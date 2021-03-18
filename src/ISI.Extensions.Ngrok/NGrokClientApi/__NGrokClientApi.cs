@@ -1,0 +1,55 @@
+#region Copyright & License
+/*
+Copyright (c) 2021, Integrated Solutions, Inc.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+		* Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+		* Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+		* Neither the name of the Integrated Solutions, Inc. nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+#endregion
+ 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using DTOs = ISI.Extensions.Ngrok.DataTransferObjects.NGrokClientApi;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace ISI.Extensions.Ngrok
+{
+	//https://ngrok.com/docs#client-api
+	public partial class NGrokClientApi : INGrokClientApi
+	{
+		private static ISI.Extensions.Ngrok.Configuration _configuration = null;
+		protected ISI.Extensions.Ngrok.Configuration Configuration => _configuration ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Ngrok.Configuration>();
+
+		protected string Version { get; }
+		protected string BaseUrl { get; }
+
+		public NGrokClientApi()
+		{
+			Version = ISI.Extensions.SystemInformation.GetAssemblyVersion(this.GetType().Assembly);
+			BaseUrl = "http://localhost:4040";
+		}
+
+		protected ISI.Extensions.WebClient.HeaderCollection GetHeaders()
+		{
+			var headers = new ISI.Extensions.WebClient.HeaderCollection();
+
+			headers.Add("user-agent", string.Format("ISI.Extensions.Ngrok/{0}", Version));
+
+			return headers;
+		}
+
+		protected string GetUrl(string path)
+		{
+			return string.Format("{0}/{1}", BaseUrl, path);
+		}
+	}
+}

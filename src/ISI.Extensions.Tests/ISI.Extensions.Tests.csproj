@@ -1,0 +1,100 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<LangVersion>latest</LangVersion>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<Deterministic>false</Deterministic>
+		<Platforms>AnyCPU;x64</Platforms>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Include="..\ISI.Extensions.AssemblyInfo.cs" Link="Properties\ISI.Extensions.AssemblyInfo.cs" />
+		<Compile Include="..\ISI.Extensions.Version.cs" Link="Properties\ISI.Extensions.Version.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="..\ISI.Extensions.licenseheader" Link="ISI.Extensions.licenseheader" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0" />
+		<PackageReference Include="NETStandard.Library" Version="2.0.3" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.1" />
+		<PackageReference Include="NUnit" Version="3.13.1" />
+		<PackageReference Include="NUnit3TestAdapter" Version="3.17.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\ISI.Extensions.Caching.Redis\ISI.Extensions.Caching.Redis.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.DependencyInjection.Iunq\ISI.Extensions.DependencyInjection.Iunq.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.JsonSerialization.Newtonsoft\ISI.Extensions.JsonSerialization.Newtonsoft.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Repository.Cosmos\ISI.Extensions.Repository.Cosmos.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Repository.SqlServer\ISI.Extensions.Repository.SqlServer.csproj" />
+		<ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Update="T4LocalContent\T4LocalContent.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>T4LocalContent.generatedcode.cs</LastGenOutput>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Update="T4LocalContent\T4LocalContent.generatedcode.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>T4LocalContent.tt</DependentUpon>
+		</Compile>
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="**\*.ascx" />
+		<EmbeddedResource Include="**\*.aspx" />
+		<EmbeddedResource Include="**\*.cscss" />
+		<EmbeddedResource Include="**\*.cshtml" />
+		<EmbeddedResource Include="**\*.csjs" />
+		<EmbeddedResource Include="**\*.csless" />
+		<EmbeddedResource Include="**\*.css" />
+		<EmbeddedResource Include="**\*.csscss" />
+		<EmbeddedResource Include="**\*.cssx" />
+		<EmbeddedResource Include="**\*.eot" />
+		<EmbeddedResource Include="**\*.gif" />
+		<EmbeddedResource Include="**\*.ico" />
+		<EmbeddedResource Include="**\*.icon" />
+		<EmbeddedResource Include="**\*.jpg" />
+		<EmbeddedResource Include="**\*.js" />
+		<EmbeddedResource Include="**\*.jsx" />
+		<EmbeddedResource Include="**\*.less" />
+		<EmbeddedResource Include="**\*.lessx" />
+		<EmbeddedResource Include="**\*.m4v" />
+		<EmbeddedResource Include="**\*.mp4" />
+		<EmbeddedResource Include="**\*.oga" />
+		<EmbeddedResource Include="**\*.ogg" />
+		<EmbeddedResource Include="**\*.ogv" />
+		<EmbeddedResource Include="**\*.otf" />
+		<EmbeddedResource Include="**\*.png" />
+		<EmbeddedResource Include="**\*.scss" />
+		<EmbeddedResource Include="**\*.scssx" />
+		<EmbeddedResource Include="**\*.spx" />
+		<EmbeddedResource Include="**\*.svg" />
+		<EmbeddedResource Include="**\*.svgz" />
+		<EmbeddedResource Include="**\*.swf" />
+		<EmbeddedResource Include="**\*.ttf" />
+		<EmbeddedResource Include="**\*.txt" />
+		<EmbeddedResource Include="**\*.vbcss" />
+		<EmbeddedResource Include="**\*.vbhtml" />
+		<EmbeddedResource Include="**\*.vbjs" />
+		<EmbeddedResource Include="**\*.vbless" />
+		<EmbeddedResource Include="**\*.vbscss" />
+		<EmbeddedResource Include="**\*.webm" />
+		<EmbeddedResource Include="**\*.woff" />
+		<EmbeddedResource Include="**\web.config" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Remove="obj\**" />
+	  <EmbeddedResource Remove="obj\**" />
+	  <None Remove="obj\**" />
+	</ItemGroup>
+</Project>

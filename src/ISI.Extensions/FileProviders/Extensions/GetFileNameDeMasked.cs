@@ -1,0 +1,111 @@
+#region Copyright & License
+/*
+Copyright (c) 2021, Integrated Solutions, Inc.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+		* Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+		* Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+		* Neither the name of the Integrated Solutions, Inc. nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+#endregion
+ 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using ISI.Extensions.Extensions;
+
+namespace ISI.Extensions.FileProviders.Extensions
+{
+	public static partial class FileProvidersExtensions
+	{
+		private static IEnumerable<FileNameMask> DefaultFileNameMasks => new FileNameMask[]
+		{
+				new FileNameMask(string.Format("{{{0}}}", FileNameMask.FilePrefix), FileNameMask.FileNameMaskType.KeyValue, "file", "file retrieval"),
+				new FileNameMask(string.Format("{{{0}}}", FileNameMask.KeyValuePrefix), FileNameMask.FileNameMaskType.KeyValue, "KeyValue", "KeyValue retrieval"),
+				new FileNameMask("{YYYYMMDD}", FileNameMask.FileNameMaskType.DateTimeMask, "yyyyMMdd", "Date Stamp: Year Month Day"),
+				new FileNameMask("{YYYYMMDD.HHmmssfff}", FileNameMask.FileNameMaskType.DateTimeMask, "yyyyMMdd.HHmmssfff", "Date Time Stamp: Year Month Day.24Hour minute second millisecond"),
+				new FileNameMask("{Now}", FileNameMask.FileNameMaskType.DateTimeMask, "yyyyMMdd.HHmmssfff", "Date Time Stamp: Year Month Day.24Hour minute second millisecond"),
+				new FileNameMask("{YYYY}", FileNameMask.FileNameMaskType.DateTimeMask, "yyyy", "Date Stamp: Year"),
+				new FileNameMask("{YY}", FileNameMask.FileNameMaskType.DateTimeMask, "yy", "Date Stamp: Year last two digits"),
+				new FileNameMask("{MM}", FileNameMask.FileNameMaskType.DateTimeMask, "MM", "Date Stamp: Month"),
+				new FileNameMask("{WW}", FileNameMask.FileNameMaskType.DateTimeMask, "ww", "Date Stamp: Week"),
+				new FileNameMask("{DD}", FileNameMask.FileNameMaskType.DateTimeMask, "dd", "Date Stamp: Day"),
+				new FileNameMask("{HH}", FileNameMask.FileNameMaskType.DateTimeMask, "HH", "Time Stamp: 24Hour"),
+				new FileNameMask("{hh}", FileNameMask.FileNameMaskType.DateTimeMask, "hh", "Time Stamp: Hour"),
+				new FileNameMask("{mm}", FileNameMask.FileNameMaskType.DateTimeMask, "mm", "Time Stamp: Minute"),
+				new FileNameMask("{ss}", FileNameMask.FileNameMaskType.DateTimeMask, "ss", "Time Stamp: Second"),
+				new FileNameMask("{fff}", FileNameMask.FileNameMaskType.DateTimeMask, "fff", "Time Stamp: Millisecond"),
+				new FileNameMask("{TempDirectory}", FileNameMask.FileNameMaskType.StringReplacement, System.IO.Path.GetTempPath, "Temp Directory"),
+		};
+
+		public static string GetFileNameDeMasked(this Microsoft.Extensions.FileProviders.IFileProvider fileProvider, string fileName)
+		{
+			return GetFileNameDeMasked(fileProvider, fileName, () => DateTimeStamper.CurrentDateTimeUtc(), null);
+		}
+		public static string GetFileNameDeMasked(this Microsoft.Extensions.FileProviders.IFileProvider fileProvider, string fileName, IEnumerable<FileNameMask> additionalMasks)
+		{
+			return GetFileNameDeMasked(fileProvider, fileName, () => DateTimeStamper.CurrentDateTimeUtc(), additionalMasks);
+		}
+		public static string GetFileNameDeMasked(this Microsoft.Extensions.FileProviders.IFileProvider fileProvider, string fileName, DateTime? dateTimeStamp, IEnumerable<FileNameMask> additionalMasks = null)
+		{
+			return GetFileNameDeMasked(fileProvider, fileName, () => dateTimeStamp, additionalMasks);
+		}
+
+		public static string GetFileNameDeMasked(this Microsoft.Extensions.FileProviders.IFileProvider fileProvider, string fileName, Func<DateTime?> getDateTimeStamp, IEnumerable<FileNameMask> additionalMasks)
+		{
+			var masks = new Dictionary<string, FileNameMask>();
+
+			foreach (var fileNameMask in DefaultFileNameMasks)
+			{
+				if (masks.ContainsKey(fileNameMask.Key))
+				{
+					masks.Remove(fileNameMask.Key);
+				}
+				if ((getDateTimeStamp != null) || (fileNameMask.MaskType != FileNameMask.FileNameMaskType.DateTimeMask))
+				{
+					masks.Add(fileNameMask.Key, fileNameMask);
+				}
+			}
+
+			if (additionalMasks != null)
+			{
+				foreach (var fileNameMask in additionalMasks)
+				{
+					var key = fileNameMask.Key;
+
+					if (!key.StartsWith("{"))
+					{
+						key = "{" + key;
+					}
+					if (!key.EndsWith("}"))
+					{
+						key += "}";
+					}
+
+					if (masks.ContainsKey(key))
+					{
+						masks.Remove(key);
+					}
+					masks.Add(key, fileNameMask);
+				}
+			}
+
+			DateTime? dateTimeStamp = null;
+
+			return masks.Aggregate(fileName, (current, fileNameMask) => fileNameMask.Value.Process(fileProvider, current, () =>
+			{
+				if (!dateTimeStamp.HasValue && (getDateTimeStamp != null))
+				{
+					dateTimeStamp = getDateTimeStamp();
+				}
+
+				return dateTimeStamp;
+			}));
+		}
+	}
+}

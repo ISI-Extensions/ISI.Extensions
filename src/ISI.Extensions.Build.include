@@ -1,0 +1,558 @@
+<?xml version="1.0"?>
+<project name="ISI.Extensions.Include" xmlns="http://nant.sf.net/release/0.86-beta1/nant.xsd">
+	<target name="ISI.Extensions.Compile.PreExecute">
+		<loadfile file="${solution.dir}ISI.Extensions/ISI.Extensions.Version.Major.Minor.txt" property="version.major.minor" />
+		<property name="ISI.Extensions.build.version" value="${version.major.minor}.${version.revision.build}"/>
+		<asminfo output="${solution.dir}ISI.Extensions/ISI.Extensions.Version.cs" language="CSharp">
+			<imports>
+				<import namespace="System" />
+				<import namespace="System.Reflection" />
+			</imports>
+			<attributes>
+				<attribute type="AssemblyVersionAttribute" value="${ISI.Extensions.build.version}" />
+			</attributes>
+		</asminfo>
+	</target>
+
+	<target name="ISI.Extensions.Compile.PostExecute">
+		<loadfile file="${solution.dir}ISI.Extensions/ISI.Extensions.Version.Major.Minor.txt" property="version.major.minor" />
+		<asminfo output="${solution.dir}ISI.Extensions/ISI.Extensions.Version.cs" language="CSharp">
+			<imports>
+				<import namespace="System" />
+				<import namespace="System.Reflection" />
+			</imports>
+			<attributes>
+				<attribute type="AssemblyVersionAttribute" value="${version.major.minor}.*" />
+			</attributes>
+		</asminfo>
+
+		<isiTagAndNote trunkDirectory="${solution.dir}ISI.Extensions/"
+									 version="${ISI.Extensions.build.version}"
+									 dateTimeStamp="${build.datetimeStamp}"
+									 failonerror="false"
+				/>
+	</target>
+
+	<target name="ISI.Extensions.PrePublish">
+		<!-- assemblies -->
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions/${bin.dir}netstandard2.0/ISI.Extensions.dll" tofile="${assembly.dir}ISI.Extensions.dll" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.AspNetCore/${bin.dir}netstandard2.0/ISI.Extensions.AspNetCore.dll" tofile="${assembly.dir}ISI.Extensions.AspNetCore.dll" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.Aspose/${bin.dir}netstandard2.0/ISI.Extensions.Aspose.dll" tofile="${assembly.dir}ISI.Extensions.Aspose.dll" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.Aspose.Cells/${bin.dir}netstandard2.0/ISI.Extensions.Aspose.Cells.dll" tofile="${assembly.dir}ISI.Extensions.Aspose.Cells.dll" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.Aspose.Words/${bin.dir}netstandard2.0/ISI.Extensions.Aspose.Words.dll" tofile="${assembly.dir}ISI.Extensions.Aspose.Words.dll" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.Caching.MessageBus/${bin.dir}netstandard2.0/ISI.Extensions.Caching.MessageBus.dll" tofile="${assembly.dir}ISI.Extensions.Caching.MessageBus.dll" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.Caching.Redis/${bin.dir}netstandard2.0/ISI.Extensions.Caching.Redis.dll" tofile="${assembly.dir}ISI.Extensions.Caching.Redis.dll" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.DependencyInjection.Iunq/${bin.dir}netstandard2.0/ISI.Extensions.DependencyInjection.Iunq.dll" tofile="${assembly.dir}ISI.Extensions.DependencyInjection.Iunq.dll" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.JsonSerialization.Newtonsoft/${bin.dir}netstandard2.0/ISI.Extensions.JsonSerialization.Newtonsoft.dll" tofile="${assembly.dir}ISI.Extensions.JsonSerialization.Newtonsoft.dll" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.Locks.Redis/${bin.dir}netstandard2.0/ISI.Extensions.Locks.Redis.dll" tofile="${assembly.dir}ISI.Extensions.Locks.Redis.dll" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.MessageBus.AzureServiceBus/${bin.dir}netstandard2.0/ISI.Extensions.MessageBus.AzureServiceBus.dll" tofile="${assembly.dir}ISI.Extensions.MessageBus.AzureServiceBus.dll" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.MessageBus.MassTransit/${bin.dir}netstandard2.0/ISI.Extensions.MessageBus.MassTransit.dll" tofile="${assembly.dir}ISI.Extensions.MessageBus.MassTransit.dll" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.MessageBus.MassTransit.RabbitMQ/${bin.dir}netstandard2.0/ISI.Extensions.MessageBus.MassTransit.RabbitMQ.dll" tofile="${assembly.dir}ISI.Extensions.MessageBus.MassTransit.RabbitMQ.dll" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.MessageBus.Redis/${bin.dir}netstandard2.0/ISI.Extensions.MessageBus.Redis.dll" tofile="${assembly.dir}ISI.Extensions.MessageBus.Redis.dll" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.Ngrok/${bin.dir}netstandard2.0/ISI.Extensions.Ngrok.dll" tofile="${assembly.dir}ISI.Extensions.Ngrok.dll" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.Repository.Cosmos/${bin.dir}netstandard2.0/ISI.Extensions.Repository.Cosmos.dll" tofile="${assembly.dir}ISI.Extensions.Repository.Cosmos.dll" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.Repository.SqlServer/${bin.dir}netstandard2.0/ISI.Extensions.Repository.SqlServer.dll" tofile="${assembly.dir}ISI.Extensions.Repository.SqlServer.dll" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.Telephony.MessageBus/${bin.dir}netstandard2.0/ISI.Extensions.Telephony.MessageBus.dll" tofile="${assembly.dir}ISI.Extensions.Telephony.MessageBus.dll" failonerror="false" />
+		<!-- pdbs -->
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions/${bin.dir}netstandard2.0/ISI.Extensions.pdb" tofile="${pdb.dir}ISI.Extensions.pdb" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.AspNetCore/${bin.dir}netstandard2.0/ISI.Extensions.AspNetCore.pdb" tofile="${pdb.dir}ISI.Extensions.AspNetCore.pdb" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.Aspose/${bin.dir}netstandard2.0/ISI.Extensions.Aspose.pdb" tofile="${pdb.dir}ISI.Extensions.Aspose.pdb" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.Aspose.Cells/${bin.dir}netstandard2.0/ISI.Extensions.Aspose.Cells.pdb" tofile="${pdb.dir}ISI.Extensions.Aspose.Cells.pdb" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.Aspose.Words/${bin.dir}netstandard2.0/ISI.Extensions.Aspose.Words.pdb" tofile="${pdb.dir}ISI.Extensions.Aspose.Words.pdb" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.Caching.MessageBus/${bin.dir}netstandard2.0/ISI.Extensions.Caching.MessageBus.pdb" tofile="${pdb.dir}ISI.Extensions.Caching.MessageBus.pdb" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.Caching.Redis/${bin.dir}netstandard2.0/ISI.Extensions.Caching.Redis.pdb" tofile="${pdb.dir}ISI.Extensions.Caching.Redis.pdb" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.DependencyInjection.Iunq/${bin.dir}netstandard2.0/ISI.Extensions.DependencyInjection.Iunq.pdb" tofile="${pdb.dir}ISI.Extensions.DependencyInjection.Iunq.pdb" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.JsonSerialization.Newtonsoft/${bin.dir}netstandard2.0/ISI.Extensions.JsonSerialization.Newtonsoft.pdb" tofile="${pdb.dir}ISI.Extensions.JsonSerialization.Newtonsoft.pdb" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.Locks.Redis/${bin.dir}netstandard2.0/ISI.Extensions.Locks.Redis.pdb" tofile="${pdb.dir}ISI.Extensions.Locks.Redis.pdb" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.MessageBus.AzureServiceBus/${bin.dir}netstandard2.0/ISI.Extensions.MessageBus.AzureServiceBus.pdb" tofile="${pdb.dir}ISI.Extensions.MessageBus.AzureServiceBus.pdb" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.MessageBus.MassTransit/${bin.dir}netstandard2.0/ISI.Extensions.MessageBus.MassTransit.pdb" tofile="${pdb.dir}ISI.Extensions.MessageBus.MassTransit.pdb" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.MessageBus.MassTransit.RabbitMQ/${bin.dir}netstandard2.0/ISI.Extensions.MessageBus.MassTransit.RabbitMQ.pdb" tofile="${pdb.dir}ISI.Extensions.MessageBus.MassTransit.RabbitMQ.pdb" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.MessageBus.Redis/${bin.dir}netstandard2.0/ISI.Extensions.MessageBus.Redis.pdb" tofile="${pdb.dir}ISI.Extensions.MessageBus.Redis.pdb" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.Ngrok/${bin.dir}netstandard2.0/ISI.Extensions.Ngrok.pdb" tofile="${pdb.dir}ISI.Extensions.Ngrok.pdb" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.Repository.Cosmos/${bin.dir}netstandard2.0/ISI.Extensions.Repository.Cosmos.pdb" tofile="${pdb.dir}ISI.Extensions.Repository.Cosmos.pdb" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.Repository.SqlServer/${bin.dir}netstandard2.0/ISI.Extensions.Repository.SqlServer.pdb" tofile="${pdb.dir}ISI.Extensions.Repository.SqlServer.pdb" failonerror="false" />
+		<copy file="${solution.dir}ISI.Extensions/ISI.Extensions.Telephony.MessageBus/${bin.dir}netstandard2.0/ISI.Extensions.Telephony.MessageBus.pdb" tofile="${pdb.dir}ISI.Extensions.Telephony.MessageBus.pdb" failonerror="false" />
+
+		<!-- Sign Assemblies -->
+		<isiSignTool certificateFileName="${signTool.CertificateFileName}" certificatePasswordFileName="${signTool.CertificatePasswordFileName}" timeServerUrl="${timeServerUrl}">
+			<assemblies basedir="${assembly.dir}">
+				<include name="ISI.Extensions.dll" />
+				<include name="ISI.Extensions.*.dll" />
+				<include name="ISI.Extensions.*.exe" />
+			</assemblies>
+		</isiSignTool>
+	</target>
+
+	<target name="ISI.Extensions.Publish">
+		<isiNugetPackagePush
+			id="ISI.Extensions"
+			version="${ISI.Extensions.build.version}"
+			authors="Integrated Solutions, Inc."
+			description="ISI.Extensions"
+			iconUrl="https://nuget.isi-net.com/Images/Lantern.png"
+			repositoryUrl="${nugetRepositoryUrl}"
+			nugetCacheDirectory="${nugetCacheDirectory}"
+			apiKey="${ISI.Functions::GetNuGetApiKey(scm.remoteManagementUrl, activeDirectory.userName, activeDirectory.password, true, 60)}"
+		>
+			<importdependencies basedir="${solution.dir}ISI.Extensions">
+				<include name="ISI.Extensions/ISI.Extensions.csproj" />
+			</importdependencies>
+			<filesets>
+				<fileset target="Lib\.NETStandard2.0" basedir="${assembly.dir}">
+					<include name="ISI.Extensions.dll" />
+				</fileset>
+				<fileset target="Lib\.NETStandard2.0" basedir="${pdb.dir}">
+					<include name="ISI.Extensions.pdb" />
+				</fileset>
+			</filesets>
+		</isiNugetPackagePush>
+
+		<isiNugetPackagePush
+			id="ISI.Extensions.AspNetCore"
+			version="${ISI.Extensions.build.version}"
+			authors="Integrated Solutions, Inc."
+			description="ISI.Extensions.AspNetCore"
+			iconUrl="https://nuget.isi-net.com/Images/Lantern.png"
+			repositoryUrl="${nugetRepositoryUrl}"
+			nugetCacheDirectory="${nugetCacheDirectory}"
+			apiKey="${ISI.Functions::GetNuGetApiKey(scm.remoteManagementUrl, activeDirectory.userName, activeDirectory.password, true, 60)}"
+		>
+			<importdependencies basedir="${solution.dir}ISI.Extensions">
+				<include name="ISI.Extensions.AspNetCore/ISI.Extensions.AspNetCore.csproj" />
+			</importdependencies>
+			<dependencyset>
+				<dependency id="ISI.Extensions" version="${ISI.Extensions.build.version}" />
+			</dependencyset>
+			<filesets>
+				<fileset target="Lib\.NETStandard2.0" basedir="${assembly.dir}">
+					<include name="ISI.Extensions.AspNetCore.dll" />
+				</fileset>
+				<fileset target="Lib\.NETStandard2.0" basedir="${pdb.dir}">
+					<include name="ISI.Extensions.AspNetCore.pdb" />
+				</fileset>
+			</filesets>
+		</isiNugetPackagePush>
+
+		<isiNugetPackagePush
+			id="ISI.Extensions.Aspose"
+			version="${ISI.Extensions.build.version}"
+			authors="Integrated Solutions, Inc."
+			description="ISI.Extensions.Aspose"
+			iconUrl="https://nuget.isi-net.com/Images/Lantern.png"
+			repositoryUrl="${nugetRepositoryUrl}"
+			nugetCacheDirectory="${nugetCacheDirectory}"
+			apiKey="${ISI.Functions::GetNuGetApiKey(scm.remoteManagementUrl, activeDirectory.userName, activeDirectory.password, true, 60)}"
+		>
+			<importdependencies basedir="${solution.dir}ISI.Extensions">
+				<include name="ISI.Extensions.Aspose/ISI.Extensions.Aspose.csproj" />
+			</importdependencies>
+			<dependencyset>
+				<dependency id="ISI.Extensions" version="${ISI.Extensions.build.version}" />
+			</dependencyset>
+			<filesets>
+				<fileset target="Lib\.NETStandard2.0" basedir="${assembly.dir}">
+					<include name="ISI.Extensions.Aspose.dll" />
+				</fileset>
+				<fileset target="Lib\.NETStandard2.0" basedir="${pdb.dir}">
+					<include name="ISI.Extensions.Aspose.pdb" />
+				</fileset>
+			</filesets>
+		</isiNugetPackagePush>
+
+		<isiNugetPackagePush
+			id="ISI.Extensions.Aspose.Cells"
+			version="${ISI.Extensions.build.version}"
+			authors="Integrated Solutions, Inc."
+			description="ISI.Extensions.Aspose.Cells"
+			iconUrl="https://nuget.isi-net.com/Images/Lantern.png"
+			repositoryUrl="${nugetRepositoryUrl}"
+			nugetCacheDirectory="${nugetCacheDirectory}"
+			apiKey="${ISI.Functions::GetNuGetApiKey(scm.remoteManagementUrl, activeDirectory.userName, activeDirectory.password, true, 60)}"
+		>
+			<importdependencies basedir="${solution.dir}ISI.Extensions">
+				<include name="ISI.Extensions.Aspose.Cells/ISI.Extensions.Aspose.Cells.csproj" />
+			</importdependencies>
+			<dependencyset>
+				<dependency id="ISI.Extensions" version="${ISI.Extensions.build.version}" />
+				<dependency id="ISI.Extensions.Aspose" version="${ISI.Extensions.build.version}" />
+			</dependencyset>
+			<filesets>
+				<fileset target="Lib\.NETStandard2.0" basedir="${assembly.dir}">
+					<include name="ISI.Extensions.Aspose.Cells.dll" />
+				</fileset>
+				<fileset target="Lib\.NETStandard2.0" basedir="${pdb.dir}">
+					<include name="ISI.Extensions.Aspose.Cells.pdb" />
+				</fileset>
+			</filesets>
+		</isiNugetPackagePush>
+
+		<isiNugetPackagePush
+			id="ISI.Extensions.Aspose.Words"
+			version="${ISI.Extensions.build.version}"
+			authors="Integrated Solutions, Inc."
+			description="ISI.Extensions.Aspose.Words"
+			iconUrl="https://nuget.isi-net.com/Images/Lantern.png"
+			repositoryUrl="${nugetRepositoryUrl}"
+			nugetCacheDirectory="${nugetCacheDirectory}"
+			apiKey="${ISI.Functions::GetNuGetApiKey(scm.remoteManagementUrl, activeDirectory.userName, activeDirectory.password, true, 60)}"
+		>
+			<importdependencies basedir="${solution.dir}ISI.Extensions">
+				<include name="ISI.Extensions.Aspose.Words/ISI.Extensions.Aspose.Words.csproj" />
+			</importdependencies>
+			<dependencyset>
+				<dependency id="ISI.Extensions" version="${ISI.Extensions.build.version}" />
+				<dependency id="ISI.Extensions.Aspose" version="${ISI.Extensions.build.version}" />
+			</dependencyset>
+			<filesets>
+				<fileset target="Lib\.NETStandard2.0" basedir="${assembly.dir}">
+					<include name="ISI.Extensions.Aspose.Words.dll" />
+				</fileset>
+				<fileset target="Lib\.NETStandard2.0" basedir="${pdb.dir}">
+					<include name="ISI.Extensions.Aspose.Words.pdb" />
+				</fileset>
+			</filesets>
+		</isiNugetPackagePush>
+
+		<isiNugetPackagePush
+			id="ISI.Extensions.Caching.MessageBus"
+			version="${ISI.Extensions.build.version}"
+			authors="Integrated Solutions, Inc."
+			description="ISI.Extensions.Caching.MessageBus"
+			iconUrl="https://nuget.isi-net.com/Images/Lantern.png"
+			repositoryUrl="${nugetRepositoryUrl}"
+			nugetCacheDirectory="${nugetCacheDirectory}"
+			apiKey="${ISI.Functions::GetNuGetApiKey(scm.remoteManagementUrl, activeDirectory.userName, activeDirectory.password, true, 60)}"
+		>
+			<importdependencies basedir="${solution.dir}ISI.Extensions">
+				<include name="ISI.Extensions.Caching.MessageBus/ISI.Extensions.Caching.MessageBus.csproj" />
+			</importdependencies>
+			<dependencyset>
+				<dependency id="ISI.Extensions" version="${ISI.Extensions.build.version}" />
+			</dependencyset>
+			<filesets>
+				<fileset target="Lib\.NETStandard2.0" basedir="${assembly.dir}">
+					<include name="ISI.Extensions.Caching.MessageBus.dll" />
+				</fileset>
+				<fileset target="Lib\.NETStandard2.0" basedir="${pdb.dir}">
+					<include name="ISI.Extensions.Caching.MessageBus.pdb" />
+				</fileset>
+			</filesets>
+		</isiNugetPackagePush>
+
+		<isiNugetPackagePush
+			id="ISI.Extensions.Caching.Redis"
+			version="${ISI.Extensions.build.version}"
+			authors="Integrated Solutions, Inc."
+			description="ISI.Extensions.Caching.Redis"
+			iconUrl="https://nuget.isi-net.com/Images/Lantern.png"
+			repositoryUrl="${nugetRepositoryUrl}"
+			nugetCacheDirectory="${nugetCacheDirectory}"
+			apiKey="${ISI.Functions::GetNuGetApiKey(scm.remoteManagementUrl, activeDirectory.userName, activeDirectory.password, true, 60)}"
+		>
+			<importdependencies basedir="${solution.dir}ISI.Extensions">
+				<include name="ISI.Extensions.Caching.Redis/ISI.Extensions.Caching.Redis.csproj" />
+			</importdependencies>
+			<dependencyset>
+				<dependency id="ISI.Extensions" version="${ISI.Extensions.build.version}" />
+			</dependencyset>
+			<filesets>
+				<fileset target="Lib\.NETStandard2.0" basedir="${assembly.dir}">
+					<include name="ISI.Extensions.Caching.Redis.dll" />
+				</fileset>
+				<fileset target="Lib\.NETStandard2.0" basedir="${pdb.dir}">
+					<include name="ISI.Extensions.Caching.Redis.pdb" />
+				</fileset>
+			</filesets>
+		</isiNugetPackagePush>
+
+		<isiNugetPackagePush
+			id="ISI.Extensions.DependencyInjection.Iunq"
+			version="${ISI.Extensions.build.version}"
+			authors="Integrated Solutions, Inc."
+			description="ISI.Extensions.DependencyInjection.Iunq"
+			iconUrl="https://nuget.isi-net.com/Images/Lantern.png"
+			repositoryUrl="${nugetRepositoryUrl}"
+			nugetCacheDirectory="${nugetCacheDirectory}"
+			apiKey="${ISI.Functions::GetNuGetApiKey(scm.remoteManagementUrl, activeDirectory.userName, activeDirectory.password, true, 60)}"
+		>
+			<importdependencies basedir="${solution.dir}ISI.Extensions">
+				<include name="ISI.Extensions.DependencyInjection.Iunq/ISI.Extensions.DependencyInjection.Iunq.csproj" />
+			</importdependencies>
+			<dependencyset>
+				<dependency id="ISI.Extensions" version="${ISI.Extensions.build.version}" />
+			</dependencyset>
+			<filesets>
+				<fileset target="Lib\.NETStandard2.0" basedir="${assembly.dir}">
+					<include name="ISI.Extensions.DependencyInjection.Iunq.dll" />
+				</fileset>
+				<fileset target="Lib\.NETStandard2.0" basedir="${pdb.dir}">
+					<include name="ISI.Extensions.DependencyInjection.Iunq.pdb" />
+				</fileset>
+			</filesets>
+		</isiNugetPackagePush>
+
+		<isiNugetPackagePush
+			id="ISI.Extensions.JsonSerialization.Newtonsoft"
+			version="${ISI.Extensions.build.version}"
+			authors="Integrated Solutions, Inc."
+			description="ISI.Extensions.JsonSerialization.Newtonsoft"
+			iconUrl="https://nuget.isi-net.com/Images/Lantern.png"
+			repositoryUrl="${nugetRepositoryUrl}"
+			nugetCacheDirectory="${nugetCacheDirectory}"
+			apiKey="${ISI.Functions::GetNuGetApiKey(scm.remoteManagementUrl, activeDirectory.userName, activeDirectory.password, true, 60)}"
+		>
+			<importdependencies basedir="${solution.dir}ISI.Extensions">
+				<include name="ISI.Extensions.JsonSerialization.Newtonsoft/ISI.Extensions.JsonSerialization.Newtonsoft.csproj" />
+			</importdependencies>
+			<dependencyset>
+				<dependency id="ISI.Extensions" version="${ISI.Extensions.build.version}" />
+			</dependencyset>
+			<filesets>
+				<fileset target="Lib\.NETStandard2.0" basedir="${assembly.dir}">
+					<include name="ISI.Extensions.JsonSerialization.Newtonsoft.dll" />
+				</fileset>
+				<fileset target="Lib\.NETStandard2.0" basedir="${pdb.dir}">
+					<include name="ISI.Extensions.JsonSerialization.Newtonsoft.pdb" />
+				</fileset>
+			</filesets>
+		</isiNugetPackagePush>
+
+		<isiNugetPackagePush
+			id="ISI.Extensions.Locks.Redis"
+			version="${ISI.Extensions.build.version}"
+			authors="Integrated Solutions, Inc."
+			description="ISI.Extensions.Locks.Redis"
+			iconUrl="https://nuget.isi-net.com/Images/Lantern.png"
+			repositoryUrl="${nugetRepositoryUrl}"
+			nugetCacheDirectory="${nugetCacheDirectory}"
+			apiKey="${ISI.Functions::GetNuGetApiKey(scm.remoteManagementUrl, activeDirectory.userName, activeDirectory.password, true, 60)}"
+		>
+			<importdependencies basedir="${solution.dir}ISI.Extensions">
+				<include name="ISI.Extensions.Locks.Redis/ISI.Extensions.Locks.Redis.csproj" />
+			</importdependencies>
+			<dependencyset>
+				<dependency id="ISI.Extensions" version="${ISI.Extensions.build.version}" />
+			</dependencyset>
+			<filesets>
+				<fileset target="Lib\.NETStandard2.0" basedir="${assembly.dir}">
+					<include name="ISI.Extensions.Locks.Redis.dll" />
+				</fileset>
+				<fileset target="Lib\.NETStandard2.0" basedir="${pdb.dir}">
+					<include name="ISI.Extensions.Locks.Redis.pdb" />
+				</fileset>
+			</filesets>
+		</isiNugetPackagePush>
+
+		<isiNugetPackagePush
+			id="ISI.Extensions.MessageBus.AzureServiceBus"
+			version="${ISI.Extensions.build.version}"
+			authors="Integrated Solutions, Inc."
+			description="ISI.Extensions.MessageBus.AzureServiceBus"
+			iconUrl="https://nuget.isi-net.com/Images/Lantern.png"
+			repositoryUrl="${nugetRepositoryUrl}"
+			nugetCacheDirectory="${nugetCacheDirectory}"
+			apiKey="${ISI.Functions::GetNuGetApiKey(scm.remoteManagementUrl, activeDirectory.userName, activeDirectory.password, true, 60)}"
+		>
+			<importdependencies basedir="${solution.dir}ISI.Extensions">
+				<include name="ISI.Extensions.MessageBus.AzureServiceBus/ISI.Extensions.MessageBus.AzureServiceBus.csproj" />
+			</importdependencies>
+			<dependencyset>
+				<dependency id="ISI.Extensions" version="${ISI.Extensions.build.version}" />
+			</dependencyset>
+			<filesets>
+				<fileset target="Lib\.NETStandard2.0" basedir="${assembly.dir}">
+					<include name="ISI.Extensions.MessageBus.AzureServiceBus.dll" />
+				</fileset>
+				<fileset target="Lib\.NETStandard2.0" basedir="${pdb.dir}">
+					<include name="ISI.Extensions.MessageBus.AzureServiceBus.pdb" />
+				</fileset>
+			</filesets>
+		</isiNugetPackagePush>
+
+		<isiNugetPackagePush
+			id="ISI.Extensions.MessageBus.MassTransit"
+			version="${ISI.Extensions.build.version}"
+			authors="Integrated Solutions, Inc."
+			description="ISI.Extensions.MessageBus.MassTransit"
+			iconUrl="https://nuget.isi-net.com/Images/Lantern.png"
+			repositoryUrl="${nugetRepositoryUrl}"
+			nugetCacheDirectory="${nugetCacheDirectory}"
+			apiKey="${ISI.Functions::GetNuGetApiKey(scm.remoteManagementUrl, activeDirectory.userName, activeDirectory.password, true, 60)}"
+		>
+			<importdependencies basedir="${solution.dir}ISI.Extensions">
+				<include name="ISI.Extensions.MessageBus.MassTransit/ISI.Extensions.MessageBus.MassTransit.csproj" />
+			</importdependencies>
+			<dependencyset>
+				<dependency id="ISI.Extensions" version="${ISI.Extensions.build.version}" />
+			</dependencyset>
+			<filesets>
+				<fileset target="Lib\.NETStandard2.0" basedir="${assembly.dir}">
+					<include name="ISI.Extensions.MessageBus.MassTransit.dll" />
+				</fileset>
+				<fileset target="Lib\.NETStandard2.0" basedir="${pdb.dir}">
+					<include name="ISI.Extensions.MessageBus.MassTransit.pdb" />
+				</fileset>
+			</filesets>
+		</isiNugetPackagePush>
+
+		<isiNugetPackagePush
+			id="ISI.Extensions.MessageBus.MassTransit.RabbitMQ"
+			version="${ISI.Extensions.build.version}"
+			authors="Integrated Solutions, Inc."
+			description="ISI.Extensions.MessageBus.MassTransit.RabbitMQ"
+			iconUrl="https://nuget.isi-net.com/Images/Lantern.png"
+			repositoryUrl="${nugetRepositoryUrl}"
+			nugetCacheDirectory="${nugetCacheDirectory}"
+			apiKey="${ISI.Functions::GetNuGetApiKey(scm.remoteManagementUrl, activeDirectory.userName, activeDirectory.password, true, 60)}"
+		>
+			<importdependencies basedir="${solution.dir}ISI.Extensions">
+				<include name="ISI.Extensions.MessageBus.MassTransit.RabbitMQ/ISI.Extensions.MessageBus.MassTransit.RabbitMQ.csproj" />
+			</importdependencies>
+			<dependencyset>
+				<dependency id="ISI.Extensions" version="${ISI.Extensions.build.version}" />
+				<dependency id="ISI.Extensions.JsonSerialization.Newtonsoft" version="${ISI.Extensions.build.version}" />
+				<dependency id="ISI.Extensions.MessageBus.MassTransit" version="${ISI.Extensions.build.version}" />
+			</dependencyset>
+			<filesets>
+				<fileset target="Lib\.NETStandard2.0" basedir="${assembly.dir}">
+					<include name="ISI.Extensions.MessageBus.MassTransit.RabbitMQ.dll" />
+				</fileset>
+				<fileset target="Lib\.NETStandard2.0" basedir="${pdb.dir}">
+					<include name="ISI.Extensions.MessageBus.MassTransit.RabbitMQ.pdb" />
+				</fileset>
+			</filesets>
+		</isiNugetPackagePush>
+
+		<isiNugetPackagePush
+			id="ISI.Extensions.MessageBus.Redis"
+			version="${ISI.Extensions.build.version}"
+			authors="Integrated Solutions, Inc."
+			description="ISI.Extensions.MessageBus.Redis"
+			iconUrl="https://nuget.isi-net.com/Images/Lantern.png"
+			repositoryUrl="${nugetRepositoryUrl}"
+			nugetCacheDirectory="${nugetCacheDirectory}"
+			apiKey="${ISI.Functions::GetNuGetApiKey(scm.remoteManagementUrl, activeDirectory.userName, activeDirectory.password, true, 60)}"
+		>
+			<importdependencies basedir="${solution.dir}ISI.Extensions">
+				<include name="ISI.Extensions.MessageBus.Redis/ISI.Extensions.MessageBus.Redis.csproj" />
+			</importdependencies>
+			<dependencyset>
+				<dependency id="ISI.Extensions" version="${ISI.Extensions.build.version}" />
+			</dependencyset>
+			<filesets>
+				<fileset target="Lib\.NETStandard2.0" basedir="${assembly.dir}">
+					<include name="ISI.Extensions.MessageBus.Redis.dll" />
+				</fileset>
+				<fileset target="Lib\.NETStandard2.0" basedir="${pdb.dir}">
+					<include name="ISI.Extensions.MessageBus.Redis.pdb" />
+				</fileset>
+			</filesets>
+		</isiNugetPackagePush>
+
+		<isiNugetPackagePush
+			id="ISI.Extensions.Ngrok"
+			version="${ISI.Extensions.build.version}"
+			authors="Integrated Solutions, Inc."
+			description="ISI.Extensions.Ngrok"
+			iconUrl="https://nuget.isi-net.com/Images/Lantern.png"
+			repositoryUrl="${nugetRepositoryUrl}"
+			nugetCacheDirectory="${nugetCacheDirectory}"
+			apiKey="${ISI.Functions::GetNuGetApiKey(scm.remoteManagementUrl, activeDirectory.userName, activeDirectory.password, true, 60)}"
+		>
+			<importdependencies basedir="${solution.dir}ISI.Extensions">
+				<include name="ISI.Extensions.Ngrok/ISI.Extensions.Ngrok.csproj" />
+			</importdependencies>
+			<dependencyset>
+				<dependency id="ISI.Extensions" version="${ISI.Extensions.build.version}" />
+			</dependencyset>
+			<filesets>
+				<fileset target="Lib\.NETStandard2.0" basedir="${assembly.dir}">
+					<include name="ISI.Extensions.Ngrok.dll" />
+				</fileset>
+				<fileset target="Lib\.NETStandard2.0" basedir="${pdb.dir}">
+					<include name="ISI.Extensions.Ngrok.pdb" />
+				</fileset>
+			</filesets>
+		</isiNugetPackagePush>
+
+		<isiNugetPackagePush
+			id="ISI.Extensions.Repository.Cosmos"
+			version="${ISI.Extensions.build.version}"
+			authors="Integrated Solutions, Inc."
+			description="ISI.Extensions.Repository.Cosmos"
+			iconUrl="https://nuget.isi-net.com/Images/Lantern.png"
+			repositoryUrl="${nugetRepositoryUrl}"
+			nugetCacheDirectory="${nugetCacheDirectory}"
+			apiKey="${ISI.Functions::GetNuGetApiKey(scm.remoteManagementUrl, activeDirectory.userName, activeDirectory.password, true, 60)}"
+		>
+			<importdependencies basedir="${solution.dir}ISI.Extensions">
+				<include name="ISI.Extensions.Repository.Cosmos/ISI.Extensions.Repository.Cosmos.csproj" />
+			</importdependencies>
+			<dependencyset>
+				<dependency id="ISI.Extensions" version="${ISI.Extensions.build.version}" />
+				<dependency id="ISI.Extensions.JsonSerialization.Newtonsoft" version="${ISI.Extensions.build.version}" />
+			</dependencyset>
+			<filesets>
+				<fileset target="Lib\.NETStandard2.0" basedir="${assembly.dir}">
+					<include name="ISI.Extensions.Repository.Cosmos.dll" />
+				</fileset>
+				<fileset target="Lib\.NETStandard2.0" basedir="${pdb.dir}">
+					<include name="ISI.Extensions.Repository.Cosmos.pdb" />
+				</fileset>
+			</filesets>
+		</isiNugetPackagePush>
+
+		<isiNugetPackagePush
+			id="ISI.Extensions.Repository.SqlServer"
+			version="${ISI.Extensions.build.version}"
+			authors="Integrated Solutions, Inc."
+			description="ISI.Extensions.Repository.SqlServer"
+			iconUrl="https://nuget.isi-net.com/Images/Lantern.png"
+			repositoryUrl="${nugetRepositoryUrl}"
+			nugetCacheDirectory="${nugetCacheDirectory}"
+			apiKey="${ISI.Functions::GetNuGetApiKey(scm.remoteManagementUrl, activeDirectory.userName, activeDirectory.password, true, 60)}"
+		>
+			<importdependencies basedir="${solution.dir}ISI.Extensions">
+				<include name="ISI.Extensions.Repository.SqlServer/ISI.Extensions.Repository.SqlServer.csproj" />
+			</importdependencies>
+			<dependencyset>
+				<dependency id="ISI.Extensions" version="${ISI.Extensions.build.version}" />
+				<dependency id="ISI.Extensions.JsonSerialization.Newtonsoft" version="${ISI.Extensions.build.version}" />
+			</dependencyset>
+			<filesets>
+				<fileset target="Lib\.NETStandard2.0" basedir="${assembly.dir}">
+					<include name="ISI.Extensions.Repository.SqlServer.dll" />
+				</fileset>
+				<fileset target="Lib\.NETStandard2.0" basedir="${pdb.dir}">
+					<include name="ISI.Extensions.Repository.SqlServer.pdb" />
+				</fileset>
+			</filesets>
+		</isiNugetPackagePush>
+
+		<isiNugetPackagePush
+			id="ISI.Extensions.Telephony.MessageBus"
+			version="${ISI.Extensions.build.version}"
+			authors="Integrated Solutions, Inc."
+			description="ISI.Extensions.Telephony.MessageBus"
+			iconUrl="https://nuget.isi-net.com/Images/Lantern.png"
+			repositoryUrl="${nugetRepositoryUrl}"
+			nugetCacheDirectory="${nugetCacheDirectory}"
+			apiKey="${ISI.Functions::GetNuGetApiKey(scm.remoteManagementUrl, activeDirectory.userName, activeDirectory.password, true, 60)}"
+		>
+			<importdependencies basedir="${solution.dir}ISI.Extensions">
+				<include name="ISI.Extensions.Telephony.MessageBus/ISI.Extensions.Telephony.MessageBus.csproj" />
+			</importdependencies>
+			<dependencyset>
+				<dependency id="ISI.Extensions" version="${ISI.Extensions.build.version}" />
+			</dependencyset>
+			<filesets>
+				<fileset target="Lib\.NETStandard2.0" basedir="${assembly.dir}">
+					<include name="ISI.Extensions.Telephony.MessageBus.dll" />
+				</fileset>
+				<fileset target="Lib\.NETStandard2.0" basedir="${pdb.dir}">
+					<include name="ISI.Extensions.Telephony.MessageBus.pdb" />
+				</fileset>
+			</filesets>
+		</isiNugetPackagePush>
+	</target>
+</project>

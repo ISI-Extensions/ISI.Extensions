@@ -26,7 +26,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void Nuspec_Test()
 		{
-			var nugetHelper = new ISI.Extensions.Nuget.NugetHelper();
+			var nugetHelper = new ISI.Extensions.Nuget.NugetHelper(new ConsoleLogger());
 
 			var nuspec = nugetHelper.GenerateNuspecFromProject(@"F:\ISI\Internal Projects\ISI.Extensions\src\ISI.Extensions.Nuget\ISI.Extensions.Nuget.csproj", package =>
 			{

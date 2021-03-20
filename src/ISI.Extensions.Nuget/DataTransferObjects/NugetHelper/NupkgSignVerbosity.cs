@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,65 +15,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.Nuget.DataTransferObjects.NugetHelper
 {
-	public class SimpleKeyValueStorage : ISI.Extensions.KeyValueStorage.IKeyValueStorageReader
+	public enum NupkgSignVerbosity
 	{
-		protected string FullName { get; }
-
-		private IDictionary<string, string> _values;
-		protected IDictionary<string, string> Values => _values ??= GetValues();
-
-		protected IDictionary<string, string> GetValues()
-		{
-			var values = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
-
-			var lines = System.IO.File.ReadAllLines(FullName).ToList();
-
-			lines.RemoveAll(string.IsNullOrWhiteSpace);
-
-			foreach (var keyValue in lines.Select(line => line.Split(new[] { ':', '\t' }, 2)))
-			{
-				var key = keyValue.First().Trim();
-
-				var value = string.Empty;
-				if (keyValue.Length > 1)
-				{
-					value = keyValue[1].Trim();
-				}
-
-				if (values.ContainsKey(key))
-				{
-					throw new Exception(string.Format("key: \"{0}\" already exists with value of \"{1}\" cannot add value \"{2}\"", key, values[key], value));
-				}
-
-				values.Add(key, value);
-			}
-
-			return values;
-		}
-
-		public SimpleKeyValueStorage(string fullName)
-		{
-			FullName = fullName;
-		}
-
-		public string GetValue(string key, string defaultValue = null)
-		{
-			if (Values.TryGetValue(key, out var value))
-			{
-				return value;
-			}
-
-			return defaultValue;
-		}
-
-		public bool TryGetValue(string key, out string value) => Values.TryGetValue(key, out value);
-
-		public IEnumerable<string> Keys => Values.Keys;
+		Normal,
+		Quiet,
+		Detailed,
 	}
 }

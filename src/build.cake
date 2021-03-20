@@ -1,6 +1,4 @@
 #addin nuget:?package=Cake.FileHelpers
-//#addin nuget:file:///E:/Cake/?package=ISI.Cake.Addin&loaddependencies=true
-//#addin nuget:https://nuget.isi-net.com/?package=ISI.Cake.AddIn&loaddependencies=true
 #addin nuget:?package=ISI.Cake.AddIn&loaddependencies=true
 
 var target = Argument("target", "Default");

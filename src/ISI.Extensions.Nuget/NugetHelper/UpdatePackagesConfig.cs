@@ -26,24 +26,29 @@ namespace ISI.Extensions.Nuget
 {
 	public partial class NugetHelper
 	{
-		public IEnumerable<NugetPackageKey> GetProjectNugetPackageDependencies(string projectFullName, Func<string, string> versionFinder = null)
+		public string UpdatePackagesConfig(string packagesConfig, IEnumerable<NugetPackageKey> nugetPackageKeys)
 		{
-			var nugetPackageKeys = new NugetPackageKeyDictionary();
-			
-			var projectDirectory = System.IO.Path.GetDirectoryName(projectFullName);
+			return UpdatePackagesConfig(packagesConfig, new NugetPackageKeyDictionary(nugetPackageKeys));
+		}
 
-			var packagesConfigFullName = System.IO.Path.Combine(projectDirectory, "packages.config");
-			if (System.IO.File.Exists(packagesConfigFullName))
+		public string UpdatePackagesConfig(string packagesConfig, NugetPackageKeyDictionary nugetPackageKeys)
+		{
+			var packagesConfigXml = System.Xml.Linq.XElement.Parse(packagesConfig);
+
+			foreach (var packageTag in packagesConfigXml.Elements("package"))
 			{
-				nugetPackageKeys.Upsert(ParsePackagesConfig(packagesConfigFullName));
+				var packageId = packageTag.Attribute("id").Value;
+
+				if (nugetPackageKeys.TryGetValue(packageId, out var nugetPackageKey))
+				{
+					if (!string.IsNullOrWhiteSpace(nugetPackageKey.Version))
+					{
+						packageTag.Attribute("version").Value = nugetPackageKey.Version;
+					}
+				}
 			}
 
-			if (projectFullName.EndsWith(".csproj", StringComparison.InvariantCultureIgnoreCase))
-			{
-				nugetPackageKeys.Upsert(ParseCsProj(projectFullName, versionFinder));
-			}
-
-			return nugetPackageKeys;
+			return packagesConfig.ToString();
 		}
 	}
 }

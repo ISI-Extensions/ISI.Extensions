@@ -14,9 +14,9 @@ namespace ISI.Extensions.Nuget
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 
 		public NugetHelper(
-			Microsoft.Extensions.Logging.ILogger logger)
+			Microsoft.Extensions.Logging.ILogger logger = null)
 		{
-			Logger = logger;
+			Logger = logger ?? new ConsoleLogger();
 		}
 	}
 }

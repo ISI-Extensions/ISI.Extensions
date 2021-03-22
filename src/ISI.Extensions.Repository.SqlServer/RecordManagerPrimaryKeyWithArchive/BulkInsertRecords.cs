@@ -26,9 +26,9 @@ namespace ISI.Extensions.Repository.SqlServer
 {
 	public abstract partial class RecordManagerPrimaryKeyWithArchive<TRecord, TRecordPrimaryKey>
 	{
-		public override void BulkInsertRecords(IEnumerable<TRecord> records, bool keepIdentities = false, int bulkCopyTimeoutInSeconds = 3600, int batchSize = 1000)
+		public override void BulkInsertRecords(IEnumerable<TRecord> records, bool keepIdentities = false, int bulkCopyTimeoutInSeconds = 3600, int batchSize = 1000, Action<string> batchLogger = null)
 		{
-			BulkInsertRecords(records, keepIdentities, true, bulkCopyTimeoutInSeconds, batchSize);
+			BulkInsertRecords(records, keepIdentities, true, bulkCopyTimeoutInSeconds, batchSize, batchLogger);
 		}
 	}
 }

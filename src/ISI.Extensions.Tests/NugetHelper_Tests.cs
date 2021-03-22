@@ -43,5 +43,32 @@ namespace ISI.Extensions.Tests
 				Nuspec = nuspec,
 			});
 		}
+
+		[Test]
+		public void ParseCsProj_Test()
+		{
+			var nugetHelper = new ISI.Extensions.Nuget.NugetHelper(new ConsoleLogger());
+
+			{
+				var nugetPackageKeys = nugetHelper.ParseCsProj(@"F:\ISI\Internal Projects\ISI.Extensions\src\ISI.Extensions.Nuget\ISI.Extensions.Nuget.csproj");
+			}
+
+			{
+				var nugetPackageKeys = nugetHelper.ParseCsProj(@"F:\ISI\Internal Projects\ISI.BuildTools\src\ISI.BuildTools.Tests\ISI.BuildTools.Tests.csproj");
+			}
+		}
+
+		[Test]
+		public void UpdatePackagesConfig_Test()
+		{
+			var nugetHelper = new ISI.Extensions.Nuget.NugetHelper(new ConsoleLogger());
+
+			var nugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
+			nugetPackageKeys.Upsert(nugetHelper.ParseCsProj(@"F:\ISI\Internal Projects\ISI.Extensions\src\ISI.Extensions.Nuget\ISI.Extensions.Nuget.csproj"));
+			nugetPackageKeys.Upsert(nugetHelper.ParseCsProj(@"F:\ISI\Internal Projects\ISI.BuildTools\src\ISI.BuildTools.Tests\ISI.BuildTools.Tests.csproj"));
+
+			var packagesConfig = System.IO.File.ReadAllText(@"F:\ISI\Internal Projects\ISI.BuildTools\src\ISI.BuildTools.Tests\packages.config");
+			nugetHelper.UpdatePackagesConfig(packagesConfig, nugetPackageKeys);
+		}
 	}
 }

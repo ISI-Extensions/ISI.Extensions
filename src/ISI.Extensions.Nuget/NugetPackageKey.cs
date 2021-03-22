@@ -19,9 +19,12 @@ using System.Text;
 
 namespace ISI.Extensions.Nuget
 {
-	public class NugetKey
+	public class NugetPackageKey
 	{
 		public string Package { get; set; }
 		public string Version { get; set; }
+		public string HintPath { get; set; }
+
+		public override string ToString() => $"{Package} {Version}";
 	}
 }

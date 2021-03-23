@@ -35,12 +35,12 @@ namespace ISI.Extensions.Nuget
 			var packagesConfigFullName = System.IO.Path.Combine(projectDirectory, "packages.config");
 			if (System.IO.File.Exists(packagesConfigFullName))
 			{
-				nugetPackageKeys.Upsert(ParsePackagesConfig(packagesConfigFullName));
+				nugetPackageKeys.Merge(ParsePackagesConfig(packagesConfigFullName));
 			}
 
 			if (projectFullName.EndsWith(".csproj", StringComparison.InvariantCultureIgnoreCase))
 			{
-				nugetPackageKeys.Upsert(ParseCsProj(projectFullName, versionFinder));
+				nugetPackageKeys.Merge(ParseCsProj(projectFullName, versionFinder));
 			}
 
 			return nugetPackageKeys;

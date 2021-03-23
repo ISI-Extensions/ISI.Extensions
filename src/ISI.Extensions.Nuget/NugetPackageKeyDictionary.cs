@@ -49,14 +49,17 @@ namespace ISI.Extensions.Nuget
 			HintPath = hintPath,
 		});
 
-		internal void Upsert(IEnumerable<NugetPackageKey> nugetPackageKeys)
+		public void Merge(IEnumerable<NugetPackageKey> nugetPackageKeys)
 		{
 			foreach (var nugetPackageKey in nugetPackageKeys)
 			{
 				if (_nugetPackageKeys.TryGetValue(nugetPackageKey.Package, out var existingNugetPackageKey))
 				{
 					existingNugetPackageKey.Version = nugetPackageKey.Version;
-					existingNugetPackageKey.HintPath = nugetPackageKey.HintPath;
+					if (!string.IsNullOrWhiteSpace(nugetPackageKey.HintPath))
+					{
+						existingNugetPackageKey.HintPath = nugetPackageKey.HintPath;
+					}
 				}
 				else
 				{

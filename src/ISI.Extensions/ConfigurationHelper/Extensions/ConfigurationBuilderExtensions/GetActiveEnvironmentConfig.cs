@@ -33,7 +33,7 @@ namespace ISI.Extensions.ConfigurationHelper.Extensions
 			EnvironmentsConfiguration environmentsConfiguration = null;
 			EnvironmentsConfiguration.EnvironmentConfiguration environmentConfiguration = null;
 
-			var machineName = Environment.MachineName;
+			var machineName = System.Environment.MachineName;
 
 			var environment = machineName;
 			var environments = new List<string>();
@@ -74,7 +74,7 @@ namespace ISI.Extensions.ConfigurationHelper.Extensions
 
 							if ((environmentConfiguration == null) && !string.IsNullOrWhiteSpace(machineEnvironmentVariableName))
 							{
-								var machineEnvironmentVariableValue = Environment.GetEnvironmentVariable(machineEnvironmentVariableName);
+								var machineEnvironmentVariableValue = System.Environment.GetEnvironmentVariable(machineEnvironmentVariableName);
 
 								if (!string.IsNullOrWhiteSpace(machineEnvironmentVariableValue))
 								{
@@ -110,7 +110,7 @@ namespace ISI.Extensions.ConfigurationHelper.Extensions
 
 			if (!string.IsNullOrWhiteSpace(machineEnvironmentVariableName) && !hasMachineEnvironmentConfig && (environmentConfiguration == null))
 			{
-				var machineEnvironmentVariableValue = Environment.GetEnvironmentVariable(machineEnvironmentVariableName);
+				var machineEnvironmentVariableValue = System.Environment.GetEnvironmentVariable(machineEnvironmentVariableName);
 
 				if (!string.IsNullOrWhiteSpace(machineEnvironmentVariableValue))
 				{

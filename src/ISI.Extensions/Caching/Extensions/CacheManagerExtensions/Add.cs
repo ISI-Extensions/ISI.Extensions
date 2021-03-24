@@ -63,10 +63,10 @@ namespace ISI.Extensions.Caching.Extensions
 			Add(cacheManager, item.CacheKey, item);
 		}
 
-		public static void AddCacheKeyProxies<TItem>(this ISI.Extensions.Caching.ICacheManager cacheManager, string cacheKey, TItem item, GenerateCacheKeys<TItem> generateCacheKeys, Func<ISI.Extensions.Caching.ICacheEntryExpirationPolicy> getCacheEntryExpirationPolicy = null)
+		public static void AddCacheKeyProxies<TItem>(this ISI.Extensions.Caching.ICacheManager cacheManager, string cacheKey, TItem item, GenerateCacheKeys<TItem> generateProxyCacheKeys, Func<ISI.Extensions.Caching.ICacheEntryExpirationPolicy> getCacheEntryExpirationPolicy = null)
 		{
 			var proxyCacheKeys = new HashSet<string>(StringComparer.Ordinal);
-			proxyCacheKeys.UnionWith(generateCacheKeys(item));
+			proxyCacheKeys.UnionWith(generateProxyCacheKeys(item));
 			proxyCacheKeys.Remove(cacheKey);
 
 			if (proxyCacheKeys.Any())

@@ -21,9 +21,11 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Caching.Redis
 {
-	[ISI.Extensions.ConfigurationHelper.Configuration("ISI.Extensions.Caching.Redis")]
+	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
 	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
 	{
+		public const string ConfigurationSectionName = "ISI.Extensions.Caching.Redis";
+
 		public string ConnectionString { get; set; } = "localhost";
 
 		public int Database { get; set; } = 0;

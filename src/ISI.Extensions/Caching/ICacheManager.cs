@@ -19,6 +19,16 @@ using System.Text;
 
 namespace ISI.Extensions.Caching
 {
+	public delegate string GenerateCacheKey<TKey>(TKey key);
+
+	public delegate string[] GenerateCacheKeys<TItem>(TItem item);
+
+	public delegate TItem GetItem<TItem>();
+
+	public delegate TItem GetItem<TKey, TItem>(TKey key);
+
+	public delegate IDictionary<TKey, TItem> GetItems<TKey, TItem>(IEnumerable<TKey> keys);
+
 	public delegate ICacheEntryExpirationPolicy DefaultCacheEntryExpirationPolicyGetter(object itemToCache);
 
 	public interface ICacheManager : IDisposable
@@ -26,11 +36,11 @@ namespace ISI.Extensions.Caching
 		Guid CacheManagerInstanceUuid { get; }
 		
 		bool TryGetValue(string cacheKey, out object value);
-		Microsoft.Extensions.Caching.Memory.ICacheEntry CreateEntry(string cacheKey);
+		Microsoft.Extensions.Caching.Memory.ICacheEntry CreateEntry(string key);
 		
 		void ClearCache();
 		void ClearCache(ISI.Extensions.Caching.ClearCacheRequest clearCacheRequest);
-		void Remove(string cacheKey);
+		void Remove(string key);
 		void RemoveByCacheKeyPrefix(string cacheKeyPrefix);
 		void Remove(IEnumerable<ClearCacheRequestCacheKeyWithCacheKeyInstanceUuid> cacheKeysWithCacheKeyInstanceUuid);
 

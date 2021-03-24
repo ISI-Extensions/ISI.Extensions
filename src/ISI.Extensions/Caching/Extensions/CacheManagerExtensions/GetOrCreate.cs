@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,88 +24,110 @@ namespace ISI.Extensions.Caching.Extensions
 {
 	public static partial class CacheManagerExtensions
 	{
-		public static IDictionary<TKey, TItem> GetOrCreate<TKey, TItem>(this ISI.Extensions.Caching.ICacheManager cacheManager, IEnumerable<TKey> keys, Func<TKey, string> getCacheKey, Func<TKey, TItem> getItem, Func<IEnumerable<TKey>, IDictionary<TKey, TItem>> getDefaultValues, Func<ISI.Extensions.Caching.ICacheEntryExpirationPolicy> getCacheEntryExpirationPolicy = null, bool forceRefreshCache = false)
-		{
-			Func<IEnumerable<TKey>, IDictionary<TKey, TItem>> getItems = itemKeys => { return itemKeys.ToDictionary(itemKey => itemKey, getItem).Where(keyValue => keyValue.Value != null).ToDictionary(keyValue => keyValue.Key, keyValue => keyValue.Value); };
+		//public static IDictionary<TKey, TItem> GetOrCreate<TKey, TItem>(this ISI.Extensions.Caching.ICacheManager cacheManager, IEnumerable<TKey> keys, GenerateCacheKey<TKey> getCacheKey, Func<TKey, TItem> getItem, GetItems<TKey, TItem> getDefaultValues, Func<ISI.Extensions.Caching.ICacheEntryExpirationPolicy> getCacheEntryExpirationPolicy = null, bool forceRefreshCache = false)
+		//{
+		//	GetItems<TKey, TItem> getItems = itemKeys => { return itemKeys.ToDictionary(itemKey => itemKey, getItem).Where(keyValue => keyValue.Value != null).ToDictionary(keyValue => keyValue.Key, keyValue => keyValue.Value); };
 
-			return GetOrCreate(cacheManager, keys, getCacheKey, getItems, getDefaultValues, getCacheEntryExpirationPolicy, forceRefreshCache);
+		//	return GetOrCreate(cacheManager, keys, getCacheKey, getItems, getDefaultValues, getCacheEntryExpirationPolicy, forceRefreshCache);
+		//}
+
+		//public static IDictionary<TKey, TItem> GetOrCreate<TKey, TItem>(this ISI.Extensions.Caching.ICacheManager cacheManager, IEnumerable<TKey> keys, GenerateCacheKey<TKey> getCacheKey, GetItems<TKey, TItem> getItems, Func<TKey, TItem> getDefaultValue, Func<ISI.Extensions.Caching.ICacheEntryExpirationPolicy> getCacheEntryExpirationPolicy = null, bool forceRefreshCache = false)
+		//{
+		//	GetItems<TKey, TItem> getDefaultValues = itemKeys => { return itemKeys.ToDictionary(itemKey => itemKey, getDefaultValue).Where(keyValue => keyValue.Value != null).ToDictionary(keyValue => keyValue.Key, keyValue => keyValue.Value); };
+
+		//	return GetOrCreate(cacheManager, keys, getCacheKey, getItems, getDefaultValues, getCacheEntryExpirationPolicy, forceRefreshCache);
+		//}
+
+		//public static IDictionary<TKey, TItem> GetOrCreate<TKey, TItem>(this ISI.Extensions.Caching.ICacheManager cacheManager, IEnumerable<TKey> keys, GenerateCacheKey<TKey> getCacheKey, Func<TKey, TItem> getItem, Func<TKey, TItem> getDefaultValue, Func<ISI.Extensions.Caching.ICacheEntryExpirationPolicy> getCacheEntryExpirationPolicy = null, bool forceRefreshCache = false)
+		//{
+		//	GetItems<TKey, TItem> getItems = itemKeys => { return itemKeys.ToDictionary(itemKey => itemKey, getItem).Where(keyValue => keyValue.Value != null).ToDictionary(keyValue => keyValue.Key, keyValue => keyValue.Value); };
+
+		//	GetItems<TKey, TItem> getDefaultValues = itemKeys => { return itemKeys.ToDictionary(itemKey => itemKey, getDefaultValue).Where(keyValue => keyValue.Value != null).ToDictionary(keyValue => keyValue.Key, keyValue => keyValue.Value); };
+
+		//	return GetOrCreate(cacheManager, keys, getCacheKey, getItems, getDefaultValues, getCacheEntryExpirationPolicy, forceRefreshCache);
+		//}
+
+		//public static IDictionary<TKey, TItem> GetOrCreate<TKey, TItem>(this ISI.Extensions.Caching.ICacheManager cacheManager, IEnumerable<TKey> keys, GenerateCacheKey<TKey> getCacheKey, GetItems<TKey, TItem> getItems, GetItems<TKey, TItem> getDefaultValues, Func<ISI.Extensions.Caching.ICacheEntryExpirationPolicy> getCacheEntryExpirationPolicy = null, bool forceRefreshCache = false)
+		//{
+		//	return GetOrCreate(cacheManager, keys, getCacheKey, getItems, getDefaultValues, null, getCacheEntryExpirationPolicy, forceRefreshCache);
+		//}
+
+		public static IDictionary<TKey, TItem> GetOrCreate<TKey, TItem>(this ISI.Extensions.Caching.ICacheManager cacheManager, IEnumerable<TKey> cacheKeys, GenerateCacheKey<TKey> getCacheKey, GetItems<TKey, TItem> getItems, GetItems<TKey, TItem> getDefaultValues)
+		{
+			return GetOrCreate(cacheManager, cacheKeys, getCacheKey, getItems, getDefaultValues, null, null, false);
 		}
 
-		public static IDictionary<TKey, TItem> GetOrCreate<TKey, TItem>(this ISI.Extensions.Caching.ICacheManager cacheManager, IEnumerable<TKey> keys, Func<TKey, string> getCacheKey, Func<IEnumerable<TKey>, IDictionary<TKey, TItem>> getItems, Func<TKey, TItem> getDefaultValue, Func<ISI.Extensions.Caching.ICacheEntryExpirationPolicy> getCacheEntryExpirationPolicy = null, bool forceRefreshCache = false)
-		{
-			Func<IEnumerable<TKey>, IDictionary<TKey, TItem>> getDefaultValues = itemKeys => { return itemKeys.ToDictionary(itemKey => itemKey, getDefaultValue).Where(keyValue => keyValue.Value != null).ToDictionary(keyValue => keyValue.Key, keyValue => keyValue.Value); };
-
-			return GetOrCreate(cacheManager, keys, getCacheKey, getItems, getDefaultValues, getCacheEntryExpirationPolicy, forceRefreshCache);
-		}
-
-		public static IDictionary<TKey, TItem> GetOrCreate<TKey, TItem>(this ISI.Extensions.Caching.ICacheManager cacheManager, IEnumerable<TKey> keys, Func<TKey, string> getCacheKey, Func<TKey, TItem> getItem, Func<TKey, TItem> getDefaultValue, Func<ISI.Extensions.Caching.ICacheEntryExpirationPolicy> getCacheEntryExpirationPolicy = null, bool forceRefreshCache = false)
-		{
-			Func<IEnumerable<TKey>, IDictionary<TKey, TItem>> getItems = itemKeys => { return itemKeys.ToDictionary(itemKey => itemKey, getItem).Where(keyValue => keyValue.Value != null).ToDictionary(keyValue => keyValue.Key, keyValue => keyValue.Value); };
-
-			Func<IEnumerable<TKey>, IDictionary<TKey, TItem>> getDefaultValues = itemKeys => { return itemKeys.ToDictionary(itemKey => itemKey, getDefaultValue).Where(keyValue => keyValue.Value != null).ToDictionary(keyValue => keyValue.Key, keyValue => keyValue.Value); };
-
-			return GetOrCreate(cacheManager, keys, getCacheKey, getItems, getDefaultValues, getCacheEntryExpirationPolicy, forceRefreshCache);
-		}
-
-		public static IDictionary<TKey, TItem> GetOrCreate<TKey, TItem>(this ISI.Extensions.Caching.ICacheManager cacheManager, IEnumerable<TKey> keys, Func<TKey, string> getCacheKey, Func<IEnumerable<TKey>, IDictionary<TKey, TItem>> getItems, Func<IEnumerable<TKey>, IDictionary<TKey, TItem>> getDefaultValues, Func<ISI.Extensions.Caching.ICacheEntryExpirationPolicy> getCacheEntryExpirationPolicy = null, bool forceRefreshCache = false)
+		public static IDictionary<TKey, TItem> GetOrCreate<TKey, TItem>(this ISI.Extensions.Caching.ICacheManager cacheManager, IEnumerable<TKey> cacheKeys, GenerateCacheKey<TKey> getCacheKey, GetItems<TKey, TItem> getItems, GetItems<TKey, TItem> getDefaultValues, GenerateCacheKeys<TItem> generateCacheKeys, Func<ISI.Extensions.Caching.ICacheEntryExpirationPolicy> getCacheEntryExpirationPolicy, bool forceRefreshCache)
 		{
 			var result = new Dictionary<TKey, TItem>();
 
-			var neededFormattedCacheKeys = keys.Distinct().ToDictionary(key => getCacheKey(key), key => key);
+			var neededCacheKeys = cacheKeys.Distinct().ToDictionary(key => getCacheKey(key), key => key);
 
 			#region Get from Cache
 			if (!forceRefreshCache)
 			{
-				var foundFormattedCacheKeys = new List<string>();
+				var foundCacheKeys = new List<string>();
 
-				foreach (var neededFormattedCacheKey in neededFormattedCacheKeys)
+				foreach (var neededCacheKey in neededCacheKeys)
 				{
-					if (cacheManager.TryGetValue<TItem>(neededFormattedCacheKey.Key, out var item))
+					if (cacheManager.TryGetValue<TItem>(neededCacheKey.Key, out var item))
 					{
-						result.Add(neededFormattedCacheKey.Value, item);
-						foundFormattedCacheKeys.Add(neededFormattedCacheKey.Key);
+						result.Add(neededCacheKey.Value, item);
+						foundCacheKeys.Add(neededCacheKey.Key);
 					}
 				}
 
-				foreach (var foundFormattedCacheKey in foundFormattedCacheKeys)
+				foreach (var foundCacheKey in foundCacheKeys)
 				{
-					neededFormattedCacheKeys.Remove(foundFormattedCacheKey);
+					neededCacheKeys.Remove(foundCacheKey);
 				}
 			}
 			#endregion
 
 			#region Use getItems
-			if (neededFormattedCacheKeys.Any())
+			if (neededCacheKeys.Any())
 			{
-				var foundFormattedCacheKeys = new List<string>();
+				var foundCacheKeys = new List<string>();
 
-				var items = getItems(neededFormattedCacheKeys.Select(neededKey => neededKey.Value));
+				var items = getItems(neededCacheKeys.Select(neededKey => neededKey.Value));
 
 				foreach (var item in items.Where(i => i.Value != null))
 				{
 					result.Add(item.Key, item.Value);
 
-					var formattedCacheKey = getCacheKey(item.Key);
-					Add(cacheManager, formattedCacheKey, item.Value, getCacheEntryExpirationPolicy);
-					foundFormattedCacheKeys.Add(formattedCacheKey);
+					var cacheKey = getCacheKey(item.Key);
+					Add(cacheManager, cacheKey, item.Value, getCacheEntryExpirationPolicy);
+					foundCacheKeys.Add(cacheKey);
+
+					if (generateCacheKeys != null)
+					{
+						AddCacheKeyProxies(cacheManager, cacheKey, item.Value, generateCacheKeys);
+					}
 				}
 
-				foreach (var foundFormattedCacheKey in foundFormattedCacheKeys)
+				foreach (var foundFormattedCacheKey in foundCacheKeys)
 				{
-					neededFormattedCacheKeys.Remove(foundFormattedCacheKey);
+					neededCacheKeys.Remove(foundFormattedCacheKey);
 				}
 			}
 			#endregion
 
 			#region Use getDefaultValues
-			if (neededFormattedCacheKeys.Any() && (getDefaultValues != null))
+			if (neededCacheKeys.Any() && (getDefaultValues != null))
 			{
-				var items = getDefaultValues(neededFormattedCacheKeys.Select(neededFormattedCacheKey => neededFormattedCacheKey.Value));
+				var items = getDefaultValues(neededCacheKeys.Select(neededFormattedCacheKey => neededFormattedCacheKey.Value));
 
 				foreach (var item in items)
 				{
 					result.Add(item.Key, item.Value);
-					Add(cacheManager, getCacheKey(item.Key), item.Value, getCacheEntryExpirationPolicy);
+
+					var cacheKey = getCacheKey(item.Key);
+					Add(cacheManager, cacheKey, item.Value, getCacheEntryExpirationPolicy);
+
+					if (generateCacheKeys != null)
+					{
+						AddCacheKeyProxies(cacheManager, cacheKey, item.Value, generateCacheKeys);
+					}
 				}
 			}
 			#endregion
@@ -113,12 +135,17 @@ namespace ISI.Extensions.Caching.Extensions
 			return result;
 		}
 
-		public static TItem GetOrCreate<TItem>(this ISI.Extensions.Caching.ICacheManager cacheManager, Func<string> getCacheKey, Func<TItem> getItem = null, Func<TItem> getDefaultValue = null, Func<ISI.Extensions.Caching.ICacheEntryExpirationPolicy> getCacheEntryExpirationPolicy = null, bool forceRefreshCache = false)
-		{
-			return GetOrCreate(cacheManager, getCacheKey(), getItem, getDefaultValue, getCacheEntryExpirationPolicy, forceRefreshCache);
-		}
+		//public static TItem GetOrCreate<TItem>(this ISI.Extensions.Caching.ICacheManager cacheManager, Func<string> getCacheKey, GetItem<TItem> getItem = null, GetItem<TItem> getDefaultValue = null, Func<ISI.Extensions.Caching.ICacheEntryExpirationPolicy> getCacheEntryExpirationPolicy = null, bool forceRefreshCache = false)
+		//{
+		//	return GetOrCreate(cacheManager, getCacheKey(), getItem, getDefaultValue, getCacheEntryExpirationPolicy, forceRefreshCache);
+		//}
 
-		public static TItem GetOrCreate<TItem>(this ISI.Extensions.Caching.ICacheManager cacheManager, string cacheKey, Func<TItem> getItem = null, Func<TItem> getDefaultValue = null, Func<ISI.Extensions.Caching.ICacheEntryExpirationPolicy> getCacheEntryExpirationPolicy = null, bool forceRefreshCache = false)
+		//public static TItem GetOrCreate<TItem>(this ISI.Extensions.Caching.ICacheManager cacheManager, string cacheKey, GetItem<TItem> getItem = null, GetItem<TItem> getDefaultValue = null, Func<ISI.Extensions.Caching.ICacheEntryExpirationPolicy> getCacheEntryExpirationPolicy = null, bool forceRefreshCache = false)
+		//{
+		//	return GetOrCreate(cacheManager, cacheKey, getItem, getDefaultValue, null, getCacheEntryExpirationPolicy, forceRefreshCache);
+		//}
+
+		public static TItem GetOrCreate<TItem>(this ISI.Extensions.Caching.ICacheManager cacheManager, string cacheKey, GetItem<TItem> getItem, GetItem<TItem> getDefaultValue, GenerateCacheKeys<TItem> generateCacheKeys, Func<ISI.Extensions.Caching.ICacheEntryExpirationPolicy> getCacheEntryExpirationPolicy, bool forceRefreshCache)
 		{
 			if (!forceRefreshCache)
 			{
@@ -143,6 +170,11 @@ namespace ISI.Extensions.Caching.Extensions
 			var value = (TItem)getItem();
 
 			Add(cacheManager, cacheKey, value, getCacheEntryExpirationPolicy);
+
+			if (generateCacheKeys != null)
+			{
+				AddCacheKeyProxies(cacheManager, cacheKey, value, generateCacheKeys);
+			}
 
 			return value;
 		}

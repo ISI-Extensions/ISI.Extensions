@@ -22,6 +22,7 @@ using ISI.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Tests.Caching
 {
@@ -75,9 +76,9 @@ namespace ISI.Extensions.Tests.Caching
 		[Test]
 		public void GetOrCreate_keys_getCacheKey_getItem_getDefaultValue_getCacheEntryExpirationPolicy_forceRefreshCache_Test()
 		{
-			Func<string, string> getCacheKey = key => string.Format("CacheKey:{0}", key);
-			Func<string, string> getItem = key => string.Format("Item:{0}", key);
-			Func<string, string> getDefaultValue = key => string.Format("Default-Item:{0}", key);
+			ISI.Extensions.Caching.GenerateCacheKey<string> getCacheKey = key => string.Format("CacheKey:{0}", key);
+			ISI.Extensions.Caching.GetItem<string, string> getItem = key => string.Format("Item:{0}", key);
+			ISI.Extensions.Caching.GetItem<string, string> getDefaultValue = key => string.Format("Default-Item:{0}", key);
 
 			var cachedKeys = new HashSet<string>();
 			for (int i = 20; i < 40; i++)
@@ -97,7 +98,7 @@ namespace ISI.Extensions.Tests.Caching
 				keys.Add(key);
 			}
 
-			Func<string, string> getItemCheckCachedKeys = key =>
+			ISI.Extensions.Caching.GetItem<string, string> getItemCheckCachedKeys = key =>
 			{
 				if (cachedKeys.Contains(key))
 				{
@@ -112,7 +113,11 @@ namespace ISI.Extensions.Tests.Caching
 				return null;
 			};
 
-			var items = CacheManager.GetOrCreate(keys, getCacheKey, getItemCheckCachedKeys, getDefaultValue);
+			var items = CacheManager.GetOrCreate(
+				keys,
+				getCacheKey,
+				neededCacheKeys => neededCacheKeys.ToDictionary(key => key, key => getItemCheckCachedKeys(key)),
+				neededCacheKeys => neededCacheKeys.ToDictionary(key => key, key => getDefaultValue(key)));
 
 			foreach (var item in items)
 			{
@@ -123,9 +128,9 @@ namespace ISI.Extensions.Tests.Caching
 		[Test]
 		public void GetOrCreate_keys_getCacheKey_getItems_getDefaultValues_getCacheEntryExpirationPolicy_forceRefreshCache_Test()
 		{
-			Func<string, string> getCacheKey = key => string.Format("CacheKey:{0}", key);
-			Func<string, string> getItem = key => string.Format("Item:{0}", key);
-			Func<string, string> getDefaultValue = key => string.Format("Default-Item:{0}", key);
+			ISI.Extensions.Caching.GenerateCacheKey<string> getCacheKey = key => string.Format("CacheKey:{0}", key);
+			ISI.Extensions.Caching.GetItem<string, string> getItem = key => string.Format("Item:{0}", key);
+			ISI.Extensions.Caching.GetItem<string, string> getDefaultValue = key => string.Format("Default-Item:{0}", key);
 
 			var cachedKeys = new HashSet<string>();
 			for (int i = 20; i < 40; i++)
@@ -160,8 +165,8 @@ namespace ISI.Extensions.Tests.Caching
 				return null;
 			};
 
-			Func<IEnumerable<string>, IDictionary<string, string>> getItems = keys => keys.ToDictionary(key => key, getItemCheckCachedKeys);
-			Func<IEnumerable<string>, IDictionary<string, string>> getDefaultValues = keys => keys.ToDictionary(key => key, getDefaultValue);
+			ISI.Extensions.Caching.GetItems<string, string> getItems = keys => keys.ToDictionary(key => key, getItemCheckCachedKeys);
+			ISI.Extensions.Caching.GetItems<string, string> getDefaultValues = keys => keys.ToDictionary(key => key, key => getDefaultValue(key));
 
 			var items = CacheManager.GetOrCreate(keys, getCacheKey, getItems, getDefaultValues);
 
@@ -170,5 +175,39 @@ namespace ISI.Extensions.Tests.Caching
 				Console.WriteLine("{0} => {1}", item.Key, item.Value);
 			}
 		}
+
+
+		
+
+		[Test]
+		public void CacheKeyProxies_Test()
+		{
+			ISI.Extensions.Caching.GenerateCacheKey<Guid> getCacheKey = key => string.Format("CacheKey:{0}", key.Formatted(GuidExtensions.GuidFormat.WithHyphens));
+			ISI.Extensions.Caching.GenerateCacheKey<CacheKeyProxyTestObject> getForeignCacheKey = item => string.Format("ForeignCacheKey:{0}", item.Description);
+			ISI.Extensions.Caching.GenerateCacheKeys<CacheKeyProxyTestObject> getForeignCacheKeys = item => new[]
+			{
+				getForeignCacheKey(item)
+			};
+
+			var testItem = new CacheKeyProxyTestObject()
+			{
+				TestObjectUuid = Guid.NewGuid(),
+				Description = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
+			};
+
+			CacheManager.GetOrCreate(getCacheKey(testItem.TestObjectUuid), () => testItem, null, getForeignCacheKeys, null, false);
+
+			var primaryTestItem = CacheManager.Get<CacheKeyProxyTestObject>(getCacheKey(testItem.TestObjectUuid));
+			var foreignTestItem = CacheManager.Get<CacheKeyProxyTestObject>(getForeignCacheKey(testItem));
+
+			CacheManager.Remove(getForeignCacheKey(testItem));
+		}
+
+		public class CacheKeyProxyTestObject
+		{
+			public Guid TestObjectUuid { get; set; }
+			public string Description { get; set; }
+		}
+
 	}
 }

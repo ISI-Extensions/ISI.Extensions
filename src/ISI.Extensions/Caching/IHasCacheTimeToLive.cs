@@ -21,6 +21,6 @@ namespace ISI.Extensions.Caching
 {
 	public interface IHasCacheTimeToLive
 	{
-		int CacheTimeToLiveInSeconds { get; set; }
+		int CacheTimeToLiveInSeconds { get; }
 	}
 }

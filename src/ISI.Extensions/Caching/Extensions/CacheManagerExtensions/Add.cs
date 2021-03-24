@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,12 +32,58 @@ namespace ISI.Extensions.Caching.Extensions
 
 				(getCacheEntryExpirationPolicy?.Invoke() ?? cacheManager.GetDefaultCacheEntryExpirationPolicy(item))?.SetCacheEntryExpiration(cacheEntry);
 			}
+
+			if (item is ISI.Extensions.Caching.IHasProxyCacheKeys hasProxyCacheKeys)
+			{
+				var proxyCacheKeys = new HashSet<string>(StringComparer.Ordinal);
+				proxyCacheKeys.UnionWith(hasProxyCacheKeys.ProxyCacheKeys ?? new string[0]);
+				proxyCacheKeys.Remove(cacheKey);
+
+				if (proxyCacheKeys.Any())
+				{
+					foreach (var proxyCacheKey in proxyCacheKeys)
+					{
+						Add(cacheManager, proxyCacheKey, new CachedItemProxy()
+						{
+							CacheKey = cacheKey,
+						}, getCacheEntryExpirationPolicy);
+					}
+
+					Add(cacheManager, CachedItemProxies.GetCachedItemProxiesCacheKey(cacheKey), new CachedItemProxies()
+					{
+						ProxyCacheKeys = proxyCacheKeys.ToArray(),
+					}, getCacheEntryExpirationPolicy);
+				}
+			}
 		}
 
 		public static void Add<TItem>(this ISI.Extensions.Caching.ICacheManager cacheManager, TItem item)
 			where TItem : ISI.Extensions.Caching.IHasCacheKey
 		{
 			Add(cacheManager, item.CacheKey, item);
+		}
+
+		public static void AddCacheKeyProxies<TItem>(this ISI.Extensions.Caching.ICacheManager cacheManager, string cacheKey, TItem item, GenerateCacheKeys<TItem> generateCacheKeys, Func<ISI.Extensions.Caching.ICacheEntryExpirationPolicy> getCacheEntryExpirationPolicy = null)
+		{
+			var proxyCacheKeys = new HashSet<string>(StringComparer.Ordinal);
+			proxyCacheKeys.UnionWith(generateCacheKeys(item));
+			proxyCacheKeys.Remove(cacheKey);
+
+			if (proxyCacheKeys.Any())
+			{
+				foreach (var proxyCacheKey in proxyCacheKeys)
+				{
+					Add(cacheManager, proxyCacheKey, new CachedItemProxy()
+					{
+						CacheKey = cacheKey,
+					}, getCacheEntryExpirationPolicy);
+				}
+
+				Add(cacheManager, CachedItemProxies.GetCachedItemProxiesCacheKey(cacheKey), new CachedItemProxies()
+				{
+					ProxyCacheKeys = proxyCacheKeys.ToArray(),
+				}, getCacheEntryExpirationPolicy);
+			}
 		}
 	}
 }

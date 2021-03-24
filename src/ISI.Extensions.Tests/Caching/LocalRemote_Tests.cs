@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -123,9 +123,9 @@ namespace ISI.Extensions.Tests.Caching
 		[Test]
 		public void GetOrCreate_keys_getCacheKey_getItem_getDefaultValue_getCacheEntryExpirationPolicy_forceRefreshCache_Test()
 		{
-			Func<string, string> getCacheKey = key => string.Format("CacheKey:{0}", key);
-			Func<string, string> getItem = key => string.Format("Item:{0}", key);
-			Func<string, string> getDefaultValue = key => string.Format("Default-Item:{0}", key);
+			ISI.Extensions.Caching.GenerateCacheKey<string> getCacheKey = key => string.Format("CacheKey:{0}", key);
+			ISI.Extensions.Caching.GetItem<string, string> getItem = key => string.Format("Item:{0}", key);
+			ISI.Extensions.Caching.GetItem<string, string> getDefaultValue = key => string.Format("Default-Item:{0}", key);
 
 			var cachedKeys = new HashSet<string>();
 			for (int i = 20; i < 40; i++)
@@ -145,7 +145,7 @@ namespace ISI.Extensions.Tests.Caching
 				keys.Add(key);
 			}
 
-			Func<string, string> getItemCheckCachedKeys = key =>
+			ISI.Extensions.Caching.GetItem<string, string> getItemCheckCachedKeys = key =>
 			{
 				if (cachedKeys.Contains(key))
 				{
@@ -160,7 +160,11 @@ namespace ISI.Extensions.Tests.Caching
 				return null;
 			};
 
-			var items = CacheManager.GetOrCreate(keys, getCacheKey, getItemCheckCachedKeys, getDefaultValue);
+			var items = CacheManager.GetOrCreate(
+				keys,
+				getCacheKey,
+				neededCacheKeys => neededCacheKeys.ToDictionary(key => key, key => getItemCheckCachedKeys(key)),
+				neededCacheKeys => neededCacheKeys.ToDictionary(key => key, key => getDefaultValue(key)));
 
 			foreach (var item in items)
 			{
@@ -171,9 +175,9 @@ namespace ISI.Extensions.Tests.Caching
 		[Test]
 		public void GetOrCreate_keys_getCacheKey_getItems_getDefaultValues_getCacheEntryExpirationPolicy_forceRefreshCache_Test()
 		{
-			Func<string, string> getCacheKey = key => string.Format("CacheKey:{0}", key);
-			Func<string, string> getItem = key => string.Format("Item:{0}", key);
-			Func<string, string> getDefaultValue = key => string.Format("Default-Item:{0}", key);
+			ISI.Extensions.Caching.GenerateCacheKey<string> getCacheKey = key => string.Format("CacheKey:{0}", key);
+			ISI.Extensions.Caching.GetItem<string, string> getItem = key => string.Format("Item:{0}", key);
+			ISI.Extensions.Caching.GetItem<string, string> getDefaultValue = key => string.Format("Default-Item:{0}", key);
 
 			var cachedKeys = new HashSet<string>();
 			for (int i = 20; i < 40; i++)
@@ -208,8 +212,8 @@ namespace ISI.Extensions.Tests.Caching
 				return null;
 			};
 
-			Func<IEnumerable<string>, IDictionary<string, string>> getItems = keys => keys.ToDictionary(key => key, getItemCheckCachedKeys);
-			Func<IEnumerable<string>, IDictionary<string, string>> getDefaultValues = keys => keys.ToDictionary(key => key, getDefaultValue);
+			ISI.Extensions.Caching.GetItems<string, string> getItems = keys => keys.ToDictionary(key => key, getItemCheckCachedKeys);
+			ISI.Extensions.Caching.GetItems<string, string> getDefaultValues = keys => keys.ToDictionary(key => key, key => getDefaultValue(key));
 
 			var items = CacheManager.GetOrCreate(keys, getCacheKey, getItems, getDefaultValues);
 

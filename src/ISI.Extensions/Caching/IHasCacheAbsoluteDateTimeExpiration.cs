@@ -21,6 +21,6 @@ namespace ISI.Extensions.Caching
 {
 	public interface IHasCacheAbsoluteDateTimeExpiration
 	{
-		DateTime CacheAbsoluteDateTimeExpiration { get; set; }
+		DateTime CacheAbsoluteDateTimeExpiration { get; }
 	}
 }

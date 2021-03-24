@@ -16,6 +16,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Caching.Redis
 {
@@ -62,7 +63,7 @@ namespace ISI.Extensions.Caching.Redis
 		{
 			var type = Value.GetType();
 
-			var serializedValue = string.Format("{0}\n{1}", type.FullName, (type.IsPrimitive || (type == typeof(string)) ? string.Format("{0}", Value) : JsonSerializer.Serialize(type, Value)));
+			var serializedValue = string.Format("{0}\n{1}", type.AssemblyQualifiedNameWithoutVersion(), (type.IsPrimitive || (type == typeof(string)) ? string.Format("{0}", Value) : JsonSerializer.Serialize(type, Value)));
 
 			var database = GetDatabase();
 

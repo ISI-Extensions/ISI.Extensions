@@ -12,12 +12,14 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ISI.Extensions.Extensions;
+
+//sudo service redis-server start
 
 namespace ISI.Extensions.Caching.Redis
 {
@@ -101,7 +103,9 @@ namespace ISI.Extensions.Caching.Redis
 
 		public void Dispose() => _connection?.Dispose();
 
-		public bool TryGetValue(string cacheKey, out object value)
+		public bool TryGetValue(string cacheKey, out object value) => TryGetValue(cacheKey, out value, true);
+
+		protected bool TryGetValue(string cacheKey, out object value, bool checkCachedItemProxy)
 		{
 			var database = GetDatabase();
 
@@ -124,6 +128,11 @@ namespace ISI.Extensions.Caching.Redis
 				else
 				{
 					value = JsonSerializer.Deserialize(type, serializedParts[1]);
+				}
+
+				if (checkCachedItemProxy && (value is CachedItemProxy cachedItemProxy))
+				{
+					return TryGetValue(cachedItemProxy.CacheKey, out value);
 				}
 
 				return true;
@@ -174,7 +183,31 @@ namespace ISI.Extensions.Caching.Redis
 		{
 			var database = GetDatabase();
 
-			database.KeyDelete(CacheKeyFormatter(cacheKey));
+			if (TryGetValue(cacheKey, out var value, false))
+			{
+				if (value is CachedItemProxy cachedItemProxy)
+				{
+					Remove(cachedItemProxy.CacheKey);
+				}
+				else
+				{
+					database.KeyDelete(CacheKeyFormatter(cacheKey));
+				}
+			}
+
+			var cachedItemProxiesCacheKey = CachedItemProxies.GetCachedItemProxiesCacheKey(cacheKey);
+			if (TryGetValue(cachedItemProxiesCacheKey, out value, false))
+			{
+				if (value is CachedItemProxies cachedItemProxies)
+				{
+					foreach (var proxyCacheKey in cachedItemProxies.ProxyCacheKeys)
+					{
+						database.KeyDelete(CacheKeyFormatter(proxyCacheKey));
+					}
+				}
+
+				database.KeyDelete(CacheKeyFormatter(cachedItemProxiesCacheKey));
+			}
 		}
 
 		public void RemoveByCacheKeyPrefix(string cacheKeyPrefix)

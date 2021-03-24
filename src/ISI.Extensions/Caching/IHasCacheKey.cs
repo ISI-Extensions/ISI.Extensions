@@ -26,7 +26,7 @@ namespace ISI.Extensions.Caching
 
 	public interface IHasCacheKey : IHasCacheKeys
 	{
-		string CacheKey { get; set; }
+		string CacheKey { get; }
 	}
 
 	public interface IHasCacheKeyCollection : IHasCacheKeys

@@ -28,7 +28,7 @@ namespace ISI.Extensions.Repository.SqlServer
 	{
 		public virtual void BulkInsertRecords(IEnumerable<TRecord> records, bool keepIdentities = false, int bulkCopyTimeoutInSeconds = 3600, int batchSize = 1000, Action<string> batchLogger = null)
 		{
-			BulkInsertRecords(records, keepIdentities, false, bulkCopyTimeoutInSeconds, batchSize);
+			BulkInsertRecords(records, keepIdentities, false, bulkCopyTimeoutInSeconds, batchSize, batchLogger);
 		}
 
 		protected void BulkInsertRecords(IEnumerable<TRecord> records, bool keepIdentities, bool hasArchiveTable, int bulkCopyTimeoutInSeconds = 3600, int batchSize = 1000, Action<string> batchLogger = null)

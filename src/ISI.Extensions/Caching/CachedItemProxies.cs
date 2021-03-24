@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -16,11 +16,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Runtime.Serialization;
 
 namespace ISI.Extensions.Caching
 {
-	public interface IHasCacheKeyInstanceUuid
+	public class CachedItemProxies
 	{
-		Guid CacheKeyInstanceUuid { get; }
+		public static string GetCachedItemProxiesCacheKey(string cacheKey) => string.Format("{0}-ProxyCacheKey", cacheKey);
+
+		public string[] ProxyCacheKeys { get; set; }
 	}
 }

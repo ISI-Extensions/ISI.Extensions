@@ -26,97 +26,134 @@ namespace ISI.Extensions.Nuget
 {
 	public partial class NugetHelper
 	{
-		public string UpdateCsProj(string csProj, IEnumerable<NugetPackageKey> nugetPackageKeys)
+		public string UpdateCsProj(string csProj, IEnumerable<NugetPackageKey> nugetPackageKeys, bool convertToPackageReferences)
 		{
-			return UpdateCsProj(csProj, new NugetPackageKeyDictionary(nugetPackageKeys));
+			return UpdateCsProj(csProj, new NugetPackageKeyDictionary(nugetPackageKeys), convertToPackageReferences);
 		}
 
-		public string UpdateCsProj(string csProj, NugetPackageKeyDictionary nugetPackageKeys)
+		public string UpdateCsProj(string csProj, ISI.Extensions.Nuget.NugetPackageKeyDictionary nugetPackageKeys, bool convertToPackageReferences)
 		{
 			var csProjXml = System.Xml.Linq.XElement.Parse(csProj);
 
-			foreach (var itemGroup in csProjXml.Elements("ItemGroup"))
+			var replacements = new Dictionary<string, string>();
+			//replacements.Add("<Version xmlns=\"\">", "<Version>");
+			replacements.Add(" xmlns=\"\"", string.Empty);
+
+			if ((csProj.IndexOf("Sdk=\"Microsoft.NET", StringComparison.InvariantCultureIgnoreCase) >= 0) || (csProj.IndexOf("<PackageReference", StringComparison.InvariantCultureIgnoreCase) >= 0))
 			{
-				var packageReferences = itemGroup.Elements("PackageReference");
-
-				foreach (var packageReference in packageReferences)
+				foreach (var itemGroup in csProjXml.Elements("ItemGroup"))
 				{
-					var packageId = (packageReference.Attributes("Include").FirstOrDefault() ?? packageReference.Attributes("Update").FirstOrDefault())?.Value;
+					var packageReferences = itemGroup.Elements("PackageReference");
 
-					if (nugetPackageKeys.TryGetValue(packageId, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version))
+					foreach (var packageReference in packageReferences)
 					{
-						var versionAttribute = packageReference.Attributes("Version").FirstOrDefault();
-						if (versionAttribute != null)
-						{
-							versionAttribute.Value = nugetPackageKey.Version;
-						}
+						var packageId = (packageReference.Attributes("Include").FirstOrDefault() ?? packageReference.Attributes("Update").FirstOrDefault())?.Value ?? string.Empty;
+						var packageVersion = (packageReference.Attributes("Version").FirstOrDefault()?.Value ?? packageReference.Elements("Version").FirstOrDefault()?.Value) ?? string.Empty;
 
-						var versionElement = packageReference.Elements("Version").FirstOrDefault();
-						if (versionElement != null)
+						if (nugetPackageKeys.TryGetValue(packageId, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 						{
-							versionElement.Value = nugetPackageKey.Version;
+							var versionAttribute = packageReference.Attributes("Version").FirstOrDefault();
+							if (versionAttribute != null)
+							{
+								versionAttribute.Value = nugetPackageKey.Version;
+							}
+
+							var versionElement = packageReference.Elements("Version").FirstOrDefault();
+							if (versionElement != null)
+							{
+								versionElement.Value = nugetPackageKey.Version;
+							}
 						}
 					}
 				}
 			}
 
-			foreach (var itemGroup in csProjXml.Elements().Where(e => string.Equals(e.Name.LocalName, "ItemGroup", StringComparison.InvariantCultureIgnoreCase)))
+			if (csProj.IndexOf("Sdk=\"Microsoft.NET", StringComparison.InvariantCultureIgnoreCase) < 0)
 			{
-				var references = itemGroup.Elements().Where(e => string.Equals(e.Name.LocalName, "Reference", StringComparison.InvariantCultureIgnoreCase));
-
-				foreach (var reference in references)
+				foreach (var itemGroup in csProjXml.Elements().Where(e => string.Equals(e.Name.LocalName, "ItemGroup", StringComparison.InvariantCultureIgnoreCase)))
 				{
-					var packageAttribute = reference.Attributes("Include").FirstOrDefault();
-					if (packageAttribute != null)
+					var references = itemGroup.Elements().Where(e => string.Equals(e.Name.LocalName, "Reference", StringComparison.InvariantCultureIgnoreCase)).ToArray();
+
+					foreach (var reference in references)
 					{
-						var hintPathAttribute = reference.Elements().FirstOrDefault(e => string.Equals(e.Name.LocalName, "HintPath", StringComparison.InvariantCultureIgnoreCase));
+						var packageAttribute = reference.Attributes("Include").FirstOrDefault();
 
-						if (hintPathAttribute != null)
+						if (packageAttribute != null)
 						{
-							var hintPath = hintPathAttribute.Value;
+							var packageId = string.Empty;
+							var packageVersion = string.Empty;
 
-							if (!string.IsNullOrWhiteSpace(hintPath))
+							var hintPathAttribute = reference.Elements().FirstOrDefault(e => string.Equals(e.Name.LocalName, "HintPath", StringComparison.InvariantCultureIgnoreCase));
+
+							if (hintPathAttribute != null)
 							{
-								var hintPathPieces = hintPath.Split(new[] { '\\' }).ToList();
+								var hintPath = hintPathAttribute.Value;
 
-								var packagesPath = string.Empty;
-								while (string.Equals(hintPathPieces.First(), "..", StringComparison.InvariantCultureIgnoreCase) || string.Equals(hintPathPieces.First(), "packages", StringComparison.InvariantCultureIgnoreCase))
+								if (!string.IsNullOrWhiteSpace(hintPath))
 								{
-									packagesPath = string.Format("{0}\\{1}", packagesPath, hintPathPieces.First());
-									hintPathPieces.RemoveAt(0);
-								}
-								packagesPath = packagesPath.TrimStart("\\");
+									var hintPathPieces = hintPath.Split(new[] { '\\' }).ToList();
 
-								hintPathPieces = hintPathPieces.First().Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries).Reverse().ToList();
-
-								var packageId = string.Empty;
-								var packageVersion = string.Empty;
-
-								var inVersion = true;
-								while (hintPathPieces.Any())
-								{
-									var pathPiece = hintPathPieces.First();
-									hintPathPieces.RemoveAt(0);
-
-									if (inVersion && pathPiece.ToIntNullable().HasValue)
+									var packagesPath = string.Empty;
+									while (string.Equals(hintPathPieces.First(), "..", StringComparison.InvariantCultureIgnoreCase) || string.Equals(hintPathPieces.First(), "packages", StringComparison.InvariantCultureIgnoreCase))
 									{
-										packageVersion = string.Format("{0}.{1}", pathPiece, packageVersion);
+										packagesPath = string.Format("{0}\\{1}", packagesPath, hintPathPieces.First());
+										hintPathPieces.RemoveAt(0);
 									}
-									else
-									{
-										inVersion = false;
 
-										packageId = string.Format("{0}.{1}", pathPiece, packageId);
+									packagesPath = packagesPath.TrimStart("\\");
+
+									hintPathPieces = hintPathPieces.First().Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries).Reverse().ToList();
+
+									var inVersion = true;
+									while (hintPathPieces.Any())
+									{
+										var pathPiece = hintPathPieces.First();
+										hintPathPieces.RemoveAt(0);
+
+										if (inVersion && pathPiece.ToIntNullable().HasValue)
+										{
+											packageVersion = string.Format("{0}.{1}", pathPiece, packageVersion);
+										}
+										else
+										{
+											inVersion = false;
+
+											packageId = string.Format("{0}.{1}", pathPiece, packageId);
+										}
+									}
+
+									packageId = packageId.TrimEnd('.');
+									packageVersion = packageVersion.TrimEnd('.');
+
+									if (nugetPackageKeys.TryGetValue(packageId, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
+									{
+										packageAttribute.Value = packageAttribute.Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).First();
+										hintPathAttribute.Value = string.Format("{0}\\{1}", packagesPath, nugetPackageKey.HintPath);
 									}
 								}
+							}
 
-								packageId = packageId.TrimEnd('.');
-								packageVersion = packageVersion.TrimEnd('.');
-								
-								if (nugetPackageKeys.TryGetValue(packageId, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
+							if (convertToPackageReferences)
+							{
+								if (!string.IsNullOrWhiteSpace(packageId))
 								{
-									packageAttribute.Value = packageAttribute.Value.Split(new[] {'.'}, StringSplitOptions.RemoveEmptyEntries).First();
-									hintPathAttribute.Value = string.Format("{0}\\{1}", packagesPath, nugetPackageKey.HintPath);
+									if (nugetPackageKeys.TryGetValue(packageId, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version))
+									{
+										packageVersion = nugetPackageKey.Version;
+									}
+
+									var packageReferenceElement = new System.Xml.Linq.XElement("PackageReference");
+
+									var includeAttribute = new System.Xml.Linq.XAttribute("Include", packageId);
+									packageReferenceElement.Add(includeAttribute);
+
+									var versionElement = new System.Xml.Linq.XElement("Version");
+									versionElement.Value = packageVersion;
+									packageReferenceElement.Add(versionElement);
+
+									reference.AddBeforeSelf(packageReferenceElement);
+
+									reference.Remove();
 								}
 							}
 						}
@@ -124,7 +161,42 @@ namespace ISI.Extensions.Nuget
 				}
 			}
 
-			return csProjXml.ToString();
+			if (convertToPackageReferences)
+			{
+				foreach (var itemGroup in csProjXml.Elements().Where(e => string.Equals(e.Name.LocalName, "ItemGroup", StringComparison.InvariantCultureIgnoreCase)))
+				{
+					var references = itemGroup.Elements().Where(e => string.Equals(e.Name.LocalName, "None", StringComparison.InvariantCultureIgnoreCase));
+
+					foreach (var reference in references)
+					{
+						var include = reference.Attributes("Include").FirstOrDefault()?.Value ?? string.Empty;
+
+						if (string.Equals(include, "packages.config", StringComparison.InvariantCultureIgnoreCase))
+						{
+							reference.Remove();
+						}
+					}
+
+					if (!itemGroup.Elements().Any())
+					{
+						itemGroup.Remove();
+					}
+				}
+			}
+
+			var newCsProj = csProjXml.ToString();
+
+			foreach (var replacement in replacements)
+			{
+				newCsProj = newCsProj.Replace(replacement.Key, replacement.Value);
+			}
+
+			if (csProj.IndexOf("Sdk=\"Microsoft.NET", StringComparison.InvariantCultureIgnoreCase) < 0)
+			{
+				return string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n{0}", newCsProj);
+			}
+
+			return newCsProj;
 		}
 	}
 }

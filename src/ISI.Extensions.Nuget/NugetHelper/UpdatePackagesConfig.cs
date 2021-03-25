@@ -31,24 +31,22 @@ namespace ISI.Extensions.Nuget
 			return UpdatePackagesConfig(packagesConfig, new NugetPackageKeyDictionary(nugetPackageKeys));
 		}
 
-		public string UpdatePackagesConfig(string packagesConfig, NugetPackageKeyDictionary nugetPackageKeys)
+		public string UpdatePackagesConfig(string packagesConfig, ISI.Extensions.Nuget.NugetPackageKeyDictionary nugetPackageKeys)
 		{
 			var packagesConfigXml = System.Xml.Linq.XElement.Parse(packagesConfig);
 
 			foreach (var packageTag in packagesConfigXml.Elements("package"))
 			{
 				var packageId = packageTag.Attribute("id").Value;
+				var packageVersion = packageTag.Attribute("version").Value;
 
-				if (nugetPackageKeys.TryGetValue(packageId, out var nugetPackageKey))
+				if (nugetPackageKeys.TryGetValue(packageId, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 				{
-					if (!string.IsNullOrWhiteSpace(nugetPackageKey.Version))
-					{
-						packageTag.Attribute("version").Value = nugetPackageKey.Version;
-					}
+					packageTag.Attribute("version").Value = nugetPackageKey.Version;
 				}
 			}
 
-			return packagesConfig.ToString();
+			return string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n{0}", packagesConfigXml.ToString());
 		}
 	}
 }

@@ -115,10 +115,11 @@ namespace ISI.Extensions.Repository.SqlServer
 						if (batchLogger != null)
 						{
 							target.SqlRowsCopied += (sender, args) => batchLogger(string.Format("{0} records inserted into archive", args.RowsCopied));
-
 						}
-						//target.SqlRowsCopied += (sender, args) => Console.WriteLine("{0} records inserted into archive", args.RowsCopied);
+
 						target.WriteToServer(dataReader);
+
+						batchLogger?.Invoke(string.Format("{0} records inserted into archive", target.RowsCopied));
 					}
 				}
 			}

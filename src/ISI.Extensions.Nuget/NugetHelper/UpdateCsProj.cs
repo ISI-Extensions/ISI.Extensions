@@ -163,6 +163,31 @@ namespace ISI.Extensions.Nuget
 
 			if (convertToPackageReferences)
 			{
+				foreach (var importElement in csProjXml.Elements().Where(e => string.Equals(e.Name.LocalName, "Import", StringComparison.InvariantCultureIgnoreCase)))
+				{
+					var project = importElement.Attributes("Project").FirstOrDefault()?.Value ?? string.Empty;
+
+					if (project.IndexOf("NETStandard.Library.targets", StringComparison.InvariantCultureIgnoreCase) >= 0)
+					{
+						importElement.Remove();
+					}
+				}
+
+				foreach (var targetElement in csProjXml.Elements().Where(e => string.Equals(e.Name.LocalName, "Target", StringComparison.InvariantCultureIgnoreCase)))
+				{
+					var errors = targetElement.Elements().Where(e => string.Equals(e.Name.LocalName, "Error", StringComparison.InvariantCultureIgnoreCase));
+
+					foreach (var error in errors)
+					{
+						var condition = error.Attributes("Condition").FirstOrDefault()?.Value ?? string.Empty;
+
+						if (condition.IndexOf("NETStandard.Library.targets", StringComparison.InvariantCultureIgnoreCase) >= 0)
+						{
+							error.Remove();
+						}
+					}
+				}
+
 				foreach (var itemGroup in csProjXml.Elements().Where(e => string.Equals(e.Name.LocalName, "ItemGroup", StringComparison.InvariantCultureIgnoreCase)))
 				{
 					var references = itemGroup.Elements().Where(e => string.Equals(e.Name.LocalName, "None", StringComparison.InvariantCultureIgnoreCase));

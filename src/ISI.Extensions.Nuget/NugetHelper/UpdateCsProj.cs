@@ -39,6 +39,8 @@ namespace ISI.Extensions.Nuget
 			//replacements.Add("<Version xmlns=\"\">", "<Version>");
 			replacements.Add(" xmlns=\"\"", string.Empty);
 
+			var usedPackageReferences = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+
 			if ((csProj.IndexOf("Sdk=\"Microsoft.NET", StringComparison.InvariantCultureIgnoreCase) >= 0) || (csProj.IndexOf("<PackageReference", StringComparison.InvariantCultureIgnoreCase) >= 0))
 			{
 				foreach (var itemGroup in csProjXml.Elements("ItemGroup"))
@@ -137,21 +139,26 @@ namespace ISI.Extensions.Nuget
 							{
 								if (!string.IsNullOrWhiteSpace(packageId))
 								{
-									if (nugetPackageKeys.TryGetValue(packageId, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version))
+									if (!usedPackageReferences.Contains(packageId))
 									{
-										packageVersion = nugetPackageKey.Version;
+										if (nugetPackageKeys.TryGetValue(packageId, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version))
+										{
+											packageVersion = nugetPackageKey.Version;
+										}
+
+										var packageReferenceElement = new System.Xml.Linq.XElement("PackageReference");
+
+										var includeAttribute = new System.Xml.Linq.XAttribute("Include", packageId);
+										packageReferenceElement.Add(includeAttribute);
+
+										var versionElement = new System.Xml.Linq.XElement("Version");
+										versionElement.Value = packageVersion;
+										packageReferenceElement.Add(versionElement);
+
+										reference.AddBeforeSelf(packageReferenceElement);
+
+										usedPackageReferences.Add(packageId);
 									}
-
-									var packageReferenceElement = new System.Xml.Linq.XElement("PackageReference");
-
-									var includeAttribute = new System.Xml.Linq.XAttribute("Include", packageId);
-									packageReferenceElement.Add(includeAttribute);
-
-									var versionElement = new System.Xml.Linq.XElement("Version");
-									versionElement.Value = packageVersion;
-									packageReferenceElement.Add(versionElement);
-
-									reference.AddBeforeSelf(packageReferenceElement);
 
 									reference.Remove();
 								}

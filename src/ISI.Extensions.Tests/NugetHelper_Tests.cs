@@ -61,20 +61,6 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
-		public void NupkgPush_Test()
-		{
-			var nugetHelper = new ISI.Extensions.Nuget.NugetHelper(new ConsoleLogger());
-
-			nugetHelper.NupkgPush(new ISI.Extensions.Nuget.DataTransferObjects.NugetHelper.NupkgPushRequest()
-			{
-				NupkgFullNames = new[] { @"F:\ISI\Clients\ICS\ICS.Scripts\Nuget\ICS.Scripts.1.1.7758.4975.nupkg" },
-				UseNugetPush = false,
-				RepositoryUri = new Uri("https://nuget.swdcentral.com"),
-				ApiKey = "32a33689-f2df-4b01-b341-917560dc6858",
-			});
-		}
-
-		[Test]
 		public void ParseCsProj_Test()
 		{
 			var nugetHelper = new ISI.Extensions.Nuget.NugetHelper(new ConsoleLogger());

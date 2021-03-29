@@ -156,9 +156,9 @@ namespace ISI.Extensions.Nuget
 								System.Threading.Thread.Sleep(5000);
 							}
 						}
-
-						copyToNugetCacheDirectory(nupkgFullName);
 					}
+
+					copyToNugetCacheDirectory(nupkgFullName);
 				}
 			}
 

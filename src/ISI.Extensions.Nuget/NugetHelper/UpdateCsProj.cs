@@ -163,13 +163,25 @@ namespace ISI.Extensions.Nuget
 
 			if (convertToPackageReferences)
 			{
+				var removeTargets = new[]
+				{
+					"NETStandard.Library.targets",
+					"Microsoft.ApplicationInsights.DependencyCollector.targets",
+					"Microsoft.Bcl.Build.targets",
+					"Microsoft.Net.Compilers",
+					"NUnit.props",
+				};
+
 				foreach (var importElement in csProjXml.Elements().Where(e => string.Equals(e.Name.LocalName, "Import", StringComparison.InvariantCultureIgnoreCase)))
 				{
 					var project = importElement.Attributes("Project").FirstOrDefault()?.Value ?? string.Empty;
 
-					if (project.IndexOf("NETStandard.Library.targets", StringComparison.InvariantCultureIgnoreCase) >= 0)
+					foreach (var removeTarget in removeTargets)
 					{
-						importElement.Remove();
+						if (project.IndexOf(removeTarget, StringComparison.InvariantCultureIgnoreCase) >= 0)
+						{
+							importElement.Remove();
+						}
 					}
 				}
 
@@ -181,9 +193,12 @@ namespace ISI.Extensions.Nuget
 					{
 						var condition = error.Attributes("Condition").FirstOrDefault()?.Value ?? string.Empty;
 
-						if (condition.IndexOf("NETStandard.Library.targets", StringComparison.InvariantCultureIgnoreCase) >= 0)
+						foreach (var removeTarget in removeTargets)
 						{
-							error.Remove();
+							if (condition.IndexOf(removeTarget, StringComparison.InvariantCultureIgnoreCase) >= 0)
+							{
+								error.Remove();
+							}
 						}
 					}
 				}
@@ -218,7 +233,7 @@ namespace ISI.Extensions.Nuget
 
 			if (csProj.IndexOf("Sdk=\"Microsoft.NET", StringComparison.InvariantCultureIgnoreCase) < 0)
 			{
-				return string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n{0}", newCsProj);
+				newCsProj = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n{0}", newCsProj);
 			}
 
 			return newCsProj;

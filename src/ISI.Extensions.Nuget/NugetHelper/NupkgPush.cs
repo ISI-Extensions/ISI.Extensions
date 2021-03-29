@@ -38,7 +38,14 @@ namespace ISI.Extensions.Nuget
 				}
 			}
 
-			if (request.UseNugetPush)
+			if (string.IsNullOrWhiteSpace(request.RepositoryUri?.ToString()))
+			{
+				foreach (var nupkgFullName in request.NupkgFullNames)
+				{
+					copyToNugetCacheDirectory(nupkgFullName);
+				}
+			}
+			else if (request.UseNugetPush)
 			{
 				foreach (var nupkgFullName in request.NupkgFullNames)
 				{

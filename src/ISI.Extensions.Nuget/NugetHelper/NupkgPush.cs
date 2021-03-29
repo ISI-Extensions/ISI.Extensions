@@ -34,7 +34,12 @@ namespace ISI.Extensions.Nuget
 			{
 				if (!string.IsNullOrWhiteSpace(request.NugetCacheDirectory))
 				{
-					System.IO.File.Copy(fullName, System.IO.Path.Combine(request.NugetCacheDirectory, System.IO.Path.GetFileName(fullName)));
+					var nugetCacheDirectoryFullName = System.IO.Path.Combine(request.NugetCacheDirectory, System.IO.Path.GetFileName(fullName));
+
+					if (!System.IO.File.Exists(nugetCacheDirectoryFullName))
+					{
+						System.IO.File.Copy(fullName, nugetCacheDirectoryFullName);
+					}
 				}
 			}
 

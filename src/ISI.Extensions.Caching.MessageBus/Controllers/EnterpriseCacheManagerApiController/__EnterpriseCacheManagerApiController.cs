@@ -51,7 +51,7 @@ namespace ISI.Extensions.Caching.MessageBus.Controllers
 			CacheManager = cacheManager;
 
 			var cacheKeyScopes = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
-			foreach (string cacheKeyScope in Configuration.EnterpriseCacheManagerApi.CacheKeyScopes.ToNullCheckedArray(NullCheckCollectionResult.Empty))
+			foreach (var cacheKeyScope in Configuration.EnterpriseCacheManagerApi.CacheKeyScopes.ToNullCheckedArray(NullCheckCollectionResult.Empty))
 			{
 				cacheKeyScopes.Add(cacheKeyScope);
 			}

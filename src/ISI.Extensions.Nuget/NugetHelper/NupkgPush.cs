@@ -74,6 +74,8 @@ namespace ISI.Extensions.Nuget
 			{
 				foreach (var nupkgFullName in request.NupkgFullNames)
 				{
+					Logger.LogInformation(string.Format("Pushing \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), request.RepositoryUri));
+
 					var fileSegments = new Queue<byte[]>();
 
 					using (var ms = new System.IO.MemoryStream())
@@ -164,6 +166,8 @@ namespace ISI.Extensions.Nuget
 					}
 
 					copyToNugetCacheDirectory(nupkgFullName);
+
+					Logger.LogInformation(string.Format("Pushed \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), request.RepositoryUri));
 				}
 			}
 

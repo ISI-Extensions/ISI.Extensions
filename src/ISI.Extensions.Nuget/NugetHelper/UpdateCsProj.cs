@@ -170,6 +170,29 @@ namespace ISI.Extensions.Nuget
 							}
 						}
 					}
+
+					var packageReferences = itemGroup.Elements().Where(e => string.Equals(e.Name.LocalName, "PackageReference", StringComparison.InvariantCultureIgnoreCase)).ToArray();
+
+					foreach (var packageReference in packageReferences)
+					{
+						var packageId = (packageReference.Attributes("Include").FirstOrDefault() ?? packageReference.Attributes("Update").FirstOrDefault())?.Value ?? string.Empty;
+						var packageVersionAttribute = packageReference.Attributes("Version").FirstOrDefault();
+						var packageVersionElement = packageReference.Elements().FirstOrDefault(e => string.Equals(e.Name.LocalName, "Version", StringComparison.InvariantCultureIgnoreCase));
+						var packageVersion = packageVersionAttribute?.Value ?? packageVersionElement?.Value ?? string.Empty;
+
+						if (tryGetNugetPackageKey(packageId, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
+						{
+							if (packageVersionAttribute != null)
+							{
+								packageVersionAttribute.Value = nugetPackageKey.Version;
+							}
+
+							if (packageVersionElement != null)
+							{
+								packageVersionElement.Value = nugetPackageKey.Version;
+							}
+						}
+					}
 				}
 			}
 

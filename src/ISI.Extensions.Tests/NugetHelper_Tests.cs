@@ -28,30 +28,24 @@ namespace ISI.Extensions.Tests
 		{
 			var nugetHelper = new ISI.Extensions.Nuget.NugetHelper(new ConsoleLogger());
 
-			var nuspec = nugetHelper.GenerateNuspecFromProject(@"F:/ISI/Clients/ICS/ICS.Libraries/src/ICS.Libraries/ICS.Libraries/ICS.Libraries.csproj", package =>
+			var nuspec = nugetHelper.GenerateNuspecFromProject(@"F:\ISI\Internal Projects\ISI.Extensions\src\ISI.Extensions.Nuget\ISI.Extensions.Nuget.csproj", package =>
 			{
 				if (package.StartsWith("ISI.Extensions", StringComparison.InvariantCultureIgnoreCase))
 				{
 					return "10.0.*";
 				}
 
-				if (package.StartsWith("ICS.Libraries", StringComparison.InvariantCultureIgnoreCase))
-				{
-					return "2.0.*";
-				}
-
-
 				return string.Empty;
 			});
 
 			nuspec.Version = "2.0.0.0";
-			//nuspec.IconUri = new Uri(@"https://github.com/ICS/ICS.Libraries/ICS.png");
-			//nuspec.ProjectUri = new Uri(@"https://github.com/ICS/ICS.Libraries");
-			nuspec.Title = "ICS.Libraries";
-			nuspec.Description = "ICS.Libraries";
-			nuspec.Copyright = string.Format("Copyright (c) {0}, Integrated Control Solutions, Inc.", DateTime.Now.Year);
-			nuspec.Authors = new[] { "Integrated Control Solutions, Inc." };
-			nuspec.Owners = new[] { "Integrated Control Solutions, Inc." };
+			//nuspec.IconUri = new Uri(@"https://github.com/ISI-Extensions/ISI.Extensions/Lantern.png");
+			//nuspec.ProjectUri = new Uri(@"https://github.com/ISI-Extensions/ISI.Extensions");
+			nuspec.Title = "ISI.Libraries";
+			nuspec.Description = "ISI.Libraries";
+			nuspec.Copyright = string.Format("Copyright (c) {0}, Integrated Solutions, Inc.", DateTime.Now.Year);
+			nuspec.Authors = new[] { "Integrated Solutions, Inc." };
+			nuspec.Owners = new[] { "Integrated  Solutions, Inc." };
 
 
 			var xxx = nugetHelper.BuildNuspec(new ISI.Extensions.Nuget.DataTransferObjects.NugetHelper.BuildNuspecRequest()
@@ -68,10 +62,21 @@ namespace ISI.Extensions.Tests
 			{
 				var nugetPackageKeys = nugetHelper.ParseCsProj(@"F:\ISI\Internal Projects\ISI.Extensions\src\ISI.Extensions.Nuget\ISI.Extensions.Nuget.csproj");
 			}
+		}
 
-			{
-				var nugetPackageKeys = nugetHelper.ParseCsProj(@"F:\ISI\Internal Projects\ISI.BuildTools\src\ISI.BuildTools.Tests\ISI.BuildTools.Tests.csproj");
-			}
+		[Test]
+		public void GetLatestPackageVersion_Test()
+		{
+			var nugetHelper = new ISI.Extensions.Nuget.NugetHelper(new ConsoleLogger());
+
+			var packageNugetServers = new Dictionary<string, string>();
+			packageNugetServers.Add("ISI.*", "https://nuget.isi-net.com");
+
+			var mainNugetPackageForConsideration = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+			mainNugetPackageForConsideration.Add("JQuery");
+
+			var xxx = nugetHelper.GetLatestPackageVersion("ISI.Libraries", packageNugetServers, mainNugetPackageForConsideration);
+			var yyy = nugetHelper.GetLatestPackageVersion("JQuery", packageNugetServers, mainNugetPackageForConsideration);
 		}
 
 		[Test]
@@ -81,7 +86,6 @@ namespace ISI.Extensions.Tests
 
 			var nugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
 			nugetPackageKeys.Merge(nugetHelper.ParseCsProj(@"F:\ISI\Internal Projects\ISI.Extensions\src\ISI.Extensions.Nuget\ISI.Extensions.Nuget.csproj"));
-			nugetPackageKeys.Merge(nugetHelper.ParseCsProj(@"F:\ISI\Internal Projects\ISI.BuildTools\src\ISI.BuildTools.Tests\ISI.BuildTools.Tests.csproj"));
 
 			var packagesConfig = System.IO.File.ReadAllText(@"F:\ISI\Internal Projects\ISI.BuildTools\src\ISI.BuildTools.Tests\packages.config");
 			nugetHelper.UpdatePackagesConfig(packagesConfig, nugetPackageKeys);

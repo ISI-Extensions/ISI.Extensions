@@ -33,6 +33,11 @@ namespace ISI.Extensions.Nuget
 
 		public string UpdateCsProj(string csProj, ISI.Extensions.Nuget.NugetPackageKeyDictionary nugetPackageKeys, bool convertToPackageReferences)
 		{
+			return UpdateCsProj(csProj, nugetPackageKeys.TryGetValue, convertToPackageReferences);
+		}
+
+		public string UpdateCsProj(string csProj, DTOs.TryGetNugetPackageKey tryGetNugetPackageKey, bool convertToPackageReferences)
+		{
 			var csProjXml = System.Xml.Linq.XElement.Parse(csProj);
 
 			var replacements = new Dictionary<string, string>();
@@ -52,7 +57,7 @@ namespace ISI.Extensions.Nuget
 						var packageId = (packageReference.Attributes("Include").FirstOrDefault() ?? packageReference.Attributes("Update").FirstOrDefault())?.Value ?? string.Empty;
 						var packageVersion = (packageReference.Attributes("Version").FirstOrDefault()?.Value ?? packageReference.Elements("Version").FirstOrDefault()?.Value) ?? string.Empty;
 
-						if (nugetPackageKeys.TryGetValue(packageId, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
+						if (tryGetNugetPackageKey(packageId, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 						{
 							var versionAttribute = packageReference.Attributes("Version").FirstOrDefault();
 							if (versionAttribute != null)
@@ -127,7 +132,7 @@ namespace ISI.Extensions.Nuget
 									packageId = packageId.TrimEnd('.');
 									packageVersion = packageVersion.TrimEnd('.');
 
-									if (nugetPackageKeys.TryGetValue(packageId, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
+									if (tryGetNugetPackageKey(packageId, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 									{
 										packageAttribute.Value = packageAttribute.Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).First();
 										hintPathAttribute.Value = string.Format("{0}\\{1}", packagesPath, nugetPackageKey.HintPath);
@@ -141,7 +146,7 @@ namespace ISI.Extensions.Nuget
 								{
 									if (!usedPackageReferences.Contains(packageId))
 									{
-										if (nugetPackageKeys.TryGetValue(packageId, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version))
+										if (tryGetNugetPackageKey(packageId, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version))
 										{
 											packageVersion = nugetPackageKey.Version;
 										}

@@ -83,7 +83,7 @@ Task("Nuget")
 	.IsDependentOn("Sign")
 	.Does(() =>
 	{
-		foreach(var project in solution.Projects.Where(project => project.Path.FullPath.EndsWith(".csproj") && (project.Name.IndexOf(".Tests") < 0)))
+		foreach(var project in solution.Projects.Where(project => project.Path.FullPath.EndsWith(".csproj") && !project.Name.EndsWith(".Tests")))
 		{
 			Information(project.Name);
 

@@ -23,8 +23,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.JsonSerializ
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Locks.Redis", "ISI.Extensions.Locks.Redis\ISI.Extensions.Locks.Redis.csproj", "{CF46768C-E3CB-4AF9-A682-880260D83154}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Logging.AsyncDiskLoggerProvider", "ISI.Extensions.Logging.AsyncDiskLoggerProvider\ISI.Extensions.Logging.AsyncDiskLoggerProvider.csproj", "{DA506BDE-1AC7-481D-AACA-871539F79310}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.MessageBus.AzureServiceBus", "ISI.Extensions.MessageBus.AzureServiceBus\ISI.Extensions.MessageBus.AzureServiceBus.csproj", "{33403003-544C-4282-A8C1-E314060E6FB8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.MessageBus.MassTransit", "ISI.Extensions.MessageBus.MassTransit\ISI.Extensions.MessageBus.MassTransit.csproj", "{B73C042B-35A5-4B32-B2AF-DC9918CDD5D9}"
@@ -52,9 +50,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{5E2AEF
 		build.cake = build.cake
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.Cake", "ISI.Extensions.Cake\ISI.Extensions.Cake.csproj", "{FB861B75-7B2D-4D3F-93FC-87E2667A516C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Cake", "ISI.Extensions.Cake\ISI.Extensions.Cake.csproj", "{FB861B75-7B2D-4D3F-93FC-87E2667A516C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.Nuget", "ISI.Extensions.Nuget\ISI.Extensions.Nuget.csproj", "{CAEF609E-9D95-4CA3-9044-EAB1EC41BC69}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Nuget", "ISI.Extensions.Nuget\ISI.Extensions.Nuget.csproj", "{CAEF609E-9D95-4CA3-9044-EAB1EC41BC69}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.SCM", "ISI.Extensions.SCM\ISI.Extensions.SCM.csproj", "{5EAADD95-0F64-429D-99F6-3E87E6F5FB59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -144,14 +144,6 @@ Global
 		{CF46768C-E3CB-4AF9-A682-880260D83154}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CF46768C-E3CB-4AF9-A682-880260D83154}.Release|x64.ActiveCfg = Release|x64
 		{CF46768C-E3CB-4AF9-A682-880260D83154}.Release|x64.Build.0 = Release|x64
-		{DA506BDE-1AC7-481D-AACA-871539F79310}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA506BDE-1AC7-481D-AACA-871539F79310}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DA506BDE-1AC7-481D-AACA-871539F79310}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{DA506BDE-1AC7-481D-AACA-871539F79310}.Debug|x64.Build.0 = Debug|Any CPU
-		{DA506BDE-1AC7-481D-AACA-871539F79310}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA506BDE-1AC7-481D-AACA-871539F79310}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DA506BDE-1AC7-481D-AACA-871539F79310}.Release|x64.ActiveCfg = Release|Any CPU
-		{DA506BDE-1AC7-481D-AACA-871539F79310}.Release|x64.Build.0 = Release|Any CPU
 		{33403003-544C-4282-A8C1-E314060E6FB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{33403003-544C-4282-A8C1-E314060E6FB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33403003-544C-4282-A8C1-E314060E6FB8}.Debug|x64.ActiveCfg = Debug|x64
@@ -256,6 +248,14 @@ Global
 		{CAEF609E-9D95-4CA3-9044-EAB1EC41BC69}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CAEF609E-9D95-4CA3-9044-EAB1EC41BC69}.Release|x64.ActiveCfg = Release|Any CPU
 		{CAEF609E-9D95-4CA3-9044-EAB1EC41BC69}.Release|x64.Build.0 = Release|Any CPU
+		{5EAADD95-0F64-429D-99F6-3E87E6F5FB59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EAADD95-0F64-429D-99F6-3E87E6F5FB59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EAADD95-0F64-429D-99F6-3E87E6F5FB59}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5EAADD95-0F64-429D-99F6-3E87E6F5FB59}.Debug|x64.Build.0 = Debug|Any CPU
+		{5EAADD95-0F64-429D-99F6-3E87E6F5FB59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EAADD95-0F64-429D-99F6-3E87E6F5FB59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EAADD95-0F64-429D-99F6-3E87E6F5FB59}.Release|x64.ActiveCfg = Release|Any CPU
+		{5EAADD95-0F64-429D-99F6-3E87E6F5FB59}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

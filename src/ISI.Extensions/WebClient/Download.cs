@@ -44,13 +44,13 @@ namespace ISI.Extensions.WebClient
 			}
 		}
 
-		public static DownloadFileResponse<TStream> DownloadFile<TStream>(string url, HeaderCollection headers)
+		public static DownloadFileResponse<TStream> DownloadFile<TStream>(string url, HeaderCollection headers, int? bufferSize = null)
 			where TStream : System.IO.Stream, new()
 		{
-			return DownloadFile<TStream>(new Uri(url), headers);
+			return DownloadFile<TStream>(new Uri(url), headers, bufferSize);
 		}
 
-		public static DownloadFileResponse<TStream> DownloadFile<TStream>(Uri uri, HeaderCollection headers)
+		public static DownloadFileResponse<TStream> DownloadFile<TStream>(Uri uri, HeaderCollection headers, int? bufferSize = null)
 			where TStream : System.IO.Stream, new()
 		{
 			var response = new DownloadFileResponse<TStream>();
@@ -77,7 +77,14 @@ namespace ISI.Extensions.WebClient
 					{
 						if (webResponseStream != null)
 						{
-							webResponseStream.CopyTo(response.Stream);
+							if (bufferSize.HasValue)
+							{
+								webResponseStream.CopyTo(response.Stream, bufferSize.Value);
+							}
+							else
+							{
+								webResponseStream.CopyTo(response.Stream);
+							}
 							response.Stream.Rewind();
 						}
 					}

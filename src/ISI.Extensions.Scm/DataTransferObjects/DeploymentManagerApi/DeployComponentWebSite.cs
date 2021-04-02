@@ -17,14 +17,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ISI.Extensions.Scm.DataTransferObjects.ServicesManagerApi
+namespace ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi
 {
-	public class DeployComponent : IDeployComponent
+	public class DeployComponentWebSite : IDeployComponent
 	{
-		public string ComponentType { get; set; }
 		public string PackageFolder { get; set; }
 		public string DeployToSubfolder { get; set; }
-		public string ApplicationExe { get; set; }
 		public IEnumerable<string> ExcludeFiles { get; set; }
 	}
 }

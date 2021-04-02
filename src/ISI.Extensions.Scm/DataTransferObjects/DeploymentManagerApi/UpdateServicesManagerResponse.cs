@@ -19,23 +19,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.Scm.DataTransferObjects.ServicesManagerApi
+namespace ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi
 {
-	public partial class DeployArtifactRequest
+	public partial class UpdateServicesManagerResponse
 	{
-		public string RemoteManagementUrl { get; set; }
-		public string Password { get; set; }
-		public string AuthenticationToken { get; set; }
-
-		public string ArtifactName { get; set; }
-		public string ArtifactDateTimeStampVersionUrl { get; set; }
-		public string ArtifactDownloadUrl { get; set; }
-		public string ToDateTimeStamp { get; set; }
-		public string FromEnvironment { get; set; }
-		public string ToEnvironment { get; set; }
-		public string ConfigurationKey { get; set; }
-		public IEnumerable<IDeployComponent> Components { get; set; }
-		public bool SetDeployedVersion { get; set; } = true;
-		public bool RunAsync { get; set; } = true;
+		public string CurrentVersion { get; set; }
+		public string Log { get; set; }
+		public string NewVersion { get; set; }
+		public bool SameVersion { get; set; }
 	}
 }

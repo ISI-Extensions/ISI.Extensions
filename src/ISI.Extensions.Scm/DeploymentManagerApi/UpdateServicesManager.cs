@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,16 +15,34 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi;
 
-namespace ISI.Extensions.Scm.DataTransferObjects.ServicesManagerApi
+namespace ISI.Extensions.Scm
 {
-	public class DeployComponentWindowsService : IDeployComponent
+	public partial class DeploymentManagerApi
 	{
-		public string PackageFolder { get; set; }
-		public string DeployToSubfolder { get; set; }
-		public string WindowsServiceExe { get; set; }
-		public IEnumerable<string> ExcludeFiles { get; set; }
-		public bool UninstallIfInstalled { get; set; }
+		public DTOs.UpdateServicesManagerResponse UpdateServicesManager(DTOs.UpdateServicesManagerRequest request)
+		{
+			var response = new DTOs.UpdateServicesManagerResponse();
+
+			using (var managerClient = ISI.Extensions.Scm.ServiceReferences.ServicesManager.ManagerClient.GetClient(request.RemoteManagementUrl))
+			{
+				managerClient.Endpoint.Binding.SendTimeout = TimeSpan.FromMinutes(15);
+				managerClient.Endpoint.Binding.ReceiveTimeout = TimeSpan.FromMinutes(15);
+
+				var updateResponse = managerClient.UpdateAsync(request.Password).GetAwaiter().GetResult();
+
+				response.CurrentVersion = updateResponse.CurrentVersion;
+				response.Log = updateResponse.Log;
+				response.NewVersion = updateResponse.NewVersion;
+				response.SameVersion = updateResponse.SameVersion;
+			}
+
+			return response;
+		}
 	}
 }

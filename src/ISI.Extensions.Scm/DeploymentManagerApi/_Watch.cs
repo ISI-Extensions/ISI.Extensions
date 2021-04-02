@@ -20,11 +20,11 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using Microsoft.Extensions.Logging;
-using DTOs = ISI.Extensions.Scm.DataTransferObjects.ServicesManagerApi;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi;
 
 namespace ISI.Extensions.Scm
 {
-	public partial class ServicesManagerApi
+	public partial class DeploymentManagerApi
 	{
 		private bool Watch(string remoteManagementUrl, string password, string statusTrackerKey)
 		{

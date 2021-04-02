@@ -12,37 +12,30 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Scm.DataTransferObjects.ServicesManagerApi;
 
-namespace ISI.Extensions.Scm
+namespace ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi
 {
-	public partial class ServicesManagerApi
+	public partial class DeployArtifactRequest
 	{
-		public DTOs.UpdateServicesManagerResponse UpdateServicesManager(DTOs.UpdateServicesManagerRequest request)
-		{
-			var response = new DTOs.UpdateServicesManagerResponse();
+		public string RemoteManagementUrl { get; set; }
+		public string Password { get; set; }
+		public string AuthenticationToken { get; set; }
 
-			using (var managerClient = ISI.Extensions.Scm.ServiceReferences.ServicesManager.ManagerClient.GetClient(request.RemoteManagementUrl))
-			{
-				managerClient.Endpoint.Binding.SendTimeout = TimeSpan.FromMinutes(15);
-				managerClient.Endpoint.Binding.ReceiveTimeout = TimeSpan.FromMinutes(15);
-
-				var updateResponse = managerClient.UpdateAsync(request.Password).GetAwaiter().GetResult();
-
-				response.CurrentVersion = updateResponse.CurrentVersion;
-				response.Log = updateResponse.Log;
-				response.NewVersion = updateResponse.NewVersion;
-				response.SameVersion = updateResponse.SameVersion;
-			}
-
-			return response;
-		}
+		public string ArtifactName { get; set; }
+		public string ArtifactDateTimeStampVersionUrl { get; set; }
+		public string ArtifactDownloadUrl { get; set; }
+		public string ToDateTimeStamp { get; set; }
+		public string FromEnvironment { get; set; }
+		public string ToEnvironment { get; set; }
+		public string ConfigurationKey { get; set; }
+		public IEnumerable<IDeployComponent> Components { get; set; }
+		public bool SetDeployedVersion { get; set; } = true;
+		public bool RunAsync { get; set; } = true;
 	}
 }

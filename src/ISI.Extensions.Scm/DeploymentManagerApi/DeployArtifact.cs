@@ -20,11 +20,11 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using Microsoft.Extensions.Logging;
-using DTOs = ISI.Extensions.Scm.DataTransferObjects.ServicesManagerApi;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi;
 
 namespace ISI.Extensions.Scm
 {
-	public partial class ServicesManagerApi
+	public partial class DeploymentManagerApi
 	{
 		public DTOs.DeployArtifactResponse DeployArtifact(DTOs.DeployArtifactRequest request)
 		{
@@ -51,7 +51,7 @@ namespace ISI.Extensions.Scm
 			{
 				switch (component)
 				{
-					case ISI.Extensions.Scm.DataTransferObjects.ServicesManagerApi.DeployComponent deployComponent:
+					case ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.DeployComponent deployComponent:
 						if (string.Equals(deployComponent.ComponentType, "ConsoleApplication", StringComparison.InvariantCultureIgnoreCase))
 						{
 							deployComponents.Add(new ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployConsoleApplication()
@@ -83,7 +83,7 @@ namespace ISI.Extensions.Scm
 						}
 						break;
 
-					case ISI.Extensions.Scm.DataTransferObjects.ServicesManagerApi.DeployComponentConsoleApplication deployComponentConsoleApplication:
+					case ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.DeployComponentConsoleApplication deployComponentConsoleApplication:
 						deployComponents.Add(new ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployConsoleApplication()
 						{
 							PackageFolder = deployComponentConsoleApplication.PackageFolder,
@@ -95,7 +95,7 @@ namespace ISI.Extensions.Scm
 						});
 						break;
 
-					case ISI.Extensions.Scm.DataTransferObjects.ServicesManagerApi.DeployComponentWebSite deployComponentWebSite:
+					case ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.DeployComponentWebSite deployComponentWebSite:
 						deployComponents.Add(new ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployWebSite()
 						{
 							PackageFolder = deployComponentWebSite.PackageFolder,
@@ -104,7 +104,7 @@ namespace ISI.Extensions.Scm
 						});
 						break;
 
-					case ISI.Extensions.Scm.DataTransferObjects.ServicesManagerApi.DeployComponentWindowsService deployComponentWindowsService:
+					case ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.DeployComponentWindowsService deployComponentWindowsService:
 						deployComponents.Add(new ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployWindowsService()
 						{
 							PackageFolder = deployComponentWindowsService.PackageFolder,

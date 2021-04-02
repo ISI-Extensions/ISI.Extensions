@@ -23,7 +23,7 @@ using DTOs = ISI.Extensions.Scm.DataTransferObjects.SCMApi;
 
 namespace ISI.Extensions.Scm
 {
-	public partial class SCMApi
+	public partial class ScmApi
 	{
 		public DTOs.GetAuthenticationTokenResponse GetAuthenticationToken(DTOs.GetAuthenticationTokenRequest request)
 		{

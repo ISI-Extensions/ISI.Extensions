@@ -2,7 +2,7 @@
 #addin nuget:?package=ISI.Cake.AddIn&loaddependencies=true
 
 //mklink /D Secrets S:\
-var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.SCM.Settings.keyValue");
+var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 var settings = GetSettings(settingsFullName);
 
 var target = Argument("target", "Default");
@@ -87,15 +87,19 @@ Task("Nuget")
 		{
 			Information(project.Name);
 
-			var nuspec = GenerateNuspecFromProject(project.Path, package =>
+			var nuspec = GenerateNuspecFromProject(new ISI.Cake.Addin.Nuget.GenerateNuspecFromProjectRequest()
 			{
-				if (package.StartsWith("ISI.Extensions", StringComparison.InvariantCultureIgnoreCase))
+				ProjectFullName = project.Path.FullPath,
+				GetPackageVersion = package =>
 				{
-					return buildVersion;
-				}
+					if (package.StartsWith("ISI.Extensions", StringComparison.InvariantCultureIgnoreCase))
+					{
+						return buildVersion;
+					}
 
-				return string.Empty;
-			});
+					return string.Empty;
+				}
+			}).Nuspec;
 			nuspec.Version = buildVersion;
 			nuspec.IconUri = new Uri(@"https://github.com/ISI-Extensions/ISI.Extensions/Lantern.png");
 			nuspec.ProjectUri = new Uri(@"https://github.com/ISI-Extensions/ISI.Extensions");
@@ -107,7 +111,11 @@ Task("Nuget")
 
 			var nuspecFile = File(project.Path.GetDirectory() + "/" + project.Name + ".nuspec");
 
-			CreateNuspec(nuspec, nuspecFile);
+			CreateNuspecFile(new ISI.Cake.Addin.Nuget.CreateNuspecFileRequest()
+			{
+				Nuspec = nuspec,
+				NuspecFullName = nuspecFile.Path.FullPath,
+			});
 
 			NuGetPack(project.Path.FullPath, new NuGetPackSettings()
 			{
@@ -126,19 +134,20 @@ Task("Nuget")
 			DeleteFile(nuspecFile);
 
 			var nupgkFile = File(nugetDirectory + "/" + project.Name + "." + buildVersion + ".nupkg");
-			NupkgSign(nupgkFile, new ISI.Cake.Addin.Nuget.NupkgSignToolSettings()
+			NupkgSign(new ISI.Cake.Addin.Nuget.NupkgSignRequest()
 			{
+				NupkgFullNames = new [] { nupgkFile.Path.FullPath },
 				TimestamperUri = new Uri(settings.CodeSigning.TimeStampUrl),
 				CertificatePath = File(settings.CodeSigning.CertificateFileName),
 				CertificatePassword = settings.CodeSigning.CertificatePassword,
 			});
 
-			NupkgPush(nupgkFile, new ISI.Cake.Addin.Nuget.NupkgPushToolSettings()
+			NupkgPush(new ISI.Cake.Addin.Nuget.NupkgPushRequest()
 			{
+				NupkgFullNames = new [] { nupgkFile.Path.FullPath },
 				UseNugetPush = false,
 				RepositoryUri = new Uri(settings.Nuget.RepositoryUrl),
 				ApiKey = settings.Nuget.ApiKey,
-				NugetCacheDirectory = Directory(settings.Nuget.CacheDirectory),
 			});
 		}
 	});

@@ -8,11 +8,11 @@ using DTOs = ISI.Extensions.Scm.DataTransferObjects.SCMApi;
 
 namespace ISI.Extensions.Scm
 {
-	public partial class SCMApi
+	public partial class ScmApi
 	{
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 
-		public SCMApi(
+		public ScmApi(
 			Microsoft.Extensions.Logging.ILogger logger = null)
 		{
 			Logger = logger ?? new ConsoleLogger();

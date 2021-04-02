@@ -29,7 +29,7 @@ namespace ISI.Extensions.Scm
 		{
 			var response = new DTOs.GetArtifactDateTimeStampResponse();
 
-			using (var remoteManagementClient = ISI.Extensions.Scm.ServiceReferences.SCM.RemoteManagementClient.GetClient(request.RemoteManagementUrl))
+			using (var remoteManagementClient = ISI.Extensions.Scm.ServiceReferences.Scm.RemoteManagementClient.GetClient(request.RemoteManagementUrl))
 			{
 				response.ArtifactDateTimeStamp = remoteManagementClient.GetArtifactDateTimeStampAsync(request.AuthenticationToken, request.DateTimeStamp).GetAwaiter().GetResult();
 			}

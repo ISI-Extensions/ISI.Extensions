@@ -19,9 +19,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Scm.DataTransferObjects.SCMApi;
 
-namespace ISI.Extensions.Scm.ServiceReferences.SCM
+namespace ISI.Extensions.Scm.ServiceReferences.Scm
 {
 	public partial class RemoteManagementClient
 	{

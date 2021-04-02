@@ -19,7 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Scm.DataTransferObjects.SCMApi;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.ScmApi;
 
 namespace ISI.Extensions.Scm
 {
@@ -29,7 +29,7 @@ namespace ISI.Extensions.Scm
 		{
 			var response = new DTOs.GetAuthenticationTokenResponse();
 			
-			using (var remoteManagementClient = ISI.Extensions.Scm.ServiceReferences.SCM.RemoteManagementClient.GetClient(request.RemoteManagementUrl))
+			using (var remoteManagementClient = ISI.Extensions.Scm.ServiceReferences.Scm.RemoteManagementClient.GetClient(request.RemoteManagementUrl))
 			{
 				response.AuthenticationToken = remoteManagementClient.GetAuthenticationTokenAsync(request.UserName, request.Password).GetAwaiter().GetResult();
 			}

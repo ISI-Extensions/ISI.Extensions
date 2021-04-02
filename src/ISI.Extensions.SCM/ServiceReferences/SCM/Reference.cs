@@ -9,12 +9,12 @@
 
 [assembly: System.Runtime.Serialization.ContractNamespaceAttribute("http://scm.isi-net.com/remote-management", ClrNamespace = "ISI.Extensions.Scm.ServiceReferences.SCM")]
 
-namespace ISI.Extensions.Scm.ServiceReferences.SCM
+namespace ISI.Extensions.Scm.ServiceReferences.Scm
 {
 	[System.Diagnostics.DebuggerStepThroughAttribute()]
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
 	[System.Runtime.Serialization.CollectionDataContractAttribute(Name = "RevisionInformationCollection", Namespace = "http://scm.isi-net.com/remote-management", ItemName = "RevisionInformation")]
-	public class RevisionInformationCollection : System.Collections.Generic.List<ISI.Extensions.Scm.ServiceReferences.SCM.RevisionInformation>
+	public class RevisionInformationCollection : System.Collections.Generic.List<ISI.Extensions.Scm.ServiceReferences.Scm.RevisionInformation>
 	{
 	}
 
@@ -28,7 +28,7 @@ namespace ISI.Extensions.Scm.ServiceReferences.SCM
 
 		private System.DateTime DateTimeField;
 
-		private ISI.Extensions.Scm.ServiceReferences.SCM.RevisionInformationItemCollection ItemsField;
+		private ISI.Extensions.Scm.ServiceReferences.Scm.RevisionInformationItemCollection ItemsField;
 
 		private string LogMessageField;
 
@@ -49,7 +49,7 @@ namespace ISI.Extensions.Scm.ServiceReferences.SCM
 		}
 
 		[System.Runtime.Serialization.DataMemberAttribute()]
-		public ISI.Extensions.Scm.ServiceReferences.SCM.RevisionInformationItemCollection Items
+		public ISI.Extensions.Scm.ServiceReferences.Scm.RevisionInformationItemCollection Items
 		{
 			get { return this.ItemsField; }
 			set { this.ItemsField = value; }
@@ -73,7 +73,7 @@ namespace ISI.Extensions.Scm.ServiceReferences.SCM
 	[System.Diagnostics.DebuggerStepThroughAttribute()]
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
 	[System.Runtime.Serialization.CollectionDataContractAttribute(Name = "RevisionInformationItemCollection", Namespace = "http://scm.isi-net.com/remote-management", ItemName = "RevisionInformationItem")]
-	public class RevisionInformationItemCollection : System.Collections.Generic.List<ISI.Extensions.Scm.ServiceReferences.SCM.RevisionInformationItem>
+	public class RevisionInformationItemCollection : System.Collections.Generic.List<ISI.Extensions.Scm.ServiceReferences.Scm.RevisionInformationItem>
 	{
 	}
 
@@ -114,7 +114,7 @@ namespace ISI.Extensions.Scm.ServiceReferences.SCM
 	[System.Diagnostics.DebuggerStepThroughAttribute()]
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
 	[System.Runtime.Serialization.CollectionDataContractAttribute(Name = "TicketCollection", Namespace = "http://scm.isi-net.com/remote-management", ItemName = "Ticket")]
-	public class TicketCollection : System.Collections.Generic.List<ISI.Extensions.Scm.ServiceReferences.SCM.Ticket>
+	public class TicketCollection : System.Collections.Generic.List<ISI.Extensions.Scm.ServiceReferences.Scm.Ticket>
 	{
 	}
 
@@ -331,13 +331,13 @@ namespace ISI.Extensions.Scm.ServiceReferences.SCM
 
 		[System.ServiceModel.OperationContractAttribute(Action = "http://scm.isi-net.com/RemoteManagement/GetSvnRepositoryNodeLogByRevision", ReplyAction = "http://scm.isi-net.com/RemoteManagement/GetSvnRepositoryNodeLogByRevisionResponse" +
 		                                                                                                                                                    "")]
-		System.Threading.Tasks.Task<ISI.Extensions.Scm.ServiceReferences.SCM.RevisionInformationCollection> GetSvnRepositoryNodeLogByRevisionAsync(string userName, string password, string repositoryKey, System.Nullable<int> startRevision, System.Nullable<int> stopRevision, string[] authorFilter, string logMessageRegexFilter, string fileNameRegexFilter);
+		System.Threading.Tasks.Task<ISI.Extensions.Scm.ServiceReferences.Scm.RevisionInformationCollection> GetSvnRepositoryNodeLogByRevisionAsync(string userName, string password, string repositoryKey, System.Nullable<int> startRevision, System.Nullable<int> stopRevision, string[] authorFilter, string logMessageRegexFilter, string fileNameRegexFilter);
 
 		[System.ServiceModel.OperationContractAttribute(Action = "http://scm.isi-net.com/RemoteManagement/GetSvnRepositoryNodeLogByDate", ReplyAction = "http://scm.isi-net.com/RemoteManagement/GetSvnRepositoryNodeLogByDateResponse")]
-		System.Threading.Tasks.Task<ISI.Extensions.Scm.ServiceReferences.SCM.RevisionInformationCollection> GetSvnRepositoryNodeLogByDateAsync(string userName, string password, string repositoryKey, System.Nullable<System.DateTime> startDateTime, System.Nullable<System.DateTime> stopDateTime, string[] authorFilter, string logMessageRegexFilter, string fileNameRegexFilter);
+		System.Threading.Tasks.Task<ISI.Extensions.Scm.ServiceReferences.Scm.RevisionInformationCollection> GetSvnRepositoryNodeLogByDateAsync(string userName, string password, string repositoryKey, System.Nullable<System.DateTime> startDateTime, System.Nullable<System.DateTime> stopDateTime, string[] authorFilter, string logMessageRegexFilter, string fileNameRegexFilter);
 
 		[System.ServiceModel.OperationContractAttribute(Action = "http://scm.isi-net.com/RemoteManagement/GetTracTickets", ReplyAction = "http://scm.isi-net.com/RemoteManagement/GetTracTicketsResponse")]
-		System.Threading.Tasks.Task<ISI.Extensions.Scm.ServiceReferences.SCM.TicketCollection> GetTracTicketsAsync(string authenticationToken, string repositoryKey, int[] ticketIds, string component, string[] owners, string[] statuses);
+		System.Threading.Tasks.Task<ISI.Extensions.Scm.ServiceReferences.Scm.TicketCollection> GetTracTicketsAsync(string authenticationToken, string repositoryKey, int[] ticketIds, string component, string[] owners, string[] statuses);
 
 		[System.ServiceModel.OperationContractAttribute(Action = "http://scm.isi-net.com/RemoteManagement/HipChatSendDeploymentFinishMessage", ReplyAction = "http://scm.isi-net.com/RemoteManagement/HipChatSendDeploymentFinishMessageRespons" +
 		                                                                                                                                                     "e")]
@@ -467,17 +467,17 @@ namespace ISI.Extensions.Scm.ServiceReferences.SCM
 			return base.Channel.JiraSendDeploymentStartEmailAsync(authenticationToken, description, jqlQuery, environment, emailAddresses, addTicketReporterToEmailAddresses, addTicketOwnerToEmailAddresses, addTicketCarbonCopysToEmailAddresses);
 		}
 
-		public System.Threading.Tasks.Task<ISI.Extensions.Scm.ServiceReferences.SCM.RevisionInformationCollection> GetSvnRepositoryNodeLogByRevisionAsync(string userName, string password, string repositoryKey, System.Nullable<int> startRevision, System.Nullable<int> stopRevision, string[] authorFilter, string logMessageRegexFilter, string fileNameRegexFilter)
+		public System.Threading.Tasks.Task<ISI.Extensions.Scm.ServiceReferences.Scm.RevisionInformationCollection> GetSvnRepositoryNodeLogByRevisionAsync(string userName, string password, string repositoryKey, System.Nullable<int> startRevision, System.Nullable<int> stopRevision, string[] authorFilter, string logMessageRegexFilter, string fileNameRegexFilter)
 		{
 			return base.Channel.GetSvnRepositoryNodeLogByRevisionAsync(userName, password, repositoryKey, startRevision, stopRevision, authorFilter, logMessageRegexFilter, fileNameRegexFilter);
 		}
 
-		public System.Threading.Tasks.Task<ISI.Extensions.Scm.ServiceReferences.SCM.RevisionInformationCollection> GetSvnRepositoryNodeLogByDateAsync(string userName, string password, string repositoryKey, System.Nullable<System.DateTime> startDateTime, System.Nullable<System.DateTime> stopDateTime, string[] authorFilter, string logMessageRegexFilter, string fileNameRegexFilter)
+		public System.Threading.Tasks.Task<ISI.Extensions.Scm.ServiceReferences.Scm.RevisionInformationCollection> GetSvnRepositoryNodeLogByDateAsync(string userName, string password, string repositoryKey, System.Nullable<System.DateTime> startDateTime, System.Nullable<System.DateTime> stopDateTime, string[] authorFilter, string logMessageRegexFilter, string fileNameRegexFilter)
 		{
 			return base.Channel.GetSvnRepositoryNodeLogByDateAsync(userName, password, repositoryKey, startDateTime, stopDateTime, authorFilter, logMessageRegexFilter, fileNameRegexFilter);
 		}
 
-		public System.Threading.Tasks.Task<ISI.Extensions.Scm.ServiceReferences.SCM.TicketCollection> GetTracTicketsAsync(string authenticationToken, string repositoryKey, int[] ticketIds, string component, string[] owners, string[] statuses)
+		public System.Threading.Tasks.Task<ISI.Extensions.Scm.ServiceReferences.Scm.TicketCollection> GetTracTicketsAsync(string authenticationToken, string repositoryKey, int[] ticketIds, string component, string[] owners, string[] statuses)
 		{
 			return base.Channel.GetTracTicketsAsync(authenticationToken, repositoryKey, ticketIds, component, owners, statuses);
 		}

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Scm.DataTransferObjects.SCMApi;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.ScmApi;
 
 namespace ISI.Extensions.Scm
 {

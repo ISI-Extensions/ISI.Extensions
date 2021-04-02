@@ -19,7 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.SCM.DataTransferObjects.BuildArtifactApi
+namespace ISI.Extensions.Scm.DataTransferObjects.BuildArtifactApi
 {
 	public partial class GetBuildArtifactEnvironmentDateTimeStampVersionRequest
 	{

@@ -20,9 +20,9 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using Microsoft.Extensions.Logging;
-using DTOs = ISI.Extensions.SCM.DataTransferObjects.ServicesManagerApi;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.ServicesManagerApi;
 
-namespace ISI.Extensions.SCM
+namespace ISI.Extensions.Scm
 {
 	public partial class ServicesManagerApi
 	{
@@ -30,7 +30,7 @@ namespace ISI.Extensions.SCM
 		{
 			var success = false;
 
-			using (var managerClient = ISI.Extensions.SCM.ServiceReferences.ServicesManager.ManagerClient.GetClient(remoteManagementUrl))
+			using (var managerClient = ISI.Extensions.Scm.ServiceReferences.ServicesManager.ManagerClient.GetClient(remoteManagementUrl))
 			{
 				managerClient.Endpoint.Binding.OpenTimeout = TimeSpan.FromMinutes(60);
 				managerClient.Endpoint.Binding.SendTimeout = TimeSpan.FromMinutes(60);

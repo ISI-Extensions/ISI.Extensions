@@ -19,9 +19,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.SCM.DataTransferObjects.FileStoreApi;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.FileStoreApi;
 
-namespace ISI.Extensions.SCM
+namespace ISI.Extensions.Scm
 {
 	public partial class FileStoreApi
 	{
@@ -65,7 +65,7 @@ namespace ISI.Extensions.SCM
 				}
 			}
 			
-			using (var fileStoreClient = ISI.Extensions.SCM.ServiceReferences.FileStore.FileStoreClient.GetClient(request.FileStoreUrl))
+			using (var fileStoreClient = ISI.Extensions.Scm.ServiceReferences.FileStore.FileStoreClient.GetClient(request.FileStoreUrl))
 			{
 				int jFileSegment = fileSegments.Count;
 				for (int iFileSegment = 1; iFileSegment <= jFileSegment; iFileSegment++)

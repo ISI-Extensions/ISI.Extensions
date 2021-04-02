@@ -22,23 +22,23 @@ namespace ISI.Extensions.Aspose.InternalTryNotToUseExtensions
 {
 	public static partial class WordsExtensions
 	{
-		public static ISI.Extensions.Documents.FootnoteType ToFootnoteType(this global::Aspose.Words.FootnoteType footnoteType)
+		public static ISI.Extensions.Documents.FootnoteType ToFootnoteType(this global::Aspose.Words.Notes.FootnoteType footnoteType)
 		{
 			switch (footnoteType)
 			{
-				case global::Aspose.Words.FootnoteType.Footnote: return ISI.Extensions.Documents.FootnoteType.Footnote;
-				case global::Aspose.Words.FootnoteType.Endnote: return ISI.Extensions.Documents.FootnoteType.Endnote;
+				case global::Aspose.Words.Notes.FootnoteType.Footnote: return ISI.Extensions.Documents.FootnoteType.Footnote;
+				case global::Aspose.Words.Notes.FootnoteType.Endnote: return ISI.Extensions.Documents.FootnoteType.Endnote;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(footnoteType), footnoteType, null);
 			}
 		}
 
-		public static global::Aspose.Words.FootnoteType ToFootnoteType(this ISI.Extensions.Documents.FootnoteType footnoteType)
+		public static global::Aspose.Words.Notes.FootnoteType ToFootnoteType(this ISI.Extensions.Documents.FootnoteType footnoteType)
 		{
 			switch (footnoteType)
 			{
-				case ISI.Extensions.Documents.FootnoteType.Footnote: return global::Aspose.Words.FootnoteType.Footnote;
-				case ISI.Extensions.Documents.FootnoteType.Endnote: return global::Aspose.Words.FootnoteType.Endnote;
+				case ISI.Extensions.Documents.FootnoteType.Footnote: return global::Aspose.Words.Notes.FootnoteType.Footnote;
+				case ISI.Extensions.Documents.FootnoteType.Endnote: return global::Aspose.Words.Notes.FootnoteType.Endnote;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(footnoteType), footnoteType, null);
 			}

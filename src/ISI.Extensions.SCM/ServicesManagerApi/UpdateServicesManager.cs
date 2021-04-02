@@ -19,9 +19,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.SCM.DataTransferObjects.ServicesManagerApi;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.ServicesManagerApi;
 
-namespace ISI.Extensions.SCM
+namespace ISI.Extensions.Scm
 {
 	public partial class ServicesManagerApi
 	{
@@ -29,7 +29,7 @@ namespace ISI.Extensions.SCM
 		{
 			var response = new DTOs.UpdateServicesManagerResponse();
 
-			using (var managerClient = ISI.Extensions.SCM.ServiceReferences.ServicesManager.ManagerClient.GetClient(request.RemoteManagementUrl))
+			using (var managerClient = ISI.Extensions.Scm.ServiceReferences.ServicesManager.ManagerClient.GetClient(request.RemoteManagementUrl))
 			{
 				managerClient.Endpoint.Binding.SendTimeout = TimeSpan.FromMinutes(15);
 				managerClient.Endpoint.Binding.ReceiveTimeout = TimeSpan.FromMinutes(15);

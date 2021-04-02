@@ -19,7 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.SCM.DataTransferObjects.ServicesManagerApi
+namespace ISI.Extensions.Scm.DataTransferObjects.ServicesManagerApi
 {
 	public partial class UpdateServicesManagerRequest
 	{

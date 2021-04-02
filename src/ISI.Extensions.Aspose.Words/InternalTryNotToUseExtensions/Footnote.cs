@@ -23,7 +23,7 @@ namespace ISI.Extensions.Aspose.InternalTryNotToUseExtensions
 {
 	public static partial class WordsExtensions
 	{
-		public static global::Aspose.Words.Footnote GetAsposeFootnote(this ISI.Extensions.Documents.IDocumentFootnote documentFootnote)
+		public static global::Aspose.Words.Notes.Footnote GetAsposeFootnote(this ISI.Extensions.Documents.IDocumentFootnote documentFootnote)
 		{
 			if (!(documentFootnote is ISI.Extensions.Aspose.Words.DocumentFootnote asposeFootnote))
 			{

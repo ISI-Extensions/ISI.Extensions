@@ -26,9 +26,9 @@ namespace ISI.Extensions.Aspose
 	{
 		public class DocumentEndnoteOptions : ISI.Extensions.Documents.IDocumentEndnoteOptions
 		{
-			internal global::Aspose.Words.EndnoteOptions _endnoteOptions = null;
+			internal global::Aspose.Words.Notes.EndnoteOptions _endnoteOptions = null;
 
-			public DocumentEndnoteOptions(global::Aspose.Words.EndnoteOptions endnoteOptions)
+			public DocumentEndnoteOptions(global::Aspose.Words.Notes.EndnoteOptions endnoteOptions)
 			{
 				_endnoteOptions = endnoteOptions;
 			}

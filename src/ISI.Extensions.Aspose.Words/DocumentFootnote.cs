@@ -26,9 +26,9 @@ namespace ISI.Extensions.Aspose
 	{
 		public class DocumentFootnote : ISI.Extensions.Documents.IDocumentFootnote
 		{
-			internal global::Aspose.Words.Footnote _footnote = null;
+			internal global::Aspose.Words.Notes.Footnote _footnote = null;
 
-			public DocumentFootnote(global::Aspose.Words.Footnote field)
+			public DocumentFootnote(global::Aspose.Words.Notes.Footnote field)
 			{
 				_footnote = field;
 			}

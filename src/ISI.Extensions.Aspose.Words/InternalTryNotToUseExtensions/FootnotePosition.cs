@@ -22,23 +22,23 @@ namespace ISI.Extensions.Aspose.InternalTryNotToUseExtensions
 {
 	public static partial class WordsExtensions
 	{
-		public static ISI.Extensions.Documents.FootnotePosition ToFootnotePosition(this global::Aspose.Words.FootnotePosition footnotePosition)
+		public static ISI.Extensions.Documents.FootnotePosition ToFootnotePosition(this global::Aspose.Words.Notes.FootnotePosition footnotePosition)
 		{
 			switch (footnotePosition)
 			{
-				case global::Aspose.Words.FootnotePosition.BottomOfPage: return ISI.Extensions.Documents.FootnotePosition.BottomOfPage;
-				case global::Aspose.Words.FootnotePosition.BeneathText: return ISI.Extensions.Documents.FootnotePosition.BeneathText;
+				case global::Aspose.Words.Notes.FootnotePosition.BottomOfPage: return ISI.Extensions.Documents.FootnotePosition.BottomOfPage;
+				case global::Aspose.Words.Notes.FootnotePosition.BeneathText: return ISI.Extensions.Documents.FootnotePosition.BeneathText;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(footnotePosition), footnotePosition, null);
 			}
 		}
 
-		public static global::Aspose.Words.FootnotePosition ToFootnotePosition(this ISI.Extensions.Documents.FootnotePosition footnotePosition)
+		public static global::Aspose.Words.Notes.FootnotePosition ToFootnotePosition(this ISI.Extensions.Documents.FootnotePosition footnotePosition)
 		{
 			switch (footnotePosition)
 			{
-				case ISI.Extensions.Documents.FootnotePosition.BottomOfPage: return global::Aspose.Words.FootnotePosition.BottomOfPage;
-				case ISI.Extensions.Documents.FootnotePosition.BeneathText: return global::Aspose.Words.FootnotePosition.BeneathText;
+				case ISI.Extensions.Documents.FootnotePosition.BottomOfPage: return global::Aspose.Words.Notes.FootnotePosition.BottomOfPage;
+				case ISI.Extensions.Documents.FootnotePosition.BeneathText: return global::Aspose.Words.Notes.FootnotePosition.BeneathText;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(footnotePosition), footnotePosition, null);
 			}

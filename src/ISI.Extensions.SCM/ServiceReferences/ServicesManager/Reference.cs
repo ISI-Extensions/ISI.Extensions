@@ -7,9 +7,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Runtime.Serialization.ContractNamespaceAttribute("http://services-manager.isi-net.com/manager/data-transfer-objects", ClrNamespace = "ISI.Extensions.SCM.ServiceReferences.ServicesManager")]
+[assembly: System.Runtime.Serialization.ContractNamespaceAttribute("http://services-manager.isi-net.com/manager/data-transfer-objects", ClrNamespace = "ISI.Extensions.Scm.ServiceReferences.ServicesManager")]
 
-namespace ISI.Extensions.SCM.ServiceReferences.ServicesManager
+namespace ISI.Extensions.Scm.ServiceReferences.ServicesManager
 {
 	[System.Diagnostics.DebuggerStepThroughAttribute()]
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
@@ -27,7 +27,7 @@ namespace ISI.Extensions.SCM.ServiceReferences.ServicesManager
 
 		private string DeployToSubfolderField;
 
-		private ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployComponentExcludeFileCollection ExcludeFilesField;
+		private ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentExcludeFileCollection ExcludeFilesField;
 
 		private bool ExecuteConsoleApplicationAfterInstallField;
 
@@ -50,7 +50,7 @@ namespace ISI.Extensions.SCM.ServiceReferences.ServicesManager
 		}
 
 		[System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
-		public ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployComponentExcludeFileCollection ExcludeFiles
+		public ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentExcludeFileCollection ExcludeFiles
 		{
 			get { return this.ExcludeFilesField; }
 			set { this.ExcludeFilesField = value; }
@@ -81,7 +81,7 @@ namespace ISI.Extensions.SCM.ServiceReferences.ServicesManager
 	[System.Diagnostics.DebuggerStepThroughAttribute()]
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
 	[System.Runtime.Serialization.CollectionDataContractAttribute(Name = "DeployComponentExcludeFileCollection", Namespace = "http://services-manager.isi-net.com/manager/data-transfer-objects", ItemName = "DeployComponentExcludeFile")]
-	public class DeployComponentExcludeFileCollection : System.Collections.Generic.List<ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployComponentExcludeFile>
+	public class DeployComponentExcludeFileCollection : System.Collections.Generic.List<ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentExcludeFile>
 	{
 	}
 
@@ -108,7 +108,7 @@ namespace ISI.Extensions.SCM.ServiceReferences.ServicesManager
 
 		private string DeployToSubfolderField;
 
-		private ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployComponentExcludeFileCollection ExcludeFilesField;
+		private ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentExcludeFileCollection ExcludeFilesField;
 
 		private string PackageFolderField;
 
@@ -120,7 +120,7 @@ namespace ISI.Extensions.SCM.ServiceReferences.ServicesManager
 		}
 
 		[System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
-		public ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployComponentExcludeFileCollection ExcludeFiles
+		public ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentExcludeFileCollection ExcludeFiles
 		{
 			get { return this.ExcludeFilesField; }
 			set { this.ExcludeFilesField = value; }
@@ -142,7 +142,7 @@ namespace ISI.Extensions.SCM.ServiceReferences.ServicesManager
 
 		private string DeployToSubfolderField;
 
-		private ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployComponentExcludeFileCollection ExcludeFilesField;
+		private ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentExcludeFileCollection ExcludeFilesField;
 
 		private string PackageFolderField;
 
@@ -158,7 +158,7 @@ namespace ISI.Extensions.SCM.ServiceReferences.ServicesManager
 		}
 
 		[System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
-		public ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployComponentExcludeFileCollection ExcludeFiles
+		public ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentExcludeFileCollection ExcludeFiles
 		{
 			get { return this.ExcludeFilesField; }
 			set { this.ExcludeFilesField = value; }
@@ -443,14 +443,14 @@ namespace ISI.Extensions.SCM.ServiceReferences.ServicesManager
 	[System.Diagnostics.DebuggerStepThroughAttribute()]
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
 	[System.Runtime.Serialization.DataContractAttribute(Name = "GetStatusResponse", Namespace = "http://services-manager.isi-net.com/manager/data-transfer-objects")]
-	public partial class GetStatusResponse : ISI.Extensions.SCM.ServiceReferences.ServicesManager.Response
+	public partial class GetStatusResponse : ISI.Extensions.Scm.ServiceReferences.ServicesManager.Response
 	{
 
 		private bool ActiveField;
 
 		private string CaptionField;
 
-		private ISI.Extensions.SCM.ServiceReferences.ServicesManager.LogEntryCollection LogField;
+		private ISI.Extensions.Scm.ServiceReferences.ServicesManager.LogEntryCollection LogField;
 
 		private int PercentField;
 
@@ -471,7 +471,7 @@ namespace ISI.Extensions.SCM.ServiceReferences.ServicesManager
 		}
 
 		[System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
-		public ISI.Extensions.SCM.ServiceReferences.ServicesManager.LogEntryCollection Log
+		public ISI.Extensions.Scm.ServiceReferences.ServicesManager.LogEntryCollection Log
 		{
 			get { return this.LogField; }
 			set { this.LogField = value; }
@@ -495,7 +495,7 @@ namespace ISI.Extensions.SCM.ServiceReferences.ServicesManager
 	[System.Diagnostics.DebuggerStepThroughAttribute()]
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
 	[System.Runtime.Serialization.DataContractAttribute(Name = "UpdateResponse", Namespace = "http://services-manager.isi-net.com/manager/data-transfer-objects")]
-	public partial class UpdateResponse : ISI.Extensions.SCM.ServiceReferences.ServicesManager.Response
+	public partial class UpdateResponse : ISI.Extensions.Scm.ServiceReferences.ServicesManager.Response
 	{
 
 		private string CurrentVersionField;
@@ -538,29 +538,29 @@ namespace ISI.Extensions.SCM.ServiceReferences.ServicesManager
 	[System.Diagnostics.DebuggerStepThroughAttribute()]
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
 	[System.Runtime.Serialization.DataContractAttribute(Name = "DeployArtifactResponse", Namespace = "http://services-manager.isi-net.com/manager/data-transfer-objects")]
-	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployConsoleApplication))]
-	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployComponentExcludeFileCollection))]
-	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployComponentExcludeFile))]
-	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployWebSite))]
-	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployWindowsService))]
-	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployConsoleApplicationResponse))]
-	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployWebSiteResponse))]
-	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployWindowsServiceResponse))]
-	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployComponentCollection))]
-	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployComponentResponseCollection))]
-	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.GetStatusResponse))]
-	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.LogEntryCollection))]
-	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.LogEntry))]
-	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.UpdateResponse))]
-	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.Response))]
-	public partial class DeployArtifactResponse : ISI.Extensions.SCM.ServiceReferences.ServicesManager.Response
+	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployConsoleApplication))]
+	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentExcludeFileCollection))]
+	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentExcludeFile))]
+	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployWebSite))]
+	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployWindowsService))]
+	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployConsoleApplicationResponse))]
+	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployWebSiteResponse))]
+	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployWindowsServiceResponse))]
+	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentCollection))]
+	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentResponseCollection))]
+	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.GetStatusResponse))]
+	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.LogEntryCollection))]
+	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.LogEntry))]
+	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.UpdateResponse))]
+	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.Response))]
+	public partial class DeployArtifactResponse : ISI.Extensions.Scm.ServiceReferences.ServicesManager.Response
 	{
-		private ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployComponentResponseCollection DeployComponentResponsesField;
+		private ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentResponseCollection DeployComponentResponsesField;
 
 		private string StatusTrackerKeyField;
 
 		[System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
-		public ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployComponentResponseCollection DeployComponentResponses
+		public ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentResponseCollection DeployComponentResponses
 		{
 			get { return this.DeployComponentResponsesField; }
 			set { this.DeployComponentResponsesField = value; }
@@ -584,7 +584,7 @@ namespace ISI.Extensions.SCM.ServiceReferences.ServicesManager
 	[System.Diagnostics.DebuggerStepThroughAttribute()]
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
 	[System.Runtime.Serialization.CollectionDataContractAttribute(Name = "LogEntryCollection", Namespace = "http://services-manager.isi-net.com/manager/data-transfer-objects", ItemName = "LogEntry")]
-	public class LogEntryCollection : System.Collections.Generic.List<ISI.Extensions.SCM.ServiceReferences.ServicesManager.LogEntry>
+	public class LogEntryCollection : System.Collections.Generic.List<ISI.Extensions.Scm.ServiceReferences.ServicesManager.LogEntry>
 	{
 	}
 
@@ -615,10 +615,10 @@ namespace ISI.Extensions.SCM.ServiceReferences.ServicesManager
 
 	[System.Diagnostics.DebuggerStepThroughAttribute()]
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-	[System.Runtime.Serialization.DataContractAttribute(Name = "response", Namespace = "http://schemas.datacontract.org/2004/07/ISI.Extensions.SCM.ServiceReferences.ServicesManager")]
-	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.GetStatusResponse))]
-	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.UpdateResponse))]
-	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployArtifactResponse))]
+	[System.Runtime.Serialization.DataContractAttribute(Name = "response", Namespace = "http://schemas.datacontract.org/2004/07/ISI.Extensions.Scm.ServiceReferences.ServicesManager")]
+	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.GetStatusResponse))]
+	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.UpdateResponse))]
+	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployArtifactResponse))]
 	public partial class Response : object
 	{
 	}
@@ -628,29 +628,29 @@ namespace ISI.Extensions.SCM.ServiceReferences.ServicesManager
 	public interface IManager
 	{
 		[System.ServiceModel.OperationContractAttribute(Action = "http://services-manager.isi-net.com/Manager/DeployArtifact", ReplyAction = "http://services-manager.isi-net.com/Manager/DeployArtifactResponse")]
-		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployConsoleApplication))]
-		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployComponentExcludeFileCollection))]
-		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployComponentExcludeFile))]
-		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployWebSite))]
-		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployWindowsService))]
-		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployConsoleApplicationResponse))]
-		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployWebSiteResponse))]
-		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployWindowsServiceResponse))]
-		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployComponentCollection))]
-		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployArtifactResponse))]
-		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployComponentResponseCollection))]
-		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.GetStatusResponse))]
-		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.LogEntryCollection))]
-		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.LogEntry))]
-		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.UpdateResponse))]
-		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.SCM.ServiceReferences.ServicesManager.Response))]
-		System.Threading.Tasks.Task<ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployArtifactResponse> DeployArtifactAsync(string password, string remoteManagementUrl, string authenticationToken, string artifactName, string artifactDateTimeStampVersionUrl, string artifactDownloadUrl, string toDateTimeStamp, string fromEnvironment, string toEnvironment, string configurationKey, ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployComponentCollection deployComponents, bool setDeployedVersion, bool runAsync);
+		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployConsoleApplication))]
+		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentExcludeFileCollection))]
+		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentExcludeFile))]
+		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployWebSite))]
+		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployWindowsService))]
+		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployConsoleApplicationResponse))]
+		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployWebSiteResponse))]
+		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployWindowsServiceResponse))]
+		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentCollection))]
+		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployArtifactResponse))]
+		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentResponseCollection))]
+		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.GetStatusResponse))]
+		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.LogEntryCollection))]
+		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.LogEntry))]
+		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.UpdateResponse))]
+		[System.ServiceModel.ServiceKnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.Response))]
+		System.Threading.Tasks.Task<ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployArtifactResponse> DeployArtifactAsync(string password, string remoteManagementUrl, string authenticationToken, string artifactName, string artifactDateTimeStampVersionUrl, string artifactDownloadUrl, string toDateTimeStamp, string fromEnvironment, string toEnvironment, string configurationKey, ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentCollection deployComponents, bool setDeployedVersion, bool runAsync);
 
 		[System.ServiceModel.OperationContractAttribute(Action = "http://services-manager.isi-net.com/Manager/GetStatus", ReplyAction = "http://services-manager.isi-net.com/Manager/GetStatusResponse")]
-		System.Threading.Tasks.Task<ISI.Extensions.SCM.ServiceReferences.ServicesManager.GetStatusResponse> GetStatusAsync(string password, string statusTrackerKey);
+		System.Threading.Tasks.Task<ISI.Extensions.Scm.ServiceReferences.ServicesManager.GetStatusResponse> GetStatusAsync(string password, string statusTrackerKey);
 
 		[System.ServiceModel.OperationContractAttribute(Action = "http://services-manager.isi-net.com/Manager/Update", ReplyAction = "http://services-manager.isi-net.com/Manager/UpdateResponse")]
-		System.Threading.Tasks.Task<ISI.Extensions.SCM.ServiceReferences.ServicesManager.UpdateResponse> UpdateAsync(string password);
+		System.Threading.Tasks.Task<ISI.Extensions.Scm.ServiceReferences.ServicesManager.UpdateResponse> UpdateAsync(string password);
 	}
 
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
@@ -702,17 +702,17 @@ namespace ISI.Extensions.SCM.ServiceReferences.ServicesManager
 		{
 		}
 
-		public System.Threading.Tasks.Task<ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployArtifactResponse> DeployArtifactAsync(string password, string remoteManagementUrl, string authenticationToken, string artifactName, string artifactDateTimeStampVersionUrl, string artifactDownloadUrl, string toDateTimeStamp, string fromEnvironment, string toEnvironment, string configurationKey, ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployComponentCollection deployComponents, bool setDeployedVersion, bool runAsync)
+		public System.Threading.Tasks.Task<ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployArtifactResponse> DeployArtifactAsync(string password, string remoteManagementUrl, string authenticationToken, string artifactName, string artifactDateTimeStampVersionUrl, string artifactDownloadUrl, string toDateTimeStamp, string fromEnvironment, string toEnvironment, string configurationKey, ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentCollection deployComponents, bool setDeployedVersion, bool runAsync)
 		{
 			return base.Channel.DeployArtifactAsync(password, remoteManagementUrl, authenticationToken, artifactName, artifactDateTimeStampVersionUrl, artifactDownloadUrl, toDateTimeStamp, fromEnvironment, toEnvironment, configurationKey, deployComponents, setDeployedVersion, runAsync);
 		}
 
-		public System.Threading.Tasks.Task<ISI.Extensions.SCM.ServiceReferences.ServicesManager.GetStatusResponse> GetStatusAsync(string password, string statusTrackerKey)
+		public System.Threading.Tasks.Task<ISI.Extensions.Scm.ServiceReferences.ServicesManager.GetStatusResponse> GetStatusAsync(string password, string statusTrackerKey)
 		{
 			return base.Channel.GetStatusAsync(password, statusTrackerKey);
 		}
 
-		public System.Threading.Tasks.Task<ISI.Extensions.SCM.ServiceReferences.ServicesManager.UpdateResponse> UpdateAsync(string password)
+		public System.Threading.Tasks.Task<ISI.Extensions.Scm.ServiceReferences.ServicesManager.UpdateResponse> UpdateAsync(string password)
 		{
 			return base.Channel.UpdateAsync(password);
 		}

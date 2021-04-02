@@ -19,7 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.SCM.DataTransferObjects.SCMApi
+namespace ISI.Extensions.Scm.DataTransferObjects.SCMApi
 {
 	public partial class GetAuthenticationTokenRequest
 	{

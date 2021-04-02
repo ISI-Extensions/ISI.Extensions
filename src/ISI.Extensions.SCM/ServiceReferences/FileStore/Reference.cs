@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ISI.Extensions.SCM.ServiceReferences.FileStore
+namespace ISI.Extensions.Scm.ServiceReferences.FileStore
 {
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
 	[System.ServiceModel.ServiceContractAttribute(Namespace = "http://www.isi-net.com", ConfigurationName = "FileStore")]

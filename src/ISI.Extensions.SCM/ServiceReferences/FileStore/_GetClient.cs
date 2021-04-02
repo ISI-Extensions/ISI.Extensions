@@ -19,9 +19,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.SCM.DataTransferObjects.SCMApi;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.SCMApi;
 
-namespace ISI.Extensions.SCM.ServiceReferences.FileStore
+namespace ISI.Extensions.Scm.ServiceReferences.FileStore
 {
 	public partial class FileStoreClient
 	{

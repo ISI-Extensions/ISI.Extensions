@@ -22,34 +22,34 @@ namespace ISI.Extensions.Aspose.InternalTryNotToUseExtensions
 {
 	public static partial class WordsExtensions
 	{
-		public static ISI.Extensions.Documents.FootnoteNumberingRule ToFootnoteNumberingRule(this global::Aspose.Words.FootnoteNumberingRule footnoteNumberingRule)
+		public static ISI.Extensions.Documents.FootnoteNumberingRule ToFootnoteNumberingRule(this global::Aspose.Words.Notes.FootnoteNumberingRule footnoteNumberingRule)
 		{
-			if (footnoteNumberingRule == global::Aspose.Words.FootnoteNumberingRule.Default)
+			if (footnoteNumberingRule == global::Aspose.Words.Notes.FootnoteNumberingRule.Default)
 			{
 				return ISI.Extensions.Documents.FootnoteNumberingRule.Default;
 			}
-			if (footnoteNumberingRule == global::Aspose.Words.FootnoteNumberingRule.Continuous)
+			if (footnoteNumberingRule == global::Aspose.Words.Notes.FootnoteNumberingRule.Continuous)
 			{
 				return ISI.Extensions.Documents.FootnoteNumberingRule.Continuous;
 			}
 
 			switch (footnoteNumberingRule)
 			{
-				case global::Aspose.Words.FootnoteNumberingRule.RestartSection: return ISI.Extensions.Documents.FootnoteNumberingRule.RestartSection;
-				case global::Aspose.Words.FootnoteNumberingRule.RestartPage: return ISI.Extensions.Documents.FootnoteNumberingRule.RestartPage;
+				case global::Aspose.Words.Notes.FootnoteNumberingRule.RestartSection: return ISI.Extensions.Documents.FootnoteNumberingRule.RestartSection;
+				case global::Aspose.Words.Notes.FootnoteNumberingRule.RestartPage: return ISI.Extensions.Documents.FootnoteNumberingRule.RestartPage;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(footnoteNumberingRule), footnoteNumberingRule, null);
 			}
 		}
 
-		public static global::Aspose.Words.FootnoteNumberingRule ToFootnoteNumberingRule(this ISI.Extensions.Documents.FootnoteNumberingRule footnoteNumberingRule)
+		public static global::Aspose.Words.Notes.FootnoteNumberingRule ToFootnoteNumberingRule(this ISI.Extensions.Documents.FootnoteNumberingRule footnoteNumberingRule)
 		{
 			switch (footnoteNumberingRule)
 			{
-				case ISI.Extensions.Documents.FootnoteNumberingRule.Default: return global::Aspose.Words.FootnoteNumberingRule.Default;
-				case ISI.Extensions.Documents.FootnoteNumberingRule.Continuous: return global::Aspose.Words.FootnoteNumberingRule.Continuous;
-				case ISI.Extensions.Documents.FootnoteNumberingRule.RestartSection: return global::Aspose.Words.FootnoteNumberingRule.RestartSection;
-				case ISI.Extensions.Documents.FootnoteNumberingRule.RestartPage: return global::Aspose.Words.FootnoteNumberingRule.RestartPage;
+				case ISI.Extensions.Documents.FootnoteNumberingRule.Default: return global::Aspose.Words.Notes.FootnoteNumberingRule.Default;
+				case ISI.Extensions.Documents.FootnoteNumberingRule.Continuous: return global::Aspose.Words.Notes.FootnoteNumberingRule.Continuous;
+				case ISI.Extensions.Documents.FootnoteNumberingRule.RestartSection: return global::Aspose.Words.Notes.FootnoteNumberingRule.RestartSection;
+				case ISI.Extensions.Documents.FootnoteNumberingRule.RestartPage: return global::Aspose.Words.Notes.FootnoteNumberingRule.RestartPage;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(footnoteNumberingRule), footnoteNumberingRule, null);
 			}

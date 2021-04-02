@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ISI.Extensions.SCM.DataTransferObjects.ServicesManagerApi
+namespace ISI.Extensions.Scm.DataTransferObjects.ServicesManagerApi
 {
 	public class DeployComponent : IDeployComponent
 	{

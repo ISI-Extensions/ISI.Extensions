@@ -20,9 +20,9 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using Microsoft.Extensions.Logging;
-using DTOs = ISI.Extensions.SCM.DataTransferObjects.ServicesManagerApi;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.ServicesManagerApi;
 
-namespace ISI.Extensions.SCM
+namespace ISI.Extensions.Scm
 {
 	public partial class ServicesManagerApi
 	{
@@ -30,15 +30,15 @@ namespace ISI.Extensions.SCM
 		{
 			var response = new DTOs.DeployArtifactResponse();
 
-			var deployComponents = new ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployComponentCollection();
+			var deployComponents = new ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentCollection();
 
-			ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployComponentExcludeFileCollection getDeployComponentExcludeFileCollection(IEnumerable<string> fileNames)
+			ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentExcludeFileCollection getDeployComponentExcludeFileCollection(IEnumerable<string> fileNames)
 			{
-				var deployComponentExcludeFiles = new ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployComponentExcludeFileCollection();
+				var deployComponentExcludeFiles = new ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentExcludeFileCollection();
 
 				foreach (var fileName in fileNames.ToNullCheckedArray(NullCheckCollectionResult.Empty))
 				{
-					deployComponentExcludeFiles.Add(new ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployComponentExcludeFile()
+					deployComponentExcludeFiles.Add(new ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentExcludeFile()
 					{
 						ExcludeFile = fileName,
 					});
@@ -51,10 +51,10 @@ namespace ISI.Extensions.SCM
 			{
 				switch (component)
 				{
-					case ISI.Extensions.SCM.DataTransferObjects.ServicesManagerApi.DeployComponent deployComponent:
+					case ISI.Extensions.Scm.DataTransferObjects.ServicesManagerApi.DeployComponent deployComponent:
 						if (string.Equals(deployComponent.ComponentType, "ConsoleApplication", StringComparison.InvariantCultureIgnoreCase))
 						{
-							deployComponents.Add(new ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployConsoleApplication()
+							deployComponents.Add(new ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployConsoleApplication()
 							{
 								PackageFolder = deployComponent.PackageFolder,
 								DeployToSubfolder = deployComponent.DeployToSubfolder,
@@ -64,7 +64,7 @@ namespace ISI.Extensions.SCM
 						}
 						else if (string.Equals(deployComponent.ComponentType, "WebSite", StringComparison.InvariantCultureIgnoreCase))
 						{
-							deployComponents.Add(new ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployWebSite()
+							deployComponents.Add(new ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployWebSite()
 							{
 								PackageFolder = deployComponent.PackageFolder,
 								DeployToSubfolder = deployComponent.DeployToSubfolder,
@@ -73,7 +73,7 @@ namespace ISI.Extensions.SCM
 						}
 						else if (string.Equals(deployComponent.ComponentType, "WindowsService", StringComparison.InvariantCultureIgnoreCase))
 						{
-							deployComponents.Add(new ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployWindowsService()
+							deployComponents.Add(new ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployWindowsService()
 							{
 								PackageFolder = deployComponent.PackageFolder,
 								DeployToSubfolder = deployComponent.DeployToSubfolder,
@@ -83,8 +83,8 @@ namespace ISI.Extensions.SCM
 						}
 						break;
 
-					case ISI.Extensions.SCM.DataTransferObjects.ServicesManagerApi.DeployComponentConsoleApplication deployComponentConsoleApplication:
-						deployComponents.Add(new ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployConsoleApplication()
+					case ISI.Extensions.Scm.DataTransferObjects.ServicesManagerApi.DeployComponentConsoleApplication deployComponentConsoleApplication:
+						deployComponents.Add(new ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployConsoleApplication()
 						{
 							PackageFolder = deployComponentConsoleApplication.PackageFolder,
 							DeployToSubfolder = deployComponentConsoleApplication.DeployToSubfolder,
@@ -95,8 +95,8 @@ namespace ISI.Extensions.SCM
 						});
 						break;
 
-					case ISI.Extensions.SCM.DataTransferObjects.ServicesManagerApi.DeployComponentWebSite deployComponentWebSite:
-						deployComponents.Add(new ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployWebSite()
+					case ISI.Extensions.Scm.DataTransferObjects.ServicesManagerApi.DeployComponentWebSite deployComponentWebSite:
+						deployComponents.Add(new ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployWebSite()
 						{
 							PackageFolder = deployComponentWebSite.PackageFolder,
 							DeployToSubfolder = deployComponentWebSite.DeployToSubfolder,
@@ -104,8 +104,8 @@ namespace ISI.Extensions.SCM
 						});
 						break;
 
-					case ISI.Extensions.SCM.DataTransferObjects.ServicesManagerApi.DeployComponentWindowsService deployComponentWindowsService:
-						deployComponents.Add(new ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployWindowsService()
+					case ISI.Extensions.Scm.DataTransferObjects.ServicesManagerApi.DeployComponentWindowsService deployComponentWindowsService:
+						deployComponents.Add(new ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployWindowsService()
 						{
 							PackageFolder = deployComponentWindowsService.PackageFolder,
 							DeployToSubfolder = deployComponentWindowsService.DeployToSubfolder,
@@ -122,7 +122,7 @@ namespace ISI.Extensions.SCM
 
 			var statusTrackerKey = string.Empty;
 
-			using (var managerClient = ISI.Extensions.SCM.ServiceReferences.ServicesManager.ManagerClient.GetClient(request.RemoteManagementUrl))
+			using (var managerClient = ISI.Extensions.Scm.ServiceReferences.ServicesManager.ManagerClient.GetClient(request.RemoteManagementUrl))
 			{
 				managerClient.Endpoint.Binding.SendTimeout = TimeSpan.FromMinutes(15);
 				managerClient.Endpoint.Binding.ReceiveTimeout = TimeSpan.FromMinutes(15);
@@ -139,7 +139,7 @@ namespace ISI.Extensions.SCM
 					{
 						switch (componentResponse)
 						{
-							case ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployConsoleApplicationResponse deployConsoleApplicationResponse:
+							case ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployConsoleApplicationResponse deployConsoleApplicationResponse:
 								Logger.LogInformation(string.Format("  PackageFolder '{0}'.", deployConsoleApplicationResponse.PackageFolder));
 								Logger.LogInformation(string.Format("  Log '{0}'.", deployConsoleApplicationResponse.Log));
 								Logger.LogInformation(string.Format("  SameVersion '{0}'.", (deployConsoleApplicationResponse.SameVersion ? "True" : "False")));
@@ -150,7 +150,7 @@ namespace ISI.Extensions.SCM
 								response.Success &= deployConsoleApplicationResponse.Success;
 								break;
 
-							case ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployWebSiteResponse deployWebSiteResponse:
+							case ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployWebSiteResponse deployWebSiteResponse:
 								Logger.LogInformation(string.Format("  PackageFolder '{0}'.", deployWebSiteResponse.PackageFolder));
 								Logger.LogInformation(string.Format("  Log '{0}'.", deployWebSiteResponse.Log));
 								Logger.LogInformation(string.Format("  SameVersion '{0}'.", (deployWebSiteResponse.SameVersion ? "True" : "False")));
@@ -161,7 +161,7 @@ namespace ISI.Extensions.SCM
 								response.Success &= deployWebSiteResponse.Success;
 								break;
 
-							case ISI.Extensions.SCM.ServiceReferences.ServicesManager.DeployWindowsServiceResponse deployWindowsServiceResponse:
+							case ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployWindowsServiceResponse deployWindowsServiceResponse:
 								Logger.LogInformation(string.Format("  PackageFolder '{0}'.", deployWindowsServiceResponse.PackageFolder));
 								Logger.LogInformation(string.Format("  Log '{0}'.", deployWindowsServiceResponse.Log));
 								Logger.LogInformation(string.Format("  SameVersion '{0}'.", (deployWindowsServiceResponse.SameVersion ? "True" : "False")));

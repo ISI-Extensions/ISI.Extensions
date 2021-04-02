@@ -22,23 +22,23 @@ namespace ISI.Extensions.Aspose.InternalTryNotToUseExtensions
 {
 	public static partial class WordsExtensions
 	{
-		public static ISI.Extensions.Documents.EndnotePosition ToEndnotePosition(this global::Aspose.Words.EndnotePosition endnotePosition)
+		public static ISI.Extensions.Documents.EndnotePosition ToEndnotePosition(this global::Aspose.Words.Notes.EndnotePosition endnotePosition)
 		{
 			switch (endnotePosition)
 			{
-				case global::Aspose.Words.EndnotePosition.EndOfSection: return ISI.Extensions.Documents.EndnotePosition.EndOfSection;
-				case global::Aspose.Words.EndnotePosition.EndOfDocument: return ISI.Extensions.Documents.EndnotePosition.EndOfDocument;
+				case global::Aspose.Words.Notes.EndnotePosition.EndOfSection: return ISI.Extensions.Documents.EndnotePosition.EndOfSection;
+				case global::Aspose.Words.Notes.EndnotePosition.EndOfDocument: return ISI.Extensions.Documents.EndnotePosition.EndOfDocument;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(endnotePosition), endnotePosition, null);
 			}
 		}
 
-		public static global::Aspose.Words.EndnotePosition ToEndnotePosition(this ISI.Extensions.Documents.EndnotePosition endnotePosition)
+		public static global::Aspose.Words.Notes.EndnotePosition ToEndnotePosition(this ISI.Extensions.Documents.EndnotePosition endnotePosition)
 		{
 			switch (endnotePosition)
 			{
-				case ISI.Extensions.Documents.EndnotePosition.EndOfSection: return global::Aspose.Words.EndnotePosition.EndOfSection;
-				case ISI.Extensions.Documents.EndnotePosition.EndOfDocument: return global::Aspose.Words.EndnotePosition.EndOfDocument;
+				case ISI.Extensions.Documents.EndnotePosition.EndOfSection: return global::Aspose.Words.Notes.EndnotePosition.EndOfSection;
+				case ISI.Extensions.Documents.EndnotePosition.EndOfDocument: return global::Aspose.Words.Notes.EndnotePosition.EndOfDocument;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(endnotePosition), endnotePosition, null);
 			}

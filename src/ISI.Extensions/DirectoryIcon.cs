@@ -24,7 +24,7 @@ namespace ISI.Extensions
 		[System.Runtime.InteropServices.DllImport("shell32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto, SetLastError = true)]
 		private static extern void SHChangeNotify(int wEventId, int uFlags, IntPtr dwItem1, IntPtr dwItem2);
 
-		public void SetDirectoryIcon(string directoryFullName, string iconFullName, int iconIndex = 0)
+		public static void SetDirectoryIcon(string directoryFullName, string iconFullName, int iconIndex = 0)
 		{
 			var iconFileName = System.IO.Path.GetFileName(iconFullName);
 

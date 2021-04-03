@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,35 +15,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace ISI.Extensions.ConfigurationHelper
+namespace ISI.Extensions.IO
 {
-	public class Environment
+	public partial class Path
 	{
-		public static readonly Environment Production = new Environment("Production");
-		public static readonly Environment Staging = new Environment("Staging");
-		public static readonly Environment UAT = new Environment("UAT");
-		public static readonly Environment QA = new Environment("QA");
-		public static readonly Environment Development = new Environment("Development");
-
-		public string Value { get; }
-
-		public Environment(string value)
-		{
-			Value = value;
-		}
-
-		public bool Equals(string value) => Value.Equals(value);
-
-		public override bool Equals(object obj) => Equals(obj as string ?? string.Empty);
-
-		public static bool operator ==(string value, Environment environment) => environment.Equals(value);
-
-		public static bool operator !=(string value, Environment environment) => !(environment.Equals(value));
-
-		public override int GetHashCode() => Value.GetHashCode();
-
-		public override string ToString() => Value;
 	}
 }

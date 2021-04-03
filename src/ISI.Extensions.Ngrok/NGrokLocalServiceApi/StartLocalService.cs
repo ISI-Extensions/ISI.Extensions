@@ -34,7 +34,7 @@ namespace ISI.Extensions.Ngrok
 
 			if (!runningLocalService.IsRunning)
 			{
-				var ngrokServiceFileName = FileProvider.GetFileNameDeMasked(Configuration.NGrokServiceFileName);
+				var ngrokServiceFileName = ISI.Extensions.IO.Path.GetFileNameDeMasked(Configuration.NGrokServiceFileName);
 
 				if (!System.IO.File.Exists(ngrokServiceFileName))
 				{

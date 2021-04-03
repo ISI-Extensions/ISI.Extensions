@@ -18,15 +18,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.FileProviders.Extensions;
-using ISI.Extensions.DependencyInjection.Extensions;
 
-namespace ISI.Extensions.FileProviders
+namespace ISI.Extensions.IO
 {
 	public class FileNameMask
 	{
 		internal const string FilePrefix = "file:";
-		internal const string KeyValuePrefix = "keyValue:";
 
 		public enum FileNameMaskType
 		{
@@ -60,7 +57,7 @@ namespace ISI.Extensions.FileProviders
 			Description = description;
 		}
 
-		public string Process(Microsoft.Extensions.FileProviders.IFileProvider fileProvider, string value, Func<DateTime?> dateTimeStamp)
+		public string Process(string value, Func<DateTime?> dateTimeStamp)
 		{
 			if (value.IndexOf(Key) >= 0)
 			{
@@ -108,31 +105,14 @@ namespace ISI.Extensions.FileProviders
 							{
 								foreach (var key in keys)
 								{
-									var fileName = fileProvider.GetFileNameDeMasked(key.Trim());
+									var fileName = ISI.Extensions.IO.Path.GetFileNameDeMasked(key.Trim());
 
-									var fileInfo = fileProvider.GetFileInfo(fileName);
-
-									if (fileInfo != null)
+									if (System.IO.File.Exists(fileName))
 									{
-										replacementValue = fileInfo.CreateReadStream().TextReadToEnd();
+										replacementValue = System.IO.File.ReadAllText(fileName);
 
 										value = value.Replace(string.Format("{{{0}{1}}}", FilePrefix, key), replacementValue);
 									}
-								}
-							}
-							else if (string.Equals(keyType, KeyValuePrefix, StringComparison.InvariantCultureIgnoreCase))
-							{
-								var keyValueStorageReader = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.KeyValueStorage.IKeyValueStorageReader>(() => new ISI.Extensions.DependencyInjection.RegistrationDeclarationByMapToType()
-								{
-									MapToType = typeof(ISI.Extensions.SimpleKeyValueStorage),
-									ServiceLifetime = Microsoft.Extensions.DependencyInjection.ServiceLifetime.Singleton,
-								});
-
-								foreach (var key in keys)
-								{
-									replacementValue = keyValueStorageReader.GetValue(key.Substring(KeyValuePrefix.Length).Trim());
-
-									value = value.Replace(string.Format("{{{0}{1}}}", FilePrefix, key), replacementValue);
 								}
 							}
 						}

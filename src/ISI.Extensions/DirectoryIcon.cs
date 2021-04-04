@@ -30,7 +30,8 @@ namespace ISI.Extensions
 
 			var desktopIniFullName = System.IO.Path.Combine(directoryFullName, "desktop.ini");
 			System.IO.File.WriteAllText(desktopIniFullName, string.Format("[.ShellClassInfo]\nIconResource={0},{1}\n[ViewState]\nMode=\nVid=\nFolderType=Generic", iconFileName, iconIndex));
-			System.IO.File.SetAttributes(desktopIniFullName, System.IO.File.GetAttributes(desktopIniFullName) | System.IO.FileAttributes.Hidden | System.IO.FileAttributes.ReadOnly);
+			System.IO.File.SetAttributes(desktopIniFullName, System.IO.File.GetAttributes(desktopIniFullName) | System.IO.FileAttributes.Hidden);
+			//System.IO.File.SetAttributes(desktopIniFullName, System.IO.File.GetAttributes(desktopIniFullName) | System.IO.FileAttributes.Hidden | System.IO.FileAttributes.ReadOnly);
 
 			var inDirectoryIconFullName = System.IO.Path.Combine(directoryFullName, iconFileName);
 			if (string.IsNullOrWhiteSpace(System.IO.Path.GetDirectoryName(iconFullName)))
@@ -41,13 +42,15 @@ namespace ISI.Extensions
 			{
 				System.IO.File.Copy(iconFullName, inDirectoryIconFullName);
 			}
-			System.IO.File.SetAttributes(inDirectoryIconFullName, System.IO.File.GetAttributes(inDirectoryIconFullName) | System.IO.FileAttributes.Hidden | System.IO.FileAttributes.ReadOnly);
+			System.IO.File.SetAttributes(inDirectoryIconFullName, System.IO.File.GetAttributes(inDirectoryIconFullName) | System.IO.FileAttributes.Hidden);
+			//System.IO.File.SetAttributes(inDirectoryIconFullName, System.IO.File.GetAttributes(inDirectoryIconFullName) | System.IO.FileAttributes.Hidden | System.IO.FileAttributes.ReadOnly);
 
 			var hiddenFullName = System.IO.Path.Combine(directoryFullName, ".hidden");
 			System.IO.File.WriteAllText(hiddenFullName, string.Format("desktop.ini\n{0}", iconFileName));
-			System.IO.File.SetAttributes(hiddenFullName, System.IO.File.GetAttributes(hiddenFullName) | System.IO.FileAttributes.Hidden | System.IO.FileAttributes.ReadOnly);
+			System.IO.File.SetAttributes(hiddenFullName, System.IO.File.GetAttributes(hiddenFullName) | System.IO.FileAttributes.Hidden);
+			//System.IO.File.SetAttributes(hiddenFullName, System.IO.File.GetAttributes(hiddenFullName) | System.IO.FileAttributes.Hidden | System.IO.FileAttributes.ReadOnly);
 			
-			System.IO.File.SetAttributes(directoryFullName, System.IO.File.GetAttributes(directoryFullName) | System.IO.FileAttributes.ReadOnly);
+			//System.IO.File.SetAttributes(directoryFullName, System.IO.File.GetAttributes(directoryFullName) | System.IO.FileAttributes.ReadOnly);
 
 			SHChangeNotify(0x08000000, 0x0000, (IntPtr)null, (IntPtr)null);
 		}

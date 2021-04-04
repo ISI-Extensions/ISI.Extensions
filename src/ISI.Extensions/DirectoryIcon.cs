@@ -21,38 +21,47 @@ namespace ISI.Extensions
 {
 	public class DirectoryIcon
 	{
-		[System.Runtime.InteropServices.DllImport("shell32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto, SetLastError = true)]
-		private static extern void SHChangeNotify(int wEventId, int uFlags, IntPtr dwItem1, IntPtr dwItem2);
+		[System.Runtime.InteropServices.DllImportAttribute("user32.dll", SetLastError = true, CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+		static extern IntPtr SendMessageTimeout(int windowHandle, int msg, int wParam, string lParam, SendMessageTimeoutFlags flags, int timeout, out int result);
 
+		[Flags]
+		enum SendMessageTimeoutFlags : uint
+		{
+			SMTO_NORMAL = 0x0,
+			SMTO_BLOCK = 0x1,
+			SMTO_ABORTIFHUNG = 0x2,
+			SMTO_NOTIMEOUTIFNOTHUNG = 0x8
+		}
+
+		static void RefreshIconCache()
+		{
+			SendMessageTimeout(0xffff, 0x001A, 0, "", SendMessageTimeoutFlags.SMTO_ABORTIFHUNG, 5000, out var res);
+
+			System.Threading.Thread.Sleep(15000);
+		}
 		public static void SetDirectoryIcon(string directoryFullName, string iconFullName, int iconIndex = 0)
 		{
 			var iconFileName = System.IO.Path.GetFileName(iconFullName);
 
 			var desktopIniFullName = System.IO.Path.Combine(directoryFullName, "desktop.ini");
-			System.IO.File.WriteAllText(desktopIniFullName, string.Format("[.ShellClassInfo]\nIconResource={0},{1}\n[ViewState]\nMode=\nVid=\nFolderType=Generic", iconFileName, iconIndex));
-			System.IO.File.SetAttributes(desktopIniFullName, System.IO.File.GetAttributes(desktopIniFullName) | System.IO.FileAttributes.Hidden);
+			System.IO.File.WriteAllText(desktopIniFullName, string.Format("[.ShellClassInfo]\nIconFile={0}\nIconIndex={1}\nConfirmFileOp=0\nIconResource={0},{1}\n[ViewState]\nMode=\nVid=\nFolderType=Generic", iconFileName, iconIndex));
+			System.IO.File.SetAttributes(desktopIniFullName, System.IO.File.GetAttributes(desktopIniFullName) | System.IO.FileAttributes.Hidden | System.IO.FileAttributes.Archive | System.IO.FileAttributes.System);
 			//System.IO.File.SetAttributes(desktopIniFullName, System.IO.File.GetAttributes(desktopIniFullName) | System.IO.FileAttributes.Hidden | System.IO.FileAttributes.ReadOnly);
 
-			var inDirectoryIconFullName = System.IO.Path.Combine(directoryFullName, iconFileName);
+			var inconDirectoryIconFullName = System.IO.Path.Combine(directoryFullName, iconFileName);
 			if (string.IsNullOrWhiteSpace(System.IO.Path.GetDirectoryName(iconFullName)))
 			{
-				iconFullName = inDirectoryIconFullName;
+				iconFullName = inconDirectoryIconFullName;
 			}
 			if (!string.Equals(directoryFullName.TrimEnd(System.IO.Path.DirectorySeparatorChar), System.IO.Path.GetDirectoryName(iconFullName).TrimEnd(System.IO.Path.DirectorySeparatorChar), StringComparison.InvariantCultureIgnoreCase))
 			{
-				System.IO.File.Copy(iconFullName, inDirectoryIconFullName);
+				System.IO.File.Copy(iconFullName, inconDirectoryIconFullName);
 			}
-			System.IO.File.SetAttributes(inDirectoryIconFullName, System.IO.File.GetAttributes(inDirectoryIconFullName) | System.IO.FileAttributes.Hidden);
+			//System.IO.File.SetAttributes(inconDirectoryIconFullName, System.IO.File.GetAttributes(inconDirectoryIconFullName) | System.IO.FileAttributes.Hidden);
 			//System.IO.File.SetAttributes(inDirectoryIconFullName, System.IO.File.GetAttributes(inDirectoryIconFullName) | System.IO.FileAttributes.Hidden | System.IO.FileAttributes.ReadOnly);
 
-			var hiddenFullName = System.IO.Path.Combine(directoryFullName, ".hidden");
-			System.IO.File.WriteAllText(hiddenFullName, string.Format("desktop.ini\n{0}", iconFileName));
-			System.IO.File.SetAttributes(hiddenFullName, System.IO.File.GetAttributes(hiddenFullName) | System.IO.FileAttributes.Hidden);
-			//System.IO.File.SetAttributes(hiddenFullName, System.IO.File.GetAttributes(hiddenFullName) | System.IO.FileAttributes.Hidden | System.IO.FileAttributes.ReadOnly);
-			
-			//System.IO.File.SetAttributes(directoryFullName, System.IO.File.GetAttributes(directoryFullName) | System.IO.FileAttributes.ReadOnly);
 
-			SHChangeNotify(0x08000000, 0x0000, (IntPtr)null, (IntPtr)null);
+			RefreshIconCache();
 		}
 	}
 }

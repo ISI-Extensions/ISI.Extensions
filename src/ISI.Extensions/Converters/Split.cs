@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -17,30 +17,53 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using Microsoft.Extensions.Logging;
-using DTOs = ISI.Extensions.Scm.DataTransferObjects.BuildArtifactApi;
 
-namespace ISI.Extensions.Scm
+namespace ISI.Extensions.Extensions
 {
-	public partial class BuildArtifactApi
+	public static partial class Converters
 	{
-		public DTOs.GetBuildArtifactEnvironmentDateTimeStampVersionResponse GetBuildArtifactEnvironmentDateTimeStampVersion(DTOs.GetBuildArtifactEnvironmentDateTimeStampVersionRequest request)
+		public static T[] Split<T>(this string value, char[] separator, StringSplitOptions options = StringSplitOptions.None, Func<string, T> conversion = null)
 		{
-			var response = new DTOs.GetBuildArtifactEnvironmentDateTimeStampVersionResponse();
-			
-			var sourceUri = new UriBuilder(request.RemoteManagementUrl);
-			sourceUri.Path = "remote-management";
+			return Split<T>(value, separator.Select(s => s.ToString()).ToArray(), 0, options, conversion);
+		}
 
-			Logger.LogInformation(string.Format("GetBuildArtifactEnvironmentDateTimeStampVersion, SourceUri: {0}", sourceUri.Uri));
+		public static T[] Split<T>(this string value, string[] separator, StringSplitOptions options = StringSplitOptions.None, Func<string, T> conversion = null)
+		{
+			return Split<T>(value, separator, 0, options, conversion);
+		}
 
-			using (var remoteManagementClient = ISI.Extensions.Scm.ServiceReferences.Scm.RemoteManagementClient.GetClient(sourceUri.Uri.ToString()))
+		public static T[] Split<T>(this string value, char[] separator, int count = 0, StringSplitOptions options = StringSplitOptions.None, Func<string, T> conversion = null)
+		{
+			return Split<T>(value, separator.Select(s => s.ToString()).ToArray(), count, options, conversion);
+		}
+
+		public static T[] Split<T>(this string value, string[] separator, int count = 0, StringSplitOptions options = StringSplitOptions.None, Func<string, T> conversion = null)
+		{
+			var result = new List<T>();
+
+			if (value != null)
 			{
-				response.DateTimeStampVersion = new DTOs.DateTimeStampVersion(remoteManagementClient.GetBuildArtifactEnvironmentDateTimeStampVersionAsync(request.AuthenticationToken, request.ArtifactName, request.Environment).GetAwaiter().GetResult());
+				if (conversion == null)
+				{
+					if (ISI.Extensions.Enum.IsEnum<T>())
+					{
+						conversion = v => ISI.Extensions.Enum<T>.Parse(v.Trim());
+					}
+					else
+					{
+						conversion = v => ISI.Extensions.Extensions.Converters.ChangeType<T>(v.Trim());
+					}
+				}
+
+				var values = value.Split(separator, options);
+
+				for (var index = 0; ((index < values.Length) && ((count == 0) || (result.Count < count))); index++)
+				{
+					result.Add(conversion(values[index]));
+				}
 			}
 
-			return response;
+			return result.ToArray();
 		}
 	}
 }

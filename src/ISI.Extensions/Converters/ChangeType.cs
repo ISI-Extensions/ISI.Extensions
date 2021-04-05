@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,14 +15,53 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace ISI.Extensions.Scm.DataTransferObjects.BuildArtifactApi
+namespace ISI.Extensions.Extensions
 {
-	public partial class GetBuildArtifactEnvironmentDateTimeStampVersionResponse
+	public partial class Converters
 	{
-		public DateTimeStampVersion DateTimeStampVersion { get; set; }
+		public static TValue ChangeType<TValue>(object value, TValue defaultValue = default(TValue), bool throwErrorIfConversionFails = true)
+		{
+			try
+			{
+				if (value != null)
+				{
+					if (ISI.Extensions.Enum.IsEnum<TValue>())
+					{
+						return ISI.Extensions.Enum<TValue>.Parse(string.Format("{0}", value).Trim());
+					}
+
+					return (TValue) ChangeType(typeof (TValue), value);
+				}
+			}
+			catch
+			{
+				if (throwErrorIfConversionFails)
+				{
+					throw;
+				}
+			}
+
+			return defaultValue;
+		}
+
+		public static TValue ChangeType<TValue>(string value)
+		{
+			return ChangeType<TValue>(value, default(TValue), true);
+		}
+
+		public static object ChangeType(Type type, object value)
+		{
+			var typeConverter = System.ComponentModel.TypeDescriptor.GetConverter(type);
+
+			return typeConverter.ConvertFrom(value);
+		}
+
+		public static void RegisterTypeConverter<TValue, TTypeConverter>() 
+			where TTypeConverter : System.ComponentModel.TypeConverter
+		{
+			System.ComponentModel.TypeDescriptor.AddAttributes(typeof(TValue), new System.ComponentModel.TypeConverterAttribute(typeof(TTypeConverter)));
+		}
 	}
 }

@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -12,17 +12,66 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.BuildArtifactApi
 {
-	public partial class GetBuildArtifactEnvironmentDateTimeStampVersionResponse
+	public class DateTimeStampVersion
 	{
-		public DateTimeStampVersion DateTimeStampVersion { get; set; }
+		public string DateTimeStamp { get; set; }
+		public System.Version Version { get; set; }
+
+		public DateTimeStampVersion()
+		{
+
+		}
+		public DateTimeStampVersion(string dateTimeStampVersion)
+		{
+			Value = dateTimeStampVersion;
+		}
+		public DateTimeStampVersion(string dateTimeStamp, System.Version version)
+		{
+			DateTimeStamp = dateTimeStamp;
+			Version = version;
+		}
+		public DateTimeStampVersion(string dateTimeStamp, string version)
+		{
+			DateTimeStamp = dateTimeStamp;
+			Version = new System.Version(version);
+		}
+
+		public string Value
+		{
+			get { return string.Format("{0}|{1}", DateTimeStamp, Version ?? new System.Version()); }
+			set
+			{
+				if (string.IsNullOrEmpty(value))
+				{
+					DateTimeStamp = string.Empty;
+					Version = null;
+				}
+				else if (value.IndexOf("(") >= 0)
+				{
+					var pieces = string.Format("{0}(((-(-", value).Split(new[] { '(', ')', ' ', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries, p => p.Trim('-'));
+					DateTimeStamp = pieces[1];
+					Version = string.IsNullOrEmpty(pieces[0]) ? null : new System.Version(pieces[0]);
+				}
+				else
+				{
+					var pieces = string.Format("{0}||||-|-", value).Split(new[] { '|', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries, p => p.Trim('-'));
+					DateTimeStamp = pieces[0];
+					Version = string.IsNullOrEmpty(pieces[1]) ? null : new System.Version(pieces[1]);
+				}
+			}
+		}
+
+		public string Formatted()
+		{
+			return string.Format("{0} ({1})", Version, DateTimeStamp);
+		}
 	}
 }

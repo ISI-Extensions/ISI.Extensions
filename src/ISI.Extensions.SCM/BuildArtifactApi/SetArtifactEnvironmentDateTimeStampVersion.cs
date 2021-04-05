@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Scm.DataTransferObjects.BuildArtifactApi;
 
 namespace ISI.Extensions.Scm
@@ -35,9 +36,32 @@ namespace ISI.Extensions.Scm
 			sourceUri.AddQueryStringParameter("artifactName", request.ArtifactName);
 			sourceUri.AddQueryStringParameter("environment", request.Environment);
 			sourceUri.AddQueryStringParameter("dateTimeStampVersion", request.DateTimeStampVersion);
+			
+			Logger.LogInformation(string.Format("SetArtifactEnvironmentDateTimeStampVersion, SourceUri: {0}", sourceUri.Uri));
+
 			sourceUri.AddQueryStringParameter("authenticationToken", request.AuthenticationToken);
 
-			response.Status = ISI.Extensions.WebClient.Rest.ExecuteTextGet(sourceUri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), true);
+			//response.Status = ISI.Extensions.WebClient.Rest.ExecuteTextGet(sourceUri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), true);
+
+			var webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(sourceUri.Uri);
+			webRequest.Method = System.Net.WebRequestMethods.Http.Get;
+
+			using (var webResponse = (System.Net.HttpWebResponse) webRequest.GetResponse())
+			{
+				//var httpWebResponse = webResponse as System.Net.HttpWebResponse;
+
+				if ((webResponse != null) && (webResponse.StatusCode != System.Net.HttpStatusCode.OK))
+				{
+					var encoding = Encoding.GetEncoding(webResponse.CharacterSet);
+
+					using (var responseStream = new System.IO.StreamReader(webResponse.GetResponseStream(), encoding))
+					{
+						response.Status = responseStream.ReadToEnd();
+
+						throw new Exception(string.Format("{0}: {1}\n{2}", webResponse.StatusCode, webResponse.StatusDescription, response.Status));
+					}
+				}
+			}
 
 			return response;
 		}

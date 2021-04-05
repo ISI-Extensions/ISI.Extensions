@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Scm.DataTransferObjects.ScmApi;
 
 namespace ISI.Extensions.Scm
@@ -29,10 +30,12 @@ namespace ISI.Extensions.Scm
 		{
 			var response = new DTOs.GetAuthenticationTokenResponse();
 
-			var uri = new UriBuilder(request.RemoteManagementUrl);
-			uri.Path = "remote-management";
+			var sourceUri = new UriBuilder(request.RemoteManagementUrl);
+			sourceUri.Path = "remote-management";
 
-			using (var remoteManagementClient = ISI.Extensions.Scm.ServiceReferences.Scm.RemoteManagementClient.GetClient(uri.Uri.ToString()))
+			Logger.LogInformation(string.Format("GetAuthenticationToken, SourceUri: {0}", sourceUri.Uri));
+
+			using (var remoteManagementClient = ISI.Extensions.Scm.ServiceReferences.Scm.RemoteManagementClient.GetClient(sourceUri.Uri.ToString()))
 			{
 				response.AuthenticationToken = remoteManagementClient.GetAuthenticationTokenAsync(request.UserName, request.Password).GetAwaiter().GetResult();
 			}

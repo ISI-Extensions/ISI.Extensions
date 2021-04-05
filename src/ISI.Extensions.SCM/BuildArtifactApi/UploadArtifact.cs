@@ -32,14 +32,15 @@ namespace ISI.Extensions.Scm
 			
 			var sourceUri = new UriBuilder(request.RepositoryUrl);
 			sourceUri.AddDirectoryToPath("build-artifacts/upload-artifact");
+
+			Logger.LogInformation(string.Format("UploadArtifact, SourceUri: {0}", sourceUri.Uri));
+			Logger.LogInformation(string.Format("UploadArtifact, SourceFileName: {0}", request.SourceFileName));
+
 			sourceUri.AddQueryStringParameter("authenticationToken", request.AuthenticationToken);
 
 			var formValues = new System.Collections.Specialized.NameValueCollection();
 			formValues.Add("artifactName", request.ArtifactName);
 			formValues.Add("dateTimeStamp", request.DateTimeStamp);
-
-			Logger.LogInformation(string.Format("sourceUri: {0}", sourceUri.Uri));
-			Logger.LogInformation(string.Format("SourceFileName: {0}", request.SourceFileName));
 
 			using (System.IO.Stream stream = System.IO.File.OpenRead(request.SourceFileName))
 			{

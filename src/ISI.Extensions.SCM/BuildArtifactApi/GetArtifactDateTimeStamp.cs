@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Scm.DataTransferObjects.BuildArtifactApi;
 
 namespace ISI.Extensions.Scm
@@ -29,7 +30,12 @@ namespace ISI.Extensions.Scm
 		{
 			var response = new DTOs.GetArtifactDateTimeStampResponse();
 
-			using (var remoteManagementClient = ISI.Extensions.Scm.ServiceReferences.Scm.RemoteManagementClient.GetClient(request.RemoteManagementUrl))
+			var sourceUri = new UriBuilder(request.RemoteManagementUrl);
+			sourceUri.Path = "remote-management";
+
+			Logger.LogInformation(string.Format("GetArtifactDateTimeStamp, SourceUri: {0}", sourceUri.Uri));
+
+			using (var remoteManagementClient = ISI.Extensions.Scm.ServiceReferences.Scm.RemoteManagementClient.GetClient(sourceUri.Uri.ToString()))
 			{
 				response.ArtifactDateTimeStamp = remoteManagementClient.GetArtifactDateTimeStampAsync(request.AuthenticationToken, request.DateTimeStamp).GetAwaiter().GetResult();
 			}

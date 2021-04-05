@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Scm.DataTransferObjects.BuildArtifactApi;
 
 namespace ISI.Extensions.Scm
@@ -33,6 +34,9 @@ namespace ISI.Extensions.Scm
 			sourceUri.AddDirectoryToPath("build-artifacts/download-artifact");
 			sourceUri.AddQueryStringParameter("artifactName", request.ArtifactName);
 			sourceUri.AddQueryStringParameter("dateTimeStamp", request.DateTimeStamp);
+
+			Logger.LogInformation(string.Format("DownloadArtifact, SourceUri: {0}", sourceUri.Uri));
+
 			sourceUri.AddQueryStringParameter("authenticationToken", request.AuthenticationToken);
 
 			using(var downloadFileResponse = ISI.Extensions.WebClient.Download.DownloadFile<ISI.Extensions.Stream.TempFileStream>(sourceUri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), 1427))// any larger will cause an SSL request to fail

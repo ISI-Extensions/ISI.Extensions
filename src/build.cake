@@ -97,13 +97,13 @@ Task("Nuget")
 				{
 					if (package.StartsWith("ISI.Extensions", StringComparison.InvariantCultureIgnoreCase))
 					{
-						return buildVersion;
+						return assemblyVersion;
 					}
 
 					return string.Empty;
 				}
 			}).Nuspec;
-			nuspec.Version = buildVersion;
+			nuspec.Version = assemblyVersion;
 			nuspec.IconUri = new Uri(@"https://github.com/ISI-Extensions/ISI.Extensions/Lantern.png");
 			nuspec.ProjectUri = new Uri(@"https://github.com/ISI-Extensions/ISI.Extensions");
 			nuspec.Title = project.Name;
@@ -123,7 +123,7 @@ Task("Nuget")
 			NuGetPack(project.Path.FullPath, new NuGetPackSettings()
 			{
 				Id = project.Name,
-				Version = buildVersion, 
+				Version = assemblyVersion, 
 				Verbosity = NuGetVerbosity.Detailed,
 				Properties = new Dictionary<string, string>
 				{
@@ -136,7 +136,7 @@ Task("Nuget")
 
 			DeleteFile(nuspecFile);
 
-			var nupgkFile = File(nugetDirectory + "/" + project.Name + "." + buildVersion + ".nupkg");
+			var nupgkFile = File(nugetDirectory + "/" + project.Name + "." + assemblyVersion + ".nupkg");
 			NupkgSign(new ISI.Cake.Addin.Nuget.NupkgSignRequest()
 			{
 				NupkgFullNames = new [] { nupgkFile.Path.FullPath },

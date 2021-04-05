@@ -28,8 +28,11 @@ namespace ISI.Extensions.Scm
 		public DTOs.GetAuthenticationTokenResponse GetAuthenticationToken(DTOs.GetAuthenticationTokenRequest request)
 		{
 			var response = new DTOs.GetAuthenticationTokenResponse();
-			
-			using (var remoteManagementClient = ISI.Extensions.Scm.ServiceReferences.Scm.RemoteManagementClient.GetClient(request.RemoteManagementUrl))
+
+			var uri = new UriBuilder(request.RemoteManagementUrl);
+			uri.Path = "remote-management";
+
+			using (var remoteManagementClient = ISI.Extensions.Scm.ServiceReferences.Scm.RemoteManagementClient.GetClient(uri.Uri.ToString()))
 			{
 				response.AuthenticationToken = remoteManagementClient.GetAuthenticationTokenAsync(request.UserName, request.Password).GetAwaiter().GetResult();
 			}

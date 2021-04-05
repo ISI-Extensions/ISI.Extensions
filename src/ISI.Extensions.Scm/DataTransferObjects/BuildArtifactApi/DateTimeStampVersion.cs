@@ -46,7 +46,7 @@ namespace ISI.Extensions.Scm.DataTransferObjects.BuildArtifactApi
 
 		public string Value
 		{
-			get { return string.Format("{0}|{1}", DateTimeStamp, Version ?? new System.Version()); }
+			get => string.Format("{0}|{1}", DateTimeStamp, Version ?? new System.Version());
 			set
 			{
 				if (string.IsNullOrEmpty(value))

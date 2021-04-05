@@ -29,6 +29,13 @@ namespace ISI.Extensions.Scm
 		public DTOs.DeployArtifactResponse DeployArtifact(DTOs.DeployArtifactRequest request)
 		{
 			var response = new DTOs.DeployArtifactResponse();
+			
+			Logger.LogInformation(string.Format("DeployArtifact, RemoteManagementUrl: {0}", request.RemoteManagementUrl));
+			Logger.LogInformation(string.Format("DeployArtifact, ArtifactName: {0}", request.ArtifactName));
+			Logger.LogInformation(string.Format("DeployArtifact, ToDateTimeStamp: {0}", request.ToDateTimeStamp));
+			Logger.LogInformation(string.Format("DeployArtifact, FromEnvironment: {0}", request.FromEnvironment));
+			Logger.LogInformation(string.Format("DeployArtifact, ToEnvironment: {0}", request.ToEnvironment));
+			Logger.LogInformation(string.Format("DeployArtifact, ConfigurationKey: {0}", request.ConfigurationKey));
 
 			var deployComponents = new ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentCollection();
 

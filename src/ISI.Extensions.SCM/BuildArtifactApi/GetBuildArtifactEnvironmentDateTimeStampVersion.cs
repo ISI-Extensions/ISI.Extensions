@@ -30,12 +30,12 @@ namespace ISI.Extensions.Scm
 		{
 			var response = new DTOs.GetBuildArtifactEnvironmentDateTimeStampVersionResponse();
 			
-			var sourceUri = new UriBuilder(request.RemoteManagementUrl);
-			sourceUri.Path = "remote-management";
+			var remoteManagementUri = new UriBuilder(request.RemoteManagementUrl);
+			remoteManagementUri.Path = "remote-management";
 
-			Logger.LogInformation(string.Format("GetBuildArtifactEnvironmentDateTimeStampVersion, SourceUri: {0}", sourceUri.Uri));
+			Logger.LogInformation(string.Format("GetBuildArtifactEnvironmentDateTimeStampVersion, RemoteManagementUrl: {0}", remoteManagementUri.Uri));
 
-			using (var remoteManagementClient = ISI.Extensions.Scm.ServiceReferences.Scm.RemoteManagementClient.GetClient(sourceUri.Uri.ToString()))
+			using (var remoteManagementClient = ISI.Extensions.Scm.ServiceReferences.Scm.RemoteManagementClient.GetClient(remoteManagementUri.Uri.ToString()))
 			{
 				response.DateTimeStampVersion = new DTOs.DateTimeStampVersion(remoteManagementClient.GetBuildArtifactEnvironmentDateTimeStampVersionAsync(request.AuthenticationToken, request.ArtifactName, request.Environment).GetAwaiter().GetResult());
 			}

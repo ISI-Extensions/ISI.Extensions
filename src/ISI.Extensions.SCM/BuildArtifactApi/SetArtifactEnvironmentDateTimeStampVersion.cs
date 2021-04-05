@@ -30,20 +30,20 @@ namespace ISI.Extensions.Scm
 		{
 			var response = new DTOs.SetArtifactEnvironmentDateTimeStampVersionResponse();
 
-			var sourceUri = new UriBuilder(request.RepositoryUrl);
-			sourceUri.AddDirectoryToPath("build-artifacts/set-artifact-environment-dateTimeStamp-version");
+			var remoteManagementUri = new UriBuilder(request.RemoteManagementUrl);
+			remoteManagementUri.AddDirectoryToPath("build-artifacts/set-artifact-environment-dateTimeStamp-version");
 
-			sourceUri.AddQueryStringParameter("artifactName", request.ArtifactName);
-			sourceUri.AddQueryStringParameter("environment", request.Environment);
-			sourceUri.AddQueryStringParameter("dateTimeStampVersion", request.DateTimeStampVersion);
+			remoteManagementUri.AddQueryStringParameter("artifactName", request.ArtifactName);
+			remoteManagementUri.AddQueryStringParameter("environment", request.Environment);
+			remoteManagementUri.AddQueryStringParameter("dateTimeStampVersion", request.DateTimeStampVersion);
 			
-			Logger.LogInformation(string.Format("SetArtifactEnvironmentDateTimeStampVersion, SourceUri: {0}", sourceUri.Uri));
+			Logger.LogInformation(string.Format("SetArtifactEnvironmentDateTimeStampVersion, RemoteManagementUrl: {0}", remoteManagementUri.Uri));
 
-			sourceUri.AddQueryStringParameter("authenticationToken", request.AuthenticationToken);
+			remoteManagementUri.AddQueryStringParameter("authenticationToken", request.AuthenticationToken);
 
 			//response.Status = ISI.Extensions.WebClient.Rest.ExecuteTextGet(sourceUri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), true);
 
-			var webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(sourceUri.Uri);
+			var webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(remoteManagementUri.Uri);
 			webRequest.Method = System.Net.WebRequestMethods.Http.Get;
 
 			using (var webResponse = (System.Net.HttpWebResponse) webRequest.GetResponse())

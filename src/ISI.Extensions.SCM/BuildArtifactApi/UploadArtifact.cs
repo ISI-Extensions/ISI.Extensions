@@ -30,13 +30,13 @@ namespace ISI.Extensions.Scm
 		{
 			var response = new DTOs.UploadArtifactResponse();
 			
-			var sourceUri = new UriBuilder(request.RepositoryUrl);
-			sourceUri.AddDirectoryToPath("build-artifacts/upload-artifact");
+			var remoteManagementUri = new UriBuilder(request.RemoteManagementUrl);
+			remoteManagementUri.AddDirectoryToPath("build-artifacts/upload-artifact");
 
-			Logger.LogInformation(string.Format("UploadArtifact, SourceUri: {0}", sourceUri.Uri));
+			Logger.LogInformation(string.Format("UploadArtifact, RemoteManagementUrl: {0}", remoteManagementUri.Uri));
 			Logger.LogInformation(string.Format("UploadArtifact, SourceFileName: {0}", request.SourceFileName));
 
-			sourceUri.AddQueryStringParameter("authenticationToken", request.AuthenticationToken);
+			remoteManagementUri.AddQueryStringParameter("authenticationToken", request.AuthenticationToken);
 
 			var formValues = new System.Collections.Specialized.NameValueCollection();
 			formValues.Add("artifactName", request.ArtifactName);
@@ -44,7 +44,7 @@ namespace ISI.Extensions.Scm
 
 			using (System.IO.Stream stream = System.IO.File.OpenRead(request.SourceFileName))
 			{
-				ISI.Extensions.WebClient.Upload.UploadFile(sourceUri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), stream, request.SourceFileName, "uploadFile", formValues);
+				ISI.Extensions.WebClient.Upload.UploadFile(remoteManagementUri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), stream, request.SourceFileName, "uploadFile", formValues);
 			}
 			
 			return response;

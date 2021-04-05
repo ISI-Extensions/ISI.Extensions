@@ -30,7 +30,10 @@ namespace ISI.Extensions.Scm
 		{
 			var response = new DTOs.DeployArtifactResponse();
 			
-			Logger.LogInformation(string.Format("DeployArtifact, RemoteManagementUrl: {0}", request.RemoteManagementUrl));
+			var remoteManagementUri = new UriBuilder(request.RemoteManagementUrl);
+			remoteManagementUri.Path = "manager";
+
+			Logger.LogInformation(string.Format("DeployArtifact, SourceUri: {0}", remoteManagementUri.Uri));
 			Logger.LogInformation(string.Format("DeployArtifact, ArtifactName: {0}", request.ArtifactName));
 			Logger.LogInformation(string.Format("DeployArtifact, ToDateTimeStamp: {0}", request.ToDateTimeStamp));
 			Logger.LogInformation(string.Format("DeployArtifact, FromEnvironment: {0}", request.FromEnvironment));
@@ -129,12 +132,12 @@ namespace ISI.Extensions.Scm
 
 			var statusTrackerKey = string.Empty;
 
-			using (var managerClient = ISI.Extensions.Scm.ServiceReferences.ServicesManager.ManagerClient.GetClient(request.RemoteManagementUrl))
+			using (var managerClient = ISI.Extensions.Scm.ServiceReferences.ServicesManager.ManagerClient.GetClient(remoteManagementUri.Uri.ToString()))
 			{
 				managerClient.Endpoint.Binding.SendTimeout = TimeSpan.FromMinutes(15);
 				managerClient.Endpoint.Binding.ReceiveTimeout = TimeSpan.FromMinutes(15);
 
-				var deployArtifactResponse = managerClient.DeployArtifactAsync(request.Password, request.RemoteManagementUrl, request.AuthenticationToken, request.ArtifactName, request.ArtifactDateTimeStampVersionUrl, request.ArtifactDownloadUrl, request.ToDateTimeStamp, request.FromEnvironment, request.ToEnvironment, request.ConfigurationKey, deployComponents, request.SetDeployedVersion, request.RunAsync).GetAwaiter().GetResult();
+				var deployArtifactResponse = managerClient.DeployArtifactAsync(request.Password, remoteManagementUri.Uri.ToString(), request.AuthenticationToken, request.ArtifactName, request.ArtifactDateTimeStampVersionUrl, request.ArtifactDownloadUrl, request.ToDateTimeStamp, request.FromEnvironment, request.ToEnvironment, request.ConfigurationKey, deployComponents, request.SetDeployedVersion, request.RunAsync).GetAwaiter().GetResult();
 
 				statusTrackerKey = deployArtifactResponse.StatusTrackerKey;
 

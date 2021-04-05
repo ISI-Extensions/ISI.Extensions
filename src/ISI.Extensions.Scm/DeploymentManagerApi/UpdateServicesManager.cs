@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi;
 
 namespace ISI.Extensions.Scm
@@ -29,7 +30,12 @@ namespace ISI.Extensions.Scm
 		{
 			var response = new DTOs.UpdateServicesManagerResponse();
 
-			using (var managerClient = ISI.Extensions.Scm.ServiceReferences.ServicesManager.ManagerClient.GetClient(request.RemoteManagementUrl))
+			var servicesManagerUri = new UriBuilder(request.ServicesManagerUrl);
+			servicesManagerUri.Path = "manager";
+
+			Logger.LogInformation(string.Format("UpdateServicesManager, ServicesManagerUrl: {0}", servicesManagerUri.Uri));
+
+			using (var managerClient = ISI.Extensions.Scm.ServiceReferences.ServicesManager.ManagerClient.GetClient(servicesManagerUri.Uri.ToString()))
 			{
 				managerClient.Endpoint.Binding.SendTimeout = TimeSpan.FromMinutes(15);
 				managerClient.Endpoint.Binding.ReceiveTimeout = TimeSpan.FromMinutes(15);

@@ -23,7 +23,7 @@ namespace ISI.Extensions.Scm.DataTransferObjects.BuildArtifactApi
 {
 	public partial class GetArtifactDateTimeStampVersionRequest
 	{
-		public string RemoteManagementUrl { get; set; }
+		public string BuildArtifactManagementUrl { get; set; }
 		public string AuthenticationToken { get; set; }
 		public string DateTimeStampVersion { get; set; }
 	}

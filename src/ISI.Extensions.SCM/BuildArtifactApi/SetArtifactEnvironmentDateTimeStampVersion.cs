@@ -30,20 +30,20 @@ namespace ISI.Extensions.Scm
 		{
 			var response = new DTOs.SetArtifactEnvironmentDateTimeStampVersionResponse();
 
-			var remoteManagementUri = new UriBuilder(request.RemoteManagementUrl);
-			remoteManagementUri.AddDirectoryToPath("build-artifacts/set-artifact-environment-dateTimeStamp-version");
+			var buildArtifactManagementUri = new UriBuilder(request.BuildArtifactManagementUrl);
+			buildArtifactManagementUri.AddDirectoryToPath("build-artifacts/set-artifact-environment-dateTimeStamp-version");
 
-			remoteManagementUri.AddQueryStringParameter("artifactName", request.ArtifactName);
-			remoteManagementUri.AddQueryStringParameter("environment", request.Environment);
-			remoteManagementUri.AddQueryStringParameter("dateTimeStampVersion", request.DateTimeStampVersion);
+			buildArtifactManagementUri.AddQueryStringParameter("artifactName", request.ArtifactName);
+			buildArtifactManagementUri.AddQueryStringParameter("environment", request.Environment);
+			buildArtifactManagementUri.AddQueryStringParameter("dateTimeStampVersion", request.DateTimeStampVersion);
 			
-			Logger.LogInformation(string.Format("SetArtifactEnvironmentDateTimeStampVersion, RemoteManagementUrl: {0}", remoteManagementUri.Uri));
+			Logger.LogInformation(string.Format("SetArtifactEnvironmentDateTimeStampVersion, BuildArtifactManagementUrl: {0}", buildArtifactManagementUri.Uri));
 
-			remoteManagementUri.AddQueryStringParameter("authenticationToken", request.AuthenticationToken);
+			buildArtifactManagementUri.AddQueryStringParameter("authenticationToken", request.AuthenticationToken);
 
 			//response.Status = ISI.Extensions.WebClient.Rest.ExecuteTextGet(sourceUri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), true);
 
-			var webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(remoteManagementUri.Uri);
+			var webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(buildArtifactManagementUri.Uri);
 			webRequest.Method = System.Net.WebRequestMethods.Http.Get;
 
 			using (var webResponse = (System.Net.HttpWebResponse) webRequest.GetResponse())

@@ -23,7 +23,7 @@ namespace ISI.Extensions.Scm.DataTransferObjects.ScmApi
 {
 	public partial class GetAuthenticationTokenRequest
 	{
-		public string RemoteManagementUrl { get; set; }
+		public string ScmManagementUrl { get; set; }
 		public string UserName { get; set; }
 		public string Password { get; set; }
 	}

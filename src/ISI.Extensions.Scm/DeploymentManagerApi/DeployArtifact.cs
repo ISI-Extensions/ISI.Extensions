@@ -30,11 +30,17 @@ namespace ISI.Extensions.Scm
 		{
 			var response = new DTOs.DeployArtifactResponse();
 			
-			var remoteManagementUri = new UriBuilder(request.RemoteManagementUrl);
-			remoteManagementUri.Path = "manager";
+			var servicesManagerUri = new UriBuilder(request.ServicesManagerUrl);
+			servicesManagerUri.Path = "manager";
 
-			Logger.LogInformation(string.Format("DeployArtifact, SourceUri: {0}", remoteManagementUri.Uri));
+			var buildArtifactManagementUri = new UriBuilder(request.BuildArtifactManagementUrl);
+			buildArtifactManagementUri.Path = "remote-management";
+
+			Logger.LogInformation(string.Format("DeployArtifact, ServicesManagerUrl: {0}", servicesManagerUri.Uri));
+			Logger.LogInformation(string.Format("DeployArtifact, BuildArtifactManagementUri: {0}", buildArtifactManagementUri.Uri));
 			Logger.LogInformation(string.Format("DeployArtifact, ArtifactName: {0}", request.ArtifactName));
+			Logger.LogInformation(string.Format("DeployArtifact, ArtifactDateTimeStampVersionUrl: {0}", request.ArtifactDateTimeStampVersionUrl));
+			Logger.LogInformation(string.Format("DeployArtifact, ArtifactDownloadUrl: {0}", request.ArtifactDownloadUrl));
 			Logger.LogInformation(string.Format("DeployArtifact, ToDateTimeStamp: {0}", request.ToDateTimeStamp));
 			Logger.LogInformation(string.Format("DeployArtifact, FromEnvironment: {0}", request.FromEnvironment));
 			Logger.LogInformation(string.Format("DeployArtifact, ToEnvironment: {0}", request.ToEnvironment));
@@ -132,12 +138,12 @@ namespace ISI.Extensions.Scm
 
 			var statusTrackerKey = string.Empty;
 
-			using (var managerClient = ISI.Extensions.Scm.ServiceReferences.ServicesManager.ManagerClient.GetClient(remoteManagementUri.Uri.ToString()))
+			using (var managerClient = ISI.Extensions.Scm.ServiceReferences.ServicesManager.ManagerClient.GetClient(servicesManagerUri.Uri.ToString()))
 			{
 				managerClient.Endpoint.Binding.SendTimeout = TimeSpan.FromMinutes(15);
 				managerClient.Endpoint.Binding.ReceiveTimeout = TimeSpan.FromMinutes(15);
 
-				var deployArtifactResponse = managerClient.DeployArtifactAsync(request.Password, remoteManagementUri.Uri.ToString(), request.AuthenticationToken, request.ArtifactName, request.ArtifactDateTimeStampVersionUrl, request.ArtifactDownloadUrl, request.ToDateTimeStamp, request.FromEnvironment, request.ToEnvironment, request.ConfigurationKey, deployComponents, request.SetDeployedVersion, request.RunAsync).GetAwaiter().GetResult();
+				var deployArtifactResponse = managerClient.DeployArtifactAsync(request.Password, buildArtifactManagementUri.Uri.ToString(), request.AuthenticationToken, request.ArtifactName, request.ArtifactDateTimeStampVersionUrl, request.ArtifactDownloadUrl, request.ToDateTimeStamp, request.FromEnvironment, request.ToEnvironment, request.ConfigurationKey, deployComponents, request.SetDeployedVersion, request.RunAsync).GetAwaiter().GetResult();
 
 				statusTrackerKey = deployArtifactResponse.StatusTrackerKey;
 
@@ -188,7 +194,7 @@ namespace ISI.Extensions.Scm
 
 			if (request.RunAsync)
 			{
-				response.Success = Watch(request.RemoteManagementUrl, request.Password, statusTrackerKey);
+				response.Success = Watch(servicesManagerUri.Uri.ToString(), request.Password, statusTrackerKey);
 			}
 
 			return response;

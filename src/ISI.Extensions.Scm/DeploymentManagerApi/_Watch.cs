@@ -26,11 +26,11 @@ namespace ISI.Extensions.Scm
 {
 	public partial class DeploymentManagerApi
 	{
-		private bool Watch(string remoteManagementUrl, string password, string statusTrackerKey)
+		private bool Watch(string servicesManagerUrl, string password, string statusTrackerKey)
 		{
 			var success = false;
 
-			using (var managerClient = ISI.Extensions.Scm.ServiceReferences.ServicesManager.ManagerClient.GetClient(remoteManagementUrl))
+			using (var managerClient = ISI.Extensions.Scm.ServiceReferences.ServicesManager.ManagerClient.GetClient(servicesManagerUrl))
 			{
 				managerClient.Endpoint.Binding.OpenTimeout = TimeSpan.FromMinutes(60);
 				managerClient.Endpoint.Binding.SendTimeout = TimeSpan.FromMinutes(60);

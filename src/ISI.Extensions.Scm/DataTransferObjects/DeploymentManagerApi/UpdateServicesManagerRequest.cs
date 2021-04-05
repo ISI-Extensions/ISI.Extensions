@@ -23,7 +23,7 @@ namespace ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi
 {
 	public partial class UpdateServicesManagerRequest
 	{
-		public string RemoteManagementUrl { get; set; }
+		public string ServicesManagerUrl { get; set; }
 		public string Password { get; set; }
 	}
 }

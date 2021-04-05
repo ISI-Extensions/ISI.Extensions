@@ -30,16 +30,16 @@ namespace ISI.Extensions.Scm
 		{
 			var response = new DTOs.DownloadArtifactResponse();
 
-			var remoteManagementUri = new UriBuilder(request.RemoteManagementUrl);
-			remoteManagementUri.AddDirectoryToPath("build-artifacts/download-artifact");
-			remoteManagementUri.AddQueryStringParameter("artifactName", request.ArtifactName);
-			remoteManagementUri.AddQueryStringParameter("dateTimeStamp", request.DateTimeStamp);
+			var buildArtifactManagementUri = new UriBuilder(request.BuildArtifactManagementUrl);
+			buildArtifactManagementUri.AddDirectoryToPath("build-artifacts/download-artifact");
+			buildArtifactManagementUri.AddQueryStringParameter("artifactName", request.ArtifactName);
+			buildArtifactManagementUri.AddQueryStringParameter("dateTimeStamp", request.DateTimeStamp);
 
-			Logger.LogInformation(string.Format("DownloadArtifact, RemoteManagementUrl: {0}", remoteManagementUri.Uri));
+			Logger.LogInformation(string.Format("DownloadArtifact, BuildArtifactManagementUrl: {0}", buildArtifactManagementUri.Uri));
 
-			remoteManagementUri.AddQueryStringParameter("authenticationToken", request.AuthenticationToken);
+			buildArtifactManagementUri.AddQueryStringParameter("authenticationToken", request.AuthenticationToken);
 
-			using(var downloadFileResponse = ISI.Extensions.WebClient.Download.DownloadFile<ISI.Extensions.Stream.TempFileStream>(remoteManagementUri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), 1427))// any larger will cause an SSL request to fail
+			using(var downloadFileResponse = ISI.Extensions.WebClient.Download.DownloadFile<ISI.Extensions.Stream.TempFileStream>(buildArtifactManagementUri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), 1427))// any larger will cause an SSL request to fail
 			{
 				using (var stream = System.IO.File.OpenWrite(request.TargetFileName))
 				{

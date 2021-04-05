@@ -30,12 +30,12 @@ namespace ISI.Extensions.Scm
 		{
 			var response = new DTOs.GetAuthenticationTokenResponse();
 
-			var remoteManagementUri = new UriBuilder(request.RemoteManagementUrl);
-			remoteManagementUri.Path = "remote-management";
+			var scmManagementi = new UriBuilder(request.ScmManagementUrl);
+			scmManagementi.Path = "remote-management";
 
-			Logger.LogInformation(string.Format("GetAuthenticationToken, RemoteManagementUrl: {0}", remoteManagementUri.Uri));
+			Logger.LogInformation(string.Format("GetAuthenticationToken, ScmManagementUrl: {0}", scmManagementi.Uri));
 
-			using (var remoteManagementClient = ISI.Extensions.Scm.ServiceReferences.Scm.RemoteManagementClient.GetClient(remoteManagementUri.Uri.ToString()))
+			using (var remoteManagementClient = ISI.Extensions.Scm.ServiceReferences.Scm.RemoteManagementClient.GetClient(scmManagementi.Uri.ToString()))
 			{
 				response.AuthenticationToken = remoteManagementClient.GetAuthenticationTokenAsync(request.UserName, request.Password).GetAwaiter().GetResult();
 			}

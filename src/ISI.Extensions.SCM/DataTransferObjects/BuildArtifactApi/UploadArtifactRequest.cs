@@ -28,6 +28,5 @@ namespace ISI.Extensions.Scm.DataTransferObjects.BuildArtifactApi
 		public string SourceFileName { get; set; }
 		public string ArtifactName { get; set; }
 		public string DateTimeStamp { get; set; }
-		public string FileExtension { get; set; }
 	}
 }

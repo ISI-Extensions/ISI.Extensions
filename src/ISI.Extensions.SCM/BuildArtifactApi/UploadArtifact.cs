@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Scm.DataTransferObjects.BuildArtifactApi;
 
 namespace ISI.Extensions.Scm
@@ -34,9 +35,11 @@ namespace ISI.Extensions.Scm
 			sourceUri.AddQueryStringParameter("authenticationToken", request.AuthenticationToken);
 
 			var formValues = new System.Collections.Specialized.NameValueCollection();
-			//formValues.Add("authenticationToken", AuthenticationToken);
 			formValues.Add("artifactName", request.ArtifactName);
 			formValues.Add("dateTimeStamp", request.DateTimeStamp);
+
+			Logger.LogInformation(string.Format("sourceUri: {0}", sourceUri.Uri));
+			Logger.LogInformation(string.Format("SourceFileName: {0}", request.SourceFileName));
 
 			using (System.IO.Stream stream = System.IO.File.OpenRead(request.SourceFileName))
 			{

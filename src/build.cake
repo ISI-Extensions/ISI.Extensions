@@ -13,9 +13,11 @@ var solution = ParseSolution(solutionPath);
 
 var assemblyVersionFile = File("./ISI.Extensions.Version.cs");
 
-var revisionBuild = GetBuildRevision();
-var buildVersion = GetBuildVersion(ParseAssemblyInfo(assemblyVersionFile).AssemblyVersion, revisionBuild);
-Information("BuildVersion: {0}", buildVersion);
+var buildDateTime = DateTime.UtcNow;
+var buildDateTimeStamp = GetDateTimeStamp(buildDateTime);
+var buildRevision = GetBuildRevision(buildDateTime);
+var assemblyVersion = GetAssemblyVersion(ParseAssemblyInfo(assemblyVersionFile).AssemblyVersion, buildRevision);
+Information("AssemblyVersion: {0}", assemblyVersion);
 
 var nugetDirectory = "../Nuget";
 
@@ -48,7 +50,7 @@ Task("Build")
 	{
 		CreateAssemblyInfo(assemblyVersionFile, new AssemblyInfoSettings()
 		{
-			Version = buildVersion,
+			Version = assemblyVersion,
 		});
 
 		MSBuild(solutionPath, configurator => configurator
@@ -60,7 +62,7 @@ Task("Build")
 
 		CreateAssemblyInfo(assemblyVersionFile, new AssemblyInfoSettings()
 		{
-			Version = GetBuildVersion(buildVersion, "*"),
+			Version = GetAssemblyVersion(assemblyVersion, "*"),
 		});
 	});
 
@@ -71,10 +73,11 @@ Task("Sign")
 		if (configuration.Equals("Release"))
 		{
 			var files = GetFiles("./**/bin/" + configuration + "/**/ISI.*.dll");
-			Sign(files, new SignToolSignSettings {
-						TimeStampUri = new Uri(settings.CodeSigning.TimeStampUrl),
-						CertPath = settings.CodeSigning.CertificateFileName,
-						Password = settings.CodeSigning.CertificatePassword,
+			Sign(files, new SignToolSignSettings()
+			{
+				TimeStampUri = new Uri(settings.CodeSigning.TimeStampUrl),
+				CertPath = settings.CodeSigning.CertificateFileName,
+				Password = settings.CodeSigning.CertificatePassword,
 			});
 		}
 	});

@@ -31,7 +31,7 @@ namespace ISI.Extensions.Scm
 			var response = new DTOs.UpdateServicesManagerResponse();
 
 			var servicesManagerUri = new UriBuilder(request.ServicesManagerUrl);
-			servicesManagerUri.Path = "manager";
+			servicesManagerUri.Path = "manager/";
 
 			Logger.LogInformation(string.Format("UpdateServicesManager, ServicesManagerUrl: {0}", servicesManagerUri.Uri));
 

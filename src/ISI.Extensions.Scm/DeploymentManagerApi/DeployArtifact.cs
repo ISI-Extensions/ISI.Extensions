@@ -31,12 +31,13 @@ namespace ISI.Extensions.Scm
 			var response = new DTOs.DeployArtifactResponse();
 			
 			var servicesManagerUri = new UriBuilder(request.ServicesManagerUrl);
-			servicesManagerUri.Path = "manager";
+			servicesManagerUri.Path = "manager/";
 
 			var buildArtifactManagementUri = new UriBuilder(request.BuildArtifactManagementUrl);
 			buildArtifactManagementUri.Path = "remote-management";
 
 			Logger.LogInformation(string.Format("DeployArtifact, ServicesManagerUrl: {0}", servicesManagerUri.Uri));
+			Logger.LogInformation(string.Format("DeployArtifact, Password: {0}", request.Password));
 			Logger.LogInformation(string.Format("DeployArtifact, BuildArtifactManagementUri: {0}", buildArtifactManagementUri.Uri));
 			Logger.LogInformation(string.Format("DeployArtifact, ArtifactName: {0}", request.ArtifactName));
 			Logger.LogInformation(string.Format("DeployArtifact, ArtifactDateTimeStampVersionUrl: {0}", request.ArtifactDateTimeStampVersionUrl));
@@ -77,6 +78,9 @@ namespace ISI.Extensions.Scm
 								ConsoleApplicationExe = deployComponent.ApplicationExe,
 								ExcludeFiles = getDeployComponentExcludeFileCollection(deployComponent.ExcludeFiles),
 							});
+							Logger.LogInformation(string.Format("  deployComponent.PackageFolder: {0}", deployComponent.PackageFolder));
+							Logger.LogInformation(string.Format("  deployComponent.DeployToSubfolder: {0}", deployComponent.DeployToSubfolder));
+							Logger.LogInformation(string.Format("  deployComponent.ConsoleApplicationExe: {0}", deployComponent.ApplicationExe));
 						}
 						else if (string.Equals(deployComponent.ComponentType, "WebSite", StringComparison.InvariantCultureIgnoreCase))
 						{
@@ -86,6 +90,8 @@ namespace ISI.Extensions.Scm
 								DeployToSubfolder = deployComponent.DeployToSubfolder,
 								ExcludeFiles = getDeployComponentExcludeFileCollection(deployComponent.ExcludeFiles),
 							});
+							Logger.LogInformation(string.Format("  deployComponent.PackageFolder: {0}", deployComponent.PackageFolder));
+							Logger.LogInformation(string.Format("  deployComponent.DeployToSubfolder: {0}", deployComponent.DeployToSubfolder));
 						}
 						else if (string.Equals(deployComponent.ComponentType, "WindowsService", StringComparison.InvariantCultureIgnoreCase))
 						{
@@ -96,6 +102,9 @@ namespace ISI.Extensions.Scm
 								WindowsServiceExe = deployComponent.ApplicationExe,
 								ExcludeFiles = getDeployComponentExcludeFileCollection(deployComponent.ExcludeFiles),
 							});
+							Logger.LogInformation(string.Format("  deployComponent.PackageFolder: {0}", deployComponent.PackageFolder));
+							Logger.LogInformation(string.Format("  deployComponent.DeployToSubfolder: {0}", deployComponent.DeployToSubfolder));
+							Logger.LogInformation(string.Format("  deployComponent.WindowsServiceExe: {0}", deployComponent.ApplicationExe));
 						}
 						break;
 
@@ -109,6 +118,11 @@ namespace ISI.Extensions.Scm
 							ExecuteConsoleApplicationAfterInstall = deployComponentConsoleApplication.ExecuteConsoleApplicationAfterInstall,
 							ExecuteConsoleApplicationAfterInstallArguments = deployComponentConsoleApplication.ExecuteConsoleApplicationAfterInstallArguments,
 						});
+						Logger.LogInformation(string.Format("  deployComponentConsoleApplication.PackageFolder: {0}", deployComponentConsoleApplication.PackageFolder));
+						Logger.LogInformation(string.Format("  deployComponentConsoleApplication.DeployToSubfolder: {0}", deployComponentConsoleApplication.DeployToSubfolder));
+						Logger.LogInformation(string.Format("  deployComponentConsoleApplication.ConsoleApplicationExe: {0}", deployComponentConsoleApplication.ConsoleApplicationExe));
+						Logger.LogInformation(string.Format("  deployComponentConsoleApplication.ExecuteConsoleApplicationAfterInstall: {0}", deployComponentConsoleApplication.ExecuteConsoleApplicationAfterInstall.TrueFalse()));
+						Logger.LogInformation(string.Format("  deployComponentConsoleApplication.ExecuteConsoleApplicationAfterInstallArguments: {0}", deployComponentConsoleApplication.ExecuteConsoleApplicationAfterInstallArguments));
 						break;
 
 					case ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.DeployComponentWebSite deployComponentWebSite:
@@ -118,6 +132,8 @@ namespace ISI.Extensions.Scm
 							DeployToSubfolder = deployComponentWebSite.DeployToSubfolder,
 							ExcludeFiles = getDeployComponentExcludeFileCollection(deployComponentWebSite.ExcludeFiles),
 						});
+						Logger.LogInformation(string.Format("  deployComponentWebSite.PackageFolder: {0}", deployComponentWebSite.PackageFolder));
+						Logger.LogInformation(string.Format("  deployComponentWebSite.DeployToSubfolder: {0}", deployComponentWebSite.DeployToSubfolder));
 						break;
 
 					case ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.DeployComponentWindowsService deployComponentWindowsService:
@@ -129,11 +145,15 @@ namespace ISI.Extensions.Scm
 							ExcludeFiles = getDeployComponentExcludeFileCollection(deployComponentWindowsService.ExcludeFiles),
 							UninstallIfInstalled = deployComponentWindowsService.UninstallIfInstalled,
 						});
+						Logger.LogInformation(string.Format("  deployComponentWindowsService.PackageFolder: {0}", deployComponentWindowsService.PackageFolder));
+						Logger.LogInformation(string.Format("  deployComponentWindowsService.DeployToSubfolder: {0}", deployComponentWindowsService.DeployToSubfolder));
+						Logger.LogInformation(string.Format("  deployComponentWindowsService.WindowsServiceExe: {0}", deployComponentWindowsService.WindowsServiceExe));
 						break;
 
 					default:
 						throw new ArgumentOutOfRangeException(nameof(component));
 				}
+				Logger.LogInformation(string.Empty);
 			}
 
 			var statusTrackerKey = string.Empty;
@@ -146,6 +166,8 @@ namespace ISI.Extensions.Scm
 				var deployArtifactResponse = managerClient.DeployArtifactAsync(request.Password, buildArtifactManagementUri.Uri.ToString(), request.AuthenticationToken, request.ArtifactName, request.ArtifactDateTimeStampVersionUrl, request.ArtifactDownloadUrl, request.ToDateTimeStamp, request.FromEnvironment, request.ToEnvironment, request.ConfigurationKey, deployComponents, request.SetDeployedVersion, request.RunAsync).GetAwaiter().GetResult();
 
 				statusTrackerKey = deployArtifactResponse.StatusTrackerKey;
+
+				Logger.LogInformation(string.Format("  statusTrackerKey: {0}", statusTrackerKey));
 
 				if (!request.RunAsync)
 				{

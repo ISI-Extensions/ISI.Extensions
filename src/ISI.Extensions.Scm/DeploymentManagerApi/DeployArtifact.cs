@@ -29,14 +29,11 @@ namespace ISI.Extensions.Scm
 		public DTOs.DeployArtifactResponse DeployArtifact(DTOs.DeployArtifactRequest request)
 		{
 			var response = new DTOs.DeployArtifactResponse();
-			
-			var servicesManagerUri = new UriBuilder(request.ServicesManagerUrl);
-			servicesManagerUri.Path = "manager/";
 
 			var buildArtifactManagementUri = new UriBuilder(request.BuildArtifactManagementUrl);
 			buildArtifactManagementUri.Path = "remote-management";
 
-			Logger.LogInformation(string.Format("DeployArtifact, ServicesManagerUrl: {0}", servicesManagerUri.Uri));
+			Logger.LogInformation(string.Format("DeployArtifact, ServicesManagerUrl: {0}", request.ServicesManagerUrl));
 			Logger.LogInformation(string.Format("DeployArtifact, Password: {0}", request.Password));
 			Logger.LogInformation(string.Format("DeployArtifact, BuildArtifactManagementUri: {0}", buildArtifactManagementUri.Uri));
 			Logger.LogInformation(string.Format("DeployArtifact, ArtifactName: {0}", request.ArtifactName));
@@ -158,7 +155,7 @@ namespace ISI.Extensions.Scm
 
 			var statusTrackerKey = string.Empty;
 
-			using (var managerClient = ISI.Extensions.Scm.ServiceReferences.ServicesManager.ManagerClient.GetClient(servicesManagerUri.Uri.ToString()))
+			using (var managerClient = ISI.Extensions.Scm.ServiceReferences.ServicesManager.ManagerClient.GetClient(request.ServicesManagerUrl))
 			{
 				managerClient.Endpoint.Binding.SendTimeout = TimeSpan.FromMinutes(15);
 				managerClient.Endpoint.Binding.ReceiveTimeout = TimeSpan.FromMinutes(15);
@@ -216,7 +213,7 @@ namespace ISI.Extensions.Scm
 
 			if (request.RunAsync)
 			{
-				response.Success = Watch(servicesManagerUri.Uri.ToString(), request.Password, statusTrackerKey);
+				response.Success = Watch(request.ServicesManagerUrl, request.Password, statusTrackerKey);
 			}
 
 			return response;

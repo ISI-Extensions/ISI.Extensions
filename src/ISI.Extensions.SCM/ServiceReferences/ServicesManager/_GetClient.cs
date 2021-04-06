@@ -26,8 +26,18 @@ namespace ISI.Extensions.Scm.ServiceReferences.ServicesManager
 	{
 		public static ManagerClient GetClient(string webServiceUrl)
 		{
-			System.Net.ServicePointManager.Expect100Continue = true;
-			System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls;
+			//System.Net.ServicePointManager.Expect100Continue = true;
+			//System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls;
+
+			webServiceUrl = webServiceUrl.Trim();
+			if (!webServiceUrl.EndsWith("/"))
+			{
+				webServiceUrl += "/";
+			}
+			if (!webServiceUrl.EndsWith("/manager/"))
+			{
+				webServiceUrl += "manager/";
+			}
 
 			var securityMode = ((new Uri(webServiceUrl)).Scheme == Uri.UriSchemeHttps ? System.ServiceModel.SecurityMode.Transport : System.ServiceModel.SecurityMode.None);
 

@@ -26,9 +26,19 @@ namespace ISI.Extensions.Scm.ServiceReferences.Scm
 	{
 		public static RemoteManagementClient GetClient(string webServiceUrl)
 		{
-			System.Net.ServicePointManager.Expect100Continue = true;
-			System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls;
+			//System.Net.ServicePointManager.Expect100Continue = true;
+			//System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls;
 
+			webServiceUrl = webServiceUrl.Trim();
+			if (!webServiceUrl.EndsWith("/"))
+			{
+				webServiceUrl += "/";
+			}
+			if (!webServiceUrl.EndsWith("/remote-management/"))
+			{
+				webServiceUrl += "remote-management/";
+			}
+			
 			var securityMode = ((new Uri(webServiceUrl)).Scheme == Uri.UriSchemeHttps ? System.ServiceModel.SecurityMode.Transport : System.ServiceModel.SecurityMode.None);
 
 			var binding = new System.ServiceModel.WSHttpBinding(securityMode)

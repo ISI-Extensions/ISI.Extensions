@@ -30,12 +30,9 @@ namespace ISI.Extensions.Scm
 		{
 			var response = new DTOs.UpdateServicesManagerResponse();
 
-			var servicesManagerUri = new UriBuilder(request.ServicesManagerUrl);
-			servicesManagerUri.Path = "manager/";
+			Logger.LogInformation(string.Format("UpdateServicesManager, ServicesManagerUrl: {0}", request.ServicesManagerUrl));
 
-			Logger.LogInformation(string.Format("UpdateServicesManager, ServicesManagerUrl: {0}", servicesManagerUri.Uri));
-
-			using (var managerClient = ISI.Extensions.Scm.ServiceReferences.ServicesManager.ManagerClient.GetClient(servicesManagerUri.Uri.ToString()))
+			using (var managerClient = ISI.Extensions.Scm.ServiceReferences.ServicesManager.ManagerClient.GetClient(request.ServicesManagerUrl))
 			{
 				managerClient.Endpoint.Binding.SendTimeout = TimeSpan.FromMinutes(15);
 				managerClient.Endpoint.Binding.ReceiveTimeout = TimeSpan.FromMinutes(15);

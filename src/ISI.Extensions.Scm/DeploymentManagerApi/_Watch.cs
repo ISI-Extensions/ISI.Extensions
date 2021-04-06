@@ -49,7 +49,7 @@ namespace ISI.Extensions.Scm
 						{
 							System.Threading.Thread.Sleep(5000);
 
-							var response = managerClient.GetStatusAsync(password, statusTrackerKey).GetAwaiter().GetResult();
+							var response = managerClient.GetStatus(password, statusTrackerKey);
 
 							if (response != null)
 							{

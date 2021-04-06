@@ -163,7 +163,7 @@ namespace ISI.Extensions.Scm
 				managerClient.Endpoint.Binding.SendTimeout = TimeSpan.FromMinutes(15);
 				managerClient.Endpoint.Binding.ReceiveTimeout = TimeSpan.FromMinutes(15);
 
-				var deployArtifactResponse = managerClient.DeployArtifactAsync(request.Password, buildArtifactManagementUri.Uri.ToString(), request.AuthenticationToken, request.ArtifactName, request.ArtifactDateTimeStampVersionUrl, request.ArtifactDownloadUrl, request.ToDateTimeStamp, request.FromEnvironment, request.ToEnvironment, request.ConfigurationKey, deployComponents, request.SetDeployedVersion, request.RunAsync).GetAwaiter().GetResult();
+				var deployArtifactResponse = managerClient.DeployArtifact(request.Password, buildArtifactManagementUri.Uri.ToString(), request.AuthenticationToken, request.ArtifactName, request.ArtifactDateTimeStampVersionUrl, request.ArtifactDownloadUrl, request.ToDateTimeStamp, request.FromEnvironment, request.ToEnvironment, request.ConfigurationKey, deployComponents, request.SetDeployedVersion, request.RunAsync);
 
 				statusTrackerKey = deployArtifactResponse.StatusTrackerKey;
 

@@ -40,7 +40,7 @@ namespace ISI.Extensions.Scm
 				managerClient.Endpoint.Binding.SendTimeout = TimeSpan.FromMinutes(15);
 				managerClient.Endpoint.Binding.ReceiveTimeout = TimeSpan.FromMinutes(15);
 
-				var updateResponse = managerClient.UpdateAsync(request.Password).GetAwaiter().GetResult();
+				var updateResponse = managerClient.Update(request.Password);
 
 				response.CurrentVersion = updateResponse.CurrentVersion;
 				response.Log = updateResponse.Log;

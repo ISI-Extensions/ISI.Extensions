@@ -43,7 +43,7 @@ namespace ISI.Extensions.Nuget
 				}
 			}
 
-			if (string.IsNullOrWhiteSpace(request.RepositoryUri?.ToString()))
+			if (string.IsNullOrWhiteSpace(request.RepositoryUri?.ToString()) && string.IsNullOrWhiteSpace(request.RepositoryName))
 			{
 				foreach (var nupkgFullName in request.NupkgFullNames)
 				{
@@ -56,6 +56,8 @@ namespace ISI.Extensions.Nuget
 
 				foreach (var nupkgFullName in request.NupkgFullNames)
 				{
+					Logger.LogInformation(string.Format("Pushing \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), source));
+
 					ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 					{
 						Logger = Logger,
@@ -63,9 +65,10 @@ namespace ISI.Extensions.Nuget
 						ProcessExeFullName = "nuget",
 						Arguments = new[]
 						{
-							string.Format("push \"{0}\"", nupkgFullName),
-							request.ApiKey,
-							string.Format("/Source \"{0}\"", source),
+							"push",
+							string.Format("-Source \"{0}\"", source),
+							string.Format("-ApiKey \"{0}\"", request.ApiKey),
+							string.Format("\"{0}\"", nupkgFullName),
 						}
 					});
 

@@ -52,6 +52,8 @@ namespace ISI.Extensions.Nuget
 			}
 			else if (request.UseNugetPush)
 			{
+				var source = (string.IsNullOrWhiteSpace(request.RepositoryName) ? request.RepositoryUri.ToString() : request.RepositoryName);
+
 				foreach (var nupkgFullName in request.NupkgFullNames)
 				{
 					ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
@@ -63,7 +65,7 @@ namespace ISI.Extensions.Nuget
 						{
 							string.Format("push \"{0}\"", nupkgFullName),
 							request.ApiKey,
-							string.Format("/Source \"{0}\"", request.RepositoryUri),
+							string.Format("/Source \"{0}\"", source),
 						}
 					});
 

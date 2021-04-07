@@ -31,7 +31,7 @@ namespace ISI.Extensions.Scm
 			var response = new DTOs.DeployArtifactResponse();
 
 			var buildArtifactManagementUri = new UriBuilder(request.BuildArtifactManagementUrl);
-			buildArtifactManagementUri.Path = "remote-management";
+			buildArtifactManagementUri.Path = "remote-management/";
 
 			Logger.LogInformation(string.Format("DeployArtifact, ServicesManagerUrl: {0}", request.ServicesManagerUrl));
 			Logger.LogInformation(string.Format("DeployArtifact, Password: {0}", request.Password));

@@ -28,7 +28,8 @@ namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 		public string WorkingDirectory { get; set; }
 
 		public bool UseNugetPush { get; set; } = true;
-		public Uri RepositoryUri { get; set; } = new Uri("https://nuget.isi-net.com");
+		public string RepositoryName { get; set; }
+		public Uri RepositoryUri { get; set; }
 		public string ApiKey { get; set; }
 		public int MaxFileSegmentSize { get; set; } = 2000000;
 		public int MaxTries { get; set; } = 3;

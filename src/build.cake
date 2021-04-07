@@ -149,9 +149,8 @@ Task("Nuget")
 			NupkgPush(new ISI.Cake.Addin.Nuget.NupkgPushRequest()
 			{
 				NupkgFullNames = new [] { nupgkFile.Path.FullPath },
-				UseNugetPush = false,
-				RepositoryUri = new Uri(settings.Nuget.RepositoryUrl),
 				ApiKey = settings.Nuget.ApiKey,
+				RepositoryUri = new Uri(settings.Nuget.RepositoryUrl),
 			});
 		}
 	});

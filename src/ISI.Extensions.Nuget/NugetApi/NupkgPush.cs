@@ -30,33 +30,11 @@ namespace ISI.Extensions.Nuget
 		{
 			var response = new DTOs.NupkgPushResponse();
 
-			void copyToNugetCacheDirectory(string fullName)
-			{
-				if (!string.IsNullOrWhiteSpace(request.NugetCacheDirectory))
-				{
-					var nugetCacheDirectoryFullName = System.IO.Path.Combine(request.NugetCacheDirectory, System.IO.Path.GetFileName(fullName));
-
-					if (!System.IO.File.Exists(nugetCacheDirectoryFullName))
-					{
-						System.IO.File.Copy(fullName, nugetCacheDirectoryFullName);
-					}
-				}
-			}
-
-			if (string.IsNullOrWhiteSpace(request.RepositoryUri?.ToString()) && string.IsNullOrWhiteSpace(request.RepositoryName))
+			if (!string.IsNullOrWhiteSpace(request.RepositoryName))
 			{
 				foreach (var nupkgFullName in request.NupkgFullNames)
 				{
-					copyToNugetCacheDirectory(nupkgFullName);
-				}
-			}
-			else if (request.UseNugetPush)
-			{
-				var source = (string.IsNullOrWhiteSpace(request.RepositoryName) ? request.RepositoryUri.ToString() : request.RepositoryName);
-
-				foreach (var nupkgFullName in request.NupkgFullNames)
-				{
-					Logger.LogInformation(string.Format("Pushing \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), source));
+					Logger.LogInformation(string.Format("Pushing \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), request.RepositoryName));
 
 					ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 					{
@@ -66,16 +44,16 @@ namespace ISI.Extensions.Nuget
 						Arguments = new[]
 						{
 							"push",
-							string.Format("-Source \"{0}\"", source),
+							string.Format("-Source \"{0}\"", request.RepositoryName),
 							string.Format("-ApiKey \"{0}\"", request.ApiKey),
 							string.Format("\"{0}\"", nupkgFullName),
 						}
 					});
 
-					copyToNugetCacheDirectory(nupkgFullName);
+					Logger.LogInformation(string.Format("Pushed \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), request.RepositoryUri));
 				}
 			}
-			else
+			else if(!string.IsNullOrWhiteSpace(request.RepositoryUri?.ToString()))
 			{
 				foreach (var nupkgFullName in request.NupkgFullNames)
 				{
@@ -110,6 +88,8 @@ namespace ISI.Extensions.Nuget
 						}
 					}
 
+					var repositoryUri = new UriBuilder(request.RepositoryUri);
+					repositoryUri.Path = "api/v2/package-chunk";
 
 					while (fileSegments.Any())
 					{
@@ -123,7 +103,7 @@ namespace ISI.Extensions.Nuget
 								System.Net.ServicePointManager.Expect100Continue = true;
 								System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls;
 
-								var webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(string.Format("{0}api/v2/package-chunk", request.RepositoryUri.ToString()));
+								var webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(repositoryUri.Uri.ToString());
 
 								webRequest.Method = System.Net.WebRequestMethods.Http.Post;
 								webRequest.ContentType = "application/x-www-form-urlencoded";
@@ -169,8 +149,6 @@ namespace ISI.Extensions.Nuget
 							}
 						}
 					}
-
-					copyToNugetCacheDirectory(nupkgFullName);
 
 					Logger.LogInformation(string.Format("Pushed \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), request.RepositoryUri));
 				}

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>ISI.Extensions</id>
+    <version>10.0.7769.24004</version>
+    <title>ISI.Extensions</title>
+    <authors>Integrated Solutions, Inc.</authors>
+    <owners>Integrated Solutions, Inc.</owners>
+    <projectUrl>https://github.com/ISI-Extensions/ISI.Extensions</projectUrl>
+    <description>ISI.Extensions</description>
+    <copyright>Copyright (c) 2021, Integrated Solutions, Inc.</copyright>
+    
+    <icon>https://github.com/ISI-Extensions/ISI.Extensions/Lantern.png</icon>
+    <dependencies>
+      <dependency id="Microsoft.Extensions.FileProviders.Physical" version="5.0.0" />
+      <dependency id="Microsoft.Extensions.FileProviders.Composite" version="5.0.0" />
+      <dependency id="Microsoft.Extensions.FileProviders.Embedded" version="5.0.5" />
+      <dependency id="Microsoft.Extensions.Hosting" version="5.0.0" />
+      <dependency id="Microsoft.Extensions.Configuration.Abstractions" version="5.0.0" />
+      <dependency id="Microsoft.Extensions.FileProviders.Abstractions" version="5.0.0" />
+      <dependency id="Microsoft.Extensions.Options.ConfigurationExtensions" version="5.0.0" />
+      <dependency id="Microsoft.Extensions.Caching.Abstractions" version="5.0.0" />
+      <dependency id="Microsoft.Extensions.Primitives" version="5.0.1" />
+      <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="5.0.0" />
+      <dependency id="NETStandard.Library" version="2.0.3" />
+      <dependency id="System.Text.Json" version="5.0.2" />
+      <dependency id="System.Composition" version="5.0.1" />
+    </dependencies>
+  </metadata>
+  
+</package>

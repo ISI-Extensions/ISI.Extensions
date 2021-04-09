@@ -32,6 +32,11 @@ namespace ISI.Extensions.Nuget
 			
 			Logger.LogInformation(string.Format("Packing \"{0}\"", System.IO.Path.GetFileName(request.NuspecFullName)));
 
+			if (string.IsNullOrWhiteSpace(request.OutputDirectory))
+			{
+				request.OutputDirectory = System.IO.Path.GetDirectoryName(request.NuspecFullName);
+			}
+
 			ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{
 				Logger = Logger,

@@ -19,38 +19,10 @@ using System.Text;
 
 namespace ISI.Extensions.Nuget
 {
-	public class Nuspec
+	public class NuspecFile
 	{
-		public string Package { get; set; }
-		public string Version { get; set; }
-
-		public Uri IconUri { get; set; }
-		public Uri ProjectUri { get; set; }
-
-		public string Title { get; set; }
-		public string Description { get; set; }
-		public string Summary { get; set; }
-
-		public IEnumerable<string> Authors { get; set; }
-		public IEnumerable<string> Owners { get; set; }
-
-		public string Copyright { get; set; }
-
-		public Uri LicenseUri { get; set; }
-		public NuspecLicense License { get; set; }
-
-		public bool? RequireLicenseAcceptance { get; set; }
-		public string ReleaseNotes { get; set; }
-		public string Readme { get; set; }
-
-		public IEnumerable<string> Tags { get; set; }
-
-		public NuspecRepository Repository { get; set; }
-
-		public IEnumerable<NuspecPackageType> PackageTypes { get; set; }
-
-		public IEnumerable<INuspecDependency> Dependencies { get; set; }
-
-		public IEnumerable<NuspecFile> Files { get; set; }
+		public string Target { get; set; }
+		public string SourcePattern { get; set; }
+		public string ExcludePattern { get; set; }
 	}
 }

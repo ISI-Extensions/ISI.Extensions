@@ -125,6 +125,13 @@ namespace ISI.Extensions.Nuget
 				}, NullCheckCollectionResult.ReturnNull)
 			});
 
+			package.files = request.Nuspec.Files.ToNullCheckedArray(file => new ISI.Extensions.Nuget.SerializableEntities.packageFile()
+			{
+				src = file.SourcePattern,
+				target = (string.IsNullOrWhiteSpace(file.Target) ? null : file.Target),
+				exclude = (string.IsNullOrWhiteSpace(file.ExcludePattern) ? null : file.ExcludePattern),
+			}, NullCheckCollectionResult.ReturnNull);
+
 			using (var stream = new System.IO.MemoryStream())
 			{
 				var xmlSerializer = new System.Xml.Serialization.XmlSerializer(typeof(ISI.Extensions.Nuget.SerializableEntities.package));

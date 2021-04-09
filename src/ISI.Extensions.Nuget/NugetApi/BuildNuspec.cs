@@ -40,7 +40,8 @@ namespace ISI.Extensions.Nuget
 
 			if (request.Nuspec.IconUri != null)
 			{
-				package.metadata.iconUrl = request.Nuspec.IconUri.ToString();
+				package.metadata.icon = request.Nuspec.IconUri.ToString();
+				//package.metadata.iconUrl = request.Nuspec.IconUri.ToString();
 			}
 
 			if (request.Nuspec.ProjectUri != null)

@@ -24,6 +24,7 @@ namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 	public partial class NupkgPackRequest
 	{
 		public string NuspecFullName { get; set; }
+		public string OutputDirectory { get; set; }
 
 		public string WorkingDirectory { get; set; }
 	}

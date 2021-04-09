@@ -41,6 +41,7 @@ namespace ISI.Extensions.Nuget
 				{
 					"pack",
 					string.Format("\"{0}\"", request.NuspecFullName),
+					string.Format("-OutputDirectory \"{0}\"", request.OutputDirectory),
 				}
 			});
 

@@ -58,21 +58,24 @@ namespace ISI.Extensions.Nuget
 
 			foreach (var fullName in fullNames)
 			{
-				var lines = System.IO.File.ReadAllLines(fullName);
-
-				foreach (var line in lines)
+				if(System.IO.File.Exists(fullName))
 				{
-					if (line.IndexOf("assembly: AssemblyCompany", StringComparison.InvariantCultureIgnoreCase) >= 0)
+					var lines = System.IO.File.ReadAllLines(fullName);
+
+					foreach (var line in lines)
 					{
-						response.Nuspec.Owners = new[] { line.Split(new[] { '\"' }, StringSplitOptions.None)[1] };
-					}
-					else if (line.IndexOf("assembly: AssemblyCopyright", StringComparison.InvariantCultureIgnoreCase) >= 0)
-					{
-						response.Nuspec.Copyright = line.Split(new[] { '\"' }, StringSplitOptions.None)[1];
-					}
-					else if (line.IndexOf("assembly: AssemblyVersion", StringComparison.InvariantCultureIgnoreCase) >= 0)
-					{
-						response.Nuspec.Version = line.Split(new[] { '\"' }, StringSplitOptions.None)[1];
+						if (line.IndexOf("assembly: AssemblyCompany", StringComparison.InvariantCultureIgnoreCase) >= 0)
+						{
+							response.Nuspec.Owners = new[] { line.Split(new[] { '\"' }, StringSplitOptions.None)[1] };
+						}
+						else if (line.IndexOf("assembly: AssemblyCopyright", StringComparison.InvariantCultureIgnoreCase) >= 0)
+						{
+							response.Nuspec.Copyright = line.Split(new[] { '\"' }, StringSplitOptions.None)[1];
+						}
+						else if (line.IndexOf("assembly: AssemblyVersion", StringComparison.InvariantCultureIgnoreCase) >= 0)
+						{
+							response.Nuspec.Version = line.Split(new[] { '\"' }, StringSplitOptions.None)[1];
+						}
 					}
 				}
 			}

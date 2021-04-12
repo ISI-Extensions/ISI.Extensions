@@ -87,7 +87,7 @@ Task("Nuget")
 	.IsDependentOn("Sign")
 	.Does(() =>
 	{
-		foreach(var project in solution.Projects.Where(project => project.Path.FullPath.EndsWith(".csproj") && !project.Name.EndsWith(".Tests")))
+		foreach(var project in solution.Projects.Where(project => project.Path.FullPath.EndsWith(".csproj") && !project.Name.EndsWith(".Tests") && !project.Name.EndsWith(".T4LocalContent")))
 		{
 			Information(project.Name);
 
@@ -153,6 +153,92 @@ Task("Nuget")
 				RepositoryUri = new Uri(settings.Nuget.RepositoryUrl),
 			});
 		}
+
+		//ISI.Extensions.T4LocalContent.*
+		foreach(var t4LocalContentVersion in new [] { "", "Embedded", "Resources", "VirtualFiles", "WebApplication", "WebPortableArea" })
+		{
+			var project = solution.Projects.First(project => project.Name.EndsWith("ISI.Extensions.T4LocalContent"));
+
+			var projectName = "ISI.Extensions.T4LocalContent" + (string.IsNullOrWhiteSpace(t4LocalContentVersion) ? string.Empty : "." + t4LocalContentVersion);
+			Information(projectName);
+			Information(project.Path.GetDirectory());
+			
+			var assemblyGroupDirectory = System.IO.Path.GetDirectoryName(project.Path.GetDirectory().FullPath);
+			var assemblyGroupName = System.IO.Path.GetFileName(assemblyGroupDirectory);
+
+			Information(string.Format("  {0} => {1}", assemblyGroupName, assemblyGroupDirectory));
+
+			var nuspec = new ISI.Extensions.Nuget.Nuspec()
+			{
+				Package = projectName,
+				Version = assemblyVersions[assemblyGroupName],
+				IconUri = new Uri(@"https://nuget.isi-net.com/Images/Lantern.png"),
+				ProjectUri = new Uri(@"https://svn.isi-net.com/ISI"),
+				Title = projectName,
+				Description = projectName,
+				Copyright = string.Format("Copyright (c) {0}, Integrated Solutions, Inc.", DateTime.Now.Year),
+				Authors = new [] { "Integrated Solutions, Inc." },
+				Owners = new [] { "Integrated Solutions, Inc." },
+				Files = new []
+				{
+					new ISI.Extensions.Nuget.NuspecFile()
+					{
+						Target = "Content/T4LocalContent",
+						SourcePattern = (string.IsNullOrWhiteSpace(t4LocalContentVersion) ? string.Empty : t4LocalContentVersion + "/") + "T4LocalContent.settings.t4.pp",
+					},
+					new ISI.Extensions.Nuget.NuspecFile()
+					{
+						Target = "Content/T4LocalContent",
+						SourcePattern = "T4LocalContent.Generator.t4",
+					},
+					new ISI.Extensions.Nuget.NuspecFile()
+					{
+						Target = "Content/T4LocalContent",
+						SourcePattern = "T4LocalContent.tt.pp",
+					},
+					new ISI.Extensions.Nuget.NuspecFile()
+					{
+						Target = "tools",
+						SourcePattern = "Install.ps1",
+					},
+				},
+			};
+
+			var nuspecFile = File(project.Path.GetDirectory() + "/" + projectName + ".nuspec");
+			
+			Information(nuspecFile.Path.FullPath);
+
+			CreateNuspecFile(new ISI.Cake.Addin.Nuget.CreateNuspecFileRequest()
+			{
+				Nuspec = nuspec,
+				NuspecFullName = nuspecFile.Path.FullPath,
+			});
+
+			NupkgPack(new ISI.Cake.Addin.Nuget.NupkgPackRequest()
+			{
+				NuspecFullName = nuspecFile.Path.FullPath,
+				OutputDirectory = nugetDirectory,
+			});
+
+			DeleteFile(nuspecFile);
+
+			var nupgkFile = File(nugetDirectory + "/" + projectName + "." + assemblyVersions[assemblyGroupName] + ".nupkg");
+
+			NupkgSign(new ISI.Cake.Addin.Nuget.NupkgSignRequest()
+			{
+				NupkgFullNames = new [] { nupgkFile.Path.FullPath },
+				TimestamperUri = new Uri(settings.CodeSigning.TimeStampUrl),
+				CertificatePath = File(settings.CodeSigning.CertificateFileName),
+				CertificatePassword = settings.CodeSigning.CertificatePassword,
+			});
+
+			NupkgPush(new ISI.Cake.Addin.Nuget.NupkgPushRequest()
+			{
+				NupkgFullNames = new [] { nupgkFile.Path.FullPath },
+				ApiKey = settings.Nuget.ApiKey,
+				RepositoryUri = new Uri(settings.Nuget.RepositoryUrl),
+			});
+		}	
 	});
 
 Task("Default")

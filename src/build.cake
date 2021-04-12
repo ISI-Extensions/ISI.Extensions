@@ -171,7 +171,7 @@ Task("Nuget")
 			var nuspec = new ISI.Extensions.Nuget.Nuspec()
 			{
 				Package = projectName,
-				Version = assemblyVersions[assemblyGroupName],
+				Version = assemblyVersion,
 				IconUri = new Uri(@"https://nuget.isi-net.com/Images/Lantern.png"),
 				ProjectUri = new Uri(@"https://svn.isi-net.com/ISI"),
 				Title = projectName,
@@ -222,7 +222,7 @@ Task("Nuget")
 
 			DeleteFile(nuspecFile);
 
-			var nupgkFile = File(nugetDirectory + "/" + projectName + "." + assemblyVersions[assemblyGroupName] + ".nupkg");
+			var nupgkFile = File(nugetDirectory + "/" + projectName + "." + assemblyVersion+ ".nupkg");
 
 			NupkgSign(new ISI.Cake.Addin.Nuget.NupkgSignRequest()
 			{

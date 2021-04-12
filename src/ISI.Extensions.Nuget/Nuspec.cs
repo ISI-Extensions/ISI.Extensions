@@ -24,6 +24,7 @@ namespace ISI.Extensions.Nuget
 		public string Package { get; set; }
 		public string Version { get; set; }
 
+		public string IconName { get; set; }
 		public Uri IconUri { get; set; }
 		public Uri ProjectUri { get; set; }
 

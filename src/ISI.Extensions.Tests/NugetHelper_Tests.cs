@@ -30,10 +30,15 @@ namespace ISI.Extensions.Tests
 
 			var nuspec = nugetHelper.GenerateNuspecFromProject(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GenerateNuspecFromProjectRequest()
 			{
-				ProjectFullName = @"F:\ISI\Internal Projects\ISI.Extensions\src\ISI.Extensions.Nuget\ISI.Extensions.Nuget.csproj",
+				ProjectFullName = @"F:\ISI\ISI.FrameWork\src\ISI.Wrappers\ISI.Wrappers.MassTransit\ISI.Wrappers.MassTransit.csproj",
 				GetPackageVersion = package =>
 					{
 						if (package.StartsWith("ISI.Extensions", StringComparison.InvariantCultureIgnoreCase))
+						{
+							return "10.0.*";
+						}
+
+						if (package.StartsWith("ISI.Libraries", StringComparison.InvariantCultureIgnoreCase))
 						{
 							return "10.0.*";
 						}

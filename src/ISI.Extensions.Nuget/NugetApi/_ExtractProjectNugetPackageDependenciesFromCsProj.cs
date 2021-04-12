@@ -35,17 +35,17 @@ namespace ISI.Extensions.Nuget
 
 			var csProjXml = System.Xml.Linq.XElement.Load(csProjFullName);
 
-			foreach (var itemGroup in csProjXml.Elements("ItemGroup"))
+			foreach (var itemGroup in csProjXml.Elements().Where(e => string.Equals(e.Name.LocalName, "ItemGroup", StringComparison.InvariantCultureIgnoreCase)))
 			{
-				var packageReferences = itemGroup.Elements("PackageReference");
+				var packageReferences = itemGroup.Elements().Where(e => string.Equals(e.Name.LocalName, "PackageReference", StringComparison.InvariantCultureIgnoreCase));
 
 				foreach (var packageReference in packageReferences)
 				{
-					var packageId = (packageReference.Attributes("Include").FirstOrDefault() ?? packageReference.Attributes("Update").FirstOrDefault())?.Value;
-					var packageVersion = packageReference.Attributes("Version").FirstOrDefault()?.Value;
+					var packageId = (packageReference.Attributes().FirstOrDefault(e => string.Equals(e.Name.LocalName, "Include", StringComparison.InvariantCultureIgnoreCase)) ?? packageReference.Attributes().FirstOrDefault(e => string.Equals(e.Name.LocalName, "Update", StringComparison.InvariantCultureIgnoreCase)))?.Value;
+					var packageVersion = packageReference.Attributes().FirstOrDefault(e => string.Equals(e.Name.LocalName, "Version", StringComparison.InvariantCultureIgnoreCase))?.Value;
 					if (string.IsNullOrWhiteSpace(packageVersion))
 					{
-						packageVersion = packageReference.Elements("Version").FirstOrDefault()?.Value;
+						packageVersion = packageReference.Elements().FirstOrDefault(e => string.Equals(e.Name.LocalName, "Version", StringComparison.InvariantCultureIgnoreCase))?.Value;
 					}
 
 					if (!string.IsNullOrWhiteSpace(packageVersion))
@@ -64,11 +64,11 @@ namespace ISI.Extensions.Nuget
 					}
 				}
 
-				var projectReferences = itemGroup.Elements("ProjectReference");
+				var projectReferences = itemGroup.Elements().Where(e => string.Equals(e.Name.LocalName, "ProjectReference", StringComparison.InvariantCultureIgnoreCase));
 
 				foreach (var projectReference in projectReferences)
 				{
-					var projectPath = projectReference.Attributes("Include").FirstOrDefault()?.Value;
+					var projectPath = projectReference.Attributes().FirstOrDefault(e => string.Equals(e.Name.LocalName, "Include", StringComparison.InvariantCultureIgnoreCase))?.Value;
 
 					if (!string.IsNullOrWhiteSpace(projectPath))
 					{

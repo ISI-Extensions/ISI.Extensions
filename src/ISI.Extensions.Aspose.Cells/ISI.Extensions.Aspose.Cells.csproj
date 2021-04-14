@@ -18,7 +18,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Aspose.Cells" Version="21.3.0" />
+	  <PackageReference Include="Aspose.Cells" Version="21.4.0" />
 	</ItemGroup>
 
 	<ItemGroup>

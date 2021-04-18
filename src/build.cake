@@ -105,7 +105,7 @@ Task("Nuget")
 				}
 			}).Nuspec;
 			nuspec.Version = assemblyVersion;
-			nuspec.IconUri = new Uri(@"https://github.com/ISI-Extensions/ISI.Extensions/Lantern.png");
+			nuspec.IconUri = new Uri(@"https://nuget.isi-net.com/Images/Lantern.png");
 			nuspec.ProjectUri = new Uri(@"https://github.com/ISI-Extensions/ISI.Extensions");
 			nuspec.Title = project.Name;
 			nuspec.Description = project.Name;

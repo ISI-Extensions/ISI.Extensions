@@ -21,14 +21,14 @@ using NUnit.Framework;
 namespace ISI.Extensions.Tests
 {
 	[TestFixture]
-	public class NugetHelper_Tests
+	public class NugetApi_Tests
 	{
 		[Test]
 		public void Nuspec_Test()
 		{
-			var nugetHelper = new ISI.Extensions.Nuget.NugetApi(new ConsoleLogger());
+			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ConsoleLogger());
 
-			var nuspec = nugetHelper.GenerateNuspecFromProject(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GenerateNuspecFromProjectRequest()
+			var nuspec = nugetApi.GenerateNuspecFromProject(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GenerateNuspecFromProjectRequest()
 			{
 				ProjectFullName = @"F:\ISI\ISI.FrameWork\src\ISI.Wrappers\ISI.Wrappers.MassTransit\ISI.Wrappers.MassTransit.csproj",
 				GetPackageVersion = package =>
@@ -57,7 +57,7 @@ namespace ISI.Extensions.Tests
 			nuspec.Owners = new[] { "Integrated  Solutions, Inc." };
 
 
-			var xxx = nugetHelper.BuildNuspec(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.BuildNuspecRequest()
+			var xxx = nugetApi.BuildNuspec(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.BuildNuspecRequest()
 			{
 				Nuspec = nuspec,
 			});
@@ -68,7 +68,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void GetLatestPackageVersion_Test()
 		{
-			var nugetHelper = new ISI.Extensions.Nuget.NugetApi(new ConsoleLogger());
+			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ConsoleLogger());
 
 			var packageNugetServers = new Dictionary<string, string>();
 			packageNugetServers.Add("ISI.*", "https://nuget.isi-net.com");
@@ -76,13 +76,13 @@ namespace ISI.Extensions.Tests
 			var mainNugetPackageForConsideration = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
 			mainNugetPackageForConsideration.Add("JQuery");
 
-			var xxx = nugetHelper.GetLatestPackageVersion(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetLatestPackageVersionRequest()
+			var xxx = nugetApi.GetLatestPackageVersion(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetLatestPackageVersionRequest()
 			{
 				PackageId = "ISI.Libraries",
 				PackageNugetServers = packageNugetServers,
 				MainNugetPackageForConsideration = mainNugetPackageForConsideration
 			});
-			var yyy = nugetHelper.GetLatestPackageVersion(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetLatestPackageVersionRequest()
+			var yyy = nugetApi.GetLatestPackageVersion(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetLatestPackageVersionRequest()
 			{
 				PackageId = "JQuery",
 				PackageNugetServers = packageNugetServers,

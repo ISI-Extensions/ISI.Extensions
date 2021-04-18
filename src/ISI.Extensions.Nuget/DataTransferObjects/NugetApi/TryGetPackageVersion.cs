@@ -21,5 +21,5 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public delegate string GetPackageVersion(string packageId);
+	public delegate bool TryGetPackageVersion(string packageId, out string packageVersion);
 }

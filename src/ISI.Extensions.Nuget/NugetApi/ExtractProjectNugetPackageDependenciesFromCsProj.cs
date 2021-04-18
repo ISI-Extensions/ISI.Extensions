@@ -31,7 +31,11 @@ namespace ISI.Extensions.Nuget
 		{
 			var response = new DTOs.ExtractProjectNugetPackageDependenciesFromCsProjResponse();
 
-			request.GetPackageVersion ??= s => string.Empty;
+			request.TryGetPackageVersion ??= (string _, out string version) =>
+			{
+				version = string.Empty;
+				return false;
+			};
 
 			var nugetPackageKeys = new NugetPackageKeyDictionary();
 
@@ -76,7 +80,10 @@ namespace ISI.Extensions.Nuget
 					{
 						var packageId = System.IO.Path.GetFileNameWithoutExtension(projectPath);
 
-						var packageVersion = request.GetPackageVersion(packageId);
+						if (!request.TryGetPackageVersion(packageId, out var packageVersion))
+						{
+							packageVersion = string.Empty;
+						}
 
 						if (!string.IsNullOrWhiteSpace(packageVersion))
 						{

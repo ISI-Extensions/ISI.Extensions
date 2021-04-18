@@ -31,20 +31,23 @@ namespace ISI.Extensions.Tests
 			var nuspec = nugetApi.GenerateNuspecFromProject(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GenerateNuspecFromProjectRequest()
 			{
 				ProjectFullName = @"F:\ISI\ISI.FrameWork\src\ISI.Wrappers\ISI.Wrappers.MassTransit\ISI.Wrappers.MassTransit.csproj",
-				GetPackageVersion = package =>
-					{
-						if (package.StartsWith("ISI.Extensions", StringComparison.InvariantCultureIgnoreCase))
-						{
-							return "10.0.*";
-						}
+				TryGetPackageVersion = (string package, out string version) =>
+					 {
+						 if (package.StartsWith("ISI.Extensions", StringComparison.InvariantCultureIgnoreCase))
+						 {
+							 version = "10.0.*";
+							 return true;
+						 }
 
-						if (package.StartsWith("ISI.Libraries", StringComparison.InvariantCultureIgnoreCase))
-						{
-							return "10.0.*";
-						}
+						 if (package.StartsWith("ISI.Libraries", StringComparison.InvariantCultureIgnoreCase))
+						 {
+							 version = "10.0.*";
+							 return true;
+						 }
 
-						return string.Empty;
-					}
+						 version = string.Empty;
+						 return false;
+					 }
 			}).Nuspec;
 
 			nuspec.Version = "2.0.0.0";

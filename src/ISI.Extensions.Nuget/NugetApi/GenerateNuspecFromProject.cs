@@ -83,7 +83,7 @@ namespace ISI.Extensions.Nuget
 			var dependencies = GetProjectNugetPackageDependencies(new DTOs.GetProjectNugetPackageDependenciesRequest()
 			{
 				ProjectFullName = request.ProjectFullName,
-				GetPackageVersion = request.GetPackageVersion,
+				TryGetPackageVersion = request.TryGetPackageVersion,
 			}).NugetPackageKeys;
 
 			response.Nuspec.Dependencies = dependencies.ToNullCheckedArray(dependency => new NuspecDependency()

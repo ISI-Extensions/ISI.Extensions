@@ -24,6 +24,6 @@ namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 	public partial class GetProjectNugetPackageDependenciesRequest
 	{
 		public string ProjectFullName { get; set; }
-		public GetPackageVersion GetPackageVersion { get; set; } = null;
+		public TryGetPackageVersion TryGetPackageVersion { get; set; } = null;
 	}
 }

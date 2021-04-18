@@ -48,7 +48,7 @@ namespace ISI.Extensions.Nuget
 				nugetPackageKeys.Merge(ExtractProjectNugetPackageDependenciesFromCsProj(new DTOs.ExtractProjectNugetPackageDependenciesFromCsProjRequest()
 				{
 					CsProjFullName = request.ProjectFullName,
-					GetPackageVersion = request.GetPackageVersion,
+					TryGetPackageVersion = request.TryGetPackageVersion,
 				}).NugetPackageKeys);
 			}
 

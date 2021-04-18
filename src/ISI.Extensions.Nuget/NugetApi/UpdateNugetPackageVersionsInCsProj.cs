@@ -30,6 +30,12 @@ namespace ISI.Extensions.Nuget
 		{
 			var response = new DTOs.UpdateNugetPackageVersionsInCsProjResponse();
 
+			request.TryGetPackageHintPath ??= (NugetPackageKey key, out string path) =>
+			{
+				path = string.Empty;
+				return false;
+			};
+
 			var csProjXml = System.Xml.Linq.XElement.Parse(request.CsProjXml);
 
 			var replacements = new Dictionary<string, string>();
@@ -126,6 +132,11 @@ namespace ISI.Extensions.Nuget
 
 									if (request.TryGetNugetPackageKey(packageId, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 									{
+										if (string.IsNullOrWhiteSpace(nugetPackageKey.HintPath) && request.TryGetPackageHintPath(nugetPackageKey, out hintPath))
+										{
+											nugetPackageKey.HintPath = hintPath;
+										}
+
 										packageAttribute.Value = packageAttribute.Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).First();
 										hintPathAttribute.Value = string.Format("{0}\\{1}", packagesPath, nugetPackageKey.HintPath);
 									}

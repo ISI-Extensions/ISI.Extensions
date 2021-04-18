@@ -18,43 +18,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Nuget.DataTransferObjects.NugetApi;
-using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.Nuget
+namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public partial class NugetApi
+	public partial class ExtractProjectNugetPackageDependenciesFromCsProjResponse
 	{
-		public DTOs.GetProjectNugetPackageDependenciesResponse GetProjectNugetPackageDependencies(DTOs.GetProjectNugetPackageDependenciesRequest request)
-		{
-			var response = new DTOs.GetProjectNugetPackageDependenciesResponse();
-
-			var nugetPackageKeys = new NugetPackageKeyDictionary();
-
-			var projectDirectory = System.IO.Path.GetDirectoryName(request.ProjectFullName);
-
-			var packagesConfigFullName = System.IO.Path.Combine(projectDirectory, "packages.config");
-			if (System.IO.File.Exists(packagesConfigFullName))
-			{
-				nugetPackageKeys.Merge(ExtractProjectNugetPackageDependenciesFromPackagesConfig(new DTOs.ExtractProjectNugetPackageDependenciesFromPackagesConfigRequest()
-				{
-					PackagesConfigFullName = packagesConfigFullName,
-				}).NugetPackageKeys);
-			}
-
-			if (request.ProjectFullName.EndsWith(".csproj", StringComparison.InvariantCultureIgnoreCase))
-			{
-				nugetPackageKeys.Merge(ExtractProjectNugetPackageDependenciesFromCsProj(new DTOs.ExtractProjectNugetPackageDependenciesFromCsProjRequest()
-				{
-					CsProjFullName = request.ProjectFullName,
-					GetPackageVersion = request.GetPackageVersion,
-				}).NugetPackageKeys);
-			}
-
-			response.NugetPackageKeys = nugetPackageKeys;
-
-			return response;
-		}
+		public NugetPackageKey[] NugetPackageKeys { get; set; }
 	}
 }

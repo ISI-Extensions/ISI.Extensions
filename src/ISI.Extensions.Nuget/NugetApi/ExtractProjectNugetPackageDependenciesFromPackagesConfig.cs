@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,33 +26,31 @@ namespace ISI.Extensions.Nuget
 {
 	public partial class NugetApi
 	{
-		public DTOs.GetProjectNugetPackageDependenciesResponse GetProjectNugetPackageDependencies(DTOs.GetProjectNugetPackageDependenciesRequest request)
+		public DTOs.ExtractProjectNugetPackageDependenciesFromPackagesConfigResponse ExtractProjectNugetPackageDependenciesFromPackagesConfig(DTOs.ExtractProjectNugetPackageDependenciesFromPackagesConfigRequest request)
 		{
-			var response = new DTOs.GetProjectNugetPackageDependenciesResponse();
+			var response = new DTOs.ExtractProjectNugetPackageDependenciesFromPackagesConfigResponse();
 
 			var nugetPackageKeys = new NugetPackageKeyDictionary();
 
-			var projectDirectory = System.IO.Path.GetDirectoryName(request.ProjectFullName);
+			var packages = from packageTag in System.Xml.Linq.XElement.Load(request.PackagesConfigFullName).Elements("package")
+				select new { Id = packageTag.Attribute("id").Value, Version = packageTag.Attribute("version").Value };
 
-			var packagesConfigFullName = System.IO.Path.Combine(projectDirectory, "packages.config");
-			if (System.IO.File.Exists(packagesConfigFullName))
+			foreach (var package in packages)
 			{
-				nugetPackageKeys.Merge(ExtractProjectNugetPackageDependenciesFromPackagesConfig(new DTOs.ExtractProjectNugetPackageDependenciesFromPackagesConfigRequest()
+				if (nugetPackageKeys.TryGetValue(package.Id, out var nugetPackageKey))
 				{
-					PackagesConfigFullName = packagesConfigFullName,
-				}).NugetPackageKeys);
+					if (!string.Equals(package.Version, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
+					{
+						throw new Exception(string.Format("Multiple versions of {0} found", package.Id));
+					}
+				}
+				else
+				{
+					nugetPackageKeys.TryAdd(package.Id, package.Version);
+				}
 			}
 
-			if (request.ProjectFullName.EndsWith(".csproj", StringComparison.InvariantCultureIgnoreCase))
-			{
-				nugetPackageKeys.Merge(ExtractProjectNugetPackageDependenciesFromCsProj(new DTOs.ExtractProjectNugetPackageDependenciesFromCsProjRequest()
-				{
-					CsProjFullName = request.ProjectFullName,
-					GetPackageVersion = request.GetPackageVersion,
-				}).NugetPackageKeys);
-			}
-
-			response.NugetPackageKeys = nugetPackageKeys;
+			response.NugetPackageKeys = nugetPackageKeys.ToArray();
 
 			return response;
 		}

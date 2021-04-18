@@ -27,13 +27,15 @@ namespace ISI.Extensions.Nuget
 {
 	public partial class NugetApi
 	{
-		private NugetPackageKey[] ExtractProjectNugetPackageDependenciesFromCsProj(string csProjFullName, DTOs.GetPackageVersion getPackageVersion = null)
+		public DTOs.ExtractProjectNugetPackageDependenciesFromCsProjResponse ExtractProjectNugetPackageDependenciesFromCsProj(DTOs.ExtractProjectNugetPackageDependenciesFromCsProjRequest request)
 		{
-			getPackageVersion ??= s => string.Empty;
+			var response = new DTOs.ExtractProjectNugetPackageDependenciesFromCsProjResponse();
+
+			request.GetPackageVersion ??= s => string.Empty;
 
 			var nugetPackageKeys = new NugetPackageKeyDictionary();
 
-			var csProjXml = System.Xml.Linq.XElement.Load(csProjFullName);
+			var csProjXml = System.Xml.Linq.XElement.Load(request.CsProjFullName);
 
 			foreach (var itemGroup in csProjXml.Elements().Where(e => string.Equals(e.Name.LocalName, "ItemGroup", StringComparison.InvariantCultureIgnoreCase)))
 			{
@@ -74,7 +76,7 @@ namespace ISI.Extensions.Nuget
 					{
 						var packageId = System.IO.Path.GetFileNameWithoutExtension(projectPath);
 
-						var packageVersion = getPackageVersion(packageId);
+						var packageVersion = request.GetPackageVersion(packageId);
 
 						if (!string.IsNullOrWhiteSpace(packageVersion))
 						{
@@ -162,7 +164,9 @@ namespace ISI.Extensions.Nuget
 				}
 			}
 
-			return nugetPackageKeys.ToArray();
+			response.NugetPackageKeys = nugetPackageKeys.ToArray();
+
+			return response;
 		}
 	}
 }

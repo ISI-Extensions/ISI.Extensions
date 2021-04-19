@@ -15,6 +15,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using NUnit.Framework;
 
@@ -91,6 +92,216 @@ namespace ISI.Extensions.Tests
 				PackageNugetServers = packageNugetServers,
 				MainNugetPackageForConsideration = mainNugetPackageForConsideration
 			});
+		}
+
+
+		private bool HasChanges(string original, string newVersion)
+		{
+			string getCompressed(string value) => value
+				.Replace(" ", string.Empty)
+				.Replace("\t", string.Empty)
+				.Replace("\r", string.Empty)
+				.Replace("\n", string.Empty);
+
+			return !string.Equals(getCompressed(original), getCompressed(newVersion), StringComparison.InvariantCultureIgnoreCase);
+		}
+
+		[Test]
+		public void UpdatePackageVersions_Test()
+		{
+			var nugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
+			var packageNugetServers = new Dictionary<string, string>();
+
+			var mainNugetPackageForConsideration = new HashSet<string>();
+			mainNugetPackageForConsideration.Add("AWSSDK.Core");
+			mainNugetPackageForConsideration.Add("FluentValidation");
+			mainNugetPackageForConsideration.Add("Polly");
+
+			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.ConsoleLogger());
+
+			{
+				var sourceSolution = @"F:\ISI\ISI.FrameWork\src";
+
+				var sourceCsProjFileNames = System.IO.Directory.GetFiles(sourceSolution, "*.csproj", System.IO.SearchOption.AllDirectories).Where(f => f.Substring(sourceSolution.Length).IndexOf("\\.svn\\") < 0);
+
+				foreach (var csProjFileName in sourceCsProjFileNames)
+				{
+					var projectDirectory = System.IO.Path.GetDirectoryName(csProjFileName);
+
+					var packagesConfigFullName = System.IO.Path.Combine(projectDirectory, "packages.config");
+
+					if (System.IO.File.Exists(packagesConfigFullName))
+					{
+						nugetPackageKeys.Merge(nugetApi.ExtractProjectNugetPackageDependenciesFromPackagesConfig(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.ExtractProjectNugetPackageDependenciesFromPackagesConfigRequest()
+						{
+							PackagesConfigFullName = packagesConfigFullName,
+						}).NugetPackageKeys);
+					}
+				}
+
+				foreach (var csProjFileName in sourceCsProjFileNames)
+				{
+					nugetPackageKeys.Merge(nugetApi.ExtractProjectNugetPackageDependenciesFromCsProj(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.ExtractProjectNugetPackageDependenciesFromCsProjRequest()
+					{
+						CsProjFullName = csProjFileName,
+					}).NugetPackageKeys);
+				}
+
+				//var packageNugetServers = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+				packageNugetServers.Add("ISI.*", "https://nuget.isi-net.com");
+				packageNugetServers.Add("ICS.*", "https://nuget.swdcentral.com");
+				packageNugetServers.Add("Tristar.*", "https://nuget.tristarfulfillment.com");
+			}
+
+			var solution = @"F:\ISI\Clients\TFS\Tristar.Scheduler";
+
+			var dirtyFileNames = new HashSet<string>();
+
+			bool TryGetNugetPackageKey(string id, out ISI.Extensions.Nuget.NugetPackageKey key)
+			{
+				if (nugetPackageKeys.TryGetValue(id, out key))
+				{
+					return true;
+				}
+
+				var version = nugetApi.GetLatestPackageVersion(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetLatestPackageVersionRequest()
+				{
+					MainNugetPackageForConsideration = mainNugetPackageForConsideration,
+					PackageNugetServers = packageNugetServers,
+					PackageId = id,
+				}).PackageVersion;
+
+				nugetPackageKeys.TryAdd(id, version);
+
+				return nugetPackageKeys.TryGetValue(id, out key);
+			}
+
+			var csProjFileNames = System.IO.Directory.GetFiles(solution, "*.csproj", System.IO.SearchOption.AllDirectories).Where(f => (f.Substring(solution.Length).IndexOf("\\.svn\\") < 0) && (f.Substring(solution.Length).IndexOf("\\src\\Resources\\") < 0));
+
+			foreach (var csProjFileName in csProjFileNames)
+			{
+				var projectDirectory = System.IO.Path.GetDirectoryName(csProjFileName);
+
+				var packagesConfigFullName = System.IO.Path.Combine(projectDirectory, "packages.config");
+
+				if (System.IO.File.Exists(packagesConfigFullName))
+				{
+					var packagesConfig = System.IO.File.ReadAllText(packagesConfigFullName);
+
+					try
+					{
+						var newPackagesConfig = nugetApi.UpdateNugetPackageVersionsInPackagesConfig(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.UpdateNugetPackageVersionsInPackagesConfigRequest()
+						{
+							PackagesConfigXml = packagesConfig,
+							TryGetNugetPackageKey = TryGetNugetPackageKey,
+						}).PackagesConfigXml;
+
+						if (HasChanges(packagesConfig, newPackagesConfig))
+						{
+							System.IO.File.WriteAllText(packagesConfigFullName, newPackagesConfig);
+
+							dirtyFileNames.Add(packagesConfigFullName);
+						}
+					}
+					catch (Exception exception)
+					{
+						throw new Exception(string.Format("File: {0}", packagesConfigFullName), exception);
+					}
+				}
+			}
+
+			foreach (var csProjFileName in csProjFileNames)
+			{
+				var csProj = System.IO.File.ReadAllText(csProjFileName);
+
+				try
+				{
+					var newCsProj = nugetApi.UpdateNugetPackageVersionsInCsProj(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.UpdateNugetPackageVersionsInCsProjRequest()
+					{
+						CsProjXml = csProj,
+						TryGetNugetPackageKey = TryGetNugetPackageKey,
+						TryGetPackageHintPath = (ISI.Extensions.Nuget.NugetPackageKey nugetPackageKey, out string hintPath) =>
+						{
+							if (nugetPackageKey.Package.StartsWith("ISI.Extensions"))
+							{
+								hintPath = string.Format("{0}.{1}\\lib\\netstandard2.0\\{0}.dll", nugetPackageKey.Package, nugetPackageKey.Version);
+								return true;
+							}
+							else if (nugetPackageKey.Package.StartsWith("ISI."))
+							{
+								hintPath = string.Format("{0}.{1}\\lib\\net48\\{0}.dll", nugetPackageKey.Package, nugetPackageKey.Version);
+								return true;
+							}
+							else if (nugetPackageKey.Package.StartsWith("Tristar."))
+							{
+								hintPath = string.Format("{0}.{1}\\lib\\net48\\{0}.dll", nugetPackageKey.Package, nugetPackageKey.Version);
+								return true;
+							}
+							else if (nugetPackageKey.Package.StartsWith("ICS."))
+							{
+								hintPath = string.Format("{0}.{1}\\lib\\net48\\{0}.dll", nugetPackageKey.Package, nugetPackageKey.Version);
+								return true;
+							}
+
+							{
+								var nugetDownloadUrl = string.Format("https://www.nuget.org/api/v2/package/{0}/{1}", nugetPackageKey.Package, nugetPackageKey.Version);
+
+								var downloadResponse = ISI.Extensions.WebClient.Download.DownloadFile<System.IO.MemoryStream>(nugetDownloadUrl, new ISI.Extensions.WebClient.HeaderCollection());
+
+								var zipArchive = new System.IO.Compression.ZipArchive(downloadResponse.Stream, System.IO.Compression.ZipArchiveMode.Read);
+
+								var dlls = zipArchive.Entries.Select(entry => entry.FullName).Where(fullName => fullName.EndsWith(string.Format("{0}.dll", nugetPackageKey.Package))).ToArray();
+
+								foreach (var dllPrefix in new[]
+								{
+										"lib/net48/",
+										"lib/net4.8/",
+										"lib/net472/",
+										"lib/net4.72/",
+										"lib/net461/",
+										"lib/net4.61/",
+										"lib/net46/",
+										"lib/net4.6/",
+										"lib/net40/",
+										"lib/net4.0/",
+										"lib/net35/",
+										"lib/net3.5/",
+										"lib/net20/",
+										"lib/net2.0/",
+										"lib/netstandard2.0/",
+									})
+								{
+									foreach (var dll in dlls)
+									{
+										if (dll.StartsWith(dllPrefix, StringComparison.InvariantCultureIgnoreCase))
+										{
+											hintPath = string.Format("{0}.{1}\\{2}", nugetPackageKey.Package, nugetPackageKey.Version, dll.Replace("/", "\\"));
+											return true;
+										}
+									}
+								}
+							}
+
+							hintPath = string.Empty;
+							return false;
+						},
+						ConvertToPackageReferences = false,
+					}).CsProjXml;
+
+					if (HasChanges(csProj, newCsProj))
+					{
+						System.IO.File.WriteAllText(csProjFileName, newCsProj);
+
+						dirtyFileNames.Add(csProjFileName);
+					}
+				}
+				catch (Exception exception)
+				{
+					throw new Exception(string.Format("File: {0}", csProjFileName), exception);
+
+				}
+			}
+
 		}
 	}
 }

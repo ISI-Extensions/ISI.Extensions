@@ -34,14 +34,13 @@ namespace ISI.Extensions.Scm
 			buildArtifactManagementUri.Path = "remote-management/";
 
 			Logger.LogInformation(string.Format("DeployArtifact, ServicesManagerUrl: {0}", request.ServicesManagerUrl));
-			Logger.LogInformation(string.Format("DeployArtifact, Password: {0}", request.Password));
 			Logger.LogInformation(string.Format("DeployArtifact, BuildArtifactManagementUri: {0}", buildArtifactManagementUri.Uri));
 			Logger.LogInformation(string.Format("DeployArtifact, ArtifactName: {0}", request.ArtifactName));
 			Logger.LogInformation(string.Format("DeployArtifact, ArtifactDateTimeStampVersionUrl: {0}", request.ArtifactDateTimeStampVersionUrl));
 			Logger.LogInformation(string.Format("DeployArtifact, ArtifactDownloadUrl: {0}", request.ArtifactDownloadUrl));
-			Logger.LogInformation(string.Format("DeployArtifact, ToDateTimeStamp: {0}", request.ToDateTimeStamp));
 			Logger.LogInformation(string.Format("DeployArtifact, FromEnvironment: {0}", request.FromEnvironment));
 			Logger.LogInformation(string.Format("DeployArtifact, ToEnvironment: {0}", request.ToEnvironment));
+			Logger.LogInformation(string.Format("DeployArtifact, ToDateTimeStamp: {0}", request.ToDateTimeStamp));
 			Logger.LogInformation(string.Format("DeployArtifact, ConfigurationKey: {0}", request.ConfigurationKey));
 
 			var deployComponents = new ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentCollection();

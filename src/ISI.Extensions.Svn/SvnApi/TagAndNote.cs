@@ -12,78 +12,71 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Svn.DataTransferObjects.SvnApi;
 
 namespace ISI.Extensions.Svn
 {
 	public partial class SvnApi
 	{
-		public DTOs.GetPropertiesResponse GetProperties(DTOs.GetPropertiesRequest request)
+		public DTOs.TagAndNoteResponse TagAndNote(DTOs.TagAndNoteRequest request)
 		{
-			var response = new DTOs.GetPropertiesResponse();
-			
-			var properties = new List<(string Path, IEnumerable<KeyValuePair<string, string>> Properties)>();
+			var response = new DTOs.TagAndNoteResponse();
 
-			var arguments = new List<string>();
-
-			arguments.Add("proplist");
-			arguments.Add("-v");
-
-			switch (request.Depth)
+			var info = GetInfo(new DTOs.GetInfoRequest()
 			{
-				case Depth.Infinity:
-					arguments.Add("--depth infinity");
-					break;
-			}
+				Source = request.WorkingCopyDirectory,
+			});
 
-			arguments.Add(string.Format("\"{0}\"", request.Source.TrimEnd(System.IO.Path.DirectorySeparatorChar)));
-
-			var content = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+			if (info.IsUnderSvn)
 			{
-				Logger = Logger,
-				ProcessExeFullName = "svn",
-				Arguments = arguments.ToArray(),
-			}).Output;
+				var trunkUrl = GetTrunkUrl(info.Uri);
 
-			var contentItems = new Queue<string>(content.Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries));
-
-			var pathPropertyKey = string.Empty;
-			var pathProperties = (IDictionary<string, string>) null;
-
-			while (contentItems.Any())
-			{
-				var contentItem = contentItems.Dequeue();
-
-				if ((contentItem.Length > 0) && (contentItem[0] != ' '))
+				if (!string.IsNullOrEmpty(trunkUrl))
 				{
-					pathProperties = new Dictionary<string, string>();
-					properties.Add((Path: contentItem.Split(new string[] {"'"}, StringSplitOptions.RemoveEmptyEntries)[1], pathProperties));
-				}
-				else if ((contentItem.Length > 2) && (contentItem.Substring(0, 2) == "  ") && (contentItem[2] != ' '))
-				{
-					if (pathProperties != null)
+					Logger.LogInformation(string.Format("  trunkUrl=\"{0}\"", trunkUrl));
+
+					var tagsUrl = GetTagsUrl(trunkUrl, request.Version, request.DateTimeStamp, request.DateTimeMask);
+
+					if (!string.IsNullOrEmpty(tagsUrl))
 					{
-						pathPropertyKey = contentItem.Trim();
-						pathProperties.Add(pathPropertyKey, string.Empty);
+						Logger.LogInformation(string.Format("  tagsUrl=\"{0}\"", tagsUrl));
+
+						var note = string.Format("Version: {0}\nDateTimeStamp: {1}", request.Version, request.DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise));
+
+						Logger.LogInformation("  svn tag start");
+
+						RemoteCopy(new DTOs.RemoteCopyRequest()
+						{
+							SourceUrl = trunkUrl,
+							TargetUrl = tagsUrl,
+							LogMessage = note,
+							CreateParents = true,
+						});
+
+						Logger.LogInformation("  svn tag done");
+					}
+					else
+					{
+						Logger.LogInformation("Missing tagsUrl");
 					}
 				}
-				else if ((contentItem.Length > 4) && (contentItem.Substring(0, 4) == "    ") && (contentItem[4] != ' '))
+				else
 				{
-					if (!string.IsNullOrWhiteSpace(pathPropertyKey) && (pathProperties != null))
-					{
-						pathProperties[pathPropertyKey] += string.Format("{0}\n", contentItem.Trim());
-					}
+					Logger.LogInformation("Missing trunkUrl");
 				}
 			}
-
-			response.Properties = properties;
+			else
+			{
+				Logger.LogInformation("Not under source Control");
+			}
 
 			return response;
 		}

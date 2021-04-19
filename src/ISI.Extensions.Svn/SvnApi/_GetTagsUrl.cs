@@ -25,24 +25,42 @@ namespace ISI.Extensions.Svn
 {
 	public partial class SvnApi
 	{
-		public DTOs.ExportResponse Export(DTOs.ExportRequest request)
+		private string GetTagsUrl(Uri uri, string version, DateTime dateTimeStamp, string dateTimeMask)
 		{
-			var response = new DTOs.ExportResponse();
-
-			var arguments = new List<string>();
-
-			arguments.Add("export");
-			arguments.Add(string.Format("\"{0}\"", request.Source.TrimEnd(System.IO.Path.DirectorySeparatorChar)));
-			arguments.Add(string.Format("\"{0}\"", request.Target.TrimEnd(System.IO.Path.DirectorySeparatorChar)));
-
-			ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+			if (uri != null)
 			{
-				Logger = Logger,
-				ProcessExeFullName = "svn",
-				Arguments = arguments.ToArray(),
-			});
+				return GetTagsUrl(uri.ToString(), version, dateTimeStamp, dateTimeMask);
+			}
 
-			return response;
+			return string.Empty;
+		}
+
+		private string GetTagsUrl(string url, string version, DateTime dateTimeStamp, string dateTimeMask)
+		{
+			if (string.IsNullOrWhiteSpace(url))
+			{
+				return string.Empty;
+			}
+
+			var uri = new UriBuilder(url);
+
+			var pathPieces = uri.Path.Split(new[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+			if (pathPieces.Contains("trunk", StringComparer.InvariantCultureIgnoreCase))
+			{
+				while (!string.Equals(pathPieces.Last(), "trunk", StringComparison.InvariantCultureIgnoreCase))
+				{
+					pathPieces.RemoveAt(pathPieces.Count - 1);
+				}
+				pathPieces.RemoveAt(pathPieces.Count - 1);
+			}
+
+			pathPieces.Add("tags");
+			pathPieces.Add(string.Format("{0}{1}", dateTimeStamp.ToString(dateTimeMask), version));
+
+			uri.Path = string.Join("/", pathPieces);
+
+			return uri.Uri.ToString();
 		}
 	}
 }

@@ -24,6 +24,8 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="System.IO.Compression" Version="4.3.0" />
+		<PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\ISI.Extensions.Caching.Redis\ISI.Extensions.Caching.Redis.csproj" />
@@ -33,6 +35,7 @@
 		<ProjectReference Include="..\ISI.Extensions.Repository.Cosmos\ISI.Extensions.Repository.Cosmos.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Repository.SqlServer\ISI.Extensions.Repository.SqlServer.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Scm\ISI.Extensions.Scm.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Svn\ISI.Extensions.Svn.csproj" />
 		<ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />
 	</ItemGroup>
 	<ItemGroup>

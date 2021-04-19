@@ -31,14 +31,14 @@ namespace ISI.Extensions.Svn
 			
 			var arguments = new List<string>();
 
-			arguments.Append("copy");
-			arguments.Append(string.Format("\"{0}\"", new Uri(request.SourceUrl)));
-			arguments.Append(string.Format("\"{0}\"", new Uri(request.TargetUrl)));
+			arguments.Add("copy");
+			arguments.Add(string.Format("\"{0}\"", new Uri(request.SourceUrl)));
+			arguments.Add(string.Format("\"{0}\"", new Uri(request.TargetUrl)));
 			if (request.CreateParents)
 			{
-				arguments.Append("--parents");
+				arguments.Add("--parents");
 			}
-			arguments.Append(string.Format("--message \"{0}\" ", request.LogMessage));
+			arguments.Add(string.Format("--message \"{0}\" ", request.LogMessage));
 
 			ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{

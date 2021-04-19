@@ -33,9 +33,9 @@ namespace ISI.Extensions.Svn
 
 			var arguments = new List<string>();
 
-			arguments.Append("status");
-			arguments.Append("-u");
-			arguments.Append(string.Format("\"{0}\"", request.Source.TrimEnd(System.IO.Path.DirectorySeparatorChar)));
+			arguments.Add("status");
+			arguments.Add("-u");
+			arguments.Add(string.Format("\"{0}\"", request.Source.TrimEnd(System.IO.Path.DirectorySeparatorChar)));
 
 			var content = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{

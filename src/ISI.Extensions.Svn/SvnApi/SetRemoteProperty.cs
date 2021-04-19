@@ -36,9 +36,9 @@ namespace ISI.Extensions.Svn
 			{
 				var arguments = new List<string>();
 
-				arguments.Append("checkout --depth empty");
-				arguments.Append(string.Format("\"{0}\"", request.Uri));
-				arguments.Append(string.Format("\"{0}\"", tempFolderName));
+				arguments.Add("checkout --depth empty");
+				arguments.Add(string.Format("\"{0}\"", request.Uri));
+				arguments.Add(string.Format("\"{0}\"", tempFolderName));
 
 				ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
@@ -51,9 +51,9 @@ namespace ISI.Extensions.Svn
 			{
 				var arguments = new List<string>();
 
-				arguments.Append(string.Format("propset {0}", request.Key));
-				arguments.Append(string.Format("\"{0}\"", request.Value));
-				arguments.Append(string.Format("\"{0}\"", tempFolderName));
+				arguments.Add(string.Format("propset {0}", request.Key));
+				arguments.Add(string.Format("\"{0}\"", request.Value));
+				arguments.Add(string.Format("\"{0}\"", tempFolderName));
 
 				ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
@@ -66,9 +66,9 @@ namespace ISI.Extensions.Svn
 			{
 				var arguments = new List<string>();
 
-				arguments.Append("commit");
-				arguments.Append(string.Format("\"{0}\"", tempFolderName));
-				arguments.Append(string.Format("--message \"{0}\" ", request.LogMessage));
+				arguments.Add("commit");
+				arguments.Add(string.Format("\"{0}\"", tempFolderName));
+				arguments.Add(string.Format("--message \"{0}\" ", request.LogMessage));
 
 				ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{

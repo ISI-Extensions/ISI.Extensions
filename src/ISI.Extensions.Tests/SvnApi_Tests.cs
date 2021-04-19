@@ -1,0 +1,101 @@
+﻿#region Copyright & License
+/*
+Copyright (c) 2021, Integrated Solutions, Inc.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+		* Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+		* Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+		* Neither the name of the Integrated Solutions, Inc. nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+#endregion
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using NUnit.Framework;
+
+namespace ISI.Extensions.Tests
+{
+	[TestFixture]
+	public class SvnApi_Tests
+	{
+		[Test]
+		public void FixExternalRevisions_Test()
+		{
+			var buildDateTimeStamp = DateTime.UtcNow;
+
+			var jan1st2000 = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+
+			var buildRevision = string.Format("{0}.{1}", Math.Floor((buildDateTimeStamp.Date - jan1st2000).TotalDays), Math.Floor(((buildDateTimeStamp - buildDateTimeStamp.Date).TotalSeconds) / 2));
+			
+			var svnApi = new ISI.Extensions.Svn.SvnApi(new ConsoleLogger());
+
+			svnApi.TagAndNote(new ISI.Extensions.Svn.DataTransferObjects.SvnApi.TagAndNoteRequest()
+			{
+				WorkingCopyDirectory = @"F:\ISI\Internal Projects\ISI.WebApplication",
+				Version = string.Format("4.1.{0}", buildRevision),
+				DateTimeStamp = buildDateTimeStamp,
+			});
+
+			svnApi.FixExternalRevisions(new ISI.Extensions.Svn.DataTransferObjects.SvnApi.FixExternalRevisionsRequest()
+			{
+				WorkingCopyDirectory = @"F:\ISI\Internal Projects\ISI.WebApplication",
+				Version = string.Format("4.1.{0}", buildRevision),
+				DateTimeStamp = buildDateTimeStamp,
+				ExternalReplacements = new[]
+				{
+					new ISI.Extensions.Svn.DataTransferObjects.SvnApi.FixExternalRevisionsExternalReplacement()
+					{
+						WorkingCopyDirectory = "^/ISI.CMS/trunk",
+						Version = string.Format("3.1.{0}", buildRevision),
+					},
+					new ISI.Extensions.Svn.DataTransferObjects.SvnApi.FixExternalRevisionsExternalReplacement()
+					{
+						WorkingCopyDirectory = "^/ISI.Gravity/trunk",
+						Version = string.Format("5.1.{0}", buildRevision),
+					},
+					new ISI.Extensions.Svn.DataTransferObjects.SvnApi.FixExternalRevisionsExternalReplacement()
+					{
+						WorkingCopyDirectory = "^/ISI.Libraries/trunk",
+						Version = string.Format("5.1.{0}", buildRevision),
+					},
+					new ISI.Extensions.Svn.DataTransferObjects.SvnApi.FixExternalRevisionsExternalReplacement()
+					{
+						WorkingCopyDirectory = "^/ISI.Licenses/trunk",
+						Version = string.Format("2.1.{0}", buildRevision),
+					},
+					new ISI.Extensions.Svn.DataTransferObjects.SvnApi.FixExternalRevisionsExternalReplacement()
+					{
+						WorkingCopyDirectory = "^/ISI.SCM.RemoteApi/trunk",
+						Version = string.Format("3.1.{0}", buildRevision),
+					},
+					new ISI.Extensions.Svn.DataTransferObjects.SvnApi.FixExternalRevisionsExternalReplacement()
+					{
+						WorkingCopyDirectory = "^/ISI.Scripts/trunk",
+						Version = string.Format("1.1.{0}", buildRevision),
+					},
+					new ISI.Extensions.Svn.DataTransferObjects.SvnApi.FixExternalRevisionsExternalReplacement()
+					{
+						WorkingCopyDirectory = "^/ISI.Services/trunk",
+						Version = string.Format("2.1.{0}", buildRevision),
+					},
+					new ISI.Extensions.Svn.DataTransferObjects.SvnApi.FixExternalRevisionsExternalReplacement()
+					{
+						WorkingCopyDirectory = "^/ISI.Tracing/trunk",
+						Version = string.Format("1.1.{0}", buildRevision),
+					},
+					new ISI.Extensions.Svn.DataTransferObjects.SvnApi.FixExternalRevisionsExternalReplacement()
+					{
+						WorkingCopyDirectory = "^/ISI.Wrappers/trunk",
+						Version = string.Format("1.1.{0}", buildRevision),
+					},
+				},
+			});
+		}
+	}
+}

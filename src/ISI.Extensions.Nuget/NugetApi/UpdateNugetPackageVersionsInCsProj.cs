@@ -128,6 +128,11 @@ namespace ISI.Extensions.Nuget
 									}
 
 									packageId = packageId.TrimEnd('.');
+									if (string.IsNullOrWhiteSpace(packageId))
+									{
+										packageId = packageAttribute.Value;
+									}
+									
 									packageVersion = packageVersion.TrimEnd('.');
 
 									if (request.TryGetNugetPackageKey(packageId, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))

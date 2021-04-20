@@ -39,7 +39,6 @@ namespace ISI.Extensions.Nuget
 			var csProjXml = System.Xml.Linq.XElement.Parse(request.CsProjXml);
 
 			var replacements = new Dictionary<string, string>();
-			//replacements.Add("<Version xmlns=\"\">", "<Version>");
 			replacements.Add(" xmlns=\"\"", string.Empty);
 
 			var usedPackageReferences = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);

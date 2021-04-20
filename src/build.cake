@@ -94,14 +94,17 @@ Task("Nuget")
 			var nuspec = GenerateNuspecFromProject(new ISI.Cake.Addin.Nuget.GenerateNuspecFromProjectRequest()
 			{
 				ProjectFullName = project.Path.FullPath,
-				GetPackageVersion = package =>
+				TryGetPackageVersion = (string package, out string version) =>
 				{
 					if (package.StartsWith("ISI.Extensions", StringComparison.InvariantCultureIgnoreCase))
 					{
-						return assemblyVersion;
+						version =  assemblyVersion;
+							return true;
+						}
 					}
 
-					return string.Empty;
+					version = string.Empty;
+					return false;
 				}
 			}).Nuspec;
 			nuspec.Version = assemblyVersion;

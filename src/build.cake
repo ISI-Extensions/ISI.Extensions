@@ -99,8 +99,7 @@ Task("Nuget")
 					if (package.StartsWith("ISI.Extensions", StringComparison.InvariantCultureIgnoreCase))
 					{
 						version =  assemblyVersion;
-							return true;
-						}
+						return true;
 					}
 
 					version = string.Empty;

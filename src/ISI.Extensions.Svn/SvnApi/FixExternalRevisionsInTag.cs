@@ -26,12 +26,12 @@ namespace ISI.Extensions.Svn
 {
 	public partial class SvnApi
 	{
-		public DTOs.FixExternalRevisionsResponse FixExternalRevisions(DTOs.FixExternalRevisionsRequest request)
+		public DTOs.FixExternalRevisionsInTagResponse FixExternalRevisionsInTag(DTOs.FixExternalRevisionsInTagRequest request)
 		{
 			var rgPropertyLineParser = new System.Text.RegularExpressions.Regex("(?:[^\"\\s]+)\\s*|\"(?:[\"]+)\"\\s*");
 			var rgIsSVNUrl = new System.Text.RegularExpressions.Regex("^((?:http://)|(?:https://)|(?:svn://)|(?:file:///)|(?:svn\\+ssh://)|(?:svn\\+...://))");
 
-			var response = new DTOs.FixExternalRevisionsResponse();
+			var response = new DTOs.FixExternalRevisionsInTagResponse();
 
 			var workingCopyInfo = GetInfo(new DTOs.GetInfoRequest()
 			{
@@ -62,7 +62,11 @@ namespace ISI.Extensions.Svn
 
 						var setPropertyRequests = new List<DTOs.SetRemotePropertyRequest>();
 
-						var externalReplacements = request.ExternalReplacements.ToNullCheckedDictionary(externalReplacement => externalReplacement.WorkingCopyDirectory.ToLower(), externalReplacement => externalReplacement, NullCheckDictionaryResult.Empty);
+						request.TryGetExternalVersion ??= (string path, out string version) =>
+						{
+							version = string.Empty;
+							return false;
+						};
 
 						foreach (var propertySet in propertySets)
 						{
@@ -128,24 +132,12 @@ namespace ISI.Extensions.Svn
 									}
 
 									Logger.LogInformation(string.Format("      testing=\"{0}\"", uri.ToLower()));
-
-									DTOs.FixExternalRevisionsExternalReplacement externalReplacement = null;
-									foreach (var replacement in externalReplacements)
-									{
-										if (uri.StartsWith(replacement.Key, StringComparison.InvariantCultureIgnoreCase))
-										{
-											if ((externalReplacement == null) || (replacement.Value.WorkingCopyDirectory.Length > externalReplacement.WorkingCopyDirectory.Length))
-											{
-												externalReplacement = replacement.Value;
-											}
-										}
-									}
-
-									if (externalReplacement != null)
+									
+									if (request.TryGetExternalVersion(uri, out var externalVersion))
 									{
 										var externalTrunkUri = new Uri(GetRemoteUrl(System.IO.Path.Combine(propertySet.Path, directory)));
 										var externalTrunkUrl = GetTrunkUrl(externalTrunkUri);
-										var externalTagsUrl = GetTagsUrl(externalTrunkUri, externalReplacement.Version, externalReplacement.DateTimeStamp ?? request.DateTimeStamp, externalReplacement.DateTimeMask);
+										var externalTagsUrl = GetTagsUrl(externalTrunkUri, externalVersion, request.DateTimeStamp, request.DateTimeMask);
 
 										var trunkUri = new Uri(GetRemoteUrl(propertySet.Path));
 										externalTrunkUri = new Uri(externalTagsUrl);

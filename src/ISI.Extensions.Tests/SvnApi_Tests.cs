@@ -41,61 +41,6 @@ namespace ISI.Extensions.Tests
 				Version = string.Format("4.1.{0}", buildRevision),
 				DateTimeStamp = buildDateTimeStamp,
 			});
-
-			svnApi.FixExternalRevisions(new ISI.Extensions.Svn.DataTransferObjects.SvnApi.FixExternalRevisionsRequest()
-			{
-				WorkingCopyDirectory = @"F:\ISI\Internal Projects\ISI.WebApplication",
-				Version = string.Format("4.1.{0}", buildRevision),
-				DateTimeStamp = buildDateTimeStamp,
-				ExternalReplacements = new[]
-				{
-					new ISI.Extensions.Svn.DataTransferObjects.SvnApi.FixExternalRevisionsExternalReplacement()
-					{
-						WorkingCopyDirectory = "^/ISI.CMS/trunk",
-						Version = string.Format("3.1.{0}", buildRevision),
-					},
-					new ISI.Extensions.Svn.DataTransferObjects.SvnApi.FixExternalRevisionsExternalReplacement()
-					{
-						WorkingCopyDirectory = "^/ISI.Gravity/trunk",
-						Version = string.Format("5.1.{0}", buildRevision),
-					},
-					new ISI.Extensions.Svn.DataTransferObjects.SvnApi.FixExternalRevisionsExternalReplacement()
-					{
-						WorkingCopyDirectory = "^/ISI.Libraries/trunk",
-						Version = string.Format("5.1.{0}", buildRevision),
-					},
-					new ISI.Extensions.Svn.DataTransferObjects.SvnApi.FixExternalRevisionsExternalReplacement()
-					{
-						WorkingCopyDirectory = "^/ISI.Licenses/trunk",
-						Version = string.Format("2.1.{0}", buildRevision),
-					},
-					new ISI.Extensions.Svn.DataTransferObjects.SvnApi.FixExternalRevisionsExternalReplacement()
-					{
-						WorkingCopyDirectory = "^/ISI.SCM.RemoteApi/trunk",
-						Version = string.Format("3.1.{0}", buildRevision),
-					},
-					new ISI.Extensions.Svn.DataTransferObjects.SvnApi.FixExternalRevisionsExternalReplacement()
-					{
-						WorkingCopyDirectory = "^/ISI.Scripts/trunk",
-						Version = string.Format("1.1.{0}", buildRevision),
-					},
-					new ISI.Extensions.Svn.DataTransferObjects.SvnApi.FixExternalRevisionsExternalReplacement()
-					{
-						WorkingCopyDirectory = "^/ISI.Services/trunk",
-						Version = string.Format("2.1.{0}", buildRevision),
-					},
-					new ISI.Extensions.Svn.DataTransferObjects.SvnApi.FixExternalRevisionsExternalReplacement()
-					{
-						WorkingCopyDirectory = "^/ISI.Tracing/trunk",
-						Version = string.Format("1.1.{0}", buildRevision),
-					},
-					new ISI.Extensions.Svn.DataTransferObjects.SvnApi.FixExternalRevisionsExternalReplacement()
-					{
-						WorkingCopyDirectory = "^/ISI.Wrappers/trunk",
-						Version = string.Format("1.1.{0}", buildRevision),
-					},
-				},
-			});
 		}
 	}
 }

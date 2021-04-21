@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,17 +15,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
-	public partial class FixExternalRevisionsExternalReplacement
-	{
-		public string WorkingCopyDirectory { get; set; }
-		public string Version { get; set; }
-		public DateTime? DateTimeStamp { get; set; }
-		public string DateTimeMask { get; set; } = "yyyy/MM/";
-	}
+	public delegate bool TryGetExternalVersion(string externalPath, out string externalVersion);
 }

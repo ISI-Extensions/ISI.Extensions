@@ -21,12 +21,12 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
-	public partial class FixExternalRevisionsRequest
+	public partial class FixExternalRevisionsInTagRequest
 	{
 		public string WorkingCopyDirectory { get; set; }
 		public string Version { get; set; }
 		public DateTime DateTimeStamp { get; set; }
 		public string DateTimeMask { get; set; } = "yyyy/MM/";
-		public FixExternalRevisionsExternalReplacement[] ExternalReplacements { get; set; }
+		public TryGetExternalVersion TryGetExternalVersion { get; set; }
 	}
 }

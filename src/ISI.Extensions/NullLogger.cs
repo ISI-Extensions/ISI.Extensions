@@ -20,46 +20,11 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions
 {
-	public class ConsoleLogger : Microsoft.Extensions.Logging.ILogger
+	public class NullLogger : Microsoft.Extensions.Logging.ILogger
 	{
 		public void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel, Microsoft.Extensions.Logging.EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
 		{
-			formatter ??= (formatterState, formatterException) =>
-			{
-				if (formatterState is string stringValue)
-				{
-					return stringValue;
-				}
-
-				if (formatterException != null)
-				{
-					return formatterException.ErrorMessageFormatted();
-				}
-
-				return formatterState.ToString();
-			};
-
-			var foregroundColor = System.Console.ForegroundColor;
-
-			switch (logLevel)
-			{
-				case Microsoft.Extensions.Logging.LogLevel.None:
-				case Microsoft.Extensions.Logging.LogLevel.Trace:
-				case Microsoft.Extensions.Logging.LogLevel.Debug:
-				case Microsoft.Extensions.Logging.LogLevel.Information:
-					break;
-				case Microsoft.Extensions.Logging.LogLevel.Warning:
-				case Microsoft.Extensions.Logging.LogLevel.Error:
-				case Microsoft.Extensions.Logging.LogLevel.Critical:
-					System.Console.ForegroundColor = ConsoleColor.Red;
-					break;
-				default:
-					throw new ArgumentOutOfRangeException(nameof(logLevel), logLevel, null);
-			}
-
-			System.Console.WriteLine(formatter(state, exception));
-
-			System.Console.ForegroundColor = foregroundColor;
+			
 		}
 
 		public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel)
@@ -69,14 +34,14 @@ namespace ISI.Extensions
 
 		public IDisposable BeginScope<TState>(TState state)
 		{
-			return new ConsoleLoggerScope<TState>(state);
+			return new NullLoggerScope<TState>(state);
 		}
 
-		public class ConsoleLoggerScope<TState> : IDisposable
+		public class NullLoggerScope<TState> : IDisposable
 		{
 			protected TState State { get; }
 
-			public ConsoleLoggerScope(TState state)
+			public NullLoggerScope(TState state)
 			{
 				State = state;
 			}

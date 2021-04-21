@@ -79,11 +79,12 @@ namespace ISI.Extensions.Svn
 
 								var url = info.Uri.ToString().Replace(trunkUrl, tagsUrl);
 
+								var existingExternals = property.Value.Split(new string[] { "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
+
 								Logger.LogInformation(string.Format("  TagUrl=\"{0}\"", url));
 								Logger.LogInformation(string.Format("  Path=\"{0}\"", propertySet.Path));
-								Logger.LogInformation(string.Format("  Was:\n{0}", property.Value));
+								Logger.LogInformation(string.Format("  Was:\n{0}", string.Join("\r\n", existingExternals)));
 
-								var existingExternals = property.Value.Split(new string[] { "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
 								for (var existingExternalIndex = 0; existingExternalIndex < existingExternals.Length; existingExternalIndex++)
 								{
 									var existingExternal = existingExternals[existingExternalIndex];
@@ -198,7 +199,7 @@ namespace ISI.Extensions.Svn
 									}
 								}
 
-								var externals = string.Join("\n", existingExternals);
+								var externals = string.Join("\r\n", existingExternals);
 
 								Logger.LogInformation(string.Format("  Will Be:\n{0}", externals));
 

@@ -32,7 +32,7 @@ namespace ISI.Extensions.Tests
 			var jan1st2000 = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 
 			var buildRevision = string.Format("{0}.{1}", Math.Floor((buildDateTimeStamp.Date - jan1st2000).TotalDays), Math.Floor(((buildDateTimeStamp - buildDateTimeStamp.Date).TotalSeconds) / 2));
-			
+
 			var svnApi = new ISI.Extensions.Svn.SvnApi(new ConsoleLogger());
 
 			svnApi.TagAndNote(new ISI.Extensions.Svn.DataTransferObjects.SvnApi.TagAndNoteRequest()
@@ -41,6 +41,37 @@ namespace ISI.Extensions.Tests
 				Version = string.Format("4.1.{0}", buildRevision),
 				DateTimeStamp = buildDateTimeStamp,
 			});
+
+			svnApi.FixExternalRevisionsInTag(new ISI.Extensions.Svn.DataTransferObjects.SvnApi.FixExternalRevisionsInTagRequest()
+			{
+				WorkingCopyDirectory = @"F:\ISI\Internal Projects\ISI.WebApplication",
+				Version = string.Format("4.1.{0}", buildRevision),
+				DateTimeStamp = buildDateTimeStamp,
+				TryGetExternalVersion = (string externalPath, out string externalVersion) =>
+				{
+					var externalPathPieces = externalPath.Split(new[] { '/' }).ToList();
+					while (string.Equals(externalPathPieces.Last(), "trunk", StringComparison.InvariantCultureIgnoreCase))
+					{
+						externalPathPieces.RemoveAt(externalPathPieces.Count - 1);
+					}
+
+					switch (externalPathPieces.Last())
+					{
+						case "ISI.Libraries":
+							externalVersion = string.Format("1.1.{0}", buildRevision);
+							return true;
+
+						case "ISI.CMS":
+							externalVersion = string.Format("1.2.{0}", buildRevision);
+							return true;
+
+					}
+
+					externalVersion = string.Empty;
+					return false;
+				},
+			});
+
 		}
 	}
 }

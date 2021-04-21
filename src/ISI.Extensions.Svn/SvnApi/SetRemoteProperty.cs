@@ -42,7 +42,7 @@ namespace ISI.Extensions.Svn
 
 				ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
-					Logger = Logger,
+					Logger = new NullLogger(),
 					ProcessExeFullName = "svn",
 					Arguments = arguments.ToArray(),
 				});
@@ -57,7 +57,7 @@ namespace ISI.Extensions.Svn
 
 				ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
-					Logger = Logger,
+					Logger = new NullLogger(),
 					ProcessExeFullName = "svn",
 					Arguments = arguments.ToArray(),
 				});
@@ -72,7 +72,7 @@ namespace ISI.Extensions.Svn
 
 				ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
-					Logger = Logger,
+					Logger = new NullLogger(),
 					ProcessExeFullName = "svn",
 					Arguments = arguments.ToArray(),
 				});

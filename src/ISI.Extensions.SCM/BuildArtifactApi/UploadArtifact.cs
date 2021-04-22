@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +29,7 @@ namespace ISI.Extensions.Scm
 		public DTOs.UploadArtifactResponse UploadArtifact(DTOs.UploadArtifactRequest request)
 		{
 			var response = new DTOs.UploadArtifactResponse();
-			
+
 			var buildArtifactManagementUri = new UriBuilder(request.BuildArtifactManagementUrl);
 			buildArtifactManagementUri.AddDirectoryToPath("build-artifacts/upload-artifact");
 
@@ -42,11 +42,32 @@ namespace ISI.Extensions.Scm
 			formValues.Add("artifactName", request.ArtifactName);
 			formValues.Add("dateTimeStamp", request.DateTimeStamp);
 
-			using (System.IO.Stream stream = System.IO.File.OpenRead(request.SourceFileName))
+			var tryAttemptsLeft = request.MaxTries;
+			while (tryAttemptsLeft > 0)
 			{
-				ISI.Extensions.WebClient.Upload.UploadFile(buildArtifactManagementUri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), stream, request.SourceFileName, "uploadFile", formValues);
+				try
+				{
+					using (System.IO.Stream stream = System.IO.File.OpenRead(request.SourceFileName))
+					{
+						ISI.Extensions.WebClient.Upload.UploadFile(buildArtifactManagementUri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), stream, request.SourceFileName, "uploadFile", formValues);
+					}
+
+					tryAttemptsLeft = 0;
+				}
+				catch (Exception exception)
+				{
+					Logger.LogInformation(exception.ErrorMessageFormatted());
+
+					tryAttemptsLeft--;
+					if (tryAttemptsLeft < 0)
+					{
+						throw;
+					}
+
+					System.Threading.Thread.Sleep(5000);
+				}
 			}
-			
+
 			return response;
 		}
 	}

@@ -21,18 +21,8 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
-	public partial class GetInfoResponse
+	public partial class GetInfosResponse
 	{
-		public bool IsUnderSvn { get; set; }
-		public string Path { get; set; }
-		public string WorkingCopyRootPath { get; set; }
-		public Uri Uri { get; set; }
-		public Uri RepositoryRoot { get; set; }
-		public long Revision { get; set; }
-		public NodeKind NodeKind { get; set; }
-		public Schedule Schedule { get; set; }
-		public string LastChangeAuthor { get; set; }
-		public long LastChangeRevision { get; set; }
-		public DateTime LastChangeTime { get; set; }
+		public IEnumerable<Info> Infos { get; set; }
 	}
 }

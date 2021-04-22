@@ -21,12 +21,17 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
-	public partial class FixExternalRevisionsInTagRequest
+	public partial class Info
 	{
-		public string WorkingCopyDirectory { get; set; }
-		public string Version { get; set; }
-		public DateTime DateTimeStamp { get; set; }
-		public string DateTimeMask { get; set; } = "yyyy/MM/";
-		public TryGetExternalVersion TryGetExternalVersion { get; set; }
+		public string Path { get; set; }
+		public string WorkingCopyRootPath { get; set; }
+		public Uri Uri { get; set; }
+		public Uri RepositoryRoot { get; set; }
+		public long Revision { get; set; }
+		public NodeKind NodeKind { get; set; }
+		public Schedule Schedule { get; set; }
+		public string LastChangeAuthor { get; set; }
+		public long LastChangeRevision { get; set; }
+		public DateTime LastChangeTime { get; set; }
 	}
 }

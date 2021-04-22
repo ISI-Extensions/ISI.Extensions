@@ -25,7 +25,7 @@ namespace ISI.Extensions.Tests
 	public class SvnApi_Tests
 	{
 		[Test]
-		public void FixExternalRevisions_Test()
+		public void TagAndNote_Test()
 		{
 			var buildDateTimeStamp = DateTime.UtcNow;
 
@@ -36,13 +36,6 @@ namespace ISI.Extensions.Tests
 			var svnApi = new ISI.Extensions.Svn.SvnApi(new ConsoleLogger());
 
 			svnApi.TagAndNote(new ISI.Extensions.Svn.DataTransferObjects.SvnApi.TagAndNoteRequest()
-			{
-				WorkingCopyDirectory = @"F:\ISI\Internal Projects\ISI.WebApplication",
-				Version = string.Format("4.1.{0}", buildRevision),
-				DateTimeStamp = buildDateTimeStamp,
-			});
-
-			svnApi.FixExternalRevisionsInTag(new ISI.Extensions.Svn.DataTransferObjects.SvnApi.FixExternalRevisionsInTagRequest()
 			{
 				WorkingCopyDirectory = @"F:\ISI\Internal Projects\ISI.WebApplication",
 				Version = string.Format("4.1.{0}", buildRevision),

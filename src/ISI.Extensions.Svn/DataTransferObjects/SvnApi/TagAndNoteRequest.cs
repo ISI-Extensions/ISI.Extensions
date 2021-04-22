@@ -27,5 +27,6 @@ namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 		public string Version { get; set; }
 		public DateTime DateTimeStamp { get; set; }
 		public string DateTimeMask { get; set; } = "yyyy/MM/";
+		public TryGetExternalVersion TryGetExternalVersion { get; set; }
 	}
 }

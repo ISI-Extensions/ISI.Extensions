@@ -21,7 +21,9 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
-	public partial class FixExternalRevisionsInTagResponse
+	public partial class GetInfosRequest
 	{
+		public string Source { get; set; }
+		public Depth Depth { get; set; }	
 	}
 }

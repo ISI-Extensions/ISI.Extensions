@@ -27,10 +27,10 @@ namespace ISI.Extensions.Svn
 	{
 		private string GetRepositoryRoot(string workingCopyDirectory)
 		{
-			return GetInfo(new DTOs.GetInfoRequest()
+			return GetInfos(new DTOs.GetInfosRequest()
 			{
 				Source = System.IO.Path.Combine(workingCopyDirectory),
-			})?.RepositoryRoot?.ToString() ?? string.Empty;
+			})?.Infos?.First()?.RepositoryRoot?.ToString() ?? string.Empty;
 		}
 	}
 }

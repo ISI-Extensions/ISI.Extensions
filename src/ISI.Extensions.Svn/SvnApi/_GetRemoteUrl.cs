@@ -27,10 +27,10 @@ namespace ISI.Extensions.Svn
 	{
 		private string GetRemoteUrl(string workingCopyDirectory)
 		{
-			return GetInfo(new DTOs.GetInfoRequest()
+			return GetInfos(new DTOs.GetInfosRequest()
 			{
 				Source = System.IO.Path.Combine(workingCopyDirectory),
-			})?.Uri?.ToString() ?? string.Empty;
+			})?.Infos?.First()?.Uri?.ToString() ?? string.Empty;
 		}
 	}
 }

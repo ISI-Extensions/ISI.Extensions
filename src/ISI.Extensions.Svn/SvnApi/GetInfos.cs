@@ -25,14 +25,30 @@ namespace ISI.Extensions.Svn
 {
 	public partial class SvnApi
 	{
-		public DTOs.GetInfoResponse GetInfo(DTOs.GetInfoRequest request)
+		public DTOs.GetInfosResponse GetInfos(DTOs.GetInfosRequest request)
 		{
-			var response = new DTOs.GetInfoResponse();
+			var response = new DTOs.GetInfosResponse();
 
 			var arguments = new List<string>();
 
 			arguments.Add("info");
 			arguments.Add(string.Format("\"{0}\"", request.Source.TrimEnd(System.IO.Path.DirectorySeparatorChar)));
+
+			switch (request.Depth)
+			{
+				case Depth.Empty:
+					arguments.Add("--depth empty");
+					break;
+				case Depth.Files:
+					arguments.Add("--depth files");
+					break;
+				case Depth.Children:
+					arguments.Add("--depth immediates");
+					break;
+				case Depth.Infinity:
+					arguments.Add("--depth infinity");
+					break;
+			}
 
 			var content = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{
@@ -43,60 +59,70 @@ namespace ISI.Extensions.Svn
 
 			var contentItems = content.Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
-			var properties = new Dictionary<string, string>();
-			foreach (var property in contentItems.Select(contentItem => contentItem.Split(new string[] { ":" }, 2, StringSplitOptions.RemoveEmptyEntries)))
+			var infos = new List<DTOs.Info>();
+
+			DTOs.Info info = null;
+
+			foreach (var contentItem in contentItems)
 			{
-				if ((property.Length >= 2) && !properties.ContainsKey(property[0]))
+				if (!string.IsNullOrWhiteSpace(contentItem))
 				{
-					properties.Add(property[0], property[1]);
+					var property = contentItem.Split(new string[] { ":" }, 2, StringSplitOptions.RemoveEmptyEntries);
+
+					if (property.Length >= 2)
+					{
+						var propertyKey = property[0];
+						var propertyValue = property[1];
+
+						switch (propertyKey)
+						{
+							case "Path":
+								info = new DTOs.Info();
+								infos.Add(info);
+								info.Path = propertyValue.Trim();
+								break;
+
+							case "Working Copy Root Path":
+								info.WorkingCopyRootPath = propertyValue.Trim();
+								break;
+
+							case "URL":
+								info.Uri = new Uri(propertyValue.Trim());
+								break;
+
+							case "Repository Root":
+								info.RepositoryRoot = new Uri(propertyValue.Trim());
+								break;
+
+							case "Revision":
+								info.Revision = propertyValue.Trim().ToLong();
+								break;
+
+							case "Node Kind":
+								info.NodeKind = ISI.Extensions.Enum<NodeKind>.Parse(propertyValue.Trim());
+								break;
+
+							case "Schedule":
+								info.Schedule = ISI.Extensions.Enum<Schedule>.Parse(propertyValue.Trim());
+								break;
+
+							case "Last Changed Author":
+								info.LastChangeAuthor = propertyValue.Trim();
+								break;
+
+							case "Last Changed Rev":
+								info.LastChangeRevision = propertyValue.Trim().ToLong();
+								break;
+
+							case "Last Changed Date":
+								info.LastChangeTime = propertyValue.Trim().ToDateTime();
+								break;
+						}
+					}
 				}
 			}
 
-			if (properties.Any())
-			{
-				response.IsUnderSvn = properties.Count > 1;
-
-				if (properties.TryGetValue("Path", out var path))
-				{
-					response.Path = path.Trim();
-				}
-				if (properties.TryGetValue("Working Copy Root Path", out var workingCopyRootPath))
-				{
-					response.WorkingCopyRootPath = workingCopyRootPath.Trim();
-				}
-				if (properties.TryGetValue("URL", out var url))
-				{
-					response.Uri = new Uri(url);
-				}
-				if (properties.TryGetValue("Repository Root", out var repositoryRoot))
-				{
-					response.RepositoryRoot = new Uri(repositoryRoot.Trim());
-				}
-				if (properties.TryGetValue("Revision", out var revision))
-				{
-					response.Revision = revision.Trim().ToLong();
-				}
-				if (properties.TryGetValue("Node Kind", out var nodeKind))
-				{
-					response.NodeKind = ISI.Extensions.Enum<NodeKind>.Parse(nodeKind.Trim());
-				}
-				if (properties.TryGetValue("Schedule", out var schedule))
-				{
-					response.Schedule = ISI.Extensions.Enum<Schedule>.Parse(schedule.Trim());
-				}
-				if (properties.TryGetValue("Last Changed Author", out var lastChangeAuthor))
-				{
-					response.LastChangeAuthor = lastChangeAuthor.Trim();
-				}
-				if (properties.TryGetValue("Last Changed Rev", out var lastChangeRevision))
-				{
-					response.LastChangeRevision = lastChangeRevision.ToLong();
-				}
-				if (properties.TryGetValue("Last Changed Date", out var lastChangeTime))
-				{
-					response.LastChangeTime = lastChangeTime.Trim().ToDateTime();
-				}
-			}
+			response.Infos = infos;
 
 			return response;
 		}

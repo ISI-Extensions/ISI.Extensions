@@ -38,6 +38,15 @@ namespace ISI.Extensions.Svn
 
 			switch (request.Depth)
 			{
+				case Depth.Empty:
+					arguments.Add("--depth empty");
+					break;
+				case Depth.Files:
+					arguments.Add("--depth files");
+					break;
+				case Depth.Children:
+					arguments.Add("--depth immediates");
+					break;
 				case Depth.Infinity:
 					arguments.Add("--depth infinity");
 					break;

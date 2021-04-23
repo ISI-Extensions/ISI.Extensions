@@ -26,5 +26,6 @@ namespace ISI.Extensions.Scm.DataTransferObjects.ScmApi
 		public string ScmManagementUrl { get; set; }
 		public string UserName { get; set; }
 		public string Password { get; set; }
+		public int MaxTries { get; set; } = 5;
 	}
 }

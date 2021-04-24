@@ -39,7 +39,13 @@ namespace ISI.Extensions.Svn
 				Depth = Depth.Infinity,
 			}).Infos.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
-			var trunkInfo = infos.FirstOrDefault(info => string.Equals(info.Path.TrimEnd('\\', '/'), request.WorkingCopyDirectory.TrimEnd('\\', '/'), StringComparison.CurrentCultureIgnoreCase));
+			var workingCopyDirectory = request.WorkingCopyDirectory.TrimEnd('\\', '/');
+			if (string.IsNullOrWhiteSpace(workingCopyDirectory))
+			{
+				workingCopyDirectory = ".";
+			}
+
+			var trunkInfo = infos.FirstOrDefault(info => string.Equals(info.Path.TrimEnd('\\', '/'), workingCopyDirectory, StringComparison.CurrentCultureIgnoreCase));
 			if (trunkInfo != null)
 			{
 				var trunkUrl = GetTrunkUrl(trunkInfo.Uri);

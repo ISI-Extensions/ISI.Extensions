@@ -18,12 +18,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.NAnt.DataTransferObjects.NAntApi;
 
-namespace ISI.Extensions.Cake.DataTransferObjects.CakeApi
+namespace ISI.Extensions.NAnt
 {
-	public partial class ExecuteBuildTargetRequest
+	public partial class NAntApi
 	{
-		public string BuildScriptFullName { get; set; }
-		public string Target { get; set; }
+		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
+
+		public NAntApi(
+			Microsoft.Extensions.Logging.ILogger logger = null)
+		{
+			Logger = logger ?? new ConsoleLogger();
+		}
 	}
 }

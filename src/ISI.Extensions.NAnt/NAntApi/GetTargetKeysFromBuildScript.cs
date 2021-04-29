@@ -18,12 +18,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.NAnt.DataTransferObjects.NAntApi;
 
-namespace ISI.Extensions.Cake.DataTransferObjects.CakeApi
+namespace ISI.Extensions.NAnt
 {
-	public partial class ExecuteBuildTargetRequest
+	public partial class NAntApi
 	{
-		public string BuildScriptFullName { get; set; }
-		public string Target { get; set; }
+		public DTOs.GetTargetKeysFromBuildScriptResponse GetTargetKeysFromBuildScript(DTOs.GetTargetKeysFromBuildScriptRequest request)
+		{
+			var response = new DTOs.GetTargetKeysFromBuildScriptResponse();
+			
+			var rgTargets = new System.Text.RegularExpressions.Regex("(?im-snx:.*(?:<target)\\s*(?:name=\"?(?<target>[\\w-]*)\"?\\s*).*)+");
+
+			var targets = new List<string>();
+
+			var buildCommands = System.IO.File.ReadAllText(request.BuildScriptFullName);
+
+			var matches = rgTargets.Matches(buildCommands);
+
+			foreach (System.Text.RegularExpressions.Match match in matches)
+			{
+				targets.Add(match.Groups["target"].Value);
+			}
+
+			response.Targets = targets.ToArray();
+
+			return response;
+		}
 	}
 }

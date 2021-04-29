@@ -18,12 +18,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.NAnt.DataTransferObjects.NAntApi;
 
-namespace ISI.Extensions.Cake.DataTransferObjects.CakeApi
+namespace ISI.Extensions.NAnt
 {
-	public partial class ExecuteBuildTargetRequest
+	public partial class NAntApi
 	{
-		public string BuildScriptFullName { get; set; }
-		public string Target { get; set; }
+		public DTOs.IsBuildFileResponse IsBuildFile(DTOs.IsBuildFileRequest request)
+		{
+			var response = new DTOs.IsBuildFileResponse();
+			
+			if (string.Equals(System.IO.Path.GetFileName(request.BuildScriptFullName), "default.build", StringComparison.CurrentCultureIgnoreCase))
+			{
+				response.IsBuildFile = GetTargetKeysFromBuildScript(new DTOs.GetTargetKeysFromBuildScriptRequest()
+				{
+					BuildScriptFullName = request.BuildScriptFullName,
+				}).Targets.NullCheckedAny();
+			}
+
+			return response;
+		}
 	}
 }

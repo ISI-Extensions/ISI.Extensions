@@ -60,6 +60,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Scm", "ISI.E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.Git", "ISI.Extensions.Git\ISI.Extensions.Git.csproj", "{F74CEB8A-B302-4A89-8310-9C1D964F3F6B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.NAnt", "ISI.Extensions.NAnt\ISI.Extensions.NAnt.csproj", "{5AC92DEF-44D5-4C9F-9FE1-54D65C2F3D27}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -276,6 +278,14 @@ Global
 		{F74CEB8A-B302-4A89-8310-9C1D964F3F6B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F74CEB8A-B302-4A89-8310-9C1D964F3F6B}.Release|x64.ActiveCfg = Release|Any CPU
 		{F74CEB8A-B302-4A89-8310-9C1D964F3F6B}.Release|x64.Build.0 = Release|Any CPU
+		{5AC92DEF-44D5-4C9F-9FE1-54D65C2F3D27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AC92DEF-44D5-4C9F-9FE1-54D65C2F3D27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AC92DEF-44D5-4C9F-9FE1-54D65C2F3D27}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5AC92DEF-44D5-4C9F-9FE1-54D65C2F3D27}.Debug|x64.Build.0 = Debug|Any CPU
+		{5AC92DEF-44D5-4C9F-9FE1-54D65C2F3D27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AC92DEF-44D5-4C9F-9FE1-54D65C2F3D27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AC92DEF-44D5-4C9F-9FE1-54D65C2F3D27}.Release|x64.ActiveCfg = Release|Any CPU
+		{5AC92DEF-44D5-4C9F-9FE1-54D65C2F3D27}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

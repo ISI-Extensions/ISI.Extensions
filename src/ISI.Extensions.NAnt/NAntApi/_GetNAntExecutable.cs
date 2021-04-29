@@ -18,12 +18,50 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.NAnt.DataTransferObjects.NAntApi;
 
-namespace ISI.Extensions.Cake.DataTransferObjects.CakeApi
+namespace ISI.Extensions.NAnt
 {
-	public partial class ExecuteBuildTargetRequest
+	public partial class NAntApi
 	{
-		public string BuildScriptFullName { get; set; }
-		public string Target { get; set; }
+		private string GetNAntExecutable(string buildScriptFullName = null)
+		{
+			if (!string.IsNullOrWhiteSpace(buildScriptFullName))
+			{
+				var solutionPath = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(buildScriptFullName));
+
+				var fileName = System.IO.Path.Combine(solutionPath, "resources", "NAnt", "bin", "NAnt.exe");
+
+				if (System.IO.File.Exists(fileName))
+				{
+					return fileName;
+				}
+			}
+
+			{
+				var programFilesPath = System.Environment.GetEnvironmentVariable("ProgramFiles(x86)");
+
+				var fileName = System.IO.Path.Combine(programFilesPath, "NAnt", "bin", "NAnt.exe");
+
+				if (System.IO.File.Exists(fileName))
+				{
+					return fileName;
+				}
+			}
+
+			{
+				var programFilesPath = System.Environment.GetEnvironmentVariable("ProgramFiles");
+
+				var fileName = System.IO.Path.Combine(programFilesPath, "NAnt", "bin", "NAnt.exe");
+
+				if (System.IO.File.Exists(fileName))
+				{
+					return fileName;
+				}
+			}
+
+			return null;
+		}
 	}
 }

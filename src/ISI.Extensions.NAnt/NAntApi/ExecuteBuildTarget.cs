@@ -18,12 +18,40 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.NAnt.DataTransferObjects.NAntApi;
 
-namespace ISI.Extensions.Cake.DataTransferObjects.CakeApi
+namespace ISI.Extensions.NAnt
 {
-	public partial class ExecuteBuildTargetRequest
+	public partial class NAntApi
 	{
-		public string BuildScriptFullName { get; set; }
-		public string Target { get; set; }
+		public DTOs.ExecuteBuildTargetResponse ExecuteBuildTarget(DTOs.ExecuteBuildTargetRequest request)
+		{
+			var response = new DTOs.ExecuteBuildTargetResponse();
+
+			var nantFullName = GetNAntExecutable(request.BuildScriptFullName);
+
+			if (string.IsNullOrWhiteSpace(nantFullName))
+			{
+				response.ExitCode = 1;
+			}
+			else
+			{
+				var arguments = new List<string>();
+
+				arguments.Add(request.Target);
+				arguments.Add(string.Format("-buildfile:\"{0}\"", request.BuildScriptFullName));
+
+				response.ExitCode = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				{
+					Logger = Logger,
+					ProcessExeFullName = GetNAntExecutable(request.BuildScriptFullName),
+					Arguments = arguments.ToArray(),
+					WorkingDirectory = System.IO.Path.GetDirectoryName(request.BuildScriptFullName),
+				}).ExitCode;
+			}
+
+			return response;
+		}
 	}
 }

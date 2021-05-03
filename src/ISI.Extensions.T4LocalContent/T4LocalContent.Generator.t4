@@ -493,6 +493,10 @@ public static partial class <#= projectFolderSlug #>
 						{
 #>
 	public static readonly string <#= CreateSlug(fileName, projectFolderSlug) #> = _root() + "<#= projectItem.Name #>";
+	public static System.IO.Stream Get<#= CreateSlug(projectItem.Name) #>Stream()
+	{
+		return typeof(<#= Namespace #>.<#= ResourcesSubClassName #>).Assembly.GetManifestResourceStream(<#= CreateSlug(projectItem.Name) #>);
+	}
 <#+
 							usedNames.Add(fileName);
 						}

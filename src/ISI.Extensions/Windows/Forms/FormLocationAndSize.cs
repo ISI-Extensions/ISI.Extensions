@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,39 +15,46 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace ISI.Extensions.WindowsServices
+namespace ISI.Extensions.Windows.Forms
 {
-	public partial class WindowsServiceManager
+	public class FormLocationAndSize
 	{
-		public void StopService()
+		public string FormName { get; set; }
+		public int Left { get; set; }
+		public int Top { get; set; }
+		public int Width { get; set; }
+		public int Height { get; set; }
+
+		public override bool Equals(object obj)
 		{
-			using (var serviceController = new System.ServiceProcess.ServiceController(ServiceName))
+			if (obj is FormLocationAndSize formLocationAndSize)
 			{
-				switch ( serviceController.Status)
+				if (formLocationAndSize.Left != Left)
 				{
-					case System.ServiceProcess.ServiceControllerStatus.Running:
-					case System.ServiceProcess.ServiceControllerStatus.Paused:
-						serviceController.Stop();
-						serviceController.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Stopped, StopTimeOut);
-						break;
-					case System.ServiceProcess.ServiceControllerStatus.Stopped:
-						break;
-					case System.ServiceProcess.ServiceControllerStatus.StartPending:
-						break;
-					case System.ServiceProcess.ServiceControllerStatus.StopPending:
-						break;
-					case System.ServiceProcess.ServiceControllerStatus.ContinuePending:
-						break;
-					case System.ServiceProcess.ServiceControllerStatus.PausePending:
-						break;
-					default:
-						throw new ArgumentOutOfRangeException();
+					return false;
 				}
+
+				if (formLocationAndSize.Top != Top)
+				{
+					return false;
+				}
+
+				if (formLocationAndSize.Width != Width)
+				{
+					return false;
+				}
+
+				if (formLocationAndSize.Height != Height)
+				{
+					return false;
+				}
+
+				return string.Equals(formLocationAndSize.FormName, FormName, StringComparison.InvariantCultureIgnoreCase);
 			}
+
+			return false;
 		}
 	}
 }

@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net5.0</TargetFramework>
+		<TargetFramework>net5.0-windows</TargetFramework>
+		<UseWindowsForms>true</UseWindowsForms>
 		<LangVersion>latest</LangVersion>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<Deterministic>false</Deterministic>
@@ -18,11 +19,23 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="System.ServiceProcess.ServiceController" Version="5.0.0" />
+		<None Update="T4LocalContent\T4LocalContent.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>T4LocalContent.generatedcode.cs</LastGenOutput>
+		</None>
+		<Compile Update="T4LocalContent\T4LocalContent.generatedcode.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>T4LocalContent.tt</DependentUpon>
+		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
 	</ItemGroup>
 
 </Project>

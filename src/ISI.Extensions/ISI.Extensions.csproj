@@ -9,12 +9,28 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Include="..\ISI.Extensions.AssemblyInfo.cs" Link="Properties\ISI.Extensions.AssemblyInfo.cs" />
-	  <Compile Include="..\ISI.Extensions.Version.cs" Link="Properties\ISI.Extensions.Version.cs" />
+		<Compile Include="..\ISI.Extensions.AssemblyInfo.cs" Link="Properties\ISI.Extensions.AssemblyInfo.cs" />
+		<Compile Include="..\ISI.Extensions.Version.cs" Link="Properties\ISI.Extensions.Version.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="..\ISI.Extensions.licenseheader" Link="ISI.Extensions.licenseheader" />
+		<None Include="..\ISI.Extensions.licenseheader" Link="ISI.Extensions.licenseheader" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Artwork\Lantern.ico" />
+	  <None Remove="Artwork\Lantern.png" />
+	  <EmbeddedResource Include="Artwork\Lantern.ico" />
+	  <EmbeddedResource Include="Artwork\Lantern.png" />
+		<None Update="T4LocalContent\T4LocalContent.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>T4LocalContent.generatedcode.cs</LastGenOutput>
+		</None>
+		<Compile Update="T4LocalContent\T4LocalContent.generatedcode.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>T4LocalContent.tt</DependentUpon>
+		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -31,6 +47,14 @@
 		<PackageReference Include="Microsoft.Extensions.Primitives" Version="5.0.1" />
 		<PackageReference Include="System.Composition" Version="5.0.1" />
 		<PackageReference Include="System.Text.Json" Version="5.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Windows\Forms\Extensions\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
 	</ItemGroup>
 
 </Project>

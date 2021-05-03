@@ -18,17 +18,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Jenkins.SerializableEntities
+namespace ISI.Extensions.IO
 {
-	[DataContract]
-	public class JenkinsSettings
+	public partial class Path
 	{
-		[DataMember(Name = "jenkinsServers", EmitDefaultValue = false)]
-		public JenkinsSettingsJenkinsServer[] JenkinsServers { get; set; }
+		public static string GetCommonPath(IEnumerable<string> fileNames)
+		{
+			fileNames = fileNames.ToArray();
 
-		[DataMember(Name = "formLocationAndSizes", EmitDefaultValue = false)]
-		public JenkinsSettingsFormLocationAndSize[] FormLocationAndSizes { get; set; }
+			var commonPath = System.IO.Path.GetDirectoryName(fileNames.First());
+
+			foreach (var fileName in fileNames.Skip(1))
+			{
+				if (!string.IsNullOrEmpty(commonPath))
+				{
+					var path = System.IO.Path.GetDirectoryName(fileName);
+
+					while (!string.IsNullOrEmpty(commonPath) && !string.IsNullOrEmpty(path) && !string.Equals(commonPath, path, StringComparison.InvariantCultureIgnoreCase))
+					{
+						if (commonPath.Length > path.Length)
+						{
+							commonPath = System.IO.Path.GetDirectoryName(commonPath);
+						}
+						else
+						{
+							path = System.IO.Path.GetDirectoryName(path);
+						}
+					}
+				}
+			}
+
+			return commonPath;
+		}
 	}
 }

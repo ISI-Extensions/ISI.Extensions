@@ -23,12 +23,21 @@ using System.Runtime.Serialization;
 namespace ISI.Extensions.Jenkins.SerializableEntities
 {
 	[DataContract]
-	public class JenkinsSettings
+	public class JenkinsSettingsFormLocationAndSize
 	{
-		[DataMember(Name = "jenkinsServers", EmitDefaultValue = false)]
-		public JenkinsSettingsJenkinsServer[] JenkinsServers { get; set; }
+		[DataMember(Name = "formName", EmitDefaultValue = false)]
+		public string FormName { get; set; }
 
-		[DataMember(Name = "formLocationAndSizes", EmitDefaultValue = false)]
-		public JenkinsSettingsFormLocationAndSize[] FormLocationAndSizes { get; set; }
+		[DataMember(Name = "left", EmitDefaultValue = false)]
+		public int Left { get; set; }
+
+		[DataMember(Name = "top", EmitDefaultValue = false)]
+		public int Top { get; set; }
+
+		[DataMember(Name = "width", EmitDefaultValue = false)]
+		public int Width { get; set; }
+
+		[DataMember(Name = "height", EmitDefaultValue = false)]
+		public int Height { get; set; }
 	}
 }

@@ -43,8 +43,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Telephony.Me
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Tests", "ISI.Extensions.Tests\ISI.Extensions.Tests.csproj", "{12E7BEE4-1CF8-4D37-9C60-16F5B5D4D1DD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.WindowsServices", "ISI.Extensions.WindowsServices\ISI.Extensions.WindowsServices.csproj", "{980151D0-1CDD-4243-A4E2-D7645AE01906}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{5E2AEF11-B578-4316-8285-E91B89B83014}"
 	ProjectSection(SolutionItems) = preProject
 		build.cake = build.cake
@@ -58,11 +56,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Svn", "ISI.E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Scm", "ISI.Extensions.Scm\ISI.Extensions.Scm.csproj", "{0876C2A7-4873-4C4D-88D2-4142BDE31C03}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.Git", "ISI.Extensions.Git\ISI.Extensions.Git.csproj", "{F74CEB8A-B302-4A89-8310-9C1D964F3F6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Git", "ISI.Extensions.Git\ISI.Extensions.Git.csproj", "{F74CEB8A-B302-4A89-8310-9C1D964F3F6B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.NAnt", "ISI.Extensions.NAnt\ISI.Extensions.NAnt.csproj", "{5AC92DEF-44D5-4C9F-9FE1-54D65C2F3D27}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.NAnt", "ISI.Extensions.NAnt\ISI.Extensions.NAnt.csproj", "{5AC92DEF-44D5-4C9F-9FE1-54D65C2F3D27}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.Jenkins", "ISI.Extensions.Jenkins\ISI.Extensions.Jenkins.csproj", "{B857B791-3F8A-445C-8F9D-2619B2689019}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Jenkins", "ISI.Extensions.Jenkins\ISI.Extensions.Jenkins.csproj", "{B857B791-3F8A-445C-8F9D-2619B2689019}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Windows.Forms", "ISI.Extensions.Windows.Forms\ISI.Extensions.Windows.Forms.csproj", "{7536DED7-5563-40F1-8FA1-46472D7246CB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Jenkins.Windows.Forms", "ISI.Extensions.Jenkins.Windows.Forms\ISI.Extensions.Jenkins.Windows.Forms.csproj", "{3C38C1A7-8A3A-424D-AF8C-8B96E0250C51}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -232,14 +234,6 @@ Global
 		{12E7BEE4-1CF8-4D37-9C60-16F5B5D4D1DD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{12E7BEE4-1CF8-4D37-9C60-16F5B5D4D1DD}.Release|x64.ActiveCfg = Release|x64
 		{12E7BEE4-1CF8-4D37-9C60-16F5B5D4D1DD}.Release|x64.Build.0 = Release|x64
-		{980151D0-1CDD-4243-A4E2-D7645AE01906}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{980151D0-1CDD-4243-A4E2-D7645AE01906}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{980151D0-1CDD-4243-A4E2-D7645AE01906}.Debug|x64.ActiveCfg = Debug|x64
-		{980151D0-1CDD-4243-A4E2-D7645AE01906}.Debug|x64.Build.0 = Debug|x64
-		{980151D0-1CDD-4243-A4E2-D7645AE01906}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{980151D0-1CDD-4243-A4E2-D7645AE01906}.Release|Any CPU.Build.0 = Release|Any CPU
-		{980151D0-1CDD-4243-A4E2-D7645AE01906}.Release|x64.ActiveCfg = Release|x64
-		{980151D0-1CDD-4243-A4E2-D7645AE01906}.Release|x64.Build.0 = Release|x64
 		{FB861B75-7B2D-4D3F-93FC-87E2667A516C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FB861B75-7B2D-4D3F-93FC-87E2667A516C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB861B75-7B2D-4D3F-93FC-87E2667A516C}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -296,6 +290,22 @@ Global
 		{B857B791-3F8A-445C-8F9D-2619B2689019}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B857B791-3F8A-445C-8F9D-2619B2689019}.Release|x64.ActiveCfg = Release|Any CPU
 		{B857B791-3F8A-445C-8F9D-2619B2689019}.Release|x64.Build.0 = Release|Any CPU
+		{7536DED7-5563-40F1-8FA1-46472D7246CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7536DED7-5563-40F1-8FA1-46472D7246CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7536DED7-5563-40F1-8FA1-46472D7246CB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7536DED7-5563-40F1-8FA1-46472D7246CB}.Debug|x64.Build.0 = Debug|Any CPU
+		{7536DED7-5563-40F1-8FA1-46472D7246CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7536DED7-5563-40F1-8FA1-46472D7246CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7536DED7-5563-40F1-8FA1-46472D7246CB}.Release|x64.ActiveCfg = Release|Any CPU
+		{7536DED7-5563-40F1-8FA1-46472D7246CB}.Release|x64.Build.0 = Release|Any CPU
+		{3C38C1A7-8A3A-424D-AF8C-8B96E0250C51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C38C1A7-8A3A-424D-AF8C-8B96E0250C51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C38C1A7-8A3A-424D-AF8C-8B96E0250C51}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3C38C1A7-8A3A-424D-AF8C-8B96E0250C51}.Debug|x64.Build.0 = Debug|Any CPU
+		{3C38C1A7-8A3A-424D-AF8C-8B96E0250C51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C38C1A7-8A3A-424D-AF8C-8B96E0250C51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C38C1A7-8A3A-424D-AF8C-8B96E0250C51}.Release|x64.ActiveCfg = Release|Any CPU
+		{3C38C1A7-8A3A-424D-AF8C-8B96E0250C51}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

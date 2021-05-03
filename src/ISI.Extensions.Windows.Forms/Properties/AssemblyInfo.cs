@@ -13,28 +13,23 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
-namespace ISI.Extensions.WindowsServices
-{
-	public partial class WindowsServiceManager
-	{
-		public string ServiceName { get; }
-		public TimeSpan StartTimeOut { get; }
-		public TimeSpan StopTimeOut { get; }
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+[assembly: AssemblyTitle("ISI.Extensions.Windows.Forms")]
+[assembly: AssemblyDescription("")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyProduct("ISI.Extensions.Windows.Forms")]
+[assembly: AssemblyCulture("")]
 
-		public WindowsServiceManager(
-			string serviceName,
-			TimeSpan? startTimeOut = null,
-			TimeSpan? stopTimeOut = null)
-		{
-			ServiceName = serviceName;
-			StartTimeOut = startTimeOut ?? new TimeSpan(30000);
-			StopTimeOut = stopTimeOut ?? new TimeSpan(30000);
-		}
-	}
-}
+// Setting ComVisible to false makes the types in this assembly not visible 
+// to COM components.  If you need to access a type in this assembly from 
+// COM, set the ComVisible attribute to true on that type.
+[assembly: ComVisible(false)]
+
+// The following GUID is for the ID of the typelib if this project is exposed to COM
+[assembly: Guid("6a010f9c-e8f4-47a2-9935-67e83ee26098")]

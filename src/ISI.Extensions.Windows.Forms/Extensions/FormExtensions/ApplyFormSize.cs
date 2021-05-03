@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -12,23 +12,52 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.WindowsServices
+namespace ISI.Extensions.Windows.Forms.Extensions
 {
-	public partial class WindowsServiceManager
+	public static partial class FormExtensions
 	{
-		public void InstallService()
+		public static void ApplyFormLocationAndSize(this System.Windows.Forms.Form form, IEnumerable<ISI.Extensions.Windows.Forms.FormLocationAndSize> formLocationAndSizes)
 		{
-			using (var serviceController = new System.ServiceProcess.ServiceController(ServiceName))
+			ApplyFormLocationAndSize(form, form.Name, formLocationAndSizes);
+		}
+
+		public static void ApplyFormLocationAndSize(this System.Windows.Forms.Form form, string formName, IEnumerable<ISI.Extensions.Windows.Forms.FormLocationAndSize> formLocationAndSizes)
+		{
+			var formLocationAndSize = formLocationAndSizes.FirstOrDefault(formLocationAndSize => string.Equals(formLocationAndSize.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
+
+			if (formLocationAndSize == null)
 			{
-				
+				throw new Exception($"Form not found \"{formName}\"");
 			}
+
+			ApplyFormLocationAndSize(form, formLocationAndSize);
+		}
+
+		public static void ApplyFormLocationAndSize(this System.Windows.Forms.Form form, ISI.Extensions.Windows.Forms.FormLocationAndSize formLocationAndSize)
+		{
+			var workingArea = System.Windows.Forms.Screen.FromControl(form).WorkingArea;
+
+			if (formLocationAndSize.Top + formLocationAndSize.Height > workingArea.Height)
+			{
+				formLocationAndSize.Top = 0;
+			}
+
+			if (formLocationAndSize.Left + formLocationAndSize.Width > workingArea.Width)
+			{
+				formLocationAndSize.Left = 0;
+			}
+
+			form.Left = formLocationAndSize.Left;
+			form.Top = formLocationAndSize.Top;
+			form.Width = formLocationAndSize.Width;
+			form.Height = formLocationAndSize.Height;
 		}
 	}
 }

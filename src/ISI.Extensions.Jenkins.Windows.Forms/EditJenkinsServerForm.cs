@@ -39,8 +39,8 @@ namespace ISI.Extensions.Jenkins.UI
 		{
 			InitializeComponent();
 
-			this.ApplyFormLocationAndSize(nameof(EditJenkinsServerForm), new List<>());
-			JenkinsSettings.ApplyFormSize(nameof(EditJenkinsServerForm), this);
+			//this.ApplyFormLocationAndSize(nameof(EditJenkinsServerForm), new List<>());
+			//JenkinsSettings.ApplyFormSize(nameof(EditJenkinsServerForm), this);
 
 			flpDirectories.Visible = false;
 			btnCancel.Visible = false;
@@ -106,7 +106,7 @@ namespace ISI.Extensions.Jenkins.UI
 
 			btnOK.Click += (clickSender, clickEventArgs) =>
 			{
-				JenkinsSettings.RecordFormSize(this);
+				//JenkinsSettings.RecordFormSize(this);
 
 				JenkinsServer.JenkinsUrl = txtJenkinsUrl.Text;
 				JenkinsServer.Description = txtDescription.Text;
@@ -114,7 +114,7 @@ namespace ISI.Extensions.Jenkins.UI
 				JenkinsServer.ApiToken = txtApiToken.Text;
 				JenkinsServer.Directories = DirectoryPanels.Where(directoryPanel => !directoryPanel.Delete).Select(directoryPanel => directoryPanel.Directory).ToArray();
 
-				JenkinsSettings.SetJenkinsServer(JenkinsServer);
+				//JenkinsSettings.SetJenkinsServer(JenkinsServer);
 
 				if (this.Modal)
 				{

@@ -58,6 +58,9 @@ namespace ISI.Extensions.Scm
 						{
 							memoryStream.Position = 0;
 							fileSegments.Add(memoryStream.ToArray());
+
+							Logger.LogInformation(string.Format("  Created FileSegment: {0} Size: {1}", fileSegments.Count, memoryStream.Length));
+
 							memoryStream.SetLength(0);
 						}
 					}

@@ -29,9 +29,30 @@ namespace ISI.Extensions
 			var iconFileName = System.IO.Path.GetFileName(iconFullName);
 
 			var desktopIniFullName = System.IO.Path.Combine(directoryFullName, "desktop.ini");
-			System.IO.File.WriteAllText(desktopIniFullName, string.Format("[.ShellClassInfo]\nIconResource={0},{1}\n[ViewState]\nMode=\nVid=\nFolderType=Generic", iconFileName, iconIndex));
-			//System.IO.File.WriteAllText(desktopIniFullName, string.Format("[.ShellClassInfo]\nIconFile={0}\nIconIndex={1}\nConfirmFileOp=0\nIconResource={0},{1}\n[ViewState]\nMode=\nVid=\nFolderType=Generic", iconFileName, iconIndex));
+
+			using (var streamWriter = new System.IO.StreamWriter(desktopIniFullName, false, Encoding.Unicode))
+			{
+				streamWriter.WriteLine("[.ShellClassInfo]");
+				streamWriter.WriteLine(string.Format("IconFile={0}", iconFileName));
+				streamWriter.WriteLine(string.Format("IconIndex={0}", iconIndex));
+				streamWriter.WriteLine("ConfirmFileOp=0");
+				streamWriter.WriteLine(string.Format("IconResource={0},{1}", iconFileName, iconIndex));
+
+				streamWriter.Flush();
+				streamWriter.Close();
+			}
+
 			System.IO.File.SetAttributes(desktopIniFullName, System.IO.File.GetAttributes(desktopIniFullName) | System.IO.FileAttributes.Hidden | System.IO.FileAttributes.Archive | System.IO.FileAttributes.System);
+			System.IO.File.SetAttributes(directoryFullName, System.IO.File.GetAttributes(directoryFullName) | System.IO.FileAttributes.System);
+
+
+
+
+
+
+			//System.IO.File.WriteAllText(desktopIniFullName, string.Format("[.ShellClassInfo]\nIconResource={0},{1}\n[ViewState]\nMode=\nVid=\nFolderType=Generic", iconFileName, iconIndex));
+			//System.IO.File.WriteAllText(desktopIniFullName, string.Format("[.ShellClassInfo]\nIconFile={0}\nIconIndex={1}\nConfirmFileOp=0\nIconResource={0},{1}\n[ViewState]\nMode=\nVid=\nFolderType=Generic", iconFileName, iconIndex));
+			//System.IO.File.SetAttributes(desktopIniFullName, System.IO.File.GetAttributes(desktopIniFullName) | System.IO.FileAttributes.Hidden | System.IO.FileAttributes.Archive | System.IO.FileAttributes.System);
 			//System.IO.File.SetAttributes(desktopIniFullName, System.IO.File.GetAttributes(desktopIniFullName) | System.IO.FileAttributes.Hidden | System.IO.FileAttributes.ReadOnly);
 
 			var iconDirectoryIconFullName = System.IO.Path.Combine(directoryFullName, iconFileName);

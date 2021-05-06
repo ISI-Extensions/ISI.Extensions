@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Scm.DataTransferObjects.FileStoreApi;
 
 namespace ISI.Extensions.Scm
@@ -29,37 +30,35 @@ namespace ISI.Extensions.Scm
 		{
 			var response = new DTOs.UploadFileResponse();
 			
+			Logger.LogInformation("UploadFile");
+			Logger.LogInformation(string.Format("  FileStoreUrl: {0}", request.FileStoreUrl));
+			Logger.LogInformation(string.Format("  FileName: {0}", request.FileName));
+			Logger.LogInformation(string.Format("  FileStoreUuid: {0}", request.FileStoreUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)));
+
 			var fileSegments = new List<byte[]>();
 
-			using (var ms = new System.IO.MemoryStream())
+			using (var memoryStream = new System.IO.MemoryStream())
 			{
-				using (System.IO.Stream iStream = System.IO.File.OpenRead(request.FileName))
+				using (System.IO.Stream fileStream = System.IO.File.OpenRead(request.FileName))
 				{
-					int chunkSize = 2048;
-					byte[] buffer = new byte[chunkSize];
-					int readBlocks = 0;
+					var chunkSize = 2048;
+					var buffer = new byte[chunkSize];
+					var readBlocks = 0;
 
-					readBlocks = iStream.Read(buffer, 0, chunkSize);
+					readBlocks = fileStream.Read(buffer, 0, chunkSize);
 
 					while (readBlocks > 0)
 					{
-						ms.Write(buffer, 0, readBlocks);
-						if (readBlocks >= chunkSize)
-						{
-							readBlocks = iStream.Read(buffer, 0, chunkSize);
-						}
-						else
-						{
-							readBlocks = 0;
-						}
+						memoryStream.Write(buffer, 0, readBlocks);
+						readBlocks = readBlocks >= chunkSize ? fileStream.Read(buffer, 0, chunkSize) : 0;
 
-						ms.Flush();
+						memoryStream.Flush();
 
-						if ((ms.Position > 0) && ((readBlocks == 0) || (ms.Position + chunkSize > request.MaxFileSegmentSize)))
+						if ((memoryStream.Position > 0) && ((readBlocks == 0) || (memoryStream.Position + chunkSize > request.MaxFileSegmentSize)))
 						{
-							ms.Position = 0;
-							fileSegments.Add(ms.ToArray());
-							ms.SetLength(0);
+							memoryStream.Position = 0;
+							fileSegments.Add(memoryStream.ToArray());
+							memoryStream.SetLength(0);
 						}
 					}
 				}
@@ -67,10 +66,11 @@ namespace ISI.Extensions.Scm
 			
 			using (var fileStoreClient = ISI.Extensions.Scm.ServiceReferences.FileStore.FileStoreClient.GetClient(request.FileStoreUrl))
 			{
-				int jFileSegment = fileSegments.Count;
-				for (int iFileSegment = 1; iFileSegment <= jFileSegment; iFileSegment++)
+				var fileSegmentsCount = fileSegments.Count;
+				for (var fileSegmentIndex = 1; fileSegmentIndex <= fileSegments.Count; fileSegmentIndex++)
 				{
-					fileStoreClient.UploadFileSegmentAsync(request.UserName, request.Password, request.FileStoreUuid, request.Version, (iFileSegment == jFileSegment), fileSegments[iFileSegment - 1]);
+					Logger.LogInformation(string.Format("  Uploading FileSegment: {0} of {1}", fileSegmentIndex, fileSegmentsCount));
+					fileStoreClient.UploadFileSegmentAsync(request.UserName, request.Password, request.FileStoreUuid, request.Version, (fileSegmentIndex == fileSegmentsCount), fileSegments[fileSegmentIndex - 1]);
 				}
 			}
 

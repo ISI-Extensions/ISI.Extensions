@@ -70,7 +70,7 @@ namespace ISI.Extensions.Scm
 				for (var fileSegmentIndex = 1; fileSegmentIndex <= fileSegments.Count; fileSegmentIndex++)
 				{
 					Logger.LogInformation(string.Format("  Uploading FileSegment: {0} of {1}", fileSegmentIndex, fileSegmentsCount));
-					fileStoreClient.UploadFileSegmentAsync(request.UserName, request.Password, request.FileStoreUuid, request.Version, (fileSegmentIndex == fileSegmentsCount), fileSegments[fileSegmentIndex - 1]);
+					fileStoreClient.UploadFileSegmentAsync(request.UserName, request.Password, request.FileStoreUuid, request.Version, (fileSegmentIndex == fileSegmentsCount), fileSegments[fileSegmentIndex - 1]).Wait();
 				}
 			}
 

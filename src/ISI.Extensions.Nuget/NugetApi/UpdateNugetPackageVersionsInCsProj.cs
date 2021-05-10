@@ -129,7 +129,7 @@ namespace ISI.Extensions.Nuget
 									packageId = packageId.TrimEnd('.');
 									if (string.IsNullOrWhiteSpace(packageId))
 									{
-										packageId = packageAttribute.Value;
+										packageId = packageAttribute.Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).First();
 									}
 									
 									packageVersion = packageVersion.TrimEnd('.');

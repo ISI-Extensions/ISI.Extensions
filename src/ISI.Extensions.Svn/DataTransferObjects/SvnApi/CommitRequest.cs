@@ -23,5 +23,8 @@ namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
 	public partial class CommitRequest
 	{
+		public string FullName { get; set; }
+		public string LogMessage { get; set; }
+		public bool UseTortoiseSvn { get; set; } = false;
 	}
 }

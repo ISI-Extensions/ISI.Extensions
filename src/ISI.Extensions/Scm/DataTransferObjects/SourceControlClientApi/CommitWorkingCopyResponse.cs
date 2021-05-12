@@ -23,5 +23,6 @@ namespace ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi
 {
 	public partial class CommitWorkingCopyResponse
 	{
+		public bool Success { get; set; }
 	}
 }

@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,57 +15,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Svn.DataTransferObjects.SvnApi;
-using SourceControlClientApiDTOs = ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi;
 
-namespace ISI.Extensions.Svn
+namespace ISI.Extensions.Scm
 {
-	public partial class SvnApi
+	public interface IDeploymentManagerApi
 	{
-		public DTOs.CommitResponse Commit(DTOs.CommitRequest request)
-		{
-			var response = new DTOs.CommitResponse();
-
-			if (request.UseTortoiseSvn)
-			{
-				var arguments = new List<string>();
-
-				arguments.Add("/command:commit");
-				arguments.Add(string.Format("/path:\"{0}\"", request.FullName));
-				if (!string.IsNullOrWhiteSpace(request.LogMessage))
-				{
-					arguments.Add(string.Format("/logmsg:\"{0}\"", request.LogMessage));
-				}
-				arguments.Add("/closeonend:0");
-
-				response.ExitCode = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-				{
-					Logger = Logger,
-					ProcessExeFullName = "TortoiseProc",
-					Arguments = arguments.ToArray(),
-				}).ExitCode;
-			}
-			else
-			{
-				var arguments = new List<string>();
-
-				arguments.Add("commit");
-				arguments.Add(string.Format("\"{0}\"", request.FullName));
-				arguments.Add(string.Format("-m \"{0}\"", request.LogMessage));
-
-				response.ExitCode = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-				{
-					Logger = Logger,
-					ProcessExeFullName = "svn",
-					Arguments = arguments.ToArray(),
-				}).ExitCode;
-			}
-
-			return response;
-		}
+		DTOs.UpdateServicesManagerResponse UpdateServicesManager(DTOs.UpdateServicesManagerRequest request);
+		DTOs.DeployArtifactResponse DeployArtifact(DTOs.DeployArtifactRequest request);
 	}
 }

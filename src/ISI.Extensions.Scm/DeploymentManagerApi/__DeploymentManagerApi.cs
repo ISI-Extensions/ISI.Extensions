@@ -23,7 +23,7 @@ using DTOs = ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi;
 
 namespace ISI.Extensions.Scm
 {
-	public partial class DeploymentManagerApi
+	public partial class DeploymentManagerApi : IDeploymentManagerApi
 	{
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 

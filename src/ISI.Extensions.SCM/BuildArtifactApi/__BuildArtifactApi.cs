@@ -23,7 +23,7 @@ using DTOs = ISI.Extensions.Scm.DataTransferObjects.BuildArtifactApi;
 
 namespace ISI.Extensions.Scm
 {
-	public partial class BuildArtifactApi
+	public partial class BuildArtifactApi : IBuildArtifactApi
 	{
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 

@@ -24,14 +24,41 @@ using SourceControlClientApiDTOs = ISI.Extensions.Scm.DataTransferObjects.Source
 
 namespace ISI.Extensions.Git
 {
+	[SourceControlClientApi]
 	public partial class GitApi : ISI.Extensions.Scm.ISourceControlClientApi
 	{
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 
+		public GitApi()
+			: this(null)
+		{
+		}
+
 		public GitApi(
-			Microsoft.Extensions.Logging.ILogger logger = null)
+			Microsoft.Extensions.Logging.ILogger logger)
 		{
 			Logger = logger ?? new ConsoleLogger();
+		}
+		
+		private const string SccDirectoryName = ".git";
+		bool ISI.Extensions.Scm.ISourceControlClientApi.IsSccDirectory(string directoryName) => string.Equals(System.IO.Path.GetFileName(directoryName), SccDirectoryName, StringComparison.InvariantCultureIgnoreCase);
+		bool ISI.Extensions.Scm.ISourceControlClientApi.UsesScc(string path)
+		{
+			var usesSvn = false;
+
+			while (!System.IO.Directory.Exists(path))
+			{
+				path = System.IO.Path.GetDirectoryName(path);
+			}
+
+			while (!usesSvn && !string.IsNullOrEmpty(path))
+			{
+				usesSvn = System.IO.Directory.Exists(System.IO.Path.Combine(path, SccDirectoryName));
+
+				path = System.IO.Path.GetDirectoryName(path);
+			}
+
+			return usesSvn;
 		}
 
 		SourceControlClientApiDTOs.UpdateWorkingCopyResponse ISI.Extensions.Scm.ISourceControlClientApi.UpdateWorkingCopy(SourceControlClientApiDTOs.UpdateWorkingCopyRequest request)
@@ -53,13 +80,13 @@ namespace ISI.Extensions.Git
 		{
 			var response = new SourceControlClientApiDTOs.CommitWorkingCopyResponse();
 
-			//var apiResponse = Commit(new DTOs.CommitRequest()
-			//{
-			//	FullName = request.FullName,
-			//	IncludeSubModules = request.IncludeExternals,
-			//});
+			var apiResponse = Commit(new DTOs.CommitRequest()
+			{
+				FullName = request.FullName,
+				LogMessage = request.LogMessage,
+			});
 
-			//response.Success = (apiResponse.ExitCode == 0);
+			response.Success = (apiResponse.ExitCode == 0);
 
 			return response;
 		}

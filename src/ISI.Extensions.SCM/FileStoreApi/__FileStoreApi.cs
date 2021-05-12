@@ -23,7 +23,7 @@ using DTOs = ISI.Extensions.Scm.DataTransferObjects.FileStoreApi;
 
 namespace ISI.Extensions.Scm
 {
-	public partial class FileStoreApi 
+	public partial class FileStoreApi : IFileStoreApi
 	{
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 

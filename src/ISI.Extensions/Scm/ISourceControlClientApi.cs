@@ -22,6 +22,8 @@ namespace ISI.Extensions.Scm
 {
 	public interface ISourceControlClientApi
 	{
+		bool IsSccDirectory(string directoryName);
+		bool UsesScc(string directoryName);
 		DTOs.UpdateWorkingCopyResponse UpdateWorkingCopy(DTOs.UpdateWorkingCopyRequest request);
 		DTOs.CommitWorkingCopyResponse CommitWorkingCopy(DTOs.CommitWorkingCopyRequest request);
 	}

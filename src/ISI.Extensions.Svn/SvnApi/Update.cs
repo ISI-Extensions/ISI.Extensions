@@ -35,7 +35,10 @@ namespace ISI.Extensions.Svn
 
 				arguments.Add("/command:update");
 				arguments.Add(string.Format("/path:\"{0}\"", request.FullName));
-				arguments.Add("/includeexternals");
+				if (request.IncludeExternals)
+				{
+					arguments.Add("/includeexternals");
+				}
 				arguments.Add("/closeonend:2");
 
 				response.ExitCode = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
@@ -51,6 +54,10 @@ namespace ISI.Extensions.Svn
 
 				arguments.Add("update");
 				arguments.Add(string.Format("\"{0}\"", request.FullName));
+				if (!request.IncludeExternals)
+				{
+					arguments.Add("--ignore-externals");
+				}
 
 				response.ExitCode = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{

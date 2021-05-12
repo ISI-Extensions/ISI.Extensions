@@ -20,10 +20,11 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using DTOs = ISI.Extensions.Svn.DataTransferObjects.SvnApi;
+using SourceControlClientApiDTOs = ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi;
 
 namespace ISI.Extensions.Svn
 {
-	public partial class SvnApi
+	public partial class SvnApi : ISI.Extensions.Scm.ISourceControlClientApi
 	{
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 
@@ -31,6 +32,36 @@ namespace ISI.Extensions.Svn
 			Microsoft.Extensions.Logging.ILogger logger = null)
 		{
 			Logger = logger ?? new ConsoleLogger();
+		}
+
+		SourceControlClientApiDTOs.UpdateWorkingCopyResponse ISI.Extensions.Scm.ISourceControlClientApi.UpdateWorkingCopy(SourceControlClientApiDTOs.UpdateWorkingCopyRequest request)
+		{
+			var response = new SourceControlClientApiDTOs.UpdateWorkingCopyResponse();
+
+			var apiResponse = Update(new DTOs.UpdateRequest()
+			{
+				FullName = request.FullName,
+				IncludeExternals = request.IncludeExternals,
+			});
+
+			response.Success = (apiResponse.ExitCode == 0);
+
+			return response;
+		}
+
+		SourceControlClientApiDTOs.CommitWorkingCopyResponse ISI.Extensions.Scm.ISourceControlClientApi.CommitWorkingCopy(SourceControlClientApiDTOs.CommitWorkingCopyRequest request)
+		{
+			var response = new SourceControlClientApiDTOs.CommitWorkingCopyResponse();
+
+			//var apiResponse = Commit(new DTOs.CommitRequest()
+			//{
+			//	FullName = request.FullName,
+			//	IncludeSubModules = request.IncludeExternals,
+			//});
+
+			//response.Success = (apiResponse.ExitCode == 0);
+
+			return response;
 		}
 	}
 }

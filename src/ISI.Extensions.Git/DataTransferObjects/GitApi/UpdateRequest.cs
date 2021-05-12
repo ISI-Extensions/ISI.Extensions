@@ -24,5 +24,6 @@ namespace ISI.Extensions.Git.DataTransferObjects.GitApi
 	public partial class UpdateRequest
 	{
 		public string FullName { get; set; }
+		public bool IncludeSubModules { get; set; } = true;
 	}
 }

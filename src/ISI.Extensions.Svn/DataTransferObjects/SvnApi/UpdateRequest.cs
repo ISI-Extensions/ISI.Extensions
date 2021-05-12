@@ -24,6 +24,7 @@ namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 	public partial class UpdateRequest
 	{
 		public string FullName { get; set; }
+		public bool IncludeExternals { get; set; } = true;
 		public bool UseTortoiseSvn { get; set; } = false;
 	}
 }

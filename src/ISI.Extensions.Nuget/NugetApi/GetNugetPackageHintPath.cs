@@ -21,43 +21,14 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using DTOs = ISI.Extensions.Nuget.DataTransferObjects.NugetApi;
 using Microsoft.Extensions.Logging;
-using System.Runtime.Serialization;
 
 namespace ISI.Extensions.Nuget
 {
 	public partial class NugetApi
 	{
-		public DTOs.GetLatestPackageVersionResponse GetLatestPackageVersion(DTOs.GetLatestPackageVersionRequest request)
+		public DTOs.GetNugetPackageHintPathResponse GetNugetPackageHintPath(DTOs.GetNugetPackageHintPathRequest request)
 		{
-			var response = new DTOs.GetLatestPackageVersionResponse();
-
-			//var arguments = new List<string>();
-			//arguments.Add("list");
-			//arguments.Add(request.PackageId);
-			//arguments.AddRange(GetConfigFileArguments(request.NugetConfigFullNames));
-
-			//var nugetResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-			//{
-			//	Logger = Logger,
-			//	ProcessExeFullName = "nuget",
-			//	Arguments = arguments.ToArray(),
-			//});
-
-			//if (!nugetResponse.Errored)
-			//{
-			//	var packages = nugetResponse.Output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToNullCheckedArray(line => line.Split(new[] { ' ' }, 2));
-
-			//	var packageVersions = packages.Where(package => (package.Length > 1) && string.Equals(package.FirstOrDefault() ?? string.Empty, request.PackageId, StringComparison.InvariantCultureIgnoreCase)).ToArray();
-
-			//	if (packageVersions.Length == 1)
-			//	{
-			//		response.PackageVersion = packageVersions.First()[1];
-			//	}
-			//	else if (packageVersions.Length > 1)
-			//	{
-			//		response.PackageVersion = packageVersions.OrderByDescending(packageVersion => global::NuGet.Versioning.SemanticVersion.Parse(packageVersion[1])).First()[1];
-			//	}
-			//}
+			var response = new DTOs.GetNugetPackageHintPathResponse();
 
 			using (var tempDirectory = new ISI.Extensions.IO.Path.TempDirectory())
 			{
@@ -65,7 +36,7 @@ namespace ISI.Extensions.Nuget
 				arguments.Add("install");
 				arguments.Add(request.PackageId);
 				arguments.Add("-DependencyVersion ignore");
-				//arguments.Add(string.Format("-Version {0}", request.PackageVersion));
+				arguments.Add(string.Format("-Version {0}", request.PackageVersion));
 				arguments.AddRange(GetConfigFileArguments(request.NugetConfigFullNames));
 
 				var nugetResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
@@ -80,8 +51,6 @@ namespace ISI.Extensions.Nuget
 				{
 					//var packageFullName = System.IO.Path.Combine(tempDirectory.FullName, string.Format("{0}.{1}", request.PackageId, request.PackageVersion));
 					var packageFullName = System.IO.Directory.GetDirectories(tempDirectory.FullName).First();
-
-					response.PackageVersion = System.IO.Path.GetFileName(packageFullName).Substring(request.PackageId.Length + 1);
 
 					var dlls = System.IO.Directory.GetFiles(packageFullName, "*.dll", System.IO.SearchOption.AllDirectories)
 						.Select(fullName => fullName.Substring(packageFullName.Length).Trim('\\'));
@@ -115,7 +84,6 @@ namespace ISI.Extensions.Nuget
 					}
 				}
 			}
-
 
 			return response;
 		}

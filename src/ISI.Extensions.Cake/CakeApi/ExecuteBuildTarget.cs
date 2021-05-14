@@ -37,13 +37,13 @@ namespace ISI.Extensions.Cake
 				arguments.Add(string.Format("--Target={0}", request.Target));
 			}
 
-			response.ExitCode = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+			response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{
 				Logger = Logger,
 				ProcessExeFullName = "dotnet",
 				Arguments = arguments.ToArray(),
 				WorkingDirectory = System.IO.Path.GetDirectoryName(request.BuildScriptFullName),
-			}).ExitCode;
+			}).Errored;
 
 			return response;
 		}

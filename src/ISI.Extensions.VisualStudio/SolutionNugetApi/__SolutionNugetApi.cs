@@ -12,11 +12,17 @@ namespace ISI.Extensions.VisualStudio
 	public partial class SolutionNugetApi
 	{
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
+		protected ISI.Extensions.Scm.SourceControlClientApi SourceControlClientApi { get; }
+		protected ISI.Extensions.Nuget.NugetApi NugetApi { get; }
 
 		public SolutionNugetApi(
-			Microsoft.Extensions.Logging.ILogger logger = null)
+			Microsoft.Extensions.Logging.ILogger logger,
+			ISI.Extensions.Scm.SourceControlClientApi sourceControlClientApi,
+			ISI.Extensions.Nuget.NugetApi nugetApi)
 		{
-			Logger = logger ?? new ConsoleLogger();
+			Logger = logger;
+			NugetApi = nugetApi;
+			SourceControlClientApi = sourceControlClientApi;
 		}
 	}
 }

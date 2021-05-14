@@ -41,7 +41,7 @@ namespace ISI.Extensions.Nuget
 				}
 			});
 
-			if (sourcesResponse.ExitCode == 0)
+			if (!sourcesResponse.Errored)
 			{
 				var nugetServers = new List<NugetServer>();
 

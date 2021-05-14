@@ -23,6 +23,6 @@ namespace ISI.Extensions.Cake.DataTransferObjects.CakeApi
 {
 	public partial class ExecuteBuildTargetResponse
 	{
-		public int ExitCode { get; set; }
+		public bool Success { get; set; }
 	}
 }

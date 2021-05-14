@@ -24,5 +24,7 @@ namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 	public partial class GetNugetServersRequest
 	{
 		public string WorkingDirectory { get; set; }
+
+		public IEnumerable<string> NugetConfigFullNames { get; set; }
 	}
 }

@@ -19,10 +19,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.Git.DataTransferObjects.GitApi
+namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public partial class CommitResponse
+	public partial class GetNugetConfigFullNamesResponse
 	{
-		public bool Success { get; set; }
+		public IEnumerable<string> NugetConfigFullNames { get; set; }
 	}
 }

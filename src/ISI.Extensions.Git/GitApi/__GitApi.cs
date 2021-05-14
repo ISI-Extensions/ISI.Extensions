@@ -44,21 +44,21 @@ namespace ISI.Extensions.Git
 		bool ISI.Extensions.Scm.ISourceControlClientApi.IsSccDirectory(string directoryName) => string.Equals(System.IO.Path.GetFileName(directoryName), SccDirectoryName, StringComparison.InvariantCultureIgnoreCase);
 		bool ISI.Extensions.Scm.ISourceControlClientApi.UsesScc(string path)
 		{
-			var usesSvn = false;
+			var usesGit = false;
 
 			while (!System.IO.Directory.Exists(path))
 			{
 				path = System.IO.Path.GetDirectoryName(path);
 			}
 
-			while (!usesSvn && !string.IsNullOrEmpty(path))
+			while (!usesGit && !string.IsNullOrEmpty(path))
 			{
-				usesSvn = System.IO.Directory.Exists(System.IO.Path.Combine(path, SccDirectoryName));
+				usesGit = System.IO.Directory.Exists(System.IO.Path.Combine(path, SccDirectoryName));
 
 				path = System.IO.Path.GetDirectoryName(path);
 			}
 
-			return usesSvn;
+			return usesGit;
 		}
 
 		SourceControlClientApiDTOs.UpdateWorkingCopyResponse ISI.Extensions.Scm.ISourceControlClientApi.UpdateWorkingCopy(SourceControlClientApiDTOs.UpdateWorkingCopyRequest request)
@@ -71,7 +71,7 @@ namespace ISI.Extensions.Git
 				IncludeSubModules = request.IncludeExternals,
 			});
 
-			response.Success = (apiResponse.ExitCode == 0);
+			response.Success = apiResponse.Success;
 
 			return response;
 		}
@@ -86,7 +86,7 @@ namespace ISI.Extensions.Git
 				LogMessage = request.LogMessage,
 			});
 
-			response.Success = (apiResponse.ExitCode == 0);
+			response.Success = apiResponse.Success;
 
 			return response;
 		}

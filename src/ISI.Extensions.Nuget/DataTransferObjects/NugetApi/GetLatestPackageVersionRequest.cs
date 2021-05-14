@@ -24,6 +24,6 @@ namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 	public partial class GetLatestPackageVersionRequest
 	{
 		public string PackageId { get; set; }
-		public string WorkingDirectory { get; set; }
+		public IEnumerable<string> NugetConfigFullNames { get; set; }
 	}
 }

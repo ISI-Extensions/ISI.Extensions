@@ -46,7 +46,7 @@ namespace ISI.Extensions.Tests
 						.AddConsole()
 				//.AddFilter(level => level >= Microsoft.Extensions.Logging.LogLevel.Information)
 				)
-				.AddTransient<Microsoft.Extensions.Logging.ILogger>(serviceProvider => serviceProvider.GetService<ILoggerFactory>().CreateLogger<Microsoft.VisualStudio.TestPlatform.TestHost.Program>())
+				.AddSingleton<Microsoft.Extensions.Logging.ILogger>(serviceProvider => new ISI.Extensions.ConsoleLogger())
 
 				.AddSingleton<ISI.Extensions.DateTimeStamper.IDateTimeStamper, ISI.Extensions.DateTimeStamper.LocalMachineDateTimeStamper>()
 
@@ -121,6 +121,11 @@ namespace ISI.Extensions.Tests
 			{
 				PackageId = "ISI.Libraries",
 			}).PackageVersion;
+
+			var packageVersion2 = nugetApi.GetLatestPackageVersion(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetLatestPackageVersionRequest()
+			{
+				PackageId = "Microsoft.CSharp",
+			}).PackageVersion;
 		}
 
 
@@ -138,53 +143,42 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void UpdatePackageVersions_Test()
 		{
-			var nugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
-			var packageNugetServers = new Dictionary<string, string>();
+			var solutionNugetApi = ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionNugetApi>();
 
-			var mainNugetPackageForConsideration = new HashSet<string>();
-			mainNugetPackageForConsideration.Add("AWSSDK.Core");
-			mainNugetPackageForConsideration.Add("FluentValidation");
-			mainNugetPackageForConsideration.Add("Polly");
+			solutionNugetApi.UpdateNugetPackages(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionNugetApi.UpdateNugetPackagesRequest()
+			{
+				SolutionFullNames = new[]
+				{
+					@"F:\ISI\Clients\TFS\Tristar.Scheduler",
+				},
+				CommitWorkingCopyToSourceControl = false,
+				IgnorePackageIds = new[]
+				{
+					"AccumailGoldConnections.NETToolkit",
+					"nsoftware.InPay",
+					"nsoftware.InPtech",
+					"nsoftware.InShip",
+					"nsoftware.IPWorksSSH",
+				}
+			});
+		}
+
+		[Test]
+		public void UpdatePackageVersions_Test_Old()
+		{
+			var nugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
 
 			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.ConsoleLogger());
+			var sourceControlClientApi = new ISI.Extensions.Scm.SourceControlClientApi(new ISI.Extensions.ConsoleLogger());
 
-			{
-				var sourceSolution = @"F:\ISI\ISI.FrameWork\src";
-
-				var sourceCsProjFileNames = System.IO.Directory.GetFiles(sourceSolution, "*.csproj", System.IO.SearchOption.AllDirectories).Where(f => f.Substring(sourceSolution.Length).IndexOf("\\.svn\\") < 0);
-
-				foreach (var csProjFileName in sourceCsProjFileNames)
-				{
-					var projectDirectory = System.IO.Path.GetDirectoryName(csProjFileName);
-
-					var packagesConfigFullName = System.IO.Path.Combine(projectDirectory, "packages.config");
-
-					if (System.IO.File.Exists(packagesConfigFullName))
-					{
-						nugetPackageKeys.Merge(nugetApi.ExtractProjectNugetPackageDependenciesFromPackagesConfig(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.ExtractProjectNugetPackageDependenciesFromPackagesConfigRequest()
-						{
-							PackagesConfigFullName = packagesConfigFullName,
-						}).NugetPackageKeys);
-					}
-				}
-
-				foreach (var csProjFileName in sourceCsProjFileNames)
-				{
-					nugetPackageKeys.Merge(nugetApi.ExtractProjectNugetPackageDependenciesFromCsProj(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.ExtractProjectNugetPackageDependenciesFromCsProjRequest()
-					{
-						CsProjFullName = csProjFileName,
-					}).NugetPackageKeys);
-				}
-
-				//var packageNugetServers = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
-				packageNugetServers.Add("ISI.*", "https://nuget.isi-net.com");
-				packageNugetServers.Add("ICS.*", "https://nuget.swdcentral.com");
-				packageNugetServers.Add("Tristar.*", "https://nuget.tristarfulfillment.com");
-			}
 
 			var solution = @"F:\ISI\Clients\TFS\Tristar.Scheduler";
 
-			var dirtyFileNames = new HashSet<string>();
+			sourceControlClientApi.UpdateWorkingCopy(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.UpdateWorkingCopyRequest()
+			{
+				FullName = solution,
+				IncludeExternals = true,
+			});
 
 			bool TryGetNugetPackageKey(string id, out ISI.Extensions.Nuget.NugetPackageKey key)
 			{
@@ -203,7 +197,7 @@ namespace ISI.Extensions.Tests
 				return nugetPackageKeys.TryGetValue(id, out key);
 			}
 
-			var csProjFileNames = System.IO.Directory.GetFiles(solution, "*.csproj", System.IO.SearchOption.AllDirectories).Where(f => (f.Substring(solution.Length).IndexOf("\\.svn\\") < 0) && (f.Substring(solution.Length).IndexOf("\\src\\Resources\\") < 0));
+			var csProjFileNames = System.IO.Directory.GetFiles(solution, "*.csproj", System.IO.SearchOption.AllDirectories).Where(fullName => !sourceControlClientApi.IsSccDirectory(fullName));
 
 			foreach (var csProjFileName in csProjFileNames)
 			{
@@ -226,8 +220,6 @@ namespace ISI.Extensions.Tests
 						if (HasChanges(packagesConfig, newPackagesConfig))
 						{
 							System.IO.File.WriteAllText(packagesConfigFullName, newPackagesConfig);
-
-							dirtyFileNames.Add(packagesConfigFullName);
 						}
 					}
 					catch (Exception exception)
@@ -318,8 +310,6 @@ namespace ISI.Extensions.Tests
 					if (HasChanges(csProj, newCsProj))
 					{
 						System.IO.File.WriteAllText(csProjFileName, newCsProj);
-
-						dirtyFileNames.Add(csProjFileName);
 					}
 				}
 				catch (Exception exception)

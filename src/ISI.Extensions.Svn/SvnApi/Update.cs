@@ -41,12 +41,12 @@ namespace ISI.Extensions.Svn
 				}
 				arguments.Add("/closeonend:2");
 
-				response.ExitCode = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
 					Logger = Logger,
 					ProcessExeFullName = "TortoiseProc",
 					Arguments = arguments.ToArray(),
-				}).ExitCode;
+				}).Errored;
 			}
 			else
 			{
@@ -59,12 +59,12 @@ namespace ISI.Extensions.Svn
 					arguments.Add("--ignore-externals");
 				}
 
-				response.ExitCode = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
 					Logger = Logger,
 					ProcessExeFullName = "svn",
 					Arguments = arguments.ToArray(),
-				}).ExitCode;
+				}).Errored;
 			}
 
 			return response;

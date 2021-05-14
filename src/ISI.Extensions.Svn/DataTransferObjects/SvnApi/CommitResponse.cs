@@ -23,6 +23,6 @@ namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
 	public partial class CommitResponse
 	{
-		public int ExitCode { get; set; }
+		public bool Success { get; set; }
 	}
 }

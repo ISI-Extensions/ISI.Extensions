@@ -18,11 +18,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.SolutionNugetApi;
+using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.Git.DataTransferObjects.GitApi
+namespace ISI.Extensions.VisualStudio
 {
-	public partial class CommitResponse
+	public partial class SolutionNugetApi
 	{
-		public bool Success { get; set; }
+		private bool HasChanges(string original, string newVersion)
+		{
+			string getCompressed(string value) => value
+				.Replace(" ", string.Empty)
+				.Replace("\t", string.Empty)
+				.Replace("\r", string.Empty)
+				.Replace("\n", string.Empty);
+
+			return !string.Equals(getCompressed(original), getCompressed(newVersion), StringComparison.InvariantCultureIgnoreCase);
+		}
 	}
 }

@@ -24,5 +24,6 @@ namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 	public partial class GetLatestPackageVersionResponse
 	{
 		public string PackageVersion { get; set; }
+		public string HintPath { get; set; }
 	}
 }

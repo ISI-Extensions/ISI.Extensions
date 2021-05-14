@@ -30,12 +30,14 @@
 	<ItemGroup>
 		<ProjectReference Include="..\ISI.Extensions.Caching.Redis\ISI.Extensions.Caching.Redis.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.DependencyInjection.Iunq\ISI.Extensions.DependencyInjection.Iunq.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Git\ISI.Extensions.Git.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.JsonSerialization.Newtonsoft\ISI.Extensions.JsonSerialization.Newtonsoft.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Nuget\ISI.Extensions.Nuget.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Repository.Cosmos\ISI.Extensions.Repository.Cosmos.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Repository.SqlServer\ISI.Extensions.Repository.SqlServer.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Scm\ISI.Extensions.Scm.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Svn\ISI.Extensions.Svn.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.VisualStudio\ISI.Extensions.VisualStudio.csproj" />
 		<ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />
 	</ItemGroup>
 	<ItemGroup>

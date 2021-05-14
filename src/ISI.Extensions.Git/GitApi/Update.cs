@@ -33,15 +33,15 @@ namespace ISI.Extensions.Git
 
 			arguments.Add("pull");
 
-			response.ExitCode = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+			response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{
 				Logger = Logger,
 				ProcessExeFullName = "git",
 				Arguments = arguments.ToArray(),
 				WorkingDirectory = request.FullName,
-			}).ExitCode;
+			}).Errored;
 
-			if ((response.ExitCode == 0) && request.IncludeSubModules)
+			if (response.Success && request.IncludeSubModules)
 			{
 				arguments.Clear();
 				arguments.Add("submodule");
@@ -49,13 +49,13 @@ namespace ISI.Extensions.Git
 				arguments.Add("--recursive");
 				arguments.Add("--remote");
 
-				response.ExitCode = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
 					Logger = Logger,
 					ProcessExeFullName = "git",
 					Arguments = arguments.ToArray(),
 					WorkingDirectory = request.FullName,
-				}).ExitCode;
+				}).Errored;
 			}
 
 			return response;

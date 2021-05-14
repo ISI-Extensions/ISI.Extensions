@@ -18,11 +18,48 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Nuget.DataTransferObjects.NugetApi;
+using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.Git.DataTransferObjects.GitApi
+namespace ISI.Extensions.Nuget
 {
-	public partial class CommitResponse
+	public partial class NugetApi
 	{
-		public bool Success { get; set; }
+		public DTOs.GetNugetConfigFullNamesResponse GetNugetConfigFullNames(DTOs.GetNugetConfigFullNamesRequest request)
+		{
+			var response = new DTOs.GetNugetConfigFullNamesResponse();
+
+			var nugetConfigFullNames = new List<string>();
+
+			if(!string.IsNullOrWhiteSpace(request.WorkingCopyDirectory))
+			{
+				var nugetConfigFullName = System.IO.Path.Combine(request.WorkingCopyDirectory, "NuGet.config");
+				if (System.IO.File.Exists(nugetConfigFullName))
+				{
+					nugetConfigFullNames.Add(nugetConfigFullName);
+				}
+				else
+				{
+					nugetConfigFullName = System.IO.Path.Combine(request.WorkingCopyDirectory, "src", "NuGet.config");
+					if (System.IO.File.Exists(nugetConfigFullName))
+					{
+						nugetConfigFullNames.Add(nugetConfigFullName);
+					}
+				}
+			}
+
+			{
+				var nugetConfigFullName = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "NuGet", "NuGet.config");
+				if (System.IO.File.Exists(nugetConfigFullName))
+				{
+					nugetConfigFullNames.Add(nugetConfigFullName);
+				}
+			}
+
+			response.NugetConfigFullNames = nugetConfigFullNames.ToArray();
+			
+			return response;
+		}
 	}
 }

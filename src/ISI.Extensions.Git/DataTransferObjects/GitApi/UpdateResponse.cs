@@ -23,6 +23,6 @@ namespace ISI.Extensions.Git.DataTransferObjects.GitApi
 {
 	public partial class UpdateResponse
 	{
-		public int ExitCode { get; set; }
+		public bool Success { get; set; }
 	}
 }

@@ -71,7 +71,7 @@ namespace ISI.Extensions.Svn
 				IncludeExternals = request.IncludeExternals,
 			});
 
-			response.Success = (apiResponse.ExitCode == 0);
+			response.Success = apiResponse.Success;
 
 			return response;
 		}
@@ -86,7 +86,7 @@ namespace ISI.Extensions.Svn
 				LogMessage = request.LogMessage,
 			});
 
-			response.Success = (apiResponse.ExitCode == 0);
+			response.Success = apiResponse.Success;
 
 			return response;
 		}

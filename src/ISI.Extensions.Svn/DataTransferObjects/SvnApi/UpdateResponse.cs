@@ -23,6 +23,6 @@ namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
 	public partial class UpdateResponse
 	{
-		public int ExitCode { get; set; }
+		public bool Success { get; set; }
 	}
 }

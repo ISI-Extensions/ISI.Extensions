@@ -23,6 +23,11 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionNugetApi
 {
 	public partial class UpdateNugetPackagesRequest
 	{
-		public IEnumerable<string> SolutionsFullNames { get; set; }
+		public bool UpdateWorkingCopyFromSourceControl { get; set; } = true;
+		public bool CommitWorkingCopyToSourceControl { get; set; } = true;
+
+		public IEnumerable<string> SolutionFullNames { get; set; }
+
+		public IEnumerable<string> IgnorePackageIds { get; set; }
 	}
 }

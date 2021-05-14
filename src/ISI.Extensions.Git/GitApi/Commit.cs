@@ -37,26 +37,26 @@ namespace ISI.Extensions.Git
 			arguments.Add("-m");
 			arguments.Add(string.Format("\"{0}\"", request.LogMessage));
 
-			response.ExitCode = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+			response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{
 				Logger = Logger,
 				ProcessExeFullName = "git",
 				Arguments = arguments.ToArray(),
 				WorkingDirectory = request.FullName,
-			}).ExitCode;
+			}).Errored;
 
-			if ((response.ExitCode == 0) && request.PushToOrigin)
+			if (response.Success && request.PushToOrigin)
 			{
 				arguments.Clear();
 				arguments.Add("push");
 
-				response.ExitCode = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
 					Logger = Logger,
 					ProcessExeFullName = "git",
 					Arguments = arguments.ToArray(),
 					WorkingDirectory = request.FullName,
-				}).ExitCode;
+				}).Errored;
 			}
 
 			return response;

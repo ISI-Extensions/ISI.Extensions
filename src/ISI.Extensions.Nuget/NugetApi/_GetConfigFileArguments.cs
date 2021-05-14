@@ -18,11 +18,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Nuget.DataTransferObjects.NugetApi;
+using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.Git.DataTransferObjects.GitApi
+namespace ISI.Extensions.Nuget
 {
-	public partial class CommitResponse
+	public partial class NugetApi
 	{
-		public bool Success { get; set; }
+		private IEnumerable<string> GetConfigFileArguments(IEnumerable<string> nugetConfigFullNames)
+		{
+			var arguments = new List<string>();
+
+			foreach (var nugetConfigFullName in nugetConfigFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty))
+			{
+				arguments.Add(string.Format("-ConfigFile \"{0}\"", nugetConfigFullName));
+			}
+
+			return arguments;
+		}
 	}
 }

@@ -33,7 +33,7 @@ namespace ISI.Extensions.NAnt
 
 			if (string.IsNullOrWhiteSpace(nantFullName))
 			{
-				response.ExitCode = 1;
+				response.Success = false;
 			}
 			else
 			{
@@ -42,13 +42,13 @@ namespace ISI.Extensions.NAnt
 				arguments.Add(request.Target);
 				arguments.Add(string.Format("-buildfile:\"{0}\"", request.BuildScriptFullName));
 
-				response.ExitCode = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
 					Logger = Logger,
 					ProcessExeFullName = GetNAntExecutable(request.BuildScriptFullName),
 					Arguments = arguments.ToArray(),
 					WorkingDirectory = System.IO.Path.GetDirectoryName(request.BuildScriptFullName),
-				}).ExitCode;
+				}).Errored;
 			}
 
 			return response;

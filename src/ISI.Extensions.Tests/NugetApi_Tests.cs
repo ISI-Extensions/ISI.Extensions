@@ -12,11 +12,15 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ISI.Extensions.ConfigurationHelper.Extensions;
+using ISI.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 
 namespace ISI.Extensions.Tests
@@ -24,6 +28,45 @@ namespace ISI.Extensions.Tests
 	[TestFixture]
 	public class NugetApi_Tests
 	{
+		[OneTimeSetUp]
+		public void OneTimeSetup()
+		{
+			var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
+			var configuration = configurationBuilder.Build();
+
+			var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection()
+				.AddOptions()
+				.AddSingleton<Microsoft.Extensions.Configuration.IConfiguration>(configuration);
+
+			services.AddAllConfigurations(configuration)
+
+				//.AddSingleton<Microsoft.Extensions.Logging.ILoggerFactory, Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory>()
+				.AddSingleton<Microsoft.Extensions.Logging.ILoggerFactory, Microsoft.Extensions.Logging.LoggerFactory>()
+				.AddLogging(builder => builder
+						.AddConsole()
+				//.AddFilter(level => level >= Microsoft.Extensions.Logging.LogLevel.Information)
+				)
+				.AddTransient<Microsoft.Extensions.Logging.ILogger>(serviceProvider => serviceProvider.GetService<ILoggerFactory>().CreateLogger<Microsoft.VisualStudio.TestPlatform.TestHost.Program>())
+
+				.AddSingleton<ISI.Extensions.DateTimeStamper.IDateTimeStamper, ISI.Extensions.DateTimeStamper.LocalMachineDateTimeStamper>()
+
+				.AddSingleton<ISI.Extensions.JsonSerialization.IJsonSerializer, ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer>()
+				.AddSingleton<ISI.Extensions.Serialization.ISerialization, ISI.Extensions.Serialization.Serialization>()
+
+				.AddConfigurationRegistrations(configuration)
+				.ProcessServiceRegistrars()
+				;
+
+
+
+
+
+
+			var serviceProvider = services.BuildServiceProvider<ISI.Extensions.DependencyInjection.Iunq.ServiceProviderBuilder>(configuration);
+
+			serviceProvider.SetServiceLocator();
+		}
+
 		[Test]
 		public void Nuspec_Test()
 		{
@@ -74,24 +117,10 @@ namespace ISI.Extensions.Tests
 		{
 			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ConsoleLogger());
 
-			var packageNugetServers = new Dictionary<string, string>();
-			packageNugetServers.Add("ISI.*", "https://nuget.isi-net.com");
-
-			var mainNugetPackageForConsideration = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
-			mainNugetPackageForConsideration.Add("JQuery");
-
-			var xxx = nugetApi.GetLatestPackageVersion(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetLatestPackageVersionRequest()
+			var packageVersion = nugetApi.GetLatestPackageVersion(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetLatestPackageVersionRequest()
 			{
 				PackageId = "ISI.Libraries",
-				PackageNugetServers = packageNugetServers,
-				MainNugetPackageForConsideration = mainNugetPackageForConsideration
-			});
-			var yyy = nugetApi.GetLatestPackageVersion(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetLatestPackageVersionRequest()
-			{
-				PackageId = "JQuery",
-				PackageNugetServers = packageNugetServers,
-				MainNugetPackageForConsideration = mainNugetPackageForConsideration
-			});
+			}).PackageVersion;
 		}
 
 
@@ -166,8 +195,6 @@ namespace ISI.Extensions.Tests
 
 				var version = nugetApi.GetLatestPackageVersion(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetLatestPackageVersionRequest()
 				{
-					MainNugetPackageForConsideration = mainNugetPackageForConsideration,
-					PackageNugetServers = packageNugetServers,
 					PackageId = id,
 				}).PackageVersion;
 

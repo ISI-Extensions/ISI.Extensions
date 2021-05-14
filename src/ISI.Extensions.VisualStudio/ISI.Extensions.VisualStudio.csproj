@@ -26,8 +26,4 @@
 		<ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="DataTransferObjects\SolutionNugetApi\" />
-	</ItemGroup>
-
 </Project>

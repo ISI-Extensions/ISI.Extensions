@@ -24,7 +24,19 @@ namespace ISI.Extensions.WebClient
 	public partial class Rest
 	{
 		private static ISI.Extensions.Serialization.ISerialization _serialization = null;
-		protected static ISI.Extensions.Serialization.ISerialization Serialization => _serialization ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Serialization.ISerialization>();
+		protected static ISI.Extensions.Serialization.ISerialization Serialization => _serialization ??= GetSerialization();
+
+		private static ISI.Extensions.Serialization.ISerialization GetSerialization()
+		{
+			var serialization = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Serialization.ISerialization>();
+
+			if (serialization == null)
+			{
+				throw new Exception("ISI.Extensions.Serialization.ISerialization is null");
+			}
+
+			return serialization;
+		}
 
 		public const string MethodHeaderKey = "X-HTTP-METHOD";
 

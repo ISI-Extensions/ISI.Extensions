@@ -24,7 +24,6 @@ namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 	public partial class GetLatestPackageVersionRequest
 	{
 		public string PackageId { get; set; }
-		public IDictionary<string, string> PackageNugetServers { get; set; }
-		public HashSet<string> MainNugetPackageForConsideration { get; set; }
+		public string WorkingDirectory { get; set; }
 	}
 }

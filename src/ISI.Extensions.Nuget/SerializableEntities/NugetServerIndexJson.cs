@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -12,60 +12,24 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Nuget.DataTransferObjects.NugetApi;
-using Microsoft.Extensions.Logging;
 using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Nuget
+namespace ISI.Extensions.Nuget.SerializableEntities
 {
-	public partial class NugetApi
+	[DataContract]
+	public class NugetServerIndexJson
 	{
-		public DTOs.GetLatestPackageVersionResponse GetLatestPackageVersion(DTOs.GetLatestPackageVersionRequest request)
-		{
-			var response = new DTOs.GetLatestPackageVersionResponse();
+		[DataMember(Name = "version", EmitDefaultValue = false)]
+		public string Version { get; set; }
 
-			var arguments = new List<string>();
-			arguments.Add("list");
-			arguments.Add(request.PackageId);
+		[DataMember(Name = "resources", EmitDefaultValue = false)]
+		public NugetServerIndexJsonResource[] Resources { get; set; }
 
-			if (!string.IsNullOrWhiteSpace(request.WorkingDirectory))
-			{
-				var nugetConfigFullName = System.IO.Path.Combine(request.WorkingDirectory, "nuget.config");
-
-				if (System.IO.File.Exists(nugetConfigFullName))
-				{
-					arguments.Add("-ConfigFile");
-					arguments.Add(string.Format("\"{0}\"", nugetConfigFullName));
-				}
-			}
-
-			var nugetResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-			{
-				Logger = Logger,
-				ProcessExeFullName = "nuget",
-				Arguments = arguments.ToArray(),
-			});
-
-			if (!nugetResponse.Errored)
-			{
-				var packages = nugetResponse.Output.Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries).ToNullCheckedArray(line => line.Split(new[] {' '}, 2));
-
-				var package = packages.FirstOrDefault(package => string.Equals(package.FirstOrDefault() ?? string.Empty, request.PackageId, StringComparison.InvariantCultureIgnoreCase));
-
-				if (package?.Length > 1)
-				{
-					response.PackageVersion = package[1];
-				}
-			}
-
-			return response;
-		}
+		[DataMember(Name = "@context", EmitDefaultValue = false)]
+		public NugetServerIndexJsonContext Context { get; set; }
 	}
 }

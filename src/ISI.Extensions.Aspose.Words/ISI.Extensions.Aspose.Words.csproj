@@ -18,11 +18,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Aspose.Words" Version="21.5.0" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Update="NETStandard.Library" Version="2.0.3" />
+	  <PackageReference Include="Aspose.Words" Version="21.5.0" />
 	</ItemGroup>
 
 	<ItemGroup>

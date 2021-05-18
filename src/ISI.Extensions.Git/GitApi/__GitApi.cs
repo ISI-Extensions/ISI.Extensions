@@ -61,6 +61,20 @@ namespace ISI.Extensions.Git
 			return usesGit;
 		}
 
+		SourceControlClientApiDTOs.GetRootDirectoryResponse ISI.Extensions.Scm.ISourceControlClientApi.GetRootDirectory(SourceControlClientApiDTOs.GetRootDirectoryRequest request)
+		{
+			var response = new SourceControlClientApiDTOs.GetRootDirectoryResponse();
+
+			var apiResponse = GetRootDirectory(new DTOs.GetRootDirectoryRequest()
+			{
+				FullName = request.FullName,
+			});
+
+			response.FullName = apiResponse.FullName;
+
+			return response;
+		}
+
 		SourceControlClientApiDTOs.UpdateWorkingCopyResponse ISI.Extensions.Scm.ISourceControlClientApi.UpdateWorkingCopy(SourceControlClientApiDTOs.UpdateWorkingCopyRequest request)
 		{
 			var response = new SourceControlClientApiDTOs.UpdateWorkingCopyResponse();

@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -12,20 +12,40 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Git.DataTransferObjects.GitApi;
+using SourceControlClientApiDTOs = ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi;
 
-namespace ISI.Extensions.Nuget
+namespace ISI.Extensions.Git
 {
-	public class NugetPackageKey
+	public partial class GitApi
 	{
-		public string Package { get; set; }
-		public string Version { get; set; }
+		public DTOs.GetRootDirectoryResponse GetRootDirectory(DTOs.GetRootDirectoryRequest request)
+		{
+			var response = new DTOs.GetRootDirectoryResponse();
 
-		public override string ToString() => $"{Package} {Version}";
+			var arguments = new List<string>();
 
-		public NugetPackageKeyTargetFramework[] TargetFrameworks { get; set; }
+			arguments.Add("rev-parse");
+			arguments.Add("--show-toplevel");
+
+			var gitResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+			{
+				Logger = new NullLogger(),
+				ProcessExeFullName = "git",
+				Arguments = arguments.ToArray(),
+				WorkingDirectory = request.FullName,
+			});
+
+			response.FullName = (gitResponse.Output ?? string.Empty).Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+
+			return response;
+		}
 	}
 }

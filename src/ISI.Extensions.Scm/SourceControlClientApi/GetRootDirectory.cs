@@ -18,14 +18,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi;
 
-namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
+namespace ISI.Extensions.Scm
 {
-	public partial class GetNugetPackageHintPathRequest
+	public partial class SourceControlClientApi
 	{
-		public string PackageId { get; set; }
-		public string PackageVersion { get; set; }
-		
-		public IEnumerable<string> NugetConfigFullNames { get; set; }
+		public DTOs.GetRootDirectoryResponse GetRootDirectory(DTOs.GetRootDirectoryRequest request)
+		{
+			var response = new DTOs.GetRootDirectoryResponse();
+			
+			response.FullName = GetSourceControlClientApi(request.FullName)?.GetRootDirectory(request)?.FullName;
+
+			return response;
+		}
 	}
 }

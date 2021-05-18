@@ -16,16 +16,61 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Nuget
+namespace ISI.Extensions
 {
-	public class NugetPackageKey
+	public class TextWriterLogger : Microsoft.Extensions.Logging.ILogger
 	{
-		public string Package { get; set; }
-		public string Version { get; set; }
+		protected System.IO.TextWriter TextWriter { get; }
 
-		public override string ToString() => $"{Package} {Version}";
+		public TextWriterLogger(System.IO.TextWriter textWriter)
+		{
+			TextWriter = textWriter;
+		}
 
-		public NugetPackageKeyTargetFramework[] TargetFrameworks { get; set; }
+		public void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel, Microsoft.Extensions.Logging.EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+		{
+			formatter ??= (formatterState, formatterException) =>
+			{
+				if (formatterState is string stringValue)
+				{
+					return stringValue;
+				}
+
+				if (formatterException != null)
+				{
+					return formatterException.ErrorMessageFormatted();
+				}
+
+				return formatterState.ToString();
+			};
+
+			TextWriter.WriteLine(formatter(state, exception));
+		}
+
+		public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel)
+		{
+			return true;
+		}
+
+		public IDisposable BeginScope<TState>(TState state)
+		{
+			return new TextWriterLoggerScope<TState>(state);
+		}
+
+		public class TextWriterLoggerScope<TState> : IDisposable
+		{
+			protected TState State { get; }
+
+			public TextWriterLoggerScope(TState state)
+			{
+				State = state;
+			}
+
+			public void Dispose()
+			{
+			}
+		}
 	}
 }

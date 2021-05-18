@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Nuget
 {
@@ -42,11 +43,10 @@ namespace ISI.Extensions.Nuget
 
 		public bool TryAdd(NugetPackageKey nugetPackageKey) => _nugetPackageKeys.TryAdd(nugetPackageKey.Package, nugetPackageKey);
 
-		public bool TryAdd(string package, string version, string hintPath = null) => TryAdd(new NugetPackageKey()
+		public bool TryAdd(string package, string version) => TryAdd(new NugetPackageKey()
 		{
 			Package = package,
 			Version = version,
-			HintPath = hintPath,
 		});
 
 		public void Merge(IEnumerable<NugetPackageKey> nugetPackageKeys)
@@ -56,9 +56,9 @@ namespace ISI.Extensions.Nuget
 				if (_nugetPackageKeys.TryGetValue(nugetPackageKey.Package, out var existingNugetPackageKey))
 				{
 					existingNugetPackageKey.Version = nugetPackageKey.Version;
-					if (!string.IsNullOrWhiteSpace(nugetPackageKey.HintPath))
+					if (nugetPackageKey.TargetFrameworks.NullCheckedAny())
 					{
-						existingNugetPackageKey.HintPath = nugetPackageKey.HintPath;
+						existingNugetPackageKey.TargetFrameworks = nugetPackageKey.TargetFrameworks;
 					}
 				}
 				else

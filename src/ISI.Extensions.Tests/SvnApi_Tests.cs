@@ -33,7 +33,7 @@ namespace ISI.Extensions.Tests
 
 			var buildRevision = string.Format("{0}.{1}", Math.Floor((buildDateTimeStamp.Date - jan1st2000).TotalDays), Math.Floor(((buildDateTimeStamp - buildDateTimeStamp.Date).TotalSeconds) / 2));
 
-			var svnApi = new ISI.Extensions.Svn.SvnApi(new ConsoleLogger());
+			var svnApi = new ISI.Extensions.Svn.SvnApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
 
 			svnApi.TagAndNote(new ISI.Extensions.Svn.DataTransferObjects.SvnApi.TagAndNoteRequest()
 			{

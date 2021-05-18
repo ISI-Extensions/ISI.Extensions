@@ -32,7 +32,7 @@ namespace ISI.Extensions.Nuget
 
 			var sourcesResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{
-				Logger = Logger,
+				Logger = new NullLogger(),
 				WorkingDirectory = request.WorkingDirectory,
 				ProcessExeFullName = "nuget",
 				Arguments = new[]

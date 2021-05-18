@@ -24,6 +24,7 @@ namespace ISI.Extensions.Scm
 	{
 		bool IsSccDirectory(string directoryName);
 		bool UsesScc(string directoryName);
+		DTOs.GetRootDirectoryResponse GetRootDirectory(DTOs.GetRootDirectoryRequest request);
 		DTOs.UpdateWorkingCopyResponse UpdateWorkingCopy(DTOs.UpdateWorkingCopyRequest request);
 		DTOs.CommitWorkingCopyResponse CommitWorkingCopy(DTOs.CommitWorkingCopyRequest request);
 	}

@@ -27,9 +27,9 @@ namespace ISI.Extensions.Nuget
 {
 	public partial class NugetApi
 	{
-		public DTOs.GetLatestPackageVersionResponse GetLatestPackageVersion(DTOs.GetLatestPackageVersionRequest request)
+		public DTOs.GetNugetPackageKeyResponse GetNugetPackageKey(DTOs.GetNugetPackageKeyRequest request)
 		{
-			var response = new DTOs.GetLatestPackageVersionResponse();
+			var response = new DTOs.GetNugetPackageKeyResponse();
 
 			//var arguments = new List<string>();
 			//arguments.Add("list");
@@ -62,15 +62,19 @@ namespace ISI.Extensions.Nuget
 			using (var tempDirectory = new ISI.Extensions.IO.Path.TempDirectory())
 			{
 				var arguments = new List<string>();
+
 				arguments.Add("install");
 				arguments.Add(request.PackageId);
 				arguments.Add("-DependencyVersion ignore");
-				//arguments.Add(string.Format("-Version {0}", request.PackageVersion));
+				if (!string.IsNullOrWhiteSpace(request.PackageVersion))
+				{
+					arguments.Add(string.Format("-Version {0}", request.PackageVersion));
+				}
 				arguments.AddRange(GetConfigFileArguments(request.NugetConfigFullNames));
 
 				var nugetResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
-					Logger = Logger,
+					Logger = new NullLogger(),
 					ProcessExeFullName = "nuget",
 					Arguments = arguments.ToArray(),
 					WorkingDirectory = tempDirectory.FullName,
@@ -78,41 +82,83 @@ namespace ISI.Extensions.Nuget
 
 				if (!nugetResponse.Errored)
 				{
-					//var packageFullName = System.IO.Path.Combine(tempDirectory.FullName, string.Format("{0}.{1}", request.PackageId, request.PackageVersion));
 					var packageFullName = System.IO.Directory.GetDirectories(tempDirectory.FullName).First();
 
-					response.PackageVersion = System.IO.Path.GetFileName(packageFullName).Substring(request.PackageId.Length + 1);
-
-					var dlls = System.IO.Directory.GetFiles(packageFullName, "*.dll", System.IO.SearchOption.AllDirectories)
-						.Select(fullName => fullName.Substring(packageFullName.Length).Trim('\\'));
-
-					foreach (var dllPrefix in new[]
+					response.NugetPackageKey = new NugetPackageKey()
 					{
-						"lib\\net48\\",
-						"lib\\net4.8\\",
-						"lib\\net472\\",
-						"lib\\net4.72\\",
-						"lib\\net461\\",
-						"lib\\net4.61\\",
-						"lib\\net46\\",
-						"lib\\net4.6\\",
-						"lib\\net40\\",
-						"lib\\net4.0\\",
-						"lib\\net35\\",
-						"lib\\net3.5\\",
-						"lib\\net20\\",
-						"lib\\net2.0\\",
-						"lib\\netstandard2.0\\",
-					})
+						Package = request.PackageId,
+						Version = System.IO.Path.GetFileName(packageFullName).Substring(request.PackageId.Length + 1),
+					};
+
+					var assemblyFullNames = System.IO.Directory.GetFiles(packageFullName, "*.dll", System.IO.SearchOption.AllDirectories)
+						.OrderBy(assemblyFullName => assemblyFullName, StringComparer.InvariantCultureIgnoreCase)
+						.Select(assemblyFullName => assemblyFullName.Substring(packageFullName.Length).Trim('\\'))
+						.Where(assemblyFileName => assemblyFileName.StartsWith("lib\\", StringComparison.InvariantCultureIgnoreCase));
+
+					var nugetPackageKeyTargetFrameworks = new List<NugetPackageKeyTargetFramework>();
+
+					foreach (var assemblyGroup in assemblyFullNames.GroupBy(System.IO.Path.GetDirectoryName, StringComparer.InvariantCultureIgnoreCase))
 					{
-						foreach (var dll in dlls)
+						var pathPieces = assemblyGroup.Key.Split(new[] { '\\', '/' });
+
+						var nugetPackageKeyTargetFrameworkAssemblies = new List<NugetPackageKeyTargetFrameworkAssembly>();
+
+						var nugetPackageKeyTargetFramework = new NugetPackageKeyTargetFramework()
 						{
-							if (string.IsNullOrWhiteSpace(response.HintPath) && dll.StartsWith(dllPrefix, StringComparison.InvariantCultureIgnoreCase))
+							TargetFramework = (pathPieces.Length > 1 ? NuGet.Frameworks.NuGetFramework.Parse(pathPieces[1]) : null),
+						};
+
+						foreach (var assemblyFileName in assemblyGroup)
+						{
+							var assemblyName = System.Reflection.AssemblyName.GetAssemblyName(System.IO.Path.Combine(packageFullName, assemblyFileName));
+
+							var nugetPackageKeyTargetFrameworkAssembly = new NugetPackageKeyTargetFrameworkAssembly()
 							{
-								response.HintPath = string.Format("{0}\\{1}", System.IO.Path.GetFileName(packageFullName), dll.Replace("/", "\\"));
-							}
+								AssemblyName = assemblyName.FullName.Split(new[] { ',' }).First().Trim(),
+								AssemblyFileName = System.IO.Path.GetFileName(assemblyFileName),
+								HintPath = string.Format("{0}\\{1}", System.IO.Path.GetFileName(packageFullName), assemblyFileName.Replace("/", "\\")),
+								AssemblyVersion = assemblyName.Version.ToString(),
+								PublicKeyToken = assemblyName.GetPublicKeyToken().ToString(),
+							};
+
+							nugetPackageKeyTargetFrameworkAssemblies.Add(nugetPackageKeyTargetFrameworkAssembly);
+
+							nugetPackageKeyTargetFramework.Assemblies = nugetPackageKeyTargetFrameworkAssemblies.ToArray();
+
+							nugetPackageKeyTargetFrameworks.Add(nugetPackageKeyTargetFramework);
 						}
 					}
+
+					response.NugetPackageKey.TargetFrameworks = nugetPackageKeyTargetFrameworks.ToArray();
+
+
+					//foreach (var dllPrefix in new[]
+					//{
+					//	"lib\\net48\\",
+					//	"lib\\net4.8\\",
+					//	"lib\\net472\\",
+					//	"lib\\net4.72\\",
+					//	"lib\\net461\\",
+					//	"lib\\net4.61\\",
+					//	"lib\\net46\\",
+					//	"lib\\net4.6\\",
+					//	"lib\\net40\\",
+					//	"lib\\net4.0\\",
+					//	"lib\\net35\\",
+					//	"lib\\net3.5\\",
+					//	"lib\\net20\\",
+					//	"lib\\net2.0\\",
+					//	"lib\\netstandard2.0\\",
+					//})
+					//{
+					//	foreach (var dll in assemblyFullNames)
+					//	{
+					//		if (string.IsNullOrWhiteSpace(response.HintPath) && dll.StartsWith(dllPrefix, StringComparison.InvariantCultureIgnoreCase))
+					//		{
+					//			response.HintPath = string.Format("{0}\\{1}", System.IO.Path.GetFileName(packageFullName), dll.Replace("/", "\\"));
+					//		}
+					//	}
+					//}
 				}
 			}
 

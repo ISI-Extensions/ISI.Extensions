@@ -165,7 +165,28 @@ namespace ISI.Extensions.Nuget
 						}
 						else
 						{
-							nugetPackageKeys.TryAdd(packageId, packageVersion, hintPath);
+							nugetPackageKey = new NugetPackageKey()
+							{
+								Package = packageId,
+								Version = packageVersion,
+								TargetFrameworks = new []
+								{
+									new NugetPackageKeyTargetFramework()
+									{
+										TargetFramework = NuGet.Frameworks.NuGetFramework.Parse(hintPath.Split(new[] { '\\', '/' })[2]),
+										Assemblies = new []
+										{
+											new NugetPackageKeyTargetFrameworkAssembly()
+											{
+												AssemblyFileName = System.IO.Path.GetFileName(hintPath),
+												HintPath = hintPath,
+											}
+										}
+									}
+								}
+							};
+
+							nugetPackageKeys.TryAdd(nugetPackageKey);
 						}
 					}
 				}

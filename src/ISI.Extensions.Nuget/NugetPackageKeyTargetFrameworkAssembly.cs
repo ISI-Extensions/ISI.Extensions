@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,15 +15,18 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
+namespace ISI.Extensions.Nuget
 {
-	public partial class GetLatestPackageVersionRequest
+	public class NugetPackageKeyTargetFrameworkAssembly
 	{
-		public string PackageId { get; set; }
-		public IEnumerable<string> NugetConfigFullNames { get; set; }
+		public string AssemblyName { get; set; }
+		public string AssemblyFileName { get; set; }
+		public string HintPath { get; set; }
+		public string AssemblyVersion { get; set; }
+		public string PublicKeyToken { get; set; }
+
+		public override string ToString() => AssemblyFileName;
 	}
 }

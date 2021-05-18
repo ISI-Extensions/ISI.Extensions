@@ -44,7 +44,7 @@ namespace ISI.Extensions.NAnt
 
 				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
-					Logger = Logger,
+					Logger = new NullLogger(),
 					ProcessExeFullName = GetNAntExecutable(request.BuildScriptFullName),
 					Arguments = arguments.ToArray(),
 					WorkingDirectory = System.IO.Path.GetDirectoryName(request.BuildScriptFullName),

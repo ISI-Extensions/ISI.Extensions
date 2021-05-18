@@ -25,7 +25,6 @@ namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 	{
 		public string CsProjXml { get; set; }
 		public TryGetNugetPackageKey TryGetNugetPackageKey { get; set; }
-		public TryGetPackageHintPath TryGetPackageHintPath { get; set; }
 		public bool ConvertToPackageReferences { get; set; }
 	}
 }

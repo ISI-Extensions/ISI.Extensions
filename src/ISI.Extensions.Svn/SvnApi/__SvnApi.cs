@@ -61,6 +61,21 @@ namespace ISI.Extensions.Svn
 			return usesSvn;
 		}
 
+		SourceControlClientApiDTOs.GetRootDirectoryResponse ISI.Extensions.Scm.ISourceControlClientApi.GetRootDirectory(SourceControlClientApiDTOs.GetRootDirectoryRequest request)
+		{
+			var response = new SourceControlClientApiDTOs.GetRootDirectoryResponse();
+
+			var svnResponse = GetInfos(new DTOs.GetInfosRequest()
+			{
+				Source = request.FullName,
+				Depth = Depth.Empty,
+			}).Infos.FirstOrDefault();
+
+			response.FullName = svnResponse?.WorkingCopyRootPath ?? string.Empty;
+
+			return response;
+		}
+
 		SourceControlClientApiDTOs.UpdateWorkingCopyResponse ISI.Extensions.Scm.ISourceControlClientApi.UpdateWorkingCopy(SourceControlClientApiDTOs.UpdateWorkingCopyRequest request)
 		{
 			var response = new SourceControlClientApiDTOs.UpdateWorkingCopyResponse();

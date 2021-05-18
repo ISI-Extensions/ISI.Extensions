@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,17 +15,19 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Nuget
+namespace ISI.Extensions
 {
-	public class NugetPackageKey
+	public partial class StringFormat
 	{
-		public string Package { get; set; }
-		public string Version { get; set; }
-
-		public override string ToString() => $"{Package} {Version}";
-
-		public NugetPackageKeyTargetFramework[] TargetFrameworks { get; set; }
+		public static readonly System.Text.RegularExpressions.Regex NonDigits = new System.Text.RegularExpressions.Regex(@"\D+");
+		public static string StringNumericOnly(string value)
+		{
+			return NonDigits.Replace(value ?? string.Empty, string.Empty);
+		}
 	}
 }

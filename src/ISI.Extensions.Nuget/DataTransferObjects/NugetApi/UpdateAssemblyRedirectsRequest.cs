@@ -21,8 +21,10 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public partial class GetNugetPackageHintPathResponse
+	public partial class UpdateAssemblyRedirectsRequest
 	{
-		public string HintPath { get; set; }
+		public string CsProjXml { get; set; }
+		public string AppConfigXml { get; set; }
+		public IEnumerable<NugetPackageKey> NugetPackageKeys { get; set; }
 	}
 }

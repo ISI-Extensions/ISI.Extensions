@@ -33,7 +33,7 @@ namespace ISI.Extensions.Tests
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ICS.keyValue");
 			var settings = new ISI.Extensions.SimpleKeyValueStorage(settingsFullName);
 
-			var scmApi = new ISI.Extensions.Scm.ScmApi(new ConsoleLogger());
+			var scmApi = new ISI.Extensions.Scm.ScmApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
 
 			var authenticationToken = scmApi.GetAuthenticationToken(new ISI.Extensions.Scm.DataTransferObjects.ScmApi.GetAuthenticationTokenRequest()
 			{
@@ -42,7 +42,7 @@ namespace ISI.Extensions.Tests
 				Password = settings.GetValue("ActiveDirectoryPassword"),
 			}).AuthenticationToken;
 
-			var buildArtifactApi = new ISI.Extensions.Scm.BuildArtifactApi(new ConsoleLogger());
+			var buildArtifactApi = new ISI.Extensions.Scm.BuildArtifactApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
 
 			var dateTimeStampVersion = buildArtifactApi.GetBuildArtifactEnvironmentDateTimeStampVersion(new ISI.Extensions.Scm.DataTransferObjects.BuildArtifactApi.GetBuildArtifactEnvironmentDateTimeStampVersionRequest()
 			{
@@ -52,7 +52,7 @@ namespace ISI.Extensions.Tests
 				Environment = "QA",
 			}).DateTimeStampVersion;
 
-			var deploymentManagerApi = new ISI.Extensions.Scm.DeploymentManagerApi(new ConsoleLogger());
+			var deploymentManagerApi = new ISI.Extensions.Scm.DeploymentManagerApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
 
 			deploymentManagerApi.DeployArtifact(new ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.DeployArtifactRequest()
 			{

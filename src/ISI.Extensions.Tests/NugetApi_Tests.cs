@@ -46,7 +46,7 @@ namespace ISI.Extensions.Tests
 						.AddConsole()
 				//.AddFilter(level => level >= Microsoft.Extensions.Logging.LogLevel.Information)
 				)
-				.AddSingleton<Microsoft.Extensions.Logging.ILogger>(serviceProvider => new ISI.Extensions.ConsoleLogger())
+				.AddSingleton<Microsoft.Extensions.Logging.ILogger>(serviceProvider => new ISI.Extensions.TextWriterLogger(TestContext.Progress))
 
 				.AddSingleton<ISI.Extensions.DateTimeStamper.IDateTimeStamper, ISI.Extensions.DateTimeStamper.LocalMachineDateTimeStamper>()
 
@@ -58,7 +58,7 @@ namespace ISI.Extensions.Tests
 				;
 
 
-
+			
 
 
 
@@ -70,7 +70,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void Nuspec_Test()
 		{
-			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ConsoleLogger());
+			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
 
 			var nuspec = nugetApi.GenerateNuspecFromProject(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GenerateNuspecFromProjectRequest()
 			{
@@ -115,17 +115,22 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void GetLatestPackageVersion_Test()
 		{
-			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ConsoleLogger());
+			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
 
-			var packageVersion = nugetApi.GetLatestPackageVersion(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetLatestPackageVersionRequest()
+			var packageVersion = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
 			{
 				PackageId = "ISI.Libraries",
-			}).PackageVersion;
+			}).NugetPackageKey.Version;
 
-			var packageVersion2 = nugetApi.GetLatestPackageVersion(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetLatestPackageVersionRequest()
+			var packageVersion2 = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
 			{
 				PackageId = "Microsoft.CSharp",
-			}).PackageVersion;
+			}).NugetPackageKey.Version;
+
+			var packageVersion3 = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			{
+				PackageId = "SevenZipSharp",
+			}).NugetPackageKey.Version;
 		}
 
 
@@ -161,164 +166,6 @@ namespace ISI.Extensions.Tests
 					"nsoftware.IPWorksSSH",
 				}
 			});
-		}
-
-		[Test]
-		public void UpdatePackageVersions_Test_Old()
-		{
-			var nugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
-
-			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.ConsoleLogger());
-			var sourceControlClientApi = new ISI.Extensions.Scm.SourceControlClientApi(new ISI.Extensions.ConsoleLogger());
-
-
-			var solution = @"F:\ISI\Clients\TFS\Tristar.Scheduler";
-
-			sourceControlClientApi.UpdateWorkingCopy(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.UpdateWorkingCopyRequest()
-			{
-				FullName = solution,
-				IncludeExternals = true,
-			});
-
-			bool TryGetNugetPackageKey(string id, out ISI.Extensions.Nuget.NugetPackageKey key)
-			{
-				if (nugetPackageKeys.TryGetValue(id, out key))
-				{
-					return true;
-				}
-
-				var version = nugetApi.GetLatestPackageVersion(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetLatestPackageVersionRequest()
-				{
-					PackageId = id,
-				}).PackageVersion;
-
-				nugetPackageKeys.TryAdd(id, version);
-
-				return nugetPackageKeys.TryGetValue(id, out key);
-			}
-
-			var csProjFileNames = System.IO.Directory.GetFiles(solution, "*.csproj", System.IO.SearchOption.AllDirectories).Where(fullName => !sourceControlClientApi.IsSccDirectory(fullName));
-
-			foreach (var csProjFileName in csProjFileNames)
-			{
-				var projectDirectory = System.IO.Path.GetDirectoryName(csProjFileName);
-
-				var packagesConfigFullName = System.IO.Path.Combine(projectDirectory, "packages.config");
-
-				if (System.IO.File.Exists(packagesConfigFullName))
-				{
-					var packagesConfig = System.IO.File.ReadAllText(packagesConfigFullName);
-
-					try
-					{
-						var newPackagesConfig = nugetApi.UpdateNugetPackageVersionsInPackagesConfig(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.UpdateNugetPackageVersionsInPackagesConfigRequest()
-						{
-							PackagesConfigXml = packagesConfig,
-							TryGetNugetPackageKey = TryGetNugetPackageKey,
-						}).PackagesConfigXml;
-
-						if (HasChanges(packagesConfig, newPackagesConfig))
-						{
-							System.IO.File.WriteAllText(packagesConfigFullName, newPackagesConfig);
-						}
-					}
-					catch (Exception exception)
-					{
-						throw new Exception(string.Format("File: {0}", packagesConfigFullName), exception);
-					}
-				}
-			}
-
-			foreach (var csProjFileName in csProjFileNames)
-			{
-				var csProj = System.IO.File.ReadAllText(csProjFileName);
-
-				try
-				{
-					var newCsProj = nugetApi.UpdateNugetPackageVersionsInCsProj(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.UpdateNugetPackageVersionsInCsProjRequest()
-					{
-						CsProjXml = csProj,
-						TryGetNugetPackageKey = TryGetNugetPackageKey,
-						TryGetPackageHintPath = (ISI.Extensions.Nuget.NugetPackageKey nugetPackageKey, out string hintPath) =>
-						{
-							if (nugetPackageKey.Package.StartsWith("ISI.Extensions"))
-							{
-								hintPath = string.Format("{0}.{1}\\lib\\netstandard2.0\\{0}.dll", nugetPackageKey.Package, nugetPackageKey.Version);
-								return true;
-							}
-							else if (nugetPackageKey.Package.StartsWith("ISI."))
-							{
-								hintPath = string.Format("{0}.{1}\\lib\\net48\\{0}.dll", nugetPackageKey.Package, nugetPackageKey.Version);
-								return true;
-							}
-							else if (nugetPackageKey.Package.StartsWith("Tristar."))
-							{
-								hintPath = string.Format("{0}.{1}\\lib\\net48\\{0}.dll", nugetPackageKey.Package, nugetPackageKey.Version);
-								return true;
-							}
-							else if (nugetPackageKey.Package.StartsWith("ICS."))
-							{
-								hintPath = string.Format("{0}.{1}\\lib\\net48\\{0}.dll", nugetPackageKey.Package, nugetPackageKey.Version);
-								return true;
-							}
-
-							{
-								var nugetDownloadUrl = string.Format("https://www.nuget.org/api/v2/package/{0}/{1}", nugetPackageKey.Package, nugetPackageKey.Version);
-
-								var downloadResponse = ISI.Extensions.WebClient.Download.DownloadFile<System.IO.MemoryStream>(nugetDownloadUrl, new ISI.Extensions.WebClient.HeaderCollection());
-
-								var zipArchive = new System.IO.Compression.ZipArchive(downloadResponse.Stream, System.IO.Compression.ZipArchiveMode.Read);
-
-								var dlls = zipArchive.Entries.Select(entry => entry.FullName).Where(fullName => fullName.EndsWith(string.Format("{0}.dll", nugetPackageKey.Package))).ToArray();
-
-								foreach (var dllPrefix in new[]
-								{
-										"lib/net48/",
-										"lib/net4.8/",
-										"lib/net472/",
-										"lib/net4.72/",
-										"lib/net461/",
-										"lib/net4.61/",
-										"lib/net46/",
-										"lib/net4.6/",
-										"lib/net40/",
-										"lib/net4.0/",
-										"lib/net35/",
-										"lib/net3.5/",
-										"lib/net20/",
-										"lib/net2.0/",
-										"lib/netstandard2.0/",
-									})
-								{
-									foreach (var dll in dlls)
-									{
-										if (dll.StartsWith(dllPrefix, StringComparison.InvariantCultureIgnoreCase))
-										{
-											hintPath = string.Format("{0}.{1}\\{2}", nugetPackageKey.Package, nugetPackageKey.Version, dll.Replace("/", "\\"));
-											return true;
-										}
-									}
-								}
-							}
-
-							hintPath = string.Empty;
-							return false;
-						},
-						ConvertToPackageReferences = false,
-					}).CsProjXml;
-
-					if (HasChanges(csProj, newCsProj))
-					{
-						System.IO.File.WriteAllText(csProjFileName, newCsProj);
-					}
-				}
-				catch (Exception exception)
-				{
-					throw new Exception(string.Format("File: {0}", csProjFileName), exception);
-
-				}
-			}
-
 		}
 	}
 }

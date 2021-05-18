@@ -21,9 +21,8 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public partial class GetLatestPackageVersionResponse
+	public partial class GetNugetPackageKeyResponse
 	{
-		public string PackageVersion { get; set; }
-		public string HintPath { get; set; }
+		public NugetPackageKey NugetPackageKey { get; set; }
 	}
 }

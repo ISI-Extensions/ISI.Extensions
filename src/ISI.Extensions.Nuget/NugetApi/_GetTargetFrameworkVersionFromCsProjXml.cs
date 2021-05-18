@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,33 +26,42 @@ namespace ISI.Extensions.Nuget
 {
 	public partial class NugetApi
 	{
-		public DTOs.NupkgPackResponse NupkgPack(DTOs.NupkgPackRequest request)
+		public NuGet.Frameworks.NuGetFramework GetTargetFrameworkVersionFromCsProjXml(System.Xml.Linq.XElement csProjXml)
 		{
-			var response = new DTOs.NupkgPackResponse();
-			
-			Logger.LogInformation(string.Format("Packing \"{0}\"", System.IO.Path.GetFileName(request.NuspecFullName)));
+			var sdkAttribute = csProjXml.Attributes().FirstOrDefault(a => string.Equals(a.Name.LocalName, "Sdk", StringComparison.InvariantCultureIgnoreCase))?.Value ?? string.Empty;
 
-			if (string.IsNullOrWhiteSpace(request.OutputDirectory))
+			if (sdkAttribute.StartsWith("Microsoft.NET"))
 			{
-				request.OutputDirectory = System.IO.Path.GetDirectoryName(request.NuspecFullName);
+				var targetFrameworkVersion = csProjXml
+					.Elements().FirstOrDefault(e => string.Equals(e.Name.LocalName, "PropertyGroup", StringComparison.InvariantCultureIgnoreCase))?
+					.Elements().FirstOrDefault(e => string.Equals(e.Name.LocalName, "TargetFramework", StringComparison.InvariantCultureIgnoreCase))?
+					.Value;
+
+				if (string.IsNullOrWhiteSpace(targetFrameworkVersion))
+				{
+					targetFrameworkVersion = "net5.0";
+				}
+
+				return NuGet.Frameworks.NuGetFramework.Parse(targetFrameworkVersion);
+			}
+			else
+			{
+				var targetFrameworkVersion = csProjXml
+					.Elements().FirstOrDefault(e => string.Equals(e.Name.LocalName, "PropertyGroup", StringComparison.InvariantCultureIgnoreCase))?
+					.Elements().FirstOrDefault(e => string.Equals(e.Name.LocalName, "TargetFrameworkVersion", StringComparison.InvariantCultureIgnoreCase))?
+					.Value;
+
+				if (string.IsNullOrWhiteSpace(targetFrameworkVersion))
+				{
+					targetFrameworkVersion = "v4.8";
+				}
+
+				targetFrameworkVersion = string.Format("net{0}", ISI.Extensions.StringFormat.StringNumericOnly(targetFrameworkVersion).Replace(".", string.Empty));
+
+				return NuGet.Frameworks.NuGetFramework.Parse(targetFrameworkVersion);
 			}
 
-			ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-			{
-				Logger = new NullLogger(),
-				WorkingDirectory = request.WorkingDirectory,
-				ProcessExeFullName = "nuget",
-				Arguments = new[]
-				{
-					"pack",
-					string.Format("\"{0}\"", request.NuspecFullName),
-					string.Format("-OutputDirectory \"{0}\"", request.OutputDirectory),
-				}
-			});
-
-			Logger.LogInformation(string.Format("Packed \"{0}\"", System.IO.Path.GetFileName(request.NuspecFullName)));
-
-			return response;
+			return null;
 		}
 	}
 }

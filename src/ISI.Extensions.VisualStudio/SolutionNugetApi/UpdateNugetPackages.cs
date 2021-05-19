@@ -241,10 +241,17 @@ namespace ISI.Extensions.VisualStudio
 
 				if (success && isDirty && request.CommitWorkingCopyToSourceControl)
 				{
-					var resharperCacheFullName = System.IO.Path.Combine(solutionSourceDirectory, "_ReSharper.Caches");
-					if (System.IO.Directory.Exists(resharperCacheFullName))
+					try
 					{
-						System.IO.Directory.Delete(resharperCacheFullName, true);
+						var resharperCacheFullName = System.IO.Path.Combine(solutionSourceDirectory, "_ReSharper.Caches");
+						if (System.IO.Directory.Exists(resharperCacheFullName))
+						{
+							System.IO.Directory.Delete(resharperCacheFullName, true);
+						}
+					}
+					catch (Exception exception)
+					{
+						Logger.LogError(string.Format("Error deleting Resharper Cache \"{0}\"", solutionDirectory));
 					}
 
 					success = SourceControlClientApi.CommitWorkingCopy(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.CommitWorkingCopyRequest()

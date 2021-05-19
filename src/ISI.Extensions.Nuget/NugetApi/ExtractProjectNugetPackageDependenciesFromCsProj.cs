@@ -154,7 +154,7 @@ namespace ISI.Extensions.Nuget
 						packageVersion = packageVersion.TrimEnd('.');
 					}
 
-					if (!string.IsNullOrWhiteSpace(packageVersion))
+					if (!string.IsNullOrWhiteSpace(packageVersion) && !string.IsNullOrWhiteSpace(hintPath))
 					{
 						if (nugetPackageKeys.TryGetValue(packageId, out var nugetPackageKey))
 						{

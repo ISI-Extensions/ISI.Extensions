@@ -32,7 +32,7 @@ namespace ISI.Extensions.VisualStudio
 
 			var ignorePackageIds = new HashSet<string>(request.IgnorePackageIds ?? new string[0], StringComparer.InvariantCultureIgnoreCase);
 
-			var nugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
+			var nugetPackageKeys = request.NugetPackageKeys ?? new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
 
 			var solutionFullNames = request.SolutionFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 			for (var solutionIndex = 0; solutionIndex < solutionFullNames.Length; solutionIndex++)

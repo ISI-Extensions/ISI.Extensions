@@ -46,7 +46,7 @@ namespace ISI.Extensions.Tests
 						.AddConsole()
 				//.AddFilter(level => level >= Microsoft.Extensions.Logging.LogLevel.Information)
 				)
-				.AddSingleton<Microsoft.Extensions.Logging.ILogger>(serviceProvider => new ISI.Extensions.TextWriterLogger(TestContext.Progress))
+				.AddSingleton<Microsoft.Extensions.Logging.ILogger>(_ => new ISI.Extensions.TextWriterLogger(TestContext.Progress))
 
 				.AddSingleton<ISI.Extensions.DateTimeStamper.IDateTimeStamper, ISI.Extensions.DateTimeStamper.LocalMachineDateTimeStamper>()
 
@@ -56,11 +56,6 @@ namespace ISI.Extensions.Tests
 				.AddConfigurationRegistrations(configuration)
 				.ProcessServiceRegistrars()
 				;
-
-
-			
-
-
 
 			var serviceProvider = services.BuildServiceProvider<ISI.Extensions.DependencyInjection.Iunq.ServiceProviderBuilder>(configuration);
 
@@ -148,7 +143,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void UpdatePackageVersions_Test()
 		{
-			var solutionNugetApi = ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionNugetApi>();
+			var solutionNugetApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionNugetApi>();
 
 			solutionNugetApi.UpdateNugetPackages(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionNugetApi.UpdateNugetPackagesRequest()
 			{

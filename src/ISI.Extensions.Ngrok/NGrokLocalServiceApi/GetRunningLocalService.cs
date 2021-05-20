@@ -32,7 +32,7 @@ namespace ISI.Extensions.Ngrok
 
 			try
 			{
-				var process = System.Diagnostics.Process.GetProcessesByName("ngrok").NullCheckedFirstOrDefault();
+				var process = System.Diagnostics.Process.GetProcessesByName("ngrok").NullCheckedFirstOrDefault(process => (process?.MainModule?.FileName ?? string.Empty).EndsWith("\\ngrok.exe", StringComparison.InvariantCultureIgnoreCase));
 				if (process != null)
 				{
 					response.IsRunning = true;

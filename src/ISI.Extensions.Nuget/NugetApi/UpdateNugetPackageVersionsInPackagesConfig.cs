@@ -32,14 +32,14 @@ namespace ISI.Extensions.Nuget
 
 			var packagesConfigXml = System.Xml.Linq.XElement.Parse(request.PackagesConfigXml);
 
-			foreach (var packageTag in packagesConfigXml.Elements("package"))
+			foreach (var packageTag in packagesConfigXml.GetElementsByLocalName("package"))
 			{
-				var packageId = packageTag.Attribute("id").Value;
-				var packageVersion = packageTag.Attribute("version").Value;
+				var packageId = packageTag.GetAttributeByLocalName("id").Value;
+				var packageVersion = packageTag.GetAttributeByLocalName("version").Value;
 
 				if (request.TryGetNugetPackageKey(packageId, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 				{
-					packageTag.Attribute("version").Value = nugetPackageKey.Version;
+					packageTag.GetAttributeByLocalName("version").Value = nugetPackageKey.Version;
 				}
 			}
 

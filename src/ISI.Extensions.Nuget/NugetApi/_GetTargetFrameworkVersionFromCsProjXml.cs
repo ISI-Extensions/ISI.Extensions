@@ -28,13 +28,13 @@ namespace ISI.Extensions.Nuget
 	{
 		public NuGet.Frameworks.NuGetFramework GetTargetFrameworkVersionFromCsProjXml(System.Xml.Linq.XElement csProjXml)
 		{
-			var sdkAttribute = csProjXml.Attributes().FirstOrDefault(a => string.Equals(a.Name.LocalName, "Sdk", StringComparison.InvariantCultureIgnoreCase))?.Value ?? string.Empty;
+			var sdkAttribute = csProjXml.GetAttributeByLocalName("Sdk")?.Value ?? string.Empty;
 
 			if (sdkAttribute.StartsWith("Microsoft.NET"))
 			{
 				var targetFrameworkVersion = csProjXml
-					.Elements().FirstOrDefault(e => string.Equals(e.Name.LocalName, "PropertyGroup", StringComparison.InvariantCultureIgnoreCase))?
-					.Elements().FirstOrDefault(e => string.Equals(e.Name.LocalName, "TargetFramework", StringComparison.InvariantCultureIgnoreCase))?
+					.GetElementByLocalName("PropertyGroup")?
+					.GetElementByLocalName("TargetFramework")?
 					.Value;
 
 				if (string.IsNullOrWhiteSpace(targetFrameworkVersion))
@@ -47,8 +47,8 @@ namespace ISI.Extensions.Nuget
 			else
 			{
 				var targetFrameworkVersion = csProjXml
-					.Elements().FirstOrDefault(e => string.Equals(e.Name.LocalName, "PropertyGroup", StringComparison.InvariantCultureIgnoreCase))?
-					.Elements().FirstOrDefault(e => string.Equals(e.Name.LocalName, "TargetFrameworkVersion", StringComparison.InvariantCultureIgnoreCase))?
+					.GetElementByLocalName("PropertyGroup")?
+					.GetElementByLocalName("TargetFrameworkVersion")?
 					.Value;
 
 				if (string.IsNullOrWhiteSpace(targetFrameworkVersion))
@@ -60,8 +60,6 @@ namespace ISI.Extensions.Nuget
 
 				return NuGet.Frameworks.NuGetFramework.Parse(targetFrameworkVersion);
 			}
-
-			return null;
 		}
 	}
 }

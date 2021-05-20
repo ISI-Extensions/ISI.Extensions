@@ -41,17 +41,17 @@ namespace ISI.Extensions.Nuget
 
 			var csProjXml = System.Xml.Linq.XElement.Load(request.CsProjFullName);
 
-			foreach (var itemGroup in csProjXml.Elements().Where(e => string.Equals(e.Name.LocalName, "ItemGroup", StringComparison.InvariantCultureIgnoreCase)))
+			foreach (var itemGroup in csProjXml.GetElementsByLocalName("ItemGroup"))
 			{
-				var packageReferences = itemGroup.Elements().Where(e => string.Equals(e.Name.LocalName, "PackageReference", StringComparison.InvariantCultureIgnoreCase));
+				var packageReferences = itemGroup.GetElementsByLocalName("PackageReference");
 
 				foreach (var packageReference in packageReferences)
 				{
-					var packageId = (packageReference.Attributes().FirstOrDefault(e => string.Equals(e.Name.LocalName, "Include", StringComparison.InvariantCultureIgnoreCase)) ?? packageReference.Attributes().FirstOrDefault(e => string.Equals(e.Name.LocalName, "Update", StringComparison.InvariantCultureIgnoreCase)))?.Value;
-					var packageVersion = packageReference.Attributes().FirstOrDefault(e => string.Equals(e.Name.LocalName, "Version", StringComparison.InvariantCultureIgnoreCase))?.Value;
+					var packageId = (packageReference.GetAttributeByLocalName("Include") ?? packageReference.GetAttributeByLocalName("Update"))?.Value;
+					var packageVersion = packageReference.GetAttributeByLocalName("Version")?.Value;
 					if (string.IsNullOrWhiteSpace(packageVersion))
 					{
-						packageVersion = packageReference.Elements().FirstOrDefault(e => string.Equals(e.Name.LocalName, "Version", StringComparison.InvariantCultureIgnoreCase))?.Value;
+						packageVersion = packageReference.GetElementByLocalName("Version")?.Value;
 					}
 
 					if (!string.IsNullOrWhiteSpace(packageVersion))
@@ -70,11 +70,11 @@ namespace ISI.Extensions.Nuget
 					}
 				}
 
-				var projectReferences = itemGroup.Elements().Where(e => string.Equals(e.Name.LocalName, "ProjectReference", StringComparison.InvariantCultureIgnoreCase));
+				var projectReferences = itemGroup.GetElementsByLocalName("ProjectReference");
 
 				foreach (var projectReference in projectReferences)
 				{
-					var projectPath = projectReference.Attributes().FirstOrDefault(e => string.Equals(e.Name.LocalName, "Include", StringComparison.InvariantCultureIgnoreCase))?.Value;
+					var projectPath = projectReference.GetAttributeByLocalName("Include")?.Value;
 
 					if (!string.IsNullOrWhiteSpace(projectPath))
 					{
@@ -103,15 +103,15 @@ namespace ISI.Extensions.Nuget
 				}
 			}
 
-			foreach (var itemGroup in csProjXml.Elements().Where(e => string.Equals(e.Name.LocalName, "ItemGroup", StringComparison.InvariantCultureIgnoreCase)))
+			foreach (var itemGroup in csProjXml.GetElementsByLocalName("ItemGroup"))
 			{
-				var references = itemGroup.Elements().Where(e => string.Equals(e.Name.LocalName, "Reference", StringComparison.InvariantCultureIgnoreCase));
+				var references = itemGroup.GetElementsByLocalName("Reference");
 
 				foreach (var reference in references)
 				{
-					var packageId = reference.Attributes("Include").FirstOrDefault()?.Value;
+					var packageId = reference.GetAttributeByLocalName("Include")?.Value;
 					var packageVersion = string.Empty;
-					var hintPath = reference.Elements().FirstOrDefault(e => string.Equals(e.Name.LocalName, "HintPath", StringComparison.InvariantCultureIgnoreCase))?.Value;
+					var hintPath = reference.GetElementByLocalName("HintPath")?.Value;
 
 					var keyValues = string.Format("PackageId={0}", packageId).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(item => item.Split(new[] { "=" }, StringSplitOptions.None)).ToDictionary(item => item[0].Trim(), item => (item.Length >= 2 ? item[1].Trim() : string.Empty), StringComparer.CurrentCultureIgnoreCase);
 					keyValues.TryGetValue("PackageId", out packageId);

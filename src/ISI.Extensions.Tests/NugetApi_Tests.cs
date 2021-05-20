@@ -112,6 +112,11 @@ namespace ISI.Extensions.Tests
 		{
 			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
 
+			var packageVersion4 = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			{
+				PackageId = "ISI.Libraries",
+			}).NugetPackageKey.Version;
+
 			var packageVersion = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
 			{
 				PackageId = "ISI.Libraries",

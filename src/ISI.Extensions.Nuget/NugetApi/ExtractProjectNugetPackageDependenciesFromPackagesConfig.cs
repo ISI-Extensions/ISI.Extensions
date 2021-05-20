@@ -32,8 +32,13 @@ namespace ISI.Extensions.Nuget
 
 			var nugetPackageKeys = new NugetPackageKeyDictionary();
 
-			var packages = from packageTag in System.Xml.Linq.XElement.Load(request.PackagesConfigFullName).Elements("package")
-				select new { Id = packageTag.Attribute("id").Value, Version = packageTag.Attribute("version").Value };
+			var packages = from packageTag 
+					in System.Xml.Linq.XElement.Load(request.PackagesConfigFullName).GetElementsByLocalName("package")
+				select new
+				{
+					Id = packageTag.GetAttributeByLocalName("id").Value, 
+					Version = packageTag.GetAttributeByLocalName("version").Value
+				};
 
 			foreach (var package in packages)
 			{

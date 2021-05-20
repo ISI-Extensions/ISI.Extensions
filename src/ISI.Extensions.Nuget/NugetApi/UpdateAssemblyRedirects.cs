@@ -39,19 +39,19 @@ namespace ISI.Extensions.Nuget
 
 			var projectXml = System.Xml.Linq.XElement.Parse(request.AppConfigXml);
 
-			var runtimeSectionElement = projectXml.Elements().FirstOrDefault(e => string.Equals(e.Name.LocalName, "runtime", StringComparison.InvariantCultureIgnoreCase));
+			var runtimeSectionElement = projectXml.GetElementByLocalName("runtime");
 
-			var assemblyBindingElement = runtimeSectionElement?.Elements().FirstOrDefault(e => string.Equals(e.Name.LocalName, "assemblyBinding", StringComparison.InvariantCultureIgnoreCase));
+			var assemblyBindingElement = runtimeSectionElement?.GetElementByLocalName("assemblyBinding");
 
 			if (assemblyBindingElement != null)
 			{
-				foreach (var dependentAssembly in assemblyBindingElement.Elements().Where(e => string.Equals(e.Name.LocalName, "dependentAssembly", StringComparison.InvariantCultureIgnoreCase)))
+				foreach (var dependentAssembly in assemblyBindingElement.GetElementsByLocalName("dependentAssembly"))
 				{
-					var assemblyIdentity = dependentAssembly.Elements().FirstOrDefault(e => string.Equals(e.Name.LocalName, "assemblyIdentity", StringComparison.InvariantCultureIgnoreCase));
-					var bindingRedirect = dependentAssembly.Elements().FirstOrDefault(e => string.Equals(e.Name.LocalName, "bindingRedirect", StringComparison.InvariantCultureIgnoreCase));
+					var assemblyIdentity = dependentAssembly.GetElementByLocalName("assemblyIdentity");
+					var bindingRedirect = dependentAssembly.GetElementByLocalName("bindingRedirect");
 
-					var assemblyName = assemblyIdentity.Attributes().FirstOrDefault(a => string.Equals(a.Name.LocalName, "name", StringComparison.InvariantCultureIgnoreCase))?.Value ?? string.Empty;
-					var newVersion = bindingRedirect.Attributes().FirstOrDefault(a => string.Equals(a.Name.LocalName, "newVersion", StringComparison.InvariantCultureIgnoreCase))?.Value ?? string.Empty;
+					var assemblyName = assemblyIdentity.GetAttributeByLocalName("name")?.Value ?? string.Empty;
+					var newVersion = bindingRedirect.GetAttributeByLocalName("newVersion")?.Value ?? string.Empty;
 
 					foreach (var nugetPackageKey in nugetPackageKeys)
 					{

@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 using ISI.Extensions.Ngrok.Extensions;
 using DTOs = ISI.Extensions.Ngrok.DataTransferObjects.NGrokLocalServiceApi;
 
@@ -29,19 +30,36 @@ namespace ISI.Extensions.Ngrok
 		{
 			var response = new DTOs.GetRunningLocalServiceResponse();
 
-			foreach (var process in System.Diagnostics.Process.GetProcesses())
+			try
 			{
-				try
+				var process = System.Diagnostics.Process.GetProcessesByName("ngrok").NullCheckedFirstOrDefault();
+				if (process != null)
 				{
-					if ((process.ProcessName.IndexOf("ngrok", StringComparison.InvariantCultureIgnoreCase) >= 0) && process.MainModule.FileName.EndsWith("\\ngrok.exe", StringComparison.InvariantCultureIgnoreCase))
-					{
-						response.IsRunning = true;
-						response.ServiceFileName = process.MainModule.FileName;
-					}
+					response.IsRunning = true;
+					response.ServiceFileName = process.MainModule.FileName;
 				}
-				catch (Exception exception)
-				{
+			}
+			catch (Exception exception)
+			{
 
+			}
+
+			if (!response.IsRunning)
+			{
+				foreach (var process in System.Diagnostics.Process.GetProcesses())
+				{
+					try
+					{
+						if ((process.ProcessName.IndexOf("ngrok", StringComparison.InvariantCultureIgnoreCase) >= 0) && process.MainModule.FileName.EndsWith("\\ngrok.exe", StringComparison.InvariantCultureIgnoreCase))
+						{
+							response.IsRunning = true;
+							response.ServiceFileName = process.MainModule.FileName;
+						}
+					}
+					catch (Exception exception)
+					{
+
+					}
 				}
 			}
 

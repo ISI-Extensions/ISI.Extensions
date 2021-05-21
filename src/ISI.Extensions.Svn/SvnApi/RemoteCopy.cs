@@ -39,6 +39,7 @@ namespace ISI.Extensions.Svn
 				arguments.Add("--parents");
 			}
 			arguments.Add(string.Format("--message \"{0}\" ", request.LogMessage));
+			AddCredentials(arguments, request);
 
 			ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{

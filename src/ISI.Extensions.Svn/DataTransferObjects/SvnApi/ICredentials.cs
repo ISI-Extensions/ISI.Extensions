@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,18 +15,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
-	public partial class ExportRequest : ICredentials
+	public interface ICredentials
 	{
-		public string UserName { get; set; }
-		public string Password { get; set; }
-
-		public string Source { get; set; }
-		public string Target { get; set; }
+		string UserName { get; }
+		string Password { get; }
 	}
 }

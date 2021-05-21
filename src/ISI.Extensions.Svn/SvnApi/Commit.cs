@@ -57,6 +57,7 @@ namespace ISI.Extensions.Svn
 				arguments.Add(string.Format("\"{0}\"", request.FullName));
 				arguments.Add(string.Format("-m \"{0}\"", request.LogMessage));
 				arguments.Add("--include-externals");
+				AddCredentials(arguments, request);
 
 				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{

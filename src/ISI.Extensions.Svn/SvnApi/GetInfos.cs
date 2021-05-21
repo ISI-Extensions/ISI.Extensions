@@ -50,6 +50,8 @@ namespace ISI.Extensions.Svn
 					break;
 			}
 
+			AddCredentials(arguments, request);
+
 			var content = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{
 				Logger = new NullLogger(),

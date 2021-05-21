@@ -21,8 +21,11 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
-	public partial class RemoteCopyRequest
+	public partial class RemoteCopyRequest : ICredentials
 	{
+		public string UserName { get; set; }
+		public string Password { get; set; }
+
 		public string SourceUrl { get; set; }
 		public string TargetUrl { get; set; }
 

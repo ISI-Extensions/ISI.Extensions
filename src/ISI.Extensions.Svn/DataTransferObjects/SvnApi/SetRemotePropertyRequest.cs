@@ -21,8 +21,11 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
-	public partial class SetRemotePropertyRequest
+	public partial class SetRemotePropertyRequest : ICredentials
 	{
+		public string UserName { get; set; }
+		public string Password { get; set; }
+
 		public Uri Uri { get; set; }
 		public string Key { get; set; }
 		public string Value { get; set; }

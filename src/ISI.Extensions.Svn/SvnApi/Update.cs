@@ -58,6 +58,7 @@ namespace ISI.Extensions.Svn
 				{
 					arguments.Add("--ignore-externals");
 				}
+				AddCredentials(arguments, request);
 
 				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{

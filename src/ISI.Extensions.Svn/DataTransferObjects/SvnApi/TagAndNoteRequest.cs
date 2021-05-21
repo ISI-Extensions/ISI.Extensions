@@ -21,8 +21,11 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
-	public partial class TagAndNoteRequest
+	public partial class TagAndNoteRequest : ICredentials
 	{
+		public string UserName { get; set; }
+		public string Password { get; set; }
+
 		public string WorkingCopyDirectory { get; set; }
 		public string Version { get; set; }
 		public DateTime DateTimeStamp { get; set; }

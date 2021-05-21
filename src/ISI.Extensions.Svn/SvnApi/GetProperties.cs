@@ -54,6 +54,8 @@ namespace ISI.Extensions.Svn
 
 			arguments.Add(string.Format("\"{0}\"", request.Source.TrimEnd(System.IO.Path.DirectorySeparatorChar)));
 
+			AddCredentials(arguments, request);
+
 			var content = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{
 				Logger = new NullLogger(),

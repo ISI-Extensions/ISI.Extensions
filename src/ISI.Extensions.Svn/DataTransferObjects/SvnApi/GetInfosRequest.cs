@@ -21,8 +21,11 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
-	public partial class GetInfosRequest
+	public partial class GetInfosRequest : ICredentials
 	{
+		public string UserName { get; set; }
+		public string Password { get; set; }
+
 		public string Source { get; set; }
 		public Depth Depth { get; set; }	
 	}

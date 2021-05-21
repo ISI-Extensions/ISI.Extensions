@@ -21,8 +21,11 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
-	public partial class CommitRequest
+	public partial class CommitRequest : ICredentials
 	{
+		public string UserName { get; set; }
+		public string Password { get; set; }
+		
 		public string FullName { get; set; }
 		public string LogMessage { get; set; }
 		public bool UseTortoiseSvn { get; set; } = false;

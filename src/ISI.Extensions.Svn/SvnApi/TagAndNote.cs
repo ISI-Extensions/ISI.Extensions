@@ -35,6 +35,8 @@ namespace ISI.Extensions.Svn
 
 			var infos = GetInfos(new DTOs.GetInfosRequest()
 			{
+				UserName = request.UserName,
+				Password = request.Password,
 				Source = request.WorkingCopyDirectory,
 				Depth = Depth.Infinity,
 			}).Infos.ToNullCheckedArray(NullCheckCollectionResult.Empty);
@@ -64,6 +66,8 @@ namespace ISI.Extensions.Svn
 
 						RemoteCopy(new DTOs.RemoteCopyRequest()
 						{
+							UserName = request.UserName,
+							Password = request.Password,
 							SourceUrl = trunkUrl,
 							TargetUrl = tagsUrl,
 							LogMessage = string.Format("Version: {0}\nDateTimeStamp: {1}", request.Version, request.DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise)),
@@ -78,6 +82,8 @@ namespace ISI.Extensions.Svn
 
 						var propertySets = GetProperties(new DTOs.GetPropertiesRequest()
 						{
+							UserName = request.UserName,
+							Password = request.Password,
 							Source = request.WorkingCopyDirectory,
 							Depth = Depth.Infinity,
 						}).Properties.ToNullCheckedArray(NullCheckCollectionResult.Empty);
@@ -157,6 +163,8 @@ namespace ISI.Extensions.Svn
 
 										RemoteCopy(new DTOs.RemoteCopyRequest()
 										{
+											UserName = request.UserName,
+											Password = request.Password,
 											SourceUrl = externalTrunkUrl,
 											TargetUrl = externalTagsUrl,
 											LogMessage = string.Format("Version: {0}\nDateTimeStamp: {1}", externalVersion, request.DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise)),
@@ -225,6 +233,8 @@ namespace ISI.Extensions.Svn
 
 								setPropertyRequests.Add(new DTOs.SetRemotePropertyRequest()
 								{
+									UserName = request.UserName,
+									Password = request.Password,
 									Uri = new Uri(url),
 									Key = PropertyName.Externals,
 									Value = externals,

@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,40 +15,42 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.WebClient
+namespace ISI.Extensions.StatusTrackers
 {
-	public partial class Rest
+	public delegate void OnStatusChange(string caption, int percent);
+	public delegate void OnLogUpdate(IEnumerable<IStatusTrackerLogEntry> logEntries);
+	public delegate void OnAddToLog(IStatusTrackerLogEntry logEntry);
+}
+
+namespace ISI.Extensions
+{
+	public interface IStatusTrackerSnapshot
 	{
-		private static ISI.Extensions.Serialization.ISerialization _serialization = null;
-		protected static ISI.Extensions.Serialization.ISerialization Serialization => _serialization ??= GetSerialization();
+		string Caption { get; }
+		int Percent { get; }
+		IEnumerable<IStatusTrackerLogEntry> GetLogEntries();
+	}
 
-		private static ISI.Extensions.Serialization.ISerialization GetSerialization()
-		{
-			var serialization = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Serialization.ISerialization>();
+	public interface IStatusTracker
+	{
+		event ISI.Extensions.StatusTrackers.OnStatusChange OnStatusChangeEvents;
+		event ISI.Extensions.StatusTrackers.OnLogUpdate OnLogUpdateEvents;
+		event ISI.Extensions.StatusTrackers.OnAddToLog OnAddToLogEvents;
+		string Caption { get; set; }
+		int Percent { get; set; }
+		void AddToLog(System.Exception exception);
+		void AddToLog(string logEntry, System.Exception exception);
+		void AddToLog(string logEntry);
+		void AddToLog(DateTime dateTimeStamp, string logEntry);
+		void AddToLog(IEnumerable<IStatusTrackerLogEntry> logEntries);
+		IEnumerable<IStatusTrackerLogEntry> GetLogEntries();
+	}
 
-			if (serialization == null)
-			{
-				throw new Exception("ISI.Extensions.Serialization.ISerialization is null");
-			}
-
-			return serialization;
-		}
-
-		public const string MethodHeaderKey = "X-HTTP-METHOD";
-
-		public const string AcceptAllHeaderValue = "*/*";
-		public const string AcceptTextHeaderValue = ISI.Extensions.MimeTypes.PlainText;
-		public const string AcceptXmlHeaderValue = ISI.Extensions.MimeTypes.Xml;
-		public const string AcceptTextXmlHeaderValue = ISI.Extensions.MimeTypes.TextXml;
-		public const string AcceptJsonHeaderValue = ISI.Extensions.MimeTypes.Json;
-
-		public const string ContentTypeApplicationFormUrlEncodedHeaderValue = "application/x-www-form-urlencoded";
-		public const string ContentTypeTextHeaderValue = ISI.Extensions.MimeTypes.PlainText;
-		public const string ContentTypeXmlHeaderValue = ISI.Extensions.MimeTypes.Xml;
-		public const string ContentTypeJsonHeaderValue = ISI.Extensions.MimeTypes.Json;
+	public interface IStatusTrackerLogEntry
+	{
+		DateTime DateTimeStamp { get; }
+		string Description { get; }
 	}
 }

@@ -29,7 +29,7 @@ namespace ISI.Extensions.JsonSerialization
 
 		public bool UsesDataContract => false;
 
-		public string ContentType => "application/json";
+		public string ContentType => ISI.Extensions.MimeTypes.Json;
 
 		public object Deserialize(Type type, string serializedValue)
 		{

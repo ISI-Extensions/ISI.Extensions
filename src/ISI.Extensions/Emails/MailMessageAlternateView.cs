@@ -23,8 +23,8 @@ namespace ISI.Extensions.Emails
 {
 	public class MailMessageAlternateView : IMailMessageAlternateView
 	{
-		public const string MthmlMediaType = "text/html";
-		public const string PlainTextMediaType = "text/plain";
+		public const string MthmlMediaType = ISI.Extensions.MimeTypes.Html;
+		public const string PlainTextMediaType = ISI.Extensions.MimeTypes.PlainText;
 
 		public MailMessageAlternateView()
 		{

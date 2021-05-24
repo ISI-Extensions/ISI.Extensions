@@ -24,7 +24,7 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 	{
 		public ISI.Extensions.Serialization.SerializationFormat SerializationFormat => ISI.Extensions.Serialization.SerializationFormat.Json;
 		public bool UsesDataContract => true;
-		public string ContentType => "application/json";
+		public string ContentType => ISI.Extensions.MimeTypes.Json;
 
 		public object Deserialize(Type type, string serializedValue)
 		{

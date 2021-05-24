@@ -41,7 +41,9 @@ namespace ISI.Extensions.Scm
 			public const string NugetApiKey = nameof(NugetApiKey);
 			public const string NugetCacheDirectory = nameof(NugetCacheDirectory);
 
-			public const string JenkinsApiKey = nameof(JenkinsApiKey);
+			public const string JenkinsUrl = nameof(JenkinsUrl);
+			public const string JenkinsUserName = nameof(JenkinsUserName);
+			public const string JenkinsApiToken = nameof(JenkinsApiToken);
 
 			public const string FileStoreUrl = nameof(FileStoreUrl);
 			public const string FileStoreUserName = nameof(FileStoreUserName);
@@ -61,7 +63,7 @@ namespace ISI.Extensions.Scm
 					NugetRepositoryUrl,
 					NugetApiKey,
 					NugetCacheDirectory,
-					JenkinsApiKey,
+					JenkinsApiToken,
 					FileStoreUrl,
 					FileStoreUserName,
 					FileStorePassword,
@@ -93,8 +95,8 @@ namespace ISI.Extensions.Scm
 		private SettingsNuget _nuget = null;
 		public SettingsNuget Nuget => _nuget ??= new SettingsNuget(this);
 
-		private SettingsNuget _jenkins = null;
-		public SettingsNuget Jenkins => _jenkins ??= new SettingsNuget(this);
+		private SettingsJenkins _jenkins = null;
+		public SettingsJenkins Jenkins => _jenkins ??= new SettingsJenkins(this);
 
 		private SettingsFileStore _fileStore = null;
 		public SettingsFileStore FileStore => _fileStore ??= new SettingsFileStore(this);

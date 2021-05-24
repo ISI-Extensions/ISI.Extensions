@@ -19,6 +19,15 @@ using System.Text;
 
 namespace ISI.Extensions
 {
+	public static class MimeTypes
+	{
+		public const string PlainText = "text/plain";
+		public const string Html = "text/html";
+		public const string Xml = "application/xml";
+		public const string TextXml = "text/plain,application/xhtml+xml,application/xml";
+		public const string Json = "application/json";
+	}
+
 	public class MimeType
 	{
 		private static IDictionary<string, string> _knownMimeTypes = null;
@@ -46,15 +55,15 @@ namespace ISI.Extensions
 			knownMimeTypes.Add("epub", "application/epub+zip");
 			knownMimeTypes.Add("gz", "application/gzip");
 			knownMimeTypes.Add("gif", "image/gif");
-			knownMimeTypes.Add("htm", "text/html");
-			knownMimeTypes.Add("html", "text/html");
+			knownMimeTypes.Add("htm", ISI.Extensions.MimeTypes.Html);
+			knownMimeTypes.Add("html", ISI.Extensions.MimeTypes.Html);
 			knownMimeTypes.Add("ico", "image/vnd.microsoft.icon");
 			knownMimeTypes.Add("ics", "text/calendar");
 			knownMimeTypes.Add("jar", "application/java-archive");
 			knownMimeTypes.Add("jpeg", "image/jpeg");
 			knownMimeTypes.Add("jpg", "image/jpeg");
 			knownMimeTypes.Add("js", "text/x-javascript");
-			knownMimeTypes.Add("json", "application/json");
+			knownMimeTypes.Add("json", ISI.Extensions.MimeTypes.Json);
 			knownMimeTypes.Add("jsonld", "application/ld+json");
 			knownMimeTypes.Add("mid", "audio/midi");
 			knownMimeTypes.Add("midi", "audio/midi");
@@ -85,7 +94,7 @@ namespace ISI.Extensions
 			knownMimeTypes.Add("tiff", "image/tiff");
 			knownMimeTypes.Add("ts", "video/mp2t");
 			knownMimeTypes.Add("ttf", "font/ttf");
-			knownMimeTypes.Add("txt", "text/plain");
+			knownMimeTypes.Add("txt", ISI.Extensions.MimeTypes.PlainText);
 			knownMimeTypes.Add("vsd", "application/vnd.visio");
 			knownMimeTypes.Add("wav", "audio/wav");
 			knownMimeTypes.Add("weba", "audio/webm");

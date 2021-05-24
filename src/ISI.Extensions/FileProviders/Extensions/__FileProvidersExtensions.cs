@@ -25,6 +25,6 @@ namespace ISI.Extensions.FileProviders.Extensions
 	public static partial class FileProvidersExtensions
 	{
 		private static ISI.Extensions.DateTimeStamper.IDateTimeStamper _dateTimeStamper = null;
-		private static ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper => _dateTimeStamper ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.DateTimeStamper.IDateTimeStamper>();
+		private static ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper => _dateTimeStamper ??= (ISI.Extensions.ServiceLocator.Current?.GetService<ISI.Extensions.DateTimeStamper.IDateTimeStamper>() ?? new ISI.Extensions.DateTimeStamper.LocalMachineDateTimeStamper());
 	}
 }

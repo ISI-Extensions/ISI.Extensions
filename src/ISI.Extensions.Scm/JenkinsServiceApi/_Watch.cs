@@ -37,6 +37,7 @@ namespace ISI.Extensions.Scm
 			var getStatusTrackerSnapshotRequest = new SerializableDTOs.GetStatusTrackerSnapshotRequest()
 			{
 				StatusTrackerKey = statusTrackerKey,
+				Password = password,
 			};
 
 			var logIndex = 0;

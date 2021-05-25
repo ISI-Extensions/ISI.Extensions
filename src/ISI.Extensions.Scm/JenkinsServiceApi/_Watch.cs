@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,34 +27,70 @@ namespace ISI.Extensions.Scm
 {
 	public partial class JenkinsServiceApi
 	{
-		public DTOs.GetStatusTrackerSnapshotResponse GetStatusTrackerSnapshot(DTOs.GetStatusTrackerSnapshotRequest request)
+		private bool Watch(string jenkinsServiceUrl, string password, string statusTrackerKey)
 		{
-			var response = new DTOs.GetStatusTrackerSnapshotResponse();
-			
-			var uri = new UriBuilder(request.JenkinsServiceUrl);
-			uri.SetPathAndQueryString("api/update-nuget-packages");
+			var success = false;
+
+			var uri = new UriBuilder(jenkinsServiceUrl);
+			uri.SetPathAndQueryString("api/get-status-tracker-snapshot");
 
 			var getStatusTrackerSnapshotRequest = new SerializableDTOs.GetStatusTrackerSnapshotRequest()
 			{
-				StatusTrackerKey = request.StatusTrackerKey,
+				StatusTrackerKey = statusTrackerKey,
 			};
 
-			try
-			{
-				var statusTrackerSnapshot = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.GetStatusTrackerSnapshotRequest, SerializableDTOs.GetStatusTrackerSnapshotResponse>(uri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), getStatusTrackerSnapshotRequest, false)?.StatusTrackerSnapshot;
+			var logIndex = 0;
 
-				response.StatusTrackerSnapshot = new ISI.Extensions.StatusTrackers.StatusTrackerSnapshot(statusTrackerSnapshot.Caption, statusTrackerSnapshot.Percent, statusTrackerSnapshot.LogEntries.ToNullCheckedArray(logEntry => new ISI.Extensions.StatusTrackers.StatusTrackerLogEntry()
+			var isFinished = false;
+			while (!isFinished)
+			{
+				var maxTries = 3;
+				while (maxTries > 0)
 				{
-					DateTimeStamp = logEntry.DateTimeStamp,
-					Description = logEntry.Description,
-				}));
-			}
-			catch (Exception exception)
-			{
-				Logger.LogError(exception, "GetStatusTrackerSnapshot Failed");
+					try
+					{
+						System.Threading.Thread.Sleep(5000);
+
+						var getStatusTrackerSnapshotResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.GetStatusTrackerSnapshotRequest, SerializableDTOs.GetStatusTrackerSnapshotResponse>(uri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), getStatusTrackerSnapshotRequest, false);
+
+						if (getStatusTrackerSnapshotResponse?.StatusTrackerSnapshot != null)
+						{
+							success = getStatusTrackerSnapshotResponse.Success.GetValueOrDefault();
+							isFinished = getStatusTrackerSnapshotResponse.IsFinished;
+
+							while (logIndex < getStatusTrackerSnapshotResponse.StatusTrackerSnapshot.LogEntries.Length)
+							{
+								Logger.LogInformation(string.Format("{0}", getStatusTrackerSnapshotResponse.StatusTrackerSnapshot.LogEntries[logIndex++].Description));
+							}
+						}
+						else
+						{
+							isFinished = true;
+						}
+
+						maxTries = 0;
+					}
+#pragma warning disable CS0168 // Variable is declared but never used
+					catch (Exception exception)
+#pragma warning restore CS0168 // Variable is declared but never used
+					{
+						if (maxTries > 0)
+						{
+							System.Threading.Thread.Sleep(20000);
+							maxTries--;
+						}
+						else
+						{
+							throw;
+						}
+					}
+				}
+
 			}
 
-			return response;
+			Logger.Log((success ? LogLevel.Information : LogLevel.Error), string.Format("  Success '{0}'.", success.TrueFalse()));
+
+			return success;
 		}
 	}
 }

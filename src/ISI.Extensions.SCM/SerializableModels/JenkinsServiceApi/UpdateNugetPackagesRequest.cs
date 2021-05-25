@@ -25,17 +25,20 @@ namespace ISI.Extensions.Scm.SerializableModels.JenkinsServiceApi
 	[DataContract]
 	public partial class UpdateNugetPackagesRequest
 	{
+		[DataMember(Name = "password", EmitDefaultValue = false)]
+		public string Password { get; set; }
+
 		[DataMember(Name = "settingsFullName", EmitDefaultValue = false)]
 		public string SettingsFullName { get; set; }
 
 		[DataMember(Name = "jenkinsUrl", EmitDefaultValue = false)]
 		public string JenkinsUrl { get; set; }
 
-		[DataMember(Name = "userName", EmitDefaultValue = false)]
-		public string UserName { get; set; }
+		[DataMember(Name = "jenkinsUserName", EmitDefaultValue = false)]
+		public string JenkinsUserName { get; set; }
 
-		[DataMember(Name = "apiToken", EmitDefaultValue = false)]
-		public string ApiToken { get; set; }
+		[DataMember(Name = "jenkinsApiToken", EmitDefaultValue = false)]
+		public string JenkinsApiToken { get; set; }
 
 		[DataMember(Name = "jobIds", EmitDefaultValue = false)]
 		public string[] JobIds { get; set; }

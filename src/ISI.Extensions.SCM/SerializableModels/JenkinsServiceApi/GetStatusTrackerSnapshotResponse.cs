@@ -31,7 +31,7 @@ namespace ISI.Extensions.Scm.SerializableModels.JenkinsServiceApi
 		[DataMember(Name = "isFinished", EmitDefaultValue = false)]
 		public bool IsFinished { get; set; }
 
-		[DataMember(Name = "successful", EmitDefaultValue = false)]
-		public bool? Successful { get; set; }
+		[DataMember(Name = "success", EmitDefaultValue = false)]
+		public bool? Success { get; set; }
 	}
 }

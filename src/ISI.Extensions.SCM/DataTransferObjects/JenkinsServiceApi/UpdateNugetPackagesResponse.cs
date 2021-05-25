@@ -23,6 +23,6 @@ namespace ISI.Extensions.Scm.DataTransferObjects.JenkinsServiceApi
 {
 	public partial class UpdateNugetPackagesResponse
 	{
-		public string StatusTrackerKey { get; set; }
+		public bool Success { get; set; }
 	}
 }

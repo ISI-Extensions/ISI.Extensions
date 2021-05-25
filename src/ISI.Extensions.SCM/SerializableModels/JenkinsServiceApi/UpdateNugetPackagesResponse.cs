@@ -25,7 +25,7 @@ namespace ISI.Extensions.Scm.SerializableModels.JenkinsServiceApi
 	[DataContract]
 	public partial class UpdateNugetPackagesResponse
 	{
-		[DataMember(EmitDefaultValue = false)]
+		[DataMember(Name = "statusTrackerKey", EmitDefaultValue = false)]
 		public string StatusTrackerKey { get; set; }
 	}
 }

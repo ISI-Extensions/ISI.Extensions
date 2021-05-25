@@ -36,10 +36,11 @@ namespace ISI.Extensions.Scm
 
 			var updateNugetPackagesRequest = new SerializableDTOs.UpdateNugetPackagesRequest()
 			{
+				Password = request.JenkinsServicePassword,
 				SettingsFullName = request.SettingsFullName,
 				JenkinsUrl = request.JenkinsUrl,
-				UserName = request.UserName,
-				ApiToken = request.ApiToken,
+				JenkinsUserName = request.JenkinsUserName,
+				JenkinsApiToken = request.JenkinsApiToken,
 				JobIds = request.JobIds.ToNullCheckedArray(),
 				FilterByJobIdSuffix = request.FilterByJobIdSuffix,
 				IgnorePackageIds = request.IgnorePackageIds.ToNullCheckedArray(),
@@ -49,7 +50,7 @@ namespace ISI.Extensions.Scm
 			{
 				var updateNugetPackagesResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.UpdateNugetPackagesRequest, SerializableDTOs.UpdateNugetPackagesResponse>(uri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), updateNugetPackagesRequest, false);
 
-				response.StatusTrackerKey = updateNugetPackagesResponse.StatusTrackerKey;
+				response.Success = Watch(request.JenkinsServiceUrl, request.JenkinsServicePassword, updateNugetPackagesResponse.StatusTrackerKey);
 			}
 			catch (Exception exception)
 			{

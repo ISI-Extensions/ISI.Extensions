@@ -26,10 +26,11 @@ namespace ISI.Extensions.Scm.DataTransferObjects.JenkinsServiceApi
 		public string SettingsFullName { get; set; }
 
 		public string JenkinsServiceUrl { get; set; }
+		public string JenkinsServicePassword { get; set; }
 
 		public string JenkinsUrl { get; set; }
-		public string UserName { get; set; }
-		public string ApiToken { get; set; }
+		public string JenkinsUserName { get; set; }
+		public string JenkinsApiToken { get; set; }
 
 		public string[] JobIds { get; set; }
 		public string FilterByJobIdSuffix { get; set; }

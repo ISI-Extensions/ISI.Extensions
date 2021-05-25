@@ -30,9 +30,9 @@ namespace ISI.Extensions.Nuget
 		{
 			var response = new DTOs.GetNugetLockResponse();
 			
-			var lockFullName = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments), "nuget.lock");
+			var lockFullName = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments), "nuget");
 
-			Logger.LogInformation(string.Format("Nuget Lock File: \"{0}\"", lockFullName));
+			//Logger.LogInformation(string.Format("Nuget Lock File: \"{0}\"", lockFullName));
 
 			response.Lock = new ISI.Extensions.Locks.FileLock(lockFullName, onWaitingForLock: () => request.AddToLog("Waiting for Nuget Lock"));
 

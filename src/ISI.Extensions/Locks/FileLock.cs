@@ -27,17 +27,19 @@ namespace ISI.Extensions.Locks
 		public string DirectoryName { get; }
 		protected System.IO.Stream FileStream { get; private set; }
 
-		public FileLock(string fileName, TimeSpan? retryInterval = null, TimeSpan? failInterval = null, Action onWaitingForLock = null)
+		public FileLock(string fileName, TimeSpan? retryInterval = null, TimeSpan? failInterval = null, Action onWaitingForLock = null, Action<string> onCreatingLock = null)
 		{
 			FileName = GetLockFileName(fileName);
 			DirectoryName = System.IO.Path.GetDirectoryName(FileName);
 			FileStream = null;
 
-			CreateFileStream(retryInterval.GetValueOrDefault(TimeSpan.FromSeconds(5)), failInterval, onWaitingForLock);
+			CreateFileStream(retryInterval.GetValueOrDefault(TimeSpan.FromSeconds(5)), failInterval, onWaitingForLock, onCreatingLock);
 		}
 
-		protected virtual void CreateFileStream(TimeSpan retryInterval, TimeSpan? failInterval, Action onWaitingForLock = null)
+		protected virtual void CreateFileStream(TimeSpan retryInterval, TimeSpan? failInterval, Action onWaitingForLock = null, Action<string> onCreatingLock = null)
 		{
+			onCreatingLock?.Invoke(FileName);
+
 			var autoResetEvent = new System.Threading.AutoResetEvent(false);
 
 			var now = DateTime.UtcNow;
@@ -88,7 +90,7 @@ namespace ISI.Extensions.Locks
 			FileStream = null;
 		}
 
-		public static void Lock(string fileName, Action action, TimeSpan? retryInterval = null, TimeSpan? failInterval = null, Action onWaitingForLock = null)
+		public static void Lock(string fileName, Action action, TimeSpan? retryInterval = null, TimeSpan? failInterval = null, Action onWaitingForLock = null, Action<string> onCreatingLock = null)
 		{
 			if (string.IsNullOrEmpty(fileName))
 			{
@@ -100,7 +102,7 @@ namespace ISI.Extensions.Locks
 				throw new NullReferenceException("action cannot be null");
 			}
 
-			using (new FileLock(fileName, retryInterval, failInterval, onWaitingForLock))
+			using (new FileLock(fileName, retryInterval, failInterval, onWaitingForLock, onCreatingLock))
 			{
 				action();
 			}

@@ -42,7 +42,7 @@ namespace ISI.Extensions.VisualStudio
 				solutionDirectory = System.IO.Path.GetFullPath(request.SolutionFullName);
 			}
 
-			response.Lock = new ISI.Extensions.Locks.FileLock(solutionDirectory, onWaitingForLock: () => request.AddToLog("Waiting for Solution Lock"));
+			response.Lock = new ISI.Extensions.Locks.FileLock(solutionDirectory, onWaitingForLock: () => request.AddToLog("Waiting for Solution Lock"), onCreatingLock: lockFileName => request.AddToLog(string.Format("Creating Solution lock: \"{0}\"", lockFileName)));
 
 			return response;
 		}

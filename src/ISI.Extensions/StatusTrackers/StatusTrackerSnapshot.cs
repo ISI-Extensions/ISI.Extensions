@@ -16,6 +16,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.StatusTrackers
 {
@@ -23,19 +24,18 @@ namespace ISI.Extensions.StatusTrackers
 	{
 		public string Caption { get; }
 		public int Percent { get; }
+		private readonly IStatusTrackerLogEntry[] _logEntries;
 
-		internal StatusTrackerSnapshot(
+		public StatusTrackerSnapshot(
 			string caption,
 			int percent,
 			IEnumerable<IStatusTrackerLogEntry> logEntries)
 		{
-
+			Caption = caption;
+			Percent = percent;
+			_logEntries = logEntries.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 		}
 
-
-		public IEnumerable<IStatusTrackerLogEntry> GetLogEntries()
-		{
-			throw new NotImplementedException();
-		}
+		public IEnumerable<IStatusTrackerLogEntry> GetLogEntries() => _logEntries;
 	}
 }

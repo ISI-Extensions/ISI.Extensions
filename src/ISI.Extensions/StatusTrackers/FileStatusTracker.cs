@@ -194,7 +194,7 @@ namespace ISI.Extensions.StatusTrackers
 					new ISI.Extensions.StatusTrackers.StatusTrackerLogEntry()
 					{
 						DateTimeStamp = dateTimeStamp,
-						Description = logEntry,
+						Description = logEntry.TrimEnd(' ', '\r', '\n'),
 					}
 				});
 			}

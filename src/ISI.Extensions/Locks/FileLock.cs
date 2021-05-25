@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,16 +27,16 @@ namespace ISI.Extensions.Locks
 		public string DirectoryName { get; }
 		protected System.IO.Stream FileStream { get; private set; }
 
-		public FileLock(string fileName, TimeSpan? retryInterval = null, TimeSpan? failInterval = null)
+		public FileLock(string fileName, TimeSpan? retryInterval = null, TimeSpan? failInterval = null, Action onWaitingForLock = null)
 		{
 			FileName = GetLockFileName(fileName);
 			DirectoryName = System.IO.Path.GetDirectoryName(FileName);
 			FileStream = null;
 
-			CreateFileStream(retryInterval.GetValueOrDefault(TimeSpan.FromSeconds(5)), failInterval);
+			CreateFileStream(retryInterval.GetValueOrDefault(TimeSpan.FromSeconds(5)), failInterval, onWaitingForLock);
 		}
 
-		protected virtual void CreateFileStream(TimeSpan retryInterval, TimeSpan? failInterval)
+		protected virtual void CreateFileStream(TimeSpan retryInterval, TimeSpan? failInterval, Action onWaitingForLock = null)
 		{
 			var autoResetEvent = new System.Threading.AutoResetEvent(false);
 
@@ -54,6 +54,8 @@ namespace ISI.Extensions.Locks
 					{
 						throw new ISI.Extensions.Locks.LockException(string.Format("Failed to get lock on \"{0}\"", FileName), exception);
 					}
+
+					onWaitingForLock?.Invoke();
 
 					System.IO.Directory.CreateDirectory(DirectoryName);
 
@@ -86,7 +88,7 @@ namespace ISI.Extensions.Locks
 			FileStream = null;
 		}
 
-		public static void Lock(string fileName, Action action, TimeSpan? retryInterval = null, TimeSpan? failInterval = null)
+		public static void Lock(string fileName, Action action, TimeSpan? retryInterval = null, TimeSpan? failInterval = null, Action onWaitingForLock = null)
 		{
 			if (string.IsNullOrEmpty(fileName))
 			{
@@ -98,7 +100,7 @@ namespace ISI.Extensions.Locks
 				throw new NullReferenceException("action cannot be null");
 			}
 
-			using (new FileLock(fileName, retryInterval, failInterval))
+			using (new FileLock(fileName, retryInterval, failInterval, onWaitingForLock))
 			{
 				action();
 			}

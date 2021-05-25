@@ -41,6 +41,7 @@ namespace ISI.Extensions.Scm
 			public const string NugetApiKey = nameof(NugetApiKey);
 			public const string NugetCacheDirectory = nameof(NugetCacheDirectory);
 
+			public const string JenkinsServiceUrl = nameof(JenkinsServiceUrl);
 			public const string JenkinsUrl = nameof(JenkinsUrl);
 			public const string JenkinsUserName = nameof(JenkinsUserName);
 			public const string JenkinsApiToken = nameof(JenkinsApiToken);
@@ -63,6 +64,9 @@ namespace ISI.Extensions.Scm
 					NugetRepositoryUrl,
 					NugetApiKey,
 					NugetCacheDirectory,
+					JenkinsServiceUrl,
+					JenkinsUrl,
+					JenkinsUserName,
 					JenkinsApiToken,
 					FileStoreUrl,
 					FileStoreUserName,

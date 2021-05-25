@@ -26,5 +26,7 @@ namespace ISI.Extensions.Git.DataTransferObjects.GitApi
 		public string FullName { get; set; }
 		public string LogMessage { get; set; }
 		public bool PushToOrigin { get; set; } = true;
+
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; } = description => { };
 	}
 }

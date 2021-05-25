@@ -17,5 +17,7 @@ namespace ISI.Extensions.Scm
 		{
 			Logger = logger ?? new ConsoleLogger();
 		}
+
+		public Guid SourceControlTypeUuid => throw new NotImplementedException();
 	}
 }

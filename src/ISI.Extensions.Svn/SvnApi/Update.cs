@@ -43,7 +43,7 @@ namespace ISI.Extensions.Svn
 
 				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
-					Logger = new NullLogger(),
+					Logger = new AddToLogLogger(request.AddToLog),
 					ProcessExeFullName = "TortoiseProc",
 					Arguments = arguments.ToArray(),
 				}).Errored;
@@ -62,7 +62,7 @@ namespace ISI.Extensions.Svn
 
 				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
-					Logger = new NullLogger(),
+					Logger = new AddToLogLogger(request.AddToLog),
 					ProcessExeFullName = "svn",
 					Arguments = arguments.ToArray(),
 				}).Errored;

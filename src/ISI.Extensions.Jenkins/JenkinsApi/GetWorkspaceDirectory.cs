@@ -12,29 +12,46 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.XPath;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.SolutionNugetApi;
-using Microsoft.Extensions.Logging;
+using DTOs = ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi;
 
-namespace ISI.Extensions.VisualStudio
+namespace ISI.Extensions.Jenkins
 {
-	public partial class SolutionNugetApi
+	public partial class JenkinsApi
 	{
-		private bool HasChanges(string original, string newVersion)
+		public DTOs.GetWorkspaceDirectoryResponse GetWorkspaceDirectory(DTOs.GetWorkspaceDirectoryRequest request)
 		{
-			string getCompressed(string value) => value
-				.Replace(" ", string.Empty)
-				.Replace("\t", string.Empty)
-				.Replace("\r", string.Empty)
-				.Replace("\n", string.Empty);
+			var response = new DTOs.GetWorkspaceDirectoryResponse();
 
-			return !string.Equals(getCompressed(original), getCompressed(newVersion), StringComparison.InvariantCultureIgnoreCase);
+			var jobConfigXml = GetJobConfigXml(new DTOs.GetJobConfigXmlRequest()
+			{
+				JenkinsUrl = request.JenkinsUrl,
+				UserName = request.UserName,
+				ApiToken = request.ApiToken,
+				SslProtocols = request.SslProtocols,
+				JobId = request.JobId,
+			})?.ConfigXml ?? string.Empty;
+
+			if (!string.IsNullOrWhiteSpace(jobConfigXml))
+			{
+				const string customWorkspaceToken = "<customWorkspace>";
+				var customWorkspaceIndex = jobConfigXml.IndexOf(customWorkspaceToken, StringComparison.InvariantCultureIgnoreCase);
+				if (customWorkspaceIndex >= 0)
+				{
+					response.WorkspaceDirectory = jobConfigXml.Substring(customWorkspaceIndex + customWorkspaceToken.Length).Split(new[] {'<'}).NullCheckedFirstOrDefault();
+				}
+			}
+
+			response.WorkspaceDirectory = response.WorkspaceDirectory.Replace("${JOB_NAME}", request.JobId);
+
+			return response;
 		}
 	}
 }

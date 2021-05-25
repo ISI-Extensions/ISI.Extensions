@@ -22,6 +22,6 @@ namespace ISI.Extensions.StatusTrackers
 	[ISI.Extensions.ConfigurationHelper.Configuration("ISI.Extensions.StatusTrackers")]
 	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
 	{
-		public string FileStatusTrackerDirectory { get; set; } = "StatusTracker";
+		public string FileStatusTrackerDirectory { get; set; } = "FileStatusTrackerDirectory";
 	}
 }

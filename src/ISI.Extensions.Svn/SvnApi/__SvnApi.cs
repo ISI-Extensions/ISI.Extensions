@@ -27,6 +27,8 @@ namespace ISI.Extensions.Svn
 	[SourceControlClientApi]
 	public partial class SvnApi : ISI.Extensions.Scm.ISourceControlClientApi
 	{
+		public const string SourceControlTypeUuid = "6f5ddcfd-8678-441a-977e-a4f58415de5f";
+
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 
 		public SvnApi()
@@ -41,6 +43,7 @@ namespace ISI.Extensions.Svn
 		}
 
 		private const string SccDirectoryName = ".svn";
+		Guid ISI.Extensions.Scm.ISourceControlClientApi.SourceControlTypeUuid => SourceControlTypeUuid.ToGuid();
 		bool ISI.Extensions.Scm.ISourceControlClientApi.IsSccDirectory(string directoryName) => string.Equals(System.IO.Path.GetFileName(directoryName), SccDirectoryName, StringComparison.InvariantCultureIgnoreCase);
 		bool ISI.Extensions.Scm.ISourceControlClientApi.UsesScc(string path)
 		{
@@ -75,6 +78,22 @@ namespace ISI.Extensions.Svn
 
 			return response;
 		}
+		
+		SourceControlClientApiDTOs.CheckOutResponse ISI.Extensions.Scm.ISourceControlClientApi.CheckOut(SourceControlClientApiDTOs.CheckOutRequest request)
+		{
+			var response = new SourceControlClientApiDTOs.CheckOutResponse();
+
+			var apiResponse = CheckOut(new DTOs.CheckOutRequest()
+			{
+				SourceUrl = request.SourceUrl,
+				TargetFullName = request.TargetFullName,
+				AddToLog = request.AddToLog,
+			});
+
+			response.Success = apiResponse.Success;
+
+			return response;
+		}
 
 		SourceControlClientApiDTOs.UpdateWorkingCopyResponse ISI.Extensions.Scm.ISourceControlClientApi.UpdateWorkingCopy(SourceControlClientApiDTOs.UpdateWorkingCopyRequest request)
 		{
@@ -84,6 +103,7 @@ namespace ISI.Extensions.Svn
 			{
 				FullName = request.FullName,
 				IncludeExternals = request.IncludeExternals,
+				AddToLog = request.AddToLog,
 			});
 
 			response.Success = apiResponse.Success;
@@ -99,6 +119,7 @@ namespace ISI.Extensions.Svn
 			{
 				FullName = request.FullName,
 				LogMessage = request.LogMessage,
+				AddToLog = request.AddToLog,
 			});
 
 			response.Success = apiResponse.Success;

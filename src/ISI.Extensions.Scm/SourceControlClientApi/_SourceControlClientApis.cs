@@ -26,7 +26,7 @@ namespace ISI.Extensions.Scm
 	public partial class SourceControlClientApi
 	{
 		private static ISourceControlClientApi[] _sourceControlClientApis = null;
-		protected ISourceControlClientApi[] SourceControlClientApis => _sourceControlClientApis ?? GetSourceControlClientApis();
+		protected ISourceControlClientApi[] SourceControlClientApis => _sourceControlClientApis ??= GetSourceControlClientApis();
 
 		private ISourceControlClientApi[] GetSourceControlClientApis()
 		{
@@ -40,6 +40,19 @@ namespace ISI.Extensions.Scm
 			foreach (var sourceControlClientApi in SourceControlClientApis)
 			{
 				if (sourceControlClientApi.UsesScc(fullName))
+				{
+					return sourceControlClientApi;
+				}
+			}
+
+			return null;
+		}
+
+		private ISourceControlClientApi GetSourceControlClientApi(Guid sourceControlTypeUuid)
+		{
+			foreach (var sourceControlClientApi in SourceControlClientApis)
+			{
+				if (sourceControlClientApi.SourceControlTypeUuid == sourceControlTypeUuid)
 				{
 					return sourceControlClientApi;
 				}

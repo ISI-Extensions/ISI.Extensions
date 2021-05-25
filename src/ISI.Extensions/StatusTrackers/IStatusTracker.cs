@@ -22,6 +22,7 @@ namespace ISI.Extensions.StatusTrackers
 	public delegate void OnStatusChange(string caption, int percent);
 	public delegate void OnLogUpdate(IEnumerable<IStatusTrackerLogEntry> logEntries);
 	public delegate void OnAddToLog(IStatusTrackerLogEntry logEntry);
+	public delegate void AddToLog(string description);
 }
 
 namespace ISI.Extensions

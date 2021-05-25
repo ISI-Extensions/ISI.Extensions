@@ -19,17 +19,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionNugetApi
+namespace ISI.Extensions.Scm.DataTransferObjects.JenkinsServiceApi
 {
-	public partial class UpdateNugetPackagesRequest
+	public partial class GetJenkinsJobIdsResponse
 	{
-		public bool UpdateWorkingCopyFromSourceControl { get; set; } = true;
-		public bool CommitWorkingCopyToSourceControl { get; set; } = true;
-
-		public IEnumerable<string> SolutionFullNames { get; set; }
-
-		public IEnumerable<string> IgnorePackageIds { get; set; }
-
-		public ISI.Extensions.Nuget.NugetPackageKeyDictionary NugetPackageKeys { get; set; }
+		public string[] JobIds { get; set; }
 	}
 }

@@ -30,6 +30,12 @@ namespace ISI.Extensions.Scm
 				Settings = settings;
 			}
 
+			public string JenkinsServiceUrl
+			{
+				get => Settings.GetValue(Settings.Key.JenkinsServiceUrl);
+				set => Settings.SetValue(Settings.Key.JenkinsServiceUrl, value);
+			}
+
 			public string JenkinsUrl
 			{
 				get => Settings.GetValue(Settings.Key.JenkinsUrl);

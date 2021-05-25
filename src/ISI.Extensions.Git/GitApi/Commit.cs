@@ -39,7 +39,7 @@ namespace ISI.Extensions.Git
 
 			response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{
-				Logger = new NullLogger(),
+				Logger = new AddToLogLogger(request.AddToLog),
 				ProcessExeFullName = "git",
 				Arguments = arguments.ToArray(),
 				WorkingDirectory = request.FullName,
@@ -52,7 +52,7 @@ namespace ISI.Extensions.Git
 
 				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
-					Logger = new NullLogger(),
+					Logger = new AddToLogLogger(request.AddToLog),
 					ProcessExeFullName = "git",
 					Arguments = arguments.ToArray(),
 					WorkingDirectory = request.FullName,

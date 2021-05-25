@@ -27,6 +27,8 @@ namespace ISI.Extensions.Git
 	[SourceControlClientApi]
 	public partial class GitApi : ISI.Extensions.Scm.ISourceControlClientApi
 	{
+		public const string SourceControlTypeUuid = "2d545e80-bc15-4127-b8cd-cc0d12f8b0b8";
+
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 
 		public GitApi()
@@ -41,6 +43,7 @@ namespace ISI.Extensions.Git
 		}
 		
 		private const string SccDirectoryName = ".git";
+		Guid ISI.Extensions.Scm.ISourceControlClientApi.SourceControlTypeUuid => SourceControlTypeUuid.ToGuid();
 		bool ISI.Extensions.Scm.ISourceControlClientApi.IsSccDirectory(string directoryName) => string.Equals(System.IO.Path.GetFileName(directoryName), SccDirectoryName, StringComparison.InvariantCultureIgnoreCase);
 		bool ISI.Extensions.Scm.ISourceControlClientApi.UsesScc(string path)
 		{
@@ -75,6 +78,22 @@ namespace ISI.Extensions.Git
 			return response;
 		}
 
+		SourceControlClientApiDTOs.CheckOutResponse ISI.Extensions.Scm.ISourceControlClientApi.CheckOut(SourceControlClientApiDTOs.CheckOutRequest request)
+		{
+			var response = new SourceControlClientApiDTOs.CheckOutResponse();
+
+			var apiResponse = Clone(new DTOs.CloneRequest()
+			{
+				SourceUrl = request.SourceUrl,
+				TargetFullName = request.TargetFullName,
+				AddToLog = request.AddToLog,
+			});
+
+			response.Success = apiResponse.Success;
+
+			return response;
+		}
+
 		SourceControlClientApiDTOs.UpdateWorkingCopyResponse ISI.Extensions.Scm.ISourceControlClientApi.UpdateWorkingCopy(SourceControlClientApiDTOs.UpdateWorkingCopyRequest request)
 		{
 			var response = new SourceControlClientApiDTOs.UpdateWorkingCopyResponse();
@@ -83,6 +102,7 @@ namespace ISI.Extensions.Git
 			{
 				FullName = request.FullName,
 				IncludeSubModules = request.IncludeExternals,
+				AddToLog = request.AddToLog,
 			});
 
 			response.Success = apiResponse.Success;
@@ -98,6 +118,7 @@ namespace ISI.Extensions.Git
 			{
 				FullName = request.FullName,
 				LogMessage = request.LogMessage,
+				AddToLog = request.AddToLog,
 			});
 
 			response.Success = apiResponse.Success;

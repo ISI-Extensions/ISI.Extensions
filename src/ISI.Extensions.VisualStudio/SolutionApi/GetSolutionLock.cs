@@ -18,10 +18,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi;
+using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionNugetApi
+namespace ISI.Extensions.VisualStudio
 {
-	public partial class UpdateNugetPackagesResponse
+	public partial class SolutionApi
 	{
+		public DTOs.GetSolutionLockResponse GetSolutionLock(DTOs.GetSolutionLockRequest request)
+		{
+			var logger = new AddToLogLogger(request.AddToLog, Logger);
+
+			var response = new DTOs.GetSolutionLockResponse();
+			
+			var solutionDirectory = SourceControlClientApi.GetRootDirectory(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.GetRootDirectoryRequest()
+			{
+				FullName = request.SolutionFullName,
+			}).FullName;
+
+			response.Lock = new ISI.Extensions.Locks.FileLock(string.Format("{0}.lock", solutionDirectory), onWaitingForLock: () => request.AddToLog("Waiting for Solution Lock"));
+			
+			return response;
+		}
 	}
 }

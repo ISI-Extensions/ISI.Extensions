@@ -23,7 +23,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\ISI.Extensions.Nuget\ISI.Extensions.Nuget.csproj" />
-		<ProjectReference Include="..\ISI.Extensions.Scm\ISI.Extensions.Scm.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.SCM\ISI.Extensions.Scm.csproj" />
 		<ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />
 	</ItemGroup>
 

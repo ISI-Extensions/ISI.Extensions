@@ -25,5 +25,7 @@ namespace ISI.Extensions.Git.DataTransferObjects.GitApi
 	{
 		public string FullName { get; set; }
 		public bool IncludeSubModules { get; set; } = true;
+
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; } = description => { };
 	}
 }

@@ -28,5 +28,7 @@ namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 
 		public string Source { get; set; }
 		public string Target { get; set; }
+
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; } = description => { };
 	}
 }

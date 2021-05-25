@@ -49,12 +49,14 @@ namespace ISI.Extensions.Svn
 		{
 			var usesSvn = false;
 
-			while (!System.IO.Directory.Exists(path))
+			path = System.IO.Path.GetFullPath(path);
+
+			while (!string.IsNullOrEmpty(path) && !System.IO.Directory.Exists(path))
 			{
 				path = System.IO.Path.GetDirectoryName(path);
 			}
 
-			while (!usesSvn && !string.IsNullOrEmpty(path))
+			while (!string.IsNullOrEmpty(path) && !usesSvn)
 			{
 				usesSvn = System.IO.Directory.Exists(System.IO.Path.Combine(path, SccDirectoryName));
 

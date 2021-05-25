@@ -28,8 +28,11 @@ namespace ISI.Extensions.Scm
 		public DTOs.GetRootDirectoryResponse GetRootDirectory(DTOs.GetRootDirectoryRequest request)
 		{
 			var response = new DTOs.GetRootDirectoryResponse();
-			
-			response.FullName = GetSourceControlClientApi(request.FullName)?.GetRootDirectory(request)?.FullName;
+
+			var sourceControlClientApi = GetSourceControlClientApi(request.FullName);
+
+			response.SourceControlTypeUuid = sourceControlClientApi?.SourceControlTypeUuid ?? Guid.Empty;
+			response.FullName = sourceControlClientApi?.GetRootDirectory(request)?.FullName;
 
 			return response;
 		}

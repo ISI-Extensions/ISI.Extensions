@@ -91,6 +91,13 @@ namespace ISI.Extensions
 			if (!string.IsNullOrWhiteSpace(request.WorkingDirectory))
 			{
 				processStartInfo.WorkingDirectory = request.WorkingDirectory;
+
+				processStartInfo.WorkingDirectory = System.IO.Path.GetFullPath(processStartInfo.WorkingDirectory);
+
+				while (!string.IsNullOrEmpty(processStartInfo.WorkingDirectory) && !System.IO.Directory.Exists(processStartInfo.WorkingDirectory))
+				{
+					processStartInfo.WorkingDirectory = System.IO.Path.GetDirectoryName(processStartInfo.WorkingDirectory);
+				}
 			}
 
 			using (var process = System.Diagnostics.Process.Start(processStartInfo))

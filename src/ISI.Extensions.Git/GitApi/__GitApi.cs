@@ -49,12 +49,14 @@ namespace ISI.Extensions.Git
 		{
 			var usesGit = false;
 
-			while (!System.IO.Directory.Exists(path))
+			path = System.IO.Path.GetFullPath(path);
+
+			while (!string.IsNullOrEmpty(path) && !System.IO.Directory.Exists(path))
 			{
 				path = System.IO.Path.GetDirectoryName(path);
 			}
 
-			while (!usesGit && !string.IsNullOrEmpty(path))
+			while (!string.IsNullOrEmpty(path) && !usesGit)
 			{
 				usesGit = System.IO.Directory.Exists(System.IO.Path.Combine(path, SccDirectoryName));
 

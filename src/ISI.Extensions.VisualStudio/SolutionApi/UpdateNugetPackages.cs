@@ -275,6 +275,7 @@ namespace ISI.Extensions.VisualStudio
 							{
 								FullName = solutionDirectory,
 								LogMessage = "update nuget packages",
+								AddToLog = request.AddToLog,
 							}).Success;
 #endif
 

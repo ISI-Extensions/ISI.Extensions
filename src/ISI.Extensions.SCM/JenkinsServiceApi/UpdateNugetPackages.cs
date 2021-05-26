@@ -46,8 +46,6 @@ namespace ISI.Extensions.Scm
 				IgnorePackageIds = request.IgnorePackageIds.ToNullCheckedArray(),
 			};
 
-			Logger.LogInformation(uri.Uri.ToString());
-
 			try
 			{
 				var updateNugetPackagesResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.UpdateNugetPackagesRequest, SerializableDTOs.UpdateNugetPackagesResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), updateNugetPackagesRequest, false);

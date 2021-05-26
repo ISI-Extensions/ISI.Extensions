@@ -250,4 +250,10 @@ Task("Default")
 		Information("No target provided. Starting default task");
 	});
 
-RunTarget(target);
+using(GetNugetLock())
+{
+	using(GetSolutionLock())
+	{
+		RunTarget(target);
+	}
+}

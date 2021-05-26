@@ -28,6 +28,7 @@ namespace ISI.Extensions
 			{
 				if (_current == null)
 				{
+					//_current = new ISI.Extensions.DependencyInjection.DefaultServiceProvider();
 					throw new Exception("DependencyInjector is null");
 				}
 

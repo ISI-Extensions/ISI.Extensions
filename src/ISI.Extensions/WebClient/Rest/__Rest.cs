@@ -28,7 +28,7 @@ namespace ISI.Extensions.WebClient
 
 		private static ISI.Extensions.Serialization.ISerialization GetSerialization()
 		{
-			var serialization = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Serialization.ISerialization>();
+			var serialization = ISI.Extensions.ServiceLocator.Current?.GetService<ISI.Extensions.Serialization.ISerialization>();
 
 			if (serialization == null)
 			{

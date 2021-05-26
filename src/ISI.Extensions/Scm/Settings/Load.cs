@@ -36,7 +36,10 @@ namespace ISI.Extensions.Scm
 				}
 			}
 
-			return new ISI.Extensions.Scm.Settings(values, overrideTryGetValue);
+			return new ISI.Extensions.Scm.Settings(values, overrideTryGetValue)
+			{
+				SettingsFullName = settingsFullName,
+			};
 		}
 	}
 }

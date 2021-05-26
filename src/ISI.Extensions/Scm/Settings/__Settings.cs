@@ -40,7 +40,7 @@ namespace ISI.Extensions.Scm
 			public const string NugetRepositoryUrl = nameof(NugetRepositoryUrl);
 			public const string NugetApiKey = nameof(NugetApiKey);
 			public const string NugetCacheDirectory = nameof(NugetCacheDirectory);
-
+			
 			public const string JenkinsServiceUrl = nameof(JenkinsServiceUrl);
 			public const string JenkinsServicePassword = nameof(JenkinsServicePassword);
 			public const string JenkinsUrl = nameof(JenkinsUrl);
@@ -74,6 +74,8 @@ namespace ISI.Extensions.Scm
 					FileStorePassword,
 				};
 		}
+
+		public string SettingsFullName { get; protected set; }
 
 		protected IDictionary<string, string> Values { get; }
 		protected GetSettings_TryGetValue OverrideTryGetValue { get; }

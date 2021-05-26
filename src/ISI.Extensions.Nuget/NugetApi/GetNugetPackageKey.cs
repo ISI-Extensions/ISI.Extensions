@@ -31,34 +31,6 @@ namespace ISI.Extensions.Nuget
 		{
 			var response = new DTOs.GetNugetPackageKeyResponse();
 
-			//var arguments = new List<string>();
-			//arguments.Add("list");
-			//arguments.Add(request.PackageId);
-			//arguments.AddRange(GetConfigFileArguments(request.NugetConfigFullNames));
-
-			//var nugetResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-			//{
-			//	Logger = Logger,
-			//	ProcessExeFullName = "nuget",
-			//	Arguments = arguments.ToArray(),
-			//});
-
-			//if (!nugetResponse.Errored)
-			//{
-			//	var packages = nugetResponse.Output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToNullCheckedArray(line => line.Split(new[] { ' ' }, 2));
-
-			//	var packageVersions = packages.Where(package => (package.Length > 1) && string.Equals(package.FirstOrDefault() ?? string.Empty, request.PackageId, StringComparison.InvariantCultureIgnoreCase)).ToArray();
-
-			//	if (packageVersions.Length == 1)
-			//	{
-			//		response.PackageVersion = packageVersions.First()[1];
-			//	}
-			//	else if (packageVersions.Length > 1)
-			//	{
-			//		response.PackageVersion = packageVersions.OrderByDescending(packageVersion => global::NuGet.Versioning.SemanticVersion.Parse(packageVersion[1])).First()[1];
-			//	}
-			//}
-
 			using (var tempDirectory = new ISI.Extensions.IO.Path.TempDirectory())
 			{
 				var arguments = new List<string>();
@@ -130,38 +102,8 @@ namespace ISI.Extensions.Nuget
 					}
 
 					response.NugetPackageKey.TargetFrameworks = nugetPackageKeyTargetFrameworks.ToArray();
-
-
-					//foreach (var dllPrefix in new[]
-					//{
-					//	"lib\\net48\\",
-					//	"lib\\net4.8\\",
-					//	"lib\\net472\\",
-					//	"lib\\net4.72\\",
-					//	"lib\\net461\\",
-					//	"lib\\net4.61\\",
-					//	"lib\\net46\\",
-					//	"lib\\net4.6\\",
-					//	"lib\\net40\\",
-					//	"lib\\net4.0\\",
-					//	"lib\\net35\\",
-					//	"lib\\net3.5\\",
-					//	"lib\\net20\\",
-					//	"lib\\net2.0\\",
-					//	"lib\\netstandard2.0\\",
-					//})
-					//{
-					//	foreach (var dll in assemblyFullNames)
-					//	{
-					//		if (string.IsNullOrWhiteSpace(response.HintPath) && dll.StartsWith(dllPrefix, StringComparison.InvariantCultureIgnoreCase))
-					//		{
-					//			response.HintPath = string.Format("{0}\\{1}", System.IO.Path.GetFileName(packageFullName), dll.Replace("/", "\\"));
-					//		}
-					//	}
-					//}
 				}
 			}
-
 
 			return response;
 		}

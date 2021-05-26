@@ -26,7 +26,7 @@ namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 		public string UserName { get; set; }
 		public string Password { get; set; }
 		
-		public string FullName { get; set; }
+		public IEnumerable<string> FullNames { get; set; }
 		public string LogMessage { get; set; }
 		public bool UseTortoiseSvn { get; set; } = false;
 

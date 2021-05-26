@@ -12,71 +12,51 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Svn.DataTransferObjects.SvnApi;
+using DTOs = ISI.Extensions.Git.DataTransferObjects.GitApi;
 using SourceControlClientApiDTOs = ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi;
 
-namespace ISI.Extensions.Svn
+namespace ISI.Extensions.Git
 {
-	public partial class SvnApi
+	public partial class GitApi
 	{
-		public DTOs.CommitResponse Commit(DTOs.CommitRequest request)
+		public DTOs.CommitWorkingCopyResponse CommitWorkingCopy(DTOs.CommitWorkingCopyRequest request)
 		{
-			var response = new DTOs.CommitResponse()
+			var response = new DTOs.CommitWorkingCopyResponse();
+			
+			var arguments = new List<string>();
+
+			arguments.Add("commit");
+			arguments.Add("-all");
+			arguments.Add("-m");
+			arguments.Add(string.Format("\"{0}\"", request.LogMessage));
+
+			response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{
-				Success = true,
-			};
+				Logger = new AddToLogLogger(request.AddToLog),
+				ProcessExeFullName = "git",
+				Arguments = arguments.ToArray(),
+				WorkingDirectory = request.FullName,
+			}).Errored;
 
-			var fullNames = request.FullNames.ToNullCheckedArray(System.IO.Path.GetFullPath, NullCheckCollectionResult.Empty);
-
-			using (var tempFile = new ISI.Extensions.IO.Path.TempFile())
+			if (response.Success && request.PushToOrigin)
 			{
-				System.IO.File.WriteAllLines(tempFile.FullName, fullNames);
+				arguments.Clear();
+				arguments.Add("push");
 
-				if (request.UseTortoiseSvn)
+				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
-					var arguments = new List<string>();
-
-					arguments.Add("/command:commit");
-					if (!string.IsNullOrWhiteSpace(request.LogMessage))
-					{
-						arguments.Add(string.Format("/logmsg:\"{0}\"", request.LogMessage));
-					}
-					arguments.Add(string.Format("/pathfile :\"{0}\"", tempFile.FullName));
-					arguments.Add("/closeonend:0");
-
-					response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-					{
-						Logger = new AddToLogLogger(request.AddToLog),
-						ProcessExeFullName = "TortoiseProc",
-						Arguments = arguments.ToArray(),
-					}).Errored;
-				}
-				else
-				{
-					var arguments = new List<string>();
-
-					arguments.Add("commit");
-					if (!string.IsNullOrWhiteSpace(request.LogMessage))
-					{
-						arguments.Add(string.Format("-m \"{0}\"", request.LogMessage));
-					}
-					arguments.Add(string.Format("--targets \"{0}\"", tempFile.FullName));
-					AddCredentials(arguments, request);
-
-					response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-					{
-						Logger = new AddToLogLogger(request.AddToLog),
-						ProcessExeFullName = "svn",
-						Arguments = arguments.ToArray(),
-					}).Errored;
-				}
+					Logger = new AddToLogLogger(request.AddToLog),
+					ProcessExeFullName = "git",
+					Arguments = arguments.ToArray(),
+					WorkingDirectory = request.FullName,
+				}).Errored;
 			}
 
 			return response;

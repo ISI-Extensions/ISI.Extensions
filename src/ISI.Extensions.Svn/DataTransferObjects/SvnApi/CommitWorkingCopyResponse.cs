@@ -19,13 +19,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.Git.DataTransferObjects.GitApi
+namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
-	public partial class UpdateRequest
+	public partial class CommitWorkingCopyResponse
 	{
-		public string FullName { get; set; }
-		public bool IncludeSubModules { get; set; } = true;
-
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; } = description => { };
+		public bool Success { get; set; }
 	}
 }

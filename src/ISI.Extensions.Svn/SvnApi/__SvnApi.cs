@@ -101,7 +101,7 @@ namespace ISI.Extensions.Svn
 		{
 			var response = new SourceControlClientApiDTOs.UpdateWorkingCopyResponse();
 
-			var apiResponse = Update(new DTOs.UpdateRequest()
+			var apiResponse = UpdateWorkingCopy(new DTOs.UpdateWorkingCopyRequest()
 			{
 				FullName = request.FullName,
 				IncludeExternals = request.IncludeExternals,
@@ -117,9 +117,25 @@ namespace ISI.Extensions.Svn
 		{
 			var response = new SourceControlClientApiDTOs.CommitWorkingCopyResponse();
 
-			var apiResponse = Commit(new DTOs.CommitRequest()
+			var apiResponse = CommitWorkingCopy(new DTOs.CommitWorkingCopyRequest()
 			{
 				FullName = request.FullName,
+				LogMessage = request.LogMessage,
+				AddToLog = request.AddToLog,
+			});
+
+			response.Success = apiResponse.Success;
+
+			return response;
+		}
+
+		SourceControlClientApiDTOs.CommitResponse ISI.Extensions.Scm.ISourceControlClientApi.Commit(SourceControlClientApiDTOs.CommitRequest request)
+		{
+			var response = new SourceControlClientApiDTOs.CommitResponse();
+
+			var apiResponse = Commit(new DTOs.CommitRequest()
+			{
+				FullNames = request.FullNames,
 				LogMessage = request.LogMessage,
 				AddToLog = request.AddToLog,
 			});

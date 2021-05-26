@@ -12,45 +12,20 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.IO
+namespace ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi
 {
-	public partial class Path
+	public partial class CommitRequest
 	{
-		public static string GetCommonPath(IEnumerable<string> fileNames)
-		{
-			var fullNames = fileNames.ToNullCheckedArray(System.IO.Path.GetFullPath, NullCheckCollectionResult.Empty);
+		public IEnumerable<string> FullNames { get; set; }
+		public string LogMessage { get; set; }
 
-			var commonPath = System.IO.Path.GetDirectoryName(fullNames.First());
-
-			foreach (var fullName in fullNames.Skip(1))
-			{
-				if (!string.IsNullOrEmpty(commonPath))
-				{
-					var path = System.IO.Path.GetDirectoryName(fullName);
-
-					while (!string.IsNullOrEmpty(commonPath) && !string.IsNullOrEmpty(path) && !string.Equals(commonPath, path, StringComparison.InvariantCultureIgnoreCase))
-					{
-						if (commonPath.Length > path.Length)
-						{
-							commonPath = System.IO.Path.GetDirectoryName(commonPath);
-						}
-						else
-						{
-							path = System.IO.Path.GetDirectoryName(path);
-						}
-					}
-				}
-			}
-
-			return commonPath;
-		}
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; } = description => { };
 	}
 }

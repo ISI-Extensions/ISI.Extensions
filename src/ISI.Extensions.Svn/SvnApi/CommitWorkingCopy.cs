@@ -18,11 +18,56 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Svn.DataTransferObjects.SvnApi;
+using SourceControlClientApiDTOs = ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi;
 
-namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
+namespace ISI.Extensions.Svn
 {
-	public partial class UpdateResponse
+	public partial class SvnApi
 	{
-		public bool Success { get; set; }
+		public DTOs.CommitWorkingCopyResponse CommitWorkingCopy(DTOs.CommitWorkingCopyRequest request)
+		{
+			var response = new DTOs.CommitWorkingCopyResponse();
+
+			if (request.UseTortoiseSvn)
+			{
+				var arguments = new List<string>();
+
+				arguments.Add("/command:commit");
+				arguments.Add(string.Format("/path:\"{0}\"", request.FullName));
+				if (!string.IsNullOrWhiteSpace(request.LogMessage))
+				{
+					arguments.Add(string.Format("/logmsg:\"{0}\"", request.LogMessage));
+				}
+				arguments.Add("/closeonend:0");
+
+				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				{
+					Logger = new AddToLogLogger(request.AddToLog),
+					ProcessExeFullName = "TortoiseProc",
+					Arguments = arguments.ToArray(),
+				}).Errored;
+			}
+			else
+			{
+				var arguments = new List<string>();
+
+				arguments.Add("commit");
+				arguments.Add(string.Format("\"{0}\"", request.FullName));
+				arguments.Add(string.Format("-m \"{0}\"", request.LogMessage));
+				arguments.Add("--include-externals");
+				AddCredentials(arguments, request);
+
+				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				{
+					Logger = new AddToLogLogger(request.AddToLog),
+					ProcessExeFullName = "svn",
+					Arguments = arguments.ToArray(),
+				}).Errored;
+			}
+
+			return response;
+		}
 	}
 }

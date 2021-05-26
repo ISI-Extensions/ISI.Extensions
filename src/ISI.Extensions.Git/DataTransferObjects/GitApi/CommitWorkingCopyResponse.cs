@@ -18,47 +18,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Git.DataTransferObjects.GitApi;
 
-namespace ISI.Extensions.Git
+namespace ISI.Extensions.Git.DataTransferObjects.GitApi
 {
-	public partial class GitApi
+	public partial class CommitWorkingCopyResponse
 	{
-		public DTOs.UpdateResponse Update(DTOs.UpdateRequest request)
-		{
-			var response = new DTOs.UpdateResponse();
-
-			var arguments = new List<string>();
-
-			arguments.Add("pull");
-
-			response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-			{
-				Logger = new AddToLogLogger(request.AddToLog),
-				ProcessExeFullName = "git",
-				Arguments = arguments.ToArray(),
-				WorkingDirectory = request.FullName,
-			}).Errored;
-
-			if (response.Success && request.IncludeSubModules)
-			{
-				arguments.Clear();
-				arguments.Add("submodule");
-				arguments.Add("update");
-				arguments.Add("--recursive");
-				arguments.Add("--remote");
-
-				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-				{
-					Logger = new AddToLogLogger(request.AddToLog),
-					ProcessExeFullName = "git",
-					Arguments = arguments.ToArray(),
-					WorkingDirectory = request.FullName,
-				}).Errored;
-			}
-
-			return response;
-		}
+		public bool Success { get; set; }
 	}
 }

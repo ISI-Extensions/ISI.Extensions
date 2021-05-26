@@ -19,16 +19,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
+namespace ISI.Extensions.Git.DataTransferObjects.GitApi
 {
-	public partial class UpdateRequest : ICredentials
+	public partial class CommitWorkingCopyRequest
 	{
-		public string UserName { get; set; }
-		public string Password { get; set; }
-
 		public string FullName { get; set; }
-		public bool IncludeExternals { get; set; } = true;
-		public bool UseTortoiseSvn { get; set; } = false;
+		public string LogMessage { get; set; }
+		public bool PushToOrigin { get; set; } = true;
 
 		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; } = description => { };
 	}

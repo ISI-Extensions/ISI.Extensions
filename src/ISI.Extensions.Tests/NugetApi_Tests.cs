@@ -154,11 +154,29 @@ namespace ISI.Extensions.Tests
 			{
 				SolutionFullNames = new[]
 				{
-					@"F:\ISI\Clients\TFS\Tristar.Scheduler",
+					//@"F:\ISI\Clients\SitePro\SitePro.Extensions",
+					//@"F:\ISI\Clients\SitePro\SitePro.Services",
+					@"F:\ISI\Clients\SitePro\SitePro.Connect.ServiceApplication",
+					@"F:\ISI\Clients\SitePro\SitePro.Connect.Api.WebApplication",
 				},
-				CommitWorkingCopyToSourceControl = false,
+				//CommitWorkingCopyToSourceControl = false,
 				IgnorePackageIds = new[]
 				{
+					"ISI.CMS.T4CMS.FileSystem",
+					"ISI.CMS.T4CMS.SqlServer",
+					"ISI.Libraries.T4LocalContent",
+					"ISI.Libraries.T4LocalContent.Embedded",
+					"ISI.Libraries.T4LocalContent.Resources",
+					"ISI.Libraries.T4LocalContent.VirtualFiles",
+					"ISI.Libraries.T4LocalContent.Web",
+					"ISI.Libraries.T4LocalContent.WebPortableArea",
+					"ISI.Extensions.T4LocalContent",
+					"ISI.Extensions.T4LocalContent.Embedded",
+					"ISI.Extensions.T4LocalContent.Resources",
+					"ISI.Extensions.T4LocalContent.VirtualFiles",
+					"ISI.Extensions.T4LocalContent.Web",
+					"ISI.Extensions.T4LocalContent.WebPortableArea",
+					"jQuery",
 					"AccumailGoldConnections.NETToolkit",
 					"nsoftware.InPay",
 					"nsoftware.InPtech",

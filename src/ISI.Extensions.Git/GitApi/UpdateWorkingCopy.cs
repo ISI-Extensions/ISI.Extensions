@@ -19,52 +19,42 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Svn.DataTransferObjects.SvnApi;
+using DTOs = ISI.Extensions.Git.DataTransferObjects.GitApi;
 
-namespace ISI.Extensions.Svn
+namespace ISI.Extensions.Git
 {
-	public partial class SvnApi
+	public partial class GitApi
 	{
-		public DTOs.UpdateResponse Update(DTOs.UpdateRequest request)
+		public DTOs.UpdateWorkingCopyResponse UpdateWorkingCopy(DTOs.UpdateWorkingCopyRequest request)
 		{
-			var response = new DTOs.UpdateResponse();
+			var response = new DTOs.UpdateWorkingCopyResponse();
 
-			if (request.UseTortoiseSvn)
+			var arguments = new List<string>();
+
+			arguments.Add("pull");
+
+			response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{
-				var arguments = new List<string>();
+				Logger = new AddToLogLogger(request.AddToLog),
+				ProcessExeFullName = "git",
+				Arguments = arguments.ToArray(),
+				WorkingDirectory = request.FullName,
+			}).Errored;
 
-				arguments.Add("/command:update");
-				arguments.Add(string.Format("/path:\"{0}\"", request.FullName));
-				if (request.IncludeExternals)
-				{
-					arguments.Add("/includeexternals");
-				}
-				arguments.Add("/closeonend:2");
-
-				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-				{
-					Logger = new AddToLogLogger(request.AddToLog),
-					ProcessExeFullName = "TortoiseProc",
-					Arguments = arguments.ToArray(),
-				}).Errored;
-			}
-			else
+			if (response.Success && request.IncludeSubModules)
 			{
-				var arguments = new List<string>();
-
+				arguments.Clear();
+				arguments.Add("submodule");
 				arguments.Add("update");
-				arguments.Add(string.Format("\"{0}\"", request.FullName));
-				if (!request.IncludeExternals)
-				{
-					arguments.Add("--ignore-externals");
-				}
-				AddCredentials(arguments, request);
+				arguments.Add("--recursive");
+				arguments.Add("--remote");
 
 				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
 					Logger = new AddToLogLogger(request.AddToLog),
-					ProcessExeFullName = "svn",
+					ProcessExeFullName = "git",
 					Arguments = arguments.ToArray(),
+					WorkingDirectory = request.FullName,
 				}).Errored;
 			}
 

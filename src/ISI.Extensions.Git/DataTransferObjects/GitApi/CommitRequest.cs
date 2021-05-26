@@ -23,7 +23,7 @@ namespace ISI.Extensions.Git.DataTransferObjects.GitApi
 {
 	public partial class CommitRequest
 	{
-		public string FullName { get; set; }
+		public IEnumerable<string> FullNames { get; set; }
 		public string LogMessage { get; set; }
 		public bool PushToOrigin { get; set; } = true;
 

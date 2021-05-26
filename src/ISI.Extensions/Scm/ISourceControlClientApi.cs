@@ -28,6 +28,7 @@ namespace ISI.Extensions.Scm
 		DTOs.GetRootDirectoryResponse GetRootDirectory(DTOs.GetRootDirectoryRequest request);
 		DTOs.CheckOutResponse CheckOut(DTOs.CheckOutRequest request);
 		DTOs.UpdateWorkingCopyResponse UpdateWorkingCopy(DTOs.UpdateWorkingCopyRequest request);
+		DTOs.CommitResponse Commit(DTOs.CommitRequest request);
 		DTOs.CommitWorkingCopyResponse CommitWorkingCopy(DTOs.CommitWorkingCopyRequest request);
 	}
 }

@@ -23,5 +23,6 @@ namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
 	public partial class AddResponse
 	{
+		public bool Success { get; set; }
 	}
 }

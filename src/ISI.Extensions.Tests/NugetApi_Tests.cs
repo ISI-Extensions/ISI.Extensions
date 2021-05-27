@@ -154,12 +154,16 @@ namespace ISI.Extensions.Tests
 			{
 				SolutionFullNames = new[]
 				{
+					//@"F:\ISI\ISI.FrameWork",
 					//@"F:\ISI\Clients\SitePro\SitePro.Extensions",
 					//@"F:\ISI\Clients\SitePro\SitePro.Services",
-					@"F:\ISI\Clients\SitePro\SitePro.Connect.ServiceApplication",
-					@"F:\ISI\Clients\SitePro\SitePro.Connect.Api.WebApplication",
+					//@"F:\ISI\Clients\SitePro\SitePro.Connect.ServiceApplication",
+					//@"F:\ISI\Clients\SitePro\SitePro.Connect.Api.WebApplication",
+					//@"F:\ISI\Internal Projects\ISI.Desktop",
+					//@"F:\ISI\Internal Projects\ISI.WebApplication",
+					@"F:\ISI\ISI.FrameWork",
 				},
-				//CommitWorkingCopyToSourceControl = false,
+				CommitWorkingCopyToSourceControl = false,
 				IgnorePackageIds = new[]
 				{
 					"ISI.CMS.T4CMS.FileSystem",
@@ -176,6 +180,7 @@ namespace ISI.Extensions.Tests
 					"ISI.Extensions.T4LocalContent.VirtualFiles",
 					"ISI.Extensions.T4LocalContent.Web",
 					"ISI.Extensions.T4LocalContent.WebPortableArea",
+					"Microsoft.ClearScript",
 					"jQuery",
 					"AccumailGoldConnections.NETToolkit",
 					"nsoftware.InPay",

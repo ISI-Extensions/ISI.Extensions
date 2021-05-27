@@ -19,56 +19,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Svn.DataTransferObjects.SvnApi;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi;
 
-namespace ISI.Extensions.Svn
+namespace ISI.Extensions.Scm
 {
-	public partial class SvnApi
+	public partial class SourceControlClientApi
 	{
 		public DTOs.AddResponse Add(DTOs.AddRequest request)
 		{
-			var response = new DTOs.AddResponse()
-			{
-				Success = true,
-			};
-
-			var fullNames = request.FullNames.ToNullCheckedArray(System.IO.Path.GetFullPath, NullCheckCollectionResult.Empty);
-
-			using (var tempFile = new ISI.Extensions.IO.Path.TempFile())
-			{
-				System.IO.File.WriteAllLines(tempFile.FullName, fullNames);
-
-				if (request.UseTortoiseSvn)
-				{
-					var arguments = new List<string>();
-
-					arguments.Add("/command:add");
-					arguments.Add(string.Format("/pathfile :\"{0}\"", tempFile.FullName));
-					arguments.Add("/closeonend:0");
-
-					ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-					{
-						Logger = new NullLogger(),
-						ProcessExeFullName = "TortoiseProc",
-						Arguments = arguments.ToArray(),
-					});
-				}
-				else
-				{
-					var arguments = new List<string>();
-
-					arguments.Add("add");
-					arguments.Add(string.Format("--targets \"{0}\"", tempFile.FullName));
-					arguments.Add("--parents");
-
-					ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-					{
-						Logger = new NullLogger(),
-						ProcessExeFullName = "svn",
-						Arguments = arguments.ToArray(),
-					});
-				}
-			}
+			var response = new DTOs.AddResponse();
+			
+			response.Success = GetSourceControlClientApi(request.FullNames.First())?.Add(request)?.Success ?? false;
 
 			return response;
 		}

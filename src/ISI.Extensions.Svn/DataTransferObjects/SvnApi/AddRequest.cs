@@ -23,7 +23,9 @@ namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
 	public partial class AddRequest
 	{
-		public string FullName { get; set; }
+		public IEnumerable<string> FullNames { get; set; }
 		public bool UseTortoiseSvn { get; set; } = false;
+
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; } = description => { };
 	}
 }

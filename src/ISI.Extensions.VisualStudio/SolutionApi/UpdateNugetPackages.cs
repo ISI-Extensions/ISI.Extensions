@@ -286,27 +286,28 @@ namespace ISI.Extensions.VisualStudio
 					}
 
 					logger.LogInformation(string.Format("Updated Nuget Packages in {0}", solutionDetails.Name));
+				}
 
-					if (!string.IsNullOrWhiteSpace(solutionDetails.ExecuteBuildScriptTargetAfterUpdateNugetPackages))
+				if (!string.IsNullOrWhiteSpace(solutionDetails.ExecuteBuildScriptTargetAfterUpdateNugetPackages))
+				{
+					if (BuildScriptApi.TryGetBuildScript(solutionDetails.SolutionDirectory, out var buildScriptFullName))
 					{
-						if (BuildScriptApi.TryGetBuildScript(solutionDetails.SolutionDirectory, out var buildScriptFullName))
+						logger.LogInformation(string.Format("Building {0}", solutionDetails.Name));
+						logger.LogInformation(string.Format("  BuildScriptFullName: {0}", buildScriptFullName));
+
+						if (!BuildScriptApi.ExecuteBuildTarget(new ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi.ExecuteBuildTargetRequest()
 						{
-							logger.LogInformation(string.Format("Building {0}", solutionDetails.Name));
-
-							if (!BuildScriptApi.ExecuteBuildTarget(new ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi.ExecuteBuildTargetRequest()
-							{
-								BuildScriptFullName = buildScriptFullName,
-								Target = solutionDetails.ExecuteBuildScriptTargetAfterUpdateNugetPackages,
-								AddToLog = request.AddToLog,
-							}).Success)
-							{
-								var exception = new Exception(string.Format("Error Building \"{0}\"", solutionDetails.RootSourceDirectory));
-								logger.LogError(exception.Message);
-								throw exception;
-							}
-
-							logger.LogInformation(string.Format("Built {0}", solutionDetails.Name));
+							BuildScriptFullName = buildScriptFullName,
+							Target = solutionDetails.ExecuteBuildScriptTargetAfterUpdateNugetPackages,
+							AddToLog = request.AddToLog,
+						}).Success)
+						{
+							var exception = new Exception(string.Format("Error Building \"{0}\"", solutionDetails.RootSourceDirectory));
+							logger.LogError(exception.Message);
+							throw exception;
 						}
+
+						logger.LogInformation(string.Format("Built {0}", solutionDetails.Name));
 					}
 				}
 			}

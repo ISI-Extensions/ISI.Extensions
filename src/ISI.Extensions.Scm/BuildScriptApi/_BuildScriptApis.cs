@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi;
 
 namespace ISI.Extensions.Scm
@@ -31,6 +32,8 @@ namespace ISI.Extensions.Scm
 		private IBuildScriptApi[] GetBuildScriptApis()
 		{
 			var buildScriptApiTypes = ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementationTypes(typeof(IBuildScriptApi));
+
+			Logger.LogInformation(string.Format("buildScriptApiTypes Count: {0}", buildScriptApiTypes.Length));
 
 			return buildScriptApiTypes.ToNullCheckedArray(buildScriptApiType => Activator.CreateInstance(buildScriptApiType, new object[] {Logger}) as IBuildScriptApi, NullCheckCollectionResult.Empty);
 		}

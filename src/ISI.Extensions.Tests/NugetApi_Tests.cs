@@ -211,7 +211,7 @@ namespace ISI.Extensions.Tests
 				@"F:\ISI\Clients\TFS\Tristar.DocumentStorage",
 				@"F:\ISI\Clients\TFS\Tristar.SecureData",
 				},
-				CommitWorkingCopyToSourceControl = false,
+				CommitWorkingCopyToSourceControl = true,
 				IgnorePackageIds = new[]
 				{
 					"ISI.CMS.T4CMS.FileSystem",

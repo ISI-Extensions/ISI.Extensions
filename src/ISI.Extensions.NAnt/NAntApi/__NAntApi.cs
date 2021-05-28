@@ -23,14 +23,74 @@ using DTOs = ISI.Extensions.NAnt.DataTransferObjects.NAntApi;
 
 namespace ISI.Extensions.NAnt
 {
-	public partial class NAntApi
+	[BuildScriptApi]
+	public partial class NAntApi : ISI.Extensions.Scm.IBuildScriptApi
 	{
+		public const string BuildScriptTypeUuid = "78d5b3e2-8ce9-46c1-b06c-a257a85adb0f";
+		public const string BuildScriptFileName = "default.build";
+
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 
 		public NAntApi(
 			Microsoft.Extensions.Logging.ILogger logger = null)
 		{
 			Logger = logger ?? new ConsoleLogger();
+		}
+	
+		Guid ISI.Extensions.Scm.IBuildScriptApi.BuildScriptTypeUuid => BuildScriptTypeUuid.ToGuid();
+
+		bool ISI.Extensions.Scm.IBuildScriptApi.TryGetBuildScript(string solutionDirectory, out string buildScriptFullName)
+		{
+			if (string.Equals(System.IO.Path.GetFileName(solutionDirectory), BuildScriptFileName, StringComparison.CurrentCultureIgnoreCase))
+			{
+				buildScriptFullName = solutionDirectory;
+
+				return true;
+			}
+
+			var possibleBuildScriptFullNames = System.IO.Directory.GetFiles(solutionDirectory, BuildScriptFileName, System.IO.SearchOption.AllDirectories).OrderBy(fileName => fileName.Length);
+
+			buildScriptFullName = possibleBuildScriptFullNames.NullCheckedFirstOrDefault();
+
+			return !string.IsNullOrWhiteSpace(buildScriptFullName);
+		}
+
+		ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi.IsBuildScriptFileResponse ISI.Extensions.Scm.IBuildScriptApi.IsBuildScriptFile(ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi.IsBuildScriptFileRequest request)
+		{
+			var response = new ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi.IsBuildScriptFileResponse();
+
+			response.IsBuildFile = IsBuildScriptFile(new DTOs.IsBuildScriptFileRequest()
+			{
+				BuildScriptFullName = request.BuildScriptFullName,
+			}).IsBuildFile;
+
+			return response;
+		}
+
+		ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi.GetTargetKeysFromBuildScriptResponse ISI.Extensions.Scm.IBuildScriptApi.GetTargetKeysFromBuildScript(ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi.GetTargetKeysFromBuildScriptRequest request)
+		{
+			var response = new ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi.GetTargetKeysFromBuildScriptResponse();
+
+			response.Targets = GetTargetKeysFromBuildScript(new DTOs.GetTargetKeysFromBuildScriptRequest()
+			{
+				BuildScriptFullName = request.BuildScriptFullName,
+			}).Targets;
+
+			return response;
+		}
+
+		ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi.ExecuteBuildTargetResponse ISI.Extensions.Scm.IBuildScriptApi.ExecuteBuildTarget(ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi.ExecuteBuildTargetRequest request)
+		{
+			var response = new ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi.ExecuteBuildTargetResponse();
+
+			response.Success = ExecuteBuildTarget(new DTOs.ExecuteBuildTargetRequest()
+			{
+				BuildScriptFullName = request.BuildScriptFullName,
+				Target = request.Target,
+				AddToLog = request.AddToLog,
+			}).Success;
+
+			return response;
 		}
 	}
 }

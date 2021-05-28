@@ -18,11 +18,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi;
 
-namespace ISI.Extensions.NAnt.DataTransferObjects.NAntApi
+namespace ISI.Extensions.Scm
 {
-	public partial class IsBuildFileRequest
+	public partial class BuildScriptApi
 	{
-		public string BuildScriptFullName { get; set; }
+		public bool TryGetBuildScript(string solutionDirectory, out string buildScriptFullName)
+		{
+			foreach (var buildScriptApi in BuildScriptApis)
+			{
+				if (buildScriptApi.TryGetBuildScript(solutionDirectory, out buildScriptFullName))
+				{
+					return true;
+				}
+			}
+
+			buildScriptFullName = null;
+
+			return false;
+		}
 	}
 }

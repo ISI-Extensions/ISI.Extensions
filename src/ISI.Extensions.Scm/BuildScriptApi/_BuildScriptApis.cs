@@ -19,35 +19,46 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Cake.DataTransferObjects.CakeApi;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi;
 
-namespace ISI.Extensions.Cake
+namespace ISI.Extensions.Scm
 {
-	public partial class CakeApi
+	public partial class BuildScriptApi
 	{
-		public DTOs.ExecuteBuildTargetResponse ExecuteBuildTarget(DTOs.ExecuteBuildTargetRequest request)
+		private static IBuildScriptApi[] _buildScriptApis = null;
+		protected IBuildScriptApi[] BuildScriptApis => _buildScriptApis ??= GetBuildScriptApis();
+
+		private IBuildScriptApi[] GetBuildScriptApis()
 		{
-			var logger = new AddToLogLogger(request.AddToLog, Logger);
+			var buildScriptApiTypes = ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementationTypes(typeof(IBuildScriptApi));
 
-			var response = new DTOs.ExecuteBuildTargetResponse();
+			return buildScriptApiTypes.ToNullCheckedArray(buildScriptApiType => Activator.CreateInstance(buildScriptApiType, new object[] {Logger}) as IBuildScriptApi, NullCheckCollectionResult.Empty);
+		}
 
-			var arguments = new List<string>();
-
-			arguments.Add("cake");
-			if (!string.IsNullOrWhiteSpace(request.Target))
+		private IBuildScriptApi GetBuildScriptApi(string solutionDirectory)
+		{
+			foreach (var buildScriptApi in BuildScriptApis)
 			{
-				arguments.Add(string.Format("--Target={0}", request.Target));
+				if (buildScriptApi.TryGetBuildScript(solutionDirectory, out var _))
+				{
+					return buildScriptApi;
+				}
 			}
 
-			response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-			{
-				Logger = logger,
-				ProcessExeFullName = "dotnet",
-				Arguments = arguments.ToArray(),
-				WorkingDirectory = System.IO.Path.GetDirectoryName(request.BuildScriptFullName),
-			}).Errored;
+			return null;
+		}
 
-			return response;
+		private IBuildScriptApi GetBuildScriptApi(Guid buildScriptTypeUuid)
+		{
+			foreach (var buildScriptApi in BuildScriptApis)
+			{
+				if (buildScriptApi.BuildScriptTypeUuid == buildScriptTypeUuid)
+				{
+					return buildScriptApi;
+				}
+			}
+
+			return null;
 		}
 	}
 }

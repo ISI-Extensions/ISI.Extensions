@@ -19,33 +19,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Cake.DataTransferObjects.CakeApi;
+using DTOs = ISI.Extensions.NAnt.DataTransferObjects.NAntApi;
 
-namespace ISI.Extensions.Cake
+namespace ISI.Extensions.NAnt
 {
-	public partial class CakeApi
+	public partial class NAntApi
 	{
-		public DTOs.ExecuteBuildTargetResponse ExecuteBuildTarget(DTOs.ExecuteBuildTargetRequest request)
+		public DTOs.IsBuildScriptFileResponse IsBuildScriptFile(DTOs.IsBuildScriptFileRequest request)
 		{
-			var logger = new AddToLogLogger(request.AddToLog, Logger);
-
-			var response = new DTOs.ExecuteBuildTargetResponse();
-
-			var arguments = new List<string>();
-
-			arguments.Add("cake");
-			if (!string.IsNullOrWhiteSpace(request.Target))
+			var response = new DTOs.IsBuildScriptFileResponse();
+			
+			if (string.Equals(System.IO.Path.GetFileName(request.BuildScriptFullName), BuildScriptFileName, StringComparison.CurrentCultureIgnoreCase))
 			{
-				arguments.Add(string.Format("--Target={0}", request.Target));
+				response.IsBuildFile = GetTargetKeysFromBuildScript(new DTOs.GetTargetKeysFromBuildScriptRequest()
+				{
+					BuildScriptFullName = request.BuildScriptFullName,
+				}).Targets.NullCheckedAny();
 			}
-
-			response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-			{
-				Logger = logger,
-				ProcessExeFullName = "dotnet",
-				Arguments = arguments.ToArray(),
-				WorkingDirectory = System.IO.Path.GetDirectoryName(request.BuildScriptFullName),
-			}).Errored;
 
 			return response;
 		}

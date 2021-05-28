@@ -27,6 +27,8 @@ namespace ISI.Extensions.NAnt
 	{
 		public DTOs.ExecuteBuildTargetResponse ExecuteBuildTarget(DTOs.ExecuteBuildTargetRequest request)
 		{
+			var logger = new AddToLogLogger(request.AddToLog, Logger);
+
 			var response = new DTOs.ExecuteBuildTargetResponse();
 
 			var nantFullName = GetNAntExecutable(request.BuildScriptFullName);
@@ -44,7 +46,7 @@ namespace ISI.Extensions.NAnt
 
 				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
-					Logger = new NullLogger(),
+					Logger = logger,
 					ProcessExeFullName = GetNAntExecutable(request.BuildScriptFullName),
 					Arguments = arguments.ToArray(),
 					WorkingDirectory = System.IO.Path.GetDirectoryName(request.BuildScriptFullName),

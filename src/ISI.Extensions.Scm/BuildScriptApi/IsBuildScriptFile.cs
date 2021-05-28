@@ -19,23 +19,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.NAnt.DataTransferObjects.NAntApi;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi;
 
-namespace ISI.Extensions.NAnt
+namespace ISI.Extensions.Scm
 {
-	public partial class NAntApi
+	public partial class BuildScriptApi
 	{
-		public DTOs.IsBuildFileResponse IsBuildFile(DTOs.IsBuildFileRequest request)
+		public DTOs.IsBuildScriptFileResponse IsBuildScriptFile(DTOs.IsBuildScriptFileRequest request)
 		{
-			var response = new DTOs.IsBuildFileResponse();
+			var response = new DTOs.IsBuildScriptFileResponse();
 			
-			if (string.Equals(System.IO.Path.GetFileName(request.BuildScriptFullName), "default.build", StringComparison.CurrentCultureIgnoreCase))
-			{
-				response.IsBuildFile = GetTargetKeysFromBuildScript(new DTOs.GetTargetKeysFromBuildScriptRequest()
-				{
-					BuildScriptFullName = request.BuildScriptFullName,
-				}).Targets.NullCheckedAny();
-			}
+			response.IsBuildFile = GetBuildScriptApi(request.BuildScriptFullName)?.IsBuildScriptFile(request)?.IsBuildFile ?? false;
 
 			return response;
 		}

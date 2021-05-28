@@ -18,36 +18,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Cake.DataTransferObjects.CakeApi;
 
-namespace ISI.Extensions.Cake
+namespace ISI.Extensions.Cake.DataTransferObjects.CakeApi
 {
-	public partial class CakeApi
+	public partial class IsBuildScriptFileResponse
 	{
-		public DTOs.ExecuteBuildTargetResponse ExecuteBuildTarget(DTOs.ExecuteBuildTargetRequest request)
-		{
-			var logger = new AddToLogLogger(request.AddToLog, Logger);
-
-			var response = new DTOs.ExecuteBuildTargetResponse();
-
-			var arguments = new List<string>();
-
-			arguments.Add("cake");
-			if (!string.IsNullOrWhiteSpace(request.Target))
-			{
-				arguments.Add(string.Format("--Target={0}", request.Target));
-			}
-
-			response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-			{
-				Logger = logger,
-				ProcessExeFullName = "dotnet",
-				Arguments = arguments.ToArray(),
-				WorkingDirectory = System.IO.Path.GetDirectoryName(request.BuildScriptFullName),
-			}).Errored;
-
-			return response;
-		}
+		public bool IsBuildFile { get; set; }
 	}
 }

@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,29 +15,20 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Cake.DataTransferObjects.CakeApi;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Cake
+namespace ISI.Extensions.VisualStudio.SerializableModels
 {
-	public partial class CakeApi
+	[DataContract]
+	public class SolutionDetails
 	{
-		public DTOs.IsBuildFileResponse IsBuildFile(DTOs.IsBuildFileRequest request)
-		{
-			var response = new DTOs.IsBuildFileResponse();
+		public const string FileName = ".solutionDetails.json";
 
-			if (string.Equals(System.IO.Path.GetFileName(request.BuildScriptFullName), "build.cake", StringComparison.CurrentCultureIgnoreCase))
-			{
-				response.IsBuildFile = GetTargetKeysFromBuildScript(new DTOs.GetTargetKeysFromBuildScriptRequest()
-				{
-					BuildScriptFullName = request.BuildScriptFullName,
-				}).Targets.NullCheckedAny();
-			}
+		[DataMember(Name = "updateNugetPackagesPriority", EmitDefaultValue = false)]
+		public int UpdateNugetPackagesPriority { get; set; } = int.MaxValue;
 
-			return response;
-		}
+		[DataMember(Name = "executeBuildScriptTargetAfterUpdateNugetPackages", EmitDefaultValue = false)]
+		public string ExecuteBuildScriptTargetAfterUpdateNugetPackages { get; set; }
 	}
 }

@@ -36,233 +36,223 @@ namespace ISI.Extensions.VisualStudio
 
 			var nugetPackageKeys = request.NugetPackageKeys ?? new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
 
-			var solutionFullNames = request.SolutionFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty);
-			for (var solutionIndex = 0; solutionIndex < solutionFullNames.Length; solutionIndex++)
+			var solutionDetailsSet = request.SolutionFullNames.ToNullCheckedArray(GetSolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
+
+			if (request.UpdateWorkingCopyFromSourceControl)
 			{
-				var solutionFullName = solutionFullNames[solutionIndex];
-				if (System.IO.Directory.Exists(solutionFullName))
+				foreach (var solutionDetails in solutionDetailsSet)
 				{
-					var possibleSolutionFullNames = System.IO.Directory.GetFiles(solutionFullName, "*.sln", System.IO.SearchOption.AllDirectories);
-
-					if (possibleSolutionFullNames.Length == 1)
+					if (!SourceControlClientApi.UpdateWorkingCopy(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.UpdateWorkingCopyRequest()
 					{
-						solutionFullName = possibleSolutionFullNames.First();
-					}
-					else if (possibleSolutionFullNames.Length > 1)
+						FullName = solutionDetails.RootSourceDirectory,
+						IncludeExternals = true,
+						AddToLog = request.AddToLog,
+					}).Success)
 					{
-						var possibleSolutionName = System.IO.Path.GetFileName(solutionFullName);
-
-						var possibleSolutionFullName = possibleSolutionFullNames.FirstOrDefault(possibleSolutionFullName => string.Equals(System.IO.Path.GetFileNameWithoutExtension(possibleSolutionFullName), possibleSolutionName, StringComparison.InvariantCultureIgnoreCase));
-
-						if (!string.IsNullOrWhiteSpace(possibleSolutionFullName))
-						{
-							solutionFullName = possibleSolutionFullName;
-						}
-						else
-						{
-							throw new Exception(string.Format("Cannot determine which solution to update \"{0}\"", solutionFullNames[solutionIndex]));
-						}
-					}
-					else
-					{
-						throw new Exception(string.Format("Cannot find a solution to update \"{0}\"", solutionFullNames[solutionIndex]));
+						var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
+						logger.LogError(exception.Message);
+						throw exception;
 					}
 				}
 
-				var solutionName = System.IO.Path.GetFileNameWithoutExtension(solutionFullName);
-				var solutionSourceDirectory = System.IO.Path.GetDirectoryName(solutionFullName);
-				var solutionDirectory = SourceControlClientApi.GetRootDirectory(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.GetRootDirectoryRequest()
-				{
-					FullName = solutionSourceDirectory,
-				}).FullName;
+				solutionDetailsSet = request.SolutionFullNames.ToNullCheckedArray(GetSolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
+			}
 
+			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpdateNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.Name, StringComparer.InvariantCultureIgnoreCase))
+			{
 				using (GetSolutionLock(new DTOs.GetSolutionLockRequest()
 				{
-					SolutionFullName = solutionDirectory,
+					SolutionFullName = solutionDetails.SolutionFullName,
 					AddToLog = request.AddToLog,
 				}).Lock)
 				{
-					logger.LogInformation(string.Format("Updating {0}", solutionName));
+					logger.LogInformation(string.Format("Updating {0}", solutionDetails.Name));
 
 					var dirtyFileNames = new HashSet<string>();
 
-					var success = true;
-
-					if (success && request.UpdateWorkingCopyFromSourceControl)
+					if (request.UpdateWorkingCopyFromSourceControl)
 					{
-						success = SourceControlClientApi.UpdateWorkingCopy(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.UpdateWorkingCopyRequest()
+						if (!SourceControlClientApi.UpdateWorkingCopy(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.UpdateWorkingCopyRequest()
 						{
-							FullName = solutionDirectory,
+							FullName = solutionDetails.RootSourceDirectory,
 							IncludeExternals = true,
 							AddToLog = request.AddToLog,
-						}).Success;
-
-						if (!success)
+						}).Success)
 						{
-							logger.LogError(string.Format("Error updating \"{0}\"", solutionDirectory));
+							var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
+							logger.LogError(exception.Message);
+							throw exception;
 						}
 					}
 
-					var nugetConfigFullNames = NugetApi.GetNugetConfigFullNames(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetConfigFullNamesRequest()
+					try
 					{
-						WorkingCopyDirectory = solutionSourceDirectory,
-					}).NugetConfigFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty);
+						var nugetConfigFullNames = NugetApi.GetNugetConfigFullNames(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetConfigFullNamesRequest()
+						{
+							WorkingCopyDirectory = solutionDetails.SolutionDirectory,
+						}).NugetConfigFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 
-					bool tryGetNugetPackageKey(string id, out ISI.Extensions.Nuget.NugetPackageKey key)
-					{
-						if (nugetPackageKeys.TryGetValue(id, out key))
+						bool tryGetNugetPackageKey(string id, out ISI.Extensions.Nuget.NugetPackageKey key)
 						{
-							return true;
-						}
-
-						if (ignorePackageIds.Contains(id))
-						{
-							return false;
-						}
-
-						using (NugetApi.GetNugetLock(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetLockRequest()
-						{
-							AddToLog = request.AddToLog,
-						}).Lock)
-						{
-							var getLatestPackageVersionResponse = NugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+							if (nugetPackageKeys.TryGetValue(id, out key))
 							{
-								PackageId = id,
-								NugetConfigFullNames = nugetConfigFullNames,
-							});
-
-							if (getLatestPackageVersionResponse.NugetPackageKey != null)
-							{
-								nugetPackageKeys.TryAdd(getLatestPackageVersionResponse.NugetPackageKey);
+								return true;
 							}
+
+							if (ignorePackageIds.Contains(id))
+							{
+								return false;
+							}
+
+							using (NugetApi.GetNugetLock(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetLockRequest()
+							{
+								AddToLog = request.AddToLog,
+							}).Lock)
+							{
+								var getLatestPackageVersionResponse = NugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+								{
+									PackageId = id,
+									NugetConfigFullNames = nugetConfigFullNames,
+								});
+
+								if (getLatestPackageVersionResponse.NugetPackageKey != null)
+								{
+									nugetPackageKeys.TryAdd(getLatestPackageVersionResponse.NugetPackageKey);
+								}
+							}
+
+							return nugetPackageKeys.TryGetValue(id, out key);
 						}
 
-						return nugetPackageKeys.TryGetValue(id, out key);
-					}
+						var csProjFullNames = new List<string>();
 
-					var csProjFullNames = new List<string>();
-
-					{
-						var solutionLines = System.IO.File.ReadAllLines(solutionFullName);
-
-						foreach (var solutionLine in solutionLines)
 						{
-							if (solutionLine.Trim().StartsWith("Project(", StringComparison.InvariantCultureIgnoreCase))
+							var solutionLines = System.IO.File.ReadAllLines(solutionDetails.SolutionFullName);
+
+							foreach (var solutionLine in solutionLines)
 							{
-								var pieces = solutionLine.Split(new[] { '=' }).ToList();
-
-								pieces = pieces[1].Split(new[] { '"' }).Select(piece => piece.Trim()).ToList();
-
-								pieces.RemoveAll(piece => string.Equals(piece, ","));
-								pieces.RemoveAll(string.IsNullOrWhiteSpace);
-
-								if (pieces[1].EndsWith(".csproj", StringComparison.InvariantCultureIgnoreCase))
+								if (solutionLine.Trim().StartsWith("Project(", StringComparison.InvariantCultureIgnoreCase))
 								{
-									csProjFullNames.Add(System.IO.Path.Combine(solutionSourceDirectory, pieces[1]));
+									var pieces = solutionLine.Split(new[] { '=' }).ToList();
+
+									pieces = pieces[1].Split(new[] { '"' }).Select(piece => piece.Trim()).ToList();
+
+									pieces.RemoveAll(piece => string.Equals(piece, ","));
+									pieces.RemoveAll(string.IsNullOrWhiteSpace);
+
+									if (pieces[1].EndsWith(".csproj", StringComparison.InvariantCultureIgnoreCase))
+									{
+										csProjFullNames.Add(System.IO.Path.Combine(solutionDetails.SolutionDirectory, pieces[1]));
+									}
 								}
 							}
 						}
-					}
 
-					logger.LogInformation("Updating Projects");
+						logger.LogInformation("Updating Projects");
 
-					foreach (var csProjFullName in csProjFullNames.OrderBy(f => f, StringComparer.InvariantCultureIgnoreCase))
-					{
-						logger.LogInformation(string.Format("  {0}", System.IO.Path.GetFileNameWithoutExtension(csProjFullName)));
-
-						var projectDirectory = System.IO.Path.GetDirectoryName(csProjFullName);
-
-						var packagesConfigFullName = System.IO.Path.Combine(projectDirectory, "packages.config");
-
-						if (System.IO.File.Exists(packagesConfigFullName))
+						foreach (var csProjFullName in csProjFullNames.OrderBy(f => f, StringComparer.InvariantCultureIgnoreCase))
 						{
-							var packagesConfig = System.IO.File.ReadAllText(packagesConfigFullName);
+							logger.LogInformation(string.Format("  {0}", System.IO.Path.GetFileNameWithoutExtension(csProjFullName)));
 
-							try
+							var projectDirectory = System.IO.Path.GetDirectoryName(csProjFullName);
+
+							var packagesConfigFullName = System.IO.Path.Combine(projectDirectory, "packages.config");
+
+							if (System.IO.File.Exists(packagesConfigFullName))
 							{
-								var newPackagesConfig = NugetApi.UpdateNugetPackageVersionsInPackagesConfig(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.UpdateNugetPackageVersionsInPackagesConfigRequest()
-								{
-									PackagesConfigXml = packagesConfig,
-									TryGetNugetPackageKey = tryGetNugetPackageKey,
-								}).PackagesConfigXml;
+								var packagesConfig = System.IO.File.ReadAllText(packagesConfigFullName);
 
-								if (HasChanges(packagesConfig, newPackagesConfig))
+								try
 								{
-									System.IO.File.WriteAllText(packagesConfigFullName, newPackagesConfig);
-									dirtyFileNames.Add(packagesConfigFullName);
+									var newPackagesConfig = NugetApi.UpdateNugetPackageVersionsInPackagesConfig(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.UpdateNugetPackageVersionsInPackagesConfigRequest()
+									{
+										PackagesConfigXml = packagesConfig,
+										TryGetNugetPackageKey = tryGetNugetPackageKey,
+									}).PackagesConfigXml;
+
+									if (HasChanges(packagesConfig, newPackagesConfig))
+									{
+										System.IO.File.WriteAllText(packagesConfigFullName, newPackagesConfig);
+										dirtyFileNames.Add(packagesConfigFullName);
+									}
+								}
+								catch (Exception exception)
+								{
+									throw new Exception(string.Format("File: {0}", packagesConfigFullName), exception);
 								}
 							}
-							catch (Exception exception)
-							{
-								throw new Exception(string.Format("File: {0}", packagesConfigFullName), exception);
-							}
-						}
 
-						var csProj = System.IO.File.ReadAllText(csProjFullName);
-
-						try
-						{
-							var newCsProj = NugetApi.UpdateNugetPackageVersionsInCsProj(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.UpdateNugetPackageVersionsInCsProjRequest()
-							{
-								CsProjXml = csProj,
-								TryGetNugetPackageKey = tryGetNugetPackageKey,
-								ConvertToPackageReferences = false,
-							}).CsProjXml;
-
-							if (HasChanges(csProj, newCsProj))
-							{
-								System.IO.File.WriteAllText(csProjFullName, newCsProj);
-								dirtyFileNames.Add(csProjFullName);
-							}
-						}
-						catch (Exception exception)
-						{
-							throw new Exception(string.Format("File: {0}", csProjFullName), exception);
-						}
-
-						var appConfigFileName = System.IO.Path.Combine(projectDirectory, "web.config");
-						if (!System.IO.File.Exists(appConfigFileName))
-						{
-							appConfigFileName = System.IO.Path.Combine(projectDirectory, "app.config");
-
-							if (!System.IO.File.Exists(appConfigFileName))
-							{
-								appConfigFileName = null;
-							}
-						}
-
-						if (System.IO.File.Exists(appConfigFileName))
-						{
-							var appConfigXml = System.IO.File.ReadAllText(appConfigFileName);
+							var csProj = System.IO.File.ReadAllText(csProjFullName);
 
 							try
 							{
-								var newAppConfigXml = NugetApi.UpdateAssemblyRedirects(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.UpdateAssemblyRedirectsRequest()
+								var newCsProj = NugetApi.UpdateNugetPackageVersionsInCsProj(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.UpdateNugetPackageVersionsInCsProjRequest()
 								{
 									CsProjXml = csProj,
-									AppConfigXml = appConfigXml,
-									NugetPackageKeys = nugetPackageKeys,
-								}).AppConfigXml;
+									TryGetNugetPackageKey = tryGetNugetPackageKey,
+									ConvertToPackageReferences = false,
+								}).CsProjXml;
 
-								if (HasChanges(appConfigXml, newAppConfigXml))
+								if (HasChanges(csProj, newCsProj))
 								{
-									System.IO.File.WriteAllText(appConfigFileName, newAppConfigXml);
-									dirtyFileNames.Add(appConfigFileName);
+									System.IO.File.WriteAllText(csProjFullName, newCsProj);
+									dirtyFileNames.Add(csProjFullName);
 								}
 							}
 							catch (Exception exception)
 							{
-								throw new Exception(string.Format("File: {0}", appConfigFileName), exception);
+								throw new Exception(string.Format("File: {0}", csProjFullName), exception);
+							}
+
+							var appConfigFileName = System.IO.Path.Combine(projectDirectory, "web.config");
+							if (!System.IO.File.Exists(appConfigFileName))
+							{
+								appConfigFileName = System.IO.Path.Combine(projectDirectory, "app.config");
+
+								if (!System.IO.File.Exists(appConfigFileName))
+								{
+									appConfigFileName = null;
+								}
+							}
+
+							if (System.IO.File.Exists(appConfigFileName))
+							{
+								var appConfigXml = System.IO.File.ReadAllText(appConfigFileName);
+
+								try
+								{
+									var newAppConfigXml = NugetApi.UpdateAssemblyRedirects(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.UpdateAssemblyRedirectsRequest()
+									{
+										CsProjXml = csProj,
+										AppConfigXml = appConfigXml,
+										NugetPackageKeys = nugetPackageKeys,
+									}).AppConfigXml;
+
+									if (HasChanges(appConfigXml, newAppConfigXml))
+									{
+										System.IO.File.WriteAllText(appConfigFileName, newAppConfigXml);
+										dirtyFileNames.Add(appConfigFileName);
+									}
+								}
+								catch (Exception exception)
+								{
+									throw new Exception(string.Format("File: {0}", appConfigFileName), exception);
+								}
 							}
 						}
 					}
+					catch (Exception exception)
+					{
+						logger.LogError(exception.Message);
+						throw;
+					}
 
-					if (success && dirtyFileNames.Any() && request.CommitWorkingCopyToSourceControl)
+					if (dirtyFileNames.Any() && request.CommitWorkingCopyToSourceControl)
 					{
 						try
 						{
-							var resharperCacheFullName = System.IO.Path.Combine(solutionSourceDirectory, "_ReSharper.Caches");
+							var resharperCacheFullName = System.IO.Path.Combine(solutionDetails.SolutionDirectory, "_ReSharper.Caches");
 							if (System.IO.Directory.Exists(resharperCacheFullName))
 							{
 								System.IO.Directory.Delete(resharperCacheFullName, true);
@@ -270,25 +260,41 @@ namespace ISI.Extensions.VisualStudio
 						}
 						catch (Exception exception)
 						{
-							logger.LogError(string.Format("Error deleting Resharper Cache \"{0}\"", solutionDirectory));
+							logger.LogError(string.Format("Error deleting Resharper Cache \"{0}\"", solutionDetails.SolutionDirectory));
 						}
 
-//#if !DEBUG
-							success = SourceControlClientApi.Commit(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.CommitRequest()
-							{
-								FullNames = dirtyFileNames,
-								LogMessage = "update nuget packages",
-								AddToLog = request.AddToLog,
-							}).Success;
-//#endif
-
-						if (!success)
+						if(!SourceControlClientApi.Commit(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.CommitRequest()
 						{
-							logger.LogError(string.Format("Error commiting \"{0}\"", solutionDirectory));
+							FullNames = dirtyFileNames,
+							LogMessage = "update nuget packages",
+							AddToLog = request.AddToLog,
+						}).Success)
+						{
+							var exception = new Exception(string.Format("Error commiting \"{0}\"", solutionDetails.RootSourceDirectory));
+							logger.LogError(exception.Message);
+							throw exception;
 						}
 					}
 
-					logger.LogInformation(string.Format("Updated {0}", solutionName));
+					logger.LogInformation(string.Format("Updated {0}", solutionDetails.Name));
+
+					if (!string.IsNullOrWhiteSpace(solutionDetails.ExecuteBuildScriptTargetAfterUpdateNugetPackages))
+					{
+						if (BuildScriptApi.TryGetBuildScript(solutionDetails.SolutionDirectory, out var buildScriptFullName))
+						{
+							if(!BuildScriptApi.ExecuteBuildTarget(new ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi.ExecuteBuildTargetRequest()
+							{
+								BuildScriptFullName = buildScriptFullName,
+								Target = solutionDetails.ExecuteBuildScriptTargetAfterUpdateNugetPackages,
+								AddToLog = request.AddToLog,
+							}).Success)
+							{
+								var exception = new Exception(string.Format("Error Building \"{0}\"", solutionDetails.RootSourceDirectory));
+								logger.LogError(exception.Message);
+								throw exception;
+							}
+						}
+					}
 				}
 			}
 

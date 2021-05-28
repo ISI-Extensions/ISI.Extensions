@@ -27,17 +27,23 @@ namespace ISI.Extensions.VisualStudio
 	public partial class SolutionApi 
 	{
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
+		protected ISI.Extensions.Serialization.ISerialization Serialization { get; }
+		protected ISI.Extensions.Scm.BuildScriptApi BuildScriptApi { get; }
 		protected ISI.Extensions.Scm.SourceControlClientApi SourceControlClientApi { get; }
 		protected ISI.Extensions.Nuget.NugetApi NugetApi { get; }
 
 		public SolutionApi(
 			Microsoft.Extensions.Logging.ILogger logger,
+			ISI.Extensions.Serialization.ISerialization serialization,
+			ISI.Extensions.Scm.BuildScriptApi buildScriptApi,
 			ISI.Extensions.Scm.SourceControlClientApi sourceControlClientApi,
 			ISI.Extensions.Nuget.NugetApi nugetApi)
 		{
 			Logger = logger;
-			NugetApi = nugetApi;
+			Serialization = serialization;
+			BuildScriptApi = buildScriptApi;
 			SourceControlClientApi = sourceControlClientApi;
+			NugetApi = nugetApi;
 		}
 	}
 }

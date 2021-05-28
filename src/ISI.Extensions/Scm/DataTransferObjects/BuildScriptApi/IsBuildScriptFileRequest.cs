@@ -19,10 +19,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.Cake.DataTransferObjects.CakeApi
+namespace ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi
 {
-	public partial class IsBuildFileResponse
+	public partial class IsBuildScriptFileRequest
 	{
-		public bool IsBuildFile { get; set; }
+		public string BuildScriptFullName { get; set; }
 	}
 }

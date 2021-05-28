@@ -73,9 +73,10 @@ namespace ISI.Extensions.TypeLocator
 
 					if (assemblyFileNames.Contains(assemblyFileName))
 					{
-						types.AddRange(assembly.GetTypes());
 						assemblyFileNames.Remove(assemblyFileName);
 					}
+
+					types.AddRange(assembly.GetTypes());
 				}
 				catch
 				{

@@ -40,18 +40,27 @@ namespace ISI.Extensions.VisualStudio
 
 			if (request.UpdateWorkingCopyFromSourceControl)
 			{
-				foreach (var solutionDetails in solutionDetailsSet)
+				foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.Name, StringComparer.InvariantCultureIgnoreCase))
 				{
-					if (!SourceControlClientApi.UpdateWorkingCopy(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.UpdateWorkingCopyRequest()
+					using (GetSolutionLock(new DTOs.GetSolutionLockRequest()
 					{
-						FullName = solutionDetails.RootSourceDirectory,
-						IncludeExternals = true,
+						SolutionFullName = solutionDetails.SolutionFullName,
 						AddToLog = request.AddToLog,
-					}).Success)
+					}).Lock)
 					{
-						var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
-						logger.LogError(exception.Message);
-						throw exception;
+						logger.LogInformation(string.Format("Updating {0} from Source Control", solutionDetails.Name));
+
+						if (!SourceControlClientApi.UpdateWorkingCopy(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.UpdateWorkingCopyRequest()
+						{
+							FullName = solutionDetails.RootSourceDirectory,
+							IncludeExternals = true,
+							AddToLog = request.AddToLog,
+						}).Success)
+						{
+							var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
+							logger.LogError(exception.Message);
+							throw exception;
+						}
 					}
 				}
 
@@ -66,7 +75,7 @@ namespace ISI.Extensions.VisualStudio
 					AddToLog = request.AddToLog,
 				}).Lock)
 				{
-					logger.LogInformation(string.Format("Updating {0}", solutionDetails.Name));
+					logger.LogInformation(string.Format("Updating {0} from Source Control", solutionDetails.Name));
 
 					var dirtyFileNames = new HashSet<string>();
 
@@ -263,7 +272,7 @@ namespace ISI.Extensions.VisualStudio
 							logger.LogError(string.Format("Error deleting Resharper Cache \"{0}\"", solutionDetails.SolutionDirectory));
 						}
 
-						if(!SourceControlClientApi.Commit(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.CommitRequest()
+						if (!SourceControlClientApi.Commit(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.CommitRequest()
 						{
 							FullNames = dirtyFileNames,
 							LogMessage = "update nuget packages",
@@ -276,13 +285,15 @@ namespace ISI.Extensions.VisualStudio
 						}
 					}
 
-					logger.LogInformation(string.Format("Updated {0}", solutionDetails.Name));
+					logger.LogInformation(string.Format("Updated Nuget Packages in {0}", solutionDetails.Name));
 
 					if (!string.IsNullOrWhiteSpace(solutionDetails.ExecuteBuildScriptTargetAfterUpdateNugetPackages))
 					{
 						if (BuildScriptApi.TryGetBuildScript(solutionDetails.SolutionDirectory, out var buildScriptFullName))
 						{
-							if(!BuildScriptApi.ExecuteBuildTarget(new ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi.ExecuteBuildTargetRequest()
+							logger.LogInformation(string.Format("Building {0}", solutionDetails.Name));
+
+							if (!BuildScriptApi.ExecuteBuildTarget(new ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi.ExecuteBuildTargetRequest()
 							{
 								BuildScriptFullName = buildScriptFullName,
 								Target = solutionDetails.ExecuteBuildScriptTargetAfterUpdateNugetPackages,
@@ -293,6 +304,8 @@ namespace ISI.Extensions.VisualStudio
 								logger.LogError(exception.Message);
 								throw exception;
 							}
+
+							logger.LogInformation(string.Format("Built {0}", solutionDetails.Name));
 						}
 					}
 				}

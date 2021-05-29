@@ -30,7 +30,10 @@ namespace ISI.Extensions.Jenkins
 			public static readonly string GetCSRF = @"/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,"":"",//crumb)";
 			public static readonly string GetNodeJson = "/api/json";
 			public static readonly string GetNodeXml = "/api/xml";
-			public static readonly string JobConfigXml = "/job/{jobId}/config.xml";
+			public static readonly string GetJobConfigXml = "/job/{jobId}/config.xml";
+			public static readonly string GetJobStatusXml = "/job/{jobId}/api/xml";
+			public static readonly string EnableJob = "/job/{jobId}/enable";
+			public static readonly string DisableJob = "/job/{jobId}/disable";
 			public static readonly string DeleteJob = "/job/{jobId}/doDelete";
 			public static readonly string CreateJobConfigXml = "/createItem?name={jobId}";
 			public static readonly string GetJobDataJson = "/job/{jobId}/api/json";

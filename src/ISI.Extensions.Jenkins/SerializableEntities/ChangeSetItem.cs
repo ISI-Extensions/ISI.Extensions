@@ -62,7 +62,9 @@ namespace ISI.Extensions.Jenkins.SerializableEntities
 		[DataMember(Name = "commitId", EmitDefaultValue = false)]
 		public string CommitId { get; set; }
 
-		[DataMember(Name = "timestamp", EmitDefaultValue = false)]
+		[DataMember(Name = "timeStamp", EmitDefaultValue = false)]
+		public string __TimeStamp { get => TimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => TimeStamp = value.ToDateTimeNullable(); }
+		[IgnoreDataMember]
 		public DateTime? TimeStamp { get; set; }
 
 		[DataMember(Name = "author", EmitDefaultValue = false)]

@@ -19,30 +19,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi;
 
 namespace ISI.Extensions.Jenkins
 {
 	public partial class JenkinsApi
 	{
-		public DTOs.GetJobConfigXmlResponse GetJobConfigXml(DTOs.GetJobConfigXmlRequest request)
+		public DTOs.IsJobEnabledResponse IsJobEnabled(DTOs.IsJobEnabledRequest request)
 		{
-			var response = new DTOs.GetJobConfigXmlResponse();
+			var response = new DTOs.IsJobEnabledResponse();
 			
-			var uri = new UriBuilder(request.JenkinsUrl);
-			uri.SetPathAndQueryString(UrlPathFormat.GetJobConfigXml.Replace(new Dictionary<string, string>()
+			var jobStatusXml = GetJobStatusXml(new DTOs.GetJobStatusXmlRequest()
 			{
-				{"{jobId}", request.JobId}
-			}, StringComparer.InvariantCultureIgnoreCase));
+				JenkinsUrl = request.JenkinsUrl,
+				UserName = request.UserName,
+				ApiToken = request.ApiToken,
+				SslProtocols = request.SslProtocols,
+				JobId = request.JobId,
+			})?.StatusXml ?? string.Empty;
 
-			try
+			if (!string.IsNullOrWhiteSpace(jobStatusXml))
 			{
-				response.ConfigXml = ISI.Extensions.WebClient.Rest.ExecuteTextGet(uri.Uri, GetHeaders(request), true, request.SslProtocols);
-			}
-			catch (Exception exception)
-			{
-				Logger.LogError(exception, "Get JobConfigXml Failed");
+				response.IsEnabled = true;
+
+				const string disabledToken = "<disabled>";
+				var disabledIndex = jobStatusXml.IndexOf(disabledToken, StringComparison.InvariantCultureIgnoreCase);
+				if (disabledIndex >= 0)
+				{
+					response.IsEnabled = !jobStatusXml.Substring(disabledIndex + disabledToken.Length).Split(new[] {'<'}).NullCheckedFirstOrDefault().ToBoolean();
+				}
 			}
 
 			return response;

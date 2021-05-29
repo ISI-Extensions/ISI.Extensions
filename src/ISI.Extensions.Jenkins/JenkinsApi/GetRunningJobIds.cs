@@ -12,38 +12,43 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi;
 
 namespace ISI.Extensions.Jenkins
 {
 	public partial class JenkinsApi
 	{
-		public DTOs.GetJobConfigXmlResponse GetJobConfigXml(DTOs.GetJobConfigXmlRequest request)
+		public DTOs.GetRunningJobIdsResponse GetRunningJobIds(DTOs.GetRunningJobIdsRequest request)
 		{
-			var response = new DTOs.GetJobConfigXmlResponse();
-			
-			var uri = new UriBuilder(request.JenkinsUrl);
-			uri.SetPathAndQueryString(UrlPathFormat.GetJobConfigXml.Replace(new Dictionary<string, string>()
-			{
-				{"{jobId}", request.JobId}
-			}, StringComparer.InvariantCultureIgnoreCase));
+			var response = new DTOs.GetRunningJobIdsResponse();
 
-			try
+			var node = GetNode(new DTOs.GetNodeRequest()
 			{
-				response.ConfigXml = ISI.Extensions.WebClient.Rest.ExecuteTextGet(uri.Uri, GetHeaders(request), true, request.SslProtocols);
-			}
-			catch (Exception exception)
+				JenkinsUrl = request.JenkinsUrl,
+				UserName = request.UserName,
+				ApiToken = request.ApiToken,
+				SslProtocols = request.SslProtocols,
+				Tree = "jobs[name,lastBuild[building,timestamp]]",
+			}).Node;
+
+			var jobIds = new List<string>();
+
+			foreach (var job in node?.Jobs.ToNullCheckedArray(NullCheckCollectionResult.Empty))
 			{
-				Logger.LogError(exception, "Get JobConfigXml Failed");
+				if (job.LastBuild?.IsBuilding ?? false)
+				{
+					jobIds.Add(job.Name);
+				}
 			}
+
+			response.JobIds = jobIds.ToArray();
 
 			return response;
 		}

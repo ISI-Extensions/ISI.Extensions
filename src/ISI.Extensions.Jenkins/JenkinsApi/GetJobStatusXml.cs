@@ -26,19 +26,19 @@ namespace ISI.Extensions.Jenkins
 {
 	public partial class JenkinsApi
 	{
-		public DTOs.GetJobConfigXmlResponse GetJobConfigXml(DTOs.GetJobConfigXmlRequest request)
+		public DTOs.GetJobStatusXmlResponse GetJobStatusXml(DTOs.GetJobStatusXmlRequest request)
 		{
-			var response = new DTOs.GetJobConfigXmlResponse();
+			var response = new DTOs.GetJobStatusXmlResponse();
 			
 			var uri = new UriBuilder(request.JenkinsUrl);
-			uri.SetPathAndQueryString(UrlPathFormat.GetJobConfigXml.Replace(new Dictionary<string, string>()
+			uri.SetPathAndQueryString(UrlPathFormat.GetJobStatusXml.Replace(new Dictionary<string, string>()
 			{
 				{"{jobId}", request.JobId}
 			}, StringComparer.InvariantCultureIgnoreCase));
 
 			try
 			{
-				response.ConfigXml = ISI.Extensions.WebClient.Rest.ExecuteTextGet(uri.Uri, GetHeaders(request), true, request.SslProtocols);
+				response.StatusXml = ISI.Extensions.WebClient.Rest.ExecuteTextGet(uri.Uri, GetHeaders(request), true, request.SslProtocols);
 			}
 			catch (Exception exception)
 			{

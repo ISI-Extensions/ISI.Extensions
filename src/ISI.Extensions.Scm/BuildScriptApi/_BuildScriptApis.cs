@@ -33,8 +33,6 @@ namespace ISI.Extensions.Scm
 		{
 			var buildScriptApiTypes = ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementationTypes(typeof(IBuildScriptApi));
 
-			Logger.LogInformation(string.Format("buildScriptApiTypes Count: {0}", buildScriptApiTypes.Length));
-
 			return buildScriptApiTypes.ToNullCheckedArray(buildScriptApiType => Activator.CreateInstance(buildScriptApiType, new object[] {Logger}) as IBuildScriptApi, NullCheckCollectionResult.Empty);
 		}
 

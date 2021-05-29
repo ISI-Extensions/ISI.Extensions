@@ -43,7 +43,7 @@ namespace ISI.Extensions.Jenkins
 
 			if (jobExists)
 			{
-				uri.SetPathAndQueryString(UrlPathFormat.JobConfigXml.Replace(new Dictionary<string, string>()
+				uri.SetPathAndQueryString(UrlPathFormat.GetJobConfigXml.Replace(new Dictionary<string, string>()
 				{
 					{"{jobId}", request.JobId}
 				}, StringComparer.InvariantCultureIgnoreCase));

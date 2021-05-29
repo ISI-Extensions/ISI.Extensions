@@ -26,25 +26,35 @@ namespace ISI.Extensions.Jenkins
 {
 	public partial class JenkinsApi
 	{
-		public DTOs.GetJobConfigXmlResponse GetJobConfigXml(DTOs.GetJobConfigXmlRequest request)
+		public DTOs.DisableJobResponse DisableJob(DTOs.DisableJobRequest request)
 		{
-			var response = new DTOs.GetJobConfigXmlResponse();
+			var response = new DTOs.DisableJobResponse();
 			
 			var uri = new UriBuilder(request.JenkinsUrl);
-			uri.SetPathAndQueryString(UrlPathFormat.GetJobConfigXml.Replace(new Dictionary<string, string>()
+			uri.SetPathAndQueryString(UrlPathFormat.DisableJob.Replace(new Dictionary<string, string>()
 			{
 				{"{jobId}", request.JobId}
 			}, StringComparer.InvariantCultureIgnoreCase));
 
+			var headers = GetHeaders(request);
+
+			var csrfHeader = GetCSRFTokenHeader(request);
+			if (csrfHeader != null)
+			{
+				headers.Add(csrfHeader);
+			}
+
+			headers.Add("Content-Type", "text/xml");
+
 			try
 			{
-				response.ConfigXml = ISI.Extensions.WebClient.Rest.ExecuteTextGet(uri.Uri, GetHeaders(request), true, request.SslProtocols);
+				ISI.Extensions.WebClient.Rest.ExecutePost(uri.Uri, headers, true, request.SslProtocols);
 			}
 			catch (Exception exception)
 			{
-				Logger.LogError(exception, "Get JobConfigXml Failed");
+				Logger.LogError(exception, "Quiet Down Failed");
 			}
-
+			
 			return response;
 		}
 	}

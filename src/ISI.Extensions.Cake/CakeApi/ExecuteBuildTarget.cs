@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Cake.DataTransferObjects.CakeApi;
 
 namespace ISI.Extensions.Cake
@@ -38,6 +39,8 @@ namespace ISI.Extensions.Cake
 			{
 				arguments.Add(string.Format("--Target={0}", request.Target));
 			}
+
+			logger.LogInformation(string.Format("dotnet {0}", string.Join(" ", arguments)));
 
 			response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{

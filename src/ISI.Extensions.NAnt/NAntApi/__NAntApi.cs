@@ -41,18 +41,32 @@ namespace ISI.Extensions.NAnt
 
 		bool ISI.Extensions.Scm.IBuildScriptApi.TryGetBuildScript(string solutionDirectory, out string buildScriptFullName)
 		{
-			if (string.Equals(System.IO.Path.GetFileName(solutionDirectory), BuildScriptFileName, StringComparison.CurrentCultureIgnoreCase))
+			try
 			{
-				buildScriptFullName = solutionDirectory;
+				if (string.Equals(System.IO.Path.GetFileName(solutionDirectory), BuildScriptFileName, StringComparison.CurrentCultureIgnoreCase))
+				{
+					buildScriptFullName = solutionDirectory;
 
-				return true;
+					return true;
+				}
+
+				if (System.IO.File.Exists(solutionDirectory))
+				{
+					solutionDirectory = System.IO.Path.GetDirectoryName(solutionDirectory);
+				}
+
+				var possibleBuildScriptFullNames = System.IO.Directory.GetFiles(solutionDirectory, BuildScriptFileName, System.IO.SearchOption.AllDirectories).OrderBy(fileName => fileName.Length);
+
+				buildScriptFullName = possibleBuildScriptFullNames.NullCheckedFirstOrDefault();
+
+				return !string.IsNullOrWhiteSpace(buildScriptFullName);
 			}
+			catch
+			{
+				buildScriptFullName = null;
 
-			var possibleBuildScriptFullNames = System.IO.Directory.GetFiles(solutionDirectory, BuildScriptFileName, System.IO.SearchOption.AllDirectories).OrderBy(fileName => fileName.Length);
-
-			buildScriptFullName = possibleBuildScriptFullNames.NullCheckedFirstOrDefault();
-
-			return !string.IsNullOrWhiteSpace(buildScriptFullName);
+				return false;
+			}
 		}
 
 		ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi.IsBuildScriptFileResponse ISI.Extensions.Scm.IBuildScriptApi.IsBuildScriptFile(ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi.IsBuildScriptFileRequest request)

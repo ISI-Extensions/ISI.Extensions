@@ -32,6 +32,7 @@
 		<ProjectReference Include="..\ISI.Extensions.Cake\ISI.Extensions.Cake.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.DependencyInjection.Iunq\ISI.Extensions.DependencyInjection.Iunq.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Git\ISI.Extensions.Git.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Jenkins\ISI.Extensions.Jenkins.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.JsonSerialization.Newtonsoft\ISI.Extensions.JsonSerialization.Newtonsoft.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.NAnt\ISI.Extensions.NAnt.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Nuget\ISI.Extensions.Nuget.csproj" />

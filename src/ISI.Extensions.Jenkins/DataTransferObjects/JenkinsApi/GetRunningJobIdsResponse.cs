@@ -18,34 +18,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using Microsoft.Extensions.Logging;
-using DTOs = ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi;
 
-namespace ISI.Extensions.Jenkins
+namespace ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi
 {
-	public partial class JenkinsApi
+	public partial class GetRunningJobIdsResponse
 	{
-		public DTOs.GetJobConfigXmlResponse GetJobConfigXml(DTOs.GetJobConfigXmlRequest request)
-		{
-			var response = new DTOs.GetJobConfigXmlResponse();
-			
-			var uri = new UriBuilder(request.JenkinsUrl);
-			uri.SetPathAndQueryString(UrlPathFormat.GetJobConfigXml.Replace(new Dictionary<string, string>()
-			{
-				{"{jobId}", request.JobId}
-			}, StringComparer.InvariantCultureIgnoreCase));
-
-			try
-			{
-				response.ConfigXml = ISI.Extensions.WebClient.Rest.ExecuteTextGet(uri.Uri, GetHeaders(request), true, request.SslProtocols);
-			}
-			catch (Exception exception)
-			{
-				Logger.LogError(exception, "Get JobConfigXml Failed");
-			}
-
-			return response;
-		}
+		public string[] JobIds { get; set; }
 	}
 }

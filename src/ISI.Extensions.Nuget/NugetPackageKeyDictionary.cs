@@ -68,6 +68,11 @@ namespace ISI.Extensions.Nuget
 			}
 		}
 
+		public void Clear()
+		{
+			_nugetPackageKeys.Clear();
+		}
+
 		public IEnumerator<NugetPackageKey> GetEnumerator() => _nugetPackageKeys.Values.GetEnumerator();
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();

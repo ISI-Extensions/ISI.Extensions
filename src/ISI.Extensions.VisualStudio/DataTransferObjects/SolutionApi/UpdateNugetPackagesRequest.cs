@@ -21,6 +21,8 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 {
+	public delegate IDisposable GetBuildServiceSolutionLock(string solutionFullName, ISI.Extensions.StatusTrackers.AddToLog addToLog);
+
 	public partial class UpdateNugetPackagesRequest
 	{
 		public bool UpdateWorkingCopyFromSourceControl { get; set; } = true;
@@ -33,5 +35,7 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 		public ISI.Extensions.Nuget.NugetPackageKeyDictionary NugetPackageKeys { get; set; }
 
 		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; } = description => { };
+
+		public GetBuildServiceSolutionLock GetBuildServiceSolutionLock { get; set; } = null;
 	}
 }

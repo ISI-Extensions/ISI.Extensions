@@ -19,33 +19,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi;
 using Microsoft.Extensions.Logging;
-using DTOs = ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi;
 
-namespace ISI.Extensions.Jenkins
+namespace ISI.Extensions.VisualStudio
 {
-	public partial class JenkinsApi
+	public partial class SolutionApi
 	{
-		public DTOs.GetJobConfigXmlResponse GetJobConfigXml(DTOs.GetJobConfigXmlRequest request)
+		private class PhonyBuildServiceSolutionLock : IDisposable
 		{
-			var response = new DTOs.GetJobConfigXmlResponse();
-			
-			var uri = new UriBuilder(request.JenkinsUrl);
-			uri.SetPathAndQueryString(UrlPathFormat.GetJobConfigXml.Replace(new Dictionary<string, string>()
+			public void Dispose()
 			{
-				{"{jobId}", request.JobId}
-			}, StringComparer.InvariantCultureIgnoreCase));
-
-			try
-			{
-				response.ConfigXml = ISI.Extensions.WebClient.Rest.ExecuteTextGet(uri.Uri, GetHeaders(request), true, request.SslProtocols);
+				
 			}
-			catch (Exception exception)
-			{
-				Logger.LogError(exception, "Get JobConfigXml Failed");
-			}
-
-			return response;
 		}
 	}
 }

@@ -20,40 +20,57 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using DTOs = ISI.Extensions.Svn.DataTransferObjects.SvnApi;
-using SourceControlClientApiDTOs = ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi;
 
 namespace ISI.Extensions.Svn
 {
 	public partial class SvnApi
 	{
-		public DTOs.CheckOutResponse CheckOut(DTOs.CheckOutRequest request)
+		/*
+svn checkout <url_of_big_dir> <target> --depth empty
+cd <target>
+svn up <file_you_want>
+		*/
+		public DTOs.CheckOutSingleFileResponse CheckOutSingleFile(DTOs.CheckOutSingleFileRequest request)
 		{
-			var response = new DTOs.CheckOutResponse();
-			
-			if (request.UseTortoiseSvn)
+			var response = new DTOs.CheckOutSingleFileResponse();
+
+			if (!System.IO.Directory.Exists(request.TargetFullName))
 			{
-				var arguments = new List<string>();
-
-				arguments.Add("/command:checkout");
-				arguments.Add(string.Format("/url:\"{0}\"", request.SourceUrl));
-				arguments.Add(string.Format("/path:\"{0}\"", request.TargetFullName));
-				arguments.Add("/closeonend:0");
-
-				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-				{
-					Logger = new AddToLogLogger(request.AddToLog),
-					ProcessExeFullName = "TortoiseProc",
-					Arguments = arguments.ToArray(),
-				}).Errored;
+				System.IO.Directory.CreateDirectory(request.TargetFullName);
 			}
-			else
-			{
-				var arguments = new List<string>();
 
-				arguments.Add("checkout");
-				arguments.Add(string.Format("\"{0}\"", request.SourceUrl));
-				arguments.Add(string.Format("\"{0}\"", request.TargetFullName));
-				arguments.Add("--include-externals");
+			var lastPathSeparatorIndex = request.SourceUrl.LastIndexOf("/", StringComparison.InvariantCultureIgnoreCase);
+			if (lastPathSeparatorIndex < 0)
+			{
+				lastPathSeparatorIndex = request.SourceUrl.LastIndexOf("\\", StringComparison.InvariantCultureIgnoreCase);
+			}
+
+			var sourceUrl = request.SourceUrl.Substring(0, lastPathSeparatorIndex);
+			var fileName = request.SourceUrl.Substring(lastPathSeparatorIndex + 1);
+
+			var targetFullName = request.TargetFullName.TrimEnd(fileName, StringComparison.InvariantCultureIgnoreCase);
+
+			var arguments = new List<string>();
+
+			arguments.Add("checkout");
+			arguments.Add(string.Format("\"{0}\"", sourceUrl));
+			arguments.Add(string.Format("\"{0}\"", targetFullName));
+			arguments.Add("--depth empty");
+			AddCredentials(arguments, request);
+
+			response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+			{
+				Logger = new AddToLogLogger(request.AddToLog),
+				ProcessExeFullName = "svn",
+				Arguments = arguments.ToArray(),
+			}).Errored;
+
+			if (response.Success)
+			{
+				arguments.Clear();
+
+				arguments.Add("update");
+				arguments.Add(string.Format("\"{0}\"", fileName));
 				AddCredentials(arguments, request);
 
 				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
@@ -61,9 +78,10 @@ namespace ISI.Extensions.Svn
 					Logger = new AddToLogLogger(request.AddToLog),
 					ProcessExeFullName = "svn",
 					Arguments = arguments.ToArray(),
+					WorkingDirectory = targetFullName,
 				}).Errored;
 			}
-
+			
 			return response;
 		}
 	}

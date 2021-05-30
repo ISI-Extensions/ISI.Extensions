@@ -44,24 +44,27 @@ namespace ISI.Extensions.VisualStudio
 			{
 				foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.Name, StringComparer.InvariantCultureIgnoreCase))
 				{
-					using (GetSolutionLock(new DTOs.GetSolutionLockRequest()
+					using (getBuildServiceSolutionLock(solutionDetails.SolutionFullName, request.AddToLog))
 					{
-						SolutionFullName = solutionDetails.SolutionFullName,
-						AddToLog = request.AddToLog,
-					}).Lock)
-					{
-						logger.LogInformation(string.Format("Updating {0} from Source Control", solutionDetails.Name));
-
-						if (!SourceControlClientApi.UpdateWorkingCopy(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.UpdateWorkingCopyRequest()
+						using (GetSolutionLock(new DTOs.GetSolutionLockRequest()
 						{
-							FullName = solutionDetails.RootSourceDirectory,
-							IncludeExternals = true,
+							SolutionFullName = solutionDetails.SolutionFullName,
 							AddToLog = request.AddToLog,
-						}).Success)
+						}).Lock)
 						{
-							var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
-							logger.LogError(exception.Message);
-							throw exception;
+							logger.LogInformation(string.Format("Updating {0} from Source Control", solutionDetails.Name));
+
+							if (!SourceControlClientApi.UpdateWorkingCopy(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.UpdateWorkingCopyRequest()
+							{
+								FullName = solutionDetails.RootSourceDirectory,
+								IncludeExternals = true,
+								AddToLog = request.AddToLog,
+							}).Success)
+							{
+								var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
+								logger.LogError(exception.Message);
+								throw exception;
+							}
 						}
 					}
 				}

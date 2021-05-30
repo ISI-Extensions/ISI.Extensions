@@ -19,51 +19,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Svn.DataTransferObjects.SvnApi;
+using DTOs = ISI.Extensions.Git.DataTransferObjects.GitApi;
 using SourceControlClientApiDTOs = ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi;
 
-namespace ISI.Extensions.Svn
+namespace ISI.Extensions.Git
 {
-	public partial class SvnApi
+	public partial class GitApi
 	{
-		public DTOs.CheckOutResponse CheckOut(DTOs.CheckOutRequest request)
+		public DTOs.ListResponse List(DTOs.ListRequest request)
 		{
-			var response = new DTOs.CheckOutResponse();
+			var response = new DTOs.ListResponse();
+
+			throw new NotImplementedException();
 			
-			if (request.UseTortoiseSvn)
-			{
-				var arguments = new List<string>();
-
-				arguments.Add("/command:checkout");
-				arguments.Add(string.Format("/url:\"{0}\"", request.SourceUrl));
-				arguments.Add(string.Format("/path:\"{0}\"", request.TargetFullName));
-				arguments.Add("/closeonend:0");
-
-				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-				{
-					Logger = new AddToLogLogger(request.AddToLog),
-					ProcessExeFullName = "TortoiseProc",
-					Arguments = arguments.ToArray(),
-				}).Errored;
-			}
-			else
-			{
-				var arguments = new List<string>();
-
-				arguments.Add("checkout");
-				arguments.Add(string.Format("\"{0}\"", request.SourceUrl));
-				arguments.Add(string.Format("\"{0}\"", request.TargetFullName));
-				arguments.Add("--include-externals");
-				AddCredentials(arguments, request);
-
-				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-				{
-					Logger = new AddToLogLogger(request.AddToLog),
-					ProcessExeFullName = "svn",
-					Arguments = arguments.ToArray(),
-				}).Errored;
-			}
-
 			return response;
 		}
 	}

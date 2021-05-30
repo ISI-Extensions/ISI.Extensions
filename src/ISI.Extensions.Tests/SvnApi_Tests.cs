@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,6 +65,37 @@ namespace ISI.Extensions.Tests
 				},
 			});
 
+		}
+
+		[Test]
+		public void CheckOutFile_Test()
+		{
+			using (var tempDirectory = new ISI.Extensions.IO.Path.TempDirectory())
+			{
+				var svnApi = new ISI.Extensions.Svn.SvnApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+
+				var sourceUrl = @"https://svn.isi-net.com/ISI/ISI.FrameWork/trunk/src/jenkins/ISI.FrameWork.Build.jenkinsConfig";
+
+				svnApi.CheckOutSingleFile(new ISI.Extensions.Svn.DataTransferObjects.SvnApi.CheckOutSingleFileRequest()
+				{
+					SourceUrl = sourceUrl,
+					TargetFullName = tempDirectory.FullName,
+				});
+			}
+		}
+
+		[Test]
+		public void List_Test()
+		{
+			var svnApi = new ISI.Extensions.Svn.SvnApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+
+			var sourceUrl = @"https://svn.isi-net.com/ISI/ISI.FrameWork/trunk/src/";
+
+			var fileNames = svnApi.List(new ISI.Extensions.Svn.DataTransferObjects.SvnApi.ListRequest()
+			{
+				SourceUrl = sourceUrl,
+				Depth = ISI.Extensions.Svn.Depth.Infinity,
+			});
 		}
 	}
 }

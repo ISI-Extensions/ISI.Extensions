@@ -26,43 +26,41 @@ namespace ISI.Extensions.Svn
 {
 	public partial class SvnApi
 	{
-		public DTOs.CheckOutResponse CheckOut(DTOs.CheckOutRequest request)
+		public DTOs.ListResponse List(DTOs.ListRequest request)
 		{
-			var response = new DTOs.CheckOutResponse();
+			var response = new DTOs.ListResponse();
 			
-			if (request.UseTortoiseSvn)
+			var arguments = new List<string>();
+
+			arguments.Add("list");
+			arguments.Add(string.Format("\"{0}\"", request.SourceUrl));
+
+			switch (request.Depth)
 			{
-				var arguments = new List<string>();
-
-				arguments.Add("/command:checkout");
-				arguments.Add(string.Format("/url:\"{0}\"", request.SourceUrl));
-				arguments.Add(string.Format("/path:\"{0}\"", request.TargetFullName));
-				arguments.Add("/closeonend:0");
-
-				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-				{
-					Logger = new AddToLogLogger(request.AddToLog),
-					ProcessExeFullName = "TortoiseProc",
-					Arguments = arguments.ToArray(),
-				}).Errored;
+				case Depth.Empty:
+					arguments.Add("--depth empty");
+					break;
+				case Depth.Files:
+					arguments.Add("--depth files");
+					break;
+				case Depth.Children:
+					arguments.Add("--depth immediates");
+					break;
+				case Depth.Infinity:
+					arguments.Add("--depth infinity");
+					break;
 			}
-			else
+
+			AddCredentials(arguments, request);
+
+			var content = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{
-				var arguments = new List<string>();
+				Logger = new NullLogger(),
+				ProcessExeFullName = "svn",
+				Arguments = arguments.ToArray(),
+			}).Output;
 
-				arguments.Add("checkout");
-				arguments.Add(string.Format("\"{0}\"", request.SourceUrl));
-				arguments.Add(string.Format("\"{0}\"", request.TargetFullName));
-				arguments.Add("--include-externals");
-				AddCredentials(arguments, request);
-
-				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-				{
-					Logger = new AddToLogLogger(request.AddToLog),
-					ProcessExeFullName = "svn",
-					Arguments = arguments.ToArray(),
-				}).Errored;
-			}
+			response.FileNames = content.Split(new [] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
 			return response;
 		}

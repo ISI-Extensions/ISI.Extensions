@@ -19,50 +19,42 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Svn.DataTransferObjects.SvnApi;
+using DTOs = ISI.Extensions.Git.DataTransferObjects.GitApi;
 using SourceControlClientApiDTOs = ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi;
 
-namespace ISI.Extensions.Svn
+namespace ISI.Extensions.Git
 {
-	public partial class SvnApi
+	public partial class GitApi
 	{
-		public DTOs.CheckOutResponse CheckOut(DTOs.CheckOutRequest request)
+		/*
+# Navigate to a directory and initiate a local repository
+git init        
+
+# Add remote repository to be tracked for changes:   
+git remote add origin https://github.com/username/repository_name.git
+
+# Track all changes made on above remote repository
+# This will show files on remote repository not available on local repository
+git fetch
+
+# Add file present in staging area for checkout
+git check origin/master -m /path/to/file
+# NOTE: /path/to/file is a relative path from repository_name
+git add /path/to/file
+
+# Verify track of file(s) being committed to local repository
+git status
+
+# Commit to local repository
+git commit -m "commit message"
+
+# You may perform a final check of the staging area again with git status
+		*/
+		public DTOs.CloneSingleFileResponse CloneSingleFile(DTOs.CloneSingleFileRequest request)
 		{
-			var response = new DTOs.CheckOutResponse();
+			var response = new DTOs.CloneSingleFileResponse();
 			
-			if (request.UseTortoiseSvn)
-			{
-				var arguments = new List<string>();
-
-				arguments.Add("/command:checkout");
-				arguments.Add(string.Format("/url:\"{0}\"", request.SourceUrl));
-				arguments.Add(string.Format("/path:\"{0}\"", request.TargetFullName));
-				arguments.Add("/closeonend:0");
-
-				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-				{
-					Logger = new AddToLogLogger(request.AddToLog),
-					ProcessExeFullName = "TortoiseProc",
-					Arguments = arguments.ToArray(),
-				}).Errored;
-			}
-			else
-			{
-				var arguments = new List<string>();
-
-				arguments.Add("checkout");
-				arguments.Add(string.Format("\"{0}\"", request.SourceUrl));
-				arguments.Add(string.Format("\"{0}\"", request.TargetFullName));
-				arguments.Add("--include-externals");
-				AddCredentials(arguments, request);
-
-				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-				{
-					Logger = new AddToLogLogger(request.AddToLog),
-					ProcessExeFullName = "svn",
-					Arguments = arguments.ToArray(),
-				}).Errored;
-			}
+			throw new NotImplementedException();
 
 			return response;
 		}

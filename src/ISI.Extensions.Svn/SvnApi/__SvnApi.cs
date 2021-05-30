@@ -81,11 +81,42 @@ namespace ISI.Extensions.Svn
 			return response;
 		}
 		
+		SourceControlClientApiDTOs.ListResponse ISI.Extensions.Scm.ISourceControlClientApi.List(SourceControlClientApiDTOs.ListRequest request)
+		{
+			var response = new SourceControlClientApiDTOs.ListResponse();
+
+			var apiResponse = List(new DTOs.ListRequest()
+			{
+				SourceUrl = request.SourceUrl,
+				AddToLog = request.AddToLog,
+			});
+
+			response.FileNames = apiResponse.FileNames;
+
+			return response;
+		}
+
 		SourceControlClientApiDTOs.CheckOutResponse ISI.Extensions.Scm.ISourceControlClientApi.CheckOut(SourceControlClientApiDTOs.CheckOutRequest request)
 		{
 			var response = new SourceControlClientApiDTOs.CheckOutResponse();
 
 			var apiResponse = CheckOut(new DTOs.CheckOutRequest()
+			{
+				SourceUrl = request.SourceUrl,
+				TargetFullName = request.TargetFullName,
+				AddToLog = request.AddToLog,
+			});
+
+			response.Success = apiResponse.Success;
+
+			return response;
+		}
+
+		SourceControlClientApiDTOs.CheckOutSingleFileResponse ISI.Extensions.Scm.ISourceControlClientApi.CheckOutSingleFile(SourceControlClientApiDTOs.CheckOutSingleFileRequest request)
+		{
+			var response = new SourceControlClientApiDTOs.CheckOutSingleFileResponse();
+
+			var apiResponse = CheckOutSingleFile(new DTOs.CheckOutSingleFileRequest()
 			{
 				SourceUrl = request.SourceUrl,
 				TargetFullName = request.TargetFullName,

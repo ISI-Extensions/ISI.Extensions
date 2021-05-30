@@ -18,53 +18,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Svn.DataTransferObjects.SvnApi;
-using SourceControlClientApiDTOs = ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi;
 
-namespace ISI.Extensions.Svn
+namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
-	public partial class SvnApi
+	public partial class CheckOutSingleFileRequest : ICredentials
 	{
-		public DTOs.CheckOutResponse CheckOut(DTOs.CheckOutRequest request)
-		{
-			var response = new DTOs.CheckOutResponse();
-			
-			if (request.UseTortoiseSvn)
-			{
-				var arguments = new List<string>();
+		public string UserName { get; set; }
+		public string Password { get; set; }
 
-				arguments.Add("/command:checkout");
-				arguments.Add(string.Format("/url:\"{0}\"", request.SourceUrl));
-				arguments.Add(string.Format("/path:\"{0}\"", request.TargetFullName));
-				arguments.Add("/closeonend:0");
+		public string SourceUrl { get; set; }
+		public string TargetFullName { get; set; }
 
-				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-				{
-					Logger = new AddToLogLogger(request.AddToLog),
-					ProcessExeFullName = "TortoiseProc",
-					Arguments = arguments.ToArray(),
-				}).Errored;
-			}
-			else
-			{
-				var arguments = new List<string>();
+		public bool UseTortoiseSvn { get; set; } = false;
 
-				arguments.Add("checkout");
-				arguments.Add(string.Format("\"{0}\"", request.SourceUrl));
-				arguments.Add(string.Format("\"{0}\"", request.TargetFullName));
-				arguments.Add("--include-externals");
-				AddCredentials(arguments, request);
-
-				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-				{
-					Logger = new AddToLogLogger(request.AddToLog),
-					ProcessExeFullName = "svn",
-					Arguments = arguments.ToArray(),
-				}).Errored;
-			}
-
-			return response;
-		}
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; } = description => { };
 	}
 }

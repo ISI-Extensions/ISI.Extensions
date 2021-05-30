@@ -80,11 +80,42 @@ namespace ISI.Extensions.Git
 			return response;
 		}
 
+		SourceControlClientApiDTOs.ListResponse ISI.Extensions.Scm.ISourceControlClientApi.List(SourceControlClientApiDTOs.ListRequest request)
+		{
+			var response = new SourceControlClientApiDTOs.ListResponse();
+
+			var apiResponse = List(new DTOs.ListRequest()
+			{
+				SourceUrl = request.SourceUrl,
+				AddToLog = request.AddToLog,
+			});
+
+			response.FileNames = apiResponse.FileNames;
+
+			return response;
+		}
+
 		SourceControlClientApiDTOs.CheckOutResponse ISI.Extensions.Scm.ISourceControlClientApi.CheckOut(SourceControlClientApiDTOs.CheckOutRequest request)
 		{
 			var response = new SourceControlClientApiDTOs.CheckOutResponse();
 
 			var apiResponse = Clone(new DTOs.CloneRequest()
+			{
+				SourceUrl = request.SourceUrl,
+				TargetFullName = request.TargetFullName,
+				AddToLog = request.AddToLog,
+			});
+
+			response.Success = apiResponse.Success;
+
+			return response;
+		}
+
+		SourceControlClientApiDTOs.CheckOutSingleFileResponse ISI.Extensions.Scm.ISourceControlClientApi.CheckOutSingleFile(SourceControlClientApiDTOs.CheckOutSingleFileRequest request)
+		{
+			var response = new SourceControlClientApiDTOs.CheckOutSingleFileResponse();
+
+			var apiResponse = CloneSingleFile(new DTOs.CloneSingleFileRequest()
 			{
 				SourceUrl = request.SourceUrl,
 				TargetFullName = request.TargetFullName,

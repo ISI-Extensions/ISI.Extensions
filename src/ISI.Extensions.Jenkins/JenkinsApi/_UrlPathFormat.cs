@@ -28,6 +28,7 @@ namespace ISI.Extensions.Jenkins
 		private class UrlPathFormat
 		{
 			public static readonly string GetCSRF = @"/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,"":"",//crumb)";
+			public static readonly string GetServiceConfiguration = "/configuration-as-code/export";
 			public static readonly string GetNodeJson = "/api/json";
 			public static readonly string GetNodeXml = "/api/xml";
 			public static readonly string GetJobConfigXml = "/job/{jobId}/config.xml";

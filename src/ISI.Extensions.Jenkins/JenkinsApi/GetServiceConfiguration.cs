@@ -12,40 +12,39 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
+using DTOs = ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi;
 
-namespace ISI.Extensions.IO
+namespace ISI.Extensions.Jenkins
 {
-	public partial class Path
+	public partial class JenkinsApi
 	{
-		public class TempDirectory : IDisposable
+		public DTOs.GetServiceConfigurationResponse GetServiceConfiguration(DTOs.GetServiceConfigurationRequest request)
 		{
-			public string FullName { get; }
-
-			public TempDirectory()
+			var response = new DTOs.GetServiceConfigurationResponse();
+			
+			var uri = new UriBuilder(request.JenkinsUrl);
+			uri.SetPathAndQueryString(UrlPathFormat.GetServiceConfiguration.Replace(new Dictionary<string, string>()
 			{
-				FullName = GetTempDirectoryName();
+			}, StringComparer.InvariantCultureIgnoreCase));
+
+			try
+			{
+				response.ServiceConfigurationYaml = ISI.Extensions.WebClient.Rest.ExecuteTextPost(uri.Uri, GetHeaders(request), true, request.SslProtocols);
+			}
+			catch (Exception exception)
+			{
+				Logger.LogError(exception, "Get GetServiceConfiguration Failed");
 			}
 
-			public void Dispose()
-			{
-				var directoryInfo = new System.IO.DirectoryInfo(FullName)
-				{
-					Attributes = System.IO.FileAttributes.Normal
-				};
-
-				foreach (var fileSystemInfo in directoryInfo.GetFileSystemInfos("*", System.IO.SearchOption.AllDirectories))
-				{
-					fileSystemInfo.Attributes = System.IO.FileAttributes.Normal;
-				}
-
-				System.IO.Directory.Delete(FullName, true);
-			}
+			return response;
 		}
 	}
 }

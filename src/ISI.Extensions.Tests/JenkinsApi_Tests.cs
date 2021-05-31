@@ -63,6 +63,22 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void GetServiceConfiguration_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "Tristar.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName);
+
+			var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+
+			var serviceConfigurationYaml = jenkinsApi.GetServiceConfiguration(new ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi.GetServiceConfigurationRequest()
+			{
+				JenkinsUrl = settings.Jenkins.JenkinsUrl,
+				UserName = settings.Jenkins.UserName,
+				ApiToken = settings.Jenkins.ApiToken,
+			}).ServiceConfigurationYaml;
+		}
+
+		[Test]
 		public void JobStatus_Test()
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "Tristar.keyValue");

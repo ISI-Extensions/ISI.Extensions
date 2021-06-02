@@ -27,7 +27,7 @@ namespace ISI.Extensions.Tests.Repository
 	public partial class SqlServer_Tests
 	{
 		[ISI.Extensions.Repository.Record(Schema = "C2", TableName = "ContactWithUuid")]
-		public class Contact : ISI.Extensions.Repository.IRecordManagerPrimaryKeyRecord<Guid>, ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime
+		public class Contact : ISI.Extensions.Repository.IRecordManagerPrimaryKeyRecord<Guid>, ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime, ISI.Extensions.Repository.IRecordIndexDescriptions<Contact>
 		{
 			[ISI.Extensions.Repository.PrimaryKey]
 			[ISI.Extensions.Repository.Identity]
@@ -46,6 +46,21 @@ namespace ISI.Extensions.Tests.Repository
 			Guid ISI.Extensions.Repository.IRecordManagerPrimaryKeyRecord<Guid>.PrimaryKey => ContactUuid;
 
 			DateTime ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime.ArchiveDateTime => TimeStamp;
+
+			ISI.Extensions.Repository.RecordIndexCollection<Contact> ISI.Extensions.Repository.IRecordIndexDescriptions<Contact>.GetRecordIndexes()
+			{
+				return new()
+				{
+					{
+						new ISI.Extensions.Repository.RecordIndexColumnCollection<Contact>()
+						{
+							{record => FirstName},
+							{record => LastName},
+						},
+						true
+					},
+				};
+			}
 		}
 
 		public class ContactRecordManager : ISI.Extensions.Repository.SqlServer.RecordManagerPrimaryKeyWithArchive<Contact, Guid>

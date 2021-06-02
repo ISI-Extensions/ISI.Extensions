@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,33 +15,37 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Repository
+namespace ISI.Extensions.AspNetCore.Extensions
 {
-	public class RecordIndexCollection<TRecord> : List<RecordIndex<TRecord>>
+	public static class UrlHelperExtensions
 	{
-		public void Add(RecordIndexColumnCollection<TRecord> indexDefinition, bool unique = false, bool clustered = false)
+		public static string GenerateRouteUrl(this Microsoft.AspNetCore.Mvc.IUrlHelper urlHelper, string routeName, bool makeAbsolute = false)
 		{
-			Add(null, indexDefinition, unique, clustered);
-		}
-
-		public void Add(string name, RecordIndexColumnCollection<TRecord> indexDefinition, bool unique = false, bool clustered = false)
-		{
-			if (string.IsNullOrWhiteSpace(name))
+			var url = urlHelper.RouteUrl(new Microsoft.AspNetCore.Mvc.Routing.UrlRouteContext()
 			{
-				name = string.Format("idx{0}", string.Join(string.Empty, indexDefinition.Select(column => column.RecordPropertyDescription.ColumnName)));
+				RouteName = routeName,
+			});
+
+			if (makeAbsolute)
+			{
+				var uriBuilder = new UriBuilder(urlHelper.ActionContext.HttpContext.Request.Host.Host)
+				{
+					Scheme = urlHelper.ActionContext.HttpContext.Request.Scheme,
+				};
+
+				if (urlHelper.ActionContext.HttpContext.Request.Host.Port.HasValue)
+				{
+					uriBuilder.Port = urlHelper.ActionContext.HttpContext.Request.Host.Port.Value;
+				}
+
+				uriBuilder.SetPathAndQueryString(url);
+				url = uriBuilder.Uri.ToString();
 			}
 
-			Add(new RecordIndex<TRecord>()
-			{
-				Name = name,
-				Columns = indexDefinition.ToArray(),
-				Unique = unique,
-				Clustered = clustered,
-			});
+			return url;
 		}
 	}
 }

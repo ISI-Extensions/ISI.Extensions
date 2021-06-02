@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,30 +18,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using NUnit.Framework;
 
-namespace ISI.Extensions.Repository
+namespace ISI.Extensions.Tests
 {
-	public class RecordIndexCollection<TRecord> : List<RecordIndex<TRecord>>
+	[TestFixture]
+	public class UriBuilderExtensions_Tests
 	{
-		public void Add(RecordIndexColumnCollection<TRecord> indexDefinition, bool unique = false, bool clustered = false)
+		[Test]
+		public void SetPathAndQueryString()
 		{
-			Add(null, indexDefinition, unique, clustered);
-		}
+			var uriBuilder = new UriBuilder("localhost:5001");
+			uriBuilder.SetPathAndQueryString("/nuget/v2/package");
 
-		public void Add(string name, RecordIndexColumnCollection<TRecord> indexDefinition, bool unique = false, bool clustered = false)
-		{
-			if (string.IsNullOrWhiteSpace(name))
-			{
-				name = string.Format("idx{0}", string.Join(string.Empty, indexDefinition.Select(column => column.RecordPropertyDescription.ColumnName)));
-			}
-
-			Add(new RecordIndex<TRecord>()
-			{
-				Name = name,
-				Columns = indexDefinition.ToArray(),
-				Unique = unique,
-				Clustered = clustered,
-			});
 		}
 	}
 }

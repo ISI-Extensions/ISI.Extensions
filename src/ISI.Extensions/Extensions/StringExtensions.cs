@@ -470,5 +470,25 @@ namespace ISI.Extensions.Extensions
 
 			return ((string.IsNullOrEmpty(value) || (value.Length < 2)) ? value : char.ToLowerInvariant(value[0]) + value.Substring(1));
 		}
+
+		public static UriBuilder ToUriBuilder(this string url)
+		{
+			if (string.IsNullOrWhiteSpace(url))
+			{
+				return null;
+			}
+
+			return new UriBuilder(url);
+		}
+
+		public static Uri ToUri(this string url)
+		{
+			if (string.IsNullOrWhiteSpace(url))
+			{
+				return null;
+			}
+
+			return new UriBuilder(url).Uri;
+		}
 	}
 }

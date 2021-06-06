@@ -30,6 +30,8 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 
 		public IEnumerable<string> SolutionFullNames { get; set; }
 
+		public bool ConvertToPackageReferences { get; set; }
+
 		public IEnumerable<string> IgnorePackageIds { get; set; }
 
 		public ISI.Extensions.Nuget.NugetPackageKeyDictionary NugetPackageKeys { get; set; }

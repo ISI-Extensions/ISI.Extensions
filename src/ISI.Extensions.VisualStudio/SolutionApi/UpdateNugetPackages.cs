@@ -177,25 +177,33 @@ namespace ISI.Extensions.VisualStudio
 
 								if (System.IO.File.Exists(packagesConfigFullName))
 								{
-									var packagesConfig = System.IO.File.ReadAllText(packagesConfigFullName);
-
-									try
+									if (request.ConvertToPackageReferences)
 									{
-										var newPackagesConfig = NugetApi.UpdateNugetPackageVersionsInPackagesConfig(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.UpdateNugetPackageVersionsInPackagesConfigRequest()
-										{
-											PackagesConfigXml = packagesConfig,
-											TryGetNugetPackageKey = tryGetNugetPackageKey,
-										}).PackagesConfigXml;
-
-										if (HasChanges(packagesConfig, newPackagesConfig))
-										{
-											System.IO.File.WriteAllText(packagesConfigFullName, newPackagesConfig);
-											dirtyFileNames.Add(packagesConfigFullName);
-										}
+										System.IO.File.Delete(packagesConfigFullName);
+										dirtyFileNames.Add(packagesConfigFullName);
 									}
-									catch (Exception exception)
+									else
 									{
-										throw new Exception(string.Format("File: {0}", packagesConfigFullName), exception);
+										var packagesConfig = System.IO.File.ReadAllText(packagesConfigFullName);
+
+										try
+										{
+											var newPackagesConfig = NugetApi.UpdateNugetPackageVersionsInPackagesConfig(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.UpdateNugetPackageVersionsInPackagesConfigRequest()
+											{
+												PackagesConfigXml = packagesConfig,
+												TryGetNugetPackageKey = tryGetNugetPackageKey,
+											}).PackagesConfigXml;
+
+											if (HasChanges(packagesConfig, newPackagesConfig))
+											{
+												System.IO.File.WriteAllText(packagesConfigFullName, newPackagesConfig);
+												dirtyFileNames.Add(packagesConfigFullName);
+											}
+										}
+										catch (Exception exception)
+										{
+											throw new Exception(string.Format("File: {0}", packagesConfigFullName), exception);
+										}
 									}
 								}
 
@@ -207,7 +215,7 @@ namespace ISI.Extensions.VisualStudio
 									{
 										CsProjXml = csProj,
 										TryGetNugetPackageKey = tryGetNugetPackageKey,
-										ConvertToPackageReferences = false,
+										ConvertToPackageReferences = request.ConvertToPackageReferences,
 									}).CsProjXml;
 
 									if (HasChanges(csProj, newCsProj))
@@ -271,6 +279,16 @@ namespace ISI.Extensions.VisualStudio
 								var resharperCacheFullName = System.IO.Path.Combine(solutionDetails.SolutionDirectory, "_ReSharper.Caches");
 								if (System.IO.Directory.Exists(resharperCacheFullName))
 								{
+									var directoryInfo = new System.IO.DirectoryInfo(resharperCacheFullName)
+									{
+										Attributes = System.IO.FileAttributes.Normal
+									};
+									
+									foreach (var fileSystemInfo in directoryInfo.GetFileSystemInfos("*", System.IO.SearchOption.AllDirectories))
+									{
+										fileSystemInfo.Attributes = System.IO.FileAttributes.Normal;
+									}
+
 									System.IO.Directory.Delete(resharperCacheFullName, true);
 								}
 							}

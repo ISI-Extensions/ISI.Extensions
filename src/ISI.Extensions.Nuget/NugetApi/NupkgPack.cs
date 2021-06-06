@@ -37,17 +37,25 @@ namespace ISI.Extensions.Nuget
 				request.OutputDirectory = System.IO.Path.GetDirectoryName(request.NuspecFullName);
 			}
 
+			var arguments = new List<string>();
+			arguments.Add("pack");
+			arguments.Add(string.Format("\"{0}\"", request.NuspecFullName));
+			arguments.Add(string.Format("-OutputDirectory \"{0}\"", request.OutputDirectory));
+			if (request.IncludeSymbols)
+			{
+				arguments.Add("--include-symbols");
+			}
+			if (request.IncludeSource)
+			{
+				arguments.Add(string.Format("--include-source \"{0}\"", request.WorkingDirectory));
+			}
+
 			ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{
 				Logger = new NullLogger(),
 				WorkingDirectory = request.WorkingDirectory,
 				ProcessExeFullName = "nuget",
-				Arguments = new[]
-				{
-					"pack",
-					string.Format("\"{0}\"", request.NuspecFullName),
-					string.Format("-OutputDirectory \"{0}\"", request.OutputDirectory),
-				}
+				Arguments = arguments,
 			});
 
 			Logger.LogInformation(string.Format("Packed \"{0}\"", System.IO.Path.GetFileName(request.NuspecFullName)));

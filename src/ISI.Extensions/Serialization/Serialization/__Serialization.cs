@@ -126,7 +126,10 @@ namespace ISI.Extensions.Serialization
 					if (serializerContractUuidAttribute != null)
 					{
 						SerializerContractUuidLookupBySerializerContractType.TryAdd(exportedType, serializerContractUuidAttribute.SerializerContractUuid);
-						SerializerContractTypeLookupBySerializerContractUuid.TryAdd(serializerContractUuidAttribute.SerializerContractUuid, exportedType);
+						if (!SerializerContractTypeLookupBySerializerContractUuid.TryAdd(serializerContractUuidAttribute.SerializerContractUuid, exportedType))
+						{
+							throw new Exception(string.Format("Multiple SerializerContractUuid found \"{0}\"", serializerContractUuidAttribute.SerializerContractUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)));
+						}
 					}
 				}
 			}

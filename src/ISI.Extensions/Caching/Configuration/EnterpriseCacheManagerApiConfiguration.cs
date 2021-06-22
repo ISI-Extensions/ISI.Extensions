@@ -25,7 +25,7 @@ namespace ISI.Extensions.Caching
 	{
 		public class EnterpriseCacheManagerApiConfiguration
 		{
-			public bool EnqueueIncomingClearRequests { get; set; } = false;
+			public bool EnqueueIncomingClearRequests { get; set; } = true;
 			
 			public TimeSpan EnqueueIncomingClearRequestQueueInterval { get; set; } = TimeSpan.FromSeconds(10);
 			

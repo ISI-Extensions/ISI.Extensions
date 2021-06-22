@@ -41,8 +41,6 @@ namespace ISI.Extensions.Repository.SqlServer
 				return value;
 			}
 
-
-
 			var persistedConvertedRecords = new List<TConvertedRecord>();
 
 			var insertPropertyDescriptions = RecordDescription.GetRecordDescription<TConvertedRecord>().PropertyDescriptions.ToList();
@@ -264,7 +262,7 @@ namespace ISI.Extensions.Repository.SqlServer
 							sqlValues.Add(string.Format("@value_{0}_{1}", selectIndex, valueIndex++), getArchiveDateTime(persistedRecordSet.Record));
 							foreach (var property in archivePropertyDescriptions)
 							{
-								sqlValues.Add(string.Format("@value_{0}_{1}", selectIndex, valueIndex++), (property.IsNull(persistedRecordSet.ConvertedRecord) ? DBNull.Value : GetValue(property, persistedRecordSet.Item2)));
+								sqlValues.Add(string.Format("@value_{0}_{1}", selectIndex, valueIndex++), (property.IsNull(persistedRecordSet.ConvertedRecord) ? DBNull.Value : GetValue(property, persistedRecordSet.ConvertedRecord)));
 							}
 
 							selectIndex++;

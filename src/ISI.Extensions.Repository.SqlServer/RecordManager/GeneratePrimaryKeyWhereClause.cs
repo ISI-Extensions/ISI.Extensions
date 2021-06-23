@@ -138,22 +138,40 @@ namespace ISI.Extensions.Repository.SqlServer
 
 						using (var target = new Microsoft.Data.SqlClient.SqlBulkCopy(connection, Microsoft.Data.SqlClient.SqlBulkCopyOptions.Default, null))
 						{
-							var createTempTableSql = string.Format(@"
+							var sourcePrimaryKeyTempTableName = string.Format("Source{0}", PrimaryKeyTempTableName);
+
+							using (var command = new Microsoft.Data.SqlClient.SqlCommand(string.Format(@"
 create table #{0}
 (
-	{1} primary key
+	{1}
 )
-", PrimaryKeyTempTableName, primaryKeyColumn.GetColumnDefinition(_formatColumnName));
-
-							using (var command = new Microsoft.Data.SqlClient.SqlCommand(createTempTableSql, connection))
+", sourcePrimaryKeyTempTableName, primaryKeyColumn.GetColumnDefinition(_formatColumnName)), connection))
 							{
 								command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
 							}
 
-							target.DestinationTableName = string.Format("#{0}", PrimaryKeyTempTableName);
+							target.DestinationTableName = string.Format("#{0}", sourcePrimaryKeyTempTableName);
 							target.BulkCopyTimeout = 0; // 60 * 60;
 							target.BatchSize = 1000;
 							target.WriteToServer(dataReader);
+
+							using (var command = new Microsoft.Data.SqlClient.SqlCommand(string.Format(@"
+create table #{0}
+(
+	{1} primary key
+)
+", PrimaryKeyTempTableName, primaryKeyColumn.GetColumnDefinition(_formatColumnName)), connection))
+							{
+								command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
+							}
+
+							using (var command = new Microsoft.Data.SqlClient.SqlCommand(string.Format(@"
+insert into #{1} ({0})
+select distinct {0}
+from #{2}", _formatColumnName(primaryKeyColumn.ColumnName), PrimaryKeyTempTableName, sourcePrimaryKeyTempTableName), connection))
+							{
+								command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
+							}
 						}
 
 						JoinClauseFormat = string.Format("    join #{0} {0} with (NoLock) On ({0}.{1} = {{0}}.{1})\n", PrimaryKeyTempTableName, _formatColumnName(primaryKeyColumn.ColumnName));
@@ -188,8 +206,6 @@ create table #{0}
 				}
 			}
 		}
-
-
 
 		protected override IWhereClause GeneratePrimaryKeyWhereClause<TPrimaryKey>(IEnumerable<TPrimaryKey> primaryKeyValues)
 		{

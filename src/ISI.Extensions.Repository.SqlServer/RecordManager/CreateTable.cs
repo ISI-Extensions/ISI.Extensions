@@ -138,14 +138,17 @@ namespace ISI.Extensions.Repository.SqlServer
 				}
 			}
 
-			if (ExecuteScalarAsync<int>("select count(*) from sys.schemas with (NoLock) where name = @SchemaName", new Dictionary<string, object>()
+			if (!string.IsNullOrWhiteSpace(Schema))
 			{
-				{"@SchemaName", Schema}
-			}).GetAwaiter().GetResult() < 1)
-			{
-				ExecuteNonQueryAsync(string.Format("CREATE SCHEMA [{0}]", Schema)).Wait();
+				if (ExecuteScalarAsync<int>("select count(*) from sys.schemas with (NoLock) where name = @SchemaName", new Dictionary<string, object>()
+				{
+					{"@SchemaName", Schema}
+				}).GetAwaiter().GetResult() < 1)
+				{
+					ExecuteNonQueryAsync(string.Format("CREATE SCHEMA [{0}]", Schema)).Wait();
+				}
 			}
-			
+
 			switch (createTableMode)
 			{
 				case CreateTableMode.DeleteAndCreateIfExists:

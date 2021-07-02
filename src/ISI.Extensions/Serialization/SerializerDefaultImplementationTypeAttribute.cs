@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Serialization
 {
-	[AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
+	[AttributeUsage(AttributeTargets.Interface, Inherited = false, AllowMultiple = false)]
 	public class SerializerDefaultImplementationTypeAttribute : System.Attribute
 	{
 		public Type DefaultImplementationType { get; }

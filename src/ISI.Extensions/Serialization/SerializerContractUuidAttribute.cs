@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Serialization
 {
-	[AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
+	[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
 	public class SerializerContractUuidAttribute : ISI.Extensions.TypeLocatorAttribute
 	{
 		public Guid SerializerContractUuid { get; }

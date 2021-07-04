@@ -43,6 +43,9 @@ namespace ISI.Extensions.Scm.SerializableModels.JenkinsServiceApi
 		[DataMember(Name = "jobIds", EmitDefaultValue = false)]
 		public string[] JobIds { get; set; }
 
+		[DataMember(Name = "filterByJobNamePrefix", EmitDefaultValue = false)]
+		public string FilterByJobIdPrefix { get; set; }
+
 		[DataMember(Name = "filterByJobNameSuffix", EmitDefaultValue = false)]
 		public string FilterByJobIdSuffix { get; set; }
 

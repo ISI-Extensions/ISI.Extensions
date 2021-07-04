@@ -33,5 +33,7 @@ namespace ISI.Extensions.Scm.DataTransferObjects.JenkinsServiceApi
 		public string JenkinsApiToken { get; set; }
 
 		public string[] JobIds { get; set; }
+		public string FilterByJobIdPrefix { get; set; }
+		public string FilterByJobIdSuffix { get; set; }
 	}
 }

@@ -37,6 +37,8 @@ namespace ISI.Extensions.Scm
 			uri.ConditionalAddQueryStringParameter(!string.IsNullOrWhiteSpace(request.JenkinsUrl), "jenkinsUrl", request.JenkinsUrl);
 			uri.ConditionalAddQueryStringParameter(!string.IsNullOrWhiteSpace(request.UserName), "userName", request.UserName);
 			uri.ConditionalAddQueryStringParameter(!string.IsNullOrWhiteSpace(request.ApiToken), "apiToken", request.ApiToken);
+			uri.ConditionalAddQueryStringParameter(!string.IsNullOrWhiteSpace(request.FilterByJobIdPrefix), "filterByJobIdPrefix", request.FilterByJobIdSuffix);
+			uri.ConditionalAddQueryStringParameter(request.StripJobIdPrefix.HasValue, "stripJobIdPrefix", request.StripJobIdPrefix.TrueFalse());
 			uri.ConditionalAddQueryStringParameter(!string.IsNullOrWhiteSpace(request.FilterByJobIdSuffix), "filterByJobIdSuffix", request.FilterByJobIdSuffix);
 			uri.ConditionalAddQueryStringParameter(request.StripJobIdSuffix.HasValue, "stripJobIdSuffix", request.StripJobIdSuffix.TrueFalse());
 			uri.ConditionalAddQueryStringParameter(!string.IsNullOrWhiteSpace(request.InsertJobId), "insertJobId", request.InsertJobId);

@@ -34,7 +34,7 @@ namespace ISI.Extensions.Caching.MessageBus.Controllers
 
 		protected HashSet<string> CacheKeyScopes { get; }
 
-		protected ISI.Extensions.Threads.TaskTimer ProcessClearCacheQueueTaskTimer { get; }
+		protected static ISI.Extensions.Threads.TaskTimer ProcessClearCacheQueueTaskTimer { get; private set; }
 
 		private ISI.Extensions.Caching.IEnterpriseCacheClient[] _enterpriseCacheClients = null;
 		protected ISI.Extensions.Caching.IEnterpriseCacheClient[] EnterpriseCacheClients => _enterpriseCacheClients ??= ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementations<ISI.Extensions.Caching.IEnterpriseCacheClient>(serviceType => ServiceProvider.GetService(serviceType) as ISI.Extensions.Caching.IEnterpriseCacheClient).ToArray();
@@ -58,7 +58,7 @@ namespace ISI.Extensions.Caching.MessageBus.Controllers
 
 			CacheKeyScopes = cacheKeyScopes;
 
-			if (Configuration.EnterpriseCacheManagerApi.EnqueueIncomingClearRequests)
+			if((ProcessClearCacheQueueTaskTimer == null) && Configuration.EnterpriseCacheManagerApi.EnqueueIncomingClearRequests)
 			{
 				ProcessClearCacheQueueTaskTimer = new ISI.Extensions.Threads.TaskTimer(Logger, Configuration.EnterpriseCacheManagerApi.EnqueueIncomingClearRequestQueueInterval, Configuration.EnterpriseCacheManagerApi.EnqueueIncomingClearRequestQueueExceptionInterval);
 				ProcessClearCacheQueueTaskTimer.OnTimer += ProcessClearCacheQueue;

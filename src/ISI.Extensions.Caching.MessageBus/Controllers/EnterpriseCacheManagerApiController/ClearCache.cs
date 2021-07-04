@@ -25,7 +25,7 @@ namespace ISI.Extensions.Caching.MessageBus.Controllers
 {
 	public partial class EnterpriseCacheManagerApiController
 	{
-		private readonly System.Collections.Concurrent.ConcurrentQueue<ISI.Extensions.Caching.ClearCacheRequest> _clearCacheRequests = new System.Collections.Concurrent.ConcurrentQueue<ISI.Extensions.Caching.ClearCacheRequest>();
+		private static readonly System.Collections.Concurrent.ConcurrentQueue<ISI.Extensions.Caching.ClearCacheRequest> _clearCacheRequests = new();
 
 		public void ClearCache(MESSAGEBUS.ClearCacheRequest request)
 		{
@@ -57,10 +57,17 @@ namespace ISI.Extensions.Caching.MessageBus.Controllers
 
 		public void ProcessClearCacheQueue()
 		{
+			//var doGarbageCollection = false;
 			while (_clearCacheRequests.TryDequeue(out var clearCacheRequest))
 			{
+				//doGarbageCollection = true;
 				ClearCache(clearCacheRequest);
 			}
+
+			//if (doGarbageCollection)
+			//{
+			//	GC.Collect();
+			//}
 		}
 
 		private void ClearCache(ISI.Extensions.Caching.ClearCacheRequest clearCacheRequest)

@@ -23,17 +23,17 @@ namespace ISI.Extensions.DocumentStorage
 {
 	public class NullDeviceDocumentStorage : IDocumentStorage
 	{
-		public Guid SetDocument(ISI.Extensions.DocumentStorage.IDocument document, string userKey)
+		public async Task<Guid> SetDocumentAsync(ISI.Extensions.DocumentStorage.IDocument document, string userKey)
 		{
 			return Guid.Empty;
 		}
 
-		public void SetDocument(Guid documentUuid, ISI.Extensions.DocumentStorage.IDocument document, string userKey)
+		public async Task SetDocumentAsync(Guid documentUuid, ISI.Extensions.DocumentStorage.IDocument document, string userKey)
 		{
 
 		}
 
-		public ISI.Extensions.DocumentStorage.IDocument GetDocument(Guid documentUuid, string userKey)
+		public async Task<ISI.Extensions.DocumentStorage.IDocument> GetDocumentAsync(Guid documentUuid, string userKey)
 		{
 			return null;
 		}

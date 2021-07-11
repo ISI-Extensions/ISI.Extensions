@@ -23,39 +23,19 @@ namespace ISI.Extensions.Extensions
 {
 	public static class DocumentStorageExtensions
 	{
-		public static Guid SetDocumentStream(this ISI.Extensions.IDocumentStorage documentStorage, ISI.Extensions.DocumentStorage.IDocument document)
+		public static async Task<Guid> SetDocumentStreamAsync(this ISI.Extensions.IDocumentStorage documentStorage, ISI.Extensions.DocumentStorage.IDocument document)
 		{
-			return documentStorage.SetDocument(document, null);
+			return await documentStorage.SetDocumentAsync(document, null);
 		}
 
-		public static Guid SetDocumentStream(this ISI.Extensions.IDocumentStorage documentStorage, ISI.Extensions.DocumentStorage.IDocument document, Guid userUuid)
+		public static async Task<Guid> SetDocumentStreamAsync(this ISI.Extensions.IDocumentStorage documentStorage, ISI.Extensions.DocumentStorage.IDocument document, Guid userUuid)
 		{
-			return documentStorage.SetDocument(document, userUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
+			return await documentStorage.SetDocumentAsync(document, userUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
 		}
 
-		public static Guid SetDocumentStream(this ISI.Extensions.IDocumentStorage documentStorage, ISI.Extensions.DocumentStorage.IDocument document, int? userId)
+		public static async Task<Guid> SetDocumentStreamAsync(this ISI.Extensions.IDocumentStorage documentStorage, ISI.Extensions.DocumentStorage.IDocument document, int? userId)
 		{
-			return documentStorage.SetDocument(document, string.Format("{0}", userId));
-		}
-
-
-
-
-
-
-		public static void SetDocumentStream(this ISI.Extensions.IDocumentStorage documentStorage, Guid documentUuid, ISI.Extensions.DocumentStorage.IDocument document)
-		{
-			documentStorage.SetDocument(documentUuid, document, null);
-		}
-
-		public static void SetDocumentStream(this ISI.Extensions.IDocumentStorage documentStorage, Guid documentUuid, ISI.Extensions.DocumentStorage.IDocument document, Guid userUuid)
-		{
-			documentStorage.SetDocument(documentUuid, document, userUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
-		}
-
-		public static void SetDocumentStream(this ISI.Extensions.IDocumentStorage documentStorage, Guid documentUuid, ISI.Extensions.DocumentStorage.IDocument document, int? userId)
-		{
-			documentStorage.SetDocument(documentUuid, document, string.Format("{0}", userId));
+			return await documentStorage.SetDocumentAsync(document, string.Format("{0}", userId));
 		}
 
 
@@ -63,20 +43,39 @@ namespace ISI.Extensions.Extensions
 
 
 
-		public static ISI.Extensions.DocumentStorage.IDocument GetDocumentStream(this ISI.Extensions.IDocumentStorage documentStorage, Guid documentUuid)
+		public static async Task SetDocumentStreamAsync(this ISI.Extensions.IDocumentStorage documentStorage, Guid documentUuid, ISI.Extensions.DocumentStorage.IDocument document)
 		{
-			return documentStorage.GetDocument(documentUuid, null);
+			await documentStorage.SetDocumentAsync(documentUuid, document, null);
 		}
 
-		public static ISI.Extensions.DocumentStorage.IDocument GetDocumentStream(this ISI.Extensions.IDocumentStorage documentStorage, Guid documentUuid, Guid userUuid)
+		public static async Task SetDocumentStreamAsync(this ISI.Extensions.IDocumentStorage documentStorage, Guid documentUuid, ISI.Extensions.DocumentStorage.IDocument document, Guid userUuid)
 		{
-			return documentStorage.GetDocument(documentUuid, userUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
+			await documentStorage.SetDocumentAsync(documentUuid, document, userUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
 		}
 
-		public static ISI.Extensions.DocumentStorage.IDocument GetDocumentStream(this ISI.Extensions.IDocumentStorage documentStorage, Guid documentUuid, int? userId)
+		public static async Task SetDocumentStreamAsync(this ISI.Extensions.IDocumentStorage documentStorage, Guid documentUuid, ISI.Extensions.DocumentStorage.IDocument document, int? userId)
 		{
-			return documentStorage.GetDocument(documentUuid, string.Format("{0}", userId));
+			await documentStorage.SetDocumentAsync(documentUuid, document, string.Format("{0}", userId));
 		}
 
+
+
+
+
+
+		public static async Task<ISI.Extensions.DocumentStorage.IDocument> GetDocumentStreamAsync(this ISI.Extensions.IDocumentStorage documentStorage, Guid documentUuid)
+		{
+			return await documentStorage.GetDocumentAsync(documentUuid, null);
+		}
+
+		public static async Task<ISI.Extensions.DocumentStorage.IDocument> GetDocumentStreamAsync(this ISI.Extensions.IDocumentStorage documentStorage, Guid documentUuid, Guid userUuid)
+		{
+			return await documentStorage.GetDocumentAsync(documentUuid, userUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
+		}
+
+		public static async Task<ISI.Extensions.DocumentStorage.IDocument> GetDocumentStreamAsync(this ISI.Extensions.IDocumentStorage documentStorage, Guid documentUuid, int? userId)
+		{
+			return await documentStorage.GetDocumentAsync(documentUuid, string.Format("{0}", userId));
+		}
 	}
 }

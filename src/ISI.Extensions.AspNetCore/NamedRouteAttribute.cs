@@ -23,7 +23,7 @@ namespace ISI.Extensions.AspNetCore
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
 	public class NamedRouteAttribute : Attribute, Microsoft.AspNetCore.Mvc.Routing.IRouteTemplateProvider
 	{
-		private static System.Collections.Concurrent.ConcurrentDictionary<Type, string> UrlRoots { get; } = new System.Collections.Concurrent.ConcurrentDictionary<Type, string>();
+		private static System.Collections.Concurrent.ConcurrentDictionary<Type, string> UrlRoots { get; } = new();
 
 		public string Name { get; }
 		public string Template { get; }

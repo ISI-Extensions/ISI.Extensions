@@ -18,15 +18,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.AspNetCore
+namespace ISI.Extensions.Repository.Extensions
 {
-	[ISI.Extensions.ConfigurationHelper.Configuration("ISI.Extensions.AspNetCore")]
-	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
+	public static class RecordDescriptionExtensions
 	{
-		public HttpContextLoggingConfiguration HttpContextLogging { get; set; } = new();
+		public static IRecordPropertyDescription<TRecord> GetRecordPropertyDescription<TRecord, TProperty>(this IRecordDescription<TRecord> recordDescription, System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property)
+		{
+			var propertyInfo = ISI.Extensions.Reflection.GetPropertyInfo(property);
 
-		public TrackingConfiguration Tracking { get; set; } = new();
+			return recordDescription.PropertyDescriptionLookup[propertyInfo.Name];
+		}
 	}
 }

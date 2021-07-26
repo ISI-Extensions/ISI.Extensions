@@ -22,11 +22,12 @@ namespace ISI.Extensions.AspNetCore.Extensions
 {
 	public static class UrlHelperExtensions
 	{
-		public static string GenerateRouteUrl(this Microsoft.AspNetCore.Mvc.IUrlHelper urlHelper, string routeName, bool makeAbsolute = false)
+		public static string GenerateRouteUrl(this Microsoft.AspNetCore.Mvc.IUrlHelper urlHelper, string routeName, object routeValues = null, bool makeAbsolute = false)
 		{
 			var url = urlHelper.RouteUrl(new Microsoft.AspNetCore.Mvc.Routing.UrlRouteContext()
 			{
 				RouteName = routeName,
+				Values = new Microsoft.AspNetCore.Routing.RouteValueDictionary(routeValues),
 			});
 
 			if (makeAbsolute)

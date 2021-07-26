@@ -19,7 +19,7 @@
 
 	<ItemGroup>
 		<PackageReference Update="NETStandard.Library" Version="2.0.3" />
-	  <PackageReference Include="Aspose.Cells" Version="21.6.0" />
+	  <PackageReference Include="Aspose.Cells" Version="21.7.0" />
 	</ItemGroup>
 
 	<ItemGroup>

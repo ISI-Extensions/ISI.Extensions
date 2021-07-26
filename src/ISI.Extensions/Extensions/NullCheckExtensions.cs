@@ -580,6 +580,42 @@ namespace ISI.Extensions.Extensions
 			}
 		}
 
+		public static IEnumerable<IGrouping<TKey, TValue>> NullCheckedGroup<TKey, TValue>(this IEnumerable<TValue> values, Func<TValue, TKey> keySelector, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.ReturnNull)
+		{
+			if (values == null)
+			{
+				switch (ifNullReturn)
+				{
+					case NullCheckCollectionResult.ReturnNull:
+						return null;
+					case NullCheckCollectionResult.Empty:
+						return new IGrouping<TKey, TValue>[0];
+					default:
+						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
+				}
+			}
+
+			return values.GroupBy(keySelector);
+		}
+
+		public static IEnumerable<IGrouping<TKey, TValue>> NullCheckedGroup<TKey, TValue>(this IEnumerable<TValue> values, Func<TValue, TKey> keySelector, IEqualityComparer<TKey> comparer, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.ReturnNull)
+		{
+			if (values == null)
+			{
+				switch (ifNullReturn)
+				{
+					case NullCheckCollectionResult.ReturnNull:
+						return null;
+					case NullCheckCollectionResult.Empty:
+						return new IGrouping<TKey, TValue>[0];
+					default:
+						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
+				}
+			}
+
+			return values.GroupBy(keySelector, comparer);
+		}
+
 		public static IEnumerable<TValue> NullCheckedDistinct<TValue>(this IEnumerable<TValue> values)
 		{
 			return values?.Distinct();

@@ -75,15 +75,9 @@ namespace ISI.Extensions.Repository.SqlServer
 
 			updatePropertyDescriptions.RemoveAll(property => primaryKeyPropertyDescriptions.Any(primaryKeyPropertyDescription => string.Equals(property.ColumnName, primaryKeyPropertyDescription.ColumnName)));
 
-			if (recordToConvertedRecordConverter == null)
-			{
-				recordToConvertedRecordConverter = record => record as TConvertedRecord;
-			}
+			recordToConvertedRecordConverter ??= record => record as TConvertedRecord;
 
-			if (convertedRecordToRecordConverter == null)
-			{
-				convertedRecordToRecordConverter = record => record as TRecord;
-			}
+			convertedRecordToRecordConverter ??= record => record as TRecord;
 
 			if (getArchiveDateTime == null)
 			{

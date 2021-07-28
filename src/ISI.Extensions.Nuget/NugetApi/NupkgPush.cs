@@ -30,7 +30,7 @@ namespace ISI.Extensions.Nuget
 		{
 			var response = new DTOs.NupkgPushResponse();
 
-			if (!request.UsePackageChunks)
+			if (string.IsNullOrWhiteSpace(request.PackageChunksRepositoryUri?.ToString()))
 			{
 				foreach (var nupkgFullName in request.NupkgFullNames)
 				{
@@ -39,14 +39,8 @@ namespace ISI.Extensions.Nuget
 					var arguments = new List<string>();
 					arguments.Add("push");
 
-					if (string.IsNullOrWhiteSpace(request.RepositoryUri?.ToString()))
-					{
-						arguments.Add(string.Format("-Source \"{0}\"", request.RepositoryName));
-					}
-					else
-					{
-						arguments.Add(string.Format("-Source \"{0}\"", request.RepositoryUri?.ToString()));
-					}
+					var source = (string.IsNullOrWhiteSpace(request.RepositoryUri?.ToString()) ? request.RepositoryName : request.RepositoryUri?.ToString());
+					arguments.Add(string.Format("-Source \"{0}\"", source));
 
 					if (!string.IsNullOrWhiteSpace(request.ApiKey))
 					{
@@ -76,19 +70,19 @@ namespace ISI.Extensions.Nuget
 
 					if (nugetResponse.Errored)
 					{
-						Logger.LogError(string.Format("Error pushing \"{0}\" to \"{1}\"\n{2}", System.IO.Path.GetFileName(nupkgFullName), request.RepositoryName, nugetResponse.Output));
+						Logger.LogError(string.Format("Error pushing \"{0}\" to \"{1}\"\n{2}", System.IO.Path.GetFileName(nupkgFullName), source, nugetResponse.Output));
 					}
 					else
 					{
-						Logger.LogInformation(string.Format("Pushed \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), request.RepositoryName));
+						Logger.LogInformation(string.Format("Pushed \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), source));
 					}
 				}
 			}
-			else if (!string.IsNullOrWhiteSpace(request.RepositoryUri?.ToString()))
+			else
 			{
 				foreach (var nupkgFullName in request.NupkgFullNames)
 				{
-					Logger.LogInformation(string.Format("Pushing \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), request.RepositoryUri));
+					Logger.LogInformation(string.Format("Pushing \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), request.PackageChunksRepositoryUri));
 
 					var fileSegments = new Queue<byte[]>();
 
@@ -119,7 +113,7 @@ namespace ISI.Extensions.Nuget
 						}
 					}
 
-					var repositoryUri = new UriBuilder(request.RepositoryUri);
+					var repositoryUri = new UriBuilder(request.PackageChunksRepositoryUri);
 					repositoryUri.Path = "api/v2/package-chunk";
 
 					while (fileSegments.Any())
@@ -181,7 +175,7 @@ namespace ISI.Extensions.Nuget
 						}
 					}
 
-					Logger.LogInformation(string.Format("Pushed \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), request.RepositoryUri));
+					Logger.LogInformation(string.Format("Pushed \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), request.PackageChunksRepositoryUri));
 				}
 			}
 

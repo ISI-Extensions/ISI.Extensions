@@ -30,7 +30,7 @@ namespace ISI.Extensions.Nuget
 		{
 			var response = new DTOs.NupkgPushResponse();
 
-			if (!string.IsNullOrWhiteSpace(request.RepositoryName))
+			if (!request.UsePackageChunks)
 			{
 				foreach (var nupkgFullName in request.NupkgFullNames)
 				{
@@ -38,7 +38,15 @@ namespace ISI.Extensions.Nuget
 
 					var arguments = new List<string>();
 					arguments.Add("push");
-					arguments.Add(string.Format("-Source \"{0}\"", request.RepositoryName));
+
+					if (string.IsNullOrWhiteSpace(request.RepositoryUri?.ToString()))
+					{
+						arguments.Add(string.Format("-Source \"{0}\"", request.RepositoryName));
+					}
+					else
+					{
+						arguments.Add(string.Format("-Source \"{0}\"", request.RepositoryUri?.ToString()));
+					}
 
 					if (!string.IsNullOrWhiteSpace(request.ApiKey))
 					{
@@ -68,11 +76,11 @@ namespace ISI.Extensions.Nuget
 
 					if (nugetResponse.Errored)
 					{
-						Logger.LogError(string.Format("Error pushing \"{0}\" to \"{1}\"\n{2}", System.IO.Path.GetFileName(nupkgFullName), request.RepositoryUri, nugetResponse.Output));
+						Logger.LogError(string.Format("Error pushing \"{0}\" to \"{1}\"\n{2}", System.IO.Path.GetFileName(nupkgFullName), request.RepositoryName, nugetResponse.Output));
 					}
 					else
 					{
-						Logger.LogInformation(string.Format("Pushed \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), request.RepositoryUri));
+						Logger.LogInformation(string.Format("Pushed \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), request.RepositoryName));
 					}
 				}
 			}

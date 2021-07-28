@@ -34,12 +34,13 @@ namespace ISI.Extensions.Nuget
 			{
 				foreach (var nupkgFullName in request.NupkgFullNames)
 				{
-					Logger.LogInformation(string.Format("Pushing \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), request.RepositoryName));
+					var source = (string.IsNullOrWhiteSpace(request.RepositoryUri?.ToString()) ? request.RepositoryName : request.RepositoryUri?.ToString());
+
+					Logger.LogInformation(string.Format("Pushing \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), source));
 
 					var arguments = new List<string>();
 					arguments.Add("push");
 
-					var source = (string.IsNullOrWhiteSpace(request.RepositoryUri?.ToString()) ? request.RepositoryName : request.RepositoryUri?.ToString());
 					arguments.Add(string.Format("-Source \"{0}\"", source));
 
 					if (!string.IsNullOrWhiteSpace(request.ApiKey))

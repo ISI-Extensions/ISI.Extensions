@@ -103,7 +103,7 @@ namespace ISI.Extensions.Nuget
 
 								ms.Flush();
 
-								if ((ms.Position > 0) && ((readBlocks == 0) || (ms.Position + chunkSize > request.MaxFileSegmentSize)))
+								if ((ms.Position > 0) && ((readBlocks == 0) || (ms.Position + chunkSize > request.PackageChunksMaxFileSegmentSize)))
 								{
 									ms.Position = 0;
 									fileSegments.Enqueue(ms.ToArray());
@@ -120,7 +120,7 @@ namespace ISI.Extensions.Nuget
 					{
 						var data = fileSegments.Dequeue();
 
-						var tryAttemptsLeft = request.MaxTries;
+						var tryAttemptsLeft = request.PackageChunksMaxTries;
 						while (tryAttemptsLeft > 0)
 						{
 							try

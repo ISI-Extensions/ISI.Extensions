@@ -32,8 +32,8 @@ namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 		public Uri RepositoryUri { get; set; }
 
 		public Uri PackageChunksRepositoryUri { get; set; }
-		public int MaxFileSegmentSize { get; set; } = 2000000;
-		public int MaxTries { get; set; } = 3;
+		public int PackageChunksMaxFileSegmentSize { get; set; } = 2000000;
+		public int PackageChunksMaxTries { get; set; } = 3;
 
 		public string WorkingDirectory { get; set; }
 	}

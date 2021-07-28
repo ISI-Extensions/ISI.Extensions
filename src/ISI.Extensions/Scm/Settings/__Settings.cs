@@ -36,10 +36,10 @@ namespace ISI.Extensions.Scm
 			public const string CodeSigningCertificateFileName = nameof(CodeSigningCertificateFileName);
 			public const string CodeSigningCertificatePassword = nameof(CodeSigningCertificatePassword);
 
+			public const string NugetApiKey = nameof(NugetApiKey);
 			public const string NugetRepositoryName = nameof(NugetRepositoryName);
 			public const string NugetRepositoryUrl = nameof(NugetRepositoryUrl);
-			public const string NugetApiKey = nameof(NugetApiKey);
-			public const string NugetCacheDirectory = nameof(NugetCacheDirectory);
+			public const string NugetPackageChunksRepositoryUrl = nameof(NugetPackageChunksRepositoryUrl);
 			
 			public const string JenkinsServiceUrl = nameof(JenkinsServiceUrl);
 			public const string JenkinsServicePassword = nameof(JenkinsServicePassword);
@@ -61,10 +61,10 @@ namespace ISI.Extensions.Scm
 					CodeSigningTimeStampUrl,
 					CodeSigningCertificateFileName,
 					CodeSigningCertificatePassword,
+					NugetApiKey,
 					NugetRepositoryName,
 					NugetRepositoryUrl,
-					NugetApiKey,
-					NugetCacheDirectory,
+					NugetPackageChunksRepositoryUrl,
 					JenkinsServiceUrl,
 					JenkinsUrl,
 					JenkinsUserName,

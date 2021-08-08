@@ -16,6 +16,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ISI.Extensions.Caching
 {
@@ -24,10 +25,13 @@ namespace ISI.Extensions.Caching
 	public delegate string[] GenerateCacheKeys<TItem>(TItem item);
 
 	public delegate TItem GetItem<TItem>();
+	public delegate Task<TItem> GetItemAsync<TItem>();
 
 	public delegate TItem GetItem<TKey, TItem>(TKey key);
+	public delegate Task<TItem> GetItemAsync<TKey, TItem>(TKey key);
 
 	public delegate IDictionary<TKey, TItem> GetItems<TKey, TItem>(IEnumerable<TKey> keys);
+	public delegate Task<IDictionary<TKey, TItem>> GetItemsAsync<TKey, TItem>(IEnumerable<TKey> keys);
 
 	public delegate ICacheEntryExpirationPolicy DefaultCacheEntryExpirationPolicyGetter(object itemToCache);
 

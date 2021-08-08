@@ -26,13 +26,13 @@ namespace ISI.Extensions.Caching
 		protected Microsoft.Extensions.Caching.Memory.IMemoryCache MemoryCache { get; }
 
 		private object _innerMemoryCache = null;
-		private object InnerMemoryCache => _innerMemoryCache ??= GetInnerMemoryCache();
+		private object InnerMemoryCache => _innerMemoryCache ??= MemoryCache.GetType().GetProperty("EntriesCollection", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.GetProperty | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public)?.GetValue(MemoryCache);
 
 		private System.Reflection.MethodInfo _innerMemoryCacheClearMethodInfo = null;
-		private System.Reflection.MethodInfo InnerMemoryCacheClearMethodInfo => _innerMemoryCacheClearMethodInfo ??= GetInnerMemoryCacheClearMethodInfo();
+		private System.Reflection.MethodInfo InnerMemoryCacheClearMethodInfo => _innerMemoryCacheClearMethodInfo ??= InnerMemoryCache.GetType().GetMethod("Clear", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
 
 		private System.Reflection.MethodInfo _innerMemoryCacheKeysMethodInfo = null;
-		private System.Reflection.MethodInfo InnerMemoryCacheKeysMethodInfo => _innerMemoryCacheKeysMethodInfo ??= GetInnerMemoryCacheKeysMethodInfo();
+		private System.Reflection.MethodInfo InnerMemoryCacheKeysMethodInfo => _innerMemoryCacheKeysMethodInfo ??= InnerMemoryCache.GetType().GetMethod("Keys", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
 
 		public CacheManager(
 			ISI.Extensions.Caching.Configuration configuration,
@@ -40,22 +40,6 @@ namespace ISI.Extensions.Caching
 		: base(configuration)
 		{
 			MemoryCache = memoryCache;
-		}
-
-		private object GetInnerMemoryCache()
-		{
-			var entriesCollectionProperty = MemoryCache.GetType().GetProperty("EntriesCollection", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.GetProperty | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public);
-			return entriesCollectionProperty?.GetValue(MemoryCache);
-		}
-
-		private System.Reflection.MethodInfo GetInnerMemoryCacheClearMethodInfo()
-		{
-			return InnerMemoryCache.GetType().GetMethod("Clear", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-		}
-
-		private System.Reflection.MethodInfo GetInnerMemoryCacheKeysMethodInfo()
-		{
-			return InnerMemoryCache.GetType().GetMethod("Keys", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
 		}
 
 		public override void Dispose() => MemoryCache?.Dispose();

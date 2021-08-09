@@ -12,15 +12,15 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Nuget.DataTransferObjects.NugetApi;
 using Microsoft.Extensions.Logging;
+using DTOs = ISI.Extensions.Nuget.DataTransferObjects.NugetApi;
 
 namespace ISI.Extensions.Nuget
 {
@@ -38,7 +38,11 @@ namespace ISI.Extensions.Nuget
 			package.metadata.id = request.Nuspec.Package;
 			package.metadata.version = request.Nuspec.Version;
 
-			if (request.Nuspec.IconUri != null)
+			if (!string.IsNullOrWhiteSpace(request.Nuspec.IconName))
+			{
+				package.metadata.icon = request.Nuspec.IconName;
+			}
+			else if (request.Nuspec.IconUri != null)
 			{
 				//package.metadata.icon = request.Nuspec.IconUri.ToString();
 				package.metadata.iconUrl = request.Nuspec.IconUri.ToString();

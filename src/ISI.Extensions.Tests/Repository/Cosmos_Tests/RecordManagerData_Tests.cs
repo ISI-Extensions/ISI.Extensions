@@ -85,7 +85,7 @@ namespace ISI.Extensions.Tests.Repository
 
 			Assert.AreEqual(contactV1.ContactUuid, testContact.ContactUuid);
 
-			var noContacts = recordManager.GetRecordsAsync(new Guid[0]).ToEnumerable();
+			var noContacts = recordManager.GetRecordsAsync(Array.Empty<Guid>()).ToEnumerable();
 
 			Assert.True(noContacts != null);
 
@@ -125,7 +125,7 @@ namespace ISI.Extensions.Tests.Repository
 
 			Assert.AreEqual(contactV2.ContactUuid, testContact.ContactUuid);
 
-			var noContacts = recordManager.GetRecordsAsync(new Guid[0]).ToEnumerable();
+			var noContacts = recordManager.GetRecordsAsync(Array.Empty<Guid>()).ToEnumerable();
 
 			Assert.True(noContacts != null);
 

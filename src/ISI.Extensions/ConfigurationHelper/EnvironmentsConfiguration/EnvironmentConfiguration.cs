@@ -30,7 +30,7 @@ namespace ISI.Extensions.ConfigurationHelper
 
 			public string InheritsFromEnvironmentName { get; set; } = string.Empty;
 
-			public string[] Machines { get; set; } = new string[0];
+			public string[] Machines { get; set; } = Array.Empty<string>();
 		}
 	}
 }

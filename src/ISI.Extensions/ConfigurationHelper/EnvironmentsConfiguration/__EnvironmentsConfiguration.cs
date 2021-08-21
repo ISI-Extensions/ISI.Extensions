@@ -30,6 +30,6 @@ namespace ISI.Extensions.ConfigurationHelper
 
 		public string MachineEnvironmentVariableName { get; set; } = "RUNTIME_ENVIRONMENT";
 
-		public EnvironmentConfiguration[] Environments { get; set; } = new EnvironmentConfiguration[0];
+		public EnvironmentConfiguration[] Environments { get; set; } = Array.Empty<EnvironmentConfiguration>();
 	}
 }

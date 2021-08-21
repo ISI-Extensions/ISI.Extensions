@@ -80,7 +80,7 @@ namespace ISI.Extensions
 
 			var processStartInfo = new System.Diagnostics.ProcessStartInfo(request.ProcessExeFullName)
 			{
-				Arguments = string.Join(" ", request.Arguments ?? new string[0]),
+				Arguments = string.Join(" ", request.Arguments ?? Array.Empty<string>()),
 				WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
 				UseShellExecute = false,
 				CreateNoWindow = true,

@@ -26,7 +26,7 @@ namespace ISI.Extensions.Repository
 	{
 		public virtual async IAsyncEnumerable<TRecord> InsertRecordsAsync(IEnumerable<TRecord> records)
 		{
-			foreach (var record in records ?? new TRecord[0])
+			foreach (var record in records ?? Array.Empty<TRecord>())
 			{
 				yield return await InsertRecordAsync(record);
 			}
@@ -34,7 +34,7 @@ namespace ISI.Extensions.Repository
 
 		public virtual async Task<TRecord> InsertRecordAsync(TRecord record)
 		{
-			await foreach (var insertedRecord in InsertRecordsAsync((record == null ? new TRecord[0] : new[] {record})))
+			await foreach (var insertedRecord in InsertRecordsAsync((record == null ? Array.Empty<TRecord>() : new[] {record})))
 			{
 				return insertedRecord;
 			}

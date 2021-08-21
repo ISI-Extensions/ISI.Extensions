@@ -23,6 +23,7 @@ namespace ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi
 {
 	public partial class ExecuteBuildTargetResponse
 	{
+		public string ExecutionOutputLog { get; set; }
 		public bool Success { get; set; }
 	}
 }

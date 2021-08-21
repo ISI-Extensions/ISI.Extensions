@@ -57,7 +57,7 @@ namespace ISI.Extensions.Nuget
 				ProcessExeFullName = "nuget",
 				Arguments = arguments,
 			});
-
+			
 			Logger.LogInformation(string.Format("Packed \"{0}\"", System.IO.Path.GetFileName(request.NuspecFullName)));
 
 			return response;

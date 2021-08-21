@@ -34,7 +34,7 @@ namespace ISI.Extensions.VisualStudio
 
 			var response = new DTOs.UpdateNugetPackagesResponse();
 
-			var ignorePackageIds = new HashSet<string>(request.IgnorePackageIds ?? new string[0], StringComparer.InvariantCultureIgnoreCase);
+			var ignorePackageIds = new HashSet<string>(request.IgnorePackageIds ?? Array.Empty<string>(), StringComparer.InvariantCultureIgnoreCase);
 
 			var nugetPackageKeys = request.NugetPackageKeys ?? new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
 
@@ -108,17 +108,21 @@ namespace ISI.Extensions.VisualStudio
 								WorkingCopyDirectory = solutionDetails.SolutionDirectory,
 							}).NugetConfigFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
+							var solutionIgnorePackageIds = new HashSet<string>(solutionDetails.DoNotUpdatePackageIds ?? Array.Empty<string>(), StringComparer.InvariantCultureIgnoreCase);
+							solutionIgnorePackageIds.UnionWith(ignorePackageIds);
 
 							bool tryGetNugetPackageKey(string id, out ISI.Extensions.Nuget.NugetPackageKey key)
 							{
+								if (solutionIgnorePackageIds.Contains(id))
+								{
+									key = null;
+
+									return false;
+								}
+
 								if (nugetPackageKeys.TryGetValue(id, out key))
 								{
 									return true;
-								}
-
-								if (ignorePackageIds.Contains(id))
-								{
-									return false;
 								}
 
 								using (NugetApi.GetNugetLock(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetLockRequest()
@@ -250,7 +254,7 @@ namespace ISI.Extensions.VisualStudio
 										{
 											CsProjXml = csProj,
 											AppConfigXml = appConfigXml,
-											NugetPackageKeys = nugetPackageKeys,
+											NugetPackageKeys = nugetPackageKeys.Where(nugetPackageKey => !solutionIgnorePackageIds.Contains(nugetPackageKey.Package)),
 										}).AppConfigXml;
 
 										if (HasChanges(appConfigXml, newAppConfigXml))
@@ -322,10 +326,16 @@ namespace ISI.Extensions.VisualStudio
 
 							try
 							{
+								var nugetPackOutputDirectory = System.IO.Path.Combine(solutionDetails.RootSourceDirectory, "Nuget");
+
 								if (!BuildScriptApi.ExecuteBuildTarget(new ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi.ExecuteBuildTargetRequest()
 								{
 									BuildScriptFullName = buildScriptFullName,
 									Target = solutionDetails.ExecuteBuildScriptTargetAfterUpdateNugetPackages,
+									Parameters = new []
+									{
+										(ParameterName: "NugetPackOutputDirectory", ParameterValue: nugetPackOutputDirectory)
+									},
 									AddToLog = request.AddToLog,
 								}).Success)
 								{
@@ -334,7 +344,26 @@ namespace ISI.Extensions.VisualStudio
 									throw exception;
 								}
 
-								nugetPackageKeys.Clear();
+								if (System.IO.Directory.Exists(nugetPackOutputDirectory))
+								{
+									var updatedNugetPackageKeys = NugetApi.ListNugetPackageKeys(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.ListNugetPackageKeysRequest()
+									{
+										Source = nugetPackOutputDirectory,
+									}).NugetPackageKeys;
+
+									if (updatedNugetPackageKeys.NullCheckedAny())
+									{
+										nugetPackageKeys.Merge(updatedNugetPackageKeys);
+									}
+									else
+									{
+										nugetPackageKeys.Clear();
+									}
+								}
+								else
+								{
+									nugetPackageKeys.Clear();
+								}
 							}
 							catch (Exception exception)
 							{

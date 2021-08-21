@@ -84,7 +84,7 @@ namespace ISI.Extensions.Caching
 		{
 			ClearAll |= item.ClearAll;
 
-			CacheKeys.UnionWith(item.CacheKeys ?? new string[0]);
+			CacheKeys.UnionWith(item.CacheKeys ?? Array.Empty<string>());
 
 			if (item.ItemsWithCacheKey != null)
 			{
@@ -105,7 +105,7 @@ namespace ISI.Extensions.Caching
 				}
 			}
 
-			CacheKeyPrefixes.UnionWith(item.CacheKeyPrefixes ?? new string[0]);
+			CacheKeyPrefixes.UnionWith(item.CacheKeyPrefixes ?? Array.Empty<string>());
 		}
 
 		public void Clear()

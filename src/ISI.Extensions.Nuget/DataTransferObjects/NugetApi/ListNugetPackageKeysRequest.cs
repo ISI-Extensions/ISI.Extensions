@@ -18,46 +18,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Repository
+namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public abstract partial class RecordManager<TRecord>
+	public partial class ListNugetPackageKeysRequest
 	{
-		public virtual async IAsyncEnumerable<TRecord> UpsertRecordsAsync(IEnumerable<TRecord> records)
-		{
-			await foreach (var record in UpsertRecordsAsync(records, null))
-			{
-				yield return await UpsertRecordAsync(record);
-			}
-		}
-
-		public virtual async Task<TRecord> UpsertRecordAsync(TRecord record)
-		{
-			return await UpsertRecordAsync(record, null);
-		}
-
-
-
-
-
-
-		public virtual async IAsyncEnumerable<TRecord> UpsertRecordsAsync(IEnumerable<TRecord> records, Action<TRecord> updateRecordProperties)
-		{
-			foreach (var record in records ?? Array.Empty<TRecord>())
-			{
-				yield return await UpsertRecordAsync(record, updateRecordProperties);
-			}
-		}
-
-		public virtual async Task<TRecord> UpsertRecordAsync(TRecord record, Action<TRecord> updateRecordProperties)
-		{
-			await foreach (var upsertedRecord in UpsertRecordsAsync((record == null ? Array.Empty<TRecord>() : new[] {record})))
-			{
-				return upsertedRecord;
-			}
-
-			return null;
-		}
+		public string Source { get; set; }
 	}
 }

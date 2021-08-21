@@ -12,52 +12,66 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
+using DTOs = ISI.Extensions.Nuget.DataTransferObjects.NugetApi;
 
-namespace ISI.Extensions.Repository
+namespace ISI.Extensions.Nuget
 {
-	public abstract partial class RecordManager<TRecord>
+	public partial class NugetApi
 	{
-		public virtual async IAsyncEnumerable<TRecord> UpsertRecordsAsync(IEnumerable<TRecord> records)
+		public DTOs.ListNugetPackageKeysResponse ListNugetPackageKeys(DTOs.ListNugetPackageKeysRequest request)
 		{
-			await foreach (var record in UpsertRecordsAsync(records, null))
+			var response = new DTOs.ListNugetPackageKeysResponse();
+
+			var arguments = new List<string>();
+
+			arguments.Add("list");
+			arguments.Add(string.Format("-Source \"{0}\"", request.Source));
+
+			var nugetResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{
-				yield return await UpsertRecordAsync(record);
-			}
-		}
+				Logger = new NullLogger(),
+				ProcessExeFullName = "nuget",
+				Arguments = arguments.ToArray(),
+			});
 
-		public virtual async Task<TRecord> UpsertRecordAsync(TRecord record)
-		{
-			return await UpsertRecordAsync(record, null);
-		}
-
-
-
-
-
-
-		public virtual async IAsyncEnumerable<TRecord> UpsertRecordsAsync(IEnumerable<TRecord> records, Action<TRecord> updateRecordProperties)
-		{
-			foreach (var record in records ?? Array.Empty<TRecord>())
+			if (!nugetResponse.Errored)
 			{
-				yield return await UpsertRecordAsync(record, updateRecordProperties);
-			}
-		}
+				var nugetPackageKeys = new List<NugetPackageKey>();
 
-		public virtual async Task<TRecord> UpsertRecordAsync(TRecord record, Action<TRecord> updateRecordProperties)
-		{
-			await foreach (var upsertedRecord in UpsertRecordsAsync((record == null ? Array.Empty<TRecord>() : new[] {record})))
-			{
-				return upsertedRecord;
+				var lines = nugetResponse.Output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+				foreach (var line in lines)
+				{
+					var linePieces = line.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+
+					if (linePieces.Length == 2)
+					{
+						var nugetPackageKey = GetNugetPackageKey(new DTOs.GetNugetPackageKeyRequest()
+						{
+							PackageId = linePieces[0].Trim(),
+							PackageVersion = linePieces[1].Trim(),
+							Source = request.Source,
+						}).NugetPackageKey;
+
+						if (nugetPackageKey != null)
+						{
+							nugetPackageKeys.Add(nugetPackageKey);
+						}
+					}
+				}
+
+				response.NugetPackageKeys = nugetPackageKeys.ToArray();
 			}
 
-			return null;
+			return response;
 		}
 	}
 }

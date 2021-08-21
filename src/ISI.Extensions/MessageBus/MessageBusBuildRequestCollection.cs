@@ -27,7 +27,7 @@ namespace ISI.Extensions.MessageBus
 		public static ISI.Extensions.MessageBus.Configuration Configuration { get; set; }
 		public static IDictionary<string, ISI.Extensions.MessageBus.Configuration.ChannelConfiguration> NamedChannelConfigurations { get; set; }
 
-		public MessageBusBuildRequest DefaultChannelMessageBusBuildRequest { get; } = new MessageBusBuildRequest(null, new Action<IMessageBusConfigurator>[0])
+		public MessageBusBuildRequest DefaultChannelMessageBusBuildRequest { get; } = new MessageBusBuildRequest(null, Array.Empty<Action<IMessageBusConfigurator>>())
 		{
 			ChannelPath = Configuration.DefaultChannel.ChannelPath,
 			ConcurrentConsumerLimit = Configuration.DefaultChannel.ConcurrentConsumerLimit,

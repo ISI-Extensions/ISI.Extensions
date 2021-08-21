@@ -56,7 +56,7 @@ namespace ISI.Extensions.Repository
 
 		public virtual async Task<int> UpdateRecordAsync(TRecord record, UpdateRecordFilterColumnCollection<TRecord> updateRecordFilterColumns)
 		{
-			return await UpdateRecordsAsync((record == null ? new TRecord[0] : new[] { record }), updateRecordFilterColumns);
+			return await UpdateRecordsAsync((record == null ? Array.Empty<TRecord>() : new[] { record }), updateRecordFilterColumns);
 		}
 	}
 }

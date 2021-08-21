@@ -26,13 +26,13 @@ namespace ISI.Extensions.Jenkins
 	{
 		private IDictionary<string, ISI.Extensions.Jenkins.SerializableEntities.JenkinsSettingsJenkinsServer> GetJenkinsServersByDirectory()
 		{
-			var jenkinsServers = (Load()?.JenkinsServers ?? new ISI.Extensions.Jenkins.SerializableEntities.JenkinsSettingsJenkinsServer[0]);
+			var jenkinsServers = (Load()?.JenkinsServers ?? Array.Empty<ISI.Extensions.Jenkins.SerializableEntities.JenkinsSettingsJenkinsServer>());
 
 			var jenkinsServersByDirectory = new Dictionary<string, ISI.Extensions.Jenkins.SerializableEntities.JenkinsSettingsJenkinsServer>(StringComparer.InvariantCultureIgnoreCase);
 
 			foreach (var jenkinsServer in jenkinsServers)
 			{
-				foreach (var directory in jenkinsServer.Directories ?? new string[0])
+				foreach (var directory in jenkinsServer.Directories ?? Array.Empty<string>())
 				{
 					jenkinsServersByDirectory.Add(directory, jenkinsServer);
 				}

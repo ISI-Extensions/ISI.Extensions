@@ -107,7 +107,7 @@ namespace ISI.Extensions.Jenkins.UI
 			txtUserName.Text = JenkinsServer.UserName;
 			txtApiToken.Text = JenkinsServer.ApiToken;
 
-			var directories = (JenkinsServer.Directories ?? new string[0]);
+			var directories = (JenkinsServer.Directories ?? Array.Empty<string>());
 			foreach (var directory in directories)
 			{
 				AddDirectoryPanel(directory);

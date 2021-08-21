@@ -23,6 +23,7 @@ namespace ISI.Extensions.NAnt.DataTransferObjects.NAntApi
 {
 	public partial class ExecuteBuildTargetResponse
 	{
+		public string ExecutionOutputLog { get; set; }
 		public bool Success { get; set; }
 	}
 }

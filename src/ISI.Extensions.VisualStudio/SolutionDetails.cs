@@ -28,5 +28,6 @@ namespace ISI.Extensions.VisualStudio
 
 		public int UpdateNugetPackagesPriority { get; set; } = int.MaxValue;
 		public string ExecuteBuildScriptTargetAfterUpdateNugetPackages { get; set; }
+		public string[] DoNotUpdatePackageIds { get; set; }
 	}
 }

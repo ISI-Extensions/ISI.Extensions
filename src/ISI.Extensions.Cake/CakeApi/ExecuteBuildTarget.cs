@@ -39,16 +39,26 @@ namespace ISI.Extensions.Cake
 			{
 				arguments.Add(string.Format("--Target={0}", request.Target));
 			}
+			if (!request.Parameters.NullCheckedAny())
+			{
+				foreach (var requestParameter in request.Parameters)
+				{
+					arguments.Add(string.Format("--{0}=\"{1}\"", requestParameter.ParameterName, requestParameter.ParameterValue));
+				}
+			}
 
 			logger.LogInformation(string.Format("dotnet {0}", string.Join(" ", arguments)));
 
-			response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+			var processResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{
 				Logger = logger,
 				ProcessExeFullName = "dotnet",
 				Arguments = arguments.ToArray(),
 				WorkingDirectory = System.IO.Path.GetDirectoryName(request.BuildScriptFullName),
-			}).Errored;
+			});
+
+			response.ExecutionOutputLog = processResponse.Output;
+			response.Success = !processResponse.Errored;
 
 			return response;
 		}

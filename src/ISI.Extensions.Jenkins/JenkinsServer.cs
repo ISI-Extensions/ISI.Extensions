@@ -41,7 +41,7 @@ namespace ISI.Extensions.Jenkins
 				JenkinsUrl = ISI.Extensions.ConfigurationValueReader.GetValue(JenkinsUrl),
 				UserName = ISI.Extensions.ConfigurationValueReader.GetValue(UserName),
 				ApiToken = ISI.Extensions.ConfigurationValueReader.GetValue(ApiToken),
-				Directories = (Directories ?? new string[0]).Select(ISI.Extensions.ConfigurationValueReader.GetValue).ToArray(),
+				Directories = (Directories ?? Array.Empty<string>()).Select(ISI.Extensions.ConfigurationValueReader.GetValue).ToArray(),
 			};
 		}
 	}

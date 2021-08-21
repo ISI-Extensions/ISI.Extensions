@@ -34,7 +34,7 @@ namespace ISI.Extensions.Repository
 		public IRecordPropertyDescription<TRecord>[] RepositoryAssignedValuePropertyDescriptions { get; }
 
 		private RecordIndex<TRecord>[] _indexes = null;
-		public RecordIndex<TRecord>[] Indexes => _indexes ??= (Activator.CreateInstance<TRecord>() as IRecordIndexDescriptions<TRecord>)?.GetRecordIndexes()?.ToArray() ?? new RecordIndex<TRecord>[0];
+		public RecordIndex<TRecord>[] Indexes => _indexes ??= (Activator.CreateInstance<TRecord>() as IRecordIndexDescriptions<TRecord>)?.GetRecordIndexes()?.ToArray() ?? Array.Empty<RecordIndex<TRecord>>();
 
 		public RecordDescription(
 			string schema,

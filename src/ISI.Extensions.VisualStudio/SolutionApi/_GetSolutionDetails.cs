@@ -83,8 +83,9 @@ namespace ISI.Extensions.VisualStudio
 				{
 					var storedSolutionDetails = Serialization.Deserialize<SerializableModels.SolutionDetails>(stream, ISI.Extensions.Serialization.SerializationFormat.Json);
 
-					solutionDetails.UpdateNugetPackagesPriority = storedSolutionDetails.UpdateNugetPackagesPriority;
+					solutionDetails.UpdateNugetPackagesPriority = storedSolutionDetails.UpdateNugetPackagesPriority ?? int.MaxValue;
 					solutionDetails.ExecuteBuildScriptTargetAfterUpdateNugetPackages = storedSolutionDetails.ExecuteBuildScriptTargetAfterUpdateNugetPackages;
+					solutionDetails.DoNotUpdatePackageIds = storedSolutionDetails.DoNotUpdatePackageIds;
 				}
 			}
 

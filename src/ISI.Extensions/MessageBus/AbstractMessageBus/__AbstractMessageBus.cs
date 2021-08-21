@@ -32,7 +32,7 @@ namespace ISI.Extensions.MessageBus
 			ISI.Extensions.MessageBus.Configuration configuration,
 			Microsoft.Extensions.Logging.ILogger logger)
 		{
-			configuration.NamedChannels ??= new Configuration.NamedChannelConfiguration[0];
+			configuration.NamedChannels ??= Array.Empty<Configuration.NamedChannelConfiguration>();
 
 			Configuration = configuration;
 			Logger = logger;

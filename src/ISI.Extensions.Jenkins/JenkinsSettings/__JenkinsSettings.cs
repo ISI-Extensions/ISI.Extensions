@@ -53,7 +53,7 @@ namespace ISI.Extensions.Jenkins
 				JenkinsUrl = jenkinsServer.JenkinsUrl,
 				UserName = jenkinsServer.UserName,
 				ApiToken = jenkinsServer.ApiToken,
-				Directories = jenkinsServer.Directories ?? new string[0],
+				Directories = jenkinsServer.Directories ?? Array.Empty<string>(),
 			};
 		}
 
@@ -71,7 +71,7 @@ namespace ISI.Extensions.Jenkins
 				JenkinsUrl = jenkinsServer.JenkinsUrl,
 				UserName = jenkinsServer.UserName,
 				ApiToken = jenkinsServer.ApiToken,
-				Directories = jenkinsServer.Directories ?? new string[0],
+				Directories = jenkinsServer.Directories ?? Array.Empty<string>(),
 			};
 		}
 	}

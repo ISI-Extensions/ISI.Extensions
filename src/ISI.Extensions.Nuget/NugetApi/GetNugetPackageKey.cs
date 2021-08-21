@@ -42,7 +42,14 @@ namespace ISI.Extensions.Nuget
 				{
 					arguments.Add(string.Format("-Version {0}", request.PackageVersion));
 				}
-				arguments.AddRange(GetConfigFileArguments(request.NugetConfigFullNames));
+				if (!string.IsNullOrWhiteSpace(request.Source))
+				{
+					arguments.Add(string.Format("-Source \"{0}\"", request.Source));
+				}
+				if (request.NugetConfigFullNames.NullCheckedAny())
+				{
+					arguments.AddRange(GetConfigFileArguments(request.NugetConfigFullNames));
+				}
 
 				var nugetResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{

@@ -97,12 +97,16 @@ namespace ISI.Extensions.Cake
 		{
 			var response = new ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi.ExecuteBuildTargetResponse();
 
-			response.Success = ExecuteBuildTarget(new DTOs.ExecuteBuildTargetRequest()
+			var executeBuildTargetResponse = ExecuteBuildTarget(new DTOs.ExecuteBuildTargetRequest()
 			{
 				BuildScriptFullName = request.BuildScriptFullName,
 				Target = request.Target,
+				Parameters = request.Parameters,
 				AddToLog = request.AddToLog,
-			}).Success;
+			});
+
+			response.ExecutionOutputLog = executeBuildTargetResponse?.ExecutionOutputLog;
+			response.Success = executeBuildTargetResponse?.Success ?? false;
 
 			return response;
 		}

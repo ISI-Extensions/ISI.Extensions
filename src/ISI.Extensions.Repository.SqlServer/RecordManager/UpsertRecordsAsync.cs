@@ -26,7 +26,7 @@ namespace ISI.Extensions.Repository.SqlServer
 	{
 		public override async IAsyncEnumerable<TRecord> UpsertRecordsAsync(IEnumerable<TRecord> records, Action<TRecord> updateRecordProperties)
 		{
-			await foreach (var record in PersistConvertedRecordsAsync<TRecord>(records ?? new TRecord[0], PersistenceMethod.Upsert, false, updateRecordProperties))
+			await foreach (var record in PersistConvertedRecordsAsync<TRecord>(records ?? Array.Empty<TRecord>(), PersistenceMethod.Upsert, false, updateRecordProperties))
 			{
 				yield return record;
 			}

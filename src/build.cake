@@ -20,7 +20,7 @@ var buildRevision = GetBuildRevision(buildDateTime);
 var assemblyVersion = GetAssemblyVersion(ParseAssemblyInfo(assemblyVersionFile).AssemblyVersion, buildRevision);
 Information("AssemblyVersion: {0}", assemblyVersion);
 
-var nugetDirectory = "../Nuget";
+var nugetPackOutputDirectory = Argument("NugetPackOutputDirectory", "../Nuget");
 
 Task("Clean")
 	.Does(() =>
@@ -32,7 +32,7 @@ Task("Clean")
 			CleanDirectories(projectPath + "/**/obj/" + configuration);
 		}
 
-		CleanDirectories(nugetDirectory);
+		CleanDirectories(nugetPackOutputDirectory);
 
 		Information("Cleaning Projects ...");
 	});
@@ -134,12 +134,12 @@ Task("Nuget")
 				},
 				NoPackageAnalysis = false,
 				Symbols = false,
-				OutputDirectory = nugetDirectory,
+				OutputDirectory = nugetPackOutputDirectory,
 			});
 
 			DeleteFile(nuspecFile);
 
-			var nupgkFile = File(nugetDirectory + "/" + project.Name + "." + assemblyVersion + ".nupkg");
+			var nupgkFile = File(nugetPackOutputDirectory + "/" + project.Name + "." + assemblyVersion + ".nupkg");
 			NupkgSign(new ISI.Cake.Addin.Nuget.NupkgSignRequest()
 			{
 				NupkgFullNames = new [] { nupgkFile.Path.FullPath },
@@ -221,12 +221,12 @@ Task("Nuget")
 			NupkgPack(new ISI.Cake.Addin.Nuget.NupkgPackRequest()
 			{
 				NuspecFullName = nuspecFile.Path.FullPath,
-				OutputDirectory = nugetDirectory,
+				OutputDirectory = nugetPackOutputDirectory,
 			});
 
 			DeleteFile(nuspecFile);
 
-			var nupgkFile = File(nugetDirectory + "/" + projectName + "." + assemblyVersion+ ".nupkg");
+			var nupgkFile = File(nugetPackOutputDirectory + "/" + projectName + "." + assemblyVersion+ ".nupkg");
 
 			NupkgSign(new ISI.Cake.Addin.Nuget.NupkgSignRequest()
 			{

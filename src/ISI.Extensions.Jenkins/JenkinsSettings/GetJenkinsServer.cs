@@ -26,7 +26,7 @@ namespace ISI.Extensions.Jenkins
 	{
 		public ISI.Extensions.Jenkins.JenkinsServer GetJenkinsServer(Guid jenkinsServerUuid)
 		{
-			return Convert((Load()?.JenkinsServers ?? new ISI.Extensions.Jenkins.SerializableEntities.JenkinsSettingsJenkinsServer[0]).FirstOrDefault(jenkinsServer => jenkinsServer.JenkinsServerUuid == jenkinsServerUuid));
+			return Convert((Load()?.JenkinsServers ?? Array.Empty<ISI.Extensions.Jenkins.SerializableEntities.JenkinsSettingsJenkinsServer>()).FirstOrDefault(jenkinsServer => jenkinsServer.JenkinsServerUuid == jenkinsServerUuid));
 		}
 	}
 }

@@ -328,16 +328,18 @@ namespace ISI.Extensions.VisualStudio
 							{
 								var nugetPackOutputDirectory = System.IO.Path.Combine(solutionDetails.RootSourceDirectory, "Nuget");
 
-								if (!BuildScriptApi.ExecuteBuildTarget(new ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi.ExecuteBuildTargetRequest()
+								var executeBuildTargetResponse = BuildScriptApi.ExecuteBuildTarget(new ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi.ExecuteBuildTargetRequest()
 								{
 									BuildScriptFullName = buildScriptFullName,
 									Target = solutionDetails.ExecuteBuildScriptTargetAfterUpdateNugetPackages,
-									Parameters = new []
+									Parameters = new[]
 									{
 										(ParameterName: "NugetPackOutputDirectory", ParameterValue: nugetPackOutputDirectory)
 									},
 									AddToLog = request.AddToLog,
-								}).Success)
+								});
+
+								if (!executeBuildTargetResponse.Success)
 								{
 									var exception = new Exception(string.Format("Error Building \"{0}\"", solutionDetails.RootSourceDirectory));
 									logger.LogError(exception.Message);

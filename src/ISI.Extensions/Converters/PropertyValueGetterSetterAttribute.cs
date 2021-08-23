@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -17,35 +17,24 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.Extensions
 {
-	public class ServiceLocator
+	public partial class Converters
 	{
-		private static System.IServiceProvider _current { get; set; }
-		public static System.IServiceProvider Current
+		[AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+		public class PropertyValueGetterSetterAttribute : Attribute
 		{
-			get
-			{
-				if (_current == null)
-				{
-					//_current = new ISI.Extensions.DependencyInjection.DefaultServiceProvider();
-					throw new Exception("DependencyInjector is null");
-				}
+			public Type PropertyValueType => PropertyValueGetterSetter.PropertyValueType;
 
-				return _current;
-			}
-		}
+			protected IPropertyValueGetterSetter PropertyValueGetterSetter { get; }
 
-		public static object GetService(Type serviceType)
-		{
-			if (_current != null)
+			public PropertyValueGetterSetterAttribute(Type getValueType)
 			{
-				return _current.GetService(serviceType);
+				PropertyValueGetterSetter = ISI.Extensions.ServiceLocator.GetService(getValueType) as IPropertyValueGetterSetter;
 			}
 
-			return Activator.CreateInstance(serviceType);
+			public object GetPropertyValue(object instance) => PropertyValueGetterSetter.GetPropertyValue(instance);
+			public void SetPropertyValue(object instance, object value) => PropertyValueGetterSetter.SetPropertyValue(instance, value);
 		}
-
-		internal static void SetServiceProvider(System.IServiceProvider serviceProvider) => _current = serviceProvider;
 	}
 }

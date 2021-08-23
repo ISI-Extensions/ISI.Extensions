@@ -77,6 +77,10 @@ namespace ISI.Extensions.Topshelf.Extensions
 				{
 					serviceDisplayName = serviceDisplayName.Substring(0, serviceDisplayName.Length - ".WindowsService".Length);
 				}
+				else if (serviceDisplayName.EndsWith(".ServiceApplication"))
+				{
+					serviceDisplayName = serviceDisplayName.Substring(0, serviceDisplayName.Length - ".ServiceApplication".Length);
+				}
 			}
 
 			var servicePrefix = configuration?.ServicePrefix;
@@ -99,6 +103,10 @@ namespace ISI.Extensions.Topshelf.Extensions
 				if (serviceServiceName.EndsWith(".WindowsService"))
 				{
 					serviceServiceName = serviceServiceName.Substring(0, serviceServiceName.Length - ".WindowsService".Length);
+				}
+				else if (serviceServiceName.EndsWith(".ServiceApplication"))
+				{
+					serviceServiceName = serviceServiceName.Substring(0, serviceServiceName.Length - ".ServiceApplication".Length);
 				}
 			}
 

@@ -43,7 +43,7 @@ namespace ISI.Extensions.NAnt
 
 				arguments.Add(request.Target);
 				arguments.Add(string.Format("-buildfile:\"{0}\"", request.BuildScriptFullName));
-				if (!request.Parameters.NullCheckedAny())
+				if (request.Parameters.NullCheckedAny())
 				{
 					foreach (var requestParameter in request.Parameters)
 					{

@@ -39,7 +39,7 @@ namespace ISI.Extensions.Cake
 			{
 				arguments.Add(string.Format("--Target={0}", request.Target));
 			}
-			if (!request.Parameters.NullCheckedAny())
+			if (request.Parameters.NullCheckedAny())
 			{
 				foreach (var requestParameter in request.Parameters)
 				{

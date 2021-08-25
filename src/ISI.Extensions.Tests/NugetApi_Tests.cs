@@ -159,6 +159,19 @@ namespace ISI.Extensions.Tests
 		public void UpdatePackageVersions_Test()
 		{
 			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
+			var nugetApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Nuget.NugetApi>();
+
+			var nugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
+			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			{
+				PackageId = "GreenPipes",
+				PackageVersion = "4.0.0",
+			}).NugetPackageKey);
+			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			{
+				PackageId = "Automatonymous",
+				PackageVersion = "5.1.2",
+			}).NugetPackageKey);
 
 			solutionApi.UpdateNugetPackages(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.UpdateNugetPackagesRequest()
 			{
@@ -240,6 +253,7 @@ namespace ISI.Extensions.Tests
 					@"F:\ISI\Clients\ICS\ICS.WorkState.MigrationTool",
 				},
 				CommitWorkingCopyToSourceControl = true,
+				NugetPackageKeys = nugetPackageKeys,
 				IgnorePackageIds = new[]
 				{
 					"ISI.CMS.T4CMS",

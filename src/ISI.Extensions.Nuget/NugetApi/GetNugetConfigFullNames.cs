@@ -49,6 +49,7 @@ namespace ISI.Extensions.Nuget
 				}
 			}
 
+			if(!nugetConfigFullNames.Any())
 			{
 				var nugetConfigFullName = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "NuGet", "NuGet.config");
 				if (System.IO.File.Exists(nugetConfigFullName))

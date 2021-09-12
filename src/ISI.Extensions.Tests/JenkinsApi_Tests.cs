@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using ISI.Extensions.ConfigurationHelper.Extensions;
 using ISI.Extensions.DependencyInjection.Extensions;
+using ISI.Extensions.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
@@ -76,6 +77,35 @@ namespace ISI.Extensions.Tests
 				UserName = settings.Jenkins.UserName,
 				ApiToken = settings.Jenkins.ApiToken,
 			}).ServiceConfigurationYaml;
+		}
+
+		[Test]
+		public void Delete_QA_Jobs_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ICS.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName);
+
+			var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+
+			var jobIds = jenkinsApi.GetJobIds(new ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi.GetJobIdsRequest()
+			{
+				JenkinsUrl = settings.Jenkins.JenkinsUrl,
+				UserName = settings.Jenkins.UserName,
+				ApiToken = settings.Jenkins.ApiToken,
+			}).JobIds.ToNullCheckedHashSet(NullCheckCollectionResult.Empty);
+
+			jobIds.RemoveWhere(jobId => !jobId.Contains(".QA.", StringComparison.InvariantCulture));
+
+			foreach (var jobId in jobIds)
+			{
+				jenkinsApi.DeleteJob(new ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi.DeleteJobRequest()
+				{
+					JenkinsUrl = settings.Jenkins.JenkinsUrl,
+					UserName = settings.Jenkins.UserName,
+					ApiToken = settings.Jenkins.ApiToken,
+					JobId = jobId,
+				});
+			}
 		}
 
 		[Test]

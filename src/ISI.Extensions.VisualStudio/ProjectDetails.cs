@@ -19,17 +19,10 @@ using System.Text;
 
 namespace ISI.Extensions.VisualStudio
 {
-	public class SolutionDetails
+	public class ProjectDetails
 	{
-		public string SolutionName { get; set; }
-		public string SolutionDirectory { get; set; }
-		public string SolutionFullName { get; set; }
-		public string RootSourceDirectory { get; set; }
-
-		public ProjectDetails[] ProjectDetailsSet { get; set; }
-
-		public int UpdateNugetPackagesPriority { get; set; } = int.MaxValue;
-		public string ExecuteBuildScriptTargetAfterUpdateNugetPackages { get; set; }
-		public string[] DoNotUpdatePackageIds { get; set; }
+		public string ProjectName { get; set; }
+		public string ProjectDirectory { get; set; }
+		public string ProjectFullName { get; set; }
 	}
 }

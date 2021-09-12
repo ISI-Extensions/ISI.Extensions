@@ -38,11 +38,14 @@ namespace ISI.Extensions.VisualStudio
 
 			var nugetPackageKeys = request.NugetPackageKeys ?? new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
 
-			var solutionDetailsSet = request.SolutionFullNames.ToNullCheckedArray(GetSolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
+			var solutionDetailsSet = request.SolutionFullNames.ToNullCheckedArray(solution => GetSolutionDetails(new DTOs.GetSolutionDetailsRequest()
+			{
+				Solution = solution,
+			}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
 
 			if (request.UpdateWorkingCopyFromSourceControl)
 			{
-				foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.Name, StringComparer.InvariantCultureIgnoreCase))
+				foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
 				{
 					using (getBuildServiceSolutionLock(solutionDetails.SolutionFullName, request.AddToLog))
 					{
@@ -52,7 +55,7 @@ namespace ISI.Extensions.VisualStudio
 							AddToLog = request.AddToLog,
 						}).Lock)
 						{
-							logger.LogInformation(string.Format("Updating {0} from Source Control", solutionDetails.Name));
+							logger.LogInformation(string.Format("Updating {0} from Source Control", solutionDetails.SolutionName));
 
 							if (!SourceControlClientApi.UpdateWorkingCopy(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.UpdateWorkingCopyRequest()
 							{
@@ -69,10 +72,13 @@ namespace ISI.Extensions.VisualStudio
 					}
 				}
 
-				solutionDetailsSet = request.SolutionFullNames.ToNullCheckedArray(GetSolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
+				solutionDetailsSet = request.SolutionFullNames.ToNullCheckedArray(solution => GetSolutionDetails(new DTOs.GetSolutionDetailsRequest()
+				{
+					Solution = solution,
+				}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
 			}
 
-			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpdateNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.Name, StringComparer.InvariantCultureIgnoreCase))
+			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpdateNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
 			{
 				using (getBuildServiceSolutionLock(solutionDetails.SolutionFullName, request.AddToLog))
 				{
@@ -82,7 +88,7 @@ namespace ISI.Extensions.VisualStudio
 						AddToLog = request.AddToLog,
 					}).Lock)
 					{
-						logger.LogInformation(string.Format("Updating {0} from Source Control", solutionDetails.Name));
+						logger.LogInformation(string.Format("Updating {0} from Source Control", solutionDetails.SolutionName));
 
 						var dirtyFileNames = new HashSet<string>();
 
@@ -145,39 +151,13 @@ namespace ISI.Extensions.VisualStudio
 								return nugetPackageKeys.TryGetValue(id, out key);
 							}
 
-							var csProjFullNames = new List<string>();
-
-							{
-								var solutionLines = System.IO.File.ReadAllLines(solutionDetails.SolutionFullName);
-
-								foreach (var solutionLine in solutionLines)
-								{
-									if (solutionLine.Trim().StartsWith("Project(", StringComparison.InvariantCultureIgnoreCase))
-									{
-										var pieces = solutionLine.Split(new[] { '=' }).ToList();
-
-										pieces = pieces[1].Split(new[] { '"' }).Select(piece => piece.Trim()).ToList();
-
-										pieces.RemoveAll(piece => string.Equals(piece, ","));
-										pieces.RemoveAll(string.IsNullOrWhiteSpace);
-
-										if (pieces[1].EndsWith(".csproj", StringComparison.InvariantCultureIgnoreCase))
-										{
-											csProjFullNames.Add(System.IO.Path.Combine(solutionDetails.SolutionDirectory, pieces[1]));
-										}
-									}
-								}
-							}
-
 							logger.LogInformation("Updating Projects");
 
-							foreach (var csProjFullName in csProjFullNames.OrderBy(f => f, StringComparer.InvariantCultureIgnoreCase))
+							foreach (var projectDetails in solutionDetails.ProjectDetailsSet.OrderBy(projectDetails => projectDetails.ProjectFullName, StringComparer.InvariantCultureIgnoreCase))
 							{
-								logger.LogInformation(string.Format("  {0}", System.IO.Path.GetFileNameWithoutExtension(csProjFullName)));
+								logger.LogInformation(string.Format("  {0}", projectDetails.ProjectName));
 
-								var projectDirectory = System.IO.Path.GetDirectoryName(csProjFullName);
-
-								var packagesConfigFullName = System.IO.Path.Combine(projectDirectory, "packages.config");
+								var packagesConfigFullName = System.IO.Path.Combine(projectDetails.ProjectDirectory, "packages.config");
 
 								if (System.IO.File.Exists(packagesConfigFullName))
 								{
@@ -211,7 +191,7 @@ namespace ISI.Extensions.VisualStudio
 									}
 								}
 
-								var csProj = System.IO.File.ReadAllText(csProjFullName);
+								var csProj = System.IO.File.ReadAllText(projectDetails.ProjectFullName);
 
 								try
 								{
@@ -224,19 +204,19 @@ namespace ISI.Extensions.VisualStudio
 
 									if (HasChanges(csProj, newCsProj))
 									{
-										System.IO.File.WriteAllText(csProjFullName, newCsProj);
-										dirtyFileNames.Add(csProjFullName);
+										System.IO.File.WriteAllText(projectDetails.ProjectFullName, newCsProj);
+										dirtyFileNames.Add(projectDetails.ProjectFullName);
 									}
 								}
 								catch (Exception exception)
 								{
-									throw new Exception(string.Format("File: {0}", csProjFullName), exception);
+									throw new Exception(string.Format("File: {0}", projectDetails.ProjectFullName), exception);
 								}
 
-								var appConfigFileName = System.IO.Path.Combine(projectDirectory, "web.config");
+								var appConfigFileName = System.IO.Path.Combine(projectDetails.ProjectDirectory, "web.config");
 								if (!System.IO.File.Exists(appConfigFileName))
 								{
-									appConfigFileName = System.IO.Path.Combine(projectDirectory, "app.config");
+									appConfigFileName = System.IO.Path.Combine(projectDetails.ProjectDirectory, "app.config");
 
 									if (!System.IO.File.Exists(appConfigFileName))
 									{
@@ -314,14 +294,14 @@ namespace ISI.Extensions.VisualStudio
 							}
 						}
 
-						logger.LogInformation(string.Format("Updated Nuget Packages in {0}", solutionDetails.Name));
+						logger.LogInformation(string.Format("Updated Nuget Packages in {0}", solutionDetails.SolutionName));
 					}
 
 					if (!string.IsNullOrWhiteSpace(solutionDetails.ExecuteBuildScriptTargetAfterUpdateNugetPackages))
 					{
 						if (BuildScriptApi.TryGetBuildScript(solutionDetails.SolutionDirectory, out var buildScriptFullName))
 						{
-							logger.LogInformation(string.Format("Building {0}", solutionDetails.Name));
+							logger.LogInformation(string.Format("Building {0}", solutionDetails.SolutionName));
 							logger.LogInformation(string.Format("  BuildScriptFullName: {0}", buildScriptFullName));
 
 							try
@@ -373,7 +353,7 @@ namespace ISI.Extensions.VisualStudio
 								throw;
 							}
 
-							logger.LogInformation(string.Format("Built {0}", solutionDetails.Name));
+							logger.LogInformation(string.Format("Built {0}", solutionDetails.SolutionName));
 						}
 					}
 				}

@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,21 +15,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace ISI.Extensions.VisualStudio
+namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 {
-	public class SolutionDetails
+	public partial class GetProjectDetailsRequest
 	{
-		public string SolutionName { get; set; }
-		public string SolutionDirectory { get; set; }
-		public string SolutionFullName { get; set; }
-		public string RootSourceDirectory { get; set; }
-
-		public ProjectDetails[] ProjectDetailsSet { get; set; }
-
-		public int UpdateNugetPackagesPriority { get; set; } = int.MaxValue;
-		public string ExecuteBuildScriptTargetAfterUpdateNugetPackages { get; set; }
-		public string[] DoNotUpdatePackageIds { get; set; }
+		public string Project { get; set; }
 	}
 }

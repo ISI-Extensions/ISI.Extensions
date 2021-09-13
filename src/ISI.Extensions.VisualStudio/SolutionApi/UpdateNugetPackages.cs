@@ -319,7 +319,11 @@ namespace ISI.Extensions.VisualStudio
 									AddToLog = request.AddToLog,
 								});
 
-								if (!executeBuildTargetResponse.Success)
+								if (executeBuildTargetResponse.Success)
+								{
+									System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
+								}
+								else
 								{
 									var exception = new Exception(string.Format("Error Building \"{0}\"", solutionDetails.RootSourceDirectory));
 									logger.LogError(exception.Message);

@@ -78,63 +78,6 @@ namespace ISI.Extensions.Tests
 		public void Replacements_Test()
 		{
 			var replacements = new Dictionary<string, string>();
-			//replacements.Add("Integrated Control Solutions, Inc. 2010", "SitePro, Inc. 2021");
-			//replacements.Add("Integrated Control Solutions, Inc. 2011", "SitePro, Inc. 2021");
-			//replacements.Add("Integrated Control Solutions, Inc. 2012", "SitePro, Inc. 2021");
-			//replacements.Add("Integrated Control Solutions, Inc. 2013", "SitePro, Inc. 2021");
-			//replacements.Add("Integrated Control Solutions, Inc. 2014", "SitePro, Inc. 2021");
-			//replacements.Add("Integrated Control Solutions, Inc. 2015", "SitePro, Inc. 2021");
-			//replacements.Add("Integrated Control Solutions, Inc. 2016", "SitePro, Inc. 2021");
-			//replacements.Add("Integrated Control Solutions, Inc. 2017", "SitePro, Inc. 2021");
-			//replacements.Add("Integrated Control Solutions, Inc. 2018", "SitePro, Inc. 2021");
-			//replacements.Add("Integrated Control Solutions, Inc. 2019", "SitePro, Inc. 2021");
-			//replacements.Add("Integrated Control Solutions, Inc. 2020", "SitePro, Inc. 2021");
-			//replacements.Add("Integrated Control Solutions, Inc. 2021", "SitePro, Inc. 2021");
-			//replacements.Add("Integrated Control Solutions, LLC", "SitePro, Inc");
-			//replacements.Add("Integrated Control Solutions LLC", "SitePro, Inc");
-			//replacements.Add("Integrated Control Solutions, Inc", "SitePro, Inc");
-			//replacements.Add("Integrated Control Solutions", "SitePro");
-
-
-			replacements.Add("ics-monitor-tester-swdc-app01.swdcentral.com", "spc-beta-app01-monitor-tester.corp.sitepro.com");
-			replacements.Add("ics-monitor-tester-swdc-iis01.swdcentral.com", "spc-beta-iis01-monitor-tester.corp.sitepro.com");
-			replacements.Add("ics-monitor-tester-swdc-sql01.swdcentral.com", "spc-beta-sql01-monitor-tester.corp.sitepro.com");
-
-			replacements.Add("ics-monitor-tester-swdc-app01.swdcentral.com", "spc-beta-app01-monitor-tester.corp.sitepro.com");
-			replacements.Add("ics-monitor-tester-swdc-iis01.swdcentral.com", "spc-beta-iis01-monitor-tester.corp.sitepro.com");
-			replacements.Add("ics-monitor-tester-swdc-sql01.swdcentral.com", "spc-beta-sql01-monitor-tester.corp.sitepro.com");
-
-
-			//replacements.Add("qa-ics-facility-operator.swdcentral.com", "beta-central.sitepro.com");
-			//replacements.Add("qa-ics-cms.swdcentral.com", "beta-cms-central.sitepro.com");
-			//replacements.Add("qa-ics-communicationChannels.swdcentral.com", "beta-communicationChannels-central.sitepro.com");
-			//replacements.Add("qa-ics-delegated-alarms-dashboards.swdcentral.com", "beta-delegated-alarms-dashboards-central.sitepro.com");
-			//replacements.Add("qa-ics-emails.swdcentral.com", "beta-emails-central.sitepro.com");
-			//replacements.Add("qa-ics-facility-cis-modelling-api.swdcentral.com", "beta-facility-cis-modelling-api-central.sitepro.com");
-			//replacements.Add("qa-ics-facility-operator-back-office-api.swdcentral.com", "beta-facility-operator-back-office-api-central.sitepro.com");
-			//replacements.Add("qa-ics-facility-panel-services.swdcentral.com", "beta-facility-panel-services-central.sitepro.com");
-			//replacements.Add("qa-ics-facility-status-and-alarms-api.swdcentral.com", "beta-facility-status-and-alarms-api-central.sitepro.com");
-			//replacements.Add("qa-ics-facilityRealtimeCommands.swdcentral.com", "beta-facilityRealtimeCommands-central.sitepro.com");
-			//replacements.Add("qa-ics-monitor-tester-websites.swdcentral.com", "beta-monitor-tester-websites-central.sitepro.com");
-			//replacements.Add("qa-ics-monitor-tester-windowservices.swdcentral.com", "beta-monitor-tester-windowservices-central.sitepro.com");
-			//replacements.Add("qa-ics-telephony.swdcentral.com", "beta-telephony-central.sitepro.com");
-			//replacements.Add("qa-ics-web.swdcentral.com", "beta-web-central.sitepro.com");
-			//replacements.Add("uat-ics-facility-operator.swdcentral.com", "uat-central.sitepro.com");
-			//replacements.Add("uat-ics-cms.swdcentral.com", "uat-cms-central.sitepro.com");
-			//replacements.Add("uat-ics-communicationChannels.swdcentral.com", "uat-communicationChannels-central.sitepro.com");
-			//replacements.Add("uat-ics-delegated-alarms-dashboards.swdcentral.com", "uat-delegated-alarms-dashboards-central.sitepro.com");
-			//replacements.Add("uat-ics-emails.swdcentral.com", "uat-emails-central.sitepro.com");
-			//replacements.Add("uat-ics-facility-cis-modelling-api.swdcentral.com", "uat-facility-cis-modelling-api-central.sitepro.com");
-			//replacements.Add("uat-ics-facility-operator-back-office-api.swdcentral.com", "uat-facility-operator-back-office-api-central.sitepro.com");
-			//replacements.Add("uat-ics-facility-panel-services.swdcentral.com", "uat-facility-panel-services-central.sitepro.com");
-			//replacements.Add("uat-ics-facility-status-and-alarms-api.swdcentral.com", "uat-facility-status-and-alarms-api-central.sitepro.com");
-			//replacements.Add("uat-ics-facilityRealtimeCommands.swdcentral.com", "uat-facilityRealtimeCommands-central.sitepro.com");
-			//replacements.Add("uat-ics-monitor-tester-websites.swdcentral.com", "uat-monitor-tester-websites-central.sitepro.com");
-			//replacements.Add("uat-ics-monitor-tester-windowservices.swdcentral.com", "uat-monitor-tester-windowsservices-central.sitepro.com");
-			//replacements.Add("uat-ics-telephony.swdcentral.com", "uat-telephony-central.sitepro.com");
-			//replacements.Add("uat-ics-web.swdcentral.com", "uat-web-central.sitepro.com");
-
-			//replacements.Add("ICS.ico", "SitePro.ico");
 
 			var logger = ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();
 			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();

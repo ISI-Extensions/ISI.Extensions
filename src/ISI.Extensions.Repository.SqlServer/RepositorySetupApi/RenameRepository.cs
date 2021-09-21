@@ -57,7 +57,7 @@ namespace ISI.Extensions.Repository.SqlServer
 			var databaseFileNames = new List<string>();
 
 			{
-				using (var connection = new Microsoft.Data.SqlClient.SqlConnection(MasterConnectionString))
+				using (var connection = SqlConnection.GetSqlConnection(MasterConnectionString))
 				{
 					connection.Open();
 

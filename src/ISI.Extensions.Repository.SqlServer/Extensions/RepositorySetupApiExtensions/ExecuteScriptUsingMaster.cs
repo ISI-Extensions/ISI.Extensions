@@ -28,7 +28,7 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 	{
 		public static DTOs.ExecuteScriptResponse ExecuteScriptUsingMaster(this ISI.Extensions.Repository.IRepositorySetupApi repositorySetupApi, string script, IDictionary<string, object> parameters = null)
 		{
-			using (var connection = new Microsoft.Data.SqlClient.SqlConnection(GetMasterConnectionString(repositorySetupApi)))
+			using (var connection = SqlConnection.GetSqlConnection(GetMasterConnectionString(repositorySetupApi)))
 			{
 				connection.Open();
 

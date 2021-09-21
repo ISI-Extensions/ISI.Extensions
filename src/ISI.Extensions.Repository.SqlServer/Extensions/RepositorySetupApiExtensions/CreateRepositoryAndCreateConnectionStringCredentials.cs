@@ -44,7 +44,7 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 
 			var response = new DTOs.CreateRepositoryResponse();
 
-			using (var connection = new Microsoft.Data.SqlClient.SqlConnection(((ISI.Extensions.Repository.SqlServer.RepositorySetupApi)repositorySetupApi).MasterConnectionString))
+			using (var connection = SqlConnection.GetSqlConnection(((ISI.Extensions.Repository.SqlServer.RepositorySetupApi)repositorySetupApi).MasterConnectionString))
 			{
 				connection.Open();
 

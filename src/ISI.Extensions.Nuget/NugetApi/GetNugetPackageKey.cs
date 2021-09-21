@@ -97,7 +97,7 @@ namespace ISI.Extensions.Nuget
 								AssemblyFileName = System.IO.Path.GetFileName(assemblyFileName),
 								HintPath = string.Format("{0}\\{1}", System.IO.Path.GetFileName(packageFullName), assemblyFileName.Replace("/", "\\")),
 								AssemblyVersion = assemblyName.Version.ToString(),
-								PublicKeyToken = assemblyName.GetPublicKeyToken().ToString(),
+								PublicKeyToken = string.Concat(assemblyName.GetPublicKeyToken().Select(b => b.ToString("X2"))).ToLower(),
 							};
 
 							nugetPackageKeyTargetFrameworkAssemblies.Add(nugetPackageKeyTargetFrameworkAssembly);

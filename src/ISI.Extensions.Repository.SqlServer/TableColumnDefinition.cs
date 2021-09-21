@@ -36,7 +36,7 @@ namespace ISI.Extensions.Repository.SqlServer
 		{
 			var result = new List<TableColumnDefinition>();
 
-			using (var connection = new Microsoft.Data.SqlClient.SqlConnection(connectionString))
+			using (var connection = SqlConnection.GetSqlConnection(connectionString))
 			{
 				connection.Open();
 

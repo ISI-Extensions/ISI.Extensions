@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,52 +15,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
-using ISI.Extensions.Extensions;
-using ISI.Extensions.Repository.SqlServer.Extensions;
 
-namespace ISI.Extensions.Repository.SqlServer
+namespace ISI.Extensions.Repository
 {
-	public partial class RepositorySetupApi
+	public class ConnectionStringParameterName
 	{
-		public DTOs.ExecuteScriptResponse ExecuteScript(string script, IDictionary<string, object> parameters = null)
-		{
-			using (var connection = SqlConnection.GetSqlConnection(ConnectionString))
-			{
-				connection.Open();
-
-				return ExecuteScript(connection, script, parameters);
-			}
-		}
-
-		internal DTOs.ExecuteScriptResponse ExecuteScript(Microsoft.Data.SqlClient.SqlConnection connection, string script, IDictionary<string, object> parameters = null)
-		{
-			var response = new DTOs.ExecuteScriptResponse();
-
-			if (!string.IsNullOrEmpty(script))
-			{
-				var replacementValues = GetReplacementValues();
-
-				script = script.Replace(replacementValues);
-
-				var sql = new StringBuilder();
-
-				sql.AppendFormat("use [{0}];\n", DatabaseName);
-				sql.AppendFormat("{0}\n", script);
-
-				using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql.ToString(), connection))
-				{
-					command.AddParameters(parameters);
-
-					command.CommandTimeout = 60 * 10;
-					command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
-				}
-			}
-
-			return response;
-		}
+		public static readonly string Provider = nameof(Provider);
+		public static readonly string AppRoleName = nameof(AppRoleName);
+		public static readonly string AppRolePassword = nameof(AppRolePassword);
 	}
 }

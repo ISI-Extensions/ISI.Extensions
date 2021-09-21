@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,52 +15,54 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
-using ISI.Extensions.Extensions;
+using ISI.Extensions.Repository.Extensions;
 using ISI.Extensions.Repository.SqlServer.Extensions;
 
 namespace ISI.Extensions.Repository.SqlServer
 {
-	public partial class RepositorySetupApi
+	public class SqlConnection
 	{
-		public DTOs.ExecuteScriptResponse ExecuteScript(string script, IDictionary<string, object> parameters = null)
+		public static Microsoft.Data.SqlClient.SqlConnection GetSqlConnection(string connectionString, bool enableMultipleActiveResultSets = false)
 		{
-			using (var connection = SqlConnection.GetSqlConnection(ConnectionString))
+			var dbConnectionStringBuilder = new System.Data.Common.DbConnectionStringBuilder()
 			{
-				connection.Open();
+				ConnectionString = connectionString,	
+			};
 
-				return ExecuteScript(connection, script, parameters);
+			var appRoleName = dbConnectionStringBuilder.GetValue(ISI.Extensions.Repository.ConnectionStringParameterName.AppRoleName, true) ?? string.Empty;
+			var appRolePassword = dbConnectionStringBuilder.GetValue(ISI.Extensions.Repository.ConnectionStringParameterName.AppRolePassword, true) ?? string.Empty;
+
+			if (enableMultipleActiveResultSets)
+			{
+				dbConnectionStringBuilder.Add("MultipleActiveResultSets", "true");
 			}
-		}
 
-		internal DTOs.ExecuteScriptResponse ExecuteScript(Microsoft.Data.SqlClient.SqlConnection connection, string script, IDictionary<string, object> parameters = null)
-		{
-			var response = new DTOs.ExecuteScriptResponse();
+			var connection = new Microsoft.Data.SqlClient.SqlConnection(dbConnectionStringBuilder.ConnectionString);
 
-			if (!string.IsNullOrEmpty(script))
+			connection.StateChange += (sender, args) =>
 			{
-				var replacementValues = GetReplacementValues();
-
-				script = script.Replace(replacementValues);
-
-				var sql = new StringBuilder();
-
-				sql.AppendFormat("use [{0}];\n", DatabaseName);
-				sql.AppendFormat("{0}\n", script);
-
-				using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql.ToString(), connection))
+				if ((args.OriginalState == System.Data.ConnectionState.Closed) ||
+				    (args.OriginalState == System.Data.ConnectionState.Connecting) &&
+				    (args.CurrentState == System.Data.ConnectionState.Open))
 				{
-					command.AddParameters(parameters);
+					if (!string.IsNullOrWhiteSpace(appRoleName) && !string.IsNullOrWhiteSpace(appRolePassword))
+					{
+						using (var command = new Microsoft.Data.SqlClient.SqlCommand("sp_setapprole", connection))
+						{
+							command.CommandType = System.Data.CommandType.StoredProcedure;
 
-					command.CommandTimeout = 60 * 10;
-					command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
+							command.AddParameter("@rolename", appRoleName);
+							command.AddParameter("@password", appRolePassword);
+
+							command.CommandTimeout = 0;
+							command.ExecuteNonQuery();
+						}
+					}
 				}
-			}
+			};
 
-			return response;
+			return connection;
 		}
 	}
 }

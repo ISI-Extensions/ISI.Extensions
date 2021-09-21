@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -17,50 +17,40 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
-using ISI.Extensions.Extensions;
-using ISI.Extensions.Repository.SqlServer.Extensions;
 
-namespace ISI.Extensions.Repository.SqlServer
+namespace ISI.Extensions.Repository.Extensions
 {
-	public partial class RepositorySetupApi
+	public static class DbConnectionStringBuilderExtensions
 	{
-		public DTOs.ExecuteScriptResponse ExecuteScript(string script, IDictionary<string, object> parameters = null)
+		public static string GetValue(this System.Data.Common.DbConnectionStringBuilder dbConnectionStringBuilder, string key, bool removeWhenFound = false)
 		{
-			using (var connection = SqlConnection.GetSqlConnection(ConnectionString))
-			{
-				connection.Open();
-
-				return ExecuteScript(connection, script, parameters);
-			}
+			return GetValue(dbConnectionStringBuilder, new[] { key }, removeWhenFound);
 		}
 
-		internal DTOs.ExecuteScriptResponse ExecuteScript(Microsoft.Data.SqlClient.SqlConnection connection, string script, IDictionary<string, object> parameters = null)
+		public static string GetValue(this System.Data.Common.DbConnectionStringBuilder dbConnectionStringBuilder, string[] keys, bool removeWhenFound = false)
 		{
-			var response = new DTOs.ExecuteScriptResponse();
-
-			if (!string.IsNullOrEmpty(script))
+			if ((keys != null) && keys.Any())
 			{
-				var replacementValues = GetReplacementValues();
-
-				script = script.Replace(replacementValues);
-
-				var sql = new StringBuilder();
-
-				sql.AppendFormat("use [{0}];\n", DatabaseName);
-				sql.AppendFormat("{0}\n", script);
-
-				using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql.ToString(), connection))
+				foreach (var key in keys.Where(key => !string.IsNullOrWhiteSpace(key)))
 				{
-					command.AddParameters(parameters);
+					if (dbConnectionStringBuilder.TryGetValue(key, out var value))
+					{
+						if (removeWhenFound)
+						{
+							dbConnectionStringBuilder.Remove(key);
+						}
 
-					command.CommandTimeout = 60 * 10;
-					command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
+						return string.Format("{0}", value);
+					}
 				}
 			}
 
-			return response;
+			return null;
 		}
+
+		public static string GetServerName(this System.Data.Common.DbConnectionStringBuilder dbConnectionStringBuilder) => GetValue(dbConnectionStringBuilder, new[] { "Data Source", "Server", "Address", "Addr", "Network Address" });
+		public static string GetDatabaseName(this System.Data.Common.DbConnectionStringBuilder dbConnectionStringBuilder) => GetValue(dbConnectionStringBuilder, new[] { "Database", "Initial Catalog" });
+		public static string GetUserName(this System.Data.Common.DbConnectionStringBuilder dbConnectionStringBuilder) => GetValue(dbConnectionStringBuilder, new[] { "UID", "User ID" });
+		public static string GetPassword(this System.Data.Common.DbConnectionStringBuilder dbConnectionStringBuilder) => GetValue(dbConnectionStringBuilder, new[] { "Password", "Pwd" });
 	}
 }

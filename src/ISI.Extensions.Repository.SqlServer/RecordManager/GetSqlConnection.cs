@@ -26,18 +26,7 @@ namespace ISI.Extensions.Repository.SqlServer
 	{
 		protected virtual Microsoft.Data.SqlClient.SqlConnection GetSqlConnection(bool enableMultipleActiveResultSets = false)
 		{
-			var connectionString = ConnectionString;
-
-			if (enableMultipleActiveResultSets)
-			{
-				var connectionStringBuilder = new System.Data.Common.DbConnectionStringBuilder();
-				connectionStringBuilder.ConnectionString = connectionString;
-				connectionStringBuilder.Add("MultipleActiveResultSets", "true");
-
-				connectionString = connectionStringBuilder.ConnectionString;
-			}
-
-			return new Microsoft.Data.SqlClient.SqlConnection(connectionString);
+			return SqlConnection.GetSqlConnection(ConnectionString, enableMultipleActiveResultSets);
 		}
 	}
 }

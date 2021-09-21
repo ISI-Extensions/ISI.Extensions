@@ -29,7 +29,7 @@ namespace ISI.Extensions.Repository.SqlServer
 		{
 			var response = new DTOs.DeleteRepositoryResponse();
 
-			using (var connection = new Microsoft.Data.SqlClient.SqlConnection(MasterConnectionString))
+			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionString))
 			{
 				connection.Open();
 

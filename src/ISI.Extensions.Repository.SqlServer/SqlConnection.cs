@@ -40,13 +40,13 @@ namespace ISI.Extensions.Repository.SqlServer
 
 			var connection = new Microsoft.Data.SqlClient.SqlConnection(dbConnectionStringBuilder.ConnectionString);
 
-			connection.StateChange += (sender, args) =>
+			if (!string.IsNullOrWhiteSpace(appRoleName) && !string.IsNullOrWhiteSpace(appRolePassword))
 			{
-				if ((args.OriginalState == System.Data.ConnectionState.Closed) ||
-				    (args.OriginalState == System.Data.ConnectionState.Connecting) &&
-				    (args.CurrentState == System.Data.ConnectionState.Open))
+				connection.StateChange += (sender, args) =>
 				{
-					if (!string.IsNullOrWhiteSpace(appRoleName) && !string.IsNullOrWhiteSpace(appRolePassword))
+					if ((args.OriginalState == System.Data.ConnectionState.Closed) ||
+					    (args.OriginalState == System.Data.ConnectionState.Connecting) &&
+					    (args.CurrentState == System.Data.ConnectionState.Open))
 					{
 						using (var command = new Microsoft.Data.SqlClient.SqlCommand("sp_setapprole", connection))
 						{
@@ -59,8 +59,8 @@ namespace ISI.Extensions.Repository.SqlServer
 							command.ExecuteNonQuery();
 						}
 					}
-				}
-			};
+				};
+			}
 
 			return connection;
 		}

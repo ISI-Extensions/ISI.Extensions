@@ -172,6 +172,11 @@ namespace ISI.Extensions.Tests
 				PackageId = "Automatonymous",
 				PackageVersion = "5.1.2",
 			}).NugetPackageKey);
+			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			{
+				PackageId = "SkiaSharp",
+				PackageVersion = "2.80.2",
+			}).NugetPackageKey);
 
 			var solutionFullNames = System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt");
 

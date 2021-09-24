@@ -40,6 +40,9 @@ namespace ISI.Extensions.Scm.SerializableModels.JenkinsServiceApi
 		[DataMember(Name = "jenkinsApiToken", EmitDefaultValue = false)]
 		public string JenkinsApiToken { get; set; }
 
+		[DataMember(Name = "pauseJenkins", EmitDefaultValue = false)]
+		public bool PauseJenkins { get; set; }
+
 		[DataMember(Name = "jobIds", EmitDefaultValue = false)]
 		public string[] JobIds { get; set; }
 

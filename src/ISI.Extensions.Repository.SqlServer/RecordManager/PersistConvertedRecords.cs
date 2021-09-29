@@ -26,14 +26,14 @@ namespace ISI.Extensions.Repository.SqlServer
 {
 	public abstract partial class RecordManager<TRecord>
 	{
-		protected virtual async IAsyncEnumerable<TRecord> PersistConvertedRecordsAsync<TConvertedRecord>(IEnumerable<TRecord> records, PersistenceMethod persistenceMethod, bool hasArchiveTable, Action<TRecord> updateRecordProperties = null, UpdateRecordFilterColumnCollection<TRecord> updateRecordColumns = null, Func<TRecord, TConvertedRecord> recordToConvertedRecordConverter = null, Func<TConvertedRecord, TRecord> convertedRecordToRecordConverter = null, Func<TRecord, DateTime> getArchiveDateTime = null)
+		protected virtual async Task<IEnumerable<TRecord>> PersistConvertedRecordsAsync<TConvertedRecord>(IEnumerable<TRecord> records, PersistenceMethod persistenceMethod, bool hasArchiveTable, Action<TRecord> updateRecordProperties = null, UpdateRecordFilterColumnCollection<TRecord> updateRecordColumns = null, Func<TRecord, TConvertedRecord> recordToConvertedRecordConverter = null, Func<TConvertedRecord, TRecord> convertedRecordToRecordConverter = null, Func<TRecord, DateTime> getArchiveDateTime = null)
 			where TConvertedRecord : class
 		{
 			object GetValue(IRecordPropertyDescription<TConvertedRecord> recordPropertyDescription, TConvertedRecord convertedRecord)
 			{
 				var value = recordPropertyDescription.GetValue(convertedRecord);
 
-				if (recordPropertyDescription.CanBeSerialized)
+				if (recordPropertyDescription.CanBeSerialized && (value != null))
 				{
 					value = Serializer.Serialize(recordPropertyDescription.ValueType, value, true);
 				}
@@ -59,8 +59,7 @@ namespace ISI.Extensions.Repository.SqlServer
 			}
 
 			var maxBatchSize = (int)(1500 / (insertPropertyDescriptions.Count + (hasArchiveTable ? 1 : 0)));
-
-
+			
 			var repositoryAssignedValueColumnDefinitions = new List<TableColumnDefinition>();
 			foreach (var repositoryAssignedPropertyDescription in repositoryAssignedValuePropertyDescriptions)
 			{
@@ -175,7 +174,7 @@ namespace ISI.Extensions.Repository.SqlServer
 									command.AddParameter(string.Format("@primaryKey{0}", primaryKeyIndex++), (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
 								}
 
-								await updateConnection.EnsureConnectionIsOpenAsync();
+								updateConnection.EnsureConnectionIsOpenAsync().Wait();
 
 								doInsert = !(string.Format("{0}", await command.ExecuteScalarWithExceptionTracingAsync())).ToBoolean();
 							}
@@ -281,10 +280,7 @@ namespace ISI.Extensions.Repository.SqlServer
 				}
 			}
 
-			foreach (var record in persistedConvertedRecords.Select(convertedRecordToRecordConverter))
-			{
-				yield return record;
-			}
+			return persistedConvertedRecords.Select(convertedRecordToRecordConverter);
 		}
 	}
 }

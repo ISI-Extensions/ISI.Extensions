@@ -47,12 +47,6 @@ namespace ISI.Extensions.Repository.SqlServer
 
 			var sql = new StringBuilder();
 
-			if (string.IsNullOrEmpty(schema))
-			{
-				schema = Schema;
-			}
-
-			#region Create schema
 			if (!string.IsNullOrEmpty(schema))
 			{
 				sql.Clear();
@@ -60,9 +54,7 @@ namespace ISI.Extensions.Repository.SqlServer
 				sql.AppendFormat("exec('CREATE SCHEMA [{0}]');\n", schema);
 				connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
 			}
-			#endregion
 
-			#region Create userRoleName
 			if (!string.IsNullOrEmpty(userRoleName))
 			{
 				sql.Clear();
@@ -76,7 +68,6 @@ namespace ISI.Extensions.Repository.SqlServer
 				sql.AppendFormat("GRANT CREATE TABLE TO [{0}];\n", userRoleName);
 				connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
 			}
-			#endregion
 
 			return response;
 		}

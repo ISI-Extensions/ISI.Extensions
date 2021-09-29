@@ -18,26 +18,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Repository.SqlServer
+namespace ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi
 {
-	public abstract partial class RecordManagerPrimaryKeyWithArchive<TRecord, TRecordPrimaryKey>
+	public partial class CreateRepositoryRequest
 	{
-		public override async IAsyncEnumerable<TRecord> UpsertRecordsAsync(IEnumerable<TRecord> records)
-		{
-			foreach (var record in await PersistConvertedRecordsAsync<TRecord>(records ?? Array.Empty<TRecord>(), PersistenceMethod.Upsert, true, null, null, record => record, convertedRecord => convertedRecord, record => record.ArchiveDateTime))
-			{
-				yield return record;
-			}
-		}
-
-		public override async IAsyncEnumerable<TRecord> UpsertRecordsAsync(IEnumerable<TRecord> records, Action<TRecord> updateRecordProperties)
-		{
-			foreach (var record in await PersistConvertedRecordsAsync<TRecord>(records ?? Array.Empty<TRecord>(), PersistenceMethod.Upsert, true, updateRecordProperties, null, record => record, convertedRecord => convertedRecord, record => record.ArchiveDateTime))
-			{
-				yield return record;
-			}
-		}
 	}
 }

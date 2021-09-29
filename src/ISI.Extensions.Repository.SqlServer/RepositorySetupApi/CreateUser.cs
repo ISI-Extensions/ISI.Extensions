@@ -47,11 +47,6 @@ namespace ISI.Extensions.Repository.SqlServer
 
 			var sql = new StringBuilder();
 
-			if (string.IsNullOrEmpty(schema))
-			{
-				schema = Schema;
-			}
-
 			#region Create userRoleName
 			if (!string.IsNullOrEmpty(userRoleName))
 			{

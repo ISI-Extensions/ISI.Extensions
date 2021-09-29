@@ -30,7 +30,6 @@ namespace ISI.Extensions.Repository.SqlServer
 			var replacementValues = new System.Collections.Generic.Dictionary<string, string>();
 
 			replacementValues.Add("{database}", DatabaseName);
-			replacementValues.Add("{schema}", Schema);
 
 			return replacementValues;
 		}

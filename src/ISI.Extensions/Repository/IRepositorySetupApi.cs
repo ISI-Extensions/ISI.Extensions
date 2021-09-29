@@ -24,12 +24,8 @@ namespace ISI.Extensions.Repository
 {
 	public interface IRepositorySetupApi
 	{
-		string ConnectionString { get; }
-		string Schema { get; }
-		string TableNamePrefix { get; }
-
 		DTOs.DeleteRepositoryResponse DeleteRepository();
-		DTOs.CreateRepositoryResponse CreateRepository(string dataFileDirectory = null, string logFileDirectory = null, string schema = null, string userRoleName = null, string userName = null, string password = null, string additionalScript = null);
+		DTOs.CreateRepositoryResponse CreateRepository(DTOs.CreateRepositoryRequest request);
 		DTOs.GetLatestStepResponse GetLatestStep();
 		DTOs.SetStepResponse SetStep(int stepId);
 		DTOs.ExecuteScriptResponse ExecuteScript(string script, IDictionary<string, object> parameters = null);

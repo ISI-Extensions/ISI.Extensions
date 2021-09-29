@@ -28,7 +28,7 @@ namespace ISI.Extensions.Repository.SqlServer
 		{
 			var count = 0;
 
-			await foreach (var updatedRecord in PersistConvertedRecordsAsync<TRecord>(records, PersistenceMethod.Update, false, null, updateRecordFilterColumns))
+			foreach (var updatedRecord in await PersistConvertedRecordsAsync<TRecord>(records, PersistenceMethod.Update, false, null, updateRecordFilterColumns))
 			{
 				count++;
 			}

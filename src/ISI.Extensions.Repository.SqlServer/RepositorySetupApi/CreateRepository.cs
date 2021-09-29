@@ -25,9 +25,18 @@ namespace ISI.Extensions.Repository.SqlServer
 {
 	public partial class RepositorySetupApi
 	{
-		public DTOs.CreateRepositoryResponse CreateRepository(string dataFileDirectory = null, string logFileDirectory = null, string schema = null, string userRoleName = null, string userName = null, string password = null, string additionalScript = null)
+		public DTOs.CreateRepositoryResponse CreateRepository(DTOs.CreateRepositoryRequest request)
 		{
 			var response = new DTOs.CreateRepositoryResponse();
+
+			var dataFileDirectory = (request as ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateRepositoryRequest)?.DataFileDirectory;
+			var logFileDirectory = (request as ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateRepositoryRequest)?.LogFileDirectory;
+			var schema = (request as ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateRepositoryRequest)?.Schema;
+			var userRoleName = (request as ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateRepositoryRequest)?.UserRoleName;
+			var userName = (request as ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateRepositoryRequest)?.UserName;
+			var password = (request as ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateRepositoryRequest)?.Password;
+			var additionalScript = (request as ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateRepositoryRequest)?.AdditionalScript;
+			var additionalScriptFileNames = (request as ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateRepositoryRequest)?.AdditionalScriptFileNames;
 
 			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionString))
 			{

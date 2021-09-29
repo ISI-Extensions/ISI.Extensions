@@ -36,8 +36,6 @@ namespace ISI.Extensions.Repository.Cosmos
 		public string DatabaseName { get; }
 		public string AccountEndpoint { get; }
 		public string AccountKey { get; }
-		public string Schema => string.Empty;
-		public string TableNamePrefix { get; }
 		public string CompletedBy { get; }
 
 		public RepositorySetupApi(
@@ -46,13 +44,11 @@ namespace ISI.Extensions.Repository.Cosmos
 			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
 			string connectionString,
 			string databaseName = null,
-			string tableNamePrefix = null,
 			string completedBy = null)
 		{
 			Configuration = configuration;
 			Logger = logger;
 			DateTimeStamper = dateTimeStamper;
-			TableNamePrefix = tableNamePrefix;
 
 			ConnectionString = Configuration.GetConnectionString(connectionString) ?? connectionString;
 
@@ -61,12 +57,7 @@ namespace ISI.Extensions.Repository.Cosmos
 			AccountEndpoint = connectionStringBuilder.AccountEndpoint;
 			AccountKey = connectionStringBuilder.AccountKey;
 
-			if (string.IsNullOrWhiteSpace(databaseName))
-			{
-				databaseName = connectionStringBuilder.DatabaseName;
-			}
-			DatabaseName = databaseName;
-
+			DatabaseName = (string.IsNullOrWhiteSpace(databaseName) ? connectionStringBuilder.DatabaseName : databaseName);
 			CompletedBy = completedBy;
 		}
 

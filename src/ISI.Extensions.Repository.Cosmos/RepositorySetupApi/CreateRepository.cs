@@ -25,7 +25,7 @@ namespace ISI.Extensions.Repository.Cosmos
 {
 	public partial class RepositorySetupApi
 	{
-		public DTOs.CreateRepositoryResponse CreateRepository(string dataFileDirectory = null, string logFileDirectory = null, string schema = null, string userRoleName = null, string userName = null, string password = null, string additionalScript = null)
+		public DTOs.CreateRepositoryResponse CreateRepository(DTOs.CreateRepositoryRequest request)
 		{
 			var response = new DTOs.CreateRepositoryResponse();
 

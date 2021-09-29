@@ -36,8 +36,6 @@ namespace ISI.Extensions.Repository.SqlServer
 
 		public string ConnectionString { get; }
 		public string DatabaseName { get; }
-		public string Schema { get; }
-		public string TableNamePrefix { get; }
 		public string CompletedBy { get; }
 
 		public RepositorySetupApi(
@@ -47,8 +45,6 @@ namespace ISI.Extensions.Repository.SqlServer
 			ISI.Extensions.JsonSerialization.IJsonSerializer serializer,
 			string connectionString,
 			string databaseName = null,
-			string schema = null,
-			string tableNamePrefix = null,
 			string completedBy = null,
 			string masterConnectionString = null)
 		{
@@ -56,26 +52,13 @@ namespace ISI.Extensions.Repository.SqlServer
 			Logger = logger;
 			DateTimeStamper = dateTimeStamper;
 			Serializer = serializer;
-			Schema = schema;
-			TableNamePrefix = tableNamePrefix;
 
 			ConnectionString = Configuration.GetConnectionString(connectionString) ?? connectionString;
 
 			var connectionStringBuilder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(ConnectionString);
 
-			if (string.IsNullOrWhiteSpace(databaseName))
-			{
-				databaseName = connectionStringBuilder.InitialCatalog;
-			}
-			DatabaseName = databaseName.Replace("[", string.Empty).Replace("]", string.Empty);
-
-			Schema = (schema ?? string.Empty).Replace("[", string.Empty).Replace("]", string.Empty);
-
-			if (string.IsNullOrWhiteSpace(completedBy))
-			{
-				completedBy = connectionStringBuilder.UserID;
-			}
-			CompletedBy = completedBy;
+			DatabaseName = (string.IsNullOrWhiteSpace(databaseName) ? connectionStringBuilder.InitialCatalog : databaseName).Replace("[", string.Empty).Replace("]", string.Empty);
+			CompletedBy = (string.IsNullOrWhiteSpace(completedBy) ? connectionStringBuilder.UserID : completedBy);
 
 			_masterConnectionString = masterConnectionString;
 		}

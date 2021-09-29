@@ -32,7 +32,15 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 			var userName = connectionStringBuilder.UserID;
 			var password = connectionStringBuilder.Password;
 
-			return repositorySetupApi.CreateRepository(dataFileDirectory, logFileDirectory, schema, userRoleName, userName, password);
+			return repositorySetupApi.CreateRepository(new ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateRepositoryRequest()
+			{
+				DataFileDirectory = dataFileDirectory,
+				LogFileDirectory = logFileDirectory,
+				Schema = schema,
+				UserRoleName = userRoleName,
+				UserName = userName,
+				Password = password,
+			});
 		}
 
 		public static DTOs.CreateRepositoryResponse CreateConnectionStringCredentials(this ISI.Extensions.Repository.IRepositorySetupApi repositorySetupApi, string schema = null, string userRoleName = null)

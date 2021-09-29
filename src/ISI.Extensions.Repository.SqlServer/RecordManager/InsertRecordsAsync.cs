@@ -28,7 +28,7 @@ namespace ISI.Extensions.Repository.SqlServer
 	{
 		public override async IAsyncEnumerable<TRecord> InsertRecordsAsync(IEnumerable<TRecord> records)
 		{
-			await foreach (var record in PersistConvertedRecordsAsync<TRecord>(records, PersistenceMethod.Insert, false))
+			foreach (var record in await PersistConvertedRecordsAsync<TRecord>(records, PersistenceMethod.Insert, false))
 			{
 				yield return record;
 			}

@@ -20,9 +20,9 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Repository.SqlServer.Extensions
+namespace ISI.Extensions.Repository.Extensions
 {
-	public static partial class DbDataReaderByOrdinalExtensions
+	public static partial class DataReaderByOrdinalExtensions
 	{
 		public static bool GetBoolean(this System.Data.Common.DbDataReader dbDataReader, int ordinal)
 		{

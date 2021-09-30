@@ -20,9 +20,9 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Repository.SqlServer.Extensions
+namespace ISI.Extensions.Repository.Extensions
 {
-	public static partial class DbDataReaderByColumnNameExtensions
+	public static partial class DataReaderByColumnNameExtensions
 	{
 		public static TEnum GetEnum<TEnum>(this System.Data.Common.DbDataReader dbDataReader, string name)
 		{
@@ -45,97 +45,97 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 
 		public static bool GetBoolean(this System.Data.Common.DbDataReader dbDataReader, string name)
 		{
-			return DbDataReaderByOrdinalExtensions.GetBoolean(dbDataReader, dbDataReader.GetOrdinal(name));
+			return DataReaderByOrdinalExtensions.GetBoolean(dbDataReader, dbDataReader.GetOrdinal(name));
 		}
 
 		public static bool? GetBooleanNullable(this System.Data.Common.DbDataReader dbDataReader, string name)
 		{
-			return DbDataReaderByOrdinalExtensions.GetBooleanNullable(dbDataReader, dbDataReader.GetOrdinal(name));
+			return DataReaderByOrdinalExtensions.GetBooleanNullable(dbDataReader, dbDataReader.GetOrdinal(name));
 		}
 
 		public static byte[] GetBytes(this System.Data.Common.DbDataReader dbDataReader, string name)
 		{
-			return DbDataReaderByOrdinalExtensions.GetBytes(dbDataReader, dbDataReader.GetOrdinal(name));
+			return DataReaderByOrdinalExtensions.GetBytes(dbDataReader, dbDataReader.GetOrdinal(name));
 		}
 
 		public static Guid GetGuid(this System.Data.Common.DbDataReader dbDataReader, string name)
 		{
-			return DbDataReaderByOrdinalExtensions.GetGuid(dbDataReader, dbDataReader.GetOrdinal(name));
+			return DataReaderByOrdinalExtensions.GetGuid(dbDataReader, dbDataReader.GetOrdinal(name));
 		}
 
 		public static Guid? GetGuidNullable(this System.Data.Common.DbDataReader dbDataReader, string name)
 		{
-			return DbDataReaderByOrdinalExtensions.GetGuidNullable(dbDataReader, dbDataReader.GetOrdinal(name));
+			return DataReaderByOrdinalExtensions.GetGuidNullable(dbDataReader, dbDataReader.GetOrdinal(name));
 		}
 
 		public static int GetInt(this System.Data.Common.DbDataReader dbDataReader, string name)
 		{
-			return DbDataReaderByOrdinalExtensions.GetInt(dbDataReader, dbDataReader.GetOrdinal(name));
+			return DataReaderByOrdinalExtensions.GetInt(dbDataReader, dbDataReader.GetOrdinal(name));
 		}
 
 		public static int? GetIntNullable(this System.Data.Common.DbDataReader dbDataReader, string name)
 		{
-			return DbDataReaderByOrdinalExtensions.GetIntNullable(dbDataReader, dbDataReader.GetOrdinal(name));
+			return DataReaderByOrdinalExtensions.GetIntNullable(dbDataReader, dbDataReader.GetOrdinal(name));
 		}
 
 		public static long GetLong(this System.Data.Common.DbDataReader dbDataReader, string name)
 		{
-			return DbDataReaderByOrdinalExtensions.GetLong(dbDataReader, dbDataReader.GetOrdinal(name));
+			return DataReaderByOrdinalExtensions.GetLong(dbDataReader, dbDataReader.GetOrdinal(name));
 		}
 
 		public static long? GetLongNullable(this System.Data.Common.DbDataReader dbDataReader, string name)
 		{
-			return DbDataReaderByOrdinalExtensions.GetLongNullable(dbDataReader, dbDataReader.GetOrdinal(name));
+			return DataReaderByOrdinalExtensions.GetLongNullable(dbDataReader, dbDataReader.GetOrdinal(name));
 		}
 
 		public static double GetDouble(this System.Data.Common.DbDataReader dbDataReader, string name)
 		{
-			return DbDataReaderByOrdinalExtensions.GetDouble(dbDataReader, dbDataReader.GetOrdinal(name));
+			return DataReaderByOrdinalExtensions.GetDouble(dbDataReader, dbDataReader.GetOrdinal(name));
 		}
 
 		public static double? GetDoubleNullable(this System.Data.Common.DbDataReader dbDataReader, string name)
 		{
-			return DbDataReaderByOrdinalExtensions.GetDoubleNullable(dbDataReader, dbDataReader.GetOrdinal(name));
+			return DataReaderByOrdinalExtensions.GetDoubleNullable(dbDataReader, dbDataReader.GetOrdinal(name));
 		}
 
 		public static decimal GetDecimal(this System.Data.Common.DbDataReader dbDataReader, string name)
 		{
-			return DbDataReaderByOrdinalExtensions.GetDecimal(dbDataReader, dbDataReader.GetOrdinal(name));
+			return DataReaderByOrdinalExtensions.GetDecimal(dbDataReader, dbDataReader.GetOrdinal(name));
 		}
 
 		public static decimal? GetDecimalNullable(this System.Data.Common.DbDataReader dbDataReader, string name)
 		{
-			return DbDataReaderByOrdinalExtensions.GetDecimalNullable(dbDataReader, dbDataReader.GetOrdinal(name));
+			return DataReaderByOrdinalExtensions.GetDecimalNullable(dbDataReader, dbDataReader.GetOrdinal(name));
 		}
 
 		public static float GetFloat(this System.Data.Common.DbDataReader dbDataReader, string name)
 		{
-			return DbDataReaderByOrdinalExtensions.GetFloat(dbDataReader, dbDataReader.GetOrdinal(name));
+			return DataReaderByOrdinalExtensions.GetFloat(dbDataReader, dbDataReader.GetOrdinal(name));
 		}
 
 		public static float? GetFloatNullable(this System.Data.Common.DbDataReader dbDataReader, string name)
 		{
-			return DbDataReaderByOrdinalExtensions.GetFloatNullable(dbDataReader, dbDataReader.GetOrdinal(name));
+			return DataReaderByOrdinalExtensions.GetFloatNullable(dbDataReader, dbDataReader.GetOrdinal(name));
 		}
 
 		public static DateTime GetDateTime(this System.Data.Common.DbDataReader dbDataReader, string name)
 		{
-			return DbDataReaderByOrdinalExtensions.GetDateTime(dbDataReader, dbDataReader.GetOrdinal(name));
+			return DataReaderByOrdinalExtensions.GetDateTime(dbDataReader, dbDataReader.GetOrdinal(name));
 		}
 
 		public static DateTime? GetDateTimeNullable(this System.Data.Common.DbDataReader dbDataReader, string name)
 		{
-			return DbDataReaderByOrdinalExtensions.GetDateTimeNullable(dbDataReader, dbDataReader.GetOrdinal(name));
+			return DataReaderByOrdinalExtensions.GetDateTimeNullable(dbDataReader, dbDataReader.GetOrdinal(name));
 		}
 
 		public static TimeSpan GetTimeSpan(this System.Data.Common.DbDataReader dbDataReader, string name)
 		{
-			return DbDataReaderByOrdinalExtensions.GetTimeSpan(dbDataReader, dbDataReader.GetOrdinal(name));
+			return DataReaderByOrdinalExtensions.GetTimeSpan(dbDataReader, dbDataReader.GetOrdinal(name));
 		}
 
 		public static TimeSpan? GetTimeSpanNullable(this System.Data.Common.DbDataReader dbDataReader, string name)
 		{
-			return DbDataReaderByOrdinalExtensions.GetTimeSpanNullable(dbDataReader, dbDataReader.GetOrdinal(name));
+			return DataReaderByOrdinalExtensions.GetTimeSpanNullable(dbDataReader, dbDataReader.GetOrdinal(name));
 		}
 	}
 }

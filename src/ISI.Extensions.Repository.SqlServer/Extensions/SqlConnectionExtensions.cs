@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.Repository.Extensions;
 
 namespace ISI.Extensions.Repository.SqlServer.Extensions
 {

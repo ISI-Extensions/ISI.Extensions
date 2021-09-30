@@ -32,23 +32,44 @@ namespace ISI.Extensions.Repository.SqlServer
 			var dataFileDirectory = (request as ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateRepositoryRequest)?.DataFileDirectory;
 			var logFileDirectory = (request as ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateRepositoryRequest)?.LogFileDirectory;
 			var schema = (request as ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateRepositoryRequest)?.Schema;
-			var userRoleName = (request as ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateRepositoryRequest)?.UserRoleName;
+			var userRole = (request as ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateRepositoryRequest)?.UserRole;
 			var userName = (request as ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateRepositoryRequest)?.UserName;
 			var password = (request as ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateRepositoryRequest)?.Password;
-			var additionalScript = (request as ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateRepositoryRequest)?.AdditionalScript;
-			var additionalScriptFileNames = (request as ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateRepositoryRequest)?.AdditionalScriptFileNames;
 
 			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionString))
 			{
-				connection.Open();
+				connection.EnsureConnectionIsOpenAsync().Wait();
 
 				var sql = new StringBuilder();
 
 				CreateDatabase(connection, dataFileDirectory, logFileDirectory);
-				CreateSchema(connection, schema, userRoleName);
-				CreateUser(connection, schema, userRoleName, userName, password);
 
-				ExecuteScript(connection, additionalScript);
+				if (!string.IsNullOrWhiteSpace(userName) && !string.IsNullOrWhiteSpace(password))
+				{
+					CreateUser(connection, userName, password);
+				}
+
+				if (!string.IsNullOrWhiteSpace(userRole))
+				{
+					CreateUserRole(connection, userRole);
+					if (!string.IsNullOrWhiteSpace(userName) && !string.IsNullOrWhiteSpace(password))
+					{
+						AddUserToUserRole(connection, userRole, userName);
+					}
+				}
+
+				if (!string.IsNullOrWhiteSpace(schema))
+				{
+					CreateSchema(connection, schema);
+					if (!string.IsNullOrWhiteSpace(userRole))
+					{
+						AddUserRoleToSchema(connection, userRole, schema);
+					}
+					else if (!string.IsNullOrWhiteSpace(userName) && !string.IsNullOrWhiteSpace(password))
+					{
+						AddUserToSchema(connection, userName, schema);
+					}
+				}
 			}
 
 			return response;

@@ -18,24 +18,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
 using ISI.Extensions.Repository.SqlServer.Extensions;
+using Microsoft.Extensions.Configuration;
+using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
 
 namespace ISI.Extensions.Repository.SqlServer
 {
 	public partial class RepositorySetupApi
 	{
-		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateSchemaResponse CreateSchema(string schema)
+		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateUserRoleResponse CreateUserRole(string userRole)
 		{
 			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionString))
 			{
-				return CreateSchema(connection, schema);
+				return CreateUserRole(connection, userRole);
 			}
 		}
 
-		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateSchemaResponse CreateSchema(Microsoft.Data.SqlClient.SqlConnection connection, string schema)
+		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateUserRoleResponse CreateUserRole(Microsoft.Data.SqlClient.SqlConnection connection, string userRole)
 		{
-			var response = new ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateSchemaResponse();
+			var response = new ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateUserRoleResponse();
 
 			connection.EnsureConnectionIsOpenAsync().Wait();
 
@@ -43,7 +44,10 @@ namespace ISI.Extensions.Repository.SqlServer
 
 			sql.Clear();
 			sql.AppendFormat("use [{0}];\n", DatabaseName);
-			sql.AppendFormat("exec('CREATE SCHEMA [{0}]');\n", schema);
+			sql.AppendFormat("CREATE ROLE [{0}] AUTHORIZATION db_securityadmin;\n", userRole);
+			sql.AppendFormat("GRANT CREATE SCHEMA TO [{0}];\n", userRole);
+			sql.AppendFormat("GRANT CREATE TABLE TO [{0}];\n", userRole);
+
 			connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
 
 			return response;

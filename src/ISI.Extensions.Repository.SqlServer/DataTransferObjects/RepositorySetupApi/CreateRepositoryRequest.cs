@@ -25,10 +25,8 @@ namespace ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetu
 		public string DataFileDirectory { get; set; }
 		public string LogFileDirectory { get; set; }
 		public string Schema { get; set; }
-		public string UserRoleName { get; set; }
+		public string UserRole { get; set; }
 		public string UserName { get; set; }
 		public string Password { get; set; }
-		public string AdditionalScript { get; set; }
-		public IEnumerable<string> AdditionalScriptFileNames { get; set; }
 	}
 }

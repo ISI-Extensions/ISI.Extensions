@@ -12,30 +12,31 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
 using ISI.Extensions.Repository.SqlServer.Extensions;
+using Microsoft.Extensions.Configuration;
+using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
 
 namespace ISI.Extensions.Repository.SqlServer
 {
 	public partial class RepositorySetupApi
 	{
-		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateSchemaResponse CreateSchema(string schema)
+		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.AddUserRoleToSchemaResponse AddUserRoleToSchema(string userRole, string schema)
 		{
 			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionString))
 			{
-				return CreateSchema(connection, schema);
+				return AddUserRoleToSchema(connection, userRole, schema);
 			}
 		}
 
-		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateSchemaResponse CreateSchema(Microsoft.Data.SqlClient.SqlConnection connection, string schema)
+		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.AddUserRoleToSchemaResponse AddUserRoleToSchema(Microsoft.Data.SqlClient.SqlConnection connection, string userRole, string schema)
 		{
-			var response = new ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateSchemaResponse();
+			var response = new ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.AddUserRoleToSchemaResponse();
 
 			connection.EnsureConnectionIsOpenAsync().Wait();
 
@@ -43,7 +44,8 @@ namespace ISI.Extensions.Repository.SqlServer
 
 			sql.Clear();
 			sql.AppendFormat("use [{0}];\n", DatabaseName);
-			sql.AppendFormat("exec('CREATE SCHEMA [{0}]');\n", schema);
+			sql.AppendFormat("GRANT ALTER, SELECT, INSERT, UPDATE, DELETE ON SCHEMA :: [{1}] TO [{0}];\n", userRole, schema);
+
 			connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
 
 			return response;

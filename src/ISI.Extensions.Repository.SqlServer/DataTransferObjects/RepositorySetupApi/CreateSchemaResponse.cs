@@ -19,34 +19,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
-using ISI.Extensions.Repository.SqlServer.Extensions;
 
-namespace ISI.Extensions.Repository.SqlServer
+namespace ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi
 {
-	public partial class RepositorySetupApi
+	public partial class CreateSchemaResponse
 	{
-		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateSchemaResponse CreateSchema(string schema)
-		{
-			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionString))
-			{
-				return CreateSchema(connection, schema);
-			}
-		}
-
-		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateSchemaResponse CreateSchema(Microsoft.Data.SqlClient.SqlConnection connection, string schema)
-		{
-			var response = new ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateSchemaResponse();
-
-			connection.EnsureConnectionIsOpenAsync().Wait();
-
-			var sql = new StringBuilder();
-
-			sql.Clear();
-			sql.AppendFormat("use [{0}];\n", DatabaseName);
-			sql.AppendFormat("exec('CREATE SCHEMA [{0}]');\n", schema);
-			connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
-
-			return response;
-		}
 	}
 }

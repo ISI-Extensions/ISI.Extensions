@@ -18,24 +18,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
 using ISI.Extensions.Repository.SqlServer.Extensions;
+using Microsoft.Extensions.Configuration;
+using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
 
 namespace ISI.Extensions.Repository.SqlServer
 {
 	public partial class RepositorySetupApi
 	{
-		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateSchemaResponse CreateSchema(string schema)
+		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.AddUserToUserRoleResponse AddUserToUserRole(string userName, string userRole)
 		{
 			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionString))
 			{
-				return CreateSchema(connection, schema);
+				return AddUserToUserRole(connection, userName, userRole);
 			}
 		}
 
-		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateSchemaResponse CreateSchema(Microsoft.Data.SqlClient.SqlConnection connection, string schema)
+		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.AddUserToUserRoleResponse AddUserToUserRole(Microsoft.Data.SqlClient.SqlConnection connection, string userName, string userRole)
 		{
-			var response = new ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateSchemaResponse();
+			var response = new ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.AddUserToUserRoleResponse();
 
 			connection.EnsureConnectionIsOpenAsync().Wait();
 
@@ -43,7 +44,8 @@ namespace ISI.Extensions.Repository.SqlServer
 
 			sql.Clear();
 			sql.AppendFormat("use [{0}];\n", DatabaseName);
-			sql.AppendFormat("exec('CREATE SCHEMA [{0}]');\n", schema);
+			sql.AppendFormat("exec sp_addrolemember '{0}', '{1}';\n", userRole, userName);
+
 			connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
 
 			return response;

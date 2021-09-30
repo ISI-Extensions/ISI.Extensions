@@ -18,24 +18,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
 using ISI.Extensions.Repository.SqlServer.Extensions;
+using Microsoft.Extensions.Configuration;
+using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
 
 namespace ISI.Extensions.Repository.SqlServer
 {
 	public partial class RepositorySetupApi
 	{
-		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateSchemaResponse CreateSchema(string schema)
+		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.AddUserToSchemaResponse AddUserToSchema(string userName, string schema)
 		{
 			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionString))
 			{
-				return CreateSchema(connection, schema);
+				return AddUserToSchema(connection, userName, schema);
 			}
 		}
 
-		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateSchemaResponse CreateSchema(Microsoft.Data.SqlClient.SqlConnection connection, string schema)
+		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.AddUserToSchemaResponse AddUserToSchema(Microsoft.Data.SqlClient.SqlConnection connection, string userName, string schema)
 		{
-			var response = new ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateSchemaResponse();
+			var response = new ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.AddUserToSchemaResponse();
 
 			connection.EnsureConnectionIsOpenAsync().Wait();
 
@@ -43,7 +44,8 @@ namespace ISI.Extensions.Repository.SqlServer
 
 			sql.Clear();
 			sql.AppendFormat("use [{0}];\n", DatabaseName);
-			sql.AppendFormat("exec('CREATE SCHEMA [{0}]');\n", schema);
+			sql.AppendFormat("GRANT ALTER, SELECT, INSERT, UPDATE, DELETE ON SCHEMA :: [{1}] TO [{0}];\n", userName, schema);
+
 			connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
 
 			return response;

@@ -28,10 +28,5 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 		{
 			return (repositorySetupApi as ISI.Extensions.Repository.SqlServer.RepositorySetupApi)?.MasterConnectionString;
 		}
-
-		public static string GetDatabaseName(this ISI.Extensions.Repository.IRepositorySetupApi repositorySetupApi)
-		{
-			return (repositorySetupApi as ISI.Extensions.Repository.SqlServer.RepositorySetupApi)?.DatabaseName;
-		}
 	}
 }

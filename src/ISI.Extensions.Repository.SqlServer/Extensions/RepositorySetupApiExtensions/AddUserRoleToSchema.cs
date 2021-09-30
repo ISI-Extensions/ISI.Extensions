@@ -18,35 +18,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
-using ISI.Extensions.Repository.SqlServer.Extensions;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Repository.SqlServer
+namespace ISI.Extensions.Repository.SqlServer.Extensions
 {
-	public partial class RepositorySetupApi
+	public static partial class RepositorySetupApiExtensions
 	{
-		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateSchemaResponse CreateSchema(string schema)
+		public static ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.AddUserRoleToSchemaResponse AddUserRoleToSchema<TRecord>(this ISI.Extensions.Repository.IRepositorySetupApi repositorySetupApi, string userRole)
 		{
-			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionString))
-			{
-				return CreateSchema(connection, schema);
-			}
+			return (repositorySetupApi as ISI.Extensions.Repository.SqlServer.RepositorySetupApi)?.AddUserRoleToSchema(userRole, RecordDescription.GetRecordDescription<TRecord>().Schema);
 		}
 
-		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateSchemaResponse CreateSchema(Microsoft.Data.SqlClient.SqlConnection connection, string schema)
+		public static ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.AddUserRoleToSchemaResponse AddUserRoleToSchema(this ISI.Extensions.Repository.IRepositorySetupApi repositorySetupApi, string userRole, string schema)
 		{
-			var response = new ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateSchemaResponse();
-
-			connection.EnsureConnectionIsOpenAsync().Wait();
-
-			var sql = new StringBuilder();
-
-			sql.Clear();
-			sql.AppendFormat("use [{0}];\n", DatabaseName);
-			sql.AppendFormat("exec('CREATE SCHEMA [{0}]');\n", schema);
-			connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
-
-			return response;
+			return (repositorySetupApi as ISI.Extensions.Repository.SqlServer.RepositorySetupApi)?.AddUserRoleToSchema(userRole, schema);
 		}
 	}
 }

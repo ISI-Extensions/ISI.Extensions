@@ -19,35 +19,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
+using ISI.Extensions.Repository.Extensions;
 using ISI.Extensions.Repository.SqlServer.Extensions;
 
 namespace ISI.Extensions.Repository.SqlServer
 {
 	public partial class RepositorySetupApi
 	{
-		public DTOs.CreateRepositoryResponse CreateDatabase(string dataFileDirectory = null, string logFileDirectory = null, string additionalScript = null)
+		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateDatabaseResponse CreateDatabase(string dataFileDirectory = null, string logFileDirectory = null)
 		{
-			var response = new DTOs.CreateRepositoryResponse();
-
 			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionString))
 			{
-				connection.Open();
-
-				CreateDatabase(connection, dataFileDirectory, logFileDirectory);
-
-				ExecuteScript(connection, additionalScript);
+				return CreateDatabase(connection, dataFileDirectory, logFileDirectory);
 			}
-
-			return response;
 		}
-
-		public DTOs.CreateRepositoryResponse CreateDatabase(Microsoft.Data.SqlClient.SqlConnection connection, string dataFileDirectory = null, string logFileDirectory = null)
+		
+		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateDatabaseResponse CreateDatabase(Microsoft.Data.SqlClient.SqlConnection connection, string dataFileDirectory = null, string logFileDirectory = null)
 		{
-			var response = new DTOs.CreateRepositoryResponse();
+			var response = new ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateDatabaseResponse();
 
 			var sql = new StringBuilder();
 
-			#region dataFileDirectory and/or logFileDirectory
 			if (string.IsNullOrEmpty(dataFileDirectory) || string.IsNullOrEmpty(logFileDirectory))
 			{
 				sql.Clear();
@@ -87,21 +79,18 @@ select @defaultDataDirectory as DefaultDataDirectory, @defaultLogDirectory as De
 					{
 						if (dataReader.Read())
 						{
-							dataFileDirectory = dataReader.GetString(0);
-							logFileDirectory = dataReader.GetString(1);
+							dataFileDirectory = dataReader.GetString("DefaultDataDirectory");
+							logFileDirectory = dataReader.GetString("DefaultLogDirectory");
 						}
 					}
 				}
 			}
-			#endregion
 
-			#region Create Database
 			sql.Clear();
 			sql.AppendFormat("CREATE DATABASE [{0}]\n", DatabaseName);
 			sql.AppendFormat("  ON PRIMARY (NAME = N'{0}.Data', FILENAME = N'{1}')\n", DatabaseName, System.IO.Path.Combine(dataFileDirectory, string.Format("{0}.mdf", DatabaseName)));
 			sql.AppendFormat("  LOG ON (NAME = N'{0}.Log', FILENAME = N'{1}');\n", DatabaseName, System.IO.Path.Combine(logFileDirectory, string.Format("{0}.ldf", DatabaseName)));
 			connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
-			#endregion
 
 			return response;
 		}

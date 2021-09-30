@@ -25,51 +25,20 @@ namespace ISI.Extensions.Repository.SqlServer
 {
 	public partial class RepositorySetupApi
 	{
-		public DTOs.CreateRepositoryResponse CreateUser(string schema = null, string userRoleName = null, string userName = null, string password = null, string additionalScript = null)
+		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateUserResponse CreateUser(string userName, string password)
 		{
-			var response = new DTOs.CreateRepositoryResponse();
-
 			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionString))
 			{
-				connection.Open();
-
-				CreateUser(connection, schema, userRoleName, userName, password);
-
-				ExecuteScript(connection, additionalScript);
+				return CreateUser(connection, userName, password);
 			}
-
-			return response;
 		}
 
-		public DTOs.CreateRepositoryResponse CreateUser(Microsoft.Data.SqlClient.SqlConnection connection, string schema = null, string userRoleName = null, string userName = null, string password = null)
+		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateUserResponse CreateUser(Microsoft.Data.SqlClient.SqlConnection connection, string userName, string password)
 		{
-			var response = new DTOs.CreateRepositoryResponse();
+			var response = new ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateUserResponse();
 
 			var sql = new StringBuilder();
 
-			#region Create userRoleName
-			if (!string.IsNullOrEmpty(userRoleName))
-			{
-				sql.Clear();
-				sql.AppendFormat("use [{0}];\n", DatabaseName);
-				sql.AppendFormat("CREATE ROLE [{0}] AUTHORIZATION db_securityadmin;\n", userRoleName);
-				if (!string.IsNullOrEmpty(schema))
-				{
-					sql.AppendFormat("GRANT ALTER, SELECT, INSERT, UPDATE, DELETE ON SCHEMA :: [{1}] TO [{0}];\n", userRoleName, schema);
-				}
-				sql.AppendFormat("GRANT CREATE TABLE TO [{0}];\n", userRoleName);
-				try
-				{
-					connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
-				}
-				catch (Exception exception)
-				{
-					Console.WriteLine(exception);
-				}
-			}
-			#endregion
-
-			#region Create user
 			if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(password))
 			{
 				sql.Clear();
@@ -79,25 +48,14 @@ namespace ISI.Extensions.Repository.SqlServer
 				sql.Append("end\n");
 				connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
 			}
-			#endregion
 
-			#region Create login
 			if (!string.IsNullOrEmpty(userName))
 			{
 				sql.Clear();
 				sql.AppendFormat("use [{0}];\n", DatabaseName);
 				sql.AppendFormat("CREATE USER [{0}] FOR LOGIN [{0}];\n", userName);
 				connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
-
-				if (!string.IsNullOrEmpty(userRoleName))
-				{
-					sql.Clear();
-					sql.AppendFormat("use [{0}];\n", DatabaseName);
-					sql.AppendFormat("exec sp_addrolemember '{0}', '{1}';\n", userRoleName, userName);
-					connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
-				}
 			}
-			#endregion
 
 			return response;
 		}

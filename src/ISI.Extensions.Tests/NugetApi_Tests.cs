@@ -179,6 +179,7 @@ namespace ISI.Extensions.Tests
 			}).NugetPackageKey);
 
 			var solutionFullNames = System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt");
+			//var solutionFullNames = System.IO.File.ReadAllLines(@"S:\Connect.SolutionFullNames.txt");
 
 			solutionApi.UpdateNugetPackages(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.UpdateNugetPackagesRequest()
 			{

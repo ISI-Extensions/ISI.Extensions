@@ -38,7 +38,9 @@ namespace ISI.Extensions.VisualStudio
 
 			var nugetPackageKeys = request.NugetPackageKeys ?? new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
 
-			var solutionDetailsSet = request.SolutionFullNames.ToNullCheckedArray(solution => GetSolutionDetails(new DTOs.GetSolutionDetailsRequest()
+			var solutionFullNames = request.SolutionFullNames.Where(System.IO.Directory.Exists).ToArray();
+
+			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => GetSolutionDetails(new DTOs.GetSolutionDetailsRequest()
 			{
 				Solution = solution,
 			}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
@@ -72,7 +74,7 @@ namespace ISI.Extensions.VisualStudio
 					}
 				}
 
-				solutionDetailsSet = request.SolutionFullNames.ToNullCheckedArray(solution => GetSolutionDetails(new DTOs.GetSolutionDetailsRequest()
+				solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => GetSolutionDetails(new DTOs.GetSolutionDetailsRequest()
 				{
 					Solution = solution,
 				}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();

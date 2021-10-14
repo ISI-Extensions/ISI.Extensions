@@ -106,7 +106,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 					if (_timeToLive.HasValue)
 					{
-						busRequest.TimeToLive = _timeToLive.Value;
+						((global::MassTransit.RequestHandle)busRequest).TimeToLive = _timeToLive.Value;
 					}
 
 					var busResponse = await busRequest.GetResponse<TResponse>().ConfigureAwait(false);

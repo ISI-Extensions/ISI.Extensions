@@ -23,5 +23,6 @@ namespace ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi
 {
 	public partial class QuietDownRequest : AbstractRequest
 	{
+		public string Reason { get; set; }
 	}
 }

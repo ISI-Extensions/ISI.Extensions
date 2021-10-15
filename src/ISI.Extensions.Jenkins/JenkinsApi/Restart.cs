@@ -26,16 +26,12 @@ namespace ISI.Extensions.Jenkins
 {
 	public partial class JenkinsApi
 	{
-		public DTOs.QuietDownResponse QuietDown(DTOs.QuietDownRequest request)
+		public DTOs.RestartResponse Restart(DTOs.RestartRequest request)
 		{
-			var response = new DTOs.QuietDownResponse();
+			var response = new DTOs.RestartResponse();
 			
 			var uri = new UriBuilder(request.JenkinsUrl);
-			uri.SetPathAndQueryString(UrlPathFormat.QuietDown);
-			if (!string.IsNullOrWhiteSpace(request.Reason))
-			{
-				uri.AddQueryStringParameter("reason", request.Reason);
-			}
+			uri.SetPathAndQueryString(request.WaitForJobsToFinish ? UrlPathFormat.SafeRestart : UrlPathFormat.Restart);
 
 			try
 			{
@@ -43,7 +39,7 @@ namespace ISI.Extensions.Jenkins
 			}
 			catch (Exception exception)
 			{
-				Logger.LogError(exception, "Quiet Down Failed");
+				Logger.LogError(exception, "Cancel Restart Failed");
 			}
 
 			return response;

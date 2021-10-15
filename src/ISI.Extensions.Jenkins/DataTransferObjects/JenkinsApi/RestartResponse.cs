@@ -18,35 +18,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using Microsoft.Extensions.Logging;
-using DTOs = ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi;
 
-namespace ISI.Extensions.Jenkins
+namespace ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi
 {
-	public partial class JenkinsApi
+	public partial class RestartResponse
 	{
-		public DTOs.QuietDownResponse QuietDown(DTOs.QuietDownRequest request)
-		{
-			var response = new DTOs.QuietDownResponse();
-			
-			var uri = new UriBuilder(request.JenkinsUrl);
-			uri.SetPathAndQueryString(UrlPathFormat.QuietDown);
-			if (!string.IsNullOrWhiteSpace(request.Reason))
-			{
-				uri.AddQueryStringParameter("reason", request.Reason);
-			}
-
-			try
-			{
-				ISI.Extensions.WebClient.Rest.ExecutePost(uri.Uri, GetHeaders(request), (object)null, false, request.SslProtocols);
-			}
-			catch (Exception exception)
-			{
-				Logger.LogError(exception, "Quiet Down Failed");
-			}
-
-			return response;
-		}
 	}
 }

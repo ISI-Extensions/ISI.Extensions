@@ -79,7 +79,14 @@ namespace ISI.Extensions.VisualStudio
 					Solution = solution,
 				}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
 			}
-
+			
+			request.AddToLog("UpdateNugetPackages For Solutions:");
+			foreach (var solutionDetails in solutionDetailsSet)
+			{
+				request.AddToLog(string.Format("  {0}", solutionDetails.SolutionName));
+			}
+			request.AddToLog(string.Empty);
+			
 			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpdateNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
 			{
 				using (getBuildServiceSolutionLock(solutionDetails.SolutionFullName, request.AddToLog))
@@ -341,6 +348,13 @@ namespace ISI.Extensions.VisualStudio
 
 									if (updatedNugetPackageKeys.NullCheckedAny())
 									{
+										request.AddToLog(string.Format("Refreshing NugetPackageKeys From: \"{0}\"", nugetPackOutputDirectory));
+										foreach (var updatedNugetPackageKey in updatedNugetPackageKeys)
+										{
+											request.AddToLog(string.Format("  {0} => {1}", updatedNugetPackageKey.Package, updatedNugetPackageKey.Version));
+										}
+										request.AddToLog(string.Empty);
+
 										nugetPackageKeys.Merge(updatedNugetPackageKeys);
 									}
 									else

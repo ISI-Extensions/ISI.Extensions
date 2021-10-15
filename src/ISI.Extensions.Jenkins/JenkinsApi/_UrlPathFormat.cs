@@ -46,6 +46,11 @@ namespace ISI.Extensions.Jenkins
 
 			public static readonly string QuietDown = "/quietDown";
 			public static readonly string CancelQuietDown = "/cancelQuietDown";
+			
+			public static readonly string Restart = "/restart";
+			public static readonly string SafeRestart = "/safeRestart";
+			public static readonly string Exit = "/exit";
+			public static readonly string SafeExit = "/safeExit";
 		}
 	}
 }

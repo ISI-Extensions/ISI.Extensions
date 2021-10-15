@@ -42,6 +42,7 @@ namespace ISI.Extensions.Scm
 				JenkinsUserName = request.JenkinsUserName,
 				JenkinsApiToken = request.JenkinsApiToken,
 				PauseJenkins = request.PauseJenkins,
+				PauseJenkinsReason = request.PauseJenkinsReason,
 				JobIds = request.JobIds.ToNullCheckedArray(),
 				FilterByJobIdPrefix = request.FilterByJobIdPrefix,
 				FilterByJobIdSuffix = request.FilterByJobIdSuffix,

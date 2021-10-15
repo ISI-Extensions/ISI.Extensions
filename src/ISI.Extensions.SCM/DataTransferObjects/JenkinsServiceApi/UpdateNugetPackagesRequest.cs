@@ -35,6 +35,9 @@ namespace ISI.Extensions.Scm.DataTransferObjects.JenkinsServiceApi
 		public bool PauseJenkins { get; set; }
 		public string PauseJenkinsReason { get; set; } = "Updating Nuget Packages";
 
+		public bool FinishAllJobsBeforeProcessing { get; set; }
+		public string[] FinishAllJobsBeforeProcessingExceptForJobIds { get; set; }
+
 		public string[] JobIds { get; set; }
 		public string FilterByJobIdPrefix { get; set; }
 		public string FilterByJobIdSuffix { get; set; }

@@ -46,6 +46,12 @@ namespace ISI.Extensions.Scm.SerializableModels.JenkinsServiceApi
 		[DataMember(Name = "pauseJenkinsReason", EmitDefaultValue = false)]
 		public string PauseJenkinsReason { get; set; }
 
+		[DataMember(Name = "finishAllJobsBeforeProcessing", EmitDefaultValue = false)]
+		public bool FinishAllJobsBeforeProcessing { get; set; }
+
+		[DataMember(Name = "finishAllJobsBeforeProcessingExceptForJobIds", EmitDefaultValue = false)]
+		public string[] FinishAllJobsBeforeProcessingExceptForJobIds { get; set; }
+
 		[DataMember(Name = "jobIds", EmitDefaultValue = false)]
 		public string[] JobIds { get; set; }
 

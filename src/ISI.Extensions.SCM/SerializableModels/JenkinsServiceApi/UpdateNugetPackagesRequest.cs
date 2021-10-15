@@ -49,6 +49,12 @@ namespace ISI.Extensions.Scm.SerializableModels.JenkinsServiceApi
 		[DataMember(Name = "finishAllJobsBeforeProcessing", EmitDefaultValue = false)]
 		public bool FinishAllJobsBeforeProcessing { get; set; }
 
+		[DataMember(Name = "finishAllJobsBeforeProcessingFilterByJobIdPrefix", EmitDefaultValue = false)]
+		public string FinishAllJobsBeforeProcessingFilterByJobIdPrefix { get; set; }
+
+		[DataMember(Name = "finishAllJobsBeforeProcessingFilterByJobIdSuffix", EmitDefaultValue = false)]
+		public string FinishAllJobsBeforeProcessingFilterByJobIdSuffix { get; set; }
+
 		[DataMember(Name = "finishAllJobsBeforeProcessingExceptForJobIds", EmitDefaultValue = false)]
 		public string[] FinishAllJobsBeforeProcessingExceptForJobIds { get; set; }
 

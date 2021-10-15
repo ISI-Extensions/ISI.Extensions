@@ -44,6 +44,8 @@ namespace ISI.Extensions.Scm
 				PauseJenkins = request.PauseJenkins,
 				PauseJenkinsReason = request.PauseJenkinsReason,
 				FinishAllJobsBeforeProcessing = request.FinishAllJobsBeforeProcessing,
+				FinishAllJobsBeforeProcessingFilterByJobIdPrefix = request.FinishAllJobsBeforeProcessingFilterByJobIdPrefix,
+				FinishAllJobsBeforeProcessingFilterByJobIdSuffix = request.FinishAllJobsBeforeProcessingFilterByJobIdSuffix,
 				FinishAllJobsBeforeProcessingExceptForJobIds = request.FinishAllJobsBeforeProcessingExceptForJobIds.ToNullCheckedArray(),
 				JobIds = request.JobIds.ToNullCheckedArray(),
 				FilterByJobIdPrefix = request.FilterByJobIdPrefix,

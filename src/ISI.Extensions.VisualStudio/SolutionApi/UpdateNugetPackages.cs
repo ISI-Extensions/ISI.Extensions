@@ -80,8 +80,8 @@ namespace ISI.Extensions.VisualStudio
 				}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
 			}
 			
-			request.AddToLog("UpdateNugetPackages For Solutions:");
-			foreach (var solutionDetails in solutionDetailsSet)
+			request.AddToLog("Update Nuget Packages For Solutions:");
+			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpdateNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
 			{
 				request.AddToLog(string.Format("  {0}", solutionDetails.SolutionName));
 			}

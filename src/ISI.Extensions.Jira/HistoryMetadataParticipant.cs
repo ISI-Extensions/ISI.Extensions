@@ -23,7 +23,7 @@ namespace ISI.Extensions.Jira
 {
 	public partial class HistoryMetadataParticipant
 	{
-		public int HistoryMetadataParticipantId { get; set; }
+		public string HistoryMetadataParticipantId { get; set; }
 		public string DisplayName { get; set; }
 		public string DisplayNameKey { get; set; }
 		public string Type { get; set; }

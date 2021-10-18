@@ -23,10 +23,10 @@ namespace ISI.Extensions.Jira
 {
 	public partial class IssueFilter
 	{
-		public string Self { get; set; }
-		public int IssueFilterId { get; set; }
+		public string IssueFilterId { get; set; }
 		public string Name { get; set; }
 		public string Description { get; set; }
+		public string IssueFilterUrl { get; set; }
 		public User Owner { get; set; }
 		public string Jql { get; set; }
 		public string ViewUrl { get; set; }

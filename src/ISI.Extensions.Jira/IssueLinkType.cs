@@ -23,7 +23,7 @@ namespace ISI.Extensions.Jira
 {
 	public partial class IssueLinkType
 	{
-		public int IssueLinkTypeId { get; set; }
+		public string IssueLinkTypeId { get; set; }
 		public string Name { get; set; }
 		public string Inward { get; set; }
 		public string Outward { get; set; }

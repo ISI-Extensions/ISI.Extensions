@@ -23,9 +23,9 @@ namespace ISI.Extensions.Jira
 {
 	public partial class InwardIssue
 	{
-		public int InwardIssueId { get; set; }
+		public string InwardIssueId { get; set; }
 		public string InwardIssueKey { get; set; }
-		public string Self { get; set; }
+		public string IssueUrl { get; set; }
 		public InwardIssueFields Fields { get; set; }
 	}
 }

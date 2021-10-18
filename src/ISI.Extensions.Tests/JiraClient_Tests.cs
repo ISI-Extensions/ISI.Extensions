@@ -32,7 +32,7 @@ namespace ISI.Extensions.Tests
 	{
 		public string JiraUrl { get; set; }
 		public string JiraApiUserName { get; set; }
-		public string JiraApiPassword { get; set; }
+		public string JiraApiToken { get; set; }
 
 		[OneTimeSetUp]
 		public void OneTimeSetup()
@@ -73,7 +73,7 @@ namespace ISI.Extensions.Tests
 
 			JiraUrl = settings.GetValue("JiraUrl");
 			JiraApiUserName = settings.GetValue("JiraApiUserName");
-			JiraApiPassword = settings.GetValue("JiraApiPassword");
+			JiraApiToken = settings.GetValue("JiraApiToken");
 		}
 
 		[Test]
@@ -85,7 +85,7 @@ namespace ISI.Extensions.Tests
 			{
 				JiraApiUrl = JiraUrl,
 				JiraApiUserName = JiraApiUserName,
-				JiraApiPassword = JiraApiPassword,
+				JiraApiToken = JiraApiToken,
 				ImpersonatedUser = "rmuth",
 				Take = 3000,
 			});
@@ -100,7 +100,7 @@ namespace ISI.Extensions.Tests
 			{
 				JiraApiUrl = JiraUrl,
 				JiraApiUserName = JiraApiUserName,
-				JiraApiPassword = JiraApiPassword,
+				JiraApiToken = JiraApiToken,
 				ImpersonatedUser = "rmuth",
 			});
 		}
@@ -114,9 +114,9 @@ namespace ISI.Extensions.Tests
 			{
 				JiraApiUrl = JiraUrl,
 				JiraApiUserName = JiraApiUserName,
-				JiraApiPassword = JiraApiPassword,
+				JiraApiToken = JiraApiToken,
 				//ImpersonatedUser = "rmuth",
-				Jql = "assignee=currentuser()",
+				Jql = "assignee=currentuser() AND STATUS!=DONE ORDER BY created DESC",
 			});
 		}
 
@@ -131,11 +131,11 @@ namespace ISI.Extensions.Tests
 			{
 				JiraApiUrl = JiraUrl,
 				JiraApiUserName = JiraApiUserName,
-				JiraApiPassword = JiraApiPassword,
+				JiraApiToken = JiraApiToken,
 				ImpersonatedUser = impersonatedUser, //user must have access to above project
 				Jql = "project=CD AND status IN (Closed,Canceled,Resolved) AND attachments IS NOT EMPTY AND updatedDate < 2020-12-22",
 				Fields = new[] { "attachment" },
-				Take = 1001, //1,000 is the max the API will return
+				//Take = 1001, //1,000 is the max the API will return
 			});
 
 			if (findIssuesResponse.Issues.NullCheckedAny())
@@ -150,7 +150,7 @@ namespace ISI.Extensions.Tests
 					{
 						jiraApi.DeleteAttachment(new ISI.Extensions.Jira.DataTransferObjects.JiraApi.DeleteAttachmentRequest()
 						{
-							AttachmentId = attachment.Id,
+							AttachmentId = attachment.AttachmentId,
 							ImpersonatedUser = impersonatedUser, //user must have 'delete all attachments project permission'
 						});
 					}
@@ -167,7 +167,7 @@ namespace ISI.Extensions.Tests
 			{
 				JiraApiUrl = JiraUrl,
 				JiraApiUserName = JiraApiUserName,
-				JiraApiPassword = JiraApiPassword,
+				JiraApiToken = JiraApiToken,
 				ImpersonatedUser = "rmuth",
 				IssueIdOrKey = "DEV-13",
 				Comment = "Worked on this",
@@ -185,36 +185,36 @@ namespace ISI.Extensions.Tests
 			{
 				JiraApiUrl = JiraUrl,
 				JiraApiUserName = JiraApiUserName,
-				JiraApiPassword = JiraApiPassword,
+				JiraApiToken = JiraApiToken,
 				ImpersonatedUser = "rmuth",
 				IssueIdOrKey = "CD-76",
 			});
 
 			var groupedWorklogs = getIssueWorklogsResponse.Worklogs.GroupBy(worklog => string.Format("{0}-{1}", worklog.Started.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise), worklog.TimeSpent));
 
-			foreach (var groupedWorklog in groupedWorklogs.Where(worklogs => worklogs.Count() > 1))
-			{
-				var isFirst = true;
-				foreach (var worklog in groupedWorklog)
-				{
-					if (isFirst)
-					{
-						isFirst = false;
-					}
-					else
-					{
-						jiraApi.DeleteIssueWorklog(new ISI.Extensions.Jira.DataTransferObjects.JiraApi.DeleteIssueWorklogRequest()
-						{
-							JiraApiUrl = JiraUrl,
-							JiraApiUserName = JiraApiUserName,
-							JiraApiPassword = JiraApiPassword,
-							ImpersonatedUser = worklog.Author.UserKey,
-							IssueIdOrKey = string.Format("{0}", worklog.IssueId),
-							WorklogId = worklog.WorklogId,
-						});
-					}
-				}
-			}
+			//foreach (var groupedWorklog in groupedWorklogs.Where(worklogs => worklogs.Count() > 1))
+			//{
+			//	var isFirst = true;
+			//	foreach (var worklog in groupedWorklog)
+			//	{
+			//		if (isFirst)
+			//		{
+			//			isFirst = false;
+			//		}
+			//		else
+			//		{
+			//			jiraApi.DeleteIssueWorklog(new ISI.Extensions.Jira.DataTransferObjects.JiraApi.DeleteIssueWorklogRequest()
+			//			{
+			//				JiraApiUrl = JiraUrl,
+			//				JiraApiUserName = JiraApiUserName,
+			//				JiraApiToken = JiraApiToken,
+			//				ImpersonatedUser = worklog.Author.UserKey,
+			//				IssueIdOrKey = string.Format("{0}", worklog.IssueId),
+			//				WorklogId = worklog.WorklogId,
+			//			});
+			//		}
+			//	}
+			//}
 		}
 	}
 }

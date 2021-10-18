@@ -30,29 +30,49 @@ namespace ISI.Extensions.Jira
 		{
 			var response = new DTOs.FindIssuesResponse();
 
-			var uri = new UriBuilder(request.JiraApiUrl);
-			uri.SetPathAndQueryString(UrlPathFormat.FindIssues);
-			uri.AddQueryStringParameter("jql", request.Jql);
-			uri.AddQueryStringParameter("startAt", request.Skip);
-			uri.AddQueryStringParameter("maxResults", request.Take);
-			uri.AddQueryStringParameter("validateQuery", request.ValidateQuery);
-			if (request.Fields.NullCheckedAny())
+			var issues = new List<Issue>();
+			var expand = new HashSet<string>();
+			var warningMessages = new HashSet<string>();
+
+			var continueProcessing = true;
+			var skip = 0;
+			while (continueProcessing)
 			{
-				uri.AddQueryStringParameter("fields", string.Join(",", request.Fields));
-			}
-			if (request.Expand.NullCheckedAny())
-			{
-				uri.AddQueryStringParameter("expand", string.Join(",", request.Expand));
+				var uri = new UriBuilder(request.JiraApiUrl);
+				uri.SetPathAndQueryString(UrlPathFormat.FindIssues);
+				uri.AddQueryStringParameter("jql", request.Jql);
+				uri.AddQueryStringParameter("startAt", skip);
+				//uri.AddQueryStringParameter("maxResults", request.Take);
+				uri.AddQueryStringParameter("validateQuery", request.ValidateQuery);
+				if (request.Fields.NullCheckedAny())
+				{
+					uri.AddQueryStringParameter("fields", string.Join(",", request.Fields));
+				}
+
+				if (request.Expand.NullCheckedAny())
+				{
+					uri.AddQueryStringParameter("expand", string.Join(",", request.Expand));
+				}
+
+				var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SERIALIZABLE.FindIssuesResponse>(uri.Uri, GetHeaders(request), true, request.SslProtocols);
+
+				issues.AddRange(jiraResponse.Issues.NullCheckedSelect(x => x?.Export(), NullCheckCollectionResult.Empty));
+				expand.UnionWith(jiraResponse.Expand?.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>());
+				warningMessages.UnionWith(jiraResponse.WarningMessages ?? Array.Empty<string>());
+
+				if (issues.Count < jiraResponse.Total)
+				{
+					skip += issues.Count;
+				}
+				else
+				{
+					continueProcessing = false;
+				}
 			}
 
-			var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SERIALIZABLE.FindIssuesResponse>(uri.Uri, GetHeaders(request), true, request.SslProtocols);
-
-			response.Skip = jiraResponse.Skip;
-			response.Take = jiraResponse.Take;
-			response.Total = jiraResponse.Total;
-			response.Issues = jiraResponse.Issues.ToNullCheckedArray(x => x?.Export());
-			response.Expand = jiraResponse.Expand?.Split(new [] {','}, StringSplitOptions.RemoveEmptyEntries);
-			response.WarningMessages = jiraResponse.WarningMessages.ToNullCheckedArray();
+			response.Issues = issues.ToArray();
+			response.Expand = expand.ToArray();
+			response.WarningMessages = warningMessages.ToArray();
 
 			return response;
 		}

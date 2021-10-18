@@ -40,7 +40,7 @@ namespace ISI.Extensions.Jira.SerializableEntities
 		}
 
 		[DataMember(Name = "id", EmitDefaultValue = false)]
-		public int LinkGroupId { get; set; }
+		public string LinkGroupId { get; set; }
 
 		[DataMember(Name = "styleClass", EmitDefaultValue = false)]
 		public string StyleClass { get; set; }

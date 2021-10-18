@@ -31,7 +31,7 @@ namespace ISI.Extensions.Jira.SerializableEntities
 			return new ISI.Extensions.Jira.IssueFilter()
 			{
 				IssueFilterId = IssueFilterId,
-				Self = Self,
+				IssueFilterUrl = IssueFilterUrl,
 				Name = Name,
 				Description = Description,
 				Owner = Owner?.Export(),
@@ -45,10 +45,10 @@ namespace ISI.Extensions.Jira.SerializableEntities
 		}
 
 		[DataMember(Name = "id", EmitDefaultValue = false)]
-		public int IssueFilterId { get; set; }
+		public string IssueFilterId { get; set; }
 
 		[DataMember(Name = "self", EmitDefaultValue = false)]
-		public string Self { get; set; }
+		public string IssueFilterUrl { get; set; }
 
 		[DataMember(Name = "name", EmitDefaultValue = false)]
 		public string Name { get; set; }

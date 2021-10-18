@@ -23,12 +23,12 @@ namespace ISI.Extensions.Jira
 {
 	public partial class To
 	{
-		public string Self { get; set; }
+		public string ToId { get; set; }
+		public string ToUrl { get; set; }
 		public string StatusColor { get; set; }
 		public string Description { get; set; }
 		public string IconUrl { get; set; }
 		public string Name { get; set; }
-		public int ToId { get; set; }
 		public StatusCategory StatusCategory { get; set; }
 	}
 }

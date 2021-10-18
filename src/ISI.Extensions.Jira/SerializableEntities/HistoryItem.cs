@@ -30,11 +30,11 @@ namespace ISI.Extensions.Jira.SerializableEntities
 			return new ISI.Extensions.Jira.HistoryItem()
 			{
 				Field = Field,
-				FieldType = Fieldtype,
+				FieldType = FieldType,
 				From = From,
 				FromDescription = FromString,
 				To = To,
-				ToDescription = ToString,
+				ToDescription = ToDescription,
 			};
 		}
 
@@ -42,7 +42,7 @@ namespace ISI.Extensions.Jira.SerializableEntities
 		public string Field { get; set; }
 
 		[DataMember(Name = "fieldtype", EmitDefaultValue = false)]
-		public string Fieldtype { get; set; }
+		public string FieldType { get; set; }
 
 		[DataMember(Name = "from", EmitDefaultValue = false)]
 		public string From { get; set; }
@@ -54,6 +54,6 @@ namespace ISI.Extensions.Jira.SerializableEntities
 		public string To { get; set; }
 
 		[DataMember(Name = "toString", EmitDefaultValue = false)]
-		public string ToString { get; set; }
+		public string ToDescription { get; set; }
 	}
 }

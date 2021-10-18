@@ -30,14 +30,14 @@ namespace ISI.Extensions.Jira.SerializableEntities
 		{
 			return new ISI.Extensions.Jira.InwardIssueFieldsWatches()
 			{
-				Self = Self,
+				WatchesUrl = WatchesUrl,
 				WatchCount = WatchCount,
 				IsWatching = IsWatching,
 			};
 		}
 
 		[DataMember(Name = "self", EmitDefaultValue = false)]
-		public string Self { get; set; }
+		public string WatchesUrl { get; set; }
 
 		[DataMember(Name = "watchCount", EmitDefaultValue = false)]
 		public int WatchCount { get; set; }

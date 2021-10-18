@@ -32,7 +32,7 @@ namespace ISI.Extensions.Jira.SerializableEntities
 			{
 				IssueId = IssueId,
 				WorklogId = WorklogId,
-				Self = Self,
+				WorklogUrl = WorklogUrl,
 				Author = Author?.Export(),
 				UpdateAuthor = UpdateAuthor?.Export(),
 				Comment = Comment,
@@ -45,13 +45,13 @@ namespace ISI.Extensions.Jira.SerializableEntities
 		}
 
 		[DataMember(Name = "issueId", EmitDefaultValue = false)]
-		public int IssueId { get; set; }
+		public string IssueId { get; set; }
 
 		[DataMember(Name = "id", EmitDefaultValue = false)]
-		public int WorklogId { get; set; }
+		public string WorklogId { get; set; }
 
 		[DataMember(Name = "self", EmitDefaultValue = false)]
-		public string Self { get; set; }
+		public string WorklogUrl { get; set; }
 
 		[DataMember(Name = "author", EmitDefaultValue = false)]
 		public User Author { get; set; }

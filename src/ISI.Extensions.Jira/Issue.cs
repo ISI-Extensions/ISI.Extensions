@@ -25,12 +25,14 @@ namespace ISI.Extensions.Jira
 	{
 		public string Expand { get; set; }
 		public int IssueId { get; set; }
-		public string Self { get; set; }
+		public string IssueUrl { get; set; }
 		public string IssueKey { get; set; }
-		public InwardIssueFields Fields { get; set; }
+		public IssueFields Fields { get; set; }
 		public Transition[] Transitions { get; set; }
 		public Operations Operations { get; set; }
 		public Changelog Changelog { get; set; }
 		public string FieldsToInclude { get; set; }
+
+		public override string ToString() => string.Format("{0} {1} => {2}", IssueKey, Fields?.Summary, Fields?.Status?.Name);
 	}
 }

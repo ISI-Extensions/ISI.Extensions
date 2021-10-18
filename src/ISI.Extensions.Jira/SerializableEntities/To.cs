@@ -31,7 +31,7 @@ namespace ISI.Extensions.Jira.SerializableEntities
 			{
 				ToId = ToId,
 				Name = Name,
-				Self = Self,
+				ToUrl = ToUrl,
 				Description = Description,
 				IconUrl = IconUrl,
 				StatusColor = StatusColor,
@@ -40,10 +40,10 @@ namespace ISI.Extensions.Jira.SerializableEntities
 		}
 
 		[DataMember(Name = "id", EmitDefaultValue = false)]
-		public int ToId { get; set; }
+		public string ToId { get; set; }
 
 		[DataMember(Name = "self", EmitDefaultValue = false)]
-		public string Self { get; set; }
+		public string ToUrl { get; set; }
 
 		[DataMember(Name = "name", EmitDefaultValue = false)]
 		public string Name { get; set; }

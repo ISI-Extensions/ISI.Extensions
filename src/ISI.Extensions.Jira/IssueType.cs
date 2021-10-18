@@ -23,13 +23,14 @@ namespace ISI.Extensions.Jira
 {
 	public partial class IssueType
 	{
-		public string Self { get; set; }
-		public int IssueTypeId { get; set; }
+		public string IssueTypeUrl { get; set; }
+		public string IssueTypeId { get; set; }
 		public string Description { get; set; }
 		public string IconUrl { get; set; }
 		public string Name { get; set; }
 		public bool Subtask { get; set; }
 		public int AvatarId { get; set; }
+		public int HierarchyLevel { get; set; }
 	}
 }
 

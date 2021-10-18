@@ -26,9 +26,9 @@ namespace ISI.Extensions.Jira
 		public IssueType IssueType { get; set; }
 		public string Timespent { get; set; }
 		public Project Project { get; set; }
-		public string[] FixVersions { get; set; }
+		public IssueFixVersion[] FixVersions { get; set; }
 		public string AggregateTimespent { get; set; }
-		public string Resolution { get; set; }
+		public IssueResolution Resolution { get; set; }
 		public DateTime? ResolutionDate { get; set; }
 		public int WorkRatio { get; set; }
 		public DateTime? LastViewed { get; set; }
@@ -53,6 +53,8 @@ namespace ISI.Extensions.Jira
 		public DateTime? DueDate { get; set; }
 		public InwardIssueFieldsProgress Progress { get; set; }
 		public InwardIssueFieldsVotes Votes { get; set; }
+		public DateTime? StatusCategoryChangeDate { get; set; }
+		public Attachment[] Attachments { get; set; }
 	}
 }
 

@@ -24,8 +24,6 @@ namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 	public partial class FindIssuesRequest : AbstractRequest
 	{
 		public string Jql { get; set; }
-		public int Skip { get; set; } = 0;
-		public int Take { get; set; } = 50;
 		public bool ValidateQuery { get; set; } = true;
 		public string[] Fields { get; set; }
 		public string[] Expand { get; set; }

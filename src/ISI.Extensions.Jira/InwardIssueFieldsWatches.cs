@@ -23,7 +23,7 @@ namespace ISI.Extensions.Jira
 {
 	public partial class InwardIssueFieldsWatches
 	{
-		public string Self { get; set; }
+		public string WatchesUrl { get; set; }
 		public int WatchCount { get; set; }
 		public bool IsWatching { get; set; }
 	}

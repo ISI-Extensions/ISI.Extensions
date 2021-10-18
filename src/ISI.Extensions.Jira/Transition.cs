@@ -23,7 +23,7 @@ namespace ISI.Extensions.Jira
 {
 	public partial class Transition
 	{
-		public int TransitionId { get; set; }
+		public string TransitionId { get; set; }
 		public string Name { get; set; }
 		public To To { get; set; }
 		public IssueFields Fields { get; set; }

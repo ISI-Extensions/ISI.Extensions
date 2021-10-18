@@ -32,19 +32,19 @@ namespace ISI.Extensions.Jira.SerializableEntities
 			{
 				OutwardIssueId = OutwardIssueId,
 				OutwardIssueKey = OutwardIssueKey,
-				Self = Self,
+				OutwardIssueUrl = OutwardIssueUrl,
 				Fields = Fields?.Export(),
 			};
 		}
 
 		[DataMember(Name = "id", EmitDefaultValue = false)]
-		public int OutwardIssueId { get; set; }
+		public string OutwardIssueId { get; set; }
 
 		[DataMember(Name = "key", EmitDefaultValue = false)]
 		public string OutwardIssueKey { get; set; }
 
 		[DataMember(Name = "self", EmitDefaultValue = false)]
-		public string Self { get; set; }
+		public string OutwardIssueUrl { get; set; }
 
 		[DataMember(Name = "fields", EmitDefaultValue = false)]
 		public OutwardIssueFields Fields { get; set; }

@@ -23,11 +23,13 @@ namespace ISI.Extensions.Jira
 {
 	public partial class Project
 	{
-		public string Self { get; set; }
-		public int ProjectId { get; set; }
+		public string ProjectUrl { get; set; }
+		public string ProjectId { get; set; }
 		public string ProjectKey { get; set; }
 		public string Name { get; set; }
 		public AvatarUrls AvatarUrls { get; set; }
+		public string ProjectTypeKey { get; set; }
+		public bool Simplified { get; set; }
 	}
 }
 

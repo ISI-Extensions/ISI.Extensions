@@ -23,9 +23,9 @@ namespace ISI.Extensions.Jira
 {
 	public class Worklog
 	{
-		public int IssueId { get; set; }
-		public int WorklogId { get; set; }
-		public string Self { get; set; }
+		public string IssueId { get; set; }
+		public string WorklogId { get; set; }
+		public string WorklogUrl { get; set; }
 		public User Author { get; set; }
 		public User UpdateAuthor { get; set; }
 		public string Comment { get; set; }

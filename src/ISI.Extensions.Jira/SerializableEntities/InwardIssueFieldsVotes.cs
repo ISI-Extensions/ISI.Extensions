@@ -30,14 +30,14 @@ namespace ISI.Extensions.Jira.SerializableEntities
 		{
 			return new ISI.Extensions.Jira.InwardIssueFieldsVotes()
 			{
-				Self = Self,
+				VotesUrl = VotesUrl,
 				Votes = Votes,
 				HasVoted = HasVoted,
 			};
 		}
 
 		[DataMember(Name = "self", EmitDefaultValue = false)]
-		public string Self { get; set; }
+		public string VotesUrl { get; set; }
 
 		[DataMember(Name = "votes", EmitDefaultValue = false)]
 		public int Votes { get; set; }

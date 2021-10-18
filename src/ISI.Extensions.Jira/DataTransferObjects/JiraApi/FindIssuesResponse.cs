@@ -23,10 +23,6 @@ namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 {
 	public partial class FindIssuesResponse
 	{
-		public int Skip { get; set; }
-		public int Take { get; set; }
-		public int Total { get; set; }
-
 		public Issue[] Issues { get; set; }
 
 		public string[] Expand { get; set; }

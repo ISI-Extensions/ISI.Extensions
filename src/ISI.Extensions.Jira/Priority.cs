@@ -23,10 +23,10 @@ namespace ISI.Extensions.Jira
 {
 	public partial class Priority
 	{
-		public string Self { get; set; }
+		public string PriorityUrl { get; set; }
 		public string IconUrl { get; set; }
 		public string Name { get; set; }
-		public int PriorityId { get; set; }
+		public string PriorityId { get; set; }
 	}
 }
 

@@ -23,7 +23,7 @@ namespace ISI.Extensions.Jira
 {
 	public partial class LinkGroup
 	{
-		public int LinkGroupId { get; set; }
+		public string LinkGroupId { get; set; }
 		public string StyleClass { get; set; }
 		public SimpleLink Header { get; set; }
 		public int Weight { get; set; }

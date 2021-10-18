@@ -39,7 +39,7 @@ namespace ISI.Extensions.Jira.SerializableEntities
 		}
 
 		[DataMember(Name = "id", EmitDefaultValue = false)]
-		public int HistoryId { get; set; }
+		public string HistoryId { get; set; }
 
 		[DataMember(Name = "author", EmitDefaultValue = false)]
 		public User Author { get; set; }

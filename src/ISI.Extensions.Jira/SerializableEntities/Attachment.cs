@@ -31,7 +31,7 @@ namespace ISI.Extensions.Jira.SerializableEntities
 			return new ISI.Extensions.Jira.Attachment()
 			{
 				IssueId = IssueId,
-				Id = Id,
+				AttachmentId = AttachmentId,
 				Mimetype = Mimetype,
 				FileName = FileName,
 				FileSize = FileSize,
@@ -39,10 +39,10 @@ namespace ISI.Extensions.Jira.SerializableEntities
 		}
 
 		[DataMember(Name = "issueId", EmitDefaultValue = false)]
-		public long IssueId { get; set; }
+		public string IssueId { get; set; }
 
 		[DataMember(Name = "id", EmitDefaultValue = false)]
-		public long Id { get; set; }
+		public string AttachmentId { get; set; }
 
 		[DataMember(Name = "mimetype", EmitDefaultValue = false)]
 		public string Mimetype { get; set; }

@@ -52,6 +52,5 @@ namespace ISI.Extensions.Jira.SerializableEntities
 
 		[DataMember(Name = "attachment", EmitDefaultValue = false)]
 		public Attachment[] Attachments { get; set; }
-
 	}
 }

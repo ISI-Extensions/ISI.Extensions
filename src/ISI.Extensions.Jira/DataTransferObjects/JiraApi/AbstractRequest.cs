@@ -23,7 +23,7 @@ namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 	{
 		public string JiraApiUrl { get; set; }
 		public string JiraApiUserName { get; set; }
-		public string JiraApiPassword { get; set; }
+		public string JiraApiToken { get; set; }
 		public System.Security.Authentication.SslProtocols SslProtocols { get; set; } = System.Security.Authentication.SslProtocols.Tls | System.Security.Authentication.SslProtocols.Tls11 | System.Security.Authentication.SslProtocols.Tls12 | System.Security.Authentication.SslProtocols.Ssl3;
 
 		public string ImpersonatedUser { get; set; }

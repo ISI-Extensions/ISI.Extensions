@@ -23,7 +23,7 @@ namespace ISI.Extensions.Jira
 {
 	public partial class InwardIssueFieldsVotes
 	{
-		public string Self { get; set; }
+		public string VotesUrl { get; set; }
 		public int Votes { get; set; }
 		public bool HasVoted { get; set; }
 	}

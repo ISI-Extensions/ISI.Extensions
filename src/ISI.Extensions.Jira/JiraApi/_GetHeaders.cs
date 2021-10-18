@@ -29,7 +29,7 @@ namespace ISI.Extensions.Jira
 		{
 			var headers = new ISI.Extensions.WebClient.HeaderCollection();
 
-			headers.AddBasicAuthentication(request.JiraApiUserName, request.JiraApiPassword);
+			headers.AddBasicAuthentication(request.JiraApiUserName, request.JiraApiToken);
 
 			if (!string.IsNullOrWhiteSpace(request.ImpersonatedUser) && !string.Equals(request.JiraApiUserName, request.ImpersonatedUser, StringComparison.InvariantCulture))
 			{

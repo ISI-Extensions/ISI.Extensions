@@ -32,19 +32,19 @@ namespace ISI.Extensions.Jira.SerializableEntities
 			{
 				PriorityId = PriorityId,
 				Name = Name,
-				Self = Self,
+				PriorityUrl = PriorityUrl,
 				IconUrl = IconUrl,
 			};
 		}
 
 		[DataMember(Name = "id", EmitDefaultValue = false)]
-		public int PriorityId { get; set; }
+		public string PriorityId { get; set; }
 
 		[DataMember(Name = "name", EmitDefaultValue = false)]
 		public string Name { get; set; }
 
 		[DataMember(Name = "self", EmitDefaultValue = false)]
-		public string Self { get; set; }
+		public string PriorityUrl { get; set; }
 
 		[DataMember(Name = "iconUrl", EmitDefaultValue = false)]
 		public string IconUrl { get; set; }

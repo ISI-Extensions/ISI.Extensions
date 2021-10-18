@@ -23,8 +23,8 @@ namespace ISI.Extensions.Jira
 {
 	public partial class StatusCategory
 	{
-		public int StatusCategoryId { get; set; }
-		public string Self { get; set; }
+		public string StatusCategoryId { get; set; }
+		public string StatusCategoryUrl { get; set; }
 		public string StatusCategoryKey { get; set; }
 		public string Name { get; set; }
 		public string ColorName { get; set; }

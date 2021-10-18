@@ -23,6 +23,6 @@ namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 {
 	public partial class DeleteAttachmentRequest : AbstractRequest
 	{
-		public long AttachmentId { get; set; }
+		public string AttachmentId { get; set; }
 	}
 }

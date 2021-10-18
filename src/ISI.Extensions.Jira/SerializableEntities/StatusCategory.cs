@@ -29,7 +29,7 @@ namespace ISI.Extensions.Jira.SerializableEntities
 		{
 			return new ISI.Extensions.Jira.StatusCategory()
 			{
-				Self = Self,
+				StatusCategoryUrl = StatusCategoryUrl,
 				StatusCategoryId = StatusCategoryId,
 				StatusCategoryKey = StatusCategoryKey,
 				ColorName = ColorName,
@@ -38,7 +38,7 @@ namespace ISI.Extensions.Jira.SerializableEntities
 		}
 
 		[DataMember(Name = "id", EmitDefaultValue = false)]
-		public int StatusCategoryId { get; set; }
+		public string StatusCategoryId { get; set; }
 
 		[DataMember(Name = "key", EmitDefaultValue = false)]
 		public string StatusCategoryKey { get; set; }
@@ -47,7 +47,7 @@ namespace ISI.Extensions.Jira.SerializableEntities
 		public string Name { get; set; }
 
 		[DataMember(Name = "self", EmitDefaultValue = false)]
-		public string Self { get; set; }
+		public string StatusCategoryUrl { get; set; }
 
 		[DataMember(Name = "colorName", EmitDefaultValue = false)]
 		public string ColorName { get; set; }

@@ -18,43 +18,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Runtime.Serialization;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Jira.SerializableEntities
+namespace ISI.Extensions.Jira
 {
-	[DataContract]
-	public partial class Status : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.Status>
+	public partial class IssueResolution
 	{
-		public ISI.Extensions.Jira.Status Export()
-		{
-			return new ISI.Extensions.Jira.Status()
-			{
-				StatusId = StatusId,
-				Name = Name,
-				StatusUrl = StatusUrl,
-				Description = Description,
-				IconUrl = IconUrl,
-				StatusCategory = StatusCategory?.Export(),
-			};
-		}
-
-		[DataMember(Name = "id", EmitDefaultValue = false)]
-		public string StatusId { get; set; }
-
-		[DataMember(Name = "name", EmitDefaultValue = false)]
-		public string Name { get; set; }
-
-		[DataMember(Name = "self", EmitDefaultValue = false)]
-		public string StatusUrl { get; set; }
-
-		[DataMember(Name = "description", EmitDefaultValue = false)]
+		public string IssueResolutionId { get; set; }
+		public string IssueResolutionUrl { get; set; }
 		public string Description { get; set; }
-
-		[DataMember(Name = "iconUrl", EmitDefaultValue = false)]
-		public string IconUrl { get; set; }
-
-		[DataMember(Name = "statusCategory", EmitDefaultValue = false)]
-		public StatusCategory StatusCategory { get; set; }
+		public string Name { get; set; }
 	}
 }
+
+
+

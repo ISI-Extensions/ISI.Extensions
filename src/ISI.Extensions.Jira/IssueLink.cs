@@ -23,8 +23,8 @@ namespace ISI.Extensions.Jira
 {
 	public partial class IssueLink
 	{
-		public int IssueLinkId { get; set; }
-		public string Self { get; set; }
+		public string IssueLinkId { get; set; }
+		public string IssueLinkUrl { get; set; }
 		public IssueLinkType Type { get; set; }
 		public InwardIssue InwardIssue { get; set; }
 		public OutwardIssue OutwardIssue { get; set; }

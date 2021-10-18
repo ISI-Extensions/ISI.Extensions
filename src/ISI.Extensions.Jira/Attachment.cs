@@ -23,8 +23,8 @@ namespace ISI.Extensions.Jira
 {
 	public partial class Attachment
 	{
-		public long IssueId { get; set; }
-		public long Id { get; set; }
+		public string IssueId { get; set; }
+		public string AttachmentId { get; set; }
 		public string Mimetype { get; set; }
 		public string FileName { get; set; }
 		public long FileSize { get; set; }

@@ -31,7 +31,7 @@ namespace ISI.Extensions.Jira.SerializableEntities
 			return new ISI.Extensions.Jira.IssueLink()
 			{
 				IssueLinkId = IssueLinkId,
-				Self = Self,
+				IssueLinkUrl = IssueLinkUrl,
 				Type = Type?.Export(),
 				InwardIssue = InwardIssue?.Export(),
 				OutwardIssue = OutwardIssue?.Export(),
@@ -39,10 +39,10 @@ namespace ISI.Extensions.Jira.SerializableEntities
 		}
 
 		[DataMember(Name = "id", EmitDefaultValue = false)]
-		public int IssueLinkId { get; set; }
+		public string IssueLinkId { get; set; }
 
 		[DataMember(Name = "self", EmitDefaultValue = false)]
-		public string Self { get; set; }
+		public string IssueLinkUrl { get; set; }
 
 		[DataMember(Name = "type", EmitDefaultValue = false)]
 		public IssueLinkType Type { get; set; }

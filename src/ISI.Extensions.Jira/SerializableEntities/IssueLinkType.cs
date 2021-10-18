@@ -39,7 +39,7 @@ namespace ISI.Extensions.Jira.SerializableEntities
 		}
 
 		[DataMember(Name = "id", EmitDefaultValue = false)]
-		public int IssueLinkTypeId { get; set; }
+		public string IssueLinkTypeId { get; set; }
 
 		[DataMember(Name = "name", EmitDefaultValue = false)]
 		public string Name { get; set; }

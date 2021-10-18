@@ -12,13 +12,13 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
-using System.Runtime.Serialization;
 using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Jira.SerializableEntities
@@ -32,26 +32,34 @@ namespace ISI.Extensions.Jira.SerializableEntities
 			{
 				ProjectId = ProjectId,
 				ProjectKey = ProjectKey,
-				Self = Self,
+				ProjectUrl = ProjectUrl,
 				Name = Name,
 				AvatarUrls = AvatarUrls?.Export(),
+				ProjectTypeKey = ProjectTypeKey,
+				Simplified = Simplified,
 			};
 		}
 
 		[DataMember(Name = "id", EmitDefaultValue = false)]
-		public int ProjectId { get; set; }
+		public string ProjectId { get; set; }
 
 		[DataMember(Name = "key", EmitDefaultValue = false)]
 		public string ProjectKey { get; set; }
 
 		[DataMember(Name = "self", EmitDefaultValue = false)]
-		public string Self { get; set; }
+		public string ProjectUrl { get; set; }
 
 		[DataMember(Name = "name", EmitDefaultValue = false)]
 		public string Name { get; set; }
 
 		[DataMember(Name = "avatarUrls", EmitDefaultValue = false)]
 		public AvatarUrls AvatarUrls { get; set; }
+
+		[DataMember(Name = "projecttypekey", EmitDefaultValue = false)]
+		public string ProjectTypeKey { get; set; }
+
+		[DataMember(Name = "simplified", EmitDefaultValue = false)]
+		public bool Simplified { get; set; }
 	}
 }
 

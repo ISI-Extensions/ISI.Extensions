@@ -23,7 +23,7 @@ namespace ISI.Extensions.Jira
 {
 	public partial class History
 	{
-		public int HistoryId { get; set; }
+		public string HistoryId { get; set; }
 		public User Author { get; set; }
 		public string Created { get; set; }
 		public HistoryItem[] Items { get; set; }

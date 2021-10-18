@@ -37,7 +37,7 @@ namespace ISI.Extensions.Jira.SerializableEntities
 		}
 
 		[DataMember(Name = "id", EmitDefaultValue = false)]
-		public int SharePermissionId { get; set; }
+		public string SharePermissionId { get; set; }
 
 		[DataMember(Name = "type", EmitDefaultValue = false)]
 		public string Type { get; set; }

@@ -76,9 +76,11 @@ Task("Sign")
 			var files = GetFiles("./**/bin/" + configuration + "/**/ISI.*.dll");
 			Sign(files, new SignToolSignSettings()
 			{
+				TimeStampDigestAlgorithm == SignToolDigestAlgorithm.Sha256,
 				TimeStampUri = GetNullableUri(settings.CodeSigning.TimeStampUrl),
 				CertPath = settings.CodeSigning.CertificateFileName,
 				Password = settings.CodeSigning.CertificatePassword,
+				DigestAlgorithm = SignToolDigestAlgorithm.Sha256,
 			});
 		}
 	});

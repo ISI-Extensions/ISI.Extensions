@@ -72,7 +72,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Topshelf", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Aspose.Pdf", "ISI.Extensions.Aspose.Pdf\ISI.Extensions.Aspose.Pdf.csproj", "{6C52CC49-B651-4E61-8352-16C668291C99}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.Aspose.Slides", "ISI.Extensions.Aspose.Slides\ISI.Extensions.Aspose.Slides.csproj", "{B946113C-BC15-4498-803D-49E327D7E045}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Aspose.Slides", "ISI.Extensions.Aspose.Slides\ISI.Extensions.Aspose.Slides.csproj", "{B946113C-BC15-4498-803D-49E327D7E045}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.Jira", "ISI.Extensions.Jira\ISI.Extensions.Jira.csproj", "{B5C67A72-EA1B-4AEA-BAC6-7D8298F782E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -346,6 +348,14 @@ Global
 		{B946113C-BC15-4498-803D-49E327D7E045}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B946113C-BC15-4498-803D-49E327D7E045}.Release|x64.ActiveCfg = Release|Any CPU
 		{B946113C-BC15-4498-803D-49E327D7E045}.Release|x64.Build.0 = Release|Any CPU
+		{B5C67A72-EA1B-4AEA-BAC6-7D8298F782E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5C67A72-EA1B-4AEA-BAC6-7D8298F782E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5C67A72-EA1B-4AEA-BAC6-7D8298F782E6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B5C67A72-EA1B-4AEA-BAC6-7D8298F782E6}.Debug|x64.Build.0 = Debug|Any CPU
+		{B5C67A72-EA1B-4AEA-BAC6-7D8298F782E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5C67A72-EA1B-4AEA-BAC6-7D8298F782E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5C67A72-EA1B-4AEA-BAC6-7D8298F782E6}.Release|x64.ActiveCfg = Release|Any CPU
+		{B5C67A72-EA1B-4AEA-BAC6-7D8298F782E6}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

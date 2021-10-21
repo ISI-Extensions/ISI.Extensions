@@ -76,7 +76,7 @@ Task("Sign")
 			var files = GetFiles("./**/bin/" + configuration + "/**/ISI.*.dll");
 			Sign(files, new SignToolSignSettings()
 			{
-				TimeStampDigestAlgorithm == SignToolDigestAlgorithm.Sha256,
+				TimeStampDigestAlgorithm = SignToolDigestAlgorithm.Sha256,
 				TimeStampUri = GetNullableUri(settings.CodeSigning.TimeStampUrl),
 				CertPath = settings.CodeSigning.CertificateFileName,
 				Password = settings.CodeSigning.CertificatePassword,
@@ -236,6 +236,7 @@ Task("Nuget")
 				TimestamperUri = GetNullableUri(settings.CodeSigning.TimeStampUrl),
 				CertificatePath = File(settings.CodeSigning.CertificateFileName),
 				CertificatePassword = settings.CodeSigning.CertificatePassword,
+				Verbosity = NupkgSignToolVerbosity.Detailed,
 			});
 
 			NupkgPush(new ISI.Cake.Addin.Nuget.NupkgPushRequest()

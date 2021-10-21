@@ -122,25 +122,25 @@ namespace ISI.Extensions.Tests
 		{
 			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
 
-			var packageVersion4 = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
-			{
-				PackageId = "ISI.Libraries",
-			}).NugetPackageKey.Version;
+			//var packageVersion4 = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			//{
+			//	PackageId = "ISI.Libraries",
+			//}).NugetPackageKey.Version;
 
-			var packageVersion = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
-			{
-				PackageId = "ISI.Libraries",
-			}).NugetPackageKey.Version;
+			//var packageVersion = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			//{
+			//	PackageId = "ISI.Libraries",
+			//}).NugetPackageKey.Version;
 
-			var packageVersion2 = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
-			{
-				PackageId = "Microsoft.CSharp",
-			}).NugetPackageKey.Version;
+			//var packageVersion2 = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			//{
+			//	PackageId = "Microsoft.CSharp",
+			//}).NugetPackageKey.Version;
 
 			var packageVersion3 = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
 			{
-				PackageId = "SevenZipSharp",
-			}).NugetPackageKey.Version;
+				PackageId = "SkiaSharp",
+			}).NugetPackageKey;
 		}
 
 
@@ -172,11 +172,11 @@ namespace ISI.Extensions.Tests
 			//	PackageId = "Automatonymous",
 			//	PackageVersion = "5.1.2",
 			//}).NugetPackageKey);
-			//nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
-			//{
-			//	PackageId = "SkiaSharp",
-			//	PackageVersion = "2.80.2",
-			//}).NugetPackageKey);
+			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			{
+				PackageId = "SkiaSharp",
+				PackageVersion = "2.80.2",
+			}).NugetPackageKey);
 
 			var solutionFullNames = System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt");
 			//var solutionFullNames = System.IO.File.ReadAllLines(@"S:\Connect.SolutionFullNames.txt");

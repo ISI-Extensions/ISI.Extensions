@@ -178,6 +178,12 @@ namespace ISI.Extensions.Tests
 				PackageVersion = "2.80.2",
 			}).NugetPackageKey);
 
+			var upsertAssemblyRedirectsNugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
+			//upsertAssemblyRedirectsNugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			//{
+			//	PackageId = "System.Text.Json",
+			//}).NugetPackageKey);
+
 			var solutionFullNames = System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt");
 			//var solutionFullNames = System.IO.File.ReadAllLines(@"S:\Connect.SolutionFullNames.txt");
 
@@ -186,6 +192,7 @@ namespace ISI.Extensions.Tests
 				SolutionFullNames = solutionFullNames,
 				CommitWorkingCopyToSourceControl = true,
 				NugetPackageKeys = nugetPackageKeys,
+				UpsertAssemblyRedirectsNugetPackageKeys = upsertAssemblyRedirectsNugetPackageKeys,
 				IgnorePackageIds = new[]
 				{
 					"ISI.CMS.T4CMS",

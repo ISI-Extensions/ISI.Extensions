@@ -78,9 +78,11 @@ namespace ISI.Extensions.Tests
 		public void Replacements_Test()
 		{
 			var replacements = new Dictionary<string, string>();
+			replacements.Add("./ICS.ico", "./SitePro.ico");
 
 			var logger = ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();
 			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
+			var sourceControlClientApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.SourceControlClientApi>();
 
 			var solutionFullNames = System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt");
 
@@ -98,12 +100,25 @@ namespace ISI.Extensions.Tests
 				}).Lock)
 				{
 					logger.Log(LogLevel.Information, solutionDetails.SolutionName);
-					
+
 					var sourceFullNames = new List<string>();
-					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.cs", System.IO.SearchOption.AllDirectories));
-					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.config", System.IO.SearchOption.AllDirectories));
-					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.csproj", System.IO.SearchOption.AllDirectories));
+					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.cs", System.IO.SearchOption.AllDirectories));
+					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.config", System.IO.SearchOption.AllDirectories));
+					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.csproj", System.IO.SearchOption.AllDirectories));
 					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "build.cake", System.IO.SearchOption.AllDirectories));
+
+					var dirtyFileNames = new HashSet<string>();
+
+					if (!sourceControlClientApi.UpdateWorkingCopy(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.UpdateWorkingCopyRequest()
+					{
+						FullName = solutionDetails.RootSourceDirectory,
+						IncludeExternals = true,
+					}).Success)
+					{
+						var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
+						logger.LogError(exception.Message);
+						throw exception;
+					}
 
 					foreach (var sourceFullName in sourceFullNames)
 					{
@@ -118,6 +133,21 @@ namespace ISI.Extensions.Tests
 						if (HasChanges(content, updatedContent))
 						{
 							System.IO.File.WriteAllText(sourceFullName, updatedContent);
+							dirtyFileNames.Add(sourceFullName);
+						}
+					}
+
+					if (dirtyFileNames.Any())
+					{
+						if (!sourceControlClientApi.Commit(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.CommitRequest()
+						{
+							FullNames = dirtyFileNames,
+							LogMessage = "change icon file",
+						}).Success)
+						{
+							var exception = new Exception(string.Format("Error commiting \"{0}\"", solutionDetails.RootSourceDirectory));
+							logger.LogError(exception.Message);
+							throw exception;
 						}
 					}
 				}

@@ -244,6 +244,7 @@ namespace ISI.Extensions.VisualStudio
 											CsProjXml = csProj,
 											AppConfigXml = appConfigXml,
 											NugetPackageKeys = nugetPackageKeys.Where(nugetPackageKey => !solutionIgnorePackageIds.Contains(nugetPackageKey.Package)),
+											UpsertAssemblyRedirectsNugetPackageKeys = request.UpsertAssemblyRedirectsNugetPackageKeys,
 										}).AppConfigXml;
 
 										if (HasChanges(appConfigXml, newAppConfigXml))
@@ -330,7 +331,7 @@ namespace ISI.Extensions.VisualStudio
 
 								if (executeBuildTargetResponse.Success)
 								{
-									System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
+									System.Threading.Thread.Sleep(TimeSpan.FromMinutes(4));
 								}
 								else
 								{

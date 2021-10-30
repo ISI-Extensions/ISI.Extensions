@@ -26,5 +26,6 @@ namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 		public string CsProjXml { get; set; }
 		public string AppConfigXml { get; set; }
 		public IEnumerable<NugetPackageKey> NugetPackageKeys { get; set; }
+		public IEnumerable<NugetPackageKey> UpsertAssemblyRedirectsNugetPackageKeys { get; set; }
 	}
 }

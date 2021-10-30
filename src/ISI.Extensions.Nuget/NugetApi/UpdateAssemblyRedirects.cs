@@ -43,6 +43,10 @@ namespace ISI.Extensions.Nuget
 
 			var assemblyBindingElement = runtimeSectionElement?.GetElementByLocalName("assemblyBinding");
 
+			var upsertAssemblies = request.UpsertAssemblyRedirectsNugetPackageKeys
+				.NullCheckedSelectMany(nugetPackageKey => nugetPackageKey.GetTargetFrameworkAssembly(targetFrameworkVersion)?.Assemblies, NullCheckCollectionResult.Empty)
+				.ToDictionary(assembly => assembly.AssemblyName, assembly => assembly, StringComparer.InvariantCultureIgnoreCase);
+
 			if (assemblyBindingElement != null)
 			{
 				foreach (var dependentAssembly in assemblyBindingElement.GetElementsByLocalName("dependentAssembly"))
@@ -52,6 +56,8 @@ namespace ISI.Extensions.Nuget
 
 					var assemblyName = assemblyIdentity.GetAttributeByLocalName("name")?.Value ?? string.Empty;
 					var newVersion = bindingRedirect.GetAttributeByLocalName("newVersion")?.Value ?? string.Empty;
+
+					upsertAssemblies.Remove(assemblyName);
 
 					foreach (var nugetPackageKey in nugetPackageKeys)
 					{
@@ -64,9 +70,27 @@ namespace ISI.Extensions.Nuget
 						}
 					}
 				}
+
+				foreach (var upsertAssembly in upsertAssemblies.Values)
+				{
+					var dependentAssemblyElement = new System.Xml.Linq.XElement("dependentAssembly");
+
+					var assemblyIdentityElement = new System.Xml.Linq.XElement("assemblyIdentity");
+					assemblyIdentityElement.Add(new System.Xml.Linq.XAttribute("name", upsertAssembly.AssemblyName));
+					assemblyIdentityElement.Add(new System.Xml.Linq.XAttribute("publicKeyToken", upsertAssembly.PublicKeyToken));
+					assemblyIdentityElement.Add(new System.Xml.Linq.XAttribute("culture", "neutral"));
+					dependentAssemblyElement.Add(assemblyIdentityElement);
+
+					var bindingRedirectElement = new System.Xml.Linq.XElement("bindingRedirect");
+					bindingRedirectElement.Add(new System.Xml.Linq.XAttribute("oldVersion", string.Format("0.0.0.0-{0}", upsertAssembly.AssemblyVersion)));
+					bindingRedirectElement.Add(new System.Xml.Linq.XAttribute("newVersion", upsertAssembly.AssemblyVersion));
+					dependentAssemblyElement.Add(bindingRedirectElement);
+
+					assemblyBindingElement.Add(dependentAssemblyElement);
+				}
 			}
 
-			response.AppConfigXml = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n{0}", projectXml);
+			response.AppConfigXml = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n{0}", projectXml).Replace(" xmlns=\"\"", string.Empty);
 
 			return response;
 		}

@@ -36,6 +36,8 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 
 		public ISI.Extensions.Nuget.NugetPackageKeyDictionary NugetPackageKeys { get; set; }
 
+		public IEnumerable<ISI.Extensions.Nuget.NugetPackageKey> UpsertAssemblyRedirectsNugetPackageKeys { get; set; }
+
 		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; } = description => { };
 
 		public GetBuildServiceSolutionLock GetBuildServiceSolutionLock { get; set; } = null;

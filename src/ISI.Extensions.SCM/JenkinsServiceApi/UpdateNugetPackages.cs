@@ -51,6 +51,16 @@ namespace ISI.Extensions.Scm
 				FilterByJobIdPrefix = request.FilterByJobIdPrefix,
 				FilterByJobIdSuffix = request.FilterByJobIdSuffix,
 				IgnorePackageIds = request.IgnorePackageIds.ToNullCheckedArray(),
+				NugetPackageKeys = request.NugetPackageKeys.ToNullCheckedArray(source => new SerializableDTOs.NugetPackageKey()
+				{
+					PackageId = source.PackageId,
+					PackageVersion = source.PackageVersion,
+				}),
+				UpsertAssemblyRedirectsNugetPackageKeys = request.UpsertAssemblyRedirectsNugetPackageKeys.ToNullCheckedArray(source => new SerializableDTOs.NugetPackageKey()
+				{
+					PackageId = source.PackageId,
+					PackageVersion = source.PackageVersion,
+				}),
 			};
 
 			try

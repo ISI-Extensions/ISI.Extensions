@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -12,40 +12,23 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.Scm.DataTransferObjects.JenkinsServiceApi
+namespace ISI.Extensions.Scm.SerializableModels.JenkinsServiceApi
 {
-	public partial class UpdateNugetPackagesRequest
+	[DataContract]
+	public partial class NugetPackageKey
 	{
-		public string SettingsFullName { get; set; }
+		[DataMember(Name = "packageId", EmitDefaultValue = false)]
+		public string PackageId { get; set; }
 
-		public string JenkinsServiceUrl { get; set; }
-		public string JenkinsServicePassword { get; set; }
-
-		public string JenkinsUrl { get; set; }
-		public string JenkinsUserName { get; set; }
-		public string JenkinsApiToken { get; set; }
-
-		public bool PauseJenkins { get; set; }
-		public string PauseJenkinsReason { get; set; } = "Updating Nuget Packages";
-
-		public bool FinishAllJobsBeforeProcessing { get; set; }
-		public string FinishAllJobsBeforeProcessingFilterByJobIdPrefix { get; set; }
-		public string FinishAllJobsBeforeProcessingFilterByJobIdSuffix { get; set; }
-		public string[] FinishAllJobsBeforeProcessingExceptForJobIds { get; set; }
-
-		public string[] JobIds { get; set; }
-		public string FilterByJobIdPrefix { get; set; }
-		public string FilterByJobIdSuffix { get; set; }
-
-		public string[] IgnorePackageIds { get; set; }
-		public NugetPackageKey[] NugetPackageKeys { get; set; }
-		public NugetPackageKey[] UpsertAssemblyRedirectsNugetPackageKeys { get; set; }
+		[DataMember(Name = "packageVersion", EmitDefaultValue = false)]
+		public string PackageVersion { get; set; }
 	}
 }

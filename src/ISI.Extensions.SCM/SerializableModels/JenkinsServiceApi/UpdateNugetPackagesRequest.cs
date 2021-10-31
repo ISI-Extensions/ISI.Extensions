@@ -69,5 +69,11 @@ namespace ISI.Extensions.Scm.SerializableModels.JenkinsServiceApi
 
 		[DataMember(Name = "ignorePackageIds", EmitDefaultValue = false)]
 		public string[] IgnorePackageIds { get; set; }
+
+		[DataMember(Name = "nugetPackageKeys", EmitDefaultValue = false)]
+		public NugetPackageKey[] NugetPackageKeys { get; set; }
+
+		[DataMember(Name = "upsertAssemblyRedirectsNugetPackageKeys", EmitDefaultValue = false)]
+		public NugetPackageKey[] UpsertAssemblyRedirectsNugetPackageKeys { get; set; }
 	}
 }

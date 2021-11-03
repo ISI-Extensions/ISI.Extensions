@@ -34,6 +34,11 @@ namespace ISI.Wrappers.Aspose
 				var localContainer = ISI.Extensions.TypeLocator.Container.LocalContainer;
 
 				var licenseManagers = localContainer.GetImplementations<ISI.Extensions.Aspose.IPdfLicense>().Cast<ISI.Extensions.LicenseManager.ILicenseStream>();
+				
+				if (!licenseManagers.Any())
+				{
+					licenseManagers = localContainer.GetImplementations<ISI.Extensions.Aspose.ITotalLicense>().Cast<ISI.Extensions.LicenseManager.ILicenseStream>();
+				}
 
 				if (!licenseManagers.Any())
 				{

@@ -37,6 +37,11 @@ namespace ISI.Extensions.Aspose
 
 				if (!licenseManagers.Any())
 				{
+					licenseManagers = localContainer.GetImplementations<ISI.Extensions.Aspose.ITotalLicense>().Cast<ISI.Extensions.LicenseManager.ILicenseStream>();
+				}
+
+				if (!licenseManagers.Any())
+				{
 					throw new Exception("Aspose License not found");
 				}
 

@@ -17,50 +17,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ISI.Extensions.Extensions;
-using ISI.Extensions.TypeLocator.Extensions;
 
 namespace ISI.Extensions.Aspose
 {
-	[ISI.Extensions.LicenseManager.LicenseApplier]
-	public partial class Slides : ISI.Extensions.LicenseManager.ILicenseApplier
+	public interface IOcrLicense : ISI.Extensions.LicenseManager.ILicenseStream
 	{
-		private static bool _IsLicensed = false;
-
-		static Slides()
-		{
-			if (!_IsLicensed)
-			{
-				var localContainer = ISI.Extensions.TypeLocator.Container.LocalContainer;
-
-				var licenseManagers = localContainer.GetImplementations<ISI.Extensions.Aspose.ICellsLicense>().Cast<ISI.Extensions.LicenseManager.ILicenseStream>();
-				
-				if (!licenseManagers.Any())
-				{
-					licenseManagers = localContainer.GetImplementations<ISI.Extensions.Aspose.ITotalLicense>().Cast<ISI.Extensions.LicenseManager.ILicenseStream>();
-				}
-
-				if (!licenseManagers.Any())
-				{
-					throw new Exception("Aspose License not found");
-				}
-
-				var licenseManager = licenseManagers.First();
-
-				(new global::Aspose.Slides.License()).SetLicense(licenseManager.GetLicenseStream());
-
-				_IsLicensed = true;
-			}
-		}
-
-		public void ApplyLicense()
-		{
-			if (!_IsLicensed)
-			{
-				throw new Exception("Did not get licensed");
-			}
-		}
-
-		public bool IsLicensed => _IsLicensed;
 	}
 }

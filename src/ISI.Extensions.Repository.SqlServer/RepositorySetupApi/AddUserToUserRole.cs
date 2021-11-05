@@ -44,7 +44,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 			sql.Clear();
 			sql.AppendFormat("use [{0}];\n", DatabaseName);
-			sql.AppendFormat("exec sp_addrolemember '{0}', '{1}';\n", userRole, userName);
+			sql.AppendFormat("exec sp_addrolemember '{0}', '{1}';\n", userName, userRole);
 
 			connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
 

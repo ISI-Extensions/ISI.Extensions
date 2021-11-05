@@ -78,7 +78,15 @@ namespace ISI.Extensions.Tests
 		public void Replacements_Test()
 		{
 			var replacements = new Dictionary<string, string>();
-			replacements.Add("./ICS.ico", "./SitePro.ico");
+			//replacements.Add("./ICS.ico", "./SitePro.ico");
+			//replacements.Add("rabbitmq://swdc-rabbitmq01.swdcentral.com", "rabbitmq://swdc-rabbitmq01.swdcentral.com")
+
+			var findContents = new List<string>();
+			findContents.Add("swdcentral");
+
+			var ignoreFindContents = new List<string>();
+			ignoreFindContents.Add("rabbitmq://swdc-rabbitmq01.swdcentral.com");
+			ignoreFindContents.Add("swdc-sql01.swdcentral.com");
 
 			var logger = ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();
 			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
@@ -102,10 +110,18 @@ namespace ISI.Extensions.Tests
 					logger.Log(LogLevel.Information, solutionDetails.SolutionName);
 
 					var sourceFullNames = new List<string>();
-					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.cs", System.IO.SearchOption.AllDirectories));
-					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.config", System.IO.SearchOption.AllDirectories));
+					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.cs", System.IO.SearchOption.AllDirectories));
+					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.cshtml", System.IO.SearchOption.AllDirectories));
+					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.config", System.IO.SearchOption.AllDirectories));
 					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.csproj", System.IO.SearchOption.AllDirectories));
-					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "build.cake", System.IO.SearchOption.AllDirectories));
+					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "build.cake", System.IO.SearchOption.AllDirectories));
+
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\bin\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\obj\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\.svn\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\.git\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\.vs\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\_ReSharper.Caches\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
 
 					var dirtyFileNames = new HashSet<string>();
 
@@ -124,6 +140,14 @@ namespace ISI.Extensions.Tests
 					{
 						var content = System.IO.File.ReadAllText(sourceFullName);
 						var updatedContent = content;
+
+						foreach (var findContent in findContents)
+						{
+							if ((content.IndexOf(findContent, StringComparison.CurrentCultureIgnoreCase) >= 0) && !ignoreFindContents.Any(ignoreFindContent => content.IndexOf(ignoreFindContent, StringComparison.CurrentCultureIgnoreCase) >= 0))
+							{
+								System.Diagnostics.Debugger.Break();
+							}
+						}
 
 						foreach (var replacement in replacements)
 						{
@@ -148,6 +172,95 @@ namespace ISI.Extensions.Tests
 							var exception = new Exception(string.Format("Error commiting \"{0}\"", solutionDetails.RootSourceDirectory));
 							logger.LogError(exception.Message);
 							throw exception;
+						}
+					}
+				}
+			}
+		}
+
+		[Test]
+		public void ReplaceFiles_Test()
+		{
+			var replacements = new List<(string FileName, string ReplacementFullName)>();
+			replacements.Add((FileName: "favicon.ico", ReplacementFullName: @"F:\ISI\Clients\ICS\SitePro.ico"));
+			replacements.Add((FileName: "SitePro.ico", ReplacementFullName: @"F:\ISI\Clients\ICS\SitePro.ico"));
+
+			var logger = ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();
+			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
+			var sourceControlClientApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.SourceControlClientApi>();
+
+			var solutionFullNames = System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt");
+
+			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionDetailsRequest()
+			{
+				Solution = solution,
+			}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
+
+			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpdateNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
+			{
+				using (solutionApi.GetSolutionLock(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionLockRequest()
+				{
+					SolutionFullName = solutionDetails.SolutionFullName,
+					//AddToLog = addToLog,
+				}).Lock)
+				{
+					logger.Log(LogLevel.Information, solutionDetails.SolutionName);
+
+					var sourceFullNames = new List<string>();
+					foreach (var replacement in replacements)
+					{
+						sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, replacement.FileName, System.IO.SearchOption.AllDirectories));
+					}
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\src\\Publish\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\bin\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\obj\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\.svn\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\.git\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\.vs\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\_ReSharper.Caches\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+
+					var dirtyFileNames = new HashSet<string>();
+
+					if (!sourceControlClientApi.UpdateWorkingCopy(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.UpdateWorkingCopyRequest()
+					{
+						FullName = solutionDetails.RootSourceDirectory,
+						IncludeExternals = true,
+					}).Success)
+					{
+						var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
+						logger.LogError(exception.Message);
+						throw exception;
+					}
+
+					foreach (var sourceFullName in sourceFullNames)
+					{
+						foreach (var replacement in replacements)
+						{
+							if (string.Equals(System.IO.Path.GetFileName(sourceFullName), replacement.FileName, StringComparison.InvariantCultureIgnoreCase))
+							{
+								System.IO.File.Copy(replacement.ReplacementFullName, sourceFullName, true);
+								dirtyFileNames.Add(sourceFullName);
+							}
+						}
+					}
+
+					if (dirtyFileNames.Any())
+					{
+						var commitLog = new StringBuilder();
+
+						if (!sourceControlClientApi.Commit(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.CommitRequest()
+						{
+							FullNames = dirtyFileNames,
+							LogMessage = "change icon file",
+							AddToLog = log => commitLog.AppendLine(log),
+						}).Success)
+						{
+							if (commitLog.ToString().IndexOf("Your branch is up to date with 'origin/main'.", StringComparison.InvariantCultureIgnoreCase) < 0)
+							{
+								var exception = new Exception(string.Format("Error commiting \"{0}\"", solutionDetails.RootSourceDirectory));
+								logger.LogError(exception.Message);
+								throw exception;
+							}
 						}
 					}
 				}

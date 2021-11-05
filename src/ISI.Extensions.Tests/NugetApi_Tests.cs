@@ -139,7 +139,7 @@ namespace ISI.Extensions.Tests
 
 			var packageVersion3 = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
 			{
-				PackageId = "SkiaSharp",
+				PackageId = "System.Runtime.CompilerServices.Unsafe",
 			}).NugetPackageKey;
 		}
 

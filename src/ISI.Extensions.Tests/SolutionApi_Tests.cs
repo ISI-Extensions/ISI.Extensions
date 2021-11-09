@@ -82,7 +82,7 @@ namespace ISI.Extensions.Tests
 			//replacements.Add("rabbitmq://swdc-rabbitmq01.swdcentral.com", "rabbitmq://swdc-rabbitmq01.swdcentral.com")
 
 			var findContents = new List<string>();
-			findContents.Add("swdcentral");
+			findContents.Add("ics.emails-beta@sitepro.com");
 
 			var ignoreFindContents = new List<string>();
 			ignoreFindContents.Add("rabbitmq://swdc-rabbitmq01.swdcentral.com");
@@ -154,6 +154,23 @@ namespace ISI.Extensions.Tests
 							updatedContent = updatedContent.Replace(replacement.Key, replacement.Value, StringComparison.InvariantCultureIgnoreCase);
 						}
 
+						if (updatedContent.IndexOf("System.Diagnostics.EventTypeFilter", StringComparison.InvariantCultureIgnoreCase) >= 0)
+						{
+							var lines = updatedContent.Split(new[] { '\r', '\n' });
+
+							var line = lines.FirstOrDefault(line => line.IndexOf("System.Diagnostics.EventTypeFilter", StringComparison.InvariantCultureIgnoreCase) >= 0);
+
+							if (!string.IsNullOrEmpty(line))
+							{
+								if (line.IndexOf("<!--", StringComparison.InvariantCultureIgnoreCase) < 0)
+								{
+									line = line.Trim();
+
+									updatedContent = updatedContent.Replace(line, string.Format("<!--{0}-->", line));
+								}
+							}
+						}
+
 						if (HasChanges(content, updatedContent))
 						{
 							System.IO.File.WriteAllText(sourceFullName, updatedContent);
@@ -163,10 +180,13 @@ namespace ISI.Extensions.Tests
 
 					if (dirtyFileNames.Any())
 					{
+						var commitLog = new StringBuilder();
+
 						if (!sourceControlClientApi.Commit(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.CommitRequest()
 						{
 							FullNames = dirtyFileNames,
-							LogMessage = "change icon file",
+							LogMessage = "remove EventTypeFilter",
+							AddToLog = log => commitLog.AppendLine(log),
 						}).Success)
 						{
 							var exception = new Exception(string.Format("Error commiting \"{0}\"", solutionDetails.RootSourceDirectory));

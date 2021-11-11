@@ -140,21 +140,37 @@ namespace ISI.Extensions.VisualStudio
 									return true;
 								}
 
-								using (NugetApi.GetNugetLock(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetLockRequest()
-								{
-									AddToLog = request.AddToLog,
-								}).Lock)
+								void addNugetPackageKey(string packageId)
 								{
 									var getLatestPackageVersionResponse = NugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
 									{
-										PackageId = id,
+										PackageId = packageId,
 										NugetConfigFullNames = nugetConfigFullNames,
 									});
 
 									if (getLatestPackageVersionResponse.NugetPackageKey != null)
 									{
 										nugetPackageKeys.TryAdd(getLatestPackageVersionResponse.NugetPackageKey);
+
+										if (getLatestPackageVersionResponse.NugetPackageKey.Dependencies.NullCheckedAny())
+										{
+											foreach (var nugetPackageDependency in getLatestPackageVersionResponse.NugetPackageKey.Dependencies)
+											{
+												if (!nugetPackageKeys.ContainsKey(nugetPackageDependency.Package))
+												{
+													addNugetPackageKey(nugetPackageDependency.Package);
+												}
+											}
+										}
 									}
+								}
+
+								using (NugetApi.GetNugetLock(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetLockRequest()
+								{
+									AddToLog = request.AddToLog,
+								}).Lock)
+								{
+									addNugetPackageKey(id);
 								}
 
 								return nugetPackageKeys.TryGetValue(id, out key);

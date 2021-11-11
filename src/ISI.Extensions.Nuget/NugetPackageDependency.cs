@@ -19,15 +19,32 @@ using System.Text;
 
 namespace ISI.Extensions.Nuget
 {
-	public class NugetPackageKey
+	public class NugetPackageDependency : IComparable<NugetPackageDependency>
 	{
 		public string Package { get; set; }
 		public string Version { get; set; }
 
-		public NugetPackageDependency[] Dependencies { get; set; }
-
-		public NugetPackageKeyTargetFramework[] TargetFrameworks { get; set; }
-
 		public override string ToString() => $"{Package} {Version}";
+
+		public int CompareTo(NugetPackageDependency other)
+		{
+			if (ReferenceEquals(this, other))
+			{
+				return 0;
+			}
+
+			if (ReferenceEquals(null, other))
+			{
+				return 1;
+			}
+			
+			var packageComparison = string.Compare(Package, other.Package, StringComparison.InvariantCultureIgnoreCase);
+			if (packageComparison != 0)
+			{
+				return packageComparison;
+			}
+
+			return string.Compare(Version, other.Version, StringComparison.InvariantCultureIgnoreCase);
+		}
 	}
 }

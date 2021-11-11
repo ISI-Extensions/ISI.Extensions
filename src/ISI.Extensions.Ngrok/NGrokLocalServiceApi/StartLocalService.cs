@@ -12,15 +12,15 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
+using ISI.Extensions.FileProviders.Extensions;
 using System;
 using System.Collections.Generic;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DTOs = ISI.Extensions.Ngrok.DataTransferObjects.NGrokLocalServiceApi;
-using System.IO.Compression;
-using ISI.Extensions.FileProviders.Extensions;
 
 namespace ISI.Extensions.Ngrok
 {
@@ -50,13 +50,14 @@ namespace ISI.Extensions.Ngrok
 
 						var downloadFileResponse = ISI.Extensions.WebClient.Download.DownloadFile<System.IO.MemoryStream>(downloadUrl, null);
 
-						var zipArchive = new System.IO.Compression.ZipArchive(downloadFileResponse.Stream, System.IO.Compression.ZipArchiveMode.Read);
+						using (var zipArchive = new System.IO.Compression.ZipArchive(downloadFileResponse.Stream, System.IO.Compression.ZipArchiveMode.Read))
+						{
+							var archiveEntry = zipArchive.Entries.FirstOrDefault(file => file.Name.IndexOf("ngrok.exe", StringComparison.InvariantCultureIgnoreCase) >= 0);
 
-						var archiveEntry = zipArchive.Entries.FirstOrDefault(file => file.Name.IndexOf("ngrok.exe", StringComparison.InvariantCultureIgnoreCase) >= 0);
+							System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(ngrokServiceFileName));
 
-						System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(ngrokServiceFileName));
-
-						archiveEntry?.ExtractToFile(ngrokServiceFileName);
+							archiveEntry?.ExtractToFile(ngrokServiceFileName);
+						}
 					}
 				}
 
@@ -67,7 +68,7 @@ namespace ISI.Extensions.Ngrok
 				//processStartInfo.Arguments = "start --none";
 
 				//processStartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
-				
+
 				//System.Diagnostics.Process.Start(processStartInfo);
 				System.Diagnostics.Process.Start(ngrokServiceFileName, "start --none");
 			}

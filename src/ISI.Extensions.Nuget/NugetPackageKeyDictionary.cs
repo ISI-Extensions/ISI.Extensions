@@ -39,9 +39,19 @@ namespace ISI.Extensions.Nuget
 
 		public NugetPackageKey this[string package] => _nugetPackageKeys.TryGetValue(package, out var nugetPackageKey) ? nugetPackageKey : null;
 
+		public bool ContainsKey(string package) => _nugetPackageKeys.ContainsKey(package);
+
 		public bool TryGetValue(string package, out NugetPackageKey nugetPackageKey) => _nugetPackageKeys.TryGetValue(package, out nugetPackageKey);
 
-		public bool TryAdd(NugetPackageKey nugetPackageKey) => _nugetPackageKeys.TryAdd(nugetPackageKey.Package, nugetPackageKey);
+		public bool TryAdd(NugetPackageKey nugetPackageKey)
+		{
+			if (nugetPackageKey != null)
+			{
+				return _nugetPackageKeys.TryAdd(nugetPackageKey.Package, nugetPackageKey);
+			}
+
+			return false;
+		}
 
 		public bool TryAdd(string package, string version) => TryAdd(new NugetPackageKey()
 		{

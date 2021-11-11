@@ -122,10 +122,10 @@ namespace ISI.Extensions.Tests
 		{
 			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
 
-			//var packageVersion4 = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
-			//{
-			//	PackageId = "ISI.Libraries",
-			//}).NugetPackageKey.Version;
+			var packageVersion4 = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			{
+				PackageId = "ISI.Libraries",
+			}).NugetPackageKey.Version;
 
 			//var packageVersion = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
 			//{
@@ -139,7 +139,7 @@ namespace ISI.Extensions.Tests
 
 			var packageVersion3 = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
 			{
-				PackageId = "System.Runtime.CompilerServices.Unsafe",
+				PackageId = "Aspose.Cells",
 			}).NugetPackageKey;
 		}
 
@@ -167,16 +167,56 @@ namespace ISI.Extensions.Tests
 				PackageId = "SkiaSharp",
 				PackageVersion = "2.80.2",
 			}).NugetPackageKey);
+			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			{
+				PackageId = "Microsoft.AspNetCore.Mvc.Razor.Extensions",
+				PackageVersion = "5.0.11",
+			}).NugetPackageKey);
+			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			{
+				PackageId = "Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv",
+				PackageVersion = "2.2.0",
+			}).NugetPackageKey);
+			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			{
+				PackageId = "Microsoft.ClearScript",
+				PackageVersion = "6.0.2",
+			}).NugetPackageKey);
+			//nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			//{
+			//	PackageId = "Microsoft.Bcl.AsyncInterfaces",
+			//	//PackageVersion = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+			//}).NugetPackageKey);
+			//nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			//{
+			//	PackageId = "System.Text.Json",
+			//	//PackageVersion = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+			//}).NugetPackageKey);
+			////nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			//{
+			//	PackageId = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+			//	PackageVersion = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+			//}).NugetPackageKey);
+			//nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			//{
+			//	PackageId = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+			//	PackageVersion = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+			//}).NugetPackageKey);
 
 			var upsertAssemblyRedirectsNugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
 
 			var solutionFullNames = new List<string>();
+			//solutionFullNames.Add(@"F:\ISI\ISI.FrameWork");
+			//solutionFullNames.Add(@"F:\ISI\Clients\ICS\ICS.Customers.WindowsService");
 			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt"));
-			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Connect.SolutionFullNames.txt"));
+			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Connect.SolutionFullNames.txt"));
 
 			solutionApi.UpdateNugetPackages(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.UpdateNugetPackagesRequest()
 			{
 				SolutionFullNames = solutionFullNames,
+				//UpdateWorkingCopyFromSourceControl = false,
+				//CommitWorkingCopyToSourceControl = false,
+				UpdateWorkingCopyFromSourceControl = true,
 				CommitWorkingCopyToSourceControl = true,
 				NugetPackageKeys = nugetPackageKeys,
 				UpsertAssemblyRedirectsNugetPackageKeys = upsertAssemblyRedirectsNugetPackageKeys,

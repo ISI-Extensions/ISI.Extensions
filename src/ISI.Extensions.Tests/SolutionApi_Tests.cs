@@ -82,11 +82,11 @@ namespace ISI.Extensions.Tests
 			//replacements.Add("rabbitmq://swdc-rabbitmq01.swdcentral.com", "rabbitmq://swdc-rabbitmq01.swdcentral.com")
 
 			var findContents = new List<string>();
-			findContents.Add("ics.emails-beta@sitepro.com");
+			//findContents.Add("ics.emails-beta@sitepro.com");
 
 			var ignoreFindContents = new List<string>();
-			ignoreFindContents.Add("rabbitmq://swdc-rabbitmq01.swdcentral.com");
-			ignoreFindContents.Add("swdc-sql01.swdcentral.com");
+			//ignoreFindContents.Add("rabbitmq://swdc-rabbitmq01.swdcentral.com");
+			//ignoreFindContents.Add("swdc-sql01.swdcentral.com");
 
 			var logger = ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();
 			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
@@ -110,10 +110,10 @@ namespace ISI.Extensions.Tests
 					logger.Log(LogLevel.Information, solutionDetails.SolutionName);
 
 					var sourceFullNames = new List<string>();
-					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.cs", System.IO.SearchOption.AllDirectories));
-					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.cshtml", System.IO.SearchOption.AllDirectories));
-					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.config", System.IO.SearchOption.AllDirectories));
-					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.csproj", System.IO.SearchOption.AllDirectories));
+					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.cs", System.IO.SearchOption.AllDirectories));
+					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.cshtml", System.IO.SearchOption.AllDirectories));
+					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.config", System.IO.SearchOption.AllDirectories));
+					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.csproj", System.IO.SearchOption.AllDirectories));
 					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "build.cake", System.IO.SearchOption.AllDirectories));
 
 					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\bin\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
@@ -154,21 +154,27 @@ namespace ISI.Extensions.Tests
 							updatedContent = updatedContent.Replace(replacement.Key, replacement.Value, StringComparison.InvariantCultureIgnoreCase);
 						}
 
-						if (updatedContent.IndexOf("System.Diagnostics.EventTypeFilter", StringComparison.InvariantCultureIgnoreCase) >= 0)
+						//if (updatedContent.IndexOf("System.Diagnostics.EventTypeFilter", StringComparison.InvariantCultureIgnoreCase) >= 0)
+						//{
+						//	var lines = updatedContent.Split(new[] { '\r', '\n' });
+
+						//	var line = lines.FirstOrDefault(line => line.IndexOf("System.Diagnostics.EventTypeFilter", StringComparison.InvariantCultureIgnoreCase) >= 0);
+
+						//	if (!string.IsNullOrEmpty(line))
+						//	{
+						//		if (line.IndexOf("<!--", StringComparison.InvariantCultureIgnoreCase) < 0)
+						//		{
+						//			line = line.Trim();
+
+						//			updatedContent = updatedContent.Replace(line, string.Format("<!--{0}-->", line));
+						//		}
+						//	}
+						//}
+
+						if ((updatedContent.IndexOf("<LangVersion>latest</LangVersion>", StringComparison.InvariantCultureIgnoreCase) >= 0) && 
+						    (updatedContent.IndexOf("<RuntimeIdentifiers>win</RuntimeIdentifiers>", StringComparison.InvariantCultureIgnoreCase) <= 0))
 						{
-							var lines = updatedContent.Split(new[] { '\r', '\n' });
-
-							var line = lines.FirstOrDefault(line => line.IndexOf("System.Diagnostics.EventTypeFilter", StringComparison.InvariantCultureIgnoreCase) >= 0);
-
-							if (!string.IsNullOrEmpty(line))
-							{
-								if (line.IndexOf("<!--", StringComparison.InvariantCultureIgnoreCase) < 0)
-								{
-									line = line.Trim();
-
-									updatedContent = updatedContent.Replace(line, string.Format("<!--{0}-->", line));
-								}
-							}
+							updatedContent = updatedContent.Replace("<LangVersion>latest</LangVersion>", "<LangVersion>latest</LangVersion>\r\n\t\t<RuntimeIdentifiers>win</RuntimeIdentifiers>");
 						}
 
 						if (HasChanges(content, updatedContent))
@@ -185,7 +191,7 @@ namespace ISI.Extensions.Tests
 						if (!sourceControlClientApi.Commit(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.CommitRequest()
 						{
 							FullNames = dirtyFileNames,
-							LogMessage = "remove EventTypeFilter",
+							LogMessage = "add <RuntimeIdentifiers>win</RuntimeIdentifiers>",
 							AddToLog = log => commitLog.AppendLine(log),
 						}).Success)
 						{

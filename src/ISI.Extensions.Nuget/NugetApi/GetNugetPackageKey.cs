@@ -12,16 +12,17 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
+using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO.Compression;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 using DTOs = ISI.Extensions.Nuget.DataTransferObjects.NugetApi;
-using Microsoft.Extensions.Logging;
-using System.Runtime.Serialization;
 
 namespace ISI.Extensions.Nuget
 {
@@ -68,6 +69,55 @@ namespace ISI.Extensions.Nuget
 						Package = request.PackageId,
 						Version = System.IO.Path.GetFileName(packageFullName).Substring(request.PackageId.Length + 1),
 					};
+
+					var nupkgFullName = System.IO.Directory.GetFiles(packageFullName, "*.nupkg").NullCheckedFirstOrDefault();
+					if (!string.IsNullOrWhiteSpace(nupkgFullName))
+					{
+						var nugetPackageDependencies = new HashSet<NugetPackageDependency>();
+
+						var nuspecFullName = System.IO.Path.Combine(packageFullName, string.Format("{0}.nuspec", System.IO.Path.GetFileNameWithoutExtension(nupkgFullName)));
+
+						using (var zipSteam = System.IO.File.OpenRead(nupkgFullName))
+						{
+							using (var zipArchive = new System.IO.Compression.ZipArchive(zipSteam, System.IO.Compression.ZipArchiveMode.Read))
+							{
+								var archiveEntry = zipArchive.Entries.FirstOrDefault(file => file.Name.EndsWith(".nuspec", StringComparison.InvariantCultureIgnoreCase));
+
+								archiveEntry?.ExtractToFile(nuspecFullName);
+							}
+						}
+
+						var nuspecXml = System.Xml.Linq.XElement.Parse(System.IO.File.ReadAllText(nuspecFullName));
+
+						foreach (var metadata in nuspecXml.GetElementsByLocalName("metadata"))
+						{
+							foreach (var dependencies in metadata.GetElementsByLocalName("dependencies"))
+							{
+								foreach (var dependencyGroup in dependencies.GetElementsByLocalName("group"))
+								{
+									foreach (var dependency in dependencyGroup.GetElementsByLocalName("dependency"))
+									{
+										nugetPackageDependencies.Add(new NugetPackageDependency()
+										{
+											Package = dependency.GetAttributeByLocalName("id")?.Value ?? string.Empty,
+											Version = dependency.GetAttributeByLocalName("version")?.Value ?? string.Empty,
+										});
+									}
+								}
+								foreach (var dependency in dependencies.GetElementsByLocalName("dependency"))
+								{
+									nugetPackageDependencies.Add(new NugetPackageDependency()
+									{
+										Package = dependency.GetAttributeByLocalName("id")?.Value ?? string.Empty,
+										Version = dependency.GetAttributeByLocalName("version")?.Value ?? string.Empty,
+									});
+								}
+							}
+						}
+
+						response.NugetPackageKey.Dependencies = nugetPackageDependencies.ToArray();
+					}
+
 
 					var assemblyFullNames = System.IO.Directory.GetFiles(packageFullName, "*.dll", System.IO.SearchOption.AllDirectories)
 						.OrderBy(assemblyFullName => assemblyFullName, StringComparer.InvariantCultureIgnoreCase)

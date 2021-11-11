@@ -24,16 +24,16 @@ namespace ISI.Extensions.Repository.Extensions
 {
 	public static partial class DataReaderByColumnNameExtensions
 	{
-		public static TEnum GetEnum<TEnum>(this System.Data.Common.DbDataReader dbDataReader, string name)
+		public static TEnum GetEnum<TEnum>(this System.Data.Common.DbDataReader dbDataReader, string name, TEnum defaultValue = default)
 		{
 			var ordinal = dbDataReader.GetOrdinal(name);
 
 			if (dbDataReader.IsDBNull(ordinal))
 			{
-				return default(TEnum);
+				return defaultValue;
 			}
 
-			return ISI.Extensions.Enum<TEnum>.Parse(string.Format("{0}", dbDataReader.GetValue(ordinal)));
+			return ISI.Extensions.Enum<TEnum>.Parse(string.Format("{0}", dbDataReader.GetValue(ordinal)), defaultValue);
 		}
 
 		public static string GetString(this System.Data.Common.DbDataReader dbDataReader, string name)

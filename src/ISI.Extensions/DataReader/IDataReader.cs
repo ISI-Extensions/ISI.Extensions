@@ -31,7 +31,7 @@ namespace ISI.Extensions.DataReader
 	public interface IDataReader : System.Data.IDataReader
 	{
 		IDictionary<string, object> GetValuesDictionary();
-		T GetEnum<T>(int i);
+		TEnum GetEnum<TEnum>(int i, TEnum defaultValue = default);
 		bool? GetBooleanNullable(int i);
 		DateTime GetDateTimeUtc(int i);
 		DateTime? GetDateTimeUtcNullable(int i);

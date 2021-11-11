@@ -115,11 +115,11 @@ namespace ISI.Extensions.DataReader
 
 		public abstract int GetOrdinal(string name);
 
-		public virtual T GetEnum<T>(int columnIndex)
+		public virtual TEnum GetEnum<TEnum>(int columnIndex, TEnum defaultValue = default)
 		{
 			CheckColumnIndex(columnIndex);
 
-			return ISI.Extensions.Enum<T>.Parse(GetString(columnIndex));
+			return ISI.Extensions.Enum<TEnum>.Parse(GetString(columnIndex), defaultValue);
 		}
 
 		public virtual bool GetBoolean(int columnIndex)

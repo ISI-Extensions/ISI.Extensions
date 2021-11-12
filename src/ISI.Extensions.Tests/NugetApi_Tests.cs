@@ -182,26 +182,6 @@ namespace ISI.Extensions.Tests
 				PackageId = "Microsoft.ClearScript",
 				PackageVersion = "6.0.2",
 			}).NugetPackageKey);
-			//nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
-			//{
-			//	PackageId = "Microsoft.Bcl.AsyncInterfaces",
-			//	//PackageVersion = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-			//}).NugetPackageKey);
-			//nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
-			//{
-			//	PackageId = "System.Text.Json",
-			//	//PackageVersion = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-			//}).NugetPackageKey);
-			////nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
-			//{
-			//	PackageId = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-			//	PackageVersion = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-			//}).NugetPackageKey);
-			//nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
-			//{
-			//	PackageId = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-			//	PackageVersion = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-			//}).NugetPackageKey);
 
 			var upsertAssemblyRedirectsNugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
 

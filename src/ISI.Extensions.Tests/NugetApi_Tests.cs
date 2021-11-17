@@ -169,11 +169,6 @@ namespace ISI.Extensions.Tests
 			}).NugetPackageKey);
 			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
 			{
-				PackageId = "Microsoft.AspNetCore.Mvc.Razor.Extensions",
-				PackageVersion = "5.0.11",
-			}).NugetPackageKey);
-			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
-			{
 				PackageId = "Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv",
 				PackageVersion = "2.2.0",
 			}).NugetPackageKey);
@@ -181,6 +176,11 @@ namespace ISI.Extensions.Tests
 			{
 				PackageId = "Microsoft.ClearScript",
 				PackageVersion = "6.0.2",
+			}).NugetPackageKey);
+			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			{
+				PackageId = "Aspose.Pdf",
+				PackageVersion = "21.10.1",
 			}).NugetPackageKey);
 
 			var upsertAssemblyRedirectsNugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();

@@ -26,6 +26,6 @@ namespace ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi
 		public string FullName { get; set; }
 		public string LogMessage { get; set; }
 
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; } = description => { };
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

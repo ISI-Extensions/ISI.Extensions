@@ -27,6 +27,6 @@ namespace ISI.Extensions.Cake.DataTransferObjects.CakeApi
 		public string Target { get; set; }
 		public IEnumerable<(string ParameterName, string ParameterValue)> Parameters { get; set; }
 
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; } = description => { };
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

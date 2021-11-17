@@ -25,6 +25,6 @@ namespace ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi
 	{
 		public string JobId { get; set; }
 
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; } = description => { };
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

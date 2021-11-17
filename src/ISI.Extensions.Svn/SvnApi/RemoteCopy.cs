@@ -43,7 +43,7 @@ namespace ISI.Extensions.Svn
 
 			ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{
-				Logger = new AddToLogLogger(request.AddToLog),
+				Logger = new AddToLogLogger(request.AddToLog, Logger),
 				ProcessExeFullName = "svn",
 				Arguments = arguments.ToArray(),
 			});

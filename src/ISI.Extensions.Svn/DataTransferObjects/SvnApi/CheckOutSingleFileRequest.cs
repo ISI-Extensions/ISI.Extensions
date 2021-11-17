@@ -31,6 +31,6 @@ namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 
 		public bool UseTortoiseSvn { get; set; } = false;
 
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; } = description => { };
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

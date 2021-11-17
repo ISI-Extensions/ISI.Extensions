@@ -28,9 +28,9 @@ namespace ISI.Extensions.VisualStudio
 	{
 		public DTOs.GetSolutionLockResponse GetSolutionLock(DTOs.GetSolutionLockRequest request)
 		{
-			var logger = new AddToLogLogger(request.AddToLog, Logger);
-
 			var response = new DTOs.GetSolutionLockResponse();
+
+			var logger = new AddToLogLogger(request.AddToLog, Logger);
 
 			var solutionDirectory = SourceControlClientApi.GetRootDirectory(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.GetRootDirectoryRequest()
 			{
@@ -42,7 +42,7 @@ namespace ISI.Extensions.VisualStudio
 				solutionDirectory = System.IO.Path.GetFullPath(request.SolutionFullName);
 			}
 
-			response.Lock = new ISI.Extensions.Locks.FileLock(solutionDirectory, onWaitingForLock: () => request.AddToLog("Waiting for Solution Lock"), onCreatingLock: lockFileName => request.AddToLog(string.Format("Creating Solution lock: \"{0}\"", lockFileName)));
+			response.Lock = new ISI.Extensions.Locks.FileLock(solutionDirectory, onWaitingForLock: () => logger.LogInformation("Waiting for Solution Lock"), onCreatingLock: lockFileName => logger.LogInformation("Creating Solution lock: \"{0}\"", lockFileName));
 
 			return response;
 		}

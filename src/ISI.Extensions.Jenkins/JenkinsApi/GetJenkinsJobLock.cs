@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi;
 
 namespace ISI.Extensions.Jenkins
@@ -53,7 +54,7 @@ namespace ISI.Extensions.Jenkins
 
 				if (runningJobIds.Contains(request.JobId))
 				{
-					request.AddToLog("Waiting for Build Jenkins Job Lock");
+					Logger.LogInformation("Waiting for Build Jenkins Job Lock");
 
 					autoResetEvent.WaitOne(TimeSpan.FromMinutes(1));
 				}

@@ -13,12 +13,12 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
 
+using ISI.Extensions.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.IO
 {
@@ -28,7 +28,7 @@ namespace ISI.Extensions.IO
 		{
 			var fullNames = fileNames.ToNullCheckedArray(System.IO.Path.GetFullPath, NullCheckCollectionResult.Empty);
 
-			var commonPath = System.IO.Path.GetDirectoryName(fullNames.First());
+			var commonPath = fullNames.First();
 
 			foreach (var fullName in fullNames.Skip(1))
 			{

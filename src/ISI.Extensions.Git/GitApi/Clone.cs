@@ -38,7 +38,7 @@ namespace ISI.Extensions.Git
 
 			response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{
-				Logger = new AddToLogLogger(request.AddToLog),
+				Logger = new AddToLogLogger(request.AddToLog, Logger),
 				ProcessExeFullName = "git",
 				Arguments = arguments.ToArray(),
 			}).Errored;

@@ -57,7 +57,7 @@ namespace ISI.Extensions.Ngrok.SerializableEntities.ClientApi
 		public string StartDateTime { get; set; }
 
 		[DataMember(Name = "duration", EmitDefaultValue = false)]
-		public long Duration { get; set; }
+		public double Duration { get; set; }
 
 		[DataMember(Name = "request", EmitDefaultValue = false)]
 		public TrafficRequest Request { get; set; }

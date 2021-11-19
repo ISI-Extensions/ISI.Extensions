@@ -70,15 +70,15 @@ namespace ISI.Extensions.Ngrok.SerializableEntities.ClientApi
 		public double Rate15 { get; set; }
 
 		[DataMember(Name = "p50", EmitDefaultValue = false)]
-		public long P50 { get; set; }
+		public double P50 { get; set; }
 
 		[DataMember(Name = "p90", EmitDefaultValue = false)]
-		public long P90 { get; set; }
+		public double P90 { get; set; }
 
 		[DataMember(Name = "p95", EmitDefaultValue = false)]
-		public long P95 { get; set; }
+		public double P95 { get; set; }
 
 		[DataMember(Name = "p99", EmitDefaultValue = false)]
-		public long P99 { get; set; }
+		public double P99 { get; set; }
 	}
 }

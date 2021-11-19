@@ -28,9 +28,9 @@ namespace ISI.Extensions.Ngrok
 		public double Rate1 { get; set; }
 		public double Rate5 { get; set; }
 		public double Rate15 { get; set; }
-		public long P50 { get; set; }
-		public long P90 { get; set; }
-		public long P95 { get; set; }
-		public long P99 { get; set; }
+		public double P50 { get; set; }
+		public double P90 { get; set; }
+		public double P95 { get; set; }
+		public double P99 { get; set; }
 	}
 }

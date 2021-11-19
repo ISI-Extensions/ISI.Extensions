@@ -28,7 +28,7 @@ namespace ISI.Extensions.Ngrok
 		public string TunnelName { get; set; }
 		public string LocalExternalGatewayAddress { get; set; }
 		public DateTime StartDateTime { get; set; }
-		public long Duration { get; set; }
+		public double Duration { get; set; }
 		public TrafficRequest Request { get; set; }
 		public TrafficResponse Response { get; set; }
 

@@ -138,7 +138,7 @@ namespace ISI.Extensions.TypeLocator
 				return implementationTypes.ToArray();
 			}
 
-			return new Type[0];
+			return Type.EmptyTypes;
 		}
 	}
 }

@@ -13,16 +13,16 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using ISI.Extensions.ConfigurationHelper.Extensions;
 using ISI.Extensions.DependencyInjection.Extensions;
 using ISI.Extensions.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace ISI.Extensions.Tests
 {
@@ -94,7 +94,9 @@ namespace ISI.Extensions.Tests
 
 			var solutionFullNames = new List<string>();
 			//solutionFullNames.Add(@"F:\ISI\ISI.FrameWork");
-			solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.WebApplication");
+			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Telephony.WindowsService");
+			solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Desktop");
+			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.WebApplication");
 			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt"));
 			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Connect.SolutionFullNames.txt"));
 
@@ -175,10 +177,35 @@ namespace ISI.Extensions.Tests
 						//	}
 						//}
 
-						if ((updatedContent.IndexOf("<LangVersion>latest</LangVersion>", StringComparison.InvariantCultureIgnoreCase) >= 0) && 
-						    (updatedContent.IndexOf("<RuntimeIdentifiers>win</RuntimeIdentifiers>", StringComparison.InvariantCultureIgnoreCase) <= 0))
+						if ((updatedContent.IndexOf("<LangVersion>latest</LangVersion>", StringComparison.InvariantCultureIgnoreCase) >= 0) &&
+								(updatedContent.IndexOf("<RuntimeIdentifiers>win</RuntimeIdentifiers>", StringComparison.InvariantCultureIgnoreCase) <= 0))
 						{
-							updatedContent = updatedContent.Replace("<LangVersion>latest</LangVersion>", "<LangVersion>latest</LangVersion>\r\n\t\t<RuntimeIdentifiers>win</RuntimeIdentifiers>");
+							updatedContent = updatedContent.Replace("<LangVersion>latest</LangVersion>", "<LangVersion>latest</LangVersion>\r\n\t\t<RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>");
+						}
+
+						if ((updatedContent.IndexOf("<LangVersion>latest</LangVersion>", StringComparison.InvariantCultureIgnoreCase) >= 0) &&
+								(updatedContent.IndexOf("<RuntimeIdentifiers>win</RuntimeIdentifiers>", StringComparison.InvariantCultureIgnoreCase) >= 0))
+						{
+							updatedContent = updatedContent.Replace("<RuntimeIdentifiers>win</RuntimeIdentifiers>", "<RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>");
+						}
+
+						foreach (var tag in new[]
+						{
+							"<LangVersion>latest</LangVersion>",
+							"<RuntimeIdentifiers>win</RuntimeIdentifiers>",
+							"<RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>",
+						})
+						{
+							var firstOccurrenceIndex = updatedContent.IndexOf(tag, StringComparison.InvariantCultureIgnoreCase);
+							var secondOccurrenceIndex = firstOccurrenceIndex;
+							while (secondOccurrenceIndex >= 0)
+							{
+								secondOccurrenceIndex = updatedContent.IndexOf(tag, firstOccurrenceIndex + 1, StringComparison.InvariantCultureIgnoreCase);
+								if (secondOccurrenceIndex >= 0)
+								{
+									updatedContent = string.Format("{0}{1}", updatedContent.Substring(0, secondOccurrenceIndex), updatedContent.Substring(secondOccurrenceIndex + tag.Length).TrimStart(' ', '\t', '\r', '\n'));
+								}
+							}
 						}
 
 						if (HasChanges(content, updatedContent))
@@ -195,7 +222,7 @@ namespace ISI.Extensions.Tests
 						if (!sourceControlClientApi.Commit(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.CommitRequest()
 						{
 							FullNames = dirtyFileNames,
-							LogMessage = "add <RuntimeIdentifiers>win</RuntimeIdentifiers>",
+							LogMessage = "add <RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>",
 							AddToLog = log => commitLog.AppendLine(log),
 						}).Success)
 						{

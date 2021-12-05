@@ -177,12 +177,18 @@ namespace ISI.Extensions.Tests
 				PackageId = "Microsoft.ClearScript",
 				PackageVersion = "6.0.2",
 			}).NugetPackageKey);
+			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			{
+				PackageId = "Microsoft.AspNetCore.Mvc.NewtonsoftJson",
+				PackageVersion = "5.0.12",
+			}).NugetPackageKey);
 
 			var upsertAssemblyRedirectsNugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
 
 			var solutionFullNames = new List<string>();
 			//solutionFullNames.Add(@"F:\ISI\ISI.FrameWork");
 			//solutionFullNames.Add(@"F:\ISI\Clients\ICS\ICS.Customers.WindowsService");
+			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Telephony.WindowsService");
 			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt"));
 			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Connect.SolutionFullNames.txt"));
 

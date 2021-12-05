@@ -32,7 +32,7 @@ namespace ISI.Extensions.Ngrok
 
 			try
 			{
-				var process = System.Diagnostics.Process.GetProcessesByName("ngrok").NullCheckedFirstOrDefault(process => (process?.MainModule?.FileName ?? string.Empty).EndsWith("\\ngrok.exe", StringComparison.InvariantCultureIgnoreCase));
+				var process = System.Diagnostics.Process.GetProcessesByName("ngrok").NullCheckedFirstOrDefault(); //process => (process?.MainModule?.FileName ?? string.Empty).EndsWith("\\ngrok.exe", StringComparison.InvariantCultureIgnoreCase));
 				if (process != null)
 				{
 					response.IsRunning = true;
@@ -50,7 +50,7 @@ namespace ISI.Extensions.Ngrok
 				{
 					try
 					{
-						if ((process.ProcessName.IndexOf("ngrok", StringComparison.InvariantCultureIgnoreCase) >= 0) && process.MainModule.FileName.EndsWith("\\ngrok.exe", StringComparison.InvariantCultureIgnoreCase))
+						if ((process.ProcessName.IndexOf("ngrok", StringComparison.InvariantCultureIgnoreCase) >= 0)) // && process.MainModule.FileName.EndsWith("\\ngrok.exe", StringComparison.InvariantCultureIgnoreCase))
 						{
 							response.IsRunning = true;
 							response.ServiceFileName = process.MainModule.FileName;

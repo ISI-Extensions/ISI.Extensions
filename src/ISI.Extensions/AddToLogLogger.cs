@@ -35,24 +35,29 @@ namespace ISI.Extensions
 
 		public void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel, Microsoft.Extensions.Logging.EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
 		{
-			Logger?.Log(logLevel, eventId, state, exception, formatter);
-
-			formatter ??= (formatterState, formatterException) =>
+			if (AddToLog == null)
 			{
-				if (formatterState is string stringValue)
+				Logger?.Log(logLevel, eventId, state, exception, formatter);
+			}
+			else
+			{
+				formatter ??= (formatterState, formatterException) =>
 				{
-					return stringValue;
-				}
+					if (formatterState is string stringValue)
+					{
+						return stringValue;
+					}
 
-				if (formatterException != null)
-				{
-					return formatterException.ErrorMessageFormatted();
-				}
+					if (formatterException != null)
+					{
+						return formatterException.ErrorMessageFormatted();
+					}
 
-				return formatterState.ToString();
-			};
+					return formatterState.ToString();
+				};
 
-			AddToLog?.Invoke(string.Format("{0}{1}", formatter(state, exception), Environment.NewLine));
+				AddToLog?.Invoke(string.Format("{0}{1}", formatter(state, exception), Environment.NewLine));
+			}
 		}
 
 		public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel)

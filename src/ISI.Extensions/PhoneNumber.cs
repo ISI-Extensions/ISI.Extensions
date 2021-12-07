@@ -21,7 +21,7 @@ namespace ISI.Extensions
 {
 	public class PhoneNumber
 	{
-		public static readonly System.Text.RegularExpressions.Regex PhoneNumberRegex = new System.Text.RegularExpressions.Regex(@"^\s*(((\(\s*1\s*\))|1)\s*-?)?(?<AreaCode>\(?\s*\d{3}\s*\)?)\s*-?\s*(?<Exchange>\d{3})\s*-?\s*(?<Extension>\d{4})\s*$");
+		public static readonly System.Text.RegularExpressions.Regex PhoneNumberRegex = new(@"^\s*(((\(\s*1\s*\))|1)\s*-?)?(?<AreaCode>\(?\s*\d{3}\s*\)?)\s*-?\s*(?<Exchange>\d{3})\s*-?\s*(?<Extension>\d{4})\s*$");
 
 		#region GetPhoneNumber
 		public static string GetPhoneNumber(string value)

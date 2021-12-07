@@ -23,7 +23,7 @@ namespace ISI.Extensions.DependencyInjection.Iunq
 {
 	public class ServiceCache : IDisposable
 	{
-		private readonly object _creationLock = new object();
+		private readonly object _creationLock = new();
 		protected System.Collections.Concurrent.ConcurrentDictionary<Type, object> Instances { get; }
 
 		internal ServiceCache(Configuration configuration)

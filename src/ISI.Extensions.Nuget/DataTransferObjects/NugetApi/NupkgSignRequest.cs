@@ -27,7 +27,7 @@ namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 
 		public string WorkingDirectory { get; set; }
 
-		public Uri TimestamperUri { get; set; } = new Uri("http://timestamp.digicert.com");
+		public Uri TimestamperUri { get; set; } = new("http://timestamp.digicert.com");
 		public string TimestampHashAlgorithm { get; set; } = "SHA256";
 		
 		public string OutputDirectory { get; set; }

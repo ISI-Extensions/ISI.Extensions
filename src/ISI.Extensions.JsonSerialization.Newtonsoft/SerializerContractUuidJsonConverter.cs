@@ -78,7 +78,7 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 
 
 		private static global::Newtonsoft.Json.JsonConverter _jsonConverter = null;
-		private static readonly object _jsonConverterLock = new object();
+		private static readonly object _jsonConverterLock = new();
 
 		public static global::Newtonsoft.Json.JsonConverter GetJsonConverter()
 		{

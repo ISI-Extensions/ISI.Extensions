@@ -74,7 +74,7 @@ namespace ISI.Extensions
 			return result ?? assembly.GetName().Version.ToString();
 		}
 
-		private static DateTime _jan1st2000 = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+		private static DateTime _jan1st2000 = new(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 		public static DateTime? GetAssemblyBuildDate(System.Reflection.Assembly assembly)
 		{
 			var version = new System.Version(GetAssemblyVersion(assembly));

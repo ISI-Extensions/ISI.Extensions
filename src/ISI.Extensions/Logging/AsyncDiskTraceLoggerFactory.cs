@@ -23,7 +23,7 @@ namespace ISI.Extensions.Logging
 {
 	public class AsyncDiskTraceLoggerFactory : global::Microsoft.Extensions.Logging.ILoggerFactory
 	{
-		protected List<global::Microsoft.Extensions.Logging.ILoggerProvider> LoggerProviders { get; } = new List<global::Microsoft.Extensions.Logging.ILoggerProvider>();
+		protected List<global::Microsoft.Extensions.Logging.ILoggerProvider> LoggerProviders { get; } = new();
 
 		public global::Microsoft.Extensions.Logging.ILogger CreateLogger(string categoryName) => new AsyncDiskTraceLogger(categoryName);
 

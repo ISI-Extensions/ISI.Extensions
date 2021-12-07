@@ -24,7 +24,7 @@ namespace ISI.Extensions.SpreadSheets
 {
 	public class AddRecordsColumnCollection<TRecord> : List<IAddRecordsColumn<TRecord>>
 	{
-		private static System.Text.RegularExpressions.Regex _formulaRegex = new System.Text.RegularExpressions.Regex("(?:{)(?<definition>(?:row)|(?:column))(?:(?<sign>[-\\+])(?<offset>\\d+))?(?:})*");
+		private static System.Text.RegularExpressions.Regex _formulaRegex = new("(?:{)(?<definition>(?:row)|(?:column))(?:(?<sign>[-\\+])(?<offset>\\d+))?(?:})*");
 
 		private int GetNextColumnOffset()
 		{

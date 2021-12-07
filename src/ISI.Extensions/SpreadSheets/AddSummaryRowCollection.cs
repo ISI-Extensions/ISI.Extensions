@@ -24,7 +24,7 @@ namespace ISI.Extensions.SpreadSheets
 {
 	public class AddSummaryRowCollection<TSummary> : List<IAddSummaryRow<TSummary>>
 	{
-		private static System.Text.RegularExpressions.Regex _formulaRegex = new System.Text.RegularExpressions.Regex("(?:{)(?<definition>(?:row)|(?:row))(?:(?<sign>[-\\+])(?<offset>\\d+))?(?:})*");
+		private static System.Text.RegularExpressions.Regex _formulaRegex = new("(?:{)(?<definition>(?:row)|(?:row))(?:(?<sign>[-\\+])(?<offset>\\d+))?(?:})*");
 
 		private int GetNextRowOffset()
 		{

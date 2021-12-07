@@ -28,7 +28,7 @@ namespace ISI.Extensions.ConfigurationValueReaders
 		string IConfigurationValueReader.Prefix => Prefix;
 
 		private readonly IDictionary<string, string> _valueByKey = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
-		private static readonly object _valueByKeyByKeyLock = new object();
+		private static readonly object _valueByKeyByKeyLock = new();
 		private readonly IDictionary<string, IDictionary<string, string>> _valueByKeyByKey = new Dictionary<string, IDictionary<string, string>>(StringComparer.InvariantCultureIgnoreCase);
 
 		public string GetValue(ParsedValue parsedValue)

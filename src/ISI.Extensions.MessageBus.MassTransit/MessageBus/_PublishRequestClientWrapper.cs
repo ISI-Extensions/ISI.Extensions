@@ -26,8 +26,8 @@ namespace ISI.Extensions.MessageBus.MassTransit
 {
 	public partial class MessageBus
 	{
-		private static readonly object _publishRequestClientWrapperCacheLock = new object();
-		private static readonly Dictionary<string, IPublishRequestClientWrapper> _publishRequestClientWrapperCache = new Dictionary<string, IPublishRequestClientWrapper>();
+		private static readonly object _publishRequestClientWrapperCacheLock = new();
+		private static readonly Dictionary<string, IPublishRequestClientWrapper> _publishRequestClientWrapperCache = new();
 
 		private IPublishRequestClientWrapper GetPublishRequestClientWrapper(Type requestType, Type responseType, TimeSpan? timeout, TimeSpan? timeToLive = null)
 		{
@@ -70,7 +70,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 			where TRequest : class
 			where TResponse : class
 		{
-			private readonly object _clientLock = new object();
+			private readonly object _clientLock = new();
 			private global::MassTransit.IRequestClient<TRequest> _client = null;
 
 			private readonly TimeSpan _timeout;

@@ -30,7 +30,7 @@ namespace ISI.Extensions.Aspose
 				(new ISI.Extensions.Aspose.Words()).ApplyLicense();
 			}
 
-			protected HashSet<string> ValidExtensions = new HashSet<string>(new[]
+			protected HashSet<string> ValidExtensions = new(new[]
 			{
 				"doc",
 				"docx"

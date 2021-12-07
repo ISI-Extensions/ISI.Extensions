@@ -24,7 +24,7 @@ namespace ISI.Extensions
 {
 	public partial class StringFormat
 	{
-		private static readonly Random _generateRandomKeyRandom = new Random();
+		private static readonly Random _generateRandomKeyRandom = new();
 		public static string GenerateRandomKey(int length, string allowableCharacters = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789!@#$%^&*()")
 		{
 			var generatedRandomKey = new char[length];

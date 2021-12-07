@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,19 +15,26 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.AspNetCore.Swashbuckle.Extensions
 {
-	public partial class StringFormat
+	public static partial class SwaggerGenOptionsExtensions
 	{
-		public static readonly System.Text.RegularExpressions.Regex NonDigits = new(@"\D+");
-		public static string StringNumericOnly(string value)
+		public static void AddBearerTokenAuthentication(this global::Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions swaggerGenOptions, string bearerFormat = "JWT", string description = "JWT Authorization header. \r\n\r\n Enter the token in the text input below.")
 		{
-			return NonDigits.Replace(value ?? string.Empty, string.Empty);
+			swaggerGenOptions.OperationFilter<BearerTokenOperationFilter>();
+
+			swaggerGenOptions.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme()
+			{                                
+				Name = "Authorization",
+				Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+				Scheme = "Bearer",
+				BearerFormat = bearerFormat,
+				In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+				Description = description,
+			});
 		}
 	}
 }

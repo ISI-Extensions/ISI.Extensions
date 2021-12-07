@@ -26,7 +26,7 @@ namespace ISI.Extensions.Repository.Cosmos
 	public abstract partial class RecordManagerPrimaryKey<TRecord, TRecordPrimaryKey>
 	{
 		private static global::Newtonsoft.Json.Serialization.DefaultContractResolver _repositoryContractResolver = null;
-		private static readonly object _repositoryContractResolverLock = new object();
+		private static readonly object _repositoryContractResolverLock = new();
 
 		protected global::Newtonsoft.Json.Serialization.DefaultContractResolver GetRepositoryContractResolver()
 		{

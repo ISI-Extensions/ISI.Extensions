@@ -100,7 +100,7 @@ namespace ISI.Extensions
 			return latitudeLongitude.GetValueOrDefault();
 		}
 
-		public static LatitudeLongitude Empty => new LatitudeLongitude(0, 0);
+		public static LatitudeLongitude Empty => new(0, 0);
 
 		public static bool operator ==(LatitudeLongitude x, LatitudeLongitude y)
 		{

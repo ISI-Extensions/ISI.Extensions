@@ -27,6 +27,6 @@ namespace ISI.Extensions.MessageBus
 		public string ChannelName { get; set; }
 		public string ChannelPathSuffix { get; set; }
 
-		public List<Action<IMessageBusConfigurator>> AddSubscriptions { get; } = new List<Action<IMessageBusConfigurator>>();
+		public List<Action<IMessageBusConfigurator>> AddSubscriptions { get; } = new();
 	}
 }

@@ -38,7 +38,7 @@ namespace ISI.Extensions.MessageBus
 
 		public string ChannelNameSuffix { get; set; } = string.Empty;
 
-		public ChannelConfiguration DefaultChannel { get; set; } = new ChannelConfiguration();
+		public ChannelConfiguration DefaultChannel { get; set; } = new();
 
 		public NamedChannelConfiguration[] NamedChannels { get; set; } = null;
 

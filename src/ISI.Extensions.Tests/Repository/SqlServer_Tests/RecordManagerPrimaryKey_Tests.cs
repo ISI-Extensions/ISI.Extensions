@@ -49,7 +49,7 @@ namespace ISI.Extensions.Tests.Repository
 
 			ISI.Extensions.Repository.RecordIndexCollection<Contact> ISI.Extensions.Repository.IRecordIndexDescriptions<Contact>.GetRecordIndexes()
 			{
-				return new()
+				return new ISI.Extensions.Repository.RecordIndexCollection<Contact>
 				{
 					{
 						new ISI.Extensions.Repository.RecordIndexColumnCollection<Contact>()

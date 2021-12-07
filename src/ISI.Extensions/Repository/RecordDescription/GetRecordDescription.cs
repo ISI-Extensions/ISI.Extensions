@@ -25,7 +25,7 @@ namespace ISI.Extensions.Repository
 	public partial class RecordDescription
 	{
 		private static readonly IDictionary<Type, IRecordDescription> _recordDescriptions = new Dictionary<Type, IRecordDescription>();
-		private static readonly object _recordDescriptionsLock = new object();
+		private static readonly object _recordDescriptionsLock = new();
 
 		public static IRecordDescription<TRecord> GetRecordDescription<TRecord>()
 		{

@@ -49,7 +49,7 @@ namespace ISI.Extensions.SpreadSheets
 			OnReads = onReads;
 		}
 
-		public WorksheetRecordReaders Worksheets => new WorksheetRecordReaders(Workbook, Columns, OnReads);
+		public WorksheetRecordReaders Worksheets => new(Workbook, Columns, OnReads);
 
 		public void Dispose()
 		{

@@ -26,7 +26,7 @@ namespace ISI.Extensions.Repository
 	public partial class RecordDescription
 	{
 		private static HashSet<Type> _typesWithSerializerContractUuid = null;
-		private static readonly object _typesWithSerializerContractUuidLock = new object();
+		private static readonly object _typesWithSerializerContractUuidLock = new();
 
 		private static HashSet<Type> GetTypesWithSerializerContractUuid()
 		{

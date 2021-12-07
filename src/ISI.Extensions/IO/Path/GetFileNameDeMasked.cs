@@ -25,21 +25,21 @@ namespace ISI.Extensions.IO
 	{
 		private static IEnumerable<FileNameMask> DefaultFileNameMasks => new FileNameMask[]
 		{
-				new FileNameMask(string.Format("{{{0}}}", FileNameMask.FilePrefix), FileNameMask.FileNameMaskType.KeyValue, "file", "file retrieval"),
-				new FileNameMask("{YYYYMMDD}", FileNameMask.FileNameMaskType.DateTimeMask, "yyyyMMdd", "Date Stamp: Year Month Day"),
-				new FileNameMask("{YYYYMMDD.HHmmssfff}", FileNameMask.FileNameMaskType.DateTimeMask, "yyyyMMdd.HHmmssfff", "Date Time Stamp: Year Month Day.24Hour minute second millisecond"),
-				new FileNameMask("{Now}", FileNameMask.FileNameMaskType.DateTimeMask, "yyyyMMdd.HHmmssfff", "Date Time Stamp: Year Month Day.24Hour minute second millisecond"),
-				new FileNameMask("{YYYY}", FileNameMask.FileNameMaskType.DateTimeMask, "yyyy", "Date Stamp: Year"),
-				new FileNameMask("{YY}", FileNameMask.FileNameMaskType.DateTimeMask, "yy", "Date Stamp: Year last two digits"),
-				new FileNameMask("{MM}", FileNameMask.FileNameMaskType.DateTimeMask, "MM", "Date Stamp: Month"),
-				new FileNameMask("{WW}", FileNameMask.FileNameMaskType.DateTimeMask, "ww", "Date Stamp: Week"),
-				new FileNameMask("{DD}", FileNameMask.FileNameMaskType.DateTimeMask, "dd", "Date Stamp: Day"),
-				new FileNameMask("{HH}", FileNameMask.FileNameMaskType.DateTimeMask, "HH", "Time Stamp: 24Hour"),
-				new FileNameMask("{hh}", FileNameMask.FileNameMaskType.DateTimeMask, "hh", "Time Stamp: Hour"),
-				new FileNameMask("{mm}", FileNameMask.FileNameMaskType.DateTimeMask, "mm", "Time Stamp: Minute"),
-				new FileNameMask("{ss}", FileNameMask.FileNameMaskType.DateTimeMask, "ss", "Time Stamp: Second"),
-				new FileNameMask("{fff}", FileNameMask.FileNameMaskType.DateTimeMask, "fff", "Time Stamp: Millisecond"),
-				new FileNameMask("{TempDirectory}", FileNameMask.FileNameMaskType.StringReplacement, System.IO.Path.GetTempPath, "Temp Directory"),
+				new(string.Format("{{{0}}}", FileNameMask.FilePrefix), FileNameMask.FileNameMaskType.KeyValue, "file", "file retrieval"),
+				new("{YYYYMMDD}", FileNameMask.FileNameMaskType.DateTimeMask, "yyyyMMdd", "Date Stamp: Year Month Day"),
+				new("{YYYYMMDD.HHmmssfff}", FileNameMask.FileNameMaskType.DateTimeMask, "yyyyMMdd.HHmmssfff", "Date Time Stamp: Year Month Day.24Hour minute second millisecond"),
+				new("{Now}", FileNameMask.FileNameMaskType.DateTimeMask, "yyyyMMdd.HHmmssfff", "Date Time Stamp: Year Month Day.24Hour minute second millisecond"),
+				new("{YYYY}", FileNameMask.FileNameMaskType.DateTimeMask, "yyyy", "Date Stamp: Year"),
+				new("{YY}", FileNameMask.FileNameMaskType.DateTimeMask, "yy", "Date Stamp: Year last two digits"),
+				new("{MM}", FileNameMask.FileNameMaskType.DateTimeMask, "MM", "Date Stamp: Month"),
+				new("{WW}", FileNameMask.FileNameMaskType.DateTimeMask, "ww", "Date Stamp: Week"),
+				new("{DD}", FileNameMask.FileNameMaskType.DateTimeMask, "dd", "Date Stamp: Day"),
+				new("{HH}", FileNameMask.FileNameMaskType.DateTimeMask, "HH", "Time Stamp: 24Hour"),
+				new("{hh}", FileNameMask.FileNameMaskType.DateTimeMask, "hh", "Time Stamp: Hour"),
+				new("{mm}", FileNameMask.FileNameMaskType.DateTimeMask, "mm", "Time Stamp: Minute"),
+				new("{ss}", FileNameMask.FileNameMaskType.DateTimeMask, "ss", "Time Stamp: Second"),
+				new("{fff}", FileNameMask.FileNameMaskType.DateTimeMask, "fff", "Time Stamp: Millisecond"),
+				new("{TempDirectory}", FileNameMask.FileNameMaskType.StringReplacement, System.IO.Path.GetTempPath, "Temp Directory"),
 		};
 
 		public static string GetFileNameDeMasked(string fileName, ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper = null)

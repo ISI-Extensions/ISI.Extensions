@@ -26,7 +26,7 @@ namespace ISI.Extensions.Repository.Cosmos
 	public abstract partial class RecordManagerPrimaryKey<TRecord, TRecordPrimaryKey>
 	{
 		private static global::Newtonsoft.Json.JsonSerializerSettings _repositoryJsonSerializerSettings = null;
-		private static readonly object _repositoryJsonSerializerSettingsLock = new object();
+		private static readonly object _repositoryJsonSerializerSettingsLock = new();
 
 		private global::Newtonsoft.Json.JsonSerializerSettings GetRepositoryJsonSerializerSettings()
 		{

@@ -23,7 +23,7 @@ namespace ISI.Extensions.TypeLocator
 {
 	public class Container : IContainer
 	{
-		private static object _localContainerLock { get; } = new object();
+		private static object _localContainerLock { get; } = new();
 		private static IContainer _localContainer { get; set; } = null;
 		public static IContainer LocalContainer => _localContainer ??= BuildLocalContainer();
 
@@ -42,7 +42,7 @@ namespace ISI.Extensions.TypeLocator
 			return _localContainer;
 		}
 
-		protected Dictionary<Type, List<Type>> ImplementationTypesLookup { get; } = new Dictionary<Type, List<Type>>();
+		protected Dictionary<Type, List<Type>> ImplementationTypesLookup { get; } = new();
 
 		public IContainer Build(IEnumerable<string> excludeAssemblyFileNames = null, bool includeExes = false)
 		{

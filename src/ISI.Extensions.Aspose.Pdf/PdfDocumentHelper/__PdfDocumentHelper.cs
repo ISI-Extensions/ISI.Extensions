@@ -30,7 +30,7 @@ namespace ISI.Extensions.Aspose
 				(new ISI.Wrappers.Aspose.Pdf()).ApplyLicense();
 			}
 
-			protected readonly HashSet<string> ValidExtensions = new HashSet<string>(new []
+			protected readonly HashSet<string> ValidExtensions = new(new []
 			{
 				"pdf"
 			}, StringComparer.InvariantCultureIgnoreCase);

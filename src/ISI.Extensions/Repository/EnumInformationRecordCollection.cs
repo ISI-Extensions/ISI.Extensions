@@ -25,7 +25,7 @@ namespace ISI.Extensions.Repository
 {
 	public class EnumInformationRecordCollection : List<EnumInformationRecord>
 	{
-		private static readonly System.Text.RegularExpressions.Regex PascalizeRegex = new System.Text.RegularExpressions.Regex(@"(?:[^a-zA-Z0-9]*)(?<first>[a-zA-Z0-9])(?<reminder>[a-zA-Z0-9]*)(?:[^a-zA-Z0-9]*)");
+		private static readonly System.Text.RegularExpressions.Regex PascalizeRegex = new(@"(?:[^a-zA-Z0-9]*)(?<first>[a-zA-Z0-9])(?<reminder>[a-zA-Z0-9]*)(?:[^a-zA-Z0-9]*)");
 
 		public string AliasesDelimiter { get; }
 

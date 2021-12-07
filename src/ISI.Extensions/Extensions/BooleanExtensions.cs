@@ -100,7 +100,7 @@ namespace ISI.Extensions.Extensions
 			return null;
 		}
 
-		private static object _boolDescriptionLock = new object();
+		private static object _boolDescriptionLock = new();
 		private static IDictionary<Type, IBoolDescription> _boolDescriptions = new Dictionary<Type, IBoolDescription>();
 
 		public interface IBoolDescription

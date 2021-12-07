@@ -30,6 +30,6 @@ namespace ISI.Extensions.Caching
 
 		public TimeSpan DefaultSlidingExpirationDuration { get; set; } = TimeSpan.FromMinutes(5);
 
-		public EnterpriseCacheManagerApiConfiguration EnterpriseCacheManagerApi { get; set; } = new EnterpriseCacheManagerApiConfiguration();
+		public EnterpriseCacheManagerApiConfiguration EnterpriseCacheManagerApi { get; set; } = new();
 	}
 }

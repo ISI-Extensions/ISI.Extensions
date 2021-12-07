@@ -42,7 +42,7 @@ namespace ISI.Extensions.StatusTrackers
 
 			public int MaxLogSize { get; set; } = 100000;
 
-			protected readonly object SyncLock = new object();
+			protected readonly object SyncLock = new();
 
 			protected System.IO.FileStream RunningFileStream { get; set; }
 
@@ -170,7 +170,7 @@ namespace ISI.Extensions.StatusTrackers
 				}
 			}
 
-			private readonly List<IStatusTrackerLogEntry> _logEntries = new List<IStatusTrackerLogEntry>();
+			private readonly List<IStatusTrackerLogEntry> _logEntries = new();
 
 			public void AddToLog(System.Exception exception)
 			{

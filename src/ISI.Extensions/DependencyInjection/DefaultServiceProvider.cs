@@ -23,7 +23,7 @@ namespace ISI.Extensions.DependencyInjection
 {
 	public class DefaultServiceProvider : IServiceProvider
 	{
-		protected object Lock { get; } = new object();
+		protected object Lock { get; } = new();
 
 		protected IDictionary<Type, Type> KnownTypes { get; } = new Dictionary<Type, Type>();
 		protected IDictionary<Type, Microsoft.Extensions.DependencyInjection.ServiceLifetime> LifeTimes { get; } = new Dictionary<Type, Microsoft.Extensions.DependencyInjection.ServiceLifetime>();

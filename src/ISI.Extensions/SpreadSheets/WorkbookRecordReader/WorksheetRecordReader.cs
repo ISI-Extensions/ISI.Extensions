@@ -37,7 +37,7 @@ namespace ISI.Extensions.SpreadSheets
 				OnReads = onReads.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 			}
 
-			public WorksheetRecords Records => new WorksheetRecords(Worksheet.Cells.Rows, Columns, OnReads);
+			public WorksheetRecords Records => new(Worksheet.Cells.Rows, Columns, OnReads);
 		}
 	}
 }

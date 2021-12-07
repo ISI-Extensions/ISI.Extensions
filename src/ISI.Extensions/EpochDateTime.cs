@@ -22,7 +22,7 @@ namespace ISI.Extensions
 {
 	public class EpochDateTime
 	{
-		internal static readonly DateTime EpochStartOfDateTimeUtc = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+		internal static readonly DateTime EpochStartOfDateTimeUtc = new(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 
 		private DateTime _valueUtc;
 
@@ -66,13 +66,13 @@ namespace ISI.Extensions
 			set => _valueUtc = value;
 		}
 
-		public static EpochDateTime FromDateTimeUtc(DateTime dateTimeUtc) => new EpochDateTime(dateTimeUtc);
+		public static EpochDateTime FromDateTimeUtc(DateTime dateTimeUtc) => new(dateTimeUtc);
 		public static EpochDateTime FromDateTimeUtc(DateTime? dateTimeUtc) => (dateTimeUtc.HasValue ? new EpochDateTime(dateTimeUtc.Value) : null);
-		public static EpochDateTime FromTicks(long ticks) => new EpochDateTime(EpochStartOfDateTimeUtc.AddTicks(ticks));
+		public static EpochDateTime FromTicks(long ticks) => new(EpochStartOfDateTimeUtc.AddTicks(ticks));
 		public static EpochDateTime FromTicks(long? ticks) => (ticks.HasValue ? new EpochDateTime(EpochStartOfDateTimeUtc.AddTicks(ticks.Value)) : null);
-		public static EpochDateTime FromMilliseconds(double milliseconds) => new EpochDateTime(EpochStartOfDateTimeUtc.AddMilliseconds(milliseconds));
+		public static EpochDateTime FromMilliseconds(double milliseconds) => new(EpochStartOfDateTimeUtc.AddMilliseconds(milliseconds));
 		public static EpochDateTime FromMilliseconds(double? milliseconds) => (milliseconds.HasValue ? new EpochDateTime(EpochStartOfDateTimeUtc.AddMilliseconds(milliseconds.Value)) : null);
-		public static EpochDateTime FromTotalSeconds(long seconds) => new EpochDateTime(EpochStartOfDateTimeUtc.AddSeconds(seconds));
+		public static EpochDateTime FromTotalSeconds(long seconds) => new(EpochStartOfDateTimeUtc.AddSeconds(seconds));
 		public static EpochDateTime FromTotalSeconds(long? seconds) => (seconds.HasValue ? new EpochDateTime(EpochStartOfDateTimeUtc.AddSeconds(seconds.Value)) : null);
 	}
 }

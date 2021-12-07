@@ -40,7 +40,7 @@ namespace ISI.Extensions
 			protected TimeSpan? MaxProcessTimeSpan { get; }
 			protected TimeSpan TaskTimerInterval { get; }
 			protected TimeSpan? ExceptionWaitTimeSpan { get; }
-			protected object StartLock { get; } = new object();
+			protected object StartLock { get; } = new();
 			public bool Started { get; private set; }
 			public bool StopTimer { get; private set; }
 

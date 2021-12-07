@@ -27,9 +27,9 @@ namespace ISI.Extensions.Repository.SqlServer
 
 	public class SqlConnectionWhereClause : WhereClause, ISqlConnectionWhereClause, IWhereClause, IWhereClauseWithSql, IWhereClauseWithGetSql, IWhereClauseWithParameters, IWhereClauseWithGetParameters
 	{
-		public List<InitializeDelegate> InitializeActions { get; } = new List<InitializeDelegate>();
-		public List<FinalizeDelegate> FinalizeActions { get; } = new List<FinalizeDelegate>();
-		public List<GetJoinCauseDelegate> JoinCauseBuilders { get; } = new List<GetJoinCauseDelegate>();
+		public List<InitializeDelegate> InitializeActions { get; } = new();
+		public List<FinalizeDelegate> FinalizeActions { get; } = new();
+		public List<GetJoinCauseDelegate> JoinCauseBuilders { get; } = new();
 
 
 		public string GetJoinCause(string tableNameAlias)

@@ -23,11 +23,11 @@ namespace ISI.Extensions.MessageBus
 {
 	public class MessageBusBuildRequest : IMessageBusBuildRequest
 	{
-		public HashSet<string> ChannelNames { get; } = new HashSet<string>(StringComparer.InvariantCulture);
+		public HashSet<string> ChannelNames { get; } = new(StringComparer.InvariantCulture);
 
 		public string ChannelPath { get; set; }
 
-		public List<Action<IMessageBusConfigurator>> AddSubscriptions { get; } = new List<Action<IMessageBusConfigurator>>();
+		public List<Action<IMessageBusConfigurator>> AddSubscriptions { get; } = new();
 
 		public int? ConcurrentConsumerLimit { get; set; } = null;
 		public int RetryLimit { get; set; } = 0;

@@ -27,8 +27,8 @@ namespace ISI.Extensions.Caching
 
 	public class ClearCacheLock : IDisposable
 	{
-		public ClearCacheRequest ClearCacheLockRequest { get; } = new ClearCacheRequest();
-		public System.Collections.Concurrent.ConcurrentDictionary<string, ClearCacheRequest> ClearCacheLockRequestByCacheKeyScope { get; } = new System.Collections.Concurrent.ConcurrentDictionary<string, ClearCacheRequest>();
+		public ClearCacheRequest ClearCacheLockRequest { get; } = new();
+		public System.Collections.Concurrent.ConcurrentDictionary<string, ClearCacheRequest> ClearCacheLockRequestByCacheKeyScope { get; } = new();
 
 		public IEnterpriseCacheManagerApi EnterpriseCacheManagerApi { get; }
 		private ClearCacheLockFilter ClearCacheFilter { get; }

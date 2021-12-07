@@ -69,9 +69,9 @@ namespace ISI.Extensions
 			}
 		}
 
-		private readonly List<IStatusTrackerLogEntry> _logEntries = new List<IStatusTrackerLogEntry>();
+		private readonly List<IStatusTrackerLogEntry> _logEntries = new();
 
-		private readonly object _syncLock = new object();
+		private readonly object _syncLock = new();
 
 		public void AddToLog(System.Exception exception)
 		{

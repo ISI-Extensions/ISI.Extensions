@@ -21,11 +21,11 @@ namespace ISI.Extensions.ConfigurationHelper
 {
 	public class Environment
 	{
-		public static readonly Environment Production = new Environment("Production");
-		public static readonly Environment Staging = new Environment("Staging");
-		public static readonly Environment UAT = new Environment("UAT");
-		public static readonly Environment QA = new Environment("QA");
-		public static readonly Environment Development = new Environment("Development");
+		public static readonly Environment Production = new("Production");
+		public static readonly Environment Staging = new("Staging");
+		public static readonly Environment UAT = new("UAT");
+		public static readonly Environment QA = new("QA");
+		public static readonly Environment Development = new("Development");
 
 		public string Value { get; }
 

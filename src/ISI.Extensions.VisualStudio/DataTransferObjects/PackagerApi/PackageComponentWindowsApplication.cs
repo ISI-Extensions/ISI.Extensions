@@ -27,7 +27,7 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi
 
 		public bool DoNotXmlTransformConfigs { get; set; }
 
-		public List<string> ExcludeFiles { get; set; } = new List<string>(new[]
+		public List<string> ExcludeFiles { get; set; } = new(new[]
 		{
 			"*.xml",
 			"T4LocalContent",

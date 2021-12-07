@@ -23,7 +23,7 @@ namespace ISI.Extensions.DateTimeStamper
 	{
 		protected ISI.Extensions.DateTimeStamper.Configuration Configuration { get; }
 
-		private static readonly object _sourceRefreshLock = new object();
+		private static readonly object _sourceRefreshLock = new();
 
 		private static DateTime _sourceLastRefresh = DateTime.MinValue;
 		private static TimeSpan _sourceToLocalMachineOffset;

@@ -25,7 +25,7 @@ namespace ISI.Extensions.MessageBus.Redis
 {
 	public partial class MessageBus
 	{
-		private static System.Collections.Concurrent.ConcurrentDictionary<Type, string> _knownTypeChannelNames { get; } = new System.Collections.Concurrent.ConcurrentDictionary<Type, string>();
+		private static System.Collections.Concurrent.ConcurrentDictionary<Type, string> _knownTypeChannelNames { get; } = new();
 
 		protected virtual string GetChannelName<TMessage>()
 			where TMessage : class

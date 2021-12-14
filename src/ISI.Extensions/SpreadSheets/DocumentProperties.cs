@@ -25,7 +25,7 @@ namespace ISI.Extensions.SpreadSheets
 	{
 		public string Subject { get; set; }
 		public string Author { get; set; }
-		public string Revision { get; set; }
+		public string RevisionNumber { get; set; }
 		public string Keywords { get; set; }
 		public string Title { get; set; }
 		public string Comments { get; set; }

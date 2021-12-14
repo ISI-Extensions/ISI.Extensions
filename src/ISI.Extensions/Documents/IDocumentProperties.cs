@@ -67,7 +67,7 @@ namespace ISI.Extensions.Documents
 	{
 		string Comments { get; set; }
 		string Template { get; set; }
-		string Revision { get; set; }
+		string RevisionNumber { get; set; }
 		string ApplicationName { get; set; }
 		string Category { get; set; }
 		string Manager { get; set; }

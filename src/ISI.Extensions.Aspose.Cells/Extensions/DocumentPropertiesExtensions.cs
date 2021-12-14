@@ -37,7 +37,7 @@ namespace ISI.Extensions.Aspose.Extensions
 				{
 					workbook.BuiltInDocumentProperties.Subject = spreadSheetDocumentProperties.Subject ?? string.Empty;
 					workbook.BuiltInDocumentProperties.Author = spreadSheetDocumentProperties.Author ?? string.Empty;
-					workbook.BuiltInDocumentProperties.Revision = spreadSheetDocumentProperties.Revision ?? string.Empty;
+					workbook.BuiltInDocumentProperties.RevisionNumber = spreadSheetDocumentProperties.RevisionNumber ?? string.Empty;
 					workbook.BuiltInDocumentProperties.Keywords = spreadSheetDocumentProperties.Keywords ?? string.Empty;
 					workbook.BuiltInDocumentProperties.Title = spreadSheetDocumentProperties.Title ?? string.Empty;
 					workbook.BuiltInDocumentProperties.Comments = spreadSheetDocumentProperties.Comments ?? string.Empty;
@@ -56,7 +56,7 @@ namespace ISI.Extensions.Aspose.Extensions
 			{
 				Subject = workbook.BuiltInDocumentProperties.Subject ?? string.Empty,
 				Author = workbook.BuiltInDocumentProperties.Author ?? string.Empty,
-				Revision = workbook.BuiltInDocumentProperties.Revision ?? string.Empty,
+				RevisionNumber = workbook.BuiltInDocumentProperties.RevisionNumber ?? string.Empty,
 				Keywords = workbook.BuiltInDocumentProperties.Keywords ?? string.Empty,
 				Title = workbook.BuiltInDocumentProperties.Title ?? string.Empty,
 				Comments = workbook.BuiltInDocumentProperties.Comments ?? string.Empty,

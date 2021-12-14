@@ -27,15 +27,18 @@ namespace ISI.Extensions.VisualStudio
 	public partial class PackagerApi
 	{
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
+		protected MSBuildApi MSBuildApi { get; }
 		protected CodeGenerationApi CodeGenerationApi { get; }
 		protected XmlTransformApi XmlTransformApi { get; }
 
 		public PackagerApi(
 			Microsoft.Extensions.Logging.ILogger logger,
+			MSBuildApi msBuildApi,
 			CodeGenerationApi codeGenerationApi,
 			XmlTransformApi xmlTransformApi)
 		{
 			Logger = logger;
+			MSBuildApi = msBuildApi;
 			CodeGenerationApi = codeGenerationApi;
 			XmlTransformApi = xmlTransformApi;
 		}

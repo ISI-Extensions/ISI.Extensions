@@ -18,30 +18,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.VisualStudio.DataTransferObjects.VsWhereApi
 {
-	public partial class IO
+	public partial class GetVsWhereExeFullNameResponse
 	{
-		public partial class Path
-		{
-			public static string GetTempFileName()
-			{
-				return GetTempFileName(null);
-			}
-
-			public static string GetTempFileName(string directoryName)
-			{
-				if (string.IsNullOrEmpty(directoryName))
-				{
-					return System.IO.Path.GetTempFileName();
-				}
-
-				var fileName = string.Format("tmp{0}.tmp", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting).ToUpper());
-
-				return System.IO.Path.Combine(directoryName, fileName);
-			}
-		}
+		public string VsWhereExeFullName { get; set; }
 	}
 }

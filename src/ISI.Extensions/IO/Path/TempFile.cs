@@ -19,22 +19,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.IO
+namespace ISI.Extensions
 {
-	public partial class Path
+	public partial class IO
 	{
-		public class TempFile : IDisposable
+		public partial class Path
 		{
-			public string FullName { get; }
-
-			public TempFile()
+			public class TempFile : IDisposable
 			{
-				FullName = GetTempFileName();
-			}
+				public string FullName { get; }
 
-			public void Dispose()
-			{
-				System.IO.File.Delete(FullName);
+				public TempFile()
+				{
+					FullName = GetTempFileName();
+				}
+
+				public void Dispose()
+				{
+					System.IO.File.Delete(FullName);
+				}
 			}
 		}
 	}

@@ -19,36 +19,39 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.IO
+namespace ISI.Extensions
 {
-	public partial class Path
+	public partial class IO
 	{
-		public static string GetRelativePath(string relativeTo, string path)
+		public partial class Path
 		{
-			relativeTo = System.IO.Path.GetFullPath(relativeTo);
-			path = System.IO.Path.GetFullPath(path);
-
-			if (!string.Equals(System.IO.Path.GetPathRoot(relativeTo), System.IO.Path.GetPathRoot(path), StringComparison.InvariantCultureIgnoreCase))
+			public static string GetRelativePath(string relativeTo, string path)
 			{
+				relativeTo = System.IO.Path.GetFullPath(relativeTo);
+				path = System.IO.Path.GetFullPath(path);
+
+				if (!string.Equals(System.IO.Path.GetPathRoot(relativeTo), System.IO.Path.GetPathRoot(path), StringComparison.InvariantCultureIgnoreCase))
+				{
+					return path;
+				}
+
+				var commonPath = GetCommonPath(new[] { relativeTo, path });
+
+				if (string.IsNullOrWhiteSpace(commonPath))
+				{
+					return path;
+				}
+
+				path = path.Substring(commonPath.Length).TrimStart(System.IO.Path.DirectorySeparatorChar);
+
+				while (!string.Equals(relativeTo, commonPath, StringComparison.InvariantCultureIgnoreCase))
+				{
+					relativeTo = System.IO.Path.GetDirectoryName(relativeTo);
+					path = string.Format("..{0}{1}", System.IO.Path.DirectorySeparatorChar, path);
+				}
+
 				return path;
 			}
-
-			var commonPath = GetCommonPath(new[] { relativeTo, path });
-
-			if (string.IsNullOrWhiteSpace(commonPath))
-			{
-				return path;
-			}
-
-			path = path.Substring(commonPath.Length).TrimStart(System.IO.Path.DirectorySeparatorChar);
-
-			while (!string.Equals(relativeTo, commonPath, StringComparison.InvariantCultureIgnoreCase))
-			{
-				relativeTo = System.IO.Path.GetDirectoryName(relativeTo);
-				path = string.Format("..{0}{1}", System.IO.Path.DirectorySeparatorChar, path);
-			}
-
-			return path;
 		}
 	}
 }

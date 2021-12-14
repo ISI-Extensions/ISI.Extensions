@@ -13,63 +13,67 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
 
+using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Nuget.DataTransferObjects.NugetApi;
 
 namespace ISI.Extensions.Nuget
 {
 	public partial class NugetApi
 	{
-		public DTOs.ListNugetPackageKeysResponse ListNugetPackageKeys(DTOs.ListNugetPackageKeysRequest request)
+		private static string _nugetExeFullName = string.Empty;
+
+		public DTOs.GetNugetExeFullNameResponse GetNugetExeFullName(DTOs.GetNugetExeFullNameRequest request)
 		{
-			var response = new DTOs.ListNugetPackageKeysResponse();
+			var response = new DTOs.GetNugetExeFullNameResponse();
 
-			var arguments = new List<string>();
-
-			arguments.Add("list");
-			arguments.Add(string.Format("-Source \"{0}\"", request.Source));
-
-			var nugetResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+			if (string.IsNullOrWhiteSpace(_nugetExeFullName))
 			{
-				Logger = new NullLogger(),
-				ProcessExeFullName = GetNugetExeFullName(new DTOs.GetNugetExeFullNameRequest()).NugetExeFullName,
-				Arguments = arguments.ToArray(),
-			});
+				const string nugetExeFileName = "nuget.exe";
+				const string NUGET_URL = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe";
 
-			if (!nugetResponse.Errored)
-			{
-				var nugetPackageKeys = new List<NugetPackageKey>();
-
-				var lines = nugetResponse.Output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-
-				foreach (var line in lines)
+				if (ISI.Extensions.IO.Path.IsInEnvironmentPath(nugetExeFileName, out var nugetExeFullName))
 				{
-					var linePieces = line.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+					_nugetExeFullName = nugetExeFullName;
+				}
+				else
+				{
+					var uriCodeBase = new UriBuilder(GetType().Assembly.CodeBase);
 
-					if (linePieces.Length == 2)
+					var directory = System.IO.Path.GetDirectoryName(Uri.UnescapeDataString(uriCodeBase.Path));
+
+					nugetExeFullName = System.IO.Path.Combine(directory, nugetExeFileName);
+
+					if (!System.IO.File.Exists(nugetExeFullName))
 					{
-						var nugetPackageKey = GetNugetPackageKey(new DTOs.GetNugetPackageKeyRequest()
+						using (var webClient = new System.Net.WebClient())
 						{
-							PackageId = linePieces[0].Trim(),
-							PackageVersion = linePieces[1].Trim(),
-							Source = request.Source,
-						}).NugetPackageKey;
+							webClient.DownloadFile(NUGET_URL, directory);
+						}
 
-						if (nugetPackageKey != null)
+						ISI.Extensions.IO.FileZone.RemoveZone(nugetExeFullName);
+					}
+
+					if (!string.IsNullOrWhiteSpace(nugetExeFullName) && System.IO.File.Exists(nugetExeFullName))
+					{
+						var versionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(nugetExeFullName);
+						var productVersion = new System.Version(versionInfo.ProductVersion);
+						var minProductionVersion = new System.Version("5.8.1");
+
+						if (productVersion < minProductionVersion)
 						{
-							nugetPackageKeys.Add(nugetPackageKey);
+							var processResponse = ISI.Extensions.Process.WaitForProcessResponse(nugetExeFullName, new[] { "update", "-self" });
 						}
 					}
 				}
-
-				response.NugetPackageKeys = nugetPackageKeys.ToArray();
 			}
+
+			response.NugetExeFullName = _nugetExeFullName;
 
 			return response;
 		}

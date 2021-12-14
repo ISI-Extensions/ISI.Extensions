@@ -19,12 +19,14 @@ using System.Text;
 
 namespace ISI.Extensions.VisualStudio
 {
-	public class AssemblyVersionFileDictionary : IDictionary<string, AssemblyVersionFile>
+	public class AssemblyVersionFileDictionary : IDictionary<string, AssemblyVersionFile>, IEnumerable<AssemblyVersionFile>
 	{
 		private readonly IDictionary<string, AssemblyVersionFile> _assemblyVersionFiles = new Dictionary<string, AssemblyVersionFile>(StringComparer.InvariantCultureIgnoreCase);
 
 		public IEnumerator<KeyValuePair<string, AssemblyVersionFile>> GetEnumerator() => _assemblyVersionFiles.GetEnumerator();
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => _assemblyVersionFiles.GetEnumerator();
+
+		IEnumerator<AssemblyVersionFile> IEnumerable<AssemblyVersionFile>.GetEnumerator() => _assemblyVersionFiles.Values.GetEnumerator();
 
 		public void Add(AssemblyVersionFile assemblyVersionFile) => _assemblyVersionFiles.Add(assemblyVersionFile.AssemblyGroupName, assemblyVersionFile);
 		public void Add(KeyValuePair<string, AssemblyVersionFile> item) => _assemblyVersionFiles.Add(item);

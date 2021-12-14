@@ -12,14 +12,15 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
+using ISI.Extensions.Extensions;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using NUnit.Framework;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Tests
 {
@@ -27,11 +28,95 @@ namespace ISI.Extensions.Tests
 	public class UriBuilderExtensions_Tests
 	{
 		[Test]
-		public void SetPathAndQueryString()
+		public void SetPathAndQueryString_Test()
 		{
 			var uriBuilder = new UriBuilder("localhost:5001");
 			uriBuilder.SetPathAndQueryString("/nuget/v2/package");
 
+		}
+
+		[Test]
+		public void Upload_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ICS.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+
+			var directory = @"F:\ISI\Clients\ICS\ICS.FacilityController.v9.WindowsApplication\Publish\";
+
+			var version = System.IO.File.ReadAllLines(System.IO.Path.Combine(directory, "ICS.FacilityController.WindowsApplication.Current.DateTimeStamp.Version.txt")).First().Split(new[] { '|' });
+
+			var facilityPanelSoftwareVersion = version[1];
+			var fileName = System.IO.Path.Combine(directory, string.Format("ICS.FacilityController.WindowsApplication.{0}.zip", version[0]));
+
+
+			var uriBuilder = new UriBuilder("https://localhost:44329/facility-panel-updater/v1/upload-facility-panel-software-version");
+			uriBuilder.AddQueryStringParameter("facilityPanelSoftwareVersion", facilityPanelSoftwareVersion);
+			uriBuilder.AddQueryStringParameter("requestedBy", "test");
+
+			var headers = new ISI.Extensions.WebClient.HeaderCollection();
+			headers.Add("X-Administrator-Token", settings.GetValue("ICS.FacilityController.WindowsApplication-Upload-Password"));
+
+			using (var fileStream = System.IO.File.OpenRead(fileName))
+			{
+				ISI.Extensions.WebClient.Upload.UploadFile(uriBuilder.Uri, headers, fileStream, fileName, "facilityPanelSoftware");
+			}
+		}
+
+		[Test]
+		public void WarmUpWebService_Test()
+		{
+			var log = new ISI.Extensions.TextWriterLogger(TestContext.Progress);
+
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ICS.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+
+			System.Net.ServicePointManager.Expect100Continue = true;
+			System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls;
+
+			var webServiceUrls = new[]
+			{
+					(new UriBuilder(settings.Scm.WebServiceUrl) {Query = string.Empty}).Uri.ToString(),
+					(new UriBuilder(settings.Scm.WebServiceUrl) {Path = string.Empty, Query = string.Empty}).Uri.ToString(),
+				};
+
+			foreach (var webServiceUrl in webServiceUrls)
+			{
+				log.Log(LogLevel.Information, "Warming up: {0}", webServiceUrl);
+
+				var tryAttemptsLeft = 3;
+				while (tryAttemptsLeft > 0)
+				{
+					try
+					{
+						var warmUpUrl = webServiceUrl;
+
+						var httpWebRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(warmUpUrl);
+						httpWebRequest.Method = System.Net.WebRequestMethods.Http.Get;
+
+						using (var httpWebResponse = (System.Net.HttpWebResponse)httpWebRequest.GetResponse())
+						{
+							using (var stream = new System.IO.StreamReader(httpWebResponse.GetResponseStream()))
+							{
+								var result = stream.ReadToEnd();
+							}
+						}
+
+						tryAttemptsLeft = 0;
+					}
+					catch (Exception exception)
+					{
+						log.Log(LogLevel.Information, exception.ErrorMessageFormatted());
+
+						tryAttemptsLeft--;
+						if (tryAttemptsLeft < 0)
+						{
+							throw;
+						}
+
+						System.Threading.Thread.Sleep(TimeSpan.FromSeconds(10));
+					}
+				}
+			}
 		}
 	}
 }

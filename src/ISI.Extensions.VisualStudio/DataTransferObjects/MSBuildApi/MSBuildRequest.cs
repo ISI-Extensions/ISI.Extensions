@@ -18,30 +18,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.VisualStudio.DataTransferObjects.MSBuildApi
 {
-	public partial class IO
+	public partial class MSBuildRequest
 	{
-		public partial class Path
-		{
-			public static string GetTempFileName()
-			{
-				return GetTempFileName(null);
-			}
+		public string FullName { get; set; }
 
-			public static string GetTempFileName(string directoryName)
-			{
-				if (string.IsNullOrEmpty(directoryName))
-				{
-					return System.IO.Path.GetTempFileName();
-				}
+		public MSBuildVersion MsBuildVersion { get; set; } = MSBuildVersion.Automatic;
+		public MSBuildPlatform MsBuildPlatform { get; set; } = MSBuildPlatform.Automatic;
+		
+		public MSBuildOptions Options { get; set; } = new MSBuildOptions();
 
-				var fileName = string.Format("tmp{0}.tmp", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting).ToUpper());
-
-				return System.IO.Path.Combine(directoryName, fileName);
-			}
-		}
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

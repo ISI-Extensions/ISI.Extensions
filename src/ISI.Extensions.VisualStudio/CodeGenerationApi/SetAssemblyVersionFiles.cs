@@ -19,29 +19,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.CodeGenerationApi;
+using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.VisualStudio
 {
-	public partial class IO
+	public partial class CodeGenerationApi
 	{
-		public partial class Path
+		public DTOs.SetAssemblyVersionFilesResponse SetAssemblyVersionFiles(DTOs.SetAssemblyVersionFilesRequest request)
 		{
-			public static string GetTempFileName()
+			var response = new DTOs.SetAssemblyVersionFilesResponse();
+			
+			foreach (var assemblyVersionFile in request.AssemblyVersionFiles)
 			{
-				return GetTempFileName(null);
-			}
-
-			public static string GetTempFileName(string directoryName)
-			{
-				if (string.IsNullOrEmpty(directoryName))
+				GenerateAssemblyInfoFile(new DTOs.GenerateAssemblyInfoFileRequest()
 				{
-					return System.IO.Path.GetTempFileName();
-				}
-
-				var fileName = string.Format("tmp{0}.tmp", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting).ToUpper());
-
-				return System.IO.Path.Combine(directoryName, fileName);
+					AssemblyInfoFullName = assemblyVersionFile.FullName,
+					Version = assemblyVersionFile.AssemblyVersion,
+				});
 			}
+
+			return response;
 		}
 	}
 }

@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2021, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,33 +15,15 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.VisualStudio
 {
-	public partial class IO
+	public enum MSBuildVersion
 	{
-		public partial class Path
-		{
-			public static string GetTempFileName()
-			{
-				return GetTempFileName(null);
-			}
-
-			public static string GetTempFileName(string directoryName)
-			{
-				if (string.IsNullOrEmpty(directoryName))
-				{
-					return System.IO.Path.GetTempFileName();
-				}
-
-				var fileName = string.Format("tmp{0}.tmp", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting).ToUpper());
-
-				return System.IO.Path.Combine(directoryName, fileName);
-			}
-		}
+		Latest,
+		Automatic,
+		MSBuild16,
+		MSBuild17,
 	}
 }

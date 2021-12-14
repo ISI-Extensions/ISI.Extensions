@@ -236,6 +236,111 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void PinCake_Test()
+		{
+			var logger = ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();
+			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
+			var sourceControlClientApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.SourceControlClientApi>();
+
+			var solutionFullNames = new List<string>();
+			//solutionFullNames.Add(@"F:\ISI\ISI.FrameWork");
+			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Telephony.WindowsService");
+			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Desktop");
+			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.WebApplication");
+			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt"));
+			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Connect.SolutionFullNames.txt"));
+
+			if (false)
+			{
+				var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "Tristar.keyValue");
+				var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName);
+
+				var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+
+				var jobIds = jenkinsApi.GetJobIds(new ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi.GetJobIdsRequest()
+				{
+					JenkinsUrl = settings.Jenkins.JenkinsUrl,
+					UserName = settings.Jenkins.UserName,
+					ApiToken = settings.Jenkins.ApiToken,
+				}).JobIds.ToNullCheckedHashSet(NullCheckCollectionResult.Empty);
+
+				jobIds.RemoveWhere(jobId => !jobId.EndsWith(".Build", StringComparison.InvariantCulture));
+
+				solutionFullNames.AddRange(jobIds.Select(jobId => System.IO.Path.Combine(@"F:\ISI\Clients\TFS", jobId.TrimEnd(".Build"))));
+			}
+
+			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionDetailsRequest()
+			{
+				Solution = solution,
+			}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
+
+			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpdateNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
+			{
+				using (solutionApi.GetSolutionLock(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionLockRequest()
+				{
+					SolutionFullName = solutionDetails.SolutionFullName,
+					//AddToLog = addToLog,
+				}).Lock)
+				{
+					logger.Log(LogLevel.Information, solutionDetails.SolutionName);
+
+					if (!sourceControlClientApi.UpdateWorkingCopy(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.UpdateWorkingCopyRequest()
+					{
+						FullName = solutionDetails.RootSourceDirectory,
+						IncludeExternals = true,
+					}).Success)
+					{
+						var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
+						logger.LogError(exception.Message);
+						throw exception;
+					}
+
+					var sourceFullNames = new List<string>();
+					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.cake", System.IO.SearchOption.AllDirectories));
+
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\bin\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\obj\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\.svn\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\.git\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\.vs\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\_ReSharper.Caches\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+
+					var dirtyFileNames = new HashSet<string>();
+
+					foreach (var sourceFullName in sourceFullNames)
+					{
+						var lines = System.IO.File.ReadAllLines(sourceFullName);
+
+						if (lines[0].IndexOf("version", StringComparison.InvariantCultureIgnoreCase) < 0)
+						{
+							lines[0] = "#addin nuget:?package=Cake.FileHelpers&version=4.0.1";
+
+							System.IO.File.WriteAllLines(sourceFullName, lines);
+							dirtyFileNames.Add(sourceFullName);
+						}
+					}
+
+					if (dirtyFileNames.Any())
+					{
+						var commitLog = new StringBuilder();
+
+						if (!sourceControlClientApi.Commit(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.CommitRequest()
+						{
+							FullNames = dirtyFileNames,
+							LogMessage = "pin Cake.FileHelpers version",
+							AddToLog = log => commitLog.AppendLine(log),
+						}).Success)
+						{
+							var exception = new Exception(string.Format("Error commiting \"{0}\"", solutionDetails.RootSourceDirectory));
+							logger.LogError(exception.Message);
+							throw exception;
+						}
+					}
+				}
+			}
+		}
+
+		[Test]
 		public void ReplaceFiles_Test()
 		{
 			var replacements = new List<(string FileName, string ReplacementFullName)>();

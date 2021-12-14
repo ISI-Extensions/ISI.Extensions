@@ -19,32 +19,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.IO
+namespace ISI.Extensions
 {
-	public partial class Path
+	public partial class IO
 	{
-		public class TempDirectory : IDisposable
+		public partial class Path
 		{
-			public string FullName { get; }
-
-			public TempDirectory()
+			public class TempDirectory : IDisposable
 			{
-				FullName = GetTempDirectoryName();
-			}
+				public string FullName { get; }
 
-			public void Dispose()
-			{
-				var directoryInfo = new System.IO.DirectoryInfo(FullName)
+				public TempDirectory()
 				{
-					Attributes = System.IO.FileAttributes.Normal
-				};
-
-				foreach (var fileSystemInfo in directoryInfo.GetFileSystemInfos("*", System.IO.SearchOption.AllDirectories))
-				{
-					fileSystemInfo.Attributes = System.IO.FileAttributes.Normal;
+					FullName = GetTempDirectoryName();
 				}
 
-				System.IO.Directory.Delete(FullName, true);
+				public void Dispose()
+				{
+					var directoryInfo = new System.IO.DirectoryInfo(FullName)
+					{
+						Attributes = System.IO.FileAttributes.Normal
+					};
+
+					foreach (var fileSystemInfo in directoryInfo.GetFileSystemInfos("*", System.IO.SearchOption.AllDirectories))
+					{
+						fileSystemInfo.Attributes = System.IO.FileAttributes.Normal;
+					}
+
+					System.IO.Directory.Delete(FullName, true);
+				}
 			}
 		}
 	}

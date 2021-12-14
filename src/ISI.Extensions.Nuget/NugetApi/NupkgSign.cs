@@ -73,7 +73,7 @@ namespace ISI.Extensions.Nuget
 				{
 					Logger = Logger, //new NullLogger(),
 					WorkingDirectory = request.WorkingDirectory,
-					ProcessExeFullName = "nuget",
+					ProcessExeFullName = GetNugetExeFullName(new DTOs.GetNugetExeFullNameRequest()).NugetExeFullName,
 					Arguments = new[]
 					{
 						string.Format("sign \"{0}\"", nupkgFullName),

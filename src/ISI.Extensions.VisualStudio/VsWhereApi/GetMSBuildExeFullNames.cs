@@ -12,36 +12,58 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
+using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.VsWhereApi;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.VisualStudio
 {
-	public partial class IO
+	public partial class VsWhereApi
 	{
-		public partial class Path
+		public DTOs.GetMSBuildExeFullNamesResponse GetMSBuildExeFullNames(DTOs.GetMSBuildExeFullNamesRequest request)
 		{
-			public static string GetTempFileName()
-			{
-				return GetTempFileName(null);
-			}
+			var response = new DTOs.GetMSBuildExeFullNamesResponse();
 
-			public static string GetTempFileName(string directoryName)
+			var logger = new AddToLogLogger(request.AddToLog, Logger);
+
+			var arguments = new[]
 			{
-				if (string.IsNullOrEmpty(directoryName))
+				"-products *",
+				"-requires Microsoft.Component.MSBuild",
+				"-property installationPath",
+			};
+
+			var processResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+			{
+				//Logger = logger,
+				ProcessExeFullName = GetVsWhereExeFullName(new DTOs.GetVsWhereExeFullNameRequest()).VsWhereExeFullName,
+				Arguments = arguments,
+			});
+
+			if (!processResponse.Errored)
+			{
+				var msBuildExeFullNames = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+
+				foreach (var visualStudioPath in processResponse.Output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
 				{
-					return System.IO.Path.GetTempFileName();
+					var msBuildExeFullName = System.IO.Path.Combine(visualStudioPath, "MSBuild", "Current", "Bin", "MSBuild.exe");
+
+					if (System.IO.File.Exists(msBuildExeFullName))
+					{
+						msBuildExeFullNames.Add(msBuildExeFullName);
+					}
 				}
 
-				var fileName = string.Format("tmp{0}.tmp", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting).ToUpper());
-
-				return System.IO.Path.Combine(directoryName, fileName);
+				response.MSBuildExeFullNames = msBuildExeFullNames.ToArray();
 			}
+
+			return response;
 		}
 	}
 }

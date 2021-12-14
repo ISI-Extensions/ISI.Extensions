@@ -20,37 +20,40 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.IO
+namespace ISI.Extensions
 {
-	public partial class Path
+	public partial class IO
 	{
-		public static string GetCommonPath(IEnumerable<string> fileNames)
+		public partial class Path
 		{
-			var fullNames = fileNames.ToNullCheckedArray(System.IO.Path.GetFullPath, NullCheckCollectionResult.Empty);
-
-			var commonPath = fullNames.First();
-
-			foreach (var fullName in fullNames.Skip(1))
+			public static string GetCommonPath(IEnumerable<string> fileNames)
 			{
-				if (!string.IsNullOrEmpty(commonPath))
-				{
-					var path = System.IO.Path.GetDirectoryName(fullName);
+				var fullNames = fileNames.ToNullCheckedArray(System.IO.Path.GetFullPath, NullCheckCollectionResult.Empty);
 
-					while (!string.IsNullOrEmpty(commonPath) && !string.IsNullOrEmpty(path) && !string.Equals(commonPath, path, StringComparison.InvariantCultureIgnoreCase))
+				var commonPath = fullNames.First();
+
+				foreach (var fullName in fullNames.Skip(1))
+				{
+					if (!string.IsNullOrEmpty(commonPath))
 					{
-						if (commonPath.Length > path.Length)
+						var path = System.IO.Path.GetDirectoryName(fullName);
+
+						while (!string.IsNullOrEmpty(commonPath) && !string.IsNullOrEmpty(path) && !string.Equals(commonPath, path, StringComparison.InvariantCultureIgnoreCase))
 						{
-							commonPath = System.IO.Path.GetDirectoryName(commonPath);
-						}
-						else
-						{
-							path = System.IO.Path.GetDirectoryName(path);
+							if (commonPath.Length > path.Length)
+							{
+								commonPath = System.IO.Path.GetDirectoryName(commonPath);
+							}
+							else
+							{
+								path = System.IO.Path.GetDirectoryName(path);
+							}
 						}
 					}
 				}
-			}
 
-			return commonPath;
+				return commonPath;
+			}
 		}
 	}
 }

@@ -19,109 +19,114 @@ using System.Linq;
 using System.Text;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.IO
+namespace ISI.Extensions
 {
-	public class FileNameMask
+	public partial class IO
 	{
-		internal const string FilePrefix = "file:";
-
-		public enum FileNameMaskType
+		public class FileNameMask
 		{
-			StringReplacement,
-			DateTimeMask,
-			KeyValue
-		}
+			internal const string FilePrefix = "file:";
 
-		public string Key { get; } = null;
-		public FileNameMaskType MaskType { get; } = FileNameMaskType.StringReplacement;
-		public string ReplacementValue { get; } = null;
-		public Func<string> GetReplacementValue { get; } = null;
-		public string Description { get; } = null;
-
-		public FileNameMask()
-		{
-
-		}
-		public FileNameMask(string key, FileNameMaskType maskType, string replacementValue, string description)
-		{
-			Key = key;
-			MaskType = maskType;
-			ReplacementValue = replacementValue;
-			Description = description;
-		}
-		public FileNameMask(string key, FileNameMaskType maskType, Func<string> getReplacementValue, string description)
-		{
-			Key = key;
-			MaskType = maskType;
-			GetReplacementValue = getReplacementValue;
-			Description = description;
-		}
-
-		public string Process(string value, Func<DateTime?> dateTimeStamp)
-		{
-			if (value.IndexOf(Key) >= 0)
+			public enum FileNameMaskType
 			{
-				switch (MaskType)
+				StringReplacement,
+				DateTimeMask,
+				KeyValue
+			}
+
+			public string Key { get; } = null;
+			public FileNameMaskType MaskType { get; } = FileNameMaskType.StringReplacement;
+			public string ReplacementValue { get; } = null;
+			public Func<string> GetReplacementValue { get; } = null;
+			public string Description { get; } = null;
+
+			public FileNameMask()
+			{
+
+			}
+
+			public FileNameMask(string key, FileNameMaskType maskType, string replacementValue, string description)
+			{
+				Key = key;
+				MaskType = maskType;
+				ReplacementValue = replacementValue;
+				Description = description;
+			}
+
+			public FileNameMask(string key, FileNameMaskType maskType, Func<string> getReplacementValue, string description)
+			{
+				Key = key;
+				MaskType = maskType;
+				GetReplacementValue = getReplacementValue;
+				Description = description;
+			}
+
+			public string Process(string value, Func<DateTime?> dateTimeStamp)
+			{
+				if (value.IndexOf(Key) >= 0)
 				{
-					case FileNameMaskType.StringReplacement:
-						value = value.Replace(Key, (GetReplacementValue == null ? ReplacementValue : GetReplacementValue()));
-						break;
+					switch (MaskType)
+					{
+						case FileNameMaskType.StringReplacement:
+							value = value.Replace(Key, (GetReplacementValue == null ? ReplacementValue : GetReplacementValue()));
+							break;
 
-					case FileNameMaskType.DateTimeMask:
-						var replacementValue = ReplacementValue;
-						if ((dateTimeStamp != null) && (value.IndexOf(Key) >= 0))
-						{
-							replacementValue = dateTimeStamp().GetValueOrDefault().ToString(replacementValue);
-						}
-						else
-						{
-							replacementValue = string.Empty;
-						}
-
-						value = value.Replace(Key, replacementValue);
-						break;
-
-					case FileNameMaskType.KeyValue:
-						var keys = new HashSet<string>();
-
-						var pattern = "\\" + Key.TrimEnd(":}") + "\\:(?<key>[^\\}]+)\\}";
-
-						var regex = new System.Text.RegularExpressions.Regex(pattern);
-
-						var match = regex.Match(value);
-
-						while (match.Success)
-						{
-							keys.Add(match.Groups["key"].Value);
-
-							match = match.NextMatch();
-						}
-
-						var keyType = Key.TrimStart("{").TrimEnd("}");
-
-						if (keys.Any())
-						{
-							if (string.Equals(keyType, FilePrefix, StringComparison.InvariantCultureIgnoreCase))
+						case FileNameMaskType.DateTimeMask:
+							var replacementValue = ReplacementValue;
+							if ((dateTimeStamp != null) && (value.IndexOf(Key) >= 0))
 							{
-								foreach (var key in keys)
+								replacementValue = dateTimeStamp().GetValueOrDefault().ToString(replacementValue);
+							}
+							else
+							{
+								replacementValue = string.Empty;
+							}
+
+							value = value.Replace(Key, replacementValue);
+							break;
+
+						case FileNameMaskType.KeyValue:
+							var keys = new HashSet<string>();
+
+							var pattern = "\\" + Key.TrimEnd(":}") + "\\:(?<key>[^\\}]+)\\}";
+
+							var regex = new System.Text.RegularExpressions.Regex(pattern);
+
+							var match = regex.Match(value);
+
+							while (match.Success)
+							{
+								keys.Add(match.Groups["key"].Value);
+
+								match = match.NextMatch();
+							}
+
+							var keyType = Key.TrimStart("{").TrimEnd("}");
+
+							if (keys.Any())
+							{
+								if (string.Equals(keyType, FilePrefix, StringComparison.InvariantCultureIgnoreCase))
 								{
-									var fileName = ISI.Extensions.IO.Path.GetFileNameDeMasked(key.Trim());
-
-									if (System.IO.File.Exists(fileName))
+									foreach (var key in keys)
 									{
-										replacementValue = System.IO.File.ReadAllText(fileName);
+										var fileName = ISI.Extensions.IO.Path.GetFileNameDeMasked(key.Trim());
 
-										value = value.Replace(string.Format("{{{0}{1}}}", FilePrefix, key), replacementValue);
+										if (System.IO.File.Exists(fileName))
+										{
+											replacementValue = System.IO.File.ReadAllText(fileName);
+
+											value = value.Replace(string.Format("{{{0}{1}}}", FilePrefix, key), replacementValue);
+										}
 									}
 								}
 							}
-						}
 
-						break;
+							break;
+					}
 				}
-			}
 
-			return value;
+				return value;
+			}
 		}
 	}
 }

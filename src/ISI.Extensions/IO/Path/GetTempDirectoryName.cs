@@ -20,27 +20,30 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.IO
+namespace ISI.Extensions
 {
-	public partial class Path
+	public partial class IO
 	{
-		public static string GetTempDirectoryName()
+		public partial class Path
 		{
-			return GetTempDirectoryName(null);
-		}
-
-		public static string GetTempDirectoryName(string directoryName)
-		{
-			if (string.IsNullOrEmpty(directoryName))
+			public static string GetTempDirectoryName()
 			{
-				directoryName = System.IO.Path.GetTempPath();
+				return GetTempDirectoryName(null);
 			}
 
-			directoryName = System.IO.Path.Combine(directoryName, string.Format("tmp{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting).ToUpper()));
+			public static string GetTempDirectoryName(string directoryName)
+			{
+				if (string.IsNullOrEmpty(directoryName))
+				{
+					directoryName = System.IO.Path.GetTempPath();
+				}
 
-			System.IO.Directory.CreateDirectory(directoryName);
+				directoryName = System.IO.Path.Combine(directoryName, string.Format("tmp{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting).ToUpper()));
 
-			return directoryName;
+				System.IO.Directory.CreateDirectory(directoryName);
+
+				return directoryName;
+			}
 		}
 	}
 }

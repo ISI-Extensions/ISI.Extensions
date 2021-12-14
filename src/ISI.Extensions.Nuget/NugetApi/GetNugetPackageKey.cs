@@ -55,7 +55,7 @@ namespace ISI.Extensions.Nuget
 				var nugetResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
 					Logger = new NullLogger(),
-					ProcessExeFullName = "nuget",
+					ProcessExeFullName = GetNugetExeFullName(new DTOs.GetNugetExeFullNameRequest()).NugetExeFullName,
 					Arguments = arguments.ToArray(),
 					WorkingDirectory = tempDirectory.FullName,
 				});

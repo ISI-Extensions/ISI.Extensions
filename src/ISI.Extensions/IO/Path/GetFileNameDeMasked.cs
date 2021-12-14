@@ -19,12 +19,14 @@ using System.Linq;
 using System.Text;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.IO
+namespace ISI.Extensions
 {
-	public partial class Path
+	public partial class IO
 	{
-		private static IEnumerable<FileNameMask> DefaultFileNameMasks => new FileNameMask[]
+		public partial class Path
 		{
+			private static IEnumerable<FileNameMask> DefaultFileNameMasks => new FileNameMask[]
+			{
 				new(string.Format("{{{0}}}", FileNameMask.FilePrefix), FileNameMask.FileNameMaskType.KeyValue, "file", "file retrieval"),
 				new("{YYYYMMDD}", FileNameMask.FileNameMaskType.DateTimeMask, "yyyyMMdd", "Date Stamp: Year Month Day"),
 				new("{YYYYMMDD.HHmmssfff}", FileNameMask.FileNameMaskType.DateTimeMask, "yyyyMMdd.HHmmssfff", "Date Time Stamp: Year Month Day.24Hour minute second millisecond"),
@@ -40,71 +42,77 @@ namespace ISI.Extensions.IO
 				new("{ss}", FileNameMask.FileNameMaskType.DateTimeMask, "ss", "Time Stamp: Second"),
 				new("{fff}", FileNameMask.FileNameMaskType.DateTimeMask, "fff", "Time Stamp: Millisecond"),
 				new("{TempDirectory}", FileNameMask.FileNameMaskType.StringReplacement, System.IO.Path.GetTempPath, "Temp Directory"),
-		};
+			};
 
-		public static string GetFileNameDeMasked(string fileName, ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper = null)
-		{
-			return GetFileNameDeMasked(fileName, () => (dateTimeStamper ?? new ISI.Extensions.DateTimeStamper.LocalMachineDateTimeStamper()).CurrentDateTimeUtc(), null);
-		}
-		public static string GetFileNameDeMasked(string fileName, IEnumerable<FileNameMask> additionalMasks, ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper = null)
-		{
-			return GetFileNameDeMasked(fileName, () => (dateTimeStamper ?? new ISI.Extensions.DateTimeStamper.LocalMachineDateTimeStamper()).CurrentDateTimeUtc(), additionalMasks);
-		}
-		public static string GetFileNameDeMasked(string fileName, DateTime? dateTimeStamp, IEnumerable<FileNameMask> additionalMasks = null)
-		{
-			return GetFileNameDeMasked(fileName, () => dateTimeStamp, additionalMasks);
-		}
-
-		public static string GetFileNameDeMasked(string fileName, Func<DateTime?> getDateTimeStamp, IEnumerable<FileNameMask> additionalMasks)
-		{
-			var masks = new Dictionary<string, FileNameMask>();
-
-			foreach (var fileNameMask in DefaultFileNameMasks)
+			public static string GetFileNameDeMasked(string fileName, ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper = null)
 			{
-				if (masks.ContainsKey(fileNameMask.Key))
-				{
-					masks.Remove(fileNameMask.Key);
-				}
-				if ((getDateTimeStamp != null) || (fileNameMask.MaskType != FileNameMask.FileNameMaskType.DateTimeMask))
-				{
-					masks.Add(fileNameMask.Key, fileNameMask);
-				}
+				return GetFileNameDeMasked(fileName, () => (dateTimeStamper ?? new ISI.Extensions.DateTimeStamper.LocalMachineDateTimeStamper()).CurrentDateTimeUtc(), null);
 			}
 
-			if (additionalMasks != null)
+			public static string GetFileNameDeMasked(string fileName, IEnumerable<FileNameMask> additionalMasks, ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper = null)
 			{
-				foreach (var fileNameMask in additionalMasks)
-				{
-					var key = fileNameMask.Key;
-
-					if (!key.StartsWith("{"))
-					{
-						key = "{" + key;
-					}
-					if (!key.EndsWith("}"))
-					{
-						key += "}";
-					}
-
-					if (masks.ContainsKey(key))
-					{
-						masks.Remove(key);
-					}
-					masks.Add(key, fileNameMask);
-				}
+				return GetFileNameDeMasked(fileName, () => (dateTimeStamper ?? new ISI.Extensions.DateTimeStamper.LocalMachineDateTimeStamper()).CurrentDateTimeUtc(), additionalMasks);
 			}
 
-			DateTime? dateTimeStamp = null;
-
-			return masks.Aggregate(fileName, (current, fileNameMask) => fileNameMask.Value.Process(current, () =>
+			public static string GetFileNameDeMasked(string fileName, DateTime? dateTimeStamp, IEnumerable<FileNameMask> additionalMasks = null)
 			{
-				if (!dateTimeStamp.HasValue && (getDateTimeStamp != null))
+				return GetFileNameDeMasked(fileName, () => dateTimeStamp, additionalMasks);
+			}
+
+			public static string GetFileNameDeMasked(string fileName, Func<DateTime?> getDateTimeStamp, IEnumerable<FileNameMask> additionalMasks)
+			{
+				var masks = new Dictionary<string, FileNameMask>();
+
+				foreach (var fileNameMask in DefaultFileNameMasks)
 				{
-					dateTimeStamp = getDateTimeStamp();
+					if (masks.ContainsKey(fileNameMask.Key))
+					{
+						masks.Remove(fileNameMask.Key);
+					}
+
+					if ((getDateTimeStamp != null) || (fileNameMask.MaskType != FileNameMask.FileNameMaskType.DateTimeMask))
+					{
+						masks.Add(fileNameMask.Key, fileNameMask);
+					}
 				}
 
-				return dateTimeStamp;
-			}));
+				if (additionalMasks != null)
+				{
+					foreach (var fileNameMask in additionalMasks)
+					{
+						var key = fileNameMask.Key;
+
+						if (!key.StartsWith("{"))
+						{
+							key = "{" + key;
+						}
+
+						if (!key.EndsWith("}"))
+						{
+							key += "}";
+						}
+
+						if (masks.ContainsKey(key))
+						{
+							masks.Remove(key);
+						}
+
+						masks.Add(key, fileNameMask);
+					}
+				}
+
+				DateTime? dateTimeStamp = null;
+
+				return masks.Aggregate(fileName, (current, fileNameMask) => fileNameMask.Value.Process(current, () =>
+				{
+					if (!dateTimeStamp.HasValue && (getDateTimeStamp != null))
+					{
+						dateTimeStamp = getDateTimeStamp();
+					}
+
+					return dateTimeStamp;
+				}));
+			}
 		}
 	}
 }

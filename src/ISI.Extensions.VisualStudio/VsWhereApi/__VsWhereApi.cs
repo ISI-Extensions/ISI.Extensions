@@ -19,29 +19,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.VsWhereApi;
+using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.VisualStudio
 {
-	public partial class IO
+	public partial class VsWhereApi
 	{
-		public partial class Path
+		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
+		protected ISI.Extensions.Nuget.NugetApi NugetApi { get; }
+
+		public VsWhereApi(
+			Microsoft.Extensions.Logging.ILogger logger,
+			ISI.Extensions.Nuget.NugetApi nugetApi)
 		{
-			public static string GetTempFileName()
-			{
-				return GetTempFileName(null);
-			}
-
-			public static string GetTempFileName(string directoryName)
-			{
-				if (string.IsNullOrEmpty(directoryName))
-				{
-					return System.IO.Path.GetTempFileName();
-				}
-
-				var fileName = string.Format("tmp{0}.tmp", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting).ToUpper());
-
-				return System.IO.Path.Combine(directoryName, fileName);
-			}
+			Logger = logger;
+			NugetApi = nugetApi;
 		}
 	}
 }

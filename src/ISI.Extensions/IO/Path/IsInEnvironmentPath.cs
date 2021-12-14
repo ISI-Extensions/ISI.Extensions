@@ -20,19 +20,22 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.IO
+namespace ISI.Extensions
 {
-	public partial class Path
+	public partial class IO
 	{
-		public static bool IsInEnvironmentPath(string exeFileName) => IsInEnvironmentPath(exeFileName, out var _);
-
-		public static bool IsInEnvironmentPath(string exeFileName, out string fullName)
+		public partial class Path
 		{
-			var processResponse = ISI.Extensions.Process.WaitForProcessResponse("where", null, exeFileName);
+			public static bool IsInEnvironmentPath(string exeFileName) => IsInEnvironmentPath(exeFileName, out var _);
 
-			fullName = processResponse.ExitCode == 0 ? processResponse.Output.Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries).First() : string.Empty;
+			public static bool IsInEnvironmentPath(string exeFileName, out string fullName)
+			{
+				var processResponse = ISI.Extensions.Process.WaitForProcessResponse("where", null, exeFileName);
 
-			return !string.IsNullOrWhiteSpace(fullName);
+				fullName = processResponse.ExitCode == 0 ? processResponse.Output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).First() : string.Empty;
+
+				return !string.IsNullOrWhiteSpace(fullName);
+			}
 		}
 	}
 }

@@ -26,30 +26,48 @@ namespace ISI.Extensions.VisualStudio
 {
 	public partial class CodeGenerationApi
 	{
+		private static readonly System.Text.RegularExpressions.Regex[] _assemblyInfoRegexes = new[]
+		{
+			new System.Text.RegularExpressions.Regex(@"^\s*\[assembly: (?:System\.Reflection\.)?(?<attributeKey>.*) ?\((?<attributeValue>.*)\)", System.Text.RegularExpressions.RegexOptions.Multiline),
+		};
+
 		public DTOs.ParseAssemblyInfoFileResponse ParseAssemblyInfoFile(DTOs.ParseAssemblyInfoFileRequest request)
 		{
 			var response = new DTOs.ParseAssemblyInfoFileResponse();
 
 			if (System.IO.File.Exists(request.AssemblyInfoFullName))
 			{
-				var lines = System.IO.File.ReadAllLines(request.AssemblyInfoFullName);
+				var content = System.IO.File.ReadAllText(request.AssemblyInfoFullName);
+
+				var attributeValues = new Dictionary<string, HashSet<string>>(StringComparer.InvariantCultureIgnoreCase);
+
+				foreach (var assemblyInfoRegex in _assemblyInfoRegexes)
+				{
+					foreach (System.Text.RegularExpressions.Match match in assemblyInfoRegex.Matches(content))
+					{
+						if (match.Groups.Count > 0)
+						{
+							var attributeKey = match.Groups["attributeKey"].Value.Trim().TrimStart("Assembly").TrimEnd("Attribute");
+							var attributeValue = match.Groups["attributeValue"].Value.Trim('\"', ' ');
+							if (!string.IsNullOrWhiteSpace(attributeKey) && !string.IsNullOrWhiteSpace(attributeValue))
+							{
+								if (!attributeValues.TryGetValue(attributeKey, out var values))
+								{
+									values = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+									attributeValues.Add(attributeKey, values);
+								}
+
+								values.Add(attributeValue);
+							}
+						}
+					}
+				}
 
 				string readAttributeValue(string attributeName)
 				{
-					var keys = new []
+					if (attributeValues.TryGetValue(attributeName, out var values))
 					{
-						string.Format("[assembly: Assembly{0}(\"", attributeName),
-						string.Format("[assembly: Assembly{0}Attribute(\"", attributeName),
-					};
-
-					foreach (var key in keys)
-					{
-						var line = lines.FirstOrDefault(line => line.IndexOf(key, StringComparison.InvariantCultureIgnoreCase) >= 0);
-
-						if (!string.IsNullOrWhiteSpace(line))
-						{
-							return line.Split(new[] { key }, StringSplitOptions.RemoveEmptyEntries).First().Split(new[] { '\"' }, StringSplitOptions.RemoveEmptyEntries).First();
-						}
+						return values.NullCheckedFirstOrDefault() ?? string.Empty;
 					}
 
 					return string.Empty;

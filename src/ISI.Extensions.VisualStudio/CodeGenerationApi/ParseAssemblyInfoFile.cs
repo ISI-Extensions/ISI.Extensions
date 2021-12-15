@@ -36,13 +36,20 @@ namespace ISI.Extensions.VisualStudio
 
 				string readAttributeValue(string attributeName)
 				{
-					var key = string.Format("[assembly: Assembly{0}(\"", attributeName);
-
-					var line = lines.FirstOrDefault(line => line.IndexOf(key, StringComparison.InvariantCultureIgnoreCase) >= 0);
-
-					if (!string.IsNullOrWhiteSpace(line))
+					var keys = new []
 					{
-						return line.Split(new[] { key }, StringSplitOptions.RemoveEmptyEntries).First().Split(new[] { '\"' }, StringSplitOptions.RemoveEmptyEntries).First();
+						string.Format("[assembly: Assembly{0}(\"", attributeName),
+						string.Format("[assembly: Assembly{0}Attribute(\"", attributeName),
+					};
+
+					foreach (var key in keys)
+					{
+						var line = lines.FirstOrDefault(line => line.IndexOf(key, StringComparison.InvariantCultureIgnoreCase) >= 0);
+
+						if (!string.IsNullOrWhiteSpace(line))
+						{
+							return line.Split(new[] { key }, StringSplitOptions.RemoveEmptyEntries).First().Split(new[] { '\"' }, StringSplitOptions.RemoveEmptyEntries).First();
+						}
 					}
 
 					return string.Empty;

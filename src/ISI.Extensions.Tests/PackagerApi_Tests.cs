@@ -69,8 +69,8 @@ namespace ISI.Extensions.Tests
 			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
 			var packagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.PackagerApi>();
 
-			var solution = @"F:\ISI\Clients\TFS\Comcast.Business.TenMinuteAdvantage.Web";
-			var rootAssemblyVersionKey = "Comcast.Business.TenMinuteAdvantage.Web";
+			var solution = @"F:\ISI\Clients\TFS\Comcast.CallCenter.WebApi\src";
+			var rootAssemblyVersionKey = "Comcast.CallCenter.WebApi";
 
 			var buildDateTimeStamp = string.Format("{0:yyyyMMdd.HHmmss}", DateTime.UtcNow);
 			var buildRevision = solutionApi.GetBuildRevision(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetBuildRevisionRequest()).BuildRevision;

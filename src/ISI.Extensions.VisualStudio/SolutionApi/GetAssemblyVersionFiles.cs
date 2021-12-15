@@ -55,7 +55,8 @@ namespace ISI.Extensions.VisualStudio
 
 			if (!string.IsNullOrWhiteSpace(request.RootAssemblyVersionKey))
 			{
-				var assemblyVersionFile = System.IO.Path.Combine(solutionDetails.RootSourceDirectory, string.Format("{0}.Version.cs", request.RootAssemblyVersionKey));
+				var assemblyVersionFile = System.IO.Path.Combine(solutionDetails.SolutionDirectory, string.Format("{0}.Version.cs", request.RootAssemblyVersionKey));
+
 				if (System.IO.File.Exists(assemblyVersionFile))
 				{
 					addVersionFile(request.RootAssemblyVersionKey, assemblyVersionFile);

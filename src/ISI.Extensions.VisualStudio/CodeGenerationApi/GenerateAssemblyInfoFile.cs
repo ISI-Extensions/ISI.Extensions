@@ -55,16 +55,16 @@ namespace ISI.Extensions.VisualStudio
 						}
 					}
 
-					writeAttribute("Title", request.Title);
-					writeAttribute("Description", request.Description);
-					writeAttribute("Guid", request.Guid);
-					writeAttribute("Product", request.Product);
-					writeAttribute("Copyright", request.Copyright);
-					writeAttribute("Trademark", request.Trademark);
-					writeAttribute("Version", request.Version);
-					writeAttribute("FileVersion", request.FileVersion);
-					writeAttribute("InformationalVersion", request.InformationalVersion);
-					writeAttribute("Company", request.Company);
+					writeAttribute(nameof(DTOs.GenerateAssemblyInfoFileRequest.Title), request.Title);
+					writeAttribute(nameof(DTOs.GenerateAssemblyInfoFileRequest.Description), request.Description);
+					writeAttribute(nameof(DTOs.GenerateAssemblyInfoFileRequest.Guid), request.Guid);
+					writeAttribute(nameof(DTOs.GenerateAssemblyInfoFileRequest.Product), request.Product);
+					writeAttribute(nameof(DTOs.GenerateAssemblyInfoFileRequest.Copyright), request.Copyright);
+					writeAttribute(nameof(DTOs.GenerateAssemblyInfoFileRequest.Trademark), request.Trademark);
+					writeAttribute(nameof(DTOs.GenerateAssemblyInfoFileRequest.Version), request.Version);
+					writeAttribute(nameof(DTOs.GenerateAssemblyInfoFileRequest.FileVersion), request.FileVersion);
+					writeAttribute(nameof(DTOs.GenerateAssemblyInfoFileRequest.InformationalVersion), request.InformationalVersion);
+					writeAttribute(nameof(DTOs.GenerateAssemblyInfoFileRequest.Company), request.Company);
 				}
 			}
 

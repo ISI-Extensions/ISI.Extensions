@@ -39,6 +39,11 @@ namespace ISI.Extensions.VisualStudio
 				request.MsBuildVersion = MSBuildVersion.MSBuild17;
 			}
 
+			if (request.MsBuildPlatform == MSBuildPlatform.Automatic)
+			{
+				request.MsBuildPlatform = (System.Environment.Is64BitOperatingSystem ? MSBuildPlatform.x64 : MSBuildPlatform.x86);
+			}
+
 			var vsVersions = new[]
 			{
 				"Enterprise",
@@ -49,6 +54,15 @@ namespace ISI.Extensions.VisualStudio
 
 			var msBuildFullNames = VsWhereApi.GetMSBuildExeFullNames(new ISI.Extensions.VisualStudio.DataTransferObjects.VsWhereApi.GetMSBuildExeFullNamesRequest()).MSBuildExeFullNames.ToList();
 
+			if (request.MsBuildPlatform == MSBuildPlatform.x64)
+			{
+				msBuildFullNames.RemoveAll(msBuildFullName => msBuildFullName.IndexOf(@"\amd64\", StringComparison.InvariantCultureIgnoreCase) < 0);
+			}
+			else
+			{
+				msBuildFullNames.RemoveAll(msBuildFullName => msBuildFullName.IndexOf(@"\amd64\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+			}
+
 			switch (request.MsBuildVersion)
 			{
 				case MSBuildVersion.MSBuild16:
@@ -57,7 +71,7 @@ namespace ISI.Extensions.VisualStudio
 					{
 						if (string.IsNullOrWhiteSpace(response.MSBuildExeFullName))
 						{
-							response.MSBuildExeFullName = msBuildFullNames.First(msBuildFullName => msBuildFullName.IndexOf(string.Format(@"\{0}\", vsVersion), StringComparison.InvariantCultureIgnoreCase) > 0);
+							response.MSBuildExeFullName = msBuildFullNames.FirstOrDefault(msBuildFullName => msBuildFullName.IndexOf(string.Format(@"\{0}\", vsVersion), StringComparison.InvariantCultureIgnoreCase) > 0);
 						}
 					}
 					break;
@@ -67,29 +81,12 @@ namespace ISI.Extensions.VisualStudio
 					{
 						if (string.IsNullOrWhiteSpace(response.MSBuildExeFullName))
 						{
-							response.MSBuildExeFullName = msBuildFullNames.First(msBuildFullName => msBuildFullName.IndexOf(string.Format(@"\{0}\", vsVersion), StringComparison.InvariantCultureIgnoreCase) > 0);
+							response.MSBuildExeFullName = msBuildFullNames.FirstOrDefault(msBuildFullName => msBuildFullName.IndexOf(string.Format(@"\{0}\", vsVersion), StringComparison.InvariantCultureIgnoreCase) > 0);
 						}
 					}
 					break;
 				default:
 					throw new ArgumentOutOfRangeException();
-			}
-
-			if (!string.IsNullOrWhiteSpace(response.MSBuildExeFullName))
-			{
-				response.MSBuildExeFullName = System.IO.Path.Combine(response.MSBuildExeFullName, "MSBuild", "Current", "Bin");
-
-				if (request.MsBuildPlatform == MSBuildPlatform.Automatic)
-				{
-					request.MsBuildPlatform = (System.Environment.Is64BitOperatingSystem ? MSBuildPlatform.x64 : MSBuildPlatform.x86);
-				}
-
-				if (request.MsBuildPlatform == MSBuildPlatform.x64)
-				{
-					response.MSBuildExeFullName = System.IO.Path.Combine(response.MSBuildExeFullName, "amd64");
-				}
-
-				response.MSBuildExeFullName = System.IO.Path.Combine(response.MSBuildExeFullName, "MSBuild.exe");
 			}
 			
 			return response;

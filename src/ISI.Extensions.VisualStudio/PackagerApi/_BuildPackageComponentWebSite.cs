@@ -59,6 +59,7 @@ namespace ISI.Extensions.VisualStudio
 						{
 							FullName = packageComponent.ProjectFullName,
 							MsBuildPlatform = platform,
+							MsBuildVersion = MSBuildVersion.MSBuild16,
 						};
 
 						msBuildRequest.Options.Configuration = configuration;
@@ -80,6 +81,8 @@ namespace ISI.Extensions.VisualStudio
 						{
 							ISI.Extensions.DirectoryIcon.SetDirectoryIcon(packageComponentDirectory, packageComponent.IconFullName);
 						}
+
+						ISI.Extensions.IO.Path.CopyDirectory(publishDirectory, packageComponentDirectory);
 					}
 					finally
 					{

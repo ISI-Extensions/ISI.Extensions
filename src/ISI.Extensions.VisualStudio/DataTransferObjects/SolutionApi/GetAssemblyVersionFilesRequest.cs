@@ -13,61 +13,18 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
 
-using ISI.Extensions.Extensions;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.VsWhereApi;
 
-namespace ISI.Extensions.VisualStudio
+namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 {
-	public partial class VsWhereApi
+	public partial class GetAssemblyVersionFilesRequest
 	{
-		public DTOs.GetMSBuildExeFullNamesResponse GetMSBuildExeFullNames(DTOs.GetMSBuildExeFullNamesRequest request)
-		{
-			var response = new DTOs.GetMSBuildExeFullNamesResponse();
-
-			var logger = new AddToLogLogger(request.AddToLog, Logger);
-
-			var arguments = new[]
-			{
-				"-products *",
-				"-requires Microsoft.Component.MSBuild",
-				"-property installationPath",
-			};
-
-			var processResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-			{
-				//Logger = logger,
-				ProcessExeFullName = GetVsWhereExeFullName(new DTOs.GetVsWhereExeFullNameRequest()).VsWhereExeFullName,
-				Arguments = arguments,
-			});
-
-			if (!processResponse.Errored)
-			{
-				var msBuildExeFullNames = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
-
-				void addIfExists(string msBuildExeFullName)
-				{
-					if (System.IO.File.Exists(msBuildExeFullName))
-					{
-						msBuildExeFullNames.Add(msBuildExeFullName);
-					}
-				}
-
-				foreach (var visualStudioPath in processResponse.Output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
-				{
-					addIfExists(System.IO.Path.Combine(visualStudioPath, "MSBuild", "Current", "Bin", "MSBuild.exe"));
-					addIfExists(System.IO.Path.Combine(visualStudioPath, "MSBuild", "Current", "Bin", "amd64", "MSBuild.exe"));
-				}
-
-				response.MSBuildExeFullNames = msBuildExeFullNames.ToArray();
-			}
-
-			return response;
-		}
+		public string Solution { get; set; }
+		public string RootAssemblyVersionKey { get; set; }
+		public string BuildRevision { get; set; }
 	}
 }

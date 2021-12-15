@@ -34,6 +34,8 @@ namespace ISI.Extensions.VisualStudio
 
 			var arguments = new List<string>();
 
+			arguments.Add(string.Format("\"{0}\"", request.FullName));
+
 			if (request.Options.MaxCpuCount.HasValue)
 			{
 				arguments.Add(request.Options.MaxCpuCount > 0 ? string.Format("/m:{0}", request.Options.MaxCpuCount) : "/m");
@@ -135,11 +137,15 @@ namespace ISI.Extensions.VisualStudio
 			var processResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{
 				Logger = logger,
-				ProcessExeFullName = GetMSBuildExeFullName(new DTOs.GetMSBuildExeFullNameRequest()).MSBuildExeFullName,
+				ProcessExeFullName = GetMSBuildExeFullName(new DTOs.GetMSBuildExeFullNameRequest()
+				{
+					MsBuildPlatform = request.MsBuildPlatform,
+					MsBuildVersion = request.MsBuildVersion,
+				}).MSBuildExeFullName,
 				Arguments = arguments,
 			});
 
-			if (!processResponse.Errored)
+			if (processResponse.Errored)
 			{
 				throw new Exception("Error Executing MSBuild.exe");
 			}

@@ -30,6 +30,7 @@ namespace ISI.Extensions.VisualStudio
 		protected ISI.Extensions.Serialization.ISerialization Serialization { get; }
 		protected ISI.Extensions.Scm.BuildScriptApi BuildScriptApi { get; }
 		protected ISI.Extensions.Scm.SourceControlClientApi SourceControlClientApi { get; }
+		protected ISI.Extensions.VisualStudio.CodeGenerationApi CodeGenerationApi { get; }
 		protected ISI.Extensions.Nuget.NugetApi NugetApi { get; }
 
 		public SolutionApi(
@@ -37,12 +38,14 @@ namespace ISI.Extensions.VisualStudio
 			ISI.Extensions.Serialization.ISerialization serialization,
 			ISI.Extensions.Scm.BuildScriptApi buildScriptApi,
 			ISI.Extensions.Scm.SourceControlClientApi sourceControlClientApi,
+			ISI.Extensions.VisualStudio.CodeGenerationApi codeGenerationApi,
 			ISI.Extensions.Nuget.NugetApi nugetApi)
 		{
 			Logger = logger;
 			Serialization = serialization;
 			BuildScriptApi = buildScriptApi;
 			SourceControlClientApi = sourceControlClientApi;
+			CodeGenerationApi = codeGenerationApi;
 			NugetApi = nugetApi;
 		}
 	}

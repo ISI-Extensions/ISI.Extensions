@@ -36,38 +36,11 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
-		public void Upload_Test()
-		{
-			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ICS.keyValue");
-			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
-
-			var directory = @"F:\ISI\Clients\ICS\ICS.FacilityController.v9.WindowsApplication\Publish\";
-
-			var version = System.IO.File.ReadAllLines(System.IO.Path.Combine(directory, "ICS.FacilityController.WindowsApplication.Current.DateTimeStamp.Version.txt")).First().Split(new[] { '|' });
-
-			var facilityPanelSoftwareVersion = version[1];
-			var fileName = System.IO.Path.Combine(directory, string.Format("ICS.FacilityController.WindowsApplication.{0}.zip", version[0]));
-
-
-			var uriBuilder = new UriBuilder("https://localhost:44329/facility-panel-updater/v1/upload-facility-panel-software-version");
-			uriBuilder.AddQueryStringParameter("facilityPanelSoftwareVersion", facilityPanelSoftwareVersion);
-			uriBuilder.AddQueryStringParameter("requestedBy", "test");
-
-			var headers = new ISI.Extensions.WebClient.HeaderCollection();
-			headers.Add("X-Administrator-Token", settings.GetValue("ICS.FacilityController.WindowsApplication-Upload-Password"));
-
-			using (var fileStream = System.IO.File.OpenRead(fileName))
-			{
-				ISI.Extensions.WebClient.Upload.UploadFile(uriBuilder.Uri, headers, fileStream, fileName, "facilityPanelSoftware");
-			}
-		}
-
-		[Test]
 		public void WarmUpWebService_Test()
 		{
 			var log = new ISI.Extensions.TextWriterLogger(TestContext.Progress);
 
-			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ICS.keyValue");
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 
 			System.Net.ServicePointManager.Expect100Continue = true;

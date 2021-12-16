@@ -78,15 +78,10 @@ namespace ISI.Extensions.Tests
 		public void Replacements_Test()
 		{
 			var replacements = new Dictionary<string, string>();
-			//replacements.Add("./ICS.ico", "./SitePro.ico");
-			//replacements.Add("rabbitmq://swdc-rabbitmq01.swdcentral.com", "rabbitmq://swdc-rabbitmq01.swdcentral.com")
 
 			var findContents = new List<string>();
-			//findContents.Add("ics.emails-beta@sitepro.com");
 
 			var ignoreFindContents = new List<string>();
-			//ignoreFindContents.Add("rabbitmq://swdc-rabbitmq01.swdcentral.com");
-			//ignoreFindContents.Add("swdc-sql01.swdcentral.com");
 
 			var logger = ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();
 			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
@@ -252,7 +247,7 @@ namespace ISI.Extensions.Tests
 
 			if (false)
 			{
-				var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "Tristar.keyValue");
+				var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 				var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName);
 
 				var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
@@ -344,8 +339,6 @@ namespace ISI.Extensions.Tests
 		public void ReplaceFiles_Test()
 		{
 			var replacements = new List<(string FileName, string ReplacementFullName)>();
-			replacements.Add((FileName: "favicon.ico", ReplacementFullName: @"F:\ISI\Clients\ICS\SitePro.ico"));
-			replacements.Add((FileName: "SitePro.ico", ReplacementFullName: @"F:\ISI\Clients\ICS\SitePro.ico"));
 
 			var logger = ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();
 			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();

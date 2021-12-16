@@ -61,28 +61,5 @@ namespace ISI.Extensions.Tests
 
 			serviceProvider.SetServiceLocator();
 		}
-
-		[Test]
-		public void GetRootDirectory_Test()
-		{
-			var sourceControlClientApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.SourceControlClientApi>();
-
-			//Environment.CurrentDirectory = @"F:/ISI/Internal Projects/ISI.Cake.Addin/src";
-
-			var xx = sourceControlClientApi.GetRootDirectory(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.GetRootDirectoryRequest()
-			{
-				FullName = @"F:\ISI\Clients\TFS\Tristar.Libraries\src",
-			});
-
-			var xx2 = sourceControlClientApi.GetRootDirectory(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.GetRootDirectoryRequest()
-			{
-				FullName = @"F:/ISI/Clients/TFS/Tristar.Libraries/src",
-			});
-
-			var xxx = sourceControlClientApi.GetRootDirectory(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.GetRootDirectoryRequest()
-			{
-				FullName = "F:/ISI/Internal Projects/ISI.Cake.Addin/src",
-			});
-		}
 	}
 }

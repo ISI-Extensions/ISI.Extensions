@@ -69,8 +69,8 @@ namespace ISI.Extensions.Tests
 			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
 			var packagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.PackagerApi>();
 
-			var solution = @"F:\ISI\Clients\ICS\ICS.FacilityPanel.WebServices";
-			var rootAssemblyVersionKey = "ICS.FacilityPanel";
+			var solution = @"F:\ISI\Clients\ICS\ICS.Facilities.WindowsService\src";
+			var rootAssemblyVersionKey = "ICS.Facilities";
 
 			var buildDateTimeStamp = string.Format("{0:yyyyMMdd.HHmmss}", DateTime.UtcNow);
 			var buildRevision = solutionApi.GetBuildRevision(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetBuildRevisionRequest()).BuildRevision;

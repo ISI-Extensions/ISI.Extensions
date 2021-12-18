@@ -26,12 +26,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("ISI.Extensions.Nuget")]
 [assembly: AssemblyCulture("")]
 
-// Setting ComVisible to false makes the types in this assembly not visible 
-// to COM components.  If you need to access a type in this assembly from 
-// COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(false)]
-
-// The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("9e5f5c00-913c-448b-9293-082a65a0debb")]
-
 [assembly: InternalsVisibleTo("ISI.Extensions.Tests")]

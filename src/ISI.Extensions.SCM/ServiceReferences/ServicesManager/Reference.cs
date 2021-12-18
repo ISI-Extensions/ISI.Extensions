@@ -1113,7 +1113,7 @@ namespace ISI.Extensions.Scm.ServiceReferences.ServicesManager
 
 	[System.Diagnostics.DebuggerStepThroughAttribute()]
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-	[System.Runtime.Serialization.DataContractAttribute(Name = "response", Namespace = "http://schemas.datacontract.org/2004/07/ISI.Libraries.Contracts.DataTransferObjec" +
+	[System.Runtime.Serialization.DataContractAttribute(Name = "response", Namespace = "http://schemas.datacontract.org/2004/07/ISI.Extensions.Contracts.DataTransferObjec" +
 			"ts")]
 	[System.SerializableAttribute()]
 	[System.Runtime.Serialization.KnownTypeAttribute(typeof(ISI.Extensions.Scm.ServiceReferences.ServicesManager.GetStatusResponse))]

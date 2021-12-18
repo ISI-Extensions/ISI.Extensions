@@ -78,7 +78,7 @@ namespace ISI.Extensions.Tests
 							 return true;
 						 }
 
-						 if (package.StartsWith("ISI.Libraries", StringComparison.InvariantCultureIgnoreCase))
+						 if (package.StartsWith("ISI.Extensions", StringComparison.InvariantCultureIgnoreCase))
 						 {
 							 version = "10.0.*";
 							 return true;
@@ -92,8 +92,8 @@ namespace ISI.Extensions.Tests
 			nuspec.Version = "2.0.0.0";
 			//nuspec.IconUri = new Uri(@"https://github.com/ISI-Extensions/ISI.Extensions/Lantern.png");
 			//nuspec.ProjectUri = new Uri(@"https://github.com/ISI-Extensions/ISI.Extensions");
-			nuspec.Title = "ISI.Libraries";
-			nuspec.Description = "ISI.Libraries";
+			nuspec.Title = "ISI.Extensions";
+			nuspec.Description = "ISI.Extensions";
 			nuspec.Copyright = string.Format("Copyright (c) {0}, Integrated Solutions, Inc.", DateTime.Now.Year);
 			nuspec.Authors = new[] { "Integrated Solutions, Inc." };
 			nuspec.Owners = new[] { "Integrated  Solutions, Inc." };
@@ -124,12 +124,12 @@ namespace ISI.Extensions.Tests
 
 			var packageVersion4 = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
 			{
-				PackageId = "ISI.Libraries",
+				PackageId = "ISI.Extensions",
 			}).NugetPackageKey.Version;
 
 			//var packageVersion = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
 			//{
-			//	PackageId = "ISI.Libraries",
+			//	PackageId = "ISI.Extensions",
 			//}).NugetPackageKey.Version;
 
 			//var packageVersion2 = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
@@ -206,13 +206,13 @@ namespace ISI.Extensions.Tests
 					"ISI.CMS.T4CMS.MSSQL",
 					"ISI.CMS.T4CMS.FileSystem",
 					"ISI.CMS.T4CMS.SqlServer",
-					"ISI.Libraries.T4LocalContent",
-					"ISI.Libraries.T4LocalContent.Embedded",
-					"ISI.Libraries.T4LocalContent.RazorEngine",
-					"ISI.Libraries.T4LocalContent.Resources",
-					"ISI.Libraries.T4LocalContent.VirtualFiles",
-					"ISI.Libraries.T4LocalContent.Web",
-					"ISI.Libraries.T4LocalContent.WebPortableArea",
+					"ISI.Extensions.T4LocalContent",
+					"ISI.Extensions.T4LocalContent.Embedded",
+					"ISI.Extensions.T4LocalContent.RazorEngine",
+					"ISI.Extensions.T4LocalContent.Resources",
+					"ISI.Extensions.T4LocalContent.VirtualFiles",
+					"ISI.Extensions.T4LocalContent.Web",
+					"ISI.Extensions.T4LocalContent.WebPortableArea",
 					"ISI.Extensions.T4LocalContent",
 					"ISI.Extensions.T4LocalContent.Embedded",
 					"ISI.Extensions.T4LocalContent.Resources",

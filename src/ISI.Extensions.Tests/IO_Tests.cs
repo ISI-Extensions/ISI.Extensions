@@ -29,8 +29,8 @@ namespace ISI.Extensions.Tests
 		public void GetRelativePath()
 		{
 			{
-				var relativeTo = @"F:\ISI\ISI.FrameWork\src\ISI.Libraries\ISI.Libraries.UnitTests";
-				var path = @"F:\ISI\ISI.FrameWork\src\ISI.Libraries\ISI.Libraries.UnitTests\EmbeddedFiles\Views\Test.cshtml";
+				var relativeTo = @"F:\ISI\ISI.FrameWork\src\ISI.Extensions\ISI.Extensions.UnitTests";
+				var path = @"F:\ISI\ISI.FrameWork\src\ISI.Extensions\ISI.Extensions.UnitTests\EmbeddedFiles\Views\Test.cshtml";
 
 				Console.WriteLine(System.IO.Path.GetRelativePath(relativeTo, path));
 
@@ -38,8 +38,8 @@ namespace ISI.Extensions.Tests
 			}
 
 			{
-				var relativeTo = @"F:\ISI\ISI.FrameWork\src\ISI.Libraries\ISI.Libraries.UnitTests\Pizza";
-				var path = @"F:\ISI\ISI.FrameWork\src\ISI.Libraries\ISI.Libraries.UnitTests\EmbeddedFiles\Views\Test.cshtml";
+				var relativeTo = @"F:\ISI\ISI.FrameWork\src\ISI.Extensions\ISI.Extensions.UnitTests\Pizza";
+				var path = @"F:\ISI\ISI.FrameWork\src\ISI.Extensions\ISI.Extensions.UnitTests\EmbeddedFiles\Views\Test.cshtml";
 
 				Console.WriteLine(System.IO.Path.GetRelativePath(relativeTo, path));
 
@@ -47,8 +47,8 @@ namespace ISI.Extensions.Tests
 			}
 
 			{
-				var relativeTo = @"E:\ISI\ISI.FrameWork\src\ISI.Libraries\ISI.Libraries.UnitTests\Pizza";
-				var path = @"F:\ISI\ISI.FrameWork\src\ISI.Libraries\ISI.Libraries.UnitTests\EmbeddedFiles\Views\Test.cshtml";
+				var relativeTo = @"E:\ISI\ISI.FrameWork\src\ISI.Extensions\ISI.Extensions.UnitTests\Pizza";
+				var path = @"F:\ISI\ISI.FrameWork\src\ISI.Extensions\ISI.Extensions.UnitTests\EmbeddedFiles\Views\Test.cshtml";
 
 				Console.WriteLine(System.IO.Path.GetRelativePath(relativeTo, path));
 
@@ -56,8 +56,8 @@ namespace ISI.Extensions.Tests
 			}
 
 			{
-				var relativeTo = @"\\Server\E$\ISI\ISI.FrameWork\src\ISI.Libraries\ISI.Libraries.UnitTests\Pizza";
-				var path = @"\\Server\E$\ISI\ISI.FrameWork\src\ISI.Libraries\ISI.Libraries.UnitTests\EmbeddedFiles\Views\Test.cshtml";
+				var relativeTo = @"\\Server\E$\ISI\ISI.FrameWork\src\ISI.Extensions\ISI.Extensions.UnitTests\Pizza";
+				var path = @"\\Server\E$\ISI\ISI.FrameWork\src\ISI.Extensions\ISI.Extensions.UnitTests\EmbeddedFiles\Views\Test.cshtml";
 
 				Console.WriteLine(System.IO.Path.GetRelativePath(relativeTo, path));
 
@@ -65,8 +65,8 @@ namespace ISI.Extensions.Tests
 			}
 
 			{
-				var relativeTo = @"\\Server\E$\ISI\ISI.FrameWork\src\ISI.Libraries\ISI.Libraries.UnitTests\Pizza";
-				var path = @"\\Server1\E$\ISI\ISI.FrameWork\src\ISI.Libraries\ISI.Libraries.UnitTests\EmbeddedFiles\Views\Test.cshtml";
+				var relativeTo = @"\\Server\E$\ISI\ISI.FrameWork\src\ISI.Extensions\ISI.Extensions.UnitTests\Pizza";
+				var path = @"\\Server1\E$\ISI\ISI.FrameWork\src\ISI.Extensions\ISI.Extensions.UnitTests\EmbeddedFiles\Views\Test.cshtml";
 
 				Console.WriteLine(System.IO.Path.GetRelativePath(relativeTo, path));
 

@@ -13,15 +13,42 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle("ISI.Extensions.Scm")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("ISI.Extensions.Scm")]
-[assembly: AssemblyCulture("")]
+namespace ISI.Extensions
+{
+	public abstract class MonitorTest<TModel> : ISI.Extensions.IMonitorTest
+		where TModel : class
+	{
+		protected static System.Reflection.PropertyInfo[] _modelProperties = null;
+
+		static MonitorTest()
+		{
+			_modelProperties = typeof(TModel).GetProperties();
+		}
+
+		public TModel Model { get; set; }
+
+		public virtual string Name => this.GetType().AssemblyQualifiedNameWithoutVersion();
+
+		object IMonitorTest.Model
+		{
+			get => Model;
+			set => Model = value as TModel;
+		}
+
+		Type IMonitorTest.ModelType => typeof(TModel);
+
+		System.Reflection.PropertyInfo[] IMonitorTest.GetModelProperties()
+		{
+			return _modelProperties;
+		}
+
+		public abstract IMonitorTestResponse Execute();
+	}
+}

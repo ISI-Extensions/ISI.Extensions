@@ -50,7 +50,7 @@ namespace ISI.Extensions.Tests
 
 					switch (externalPathPieces.Last())
 					{
-						case "ISI.Libraries":
+						case "ISI.Extensions":
 							externalVersion = string.Format("1.1.{0}", buildRevision);
 							return true;
 

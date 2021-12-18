@@ -20,8 +20,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ISI.Extensions.Scm")]
+[assembly: AssemblyTitle("ISI.Extensions.Monitor")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("ISI.Extensions.Scm")]
+[assembly: AssemblyProduct("ISI.Extensions.Monitor")]
 [assembly: AssemblyCulture("")]

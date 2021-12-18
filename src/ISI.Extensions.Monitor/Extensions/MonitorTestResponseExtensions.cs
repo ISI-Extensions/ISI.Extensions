@@ -13,15 +13,33 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle("ISI.Extensions.Scm")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("ISI.Extensions.Scm")]
-[assembly: AssemblyCulture("")]
+namespace ISI.Extensions.Extensions
+{
+	public static class MonitorTestResponseExtensions
+	{
+		public static TSerializableResponse CreateSerializableResponse<TSerializableResponse>(this ISI.Extensions.IMonitorTestResponse monitorTestResponse, Action<TSerializableResponse> initialize = null)
+			where TSerializableResponse : ISI.Extensions.SerializableEntities.IMonitorTestSerializableResponse, new()
+		{
+			var response = new TSerializableResponse();
+
+			response.Passed = monitorTestResponse.Passed;
+
+			response.StartupParameterValues = monitorTestResponse.StartupParameterValues.ToNullCheckedCollection<ISI.Extensions.IMonitorTestResponseStartupParameterValue, ISI.Extensions.SerializableEntities.MonitorTestSerializableResponseStartupParameterValue, ISI.Extensions.SerializableEntities.MonitorTestSerializableResponseStartupParameterValueCollection>(parameter => new SerializableEntities.MonitorTestSerializableResponseStartupParameterValue()
+			{
+				Name = parameter.Name,
+				Value = parameter.Value
+			});
+
+			initialize?.Invoke(response);
+
+			return response;
+		}
+	}
+}

@@ -13,15 +13,28 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Runtime.Serialization;
+using ISI.Extensions.Extensions;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle("ISI.Extensions.Scm")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("ISI.Extensions.Scm")]
-[assembly: AssemblyCulture("")]
+namespace ISI.Extensions.SerializableEntities
+{
+	[CollectionDataContract(Name = "monitorTestSerializableResponseStartupParameterValueCollection", ItemName = "parameterValue", Namespace = "")]
+	public class MonitorTestSerializableResponseStartupParameterValueCollection : System.Collections.ObjectModel.Collection<MonitorTestSerializableResponseStartupParameterValue>
+	{
+		public MonitorTestSerializableResponseStartupParameterValueCollection()
+		{
+
+		}
+
+		public MonitorTestSerializableResponseStartupParameterValueCollection(IEnumerable<MonitorTestSerializableResponseStartupParameterValue> monitorTestParameters)
+			: base(monitorTestParameters.ToNullCheckedList())
+		{
+
+		}
+	}
+}

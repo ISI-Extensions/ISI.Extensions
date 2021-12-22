@@ -13,23 +13,15 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
-namespace ISI.Extensions.Telephony.DataTransferObjects.PhoneSwitchManagerApi
-{
-	public partial class OriginateCallRequest
-	{
-		public string AsteriskServerIpAddress { get; set; }
-		public int? AsteriskServerPort { get; set; }
-		public string AsteriskUserName { get; set; }
-		public string AsteriskPassword { get; set; }
-
-		public string Context { get; set; }
-		public string Channel { get; set; }
-		public string Extension { get; set; }
-	}
-}
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+[assembly: AssemblyTitle("ISI.Extensions.Asterisk")]
+[assembly: AssemblyDescription("")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyProduct("ISI.Extensions.Asterisk")]
+[assembly: AssemblyCulture("")]

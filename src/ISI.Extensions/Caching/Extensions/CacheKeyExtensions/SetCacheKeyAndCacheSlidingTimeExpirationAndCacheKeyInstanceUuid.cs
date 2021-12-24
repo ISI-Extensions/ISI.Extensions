@@ -15,17 +15,23 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 
-namespace ISI.Extensions.Caching
+namespace ISI.Extensions.Caching.Extensions
 {
-	public interface IHasProxyCacheKeys : IHasCacheKey
+	public static partial class CacheKeyExtensions
 	{
-		string[] ProxyCacheKeys { get; }
-	}
+		public static THasSettableCacheKeyWithInstanceUuidAndSlidingTimeExpiration SetCacheKeyAndCacheSlidingTimeExpirationAndCacheKeyInstanceUuid<THasSettableCacheKeyWithInstanceUuidAndSlidingTimeExpiration>(this THasSettableCacheKeyWithInstanceUuidAndSlidingTimeExpiration hasCacheKeyWithInstanceUuidAndSlidingTimeExpiration, string cacheKey, TimeSpan slidingTimeExpiration, Guid? cacheKeyInstanceUuid = null)
+			where THasSettableCacheKeyWithInstanceUuidAndSlidingTimeExpiration : ISI.Extensions.Caching.IHasSettableCacheKeyWithInstanceUuidAndSlidingTimeExpiration
+		{
+			hasCacheKeyWithInstanceUuidAndSlidingTimeExpiration.CacheKey = cacheKey;
+			hasCacheKeyWithInstanceUuidAndSlidingTimeExpiration.CacheKeyInstanceUuid = cacheKeyInstanceUuid ?? Guid.NewGuid();
+			hasCacheKeyWithInstanceUuidAndSlidingTimeExpiration.CacheSlidingTimeExpiration = slidingTimeExpiration;
 
-	public interface IHasSettableProxyCacheKeys : IHasProxyCacheKeys
-	{
-		new string[] ProxyCacheKeys { set; }
+			return hasCacheKeyWithInstanceUuidAndSlidingTimeExpiration;
+		}
 	}
 }

@@ -23,4 +23,9 @@ namespace ISI.Extensions.Caching
 	{
 		TimeSpan CacheSlidingTimeExpiration { get; }
 	}
+
+	public interface IHasSettableCacheSlidingTimeExpiration : IHasCacheSlidingTimeExpiration
+	{
+		new TimeSpan CacheSlidingTimeExpiration { set; }
+	}
 }

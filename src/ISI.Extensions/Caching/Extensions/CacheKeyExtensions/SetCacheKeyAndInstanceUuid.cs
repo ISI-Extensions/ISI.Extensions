@@ -15,17 +15,22 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 
-namespace ISI.Extensions.Caching
+namespace ISI.Extensions.Caching.Extensions
 {
-	public interface IHasProxyCacheKeys : IHasCacheKey
+	public static partial class CacheKeyExtensions
 	{
-		string[] ProxyCacheKeys { get; }
-	}
+		public static THasSettableCacheKeyWithInstanceUuid SetCacheKeyAndInstanceUuid<THasSettableCacheKeyWithInstanceUuid>(this THasSettableCacheKeyWithInstanceUuid hasSettableCacheKeyWithInstanceUuid, string cacheKey, Guid? cacheKeyInstanceUuid = null)
+			where THasSettableCacheKeyWithInstanceUuid : ISI.Extensions.Caching.IHasSettableCacheKeyWithInstanceUuid
+		{
+			hasSettableCacheKeyWithInstanceUuid.CacheKey = cacheKey;
+			hasSettableCacheKeyWithInstanceUuid.CacheKeyInstanceUuid = cacheKeyInstanceUuid ?? Guid.NewGuid();
 
-	public interface IHasSettableProxyCacheKeys : IHasProxyCacheKeys
-	{
-		new string[] ProxyCacheKeys { set; }
+			return hasSettableCacheKeyWithInstanceUuid;
+		}
 	}
 }

@@ -24,6 +24,11 @@ namespace ISI.Extensions.Caching.Extensions
 {
 	public static partial class CacheManagerExtensions
 	{
+		public static async Task<IDictionary<TKey, TItem>> GetOrCreateAsync<TKey, TItem>(this ISI.Extensions.Caching.ICacheManager cacheManager, IEnumerable<TKey> cacheKeys, GenerateCacheKey<TKey> getCacheKey, GetItemsAsync<TKey, TItem> getItemsAsync)
+		{
+			return await GetOrCreateAsync(cacheManager, cacheKeys, getCacheKey, getItemsAsync, null, null, null, false);
+		}
+
 		public static async Task<IDictionary<TKey, TItem>> GetOrCreateAsync<TKey, TItem>(this ISI.Extensions.Caching.ICacheManager cacheManager, IEnumerable<TKey> cacheKeys, GenerateCacheKey<TKey> getCacheKey, GetItemsAsync<TKey, TItem> getItemsAsync, GetItemsAsync<TKey, TItem> getDefaultValuesAsync)
 		{
 			return await GetOrCreateAsync(cacheManager, cacheKeys, getCacheKey, getItemsAsync, getDefaultValuesAsync, null, null, false);

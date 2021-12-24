@@ -259,5 +259,8 @@ namespace ISI.Extensions.Caching.Redis
 		public ICacheEntryExpirationPolicy GetAbsoluteTimeExpirationCacheEntryExpirationPolicy(TimeSpan? timeSpan = null) => new AbsoluteTimeExpirationCacheEntryExpirationPolicy(timeSpan ?? Configuration.DefaultAbsoluteExpirationDuration);
 
 		public ICacheEntryExpirationPolicy GetSlidingTimeExpirationCacheEntryExpirationPolicy(TimeSpan? timeSpan = null) => new SlidingTimeExpirationCacheEntryExpirationPolicy(timeSpan ?? Configuration.DefaultSlidingExpirationDuration);
+
+		public virtual TimeSpan GetDefaultAbsoluteExpirationDuration => Configuration.DefaultAbsoluteExpirationDuration;
+		public virtual TimeSpan GetDefaultSlidingExpirationDuration => Configuration.DefaultSlidingExpirationDuration;
 	}
 }

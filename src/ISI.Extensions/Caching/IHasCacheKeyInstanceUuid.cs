@@ -23,4 +23,9 @@ namespace ISI.Extensions.Caching
 	{
 		Guid CacheKeyInstanceUuid { get; }
 	}
+
+	public interface IHasSettableCacheKeyInstanceUuid : IHasCacheKeyInstanceUuid
+	{
+		new Guid CacheKeyInstanceUuid { set; }
+	}
 }

@@ -15,17 +15,33 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 
-namespace ISI.Extensions.Caching
+namespace ISI.Extensions.Caching.Extensions
 {
-	public interface IHasProxyCacheKeys : IHasCacheKey
+	public static partial class CacheKeyExtensions
 	{
-		string[] ProxyCacheKeys { get; }
-	}
+		public static string[] GetCacheKeys(this ISI.Extensions.Caching.IHasCacheKeys hasCacheKeys)
+		{
+			var cacheKeys = new HashSet<string>();
 
-	public interface IHasSettableProxyCacheKeys : IHasProxyCacheKeys
-	{
-		new string[] ProxyCacheKeys { set; }
+			if (hasCacheKeys is ISI.Extensions.Caching.IHasCacheKey hasCacheKey)
+			{
+				cacheKeys.Add(hasCacheKey.CacheKey);
+			}
+
+			if (hasCacheKeys is ISI.Extensions.Caching.IHasCacheKeyCollection hasCacheKeyCollection)
+			{
+				foreach (var cacheableItem in hasCacheKeyCollection.CacheableItems)
+				{
+					cacheKeys.Add(cacheableItem.CacheKey);
+				}
+			}
+
+			return cacheKeys.ToArray();
+		}
 	}
 }

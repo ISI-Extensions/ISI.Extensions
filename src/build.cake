@@ -86,7 +86,8 @@ Task("Sign")
 	});
 
 Task("Nuget")
-	.IsDependentOn("Sign")
+	//.IsDependentOn("Sign")
+	.IsDependentOn("Build")
 	.Does(() =>
 	{
 		foreach(var project in solution.Projects.Where(project => project.Path.FullPath.EndsWith(".csproj") && !project.Name.EndsWith(".Tests") && !project.Name.EndsWith(".T4LocalContent")))
@@ -142,13 +143,13 @@ Task("Nuget")
 			DeleteFile(nuspecFile);
 
 			var nupgkFile = File(nugetPackOutputDirectory + "/" + project.Name + "." + assemblyVersion + ".nupkg");
-			NupkgSign(new ISI.Cake.Addin.Nuget.NupkgSignRequest()
-			{
-				NupkgFullNames = new [] { nupgkFile.Path.FullPath },
-				TimestamperUri = GetNullableUri(settings.CodeSigning.TimeStampUrl),
-				CertificatePath = File(settings.CodeSigning.CertificateFileName),
-				CertificatePassword = settings.CodeSigning.CertificatePassword,
-			});
+			//NupkgSign(new ISI.Cake.Addin.Nuget.NupkgSignRequest()
+			//{
+			//	NupkgFullNames = new [] { nupgkFile.Path.FullPath },
+			//	TimestamperUri = GetNullableUri(settings.CodeSigning.TimeStampUrl),
+			//	CertificatePath = File(settings.CodeSigning.CertificateFileName),
+			//	CertificatePassword = settings.CodeSigning.CertificatePassword,
+			//});
 
 			NupkgPush(new ISI.Cake.Addin.Nuget.NupkgPushRequest()
 			{
@@ -230,14 +231,14 @@ Task("Nuget")
 
 			var nupgkFile = File(nugetPackOutputDirectory + "/" + projectName + "." + assemblyVersion+ ".nupkg");
 
-			NupkgSign(new ISI.Cake.Addin.Nuget.NupkgSignRequest()
-			{
-				NupkgFullNames = new [] { nupgkFile.Path.FullPath },
-				TimestamperUri = GetNullableUri(settings.CodeSigning.TimeStampUrl),
-				CertificatePath = File(settings.CodeSigning.CertificateFileName),
-				CertificatePassword = settings.CodeSigning.CertificatePassword,
-				Verbosity = NupkgSignToolVerbosity.Detailed,
-			});
+			//NupkgSign(new ISI.Cake.Addin.Nuget.NupkgSignRequest()
+			//{
+			//	NupkgFullNames = new [] { nupgkFile.Path.FullPath },
+			//	TimestamperUri = GetNullableUri(settings.CodeSigning.TimeStampUrl),
+			//	CertificatePath = File(settings.CodeSigning.CertificateFileName),
+			//	CertificatePassword = settings.CodeSigning.CertificatePassword,
+			//	Verbosity = NupkgSignToolVerbosity.Detailed,
+			//});
 
 			NupkgPush(new ISI.Cake.Addin.Nuget.NupkgPushRequest()
 			{

@@ -104,5 +104,8 @@ namespace ISI.Extensions.Caching
 		public ICacheEntryExpirationPolicy GetAbsoluteTimeExpirationCacheEntryExpirationPolicy(TimeSpan? timeSpan = null) => LocalCacheManager.GetAbsoluteTimeExpirationCacheEntryExpirationPolicy(timeSpan);
 
 		public ICacheEntryExpirationPolicy GetSlidingTimeExpirationCacheEntryExpirationPolicy(TimeSpan? timeSpan = null) => LocalCacheManager.GetSlidingTimeExpirationCacheEntryExpirationPolicy(timeSpan);
+
+		public virtual TimeSpan GetDefaultAbsoluteExpirationDuration => LocalCacheManager.GetDefaultAbsoluteExpirationDuration;
+		public virtual TimeSpan GetDefaultSlidingExpirationDuration => LocalCacheManager.GetDefaultSlidingExpirationDuration;
 	}
 }

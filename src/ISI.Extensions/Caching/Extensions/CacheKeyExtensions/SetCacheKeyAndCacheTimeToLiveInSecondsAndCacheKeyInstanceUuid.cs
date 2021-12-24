@@ -15,17 +15,23 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 
-namespace ISI.Extensions.Caching
+namespace ISI.Extensions.Caching.Extensions
 {
-	public interface IHasProxyCacheKeys : IHasCacheKey
+	public static partial class CacheKeyExtensions
 	{
-		string[] ProxyCacheKeys { get; }
-	}
+		public static THasSettableCacheKeyWithInstanceUuidAndTimeToLive SetCacheKeyAndCacheTimeToLiveInSecondsAndCacheKeyInstanceUuid<THasSettableCacheKeyWithInstanceUuidAndTimeToLive>(this THasSettableCacheKeyWithInstanceUuidAndTimeToLive hasSettableCacheKeyWithInstanceUuidAndTimeToLive, string cacheKey, int timeToLiveInSeconds, Guid? cacheKeyInstanceUuid = null)
+			where THasSettableCacheKeyWithInstanceUuidAndTimeToLive : ISI.Extensions.Caching.IHasSettableCacheKeyWithInstanceUuidAndTimeToLive
+		{
+			hasSettableCacheKeyWithInstanceUuidAndTimeToLive.CacheKey = cacheKey;
+			hasSettableCacheKeyWithInstanceUuidAndTimeToLive.CacheKeyInstanceUuid = cacheKeyInstanceUuid ?? Guid.NewGuid();
+			hasSettableCacheKeyWithInstanceUuidAndTimeToLive.CacheTimeToLiveInSeconds = timeToLiveInSeconds;
 
-	public interface IHasSettableProxyCacheKeys : IHasProxyCacheKeys
-	{
-		new string[] ProxyCacheKeys { set; }
+			return hasSettableCacheKeyWithInstanceUuidAndTimeToLive;
+		}
 	}
 }

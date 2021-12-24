@@ -29,12 +29,27 @@ namespace ISI.Extensions.Caching
 		string CacheKey { get; }
 	}
 
+	public interface IHasSettableCacheKey : IHasCacheKey
+	{
+		new string CacheKey { set; }
+	}
+
 	public interface IHasCacheKeyCollection : IHasCacheKeys
 	{
 		IEnumerable<IHasCacheKey> CacheableItems { get; }
 	}
 
+	public interface IHasSettableCacheKeyCollection : IHasCacheKeyCollection
+	{
+		new IEnumerable<IHasCacheKey> CacheableItems { set; }
+	}
+
 	public interface IHasCacheKeyWithAbsoluteTimeExpiration : IHasCacheKey, IHasCacheAbsoluteDateTimeExpiration
+	{
+
+	}
+
+	public interface IHasSettableCacheKeyWithAbsoluteTimeExpiration : IHasSettableCacheKey, IHasSettableCacheAbsoluteDateTimeExpiration
 	{
 
 	}
@@ -44,7 +59,17 @@ namespace ISI.Extensions.Caching
 
 	}
 
+	public interface IHasSettableCacheKeyWithSlidingTimeExpiration : IHasSettableCacheKey, IHasSettableCacheSlidingTimeExpiration
+	{
+
+	}
+
 	public interface IHasCacheKeyWithTimeToLive : IHasCacheKey, IHasCacheTimeToLive
+	{
+
+	}
+
+	public interface IHasSettableCacheKeyWithTimeToLive : IHasSettableCacheKey, IHasSettableCacheTimeToLive
 	{
 
 	}
@@ -54,7 +79,17 @@ namespace ISI.Extensions.Caching
 
 	}
 
+	public interface IHasSettableCacheKeyWithInstanceUuid : IHasSettableCacheKey, IHasSettableCacheKeyInstanceUuid
+	{
+
+	}
+
 	public interface IHasCacheKeyWithInstanceUuidAndAbsoluteTimeExpiration : IHasCacheKeyWithInstanceUuid, IHasCacheKeyWithAbsoluteTimeExpiration
+	{
+
+	}
+
+	public interface IHasSettableCacheKeyWithInstanceUuidAndAbsoluteTimeExpiration : IHasSettableCacheKeyWithInstanceUuid, IHasSettableCacheKeyWithAbsoluteTimeExpiration
 	{
 
 	}
@@ -64,7 +99,17 @@ namespace ISI.Extensions.Caching
 
 	}
 
+	public interface IHasSettableCacheKeyWithInstanceUuidAndSlidingTimeExpiration : IHasSettableCacheKeyWithInstanceUuid, IHasSettableCacheKeyWithSlidingTimeExpiration
+	{
+
+	}
+
 	public interface IHasCacheKeyWithInstanceUuidAndTimeToLive : IHasCacheKeyWithInstanceUuid, IHasCacheKeyWithTimeToLive
+	{
+
+	}
+
+	public interface IHasSettableCacheKeyWithInstanceUuidAndTimeToLive : IHasSettableCacheKeyWithInstanceUuid, IHasSettableCacheKeyWithTimeToLive
 	{
 
 	}

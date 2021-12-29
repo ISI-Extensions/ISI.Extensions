@@ -260,7 +260,7 @@ namespace ISI.Extensions.Caching.Redis
 
 		public ICacheEntryExpirationPolicy GetSlidingTimeExpirationCacheEntryExpirationPolicy(TimeSpan? timeSpan = null) => new SlidingTimeExpirationCacheEntryExpirationPolicy(timeSpan ?? Configuration.DefaultSlidingExpirationDuration);
 
-		public virtual TimeSpan GetDefaultAbsoluteExpirationDuration => Configuration.DefaultAbsoluteExpirationDuration;
-		public virtual TimeSpan GetDefaultSlidingExpirationDuration => Configuration.DefaultSlidingExpirationDuration;
+		public virtual TimeSpan GetDefaultAbsoluteExpirationDuration() => Configuration.DefaultAbsoluteExpirationDuration;
+		public virtual TimeSpan GetDefaultSlidingExpirationDuration() => Configuration.DefaultSlidingExpirationDuration;
 	}
 }

@@ -36,7 +36,9 @@ namespace ISI.Extensions.Repository.SqlServer
 
 		public string ConnectionString { get; }
 		public string DatabaseName { get; }
-		public string CompletedBy { get; }
+
+		private string _completedBy = null;
+		public string CompletedBy => _completedBy ??= GetCompletedBy();
 
 		public RepositorySetupApi(
 			Microsoft.Extensions.Configuration.IConfiguration configuration,
@@ -58,7 +60,7 @@ namespace ISI.Extensions.Repository.SqlServer
 			var connectionStringBuilder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(ConnectionString);
 
 			DatabaseName = (string.IsNullOrWhiteSpace(databaseName) ? connectionStringBuilder.InitialCatalog : databaseName).Replace("[", string.Empty).Replace("]", string.Empty);
-			CompletedBy = (string.IsNullOrWhiteSpace(completedBy) ? connectionStringBuilder.UserID : completedBy);
+			_completedBy = (string.IsNullOrWhiteSpace(completedBy) ? connectionStringBuilder.UserID : completedBy);
 
 			_masterConnectionString = masterConnectionString;
 		}
@@ -81,6 +83,38 @@ namespace ISI.Extensions.Repository.SqlServer
 			}
 			
 			return masterConnectionStringBuilder.ConnectionString;
+		}
+
+		private string GetCompletedBy()
+		{
+			if (string.IsNullOrWhiteSpace(_completedBy))
+			{
+				foreach (var connectionString in new[]
+				         {
+					         ConnectionString,
+					         MasterConnectionString,
+				         })
+				{
+					if (string.IsNullOrWhiteSpace(_completedBy))
+					{
+						try
+						{
+							using (var connection = SqlConnection.GetSqlConnection(connectionString))
+							{
+								connection.Open();
+
+								using (var command = new Microsoft.Data.SqlClient.SqlCommand("select ORIGINAL_LOGIN()", connection))
+								{
+									_completedBy = string.Format("{0}", command.ExecuteScalar());
+								}
+							}
+						}
+						catch { }
+					}
+				}
+			}
+
+			return _completedBy;
 		}
 	}
 }

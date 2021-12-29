@@ -153,7 +153,7 @@ namespace ISI.Extensions.Caching
 
 		public virtual ICacheEntryExpirationPolicy GetSlidingTimeExpirationCacheEntryExpirationPolicy(TimeSpan? timeSpan = null) => new SlidingTimeExpirationCacheEntryExpirationPolicy(timeSpan ?? Configuration.DefaultSlidingExpirationDuration);
 
-		public virtual TimeSpan GetDefaultAbsoluteExpirationDuration => Configuration.DefaultAbsoluteExpirationDuration;
-		public virtual TimeSpan GetDefaultSlidingExpirationDuration => Configuration.DefaultSlidingExpirationDuration;
+		public virtual TimeSpan GetDefaultAbsoluteExpirationDuration() => Configuration.DefaultAbsoluteExpirationDuration;
+		public virtual TimeSpan GetDefaultSlidingExpirationDuration() => Configuration.DefaultSlidingExpirationDuration;
 	}
 }

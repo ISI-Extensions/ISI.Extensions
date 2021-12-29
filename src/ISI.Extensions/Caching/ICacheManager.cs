@@ -55,7 +55,7 @@ namespace ISI.Extensions.Caching
 		ISI.Extensions.Caching.ICacheEntryExpirationPolicy GetAbsoluteTimeExpirationCacheEntryExpirationPolicy(TimeSpan? timeSpan = null);
 		ISI.Extensions.Caching.ICacheEntryExpirationPolicy GetSlidingTimeExpirationCacheEntryExpirationPolicy(TimeSpan? timeSpan = null);
 
-		TimeSpan GetDefaultAbsoluteExpirationDuration { get; }
-		TimeSpan GetDefaultSlidingExpirationDuration { get; }
+		TimeSpan GetDefaultAbsoluteExpirationDuration();
+		TimeSpan GetDefaultSlidingExpirationDuration();
 	}
 }

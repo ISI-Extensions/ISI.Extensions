@@ -38,7 +38,5 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
 		public VsixSignDigestAlgorithm DigestAlgorithm { get; set; } = VsixSignDigestAlgorithm.Sha256;
 		
 		public bool OverwriteAnyExistingSignature { get; set; } = false;
-
-		public VsixSignVerbosity Verbosity { get; set; } = VsixSignVerbosity.Normal;
 	}
 }

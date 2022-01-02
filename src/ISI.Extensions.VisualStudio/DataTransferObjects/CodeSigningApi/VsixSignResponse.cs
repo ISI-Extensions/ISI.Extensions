@@ -19,30 +19,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
+namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
 {
-	public partial class NupkgSignRequest
+	public partial class VsixSignResponse
 	{
-		public IEnumerable<string> NupkgFullNames { get; set; }
-
-		public string WorkingDirectory { get; set; }
-
-		public Uri TimeStampUri { get; set; } = new("http://timestamp.digicert.com");
-		public NupkgSignDigestAlgorithm TimeStampDigestAlgorithm { get; set; } = NupkgSignDigestAlgorithm.Sha256;
-		
-		public string OutputDirectory { get; set; }
-
-		public string CertificatePath { get; set; }
-		public string CertificatePassword { get; set; }
-		public string CertificateStoreName { get; set; } = "My";
-		public string CertificateStoreLocation { get; set; } = "CurrentUser";
-		public string CertificateSubjectName { get; set; }
-		public string CertificateFingerprint { get; set; }
-
-		public NupkgSignDigestAlgorithm DigestAlgorithm { get; set; } = NupkgSignDigestAlgorithm.Sha256;
-
-		public bool OverwriteAnyExistingSignature { get; set; } = false;
-
-		public NupkgSignVerbosity Verbosity { get; set; } = NupkgSignVerbosity.Normal;
 	}
 }

@@ -32,8 +32,8 @@ namespace ISI.Extensions.Nuget
 			
 			var arguments = new List<string>();
 
-			arguments.Add(string.Format(" -Timestamper \"{0}\"", request.TimestamperUri));
-			arguments.Add(string.Format(" -TimestampHashAlgorithm \"{0}\"", request.TimestampHashAlgorithm));
+			arguments.Add(string.Format(" -Timestamper \"{0}\"", request.TimeStampUri));
+			arguments.Add(string.Format(" -TimestampHashAlgorithm \"{0}\"", request.TimeStampDigestAlgorithm.GetAbbreviation()));
 
 			if (!string.IsNullOrWhiteSpace(request.OutputDirectory))
 			{
@@ -58,7 +58,7 @@ namespace ISI.Extensions.Nuget
 				arguments.Add(string.Format(" -CertificatePath \"{0}\"", request.CertificatePath));
 				arguments.Add(string.Format(" -CertificatePassword \"{0}\"", request.CertificatePassword));
 			}
-			arguments.Add(string.Format(" -HashAlgorithm \"{0}\"", request.HashAlgorithm));
+			arguments.Add(string.Format(" -HashAlgorithm \"{0}\"", request.DigestAlgorithm.GetAbbreviation()));
 
 			if (request.OverwriteAnyExistingSignature)
 			{
@@ -67,19 +67,27 @@ namespace ISI.Extensions.Nuget
 
 			arguments.Add(string.Format(" -Verbosity \"{0}\"", request.Verbosity));
 
+			var processExeFullName = GetNugetExeFullName(new DTOs.GetNugetExeFullNameRequest()).NugetExeFullName;
+
 			foreach (var nupkgFullName in request.NupkgFullNames)
 			{
-				ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				var processRequest = new ISI.Extensions.Process.ProcessRequest()
 				{
 					Logger = Logger, //new NullLogger(),
 					WorkingDirectory = request.WorkingDirectory,
-					ProcessExeFullName = GetNugetExeFullName(new DTOs.GetNugetExeFullNameRequest()).NugetExeFullName,
+					ProcessExeFullName = processExeFullName,
 					Arguments = new[]
 					{
 						string.Format("sign \"{0}\"", nupkgFullName),
 						string.Join(" ", arguments),
-					}
-				});
+					}};
+
+				if (request.Verbosity == ISI.Extensions.Nuget.DataTransferObjects.NugetApi.NupkgSignVerbosity.Detailed)
+				{
+					Logger.LogInformation(processRequest.ToString());
+				}
+
+				ISI.Extensions.Process.WaitForProcessResponse(processRequest);
 			}
 
 			return response;

@@ -19,19 +19,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
+namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
 {
-	public partial class NupkgSignRequest
+	public partial class VsixSignRequest
 	{
-		public IEnumerable<string> NupkgFullNames { get; set; }
-
-		public string WorkingDirectory { get; set; }
+		public string VsixFullName { get; set; }
 
 		public Uri TimeStampUri { get; set; } = new("http://timestamp.digicert.com");
-		public NupkgSignDigestAlgorithm TimeStampDigestAlgorithm { get; set; } = NupkgSignDigestAlgorithm.Sha256;
+		public VsixSignDigestAlgorithm TimeStampDigestAlgorithm { get; set; } = VsixSignDigestAlgorithm.Sha256;
 		
-		public string OutputDirectory { get; set; }
-
 		public string CertificatePath { get; set; }
 		public string CertificatePassword { get; set; }
 		public string CertificateStoreName { get; set; } = "My";
@@ -39,10 +35,10 @@ namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 		public string CertificateSubjectName { get; set; }
 		public string CertificateFingerprint { get; set; }
 
-		public NupkgSignDigestAlgorithm DigestAlgorithm { get; set; } = NupkgSignDigestAlgorithm.Sha256;
-
+		public VsixSignDigestAlgorithm DigestAlgorithm { get; set; } = VsixSignDigestAlgorithm.Sha256;
+		
 		public bool OverwriteAnyExistingSignature { get; set; } = false;
 
-		public NupkgSignVerbosity Verbosity { get; set; } = NupkgSignVerbosity.Normal;
+		public VsixSignVerbosity Verbosity { get; set; } = VsixSignVerbosity.Normal;
 	}
 }

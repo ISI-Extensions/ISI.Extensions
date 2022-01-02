@@ -18,31 +18,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi;
+using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
+namespace ISI.Extensions.VisualStudio
 {
-	public partial class NupkgSignRequest
+	public partial class CodeSigningApi
 	{
-		public IEnumerable<string> NupkgFullNames { get; set; }
+		private System.Security.Cryptography.HashAlgorithmName GetHashAlgorithmName(DTOs.VsixSignDigestAlgorithm vsixSignDigestAlgorithm)
+		{
+			switch (vsixSignDigestAlgorithm)
+			{
+				case ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.VsixSignDigestAlgorithm.Sha1:
+					return System.Security.Cryptography.HashAlgorithmName.SHA1;
 
-		public string WorkingDirectory { get; set; }
+				case ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.VsixSignDigestAlgorithm.Sha256:
+					return System.Security.Cryptography.HashAlgorithmName.SHA256;
 
-		public Uri TimeStampUri { get; set; } = new("http://timestamp.digicert.com");
-		public NupkgSignDigestAlgorithm TimeStampDigestAlgorithm { get; set; } = NupkgSignDigestAlgorithm.Sha256;
-		
-		public string OutputDirectory { get; set; }
+				case ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.VsixSignDigestAlgorithm.Sha384:
+					return System.Security.Cryptography.HashAlgorithmName.SHA384;
 
-		public string CertificatePath { get; set; }
-		public string CertificatePassword { get; set; }
-		public string CertificateStoreName { get; set; } = "My";
-		public string CertificateStoreLocation { get; set; } = "CurrentUser";
-		public string CertificateSubjectName { get; set; }
-		public string CertificateFingerprint { get; set; }
+				case ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.VsixSignDigestAlgorithm.Sha512:
+					return System.Security.Cryptography.HashAlgorithmName.SHA512;
 
-		public NupkgSignDigestAlgorithm DigestAlgorithm { get; set; } = NupkgSignDigestAlgorithm.Sha256;
-
-		public bool OverwriteAnyExistingSignature { get; set; } = false;
-
-		public NupkgSignVerbosity Verbosity { get; set; } = NupkgSignVerbosity.Normal;
+				default:
+					throw new ArgumentOutOfRangeException(nameof(vsixSignDigestAlgorithm), vsixSignDigestAlgorithm, null);
+			}
+		}
 	}
 }

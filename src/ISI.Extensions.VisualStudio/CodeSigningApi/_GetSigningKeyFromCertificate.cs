@@ -16,33 +16,33 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi;
+using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
+namespace ISI.Extensions.VisualStudio
 {
-	public partial class NupkgSignRequest
+	public partial class CodeSigningApi
 	{
-		public IEnumerable<string> NupkgFullNames { get; set; }
+		private System.Security.Cryptography.AsymmetricAlgorithm GetSigningKeyFromCertificate(System.Security.Cryptography.X509Certificates.X509Certificate2 certificate)
+		{
+			const string RSA = "1.2.840.113549.1.1.1";
+			const string Ecc = "1.2.840.10045.2.1";
 
-		public string WorkingDirectory { get; set; }
-
-		public Uri TimeStampUri { get; set; } = new("http://timestamp.digicert.com");
-		public NupkgSignDigestAlgorithm TimeStampDigestAlgorithm { get; set; } = NupkgSignDigestAlgorithm.Sha256;
-		
-		public string OutputDirectory { get; set; }
-
-		public string CertificatePath { get; set; }
-		public string CertificatePassword { get; set; }
-		public string CertificateStoreName { get; set; } = "My";
-		public string CertificateStoreLocation { get; set; } = "CurrentUser";
-		public string CertificateSubjectName { get; set; }
-		public string CertificateFingerprint { get; set; }
-
-		public NupkgSignDigestAlgorithm DigestAlgorithm { get; set; } = NupkgSignDigestAlgorithm.Sha256;
-
-		public bool OverwriteAnyExistingSignature { get; set; } = false;
-
-		public NupkgSignVerbosity Verbosity { get; set; } = NupkgSignVerbosity.Normal;
+			var keyAlgorithm = certificate.GetKeyAlgorithm();
+			
+			switch (keyAlgorithm)
+			{
+				case RSA:
+					return certificate.GetRSAPrivateKey();
+				case Ecc:
+					return certificate.GetECDsaPrivateKey();
+				default:
+					throw new InvalidOperationException("Unknown certificate signing algorithm.");
+			}
+		}
 	}
 }

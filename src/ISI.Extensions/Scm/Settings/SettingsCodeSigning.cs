@@ -16,6 +16,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Scm
 {
@@ -28,6 +29,12 @@ namespace ISI.Extensions.Scm
 			public SettingsCodeSigning(Settings settings)
 			{
 				Settings = settings;
+			}
+
+			public bool DoCodeSigning
+			{
+				get => Settings.GetValue(Settings.Key.CodeSigningDoCodeSigning, "true").ToBoolean();
+				set => Settings.SetValue(Settings.Key.CodeSigningDoCodeSigning, value.TrueFalse());
 			}
 
 			public string TimeStampUrl
@@ -46,6 +53,12 @@ namespace ISI.Extensions.Scm
 			{
 				get => Settings.GetValue(Settings.Key.CodeSigningCertificatePassword);
 				set => Settings.SetValue(Settings.Key.CodeSigningCertificatePassword, value);
+			}
+
+			public string CertificateFingerprint
+			{
+				get => Settings.GetValue(Settings.Key.CodeSigningCertificateFingerprint);
+				set => Settings.SetValue(Settings.Key.CodeSigningCertificateFingerprint, value);
 			}
 		}
 	}

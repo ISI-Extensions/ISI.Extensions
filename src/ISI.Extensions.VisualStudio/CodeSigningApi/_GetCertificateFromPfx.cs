@@ -13,36 +13,27 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
+using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi;
 
-namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
+namespace ISI.Extensions.VisualStudio
 {
-	public partial class NupkgSignRequest
+	public partial class CodeSigningApi
 	{
-		public IEnumerable<string> NupkgFullNames { get; set; }
+		private System.Security.Cryptography.X509Certificates.X509Certificate2 GetCertificateFromPfx(string certificatePath, string certificatePassword)
+		{
+			if (string.IsNullOrWhiteSpace(certificatePassword))
+			{
+				return new System.Security.Cryptography.X509Certificates.X509Certificate2(certificatePath);
+			}
 
-		public string WorkingDirectory { get; set; }
-
-		public Uri TimeStampUri { get; set; } = new("http://timestamp.digicert.com");
-		public NupkgSignDigestAlgorithm TimeStampDigestAlgorithm { get; set; } = NupkgSignDigestAlgorithm.Sha256;
-		
-		public string OutputDirectory { get; set; }
-
-		public string CertificatePath { get; set; }
-		public string CertificatePassword { get; set; }
-		public string CertificateStoreName { get; set; } = "My";
-		public string CertificateStoreLocation { get; set; } = "CurrentUser";
-		public string CertificateSubjectName { get; set; }
-		public string CertificateFingerprint { get; set; }
-
-		public NupkgSignDigestAlgorithm DigestAlgorithm { get; set; } = NupkgSignDigestAlgorithm.Sha256;
-
-		public bool OverwriteAnyExistingSignature { get; set; } = false;
-
-		public NupkgSignVerbosity Verbosity { get; set; } = NupkgSignVerbosity.Normal;
+			return new System.Security.Cryptography.X509Certificates.X509Certificate2(certificatePath, certificatePassword);
+		}
 	}
 }

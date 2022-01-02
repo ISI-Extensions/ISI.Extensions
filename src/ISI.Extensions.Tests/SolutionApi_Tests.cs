@@ -90,9 +90,9 @@ namespace ISI.Extensions.Tests
 			var solutionFullNames = new List<string>();
 			//solutionFullNames.Add(@"F:\ISI\ISI.FrameWork");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Telephony.WindowsService");
-			solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Desktop");
+			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Desktop");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.WebApplication");
-			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt"));
+			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt"));
 			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Connect.SolutionFullNames.txt"));
 
 			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionDetailsRequest()

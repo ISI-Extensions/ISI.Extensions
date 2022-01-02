@@ -12,16 +12,16 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 using ISI.Extensions.ConfigurationHelper.Extensions;
 using ISI.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace ISI.Extensions.Tests
 {
@@ -60,6 +60,25 @@ namespace ISI.Extensions.Tests
 			var serviceProvider = services.BuildServiceProvider<ISI.Extensions.DependencyInjection.Iunq.ServiceProviderBuilder>(configuration);
 
 			serviceProvider.SetServiceLocator();
+		}
+
+		[Test]
+		public void NupkgSign_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+
+			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+
+			nugetApi.NupkgSign(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.NupkgSignRequest()
+			{
+				NupkgFullNames = new[] { @"F:\ISI\Internal Projects\ISI.Extensions\Nuget\ISI.Extensions.10.0.8036.36374.nupkg" },
+				TimeStampUri = new Uri(settings.CodeSigning.TimeStampUrl),
+				CertificateFingerprint = settings.CodeSigning.CertificateFingerprint,
+				//CertificatePath = File(settings.CodeSigning.CertificateFileName),
+				//CertificatePassword = settings.CodeSigning.CertificatePassword,
+				Verbosity = ISI.Extensions.Nuget.DataTransferObjects.NugetApi.NupkgSignVerbosity.Detailed,
+			});
 		}
 
 		[Test]

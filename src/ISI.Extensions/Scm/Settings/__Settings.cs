@@ -32,9 +32,11 @@ namespace ISI.Extensions.Scm
 
 			public const string ScmWebServiceUrl = nameof(ScmWebServiceUrl);
 
+			public const string CodeSigningDoCodeSigning = nameof(CodeSigningDoCodeSigning);
 			public const string CodeSigningTimeStampUrl = nameof(CodeSigningTimeStampUrl);
 			public const string CodeSigningCertificateFileName = nameof(CodeSigningCertificateFileName);
 			public const string CodeSigningCertificatePassword = nameof(CodeSigningCertificatePassword);
+			public const string CodeSigningCertificateFingerprint = nameof(CodeSigningCertificateFingerprint);
 
 			public const string NugetApiKey = nameof(NugetApiKey);
 			public const string NugetRepositoryName = nameof(NugetRepositoryName);

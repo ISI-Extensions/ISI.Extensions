@@ -75,39 +75,42 @@ Task("Sign")
 		{
 			var files = GetFiles("./**/bin/" + configuration + "/**/ISI.*.dll");
 
-			using(var tempDirectory = GetNewTempDirectory())
+			if(files.Any())
 			{
-				foreach(var file in files)
+				using(var tempDirectory = GetNewTempDirectory())
 				{
-					var tempFile = File(tempDirectory.FullName + "/" + file.GetFilename());
-
-					if(System.IO.File.Exists(tempFile.Path.FullPath))
+					foreach(var file in files)
 					{
-						DeleteFile(tempFile);
+						var tempFile = File(tempDirectory.FullName + "/" + file.GetFilename());
+
+						if(System.IO.File.Exists(tempFile.Path.FullPath))
+						{
+							DeleteFile(tempFile);
+						}
+
+						CopyFile(file, tempFile);
 					}
 
-					CopyFile(file, tempFile);
-				}
+					var tempFiles = GetFiles(tempDirectory.FullName + "/ISI.*.dll");
 
-				var tempFiles = GetFiles(tempDirectory.FullName + "/ISI.*.dll");
+					Sign(tempFiles, new SignToolSignSettings()
+					{
+						TimeStampDigestAlgorithm = SignToolDigestAlgorithm.Sha256,
+						TimeStampUri = GetNullableUri(settings.CodeSigning.TimeStampUrl),
+						CertThumbprint = settings.CodeSigning.CertificateFingerprint,
+						CertPath = GetNullableFile(settings.CodeSigning.CertificateFileName),
+						Password = settings.CodeSigning.CertificatePassword,
+						DigestAlgorithm = SignToolDigestAlgorithm.Sha256,
+					});
 
-				Sign(tempFiles, new SignToolSignSettings()
-				{
-					TimeStampDigestAlgorithm = SignToolDigestAlgorithm.Sha256,
-					TimeStampUri = GetNullableUri(settings.CodeSigning.TimeStampUrl),
-					CertThumbprint = settings.CodeSigning.CertificateFingerprint,
-					CertPath = GetNullableFile(settings.CodeSigning.CertificateFileName),
-					Password = settings.CodeSigning.CertificatePassword,
-					DigestAlgorithm = SignToolDigestAlgorithm.Sha256,
-				});
+					foreach(var file in files)
+					{
+						var tempFile = File(tempDirectory.FullName + "/" + file.GetFilename());
 
-				foreach(var file in files)
-				{
-					var tempFile = File(tempDirectory.FullName + "/" + file.GetFilename());
+						DeleteFile(file);
 
-					DeleteFile(file);
-
-					CopyFile(tempFile, file);
+						CopyFile(tempFile, file);
+					}
 				}
 			}
 		}

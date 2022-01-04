@@ -146,10 +146,10 @@ namespace ISI.Extensions.Tests
 				PackageId = "ISI.Extensions",
 			}).NugetPackageKey.Version;
 
-			//var packageVersion = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
-			//{
-			//	PackageId = "ISI.Extensions",
-			//}).NugetPackageKey.Version;
+			var packageVersion = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			{
+				PackageId = "ISI.Libraries",
+			}).NugetPackageKey.Version;
 
 			//var packageVersion2 = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
 			//{
@@ -207,7 +207,8 @@ namespace ISI.Extensions.Tests
 			var solutionFullNames = new List<string>();
 			//solutionFullNames.Add(@"F:\ISI\ISI.FrameWork");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Telephony.WindowsService");
-			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt"));
+			//solutionFullNames.Add(@"E:\Tristar\Tristar.Scheduler");
+			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt"));
 			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Connect.SolutionFullNames.txt"));
 
 			solutionApi.UpdateNugetPackages(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.UpdateNugetPackagesRequest()

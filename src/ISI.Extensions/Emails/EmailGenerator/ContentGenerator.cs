@@ -30,7 +30,7 @@ namespace ISI.Extensions.Emails.EmailGenerator
 		protected virtual Microsoft.Extensions.Logging.ILogger Logger { get; }
 
 		private ITemplateProvider _templateProvider = null;
-		protected ITemplateProvider TemplateProvider => (_templateProvider ??= ISI.Extensions.TemplateProviders.TemplateProviderFactory.GetTemplateProvider<ITemplateProvider>(this));
+		protected ITemplateProvider TemplateProvider => (_templateProvider ??= ISI.Extensions.TemplateProviders.TemplateProviderFactory.GetTemplateProvider<ITemplateProvider>(this, true));
 
 		public virtual Type ModelType => typeof(TModel);
 

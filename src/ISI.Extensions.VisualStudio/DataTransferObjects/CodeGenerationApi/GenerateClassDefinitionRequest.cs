@@ -12,38 +12,25 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using ISI.Extensions.TypeLocator.Extensions;
 
-namespace ISI.Extensions.TemplateProviders
+namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeGenerationApi
 {
-	public class TemplateProviderFactory
+	public partial class GenerateClassDefinitionRequest
 	{
-		private static ISI.Extensions.TemplateProviders.ITemplateProvider[] _templateProviders = null;
-		private static ISI.Extensions.TemplateProviders.ITemplateProvider[] TemplateProviders => (_templateProviders ??= ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementations<ISI.Extensions.TemplateProviders.ITemplateProvider>(ISI.Extensions.ServiceLocator.Current).ToArray());
-
-		public static TTemplateProvider GetTemplateProvider<TTemplateProvider>(object contentGenerator, bool throwExceptionIfNotDefinedOrNotFound)
-		{
-			foreach (var templateProvider in TemplateProviders)
-			{
-				if (templateProvider.IsTemplateProviderFor(contentGenerator))
-				{
-					return (TTemplateProvider)templateProvider;
-				}
-			}
-
-			if (throwExceptionIfNotDefinedOrNotFound)
-			{
-				throw new Exception("Template provider either not defined or not found");
-			}
-
-			return default;
-		}
+		public Guid CodeExtensionProviderUuid { get; set; } = ISI.Extensions.VisualStudio.CodeExtensionProviders.ISI.Extensions.CodeExtensionProvider.CodeExtensionProviderUuid;
+		public ClassDefinition ClassDefinition { get; set; }
+		public StringCaseFormat FormatPropertyName { get; set; }
+		public IncludePropertyAttribute IncludeDataContractAttributes { get; set; }
+		public bool EmitDefaultValueFalse { get; set; }
+		public IncludePropertyAttribute IncludeRepositoryAttributes { get; set; }
+		public IncludePropertyAttribute IncludeDocumentDataAttributes { get; set; }
+		public bool IncludeSpreadSheetsAttributes { get; set; }
+		public PreferredSerializer PreferredSerializer { get; set; }
 	}
 }

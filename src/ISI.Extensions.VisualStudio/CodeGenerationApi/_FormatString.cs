@@ -19,31 +19,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.TypeLocator.Extensions;
+using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.CodeGenerationApi;
+using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.TemplateProviders
+namespace ISI.Extensions.VisualStudio
 {
-	public class TemplateProviderFactory
+	public partial class CodeGenerationApi
 	{
-		private static ISI.Extensions.TemplateProviders.ITemplateProvider[] _templateProviders = null;
-		private static ISI.Extensions.TemplateProviders.ITemplateProvider[] TemplateProviders => (_templateProviders ??= ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementations<ISI.Extensions.TemplateProviders.ITemplateProvider>(ISI.Extensions.ServiceLocator.Current).ToArray());
-
-		public static TTemplateProvider GetTemplateProvider<TTemplateProvider>(object contentGenerator, bool throwExceptionIfNotDefinedOrNotFound)
+		private string FormatString(StringCaseFormat stringCaseFormat, string value)
 		{
-			foreach (var templateProvider in TemplateProviders)
+			switch (stringCaseFormat)
 			{
-				if (templateProvider.IsTemplateProviderFor(contentGenerator))
-				{
-					return (TTemplateProvider)templateProvider;
-				}
-			}
+				case StringCaseFormat.No:
+					return value;
+				
+				case StringCaseFormat.YesUsingCamelCase:
+					return ISI.Extensions.StringFormat.CamelCase(value);
+				
+				case StringCaseFormat.YesUsingPascalCase:
+					return ISI.Extensions.StringFormat.PascalCase(value);
 
-			if (throwExceptionIfNotDefinedOrNotFound)
-			{
-				throw new Exception("Template provider either not defined or not found");
+				default:
+					return string.Empty;
 			}
-
-			return default;
 		}
 	}
 }

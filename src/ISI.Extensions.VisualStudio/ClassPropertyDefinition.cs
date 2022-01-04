@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,35 +15,23 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using ISI.Extensions.TypeLocator.Extensions;
 
-namespace ISI.Extensions.TemplateProviders
+namespace ISI.Extensions.VisualStudio
 {
-	public class TemplateProviderFactory
+	public class ClassPropertyDefinition
 	{
-		private static ISI.Extensions.TemplateProviders.ITemplateProvider[] _templateProviders = null;
-		private static ISI.Extensions.TemplateProviders.ITemplateProvider[] TemplateProviders => (_templateProviders ??= ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementations<ISI.Extensions.TemplateProviders.ITemplateProvider>(ISI.Extensions.ServiceLocator.Current).ToArray());
+		public bool HasDataMember { get; set; }
+		public string DataMemberName { get; set; }
 
-		public static TTemplateProvider GetTemplateProvider<TTemplateProvider>(object contentGenerator, bool throwExceptionIfNotDefinedOrNotFound)
+		public string AccessModifier { get; set; } = "public";
+		public string Accessor { get; set; }
+		public string PropertyType { get; set; }
+		public string PropertyName { get; set; }
+
+		public override string ToString()
 		{
-			foreach (var templateProvider in TemplateProviders)
-			{
-				if (templateProvider.IsTemplateProviderFor(contentGenerator))
-				{
-					return (TTemplateProvider)templateProvider;
-				}
-			}
-
-			if (throwExceptionIfNotDefinedOrNotFound)
-			{
-				throw new Exception("Template provider either not defined or not found");
-			}
-
-			return default;
+			return string.Format("{1}{2}{3} {4} {{ get; set; }}", Environment.NewLine, (string.IsNullOrEmpty(AccessModifier) ? string.Empty : string.Format("{0} ", AccessModifier)), (string.IsNullOrEmpty(Accessor) ? string.Empty : string.Format("{0} ", Accessor)), PropertyType, PropertyName);
 		}
 	}
 }

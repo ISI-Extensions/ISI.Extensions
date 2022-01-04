@@ -29,7 +29,7 @@ namespace ISI.Extensions.Documents.DocumentGenerator
 
 		private Func<ISI.Extensions.TemplateProviders.ITemplateProvider> _getTemplateProvider = null;
 		private ISI.Extensions.TemplateProviders.ITemplateProvider _templateProvider = null;
-		protected ISI.Extensions.TemplateProviders.ITemplateProvider TemplateProvider => (_templateProvider ??= _getTemplateProvider?.Invoke() ?? ISI.Extensions.TemplateProviders.TemplateProviderFactory.GetTemplateProvider<ISI.Extensions.TemplateProviders.ITemplateProvider>(this));
+		protected ISI.Extensions.TemplateProviders.ITemplateProvider TemplateProvider => (_templateProvider ??= _getTemplateProvider?.Invoke() ?? ISI.Extensions.TemplateProviders.TemplateProviderFactory.GetTemplateProvider<ISI.Extensions.TemplateProviders.ITemplateProvider>(this, false));
 
 		public virtual Type ModelType => typeof(TModel);
 
@@ -54,17 +54,17 @@ namespace ISI.Extensions.Documents.DocumentGenerator
 
 		protected virtual System.IO.Stream GetTemplateStream(string templateCacheKey)
 		{
-			return TemplateProvider.GetTemplateStream(templateCacheKey);
+			return TemplateProvider?.GetTemplateStream(templateCacheKey);
 		}
 
 		protected virtual string GetTemplateCacheKey(string templateKey, IModel model)
 		{
-			return TemplateProvider.GetTemplateCacheKey(this, templateKey, model);
+			return TemplateProvider?.GetTemplateCacheKey(this, templateKey, model);
 		}
 
 		protected virtual string GetTemplateKey(IModel model)
 		{
-			return TemplateProvider.GetTemplateKey(this, model);
+			return TemplateProvider?.GetTemplateKey(this, model);
 		}
 
 		public virtual void GenerateDocument(TModel model, ISI.Extensions.Documents.IDocumentProperties documentProperties, string printerName, System.IO.Stream documentStream, ISI.Extensions.Documents.FileFormat fileFormat)

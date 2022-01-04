@@ -19,31 +19,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.TypeLocator.Extensions;
 
-namespace ISI.Extensions.TemplateProviders
+namespace ISI.Extensions
 {
-	public class TemplateProviderFactory
+	public partial class StringFormat
 	{
-		private static ISI.Extensions.TemplateProviders.ITemplateProvider[] _templateProviders = null;
-		private static ISI.Extensions.TemplateProviders.ITemplateProvider[] TemplateProviders => (_templateProviders ??= ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementations<ISI.Extensions.TemplateProviders.ITemplateProvider>(ISI.Extensions.ServiceLocator.Current).ToArray());
-
-		public static TTemplateProvider GetTemplateProvider<TTemplateProvider>(object contentGenerator, bool throwExceptionIfNotDefinedOrNotFound)
+		public static string CamelCase(string propertyName)
 		{
-			foreach (var templateProvider in TemplateProviders)
-			{
-				if (templateProvider.IsTemplateProviderFor(contentGenerator))
-				{
-					return (TTemplateProvider)templateProvider;
-				}
-			}
+			propertyName = PascalCase(propertyName);
 
-			if (throwExceptionIfNotDefinedOrNotFound)
-			{
-				throw new Exception("Template provider either not defined or not found");
-			}
-
-			return default;
+			return string.Format("{0}{1}", propertyName.Substring(0, 1).ToLower(), propertyName.Substring(1));
 		}
 	}
 }

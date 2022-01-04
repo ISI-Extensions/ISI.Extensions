@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,35 +15,27 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using ISI.Extensions.TypeLocator.Extensions;
 
-namespace ISI.Extensions.TemplateProviders
+namespace ISI.Extensions.VisualStudio
 {
-	public class TemplateProviderFactory
+	public partial class CodeExtensionProviders
 	{
-		private static ISI.Extensions.TemplateProviders.ITemplateProvider[] _templateProviders = null;
-		private static ISI.Extensions.TemplateProviders.ITemplateProvider[] TemplateProviders => (_templateProviders ??= ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementations<ISI.Extensions.TemplateProviders.ITemplateProvider>(ISI.Extensions.ServiceLocator.Current).ToArray());
-
-		public static TTemplateProvider GetTemplateProvider<TTemplateProvider>(object contentGenerator, bool throwExceptionIfNotDefinedOrNotFound)
+		public partial class ISI
 		{
-			foreach (var templateProvider in TemplateProviders)
+			public partial class Extensions
 			{
-				if (templateProvider.IsTemplateProviderFor(contentGenerator))
+				[global::ISI.Extensions.TypeLocator(typeof(ICodeExtensionProvider))]
+				public class CodeExtensionProvider : ICodeExtensionProvider
 				{
-					return (TTemplateProvider)templateProvider;
+					public static Guid CodeExtensionProviderUuid = Guid.Parse("e03b59ad-c30b-4eeb-a4a4-74b72ba356f0");
+
+					Guid ICodeExtensionProvider.CodeExtensionProviderUuid => CodeExtensionProviderUuid;
+					string ICodeExtensionProvider.Description => "ISI.Extensions";
+
+					public string Namespace => "ISI.Extensions";
 				}
 			}
-
-			if (throwExceptionIfNotDefinedOrNotFound)
-			{
-				throw new Exception("Template provider either not defined or not found");
-			}
-
-			return default;
 		}
 	}
 }

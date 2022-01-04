@@ -150,6 +150,8 @@ namespace ISI.Extensions.VisualStudio
 
 									if (getLatestPackageVersionResponse.NugetPackageKey != null)
 									{
+										Logger.LogInformation(string.Format("  Added {0} {1}", getLatestPackageVersionResponse.NugetPackageKey.Package, getLatestPackageVersionResponse.NugetPackageKey.Version));
+
 										nugetPackageKeys.TryAdd(getLatestPackageVersionResponse.NugetPackageKey);
 
 										if (getLatestPackageVersionResponse.NugetPackageKey.Dependencies.NullCheckedAny())
@@ -181,6 +183,11 @@ namespace ISI.Extensions.VisualStudio
 							foreach (var projectDetails in solutionDetails.ProjectDetailsSet.OrderBy(projectDetails => projectDetails.ProjectFullName, StringComparer.InvariantCultureIgnoreCase))
 							{
 								logger.LogInformation(string.Format("  {0}", projectDetails.ProjectName));
+
+								if (string.Equals(projectDetails.ProjectName, "SheerID.Services.SheerID.Tests", StringComparison.InvariantCultureIgnoreCase))
+								{
+									System.Diagnostics.Debugger.Break();
+								}
 
 								var packagesConfigFullName = System.IO.Path.Combine(projectDetails.ProjectDirectory, "packages.config");
 

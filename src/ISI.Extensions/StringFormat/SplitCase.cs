@@ -19,31 +19,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.TypeLocator.Extensions;
 
-namespace ISI.Extensions.TemplateProviders
+namespace ISI.Extensions
 {
-	public class TemplateProviderFactory
+	public partial class StringFormat
 	{
-		private static ISI.Extensions.TemplateProviders.ITemplateProvider[] _templateProviders = null;
-		private static ISI.Extensions.TemplateProviders.ITemplateProvider[] TemplateProviders => (_templateProviders ??= ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementations<ISI.Extensions.TemplateProviders.ITemplateProvider>(ISI.Extensions.ServiceLocator.Current).ToArray());
-
-		public static TTemplateProvider GetTemplateProvider<TTemplateProvider>(object contentGenerator, bool throwExceptionIfNotDefinedOrNotFound)
+		public static string SplitCase(string propertyName)
 		{
-			foreach (var templateProvider in TemplateProviders)
-			{
-				if (templateProvider.IsTemplateProviderFor(contentGenerator))
-				{
-					return (TTemplateProvider)templateProvider;
-				}
-			}
-
-			if (throwExceptionIfNotDefinedOrNotFound)
-			{
-				throw new Exception("Template provider either not defined or not found");
-			}
-
-			return default;
+			return System.Text.RegularExpressions.Regex.Replace(propertyName, "([A-Z]{1,2}|[0-9]+)", " $1").TrimStart();
 		}
 	}
 }

@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -17,33 +17,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 using ISI.Extensions.TypeLocator.Extensions;
 
-namespace ISI.Extensions.TemplateProviders
+namespace ISI.Extensions.VisualStudio
 {
-	public class TemplateProviderFactory
+	public partial class CodeExtensionProviders
 	{
-		private static ISI.Extensions.TemplateProviders.ITemplateProvider[] _templateProviders = null;
-		private static ISI.Extensions.TemplateProviders.ITemplateProvider[] TemplateProviders => (_templateProviders ??= ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementations<ISI.Extensions.TemplateProviders.ITemplateProvider>(ISI.Extensions.ServiceLocator.Current).ToArray());
+		private static readonly object _codeExtensionProvidersLock = new();
+		private static IDictionary<Guid, ICodeExtensionProvider> _codeExtensionProviders = null;
 
-		public static TTemplateProvider GetTemplateProvider<TTemplateProvider>(object contentGenerator, bool throwExceptionIfNotDefinedOrNotFound)
+		public static bool TryGetCodeExtensionProvider(Guid codeExtensionProviderUuid, out ICodeExtensionProvider codeExtensionProvider)
 		{
-			foreach (var templateProvider in TemplateProviders)
+			if (_codeExtensionProviders == null)
 			{
-				if (templateProvider.IsTemplateProviderFor(contentGenerator))
+				lock(_codeExtensionProvidersLock)
 				{
-					return (TTemplateProvider)templateProvider;
+					_codeExtensionProviders ??= global::ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementations<ICodeExtensionProvider>().ToDictionary(provider => provider.CodeExtensionProviderUuid, provider => provider);
 				}
 			}
 
-			if (throwExceptionIfNotDefinedOrNotFound)
-			{
-				throw new Exception("Template provider either not defined or not found");
-			}
-
-			return default;
+			return _codeExtensionProviders.TryGetValue(codeExtensionProviderUuid, out codeExtensionProvider);
 		}
 	}
 }

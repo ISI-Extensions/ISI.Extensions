@@ -15,17 +15,18 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ISI.Extensions.Scm.Extensions
 {
 	public static class SettingsExtensions
 	{
-		public static void OverrideWithEnvironmentVariables(this Settings settings)
+		public static void OverrideWithEnvironmentVariables(this Settings settings, string prefix = null)
 		{
 			var environmentVariables = System.Environment.GetEnvironmentVariables();
 
-			foreach (var key in ISI.Extensions.Scm.Settings.Key.Keys)
+			foreach (var key in ISI.Extensions.Scm.Settings.Key.Keys.Select(key => string.Format("{0}{1}", prefix, key)))
 			{
 				if (environmentVariables.Contains(key))
 				{

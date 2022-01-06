@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,54 +15,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using ISI.Extensions.Extensions;
+using System.Threading.Tasks;
 
-namespace ISI.Extensions.Scm
+namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
 {
-	public partial class Settings
+	public partial class InitializeCodeSigningCertificateTokenRequest
 	{
-		public class SettingsCodeSigning
-		{
-			protected Settings Settings { get; }
-
-			public SettingsCodeSigning(Settings settings)
-			{
-				Settings = settings;
-			}
-
-			public bool DoCodeSigning
-			{
-				get => Settings.GetValue(Settings.Key.CodeSigningDoCodeSigning, "true").ToBoolean();
-				set => Settings.SetValue(Settings.Key.CodeSigningDoCodeSigning, value.TrueFalse());
-			}
-
-			public string TimeStampUrl
-			{
-				get => Settings.GetValue(Settings.Key.CodeSigningTimeStampUrl);
-				set => Settings.SetValue(Settings.Key.CodeSigningTimeStampUrl, value);
-			}
-
-			public string CertificateFingerprint
-			{
-				get => Settings.GetValue(Settings.Key.CodeSigningCertificateFingerprint);
-				set => Settings.SetValue(Settings.Key.CodeSigningCertificateFingerprint, value);
-			}
-
-			public string CertificateFileName
-			{
-				get => Settings.GetValue(Settings.Key.CodeSigningCertificateFileName);
-				set => Settings.SetValue(Settings.Key.CodeSigningCertificateFileName, value);
-			}
-
-			public string CertificatePassword
-			{
-				get => Settings.GetValue(Settings.Key.CodeSigningCertificatePassword);
-				set => Settings.SetValue(Settings.Key.CodeSigningCertificatePassword, value);
-			}
-			
-			private SettingsCodeSigningToken _token = null;
-			public SettingsCodeSigningToken Token => _token ??= new SettingsCodeSigningToken(this.Settings);
-		}
+		public string CodeSigningCertificateTokenCertificateFileName { get; set; }
+		public string CodeSigningCertificateTokenCryptographicProvider { get; set; }
+		public string CodeSigningCertificateTokenContainerName { get; set; }
+		public string CodeSigningCertificateTokenPassword { get; set; }
 	}
 }

@@ -22,47 +22,44 @@ namespace ISI.Extensions.Scm
 {
 	public partial class Settings
 	{
-		public class SettingsCodeSigning
+		public class SettingsCodeSigningToken
 		{
 			protected Settings Settings { get; }
 
-			public SettingsCodeSigning(Settings settings)
+			public SettingsCodeSigningToken(Settings settings)
 			{
 				Settings = settings;
 			}
 
-			public bool DoCodeSigning
-			{
-				get => Settings.GetValue(Settings.Key.CodeSigningDoCodeSigning, "true").ToBoolean();
-				set => Settings.SetValue(Settings.Key.CodeSigningDoCodeSigning, value.TrueFalse());
-			}
-
-			public string TimeStampUrl
-			{
-				get => Settings.GetValue(Settings.Key.CodeSigningTimeStampUrl);
-				set => Settings.SetValue(Settings.Key.CodeSigningTimeStampUrl, value);
-			}
-
-			public string CertificateFingerprint
-			{
-				get => Settings.GetValue(Settings.Key.CodeSigningCertificateFingerprint);
-				set => Settings.SetValue(Settings.Key.CodeSigningCertificateFingerprint, value);
-			}
-
 			public string CertificateFileName
 			{
-				get => Settings.GetValue(Settings.Key.CodeSigningCertificateFileName);
-				set => Settings.SetValue(Settings.Key.CodeSigningCertificateFileName, value);
+				get => Settings.GetValue(Settings.Key.CodeSigningCertificateTokenCertificateFileName);
+				set => Settings.SetValue(Settings.Key.CodeSigningCertificateTokenCertificateFileName, value);
 			}
 
-			public string CertificatePassword
+			public string CryptographicProvider
 			{
-				get => Settings.GetValue(Settings.Key.CodeSigningCertificatePassword);
-				set => Settings.SetValue(Settings.Key.CodeSigningCertificatePassword, value);
+				get => Settings.GetValue(Settings.Key.CodeSigningCertificateTokenCryptographicProvider);
+				set => Settings.SetValue(Settings.Key.CodeSigningCertificateTokenCryptographicProvider, value);
 			}
-			
-			private SettingsCodeSigningToken _token = null;
-			public SettingsCodeSigningToken Token => _token ??= new SettingsCodeSigningToken(this.Settings);
+
+			public string ContainerName
+			{
+				get => Settings.GetValue(Settings.Key.CodeSigningCertificateTokenContainerName);
+				set => Settings.SetValue(Settings.Key.CodeSigningCertificateTokenContainerName, value);
+			}
+
+			public string Password
+			{
+				get => Settings.GetValue(Settings.Key.CodeSigningCertificateTokenPassword);
+				set => Settings.SetValue(Settings.Key.CodeSigningCertificateTokenPassword, value);
+			}
+
+			public string RevocationPassword
+			{
+				get => Settings.GetValue(Settings.Key.CodeSigningCertificateTokenRevocationPassword);
+				set => Settings.SetValue(Settings.Key.CodeSigningCertificateTokenRevocationPassword, value);
+			}
 		}
 	}
 }

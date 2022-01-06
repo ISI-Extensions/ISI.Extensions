@@ -34,9 +34,14 @@ namespace ISI.Extensions.Scm
 
 			public const string CodeSigningDoCodeSigning = nameof(CodeSigningDoCodeSigning);
 			public const string CodeSigningTimeStampUrl = nameof(CodeSigningTimeStampUrl);
+			public const string CodeSigningCertificateFingerprint = nameof(CodeSigningCertificateFingerprint);
 			public const string CodeSigningCertificateFileName = nameof(CodeSigningCertificateFileName);
 			public const string CodeSigningCertificatePassword = nameof(CodeSigningCertificatePassword);
-			public const string CodeSigningCertificateFingerprint = nameof(CodeSigningCertificateFingerprint);
+			public const string CodeSigningCertificateTokenCertificateFileName = nameof(CodeSigningCertificateTokenCertificateFileName);
+			public const string CodeSigningCertificateTokenCryptographicProvider = nameof(CodeSigningCertificateTokenCryptographicProvider);
+			public const string CodeSigningCertificateTokenContainerName = nameof(CodeSigningCertificateTokenContainerName);
+			public const string CodeSigningCertificateTokenPassword = nameof(CodeSigningCertificateTokenPassword);
+			public const string CodeSigningCertificateTokenRevocationPassword = nameof(CodeSigningCertificateTokenRevocationPassword);
 
 			public const string NugetApiKey = nameof(NugetApiKey);
 			public const string NugetRepositoryName = nameof(NugetRepositoryName);
@@ -53,28 +58,16 @@ namespace ISI.Extensions.Scm
 			public const string FileStoreUserName = nameof(FileStoreUserName);
 			public const string FileStorePassword = nameof(FileStorePassword);
 
-			internal static IEnumerable<string> Keys =>
-				new[]
-				{
-					ActiveDirectoryDomain,
-					ActiveDirectoryUserName,
-					ActiveDirectoryPassword,
-					ScmWebServiceUrl,
-					CodeSigningTimeStampUrl,
-					CodeSigningCertificateFileName,
-					CodeSigningCertificatePassword,
-					NugetApiKey,
-					NugetRepositoryName,
-					NugetRepositoryUrl,
-					NugetPackageChunksRepositoryUrl,
-					JenkinsServiceUrl,
-					JenkinsUrl,
-					JenkinsUserName,
-					JenkinsApiToken,
-					FileStoreUrl,
-					FileStoreUserName,
-					FileStorePassword,
-				};
+			private static IEnumerable<string> _keys = null;
+			internal static IEnumerable<string> Keys => _keys ??= GetKeys();
+			private static IEnumerable<string> GetKeys()
+			{
+				return typeof(Key)
+					.GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.FlattenHierarchy)
+					.Where(fieldInfo => fieldInfo.IsLiteral && !fieldInfo.IsInitOnly && (fieldInfo.FieldType == typeof(string)))
+					.Select(fieldInfo => (string)fieldInfo.GetRawConstantValue())
+					.ToArray();
+			}
 		}
 
 		public string SettingsFullName { get; protected set; }

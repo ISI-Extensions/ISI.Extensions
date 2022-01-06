@@ -26,7 +26,7 @@ namespace ISI.Extensions.VisualStudio
 		private static readonly object _codeExtensionProvidersLock = new();
 		private static IDictionary<Guid, ICodeExtensionProvider> _codeExtensionProviders = null;
 
-		public static bool TryGetCodeExtensionProvider(Guid codeExtensionProviderUuid, out ICodeExtensionProvider codeExtensionProvider)
+		public static IEnumerable<ICodeExtensionProvider> GetCodeExtensionProviders()
 		{
 			if (_codeExtensionProviders == null)
 			{
@@ -35,6 +35,13 @@ namespace ISI.Extensions.VisualStudio
 					_codeExtensionProviders ??= global::ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementations<ICodeExtensionProvider>().ToDictionary(provider => provider.CodeExtensionProviderUuid, provider => provider);
 				}
 			}
+
+			return _codeExtensionProviders.Values;
+		}
+
+		public static bool TryGetCodeExtensionProvider(Guid codeExtensionProviderUuid, out ICodeExtensionProvider codeExtensionProvider)
+		{
+			GetCodeExtensionProviders();
 
 			return _codeExtensionProviders.TryGetValue(codeExtensionProviderUuid, out codeExtensionProvider);
 		}

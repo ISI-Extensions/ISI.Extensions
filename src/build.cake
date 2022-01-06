@@ -73,6 +73,14 @@ Task("Sign")
 	{
 		if (settings.CodeSigning.DoCodeSigning && configuration.Equals("Release"))
 		{
+			InitializeCodeSigningCertificateToken(new ISI.Cake.Addin.CodeSigning.InitializeCodeSigningCertificateTokenRequest()
+			{
+				CodeSigningCertificateTokenCertificateFileName = settings.CodeSigning.Token.CertificateFileName,
+				CodeSigningCertificateTokenCryptographicProvider = settings.CodeSigning.Token.CryptographicProvider,
+				CodeSigningCertificateTokenContainerName = settings.CodeSigning.Token.ContainerName,
+				CodeSigningCertificateTokenPassword = settings.CodeSigning.Token.Password,
+			});
+
 			var files = GetFiles("./**/bin/" + configuration + "/**/ISI.*.dll");
 
 			if(files.Any())
@@ -120,7 +128,7 @@ Task("Nuget")
 	.IsDependentOn("Sign")
 	.Does(() =>
 	{
-		foreach(var project in solution.Projects.Where(project => project.Path.FullPath.EndsWith(".csproj") && !project.Name.EndsWith(".Tests") && !project.Name.EndsWith(".T4LocalContent")))
+		foreach(var project in solution.Projects.Where(project => project.Path.FullPath.EndsWith(".csproj") && !project.Name.EndsWith(".Tests") && !project.Name.EndsWith(".T4LocalContent")).OrderBy(project => project.Name, StringComparer.InvariantCultureIgnoreCase))
 		{
 			Information(project.Name);
 

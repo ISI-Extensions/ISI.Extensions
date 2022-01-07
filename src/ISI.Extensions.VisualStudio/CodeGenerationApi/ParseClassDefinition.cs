@@ -26,7 +26,7 @@ namespace ISI.Extensions.VisualStudio
 {
 	public partial class CodeGenerationApi
 	{
-		private static System.Text.RegularExpressions.Regex _contractRegex = new System.Text.RegularExpressions.Regex(@"(?m-isnx:^(?:\s*(?:(?<dataContract>(?:\[DataContract)(?:(?:\()(?:Name)(?:\s*)?(?:=)(?:\s*)?(?:\"")(?<dataContractName>[\w\d_]+)(?:\"")(?:\))?)(?:\]))|(?<class>(?:(?<accessModifier>public|protected|private)\s+)?(?:(?<accessor>abstract)\s+)?class(?:\s+)(?<className>[\w\d_]+))|(?<dataMember>(?:\[DataMember)(?:(?:\()(?:Name)(?:\s*)?(?:=)(?:\s*)?(?:\"")(?<dataMemberName>[\w\d_]+)(?:\"")(?:.*)?(?:\))?)(?:\]))|(?<property>(?:(?<accessModifier>public|protected|private)\s+)?(?:(?<accessor>abstract|virtual|override)\s+)?(?:(?<propertyType>(?:[\w\d\._]+)(?:\?)?(?:<[\w\d\._,\s\[\]]+>)?(?:\[\])?)(?:\s+)(?<propertyName>[\w\d_]+)))?))(?:.+)$)");
+		private static System.Text.RegularExpressions.Regex _contractRegex = new(@"(?m-isnx:^(?:\s*(?:(?<dataContract>(?:\[DataContract)(?:(?:\()(?:Name)(?:\s*)?(?:=)(?:\s*)?(?:\"")(?<dataContractName>[\w\d_]+)(?:\"")(?:\))?)(?:\]))|(?<class>(?:(?<accessModifier>public|protected|private)\s+)?(?:(?<accessor>abstract)\s+)?class(?:\s+)(?<className>[\w\d_]+))|(?<dataMember>(?:\[DataMember)(?:(?:\()(?:Name)(?:\s*)?(?:=)(?:\s*)?(?:\"")(?<dataMemberName>[\w\d_]+)(?:\"")(?:.*)?(?:\))?)(?:\]))|(?<property>(?:(?<accessModifier>public|protected|private)\s+)?(?:(?<accessor>abstract|virtual|override)\s+)?(?:(?<propertyType>(?:[\w\d\._]+)(?:\?)?(?:<[\w\d\._,\s\[\]]+>)?(?:\[\])?)(?:\s+)(?<propertyName>[\w\d_]+)(?:(?:\s+)(?:\{)(?:\s+)?(?:(?<getset>get;|set;)(?<thirdSpace>\s+))*(?:\})(?:\s+)(?:\=)(?:\s+)(?<defaultValue>[^;]+))?))?))(?:.+)$)");
 
 		public DTOs.ParseClassDefinitionResponse ParseClassDefinition(DTOs.ParseClassDefinitionRequest request)
 		{
@@ -74,16 +74,20 @@ namespace ISI.Extensions.VisualStudio
 						contractProperty.Accessor = match.Groups["accessor"].Value;
 						contractProperty.PropertyType = match.Groups["propertyType"].Value;
 						contractProperty.PropertyName = match.Groups["propertyName"].Value;
+						contractProperty.DefaultValue = match.Groups["defaultValue"].Value;
 
-						//if (!string.IsNullOrEmpty(match.Groups["propertyName"].Value))
-						//{
-						//	contractProperty.PropertyName = match.Groups["propertyName"].Value;
-						//}
-
-						//if (!string.IsNullOrEmpty(match.Groups["field"].Value))
-						//{
-						//	contractProperty.PropertyName = match.Groups["field"].Value;
-						//}
+						if (contractProperty.PropertyType.EndsWith("[]"))
+						{
+							contractProperty.IsPropertyIEnumerable = true;
+						}
+						else if (contractProperty.PropertyType.IndexOf("Enumerable<", StringComparison.InvariantCultureIgnoreCase) >= 0)
+						{
+							contractProperty.IsPropertyIEnumerable = true;
+						}
+						else if (contractProperty.PropertyType.EndsWith("Collection"))
+						{
+							contractProperty.IsPropertyCollection = true;
+						}
 
 						contract.Properties.Add(contractProperty);
 

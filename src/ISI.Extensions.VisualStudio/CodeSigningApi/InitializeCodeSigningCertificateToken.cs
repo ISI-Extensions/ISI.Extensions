@@ -30,6 +30,8 @@ namespace ISI.Extensions.VisualStudio
 		{
 			var response = new DTOs.InitializeCodeSigningCertificateTokenResponse();
 
+			var logger = new AddToLogLogger(request.AddToLog, Logger);
+
 			if (!string.IsNullOrWhiteSpace(request.CodeSigningCertificateTokenCertificateFileName) && System.IO.File.Exists(request.CodeSigningCertificateTokenCertificateFileName))
 			{
 				using (var tempDirectory = new ISI.Extensions.IO.Path.TempDirectory())
@@ -54,8 +56,9 @@ namespace ISI.Extensions.VisualStudio
 					{
 						ProcessExeFullName = "signtool.exe",
 						Arguments = arguments,
-						Logger = new ISI.Extensions.ConsoleLogger(),
 					});
+
+					logger.LogInformation("Code Signing Certificate Token has been Initialized");
 				}
 			}
 

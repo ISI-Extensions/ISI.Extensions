@@ -27,7 +27,7 @@ namespace ISI.Extensions.Ngrok.DataTransferObjects.NGrokClientApi
 		public TunnelProtocol TunnelProtocol { get; set; }
 		public string Hostname { get; set; }
 		public string Subdomain { get; set; }
-		public int Port { get; set; }
+		public string LocalAddress { get; set; }
 		public string HostHeader { get; set; }
 		public string RemoteAddress { get; set; }
 		public bool Inspect { get; set; } = true;

@@ -23,6 +23,6 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeGenerationApi
 {
 	public partial class GenerateClassDefinitionResponse
 	{
-		public string ClassDefinition { get; set; }
+		public string Content { get; set; }
 	}
 }

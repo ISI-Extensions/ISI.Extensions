@@ -26,14 +26,19 @@ namespace ISI.Extensions.Ngrok
 	//https://ngrok.com/docs#client-api
 	public partial class NGrokClientApi : INGrokClientApi
 	{
-		private static ISI.Extensions.Ngrok.Configuration _configuration = null;
-		protected ISI.Extensions.Ngrok.Configuration Configuration => _configuration ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Ngrok.Configuration>();
-
+		protected ISI.Extensions.Ngrok.Configuration Configuration { get; }
+		protected ISI.Extensions.Serialization.ISerialization Serialization { get; }
+		
 		protected string Version { get; }
 		protected string BaseUrl { get; }
 
-		public NGrokClientApi()
+		public NGrokClientApi(
+			ISI.Extensions.Ngrok.Configuration configuration,
+			ISI.Extensions.Serialization.ISerialization serialization)
 		{
+			Configuration = configuration;
+			Serialization = serialization;
+
 			Version = ISI.Extensions.SystemInformation.GetAssemblyVersion(this.GetType().Assembly);
 			BaseUrl = "http://localhost:4040";
 		}

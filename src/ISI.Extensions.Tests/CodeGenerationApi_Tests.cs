@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using ISI.Extensions.ConfigurationHelper.Extensions;
 using ISI.Extensions.DependencyInjection.Extensions;
 using ISI.Extensions.Extensions;
@@ -73,7 +73,76 @@ namespace ISI.Extensions.Tests
 				AssemblyInfoFullName = @"C:\Temp\Version.cs",
 				Version = "10.1.1.1",
 			});
+		}
 
+		[Test]
+		public void GenerateClassDefinition_Test()
+		{
+			var codeGenerationApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.CodeGenerationApi>();
+
+			var sample = @"
+		public string CertificatePath { get; set; }
+		public string[] CertificatePasswords { get; set; }
+		public IEnumerable<string> CertificateStoreNames { get; set; }
+		public stringCollection CertificateStoreLocations { get; set; } = ""CurrentUser"";
+		public string CertificateSubjectName { get; set; } = ""My"";
+		public string CertificateFingerprint { get; set; }
+";
+
+			var classDefinition = codeGenerationApi.ParseClassDefinition(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeGenerationApi.ParseClassDefinitionRequest()
+			{
+				Definition = sample,
+			}).ClassDefinition;
+
+			var generatedClassDefinition = codeGenerationApi.GenerateClassDefinition(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeGenerationApi.GenerateClassDefinitionRequest()
+			{
+				ClassDefinition = classDefinition,
+				FormatPropertyName = ISI.Extensions.VisualStudio.StringCaseFormat.No,
+				IncludeDataContractAttributes = ISI.Extensions.VisualStudio.IncludePropertyAttribute.YesUseCamelCaseIfNameNotDefined,
+				EmitDefaultValueFalse = true,
+				IncludeRepositoryAttributes = ISI.Extensions.VisualStudio.IncludePropertyAttribute.Yes,
+				IncludeDocumentDataAttributes = ISI.Extensions.VisualStudio.IncludePropertyAttribute.Yes,
+				IncludeSpreadSheetsAttributes = true,
+				PreferredSerializer = ISI.Extensions.VisualStudio.PreferredSerializer.Json
+			}).Content;
+		}
+
+		[Test]
+		public void GenerateClassDefinitionConversion_Test()
+		{
+			var codeGenerationApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.CodeGenerationApi>();
+
+			var sample = @"
+		public string CertificatePath { get; set; }
+		public string[] CertificatePasswords { get; set; }
+		public IEnumerable<string> CertificateStoreNames { get; set; }
+		public stringCollection CertificateStoreLocations { get; set; } = ""CurrentUser"";
+		public string CertificateSubjectName { get; set; } = ""My"";
+		public string CertificateFingerprint { get; set; }
+";
+
+			var classDefinition = codeGenerationApi.ParseClassDefinition(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeGenerationApi.ParseClassDefinitionRequest()
+			{
+				Definition = sample,
+			}).ClassDefinition;
+
+			var assignmentConversion = codeGenerationApi.GenerateClassDefinitionConversion(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeGenerationApi.GenerateClassDefinitionConversionRequest()
+			{
+				ClassDefinition = classDefinition,
+				FormatPropertyName = ISI.Extensions.VisualStudio.StringCaseFormat.No,
+				SourceEntityName = "source",
+				TargetEntityName = "target.",
+				ConversionSeparator = ";",
+			}).Content;
+
+			var constructorConversion = codeGenerationApi.GenerateClassDefinitionConversion(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeGenerationApi.GenerateClassDefinitionConversionRequest()
+			{
+				ClassDefinition = classDefinition,
+				FormatPropertyName = ISI.Extensions.VisualStudio.StringCaseFormat.No,
+				SourceEntityName = "source",
+				TargetEntityName = null,
+				ConversionSeparator = ",",
+			}).Content;
 		}
 	}
 }

@@ -29,6 +29,11 @@ namespace ISI.Extensions.VisualStudio
 		public string PropertyType { get; set; }
 		public string PropertyName { get; set; }
 
+		public bool IsPropertyIEnumerable { get; set; }
+		public bool IsPropertyCollection { get; set; }
+
+		public string DefaultValue { get; set; }
+
 		public override string ToString()
 		{
 			return string.Format("{1}{2}{3} {4} {{ get; set; }}", Environment.NewLine, (string.IsNullOrEmpty(AccessModifier) ? string.Empty : string.Format("{0} ", AccessModifier)), (string.IsNullOrEmpty(Accessor) ? string.Empty : string.Format("{0} ", Accessor)), PropertyType, PropertyName);

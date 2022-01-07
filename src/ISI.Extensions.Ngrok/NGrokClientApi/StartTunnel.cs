@@ -40,14 +40,21 @@ namespace ISI.Extensions.Ngrok
 				TunnelProtocol = ISI.Extensions.Enum<SerializableEntities.ClientApi.TunnelProtocol>.Convert(request.TunnelProtocol),
 				Hostname = request.Hostname,
 				Subdomain = request.Subdomain,
-				Port = request.Port,
+				LocalAddress = request.LocalAddress,
 				HostHeader = request.HostHeader,
 				RemoteAddress = request.RemoteAddress,
 				UseTls = ISI.Extensions.Enum<SerializableEntities.ClientApi.UseTls>.Convert(request.UseTls),
 				Inspect = request.Inspect,
 			};
 
-			var serviceResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableEntities.ClientApi.DataTransferObjects.StartTunnelRequest, SerializableEntities.ClientApi.DataTransferObjects.StartTunnelResponse>(GetUrl("api/tunnels"), GetHeaders(), serviceRequest, true);
+			var serializedRequest = Serialization.Serialize(serviceRequest).SerializedValue.Replace(@"https:\/\/localhost", @"https://localhost");
+
+			var textRequest = new ISI.Extensions.WebClient.Rest.TextRequest(serializedRequest);
+
+			var headers = GetHeaders();
+			headers.ContentType = ISI.Extensions.WebClient.Rest.AcceptJsonHeaderValue;
+
+			var serviceResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<ISI.Extensions.WebClient.Rest.TextRequest, SerializableEntities.ClientApi.DataTransferObjects.StartTunnelResponse>(GetUrl("api/tunnels"), headers, textRequest, true);
 
 			if (GetTunnels(new DTOs.GetTunnelsRequest()).Tunnels.Any(tunnel => string.Equals(tunnel.TunnelName, Configuration.PlaceHolderTunnelName, StringComparison.InvariantCultureIgnoreCase)))
 			{

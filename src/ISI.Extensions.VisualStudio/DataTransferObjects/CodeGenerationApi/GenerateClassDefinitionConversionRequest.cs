@@ -23,15 +23,13 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeGenerationApi
 {
 	public partial class GenerateClassDefinitionConversionRequest
 	{
+		public Guid CodeExtensionProviderUuid { get; set; } = ISI.Extensions.VisualStudio.CodeExtensionProviders.ISI.Extensions.CodeExtensionProvider.CodeExtensionProviderUuid;
 		public ClassDefinition ClassDefinition { get; set; }
-		public ClassDefinitionConversionType ClassDefinitionConversionType { get; set; }
+
 		public StringCaseFormat FormatPropertyName { get; set; }
-		public string EntityNameSpace { get; set; } = "ENTITY";
-		public string LocalEntityNameSpace { get; set; } = "LOCALENTITY";
-		public string DomainEntityNameSpace { get; set; } = "DOMAINENTITY";
-		public string ServiceBusNameSpace { get; set; } = "SERVICEBUS";
-		public string RepositoryNameSpace { get; set; } = "";
-		public string SourceIteratorName { get; set; } = "source";
-		public string TargetIteratorName { get; set; } = "target";
+
+		public string SourceEntityName { get; set; }
+		public string TargetEntityName { get; set; }
+		public string ConversionSeparator { get; set; }
 	}
 }

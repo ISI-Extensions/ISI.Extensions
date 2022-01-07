@@ -148,6 +148,11 @@ namespace ISI.Extensions.VisualStudio
 
 				propertyFormattedText.AppendFormat("\t\t{1}{2}{3} {4} {{ get; set; }}", Environment.NewLine, (string.IsNullOrEmpty(property.AccessModifier) ? string.Empty : string.Format("{0} ", property.AccessModifier)), (string.IsNullOrEmpty(property.Accessor) ? string.Empty : string.Format("{0} ", property.Accessor)), property.PropertyType, FormatString(request.FormatPropertyName, property.PropertyName));
 
+				if (!string.IsNullOrWhiteSpace(property.DefaultValue))
+				{
+					propertyFormattedText.AppendFormat(" = {1};", Environment.NewLine, property.DefaultValue);
+				}
+
 				return propertyFormattedText.ToString();
 			})));
 
@@ -156,7 +161,7 @@ namespace ISI.Extensions.VisualStudio
 				formattedText.AppendFormat("\t}}{0}", Environment.NewLine);
 			}
 
-			response.ClassDefinition = formattedText.ToString();
+			response.Content = formattedText.ToString();
 
 			return response;
 		}

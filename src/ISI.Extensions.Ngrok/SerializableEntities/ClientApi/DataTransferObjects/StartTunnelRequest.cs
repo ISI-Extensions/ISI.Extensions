@@ -45,7 +45,7 @@ namespace ISI.Extensions.Ngrok.SerializableEntities.ClientApi.DataTransferObject
 		public string Subdomain { get; set; }
 
 		[DataMember(Name = "addr", EmitDefaultValue = false)]
-		public int Port { get; set; }
+		public string LocalAddress { get; set; }
 
 		[DataMember(Name = "host_header", EmitDefaultValue = false)]
 		public string HostHeader { get; set; }

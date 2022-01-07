@@ -27,5 +27,7 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
 		public string CodeSigningCertificateTokenCryptographicProvider { get; set; }
 		public string CodeSigningCertificateTokenContainerName { get; set; }
 		public string CodeSigningCertificateTokenPassword { get; set; }
+
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

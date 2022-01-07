@@ -67,24 +67,5 @@ namespace ISI.Extensions.Ngrok.Extensions
 				TunnelName = tunnelName,
 			}).Success;
 		}
-
-		public static DTOs.StartTunnelResponse StartTunnel(this ISI.Extensions.Ngrok.INGrokClientApi nGrokClientApi, string tunnelName, TunnelProtocol protocol, int port, string hostHeader = null)
-		{
-			return nGrokClientApi.StartTunnel(new DTOs.StartTunnelRequest()
-			{
-				TunnelName = tunnelName,
-				TunnelProtocol = protocol,
-				Port  = port,
-				HostHeader = hostHeader,
-			});
-		}
-
-		public static bool StopTunnel(this ISI.Extensions.Ngrok.INGrokClientApi nGrokClientApi, string tunnelName)
-		{
-			return nGrokClientApi.StopTunnel(new DTOs.StopTunnelRequest()
-			{
-				TunnelName = tunnelName,
-			}).Success;
-		}
 	}
 }

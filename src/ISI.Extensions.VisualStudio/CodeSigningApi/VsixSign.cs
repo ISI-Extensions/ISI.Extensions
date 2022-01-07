@@ -30,6 +30,8 @@ namespace ISI.Extensions.VisualStudio
 		{
 			var response = new DTOs.VsixSignResponse();
 
+			var logger = new AddToLogLogger(request.AddToLog, Logger);
+
 			var certificate = (string.IsNullOrWhiteSpace(request.CertificatePath) ? GetCertificateFromCertificateStore(request.CertificateStoreName, request.CertificateStoreLocation, request.CertificateSubjectName, request.CertificateFingerprint) : GetCertificateFromPfx(request.CertificatePath, request.CertificatePassword));
 
 			var signingKey = GetSigningKeyFromCertificate(certificate);
@@ -62,6 +64,8 @@ namespace ISI.Extensions.VisualStudio
 						throw new Exception("TimeStamping Signature Failed");
 					}
 				}
+
+				logger.LogInformation("{0} has been signed", request.VsixFullName);
 			}
 
 			return response;

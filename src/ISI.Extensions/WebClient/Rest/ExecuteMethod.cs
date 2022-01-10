@@ -223,8 +223,10 @@ namespace ISI.Extensions.WebClient
 		public static IRestResponseWrapper ExecuteMethod<TRequest>(string contentType, string acceptTypes, Type restResponseWrapperType, RestResponseTypeCollection restResponseTypes, string httpMethod, Uri uri, HeaderCollection headers, TRequest request, ExecuteMethodBuildBody<TRequest> bodyBuilder, bool throwUnhandledException, System.Security.Authentication.SslProtocols? overRideSecurityProtocolTypes, System.Net.Security.RemoteCertificateValidationCallback serverCertificateValidationCallback, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates, System.Net.CookieContainer cookieContainer)
 			where TRequest : class
 		{
-			_EventHandler?.WebRequestDetails?.SetHttpMethod(httpMethod);
-			_EventHandler?.WebRequestDetails?.SetUri(uri);
+			var webRequestDetails = _EventHandler?.WebRequestDetails ?? new WebRequestDetails();
+
+			webRequestDetails.SetHttpMethod(httpMethod);
+			webRequestDetails.SetUri(uri);
 
 			IRestResponseWrapper response = null;
 
@@ -243,11 +245,11 @@ namespace ISI.Extensions.WebClient
 				cookieContainer ??= new System.Net.CookieContainer();
 				var webRequest = CreateWebRequest(contentType, acceptTypes, httpMethod, uri, headers, cookieContainer, sslProtocolWebProxyWrapper, serverCertificateValidationCallback, clientCertificates);
 
-				_EventHandler?.WebRequestDetails?.SetHeaders(webRequest.Headers);
+				webRequestDetails.SetHeaders(webRequest.Headers);
 
 				if (!string.Equals(httpMethod, System.Net.WebRequestMethods.Http.Get, StringComparison.InvariantCultureIgnoreCase) && (request != null))
 				{
-					bodyBuilder?.Invoke(request, webRequest, _EventHandler?.WebRequestDetails);
+					bodyBuilder?.Invoke(request, webRequest, webRequestDetails);
 				}
 
 				_EventHandler?.Execute();
@@ -285,7 +287,7 @@ namespace ISI.Extensions.WebClient
 					}
 				}
 
-				response = restResponseTypes.GetRestResponse(restResponseWrapperType, webResponse, _EventHandler?.WebRequestDetails, false);
+				response = restResponseTypes.GetRestResponse(restResponseWrapperType, webResponse, webRequestDetails, false);
 
 				webResponse?.Dispose();
 				webResponse = null;
@@ -294,7 +296,7 @@ namespace ISI.Extensions.WebClient
 			{
 				using (var webResponse = exception.Response as System.Net.HttpWebResponse)
 				{
-					response = restResponseTypes.GetRestResponse(restResponseWrapperType, webResponse, _EventHandler?.WebRequestDetails, true, exception);
+					response = restResponseTypes.GetRestResponse(restResponseWrapperType, webResponse, webRequestDetails, true, exception);
 				}
 			}
 			catch (Exception exception)

@@ -32,6 +32,14 @@ namespace ISI.Extensions.Extensions
 				result.AppendFormat("{1}Message: {2}{0}", Environment.NewLine, indent, exception.Message);
 				result.AppendFormat("{1}StackTrace: {2}{0}", Environment.NewLine, indent, exception.StackTrace);
 
+				if (exception is ISI.Extensions.WebClient.Rest.RestException restException)
+				{
+					result.AppendFormat("{1}StatusCode: {2}{0}", Environment.NewLine, indent, restException.StatusCode);
+					result.AppendFormat("{1}RestRequest: {2}{0}", Environment.NewLine, indent, restException.RestRequest);
+					result.AppendFormat("{1}RestResponse: {2}{0}", Environment.NewLine, indent, restException.RestResponse);
+					result.AppendFormat("{1}CurlCommand: {2}{0}", Environment.NewLine, indent, restException.CurlCommand);
+				}
+
 				if (exception is System.Reflection.ReflectionTypeLoadException reflectionTypeLoadException)
 				{
 					foreach (var loaderException in reflectionTypeLoadException.LoaderExceptions)

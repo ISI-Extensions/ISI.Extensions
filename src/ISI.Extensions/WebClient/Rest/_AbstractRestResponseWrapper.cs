@@ -101,6 +101,11 @@ namespace ISI.Extensions.WebClient
 							((IRestContentResponse)Response).StatusCode = StatusCode;
 							((IRestContentResponse)Response).Content = responseStream.TextReadToEnd();
 							webRequestDetails?.SetResponseRaw(((IRestContentResponse)Response).Content);
+
+							if (exception != null)
+							{
+								exception = new RestException(StatusCode, webRequestDetails, exception);
+							}
 						}
 						else
 						{

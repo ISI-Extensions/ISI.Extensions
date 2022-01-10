@@ -86,7 +86,7 @@ namespace ISI.Extensions.WebClient
 				{
 					foreach (var headerKey in Headers.AllKeys)
 					{
-						cmd.AppendLine(string.Format("-H \"{0}: {1}\" \\", headerKey, Headers[headerKey]));
+						cmd.AppendLine(string.Format("-H '{0}: {1}' \\", headerKey, Headers[headerKey]));
 					}
 				}
 
@@ -114,7 +114,7 @@ namespace ISI.Extensions.WebClient
 
 				if (!string.IsNullOrWhiteSpace(BodyRaw))
 				{
-					cmd.AppendLine(string.Format("-d \"{0}\" \\", BodyRaw.Replace("\"", "\"\"")));
+					cmd.AppendLine(string.Format("-d '{0}' \\", BodyRaw));
 				}
 
 				return cmd.ToString().TrimEnd(' ', '\\', '\r', '\n');

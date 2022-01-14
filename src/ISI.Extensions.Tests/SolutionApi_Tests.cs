@@ -93,7 +93,7 @@ namespace ISI.Extensions.Tests
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Desktop");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.WebApplication");
 			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt"));
-			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Connect.SolutionFullNames.txt"));
+			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Connect.SolutionFullNames.txt"));
 
 			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionDetailsRequest()
 			{
@@ -114,8 +114,8 @@ namespace ISI.Extensions.Tests
 					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.cs", System.IO.SearchOption.AllDirectories));
 					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.cshtml", System.IO.SearchOption.AllDirectories));
 					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.config", System.IO.SearchOption.AllDirectories));
-					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.csproj", System.IO.SearchOption.AllDirectories));
-					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "build.cake", System.IO.SearchOption.AllDirectories));
+					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.csproj", System.IO.SearchOption.AllDirectories));
+					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "build.cake", System.IO.SearchOption.AllDirectories));
 
 					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\bin\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
 					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\obj\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
@@ -141,6 +141,17 @@ namespace ISI.Extensions.Tests
 					{
 						var content = System.IO.File.ReadAllText(sourceFullName);
 						var updatedContent = content;
+
+						updatedContent = updatedContent.Replace("Platform = MSBuildPlatform", "BuildPlatform = MSBuildPlatform");
+						updatedContent = updatedContent.Replace("BuildBuildPlatform = MSBuildPlatform", "BuildPlatform = MSBuildPlatform");
+
+						{
+							var lines = updatedContent.Replace("\r\n", "\n").Split(new[] { '\n' }).ToList();
+
+							lines.RemoveAll(line => line.IndexOf("Platform = MSBuildPlatform.Automatic", StringComparison.InvariantCultureIgnoreCase) >= 0);
+
+							updatedContent = string.Join(Environment.NewLine, lines);
+						}
 
 						foreach (var findContent in findContents)
 						{
@@ -217,7 +228,7 @@ namespace ISI.Extensions.Tests
 						if (!sourceControlClientApi.Commit(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.CommitRequest()
 						{
 							FullNames = dirtyFileNames,
-							LogMessage = "add <RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>",
+							LogMessage = "update Platform = MSBuildPlatform to BuildPlatform = MSBuildPlatform",
 							AddToLog = log => commitLog.AppendLine(log),
 						}).Success)
 						{

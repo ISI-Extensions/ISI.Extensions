@@ -37,6 +37,16 @@ namespace ISI.Extensions.VisualStudio
 				request.PackageName = System.IO.Path.GetFileNameWithoutExtension(System.IO.Path.GetFileNameWithoutExtension(System.IO.Path.GetFileNameWithoutExtension(request.PackageFullName)));
 			}
 
+			logger.LogInformation("Package Components");
+			logger.LogInformation("  Configuration: {0}", request.Configuration);
+			logger.LogInformation("  Build Platform: {0}", request.BuildPlatform.GetDescription());
+			logger.LogInformation("  Platform Target: {0}", request.PlatformTarget.GetDescription());
+			logger.LogInformation("  SubDirectory: {0}", request.SubDirectory);
+			logger.LogInformation("  Package FullName: {0}", request.PackageFullName);
+			logger.LogInformation("  Package Name: {0}", request.PackageName);
+			logger.LogInformation("  Package Version: {0}", request.PackageVersion);
+			logger.LogInformation("  Package BuildDateTimeStamp: {0}", request.PackageBuildDateTimeStamp);
+
 			using (var tempDirectory = new ISI.Extensions.IO.Path.TempDirectory())
 			{
 				var packageComponentsDirectory = tempDirectory.FullName;

@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -17,18 +17,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Memory;
+using NUnit.Framework;
 
-namespace ISI.Extensions.Caching.Extensions
+namespace ISI.Extensions.Tests
 {
-	public static partial class CacheKeyExtensions
+	[TestFixture]
+	public class DateTimeStampVersion_Tests
 	{
-		public static string GetCacheKey(this ISI.Extensions.Caching.IHasCacheKey hasCacheKey) => hasCacheKey.CacheKey;
-		public static Guid GetCacheKeyInstanceUuid(this ISI.Extensions.Caching.IHasCacheKeyInstanceUuid hasCacheKeyInstanceUuid) => hasCacheKeyInstanceUuid.CacheKeyInstanceUuid;
-		public static DateTime GetCacheAbsoluteTimeExpiration(this ISI.Extensions.Caching.IHasCacheAbsoluteDateTimeExpiration hasCacheAbsoluteDateTimeExpiration) => hasCacheAbsoluteDateTimeExpiration.CacheAbsoluteDateTimeExpiration;
-		public static TimeSpan GetCacheSlidingTimeExpiration(this ISI.Extensions.Caching.IHasCacheSlidingTimeExpiration hasCacheSlidingTimeExpiration) => hasCacheSlidingTimeExpiration.CacheSlidingTimeExpiration;
-		public static int GetCacheTimeToLiveInSeconds(this ISI.Extensions.Caching.IHasCacheTimeToLive hasCacheTimeToLive) => hasCacheTimeToLive.CacheTimeToLiveInSeconds;
-
+		[Test]
+		public void DateTimeStampVersion_Test()
+		{
+			var dateTimeStampVersion = new ISI.Extensions.Scm.DataTransferObjects.BuildArtifactApi.DateTimeStampVersion("2.0.8040.39225 (20220105.214731)");
+			
+		}
 	}
 }

@@ -12,38 +12,61 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
+using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi;
-using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.VisualStudio
 {
 	public partial class PackagerApi
 	{
-		private string GetBinDirectory(string projectFullName, string configuration, MSBuildPlatform platform)
+		private string GetBinDirectory(string projectFullName, string configuration, MSBuildPlatform platform, BuildPlatformTarget platformTarget)
 		{
 			var projectDirectoryFullName = System.IO.Path.GetDirectoryName(projectFullName);
 
-			var binDirectory = System.IO.Path.Combine(projectDirectoryFullName, "bin", configuration);
-
-			foreach (var framework in new [] {"net5.0"})
+			foreach (var framework in new[] { "net6.0", "net5.0" })
 			{
-				var frameworkBinDirectory = System.IO.Path.Combine(binDirectory, framework);
+				var binDirectory = System.IO.Path.Combine(projectDirectoryFullName, "bin", framework);
 
-				if (System.IO.Directory.Exists(frameworkBinDirectory))
+				if (System.IO.Directory.Exists(binDirectory))
 				{
-					return frameworkBinDirectory;
+					return binDirectory;
 				}
 			}
 
-			return binDirectory;
+			switch (platformTarget)
+			{
+				case BuildPlatformTarget.x86:
+					{
+						var binDirectory = System.IO.Path.Combine(projectDirectoryFullName, "bin", "x86", configuration);
 
+						if (System.IO.Directory.Exists(binDirectory))
+						{
+							return binDirectory;
+						}
+					}
+					break;
+
+				case BuildPlatformTarget.x64:
+					{
+						var binDirectory = System.IO.Path.Combine(projectDirectoryFullName, "bin", "x64", configuration);
+
+						if (System.IO.Directory.Exists(binDirectory))
+						{
+							return binDirectory;
+						}
+					}
+					break;
+			}
+
+
+			return System.IO.Path.Combine(projectDirectoryFullName, "bin", configuration);
 
 			//if (string.IsNullOrWhiteSpace(platform) || string.Equals(platform, "Any CPU", StringComparison.InvariantCultureIgnoreCase))
 			//{

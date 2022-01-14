@@ -56,19 +56,19 @@ namespace ISI.Extensions.VisualStudio
 					switch (packageComponent)
 					{
 						case DTOs.PackageComponentWindowsApplication packageComponentWindowsApplication:
-							BuildPackageComponentWindowsApplication(logger, request.Configuration, request.Platform, packageComponentsDirectory, request.AssemblyVersionFiles, packageComponentWindowsApplication);
+							BuildPackageComponentWindowsApplication(logger, request.Configuration, request.BuildPlatform, request.PlatformTarget, packageComponentsDirectory, request.AssemblyVersionFiles, packageComponentWindowsApplication);
 							break;
 
 						case DTOs.PackageComponentConsoleApplication packageComponentConsoleApplication:
-							BuildPackageComponentConsoleApplication(logger, request.Configuration, request.Platform, packageComponentsDirectory, request.AssemblyVersionFiles, packageComponentConsoleApplication);
+							BuildPackageComponentConsoleApplication(logger, request.Configuration, request.BuildPlatform, request.PlatformTarget, packageComponentsDirectory, request.AssemblyVersionFiles, packageComponentConsoleApplication);
 							break;
 
 						case DTOs.PackageComponentWindowsService packageComponentWindowsService:
-							BuildPackageComponentWindowsService(logger, request.Configuration, request.Platform, packageComponentsDirectory, request.AssemblyVersionFiles, packageComponentWindowsService);
+							BuildPackageComponentWindowsService(logger, request.Configuration, request.BuildPlatform, request.PlatformTarget, packageComponentsDirectory, request.AssemblyVersionFiles, packageComponentWindowsService);
 							break;
 
 						case DTOs.PackageComponentWebSite packageComponentWebSite:
-							BuildPackageComponentWebSite(logger, request.Configuration, request.Platform, packageComponentsDirectory, request.AssemblyVersionFiles, packageComponentWebSite);
+							BuildPackageComponentWebSite(logger, request.Configuration, request.BuildPlatform, request.PlatformTarget, packageComponentsDirectory, request.AssemblyVersionFiles, packageComponentWebSite);
 							break;
 
 						default:

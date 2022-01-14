@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,31 +15,20 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi
+namespace ISI.Extensions.VisualStudio
 {
-	public partial class PackageComponentsRequest
+	public enum BuildPlatformTarget
 	{
-		public string Configuration { get; set; }
-		public MSBuildPlatform BuildPlatform { get; set; } = MSBuildPlatform.Automatic;
-		public BuildPlatformTarget PlatformTarget { get; set; } = BuildPlatformTarget.MSIL;
-
-		public string SubDirectory { get; set; }
-
-		public IPackageComponent[] PackageComponents { get; set; }
-
-		public string PackageFullName { get; set; }
-		public string PackageName { get; set; }
-		public string PackageVersion { get; set; }
-		public string PackageBuildDateTimeStamp { get; set; }
-
-		public AssemblyVersionFileDictionary AssemblyVersionFiles { get; set; }
-
-		public bool CleanupTempDirectories { get; set; } = true;
-
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
+		MSIL,
+		Win32,
+		x86,
+		x64,
+		ARM,
+		ARM64,
+		ARMv6,
+		ARMv7,
+		ARMv7s,
 	}
 }

@@ -139,22 +139,29 @@ namespace ISI.Extensions.Nuget
 
 						foreach (var assemblyFileName in assemblyGroup)
 						{
-							var assemblyName = System.Reflection.AssemblyName.GetAssemblyName(System.IO.Path.Combine(packageFullName, assemblyFileName));
-
-							var nugetPackageKeyTargetFrameworkAssembly = new NugetPackageKeyTargetFrameworkAssembly()
+							try
 							{
-								AssemblyName = assemblyName.FullName.Split(new[] { ',' }).First().Trim(),
-								AssemblyFileName = System.IO.Path.GetFileName(assemblyFileName),
-								HintPath = string.Format("{0}\\{1}", System.IO.Path.GetFileName(packageFullName), assemblyFileName.Replace("/", "\\")),
-								AssemblyVersion = assemblyName.Version.ToString(),
-								PublicKeyToken = string.Concat(assemblyName.GetPublicKeyToken().Select(b => b.ToString("X2"))).ToLower(),
-							};
+								var assemblyName = System.Reflection.AssemblyName.GetAssemblyName(System.IO.Path.Combine(packageFullName, assemblyFileName));
 
-							nugetPackageKeyTargetFrameworkAssemblies.Add(nugetPackageKeyTargetFrameworkAssembly);
+								var nugetPackageKeyTargetFrameworkAssembly = new NugetPackageKeyTargetFrameworkAssembly()
+								{
+									AssemblyName = assemblyName.FullName.Split(new[] { ',' }).First().Trim(),
+									AssemblyFileName = System.IO.Path.GetFileName(assemblyFileName),
+									HintPath = string.Format("{0}\\{1}", System.IO.Path.GetFileName(packageFullName), assemblyFileName.Replace("/", "\\")),
+									AssemblyVersion = assemblyName.Version.ToString(),
+									PublicKeyToken = string.Concat(assemblyName.GetPublicKeyToken().Select(b => b.ToString("X2"))).ToLower(),
+								};
 
-							nugetPackageKeyTargetFramework.Assemblies = nugetPackageKeyTargetFrameworkAssemblies.ToArray();
+								nugetPackageKeyTargetFrameworkAssemblies.Add(nugetPackageKeyTargetFrameworkAssembly);
 
-							nugetPackageKeyTargetFrameworks.Add(nugetPackageKeyTargetFramework);
+								nugetPackageKeyTargetFramework.Assemblies = nugetPackageKeyTargetFrameworkAssemblies.ToArray();
+
+								nugetPackageKeyTargetFrameworks.Add(nugetPackageKeyTargetFramework);
+							}
+							catch (Exception exception)
+							{
+								Console.WriteLine(exception);
+							}
 						}
 					}
 

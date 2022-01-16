@@ -27,6 +27,8 @@ namespace ISI.Extensions.WebClient
 		public string Value { get; set; }
 	}
 
+	public delegate void OnHasContent(HeaderCollection headers, string content);
+
 	public class HeaderCollection : List<Header>
 	{
 		private class Keys
@@ -42,6 +44,8 @@ namespace ISI.Extensions.WebClient
 			public const string Bearer = "Bearer ";
 		}
 
+		public event OnHasContent OnHasContent = null;
+
 		public HeaderCollection()
 		{
 
@@ -51,7 +55,12 @@ namespace ISI.Extensions.WebClient
 			AddRange(headers);
 		}
 
-		public void AddRange(IEnumerable<Header> headers)
+		public void ProcessContent(Func<string> getContent)
+		{
+			OnHasContent?.Invoke(this, getContent());
+		}
+
+		public new void AddRange(IEnumerable<Header> headers)
 		{
 			foreach (var header in headers)
 			{

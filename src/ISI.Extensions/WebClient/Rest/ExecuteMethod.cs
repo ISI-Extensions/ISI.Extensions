@@ -242,6 +242,13 @@ namespace ISI.Extensions.WebClient
 
 			try
 			{
+				headers.ProcessContent(() =>
+				{
+					bodyBuilder?.Invoke(request, null, webRequestDetails);
+
+					return webRequestDetails.BodyRaw;
+				});
+
 				cookieContainer ??= new System.Net.CookieContainer();
 				var webRequest = CreateWebRequest(contentType, acceptTypes, httpMethod, uri, headers, cookieContainer, sslProtocolWebProxyWrapper, serverCertificateValidationCallback, clientCertificates);
 

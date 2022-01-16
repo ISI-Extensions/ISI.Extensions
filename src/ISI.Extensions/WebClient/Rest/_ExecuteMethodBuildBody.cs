@@ -47,7 +47,7 @@ namespace ISI.Extensions.WebClient
 					{
 						var encodedRequest = textRequest.GetEncodedRequest();
 
-						webRequest.GetRequestStream()?.Write(encodedRequest, 0, encodedRequest.Length);
+						webRequest?.GetRequestStream()?.Write(encodedRequest, 0, encodedRequest.Length);
 
 						webRequestDetails?.SetBodyRaw(textRequest.Content);
 					}
@@ -78,13 +78,13 @@ namespace ISI.Extensions.WebClient
 			{
 				if (request != null)
 				{
-					var serializedRequestEntity = Serialization.Serialize(request, ISI.Extensions.Serialization.SerializationFormat.Json);
+					var content = (string.IsNullOrWhiteSpace(webRequestDetails?.BodyRaw) ? Serialization.Serialize(request, ISI.Extensions.Serialization.SerializationFormat.Json).SerializedValue : webRequestDetails.BodyRaw);
 
-					var encodedRequest = (new ASCIIEncoding()).GetBytes(serializedRequestEntity.SerializedValue);
+					var encodedRequest = (new ASCIIEncoding()).GetBytes(content);
 
-					webRequest.GetRequestStream()?.Write(encodedRequest, 0, encodedRequest.Length);
+					webRequest?.GetRequestStream()?.Write(encodedRequest, 0, encodedRequest.Length);
 
-					webRequestDetails?.SetBodyRaw(serializedRequestEntity.SerializedValue);
+					webRequestDetails?.SetBodyRaw(content);
 				}
 			};
 		}
@@ -96,13 +96,13 @@ namespace ISI.Extensions.WebClient
 			{
 				if (request != null)
 				{
-					var serializedRequestEntity = Serialization.Serialize(request, ISI.Extensions.Serialization.SerializationFormat.Xml);
+					var content = (string.IsNullOrWhiteSpace(webRequestDetails?.BodyRaw) ? Serialization.Serialize(request, ISI.Extensions.Serialization.SerializationFormat.Xml).SerializedValue : webRequestDetails.BodyRaw);
 
-					var encodedRequest = (new ASCIIEncoding()).GetBytes(serializedRequestEntity.SerializedValue);
+					var encodedRequest = (new ASCIIEncoding()).GetBytes(content);
 
-					webRequest.GetRequestStream()?.Write(encodedRequest, 0, encodedRequest.Length);
+					webRequest?.GetRequestStream()?.Write(encodedRequest, 0, encodedRequest.Length);
 
-					webRequestDetails?.SetBodyRaw(serializedRequestEntity.SerializedValue);
+					webRequestDetails?.SetBodyRaw(content);
 				}
 			};
 		}

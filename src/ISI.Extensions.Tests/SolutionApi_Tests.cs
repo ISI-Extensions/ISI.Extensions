@@ -80,6 +80,7 @@ namespace ISI.Extensions.Tests
 			var replacements = new Dictionary<string, string>();
 
 			var findContents = new List<string>();
+			findContents.Add("ICS.Libraries.Service");
 
 			var ignoreFindContents = new List<string>();
 
@@ -93,7 +94,7 @@ namespace ISI.Extensions.Tests
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Desktop");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.WebApplication");
 			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt"));
-			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Connect.SolutionFullNames.txt"));
+			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Connect.SolutionFullNames.txt"));
 
 			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionDetailsRequest()
 			{
@@ -113,9 +114,9 @@ namespace ISI.Extensions.Tests
 					var sourceFullNames = new List<string>();
 					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.cs", System.IO.SearchOption.AllDirectories));
 					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.cshtml", System.IO.SearchOption.AllDirectories));
-					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.config", System.IO.SearchOption.AllDirectories));
-					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.csproj", System.IO.SearchOption.AllDirectories));
-					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "build.cake", System.IO.SearchOption.AllDirectories));
+					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.config", System.IO.SearchOption.AllDirectories));
+					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.csproj", System.IO.SearchOption.AllDirectories));
+					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "build.cake", System.IO.SearchOption.AllDirectories));
 
 					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\bin\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
 					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\obj\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
@@ -221,7 +222,7 @@ namespace ISI.Extensions.Tests
 						}
 					}
 
-					if (dirtyFileNames.Any())
+					if (false && dirtyFileNames.Any())
 					{
 						var commitLog = new StringBuilder();
 

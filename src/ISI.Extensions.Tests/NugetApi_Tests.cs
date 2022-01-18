@@ -209,7 +209,7 @@ namespace ISI.Extensions.Tests
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Telephony.WindowsService");
 			//solutionFullNames.Add(@"E:\Tristar\Tristar.Scheduler");
 			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt"));
-			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Connect.SolutionFullNames.txt"));
+			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Connect.SolutionFullNames.txt"));
 
 			solutionApi.UpdateNugetPackages(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.UpdateNugetPackagesRequest()
 			{

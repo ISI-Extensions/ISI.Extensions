@@ -32,7 +32,7 @@ namespace ISI.Extensions.VisualStudio
 
 			foreach (var framework in new[] { "net6.0", "net5.0" })
 			{
-				var binDirectory = System.IO.Path.Combine(projectDirectoryFullName, "bin", framework);
+				var binDirectory = System.IO.Path.Combine(projectDirectoryFullName, "bin", configuration, framework);
 
 				if (System.IO.Directory.Exists(binDirectory))
 				{

@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,29 +15,19 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.Caching
 {
-	public partial class IO
+	public sealed class CacheKeyWithInstanceUuid : IHasCacheKey, IHasCacheKeyInstanceUuid
 	{
-		public partial class Path
+		public string CacheKey { get; }
+		public Guid CacheKeyInstanceUuid { get; }
+
+		public CacheKeyWithInstanceUuid(string cacheKey, IHasCacheKeyInstanceUuid hasCacheKeyInstanceUuid)
 		{
-			private static string _pathRoot = null;
-			public static string PathRoot => _pathRoot ??= System.IO.Path.GetPathRoot(System.Reflection.Assembly.GetExecutingAssembly().CodeBase.TrimStart("file:///"));
-
-			private static string _dataRoot = null;
-			public static string DataRoot => _dataRoot ??= GetDataRoot();
-
-			private static string GetDataRoot()
-			{
-				var dataRoot = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Data");
-
-				return string.Format("{0}{1}", System.IO.Directory.Exists(dataRoot) ? dataRoot : System.IO.Path.Combine(PathRoot, "Data"), System.IO.Path.DirectorySeparatorChar);
-			}
+			CacheKey = cacheKey;
+			CacheKeyInstanceUuid = hasCacheKeyInstanceUuid.CacheKeyInstanceUuid;
 		}
 	}
 }

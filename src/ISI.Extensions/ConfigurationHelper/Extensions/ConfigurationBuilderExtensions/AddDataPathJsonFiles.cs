@@ -12,32 +12,40 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
+using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.ConfigurationHelper.Extensions
 {
-	public partial class IO
+	public static partial class ConfigurationBuilderExtensions
 	{
-		public partial class Path
+
+		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddDataPathJsonFile(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, string path, Microsoft.Extensions.FileProviders.IFileProvider provider = null, bool reloadOnChange = false)
 		{
-			private static string _pathRoot = null;
-			public static string PathRoot => _pathRoot ??= System.IO.Path.GetPathRoot(System.Reflection.Assembly.GetExecutingAssembly().CodeBase.TrimStart("file:///"));
+			configurationBuilder.AddJsonFile(provider, System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, path), true, reloadOnChange);
 
-			private static string _dataRoot = null;
-			public static string DataRoot => _dataRoot ??= GetDataRoot();
+			return configurationBuilder;
+		}
+		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddDataPathJsonFiles(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, string[] environments, GetJsonFilePath getPath, bool reloadOnChange = false)
+		{
+			return AddJsonFiles(configurationBuilder, null, environments, getPath, reloadOnChange);
+		}
+		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddDataPathJsonFiles(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, Microsoft.Extensions.FileProviders.IFileProvider provider, string[] environments, GetJsonFilePath getPath, bool reloadOnChange = false)
+		{
+			var index = environments.Length;
 
-			private static string GetDataRoot()
+			while (index-- > 0)
 			{
-				var dataRoot = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Data");
-
-				return string.Format("{0}{1}", System.IO.Directory.Exists(dataRoot) ? dataRoot : System.IO.Path.Combine(PathRoot, "Data"), System.IO.Path.DirectorySeparatorChar);
+				configurationBuilder.AddJsonFile(provider, System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, getPath(environments[index])), true, reloadOnChange);
 			}
+
+			return configurationBuilder;
 		}
 	}
 }

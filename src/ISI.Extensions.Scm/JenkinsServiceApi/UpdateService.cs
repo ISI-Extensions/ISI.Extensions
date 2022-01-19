@@ -19,25 +19,41 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.JenkinsServiceApi;
+using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.JenkinsServiceApi;
+using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.Scm
 {
-	public partial class IO
+	public partial class JenkinsServiceApi
 	{
-		public partial class Path
+		public DTOs.UpdateServiceResponse UpdateService(DTOs.UpdateServiceRequest request)
 		{
-			private static string _pathRoot = null;
-			public static string PathRoot => _pathRoot ??= System.IO.Path.GetPathRoot(System.Reflection.Assembly.GetExecutingAssembly().CodeBase.TrimStart("file:///"));
+			var response = new DTOs.UpdateServiceResponse();
+			
+			var uri = new UriBuilder(request.JenkinsServiceUrl);
+			uri.SetPathAndQueryString("api/update-service");
 
-			private static string _dataRoot = null;
-			public static string DataRoot => _dataRoot ??= GetDataRoot();
-
-			private static string GetDataRoot()
+			var updateServiceRequest = new SerializableDTOs.UpdateServiceRequest()
 			{
-				var dataRoot = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Data");
+				Password = request.JenkinsServicePassword,
+			};
 
-				return string.Format("{0}{1}", System.IO.Directory.Exists(dataRoot) ? dataRoot : System.IO.Path.Combine(PathRoot, "Data"), System.IO.Path.DirectorySeparatorChar);
+			try
+			{
+				var updateServiceResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.UpdateServiceRequest, SerializableDTOs.UpdateServiceResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), updateServiceRequest, false);
+
+				if (updateServiceResponse.Error != null)
+				{
+					throw updateServiceResponse.Error.Exception;
+				}
 			}
+			catch (Exception exception)
+			{
+				Logger.LogError(exception, "UpdateService Failed\n{0}", exception.ErrorMessageFormatted());
+			}
+
+			return response;
 		}
 	}
 }

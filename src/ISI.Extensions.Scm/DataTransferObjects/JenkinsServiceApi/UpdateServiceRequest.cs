@@ -18,26 +18,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.Scm.DataTransferObjects.JenkinsServiceApi
 {
-	public partial class IO
+	public partial class UpdateServiceRequest
 	{
-		public partial class Path
-		{
-			private static string _pathRoot = null;
-			public static string PathRoot => _pathRoot ??= System.IO.Path.GetPathRoot(System.Reflection.Assembly.GetExecutingAssembly().CodeBase.TrimStart("file:///"));
-
-			private static string _dataRoot = null;
-			public static string DataRoot => _dataRoot ??= GetDataRoot();
-
-			private static string GetDataRoot()
-			{
-				var dataRoot = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Data");
-
-				return string.Format("{0}{1}", System.IO.Directory.Exists(dataRoot) ? dataRoot : System.IO.Path.Combine(PathRoot, "Data"), System.IO.Path.DirectorySeparatorChar);
-			}
-		}
+		public string JenkinsServiceUrl { get; set; }
+		public string JenkinsServicePassword { get; set; }
 	}
 }

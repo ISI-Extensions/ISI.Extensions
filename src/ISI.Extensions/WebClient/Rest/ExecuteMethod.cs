@@ -242,7 +242,7 @@ namespace ISI.Extensions.WebClient
 
 			try
 			{
-				headers.ProcessContent(() =>
+				headers?.ProcessContent(() =>
 				{
 					bodyBuilder?.Invoke(request, null, webRequestDetails);
 

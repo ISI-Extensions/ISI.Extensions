@@ -25,25 +25,21 @@ namespace ISI.Extensions.ConfigurationHelper.Extensions
 {
 	public static partial class ConfigurationBuilderExtensions
 	{
-
-		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddDataPathJsonFile(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, string path, Microsoft.Extensions.FileProviders.IFileProvider provider = null, bool reloadOnChange = false)
+		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddDataPathJsonFile(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, string path)
+		{
+			return AddDataPathJsonFile(configurationBuilder, null, path, false);
+		}
+		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddDataPathJsonFile(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, Microsoft.Extensions.FileProviders.IFileProvider provider, string path)
+		{
+			return AddDataPathJsonFile(configurationBuilder, provider, path, false);
+		}
+		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddDataPathJsonFile(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, string path, bool reloadOnChange)
+		{
+			return AddDataPathJsonFile(configurationBuilder, null, path, false);
+		}
+		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddDataPathJsonFile(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, Microsoft.Extensions.FileProviders.IFileProvider provider, string path, bool reloadOnChange)
 		{
 			configurationBuilder.AddJsonFile(provider, System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, path), true, reloadOnChange);
-
-			return configurationBuilder;
-		}
-		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddDataPathJsonFiles(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, string[] environments, GetJsonFilePath getPath, bool reloadOnChange = false)
-		{
-			return AddJsonFiles(configurationBuilder, null, environments, getPath, reloadOnChange);
-		}
-		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddDataPathJsonFiles(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, Microsoft.Extensions.FileProviders.IFileProvider provider, string[] environments, GetJsonFilePath getPath, bool reloadOnChange = false)
-		{
-			var index = environments.Length;
-
-			while (index-- > 0)
-			{
-				configurationBuilder.AddJsonFile(provider, System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, getPath(environments[index])), true, reloadOnChange);
-			}
 
 			return configurationBuilder;
 		}

@@ -26,11 +26,19 @@ namespace ISI.Extensions.ConfigurationHelper.Extensions
 	{
 		public delegate string GetJsonFilePath(string environment);
 
-		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddJsonFiles(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, string[] environments, GetJsonFilePath getPath, bool reloadOnChange = false)
+		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddJsonFiles(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, string[] environments, GetJsonFilePath getPath)
 		{
-			return AddJsonFiles(configurationBuilder, null, environments, getPath, reloadOnChange);
+			return AddJsonFiles(configurationBuilder, null, environments, getPath, false);
 		}
-		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddJsonFiles(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, Microsoft.Extensions.FileProviders.IFileProvider provider, string[] environments, GetJsonFilePath getPath, bool reloadOnChange = false)
+		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddJsonFiles(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, Microsoft.Extensions.FileProviders.IFileProvider provider, string[] environments, GetJsonFilePath getPath)
+		{
+			return AddJsonFiles(configurationBuilder, provider, environments, getPath, false);
+		}
+		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddJsonFiles(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, string[] environments, GetJsonFilePath getPath, bool reloadOnChange)
+		{
+			return AddJsonFiles(configurationBuilder, null, environments, getPath, false);
+		}
+		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddJsonFiles(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, Microsoft.Extensions.FileProviders.IFileProvider provider, string[] environments, GetJsonFilePath getPath, bool reloadOnChange)
 		{
 			var index = environments.Length;
 

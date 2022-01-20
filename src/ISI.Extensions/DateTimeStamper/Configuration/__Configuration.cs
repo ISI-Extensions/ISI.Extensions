@@ -19,9 +19,11 @@ using System.Text;
 
 namespace ISI.Extensions.DateTimeStamper
 {
-	[ISI.Extensions.ConfigurationHelper.Configuration("ISI.Extensions.DateTimeStamper")]
+	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
 	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
 	{
+		public const string ConfigurationSectionName = "ISI.Extensions.DateTimeStamper";
+		
 		public string NtpServer { get; set; } = "north-america.pool.ntp.org";
 		public TimeSpan NtpServerRefreshInterval { get; set; } = TimeSpan.FromHours(1);
 	}

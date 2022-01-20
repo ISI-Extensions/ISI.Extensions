@@ -22,9 +22,11 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.AspNetCore
 {
-	[ISI.Extensions.ConfigurationHelper.Configuration("ISI.Extensions.AspNetCore")]
+	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
 	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
 	{
+		public const string ConfigurationSectionName = "ISI.Extensions.AspNetCore";
+		
 		public HttpContextLoggingConfiguration HttpContextLogging { get; set; } = new();
 
 		public TrackingConfiguration Tracking { get; set; } = new();

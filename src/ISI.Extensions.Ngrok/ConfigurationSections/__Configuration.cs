@@ -21,9 +21,11 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Ngrok
 {
-	[ISI.Extensions.ConfigurationHelper.Configuration("ISI.Extensions.Ngrok")]
+	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
 	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
 	{
+		public const string ConfigurationSectionName = "ISI.Extensions.Ngrok";
+		
 		public bool UseNGrok { get; set; } = false;
 
 		public string NGrokServiceFileName { get; set; } = "{TempDirectory}\\NGrok\\NGrok.exe";

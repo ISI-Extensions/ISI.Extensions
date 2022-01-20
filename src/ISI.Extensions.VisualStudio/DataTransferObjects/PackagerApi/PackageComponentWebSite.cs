@@ -37,6 +37,7 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi
 			"*.vshost.exe.*",
 			"Dockerfile",
 			"*Manifests.lst",
+			"appsettings.Development.json",
 		});
 
 		public AfterBuildPackageComponent AfterBuildPackageComponent { get; set; } = null;

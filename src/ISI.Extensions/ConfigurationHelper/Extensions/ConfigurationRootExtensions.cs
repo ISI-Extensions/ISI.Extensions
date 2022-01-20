@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,31 +15,28 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
+using ISI.Extensions.DependencyInjection.Extensions;
+using ISI.Extensions.TypeLocator.Extensions;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi
+namespace ISI.Extensions.ConfigurationHelper.Extensions
 {
-	public class PackageComponentConsoleApplication : IPackageComponent
+	public static class ConfigurationRootExtensions
 	{
-		public string ProjectFullName { get; set; }
-		
-		public string IconFullName { get; set; }
-
-		public bool DoNotXmlTransformConfigs { get; set; }
-
-		public List<string> ExcludeFiles { get; set; } = new(new[]
+		public static TConfiguration GetConfiguration<TConfiguration>(this IConfigurationRoot configurationRoot)
+			where TConfiguration : ISI.Extensions.ConfigurationHelper.IConfiguration, new()
 		{
-			"*.xml",
-			"T4LocalContent",
-			"T4CMS",
-			"*.licenseheader",
-			"*.vshost.exe",
-			"*.vshost.exe.*",
-			"Dockerfile",
-			"*Manifests.lst",
-			"appsettings.Development.json",
-		});
+			if (typeof(TConfiguration).GetCustomAttribute(typeof(ISI.Extensions.ConfigurationHelper.ConfigurationAttribute)) is ConfigurationAttribute configurationAttribute)
+			{
+				var configuration = new TConfiguration();
+				configurationRoot.Bind(configurationAttribute.ConfigurationSectionName, configuration);
+				return configuration;
+			}
 
-		public AfterBuildPackageComponent AfterBuildPackageComponent { get; set; } = null;
+			throw new Exception("Missing ConfigurationAttribute");
+		}
 	}
 }

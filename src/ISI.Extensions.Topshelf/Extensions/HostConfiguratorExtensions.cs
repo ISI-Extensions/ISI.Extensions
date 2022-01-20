@@ -16,13 +16,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ISI.Extensions.ConfigurationHelper.Extensions;
 using Topshelf;
-using HostConfigurator = Topshelf.HostConfigurators.HostConfigurator;
 
 namespace ISI.Extensions.Topshelf.Extensions
 {
 	public static partial class HostConfiguratorExtensions
 	{
+		public static global::Topshelf.HostConfigurators.HostConfigurator RunAs(this global::Topshelf.HostConfigurators.HostConfigurator hostConfigurator, Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot)
+		{
+			return hostConfigurator.RunAs(configurationRoot.GetConfiguration<ISI.Extensions.Topshelf.Configuration>());
+		}
 		public static global::Topshelf.HostConfigurators.HostConfigurator RunAs(this global::Topshelf.HostConfigurators.HostConfigurator hostConfigurator, Configuration configuration = null)
 		{
 			var userName = configuration?.LogOnAs?.UserName;
@@ -48,6 +52,10 @@ namespace ISI.Extensions.Topshelf.Extensions
 			return hostConfigurator;
 		}
 
+		public static global::Topshelf.HostConfigurators.HostConfigurator SetDescription(this global::Topshelf.HostConfigurators.HostConfigurator hostConfigurator, Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot)
+		{
+			return hostConfigurator.SetDescription(configurationRoot.GetConfiguration<ISI.Extensions.Topshelf.Configuration>());
+		}
 		public static global::Topshelf.HostConfigurators.HostConfigurator SetDescription(this global::Topshelf.HostConfigurators.HostConfigurator hostConfigurator, Configuration configuration = null)
 		{
 			var serviceDescription = configuration?.ServiceDescription;
@@ -67,6 +75,10 @@ namespace ISI.Extensions.Topshelf.Extensions
 			return hostConfigurator;
 		}
 
+		public static global::Topshelf.HostConfigurators.HostConfigurator SetDisplayName(this global::Topshelf.HostConfigurators.HostConfigurator hostConfigurator, Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot)
+		{
+			return hostConfigurator.SetDisplayName(configurationRoot.GetConfiguration<ISI.Extensions.Topshelf.Configuration>());
+		}
 		public static global::Topshelf.HostConfigurators.HostConfigurator SetDisplayName(this global::Topshelf.HostConfigurators.HostConfigurator hostConfigurator, Configuration configuration = null)
 		{
 			var serviceDisplayName = configuration?.ServiceDisplayName;
@@ -94,6 +106,10 @@ namespace ISI.Extensions.Topshelf.Extensions
 			return hostConfigurator;
 		}
 
+		public static global::Topshelf.HostConfigurators.HostConfigurator SetServiceName(this global::Topshelf.HostConfigurators.HostConfigurator hostConfigurator, Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot)
+		{
+			return hostConfigurator.SetServiceName(configurationRoot.GetConfiguration<ISI.Extensions.Topshelf.Configuration>());
+		}
 		public static global::Topshelf.HostConfigurators.HostConfigurator SetServiceName(this global::Topshelf.HostConfigurators.HostConfigurator hostConfigurator, Configuration configuration = null)
 		{
 			var serviceServiceName = configuration?.ServiceServiceName;
@@ -121,6 +137,10 @@ namespace ISI.Extensions.Topshelf.Extensions
 			return hostConfigurator;
 		}
 
+		public static global::Topshelf.HostConfigurators.HostConfigurator SetStartTimeout(this global::Topshelf.HostConfigurators.HostConfigurator hostConfigurator, Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot)
+		{
+			return hostConfigurator.SetStartTimeout(configurationRoot.GetConfiguration<ISI.Extensions.Topshelf.Configuration>());
+		}
 		public static global::Topshelf.HostConfigurators.HostConfigurator SetStartTimeout(this global::Topshelf.HostConfigurators.HostConfigurator hostConfigurator, Configuration configuration)
 		{
 			hostConfigurator.SetStartTimeout(configuration.StartTimeOut);
@@ -128,6 +148,10 @@ namespace ISI.Extensions.Topshelf.Extensions
 			return hostConfigurator;
 		}
 
+		public static global::Topshelf.HostConfigurators.HostConfigurator SetStopTimeout(this global::Topshelf.HostConfigurators.HostConfigurator hostConfigurator, Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot)
+		{
+			return hostConfigurator.SetStopTimeout(configurationRoot.GetConfiguration<ISI.Extensions.Topshelf.Configuration>());
+		}
 		public static global::Topshelf.HostConfigurators.HostConfigurator SetStopTimeout(this global::Topshelf.HostConfigurators.HostConfigurator hostConfigurator, Configuration configuration)
 		{
 			hostConfigurator.SetStopTimeout(configuration.StopTimeOut);

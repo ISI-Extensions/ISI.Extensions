@@ -21,9 +21,11 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Caching
 {
-	[ISI.Extensions.ConfigurationHelper.Configuration("ISI.Extensions.Caching")]
+	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
 	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
 	{
+		public const string ConfigurationSectionName = "ISI.Extensions.Caching";
+		
 		public string CacheKeyPrefix { get; set; } = string.Empty;
 
 		public TimeSpan DefaultAbsoluteExpirationDuration { get; set; } = TimeSpan.FromMinutes(5);

@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -13,33 +13,25 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
+using ISI.Extensions.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi
+namespace ISI.Extensions
 {
-	public class PackageComponentConsoleApplication : IPackageComponent
+	public partial class IO
 	{
-		public string ProjectFullName { get; set; }
-		
-		public string IconFullName { get; set; }
-
-		public bool DoNotXmlTransformConfigs { get; set; }
-
-		public List<string> ExcludeFiles { get; set; } = new(new[]
+		public partial class Path
 		{
-			"*.xml",
-			"T4LocalContent",
-			"T4CMS",
-			"*.licenseheader",
-			"*.vshost.exe",
-			"*.vshost.exe.*",
-			"Dockerfile",
-			"*Manifests.lst",
-			"appsettings.Development.json",
-		});
+			public static string GetBinDirectory()
+			{
+				var executingAssembly = System.Reflection.Assembly.GetExecutingAssembly();
 
-		public AfterBuildPackageComponent AfterBuildPackageComponent { get; set; } = null;
+				return System.IO.Path.GetDirectoryName(GetFileNameFromCodeBase(executingAssembly.CodeBase));
+			}
+		}
 	}
 }

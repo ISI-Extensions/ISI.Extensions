@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Ngrok
 {
-	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
+	public partial class Configuration
 	{
 		public class TunnelConfiguration
 		{

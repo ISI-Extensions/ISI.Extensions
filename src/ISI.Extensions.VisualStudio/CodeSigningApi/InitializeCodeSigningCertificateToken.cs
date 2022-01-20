@@ -56,6 +56,7 @@ namespace ISI.Extensions.VisualStudio
 					{
 						ProcessExeFullName = "signtool.exe",
 						Arguments = arguments,
+						Logger = new NullLogger(),
 					});
 
 					logger.LogInformation("Code Signing Certificate Token has been Initialized");

@@ -24,17 +24,26 @@ namespace ISI.Extensions.WebClient
 {
 	public class Download
 	{
-		public class DownloadFileResponse<TStream> : IDisposable
-			where TStream : System.IO.Stream, new()
+		public class DownloadFileResponse
 		{
 			public string FileName { get; set; }
-			public System.IO.Stream Stream { get; set; }
 			public System.Collections.Specialized.NameValueCollection Headers { get; }
 
 			public DownloadFileResponse()
 			{
-				Stream = new TStream();
 				Headers = new System.Collections.Specialized.NameValueCollection();
+			}
+		}
+
+		public class DownloadFileResponse<TStream> : DownloadFileResponse, IDisposable
+			where TStream : System.IO.Stream, new()
+		{
+			public System.IO.Stream Stream { get; set; }
+
+			public DownloadFileResponse()
+				: base()
+			{
+				Stream = new TStream();
 			}
 
 			public void Dispose()
@@ -63,9 +72,9 @@ namespace ISI.Extensions.WebClient
 			{
 				using (var webResponse = (System.Net.HttpWebResponse)webRequest.GetResponse())
 				{
-					if (webResponse.Headers.AllKeys.Contains("Content-Disposition"))
+					if (webResponse.Headers.AllKeys.Contains(ISI.Extensions.WebClient.HeaderCollection.Keys.ContentDisposition))
 					{
-						response.FileName = new System.Net.Mime.ContentDisposition(webResponse.Headers["Content-Disposition"]).FileName;
+						response.FileName = new System.Net.Mime.ContentDisposition(webResponse.Headers[ISI.Extensions.WebClient.HeaderCollection.Keys.ContentDisposition]).FileName;
 					}
 
 					foreach (var key in webResponse.Headers.AllKeys)
@@ -86,6 +95,61 @@ namespace ISI.Extensions.WebClient
 								webResponseStream.CopyTo(response.Stream);
 							}
 							response.Stream.Rewind();
+						}
+					}
+				}
+			}
+#pragma warning disable CS0168 // Variable is declared but never used
+			catch (Exception exception)
+#pragma warning restore CS0168 // Variable is declared but never used
+			{
+
+				throw;
+			}
+
+			return response;
+		}
+
+		public static DownloadFileResponse DownloadFile(string url, HeaderCollection headers, System.IO.Stream toStream, int? bufferSize = null)
+		{
+			return DownloadFile(new Uri(url), headers, toStream, bufferSize);
+		}
+
+		public static DownloadFileResponse DownloadFile(Uri uri, HeaderCollection headers, System.IO.Stream toStream, int? bufferSize = null)
+		{
+			var response = new DownloadFileResponse();
+
+			var webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(uri);
+
+			headers?.ApplyToWebRequest(webRequest);
+
+			try
+			{
+				using (var webResponse = (System.Net.HttpWebResponse)webRequest.GetResponse())
+				{
+					if (webResponse.Headers.AllKeys.Contains(ISI.Extensions.WebClient.HeaderCollection.Keys.ContentDisposition))
+					{
+						response.FileName = new System.Net.Mime.ContentDisposition(webResponse.Headers[ISI.Extensions.WebClient.HeaderCollection.Keys.ContentDisposition]).FileName;
+					}
+
+					foreach (var key in webResponse.Headers.AllKeys)
+					{
+						response.Headers.Add(key, webResponse.Headers[key]);
+					}
+
+					using (var webResponseStream = webResponse.GetResponseStream())
+					{
+						if (webResponseStream != null)
+						{
+							if (bufferSize.HasValue)
+							{
+								webResponseStream.CopyTo(toStream, bufferSize.Value);
+							}
+							else
+							{
+								webResponseStream.CopyTo(toStream);
+							}
+							toStream.Rewind();
 						}
 					}
 				}

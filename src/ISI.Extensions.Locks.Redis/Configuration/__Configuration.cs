@@ -24,6 +24,8 @@ namespace ISI.Extensions.Locks.Redis
 	[ISI.Extensions.ConfigurationHelper.Configuration("ISI.Extensions.Locks.Redis")]
 	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
 	{
+		public const string ConfigurationSectionName = "ISI.Extensions.Locks.Redis";
+		
 		public string ConnectionString { get; set; } = "localhost";
 
 		public int Database { get; set; } = 0;

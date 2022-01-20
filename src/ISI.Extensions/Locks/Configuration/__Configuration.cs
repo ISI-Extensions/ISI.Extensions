@@ -21,9 +21,11 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Locks
 {
-	[ISI.Extensions.ConfigurationHelper.Configuration("ISI.Extensions.Locks")]
+	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
 	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
 	{
+		public const string ConfigurationSectionName = "ISI.Extensions.Locks";
+		
 		public TimeSpan DefaultLockTimeout { get; set; } = TimeSpan.MaxValue;
 		public TimeSpan DefaultRetryInterval { get; set; } = TimeSpan.FromSeconds(1);
 		public TimeSpan DefaultRetryTimeout { get; set; } = TimeSpan.FromMinutes(5);

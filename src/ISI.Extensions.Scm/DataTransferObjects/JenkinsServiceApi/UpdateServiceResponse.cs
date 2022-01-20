@@ -23,5 +23,8 @@ namespace ISI.Extensions.Scm.DataTransferObjects.JenkinsServiceApi
 {
 	public partial class UpdateServiceResponse
 	{
+		public string CurrentVersion { get; set; }
+		public string NewVersion { get; set; }
+		public bool SameVersion { get; set; }
 	}
 }

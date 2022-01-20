@@ -21,9 +21,11 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Repository.SqlServer
 {
-	[ISI.Extensions.ConfigurationHelper.Configuration("ISI.Extensions.Repository.SqlServer")]
+	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
 	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
 	{
+		public const string ConfigurationSectionName = "ISI.Extensions.Repository.SqlServer";
+
 		public int PrimaryKeyMaxCount { get; set; } = 1000;
 		public int FilterValueMaxCount { get; set; } = 50;
 		public int ArchiveTableCommandTimeout { get; set; } = 180;

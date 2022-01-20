@@ -19,9 +19,11 @@ using System.Text;
 
 namespace ISI.Extensions.StatusTrackers
 {
-	[ISI.Extensions.ConfigurationHelper.Configuration("ISI.Extensions.StatusTrackers")]
+	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
 	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
 	{
+		public const string ConfigurationSectionName = "ISI.Extensions.StatusTrackers";
+
 		public string FileStatusTrackerDirectory { get; set; } = "FileStatusTrackerDirectory";
 	}
 }

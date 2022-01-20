@@ -18,12 +18,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace ISI.Extensions.Topshelf
 {
-	[ISI.Extensions.ConfigurationHelper.Configuration("ISI.Extensions.Topshelf")]
+	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
 	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
 	{
+		public const string ConfigurationSectionName = "ISI.Extensions.Topshelf";
+
 		public LogOnAsConfiguration LogOnAs { get; set; } = null;
 		public string ServicePrefix { get; set; }
 		public string ServiceDescription { get; set; }

@@ -26,7 +26,6 @@ namespace ISI.Extensions.Scm.SerializableModels.RemoteCodeSigningApi
 	[DataContract]
 	public partial class CreateSignVsixesBatchResponse
 	{
-		[DataMember(Name = "signVsixesBatchUuid", EmitDefaultValue = false)]
-		public Guid SignVsixesBatchUuid { get; set; }
+
 	}
 }

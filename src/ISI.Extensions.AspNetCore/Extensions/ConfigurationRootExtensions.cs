@@ -18,14 +18,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
+using Microsoft.AspNetCore.Hosting;
 
-namespace ISI.Extensions.Scm.SerializableModels.RemoteCodeSigningApi
+namespace ISI.Extensions.AspNetCore.Extensions
 {
-	[DataContract]
-	public partial class CreateSignNupkgsBatchResponse
+	public static class ConfigurationRootExtensions
 	{
-
+		public static Microsoft.Extensions.Configuration.IConfigurationSection GetKestrelConfigurationSection(this Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot)
+		{
+			return configurationRoot.GetSection("Kestrel");
+		}
 	}
 }

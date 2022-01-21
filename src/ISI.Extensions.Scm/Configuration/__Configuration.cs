@@ -19,13 +19,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Scm.SerializableModels.RemoteCodeSigningApi
+namespace ISI.Extensions.Scm
 {
-	[DataContract]
-	public partial class CreateSignNupkgsBatchResponse
+	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
+	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
 	{
-
+		public const string ConfigurationSectionName = "ISI.Extensions.Scm";
+		
+		public string SettingsFullName { get; set; }
 	}
 }

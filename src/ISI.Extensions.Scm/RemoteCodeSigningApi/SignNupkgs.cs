@@ -20,12 +20,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DTOs = ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigning;
-using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.RemoteCodeSigning;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigningApi;
+using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.RemoteCodeSigningApi;
 
 namespace ISI.Extensions.Scm
 {
-	public partial class RemoteCodeSigning
+	public partial class RemoteCodeSigningApi
 	{
 		public DTOs.SignNupkgsResponse SignNupkgs(DTOs.SignNupkgsRequest request)
 		{

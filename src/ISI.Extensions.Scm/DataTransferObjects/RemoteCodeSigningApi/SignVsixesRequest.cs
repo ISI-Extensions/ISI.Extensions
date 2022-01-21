@@ -18,15 +18,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Scm.SerializableModels.RemoteCodeSigning
+namespace ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigningApi
 {
-	[DataContract]
-	public partial class CreateSignNupkgsBatchResponse
+	public partial class SignVsixesRequest
 	{
-		[DataMember(Name = "signNupkgsBatchUuid", EmitDefaultValue = false)]
-		public Guid SignNupkgsBatchUuid { get; set; }
+		public string RemoteCodeSigningServiceUrl { get; set; }
+		public string RemoteCodeSigningServicePassword { get; set; }
+
+		public string[] VsixFullNames { get; set; }
+
+		public bool OverwriteAnyExistingSignature { get; set; } = false;
 	}
 }

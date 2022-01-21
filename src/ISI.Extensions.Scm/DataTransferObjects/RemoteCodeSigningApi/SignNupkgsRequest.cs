@@ -18,15 +18,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Scm.SerializableModels.RemoteCodeSigning
+namespace ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigningApi
 {
-	[DataContract]
-	public partial class ExecuteSignNupkgsBatchResponse
+	public partial class SignNupkgsRequest
 	{
-		[DataMember(Name = "statusTrackerKey", EmitDefaultValue = false)]
-		public string StatusTrackerKey { get; set; }
+		public string RemoteCodeSigningServiceUrl { get; set; }
+		public string RemoteCodeSigningServicePassword { get; set; }
+
+		public string[] NupkgFullNames { get; set; }
+
+		public bool OverwriteAnyExistingSignature { get; set; } = false;
 	}
 }

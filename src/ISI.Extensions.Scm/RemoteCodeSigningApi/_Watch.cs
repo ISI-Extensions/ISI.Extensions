@@ -19,13 +19,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigning;
-using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.RemoteCodeSigning;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigningApi;
+using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.RemoteCodeSigningApi;
 using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Scm
 {
-	public partial class RemoteCodeSigning
+	public partial class RemoteCodeSigningApi
 	{
 		private bool Watch(string remoteCodeSigningServiceUrl, string remoteCodeSigningServicePassword, string statusTrackerKey)
 		{

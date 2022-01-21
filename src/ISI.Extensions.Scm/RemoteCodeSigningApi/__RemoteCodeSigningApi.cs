@@ -19,17 +19,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigningApi;
+using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.RemoteCodeSigningApi;
+using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.Scm.SerializableModels.RemoteCodeSigning
+namespace ISI.Extensions.Scm
 {
-	[DataContract]
-	public partial class ExecuteSignAssembliesBatchRequest
+	public partial class RemoteCodeSigningApi
 	{
-		[DataMember(Name = "password", EmitDefaultValue = false)]
-		public string Password { get; set; }
+		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 
-		[DataMember(Name = "signAssembliesBatchUuid", EmitDefaultValue = false)]
-		public Guid SignAssembliesBatchUuid { get; set; }
+		public RemoteCodeSigningApi(
+			Microsoft.Extensions.Logging.ILogger logger = null)
+		{
+			Logger = logger ?? new ConsoleLogger();
+		}
 	}
 }

@@ -19,14 +19,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigning
+namespace ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigningApi
 {
-	public partial class SignVsixesRequest
+	public partial class SignAssembliesRequest
 	{
 		public string RemoteCodeSigningServiceUrl { get; set; }
 		public string RemoteCodeSigningServicePassword { get; set; }
 
-		public string[] VsixFullNames { get; set; }
+		public string[] AssemblyFullNames { get; set; }
 
 		public bool OverwriteAnyExistingSignature { get; set; } = false;
 	}

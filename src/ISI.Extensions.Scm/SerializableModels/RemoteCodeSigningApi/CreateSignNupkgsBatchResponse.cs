@@ -21,18 +21,12 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Scm.SerializableModels.RemoteCodeSigning
+namespace ISI.Extensions.Scm.SerializableModels.RemoteCodeSigningApi
 {
 	[DataContract]
-	public partial class GetStatusTrackerSnapshotResponse
+	public partial class CreateSignNupkgsBatchResponse
 	{
-		[DataMember(Name = "statusTrackerSnapshot", EmitDefaultValue = false)]
-		public StatusTrackerSnapshot StatusTrackerSnapshot { get; set; }
-
-		[DataMember(Name = "isFinished", EmitDefaultValue = false)]
-		public bool IsFinished { get; set; }
-
-		[DataMember(Name = "success", EmitDefaultValue = false)]
-		public bool? Success { get; set; }
+		[DataMember(Name = "signNupkgsBatchUuid", EmitDefaultValue = false)]
+		public Guid SignNupkgsBatchUuid { get; set; }
 	}
 }

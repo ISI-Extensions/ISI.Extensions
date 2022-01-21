@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -21,17 +21,12 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Scm.SerializableModels.RemoteCodeSigning
+namespace ISI.Extensions.Scm.SerializableModels.RemoteCodeSigningApi
 {
 	[DataContract]
-	public class StatusTrackerSnapshotLogEntry
+	public partial class ExecuteSignVsixesBatchResponse
 	{
-		[DataMember(Name = "dateTimeStamp", EmitDefaultValue = false)]
-		public string __DateTimeStamp { get => DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => DateTimeStamp = value.ToDateTime(); }
-		[IgnoreDataMember]
-		public DateTime DateTimeStamp { get; set; }
-
-		[DataMember(Name = "description", EmitDefaultValue = false)]
-		public string Description { get; set; }
+		[DataMember(Name = "statusTrackerKey", EmitDefaultValue = false)]
+		public string StatusTrackerKey { get; set; }
 	}
 }

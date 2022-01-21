@@ -18,11 +18,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigning
+namespace ISI.Extensions.Scm.SerializableModels.RemoteCodeSigningApi
 {
-	public partial class SignVsixesResponse
+	[DataContract]
+	public partial class GetStatusTrackerSnapshotResponse
 	{
-		public bool Success { get; set; }
+		[DataMember(Name = "statusTrackerSnapshot", EmitDefaultValue = false)]
+		public StatusTrackerSnapshot StatusTrackerSnapshot { get; set; }
+
+		[DataMember(Name = "isFinished", EmitDefaultValue = false)]
+		public bool IsFinished { get; set; }
+
+		[DataMember(Name = "success", EmitDefaultValue = false)]
+		public bool? Success { get; set; }
 	}
 }

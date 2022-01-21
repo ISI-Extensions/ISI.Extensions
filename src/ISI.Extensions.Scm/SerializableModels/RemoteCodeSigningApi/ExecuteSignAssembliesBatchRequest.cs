@@ -21,12 +21,15 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Scm.SerializableModels.RemoteCodeSigning
+namespace ISI.Extensions.Scm.SerializableModels.RemoteCodeSigningApi
 {
 	[DataContract]
-	public partial class CreateSignVsixesBatchResponse
+	public partial class ExecuteSignAssembliesBatchRequest
 	{
-		[DataMember(Name = "signVsixesBatchUuid", EmitDefaultValue = false)]
-		public Guid SignVsixesBatchUuid { get; set; }
+		[DataMember(Name = "password", EmitDefaultValue = false)]
+		public string Password { get; set; }
+
+		[DataMember(Name = "signAssembliesBatchUuid", EmitDefaultValue = false)]
+		public Guid SignAssembliesBatchUuid { get; set; }
 	}
 }

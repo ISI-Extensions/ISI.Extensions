@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -19,20 +19,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigning;
-using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.RemoteCodeSigning;
-using Microsoft.Extensions.Logging;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Scm
+namespace ISI.Extensions.Scm.SerializableModels.RemoteCodeSigningApi
 {
-	public partial class RemoteCodeSigning
+	[DataContract]
+	public class StatusTrackerSnapshot
 	{
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
+		[DataMember(Name = "caption", EmitDefaultValue = false)]
+		public string Caption { get; set; }
 
-		public RemoteCodeSigning(
-			Microsoft.Extensions.Logging.ILogger logger = null)
-		{
-			Logger = logger ?? new ConsoleLogger();
-		}
+		[DataMember(Name = "percent", EmitDefaultValue = false)]
+		public int Percent { get; set; }
+
+		[DataMember(Name = "logEntries", EmitDefaultValue = false)]
+		public StatusTrackerSnapshotLogEntry[] LogEntries { get; set; }
 	}
 }

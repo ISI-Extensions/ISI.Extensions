@@ -19,9 +19,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigning
+namespace ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigningApi
 {
-	public partial class SignNupkgsResponse
+	public partial class SignVsixesResponse
 	{
 		public bool Success { get; set; }
 	}

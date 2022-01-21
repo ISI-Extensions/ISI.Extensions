@@ -13,21 +13,26 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
+using ISI.Extensions.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigning
+namespace ISI.Extensions.Scm.SerializableModels.RemoteCodeSigningApi
 {
-	public partial class SignAssembliesRequest
+	[DataContract]
+	public partial class CreateSignVsixesBatchRequest
 	{
-		public string RemoteCodeSigningServiceUrl { get; set; }
-		public string RemoteCodeSigningServicePassword { get; set; }
+		[DataMember(Name = "password", EmitDefaultValue = false)]
+		public string Password { get; set; }
 
-		public string[] AssemblyFullNames { get; set; }
+		[DataMember(Name = "signVsixesBatchUuid", EmitDefaultValue = false)]
+		public Guid SignVsixesBatchUuid { get; set; }
 
+		[DataMember(Name = "overwriteAnyExistingSignature", EmitDefaultValue = false)]
 		public bool OverwriteAnyExistingSignature { get; set; } = false;
 	}
 }

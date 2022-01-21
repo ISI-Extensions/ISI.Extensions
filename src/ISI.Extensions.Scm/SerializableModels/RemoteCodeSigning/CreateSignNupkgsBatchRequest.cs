@@ -13,32 +13,26 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
+using ISI.Extensions.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
+namespace ISI.Extensions.Scm.SerializableModels.RemoteCodeSigning
 {
-	public partial class VsixSignRequest
+	[DataContract]
+	public partial class CreateSignNupkgsBatchRequest
 	{
-		public string VsixFullName { get; set; }
+		[DataMember(Name = "password", EmitDefaultValue = false)]
+		public string Password { get; set; }
 
-		public Uri TimeStampUri { get; set; } = new("http://timestamp.digicert.com");
-		public CodeSigningDigestAlgorithm TimeStampDigestAlgorithm { get; set; } = CodeSigningDigestAlgorithm.Sha256;
-		
-		public string CertificateFileName { get; set; }
-		public string CertificatePassword { get; set; }
-		public string CertificateStoreName { get; set; } = "My";
-		public string CertificateStoreLocation { get; set; } = "CurrentUser";
-		public string CertificateSubjectName { get; set; }
-		public string CertificateFingerprint { get; set; }
+		[DataMember(Name = "signNupkgsBatchUuid", EmitDefaultValue = false)]
+		public Guid SignNupkgsBatchUuid { get; set; }
 
-		public CodeSigningDigestAlgorithm DigestAlgorithm { get; set; } = CodeSigningDigestAlgorithm.Sha256;
-		
+		[DataMember(Name = "overwriteAnyExistingSignature", EmitDefaultValue = false)]
 		public bool OverwriteAnyExistingSignature { get; set; } = false;
-
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

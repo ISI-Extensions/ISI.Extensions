@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,15 +15,24 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigning;
+using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.RemoteCodeSigning;
+using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
+namespace ISI.Extensions.Scm
 {
-	public enum VsixSignDigestAlgorithm
+	public partial class RemoteCodeSigning
 	{
-		[ISI.Extensions.Enum("Sha 1", "SHA1")] Sha1,
-		[ISI.Extensions.Enum("Sha 256", "SHA256")] Sha256,
-		[ISI.Extensions.Enum("Sha 384", "SHA384")] Sha384,
-		[ISI.Extensions.Enum("Sha 512", "SHA512")] Sha512,
+		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
+
+		public RemoteCodeSigning(
+			Microsoft.Extensions.Logging.ILogger logger = null)
+		{
+			Logger = logger ?? new ConsoleLogger();
+		}
 	}
 }

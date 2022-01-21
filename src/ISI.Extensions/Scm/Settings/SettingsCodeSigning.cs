@@ -63,6 +63,18 @@ namespace ISI.Extensions.Scm
 			
 			private SettingsCodeSigningToken _token = null;
 			public SettingsCodeSigningToken Token => _token ??= new SettingsCodeSigningToken(this.Settings);
+
+			public string RemoteCodeSigningServiceUrl
+			{
+				get => Settings.GetValue(Settings.Key.CodeSigningRemoteCodeSigningServiceUrl);
+				set => Settings.SetValue(Settings.Key.CodeSigningRemoteCodeSigningServiceUrl, value);
+			}
+
+			public string RemoteCodeSigningServicePassword
+			{
+				get => Settings.GetValue(Settings.Key.CodeSigningRemoteCodeSigningServicePassword);
+				set => Settings.SetValue(Settings.Key.CodeSigningRemoteCodeSigningServicePassword, value);
+			}
 		}
 	}
 }

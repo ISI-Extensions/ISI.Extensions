@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,27 +18,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
+namespace ISI.Extensions.Scm.SerializableModels.RemoteCodeSigning
 {
-	public partial class VsixSignRequest
+	[DataContract]
+	public class StatusTrackerSnapshot
 	{
-		public string VsixFullName { get; set; }
+		[DataMember(Name = "caption", EmitDefaultValue = false)]
+		public string Caption { get; set; }
 
-		public Uri TimeStampUri { get; set; } = new("http://timestamp.digicert.com");
-		public CodeSigningDigestAlgorithm TimeStampDigestAlgorithm { get; set; } = CodeSigningDigestAlgorithm.Sha256;
-		
-		public string CertificateFileName { get; set; }
-		public string CertificatePassword { get; set; }
-		public string CertificateStoreName { get; set; } = "My";
-		public string CertificateStoreLocation { get; set; } = "CurrentUser";
-		public string CertificateSubjectName { get; set; }
-		public string CertificateFingerprint { get; set; }
+		[DataMember(Name = "percent", EmitDefaultValue = false)]
+		public int Percent { get; set; }
 
-		public CodeSigningDigestAlgorithm DigestAlgorithm { get; set; } = CodeSigningDigestAlgorithm.Sha256;
-		
-		public bool OverwriteAnyExistingSignature { get; set; } = false;
-
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
+		[DataMember(Name = "logEntries", EmitDefaultValue = false)]
+		public StatusTrackerSnapshotLogEntry[] LogEntries { get; set; }
 	}
 }

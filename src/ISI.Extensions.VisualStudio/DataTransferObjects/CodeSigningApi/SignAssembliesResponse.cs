@@ -21,24 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
 {
-	public partial class VsixSignRequest
+	public partial class SignAssembliesResponse
 	{
-		public string VsixFullName { get; set; }
-
-		public Uri TimeStampUri { get; set; } = new("http://timestamp.digicert.com");
-		public CodeSigningDigestAlgorithm TimeStampDigestAlgorithm { get; set; } = CodeSigningDigestAlgorithm.Sha256;
-		
-		public string CertificateFileName { get; set; }
-		public string CertificatePassword { get; set; }
-		public string CertificateStoreName { get; set; } = "My";
-		public string CertificateStoreLocation { get; set; } = "CurrentUser";
-		public string CertificateSubjectName { get; set; }
-		public string CertificateFingerprint { get; set; }
-
-		public CodeSigningDigestAlgorithm DigestAlgorithm { get; set; } = CodeSigningDigestAlgorithm.Sha256;
-		
-		public bool OverwriteAnyExistingSignature { get; set; } = false;
-
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

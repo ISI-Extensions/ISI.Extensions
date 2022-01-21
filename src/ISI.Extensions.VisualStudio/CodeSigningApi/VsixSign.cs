@@ -32,7 +32,7 @@ namespace ISI.Extensions.VisualStudio
 
 			var logger = new AddToLogLogger(request.AddToLog, Logger);
 
-			var certificate = (string.IsNullOrWhiteSpace(request.CertificatePath) ? GetCertificateFromCertificateStore(request.CertificateStoreName, request.CertificateStoreLocation, request.CertificateSubjectName, request.CertificateFingerprint) : GetCertificateFromPfx(request.CertificatePath, request.CertificatePassword));
+			var certificate = (string.IsNullOrWhiteSpace(request.CertificateFileName) ? GetCertificateFromCertificateStore(request.CertificateStoreName, request.CertificateStoreLocation, request.CertificateSubjectName, request.CertificateFingerprint) : GetCertificateFromPfx(request.CertificateFileName, request.CertificatePassword));
 
 			var signingKey = GetSigningKeyFromCertificate(certificate);
 

@@ -57,7 +57,6 @@ namespace ISI.Extensions.Scm
 
 				var createSignAssembliesBatchRequest = new SerializableDTOs.CreateSignAssembliesBatchRequest()
 				{
-					Password = request.RemoteCodeSigningServicePassword,
 					SignAssembliesBatchUuid = signAssembliesBatchUuid,
 					OverwriteAnyExistingSignature = request.OverwriteAnyExistingSignature,
 				};
@@ -113,7 +112,6 @@ namespace ISI.Extensions.Scm
 
 				var executeSignAssembliesBatchRequest = new SerializableDTOs.ExecuteSignAssembliesBatchRequest()
 				{
-					Password = request.RemoteCodeSigningServicePassword,
 					SignAssembliesBatchUuid = signAssembliesBatchUuid,
 				};
 

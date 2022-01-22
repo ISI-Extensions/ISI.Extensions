@@ -26,9 +26,6 @@ namespace ISI.Extensions.Scm.SerializableModels.RemoteCodeSigningApi
 	[DataContract]
 	public partial class GetStatusTrackerSnapshotRequest
 	{
-		[DataMember(Name = "password", EmitDefaultValue = false)]
-		public string Password { get; set; }
-
 		[DataMember(Name = "statusTrackerKey", EmitDefaultValue = false)]
 		public string StatusTrackerKey { get; set; }
 	}

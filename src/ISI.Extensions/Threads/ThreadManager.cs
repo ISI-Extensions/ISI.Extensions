@@ -13,23 +13,60 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
-using ISI.Extensions.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Scm.SerializableModels.RemoteCodeSigningApi
+namespace ISI.Extensions
 {
-	[DataContract]
-	public partial class CreateSignNupkgsBatchRequest
+	public partial class Threads
 	{
-		[DataMember(Name = "signNupkgsBatchUuid", EmitDefaultValue = false)]
-		public Guid SignNupkgsBatchUuid { get; set; }
+		public class ThreadManager
+		{
+			protected System.Threading.Timer _timer = null;
 
-		[DataMember(Name = "overwriteAnyExistingSignature", EmitDefaultValue = false)]
-		public bool OverwriteAnyExistingSignature { get; set; } = false;
+			protected readonly object _syncLock = new();
+
+			private List<ISI.Extensions.Threads.ThreadWrapper> _runningThreads = null;
+			public IList<ISI.Extensions.Threads.ThreadWrapper> RunningThreads => _runningThreads ?? (_runningThreads = new List<ISI.Extensions.Threads.ThreadWrapper>());
+
+			private void RemoveInActiveThreads()
+			{
+				_runningThreads?.RemoveAll(i => !i.IsActive);
+			}
+
+
+			public void CheckTimeouts()
+			{
+				lock (_syncLock)
+				{
+					RemoveInActiveThreads();
+				}
+			}
+
+			public bool Start()
+			{
+				_timer = new System.Threading.Timer(
+					state => { CheckTimeouts(); }, null, new TimeSpan(0), TimeSpan.FromMinutes(10));
+
+				return true;
+			}
+
+			public bool Stop()
+			{
+				_timer?.Dispose();
+				_timer = null;
+
+				lock (_syncLock)
+				{
+					RemoveInActiveThreads();
+				}
+
+				return (_timer == null);
+			}
+		}
 	}
 }

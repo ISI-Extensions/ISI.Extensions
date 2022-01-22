@@ -42,7 +42,6 @@ namespace ISI.Extensions.Scm
 			var getStatusTrackerSnapshotRequest = new SerializableDTOs.GetStatusTrackerSnapshotRequest()
 			{
 				StatusTrackerKey = statusTrackerKey,
-				Password = remoteCodeSigningServicePassword,
 			};
 
 			var logIndex = 0;

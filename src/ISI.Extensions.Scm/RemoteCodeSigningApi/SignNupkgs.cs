@@ -57,7 +57,6 @@ namespace ISI.Extensions.Scm
 
 				var createSignNupkgsBatchRequest = new SerializableDTOs.CreateSignNupkgsBatchRequest()
 				{
-					Password = request.RemoteCodeSigningServicePassword,
 					SignNupkgsBatchUuid = signNupkgsBatchUuid,
 					OverwriteAnyExistingSignature = request.OverwriteAnyExistingSignature,
 				};
@@ -113,7 +112,6 @@ namespace ISI.Extensions.Scm
 
 				var executeSignNupkgsBatchRequest = new SerializableDTOs.ExecuteSignNupkgsBatchRequest()
 				{
-					Password = request.RemoteCodeSigningServicePassword,
 					SignNupkgsBatchUuid = signNupkgsBatchUuid,
 				};
 

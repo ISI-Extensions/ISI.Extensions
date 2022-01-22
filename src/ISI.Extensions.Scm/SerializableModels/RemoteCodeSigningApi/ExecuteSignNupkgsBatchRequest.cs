@@ -26,9 +26,6 @@ namespace ISI.Extensions.Scm.SerializableModels.RemoteCodeSigningApi
 	[DataContract]
 	public partial class ExecuteSignNupkgsBatchRequest
 	{
-		[DataMember(Name = "password", EmitDefaultValue = false)]
-		public string Password { get; set; }
-
 		[DataMember(Name = "signNupkgsBatchUuid", EmitDefaultValue = false)]
 		public Guid SignNupkgsBatchUuid { get; set; }
 	}

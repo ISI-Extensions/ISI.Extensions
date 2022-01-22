@@ -39,6 +39,7 @@ namespace ISI.Extensions.Scm
 		{
 			public const string SignVsixesBatchUuid = "signVsixesBatchUuid";
 			public const string VsixUuid = "vsixUuid";
+			public const string VsixFile = "vsix";
 		}
 
 		public DTOs.SignVsixesResponse SignVsixes(DTOs.SignVsixesRequest request)
@@ -95,7 +96,7 @@ namespace ISI.Extensions.Scm
 					{
 						using (var stream = System.IO.File.OpenRead(vsixFullName))
 						{
-							ISI.Extensions.WebClient.Upload.UploadFile(uri.Uri, GetHeaders(request), stream, System.IO.Path.GetFileName(vsixFullName), "vsix");
+							ISI.Extensions.WebClient.Upload.UploadFile(uri.Uri, GetHeaders(request), stream, System.IO.Path.GetFileName(vsixFullName), SignVsixesQueryStringParameter.VsixFile);
 						}
 					}
 					catch (Exception exception)

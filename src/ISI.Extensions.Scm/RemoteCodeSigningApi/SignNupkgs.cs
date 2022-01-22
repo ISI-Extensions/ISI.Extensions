@@ -39,6 +39,7 @@ namespace ISI.Extensions.Scm
 		{
 			public const string SignNupkgsBatchUuid = "signNupkgsBatchUuid";
 			public const string NupkgUuid = "nupkgUuid";
+			public const string NupkgFile = "nupkg";
 		}
 
 		public DTOs.SignNupkgsResponse SignNupkgs(DTOs.SignNupkgsRequest request)
@@ -95,7 +96,7 @@ namespace ISI.Extensions.Scm
 					{
 						using (var stream = System.IO.File.OpenRead(nupkgFullName))
 						{
-							ISI.Extensions.WebClient.Upload.UploadFile(uri.Uri, GetHeaders(request), stream, System.IO.Path.GetFileName(nupkgFullName), "nupkg");
+							ISI.Extensions.WebClient.Upload.UploadFile(uri.Uri, GetHeaders(request), stream, System.IO.Path.GetFileName(nupkgFullName), SignNupkgsQueryStringParameter.NupkgFile);
 						}
 					}
 					catch (Exception exception)

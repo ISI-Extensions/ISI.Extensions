@@ -39,6 +39,7 @@ namespace ISI.Extensions.Scm
 		{
 			public const string SignAssembliesBatchUuid = "signAssembliesBatchUuid";
 			public const string AssemblyUuid = "assemblyUuid";
+			public const string AssemblyFile = "assembly";
 		}
 
 		public DTOs.SignAssembliesResponse SignAssemblies(DTOs.SignAssembliesRequest request)
@@ -95,7 +96,7 @@ namespace ISI.Extensions.Scm
 					{
 						using (var stream = System.IO.File.OpenRead(assemblyFullName))
 						{
-							ISI.Extensions.WebClient.Upload.UploadFile(uri.Uri, GetHeaders(request), stream, System.IO.Path.GetFileName(assemblyFullName), "assembly");
+							ISI.Extensions.WebClient.Upload.UploadFile(uri.Uri, GetHeaders(request), stream, System.IO.Path.GetFileName(assemblyFullName), SignAssembliesQueryStringParameter.AssemblyFile);
 						}
 					}
 					catch (Exception exception)

@@ -21,11 +21,8 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigningApi
 {
-	public partial class SignVsixesRequest
+	public partial class SignVsixesRequest : AbstractRequest
 	{
-		public string RemoteCodeSigningServiceUrl { get; set; }
-		public string RemoteCodeSigningServicePassword { get; set; }
-
 		public string[] VsixFullNames { get; set; }
 
 		public bool OverwriteAnyExistingSignature { get; set; } = false;

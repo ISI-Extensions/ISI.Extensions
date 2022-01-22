@@ -18,13 +18,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigningApi;
+using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.RemoteCodeSigningApi;
+using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigningApi
+namespace ISI.Extensions.Scm
 {
-	public partial class SignAssembliesRequest : AbstractRequest
+	public partial class RemoteCodeSigningApi
 	{
-		public string[] AssemblyFullNames { get; set; }
+		private ISI.Extensions.WebClient.HeaderCollection GetHeaders(DTOs.AbstractRequest request)
+		{
+			return GetHeaders(request.RemoteCodeSigningServicePassword);
+		}
 
-		public bool OverwriteAnyExistingSignature { get; set; } = false;
+		private ISI.Extensions.WebClient.HeaderCollection GetHeaders(string remoteCodeSigningServicePassword)
+		{
+			var headers = new ISI.Extensions.WebClient.HeaderCollection();
+
+			headers.AddBearerAuthentication(remoteCodeSigningServicePassword);
+
+			return headers;
+		}
 	}
 }

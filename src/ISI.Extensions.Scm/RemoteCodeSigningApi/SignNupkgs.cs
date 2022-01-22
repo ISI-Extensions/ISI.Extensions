@@ -27,6 +27,20 @@ namespace ISI.Extensions.Scm
 {
 	public partial class RemoteCodeSigningApi
 	{
+		public class SignNupkgsPath
+		{
+			public const string CreateSignNupkgsBatch = "create-sign-nupkgs-batch";
+			public const string AddNupkgToSignNupkgsBatch = "add-nupkg-to-sign-nupkgs-batch";
+			public const string ExecuteSignNupkgsBatch = "execute-sign-nupkgs-batch";
+			public const string GetNupkgFromSignNupkgsBatch = "get-nupkg-from-sign-nupkgs-batch";
+		}
+
+		public class SignNupkgsQueryStringParameter
+		{
+			public const string SignNupkgsBatchUuid = "signNupkgsBatchUuid";
+			public const string NupkgUuid = "nupkgUuid";
+		}
+
 		public DTOs.SignNupkgsResponse SignNupkgs(DTOs.SignNupkgsRequest request)
 		{
 			var response = new DTOs.SignNupkgsResponse()
@@ -38,7 +52,7 @@ namespace ISI.Extensions.Scm
 
 			{
 				var uri = new UriBuilder(request.RemoteCodeSigningServiceUrl);
-				uri.SetPathAndQueryString("api/create-sign-nupkgs-batch");
+				uri.SetPathAndQueryString(string.Format("api/{0}", SignNupkgsPath.CreateSignNupkgsBatch));
 
 				var createSignNupkgsBatchRequest = new SerializableDTOs.CreateSignNupkgsBatchRequest()
 				{
@@ -49,7 +63,7 @@ namespace ISI.Extensions.Scm
 
 				try
 				{
-					var createSignNupkgsBatchResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.CreateSignNupkgsBatchRequest, SerializableDTOs.CreateSignNupkgsBatchResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), createSignNupkgsBatchRequest, false);
+					var createSignNupkgsBatchResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.CreateSignNupkgsBatchRequest, SerializableDTOs.CreateSignNupkgsBatchResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request), createSignNupkgsBatchRequest, false);
 
 					if (createSignNupkgsBatchResponse.Error != null)
 					{
@@ -62,19 +76,26 @@ namespace ISI.Extensions.Scm
 				}
 			}
 
+			var nupkgs = new Dictionary<Guid, string>();
+
 			if (response.Success)
 			{
 				foreach (var nupkgFullName in request.NupkgFullNames)
 				{
+					var nupkgUuid = Guid.NewGuid();
+
+					nupkgs.Add(nupkgUuid, nupkgFullName);
+
 					var uri = new UriBuilder(request.RemoteCodeSigningServiceUrl);
-					uri.SetPathAndQueryString("api/add-assembly-to-sign-nupkgs-batch");
-					uri.AddQueryStringParameter("signNupkgsBatchUuid", signNupkgsBatchUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
+					uri.SetPathAndQueryString(string.Format("api/{0}", SignNupkgsPath.AddNupkgToSignNupkgsBatch));
+					uri.AddQueryStringParameter(SignNupkgsQueryStringParameter.SignNupkgsBatchUuid, signNupkgsBatchUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
+					uri.AddQueryStringParameter(SignNupkgsQueryStringParameter.NupkgUuid, nupkgUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
 
 					try
 					{
 						using (var stream = System.IO.File.OpenRead(nupkgFullName))
 						{
-							ISI.Extensions.WebClient.Upload.UploadFile(uri.Uri, null, stream, System.IO.Path.GetFileName(nupkgFullName), "nupkg");
+							ISI.Extensions.WebClient.Upload.UploadFile(uri.Uri, GetHeaders(request), stream, System.IO.Path.GetFileName(nupkgFullName), "nupkg");
 						}
 					}
 					catch (Exception exception)
@@ -87,7 +108,7 @@ namespace ISI.Extensions.Scm
 			if (response.Success)
 			{
 				var uri = new UriBuilder(request.RemoteCodeSigningServiceUrl);
-				uri.SetPathAndQueryString("api/execute-sign-nupkgs-batch");
+				uri.SetPathAndQueryString(string.Format("api/{0}", SignNupkgsPath.ExecuteSignNupkgsBatch));
 
 				var executeSignNupkgsBatchRequest = new SerializableDTOs.ExecuteSignNupkgsBatchRequest()
 				{
@@ -97,7 +118,7 @@ namespace ISI.Extensions.Scm
 
 				try
 				{
-					var executeSignNupkgsBatchResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.ExecuteSignNupkgsBatchRequest, SerializableDTOs.ExecuteSignNupkgsBatchResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), executeSignNupkgsBatchRequest, false);
+					var executeSignNupkgsBatchResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.ExecuteSignNupkgsBatchRequest, SerializableDTOs.ExecuteSignNupkgsBatchResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request), executeSignNupkgsBatchRequest, false);
 
 					if (executeSignNupkgsBatchResponse.Error != null)
 					{
@@ -111,6 +132,31 @@ namespace ISI.Extensions.Scm
 				catch (Exception exception)
 				{
 					Logger.LogError(exception, "SignNupkgs Failed\n{0}", exception.ErrorMessageFormatted());
+				}
+			}
+			
+			if (response.Success)
+			{
+				foreach (var nupkg in nupkgs)
+				{
+					var uri = new UriBuilder(request.RemoteCodeSigningServiceUrl);
+					uri.SetPathAndQueryString(string.Format("api/{0}", SignNupkgsPath.GetNupkgFromSignNupkgsBatch));
+					uri.AddQueryStringParameter(SignNupkgsQueryStringParameter.SignNupkgsBatchUuid, signNupkgsBatchUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
+					uri.AddQueryStringParameter(SignNupkgsQueryStringParameter.NupkgUuid, nupkg.Key.Formatted(GuidExtensions.GuidFormat.WithHyphens));
+
+					try
+					{
+						System.IO.File.Delete(nupkg.Value);
+
+						using (var stream = System.IO.File.OpenWrite(nupkg.Value))
+						{
+							ISI.Extensions.WebClient.Download.DownloadFile(uri.Uri, GetHeaders(request), stream);
+						}
+					}
+					catch (Exception exception)
+					{
+						Logger.LogError(exception, "SignNupkgs Failed\n{0}", exception.ErrorMessageFormatted());
+					}
 				}
 			}
 

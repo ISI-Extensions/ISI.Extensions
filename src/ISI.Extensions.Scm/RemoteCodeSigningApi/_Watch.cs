@@ -52,7 +52,7 @@ namespace ISI.Extensions.Scm
 					{
 						System.Threading.Thread.Sleep(5000);
 
-						var getStatusTrackerSnapshotResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.GetStatusTrackerSnapshotRequest, SerializableDTOs.GetStatusTrackerSnapshotResponse>(uri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), getStatusTrackerSnapshotRequest, false);
+						var getStatusTrackerSnapshotResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.GetStatusTrackerSnapshotRequest, SerializableDTOs.GetStatusTrackerSnapshotResponse>(uri.Uri, GetHeaders(remoteCodeSigningServicePassword), getStatusTrackerSnapshotRequest, false);
 
 						if (getStatusTrackerSnapshotResponse?.StatusTrackerSnapshot != null)
 						{

@@ -26,9 +26,9 @@ namespace ISI.Extensions.VisualStudio
 {
 	public partial class CodeSigningApi
 	{
-		public DTOs.VsixSignResponse VsixSign(DTOs.VsixSignRequest request)
+		public DTOs.SignVsixesResponse SignVsixes(DTOs.SignVsixesRequest request)
 		{
-			var response = new DTOs.VsixSignResponse();
+			var response = new DTOs.SignVsixesResponse();
 
 			var logger = new AddToLogLogger(request.AddToLog, Logger);
 
@@ -36,36 +36,39 @@ namespace ISI.Extensions.VisualStudio
 
 			var signingKey = GetSigningKeyFromCertificate(certificate);
 
-			using (var package = OpenVsixSignTool.Core.OpcPackage.Open(request.VsixFullName, OpenVsixSignTool.Core.OpcPackageFileMode.ReadWrite))
+			foreach (var vsixFullName in request.VsixFullNames)
 			{
-				if (package.GetSignatures().Any() && !request.OverwriteAnyExistingSignature)
+				using (var package = OpenVsixSignTool.Core.OpcPackage.Open(vsixFullName, OpenVsixSignTool.Core.OpcPackageFileMode.ReadWrite))
 				{
-					throw new Exception("The VSIX is already signed.");
-				}
-
-				var signBuilder = package.CreateSignatureBuilder();
-
-				signBuilder.EnqueueNamedPreset<OpenVsixSignTool.Core.VSIXSignatureBuilderPreset>();
-
-				var hashAlgorithmName = GetHashAlgorithmName(request.DigestAlgorithm);
-
-				var signingConfiguration = new OpenVsixSignTool.Core.SignConfigurationSet(hashAlgorithmName, hashAlgorithmName, signingKey, certificate);
-
-				var signature = signBuilder.Sign(signingConfiguration);
-
-				if (request.TimeStampUri != null)
-				{
-					var timestampBuilder = signature.CreateTimestampBuilder();
-
-					var signResponse = timestampBuilder.SignAsync(request.TimeStampUri, GetHashAlgorithmName(request.TimeStampDigestAlgorithm)).GetAwaiter().GetResult();
-
-					if (signResponse == OpenVsixSignTool.Core.TimestampResult.Failed)
+					if (package.GetSignatures().Any() && !request.OverwriteAnyExistingSignature)
 					{
-						throw new Exception("TimeStamping Signature Failed");
+						throw new Exception("The VSIX is already signed.");
 					}
-				}
 
-				logger.LogInformation("{0} has been signed", request.VsixFullName);
+					var signBuilder = package.CreateSignatureBuilder();
+
+					signBuilder.EnqueueNamedPreset<OpenVsixSignTool.Core.VSIXSignatureBuilderPreset>();
+
+					var hashAlgorithmName = GetHashAlgorithmName(request.DigestAlgorithm);
+
+					var signingConfiguration = new OpenVsixSignTool.Core.SignConfigurationSet(hashAlgorithmName, hashAlgorithmName, signingKey, certificate);
+
+					var signature = signBuilder.Sign(signingConfiguration);
+
+					if (request.TimeStampUri != null)
+					{
+						var timestampBuilder = signature.CreateTimestampBuilder();
+
+						var signResponse = timestampBuilder.SignAsync(request.TimeStampUri, GetHashAlgorithmName(request.TimeStampDigestAlgorithm)).GetAwaiter().GetResult();
+
+						if (signResponse == OpenVsixSignTool.Core.TimestampResult.Failed)
+						{
+							throw new Exception("TimeStamping Signature Failed");
+						}
+					}
+
+					logger.LogInformation("{0} has been signed", vsixFullName);
+				}
 			}
 
 			return response;

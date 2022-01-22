@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,14 +15,36 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
+namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
 {
-	public enum NupkgSignVerbosity
+	public partial class SignNupkgsRequest
 	{
-		Normal,
-		Quiet,
-		Detailed,
+		public IEnumerable<string> NupkgFullNames { get; set; }
+
+		public string WorkingDirectory { get; set; }
+
+		public Uri TimeStampUri { get; set; } = new("http://timestamp.digicert.com");
+		public CodeSigningDigestAlgorithm TimeStampDigestAlgorithm { get; set; } = CodeSigningDigestAlgorithm.Sha256;
+		
+		public string OutputDirectory { get; set; }
+
+		public string CertificateFileName { get; set; }
+		public string CertificatePassword { get; set; }
+		public string CertificateStoreName { get; set; } = "My";
+		public string CertificateStoreLocation { get; set; } = "CurrentUser";
+		public string CertificateSubjectName { get; set; }
+		public string CertificateFingerprint { get; set; }
+
+		public CodeSigningDigestAlgorithm DigestAlgorithm { get; set; } = CodeSigningDigestAlgorithm.Sha256;
+
+		public bool OverwriteAnyExistingSignature { get; set; } = false;
+
+		public CodeSigningVerbosity Verbosity { get; set; } = CodeSigningVerbosity.Normal;
+
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

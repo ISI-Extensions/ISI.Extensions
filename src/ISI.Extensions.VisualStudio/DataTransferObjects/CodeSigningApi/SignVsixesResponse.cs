@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
 {
-	public partial class VsixSignResponse
+	public partial class SignVsixesResponse
 	{
 	}
 }

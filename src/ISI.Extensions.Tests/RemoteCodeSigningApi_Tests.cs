@@ -28,7 +28,7 @@ using System.Text;
 namespace ISI.Extensions.Tests
 {
 	[TestFixture]
-	public class CodeSigningApi_Tests
+	public class RemoteCodeSigningApi_Tests
 	{
 		[OneTimeSetUp]
 		public void OneTimeSetup()
@@ -65,6 +65,26 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void SignAssemblies_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+			settings.OverrideWithEnvironmentVariables();
+
+			var remoteCodeSigningApi = new ISI.Extensions.Scm.RemoteCodeSigningApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+
+			remoteCodeSigningApi.SignAssemblies(new ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigningApi.SignAssembliesRequest()
+			{
+				RemoteCodeSigningServiceUrl = settings.CodeSigning.RemoteCodeSigningServiceUrl,
+				RemoteCodeSigningServicePassword = settings.CodeSigning.RemoteCodeSigningServicePassword,
+				AssemblyFullNames = new[]
+				{
+					@"F:\ISI\Internal Projects\ISI.SCM.Jenkins.WindowsService\src\ISI.SCM.Jenkins.WindowsService\bin\Debug\net5.0\ISI.SCM.Jenkins.WindowsService.exe",
+				}
+			});
+		}
+
+		[Test]
 		public void VsixSign_Test()
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
@@ -81,7 +101,6 @@ namespace ISI.Extensions.Tests
 				//CertificatePath = File(settings.CodeSigning.CertificateFileName),
 				//CertificatePassword = settings.CodeSigning.CertificatePassword,
 			});
-
 		}
 	}
 }

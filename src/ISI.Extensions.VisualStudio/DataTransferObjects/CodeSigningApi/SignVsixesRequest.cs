@@ -21,9 +21,9 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
 {
-	public partial class VsixSignRequest
+	public partial class SignVsixesRequest
 	{
-		public string VsixFullName { get; set; }
+		public string[] VsixFullNames { get; set; }
 
 		public Uri TimeStampUri { get; set; } = new("http://timestamp.digicert.com");
 		public CodeSigningDigestAlgorithm TimeStampDigestAlgorithm { get; set; } = CodeSigningDigestAlgorithm.Sha256;

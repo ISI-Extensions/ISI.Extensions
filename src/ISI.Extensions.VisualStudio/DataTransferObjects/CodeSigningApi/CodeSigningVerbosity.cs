@@ -17,11 +17,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
+namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
 {
-	public enum NupkgSignDigestAlgorithm
+	public enum CodeSigningVerbosity
 	{
-		[ISI.Extensions.Enum("Sha 1", "SHA1")] Sha1,
-		[ISI.Extensions.Enum("Sha 256", "SHA256")] Sha256,
+		Normal,
+		Quiet,
+		Detailed,
 	}
 }

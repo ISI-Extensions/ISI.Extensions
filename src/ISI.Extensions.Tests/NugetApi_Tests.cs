@@ -68,16 +68,16 @@ namespace ISI.Extensions.Tests
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 
-			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+			var codeSigningApi = new ISI.Extensions.VisualStudio.CodeSigningApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
 
-			nugetApi.NupkgSign(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.NupkgSignRequest()
+			codeSigningApi.SignNupkgs(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.SignNupkgsRequest()
 			{
 				NupkgFullNames = new[] { @"F:\ISI\Internal Projects\ISI.Extensions\Nuget\ISI.Extensions.10.0.8036.36374.nupkg" },
 				TimeStampUri = new Uri(settings.CodeSigning.TimeStampUrl),
 				CertificateFingerprint = settings.CodeSigning.CertificateFingerprint,
 				//CertificatePath = File(settings.CodeSigning.CertificateFileName),
 				//CertificatePassword = settings.CodeSigning.CertificatePassword,
-				Verbosity = ISI.Extensions.Nuget.DataTransferObjects.NugetApi.NupkgSignVerbosity.Detailed,
+				Verbosity = ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.CodeSigningVerbosity.Detailed,
 			});
 		}
 

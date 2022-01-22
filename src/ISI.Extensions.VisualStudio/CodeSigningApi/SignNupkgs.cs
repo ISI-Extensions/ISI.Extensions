@@ -12,24 +12,26 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
+using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Nuget.DataTransferObjects.NugetApi;
-using Microsoft.Extensions.Logging;
+using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi;
 
-namespace ISI.Extensions.Nuget
+namespace ISI.Extensions.VisualStudio
 {
-	public partial class NugetApi
+	public partial class CodeSigningApi
 	{
-		public DTOs.NupkgSignResponse NupkgSign(DTOs.NupkgSignRequest request)
+		public DTOs.SignNupkgsResponse SignNupkgs(DTOs.SignNupkgsRequest request)
 		{
-			var response = new DTOs.NupkgSignResponse();
+			var response = new DTOs.SignNupkgsResponse();
 			
+			var logger = new AddToLogLogger(request.AddToLog, Logger);
+
 			var arguments = new List<string>();
 
 			arguments.Add(string.Format(" -Timestamper \"{0}\"", request.TimeStampUri));
@@ -40,7 +42,7 @@ namespace ISI.Extensions.Nuget
 				arguments.Add(string.Format(" -OutputDirectory \"{0}\"", request.OutputDirectory));
 			}
 
-			if (string.IsNullOrWhiteSpace(request.CertificatePath))
+			if (string.IsNullOrWhiteSpace(request.CertificateFileName))
 			{
 				arguments.Add(string.Format(" -CertificateStoreName \"{0}\"", request.CertificateStoreName));
 				arguments.Add(string.Format(" -CertificateStoreLocation \"{0}\"", request.CertificateStoreLocation));
@@ -55,7 +57,7 @@ namespace ISI.Extensions.Nuget
 			}
 			else
 			{
-				arguments.Add(string.Format(" -CertificatePath \"{0}\"", request.CertificatePath));
+				arguments.Add(string.Format(" -CertificatePath \"{0}\"", request.CertificateFileName));
 				arguments.Add(string.Format(" -CertificatePassword \"{0}\"", request.CertificatePassword));
 			}
 			arguments.Add(string.Format(" -HashAlgorithm \"{0}\"", request.DigestAlgorithm.GetAbbreviation()));
@@ -67,22 +69,20 @@ namespace ISI.Extensions.Nuget
 
 			arguments.Add(string.Format(" -Verbosity \"{0}\"", request.Verbosity));
 
-			var processExeFullName = GetNugetExeFullName(new DTOs.GetNugetExeFullNameRequest()).NugetExeFullName;
-
 			foreach (var nupkgFullName in request.NupkgFullNames)
 			{
 				var processRequest = new ISI.Extensions.Process.ProcessRequest()
 				{
-					Logger = Logger, //new NullLogger(),
+					Logger = logger,
 					WorkingDirectory = request.WorkingDirectory,
-					ProcessExeFullName = processExeFullName,
+					ProcessExeFullName = "nuget.exe",
 					Arguments = new[]
 					{
 						string.Format("sign \"{0}\"", nupkgFullName),
 						string.Join(" ", arguments),
 					}};
 
-				if (request.Verbosity == ISI.Extensions.Nuget.DataTransferObjects.NugetApi.NupkgSignVerbosity.Detailed)
+				if (request.Verbosity == ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.CodeSigningVerbosity.Detailed)
 				{
 					Logger.LogInformation(processRequest.ToString());
 				}

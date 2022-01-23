@@ -26,7 +26,7 @@ namespace ISI.Extensions.VisualStudio
 {
 	public partial class CodeSigningApi
 	{
-		public DTOs.InitializeCodeSigningCertificateTokenResponse InitializeCodeSigningCertificateToken(DTOs.InitializeCodeSigningCertificateTokenRequest request)
+		public DTOs.InitializeCodeSigningCertificateTokenResponse InitializeCodeSigningCertificateToken(DTOs.IInitializeCodeSigningCertificateTokenRequest request)
 		{
 			var response = new DTOs.InitializeCodeSigningCertificateTokenResponse();
 

@@ -21,8 +21,13 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
 {
-	public partial class SignNupkgsRequest
+	public partial class SignNupkgsRequest : IInitializeCodeSigningCertificateTokenRequest
 	{
+		public string CodeSigningCertificateTokenCertificateFileName { get; set; }
+		public string CodeSigningCertificateTokenCryptographicProvider { get; set; }
+		public string CodeSigningCertificateTokenContainerName { get; set; }
+		public string CodeSigningCertificateTokenPassword { get; set; }
+
 		public IEnumerable<string> NupkgFullNames { get; set; }
 		
 		public string OutputDirectory { get; set; }

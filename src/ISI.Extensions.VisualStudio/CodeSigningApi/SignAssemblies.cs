@@ -30,118 +30,123 @@ namespace ISI.Extensions.VisualStudio
 		{
 			var response = new DTOs.SignAssembliesResponse();
 
-			var logger = new AddToLogLogger(request.AddToLog, Logger);
-
-			using (var tempDirectory = new ISI.Extensions.IO.Path.TempDirectory())
+			using (new ISI.Extensions.Windows.ScreenSaverDisabler())
 			{
-				var assemblyFullNames = request.AssemblyFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty);
+				InitializeCodeSigningCertificateToken(request);
 
-				if (!string.IsNullOrWhiteSpace(request.OutputDirectory) && System.IO.Directory.Exists(request.OutputDirectory))
+				var logger = new AddToLogLogger(request.AddToLog, Logger);
+
+				using (var tempDirectory = new ISI.Extensions.IO.Path.TempDirectory())
 				{
-					for (var fileIndex = 0; fileIndex < assemblyFullNames.Length; fileIndex++)
-					{
-						var tempAssemblyFullName = System.IO.Path.Combine(tempDirectory.FullName, System.IO.Path.GetFileName(assemblyFullNames[fileIndex]));
+					var assemblyFullNames = request.AssemblyFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
-						if (System.IO.File.Exists(tempAssemblyFullName))
+					if (!string.IsNullOrWhiteSpace(request.OutputDirectory) && System.IO.Directory.Exists(request.OutputDirectory))
+					{
+						for (var fileIndex = 0; fileIndex < assemblyFullNames.Length; fileIndex++)
 						{
-							System.IO.File.Delete(tempAssemblyFullName);
+							var tempAssemblyFullName = System.IO.Path.Combine(tempDirectory.FullName, System.IO.Path.GetFileName(assemblyFullNames[fileIndex]));
+
+							if (System.IO.File.Exists(tempAssemblyFullName))
+							{
+								System.IO.File.Delete(tempAssemblyFullName);
+							}
+
+							System.IO.File.Copy(assemblyFullNames[fileIndex], tempAssemblyFullName);
+
+							assemblyFullNames[fileIndex] = tempAssemblyFullName;
 						}
-
-						System.IO.File.Copy(assemblyFullNames[fileIndex], tempAssemblyFullName);
-
-						assemblyFullNames[fileIndex] = tempAssemblyFullName;
 					}
-				}
 
-				var arguments = new List<string>();
-				arguments.Add("sign");
+					var arguments = new List<string>();
+					arguments.Add("sign");
 
-				if (request.DigestAlgorithm == DTOs.CodeSigningDigestAlgorithm.Sha256)
-				{
-					arguments.Add("/fd SHA256");
-				}
-
-				if (request.TimeStampUri != null)
-				{
-					if (request.TimeStampDigestAlgorithm == DTOs.CodeSigningDigestAlgorithm.Sha256)
+					if (request.DigestAlgorithm == DTOs.CodeSigningDigestAlgorithm.Sha256)
 					{
-						arguments.Add("/td SHA256");
-						arguments.Add(string.Format("/tr \"{0}\"", request.TimeStampUri));
+						arguments.Add("/fd SHA256");
 					}
-					else
+
+					if (request.TimeStampUri != null)
 					{
-						arguments.Add(string.Format("/t \"{0}\"", request.TimeStampUri));
-					}
-				}
-
-				if (!string.IsNullOrWhiteSpace(request.CertificateFileName))
-				{
-					arguments.Add(string.Format("/f \"{0}\"", request.CertificateFileName));
-
-					if (!string.IsNullOrWhiteSpace(request.CertificatePassword))
-					{
-						arguments.Add(string.Format("/p \"{0}\"", request.CertificatePassword));
-					}
-				}
-
-				if (!string.IsNullOrWhiteSpace(request.CertificateFingerprint))
-				{
-					arguments.Add(string.Format("/sha1 \"{0}\"", request.CertificateFingerprint));
-				}
-
-				if (!string.IsNullOrWhiteSpace(request.CertificateSubjectName))
-				{
-					arguments.Add(string.Format("/n \"{0}\"", request.CertificateSubjectName));
-				}
-
-				if (request.OverwriteAnyExistingSignature)
-				{
-					arguments.Add("/as");
-				}
-
-				switch (request.Verbosity)
-				{
-					case DTOs.CodeSigningVerbosity.Normal:
-						break;
-					case DTOs.CodeSigningVerbosity.Quiet:
-						arguments.Add("/q");
-						break;
-					case DTOs.CodeSigningVerbosity.Detailed:
-						arguments.Add("/debug");
-						break;
-					default:
-						throw new ArgumentOutOfRangeException();
-				}
-
-				foreach (var assemblyFullName in request.AssemblyFullNames)
-				{
-					arguments.Add(string.Format("\"{0}\"", assemblyFullName));
-				}
-
-				ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-				{
-					ProcessExeFullName = "signtool.exe",
-					Arguments = arguments,
-					Logger = logger,
-				});
-
-				if (!string.IsNullOrWhiteSpace(request.OutputDirectory) && System.IO.Directory.Exists(request.OutputDirectory))
-				{
-					foreach (var assemblyFullName in assemblyFullNames)
-					{
-						var newAssemblyFullName = System.IO.Path.Combine(request.OutputDirectory, System.IO.Path.GetFileName(assemblyFullName));
-
-						if (System.IO.File.Exists(newAssemblyFullName))
+						if (request.TimeStampDigestAlgorithm == DTOs.CodeSigningDigestAlgorithm.Sha256)
 						{
-							System.IO.File.Delete(newAssemblyFullName);
+							arguments.Add("/td SHA256");
+							arguments.Add(string.Format("/tr \"{0}\"", request.TimeStampUri));
 						}
+						else
+						{
+							arguments.Add(string.Format("/t \"{0}\"", request.TimeStampUri));
+						}
+					}
 
-						System.IO.File.Copy(assemblyFullName, newAssemblyFullName);
+					if (!string.IsNullOrWhiteSpace(request.CertificateFileName))
+					{
+						arguments.Add(string.Format("/f \"{0}\"", request.CertificateFileName));
+
+						if (!string.IsNullOrWhiteSpace(request.CertificatePassword))
+						{
+							arguments.Add(string.Format("/p \"{0}\"", request.CertificatePassword));
+						}
+					}
+
+					if (!string.IsNullOrWhiteSpace(request.CertificateFingerprint))
+					{
+						arguments.Add(string.Format("/sha1 \"{0}\"", request.CertificateFingerprint));
+					}
+
+					if (!string.IsNullOrWhiteSpace(request.CertificateSubjectName))
+					{
+						arguments.Add(string.Format("/n \"{0}\"", request.CertificateSubjectName));
+					}
+
+					if (request.OverwriteAnyExistingSignature)
+					{
+						arguments.Add("/as");
+					}
+
+					switch (request.Verbosity)
+					{
+						case DTOs.CodeSigningVerbosity.Normal:
+							break;
+						case DTOs.CodeSigningVerbosity.Quiet:
+							arguments.Add("/q");
+							break;
+						case DTOs.CodeSigningVerbosity.Detailed:
+							arguments.Add("/debug");
+							break;
+						default:
+							throw new ArgumentOutOfRangeException();
+					}
+
+					foreach (var assemblyFullName in request.AssemblyFullNames)
+					{
+						arguments.Add(string.Format("\"{0}\"", assemblyFullName));
+					}
+
+					ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+					{
+						ProcessExeFullName = "signtool.exe",
+						Arguments = arguments,
+						Logger = logger,
+					});
+
+					if (!string.IsNullOrWhiteSpace(request.OutputDirectory) && System.IO.Directory.Exists(request.OutputDirectory))
+					{
+						foreach (var assemblyFullName in assemblyFullNames)
+						{
+							var newAssemblyFullName = System.IO.Path.Combine(request.OutputDirectory, System.IO.Path.GetFileName(assemblyFullName));
+
+							if (System.IO.File.Exists(newAssemblyFullName))
+							{
+								System.IO.File.Delete(newAssemblyFullName);
+							}
+
+							System.IO.File.Copy(assemblyFullName, newAssemblyFullName);
+						}
 					}
 				}
 			}
 
 			return response;
-			}
 		}
 	}
+}

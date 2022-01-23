@@ -73,14 +73,6 @@ Task("Sign")
 	{
 		if (settings.CodeSigning.DoCodeSigning && configuration.Equals("Release"))
 		{
-			InitializeCodeSigningCertificateToken(new ISI.Cake.Addin.CodeSigning.InitializeCodeSigningCertificateTokenRequest()
-			{
-				CodeSigningCertificateTokenCertificateFileName = settings.CodeSigning.Token.CertificateFileName,
-				CodeSigningCertificateTokenCryptographicProvider = settings.CodeSigning.Token.CryptographicProvider,
-				CodeSigningCertificateTokenContainerName = settings.CodeSigning.Token.ContainerName,
-				CodeSigningCertificateTokenPassword = settings.CodeSigning.Token.Password,
-			});
-
 			var files = GetFiles("./**/bin/" + configuration + "/**/ISI.*.dll");
 
 			if(files.Any())
@@ -101,13 +93,16 @@ Task("Sign")
 
 					var tempFiles = GetFiles(tempDirectory.FullName + "/ISI.*.dll");
 
-					Sign(tempFiles, new SignToolSignSettings()
+					SignAssemblies(new ISI.Cake.Addin.CodeSigning.SignAssembliesRequest()
 					{
-						TimeStampDigestAlgorithm = SignToolDigestAlgorithm.Sha256,
+						AssemblyPaths = tempFiles,
+						RemoteCodeSigningServiceUri = GetNullableUri(settings.CodeSigning.RemoteCodeSigningServiceUrl),
+						RemoteCodeSigningServicePassword = settings.CodeSigning.RemoteCodeSigningServicePassword,
 						TimeStampUri = GetNullableUri(settings.CodeSigning.TimeStampUrl),
-						CertThumbprint = settings.CodeSigning.CertificateFingerprint,
-						CertPath = GetNullableFile(settings.CodeSigning.CertificateFileName),
-						Password = settings.CodeSigning.CertificatePassword,
+						TimeStampDigestAlgorithm = SignToolDigestAlgorithm.Sha256,
+						CertificatePath = GetNullableFile(settings.CodeSigning.CertificateFileName),
+						CertificatePassword = settings.CodeSigning.CertificatePassword,
+						CertificateFingerprint = settings.CodeSigning.CertificateFingerprint,
 						DigestAlgorithm = SignToolDigestAlgorithm.Sha256,
 					});
 
@@ -128,6 +123,8 @@ Task("Nuget")
 	.IsDependentOn("Sign")
 	.Does(() =>
 	{
+		var nupgkFiles = new FilePathCollection();
+
 		foreach(var project in solution.Projects.Where(project => project.Path.FullPath.EndsWith(".csproj") && !project.Name.EndsWith(".Tests") && !project.Name.EndsWith(".T4LocalContent")).OrderBy(project => project.Name, StringComparer.InvariantCultureIgnoreCase))
 		{
 			Information(project.Name);
@@ -180,30 +177,7 @@ Task("Nuget")
 
 			DeleteFile(nuspecFile);
 
-			var nupgkFile = File(nugetPackOutputDirectory + "/" + project.Name + "." + assemblyVersion + ".nupkg");
-
-			if(settings.CodeSigning.DoCodeSigning)
-			{
-				NupkgSign(new ISI.Cake.Addin.Nuget.NupkgSignRequest()
-				{
-					NupkgFullNames = new [] { nupgkFile.Path.FullPath },
-					TimeStampDigestAlgorithm = SignToolDigestAlgorithm.Sha256,
-					TimeStampUri = GetNullableUri(settings.CodeSigning.TimeStampUrl),
-					CertificateFingerprint = settings.CodeSigning.CertificateFingerprint,
-					CertificatePath = GetNullableFile(settings.CodeSigning.CertificateFileName),
-					CertificatePassword = settings.CodeSigning.CertificatePassword,
-					DigestAlgorithm = SignToolDigestAlgorithm.Sha256,
-				});
-			}
-
-			NupkgPush(new ISI.Cake.Addin.Nuget.NupkgPushRequest()
-			{
-				NupkgFullNames = new [] { nupgkFile.Path.FullPath },
-				ApiKey = settings.Nuget.ApiKey,
-				RepositoryName = settings.Nuget.RepositoryName,
-				RepositoryUri = GetNullableUri(settings.Nuget.RepositoryUrl),
-				PackageChunksRepositoryUri = GetNullableUri(settings.Nuget.PackageChunksRepositoryUrl),
-			});
+			nupgkFiles.Add(File(nugetPackOutputDirectory + "/" + project.Name + "." + assemblyVersion + ".nupkg"));
 		}
 
 		//ISI.Extensions.T4LocalContent.*
@@ -274,31 +248,33 @@ Task("Nuget")
 
 			DeleteFile(nuspecFile);
 
-			var nupgkFile = File(nugetPackOutputDirectory + "/" + projectName + "." + assemblyVersion+ ".nupkg");
+			nupgkFiles.Add(File(nugetPackOutputDirectory + "/" + project.Name + "." + assemblyVersion + ".nupkg"));
+		}
 
-			if(settings.CodeSigning.DoCodeSigning)
+		if(settings.CodeSigning.DoCodeSigning)
+		{
+			SignNupkgs(new ISI.Cake.Addin.CodeSigning.SignNupkgsRequest()
 			{
-				NupkgSign(new ISI.Cake.Addin.Nuget.NupkgSignRequest()
-				{
-					NupkgFullNames = new [] { nupgkFile.Path.FullPath },
-					TimeStampDigestAlgorithm = SignToolDigestAlgorithm.Sha256,
-					TimeStampUri = GetNullableUri(settings.CodeSigning.TimeStampUrl),
-					CertificateFingerprint = settings.CodeSigning.CertificateFingerprint,
-					CertificatePath = GetNullableFile(settings.CodeSigning.CertificateFileName),
-					CertificatePassword = settings.CodeSigning.CertificatePassword,
-					DigestAlgorithm = SignToolDigestAlgorithm.Sha256,
-				});
-			}
-
-			NupkgPush(new ISI.Cake.Addin.Nuget.NupkgPushRequest()
-			{
-				NupkgFullNames = new [] { nupgkFile.Path.FullPath },
-				ApiKey = settings.Nuget.ApiKey,
-				RepositoryName = settings.Nuget.RepositoryName,
-				RepositoryUri = GetNullableUri(settings.Nuget.RepositoryUrl),
-				PackageChunksRepositoryUri = GetNullableUri(settings.Nuget.PackageChunksRepositoryUrl),
+				NupkgPaths = nupgkFiles,
+				RemoteCodeSigningServiceUri = GetNullableUri(settings.CodeSigning.RemoteCodeSigningServiceUrl),
+				RemoteCodeSigningServicePassword = settings.CodeSigning.RemoteCodeSigningServicePassword,
+				TimeStampUri = GetNullableUri(settings.CodeSigning.TimeStampUrl),
+				TimeStampDigestAlgorithm = SignToolDigestAlgorithm.Sha256,
+				CertificateFingerprint = settings.CodeSigning.CertificateFingerprint,
+				CertificatePath = GetNullableFile(settings.CodeSigning.CertificateFileName),
+				CertificatePassword = settings.CodeSigning.CertificatePassword,
+				DigestAlgorithm = SignToolDigestAlgorithm.Sha256,
 			});
-		}	
+		}
+
+		NupkgPush(new ISI.Cake.Addin.Nuget.NupkgPushRequest()
+		{
+			NupkgPaths = nupgkFiles,
+			ApiKey = settings.Nuget.ApiKey,
+			RepositoryName = settings.Nuget.RepositoryName,
+			RepositoryUri = GetNullableUri(settings.Nuget.RepositoryUrl),
+			PackageChunksRepositoryUri = GetNullableUri(settings.Nuget.PackageChunksRepositoryUrl),
+		});
 	});
 
 Task("Default")

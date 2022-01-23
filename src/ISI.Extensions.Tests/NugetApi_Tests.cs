@@ -63,7 +63,7 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
-		public void NupkgSign_Test()
+		public void SignNupkgs_Test()
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);

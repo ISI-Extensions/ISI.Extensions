@@ -21,8 +21,13 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
 {
-	public partial class SignVsixesRequest
+	public partial class SignVsixesRequest : IInitializeCodeSigningCertificateTokenRequest
 	{
+		public string CodeSigningCertificateTokenCertificateFileName { get; set; }
+		public string CodeSigningCertificateTokenCryptographicProvider { get; set; }
+		public string CodeSigningCertificateTokenContainerName { get; set; }
+		public string CodeSigningCertificateTokenPassword { get; set; }
+
 		public string[] VsixFullNames { get; set; }
 				
 		public string OutputDirectory { get; set; }

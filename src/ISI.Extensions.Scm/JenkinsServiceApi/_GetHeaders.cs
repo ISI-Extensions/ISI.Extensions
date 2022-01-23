@@ -18,21 +18,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.JenkinsServiceApi;
+using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.JenkinsServiceApi;
+using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.Scm.DataTransferObjects.JenkinsServiceApi
+namespace ISI.Extensions.Scm
 {
-	public partial class BackupJenkinsConfigsRequest : AbstractRequest
+	public partial class JenkinsServiceApi
 	{
-		public string SettingsFullName { get; set; }
+		private ISI.Extensions.WebClient.HeaderCollection GetHeaders(DTOs.AbstractRequest request)
+		{
+			return GetHeaders(request.JenkinsServicePassword);
+		}
 
-		public string JenkinsUrl { get; set; }
-		public string JenkinsUserName { get; set; }
-		public string JenkinsApiToken { get; set; }
+		private ISI.Extensions.WebClient.HeaderCollection GetHeaders(string jenkinsServicePassword)
+		{
+			var headers = new ISI.Extensions.WebClient.HeaderCollection();
 
-		public string[] JobIds { get; set; }
-		public string FilterByJobIdPrefix { get; set; }
-		public string FilterByJobIdSuffix { get; set; }
+			if (!string.IsNullOrWhiteSpace(jenkinsServicePassword))
+			{
+				headers.AddBearerAuthentication(jenkinsServicePassword);
+			}
 
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
+			return headers;
+		}
 	}
 }

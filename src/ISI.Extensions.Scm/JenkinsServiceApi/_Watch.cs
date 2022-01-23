@@ -12,32 +12,33 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
+using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 using DTOs = ISI.Extensions.Scm.DataTransferObjects.JenkinsServiceApi;
 using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.JenkinsServiceApi;
-using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Scm
 {
 	public partial class JenkinsServiceApi
 	{
-		private bool Watch(string jenkinsServiceUrl, string password, string statusTrackerKey)
+		public const string GetStatusTrackerSnapshotUrlPath = "get-status-tracker-snapshot";
+
+		private bool Watch(string jenkinsServiceUrl, string jenkinsServicePassword, string statusTrackerKey, Microsoft.Extensions.Logging.ILogger logger)
 		{
 			var success = false;
 
 			var uri = new UriBuilder(jenkinsServiceUrl);
-			uri.SetPathAndQueryString("api/get-status-tracker-snapshot");
+			uri.SetPathAndQueryString(string.Format("api/{0}", GetStatusTrackerSnapshotUrlPath));
 
 			var getStatusTrackerSnapshotRequest = new SerializableDTOs.GetStatusTrackerSnapshotRequest()
 			{
 				StatusTrackerKey = statusTrackerKey,
-				Password = password,
 			};
 
 			var logIndex = 0;
@@ -52,7 +53,7 @@ namespace ISI.Extensions.Scm
 					{
 						System.Threading.Thread.Sleep(5000);
 
-						var getStatusTrackerSnapshotResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.GetStatusTrackerSnapshotRequest, SerializableDTOs.GetStatusTrackerSnapshotResponse>(uri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), getStatusTrackerSnapshotRequest, false);
+						var getStatusTrackerSnapshotResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.GetStatusTrackerSnapshotRequest, SerializableDTOs.GetStatusTrackerSnapshotResponse>(uri.Uri, GetHeaders(jenkinsServicePassword), getStatusTrackerSnapshotRequest, false);
 
 						if (getStatusTrackerSnapshotResponse?.StatusTrackerSnapshot != null)
 						{
@@ -61,7 +62,7 @@ namespace ISI.Extensions.Scm
 
 							while (logIndex < getStatusTrackerSnapshotResponse.StatusTrackerSnapshot.LogEntries.Length)
 							{
-								Logger.LogInformation(string.Format("{0}", getStatusTrackerSnapshotResponse.StatusTrackerSnapshot.LogEntries[logIndex++].Description));
+								logger.LogInformation(string.Format("{0}", getStatusTrackerSnapshotResponse.StatusTrackerSnapshot.LogEntries[logIndex++].Description));
 							}
 						}
 						else
@@ -89,7 +90,7 @@ namespace ISI.Extensions.Scm
 
 			}
 
-			Logger.Log((success ? LogLevel.Information : LogLevel.Error), string.Format("  Success '{0}'.", success.TrueFalse()));
+			logger.Log((success ? LogLevel.Information : LogLevel.Error), string.Format("  Success '{0}'.", success.TrueFalse()));
 
 			return success;
 		}

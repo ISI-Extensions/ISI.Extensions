@@ -27,16 +27,19 @@ namespace ISI.Extensions.Scm
 {
 	public partial class JenkinsServiceApi
 	{
+		public const string UpdateNugetPackagesUrlPath = "update-nuget-packages";
+
 		public DTOs.UpdateNugetPackagesResponse UpdateNugetPackages(DTOs.UpdateNugetPackagesRequest request)
 		{
 			var response = new DTOs.UpdateNugetPackagesResponse();
+						
+			var logger = new AddToLogLogger(request.AddToLog, Logger);
 
 			var uri = new UriBuilder(request.JenkinsServiceUrl);
-			uri.SetPathAndQueryString("api/update-nuget-packages");
+			uri.SetPathAndQueryString(string.Format("api/{0}", UpdateNugetPackagesUrlPath));
 
 			var updateNugetPackagesRequest = new SerializableDTOs.UpdateNugetPackagesRequest()
 			{
-				Password = request.JenkinsServicePassword,
 				SettingsFullName = request.SettingsFullName,
 				JenkinsUrl = request.JenkinsUrl,
 				JenkinsUserName = request.JenkinsUserName,
@@ -65,20 +68,20 @@ namespace ISI.Extensions.Scm
 
 			try
 			{
-				var updateNugetPackagesResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.UpdateNugetPackagesRequest, SerializableDTOs.UpdateNugetPackagesResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), updateNugetPackagesRequest, false);
+				var updateNugetPackagesResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.UpdateNugetPackagesRequest, SerializableDTOs.UpdateNugetPackagesResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request), updateNugetPackagesRequest, false);
 
 				if (updateNugetPackagesResponse.Error != null)
 				{
 					throw updateNugetPackagesResponse.Error.Exception;
 				}
 
-				Logger.LogInformation(updateNugetPackagesResponse.Response.StatusTrackerKey);
+				logger.LogInformation(updateNugetPackagesResponse.Response.StatusTrackerKey);
 
-				response.Success = Watch(request.JenkinsServiceUrl, request.JenkinsServicePassword, updateNugetPackagesResponse.Response.StatusTrackerKey);
+				response.Success = Watch(request.JenkinsServiceUrl, request.JenkinsServicePassword, updateNugetPackagesResponse.Response.StatusTrackerKey, logger);
 			}
 			catch (Exception exception)
 			{
-				Logger.LogError(exception, "UpdateNugetPackages Failed\n{0}", exception.ErrorMessageFormatted());
+				logger.LogError(exception, "UpdateNugetPackages Failed\n{0}", exception.ErrorMessageFormatted());
 			}
 
 			return response;

@@ -21,12 +21,9 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.JenkinsServiceApi
 {
-	public partial class UpdateNugetPackagesRequest
+	public partial class UpdateNugetPackagesRequest : AbstractRequest
 	{
 		public string SettingsFullName { get; set; }
-
-		public string JenkinsServiceUrl { get; set; }
-		public string JenkinsServicePassword { get; set; }
 
 		public string JenkinsUrl { get; set; }
 		public string JenkinsUserName { get; set; }
@@ -47,5 +44,7 @@ namespace ISI.Extensions.Scm.DataTransferObjects.JenkinsServiceApi
 		public string[] IgnorePackageIds { get; set; }
 		public NugetPackageKey[] NugetPackageKeys { get; set; }
 		public NugetPackageKey[] UpsertAssemblyRedirectsNugetPackageKeys { get; set; }
+
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

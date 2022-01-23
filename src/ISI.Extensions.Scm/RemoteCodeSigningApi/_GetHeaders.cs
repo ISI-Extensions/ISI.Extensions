@@ -36,7 +36,10 @@ namespace ISI.Extensions.Scm
 		{
 			var headers = new ISI.Extensions.WebClient.HeaderCollection();
 
-			headers.AddBearerAuthentication(remoteCodeSigningServicePassword);
+			if (!string.IsNullOrWhiteSpace(remoteCodeSigningServicePassword))
+			{
+				headers.AddBearerAuthentication(remoteCodeSigningServicePassword);
+			}
 
 			return headers;
 		}

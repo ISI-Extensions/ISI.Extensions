@@ -27,20 +27,14 @@ namespace ISI.Extensions.Scm
 {
 	public partial class RemoteCodeSigningApi
 	{
-		public class SignAssembliesPath
-		{
-			public const string CreateSignAssembliesBatch = "create-sign-assemblies-batch";
-			public const string AddAssemblyToSignAssembliesBatch = "add-assembly-to-sign-assemblies-batch";
-			public const string ExecuteSignAssembliesBatch = "execute-sign-assemblies-batch";
-			public const string GetAssemblyFromSignAssembliesBatch = "get-assembly-from-sign-assemblies-batch";
-		}
+		public const string CreateSignAssembliesBatchUrlPath = "create-sign-assemblies-batch";
+		public const string AddAssemblyToSignAssembliesBatchUrlPath = "add-assembly-to-sign-assemblies-batch";
+		public const string ExecuteSignAssembliesBatchUrlPath = "execute-sign-assemblies-batch";
+		public const string GetAssemblyFromSignAssembliesBatchUrlPath = "get-assembly-from-sign-assemblies-batch";
 
-		public class SignAssembliesQueryStringParameter
-		{
-			public const string SignAssembliesBatchUuid = "signAssembliesBatchUuid";
-			public const string AssemblyUuid = "assemblyUuid";
-			public const string AssemblyFile = "assembly";
-		}
+		public const string SignAssembliesBatchUuidQueryStringParameter = "signAssembliesBatchUuid";
+		public const string AssemblyUuidQueryStringParameter = "assemblyUuid";
+		public const string AssemblyFileQueryStringParameter = "assembly";
 
 		public DTOs.SignAssembliesResponse SignAssemblies(DTOs.SignAssembliesRequest request)
 		{
@@ -48,14 +42,14 @@ namespace ISI.Extensions.Scm
 			{
 				Success = true,
 			};
-			
+
 			var logger = new AddToLogLogger(request.AddToLog, Logger);
 
 			var signAssembliesBatchUuid = Guid.NewGuid();
 
 			{
 				var uri = new UriBuilder(request.RemoteCodeSigningServiceUrl);
-				uri.SetPathAndQueryString(string.Format("api/{0}", SignAssembliesPath.CreateSignAssembliesBatch));
+				uri.SetPathAndQueryString(string.Format("api/{0}", CreateSignAssembliesBatchUrlPath));
 
 				var createSignAssembliesBatchRequest = new SerializableDTOs.CreateSignAssembliesBatchRequest()
 				{
@@ -90,15 +84,15 @@ namespace ISI.Extensions.Scm
 					assemblies.Add(assemblyUuid, assemblyFullName);
 
 					var uri = new UriBuilder(request.RemoteCodeSigningServiceUrl);
-					uri.SetPathAndQueryString(string.Format("api/{0}", SignAssembliesPath.AddAssemblyToSignAssembliesBatch));
-					uri.AddQueryStringParameter(SignAssembliesQueryStringParameter.SignAssembliesBatchUuid, signAssembliesBatchUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
-					uri.AddQueryStringParameter(SignAssembliesQueryStringParameter.AssemblyUuid, assemblyUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
+					uri.SetPathAndQueryString(string.Format("api/{0}", AddAssemblyToSignAssembliesBatchUrlPath));
+					uri.AddQueryStringParameter(SignAssembliesBatchUuidQueryStringParameter, signAssembliesBatchUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
+					uri.AddQueryStringParameter(AssemblyUuidQueryStringParameter, assemblyUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
 
 					try
 					{
 						using (var stream = System.IO.File.OpenRead(assemblyFullName))
 						{
-							ISI.Extensions.WebClient.Upload.UploadFile(uri.Uri, GetHeaders(request), stream, System.IO.Path.GetFileName(assemblyFullName), SignAssembliesQueryStringParameter.AssemblyFile);
+							ISI.Extensions.WebClient.Upload.UploadFile(uri.Uri, GetHeaders(request), stream, System.IO.Path.GetFileName(assemblyFullName), AssemblyFileQueryStringParameter);
 						}
 					}
 					catch (Exception exception)
@@ -111,7 +105,7 @@ namespace ISI.Extensions.Scm
 			if (response.Success)
 			{
 				var uri = new UriBuilder(request.RemoteCodeSigningServiceUrl);
-				uri.SetPathAndQueryString(string.Format("api/{0}", SignAssembliesPath.ExecuteSignAssembliesBatch));
+				uri.SetPathAndQueryString(string.Format("api/{0}", ExecuteSignAssembliesBatchUrlPath));
 
 				var executeSignAssembliesBatchRequest = new SerializableDTOs.ExecuteSignAssembliesBatchRequest()
 				{
@@ -142,9 +136,9 @@ namespace ISI.Extensions.Scm
 				foreach (var assembly in assemblies)
 				{
 					var uri = new UriBuilder(request.RemoteCodeSigningServiceUrl);
-					uri.SetPathAndQueryString(string.Format("api/{0}", SignAssembliesPath.GetAssemblyFromSignAssembliesBatch));
-					uri.AddQueryStringParameter(SignAssembliesQueryStringParameter.SignAssembliesBatchUuid, signAssembliesBatchUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
-					uri.AddQueryStringParameter(SignAssembliesQueryStringParameter.AssemblyUuid, assembly.Key.Formatted(GuidExtensions.GuidFormat.WithHyphens));
+					uri.SetPathAndQueryString(string.Format("api/{0}", GetAssemblyFromSignAssembliesBatchUrlPath));
+					uri.AddQueryStringParameter(SignAssembliesBatchUuidQueryStringParameter, signAssembliesBatchUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
+					uri.AddQueryStringParameter(AssemblyUuidQueryStringParameter, assembly.Key.Formatted(GuidExtensions.GuidFormat.WithHyphens));
 
 					try
 					{

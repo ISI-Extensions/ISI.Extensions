@@ -21,9 +21,8 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.JenkinsServiceApi
 {
-	public partial class UpdateServiceRequest
+	public partial class UpdateServiceRequest : AbstractRequest
 	{
-		public string JenkinsServiceUrl { get; set; }
-		public string JenkinsServicePassword { get; set; }
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

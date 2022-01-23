@@ -27,21 +27,22 @@ namespace ISI.Extensions.Scm
 {
 	public partial class JenkinsServiceApi
 	{
+		public const string UpdateServiceUrlPath = "update-service";
+
 		public DTOs.UpdateServiceResponse UpdateService(DTOs.UpdateServiceRequest request)
 		{
 			var response = new DTOs.UpdateServiceResponse();
+						
+			var logger = new AddToLogLogger(request.AddToLog, Logger);
 
 			var uri = new UriBuilder(request.JenkinsServiceUrl);
-			uri.SetPathAndQueryString("api/update-service");
+			uri.SetPathAndQueryString(string.Format("api/{0}", UpdateServiceUrlPath));
 
-			var updateServiceRequest = new SerializableDTOs.UpdateServiceRequest()
-			{
-				Password = request.JenkinsServicePassword,
-			};
+			var updateServiceRequest = new SerializableDTOs.UpdateServiceRequest();
 
 			try
 			{
-				var updateServiceResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.UpdateServiceRequest, SerializableDTOs.UpdateServiceResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), updateServiceRequest, false);
+				var updateServiceResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.UpdateServiceRequest, SerializableDTOs.UpdateServiceResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request), updateServiceRequest, false);
 
 				if (updateServiceResponse.Error != null)
 				{
@@ -54,7 +55,7 @@ namespace ISI.Extensions.Scm
 			}
 			catch (Exception exception)
 			{
-				Logger.LogError(exception, "UpdateService Failed\n{0}", exception.ErrorMessageFormatted());
+				logger.LogError(exception, "UpdateService Failed\n{0}", exception.ErrorMessageFormatted());
 			}
 
 			return response;

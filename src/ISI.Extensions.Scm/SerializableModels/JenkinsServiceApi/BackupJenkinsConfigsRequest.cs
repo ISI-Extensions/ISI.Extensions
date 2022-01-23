@@ -25,9 +25,6 @@ namespace ISI.Extensions.Scm.SerializableModels.JenkinsServiceApi
 	[DataContract]
 	public partial class BackupJenkinsConfigsRequest
 	{
-		[DataMember(Name = "password", EmitDefaultValue = false)]
-		public string Password { get; set; }
-
 		[DataMember(Name = "settingsFullName", EmitDefaultValue = false)]
 		public string SettingsFullName { get; set; }
 

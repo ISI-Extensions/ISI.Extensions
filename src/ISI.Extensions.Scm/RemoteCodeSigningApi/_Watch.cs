@@ -27,17 +27,14 @@ namespace ISI.Extensions.Scm
 {
 	public partial class RemoteCodeSigningApi
 	{
-		public class WatchPath
-		{
-			public const string GetStatusTrackerSnapshot = "get-status-tracker-snapshot";
-		}
+		public const string GetStatusTrackerSnapshotUrlPath = "get-status-tracker-snapshot";
 
 		private bool Watch(string remoteCodeSigningServiceUrl, string remoteCodeSigningServicePassword, string statusTrackerKey, Microsoft.Extensions.Logging.ILogger logger)
 		{
 			var success = false;
 
 			var uri = new UriBuilder(remoteCodeSigningServiceUrl);
-			uri.SetPathAndQueryString(string.Format("api/{0}", WatchPath.GetStatusTrackerSnapshot));
+			uri.SetPathAndQueryString(string.Format("api/{0}", GetStatusTrackerSnapshotUrlPath));
 
 			var getStatusTrackerSnapshotRequest = new SerializableDTOs.GetStatusTrackerSnapshotRequest()
 			{

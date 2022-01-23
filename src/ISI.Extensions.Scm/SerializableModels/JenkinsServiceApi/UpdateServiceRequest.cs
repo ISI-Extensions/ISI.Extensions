@@ -25,7 +25,6 @@ namespace ISI.Extensions.Scm.SerializableModels.JenkinsServiceApi
 	[DataContract]
 	public partial class UpdateServiceRequest
 	{
-		[DataMember(Name = "password", EmitDefaultValue = false)]
-		public string Password { get; set; }
+
 	}
 }

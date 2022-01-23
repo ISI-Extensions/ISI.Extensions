@@ -27,20 +27,14 @@ namespace ISI.Extensions.Scm
 {
 	public partial class RemoteCodeSigningApi
 	{
-		public class SignVsixesPath
-		{
-			public const string CreateSignVsixesBatch = "create-sign-vsixes-batch";
-			public const string AddVsixToSignVsixesBatch = "add-vsix-to-sign-vsixes-batch";
-			public const string ExecuteSignVsixesBatch = "execute-sign-vsixes-batch";
-			public const string GetVsixFromSignVsixesBatch = "get-vsix-from-sign-vsixes-batch";
-		}
+		public const string CreateSignVsixesBatchUrlPath = "create-sign-vsixes-batch";
+		public const string AddVsixToSignVsixesBatchUrlPath = "add-vsix-to-sign-vsixes-batch";
+		public const string ExecuteSignVsixesBatchUrlPath = "execute-sign-vsixes-batch";
+		public const string GetVsixFromSignVsixesBatchUrlPath = "get-vsix-from-sign-vsixes-batch";
 
-		public class SignVsixesQueryStringParameter
-		{
-			public const string SignVsixesBatchUuid = "signVsixesBatchUuid";
-			public const string VsixUuid = "vsixUuid";
-			public const string VsixFile = "vsix";
-		}
+		public const string SignVsixesBatchUuidQueryStringParameter = "signVsixesBatchUuid";
+		public const string VsixUuidQueryStringParameter = "vsixUuid";
+		public const string VsixFileQueryStringParameter = "vsix";
 
 		public DTOs.SignVsixesResponse SignVsixes(DTOs.SignVsixesRequest request)
 		{
@@ -48,14 +42,14 @@ namespace ISI.Extensions.Scm
 			{
 				Success = true,
 			};
-			
+
 			var logger = new AddToLogLogger(request.AddToLog, Logger);
 
 			var signVsixesBatchUuid = Guid.NewGuid();
 
 			{
 				var uri = new UriBuilder(request.RemoteCodeSigningServiceUrl);
-				uri.SetPathAndQueryString(string.Format("api/{0}", SignVsixesPath.CreateSignVsixesBatch));
+				uri.SetPathAndQueryString(string.Format("api/{0}", CreateSignVsixesBatchUrlPath));
 
 				var createSignVsixesBatchRequest = new SerializableDTOs.CreateSignVsixesBatchRequest()
 				{
@@ -90,15 +84,15 @@ namespace ISI.Extensions.Scm
 					vsixes.Add(vsixUuid, vsixFullName);
 
 					var uri = new UriBuilder(request.RemoteCodeSigningServiceUrl);
-					uri.SetPathAndQueryString(string.Format("api/{0}", SignVsixesPath.AddVsixToSignVsixesBatch));
-					uri.AddQueryStringParameter(SignVsixesQueryStringParameter.SignVsixesBatchUuid, signVsixesBatchUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
-					uri.AddQueryStringParameter(SignVsixesQueryStringParameter.VsixUuid, vsixUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
+					uri.SetPathAndQueryString(string.Format("api/{0}", AddVsixToSignVsixesBatchUrlPath));
+					uri.AddQueryStringParameter(SignVsixesBatchUuidQueryStringParameter, signVsixesBatchUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
+					uri.AddQueryStringParameter(VsixUuidQueryStringParameter, vsixUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
 
 					try
 					{
 						using (var stream = System.IO.File.OpenRead(vsixFullName))
 						{
-							ISI.Extensions.WebClient.Upload.UploadFile(uri.Uri, GetHeaders(request), stream, System.IO.Path.GetFileName(vsixFullName), SignVsixesQueryStringParameter.VsixFile);
+							ISI.Extensions.WebClient.Upload.UploadFile(uri.Uri, GetHeaders(request), stream, System.IO.Path.GetFileName(vsixFullName), VsixFileQueryStringParameter);
 						}
 					}
 					catch (Exception exception)
@@ -111,7 +105,7 @@ namespace ISI.Extensions.Scm
 			if (response.Success)
 			{
 				var uri = new UriBuilder(request.RemoteCodeSigningServiceUrl);
-				uri.SetPathAndQueryString(string.Format("api/{0}", SignVsixesPath.ExecuteSignVsixesBatch));
+				uri.SetPathAndQueryString(string.Format("api/{0}", ExecuteSignVsixesBatchUrlPath));
 
 				var executeSignVsixesBatchRequest = new SerializableDTOs.ExecuteSignVsixesBatchRequest()
 				{
@@ -142,9 +136,9 @@ namespace ISI.Extensions.Scm
 				foreach (var vsix in vsixes)
 				{
 					var uri = new UriBuilder(request.RemoteCodeSigningServiceUrl);
-					uri.SetPathAndQueryString(string.Format("api/{0}", SignVsixesPath.GetVsixFromSignVsixesBatch));
-					uri.AddQueryStringParameter(SignVsixesQueryStringParameter.SignVsixesBatchUuid, signVsixesBatchUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
-					uri.AddQueryStringParameter(SignVsixesQueryStringParameter.VsixUuid, vsix.Key.Formatted(GuidExtensions.GuidFormat.WithHyphens));
+					uri.SetPathAndQueryString(string.Format("api/{0}", GetVsixFromSignVsixesBatchUrlPath));
+					uri.AddQueryStringParameter(SignVsixesBatchUuidQueryStringParameter, signVsixesBatchUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
+					uri.AddQueryStringParameter(VsixUuidQueryStringParameter, vsix.Key.Formatted(GuidExtensions.GuidFormat.WithHyphens));
 
 					try
 					{

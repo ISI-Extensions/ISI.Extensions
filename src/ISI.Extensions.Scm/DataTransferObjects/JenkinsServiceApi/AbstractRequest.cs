@@ -21,18 +21,9 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.JenkinsServiceApi
 {
-	public partial class BackupJenkinsConfigsRequest : AbstractRequest
+	public abstract class AbstractRequest
 	{
-		public string SettingsFullName { get; set; }
-
-		public string JenkinsUrl { get; set; }
-		public string JenkinsUserName { get; set; }
-		public string JenkinsApiToken { get; set; }
-
-		public string[] JobIds { get; set; }
-		public string FilterByJobIdPrefix { get; set; }
-		public string FilterByJobIdSuffix { get; set; }
-
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
+		public string JenkinsServiceUrl { get; set; }
+		public string JenkinsServicePassword { get; set; }
 	}
 }

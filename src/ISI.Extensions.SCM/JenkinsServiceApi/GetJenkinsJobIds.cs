@@ -27,12 +27,14 @@ namespace ISI.Extensions.Scm
 {
 	public partial class JenkinsServiceApi
 	{
+		public const string GetJenkinsJobIdsUrlPath = "get-jenkins-job-ids";
+
 		public DTOs.GetJenkinsJobIdsResponse GetJenkinsJobIds(DTOs.GetJenkinsJobIdsRequest request)
 		{
 			var response = new DTOs.GetJenkinsJobIdsResponse();
 
 			var uri = new UriBuilder(request.JenkinsServiceUrl);
-			uri.SetPathAndQueryString("api/get-jenkins-job-ids");
+			uri.SetPathAndQueryString(string.Format("api/{0}", GetJenkinsJobIdsUrlPath));
 			uri.ConditionalAddQueryStringParameter(!string.IsNullOrWhiteSpace(request.SettingsFullName), "settingsFullName", request.SettingsFullName);
 			uri.ConditionalAddQueryStringParameter(!string.IsNullOrWhiteSpace(request.JenkinsUrl), "jenkinsUrl", request.JenkinsUrl);
 			uri.ConditionalAddQueryStringParameter(!string.IsNullOrWhiteSpace(request.UserName), "userName", request.UserName);

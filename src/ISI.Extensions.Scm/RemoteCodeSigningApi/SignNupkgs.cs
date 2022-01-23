@@ -48,6 +48,8 @@ namespace ISI.Extensions.Scm
 			{
 				Success = true,
 			};
+			
+			var logger = new AddToLogLogger(request.AddToLog, Logger);
 
 			var signNupkgsBatchUuid = Guid.NewGuid();
 
@@ -59,6 +61,7 @@ namespace ISI.Extensions.Scm
 				{
 					SignNupkgsBatchUuid = signNupkgsBatchUuid,
 					OverwriteAnyExistingSignature = request.OverwriteAnyExistingSignature,
+					Verbosity = request.Verbosity,
 				};
 
 				try
@@ -72,7 +75,7 @@ namespace ISI.Extensions.Scm
 				}
 				catch (Exception exception)
 				{
-					Logger.LogError(exception, "SignNupkgs Failed\n{0}", exception.ErrorMessageFormatted());
+					logger.LogError(exception, "SignNupkgs Failed\n{0}", exception.ErrorMessageFormatted());
 				}
 			}
 
@@ -100,7 +103,7 @@ namespace ISI.Extensions.Scm
 					}
 					catch (Exception exception)
 					{
-						Logger.LogError(exception, "SignNupkgs Failed\n{0}", exception.ErrorMessageFormatted());
+						logger.LogError(exception, "SignNupkgs Failed\n{0}", exception.ErrorMessageFormatted());
 					}
 				}
 			}
@@ -124,13 +127,13 @@ namespace ISI.Extensions.Scm
 						throw executeSignNupkgsBatchResponse.Error.Exception;
 					}
 
-					Logger.LogInformation(executeSignNupkgsBatchResponse.Response.StatusTrackerKey);
+					logger.LogInformation(executeSignNupkgsBatchResponse.Response.StatusTrackerKey);
 
-					response.Success = Watch(request.RemoteCodeSigningServiceUrl, request.RemoteCodeSigningServicePassword, executeSignNupkgsBatchResponse.Response.StatusTrackerKey);
+					response.Success = Watch(request.RemoteCodeSigningServiceUrl, request.RemoteCodeSigningServicePassword, executeSignNupkgsBatchResponse.Response.StatusTrackerKey, logger);
 				}
 				catch (Exception exception)
 				{
-					Logger.LogError(exception, "SignNupkgs Failed\n{0}", exception.ErrorMessageFormatted());
+					logger.LogError(exception, "SignNupkgs Failed\n{0}", exception.ErrorMessageFormatted());
 				}
 			}
 			
@@ -145,16 +148,23 @@ namespace ISI.Extensions.Scm
 
 					try
 					{
-						System.IO.File.Delete(nupkg.Value);
+						var outputFullName = nupkg.Value;
 
-						using (var stream = System.IO.File.OpenWrite(nupkg.Value))
+						if (!string.IsNullOrWhiteSpace(request.OutputDirectory) && System.IO.Directory.Exists(request.OutputDirectory))
+						{
+							outputFullName = System.IO.Path.Combine(request.OutputDirectory, System.IO.Path.GetFileName(outputFullName));
+						}
+
+						System.IO.File.Delete(outputFullName);
+
+						using (var stream = System.IO.File.OpenWrite(outputFullName))
 						{
 							ISI.Extensions.WebClient.Download.DownloadFile(uri.Uri, GetHeaders(request), stream);
 						}
 					}
 					catch (Exception exception)
 					{
-						Logger.LogError(exception, "SignNupkgs Failed\n{0}", exception.ErrorMessageFormatted());
+						logger.LogError(exception, "SignNupkgs Failed\n{0}", exception.ErrorMessageFormatted());
 					}
 				}
 			}

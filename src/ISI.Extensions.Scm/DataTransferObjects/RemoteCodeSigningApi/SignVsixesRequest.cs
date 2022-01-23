@@ -24,7 +24,13 @@ namespace ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigningApi
 	public partial class SignVsixesRequest : AbstractRequest
 	{
 		public string[] VsixFullNames { get; set; }
+				
+		public string OutputDirectory { get; set; }
 
 		public bool OverwriteAnyExistingSignature { get; set; } = false;
+		
+		public CodeSigningVerbosity Verbosity { get; set; } = CodeSigningVerbosity.Normal;
+
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

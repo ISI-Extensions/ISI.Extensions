@@ -31,5 +31,10 @@ namespace ISI.Extensions.Scm.SerializableModels.RemoteCodeSigningApi
 
 		[DataMember(Name = "overwriteAnyExistingSignature", EmitDefaultValue = false)]
 		public bool OverwriteAnyExistingSignature { get; set; } = false;
+
+		[DataMember(Name = "verbosity", EmitDefaultValue = false)]
+		public string __Verbosity { get => Verbosity.GetKey(); set => Verbosity = ISI.Extensions.Enum<ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigningApi.CodeSigningVerbosity>.Parse(value); }
+		[IgnoreDataMember]
+		public ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigningApi.CodeSigningVerbosity Verbosity { get; set; }
 	}
 }

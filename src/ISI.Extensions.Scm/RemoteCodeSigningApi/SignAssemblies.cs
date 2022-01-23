@@ -48,6 +48,8 @@ namespace ISI.Extensions.Scm
 			{
 				Success = true,
 			};
+			
+			var logger = new AddToLogLogger(request.AddToLog, Logger);
 
 			var signAssembliesBatchUuid = Guid.NewGuid();
 
@@ -59,6 +61,7 @@ namespace ISI.Extensions.Scm
 				{
 					SignAssembliesBatchUuid = signAssembliesBatchUuid,
 					OverwriteAnyExistingSignature = request.OverwriteAnyExistingSignature,
+					Verbosity = request.Verbosity,
 				};
 
 				try
@@ -72,7 +75,7 @@ namespace ISI.Extensions.Scm
 				}
 				catch (Exception exception)
 				{
-					Logger.LogError(exception, "SignAssemblies Failed\n{0}", exception.ErrorMessageFormatted());
+					logger.LogError(exception, "SignAssemblies Failed\n{0}", exception.ErrorMessageFormatted());
 				}
 			}
 
@@ -100,7 +103,7 @@ namespace ISI.Extensions.Scm
 					}
 					catch (Exception exception)
 					{
-						Logger.LogError(exception, "SignAssemblies Failed\n{0}", exception.ErrorMessageFormatted());
+						logger.LogError(exception, "SignAssemblies Failed\n{0}", exception.ErrorMessageFormatted());
 					}
 				}
 			}
@@ -124,9 +127,9 @@ namespace ISI.Extensions.Scm
 						throw executeSignAssembliesBatchResponse.Error.Exception;
 					}
 
-					Logger.LogInformation(executeSignAssembliesBatchResponse.Response.StatusTrackerKey);
+					logger.LogInformation(executeSignAssembliesBatchResponse.Response.StatusTrackerKey);
 
-					response.Success = Watch(request.RemoteCodeSigningServiceUrl, request.RemoteCodeSigningServicePassword, executeSignAssembliesBatchResponse.Response.StatusTrackerKey);
+					response.Success = Watch(request.RemoteCodeSigningServiceUrl, request.RemoteCodeSigningServicePassword, executeSignAssembliesBatchResponse.Response.StatusTrackerKey, logger);
 				}
 				catch (Exception exception)
 				{
@@ -145,16 +148,23 @@ namespace ISI.Extensions.Scm
 
 					try
 					{
-						System.IO.File.Delete(assembly.Value);
+						var outputFullName = assembly.Value;
 
-						using (var stream = System.IO.File.OpenWrite(assembly.Value))
+						if (!string.IsNullOrWhiteSpace(request.OutputDirectory) && System.IO.Directory.Exists(request.OutputDirectory))
+						{
+							outputFullName = System.IO.Path.Combine(request.OutputDirectory, System.IO.Path.GetFileName(outputFullName));
+						}
+
+						System.IO.File.Delete(outputFullName);
+
+						using (var stream = System.IO.File.OpenWrite(outputFullName))
 						{
 							ISI.Extensions.WebClient.Download.DownloadFile(uri.Uri, GetHeaders(request), stream);
 						}
 					}
 					catch (Exception exception)
 					{
-						Logger.LogError(exception, "SignAssemblies Failed\n{0}", exception.ErrorMessageFormatted());
+						logger.LogError(exception, "SignAssemblies Failed\n{0}", exception.ErrorMessageFormatted());
 					}
 				}
 			}

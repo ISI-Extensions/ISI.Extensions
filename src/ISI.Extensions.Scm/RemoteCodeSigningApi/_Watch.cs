@@ -32,7 +32,7 @@ namespace ISI.Extensions.Scm
 			public const string GetStatusTrackerSnapshot = "get-status-tracker-snapshot";
 		}
 
-		private bool Watch(string remoteCodeSigningServiceUrl, string remoteCodeSigningServicePassword, string statusTrackerKey)
+		private bool Watch(string remoteCodeSigningServiceUrl, string remoteCodeSigningServicePassword, string statusTrackerKey, Microsoft.Extensions.Logging.ILogger logger)
 		{
 			var success = false;
 
@@ -65,7 +65,7 @@ namespace ISI.Extensions.Scm
 
 							while (logIndex < getStatusTrackerSnapshotResponse.StatusTrackerSnapshot.LogEntries.Length)
 							{
-								Logger.LogInformation(string.Format("{0}", getStatusTrackerSnapshotResponse.StatusTrackerSnapshot.LogEntries[logIndex++].Description));
+								logger.LogInformation(string.Format("{0}", getStatusTrackerSnapshotResponse.StatusTrackerSnapshot.LogEntries[logIndex++].Description));
 							}
 						}
 						else
@@ -93,7 +93,7 @@ namespace ISI.Extensions.Scm
 
 			}
 
-			Logger.Log((success ? LogLevel.Information : LogLevel.Error), string.Format("  Success '{0}'.", success.TrueFalse()));
+			logger.Log((success ? LogLevel.Information : LogLevel.Error), string.Format("  Success '{0}'.", success.TrueFalse()));
 
 			return success;
 		}

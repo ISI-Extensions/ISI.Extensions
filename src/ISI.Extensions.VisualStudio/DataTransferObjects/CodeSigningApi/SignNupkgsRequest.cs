@@ -24,13 +24,13 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
 	public partial class SignNupkgsRequest
 	{
 		public IEnumerable<string> NupkgFullNames { get; set; }
+		
+		public string OutputDirectory { get; set; }
 
 		public string WorkingDirectory { get; set; }
 
 		public Uri TimeStampUri { get; set; } = new("http://timestamp.digicert.com");
 		public CodeSigningDigestAlgorithm TimeStampDigestAlgorithm { get; set; } = CodeSigningDigestAlgorithm.Sha256;
-		
-		public string OutputDirectory { get; set; }
 
 		public string CertificateFileName { get; set; }
 		public string CertificatePassword { get; set; }

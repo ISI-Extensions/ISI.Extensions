@@ -48,6 +48,8 @@ namespace ISI.Extensions.Scm
 			{
 				Success = true,
 			};
+			
+			var logger = new AddToLogLogger(request.AddToLog, Logger);
 
 			var signVsixesBatchUuid = Guid.NewGuid();
 
@@ -59,6 +61,7 @@ namespace ISI.Extensions.Scm
 				{
 					SignVsixesBatchUuid = signVsixesBatchUuid,
 					OverwriteAnyExistingSignature = request.OverwriteAnyExistingSignature,
+					Verbosity = request.Verbosity,
 				};
 
 				try
@@ -72,7 +75,7 @@ namespace ISI.Extensions.Scm
 				}
 				catch (Exception exception)
 				{
-					Logger.LogError(exception, "SignVsixes Failed\n{0}", exception.ErrorMessageFormatted());
+					logger.LogError(exception, "SignVsixes Failed\n{0}", exception.ErrorMessageFormatted());
 				}
 			}
 
@@ -100,7 +103,7 @@ namespace ISI.Extensions.Scm
 					}
 					catch (Exception exception)
 					{
-						Logger.LogError(exception, "SignVsixes Failed\n{0}", exception.ErrorMessageFormatted());
+						logger.LogError(exception, "SignVsixes Failed\n{0}", exception.ErrorMessageFormatted());
 					}
 				}
 			}
@@ -126,11 +129,11 @@ namespace ISI.Extensions.Scm
 
 					Logger.LogInformation(executeSignVsixesBatchResponse.Response.StatusTrackerKey);
 
-					response.Success = Watch(request.RemoteCodeSigningServiceUrl, request.RemoteCodeSigningServicePassword, executeSignVsixesBatchResponse.Response.StatusTrackerKey);
+					response.Success = Watch(request.RemoteCodeSigningServiceUrl, request.RemoteCodeSigningServicePassword, executeSignVsixesBatchResponse.Response.StatusTrackerKey, logger);
 				}
 				catch (Exception exception)
 				{
-					Logger.LogError(exception, "SignVsixes Failed\n{0}", exception.ErrorMessageFormatted());
+					logger.LogError(exception, "SignVsixes Failed\n{0}", exception.ErrorMessageFormatted());
 				}
 			}
 
@@ -145,16 +148,23 @@ namespace ISI.Extensions.Scm
 
 					try
 					{
-						System.IO.File.Delete(vsix.Value);
+						var outputFullName = vsix.Value;
 
-						using (var stream = System.IO.File.OpenWrite(vsix.Value))
+						if (!string.IsNullOrWhiteSpace(request.OutputDirectory) && System.IO.Directory.Exists(request.OutputDirectory))
+						{
+							outputFullName = System.IO.Path.Combine(request.OutputDirectory, System.IO.Path.GetFileName(outputFullName));
+						}
+
+						System.IO.File.Delete(outputFullName);
+
+						using (var stream = System.IO.File.OpenWrite(outputFullName))
 						{
 							ISI.Extensions.WebClient.Download.DownloadFile(uri.Uri, GetHeaders(request), stream);
 						}
 					}
 					catch (Exception exception)
 					{
-						Logger.LogError(exception, "SignVsixes Failed\n{0}", exception.ErrorMessageFormatted());
+						logger.LogError(exception, "SignVsixes Failed\n{0}", exception.ErrorMessageFormatted());
 					}
 				}
 			}

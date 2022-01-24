@@ -77,6 +77,8 @@ namespace ISI.Extensions.VisualStudio
 
 				foreach (var nupkgFullName in request.NupkgFullNames)
 				{
+					logger.LogInformation(string.Format("Signing nuget package \"{0}\"", System.IO.Path.GetFileName(nupkgFullName)));
+
 					var processRequest = new ISI.Extensions.Process.ProcessRequest()
 					{
 						Logger = logger,
@@ -91,10 +93,12 @@ namespace ISI.Extensions.VisualStudio
 
 					if (request.Verbosity == ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.CodeSigningVerbosity.Detailed)
 					{
-						Logger.LogInformation(processRequest.ToString());
+						logger.LogInformation(processRequest.ToString());
 					}
 
 					ISI.Extensions.Process.WaitForProcessResponse(processRequest);
+
+					logger.LogInformation(string.Format("Signed nuget package \"{0}\"", System.IO.Path.GetFileName(nupkgFullName)));
 				}
 			}
 

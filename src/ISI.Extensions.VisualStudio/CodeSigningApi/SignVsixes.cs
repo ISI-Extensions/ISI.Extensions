@@ -63,6 +63,8 @@ namespace ISI.Extensions.VisualStudio
 
 					foreach (var vsixFullName in request.VsixFullNames)
 					{
+						logger.LogInformation(string.Format("Signing vsix package \"{0}\"", System.IO.Path.GetFileName(vsixFullName)));
+
 						using (var package = OpenVsixSignTool.Core.OpcPackage.Open(vsixFullName, OpenVsixSignTool.Core.OpcPackageFileMode.ReadWrite))
 						{
 							if (package.GetSignatures().Any() && !request.OverwriteAnyExistingSignature)
@@ -91,9 +93,9 @@ namespace ISI.Extensions.VisualStudio
 									throw new Exception("TimeStamping Signature Failed");
 								}
 							}
-
-							logger.LogInformation("{0} has been signed", vsixFullName);
 						}
+
+						logger.LogInformation(string.Format("Signed vsix package \"{0}\"", System.IO.Path.GetFileName(vsixFullName)));
 					}
 
 					if (!string.IsNullOrWhiteSpace(request.OutputDirectory) && System.IO.Directory.Exists(request.OutputDirectory))

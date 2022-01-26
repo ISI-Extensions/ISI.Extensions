@@ -60,7 +60,7 @@ namespace ISI.Extensions.Scm
 				return deployComponentExcludeFiles;
 			}
 
-			foreach (var component in request.Components)
+			foreach (var component in request.Components.ToNullCheckedArray(NullCheckCollectionResult.Empty))
 			{
 				switch (component)
 				{

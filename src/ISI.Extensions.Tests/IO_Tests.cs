@@ -26,7 +26,15 @@ namespace ISI.Extensions.Tests
 	public class IO_Tests
 	{
 		[Test]
-		public void GetRelativePath()
+		public void GetDirectoryName_Test()
+		{
+			var xxx = System.IO.Path.GetDirectoryName(@"C:\Temp\Pizza");
+			var cccc1c = System.IO.Path.GetFileName(@"C:\Temp\Pizza\");
+			var ccccc = System.IO.Path.GetFileName(@"C:\Temp\Pizza");
+		}
+
+		[Test]
+		public void GetRelativePath_Test()
 		{
 			{
 				var relativeTo = @"F:\ISI\ISI.FrameWork\src\ISI.Extensions\ISI.Extensions.UnitTests";

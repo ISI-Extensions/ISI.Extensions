@@ -26,6 +26,15 @@ namespace ISI.Extensions.Tests
 	public class IO_Tests
 	{
 		[Test]
+		public void GetCommonPath_Test()
+		{
+			var rootDirectory = @"E:\\ISI\\Comcast.Product.XClass.WebApplication\\src\\Comcast.Product.XClass.WebApplication\\Areas\\PizzaApi\\Controllers\\";
+			var projectRootDirectory = @"E:\\ISI\\Comcast.Product.XClass.WebApplication\\src\\Comcast.Product.XClass.WebApplication\\Areas";
+
+			var cccc1c = ISI.Extensions.IO.Path.GetCommonPath(new[] { rootDirectory, projectRootDirectory });
+		}
+
+		[Test]
 		public void GetDirectoryName_Test()
 		{
 			var xxx = System.IO.Path.GetDirectoryName(@"C:\Temp\Pizza");

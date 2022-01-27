@@ -27,8 +27,8 @@ namespace ISI.Extensions
 		{
 			public static bool IsPathEqual(string path1, string path2)
 			{
-				path1 = System.IO.Path.GetFullPath(path1).TrimEnd('\\', '/');
-				path2 = System.IO.Path.GetFullPath(path2).TrimEnd('\\', '/');
+				path1 = string.Format("{0}{1}", System.IO.Path.GetFullPath(path1).TrimEnd('\\', '/'), System.IO.Path.DirectorySeparatorChar);
+				path2 = string.Format("{0}{1}", System.IO.Path.GetFullPath(path2).TrimEnd('\\', '/'), System.IO.Path.DirectorySeparatorChar);
 
 				return string.Equals(path1, path2, StringComparison.InvariantCultureIgnoreCase);
 			}

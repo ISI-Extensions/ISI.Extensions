@@ -28,7 +28,7 @@ namespace ISI.Extensions
 		{
 			public static string GetCommonPath(IEnumerable<string> fileNames)
 			{
-				var fullNames = fileNames.ToNullCheckedArray(System.IO.Path.GetFullPath, NullCheckCollectionResult.Empty);
+				var fullNames = fileNames.ToNullCheckedArray(fileName => string.Format("{0}{1}", System.IO.Path.GetFullPath(fileName).TrimEnd('\\', '/'), System.IO.Path.DirectorySeparatorChar), NullCheckCollectionResult.Empty);
 
 				var commonPath = fullNames.First();
 

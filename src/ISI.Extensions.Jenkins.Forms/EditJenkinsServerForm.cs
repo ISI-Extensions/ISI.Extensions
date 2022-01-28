@@ -22,6 +22,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ISI.Extensions.Jenkins.Forms.Extensions;
 
 namespace ISI.Extensions.Jenkins.Forms
 {
@@ -53,8 +54,7 @@ namespace ISI.Extensions.Jenkins.Forms
 		{
 			InitializeComponent();
 
-			//this.ApplyFormLocationAndSize(nameof(EditJenkinsServerForm), new List<>());
-			//JenkinsSettings.ApplyFormSize(nameof(EditJenkinsServerForm), this);
+			JenkinsSettings.ApplyFormSize(nameof(EditJenkinsServerForm), this);
 
 			flpDirectories.Visible = false;
 			btnCancel.Visible = false;
@@ -120,7 +120,7 @@ namespace ISI.Extensions.Jenkins.Forms
 
 			btnOK.Click += (clickSender, clickEventArgs) =>
 			{
-				//JenkinsSettings.RecordFormSize(this);
+				JenkinsSettings.RecordFormSize(this);
 
 				JenkinsServer.JenkinsUrl = txtJenkinsUrl.Text;
 				JenkinsServer.Description = txtDescription.Text;

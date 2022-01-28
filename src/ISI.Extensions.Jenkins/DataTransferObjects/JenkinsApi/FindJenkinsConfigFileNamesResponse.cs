@@ -13,15 +13,16 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle("ISI.Extensions.Windows.Forms")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("ISI.Extensions.Windows.Forms")]
-[assembly: AssemblyCulture("")]
+namespace ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi
+{
+	public partial class FindJenkinsConfigFileNamesResponse
+	{
+		public string[] JenkinsConfigFileNames { get; set; }
+	}
+}

@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -12,22 +12,43 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi;
 
-namespace ISI.Extensions.VisualStudio
+namespace ISI.Extensions.Jenkins
 {
-	public interface ICodeExtensionProvider
+	public partial class JenkinsApi
 	{
-		Guid CodeExtensionProviderUuid { get; }
-		string Description { get; }
+		public DTOs.FindJenkinsConfigFileNamesResponse FindJenkinsConfigFileNames(DTOs.FindJenkinsConfigFileNamesRequest request)
+		{
+			var response = new DTOs.FindJenkinsConfigFileNamesResponse();
 
-		string Namespace { get; }
+			var jenkinsConfigFileNames = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
 
-		string[] DefaultUsingStatements { get; }
+			foreach (var path in request.Paths)
+			{
+				if (System.IO.File.Exists(path) && IsJenkinsConfigFile(new ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi.IsJenkinsConfigFileRequest()
+				{
+					FileName = path,
+				}).IsJenkinsConfigFile)
+				{
+					jenkinsConfigFileNames.Add(path);
+				}
+				else if (System.IO.Directory.Exists(path))
+				{
+					jenkinsConfigFileNames.UnionWith(System.IO.Directory.EnumerateFiles(path, string.Format("*{0}", JenkinsConfigFileNameExtension), System.IO.SearchOption.AllDirectories));
+				}
+			}
 
-		CodeGenerationClassInjector[] DefaultClassInjectors { get; }
+			response.JenkinsConfigFileNames = jenkinsConfigFileNames.ToArray();
+
+			return response;
+		}
 	}
 }

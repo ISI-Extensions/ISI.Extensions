@@ -15,19 +15,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace ISI.Extensions.VisualStudio
+namespace ISI.Extensions.Jenkins.Forms
 {
-	public interface ICodeExtensionProvider
+	public enum TaskActionStatus
 	{
-		Guid CodeExtensionProviderUuid { get; }
-		string Description { get; }
-
-		string Namespace { get; }
-
-		string[] DefaultUsingStatements { get; }
-
-		CodeGenerationClassInjector[] DefaultClassInjectors { get; }
+		Default,
+		Running,
+		Success,
+		Errored
 	}
 }

@@ -22,9 +22,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ISI.Extensions.Windows.Forms.Extensions;
 
-namespace ISI.Extensions.Jenkins.UI
+namespace ISI.Extensions.Jenkins.Forms
 {
 	public partial class EditJenkinsServerForm : Form
 	{

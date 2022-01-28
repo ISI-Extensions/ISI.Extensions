@@ -15,19 +15,27 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace ISI.Extensions.VisualStudio
+namespace ISI.Extensions.Jenkins.Forms.Extensions
 {
-	public interface ICodeExtensionProvider
+	public static class TaskActionStatusExtensions
 	{
-		Guid CodeExtensionProviderUuid { get; }
-		string Description { get; }
+		public static System.Drawing.Color GetColor(this TaskActionStatus taskActionStatus)
+		{
+			switch (taskActionStatus)
+			{
+				case TaskActionStatus.Running:
+					return System.Drawing.Color.Yellow;
+				case TaskActionStatus.Success:
+					return System.Drawing.Color.Green;
+				case TaskActionStatus.Errored:
+					return System.Drawing.Color.Red;
+			}
 
-		string Namespace { get; }
-
-		string[] DefaultUsingStatements { get; }
-
-		CodeGenerationClassInjector[] DefaultClassInjectors { get; }
+			return System.Drawing.SystemColors.ControlText;
+		}
 	}
 }

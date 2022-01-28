@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,19 +15,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace ISI.Extensions.VisualStudio
+namespace ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi
 {
-	public interface ICodeExtensionProvider
+	public partial class IsJenkinsConfigFileResponse
 	{
-		Guid CodeExtensionProviderUuid { get; }
-		string Description { get; }
-
-		string Namespace { get; }
-
-		string[] DefaultUsingStatements { get; }
-
-		CodeGenerationClassInjector[] DefaultClassInjectors { get; }
+		public bool IsJenkinsConfigFile { get; set; }
 	}
 }

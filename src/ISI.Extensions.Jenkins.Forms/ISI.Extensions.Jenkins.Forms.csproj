@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{701672A4-A4C1-4560-AE06-CD2AE1AD472B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ISI.Extensions.Jenkins.Forms</RootNamespace>
+    <AssemblyName>ISI.Extensions.Jenkins.Forms</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <LangVersion>latest</LangVersion>
+    <RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\ISI.Extensions.AssemblyInfo.cs">
+      <Link>Properties\ISI.Extensions.AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\ISI.Extensions.Version.cs">
+      <Link>Properties\ISI.Extensions.Version.cs</Link>
+    </Compile>
+    <Compile Include="EditJenkinsServerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditJenkinsServerForm.Designer.cs">
+      <DependentUpon>EditJenkinsServerForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Extensions\JenkinsSettingsExtensions\ApplyFormSize.cs" />
+    <Compile Include="Extensions\JenkinsSettingsExtensions\RecordFormSize.cs" />
+    <Compile Include="Extensions\TaskActionStatusExtensions\GetColor.cs" />
+    <Compile Include="JenkinsServersForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="JenkinsServersForm.Designer.cs">
+      <DependentUpon>JenkinsServersForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PickExistingJenkinsServerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PickExistingJenkinsServerForm.Designer.cs">
+      <DependentUpon>PickExistingJenkinsServerForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PickJenkinsServerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PickJenkinsServerForm.Designer.cs">
+      <DependentUpon>PickJenkinsServerForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PullJenkinsConfigFromJenkinsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PullJenkinsConfigFromJenkinsForm.Designer.cs">
+      <DependentUpon>PullJenkinsConfigFromJenkinsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PushJenkinsConfigToJenkinsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PushJenkinsConfigToJenkinsForm.Designer.cs">
+      <DependentUpon>PushJenkinsConfigToJenkinsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TaskActionStatus.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\ISI.Extensions.licenseheader">
+      <Link>ISI.Extensions.licenseheader</Link>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EditJenkinsServerForm.resx">
+      <DependentUpon>EditJenkinsServerForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="JenkinsServersForm.resx">
+      <DependentUpon>JenkinsServersForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PickExistingJenkinsServerForm.resx">
+      <DependentUpon>PickExistingJenkinsServerForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PickJenkinsServerForm.resx">
+      <DependentUpon>PickJenkinsServerForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PullJenkinsConfigFromJenkinsForm.resx">
+      <DependentUpon>PullJenkinsConfigFromJenkinsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PushJenkinsConfigToJenkinsForm.resx">
+      <DependentUpon>PushJenkinsConfigToJenkinsForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ISI.Extensions.Jenkins\ISI.Extensions.Jenkins.csproj">
+      <Project>{b857b791-3f8a-445c-8f9d-2619b2689019}</Project>
+      <Name>ISI.Extensions.Jenkins</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj">
+      <Project>{09cea440-36de-4036-8c18-be4e476c1477}</Project>
+      <Name>ISI.Extensions</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions">
+      <Version>6.0.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

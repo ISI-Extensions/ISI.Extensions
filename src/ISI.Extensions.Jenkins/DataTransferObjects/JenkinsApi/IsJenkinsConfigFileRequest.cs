@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -19,45 +19,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.Windows.Forms.Extensions
+namespace ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi
 {
-	public static partial class FormExtensions
+	public partial class IsJenkinsConfigFileRequest
 	{
-		public static void ApplyFormLocationAndSize(this System.Windows.Forms.Form form, IEnumerable<ISI.Extensions.Windows.Forms.FormLocationAndSize> formLocationAndSizes)
-		{
-			ApplyFormLocationAndSize(form, form.Name, formLocationAndSizes);
-		}
-
-		public static void ApplyFormLocationAndSize(this System.Windows.Forms.Form form, string formName, IEnumerable<ISI.Extensions.Windows.Forms.FormLocationAndSize> formLocationAndSizes)
-		{
-			var formLocationAndSize = formLocationAndSizes.FirstOrDefault(formLocationAndSize => string.Equals(formLocationAndSize.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
-
-			if (formLocationAndSize == null)
-			{
-				throw new Exception($"Form not found \"{formName}\"");
-			}
-
-			ApplyFormLocationAndSize(form, formLocationAndSize);
-		}
-
-		public static void ApplyFormLocationAndSize(this System.Windows.Forms.Form form, ISI.Extensions.Windows.Forms.FormLocationAndSize formLocationAndSize)
-		{
-			var workingArea = System.Windows.Forms.Screen.FromControl(form).WorkingArea;
-
-			if (formLocationAndSize.Top + formLocationAndSize.Height > workingArea.Height)
-			{
-				formLocationAndSize.Top = 0;
-			}
-
-			if (formLocationAndSize.Left + formLocationAndSize.Width > workingArea.Width)
-			{
-				formLocationAndSize.Left = 0;
-			}
-
-			form.Left = formLocationAndSize.Left;
-			form.Top = formLocationAndSize.Top;
-			form.Width = formLocationAndSize.Width;
-			form.Height = formLocationAndSize.Height;
-		}
+		public string FileName { get; set; }
 	}
 }

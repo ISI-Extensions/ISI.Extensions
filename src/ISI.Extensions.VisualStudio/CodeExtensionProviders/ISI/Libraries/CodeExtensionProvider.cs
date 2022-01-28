@@ -34,6 +34,30 @@ namespace ISI.Extensions.VisualStudio
 					string ICodeExtensionProvider.Description => "ISI.Libraries";
 
 					public string Namespace => "ISI.Libraries";
+
+					public string[] DefaultUsingStatements => new[]
+					{
+						"System",
+						"System.Collections.Generic",
+						"System.Linq",
+						"System.Text",
+						"System.Threading.Tasks",
+						"ISI.Libraries.Extensions",
+					};
+
+					public CodeGenerationClassInjector[] DefaultClassInjectors => new[]
+					{
+						new CodeGenerationClassInjector()
+						{
+							Type = "ISI.Libraries.Tracing.ITrace",
+							Name = "Trace",
+						},
+						new CodeGenerationClassInjector()
+						{
+							Type = "ISI.Libraries.IDateTimeStamper",
+							Name = "DateTimeStamper",
+						},
+					};
 				}
 			}
 		}

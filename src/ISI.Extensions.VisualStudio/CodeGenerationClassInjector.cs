@@ -19,15 +19,9 @@ using System.Text;
 
 namespace ISI.Extensions.VisualStudio
 {
-	public interface ICodeExtensionProvider
+	public class CodeGenerationClassInjector
 	{
-		Guid CodeExtensionProviderUuid { get; }
-		string Description { get; }
-
-		string Namespace { get; }
-
-		string[] DefaultUsingStatements { get; }
-
-		CodeGenerationClassInjector[] DefaultClassInjectors { get; }
+		public string Type { get; set; }
+		public string Name { get; set; }
 	}
 }

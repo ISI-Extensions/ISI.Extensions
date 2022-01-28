@@ -13,8 +13,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
-
-namespace ISI.Extensions.Jenkins.UI
+namespace ISI.Extensions.Jenkins.Forms
 {
 	partial class EditJenkinsServerForm
 	{

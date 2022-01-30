@@ -21,6 +21,8 @@ namespace ISI.Extensions.Nuget
 {
 	public class NugetPackageKey
 	{
+		public const string ClipboardTokenHeader = nameof(NugetPackageKey);
+
 		public string Package { get; set; }
 		public string Version { get; set; }
 
@@ -29,5 +31,31 @@ namespace ISI.Extensions.Nuget
 		public NugetPackageKeyTargetFramework[] TargetFrameworks { get; set; }
 
 		public override string ToString() => $"{Package} {Version}";
+
+		public string GetClipboardToken() => string.Format("{0}:{1}:{2}", ClipboardTokenHeader, Package, Version);
+
+		public static bool TryParseClipboardToken(string clipboardToken, out NugetPackageKey nugetPackageKey)
+		{
+			var clippedItem = clipboardToken.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+
+			if (((clippedItem.Length == 2) || (clippedItem.Length == 3)) && string.Equals(clippedItem[0], "NugetPackageKey", StringComparison.InvariantCultureIgnoreCase))
+			{
+				nugetPackageKey = new ISI.Extensions.Nuget.NugetPackageKey()
+				{
+					Package = clippedItem[1],
+				};
+
+				if (clippedItem.Length > 2)
+				{
+					nugetPackageKey.Version = clippedItem[2];
+				}
+
+				return true;
+			}
+
+			nugetPackageKey = null;
+
+			return false;
+		}
 	}
 }

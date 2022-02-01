@@ -63,6 +63,24 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void NupkgPush_To_ISI_SCM_Artifacts_WindowsService_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+
+			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+
+			var nupkgFullName = System.IO.Directory.EnumerateFiles(@"F:\ISI\Internal Projects\ISI.Extensions\Nuget", "*.nupkg").First();
+
+			nugetApi.NupkgPush(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.NupkgPushRequest()
+			{
+				NupkgFullNames = new []{ nupkgFullName },
+				ApiKey = "xxxx",
+				RepositoryUri = new Uri("https://localhost:5001/nuget/v3/index.json"),
+			});
+		}
+
+		[Test]
 		public void SignNupkgs_Test()
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");

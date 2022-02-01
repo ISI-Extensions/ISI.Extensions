@@ -50,6 +50,8 @@ namespace ISI.Extensions.Scm
 			public const string NugetRepositoryUrl = nameof(NugetRepositoryUrl);
 			public const string NugetPackageChunksRepositoryUrl = nameof(NugetPackageChunksRepositoryUrl);
 			
+			public const string VSExtensionsRepositoryUrl = nameof(VSExtensionsRepositoryUrl);
+
 			public const string JenkinsServiceUrl = nameof(JenkinsServiceUrl);
 			public const string JenkinsServicePassword = nameof(JenkinsServicePassword);
 			public const string JenkinsUrl = nameof(JenkinsUrl);
@@ -98,6 +100,9 @@ namespace ISI.Extensions.Scm
 
 		private SettingsNuget _nuget = null;
 		public SettingsNuget Nuget => _nuget ??= new SettingsNuget(this);
+
+		private SettingsVSExtensions _vsExtensions = null;
+		public SettingsVSExtensions VSExtensions => _vsExtensions ??= new SettingsVSExtensions(this);
 
 		private SettingsJenkins _jenkins = null;
 		public SettingsJenkins Jenkins => _jenkins ??= new SettingsJenkins(this);

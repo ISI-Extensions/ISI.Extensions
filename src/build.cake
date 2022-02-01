@@ -59,7 +59,7 @@ Task("Build")
 			.SetVerbosity(Verbosity.Quiet)
 			.SetMSBuildPlatform(MSBuildPlatform.Automatic)
 			.SetPlatformTarget(PlatformTarget.MSIL)
-			.WithTarget("Build"));
+			.WithTarget("Rebuild"));
 
 		CreateAssemblyInfo(assemblyVersionFile, new AssemblyInfoSettings()
 		{

@@ -29,8 +29,13 @@ namespace ISI.Extensions.Jenkins
 
 		public const string JenkinsConfigFileNameExtension = ".jenkinsConfig";
 
+		public JenkinsApi()
+		{
+			Logger = new ConsoleLogger();
+		}
+
 		public JenkinsApi(
-			Microsoft.Extensions.Logging.ILogger logger = null)
+			Microsoft.Extensions.Logging.ILogger logger)
 		{
 			Logger = logger ?? new ConsoleLogger();
 		}

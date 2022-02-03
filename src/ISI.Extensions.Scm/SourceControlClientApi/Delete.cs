@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,24 +15,23 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 using DTOs = ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi;
 
 namespace ISI.Extensions.Scm
 {
-	public interface ISourceControlClientApi
+	public partial class SourceControlClientApi
 	{
-		Guid SourceControlTypeUuid { get; }
-		bool IsSccDirectory(string directoryName);
-		bool UsesScc(string directoryName);
-		DTOs.GetRootDirectoryResponse GetRootDirectory(DTOs.GetRootDirectoryRequest request);
-		DTOs.ListResponse List(DTOs.ListRequest request);
-		DTOs.CheckOutSingleFileResponse CheckOutSingleFile(DTOs.CheckOutSingleFileRequest request);
-		DTOs.CheckOutResponse CheckOut(DTOs.CheckOutRequest request);
-		DTOs.UpdateWorkingCopyResponse UpdateWorkingCopy(DTOs.UpdateWorkingCopyRequest request);
-		DTOs.AddResponse Add(DTOs.AddRequest request);
-		DTOs.CommitResponse Commit(DTOs.CommitRequest request);
-		DTOs.CommitWorkingCopyResponse CommitWorkingCopy(DTOs.CommitWorkingCopyRequest request);
-		DTOs.DeleteResponse Delete(DTOs.DeleteRequest request);
+		public DTOs.DeleteResponse Delete(DTOs.DeleteRequest request)
+		{
+			var response = new DTOs.DeleteResponse();
+
+			response.Success = GetSourceControlClientApi(request.FullNames.First())?.Delete(request)?.Success ?? false;
+			
+			return response;
+		}
 	}
 }

@@ -348,6 +348,90 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void Remove_vsext_Test()
+		{
+			var logger = ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();
+			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
+			var sourceControlClientApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.SourceControlClientApi>();
+
+			var solutionFullNames = new List<string>();
+			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\ISI.SolutionFullNames.txt"));
+			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Tristar.SolutionFullNames.txt"));
+			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt"));
+			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Connect.SolutionFullNames.txt"));
+
+			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionDetailsRequest()
+			{
+				Solution = solution,
+			}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
+
+			foreach (var solutionDetails in solutionDetailsSet
+				         .Where(solutionDetails => !string.IsNullOrWhiteSpace(solutionDetails.RootSourceDirectory))
+				         .OrderBy(solutionDetails => solutionDetails.UpdateNugetPackagesPriority)
+				         .ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
+			{
+				using (solutionApi.GetSolutionLock(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionLockRequest()
+				{
+					SolutionFullName = solutionDetails.SolutionFullName,
+					//AddToLog = addToLog,
+				}).Lock)
+				{
+					logger.Log(LogLevel.Information, solutionDetails.SolutionName);
+
+					if (!sourceControlClientApi.UpdateWorkingCopy(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.UpdateWorkingCopyRequest()
+					{
+						FullName = solutionDetails.RootSourceDirectory,
+						IncludeExternals = true,
+					}).Success)
+					{
+						var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
+						logger.LogError(exception.Message);
+						//throw exception;
+					}
+
+					var sourceFullNames = new List<string>();
+					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.vsext", System.IO.SearchOption.AllDirectories));
+
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\bin\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\obj\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\.svn\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\.git\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\.vs\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\_ReSharper.Caches\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+
+					var dirtyFileNames = new HashSet<string>();
+
+					if (sourceFullNames.Any())
+					{
+						sourceControlClientApi.Delete(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.DeleteRequest()
+						{
+							FullNames = sourceFullNames,
+						});
+
+						dirtyFileNames.UnionWith(sourceFullNames);
+					}
+
+					if (dirtyFileNames.Any())
+					{
+						var commitLog = new StringBuilder();
+
+						if (!sourceControlClientApi.Commit(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.CommitRequest()
+						{
+							FullNames = dirtyFileNames,
+							LogMessage = "delete .vsext file",
+							AddToLog = log => commitLog.AppendLine(log),
+						}).Success)
+						{
+							var exception = new Exception(string.Format("Error commiting \"{0}\"", solutionDetails.RootSourceDirectory));
+							logger.LogError(exception.Message);
+							throw exception;
+						}
+					}
+				}
+			}
+		}
+
+		[Test]
 		public void ReplaceFiles_Test()
 		{
 			var replacements = new List<(string FileName, string ReplacementFullName)>();

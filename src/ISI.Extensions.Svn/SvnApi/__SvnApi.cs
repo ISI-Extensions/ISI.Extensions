@@ -158,6 +158,21 @@ namespace ISI.Extensions.Svn
 
 			return response;
 		}
+		
+		SourceControlClientApiDTOs.DeleteResponse ISI.Extensions.Scm.ISourceControlClientApi.Delete(SourceControlClientApiDTOs.DeleteRequest request)
+		{
+			var response = new SourceControlClientApiDTOs.DeleteResponse();
+
+			var apiResponse = DeletePaths(new DTOs.DeleteRequest()
+			{
+				FullNames = request.FullNames,
+				AddToLog = request.AddToLog,
+			});
+
+			response.Success = apiResponse.Success;
+
+			return response;
+		}
 
 		SourceControlClientApiDTOs.CommitWorkingCopyResponse ISI.Extensions.Scm.ISourceControlClientApi.CommitWorkingCopy(SourceControlClientApiDTOs.CommitWorkingCopyRequest request)
 		{

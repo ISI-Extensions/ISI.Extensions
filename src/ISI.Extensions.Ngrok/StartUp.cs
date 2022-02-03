@@ -64,8 +64,8 @@ namespace ISI.Extensions.Ngrok
 		{
 			System.Threading.Thread.Sleep(TimeSpan.FromSeconds(5));
 
-			var server = ServiceProvider.GetRequiredService<Microsoft.AspNetCore.Hosting.Server.IServer>();
-			var addressFeature = server.Features.Get<Microsoft.AspNetCore.Hosting.Server.Features.IServerAddressesFeature>();
+			var server = ServiceProvider.GetRequiredService<global::Microsoft.AspNetCore.Hosting.Server.IServer>();
+			var addressFeature = server.Features.Get<global::Microsoft.AspNetCore.Hosting.Server.Features.IServerAddressesFeature>();
 
 			_tunnels = NGrokLocalServiceApi.CreateReplacementUrls(addressFeature.Addresses).Tunnels.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 

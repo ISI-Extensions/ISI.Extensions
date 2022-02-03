@@ -217,7 +217,7 @@ namespace ISI.Extensions.Tests
 			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
 			{
 				PackageId = "Microsoft.AspNetCore.Mvc.NewtonsoftJson",
-				PackageVersion = "5.0.12",
+				PackageVersion = "5.0.13",
 			}).NugetPackageKey);
 
 			var upsertAssemblyRedirectsNugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();

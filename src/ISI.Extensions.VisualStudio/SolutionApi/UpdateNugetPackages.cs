@@ -332,7 +332,7 @@ namespace ISI.Extensions.VisualStudio
 
 					if (!string.IsNullOrWhiteSpace(solutionDetails.ExecuteBuildScriptTargetAfterUpdateNugetPackages))
 					{
-						if (false && BuildScriptApi.TryGetBuildScript(solutionDetails.SolutionDirectory, out var buildScriptFullName))
+						if (BuildScriptApi.TryGetBuildScript(solutionDetails.SolutionDirectory, out var buildScriptFullName))
 						{
 							logger.LogInformation(string.Format("Building {0}", solutionDetails.SolutionName));
 							logger.LogInformation(string.Format("  BuildScriptFullName: {0}", buildScriptFullName));

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31112.23
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions", "ISI.Extensions\ISI.Extensions.csproj", "{09CEA440-36DE-4036-8C18-BE4E476C1477}"
 EndProject
@@ -85,6 +85,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.Nuget.Forms", "ISI.Extensions.Nuget.Forms\ISI.Extensions.Nuget.Forms.csproj", "{83507687-A765-42D3-AAA1-42F8D3A5538A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.VisualStudio.Forms", "ISI.Extensions.VisualStudio.Forms\ISI.Extensions.VisualStudio.Forms.csproj", "{2D016ABD-8345-44EF-AB00-C8B704E63953}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.Security.ActiveDirectory", "ISI.Extensions.Security.ActiveDirectory\ISI.Extensions.Security.ActiveDirectory.csproj", "{A3F39442-5569-497D-B7F1-0137BDFF27F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -406,6 +408,14 @@ Global
 		{2D016ABD-8345-44EF-AB00-C8B704E63953}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2D016ABD-8345-44EF-AB00-C8B704E63953}.Release|x64.ActiveCfg = Release|Any CPU
 		{2D016ABD-8345-44EF-AB00-C8B704E63953}.Release|x64.Build.0 = Release|Any CPU
+		{A3F39442-5569-497D-B7F1-0137BDFF27F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3F39442-5569-497D-B7F1-0137BDFF27F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3F39442-5569-497D-B7F1-0137BDFF27F1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A3F39442-5569-497D-B7F1-0137BDFF27F1}.Debug|x64.Build.0 = Debug|Any CPU
+		{A3F39442-5569-497D-B7F1-0137BDFF27F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3F39442-5569-497D-B7F1-0137BDFF27F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3F39442-5569-497D-B7F1-0137BDFF27F1}.Release|x64.ActiveCfg = Release|Any CPU
+		{A3F39442-5569-497D-B7F1-0137BDFF27F1}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

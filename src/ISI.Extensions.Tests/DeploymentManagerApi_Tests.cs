@@ -67,7 +67,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void PrePushArtifact_Test()
 		{
-			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ICS.keyValue");
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 			settings.OverrideWithEnvironmentVariables();
 
@@ -75,7 +75,7 @@ namespace ISI.Extensions.Tests
 			var buildArtifactApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.BuildArtifactApi>();
 			var deploymentManagerApi = new ISI.Extensions.Scm.DeploymentManagerApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
 
-			var artifactName = "ICS.FacilityModbus.WindowsService";
+			var artifactName = "ISI.WindowsService";
 
 			var authenticationToken = scmApi.GetAuthenticationToken(new ISI.Extensions.Scm.DataTransferObjects.ScmApi.GetAuthenticationTokenRequest()
 			{
@@ -94,8 +94,8 @@ namespace ISI.Extensions.Tests
 
 			deploymentManagerApi.DeployArtifact(new ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.DeployArtifactRequest()
 			{
-				ServicesManagerUrl = settings.GetValue("PRODUCTION-AppServer01-DeployManager-Url"),
-				Password = settings.GetValue("PRODUCTION-AppServer01-DeployManager-Password"),
+				ServicesManagerUrl = settings.GetValue("PRODUCTION-DeployManager-Url"),
+				Password = settings.GetValue("PRODUCTION-DeployManager-Password"),
 
 				AuthenticationToken = authenticationToken,
 

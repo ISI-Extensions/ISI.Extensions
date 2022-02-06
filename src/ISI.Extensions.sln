@@ -37,8 +37,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Repository.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Repository.SqlServer", "ISI.Extensions.Repository.SqlServer\ISI.Extensions.Repository.SqlServer.csproj", "{0902482A-3E9A-4A80-A923-575BC11E4CE4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.T4LocalContent", "ISI.Extensions.T4LocalContent\ISI.Extensions.T4LocalContent.csproj", "{5D91FCD4-C8BB-4218-9DC9-18AEE21533B5}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Telephony.MessageBus", "ISI.Extensions.Telephony.MessageBus\ISI.Extensions.Telephony.MessageBus.csproj", "{FC127E15-B0B0-493C-BF46-C7810B1E3648}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Tests", "ISI.Extensions.Tests\ISI.Extensions.Tests.csproj", "{12E7BEE4-1CF8-4D37-9C60-16F5B5D4D1DD}"
@@ -86,7 +84,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.Nuget.Forms"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.VisualStudio.Forms", "ISI.Extensions.VisualStudio.Forms\ISI.Extensions.VisualStudio.Forms.csproj", "{2D016ABD-8345-44EF-AB00-C8B704E63953}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.Security.ActiveDirectory", "ISI.Extensions.Security.ActiveDirectory\ISI.Extensions.Security.ActiveDirectory.csproj", "{A3F39442-5569-497D-B7F1-0137BDFF27F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Security.ActiveDirectory", "ISI.Extensions.Security.ActiveDirectory\ISI.Extensions.Security.ActiveDirectory.csproj", "{A3F39442-5569-497D-B7F1-0137BDFF27F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -232,14 +230,6 @@ Global
 		{0902482A-3E9A-4A80-A923-575BC11E4CE4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0902482A-3E9A-4A80-A923-575BC11E4CE4}.Release|x64.ActiveCfg = Release|x64
 		{0902482A-3E9A-4A80-A923-575BC11E4CE4}.Release|x64.Build.0 = Release|x64
-		{5D91FCD4-C8BB-4218-9DC9-18AEE21533B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5D91FCD4-C8BB-4218-9DC9-18AEE21533B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5D91FCD4-C8BB-4218-9DC9-18AEE21533B5}.Debug|x64.ActiveCfg = Debug|x64
-		{5D91FCD4-C8BB-4218-9DC9-18AEE21533B5}.Debug|x64.Build.0 = Debug|x64
-		{5D91FCD4-C8BB-4218-9DC9-18AEE21533B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5D91FCD4-C8BB-4218-9DC9-18AEE21533B5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5D91FCD4-C8BB-4218-9DC9-18AEE21533B5}.Release|x64.ActiveCfg = Release|x64
-		{5D91FCD4-C8BB-4218-9DC9-18AEE21533B5}.Release|x64.Build.0 = Release|x64
 		{FC127E15-B0B0-493C-BF46-C7810B1E3648}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FC127E15-B0B0-493C-BF46-C7810B1E3648}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC127E15-B0B0-493C-BF46-C7810B1E3648}.Debug|x64.ActiveCfg = Debug|x64

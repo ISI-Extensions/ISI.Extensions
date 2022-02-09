@@ -34,7 +34,6 @@ namespace ISI.Extensions.Cake
 
 			var arguments = new List<string>();
 
-			arguments.Add("cake");
 			if (!string.IsNullOrWhiteSpace(request.Target))
 			{
 				arguments.Add(string.Format("--Target={0}", request.Target));
@@ -47,12 +46,12 @@ namespace ISI.Extensions.Cake
 				}
 			}
 
-			logger.LogInformation(string.Format("dotnet {0}", string.Join(" ", arguments)));
+			logger.LogInformation(string.Format("dotnet-cake {0}", string.Join(" ", arguments)));
 
 			var processResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{
 				Logger = logger,
-				ProcessExeFullName = "dotnet",
+				ProcessExeFullName = "dotnet-cake",
 				Arguments = arguments.ToArray(),
 				WorkingDirectory = System.IO.Path.GetDirectoryName(request.BuildScriptFullName),
 			});

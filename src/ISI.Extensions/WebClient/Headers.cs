@@ -82,6 +82,19 @@ namespace ISI.Extensions.WebClient
 			return header;
 		}
 
+		public Header AddAuthorizationToken(string authenticationToken)
+		{
+			var header = new Header()
+			{
+				Key = Keys.AuthorizationToken,
+				Value = authenticationToken
+			};
+
+			this.Add(header);
+
+			return header;
+		}
+
 		public Header AddBasicAuthentication(string userName, string password)
 		{
 			var authenticationToken = string.Format("{0}{1}", Keys.Basic, Convert.ToBase64String(Encoding.Default.GetBytes(string.Format("{0}:{1}", userName, password))));

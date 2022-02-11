@@ -16,9 +16,9 @@ namespace ISI.Extensions.Dns
 		public string Protocol { get; set; }
 		public string Service { get; set; }
 		public TimeSpan Ttl { get; set; } = TimeSpan.FromHours(1);
-		public RecordType Type { get; set; }
+		public RecordType RecordType { get; set; }
 		public int Weight { get; set; }
 
-		public override string ToString() => $"{Name} {Type} {Data}";
+		public override string ToString() => $"{Name} {RecordType} {Data}";
 	}
 }

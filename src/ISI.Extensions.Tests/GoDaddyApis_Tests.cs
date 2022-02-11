@@ -76,35 +76,38 @@ namespace ISI.Extensions.Tests
 			var ipifyApi = ServiceProvider.GetService<ISI.Extensions.Ipify.IpifyApi>();
 			var domainsApi = ServiceProvider.GetService<ISI.Extensions.GoDaddy.DomainsApi>();
 
-			var externalIpAddress = ipifyApi.GetExternalIPv4().IpAddress;
-
-			var dnsRecords = domainsApi.GetDnsRecords(new ISI.Extensions.GoDaddy.DataTransferObjects.DomainsApi.GetDnsRecordsRequest()
+			using (var eventHandler = ISI.Extensions.WebClient.Rest.GetEventHandler())
 			{
-				ApiKey = settings.GetValue("GoDaddy.ApiKey"),
-				ApiSecret = settings.GetValue("GoDaddy.ApiSecret"),
-				DomainName = "MuthFamily.com",
-			}).DnsRecords;
+				var externalIpAddress = ipifyApi.GetExternalIPv4().IpAddress;
 
-			var dnsRecord = new ISI.Extensions.Dns.DnsRecord()
-			{
-				Data = externalIpAddress,
-				Name = "@",
+				var dnsRecords = domainsApi.GetDnsRecords(new ISI.Extensions.GoDaddy.DataTransferObjects.DomainsApi.GetDnsRecordsRequest()
+				{
+					ApiKey = settings.GetValue("GoDaddy.ApiKey"),
+					ApiSecret = settings.GetValue("GoDaddy.ApiSecret"),
+					DomainName = "MuthFamily.com",
+				}).DnsRecords;
+
+				var dnsRecord = new ISI.Extensions.Dns.DnsRecord()
+				{
+					Data = externalIpAddress,
+					Name = "@",
 //Port = source.Port,
 //Priority = source.Priority,
 //Protocol = source.Protocol,
 //Service = source.Service,
-				//Ttl = 3600,
-				Type = ISI.Extensions.Dns.RecordType.A,
+					//Ttl = 3600,
+					RecordType = ISI.Extensions.Dns.RecordType.A,
 //Weight = source.Weight,
-			};
+				};
 
-			var xxx = domainsApi.SetDnsRecords(new ISI.Extensions.GoDaddy.DataTransferObjects.DomainsApi.SetDnsRecordsRequest()
-			{
-				ApiKey = settings.GetValue("GoDaddy.ApiKey"),
-				ApiSecret = settings.GetValue("GoDaddy.ApiSecret"),
-				DomainName = "MuthFamily.com",
-				DnsRecords = new[] { dnsRecord },
-			});
+				var xxx = domainsApi.SetDnsRecords(new ISI.Extensions.GoDaddy.DataTransferObjects.DomainsApi.SetDnsRecordsRequest()
+				{
+					ApiKey = settings.GetValue("GoDaddy.ApiKey"),
+					ApiSecret = settings.GetValue("GoDaddy.ApiSecret"),
+					DomainName = "MuthFamily.com",
+					DnsRecords = new[] { dnsRecord },
+				});
+			}
 		}
 	}
 }

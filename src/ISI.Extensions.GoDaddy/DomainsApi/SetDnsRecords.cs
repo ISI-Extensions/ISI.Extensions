@@ -16,7 +16,7 @@ namespace ISI.Extensions.GoDaddy
 		{
 			var response = new DTOs.SetDnsRecordsResponse();
 
-			foreach (var dnsRecordsGroupedByType in request.DnsRecords.GroupBy(dnsRecord => dnsRecord.Type))
+			foreach (var dnsRecordsGroupedByType in request.DnsRecords.GroupBy(dnsRecord => dnsRecord.RecordType))
 			{
 				foreach (var dnsRecordsGroupedByName in dnsRecordsGroupedByType.GroupBy(dnsRecord => dnsRecord.Name))
 				{

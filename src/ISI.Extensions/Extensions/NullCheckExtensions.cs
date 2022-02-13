@@ -210,6 +210,26 @@ namespace ISI.Extensions.Extensions
 			return values.FirstOrDefault(predicate);
 		}
 
+		public static TValue NullCheckedLastOrDefault<TValue>(this IEnumerable<TValue> values)
+		{
+			if (values == null)
+			{
+				return default;
+			}
+
+			return values.LastOrDefault();
+		}
+
+		public static TValue NullCheckedLastOrDefault<TValue>(this IEnumerable<TValue> values, Func<TValue, bool> predicate)
+		{
+			if (values == null)
+			{
+				return default;
+			}
+
+			return values.LastOrDefault(predicate);
+		}
+
 		public static TValue[] ToNullCheckedArray<TValue>(this IEnumerable<TValue> values, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.ReturnNull)
 		{
 			if (values == null)

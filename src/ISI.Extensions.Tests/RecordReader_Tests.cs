@@ -42,7 +42,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void CsvDataReader_Test()
 		{
-			var fullName = @"E:\SitePro\Well Data\20210915\TX\HeaderRecord.csv";
+			var fullName = @"E:\data\Well Data\20210915\TX\HeaderRecord.csv";
 
 			using (var stream = System.IO.File.OpenRead(fullName))
 			{

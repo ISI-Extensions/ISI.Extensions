@@ -24,7 +24,7 @@ namespace ISI.Extensions.Extensions
 	[System.Diagnostics.DebuggerStepThrough]
 	public static partial class EnumerableExtensions
 	{
-		public static IEnumerable<IEnumerable<TValue>> Chunk<TValue>(this IEnumerable<TValue> values, int chunkSize)
+		public static IEnumerable<IEnumerable<TValue>> Chunker<TValue>(this IEnumerable<TValue> values, int chunkSize)
 		{
 			using (var chunkMasterEnumerator = new ChunkMasterEnumerator<TValue>(values.GetEnumerator(), chunkSize))
 			{

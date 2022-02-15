@@ -51,13 +51,13 @@ namespace ISI.Extensions.Extensions
 					case NullCheckCollectionResult.ReturnNull:
 						return null;
 					case NullCheckCollectionResult.Empty:
-						return (Array.Empty<TValue>()).Chunk(size);
+						return (Array.Empty<TValue>()).Chunker(size);
 					default:
 						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
 				}
 			}
 
-			return values.Chunk(size);
+			return values.Chunker(size);
 		}
 
 		public static void NullCheckedSetProperty<TObject, TProperty>(this TObject @object, System.Linq.Expressions.Expression<Func<TObject, TProperty>> property, TProperty propertyValue)

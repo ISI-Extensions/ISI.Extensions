@@ -20,7 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Parsers
+namespace ISI.Extensions.Columns
 {
 	public class ColumnInfoCollection<TRecord> : List<IColumnInfo<TRecord>>
 		where TRecord : class, new()
@@ -47,7 +47,7 @@ namespace ISI.Extensions.Parsers
 
 			foreach (var property in properties)
 			{
-				result.Add(Activator.CreateInstance(typeof(ISI.Extensions.Parsers.ColumnInfo<,>).MakeGenericType(typeof(TRecord), property.PropertyInfo.PropertyType), new object[] {new[] {property.DataMemberAttribute.Name}, property.PropertyInfo, null, null}, null) as IColumnInfo<TRecord>);
+				result.Add(Activator.CreateInstance(typeof(ISI.Extensions.Columns.ColumnInfo<,>).MakeGenericType(typeof(TRecord), property.PropertyInfo.PropertyType), new object[] {property.DataMemberAttribute.Name, property.PropertyInfo, null, null}, null) as IColumnInfo<TRecord>);
 			}
 
 			return result;

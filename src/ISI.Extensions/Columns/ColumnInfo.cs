@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,11 +20,13 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Parsers
+namespace ISI.Extensions.Columns
 {
 	public class ColumnInfo<TRecord, TProperty> : IColumnInfo<TRecord>
 		where TRecord : class, new()
 	{
+		public Type PropertyType => typeof(TProperty);
+		public string ColumnName { get; }
 		public string[] ColumnNames { get; }
 		public Func<TRecord, TProperty> GetValue { get; }
 		public Action<TRecord, TProperty> SetValue { get; }
@@ -37,17 +39,37 @@ namespace ISI.Extensions.Parsers
 			System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property,
 			Func<object, TProperty> transformValue,
 			Func<TRecord, string> formattedValue)
-			: this(columnNames, ISI.Extensions.Reflection.GetPropertyInfo(property), transformValue, formattedValue)
+			: this(null, columnNames, ISI.Extensions.Reflection.GetPropertyInfo(property), transformValue, formattedValue)
 		{
 		}
 
 		public ColumnInfo(
+			string columnName,
+			Func<TRecord, bool> isNull,
+			Func<TRecord, object> getValue)
+		{
+			ColumnName = columnName;
+			IsNull = isNull;
+			GetValue = record => (TProperty)getValue(record);
+		}
+
+		public ColumnInfo(
+			string columnName,
+			System.Reflection.PropertyInfo propertyInfo,
+			Func<object, TProperty> transformValue,
+			Func<TRecord, string> formattedValue)
+		: this(columnName, new[] { columnName }, propertyInfo, transformValue, formattedValue)
+		{
+		}
+
+		public ColumnInfo(
+			string columnName,
 			IEnumerable<string> columnNames,
 			System.Reflection.PropertyInfo propertyInfo,
 			Func<object, TProperty> transformValue,
 			Func<TRecord, string> formattedValue)
 		{
-			//var propertyInfo = ISI.Extensions.Reflection.GetPropertyInfo(property);
+			ColumnName = (string.IsNullOrWhiteSpace(columnName) ? propertyInfo.Name : columnName);
 			ColumnNames = (columnNames ?? new[] { propertyInfo.Name }).ToArray();
 			var columnType = typeof(TProperty);
 			var isNullable = (columnType.IsGenericType && (columnType.GetGenericTypeDefinition() == typeof(Nullable<>)));
@@ -148,7 +170,9 @@ namespace ISI.Extensions.Parsers
 			FormattedValue = formattedValue ?? (record => string.Format("{0}", GetValue(record)));
 		}
 
-		Type IColumnInfo<TRecord>.PropertyType => typeof(TProperty);
+		Func<object, bool> IColumnInfo.IsNull { get; }
+
+		object IColumnInfo.GetValue(object record) => GetValue(record as TRecord);
 
 		object IColumnInfo<TRecord>.GetValue(TRecord record)
 		{
@@ -174,5 +198,30 @@ namespace ISI.Extensions.Parsers
 		{
 			return FormattedValue(record);
 		}
+	}
+
+	public class ColumnInfo : IColumnInfo
+	{
+		public string ColumnName { get; }
+		public Func<object, bool> IsNull { get; }
+		public Func<object, object> GetValue { get; }
+
+		public ColumnInfo(
+			string columnName)
+			: this(columnName, record => true, record => null)
+		{
+		}
+
+		public ColumnInfo(
+			string columnName,
+			Func<object, bool> isNull,
+			Func<object, object> getValue)
+		{
+			ColumnName = columnName;
+			IsNull = isNull;
+			GetValue = getValue;
+		}
+
+		object IColumnInfo.GetValue(object record) => GetValue(record);
 	}
 }

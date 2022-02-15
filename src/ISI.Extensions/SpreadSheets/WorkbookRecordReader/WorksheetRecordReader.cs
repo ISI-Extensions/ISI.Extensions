@@ -27,10 +27,10 @@ namespace ISI.Extensions.SpreadSheets
 		public partial class WorksheetRecordReader
 		{
 			protected ISI.Extensions.SpreadSheets.IWorksheet Worksheet { get; }
-			protected ISI.Extensions.Parsers.IColumnInfo<TRecord>[] Columns { get; }
+			protected ISI.Extensions.Columns.IColumnInfo<TRecord>[] Columns { get; }
 			protected ISI.Extensions.Parsers.OnRead<TRecord>[] OnReads { get; }
 
-			public WorksheetRecordReader(ISI.Extensions.SpreadSheets.IWorksheet worksheet, IEnumerable<ISI.Extensions.Parsers.IColumnInfo<TRecord>> columns, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads)
+			public WorksheetRecordReader(ISI.Extensions.SpreadSheets.IWorksheet worksheet, IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads)
 			{
 				Worksheet = worksheet;
 				Columns = columns.ToNullCheckedArray(NullCheckCollectionResult.Empty);

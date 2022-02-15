@@ -24,7 +24,9 @@ namespace ISI.Extensions.Parsers
 {
 	public interface ITextParser
 	{
-		ITextParserResponse Read(string source);
-		ITextParserResponse Read(System.IO.StreamReader stream);
+		ITextParserContext CreateTextParserContext();
+		ITextParserResponse Read(ITextParserContext context, string source);
+		ITextParserResponse Read(ITextParserContext context, System.IO.StreamReader stream);
+		string GetUnparsed(IEnumerable<string> recordValues);
 	}
 }

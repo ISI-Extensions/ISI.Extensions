@@ -42,7 +42,9 @@ namespace ISI.Extensions
 		{
 			var parser = new ISI.Extensions.Parsers.DelimitedTextParser(' ');
 
-			var values = parser.Read(source).Record;
+			var parserContext = parser.CreateTextParserContext();
+
+			var values = parser.Read(parserContext, source).Record;
 
 			if (values.Length < 5)
 			{

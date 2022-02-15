@@ -23,13 +23,13 @@ using ISI.Extensions.Extensions;
 namespace ISI.Extensions.DataReader
 {
 	public partial class EnumerableDataReader<TRecord> : AbstractDataReader
-		where TRecord : class
+		where TRecord : class, new()
 	{
 		protected IEnumerable<IEnumerable<TRecord>> RecordSets { get; }
 		protected IEnumerator<IEnumerable<TRecord>> RecordSetsEnumerator { get; private set; }
 		protected IEnumerator<TRecord> RecordsEnumerator { get; private set; }
 
-		protected IColumnInfo[] Columns { get; }
+		protected ISI.Extensions.Columns.IColumnInfo<TRecord>[] Columns { get; }
 		protected IDictionary<string, int> ColumnLookUp { get; }
 
 		protected ISI.Extensions.DataReader.TransformRecord TransformRecord { get; }
@@ -39,7 +39,7 @@ namespace ISI.Extensions.DataReader
 		{
 		}
 
-		public EnumerableDataReader(IEnumerable<TRecord> records, ColumnInfoCollection columns, ISI.Extensions.DataReader.TransformRecord transformRecord = null)
+		public EnumerableDataReader(IEnumerable<TRecord> records, ISI.Extensions.Columns.ColumnInfoCollection<TRecord> columns, ISI.Extensions.DataReader.TransformRecord transformRecord = null)
 			: this(new[] { records }, columns, transformRecord)
 		{
 		}
@@ -49,10 +49,10 @@ namespace ISI.Extensions.DataReader
 		{
 		}
 
-		public EnumerableDataReader(IEnumerable<IEnumerable<TRecord>> recordSets, ColumnInfoCollection columns, ISI.Extensions.DataReader.TransformRecord transformRecord = null)
+		public EnumerableDataReader(IEnumerable<IEnumerable<TRecord>> recordSets, ISI.Extensions.Columns.ColumnInfoCollection<TRecord> columns, ISI.Extensions.DataReader.TransformRecord transformRecord = null)
 		{
 			RecordSets = recordSets;
-			Columns = (columns.NullCheckedAny() ? columns : ColumnInfoCollection.GetDefaultColumnInfoCollection()).ToArray();
+			Columns = (columns.NullCheckedAny() ? columns : ISI.Extensions.Columns.ColumnInfoCollection<TRecord>.GetDefault()).ToArray();
 
 			{
 				ColumnLookUp = new Dictionary<string, int>(StringComparer.InvariantCultureIgnoreCase);
@@ -106,10 +106,7 @@ namespace ISI.Extensions.DataReader
 		{
 			Values = null;
 
-			if (RecordSetsEnumerator == null)
-			{
-				RecordSetsEnumerator = RecordSets.GetEnumerator();
-			}
+			RecordSetsEnumerator ??= RecordSets.GetEnumerator();
 
 			if (RecordsEnumerator == null)
 			{

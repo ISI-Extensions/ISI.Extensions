@@ -35,18 +35,18 @@ namespace ISI.Extensions.SpreadSheets
 					protected ISI.Extensions.SpreadSheets.IWorksheetCellsRowCollection Rows { get; }
 					protected System.Collections.IEnumerator RowEnumerator { get; set; }
 
-					protected ISI.Extensions.Parsers.IColumnInfo<TRecord>[] Columns { get; }
+					protected ISI.Extensions.Columns.IColumnInfo<TRecord>[] Columns { get; }
 					protected IDictionary<string, int> ColumnLookUp { get; }
 					private int[] _columnIndexes;
 					protected int[] ColumnIndexes => _columnIndexes;
 
 					protected ISI.Extensions.Parsers.OnRead<TRecord>[] OnReads { get; }
 
-					public WorksheetRecordEnumerator(ISI.Extensions.SpreadSheets.IWorksheetCellsRowCollection rows, ISI.Extensions.Parsers.IColumnInfo<TRecord>[] columns, ISI.Extensions.Parsers.OnRead<TRecord>[] onReads)
+					public WorksheetRecordEnumerator(ISI.Extensions.SpreadSheets.IWorksheetCellsRowCollection rows, ISI.Extensions.Columns.IColumnInfo<TRecord>[] columns, ISI.Extensions.Parsers.OnRead<TRecord>[] onReads)
 					{
 						Rows = rows;
 
-						Columns = columns ?? ISI.Extensions.Parsers.ColumnInfoCollection<TRecord>.GetDefault().ToArray();
+						Columns = columns ?? ISI.Extensions.Columns.ColumnInfoCollection<TRecord>.GetDefault().ToArray();
 
 						ColumnLookUp = new Dictionary<string, int>(StringComparer.InvariantCultureIgnoreCase);
 						for (var columnIndex = 0; columnIndex < Columns.Length; columnIndex++)
@@ -158,10 +158,10 @@ namespace ISI.Extensions.SpreadSheets
 				}
 
 				protected ISI.Extensions.SpreadSheets.IWorksheetCellsRowCollection Rows { get; }
-				protected ISI.Extensions.Parsers.IColumnInfo<TRecord>[] Columns { get; }
+				protected ISI.Extensions.Columns.IColumnInfo<TRecord>[] Columns { get; }
 				protected ISI.Extensions.Parsers.OnRead<TRecord>[] OnReads { get; }
 
-				public WorksheetRecords(ISI.Extensions.SpreadSheets.IWorksheetCellsRowCollection rows, ISI.Extensions.Parsers.IColumnInfo<TRecord>[] columns, ISI.Extensions.Parsers.OnRead<TRecord>[] onReads)
+				public WorksheetRecords(ISI.Extensions.SpreadSheets.IWorksheetCellsRowCollection rows, ISI.Extensions.Columns.IColumnInfo<TRecord>[] columns, ISI.Extensions.Parsers.OnRead<TRecord>[] onReads)
 				{
 					Rows = rows;
 					Columns = columns;

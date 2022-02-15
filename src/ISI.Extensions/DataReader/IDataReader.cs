@@ -21,13 +21,6 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.DataReader
 {
-	public delegate void TransformRecord(int recordNumber, IColumnInfo[] columns, ref object[] values);
-
-	public interface IColumnInfo
-	{
-		string ColumnName { get; }
-	}
-
 	public interface IDataReader : System.Data.IDataReader
 	{
 		IDictionary<string, object> GetValuesDictionary();

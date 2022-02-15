@@ -45,7 +45,7 @@ namespace ISI.Extensions
 			}
 		}
 
-		internal static IDictionary<string, TextDelimiter> FileExtensionToTextDelimiter = new Dictionary<string, TextDelimiter>(StringComparer.InvariantCultureIgnoreCase)
+		internal static readonly IDictionary<string, TextDelimiter> FileExtensionToTextDelimiter = new Dictionary<string, TextDelimiter>(StringComparer.InvariantCultureIgnoreCase)
 		{
 			{"csv", TextDelimiter.CommaSeparatedValues},
 			{"psv", TextDelimiter.PipeDelimitedValues},

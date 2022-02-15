@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 namespace ISI.Extensions.Documents.DocumentGenerator
 {
 	public abstract class DataReaderContentGenerator<TModel> : ContentGenerator<TModel>
-		where TModel : class, IModel
+		where TModel : class, IModel, new()
 	{
 		protected DataReaderContentGenerator(
 			Microsoft.Extensions.Logging.ILogger logger)
@@ -48,13 +48,13 @@ namespace ISI.Extensions.Documents.DocumentGenerator
 		//}
 
 		public virtual System.Data.IDataReader GetDataReader<TMergeModel>(IEnumerable<TModel> models, Func<TModel, TMergeModel> converter)
-			where TMergeModel : class
+			where TMergeModel : class, new()
 		{
 			return new ISI.Extensions.DataReader.EnumerableDataReader<TMergeModel>(models.Select(converter));
 		}
 
 		public virtual System.Data.IDataReader GetDataReader<TMergeModel>(TModel model, Func<TModel, TMergeModel> converter)
-			where TMergeModel : class
+			where TMergeModel : class, new()
 		{
 			return GetDataReader<TMergeModel>(new[] { model }, converter);
 		}

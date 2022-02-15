@@ -25,27 +25,27 @@ namespace ISI.Extensions.SpreadSheets
 		where TRecord : class, new()
 	{
 		protected ISI.Extensions.SpreadSheets.IWorkbook Workbook { get; }
-		protected IEnumerable<ISI.Extensions.Parsers.IColumnInfo<TRecord>> Columns { get; }
+		protected IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> Columns { get; }
 		protected IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> OnReads { get; }
 
-		public WorkbookRecordReader(ISpreadSheetHelper spreadSheetHelper, string fileName, IEnumerable<ISI.Extensions.Parsers.IColumnInfo<TRecord>> columns, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads)
+		public WorkbookRecordReader(ISpreadSheetHelper spreadSheetHelper, string fileName, IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads)
 		{
 			Workbook = spreadSheetHelper.Open(fileName);
-			Columns = columns ?? ISI.Extensions.Parsers.ColumnInfoCollection<TRecord>.GetDefault();
+			Columns = columns ?? ISI.Extensions.Columns.ColumnInfoCollection<TRecord>.GetDefault();
 			OnReads = onReads;
 		}
 
-		public WorkbookRecordReader(ISpreadSheetHelper spreadSheetHelper, System.IO.Stream stream, IEnumerable<ISI.Extensions.Parsers.IColumnInfo<TRecord>> columns, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads)
+		public WorkbookRecordReader(ISpreadSheetHelper spreadSheetHelper, System.IO.Stream stream, IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads)
 		{
 			Workbook = spreadSheetHelper.Open(stream);
-			Columns = columns ?? ISI.Extensions.Parsers.ColumnInfoCollection<TRecord>.GetDefault();
+			Columns = columns ?? ISI.Extensions.Columns.ColumnInfoCollection<TRecord>.GetDefault();
 			OnReads = onReads;
 		}
 
-		public WorkbookRecordReader(ISI.Extensions.SpreadSheets.IWorkbook workbook, IEnumerable<ISI.Extensions.Parsers.IColumnInfo<TRecord>> columns, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads)
+		public WorkbookRecordReader(ISI.Extensions.SpreadSheets.IWorkbook workbook, IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads)
 		{
 			Workbook = workbook;
-			Columns = columns ?? ISI.Extensions.Parsers.ColumnInfoCollection<TRecord>.GetDefault();
+			Columns = columns ?? ISI.Extensions.Columns.ColumnInfoCollection<TRecord>.GetDefault();
 			OnReads = onReads;
 		}
 

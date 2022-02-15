@@ -18,16 +18,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.DataReader
+namespace ISI.Extensions.Columns
 {
-	public partial class EnumerableDataReader<TRecord>
+	public interface IColumnInfo
 	{
-		public interface IColumnInfo : ISI.Extensions.DataReader.IColumnInfo
-		{
-			Type PropertyType { get; }
-			Func<TRecord, bool> IsNull { get; }
-			object GetValue(TRecord record);
-		}
+		string ColumnName { get; }
+		Func<object, bool> IsNull { get; }
+		object GetValue(object record);
+	}
+
+	public interface IColumnInfo<TRecord> : IColumnInfo
+		where TRecord : class, new()
+	{
+		Type PropertyType { get; }
+		string[] ColumnNames { get; }
+		new Func<TRecord, bool> IsNull { get; }
+		object GetValue(TRecord record);
+		void SetValue(TRecord record, object value);
+		object TransformValue(object value);
+		string FormattedValue(TRecord record);
 	}
 }

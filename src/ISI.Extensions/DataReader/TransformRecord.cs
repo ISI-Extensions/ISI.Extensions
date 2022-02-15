@@ -18,15 +18,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Repository.SqlServer
+namespace ISI.Extensions.DataReader
 {
-	public abstract partial class RecordManager<TRecord>
-	{
-		protected virtual Microsoft.Data.SqlClient.SqlConnection GetSqlConnection(bool enableMultipleActiveResultSets = false)
-		{
-			return SqlConnection.GetSqlConnection(ConnectionString, enableMultipleActiveResultSets);
-		}
-	}
+	public delegate void TransformRecord(int recordNumber, ISI.Extensions.Columns.IColumnInfo[] columns, ref object[] values);
 }

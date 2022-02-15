@@ -22,15 +22,8 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Parsers
 {
-	public interface IColumnInfo<TRecord>
-		where TRecord : class, new()
+	public interface ITextParserContext
 	{
-		string[] ColumnNames { get; }
-		Type PropertyType { get; }
-		Func<TRecord, bool> IsNull { get; }
-		object GetValue(TRecord record);
-		void SetValue(TRecord record, object value);
-		object TransformValue(object value);
-		string FormattedValue(TRecord record);
+		bool EndOfSource { get; }
 	}
 }

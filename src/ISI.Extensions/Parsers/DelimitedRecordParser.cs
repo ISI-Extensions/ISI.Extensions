@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,23 +25,25 @@ namespace ISI.Extensions.Parsers
 	public class DelimitedRecordParser<TRecord> : IRecordParser<TRecord>
 		where TRecord : class, new()
 	{
-		public string Delimiter { get; }
+		private ISI.Extensions.Parsers.ITextParserContext _textParserContext = null;
+		protected ISI.Extensions.Parsers.ITextParserContext TextParserContext => _textParserContext ??= TextParser.CreateTextParserContext();
+		protected ISI.Extensions.Parsers.ITextParser TextParser { get; }
 
 		private string LastUnparsedHeader { get; set; } = null;
 		private string LastUnparsedSource { get; set; } = null;
 
-		protected IColumnInfo<TRecord>[] Columns { get; }
+		protected ISI.Extensions.Columns.IColumnInfo<TRecord>[] Columns { get; }
 		protected IDictionary<string, int> ColumnLookUp { get; }
 		private int[] _columnIndexes;
 		protected int[] ColumnIndexes => _columnIndexes;
 
 		protected OnRead<TRecord>[] OnReads { get; }
 
-		public DelimitedRecordParser(string delimiter, IEnumerable<IColumnInfo<TRecord>> columns, IEnumerable<OnRead<TRecord>> onReads)
+		public DelimitedRecordParser(ISI.Extensions.Parsers.ITextParser stringParser, IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns, IEnumerable<OnRead<TRecord>> onReads)
 		{
-			Delimiter = delimiter;
+			TextParser = stringParser;
 
-			Columns = (columns ?? ColumnInfoCollection<TRecord>.GetDefault()).ToArray();
+			Columns = (columns ?? ISI.Extensions.Columns.ColumnInfoCollection<TRecord>.GetDefault()).ToArray();
 
 			ColumnLookUp = new Dictionary<string, int>(StringComparer.InvariantCultureIgnoreCase);
 			for (var columnIndex = 0; columnIndex < Columns.Length; columnIndex++)
@@ -54,20 +56,20 @@ namespace ISI.Extensions.Parsers
 					}
 				}
 			}
-			_columnIndexes = System.Linq.Enumerable.Range(0, Columns.Length - 1).ToArray();
+			_columnIndexes = System.Linq.Enumerable.Range(0, Columns.Length).ToArray();
 
 			OnReads = onReads.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 		}
 
-		protected IRecordParserResponse<TRecord> ProcessSource(object context, string source)
+		protected IRecordParserResponse<TRecord> ProcessSource(object context, ITextParserResponse textParserResponse)
 		{
-			LastUnparsedSource = source;
+			LastUnparsedSource = textParserResponse.Source;
 
-			var values = source.Split(new[] { Delimiter }, StringSplitOptions.None).Cast<object>().ToArray();
-			
+			var values = textParserResponse.Record.Cast<object>().ToArray();
+
 			foreach (var onRead in OnReads)
 			{
-				onRead(context, source, ColumnLookUp, Columns, ref _columnIndexes, ref values);
+				onRead(context, LastUnparsedSource, ColumnLookUp, Columns, ref _columnIndexes, ref values);
 			}
 
 			if (context is Parsers.IRecordHeader recordHeader)
@@ -90,10 +92,10 @@ namespace ISI.Extensions.Parsers
 
 				if (record is ISI.Extensions.DataReader.IAcceptsRawValues acceptsRawValues)
 				{
-					acceptsRawValues.SetRawValues(source);
+					acceptsRawValues.SetRawValues(LastUnparsedSource);
 				}
 
-				return new RecordParserResponse<TRecord>(true, source, record);
+				return new RecordParserResponse<TRecord>(true, LastUnparsedSource, record);
 			}
 
 			return null;
@@ -101,52 +103,44 @@ namespace ISI.Extensions.Parsers
 
 		public IRecordParserResponse<TRecord> Read(object context, string source)
 		{
-			IRecordParserResponse<TRecord> result = null;
-
 			if (!string.IsNullOrEmpty(source))
 			{
-				result = ProcessSource(context, source);
-			}
-
-			return result ?? new RecordParserResponse<TRecord>(false, null, null);
-		}
-
-		public IRecordParserResponse<TRecord> Read(object context, System.IO.StreamReader stream)
-		{
-			IRecordParserResponse<TRecord> result = null;
-
-			var continueProcessing = true;
-
-			while (continueProcessing)
-			{
-				continueProcessing = false;
-				if (!stream.EndOfStream)
+				using (var memoryStream = new System.IO.MemoryStream())
 				{
-					var source = stream.ReadLine();
+					memoryStream.TextWrite(source);
 
-					if (string.IsNullOrEmpty(source))
+					memoryStream.Rewind();
+
+					using (var streamReader = new System.IO.StreamReader(memoryStream))
 					{
-						continueProcessing = true;
-					}
-					else
-					{
-						result = Read(context, source);
-						continueProcessing = !result.Success;
+						return Read(context, streamReader);
 					}
 				}
 			}
 
-			return result ?? new RecordParserResponse<TRecord>(false, null, null);
+			return new RecordParserResponse<TRecord>(false, null, null);
+		}
+
+		public IRecordParserResponse<TRecord> Read(object context, System.IO.StreamReader stream)
+		{
+			var textParserResponse = TextParser.Read(TextParserContext, stream);
+
+			if (textParserResponse.Success)
+			{
+				return ProcessSource(context, textParserResponse);
+			}
+
+			return new RecordParserResponse<TRecord>(false, null, null);
 		}
 
 		string IRecordParser<TRecord>.BuildHeaderRecord()
 		{
-			return string.Join(Delimiter, ColumnIndexes.Where(columnIndex => columnIndex >= 0).Select(columnIndex => Columns[columnIndex].ColumnNames.FirstOrDefault()));
+			return TextParser.GetUnparsed(ColumnIndexes.Where(columnIndex => columnIndex >= 0).Select(columnIndex => Columns[columnIndex].ColumnNames.FirstOrDefault()));
 		}
 
 		string IRecordParser<TRecord>.GetUnparsedRecord(TRecord record)
 		{
-			return string.Join(Delimiter, ColumnIndexes.Where(columnIndex => columnIndex >= 0).Select(columnIndex => string.Format("{0}", Columns[columnIndex].GetValue(record))));
+			return TextParser.GetUnparsed(ColumnIndexes.Where(columnIndex => columnIndex >= 0).Select(columnIndex => string.Format("{0}", Columns[columnIndex].GetValue(record))));
 		}
 
 		string IRecordParser<TRecord>.GetLastUnparsedHeader() => LastUnparsedHeader;

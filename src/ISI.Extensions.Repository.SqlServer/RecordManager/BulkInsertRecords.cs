@@ -38,13 +38,13 @@ namespace ISI.Extensions.Repository.SqlServer
 				throw new Exception("Cannot ignore Identity on when there is an archive table");
 			}
 
-			var columns = new ISI.Extensions.DataReader.EnumerableDataReader<TRecord>.ColumnInfoCollection();
+			var columns = new ISI.Extensions.Columns.ColumnInfoCollection<TRecord>();
 
 			if (RecordDescription.GetRecordDescription<TRecord>().HasLocalClusteringIndex)
 			{
 				var localClusteringIndexIdPropertyDescription = RecordDescription.GetRecordDescription<HasLocalClusteringIndexRecord>().PropertyDescriptions.FirstOrDefault() as IRecordPropertyDescription;
 
-				columns.Add(new ISI.Extensions.DataReader.EnumerableDataReader<TRecord>.ColumnInfo(
+				columns.Add(new ISI.Extensions.Columns.ColumnInfo<TRecord, object>(
 					localClusteringIndexIdPropertyDescription.ColumnName,
 					record => true,
 					record => null
@@ -55,7 +55,7 @@ namespace ISI.Extensions.Repository.SqlServer
 			{
 				if (!keepIdentities && propertyDescription.RepositoryAssignedValueAttribute is IdentityAttribute)
 				{
-					columns.Add(new ISI.Extensions.DataReader.EnumerableDataReader<TRecord>.ColumnInfo(
+					columns.Add(new ISI.Extensions.Columns.ColumnInfo<TRecord, object>(
 						propertyDescription.ColumnName,
 						record => true,
 						record => null
@@ -63,7 +63,7 @@ namespace ISI.Extensions.Repository.SqlServer
 				}
 				else
 				{
-					columns.Add(new ISI.Extensions.DataReader.EnumerableDataReader<TRecord>.ColumnInfo(
+					columns.Add(new ISI.Extensions.Columns.ColumnInfo<TRecord, object>(
 						propertyDescription.ColumnName,
 						record => propertyDescription.PropertyInfo.GetValue(record) == null,
 						record => propertyDescription.PropertyInfo.GetValue(record)
@@ -97,7 +97,7 @@ namespace ISI.Extensions.Repository.SqlServer
 						columns.RemoveAt(0);
 					}
 
-					columns.Insert(0, new ISI.Extensions.DataReader.EnumerableDataReader<TRecord>.ColumnInfo(
+					columns.Add(new ISI.Extensions.Columns.ColumnInfo<TRecord, DateTime>(
 						ArchiveTableArchiveDateTimeColumnName,
 						record => false,
 						record => ((ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime)record).ArchiveDateTime

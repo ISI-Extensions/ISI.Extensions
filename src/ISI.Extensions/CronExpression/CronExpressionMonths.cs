@@ -41,7 +41,9 @@ namespace ISI.Extensions
 
 				var parser = new ISI.Extensions.Parsers.DelimitedTextParser(',');
 
-				var values = parser.Read(source.Replace("-", ",-,")).Record.Select(value => value.Trim());
+				var parserContext = parser.CreateTextParserContext();
+
+				var values = parser.Read(parserContext, source.Replace("-", ",-,")).Record.Select(value => value.Trim());
 
 				var lastMonthIndex = -1;
 				var inRange = false;

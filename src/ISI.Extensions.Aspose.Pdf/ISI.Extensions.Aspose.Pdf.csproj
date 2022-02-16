@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
+		<TargetFramework>net5.0</TargetFramework>
 		<LangVersion>latest</LangVersion>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<Deterministic>false</Deterministic>
@@ -18,8 +18,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="Aspose.PDF" Version="22.2.0" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Update="NETStandard.Library" Version="2.0.3" />
-		<PackageReference Include="Aspose.Pdf" Version="22.1.0" />
 	</ItemGroup>
 
 	<ItemGroup>

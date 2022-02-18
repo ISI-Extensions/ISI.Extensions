@@ -1,0 +1,60 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Deterministic>false</Deterministic>
+		<LangVersion>latest</LangVersion>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Include="..\ISI.Extensions.AssemblyInfo.cs" Link="Properties\ISI.Extensions.AssemblyInfo.cs" />
+		<Compile Include="..\ISI.Extensions.Version.cs" Link="Properties\ISI.Extensions.Version.cs" />
+		<None Include="..\ISI.Extensions.licenseheader" Link="ISI.Extensions.licenseheader" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\ISI.Extensions.JsonSerialization.Newtonsoft\ISI.Extensions.JsonSerialization.Newtonsoft.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Topshelf\ISI.Extensions.Topshelf.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.AspNetCore\ISI.Extensions.AspNetCore.csproj" />
+		<ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.2" />
+		<PackageReference Include="Serilog" Version="2.10.0" />
+		<PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
+		<PackageReference Include="Serilog.Enrichers.AssemblyName" Version="1.0.9" />
+		<PackageReference Include="Serilog.Enrichers.EnrichedProperties" Version="1.0.63" />
+		<PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.0" />
+		<PackageReference Include="Serilog.Enrichers.Process" Version="2.0.2" />
+		<PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
+		<PackageReference Include="Serilog.Exceptions" Version="8.0.0" />
+		<PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
+		<PackageReference Include="Serilog.Formatting.Elasticsearch" Version="8.4.1" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
+		<PackageReference Include="Serilog.Sinks.Elasticsearch" Version="8.4.1" />
+		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.2.3" />
+		<PackageReference Include="Topshelf" Version="4.3.0" />
+		<PackageReference Include="Topshelf.Serilog" Version="4.3.0" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Update="T4LocalContent\T4LocalContent.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>T4LocalContent.generatedcode.cs</LastGenOutput>
+		</None>
+		<Compile Update="T4LocalContent\T4LocalContent.generatedcode.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>T4LocalContent.tt</DependentUpon>
+		</Compile>
+	</ItemGroup>
+	<ItemGroup>
+		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="Controllers\" />
+		<Folder Include="Models\" />
+		<Folder Include="Views\" />
+	</ItemGroup>
+</Project>

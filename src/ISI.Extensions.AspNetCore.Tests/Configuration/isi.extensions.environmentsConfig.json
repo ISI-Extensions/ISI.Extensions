@@ -1,0 +1,23 @@
+{
+	"environments": [
+		{
+			"environmentName": "production"
+		},
+		{
+			"environmentName": "uat"
+		},
+		{
+			"environmentName": "qa"
+		},
+		{
+			"environmentName": "development"
+		},
+		{
+			"environmentName": "development-ronmuth",
+			"inheritsFromEnvironmentName": "development",
+			"machines": [
+				"ronmuth"
+			]
+		}
+	]
+}

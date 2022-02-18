@@ -18,47 +18,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using Microsoft.Extensions.Logging;
-using DTOs = ISI.Extensions.Scm.DataTransferObjects.ScmApi;
 
-namespace ISI.Extensions.Scm
+namespace ISI.Extensions.AspNetCore
 {
-	public partial class ScmApi
+	public interface IContentUrl : Microsoft.AspNetCore.Html.IHtmlContent
 	{
-		public DTOs.GetAuthenticationTokenResponse GetAuthenticationToken(DTOs.GetAuthenticationTokenRequest request)
-		{
-			var response = new DTOs.GetAuthenticationTokenResponse();
-
-			Logger.LogInformation(string.Format("GetAuthenticationToken, ScmManagementUrl: {0}", request.ScmManagementUrl));
-
-			var tryAttemptsLeft = request.MaxTries;
-			while (tryAttemptsLeft > 0)
-			{
-				try
-				{
-					using (var remoteManagementClient = ISI.Extensions.Scm.ServiceReferences.Scm.RemoteManagementClient.GetClient(request.ScmManagementUrl))
-					{
-						response.AuthenticationToken = remoteManagementClient.GetAuthenticationTokenAsync(request.UserName, request.Password).GetAwaiter().GetResult();
-					}
-
-					tryAttemptsLeft = 0;
-				}
-				catch (Exception exception)
-				{
-					Logger.LogError("Error getting authentication token");
-
-					tryAttemptsLeft--;
-					if (tryAttemptsLeft < 0)
-					{
-						throw;
-					}
-
-					System.Threading.Thread.Sleep(20000);
-				}
-			}
-
-			return response;
-		}
+		string VirtualPath { get; }
+		bool IsExternalContent { get; }
+		string GetUrl(bool considerContentDistributionNetwork = true);
 	}
 }

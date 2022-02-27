@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -73,7 +73,7 @@ namespace ISI.Extensions.AspNetCore
 
 			//	if (considerContentDistributionNetwork)
 			//	{
-			//		url = CdnUrl ??= ISI.Libraries.Web.ContentDistributionNetwork.GetUrl(url);
+			//		url = CdnUrl ??= ISI.Extensions.Web.ContentDistributionNetwork.GetUrl(url);
 			//	}
 
 			//	var cacheBusterKey = GetCacheBusterKey();
@@ -85,6 +85,21 @@ namespace ISI.Extensions.AspNetCore
 
 			//	return url;
 			return Url;
+		}
+
+		public string GetCacheBusterKey()
+		{
+			//if (!string.IsNullOrEmpty(VirtualPath))
+			//{
+			//	if (System.Web.Hosting.HostingEnvironment.VirtualPathProvider.FileExists(VirtualPath))
+			//	{
+			//		var virtualFile = System.Web.Hosting.HostingEnvironment.VirtualPathProvider.GetFile(VirtualPath) as ISI.Extensions.Web.WebVirtualPathProvider.WebVirtualFile;
+
+			//		return virtualFile?.GetVersionKey();
+			//	}
+			//}
+
+			return null;
 		}
 
 		public override string ToString()

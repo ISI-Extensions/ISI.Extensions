@@ -17,14 +17,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ISI.Extensions.Extensions;
-using Microsoft.Extensions.DependencyInjection;
+using System.Threading.Tasks;
 
-namespace ISI.Extensions.FileProviders.Extensions
+namespace ISI.Extensions.ContentGenerator
 {
-	public static partial class FileProvidersExtensions
+	public class GeneratorCannotBeCreatedException : Exception
 	{
-		private static ISI.Extensions.DateTimeStamper.IDateTimeStamper _dateTimeStamper = null;
-		private static ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper => _dateTimeStamper ??= (ISI.Extensions.ServiceLocator.Current?.GetService<ISI.Extensions.DateTimeStamper.IDateTimeStamper>() ?? new ISI.Extensions.DateTimeStamper.LocalMachineDateTimeStamper());
+		public GeneratorCannotBeCreatedException()
+		{
+
+		}
+
+		public GeneratorCannotBeCreatedException(string message)
+			: base(message)
+		{
+
+		}
+
+		public GeneratorCannotBeCreatedException(string message, Exception innerException)
+			: base(message, innerException)
+		{
+
+		}
 	}
 }

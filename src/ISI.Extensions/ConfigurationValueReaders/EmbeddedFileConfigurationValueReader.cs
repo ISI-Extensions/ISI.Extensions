@@ -33,7 +33,7 @@ namespace ISI.Extensions.ConfigurationValueReaders
 
 		public string GetValue(ParsedValue parsedValue)
 		{
-			var embeddedVolumesFileProvider = new ISI.Extensions.FileProviders.EmbeddedVolumesFileProvider();
+			var virtualFileVolumesFileProvider = new ISI.Extensions.VirtualFileVolumesFileProvider();
 
 			if (string.IsNullOrWhiteSpace(parsedValue.KeyIndex))
 			{
@@ -42,7 +42,7 @@ namespace ISI.Extensions.ConfigurationValueReaders
 					return value;
 				}
 
-				var fileInfo = embeddedVolumesFileProvider.GetFileInfo(parsedValue.Key);
+				var fileInfo = virtualFileVolumesFileProvider.GetFileInfo(parsedValue.Key);
 
 				if (fileInfo?.Exists ?? false)
 				{
@@ -67,7 +67,7 @@ namespace ISI.Extensions.ConfigurationValueReaders
 					{
 						if (!_valueByKeyByKey.TryGetValue(parsedValue.Key, out valueByKey))
 						{
-							var fileInfo = embeddedVolumesFileProvider.GetFileInfo(parsedValue.Key);
+							var fileInfo = virtualFileVolumesFileProvider.GetFileInfo(parsedValue.Key);
 
 							if (fileInfo?.Exists ?? false)
 							{

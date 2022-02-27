@@ -34,7 +34,8 @@ namespace ISI.Extensions.TypeLocator
 				if (_localContainer == null)
 				{
 					var localContainer = new Container();
-					localContainer.Build();
+					localContainer.Build(ISI.Extensions.Assemblies.Container.LocalContainer);
+
 					return localContainer;
 				}
 			}
@@ -46,72 +47,15 @@ namespace ISI.Extensions.TypeLocator
 
 		public IContainer Build(IEnumerable<string> excludeAssemblyFileNames = null, bool includeExes = false)
 		{
-			var executingAssembly = System.Reflection.Assembly.GetExecutingAssembly();
+			var assembliesContainer = new ISI.Extensions.Assemblies.Container();
+			assembliesContainer.Build(excludeAssemblyFileNames, includeExes);
 
-			var executingDirectoryName = System.IO.Path.GetDirectoryName(executingAssembly.Location);
+			return Build(assembliesContainer);
+		}
 
-			var assemblyFileNames = new HashSet<string>(System.IO.Directory.GetFiles(executingDirectoryName, "*.dll", System.IO.SearchOption.TopDirectoryOnly).Select(fileName => System.IO.Path.Combine(executingDirectoryName, fileName)), StringComparer.CurrentCultureIgnoreCase);
-			if (includeExes)
-			{
-				assemblyFileNames.UnionWith(System.IO.Directory.GetFiles(executingDirectoryName, "*.exe", System.IO.SearchOption.TopDirectoryOnly).Select(fileName => System.IO.Path.Combine(executingDirectoryName, fileName)));
-			}
-
-			if (excludeAssemblyFileNames.NullCheckedAny())
-			{
-				excludeAssemblyFileNames = new HashSet<string>(excludeAssemblyFileNames, StringComparer.CurrentCultureIgnoreCase);
-
-				assemblyFileNames.RemoveWhere(excludeAssemblyFileNames.Contains);
-			}
-
-			var types = new List<Type>();
-
-			foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic))
-			{
-				try
-				{
-					var assemblyFileName = assembly.Location;
-
-					if (assemblyFileNames.Contains(assemblyFileName))
-					{
-						assemblyFileNames.Remove(assemblyFileName);
-					}
-
-					types.AddRange(assembly.GetTypes());
-				}
-				catch
-				{
-				}
-			}
-
-			var assemblies = new List<Assembly>();
-
-			foreach (var assemblyFileName in assemblyFileNames)
-			{
-				try
-				{
-					var assemblyName = AssemblyName.GetAssemblyName(assemblyFileName);
-
-					var assembly = AppDomain.CurrentDomain.Load(assemblyName);
-
-					assemblies.Add(assembly);
-				}
-				catch
-				{
-				}
-			}
-
-			foreach (var assembly in assemblies)
-			{
-				try
-				{
-					types.AddRange(assembly.DefinedTypes.Select(dt => dt.AsType()));
-				}
-				catch
-				{
-				}
-			}
-
-			foreach (var type in types)
+		private IContainer Build(ISI.Extensions.Assemblies.IContainer assembliesContainer)
+		{
+			foreach (var type in assembliesContainer.Types)
 			{
 				if (type.GetCustomAttribute(typeof(TypeLocatorAttribute)) is TypeLocatorAttribute attribute)
 				{

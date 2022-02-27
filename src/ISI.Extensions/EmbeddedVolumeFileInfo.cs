@@ -20,7 +20,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions
 {
-	public class EmbeddedVolumeFileInfo : Microsoft.Extensions.FileProviders.IFileInfo
+	public class EmbeddedVolumeFileInfo : IVirtualFileVolumeFileInfo
 	{
 		public System.Reflection.Assembly ResourceAssembly { get; }
 		public string ResourceName { get; }
@@ -89,7 +89,9 @@ namespace ISI.Extensions
 				{
 					var version = ResourceAssembly.GetName().Version;
 
-					return new DateTime(2000, 2, 1).AddDays(version.Build).AddSeconds(version.Revision * 2);
+					var jan1st2000 = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+
+					return jan1st2000.AddDays(version.Build).AddSeconds(version.Revision * 2);
 				}
 
 				return DateTime.UtcNow;

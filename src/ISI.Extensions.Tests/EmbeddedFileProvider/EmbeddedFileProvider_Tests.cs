@@ -40,9 +40,10 @@ namespace ISI.Extensions.Tests.EmbeddedFileProvider
 		[Test]
 		public void EmbeddedVolumesFileProvider_Test()
 		{
-			ISI.Extensions.FileProviders.EmbeddedVolumesFileProvider.Register(typeof(EmbeddedFileProvider_Tests));
+			ISI.Extensions.StartUp.Start();
+			//ISI.Extensions.VirtualFileVolumesFileProvider.Register(typeof(EmbeddedFileProvider_Tests));
 
-			var fileProvider = new ISI.Extensions.FileProviders.EmbeddedVolumesFileProvider();
+			var fileProvider = new ISI.Extensions.VirtualFileVolumesFileProvider();
 
 			var fileInfo = fileProvider.GetFileInfo(T4Files.EmbeddedFileProvider.Documents.TextFile1_txt);
 

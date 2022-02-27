@@ -1,0 +1,25 @@
+@using ISI.Extensions.AspNetCore.Extensions
+@model ISI.Extensions.AspNetCore.Tests.Models.BaseModel
+
+@{
+	Layout = ISI.Extensions.AspNetCore.Tests.T4Files.Views._Shared._Layout_cshtml;
+}
+
+@section StyleSheetIncludes
+{
+	@Html.AddStyleSheet(ISI.Extensions.AspNetCore.Tests.T4Links.StyleSheets._Shared._Layout_csless)
+	@RenderSection("StyleSheetIncludes", false)
+}
+
+@RenderBody()
+
+@section JavaScriptIncludes
+{
+	@Html.AddJavaScript(ISI.Extensions.AspNetCore.Tests.T4Links.JavaScripts._Shared._Layout_csjs)
+	@RenderSection("JavaScriptIncludes", false)
+}
+
+@section JavaScriptContent
+{
+	@RenderSection("JavaScriptContent", false)
+}

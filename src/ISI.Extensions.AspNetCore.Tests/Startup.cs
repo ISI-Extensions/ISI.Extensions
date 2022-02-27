@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ISI.Extensions.AspNetCore.Extensions;
 
 namespace ISI.Extensions.AspNetCore.Tests
 {
@@ -119,6 +120,7 @@ namespace ISI.Extensions.AspNetCore.Tests
 			applicationBuilder.UseDefaultFiles();
 
 			applicationBuilder.UseStaticFiles();
+			applicationBuilder.UseVirtualFileVolumesFileProvider();
 
 			applicationBuilder.UseRouting();
 

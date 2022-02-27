@@ -67,6 +67,9 @@ namespace ISI.Extensions.AspNetCore.Tests
 				Serilog.Log.Information($"  Config \"{keyValuePair.Key}\" => \"{keyValuePair.Value}\"");
 			}
 
+			ISI.Extensions.StartUp.Start();
+			ISI.Extensions.VirtualFileVolumesFileProvider.RegisterEmbeddedVolume(typeof(StartUp));
+
 			return (int) global::Topshelf.HostFactory.Run(hostConfigurator =>
 			{
 				var configuration = configurationRoot.GetConfiguration<ISI.Extensions.Topshelf.Configuration>();

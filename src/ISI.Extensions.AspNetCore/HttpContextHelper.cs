@@ -29,7 +29,7 @@ namespace ISI.Extensions.AspNetCore
 		internal static Configuration Configuration => _configuration ??= ISI.Extensions.ServiceLocator.Current.GetService<Configuration>();
 
 		private static Microsoft.Extensions.Logging.ILogger _logger = null;
-		internal static Microsoft.Extensions.Logging.ILogger Logger => _logger ??= ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();
+		internal static Microsoft.Extensions.Logging.ILogger Logger => _logger ??= ISI.Extensions.ServiceLocator.Current?.GetService<Microsoft.Extensions.Logging.ILogger>() ?? new ISI.Extensions.NullLogger();
 
 		internal System.Security.Principal.IIdentity Identity = null;
 		internal System.Collections.Specialized.NameValueCollection ServerVariables = null;

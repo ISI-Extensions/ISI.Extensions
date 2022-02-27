@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
+		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>latest</LangVersion>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<Deterministic>false</Deterministic>
@@ -18,7 +18,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Hosting.Server.Abstractions" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Html.Abstractions" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Routing.Abstractions" Version="2.2.0" />
 		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />

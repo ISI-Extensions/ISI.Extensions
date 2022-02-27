@@ -18,17 +18,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ISI.Extensions.FileProviders
+namespace ISI.Extensions
 {
-	public class EmbeddedVolumesFileProvider : Microsoft.Extensions.FileProviders.IFileProvider
+	public class VirtualFileVolumesFileProvider : Microsoft.Extensions.FileProviders.IFileProvider
 	{
-		protected static IDictionary<string, EmbeddedVolume> EmbeddedVolumes { get; } = new System.Collections.Concurrent.ConcurrentDictionary<string, EmbeddedVolume>(StringComparer.InvariantCultureIgnoreCase);
+		private static IDictionary<string, IVirtualFileVolume> _virtualFileVolumes { get; } = new System.Collections.Concurrent.ConcurrentDictionary<string, IVirtualFileVolume>(StringComparer.InvariantCultureIgnoreCase);
 
+		public IEnumerable<IVirtualFileVolume> VirtualFileVolumes => _virtualFileVolumes.Values;
 
-
-
-
-		public static void Register(Type typeToFindResourceAssembly)
+		public static void RegisterEmbeddedVolume(Type typeToFindResourceAssembly)
 		{
 			var resourceAssembly = typeToFindResourceAssembly.Assembly;
 
@@ -36,9 +34,9 @@ namespace ISI.Extensions.FileProviders
 
 			var pathPrefix = FormatPathPrefix(embeddedVolumeNamespace); //ISI.Extensions.Configuration.GetUrlRoot(typeToFindResourceAssembly);
 
-			if (!EmbeddedVolumes.ContainsKey(pathPrefix))
+			if (!_virtualFileVolumes.ContainsKey(pathPrefix))
 			{
-				EmbeddedVolumes.Add(pathPrefix, new EmbeddedVolume(resourceAssembly, embeddedVolumeNamespace));
+				_virtualFileVolumes.Add(pathPrefix, new EmbeddedVolume(resourceAssembly, embeddedVolumeNamespace));
 			}
 		}
 
@@ -135,12 +133,12 @@ namespace ISI.Extensions.FileProviders
 		{
 			var parsedSubpath = ParseSubpath(subpath);
 
-			if (EmbeddedVolumes.TryGetValue(parsedSubpath.PathPrefix, out var embeddedVolume))
+			if (_virtualFileVolumes.TryGetValue(parsedSubpath.PathPrefix, out var embeddedVolume))
 			{
 				return embeddedVolume.GetFileInfo(parsedSubpath.ResourcePath);
 			}
 
-			return null;
+			return new Microsoft.Extensions.FileProviders.NotFoundFileInfo(subpath);
 		}
 
 		public Microsoft.Extensions.FileProviders.IDirectoryContents GetDirectoryContents(string subpath)
@@ -150,7 +148,7 @@ namespace ISI.Extensions.FileProviders
 
 		public Microsoft.Extensions.Primitives.IChangeToken Watch(string filter)
 		{
-			throw new NotImplementedException();
+			return Microsoft.Extensions.FileProviders.NullChangeToken.Singleton;
 		}
 	}
 }

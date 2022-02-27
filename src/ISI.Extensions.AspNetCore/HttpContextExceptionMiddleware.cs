@@ -27,7 +27,7 @@ namespace ISI.Extensions.AspNetCore
 	public class HttpContextExceptionMiddleware
 	{
 		private static Microsoft.Extensions.Logging.ILogger _logger = null;
-		public Microsoft.Extensions.Logging.ILogger Logger => _logger ??= ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();
+		public Microsoft.Extensions.Logging.ILogger Logger => _logger ??= ISI.Extensions.ServiceLocator.Current?.GetService<Microsoft.Extensions.Logging.ILogger>() ?? new ISI.Extensions.NullLogger();
 
 		protected readonly Microsoft.AspNetCore.Http.RequestDelegate Next;
 

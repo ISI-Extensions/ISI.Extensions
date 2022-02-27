@@ -34,7 +34,7 @@ namespace ISI.Extensions.Tests
 		public static string __root = null;
 		public static string _root()
 		{
-			return (__root ??= ISI.Extensions.FileProviders.EmbeddedVolumesFileProvider.GetPathPrefix(typeof(T4Files)));
+			return (__root ??= ISI.Extensions.VirtualFileVolumesFileProvider.GetPathPrefix(typeof(T4Files)));
 		}
 	
 		[GeneratedCode("T4LocalContent", "1.0"), DebuggerNonUserCode]

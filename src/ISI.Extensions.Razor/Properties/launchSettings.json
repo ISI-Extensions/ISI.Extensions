@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "ISI.Extensions.Razor": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:32747;http://localhost:32748"
+    }
+  }
+}

@@ -15,37 +15,20 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using Microsoft.Extensions.Caching.Memory;
 
-namespace ISI.Extensions.Caching
+namespace ISI.Extensions.ContentGenerator
 {
-	public class AbsoluteTimeExpirationCacheEntryExpirationPolicy : ICacheEntryExpirationPolicy
+	public interface IContentGenerator<TModel> : IContentGenerator
+		where TModel : class, IModel
 	{
-		protected DateTime? DateTime { get; }
-		protected TimeSpan? TimeSpan { get; }
+		GenerateContentResponse GenerateContent(TModel model);
+		GenerateContentResponse GenerateContent(System.IO.Stream templateStream, TModel model);
+	}
 
-		public AbsoluteTimeExpirationCacheEntryExpirationPolicy(DateTime dateTime)
-		{
-			DateTime = dateTime;
-		}
-
-		public AbsoluteTimeExpirationCacheEntryExpirationPolicy(TimeSpan timeSpan)
-		{
-			TimeSpan = timeSpan;
-		}
-
-		public void SetCacheEntryExpiration(Microsoft.Extensions.Caching.Memory.ICacheEntry cacheEntry)
-		{
-			if (DateTime.HasValue)
-			{
-				cacheEntry.SetAbsoluteExpiration(DateTime.Value);
-			}
-
-			if (TimeSpan.HasValue)
-			{
-				cacheEntry.SetAbsoluteExpiration(TimeSpan.Value);
-			}
-		}
+	public interface IContentGenerator
+	{
+		Type ModelType { get; }
 	}
 }

@@ -147,9 +147,9 @@ namespace ISI.Extensions.Caching
 
 		public virtual ICacheEntryExpirationPolicy GetNoExpirationCacheEntryExpirationPolicy() => new NoExpirationCacheEntryExpirationPolicy();
 
-		public virtual ICacheEntryExpirationPolicy GetAbsoluteTimeExpirationCacheEntryExpirationPolicy(DateTime dateTime) => new AbsoluteTimeExpirationCacheEntryExpirationPolicy(dateTime);
+		public virtual ICacheEntryExpirationPolicy GetAbsoluteTimeExpirationCacheEntryExpirationPolicy(DateTime dateTime) => new AbsoluteDateTimeExpirationCacheEntryExpirationPolicy(dateTime);
 
-		public virtual ICacheEntryExpirationPolicy GetAbsoluteTimeExpirationCacheEntryExpirationPolicy(TimeSpan? timeSpan = null) => new AbsoluteTimeExpirationCacheEntryExpirationPolicy(timeSpan ?? Configuration.DefaultAbsoluteExpirationDuration);
+		public virtual ICacheEntryExpirationPolicy GetAbsoluteTimeExpirationCacheEntryExpirationPolicy(TimeSpan? timeSpan = null) => new AbsoluteDateTimeExpirationCacheEntryExpirationPolicy(timeSpan ?? Configuration.DefaultAbsoluteExpirationDuration);
 
 		public virtual ICacheEntryExpirationPolicy GetSlidingTimeExpirationCacheEntryExpirationPolicy(TimeSpan? timeSpan = null) => new SlidingTimeExpirationCacheEntryExpirationPolicy(timeSpan ?? Configuration.DefaultSlidingExpirationDuration);
 

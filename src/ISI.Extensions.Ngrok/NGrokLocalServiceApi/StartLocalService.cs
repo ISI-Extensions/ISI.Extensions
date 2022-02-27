@@ -13,7 +13,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
-using ISI.Extensions.FileProviders.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO.Compression;

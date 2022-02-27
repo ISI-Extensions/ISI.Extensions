@@ -27,6 +27,10 @@ namespace ISI.Extensions.AspNetCore
 	{
 		public const string ConfigurationSectionName = "ISI.Extensions.AspNetCore";
 		
+		public DynamicPagesConfiguration DynamicPages { get; set; } = new();
+		
+		public ContentDistributionNetworkConfiguration ContentDistributionNetwork { get; set; } = new();
+		
 		public HttpContextLoggingConfiguration HttpContextLogging { get; set; } = new();
 
 		public TrackingConfiguration Tracking { get; set; } = new();

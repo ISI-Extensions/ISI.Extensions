@@ -1,0 +1,21 @@
+@using ISI.Extensions.AspNetCore.Extensions
+@model ISI.Extensions.AspNetCore.Tests.Models.Public.IndexModel
+
+@{
+	Model.SetTitle("Public");
+	Layout = ISI.Extensions.AspNetCore.Tests.T4Files.Views.Public._Layout_cshtml;
+}
+
+@section StyleSheetIncludes
+{
+	@Html.AddStyleSheet(ISI.Extensions.AspNetCore.Tests.T4Links.StyleSheets.Public.Index_csless)
+}
+
+@section JavaScriptIncludes
+{
+	@Html.AddJavaScript(ISI.Extensions.AspNetCore.Tests.T4Links.JavaScripts.Public.Index_csjs)
+}
+
+@section JavaScriptContent
+{
+}

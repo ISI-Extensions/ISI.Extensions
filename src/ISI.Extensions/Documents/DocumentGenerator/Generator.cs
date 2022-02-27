@@ -107,7 +107,7 @@ namespace ISI.Extensions.Documents.DocumentGenerator
 				throw new GeneratorNotFoundException(string.Format("Cannot find Content Generator for \"{0}\"\nRegistered Content Generators:\n{1}", modelType.FullName, string.Join(Environment.NewLine, ContentGenerators.Select(cg => cg.Key.AssemblyQualifiedNameWithoutVersion()))));
 			}
 
-			if (!(ISI.Extensions.ServiceLocator.Current.GetService(contentGeneratorType, () => new ISI.Extensions.DependencyInjection.RegistrationDeclarationByMapToType()
+			if (!(ISI.Extensions.ServiceLocator.Current?.GetService(contentGeneratorType, () => new ISI.Extensions.DependencyInjection.RegistrationDeclarationByMapToType()
 			{
 				MapToType = contentGeneratorType,
 				ServiceLifetime = Microsoft.Extensions.DependencyInjection.ServiceLifetime.Singleton,

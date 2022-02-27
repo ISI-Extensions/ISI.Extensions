@@ -26,5 +26,6 @@ namespace ISI.Extensions.AspNetCore
 		string VirtualPath { get; }
 		bool IsExternalContent { get; }
 		string GetUrl(bool considerContentDistributionNetwork = true);
+		string GetCacheBusterKey();
 	}
 }

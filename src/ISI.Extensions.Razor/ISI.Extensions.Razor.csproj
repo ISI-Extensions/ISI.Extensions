@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
+		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>latest</LangVersion>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<Deterministic>false</Deterministic>
@@ -22,14 +22,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.AspNetCore.Razor" Version="2.2.0" />
-	  <PackageReference Include="Microsoft.AspNetCore.Razor.Language" Version="6.0.2" />
-	  <PackageReference Include="Microsoft.AspNetCore.Razor.Runtime" Version="2.2.0" />
-	  <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.1.0" />
-	  <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-	  <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
-	  <PackageReference Include="System.Security.Permissions" Version="6.0.0" />
-		<PackageReference Update="NETStandard.Library" Version="2.0.3" />
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
 
 </Project>

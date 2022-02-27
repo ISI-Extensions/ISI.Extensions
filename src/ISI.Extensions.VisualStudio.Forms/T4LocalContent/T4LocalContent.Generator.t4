@@ -61,7 +61,7 @@ public static partial class <#= subClassName #>
 	public static string __root = <#= (IsWebRoot ? "\"~/\"" : "null") #>;
 	public static string _root()
 	{
-		return (__root ?? (__root = ISI.Libraries.Configuration.GetUrlRoot(typeof(<#= FilesSubClassName #>))));
+		return (__root ?? (__root = ISI.Extensions.Configuration.GetUrlRoot(typeof(<#= FilesSubClassName #>))));
 	}
 
 <#
@@ -142,12 +142,12 @@ namespace <#= Namespace #>
 [<#= 		GeneratedCode #>, DebuggerNonUserCode]
 public static partial class <#= subClassName #>
 {
-	public static Func<string, bool, global::ISI.Libraries.Web.IContentUrl> GetContentUrl = (url, isOrignalUrl) => new global::ISI.Libraries.Web.ContentUrl(url, isOrignalUrl);
+	public static Func<string, bool, global::ISI.Extensions.Web.IContentUrl> GetContentUrl = (url, isOrignalUrl) => new global::ISI.Extensions.Web.ContentUrl(url, isOrignalUrl);
 
-	[ISI.Libraries.Web.ContentUrlGeneratorSetter]
-	public class ContentUrlGeneratorSetter : global::ISI.Libraries.Web.IContentUrlGeneratorSetter
+	[ISI.Extensions.Web.ContentUrlGeneratorSetter]
+	public class ContentUrlGeneratorSetter : global::ISI.Extensions.Web.IContentUrlGeneratorSetter
 	{
-		public void SetContentUrlGenerator(Func<string, bool, global::ISI.Libraries.Web.IContentUrl> setter)
+		public void SetContentUrlGenerator(Func<string, bool, global::ISI.Extensions.Web.IContentUrl> setter)
 		{
 			GetContentUrl = setter;
 		}
@@ -160,7 +160,7 @@ public static partial class <#= subClassName #>
 	public static string __root = <#= (IsWebRoot ? "\"~/\"" : "null") #>;
 	public static string _root()
 	{
-		return (__root ?? (__root = ISI.Libraries.Configuration.GetUrlRoot(typeof(<#= LinksSubClassName #>))));
+		return (__root ?? (__root = ISI.Extensions.Configuration.GetUrlRoot(typeof(<#= LinksSubClassName #>))));
 	}
 
 <#
@@ -174,13 +174,13 @@ public static partial class <#= subClassName #>
 					if (!hasRootItem)
 					{
 #>
-	private static global::ISI.Libraries.Web.IContentUrl _directory = null;
-	public static global::ISI.Libraries.Web.IContentUrl _Directory => _directory ?? (_directory = GetContentUrl(_root(), true));
+	private static global::ISI.Extensions.Web.IContentUrl _directory = null;
+	public static global::ISI.Extensions.Web.IContentUrl _Directory => _directory ?? (_directory = GetContentUrl(_root(), true));
 <#
 						hasRootItem = true;
 					}
 #>
-	public static readonly global::ISI.Libraries.Web.IContentUrl <#= CreateSlug(projectItem.Name) #> = GetContentUrl(_root() + "<#= projectItem.Name #>", true);
+	public static readonly global::ISI.Extensions.Web.IContentUrl <#= CreateSlug(projectItem.Name) #> = GetContentUrl(_root() + "<#= projectItem.Name #>", true);
 <#
 				}
 			}
@@ -545,8 +545,8 @@ public static partial class <#= projectFolderSlug #>
 		return string.Format("{0}<#= projectFolder.Name #>/", <#= classNamespace #>._root());
 	}
 
-	private static global::ISI.Libraries.Web.IContentUrl _directory = null;
-	public static global::ISI.Libraries.Web.IContentUrl _Directory => _directory ?? (_directory = GetContentUrl(<#= classNamespace #>._root() + "<#= projectFolder.Name #>", true));
+	private static global::ISI.Extensions.Web.IContentUrl _directory = null;
+	public static global::ISI.Extensions.Web.IContentUrl _Directory => _directory ?? (_directory = GetContentUrl(<#= classNamespace #>._root() + "<#= projectFolder.Name #>", true));
 
 <#+
 			var usedNames = new List<string>();
@@ -567,7 +567,7 @@ public static partial class <#= projectFolderSlug #>
 						if (!usedNames.Contains(fileName))
 						{
 #>
-	public static readonly global::ISI.Libraries.Web.IContentUrl <#= CreateSlug(fileName, projectFolderSlug) #> = GetContentUrl(_root() + "<#= projectItem.Name #>", true);
+	public static readonly global::ISI.Extensions.Web.IContentUrl <#= CreateSlug(fileName, projectFolderSlug) #> = GetContentUrl(_root() + "<#= projectItem.Name #>", true);
 <#+
 							usedNames.Add(fileName);
 						}

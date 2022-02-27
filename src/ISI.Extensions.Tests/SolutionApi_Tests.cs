@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using ISI.Extensions.ConfigurationHelper.Extensions;
 using ISI.Extensions.DependencyInjection.Extensions;
 using ISI.Extensions.Extensions;
@@ -78,9 +78,10 @@ namespace ISI.Extensions.Tests
 		public void Replacements_Test()
 		{
 			var replacements = new Dictionary<string, string>();
+			replacements.Add("language=\"C#v3.5\"", "language=\"C#\"");
 
 			var findContents = new List<string>();
-			findContents.Add("ICS.Libraries.Service");
+			//findContents.Add("ICS.Libraries.Service");
 
 			var ignoreFindContents = new List<string>();
 
@@ -93,7 +94,8 @@ namespace ISI.Extensions.Tests
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Telephony.WindowsService");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Desktop");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.WebApplication");
-			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt"));
+			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Tristar.SolutionFullNames.txt"));
+			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt"));
 			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Connect.SolutionFullNames.txt"));
 
 			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionDetailsRequest()
@@ -114,8 +116,8 @@ namespace ISI.Extensions.Tests
 					var sourceFullNames = new List<string>();
 					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.cs", System.IO.SearchOption.AllDirectories));
 					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.cshtml", System.IO.SearchOption.AllDirectories));
-					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.config", System.IO.SearchOption.AllDirectories));
-					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.csproj", System.IO.SearchOption.AllDirectories));
+					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.t4", System.IO.SearchOption.AllDirectories));
+					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.tt", System.IO.SearchOption.AllDirectories));
 					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "build.cake", System.IO.SearchOption.AllDirectories));
 
 					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\bin\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
@@ -140,100 +142,103 @@ namespace ISI.Extensions.Tests
 
 					foreach (var sourceFullName in sourceFullNames)
 					{
-						var content = System.IO.File.ReadAllText(sourceFullName);
-						var updatedContent = content;
-
-						updatedContent = updatedContent.Replace("Platform = MSBuildPlatform", "BuildPlatform = MSBuildPlatform");
-						updatedContent = updatedContent.Replace("BuildBuildPlatform = MSBuildPlatform", "BuildPlatform = MSBuildPlatform");
-
+						if (System.IO.File.Exists(sourceFullName))
 						{
-							var lines = updatedContent.Replace("\r\n", "\n").Split(new[] { '\n' }).ToList();
+							var content = System.IO.File.ReadAllText(sourceFullName);
+							var updatedContent = content;
 
-							lines.RemoveAll(line => line.IndexOf("Platform = MSBuildPlatform.Automatic", StringComparison.InvariantCultureIgnoreCase) >= 0);
+							updatedContent = updatedContent.Replace("Platform = MSBuildPlatform", "BuildPlatform = MSBuildPlatform");
+							updatedContent = updatedContent.Replace("BuildBuildPlatform = MSBuildPlatform", "BuildPlatform = MSBuildPlatform");
 
-							updatedContent = string.Join(Environment.NewLine, lines);
-						}
-
-						foreach (var findContent in findContents)
-						{
-							if ((content.IndexOf(findContent, StringComparison.CurrentCultureIgnoreCase) >= 0) && !ignoreFindContents.Any(ignoreFindContent => content.IndexOf(ignoreFindContent, StringComparison.CurrentCultureIgnoreCase) >= 0))
 							{
-								System.Diagnostics.Debugger.Break();
+								var lines = updatedContent.Replace("\r\n", "\n").Split(new[] { '\n' }).ToList();
+
+								lines.RemoveAll(line => line.IndexOf("Platform = MSBuildPlatform.Automatic", StringComparison.InvariantCultureIgnoreCase) >= 0);
+
+								updatedContent = string.Join(Environment.NewLine, lines);
 							}
-						}
 
-						foreach (var replacement in replacements)
-						{
-							updatedContent = updatedContent.Replace(replacement.Key, replacement.Value, StringComparison.InvariantCultureIgnoreCase);
-						}
-
-						//if (updatedContent.IndexOf("System.Diagnostics.EventTypeFilter", StringComparison.InvariantCultureIgnoreCase) >= 0)
-						//{
-						//	var lines = updatedContent.Split(new[] { '\r', '\n' });
-
-						//	var line = lines.FirstOrDefault(line => line.IndexOf("System.Diagnostics.EventTypeFilter", StringComparison.InvariantCultureIgnoreCase) >= 0);
-
-						//	if (!string.IsNullOrEmpty(line))
-						//	{
-						//		if (line.IndexOf("<!--", StringComparison.InvariantCultureIgnoreCase) < 0)
-						//		{
-						//			line = line.Trim();
-
-						//			updatedContent = updatedContent.Replace(line, string.Format("<!--{0}-->", line));
-						//		}
-						//	}
-						//}
-
-						if ((updatedContent.IndexOf("<LangVersion>latest</LangVersion>", StringComparison.InvariantCultureIgnoreCase) >= 0) &&
-								(updatedContent.IndexOf("<RuntimeIdentifiers>win</RuntimeIdentifiers>", StringComparison.InvariantCultureIgnoreCase) <= 0))
-						{
-							updatedContent = updatedContent.Replace("<LangVersion>latest</LangVersion>", "<LangVersion>latest</LangVersion>\r\n\t\t<RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>");
-						}
-
-						if ((updatedContent.IndexOf("<LangVersion>latest</LangVersion>", StringComparison.InvariantCultureIgnoreCase) >= 0) &&
-								(updatedContent.IndexOf("<RuntimeIdentifiers>win</RuntimeIdentifiers>", StringComparison.InvariantCultureIgnoreCase) >= 0))
-						{
-							updatedContent = updatedContent.Replace("<RuntimeIdentifiers>win</RuntimeIdentifiers>", "<RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>");
-						}
-
-						foreach (var tag in new[]
-						{
-							"<LangVersion>latest</LangVersion>",
-							"<RuntimeIdentifiers>win</RuntimeIdentifiers>",
-							"<RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>",
-						})
-						{
-							var firstOccurrenceIndex = updatedContent.IndexOf(tag, StringComparison.InvariantCultureIgnoreCase);
-							var secondOccurrenceIndex = firstOccurrenceIndex;
-							while (secondOccurrenceIndex >= 0)
+							foreach (var findContent in findContents)
 							{
-								secondOccurrenceIndex = updatedContent.IndexOf(tag, firstOccurrenceIndex + 1, StringComparison.InvariantCultureIgnoreCase);
-								if (secondOccurrenceIndex >= 0)
+								if ((content.IndexOf(findContent, StringComparison.CurrentCultureIgnoreCase) >= 0) && !ignoreFindContents.Any(ignoreFindContent => content.IndexOf(ignoreFindContent, StringComparison.CurrentCultureIgnoreCase) >= 0))
 								{
-									updatedContent = string.Format("{0}{1}", updatedContent.Substring(0, secondOccurrenceIndex), updatedContent.Substring(secondOccurrenceIndex + tag.Length).TrimStart(' ', '\t', '\r', '\n'));
+									System.Diagnostics.Debugger.Break();
 								}
 							}
-						}
 
-						if (HasChanges(content, updatedContent))
-						{
-							System.IO.File.WriteAllText(sourceFullName, updatedContent);
-							dirtyFileNames.Add(sourceFullName);
+							foreach (var replacement in replacements)
+							{
+								updatedContent = updatedContent.Replace(replacement.Key, replacement.Value, StringComparison.InvariantCultureIgnoreCase);
+							}
+
+							//if (updatedContent.IndexOf("System.Diagnostics.EventTypeFilter", StringComparison.InvariantCultureIgnoreCase) >= 0)
+							//{
+							//	var lines = updatedContent.Split(new[] { '\r', '\n' });
+
+							//	var line = lines.FirstOrDefault(line => line.IndexOf("System.Diagnostics.EventTypeFilter", StringComparison.InvariantCultureIgnoreCase) >= 0);
+
+							//	if (!string.IsNullOrEmpty(line))
+							//	{
+							//		if (line.IndexOf("<!--", StringComparison.InvariantCultureIgnoreCase) < 0)
+							//		{
+							//			line = line.Trim();
+
+							//			updatedContent = updatedContent.Replace(line, string.Format("<!--{0}-->", line));
+							//		}
+							//	}
+							//}
+
+							//if ((updatedContent.IndexOf("<LangVersion>latest</LangVersion>", StringComparison.InvariantCultureIgnoreCase) >= 0) &&
+							//		(updatedContent.IndexOf("<RuntimeIdentifiers>win</RuntimeIdentifiers>", StringComparison.InvariantCultureIgnoreCase) <= 0))
+							//{
+							//	updatedContent = updatedContent.Replace("<LangVersion>latest</LangVersion>", "<LangVersion>latest</LangVersion>\r\n\t\t<RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>");
+							//}
+
+							//if ((updatedContent.IndexOf("<LangVersion>latest</LangVersion>", StringComparison.InvariantCultureIgnoreCase) >= 0) &&
+							//		(updatedContent.IndexOf("<RuntimeIdentifiers>win</RuntimeIdentifiers>", StringComparison.InvariantCultureIgnoreCase) >= 0))
+							//{
+							//	updatedContent = updatedContent.Replace("<RuntimeIdentifiers>win</RuntimeIdentifiers>", "<RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>");
+							//}
+
+							//foreach (var tag in new[]
+							//{
+							//	"<LangVersion>latest</LangVersion>",
+							//	"<RuntimeIdentifiers>win</RuntimeIdentifiers>",
+							//	"<RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>",
+							//})
+							//{
+							//	var firstOccurrenceIndex = updatedContent.IndexOf(tag, StringComparison.InvariantCultureIgnoreCase);
+							//	var secondOccurrenceIndex = firstOccurrenceIndex;
+							//	while (secondOccurrenceIndex >= 0)
+							//	{
+							//		secondOccurrenceIndex = updatedContent.IndexOf(tag, firstOccurrenceIndex + 1, StringComparison.InvariantCultureIgnoreCase);
+							//		if (secondOccurrenceIndex >= 0)
+							//		{
+							//			updatedContent = string.Format("{0}{1}", updatedContent.Substring(0, secondOccurrenceIndex), updatedContent.Substring(secondOccurrenceIndex + tag.Length).TrimStart(' ', '\t', '\r', '\n'));
+							//		}
+							//	}
+							//}
+
+							if (HasChanges(content, updatedContent))
+							{
+								System.IO.File.WriteAllText(sourceFullName, updatedContent);
+								dirtyFileNames.Add(sourceFullName);
+							}
 						}
 					}
 
-					if (false && dirtyFileNames.Any())
+					if (dirtyFileNames.Any())
 					{
 						var commitLog = new StringBuilder();
 
 						if (!sourceControlClientApi.Commit(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.CommitRequest()
 						{
 							FullNames = dirtyFileNames,
-							LogMessage = "update Platform = MSBuildPlatform to BuildPlatform = MSBuildPlatform",
+							LogMessage = "update t4 language version",
 							AddToLog = log => commitLog.AppendLine(log),
 						}).Success)
 						{
-							var exception = new Exception(string.Format("Error commiting \"{0}\"", solutionDetails.RootSourceDirectory));
+							var exception = new Exception(string.Format("Error committing \"{0}\"", solutionDetails.RootSourceDirectory));
 							logger.LogError(exception.Message);
 							throw exception;
 						}
@@ -366,9 +371,9 @@ namespace ISI.Extensions.Tests
 			}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
 
 			foreach (var solutionDetails in solutionDetailsSet
-				         .Where(solutionDetails => !string.IsNullOrWhiteSpace(solutionDetails.RootSourceDirectory))
-				         .OrderBy(solutionDetails => solutionDetails.UpdateNugetPackagesPriority)
-				         .ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
+								 .Where(solutionDetails => !string.IsNullOrWhiteSpace(solutionDetails.RootSourceDirectory))
+								 .OrderBy(solutionDetails => solutionDetails.UpdateNugetPackagesPriority)
+								 .ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
 			{
 				using (solutionApi.GetSolutionLock(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionLockRequest()
 				{

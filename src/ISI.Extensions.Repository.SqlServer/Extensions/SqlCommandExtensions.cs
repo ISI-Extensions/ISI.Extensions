@@ -27,7 +27,7 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 	public static partial class SqlCommandExtensions
 	{
 		private static Microsoft.Extensions.Logging.ILogger _logger;
-		public static Microsoft.Extensions.Logging.ILogger Logger => _logger ??= ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();
+		public static Microsoft.Extensions.Logging.ILogger Logger => _logger ??= ISI.Extensions.ServiceLocator.Current?.GetService<Microsoft.Extensions.Logging.ILogger>() ?? new ISI.Extensions.NullLogger();
 
 		public static Microsoft.Data.SqlClient.SqlParameter GetSqlParameter(string parameterName, object parameterValue)
 		{

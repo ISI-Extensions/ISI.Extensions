@@ -20,19 +20,19 @@ using System.Text;
 
 namespace ISI.Extensions
 {
-	public class EmbeddedVolume
+	public class EmbeddedVolume : IVirtualFileVolume
 	{
 		public const string DirectorySeparator = "/";
 
-		public string EmbeddedVolumeNamespace { get; }
+		public string PathPrefix { get; }
 
 		protected IDictionary<string, EmbeddedVolumeFileInfo> EmbeddedVolumeFileInfos { get; } = new System.Collections.Concurrent.ConcurrentDictionary<string, EmbeddedVolumeFileInfo>(StringComparer.InvariantCultureIgnoreCase);
 
 		public EmbeddedVolume(System.Reflection.Assembly resourceAssembly, string embeddedVolumeNamespace)
 		{
-			EmbeddedVolumeNamespace = embeddedVolumeNamespace;
+			PathPrefix = embeddedVolumeNamespace;
 
-			var embeddedVolumeAssemblyNameLength = EmbeddedVolumeNamespace.Length + 1;
+			var embeddedVolumeAssemblyNameLength = PathPrefix.Length + 1;
 
 			var resourceNames = resourceAssembly.GetManifestResourceNames().OrderBy(resource => resource.ToLower());
 			foreach (var resourceName in resourceNames)
@@ -41,7 +41,7 @@ namespace ISI.Extensions
 			}
 		}
 
-		public EmbeddedVolumeFileInfo GetFileInfo(string resourceName)
+		public IVirtualFileVolumeFileInfo GetFileInfo(string resourceName)
 		{
 			if (EmbeddedVolumeFileInfos.TryGetValue(resourceName, out var fileInfo))
 			{

@@ -46,9 +46,14 @@ namespace ISI.Extensions.Repository.SqlServer
 
 				script = script.Replace(replacementValues);
 
+				var currentDatabase = ((new Microsoft.Data.SqlClient.SqlCommand("SELECT DB_NAME()", connection)).ExecuteScalar() as string).Replace("[", string.Empty).Replace("]", string.Empty).Trim();
+
 				var sql = new StringBuilder();
 
-				sql.AppendFormat("use [{0}];\n", DatabaseName);
+				if (!string.Equals(DatabaseName.Replace("[", string.Empty).Replace("]", string.Empty).Trim(), currentDatabase, StringComparison.InvariantCultureIgnoreCase))
+				{
+					sql.AppendFormat("use [{0}];\n", DatabaseName);
+				}
 				sql.AppendFormat("{0}\n", script);
 
 				using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql.ToString(), connection))

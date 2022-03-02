@@ -79,6 +79,7 @@ namespace ISI.Extensions.Tests
 		{
 			var replacements = new Dictionary<string, string>();
 			replacements.Add("language=\"C#v3.5\"", "language=\"C#\"");
+			replacements.Add(" Constants.", " EnvDTE.Constants.");
 
 			var findContents = new List<string>();
 			//findContents.Add("ICS.Libraries.Service");
@@ -94,8 +95,8 @@ namespace ISI.Extensions.Tests
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Telephony.WindowsService");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Desktop");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.WebApplication");
-			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Tristar.SolutionFullNames.txt"));
-			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt"));
+			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Tristar.SolutionFullNames.txt"));
+			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt"));
 			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Connect.SolutionFullNames.txt"));
 
 			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionDetailsRequest()
@@ -120,6 +121,7 @@ namespace ISI.Extensions.Tests
 					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.tt", System.IO.SearchOption.AllDirectories));
 					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "build.cake", System.IO.SearchOption.AllDirectories));
 
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\packages\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
 					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\bin\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
 					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\obj\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
 					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\.svn\\", StringComparison.InvariantCultureIgnoreCase) >= 0);

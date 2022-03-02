@@ -24,6 +24,7 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi
 	public partial class PackageComponentsRequest
 	{
 		public string Configuration { get; set; }
+		public MSBuildVersion BuildVersion { get; set; } = MSBuildVersion.MSBuild16;
 		public MSBuildPlatform BuildPlatform { get; set; } = MSBuildPlatform.Automatic;
 		public BuildPlatformTarget PlatformTarget { get; set; } = BuildPlatformTarget.MSIL;
 

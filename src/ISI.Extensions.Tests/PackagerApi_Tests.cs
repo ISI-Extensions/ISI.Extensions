@@ -77,11 +77,19 @@ namespace ISI.Extensions.Tests
 			var xmlTransformApi = new ISI.Extensions.VisualStudio.XmlTransformApi(logger);
 			var packagerApi = new ISI.Extensions.VisualStudio.PackagerApi(logger, msBuildApi, codeGenerationApi, xmlTransformApi);
 
+			//var solutionFile = File("./ISI.HAPP.WebApplication.sln");
+			//var solution = ParseSolution(solutionFile);
+			//var rootProjectFile = File("./ISI.HAPP.WebApplication/ISI.HAPP.WebApplication.csproj");
+			//var rootAssemblyVersionKey = "ISI.HAPP";
+
+			//var assemblyVersions = GetAssemblyVersionFiles(solution, rootAssemblyVersionKey, buildRevision);
+
+
 			packagerApi.PackageComponents(new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.PackageComponentsRequest()
 			{
 				Configuration = "Release",
-				BuildPlatform = ISI.Extensions.VisualStudio.MSBuildPlatform.x86,
-				PlatformTarget = ISI.Extensions.VisualStudio.BuildPlatformTarget.x86,
+				//BuildPlatform = ISI.Extensions.VisualStudio.MSBuildPlatform.x86,
+				//PlatformTarget = ISI.Extensions.VisualStudio.BuildPlatformTarget.x86,
 				SubDirectory = "ISI",
 				PackageComponents = new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.IPackageComponent[]
 				{

@@ -26,7 +26,7 @@ namespace ISI.Extensions.VisualStudio
 {
 	public partial class PackagerApi
 	{
-		private void BuildPackageComponentWindowsService(Microsoft.Extensions.Logging.ILogger logger, string configuration, MSBuildPlatform buildPlatform, BuildPlatformTarget platformTarget, string packageComponentsDirectory, AssemblyVersionFileDictionary assemblyVersionFiles, DTOs.PackageComponentWindowsService packageComponent)
+		private void BuildPackageComponentWindowsService(Microsoft.Extensions.Logging.ILogger logger, string configuration, MSBuildVersion buildVersion, MSBuildPlatform buildPlatform, BuildPlatformTarget platformTarget, string packageComponentsDirectory, AssemblyVersionFileDictionary assemblyVersionFiles, DTOs.PackageComponentWindowsService packageComponent)
 		{
 			var projectName = System.IO.Path.GetFileNameWithoutExtension(packageComponent.ProjectFullName);
 			var projectDirectory = System.IO.Path.GetDirectoryName(packageComponent.ProjectFullName);

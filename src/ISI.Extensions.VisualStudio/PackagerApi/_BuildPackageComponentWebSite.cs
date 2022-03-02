@@ -26,7 +26,7 @@ namespace ISI.Extensions.VisualStudio
 {
 	public partial class PackagerApi
 	{
-		private void BuildPackageComponentWebSite(Microsoft.Extensions.Logging.ILogger logger, string configuration, MSBuildPlatform buildPlatform, BuildPlatformTarget platformTarget, string packageComponentsDirectory, AssemblyVersionFileDictionary assemblyVersionFiles, DTOs.PackageComponentWebSite packageComponent)
+		private void BuildPackageComponentWebSite(Microsoft.Extensions.Logging.ILogger logger, string configuration, MSBuildVersion buildVersion, MSBuildPlatform buildPlatform, BuildPlatformTarget platformTarget, string packageComponentsDirectory, AssemblyVersionFileDictionary assemblyVersionFiles, DTOs.PackageComponentWebSite packageComponent)
 		{
 			var projectName = System.IO.Path.GetFileNameWithoutExtension(packageComponent.ProjectFullName);
 			var projectDirectory = System.IO.Path.GetDirectoryName(packageComponent.ProjectFullName);
@@ -58,8 +58,8 @@ namespace ISI.Extensions.VisualStudio
 						var msBuildRequest = new ISI.Extensions.VisualStudio.DataTransferObjects.MSBuildApi.MSBuildRequest()
 						{
 							FullName = packageComponent.ProjectFullName,
+							MsBuildVersion = buildVersion,
 							MsBuildPlatform = buildPlatform,
-							MsBuildVersion = MSBuildVersion.MSBuild16,
 						};
 
 						msBuildRequest.Options.Configuration = configuration;

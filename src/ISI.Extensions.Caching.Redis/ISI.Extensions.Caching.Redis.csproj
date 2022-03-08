@@ -20,7 +20,7 @@
 	<ItemGroup>
 	  <PackageReference Update="NETStandard.Library" Version="2.0.3" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="6.0.0" />
-		<PackageReference Include="StackExchange.Redis" Version="2.2.88" />
+		<PackageReference Include="StackExchange.Redis" Version="2.5.43" />
 	</ItemGroup>
 
 	<ItemGroup>

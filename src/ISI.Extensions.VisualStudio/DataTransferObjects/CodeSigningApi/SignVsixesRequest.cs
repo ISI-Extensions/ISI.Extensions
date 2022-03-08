@@ -21,33 +21,17 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
 {
-	public partial class SignVsixesRequest : IInitializeCodeSigningCertificateTokenRequest
+	public interface ISignVsixesRequest : ISignRequest, IInitializeCodeSigningCertificateTokenRequest
 	{
-		public string CodeSigningCertificateTokenCertificateFileName { get; set; }
-		public string CodeSigningCertificateTokenCryptographicProvider { get; set; }
-		public string CodeSigningCertificateTokenContainerName { get; set; }
-		public string CodeSigningCertificateTokenPassword { get; set; }
+	}
 
+	public class SignVsixesRequest : SignRequest, ISignVsixesRequest
+	{
 		public string[] VsixFullNames { get; set; }
-				
-		public string OutputDirectory { get; set; }
+	}
 
-		public Uri TimeStampUri { get; set; } = new("http://timestamp.digicert.com");
-		public CodeSigningDigestAlgorithm TimeStampDigestAlgorithm { get; set; } = CodeSigningDigestAlgorithm.Sha256;
-		
-		public string CertificateFileName { get; set; }
-		public string CertificatePassword { get; set; }
-		public string CertificateStoreName { get; set; } = "My";
-		public string CertificateStoreLocation { get; set; } = "CurrentUser";
-		public string CertificateSubjectName { get; set; }
-		public string CertificateFingerprint { get; set; }
-
-		public CodeSigningDigestAlgorithm DigestAlgorithm { get; set; } = CodeSigningDigestAlgorithm.Sha256;
-		
-		public bool OverwriteAnyExistingSignature { get; set; } = false;
-		
-		public CodeSigningVerbosity Verbosity { get; set; } = CodeSigningVerbosity.Normal;
-
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
+	public class SignVsixesInDirectoryRequest : SignRequest, ISignVsixesRequest
+	{
+		public string VsixesDirectory { get; set; }
 	}
 }

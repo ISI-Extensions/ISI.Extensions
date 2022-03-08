@@ -90,7 +90,7 @@ namespace ISI.Extensions.Tests
 
 			codeSigningApi.SignNupkgs(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.SignNupkgsRequest()
 			{
-				NupkgFullNames = new[] { @"F:\ISI\Internal Projects\ISI.Extensions\Nuget\ISI.Extensions.10.0.8036.36374.nupkg" },
+				NupkgFullNames = System.IO.Directory.GetFiles(@"F:\ISI\Internal Projects\ISI.Extensions\Nuget"),
 				TimeStampUri = new Uri(settings.CodeSigning.TimeStampUrl),
 				CertificateFingerprint = settings.CodeSigning.CertificateFingerprint,
 				//CertificatePath = File(settings.CodeSigning.CertificateFileName),

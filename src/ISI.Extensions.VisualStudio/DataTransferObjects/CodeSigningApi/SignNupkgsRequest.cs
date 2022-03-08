@@ -21,35 +21,22 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
 {
-	public partial class SignNupkgsRequest : IInitializeCodeSigningCertificateTokenRequest
+	public interface ISignNupkgsRequest : ISignRequest, IInitializeCodeSigningCertificateTokenRequest
 	{
-		public string CodeSigningCertificateTokenCertificateFileName { get; set; }
-		public string CodeSigningCertificateTokenCryptographicProvider { get; set; }
-		public string CodeSigningCertificateTokenContainerName { get; set; }
-		public string CodeSigningCertificateTokenPassword { get; set; }
+		string WorkingDirectory { get; }
+	}
 
+	public partial class SignNupkgsRequest : SignRequest, ISignNupkgsRequest
+	{
 		public IEnumerable<string> NupkgFullNames { get; set; }
-		
-		public string OutputDirectory { get; set; }
 
 		public string WorkingDirectory { get; set; }
+	}
 
-		public Uri TimeStampUri { get; set; } = new("http://timestamp.digicert.com");
-		public CodeSigningDigestAlgorithm TimeStampDigestAlgorithm { get; set; } = CodeSigningDigestAlgorithm.Sha256;
+	public partial class SignNupkgsInDirectoryRequest : SignRequest, ISignNupkgsRequest
+	{
+		public string NupkgsDirectory { get; set; }
 
-		public string CertificateFileName { get; set; }
-		public string CertificatePassword { get; set; }
-		public string CertificateStoreName { get; set; } = "My";
-		public string CertificateStoreLocation { get; set; } = "CurrentUser";
-		public string CertificateSubjectName { get; set; }
-		public string CertificateFingerprint { get; set; }
-
-		public CodeSigningDigestAlgorithm DigestAlgorithm { get; set; } = CodeSigningDigestAlgorithm.Sha256;
-
-		public bool OverwriteAnyExistingSignature { get; set; } = false;
-
-		public CodeSigningVerbosity Verbosity { get; set; } = CodeSigningVerbosity.Normal;
-
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
+		public string WorkingDirectory { get; set; }
 	}
 }

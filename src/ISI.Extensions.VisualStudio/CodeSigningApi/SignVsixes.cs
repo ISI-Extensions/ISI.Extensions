@@ -26,7 +26,7 @@ namespace ISI.Extensions.VisualStudio
 {
 	public partial class CodeSigningApi
 	{
-		public DTOs.SignVsixesResponse SignVsixes(DTOs.SignVsixesRequest request)
+		public DTOs.SignVsixesResponse SignVsixes(DTOs.ISignVsixesRequest request)
 		{
 			var response = new DTOs.SignVsixesResponse();
 
@@ -40,81 +40,100 @@ namespace ISI.Extensions.VisualStudio
 
 				var signingKey = GetSigningKeyFromCertificate(certificate);
 
-				using (var tempDirectory = new ISI.Extensions.IO.Path.TempDirectory())
+				var vsixFullNames = new List<string>();
+
+				switch (request)
 				{
-					var vsixFullNames = request.VsixFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty);
+					case DTOs.SignVsixesInDirectoryRequest signVsixesInDirectoryRequest:
+						vsixFullNames.AddRange(System.IO.Directory.GetFiles(signVsixesInDirectoryRequest.VsixesDirectory));
+						break;
 
-					if (!string.IsNullOrWhiteSpace(request.OutputDirectory) && System.IO.Directory.Exists(request.OutputDirectory))
+					case DTOs.SignVsixesRequest signVsixesRequest:
+						vsixFullNames.AddRange(signVsixesRequest.VsixFullNames);
+						break;
+
+					default:
+						throw new ArgumentOutOfRangeException(nameof(request));
+				}
+
+				if (vsixFullNames.Any())
+				{
+					using (var tempDirectory = new ISI.Extensions.IO.Path.TempDirectory())
 					{
-						for (var fileIndex = 0; fileIndex < vsixFullNames.Length; fileIndex++)
+						var tempVsixFullNames = vsixFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty);
+
+						if (!string.IsNullOrWhiteSpace(request.OutputDirectory) && System.IO.Directory.Exists(request.OutputDirectory))
 						{
-							var tempVsixFullName = System.IO.Path.Combine(tempDirectory.FullName, System.IO.Path.GetFileName(vsixFullNames[fileIndex]));
-
-							if (System.IO.File.Exists(tempVsixFullName))
+							for (var fileIndex = 0; fileIndex < tempVsixFullNames.Length; fileIndex++)
 							{
-								System.IO.File.Delete(tempVsixFullName);
-							}
+								var tempVsixFullName = System.IO.Path.Combine(tempDirectory.FullName, System.IO.Path.GetFileName(tempVsixFullNames[fileIndex]));
 
-							System.IO.File.Copy(vsixFullNames[fileIndex], tempVsixFullName);
-
-							vsixFullNames[fileIndex] = tempVsixFullName;
-						}
-					}
-
-					foreach (var vsixFullName in request.VsixFullNames)
-					{
-						logger.LogInformation(string.Format("Signing vsix package \"{0}\"", System.IO.Path.GetFileName(vsixFullName)));
-
-						using (var package = OpenVsixSignTool.Core.OpcPackage.Open(vsixFullName, OpenVsixSignTool.Core.OpcPackageFileMode.ReadWrite))
-						{
-							if (package.GetSignatures().Any() && !request.OverwriteAnyExistingSignature)
-							{
-								throw new Exception("The VSIX is already signed.");
-							}
-
-							var signBuilder = package.CreateSignatureBuilder();
-
-							signBuilder.EnqueueNamedPreset<OpenVsixSignTool.Core.VSIXSignatureBuilderPreset>();
-
-							var hashAlgorithmName = GetHashAlgorithmName(request.DigestAlgorithm);
-
-							var signingConfiguration = new OpenVsixSignTool.Core.SignConfigurationSet(hashAlgorithmName, hashAlgorithmName, signingKey, certificate);
-
-							var signature = signBuilder.Sign(signingConfiguration);
-
-							if (request.TimeStampUri != null)
-							{
-								var timestampBuilder = signature.CreateTimestampBuilder();
-
-								var signResponse = timestampBuilder.SignAsync(request.TimeStampUri, GetHashAlgorithmName(request.TimeStampDigestAlgorithm)).GetAwaiter().GetResult();
-
-								if (signResponse == OpenVsixSignTool.Core.TimestampResult.Failed)
+								if (System.IO.File.Exists(tempVsixFullName))
 								{
-									throw new Exception("TimeStamping Signature Failed");
+									System.IO.File.Delete(tempVsixFullName);
 								}
+
+								System.IO.File.Copy(tempVsixFullNames[fileIndex], tempVsixFullName);
+
+								tempVsixFullNames[fileIndex] = tempVsixFullName;
 							}
 						}
 
-						logger.LogInformation(string.Format("Signed vsix package \"{0}\"", System.IO.Path.GetFileName(vsixFullName)));
-					}
-
-					if (!string.IsNullOrWhiteSpace(request.OutputDirectory) && System.IO.Directory.Exists(request.OutputDirectory))
-					{
 						foreach (var vsixFullName in vsixFullNames)
 						{
-							var newVsixFullName = System.IO.Path.Combine(request.OutputDirectory, System.IO.Path.GetFileName(vsixFullName));
+							logger.LogInformation(string.Format("Signing vsix package \"{0}\"", System.IO.Path.GetFileName(vsixFullName)));
 
-							if (System.IO.File.Exists(newVsixFullName))
+							using (var package = OpenVsixSignTool.Core.OpcPackage.Open(vsixFullName, OpenVsixSignTool.Core.OpcPackageFileMode.ReadWrite))
 							{
-								System.IO.File.Delete(newVsixFullName);
+								if (package.GetSignatures().Any() && !request.OverwriteAnyExistingSignature)
+								{
+									throw new Exception("The VSIX is already signed.");
+								}
+
+								var signBuilder = package.CreateSignatureBuilder();
+
+								signBuilder.EnqueueNamedPreset<OpenVsixSignTool.Core.VSIXSignatureBuilderPreset>();
+
+								var hashAlgorithmName = GetHashAlgorithmName(request.DigestAlgorithm);
+
+								var signingConfiguration = new OpenVsixSignTool.Core.SignConfigurationSet(hashAlgorithmName, hashAlgorithmName, signingKey, certificate);
+
+								var signature = signBuilder.Sign(signingConfiguration);
+
+								if (request.TimeStampUri != null)
+								{
+									var timestampBuilder = signature.CreateTimestampBuilder();
+
+									var signResponse = timestampBuilder.SignAsync(request.TimeStampUri, GetHashAlgorithmName(request.TimeStampDigestAlgorithm)).GetAwaiter().GetResult();
+
+									if (signResponse == OpenVsixSignTool.Core.TimestampResult.Failed)
+									{
+										throw new Exception("TimeStamping Signature Failed");
+									}
+								}
 							}
 
-							System.IO.File.Copy(vsixFullName, newVsixFullName);
+							logger.LogInformation(string.Format("Signed vsix package \"{0}\"", System.IO.Path.GetFileName(vsixFullName)));
+						}
+
+						if (!string.IsNullOrWhiteSpace(request.OutputDirectory) && System.IO.Directory.Exists(request.OutputDirectory))
+						{
+							foreach (var vsixFullName in tempVsixFullNames)
+							{
+								var newVsixFullName = System.IO.Path.Combine(request.OutputDirectory, System.IO.Path.GetFileName(vsixFullName));
+
+								if (System.IO.File.Exists(newVsixFullName))
+								{
+									System.IO.File.Delete(newVsixFullName);
+								}
+
+								System.IO.File.Copy(vsixFullName, newVsixFullName);
+							}
 						}
 					}
 				}
 			}
-
+			
 			return response;
 		}
 	}

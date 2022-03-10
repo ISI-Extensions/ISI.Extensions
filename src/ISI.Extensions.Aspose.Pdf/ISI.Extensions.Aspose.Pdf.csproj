@@ -19,6 +19,7 @@
 
 	<ItemGroup>
 	  <PackageReference Include="Aspose.PDF" Version="22.2.0" />
+	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>

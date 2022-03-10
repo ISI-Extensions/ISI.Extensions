@@ -31,9 +31,9 @@ namespace ISI.Extensions.VisualStudio
 					public static Guid CodeExtensionProviderUuid = Guid.Parse("b8156b28-b746-403c-a1fc-20b8d75e9a06");
 
 					Guid ICodeExtensionProvider.CodeExtensionProviderUuid => CodeExtensionProviderUuid;
-					string ICodeExtensionProvider.Description => "ISI.Extensions";
+					string ICodeExtensionProvider.Description => "ISI.Libraries";
 
-					public string Namespace => "ISI.Extensions";
+					public string Namespace => "ISI.Libraries";
 
 					public string[] DefaultUsingStatements => new[]
 					{
@@ -42,19 +42,19 @@ namespace ISI.Extensions.VisualStudio
 						"System.Linq",
 						"System.Text",
 						"System.Threading.Tasks",
-						"ISI.Extensions.Extensions",
+						"ISI.Libraries.Extensions",
 					};
 
 					public CodeGenerationClassInjector[] DefaultClassInjectors => new[]
 					{
 						new CodeGenerationClassInjector()
 						{
-							Type = "ISI.Extensions.Tracing.ITrace",
+							Type = "ISI.Libraries.Tracing.ITrace",
 							Name = "Trace",
 						},
 						new CodeGenerationClassInjector()
 						{
-							Type = "ISI.Extensions.IDateTimeStamper",
+							Type = "ISI.Libraries.IDateTimeStamper",
 							Name = "DateTimeStamper",
 						},
 					};

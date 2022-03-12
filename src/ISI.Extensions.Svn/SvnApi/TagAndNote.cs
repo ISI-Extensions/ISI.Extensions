@@ -143,10 +143,7 @@ namespace ISI.Extensions.Svn
 										}
 									}
 
-									if (!revision.HasValue)
-									{
-										revision = infos.FirstOrDefault(info => string.Equals(info.Path.TrimEnd('\\', '/'), System.IO.Path.Combine(propertySet.Path, directory).TrimEnd('\\', '/'), StringComparison.CurrentCultureIgnoreCase))?.Revision;
-									}
+									revision ??= infos.FirstOrDefault(info => string.Equals(info.Path.TrimEnd('\\', '/'), System.IO.Path.Combine(propertySet.Path, directory).TrimEnd('\\', '/'), StringComparison.CurrentCultureIgnoreCase))?.Revision;
 
 									Logger.LogInformation(string.Format("      testing=\"{0}\"", uri.ToLower()));
 
@@ -157,13 +154,6 @@ namespace ISI.Extensions.Svn
 										var externalTagsUrl = GetTagsUrl(externalTrunkUri, externalVersion, request.DateTimeStamp, request.DateTimeMask);
 
 										var trunkUri = new Uri(GetRemoteUrl(propertySet.Path));
-
-										if (externalTrunkUri.ToString().Length > externalTrunkUrl.Length)
-										{
-											externalTagsUrl = string.Format("{0}{1}", externalTagsUrl, externalTrunkUri.ToString().Substring(externalTrunkUrl.Length));
-										}
-
-										externalTrunkUri = new Uri(externalTagsUrl);
 
 										Logger.LogInformation("  external svn tag start");
 
@@ -178,6 +168,13 @@ namespace ISI.Extensions.Svn
 										});
 
 										Logger.LogInformation("  external svn tag done");
+
+										if (externalTrunkUri.ToString().Length > externalTrunkUrl.Length)
+										{
+											externalTagsUrl = string.Format("{0}{1}", externalTagsUrl, externalTrunkUri.ToString().Substring(externalTrunkUrl.Length));
+										}
+
+										externalTrunkUri = new Uri(externalTagsUrl);
 
 										#region Make Relative
 										if (string.Equals(trunkUri.Scheme, externalTrunkUri.Scheme, StringComparison.InvariantCultureIgnoreCase))

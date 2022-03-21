@@ -19,7 +19,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using global::MassTransit;
-using GreenPipes;
 
 namespace ISI.Extensions.MessageBus.MassTransit.RabbitMQ
 {
@@ -38,7 +37,8 @@ namespace ISI.Extensions.MessageBus.MassTransit.RabbitMQ
 					hostConfigurator.Password(Configuration.Password);
 				});
 
-				configurator.ConfigureJsonSerializer(jsonSerializerSettings =>
+				configurator.UseNewtonsoftJsonDeserializer(true);
+				configurator.ConfigureNewtonsoftJsonDeserializer(jsonSerializerSettings =>
 				{
 					jsonSerializerSettings.Converters = new[] { ISI.Extensions.JsonSerialization.Newtonsoft.SerializerContractUuidJsonConverter.GetJsonConverter() };
 

@@ -19,14 +19,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using global::MassTransit;
-using GreenPipes;
 using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.MessageBus.MassTransit.RabbitMQ
 {
 	public partial class MessageBus
 	{
-		private void CreateChannel(System.IServiceProvider serviceProvider, global::MassTransit.RabbitMqTransport.IRabbitMqBusFactoryConfigurator configurator, Uri hostUri, ISI.Extensions.MessageBus.MessageBusBuildRequest messageBusBuildRequest)
+		private void CreateChannel(System.IServiceProvider serviceProvider, global::MassTransit.IRabbitMqBusFactoryConfigurator configurator, Uri hostUri, ISI.Extensions.MessageBus.MessageBusBuildRequest messageBusBuildRequest)
 		{
 			if (messageBusBuildRequest.AddSubscriptions.NullCheckedAny())
 			{

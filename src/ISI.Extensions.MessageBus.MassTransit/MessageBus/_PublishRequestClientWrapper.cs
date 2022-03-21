@@ -19,7 +19,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using global::MassTransit;
-using GreenPipes;
 using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.MessageBus.MassTransit

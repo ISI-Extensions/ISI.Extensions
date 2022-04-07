@@ -28,13 +28,12 @@ namespace ISI.Extensions.MessageBus.MassTransit.RabbitMQ
 		{
 			BusControl = global::MassTransit.Bus.Factory.CreateUsingRabbitMq(configurator =>
 			{
-				var hostUri = new Uri(Configuration.ConnectionString);
-
-				configurator.Host(hostUri, hostConfigurator =>
+				configurator.UseNewtonsoftJsonSerializer();
+				configurator.ConfigureNewtonsoftJsonSerializer(jsonSerializerSettings =>
 				{
-					hostConfigurator.PublisherConfirmation = Configuration.PublisherConfirmation;
-					hostConfigurator.Username(Configuration.UserName);
-					hostConfigurator.Password(Configuration.Password);
+					jsonSerializerSettings.Converters = new[] { ISI.Extensions.JsonSerialization.Newtonsoft.SerializerContractUuidJsonConverter.GetJsonConverter() };
+
+					return jsonSerializerSettings;
 				});
 
 				configurator.UseNewtonsoftJsonDeserializer(true);
@@ -43,6 +42,15 @@ namespace ISI.Extensions.MessageBus.MassTransit.RabbitMQ
 					jsonSerializerSettings.Converters = new[] { ISI.Extensions.JsonSerialization.Newtonsoft.SerializerContractUuidJsonConverter.GetJsonConverter() };
 
 					return jsonSerializerSettings;
+				});
+
+				var hostUri = new Uri(Configuration.ConnectionString);
+
+				configurator.Host(hostUri, hostConfigurator =>
+				{
+					hostConfigurator.PublisherConfirmation = Configuration.PublisherConfirmation;
+					hostConfigurator.Username(Configuration.UserName);
+					hostConfigurator.Password(Configuration.Password);
 				});
 
 				CreateChannel(serviceProvider, configurator, hostUri, requests.DefaultChannelMessageBusBuildRequest);

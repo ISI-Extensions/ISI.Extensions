@@ -66,7 +66,17 @@ namespace ISI.Extensions.Repository.SqlServer
 					columns.Add(new ISI.Extensions.Columns.ColumnInfo<TRecord, object>(
 						propertyDescription.ColumnName,
 						record => propertyDescription.PropertyInfo.GetValue(record) == null,
-						record => propertyDescription.PropertyInfo.GetValue(record)
+						record =>
+						{
+							var value = propertyDescription.GetValue(record);
+
+							if (propertyDescription.CanBeSerialized && (value != null))
+							{
+								value = Serializer.Serialize(propertyDescription.ValueType, value, true);
+							}
+
+							return value;
+						}
 					));
 				}
 			}
@@ -97,7 +107,7 @@ namespace ISI.Extensions.Repository.SqlServer
 						columns.RemoveAt(0);
 					}
 
-					columns.Add(new ISI.Extensions.Columns.ColumnInfo<TRecord, DateTime>(
+					columns.Insert(0, new ISI.Extensions.Columns.ColumnInfo<TRecord, DateTime>(
 						ArchiveTableArchiveDateTimeColumnName,
 						record => false,
 						record => ((ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime)record).ArchiveDateTime

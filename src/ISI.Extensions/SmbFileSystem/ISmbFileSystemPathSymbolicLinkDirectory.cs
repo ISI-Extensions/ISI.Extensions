@@ -16,20 +16,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.SmbFileSystem
 {
-	public partial class FileSystem
+	public interface ISmbFileSystemPathSymbolicLinkDirectory : ISmbFileSystemPathSymbolicLink, FileSystem.IFileSystemPathSymbolicLinkDirectory
 	{
-		public static IFileSystemProvider GetFileSystemHandler(string path)
-		{
-			throw new NotImplementedException();
-		}
-
-		public static string GetFileName(string path)
-		{
-			throw new NotImplementedException();
-		}
-
+		void SetValues(string drive, string server, string userName, string password, string directory, string pathName, string linkedTo);
 	}
 }
+

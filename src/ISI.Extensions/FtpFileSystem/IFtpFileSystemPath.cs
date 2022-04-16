@@ -16,27 +16,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.FtpFileSystem
 {
-	public partial class FileSystem
+	public interface IFtpFileSystemPath : UnixFileSystem.IUnixFileSystemPath
 	{
-		[AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
-		public class FileSystemPathInfoAttribute : ISI.Extensions.TypeLocatorAttribute
-		{
-			public int Priority { get; }
 
-			public FileSystemPathInfoAttribute()
-				: this(0)
-			{
-
-			}
-
-			public FileSystemPathInfoAttribute(int priority)
-				: base(typeof(IFileSystemPathInfo))
-			{
-				Priority = priority;
-			}
-		}
 	}
 }
+

@@ -16,22 +16,44 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.SmbFileSystem
 {
-	public partial class FileSystem
+	public class SmbFileSystemPathFile : SmbFileSystemPath, ISmbFileSystemPathFile
 	{
-		public class FileSystemInfoFile : AbstractFileSystemInfo, IFileSystemInfoDirectory
+		public DateTime? ModifiedDateTime { get; set; }
+		public long? Size { get; set; }
+		
+		public override string ToString() => string.Format("Smb File {0}", base.ToString());
+
+		void ISmbFileSystemPathFile.SetValues(string drive, string server, string userName, string password, string directory, string pathName, DateTime? modifiedDateTime, long? size)
 		{
-			public FileSystemInfoFile()
-			{
-			}
+			Drive = drive;
+			Server = server;
+			UserName = userName;
+			Password = password;
+			Directory = directory;
+			PathName = pathName;
+			ModifiedDateTime = modifiedDateTime;
+			Size = size;
+		}
 
-			public FileSystemInfoFile(IFileSystemInfo fileSystemInfo) : base(fileSystemInfo)
-			{
-			}
+		public override FileSystem.IFileSystemPath Clone()
+		{
+			var fileSystemPath = new SmbFileSystemPathFile();
 
-			public override string ToString() => string.Format("File: {0}", base.ToString());
+			Drive = fileSystemPath.Drive;
+			Server = fileSystemPath.Server;
+			UserName = fileSystemPath.UserName;
+			Password = fileSystemPath.Password;
+			Directory = fileSystemPath.Directory;
+			PathName = fileSystemPath.PathName;
+			ModifiedDateTime = fileSystemPath.ModifiedDateTime;
+			Size = fileSystemPath.Size;
+
+			return fileSystemPath;
 		}
 	}
 }
+

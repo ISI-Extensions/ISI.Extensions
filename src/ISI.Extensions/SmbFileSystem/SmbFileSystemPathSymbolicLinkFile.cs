@@ -12,26 +12,43 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.SmbFileSystem
 {
-	public partial class FileSystem
+	public class SmbFileSystemPathSymbolicLinkFile : SmbFileSystemPathFile, ISmbFileSystemPathSymbolicLinkFile
 	{
-		public class FileSystemInfoDirectory : AbstractFileSystemInfo, IFileSystemInfoDirectory
+		public virtual string LinkedTo { get; internal set; }
+
+		public override string ToString() => string.Format("Smb File Symbolic Link {0}", base.ToString());
+
+		void ISmbFileSystemPathSymbolicLinkFile.SetValues(string drive, string server, string userName, string password, string directory, string pathName, string linkedTo, DateTime? modifiedDateTime, long? size)
 		{
-			public FileSystemInfoDirectory()
-			{
-			}
+			(this as ISmbFileSystemPathFile)?.SetValues(drive, server, userName, password, directory, pathName, modifiedDateTime, size);
 
-			public FileSystemInfoDirectory(IFileSystemInfo fileSystemInfo) : base(fileSystemInfo)
-			{
-			}
+			LinkedTo = linkedTo;
+		}
 
-			public override string ToString() => string.Format("Directory: {0}", base.ToString());
+		public override FileSystem.IFileSystemPath Clone()
+		{
+			var fileSystemPath = new SmbFileSystemPathSymbolicLinkFile();
+
+			Drive = fileSystemPath.Drive;
+			Server = fileSystemPath.Server;
+			UserName = fileSystemPath.UserName;
+			Password = fileSystemPath.Password;
+			Directory = fileSystemPath.Directory;
+			PathName = fileSystemPath.PathName;
+			ModifiedDateTime = fileSystemPath.ModifiedDateTime;
+			Size = fileSystemPath.Size;
+			LinkedTo = fileSystemPath.LinkedTo;
+
+			return fileSystemPath;
 		}
 	}
 }
+

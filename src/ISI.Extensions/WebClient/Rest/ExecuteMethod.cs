@@ -225,6 +225,8 @@ namespace ISI.Extensions.WebClient
 		{
 			var webRequestDetails = _EventHandler?.WebRequestDetails ?? new WebRequestDetails();
 
+			webRequestDetails.Clear();
+
 			webRequestDetails.SetHttpMethod(httpMethod);
 			webRequestDetails.SetUri(uri);
 

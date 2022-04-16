@@ -21,8 +21,14 @@ namespace ISI.Extensions
 {
 	public partial class FileSystem
 	{
-		public interface IFileSystemInfoFile : IFileSystemInfo
+		[AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
+		public class FileSystemProviderAttribute : ISI.Extensions.TypeLocatorAttribute
 		{
+			public FileSystemProviderAttribute()
+				: base(typeof(IFileSystemProvider))
+			{
+
+			}
 		}
 	}
 }

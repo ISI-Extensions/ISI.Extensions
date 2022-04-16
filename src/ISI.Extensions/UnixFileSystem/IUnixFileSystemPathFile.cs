@@ -16,20 +16,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.UnixFileSystem
 {
-	public partial class FileSystem
+	public interface IUnixFileSystemPathFile : IUnixFileSystemPath, FileSystem.IFileSystemPathFile
 	{
-		public interface IFileSystemInfo
-		{
-			string AttributedFullName { get; set; }
-			string FullName { get; set; }
-			string FileName { get; set; }
-			long? Size { get; set; }
-
-			DateTime? CreatedDateTime { get; set; }
-			DateTime? ModifiedDateTime { get; set; }
-		}
+		void SetValues(string server, string userName, string password, string directory, string pathName, DateTime? modifiedDateTime, long? size);
 	}
 }
+

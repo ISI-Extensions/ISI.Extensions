@@ -43,6 +43,17 @@ namespace ISI.Extensions.WebClient
 
 			public string ResponseRaw { get; private set; } = null;
 
+			internal void Clear()
+			{
+				HttpMethod = null;
+				Uri = null;
+				Headers = null;
+				FormData = null;
+				BodyRaw = null;
+
+				ResponseRaw = null;
+			}
+
 			internal void SetHttpMethod(string httpMethod)
 			{
 				HttpMethod = httpMethod;

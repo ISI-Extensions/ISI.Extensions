@@ -16,49 +16,32 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.FtpFileSystem
 {
-	public partial class FileSystem
+	public class FtpFileSystemPathSymbolicLinkDirectory : UnixFileSystem.UnixFileSystemPathSymbolicLinkDirectory, IFtpFileSystemPath
 	{
-		public interface IFileSystemStreamProvider : IDisposable
+		public override string Schema => FtpFileSystemProvider._schema;
+		public override string DirectorySeparator => FtpFileSystemProvider._directorySeparator;
+
+		public override string ToString() => string.Format("Ftp Directory Symbolic Link {0}", base.ToString());
+
+		public override FileSystem.IFileSystemPath Clone()
 		{
-			bool WriteNeedsSeekableSource();
+			var fileSystemPath = new FtpFileSystemPathSymbolicLinkDirectory();
 
-			void OpenRead(IFileSystemPathInfo fileSystemPathInfo, bool mustBeSeekable);
-			void OpenRead(IFileSystemPathInfo fileSystemPathInfo);
-			void OpenWrite(IFileSystemPathInfo fileSystemPathInfo, bool overWrite = true, long fileSize = 0);
-			
-			bool CanRead { get; }
-			bool CanWrite { get; }
+			Server = fileSystemPath.Server;
+			UserName = fileSystemPath.UserName;
+			Password = fileSystemPath.Password;
+			Directory = fileSystemPath.Directory;
+			PathName = fileSystemPath.PathName;
+			LinkedTo = fileSystemPath.LinkedTo;
 
-			bool CanSeek { get; }
-			bool CanTimeout { get; }
-
-			long Length { get; }
-			long Position { get; set; }
-
-			int ReadTimeout { get; set; }
-			int WriteTimeout { get; set; }
-			
-			long Seek(long offset, System.IO.SeekOrigin origin);
-			void SetLength(long value);
-
-			int Read(byte[] buffer, int offset, int count);
-			int ReadByte();
-			
-			void Write(byte[] buffer, int offset, int count);
-			void WriteByte(byte value);
-
-			IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state);
-			IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object state);
-
-			int EndRead(IAsyncResult asyncResult);
-			void EndWrite(IAsyncResult asyncResult);
-			
-			void Flush();
-
-			void Close();
+			return fileSystemPath;
 		}
+
+		public override FileSystem.IFileSystemPathDirectory GetParentFileSystemPathDirectory() => GetParentFileSystemPathDirectory<FtpFileSystemPathDirectory>();
 	}
 }
+

@@ -12,36 +12,26 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.UnixFileSystem
 {
-	public partial class FileSystem
+	public abstract class UnixFileSystemPathSymbolicLinkDirectory : UnixFileSystemPathDirectory, IUnixFileSystemPathSymbolicLinkDirectory
 	{
-		public interface IFileSystemPathInfo
+		public virtual string LinkedTo { get; protected set; }
+
+		void IUnixFileSystemPathSymbolicLinkDirectory.SetValues(string server, string userName, string password, string directory, string pathName, string linkedTo)
 		{
-			string Schema { get; }
-			string DirectorySeparator { get; }
-			System.Text.RegularExpressions.Regex AttributedPathRegex { get; }
-			IFileSystemProvider FileSystemProvider { get; }
-			string Server { get; }
-			string UserName { get; }
-			string Password { get; }
-			string FullPathName { get; }
-			string Directory { get; }
-			string AttributedDirectory { get; }
-			string AttributedDirectoryWithoutCredentials { get; }
-			string PathName { get; }
-			string AttributedFullPath { get; }
-			string AttributedFullPathWithoutCredentials { get; }
-			bool CanParse(string value);
-			void Parse(string value);
-			void Parse(string server, string userName, string password, string directory, string pathName = null);
-			string ObfuscatedAttributedFullPath(bool obfuscateUserName = true, string obfuscatedUserNameValue = null, bool obfuscatePassword = true, string obfuscatedPasswordValue = null);
-			IFileSystemPathInfo Clone();
+			(this as IUnixFileSystemPathDirectory)?.SetValues(server, userName, password, directory, pathName);
+
+			LinkedTo = linkedTo;
 		}
+
+		public override string ToString() => string.Format("Unix Directory Symbolic Link {0}", base.ToString());
 	}
 }
+

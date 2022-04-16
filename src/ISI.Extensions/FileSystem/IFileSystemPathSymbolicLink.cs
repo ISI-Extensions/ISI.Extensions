@@ -21,8 +21,9 @@ namespace ISI.Extensions
 {
 	public partial class FileSystem
 	{
-		public interface IFileSystemInfoDirectory : IFileSystemInfo
+		public interface IFileSystemPathSymbolicLink : IFileSystemPath
 		{
+			string LinkedTo { get; }
 		}
 	}
 }

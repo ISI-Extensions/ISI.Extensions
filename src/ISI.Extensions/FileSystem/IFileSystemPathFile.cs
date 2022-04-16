@@ -21,19 +21,11 @@ namespace ISI.Extensions
 {
 	public partial class FileSystem
 	{
-		public class FileSystemInfoSymbolicLinkFile : AbstractFileSystemInfo, IFileSystemInfoDirectory
+		public interface IFileSystemPathFile : IFileSystemPath
 		{
-			public FileSystemInfoSymbolicLinkFile()
-			{
-			}
+			DateTime? ModifiedDateTime { get; }
 
-			public FileSystemInfoSymbolicLinkFile(IFileSystemInfo fileSystemInfo) : base(fileSystemInfo)
-			{
-			}
-
-			public virtual string LinkedTo { get; set; }
-
-			public override string ToString() => string.Format("Symbolic Link {0}", base.ToString());
+			long? Size { get;  }
 		}
 	}
 }

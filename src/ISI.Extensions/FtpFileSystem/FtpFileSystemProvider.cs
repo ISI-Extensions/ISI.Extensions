@@ -22,18 +22,26 @@ using ISI.Extensions.Extensions;
 namespace ISI.Extensions.FtpFileSystem
 {
 	[FileSystem.FileSystemProvider]
-	public class FtpFileSystemProvider : UnixFileSystem.UnixFileSystemProvider<FtpFileSystemPathFile, FtpFileSystemPathDirectory, FtpFileSystemPathSymbolicLinkFile, FtpFileSystemPathSymbolicLinkDirectory>
+	public class FtpFileSystemProvider : FtpFileSystemProvider<FtpFileSystemPathFile, FtpFileSystemPathDirectory, FtpFileSystemPathSymbolicLinkFile, FtpFileSystemPathSymbolicLinkDirectory>
 	{
-		protected virtual bool EnableSsl() => false;
+		protected override bool EnableSsl() => false;
 
 		internal static string _schema => "ftp://";
 		protected override string Schema => _schema;
-
 
 		internal static readonly System.Text.RegularExpressions.Regex _attributedPathRegex = new(@"^" + _schema + @"((?<user>.+?)(:(?<password>.+))?@)?(?<server>.+?)(/(?<file>.*))?$", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 		protected override System.Text.RegularExpressions.Regex AttributedPathRegex => _attributedPathRegex;
 
 		public override Type GetFileSystemPathType => typeof(IFtpFileSystemPath);
+	}
+
+	public abstract class FtpFileSystemProvider<TFtpFileSystemPathFile, TFtpFileSystemPathDirectory, TFtpFileSystemPathSymbolicLinkFile, TFtpFileSystemPathSymbolicLinkDirectory> : UnixFileSystem.UnixFileSystemProvider<TFtpFileSystemPathFile, TFtpFileSystemPathDirectory, TFtpFileSystemPathSymbolicLinkFile, TFtpFileSystemPathSymbolicLinkDirectory>, IFtpFileSystemProvider
+		where TFtpFileSystemPathFile : FtpFileSystemPathFile, new()
+		where TFtpFileSystemPathDirectory : FtpFileSystemPathDirectory, new()
+		where TFtpFileSystemPathSymbolicLinkFile : FtpFileSystemPathSymbolicLinkFile, new()
+		where TFtpFileSystemPathSymbolicLinkDirectory : FtpFileSystemPathSymbolicLinkDirectory, new()
+	{
+		protected abstract bool EnableSsl();
 
 		private static readonly System.Text.RegularExpressions.Regex EncodePathStartingSlashRegex = new(@"^(?<slash>/)");
 		private static readonly System.Text.RegularExpressions.Regex EncodePathDoubleDotRegex = new(@"(?<begin>(^/?)|/)(?<dots>\.\.)(?=(/|$))");
@@ -70,7 +78,7 @@ namespace ISI.Extensions.FtpFileSystem
 				var fileSystemInfos = new List<FileSystem.IFileSystemPath>();
 				var fileSystemInfoDirectories = new List<FileSystem.IFileSystemPathDirectory>();
 
-				var ftpRequest = (System.Net.FtpWebRequest)System.Net.WebRequest.Create(string.Format(@"ftp://{0}//{1}", server, EncodeFileName(directorySystemPathInfo.FullPath())));
+				var ftpRequest = (System.Net.FtpWebRequest)System.Net.WebRequest.Create(string.Format(@"{0}{1}//{2}", Schema, server, EncodeFileName(directorySystemPathInfo.FullPath())));
 				if (EnableSsl())
 				{
 					System.Net.ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
@@ -146,7 +154,7 @@ namespace ISI.Extensions.FtpFileSystem
 
 						if (!DirectoryExists(fileSystemPathDirectory))
 						{
-							var request = (System.Net.FtpWebRequest)System.Net.WebRequest.Create(string.Format(@"ftp://{0}//{1}", server, EncodeFileName(fileSystemPathDirectory.FullPath())));
+							var request = (System.Net.FtpWebRequest)System.Net.WebRequest.Create(string.Format(@"{0}{1}//{2}", Schema, server, EncodeFileName(fileSystemPathDirectory.FullPath())));
 							request.Method = System.Net.WebRequestMethods.Ftp.MakeDirectory;
 							request.EnableSsl = EnableSsl();
 							request.Credentials = new System.Net.NetworkCredential(userName, password);
@@ -182,7 +190,7 @@ namespace ISI.Extensions.FtpFileSystem
 
 		protected virtual void RemoveFile(string server, string userName, string password, string pathName)
 		{
-			var request = (System.Net.FtpWebRequest)System.Net.WebRequest.Create(string.Format(@"ftp://{0}//{1}", server, EncodeFileName(pathName)));
+			var request = (System.Net.FtpWebRequest)System.Net.WebRequest.Create(string.Format(@"{0}{1}//{2}", Schema, server, EncodeFileName(pathName)));
 			request.Method = System.Net.WebRequestMethods.Ftp.DeleteFile;
 			request.EnableSsl = EnableSsl();
 			request.Credentials = new System.Net.NetworkCredential(userName, password);
@@ -198,7 +206,7 @@ namespace ISI.Extensions.FtpFileSystem
 
 		protected virtual void RemoveDirectory(string server, string userName, string password, string pathName)
 		{
-			var request = (System.Net.FtpWebRequest)System.Net.WebRequest.Create(string.Format(@"ftp://{0}//{1}", server, EncodeFileName(pathName)));
+			var request = (System.Net.FtpWebRequest)System.Net.WebRequest.Create(string.Format(@"{0}{1}//{2}", Schema, server, EncodeFileName(pathName)));
 			request.Method = System.Net.WebRequestMethods.Ftp.RemoveDirectory;
 			request.EnableSsl = EnableSsl();
 			request.Credentials = new System.Net.NetworkCredential(userName, password);

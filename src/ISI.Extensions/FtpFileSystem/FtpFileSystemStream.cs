@@ -19,9 +19,17 @@ using System.Text;
 
 namespace ISI.Extensions.FtpFileSystem
 {
-	public class FtpFileSystemStream : FileSystem.AbstractFileSystemStream
+	public class FtpFileSystemStream : FtpFileSystemStream<FtpFileSystemProvider>
 	{
-		protected virtual bool EnableSsl() => false;
+		protected override bool EnableSsl() => false;
+		protected override string Schema => "ftp://";
+	}
+
+	public abstract class FtpFileSystemStream<TFtpFileSystemProvider> : FileSystem.AbstractFileSystemStream
+		where TFtpFileSystemProvider : IFtpFileSystemProvider, new()
+	{
+		protected abstract bool EnableSsl();
+		protected abstract string Schema { get; }
 
 		public override bool WriteNeedsSeekableSource() => false;
 
@@ -44,7 +52,7 @@ namespace ISI.Extensions.FtpFileSystem
 				server = string.Format("{0}:990", server);
 			}
 
-			_request = (System.Net.FtpWebRequest)System.Net.WebRequest.Create(string.Format(@"ftp://{0}//{1}", server, fileSystemPathFile.FullPath()));
+			_request = (System.Net.FtpWebRequest)System.Net.WebRequest.Create(string.Format(@"{0}{1}//{2}", Schema, server, fileSystemPathFile.FullPath()));
 			_request.Method = System.Net.WebRequestMethods.Ftp.DownloadFile;
 			_request.UsePassive = true;
 			_request.UseBinary = true;
@@ -68,7 +76,7 @@ namespace ISI.Extensions.FtpFileSystem
 
 			if (overWrite)
 			{
-				var fileSystemHandler = new FtpFileSystemProvider();
+				var fileSystemHandler = new TFtpFileSystemProvider();
 
 				try
 				{
@@ -80,7 +88,7 @@ namespace ISI.Extensions.FtpFileSystem
 				}
 			}
 
-			_request = (System.Net.FtpWebRequest)System.Net.WebRequest.Create(string.Format(@"ftp://{0}//{1}", server, fileSystemPathFile.FullPath()));
+			_request = (System.Net.FtpWebRequest)System.Net.WebRequest.Create(string.Format(@"{0}{1}//{2}", Schema, server, fileSystemPathFile.FullPath()));
 			_request.Method = System.Net.WebRequestMethods.Ftp.UploadFile;
 			_request.UsePassive = true;
 			_request.UseBinary = true;

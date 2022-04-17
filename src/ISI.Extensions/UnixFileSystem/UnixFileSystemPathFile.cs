@@ -45,7 +45,7 @@ namespace ISI.Extensions.UnixFileSystem
 
 			var fileSystemPath = new TUnixFileSystemPathDirectory();
 
-			fileSystemPath.SetValues(fileSystemPath.Server, fileSystemPath.UserName, fileSystemPath.Password, parentPathParts.Directory, parentPathParts.PathName);
+			fileSystemPath.SetValues(Server, UserName, Password, parentPathParts.Directory, parentPathParts.PathName);
 
 			return fileSystemPath;
 		}

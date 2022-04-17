@@ -42,9 +42,39 @@ namespace ISI.Extensions
 			public abstract IEnumerable<IFileSystemPath> GetDirectoryFileSystemPaths(IFileSystemPathDirectory fileSystemPathDirectory, bool doRecursive);
 
 			public virtual bool FileExists(string attributedFullName) => FileExists(GetFileSystemPathFile(attributedFullName));
-			public abstract bool FileExists(IFileSystemPathFile fileSystemPathFile);
+			public virtual bool FileExists(IFileSystemPathFile fileSystemPathFile)
+			{
+				foreach (var fileSystemPath in GetDirectoryFileSystemPaths(fileSystemPathFile.GetParentFileSystemPathDirectory(), false))
+				{
+					if ((fileSystemPath is IFileSystemPathFile) && string.Equals(fileSystemPath.PathName, fileSystemPathFile.PathName, StringComparison.CurrentCulture))
+					{
+						return true;
+					}
+				}
+
+				return false;
+			}
+
 			public virtual bool DirectoryExists(string attributedFullName) => DirectoryExists(GetFileSystemPathDirectory(attributedFullName));
-			public abstract bool DirectoryExists(IFileSystemPathDirectory fileSystemPathDirectory);
+			public virtual bool DirectoryExists(IFileSystemPathDirectory fileSystemPathDirectory)
+			{
+				var parentFileSystemPathDirectory = fileSystemPathDirectory.GetParentFileSystemPathDirectory();
+
+				if (parentFileSystemPathDirectory == null)
+				{
+					return true;
+				}
+
+				foreach (var fileSystemPath in GetDirectoryFileSystemPaths(parentFileSystemPathDirectory, false))
+				{
+					if ((fileSystemPath is IFileSystemPathDirectory) && string.Equals(fileSystemPath.PathName, fileSystemPathDirectory.PathName, StringComparison.CurrentCulture))
+					{
+						return true;
+					}
+				}
+
+				return false;
+			}
 
 			public virtual void CreateDirectory(string attributedFullName) => CreateDirectory(GetFileSystemPathDirectory(attributedFullName));
 			public abstract void CreateDirectory(IFileSystemPathDirectory fileSystemPathDirectory);

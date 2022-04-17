@@ -23,6 +23,7 @@ namespace ISI.Extensions.SmbFileSystem
 	public interface ISmbFileSystemPath : FileSystem.IFileSystemPath
 	{
 		string Schema { get; }
+		string Drive { get; }
 		string DirectorySeparator { get; }
 	}
 }

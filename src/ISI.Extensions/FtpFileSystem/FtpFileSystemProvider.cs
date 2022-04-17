@@ -15,6 +15,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using ISI.Extensions.Extensions;
 
@@ -41,13 +42,13 @@ namespace ISI.Extensions.FtpFileSystem
 		internal static string EncodeFileName(string fileName)
 		{
 			// http://blogs.msdn.com/mariya/archive/2006/03/06/544523.aspx
-			var result = fileName;
+			var encodedFileName = fileName;
 
-			result = EncodePathDoubleDotRegex.Replace(result, @"${begin}%2e%2e");
-			result = EncodePathSingleDotRegex.Replace(result, @"${begin}%2e");
-			result = EncodePathStartingSlashRegex.Replace(result, @"%2F");
+			encodedFileName = EncodePathDoubleDotRegex.Replace(encodedFileName, @"${begin}%2e%2e");
+			encodedFileName = EncodePathSingleDotRegex.Replace(encodedFileName, @"${begin}%2e");
+			encodedFileName = EncodePathStartingSlashRegex.Replace(encodedFileName, @"%2F");
 
-			return result;
+			return encodedFileName;
 		}
 
 		internal string ServerWithPort(string server)
@@ -79,7 +80,7 @@ namespace ISI.Extensions.FtpFileSystem
 				ftpRequest.UsePassive = true;
 				ftpRequest.EnableSsl = EnableSsl();
 				ftpRequest.Credentials = new System.Net.NetworkCredential(directorySystemPathInfo.UserName, directorySystemPathInfo.Password);
-				
+
 				using (var ftpResponse = (System.Net.FtpWebResponse)ftpRequest.GetResponse())
 				{
 					using (var streamReader = new System.IO.StreamReader(ftpResponse.GetResponseStream(), System.Text.Encoding.ASCII))
@@ -94,7 +95,7 @@ namespace ISI.Extensions.FtpFileSystem
 							{
 								fileSystemInfoDirectories.Add(subFileSystemPathDirectory);
 							}
-							
+
 							if ((fileItem != null) && !string.IsNullOrEmpty(fileItem.PathName))
 							{
 								fileSystemInfos.Add(fileItem);
@@ -117,102 +118,140 @@ namespace ISI.Extensions.FtpFileSystem
 			return getDirectoryFileSystemInfos(fileSystemPathDirectory, doRecursive);
 		}
 
-		public override bool FileExists(FileSystem.IFileSystemPathFile fileSystemPathFile)
-		{
-			try
-			{
-				var fileExists = false;
-
-				ImpersonateWindowsUser.RunImpersonated(fileSystemPathFile.UserName, fileSystemPathFile.Password, true, () =>
-				{
-					fileExists = System.IO.File.Exists(fileSystemPathFile.FullPath());
-				});
-
-				return fileExists;
-			}
-			catch (Exception exception)
-			{
-				throw new Exception("attributedFileName = " + fileSystemPathFile.AttributedFullPath(), exception);
-			}
-		}
-
-		public override bool DirectoryExists(FileSystem.IFileSystemPathDirectory fileSystemPathDirectory)
-		{
-			try
-			{
-				var directoryExists = false;
-
-				ImpersonateWindowsUser.RunImpersonated(fileSystemPathDirectory.UserName, fileSystemPathDirectory.Password, true, () =>
-				{
-					directoryExists = System.IO.Directory.Exists(fileSystemPathDirectory.FullPath());
-				});
-
-				return directoryExists;
-			}
-			catch (Exception exception)
-			{
-				throw new Exception("attributedFileName = " + fileSystemPathDirectory.AttributedFullPath(), exception);
-			}
-		}
-
 		public override void CreateDirectory(FileSystem.IFileSystemPathDirectory fileSystemPathDirectory)
 		{
-			try
+			if (fileSystemPathDirectory != null)
 			{
-				ImpersonateWindowsUser.RunImpersonated(fileSystemPathDirectory.UserName, fileSystemPathDirectory.Password, true, () =>
-				{
-					var fullPath = fileSystemPathDirectory.FullPath();
+				var server = fileSystemPathDirectory.Server;
+				var userName = fileSystemPathDirectory.UserName;
+				var password = fileSystemPathDirectory.Password;
 
-					if (!System.IO.Directory.Exists(fullPath))
+				if (!DirectoryExists(fileSystemPathDirectory))
+				{
+					var fileSystemPathDirectories = new Stack<FileSystem.IFileSystemPathDirectory>();
+
+					while (fileSystemPathDirectory != null)
 					{
-						System.IO.Directory.CreateDirectory(fullPath);
+						if (!string.IsNullOrWhiteSpace(fileSystemPathDirectory.Directory) || !string.IsNullOrWhiteSpace(fileSystemPathDirectory.PathName))
+						{
+							fileSystemPathDirectories.Push(fileSystemPathDirectory);
+						}
+
+						fileSystemPathDirectory = fileSystemPathDirectory.GetParentFileSystemPathDirectory();
 					}
-				});
+
+					while (fileSystemPathDirectories.NullCheckedAny())
+					{
+						fileSystemPathDirectory = fileSystemPathDirectories.Pop();
+
+						if (!DirectoryExists(fileSystemPathDirectory))
+						{
+							var request = (System.Net.FtpWebRequest)System.Net.WebRequest.Create(string.Format(@"ftp://{0}//{1}", server, EncodeFileName(fileSystemPathDirectory.FullPath())));
+							request.Method = System.Net.WebRequestMethods.Ftp.MakeDirectory;
+							request.EnableSsl = EnableSsl();
+							request.Credentials = new System.Net.NetworkCredential(userName, password);
+
+							try
+							{
+								using (var response = (System.Net.FtpWebResponse)request.GetResponse())
+								{
+									using (var responseStream = response.GetResponseStream())
+									{
+										responseStream?.Flush();
+									}
+
+									//if ((response.StatusCode != System.Net.FtpStatusCode.PathnameCreated) && (response.StatusCode != System.Net.FtpStatusCode.FileActionOK) && (response.StatusCode != System.Net.FtpStatusCode.CommandOK))
+									//{
+									//	result = false;
+									//}
+								}
+							}
+							catch (Exception exception)
+							{
+								// Catch 550 here as it's possible we tried to create a dir that already exists if we do not have permission to list dir above it
+								if (!exception.Message.Contains("550"))
+								{
+									throw exception;
+								}
+							}
+						}
+					}
+				}
 			}
-			catch (Exception exception)
+		}
+
+		protected virtual void RemoveFile(string server, string userName, string password, string pathName)
+		{
+			var request = (System.Net.FtpWebRequest)System.Net.WebRequest.Create(string.Format(@"ftp://{0}//{1}", server, EncodeFileName(pathName)));
+			request.Method = System.Net.WebRequestMethods.Ftp.DeleteFile;
+			request.EnableSsl = EnableSsl();
+			request.Credentials = new System.Net.NetworkCredential(userName, password);
+
+			using (var response = (System.Net.FtpWebResponse)request.GetResponse())
 			{
-				throw new Exception("attributedFileName = " + fileSystemPathDirectory.AttributedFullPath(), exception);
+				using (var responseStream = response.GetResponseStream())
+				{
+					responseStream?.Flush();
+				}
+			}
+		}
+
+		protected virtual void RemoveDirectory(string server, string userName, string password, string pathName)
+		{
+			var request = (System.Net.FtpWebRequest)System.Net.WebRequest.Create(string.Format(@"ftp://{0}//{1}", server, EncodeFileName(pathName)));
+			request.Method = System.Net.WebRequestMethods.Ftp.RemoveDirectory;
+			request.EnableSsl = EnableSsl();
+			request.Credentials = new System.Net.NetworkCredential(userName, password);
+
+			using (var response = (System.Net.FtpWebResponse)request.GetResponse())
+			{
+				using (var responseStream = response.GetResponseStream())
+				{
+					responseStream?.Flush();
+				}
 			}
 		}
 
 		public override void RemoveDirectory(FileSystem.IFileSystemPathDirectory fileSystemPathDirectory, bool doRecursive = true)
 		{
-			try
-			{
-				ImpersonateWindowsUser.RunImpersonated(fileSystemPathDirectory.UserName, fileSystemPathDirectory.Password, true, () =>
-				{
-					var fullPath = fileSystemPathDirectory.FullPath();
+			var server = fileSystemPathDirectory.Server;
+			var userName = fileSystemPathDirectory.UserName;
+			var password = fileSystemPathDirectory.Password;
 
-					if (System.IO.Directory.Exists(fullPath))
-					{
-						System.IO.Directory.Delete(fullPath, doRecursive);
-					}
-				});
-			}
-			catch (Exception exception)
+			void removeDirectory(FileSystem.IFileSystemPathDirectory removeFileSystemPathDirectory)
 			{
-				throw new Exception("attributedFileName = " + fileSystemPathDirectory.AttributedFullPath(), exception);
+				if (doRecursive)
+				{
+					var fileSystemPaths = GetDirectoryFileSystemPaths(removeFileSystemPathDirectory, true);
+
+					foreach (var subFileSystemPathDirectory in fileSystemPaths.Cast<FileSystem.IFileSystemPathDirectory>())
+					{
+						removeDirectory(subFileSystemPathDirectory);
+					}
+
+					foreach (var subFileSystemPathFile in fileSystemPaths.Cast<FileSystem.IFileSystemPathFile>())
+					{
+						RemoveFile(server, userName, password, subFileSystemPathFile.FullPath());
+					}
+				}
+
+				RemoveDirectory(server, userName, password, removeFileSystemPathDirectory.FullPath());
+			}
+
+			if (DirectoryExists(fileSystemPathDirectory))
+			{
+				removeDirectory(fileSystemPathDirectory);
 			}
 		}
 
 		public override void RemoveFile(FileSystem.IFileSystemPathFile fileSystemPathFile)
 		{
-			try
-			{
-				ImpersonateWindowsUser.RunImpersonated(fileSystemPathFile.UserName, fileSystemPathFile.Password, true, () =>
-				{
-					var fullPath = fileSystemPathFile.FullPath();
+			var server = fileSystemPathFile.Server;
+			var userName = fileSystemPathFile.UserName;
+			var password = fileSystemPathFile.Password;
+			var pathName = fileSystemPathFile.FullPath();
 
-					if (System.IO.File.Exists(fullPath))
-					{
-						System.IO.File.Delete(fullPath);
-					}
-				});
-			}
-			catch (Exception exception)
-			{
-				throw new Exception("attributedFileName = " + fileSystemPathFile.AttributedFullPath(), exception);
-			}
+			RemoveFile(server, userName, password, pathName);
 		}
 
 		public override System.IO.Stream OpenRead(FileSystem.IFileSystemPathFile fileSystemPathFile, bool mustBeSeekable = false)
@@ -228,7 +267,7 @@ namespace ISI.Extensions.FtpFileSystem
 		{
 			if (createDirectories)
 			{
-				//CreateDirectory(fileSystemPathFile);
+				CreateDirectory(fileSystemPathFile.GetParentFileSystemPathDirectory());
 			}
 
 			var stream = new FtpFileSystemStream();

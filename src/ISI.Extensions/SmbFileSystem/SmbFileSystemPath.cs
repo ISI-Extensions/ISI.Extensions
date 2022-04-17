@@ -32,17 +32,28 @@ namespace ISI.Extensions.SmbFileSystem
 		public string Directory { get; internal set; } = string.Empty;
 		public string PathName { get; internal set; } = string.Empty;
 
-		protected virtual string BuildAttributedFullPath(bool obfuscateUserName = true, string obfuscatedUserNameValue = null, bool obfuscatePassword = true, string obfuscatedPasswordValue = null)
+		protected virtual string BuildAttributedFullPath(bool showSchema, bool showUserName, bool showPassword, bool showServer, bool obfuscateUserName = true, string obfuscatedUserNameValue = null, bool obfuscatePassword = true, string obfuscatedPasswordValue = null)
 		{
 			var attributedFullPathBuilder = new System.Text.StringBuilder();
 
-			attributedFullPathBuilder.Append(string.IsNullOrWhiteSpace(Drive) ? Schema : Drive);
+			if (string.IsNullOrWhiteSpace(Drive))
+			{
+				if (showSchema)
+				{
+					attributedFullPathBuilder.Append(Schema);
+				}
+			}
+			else
+			{
+				attributedFullPathBuilder.Append(Drive);
+				attributedFullPathBuilder.Append(DirectorySeparator);
+			};
 
-			if (!string.IsNullOrWhiteSpace(UserName))
+			if (showUserName && !string.IsNullOrWhiteSpace(UserName))
 			{
 				attributedFullPathBuilder.Append((obfuscateUserName ? obfuscatedUserNameValue : UserName) ?? string.Empty);
 
-				if (!string.IsNullOrWhiteSpace(Password))
+				if (showPassword && !string.IsNullOrWhiteSpace(Password))
 				{
 					attributedFullPathBuilder.AppendFormat(":{0}", (obfuscatePassword ? obfuscatedPasswordValue : Password) ?? string.Empty);
 				}
@@ -50,7 +61,7 @@ namespace ISI.Extensions.SmbFileSystem
 				attributedFullPathBuilder.Append("@");
 			}
 
-			if (!string.IsNullOrEmpty(Server))
+			if (showServer && !string.IsNullOrEmpty(Server))
 			{
 				attributedFullPathBuilder.AppendFormat("{0}{1}", Server, DirectorySeparator);
 			}
@@ -78,16 +89,15 @@ namespace ISI.Extensions.SmbFileSystem
 			var lastDirectorySeparatorIndex = Directory.LastIndexOf(DirectorySeparator, StringComparison.InvariantCultureIgnoreCase);
 			if (lastDirectorySeparatorIndex > 0)
 			{
-				return (Directory: Directory.Substring(0, lastDirectorySeparatorIndex - DirectorySeparator.Length), PathName: Directory.Substring(lastDirectorySeparatorIndex + DirectorySeparator.Length));
+				return (Directory: Directory.Substring(0, lastDirectorySeparatorIndex), PathName: Directory.Substring(lastDirectorySeparatorIndex + DirectorySeparator.Length));
 			}
 
 			return (Directory: string.Empty, PathName: Directory);
 		}
 
-		public virtual string FullPath() => BuildAttributedFullPath(true, null, true, null);
-		public virtual string AttributedFullPath() => BuildAttributedFullPath(false, null, false, null);
-
-		public virtual string ObfuscatedAttributedFullPath(bool obfuscateUserName = true, string obfuscatedUserNameValue = null, bool obfuscatePassword = true, string obfuscatedPasswordValue = null) => BuildAttributedFullPath(obfuscateUserName, obfuscatedUserNameValue, obfuscatePassword, obfuscatedPasswordValue);
+		public virtual string FullPath() => BuildAttributedFullPath(false, false, false, false, true, null, true, null);
+		public virtual string AttributedFullPath() => BuildAttributedFullPath(true, true, true, true, false, null, false, null);
+		public virtual string ObfuscatedAttributedFullPath(bool obfuscateUserName = true, string obfuscatedUserNameValue = null, bool obfuscatePassword = true, string obfuscatedPasswordValue = null) => BuildAttributedFullPath(true, true, true, true, obfuscateUserName, obfuscatedUserNameValue, obfuscatePassword, obfuscatedPasswordValue);
 
 		public abstract FileSystem.IFileSystemPath Clone();
 
@@ -95,12 +105,17 @@ namespace ISI.Extensions.SmbFileSystem
 		{
 			var parentPathParts = GetParentPathParts();
 
+			if (string.IsNullOrWhiteSpace(parentPathParts.PathName))
+			{
+				return null;
+			}
+
 			var fileSystemPath = new SmbFileSystemPathDirectory();
 
-			Drive = fileSystemPath.Drive;
-			Server = fileSystemPath.Server;
-			UserName = fileSystemPath.UserName;
-			Password = fileSystemPath.Password;
+			Drive = Drive;
+			Server = Server;
+			UserName = UserName;
+			Password = Password;
 			Directory = parentPathParts.Directory;
 			PathName = parentPathParts.PathName;
 

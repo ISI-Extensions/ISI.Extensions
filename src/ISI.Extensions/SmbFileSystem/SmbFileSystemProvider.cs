@@ -84,7 +84,7 @@ namespace ISI.Extensions.SmbFileSystem
 				var lastDirectorySeparatorIndex = fullPath.LastIndexOf(DirectorySeparator, StringComparison.InvariantCultureIgnoreCase);
 				if (lastDirectorySeparatorIndex > 0)
 				{
-					fileSystemPath.Directory = fullPath.Substring(0, lastDirectorySeparatorIndex - DirectorySeparator.Length);
+					fileSystemPath.Directory = fullPath.Substring(0, lastDirectorySeparatorIndex);
 					fileSystemPath.PathName = fullPath.Substring(lastDirectorySeparatorIndex + DirectorySeparator.Length);
 				}
 				else

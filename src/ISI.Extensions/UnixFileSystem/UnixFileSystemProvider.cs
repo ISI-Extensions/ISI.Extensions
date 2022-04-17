@@ -33,7 +33,7 @@ namespace ISI.Extensions.UnixFileSystem
 		private static readonly System.Text.RegularExpressions.Regex[] FileSystemRecordRegexs = new System.Text.RegularExpressions.Regex[]
 		{
 			//Windows
-			new(@"^(?<datetime>\d{2}-\d{2}-\d{2}\s+\d{2}:\d{2}(A|P)M)(?<type>\s+\<type\>)?\s+(?<size>\d*)\s+(?<filename>.+)$", System.Text.RegularExpressions.RegexOptions.IgnoreCase),
+			new(@"^(?<datetime>\d{2}-\d{2}-\d{2}\s+\d{2}:\d{2}(A|P)M)(?:\s+)(?<type>(?:\<)(?:\w+)(?:\>))?\s+(?<size>\d*)\s+(?<filename>.+)$", System.Text.RegularExpressions.RegexOptions.IgnoreCase),
 			//Unix
 			new(@"^(?<type>[\-dbclps])(?<ownerpermissions>[-rwxsStT]{3})(?<grouppermissions>[-rwxsStT]{3})(?<otherpermissions>[-rwxsStT]{3})\s+\d*\s+(?<owner>[\w\-\.]+)\s+(?<group>[\w\-\.]+)\s+(?<size>\d+)\s+(?<datetime>\d{2,4}\-\d{2}\-\d{2,4}\s\d{2}\:\d{2}\:\d{2}\.\d{9}\s[-+\s]\d{4})\s+(?<filename>.+)$", System.Text.RegularExpressions.RegexOptions.IgnoreCase),
 			new(@"^(?<type>[\-dbclps])(?<ownerpermissions>[-rwxsStT]{3})(?<grouppermissions>[-rwxsStT]{3})(?<otherpermissions>[-rwxsStT]{3})\s+\d*\s+(?<owner>[\w\-\.]+)\s+(?<group>[\w\-\.]+)\s+(?<size>\d+)\s+(?<datetime>((\w+\s+\d+)|(\d{2,4}[/\-]\d{2}[/\-]\d{2,4}))\s+\d{1,2}:\d{2}(\s*[AP]M)?)\s(?<filename>.+)$", System.Text.RegularExpressions.RegexOptions.IgnoreCase),
@@ -146,7 +146,7 @@ namespace ISI.Extensions.UnixFileSystem
 					fileSystemPath.Password = passwordGroup.Value;
 				}
 
-				var fullPath = match.Groups["fileName"].Value.Trim();
+				var fullPath = match.Groups["file"].Value.Trim();
 
 				while (fullPath.StartsWith(DirectorySeparator))
 				{
@@ -161,7 +161,7 @@ namespace ISI.Extensions.UnixFileSystem
 				var lastDirectorySeparatorIndex = fullPath.LastIndexOf(DirectorySeparator, StringComparison.InvariantCultureIgnoreCase);
 				if (lastDirectorySeparatorIndex > 0)
 				{
-					fileSystemPath.Directory = fullPath.Substring(0, lastDirectorySeparatorIndex - DirectorySeparator.Length);
+					fileSystemPath.Directory = fullPath.Substring(0, lastDirectorySeparatorIndex);
 					fileSystemPath.PathName = fullPath.Substring(lastDirectorySeparatorIndex + DirectorySeparator.Length);
 				}
 				else

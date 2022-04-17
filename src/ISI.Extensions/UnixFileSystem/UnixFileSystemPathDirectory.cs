@@ -36,11 +36,16 @@ namespace ISI.Extensions.UnixFileSystem
 		protected virtual FileSystem.IFileSystemPathDirectory GetParentFileSystemPathDirectory<TUnixFileSystemPathDirectory>()
 			where TUnixFileSystemPathDirectory : IUnixFileSystemPathDirectory, new()
 		{
+			if (string.IsNullOrWhiteSpace(Directory) && string.IsNullOrWhiteSpace(PathName))
+			{
+				return null;
+			}
+
 			var parentPathParts = GetParentPathParts();
 
 			var fileSystemPath = new TUnixFileSystemPathDirectory();
 
-			fileSystemPath.SetValues(fileSystemPath.Server, fileSystemPath.UserName, fileSystemPath.Password, parentPathParts.Directory, parentPathParts.PathName);
+			fileSystemPath.SetValues(Server, UserName, Password, parentPathParts.Directory, parentPathParts.PathName);
 
 			return fileSystemPath;
 		}

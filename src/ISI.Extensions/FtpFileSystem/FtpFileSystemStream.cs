@@ -23,7 +23,7 @@ namespace ISI.Extensions.FtpFileSystem
 	{
 		protected virtual bool EnableSsl() => false;
 
-		public override bool WriteNeedsSeekableSource() { return false; }
+		public override bool WriteNeedsSeekableSource() => false;
 
 		private System.Net.FtpWebRequest _request = null;
 		private System.Net.FtpWebResponse _response = null;

@@ -15,48 +15,33 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using ISI.Extensions.DependencyInjection.Extensions;
 using ISI.Extensions.Extensions;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.SshNet
+namespace ISI.Extensions.SshNet.SftpFileSystem
 {
-	public class ConnectionManager
+	public class SftpFileSystemPathFile : UnixFileSystem.UnixFileSystemPathFile, ISftpFileSystemPath
 	{
-		private static ISI.Extensions.SecureShell.IHostConfigurationManager _hostConfigurationManager = null;
-		private static ISI.Extensions.SecureShell.IHostConfigurationManager HostConfigurationManager => _hostConfigurationManager ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.SecureShell.IHostConfigurationManager>();
+		public override string Schema => SftpFileSystemProvider._schema;
+		public override string DirectorySeparator => SftpFileSystemProvider._directorySeparator;
 
-		public static Renci.SshNet.ConnectionInfo GetConnectionInfo(string server, string userName, string password)
+		public override string ToString() => string.Format("Sftp File {0}", base.ToString());
+
+		public override FileSystem.IFileSystemPath Clone()
 		{
-			var port = 22;
-
-			var pieces = server.Split(':');
-
-			server = pieces.First();
-
-			if (pieces.Length > 1)
+			return new SftpFileSystemPathFile()
 			{
-				port = pieces[1].ToInt();
-			}
-
-			var hostConfiguration = HostConfigurationManager.GetHostConfiguration(server, port, userName);
-
-			if (!string.IsNullOrEmpty(hostConfiguration?.PrivateKey))
-			{
-				using (var privateKeyStream = new System.IO.MemoryStream(System.Text.Encoding.Default.GetBytes(hostConfiguration?.PrivateKey)))
-				{
-					if (string.IsNullOrEmpty(password))
-					{
-						return new Renci.SshNet.ConnectionInfo(server, port, userName, new Renci.SshNet.PrivateKeyAuthenticationMethod(userName, new Renci.SshNet.PrivateKeyFile(privateKeyStream)));
-					}
-
-					return new Renci.SshNet.ConnectionInfo(server, port, userName, new Renci.SshNet.PrivateKeyAuthenticationMethod(userName, new Renci.SshNet.PrivateKeyFile(privateKeyStream, password)));
-				}
-			}
-
-			return new Renci.SshNet.ConnectionInfo(server, port, userName, new Renci.SshNet.PasswordAuthenticationMethod(userName, password));
+				Server = Server,
+				UserName = UserName,
+				Password = Password,
+				Directory = Directory,
+				PathName = PathName,
+				ModifiedDateTime = ModifiedDateTime,
+				Size = Size,
+			};
 		}
+
+		public override FileSystem.IFileSystemPathDirectory GetParentFileSystemPathDirectory() => GetParentFileSystemPathDirectory<SftpFileSystemPathDirectory>();
 	}
 }
+

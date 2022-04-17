@@ -29,15 +29,14 @@ namespace ISI.Extensions.FtpsFileSystem
 
 		public override FileSystem.IFileSystemPath Clone()
 		{
-			var fileSystemPath = new FtpsFileSystemPathDirectory();
-
-			Server = fileSystemPath.Server;
-			UserName = fileSystemPath.UserName;
-			Password = fileSystemPath.Password;
-			Directory = fileSystemPath.Directory;
-			PathName = fileSystemPath.PathName;
-
-			return fileSystemPath;
+			return new FtpsFileSystemPathDirectory()
+			{
+				Server = Server,
+				UserName = UserName,
+				Password = Password,
+				Directory = Directory,
+				PathName = PathName,
+			};
 		}
 	
 		public override FileSystem.IFileSystemPathDirectory GetParentFileSystemPathDirectory() => GetParentFileSystemPathDirectory<FtpsFileSystemPathDirectory>();

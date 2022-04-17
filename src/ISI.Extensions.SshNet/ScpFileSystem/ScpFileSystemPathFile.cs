@@ -29,17 +29,16 @@ namespace ISI.Extensions.SshNet.ScpFileSystem
 
 		public override FileSystem.IFileSystemPath Clone()
 		{
-			var fileSystemPath = new ScpFileSystemPathFile();
-
-			Server = fileSystemPath.Server;
-			UserName = fileSystemPath.UserName;
-			Password = fileSystemPath.Password;
-			Directory = fileSystemPath.Directory;
-			PathName = fileSystemPath.PathName;
-			ModifiedDateTime = fileSystemPath.ModifiedDateTime;
-			Size = fileSystemPath.Size;
-
-			return fileSystemPath;
+			return new ScpFileSystemPathFile()
+			{
+				Server = Server,
+				UserName = UserName,
+				Password = Password,
+				Directory = Directory,
+				PathName = PathName,
+				ModifiedDateTime = ModifiedDateTime,
+				Size = Size,
+			};
 		}
 
 		public override FileSystem.IFileSystemPathDirectory GetParentFileSystemPathDirectory() => GetParentFileSystemPathDirectory<ScpFileSystemPathDirectory>();

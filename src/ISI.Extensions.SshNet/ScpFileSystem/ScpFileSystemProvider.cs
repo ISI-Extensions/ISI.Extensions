@@ -118,15 +118,63 @@ namespace ISI.Extensions.SshNet.ScpFileSystem
 
 		public override void CreateDirectory(FileSystem.IFileSystemPathDirectory fileSystemPathDirectory)
 		{
+			if (!string.IsNullOrWhiteSpace(fileSystemPathDirectory.PathName))
+			{
+				using (var client = GetSshClient(fileSystemPathDirectory))
+				{
+					client.Connect();
+
+					using (var cmd = client.CreateCommand(string.Format("mkdir {0}", EncodeFileName(fileSystemPathDirectory.FullPath()))))
+					{
+						cmd.Execute();
+					}
+
+					client.Disconnect();
+				}
+			}
 		}
 
 		public override void RemoveDirectory(FileSystem.IFileSystemPathDirectory fileSystemPathDirectory, bool doRecursive = true)
 		{
+			if (DirectoryExists(fileSystemPathDirectory))
+			{
+				using (var client = GetSshClient(fileSystemPathDirectory))
+				{
+					client.Connect();
+
+					using (var cmd = client.CreateCommand(string.Format("{0} {1}", (doRecursive ? "rm -r" : "rmdir"), EncodeFileName(fileSystemPathDirectory.FullPath()))))
+					{
+						cmd.Execute();
+					}
+
+					client.Disconnect();
+				}
+			}
 		}
 
 		public override void RemoveFile(FileSystem.IFileSystemPathFile fileSystemPathFile)
 		{
+			if (FileExists(fileSystemPathFile))
+			{
+				try
+				{
+					using (var client = GetSshClient(fileSystemPathFile))
+					{
+						client.Connect();
 
+						using (var cmd = client.CreateCommand(string.Format("rm {0}", EncodeFileName(fileSystemPathFile.FullPath()))))
+						{
+							cmd.Execute();
+						}
+
+						client.Disconnect();
+					}
+				}
+				catch (Exception exception)
+				{
+					throw exception;
+				}
+			}
 		}
 
 		public override System.IO.Stream OpenRead(FileSystem.IFileSystemPathFile fileSystemPathFile, bool mustBeSeekable = false)

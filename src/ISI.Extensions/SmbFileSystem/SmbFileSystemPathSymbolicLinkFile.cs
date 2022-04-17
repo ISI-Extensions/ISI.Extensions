@@ -35,19 +35,18 @@ namespace ISI.Extensions.SmbFileSystem
 
 		public override FileSystem.IFileSystemPath Clone()
 		{
-			var fileSystemPath = new SmbFileSystemPathSymbolicLinkFile();
-
-			Drive = fileSystemPath.Drive;
-			Server = fileSystemPath.Server;
-			UserName = fileSystemPath.UserName;
-			Password = fileSystemPath.Password;
-			Directory = fileSystemPath.Directory;
-			PathName = fileSystemPath.PathName;
-			ModifiedDateTime = fileSystemPath.ModifiedDateTime;
-			Size = fileSystemPath.Size;
-			LinkedTo = fileSystemPath.LinkedTo;
-
-			return fileSystemPath;
+			return new SmbFileSystemPathSymbolicLinkFile()
+			{
+				Drive = Drive,
+				Server = Server,
+				UserName = UserName,
+				Password = Password,
+				Directory = Directory,
+				PathName = PathName,
+				ModifiedDateTime = ModifiedDateTime,
+				Size = Size,
+				LinkedTo = LinkedTo,
+			};
 		}
 	}
 }

@@ -36,16 +36,15 @@ namespace ISI.Extensions.SmbFileSystem
 
 		public override FileSystem.IFileSystemPath Clone()
 		{
-			var fileSystemPath = new SmbFileSystemPathDirectory();
-
-			Drive = fileSystemPath.Drive;
-			Server = fileSystemPath.Server;
-			UserName = fileSystemPath.UserName;
-			Password = fileSystemPath.Password;
-			Directory = fileSystemPath.Directory;
-			PathName = fileSystemPath.PathName;
-
-			return fileSystemPath;
+			return new SmbFileSystemPathDirectory()
+			{
+				Drive = Drive,
+				Server = Server,
+				UserName = UserName,
+				Password = Password,
+				Directory = Directory,
+				PathName = PathName,
+			};
 		}
 	}
 }

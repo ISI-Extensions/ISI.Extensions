@@ -29,16 +29,15 @@ namespace ISI.Extensions.HttpsFileSystem
 
 		public override FileSystem.IFileSystemPath Clone()
 		{
-			var fileSystemPath = new HttpsFileSystemPathSymbolicLinkDirectory();
-
-			Server = fileSystemPath.Server;
-			UserName = fileSystemPath.UserName;
-			Password = fileSystemPath.Password;
-			Directory = fileSystemPath.Directory;
-			PathName = fileSystemPath.PathName;
-			LinkedTo = fileSystemPath.LinkedTo;
-
-			return fileSystemPath;
+			return new HttpsFileSystemPathSymbolicLinkDirectory()
+			{
+				Server = Server,
+				UserName = UserName,
+				Password = Password,
+				Directory = Directory,
+				PathName = PathName,
+				LinkedTo = LinkedTo,
+			};
 		}
 
 		public override FileSystem.IFileSystemPathDirectory GetParentFileSystemPathDirectory() => GetParentFileSystemPathDirectory<HttpsFileSystemPathDirectory>();

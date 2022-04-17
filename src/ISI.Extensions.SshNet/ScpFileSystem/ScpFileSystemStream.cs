@@ -48,6 +48,8 @@ namespace ISI.Extensions.SshNet.ScpFileSystem
 
 			_client.Download(EncodeFileName(fileSystemPathFile.FullPath()), Stream);
 
+			Stream.Rewind();
+
 			FileSystemPathFile = fileSystemPathFile.Clone() as FileSystem.IFileSystemPathFile;
 		}
 

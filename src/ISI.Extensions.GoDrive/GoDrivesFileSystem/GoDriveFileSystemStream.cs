@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -13,17 +13,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle("ISI.Extensions")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("ISI.Extensions")]
-[assembly: AssemblyCulture("")]
-
-[assembly: InternalsVisibleTo("ISI.Extensions.SshNet")]
+namespace ISI.Extensions.GoDrive.GoDrivesFileSystem
+{
+	public class GoDriveFileSystemStream : ISI.Extensions.GoDrive.GoDriveFileSystem.GoDriveFileSystemStream<GoDrivesFileSystemProvider>
+	{
+		protected override string Schema => GoDrivesFileSystemProvider._schema;
+	}
+}

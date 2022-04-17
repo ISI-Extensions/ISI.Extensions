@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -13,17 +13,23 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using ISI.Extensions.Extensions;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle("ISI.Extensions")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("ISI.Extensions")]
-[assembly: AssemblyCulture("")]
+namespace ISI.Extensions.GoDrive.GoDrivesFileSystem
+{
+	[FileSystem.FileSystemProvider]
+	public class GoDrivesFileSystemProvider : ISI.Extensions.GoDrive.GoDriveFileSystem.GoDriveFileSystemProvider<GoDrivesFileSystemPathFile, GoDrivesFileSystemPathDirectory>
+	{
+		internal static string _schema => "godrives://";
+		protected override string Schema => _schema;
 
-[assembly: InternalsVisibleTo("ISI.Extensions.SshNet")]
+		internal static readonly System.Text.RegularExpressions.Regex _attributedPathRegex = new System.Text.RegularExpressions.Regex(@"^" + _schema + @"(?<server>.+?)(/(?<file>.*))?$", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+		protected override System.Text.RegularExpressions.Regex AttributedPathRegex => _attributedPathRegex;
+
+		public override Type GetFileSystemPathType => typeof(IGoDrivesFileSystemPath);
+	}
+}

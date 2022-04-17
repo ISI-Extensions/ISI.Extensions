@@ -12,18 +12,40 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle("ISI.Extensions")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("ISI.Extensions")]
-[assembly: AssemblyCulture("")]
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.GoDrive.DataTransferObjects.GoDriveApi;
 
-[assembly: InternalsVisibleTo("ISI.Extensions.SshNet")]
+namespace ISI.Extensions.GoDrive
+{
+	public partial class GoDriveApi
+	{
+		private (string ViewState, System.Net.CookieContainer CookieContainer) CreateContext(string directoryUrl)
+		{
+			var response = (ViewState: string.Empty, CookieContainer: new System.Net.CookieContainer());
+
+			var downloadFileResponse = ISI.Extensions.WebClient.Rest.ExecuteGet<ISI.Extensions.WebClient.Rest.StreamResponse>(FormatUrl(directoryUrl), new ISI.Extensions.WebClient.HeaderCollection(), true, cookieContainer: response.CookieContainer);
+
+			downloadFileResponse.Stream.Rewind();
+
+			var content = downloadFileResponse.Stream.TextReadToEnd();
+
+			var index = content.IndexOf("name=\"javax.faces.ViewState\"");
+			if (index >= 0)
+			{
+				index = content.IndexOf("value=\"", index);
+				if (index >= 0)
+				{
+					response.ViewState = content.Substring(index).Split(new[] { '\"' }, StringSplitOptions.RemoveEmptyEntries)[1];
+				}
+			}
+
+			return response;
+		}
+	}
+}

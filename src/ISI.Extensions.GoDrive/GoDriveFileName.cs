@@ -13,17 +13,32 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle("ISI.Extensions")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("ISI.Extensions")]
-[assembly: AssemblyCulture("")]
+namespace ISI.Extensions.GoDrive
+{
+	public class GoDriveFileName
+	{
+		public string DirectoryUrl { get; set; }
+		public string FileKey { get; set; }
+		public string FileName { get; set; }
 
-[assembly: InternalsVisibleTo("ISI.Extensions.SshNet")]
+		public string FullName
+		{
+			get => string.Format("{0}/{1}/{2}", DirectoryUrl, FileKey, FileName);
+			set
+			{
+				var pieces = new Stack<string>(value.Split(new []{ '/' }));
+				FileName = pieces.Pop();
+				FileKey = pieces.Pop();
+				DirectoryUrl = string.Join("/", pieces.Reverse());
+			}
+		}
+
+		public override string ToString() => FullName;
+	}
+}

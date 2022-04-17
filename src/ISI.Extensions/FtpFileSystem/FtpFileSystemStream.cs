@@ -21,17 +21,17 @@ namespace ISI.Extensions.FtpFileSystem
 {
 	public class FtpFileSystemStream : FtpFileSystemStream<FtpFileSystemProvider>
 	{
-		protected override bool EnableSsl() => false;
-		protected override string Schema => "ftp://";
+		protected override bool EnableSsl => FtpFileSystemProvider._enableSsl;
+		protected override string Schema => FtpFileSystemProvider._schema;
 	}
 
 	public abstract class FtpFileSystemStream<TFtpFileSystemProvider> : FileSystem.AbstractFileSystemStream
 		where TFtpFileSystemProvider : IFtpFileSystemProvider, new()
 	{
-		protected abstract bool EnableSsl();
+		protected abstract bool EnableSsl { get; }
 		protected abstract string Schema { get; }
 
-		public override bool WriteNeedsSeekableSource() => false;
+		public override bool WriteNeedsSeekableSource => false;
 
 		private System.Net.FtpWebRequest _request = null;
 		private System.Net.FtpWebResponse _response = null;
@@ -47,7 +47,7 @@ namespace ISI.Extensions.FtpFileSystem
 		{
 			var server = fileSystemPathFile.Server;
 
-			if (EnableSsl() && !server.Contains(":"))
+			if (EnableSsl && !server.Contains(":"))
 			{
 				server = string.Format("{0}:990", server);
 			}
@@ -56,7 +56,7 @@ namespace ISI.Extensions.FtpFileSystem
 			_request.Method = System.Net.WebRequestMethods.Ftp.DownloadFile;
 			_request.UsePassive = true;
 			_request.UseBinary = true;
-			_request.EnableSsl = EnableSsl();
+			_request.EnableSsl = EnableSsl;
 			_request.Credentials = new System.Net.NetworkCredential(fileSystemPathFile.UserName, fileSystemPathFile.Password);
 
 			_response = (System.Net.FtpWebResponse)_request.GetResponse();
@@ -69,7 +69,7 @@ namespace ISI.Extensions.FtpFileSystem
 		{
 			var server = fileSystemPathFile.Server;
 
-			if (EnableSsl() && !server.Contains(":"))
+			if (EnableSsl && !server.Contains(":"))
 			{
 				server = string.Format("{0}:990", server);
 			}
@@ -92,7 +92,7 @@ namespace ISI.Extensions.FtpFileSystem
 			_request.Method = System.Net.WebRequestMethods.Ftp.UploadFile;
 			_request.UsePassive = true;
 			_request.UseBinary = true;
-			_request.EnableSsl = EnableSsl();
+			_request.EnableSsl = EnableSsl;
 			_request.Credentials = new System.Net.NetworkCredential(fileSystemPathFile.UserName, fileSystemPathFile.Password);
 
 			Stream = _request.GetRequestStream();

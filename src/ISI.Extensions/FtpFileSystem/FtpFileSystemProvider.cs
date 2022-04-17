@@ -24,7 +24,8 @@ namespace ISI.Extensions.FtpFileSystem
 	[FileSystem.FileSystemProvider]
 	public class FtpFileSystemProvider : FtpFileSystemProvider<FtpFileSystemPathFile, FtpFileSystemPathDirectory, FtpFileSystemPathSymbolicLinkFile, FtpFileSystemPathSymbolicLinkDirectory>
 	{
-		protected override bool EnableSsl() => false;
+		internal static bool _enableSsl => false;
+		protected override bool EnableSsl => _enableSsl;
 
 		internal static string _schema => "ftp://";
 		protected override string Schema => _schema;
@@ -41,7 +42,7 @@ namespace ISI.Extensions.FtpFileSystem
 		where TFtpFileSystemPathSymbolicLinkFile : FtpFileSystemPathSymbolicLinkFile, new()
 		where TFtpFileSystemPathSymbolicLinkDirectory : FtpFileSystemPathSymbolicLinkDirectory, new()
 	{
-		protected abstract bool EnableSsl();
+		protected abstract bool EnableSsl { get; }
 
 		private static readonly System.Text.RegularExpressions.Regex EncodePathStartingSlashRegex = new(@"^(?<slash>/)");
 		private static readonly System.Text.RegularExpressions.Regex EncodePathDoubleDotRegex = new(@"(?<begin>(^/?)|/)(?<dots>\.\.)(?=(/|$))");
@@ -61,7 +62,7 @@ namespace ISI.Extensions.FtpFileSystem
 
 		internal string ServerWithPort(string server)
 		{
-			if (EnableSsl() && !server.Contains(":"))
+			if (EnableSsl && !server.Contains(":"))
 			{
 				server = string.Format("{0}:990", server);
 			}
@@ -79,14 +80,14 @@ namespace ISI.Extensions.FtpFileSystem
 				var fileSystemInfoDirectories = new List<FileSystem.IFileSystemPathDirectory>();
 
 				var ftpRequest = (System.Net.FtpWebRequest)System.Net.WebRequest.Create(string.Format(@"{0}{1}//{2}", Schema, server, EncodeFileName(directorySystemPathInfo.FullPath())));
-				if (EnableSsl())
+				if (EnableSsl)
 				{
 					System.Net.ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
 				}
 				ftpRequest.Method = System.Net.WebRequestMethods.Ftp.ListDirectoryDetails;
 				ftpRequest.UseBinary = false;
 				ftpRequest.UsePassive = true;
-				ftpRequest.EnableSsl = EnableSsl();
+				ftpRequest.EnableSsl = EnableSsl;
 				ftpRequest.Credentials = new System.Net.NetworkCredential(directorySystemPathInfo.UserName, directorySystemPathInfo.Password);
 
 				using (var ftpResponse = (System.Net.FtpWebResponse)ftpRequest.GetResponse())
@@ -156,7 +157,7 @@ namespace ISI.Extensions.FtpFileSystem
 						{
 							var request = (System.Net.FtpWebRequest)System.Net.WebRequest.Create(string.Format(@"{0}{1}//{2}", Schema, server, EncodeFileName(fileSystemPathDirectory.FullPath())));
 							request.Method = System.Net.WebRequestMethods.Ftp.MakeDirectory;
-							request.EnableSsl = EnableSsl();
+							request.EnableSsl = EnableSsl;
 							request.Credentials = new System.Net.NetworkCredential(userName, password);
 
 							try
@@ -192,7 +193,7 @@ namespace ISI.Extensions.FtpFileSystem
 		{
 			var request = (System.Net.FtpWebRequest)System.Net.WebRequest.Create(string.Format(@"{0}{1}//{2}", Schema, server, EncodeFileName(pathName)));
 			request.Method = System.Net.WebRequestMethods.Ftp.DeleteFile;
-			request.EnableSsl = EnableSsl();
+			request.EnableSsl = EnableSsl;
 			request.Credentials = new System.Net.NetworkCredential(userName, password);
 
 			using (var response = (System.Net.FtpWebResponse)request.GetResponse())
@@ -208,7 +209,7 @@ namespace ISI.Extensions.FtpFileSystem
 		{
 			var request = (System.Net.FtpWebRequest)System.Net.WebRequest.Create(string.Format(@"{0}{1}//{2}", Schema, server, EncodeFileName(pathName)));
 			request.Method = System.Net.WebRequestMethods.Ftp.RemoveDirectory;
-			request.EnableSsl = EnableSsl();
+			request.EnableSsl = EnableSsl;
 			request.Credentials = new System.Net.NetworkCredential(userName, password);
 
 			using (var response = (System.Net.FtpWebResponse)request.GetResponse())

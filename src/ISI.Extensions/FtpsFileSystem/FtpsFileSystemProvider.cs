@@ -24,7 +24,8 @@ namespace ISI.Extensions.FtpsFileSystem
 	[FileSystem.FileSystemProvider]
 	public class FtpsFileSystemProvider : ISI.Extensions.FtpFileSystem.FtpFileSystemProvider<FtpsFileSystemPathFile, FtpsFileSystemPathDirectory, FtpsFileSystemPathSymbolicLinkFile, FtpsFileSystemPathSymbolicLinkDirectory>
 	{
-		protected override bool EnableSsl() => false;
+		internal static bool _enableSsl => true;
+		protected override bool EnableSsl => _enableSsl;
 
 		internal static string _schema => "ftps://";
 		protected override string Schema => _schema;

@@ -23,7 +23,7 @@ namespace ISI.Extensions
 	{
 		public interface IFileSystemStream : IDisposable
 		{
-			bool WriteNeedsSeekableSource();
+			bool WriteNeedsSeekableSource { get; }
 
 			void OpenRead(IFileSystemPathFile fileSystemPathFile, bool mustBeSeekable);
 			void OpenRead(IFileSystemPathFile fileSystemPathFile);

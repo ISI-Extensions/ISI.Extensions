@@ -32,6 +32,8 @@ namespace ISI.Extensions.SmbFileSystem
 		public string Directory { get; internal set; } = string.Empty;
 		public string PathName { get; internal set; } = string.Empty;
 
+		public override string ToString() => AttributedFullPath();
+
 		protected virtual string BuildAttributedFullPath(bool showSchema, bool showUserName, bool showPassword, bool showServer, bool obfuscateUserName = true, string obfuscatedUserNameValue = null, bool obfuscatePassword = true, string obfuscatedPasswordValue = null)
 		{
 			var attributedFullPathBuilder = new System.Text.StringBuilder();

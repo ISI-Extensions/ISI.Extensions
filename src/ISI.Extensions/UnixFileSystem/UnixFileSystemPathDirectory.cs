@@ -22,7 +22,7 @@ namespace ISI.Extensions.UnixFileSystem
 {
 	public abstract class UnixFileSystemPathDirectory : UnixFileSystemPath, IUnixFileSystemPathDirectory
 	{
-		public override string ToString() => string.Format("Unix Directory {0}", base.ToString());
+		public override string ToString() => AttributedFullPath();
 
 		void IUnixFileSystemPathDirectory.SetValues(string server, string userName, string password, string directory, string pathName)
 		{

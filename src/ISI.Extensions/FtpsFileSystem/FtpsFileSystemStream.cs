@@ -21,7 +21,7 @@ namespace ISI.Extensions.FtpsFileSystem
 {
 	public class FtpFileSystemStream : ISI.Extensions.FtpFileSystem.FtpFileSystemStream<FtpsFileSystemProvider>
 	{
-		protected override bool EnableSsl() => true;
-		protected override string Schema => "ftps://";
+		protected override bool EnableSsl => FtpsFileSystemProvider._enableSsl;
+		protected override string Schema => FtpsFileSystemProvider._schema;
 	}
 }

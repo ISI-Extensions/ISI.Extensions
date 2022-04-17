@@ -25,3 +25,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyProduct("ISI.Extensions")]
 [assembly: AssemblyCulture("")]
+
+[assembly: InternalsVisibleTo("ISI.Extensions.SshNet")]

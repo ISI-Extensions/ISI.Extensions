@@ -24,14 +24,14 @@ namespace ISI.Extensions.UnixFileSystem
 	{
 		public virtual string LinkedTo { get; protected set; }
 
+		public override string ToString() => AttributedFullPath();
+
 		void IUnixFileSystemPathSymbolicLinkDirectory.SetValues(string server, string userName, string password, string directory, string pathName, string linkedTo)
 		{
 			(this as IUnixFileSystemPathDirectory)?.SetValues(server, userName, password, directory, pathName);
 
 			LinkedTo = linkedTo;
 		}
-
-		public override string ToString() => string.Format("Unix Directory Symbolic Link {0}", base.ToString());
 	}
 }
 

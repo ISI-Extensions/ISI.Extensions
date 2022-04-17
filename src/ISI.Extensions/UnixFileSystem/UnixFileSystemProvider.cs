@@ -47,7 +47,7 @@ namespace ISI.Extensions.UnixFileSystem
 
 			var directory = fileSystemPathDirectory.FullPath();
 
-			if (!directory.EndsWith(DirectorySeparator))
+			if (!string.IsNullOrWhiteSpace(directory) && !directory.EndsWith(DirectorySeparator))
 			{
 				directory += DirectorySeparator;
 			}

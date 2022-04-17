@@ -21,7 +21,7 @@ namespace ISI.Extensions.SmbFileSystem
 {
 	public class SmbFileSystemStream : FileSystem.AbstractFileSystemStream
 	{
-		public override bool WriteNeedsSeekableSource() => false;
+		public override bool WriteNeedsSeekableSource => false;
 
 		public override void OpenRead(FileSystem.IFileSystemPathFile fileSystemPathFile)
 		{

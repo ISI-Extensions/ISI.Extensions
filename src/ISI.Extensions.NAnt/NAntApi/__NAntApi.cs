@@ -102,6 +102,7 @@ namespace ISI.Extensions.NAnt
 				BuildScriptFullName = request.BuildScriptFullName,
 				Target = request.Target,
 				Parameters = request.Parameters,
+				UseShell = request.UseShell,
 				AddToLog = request.AddToLog,
 			});
 

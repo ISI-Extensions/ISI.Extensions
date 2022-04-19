@@ -51,16 +51,28 @@ namespace ISI.Extensions.NAnt
 					}
 				}
 
-				var processResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				if (request.UseShell)
 				{
-					Logger = logger,
-					ProcessExeFullName = GetNAntExecutable(request.BuildScriptFullName),
-					Arguments = arguments.ToArray(),
-					WorkingDirectory = System.IO.Path.GetDirectoryName(request.BuildScriptFullName),
-				});
+					ISI.Extensions.Process.ExecuteShell(new ISI.Extensions.Process.ExecuteShellRequest()
+					{
+						ProcessExeFullName = GetNAntExecutable(request.BuildScriptFullName),
+						Arguments = arguments.ToArray(),
+						WorkingDirectory = System.IO.Path.GetDirectoryName(request.BuildScriptFullName),
+					});
+				}
+				else
+				{
+					var processResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+					{
+						Logger = logger,
+						ProcessExeFullName = GetNAntExecutable(request.BuildScriptFullName),
+						Arguments = arguments.ToArray(),
+						WorkingDirectory = System.IO.Path.GetDirectoryName(request.BuildScriptFullName),
+					});
 
-				response.ExecutionOutputLog = processResponse.Output;
-				response.Success = !processResponse.Errored;
+					response.ExecutionOutputLog = processResponse.Output;
+					response.Success = !processResponse.Errored;
+				}
 			}
 
 			return response;

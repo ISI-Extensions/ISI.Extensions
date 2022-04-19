@@ -349,6 +349,7 @@ namespace ISI.Extensions.VisualStudio
 									{
 										(ParameterName: "NugetPackOutputDirectory", ParameterValue: nugetPackOutputDirectory)
 									},
+									UseShell = false,
 									AddToLog = description => Logger.LogInformation(description),
 								});
 

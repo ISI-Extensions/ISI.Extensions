@@ -92,10 +92,24 @@ namespace ISI.Extensions.Extensions
 			return string.Empty;
 		}
 
+		public static System.IO.Stream CopyToNewStream<TStream>(this System.IO.Stream sourceStream, long startPosition = 0, int chunkSize = 2048, int maxSize = -1, bool enableWaitForBuffer = true)
+			where TStream : System.IO.Stream, new()
+		{
+			var targetStream = new TStream();
+
+			if (!CopyTo(sourceStream, targetStream, startPosition, chunkSize, maxSize, enableWaitForBuffer))
+			{
+				targetStream?.Dispose();
+				targetStream = null;
+			}
+
+			targetStream?.Rewind();
+
+			return targetStream;
+		}
+
 		public static bool CopyTo(this System.IO.Stream sourceStream, System.IO.Stream targetStream, long startPosition = 0, int chunkSize = 2048, int maxSize = -1, bool enableWaitForBuffer = true)
 		{
-			var result = false;
-
 			var buffer = new byte[chunkSize];
 
 			try
@@ -131,7 +145,7 @@ namespace ISI.Extensions.Extensions
 
 				targetStream.Flush();
 
-				result = true;
+				return true;
 			}
 			catch (Exception exception)
 			{
@@ -139,10 +153,8 @@ namespace ISI.Extensions.Extensions
 				Console.WriteLine(exception.Message);
 				System.Diagnostics.Debugger.Break();
 #endif
-				result = false;
+				return false;
 			}
-
-			return result;
 		}
 
 		public static bool TextWrite(this System.IO.Stream targetStream, string format, params object[] args)

@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -84,37 +84,33 @@ namespace ISI.Extensions
 			Values.Add(value);
 		}
 
-		public string TryGetParameterValue(string parameterName, string missingParameterValue = "")
-		{
-			return Parameters.TryGetValue(parameterName, out var value) ? value : missingParameterValue;
-		}
+		public bool TryGetParameterValue(string parameterName, out string parameterValue) => Parameters.TryGetValue(parameterName, out parameterValue);
 
-		public string[] TryGetParameterValues(string parameterName, string[] delimiters, bool trimValues = true, bool removeEmptyValues = true, string[] missingParameterValues = null)
+		public bool TryGetParameterValues(string parameterName, out string[] parameterValues, string[] delimiters, bool trimValues = true, bool removeEmptyValues = true)
 		{
 			if (Parameters.TryGetValue(parameterName, out var value))
 			{
-				var values = value.Split(delimiters, StringSplitOptions.None);
+				parameterValues = value.Split(delimiters, StringSplitOptions.None);
 
 				if (trimValues)
 				{
-					values = values.Select(v => v.Trim()).ToArray();
+					parameterValues = parameterValues.Select(v => v.Trim()).ToArray();
 				}
 
 				if (removeEmptyValues)
 				{
-					values = values.Where(v => !string.IsNullOrEmpty(v)).ToArray();
+					parameterValues = parameterValues.Where(v => !string.IsNullOrEmpty(v)).ToArray();
 				}
 
-				return values;
+				return true;
 			}
 
-			return missingParameterValues;
+			parameterValues = null;
+
+			return false;
 		}
 
-		public string[] TryGetParameterValues(string parameterName, string delimiter = ";", bool trimValues = true, bool removeEmptyValues = true, string[] missingParameterValues = null)
-		{
-			return TryGetParameterValues(parameterName, new [] { delimiter }, trimValues, removeEmptyValues, missingParameterValues);
-		}
+		public bool TryGetParameterValues(string parameterName, out string[] parameterValues, string delimiter = ";", bool trimValues = true, bool removeEmptyValues = true) => TryGetParameterValues(parameterName, out parameterValues, new[] { delimiter }, trimValues, removeEmptyValues);
 
 		public string ToArguments()
 		{

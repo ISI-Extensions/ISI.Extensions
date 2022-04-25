@@ -22,6 +22,37 @@ namespace ISI.Extensions.Extensions
 {
 	public static class StringExtensions
 	{
+		public static bool Equals(this IEnumerable<string> x, IEnumerable<string> y, StringComparer stringComparer, bool resortFirst)
+		{
+			if (x?.Count() != y?.Count())
+			{
+				return false;
+			}
+
+			if (resortFirst)
+			{
+				x = x.ToList();
+				((List<string>)x).Sort(stringComparer);
+
+				y = y.ToList();
+				((List<string>)y).Sort(stringComparer);
+			}
+
+			x = x.ToArray();
+			y = y.ToArray();
+
+			var indexCount = x.Count();
+			for (var index = 0; index < indexCount; index++)
+			{
+				if (!stringComparer.Equals(((string[]) x)[index], ((string[]) y)[index]))
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
 		public static int IndexOf(this string source, string value, int startIndex, IEqualityComparer<string> stringComparer = null)
 		{
 			if (stringComparer == null)

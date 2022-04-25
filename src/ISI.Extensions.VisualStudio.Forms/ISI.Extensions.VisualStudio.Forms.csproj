@@ -58,6 +58,9 @@
     <Compile Include="..\ISI.Extensions.Version.cs">
       <Link>Properties\ISI.Extensions.Version.cs</Link>
     </Compile>
+    <Compile Include="RefreshSolutions.cs" />
+    <Compile Include="RunMigrationTools.cs" />
+    <Compile Include="RunWindowsServices.cs" />
     <Compile Include="Solution.cs" />
     <Compile Include="SolutionProject.cs" />
     <Compile Include="SolutionsForm.cs">

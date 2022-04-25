@@ -39,7 +39,7 @@ namespace ISI.Extensions.Jenkins
 			SettingsFileName = System.IO.Path.Combine(configurationDirectory, "jenkins.settings.json");
 		}
 
-		private ISI.Extensions.Jenkins.JenkinsServer Convert(ISI.Extensions.Jenkins.SerializableEntities.JenkinsSettingsJenkinsServer jenkinsServer)
+		private ISI.Extensions.Jenkins.JenkinsServer Convert(ISI.Extensions.Jenkins.SerializableModels.JenkinsSettingsJenkinsServer jenkinsServer)
 		{
 			if (jenkinsServer == null)
 			{
@@ -57,14 +57,14 @@ namespace ISI.Extensions.Jenkins
 			};
 		}
 
-		private ISI.Extensions.Jenkins.SerializableEntities.JenkinsSettingsJenkinsServer Convert(ISI.Extensions.Jenkins.JenkinsServer jenkinsServer)
+		private ISI.Extensions.Jenkins.SerializableModels.JenkinsSettingsJenkinsServer Convert(ISI.Extensions.Jenkins.JenkinsServer jenkinsServer)
 		{
 			if (jenkinsServer == null)
 			{
 				return null;
 			}
 
-			return new ISI.Extensions.Jenkins.SerializableEntities.JenkinsSettingsJenkinsServer()
+			return new ISI.Extensions.Jenkins.SerializableModels.JenkinsSettingsJenkinsServer()
 			{
 				JenkinsServerUuid = jenkinsServer.JenkinsServerUuid,
 				Description = jenkinsServer.Description,

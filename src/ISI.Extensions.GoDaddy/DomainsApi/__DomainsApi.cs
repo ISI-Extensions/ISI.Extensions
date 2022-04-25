@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.GoDaddy.Extensions;
 using DTOs = ISI.Extensions.GoDaddy.DataTransferObjects.DomainsApi;
-using SERIALIZABLE = ISI.Extensions.GoDaddy.SerializableEntities;
+using SERIALIZABLE = ISI.Extensions.GoDaddy.SerializableModels;
 
 namespace ISI.Extensions.GoDaddy
 {

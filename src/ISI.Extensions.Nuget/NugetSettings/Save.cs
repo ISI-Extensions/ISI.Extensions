@@ -24,21 +24,21 @@ namespace ISI.Extensions.Nuget
 {
 	public partial class NugetSettings
 	{
-		public void Save(Func<ISI.Extensions.Nuget.SerializableEntities.NugetSettings, bool> updateSettings)
+		public void Save(Func<ISI.Extensions.Nuget.SerializableModels.NugetSettings, bool> updateSettings)
 		{
 			using (new ISI.Extensions.Locks.FileLock(SettingsFileName))
 			{
-				ISI.Extensions.Nuget.SerializableEntities.NugetSettings settings = null;
+				ISI.Extensions.Nuget.SerializableModels.NugetSettings settings = null;
 
 				if (System.IO.File.Exists(SettingsFileName))
 				{
 					using (var stream = System.IO.File.OpenRead(SettingsFileName))
 					{
-						settings = Serialization.Deserialize<ISI.Extensions.Nuget.SerializableEntities.NugetSettings>(stream);
+						settings = Serialization.Deserialize<ISI.Extensions.Nuget.SerializableModels.NugetSettings>(stream);
 					}
 				}
 
-				settings = settings ?? new ISI.Extensions.Nuget.SerializableEntities.NugetSettings();
+				settings = settings ?? new ISI.Extensions.Nuget.SerializableModels.NugetSettings();
 
 				if (updateSettings(settings))
 				{
@@ -49,7 +49,7 @@ namespace ISI.Extensions.Nuget
 
 					using (var stream = System.IO.File.OpenWrite(SettingsFileName))
 					{
-						Serialization.Serialize<ISI.Extensions.Nuget.SerializableEntities.NugetSettings>(settings, stream, ISI.Extensions.Serialization.SerializationFormat.Json, true);
+						Serialization.Serialize<ISI.Extensions.Nuget.SerializableModels.NugetSettings>(settings, stream, ISI.Extensions.Serialization.SerializationFormat.Json, true);
 					}
 				}
 			}

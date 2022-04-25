@@ -24,14 +24,14 @@ namespace ISI.Extensions.Jenkins.Forms.Extensions
 {
 	public static partial class JenkinsSettingsExtensions
 	{
-		private static SerializableEntities.JenkinsSettingsFormLocationAndSize[] RecordFormSize(IEnumerable<SerializableEntities.JenkinsSettingsFormLocationAndSize> formLocationAndSizes, System.Windows.Forms.Form form)
+		private static SerializableModels.JenkinsSettingsFormLocationAndSize[] RecordFormSize(IEnumerable<SerializableModels.JenkinsSettingsFormLocationAndSize> formLocationAndSizes, System.Windows.Forms.Form form)
 		{
 			return RecordFormSize(formLocationAndSizes, form.GetType().Name, form);
 		}
 
-		private static SerializableEntities.JenkinsSettingsFormLocationAndSize[] RecordFormSize(IEnumerable<SerializableEntities.JenkinsSettingsFormLocationAndSize> formLocationAndSizes, string formName, System.Windows.Forms.Form form)
+		private static SerializableModels.JenkinsSettingsFormLocationAndSize[] RecordFormSize(IEnumerable<SerializableModels.JenkinsSettingsFormLocationAndSize> formLocationAndSizes, string formName, System.Windows.Forms.Form form)
 		{
-			var formLocationAndSize = new SerializableEntities.JenkinsSettingsFormLocationAndSize()
+			var formLocationAndSize = new SerializableModels.JenkinsSettingsFormLocationAndSize()
 			{
 				FormName = formName,
 				Left = form.Left,
@@ -46,9 +46,9 @@ namespace ISI.Extensions.Jenkins.Forms.Extensions
 			{
 				formLocationAndSizes = formLocationAndSizes.ToNullCheckedList(NullCheckCollectionResult.Empty).ToList();
 
-				((List<SerializableEntities.JenkinsSettingsFormLocationAndSize>) formLocationAndSizes).RemoveAll(_ => string.Equals(_.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
+				((List<SerializableModels.JenkinsSettingsFormLocationAndSize>) formLocationAndSizes).RemoveAll(_ => string.Equals(_.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
 
-				((List<SerializableEntities.JenkinsSettingsFormLocationAndSize>) formLocationAndSizes).Add(formLocationAndSize);
+				((List<SerializableModels.JenkinsSettingsFormLocationAndSize>) formLocationAndSizes).Add(formLocationAndSize);
 
 				return formLocationAndSizes.ToArray();
 			}

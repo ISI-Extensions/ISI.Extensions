@@ -21,7 +21,7 @@ namespace ISI.Extensions.Caching
 {
 	public class CacheKeyGenerators
 	{
-		private static object _cacheKeySuffixLock { get; } = new object();
+		private static object _cacheKeySuffixLock { get; } = new();
 		private static IDictionary<Type, string> _cacheKeySuffixes { get; } = new Dictionary<Type, string>();
 
 		public static string GetCacheKeySuffix<T>()
@@ -50,7 +50,7 @@ namespace ISI.Extensions.Caching
 			return cacheKeySuffix;
 		}
 
-		private static object _cacheKeyFormatLock { get; } = new object();
+		private static object _cacheKeyFormatLock { get; } = new();
 		private static IDictionary<Type, string> _cacheKeyFormats { get; } = new Dictionary<Type, string>();
 
 		public static string GetCacheKeyFormat<T>(string extra = null)

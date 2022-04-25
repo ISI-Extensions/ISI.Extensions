@@ -37,7 +37,7 @@ namespace ISI.Extensions.ContentGenerator
 		}
 
 		#region ContentGenerators
-		private static object _contentGeneratorsLock = new object();
+		private static object _contentGeneratorsLock = new();
 		private static Dictionary<Type, Type> _contentGenerators = null;
 		private Dictionary<Type, Type> ContentGenerators
 		{

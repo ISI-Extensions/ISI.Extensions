@@ -20,7 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using DTOs = ISI.Extensions.Jira.DataTransferObjects.JiraApi;
-using SERIALIZABLE = ISI.Extensions.Jira.SerializableEntities;
+using SERIALIZABLE = ISI.Extensions.Jira.SerializableModels;
 
 namespace ISI.Extensions.Jira
 {

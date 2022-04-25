@@ -28,7 +28,7 @@ namespace ISI.Extensions.GoDrive.GoDriveFileSystem
 		internal static string _schema => "godrive://";
 		protected override string Schema => _schema;
 
-		internal static readonly System.Text.RegularExpressions.Regex _attributedPathRegex = new System.Text.RegularExpressions.Regex(@"^" + _schema + @"(?<server>.+?)(/(?<file>.*))?$", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+		internal static readonly System.Text.RegularExpressions.Regex _attributedPathRegex = new(@"^" + _schema + @"(?<server>.+?)(/(?<file>.*))?$", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 		protected override System.Text.RegularExpressions.Regex AttributedPathRegex => _attributedPathRegex;
 
 		public override Type GetFileSystemPathType => typeof(IGoDriveFileSystemPath);

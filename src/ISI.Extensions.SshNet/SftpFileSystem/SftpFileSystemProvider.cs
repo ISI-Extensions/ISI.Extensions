@@ -27,7 +27,7 @@ namespace ISI.Extensions.SshNet.SftpFileSystem
 		internal static string _schema => "sftp://";
 		protected override string Schema => _schema;
 
-		internal static readonly System.Text.RegularExpressions.Regex _attributedPathRegex = new System.Text.RegularExpressions.Regex(@"^" + _schema + @"((?<user>.+?)(:(?<password>.+))?@)?(?<server>.+?)(?<file>/.*)?$", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+		internal static readonly System.Text.RegularExpressions.Regex _attributedPathRegex = new(@"^" + _schema + @"((?<user>.+?)(:(?<password>.+))?@)?(?<server>.+?)(?<file>/.*)?$", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 		protected override System.Text.RegularExpressions.Regex AttributedPathRegex => _attributedPathRegex;
 
 		public override Type GetFileSystemPathType => typeof(ISftpFileSystemPath);

@@ -32,7 +32,7 @@ namespace ISI.Extensions.Ipify
 			var uri = new UriBuilder("https://api.ipify.org");
 			uri.AddQueryStringParameter("format", "json");
 
-			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableEntities.GetExternalIPv4Response>(uri.Uri, GetHeaders(), true);
+			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableModels.GetExternalIPv4Response>(uri.Uri, GetHeaders(), true);
 
 			response.IpAddress = apiResponse.IpAddress;
 

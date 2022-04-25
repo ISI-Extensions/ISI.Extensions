@@ -35,7 +35,7 @@ namespace ISI.Extensions.OpenCNAM
 				{"{phoneNumber}", request.PhoneNumber}
 			}));
 			
-			var getPhoneNumberInfoResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<ISI.Extensions.OpenCNAM.SerializableEntities.GetPhoneNumberInfoResponse>(uri.Uri, GetHeaders(), true);
+			var getPhoneNumberInfoResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<ISI.Extensions.OpenCNAM.SerializableModels.GetPhoneNumberInfoResponse>(uri.Uri, GetHeaders(), true);
 
 			response.Name = getPhoneNumberInfoResponse.Name;
 			response.Number = getPhoneNumberInfoResponse.Number;

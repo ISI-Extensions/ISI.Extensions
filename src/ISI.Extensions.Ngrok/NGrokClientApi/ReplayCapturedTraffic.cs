@@ -29,13 +29,13 @@ namespace ISI.Extensions.Ngrok
 		{
 			var response = new DTOs.ReplayCapturedTrafficResponse();
 
-			var serviceRequest = new SerializableEntities.ClientApi.DataTransferObjects.ReplayCapturedTrafficRequest()
+			var serviceRequest = new SerializableModels.ClientApi.ReplayCapturedTrafficRequest()
 			{
 				TrafficKey = request.TrafficKey,
 				TunnelName = request.TunnelName,
 			};
 
-			var serviceResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableEntities.ClientApi.DataTransferObjects.ReplayCapturedTrafficRequest>(GetUrl("api/requests/http"), GetHeaders(), serviceRequest, true);
+			var serviceResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableModels.ClientApi.ReplayCapturedTrafficRequest>(GetUrl("api/requests/http"), GetHeaders(), serviceRequest, true);
 
 			response.Success = (serviceResponse == System.Net.HttpStatusCode.NoContent);
 

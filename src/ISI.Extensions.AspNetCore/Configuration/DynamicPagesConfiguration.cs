@@ -29,7 +29,7 @@ namespace ISI.Extensions.AspNetCore
 
 			public ISI.Extensions.Configuration.EnabledStatus EncryptCookie { get; set; } = ISI.Extensions.Configuration.EnabledStatus.Default;
 
-			public DynamicPagesDefinitionCacheConfiguration DefinitionCache { get; set; } = new DynamicPagesDefinitionCacheConfiguration();
+			public DynamicPagesDefinitionCacheConfiguration DefinitionCache { get; set; } = new();
 
 			public ISI.Extensions.Configuration.EnabledStatus JavaScriptCombine { get; set; } = ISI.Extensions.Configuration.EnabledStatus.Default;
 			public ISI.Extensions.Configuration.EnabledStatus UseJavaScriptCompressor { get; set; } = ISI.Extensions.Configuration.EnabledStatus.Default;

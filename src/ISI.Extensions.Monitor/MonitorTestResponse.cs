@@ -26,6 +26,6 @@ namespace ISI.Extensions
 		public IMonitorTestResponseStartupParameterValue[] StartupParameterValues { get; set; }
 		public bool Passed { get; set; }
 
-		public abstract ISI.Extensions.SerializableEntities.IMonitorTestSerializableResponse GetSerializableResponse();
+		public abstract Monitor.SerializableModels.IMonitorTestSerializableResponse GetSerializableResponse();
 	}
 }

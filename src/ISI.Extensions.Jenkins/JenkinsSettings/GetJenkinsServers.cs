@@ -26,7 +26,7 @@ namespace ISI.Extensions.Jenkins
 	{
 		public ISI.Extensions.Jenkins.JenkinsServer[] GetJenkinsServers()
 		{
-			var jenkinsServers = (Load()?.JenkinsServers ?? Array.Empty<ISI.Extensions.Jenkins.SerializableEntities.JenkinsSettingsJenkinsServer>());
+			var jenkinsServers = (Load()?.JenkinsServers ?? Array.Empty<ISI.Extensions.Jenkins.SerializableModels.JenkinsSettingsJenkinsServer>());
 
 			return jenkinsServers.Select(Convert).OrderBy(jenkinsServer => jenkinsServer.DisplayDescription, StringComparer.InvariantCultureIgnoreCase).ToArray();
 		}

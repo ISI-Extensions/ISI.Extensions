@@ -40,11 +40,11 @@ namespace ISI.Extensions.Jenkins
 
 			try
 			{
-				var node = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<ISI.Extensions.Jenkins.SerializableEntities.Node>(uri.Uri, GetHeaders(request), true, request.SslProtocols);
+				var node = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<ISI.Extensions.Jenkins.SerializableModels.Node>(uri.Uri, GetHeaders(request), true, request.SslProtocols);
 
 				if (node != null)
 				{
-					response.Node = ISI.Extensions.Converters.ExportTo<ISI.Extensions.Jenkins.SerializableEntities.Node, Node>(node);
+					response.Node = ISI.Extensions.Converters.ExportTo<ISI.Extensions.Jenkins.SerializableModels.Node, Node>(node);
 				}
 			}
 			catch (Exception exception)

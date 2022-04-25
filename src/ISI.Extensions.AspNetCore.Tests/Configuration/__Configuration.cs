@@ -27,7 +27,7 @@ namespace ISI.Extensions.AspNetCore.Tests
 
 		public string Password { get; set; }
 
-		public ElasticsearchLoggingConfiguration ElasticsearchLogging { get; set; } = new ElasticsearchLoggingConfiguration();
+		public ElasticsearchLoggingConfiguration ElasticsearchLogging { get; set; } = new();
 
 		public string LogDirectory { get; set; }
 	}

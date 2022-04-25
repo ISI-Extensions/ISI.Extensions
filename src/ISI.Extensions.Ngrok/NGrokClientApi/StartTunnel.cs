@@ -34,16 +34,16 @@ namespace ISI.Extensions.Ngrok
 				tunnelName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens);
 			}
 
-			var serviceRequest = new SerializableEntities.ClientApi.DataTransferObjects.StartTunnelRequest()
+			var serviceRequest = new SerializableModels.ClientApi.StartTunnelRequest()
 			{
 				TunnelName = tunnelName,
-				TunnelProtocol = ISI.Extensions.Enum<SerializableEntities.ClientApi.TunnelProtocol>.Convert(request.TunnelProtocol),
+				TunnelProtocol = ISI.Extensions.Enum<SerializableModels.ClientApi.TunnelProtocol>.Convert(request.TunnelProtocol),
 				Hostname = request.Hostname,
 				Subdomain = request.Subdomain,
 				LocalAddress = request.LocalAddress,
 				HostHeader = request.HostHeader,
 				RemoteAddress = request.RemoteAddress,
-				UseTls = ISI.Extensions.Enum<SerializableEntities.ClientApi.UseTls>.Convert(request.UseTls),
+				UseTls = ISI.Extensions.Enum<SerializableModels.ClientApi.UseTls>.Convert(request.UseTls),
 				Inspect = request.Inspect,
 			};
 
@@ -54,7 +54,7 @@ namespace ISI.Extensions.Ngrok
 			var headers = GetHeaders();
 			headers.ContentType = ISI.Extensions.WebClient.Rest.AcceptJsonHeaderValue;
 
-			var serviceResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<ISI.Extensions.WebClient.Rest.TextRequest, SerializableEntities.ClientApi.DataTransferObjects.StartTunnelResponse>(GetUrl("api/tunnels"), headers, textRequest, true);
+			var serviceResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<ISI.Extensions.WebClient.Rest.TextRequest, SerializableModels.ClientApi.StartTunnelResponse>(GetUrl("api/tunnels"), headers, textRequest, true);
 
 			if (GetTunnels(new DTOs.GetTunnelsRequest()).Tunnels.Any(tunnel => string.Equals(tunnel.TunnelName, Configuration.PlaceHolderTunnelName, StringComparison.InvariantCultureIgnoreCase)))
 			{

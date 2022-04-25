@@ -23,13 +23,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ISI.Extensions.Jenkins.Forms.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ISI.Extensions.Jenkins.Forms
 {
 	public partial class EditJenkinsServerForm : Form
 	{
 		private static ISI.Extensions.Jenkins.JenkinsSettings _jenkinsSettings = null;
-		protected ISI.Extensions.Jenkins.JenkinsSettings JenkinsSettings => _jenkinsSettings ??= new ISI.Extensions.Jenkins.JenkinsSettings();
+		protected ISI.Extensions.Jenkins.JenkinsSettings JenkinsSettings => _jenkinsSettings ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Jenkins.JenkinsSettings>();
 
 		protected List<DirectoryPanel> DirectoryPanels { get; }
 

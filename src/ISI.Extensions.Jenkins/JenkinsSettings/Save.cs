@@ -24,21 +24,21 @@ namespace ISI.Extensions.Jenkins
 {
 	public partial class JenkinsSettings
 	{
-		public void Save(Func<ISI.Extensions.Jenkins.SerializableEntities.JenkinsSettings, bool> updateSettings)
+		public void Save(Func<ISI.Extensions.Jenkins.SerializableModels.JenkinsSettings, bool> updateSettings)
 		{
 			using (new ISI.Extensions.Locks.FileLock(SettingsFileName))
 			{
-				ISI.Extensions.Jenkins.SerializableEntities.JenkinsSettings settings = null;
+				ISI.Extensions.Jenkins.SerializableModels.JenkinsSettings settings = null;
 
 				if (System.IO.File.Exists(SettingsFileName))
 				{
 					using (var stream = System.IO.File.OpenRead(SettingsFileName))
 					{
-						settings = Serialization.Deserialize<ISI.Extensions.Jenkins.SerializableEntities.JenkinsSettings>(stream);
+						settings = Serialization.Deserialize<ISI.Extensions.Jenkins.SerializableModels.JenkinsSettings>(stream);
 					}
 				}
 
-				settings = settings ?? new ISI.Extensions.Jenkins.SerializableEntities.JenkinsSettings();
+				settings = settings ?? new ISI.Extensions.Jenkins.SerializableModels.JenkinsSettings();
 
 				if (updateSettings(settings))
 				{
@@ -49,7 +49,7 @@ namespace ISI.Extensions.Jenkins
 
 					using (var stream = System.IO.File.OpenWrite(SettingsFileName))
 					{
-						Serialization.Serialize<ISI.Extensions.Jenkins.SerializableEntities.JenkinsSettings>(settings, stream, ISI.Extensions.Serialization.SerializationFormat.Json, true);
+						Serialization.Serialize<ISI.Extensions.Jenkins.SerializableModels.JenkinsSettings>(settings, stream, ISI.Extensions.Serialization.SerializationFormat.Json, true);
 					}
 				}
 			}

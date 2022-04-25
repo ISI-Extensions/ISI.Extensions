@@ -25,13 +25,13 @@ namespace ISI.Extensions.Extensions
 	public static class MonitorTestResponseExtensions
 	{
 		public static TSerializableResponse CreateSerializableResponse<TSerializableResponse>(this ISI.Extensions.IMonitorTestResponse monitorTestResponse, Action<TSerializableResponse> initialize = null)
-			where TSerializableResponse : ISI.Extensions.SerializableEntities.IMonitorTestSerializableResponse, new()
+			where TSerializableResponse : Monitor.SerializableModels.IMonitorTestSerializableResponse, new()
 		{
 			var response = new TSerializableResponse();
 
 			response.Passed = monitorTestResponse.Passed;
 
-			response.StartupParameterValues = monitorTestResponse.StartupParameterValues.ToNullCheckedCollection<ISI.Extensions.IMonitorTestResponseStartupParameterValue, ISI.Extensions.SerializableEntities.MonitorTestSerializableResponseStartupParameterValue, ISI.Extensions.SerializableEntities.MonitorTestSerializableResponseStartupParameterValueCollection>(parameter => new SerializableEntities.MonitorTestSerializableResponseStartupParameterValue()
+			response.StartupParameterValues = monitorTestResponse.StartupParameterValues.ToNullCheckedCollection<ISI.Extensions.IMonitorTestResponseStartupParameterValue, Monitor.SerializableModels.MonitorTestSerializableResponseStartupParameterValue, Monitor.SerializableModels.MonitorTestSerializableResponseStartupParameterValueCollection>(parameter => new Monitor.SerializableModels.MonitorTestSerializableResponseStartupParameterValue()
 			{
 				Name = parameter.Name,
 				Value = parameter.Value

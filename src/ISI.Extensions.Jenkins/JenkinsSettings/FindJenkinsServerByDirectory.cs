@@ -24,11 +24,11 @@ namespace ISI.Extensions.Jenkins
 {
 	public partial class JenkinsSettings
 	{
-		private IDictionary<string, ISI.Extensions.Jenkins.SerializableEntities.JenkinsSettingsJenkinsServer> GetJenkinsServersByDirectory()
+		private IDictionary<string, ISI.Extensions.Jenkins.SerializableModels.JenkinsSettingsJenkinsServer> GetJenkinsServersByDirectory()
 		{
-			var jenkinsServers = (Load()?.JenkinsServers ?? Array.Empty<ISI.Extensions.Jenkins.SerializableEntities.JenkinsSettingsJenkinsServer>());
+			var jenkinsServers = (Load()?.JenkinsServers ?? Array.Empty<ISI.Extensions.Jenkins.SerializableModels.JenkinsSettingsJenkinsServer>());
 
-			var jenkinsServersByDirectory = new Dictionary<string, ISI.Extensions.Jenkins.SerializableEntities.JenkinsSettingsJenkinsServer>(StringComparer.InvariantCultureIgnoreCase);
+			var jenkinsServersByDirectory = new Dictionary<string, ISI.Extensions.Jenkins.SerializableModels.JenkinsSettingsJenkinsServer>(StringComparer.InvariantCultureIgnoreCase);
 
 			foreach (var jenkinsServer in jenkinsServers)
 			{

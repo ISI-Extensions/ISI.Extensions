@@ -28,6 +28,7 @@ namespace ISI.Extensions.VisualStudio
 	{
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 		protected ISI.Extensions.Serialization.ISerialization Serialization { get; }
+		protected VisualStudioSettings VisualStudioSettings { get; }
 		protected ISI.Extensions.Scm.BuildScriptApi BuildScriptApi { get; }
 		protected ISI.Extensions.Scm.SourceControlClientApi SourceControlClientApi { get; }
 		protected ISI.Extensions.VisualStudio.CodeGenerationApi CodeGenerationApi { get; }
@@ -36,6 +37,7 @@ namespace ISI.Extensions.VisualStudio
 		public SolutionApi(
 			Microsoft.Extensions.Logging.ILogger logger,
 			ISI.Extensions.Serialization.ISerialization serialization,
+			VisualStudioSettings visualStudioSettings,
 			ISI.Extensions.Scm.BuildScriptApi buildScriptApi,
 			ISI.Extensions.Scm.SourceControlClientApi sourceControlClientApi,
 			ISI.Extensions.VisualStudio.CodeGenerationApi codeGenerationApi,
@@ -43,6 +45,7 @@ namespace ISI.Extensions.VisualStudio
 		{
 			Logger = logger;
 			Serialization = serialization;
+			VisualStudioSettings = visualStudioSettings;
 			BuildScriptApi = buildScriptApi;
 			SourceControlClientApi = sourceControlClientApi;
 			CodeGenerationApi = codeGenerationApi;

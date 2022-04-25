@@ -21,18 +21,18 @@ namespace ISI.Extensions.Nuget
 {
 	public partial class NugetSettings
 	{
-		public ISI.Extensions.Nuget.SerializableEntities.NugetSettings Load()
+		public ISI.Extensions.Nuget.SerializableModels.NugetSettings Load()
 		{
 			if (!System.IO.File.Exists(SettingsFileName))
 			{
-				return new ISI.Extensions.Nuget.SerializableEntities.NugetSettings();
+				return new ISI.Extensions.Nuget.SerializableModels.NugetSettings();
 			}
 
 			using (new ISI.Extensions.Locks.FileLock(SettingsFileName))
 			{
 				using (var stream = System.IO.File.OpenRead(SettingsFileName))
 				{
-					return Serialization.Deserialize<ISI.Extensions.Nuget.SerializableEntities.NugetSettings>(stream, ISI.Extensions.Serialization.SerializationFormat.Json);
+					return Serialization.Deserialize<ISI.Extensions.Nuget.SerializableModels.NugetSettings>(stream, ISI.Extensions.Serialization.SerializationFormat.Json);
 				}
 			}
 		}

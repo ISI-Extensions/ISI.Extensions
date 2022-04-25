@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{ADEC366D-0AF8-4F00-B16A-33121F8D7232}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ISI.Extensions.VisualStudio.Forms</RootNamespace>
+    <AssemblyName>ISI.Extensions.VisualStudio.Forms</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <LangVersion>latest</LangVersion>
+    <RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BuildOptionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BuildOptionsForm.designer.cs">
+      <DependentUpon>BuildOptionsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Extensions\TaskActionStatusExtensions.cs" />
+    <Compile Include="ProjectKey.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\ISI.Extensions.AssemblyInfo.cs">
+      <Link>Properties\ISI.Extensions.AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\ISI.Extensions.Version.cs">
+      <Link>Properties\ISI.Extensions.Version.cs</Link>
+    </Compile>
+    <Compile Include="Solution.cs" />
+    <Compile Include="SolutionProject.cs" />
+    <Compile Include="SolutionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SolutionsForm.designer.cs">
+      <DependentUpon>SolutionsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TaskActions.cs" />
+    <Compile Include="TaskActionStatus.cs" />
+    <Compile Include="ViewLogForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ViewLogForm.designer.cs">
+      <DependentUpon>ViewLogForm.cs</DependentUpon>
+    </Compile>
+    <None Include="..\ISI.Extensions.licenseheader">
+      <Link>ISI.Extensions.licenseheader</Link>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Extensions\VisualStudioSettingsExtensions\ApplyFormSize.cs" />
+    <Compile Include="Extensions\VisualStudioSettingsExtensions\RecordFormSize.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ISI.Extensions.Nuget\ISI.Extensions.Nuget.csproj">
+      <Project>{caef609e-9d95-4ca3-9044-eab1ec41bc69}</Project>
+      <Name>ISI.Extensions.Nuget</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ISI.Extensions.VisualStudio\ISI.Extensions.VisualStudio.csproj">
+      <Project>{6b55f503-9291-4d3a-bbe7-8a29c752f7e3}</Project>
+      <Name>ISI.Extensions.VisualStudio</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj">
+      <Project>{09cea440-36de-4036-8c18-be4e476c1477}</Project>
+      <Name>ISI.Extensions</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions">
+      <Version>6.0.1</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="BuildOptionsForm.resx">
+      <DependentUpon>BuildOptionsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SolutionsForm.resx">
+      <DependentUpon>SolutionsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewLogForm.resx">
+      <DependentUpon>ViewLogForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

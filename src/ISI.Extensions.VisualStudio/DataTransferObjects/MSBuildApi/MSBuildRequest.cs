@@ -28,7 +28,7 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.MSBuildApi
 		public MSBuildVersion MsBuildVersion { get; set; } = MSBuildVersion.Automatic;
 		public MSBuildPlatform MsBuildPlatform { get; set; } = MSBuildPlatform.Automatic;
 		
-		public MSBuildOptions Options { get; set; } = new MSBuildOptions();
+		public MSBuildOptions Options { get; set; } = new();
 
 		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}

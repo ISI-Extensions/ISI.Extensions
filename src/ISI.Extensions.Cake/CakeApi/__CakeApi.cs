@@ -28,6 +28,7 @@ namespace ISI.Extensions.Cake
 	{
 		public const string BuildScriptTypeUuid = "d23cb050-1bc5-4891-a8aa-b4f4da2a52aa";
 		public const string BuildScriptFileName = "build.cake";
+		public const string CakeFileNameExtension = ".cake";
 
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 

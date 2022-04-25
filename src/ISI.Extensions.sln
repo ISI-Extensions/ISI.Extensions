@@ -92,9 +92,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.AspNetCore.T
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.SshNet", "ISI.Extensions.SshNet\ISI.Extensions.SshNet.csproj", "{A4B93ABE-2806-43DD-99EE-799B789372BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.GoDrive", "ISI.Extensions.GoDrive\ISI.Extensions.GoDrive.csproj", "{FFA5C7FB-7120-4E7A-8368-F9A1E2BC4E2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.GoDrive", "ISI.Extensions.GoDrive\ISI.Extensions.GoDrive.csproj", "{FFA5C7FB-7120-4E7A-8368-F9A1E2BC4E2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.Ebcdic", "ISI.Extensions.Ebcdic\ISI.Extensions.Ebcdic.csproj", "{8566727C-14A5-489D-A193-50F1E3D580D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Ebcdic", "ISI.Extensions.Ebcdic\ISI.Extensions.Ebcdic.csproj", "{8566727C-14A5-489D-A193-50F1E3D580D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.VisualStudio.Forms", "ISI.Extensions.VisualStudio.Forms\ISI.Extensions.VisualStudio.Forms.csproj", "{ADEC366D-0AF8-4F00-B16A-33121F8D7232}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -456,6 +458,14 @@ Global
 		{8566727C-14A5-489D-A193-50F1E3D580D6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8566727C-14A5-489D-A193-50F1E3D580D6}.Release|x64.ActiveCfg = Release|Any CPU
 		{8566727C-14A5-489D-A193-50F1E3D580D6}.Release|x64.Build.0 = Release|Any CPU
+		{ADEC366D-0AF8-4F00-B16A-33121F8D7232}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADEC366D-0AF8-4F00-B16A-33121F8D7232}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADEC366D-0AF8-4F00-B16A-33121F8D7232}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{ADEC366D-0AF8-4F00-B16A-33121F8D7232}.Debug|x64.Build.0 = Debug|Any CPU
+		{ADEC366D-0AF8-4F00-B16A-33121F8D7232}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADEC366D-0AF8-4F00-B16A-33121F8D7232}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADEC366D-0AF8-4F00-B16A-33121F8D7232}.Release|x64.ActiveCfg = Release|Any CPU
+		{ADEC366D-0AF8-4F00-B16A-33121F8D7232}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

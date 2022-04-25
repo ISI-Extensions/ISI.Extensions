@@ -27,7 +27,7 @@ namespace ISI.Extensions.Ngrok
 	{
 		public DTOs.GetTunnelsResponse GetTunnels(DTOs.GetTunnelsRequest request)
 		{
-			var serviceResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableEntities.ClientApi.DataTransferObjects.GetTunnelsResponse>(GetUrl("api/tunnels"), GetHeaders(), true);
+			var serviceResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableModels.ClientApi.GetTunnelsResponse>(GetUrl("api/tunnels"), GetHeaders(), true);
 
 			return serviceResponse.NullCheckedConvert(r => r.Export());
 		}

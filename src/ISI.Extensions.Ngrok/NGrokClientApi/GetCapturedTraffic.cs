@@ -34,7 +34,7 @@ namespace ISI.Extensions.Ngrok
 				uri.AddQueryStringParameter("tunnel_name", request.TunnelName);
 			}
 
-			var serviceResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableEntities.ClientApi.DataTransferObjects.GetCapturedTrafficResponse>(uri.Uri, GetHeaders(), true);
+			var serviceResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableModels.ClientApi.GetCapturedTrafficResponse>(uri.Uri, GetHeaders(), true);
 
 			return serviceResponse.NullCheckedConvert(r => r.Export());
 		}

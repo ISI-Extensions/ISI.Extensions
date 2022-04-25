@@ -30,9 +30,9 @@ namespace ISI.Extensions.Nuget
 		{
 			var response = new DTOs.BuildNuspecResponse();
 
-			var package = new ISI.Extensions.Nuget.SerializableEntities.package()
+			var package = new ISI.Extensions.Nuget.SerializableModels.package()
 			{
-				metadata = new ISI.Extensions.Nuget.SerializableEntities.packageMetadata(),
+				metadata = new ISI.Extensions.Nuget.SerializableModels.packageMetadata(),
 			};
 
 			package.metadata.id = request.Nuspec.Package;
@@ -65,7 +65,7 @@ namespace ISI.Extensions.Nuget
 			{
 				package.metadata.licenseUrl = request.Nuspec.LicenseUri.ToString();
 			}
-			package.metadata.license = request.Nuspec.License.NullCheckedConvert(license => new ISI.Extensions.Nuget.SerializableEntities.packageMetadataLicense()
+			package.metadata.license = request.Nuspec.License.NullCheckedConvert(license => new ISI.Extensions.Nuget.SerializableModels.packageMetadataLicense()
 			{
 				type = license.LicenseType,
 				version = license.Version,
@@ -82,7 +82,7 @@ namespace ISI.Extensions.Nuget
 
 			package.metadata.tags = string.Join(", ", request.Nuspec.Tags.ToNullCheckedArray(NullCheckCollectionResult.Empty));
 
-			package.metadata.repository = request.Nuspec.Repository.NullCheckedConvert(repository => new ISI.Extensions.Nuget.SerializableEntities.packageMetadataRepository()
+			package.metadata.repository = request.Nuspec.Repository.NullCheckedConvert(repository => new ISI.Extensions.Nuget.SerializableModels.packageMetadataRepository()
 			{
 				type = repository.RepositoryType,
 				url = repository.RepositoryUri.ToString(),
@@ -90,20 +90,20 @@ namespace ISI.Extensions.Nuget
 				commit = repository.Commit,
 			});
 
-			package.metadata.packageTypes = request.Nuspec.PackageTypes.ToNullCheckedArray(packageType => new ISI.Extensions.Nuget.SerializableEntities.packageMetadataPackageType()
+			package.metadata.packageTypes = request.Nuspec.PackageTypes.ToNullCheckedArray(packageType => new ISI.Extensions.Nuget.SerializableModels.packageMetadataPackageType()
 			{
 				name = packageType.Name,
 				version = packageType.Version,
 			}, NullCheckCollectionResult.ReturnNull);
 
-			package.metadata.dependencies = request.Nuspec.Dependencies.NullCheckedConvert(dependencies => new ISI.Extensions.Nuget.SerializableEntities.packageMetadataDependencies()
+			package.metadata.dependencies = request.Nuspec.Dependencies.NullCheckedConvert(dependencies => new ISI.Extensions.Nuget.SerializableModels.packageMetadataDependencies()
 			{
 				Items = dependencies.ToNullCheckedArray(dependency =>
 				{
 					switch (dependency)
 					{
 						case NuspecDependency nuspecDependency:
-							return new ISI.Extensions.Nuget.SerializableEntities.dependency()
+							return new ISI.Extensions.Nuget.SerializableModels.dependency()
 							{
 								id = nuspecDependency.Package,
 								version = nuspecDependency.Version,
@@ -112,10 +112,10 @@ namespace ISI.Extensions.Nuget
 							} as object;
 
 						case NuspecDependencyGroup nuspecDependencyGroup:
-							return new ISI.Extensions.Nuget.SerializableEntities.dependencyGroup()
+							return new ISI.Extensions.Nuget.SerializableModels.dependencyGroup()
 							{
 								targetFramework = nuspecDependencyGroup.TargetFramework,
-								dependency = nuspecDependencyGroup.Dependencies.ToNullCheckedArray(d => new ISI.Extensions.Nuget.SerializableEntities.dependency()
+								dependency = nuspecDependencyGroup.Dependencies.ToNullCheckedArray(d => new ISI.Extensions.Nuget.SerializableModels.dependency()
 								{
 									id = d.Package,
 									version = d.Version,
@@ -130,7 +130,7 @@ namespace ISI.Extensions.Nuget
 				}, NullCheckCollectionResult.ReturnNull)
 			});
 
-			package.files = request.Nuspec.Files.ToNullCheckedArray(file => new ISI.Extensions.Nuget.SerializableEntities.packageFile()
+			package.files = request.Nuspec.Files.ToNullCheckedArray(file => new ISI.Extensions.Nuget.SerializableModels.packageFile()
 			{
 				src = file.SourcePattern,
 				target = (string.IsNullOrWhiteSpace(file.Target) ? null : file.Target),
@@ -139,7 +139,7 @@ namespace ISI.Extensions.Nuget
 
 			using (var stream = new System.IO.MemoryStream())
 			{
-				var xmlSerializer = new System.Xml.Serialization.XmlSerializer(typeof(ISI.Extensions.Nuget.SerializableEntities.package));
+				var xmlSerializer = new System.Xml.Serialization.XmlSerializer(typeof(ISI.Extensions.Nuget.SerializableModels.package));
 
 				var xmlSerializerNamespaces = new System.Xml.Serialization.XmlSerializerNamespaces();
 				xmlSerializerNamespaces.Add(string.Empty, string.Empty);

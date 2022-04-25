@@ -24,12 +24,12 @@ namespace ISI.Extensions.Jenkins.Forms.Extensions
 {
 	public static partial class JenkinsSettingsExtensions
 	{
-		private static void ApplyFormSize(SerializableEntities.JenkinsSettingsFormLocationAndSize[] formLocationAndSizes, System.Windows.Forms.Form form)
+		private static void ApplyFormSize(SerializableModels.JenkinsSettingsFormLocationAndSize[] formLocationAndSizes, System.Windows.Forms.Form form)
 		{
 			ApplyFormSize(formLocationAndSizes, form.GetType().Name, form);
 		}
 
-		private static void ApplyFormSize(SerializableEntities.JenkinsSettingsFormLocationAndSize[] formLocationAndSizes, string formName, System.Windows.Forms.Form form)
+		private static void ApplyFormSize(SerializableModels.JenkinsSettingsFormLocationAndSize[] formLocationAndSizes, string formName, System.Windows.Forms.Form form)
 		{
 			var formSizeAndLocation = formLocationAndSizes.GetFormLocationAndSize(formName);
 
@@ -54,7 +54,7 @@ namespace ISI.Extensions.Jenkins.Forms.Extensions
 			}
 		}
 
-		public static SerializableEntities.JenkinsSettingsFormLocationAndSize GetFormLocationAndSize(this IEnumerable<SerializableEntities.JenkinsSettingsFormLocationAndSize> formLocationAndSizes, string formName)
+		public static SerializableModels.JenkinsSettingsFormLocationAndSize GetFormLocationAndSize(this IEnumerable<SerializableModels.JenkinsSettingsFormLocationAndSize> formLocationAndSizes, string formName)
 		{
 			return formLocationAndSizes.NullCheckedFirstOrDefault(formLocationAndSize => string.Equals(formLocationAndSize.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
 		}

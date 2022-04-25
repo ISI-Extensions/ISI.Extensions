@@ -24,12 +24,12 @@ namespace ISI.Extensions.Nuget.Forms.Extensions
 {
 	public static partial class NugetSettingsExtensions
 	{
-		private static void ApplyFormSize(SerializableEntities.NugetSettingsFormLocationAndSize[] formLocationAndSizes, System.Windows.Forms.Form form)
+		private static void ApplyFormSize(SerializableModels.NugetSettingsFormLocationAndSize[] formLocationAndSizes, System.Windows.Forms.Form form)
 		{
 			ApplyFormSize(formLocationAndSizes, form.GetType().Name, form);
 		}
 
-		private static void ApplyFormSize(SerializableEntities.NugetSettingsFormLocationAndSize[] formLocationAndSizes, string formName, System.Windows.Forms.Form form)
+		private static void ApplyFormSize(SerializableModels.NugetSettingsFormLocationAndSize[] formLocationAndSizes, string formName, System.Windows.Forms.Form form)
 		{
 			var formSizeAndLocation = formLocationAndSizes.GetFormLocationAndSize(formName);
 
@@ -54,7 +54,7 @@ namespace ISI.Extensions.Nuget.Forms.Extensions
 			}
 		}
 
-		public static SerializableEntities.NugetSettingsFormLocationAndSize GetFormLocationAndSize(this IEnumerable<SerializableEntities.NugetSettingsFormLocationAndSize> formLocationAndSizes, string formName)
+		public static SerializableModels.NugetSettingsFormLocationAndSize GetFormLocationAndSize(this IEnumerable<SerializableModels.NugetSettingsFormLocationAndSize> formLocationAndSizes, string formName)
 		{
 			return formLocationAndSizes.NullCheckedFirstOrDefault(formLocationAndSize => string.Equals(formLocationAndSize.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
 		}

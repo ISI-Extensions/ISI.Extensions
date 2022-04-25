@@ -24,14 +24,14 @@ namespace ISI.Extensions.Nuget.Forms.Extensions
 {
 	public static partial class NugetSettingsExtensions
 	{
-		private static SerializableEntities.NugetSettingsFormLocationAndSize[] RecordFormSize(IEnumerable<SerializableEntities.NugetSettingsFormLocationAndSize> formLocationAndSizes, System.Windows.Forms.Form form)
+		private static SerializableModels.NugetSettingsFormLocationAndSize[] RecordFormSize(IEnumerable<SerializableModels.NugetSettingsFormLocationAndSize> formLocationAndSizes, System.Windows.Forms.Form form)
 		{
 			return RecordFormSize(formLocationAndSizes, form.GetType().Name, form);
 		}
 
-		private static SerializableEntities.NugetSettingsFormLocationAndSize[] RecordFormSize(IEnumerable<SerializableEntities.NugetSettingsFormLocationAndSize> formLocationAndSizes, string formName, System.Windows.Forms.Form form)
+		private static SerializableModels.NugetSettingsFormLocationAndSize[] RecordFormSize(IEnumerable<SerializableModels.NugetSettingsFormLocationAndSize> formLocationAndSizes, string formName, System.Windows.Forms.Form form)
 		{
-			var formLocationAndSize = new SerializableEntities.NugetSettingsFormLocationAndSize()
+			var formLocationAndSize = new SerializableModels.NugetSettingsFormLocationAndSize()
 			{
 				FormName = formName,
 				Left = form.Left,
@@ -46,9 +46,9 @@ namespace ISI.Extensions.Nuget.Forms.Extensions
 			{
 				formLocationAndSizes = formLocationAndSizes.ToNullCheckedList(NullCheckCollectionResult.Empty).ToList();
 
-				((List<SerializableEntities.NugetSettingsFormLocationAndSize>) formLocationAndSizes).RemoveAll(_ => string.Equals(_.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
+				((List<SerializableModels.NugetSettingsFormLocationAndSize>) formLocationAndSizes).RemoveAll(_ => string.Equals(_.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
 
-				((List<SerializableEntities.NugetSettingsFormLocationAndSize>) formLocationAndSizes).Add(formLocationAndSize);
+				((List<SerializableModels.NugetSettingsFormLocationAndSize>) formLocationAndSizes).Add(formLocationAndSize);
 
 				return formLocationAndSizes.ToArray();
 			}

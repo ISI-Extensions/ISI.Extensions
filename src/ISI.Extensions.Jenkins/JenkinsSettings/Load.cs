@@ -21,18 +21,18 @@ namespace ISI.Extensions.Jenkins
 {
 	public partial class JenkinsSettings
 	{
-		public ISI.Extensions.Jenkins.SerializableEntities.JenkinsSettings Load()
+		public ISI.Extensions.Jenkins.SerializableModels.JenkinsSettings Load()
 		{
 			if (!System.IO.File.Exists(SettingsFileName))
 			{
-				return new ISI.Extensions.Jenkins.SerializableEntities.JenkinsSettings();
+				return new ISI.Extensions.Jenkins.SerializableModels.JenkinsSettings();
 			}
 
 			using (new ISI.Extensions.Locks.FileLock(SettingsFileName))
 			{
 				using (var stream = System.IO.File.OpenRead(SettingsFileName))
 				{
-					return Serialization.Deserialize<ISI.Extensions.Jenkins.SerializableEntities.JenkinsSettings>(stream, ISI.Extensions.Serialization.SerializationFormat.Json);
+					return Serialization.Deserialize<ISI.Extensions.Jenkins.SerializableModels.JenkinsSettings>(stream, ISI.Extensions.Serialization.SerializationFormat.Json);
 				}
 			}
 		}

@@ -26,16 +26,7 @@ namespace ISI.Extensions.Jenkins
 	{
 		public int GetMaxCheckDirectoryDepth()
 		{
-			return 5;
-
-			//var maxCheckDirectoryDepth =  Load()?.MaxCheckDirectoryDepth ?? 4;
-
-			//if (maxCheckDirectoryDepth <= 0)
-			//{
-			//	maxCheckDirectoryDepth = 4;
-			//}
-
-			//return maxCheckDirectoryDepth;
+			return Load()?.MaxCheckDirectoryDepth ?? 5;
 		}
 	}
 }

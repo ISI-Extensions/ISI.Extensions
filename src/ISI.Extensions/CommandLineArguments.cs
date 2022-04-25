@@ -112,6 +112,30 @@ namespace ISI.Extensions
 
 		public bool TryGetParameterValues(string parameterName, out string[] parameterValues, string delimiter = ";", bool trimValues = true, bool removeEmptyValues = true) => TryGetParameterValues(parameterName, out parameterValues, new[] { delimiter }, trimValues, removeEmptyValues);
 
+		public string GetParameterValue(string parameterName, string defaultValue = "")
+		{
+			if (TryGetParameterValue(parameterName, out var parameterValue))
+			{
+				return parameterValue;
+			}
+
+			return defaultValue;
+		}
+
+		public string[] GetParameterValues(string parameterName, string[] delimiters, bool trimValues = true, bool removeEmptyValues = true, string[] defaultValues = null)
+		{
+			if (TryGetParameterValues(parameterName, out var parameterValues, delimiters,  trimValues ,  removeEmptyValues))
+			{
+				return parameterValues;
+			}
+
+			return defaultValues;
+		}
+
+		public string[] GetParameterValues(string parameterName, string delimiter = ";", bool trimValues = true, bool removeEmptyValues = true, string[] defaultValues = null) => GetParameterValues(parameterName, new[] { delimiter }, trimValues, removeEmptyValues, defaultValues);
+
+
+
 		public string ToArguments()
 		{
 			var arguments = new List<string>();

@@ -16,88 +16,15 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Text;
-using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions
 {
 	public partial class Stream
 	{
-		public class StreamWriter : IDisposable
+		public interface IFileStream : IDisposable
 		{
-			protected System.IO.Stream _stream = null;
-			protected Encoding _encoding = null;
-
-			public StreamWriter(System.IO.Stream stream)
-			{
-				Initialize(stream, EncodingType.Unicode);
-			}
-
-			public StreamWriter(System.IO.Stream stream, EncodingType encoding)
-			{
-				Initialize(stream, encoding);
-			}
-
-			private void Initialize(System.IO.Stream stream, EncodingType encoding)
-			{
-				_stream = stream;
-				switch (encoding)
-				{
-					case EncodingType.ASCII:
-						_encoding = new ASCIIEncoding();
-						break;
-
-					case EncodingType.UTF8:
-						_encoding = new UTF8Encoding();
-						break;
-
-					default:
-						_encoding = new UnicodeEncoding();
-						break;
-				}
-			}
-
-			public void Write(string format, params object[] args)
-			{
-				var buffer = _encoding.GetBytes(string.Format(format, args));
-				_stream.Write(buffer, 0, buffer.Length);
-			}
-
-			public void Write(string message)
-			{
-				var buffer = _encoding.GetBytes(message);
-				_stream.Write(buffer, 0, buffer.Length);
-			}
-
-			public void WriteLine(string format, params object[] args)
-			{
-				Write(string.Format(format, args) + "\n");
-			}
-
-			public void WriteLine(string message)
-			{
-				Write(string.Format("{0}\n", message));
-			}
-
-			public override string ToString()
-			{
-				var result = new StringBuilder();
-
-				_stream.Rewind();
-
-				using (var stream = new System.IO.StreamReader(_stream))
-				{
-					result.Append(stream.ReadToEnd());
-				}
-
-				return result.ToString();
-			}
-
-			public void Dispose()
-			{
-				_stream?.Dispose();
-				_stream = null;
-				_encoding = null;
-			}
+			string FileName { get; }
+			System.IO.Stream Stream { get; }
 		}
 	}
 }

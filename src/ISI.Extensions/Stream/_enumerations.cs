@@ -17,12 +17,15 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ISI.Extensions.Stream
+namespace ISI.Extensions
 {
-	public enum EncodingType
+	public partial class Stream
 	{
-		ASCII,
-		Unicode,
-		UTF8
+		public enum EncodingType
+		{
+			ASCII,
+			Unicode,
+			UTF8
+		}
 	}
 }

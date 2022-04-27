@@ -20,108 +20,111 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Stream
+namespace ISI.Extensions
 {
-	public class TempFileStream : System.IO.FileStream, IDisposable
+	public partial class Stream
 	{
-		public const int DefaultBufferSize = 4096;
-
-		public Action<System.IO.Stream> OnClose { get; set; }
-
-		public TempFileStream()
-			: this(System.IO.FileAccess.ReadWrite, System.IO.FileShare.Read, DefaultBufferSize)
+		public class TempFileStream : System.IO.FileStream, IDisposable
 		{
-		}
+			public const int DefaultBufferSize = 4096;
 
-		public TempFileStream(System.IO.FileAccess access)
-			: this(access, System.IO.FileShare.Read, DefaultBufferSize)
-		{
-		}
+			public Action<System.IO.Stream> OnClose { get; set; }
 
-		public TempFileStream(System.IO.FileAccess access, System.IO.FileShare share)
-			: this(access, share, DefaultBufferSize)
-		{
-		}
-
-		public TempFileStream(System.IO.FileAccess access, System.IO.FileShare share, int bufferSize)
-			: base(System.IO.Path.GetTempFileName(), System.IO.FileMode.Create, access, share, bufferSize, System.IO.FileOptions.DeleteOnClose)
-		{
-		}
-
-		public TempFileStream(System.IO.Stream stream)
-			: this(stream, System.IO.FileAccess.ReadWrite, System.IO.FileShare.Read, DefaultBufferSize)
-		{
-		}
-
-		public TempFileStream(System.IO.Stream stream, System.IO.FileAccess access)
-			: this(stream, access, System.IO.FileShare.Read, DefaultBufferSize)
-		{
-		}
-
-		public TempFileStream(System.IO.Stream stream, System.IO.FileAccess access, System.IO.FileShare share)
-			: this(stream, access, share, DefaultBufferSize)
-		{
-		}
-
-		public TempFileStream(System.IO.Stream stream, System.IO.FileAccess access, System.IO.FileShare share, int bufferSize)
-			: base(System.IO.Path.GetTempFileName(), System.IO.FileMode.Create, access, share, bufferSize, System.IO.FileOptions.DeleteOnClose)
-		{
-			Import(stream);
-		}
-
-		private void Import(System.IO.Stream stream, bool disposeStream = true)
-		{
-			if (stream != null)
+			public TempFileStream()
+				: this(System.IO.FileAccess.ReadWrite, System.IO.FileShare.Read, DefaultBufferSize)
 			{
-				stream.Rewind();
-				stream.CopyTo(this);
-				if (disposeStream)
+			}
+
+			public TempFileStream(System.IO.FileAccess access)
+				: this(access, System.IO.FileShare.Read, DefaultBufferSize)
+			{
+			}
+
+			public TempFileStream(System.IO.FileAccess access, System.IO.FileShare share)
+				: this(access, share, DefaultBufferSize)
+			{
+			}
+
+			public TempFileStream(System.IO.FileAccess access, System.IO.FileShare share, int bufferSize)
+				: base(System.IO.Path.GetTempFileName(), System.IO.FileMode.Create, access, share, bufferSize, System.IO.FileOptions.DeleteOnClose)
+			{
+			}
+
+			public TempFileStream(System.IO.Stream stream)
+				: this(stream, System.IO.FileAccess.ReadWrite, System.IO.FileShare.Read, DefaultBufferSize)
+			{
+			}
+
+			public TempFileStream(System.IO.Stream stream, System.IO.FileAccess access)
+				: this(stream, access, System.IO.FileShare.Read, DefaultBufferSize)
+			{
+			}
+
+			public TempFileStream(System.IO.Stream stream, System.IO.FileAccess access, System.IO.FileShare share)
+				: this(stream, access, share, DefaultBufferSize)
+			{
+			}
+
+			public TempFileStream(System.IO.Stream stream, System.IO.FileAccess access, System.IO.FileShare share, int bufferSize)
+				: base(System.IO.Path.GetTempFileName(), System.IO.FileMode.Create, access, share, bufferSize, System.IO.FileOptions.DeleteOnClose)
+			{
+				Import(stream);
+			}
+
+			private void Import(System.IO.Stream stream, bool disposeStream = true)
+			{
+				if (stream != null)
 				{
-					stream.Dispose();
+					stream.Rewind();
+					stream.CopyTo(this);
+					if (disposeStream)
+					{
+						stream.Dispose();
+					}
 				}
 			}
-		}
 
-		public TempFileStream(byte[] data)
-			: this(data, System.IO.FileAccess.ReadWrite, System.IO.FileShare.Read, DefaultBufferSize)
-		{
-		}
-
-		public TempFileStream(byte[] data, System.IO.FileAccess access)
-			: this(data, access, System.IO.FileShare.Read, DefaultBufferSize)
-		{
-		}
-
-		public TempFileStream(byte[] data, System.IO.FileAccess access, System.IO.FileShare share)
-			: this(data, access, share, DefaultBufferSize)
-		{
-		}
-
-		public TempFileStream(byte[] data, System.IO.FileAccess access, System.IO.FileShare share, int bufferSize)
-			: base(System.IO.Path.GetTempFileName(), System.IO.FileMode.Create, access, share, bufferSize, System.IO.FileOptions.DeleteOnClose)
-		{
-			Import(data);
-		}
-
-		private void Import(byte[] data)
-		{
-			if (data != null)
+			public TempFileStream(byte[] data)
+				: this(data, System.IO.FileAccess.ReadWrite, System.IO.FileShare.Read, DefaultBufferSize)
 			{
-				this.Write(data, 0, data.Length);
-				this.Rewind();
-			}
-		}
-
-		public override void Close()
-		{
-			if (OnClose != null)
-			{
-				var onClose = OnClose;
-				OnClose = null;
-				onClose(this);
 			}
 
-			base.Close();
+			public TempFileStream(byte[] data, System.IO.FileAccess access)
+				: this(data, access, System.IO.FileShare.Read, DefaultBufferSize)
+			{
+			}
+
+			public TempFileStream(byte[] data, System.IO.FileAccess access, System.IO.FileShare share)
+				: this(data, access, share, DefaultBufferSize)
+			{
+			}
+
+			public TempFileStream(byte[] data, System.IO.FileAccess access, System.IO.FileShare share, int bufferSize)
+				: base(System.IO.Path.GetTempFileName(), System.IO.FileMode.Create, access, share, bufferSize, System.IO.FileOptions.DeleteOnClose)
+			{
+				Import(data);
+			}
+
+			private void Import(byte[] data)
+			{
+				if (data != null)
+				{
+					this.Write(data, 0, data.Length);
+					this.Rewind();
+				}
+			}
+
+			public override void Close()
+			{
+				if (OnClose != null)
+				{
+					var onClose = OnClose;
+					OnClose = null;
+					onClose(this);
+				}
+
+				base.Close();
+			}
 		}
 	}
 }

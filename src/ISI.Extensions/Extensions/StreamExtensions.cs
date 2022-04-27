@@ -196,5 +196,23 @@ namespace ISI.Extensions.Extensions
 
 			return result;
 		}
+
+		public static string GetChecksum(this System.IO.Stream stream)
+		{
+			if (stream != null)
+			{
+				stream.Rewind(true);
+
+				var hashAlgorithm = new System.Security.Cryptography.SHA256Managed();
+
+				var checksum = hashAlgorithm.ComputeHash(stream);
+
+				stream.Rewind();
+
+				return BitConverter.ToString(checksum).Replace("-", string.Empty);
+			}
+
+			return null;
+		}
 	}
 }

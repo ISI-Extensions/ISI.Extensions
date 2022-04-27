@@ -19,53 +19,56 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.Stream
+namespace ISI.Extensions
 {
-	public class ProgressStream : System.IO.Stream
+	public partial class Stream
 	{
-		public delegate void OnReadDelegate(int offset, int count);
-
-		public delegate void OnWriteDelegate(int offset, int count);
-
-		protected System.IO.Stream WrappedStream { get; set; }
-
-		public override bool CanRead => WrappedStream.CanRead;
-		public override bool CanSeek => WrappedStream.CanSeek;
-		public override bool CanWrite => WrappedStream.CanWrite;
-		public override long Length => WrappedStream.Length;
-
-		public override long Position
+		public class ProgressStream : System.IO.Stream
 		{
-			get => WrappedStream.Position;
-			set => WrappedStream.Position = value;
+			public delegate void OnReadDelegate(int offset, int count);
+
+			public delegate void OnWriteDelegate(int offset, int count);
+
+			protected System.IO.Stream WrappedStream { get; set; }
+
+			public override bool CanRead => WrappedStream.CanRead;
+			public override bool CanSeek => WrappedStream.CanSeek;
+			public override bool CanWrite => WrappedStream.CanWrite;
+			public override long Length => WrappedStream.Length;
+
+			public override long Position
+			{
+				get => WrappedStream.Position;
+				set => WrappedStream.Position = value;
+			}
+
+			public event OnReadDelegate OnRead = null;
+			public event OnWriteDelegate OnWrite = null;
+
+			public ProgressStream(System.IO.Stream wrappedStream)
+			{
+				WrappedStream = wrappedStream;
+			}
+
+			public override void Flush() => WrappedStream.Flush();
+			public override long Seek(long offset, System.IO.SeekOrigin origin) => WrappedStream.Seek(offset, origin);
+			public override void SetLength(long value) => WrappedStream.SetLength(value);
+
+			public override int Read(byte[] buffer, int offset, int count)
+			{
+				OnRead?.Invoke(offset, count);
+
+				return WrappedStream.Read(buffer, offset, count);
+			}
+
+			public override void Write(byte[] buffer, int offset, int count)
+			{
+				OnWrite?.Invoke(offset, count);
+
+				WrappedStream.Write(buffer, offset, count);
+			}
+
+			protected override void Dispose(bool disposing) => WrappedStream.Dispose();
 		}
-
-		public event OnReadDelegate OnRead = null;
-		public event OnWriteDelegate OnWrite = null;
-
-		public ProgressStream(System.IO.Stream wrappedStream)
-		{
-			WrappedStream = wrappedStream;
-		}
-
-		public override void Flush() => WrappedStream.Flush();
-		public override long Seek(long offset, System.IO.SeekOrigin origin) => WrappedStream.Seek(offset, origin);
-		public override void SetLength(long value) => WrappedStream.SetLength(value);
-
-		public override int Read(byte[] buffer, int offset, int count)
-		{
-			OnRead?.Invoke(offset, count);
-
-			return WrappedStream.Read(buffer, offset, count);
-		}
-
-		public override void Write(byte[] buffer, int offset, int count)
-		{
-			OnWrite?.Invoke(offset, count);
-
-			WrappedStream.Write(buffer, offset, count);
-		}
-
-		protected override void Dispose(bool disposing) => WrappedStream.Dispose();
 	}
 }

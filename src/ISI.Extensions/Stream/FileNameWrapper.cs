@@ -12,91 +12,70 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions
 {
 	public partial class Stream
 	{
-		public class StreamWriter : IDisposable
+		public class FileNameWrapper : System.IO.Stream, IStreamSourceInformation
 		{
-			protected System.IO.Stream _stream = null;
-			protected Encoding _encoding = null;
+			private readonly System.IO.Stream _stream;
+			public string FileName { get; }
+			public string SourceFileName { get; }
 
-			public StreamWriter(System.IO.Stream stream)
+			public FileNameWrapper(System.IO.Stream stream, string fileName)
+				: this(stream, fileName, fileName)
 			{
-				Initialize(stream, EncodingType.Unicode);
 			}
 
-			public StreamWriter(System.IO.Stream stream, EncodingType encoding)
-			{
-				Initialize(stream, encoding);
-			}
-
-			private void Initialize(System.IO.Stream stream, EncodingType encoding)
+			public FileNameWrapper(System.IO.Stream stream, string fileName, string sourceFileName)
 			{
 				_stream = stream;
-				switch (encoding)
-				{
-					case EncodingType.ASCII:
-						_encoding = new ASCIIEncoding();
-						break;
-
-					case EncodingType.UTF8:
-						_encoding = new UTF8Encoding();
-						break;
-
-					default:
-						_encoding = new UnicodeEncoding();
-						break;
-				}
+				FileName = fileName;
+				SourceFileName = sourceFileName;
 			}
 
-			public void Write(string format, params object[] args)
+			public override void Flush()
 			{
-				var buffer = _encoding.GetBytes(string.Format(format, args));
-				_stream.Write(buffer, 0, buffer.Length);
+				_stream.Flush();
 			}
 
-			public void Write(string message)
+			public override long Seek(long offset, System.IO.SeekOrigin origin)
 			{
-				var buffer = _encoding.GetBytes(message);
-				_stream.Write(buffer, 0, buffer.Length);
+				return _stream.Seek(offset, origin);
 			}
 
-			public void WriteLine(string format, params object[] args)
+			public override void SetLength(long value)
 			{
-				Write(string.Format(format, args) + "\n");
+				_stream.SetLength(value);
 			}
 
-			public void WriteLine(string message)
+			public override int Read(byte[] buffer, int offset, int count)
 			{
-				Write(string.Format("{0}\n", message));
+				return _stream.Read(buffer, offset, count);
 			}
 
-			public override string ToString()
+			public override void Write(byte[] buffer, int offset, int count)
 			{
-				var result = new StringBuilder();
-
-				_stream.Rewind();
-
-				using (var stream = new System.IO.StreamReader(_stream))
-				{
-					result.Append(stream.ReadToEnd());
-				}
-
-				return result.ToString();
+				_stream.Write(buffer, offset, count);
 			}
 
-			public void Dispose()
+			public override bool CanRead => _stream.CanRead;
+			public override bool CanSeek => _stream.CanSeek;
+			public override bool CanWrite => _stream.CanWrite;
+			public override long Length => _stream.Length;
+
+			public override long Position
 			{
-				_stream?.Dispose();
-				_stream = null;
-				_encoding = null;
+				get => _stream.Position;
+				set => _stream.Position = value;
 			}
 		}
 	}

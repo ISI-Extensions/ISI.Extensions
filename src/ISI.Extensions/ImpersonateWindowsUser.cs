@@ -106,6 +106,8 @@ namespace ISI.Extensions
 			if (userParsed.Count < 1) userParsed.Insert(0, string.Empty);
 			if (userParsed.Count < 2) userParsed.Add(string.Empty);
 
+			var executed = false;
+
 			if (!checkForUserNameAndOrPassword || !string.IsNullOrEmpty(userName) || !string.IsNullOrEmpty(password))
 			{
 				if (LogonUser(userName, domainName, password, (int)LogonType.LOGON32_LOGON_NEW_CREDENTIALS, (int)LogonProvider.LOGON32_PROVIDER_DEFAULT, out var safeTokenHandle))
@@ -114,9 +116,16 @@ namespace ISI.Extensions
 
 					System.Security.Principal.WindowsIdentity.RunImpersonated(windowsIdentity.AccessToken, action);
 
+					executed = true;
+
 					windowsIdentity.Dispose();
 					safeTokenHandle.Dispose();
 				}
+			}
+
+			if (!executed)
+			{
+				action();
 			}
 		}
 

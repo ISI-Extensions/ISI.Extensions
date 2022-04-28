@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,42 +18,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi;
-using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.VisualStudio
+namespace ISI.Extensions.Tests
 {
-	public partial class SolutionApi
+	[ISI.Extensions.TypeLocator(typeof(ISI.Extensions.Aspose.ITotalLicense))]
+	public class AsposeLicenseManager : ISI.Extensions.Aspose.ITotalLicense
 	{
-		public DTOs.GetClosestSolutionFullNameResponse GetClosestSolutionFullName(DTOs.GetClosestSolutionFullNameRequest request)
+		private const string AsposeLicenseFileName = @"S:\ISI.Aspose.Total.lic";
+
+		public System.IO.Stream GetLicenseStream()
 		{
-			var response = new DTOs.GetClosestSolutionFullNameResponse();
-
-			var fileName = request.FileName;
-
-			if (fileName.EndsWith(".sln", StringComparison.InvariantCultureIgnoreCase))
+			if (System.IO.File.Exists(AsposeLicenseFileName))
 			{
-				response.ClosestSolutionFullName = fileName;
-			}
-			else
-			{
-				var directory = (System.IO.File.Exists(fileName) ? System.IO.Path.GetDirectoryName(fileName) : fileName);
-
-				while (!string.IsNullOrWhiteSpace(directory) && string.IsNullOrWhiteSpace(response.ClosestSolutionFullName))
-				{
-					fileName = System.IO.Directory.GetFiles(directory, "*.sln", System.IO.SearchOption.TopDirectoryOnly).FirstOrDefault();
-
-					if (!string.IsNullOrEmpty(fileName))
-					{
-						response.ClosestSolutionFullName = fileName;
-					}
-
-					directory = System.IO.Path.GetDirectoryName(directory);
-				}
+				return System.IO.File.Open(AsposeLicenseFileName, System.IO.FileMode.Open, System.IO.FileAccess.Read);
 			}
 
-			return response;
+			return null;
 		}
 	}
 }

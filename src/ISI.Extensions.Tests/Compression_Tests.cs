@@ -49,6 +49,8 @@ namespace ISI.Extensions.Tests
 		[OneTimeSetUp]
 		public void OneTimeSetup()
 		{
+			ISI.Extensions.StartUp.Start();
+
 			var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
 			var configuration = configurationBuilder.Build();
 
@@ -81,7 +83,28 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
-		public void Expander_Test()
+		public void Expander_7zip_Test()
+		{
+			var sourceFileUrl = @"C:\Users\ron.muth\Downloads\FacilityTransactionsArchive.20220316021546194.e44e2852-98f0-46bb-a7c3-fbba73125e1d.7z";
+
+			var fileStreams = new ISI.Extensions.Stream.FileStreamCollection();
+
+			using (var stream = new System.IO.MemoryStream())
+			{
+				using (var fileSystemStream = ISI.Extensions.FileSystem.OpenRead(sourceFileUrl))
+				{
+					fileSystemStream.CopyTo(stream);
+					stream.Flush();
+				}
+
+				stream.Rewind();
+
+				fileStreams.Add(sourceFileUrl, stream, true, null);
+			}
+		}
+
+		[Test]
+		public void Expander_gz_Test()
 		{
 			var fileNamePatternRegexes = SourceFileNameRegexes.ToNullCheckedArray(x => new System.Text.RegularExpressions.Regex(x, System.Text.RegularExpressions.RegexOptions.IgnoreCase), NullCheckCollectionResult.Empty);
 

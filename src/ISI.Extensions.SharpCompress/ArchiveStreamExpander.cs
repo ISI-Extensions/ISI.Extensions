@@ -20,7 +20,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.SharpCompress
 {
-	[ISI.Extensions.Stream.ArchiveStreamExpander]
+	//[ISI.Extensions.Stream.ArchiveStreamExpander]
 	public class ArchiveStreamExpander : ISI.Extensions.Stream.IArchiveStreamExpander
 	{
 		private readonly IDictionary<string, global::SharpCompress.Common.ArchiveType> _fileNameExtensionsLookup = new Dictionary<string, global::SharpCompress.Common.ArchiveType>(StringComparer.InvariantCultureIgnoreCase)

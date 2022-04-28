@@ -33,6 +33,7 @@
 		<ProjectReference Include="..\ISI.Extensions.Aspose.Pdf\ISI.Extensions.Aspose.Pdf.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Aspose.Slides\ISI.Extensions.Aspose.Slides.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Aspose.Words\ISI.Extensions.Aspose.Words.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Aspose.Zip\ISI.Extensions.Aspose.Zip.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Aspose\ISI.Extensions.Aspose.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Asterisk\ISI.Extensions.Asterisk.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Caching.MessageBus\ISI.Extensions.Caching.MessageBus.csproj" />

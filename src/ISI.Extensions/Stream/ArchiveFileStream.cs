@@ -55,10 +55,10 @@ namespace ISI.Extensions
 			public string ArchiveFileName { get; set; }
 			public string RelativeFileName { get; set; }
 
-			public ArchiveFileStream(string fullName, string archiveFullName, TStream stream = null, bool responsibleForStream = false)
-				: base(fullName, null, stream, responsibleForStream)
+			public ArchiveFileStream(string fileName, string archiveFileName, TStream stream = null, bool responsibleForStream = false)
+				: base(fileName, null, stream, responsibleForStream)
 			{
-				ArchiveFileName = archiveFullName;
+				ArchiveFileName = archiveFileName;
 			}
 
 			string IStreamSourceInformation.SourceFileName => ArchiveFileName;

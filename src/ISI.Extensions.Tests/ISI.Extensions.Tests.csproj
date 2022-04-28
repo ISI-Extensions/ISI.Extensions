@@ -29,9 +29,17 @@
 		<PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\ISI.Extensions.Aspose.Cells\ISI.Extensions.Aspose.Cells.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Aspose.Pdf\ISI.Extensions.Aspose.Pdf.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Aspose.Slides\ISI.Extensions.Aspose.Slides.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Aspose.Words\ISI.Extensions.Aspose.Words.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Aspose\ISI.Extensions.Aspose.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Asterisk\ISI.Extensions.Asterisk.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Caching.MessageBus\ISI.Extensions.Caching.MessageBus.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Caching.Redis\ISI.Extensions.Caching.Redis.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Cake\ISI.Extensions.Cake.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.DependencyInjection.Iunq\ISI.Extensions.DependencyInjection.Iunq.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Ebcdic\ISI.Extensions.Ebcdic.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Git\ISI.Extensions.Git.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.GoDaddy\ISI.Extensions.GoDaddy.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.GoDrive\ISI.Extensions.GoDrive.csproj" />
@@ -39,14 +47,24 @@
 		<ProjectReference Include="..\ISI.Extensions.Jenkins\ISI.Extensions.Jenkins.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Jira\ISI.Extensions.Jira.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.JsonSerialization.Newtonsoft\ISI.Extensions.JsonSerialization.Newtonsoft.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Locks.Redis\ISI.Extensions.Locks.Redis.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.MessageBus.AzureServiceBus\ISI.Extensions.MessageBus.AzureServiceBus.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.MessageBus.MassTransit.RabbitMQ\ISI.Extensions.MessageBus.MassTransit.RabbitMQ.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.MessageBus.MassTransit\ISI.Extensions.MessageBus.MassTransit.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.MessageBus.Redis\ISI.Extensions.MessageBus.Redis.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Monitor\ISI.Extensions.Monitor.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.NAnt\ISI.Extensions.NAnt.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Ngrok\ISI.Extensions.Ngrok.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Nuget\ISI.Extensions.Nuget.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.OpenCNAM\ISI.Extensions.OpenCNAM.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Repository.Cosmos\ISI.Extensions.Repository.Cosmos.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Repository.SqlServer\ISI.Extensions.Repository.SqlServer.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Scm\ISI.Extensions.Scm.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Security.ActiveDirectory\ISI.Extensions.Security.ActiveDirectory.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.SharpCompress\ISI.Extensions.SharpCompress.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.SshNet\ISI.Extensions.SshNet.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Svn\ISI.Extensions.Svn.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Telephony.MessageBus\ISI.Extensions.Telephony.MessageBus.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.VisualStudio\ISI.Extensions.VisualStudio.csproj" />
 		<ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />
 	</ItemGroup>

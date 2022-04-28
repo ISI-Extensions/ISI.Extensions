@@ -23,12 +23,13 @@ namespace ISI.Extensions
 {
 	public partial class Stream
 	{
-		public interface IArchiveStreamProcessor
+		[AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
+		public class ArchiveStreamExpanderAttribute : ISI.Extensions.TypeLocatorAttribute
 		{
-			bool Handles(string fileName);
-
-			ISI.Extensions.Stream.FileStreamCollection Expand<TStream>(string fileName, System.IO.Stream archiveStream, FileStreamFilter archiveFileFilter = null)
-				where TStream : System.IO.Stream, new();
+			public ArchiveStreamExpanderAttribute()
+				: base(typeof(ISI.Extensions.Stream.IArchiveStreamExpander))
+			{
+			}
 		}
 	}
 }

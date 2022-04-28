@@ -28,8 +28,8 @@ namespace ISI.Extensions
 
 		public class FileStreamCollection : IEnumerable<FileStream>, IDisposable
 		{
-			private static IArchiveStreamProcessor[] _archiveStreamProcessors = null;
-			protected IArchiveStreamProcessor[] ArchiveStreamProcessors => _archiveStreamProcessors ??= ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementations<IArchiveStreamProcessor>(ISI.Extensions.ServiceLocator.Current);
+			private static IArchiveStreamExpander[] _archiveStreamExpanders = null;
+			protected IArchiveStreamExpander[] ArchiveStreamExpanders => _archiveStreamExpanders ??= ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementations<IArchiveStreamExpander>(ISI.Extensions.ServiceLocator.Current);
 
 			public static FileStreamFilter GetFilter(System.Text.RegularExpressions.Regex regEx)
 			{
@@ -82,7 +82,7 @@ namespace ISI.Extensions
 
 					if (processArchives)
 					{
-						foreach (var archiveStreamProcessor in ArchiveStreamProcessors)
+						foreach (var archiveStreamProcessor in ArchiveStreamExpanders)
 						{
 							if (!processed)
 							{
@@ -125,7 +125,15 @@ namespace ISI.Extensions
 				}
 			}
 
+			public void Add(string fileName, System.IO.Stream stream, bool processArchives, FileStreamFilter archiveFileFilter)
+			{
+				var sourceStream = new SourceFileStream(fileName)
+				{
+					Stream = stream,
+				};
 
+				Add(sourceStream, null, processArchives, archiveFileFilter);
+			}
 
 
 

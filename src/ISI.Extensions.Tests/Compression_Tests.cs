@@ -12,27 +12,39 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+ 
 using ISI.Extensions.ConfigurationHelper.Extensions;
 using ISI.Extensions.DependencyInjection.Extensions;
 using ISI.Extensions.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace ISI.Extensions.Tests
 {
 	[TestFixture]
-	public class GoDriveFileSystem_Tests
+	public class Compression_Tests
 	{
-		//public const string DirectoryUrl = "godrives://mft.rrc.texas.gov/link/ec380e91-5926-4d63-891a-42877a81d32f"; //OrganizationFilesSubDirectory
-		//public const string DirectoryUrl = "godrives://mft.rrc.texas.gov/link/caf63b5f-2218-42e5-8e55-9f88673477e7"; //GasLedgersFilesSubDirectory
-		public const string AttributedFullPath = "godrives://mft.rrc.texas.gov/link/abdf8b13-cc23-4489-b942-2ecd1171fae1"; //OilLedgersFilesSubDirectory
+		public readonly string[] SourceFileParentDirectoryUrls = new[]
+		{
+			"godrives://mft.rrc.texas.gov/link/ec380e91-5926-4d63-891a-42877a81d32f", //OrganizationFilesSubDirectory
+			"godrives://mft.rrc.texas.gov/link/caf63b5f-2218-42e5-8e55-9f88673477e7", //GasLedgersFilesSubDirectory
+			"godrives://mft.rrc.texas.gov/link/abdf8b13-cc23-4489-b942-2ecd1171fae1", //OilLedgersFilesSubDirectory
+		};
+
+		public readonly string[] SourceFileNameRegexes = new[]
+		{
+			@"^orf.+\.ebc\.gz?$",
+			@"^olf.+\.ebc\.gz?$",
+			@"^gsf.+\.ebc\.gz?$",
+			//@"^orf.+\.ebc(?:\.gz)?$",
+			//@"^olf.+\.ebc(?:\.gz)?$",
+			//@"^gsf.+\.ebc(?:\.gz)?$",
+		};
 
 		[OneTimeSetUp]
 		public void OneTimeSetup()
@@ -68,31 +80,47 @@ namespace ISI.Extensions.Tests
 			serviceProvider.SetServiceLocator();
 		}
 
-
 		[Test]
-		public void GetDirectoryFileSystemPaths_Test()
+		public void Expander_Test()
 		{
-			var fileSystemPaths = ISI.Extensions.FileSystem.GetDirectoryFileSystemPaths(AttributedFullPath, false);
-		}
+			var fileNamePatternRegexes = SourceFileNameRegexes.ToNullCheckedArray(x => new System.Text.RegularExpressions.Regex(x, System.Text.RegularExpressions.RegexOptions.IgnoreCase), NullCheckCollectionResult.Empty);
 
-		[Test]
-		public void Download_Test()
-		{
-			var fileSystemPaths = ISI.Extensions.FileSystem.GetDirectoryFileSystemPaths(AttributedFullPath, false);
+			var sourceFileUrls = new List<string>();
 
-			var fileSystemPath = fileSystemPaths.Cast<ISI.Extensions.GoDrive.GoDriveFileSystem.GoDriveFileSystemPathFile>().Last();
-
-			Console.WriteLine(fileSystemPath);
-
-			using (var stream = new System.IO.MemoryStream())
+			foreach (var fileParentDirectoryUrl in SourceFileParentDirectoryUrls)
 			{
-				using (var fileSystemStream = ISI.Extensions.FileSystem.OpenRead(fileSystemPath))
-				{
-					fileSystemStream.CopyTo(stream);
-					stream.Flush();
-				}
+				var directoryFiles = ISI.Extensions.FileSystem.GetDirectoryFileSystemPaths(fileParentDirectoryUrl, false);
 
-				stream.Rewind();
+				if (directoryFiles != null)
+				{
+					if (fileNamePatternRegexes.Any())
+					{
+						sourceFileUrls.AddRange(directoryFiles.Where(x => fileNamePatternRegexes.Any(y => y.IsMatch(x.PathName))).Select(x => x.AttributedFullPath()));
+					}
+					else
+					{
+						sourceFileUrls.AddRange(directoryFiles.Select(x => x.AttributedFullPath()));
+					}
+				}
+			}
+
+
+			foreach (var sourceFileUrl in sourceFileUrls)
+			{
+				var fileStreams = new ISI.Extensions.Stream.FileStreamCollection();
+
+				using (var stream = new System.IO.MemoryStream())
+				{
+					using (var fileSystemStream = ISI.Extensions.FileSystem.OpenRead(sourceFileUrl))
+					{
+						fileSystemStream.CopyTo(stream);
+						stream.Flush();
+					}
+
+					stream.Rewind();
+
+					fileStreams.Add(sourceFileUrl, stream, true, null);
+				}
 			}
 		}
 	}

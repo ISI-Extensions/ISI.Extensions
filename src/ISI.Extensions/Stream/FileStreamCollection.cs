@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,6 +61,11 @@ namespace ISI.Extensions
 				AddRange(new[] { fileName });
 			}
 
+			public void Add(string fileName, bool processArchives)
+			{
+				Add(fileName, (System.Text.RegularExpressions.Regex)null, processArchives, (System.Text.RegularExpressions.Regex)null);
+			}
+
 			public void Add(string fileName, System.Text.RegularExpressions.Regex fileFilterRegEx, bool processArchives, System.Text.RegularExpressions.Regex archiveFileFilterRegEx)
 			{
 				AddRange(new[] { fileName }, fileFilterRegEx, processArchives, archiveFileFilterRegEx);
@@ -68,7 +73,22 @@ namespace ISI.Extensions
 
 			public void Add(FileStream fileStream)
 			{
-				Add(fileStream, null, true, null);
+				Add(fileStream, null, false, null);
+			}
+
+			public void Add(FileStream fileStream, bool processArchives)
+			{
+				Add(fileStream, null, processArchives, null);
+			}
+
+			public void Add(string fileName, System.IO.Stream stream, bool processArchives, FileStreamFilter archiveFileFilter)
+			{
+				var sourceStream = new SourceFileStream(fileName)
+				{
+					Stream = stream,
+				};
+
+				Add(sourceStream, null, processArchives, archiveFileFilter);
 			}
 
 			public void Add(FileStream fileStream, FileStreamFilter fileFilter, bool processArchives, FileStreamFilter archiveFileFilter)
@@ -125,16 +145,6 @@ namespace ISI.Extensions
 				}
 			}
 
-			public void Add(string fileName, System.IO.Stream stream, bool processArchives, FileStreamFilter archiveFileFilter)
-			{
-				var sourceStream = new SourceFileStream(fileName)
-				{
-					Stream = stream,
-				};
-
-				Add(sourceStream, null, processArchives, archiveFileFilter);
-			}
-
 
 
 			public void AddDirectoryFiles(string directoryName, bool doRecursive, string fileFilterRegEx, bool processArchives, string archiveFileFilterRegEx)
@@ -167,22 +177,27 @@ namespace ISI.Extensions
 
 
 
-			public void AddRange(FileStreamCollection fileStreams)
+			public void AddRange(IEnumerable<FileStream> fileStreams)
 			{
 				AddRange(fileStreams, (FileStreamFilter)null, false, (FileStreamFilter)null);
 			}
 
-			public void AddRange(FileStreamCollection fileStreams, string fileFilterRegEx, bool processArchives, string archiveFileFilterRegEx)
+			public void AddRange(IEnumerable<FileStream> fileStreams, bool processArchives)
+			{
+				AddRange(fileStreams, (FileStreamFilter)null, processArchives, (FileStreamFilter)null);
+			}
+
+			public void AddRange(IEnumerable<FileStream> fileStreams, string fileFilterRegEx, bool processArchives, string archiveFileFilterRegEx)
 			{
 				AddRange(fileStreams, GetFilter(fileFilterRegEx), processArchives, GetFilter(archiveFileFilterRegEx));
 			}
 
-			public void AddRange(FileStreamCollection fileStreams, System.Text.RegularExpressions.Regex fileFilterRegEx, bool processArchives, System.Text.RegularExpressions.Regex archiveFileFilterRegEx)
+			public void AddRange(IEnumerable<FileStream> fileStreams, System.Text.RegularExpressions.Regex fileFilterRegEx, bool processArchives, System.Text.RegularExpressions.Regex archiveFileFilterRegEx)
 			{
 				AddRange(fileStreams, GetFilter(fileFilterRegEx), processArchives, GetFilter(archiveFileFilterRegEx));
 			}
 
-			public void AddRange(FileStreamCollection fileStreams, FileStreamFilter fileFilter, bool processArchives, FileStreamFilter archiveFileFilter)
+			public void AddRange(IEnumerable<FileStream> fileStreams, FileStreamFilter fileFilter, bool processArchives, FileStreamFilter archiveFileFilter)
 			{
 				fileFilter ??= (fileName => true);
 

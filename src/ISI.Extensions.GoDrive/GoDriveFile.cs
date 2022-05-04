@@ -12,18 +12,33 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.GoDrive.DataTransferObjects.GoDriveApi
+namespace ISI.Extensions.GoDrive
 {
-	public partial class ListFilesRequest
+	public class GoDriveFile : IGoDrivePath
 	{
 		public string DirectoryUrl { get; set; }
-		public bool Recursive { get; set; }
+		public string FileKey { get; set; }
+		public string FileName { get; set; }
+
+		public string FullName
+		{
+			get => string.Format("{0}/{1}/{2}", DirectoryUrl, FileKey, FileName);
+			set
+			{
+				var pieces = new Stack<string>(value.Split(new []{ '/' }));
+				FileName = pieces.Pop();
+				FileKey = pieces.Pop();
+				DirectoryUrl = string.Join("/", pieces.Reverse());
+			}
+		}
+
+		public override string ToString() => FullName;
 	}
 }

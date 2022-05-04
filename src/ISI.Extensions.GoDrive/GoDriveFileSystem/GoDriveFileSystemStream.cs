@@ -39,7 +39,7 @@ namespace ISI.Extensions.GoDrive.GoDriveFileSystem
 
 			var downloadFileResponse = goDriveApi.DownloadFile(new DTOs.DownloadFileRequest()
 			{
-				FileName = new GoDriveFileName()
+				FileName = new GoDriveFile()
 				{
 					FullName = fileSystemPathFile.AttributedFullPath(),
 				},

@@ -30,8 +30,11 @@ namespace ISI.Extensions.Parsers
 			public char[] Buffer { get; }
 			public int BufferOffset { get; set; }
 
-			public bool Primed { get; private set; }
-			public bool EndOfStream => (Primed && (Buffer[0] == '\0'));
+			public bool Primed { get; private set; } = false;
+
+			//private bool _endOfStream { get; set; } = false;
+			//public bool EndOfStream => (Primed && _endOfStream);
+			public bool EndOfStream { get; private set; } = false;
 
 			public DelimitedTextParserContext()
 			{
@@ -43,7 +46,7 @@ namespace ISI.Extensions.Parsers
 			{
 				if (stream.EndOfStream)
 				{
-					Buffer[0] = '\0';
+					EndOfStream = true;
 					BufferSize = 1;
 				}
 				else

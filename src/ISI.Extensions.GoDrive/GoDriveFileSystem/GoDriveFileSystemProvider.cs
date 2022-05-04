@@ -119,9 +119,23 @@ namespace ISI.Extensions.GoDrive.GoDriveFileSystem
 			var listFilesResponse = goDriveApi.ListFiles(new DTOs.ListFilesRequest()
 			{
 				DirectoryUrl = fileSystemPathDirectory.AttributedFullPath(),
+				Recursive = doRecursive,
 			});
 
-			return listFilesResponse.FileNames.NullCheckedSelect(fileName => GetFileSystemPathFile(fileName.FullName), NullCheckCollectionResult.Empty);
+			return listFilesResponse.FileNames.NullCheckedSelect(fileName =>
+			{
+				switch (fileName)
+				{
+					case GoDriveDirectory goDriveDirectory:
+						return GetFileSystemPathDirectory(goDriveDirectory.FullName) as FileSystem.IFileSystemPath;
+
+					case GoDriveFile goDriveFile:
+						return GetFileSystemPathFile(goDriveFile.FullName) as FileSystem.IFileSystemPath;
+
+					default:
+						throw new ArgumentOutOfRangeException(nameof(fileName));
+				}
+			}, NullCheckCollectionResult.Empty);
 		}
 
 		public override void CreateDirectory(FileSystem.IFileSystemPathDirectory fileSystemPathDirectory)

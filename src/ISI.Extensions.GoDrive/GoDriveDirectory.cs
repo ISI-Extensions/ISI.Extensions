@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.GoDrive
 {
-	public class GoDriveFileName
+	public class GoDriveDirectory : IGoDrivePath
 	{
 		public string DirectoryUrl { get; set; }
 		public string FileKey { get; set; }

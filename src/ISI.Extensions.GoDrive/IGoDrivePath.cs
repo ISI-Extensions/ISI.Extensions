@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,15 +15,12 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace ISI.Extensions.GoDrive.DataTransferObjects.GoDriveApi
+namespace ISI.Extensions.GoDrive
 {
-	public partial class ListFilesRequest
+	public interface IGoDrivePath
 	{
-		public string DirectoryUrl { get; set; }
-		public bool Recursive { get; set; }
+		string FullName { get; }
 	}
 }

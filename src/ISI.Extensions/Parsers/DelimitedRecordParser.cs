@@ -39,9 +39,9 @@ namespace ISI.Extensions.Parsers
 
 		protected OnRead<TRecord>[] OnReads { get; }
 
-		public DelimitedRecordParser(ISI.Extensions.Parsers.ITextParser stringParser, IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns, IEnumerable<OnRead<TRecord>> onReads)
+		public DelimitedRecordParser(ISI.Extensions.Parsers.ITextParser textParser, IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns, IEnumerable<OnRead<TRecord>> onReads)
 		{
-			TextParser = stringParser;
+			TextParser = textParser;
 
 			Columns = (columns ?? ISI.Extensions.Columns.ColumnInfoCollection<TRecord>.GetDefault()).ToArray();
 

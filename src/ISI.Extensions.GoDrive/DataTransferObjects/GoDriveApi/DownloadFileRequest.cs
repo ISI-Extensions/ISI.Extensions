@@ -23,6 +23,6 @@ namespace ISI.Extensions.GoDrive.DataTransferObjects.GoDriveApi
 {
 	public partial class DownloadFileRequest
 	{
-		public GoDriveFileName FileName { get; set; }
+		public GoDriveFile FileName { get; set; }
 	}
 }

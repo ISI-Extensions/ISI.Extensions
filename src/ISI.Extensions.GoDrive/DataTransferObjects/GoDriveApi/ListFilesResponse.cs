@@ -23,6 +23,6 @@ namespace ISI.Extensions.GoDrive.DataTransferObjects.GoDriveApi
 {
 	public partial class ListFilesResponse
 	{
-		public GoDriveFileName[] FileNames { get; set; }
+		public IGoDrivePath[] FileNames { get; set; }
 	}
 }

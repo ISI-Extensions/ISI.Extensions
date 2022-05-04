@@ -22,7 +22,6 @@ using System.Threading.Tasks;
 namespace ISI.Extensions.Ebcdic
 {
 	public partial class RecordDefinitionCollection<TIRecord> : List<RecordDefinitionCollection<TIRecord>.IRecordDefinition>
-		where TIRecord : class
 	{
 		public RecordDefinitionCollection()
 		{

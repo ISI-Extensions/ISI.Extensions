@@ -65,10 +65,7 @@ namespace ISI.Extensions.Ebcdic
 		{
 			get
 			{
-				if (!_recordSize.HasValue)
-				{
-					_recordSize = this.Sum(column => column.ColumnSize);
-				}
+				_recordSize ??= this.Sum(column => column.ColumnSize);
 
 				return _recordSize.Value;
 			}	

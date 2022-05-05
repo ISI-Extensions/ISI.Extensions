@@ -106,44 +106,21 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void Expander_gz_Test()
 		{
-			var fileNamePatternRegexes = SourceFileNameRegexes.ToNullCheckedArray(x => new System.Text.RegularExpressions.Regex(x, System.Text.RegularExpressions.RegexOptions.IgnoreCase), NullCheckCollectionResult.Empty);
+			var sourceFileUrl = @"C:\Users\ron.muth\Downloads\dbf900.ebc.gz";
 
-			var sourceFileUrls = new List<string>();
+			var fileStreams = new ISI.Extensions.Stream.FileStreamCollection();
 
-			foreach (var fileParentDirectoryUrl in SourceFileParentDirectoryUrls)
+			using (var stream = new System.IO.MemoryStream())
 			{
-				var directoryFiles = ISI.Extensions.FileSystem.GetDirectoryFileSystemPaths(fileParentDirectoryUrl, false);
-
-				if (directoryFiles != null)
+				using (var fileSystemStream = ISI.Extensions.FileSystem.OpenRead(sourceFileUrl))
 				{
-					if (fileNamePatternRegexes.Any())
-					{
-						sourceFileUrls.AddRange(directoryFiles.Where(x => fileNamePatternRegexes.Any(y => y.IsMatch(x.PathName))).Select(x => x.AttributedFullPath()));
-					}
-					else
-					{
-						sourceFileUrls.AddRange(directoryFiles.Select(x => x.AttributedFullPath()));
-					}
+					fileSystemStream.CopyTo(stream);
+					stream.Flush();
 				}
-			}
 
+				stream.Rewind();
 
-			foreach (var sourceFileUrl in sourceFileUrls)
-			{
-				var fileStreams = new ISI.Extensions.Stream.FileStreamCollection();
-
-				using (var stream = new System.IO.MemoryStream())
-				{
-					using (var fileSystemStream = ISI.Extensions.FileSystem.OpenRead(sourceFileUrl))
-					{
-						fileSystemStream.CopyTo(stream);
-						stream.Flush();
-					}
-
-					stream.Rewind();
-
-					fileStreams.Add(sourceFileUrl, stream, true, null);
-				}
+				fileStreams.Add(sourceFileUrl, stream, true, null);
 			}
 		}
 	}

@@ -67,7 +67,11 @@ namespace ISI.Extensions.Aspose.Zip
 
 						using (var stream = archiveEntry.GetStream())
 						{
+							stream.Rewind();
+
 							stream.CopyTo(archiveFileStream.Stream);
+
+							archiveFileStream.Stream.Rewind();
 						}
 
 						fileStreams.Add(archiveFileStream);

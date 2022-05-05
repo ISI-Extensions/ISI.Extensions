@@ -28,7 +28,7 @@ namespace ISI.Extensions.Ebcdic
 		{
 			Type RecordType { get; }
 			int RecordSize { get; }
-			Func<byte[], bool> IsRecordType { get; }
+			IsRecordTypeDelegate IsRecordType { get; }
 			TIRecord GetRecord(byte[] recordBuffer);
 		}
 	}

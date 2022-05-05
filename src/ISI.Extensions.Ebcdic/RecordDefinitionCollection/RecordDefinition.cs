@@ -22,6 +22,8 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Ebcdic
 {
+	public delegate bool IsRecordTypeDelegate(byte[] buffer);
+
 	public partial class RecordDefinitionCollection<TIRecord>
 	{
 		public class RecordDefinition<TRecord> : IRecordDefinition
@@ -30,9 +32,9 @@ namespace ISI.Extensions.Ebcdic
 			protected ColumnInfoCollection<TRecord>.IColumnInfo[] Columns { get; }
 			public Type RecordType => typeof(TRecord);
 			public int RecordSize { get; }
-			public Func<byte[], bool> IsRecordType { get; }
+			public IsRecordTypeDelegate IsRecordType { get; }
 
-			public RecordDefinition(ColumnInfoCollection<TRecord> columns, Func<byte[], bool> isRecordType)
+			public RecordDefinition(ColumnInfoCollection<TRecord> columns, IsRecordTypeDelegate isRecordType)
 			{
 				Columns = columns.ToArray();
 				RecordSize = columns.RecordSize;

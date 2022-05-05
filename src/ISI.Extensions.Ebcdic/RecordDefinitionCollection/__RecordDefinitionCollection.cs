@@ -40,7 +40,7 @@ namespace ISI.Extensions.Ebcdic
 			Add(new RecordDefinition<TRecord>(columns, null));
 		}
 
-		public void Add<TRecord>(ColumnInfoCollection<TRecord> columns, Func<byte[], bool> isRecordType)
+		public void Add<TRecord>(ColumnInfoCollection<TRecord> columns, IsRecordTypeDelegate isRecordType)
 			where TRecord : class, TIRecord, new()
 		{
 			Add(new RecordDefinition<TRecord>(columns, isRecordType));

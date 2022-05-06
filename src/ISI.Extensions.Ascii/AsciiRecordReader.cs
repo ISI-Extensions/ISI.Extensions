@@ -28,21 +28,21 @@ namespace ISI.Extensions.Ascii
 		public class AsciiRecordReaderEnumerator : IEnumerator<TIRecord>
 		{
 			protected System.IO.Stream SourceStream { get; }
+			protected System.IO.StreamReader SourceStreamReader { get; set; }
 			protected RecordDefinitionCollection<TIRecord>.IRecordDefinition[] RecordDefinitions { get; }
-			public int RecordSize { get; }
 			protected Func<TIRecord, bool> Filter { get; }
 
 			public AsciiRecordReaderEnumerator(System.IO.Stream sourceStream, IEnumerable<RecordDefinitionCollection<TIRecord>.IRecordDefinition> recordDefinitions, Func<TIRecord, bool> filter)
 			{
 				SourceStream = sourceStream;
+				SourceStreamReader = new System.IO.StreamReader(SourceStream);
 				RecordDefinitions = recordDefinitions.ToArray();
-				RecordSize = RecordDefinitions.FirstOrDefault().RecordSize;
 				Filter = filter;
 
-				if (RecordDefinitions.Any(recordDefinition => recordDefinition.RecordSize != RecordSize))
-				{
-					throw new Exception(string.Format("All Record Definition must be the same size:\n{0}  ", string.Join("\n  ", recordDefinitions.Select(recordDefinition => string.Format("{0} => {1}", recordDefinition.RecordSize, recordDefinition.RecordType.Name)))));
-				}
+				//if (RecordDefinitions.Any(recordDefinition => recordDefinition.RecordSize != RecordSize))
+				//{
+				//	throw new Exception(string.Format("All Record Definition must be the same size:\n{0}  ", string.Join("\n  ", recordDefinitions.Select(recordDefinition => string.Format("{0} => {1}", recordDefinition.RecordSize, recordDefinition.RecordType.Name)))));
+				//}
 
 				Current = null;
 			}
@@ -50,6 +50,7 @@ namespace ISI.Extensions.Ascii
 			public void Reset()
 			{
 				SourceStream.Rewind();
+
 				Current = null;
 			}
 
@@ -57,22 +58,15 @@ namespace ISI.Extensions.Ascii
 			{
 				Current = null;
 
-				var recordBuffer = new byte[RecordSize];
-
-				while (Current == null)
+				while ((Current == null) && !SourceStreamReader.EndOfStream)
 				{
-					var readLength = SourceStream.Read(recordBuffer, 0, RecordSize);
-
-					if (readLength < RecordSize)
-					{
-						return false;
-					}
+					var buffer = SourceStreamReader.ReadLine();
 
 					foreach (var recordDefinition in RecordDefinitions)
 					{
-						if (recordDefinition.IsRecordType(recordBuffer))
+						if (recordDefinition.IsRecordType(buffer))
 						{
-							var record = recordDefinition.GetRecord(recordBuffer);
+							var record = recordDefinition.GetRecord(buffer);
 
 							if (Filter(record))
 							{
@@ -84,7 +78,7 @@ namespace ISI.Extensions.Ascii
 					}
 				}
 
-				return true; //Will never get executed, just here for compiler
+				return false;
 			}
 
 

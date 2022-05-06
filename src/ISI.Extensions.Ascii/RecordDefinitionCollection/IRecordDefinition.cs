@@ -26,10 +26,8 @@ namespace ISI.Extensions.Ascii
 	{
 		public interface IRecordDefinition
 		{
-			Type RecordType { get; }
-			int RecordSize { get; }
 			IsRecordTypeDelegate IsRecordType { get; }
-			TIRecord GetRecord(byte[] recordBuffer);
+			TIRecord GetRecord(string recordBuffer);
 		}
 	}
 }

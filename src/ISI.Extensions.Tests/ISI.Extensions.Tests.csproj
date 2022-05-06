@@ -29,6 +29,7 @@
 		<PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\ISI.Extensions.Ascii\ISI.Extensions.Ascii.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Aspose.Cells\ISI.Extensions.Aspose.Cells.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Aspose.Pdf\ISI.Extensions.Aspose.Pdf.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Aspose.Slides\ISI.Extensions.Aspose.Slides.csproj" />

@@ -23,11 +23,11 @@ using ISI.Extensions.TypeLocator.Extensions;
 namespace ISI.Wrappers.Aspose
 {
 	[ISI.Extensions.LicenseManager.LicenseApplier]
-	public partial class Pdf : ISI.Extensions.LicenseManager.ILicenseApplier
+	public class LicenseApplier : ISI.Extensions.LicenseManager.ILicenseApplier
 	{
 		private static bool _IsLicensed = false;
 
-		static Pdf()
+		static LicenseApplier()
 		{
 			if (!_IsLicensed)
 			{

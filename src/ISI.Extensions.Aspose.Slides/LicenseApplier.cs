@@ -23,17 +23,17 @@ using ISI.Extensions.TypeLocator.Extensions;
 namespace ISI.Extensions.Aspose
 {
 	[ISI.Extensions.LicenseManager.LicenseApplier]
-	public partial class Words : ISI.Extensions.LicenseManager.ILicenseApplier
+	public class LicenseApplier : ISI.Extensions.LicenseManager.ILicenseApplier
 	{
 		private static bool _IsLicensed = false;
 
-		static Words()
+		static LicenseApplier()
 		{
 			if (!_IsLicensed)
 			{
 				var localContainer = ISI.Extensions.TypeLocator.Container.LocalContainer;
 
-				var licenseManagers = localContainer.GetImplementations<ISI.Extensions.Aspose.IWordsLicense>().Cast<ISI.Extensions.LicenseManager.ILicenseStream>();
+				var licenseManagers = localContainer.GetImplementations<ISI.Extensions.Aspose.ICellsLicense>().Cast<ISI.Extensions.LicenseManager.ILicenseStream>();
 				
 				if (!licenseManagers.Any())
 				{
@@ -47,7 +47,7 @@ namespace ISI.Extensions.Aspose
 
 				var licenseManager = licenseManagers.First();
 
-				(new global::Aspose.Words.License()).SetLicense(licenseManager.GetLicenseStream());
+				(new global::Aspose.Slides.License()).SetLicense(licenseManager.GetLicenseStream());
 
 				_IsLicensed = true;
 			}

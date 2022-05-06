@@ -20,20 +20,20 @@ using System.Text;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.TypeLocator.Extensions;
 
-namespace ISI.Extensions.Aspose
+namespace ISI.Extensions.Zip
 {
 	[ISI.Extensions.LicenseManager.LicenseApplier]
-	public partial class Slides : ISI.Extensions.LicenseManager.ILicenseApplier
+	public partial class LicenseApplier : ISI.Extensions.LicenseManager.ILicenseApplier
 	{
 		private static bool _IsLicensed = false;
 
-		static Slides()
+		static LicenseApplier()
 		{
 			if (!_IsLicensed)
 			{
 				var localContainer = ISI.Extensions.TypeLocator.Container.LocalContainer;
 
-				var licenseManagers = localContainer.GetImplementations<ISI.Extensions.Aspose.ICellsLicense>().Cast<ISI.Extensions.LicenseManager.ILicenseStream>();
+				var licenseManagers = localContainer.GetImplementations<ISI.Extensions.Aspose.IZipLicense>().Cast<ISI.Extensions.LicenseManager.ILicenseStream>();
 				
 				if (!licenseManagers.Any())
 				{
@@ -47,7 +47,7 @@ namespace ISI.Extensions.Aspose
 
 				var licenseManager = licenseManagers.First();
 
-				(new global::Aspose.Slides.License()).SetLicense(licenseManager.GetLicenseStream());
+				(new global::Aspose.Zip.License()).SetLicense(licenseManager.GetLicenseStream());
 
 				_IsLicensed = true;
 			}

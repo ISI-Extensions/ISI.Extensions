@@ -23,11 +23,11 @@ using ISI.Extensions.TypeLocator.Extensions;
 namespace ISI.Extensions.Aspose
 {
 	[ISI.Extensions.LicenseManager.LicenseApplier]
-	public partial class Cells : ISI.Extensions.LicenseManager.ILicenseApplier
+	public class LicenseApplier : ISI.Extensions.LicenseManager.ILicenseApplier
 	{
 		private static bool _IsLicensed = false;
 
-		static Cells()
+		static LicenseApplier()
 		{
 			if (!_IsLicensed)
 			{

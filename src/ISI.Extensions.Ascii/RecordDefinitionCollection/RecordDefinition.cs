@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Ascii
 {
-	public delegate bool IsRecordTypeDelegate(byte[] buffer);
+	public delegate bool IsRecordTypeDelegate(string buffer);
 
 	public partial class RecordDefinitionCollection<TIRecord>
 	{
@@ -30,18 +30,15 @@ namespace ISI.Extensions.Ascii
 			where TRecord : class, TIRecord, new()
 		{
 			protected ColumnInfoCollection<TRecord>.IColumnInfo[] Columns { get; }
-			public Type RecordType => typeof(TRecord);
-			public int RecordSize { get; }
 			public IsRecordTypeDelegate IsRecordType { get; }
 
 			public RecordDefinition(ColumnInfoCollection<TRecord> columns, IsRecordTypeDelegate isRecordType)
 			{
 				Columns = columns.ToArray();
-				RecordSize = columns.RecordSize;
 				IsRecordType = isRecordType ?? (bytes => true);
 			}
 
-			public TIRecord GetRecord(byte[] recordBuffer)
+			public TIRecord GetRecord(string recordBuffer)
 			{
 				var record = new TRecord();
 
@@ -50,13 +47,7 @@ namespace ISI.Extensions.Ascii
 				{
 					if (column.ColumnType != null)
 					{
-						var columnBuffer = new byte[column.ColumnSize];
-						for (var columnIndex = 0; columnIndex < column.ColumnSize; columnIndex++)
-						{
-							columnBuffer[columnIndex] = recordBuffer[offset + columnIndex];
-						}
-
-						var value = System.Text.Encoding.Default.GetString(columnBuffer);
+						var value = recordBuffer.Substring(offset, column.ColumnSize);
 
 						if (column.ColumnType == typeof(string))
 						{

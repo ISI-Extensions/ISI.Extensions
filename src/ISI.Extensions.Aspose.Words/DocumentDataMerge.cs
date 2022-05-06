@@ -27,7 +27,7 @@ namespace ISI.Extensions.Aspose
 		{
 			static DocumentDataMerge()
 			{
-				(new ISI.Extensions.Aspose.Words()).ApplyLicense();
+				(new ISI.Extensions.Aspose.LicenseApplier()).ApplyLicense();
 			}
 
 			public void Execute<TModel>(string templateFileName, IEnumerable<TModel> models, ISI.Extensions.Documents.IDocumentProperties documentProperties, string printerName, System.IO.Stream documentStream, ISI.Extensions.Documents.FileFormat fileFormat)

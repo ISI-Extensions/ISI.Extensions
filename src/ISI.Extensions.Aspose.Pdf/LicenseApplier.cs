@@ -22,45 +22,48 @@ using ISI.Extensions.TypeLocator.Extensions;
 
 namespace ISI.Wrappers.Aspose
 {
-	[ISI.Extensions.LicenseManager.LicenseApplier]
-	public class LicenseApplier : ISI.Extensions.LicenseManager.ILicenseApplier
+	public partial class Pdf
 	{
-		private static bool _IsLicensed = false;
-
-		static LicenseApplier()
+		[ISI.Extensions.LicenseManager.LicenseApplier]
+		public class LicenseApplier : ISI.Extensions.LicenseManager.ILicenseApplier
 		{
-			if (!_IsLicensed)
+			private static bool _IsLicensed = false;
+
+			static LicenseApplier()
 			{
-				var localContainer = ISI.Extensions.TypeLocator.Container.LocalContainer;
-
-				var licenseManagers = localContainer.GetImplementations<ISI.Extensions.Aspose.IPdfLicense>().Cast<ISI.Extensions.LicenseManager.ILicenseStream>();
-				
-				if (!licenseManagers.Any())
+				if (!_IsLicensed)
 				{
-					licenseManagers = localContainer.GetImplementations<ISI.Extensions.Aspose.ITotalLicense>().Cast<ISI.Extensions.LicenseManager.ILicenseStream>();
+					var localContainer = ISI.Extensions.TypeLocator.Container.LocalContainer;
+
+					var licenseManagers = localContainer.GetImplementations<ISI.Extensions.Aspose.IPdfLicense>().Cast<ISI.Extensions.LicenseManager.ILicenseStream>();
+
+					if (!licenseManagers.Any())
+					{
+						licenseManagers = localContainer.GetImplementations<ISI.Extensions.Aspose.ITotalLicense>().Cast<ISI.Extensions.LicenseManager.ILicenseStream>();
+					}
+
+					if (!licenseManagers.Any())
+					{
+						throw new Exception("Aspose License not found");
+					}
+
+					var licenseManager = licenseManagers.First();
+
+					(new global::Aspose.Pdf.License()).SetLicense(licenseManager.GetLicenseStream());
+
+					_IsLicensed = true;
 				}
-
-				if (!licenseManagers.Any())
-				{
-					throw new Exception("Aspose License not found");
-				}
-
-				var licenseManager = licenseManagers.First();
-
-				(new global::Aspose.Pdf.License()).SetLicense(licenseManager.GetLicenseStream());
-
-				_IsLicensed = true;
 			}
-		}
 
-		public void ApplyLicense()
-		{
-			if (!_IsLicensed)
+			public void ApplyLicense()
 			{
-				throw new Exception("Did not get licensed");
+				if (!_IsLicensed)
+				{
+					throw new Exception("Did not get licensed");
+				}
 			}
-		}
 
-		public bool IsLicensed => _IsLicensed;
+			public bool IsLicensed => _IsLicensed;
+		}
 	}
 }

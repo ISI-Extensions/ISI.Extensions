@@ -20,7 +20,8 @@ using ISI.Extensions.TypeLocator.Extensions;
 
 namespace ISI.Extensions.LicenseManager
 {
-	public class StartUp
+	[ISI.Extensions.StartUp]
+	public class StartUp : ISI.Extensions.IStartUp
 	{
 		[Obsolete("Not needed if your use \"ISI.Extensions.StartUp.Start()\"")]
 		public static void ApplyLicenses()

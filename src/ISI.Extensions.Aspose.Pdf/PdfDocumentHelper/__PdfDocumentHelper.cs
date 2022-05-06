@@ -27,7 +27,7 @@ namespace ISI.Extensions.Aspose
 		{
 			static PdfDocumentHelper()
 			{
-				(new ISI.Wrappers.Aspose.LicenseApplier()).ApplyLicense();
+				(new ISI.Wrappers.Aspose.Pdf.LicenseApplier()).ApplyLicense();
 			}
 
 			protected readonly HashSet<string> ValidExtensions = new(new []

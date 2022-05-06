@@ -20,7 +20,7 @@ using System.Text;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.TypeLocator.Extensions;
 
-namespace ISI.Extensions.Zip
+namespace ISI.Extensions.Aspose.Zip
 {
 	[ISI.Extensions.LicenseManager.LicenseApplier]
 	public partial class LicenseApplier : ISI.Extensions.LicenseManager.ILicenseApplier

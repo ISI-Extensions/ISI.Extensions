@@ -27,7 +27,7 @@ namespace ISI.Extensions.Aspose
 		{
 			static DocDocumentHelper()
 			{
-				(new ISI.Extensions.Aspose.LicenseApplier()).ApplyLicense();
+				(new ISI.Extensions.Aspose.Words.LicenseApplier()).ApplyLicense();
 			}
 
 			protected HashSet<string> ValidExtensions = new(new[]

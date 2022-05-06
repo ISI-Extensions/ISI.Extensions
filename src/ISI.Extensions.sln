@@ -100,7 +100,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.VisualStudio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.SharpCompress", "ISI.Extensions.SharpCompress\ISI.Extensions.SharpCompress.csproj", "{2EEB9EE6-EE91-48EC-8262-356665BC452C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.Aspose.Zip", "ISI.Extensions.Aspose.Zip\ISI.Extensions.Aspose.Zip.csproj", "{475EF94B-05F2-4D26-8DA6-1A2D674D6739}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Aspose.Zip", "ISI.Extensions.Aspose.Zip\ISI.Extensions.Aspose.Zip.csproj", "{475EF94B-05F2-4D26-8DA6-1A2D674D6739}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.Ascii", "ISI.Extensions.Ascii\ISI.Extensions.Ascii.csproj", "{1152BB58-FB43-4E32-8A73-163B178821E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -486,6 +488,14 @@ Global
 		{475EF94B-05F2-4D26-8DA6-1A2D674D6739}.Release|Any CPU.Build.0 = Release|Any CPU
 		{475EF94B-05F2-4D26-8DA6-1A2D674D6739}.Release|x64.ActiveCfg = Release|Any CPU
 		{475EF94B-05F2-4D26-8DA6-1A2D674D6739}.Release|x64.Build.0 = Release|Any CPU
+		{1152BB58-FB43-4E32-8A73-163B178821E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1152BB58-FB43-4E32-8A73-163B178821E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1152BB58-FB43-4E32-8A73-163B178821E1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1152BB58-FB43-4E32-8A73-163B178821E1}.Debug|x64.Build.0 = Debug|Any CPU
+		{1152BB58-FB43-4E32-8A73-163B178821E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1152BB58-FB43-4E32-8A73-163B178821E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1152BB58-FB43-4E32-8A73-163B178821E1}.Release|x64.ActiveCfg = Release|Any CPU
+		{1152BB58-FB43-4E32-8A73-163B178821E1}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

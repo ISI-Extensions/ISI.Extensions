@@ -33,7 +33,8 @@ namespace ISI.Extensions.Tests
 		//public const string DirectoryUrl = "godrives://mft.rrc.texas.gov/link/ec380e91-5926-4d63-891a-42877a81d32f"; //OrganizationFilesSubDirectory
 		//public const string DirectoryUrl = "godrives://mft.rrc.texas.gov/link/caf63b5f-2218-42e5-8e55-9f88673477e7"; //GasLedgersFilesSubDirectory
 		//public const string AttributedFullPath = "godrives://mft.rrc.texas.gov/link/abdf8b13-cc23-4489-b942-2ecd1171fae1"; //OilLedgersFilesSubDirectory
-		public const string AttributedFullPath = "godrives://mft.rrc.texas.gov/link/f2fe882e-557b-4a4c-93f8-bcfc3492bae5"; //Statewide API Data
+		//public const string AttributedFullPath = "godrives://mft.rrc.texas.gov/link/f2fe882e-557b-4a4c-93f8-bcfc3492bae5"; //Statewide API Data
+		public const string AttributedFullPath = "godrives://mft.rrc.texas.gov/link/45010658-b04d-4556-a0aa-f2dff44c26dc"; //daily drilling permit
 
 		[OneTimeSetUp]
 		public void OneTimeSetup()

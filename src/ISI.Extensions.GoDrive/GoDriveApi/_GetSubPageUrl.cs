@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,42 +25,29 @@ namespace ISI.Extensions.GoDrive
 {
 	public partial class GoDriveApi
 	{
-		public DTOs.DownloadFileResponse DownloadFile(DTOs.DownloadFileRequest request)
+		private Uri GetSubPageUri(string directoryUrl, string content)
 		{
-			var response = new DTOs.DownloadFileResponse();
+			var subPageUri = new UriBuilder(FormatUrl(directoryUrl));
 
-			var cookieContainer = new System.Net.CookieContainer();
-
-			var downloadFileResponse = ISI.Extensions.WebClient.Rest.ExecuteGet<ISI.Extensions.WebClient.Rest.StreamResponse>(FormatUrl(request.FileName.DirectoryUrl), new ISI.Extensions.WebClient.HeaderCollection(), true, cookieContainer: cookieContainer);
-
-			downloadFileResponse.Stream.Rewind();
-
-			var viewState = GetViewState(downloadFileResponse.Stream.TextReadToEnd());
-
-			var origin = (new UriBuilder(FormatUrl(request.FileName.DirectoryUrl))
+			var subPageIndex = content.IndexOf("id=\"fileList\"", StringComparison.InvariantCultureIgnoreCase);
+			if (subPageIndex >= 0)
 			{
-				Path = string.Empty,
-			}).Uri.ToString();
+				var formElement = content.Substring(subPageIndex);
+				subPageIndex = formElement.IndexOf(">", StringComparison.InvariantCultureIgnoreCase);
+				if (subPageIndex > 0)
+				{
+					formElement = formElement.Substring(0, subPageIndex);
 
-			var headers = new ISI.Extensions.WebClient.HeaderCollection();
-			headers.Add("Origin", origin);
-			headers.Add("Referer", FormatUrl(request.FileName.DirectoryUrl));
-			headers.Add("Sec-Fetch-Dest", "document");
-			headers.Add("Sec-Fetch-Mode", "navigate");
-			headers.Add("Sec-Fetch-Site", "same-origin");
-			headers.Add("Sec-Fetch-User", "?1");
-			
-			var formData = new ISI.Extensions.WebClient.Rest.FormDataCollection();
-			formData.Add("fileTable_selection", string.Empty);
-			formData.Add("fileList_SUBMIT", "1");
-			formData.Add("javax.faces.ViewState", viewState);
-			formData.Add(request.FileName.FileKey, request.FileName.FileKey);
+					subPageIndex = formElement.IndexOf("action=\"", StringComparison.InvariantCultureIgnoreCase);
 
-			var downloadResponse = ISI.Extensions.WebClient.Rest.ExecutePost<ISI.Extensions.WebClient.Rest.FormDataCollection, ISI.Extensions.WebClient.Rest.StreamResponse>(FormatUrl(request.FileName.DirectoryUrl), headers, formData, true, cookieContainer: cookieContainer);
+					var subPageParts = formElement.Substring(subPageIndex).Split(new[] { '\"' }, StringSplitOptions.RemoveEmptyEntries);
 
-			response.Stream = downloadResponse.Stream;
+					subPageUri.Path = subPageParts[1];
+					subPageUri.Query = string.Empty;
+				}
+			}
 
-			return response;
+			return subPageUri.Uri;
 		}
 	}
 }

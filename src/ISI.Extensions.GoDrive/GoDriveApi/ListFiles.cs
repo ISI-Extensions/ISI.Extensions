@@ -29,116 +29,81 @@ namespace ISI.Extensions.GoDrive
 		{
 			var response = new DTOs.ListFilesResponse();
 
-			var downloadFileResponse = ISI.Extensions.WebClient.Rest.ExecuteGet<ISI.Extensions.WebClient.Rest.StreamResponse>(FormatUrl(request.DirectoryUrl), new ISI.Extensions.WebClient.HeaderCollection(), true);
+			var cookieContainer = new System.Net.CookieContainer();
+
+			var downloadFileResponse = ISI.Extensions.WebClient.Rest.ExecuteGet<ISI.Extensions.WebClient.Rest.StreamResponse>(FormatUrl(request.DirectoryUrl), new ISI.Extensions.WebClient.HeaderCollection(), true, cookieContainer: cookieContainer);
 
 			downloadFileResponse.Stream.Rewind();
 
 			var content = downloadFileResponse.Stream.TextReadToEnd();
 
-			response.FileNames = ListFiles(string.Empty, request.DirectoryUrl, content, request.Recursive).ToArray();
+			var viewState = GetViewState(content);
+
+			response.FileNames = ListFiles(string.Empty, request.DirectoryUrl, cookieContainer, viewState, content, 0, request.Recursive).ToArray();
 
 			return response;
 		}
 
-		private IEnumerable<IGoDrivePath> ListFiles(string directory, string directoryUrl, string content, bool recursive)
+		private IEnumerable<IGoDrivePath> ListFiles(string directory, string directoryUrl, System.Net.CookieContainer cookieContainer, string viewState, string content, int skip, bool recursive)
 		{
-			var subPageUri = new UriBuilder(FormatUrl(directoryUrl));
+			const int pageSize = 250;
 
-			{
-				var subPageIndex = content.IndexOf("id=\"fileList\"", StringComparison.InvariantCultureIgnoreCase);
-				if (subPageIndex >= 0)
-				{
-					var formElement = content.Substring(subPageIndex);
-					subPageIndex = formElement.IndexOf(">", StringComparison.InvariantCultureIgnoreCase);
-					if (subPageIndex > 0)
-					{
-						formElement = formElement.Substring(0, subPageIndex);
+			var fileNames = new List<IGoDrivePath>();
 
-						subPageIndex = formElement.IndexOf("action=\"", StringComparison.InvariantCultureIgnoreCase);
-
-						var subPageParts = formElement.Substring(subPageIndex).Split(new[] { '\"' }, StringSplitOptions.RemoveEmptyEntries);
-
-						subPageUri.Path = subPageParts[1];
-						subPageUri.Query = string.Empty;
-					}
-				}
-			}
+			var subPageUri = GetSubPageUri(directoryUrl, content);
 
 			if (!string.IsNullOrWhiteSpace(directory))
 			{
 				directory = string.Format("{0}/", directory.TrimEnd('/'));
 			}
 
-			var fileNames = new List<IGoDrivePath>();
+			var @continue = true;
 
-			const string fileKey = "PrimeFaces.addSubmitParam('fileList'";
-			const string directoryKey = "PrimeFaces.ab({s:&quot;fileTable";
-
-			while (content.Length > 0)
+			while (@continue)
 			{
-				var fileIndex = content.IndexOf(fileKey, StringComparison.InvariantCultureIgnoreCase);
-				var directoryIndex = content.IndexOf(directoryKey, StringComparison.InvariantCultureIgnoreCase);
+				@continue = false;
 
-				if ((fileIndex < 0) && (directoryIndex < 0))
+				var viewFileNames = ParseFilePaths(directoryUrl, directory, content);
+
+				if (viewFileNames.NullCheckedAny())
 				{
-					content = string.Empty;
-				}
-				else
-				{
-					if (fileIndex < 0)
+					@continue = true;
+
+					fileNames.AddRange(viewFileNames);
+
+					skip += pageSize;
+
+					var origin = (new UriBuilder(FormatUrl(directoryUrl))
 					{
-						fileIndex = int.MaxValue;
-					}
-					if (directoryIndex < 0)
-					{
-						directoryIndex = int.MaxValue;
-					}
+						Path = string.Empty,
+					}).Uri.ToString();
 
-					if (fileIndex < directoryIndex)
-					{
-						content = content.Substring(fileIndex + fileKey.Length);
+					var headers = new ISI.Extensions.WebClient.HeaderCollection();
+					headers.Add("Origin", origin);
+					headers.Add("Referer", FormatUrl(directoryUrl));
+					headers.Add("Sec-Fetch-Dest", "empty");
+					headers.Add("Sec-Fetch-Mode", "cors");
+					headers.Add("Sec-Fetch-Site", "same-origin");
 
-						fileIndex = content.IndexOf("</a>", StringComparison.InvariantCultureIgnoreCase);
-						if (fileIndex >= 0)
-						{
-							var fileParts = content.Substring(0, fileIndex).Split(new[] { '>', '<', '\'', '{', '}', ',' }, StringSplitOptions.RemoveEmptyEntries);
-							content = content.Substring(fileIndex);
+					var formData = new ISI.Extensions.WebClient.Rest.FormDataCollection();
+					formData.Add("fileTable_pagination", "true");
+					formData.Add("fileTable_first", skip);
+					formData.Add("fileTable_rows", pageSize);
+					formData.Add("fileTable_children", "true");
+					formData.Add("fileTable_encodeFeature", "true");
+					formData.Add("fileTable_rows", pageSize);
+					formData.Add("fileTable_rppDD", string.Empty);
+					formData.Add("fileList_SUBMIT", "1");
+					formData.Add("javax.faces.ViewState", viewState);
+					//formData.Add(subDirectory.FileKey, subDirectory.FileKey);
 
-							fileNames.Add(new GoDriveFile()
-							{
-								DirectoryUrl = directoryUrl,
-								FileKey = fileParts.First(),
-								FileName = string.Format("{0}{1}", directory, fileParts.Last()),
-							});
-						}
-						else
-						{
-							content = string.Empty;
-						}
-					}
-					else
-					{
-						content = content.Substring(directoryIndex + directoryKey.Length);
+					var downloadResponse = ISI.Extensions.WebClient.Rest.ExecutePost<ISI.Extensions.WebClient.Rest.FormDataCollection, ISI.Extensions.WebClient.Rest.StreamResponse>(subPageUri, headers, formData, true, cookieContainer: cookieContainer);
 
-						directoryIndex = content.IndexOf("</a>", StringComparison.InvariantCultureIgnoreCase);
-						if (directoryIndex >= 0)
-						{
-							var fileParts = string.Format("fileTable{0}", content.Substring(0, directoryIndex)).Split(new[] { '>', '<', '\'', '{', '}', ',', '&' }, StringSplitOptions.RemoveEmptyEntries);
-							content = content.Substring(directoryIndex);
+					downloadResponse.Stream.Rewind();
 
-							fileNames.Add(new GoDriveDirectory()
-							{
-								DirectoryUrl = directoryUrl,
-								FileKey = fileParts.First(),
-								FileName = string.Format("{0}{1}", directory, fileParts.Last()),
-							});
-						}
-						else
-						{
-							content = string.Empty;
-						}
+					content = downloadResponse.Stream.TextReadToEnd();
 
-					}
+					viewState = GetViewState(content);
 				}
 			}
 
@@ -146,13 +111,8 @@ namespace ISI.Extensions.GoDrive
 			{
 				var directories = fileNames.Where(fileName => fileName is GoDriveDirectory).Cast<GoDriveDirectory>().ToArray();
 
-				//foreach (var subDirectory in directories)
-				if(directories.Any())
+				foreach (var subDirectory in directories)
 				{
-					var subDirectory = directories.First();
-
-					var context = CreateContext(directoryUrl);
-
 					var origin = (new UriBuilder(FormatUrl(directoryUrl))
 					{
 						Path = string.Empty,
@@ -168,16 +128,18 @@ namespace ISI.Extensions.GoDrive
 					var formData = new ISI.Extensions.WebClient.Rest.FormDataCollection();
 					formData.Add("fileTable_selection", string.Empty);
 					formData.Add("fileList_SUBMIT", "1");
-					formData.Add("javax.faces.ViewState", context.ViewState);
+					formData.Add("javax.faces.ViewState", viewState);
 					formData.Add(subDirectory.FileKey, subDirectory.FileKey);
 
-					var downloadResponse = ISI.Extensions.WebClient.Rest.ExecutePost<ISI.Extensions.WebClient.Rest.FormDataCollection, ISI.Extensions.WebClient.Rest.StreamResponse>(subPageUri.Uri, headers, formData, true, cookieContainer: context.CookieContainer);
+					var downloadResponse = ISI.Extensions.WebClient.Rest.ExecutePost<ISI.Extensions.WebClient.Rest.FormDataCollection, ISI.Extensions.WebClient.Rest.StreamResponse>(subPageUri, headers, formData, true, cookieContainer: cookieContainer);
 
 					downloadResponse.Stream.Rewind();
 
 					content = downloadResponse.Stream.TextReadToEnd();
 
-					fileNames.AddRange(ListFiles(subDirectory.FileName, directoryUrl, content, recursive));
+					viewState = GetViewState(content);
+
+					fileNames.AddRange(ListFiles(subDirectory.FileName, directoryUrl, cookieContainer, viewState, content, 0, recursive));
 				}
 			}
 

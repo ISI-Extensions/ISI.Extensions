@@ -25,27 +25,19 @@ namespace ISI.Extensions.GoDrive
 {
 	public partial class GoDriveApi
 	{
-		private (string ViewState, System.Net.CookieContainer CookieContainer) CreateContext(string directoryUrl)
+		private string GetViewState(string content)
 		{
-			var response = (ViewState: string.Empty, CookieContainer: new System.Net.CookieContainer());
-
-			var downloadFileResponse = ISI.Extensions.WebClient.Rest.ExecuteGet<ISI.Extensions.WebClient.Rest.StreamResponse>(FormatUrl(directoryUrl), new ISI.Extensions.WebClient.HeaderCollection(), true, cookieContainer: response.CookieContainer);
-
-			downloadFileResponse.Stream.Rewind();
-
-			var content = downloadFileResponse.Stream.TextReadToEnd();
-
 			var index = content.IndexOf("name=\"javax.faces.ViewState\"");
 			if (index >= 0)
 			{
 				index = content.IndexOf("value=\"", index);
 				if (index >= 0)
 				{
-					response.ViewState = content.Substring(index).Split(new[] { '\"' }, StringSplitOptions.RemoveEmptyEntries)[1];
+					return content.Substring(index).Split(new[] { '\"' }, StringSplitOptions.RemoveEmptyEntries)[1];
 				}
 			}
 
-			return response;
+			return string.Empty;
 		}
 	}
 }

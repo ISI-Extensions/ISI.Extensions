@@ -47,6 +47,19 @@ namespace ISI.Extensions.Ascii
 				{
 					if (column.ColumnType != null)
 					{
+						if (recordBuffer.Length < (offset + column.ColumnSize))
+						{
+							var padding = new char[offset + column.ColumnSize - recordBuffer.Length];
+
+							for (int i = 0; i < padding.Length; i++)
+							{
+								padding[i] = ' ';
+							}
+
+							recordBuffer = string.Format("{0}{1}", recordBuffer, padding);
+						}
+
+
 						var value = recordBuffer.Substring(offset, column.ColumnSize);
 
 						if (column.ColumnType == typeof(string))

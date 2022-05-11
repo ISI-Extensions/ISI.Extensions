@@ -118,7 +118,6 @@ namespace ISI.Extensions.Repository.SqlServer
 
 			var tableName = FormatTableName(TableName, null, false);
 
-			//var primaryKeyName = string.Format("[pk_{0}]", RecordDescription.Description<TRecord>().TableName);
 			var primaryKeyName = string.Format("[pk_{0}]", TableName);
 
 			if (!recordDescription.PrimaryKeyPropertyDescriptions.NullCheckedAny())

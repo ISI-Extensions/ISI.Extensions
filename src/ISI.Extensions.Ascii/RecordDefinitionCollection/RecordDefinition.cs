@@ -47,20 +47,14 @@ namespace ISI.Extensions.Ascii
 				{
 					if (column.ColumnType != null)
 					{
-						if (recordBuffer.Length < (offset + column.ColumnSize))
+						var columnSize = column.ColumnSize;
+
+						if (recordBuffer.Length < (offset + columnSize))
 						{
-							var padding = new char[offset + column.ColumnSize - recordBuffer.Length];
-
-							for (int i = 0; i < padding.Length; i++)
-							{
-								padding[i] = ' ';
-							}
-
-							recordBuffer = string.Format("{0}{1}", recordBuffer, padding);
+							columnSize = recordBuffer.Length - offset;
 						}
 
-
-						var value = recordBuffer.Substring(offset, column.ColumnSize);
+						var value = recordBuffer.Substring(offset, columnSize);
 
 						if (column.ColumnType == typeof(string))
 						{
@@ -81,6 +75,14 @@ namespace ISI.Extensions.Ascii
 						else if (column.ColumnType == typeof(long))
 						{
 							column.SetValue(record, value.ToLong());
+						}
+						else if (column.ColumnType == typeof(double?))
+						{
+							column.SetValue(record, value.ToDoubleNullable());
+						}
+						else if (column.ColumnType == typeof(double))
+						{
+							column.SetValue(record, value.ToDouble());
 						}
 						else if (column.ColumnType == typeof(decimal?))
 						{

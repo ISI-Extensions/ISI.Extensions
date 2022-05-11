@@ -20,8 +20,8 @@
 	<ItemGroup>
 		<PackageReference Update="NETStandard.Library" Version="2.0.3" />
 	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
-	  <PackageReference Include="NuGet.Frameworks" Version="6.1.0" />
-	  <PackageReference Include="NuGet.Versioning" Version="6.1.0" />
+	  <PackageReference Include="NuGet.Frameworks" Version="6.2.0" />
+	  <PackageReference Include="NuGet.Versioning" Version="6.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>

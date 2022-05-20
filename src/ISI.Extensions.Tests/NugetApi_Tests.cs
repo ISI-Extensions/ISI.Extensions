@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Tests
 {
@@ -266,6 +267,72 @@ namespace ISI.Extensions.Tests
 					"nsoftware.IPWorksSSH",
 				}
 			});
+		}
+
+		[Test]
+		public void UpdateNugetConfigFiles_Test()
+		{
+			var logger = ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();
+			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
+			var sourceControlClientApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.SourceControlClientApi>();
+			
+			var solutionFullNames = new List<string>();
+			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt"));
+			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Connect.SolutionFullNames.txt"));
+
+			var sourceNugetConfigFullName = @"F:\ISI\Clients\SitePro\nuget.config";
+
+			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionDetailsRequest()
+			{
+				Solution = solution,
+			}).SolutionDetails, ISI.Extensions.Extensions.NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
+
+			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpdateNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
+			{
+				using (solutionApi.GetSolutionLock(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionLockRequest()
+				{
+					SolutionFullName = solutionDetails.SolutionFullName,
+				}).Lock)
+				{
+					logger.Log(LogLevel.Information, solutionDetails.SolutionName);
+
+					var dirtyFileNames = new HashSet<string>();
+
+					if (!sourceControlClientApi.UpdateWorkingCopy(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.UpdateWorkingCopyRequest()
+					{
+						FullName = solutionDetails.RootSourceDirectory,
+						IncludeExternals = true,
+					}).Success)
+					{
+						var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
+						logger.LogError(exception.Message);
+						throw exception;
+					}
+
+					var targetNugetConfigFullName = System.IO.Path.Combine(solutionDetails.SolutionDirectory, "nuget.config");
+
+					System.IO.File.Copy(sourceNugetConfigFullName, targetNugetConfigFullName, true);
+
+					dirtyFileNames.Add(targetNugetConfigFullName);
+
+					if (dirtyFileNames.Any())
+					{
+						var commitLog = new StringBuilder();
+
+						if (!sourceControlClientApi.Commit(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.CommitRequest()
+						{
+							FullNames = dirtyFileNames,
+							LogMessage = "update nuget.config",
+							AddToLog = log => commitLog.AppendLine(log),
+						}).Success)
+						{
+							var exception = new Exception(string.Format("Error committing \"{0}\"", solutionDetails.RootSourceDirectory));
+							logger.LogError(exception.Message);
+							throw exception;
+						}
+					}
+				}
+			}
 		}
 	}
 }

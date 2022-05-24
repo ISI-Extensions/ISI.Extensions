@@ -46,7 +46,7 @@ namespace ISI.Extensions.Repository.SqlServer
 			}
 		}
 
-		protected virtual async Task<TProperty> ExecuteScalar<TProperty>(Microsoft.Data.SqlClient.SqlConnection connection, string sql, IDictionary<string, object> parameters = null, int? commandTimeout = null)
+		protected virtual async Task<TProperty> ExecuteScalarAsync<TProperty>(Microsoft.Data.SqlClient.SqlConnection connection, string sql, IDictionary<string, object> parameters = null, int? commandTimeout = null)
 		{
 			return await connection.ExecuteScalarAsync<TProperty>(sql, parameters, commandTimeout);
 		}

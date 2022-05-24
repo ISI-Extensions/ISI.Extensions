@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +28,15 @@ namespace ISI.Extensions.Repository.SqlServer
 	{
 		public override void CreateTable(CreateTableMode createTableMode = CreateTableMode.ErrorIfExists)
 		{
-			CreateTable(createTableMode, false);
+			using (var connection = GetSqlConnection())
+			{
+				CreateTable(connection, createTableMode, false);
+			}
+		}
+
+		public virtual void CreateTable(Microsoft.Data.SqlClient.SqlConnection connection, CreateTableMode createTableMode = CreateTableMode.ErrorIfExists)
+		{
+			CreateTable(connection, createTableMode, false);
 		}
 
 		internal class HasLocalClusteringIndexRecord
@@ -110,7 +118,7 @@ namespace ISI.Extensions.Repository.SqlServer
 			return recordDescription;
 		}
 
-		public virtual void CreateTable(CreateTableMode createTableMode, bool hasArchiveTable)
+		public virtual void CreateTable(Microsoft.Data.SqlClient.SqlConnection connection, CreateTableMode createTableMode, bool hasArchiveTable)
 		{
 			var sql = new StringBuilder();
 
@@ -139,12 +147,12 @@ namespace ISI.Extensions.Repository.SqlServer
 
 			if (!string.IsNullOrWhiteSpace(Schema))
 			{
-				if (ExecuteScalarAsync<int>("select count(*) from sys.schemas with (NoLock) where name = @SchemaName", new Dictionary<string, object>()
+				if (ExecuteScalarAsync<int>(connection, "select count(*) from sys.schemas with (NoLock) where name = @SchemaName", new Dictionary<string, object>()
 				{
 					{"@SchemaName", Schema}
 				}).GetAwaiter().GetResult() < 1)
 				{
-					ExecuteNonQueryAsync(string.Format("CREATE SCHEMA [{0}]", Schema)).Wait();
+					ExecuteNonQueryAsync(connection, string.Format("CREATE SCHEMA [{0}]", Schema)).Wait();
 				}
 			}
 
@@ -181,15 +189,15 @@ namespace ISI.Extensions.Repository.SqlServer
 
 			sql.Append("end\n");
 
-			ExecuteCreateTable(sql.ToString());
+			ExecuteCreateTable(connection, sql.ToString());
 
 			if (hasArchiveTable)
 			{
-				CreateArchiveTable(createTableMode);
+				CreateArchiveTable(connection, createTableMode);
 			}
 		}
 
-		public virtual void DropIndexes()
+		public virtual void DropIndexes(Microsoft.Data.SqlClient.SqlConnection connection)
 		{
 			var recordDescription = GetRecordDescription();
 
@@ -205,7 +213,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 				var sql = string.Format("drop index {0} on {1}", recordIndexName, tableName);
 
-				ExecuteNonQueryAsync(sql).Wait();
+				ExecuteNonQueryAsync(connection, sql).Wait();
 			}
 		}
 
@@ -236,7 +244,7 @@ namespace ISI.Extensions.Repository.SqlServer
 			return sql.ToString();
 		}
 
-		public virtual void CreateIndexes()
+		public virtual void CreateIndexes(Microsoft.Data.SqlClient.SqlConnection connection)
 		{
 			var recordDescription = GetRecordDescription();
 
@@ -244,15 +252,15 @@ namespace ISI.Extensions.Repository.SqlServer
 
 			var sql = GetCreateIndexesSql(tableName, recordDescription);
 
-			ExecuteNonQueryAsync(sql).Wait();
+			ExecuteNonQueryAsync(connection, sql).Wait();
 		}
 
-		protected virtual void ExecuteCreateTable(string sql)
+		protected virtual void ExecuteCreateTable(Microsoft.Data.SqlClient.SqlConnection connection, string sql)
 		{
-			ExecuteNonQueryAsync(sql).Wait();
+			ExecuteNonQueryAsync(connection, sql).Wait();
 		}
 
-		public virtual void CreateArchiveTable(CreateTableMode createTableMode = CreateTableMode.ErrorIfExists)
+		public virtual void CreateArchiveTable(Microsoft.Data.SqlClient.SqlConnection connection, CreateTableMode createTableMode = CreateTableMode.ErrorIfExists)
 		{
 			var sql = new StringBuilder();
 
@@ -311,12 +319,12 @@ namespace ISI.Extensions.Repository.SqlServer
 
 			sql.Append("end\n");
 
-			ExecuteCreateArchiveTable(sql.ToString());
+			ExecuteCreateArchiveTable(connection, sql.ToString());
 		}
 
-		protected virtual void ExecuteCreateArchiveTable(string sql)
+		protected virtual void ExecuteCreateArchiveTable(Microsoft.Data.SqlClient.SqlConnection connection, string sql)
 		{
-			ExecuteNonQueryAsync(sql).Wait();
+			ExecuteNonQueryAsync(connection, sql).Wait();
 		}
 	}
 }

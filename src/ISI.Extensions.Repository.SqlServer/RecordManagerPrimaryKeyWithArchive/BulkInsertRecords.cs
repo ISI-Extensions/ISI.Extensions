@@ -28,7 +28,15 @@ namespace ISI.Extensions.Repository.SqlServer
 	{
 		public override void BulkInsertRecords(IEnumerable<TRecord> records, bool keepIdentities = false, int bulkCopyTimeoutInSeconds = 3600, int batchSize = 1000, Action<string> batchLogger = null)
 		{
-			BulkInsertRecords(records, keepIdentities, true, bulkCopyTimeoutInSeconds, batchSize, batchLogger);
+			using (var connection = GetSqlConnection())
+			{
+				BulkInsertRecords(connection, records, keepIdentities, true, bulkCopyTimeoutInSeconds, batchSize, batchLogger);
+			}
+		}
+
+		public override void BulkInsertRecords(Microsoft.Data.SqlClient.SqlConnection connection, IEnumerable<TRecord> records, bool keepIdentities = false, int bulkCopyTimeoutInSeconds = 3600, int batchSize = 1000, Action<string> batchLogger = null)
+		{
+			BulkInsertRecords(connection, records, keepIdentities, true, bulkCopyTimeoutInSeconds, batchSize, batchLogger);
 		}
 	}
 }

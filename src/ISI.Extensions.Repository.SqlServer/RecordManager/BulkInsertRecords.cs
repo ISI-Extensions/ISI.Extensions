@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,10 +28,18 @@ namespace ISI.Extensions.Repository.SqlServer
 	{
 		public virtual void BulkInsertRecords(IEnumerable<TRecord> records, bool keepIdentities = false, int bulkCopyTimeoutInSeconds = 3600, int batchSize = 1000, Action<string> batchLogger = null)
 		{
-			BulkInsertRecords(records, keepIdentities, false, bulkCopyTimeoutInSeconds, batchSize, batchLogger);
+			using (var connection = GetSqlConnection())
+			{
+				BulkInsertRecords(connection, records, keepIdentities, false, bulkCopyTimeoutInSeconds, batchSize, batchLogger);
+			}
 		}
 
-		protected void BulkInsertRecords(IEnumerable<TRecord> records, bool keepIdentities, bool hasArchiveTable, int bulkCopyTimeoutInSeconds = 3600, int batchSize = 1000, Action<string> batchLogger = null)
+		public virtual void BulkInsertRecords(Microsoft.Data.SqlClient.SqlConnection connection, IEnumerable<TRecord> records, bool keepIdentities = false, int bulkCopyTimeoutInSeconds = 3600, int batchSize = 1000, Action<string> batchLogger = null)
+		{
+			BulkInsertRecords(connection, records, keepIdentities, false, bulkCopyTimeoutInSeconds, batchSize, batchLogger);
+		}
+
+		protected void BulkInsertRecords(Microsoft.Data.SqlClient.SqlConnection connection, IEnumerable<TRecord> records, bool keepIdentities, bool hasArchiveTable, int bulkCopyTimeoutInSeconds = 3600, int batchSize = 1000, Action<string> batchLogger = null)
 		{
 			if (hasArchiveTable && !keepIdentities)
 			{
@@ -81,56 +89,53 @@ namespace ISI.Extensions.Repository.SqlServer
 				}
 			}
 
-			using (var connection = GetSqlConnection())
+			connection.EnsureConnectionIsOpen();
+
 			{
-				connection.Open();
+				var dataReader = new ISI.Extensions.DataReader.EnumerableDataReader<TRecord>(records, columns, null);
 
+				using (var target = new Microsoft.Data.SqlClient.SqlBulkCopy(connection, Microsoft.Data.SqlClient.SqlBulkCopyOptions.Default, null))
 				{
-					var dataReader = new ISI.Extensions.DataReader.EnumerableDataReader<TRecord>(records, columns, null);
+					target.DestinationTableName = GetTableName(addAlias: false);
+					target.BulkCopyTimeout = bulkCopyTimeoutInSeconds;
+					target.BatchSize = batchSize;
 
-					using (var target = new Microsoft.Data.SqlClient.SqlBulkCopy(connection, Microsoft.Data.SqlClient.SqlBulkCopyOptions.Default, null))
-					{
-						target.DestinationTableName = GetTableName(addAlias: false);
-						target.BulkCopyTimeout = bulkCopyTimeoutInSeconds;
-						target.BatchSize = batchSize;
+					target.NotifyAfter = batchSize;
+					target.SqlRowsCopied += (sender, args) => Console.WriteLine("{0} records inserted", args.RowsCopied);
+					target.WriteToServer(dataReader);
+				}
+			}
 
-						target.NotifyAfter = batchSize;
-						target.SqlRowsCopied += (sender, args) => Console.WriteLine("{0} records inserted", args.RowsCopied);
-						target.WriteToServer(dataReader);
-					}
+			if (hasArchiveTable)
+			{
+				if (RecordDescription.GetRecordDescription<TRecord>().HasLocalClusteringIndex)
+				{
+					columns.RemoveAt(0);
 				}
 
-				if (hasArchiveTable)
+				columns.Insert(0, new ISI.Extensions.Columns.ColumnInfo<TRecord, DateTime>(
+					ArchiveTableArchiveDateTimeColumnName,
+					record => false,
+					record => ((ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime)record).ArchiveDateTime
+				));
+
+				var dataReader = new ISI.Extensions.DataReader.EnumerableDataReader<TRecord>(records, columns, null);
+
+				using (var target = new Microsoft.Data.SqlClient.SqlBulkCopy(connection, Microsoft.Data.SqlClient.SqlBulkCopyOptions.Default, null))
 				{
-					if (RecordDescription.GetRecordDescription<TRecord>().HasLocalClusteringIndex)
+					target.DestinationTableName = GetArchiveTableName(addAlias: false);
+					target.BulkCopyTimeout = bulkCopyTimeoutInSeconds;
+					target.BatchSize = batchSize;
+
+					target.NotifyAfter = batchSize;
+					if (batchLogger != null)
 					{
-						columns.RemoveAt(0);
+						target.SqlRowsCopied += (sender, args) => batchLogger(string.Format("{0} records inserted into archive", args.RowsCopied));
 					}
 
-					columns.Insert(0, new ISI.Extensions.Columns.ColumnInfo<TRecord, DateTime>(
-						ArchiveTableArchiveDateTimeColumnName,
-						record => false,
-						record => ((ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime)record).ArchiveDateTime
-					));
+					target.WriteToServer(dataReader);
 
-					var dataReader = new ISI.Extensions.DataReader.EnumerableDataReader<TRecord>(records, columns, null);
-
-					using (var target = new Microsoft.Data.SqlClient.SqlBulkCopy(connection, Microsoft.Data.SqlClient.SqlBulkCopyOptions.Default, null))
-					{
-						target.DestinationTableName = GetArchiveTableName(addAlias: false);
-						target.BulkCopyTimeout = bulkCopyTimeoutInSeconds;
-						target.BatchSize = batchSize;
-
-						target.NotifyAfter = batchSize;
-						if (batchLogger != null)
-						{
-							target.SqlRowsCopied += (sender, args) => batchLogger(string.Format("{0} records inserted into archive", args.RowsCopied));
-						}
-
-						target.WriteToServer(dataReader);
-
-						batchLogger?.Invoke(string.Format("{0} records inserted into archive", target.RowsCopied));
-					}
+					batchLogger?.Invoke(string.Format("{0} records inserted into archive", target.RowsCopied));
 				}
 			}
 		}

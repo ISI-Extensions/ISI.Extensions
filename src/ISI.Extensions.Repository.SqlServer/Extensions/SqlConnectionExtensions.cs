@@ -40,6 +40,21 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 			}
 		}
 
+		public static void EnsureConnectionIsOpen(this Microsoft.Data.SqlClient.SqlConnection connection)
+		{
+			if (connection.State != System.Data.ConnectionState.Open)
+			{
+				try
+				{
+					connection.Open();
+				}
+				catch (Exception exception)
+				{
+					throw new Exception(string.Format("Error opening Connection to \"{0}\"", connection.ConnectionString), exception);
+				}
+			}
+		}
+
 		public static async Task<Version> GetServerVersionAsync(this Microsoft.Data.SqlClient.SqlConnection connection)
 		{
 			await connection.EnsureConnectionIsOpenAsync();

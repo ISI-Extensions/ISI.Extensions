@@ -18,15 +18,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using ISI.Extensions.Repository.Extensions;
 
-namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
+namespace ISI.Extensions.Repository.SqlServer.Extensions
 {
-	public partial class UpdateAssemblyRedirectsRequest
+	public static partial class SqlConnectionExtensions
 	{
-		public string CsProjXml { get; set; }
-		public string AppConfigXml { get; set; }
-		public IEnumerable<NugetPackageKey> NugetPackageKeys { get; set; }
-		public IEnumerable<NugetPackageKey> UpsertAssemblyRedirectsNugetPackageKeys { get; set; }
-		public IEnumerable<string> RemoveAssemblyRedirects { get; set; }
+		public static async Task<SqlServerCapabilities> GetSqlServerCapabilitiesAsync(this Microsoft.Data.SqlClient.SqlConnection connection)
+		{
+			var serverVersion = await connection.GetServerVersionAsync();
+
+			return new SqlServerCapabilities()
+			{
+				ServerVersion = serverVersion,
+				SupportsNativePaging = (serverVersion.Major >= 11),
+			};
+		}
 	}
 }

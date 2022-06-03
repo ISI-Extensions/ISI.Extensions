@@ -197,63 +197,8 @@ namespace ISI.Extensions.Repository.SqlServer
 			}
 		}
 
-		public virtual void DropIndexes(Microsoft.Data.SqlClient.SqlConnection connection)
-		{
-			var recordDescription = GetRecordDescription();
 
-			var tableName = FormatTableName(TableName, null, false);
 
-			foreach (var recordIndex in recordDescription.Indexes)
-			{
-				var recordIndexName = recordIndex.Name;
-				if (recordIndexName.Length > 128)
-				{
-					recordIndexName = recordIndexName.Substring(0, 128);
-				}
-
-				var sql = string.Format("drop index {0} on {1}", recordIndexName, tableName);
-
-				ExecuteNonQueryAsync(connection, sql).Wait();
-			}
-		}
-
-		protected virtual string GetCreateIndexesSql(string tableName, ISI.Extensions.Repository.IRecordDescription<TRecord> recordDescription)
-		{
-			var sql = new StringBuilder();
-
-			foreach (var recordIndex in recordDescription.Indexes)
-			{
-				var columnIssues = new List<string>();
-				columnIssues.AddRange(recordIndex.Columns.Where(column => (column.RecordPropertyDescription.ValueType.GetDbType() == System.Data.DbType.String) && (column.RecordPropertyDescription.PropertySize <= 0)).Select(column => string.Format("Column \"{0}\" is of type varchar(max) which cannot be used in an index", column.RecordPropertyDescription.ColumnName)));
-				if (columnIssues.Any())
-				{
-					throw new Exception(string.Format("Cannot create index: \"{0}\"\n  {1}\n", recordIndex.Name, string.Join("\n  ", columnIssues)));
-				}
-
-				sql.Append("\n");
-
-				var recordIndexName = recordIndex.Name;
-				if (recordIndexName.Length > 128)
-				{
-					recordIndexName = recordIndexName.Substring(0, 128);
-				}
-
-				sql.AppendFormat("  create{3}{4} index {0} on {1} ({2})\n", recordIndexName, tableName, string.Join(", ", recordIndex.Columns.Select(column => string.Format("{0}{1}", FormatColumnName(column.RecordPropertyDescription.ColumnName), column.AscendingOrder ? string.Empty : " desc"))), (recordIndex.Unique ? " unique" : string.Empty), (recordIndex.Clustered ? " clustered" : string.Empty));
-			}
-
-			return sql.ToString();
-		}
-
-		public virtual void CreateIndexes(Microsoft.Data.SqlClient.SqlConnection connection)
-		{
-			var recordDescription = GetRecordDescription();
-
-			var tableName = FormatTableName(TableName, null, false);
-
-			var sql = GetCreateIndexesSql(tableName, recordDescription);
-
-			ExecuteNonQueryAsync(connection, sql).Wait();
-		}
 
 		protected virtual void ExecuteCreateTable(Microsoft.Data.SqlClient.SqlConnection connection, string sql)
 		{

@@ -18,15 +18,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using ISI.Extensions.Repository.Extensions;
 
-namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
+namespace ISI.Extensions.Repository.SqlServer.Extensions
 {
-	public partial class UpdateAssemblyRedirectsRequest
+	public static partial class SqlConnectionExtensions
 	{
-		public string CsProjXml { get; set; }
-		public string AppConfigXml { get; set; }
-		public IEnumerable<NugetPackageKey> NugetPackageKeys { get; set; }
-		public IEnumerable<NugetPackageKey> UpsertAssemblyRedirectsNugetPackageKeys { get; set; }
-		public IEnumerable<string> RemoveAssemblyRedirects { get; set; }
+		public static async Task<Version> GetServerVersionAsync(this Microsoft.Data.SqlClient.SqlConnection connection)
+		{
+			await connection.EnsureConnectionIsOpenAsync();
+
+			var version = connection.ServerVersion;
+
+			if (Version.TryParse(version, out var serverVersion))
+			{
+				return serverVersion;
+			}
+
+			var pieces = string.Format("{0}.....", version).Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries).ToNullCheckedArray(value => value.ToInt());
+
+			return new Version(pieces[0], pieces[1], pieces[2], pieces[3]);
+		}
 	}
 }

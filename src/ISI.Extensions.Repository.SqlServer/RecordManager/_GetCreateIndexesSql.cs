@@ -18,15 +18,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using ISI.Extensions.Repository.Extensions;
+using ISI.Extensions.Repository.SqlServer.Extensions;
 
-namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
+namespace ISI.Extensions.Repository.SqlServer
 {
-	public partial class UpdateAssemblyRedirectsRequest
+	public abstract partial class RecordManager<TRecord>
 	{
-		public string CsProjXml { get; set; }
-		public string AppConfigXml { get; set; }
-		public IEnumerable<NugetPackageKey> NugetPackageKeys { get; set; }
-		public IEnumerable<NugetPackageKey> UpsertAssemblyRedirectsNugetPackageKeys { get; set; }
-		public IEnumerable<string> RemoveAssemblyRedirects { get; set; }
+		protected virtual string GetCreateIndexesSql(string tableName, ISI.Extensions.Repository.IRecordDescription<TRecord> recordDescription)
+		{
+			var sql = new StringBuilder();
+
+			foreach (var recordIndex in recordDescription.Indexes)
+			{
+				var columnIssues = new List<string>();
+				columnIssues.AddRange(recordIndex.Columns.Where(column => (column.RecordPropertyDescription.ValueType.GetDbType() == System.Data.DbType.String) && (column.RecordPropertyDescription.PropertySize <= 0)).Select(column => string.Format("Column \"{0}\" is of type varchar(max) which cannot be used in an index", column.RecordPropertyDescription.ColumnName)));
+				if (columnIssues.Any())
+				{
+					throw new Exception(string.Format("Cannot create index: \"{0}\"\n  {1}\n", recordIndex.Name, string.Join("\n  ", columnIssues)));
+				}
+
+				sql.Append("\n");
+
+				var recordIndexName = recordIndex.Name;
+				if (recordIndexName.Length > 128)
+				{
+					recordIndexName = recordIndexName.Substring(0, 128);
+				}
+
+				sql.AppendFormat("  create{3}{4} index {0} on {1} ({2})\n", recordIndexName, tableName, string.Join(", ", recordIndex.Columns.Select(column => string.Format("{0}{1}", FormatColumnName(column.RecordPropertyDescription.ColumnName), column.AscendingOrder ? string.Empty : " desc"))), (recordIndex.Unique ? " unique" : string.Empty), (recordIndex.Clustered ? " clustered" : string.Empty));
+			}
+
+			return sql.ToString();
+		}
 	}
 }

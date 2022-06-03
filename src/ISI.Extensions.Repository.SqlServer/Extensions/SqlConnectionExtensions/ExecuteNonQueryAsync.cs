@@ -18,15 +18,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using ISI.Extensions.Repository.Extensions;
 
-namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
+namespace ISI.Extensions.Repository.SqlServer.Extensions
 {
-	public partial class UpdateAssemblyRedirectsRequest
+	public static partial class SqlConnectionExtensions
 	{
-		public string CsProjXml { get; set; }
-		public string AppConfigXml { get; set; }
-		public IEnumerable<NugetPackageKey> NugetPackageKeys { get; set; }
-		public IEnumerable<NugetPackageKey> UpsertAssemblyRedirectsNugetPackageKeys { get; set; }
-		public IEnumerable<string> RemoveAssemblyRedirects { get; set; }
+		public static async Task<int> ExecuteNonQueryAsync(this Microsoft.Data.SqlClient.SqlConnection connection, string sql, string parameterName, object parameterValue, int? commandTimeout = null)
+		{
+			return await ExecuteNonQueryAsync(connection, sql, new KeyValuePair<string, object>(parameterName, parameterValue), commandTimeout);
+		}
+
+		public static async Task<int> ExecuteNonQueryAsync(this Microsoft.Data.SqlClient.SqlConnection connection, string sql, KeyValuePair<string, object> parameter, int? commandTimeout = null)
+		{
+			return await ExecuteNonQueryAsync(connection, sql, new[] { parameter }, commandTimeout);
+		}
+
+		public static async Task<int> ExecuteNonQueryAsync(this Microsoft.Data.SqlClient.SqlConnection connection, string sql, IEnumerable<KeyValuePair<string, object>> parameters = null, int? commandTimeout = null)
+		{
+			await connection.EnsureConnectionIsOpenAsync();
+
+			using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql, connection))
+			{
+				if (commandTimeout.HasValue)
+				{
+					command.CommandTimeout = commandTimeout.Value;
+				}
+
+				command.AddParameters(parameters);
+
+				return await command.ExecuteNonQueryWithExceptionTracingAsync();
+			}
+		}
 	}
 }

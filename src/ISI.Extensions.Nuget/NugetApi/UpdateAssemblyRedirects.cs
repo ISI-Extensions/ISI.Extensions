@@ -43,6 +43,8 @@ namespace ISI.Extensions.Nuget
 
 			var assemblyBindingElement = runtimeSectionElement?.GetElementByLocalName("assemblyBinding");
 
+			var removeAssemblyRedirects = new HashSet<string>(request.RemoveAssemblyRedirects ?? Array.Empty<string>(), StringComparer.InvariantCultureIgnoreCase);
+
 			var upsertAssemblies = request.UpsertAssemblyRedirectsNugetPackageKeys
 				.NullCheckedSelectMany(nugetPackageKey => nugetPackageKey.GetTargetFrameworkAssembly(targetFrameworkVersion)?.Assemblies, NullCheckCollectionResult.Empty)
 				.ToDictionary(assembly => assembly.AssemblyName, assembly => assembly, StringComparer.InvariantCultureIgnoreCase);
@@ -57,16 +59,23 @@ namespace ISI.Extensions.Nuget
 					var assemblyName = assemblyIdentity.GetAttributeByLocalName("name")?.Value ?? string.Empty;
 					var newVersion = bindingRedirect.GetAttributeByLocalName("newVersion")?.Value ?? string.Empty;
 
-					upsertAssemblies.Remove(assemblyName);
-
-					foreach (var nugetPackageKey in nugetPackageKeys)
+					if (removeAssemblyRedirects.Contains(assemblyName))
 					{
-						var assembly = nugetPackageKey.GetTargetFrameworkAssembly(targetFrameworkVersion)?.Assemblies.NullCheckedFirstOrDefault(a => string.Equals(a.AssemblyName, assemblyName, StringComparison.InvariantCultureIgnoreCase));
+						dependentAssembly.Remove();
+					}
+					else
+					{
+						upsertAssemblies.Remove(assemblyName);
 
-						if (!string.IsNullOrWhiteSpace(assembly?.AssemblyVersion) && !string.Equals(assembly.AssemblyVersion, newVersion))
+						foreach (var nugetPackageKey in nugetPackageKeys)
 						{
-							bindingRedirect.Attribute("oldVersion").Value = string.Format("0.0.0.0-{0}", assembly.AssemblyVersion);
-							bindingRedirect.Attribute("newVersion").Value = assembly.AssemblyVersion;
+							var assembly = nugetPackageKey.GetTargetFrameworkAssembly(targetFrameworkVersion)?.Assemblies.NullCheckedFirstOrDefault(a => string.Equals(a.AssemblyName, assemblyName, StringComparison.InvariantCultureIgnoreCase));
+
+							if (!string.IsNullOrWhiteSpace(assembly?.AssemblyVersion) && !string.Equals(assembly.AssemblyVersion, newVersion))
+							{
+								bindingRedirect.Attribute("oldVersion").Value = string.Format("0.0.0.0-{0}", assembly.AssemblyVersion);
+								bindingRedirect.Attribute("newVersion").Value = assembly.AssemblyVersion;
+							}
 						}
 					}
 				}

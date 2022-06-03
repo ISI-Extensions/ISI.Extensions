@@ -184,10 +184,10 @@ namespace ISI.Extensions.VisualStudio
 							{
 								logger.LogInformation(string.Format("  {0}", projectDetails.ProjectName));
 
-								if (string.Equals(projectDetails.ProjectName, "SheerID.Services.SheerID.Tests", StringComparison.InvariantCultureIgnoreCase))
-								{
-									System.Diagnostics.Debugger.Break();
-								}
+								//if (string.Equals(projectDetails.ProjectName, "SheerID.Services.SheerID.Tests", StringComparison.InvariantCultureIgnoreCase))
+								//{
+								//	System.Diagnostics.Debugger.Break();
+								//}
 
 								var packagesConfigFullName = System.IO.Path.Combine(projectDetails.ProjectDirectory, "packages.config");
 
@@ -268,6 +268,7 @@ namespace ISI.Extensions.VisualStudio
 											AppConfigXml = appConfigXml,
 											NugetPackageKeys = nugetPackageKeys.Where(nugetPackageKey => !solutionIgnorePackageIds.Contains(nugetPackageKey.Package)),
 											UpsertAssemblyRedirectsNugetPackageKeys = request.UpsertAssemblyRedirectsNugetPackageKeys,
+											RemoveAssemblyRedirects = request.RemoveAssemblyRedirects,
 										}).AppConfigXml;
 
 										if (HasChanges(appConfigXml, newAppConfigXml))

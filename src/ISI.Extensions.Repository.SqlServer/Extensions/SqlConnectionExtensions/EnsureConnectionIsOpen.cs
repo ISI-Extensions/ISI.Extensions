@@ -18,15 +18,41 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using ISI.Extensions.Repository.Extensions;
 
-namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
+namespace ISI.Extensions.Repository.SqlServer.Extensions
 {
-	public partial class UpdateAssemblyRedirectsRequest
+	public static partial class SqlConnectionExtensions
 	{
-		public string CsProjXml { get; set; }
-		public string AppConfigXml { get; set; }
-		public IEnumerable<NugetPackageKey> NugetPackageKeys { get; set; }
-		public IEnumerable<NugetPackageKey> UpsertAssemblyRedirectsNugetPackageKeys { get; set; }
-		public IEnumerable<string> RemoveAssemblyRedirects { get; set; }
+		public static async Task EnsureConnectionIsOpenAsync(this Microsoft.Data.SqlClient.SqlConnection connection)
+		{
+			if (connection.State != System.Data.ConnectionState.Open)
+			{
+				try
+				{
+					await connection.OpenAsync();
+				}
+				catch (Exception exception)
+				{
+					throw new Exception(string.Format("Error opening Connection to \"{0}\"", connection.ConnectionString), exception);
+				}
+			}
+		}
+
+		public static void EnsureConnectionIsOpen(this Microsoft.Data.SqlClient.SqlConnection connection)
+		{
+			if (connection.State != System.Data.ConnectionState.Open)
+			{
+				try
+				{
+					connection.Open();
+				}
+				catch (Exception exception)
+				{
+					throw new Exception(string.Format("Error opening Connection to \"{0}\"", connection.ConnectionString), exception);
+				}
+			}
+		}
 	}
 }

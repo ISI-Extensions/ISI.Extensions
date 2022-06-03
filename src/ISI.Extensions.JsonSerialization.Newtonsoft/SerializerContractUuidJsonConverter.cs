@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,11 +46,27 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 
 		public override void WriteJson(global::Newtonsoft.Json.JsonWriter writer, object value, global::Newtonsoft.Json.JsonSerializer serializer)
 		{
-			var jsonObject = global::Newtonsoft.Json.Linq.JObject.FromObject(value);
+			var jsonObject = new global::Newtonsoft.Json.Linq.JObject();
 
-			if (ImplementationTypeToSerializerContractUuid.TryGetValue(value.GetType(), out var serializerContractUuid))
+			var objectType = value.GetType();
+
+			if (ImplementationTypeToSerializerContractUuid.TryGetValue(objectType, out var serializerContractUuid))
 			{
 				jsonObject.AddFirst(new global::Newtonsoft.Json.Linq.JProperty(SerializerContractUuidKey, serializerContractUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)));
+			}
+
+			foreach (var objectProperty in objectType.GetProperties())
+			{
+				if (objectProperty.CanRead)
+				{
+					var dataMemberAttribute = objectProperty.GetCustomAttributes(true).OfType<System.Runtime.Serialization.DataMemberAttribute>().FirstOrDefault();
+
+					var objectPropertyValue = objectProperty.GetValue(value, null);
+					if (objectPropertyValue != null)
+					{
+						jsonObject.Add(dataMemberAttribute?.Name ?? objectProperty.Name, global::Newtonsoft.Json.Linq.JToken.FromObject(objectPropertyValue, serializer));
+					}
+				}
 			}
 
 			jsonObject.WriteTo(writer);
@@ -68,12 +84,28 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 			{
 				SerializerContractUuidToImplementationType.TryGetValue(serializerContractUuid, out implementationType);
 			}
-			else if(InterfaceTypesWithDefaultImplementationType.TryGetValue(implementationType, out var defaultImplementationType))
+			else if (InterfaceTypesWithDefaultImplementationType.TryGetValue(implementationType, out var defaultImplementationType))
 			{
 				implementationType = defaultImplementationType;
 			}
 
-			return jsonObject.ToObject(implementationType);
+			var implementation = Activator.CreateInstance(implementationType);
+
+			foreach (var property in implementationType.GetProperties().Where(p => p.CanRead && p.CanWrite))
+			{
+				var dataMemberAttribute = property.GetCustomAttributes(true).OfType<System.Runtime.Serialization.DataMemberAttribute>().FirstOrDefault();
+
+				var jsonToken = jsonObject.SelectToken(dataMemberAttribute?.Name ?? property.Name);
+
+				if (jsonToken != null && (jsonToken.Type != global::Newtonsoft.Json.Linq.JTokenType.Null))
+				{
+					var propertyValue = jsonToken.ToObject(property.PropertyType, serializer);
+
+					property.SetValue(implementation, propertyValue, null);
+				}
+			}
+
+			return implementation;
 		}
 
 
@@ -110,7 +142,7 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 							}
 						}
 
-						_jsonConverter = new SerializerContractUuidJsonConverter(interfaceTypesWithDefaultImplementationType, serializerContractUuidToImplementationType) ;
+						_jsonConverter = new SerializerContractUuidJsonConverter(interfaceTypesWithDefaultImplementationType, serializerContractUuidToImplementationType);
 					}
 				}
 			}

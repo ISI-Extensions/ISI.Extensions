@@ -18,15 +18,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using ISI.Extensions.Repository.SqlServer.Extensions;
 
-namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
+namespace ISI.Extensions.Repository.SqlServer
 {
-	public partial class UpdateAssemblyRedirectsRequest
+	public abstract partial class RecordManager<TRecord>
 	{
-		public string CsProjXml { get; set; }
-		public string AppConfigXml { get; set; }
-		public IEnumerable<NugetPackageKey> NugetPackageKeys { get; set; }
-		public IEnumerable<NugetPackageKey> UpsertAssemblyRedirectsNugetPackageKeys { get; set; }
-		public IEnumerable<string> RemoveAssemblyRedirects { get; set; }
+		public virtual void CreateIndexes(Microsoft.Data.SqlClient.SqlConnection connection)
+		{
+			var recordDescription = GetRecordDescription();
+
+			var tableName = FormatTableName(TableName, null, false);
+
+			var sql = GetCreateIndexesSql(tableName, recordDescription);
+
+			ExecuteNonQueryAsync(connection, sql).Wait();
+		}
 	}
 }

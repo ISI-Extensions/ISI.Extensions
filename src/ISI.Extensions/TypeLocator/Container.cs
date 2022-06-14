@@ -57,18 +57,24 @@ namespace ISI.Extensions.TypeLocator
 		{
 			foreach (var type in assembliesContainer.Types)
 			{
-				if (type.GetCustomAttribute(typeof(TypeLocatorAttribute)) is TypeLocatorAttribute attribute)
+				try
 				{
-					foreach (var attributeType in attribute.Types)
+					if (type.GetCustomAttribute(typeof(TypeLocatorAttribute)) is TypeLocatorAttribute attribute)
 					{
-						if (!ImplementationTypesLookup.TryGetValue(attributeType, out var implementationTypes))
+						foreach (var attributeType in attribute.Types)
 						{
-							implementationTypes = new List<Type>();
-							ImplementationTypesLookup.Add(attributeType, implementationTypes);
-						}
+							if (!ImplementationTypesLookup.TryGetValue(attributeType, out var implementationTypes))
+							{
+								implementationTypes = new List<Type>();
+								ImplementationTypesLookup.Add(attributeType, implementationTypes);
+							}
 
-						implementationTypes.Add(type);
+							implementationTypes.Add(type);
+						}
 					}
+				}
+				catch
+				{
 				}
 			}
 

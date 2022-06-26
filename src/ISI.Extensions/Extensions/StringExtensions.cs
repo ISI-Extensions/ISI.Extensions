@@ -55,10 +55,7 @@ namespace ISI.Extensions.Extensions
 
 		public static int IndexOf(this string source, string value, int startIndex, IEqualityComparer<string> stringComparer = null)
 		{
-			if (stringComparer == null)
-			{
-				stringComparer = System.StringComparer.InvariantCulture;
-			}
+			stringComparer ??= System.StringComparer.InvariantCulture;
 
 			var valueLength = value.Length;
 			var sourceLength = source.Length - valueLength + 1;
@@ -79,10 +76,7 @@ namespace ISI.Extensions.Extensions
 		{
 			var result = new StringBuilder();
 
-			if (stringComparer == null)
-			{
-				stringComparer = System.StringComparer.InvariantCulture;
-			}
+			stringComparer ??= System.StringComparer.InvariantCulture;
 
 			var foundIndex = value.IndexOf(oldValue, 0, stringComparer);
 			if (foundIndex < 0)
@@ -122,10 +116,7 @@ namespace ISI.Extensions.Extensions
 				{
 					stringComparer = ((Dictionary<string, string>) replacementValues).Comparer;
 				}
-				if (stringComparer == null)
-				{
-					stringComparer = System.StringComparer.InvariantCulture;
-				}
+				stringComparer ??= System.StringComparer.InvariantCulture;
 
 				if (!string.IsNullOrWhiteSpace(value) && (replacementValues != null) && replacementValues.Any())
 				{

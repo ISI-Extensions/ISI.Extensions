@@ -28,7 +28,9 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void GetAssemblyNamePieces_Test()
 		{
-			var fileName = @"F:\ISI\Clients\ICS\ICS.Customers.WindowsService\Publish\ICS\ICS.Customers.WindowsService\System.Memory.dll";
+			//var fileName = @"F:\ISI\Clients\ICS\ICS.Customers.WindowsService\Publish\ICS\ICS.Customers.WindowsService\System.Memory.dll";
+			var fileName = @"F:\ISI\Clients\TFS\AccumailGoldConnections.NETToolkit\AccumailGoldDotNet.dll";
+			//var fileName = @"F:\ISI\Clients\ICS\ICS.FacilityOperator.WebApplication\src\packages\System.Text.Json.6.0.4\lib\net461\System.Text.Json.dll";
 
 			var assemblyName = System.Reflection.AssemblyName.GetAssemblyName(fileName);
 

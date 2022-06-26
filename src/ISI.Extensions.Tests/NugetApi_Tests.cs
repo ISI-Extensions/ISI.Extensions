@@ -220,17 +220,17 @@ namespace ISI.Extensions.Tests
 				PackageId = "Microsoft.AspNetCore.Mvc.NewtonsoftJson",
 				PackageVersion = "5.0.13",
 			}).NugetPackageKey);
-			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
-			{
-				PackageId = "System.Memory",
-				PackageVersion = "4.5.5",
-			}).NugetPackageKey);
+			//nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			//{
+			//	PackageId = "System.Memory",
+			//	PackageVersion = "4.5.5",
+			//}).NugetPackageKey);
 
 			var upsertAssemblyRedirectsNugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
-			upsertAssemblyRedirectsNugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
-			{
-				PackageId = "System.Memory",
-			}).NugetPackageKey);
+			//upsertAssemblyRedirectsNugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			//{
+			//	PackageId = "System.Memory",
+			//}).NugetPackageKey);
 
 			var removeAssemblyRedirects = Array.Empty<string>();
 

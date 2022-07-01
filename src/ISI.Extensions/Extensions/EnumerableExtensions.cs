@@ -28,13 +28,19 @@ namespace ISI.Extensions.Extensions
 		{
 			using (var chunkMasterEnumerator = new ChunkMasterEnumerator<TValue>(values.GetEnumerator(), chunkSize))
 			{
-				while (!chunkMasterEnumerator.EndOfValues)
+				var endOfChunks = false;
+
+				while (!endOfChunks)
 				{
 					chunkMasterEnumerator.Lock(chunkMasterEnumerator.CatchRemainingChunk);
 
-					if (!chunkMasterEnumerator.EndOfValues)
+					if (chunkMasterEnumerator.GetNextChunkEnumerable(out var chunkEnumerable))
 					{
-						yield return chunkMasterEnumerator.NextChunkEnumerable();
+						yield return chunkEnumerable;
+					}
+					else
+					{
+						endOfChunks = true;
 					}
 				}
 			}
@@ -49,12 +55,17 @@ namespace ISI.Extensions.Extensions
 			private readonly IEnumerator<TValue> _enumerator;
 			private readonly int _chunkSize;
 
-			public bool EndOfValues { get; private set; }
+			private bool _hasNextValue;
+			private TValue _nextValue;
+			private TValue _currentValue;
+
+			public bool EndOfValues { get; internal set; }
 
 			public ChunkMasterEnumerator(IEnumerator<TValue> enumerator, int chunkSize)
 			{
 				_enumerator = enumerator;
 				_chunkSize = chunkSize;
+				_hasNextValue = false;
 				EndOfValues = false;
 			}
 
@@ -63,33 +74,57 @@ namespace ISI.Extensions.Extensions
 				_semaphore?.Release();
 				_semaphore = null;
 				_enumerator.Reset();
+				_hasNextValue = false;
 				EndOfValues = false;
 			}
 
 			public bool MoveNext()
 			{
-				if (!EndOfValues && _enumerator.MoveNext())
+				if (!EndOfValues)
 				{
-					return true;
-				}
+					if (_hasNextValue)
+					{
+						_currentValue = _nextValue;
+					}
 
-				EndOfValues = true;
+					if (_enumerator.MoveNext())
+					{
+						_nextValue = _enumerator.Current;
+
+						if (!_hasNextValue)
+						{
+							_currentValue = _nextValue;
+
+							if (_enumerator.MoveNext())
+							{
+								_nextValue = _enumerator.Current;
+								_hasNextValue = true;
+							}
+							else
+							{
+								_hasNextValue = false;
+								EndOfValues = true;
+							}
+						}
+
+						return true;
+					}
+
+					EndOfValues = true;
+
+					if (_hasNextValue)
+					{
+						_currentValue = _nextValue;
+						_hasNextValue = false;
+
+						return true;
+					}
+				}
 
 				return false;
 			}
 
-			public TValue Current
-			{
-				get
-				{
-					if (EndOfValues)
-					{
-						return default;
-					}
-
-					return _enumerator.Current;
-				}
-			}
+			public TValue Current => _currentValue;
 
 			object IEnumerator.Current => Current;
 
@@ -114,12 +149,35 @@ namespace ISI.Extensions.Extensions
 				_semaphore.Release();
 			}
 
-			internal ChunkEnumerable<TValue> NextChunkEnumerable()
+			internal bool GetNextChunkEnumerable(out ChunkEnumerable<TValue> chunkEnumerable)
 			{
-				return new ChunkEnumerable<TValue>(this);
+				if (!EndOfValues)
+				{
+					if (_hasNextValue)
+					{
+						chunkEnumerable = new ChunkEnumerable<TValue>(this);
+
+						return true;
+					}
+					
+					if (_enumerator.MoveNext())
+					{
+						_nextValue = _enumerator.Current;
+						_hasNextValue = true;
+
+						chunkEnumerable = new ChunkEnumerable<TValue>(this);
+
+						return true;
+					}
+				}
+
+				//EndOfValues = true;
+				chunkEnumerable = null;
+
+				return false;
 			}
 
-			internal ChunkEnumerator<TValue> NextChunkEnumerator()
+			internal ChunkEnumerator<TValue> GetNextChunkEnumerator()
 			{
 				return (_chunkEnumerator = new ChunkEnumerator<TValue>(this, _chunkSize));
 			}
@@ -224,6 +282,11 @@ namespace ISI.Extensions.Extensions
 
 					_enumerable = enumerable;
 					_enumerator = _enumerable.GetEnumerator();
+
+					if (!enumerable.Any())
+					{
+						_chunkMasterEnumerator.EndOfValues = true;
+					}
 				}
 			}
 
@@ -237,19 +300,18 @@ namespace ISI.Extensions.Extensions
 		private class ChunkEnumerable<TValue> : IEnumerable<TValue>
 		{
 			private readonly ChunkMasterEnumerator<TValue> _chunkMasterEnumerator;
+			private readonly IEnumerator<TValue> _enumerator;
 
 			internal ChunkEnumerable(ChunkMasterEnumerator<TValue> chunkMasterEnumerator)
 			{
 				_chunkMasterEnumerator = chunkMasterEnumerator;
+				_enumerator = _chunkMasterEnumerator.GetNextChunkEnumerator();
 			}
 
-			public IEnumerator<TValue> GetEnumerator() => _chunkMasterEnumerator.NextChunkEnumerator();
+			public IEnumerator<TValue> GetEnumerator() => _enumerator;
 
 			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 		}
-
-
-
 
 
 

@@ -54,6 +54,8 @@ namespace ISI.Extensions.Jira
 					uri.AddQueryStringParameter("expand", string.Join(",", request.Expand));
 				}
 
+				var xxx = ISI.Extensions.WebClient.Rest.GetEventHandler();
+
 				var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SERIALIZABLE.FindIssuesResponse>(uri.Uri, GetHeaders(request), true, request.SslProtocols);
 
 				issues.AddRange(jiraResponse.Issues.NullCheckedSelect(x => x?.Export(), NullCheckCollectionResult.Empty));

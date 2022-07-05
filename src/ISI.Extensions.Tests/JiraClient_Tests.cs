@@ -67,12 +67,14 @@ namespace ISI.Extensions.Tests
 
 			serviceProvider.SetServiceLocator();
 
-			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "Tristar.keyValue");
 			var settings = new ISI.Extensions.SimpleKeyValueStorage(settingsFullName);
 
 			JiraUrl = settings.GetValue("JiraUrl");
-			JiraApiUserName = settings.GetValue("JiraApiUserName");
-			JiraApiToken = settings.GetValue("JiraApiToken");
+			//JiraApiUserName = settings.GetValue("JiraApiUserName");
+			//JiraApiToken = settings.GetValue("JiraApiToken");
+			JiraApiUserName = settings.GetValue("ActiveDirectoryUserName");
+			JiraApiToken = settings.GetValue("ActiveDirectoryPassword");
 		}
 
 		[Test]
@@ -116,6 +118,7 @@ namespace ISI.Extensions.Tests
 				JiraApiToken = JiraApiToken,
 				//ImpersonatedUser = "rmuth",
 				Jql = "assignee=currentuser() AND STATUS!=DONE ORDER BY created DESC",
+				//Jql = "STATUS!=DONE ORDER BY created DESC",
 			});
 		}
 

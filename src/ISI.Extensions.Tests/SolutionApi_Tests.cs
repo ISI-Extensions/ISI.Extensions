@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using ISI.Extensions.ConfigurationHelper.Extensions;
 using ISI.Extensions.DependencyInjection.Extensions;
 using ISI.Extensions.Extensions;
@@ -72,6 +72,131 @@ namespace ISI.Extensions.Tests
 				.Replace("\n", string.Empty);
 
 			return !string.Equals(getCompressed(original), getCompressed(newVersion), StringComparison.InvariantCultureIgnoreCase);
+		}
+
+		[Test]
+		public void ListNugetPackages_Test()
+		{
+			var nugetPackages = new Dictionary<string, HashSet<string>>(StringComparer.InvariantCultureIgnoreCase);
+
+			var logger = ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();
+			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
+			var sourceControlClientApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.SourceControlClientApi>();
+
+			var solutionFullNames = new List<string>();
+			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt"));
+			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Connect.SolutionFullNames.txt"));
+
+			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionDetailsRequest()
+			{
+				Solution = solution,
+			}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
+
+			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpdateNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
+			{
+				using (solutionApi.GetSolutionLock(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionLockRequest()
+				{
+					SolutionFullName = solutionDetails.SolutionFullName,
+					//AddToLog = addToLog,
+				}).Lock)
+				{
+					logger.Log(LogLevel.Information, solutionDetails.SolutionName);
+
+					var sourceFullNames = new List<string>();
+					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "packages.config", System.IO.SearchOption.AllDirectories));
+					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.csproj", System.IO.SearchOption.AllDirectories));
+
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\packages\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\bin\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\obj\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\.svn\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\.git\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\.vs\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\_ReSharper.Caches\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+
+
+					if (!sourceControlClientApi.UpdateWorkingCopy(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.UpdateWorkingCopyRequest()
+					{
+						FullName = solutionDetails.RootSourceDirectory,
+						IncludeExternals = true,
+					}).Success)
+					{
+						var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
+						logger.LogError(exception.Message);
+						throw exception;
+					}
+
+					foreach (var sourceFullName in sourceFullNames)
+					{
+						if (System.IO.File.Exists(sourceFullName))
+						{
+							var lines = System.IO.File.ReadAllLines(sourceFullName);
+
+							for (int index = 0; index < lines.Length; index++)
+							{
+								var line = lines[index];
+								if (line.IndexOf("<package", StringComparison.InvariantCultureIgnoreCase) >= 0)
+								{
+									var pieces = line.Split(new[] { '\"' });
+
+									if (pieces.Length > 2)
+									{
+										var nugetPackage = pieces[1];
+										var nugetVersion = pieces[2];
+
+										if (string.Equals(pieces[0].Trim(), "<package id=", StringComparison.InvariantCultureIgnoreCase))
+										{
+											if (pieces.Length > 3)
+											{
+												nugetVersion = pieces[3];
+											}
+										}
+
+										if (string.Equals(pieces[0].Trim(), "<PackageReference Include=", StringComparison.InvariantCultureIgnoreCase) ||
+										    string.Equals(pieces[0].Trim(), "<PackageReference Update=", StringComparison.InvariantCultureIgnoreCase))
+										{
+											if (pieces.Length > 3)
+											{
+												nugetVersion = pieces[3];
+											}
+											else
+											{
+												nugetVersion = lines[index + 1].Trim().TrimStart("<Version>").TrimEnd("</Version>");
+											}
+										}
+
+										if (!nugetPackages.TryGetValue(nugetPackage, out var nugetVersions))
+										{
+											nugetVersions = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+											nugetPackages.Add(nugetPackage, nugetVersions);
+										}
+
+										if (nugetVersion.IndexOf("version=", StringComparison.InvariantCultureIgnoreCase) >= 0)
+										{
+											System.Diagnostics.Debugger.Break();
+										}
+
+										nugetVersions.Add(nugetVersion);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			Console.WriteLine();
+			Console.WriteLine();
+
+			foreach (var nugetPackage in nugetPackages.Where(nugetPackage => nugetPackage.Key.StartsWith("ISI.", StringComparison.InvariantCultureIgnoreCase)).OrderBy(nugetPackage => nugetPackage.Key, StringComparer.InvariantCultureIgnoreCase))
+			{
+				Console.WriteLine(nugetPackage.Key);
+
+				foreach (var version in nugetPackage.Value.OrderBy(v => v, StringComparer.InvariantCultureIgnoreCase))
+				{
+					Console.WriteLine(version);
+				}
+			}
 		}
 
 		[Test]

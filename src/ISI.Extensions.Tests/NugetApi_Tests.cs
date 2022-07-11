@@ -335,7 +335,7 @@ namespace ISI.Extensions.Tests
 						if (!sourceControlClientApi.Commit(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.CommitRequest()
 						{
 							FullNames = dirtyFileNames,
-							LogMessage = "update nuget.config",
+							LogMessage = "remove ISI from nuget.config",
 							AddToLog = log => commitLog.AppendLine(log),
 						}).Success)
 						{

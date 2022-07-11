@@ -77,15 +77,53 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void ListNugetPackages_Test()
 		{
-			var nugetPackages = new Dictionary<string, HashSet<string>>(StringComparer.InvariantCultureIgnoreCase);
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ICS.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 
 			var logger = ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();
 			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
 			var sourceControlClientApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.SourceControlClientApi>();
+			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+
+			var nugetPackages = new Dictionary<string, HashSet<string>>(StringComparer.InvariantCultureIgnoreCase);
+
+			void addNugetPackage(string nugetPackage, string nugetVersion)
+			{
+				if (!nugetPackages.TryGetValue(nugetPackage, out var nugetVersions))
+				{
+					nugetVersions = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+					nugetPackages.Add(nugetPackage, nugetVersions);
+				}
+
+				if (!nugetVersions.Contains(nugetVersion))
+				{
+					nugetVersions.Add(nugetVersion);
+
+					var getLatestPackageVersionResponse = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+					{
+						PackageId = nugetPackage,
+						PackageVersion = nugetVersion,
+					});
+
+					if (getLatestPackageVersionResponse?.NugetPackageKey?.Dependencies != null)
+					{
+						foreach (var nugetPackageDependency in getLatestPackageVersionResponse?.NugetPackageKey?.Dependencies)
+						{
+							if (nugetPackageDependency.Package.StartsWith("ISI.", StringComparison.InvariantCultureIgnoreCase))
+							{
+								addNugetPackage(nugetPackageDependency.Package, nugetPackageDependency.Version);
+							}
+						}
+					}
+				}
+			}
+
+			addNugetPackage("ISI.Cake.Addin", "2022.1.8166.31991");
 
 			var solutionFullNames = new List<string>();
 			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt"));
 			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Connect.SolutionFullNames.txt"));
+			solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Cake.Addin");
 
 			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionDetailsRequest()
 			{
@@ -132,7 +170,7 @@ namespace ISI.Extensions.Tests
 						{
 							var lines = System.IO.File.ReadAllLines(sourceFullName);
 
-							for (int index = 0; index < lines.Length; index++)
+							for (var index = 0; index < lines.Length; index++)
 							{
 								var line = lines[index];
 								if (line.IndexOf("<package", StringComparison.InvariantCultureIgnoreCase) >= 0)
@@ -153,7 +191,7 @@ namespace ISI.Extensions.Tests
 										}
 
 										if (string.Equals(pieces[0].Trim(), "<PackageReference Include=", StringComparison.InvariantCultureIgnoreCase) ||
-										    string.Equals(pieces[0].Trim(), "<PackageReference Update=", StringComparison.InvariantCultureIgnoreCase))
+												string.Equals(pieces[0].Trim(), "<PackageReference Update=", StringComparison.InvariantCultureIgnoreCase))
 										{
 											if (pieces.Length > 3)
 											{
@@ -165,18 +203,12 @@ namespace ISI.Extensions.Tests
 											}
 										}
 
-										if (!nugetPackages.TryGetValue(nugetPackage, out var nugetVersions))
-										{
-											nugetVersions = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
-											nugetPackages.Add(nugetPackage, nugetVersions);
-										}
-
 										if (nugetVersion.IndexOf("version=", StringComparison.InvariantCultureIgnoreCase) >= 0)
 										{
 											System.Diagnostics.Debugger.Break();
 										}
 
-										nugetVersions.Add(nugetVersion);
+										addNugetPackage(nugetPackage, nugetVersion);
 									}
 								}
 							}
@@ -196,6 +228,72 @@ namespace ISI.Extensions.Tests
 				{
 					Console.WriteLine(version);
 				}
+			}
+
+			var existingNugetPackages = new Dictionary<string, HashSet<string>>(StringComparer.InvariantCultureIgnoreCase);
+
+			var existingNugetPackageKeys = nugetApi.ListNugetPackageKeys(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.ListNugetPackageKeysRequest()
+			{
+				Source = settings.Nuget.RepositoryName
+			}).NugetPackageKeys.NullCheckedWhere(nugetPackagKey => nugetPackagKey.Package.StartsWith("ISI.", StringComparison.InvariantCultureIgnoreCase), NullCheckCollectionResult.Empty);
+
+			foreach (var existingNugetPackageKey in existingNugetPackageKeys)
+			{
+				if (!existingNugetPackages.TryGetValue(existingNugetPackageKey.Package, out var nugetVersions))
+				{
+					nugetVersions = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+					existingNugetPackages.Add(existingNugetPackageKey.Package, nugetVersions);
+				}
+
+				nugetVersions.Add(existingNugetPackageKey.Version);
+			}
+
+			var nugetDirectory = @"\\isinyscm01\E$\Data\Nuget\Packages";
+			var legacyNugetDirectory = @"\\isinyscm01\E$\Data\Nuget\Legacy Packages";
+			using (var tempDirectory = new ISI.Extensions.IO.Path.TempDirectory())
+			{
+				var nupkgFullNames = new List<string>();
+
+				foreach (var nugetPackage in nugetPackages.Where(nugetPackage => nugetPackage.Key.StartsWith("ISI.", StringComparison.InvariantCultureIgnoreCase)).OrderBy(nugetPackage => nugetPackage.Key, StringComparer.InvariantCultureIgnoreCase))
+				{
+					Console.WriteLine(nugetPackage.Key);
+
+					foreach (var version in nugetPackage.Value.OrderBy(v => v, StringComparer.InvariantCultureIgnoreCase))
+					{
+						var sourceFullName = System.IO.Path.Combine(nugetDirectory, string.Format("{0}.{1}.nupkg", nugetPackage.Key, version));
+
+						if (!System.IO.File.Exists(sourceFullName))
+						{
+							sourceFullName = System.IO.Path.Combine(legacyNugetDirectory, string.Format("{0}.{1}.nupkg", nugetPackage.Key, version));
+						}
+
+						var targetFullName = System.IO.Path.Combine(tempDirectory.FullName, string.Format("{0}.{1}.nupkg", nugetPackage.Key, version));
+
+						Console.WriteLine(version);
+
+						var doCopy = true;
+						if (existingNugetPackages.TryGetValue(nugetPackage.Key, out var existingNugetPackageVersions))
+						{
+							doCopy = !existingNugetPackageVersions.Contains(version);
+						}
+
+						if (doCopy)
+						{
+							System.IO.File.Copy(sourceFullName, targetFullName);
+
+							nupkgFullNames.Add(targetFullName);
+						}
+					}
+				}
+
+				nugetApi.NupkgPush(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.NupkgPushRequest()
+				{
+					NupkgFullNames = nupkgFullNames,
+					ApiKey = settings.Nuget.ApiKey,
+					RepositoryName = settings.Nuget.RepositoryName,
+					RepositoryUri = new Uri(settings.Nuget.RepositoryUrl),
+					//PackageChunksRepositoryUri = GetNullableUri(settings.Nuget.PackageChunksRepositoryUrl),
+				});
 			}
 		}
 

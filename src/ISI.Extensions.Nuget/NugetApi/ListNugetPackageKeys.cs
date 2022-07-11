@@ -67,7 +67,7 @@ namespace ISI.Extensions.Nuget
 						}
 					}
 				}
-
+				 
 				response.NugetPackageKeys = nugetPackageKeys.ToArray();
 			}
 

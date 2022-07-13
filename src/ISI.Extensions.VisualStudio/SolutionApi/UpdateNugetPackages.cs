@@ -184,11 +184,6 @@ namespace ISI.Extensions.VisualStudio
 							{
 								logger.LogInformation(string.Format("  {0}", projectDetails.ProjectName));
 
-								//if (string.Equals(projectDetails.ProjectName, "SheerID.Services.SheerID.Tests", StringComparison.InvariantCultureIgnoreCase))
-								//{
-								//	System.Diagnostics.Debugger.Break();
-								//}
-
 								var packagesConfigFullName = System.IO.Path.Combine(projectDetails.ProjectDirectory, "packages.config");
 
 								if (System.IO.File.Exists(packagesConfigFullName))

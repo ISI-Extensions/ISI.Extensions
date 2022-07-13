@@ -49,6 +49,26 @@ namespace ISI.Extensions.Nuget
 				.NullCheckedSelectMany(nugetPackageKey => nugetPackageKey.GetTargetFrameworkAssembly(targetFrameworkVersion)?.Assemblies, NullCheckCollectionResult.Empty)
 				.ToDictionary(assembly => assembly.AssemblyName, assembly => assembly, StringComparer.InvariantCultureIgnoreCase);
 
+			bool doCheckWildcardRemoveAssemblyRedirect = removeAssemblyRedirects.Any(removeAssemblyRedirect => removeAssemblyRedirect.EndsWith("*", StringComparison.InvariantCultureIgnoreCase));
+
+			bool isRemoveAssemblyRedirectsWildcardMatch(string assemblyName)
+			{
+				if (doCheckWildcardRemoveAssemblyRedirect)
+				{
+					while (!string.IsNullOrWhiteSpace(assemblyName))
+					{
+						if (removeAssemblyRedirects.Contains(string.Format("{0}*", assemblyName)))
+						{
+							return true;
+						}
+
+						assemblyName = assemblyName.Substring(0, assemblyName.Length - 1);
+					}
+				}
+
+				return false;
+			}
+
 			if (assemblyBindingElement != null)
 			{
 				foreach (var dependentAssembly in assemblyBindingElement.GetElementsByLocalName("dependentAssembly"))
@@ -59,7 +79,7 @@ namespace ISI.Extensions.Nuget
 					var assemblyName = assemblyIdentity.GetAttributeByLocalName("name")?.Value ?? string.Empty;
 					var newVersion = bindingRedirect.GetAttributeByLocalName("newVersion")?.Value ?? string.Empty;
 
-					if (removeAssemblyRedirects.Contains(assemblyName))
+					if (removeAssemblyRedirects.Contains(assemblyName) || isRemoveAssemblyRedirectsWildcardMatch(assemblyName))
 					{
 						dependentAssembly.Remove();
 					}

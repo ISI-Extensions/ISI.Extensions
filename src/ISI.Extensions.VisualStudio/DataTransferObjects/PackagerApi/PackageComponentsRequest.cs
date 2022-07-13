@@ -27,6 +27,7 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi
 		public MSBuildVersion BuildVersion { get; set; } = MSBuildVersion.MSBuild16;
 		public MSBuildPlatform BuildPlatform { get; set; } = MSBuildPlatform.Automatic;
 		public BuildPlatformTarget PlatformTarget { get; set; } = BuildPlatformTarget.MSIL;
+		public MSBuildVerbosity BuildVerbosity { get; set; } = MSBuildVerbosity.Quiet;
 
 		public string SubDirectory { get; set; }
 

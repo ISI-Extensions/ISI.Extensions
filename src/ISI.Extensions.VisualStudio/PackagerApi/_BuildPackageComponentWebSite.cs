@@ -26,7 +26,7 @@ namespace ISI.Extensions.VisualStudio
 {
 	public partial class PackagerApi
 	{
-		private void BuildPackageComponentWebSite(Microsoft.Extensions.Logging.ILogger logger, string configuration, MSBuildVersion buildVersion, MSBuildPlatform buildPlatform, BuildPlatformTarget platformTarget, string packageComponentsDirectory, AssemblyVersionFileDictionary assemblyVersionFiles, DTOs.PackageComponentWebSite packageComponent)
+		private void BuildPackageComponentWebSite(Microsoft.Extensions.Logging.ILogger logger, string configuration, MSBuildVersion buildVersion, MSBuildPlatform buildPlatform, BuildPlatformTarget platformTarget, MSBuildVerbosity buildVerbosity, string packageComponentsDirectory, AssemblyVersionFileDictionary assemblyVersionFiles, DTOs.PackageComponentWebSite packageComponent)
 		{
 			var projectName = System.IO.Path.GetFileNameWithoutExtension(packageComponent.ProjectFullName);
 			var projectDirectory = System.IO.Path.GetDirectoryName(packageComponent.ProjectFullName);
@@ -63,7 +63,7 @@ namespace ISI.Extensions.VisualStudio
 						};
 
 						msBuildRequest.Options.Configuration = configuration;
-						msBuildRequest.Options.Verbosity = MSBuildVerbosity.Quiet;
+						msBuildRequest.Options.Verbosity = buildVerbosity;
 						msBuildRequest.Options.Properties.Add("DebugSymbols", "true");
 						msBuildRequest.Options.Properties.Add("OutputPath", System.IO.Path.Combine(buildDirectory, "bin"));
 						msBuildRequest.Options.Properties.Add("DeployOnBuild", "true");

@@ -28,25 +28,30 @@ namespace ISI.Extensions
 			public class TempDirectory : IDisposable
 			{
 				public string FullName { get; }
+				public bool DeleteDirectory { get; set; }
 
 				public TempDirectory()
 				{
 					FullName = GetTempDirectoryName();
+					DeleteDirectory = true;
 				}
 
 				public void Dispose()
 				{
-					var directoryInfo = new System.IO.DirectoryInfo(FullName)
+					if (DeleteDirectory)
 					{
-						Attributes = System.IO.FileAttributes.Normal
-					};
+						var directoryInfo = new System.IO.DirectoryInfo(FullName)
+						{
+							Attributes = System.IO.FileAttributes.Normal
+						};
 
-					foreach (var fileSystemInfo in directoryInfo.GetFileSystemInfos("*", System.IO.SearchOption.AllDirectories))
-					{
-						fileSystemInfo.Attributes = System.IO.FileAttributes.Normal;
+						foreach (var fileSystemInfo in directoryInfo.GetFileSystemInfos("*", System.IO.SearchOption.AllDirectories))
+						{
+							fileSystemInfo.Attributes = System.IO.FileAttributes.Normal;
+						}
+
+						System.IO.Directory.Delete(FullName, true);
 					}
-
-					System.IO.Directory.Delete(FullName, true);
 				}
 			}
 		}

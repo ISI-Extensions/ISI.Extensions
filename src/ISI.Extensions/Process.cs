@@ -155,9 +155,11 @@ namespace ISI.Extensions
 				{
 					var data = dataReceivedEventArgs.Data;
 
-					if (!string.IsNullOrEmpty(data))
+					if (!string.IsNullOrWhiteSpace(data))
 					{
 						output.AppendLine(data);
+
+						data = data.Replace("{", "{{").Replace("}", "}}");
 
 						request.Logger.LogInformation(data);
 					}
@@ -170,6 +172,8 @@ namespace ISI.Extensions
 					if (!string.IsNullOrEmpty(data))
 					{
 						output.AppendLine(data);
+
+						data = data.Replace("{", "{{").Replace("}", "}}");
 
 						request.Logger.LogError(data);
 					}

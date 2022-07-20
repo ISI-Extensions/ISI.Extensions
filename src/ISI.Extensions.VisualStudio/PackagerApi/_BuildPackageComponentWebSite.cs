@@ -75,6 +75,24 @@ namespace ISI.Extensions.VisualStudio
 
 						MSBuildApi.MSBuild(msBuildRequest);
 
+						if ((buildVerbosity == MSBuildVerbosity.Verbose) || (buildVerbosity == MSBuildVerbosity.Diagnostic))
+						{
+							tempBuildDirectory.DeleteDirectory = false;
+							tempPublishDirectory.DeleteDirectory = false;
+
+							logger.LogInformation(string.Format("buildDirectory = \"{0}\"", buildDirectory));
+							foreach(var fileName in System.IO.Directory.GetFiles(buildDirectory, "*", System.IO.SearchOption.AllDirectories))
+							{
+								logger.LogInformation(string.Format("  {0}", fileName));
+							}
+
+							logger.LogInformation(string.Format("publishDirectory = \"{0}\"", publishDirectory));
+							foreach(var fileName in System.IO.Directory.GetFiles(publishDirectory, "*", System.IO.SearchOption.AllDirectories))
+							{
+								logger.LogInformation(string.Format("  {0}", fileName));
+							}
+						}
+
 						System.IO.Directory.CreateDirectory(packageComponentDirectory);
 
 						if (!string.IsNullOrWhiteSpace(packageComponent.IconFullName) && System.IO.File.Exists(packageComponent.IconFullName))

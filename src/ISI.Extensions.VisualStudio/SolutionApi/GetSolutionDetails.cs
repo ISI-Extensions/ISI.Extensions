@@ -123,6 +123,20 @@ namespace ISI.Extensions.VisualStudio
 				}
 
 				response.SolutionDetails.ProjectDetailsSet = projectDetailsSet.ToArray();
+
+				var solutionFilterDetailsSet = new List<SolutionFilterDetails>();
+
+				foreach (var solutionFilterFullName in System.IO.Directory.EnumerateFiles(response.SolutionDetails.SolutionDirectory, "*.slnf", System.IO.SearchOption.TopDirectoryOnly))
+				{
+					solutionFilterDetailsSet.Add(new SolutionFilterDetails()
+					{
+						SolutionFilterName = System.IO.Path.GetFileNameWithoutExtension(solutionFilterFullName),
+						SolutionFilterDirectory = response.SolutionDetails.SolutionDirectory,
+						SolutionFilterFullName = solutionFilterFullName,
+					});
+				}
+
+				response.SolutionDetails.SolutionFilterDetailsSet = solutionFilterDetailsSet.ToArray();
 			}
 
 			return response;

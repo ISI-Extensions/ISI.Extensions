@@ -20,11 +20,41 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
+namespace ISI.Extensions.VisualStudio
 {
-	public partial class OpenSolutionRequest
+	public partial class VisualStudioSettings
 	{
-		public string Solution { get; set; }
-		public string SolutionFilter { get; set; }
+		public void UpdatePreviouslySelectedSolutionFilterKeys(IEnumerable<string> removeSolutionFilterKeys, IEnumerable<string> addSolutionFilterKeys)
+		{
+			Save(settings =>
+			{
+				var solutionFilterKeys = new HashSet<string>((settings.PreviouslySelectedSolutionFilterKeys ?? Array.Empty<string>()), StringComparer.InvariantCultureIgnoreCase);
+
+				if (removeSolutionFilterKeys != null)
+				{
+					foreach (var removeSolutionFilterKey in removeSolutionFilterKeys)
+					{
+						solutionFilterKeys.RemoveWhere(solutionFilterKey => string.Equals(solutionFilterKey, removeSolutionFilterKey, StringComparison.InvariantCultureIgnoreCase));
+					}
+				}
+
+				if (addSolutionFilterKeys != null)
+				{
+					foreach (var addSolutionFilterKey in addSolutionFilterKeys)
+					{
+						solutionFilterKeys.Add(addSolutionFilterKey);
+					}
+				}
+
+				if (!settings.PreviouslySelectedSolutionFilterKeys.Equals(solutionFilterKeys, StringComparer.InvariantCultureIgnoreCase, true))
+				{
+					settings.PreviouslySelectedSolutionFilterKeys = solutionFilterKeys.ToArray();
+
+					return true;
+				}
+
+				return false;
+			});
+		}
 	}
 }

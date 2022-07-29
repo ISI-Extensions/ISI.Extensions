@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,16 +15,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
+namespace ISI.Extensions.VisualStudio
 {
-	public partial class OpenSolutionRequest
+	public class SolutionFilterDetails
 	{
-		public string Solution { get; set; }
-		public string SolutionFilter { get; set; }
+		public string SolutionFilterName { get; set; }
+		public string SolutionFilterDirectory { get; set; }
+		public string SolutionFilterFullName { get; set; }
 	}
 }

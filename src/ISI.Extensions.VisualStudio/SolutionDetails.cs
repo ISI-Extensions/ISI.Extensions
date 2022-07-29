@@ -27,6 +27,7 @@ namespace ISI.Extensions.VisualStudio
 		public string RootSourceDirectory { get; set; }
 
 		public ProjectDetails[] ProjectDetailsSet { get; set; }
+		public SolutionFilterDetails[] SolutionFilterDetailsSet { get; set; }
 
 		public int UpdateNugetPackagesPriority { get; set; } = int.MaxValue;
 		public string ExecuteBuildScriptTargetAfterUpdateNugetPackages { get; set; }

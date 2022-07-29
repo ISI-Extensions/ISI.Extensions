@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,13 +18,53 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
+namespace ISI.Extensions.VisualStudio.Forms
 {
-	public partial class OpenSolutionRequest
+	public class SolutionFilterKey
 	{
-		public string Solution { get; set; }
-		public string SolutionFilter { get; set; }
+		public const string Delimiter = "=>";
+
+		public string SolutionFullName { get; }
+		public string SolutionFilterFullName { get; }
+		public string Value { get; }
+
+		protected Action OnChangeSelected { get; set; } = null;
+		private bool _selected = false;
+		public bool Selected
+		{
+			get => _selected;
+			set
+			{
+				if (_selected != value)
+				{
+					_selected = value;
+					OnChangeSelected?.Invoke();
+				}
+			}
+		}
+
+		public SolutionFilterKey(string solutionFullName, string solutionFilterFullName)
+		{
+			SolutionFullName = solutionFullName.Trim();
+			SolutionFilterFullName = solutionFilterFullName.Trim();
+
+			Value = string.Format("{0}{1}{2}", SolutionFullName, Delimiter, SolutionFilterFullName);
+		}
+
+		public SolutionFilterKey(string solutionFilterKey)
+		{
+			var pieces = solutionFilterKey.Split(new[] { Delimiter }, StringSplitOptions.None).Select(piece => piece.Trim()).ToArray();
+
+			SolutionFullName = pieces[0].Trim();
+			SolutionFilterFullName = pieces[1].Trim();
+
+			Value = string.Format("{0}{1}{2}", SolutionFullName, Delimiter, SolutionFilterFullName);
+		}
+
+		public override string ToString()
+		{
+			return Value;
+		}
 	}
 }

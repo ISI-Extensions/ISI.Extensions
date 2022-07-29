@@ -29,10 +29,39 @@ namespace ISI.Extensions.VisualStudio
 		public DTOs.OpenSolutionResponse OpenSolution(DTOs.OpenSolutionRequest request)
 		{
 			var response = new DTOs.OpenSolutionResponse();
-			
-			if (request.Solution.EndsWith(".sln", StringComparison.InvariantCultureIgnoreCase))
+
+			var solutionFileName = string.Empty;
+
+			if (!string.IsNullOrWhiteSpace(request.SolutionFilter))
 			{
-				ISI.Extensions.IO.Path.FileOpen(request.Solution, ISI.Extensions.IO.FileOpenAction.Open);
+				if (request.SolutionFilter.EndsWith(".slnf", StringComparison.InvariantCultureIgnoreCase))
+				{
+					solutionFileName = request.SolutionFilter;
+				}
+				else
+				{
+					var solutionSourceDirectory = GetSolutionDetails(new DTOs.GetSolutionDetailsRequest()
+					{
+						Solution = request.Solution,
+					}).SolutionDetails.SolutionDirectory;
+
+					if (System.IO.Directory.Exists(solutionSourceDirectory))
+					{
+						if (!System.IO.Directory.GetFiles(solutionSourceDirectory, "*.slnf").Any())
+						{
+							solutionSourceDirectory = System.IO.Path.Combine(solutionSourceDirectory, "src");
+						}
+
+						if (System.IO.Directory.Exists(solutionSourceDirectory))
+						{
+							solutionFileName = System.IO.Directory.GetFiles(solutionSourceDirectory, "*.slnf").NullCheckedFirstOrDefault(solutionFilterFullName => string.Equals(System.IO.Path.GetFileNameWithoutExtension(solutionFilterFullName), request.SolutionFilter, StringComparison.InvariantCultureIgnoreCase));
+						}
+					}
+				}
+			}
+			else if (request.Solution.EndsWith(".sln", StringComparison.InvariantCultureIgnoreCase))
+			{
+				solutionFileName = request.Solution;
 			}
 			else
 			{
@@ -50,14 +79,14 @@ namespace ISI.Extensions.VisualStudio
 
 					if (System.IO.Directory.Exists(solutionSourceDirectory))
 					{
-						var solutionFileName = System.IO.Directory.GetFiles(solutionSourceDirectory, "*.sln").FirstOrDefault();
-
-						if (!string.IsNullOrEmpty(solutionFileName))
-						{
-							ISI.Extensions.IO.Path.FileOpen(solutionFileName, ISI.Extensions.IO.FileOpenAction.Open);
-						}
+						solutionFileName = System.IO.Directory.GetFiles(solutionSourceDirectory, "*.sln").FirstOrDefault();
 					}
 				}
+			}
+
+			if (!string.IsNullOrEmpty(solutionFileName))
+			{
+				ISI.Extensions.IO.Path.FileOpen(solutionFileName, ISI.Extensions.IO.FileOpenAction.Open);
 			}
 
 			return response;

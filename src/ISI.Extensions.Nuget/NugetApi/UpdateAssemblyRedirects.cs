@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,25 +76,28 @@ namespace ISI.Extensions.Nuget
 					var assemblyIdentity = dependentAssembly.GetElementByLocalName("assemblyIdentity");
 					var bindingRedirect = dependentAssembly.GetElementByLocalName("bindingRedirect");
 
-					var assemblyName = assemblyIdentity.GetAttributeByLocalName("name")?.Value ?? string.Empty;
-					var newVersion = bindingRedirect.GetAttributeByLocalName("newVersion")?.Value ?? string.Empty;
-
-					if (removeAssemblyRedirects.Contains(assemblyName) || isRemoveAssemblyRedirectsWildcardMatch(assemblyName))
+					if (bindingRedirect != null)
 					{
-						dependentAssembly.Remove();
-					}
-					else
-					{
-						upsertAssemblies.Remove(assemblyName);
+						var assemblyName = assemblyIdentity.GetAttributeByLocalName("name")?.Value ?? string.Empty;
+						var newVersion = bindingRedirect.GetAttributeByLocalName("newVersion")?.Value ?? string.Empty;
 
-						foreach (var nugetPackageKey in nugetPackageKeys)
+						if (removeAssemblyRedirects.Contains(assemblyName) || isRemoveAssemblyRedirectsWildcardMatch(assemblyName))
 						{
-							var assembly = nugetPackageKey.GetTargetFrameworkAssembly(targetFrameworkVersion)?.Assemblies.NullCheckedFirstOrDefault(a => string.Equals(a.AssemblyName, assemblyName, StringComparison.InvariantCultureIgnoreCase));
+							dependentAssembly.Remove();
+						}
+						else
+						{
+							upsertAssemblies.Remove(assemblyName);
 
-							if (!string.IsNullOrWhiteSpace(assembly?.AssemblyVersion) && !string.Equals(assembly.AssemblyVersion, newVersion))
+							foreach (var nugetPackageKey in nugetPackageKeys)
 							{
-								bindingRedirect.Attribute("oldVersion").Value = string.Format("0.0.0.0-{0}", assembly.AssemblyVersion);
-								bindingRedirect.Attribute("newVersion").Value = assembly.AssemblyVersion;
+								var assembly = nugetPackageKey.GetTargetFrameworkAssembly(targetFrameworkVersion)?.Assemblies.NullCheckedFirstOrDefault(a => string.Equals(a.AssemblyName, assemblyName, StringComparison.InvariantCultureIgnoreCase));
+
+								if (!string.IsNullOrWhiteSpace(assembly?.AssemblyVersion) && !string.Equals(assembly.AssemblyVersion, newVersion))
+								{
+									bindingRedirect.Attribute("oldVersion").Value = string.Format("0.0.0.0-{0}", assembly.AssemblyVersion);
+									bindingRedirect.Attribute("newVersion").Value = assembly.AssemblyVersion;
+								}
 							}
 						}
 					}

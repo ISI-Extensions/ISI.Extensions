@@ -31,6 +31,9 @@ namespace ISI.Extensions.VisualStudio.SerializableModels
 		[DataMember(Name = "maxCheckDirectoryDepth", EmitDefaultValue = false)]
 		public int MaxCheckDirectoryDepth { get; set; } = 5;
 
+		[DataMember(Name = "previouslySelectedSolutionFilterKeys", EmitDefaultValue = false)]
+		public string[] PreviouslySelectedSolutionFilterKeys { get; set; }
+
 		[DataMember(Name = "refreshSolutionsExcludePathFilters", EmitDefaultValue = false)]
 		public string[] RefreshSolutionsExcludePathFilters { get; set; }
 

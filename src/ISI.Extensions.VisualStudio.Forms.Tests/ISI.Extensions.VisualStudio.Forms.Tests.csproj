@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7286DCF9-526F-4EA3-B982-86A4B9E94850}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>ISI.Extensions.VisualStudio.Forms.Tests</RootNamespace>
+    <AssemblyName>ISI.Extensions.VisualStudio.Forms.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ISI.Extensions.Cake\ISI.Extensions.Cake.csproj">
+      <Project>{fb861b75-7b2d-4d3f-93fc-87e2667a516c}</Project>
+      <Name>ISI.Extensions.Cake</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ISI.Extensions.DependencyInjection.Iunq\ISI.Extensions.DependencyInjection.Iunq.csproj">
+      <Project>{ff583614-56d3-47b4-9eb2-6e7a9c846a6f}</Project>
+      <Name>ISI.Extensions.DependencyInjection.Iunq</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ISI.Extensions.Git\ISI.Extensions.Git.csproj">
+      <Project>{f74ceb8a-b302-4a89-8310-9c1d964f3f6b}</Project>
+      <Name>ISI.Extensions.Git</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ISI.Extensions.Jenkins.Forms\ISI.Extensions.Jenkins.Forms.csproj">
+      <Project>{701672a4-a4c1-4560-ae06-cd2ae1ad472b}</Project>
+      <Name>ISI.Extensions.Jenkins.Forms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ISI.Extensions.Jenkins\ISI.Extensions.Jenkins.csproj">
+      <Project>{b857b791-3f8a-445c-8f9d-2619b2689019}</Project>
+      <Name>ISI.Extensions.Jenkins</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ISI.Extensions.JsonSerialization.Newtonsoft\ISI.Extensions.JsonSerialization.Newtonsoft.csproj">
+      <Project>{15c487cf-813d-4855-bf94-39d39b90551d}</Project>
+      <Name>ISI.Extensions.JsonSerialization.Newtonsoft</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ISI.Extensions.Nuget\ISI.Extensions.Nuget.csproj">
+      <Project>{caef609e-9d95-4ca3-9044-eab1ec41bc69}</Project>
+      <Name>ISI.Extensions.Nuget</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ISI.Extensions.Scm\ISI.Extensions.Scm.csproj">
+      <Project>{0876c2a7-4873-4c4d-88d2-4142bde31c03}</Project>
+      <Name>ISI.Extensions.Scm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ISI.Extensions.Svn\ISI.Extensions.Svn.csproj">
+      <Project>{71545b03-6b5c-4a70-af52-a372075a3d05}</Project>
+      <Name>ISI.Extensions.Svn</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ISI.Extensions.VisualStudio.Forms\ISI.Extensions.VisualStudio.Forms.csproj">
+      <Project>{adec366d-0af8-4f00-b16a-33121f8d7232}</Project>
+      <Name>ISI.Extensions.VisualStudio.Forms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ISI.Extensions.VisualStudio\ISI.Extensions.VisualStudio.csproj">
+      <Project>{6b55f503-9291-4d3a-bbe7-8a29c752f7e3}</Project>
+      <Name>ISI.Extensions.VisualStudio</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj">
+      <Project>{09cea440-36de-4036-8c18-be4e476c1477}</Project>
+      <Name>ISI.Extensions</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
+      <Version>6.0.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

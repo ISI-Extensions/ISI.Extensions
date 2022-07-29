@@ -88,6 +88,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 		}
 
 		protected internal SolutionProject[] SolutionProjects { get; }
+		protected internal SolutionFilter[] SolutionFilters { get; }
 
 		protected Action OnChangeSelected { get; set; }
 
@@ -310,7 +311,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 		public System.Windows.Forms.Control Panel { get; }
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 
-		public Solution(string solutionFullName, System.Windows.Forms.Control parentControl, bool highlighted, bool selected, Action<Solution> start, IEnumerable<ProjectKey> projectKeys, bool waitForExecuteProjectResponse, Action onChangeSelected, Microsoft.Extensions.Logging.ILogger logger = null)
+		public Solution(string solutionFullName, System.Windows.Forms.Control parentControl, bool highlighted, bool selected, Action<Solution> start, IEnumerable<ProjectKey> projectKeys, bool showSolutionFilterKeys, bool waitForExecuteProjectResponse, Action onChangeSelected, Microsoft.Extensions.Logging.ILogger logger = null)
 		{
 			Logger = logger ?? new ISI.Extensions.ConsoleLogger();
 
@@ -343,6 +344,25 @@ namespace ISI.Extensions.VisualStudio.Forms
 			{
 				Project = projectKey.ProjectFullName,
 			}).ProjectName, StringComparer.InvariantCultureIgnoreCase).Select(projectKey => new SolutionProject(this, projectKey, start, waitForExecuteProjectResponse, projectKey.Selected, () => OnChangeSelected?.Invoke())).ToArray();
+
+			if (showSolutionFilterKeys)
+			{
+				var previouslySelectedSolutionFilterKeys = new HashSet<string>(VisualStudioSettings.GetPreviouslySelectedSolutionFilterKeys(), StringComparer.InvariantCultureIgnoreCase);
+
+				var solutionFilters = SolutionDetails.SolutionFilterDetailsSet
+					.NullCheckedOrderBy(solutionFilterDetails => System.IO.Path.GetFileNameWithoutExtension(solutionFilterDetails.SolutionFilterFullName))
+					.ToNullCheckedArray(solutionFilterDetails => new SolutionFilter(this, new SolutionFilterKey(SolutionDetails.SolutionFullName, solutionFilterDetails.SolutionFilterFullName), null, previouslySelectedSolutionFilterKeys.Contains(solutionFilterDetails.SolutionFilterFullName), () => OnChangeSelected?.Invoke()))
+					.ToList();
+
+				if (solutionFilters.Any())
+				{
+					solutionFilters.Insert(0, new SolutionFilter(this, new SolutionFilterKey(SolutionDetails.SolutionFullName, SolutionDetails.SolutionFullName), null, previouslySelectedSolutionFilterKeys.Contains(SolutionDetails.SolutionFullName), () => OnChangeSelected?.Invoke()));
+				}
+
+				SolutionFilters = solutionFilters.ToArray();
+			}
+
+			SolutionFilters ??= Array.Empty<SolutionFilter>();
 
 			PopulatePanel(highlighted, start);
 
@@ -386,6 +406,21 @@ namespace ISI.Extensions.VisualStudio.Forms
 					solutionProject.Panel.Left = 0;
 					top += solutionProject.Panel.Height;
 					Panel.Controls.Add(solutionProject.Panel);
+				}
+			}
+
+			if (SolutionFilters.Any())
+			{
+				var top = SolutionPanel.Height;
+
+				Panel.Height += SolutionFilters.Sum(solutionFilter => solutionFilter.Panel.Height);
+
+				foreach (var solutionFilter in SolutionFilters.OrderBy(solutionFilter => string.Format("{0} => {1}", (string.Equals(Caption, solutionFilter.Caption, StringComparison.InvariantCultureIgnoreCase) ? "A" : "B"), solutionFilter.Caption), StringComparer.InvariantCultureIgnoreCase))
+				{
+					solutionFilter.Panel.Top = top;
+					solutionFilter.Panel.Left = 0;
+					top += solutionFilter.Panel.Height;
+					Panel.Controls.Add(solutionFilter.Panel);
 				}
 			}
 
@@ -457,9 +492,12 @@ namespace ISI.Extensions.VisualStudio.Forms
 			};
 			OpenButton.Click += (_, __) =>
 			{
+				var solutionFilterFullName = SolutionFilters.NullCheckedFirstOrDefault(solutionFilter => solutionFilter.Selected)?.SolutionFilterFullName;
+
 				Task.Run(() => SolutionApi.OpenSolution(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.OpenSolutionRequest()
 				{
 					Solution = SolutionDetails.SolutionDirectory,
+					SolutionFilter = solutionFilterFullName,
 				}));
 			};
 			SolutionPanel.Controls.Add(OpenButton);

@@ -317,7 +317,7 @@ namespace ISI.Extensions.VisualStudio
 								AddToLog = description => Logger.LogInformation(description),
 							}).Success)
 							{
-								var exception = new Exception(string.Format("Error commiting \"{0}\"", solutionDetails.RootSourceDirectory));
+								var exception = new Exception(string.Format("Error committing \"{0}\"", solutionDetails.RootSourceDirectory));
 								logger.LogError(exception.Message);
 								throw exception;
 							}

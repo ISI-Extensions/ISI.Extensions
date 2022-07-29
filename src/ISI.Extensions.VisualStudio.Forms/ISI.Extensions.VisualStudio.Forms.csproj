@@ -50,6 +50,7 @@
       <DependentUpon>BuildOptionsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Extensions\TaskActionStatusExtensions.cs" />
+    <Compile Include="SolutionFilterKey.cs" />
     <Compile Include="ProjectKey.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\ISI.Extensions.AssemblyInfo.cs">
@@ -62,6 +63,7 @@
     <Compile Include="RunMigrationTools.cs" />
     <Compile Include="RunWindowsServices.cs" />
     <Compile Include="Solution.cs" />
+    <Compile Include="SolutionFilter.cs" />
     <Compile Include="SolutionProject.cs" />
     <Compile Include="SolutionsForm.cs">
       <SubType>Form</SubType>

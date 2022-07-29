@@ -18,13 +18,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
+namespace ISI.Extensions.VisualStudio
 {
-	public partial class OpenSolutionRequest
+	public partial class VisualStudioSettings
 	{
-		public string Solution { get; set; }
-		public string SolutionFilter { get; set; }
+		public string[] GetPreviouslySelectedSolutionFilterKeys()
+		{
+			return Load()?.PreviouslySelectedSolutionFilterKeys ?? Array.Empty<string>();
+		}
 	}
 }

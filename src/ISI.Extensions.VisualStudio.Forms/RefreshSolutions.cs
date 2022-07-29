@@ -48,7 +48,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 				var excludedPathFilters = VisualStudioSettings.GetRefreshSolutionsExcludePathFilters();
 				var solutionFileNames = new System.Collections.Concurrent.ConcurrentBag<string>();
-				var maxCheckDirectoryDepth = VisualStudioSettings.GetMaxCheckDirectoryDepth() - 1;
+				var maxCheckDirectoryDepth = VisualStudioSettings.GetMaxCheckDirectoryDepth() - 1; 
 
 				Parallel.ForEach(selectedItemPaths, selectedItemPath =>
 				{
@@ -73,13 +73,11 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 				var selectAll = !solutions.Values.Any(value => value);
 
-				//foreach (var solution in solutions.OrderBy(solution => solution.Key, StringComparer.InvariantCultureIgnoreCase))
 				foreach (var solution in solutions)
 				{
-					context.Solutions.Add(new Solution(solution.Key, form.SolutionsPanel, (context.Solutions.Count % 2 == 1), selectAll || solution.Value, start, null, false, OnChangedSelection));
+					context.Solutions.Add(new Solution(solution.Key, form.SolutionsPanel, (context.Solutions.Count % 2 == 1), selectAll || solution.Value, start, null, true, false, OnChangedSelection));
 				}
 
-				//form.SolutionsPanel.Controls.AddRange(context.Solutions.OrderBy(solution => solution.Caption, StringComparer.InvariantCultureIgnoreCase).Select(solution => solution.Panel).ToArray());
 				form.SolutionsPanel.Controls.AddRange(context.Solutions.Select(solution => solution.Panel).ToArray());
 
 				OnChangedSelection();
@@ -89,6 +87,11 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 			void UpdatePreviouslySelectedSolutions(SolutionsForm form)
 			{
+				var removeSolutionFilterKeys = form.SolutionsContext.Solutions.SelectMany(solution => solution.SolutionFilters.Select(solutionFilter => solutionFilter.SolutionFilterKey));
+				var addSolutionFilterKeys = form.SolutionsContext.Solutions.Where(solution => solution.Selected).SelectMany(solution => solution.SolutionFilters.Where(solutionFilter => solutionFilter.Selected).Select(solutionFilter => solutionFilter.SolutionFilterKey));
+
+				VisualStudioSettings.UpdatePreviouslySelectedSolutionFilterKeys(removeSolutionFilterKeys.Select(solutionFilterKey => solutionFilterKey.Value), addSolutionFilterKeys.Select(solutionFilterKey => solutionFilterKey.Value));
+
 				var removeSolutions = form.SolutionsContext.Solutions.Select(solution => solution.SolutionDetails.SolutionFullName);
 				var addSolutions = form.SolutionsContext.Solutions.Where(solution => solution.Selected).Select(solution => solution.SolutionDetails.SolutionFullName);
 

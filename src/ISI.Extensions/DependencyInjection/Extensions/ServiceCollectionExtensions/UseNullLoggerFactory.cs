@@ -26,7 +26,7 @@ namespace ISI.Extensions.DependencyInjection.Extensions
 {
 	public static partial class ServiceCollectionExtensions
 	{
-		public static Microsoft.Extensions.DependencyInjection.IServiceCollection LoggerFactory(this Microsoft.Extensions.DependencyInjection.IServiceCollection services)
+		public static Microsoft.Extensions.DependencyInjection.IServiceCollection UseNullLoggerFactory(this Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
 			services.AddSingleton<Microsoft.Extensions.Logging.ILoggerFactory, Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory>();
 

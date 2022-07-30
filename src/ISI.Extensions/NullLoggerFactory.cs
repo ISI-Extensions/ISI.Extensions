@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,22 +15,25 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.TypeLocator.Extensions;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.DependencyInjection.Extensions
+namespace ISI.Extensions
 {
-	public static partial class ServiceCollectionExtensions
+	public class NullLoggerFactory : Microsoft.Extensions.Logging.ILoggerFactory
 	{
-		public static Microsoft.Extensions.DependencyInjection.IServiceCollection UseNullLoggerFactory(this Microsoft.Extensions.DependencyInjection.IServiceCollection services)
+		public Microsoft.Extensions.Logging.ILogger CreateLogger(string categoryName)
 		{
-			services.AddSingleton<Microsoft.Extensions.Logging.ILoggerFactory, ISI.Extensions.NullLoggerFactory>();
+			return new ISI.Extensions.NullLogger();
+		}
 
-			return services;
+		public void AddProvider(Microsoft.Extensions.Logging.ILoggerProvider provider)
+		{
+		}
+
+		public void Dispose()
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

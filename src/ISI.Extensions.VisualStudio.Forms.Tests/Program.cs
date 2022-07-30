@@ -47,7 +47,8 @@ namespace ISI.Extensions.VisualStudio.Forms.Tests
 
 			var selectedItemPaths = new[]
 			{
-				@"F:\ISI\Clients\TFS\Tristar.Scheduler\src",
+				@"F:\ISI\Clients\TFS\Tristar.Scheduler\",
+				@"F:\ISI\Clients\TFS\Tristar.Portal\",
 			};
 
 			System.Windows.Forms.Application.EnableVisualStyles();

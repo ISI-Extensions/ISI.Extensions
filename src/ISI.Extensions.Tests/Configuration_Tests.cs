@@ -13,37 +13,42 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
+using ISI.Extensions.ConfigurationHelper.Extensions;
+using ISI.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Configuration;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.Tests
 {
-	public class ConfigurationValueReader
+	[TestFixture]
+	public class Configuration_Tests
 	{
-		private static readonly IDictionary<string, ISI.Extensions.ConfigurationValueReaders.IConfigurationValueReader> _valueGetters = new Dictionary<string, ISI.Extensions.ConfigurationValueReaders.IConfigurationValueReader>(StringComparer.InvariantCultureIgnoreCase)
+		[Test]
+		public void ApplyConfigurationValueReaders_Test()
 		{
-			{ISI.Extensions.ConfigurationValueReaders.EmbeddedFileConfigurationValueReader.Prefix , new ISI.Extensions.ConfigurationValueReaders.EmbeddedFileConfigurationValueReader() },
-			{ISI.Extensions.ConfigurationValueReaders.EnvironmentVariableConfigurationValueReader.Prefix , new ISI.Extensions.ConfigurationValueReaders.EnvironmentVariableConfigurationValueReader() },
-			{ISI.Extensions.ConfigurationValueReaders.FileConfigurationValueReader.Prefix , new ISI.Extensions.ConfigurationValueReaders.FileConfigurationValueReader() },
-			{ISI.Extensions.ConfigurationValueReaders.FileNameDeMaskedConfigurationValueReader.Prefix , new ISI.Extensions.ConfigurationValueReaders.FileNameDeMaskedConfigurationValueReader() },
-		};
+			var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
 
-		public static string GetValue(string value)
-		{
-			var parsedValue = new ISI.Extensions.ConfigurationValueReaders.ParsedValue(value);
+			var configurationsPath = string.Format("Configuration{0}", System.IO.Path.DirectorySeparatorChar);
 
-			while (true)
-			{
-				if (!string.IsNullOrWhiteSpace(parsedValue.Prefix) && _valueGetters.TryGetValue(parsedValue.Prefix, out var valueGetter))
-				{
-					parsedValue = new ISI.Extensions.ConfigurationValueReaders.ParsedValue(valueGetter.GetValue(parsedValue));
-				}
-				else
-				{
-					return parsedValue.Value;
-				}
-			}
+			var activeEnvironment = configurationBuilder.GetActiveEnvironmentConfig($"{configurationsPath}isi.extensions.environmentsConfig.json");
+
+			//configurationBuilder.SetBasePath(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
+			configurationBuilder.AddJsonFile("appsettings.json", optional: false);
+			configurationBuilder.AddJsonFiles(activeEnvironment.ActiveEnvironments, environment => $"appsettings.{environment}.json");
+			//configurationBuilder.AddDataPathJsonFile(System.IO.Path.Combine("ISI.Extensions.Tests", "appsettings.json"));
+			
+			var configuration = configurationBuilder.Build().ApplyConfigurationValueReaders();
+
+			var configurationTest = configuration.GetConfiguration<ISI.Extensions.Tests.Configuration>();
+
+
 		}
 	}
 }

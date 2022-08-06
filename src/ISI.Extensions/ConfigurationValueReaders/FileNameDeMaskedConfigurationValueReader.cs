@@ -17,33 +17,17 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.ConfigurationValueReaders
 {
-	public class ConfigurationValueReader
+	public class FileNameDeMaskedConfigurationValueReader : IConfigurationValueReader
 	{
-		private static readonly IDictionary<string, ISI.Extensions.ConfigurationValueReaders.IConfigurationValueReader> _valueGetters = new Dictionary<string, ISI.Extensions.ConfigurationValueReaders.IConfigurationValueReader>(StringComparer.InvariantCultureIgnoreCase)
-		{
-			{ISI.Extensions.ConfigurationValueReaders.EmbeddedFileConfigurationValueReader.Prefix , new ISI.Extensions.ConfigurationValueReaders.EmbeddedFileConfigurationValueReader() },
-			{ISI.Extensions.ConfigurationValueReaders.EnvironmentVariableConfigurationValueReader.Prefix , new ISI.Extensions.ConfigurationValueReaders.EnvironmentVariableConfigurationValueReader() },
-			{ISI.Extensions.ConfigurationValueReaders.FileConfigurationValueReader.Prefix , new ISI.Extensions.ConfigurationValueReaders.FileConfigurationValueReader() },
-			{ISI.Extensions.ConfigurationValueReaders.FileNameDeMaskedConfigurationValueReader.Prefix , new ISI.Extensions.ConfigurationValueReaders.FileNameDeMaskedConfigurationValueReader() },
-		};
+		public const string Prefix = "FileNameDeMasked";
 
-		public static string GetValue(string value)
-		{
-			var parsedValue = new ISI.Extensions.ConfigurationValueReaders.ParsedValue(value);
+		string IConfigurationValueReader.Prefix => Prefix;
 
-			while (true)
-			{
-				if (!string.IsNullOrWhiteSpace(parsedValue.Prefix) && _valueGetters.TryGetValue(parsedValue.Prefix, out var valueGetter))
-				{
-					parsedValue = new ISI.Extensions.ConfigurationValueReaders.ParsedValue(valueGetter.GetValue(parsedValue));
-				}
-				else
-				{
-					return parsedValue.Value;
-				}
-			}
+		public string GetValue(ParsedValue parsedValue)
+		{
+			return ISI.Extensions.IO.Path.GetFileNameDeMasked(parsedValue.Key);
 		}
 	}
 }

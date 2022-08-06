@@ -12,12 +12,14 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+using ISI.Extensions.DependencyInjection.Extensions;
 
 namespace ISI.Extensions
 {
@@ -25,13 +27,22 @@ namespace ISI.Extensions
 	{
 		public class FileNameMask
 		{
+			private static ISI.Extensions.KeyValueStorage.IKeyValueStorageReader _keyValueStorageReader = null;
+			public ISI.Extensions.KeyValueStorage.IKeyValueStorageReader KeyValueStorageReader => _keyValueStorageReader ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.KeyValueStorage.IKeyValueStorageReader>(() => new ISI.Extensions.DependencyInjection.RegistrationDeclarationByMapToType()
+			{
+				MapToType = typeof(ISI.Extensions.SimpleKeyValueStorage),
+				ServiceLifetime = ServiceLifetime.Singleton,
+			});
+
 			internal const string FilePrefix = "file:";
+			internal const string FirstExistingDirectoryPrefix = "firstExistingDirectory:";
 
 			public enum FileNameMaskType
 			{
 				StringReplacement,
 				DateTimeMask,
-				KeyValue
+				KeyValue,
+				FirstExistingDirectory,
 			}
 
 			public string Key { get; } = null;
@@ -72,55 +83,71 @@ namespace ISI.Extensions
 							break;
 
 						case FileNameMaskType.DateTimeMask:
-							var replacementValue = ReplacementValue;
-							if ((dateTimeStamp != null) && (value.IndexOf(Key) >= 0))
 							{
-								replacementValue = dateTimeStamp().GetValueOrDefault().ToString(replacementValue);
-							}
-							else
-							{
-								replacementValue = string.Empty;
-							}
+								var replacementValue = ReplacementValue;
+								if ((dateTimeStamp != null) && (value.IndexOf(Key) >= 0))
+								{
+									replacementValue = dateTimeStamp().GetValueOrDefault().ToString(replacementValue);
+								}
+								else
+								{
+									replacementValue = string.Empty;
+								}
 
-							value = value.Replace(Key, replacementValue);
+								value = value.Replace(Key, replacementValue);
+							}
 							break;
 
 						case FileNameMaskType.KeyValue:
-							var keys = new HashSet<string>();
-
-							var pattern = "\\" + Key.TrimEnd(":}") + "\\:(?<key>[^\\}]+)\\}";
-
-							var regex = new System.Text.RegularExpressions.Regex(pattern);
-
-							var match = regex.Match(value);
-
-							while (match.Success)
 							{
-								keys.Add(match.Groups["key"].Value);
+								var keys = new HashSet<string>();
 
-								match = match.NextMatch();
-							}
+								var pattern = "(?:" + Key.Replace("{{", "\\{{").Replace(":", "\\:") + "(?<key>[^\\}]+)\\})";
 
-							var keyType = Key.TrimStart("{").TrimEnd("}");
+								var regex = new System.Text.RegularExpressions.Regex(pattern);
 
-							if (keys.Any())
-							{
-								if (string.Equals(keyType, FilePrefix, StringComparison.InvariantCultureIgnoreCase))
+								var match = regex.Match(value);
+
+								while (match.Success)
 								{
-									foreach (var key in keys)
+									keys.Add(match.Groups["key"].Value);
+
+									match = match.NextMatch();
+								}
+
+								var keyType = Key.TrimStart("{").TrimEnd("}");
+
+								if (keys.Any())
+								{
+									if (string.Equals(keyType, FilePrefix, StringComparison.InvariantCultureIgnoreCase))
 									{
-										var fileName = ISI.Extensions.IO.Path.GetFileNameDeMasked(key.Trim());
-
-										if (System.IO.File.Exists(fileName))
+										foreach (var key in keys)
 										{
-											replacementValue = System.IO.File.ReadAllText(fileName);
+											var fileName = ISI.Extensions.IO.Path.GetFileNameDeMasked(key.Trim());
 
-											value = value.Replace(string.Format("{{{0}{1}}}", FilePrefix, key), replacementValue);
+											if (System.IO.File.Exists(fileName))
+											{
+												var replacementValue = System.IO.File.ReadAllText(fileName);
+
+												value = value.Replace(string.Format("{{{0}{1}}}", FilePrefix, key), replacementValue);
+											}
 										}
 									}
 								}
 							}
 
+							break;
+
+						case FileNameMaskType.FirstExistingDirectory:
+							{
+								var key = value.Trim().TrimStart(Key).Split(new[] { '}' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+
+								var directories = key.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries).Select(directory => directory.Trim());
+
+								var replacementValue = directories.FirstOrDefault(System.IO.Directory.Exists);
+
+								value = value.Replace(string.Format("{{{0}{1}}}", FirstExistingDirectoryPrefix, key), replacementValue, StringComparer.InvariantCultureIgnoreCase);
+							}
 							break;
 					}
 				}

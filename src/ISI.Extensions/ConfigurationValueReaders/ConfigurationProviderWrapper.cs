@@ -17,33 +17,35 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.ConfigurationValueReaders
 {
-	public class ConfigurationValueReader
+	public class ConfigurationProviderWrapper : Microsoft.Extensions.Configuration.IConfigurationProvider
 	{
-		private static readonly IDictionary<string, ISI.Extensions.ConfigurationValueReaders.IConfigurationValueReader> _valueGetters = new Dictionary<string, ISI.Extensions.ConfigurationValueReaders.IConfigurationValueReader>(StringComparer.InvariantCultureIgnoreCase)
-		{
-			{ISI.Extensions.ConfigurationValueReaders.EmbeddedFileConfigurationValueReader.Prefix , new ISI.Extensions.ConfigurationValueReaders.EmbeddedFileConfigurationValueReader() },
-			{ISI.Extensions.ConfigurationValueReaders.EnvironmentVariableConfigurationValueReader.Prefix , new ISI.Extensions.ConfigurationValueReaders.EnvironmentVariableConfigurationValueReader() },
-			{ISI.Extensions.ConfigurationValueReaders.FileConfigurationValueReader.Prefix , new ISI.Extensions.ConfigurationValueReaders.FileConfigurationValueReader() },
-			{ISI.Extensions.ConfigurationValueReaders.FileNameDeMaskedConfigurationValueReader.Prefix , new ISI.Extensions.ConfigurationValueReaders.FileNameDeMaskedConfigurationValueReader() },
-		};
+		private Microsoft.Extensions.Configuration.IConfigurationProvider _configurationProvider { get; }
 
-		public static string GetValue(string value)
+		public ConfigurationProviderWrapper(Microsoft.Extensions.Configuration.IConfigurationProvider configurationProvider)
 		{
-			var parsedValue = new ISI.Extensions.ConfigurationValueReaders.ParsedValue(value);
-
-			while (true)
-			{
-				if (!string.IsNullOrWhiteSpace(parsedValue.Prefix) && _valueGetters.TryGetValue(parsedValue.Prefix, out var valueGetter))
-				{
-					parsedValue = new ISI.Extensions.ConfigurationValueReaders.ParsedValue(valueGetter.GetValue(parsedValue));
-				}
-				else
-				{
-					return parsedValue.Value;
-				}
-			}
+			_configurationProvider = configurationProvider;
 		}
+
+		public bool TryGet(string key, out string value)
+		{
+			if (_configurationProvider.TryGet(key, out value))
+			{
+				value = ISI.Extensions.ConfigurationValueReader.GetValue(value);
+
+				return true;
+			}
+
+			return false;
+		}
+
+		public void Set(string key, string value) => _configurationProvider.Set(key, value);
+
+		public Microsoft.Extensions.Primitives.IChangeToken GetReloadToken() => _configurationProvider.GetReloadToken();
+
+		public void Load() => _configurationProvider.Load();
+
+		public IEnumerable<string> GetChildKeys(IEnumerable<string> earlierKeys, string parentPath) => _configurationProvider.GetChildKeys(earlierKeys, parentPath);
 	}
 }

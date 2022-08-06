@@ -81,7 +81,7 @@ namespace ISI.Extensions.ConfigurationValueReaders
 					{
 						if (!_valueByKeyByKey.TryGetValue(parsedValue.Key, out valueByKey))
 						{
-							var fileName = CheckForRedirectFileName(parsedValue.Key);
+							var fileName = CheckForRedirectFileName(ISI.Extensions.IO.Path.GetFileNameDeMasked(parsedValue.Key));
 
 							if (System.IO.File.Exists(fileName))
 							{

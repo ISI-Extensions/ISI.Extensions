@@ -215,11 +215,11 @@ namespace ISI.Extensions.Tests
 				PackageId = "Microsoft.ClearScript",
 				PackageVersion = "6.0.2",
 			}).NugetPackageKey);
-			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
-			{
-				PackageId = "Microsoft.AspNetCore.Mvc.NewtonsoftJson",
-				PackageVersion = "5.0.13",
-			}).NugetPackageKey);
+			//nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			//{
+			//	PackageId = "Microsoft.AspNetCore.Mvc.NewtonsoftJson",
+			//	PackageVersion = "5.0.13",
+			//}).NugetPackageKey);
 			//nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
 			//{
 			//	PackageId = "System.Memory",

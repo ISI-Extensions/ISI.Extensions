@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using ISI.Extensions.Extensions;
 using Microsoft.Extensions.Logging;
 using System;
@@ -75,77 +75,86 @@ namespace ISI.Extensions.VisualStudio
 							}
 						}
 
-						var arguments = new List<string>();
-						arguments.Add("sign");
-
-						if (request.DigestAlgorithm == DTOs.CodeSigningDigestAlgorithm.Sha256)
+						void sign(string[] fileNames)
 						{
-							arguments.Add("/fd SHA256");
-						}
+							var arguments = new List<string>();
+							arguments.Add("sign");
 
-						if (request.TimeStampUri != null)
-						{
-							if (request.TimeStampDigestAlgorithm == DTOs.CodeSigningDigestAlgorithm.Sha256)
+							if (request.DigestAlgorithm == DTOs.CodeSigningDigestAlgorithm.Sha256)
 							{
-								arguments.Add("/td SHA256");
-								arguments.Add(string.Format("/tr \"{0}\"", request.TimeStampUri));
+								arguments.Add("/fd SHA256");
 							}
-							else
+
+							if (request.TimeStampUri != null)
 							{
-								arguments.Add(string.Format("/t \"{0}\"", request.TimeStampUri));
+								if (request.TimeStampDigestAlgorithm == DTOs.CodeSigningDigestAlgorithm.Sha256)
+								{
+									arguments.Add("/td SHA256");
+									arguments.Add(string.Format("/tr \"{0}\"", request.TimeStampUri));
+								}
+								else
+								{
+									arguments.Add(string.Format("/t \"{0}\"", request.TimeStampUri));
+								}
 							}
-						}
 
-						if (!string.IsNullOrWhiteSpace(request.CertificateFileName))
-						{
-							arguments.Add(string.Format("/f \"{0}\"", request.CertificateFileName));
-
-							if (!string.IsNullOrWhiteSpace(request.CertificatePassword))
+							if (!string.IsNullOrWhiteSpace(request.CertificateFileName))
 							{
-								arguments.Add(string.Format("/p \"{0}\"", request.CertificatePassword));
+								arguments.Add(string.Format("/f \"{0}\"", request.CertificateFileName));
+
+								if (!string.IsNullOrWhiteSpace(request.CertificatePassword))
+								{
+									arguments.Add(string.Format("/p \"{0}\"", request.CertificatePassword));
+								}
 							}
+
+							if (!string.IsNullOrWhiteSpace(request.CertificateFingerprint))
+							{
+								arguments.Add(string.Format("/sha1 \"{0}\"", request.CertificateFingerprint));
+							}
+
+							if (!string.IsNullOrWhiteSpace(request.CertificateSubjectName))
+							{
+								arguments.Add(string.Format("/n \"{0}\"", request.CertificateSubjectName));
+							}
+
+							if (request.OverwriteAnyExistingSignature)
+							{
+								arguments.Add("/as");
+							}
+
+							switch (request.Verbosity)
+							{
+								case DTOs.CodeSigningVerbosity.Normal:
+									break;
+								case DTOs.CodeSigningVerbosity.Quiet:
+									arguments.Add("/q");
+									break;
+								case DTOs.CodeSigningVerbosity.Detailed:
+									arguments.Add("/debug");
+									break;
+								default:
+									throw new ArgumentOutOfRangeException();
+							}
+
+							arguments.AddRange(fileNames.Select(fileName => string.Format("\"{0}\"", fileNames)));
+
+							ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+							{
+								ProcessExeFullName = "signtool.exe",
+								Arguments = arguments,
+								Logger = logger,
+							});
 						}
 
-						if (!string.IsNullOrWhiteSpace(request.CertificateFingerprint))
+						if (request.RunAsync)
 						{
-							arguments.Add(string.Format("/sha1 \"{0}\"", request.CertificateFingerprint));
+							Parallel.ForEach(assemblyFullNames, assemblyFullName => sign(new[] { assemblyFullName }));
 						}
-
-						if (!string.IsNullOrWhiteSpace(request.CertificateSubjectName))
+						else
 						{
-							arguments.Add(string.Format("/n \"{0}\"", request.CertificateSubjectName));
+							sign(assemblyFullNames.ToArray());
 						}
-
-						if (request.OverwriteAnyExistingSignature)
-						{
-							arguments.Add("/as");
-						}
-
-						switch (request.Verbosity)
-						{
-							case DTOs.CodeSigningVerbosity.Normal:
-								break;
-							case DTOs.CodeSigningVerbosity.Quiet:
-								arguments.Add("/q");
-								break;
-							case DTOs.CodeSigningVerbosity.Detailed:
-								arguments.Add("/debug");
-								break;
-							default:
-								throw new ArgumentOutOfRangeException();
-						}
-
-						foreach (var assemblyFullName in assemblyFullNames)
-						{
-							arguments.Add(string.Format("\"{0}\"", assemblyFullName));
-						}
-
-						ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-						{
-							ProcessExeFullName = "signtool.exe",
-							Arguments = arguments,
-							Logger = logger,
-						});
 
 						if (!string.IsNullOrWhiteSpace(request.OutputDirectory) && System.IO.Directory.Exists(request.OutputDirectory))
 						{

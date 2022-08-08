@@ -40,6 +40,8 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
 		bool OverwriteAnyExistingSignature { get; }
 		
 		CodeSigningVerbosity Verbosity { get; }
+
+		bool RunAsync { get; }
 	}
 
 	public abstract class SignRequest : ISignRequest
@@ -66,6 +68,8 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
 		public bool OverwriteAnyExistingSignature { get; set; } = false;
 
 		public CodeSigningVerbosity Verbosity { get; set; } = CodeSigningVerbosity.Normal;
+
+		public bool RunAsync { get; set; } = false;
 
 		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}

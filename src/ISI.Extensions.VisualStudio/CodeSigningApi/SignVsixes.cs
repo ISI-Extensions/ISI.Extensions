@@ -79,11 +79,11 @@ namespace ISI.Extensions.VisualStudio
 							}
 						}
 
-						foreach (var vsixFullName in vsixFullNames)
+						void sign(string fileName)
 						{
-							logger.LogInformation(string.Format("Signing vsix package \"{0}\"", System.IO.Path.GetFileName(vsixFullName)));
+							logger.LogInformation(string.Format("Signing vsix package \"{0}\"", System.IO.Path.GetFileName(fileName)));
 
-							using (var package = OpenVsixSignTool.Core.OpcPackage.Open(vsixFullName, OpenVsixSignTool.Core.OpcPackageFileMode.ReadWrite))
+							using (var package = OpenVsixSignTool.Core.OpcPackage.Open(fileName, OpenVsixSignTool.Core.OpcPackageFileMode.ReadWrite))
 							{
 								if (package.GetSignatures().Any() && !request.OverwriteAnyExistingSignature)
 								{
@@ -113,7 +113,19 @@ namespace ISI.Extensions.VisualStudio
 								}
 							}
 
-							logger.LogInformation(string.Format("Signed vsix package \"{0}\"", System.IO.Path.GetFileName(vsixFullName)));
+							logger.LogInformation(string.Format("Signed vsix package \"{0}\"", System.IO.Path.GetFileName(fileName)));
+						}
+
+						if (request.RunAsync)
+						{
+							Parallel.ForEach(vsixFullNames, vsixFullName => sign(vsixFullName));
+						}
+						else
+						{
+							foreach (var vsixFullName in vsixFullNames)
+							{
+								sign(vsixFullName);
+							}
 						}
 
 						if (!string.IsNullOrWhiteSpace(request.OutputDirectory) && System.IO.Directory.Exists(request.OutputDirectory))

@@ -58,65 +58,85 @@ namespace ISI.Extensions.VisualStudio
 							throw new ArgumentOutOfRangeException(nameof(request));
 					}
 
-					if (System.IO.Directory.GetFiles(tempDirectory.FullName).Any())
+					var nugetPackageFullNames = System.IO.Directory.GetFiles(tempDirectory.FullName);
+					if (nugetPackageFullNames.Any())
 					{
-						var arguments = new List<string>();
-
-						arguments.Add("sign");
-
-						arguments.Add(string.Format("\"{0}\\*\"", tempDirectory.FullName));
-
-						arguments.Add(string.Format(" -Timestamper \"{0}\"", request.TimeStampUri));
-						arguments.Add(string.Format(" -TimestampHashAlgorithm \"{0}\"", request.TimeStampDigestAlgorithm.GetAbbreviation()));
-
-						if (!string.IsNullOrWhiteSpace(request.OutputDirectory))
+						void sign(string fileName = null)
 						{
-							arguments.Add(string.Format(" -OutputDirectory \"{0}\"", request.OutputDirectory));
+							var arguments = new List<string>();
+
+							arguments.Add("sign");
+
+							if (string.IsNullOrWhiteSpace(fileName))
+							{
+								arguments.Add(string.Format("\"{0}\\*\"", tempDirectory.FullName));
+							}
+							else
+							{
+								arguments.Add(string.Format("\"{0}\"", fileName));
+							}
+
+							arguments.Add(string.Format(" -Timestamper \"{0}\"", request.TimeStampUri));
+							arguments.Add(string.Format(" -TimestampHashAlgorithm \"{0}\"", request.TimeStampDigestAlgorithm.GetAbbreviation()));
+
+							if (!string.IsNullOrWhiteSpace(request.OutputDirectory))
+							{
+								arguments.Add(string.Format(" -OutputDirectory \"{0}\"", request.OutputDirectory));
+							}
+
+							if (string.IsNullOrWhiteSpace(request.CertificateFileName))
+							{
+								arguments.Add(string.Format(" -CertificateStoreName \"{0}\"", request.CertificateStoreName));
+								arguments.Add(string.Format(" -CertificateStoreLocation \"{0}\"", request.CertificateStoreLocation));
+								if (!string.IsNullOrWhiteSpace(request.CertificateSubjectName))
+								{
+									arguments.Add(string.Format(" -CertificateSubjectName \"{0}\"", request.CertificateSubjectName));
+								}
+
+								if (!string.IsNullOrWhiteSpace(request.CertificateFingerprint))
+								{
+									arguments.Add(string.Format(" -CertificateFingerprint \"{0}\"", request.CertificateFingerprint));
+								}
+							}
+							else
+							{
+								arguments.Add(string.Format(" -CertificatePath \"{0}\"", request.CertificateFileName));
+								arguments.Add(string.Format(" -CertificatePassword \"{0}\"", request.CertificatePassword));
+							}
+
+							arguments.Add(string.Format(" -HashAlgorithm \"{0}\"", request.DigestAlgorithm.GetAbbreviation()));
+
+							if (request.OverwriteAnyExistingSignature)
+							{
+								arguments.Append(" -Overwrite");
+							}
+
+							arguments.Add(string.Format(" -Verbosity \"{0}\"", request.Verbosity));
+
+							var processRequest = new ISI.Extensions.Process.ProcessRequest()
+							{
+								Logger = logger,
+								WorkingDirectory = request.WorkingDirectory,
+								ProcessExeFullName = "nuget.exe",
+								Arguments = arguments,
+							};
+
+							if (request.Verbosity == DTOs.CodeSigningVerbosity.Detailed)
+							{
+								logger.LogInformation(processRequest.ToString());
+							}
+
+							ISI.Extensions.Process.WaitForProcessResponse(processRequest);
 						}
 
-						if (string.IsNullOrWhiteSpace(request.CertificateFileName))
+						if (request.RunAsync)
 						{
-							arguments.Add(string.Format(" -CertificateStoreName \"{0}\"", request.CertificateStoreName));
-							arguments.Add(string.Format(" -CertificateStoreLocation \"{0}\"", request.CertificateStoreLocation));
-							if (!string.IsNullOrWhiteSpace(request.CertificateSubjectName))
-							{
-								arguments.Add(string.Format(" -CertificateSubjectName \"{0}\"", request.CertificateSubjectName));
-							}
-
-							if (!string.IsNullOrWhiteSpace(request.CertificateFingerprint))
-							{
-								arguments.Add(string.Format(" -CertificateFingerprint \"{0}\"", request.CertificateFingerprint));
-							}
+							Parallel.ForEach(nugetPackageFullNames, nugetPackageFullName => sign(nugetPackageFullName));
 						}
 						else
 						{
-							arguments.Add(string.Format(" -CertificatePath \"{0}\"", request.CertificateFileName));
-							arguments.Add(string.Format(" -CertificatePassword \"{0}\"", request.CertificatePassword));
+							sign();
 						}
-
-						arguments.Add(string.Format(" -HashAlgorithm \"{0}\"", request.DigestAlgorithm.GetAbbreviation()));
-
-						if (request.OverwriteAnyExistingSignature)
-						{
-							arguments.Append(" -Overwrite");
-						}
-
-						arguments.Add(string.Format(" -Verbosity \"{0}\"", request.Verbosity));
-
-						var processRequest = new ISI.Extensions.Process.ProcessRequest()
-						{
-							Logger = logger,
-							WorkingDirectory = request.WorkingDirectory,
-							ProcessExeFullName = "nuget.exe",
-							Arguments = arguments,
-						};
-
-						if (request.Verbosity == DTOs.CodeSigningVerbosity.Detailed)
-						{
-							logger.LogInformation(processRequest.ToString());
-						}
-
-						ISI.Extensions.Process.WaitForProcessResponse(processRequest);
 
 						switch (request)
 						{

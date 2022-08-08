@@ -110,6 +110,7 @@ namespace ISI.Extensions.Scm
 				var executeSignVsixesBatchRequest = new SerializableDTOs.ExecuteSignVsixesBatchRequest()
 				{
 					SignVsixesBatchUuid = signVsixesBatchUuid,
+					RunAsync = request.RunAsync,
 				};
 
 				try

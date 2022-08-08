@@ -42,6 +42,7 @@ namespace ISI.Extensions.Scm
 			public const string CodeSigningCertificateTokenContainerName = nameof(CodeSigningCertificateTokenContainerName);
 			public const string CodeSigningCertificateTokenPassword = nameof(CodeSigningCertificateTokenPassword);
 			public const string CodeSigningCertificateTokenRevocationPassword = nameof(CodeSigningCertificateTokenRevocationPassword);
+			public const string CodeSigningRunAsync = nameof(CodeSigningRunAsync);
 			public const string CodeSigningRemoteCodeSigningServiceUrl = nameof(CodeSigningRemoteCodeSigningServiceUrl);
 			public const string CodeSigningRemoteCodeSigningServicePassword = nameof(CodeSigningRemoteCodeSigningServicePassword);
 

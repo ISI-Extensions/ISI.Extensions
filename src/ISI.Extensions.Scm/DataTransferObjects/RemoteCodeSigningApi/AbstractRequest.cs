@@ -25,5 +25,6 @@ namespace ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigningApi
 	{
 		public string RemoteCodeSigningServiceUrl { get; set; }
 		public string RemoteCodeSigningServicePassword { get; set; }
+		public bool RunAsync { get; set; } = false;
 	}
 }

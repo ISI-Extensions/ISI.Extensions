@@ -110,6 +110,7 @@ namespace ISI.Extensions.Scm
 				var executeSignNupkgsBatchRequest = new SerializableDTOs.ExecuteSignNupkgsBatchRequest()
 				{
 					SignNupkgsBatchUuid = signNupkgsBatchUuid,
+					RunAsync = request.RunAsync,
 				};
 
 				try

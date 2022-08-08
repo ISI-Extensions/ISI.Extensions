@@ -28,5 +28,8 @@ namespace ISI.Extensions.Scm.SerializableModels.RemoteCodeSigningApi
 	{
 		[DataMember(Name = "signNupkgsBatchUuid", EmitDefaultValue = false)]
 		public Guid SignNupkgsBatchUuid { get; set; }
+
+		[DataMember(Name = "runAsync", EmitDefaultValue = false)]
+		public bool RunAsync { get; set; }
 	}
 }

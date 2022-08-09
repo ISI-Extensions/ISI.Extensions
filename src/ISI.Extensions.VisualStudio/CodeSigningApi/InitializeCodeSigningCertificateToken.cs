@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +26,8 @@ namespace ISI.Extensions.VisualStudio
 {
 	public partial class CodeSigningApi
 	{
+		private static Dictionary<string, DateTime> LastInitializeCodeSigningCertificateTokenDateTimeUtc { get; } = new(StringComparer.InvariantCultureIgnoreCase);
+
 		public DTOs.InitializeCodeSigningCertificateTokenResponse InitializeCodeSigningCertificateToken(DTOs.IInitializeCodeSigningCertificateTokenRequest request)
 		{
 			var response = new DTOs.InitializeCodeSigningCertificateTokenResponse();
@@ -34,32 +36,49 @@ namespace ISI.Extensions.VisualStudio
 
 			if (!string.IsNullOrWhiteSpace(request.CodeSigningCertificateTokenCertificateFileName) && System.IO.File.Exists(request.CodeSigningCertificateTokenCertificateFileName))
 			{
-				using (var tempDirectory = new ISI.Extensions.IO.Path.TempDirectory())
+				var wasPreviouslyInitialized = LastInitializeCodeSigningCertificateTokenDateTimeUtc.TryGetValue(request.CodeSigningCertificateTokenCertificateFileName, out var lastInitializeCodeSigningCertificateTokenDateTimeUtc);
+				if (!wasPreviouslyInitialized || ((DateTime.UtcNow - lastInitializeCodeSigningCertificateTokenDateTimeUtc) > TimeSpan.FromMinutes(10)))
 				{
-					var dllSourceToSignFullName = this.GetType().Assembly.Location;
-
-					var dllToSignFullName = System.IO.Path.Combine(tempDirectory.FullName, System.IO.Path.GetFileName(dllSourceToSignFullName));
-
-					System.IO.File.Copy(dllSourceToSignFullName, dllToSignFullName);
-
-					var arguments = new List<string>();
-					arguments.Add("sign");
-					arguments.Add("/as");
-					arguments.Add("/force");
-					arguments.Add("/fd SHA256");
-					arguments.Add(string.Format("/f \"{0}\"", request.CodeSigningCertificateTokenCertificateFileName));
-					arguments.Add(string.Format("/csp \"{0}\"", request.CodeSigningCertificateTokenCryptographicProvider));
-					arguments.Add(string.Format("/k \"[{{{{{1}}}}}]={0}\"", request.CodeSigningCertificateTokenContainerName, request.CodeSigningCertificateTokenPassword));
-					arguments.Add(string.Format("\"{0}\"", dllToSignFullName));
-
-					ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+					using (var tempDirectory = new ISI.Extensions.IO.Path.TempDirectory())
 					{
-						ProcessExeFullName = "signtool.exe",
-						Arguments = arguments,
-						Logger = new NullLogger(),
-					});
+						var dllSourceToSignFullName = this.GetType().Assembly.Location;
 
-					logger.LogInformation("Code Signing Certificate Token has been Initialized");
+						var dllToSignFullName = System.IO.Path.Combine(tempDirectory.FullName, System.IO.Path.GetFileName(dllSourceToSignFullName));
+
+						System.IO.File.Copy(dllSourceToSignFullName, dllToSignFullName);
+
+						var arguments = new List<string>();
+						arguments.Add("sign");
+						arguments.Add("/as");
+						arguments.Add("/force");
+						arguments.Add("/fd SHA256");
+						arguments.Add(string.Format("/f \"{0}\"", request.CodeSigningCertificateTokenCertificateFileName));
+						arguments.Add(string.Format("/csp \"{0}\"", request.CodeSigningCertificateTokenCryptographicProvider));
+						arguments.Add(string.Format("/k \"[{{{{{1}}}}}]={0}\"", request.CodeSigningCertificateTokenContainerName, request.CodeSigningCertificateTokenPassword));
+						arguments.Add(string.Format("\"{0}\"", dllToSignFullName));
+
+						ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+						{
+							ProcessExeFullName = "signtool.exe",
+							Arguments = arguments,
+							Logger = new NullLogger(),
+						});
+
+						logger.LogInformation("Code Signing Certificate Token has been Initialized");
+					}
+
+					if (wasPreviouslyInitialized)
+					{
+						LastInitializeCodeSigningCertificateTokenDateTimeUtc[request.CodeSigningCertificateTokenCertificateFileName] = DateTime.UtcNow;
+					}
+					else
+					{
+						LastInitializeCodeSigningCertificateTokenDateTimeUtc.Add(request.CodeSigningCertificateTokenCertificateFileName, DateTime.UtcNow);
+					}
+				}
+				else
+				{
+					logger.LogInformation("Code Signing Certificate Token previously Initialized");
 				}
 			}
 

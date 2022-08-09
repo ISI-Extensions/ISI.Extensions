@@ -118,6 +118,7 @@ namespace ISI.Extensions.VisualStudio
 
 						if (request.RunAsync)
 						{
+							logger.LogInformation("Running Async");
 							Parallel.ForEach(vsixFullNames, vsixFullName => sign(vsixFullName));
 						}
 						else

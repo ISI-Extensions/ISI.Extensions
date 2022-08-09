@@ -105,11 +105,12 @@ Task("Sign")
 						CodeSigningCertificateTokenContainerName = settings.CodeSigning.Token.ContainerName,
 						CodeSigningCertificateTokenPassword = settings.CodeSigning.Token.Password,
 						TimeStampUri = GetNullableUri(settings.CodeSigning.TimeStampUrl),
-						TimeStampDigestAlgorithm = SignToolDigestAlgorithm.Sha256,
+						TimeStampDigestAlgorithm = GetCodeSigningDigestAlgorithm(settings.CodeSigning.TimeStampDigestAlgorithm),
 						CertificatePath = GetNullableFile(settings.CodeSigning.CertificateFileName),
 						CertificatePassword = settings.CodeSigning.CertificatePassword,
 						CertificateFingerprint = settings.CodeSigning.CertificateFingerprint,
-						DigestAlgorithm = SignToolDigestAlgorithm.Sha256,
+						DigestAlgorithm = GetCodeSigningDigestAlgorithm(settings.CodeSigning.CodeDigestAlgorithm),
+						RunAsync = settings.CodeSigning.RunAsync,
 					});
 
 					foreach(var file in files)
@@ -198,11 +199,12 @@ Task("Nuget")
 				CodeSigningCertificateTokenContainerName = settings.CodeSigning.Token.ContainerName,
 				CodeSigningCertificateTokenPassword = settings.CodeSigning.Token.Password,
 				TimeStampUri = GetNullableUri(settings.CodeSigning.TimeStampUrl),
-				TimeStampDigestAlgorithm = SignToolDigestAlgorithm.Sha256,
-				CertificateFingerprint = settings.CodeSigning.CertificateFingerprint,
+				TimeStampDigestAlgorithm = GetCodeSigningDigestAlgorithm(settings.CodeSigning.TimeStampDigestAlgorithm),
 				CertificatePath = GetNullableFile(settings.CodeSigning.CertificateFileName),
 				CertificatePassword = settings.CodeSigning.CertificatePassword,
-				DigestAlgorithm = SignToolDigestAlgorithm.Sha256,
+				CertificateFingerprint = settings.CodeSigning.CertificateFingerprint,
+				DigestAlgorithm = GetCodeSigningDigestAlgorithm(settings.CodeSigning.CodeDigestAlgorithm),
+				RunAsync = settings.CodeSigning.RunAsync,
 			});
 		}
 

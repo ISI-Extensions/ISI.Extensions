@@ -63,6 +63,11 @@ namespace ISI.Extensions.VisualStudio
 					{
 						void sign(string fileName = null)
 						{
+							//if (!string.IsNullOrWhiteSpace(fileName))
+							//{
+							//	logger.LogInformation(string.Format("Signing nuget package \"{0}\"", System.IO.Path.GetFileName(fileName)));
+							//}
+
 							var arguments = new List<string>();
 
 							arguments.Add("sign");
@@ -115,10 +120,10 @@ namespace ISI.Extensions.VisualStudio
 
 							var processRequest = new ISI.Extensions.Process.ProcessRequest()
 							{
-								Logger = logger,
 								WorkingDirectory = request.WorkingDirectory,
 								ProcessExeFullName = "nuget.exe",
 								Arguments = arguments,
+								Logger = (!string.IsNullOrWhiteSpace(fileName) ? null : logger),
 							};
 
 							if (request.Verbosity == DTOs.CodeSigningVerbosity.Detailed)
@@ -126,11 +131,22 @@ namespace ISI.Extensions.VisualStudio
 								logger.LogInformation(processRequest.ToString());
 							}
 
-							ISI.Extensions.Process.WaitForProcessResponse(processRequest);
+							var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(processRequest);
+
+							if (!string.IsNullOrWhiteSpace(fileName))
+							{
+								if (waitForProcessResponse.Errored)
+								{
+									Logger.LogError(waitForProcessResponse.Output);
+								}
+
+								logger.LogInformation(string.Format("Signed nuget package \"{0}\"", System.IO.Path.GetFileName(fileName)));
+							}
 						}
 
 						if (request.RunAsync)
 						{
+							logger.LogInformation("Running Async");
 							Parallel.ForEach(nugetPackageFullNames, nugetPackageFullName => sign(nugetPackageFullName));
 						}
 						else

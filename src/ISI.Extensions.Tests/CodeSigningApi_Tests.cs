@@ -65,6 +65,34 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void SignAssemblies_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+			settings.OverrideWithEnvironmentVariables();
+
+			var codeSigningApi = new ISI.Extensions.VisualStudio.CodeSigningApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+
+			var fileNames = System.IO.Directory.GetFiles(@"F:\ISI\Internal Projects\ISI.Extensions\Nuget");
+
+			codeSigningApi.SignAssemblies(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.SignAssembliesRequest()
+			{
+				AssemblyFullNames = fileNames,
+				CodeSigningCertificateTokenCertificateFileName = settings.CodeSigning.Token.CertificateFileName,
+				CodeSigningCertificateTokenCryptographicProvider = settings.CodeSigning.Token.CryptographicProvider,
+				CodeSigningCertificateTokenContainerName = settings.CodeSigning.Token.ContainerName,
+				CodeSigningCertificateTokenPassword = settings.CodeSigning.Token.Password,
+				TimeStampUri = new Uri(settings.CodeSigning.TimeStampUrl),
+				TimeStampDigestAlgorithm = ISI.Extensions.Enum<ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.CodeSigningDigestAlgorithm>.Parse(settings.CodeSigning.TimeStampDigestAlgorithm),
+				CertificateFileName = settings.CodeSigning.CertificateFileName,
+				CertificatePassword = settings.CodeSigning.CertificatePassword,
+				CertificateFingerprint = settings.CodeSigning.CertificateFingerprint,
+				DigestAlgorithm = ISI.Extensions.Enum<ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.CodeSigningDigestAlgorithm>.Parse(settings.CodeSigning.DigestAlgorithm),
+				RunAsync = settings.CodeSigning.RunAsync,
+			});
+		}
+
+		[Test]
 		public void VsixSign_Test()
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
@@ -81,7 +109,6 @@ namespace ISI.Extensions.Tests
 				//CertificatePath = File(settings.CodeSigning.CertificateFileName),
 				//CertificatePassword = settings.CodeSigning.CertificatePassword,
 			});
-
 		}
 	}
 }

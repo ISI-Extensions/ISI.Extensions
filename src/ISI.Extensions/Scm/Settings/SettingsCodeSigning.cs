@@ -43,6 +43,12 @@ namespace ISI.Extensions.Scm
 				set => Settings.SetValue(Settings.Key.CodeSigningTimeStampUrl, value);
 			}
 
+			public string TimeStampDigestAlgorithm
+			{
+				get => Settings.GetValue(Settings.Key.CodeSigningTimeStampDigestAlgorithm);
+				set => Settings.SetValue(Settings.Key.CodeSigningTimeStampDigestAlgorithm, value);
+			}
+
 			public string CertificateFingerprint
 			{
 				get => Settings.GetValue(Settings.Key.CodeSigningCertificateFingerprint);
@@ -64,7 +70,13 @@ namespace ISI.Extensions.Scm
 			private SettingsCodeSigningToken _token = null;
 			public SettingsCodeSigningToken Token => _token ??= new SettingsCodeSigningToken(this.Settings);
 
-			public bool CodeSigningRunAsync
+			public string DigestAlgorithm
+			{
+				get => Settings.GetValue(Settings.Key.CodeSigningDigestAlgorithm);
+				set => Settings.SetValue(Settings.Key.CodeSigningDigestAlgorithm, value);
+			}
+
+			public bool RunAsync
 			{
 				get => Settings.GetValue(Settings.Key.CodeSigningRunAsync).ToBoolean();
 				set => Settings.SetValue(Settings.Key.CodeSigningRunAsync, value.TrueFalse());

@@ -77,12 +77,25 @@ namespace ISI.Extensions.VisualStudio
 
 						void sign(string[] fileNames)
 						{
+							//if (fileNames.NullCheckedCount() == 1)
+							//{
+							//	logger.LogInformation(string.Format("Signing assembly \"{0}\"", System.IO.Path.GetFileName(fileNames.First())));
+							//}
+
 							var arguments = new List<string>();
 							arguments.Add("sign");
 
 							if (request.DigestAlgorithm == DTOs.CodeSigningDigestAlgorithm.Sha256)
 							{
 								arguments.Add("/fd SHA256");
+							}
+							else if (request.DigestAlgorithm == DTOs.CodeSigningDigestAlgorithm.Sha384)
+							{
+								arguments.Add("/fd SHA384");
+							}
+							else if (request.DigestAlgorithm == DTOs.CodeSigningDigestAlgorithm.Sha512)
+							{
+								arguments.Add("/fd SHA512");
 							}
 
 							if (request.TimeStampUri != null)
@@ -137,23 +150,34 @@ namespace ISI.Extensions.VisualStudio
 									throw new ArgumentOutOfRangeException();
 							}
 
-							arguments.AddRange(fileNames.Select(fileName => string.Format("\"{0}\"", fileNames)));
+							arguments.AddRange(fileNames.Select(fileName => string.Format("\"{0}\"", fileName)));
 
-							ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+							var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 							{
 								ProcessExeFullName = "signtool.exe",
 								Arguments = arguments,
-								Logger = logger,
+								Logger = (fileNames.NullCheckedCount() == 1 ? null : logger),
 							});
+
+							if (fileNames.NullCheckedCount() == 1)
+							{
+								if (waitForProcessResponse.Errored)
+								{
+									Logger.LogError(waitForProcessResponse.Output);
+								}
+
+								logger.LogInformation(string.Format("Signed assembly \"{0}\"", System.IO.Path.GetFileName(fileNames.First())));
+							}
 						}
 
 						if (request.RunAsync)
 						{
-							Parallel.ForEach(assemblyFullNames, assemblyFullName => sign(new[] { assemblyFullName }));
+							logger.LogInformation("Running Async");
+							Parallel.ForEach(tempAssemblyFullNames, assemblyFullName => sign(new[] { assemblyFullName }));
 						}
 						else
 						{
-							sign(assemblyFullNames.ToArray());
+							sign(tempAssemblyFullNames);
 						}
 
 						if (!string.IsNullOrWhiteSpace(request.OutputDirectory) && System.IO.Directory.Exists(request.OutputDirectory))

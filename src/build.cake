@@ -184,7 +184,7 @@ Task("Nuget")
 			});
 		}
 
-		NupkgPush(new ISI.Cake.Addin.Nuget.NupkgPushRequest()
+		NupkgPush(new ISI.Cake.Addin.Nuget.NupkgPushUsingSettingsRequest()
 		{
 			NupkgPaths = nupgkFiles,
 			ApiKey = settings.Nuget.ApiKey,

@@ -106,8 +106,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Ascii", "ISI
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.VisualStudio.Forms.Tests", "ISI.Extensions.VisualStudio.Forms.Tests\ISI.Extensions.VisualStudio.Forms.Tests.csproj", "{7286DCF9-526F-4EA3-B982-86A4B9E94850}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.Web", "ISI.Extensions.Web\ISI.Extensions.Web.csproj", "{F96FAC20-D52B-41BE-96FD-9028CBB84EDF}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -508,14 +506,6 @@ Global
 		{7286DCF9-526F-4EA3-B982-86A4B9E94850}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7286DCF9-526F-4EA3-B982-86A4B9E94850}.Release|x64.ActiveCfg = Release|Any CPU
 		{7286DCF9-526F-4EA3-B982-86A4B9E94850}.Release|x64.Build.0 = Release|Any CPU
-		{F96FAC20-D52B-41BE-96FD-9028CBB84EDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F96FAC20-D52B-41BE-96FD-9028CBB84EDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F96FAC20-D52B-41BE-96FD-9028CBB84EDF}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{F96FAC20-D52B-41BE-96FD-9028CBB84EDF}.Debug|x64.Build.0 = Debug|Any CPU
-		{F96FAC20-D52B-41BE-96FD-9028CBB84EDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F96FAC20-D52B-41BE-96FD-9028CBB84EDF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F96FAC20-D52B-41BE-96FD-9028CBB84EDF}.Release|x64.ActiveCfg = Release|Any CPU
-		{F96FAC20-D52B-41BE-96FD-9028CBB84EDF}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

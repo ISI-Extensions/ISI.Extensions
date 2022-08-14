@@ -34,8 +34,8 @@ namespace ISI.Extensions.AspNetCore.Extensions
 		//public static TimeSpan CacheableDuration = Configuration.Current.DynamicPages.CacheableDuration;
 
 		#region DynamicPagesHelper
-		//private static ISI.Extensions.Web.Mvc.Areas.DynamicPages.DynamicPagesHelper _dynamicPagesHelper = null;
-		//public static ISI.Extensions.Web.Mvc.Areas.DynamicPages.DynamicPagesHelper DynamicPagesHelper => _dynamicPagesHelper ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Web.Mvc.Areas.DynamicPages.DynamicPagesHelper>();
+		//private static ISI.Extensions.AspNetCore.Mvc.Areas.DynamicPages.DynamicPagesHelper _dynamicPagesHelper = null;
+		//public static ISI.Extensions.AspNetCore.Mvc.Areas.DynamicPages.DynamicPagesHelper DynamicPagesHelper => _dynamicPagesHelper ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.AspNetCore.Mvc.Areas.DynamicPages.DynamicPagesHelper>();
 		#endregion
 
 		[Flags]
@@ -185,7 +185,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 		{
 			var urlCollectionKey = contentUrls.Key();
 
-			//var cacheKey = ISI.Extensions.Web.Mvc.Areas.DynamicPages.Constants.KeyFromCombinedUrlsCacheKey(urlCollectionKey);
+			//var cacheKey = ISI.Extensions.AspNetCore.Mvc.Areas.DynamicPages.Constants.KeyFromCombinedUrlsCacheKey(urlCollectionKey);
 
 			//return CacheManager.Get(cacheKey, () =>
 			//	{
@@ -198,7 +198,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 			//			Areas.DynamicPages.DefinitionCache.PersistenceFactory.Persister.SetDefinition(key, urlCollectionKey);
 			//		}
 
-			//		CacheManager.AddWithAbsoluteTimeExpiration(ISI.Extensions.Web.Mvc.Areas.DynamicPages.Constants.CombinedUrlsFromKeyCacheKey(key), urlCollectionKey, CacheableDuration);
+			//		CacheManager.AddWithAbsoluteTimeExpiration(ISI.Extensions.AspNetCore.Mvc.Areas.DynamicPages.Constants.CombinedUrlsFromKeyCacheKey(key), urlCollectionKey, CacheableDuration);
 
 			//		return key;
 			//	}, null, () => CacheManager.AbsoluteTimeExpirationCacheItemPolicy(CacheableDuration));

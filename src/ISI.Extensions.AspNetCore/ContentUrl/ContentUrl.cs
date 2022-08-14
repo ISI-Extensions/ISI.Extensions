@@ -73,7 +73,7 @@ namespace ISI.Extensions.AspNetCore
 
 			//	if (considerContentDistributionNetwork)
 			//	{
-			//		url = CdnUrl ??= ISI.Extensions.Web.ContentDistributionNetwork.GetUrl(url);
+			//		url = CdnUrl ??= ISI.Extensions.AspNetCore.ContentDistributionNetwork.GetUrl(url);
 			//	}
 
 			//	var cacheBusterKey = GetCacheBusterKey();
@@ -93,7 +93,7 @@ namespace ISI.Extensions.AspNetCore
 			//{
 			//	if (System.Web.Hosting.HostingEnvironment.VirtualPathProvider.FileExists(VirtualPath))
 			//	{
-			//		var virtualFile = System.Web.Hosting.HostingEnvironment.VirtualPathProvider.GetFile(VirtualPath) as ISI.Extensions.Web.WebVirtualPathProvider.WebVirtualFile;
+			//		var virtualFile = System.Web.Hosting.HostingEnvironment.VirtualPathProvider.GetFile(VirtualPath) as ISI.Extensions.AspNetCore.WebVirtualPathProvider.WebVirtualFile;
 
 			//		return virtualFile?.GetVersionKey();
 			//	}

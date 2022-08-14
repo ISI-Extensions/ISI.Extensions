@@ -142,17 +142,17 @@ namespace <#= Namespace #>
 [<#= 		GeneratedCode #>, DebuggerNonUserCode]
 public static partial class <#= subClassName #>
 {
-	private static Func<string, bool, global::ISI.Extensions.Web.IContentUrl> _getContentUrl = null;
-	public static Func<string, bool, global::ISI.Extensions.Web.IContentUrl> GetContentUrl 
+	private static Func<string, bool, global::ISI.Extensions.AspNetCore.IContentUrl> _getContentUrl = null;
+	public static Func<string, bool, global::ISI.Extensions.AspNetCore.IContentUrl> GetContentUrl 
 	{
-		get => _getContentUrl ??= (url, isOriginalUrl) => new global::ISI.Extensions.Web.ContentUrl(url, isOriginalUrl);
+		get => _getContentUrl ??= (url, isOriginalUrl) => new global::ISI.Extensions.AspNetCore.ContentUrl(url, isOriginalUrl);
 		set => _getContentUrl = value;
 	}
 
-	[ISI.Extensions.Web.ContentUrlGeneratorSetter]
-	public class ContentUrlGeneratorSetter : global::ISI.Extensions.Web.IContentUrlGeneratorSetter
+	[ISI.Extensions.AspNetCore.ContentUrlGeneratorSetter]
+	public class ContentUrlGeneratorSetter : global::ISI.Extensions.AspNetCore.IContentUrlGeneratorSetter
 	{
-		public void SetContentUrlGenerator(Func<string, bool, global::ISI.Extensions.Web.IContentUrl> setter)
+		public void SetContentUrlGenerator(Func<string, bool, global::ISI.Extensions.AspNetCore.IContentUrl> setter)
 		{
 			GetContentUrl = setter;
 		}
@@ -179,14 +179,14 @@ public static partial class <#= subClassName #>
 					if (!hasRootItem)
 					{
 #>
-	private static global::ISI.Extensions.Web.IContentUrl _directory = null;
-	public static global::ISI.Extensions.Web.IContentUrl _Directory => _directory ??= GetContentUrl(_root(), true);
+	private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
+	public static global::ISI.Extensions.AspNetCore.IContentUrl _Directory => _directory ??= GetContentUrl(_root(), true);
 <#
 						hasRootItem = true;
 					}
 #>
-	private static global::ISI.Extensions.Web.IContentUrl _<#= CreateSlug(projectItem.Name) #> = null;
-	public static global::ISI.Extensions.Web.IContentUrl <#= CreateSlug(projectItem.Name) #> => _<#= CreateSlug(projectItem.Name) #> ??= GetContentUrl(_root() + "<#= projectItem.Name #>", true);
+	private static global::ISI.Extensions.AspNetCore.IContentUrl _<#= CreateSlug(projectItem.Name) #> = null;
+	public static global::ISI.Extensions.AspNetCore.IContentUrl <#= CreateSlug(projectItem.Name) #> => _<#= CreateSlug(projectItem.Name) #> ??= GetContentUrl(_root() + "<#= projectItem.Name #>", true);
 <#
 				}
 			}
@@ -562,8 +562,8 @@ public static partial class <#= projectFolderSlug #>
 		return string.Format("{0}<#= projectFolder.Name #>/", <#= classNamespace #>._root());
 	}
 
-	private static global::ISI.Extensions.Web.IContentUrl _directory = null;
-	public static global::ISI.Extensions.Web.IContentUrl _Directory => _directory ??= GetContentUrl(<#= classNamespace #>._root() + "<#= projectFolder.Name #>", true);
+	private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
+	public static global::ISI.Extensions.AspNetCore.IContentUrl _Directory => _directory ??= GetContentUrl(<#= classNamespace #>._root() + "<#= projectFolder.Name #>", true);
 
 <#+
 			var usedNames = new List<string>();
@@ -584,8 +584,8 @@ public static partial class <#= projectFolderSlug #>
 						if (!usedNames.Contains(fileName))
 						{
 #>
-	private static global::ISI.Extensions.Web.IContentUrl _<#= CreateSlug(fileName, projectFolderSlug) #> = null;
-	public static global::ISI.Extensions.Web.IContentUrl <#= CreateSlug(fileName, projectFolderSlug) #> => _<#= CreateSlug(fileName, projectFolderSlug) #> ??= GetContentUrl(_root() + "<#= projectItem.Name #>", true);
+	private static global::ISI.Extensions.AspNetCore.IContentUrl _<#= CreateSlug(fileName, projectFolderSlug) #> = null;
+	public static global::ISI.Extensions.AspNetCore.IContentUrl <#= CreateSlug(fileName, projectFolderSlug) #> => _<#= CreateSlug(fileName, projectFolderSlug) #> ??= GetContentUrl(_root() + "<#= projectItem.Name #>", true);
 <#+
 							usedNames.Add(fileName);
 						}

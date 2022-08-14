@@ -25,8 +25,8 @@ namespace ISI.Extensions.AspNetCore.Extensions
 	public static partial class JavascriptHelper
 	{
 		#region DynamicPagesHelper
-		//private static ISI.Extensions.Web.Mvc.Areas.DynamicPages.DynamicPagesHelper _dynamicPagesHelper = null;
-		//public static ISI.Extensions.Web.Mvc.Areas.DynamicPages.DynamicPagesHelper DynamicPagesHelper => _dynamicPagesHelper ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Web.Mvc.Areas.DynamicPages.DynamicPagesHelper>();
+		//private static ISI.Extensions.AspNetCore.Mvc.Areas.DynamicPages.DynamicPagesHelper _dynamicPagesHelper = null;
+		//public static ISI.Extensions.AspNetCore.Mvc.Areas.DynamicPages.DynamicPagesHelper DynamicPagesHelper => _dynamicPagesHelper ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.AspNetCore.Mvc.Areas.DynamicPages.DynamicPagesHelper>();
 		#endregion
 
 		private static Configuration _configuration = null;

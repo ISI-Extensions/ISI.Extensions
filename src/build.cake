@@ -177,14 +177,14 @@ Task("Nuget")
 
 		if(settings.CodeSigning.DoCodeSigning)
 		{
-			SignNupkgs(new ISI.Cake.Addin.CodeSigning.SignNupkgsRequest()
+			SignNupkgs(new ISI.Cake.Addin.CodeSigning.SignNupkgsUsingSettingsRequest()
 			{
 				NupkgPaths = nupgkFiles,
 				Settings = settings,
 			});
 		}
 
-		NupkgPush(new ISI.Cake.Addin.Nuget.NupkgPushUsingSettingsRequest()
+		NupkgPush(new ISI.Cake.Addin.Nuget.NupkgPushRequest()
 		{
 			NupkgPaths = nupgkFiles,
 			ApiKey = settings.Nuget.ApiKey,

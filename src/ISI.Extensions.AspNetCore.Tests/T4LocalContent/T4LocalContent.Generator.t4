@@ -61,7 +61,7 @@ public static partial class <#= subClassName #>
 	public static string __root = <#= (IsWebRoot ? "\"~/\"" : "null") #>;
 	public static string _root()
 	{
-		return (__root ??= ISI.ExtensionsFileProviders.EmbeddedVolumesFileProvider.GetPathPrefix(typeof(<#= FilesSubClassName #>)));
+		return (__root ??= ISI.Extensions.VirtualFileVolumesFileProvider.GetPathPrefix(typeof(<#= FilesSubClassName #>)));
 	}
 
 <#
@@ -165,7 +165,7 @@ public static partial class <#= subClassName #>
 	public static string __root = <#= (IsWebRoot ? "\"~/\"" : "null") #>;
 	public static string _root()
 	{
-		return (__root ??= ISI.ExtensionsFileProviders.EmbeddedVolumesFileProvider.GetPathPrefix(typeof(<#= LinksSubClassName #>)));
+		return (__root ??= ISI.Extensions.VirtualFileVolumesFileProvider.GetPathPrefix(typeof(<#= LinksSubClassName #>)));
 	}
 
 <#

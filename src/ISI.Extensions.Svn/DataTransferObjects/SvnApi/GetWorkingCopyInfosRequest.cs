@@ -18,19 +18,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Svn.DataTransferObjects.SvnApi;
 
-namespace ISI.Extensions.Svn
+namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
-	public partial class SvnApi
+	public partial class GetWorkingCopyInfosRequest : ICredentials
 	{
-		private string GetRemoteUrl(string workingCopyDirectory)
-		{
-			return GetWorkingCopyInfos(new DTOs.GetWorkingCopyInfosRequest()
-			{
-				Source = System.IO.Path.Combine(workingCopyDirectory),
-			})?.Infos?.First()?.Uri?.ToString() ?? string.Empty;
-		}
+		public string UserName { get; set; }
+		public string Password { get; set; }
+
+		public string Source { get; set; }
+		public Depth Depth { get; set; }	
 	}
 }

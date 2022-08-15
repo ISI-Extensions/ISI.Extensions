@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,22 +15,15 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Svn.DataTransferObjects.SvnApi;
 
-namespace ISI.Extensions.Svn
+namespace ISI.Extensions.Svn.DataTransferObjects.MessageParser
 {
-	public partial class SvnApi
+	public partial class ParsedMessage
 	{
-		private string GetRemoteUrl(string workingCopyDirectory)
-		{
-			return GetWorkingCopyInfos(new DTOs.GetWorkingCopyInfosRequest()
-			{
-				Source = System.IO.Path.Combine(workingCopyDirectory),
-			})?.Infos?.First()?.Uri?.ToString() ?? string.Empty;
-		}
+		public TicketAction? Action { get; set; }
+		public string[] TracTicketNumbers { get; set; }
+		public string[] JiraIssueIdOrKeys { get; set; }
+		public TimeSpan? TimeSpent { get; set; }
 	}
 }

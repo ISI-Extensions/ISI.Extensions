@@ -70,7 +70,7 @@ namespace ISI.Extensions.Svn
 		{
 			var response = new SourceControlClientApiDTOs.GetRootDirectoryResponse();
 
-			var svnResponse = GetInfos(new DTOs.GetInfosRequest()
+			var svnResponse = GetWorkingCopyInfos(new DTOs.GetWorkingCopyInfosRequest()
 			{
 				Source = request.FullName,
 				Depth = Depth.Empty,

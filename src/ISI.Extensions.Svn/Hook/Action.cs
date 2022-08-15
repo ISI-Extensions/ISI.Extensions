@@ -19,14 +19,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
+namespace ISI.Extensions.Svn
 {
-	public partial class GetInfosRequest : ICredentials
+	public enum Action
 	{
-		public string UserName { get; set; }
-		public string Password { get; set; }
-
-		public string Source { get; set; }
-		public Depth Depth { get; set; }	
+		[ISI.Extensions.Enum("Added", "A")] Added,
+		[ISI.Extensions.Enum("Modified", "M")] Modified,
+		[ISI.Extensions.Enum("Deleted", "D")] Deleted
 	}
 }

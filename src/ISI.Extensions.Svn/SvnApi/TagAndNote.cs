@@ -33,7 +33,7 @@ namespace ISI.Extensions.Svn
 
 			var response = new DTOs.TagAndNoteResponse();
 
-			var infos = GetInfos(new DTOs.GetInfosRequest()
+			var infos = GetWorkingCopyInfos(new DTOs.GetWorkingCopyInfosRequest()
 			{
 				UserName = request.UserName,
 				Password = request.Password,

@@ -25,9 +25,9 @@ namespace ISI.Extensions.Svn
 {
 	public partial class SvnApi
 	{
-		public DTOs.GetInfosResponse GetInfos(DTOs.GetInfosRequest request)
+		public DTOs.GetWorkingCopyInfosResponse GetWorkingCopyInfos(DTOs.GetWorkingCopyInfosRequest request)
 		{
-			var response = new DTOs.GetInfosResponse();
+			var response = new DTOs.GetWorkingCopyInfosResponse();
 
 			var arguments = new List<string>();
 
@@ -61,9 +61,9 @@ namespace ISI.Extensions.Svn
 
 			var contentItems = content.Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
-			var infos = new List<DTOs.Info>();
+			var infos = new List<DTOs.WorkingCopyInfo>();
 
-			DTOs.Info info = null;
+			DTOs.WorkingCopyInfo info = null;
 
 			foreach (var contentItem in contentItems)
 			{
@@ -79,7 +79,7 @@ namespace ISI.Extensions.Svn
 						switch (propertyKey)
 						{
 							case "Path":
-								info = new DTOs.Info();
+								info = new DTOs.WorkingCopyInfo();
 								infos.Add(info);
 								info.Path = propertyValue.Trim();
 								break;

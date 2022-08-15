@@ -18,19 +18,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Svn.DataTransferObjects.SvnApi;
 
 namespace ISI.Extensions.Svn
 {
-	public partial class SvnApi
+	public enum TicketAction
 	{
-		private string GetRemoteUrl(string workingCopyDirectory)
-		{
-			return GetWorkingCopyInfos(new DTOs.GetWorkingCopyInfosRequest()
-			{
-				Source = System.IO.Path.Combine(workingCopyDirectory),
-			})?.Infos?.First()?.Uri?.ToString() ?? string.Empty;
-		}
+		References,
+		Closes,
+		Fixes,
 	}
 }

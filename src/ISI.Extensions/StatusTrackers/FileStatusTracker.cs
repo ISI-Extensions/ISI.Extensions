@@ -83,14 +83,14 @@ namespace ISI.Extensions.StatusTrackers
 				{
 					lock (SyncLock)
 					{
-						if (Percent < 0)
+						if (value < 0)
 						{
-							Percent = 0;
+							value = 0;
 						}
 
-						if (Percent > 100)
+						if (value > 100)
 						{
-							Percent = 100;
+							value = 100;
 						}
 
 						PercentFileStream.Position = 0;
@@ -100,6 +100,26 @@ namespace ISI.Extensions.StatusTrackers
 						_percent = value;
 						OnStatusChangeEvents?.Invoke(Caption, Percent);
 					}
+				}
+			}
+			
+			public void SetCaptionPercent(string caption, int percent)
+			{
+				lock (SyncLock)
+				{
+					_caption = caption;
+
+					if (percent < 0)
+					{
+						percent = 0;
+					}
+					if (percent > 100)
+					{
+						percent = 100;
+					}
+					_percent = percent;
+
+					OnStatusChangeEvents?.Invoke(Caption, Percent);
 				}
 			}
 

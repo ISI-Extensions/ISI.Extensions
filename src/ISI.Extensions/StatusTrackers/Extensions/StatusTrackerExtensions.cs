@@ -12,47 +12,28 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ISI.Extensions.StatusTrackers
+namespace ISI.Extensions.StatusTrackers.Extensions
 {
-	public delegate void OnStatusChange(string caption, int percent);
-	public delegate void OnLogUpdate(IEnumerable<IStatusTrackerLogEntry> logEntries);
-	public delegate void OnAddToLog(IStatusTrackerLogEntry logEntry);
-	public delegate void AddToLog(string description);
-}
-
-namespace ISI.Extensions
-{
-	public interface IStatusTrackerSnapshot
+	public static class StatusTrackerExtensions
 	{
-		string Caption { get; }
-		int Percent { get; }
-		IEnumerable<IStatusTrackerLogEntry> GetLogEntries();
-	}
+		private static int CalculatePercentage(int percentOffset, int percentRange, int percentIndex, int percentCount)
+		{
+			return (percentOffset + (int)((double)percentRange * ((double)percentIndex / (double)percentCount)));
+		}
 
-	public interface IStatusTracker
-	{
-		event ISI.Extensions.StatusTrackers.OnStatusChange OnStatusChangeEvents;
-		event ISI.Extensions.StatusTrackers.OnLogUpdate OnLogUpdateEvents;
-		event ISI.Extensions.StatusTrackers.OnAddToLog OnAddToLogEvents;
-		string Caption { get; set; }
-		int Percent { get; set; }
-		void SetCaptionPercent(string caption, int percent);
-		void AddToLog(System.Exception exception);
-		void AddToLog(string logEntry, System.Exception exception);
-		void AddToLog(string logEntry);
-		void AddToLog(DateTime dateTimeStamp, string logEntry);
-		void AddToLog(IEnumerable<IStatusTrackerLogEntry> logEntries);
-		IEnumerable<IStatusTrackerLogEntry> GetLogEntries();
-	}
+		public static void SetPercent(this IStatusTracker statusTracker, int percentOffset, int percentRange, int percentIndex, int percentCount)
+		{
+			statusTracker.Percent = CalculatePercentage(percentOffset, percentRange, percentIndex, percentCount);
+		}
 
-	public interface IStatusTrackerLogEntry
-	{
-		DateTime DateTimeStamp { get; }
-		string Description { get; }
+		public static void SetCaptionPercent(this IStatusTracker statusTracker, string caption, int percentOffset, int percentRange, int percentIndex, int percentCount)
+		{
+			statusTracker.SetCaptionPercent(caption, CalculatePercentage(percentOffset, percentRange, percentIndex, percentCount));
+		}
 	}
 }

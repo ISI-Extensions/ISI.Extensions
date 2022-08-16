@@ -54,18 +54,38 @@ namespace ISI.Extensions
 			{
 				lock (_syncLock)
 				{
-					if (Percent < 0)
+					if (value < 0)
 					{
-						Percent = 0;
+						value = 0;
 					}
-					if (Percent > 100)
+					if (value > 100)
 					{
-						Percent = 100;
+						value = 100;
 					}
 
 					_percent = value;
 					OnStatusChangeEvents?.Invoke(Caption, Percent);
 				}
+			}
+		}
+
+		public void SetCaptionPercent(string caption, int percent)
+		{
+			lock (_syncLock)
+			{
+				_caption = caption;
+
+				if (percent < 0)
+				{
+					percent = 0;
+				}
+				if (percent > 100)
+				{
+					percent = 100;
+				}
+				_percent = percent;
+
+				OnStatusChangeEvents?.Invoke(Caption, Percent);
 			}
 		}
 

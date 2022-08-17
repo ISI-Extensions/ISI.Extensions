@@ -31,11 +31,11 @@ namespace ISI.Extensions.VisualStudio
 		public Guid? ProjectUuid { get; set; }
 		public override string ToString() => Name;
 
-		public string GetClipboardToken() => string.Format("{0}:{1}:{2}:{3}", ClipboardTokenHeader, Name, Path, ProjectUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
+		public string GetClipboardToken() => string.Format("{0}|{1}|{2}|{3}", ClipboardTokenHeader, Name, Path, ProjectUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
 
 		public static bool TryParseClipboardToken(string clipboardToken, out ProjectReference projectReference)
 		{
-			var clippedItem = clipboardToken.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+			var clippedItem = clipboardToken.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
 
 			if ((clippedItem.Length == 4) && string.Equals(clippedItem[0], ClipboardTokenHeader, StringComparison.InvariantCultureIgnoreCase))
 			{

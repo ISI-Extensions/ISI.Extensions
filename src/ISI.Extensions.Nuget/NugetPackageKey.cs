@@ -32,11 +32,11 @@ namespace ISI.Extensions.Nuget
 
 		public override string ToString() => $"{Package} {Version}";
 
-		public string GetClipboardToken() => string.Format("{0}:{1}:{2}", ClipboardTokenHeader, Package, Version);
+		public string GetClipboardToken() => string.Format("{0}|{1}|{2}", ClipboardTokenHeader, Package, Version);
 
 		public static bool TryParseClipboardToken(string clipboardToken, out NugetPackageKey nugetPackageKey)
 		{
-			var clippedItem = clipboardToken.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+			var clippedItem = clipboardToken.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
 
 			if (((clippedItem.Length == 2) || (clippedItem.Length == 3)) && string.Equals(clippedItem[0], ClipboardTokenHeader, StringComparison.InvariantCultureIgnoreCase))
 			{

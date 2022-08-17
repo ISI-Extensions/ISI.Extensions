@@ -77,7 +77,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void ListNugetPackages_Test()
 		{
-			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ICS.keyValue");
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 
 			var logger = ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();

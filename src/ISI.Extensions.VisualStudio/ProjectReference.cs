@@ -15,16 +15,43 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
+using ISI.Extensions.Extensions;
+using ISI.Extensions.Nuget.SerializableModels;
 
 namespace ISI.Extensions.VisualStudio
 {
 	public class ProjectReference
 	{
+		public const string ClipboardTokenHeader = nameof(ProjectReference);
+
 		public string Name { get; set; }
 		public string Path { get; set; }
 		public Guid? ProjectUuid { get; set; }
-
 		public override string ToString() => Name;
+
+		public string GetClipboardToken() => string.Format("{0}:{1}:{2}:{3}", ClipboardTokenHeader, Name, Path, ProjectUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
+
+		public static bool TryParseClipboardToken(string clipboardToken, out ProjectReference projectReference)
+		{
+			var clippedItem = clipboardToken.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+
+			if ((clippedItem.Length == 4) && string.Equals(clippedItem[0], ClipboardTokenHeader, StringComparison.InvariantCultureIgnoreCase))
+			{
+				projectReference = new ProjectReference()
+				{
+					Name = clippedItem[1],
+					Path = clippedItem[2],
+					ProjectUuid = clippedItem[3].ToGuidNullable(),
+				};
+
+				return true;
+			}
+
+			projectReference = null;
+
+			return false;
+		}
 	}
 }

@@ -38,7 +38,7 @@ namespace ISI.Extensions.Nuget
 		{
 			var clippedItem = clipboardToken.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
 
-			if (((clippedItem.Length == 2) || (clippedItem.Length == 3)) && string.Equals(clippedItem[0], "NugetPackageKey", StringComparison.InvariantCultureIgnoreCase))
+			if (((clippedItem.Length == 2) || (clippedItem.Length == 3)) && string.Equals(clippedItem[0], ClipboardTokenHeader, StringComparison.InvariantCultureIgnoreCase))
 			{
 				nugetPackageKey = new ISI.Extensions.Nuget.NugetPackageKey()
 				{

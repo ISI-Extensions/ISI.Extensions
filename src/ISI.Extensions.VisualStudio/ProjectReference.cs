@@ -35,15 +35,15 @@ namespace ISI.Extensions.VisualStudio
 
 		public static bool TryParseClipboardToken(string clipboardToken, out ProjectReference projectReference)
 		{
-			var clippedItem = clipboardToken.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+			var clippedItem = clipboardToken.Split(new[] { '|' }, StringSplitOptions.None);
 
-			if ((clippedItem.Length == 4) && string.Equals(clippedItem[0], ClipboardTokenHeader, StringComparison.InvariantCultureIgnoreCase))
+			if ((clippedItem.Length >= 2) && string.Equals(clippedItem[0], ClipboardTokenHeader, StringComparison.InvariantCultureIgnoreCase))
 			{
 				projectReference = new ProjectReference()
 				{
 					Name = clippedItem[1],
-					Path = clippedItem[2],
-					ProjectUuid = clippedItem[3].ToGuidNullable(),
+					Path = (clippedItem.Length >= 3 ? clippedItem[2] : null),
+					ProjectUuid = (clippedItem.Length >= 4 ? clippedItem[3].ToGuidNullable() : null),
 				};
 
 				return true;

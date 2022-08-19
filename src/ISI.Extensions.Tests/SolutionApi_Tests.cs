@@ -303,7 +303,6 @@ namespace ISI.Extensions.Tests
 			//replacements.Add(" Constants.", " EnvDTE.Constants.");
 
 			var findContents = new List<string>();
-			//findContents.Add("ICS.Libraries.Service");
 
 			var ignoreFindContents = new List<string>();
 

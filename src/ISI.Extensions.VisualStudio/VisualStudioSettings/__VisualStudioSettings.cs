@@ -54,12 +54,6 @@ namespace ISI.Extensions.VisualStudio
 			"ISI.Tracing",
 			"ISI.Worker",
 			"ISI.Wrapper",
-			"ICS.Libraries",
-			"ICS.CMS",
-			"ICS.Libraries",
-			"ICS.Licenses",
-			"ICS.Scripts",
-			"ICS.Services",
 		};
 
 		private static ISI.Extensions.Serialization.ISerialization _serialization = null;

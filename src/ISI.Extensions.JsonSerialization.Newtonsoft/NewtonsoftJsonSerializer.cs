@@ -17,18 +17,45 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.TypeLocator.Extensions;
 
 namespace ISI.Extensions.JsonSerialization.Newtonsoft
 {
 	public class NewtonsoftJsonSerializer : ISI.Extensions.JsonSerialization.IJsonSerializer, ISI.Extensions.Serialization.ISerializer
 	{
+		private static readonly object _jsonConverterLock = new();
+		private static global::Newtonsoft.Json.JsonConverter[] _jsonConverters = null;
+
+		public static global::Newtonsoft.Json.JsonConverter[] JsonConverters()
+		{
+			if (_jsonConverters == null)
+			{
+				lock (_jsonConverterLock)
+				{
+					if (_jsonConverters == null)
+					{
+						var jsonConverters = new List<global::Newtonsoft.Json.JsonConverter>();
+
+						foreach (var getJsonConverter in ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementations<IGetJsonConverter>())
+						{
+							jsonConverters.Add(getJsonConverter.GetJsonConverter());
+						}
+
+						_jsonConverters = jsonConverters.ToArray();
+					}
+				}
+			}
+
+			return _jsonConverters;
+		}
+		
 		public ISI.Extensions.Serialization.SerializationFormat SerializationFormat => ISI.Extensions.Serialization.SerializationFormat.Json;
 		public bool UsesDataContract => true;
 		public string ContentType => ISI.Extensions.MimeTypes.Json;
 
 		public object Deserialize(Type type, string serializedValue)
 		{
-			return global::Newtonsoft.Json.JsonConvert.DeserializeObject(serializedValue, type, new [] { SerializerContractUuidJsonConverter.GetJsonConverter() });
+			return global::Newtonsoft.Json.JsonConvert.DeserializeObject(serializedValue, type, JsonConverters());
 		}
 
 		public object Deserialize(Type type, System.IO.Stream stream)
@@ -40,13 +67,13 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 		{
 			if (value.GetType() == type)
 			{
-				return global::Newtonsoft.Json.JsonConvert.SerializeObject(value, (friendlyFormatted ? global::Newtonsoft.Json.Formatting.Indented : global::Newtonsoft.Json.Formatting.None), new [] { SerializerContractUuidJsonConverter.GetJsonConverter() });
+				return global::Newtonsoft.Json.JsonConvert.SerializeObject(value, (friendlyFormatted ? global::Newtonsoft.Json.Formatting.Indented : global::Newtonsoft.Json.Formatting.None), JsonConverters());
 			}
 
 			var settings = new global::Newtonsoft.Json.JsonSerializerSettings()
 			{
 				ContractResolver = TypeContractResolver.GetTypeContractResolver(type),
-				Converters = new [] { SerializerContractUuidJsonConverter.GetJsonConverter() },
+				Converters = JsonConverters(),
 			};
 
 			return global::Newtonsoft.Json.JsonConvert.SerializeObject(value, (friendlyFormatted ? global::Newtonsoft.Json.Formatting.Indented : global::Newtonsoft.Json.Formatting.None), settings);

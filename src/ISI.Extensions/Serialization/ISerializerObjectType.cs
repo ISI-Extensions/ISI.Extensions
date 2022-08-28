@@ -18,48 +18,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using global::MassTransit;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.MessageBus.MassTransit.RabbitMQ
+namespace ISI.Extensions.Serialization
 {
-	public partial class MessageBus
+	public interface ISerializerObjectType
 	{
-		protected override void CreateChannels(System.IServiceProvider serviceProvider, ISI.Extensions.MessageBus.MessageBusBuildRequestCollection requests)
-		{
-			BusControl = global::MassTransit.Bus.Factory.CreateUsingRabbitMq(configurator =>
-			{
-				configurator.UseNewtonsoftJsonSerializer();
-				configurator.ConfigureNewtonsoftJsonSerializer(jsonSerializerSettings =>
-				{
-					jsonSerializerSettings.Converters = ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer.JsonConverters();
 
-					return jsonSerializerSettings;
-				});
-
-				configurator.UseNewtonsoftJsonDeserializer(true);
-				configurator.ConfigureNewtonsoftJsonDeserializer(jsonSerializerSettings =>
-				{
-					jsonSerializerSettings.Converters = ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer.JsonConverters();
-
-					return jsonSerializerSettings;
-				});
-
-				var hostUri = new Uri(Configuration.ConnectionString);
-
-				configurator.Host(hostUri, hostConfigurator =>
-				{
-					hostConfigurator.PublisherConfirmation = Configuration.PublisherConfirmation;
-					hostConfigurator.Username(Configuration.UserName);
-					hostConfigurator.Password(Configuration.Password);
-				});
-
-				CreateChannel(serviceProvider, configurator, hostUri, requests.DefaultChannelMessageBusBuildRequest);
-
-				foreach (var request in requests)
-				{
-					CreateChannel(serviceProvider, configurator, hostUri, request);
-				}
-			});
-		}
 	}
 }

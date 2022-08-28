@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,51 +15,22 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using global::MassTransit;
 
-namespace ISI.Extensions.MessageBus.MassTransit.RabbitMQ
+namespace ISI.Extensions.JsonSerialization.Newtonsoft
 {
-	public partial class MessageBus
+	public interface IGetJsonConverter
 	{
-		protected override void CreateChannels(System.IServiceProvider serviceProvider, ISI.Extensions.MessageBus.MessageBusBuildRequestCollection requests)
+		global::Newtonsoft.Json.JsonConverter GetJsonConverter();
+	}
+
+	[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+	public class GetJsonConverterAttribute : ISI.Extensions.TypeLocatorAttribute
+	{
+		public GetJsonConverterAttribute()
+			: base(typeof(IGetJsonConverter))
 		{
-			BusControl = global::MassTransit.Bus.Factory.CreateUsingRabbitMq(configurator =>
-			{
-				configurator.UseNewtonsoftJsonSerializer();
-				configurator.ConfigureNewtonsoftJsonSerializer(jsonSerializerSettings =>
-				{
-					jsonSerializerSettings.Converters = ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer.JsonConverters();
 
-					return jsonSerializerSettings;
-				});
-
-				configurator.UseNewtonsoftJsonDeserializer(true);
-				configurator.ConfigureNewtonsoftJsonDeserializer(jsonSerializerSettings =>
-				{
-					jsonSerializerSettings.Converters = ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer.JsonConverters();
-
-					return jsonSerializerSettings;
-				});
-
-				var hostUri = new Uri(Configuration.ConnectionString);
-
-				configurator.Host(hostUri, hostConfigurator =>
-				{
-					hostConfigurator.PublisherConfirmation = Configuration.PublisherConfirmation;
-					hostConfigurator.Username(Configuration.UserName);
-					hostConfigurator.Password(Configuration.Password);
-				});
-
-				CreateChannel(serviceProvider, configurator, hostUri, requests.DefaultChannelMessageBusBuildRequest);
-
-				foreach (var request in requests)
-				{
-					CreateChannel(serviceProvider, configurator, hostUri, request);
-				}
-			});
 		}
 	}
 }

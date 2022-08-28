@@ -37,7 +37,7 @@ namespace ISI.Extensions.Repository.Cosmos
 					_repositoryJsonSerializerSettings ??= new Newtonsoft.Json.JsonSerializerSettings()
 					{
 						ContractResolver = GetRepositoryContractResolver(),
-						Converters = new [] { ISI.Extensions.JsonSerialization.Newtonsoft.SerializerContractUuidJsonConverter.GetJsonConverter() },
+						Converters = ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer.JsonConverters(),
 					};
 				}
 			}

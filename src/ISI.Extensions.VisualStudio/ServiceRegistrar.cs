@@ -18,20 +18,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.VisualStudio
 {
 	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
-	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrarWithPriority
+	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
 	{
-		public int Priority => 100;
-
 		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
-			services.AddSingleton<ISI.Extensions.Serialization.ISerialization, ISI.Extensions.Serialization.Serialization>();
-			services.AddSingleton<ISI.Extensions.SecureShell.IHostConfigurationManager, ISI.Extensions.SecureShell.HostConfigurationManager>();
-			services.AddSingleton<ISI.Extensions.StatusTrackers.FileStatusTrackerFactory>();
+			services.AddSingleton<CodeGenerationApi>();
+			services.AddSingleton<CodeSigningApi>();
+			services.AddSingleton<VsWhereApi>();
+			services.AddSingleton<MSBuildApi>();
+			services.AddSingleton<PackagerApi>();
+			services.AddSingleton<ProjectApi>();
+			services.AddSingleton<VisualStudioSettings>();
+			services.AddSingleton<SolutionApi>();
+			services.AddSingleton<XmlTransformApi>();
 		}
 	}
 }

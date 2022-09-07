@@ -27,11 +27,15 @@ namespace ISI.Extensions.Scm
 	{
 		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
+			services.AddSingleton<IBuildScriptApi, BuildScriptApi>();
 			services.AddSingleton<IBuildArtifactApi, BuildArtifactApi>();
 			services.AddSingleton<IDeploymentManagerApi, DeploymentManagerApi>();
 			services.AddSingleton<IFileStoreApi, FileStoreApi>();
 			services.AddSingleton<IScmApi, ScmApi>();
 			services.AddSingleton<ISourceControlClientApi, SourceControlClientApi>();
+			services.AddSingleton<JenkinsServiceApi>();
+			services.AddSingleton<RemoteCodeSigningApi>();
+			services.AddSingleton<VSExtensionsApi>();
 		}
 	}
 }

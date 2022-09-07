@@ -56,13 +56,15 @@ namespace ISI.Extensions.VisualStudio
 			"ISI.Wrapper",
 		};
 
-		private static ISI.Extensions.Serialization.ISerialization _serialization = null;
-		protected static ISI.Extensions.Serialization.ISerialization Serialization => _serialization ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Serialization.ISerialization>();
+		protected ISI.Extensions.Serialization.ISerialization Serialization { get; }
 
 		protected string SettingsFileName { get; }
 
-		public VisualStudioSettings()
+		public VisualStudioSettings(
+			ISI.Extensions.Serialization.ISerialization serialization)
 		{
+			Serialization = serialization;
+
 			var configurationDirectory = System.IO.Path.Combine(Environment.GetEnvironmentVariable("APPDATA"), "ISI.Extensions");
 
 			System.IO.Directory.CreateDirectory(configurationDirectory);

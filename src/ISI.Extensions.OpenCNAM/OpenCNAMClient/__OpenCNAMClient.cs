@@ -23,7 +23,7 @@ using DTOs = ISI.Extensions.OpenCNAM.DataTransferObjects;
 
 namespace ISI.Extensions.OpenCNAM
 {
-	public partial class OpenCNAMClient : IDisposable
+	public partial class OpenCNAMClient
 	{
 		protected ISI.Extensions.OpenCNAM.Configuration Configuration { get; }
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
@@ -46,11 +46,6 @@ namespace ISI.Extensions.OpenCNAM
 			headers.AddBasicAuthentication(Configuration.AccountSID, Configuration.AuthToken);
 
 			return headers;
-		}
-
-		public void Dispose()
-		{
-
 		}
 	}
 }

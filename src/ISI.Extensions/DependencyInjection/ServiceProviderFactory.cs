@@ -34,7 +34,7 @@ namespace ISI.Extensions.DependencyInjection
 			DependencyInjectionConfiguration = new Configuration();
 			ServiceProviderBuilderType = serviceProviderBuilderType;
 
-			configuration.Bind(ISI.Extensions.DependencyInjection.Configuration.ConfigurationSectionName, DependencyInjectionConfiguration);
+			Configuration.Bind(ISI.Extensions.DependencyInjection.Configuration.ConfigurationSectionName, DependencyInjectionConfiguration);
 		}
 		
 		public ContainerBuilder CreateBuilder(Microsoft.Extensions.DependencyInjection.IServiceCollection services)

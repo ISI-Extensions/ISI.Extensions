@@ -75,10 +75,10 @@ namespace ISI.Extensions.Tests
 
 			deploymentManagerApi.UpdateServicesManager(new ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.UpdateServicesManagerRequest()
 			{
-				ServicesManagerUrl = "http://localhost:14258/",
-				Password = "87BEF140-045B-42D7-AB87-3E59F162BC39",
-				//ServicesManagerUrl = settings.GetValue("PRODUCTION-DeployManager-Url"),
-				//Password = settings.GetValue("PRODUCTION-DeployManager-Password"),
+				//ServicesManagerUrl = "http://localhost:14258/",
+				//Password = "87BEF140-045B-42D7-AB87-3E59F162BC39",
+				ServicesManagerUrl = settings.GetValue("PRODUCTION-IIS01-DeployManager-Url"),
+				Password = settings.GetValue("PRODUCTION-IIS01-DeployManager-Password"),
 			});
 		}
 

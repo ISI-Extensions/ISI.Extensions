@@ -18,16 +18,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.WebClient
+namespace ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi
 {
-	public partial class Rest
+	[DataContract]
+	public class GetStatusResponse
 	{
-		public interface IRestContentResponse
-		{
-			System.Net.HttpStatusCode StatusCode { get; set; }
-			string Content { get; set; }
-			HeaderCollection ResponseHeaders { get; set; }
-		}
+		[DataMember(Name = "caption", EmitDefaultValue = false)]
+		public string Caption { get; set; }
+
+		[DataMember(Name = "percent", EmitDefaultValue = false)]
+		public int Percent { get; set; }
+
+		[DataMember(Name = "log", EmitDefaultValue = false)]
+		public LogEntry[] Log { get; set; }
+
+		[DataMember(Name = "active", EmitDefaultValue = false)]
+		public bool Active { get; set; }
+
+		[DataMember(Name = "success", EmitDefaultValue = false)]
+		public bool Success { get; set; }
 	}
 }

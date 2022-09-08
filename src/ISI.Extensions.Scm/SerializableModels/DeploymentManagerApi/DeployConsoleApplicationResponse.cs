@@ -18,16 +18,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.WebClient
+namespace ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi
 {
-	public partial class Rest
+	[DataContract]
+	[ISI.Extensions.Serialization.SerializerContractUuid("4ac9784e-f32b-4cf4-ab98-4eb040d1c36e")]
+	public class DeployConsoleApplicationResponse : IDeployComponentResponse
 	{
-		public interface IRestContentResponse
-		{
-			System.Net.HttpStatusCode StatusCode { get; set; }
-			string Content { get; set; }
-			HeaderCollection ResponseHeaders { get; set; }
-		}
+		[DataMember(Name = "deployToSubfolder", EmitDefaultValue = false)]
+		public string DeployToSubfolder { get; set; }
+
+		[DataMember(Name = "packageFolder", EmitDefaultValue = false)]
+		public string PackageFolder { get; set; }
+
+		[DataMember(Name = "consoleApplicationExe", EmitDefaultValue = false)]
+		public string ConsoleApplicationExe { get; set; }
+
+		[DataMember(Name = "sameVersion", EmitDefaultValue = false)]
+		public bool SameVersion { get; set; }
+
+		[DataMember(Name = "newInstall", EmitDefaultValue = false)]
+		public bool NewInstall { get; set; }
+
+		[DataMember(Name = "installed", EmitDefaultValue = false)]
+		public bool Installed { get; set; }
+
+		[DataMember(Name = "success", EmitDefaultValue = false)]
+		public bool Success { get; set; }
+
+		[DataMember(Name = "log", EmitDefaultValue = false)]
+		public string Log { get; set; }
 	}
 }

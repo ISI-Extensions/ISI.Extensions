@@ -18,16 +18,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.WebClient
+namespace ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi
 {
-	public partial class Rest
+	[DataContract]
+	[ISI.Extensions.Serialization.SerializerContractUuid("06e86ec7-1b68-4900-95bd-24b0c4c07195")]
+	public class DeployWindowsService : IDeployComponent
 	{
-		public interface IRestContentResponse
-		{
-			System.Net.HttpStatusCode StatusCode { get; set; }
-			string Content { get; set; }
-			HeaderCollection ResponseHeaders { get; set; }
-		}
+		[DataMember(Name = "deployToSubfolder", EmitDefaultValue = false)]
+		public string DeployToSubfolder { get; set; }
+
+		[DataMember(Name = "packageFolder", EmitDefaultValue = false)]
+		public string PackageFolder { get; set; }
+
+		[DataMember(Name = "excludeFiles", EmitDefaultValue = false)]
+		public DeployComponentExcludeFile[] ExcludeFiles { get; set; }
+
+		[DataMember(Name = "windowsServiceExe", EmitDefaultValue = false)]
+		public string WindowsServiceExe { get; set; }
+
+		[DataMember(Name = "uninstallIfInstalled", EmitDefaultValue = false)]
+		public bool UninstallIfInstalled { get; set; }
 	}
 }

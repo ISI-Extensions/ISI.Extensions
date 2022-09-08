@@ -28,6 +28,7 @@ namespace ISI.Extensions.WebClient
 			public System.Exception Exception { get; set; }
 			public System.Net.HttpStatusCode StatusCode { get; set; }
 			public string Content { get; set; }
+			public HeaderCollection ResponseHeaders { get; set; }
 		}
 	}
 }

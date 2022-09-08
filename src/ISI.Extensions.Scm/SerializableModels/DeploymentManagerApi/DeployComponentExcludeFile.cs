@@ -18,16 +18,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.WebClient
+namespace ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi
 {
-	public partial class Rest
+	[DataContract]
+	[ISI.Extensions.Serialization.SerializerContractUuid("4ddf9aa5-e005-4eb4-b214-82f443d23847")]
+	public class DeployComponentExcludeFile
 	{
-		public interface IRestContentResponse
-		{
-			System.Net.HttpStatusCode StatusCode { get; set; }
-			string Content { get; set; }
-			HeaderCollection ResponseHeaders { get; set; }
-		}
+		[DataMember(Name = "excludeFile", EmitDefaultValue = false)]
+		public string ExcludeFile { get; set; }
 	}
 }

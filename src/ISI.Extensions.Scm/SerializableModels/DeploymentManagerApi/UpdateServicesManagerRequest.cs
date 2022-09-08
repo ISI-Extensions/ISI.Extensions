@@ -18,16 +18,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.WebClient
+namespace ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi
 {
-	public partial class Rest
+	[DataContract]
+	public class UpdateServicesManagerRequest
 	{
-		public interface IRestContentResponse
-		{
-			System.Net.HttpStatusCode StatusCode { get; set; }
-			string Content { get; set; }
-			HeaderCollection ResponseHeaders { get; set; }
-		}
+
 	}
 }

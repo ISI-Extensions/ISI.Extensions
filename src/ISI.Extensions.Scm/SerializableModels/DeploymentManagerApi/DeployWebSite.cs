@@ -18,16 +18,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.WebClient
+namespace ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi
 {
-	public partial class Rest
+	[DataContract]
+	[ISI.Extensions.Serialization.SerializerContractUuid("5a307897-0c2a-4cf7-9437-51f8a5a746fd")]
+	public class DeployWebSite : IDeployComponent
 	{
-		public interface IRestContentResponse
-		{
-			System.Net.HttpStatusCode StatusCode { get; set; }
-			string Content { get; set; }
-			HeaderCollection ResponseHeaders { get; set; }
-		}
+		[DataMember(Name = "deployToSubfolder", EmitDefaultValue = false)]
+		public string DeployToSubfolder { get; set; }
+
+		[DataMember(Name = "packageFolder", EmitDefaultValue = false)]
+		public string PackageFolder { get; set; }
+
+		[DataMember(Name = "excludeFiles", EmitDefaultValue = false)]
+		public DeployComponentExcludeFile[] ExcludeFiles { get; set; }
 	}
 }

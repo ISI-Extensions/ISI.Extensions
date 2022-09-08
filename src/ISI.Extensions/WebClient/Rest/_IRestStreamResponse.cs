@@ -27,6 +27,7 @@ namespace ISI.Extensions.WebClient
 		{
 			System.Net.HttpStatusCode StatusCode { get; set; }
 			System.IO.Stream Stream { get; set; }
+			HeaderCollection ResponseHeaders { get; set; }
 		}
 	}
 }

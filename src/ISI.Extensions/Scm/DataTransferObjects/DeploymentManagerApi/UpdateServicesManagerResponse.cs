@@ -26,6 +26,6 @@ namespace ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi
 		public string CurrentVersion { get; set; }
 		public string Log { get; set; }
 		public string NewVersion { get; set; }
-		public bool SameVersion { get; set; }
+		public bool? SameVersion { get; set; }
 	}
 }

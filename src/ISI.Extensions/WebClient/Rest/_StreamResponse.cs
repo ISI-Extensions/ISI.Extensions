@@ -34,6 +34,8 @@ namespace ISI.Extensions.WebClient
 				get => _stream ??= new TStream();
 				set => _stream = value;
 			}
+
+			public HeaderCollection ResponseHeaders { get; set; }
 		}
 
 		public class StreamResponse : StreamResponse<System.IO.MemoryStream>

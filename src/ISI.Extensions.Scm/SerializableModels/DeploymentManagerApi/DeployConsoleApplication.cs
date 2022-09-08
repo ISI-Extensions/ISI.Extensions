@@ -18,16 +18,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.WebClient
+namespace ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi
 {
-	public partial class Rest
+	[DataContract]
+	[ISI.Extensions.Serialization.SerializerContractUuid("7300740d-30db-4297-ab26-416cc6d043e0")]
+	public class DeployConsoleApplication : IDeployComponent
 	{
-		public interface IRestContentResponse
-		{
-			System.Net.HttpStatusCode StatusCode { get; set; }
-			string Content { get; set; }
-			HeaderCollection ResponseHeaders { get; set; }
-		}
+		[DataMember(Name = "deployToSubfolder", EmitDefaultValue = false)]
+		public string DeployToSubfolder { get; set; }
+
+		[DataMember(Name = "packageFolder", EmitDefaultValue = false)]
+		public string PackageFolder { get; set; }
+
+		[DataMember(Name = "excludeFiles", EmitDefaultValue = false)]
+		public DeployComponentExcludeFile[] ExcludeFiles { get; set; }
+
+		[DataMember(Name = "consoleApplicationExe", EmitDefaultValue = false)]
+		public string ConsoleApplicationExe { get; set; }
+
+		[DataMember(Name = "executeConsoleApplicationAfterInstall", EmitDefaultValue = false)]
+		public bool ExecuteConsoleApplicationAfterInstall { get; set; }
+
+		[DataMember(Name = "executeConsoleApplicationAfterInstallArguments", EmitDefaultValue = false)]
+		public string ExecuteConsoleApplicationAfterInstallArguments { get; set; }
 	}
 }

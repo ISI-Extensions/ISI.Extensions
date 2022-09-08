@@ -18,16 +18,47 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.WebClient
+namespace ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi
 {
-	public partial class Rest
+	[DataContract]
+	public class DeployArtifactRequest
 	{
-		public interface IRestContentResponse
-		{
-			System.Net.HttpStatusCode StatusCode { get; set; }
-			string Content { get; set; }
-			HeaderCollection ResponseHeaders { get; set; }
-		}
+		[DataMember(Name = "remoteManagementUrl", EmitDefaultValue = false)]
+		public string RemoteManagementUrl { get; set; }
+
+		[DataMember(Name = "authenticationToken", EmitDefaultValue = false)]
+		public string AuthenticationToken { get; set; }
+
+		[DataMember(Name = "artifactName", EmitDefaultValue = false)]
+		public string ArtifactName { get; set; }
+
+		[DataMember(Name = "artifactDateTimeStampVersionUrl", EmitDefaultValue = false)]
+		public string ArtifactDateTimeStampVersionUrl { get; set; }
+
+		[DataMember(Name = "artifactDownloadUrl", EmitDefaultValue = false)]
+		public string ArtifactDownloadUrl { get; set; }
+
+		[DataMember(Name = "toDateTimeStamp", EmitDefaultValue = false)]
+		public string ToDateTimeStamp { get; set; }
+
+		[DataMember(Name = "fromEnvironment", EmitDefaultValue = false)]
+		public string FromEnvironment { get; set; }
+
+		[DataMember(Name = "toEnvironment", EmitDefaultValue = false)]
+		public string ToEnvironment { get; set; }
+
+		[DataMember(Name = "configurationKey", EmitDefaultValue = false)]
+		public string ConfigurationKey { get; set; }
+
+		[DataMember(Name = "deployComponents", EmitDefaultValue = false)]
+		public IDeployComponent[] DeployComponents { get; set; }
+
+		[DataMember(Name = "setDeployedVersion", EmitDefaultValue = false)]
+		public bool SetDeployedVersion { get; set; }
+
+		[DataMember(Name = "runAsync", EmitDefaultValue = false)]
+		public bool RunAsync { get; set; }
 	}
 }

@@ -18,16 +18,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.WebClient
+namespace ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi
 {
-	public partial class Rest
+	[DataContract]
+	public class LogEntry
 	{
-		public interface IRestContentResponse
-		{
-			System.Net.HttpStatusCode StatusCode { get; set; }
-			string Content { get; set; }
-			HeaderCollection ResponseHeaders { get; set; }
-		}
+		[DataMember(Name = "dateTimeStamp", EmitDefaultValue = false)]
+		public string __DateTimeStamp { get => DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise); set => DateTimeStamp = value.ToDateTime(); }
+		[IgnoreDataMember]
+		public DateTime DateTimeStamp { get; set; }
+
+		[DataMember(Name = "description", EmitDefaultValue = false)]
+		public string Description { get; set; }
 	}
 }

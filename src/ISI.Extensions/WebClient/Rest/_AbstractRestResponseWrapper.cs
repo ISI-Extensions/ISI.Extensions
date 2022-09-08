@@ -93,6 +93,7 @@ namespace ISI.Extensions.WebClient
 
 							((IRestStreamResponse)Response).StatusCode = StatusCode;
 							responseStream.CopyTo(((IRestStreamResponse)Response).Stream);
+							((IRestStreamResponse)Response).ResponseHeaders = new HeaderCollection(webResponse?.Headers);
 						}
 						else if (typeof(TResponse).Implements<IRestContentResponse>())
 						{
@@ -101,6 +102,7 @@ namespace ISI.Extensions.WebClient
 							((IRestContentResponse)Response).StatusCode = StatusCode;
 							((IRestContentResponse)Response).Content = responseStream.TextReadToEnd();
 							webRequestDetails?.SetResponseRaw(((IRestContentResponse)Response).Content);
+							((IRestContentResponse)Response).ResponseHeaders = new HeaderCollection(webResponse?.Headers);
 
 							if (exception != null)
 							{

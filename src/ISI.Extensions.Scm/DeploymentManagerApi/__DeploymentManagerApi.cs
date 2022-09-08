@@ -19,7 +19,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi;
+using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi;
+
 
 namespace ISI.Extensions.Scm
 {

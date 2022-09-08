@@ -18,16 +18,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.WebClient
+namespace ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi
 {
-	public partial class Rest
+	[DataContract]
+	[ISI.Extensions.Serialization.SerializerContractUuid("a253c7c5-7f49-4a38-9ea8-d07df6465d6e")]
+	public class DeployArtifactResponse
 	{
-		public interface IRestContentResponse
-		{
-			System.Net.HttpStatusCode StatusCode { get; set; }
-			string Content { get; set; }
-			HeaderCollection ResponseHeaders { get; set; }
-		}
+		[DataMember(Name = "deployComponentResponses", EmitDefaultValue = false)]
+		public IDeployComponentResponse[] DeployComponentResponses { get; set; }
+
+		[DataMember(Name = "statusTrackerKey", EmitDefaultValue = false)]
+		public string StatusTrackerKey { get; set; }
 	}
 }

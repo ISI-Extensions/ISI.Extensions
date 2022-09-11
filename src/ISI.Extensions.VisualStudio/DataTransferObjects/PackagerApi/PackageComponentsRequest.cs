@@ -24,13 +24,13 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi
 	public partial class PackageComponentsRequest
 	{
 		public string Configuration { get; set; }
-		public MSBuildVersion BuildVersion { get; set; } = MSBuildVersion.MSBuild16;
+		public MSBuildVersion BuildVersion { get; set; } = MSBuildVersion.Automatic;
 		public MSBuildPlatform BuildPlatform { get; set; } = MSBuildPlatform.Automatic;
 		public BuildPlatformTarget PlatformTarget { get; set; } = BuildPlatformTarget.MSIL;
 		public MSBuildVerbosity BuildVerbosity { get; set; } = MSBuildVerbosity.Quiet;
 
+		public string Solution { get; set; }
 		public string SubDirectory { get; set; }
-
 		public IPackageComponent[] PackageComponents { get; set; }
 
 		public string PackageFullName { get; set; }

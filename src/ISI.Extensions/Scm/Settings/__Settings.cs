@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Scm
 {
@@ -113,6 +114,7 @@ namespace ISI.Extensions.Scm
 		private SettingsFileStore _fileStore = null;
 		public SettingsFileStore FileStore => _fileStore ??= new SettingsFileStore(this);
 
+		public string[] AllKeys => Values.Keys.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 		public string GetValue(string key, string defaultValue = null)
 		{

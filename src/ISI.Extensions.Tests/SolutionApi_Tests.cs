@@ -315,7 +315,8 @@ namespace ISI.Extensions.Tests
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Telephony.WindowsService");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Desktop");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.WebApplication");
-			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Tristar.SolutionFullNames.txt"));
+			solutionFullNames.Add(@"F:\ISI\Clients\TFS\Tristar.Portal");
+			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Tristar.SolutionFullNames.txt"));
 
 			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionDetailsRequest()
 			{
@@ -333,11 +334,12 @@ namespace ISI.Extensions.Tests
 					logger.Log(LogLevel.Information, solutionDetails.SolutionName);
 
 					var sourceFullNames = new List<string>();
+					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.csproj", System.IO.SearchOption.AllDirectories));
 					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.cs", System.IO.SearchOption.AllDirectories));
 					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.cshtml", System.IO.SearchOption.AllDirectories));
 					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.t4", System.IO.SearchOption.AllDirectories));
 					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.tt", System.IO.SearchOption.AllDirectories));
-					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "web.config", System.IO.SearchOption.AllDirectories));
+					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "web.config", System.IO.SearchOption.AllDirectories));
 					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "build.cake", System.IO.SearchOption.AllDirectories));
 
 					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\packages\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
@@ -368,16 +370,16 @@ namespace ISI.Extensions.Tests
 							var content = System.IO.File.ReadAllText(sourceFullName);
 							var updatedContent = content;
 
-							updatedContent = updatedContent.Replace("Platform = MSBuildPlatform", "BuildPlatform = MSBuildPlatform");
-							updatedContent = updatedContent.Replace("BuildBuildPlatform = MSBuildPlatform", "BuildPlatform = MSBuildPlatform");
+							//updatedContent = updatedContent.Replace("Platform = MSBuildPlatform", "BuildPlatform = MSBuildPlatform");
+							//updatedContent = updatedContent.Replace("BuildBuildPlatform = MSBuildPlatform", "BuildPlatform = MSBuildPlatform");
 
-							{
-								var lines = updatedContent.Replace("\r\n", "\n").Split(new[] { '\n' }).ToList();
+							//{
+							//	var lines = updatedContent.Replace("\r\n", "\n").Split(new[] { '\n' }).ToList();
 
-								lines.RemoveAll(line => line.IndexOf("Platform = MSBuildPlatform.Automatic", StringComparison.InvariantCultureIgnoreCase) >= 0);
+							//	lines.RemoveAll(line => line.IndexOf("Platform = MSBuildPlatform.Automatic", StringComparison.InvariantCultureIgnoreCase) >= 0);
 
-								updatedContent = string.Join(Environment.NewLine, lines);
-							}
+							//	updatedContent = string.Join(Environment.NewLine, lines);
+							//}
 
 							foreach (var findContent in findContents)
 							{
@@ -409,11 +411,11 @@ namespace ISI.Extensions.Tests
 							//	}
 							//}
 
-							//if ((updatedContent.IndexOf("<LangVersion>latest</LangVersion>", StringComparison.InvariantCultureIgnoreCase) >= 0) &&
-							//		(updatedContent.IndexOf("<RuntimeIdentifiers>win</RuntimeIdentifiers>", StringComparison.InvariantCultureIgnoreCase) <= 0))
-							//{
-							//	updatedContent = updatedContent.Replace("<LangVersion>latest</LangVersion>", "<LangVersion>latest</LangVersion>\r\n\t\t<RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>");
-							//}
+							if ((updatedContent.IndexOf("<LangVersion>latest</LangVersion>", StringComparison.InvariantCultureIgnoreCase) >= 0) &&
+									(updatedContent.IndexOf("<RuntimeIdentifiers>win</RuntimeIdentifiers>", StringComparison.InvariantCultureIgnoreCase) <= 0))
+							{
+								updatedContent = updatedContent.Replace("<LangVersion>latest</LangVersion>", "<LangVersion>latest</LangVersion>\r\n\t\t<RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>");
+							}
 
 							//if ((updatedContent.IndexOf("<LangVersion>latest</LangVersion>", StringComparison.InvariantCultureIgnoreCase) >= 0) &&
 							//		(updatedContent.IndexOf("<RuntimeIdentifiers>win</RuntimeIdentifiers>", StringComparison.InvariantCultureIgnoreCase) >= 0))
@@ -421,24 +423,6 @@ namespace ISI.Extensions.Tests
 							//	updatedContent = updatedContent.Replace("<RuntimeIdentifiers>win</RuntimeIdentifiers>", "<RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>");
 							//}
 
-							//foreach (var tag in new[]
-							//{
-							//	"<LangVersion>latest</LangVersion>",
-							//	"<RuntimeIdentifiers>win</RuntimeIdentifiers>",
-							//	"<RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>",
-							//})
-							//{
-							//	var firstOccurrenceIndex = updatedContent.IndexOf(tag, StringComparison.InvariantCultureIgnoreCase);
-							//	var secondOccurrenceIndex = firstOccurrenceIndex;
-							//	while (secondOccurrenceIndex >= 0)
-							//	{
-							//		secondOccurrenceIndex = updatedContent.IndexOf(tag, firstOccurrenceIndex + 1, StringComparison.InvariantCultureIgnoreCase);
-							//		if (secondOccurrenceIndex >= 0)
-							//		{
-							//			updatedContent = string.Format("{0}{1}", updatedContent.Substring(0, secondOccurrenceIndex), updatedContent.Substring(secondOccurrenceIndex + tag.Length).TrimStart(' ', '\t', '\r', '\n'));
-							//		}
-							//	}
-							//}
 
 							if (HasChanges(content, updatedContent))
 							{

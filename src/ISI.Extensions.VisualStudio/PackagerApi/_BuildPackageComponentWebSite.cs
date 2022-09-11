@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using ISI.Extensions.Extensions;
 using Microsoft.Extensions.Logging;
 using System;
@@ -20,13 +20,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static ISI.Extensions.WebClient.Rest;
 using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi;
 
 namespace ISI.Extensions.VisualStudio
 {
 	public partial class PackagerApi
 	{
-		private void BuildPackageComponentWebSite(Microsoft.Extensions.Logging.ILogger logger, string configuration, MSBuildVersion buildVersion, MSBuildPlatform buildPlatform, BuildPlatformTarget platformTarget, MSBuildVerbosity buildVerbosity, string packageComponentsDirectory, AssemblyVersionFileDictionary assemblyVersionFiles, DTOs.PackageComponentWebSite packageComponent)
+		private void BuildPackageComponentWebSite(Microsoft.Extensions.Logging.ILogger logger, string configuration, MSBuildVersion buildVersion, MSBuildPlatform buildPlatform, BuildPlatformTarget platformTarget, MSBuildVerbosity buildVerbosity, string packageComponentsDirectory, string solutionFullName, AssemblyVersionFileDictionary assemblyVersionFiles, DTOs.PackageComponentWebSite packageComponent)
 		{
 			var projectName = System.IO.Path.GetFileNameWithoutExtension(packageComponent.ProjectFullName);
 			var projectDirectory = System.IO.Path.GetDirectoryName(packageComponent.ProjectFullName);
@@ -41,15 +42,74 @@ namespace ISI.Extensions.VisualStudio
 			{
 				var buildDirectory = tempBuildDirectory.FullName;
 
+				var publishProfileFullName = System.IO.Path.Combine(buildDirectory, "FolderProfile.pubxml");
+
 				using (var tempPublishDirectory = new ISI.Extensions.IO.Path.TempDirectory())
 				{
 					var publishDirectory = tempPublishDirectory.FullName;
+
+					var lastUsedPlatform = "Any CPU";
+					switch (buildPlatform)
+					{
+						case MSBuildPlatform.x86:
+							lastUsedPlatform = "x86";
+							break;
+						case MSBuildPlatform.x64:
+							lastUsedPlatform = "x64";
+							break;
+					}
+
+					System.IO.File.WriteAllText(publishProfileFullName, @$"<?xml version=""1.0"" encoding=""utf-8""?>
+<Project>
+	<PropertyGroup>
+		<DeleteExistingFiles>true</DeleteExistingFiles>
+		<ExcludeApp_Data>true</ExcludeApp_Data>
+		<LaunchSiteAfterPublish>false</LaunchSiteAfterPublish>
+		<LastUsedBuildConfiguration>{configuration}</LastUsedBuildConfiguration>
+		<LastUsedPlatform>{lastUsedPlatform}</LastUsedPlatform>
+		<PublishProvider>FileSystem</PublishProvider>
+		<PublishUrl>{publishDirectory}</PublishUrl>
+		<WebPublishMethod>FileSystem</WebPublishMethod>
+		<_TargetId>Folder</_TargetId>
+	</PropertyGroup>
+</Project>
+");
 
 					if (assemblyVersionFiles != null)
 					{
 						CodeGenerationApi.SetAssemblyVersionFiles(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeGenerationApi.SetAssemblyVersionFilesRequest()
 						{
 							AssemblyVersionFiles = assemblyVersionFiles,
+						});
+					}
+
+					if(false)
+					{
+						var msBuildRequest = new ISI.Extensions.VisualStudio.DataTransferObjects.MSBuildApi.MSBuildRequest()
+						{
+							FullName = solutionFullName,
+							MsBuildVersion = buildVersion,
+							MsBuildPlatform = buildPlatform,
+						};
+
+						msBuildRequest.Options.NoImplicitTarget = true;
+						msBuildRequest.Options.Targets.Add("restore");
+						msBuildRequest.Options.Properties.Add("RestorePackagesConfig", "true");
+
+						MSBuildApi.MSBuild(msBuildRequest);
+						//msbuild [sln file] -target:restore -p:=true
+					}
+
+					if (false)
+					{
+						NugetApi.RestoreNugetPackages(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.RestoreNugetPackagesRequest()
+						{
+							SolutionName = solutionFullName,
+							MSBuildExe = MSBuildApi.GetMSBuildExeFullName(new ISI.Extensions.VisualStudio.DataTransferObjects.MSBuildApi.GetMSBuildExeFullNameRequest()
+							{
+								MsBuildVersion = buildVersion,
+								MsBuildPlatform = buildPlatform,
+							}).MSBuildExeFullName,
 						});
 					}
 
@@ -64,14 +124,22 @@ namespace ISI.Extensions.VisualStudio
 
 						msBuildRequest.Options.Configuration = configuration;
 						msBuildRequest.Options.Verbosity = buildVerbosity;
-						msBuildRequest.Options.Properties.Add("DebugSymbols", "true");
-						msBuildRequest.Options.Properties.Add("OutputPath", System.IO.Path.Combine(buildDirectory, "bin"));
+						//msBuildRequest.Options.Properties.Add("DebugSymbols", "true");
+						//msBuildRequest.Options.Properties.Add("OutputPath", System.IO.Path.Combine(buildDirectory, "bin"));
+						//msBuildRequest.Options.Properties.Add("DeployOnBuild", "true");
+						//msBuildRequest.Options.Properties.Add("WebPublishMethod", "FileSystem");
+						//msBuildRequest.Options.Properties.Add("PackageAsSingleFile", "true");
+						//msBuildRequest.Options.Properties.Add("SkipInvalidConfigurations", "true");
+						//msBuildRequest.Options.Properties.Add("publishUrl", publishDirectory);
+						//msBuildRequest.Options.Properties.Add("DeployDefaultTarget", "WebPublish");
+						//msBuildRequest.Options.NoImplicitTarget = true;
+						//msBuildRequest.Options.Restore = true;
 						msBuildRequest.Options.Properties.Add("DeployOnBuild", "true");
-						msBuildRequest.Options.Properties.Add("WebPublishMethod", "FileSystem");
-						msBuildRequest.Options.Properties.Add("PackageAsSingleFile", "true");
-						msBuildRequest.Options.Properties.Add("SkipInvalidConfigurations", "true");
-						msBuildRequest.Options.Properties.Add("publishUrl", publishDirectory);
-						msBuildRequest.Options.Properties.Add("DeployDefaultTarget", "WebPublish");
+						msBuildRequest.Options.Properties.Add("PublishProfile", string.Format("\"{0}\"", publishProfileFullName));
+						//msBuildRequest.Options.Targets.Add("restore");
+						//msBuildRequest.Options.Targets.Add("build");
+
+						//msbuild.exe" "F:\ISI\Clients\TFS\Tristar.Portal\src\Tristar.Portal.Web.Interface\Tristar.Portal.Web.Interface.csproj" /p:DeployOnBuild=true /p:PublishProfile="F:\ISI\Clients\TFS\Tristar.Portal\src\Tristar.Portal.Web.Interface\Properties\PublishProfiles\FolderProfile.pubxml"
 
 						MSBuildApi.MSBuild(msBuildRequest);
 
@@ -81,13 +149,13 @@ namespace ISI.Extensions.VisualStudio
 							tempPublishDirectory.DeleteDirectory = false;
 
 							logger.LogInformation(string.Format("buildDirectory = \"{0}\"", buildDirectory));
-							foreach(var fileName in System.IO.Directory.GetFiles(buildDirectory, "*", System.IO.SearchOption.AllDirectories))
+							foreach (var fileName in System.IO.Directory.GetFiles(buildDirectory, "*", System.IO.SearchOption.AllDirectories))
 							{
 								logger.LogInformation(string.Format("  {0}", fileName));
 							}
 
 							logger.LogInformation(string.Format("publishDirectory = \"{0}\"", publishDirectory));
-							foreach(var fileName in System.IO.Directory.GetFiles(publishDirectory, "*", System.IO.SearchOption.AllDirectories))
+							foreach (var fileName in System.IO.Directory.GetFiles(publishDirectory, "*", System.IO.SearchOption.AllDirectories))
 							{
 								logger.LogInformation(string.Format("  {0}", fileName));
 							}

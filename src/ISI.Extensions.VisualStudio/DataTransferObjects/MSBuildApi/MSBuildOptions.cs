@@ -84,7 +84,7 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.MSBuildApi
 
 		public bool? NoImplicitTarget { get; set; }
 
-		public MSBuildVerbosity Verbosity { get; set; }
+		public MSBuildVerbosity? Verbosity { get; set; }
 
 		public bool? IncludeSymbols { get; set; }
 		public string SymbolPackageFormat { get; set; }

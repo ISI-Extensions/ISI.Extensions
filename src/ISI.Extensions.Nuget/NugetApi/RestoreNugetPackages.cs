@@ -29,12 +29,17 @@ namespace ISI.Extensions.Nuget
 		public DTOs.RestoreNugetPackagesResponse RestoreNugetPackages(DTOs.RestoreNugetPackagesRequest request)
 		{
 			var response = new DTOs.RestoreNugetPackagesResponse();
+
+			if (string.IsNullOrWhiteSpace(request.SolutionDirectory))
+			{
+				request.SolutionDirectory = System.IO.Path.GetDirectoryName(request.SolutionName);
+			}
 			
 			var arguments = string.Format("restore \"{0}\" -PackagesDirectory \"{1}\" -NonInteractive -MSBuildPath \"{2}\"", request.SolutionName, System.IO.Path.Combine(request.SolutionDirectory, "packages"), System.IO.Path.GetDirectoryName(request.MSBuildExe));
 
 			var nugetExeFullName = GetNugetExeFullName(new DTOs.GetNugetExeFullNameRequest()).NugetExeFullName;
 
-			var xxx= ISI.Extensions.Process.WaitForProcessResponse(nugetExeFullName, arguments);
+			ISI.Extensions.Process.WaitForProcessResponse(nugetExeFullName, arguments);
 
 			return response;
 		}

@@ -12,10 +12,11 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using ISI.Extensions.ConfigurationHelper.Extensions;
 using ISI.Extensions.DependencyInjection.Extensions;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.Scm;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
@@ -70,46 +71,99 @@ namespace ISI.Extensions.Tests
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 
 			var logger = new ISI.Extensions.TextWriterLogger(TestContext.Progress);
+			var serialization = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Serialization.ISerialization>();
 			var nugetApi = new ISI.Extensions.Nuget.NugetApi(logger);
 			var vsWhereApi = new ISI.Extensions.VisualStudio.VsWhereApi(logger, nugetApi);
 			var msBuildApi = new ISI.Extensions.VisualStudio.MSBuildApi(logger, vsWhereApi);
 			var codeGenerationApi = new ISI.Extensions.VisualStudio.CodeGenerationApi(logger);
 			var xmlTransformApi = new ISI.Extensions.VisualStudio.XmlTransformApi(logger);
-			var packagerApi = new ISI.Extensions.VisualStudio.PackagerApi(logger, msBuildApi, codeGenerationApi, xmlTransformApi);
+			var packagerApi = new ISI.Extensions.VisualStudio.PackagerApi(logger, nugetApi, msBuildApi, codeGenerationApi, xmlTransformApi);
+			var buildScriptApi = new ISI.Extensions.Scm.BuildScriptApi(logger);
+			var sourceControlClientApi = new SourceControlClientApi(logger);
+			var solutionApi = new ISI.Extensions.VisualStudio.SolutionApi(logger, serialization, new ISI.Extensions.VisualStudio.VisualStudioSettings(serialization), buildScriptApi, sourceControlClientApi, codeGenerationApi, nugetApi);
 
-			//var solutionFile = File("./ISI.HAPP.WebApplication.sln");
-			//var solution = ParseSolution(solutionFile);
-			//var rootProjectFile = File("./ISI.HAPP.WebApplication/ISI.HAPP.WebApplication.csproj");
-			//var rootAssemblyVersionKey = "ISI.HAPP";
+			var configuration = "Release";
 
-			//var assemblyVersions = GetAssemblyVersionFiles(solution, rootAssemblyVersionKey, buildRevision);
+			var utcDateTime = DateTime.UtcNow;
 
+			var buildRevision = solutionApi.GetBuildRevision(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetBuildRevisionRequest()
+			{
+				UtcDateTime = utcDateTime,
+			}).BuildRevision;
+
+			var buildDateTimeStamp = string.Format("{0:yyyyMMdd.HHmmss}", utcDateTime);
+
+			var solutionFullName = @"F:\ISI\Clients\TFS\Tristar.Portal\src\Tristar.Portal.sln";
+			var rootProjectFullName = @"F:\ISI\Clients\TFS\Tristar.Portal\src\Tristar.Portal.Web.Interface\Tristar.Portal.Web.Interface.csproj";
+			var rootAssemblyVersionKey = "Tristar.Portal";
+			var artifactName = "Tristar.Portal";
+
+			//solutionApi.CleanSolution(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.CleanSolutionRequest()
+			//{
+			//	Solution = solutionFullName,
+			//});
+
+			//nugetApi.RestoreNugetPackages(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.RestoreNugetPackagesRequest()
+			//{
+			//	MSBuildExe = msBuildApi.GetMSBuildExeFullName(new ISI.Extensions.VisualStudio.DataTransferObjects.MSBuildApi.GetMSBuildExeFullNameRequest()).MSBuildExeFullName,
+			//	SolutionDirectory = System.IO.Path.GetDirectoryName(solutionFullName),
+			//});
+
+			var assemblyVersions = solutionApi.GetAssemblyVersionFiles(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetAssemblyVersionFilesRequest()
+			{
+				Solution = solutionFullName,
+				RootAssemblyVersionKey = rootAssemblyVersionKey,
+				BuildRevision = buildRevision,
+			}).AssemblyVersionFiles;
+
+
+			var buildArtifactZipFileName = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(solutionFullName), @$"..\Publish\{artifactName}.{buildDateTimeStamp}.zip");
 
 			packagerApi.PackageComponents(new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.PackageComponentsRequest()
 			{
-				Configuration = "Release",
-				//BuildPlatform = ISI.Extensions.VisualStudio.MSBuildPlatform.x86,
-				//PlatformTarget = ISI.Extensions.VisualStudio.BuildPlatformTarget.x86,
-				SubDirectory = "ISI",
+				BuildPlatform = ISI.Extensions.VisualStudio.MSBuildPlatform.Automatic,
+				BuildVersion = ISI.Extensions.VisualStudio.MSBuildVersion.Latest,
+				Configuration = configuration,
+				AssemblyVersionFiles = assemblyVersions,
+				SubDirectory = "Tristar",
 				PackageComponents = new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.IPackageComponent[]
 				{
-					new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.PackageComponentWindowsApplication()
+					new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.PackageComponentWebSite()
 					{
-						ProjectFullName = "F:\\ISI\\WindowsApplication\\src\\Installer\\Installer.csproj",
-						IconFullName = "F:\\ISI\\Lantern.ico",
-						DoNotXmlTransformConfigs = true,
-					},
-					new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.PackageComponentWindowsApplication()
-					{
-						ProjectFullName = "F:\\ISI\\WindowsApplication\\src\\Interface\\Interface.csproj",
-						IconFullName = "F:\\ISI\\Lantern.ico",
-						DoNotXmlTransformConfigs = true,
+						ProjectFullName = rootProjectFullName,
 					},
 				},
-				PackageFullName = "F:\\ISI\\WindowsApplication\\xxxx.zip",
-				PackageVersion = "9.0.8049.6991",
-				PackageBuildDateTimeStamp = string.Format("{0:yyyyMMdd.HHmmss}", DateTime.UtcNow),
+				PackageFullName = buildArtifactZipFileName,
+				PackageVersion = rootAssemblyVersionKey,
+				PackageBuildDateTimeStamp = buildDateTimeStamp,
 			});
+
+
+			//packagerApi.PackageComponents(new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.PackageComponentsRequest()
+			//{
+			//	Configuration = "Release",
+			//	//BuildPlatform = ISI.Extensions.VisualStudio.MSBuildPlatform.x86,
+			//	//PlatformTarget = ISI.Extensions.VisualStudio.BuildPlatformTarget.x86,
+			//	SubDirectory = "ISI",
+			//	PackageComponents = new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.IPackageComponent[]
+			//	{
+			//		new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.PackageComponentWindowsApplication()
+			//		{
+			//			ProjectFullName = "F:\\ISI\\WindowsApplication\\src\\Installer\\Installer.csproj",
+			//			IconFullName = "F:\\ISI\\Lantern.ico",
+			//			DoNotXmlTransformConfigs = true,
+			//		},
+			//		new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.PackageComponentWindowsApplication()
+			//		{
+			//			ProjectFullName = "F:\\ISI\\WindowsApplication\\src\\Interface\\Interface.csproj",
+			//			IconFullName = "F:\\ISI\\Lantern.ico",
+			//			DoNotXmlTransformConfigs = true,
+			//		},
+			//	},
+			//	PackageFullName = "F:\\ISI\\WindowsApplication\\xxxx.zip",
+			//	PackageVersion = "9.0.8049.6991",
+			//	PackageBuildDateTimeStamp = string.Format("{0:yyyyMMdd.HHmmss}", DateTime.UtcNow),
+			//});
 		}
 	}
 }

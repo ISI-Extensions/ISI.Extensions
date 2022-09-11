@@ -202,6 +202,11 @@ namespace ISI.Extensions.Tests
 			var nugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
 			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
 			{
+				PackageId = "StackifyLib",
+				PackageVersion = "2.2.6",
+			}).NugetPackageKey);
+			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			{
 				PackageId = "Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv",
 				PackageVersion = "2.2.0",
 			}).NugetPackageKey);

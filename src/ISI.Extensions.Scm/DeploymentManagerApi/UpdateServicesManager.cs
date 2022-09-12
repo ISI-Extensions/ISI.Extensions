@@ -71,7 +71,11 @@ namespace ISI.Extensions.Scm
 			var uri = new UriBuilder(request.ServicesManagerUrl);
 			uri.SetPathAndQueryString("rest/manager/v3/update-services-manager");
 
-			var restRequest = new SerializableDTOs.UpdateServicesManagerRequest();
+			var restRequest = new SerializableDTOs.UpdateServicesManagerRequest()
+			{
+				ArtifactVersionDateTimeStampUrl = request.ArtifactVersionDateTimeStampUrl,
+				ArtifactDownloadUrl = request.ArtifactDownloadUrl,
+			};
 
 			var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.UpdateServicesManagerRequest, SerializableDTOs.UpdateServicesManagerResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request.Password), restRequest, false);
 

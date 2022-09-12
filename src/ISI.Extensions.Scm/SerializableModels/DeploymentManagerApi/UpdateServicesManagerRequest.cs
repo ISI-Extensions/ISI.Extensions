@@ -25,6 +25,10 @@ namespace ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi
 	[DataContract]
 	public class UpdateServicesManagerRequest
 	{
+		[DataMember(Name = "artifactVersionDateTimeStampUrl", EmitDefaultValue = false)]
+		public string ArtifactVersionDateTimeStampUrl { get; set; }
 
+		[DataMember(Name = "artifactDownloadUrl", EmitDefaultValue = false)]
+		public string ArtifactDownloadUrl { get; set; }
 	}
 }

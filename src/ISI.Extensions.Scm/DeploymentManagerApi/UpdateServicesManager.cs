@@ -80,7 +80,7 @@ namespace ISI.Extensions.Scm
 			var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.UpdateServicesManagerRequest, SerializableDTOs.UpdateServicesManagerResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request.Password), restRequest, false);
 
 			response.CurrentVersion = restResponse?.Response?.CurrentVersion;
-			response.Log = restResponse?.Response?.Log;
+			response.Log = restResponse?.Response?.Log ?? restResponse?.Error?.Content;
 			response.NewVersion = restResponse?.Response?.NewVersion;
 			response.SameVersion = restResponse?.Response?.SameVersion;
 

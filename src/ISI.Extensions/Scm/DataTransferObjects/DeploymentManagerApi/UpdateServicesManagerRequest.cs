@@ -26,7 +26,7 @@ namespace ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi
 		public string ServicesManagerUrl { get; set; }
 		public string Password { get; set; }
 
-		public string ArtifactVersionDateTimeStampUrl { get; set; } = @"http://www.isi-net.com/file-store/download/e5ec17e4-1b3e-4f80-911e-170f3bc4ba06/ISI.ServicesManager.WindowsService.Current.DateTimeStamp.Version.txt";
-		public string ArtifactDownloadUrl { get; set; } = @"http://www.isi-net.com/file-store/download/e5ec17e4-1b3e-4f80-911e-170f3bc4ba06/ISI.ServicesManager.WindowsService.zip";
+		public string ArtifactVersionDateTimeStampUrl { get; set; } = @"https://www.isi-net.com/file-store/download/e5ec17e4-1b3e-4f80-911e-170f3bc4ba06/ISI.ServicesManager.WindowsService.Current.DateTimeStamp.Version.txt";
+		public string ArtifactDownloadUrl { get; set; } = @"https://www.isi-net.com/file-store/download/8f3179ed-c15c-4411-ba01-4bfcc447f808/ISI.ServicesManager.WindowsService.zip";
 	}
 }

@@ -84,6 +84,11 @@ namespace ISI.Extensions.Scm
 			response.NewVersion = restResponse?.Response?.NewVersion;
 			response.SameVersion = restResponse?.Response?.SameVersion;
 
+			if (restResponse?.Error?.Exception != null)
+			{
+				response.Log = string.Format("{0}{1}Exception: {2}", response.Log, Environment.NewLine, restResponse.Error.Exception.ErrorMessageFormatted());
+			}
+
 			return response;
 		}
 	}

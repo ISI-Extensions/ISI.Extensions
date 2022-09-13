@@ -191,7 +191,7 @@ namespace ISI.Extensions.WebClient
 			var webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(sslProtocolWebProxyWrapper?.Uri ?? uri);
 			webRequest.CookieContainer = cookieContainer;
 			webRequest.AllowAutoRedirect = false;
-
+			
 			if (headers.NullCheckedAny())
 			{
 				headers.ApplyToWebRequest(webRequest);

@@ -73,7 +73,7 @@ namespace ISI.Extensions.Scm
 
 			var restRequest = new SerializableDTOs.UpdateServicesManagerRequest()
 			{
-				ArtifactVersionDateTimeStampUrl = request.ArtifactVersionDateTimeStampUrl,
+				ArtifactDateTimeStampVersionUrl = request.ArtifactDateTimeStampVersionUrl,
 				ArtifactDownloadUrl = request.ArtifactDownloadUrl,
 			};
 

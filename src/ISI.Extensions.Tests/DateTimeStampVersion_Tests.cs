@@ -27,7 +27,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void DateTimeStampVersion_Test()
 		{
-			var dateTimeStampVersion = new ISI.Extensions.Scm.DataTransferObjects.BuildArtifactApi.DateTimeStampVersion("2.0.8040.39225 (20220105.214731)");
+			var dateTimeStampVersion = new ISI.Extensions.Scm.DateTimeStampVersion("2.0.8040.39225 (20220105.214731)");
 			
 		}
 	}

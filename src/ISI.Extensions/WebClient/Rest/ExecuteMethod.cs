@@ -192,6 +192,8 @@ namespace ISI.Extensions.WebClient
 			webRequest.CookieContainer = cookieContainer;
 			webRequest.AllowAutoRedirect = false;
 			
+			//webRequest.Timeout = Int32.MaxValue;
+
 			if (headers.NullCheckedAny())
 			{
 				headers.ApplyToWebRequest(webRequest);

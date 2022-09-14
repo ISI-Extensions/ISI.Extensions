@@ -112,8 +112,10 @@ namespace ISI.Extensions.Tests
 
 			deploymentManagerApi.DeployArtifact(new ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.DeployArtifactRequest()
 			{
-				ServicesManagerUrl = settings.GetValue("PRODUCTION-DeployManager-Url"),
-				Password = settings.GetValue("PRODUCTION-DeployManager-Password"),
+				ServicesManagerUrl = "http://localhost:14258/",
+				Password = "87BEF140-045B-42D7-AB87-3E59F162BC39",
+				//ServicesManagerUrl = settings.GetValue("PRODUCTION-SQL01-DeployManager-Url"),
+				//Password = settings.GetValue("PRODUCTION-SQL01-DeployManager-Password"),
 
 				AuthenticationToken = authenticationToken,
 

@@ -377,6 +377,10 @@ namespace ISI.Extensions.Scm
 				RunAsync = request.RunAsync,
 			};
 
+#if DEBUG
+			var xxx = ISI.Extensions.WebClient.Rest.GetEventHandler();
+#endif
+
 			var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.DeployArtifactRequest, SerializableDTOs.DeployArtifactResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request.Password), restRequest, false);
 
 			var statusTrackerKey = restResponse?.Response?.StatusTrackerKey;

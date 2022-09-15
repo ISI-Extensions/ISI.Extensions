@@ -75,10 +75,10 @@ namespace ISI.Extensions.Tests
 
 			deploymentManagerApi.UpdateServicesManager(new ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.UpdateServicesManagerRequest()
 			{
-				ServicesManagerUrl = "http://localhost:14258/",
-				Password = "87BEF140-045B-42D7-AB87-3E59F162BC39",
-				//ServicesManagerUrl = settings.GetValue("PRODUCTION-SQL01-DeployManager-Url"),
-				//Password = settings.GetValue("PRODUCTION-SQL01-DeployManager-Password"),
+				//ServicesManagerUrl = "http://localhost:14258/",
+				//Password = "87BEF140-045B-42D7-AB87-3E59F162BC39",
+				ServicesManagerUrl = settings.GetValue("PRODUCTION-GOGS01-DeployManager-Url"),
+				Password = settings.GetValue("PRODUCTION-GOGS01-DeployManager-Password"),
 			});
 		}
 
@@ -124,6 +124,16 @@ namespace ISI.Extensions.Tests
 				ToDateTimeStamp = dateTimeStampVersion.Value,
 				ToEnvironment = "Production",
 				ConfigurationKey = "Production",
+
+				Components = new ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.IDeployComponent[]
+				{
+					new ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.DeployComponentWindowsService()
+					{
+						PackageFolder = "ISI\\ISI.Api.WindowsService",
+						DeployToSubfolder = "ISI.Api.WindowsService",
+						WindowsServiceExe = "ISI.Api.WindowsService.exe",
+					},
+				},
 			});
 		}
 	}

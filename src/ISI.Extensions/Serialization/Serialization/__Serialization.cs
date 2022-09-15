@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.Repository.Extensions;
 using ISI.Extensions.TypeLocator.Extensions;
 
 namespace ISI.Extensions.Serialization
@@ -62,14 +63,14 @@ namespace ISI.Extensions.Serialization
 				AvailableSerializers.TryAdd(exportedType, ServiceProvider.GetService(exportedType) as ISI.Extensions.Serialization.ISerializer);
 			}
 
-			var defaultSerializerType = Type.GetType(Configuration.DefaultSerializerType);
+			var defaultSerializerType = (!string.IsNullOrWhiteSpace(Configuration.DefaultSerializerType) ? Type.GetType(Configuration.DefaultSerializerType) : Type.GetType("ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer, ISI.Extensions.JsonSerialization.Newtonsoft") ?? typeof(ISI.Extensions.JsonSerialization.JsonSerializer));
 			if (defaultSerializerType == null)
 			{
 				throw new Exception(string.Format("Cannot find defaultSerializerType for \"{0}\"", Configuration.DefaultSerializerType));
 			}
 			DefaultSerializer = ServiceProvider.GetService(defaultSerializerType) as ISI.Extensions.Serialization.ISerializer;
 
-			var defaultDataContractSerializerType = Type.GetType(Configuration.DefaultDataContractSerializerType);
+			var defaultDataContractSerializerType = (!string.IsNullOrWhiteSpace(Configuration.DefaultDataContractSerializerType) ? Type.GetType(Configuration.DefaultDataContractSerializerType) : Type.GetType("ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer, ISI.Extensions.JsonSerialization.Newtonsoft") ?? typeof(ISI.Extensions.JsonSerialization.JsonDataContractSerializer));
 			if (defaultDataContractSerializerType == null)
 			{
 				throw new Exception(string.Format("Cannot find defaultDataContractSerializerType for \"{0}\"", Configuration.DefaultDataContractSerializerType));

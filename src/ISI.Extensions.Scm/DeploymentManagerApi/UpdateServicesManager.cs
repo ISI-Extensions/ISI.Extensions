@@ -77,6 +77,10 @@ namespace ISI.Extensions.Scm
 				ArtifactDownloadUrl = request.ArtifactDownloadUrl,
 			};
 
+#if DEBUG
+			var xxx = ISI.Extensions.WebClient.Rest.GetEventHandler();
+#endif
+
 			var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.UpdateServicesManagerRequest, SerializableDTOs.UpdateServicesManagerResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request.Password), restRequest, false);
 
 			response.CurrentVersion = restResponse?.Response?.CurrentVersion;

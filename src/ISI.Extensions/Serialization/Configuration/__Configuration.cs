@@ -24,7 +24,7 @@ namespace ISI.Extensions.Serialization
 	[ISI.Extensions.ConfigurationHelper.Configuration("ISI.Extensions.Serialization")]
 	public partial class Configuration
 	{
-		public string DefaultSerializerType { get; set; } = typeof(ISI.Extensions.JsonSerialization.JsonSerializer).AssemblyQualifiedName;
-		public string DefaultDataContractSerializerType { get; set; } = typeof(ISI.Extensions.JsonSerialization.JsonDataContractSerializer).AssemblyQualifiedName;
+		public string DefaultSerializerType { get; set; }
+		public string DefaultDataContractSerializerType { get; set; }
 	}
 }

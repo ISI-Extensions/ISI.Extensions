@@ -25,9 +25,9 @@ namespace ISI.Extensions.Serialization
 {
 	public partial class Serialization
 	{
-		public ISI.Extensions.Serialization.ISerializer GetSerializer<T>(ISI.Extensions.Serialization.SerializationFormat serializationFormat = ISI.Extensions.Serialization.SerializationFormat.Unknown)
+		public ISI.Extensions.Serialization.ISerializer GetSerializer<TSerializerContract>(ISI.Extensions.Serialization.SerializationFormat serializationFormat = ISI.Extensions.Serialization.SerializationFormat.Unknown)
 		{
-			return GetSerializer(typeof(T), serializationFormat);
+			return GetSerializer(typeof(TSerializerContract), serializationFormat);
 		}
 		public ISI.Extensions.Serialization.ISerializer GetSerializer(Type serializerContractType, ISI.Extensions.Serialization.SerializationFormat serializationFormat = ISI.Extensions.Serialization.SerializationFormat.Unknown)
 		{

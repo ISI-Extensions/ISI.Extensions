@@ -19,44 +19,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.JsonSerialization.Newtonsoft
+namespace ISI.Extensions.Serialization
 {
-	public class TypeContractResolver : global::Newtonsoft.Json.Serialization.DefaultContractResolver
+	[AttributeUsage(AttributeTargets.Interface, Inherited = false, AllowMultiple = false)]
+	public class SerializerUseImplementationToSerializeAttribute : Attribute
 	{
-		private readonly Type[] _interfaceTypes;
-
-		private readonly System.Collections.Concurrent.ConcurrentDictionary<Type, Type> _typeToSerializeMap;
-
-		private TypeContractResolver(params Type[] interfaceTypes)
-		{
-			_interfaceTypes = interfaceTypes;
-
-			_typeToSerializeMap = new System.Collections.Concurrent.ConcurrentDictionary<Type, Type>();
-		}
-
-		protected override IList<global::Newtonsoft.Json.Serialization.JsonProperty> CreateProperties(Type type, global::Newtonsoft.Json.MemberSerialization memberSerialization)
-		{
-			var typeToSerialize = _typeToSerializeMap.GetOrAdd(type, t => _interfaceTypes.FirstOrDefault(it => it.IsAssignableFrom(t)) ?? t);
-
-			return base.CreateProperties(typeToSerialize, memberSerialization);
-		}
-
-
-
-
-
-		private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, TypeContractResolver> _typeContractResolvers;
-
-		static TypeContractResolver()
-		{
-			_typeContractResolvers = new System.Collections.Concurrent.ConcurrentDictionary<string, TypeContractResolver>();
-		}
-
-		public static TypeContractResolver GetTypeContractResolver(params Type[] interfaceTypes)
-		{
-			var key = string.Join("|", interfaceTypes.Select(interfaceType => interfaceType.AssemblyQualifiedName).OrderBy(interfaceTypeName => interfaceTypeName));
-
-			return _typeContractResolvers.GetOrAdd(key, s => new TypeContractResolver(interfaceTypes));
-		}
 	}
 }

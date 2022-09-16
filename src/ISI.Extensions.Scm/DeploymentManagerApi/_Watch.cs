@@ -164,9 +164,9 @@ namespace ISI.Extensions.Scm
 						}
 					}
 				}
-
-				Logger.Log((success ? LogLevel.Information : LogLevel.Error), string.Format("  Success '{0}'.", (success ? "True" : "False")));
 			}
+
+			Logger.Log((success ? LogLevel.Information : LogLevel.Error), string.Format("  Success '{0}'.", (success ? "True" : "False")));
 
 			return success;
 		}

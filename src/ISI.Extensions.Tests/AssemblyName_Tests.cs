@@ -28,7 +28,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void GetAssemblyNamePieces_Test()
 		{
-			var fileName = @"F:\ISI\Internal Projects\ISI.WebApplication\src\ISI.WebApplication\bin\System.Diagnostics.DiagnosticSource.dll";
+			var fileName = @"F:\ISI\Internal Projects\ISI.SCM.Scheduler.WindowsService\src\packages\microsoft.data.sqlclient\5.0.0\lib\net462\Microsoft.Data.SqlClient.dll";
 
 			var assemblyName = System.Reflection.AssemblyName.GetAssemblyName(fileName);
 

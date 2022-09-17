@@ -65,7 +65,7 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
-		public void UpdateServicesManagerTest()
+		public void UpdateServicesManager_Test()
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
@@ -79,6 +79,56 @@ namespace ISI.Extensions.Tests
 				//Password = "87BEF140-045B-42D7-AB87-3E59F162BC39",
 				ServicesManagerUrl = settings.GetValue("PRODUCTION-GOGS01-DeployManager-Url"),
 				Password = settings.GetValue("PRODUCTION-GOGS01-DeployManager-Password"),
+			});
+		}
+
+		[Test]
+		public void UpdateServicesManagerTest()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+			settings.OverrideWithEnvironmentVariables();
+
+			var scmApi = new ISI.Extensions.Scm.ScmApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+			var authenticationToken = scmApi.GetAuthenticationToken(new ISI.Extensions.Scm.DataTransferObjects.ScmApi.GetAuthenticationTokenRequest()
+			{
+				ScmManagementUrl = settings.Scm.WebServiceUrl,
+				UserName = settings.ActiveDirectory.UserName,
+				Password = settings.ActiveDirectory.Password,
+			}).AuthenticationToken;
+
+			var deploymentManagerApi = new ISI.Extensions.Scm.DeploymentManagerApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+
+			var artifactName = "ISI.SCM.Scheduler.WindowsService";
+			var artifactFileStoreUuid = new System.Guid("bb38fd6e-8659-4a6b-a7bd-2d88c71368b9");
+			var artifactVersionFileStoreUuid = new System.Guid("864c9431-7ad1-426d-be8e-4f845a6cfd4c");
+			var artifactDateTimeStampVersionUrl = string.Format("https://www.isi-net.com/file-store/download/{0:D}/{1}.Current.DateTimeStamp.Version.txt", artifactVersionFileStoreUuid, artifactName); 
+			var artifactDownloadUrl = string.Format("https://www.isi-net.com/file-store/download/{0:D}/{1}.zip", artifactFileStoreUuid, artifactName); 
+
+			deploymentManagerApi.DeployArtifact(new ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.DeployArtifactRequest()
+			{
+				ServicesManagerUrl = "http://localhost:14258/",
+				Password = "87BEF140-045B-42D7-AB87-3E59F162BC39",
+				//ServicesManagerUrl = settings.GetValue("PRODUCTION-GOGS01-DeployManager-Url"),
+				//Password = settings.GetValue("PRODUCTION-GOGS01-DeployManager-Password"),
+				AuthenticationToken = authenticationToken,
+
+				BuildArtifactManagementUrl = settings.Scm.WebServiceUrl,
+				ArtifactName = artifactName,
+				ArtifactDateTimeStampVersionUrl = artifactDateTimeStampVersionUrl,
+				ArtifactDownloadUrl = artifactDownloadUrl,
+				//ToDateTimeStamp = dateTimeStampVersion.Value,
+				ToEnvironment = "Production",
+				ConfigurationKey = "Production",
+				Components = new ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.IDeployComponent[]
+				{
+					new ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.DeployComponentWindowsService()
+					{
+						PackageFolder = "ISI/ISI.SCM.Scheduler.WindowsService",
+						DeployToSubfolder = "ISI.SCM.Scheduler.WindowsService",
+						WindowsServiceExe = "ISI.SCM.Scheduler.WindowsService.exe",
+					},
+				},
 			});
 		}
 

@@ -29,31 +29,45 @@ namespace ISI.Extensions.Repository
 		{
 			var response = new ISI.Extensions.Repository.DataTransferObjects.MigrationApi.MigrateResponse();
 
-			isItOkToRunMigrationTool ??= repositorySetupApi => true;
+			isItOkToRunMigrationTool ??= _ => true;
 
-			var steps = ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementationTypes<IMigrationStep>().ToDictionary(step => step.Name.Split(new[] { '_' })[1].ToInt(), step => step).OrderBy(step => step.Key).ToArray();
+			var migrationStepTypes = ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementationTypes<IMigrationStep>().ToArray();
 
-			if (steps.Any())
+			var migrationSteps = new Dictionary<int, Type>();
+
+			foreach (var migrationStepType in migrationStepTypes)
 			{
-				var defaultRepositorySetupApi = RepositorySetupApiFactory.GetRepositorySetupApi(steps.First().Value);
+				var migrationStepNumber = migrationStepType.Name.Split(new[] { '_' })[1].ToInt();
+
+				if (migrationSteps.TryGetValue(migrationStepNumber, out var duplicateMigrationStepType))
+				{
+					throw new Exception(string.Format("Both Steps: \"{0}\" and \"{1}\" have the same StepNumber: {2}", duplicateMigrationStepType.Name, migrationStepType.Name, migrationStepNumber));
+				}
+
+				migrationSteps.Add(migrationStepNumber, migrationStepType);
+			}
+
+			if (migrationSteps.Any())
+			{
+				var defaultRepositorySetupApi = RepositorySetupApiFactory.GetRepositorySetupApi(migrationSteps.First().Value);
 				var lastStepId = defaultRepositorySetupApi.GetLatestStep().StepId;
 
-				if (steps.Any(step => step.Key > lastStepId) && isItOkToRunMigrationTool(defaultRepositorySetupApi))
+				if (migrationSteps.Any(migrationStep => migrationStep.Key > lastStepId) && isItOkToRunMigrationTool(defaultRepositorySetupApi))
 				{
-					foreach (var step in steps.Where(step => step.Key > lastStepId).OrderBy(step => step.Key))
+					foreach (var migrationStep in migrationSteps.Where(migrationStep => migrationStep.Key > lastStepId).OrderBy(migrationStep => migrationStep.Key))
 					{
-						if (!(ServiceProvider.GetService(step.Value) is IMigrationStep instance))
+						if (!(ServiceProvider.GetService(migrationStep.Value) is IMigrationStep migrationStepInstance))
 						{
 							throw new Exception("Can't create step");
 						}
 
-						Console.WriteLine("{1} => Started {0}", step.Value.Name, DateTime.Now.Formatted(DateTimeExtensions.DateTimeFormat.DateTime));
+						Console.WriteLine("{1} => Started {0}", migrationStep.Value.Name, DateTime.Now.Formatted(DateTimeExtensions.DateTimeFormat.DateTime));
 
-						instance.Execute(RepositorySetupApiFactory.GetRepositorySetupApi(step.Value));
+						migrationStepInstance.Execute(RepositorySetupApiFactory.GetRepositorySetupApi(migrationStep.Value));
 
-						defaultRepositorySetupApi.SetStep(step.Key);
+						defaultRepositorySetupApi.SetStep(migrationStep.Key);
 
-						Console.WriteLine("{1} => Finished {0}", step.Value.Name, DateTime.Now.Formatted(DateTimeExtensions.DateTimeFormat.DateTime));
+						Console.WriteLine("{1} => Finished {0}", migrationStep.Value.Name, DateTime.Now.Formatted(DateTimeExtensions.DateTimeFormat.DateTime));
 					}
 				}
 			}

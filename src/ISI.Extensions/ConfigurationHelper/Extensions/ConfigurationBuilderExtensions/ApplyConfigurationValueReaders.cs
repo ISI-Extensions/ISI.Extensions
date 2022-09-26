@@ -19,7 +19,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.Extensions.Configuration;
 
 namespace ISI.Extensions.ConfigurationHelper.Extensions
 {
@@ -29,7 +28,7 @@ namespace ISI.Extensions.ConfigurationHelper.Extensions
 
 		public static Microsoft.Extensions.Configuration.IConfigurationRoot ApplyConfigurationValueReaders(this Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot, ApplyConfigurationValueReadersFilter applyConfigurationValueReadersFilter = null)
 		{
-			applyConfigurationValueReadersFilter ??= provider => true;
+			applyConfigurationValueReadersFilter ??= _ => true;
 
 			var configurationProviders = new List<Microsoft.Extensions.Configuration.IConfigurationProvider>();
 
@@ -38,7 +37,7 @@ namespace ISI.Extensions.ConfigurationHelper.Extensions
 				configurationProviders.Add(applyConfigurationValueReadersFilter(configurationProvider) ? new ISI.Extensions.ConfigurationValueReaders.ConfigurationProviderWrapper(configurationProvider) : configurationProvider);
 			}
 
-			return new ConfigurationRoot(configurationProviders);
+			return new Microsoft.Extensions.Configuration.ConfigurationRoot(configurationProviders);
 		}
 	}
 }

@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,12 +23,12 @@ using ISI.Extensions.TypeLocator.Extensions;
 
 namespace ISI.Extensions.JsonSerialization.Newtonsoft
 {
-	public class SerializableArrayOrInstanceJsonConverter : global::Newtonsoft.Json.JsonConverter
+	public class SerializableEnumerableOrInstanceJsonConverter : global::Newtonsoft.Json.JsonConverter
 	{
 		public override bool CanWrite => false;
 		public override bool CanRead => true;
 
-		public override bool CanConvert(Type objectType) => objectType.Implements<ISI.Extensions.Serialization.ISerializableArrayOrInstance>();
+		public override bool CanConvert(Type objectType) => objectType.Implements<ISI.Extensions.Serialization.ISerializableEnumerableOrInstance>();
 
 		public override void WriteJson(global::Newtonsoft.Json.JsonWriter writer, object value, global::Newtonsoft.Json.JsonSerializer serializer)
 		{
@@ -39,9 +39,11 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 		{
 			var token = global::Newtonsoft.Json.Linq.JToken.Load(reader);
 
-			var instance = Activator.CreateInstance(objectType) as ISI.Extensions.Serialization.ISerializableArrayOrInstance;
-
 			var memberType = objectType.GenericTypeArguments.NullCheckedFirstOrDefault();
+
+			var instanceType = typeof(SerializableEnumerableOrInstance<>).MakeGenericType(memberType);
+
+			var instance = Activator.CreateInstance(instanceType) as ISerializableEnumerableOrInstanceSetValues;
 
 			if (token.Type == global::Newtonsoft.Json.Linq.JTokenType.Array)
 			{
@@ -58,23 +60,26 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 		}
 	}
 
+	internal interface ISerializableEnumerableOrInstanceSetValues
+	{
+		void SetValues(IEnumerable<object> values);
+	}
+
+	internal class SerializableEnumerableOrInstance<TType> : ISI.Extensions.Serialization.ISerializableEnumerableOrInstance<TType>, ISerializableEnumerableOrInstanceSetValues
+	{
+		public TType[] Values { get; set; }
+
+		public IEnumerator<TType> GetEnumerator() => Values.AsEnumerable<TType>().GetEnumerator();
+		IEnumerator IEnumerable.GetEnumerator() => Values.GetEnumerator();
+
+		void ISerializableEnumerableOrInstanceSetValues.SetValues(IEnumerable<object> values) => Values = values.ToNullCheckedArray(value => (TType)Convert.ChangeType(value, typeof(TType)));
+	}
+
 	[GetJsonConverter]
-	public class GetSerializableArrayOrInstanceJsonConverter : IGetJsonConverter
+	public class GetSerializableEnumerableOrInstanceJsonConverter : IGetJsonConverter
 	{
 		private static global::Newtonsoft.Json.JsonConverter _jsonConverter = null;
-		private static readonly object _jsonConverterLock = new();
 
-		public global::Newtonsoft.Json.JsonConverter GetJsonConverter()
-		{
-			if (_jsonConverter == null)
-			{
-				lock (_jsonConverterLock)
-				{
-					_jsonConverter ??= new SerializableArrayOrInstanceJsonConverter();
-				}
-			}
-
-			return _jsonConverter;
-		}
+		public global::Newtonsoft.Json.JsonConverter GetJsonConverter() => _jsonConverter ??= new SerializableEnumerableOrInstanceJsonConverter();
 	}
 }

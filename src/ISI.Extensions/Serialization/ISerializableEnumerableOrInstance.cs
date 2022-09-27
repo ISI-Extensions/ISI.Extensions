@@ -14,17 +14,18 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 #endregion
  
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Serialization
 {
-	public class SerializableArrayOrInstance<TType> : ISerializableArrayOrInstance
+	public interface ISerializableEnumerableOrInstance : IEnumerable
 	{
-		public TType[] Values { get; set; }
 
-		void ISerializableArrayOrInstance.SetValues(IEnumerable<object> values) => Values = values.ToNullCheckedArray(value => (TType)Convert.ChangeType(value, typeof(TType)));
-		IEnumerable<object> ISerializableArrayOrInstance.GetValues() => Values.ToNullCheckedArray(value => (object)value);
+	}
+	public interface ISerializableEnumerableOrInstance<TType> : ISerializableEnumerableOrInstance, IEnumerable<TType>
+	{
+
 	}
 }

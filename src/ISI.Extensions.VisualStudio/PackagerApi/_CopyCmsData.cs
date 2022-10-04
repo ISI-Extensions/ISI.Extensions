@@ -33,7 +33,7 @@ namespace ISI.Extensions.VisualStudio
 			{
 				foreach (var sourceDirectory in System.IO.Directory.GetDirectories(cmsDataDirectory, "*", System.IO.SearchOption.AllDirectories))
 				{
-					var relativeDirectory = sourceDirectory.Substring(cmsDataDirectory.Length);
+					var relativeDirectory = sourceDirectory.Substring(cmsDataDirectory.Length + 1);
 
 					var targetDirectory = System.IO.Path.Combine(packageComponentDirectory, "CMS.DATA", relativeDirectory);
 					System.IO.Directory.CreateDirectory(targetDirectory);

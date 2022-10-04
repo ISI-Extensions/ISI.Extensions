@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static ISI.Extensions.WebClient.Rest;
 using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi;
 
 namespace ISI.Extensions.VisualStudio

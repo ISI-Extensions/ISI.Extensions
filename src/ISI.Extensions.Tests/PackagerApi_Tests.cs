@@ -93,10 +93,10 @@ namespace ISI.Extensions.Tests
 
 			var buildDateTimeStamp = string.Format("{0:yyyyMMdd.HHmmss}", utcDateTime);
 
-			var solutionFullName = @"F:\ISI\Clients\TFS\Tristar.Portal\src\Tristar.Portal.sln";
-			var rootProjectFullName = @"F:\ISI\Clients\TFS\Tristar.Portal\src\Tristar.Portal.Web.Interface\Tristar.Portal.Web.Interface.csproj";
-			var rootAssemblyVersionKey = "Tristar.Portal";
-			var artifactName = "Tristar.Portal";
+			var solutionFullName = @"F:\ISI\Clients\TFS\Comcast.ReferAFriend2019\src\Comcast.ReferAFriend2019.sln";
+			var rootProjectFullName = @"F:\ISI\Clients\TFS\Comcast.ReferAFriend2019\src\Comcast.ReferAFriend2019.Web\Comcast.ReferAFriend2019.Web.csproj";
+			var rootAssemblyVersionKey = "Comcast.ReferAFriend2019";
+			var artifactName = "Comcast.ReferAFriend2019";
 
 			//solutionApi.CleanSolution(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.CleanSolutionRequest()
 			//{

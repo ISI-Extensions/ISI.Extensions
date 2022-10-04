@@ -39,5 +39,8 @@ namespace ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi
 
 		[DataMember(Name = "success", EmitDefaultValue = false)]
 		public bool Success { get; set; }
+
+		[DataMember(Name = "deployComponentResponses", EmitDefaultValue = false)]
+		public IDeployComponentResponse[] DeployComponentResponses { get; set; }
 	}
 }

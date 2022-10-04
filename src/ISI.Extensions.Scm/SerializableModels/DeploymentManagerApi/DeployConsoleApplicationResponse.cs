@@ -26,6 +26,22 @@ namespace ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi
 	[ISI.Extensions.Serialization.SerializerContractUuid("4ac9784e-f32b-4cf4-ab98-4eb040d1c36e")]
 	public class DeployConsoleApplicationResponse : IDeployComponentResponse
 	{
+		public ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.IDeployComponentResponse Export()
+		{
+			return new ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.DeployConsoleApplicationResponse()
+			{
+				DeployToSubfolder = DeployToSubfolder,
+				PackageFolder = PackageFolder,
+				ConsoleApplicationExe = ConsoleApplicationExe,
+				SameVersion = SameVersion,
+				InUse = InUse,
+				NewInstall = NewInstall,
+				Installed = Installed,
+				Success = Success,
+				Log = Log,
+			};
+		}
+
 		[DataMember(Name = "deployToSubfolder", EmitDefaultValue = false)]
 		public string DeployToSubfolder { get; set; }
 
@@ -37,6 +53,9 @@ namespace ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi
 
 		[DataMember(Name = "sameVersion", EmitDefaultValue = false)]
 		public bool SameVersion { get; set; }
+				
+		[DataMember(Name = "inUse", EmitDefaultValue = false)]
+		public bool InUse { get; set; }
 
 		[DataMember(Name = "newInstall", EmitDefaultValue = false)]
 		public bool NewInstall { get; set; }

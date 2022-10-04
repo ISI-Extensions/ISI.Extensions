@@ -27,18 +27,6 @@ namespace ISI.Extensions.Scm
 {
 	public partial class DeploymentManagerApi
 	{
-		private bool Watch(string servicesManagerUrl, string password, string statusTrackerKey)
-		{
-			var endPointVersion = GetEndpointVersion(servicesManagerUrl);
-
-			if (endPointVersion >= 3)
-			{
-				return WatchV3(servicesManagerUrl, password, statusTrackerKey);
-			}
-
-			return WatchV1(servicesManagerUrl, password, statusTrackerKey);
-		}
-
 		private bool WatchV1(string servicesManagerUrl, string password, string statusTrackerKey)
 		{
 			var success = false;
@@ -106,8 +94,9 @@ namespace ISI.Extensions.Scm
 		}
 
 
-		private bool WatchV3(string servicesManagerUrl, string password, string statusTrackerKey)
+		private DTOs.IDeployComponentResponse[] WatchV3(string servicesManagerUrl, string password, string statusTrackerKey)
 		{
+			DTOs.IDeployComponentResponse[] response = null;
 			var success = false;
 
 			var uri = new UriBuilder(servicesManagerUrl);
@@ -141,6 +130,8 @@ namespace ISI.Extensions.Scm
 							{
 								Logger.LogInformation(string.Format("{0}", restResponse.Response.Log[logIndex++].Description));
 							}
+
+							response = restResponse?.Response?.DeployComponentResponses.ToNullCheckedArray(deployComponentResponse => deployComponentResponse.Export());
 						}
 						else
 						{
@@ -168,7 +159,7 @@ namespace ISI.Extensions.Scm
 
 			Logger.Log((success ? LogLevel.Information : LogLevel.Error), string.Format("  Success '{0}'.", (success ? "True" : "False")));
 
-			return success;
+			return response;
 		}
 	}
 }

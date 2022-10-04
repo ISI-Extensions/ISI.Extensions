@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,22 +15,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi
 {
-	public partial class DeployArtifactResponse
+	public interface IDeployComponentResponse
 	{
-		public IDeployComponentResponse[] DeployComponentResponses { get; set; }
-
-		private bool? _success = null;
-		public bool Success
-		{
-			set => _success = value;
-			get => _success ?? DeployComponentResponses.NullCheckedAll(deployComponentResponse => deployComponentResponse.Success);
-		}
+		bool SameVersion { get; set; }
+		bool InUse { get; set; }
+		bool NewInstall { get; set; }
+		bool Installed { get; set; }
+		bool Success { get; set; }
+		string Log { get; set; }
 	}
 }

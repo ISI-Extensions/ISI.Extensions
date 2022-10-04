@@ -24,10 +24,6 @@ namespace ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi
 {
 	public interface IDeployComponentResponse
 	{
-		bool SameVersion { get; set; }
-		bool NewInstall { get; set; }
-		bool Installed { get; set; }
-		bool Success { get; set; }
-		string Log { get; set; }
+		ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.IDeployComponentResponse Export();
 	}
 }

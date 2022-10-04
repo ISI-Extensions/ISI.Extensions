@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.Scm.ServiceReferences.ServicesManager;
 using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi;
 using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi;
@@ -30,14 +31,65 @@ namespace ISI.Extensions.Scm
 	{
 		public DTOs.DeployArtifactResponse DeployArtifact(DTOs.DeployArtifactRequest request)
 		{
+			Logger.LogInformation(string.Format("DeployArtifact, ServicesManagerUrl: {0}", request.ServicesManagerUrl));
+			Logger.LogInformation(string.Format("DeployArtifact, ArtifactName: {0}", request.ArtifactName));
+			Logger.LogInformation(string.Format("DeployArtifact, ArtifactDateTimeStampVersionUrl: {0}", request.ArtifactDateTimeStampVersionUrl));
+			Logger.LogInformation(string.Format("DeployArtifact, ArtifactDownloadUrl: {0}", request.ArtifactDownloadUrl));
+			Logger.LogInformation(string.Format("DeployArtifact, FromEnvironment: {0}", request.FromEnvironment));
+			Logger.LogInformation(string.Format("DeployArtifact, ToEnvironment: {0}", request.ToEnvironment));
+			Logger.LogInformation(string.Format("DeployArtifact, ToDateTimeStamp: {0}", request.ToDateTimeStamp));
+			Logger.LogInformation(string.Format("DeployArtifact, ConfigurationKey: {0}", request.ConfigurationKey));
+
 			var endPointVersion = GetEndpointVersion(request.ServicesManagerUrl);
 
-			if (endPointVersion >= 3)
+			var response = (endPointVersion >= 3 ? DeployArtifactV3(request) : DeployArtifactV1(request));
+
+			foreach (var componentResponse in response.DeployComponentResponses)
 			{
-				return DeployArtifactV3(request);
+				switch (componentResponse)
+				{
+					case DTOs.DeployConsoleApplicationResponse deployConsoleApplicationResponse:
+						Logger.LogInformation(string.Format("  PackageFolder '{0}'.", deployConsoleApplicationResponse.PackageFolder));
+						if (!string.IsNullOrWhiteSpace(deployConsoleApplicationResponse.Log))
+						{
+							Logger.LogInformation(string.Format("  Log '{0}'.", deployConsoleApplicationResponse.Log));
+						}
+						Logger.LogInformation(string.Format("  SameVersion '{0}'.", deployConsoleApplicationResponse.SameVersion.TrueFalse()));
+						Logger.LogInformation(string.Format("  InUse '{0}'.", deployConsoleApplicationResponse.InUse.TrueFalse()));
+						Logger.LogInformation(string.Format("  NewInstall '{0}'.", deployConsoleApplicationResponse.NewInstall.TrueFalse()));
+						Logger.LogInformation(string.Format("  Installed '{0}'.", deployConsoleApplicationResponse.Installed.TrueFalse()));
+						Logger.Log((deployConsoleApplicationResponse.Success ? LogLevel.Information : LogLevel.Error), string.Format("  Success '{0}'.", deployConsoleApplicationResponse.Success.TrueFalse()));
+						break;
+
+					case DTOs.DeployWebSiteResponse deployWebSiteResponse:
+						Logger.LogInformation(string.Format("  PackageFolder '{0}'.", deployWebSiteResponse.PackageFolder));
+						if (!string.IsNullOrWhiteSpace(deployWebSiteResponse.Log))
+						{
+							Logger.LogInformation(string.Format("  Log '{0}'.", deployWebSiteResponse.Log));
+						}
+						Logger.LogInformation(string.Format("  SameVersion '{0}'.", deployWebSiteResponse.SameVersion.TrueFalse()));
+						Logger.LogInformation(string.Format("  InUse '{0}'.", deployWebSiteResponse.InUse.TrueFalse()));
+						Logger.LogInformation(string.Format("  NewInstall '{0}'.", deployWebSiteResponse.NewInstall.TrueFalse()));
+						Logger.LogInformation(string.Format("  Installed '{0}'.", deployWebSiteResponse.Installed.TrueFalse()));
+						Logger.Log((deployWebSiteResponse.Success ? LogLevel.Information : LogLevel.Error), string.Format("  Success '{0}'.", deployWebSiteResponse.Success.TrueFalse()));
+						break;
+
+					case DTOs.DeployWindowsServiceResponse deployWindowsServiceResponse:
+						Logger.LogInformation(string.Format("  PackageFolder '{0}'.", deployWindowsServiceResponse.PackageFolder));
+						if (!string.IsNullOrWhiteSpace(deployWindowsServiceResponse.Log))
+						{
+							Logger.LogInformation(string.Format("  Log '{0}'.", deployWindowsServiceResponse.Log));
+						}
+						Logger.LogInformation(string.Format("  SameVersion '{0}'.", deployWindowsServiceResponse.SameVersion.TrueFalse()));
+						Logger.LogInformation(string.Format("  InUse '{0}'.", deployWindowsServiceResponse.InUse.TrueFalse()));
+						Logger.LogInformation(string.Format("  NewInstall '{0}'.", deployWindowsServiceResponse.NewInstall.TrueFalse()));
+						Logger.LogInformation(string.Format("  Installed '{0}'.", deployWindowsServiceResponse.Installed.TrueFalse()));
+						Logger.Log((deployWindowsServiceResponse.Success ? LogLevel.Information : LogLevel.Error), string.Format("  Success '{0}'.", deployWindowsServiceResponse.Success.TrueFalse()));
+						break;
+				}
 			}
 
-			return DeployArtifactV1(request);
+			return response;
 		}
 
 		private DTOs.DeployArtifactResponse DeployArtifactV1(DTOs.DeployArtifactRequest request)
@@ -46,16 +98,6 @@ namespace ISI.Extensions.Scm
 
 			var buildArtifactManagementUri = new UriBuilder(request.BuildArtifactManagementUrl);
 			buildArtifactManagementUri.Path = "remote-management/";
-
-			Logger.LogInformation(string.Format("DeployArtifact, ServicesManagerUrl: {0}", request.ServicesManagerUrl));
-			Logger.LogInformation(string.Format("DeployArtifact, BuildArtifactManagementUri: {0}", buildArtifactManagementUri.Uri));
-			Logger.LogInformation(string.Format("DeployArtifact, ArtifactName: {0}", request.ArtifactName));
-			Logger.LogInformation(string.Format("DeployArtifact, ArtifactDateTimeStampVersionUrl: {0}", request.ArtifactDateTimeStampVersionUrl));
-			Logger.LogInformation(string.Format("DeployArtifact, ArtifactDownloadUrl: {0}", request.ArtifactDownloadUrl));
-			Logger.LogInformation(string.Format("DeployArtifact, FromEnvironment: {0}", request.FromEnvironment));
-			Logger.LogInformation(string.Format("DeployArtifact, ToEnvironment: {0}", request.ToEnvironment));
-			Logger.LogInformation(string.Format("DeployArtifact, ToDateTimeStamp: {0}", request.ToDateTimeStamp));
-			Logger.LogInformation(string.Format("DeployArtifact, ConfigurationKey: {0}", request.ConfigurationKey));
 
 			var deployComponents = new ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentCollection();
 
@@ -181,52 +223,13 @@ namespace ISI.Extensions.Scm
 
 				if (!request.RunAsync)
 				{
-					response.Success = true;
-
-					foreach (var componentResponse in deployArtifactResponse.DeployComponentResponses)
-					{
-						switch (componentResponse)
-						{
-							case ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployConsoleApplicationResponse deployConsoleApplicationResponse:
-								Logger.LogInformation(string.Format("  PackageFolder '{0}'.", deployConsoleApplicationResponse.PackageFolder));
-								Logger.LogInformation(string.Format("  Log '{0}'.", deployConsoleApplicationResponse.Log));
-								Logger.LogInformation(string.Format("  SameVersion '{0}'.", (deployConsoleApplicationResponse.SameVersion ? "True" : "False")));
-								Logger.LogInformation(string.Format("  NewInstall '{0}'.", (deployConsoleApplicationResponse.NewInstall ? "True" : "False")));
-								Logger.LogInformation(string.Format("  Installed '{0}'.", (deployConsoleApplicationResponse.Installed ? "True" : "False")));
-								Logger.Log((deployConsoleApplicationResponse.Success ? LogLevel.Information : LogLevel.Error), string.Format("  Success '{0}'.", (deployConsoleApplicationResponse.Success ? "True" : "False")));
-
-								response.Success &= deployConsoleApplicationResponse.Success;
-								break;
-
-							case ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployWebSiteResponse deployWebSiteResponse:
-								Logger.LogInformation(string.Format("  PackageFolder '{0}'.", deployWebSiteResponse.PackageFolder));
-								Logger.LogInformation(string.Format("  Log '{0}'.", deployWebSiteResponse.Log));
-								Logger.LogInformation(string.Format("  SameVersion '{0}'.", (deployWebSiteResponse.SameVersion ? "True" : "False")));
-								Logger.LogInformation(string.Format("  NewInstall '{0}'.", (deployWebSiteResponse.NewInstall ? "True" : "False")));
-								Logger.LogInformation(string.Format("  Installed '{0}'.", (deployWebSiteResponse.Installed ? "True" : "False")));
-								Logger.Log((deployWebSiteResponse.Success ? LogLevel.Information : LogLevel.Error), string.Format("  Success '{0}'.", (deployWebSiteResponse.Success ? "True" : "False")));
-
-								response.Success &= deployWebSiteResponse.Success;
-								break;
-
-							case ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployWindowsServiceResponse deployWindowsServiceResponse:
-								Logger.LogInformation(string.Format("  PackageFolder '{0}'.", deployWindowsServiceResponse.PackageFolder));
-								Logger.LogInformation(string.Format("  Log '{0}'.", deployWindowsServiceResponse.Log));
-								Logger.LogInformation(string.Format("  SameVersion '{0}'.", (deployWindowsServiceResponse.SameVersion ? "True" : "False")));
-								Logger.LogInformation(string.Format("  NewInstall '{0}'.", (deployWindowsServiceResponse.NewInstall ? "True" : "False")));
-								Logger.LogInformation(string.Format("  Installed '{0}'.", (deployWindowsServiceResponse.Installed ? "True" : "False")));
-								Logger.Log((deployWindowsServiceResponse.Success ? LogLevel.Information : LogLevel.Error), string.Format("  Success '{0}'.", (deployWindowsServiceResponse.Success ? "True" : "False")));
-
-								response.Success &= deployWindowsServiceResponse.Success;
-								break;
-						}
-					}
+					response.DeployComponentResponses = deployArtifactResponse.DeployComponentResponses.ToNullCheckedArray(deployComponentResponse => ((ISI.Extensions.Scm.ServiceReferences.ServicesManager.IDeployComponentResponse)deployComponentResponse).Export());
 				}
 			}
 
 			if (request.RunAsync)
 			{
-				response.Success = Watch(request.ServicesManagerUrl, request.Password, statusTrackerKey);
+				response.Success = WatchV1(request.ServicesManagerUrl, request.Password, statusTrackerKey);
 			}
 
 			return response;
@@ -238,16 +241,6 @@ namespace ISI.Extensions.Scm
 
 			var buildArtifactManagementUri = new UriBuilder(request.BuildArtifactManagementUrl);
 			buildArtifactManagementUri.Path = "remote-management/";
-
-			Logger.LogInformation(string.Format("DeployArtifact, ServicesManagerUrl: {0}", request.ServicesManagerUrl));
-			Logger.LogInformation(string.Format("DeployArtifact, BuildArtifactManagementUri: {0}", buildArtifactManagementUri.Uri));
-			Logger.LogInformation(string.Format("DeployArtifact, ArtifactName: {0}", request.ArtifactName));
-			Logger.LogInformation(string.Format("DeployArtifact, ArtifactDateTimeStampVersionUrl: {0}", request.ArtifactDateTimeStampVersionUrl));
-			Logger.LogInformation(string.Format("DeployArtifact, ArtifactDownloadUrl: {0}", request.ArtifactDownloadUrl));
-			Logger.LogInformation(string.Format("DeployArtifact, FromEnvironment: {0}", request.FromEnvironment));
-			Logger.LogInformation(string.Format("DeployArtifact, ToEnvironment: {0}", request.ToEnvironment));
-			Logger.LogInformation(string.Format("DeployArtifact, ToDateTimeStamp: {0}", request.ToDateTimeStamp));
-			Logger.LogInformation(string.Format("DeployArtifact, ConfigurationKey: {0}", request.ConfigurationKey));
 
 			var deployComponents = new List<SerializableDTOs.IDeployComponent>();
 
@@ -372,6 +365,7 @@ namespace ISI.Extensions.Scm
 				FromEnvironment = request.FromEnvironment,
 				ToEnvironment = request.ToEnvironment,
 				ConfigurationKey = request.ConfigurationKey,
+				WaitForFileLocksMaxTimeOutInSeconds = (request.WaitForFileLocksMaxTimeOut.HasValue ? (long)request.WaitForFileLocksMaxTimeOut.Value.TotalSeconds : null),
 				DeployComponents = deployComponents.ToArray(),
 				SetDeployedVersion = request.SetDeployedVersion,
 				RunAsync = request.RunAsync,
@@ -389,51 +383,12 @@ namespace ISI.Extensions.Scm
 
 			if (!request.RunAsync)
 			{
-				response.Success = true;
-
-				foreach (var componentResponse in restResponse?.Response?.DeployComponentResponses)
-				{
-					switch (componentResponse)
-					{
-						case SerializableDTOs.DeployConsoleApplicationResponse deployConsoleApplicationResponse:
-							Logger.LogInformation(string.Format("  PackageFolder '{0}'.", deployConsoleApplicationResponse.PackageFolder));
-							Logger.LogInformation(string.Format("  Log '{0}'.", deployConsoleApplicationResponse.Log));
-							Logger.LogInformation(string.Format("  SameVersion '{0}'.", (deployConsoleApplicationResponse.SameVersion ? "True" : "False")));
-							Logger.LogInformation(string.Format("  NewInstall '{0}'.", (deployConsoleApplicationResponse.NewInstall ? "True" : "False")));
-							Logger.LogInformation(string.Format("  Installed '{0}'.", (deployConsoleApplicationResponse.Installed ? "True" : "False")));
-							Logger.Log((deployConsoleApplicationResponse.Success ? LogLevel.Information : LogLevel.Error), string.Format("  Success '{0}'.", (deployConsoleApplicationResponse.Success ? "True" : "False")));
-
-							response.Success &= deployConsoleApplicationResponse.Success;
-							break;
-
-						case SerializableDTOs.DeployWebSiteResponse deployWebSiteResponse:
-							Logger.LogInformation(string.Format("  PackageFolder '{0}'.", deployWebSiteResponse.PackageFolder));
-							Logger.LogInformation(string.Format("  Log '{0}'.", deployWebSiteResponse.Log));
-							Logger.LogInformation(string.Format("  SameVersion '{0}'.", (deployWebSiteResponse.SameVersion ? "True" : "False")));
-							Logger.LogInformation(string.Format("  NewInstall '{0}'.", (deployWebSiteResponse.NewInstall ? "True" : "False")));
-							Logger.LogInformation(string.Format("  Installed '{0}'.", (deployWebSiteResponse.Installed ? "True" : "False")));
-							Logger.Log((deployWebSiteResponse.Success ? LogLevel.Information : LogLevel.Error), string.Format("  Success '{0}'.", (deployWebSiteResponse.Success ? "True" : "False")));
-
-							response.Success &= deployWebSiteResponse.Success;
-							break;
-
-						case SerializableDTOs.DeployWindowsServiceResponse deployWindowsServiceResponse:
-							Logger.LogInformation(string.Format("  PackageFolder '{0}'.", deployWindowsServiceResponse.PackageFolder));
-							Logger.LogInformation(string.Format("  Log '{0}'.", deployWindowsServiceResponse.Log));
-							Logger.LogInformation(string.Format("  SameVersion '{0}'.", (deployWindowsServiceResponse.SameVersion ? "True" : "False")));
-							Logger.LogInformation(string.Format("  NewInstall '{0}'.", (deployWindowsServiceResponse.NewInstall ? "True" : "False")));
-							Logger.LogInformation(string.Format("  Installed '{0}'.", (deployWindowsServiceResponse.Installed ? "True" : "False")));
-							Logger.Log((deployWindowsServiceResponse.Success ? LogLevel.Information : LogLevel.Error), string.Format("  Success '{0}'.", (deployWindowsServiceResponse.Success ? "True" : "False")));
-
-							response.Success &= deployWindowsServiceResponse.Success;
-							break;
-					}
-				}
+				response.DeployComponentResponses = restResponse?.Response?.DeployComponentResponses.ToNullCheckedArray(deployComponentResponse => deployComponentResponse.Export());
 			}
 
 			if (request.RunAsync)
 			{
-				response.Success = Watch(request.ServicesManagerUrl, request.Password, statusTrackerKey);
+				response.DeployComponentResponses = WatchV3(request.ServicesManagerUrl, request.Password, statusTrackerKey);
 			}
 
 			return response;

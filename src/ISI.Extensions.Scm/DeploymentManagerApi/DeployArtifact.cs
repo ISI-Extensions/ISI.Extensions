@@ -44,48 +44,51 @@ namespace ISI.Extensions.Scm
 
 			var response = (endPointVersion >= 3 ? DeployArtifactV3(request) : DeployArtifactV1(request));
 
-			foreach (var componentResponse in response.DeployComponentResponses)
+			if (response.DeployComponentResponses.NullCheckedAny())
 			{
-				switch (componentResponse)
+				foreach (var componentResponse in response.DeployComponentResponses)
 				{
-					case DTOs.DeployConsoleApplicationResponse deployConsoleApplicationResponse:
-						Logger.LogInformation(string.Format("  PackageFolder '{0}'.", deployConsoleApplicationResponse.PackageFolder));
-						if (!string.IsNullOrWhiteSpace(deployConsoleApplicationResponse.Log))
-						{
-							Logger.LogInformation(string.Format("  Log '{0}'.", deployConsoleApplicationResponse.Log));
-						}
-						Logger.LogInformation(string.Format("  SameVersion '{0}'.", deployConsoleApplicationResponse.SameVersion.TrueFalse()));
-						Logger.LogInformation(string.Format("  InUse '{0}'.", deployConsoleApplicationResponse.InUse.TrueFalse()));
-						Logger.LogInformation(string.Format("  NewInstall '{0}'.", deployConsoleApplicationResponse.NewInstall.TrueFalse()));
-						Logger.LogInformation(string.Format("  Installed '{0}'.", deployConsoleApplicationResponse.Installed.TrueFalse()));
-						Logger.Log((deployConsoleApplicationResponse.Success ? LogLevel.Information : LogLevel.Error), string.Format("  Success '{0}'.", deployConsoleApplicationResponse.Success.TrueFalse()));
-						break;
+					switch (componentResponse)
+					{
+						case DTOs.DeployConsoleApplicationResponse deployConsoleApplicationResponse:
+							Logger.LogInformation(string.Format("  PackageFolder '{0}'.", deployConsoleApplicationResponse.PackageFolder));
+							if (!string.IsNullOrWhiteSpace(deployConsoleApplicationResponse.Log))
+							{
+								Logger.LogInformation(string.Format("  Log '{0}'.", deployConsoleApplicationResponse.Log));
+							}
+							Logger.LogInformation(string.Format("  SameVersion '{0}'.", deployConsoleApplicationResponse.SameVersion.TrueFalse()));
+							Logger.LogInformation(string.Format("  InUse '{0}'.", deployConsoleApplicationResponse.InUse.TrueFalse()));
+							Logger.LogInformation(string.Format("  NewInstall '{0}'.", deployConsoleApplicationResponse.NewInstall.TrueFalse()));
+							Logger.LogInformation(string.Format("  Installed '{0}'.", deployConsoleApplicationResponse.Installed.TrueFalse()));
+							Logger.Log((deployConsoleApplicationResponse.Success ? LogLevel.Information : LogLevel.Error), string.Format("  Success '{0}'.", deployConsoleApplicationResponse.Success.TrueFalse()));
+							break;
 
-					case DTOs.DeployWebSiteResponse deployWebSiteResponse:
-						Logger.LogInformation(string.Format("  PackageFolder '{0}'.", deployWebSiteResponse.PackageFolder));
-						if (!string.IsNullOrWhiteSpace(deployWebSiteResponse.Log))
-						{
-							Logger.LogInformation(string.Format("  Log '{0}'.", deployWebSiteResponse.Log));
-						}
-						Logger.LogInformation(string.Format("  SameVersion '{0}'.", deployWebSiteResponse.SameVersion.TrueFalse()));
-						Logger.LogInformation(string.Format("  InUse '{0}'.", deployWebSiteResponse.InUse.TrueFalse()));
-						Logger.LogInformation(string.Format("  NewInstall '{0}'.", deployWebSiteResponse.NewInstall.TrueFalse()));
-						Logger.LogInformation(string.Format("  Installed '{0}'.", deployWebSiteResponse.Installed.TrueFalse()));
-						Logger.Log((deployWebSiteResponse.Success ? LogLevel.Information : LogLevel.Error), string.Format("  Success '{0}'.", deployWebSiteResponse.Success.TrueFalse()));
-						break;
+						case DTOs.DeployWebSiteResponse deployWebSiteResponse:
+							Logger.LogInformation(string.Format("  PackageFolder '{0}'.", deployWebSiteResponse.PackageFolder));
+							if (!string.IsNullOrWhiteSpace(deployWebSiteResponse.Log))
+							{
+								Logger.LogInformation(string.Format("  Log '{0}'.", deployWebSiteResponse.Log));
+							}
+							Logger.LogInformation(string.Format("  SameVersion '{0}'.", deployWebSiteResponse.SameVersion.TrueFalse()));
+							Logger.LogInformation(string.Format("  InUse '{0}'.", deployWebSiteResponse.InUse.TrueFalse()));
+							Logger.LogInformation(string.Format("  NewInstall '{0}'.", deployWebSiteResponse.NewInstall.TrueFalse()));
+							Logger.LogInformation(string.Format("  Installed '{0}'.", deployWebSiteResponse.Installed.TrueFalse()));
+							Logger.Log((deployWebSiteResponse.Success ? LogLevel.Information : LogLevel.Error), string.Format("  Success '{0}'.", deployWebSiteResponse.Success.TrueFalse()));
+							break;
 
-					case DTOs.DeployWindowsServiceResponse deployWindowsServiceResponse:
-						Logger.LogInformation(string.Format("  PackageFolder '{0}'.", deployWindowsServiceResponse.PackageFolder));
-						if (!string.IsNullOrWhiteSpace(deployWindowsServiceResponse.Log))
-						{
-							Logger.LogInformation(string.Format("  Log '{0}'.", deployWindowsServiceResponse.Log));
-						}
-						Logger.LogInformation(string.Format("  SameVersion '{0}'.", deployWindowsServiceResponse.SameVersion.TrueFalse()));
-						Logger.LogInformation(string.Format("  InUse '{0}'.", deployWindowsServiceResponse.InUse.TrueFalse()));
-						Logger.LogInformation(string.Format("  NewInstall '{0}'.", deployWindowsServiceResponse.NewInstall.TrueFalse()));
-						Logger.LogInformation(string.Format("  Installed '{0}'.", deployWindowsServiceResponse.Installed.TrueFalse()));
-						Logger.Log((deployWindowsServiceResponse.Success ? LogLevel.Information : LogLevel.Error), string.Format("  Success '{0}'.", deployWindowsServiceResponse.Success.TrueFalse()));
-						break;
+						case DTOs.DeployWindowsServiceResponse deployWindowsServiceResponse:
+							Logger.LogInformation(string.Format("  PackageFolder '{0}'.", deployWindowsServiceResponse.PackageFolder));
+							if (!string.IsNullOrWhiteSpace(deployWindowsServiceResponse.Log))
+							{
+								Logger.LogInformation(string.Format("  Log '{0}'.", deployWindowsServiceResponse.Log));
+							}
+							Logger.LogInformation(string.Format("  SameVersion '{0}'.", deployWindowsServiceResponse.SameVersion.TrueFalse()));
+							Logger.LogInformation(string.Format("  InUse '{0}'.", deployWindowsServiceResponse.InUse.TrueFalse()));
+							Logger.LogInformation(string.Format("  NewInstall '{0}'.", deployWindowsServiceResponse.NewInstall.TrueFalse()));
+							Logger.LogInformation(string.Format("  Installed '{0}'.", deployWindowsServiceResponse.Installed.TrueFalse()));
+							Logger.Log((deployWindowsServiceResponse.Success ? LogLevel.Information : LogLevel.Error), string.Format("  Success '{0}'.", deployWindowsServiceResponse.Success.TrueFalse()));
+							break;
+					}
 				}
 			}
 
@@ -381,14 +384,13 @@ namespace ISI.Extensions.Scm
 
 			Logger.LogInformation(string.Format("  statusTrackerKey: {0}", statusTrackerKey));
 
-			if (!request.RunAsync)
-			{
-				response.DeployComponentResponses = restResponse?.Response?.DeployComponentResponses.ToNullCheckedArray(deployComponentResponse => deployComponentResponse.Export());
-			}
-
 			if (request.RunAsync)
 			{
 				response.DeployComponentResponses = WatchV3(request.ServicesManagerUrl, request.Password, statusTrackerKey);
+			}
+			else
+			{
+				response.DeployComponentResponses = restResponse?.Response?.DeployComponentResponses.ToNullCheckedArray(deployComponentResponse => deployComponentResponse.Export());
 			}
 
 			return response;

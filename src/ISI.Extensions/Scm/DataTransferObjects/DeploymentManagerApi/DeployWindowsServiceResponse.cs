@@ -26,6 +26,7 @@ namespace ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi
 		public string WindowsServiceExe { get; set; }
 		public bool SameVersion { get; set; }
 		public bool InUse { get; set; }
+		public bool WouldNotStart { get; set; }
 		public bool NewInstall { get; set; }
 		public bool CurrentVersionStopped { get; set; }
 		public bool Uninstalled { get; set; }

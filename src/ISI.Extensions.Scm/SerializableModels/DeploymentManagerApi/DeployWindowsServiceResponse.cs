@@ -35,6 +35,7 @@ namespace ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi
 				WindowsServiceExe = WindowsServiceExe,
 				SameVersion = SameVersion,
 				InUse = InUse,
+				WouldNotStart = WouldNotStart,
 				NewInstall = NewInstall,
 				CurrentVersionStopped = CurrentVersionStopped,
 				Uninstalled = Uninstalled,
@@ -59,6 +60,9 @@ namespace ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi
 
 		[DataMember(Name = "inUse", EmitDefaultValue = false)]
 		public bool InUse { get; set; }
+				
+		[DataMember(Name = "wouldNotStart", EmitDefaultValue = false)]
+		public bool WouldNotStart { get; set; }
 
 		[DataMember(Name = "newInstall", EmitDefaultValue = false)]
 		public bool NewInstall { get; set; }

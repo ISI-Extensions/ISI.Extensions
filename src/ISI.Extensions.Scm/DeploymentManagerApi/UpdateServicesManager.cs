@@ -73,6 +73,11 @@ namespace ISI.Extensions.Scm
 			}
 
 			var installedVersion = GetInstalledVersion();
+
+			if (installedVersion != null)
+			{
+				Logger.LogInformation(string.Format("Current Version: {0}", installedVersion));
+			}
 			
 			if((installedVersion == null) || (installedVersion != artifactVersion))
 			{
@@ -121,6 +126,8 @@ namespace ISI.Extensions.Scm
 						}
 						else
 						{
+							Logger.LogInformation(string.Format("Installed Version: {0}", installedVersion));
+
 							tryAttemptsLeft = -1;
 						}
 					}

@@ -48,6 +48,8 @@ namespace ISI.Extensions.Scm
 
 			var artifactVersion = new DateTimeStampVersion(ISI.Extensions.WebClient.Rest.ExecuteTextGet(request.ArtifactDateTimeStampVersionUrl, GetHeaders(null), true)).Version;
 
+			Logger.LogInformation(string.Format("Artifact Version: {0}", artifactVersion));
+
 			Version GetInstalledVersion()
 			{
 				try
@@ -58,7 +60,7 @@ namespace ISI.Extensions.Scm
 					var restResponse = ISI.Extensions.WebClient.Rest.ExecuteGet<ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), false);
 
 					var version = (string)null;
-					if((restResponse?.ResponseHeaders?.TryGetValue(HeaderKey.ServicesManagerVersion, out version)).GetValueOrDefault())
+					if ((restResponse?.ResponseHeaders?.TryGetValue(HeaderKey.ServicesManagerVersion, out version)).GetValueOrDefault())
 					{
 						response.CurrentVersion = version;
 
@@ -78,8 +80,8 @@ namespace ISI.Extensions.Scm
 			{
 				Logger.LogInformation(string.Format("Current Version: {0}", installedVersion));
 			}
-			
-			if((installedVersion == null) || (installedVersion != artifactVersion))
+
+			if ((installedVersion == null) || (installedVersion != artifactVersion))
 			{
 				var uri = new UriBuilder(request.ServicesManagerUrl);
 				uri.SetPathAndQueryString("rest/manager/v3/update-services-manager");

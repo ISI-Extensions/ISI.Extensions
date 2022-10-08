@@ -122,9 +122,18 @@ namespace ISI.Extensions.Scm
 						{
 							tryAttemptsLeft--;
 
-							Logger.LogError(string.Format("Error verifying, Sleeping for {0} seconds", request.VerificationExceptionSleepForInSeconds));
+							if (tryAttemptsLeft > 0)
+							{
+								Logger.LogError(string.Format("Error verifying, Sleeping for {0} seconds", request.VerificationExceptionSleepForInSeconds));
 
-							System.Threading.Thread.Sleep(TimeSpan.FromSeconds(request.VerificationExceptionSleepForInSeconds));
+								System.Threading.Thread.Sleep(TimeSpan.FromSeconds(request.VerificationExceptionSleepForInSeconds));
+							}
+							else
+							{
+								response.WouldNotStart = true;
+
+								Logger.LogError("Would Not Start");
+							}
 						}
 						else
 						{
@@ -134,15 +143,16 @@ namespace ISI.Extensions.Scm
 						}
 					}
 
-					if (installedVersion != artifactVersion)
+					if (!response.WouldNotStart)
 					{
-						response.WouldNotStart = true;
-
-						Logger.LogError("Would Not Start");
-					}
-					else
-					{
-						Logger.LogInformation("New Version Installed");
+						if (installedVersion != artifactVersion)
+						{
+							Logger.LogInformation("New Version NOT Installed");
+						}
+						else
+						{
+							Logger.LogInformation("New Version Installed");
+						}
 					}
 				}
 			}

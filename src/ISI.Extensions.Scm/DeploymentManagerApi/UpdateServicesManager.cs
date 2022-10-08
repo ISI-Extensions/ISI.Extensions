@@ -37,29 +37,7 @@ namespace ISI.Extensions.Scm
 				return UpdateServicesManagerV3(request);
 			}
 
-			return UpdateServicesManagerV1(request);
-		}
-
-		public DTOs.UpdateServicesManagerResponse UpdateServicesManagerV1(DTOs.UpdateServicesManagerRequest request)
-		{
-			var response = new DTOs.UpdateServicesManagerResponse();
-
-			Logger.LogInformation(string.Format("UpdateServicesManager, ServicesManagerUrl: {0}", request.ServicesManagerUrl));
-
-			using (var managerClient = ISI.Extensions.Scm.ServiceReferences.ServicesManager.ManagerClient.GetClient(request.ServicesManagerUrl))
-			{
-				managerClient.Endpoint.Binding.SendTimeout = TimeSpan.FromMinutes(15);
-				managerClient.Endpoint.Binding.ReceiveTimeout = TimeSpan.FromMinutes(15);
-
-				var updateResponse = managerClient.Update(request.Password);
-
-				response.CurrentVersion = updateResponse.CurrentVersion;
-				response.Log = updateResponse.Log;
-				response.NewVersion = updateResponse.NewVersion;
-				response.SameVersion = updateResponse.SameVersion;
-			}
-
-			return response;
+			return new DTOs.UpdateServicesManagerResponse();
 		}
 
 		public DTOs.UpdateServicesManagerResponse UpdateServicesManagerV3(DTOs.UpdateServicesManagerRequest request)
@@ -68,29 +46,100 @@ namespace ISI.Extensions.Scm
 
 			Logger.LogInformation(string.Format("UpdateServicesManager, ServicesManagerUrl: {0}", request.ServicesManagerUrl));
 
-			var uri = new UriBuilder(request.ServicesManagerUrl);
-			uri.SetPathAndQueryString("rest/manager/v3/update-services-manager");
+			var artifactVersion = new DateTimeStampVersion(ISI.Extensions.WebClient.Rest.ExecuteTextGet(request.ArtifactDateTimeStampVersionUrl, GetHeaders(null), true)).Version;
 
-			var restRequest = new SerializableDTOs.UpdateServicesManagerRequest()
+			Version GetInstalledVersion()
 			{
-				ArtifactDateTimeStampVersionUrl = request.ArtifactDateTimeStampVersionUrl,
-				ArtifactDownloadUrl = request.ArtifactDownloadUrl,
-			};
+				try
+				{
+					var uri = new UriBuilder(request.ServicesManagerUrl);
+					uri.SetPathAndQueryString(string.Empty);
+
+					var restResponse = ISI.Extensions.WebClient.Rest.ExecuteGet<ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), false);
+
+					var version = (string)null;
+					if((restResponse?.ResponseHeaders?.TryGetValue(HeaderKey.ServicesManagerVersion, out version)).GetValueOrDefault())
+					{
+						response.CurrentVersion = version;
+
+						return new Version(version);
+					}
+				}
+				catch
+				{
+				}
+
+				return null;
+			}
+
+			var installedVersion = GetInstalledVersion();
+			
+			if((installedVersion == null) || (installedVersion != artifactVersion))
+			{
+				var uri = new UriBuilder(request.ServicesManagerUrl);
+				uri.SetPathAndQueryString("rest/manager/v3/update-services-manager");
+
+				var restRequest = new SerializableDTOs.UpdateServicesManagerRequest()
+				{
+					ArtifactDateTimeStampVersionUrl = request.ArtifactDateTimeStampVersionUrl,
+					ArtifactDownloadUrl = request.ArtifactDownloadUrl,
+				};
 
 #if DEBUG
-			var xxx = ISI.Extensions.WebClient.Rest.GetEventHandler();
+				var xxx = ISI.Extensions.WebClient.Rest.GetEventHandler();
 #endif
 
-			var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.UpdateServicesManagerRequest, SerializableDTOs.UpdateServicesManagerResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request.Password), restRequest, false);
+				var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.UpdateServicesManagerRequest, SerializableDTOs.UpdateServicesManagerResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request.Password), restRequest, false);
 
-			response.CurrentVersion = restResponse?.Response?.CurrentVersion;
-			response.Log = restResponse?.Response?.Log ?? restResponse?.Error?.Content;
-			response.NewVersion = restResponse?.Response?.NewVersion;
-			response.SameVersion = restResponse?.Response?.SameVersion;
+				response.CurrentVersion = restResponse?.Response?.CurrentVersion;
+				response.Log = restResponse?.Response?.Log ?? restResponse?.Error?.Content;
+				response.NewVersion = restResponse?.Response?.NewVersion;
+				response.SameVersion = restResponse?.Response?.SameVersion;
 
-			if (restResponse?.Error?.Exception != null)
+				if (restResponse?.Error?.Exception != null)
+				{
+					response.Log = string.Format("{0}{1}Exception: {2}", response.Log, Environment.NewLine, restResponse.Error.Exception.ErrorMessageFormatted());
+				}
+				else
+				{
+					Logger.LogInformation(string.Format("Waiting to do Verification, Sleeping for {0} seconds", request.VerificationWaitInSeconds));
+
+					System.Threading.Thread.Sleep(TimeSpan.FromSeconds(request.VerificationWaitInSeconds));
+
+					var tryAttemptsLeft = request.VerificationMaxTries;
+					while (tryAttemptsLeft > 0)
+					{
+						installedVersion = GetInstalledVersion();
+
+						if (installedVersion == null)
+						{
+							tryAttemptsLeft--;
+
+							Logger.LogError(string.Format("Error verifying, Sleeping for {0} seconds", request.VerificationExceptionSleepForInSeconds));
+
+							System.Threading.Thread.Sleep(TimeSpan.FromSeconds(request.VerificationExceptionSleepForInSeconds));
+						}
+						else
+						{
+							tryAttemptsLeft = -1;
+						}
+					}
+
+					if (installedVersion != artifactVersion)
+					{
+						response.WouldNotStart = true;
+
+						Logger.LogError("Would Not Start");
+					}
+					else
+					{
+						Logger.LogInformation("New Version Installed");
+					}
+				}
+			}
+			else
 			{
-				response.Log = string.Format("{0}{1}Exception: {2}", response.Log, Environment.NewLine, restResponse.Error.Exception.ErrorMessageFormatted());
+				response.SameVersion = true;
 			}
 
 			return response;

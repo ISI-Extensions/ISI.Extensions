@@ -28,6 +28,11 @@ namespace ISI.Extensions.Scm
 {
 	public partial class DeploymentManagerApi
 	{
+		public class HeaderKey
+		{
+			public const string ServicesManagerVersion = "X-ServicesManager-Version";
+		}
+
 		private ISI.Extensions.WebClient.HeaderCollection GetHeaders(string deploymentManagerPassword)
 		{
 			var headers = new ISI.Extensions.WebClient.HeaderCollection();

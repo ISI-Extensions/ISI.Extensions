@@ -47,41 +47,6 @@ namespace ISI.Extensions.Scm
 				}
 			}
 
-
-
-			//var request = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(sourceUri.Uri);
-			//request.Method = System.Net.WebRequestMethods.Http.Get;
-
-
-			//using (var response = (System.Net.HttpWebResponse)request.GetResponse())
-			//{
-			//	using (var sourceStream = response.GetResponseStream())
-			//	{
-			//		using (var targetStream = new System.IO.FileStream(TargetFileName, System.IO.FileMode.OpenOrCreate))
-			//		{
-			//			int chunkSize = 1427; // any larger will cause an SSL request to fail
-			//			byte[] buffer = new byte[chunkSize];
-
-			//			int readBlocks = sourceStream.Read(buffer, 0, chunkSize);
-
-			//			while (readBlocks > 0)
-			//			{
-			//				targetStream.Write(buffer, 0, readBlocks);
-
-			//				if ((readBlocks > 0) && (readBlocks < chunkSize))
-			//				{
-			//					System.Threading.Thread.Sleep(100);
-			//				}
-
-			//				if (readBlocks > 0) readBlocks = sourceStream.Read(buffer, 0, chunkSize);
-			//			}
-
-			//			targetStream.Flush();
-			//		}
-			//	}
-			//}
-
-
 			return response;
 		}
 	}

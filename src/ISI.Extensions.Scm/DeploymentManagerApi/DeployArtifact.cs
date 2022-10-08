@@ -19,7 +19,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.Scm.ServiceReferences.ServicesManager;
 using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi;
 using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi;
@@ -42,7 +41,10 @@ namespace ISI.Extensions.Scm
 
 			var endPointVersion = GetEndpointVersion(request.ServicesManagerUrl);
 
-			var response = (endPointVersion >= 3 ? DeployArtifactV3(request) : DeployArtifactV1(request));
+			var response = (endPointVersion >= 3 ? DeployArtifactV3(request) : new DTOs.DeployArtifactResponse()
+			{
+				Success = false,
+			});
 
 			if (response.DeployComponentResponses.NullCheckedAny())
 			{
@@ -90,149 +92,6 @@ namespace ISI.Extensions.Scm
 							break;
 					}
 				}
-			}
-
-			return response;
-		}
-
-		private DTOs.DeployArtifactResponse DeployArtifactV1(DTOs.DeployArtifactRequest request)
-		{
-			var response = new DTOs.DeployArtifactResponse();
-
-			var buildArtifactManagementUri = new UriBuilder(request.BuildArtifactManagementUrl);
-			buildArtifactManagementUri.Path = "remote-management/";
-
-			var deployComponents = new ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentCollection();
-
-			ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentExcludeFileCollection getDeployComponentExcludeFileCollection(IEnumerable<string> fileNames)
-			{
-				var deployComponentExcludeFiles = new ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentExcludeFileCollection();
-
-				foreach (var fileName in fileNames.ToNullCheckedArray(NullCheckCollectionResult.Empty))
-				{
-					deployComponentExcludeFiles.Add(new ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployComponentExcludeFile()
-					{
-						ExcludeFile = fileName,
-					});
-				}
-
-				return deployComponentExcludeFiles;
-			}
-
-			foreach (var component in request.Components.ToNullCheckedArray(NullCheckCollectionResult.Empty))
-			{
-				switch (component)
-				{
-					case ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.DeployComponent deployComponent:
-						if (string.Equals(deployComponent.ComponentType, "ConsoleApplication", StringComparison.InvariantCultureIgnoreCase))
-						{
-							deployComponents.Add(new ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployConsoleApplication()
-							{
-								PackageFolder = deployComponent.PackageFolder,
-								DeployToSubfolder = deployComponent.DeployToSubfolder,
-								ConsoleApplicationExe = deployComponent.ApplicationExe,
-								ExcludeFiles = getDeployComponentExcludeFileCollection(deployComponent.ExcludeFiles),
-							});
-							Logger.LogInformation(string.Format("  deployComponent.PackageFolder: {0}", deployComponent.PackageFolder));
-							Logger.LogInformation(string.Format("  deployComponent.DeployToSubfolder: {0}", deployComponent.DeployToSubfolder));
-							Logger.LogInformation(string.Format("  deployComponent.ConsoleApplicationExe: {0}", deployComponent.ApplicationExe));
-						}
-						else if (string.Equals(deployComponent.ComponentType, "WebSite", StringComparison.InvariantCultureIgnoreCase))
-						{
-							deployComponents.Add(new ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployWebSite()
-							{
-								PackageFolder = deployComponent.PackageFolder,
-								DeployToSubfolder = deployComponent.DeployToSubfolder,
-								ExcludeFiles = getDeployComponentExcludeFileCollection(deployComponent.ExcludeFiles),
-							});
-							Logger.LogInformation(string.Format("  deployComponent.PackageFolder: {0}", deployComponent.PackageFolder));
-							Logger.LogInformation(string.Format("  deployComponent.DeployToSubfolder: {0}", deployComponent.DeployToSubfolder));
-						}
-						else if (string.Equals(deployComponent.ComponentType, "WindowsService", StringComparison.InvariantCultureIgnoreCase))
-						{
-							deployComponents.Add(new ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployWindowsService()
-							{
-								PackageFolder = deployComponent.PackageFolder,
-								DeployToSubfolder = deployComponent.DeployToSubfolder,
-								WindowsServiceExe = deployComponent.ApplicationExe,
-								ExcludeFiles = getDeployComponentExcludeFileCollection(deployComponent.ExcludeFiles),
-							});
-							Logger.LogInformation(string.Format("  deployComponent.PackageFolder: {0}", deployComponent.PackageFolder));
-							Logger.LogInformation(string.Format("  deployComponent.DeployToSubfolder: {0}", deployComponent.DeployToSubfolder));
-							Logger.LogInformation(string.Format("  deployComponent.WindowsServiceExe: {0}", deployComponent.ApplicationExe));
-						}
-						break;
-
-					case ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.DeployComponentConsoleApplication deployComponentConsoleApplication:
-						deployComponents.Add(new ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployConsoleApplication()
-						{
-							PackageFolder = deployComponentConsoleApplication.PackageFolder,
-							DeployToSubfolder = deployComponentConsoleApplication.DeployToSubfolder,
-							ConsoleApplicationExe = deployComponentConsoleApplication.ConsoleApplicationExe,
-							ExcludeFiles = getDeployComponentExcludeFileCollection(deployComponentConsoleApplication.ExcludeFiles),
-							ExecuteConsoleApplicationAfterInstall = deployComponentConsoleApplication.ExecuteConsoleApplicationAfterInstall,
-							ExecuteConsoleApplicationAfterInstallArguments = deployComponentConsoleApplication.ExecuteConsoleApplicationAfterInstallArguments,
-						});
-						Logger.LogInformation(string.Format("  deployComponentConsoleApplication.PackageFolder: {0}", deployComponentConsoleApplication.PackageFolder));
-						Logger.LogInformation(string.Format("  deployComponentConsoleApplication.DeployToSubfolder: {0}", deployComponentConsoleApplication.DeployToSubfolder));
-						Logger.LogInformation(string.Format("  deployComponentConsoleApplication.ConsoleApplicationExe: {0}", deployComponentConsoleApplication.ConsoleApplicationExe));
-						Logger.LogInformation(string.Format("  deployComponentConsoleApplication.ExecuteConsoleApplicationAfterInstall: {0}", deployComponentConsoleApplication.ExecuteConsoleApplicationAfterInstall.TrueFalse()));
-						Logger.LogInformation(string.Format("  deployComponentConsoleApplication.ExecuteConsoleApplicationAfterInstallArguments: {0}", deployComponentConsoleApplication.ExecuteConsoleApplicationAfterInstallArguments));
-						break;
-
-					case ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.DeployComponentWebSite deployComponentWebSite:
-						deployComponents.Add(new ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployWebSite()
-						{
-							PackageFolder = deployComponentWebSite.PackageFolder,
-							DeployToSubfolder = deployComponentWebSite.DeployToSubfolder,
-							ExcludeFiles = getDeployComponentExcludeFileCollection(deployComponentWebSite.ExcludeFiles),
-						});
-						Logger.LogInformation(string.Format("  deployComponentWebSite.PackageFolder: {0}", deployComponentWebSite.PackageFolder));
-						Logger.LogInformation(string.Format("  deployComponentWebSite.DeployToSubfolder: {0}", deployComponentWebSite.DeployToSubfolder));
-						break;
-
-					case ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.DeployComponentWindowsService deployComponentWindowsService:
-						deployComponents.Add(new ISI.Extensions.Scm.ServiceReferences.ServicesManager.DeployWindowsService()
-						{
-							PackageFolder = deployComponentWindowsService.PackageFolder,
-							DeployToSubfolder = deployComponentWindowsService.DeployToSubfolder,
-							WindowsServiceExe = deployComponentWindowsService.WindowsServiceExe,
-							ExcludeFiles = getDeployComponentExcludeFileCollection(deployComponentWindowsService.ExcludeFiles),
-							UninstallIfInstalled = deployComponentWindowsService.UninstallIfInstalled,
-						});
-						Logger.LogInformation(string.Format("  deployComponentWindowsService.PackageFolder: {0}", deployComponentWindowsService.PackageFolder));
-						Logger.LogInformation(string.Format("  deployComponentWindowsService.DeployToSubfolder: {0}", deployComponentWindowsService.DeployToSubfolder));
-						Logger.LogInformation(string.Format("  deployComponentWindowsService.WindowsServiceExe: {0}", deployComponentWindowsService.WindowsServiceExe));
-						break;
-
-					default:
-						throw new ArgumentOutOfRangeException(nameof(component));
-				}
-				Logger.LogInformation(string.Empty);
-			}
-
-			var statusTrackerKey = string.Empty;
-
-			using (var managerClient = ISI.Extensions.Scm.ServiceReferences.ServicesManager.ManagerClient.GetClient(request.ServicesManagerUrl))
-			{
-				managerClient.Endpoint.Binding.SendTimeout = TimeSpan.FromMinutes(15);
-				managerClient.Endpoint.Binding.ReceiveTimeout = TimeSpan.FromMinutes(15);
-
-				var deployArtifactResponse = managerClient.DeployArtifact(request.Password, buildArtifactManagementUri.Uri.ToString(), request.AuthenticationToken, request.ArtifactName, request.ArtifactDateTimeStampVersionUrl, request.ArtifactDownloadUrl, request.ToDateTimeStamp, request.FromEnvironment, request.ToEnvironment, request.ConfigurationKey, deployComponents, request.SetDeployedVersion, request.RunAsync);
-
-				statusTrackerKey = deployArtifactResponse.StatusTrackerKey;
-
-				Logger.LogInformation(string.Format("  statusTrackerKey: {0}", statusTrackerKey));
-
-				if (!request.RunAsync)
-				{
-					response.DeployComponentResponses = deployArtifactResponse.DeployComponentResponses.ToNullCheckedArray(deployComponentResponse => ((ISI.Extensions.Scm.ServiceReferences.ServicesManager.IDeployComponentResponse)deployComponentResponse).Export());
-				}
-			}
-
-			if (request.RunAsync)
-			{
-				response.Success = WatchV1(request.ServicesManagerUrl, request.Password, statusTrackerKey);
 			}
 
 			return response;

@@ -49,7 +49,7 @@ namespace ISI.Extensions.Scm
 							var restResponse = ISI.Extensions.WebClient.Rest.ExecuteGet<ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), false);
 
 							var version = (string)null;
-							if((restResponse?.ResponseHeaders?.TryGetValue("X-ServicesManager-Version", out version)).GetValueOrDefault())
+							if((restResponse?.ResponseHeaders?.TryGetValue(HeaderKey.ServicesManagerVersion, out version)).GetValueOrDefault())
 							{
 								var servicesManagerVersion = new Version(version);
 

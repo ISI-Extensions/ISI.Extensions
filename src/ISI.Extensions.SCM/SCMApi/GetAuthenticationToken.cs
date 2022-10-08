@@ -53,11 +53,9 @@ namespace ISI.Extensions.Scm
 						throw;
 					}
 
-					var sleepForInSeconds = 20;
+					Logger.LogError(string.Format("Error getting authentication token, Sleeping for {0} seconds", request.ExceptionSleepForInSeconds));
 
-					Logger.LogError(string.Format("Error getting authentication token, Sleeping for {0} seconds", sleepForInSeconds));
-
-					System.Threading.Thread.Sleep(TimeSpan.FromSeconds(sleepForInSeconds));
+					System.Threading.Thread.Sleep(TimeSpan.FromSeconds(request.ExceptionSleepForInSeconds));
 				}
 			}
 

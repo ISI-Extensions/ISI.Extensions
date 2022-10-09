@@ -68,6 +68,7 @@ namespace ISI.Extensions.Tests
 		public void UpdateServicesManager_Test()
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "Tristar.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 			settings.OverrideWithEnvironmentVariables();
 
@@ -77,8 +78,10 @@ namespace ISI.Extensions.Tests
 			{
 				//ServicesManagerUrl = "http://localhost:14258/",
 				//Password = "87BEF140-045B-42D7-AB87-3E59F162BC39",
-				ServicesManagerUrl = settings.GetValue("PRODUCTION-GOGS01-DeployManager-Url"),
-				Password = settings.GetValue("PRODUCTION-GOGS01-DeployManager-Password"),
+				ServicesManagerUrl = settings.GetValue("tfsSCM02-DeployManager-Url"),
+				Password = settings.GetValue("tfsSCM02-DeployManager-Password"),
+				//ServicesManagerUrl = settings.GetValue("PRODUCTION-GOGS01-DeployManager-Url"),
+				//Password = settings.GetValue("PRODUCTION-GOGS01-DeployManager-Password"),
 			});
 		}
 

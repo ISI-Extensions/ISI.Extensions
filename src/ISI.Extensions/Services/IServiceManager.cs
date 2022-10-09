@@ -23,13 +23,27 @@ namespace ISI.Extensions.Services
 {
 	public interface IServiceManager
 	{
+		Status Status { get; }
+
 		bool Start();
 		bool Stop();
-		Status Status { get; }
 
 		void BeforeInstall();
 		void AfterInstall();
 		void BeforeUninstall();
 		void AfterUninstall();
+	}
+
+	public interface IServiceManagerAsync
+	{
+		Status Status { get; }
+
+		Task<bool> StartAsync();
+		Task<bool> StopAsync();
+
+		Task BeforeInstallAsync();
+		Task AfterInstallAsync();
+		Task BeforeUninstallAsync();
+		Task AfterUninstallAsync();
 	}
 }

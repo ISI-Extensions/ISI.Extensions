@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2022, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,24 +15,46 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ISI.Extensions
 {
-	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
-	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrarWithPriority
+	public interface IApplicationBus
 	{
-		public int Priority => 100;
+		void Subscribe<TRequest, TResponse>(Func<TRequest, TResponse> function, bool includeNamed = false)
+			where TRequest : class
+			where TResponse : class;
 
-		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
-		{
-			services.AddSingleton<ISI.Extensions.IApplicationBus, ISI.Extensions.ApplicationBus>();
-			services.AddSingleton<ISI.Extensions.Serialization.ISerialization, ISI.Extensions.Serialization.Serialization>();
-			services.AddSingleton<ISI.Extensions.SecureShell.IHostConfigurationManager, ISI.Extensions.SecureShell.HostConfigurationManager>();
-			services.AddSingleton<ISI.Extensions.StatusTrackers.FileStatusTrackerFactory>();
-		}
+		void Subscribe<TRequest, TResponse>(string name, Func<TRequest, TResponse> function)
+			where TRequest : class
+			where TResponse : class;
+
+		void Subscribe<TRequest>(Action<TRequest> action, bool includeNamed = false)
+			where TRequest : class;
+
+		void Subscribe<TRequest>(string name, Action<TRequest> action)
+			where TRequest : class;
+
+		void Subscribe<TRequest, TResponse>(Action<TRequest, TResponse> action, bool includeNamed = false)
+			where TRequest : class
+			where TResponse : class;
+
+		void Subscribe<TRequest, TResponse>(string name, Action<TRequest, TResponse> action)
+			where TRequest : class
+			where TResponse : class;
+
+		TResponse Publish<TRequest, TResponse>(TRequest request)
+			where TRequest : class
+			where TResponse : class;
+
+		TResponse Publish<TRequest, TResponse>(string name, TRequest request)
+			where TRequest : class
+			where TResponse : class;
+
+		void Publish<TRequest>(TRequest request)
+			where TRequest : class;
+
+		void Publish<TRequest>(string name, TRequest request)
+			where TRequest : class;
 	}
 }

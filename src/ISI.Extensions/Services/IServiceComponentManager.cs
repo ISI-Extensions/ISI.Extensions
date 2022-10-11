@@ -23,23 +23,23 @@ namespace ISI.Extensions.Services
 {
 	public interface IServiceComponentManager
 	{
-		bool Start();
-		bool Stop();
+		bool Start(Microsoft.Extensions.Configuration.IConfigurationRoot configuration, string environment, string[] args);
+		bool Stop(Microsoft.Extensions.Configuration.IConfigurationRoot configuration, string environment, string[] args);
 
-		void BeforeInstall();
-		void AfterInstall();
-		void BeforeUninstall();
-		void AfterUninstall();
+		void BeforeInstall(Microsoft.Extensions.Configuration.IConfigurationRoot configuration, string environment, string[] args);
+		void AfterInstall(Microsoft.Extensions.Configuration.IConfigurationRoot configuration, string environment, string[] args);
+		void BeforeUninstall(Microsoft.Extensions.Configuration.IConfigurationRoot configuration, string environment, string[] args);
+		void AfterUninstall(Microsoft.Extensions.Configuration.IConfigurationRoot configuration, string environment, string[] args);
 	}
 
 	public interface IServiceComponentManagerAsync
 	{
-		Task<bool> StartAsync();
-		Task<bool> StopAsync();
+		Task<bool> StartAsync(Microsoft.Extensions.Configuration.IConfigurationRoot configuration, string environment, string[] args);
+		Task<bool> StopAsync(Microsoft.Extensions.Configuration.IConfigurationRoot configuration, string environment, string[] args);
 
-		Task BeforeInstallAsync();
-		Task AfterInstallAsync();
-		Task BeforeUninstallAsync();
-		Task AfterUninstallAsync();
+		Task BeforeInstallAsync(Microsoft.Extensions.Configuration.IConfigurationRoot configuration, string environment, string[] args);
+		Task AfterInstallAsync(Microsoft.Extensions.Configuration.IConfigurationRoot configuration, string environment, string[] args);
+		Task BeforeUninstallAsync(Microsoft.Extensions.Configuration.IConfigurationRoot configuration, string environment, string[] args);
+		Task AfterUninstallAsync(Microsoft.Extensions.Configuration.IConfigurationRoot configuration, string environment, string[] args);
 	}
 }

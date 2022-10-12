@@ -59,8 +59,9 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 			{
 				if (objectProperty.CanRead)
 				{
-					var ignoreDataMemberAttribute = objectProperty.GetCustomAttributes(true).OfType<System.Runtime.Serialization.IgnoreDataMemberAttribute>().FirstOrDefault();
-					if (ignoreDataMemberAttribute == null)
+					if (!objectProperty.GetCustomAttributes(true).OfType<System.Runtime.Serialization.IgnoreDataMemberAttribute>().Any() &&
+					    !objectProperty.GetCustomAttributes(true).OfType<global::Newtonsoft.Json.JsonIgnoreAttribute>().Any() &&
+					    !objectProperty.GetCustomAttributes(true).OfType<System.Text.Json.Serialization.JsonIgnoreAttribute>().Any())
 					{
 						var dataMemberAttribute = objectProperty.GetCustomAttributes(true).OfType<System.Runtime.Serialization.DataMemberAttribute>().FirstOrDefault();
 
@@ -95,17 +96,22 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 
 			var implementation = Activator.CreateInstance(implementationType);
 
-			foreach (var property in implementationType.GetProperties().Where(p => p.CanRead && p.CanWrite))
+			foreach (var objectProperty in implementationType.GetProperties().Where(p => p.CanRead && p.CanWrite))
 			{
-				var dataMemberAttribute = property.GetCustomAttributes(true).OfType<System.Runtime.Serialization.DataMemberAttribute>().FirstOrDefault();
-
-				var jsonToken = jsonObject.SelectToken(dataMemberAttribute?.Name ?? property.Name);
-
-				if (jsonToken != null && (jsonToken.Type != global::Newtonsoft.Json.Linq.JTokenType.Null))
+				if (!objectProperty.GetCustomAttributes(true).OfType<System.Runtime.Serialization.IgnoreDataMemberAttribute>().Any() &&
+				    !objectProperty.GetCustomAttributes(true).OfType<global::Newtonsoft.Json.JsonIgnoreAttribute>().Any() &&
+				    !objectProperty.GetCustomAttributes(true).OfType<System.Text.Json.Serialization.JsonIgnoreAttribute>().Any())
 				{
-					var propertyValue = jsonToken.ToObject(property.PropertyType, serializer);
+					var dataMemberAttribute = objectProperty.GetCustomAttributes(true).OfType<System.Runtime.Serialization.DataMemberAttribute>().FirstOrDefault();
 
-					property.SetValue(implementation, propertyValue, null);
+					var jsonToken = jsonObject.SelectToken(dataMemberAttribute?.Name ?? objectProperty.Name);
+
+					if (jsonToken != null && (jsonToken.Type != global::Newtonsoft.Json.Linq.JTokenType.Null))
+					{
+						var propertyValue = jsonToken.ToObject(objectProperty.PropertyType, serializer);
+
+						objectProperty.SetValue(implementation, propertyValue, null);
+					}
 				}
 			}
 

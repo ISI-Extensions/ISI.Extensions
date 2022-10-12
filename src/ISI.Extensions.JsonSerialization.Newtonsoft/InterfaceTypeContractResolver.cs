@@ -56,10 +56,7 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 			return base.CreateProperties(typeToSerialize, memberSerialization);
 		}
 
-
-
-
-
+		
 		private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, InterfaceTypeContractResolver> _typeContractResolvers;
 
 		static InterfaceTypeContractResolver()

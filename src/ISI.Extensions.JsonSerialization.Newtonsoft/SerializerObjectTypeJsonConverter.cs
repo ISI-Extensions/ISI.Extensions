@@ -59,12 +59,16 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 			{
 				if (objectProperty.CanRead)
 				{
-					var dataMemberAttribute = objectProperty.GetCustomAttributes(true).OfType<System.Runtime.Serialization.DataMemberAttribute>().FirstOrDefault();
-
-					var objectPropertyValue = objectProperty.GetValue(value, null);
-					if (objectPropertyValue != null)
+					var ignoreDataMemberAttribute = objectProperty.GetCustomAttributes(true).OfType<System.Runtime.Serialization.IgnoreDataMemberAttribute>().FirstOrDefault();
+					if (ignoreDataMemberAttribute == null)
 					{
-						jsonObject.Add(dataMemberAttribute?.Name ?? objectProperty.Name, global::Newtonsoft.Json.Linq.JToken.FromObject(objectPropertyValue, serializer));
+						var dataMemberAttribute = objectProperty.GetCustomAttributes(true).OfType<System.Runtime.Serialization.DataMemberAttribute>().FirstOrDefault();
+
+						var objectPropertyValue = objectProperty.GetValue(value, null);
+						if (objectPropertyValue != null)
+						{
+							jsonObject.Add(dataMemberAttribute?.Name ?? objectProperty.Name, global::Newtonsoft.Json.Linq.JToken.FromObject(objectPropertyValue, serializer));
+						}
 					}
 				}
 			}

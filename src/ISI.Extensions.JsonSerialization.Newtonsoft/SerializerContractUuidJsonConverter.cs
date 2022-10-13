@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.JsonSerialization.Newtonsoft.Extensions;
 using ISI.Extensions.Serialization;
 using ISI.Extensions.TypeLocator.Extensions;
 
@@ -56,20 +57,18 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 				jsonObject.AddFirst(new global::Newtonsoft.Json.Linq.JProperty(SerializerContractUuidKey, serializerContractUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)));
 			}
 
-			foreach (var objectProperty in objectType.GetProperties())
+			foreach (var propertyInfo in objectType.GetProperties())
 			{
-				if (objectProperty.CanRead)
+				if (propertyInfo.CanRead)
 				{
-					if (!objectProperty.GetCustomAttributes(true).OfType<System.Runtime.Serialization.IgnoreDataMemberAttribute>().Any() &&
-							!objectProperty.GetCustomAttributes(true).OfType<global::Newtonsoft.Json.JsonIgnoreAttribute>().Any() &&
-							!objectProperty.GetCustomAttributes(true).OfType<System.Text.Json.Serialization.JsonIgnoreAttribute>().Any())
+					if (!propertyInfo.IgnorePropertyInfo())
 					{
-						var dataMemberAttribute = objectProperty.GetCustomAttributes(true).OfType<System.Runtime.Serialization.DataMemberAttribute>().FirstOrDefault();
+						var dataMemberAttribute = propertyInfo.GetCustomAttributes(true).OfType<System.Runtime.Serialization.DataMemberAttribute>().FirstOrDefault();
 
-						var objectPropertyValue = objectProperty.GetValue(value, null);
+						var objectPropertyValue = propertyInfo.GetValue(value, null);
 						if (objectPropertyValue != null)
 						{
-							jsonObject.Add(dataMemberAttribute?.Name ?? objectProperty.Name, global::Newtonsoft.Json.Linq.JToken.FromObject(objectPropertyValue, serializer));
+							jsonObject.Add(dataMemberAttribute?.Name ?? propertyInfo.Name, global::Newtonsoft.Json.Linq.JToken.FromObject(objectPropertyValue, serializer));
 						}
 					}
 				}
@@ -97,21 +96,19 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 
 			var implementation = Activator.CreateInstance(implementationType);
 
-			foreach (var objectProperty in implementationType.GetProperties().Where(p => p.CanRead && p.CanWrite))
+			foreach (var propertyInfo in implementationType.GetProperties().Where(p => p.CanRead && p.CanWrite))
 			{
-				if (!objectProperty.GetCustomAttributes(true).OfType<System.Runtime.Serialization.IgnoreDataMemberAttribute>().Any() &&
-						!objectProperty.GetCustomAttributes(true).OfType<global::Newtonsoft.Json.JsonIgnoreAttribute>().Any() &&
-						!objectProperty.GetCustomAttributes(true).OfType<System.Text.Json.Serialization.JsonIgnoreAttribute>().Any())
+				if (!propertyInfo.IgnorePropertyInfo())
 				{
-					var dataMemberAttribute = objectProperty.GetCustomAttributes(true).OfType<System.Runtime.Serialization.DataMemberAttribute>().FirstOrDefault();
+					var dataMemberAttribute = propertyInfo.GetCustomAttributes(true).OfType<System.Runtime.Serialization.DataMemberAttribute>().FirstOrDefault();
 
-					var jsonToken = jsonObject.SelectToken(dataMemberAttribute?.Name ?? objectProperty.Name);
+					var jsonToken = jsonObject.SelectToken(dataMemberAttribute?.Name ?? propertyInfo.Name);
 
 					if (jsonToken != null && (jsonToken.Type != global::Newtonsoft.Json.Linq.JTokenType.Null))
 					{
-						var propertyValue = jsonToken.ToObject(objectProperty.PropertyType, serializer);
+						var propertyValue = jsonToken.ToObject(propertyInfo.PropertyType, serializer);
 
-						objectProperty.SetValue(implementation, propertyValue, null);
+						propertyInfo.SetValue(implementation, propertyValue, null);
 					}
 				}
 			}

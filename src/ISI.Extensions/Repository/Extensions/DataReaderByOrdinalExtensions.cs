@@ -119,6 +119,35 @@ namespace ISI.Extensions.Repository.Extensions
 			return value.ToString().ToGuidNullable();
 		}
 
+		public static short GetShort(this System.Data.Common.DbDataReader dbDataReader, int ordinal)
+		{
+			var value = dbDataReader[ordinal];
+
+			if (value is short @short)
+			{
+				return @short;
+			}
+
+			return value.ToString().ToShort();
+		}
+
+		public static short? GetShortNullable(this System.Data.Common.DbDataReader dbDataReader, int ordinal)
+		{
+			if (dbDataReader.IsDBNull(ordinal))
+			{
+				return (short?)null;
+			}
+
+			var value = dbDataReader[ordinal];
+
+			if (value is short @short)
+			{
+				return @short;
+			}
+
+			return value.ToString().ToShortNullable();
+		}
+
 		public static int GetInt(this System.Data.Common.DbDataReader dbDataReader, int ordinal)
 		{
 			var value = dbDataReader[ordinal];

@@ -38,6 +38,8 @@ namespace ISI.Extensions.Repository.SqlServer
 			var dbDataReaderExtensionsType = typeof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions);
 			var getBoolean = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetBoolean), new[] { typeof(System.Data.Common.DbDataReader), typeof(int) });
 			var getBooleanNullable = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetBooleanNullable), new[] { typeof(System.Data.Common.DbDataReader), typeof(int) });
+			var getShort = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetShort), new[] { typeof(System.Data.Common.DbDataReader), typeof(short) });
+			var getShortNullable = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetShortNullable), new[] { typeof(System.Data.Common.DbDataReader), typeof(short) });
 			var getInt = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetInt), new[] { typeof(System.Data.Common.DbDataReader), typeof(int) });
 			var getIntNullable = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetIntNullable), new[] { typeof(System.Data.Common.DbDataReader), typeof(int) });
 			var getLong = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetLong), new[] { typeof(System.Data.Common.DbDataReader), typeof(int) });
@@ -78,6 +80,10 @@ namespace ISI.Extensions.Repository.SqlServer
 				if (basePropertyType == typeof(bool))
 				{
 					assignExpression = System.Linq.Expressions.Expression.Assign(System.Linq.Expressions.Expression.PropertyOrField(record, property.PropertyName), System.Linq.Expressions.Expression.Call(isNullable ? getBooleanNullable : getBoolean, dataReader, columnIndex));
+				}
+				else if (basePropertyType == typeof(short))
+				{
+					assignExpression = System.Linq.Expressions.Expression.Assign(System.Linq.Expressions.Expression.PropertyOrField(record, property.PropertyName), System.Linq.Expressions.Expression.Call(isNullable ? getShortNullable : getShort, dataReader, columnIndex));
 				}
 				else if (basePropertyType == typeof(int))
 				{

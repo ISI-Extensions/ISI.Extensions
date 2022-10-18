@@ -24,5 +24,6 @@ namespace ISI.Extensions.Services
 		public Microsoft.Extensions.Configuration.IConfigurationRoot Configuration { get; set; }
 		public string Environment { get; set; }
 		public string[] Arguments { get; set; }
+		public IServiceProvider ServiceProvider { get; set; }
 	}
 }

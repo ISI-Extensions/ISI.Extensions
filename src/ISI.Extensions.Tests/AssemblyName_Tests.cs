@@ -28,7 +28,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void GetAssemblyNamePieces_Test()
 		{
-			var fileName = @"F:\ISI\Clients\TFS\Tristar.Scheduler\src\packages\system.text.json\4.7.2\lib\net461\System.Text.Json.dll";
+			var fileName = @"F:\ISI\ISI.FrameWork\src\ISI.DocumentStorage\ISI.DocumentStorage.WindowsService\bin\Debug\Microsoft.Extensions.Configuration.Abstractions.dll";
 
 			var assemblyName = System.Reflection.AssemblyName.GetAssemblyName(fileName);
 

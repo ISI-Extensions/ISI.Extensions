@@ -55,7 +55,11 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 
 		public object Deserialize(Type type, string serializedValue)
 		{
-			return global::Newtonsoft.Json.JsonConvert.DeserializeObject(serializedValue, type, JsonConverters());
+			return global::Newtonsoft.Json.JsonConvert.DeserializeObject(serializedValue, type, new global::Newtonsoft.Json.JsonSerializerSettings()
+			{
+				Converters = JsonConverters(),
+				DateParseHandling = global::Newtonsoft.Json.DateParseHandling.None,
+			});
 		}
 
 		public object Deserialize(Type type, System.IO.Stream stream)
@@ -67,16 +71,19 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 		{
 			if (value.GetType() == type)
 			{
-				return global::Newtonsoft.Json.JsonConvert.SerializeObject(value, (friendlyFormatted ? global::Newtonsoft.Json.Formatting.Indented : global::Newtonsoft.Json.Formatting.None), JsonConverters());
+				return global::Newtonsoft.Json.JsonConvert.SerializeObject(value, (friendlyFormatted ? global::Newtonsoft.Json.Formatting.Indented : global::Newtonsoft.Json.Formatting.None), new global::Newtonsoft.Json.JsonSerializerSettings()
+				{
+					Converters = JsonConverters(),
+					DateParseHandling = global::Newtonsoft.Json.DateParseHandling.None,
+				});
 			}
 
-			var settings = new global::Newtonsoft.Json.JsonSerializerSettings()
+			return global::Newtonsoft.Json.JsonConvert.SerializeObject(value, (friendlyFormatted ? global::Newtonsoft.Json.Formatting.Indented : global::Newtonsoft.Json.Formatting.None), new global::Newtonsoft.Json.JsonSerializerSettings()
 			{
 				ContractResolver = InterfaceTypeContractResolver.GetTypeContractResolver(type, value),
 				Converters = JsonConverters(),
-			};
-
-			return global::Newtonsoft.Json.JsonConvert.SerializeObject(value, (friendlyFormatted ? global::Newtonsoft.Json.Formatting.Indented : global::Newtonsoft.Json.Formatting.None), settings);
+				DateParseHandling = global::Newtonsoft.Json.DateParseHandling.None,
+			});
 		}
 
 		public void Serialize(Type type, object value, System.IO.Stream toStream, bool friendlyFormatted = false)

@@ -37,7 +37,7 @@ namespace ISI.Extensions
 			{
 				if (!string.IsNullOrWhiteSpace(parsedValue.Prefix) && _valueGetters.TryGetValue(parsedValue.Prefix, out var valueGetter))
 				{
-					parsedValue = new ISI.Extensions.ConfigurationValueReaders.ParsedValue(valueGetter.GetValue(parsedValue));
+					parsedValue = new(valueGetter.GetValue(parsedValue));
 				}
 				else
 				{

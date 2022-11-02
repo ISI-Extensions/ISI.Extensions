@@ -28,7 +28,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.IssueResolution Export()
 		{
-			return new ISI.Extensions.Jira.IssueResolution()
+			return new()
 			{
 				IssueResolutionId = IssueResolutionId,
 				IssueResolutionUrl = IssueResolutionUrl,

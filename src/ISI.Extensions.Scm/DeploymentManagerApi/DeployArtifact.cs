@@ -41,7 +41,7 @@ namespace ISI.Extensions.Scm
 
 			var endPointVersion = GetEndpointVersion(request.ServicesManagerUrl);
 
-			var response = (endPointVersion >= 3 ? DeployArtifactV3(request) : new DTOs.DeployArtifactResponse()
+			var response = (endPointVersion >= 3 ? DeployArtifactV3(request) : new()
 			{
 				Success = false,
 			});
@@ -112,7 +112,7 @@ namespace ISI.Extensions.Scm
 
 				foreach (var fileName in fileNames.ToNullCheckedArray(NullCheckCollectionResult.Empty))
 				{
-					deployComponentExcludeFiles.Add(new SerializableDTOs.DeployComponentExcludeFile()
+					deployComponentExcludeFiles.Add(new()
 					{
 						ExcludeFile = fileName,
 					});

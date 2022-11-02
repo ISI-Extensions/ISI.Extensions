@@ -28,7 +28,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.Operations Export()
 		{
-			return new ISI.Extensions.Jira.Operations()
+			return new()
 			{
 				LinkGroups = LinkGroups.ToNullCheckedArray(x => x?.Export())
 			};

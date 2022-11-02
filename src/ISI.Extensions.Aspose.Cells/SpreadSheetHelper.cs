@@ -53,7 +53,7 @@ namespace ISI.Extensions.Aspose
 
 			public ISI.Extensions.SpreadSheets.IThemeColor CreateThemeColor(ISI.Extensions.SpreadSheets.ThemeColorType themeColorType, double tint)
 			{
-				return new ThemeColor(new global::Aspose.Cells.ThemeColor(themeColorType.ToThemeColorType(), tint));
+				return new ThemeColor(new(themeColorType.ToThemeColorType(), tint));
 			}
 		}
 	}

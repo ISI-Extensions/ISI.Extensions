@@ -28,8 +28,8 @@ namespace ISI.Extensions.Repository.Cosmos
 		{
 			GetClient().CreateDocumentCollectionAsync(
 				Microsoft.Azure.Documents.Client.UriFactory.CreateDatabaseUri(DatabaseName),
-				new Microsoft.Azure.Documents.DocumentCollection { Id = TableName },
-				new Microsoft.Azure.Documents.Client.RequestOptions { OfferThroughput = 1000 }).Wait();
+				new() { Id = TableName },
+				new() { OfferThroughput = 1000 }).Wait();
 		}
 	}
 }

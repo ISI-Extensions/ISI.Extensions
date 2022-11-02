@@ -52,7 +52,7 @@ namespace ISI.Extensions.VisualStudio
 				"BuildTools"
 			};
 
-			var msBuildFullNames = VsWhereApi.GetMSBuildExeFullNames(new ISI.Extensions.VisualStudio.DataTransferObjects.VsWhereApi.GetMSBuildExeFullNamesRequest()).MSBuildExeFullNames.ToList();
+			var msBuildFullNames = VsWhereApi.GetMSBuildExeFullNames(new()).MSBuildExeFullNames.ToList();
 
 			if (request.MsBuildPlatform == MSBuildPlatform.x64)
 			{

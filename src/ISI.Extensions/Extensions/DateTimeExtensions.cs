@@ -176,7 +176,7 @@ namespace ISI.Extensions.Extensions
 
 			var timeZoneInfo = System.TimeZoneInfo.FindSystemTimeZoneById(timeZone);
 
-			var datetime = System.TimeZoneInfo.ConvertTimeFromUtc(new DateTime(utcDateTime.Ticks, DateTimeKind.Utc), timeZoneInfo);
+			var datetime = System.TimeZoneInfo.ConvertTimeFromUtc(new(utcDateTime.Ticks, DateTimeKind.Utc), timeZoneInfo);
 
 			return string.Format("{0}{1}", Formatted(datetime, format), (showTimeZone ? string.Format(" {0}", timeZoneInfo.TimeZoneShortName(datetime)) : string.Empty));
 		}
@@ -192,7 +192,7 @@ namespace ISI.Extensions.Extensions
 				showTimeZone = false;
 			}
 
-			var datetime = System.TimeZoneInfo.ConvertTimeFromUtc(new DateTime(utcDateTime.Ticks, DateTimeKind.Utc), timeZoneInfo);
+			var datetime = System.TimeZoneInfo.ConvertTimeFromUtc(new(utcDateTime.Ticks, DateTimeKind.Utc), timeZoneInfo);
 
 			return string.Format("{0}{1}", Formatted(datetime, format), (showTimeZone ? string.Format(" {0}", timeZoneInfo.TimeZoneShortName(datetime)) : string.Empty));
 		}

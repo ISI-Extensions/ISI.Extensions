@@ -37,7 +37,7 @@ namespace ISI.Extensions.Jenkins.SerializableModels
 
 		public ISI.Extensions.Jenkins.ChangeSet Export()
 		{
-			return new ISI.Extensions.Jenkins.ChangeSet()
+			return new()
 			{
 				Items = Items.ToNullCheckedArray(x => x.Export()),
 				SourceControllerKind = SourceControllerKind,

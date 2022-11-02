@@ -55,7 +55,7 @@ namespace ISI.Extensions.Nuget
 				var nugetResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
 					Logger = new NullLogger(),
-					ProcessExeFullName = GetNugetExeFullName(new DTOs.GetNugetExeFullNameRequest()).NugetExeFullName,
+					ProcessExeFullName = GetNugetExeFullName(new()).NugetExeFullName,
 					Arguments = arguments.ToArray(),
 					WorkingDirectory = tempDirectory.FullName,
 				});
@@ -64,7 +64,7 @@ namespace ISI.Extensions.Nuget
 				{
 					var packageFullName = System.IO.Directory.GetDirectories(tempDirectory.FullName).First();
 
-					response.NugetPackageKey = new NugetPackageKey()
+					response.NugetPackageKey = new()
 					{
 						Package = request.PackageId,
 						Version = System.IO.Path.GetFileName(packageFullName).Substring(request.PackageId.Length + 1),
@@ -97,7 +97,7 @@ namespace ISI.Extensions.Nuget
 								{
 									foreach (var dependency in dependencyGroup.GetElementsByLocalName("dependency"))
 									{
-										nugetPackageDependencies.Add(new NugetPackageDependency()
+										nugetPackageDependencies.Add(new()
 										{
 											Package = dependency.GetAttributeByLocalName("id")?.Value ?? string.Empty,
 											Version = dependency.GetAttributeByLocalName("version")?.Value ?? string.Empty,
@@ -106,7 +106,7 @@ namespace ISI.Extensions.Nuget
 								}
 								foreach (var dependency in dependencies.GetElementsByLocalName("dependency"))
 								{
-									nugetPackageDependencies.Add(new NugetPackageDependency()
+									nugetPackageDependencies.Add(new()
 									{
 										Package = dependency.GetAttributeByLocalName("id")?.Value ?? string.Empty,
 										Version = dependency.GetAttributeByLocalName("version")?.Value ?? string.Empty,

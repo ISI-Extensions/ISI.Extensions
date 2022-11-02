@@ -59,7 +59,7 @@ namespace ISI.Extensions
 		{
 			if (HasValue)
 			{
-				return new LatitudeLongitude(Latitude.GetValueOrDefault(), Longitude.GetValueOrDefault());
+				return new(Latitude.GetValueOrDefault(), Longitude.GetValueOrDefault());
 			}
 
 			return ISI.Extensions.LatitudeLongitude.Empty;
@@ -68,10 +68,10 @@ namespace ISI.Extensions
 		{
 			if (HasValue)
 			{
-				return new LatitudeLongitude(Latitude.GetValueOrDefault(), Longitude.GetValueOrDefault());
+				return new(Latitude.GetValueOrDefault(), Longitude.GetValueOrDefault());
 			}
 
-			return new LatitudeLongitude(defaultLatitudeLongitude.Latitude, defaultLatitudeLongitude.Longitude);
+			return new(defaultLatitudeLongitude.Latitude, defaultLatitudeLongitude.Longitude);
 		}
 		
 		public override string ToString()

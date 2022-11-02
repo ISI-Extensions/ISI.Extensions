@@ -19,38 +19,43 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+namespace ISI.Extensions
+{
+	public interface IGetErrorMessageFormatted
+	{
+		string ErrorMessageFormatted(string indent, string innerExceptionIndent);
+	}
+}
+
 namespace ISI.Extensions.Extensions
 {
 	public static class ExceptionExtensions
 	{
 		public static string ErrorMessageFormatted(this Exception exception, string indent = "", string innerExceptionIndent = "  ", bool includeInnerExceptions = true)
 		{
-			var result = new StringBuilder();
+			var response = new StringBuilder();
 
 			while (exception != null)
 			{
-				result.AppendFormat("{1}Message: {2}{0}", Environment.NewLine, indent, exception.Message);
-				result.AppendFormat("{1}StackTrace: {2}{0}", Environment.NewLine, indent, exception.StackTrace);
+				response.AppendFormat("{1}Message: {2}{0}", Environment.NewLine, indent, exception.Message);
+				response.AppendFormat("{1}StackTrace: {2}{0}", Environment.NewLine, indent, exception.StackTrace);
 
-				if (exception is ISI.Extensions.WebClient.Rest.RestException restException)
+				if (exception is ISI.Extensions.IGetErrorMessageFormatted getErrorMessageFormatted)
 				{
-					result.AppendFormat("{1}StatusCode: {2}{0}", Environment.NewLine, indent, restException.StatusCode);
-					result.AppendFormat("{1}RestRequest: {2}{0}", Environment.NewLine, indent, restException.RestRequest);
-					result.AppendFormat("{1}RestResponse: {2}{0}", Environment.NewLine, indent, restException.RestResponse);
-					result.AppendFormat("{1}CurlCommand: {2}{0}", Environment.NewLine, indent, restException.CurlCommand);
+					response.Append(getErrorMessageFormatted.ErrorMessageFormatted(indent, innerExceptionIndent));
 				}
 
 				if (exception is System.Reflection.ReflectionTypeLoadException reflectionTypeLoadException)
 				{
 					foreach (var loaderException in reflectionTypeLoadException.LoaderExceptions)
 					{
-						result.AppendFormat("{1}TypeLoader: {2}{0}", Environment.NewLine, indent, loaderException.Message);
+						response.AppendFormat("{1}TypeLoader: {2}{0}", Environment.NewLine, indent, loaderException.Message);
 					}
 				}
 
 				//if (exception is BadImageFormatException badImageFormatException)
 				//{
-				//	result.AppendFormat("{1}BadImageFormatException-FileName: {2}{0}", Environment.NewLine, indent, ISI.Extensions.ObscureSensitiveData.Obscure(badImageFormatException.FileName));
+				//	response.AppendFormat("{1}BadImageFormatException-FileName: {2}{0}", Environment.NewLine, indent, ISI.Extensions.ObscureSensitiveData.Obscure(badImageFormatException.FileName));
 				//}
 
 				//var extraTrackingInformation = (exception as ISI.Extensions.Tracing.IExtraTrackingInformationException)?.GetExtraTrackingInformation();
@@ -63,7 +68,7 @@ namespace ISI.Extensions.Extensions
 				exception = (includeInnerExceptions ? exception.InnerException : null);
 			}
 
-			return result.ToString();
+			return response.ToString();
 		}
 	}
 }

@@ -29,7 +29,7 @@ namespace ISI.Extensions.Repository.Cosmos
 		{
 			var response = new DTOs.CreateRepositoryResponse();
 
-			GetClient().CreateDatabaseAsync(new Microsoft.Azure.Documents.Database { Id = DatabaseName }).Wait();
+			GetClient().CreateDatabaseAsync(new() { Id = DatabaseName }).Wait();
 			
 			return response;
 		}

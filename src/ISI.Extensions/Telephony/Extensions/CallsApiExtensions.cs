@@ -26,7 +26,7 @@ namespace ISI.Extensions.Telephony.Extensions
 	{
 		public static DTOs.BeginVoiceCallResponse BeginVoiceCall(this ISI.Extensions.Telephony.ICallsApi callsApi, string handlerKey, string handlerJobKey, string messageKey, string @from, string to)
 		{
-			return callsApi.BeginVoiceCall(new DTOs.BeginVoiceCallRequest()
+			return callsApi.BeginVoiceCall(new()
 			{
 				HandlerKey = handlerKey,
 				HandlerJobKey = handlerJobKey,

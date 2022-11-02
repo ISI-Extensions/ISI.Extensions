@@ -84,14 +84,14 @@ namespace ISI.Extensions.Repository.SqlServer
 
 					foreach (var primaryKeyPropertyDescription in recordDescription.PrimaryKeyPropertyDescriptions.OrderBy(propertyDescription => propertyDescription.PrimaryKeyAttribute.Order).Cast<IRecordPropertyDescription>())
 					{
-						recordIndexColumns.Add(new RecordIndexColumn<TRecord>()
+						recordIndexColumns.Add(new()
 						{
 							RecordPropertyDescription = new RecordPropertyDescription<TRecord>(primaryKeyPropertyDescription.PropertyInfo, GetAttributes(primaryKeyPropertyDescription), primaryKeyPropertyDescription.CanBeSerialized),
 							AscendingOrder = true,
 						});
 					}
 
-					recordDescriptionIndexes.Insert(0, new RecordIndex<TRecord>()
+					recordDescriptionIndexes.Insert(0, new()
 					{
 						Columns = recordIndexColumns.ToArray(),
 						Name = "PrimaryKeyIndex",

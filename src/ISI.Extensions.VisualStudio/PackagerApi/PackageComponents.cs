@@ -57,12 +57,12 @@ namespace ISI.Extensions.VisualStudio
 					}
 					else
 					{
-						throw new Exception(string.Format("Cannot determine which solution to update \"{0}\"", request.Solution));
+						throw new(string.Format("Cannot determine which solution to update \"{0}\"", request.Solution));
 					}
 				}
 				else
 				{
-					throw new Exception(string.Format("Cannot find a solution to update \"{0}\"", request.Solution));
+					throw new(string.Format("Cannot find a solution to update \"{0}\"", request.Solution));
 				}
 			}
 

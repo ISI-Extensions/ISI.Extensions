@@ -27,7 +27,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.StatusCategory Export()
 		{
-			return new ISI.Extensions.Jira.StatusCategory()
+			return new()
 			{
 				StatusCategoryUrl = StatusCategoryUrl,
 				StatusCategoryId = StatusCategoryId,

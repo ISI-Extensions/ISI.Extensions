@@ -69,7 +69,7 @@ namespace ISI.Extensions.Svn
 							parsedMessage.JiraIssueIdOrKeys = jiraIssueIdOrKeys.ToArray();
 							jiraIssueIdOrKeys.Clear();
 
-							parsedMessage = new DTOs.ParsedMessage();
+							parsedMessage = new();
 							parsedMessages.Add(parsedMessage);
 						}
 

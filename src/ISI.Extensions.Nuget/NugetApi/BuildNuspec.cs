@@ -32,7 +32,7 @@ namespace ISI.Extensions.Nuget
 
 			var package = new ISI.Extensions.Nuget.SerializableModels.package()
 			{
-				metadata = new ISI.Extensions.Nuget.SerializableModels.packageMetadata(),
+				metadata = new(),
 			};
 
 			package.metadata.id = request.Nuspec.Package;

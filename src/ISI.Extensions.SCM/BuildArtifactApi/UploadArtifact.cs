@@ -49,7 +49,7 @@ namespace ISI.Extensions.Scm
 				{
 					using (System.IO.Stream stream = System.IO.File.OpenRead(request.SourceFileName))
 					{
-						ISI.Extensions.WebClient.Upload.UploadFile(buildArtifactManagementUri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), stream, request.SourceFileName, "uploadFile", formValues);
+						ISI.Extensions.WebClient.Upload.UploadFile(buildArtifactManagementUri.Uri, new(), stream, request.SourceFileName, "uploadFile", formValues);
 					}
 
 					tryAttemptsLeft = 0;

@@ -27,7 +27,7 @@ namespace ISI.Extensions.Aspose.InternalTryNotToUseExtensions
 		{
 			if (!(border is ISI.Extensions.Aspose.Cells.Border asposeBorder))
 			{
-				throw new Exception(string.Format("{0} is not of type {1}", nameof(border), typeof(ISI.Extensions.Aspose.Cells.Border).FullName));
+				throw new(string.Format("{0} is not of type {1}", nameof(border), typeof(ISI.Extensions.Aspose.Cells.Border).FullName));
 			}
 
 			return asposeBorder._border;

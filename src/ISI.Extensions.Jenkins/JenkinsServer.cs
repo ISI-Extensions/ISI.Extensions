@@ -34,7 +34,7 @@ namespace ISI.Extensions.Jenkins
 
 		public JenkinsServer GetDecodedJenkinsServer()
 		{
-			return new JenkinsServer()
+			return new()
 			{
 				JenkinsServerUuid = JenkinsServerUuid,
 				Description = ISI.Extensions.ConfigurationValueReader.GetValue(Description),

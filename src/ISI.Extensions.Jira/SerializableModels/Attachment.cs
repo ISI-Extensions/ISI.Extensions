@@ -28,7 +28,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.Attachment Export()
 		{
-			return new ISI.Extensions.Jira.Attachment()
+			return new()
 			{
 				IssueId = IssueId,
 				AttachmentId = AttachmentId,

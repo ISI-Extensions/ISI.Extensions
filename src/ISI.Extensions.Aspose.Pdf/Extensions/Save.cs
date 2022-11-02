@@ -57,7 +57,7 @@ namespace ISI.Extensions.Aspose.Extensions
 				{
 					using (var pdfConverter = new global::Aspose.Pdf.Facades.PdfConverter())
 					{
-						pdfConverter.Resolution = new global::Aspose.Pdf.Devices.Resolution(300);
+						pdfConverter.Resolution = new(300);
 						pdfConverter.StartPage = 0;
 						pdfConverter.EndPage = document.Pages.Count;
 

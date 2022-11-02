@@ -106,7 +106,7 @@ namespace ISI.Extensions.Extensions
 			
 			try
 			{
-				return new Guid(value ?? string.Empty);
+				return new(value ?? string.Empty);
 			}
 			catch
 			{

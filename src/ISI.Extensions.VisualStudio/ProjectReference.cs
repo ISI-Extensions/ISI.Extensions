@@ -39,7 +39,7 @@ namespace ISI.Extensions.VisualStudio
 
 			if ((clippedItem.Length >= 2) && string.Equals(clippedItem[0], ClipboardTokenHeader, StringComparison.InvariantCultureIgnoreCase))
 			{
-				projectReference = new ProjectReference()
+				projectReference = new()
 				{
 					Name = clippedItem[1],
 					Path = (clippedItem.Length >= 3 ? clippedItem[2] : null),

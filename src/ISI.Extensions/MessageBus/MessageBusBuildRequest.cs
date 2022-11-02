@@ -66,7 +66,7 @@ namespace ISI.Extensions.MessageBus
 
 		public MessageBusBuildRequest CloneConfiguration()
 		{
-			return new MessageBusBuildRequest(string.Empty, Array.Empty<Action<IMessageBusConfigurator>>())
+			return new(string.Empty, Array.Empty<Action<IMessageBusConfigurator>>())
 			{
 				ConcurrentConsumerLimit = ConcurrentConsumerLimit,
 				RetryLimit = RetryLimit,

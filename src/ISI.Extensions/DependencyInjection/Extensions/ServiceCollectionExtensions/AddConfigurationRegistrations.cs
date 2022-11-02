@@ -40,13 +40,13 @@ namespace ISI.Extensions.DependencyInjection.Extensions
 				var serviceType = Type.GetType(registration.ServiceType);
 				if (serviceType == null)
 				{
-					throw new Exception(string.Format("type cannot be resolved: \"{0}\"", registration.ServiceType));
+					throw new(string.Format("type cannot be resolved: \"{0}\"", registration.ServiceType));
 				}
 
 				var mapToType = (string.IsNullOrWhiteSpace(registration.MapToType) ? (Type)null : Type.GetType(registration.MapToType));
 				if (!string.IsNullOrWhiteSpace(registration.MapToType) && (mapToType == null))
 				{
-					throw new Exception(string.Format("mapTo cannot be resolved: \"{0}\"", registration.MapToType));
+					throw new(string.Format("mapTo cannot be resolved: \"{0}\"", registration.MapToType));
 				}
 
 				ISI.Extensions.DependencyInjection.CreateService createService = null;
@@ -57,7 +57,7 @@ namespace ISI.Extensions.DependencyInjection.Extensions
 
 					foreach (var constructorInjector in registration.Constructor.Injections.ToNullCheckedArray(ISI.Extensions.Extensions.NullCheckCollectionResult.Empty))
 					{
-						injections.Add(new InjectionParameter()
+						injections.Add(new()
 						{
 							ParameterName = constructorInjector.ParameterName,
 							ParameterValue = constructorInjector.Value,
@@ -84,11 +84,11 @@ namespace ISI.Extensions.DependencyInjection.Extensions
 
 				if (createService == null)
 				{
-					services.Add(new Microsoft.Extensions.DependencyInjection.ServiceDescriptor(serviceType, mapToType, ISI.Extensions.DependencyInjection.Extensions.ServiceLifetimeExtensions.GetServiceLifetime(registration.ServiceLifetime)));
+					services.Add(new(serviceType, mapToType, ISI.Extensions.DependencyInjection.Extensions.ServiceLifetimeExtensions.GetServiceLifetime(registration.ServiceLifetime)));
 				}
 				else
 				{
-					services.Add(new Microsoft.Extensions.DependencyInjection.ServiceDescriptor(serviceType, serviceProvider =>
+					services.Add(new(serviceType, serviceProvider =>
 					{
 						if (serviceProvider is ISI.Extensions.DependencyInjection.IServiceProvider isiServiceProvider)
 						{

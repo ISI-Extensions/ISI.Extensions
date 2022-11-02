@@ -59,7 +59,7 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 
 			var serializedMessage = _jsonSerializer.Serialize(responseType, response, true);
 
-			return new Microsoft.Azure.ServiceBus.Message(Encoding.UTF8.GetBytes(serializedMessage))
+			return new(Encoding.UTF8.GetBytes(serializedMessage))
 			{
 				MessageId = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
 				Label = ResponseTypeAssemblyQualifiedNameWithoutVersion,

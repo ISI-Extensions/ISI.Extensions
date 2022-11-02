@@ -33,7 +33,7 @@ namespace ISI.Extensions.Jenkins
 
 			foreach (var path in request.Paths)
 			{
-				if (System.IO.File.Exists(path) && IsJenkinsConfigFile(new ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi.IsJenkinsConfigFileRequest()
+				if (System.IO.File.Exists(path) && IsJenkinsConfigFile(new()
 				{
 					FileName = path,
 				}).IsJenkinsConfigFile)

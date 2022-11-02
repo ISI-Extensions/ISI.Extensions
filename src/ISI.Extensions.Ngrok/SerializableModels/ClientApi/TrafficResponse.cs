@@ -28,7 +28,7 @@ namespace ISI.Extensions.Ngrok.SerializableModels.ClientApi
 	{
 		public ISI.Extensions.Ngrok.TrafficResponse Export()
 		{
-			return new ISI.Extensions.Ngrok.TrafficResponse()
+			return new()
 			{
 				StatusCode = StatusCode,
 				Status = Status,

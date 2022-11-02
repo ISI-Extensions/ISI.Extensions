@@ -32,7 +32,7 @@ namespace ISI.Extensions.Telephony.MessageBus
 				return null;
 			}
 
-			return new MESSAGEQUEUE.FaxMessage()
+			return new()
 			{
 				FaxMessageUuid = source.FaxMessageUuid,
 				AccountKey = source.AccountKey,
@@ -54,7 +54,7 @@ namespace ISI.Extensions.Telephony.MessageBus
 				return null;
 			}
 
-			return new ISI.Extensions.Telephony.Faxes.FaxMessage()
+			return new()
 			{
 				FaxMessageUuid = source.FaxMessageUuid,
 				AccountKey = source.AccountKey,

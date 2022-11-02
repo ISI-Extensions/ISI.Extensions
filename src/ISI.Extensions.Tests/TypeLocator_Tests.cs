@@ -35,7 +35,7 @@ namespace ISI.Extensions.Tests
 
 			if(types.All(type => type != typeof(TypeLocatorTest)))
 			{
-				throw new Exception("Type not found");
+				throw new("Type not found");
 			}
 		}
 

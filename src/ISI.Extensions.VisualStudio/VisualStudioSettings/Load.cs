@@ -25,7 +25,7 @@ namespace ISI.Extensions.VisualStudio
 		{
 			if (!System.IO.File.Exists(SettingsFileName))
 			{
-				return new ISI.Extensions.VisualStudio.SerializableModels.VisualStudioSettings();
+				return new();
 			}
 
 			using (new ISI.Extensions.Locks.FileLock(SettingsFileName))

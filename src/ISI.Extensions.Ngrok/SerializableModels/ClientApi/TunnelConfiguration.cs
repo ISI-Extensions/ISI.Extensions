@@ -28,7 +28,7 @@ namespace ISI.Extensions.Ngrok.SerializableModels.ClientApi
 	{
 		public ISI.Extensions.Ngrok.TunnelConfiguration Export()
 		{
-			return new ISI.Extensions.Ngrok.TunnelConfiguration()
+			return new()
 			{
 				LocalUrl = LocalUrl,
 				Inspect = Inspect,

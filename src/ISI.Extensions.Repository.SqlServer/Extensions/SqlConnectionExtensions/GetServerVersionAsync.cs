@@ -38,7 +38,7 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 
 			var pieces = string.Format("{0}.....", version).Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries).ToNullCheckedArray(value => value.ToInt());
 
-			return new Version(pieces[0], pieces[1], pieces[2], pieces[3]);
+			return new(pieces[0], pieces[1], pieces[2], pieces[3]);
 		}
 	}
 }

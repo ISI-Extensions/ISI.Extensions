@@ -28,7 +28,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.User Export()
 		{
-			return new ISI.Extensions.Jira.User()
+			return new()
 			{
 				UserKey = UserKey,
 				UserUrl = UserUrl,

@@ -41,7 +41,7 @@ namespace ISI.Extensions.Tests.Repository
 			var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
 			Configuration = configurationBuilder.Build();
 
-			SqlServerConfiguration = new ISI.Extensions.Repository.SqlServer.Configuration();
+			SqlServerConfiguration = new();
 
 			DateTimeStamper = new ISI.Extensions.DateTimeStamper.LocalMachineDateTimeStamper();
 			Serializer = new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer();

@@ -33,7 +33,7 @@ namespace ISI.Extensions.Security.ActiveDirectory
 			{
 				if (string.IsNullOrWhiteSpace(request.DomainName))
 				{
-					request.DomainName = string.Format("LDAP://{0}", GetCurrentDomainName(new DTOs.GetCurrentDomainNameRequest()).DomainName);
+					request.DomainName = string.Format("LDAP://{0}", GetCurrentDomainName(new()).DomainName);
 				}
 
 				var directoryEntry = new System.DirectoryServices.DirectoryEntry(request.DomainName, request.UserName, request.Password);

@@ -35,7 +35,7 @@ namespace ISI.Extensions.Tests
 
 			var svnApi = new ISI.Extensions.Svn.SvnApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
 
-			svnApi.TagAndNote(new ISI.Extensions.Svn.DataTransferObjects.SvnApi.TagAndNoteRequest()
+			svnApi.TagAndNote(new()
 			{
 				WorkingCopyDirectory = @"F:\ISI\Internal Projects\ISI.WebApplication",
 				Version = string.Format("4.1.{0}", buildRevision),
@@ -76,7 +76,7 @@ namespace ISI.Extensions.Tests
 
 				var sourceUrl = @"https://svn.isi-net.com/ISI/ISI.FrameWork/trunk/src/jenkins/ISI.FrameWork.Build.jenkinsConfig";
 
-				svnApi.CheckOutSingleFile(new ISI.Extensions.Svn.DataTransferObjects.SvnApi.CheckOutSingleFileRequest()
+				svnApi.CheckOutSingleFile(new()
 				{
 					SourceUrl = sourceUrl,
 					TargetFullName = tempDirectory.FullName,
@@ -91,7 +91,7 @@ namespace ISI.Extensions.Tests
 
 			var sourceUrl = @"https://svn.isi-net.com/ISI/ISI.FrameWork/trunk/src/";
 
-			var fileNames = svnApi.List(new ISI.Extensions.Svn.DataTransferObjects.SvnApi.ListRequest()
+			var fileNames = svnApi.List(new()
 			{
 				SourceUrl = sourceUrl,
 				Depth = ISI.Extensions.Svn.Depth.Infinity,

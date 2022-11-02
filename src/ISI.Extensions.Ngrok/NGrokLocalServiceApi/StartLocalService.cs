@@ -37,7 +37,7 @@ namespace ISI.Extensions.Ngrok
 
 				if (!System.IO.File.Exists(ngrokServiceFileName))
 				{
-					var downloadLinkRegex = (Environment.Is64BitOperatingSystem ? new System.Text.RegularExpressions.Regex("id=\"dl-windows-amd64\"\\shref=\"(?<url>http[s]?:\\/\\/[^\"]*?)\"") : new System.Text.RegularExpressions.Regex("id=\"dl-windows-386\"\\shref=\"(?<url>http[s]?:\\/\\/[^\"]*?)\""));
+					var downloadLinkRegex = (Environment.Is64BitOperatingSystem ? new("id=\"dl-windows-amd64\"\\shref=\"(?<url>http[s]?:\\/\\/[^\"]*?)\"") : new System.Text.RegularExpressions.Regex("id=\"dl-windows-386\"\\shref=\"(?<url>http[s]?:\\/\\/[^\"]*?)\""));
 
 					var downloadHtml = ISI.Extensions.WebClient.Rest.ExecuteTextGet(@"https://ngrok.com/download", null, true);
 

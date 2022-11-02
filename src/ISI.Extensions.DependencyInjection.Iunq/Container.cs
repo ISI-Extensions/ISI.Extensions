@@ -38,13 +38,13 @@ namespace ISI.Extensions.DependencyInjection.Iunq
 		{
 			Configuration = configuration;
 
-			UnnamedServiceTypeBuilders = new ServiceTypeBuilderDictionary(Configuration);
+			UnnamedServiceTypeBuilders = new(Configuration);
 			NamedServiceTypeBuilders = new System.Collections.Concurrent.ConcurrentDictionary<string, ServiceTypeBuilderDictionary>(Environment.ProcessorCount * 2, Configuration.NamedServiceTypeBuilderDictionaryInitialSize);
 
 			UnnamedGenericServiceTypeMapSets = new System.Collections.Concurrent.ConcurrentDictionary<string, GenericServiceTypeMaps>(Environment.ProcessorCount * 2, Configuration.GenericServiceTypeMapDictionaryInitialSize);
 			NamedGenericServiceTypeMapSets = new System.Collections.Concurrent.ConcurrentDictionary<string, IDictionary<string, GenericServiceTypeMaps>>(Environment.ProcessorCount * 2, Configuration.GenericServiceTypeMapDictionaryInitialSize);
 
-			UnnamedSingletonServiceCache = new ServiceCache(configuration);
+			UnnamedSingletonServiceCache = new(configuration);
 			NamedSingletonServiceCaches = new System.Collections.Concurrent.ConcurrentDictionary<string, ServiceCache>(Environment.ProcessorCount * 2, Configuration.ServiceCacheDictionaryInitialSize);
 		}
 
@@ -70,7 +70,7 @@ namespace ISI.Extensions.DependencyInjection.Iunq
 			{
 				if (!NamedServiceTypeBuilders.TryGetValue(name, out var serviceTypeBuilders))
 				{
-					NamedServiceTypeBuilders.Add(name, (serviceTypeBuilders = new ServiceTypeBuilderDictionary(Configuration)));
+					NamedServiceTypeBuilders.Add(name, (serviceTypeBuilders = new(Configuration)));
 				}
 
 				if (!serviceTypeBuilders.TryGetValue(serviceType, out var serviceTypeBuilder))
@@ -98,7 +98,7 @@ namespace ISI.Extensions.DependencyInjection.Iunq
 			{
 				if (!UnnamedGenericServiceTypeMapSets.TryGetValue(genericServiceTypeName, out genericServiceTypeMapSet))
 				{
-					UnnamedGenericServiceTypeMapSets.Add(genericServiceTypeName, (genericServiceTypeMapSet = new GenericServiceTypeMaps(Configuration, serviceType)));
+					UnnamedGenericServiceTypeMapSets.Add(genericServiceTypeName, (genericServiceTypeMapSet = new(Configuration, serviceType)));
 				}
 			}
 			else
@@ -110,7 +110,7 @@ namespace ISI.Extensions.DependencyInjection.Iunq
 
 				if (!genericServiceTypeMapsSet.TryGetValue(genericServiceTypeName, out genericServiceTypeMapSet))
 				{
-					genericServiceTypeMapsSet.Add(genericServiceTypeName, (genericServiceTypeMapSet = new GenericServiceTypeMaps(Configuration, serviceType)));
+					genericServiceTypeMapsSet.Add(genericServiceTypeName, (genericServiceTypeMapSet = new(Configuration, serviceType)));
 				}
 			}
 

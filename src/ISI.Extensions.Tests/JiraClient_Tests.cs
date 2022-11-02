@@ -82,7 +82,7 @@ namespace ISI.Extensions.Tests
 		{
 			var jiraApi = new ISI.Extensions.Jira.JiraApi();
 
-			var findUsersResponse = jiraApi.FindUsers(new ISI.Extensions.Jira.DataTransferObjects.JiraApi.FindUsersRequest()
+			var findUsersResponse = jiraApi.FindUsers(new()
 			{
 				JiraApiUrl = JiraUrl,
 				JiraApiUserName = JiraApiUserName,
@@ -97,7 +97,7 @@ namespace ISI.Extensions.Tests
 		{
 			var jiraApi = new ISI.Extensions.Jira.JiraApi();
 
-			var getIssueFiltersResponse = jiraApi.GetIssueFilters(new ISI.Extensions.Jira.DataTransferObjects.JiraApi.GetIssueFiltersRequest()
+			var getIssueFiltersResponse = jiraApi.GetIssueFilters(new()
 			{
 				JiraApiUrl = JiraUrl,
 				JiraApiUserName = JiraApiUserName,
@@ -111,7 +111,7 @@ namespace ISI.Extensions.Tests
 		{
 			var jiraApi = new ISI.Extensions.Jira.JiraApi();
 
-			var findIssuesResponse = jiraApi.FindIssues(new ISI.Extensions.Jira.DataTransferObjects.JiraApi.FindIssuesRequest()
+			var findIssuesResponse = jiraApi.FindIssues(new()
 			{
 				JiraApiUrl = JiraUrl,
 				JiraApiUserName = JiraApiUserName,
@@ -129,7 +129,7 @@ namespace ISI.Extensions.Tests
 
 			var impersonatedUser = "ljones";
 
-			var findIssuesResponse = jiraApi.FindIssues(new ISI.Extensions.Jira.DataTransferObjects.JiraApi.FindIssuesRequest()
+			var findIssuesResponse = jiraApi.FindIssues(new()
 			{
 				JiraApiUrl = JiraUrl,
 				JiraApiUserName = JiraApiUserName,
@@ -150,7 +150,7 @@ namespace ISI.Extensions.Tests
 
 					foreach (var attachment in attachments)
 					{
-						jiraApi.DeleteAttachment(new ISI.Extensions.Jira.DataTransferObjects.JiraApi.DeleteAttachmentRequest()
+						jiraApi.DeleteAttachment(new()
 						{
 							AttachmentId = attachment.AttachmentId,
 							ImpersonatedUser = impersonatedUser, //user must have 'delete all attachments project permission'
@@ -165,7 +165,7 @@ namespace ISI.Extensions.Tests
 		{
 			var jiraApi = new ISI.Extensions.Jira.JiraApi();
 
-			jiraApi.AddIssueWorklog(new ISI.Extensions.Jira.DataTransferObjects.JiraApi.AddIssueWorklogRequest()
+			jiraApi.AddIssueWorklog(new()
 			{
 				JiraApiUrl = JiraUrl,
 				JiraApiUserName = JiraApiUserName,
@@ -183,7 +183,7 @@ namespace ISI.Extensions.Tests
 		{
 			var jiraApi = new ISI.Extensions.Jira.JiraApi();
 
-			var getIssueWorklogsResponse = jiraApi.GetIssueWorklogs(new ISI.Extensions.Jira.DataTransferObjects.JiraApi.GetIssueWorklogsRequest()
+			var getIssueWorklogsResponse = jiraApi.GetIssueWorklogs(new()
 			{
 				JiraApiUrl = JiraUrl,
 				JiraApiUserName = JiraApiUserName,

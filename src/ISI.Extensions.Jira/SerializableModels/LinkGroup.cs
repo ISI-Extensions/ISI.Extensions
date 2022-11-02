@@ -28,7 +28,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.LinkGroup Export()
 		{
-			return new ISI.Extensions.Jira.LinkGroup()
+			return new()
 			{
 				LinkGroupId = LinkGroupId,
 				StyleClass = StyleClass,

@@ -41,7 +41,7 @@ namespace ISI.Extensions.Repository
 
 				if (migrationSteps.TryGetValue(migrationStepNumber, out var duplicateMigrationStepType))
 				{
-					throw new Exception(string.Format("Both Steps: \"{0}\" and \"{1}\" have the same StepNumber: {2}", duplicateMigrationStepType.Name, migrationStepType.Name, migrationStepNumber));
+					throw new(string.Format("Both Steps: \"{0}\" and \"{1}\" have the same StepNumber: {2}", duplicateMigrationStepType.Name, migrationStepType.Name, migrationStepNumber));
 				}
 
 				migrationSteps.Add(migrationStepNumber, migrationStepType);
@@ -58,7 +58,7 @@ namespace ISI.Extensions.Repository
 					{
 						if (!(ServiceProvider.GetService(migrationStep.Value) is IMigrationStep migrationStepInstance))
 						{
-							throw new Exception("Can't create step");
+							throw new("Can't create step");
 						}
 
 						Console.WriteLine("{1} => Started {0}", migrationStep.Value.Name, DateTime.Now.Formatted(DateTimeExtensions.DateTimeFormat.DateTime));

@@ -79,7 +79,7 @@ namespace ISI.Extensions.Svn
 						switch (propertyKey)
 						{
 							case "Path":
-								info = new DTOs.WorkingCopyInfo();
+								info = new();
 								infos.Add(info);
 								info.Path = propertyValue.Trim();
 								break;
@@ -89,11 +89,11 @@ namespace ISI.Extensions.Svn
 								break;
 
 							case "URL":
-								info.Uri = new Uri(propertyValue.Trim());
+								info.Uri = new(propertyValue.Trim());
 								break;
 
 							case "Repository Root":
-								info.RepositoryRoot = new Uri(propertyValue.Trim());
+								info.RepositoryRoot = new(propertyValue.Trim());
 								break;
 
 							case "Revision":

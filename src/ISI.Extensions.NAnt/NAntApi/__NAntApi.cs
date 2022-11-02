@@ -73,7 +73,7 @@ namespace ISI.Extensions.NAnt
 		{
 			var response = new ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi.IsBuildScriptFileResponse();
 
-			response.IsBuildFile = IsBuildScriptFile(new DTOs.IsBuildScriptFileRequest()
+			response.IsBuildFile = IsBuildScriptFile(new()
 			{
 				BuildScriptFullName = request.BuildScriptFullName,
 			}).IsBuildFile;
@@ -85,7 +85,7 @@ namespace ISI.Extensions.NAnt
 		{
 			var response = new ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi.GetTargetKeysFromBuildScriptResponse();
 
-			response.Targets = GetTargetKeysFromBuildScript(new DTOs.GetTargetKeysFromBuildScriptRequest()
+			response.Targets = GetTargetKeysFromBuildScript(new()
 			{
 				BuildScriptFullName = request.BuildScriptFullName,
 			}).Targets;
@@ -97,7 +97,7 @@ namespace ISI.Extensions.NAnt
 		{
 			var response = new ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi.ExecuteBuildTargetResponse();
 
-			var executeBuildTargetResponse = ExecuteBuildTarget(new DTOs.ExecuteBuildTargetRequest()
+			var executeBuildTargetResponse = ExecuteBuildTarget(new()
 			{
 				BuildScriptFullName = request.BuildScriptFullName,
 				Target = request.Target,

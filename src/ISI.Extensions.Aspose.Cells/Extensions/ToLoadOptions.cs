@@ -38,7 +38,7 @@ namespace ISI.Extensions.Aspose.Extensions
 				};
 			}
 
-			return new global::Aspose.Cells.LoadOptions(loadOptions.LoadFormat.ToLoadFormat())
+			return new(loadOptions.LoadFormat.ToLoadFormat())
 			{
 				Password = loadOptions.Password,
 				CheckExcelRestriction = loadOptions.CheckExcelRestriction,

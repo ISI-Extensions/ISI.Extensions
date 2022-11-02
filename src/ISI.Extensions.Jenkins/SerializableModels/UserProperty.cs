@@ -37,7 +37,7 @@ namespace ISI.Extensions.Jenkins.SerializableModels
 
 		public ISI.Extensions.Jenkins.UserProperty Export()
 		{
-			return new ISI.Extensions.Jenkins.UserProperty()
+			return new()
 			{
 				Address = Address,
 				HasInsensitiveSearch = HasInsensitiveSearch,

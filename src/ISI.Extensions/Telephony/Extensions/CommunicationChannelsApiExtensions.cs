@@ -26,7 +26,7 @@ namespace ISI.Extensions.Telephony.Extensions
 	{
 		public static DTOs.DeleteIncomingPhoneNumberResponse DeleteIncomingPhoneNumber(this ISI.Extensions.Telephony.ICommunicationChannelsApi communicationChannelApi, string phoneNumberKey)
 		{
-			return communicationChannelApi.DeleteIncomingPhoneNumber(new DTOs.DeleteIncomingPhoneNumberRequest()
+			return communicationChannelApi.DeleteIncomingPhoneNumber(new()
 			{
 				PhoneNumberKey = phoneNumberKey,
 			});

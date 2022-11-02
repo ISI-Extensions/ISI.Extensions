@@ -30,7 +30,7 @@ namespace ISI.Extensions.Jenkins
 		{
 			var response = new DTOs.SetJobConfigXmlResponse();
 			
-			var jobIds = GetJobIds(new DTOs.GetJobIdsRequest()).JobIds;
+			var jobIds = GetJobIds(new()).JobIds;
 
 			var jobExists = false;
 

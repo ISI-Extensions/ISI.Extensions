@@ -36,7 +36,7 @@ namespace ISI.Extensions.Jenkins.SerializableModels
 
 		public ISI.Extensions.Jenkins.JobAction Export()
 		{
-			return new ISI.Extensions.Jenkins.JobAction()
+			return new()
 			{
 				Parameters = Parameters.ToNullCheckedArray(x => x.Export()),
 			};

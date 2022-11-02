@@ -28,7 +28,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.IssueFilter Export()
 		{
-			return new ISI.Extensions.Jira.IssueFilter()
+			return new()
 			{
 				IssueFilterId = IssueFilterId,
 				IssueFilterUrl = IssueFilterUrl,

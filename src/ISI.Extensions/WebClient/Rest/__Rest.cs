@@ -32,7 +32,7 @@ namespace ISI.Extensions.WebClient
 
 			if (serialization == null)
 			{
-				throw new Exception("ISI.Extensions.Serialization.ISerialization is null");
+				throw new("ISI.Extensions.Serialization.ISerialization is null");
 			}
 
 			return serialization;

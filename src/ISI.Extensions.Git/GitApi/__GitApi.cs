@@ -70,7 +70,7 @@ namespace ISI.Extensions.Git
 		{
 			var response = new SourceControlClientApiDTOs.GetRootDirectoryResponse();
 
-			var apiResponse = GetRootDirectory(new DTOs.GetRootDirectoryRequest()
+			var apiResponse = GetRootDirectory(new()
 			{
 				FullName = request.FullName,
 			});
@@ -84,7 +84,7 @@ namespace ISI.Extensions.Git
 		{
 			var response = new SourceControlClientApiDTOs.ListResponse();
 
-			var apiResponse = List(new DTOs.ListRequest()
+			var apiResponse = List(new()
 			{
 				SourceUrl = request.SourceUrl,
 				AddToLog = request.AddToLog,
@@ -99,7 +99,7 @@ namespace ISI.Extensions.Git
 		{
 			var response = new SourceControlClientApiDTOs.CheckOutResponse();
 
-			var apiResponse = Clone(new DTOs.CloneRequest()
+			var apiResponse = Clone(new()
 			{
 				SourceUrl = request.SourceUrl,
 				TargetFullName = request.TargetFullName,
@@ -115,7 +115,7 @@ namespace ISI.Extensions.Git
 		{
 			var response = new SourceControlClientApiDTOs.CheckOutSingleFileResponse();
 
-			var apiResponse = CloneSingleFile(new DTOs.CloneSingleFileRequest()
+			var apiResponse = CloneSingleFile(new()
 			{
 				SourceUrl = request.SourceUrl,
 				TargetFullName = request.TargetFullName,
@@ -131,7 +131,7 @@ namespace ISI.Extensions.Git
 		{
 			var response = new SourceControlClientApiDTOs.UpdateWorkingCopyResponse();
 
-			var apiResponse = UpdateWorkingCopy(new DTOs.UpdateWorkingCopyRequest()
+			var apiResponse = UpdateWorkingCopy(new()
 			{
 				FullName = request.FullName,
 				IncludeSubModules = request.IncludeExternals,
@@ -156,7 +156,7 @@ namespace ISI.Extensions.Git
 		{
 			var response = new SourceControlClientApiDTOs.DeleteResponse();
 
-			var apiResponse = Delete(new DTOs.DeleteRequest()
+			var apiResponse = Delete(new()
 			{
 				FullNames = request.FullNames,
 				AddToLog = request.AddToLog,
@@ -171,7 +171,7 @@ namespace ISI.Extensions.Git
 		{
 			var response = new SourceControlClientApiDTOs.CommitWorkingCopyResponse();
 
-			var apiResponse = CommitWorkingCopy(new DTOs.CommitWorkingCopyRequest()
+			var apiResponse = CommitWorkingCopy(new()
 			{
 				FullName = request.FullName,
 				LogMessage = request.LogMessage,
@@ -187,7 +187,7 @@ namespace ISI.Extensions.Git
 		{
 			var response = new SourceControlClientApiDTOs.CommitResponse();
 
-			var apiResponse = Commit(new DTOs.CommitRequest()
+			var apiResponse = Commit(new()
 			{
 				FullNames = request.FullNames,
 				LogMessage = request.LogMessage,

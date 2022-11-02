@@ -40,7 +40,7 @@ namespace ISI.Extensions.Jenkins.SerializableModels
 
 		public ISI.Extensions.Jenkins.UserInformation Export()
 		{
-			return new ISI.Extensions.Jenkins.UserInformation()
+			return new()
 			{
 				Url = Url,
 				FullName = FullName,

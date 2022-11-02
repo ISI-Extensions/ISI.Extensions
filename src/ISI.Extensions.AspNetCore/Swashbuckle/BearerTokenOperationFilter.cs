@@ -45,15 +45,16 @@ namespace ISI.Extensions.AspNetCore.Swashbuckle
 
 					operation.Security ??= new List<Microsoft.OpenApi.Models.OpenApiSecurityRequirement>();
 
-					operation.Security.Add(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement{
+					operation.Security.Add(new()
+					{
 						{
-							new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+							new()
 							{
 								Name = "Authorization",
 								In = Microsoft.OpenApi.Models.ParameterLocation.Header,
 								BearerFormat = "Bearer token",
 
-								Reference = new Microsoft.OpenApi.Models.OpenApiReference
+								Reference = new()
 								{
 									Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
 									Id = "Bearer"

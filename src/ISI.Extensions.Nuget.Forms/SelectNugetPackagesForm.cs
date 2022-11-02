@@ -48,7 +48,7 @@ namespace ISI.Extensions.Nuget.Forms
 
 			ForeColor = DefaultForeColor;
 
-			Icon = new Icon(ISI.Extensions.T4Resources.Artwork.GetLantern_icoStream());
+			Icon = new(ISI.Extensions.T4Resources.Artwork.GetLantern_icoStream());
 			ControlBox = true;
 			MaximizeBox = false;
 			MinimizeBox = false;
@@ -60,7 +60,7 @@ namespace ISI.Extensions.Nuget.Forms
 
 				foreach (var nugetPackageKey in nugetPackageKeys)
 				{
-					NugetPackages.Add(new NugetPackage(nugetPackageKey, NugetPackagesPanel, (NugetPackages.Count % 2 == 1), allSelected || !_previousPackageIds.Contains(nugetPackageKey.Package) || _previouslySelectedPackageIds.Contains(nugetPackageKey.Package)));
+					NugetPackages.Add(new(nugetPackageKey, NugetPackagesPanel, (NugetPackages.Count % 2 == 1), allSelected || !_previousPackageIds.Contains(nugetPackageKey.Package) || _previouslySelectedPackageIds.Contains(nugetPackageKey.Package)));
 				}
 
 				NugetPackagesPanel.Resize += (resizeSender, resizeArgs) =>
@@ -71,7 +71,7 @@ namespace ISI.Extensions.Nuget.Forms
 					{
 						if (nugetPackage.Panel.Size.Width != parentControl.Size.Width)
 						{
-							nugetPackage.Panel.Size = new Size(parentControl.Size.Width, nugetPackage.Panel.Size.Height);
+							nugetPackage.Panel.Size = new(parentControl.Size.Width, nugetPackage.Panel.Size.Height);
 						}
 					}
 				};

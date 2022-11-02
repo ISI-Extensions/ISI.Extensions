@@ -43,7 +43,7 @@ namespace ISI.Extensions.Repository.SqlServer
 		{
 			if (hasArchiveTable && !keepIdentities)
 			{
-				throw new Exception("Cannot ignore Identity on when there is an archive table");
+				throw new("Cannot ignore Identity on when there is an archive table");
 			}
 
 			var columns = new ISI.Extensions.Columns.ColumnInfoCollection<TRecord>();

@@ -98,7 +98,7 @@ namespace ISI.Extensions.Repository.SqlServer
 				{
 					Connection.EnsureConnectionIsOpenAsync().Wait();
 
-					Command = new Microsoft.Data.SqlClient.SqlCommand(Sql, Connection);
+					Command = new(Sql, Connection);
 
 					Command.AddParameters(Parameters);
 

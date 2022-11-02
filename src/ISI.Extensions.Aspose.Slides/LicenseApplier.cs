@@ -42,7 +42,7 @@ namespace ISI.Extensions.Aspose.Slides
 
 				if (!licenseManagers.Any())
 				{
-					throw new Exception("Aspose License not found");
+					throw new("Aspose License not found");
 				}
 
 				var licenseManager = licenseManagers.First();
@@ -57,7 +57,7 @@ namespace ISI.Extensions.Aspose.Slides
 		{
 			if (!_IsLicensed)
 			{
-				throw new Exception("Did not get licensed");
+				throw new("Did not get licensed");
 			}
 		}
 

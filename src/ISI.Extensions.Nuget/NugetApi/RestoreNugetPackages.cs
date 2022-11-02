@@ -37,7 +37,7 @@ namespace ISI.Extensions.Nuget
 			
 			var arguments = string.Format("restore \"{0}\" -PackagesDirectory \"{1}\" -NonInteractive -MSBuildPath \"{2}\"", request.SolutionName, System.IO.Path.Combine(request.SolutionDirectory, "packages"), System.IO.Path.GetDirectoryName(request.MSBuildExe));
 
-			var nugetExeFullName = GetNugetExeFullName(new DTOs.GetNugetExeFullNameRequest()).NugetExeFullName;
+			var nugetExeFullName = GetNugetExeFullName(new()).NugetExeFullName;
 
 			ISI.Extensions.Process.WaitForProcessResponse(nugetExeFullName, arguments);
 

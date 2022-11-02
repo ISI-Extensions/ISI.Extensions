@@ -28,7 +28,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.Transition Export()
 		{
-			return new ISI.Extensions.Jira.Transition()
+			return new()
 			{
 				TransitionId = TransitionId,
 				Name = Name,

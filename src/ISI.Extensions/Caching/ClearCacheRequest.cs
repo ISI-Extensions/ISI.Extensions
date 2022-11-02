@@ -28,8 +28,8 @@ namespace ISI.Extensions.Caching
 		private HashSet<string> _cacheKeyScopes = null;
 		public HashSet<string> CacheKeyScopes
 		{
-			get => _cacheKeyScopes ??= new HashSet<string>();
-			set => _cacheKeyScopes = new HashSet<string>(value ?? new HashSet<string>());
+			get => _cacheKeyScopes ??= new();
+			set => _cacheKeyScopes = new(value ?? new HashSet<string>());
 		}
 
 		public bool ClearAll { get; set; } = false;
@@ -37,22 +37,22 @@ namespace ISI.Extensions.Caching
 		private HashSet<string> _cacheKeys = null;
 		public HashSet<string> CacheKeys
 		{
-			get => _cacheKeys ??= new HashSet<string>();
-			set => _cacheKeys = new HashSet<string>(value ?? new HashSet<string>());
+			get => _cacheKeys ??= new();
+			set => _cacheKeys = new(value ?? new HashSet<string>());
 		}
 
 		private HashSet<ClearCacheRequestCacheKeyWithCacheKeyInstanceUuid> _cacheKeysWithCacheKeyInstanceUuid = null;
 		public HashSet<ClearCacheRequestCacheKeyWithCacheKeyInstanceUuid> CacheKeysWithCacheKeyInstanceUuid
 		{
-			get => _cacheKeysWithCacheKeyInstanceUuid ??= new HashSet<ClearCacheRequestCacheKeyWithCacheKeyInstanceUuid>(new ClearCacheRequestCacheKeyWithCacheKeyInstanceUuidEqualityComparer());
-			set => _cacheKeysWithCacheKeyInstanceUuid = new HashSet<ClearCacheRequestCacheKeyWithCacheKeyInstanceUuid>(value ?? new HashSet<ClearCacheRequestCacheKeyWithCacheKeyInstanceUuid>(), new ClearCacheRequestCacheKeyWithCacheKeyInstanceUuidEqualityComparer());
+			get => _cacheKeysWithCacheKeyInstanceUuid ??= new(new ClearCacheRequestCacheKeyWithCacheKeyInstanceUuidEqualityComparer());
+			set => _cacheKeysWithCacheKeyInstanceUuid = new(value ?? new HashSet<ClearCacheRequestCacheKeyWithCacheKeyInstanceUuid>(), new ClearCacheRequestCacheKeyWithCacheKeyInstanceUuidEqualityComparer());
 		}
 		
 		private HashSet<string> _cacheKeyPrefixes = null;
 		public HashSet<string> CacheKeyPrefixes
 		{
-			get => _cacheKeyPrefixes ??= new HashSet<string>();
-			set => _cacheKeyPrefixes = new HashSet<string>(value ?? new HashSet<string>());
+			get => _cacheKeyPrefixes ??= new();
+			set => _cacheKeyPrefixes = new(value ?? new HashSet<string>());
 		}
 
 		public ClearCacheRequest()
@@ -92,7 +92,7 @@ namespace ISI.Extensions.Caching
 				{
 					if (itemWithCacheKey is ISI.Extensions.Caching.IHasCacheKeyWithInstanceUuid itemWithCacheKeyAndInstanceUuid)
 					{
-						CacheKeysWithCacheKeyInstanceUuid.Add(new ClearCacheRequestCacheKeyWithCacheKeyInstanceUuid()
+						CacheKeysWithCacheKeyInstanceUuid.Add(new()
 						{
 							CacheKey = itemWithCacheKeyAndInstanceUuid.CacheKey,
 							CacheKeyInstanceUuid = itemWithCacheKeyAndInstanceUuid.CacheKeyInstanceUuid,
@@ -124,7 +124,7 @@ namespace ISI.Extensions.Caching
 
 		internal EnterpriseCacheManagerApiDTOs.ClearCacheRequest ToClearCacheRequest()
 		{
-			return new EnterpriseCacheManagerApiDTOs.ClearCacheRequest()
+			return new()
 			{
 				CacheKeyScopes = CacheKeyScopes,
 				ClearAll = ClearAll,

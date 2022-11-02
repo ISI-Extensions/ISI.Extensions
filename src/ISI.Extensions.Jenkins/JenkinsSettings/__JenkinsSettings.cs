@@ -46,7 +46,7 @@ namespace ISI.Extensions.Jenkins
 				return null;
 			}
 
-			return new ISI.Extensions.Jenkins.JenkinsServer()
+			return new()
 			{
 				JenkinsServerUuid = jenkinsServer.JenkinsServerUuid,
 				Description = jenkinsServer.Description,
@@ -64,7 +64,7 @@ namespace ISI.Extensions.Jenkins
 				return null;
 			}
 
-			return new ISI.Extensions.Jenkins.SerializableModels.JenkinsSettingsJenkinsServer()
+			return new()
 			{
 				JenkinsServerUuid = jenkinsServer.JenkinsServerUuid,
 				Description = jenkinsServer.Description,

@@ -28,7 +28,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.Subscriptions Export()
 		{
-			return new ISI.Extensions.Jira.Subscriptions()
+			return new()
 			{
 				Size = Size,
 				MaxResults = MaxResults,

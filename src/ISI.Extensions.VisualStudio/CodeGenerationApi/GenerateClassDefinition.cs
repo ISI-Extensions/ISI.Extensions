@@ -34,7 +34,7 @@ namespace ISI.Extensions.VisualStudio
 
 			if (!ISI.Extensions.VisualStudio.CodeExtensionProviders.TryGetCodeExtensionProvider(request.CodeExtensionProviderUuid, out var codeExtensionProvider))
 			{
-				throw new Exception("CodeExtensionProvider not found");
+				throw new("CodeExtensionProvider not found");
 			}
 
 			var extensionsNamespace = codeExtensionProvider.Namespace;

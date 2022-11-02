@@ -50,7 +50,7 @@ namespace ISI.Extensions.TemplateProviders
 		{
 			if (!IsTemplateProviderFor(contentGenerator))
 			{
-				throw new Exception("Wrong content generator template type");
+				throw new("Wrong content generator template type");
 			}
 
 			{
@@ -81,7 +81,7 @@ namespace ISI.Extensions.TemplateProviders
 		{
 			if (!IsTemplateProviderFor(contentGenerator))
 			{
-				throw new Exception("Wrong content generator template type");
+				throw new("Wrong content generator template type");
 			}
 
 			var templateDocumentUuid = Guid.Empty;
@@ -103,7 +103,7 @@ namespace ISI.Extensions.TemplateProviders
 
 			if (templateDocumentUuid == Guid.Empty)
 			{
-				throw new Exception("No TemplateDocumentUuid Provided");
+				throw new("No TemplateDocumentUuid Provided");
 			}
 
 			return templateDocumentUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens);
@@ -113,7 +113,7 @@ namespace ISI.Extensions.TemplateProviders
 		{
 			if (!IsTemplateProviderFor(contentGenerator))
 			{
-				throw new Exception("Wrong content generator template type");
+				throw new("Wrong content generator template type");
 			}
 
 			var templateDocumentUuid = Guid.Empty;
@@ -140,7 +140,7 @@ namespace ISI.Extensions.TemplateProviders
 		{
 			if (!IsTemplateProviderFor(contentGenerator))
 			{
-				throw new Exception("Wrong content generator template type");
+				throw new("Wrong content generator template type");
 			}
 
 			var templateDocumentUuid = Guid.Empty;
@@ -167,7 +167,7 @@ namespace ISI.Extensions.TemplateProviders
 		{
 			if (!IsTemplateProviderFor(contentGenerator))
 			{
-				throw new Exception("Wrong content generator template type");
+				throw new("Wrong content generator template type");
 			}
 
 			var templateDocumentUuid = Guid.Empty;

@@ -23,7 +23,7 @@ namespace ISI.Extensions.WebClient
 {
 	public partial class Rest
 	{
-		public partial class RestException : Exception
+		public class RestException : Exception, ISI.Extensions.IGetErrorMessageFormatted
 		{
 			public string CurlCommand { get; }
 			public string RestRequest { get; }
@@ -40,6 +40,18 @@ namespace ISI.Extensions.WebClient
 				CurlCommand = webRequestDetails.GetCurlCommand();
 				RestRequest = webRequestDetails.BodyRaw;
 				RestResponse = webRequestDetails.ResponseRaw;
+			}
+
+			string ISI.Extensions.IGetErrorMessageFormatted.ErrorMessageFormatted(string indent, string innerExceptionIndent)
+			{
+				var response = new StringBuilder();
+
+				response.AppendFormat("{1}StatusCode: {2}{0}", Environment.NewLine, indent, StatusCode);
+				response.AppendFormat("{1}RestRequest: {2}{0}", Environment.NewLine, indent, RestRequest);
+				response.AppendFormat("{1}RestResponse: {2}{0}", Environment.NewLine, indent, RestResponse);
+				response.AppendFormat("{1}CurlCommand: {2}{0}", Environment.NewLine, indent, CurlCommand);
+
+				return response.ToString();
 			}
 		}
 	}

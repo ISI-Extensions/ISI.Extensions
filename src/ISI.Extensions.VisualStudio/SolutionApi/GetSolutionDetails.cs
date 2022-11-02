@@ -30,7 +30,7 @@ namespace ISI.Extensions.VisualStudio
 		{
 			var response = new DTOs.GetSolutionDetailsResponse();
 
-			response.SolutionDetails = new SolutionDetails();
+			response.SolutionDetails = new();
 
 			if (System.IO.Directory.Exists(request.Solution))
 			{
@@ -52,12 +52,12 @@ namespace ISI.Extensions.VisualStudio
 					}
 					else
 					{
-						throw new Exception(string.Format("Cannot determine which solution to update \"{0}\"", request.Solution));
+						throw new(string.Format("Cannot determine which solution to update \"{0}\"", request.Solution));
 					}
 				}
 				else
 				{
-					throw new Exception(string.Format("Cannot find a solution to update \"{0}\"", request.Solution));
+					throw new(string.Format("Cannot find a solution to update \"{0}\"", request.Solution));
 				}
 			}
 
@@ -73,7 +73,7 @@ namespace ISI.Extensions.VisualStudio
 
 			response.SolutionDetails.SolutionName = System.IO.Path.GetFileNameWithoutExtension(response.SolutionDetails.SolutionFullName);
 			response.SolutionDetails.SolutionDirectory = System.IO.Path.GetDirectoryName(response.SolutionDetails.SolutionFullName);
-			response.SolutionDetails.RootSourceDirectory = SourceControlClientApi.GetRootDirectory(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.GetRootDirectoryRequest()
+			response.SolutionDetails.RootSourceDirectory = SourceControlClientApi.GetRootDirectory(new()
 			{
 				FullName = response.SolutionDetails.SolutionDirectory,
 			}).FullName;
@@ -112,7 +112,7 @@ namespace ISI.Extensions.VisualStudio
 						{
 							var projFullName = System.IO.Path.Combine(response.SolutionDetails.SolutionDirectory, pieces[1]);
 
-							projectDetailsSet.Add(new ProjectDetails()
+							projectDetailsSet.Add(new()
 							{
 								ProjectName = System.IO.Path.GetFileNameWithoutExtension(projFullName),
 								ProjectDirectory = System.IO.Path.GetDirectoryName(projFullName),
@@ -128,7 +128,7 @@ namespace ISI.Extensions.VisualStudio
 
 				foreach (var solutionFilterFullName in System.IO.Directory.EnumerateFiles(response.SolutionDetails.SolutionDirectory, "*.slnf", System.IO.SearchOption.TopDirectoryOnly))
 				{
-					solutionFilterDetailsSet.Add(new SolutionFilterDetails()
+					solutionFilterDetailsSet.Add(new()
 					{
 						SolutionFilterName = System.IO.Path.GetFileNameWithoutExtension(solutionFilterFullName),
 						SolutionFilterDirectory = response.SolutionDetails.SolutionDirectory,

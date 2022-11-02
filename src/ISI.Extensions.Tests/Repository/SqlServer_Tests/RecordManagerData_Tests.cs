@@ -196,7 +196,7 @@ namespace ISI.Extensions.Tests.Repository
 				var firstName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens);
 				var lastName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens);
 				
-				records.Add(new ContactWithData()
+				records.Add(new()
 				{
 					ContactUuid = contactUuid,
 					FirstName = firstName,

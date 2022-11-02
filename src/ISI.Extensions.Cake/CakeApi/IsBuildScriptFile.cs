@@ -31,7 +31,7 @@ namespace ISI.Extensions.Cake
 
 			if (string.Equals(System.IO.Path.GetFileName(request.BuildScriptFullName), BuildScriptFileName, StringComparison.CurrentCultureIgnoreCase))
 			{
-				response.IsBuildFile = GetTargetKeysFromBuildScript(new DTOs.GetTargetKeysFromBuildScriptRequest()
+				response.IsBuildFile = GetTargetKeysFromBuildScript(new()
 				{
 					BuildScriptFullName = request.BuildScriptFullName,
 				}).Targets.NullCheckedAny();

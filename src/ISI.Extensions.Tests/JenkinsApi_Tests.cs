@@ -71,7 +71,7 @@ namespace ISI.Extensions.Tests
 
 			var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
 
-			var serviceConfigurationYaml = jenkinsApi.QuietDown(new ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi.QuietDownRequest()
+			var serviceConfigurationYaml = jenkinsApi.QuietDown(new()
 			{
 				JenkinsUrl = settings.Jenkins.JenkinsUrl,
 				UserName = settings.Jenkins.UserName,
@@ -88,7 +88,7 @@ namespace ISI.Extensions.Tests
 
 			var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
 
-			var serviceConfigurationYaml = jenkinsApi.GetServiceConfiguration(new ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi.GetServiceConfigurationRequest()
+			var serviceConfigurationYaml = jenkinsApi.GetServiceConfiguration(new()
 			{
 				JenkinsUrl = settings.Jenkins.JenkinsUrl,
 				UserName = settings.Jenkins.UserName,
@@ -104,7 +104,7 @@ namespace ISI.Extensions.Tests
 
 			var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
 
-			var jobIds = jenkinsApi.GetJobIds(new ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi.GetJobIdsRequest()
+			var jobIds = jenkinsApi.GetJobIds(new()
 			{
 				JenkinsUrl = settings.Jenkins.JenkinsUrl,
 				UserName = settings.Jenkins.UserName,
@@ -115,7 +115,7 @@ namespace ISI.Extensions.Tests
 
 			foreach (var jobId in jobIds)
 			{
-				jenkinsApi.DeleteJob(new ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi.DeleteJobRequest()
+				jenkinsApi.DeleteJob(new()
 				{
 					JenkinsUrl = settings.Jenkins.JenkinsUrl,
 					UserName = settings.Jenkins.UserName,
@@ -135,7 +135,7 @@ namespace ISI.Extensions.Tests
 
 			var jobId = "ISI.Web.Build";
 
-			var jobStatusStart = jenkinsApi.IsJobEnabled(new ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi.IsJobEnabledRequest()
+			var jobStatusStart = jenkinsApi.IsJobEnabled(new()
 			{
 				JenkinsUrl = settings.Jenkins.JenkinsUrl,
 				UserName = settings.Jenkins.UserName,
@@ -144,7 +144,7 @@ namespace ISI.Extensions.Tests
 				JobId = jobId,
 			}).IsEnabled;
 
-			jenkinsApi.DisableJob(new ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi.DisableJobRequest()
+			jenkinsApi.DisableJob(new()
 			{
 				JenkinsUrl = settings.Jenkins.JenkinsUrl,
 				UserName = settings.Jenkins.UserName,
@@ -153,7 +153,7 @@ namespace ISI.Extensions.Tests
 				JobId = jobId,
 			});
 
-			var jobStatusMid = jenkinsApi.IsJobEnabled(new ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi.IsJobEnabledRequest()
+			var jobStatusMid = jenkinsApi.IsJobEnabled(new()
 			{
 				JenkinsUrl = settings.Jenkins.JenkinsUrl,
 				UserName = settings.Jenkins.UserName,
@@ -162,7 +162,7 @@ namespace ISI.Extensions.Tests
 				JobId = jobId,
 			}).IsEnabled;
 
-			jenkinsApi.EnableJob(new ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi.EnableJobRequest()
+			jenkinsApi.EnableJob(new()
 			{
 				JenkinsUrl = settings.Jenkins.JenkinsUrl,
 				UserName = settings.Jenkins.UserName,
@@ -171,7 +171,7 @@ namespace ISI.Extensions.Tests
 				JobId = jobId,
 			});
 
-			var jobStatusEnd = jenkinsApi.IsJobEnabled(new ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi.IsJobEnabledRequest()
+			var jobStatusEnd = jenkinsApi.IsJobEnabled(new()
 			{
 				JenkinsUrl = settings.Jenkins.JenkinsUrl,
 				UserName = settings.Jenkins.UserName,
@@ -180,7 +180,7 @@ namespace ISI.Extensions.Tests
 				JobId = jobId,
 			}).IsEnabled;
 
-			var runningJobIds = jenkinsApi.GetRunningJobIds(new ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi.GetRunningJobIdsRequest()
+			var runningJobIds = jenkinsApi.GetRunningJobIds(new()
 			{
 				JenkinsUrl = settings.Jenkins.JenkinsUrl,
 				UserName = settings.Jenkins.UserName,

@@ -87,7 +87,7 @@ namespace ISI.Extensions.VisualStudio
 							{
 								if (package.GetSignatures().Any() && !request.OverwriteAnyExistingSignature)
 								{
-									throw new Exception("The VSIX is already signed.");
+									throw new("The VSIX is already signed.");
 								}
 
 								var signBuilder = package.CreateSignatureBuilder();
@@ -108,7 +108,7 @@ namespace ISI.Extensions.VisualStudio
 
 									if (signResponse == OpenVsixSignTool.Core.TimestampResult.Failed)
 									{
-										throw new Exception("TimeStamping Signature Failed");
+										throw new("TimeStamping Signature Failed");
 									}
 								}
 							}

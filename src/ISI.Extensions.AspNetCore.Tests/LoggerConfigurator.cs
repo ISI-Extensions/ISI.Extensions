@@ -27,7 +27,7 @@ namespace ISI.Extensions.AspNetCore.Tests
 	{
 		public static Serilog.LoggerConfiguration UpdateLoggerConfiguration(Serilog.LoggerConfiguration loggerConfiguration, IServiceProvider serviceProvider, Microsoft.Extensions.Configuration.IConfigurationRoot configuration, string environment)
 		{
-			loggerConfiguration ??= new Serilog.LoggerConfiguration();
+			loggerConfiguration ??= new();
 
 			loggerConfiguration
 				.MinimumLevel.Verbose()
@@ -57,7 +57,7 @@ namespace ISI.Extensions.AspNetCore.Tests
 
 			if (!string.IsNullOrWhiteSpace(webApplicationConfiguration?.ElasticsearchLogging?.NodeUrl))
 			{
-				loggerConfiguration.WriteTo.Elasticsearch(new Serilog.Sinks.Elasticsearch.ElasticsearchSinkOptions(new Uri(webApplicationConfiguration.ElasticsearchLogging.NodeUrl))
+				loggerConfiguration.WriteTo.Elasticsearch(new(new Uri(webApplicationConfiguration.ElasticsearchLogging.NodeUrl))
 				{
 					AutoRegisterTemplate = true,
 					AutoRegisterTemplateVersion = Serilog.Sinks.Elasticsearch.AutoRegisterTemplateVersion.ESv6,

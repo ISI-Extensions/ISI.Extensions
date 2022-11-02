@@ -32,7 +32,7 @@ namespace ISI.Extensions.DependencyInjection.Iunq
 		public IDictionary<string, ServiceCache> NamedScopedServiceCaches { get; }
 
 		public ServiceProvider(Configuration configuration)
-			: this(configuration, new Container(configuration))
+			: this(configuration, new(configuration))
 		{
 
 		}
@@ -42,7 +42,7 @@ namespace ISI.Extensions.DependencyInjection.Iunq
 
 			Container = container;
 
-			UnnamedScopedServiceCache = new ServiceCache(configuration);
+			UnnamedScopedServiceCache = new(configuration);
 			NamedScopedServiceCaches = new System.Collections.Concurrent.ConcurrentDictionary<string, ServiceCache>(Environment.ProcessorCount * 2, Configuration.NamedServiceTypeBuilderDictionaryInitialSize);
 		}
 
@@ -82,11 +82,11 @@ namespace ISI.Extensions.DependencyInjection.Iunq
 					}
 					else
 					{
-						serviceTypeBuilder = new ServiceTypeBuilder(serviceType, ExpressionBuilder.Create(registrationDeclarationByMapToType.MapToType), registrationDeclarationByMapToType.BuildUpService ?? ((serviceProvider, _) => { }), registrationDeclaration.ServiceLifetime);
+						serviceTypeBuilder = new(serviceType, ExpressionBuilder.Create(registrationDeclarationByMapToType.MapToType), registrationDeclarationByMapToType.BuildUpService ?? ((serviceProvider, _) => { }), registrationDeclaration.ServiceLifetime);
 					}
 					break;
 				case RegistrationDeclarationByCreateService registrationDeclarationByCreateService:
-					serviceTypeBuilder = new ServiceTypeBuilder(serviceType, registrationDeclarationByCreateService.CreateService ?? ExpressionBuilder.Create(serviceType), registrationDeclarationByCreateService.BuildUpService ?? ((serviceProvider, _) => { }), registrationDeclaration.ServiceLifetime);
+					serviceTypeBuilder = new(serviceType, registrationDeclarationByCreateService.CreateService ?? ExpressionBuilder.Create(serviceType), registrationDeclarationByCreateService.BuildUpService ?? ((serviceProvider, _) => { }), registrationDeclaration.ServiceLifetime);
 					break;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(registrationDeclaration));
@@ -147,7 +147,7 @@ namespace ISI.Extensions.DependencyInjection.Iunq
 
 				if (!Container.NamedServiceTypeBuilders.TryGetValue(name, out var namedServiceTypeBuilder))
 				{
-					Container.NamedServiceTypeBuilders.Add(name, (namedServiceTypeBuilder = new ServiceTypeBuilderDictionary(Configuration)));
+					Container.NamedServiceTypeBuilders.Add(name, (namedServiceTypeBuilder = new(Configuration)));
 				}
 
 				namedServiceTypeBuilder.Remove(serviceType);
@@ -279,7 +279,7 @@ namespace ISI.Extensions.DependencyInjection.Iunq
 
 				if (!Container.NamedServiceTypeBuilders.TryGetValue(name, out var namedServiceTypeBuilders))
 				{
-					Container.NamedServiceTypeBuilders.Add(name, (namedServiceTypeBuilders = new ServiceTypeBuilderDictionary(Configuration)));
+					Container.NamedServiceTypeBuilders.Add(name, (namedServiceTypeBuilders = new(Configuration)));
 				}
 
 				createIfMissingServiceTypeBuilder(namedServiceTypeBuilders);
@@ -293,14 +293,14 @@ namespace ISI.Extensions.DependencyInjection.Iunq
 						case Microsoft.Extensions.DependencyInjection.ServiceLifetime.Singleton:
 							if (namedSingletonServiceCache == null)
 							{
-								Container.NamedSingletonServiceCaches.Add(name, (namedSingletonServiceCache = new ServiceCache(Configuration)));
+								Container.NamedSingletonServiceCaches.Add(name, (namedSingletonServiceCache = new(Configuration)));
 							}
 							namedSingletonServiceCache.Register(serviceType, instance);
 							break;
 						case Microsoft.Extensions.DependencyInjection.ServiceLifetime.Scoped:
 							if (namedScopedServiceCache == null)
 							{
-								NamedScopedServiceCaches.Add(name, (namedScopedServiceCache = new ServiceCache(Configuration)));
+								NamedScopedServiceCaches.Add(name, (namedScopedServiceCache = new(Configuration)));
 							}
 							namedScopedServiceCache.Register(serviceType, instance);
 							break;

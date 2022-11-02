@@ -65,7 +65,7 @@ namespace ISI.Extensions.Repository.SqlServer
 				{
 					if (!(whereClause is IWhereClauseWithParameters whereClauseWithParameters))
 					{
-						throw new Exception("Where clause must implement IWhereClauseWithParameters");
+						throw new("Where clause must implement IWhereClauseWithParameters");
 					}
 
 					switch (filter.EqualityOperator)
@@ -89,7 +89,7 @@ namespace ISI.Extensions.Repository.SqlServer
 				{
 					if (!(whereClause is IWhereClauseWithParameters whereClauseWithParameters))
 					{
-						throw new Exception("Where clause must implement IWhereClauseWithParameters");
+						throw new("Where clause must implement IWhereClauseWithParameters");
 					}
 
 					switch (filter.EqualityOperator)

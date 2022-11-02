@@ -75,14 +75,14 @@ namespace ISI.Extensions.Tests
 			var scmApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.ScmApi>();
 			var buildArtifactApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.BuildArtifactApi>();
 
-			var authenticationToken = scmApi.GetAuthenticationToken(new ISI.Extensions.Scm.DataTransferObjects.ScmApi.GetAuthenticationTokenRequest()
+			var authenticationToken = scmApi.GetAuthenticationToken(new()
 			{
 				ScmManagementUrl = settings.Scm.WebServiceUrl,
 				UserName = settings.ActiveDirectory.UserName,
 				Password = settings.ActiveDirectory.Password,
 			}).AuthenticationToken;
 
-			var dateTimeStampVersion = buildArtifactApi.GetBuildArtifactEnvironmentDateTimeStampVersion(new ISI.Extensions.Scm.DataTransferObjects.BuildArtifactApi.GetBuildArtifactEnvironmentDateTimeStampVersionRequest()
+			var dateTimeStampVersion = buildArtifactApi.GetBuildArtifactEnvironmentDateTimeStampVersion(new()
 			{
 				BuildArtifactManagementUrl = settings.Scm.WebServiceUrl,
 				AuthenticationToken = authenticationToken,
@@ -90,7 +90,7 @@ namespace ISI.Extensions.Tests
 				Environment = "Build",
 			}).DateTimeStampVersion;
 
-			buildArtifactApi.DownloadArtifact(new ISI.Extensions.Scm.DataTransferObjects.BuildArtifactApi.DownloadArtifactRequest()
+			buildArtifactApi.DownloadArtifact(new()
 			{
 				BuildArtifactManagementUrl = settings.Scm.WebServiceUrl,
 				AuthenticationToken = authenticationToken,

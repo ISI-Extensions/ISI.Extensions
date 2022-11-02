@@ -91,7 +91,7 @@ namespace ISI.Extensions.VisualStudio
 
 						contract.Properties.Add(contractProperty);
 
-						contractProperty = new ClassPropertyDefinition();
+						contractProperty = new();
 					}
 
 					match = match.NextMatch();
@@ -108,7 +108,7 @@ namespace ISI.Extensions.VisualStudio
 				{
 					foreach (var propertyName in propertyNames)
 					{
-						contractProperty = new ClassPropertyDefinition()
+						contractProperty = new()
 						{
 							PropertyType = "string",
 							PropertyName = ISI.Extensions.StringFormat.PascalCase(propertyName)

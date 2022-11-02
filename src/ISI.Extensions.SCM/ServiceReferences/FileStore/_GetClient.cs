@@ -34,10 +34,10 @@ namespace ISI.Extensions.Scm.ServiceReferences.FileStore
 			var binding = new System.ServiceModel.WSHttpBinding(securityMode)
 			{
 				Name = "WSHttpBinding",
-				OpenTimeout = new TimeSpan(0, 0, 10, 0),
-				SendTimeout = new TimeSpan(0, 0, 10, 0),
-				ReceiveTimeout = new TimeSpan(0, 0, 10, 0),
-				CloseTimeout = new TimeSpan(0, 0, 10, 0),
+				OpenTimeout = new(0, 0, 10, 0),
+				SendTimeout = new(0, 0, 10, 0),
+				ReceiveTimeout = new(0, 0, 10, 0),
+				CloseTimeout = new(0, 0, 10, 0),
 				MaxBufferPoolSize = 2147483647,
 				MaxReceivedMessageSize = 2147483647,
 				ReaderQuotas =
@@ -52,7 +52,7 @@ namespace ISI.Extensions.Scm.ServiceReferences.FileStore
 
 			var endpoint = new System.ServiceModel.EndpointAddress(webServiceUrl);
 
-			return new FileStoreClient(binding, endpoint);
+			return new(binding, endpoint);
 		}
 	}
 }

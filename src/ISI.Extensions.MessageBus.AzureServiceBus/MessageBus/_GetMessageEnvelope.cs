@@ -32,7 +32,7 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 
 			var serializedMessage = JsonSerializer.Serialize(requestType, request, true);
 
-			return new Microsoft.Azure.ServiceBus.Message(Encoding.UTF8.GetBytes(serializedMessage))
+			return new(Encoding.UTF8.GetBytes(serializedMessage))
 			{
 				MessageId = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
 				ReplyTo = responseChannelName,

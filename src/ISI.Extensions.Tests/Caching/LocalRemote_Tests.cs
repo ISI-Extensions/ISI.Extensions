@@ -47,7 +47,7 @@ namespace ISI.Extensions.Tests.Caching
 				.AddSingleton<ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer>()
 				.AddSingleton<ISI.Extensions.Caching.Redis.IRedisJsonSerializer, ISI.Extensions.Caching.Redis.RedisJsonSerializer<ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer>>()
 
-				.AddSingleton<Microsoft.Extensions.Caching.Memory.MemoryCache>(provider => new Microsoft.Extensions.Caching.Memory.MemoryCache(new Microsoft.Extensions.Caching.Memory.MemoryCacheOptions()))
+				.AddSingleton<Microsoft.Extensions.Caching.Memory.MemoryCache>(provider => new(new Microsoft.Extensions.Caching.Memory.MemoryCacheOptions()))
 				.AddSingleton<ISI.Extensions.Caching.CacheManager<Microsoft.Extensions.Caching.Memory.MemoryCache>>()
 
 				.AddSingleton<ISI.Extensions.Caching.Redis.RedisCacheManager>()
@@ -149,7 +149,7 @@ namespace ISI.Extensions.Tests.Caching
 			{
 				if (cachedKeys.Contains(key))
 				{
-					throw new Exception("Should not have asked for this item");
+					throw new("Should not have asked for this item");
 				}
 
 				if (int.TryParse(key, out var value) && (value <= 50))
@@ -201,7 +201,7 @@ namespace ISI.Extensions.Tests.Caching
 			{
 				if (cachedKeys.Contains(key))
 				{
-					throw new Exception("Should not have asked for this item");
+					throw new("Should not have asked for this item");
 				}
 
 				if (int.TryParse(key, out var value) && (value <= 50))

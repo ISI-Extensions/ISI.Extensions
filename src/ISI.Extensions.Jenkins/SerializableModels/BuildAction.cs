@@ -37,7 +37,7 @@ namespace ISI.Extensions.Jenkins.SerializableModels
 
 		public ISI.Extensions.Jenkins.BuildAction Export()
 		{
-			return new ISI.Extensions.Jenkins.BuildAction()
+			return new()
 			{
 				Parameters = Parameters.ToNullCheckedArray(x => x.Export()),
 				Causes = Causes.ToNullCheckedArray(x => x.Export()),

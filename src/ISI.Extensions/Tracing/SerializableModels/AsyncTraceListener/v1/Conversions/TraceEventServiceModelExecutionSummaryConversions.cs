@@ -50,7 +50,7 @@ namespace ISI.Extensions.Tracing.SerializableModels.AsyncTraceListener.v1.Conver
 
 		public static TraceEventServiceModelExecutionSummary Convert(ISI.Extensions.Tracing.IServiceModelTrackingException exception)
 		{
-			return new TraceEventServiceModelExecutionSummary()
+			return new()
 			{
 				EndpointAddress = exception.ServiceModelExecutionSummary.EndpointAddress,
 				RequestKey = exception.ServiceModelExecutionSummary.RequestKey,

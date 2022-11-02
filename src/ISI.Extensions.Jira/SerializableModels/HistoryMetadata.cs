@@ -28,7 +28,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.HistoryMetadata Export()
 		{
-			return new ISI.Extensions.Jira.HistoryMetadata()
+			return new()
 			{
 				Type = Type,
 				Description = Description,

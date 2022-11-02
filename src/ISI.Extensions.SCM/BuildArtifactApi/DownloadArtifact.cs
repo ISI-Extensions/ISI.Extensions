@@ -39,7 +39,7 @@ namespace ISI.Extensions.Scm
 
 			buildArtifactManagementUri.AddQueryStringParameter("authenticationToken", request.AuthenticationToken);
 
-			using(var downloadFileResponse = ISI.Extensions.WebClient.Download.DownloadFile<ISI.Extensions.Stream.TempFileStream>(buildArtifactManagementUri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), 1427))// any larger will cause an SSL request to fail
+			using(var downloadFileResponse = ISI.Extensions.WebClient.Download.DownloadFile<ISI.Extensions.Stream.TempFileStream>(buildArtifactManagementUri.Uri, new(), 1427))// any larger will cause an SSL request to fail
 			{
 				using (var stream = System.IO.File.OpenWrite(request.TargetFileName))
 				{

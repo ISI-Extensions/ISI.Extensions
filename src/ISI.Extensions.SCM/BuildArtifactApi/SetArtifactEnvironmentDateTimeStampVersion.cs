@@ -58,7 +58,7 @@ namespace ISI.Extensions.Scm
 					{
 						response.Status = responseStream.ReadToEnd();
 
-						throw new Exception(string.Format("{0}: {1}\n{2}", webResponse.StatusCode, webResponse.StatusDescription, response.Status));
+						throw new(string.Format("{0}: {1}\n{2}", webResponse.StatusCode, webResponse.StatusDescription, response.Status));
 					}
 				}
 			}

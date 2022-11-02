@@ -32,7 +32,7 @@ namespace ISI.Extensions.Telephony.MessageBus
 				return null;
 			}
 
-			return new MESSAGEQUEUE.DataTransferObjects.OnReceivedWorkerPlanMessageRoute()
+			return new()
 			{
 				RouteMenuKey = source.RouteMenuKey,
 				ValidUntilDateTimeUtc = source.ValidUntilDateTimeUtc,
@@ -48,7 +48,7 @@ namespace ISI.Extensions.Telephony.MessageBus
 				return null;
 			}
 
-			return new DTOs.OnReceivedWorkerPlanMessageRoute()
+			return new()
 			{
 				RouteMenuKey = source.RouteMenuKey,
 				ValidUntilDateTimeUtc = source.ValidUntilDateTimeUtc,

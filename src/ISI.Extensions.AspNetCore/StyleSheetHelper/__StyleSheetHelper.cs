@@ -109,7 +109,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 
 			if (!(viewData[StyleSheetCollectionKey] is HtmlHelpers.ContentUrlCollection styleSheetUrls))
 			{
-				styleSheetUrls = new HtmlHelpers.ContentUrlCollection();
+				styleSheetUrls = new();
 				viewData[StyleSheetCollectionKey] = styleSheetUrls;
 			}
 

@@ -56,9 +56,9 @@ namespace ISI.Extensions.Ngrok
 
 			var serviceResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<ISI.Extensions.WebClient.Rest.TextRequest, SerializableModels.ClientApi.StartTunnelResponse>(GetUrl("api/tunnels"), headers, textRequest, true);
 
-			if (GetTunnels(new DTOs.GetTunnelsRequest()).Tunnels.Any(tunnel => string.Equals(tunnel.TunnelName, Configuration.PlaceHolderTunnelName, StringComparison.InvariantCultureIgnoreCase)))
+			if (GetTunnels(new()).Tunnels.Any(tunnel => string.Equals(tunnel.TunnelName, Configuration.PlaceHolderTunnelName, StringComparison.InvariantCultureIgnoreCase)))
 			{
-				StopTunnel(new DTOs.StopTunnelRequest()
+				StopTunnel(new()
 				{
 					TunnelName = Configuration.PlaceHolderTunnelName,
 				});

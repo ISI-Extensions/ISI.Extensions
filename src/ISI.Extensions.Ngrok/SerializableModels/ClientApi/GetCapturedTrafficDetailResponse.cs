@@ -28,7 +28,7 @@ namespace ISI.Extensions.Ngrok.SerializableModels.ClientApi
 	{
 		public new ISI.Extensions.Ngrok.DataTransferObjects.NGrokClientApi.GetCapturedTrafficDetailResponse Export()
 		{
-			return new ISI.Extensions.Ngrok.DataTransferObjects.NGrokClientApi.GetCapturedTrafficDetailResponse()
+			return new()
 			{
 				Traffic = base.Export(),
 			};

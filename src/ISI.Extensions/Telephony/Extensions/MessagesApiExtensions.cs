@@ -26,7 +26,7 @@ namespace ISI.Extensions.Telephony.Extensions
 	{
 		public static DTOs.SendMessageResponse SendMessage(this ISI.Extensions.Telephony.IMessagesApi messageApi, string handlerKey, string handlerJobKey, string messageKey, string @from, string to, string body, Messages.Media[] media)
 		{
-			return messageApi.SendMessage(new DataTransferObjects.MessagesApi.SendMessageRequest()
+			return messageApi.SendMessage(new()
 			{
 				HandlerKey = handlerKey,
 				HandlerJobKey = handlerJobKey,

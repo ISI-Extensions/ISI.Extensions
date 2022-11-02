@@ -28,7 +28,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.Worklog Export()
 		{
-			return new ISI.Extensions.Jira.Worklog()
+			return new()
 			{
 				IssueId = IssueId,
 				WorklogId = WorklogId,

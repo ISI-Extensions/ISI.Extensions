@@ -60,7 +60,7 @@ namespace ISI.Extensions.Jenkins.Forms
 			flpDirectories.Visible = false;
 			btnCancel.Visible = false;
 
-			Icon = new Icon(ISI.Extensions.T4Resources.Artwork.GetLantern_icoStream());
+			Icon = new(ISI.Extensions.T4Resources.Artwork.GetLantern_icoStream());
 			ControlBox = true;
 			MaximizeBox = false;
 			MinimizeBox = false;
@@ -75,7 +75,7 @@ namespace ISI.Extensions.Jenkins.Forms
 
 			if (JenkinsServer == null)
 			{
-				JenkinsServer = new ISI.Extensions.Jenkins.JenkinsServer()
+				JenkinsServer = new()
 				{
 					JenkinsServerUuid = Guid.NewGuid(),
 					UserName = "%USERNAME%",
@@ -93,7 +93,7 @@ namespace ISI.Extensions.Jenkins.Forms
 				}
 			};
 
-			DirectoryPanels = new List<DirectoryPanel>();
+			DirectoryPanels = new();
 
 			this.Shown += OnShown;
 		}
@@ -181,19 +181,19 @@ namespace ISI.Extensions.Jenkins.Forms
 			{
 				Directory = directory;
 
-				flpDirectory = new FlowLayoutPanel()
+				flpDirectory = new()
 				{
 					AutoSize = true,
 					AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly,
-					Margin = new System.Windows.Forms.Padding(3, 3, 3, 0),
-					Size = new System.Drawing.Size(386, 24),
+					Margin = new(3, 3, 3, 0),
+					Size = new(386, 24),
 				};
 
-				btnDelete = new Button()
+				btnDelete = new()
 				{
-					Location = new System.Drawing.Point(1, 1),
-					Margin = new System.Windows.Forms.Padding(1),
-					Size = new System.Drawing.Size(80, 20),
+					Location = new(1, 1),
+					Margin = new(1),
+					Size = new(80, 20),
 					Text = "Delete",
 					UseVisualStyleBackColor = true,
 				};
@@ -205,13 +205,13 @@ namespace ISI.Extensions.Jenkins.Forms
 					lblDirectory.ForeColor = Color.Red;
 				};
 
-				lblDirectory = new Label()
+				lblDirectory = new()
 				{
 					AutoSize = true,
-					Location = new System.Drawing.Point(83, 1),
-					Margin = new System.Windows.Forms.Padding(4),
-					MinimumSize = new System.Drawing.Size(300, 17),
-					Size = new System.Drawing.Size(300, 17),
+					Location = new(83, 1),
+					Margin = new(4),
+					MinimumSize = new(300, 17),
+					Size = new(300, 17),
 				};
 				flpDirectory.Controls.Add(lblDirectory);
 			}

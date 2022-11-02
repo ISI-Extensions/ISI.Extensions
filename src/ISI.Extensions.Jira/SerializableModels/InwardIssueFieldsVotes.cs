@@ -28,7 +28,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.InwardIssueFieldsVotes Export()
 		{
-			return new ISI.Extensions.Jira.InwardIssueFieldsVotes()
+			return new()
 			{
 				VotesUrl = VotesUrl,
 				Votes = Votes,

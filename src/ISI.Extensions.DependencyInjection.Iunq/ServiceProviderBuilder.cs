@@ -61,7 +61,7 @@ namespace ISI.Extensions.DependencyInjection.Iunq
 			var serviceDescriptors = new List<OrderedServiceDescriptor>();
 			for (var index = 0; index < services.Count; index++)
 			{
-				serviceDescriptors.Add(new OrderedServiceDescriptor(index, services[index]));
+				serviceDescriptors.Add(new(index, services[index]));
 			}
 
 

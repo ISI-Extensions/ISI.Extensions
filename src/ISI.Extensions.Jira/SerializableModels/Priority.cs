@@ -28,7 +28,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.Priority Export()
 		{
-			return new ISI.Extensions.Jira.Priority()
+			return new()
 			{
 				PriorityId = PriorityId,
 				Name = Name,

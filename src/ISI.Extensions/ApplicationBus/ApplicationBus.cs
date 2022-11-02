@@ -58,19 +58,19 @@ namespace ISI.Extensions
 
 			if (includeNamed && UnnamedBusFunctions.Any(f => f.Key == requestType))
 			{
-				throw new Exception("Cannot subscribe to All, is already subscribed as unnamed");
+				throw new("Cannot subscribe to All, is already subscribed as unnamed");
 			}
 
 			if (includeNamed && NamedBusFunctions.Values.Any(v => v.Any(f => f.Key == requestType)))
 			{
-				throw new Exception("Cannot subscribe to All, is already subscribed as named");
+				throw new("Cannot subscribe to All, is already subscribed as named");
 			}
 
 			var busFunctions = (includeNamed ? AllBusFunctions : UnnamedBusFunctions);
 
 			if (busFunctions.Any(f => f.Key == requestType))
 			{
-				throw new Exception("Cannot subscribe, is already subscribed");
+				throw new("Cannot subscribe, is already subscribed");
 			}
 
 			busFunctions.Add(requestType, request => function(request as TRequest));
@@ -84,7 +84,7 @@ namespace ISI.Extensions
 
 			if (AllBusFunctions.Any(f => f.Key == requestType))
 			{
-				throw new Exception("Cannot subscribe, is already subscribed as all");
+				throw new("Cannot subscribe, is already subscribed as all");
 			}
 
 			if (!NamedBusFunctions.TryGetValue(name, out var functionMaps))
@@ -95,7 +95,7 @@ namespace ISI.Extensions
 
 			if (functionMaps.Any(f => f.Key == requestType))
 			{
-				throw new Exception("Cannot subscribe, is already subscribed");
+				throw new("Cannot subscribe, is already subscribed");
 			}
 
 			functionMaps.Add(requestType, request => function(request as TRequest));

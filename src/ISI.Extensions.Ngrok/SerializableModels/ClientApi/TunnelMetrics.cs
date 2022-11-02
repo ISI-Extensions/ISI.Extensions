@@ -29,7 +29,7 @@ namespace ISI.Extensions.Ngrok.SerializableModels.ClientApi
 	{
 		public ISI.Extensions.Ngrok.TunnelMetrics Export()
 		{
-			return new ISI.Extensions.Ngrok.TunnelMetrics()
+			return new()
 			{
 				Connections = Connections.NullCheckedConvert(source => source.Export()),
 				HttpConnections = HttpConnections.NullCheckedConvert(source => source.Export()),

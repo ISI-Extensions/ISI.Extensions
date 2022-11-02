@@ -27,7 +27,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.To Export()
 		{
-			return new ISI.Extensions.Jira.To()
+			return new()
 			{
 				ToId = ToId,
 				Name = Name,

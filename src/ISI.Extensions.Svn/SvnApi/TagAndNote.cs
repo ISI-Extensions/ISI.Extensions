@@ -33,7 +33,7 @@ namespace ISI.Extensions.Svn
 
 			var response = new DTOs.TagAndNoteResponse();
 
-			var infos = GetWorkingCopyInfos(new DTOs.GetWorkingCopyInfosRequest()
+			var infos = GetWorkingCopyInfos(new()
 			{
 				UserName = request.UserName,
 				Password = request.Password,
@@ -64,7 +64,7 @@ namespace ISI.Extensions.Svn
 
 						Logger.LogInformation("  trunk svn tag start");
 
-						RemoteCopy(new DTOs.RemoteCopyRequest()
+						RemoteCopy(new()
 						{
 							UserName = request.UserName,
 							Password = request.Password,
@@ -80,7 +80,7 @@ namespace ISI.Extensions.Svn
 						Logger.LogInformation(string.Format("  Version=\"{0}\"", request.Version));
 						Logger.LogInformation(string.Format("  DateTimeStamp=\"{0}\"", request.DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise)));
 
-						var propertySets = GetProperties(new DTOs.GetPropertiesRequest()
+						var propertySets = GetProperties(new()
 						{
 							UserName = request.UserName,
 							Password = request.Password,
@@ -157,7 +157,7 @@ namespace ISI.Extensions.Svn
 
 										Logger.LogInformation("  external svn tag start");
 
-										RemoteCopy(new DTOs.RemoteCopyRequest()
+										RemoteCopy(new()
 										{
 											UserName = request.UserName,
 											Password = request.Password,
@@ -174,7 +174,7 @@ namespace ISI.Extensions.Svn
 											externalTagsUrl = string.Format("{0}{1}", externalTagsUrl, externalTrunkUri.ToString().Substring(externalTrunkUrl.Length));
 										}
 
-										externalTrunkUri = new Uri(externalTagsUrl);
+										externalTrunkUri = new(externalTagsUrl);
 
 										#region Make Relative
 										if (string.Equals(trunkUri.Scheme, externalTrunkUri.Scheme, StringComparison.InvariantCultureIgnoreCase))
@@ -234,11 +234,11 @@ namespace ISI.Extensions.Svn
 
 								Logger.LogInformation(string.Format("  Will Be:\n{0}", externals));
 
-								setPropertyRequests.Add(new DTOs.SetRemotePropertyRequest()
+								setPropertyRequests.Add(new()
 								{
 									UserName = request.UserName,
 									Password = request.Password,
-									Uri = new Uri(url),
+									Uri = new(url),
 									Key = PropertyName.Externals,
 									Value = externals,
 									LogMessage = "setting externals' revision",

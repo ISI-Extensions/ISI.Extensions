@@ -43,7 +43,7 @@ namespace ISI.Extensions.Ebcdic
 				return (long?)BitConverter.ToInt32(binaryEbcdic, 0);
 			}
 
-			throw new Exception("Bad binary format");
+			throw new("Bad binary format");
 		}
 	}
 }

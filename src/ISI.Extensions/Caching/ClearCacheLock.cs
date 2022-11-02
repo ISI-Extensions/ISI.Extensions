@@ -52,7 +52,7 @@ namespace ISI.Extensions.Caching
 					var cacheKeyScopes = item.CacheKeyScopes.ToArray();
 					foreach (var cacheKeyScope in cacheKeyScopes)
 					{
-						ClearCacheLockRequestByCacheKeyScope.AddOrUpdate(cacheKeyScope, key => new ClearCacheRequest(cacheKeyScope, item), (key, clearCacheLockRequest) =>
+						ClearCacheLockRequestByCacheKeyScope.AddOrUpdate(cacheKeyScope, key => new(cacheKeyScope, item), (key, clearCacheLockRequest) =>
 						{
 							clearCacheLockRequest.Import(item);
 							return clearCacheLockRequest;

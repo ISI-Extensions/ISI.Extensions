@@ -60,7 +60,7 @@ namespace ISI.Extensions.MessageBus.Redis
 			var requestMessageEnvelope = _jsonSerializer.Deserialize(typeof(MessageEnvelope), serializedMessageEnvelope) as MessageEnvelope;
 			var requestMessage = _jsonSerializer.Deserialize(Type.GetType(requestMessageEnvelope.MessageTypeName), requestMessageEnvelope.SerializedMessage);
 
-			return new RequestContext<TRequest>(requestMessageEnvelope, requestMessage);
+			return new(requestMessageEnvelope, requestMessage);
 		}
 
 		protected virtual void BeginRequest()

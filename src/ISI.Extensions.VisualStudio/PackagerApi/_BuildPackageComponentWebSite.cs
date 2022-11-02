@@ -76,7 +76,7 @@ namespace ISI.Extensions.VisualStudio
 
 					if (assemblyVersionFiles != null)
 					{
-						CodeGenerationApi.SetAssemblyVersionFiles(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeGenerationApi.SetAssemblyVersionFilesRequest()
+						CodeGenerationApi.SetAssemblyVersionFiles(new()
 						{
 							AssemblyVersionFiles = assemblyVersionFiles,
 						});
@@ -101,10 +101,10 @@ namespace ISI.Extensions.VisualStudio
 
 					if (false)
 					{
-						NugetApi.RestoreNugetPackages(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.RestoreNugetPackagesRequest()
+						NugetApi.RestoreNugetPackages(new()
 						{
 							SolutionName = solutionFullName,
-							MSBuildExe = MSBuildApi.GetMSBuildExeFullName(new ISI.Extensions.VisualStudio.DataTransferObjects.MSBuildApi.GetMSBuildExeFullNameRequest()
+							MSBuildExe = MSBuildApi.GetMSBuildExeFullName(new()
 							{
 								MsBuildVersion = buildVersion,
 								MsBuildPlatform = buildPlatform,
@@ -173,7 +173,7 @@ namespace ISI.Extensions.VisualStudio
 					{
 						if (assemblyVersionFiles != null)
 						{
-							CodeGenerationApi.ResetAssemblyVersionFiles(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeGenerationApi.ResetAssemblyVersionFilesRequest()
+							CodeGenerationApi.ResetAssemblyVersionFiles(new()
 							{
 								AssemblyVersionFiles = assemblyVersionFiles,
 							});
@@ -184,7 +184,7 @@ namespace ISI.Extensions.VisualStudio
 
 			if (!packageComponent.DoNotXmlTransformConfigs)
 			{
-				XmlTransformApi.XmlTransformConfigsInProject(new ISI.Extensions.VisualStudio.DataTransferObjects.XmlTransformApi.XmlTransformConfigsInProjectRequest()
+				XmlTransformApi.XmlTransformConfigsInProject(new()
 				{
 					ProjectFullName = packageComponent.ProjectFullName,
 					DestinationDirectory = packageComponentDirectory,

@@ -38,9 +38,9 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 			IDictionary<Type, Type> interfaceTypesWithDefaultImplementationType,
 			IDictionary<string, Type> serializerObjectTypeToImplementationType)
 		{
-			InterfaceTypesWithDefaultImplementationType = new System.Collections.Concurrent.ConcurrentDictionary<Type, Type>(interfaceTypesWithDefaultImplementationType);
-			SerializerObjectTypeToImplementationType = new System.Collections.Concurrent.ConcurrentDictionary<string, Type>(serializerObjectTypeToImplementationType, StringComparer.InvariantCultureIgnoreCase);
-			ImplementationTypeToSerializerSlackObjectType = new System.Collections.Concurrent.ConcurrentDictionary<Type, string>(serializerObjectTypeToImplementationType.ToDictionary(keyValue => keyValue.Value, keyValue => keyValue.Key));
+			InterfaceTypesWithDefaultImplementationType = new(interfaceTypesWithDefaultImplementationType);
+			SerializerObjectTypeToImplementationType = new(serializerObjectTypeToImplementationType, StringComparer.InvariantCultureIgnoreCase);
+			ImplementationTypeToSerializerSlackObjectType = new(serializerObjectTypeToImplementationType.ToDictionary(keyValue => keyValue.Value, keyValue => keyValue.Key));
 		}
 
 		public override bool CanConvert(Type objectType) => (InterfaceTypesWithDefaultImplementationType.ContainsKey(objectType) || ImplementationTypeToSerializerSlackObjectType.ContainsKey(objectType));
@@ -147,7 +147,7 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 
 								if (!serializerObjectTypeToImplementationType.TryAdd(serializerObjectTypeAttribute.ObjectTypeName, exportedType))
 								{
-									throw new Exception(string.Format("Multiple SerializerObjectTypeName found \"{0}\"", serializerObjectTypeAttribute.ObjectTypeName));
+									throw new(string.Format("Multiple SerializerObjectTypeName found \"{0}\"", serializerObjectTypeAttribute.ObjectTypeName));
 								}
 							}
 						}

@@ -28,7 +28,7 @@ namespace ISI.Extensions.Ngrok.SerializableModels.ClientApi
 	{
 		public ISI.Extensions.Ngrok.TrafficRequest Export()
 		{
-			return new ISI.Extensions.Ngrok.TrafficRequest()
+			return new()
 			{
 				Method = Method,
 				TunnelProtocol = ISI.Extensions.Enum<ISI.Extensions.Ngrok.TunnelProtocol>.Convert(TunnelProtocol),

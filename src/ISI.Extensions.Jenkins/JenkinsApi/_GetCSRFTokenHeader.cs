@@ -39,7 +39,7 @@ namespace ISI.Extensions.Jenkins
 				var pieces = token.Split(new[] {':'});
 				if (pieces.Length == 2)
 				{
-					return new ISI.Extensions.WebClient.Header()
+					return new()
 					{
 						Key = pieces[0],
 						Value = pieces[1],

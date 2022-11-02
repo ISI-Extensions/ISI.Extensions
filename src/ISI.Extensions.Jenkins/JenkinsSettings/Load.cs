@@ -25,7 +25,7 @@ namespace ISI.Extensions.Jenkins
 		{
 			if (!System.IO.File.Exists(SettingsFileName))
 			{
-				return new ISI.Extensions.Jenkins.SerializableModels.JenkinsSettings();
+				return new();
 			}
 
 			using (new ISI.Extensions.Locks.FileLock(SettingsFileName))

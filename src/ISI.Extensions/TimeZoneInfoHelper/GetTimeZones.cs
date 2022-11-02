@@ -30,7 +30,7 @@ namespace ISI.Extensions.Extensions
 			{
 				if (_TimeZones == null)
 				{
-					_TimeZones = new Dictionary<string, string>();
+					_TimeZones = new();
 
 					var timeZones = System.TimeZoneInfo.GetSystemTimeZones();
 

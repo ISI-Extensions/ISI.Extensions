@@ -27,7 +27,7 @@ namespace ISI.Extensions.Aspose.InternalTryNotToUseExtensions
 		{
 			if (!(documentNode is ISI.Extensions.Aspose.Words.DocumentNode asposeNode))
 			{
-				throw new Exception(string.Format("{0} is not of type {1}", nameof(documentNode), typeof(ISI.Extensions.Aspose.Words.DocumentNode).FullName));
+				throw new(string.Format("{0} is not of type {1}", nameof(documentNode), typeof(ISI.Extensions.Aspose.Words.DocumentNode).FullName));
 			}
 
 			return asposeNode._node;

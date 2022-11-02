@@ -144,9 +144,9 @@ namespace ISI.Extensions
 			{
 				if (OnTimer != null)
 				{
-					_autoResetEvent ??= new System.Threading.AutoResetEvent(false);
+					_autoResetEvent ??= new(false);
 
-					TaskTimerThread ??= new System.Threading.Thread(ThreadProcess);
+					TaskTimerThread ??= new(ThreadProcess);
 
 					if ((TaskTimerThread.ThreadState == System.Threading.ThreadState.Unstarted) || (TaskTimerThread.ThreadState == System.Threading.ThreadState.Stopped))
 					{
@@ -179,7 +179,7 @@ namespace ISI.Extensions
 							{
 								if (MaxProcessTimeSpan.HasValue)
 								{
-									TaskTimerWorkerThread = new System.Threading.Thread(() => OnTimer());
+									TaskTimerWorkerThread = new(() => OnTimer());
 
 									TaskTimerWorkerThread.Start();
 

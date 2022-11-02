@@ -37,7 +37,7 @@ namespace ISI.Extensions.Aspose
 				page.PageInfo.Margin.Left = 0;
 				page.PageInfo.Margin.Right = 0;
 
-				page.CropBox = new global::Aspose.Pdf.Rectangle(0, 0, bitmap.Width, bitmap.Height);
+				page.CropBox = new(0, 0, bitmap.Width, bitmap.Height);
 				
 				var image = new global::Aspose.Pdf.Image();
 				page.Paragraphs.Add(image);

@@ -41,7 +41,7 @@ namespace ISI.Extensions.Ebcdic
 
 				if (RecordDefinitions.Any(recordDefinition => recordDefinition.RecordSize != RecordSize))
 				{
-					throw new Exception(string.Format("All Record Definition must be the same size:\n{0}  ", string.Join("\n  ", recordDefinitions.Select(recordDefinition => string.Format("{0} => {1}", recordDefinition.RecordSize, recordDefinition.RecordType.Name)))));
+					throw new(string.Format("All Record Definition must be the same size:\n{0}  ", string.Join("\n  ", recordDefinitions.Select(recordDefinition => string.Format("{0} => {1}", recordDefinition.RecordSize, recordDefinition.RecordType.Name)))));
 				}
 
 				Current = null;

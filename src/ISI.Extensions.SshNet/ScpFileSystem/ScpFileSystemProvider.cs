@@ -49,11 +49,11 @@ namespace ISI.Extensions.SshNet.ScpFileSystem
 
 		protected Renci.SshNet.SshClient GetSshClient(FileSystem.IFileSystemPath fileSystemPath)
 		{
-			return new Renci.SshNet.SshClient(ConnectionManager.GetConnectionInfo(fileSystemPath.Server, fileSystemPath.UserName, fileSystemPath.Password));
+			return new(ConnectionManager.GetConnectionInfo(fileSystemPath.Server, fileSystemPath.UserName, fileSystemPath.Password));
 		}
 		protected Renci.SshNet.ScpClient GetTransferClient(FileSystem.IFileSystemPath fileSystemPath)
 		{
-			return new Renci.SshNet.ScpClient(ConnectionManager.GetConnectionInfo(fileSystemPath.Server, fileSystemPath.UserName, fileSystemPath.Password));
+			return new(ConnectionManager.GetConnectionInfo(fileSystemPath.Server, fileSystemPath.UserName, fileSystemPath.Password));
 		}
 
 		protected virtual FileSystem.IFileSystemStream GetFileSystemStream()

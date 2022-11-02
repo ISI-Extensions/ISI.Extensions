@@ -89,7 +89,7 @@ namespace ISI.Extensions.Repository
 			{
 				if (!(whereClause is IWhereClauseWithParameters whereClauseWithParameters))
 				{
-					throw new Exception("Where clause must implement IWhereClauseWithParameters");
+					throw new("Where clause must implement IWhereClauseWithParameters");
 				}
 
 				var filterLesserBetweenValueName = string.Format("@{0}Lesser{1}FilterValue_{2}", filterValueNamePrefix, columnName, filterIndex);
@@ -112,7 +112,7 @@ namespace ISI.Extensions.Repository
 				{
 					if (!(whereClause is IWhereClauseWithParameters whereClauseWithParameters))
 					{
-						throw new Exception("Where clause must implement IWhereClauseWithParameters");
+						throw new("Where clause must implement IWhereClauseWithParameters");
 					}
 
 					value = value.Trim();
@@ -181,7 +181,7 @@ namespace ISI.Extensions.Repository
 
 				if (!(whereClause is IWhereClauseWithParameters whereClauseWithParameters))
 				{
-					throw new Exception("Where clause must implement IWhereClauseWithParameters");
+					throw new("Where clause must implement IWhereClauseWithParameters");
 				}
 
 				var filterValueName = string.Format("@{0}{1}FilterValue_{2}", filterValueNamePrefix, columnName, filterIndex++);
@@ -210,7 +210,7 @@ namespace ISI.Extensions.Repository
 			}
 			else
 			{
-				throw new Exception("No Operator specified");
+				throw new("No Operator specified");
 			}
 
 			return sqlFilters;
@@ -234,7 +234,7 @@ namespace ISI.Extensions.Repository
 
 						if (!(whereClause is IWhereClauseWithParameters whereClauseWithParameters))
 						{
-							throw new Exception("Where clause must implement IWhereClauseWithParameters");
+							throw new("Where clause must implement IWhereClauseWithParameters");
 						}
 
 						whereClauseWithParameters.Parameters.Add(filterValueName, value);

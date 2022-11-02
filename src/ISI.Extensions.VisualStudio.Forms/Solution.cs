@@ -101,7 +101,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 		protected bool CleanSolutionErrored { get; private set; }
 		private TaskActions _cleanSolution = null;
-		protected TaskActions CleanSolution => _cleanSolution ??= new TaskActions()
+		protected TaskActions CleanSolution => _cleanSolution ??= new()
 		{
 			PreAction = () =>
 			{
@@ -117,7 +117,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			Action = () =>
 			{
 				Logger.LogInformation("Start Clean Solution");
-				CleanSolutionErrored = !(SolutionApi.CleanSolution(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.CleanSolutionRequest()
+				CleanSolutionErrored = !(SolutionApi.CleanSolution(new()
 				{
 					Solution = SolutionDetails.SolutionDirectory,
 				}).Success);
@@ -138,7 +138,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 		protected Process.ProcessResponse UpdateSolutionResponse { get; private set; } = new();
 		protected bool UpdateSolutionErrored => UpdateSolutionResponse.Errored;
 		private TaskActions _updateSolution = null;
-		protected TaskActions UpdateSolution => _updateSolution ??= new TaskActions()
+		protected TaskActions UpdateSolution => _updateSolution ??= new()
 		{
 			PreAction = () =>
 			{
@@ -160,9 +160,9 @@ namespace ISI.Extensions.VisualStudio.Forms
 				{
 					Logger.LogInformation("Start Update Solution");
 
-					UpdateSolutionResponse = new Process.ProcessResponse();
+					UpdateSolutionResponse = new();
 
-					UpdateSolutionResponse.ExitCode = SourceControlClientApi.UpdateWorkingCopy(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.UpdateWorkingCopyRequest()
+					UpdateSolutionResponse.ExitCode = SourceControlClientApi.UpdateWorkingCopy(new()
 					{
 						FullName = SolutionDetails.RootSourceDirectory,
 						IncludeExternals = true,
@@ -191,7 +191,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 		protected Process.ProcessResponse RestoreNugetPackagesResponse { get; private set; } = new();
 		protected bool RestoreNugetPackagesErrored => RestoreNugetPackagesResponse.Errored;
 		private TaskActions _restoreNugetPackages = null;
-		protected TaskActions RestoreNugetPackages => _restoreNugetPackages ??= new TaskActions()
+		protected TaskActions RestoreNugetPackages => _restoreNugetPackages ??= new()
 		{
 			PreAction = () =>
 			{
@@ -214,11 +214,11 @@ namespace ISI.Extensions.VisualStudio.Forms
 					Logger.LogInformation("Start Restore Nuget Packages");
 
 					RestoreNugetPackagesResponse = new();
-					RestoreNugetPackagesResponse.ExitCode = NugetApi.RestoreNugetPackages(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.RestoreNugetPackagesRequest()
+					RestoreNugetPackagesResponse.ExitCode = NugetApi.RestoreNugetPackages(new()
 					{
 						SolutionName = SolutionDetails.SolutionName,
 						SolutionDirectory = SolutionDetails.SolutionDirectory,
-						MSBuildExe = MSBuildApi.GetMSBuildExeFullName(new ISI.Extensions.VisualStudio.DataTransferObjects.MSBuildApi.GetMSBuildExeFullNameRequest()).MSBuildExeFullName,
+						MSBuildExe = MSBuildApi.GetMSBuildExeFullName(new()).MSBuildExeFullName,
 					}).Success ? 0 : 1;
 
 					Logger.LogInformation("Finish Restore Nuget Packages");
@@ -243,7 +243,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 		protected Process.ProcessResponse BuildSolutionResponse { get; private set; } = new();
 		public bool BuildSolutionErrored => BuildSolutionResponse.Errored;
 		private TaskActions _buildSolution = null;
-		protected TaskActions BuildSolution => _buildSolution ??= new TaskActions()
+		protected TaskActions BuildSolution => _buildSolution ??= new()
 		{
 			PreAction = () =>
 			{
@@ -315,7 +315,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 		{
 			Logger = logger ?? new ISI.Extensions.ConsoleLogger();
 
-			var getActiveBuildConfigurationResponse = SolutionApi.GetActiveBuildConfiguration(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetActiveBuildConfigurationRequest()
+			var getActiveBuildConfigurationResponse = SolutionApi.GetActiveBuildConfiguration(new()
 			{
 				Solution = solutionFullName,
 			});
@@ -327,20 +327,20 @@ namespace ISI.Extensions.VisualStudio.Forms
 			{
 				Width = parentControl.Width - 19,
 				Height = 26,
-				Margin = new System.Windows.Forms.Padding(0),
+				Margin = new(0),
 			};
 			parentControl.Resize += (resizeSender, resizeArgs) => { Panel.Width = parentControl.Width - 19; };
 
 			projectKeys = (projectKeys ?? Array.Empty<ProjectKey>()).ToArray();
 			if (projectKeys.Any() && !projectKeys.Any(projectKey => projectKey.Selected))
 			{
-				(projectKeys.FirstOrDefault(projectKey => string.Equals(ProjectApi.GetProjectName(new ISI.Extensions.VisualStudio.DataTransferObjects.ProjectApi.GetProjectNameRequest()
+				(projectKeys.FirstOrDefault(projectKey => string.Equals(ProjectApi.GetProjectName(new()
 				{
 					Project = projectKey.ProjectFullName,
 				}).ProjectName, Caption, StringComparison.InvariantCultureIgnoreCase)) ?? projectKeys.First()).Selected = true;
 			}
 
-			SolutionProjects = projectKeys.OrderBy(projectKey => ProjectApi.GetProjectName(new ISI.Extensions.VisualStudio.DataTransferObjects.ProjectApi.GetProjectNameRequest()
+			SolutionProjects = projectKeys.OrderBy(projectKey => ProjectApi.GetProjectName(new()
 			{
 				Project = projectKey.ProjectFullName,
 			}).ProjectName, StringComparer.InvariantCultureIgnoreCase).Select(projectKey => new SolutionProject(this, projectKey, start, waitForExecuteProjectResponse, projectKey.Selected, () => OnChangeSelected?.Invoke())).ToArray();
@@ -351,12 +351,12 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 				var solutionFilters = SolutionDetails.SolutionFilterDetailsSet
 					.NullCheckedOrderBy(solutionFilterDetails => System.IO.Path.GetFileNameWithoutExtension(solutionFilterDetails.SolutionFilterFullName))
-					.ToNullCheckedArray(solutionFilterDetails => new SolutionFilter(this, new SolutionFilterKey(SolutionDetails.SolutionFullName, solutionFilterDetails.SolutionFilterFullName), null, previouslySelectedSolutionFilterKeys.Contains(solutionFilterDetails.SolutionFilterFullName), () => OnChangeSelected?.Invoke()))
+					.ToNullCheckedArray(solutionFilterDetails => new SolutionFilter(this, new(SolutionDetails.SolutionFullName, solutionFilterDetails.SolutionFilterFullName), null, previouslySelectedSolutionFilterKeys.Contains(solutionFilterDetails.SolutionFilterFullName), () => OnChangeSelected?.Invoke()))
 					.ToList();
 
 				if (solutionFilters.Any())
 				{
-					solutionFilters.Insert(0, new SolutionFilter(this, new SolutionFilterKey(SolutionDetails.SolutionFullName, SolutionDetails.SolutionFullName), null, previouslySelectedSolutionFilterKeys.Contains(SolutionDetails.SolutionFullName), () => OnChangeSelected?.Invoke()));
+					solutionFilters.Insert(0, new(this, new(SolutionDetails.SolutionFullName, SolutionDetails.SolutionFullName), null, previouslySelectedSolutionFilterKeys.Contains(SolutionDetails.SolutionFullName), () => OnChangeSelected?.Invoke()));
 				}
 
 				SolutionFilters = solutionFilters.ToArray();
@@ -384,7 +384,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 				Left = 0,
 				Width = Panel.Width,
 				Height = 24,
-				Margin = new System.Windows.Forms.Padding(0),
+				Margin = new(0),
 			};
 			Panel.Controls.Add(SolutionPanel);
 			Panel.Resize += (resizeSender, resizeArgs) => { SolutionPanel.Width = Panel.Width; };
@@ -424,7 +424,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 				}
 			}
 
-			CheckBox = new System.Windows.Forms.CheckBox()
+			CheckBox = new()
 			{
 				Top = 6,
 				Left = 6,
@@ -434,7 +434,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			CheckBox.CheckedChanged += (_, __) => OnChangeSelected?.Invoke();
 			SolutionPanel.Controls.Add(CheckBox);
 
-			SolutionLabel = new System.Windows.Forms.Label()
+			SolutionLabel = new()
 			{
 				Text = Caption,
 				Top = 7,
@@ -448,7 +448,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			SolutionLabel.Click += (clickSender, clickEventArgs) => Selected = !Selected;
 			SolutionPanel.Controls.Add(SolutionLabel);
 
-			StatusLabel = new System.Windows.Forms.Label()
+			StatusLabel = new()
 			{
 				Text = string.Empty,
 				Top = 7,
@@ -463,7 +463,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 			if ((SolutionProjects == null) || !SolutionProjects.Any())
 			{
-				RefreshButton = new System.Windows.Forms.Button()
+				RefreshButton = new()
 				{
 					Visible = false,
 					Text = "Refresh",
@@ -480,7 +480,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 				SolutionPanel.Controls.Add(RefreshButton);
 			}
 
-			OpenButton = new System.Windows.Forms.Button()
+			OpenButton = new()
 			{
 				Visible = false,
 				Text = "Open",
@@ -494,7 +494,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			{
 				var solutionFilterFullName = SolutionFilters.NullCheckedFirstOrDefault(solutionFilter => solutionFilter.Selected)?.SolutionFilterFullName;
 
-				Task.Run(() => SolutionApi.OpenSolution(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.OpenSolutionRequest()
+				Task.Run(() => SolutionApi.OpenSolution(new()
 				{
 					Solution = SolutionDetails.SolutionDirectory,
 					SolutionFilter = solutionFilterFullName,
@@ -502,7 +502,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			};
 			SolutionPanel.Controls.Add(OpenButton);
 
-			ViewBuildLogButton = new System.Windows.Forms.Button()
+			ViewBuildLogButton = new()
 			{
 				Visible = false,
 				Text = "View Log",

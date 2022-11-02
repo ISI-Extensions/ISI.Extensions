@@ -29,7 +29,7 @@ namespace ISI.Extensions.Jenkins
 		{
 			var response = new DTOs.IsJobEnabledResponse();
 			
-			var jobStatusXml = GetJobStatusXml(new DTOs.GetJobStatusXmlRequest()
+			var jobStatusXml = GetJobStatusXml(new()
 			{
 				JenkinsUrl = request.JenkinsUrl,
 				UserName = request.UserName,

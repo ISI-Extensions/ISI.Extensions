@@ -28,7 +28,7 @@ namespace ISI.Extensions.Ngrok.SerializableModels.ClientApi
 	{
 		public ISI.Extensions.Ngrok.TunnelConnections Export()
 		{
-			return new ISI.Extensions.Ngrok.TunnelConnections()
+			return new()
 			{
 				Count = Count,
 				Gauge = Gauge,

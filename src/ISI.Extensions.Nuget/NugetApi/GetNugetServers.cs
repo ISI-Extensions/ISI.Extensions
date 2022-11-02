@@ -34,7 +34,7 @@ namespace ISI.Extensions.Nuget
 			{
 				Logger = new NullLogger(),
 				WorkingDirectory = request.WorkingDirectory,
-				ProcessExeFullName = GetNugetExeFullName(new DTOs.GetNugetExeFullNameRequest()).NugetExeFullName,
+				ProcessExeFullName = GetNugetExeFullName(new()).NugetExeFullName,
 				Arguments = new[]
 				{
 					"sources",
@@ -74,7 +74,7 @@ namespace ISI.Extensions.Nuget
 							}
 							else
 							{
-								var nugetServerIndex = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<ISI.Extensions.Nuget.SerializableModels.NugetServerIndexJson>(url, new ISI.Extensions.WebClient.HeaderCollection(), true);
+								var nugetServerIndex = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<ISI.Extensions.Nuget.SerializableModels.NugetServerIndexJson>(url, new(), true);
 
 								var v2Resource = nugetServerIndex.Resources.FirstOrDefault(resource => string.Equals(resource.Type, "LegacyGallery", StringComparison.InvariantCultureIgnoreCase));
 

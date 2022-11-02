@@ -47,7 +47,7 @@ namespace ISI.Extensions.Scm
 
 			try
 			{
-				response.JobIds = ISI.Extensions.WebClient.Rest.ExecuteTextGet(uri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), true).Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries);
+				response.JobIds = ISI.Extensions.WebClient.Rest.ExecuteTextGet(uri.Uri, new(), true).Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries);
 			}
 			catch (Exception exception)
 			{

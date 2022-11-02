@@ -50,7 +50,7 @@ namespace ISI.Extensions.StatusTrackers
 
 		public FileStatusTracker CreateStatusTracker(string statusTrackerKey)
 		{
-			return new FileStatusTracker(statusTrackerKey, Configuration, Logger, DateTimeStamper, GetFileName);
+			return new(statusTrackerKey, Configuration, Logger, DateTimeStamper, GetFileName);
 		}
 
 		protected string GetFileName(string statusTrackerKey, string fileNameExtension)

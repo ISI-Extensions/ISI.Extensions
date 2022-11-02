@@ -43,7 +43,7 @@ namespace ISI.Extensions.Telephony.MessageBus.CommunicationChannels.DataTransfer
 		[DataMember(Name = "nearLatitudeLongitude", EmitDefaultValue = false)]
 		public LatitudeLongitude NearLatitudeLongitude
 		{
-			get => _nearLatitudeLongitude ??= new LatitudeLongitude();
+			get => _nearLatitudeLongitude ??= new();
 			set => _nearLatitudeLongitude = value;
 		}
 

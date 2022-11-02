@@ -57,7 +57,7 @@ namespace ISI.Extensions.Jenkins.SerializableModels
 
 		public ISI.Extensions.Jenkins.Job Export()
 		{
-			return new ISI.Extensions.Jenkins.Job()
+			return new()
 			{
 				Actions = Actions.ToNullCheckedArray(x => x.Export()),
 				IsConcurrentBuild = IsConcurrentBuild,

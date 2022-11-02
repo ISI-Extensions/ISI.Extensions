@@ -29,7 +29,7 @@ namespace ISI.Extensions.Jenkins
 		{
 			var response = new DTOs.GetRunningJobIdsResponse();
 
-			var node = GetNode(new DTOs.GetNodeRequest()
+			var node = GetNode(new()
 			{
 				JenkinsUrl = request.JenkinsUrl,
 				UserName = request.UserName,

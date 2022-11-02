@@ -47,12 +47,12 @@ namespace ISI.Extensions.AspNetCore.Extensions
 
 		public static Microsoft.AspNetCore.Html.IHtmlContent AddStyleSheet(this Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper htmlHelper, string styleSheetUrl, string stylesheetMediaType)
 		{
-			return AddStyleSheet(htmlHelper, new HtmlHelpers.StylesheetContentUrl(stylesheetMediaType, styleSheetUrl));
+			return AddStyleSheet(htmlHelper, new(stylesheetMediaType, styleSheetUrl));
 		}
 
 		public static Microsoft.AspNetCore.Html.IHtmlContent AddStyleSheet(this Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper htmlHelper, ISI.Extensions.AspNetCore.IContentUrl styleSheetContentUrl, string stylesheetMediaType)
 		{
-			return AddStyleSheet(htmlHelper, new HtmlHelpers.StylesheetContentUrl(stylesheetMediaType, styleSheetContentUrl));
+			return AddStyleSheet(htmlHelper, new(stylesheetMediaType, styleSheetContentUrl));
 		}
 
 		public static Microsoft.AspNetCore.Html.IHtmlContent AddStyleSheet(this Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper htmlHelper, ISI.Extensions.AspNetCore.IContentUrl styleSheetContentUrl, HtmlHelpers.StylesheetMediaTypes stylesheetMediaTypes = HtmlHelpers.StylesheetMediaTypes.All)

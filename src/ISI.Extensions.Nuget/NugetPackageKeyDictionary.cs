@@ -53,7 +53,7 @@ namespace ISI.Extensions.Nuget
 			return false;
 		}
 
-		public bool TryAdd(string package, string version) => TryAdd(new NugetPackageKey()
+		public bool TryAdd(string package, string version) => TryAdd(new()
 		{
 			Package = package,
 			Version = version,

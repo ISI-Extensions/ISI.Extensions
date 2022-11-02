@@ -28,7 +28,7 @@ namespace ISI.Extensions.DependencyInjection.Iunq
 
 		internal ServiceCache(Configuration configuration)
 		{
-			Instances = new System.Collections.Concurrent.ConcurrentDictionary<Type, object>(Environment.ProcessorCount * 2, configuration.ServiceCacheDictionaryInitialSize);
+			Instances = new(Environment.ProcessorCount * 2, configuration.ServiceCacheDictionaryInitialSize);
 		}
 
 		public void Register(Type serviceType, object instance)

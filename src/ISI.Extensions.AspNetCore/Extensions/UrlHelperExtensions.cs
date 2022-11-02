@@ -24,7 +24,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 	{
 		public static string GenerateRouteUrl(this Microsoft.AspNetCore.Mvc.IUrlHelper urlHelper, string routeName, object routeValues = null, bool makeAbsolute = false)
 		{
-			var url = urlHelper.RouteUrl(new Microsoft.AspNetCore.Mvc.Routing.UrlRouteContext()
+			var url = urlHelper.RouteUrl(new()
 			{
 				RouteName = routeName,
 				Values = new Microsoft.AspNetCore.Routing.RouteValueDictionary(routeValues),

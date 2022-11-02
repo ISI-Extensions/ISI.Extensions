@@ -38,7 +38,7 @@ namespace ISI.Extensions.Jenkins.SerializableModels
 
 		public ISI.Extensions.Jenkins.HealthReport Export()
 		{
-			return new ISI.Extensions.Jenkins.HealthReport()
+			return new()
 			{
 				Description = Description,
 				IconUrl = IconUrl,

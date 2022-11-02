@@ -53,7 +53,7 @@ namespace ISI.Extensions.Ebcdic
 				catch { }
 			}
 
-			throw new Exception("Bad format");
+			throw new("Bad format");
 		}
 
 		public static DateTime? ToDateTimeNullable(byte[] ebcdic)
@@ -86,7 +86,7 @@ namespace ISI.Extensions.Ebcdic
 				return ascii.ToDateTimeNullable();
 			}
 
-			throw new Exception("Bad format");
+			throw new("Bad format");
 		}
 	}
 }

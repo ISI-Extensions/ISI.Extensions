@@ -86,7 +86,7 @@ namespace ISI.Extensions.ContentGenerator
 
 		public virtual GenerateContentResponse GenerateContent(string template, TModel model)
 		{
-			return new GenerateContentResponse()
+			return new()
 			{
 				Content = template
 			};

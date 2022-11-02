@@ -27,7 +27,7 @@ namespace ISI.Extensions.Aspose.InternalTryNotToUseExtensions
 		{
 			if (!(documentSection is ISI.Extensions.Aspose.Words.DocumentSection asposeSection))
 			{
-				throw new Exception(string.Format("{0} is not of type {1}", nameof(documentSection), typeof(ISI.Extensions.Aspose.Words.DocumentSection).FullName));
+				throw new(string.Format("{0} is not of type {1}", nameof(documentSection), typeof(ISI.Extensions.Aspose.Words.DocumentSection).FullName));
 			}
 
 			return asposeSection._section;

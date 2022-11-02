@@ -30,10 +30,10 @@ namespace ISI.Extensions.Jenkins.Forms
 	public partial class PushJenkinsConfigToJenkinsForm : Form
 	{
 		private static ISI.Extensions.Jenkins.JenkinsSettings _jenkinsSettings = null;
-		protected ISI.Extensions.Jenkins.JenkinsSettings JenkinsSettings => _jenkinsSettings ??= new ISI.Extensions.Jenkins.JenkinsSettings();
+		protected ISI.Extensions.Jenkins.JenkinsSettings JenkinsSettings => _jenkinsSettings ??= new();
 		
 		private static ISI.Extensions.Jenkins.JenkinsApi _jenkinsApi = null;
-		protected ISI.Extensions.Jenkins.JenkinsApi JenkinsApi => _jenkinsApi ??= new ISI.Extensions.Jenkins.JenkinsApi();
+		protected ISI.Extensions.Jenkins.JenkinsApi JenkinsApi => _jenkinsApi ??= new();
 
 		protected string[] SelectedItemPaths { get; }
 
@@ -44,7 +44,7 @@ namespace ISI.Extensions.Jenkins.Forms
 			{
 				if (_jenkinsServer == null)
 				{
-					_jenkinsServer = new ISI.Extensions.Jenkins.JenkinsServer()
+					_jenkinsServer = new()
 					{
 						JenkinsServerUuid = Guid.NewGuid(),
 					};
@@ -102,7 +102,7 @@ namespace ISI.Extensions.Jenkins.Forms
 			btnPush.Visible = false;
 			btnCancel.Visible = false;
 
-			Icon = new Icon(ISI.Extensions.T4Resources.Artwork.GetLantern_icoStream());
+			Icon = new(ISI.Extensions.T4Resources.Artwork.GetLantern_icoStream());
 			ControlBox = true;
 			MaximizeBox = false;
 			MinimizeBox = false;
@@ -110,7 +110,7 @@ namespace ISI.Extensions.Jenkins.Forms
 
 			SelectedItemPaths = selectedItemPaths.ToArray();
 
-			JenkinsConfigs = new List<JenkinsConfig>();
+			JenkinsConfigs = new();
 
 			cboJenkinsServers.SelectedValueChanged += (sender, args) =>
 			{
@@ -126,7 +126,7 @@ namespace ISI.Extensions.Jenkins.Forms
 
 					var jenkinsServer = JenkinsServer.GetDecodedJenkinsServer();
 
-					var jobIds = new HashSet<string>(JenkinsApi.GetJobIds(new ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi.GetJobIdsRequest()
+					var jobIds = new HashSet<string>(JenkinsApi.GetJobIds(new()
 					{
 						JenkinsUrl = jenkinsServer.JenkinsUrl,
 						UserName = jenkinsServer.UserName,
@@ -196,7 +196,7 @@ namespace ISI.Extensions.Jenkins.Forms
 
 						var jenkinsServer = JenkinsServer.GetDecodedJenkinsServer();
 
-						JenkinsApi.SetJobConfigXml(new ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi.SetJobConfigXmlRequest()
+						JenkinsApi.SetJobConfigXml(new()
 						{
 							JenkinsUrl = jenkinsServer.JenkinsUrl,
 							UserName = jenkinsServer.UserName,
@@ -284,12 +284,12 @@ namespace ISI.Extensions.Jenkins.Forms
 			cboJenkinsServers.DisplayMember = nameof(ISI.Extensions.Jenkins.JenkinsServer.DisplayDescription);
 			cboJenkinsServers.ValueMember = nameof(ISI.Extensions.Jenkins.JenkinsServer.JenkinsServerUuid);
 
-			foreach (var jenkinsConfigFileName in JenkinsApi.FindJenkinsConfigFileNames(new ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi.FindJenkinsConfigFileNamesRequest()
+			foreach (var jenkinsConfigFileName in JenkinsApi.FindJenkinsConfigFileNames(new()
 			         {
 								 Paths = SelectedItemPaths,
 			         }).JenkinsConfigFileNames.ToNullCheckedArray(NullCheckCollectionResult.Empty))
 			{
-				JenkinsConfigs.Add(new JenkinsConfig(jenkinsConfigFileName));
+				JenkinsConfigs.Add(new(jenkinsConfigFileName));
 			}
 
 			this.flpJenkinsConfigs.Controls.AddRange(JenkinsConfigs.Select(jenkinsConfig => jenkinsConfig.Panel).ToArray());
@@ -328,32 +328,32 @@ namespace ISI.Extensions.Jenkins.Forms
 
 				JobId = System.IO.Path.GetFileNameWithoutExtension(JenkinsConfigFullName);
 
-				flpJenkinsConfig = new FlowLayoutPanel()
+				flpJenkinsConfig = new()
 				{
 					AutoSize = true,
 					AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly,
-					Margin = new System.Windows.Forms.Padding(3, 3, 3, 0),
-					Size = new System.Drawing.Size(659, 24),
+					Margin = new(3, 3, 3, 0),
+					Size = new(659, 24),
 				};
 
-				cboJenkinsConfig = new CheckBox()
+				cboJenkinsConfig = new()
 				{
 					Text = JobId,
 					Name = string.Format("cboJenkinsConfig_{0}", this.GetHashCode()),
 					Width = 400,
 					Height = 17,
-					Margin = new Padding(1, 1, 1, 1),
+					Margin = new(1, 1, 1, 1),
 					Checked = true,
 				};
 				flpJenkinsConfig.Controls.Add(cboJenkinsConfig);
 
-				lblStatus = new Label()
+				lblStatus = new()
 				{
 					AutoSize = true,
-					Location = new System.Drawing.Point(83, 1),
-					Margin = new System.Windows.Forms.Padding(4),
-					MinimumSize = new System.Drawing.Size(300, 17),
-					Size = new System.Drawing.Size(240, 17),
+					Location = new(83, 1),
+					Margin = new(4),
+					MinimumSize = new(300, 17),
+					Size = new(240, 17),
 				};
 				flpJenkinsConfig.Controls.Add(lblStatus);
 			}
@@ -401,7 +401,7 @@ namespace ISI.Extensions.Jenkins.Forms
 		public class JenkinsConfigComparer : IComparer<JenkinsConfig>
 		{
 			private static JenkinsConfigComparer _invariantCultureIgnoreCase = null;
-			public static JenkinsConfigComparer InvariantCultureIgnoreCase => _invariantCultureIgnoreCase ??= new JenkinsConfigComparer(StringComparer.InvariantCultureIgnoreCase);
+			public static JenkinsConfigComparer InvariantCultureIgnoreCase => _invariantCultureIgnoreCase ??= new(StringComparer.InvariantCultureIgnoreCase);
 
 			private StringComparer StringComparer { get; }
 

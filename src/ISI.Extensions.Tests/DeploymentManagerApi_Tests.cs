@@ -74,7 +74,7 @@ namespace ISI.Extensions.Tests
 
 			var deploymentManagerApi = new ISI.Extensions.Scm.DeploymentManagerApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
 
-			deploymentManagerApi.UpdateServicesManager(new ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.UpdateServicesManagerRequest()
+			deploymentManagerApi.UpdateServicesManager(new()
 			{
 				//ServicesManagerUrl = "http://localhost:14258/",
 				//Password = "87BEF140-045B-42D7-AB87-3E59F162BC39",
@@ -93,7 +93,7 @@ namespace ISI.Extensions.Tests
 			settings.OverrideWithEnvironmentVariables();
 
 			var scmApi = new ISI.Extensions.Scm.ScmApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
-			var authenticationToken = scmApi.GetAuthenticationToken(new ISI.Extensions.Scm.DataTransferObjects.ScmApi.GetAuthenticationTokenRequest()
+			var authenticationToken = scmApi.GetAuthenticationToken(new()
 			{
 				ScmManagementUrl = settings.Scm.WebServiceUrl,
 				UserName = settings.ActiveDirectory.UserName,
@@ -108,7 +108,7 @@ namespace ISI.Extensions.Tests
 			var artifactDateTimeStampVersionUrl = string.Format("https://www.isi-net.com/file-store/download/{0:D}/{1}.Current.DateTimeStamp.Version.txt", artifactVersionFileStoreUuid, artifactName); 
 			var artifactDownloadUrl = string.Format("https://www.isi-net.com/file-store/download/{0:D}/{1}.zip", artifactFileStoreUuid, artifactName); 
 
-			deploymentManagerApi.DeployArtifact(new ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.DeployArtifactRequest()
+			deploymentManagerApi.DeployArtifact(new()
 			{
 				ServicesManagerUrl = "http://localhost:14258/",
 				Password = "87BEF140-045B-42D7-AB87-3E59F162BC39",
@@ -148,14 +148,14 @@ namespace ISI.Extensions.Tests
 
 			var artifactName = "ISI.WindowsService";
 
-			var authenticationToken = scmApi.GetAuthenticationToken(new ISI.Extensions.Scm.DataTransferObjects.ScmApi.GetAuthenticationTokenRequest()
+			var authenticationToken = scmApi.GetAuthenticationToken(new()
 			{
 				ScmManagementUrl = settings.Scm.WebServiceUrl,
 				UserName = settings.ActiveDirectory.UserName,
 				Password = settings.ActiveDirectory.Password,
 			}).AuthenticationToken;
 
-			var dateTimeStampVersion = buildArtifactApi.GetBuildArtifactEnvironmentDateTimeStampVersion(new ISI.Extensions.Scm.DataTransferObjects.BuildArtifactApi.GetBuildArtifactEnvironmentDateTimeStampVersionRequest()
+			var dateTimeStampVersion = buildArtifactApi.GetBuildArtifactEnvironmentDateTimeStampVersion(new()
 			{
 				BuildArtifactManagementUrl = settings.Scm.WebServiceUrl,
 				AuthenticationToken = authenticationToken,
@@ -163,7 +163,7 @@ namespace ISI.Extensions.Tests
 				Environment = "UAT",
 			}).DateTimeStampVersion;
 
-			deploymentManagerApi.DeployArtifact(new ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.DeployArtifactRequest()
+			deploymentManagerApi.DeployArtifact(new()
 			{
 				ServicesManagerUrl = "http://localhost:14258/",
 				Password = "87BEF140-045B-42D7-AB87-3E59F162BC39",

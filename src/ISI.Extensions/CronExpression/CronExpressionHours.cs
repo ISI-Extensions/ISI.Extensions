@@ -37,7 +37,7 @@ namespace ISI.Extensions
 
 			public CronExpressionHours(string source)
 			{
-				Action throwError = () => throw new System.Exception(string.Format("Hours: Cannot parse \"{0}\"", source));
+				Action throwError = () => throw new(string.Format("Hours: Cannot parse \"{0}\"", source));
 
 				var parser = new ISI.Extensions.Parsers.DelimitedTextParser(',');
 
@@ -101,7 +101,7 @@ namespace ISI.Extensions
 
 			internal CronExpressionHours Clone()
 			{
-				return new CronExpressionHours(HourFlags);
+				return new(HourFlags);
 			}
 
 			internal CronExpressionHours ShiftHours(int hours)
@@ -113,7 +113,7 @@ namespace ISI.Extensions
 					hourFlags[(hourIndex + maxHour + hours) % maxHour] = HourFlags[hourIndex];
 				}
 
-				return new CronExpressionHours(hourFlags);
+				return new(hourFlags);
 			}
 
 			public override string ToString()

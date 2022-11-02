@@ -493,17 +493,17 @@ namespace ISI.Extensions.Repository.Extensions
 
 			if (value is long @long)
 			{
-				return new TimeSpan(@long);
+				return new(@long);
 			}
 
 			if (value is int @int)
 			{
-				return new TimeSpan((long)@int);
+				return new((long)@int);
 			}
 
 			if (value is short @short)
 			{
-				return new TimeSpan((long)@short);
+				return new((long)@short);
 			}
 
 			return value.ToString().ToTimeSpan();

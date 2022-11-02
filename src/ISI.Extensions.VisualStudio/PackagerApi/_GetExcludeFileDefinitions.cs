@@ -48,7 +48,7 @@ namespace ISI.Extensions.VisualStudio
 			{
 				if (excludeFile.StartsWith("*") && excludeFile.EndsWith("*"))
 				{
-					excludeFileDefinitions.Add(new ExcludeFileDefinition()
+					excludeFileDefinitions.Add(new()
 					{
 						Exclude = excludeFile.Trim('*'),
 						MatchType = ExcludeFileMatchType.Contains,
@@ -56,7 +56,7 @@ namespace ISI.Extensions.VisualStudio
 				}
 				else if (excludeFile.StartsWith("*"))
 				{
-					excludeFileDefinitions.Add(new ExcludeFileDefinition()
+					excludeFileDefinitions.Add(new()
 					{
 						Exclude = excludeFile.Trim('*'),
 						MatchType = ExcludeFileMatchType.StartsWith,
@@ -64,7 +64,7 @@ namespace ISI.Extensions.VisualStudio
 				}
 				else if (excludeFile.EndsWith("*"))
 				{
-					excludeFileDefinitions.Add(new ExcludeFileDefinition()
+					excludeFileDefinitions.Add(new()
 					{
 						Exclude = excludeFile.Trim('*'),
 						MatchType = ExcludeFileMatchType.EndsWith,
@@ -72,7 +72,7 @@ namespace ISI.Extensions.VisualStudio
 				}
 				else
 				{
-					excludeFileDefinitions.Add(new ExcludeFileDefinition()
+					excludeFileDefinitions.Add(new()
 					{
 						Exclude = excludeFile.Trim('*'),
 						MatchType = ExcludeFileMatchType.ExactMatch,

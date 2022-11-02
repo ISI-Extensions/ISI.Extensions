@@ -33,7 +33,7 @@ namespace ISI.Extensions.Telephony.Extensions
 
 		public static void Redirect(this Calls.VoiceCommands.IHasVoiceCommands hasVoiceCommands, Calls.VoiceCommands.Redirect redirect)
 		{
-			redirect = new Calls.VoiceCommands.Redirect()
+			redirect = new()
 			{
 				RedirectHttpVerb = redirect.RedirectHttpVerb,
 				RedirectUrl = redirect.RedirectUrl,

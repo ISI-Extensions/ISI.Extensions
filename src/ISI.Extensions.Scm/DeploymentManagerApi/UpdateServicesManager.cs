@@ -37,7 +37,7 @@ namespace ISI.Extensions.Scm
 				return UpdateServicesManagerV3(request);
 			}
 
-			return new DTOs.UpdateServicesManagerResponse();
+			return new();
 		}
 
 		public DTOs.UpdateServicesManagerResponse UpdateServicesManagerV3(DTOs.UpdateServicesManagerRequest request)
@@ -57,14 +57,14 @@ namespace ISI.Extensions.Scm
 					var uri = new UriBuilder(request.ServicesManagerUrl);
 					uri.SetPathAndQueryString(string.Empty);
 
-					var restResponse = ISI.Extensions.WebClient.Rest.ExecuteGet<ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), false);
+					var restResponse = ISI.Extensions.WebClient.Rest.ExecuteGet<ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, new(), false);
 
 					var version = (string)null;
 					if ((restResponse?.ResponseHeaders?.TryGetValue(HeaderKey.ServicesManagerVersion, out version)).GetValueOrDefault())
 					{
 						response.CurrentVersion = version;
 
-						return new Version(version);
+						return new(version);
 					}
 				}
 				catch

@@ -29,7 +29,7 @@ namespace ISI.Extensions.Repository.Cosmos
 		{
 			var query = GetClient().CreateDocumentQuery<TRecord>(
 					Microsoft.Azure.Documents.Client.UriFactory.CreateDocumentCollectionUri(DatabaseName, TableName),
-					new Microsoft.Azure.Documents.Client.FeedOptions { MaxItemCount = -1 })
+					new() { MaxItemCount = -1 })
 				//.Where(predicate)
 				.AsDocumentQuery();
 

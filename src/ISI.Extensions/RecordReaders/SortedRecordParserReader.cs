@@ -226,7 +226,7 @@ namespace ISI.Extensions.RecordReaders
 
 				if ((BucketStreams == null) || (SortedQueue == null))
 				{
-					BucketStreams = new List<System.IO.Stream>();
+					BucketStreams = new();
 
 					#region Create buckets
 					{
@@ -303,7 +303,7 @@ namespace ISI.Extensions.RecordReaders
 					}
 					#endregion
 
-					SortedQueue = new List<(ISI.Extensions.Parsers.IRecordParserResponse<TRecord> RecordParserResponse, System.IO.StreamReader StreamReader)>();
+					SortedQueue = new();
 
 					#region Seed Sorted Queue
 					{

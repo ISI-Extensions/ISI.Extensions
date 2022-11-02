@@ -46,12 +46,12 @@ namespace ISI.Extensions.Serialization
 			}
 			if (!serializerContractUuid.IsNullOrEmpty())
 			{
-				return new ISI.Extensions.Serialization.SerializedEntity(serializer.SerializationFormat, serializerContractUuid.Value, serializer.Serialize(serializerContractType, value, friendlyFormatted.GetValueOrDefault(GetSerializationFormattingFriendlyFormatted(serializerContractType))));
+				return new(serializer.SerializationFormat, serializerContractUuid.Value, serializer.Serialize(serializerContractType, value, friendlyFormatted.GetValueOrDefault(GetSerializationFormattingFriendlyFormatted(serializerContractType))));
 			}
 
 			var serializerContractName = GetSerializerContractNameFromSerializerContractType(serializerContractType) ?? serializerContractType.AssemblyQualifiedNameWithoutVersion();
 
-			return new ISI.Extensions.Serialization.SerializedEntity(serializer.SerializationFormat, serializerContractName, serializer.Serialize(serializerContractType, value, friendlyFormatted.GetValueOrDefault(GetSerializationFormattingFriendlyFormatted(serializerContractType))));
+			return new(serializer.SerializationFormat, serializerContractName, serializer.Serialize(serializerContractType, value, friendlyFormatted.GetValueOrDefault(GetSerializationFormattingFriendlyFormatted(serializerContractType))));
 		}
 
 		public ISI.Extensions.Serialization.SerializedEntity Serialize<T>(T value, SerializationFormat serializationFormat = SerializationFormat.Unknown, bool? friendlyFormatted = null)

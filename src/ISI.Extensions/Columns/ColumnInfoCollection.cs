@@ -37,7 +37,7 @@ namespace ISI.Extensions.Columns
 			}
 			else
 			{
-				properties = type.GetProperties().Where(propertyInfo => propertyInfo.CanRead).Select(property => new ISI.Extensions.DataContract.DataMemberPropertyInfo(new System.Runtime.Serialization.DataMemberAttribute() { Name = property.Name }, property, false)).OrderBy(property => property.Order).ToArray();
+				properties = type.GetProperties().Where(propertyInfo => propertyInfo.CanRead).Select(property => new ISI.Extensions.DataContract.DataMemberPropertyInfo(new() { Name = property.Name }, property, false)).OrderBy(property => property.Order).ToArray();
 			}
 		}
 

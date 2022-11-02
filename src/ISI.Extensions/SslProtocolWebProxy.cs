@@ -43,11 +43,11 @@ namespace ISI.Extensions
 			SslProtocols = protocols;
 			ClientCertificates = clientCertificates ?? new System.Security.Cryptography.X509Certificates.X509CertificateCollection();
 
-			Listener = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Loopback, 0);
+			Listener = new(System.Net.IPAddress.Loopback, 0);
 			Listener.Start();
 			Listener.BeginAcceptTcpClient(OnAcceptTcpClient, null);
 
-			Proxy = new System.Net.WebProxy("localhost", ((System.Net.IPEndPoint)(Listener.LocalEndpoint)).Port);
+			Proxy = new("localhost", ((System.Net.IPEndPoint)(Listener.LocalEndpoint)).Port);
 
 			uriBuilder.Port = 80;
 			Uri = uriBuilder.Uri;
@@ -78,7 +78,7 @@ namespace ISI.Extensions
 				Listener.BeginAcceptTcpClient(OnAcceptTcpClient, null);
 				var requestorStream = requestorTcpClient.GetStream();
 
-				responderTcpClient = new System.Net.Sockets.TcpClient(Host, Port);
+				responderTcpClient = new(Host, Port);
 				var responderStream = responderTcpClient.GetStream() as System.IO.Stream;
 
 				if ((SslProtocols != System.Security.Authentication.SslProtocols.None) || (ClientCertificates != null))

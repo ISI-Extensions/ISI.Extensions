@@ -29,7 +29,7 @@ namespace ISI.Extensions.Jenkins.Forms
 	public partial class PickJenkinsServerForm : Form
 	{
 		private static ISI.Extensions.Jenkins.JenkinsSettings _jenkinsSettings = null;
-		protected ISI.Extensions.Jenkins.JenkinsSettings JenkinsSettings => _jenkinsSettings ??= new ISI.Extensions.Jenkins.JenkinsSettings();
+		protected ISI.Extensions.Jenkins.JenkinsSettings JenkinsSettings => _jenkinsSettings ??= new();
 
 		private ISI.Extensions.Jenkins.JenkinsServer _jenkinsServer = null;
 		public ISI.Extensions.Jenkins.JenkinsServer JenkinsServer
@@ -38,7 +38,7 @@ namespace ISI.Extensions.Jenkins.Forms
 			{
 				if (_jenkinsServer == null)
 				{
-					_jenkinsServer = new ISI.Extensions.Jenkins.JenkinsServer()
+					_jenkinsServer = new()
 					{
 						JenkinsServerUuid = Guid.NewGuid(),
 					};
@@ -90,7 +90,7 @@ namespace ISI.Extensions.Jenkins.Forms
 			btnOK.Visible = false;
 			btnCancel.Visible = false;
 
-			Icon = new Icon(ISI.Extensions.T4Resources.Artwork.GetLantern_icoStream());
+			Icon = new(ISI.Extensions.T4Resources.Artwork.GetLantern_icoStream());
 			ControlBox = true;
 			MaximizeBox = false;
 			MinimizeBox = false;

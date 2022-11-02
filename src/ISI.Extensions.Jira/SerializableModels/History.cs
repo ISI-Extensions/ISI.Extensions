@@ -28,7 +28,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.History Export()
 		{
-			return new ISI.Extensions.Jira.History()
+			return new()
 			{
 				HistoryId = HistoryId,
 				Author = Author?.Export(),

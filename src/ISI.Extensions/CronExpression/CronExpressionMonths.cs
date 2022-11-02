@@ -37,7 +37,7 @@ namespace ISI.Extensions
 
 			public CronExpressionMonths(string source)
 			{
-				Action throwError = () => throw new System.Exception(string.Format("Months: Cannot parse \"{0}\"", source));
+				Action throwError = () => throw new(string.Format("Months: Cannot parse \"{0}\"", source));
 
 				var parser = new ISI.Extensions.Parsers.DelimitedTextParser(',');
 
@@ -111,7 +111,7 @@ namespace ISI.Extensions
 
 			internal CronExpressionMonths Clone()
 			{
-				return new CronExpressionMonths(MonthFlags);
+				return new(MonthFlags);
 			}
 
 			public override string ToString()

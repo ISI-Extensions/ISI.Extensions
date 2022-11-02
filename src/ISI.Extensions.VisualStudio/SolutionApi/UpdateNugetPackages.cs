@@ -40,7 +40,7 @@ namespace ISI.Extensions.VisualStudio
 
 			var solutionFullNames = request.SolutionFullNames.Where(System.IO.Directory.Exists).ToArray();
 
-			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => GetSolutionDetails(new DTOs.GetSolutionDetailsRequest()
+			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => GetSolutionDetails(new()
 			{
 				Solution = solution,
 			}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
@@ -51,7 +51,7 @@ namespace ISI.Extensions.VisualStudio
 				{
 					using (getBuildServiceSolutionLock(solutionDetails.SolutionFullName, description => Logger.LogInformation(description)))
 					{
-						using (GetSolutionLock(new DTOs.GetSolutionLockRequest()
+						using (GetSolutionLock(new()
 						{
 							SolutionFullName = solutionDetails.SolutionFullName,
 							AddToLog = description => Logger.LogInformation(description),
@@ -59,7 +59,7 @@ namespace ISI.Extensions.VisualStudio
 						{
 							logger.LogInformation(string.Format("Updating {0} from Source Control", solutionDetails.SolutionName));
 
-							if (!SourceControlClientApi.UpdateWorkingCopy(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.UpdateWorkingCopyRequest()
+							if (!SourceControlClientApi.UpdateWorkingCopy(new()
 							{
 								FullName = solutionDetails.RootSourceDirectory,
 								IncludeExternals = true,
@@ -74,7 +74,7 @@ namespace ISI.Extensions.VisualStudio
 					}
 				}
 
-				solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => GetSolutionDetails(new DTOs.GetSolutionDetailsRequest()
+				solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => GetSolutionDetails(new()
 				{
 					Solution = solution,
 				}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
@@ -91,7 +91,7 @@ namespace ISI.Extensions.VisualStudio
 			{
 				using (getBuildServiceSolutionLock(solutionDetails.SolutionFullName, description => Logger.LogInformation(description)))
 				{
-					using (GetSolutionLock(new DTOs.GetSolutionLockRequest()
+					using (GetSolutionLock(new()
 					{
 						SolutionFullName = solutionDetails.SolutionFullName,
 						AddToLog = description => Logger.LogInformation(description),
@@ -103,7 +103,7 @@ namespace ISI.Extensions.VisualStudio
 
 						if (request.UpdateWorkingCopyFromSourceControl)
 						{
-							if (!SourceControlClientApi.UpdateWorkingCopy(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.UpdateWorkingCopyRequest()
+							if (!SourceControlClientApi.UpdateWorkingCopy(new()
 							{
 								FullName = solutionDetails.RootSourceDirectory,
 								IncludeExternals = true,
@@ -118,7 +118,7 @@ namespace ISI.Extensions.VisualStudio
 
 						try
 						{
-							var nugetConfigFullNames = NugetApi.GetNugetConfigFullNames(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetConfigFullNamesRequest()
+							var nugetConfigFullNames = NugetApi.GetNugetConfigFullNames(new()
 							{
 								WorkingCopyDirectory = solutionDetails.SolutionDirectory,
 							}).NugetConfigFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty);
@@ -142,7 +142,7 @@ namespace ISI.Extensions.VisualStudio
 
 								void addNugetPackageKey(string packageId)
 								{
-									var getLatestPackageVersionResponse = NugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+									var getLatestPackageVersionResponse = NugetApi.GetNugetPackageKey(new()
 									{
 										PackageId = packageId,
 										NugetConfigFullNames = nugetConfigFullNames,
@@ -167,7 +167,7 @@ namespace ISI.Extensions.VisualStudio
 									}
 								}
 
-								using (NugetApi.GetNugetLock(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetLockRequest()
+								using (NugetApi.GetNugetLock(new()
 								{
 									AddToLog = description => Logger.LogInformation(description),
 								}).Lock)
@@ -199,7 +199,7 @@ namespace ISI.Extensions.VisualStudio
 
 										try
 										{
-											var newPackagesConfig = NugetApi.UpdateNugetPackageVersionsInPackagesConfig(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.UpdateNugetPackageVersionsInPackagesConfigRequest()
+											var newPackagesConfig = NugetApi.UpdateNugetPackageVersionsInPackagesConfig(new()
 											{
 												PackagesConfigXml = packagesConfig,
 												TryGetNugetPackageKey = tryGetNugetPackageKey,
@@ -213,7 +213,7 @@ namespace ISI.Extensions.VisualStudio
 										}
 										catch (Exception exception)
 										{
-											throw new Exception(string.Format("File: {0}", packagesConfigFullName), exception);
+											throw new(string.Format("File: {0}", packagesConfigFullName), exception);
 										}
 									}
 								}
@@ -222,7 +222,7 @@ namespace ISI.Extensions.VisualStudio
 
 								try
 								{
-									var newCsProj = NugetApi.UpdateNugetPackageVersionsInCsProj(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.UpdateNugetPackageVersionsInCsProjRequest()
+									var newCsProj = NugetApi.UpdateNugetPackageVersionsInCsProj(new()
 									{
 										CsProjXml = csProj,
 										TryGetNugetPackageKey = tryGetNugetPackageKey,
@@ -237,7 +237,7 @@ namespace ISI.Extensions.VisualStudio
 								}
 								catch (Exception exception)
 								{
-									throw new Exception(string.Format("File: {0}", projectDetails.ProjectFullName), exception);
+									throw new(string.Format("File: {0}", projectDetails.ProjectFullName), exception);
 								}
 
 								var appConfigFileName = System.IO.Path.Combine(projectDetails.ProjectDirectory, "web.config");
@@ -257,7 +257,7 @@ namespace ISI.Extensions.VisualStudio
 
 									try
 									{
-										var newAppConfigXml = NugetApi.UpdateAssemblyRedirects(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.UpdateAssemblyRedirectsRequest()
+										var newAppConfigXml = NugetApi.UpdateAssemblyRedirects(new()
 										{
 											CsProjXml = csProj,
 											AppConfigXml = appConfigXml,
@@ -274,7 +274,7 @@ namespace ISI.Extensions.VisualStudio
 									}
 									catch (Exception exception)
 									{
-										throw new Exception(string.Format("File: {0}", appConfigFileName), exception);
+										throw new(string.Format("File: {0}", appConfigFileName), exception);
 									}
 								}
 							}
@@ -310,7 +310,7 @@ namespace ISI.Extensions.VisualStudio
 								logger.LogError(string.Format("Error deleting Resharper Cache \"{0}\"", solutionDetails.SolutionDirectory));
 							}
 
-							if (!SourceControlClientApi.Commit(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.CommitRequest()
+							if (!SourceControlClientApi.Commit(new()
 							{
 								FullNames = dirtyFileNames,
 								LogMessage = "update nuget packages",
@@ -337,7 +337,7 @@ namespace ISI.Extensions.VisualStudio
 							{
 								var nugetPackOutputDirectory = System.IO.Path.Combine(solutionDetails.RootSourceDirectory, "Nuget");
 
-								var executeBuildTargetResponse = BuildScriptApi.ExecuteBuildTarget(new ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi.ExecuteBuildTargetRequest()
+								var executeBuildTargetResponse = BuildScriptApi.ExecuteBuildTarget(new()
 								{
 									BuildScriptFullName = buildScriptFullName,
 									Target = solutionDetails.ExecuteBuildScriptTargetAfterUpdateNugetPackages,
@@ -362,7 +362,7 @@ namespace ISI.Extensions.VisualStudio
 
 								if (System.IO.Directory.Exists(nugetPackOutputDirectory))
 								{
-									var updatedNugetPackageKeys = NugetApi.ListNugetPackageKeys(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.ListNugetPackageKeysRequest()
+									var updatedNugetPackageKeys = NugetApi.ListNugetPackageKeys(new()
 									{
 										Source = nugetPackOutputDirectory,
 									}).NugetPackageKeys;

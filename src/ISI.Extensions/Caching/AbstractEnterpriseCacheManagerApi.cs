@@ -61,7 +61,7 @@ namespace ISI.Extensions.Caching
 
 			if (response.ClearCacheLockFilterResponse == DTOs.ClearCacheLockFilterResponse.ProcessNow)
 			{
-				response = ProcessClearCache(new ClearCacheRequest(request.CacheKeyScopes.NullCheckedFirstOrDefault(), request));
+				response = ProcessClearCache(new(request.CacheKeyScopes.NullCheckedFirstOrDefault(), request));
 			}
 
 			return response;
@@ -73,10 +73,10 @@ namespace ISI.Extensions.Caching
 		{
 			if ((ThreadClearCacheLock ?? ClearCacheLock) != null)
 			{
-				throw new Exception("There can only be one ClearCacheLock at a time");
+				throw new("There can only be one ClearCacheLock at a time");
 			}
 
-			return (ClearCacheLock = new ClearCacheLock(this, () => ClearCacheLock = null, clearCacheFilter));
+			return (ClearCacheLock = new(this, () => ClearCacheLock = null, clearCacheFilter));
 		}
 		public ClearCacheLock GetClearCacheLock(DTOs.ClearCacheLockFilterResponse clearCacheFilter)
 		{
@@ -91,10 +91,10 @@ namespace ISI.Extensions.Caching
 		{
 			if ((ThreadClearCacheLock ?? ClearCacheLock) != null)
 			{
-				throw new Exception("There can only be one ClearCacheLock at a time");
+				throw new("There can only be one ClearCacheLock at a time");
 			}
 
-			return (ThreadClearCacheLock = new ClearCacheLock(this, () => ClearCacheLock = null, clearCacheFilter));
+			return (ThreadClearCacheLock = new(this, () => ClearCacheLock = null, clearCacheFilter));
 		}
 		public ClearCacheLock GetClearCacheThreadLock(DTOs.ClearCacheLockFilterResponse clearCacheFilter)
 		{

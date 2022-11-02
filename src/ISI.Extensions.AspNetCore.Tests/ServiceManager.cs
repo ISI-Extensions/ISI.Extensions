@@ -78,8 +78,8 @@ namespace ISI.Extensions.AspNetCore.Tests
 						serverOptions.Limits.MaxConcurrentConnections = 100;
 						serverOptions.Limits.MaxConcurrentUpgradedConnections = 100;
 						serverOptions.Limits.MaxRequestBodySize = 30 * 1024 * 1024;
-						serverOptions.Limits.MinRequestBodyDataRate = new Microsoft.AspNetCore.Server.Kestrel.Core.MinDataRate(bytesPerSecond: 100, gracePeriod: TimeSpan.FromSeconds(10));
-						serverOptions.Limits.MinResponseDataRate = new Microsoft.AspNetCore.Server.Kestrel.Core.MinDataRate(bytesPerSecond: 100, gracePeriod: TimeSpan.FromSeconds(10));
+						serverOptions.Limits.MinRequestBodyDataRate = new(bytesPerSecond: 100, gracePeriod: TimeSpan.FromSeconds(10));
+						serverOptions.Limits.MinResponseDataRate = new(bytesPerSecond: 100, gracePeriod: TimeSpan.FromSeconds(10));
 						serverOptions.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2);
 						serverOptions.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(1);
 					});

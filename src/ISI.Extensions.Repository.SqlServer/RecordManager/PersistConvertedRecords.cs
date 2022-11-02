@@ -55,7 +55,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 			if ((persistenceMethod != PersistenceMethod.Insert) && !primaryKeyPropertyDescriptions.NullCheckedAny())
 			{
-				throw new Exception("Cannot use PersistConvertedRecords on record with no known primary key columns");
+				throw new("Cannot use PersistConvertedRecords on record with no known primary key columns");
 			}
 
 			var maxBatchSize = (int)(1500 / (insertPropertyDescriptions.Count + (hasArchiveTable ? 1 : 0)));

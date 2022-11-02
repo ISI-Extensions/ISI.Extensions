@@ -27,7 +27,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.SimpleLink Export()
 		{
-			return new ISI.Extensions.Jira.SimpleLink()
+			return new()
 			{
 				SimpleLinkId = SimpleLinkId,
 				StyleClass = StyleClass,

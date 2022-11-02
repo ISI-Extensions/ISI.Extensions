@@ -32,7 +32,7 @@ namespace ISI.Extensions.Telephony.MessageBus
 				return null;
 			}
 
-			return new MESSAGEQUEUE.Media()
+			return new()
 			{
 				ContentType = source.ContentType,
 				Url = source.Url,
@@ -46,7 +46,7 @@ namespace ISI.Extensions.Telephony.MessageBus
 				return null;
 			}
 
-			return new ISI.Extensions.Telephony.Messages.Media()
+			return new()
 			{
 				ContentType = source.ContentType,
 				Url = source.Url,

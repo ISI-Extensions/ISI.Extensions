@@ -61,7 +61,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 				return uriBuilder.Uri;
 			}
 
-			throw new Exception(string.Format("\"{0}\" channel not found", channelName));
+			throw new(string.Format("\"{0}\" channel not found", channelName));
 		}
 	}
 }

@@ -95,7 +95,7 @@ namespace ISI.Extensions.WebClient
 
 									using (var responseStream = new System.IO.StreamReader(webResponse.GetResponseStream(), encoding))
 									{
-										throw new Exception(string.Format("{0}: {1}\n{2}", webResponse.StatusCode, webResponse.StatusDescription, responseStream.ReadToEnd()));
+										throw new(string.Format("{0}: {1}\n{2}", webResponse.StatusCode, webResponse.StatusDescription, responseStream.ReadToEnd()));
 									}
 								}
 							}
@@ -208,7 +208,7 @@ namespace ISI.Extensions.WebClient
 					{
 						var description = responseStream.ReadToEnd();
 
-						throw new Exception(string.Format("{0}: {1}\n{2}", webResponse.StatusCode, webResponse.StatusDescription, description));
+						throw new(string.Format("{0}: {1}\n{2}", webResponse.StatusCode, webResponse.StatusDescription, description));
 					}
 				}
 			}

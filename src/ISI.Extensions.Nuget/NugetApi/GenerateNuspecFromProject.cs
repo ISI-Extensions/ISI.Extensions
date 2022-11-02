@@ -30,7 +30,7 @@ namespace ISI.Extensions.Nuget
 		{
 			var response = new DTOs.GenerateNuspecFromProjectResponse();
 
-			response.Nuspec = new Nuspec();
+			response.Nuspec = new();
 
 			var projectDirectory = System.IO.Path.GetDirectoryName(request.ProjectFullName);
 
@@ -80,7 +80,7 @@ namespace ISI.Extensions.Nuget
 				}
 			}
 
-			var dependencies = GetProjectNugetPackageDependencies(new DTOs.GetProjectNugetPackageDependenciesRequest()
+			var dependencies = GetProjectNugetPackageDependencies(new()
 			{
 				ProjectFullName = request.ProjectFullName,
 				TryGetPackageVersion = request.TryGetPackageVersion,

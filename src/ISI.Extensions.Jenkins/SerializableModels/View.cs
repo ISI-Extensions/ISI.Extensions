@@ -39,7 +39,7 @@ namespace ISI.Extensions.Jenkins.SerializableModels
 
 		public ISI.Extensions.Jenkins.View Export()
 		{
-			return new ISI.Extensions.Jenkins.View()
+			return new()
 			{
 				Name = Name,
 				Description = Description,

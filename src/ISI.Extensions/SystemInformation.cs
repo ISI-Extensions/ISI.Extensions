@@ -79,7 +79,7 @@ namespace ISI.Extensions
 		{
 			var version = new System.Version(GetAssemblyVersion(assembly));
 
-			var buildDateTimeFromVersion = _jan1st2000.Add(new TimeSpan(
+			var buildDateTimeFromVersion = _jan1st2000.Add(new(
 				TimeSpan.TicksPerDay * version.Build + // days since 1 January 2000
 				TimeSpan.TicksPerSecond * 2 * version.Revision)); /* seconds since midnight, (multiply by 2 to get original) */
 

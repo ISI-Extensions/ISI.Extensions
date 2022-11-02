@@ -65,7 +65,7 @@ namespace ISI.Extensions.Nuget
 					{
 						Logger = Logger, //new NullLogger(),
 						WorkingDirectory = request.WorkingDirectory,
-						ProcessExeFullName = GetNugetExeFullName(new DTOs.GetNugetExeFullNameRequest()).NugetExeFullName,
+						ProcessExeFullName = GetNugetExeFullName(new()).NugetExeFullName,
 						Arguments = arguments.ToArray(),
 					});
 
@@ -152,7 +152,7 @@ namespace ISI.Extensions.Nuget
 									{
 										if (((System.Net.HttpWebResponse)webResponse).StatusCode != System.Net.HttpStatusCode.OK)
 										{
-											throw new Exception(string.Format("{0}: {1}", ((System.Net.HttpWebResponse)webResponse).StatusCode, ((System.Net.HttpWebResponse)webResponse).StatusDescription));
+											throw new(string.Format("{0}: {1}", ((System.Net.HttpWebResponse)webResponse).StatusCode, ((System.Net.HttpWebResponse)webResponse).StatusDescription));
 										}
 									}
 

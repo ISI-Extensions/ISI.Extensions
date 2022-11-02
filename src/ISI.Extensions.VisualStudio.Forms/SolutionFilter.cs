@@ -66,7 +66,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			{
 				Width = solution.Panel.Width,
 				Height = 24,
-				Margin = new System.Windows.Forms.Padding(0),
+				Margin = new(0),
 			};
 			solution.Panel.Resize += (resizeSender, resizeArgs) =>
 			{
@@ -82,7 +82,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 		public virtual void PopulatePanel(Action<Solution> start)
 		{
-			RadioButton = new System.Windows.Forms.RadioButton()
+			RadioButton = new()
 			{
 				Top = 6,
 				Left = 36,
@@ -107,7 +107,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			};
 			Panel.Controls.Add(RadioButton);
 
-			SolutionFilterLabel = new System.Windows.Forms.Label()
+			SolutionFilterLabel = new()
 			{
 				Text = Caption,
 				AutoSize = false,

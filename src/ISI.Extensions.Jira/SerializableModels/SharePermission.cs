@@ -28,7 +28,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.SharePermission Export()
 		{
-			return new ISI.Extensions.Jira.SharePermission()
+			return new()
 			{
 				SharePermissionId = SharePermissionId,
 				Type = Type,

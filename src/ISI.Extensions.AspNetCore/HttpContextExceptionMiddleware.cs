@@ -48,7 +48,7 @@ namespace ISI.Extensions.AspNetCore
 
 				var httpContextLogState = new HttpContextLogState(Logger.OperationKey(), Logger.ActivityKey(), httpContextHelper.Identity, httpContextHelper.ServerVariables, httpContextHelper.QueryString, httpContextHelper.FormValues, httpContextHelper.Cookies, httpContextHelper.VisitorUuid, httpContextHelper.VisitUuid);
 
-				Logger?.Log(LogLevel.Error, new EventId(1), httpContextLogState, exception, Formatter);
+				Logger?.Log(LogLevel.Error, new(1), httpContextLogState, exception, Formatter);
 			}
 		}
 

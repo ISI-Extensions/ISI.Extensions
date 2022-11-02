@@ -75,7 +75,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 			ForeColor = DefaultForeColor;
 
-			Icon = new Icon(ISI.Extensions.T4Resources.Artwork.GetLantern_icoStream());
+			Icon = new(ISI.Extensions.T4Resources.Artwork.GetLantern_icoStream());
 			ControlBox = true;
 			MaximizeBox = false;
 			MinimizeBox = false;
@@ -128,7 +128,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 				{
 					if (solution.Panel.Size.Width != width)
 					{
-						solution.Panel.Size = new Size(width, solution.Panel.Size.Height);
+						solution.Panel.Size = new(width, solution.Panel.Size.Height);
 					}
 				}
 			}

@@ -116,7 +116,7 @@ namespace ISI.Extensions.GoDrive.GoDriveFileSystem
 		{
 			var goDriveApi = new GoDriveApi();
 
-			var listFilesResponse = goDriveApi.ListFiles(new DTOs.ListFilesRequest()
+			var listFilesResponse = goDriveApi.ListFiles(new()
 			{
 				DirectoryUrl = fileSystemPathDirectory.AttributedFullPath(),
 				Recursive = doRecursive,

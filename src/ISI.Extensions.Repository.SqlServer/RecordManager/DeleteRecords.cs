@@ -29,12 +29,12 @@ namespace ISI.Extensions.Repository.SqlServer
 		{
 			if (!(whereClause is IWhereClauseWithGetSql whereClauseWithGetSql))
 			{
-				throw new Exception("Where clause must implement IWhereClauseWithGetSql");
+				throw new("Where clause must implement IWhereClauseWithGetSql");
 			}
 
 			if (!(whereClause is IWhereClauseWithGetParameters whereClauseWithGetParameters))
 			{
-				throw new Exception("Where clause must implement IWhereClauseWithGetParameters");
+				throw new("Where clause must implement IWhereClauseWithGetParameters");
 			}
 
 			var deleteCount = 0;

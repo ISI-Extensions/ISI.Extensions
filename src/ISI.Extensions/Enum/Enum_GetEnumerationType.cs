@@ -35,7 +35,7 @@ namespace ISI.Extensions
 
 			if (!type.IsEnum)
 			{
-				throw new Exception("Object is not a Enum");
+				throw new("Object is not a Enum");
 			}
 
 			return type;

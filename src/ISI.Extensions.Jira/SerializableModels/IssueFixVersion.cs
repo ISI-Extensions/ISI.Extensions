@@ -28,7 +28,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.IssueFixVersion Export()
 		{
-			return new ISI.Extensions.Jira.IssueFixVersion()
+			return new()
 			{
 				IssueFixVersionId = IssueFixVersionId,
 				IssueFixVersionUrl = IssueFixVersionUrl,

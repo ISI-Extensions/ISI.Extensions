@@ -90,7 +90,7 @@ namespace ISI.Extensions.TemplateProviders
 		{
 			if (!IsTemplateProviderFor(contentGenerator))
 			{
-				throw new Exception("Wrong content generator template type");
+				throw new("Wrong content generator template type");
 			}
 
 			{
@@ -117,7 +117,7 @@ namespace ISI.Extensions.TemplateProviders
 		{
 			if (!IsTemplateProviderFor(contentGenerator))
 			{
-				throw new Exception("Wrong content generator template type");
+				throw new("Wrong content generator template type");
 			}
 
 			var templateFileName = string.Empty;
@@ -139,7 +139,7 @@ namespace ISI.Extensions.TemplateProviders
 
 			if (string.IsNullOrWhiteSpace(templateFileName))
 			{
-				throw new Exception("No TemplateFileName Provided");
+				throw new("No TemplateFileName Provided");
 			}
 
 			return templateFileName;
@@ -149,7 +149,7 @@ namespace ISI.Extensions.TemplateProviders
 		{
 			if (!IsTemplateProviderFor(contentGenerator))
 			{
-				throw new Exception("Wrong content generator template type");
+				throw new("Wrong content generator template type");
 			}
 
 			var templateFileName = string.Empty;
@@ -176,7 +176,7 @@ namespace ISI.Extensions.TemplateProviders
 		{
 			if (!IsTemplateProviderFor(contentGenerator))
 			{
-				throw new Exception("Wrong content generator template type");
+				throw new("Wrong content generator template type");
 			}
 
 			var templateFileName = string.Empty;
@@ -203,7 +203,7 @@ namespace ISI.Extensions.TemplateProviders
 		{
 			if (!IsTemplateProviderFor(contentGenerator))
 			{
-				throw new Exception("Wrong content generator template type");
+				throw new("Wrong content generator template type");
 			}
 
 			var templateFileName = string.Empty;

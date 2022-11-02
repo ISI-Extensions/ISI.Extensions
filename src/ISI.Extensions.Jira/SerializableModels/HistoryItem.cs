@@ -27,7 +27,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.HistoryItem Export()
 		{
-			return new ISI.Extensions.Jira.HistoryItem()
+			return new()
 			{
 				Field = Field,
 				FieldType = FieldType,

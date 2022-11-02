@@ -25,7 +25,7 @@ namespace ISI.Extensions.Nuget
 		{
 			if (!System.IO.File.Exists(SettingsFileName))
 			{
-				return new ISI.Extensions.Nuget.SerializableModels.NugetSettings();
+				return new();
 			}
 
 			using (new ISI.Extensions.Locks.FileLock(SettingsFileName))

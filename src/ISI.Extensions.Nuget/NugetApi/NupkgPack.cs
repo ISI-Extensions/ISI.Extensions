@@ -54,7 +54,7 @@ namespace ISI.Extensions.Nuget
 			{
 				Logger = Logger, //new NullLogger(),
 				WorkingDirectory = request.WorkingDirectory,
-				ProcessExeFullName = GetNugetExeFullName(new DTOs.GetNugetExeFullNameRequest()).NugetExeFullName,
+				ProcessExeFullName = GetNugetExeFullName(new()).NugetExeFullName,
 				Arguments = arguments,
 			});
 			

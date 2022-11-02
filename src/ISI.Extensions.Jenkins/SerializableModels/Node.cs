@@ -48,7 +48,7 @@ namespace ISI.Extensions.Jenkins.SerializableModels
 
 		public ISI.Extensions.Jenkins.Node Export()
 		{
-			return new ISI.Extensions.Jenkins.Node()
+			return new()
 			{
 				Mode = Mode,
 				SlaveAgentPort = SlaveAgentPort,

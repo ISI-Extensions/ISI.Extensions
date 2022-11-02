@@ -28,7 +28,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.Status Export()
 		{
-			return new ISI.Extensions.Jira.Status()
+			return new()
 			{
 				StatusId = StatusId,
 				Name = Name,

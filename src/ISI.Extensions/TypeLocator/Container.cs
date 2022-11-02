@@ -65,7 +65,7 @@ namespace ISI.Extensions.TypeLocator
 						{
 							if (!ImplementationTypesLookup.TryGetValue(attributeType, out var implementationTypes))
 							{
-								implementationTypes = new List<Type>();
+								implementationTypes = new();
 								ImplementationTypesLookup.Add(attributeType, implementationTypes);
 							}
 

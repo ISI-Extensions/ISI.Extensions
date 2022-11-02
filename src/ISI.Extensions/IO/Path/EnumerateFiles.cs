@@ -120,7 +120,7 @@ namespace ISI.Extensions
 				{
 					Parallel.ForEach(
 						pathInfo.GetDirectories().Where(directoryInfo => !ignorePatterns.Any(ignorePattern => ignorePattern(directoryInfo.Name))),
-						new ParallelOptions()
+						new()
 						{
 							CancellationToken = cancellationTokenSource.Token,
 						},

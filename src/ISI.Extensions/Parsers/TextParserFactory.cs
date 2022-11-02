@@ -62,7 +62,7 @@ namespace ISI.Extensions
 				return FileExtensionToTextDelimiter[fileExtension];
 			}
 
-			throw new Exception(string.Format("Delimited parser for file Extension: \"{0}\" not found", fileExtension));
+			throw new(string.Format("Delimited parser for file Extension: \"{0}\" not found", fileExtension));
 		}
 
 		public static ISI.Extensions.Parsers.ITextParser GetTextParser(TextDelimiter textDelimiter)

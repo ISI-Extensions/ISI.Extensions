@@ -135,7 +135,7 @@ namespace ISI.Extensions.Emails.EmailGenerator
 			where TModel : class, IModel
 			where TResult : ISI.Extensions.Emails.IMailMessage, new()
 		{
-			return GenerateEmail<TResult, TModel>(model, new TResult());
+			return GenerateEmail<TResult, TModel>(model, new());
 		}
 
 		public virtual TResult GenerateEmail<TResult, TModel>(TModel model, TResult instance)

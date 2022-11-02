@@ -29,7 +29,7 @@ namespace ISI.Extensions.Ngrok.SerializableModels.ClientApi
 	{
 		public ISI.Extensions.Ngrok.TunnelHttpConnections Export()
 		{
-			return new ISI.Extensions.Ngrok.TunnelHttpConnections()
+			return new()
 			{
 				Count = Count,
 				Rate1 = Rate1,

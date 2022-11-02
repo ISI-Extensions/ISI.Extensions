@@ -49,7 +49,7 @@ namespace ISI.Extensions.Jenkins.SerializableModels
 
 		public ISI.Extensions.Jenkins.Build Export()
 		{
-			return new ISI.Extensions.Jenkins.Build()
+			return new()
 			{
 				Actions = Actions.ToNullCheckedArray(x => x.Export()),
 				Number = Number,

@@ -37,7 +37,7 @@ namespace ISI.Extensions.Repository.Extensions
 						{
 							if (throwException)
 							{
-								throw new System.Exception(string.Format("Column: {0}, is too big, Value: {1}", propertyDescription.ColumnName, value));
+								throw new(string.Format("Column: {0}, is too big, Value: {1}", propertyDescription.ColumnName, value));
 							}
 
 							return false;

@@ -30,7 +30,7 @@ namespace ISI.Extensions.Aspose.Extensions
 		{
 			if (!string.IsNullOrWhiteSpace(printerName))
 			{
-				printerSettings ??= new System.Drawing.Printing.PrinterSettings();
+				printerSettings ??= new();
 				if (!string.IsNullOrEmpty(printerName))
 				{
 					printerSettings.PrinterName = printerName;

@@ -28,7 +28,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.IssueLink Export()
 		{
-			return new ISI.Extensions.Jira.IssueLink()
+			return new()
 			{
 				IssueLinkId = IssueLinkId,
 				IssueLinkUrl = IssueLinkUrl,

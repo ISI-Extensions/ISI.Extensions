@@ -261,7 +261,7 @@ namespace ISI.Extensions.WebClient
 							if (values.Length >= 2)
 							{
 								request.Credentials = new System.Net.CredentialCache();
-								((System.Net.CredentialCache)request.Credentials).Add(request.RequestUri, Keys.Basic.Trim(), new System.Net.NetworkCredential(values[0], values[1]));
+								((System.Net.CredentialCache)request.Credentials).Add(request.RequestUri, Keys.Basic.Trim(), new(values[0], values[1]));
 								request.PreAuthenticate = true;
 							}
 							else

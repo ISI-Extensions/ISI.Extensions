@@ -31,7 +31,7 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 		{
 			_rootObjectType = rootObjectType;
 
-			_typeToSerializeMap = new System.Collections.Concurrent.ConcurrentDictionary<Type, Type>();
+			_typeToSerializeMap = new();
 		}
 
 		protected override IList<global::Newtonsoft.Json.Serialization.JsonProperty> CreateProperties(Type type, global::Newtonsoft.Json.MemberSerialization memberSerialization)
@@ -61,7 +61,7 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 
 		static InterfaceTypeContractResolver()
 		{
-			_typeContractResolvers = new System.Collections.Concurrent.ConcurrentDictionary<string, InterfaceTypeContractResolver>();
+			_typeContractResolvers = new();
 		}
 
 		public static InterfaceTypeContractResolver GetTypeContractResolver(Type rootObjectType, object value)
@@ -70,7 +70,7 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 
 			var key = string.Format("{0}|{1}", rootObjectType.AssemblyQualifiedName, valueType.AssemblyQualifiedName);
 
-			return _typeContractResolvers.GetOrAdd(key, _ => new InterfaceTypeContractResolver(rootObjectType));
+			return _typeContractResolvers.GetOrAdd(key, _ => new(rootObjectType));
 		}
 	}
 }

@@ -28,7 +28,7 @@ namespace ISI.Extensions.GoDaddy.SerializableModels.DomainsApi
 	{
 		public static DnsRecord ToSerializable(ISI.Extensions.Dns.DnsRecord dnsRecord)
 		{
-			return new DnsRecord()
+			return new()
 			{
 				Data = dnsRecord.Data,
 				Name = dnsRecord.Name,
@@ -44,7 +44,7 @@ namespace ISI.Extensions.GoDaddy.SerializableModels.DomainsApi
 
 		public ISI.Extensions.Dns.DnsRecord Export()
 		{
-			return new ISI.Extensions.Dns.DnsRecord()
+			return new()
 			{
 				Data = Data,
 				Name = Name,

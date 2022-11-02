@@ -39,7 +39,7 @@ namespace ISI.Extensions.Aspose.Extensions
 				{
 					var imageSaveOptions = new global::Aspose.Words.Saving.ImageSaveOptions(global::Aspose.Words.SaveFormat.Tiff)
 					{
-						PageSet = new global::Aspose.Words.Saving.PageSet(new global::Aspose.Words.Saving.PageRange(0, document.PageCount)),
+						PageSet = new(new global::Aspose.Words.Saving.PageRange(0, document.PageCount)),
 					};
 
 					document.Save(documentStream, imageSaveOptions);

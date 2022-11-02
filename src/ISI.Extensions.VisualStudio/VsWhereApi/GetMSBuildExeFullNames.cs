@@ -42,7 +42,7 @@ namespace ISI.Extensions.VisualStudio
 			var processResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{
 				//Logger = logger,
-				ProcessExeFullName = GetVsWhereExeFullName(new DTOs.GetVsWhereExeFullNameRequest()).VsWhereExeFullName,
+				ProcessExeFullName = GetVsWhereExeFullName(new()).VsWhereExeFullName,
 				Arguments = arguments,
 			});
 

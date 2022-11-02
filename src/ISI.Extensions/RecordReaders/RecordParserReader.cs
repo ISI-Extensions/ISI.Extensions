@@ -56,7 +56,7 @@ namespace ISI.Extensions.RecordReaders
 			{
 				var result = false;
 
-				StreamReader ??= new System.IO.StreamReader(SourceStream);
+				StreamReader ??= new(SourceStream);
 
 				while (!result && !StreamReader.EndOfStream)
 				{

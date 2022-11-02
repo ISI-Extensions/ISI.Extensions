@@ -27,7 +27,7 @@ namespace ISI.Extensions.Aspose.InternalTryNotToUseExtensions
 		{
 			if (!(documentEditor is ISI.Extensions.Aspose.Words.DocumentEditor asposeDocumentEditor))
 			{
-				throw new Exception(string.Format("{0} is not of type {1}", nameof(documentEditor), typeof(ISI.Extensions.Aspose.Words.DocumentEditor).FullName));
+				throw new(string.Format("{0} is not of type {1}", nameof(documentEditor), typeof(ISI.Extensions.Aspose.Words.DocumentEditor).FullName));
 			}
 
 			return asposeDocumentEditor._documentBuilder.Document;

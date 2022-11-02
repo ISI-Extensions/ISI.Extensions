@@ -30,7 +30,7 @@ namespace ISI.Extensions.VisualStudio
 		{
 			var response = new DTOs.GetProjectDetailsResponse();
 
-			response.ProjectDetails = new ProjectDetails();
+			response.ProjectDetails = new();
 
 			if (System.IO.Directory.Exists(request.Project))
 			{
@@ -52,12 +52,12 @@ namespace ISI.Extensions.VisualStudio
 					}
 					else
 					{
-						throw new Exception(string.Format("Cannot determine which project to update \"{0}\"", request.Project));
+						throw new(string.Format("Cannot determine which project to update \"{0}\"", request.Project));
 					}
 				}
 				else
 				{
-					throw new Exception(string.Format("Cannot find a project to update \"{0}\"", request.Project));
+					throw new(string.Format("Cannot find a project to update \"{0}\"", request.Project));
 				}
 			}
 

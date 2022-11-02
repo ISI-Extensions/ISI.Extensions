@@ -27,7 +27,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.HistoryMetadataParticipant Export()
 		{
-			return new ISI.Extensions.Jira.HistoryMetadataParticipant()
+			return new()
 			{
 				HistoryMetadataParticipantId = HistoryMetadataParticipantId,
 				DisplayName = DisplayName,

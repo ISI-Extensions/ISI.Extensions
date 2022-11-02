@@ -28,7 +28,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.AvatarUrls Export()
 		{
-			return new ISI.Extensions.Jira.AvatarUrls()
+			return new()
 			{
 				Resolution48X48Url = Resolution48X48Url,
 				Resolution32X32Url = Resolution32X32Url,

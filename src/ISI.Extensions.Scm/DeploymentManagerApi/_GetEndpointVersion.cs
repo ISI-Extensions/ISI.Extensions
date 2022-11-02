@@ -46,7 +46,7 @@ namespace ISI.Extensions.Scm
 							var uri = new UriBuilder(servicesManagerUrl);
 							uri.SetPathAndQueryString(string.Empty);
 
-							var restResponse = ISI.Extensions.WebClient.Rest.ExecuteGet<ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), false);
+							var restResponse = ISI.Extensions.WebClient.Rest.ExecuteGet<ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, new(), false);
 
 							var version = (string)null;
 							if((restResponse?.ResponseHeaders?.TryGetValue(HeaderKey.ServicesManagerVersion, out version)).GetValueOrDefault())

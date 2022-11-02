@@ -79,7 +79,7 @@ namespace ISI.Extensions.Ngrok
 		{
 			foreach (var tunnel in _tunnels.NullCheckedWhere(tunnel => tunnel.NewTunnel))
 			{
-				NGrokLocalServiceApi.StopTunnels(new ISI.Extensions.Ngrok.DataTransferObjects.NGrokLocalServiceApi.StopTunnelsRequest()
+				NGrokLocalServiceApi.StopTunnels(new()
 				{
 					TunnelNames = new[] { tunnel.TunnelName },
 				});

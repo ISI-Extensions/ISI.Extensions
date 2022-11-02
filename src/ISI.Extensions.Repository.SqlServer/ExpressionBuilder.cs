@@ -32,7 +32,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 			if (constructor == null)
 			{
-				throw new Exception("Needs a parameterless constructor");
+				throw new("Needs a parameterless constructor");
 			}
 
 			var dbDataReaderExtensionsType = typeof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions);

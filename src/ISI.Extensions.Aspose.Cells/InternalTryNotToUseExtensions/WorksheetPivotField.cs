@@ -27,7 +27,7 @@ namespace ISI.Extensions.Aspose.InternalTryNotToUseExtensions
 		{
 			if (!(worksheetPivotField is ISI.Extensions.Aspose.Cells.WorksheetPivotField asposeWorksheetPivotField))
 			{
-				throw new Exception(string.Format("{0} is not of type {1}", nameof(worksheetPivotField), typeof(ISI.Extensions.Aspose.Cells.WorksheetPivotField).FullName));
+				throw new(string.Format("{0} is not of type {1}", nameof(worksheetPivotField), typeof(ISI.Extensions.Aspose.Cells.WorksheetPivotField).FullName));
 			}
 
 			return asposeWorksheetPivotField._pivotField;

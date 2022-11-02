@@ -41,7 +41,7 @@ namespace ISI.Extensions.Scm
 	public DateTimeStampVersion(string dateTimeStamp, string version)
 	{
 		DateTimeStamp = dateTimeStamp;
-		Version = new Version(version);
+		Version = new(version);
 	}
 
 	public string Value

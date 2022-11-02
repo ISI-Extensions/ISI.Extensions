@@ -33,15 +33,15 @@ namespace ISI.Extensions.Caching.MessageBus.Controllers
 			{
 				var clearCacheRequest = request.NullCheckedConvert(source => new ISI.Extensions.Caching.ClearCacheRequest()
 				{
-					CacheKeyScopes = new HashSet<string>(source.CacheKeyScopes ?? Array.Empty<string>()),
+					CacheKeyScopes = new(source.CacheKeyScopes ?? Array.Empty<string>()),
 					ClearAll = source.ClearAll,
-					CacheKeys = new HashSet<string>(source.CacheKeys ?? Array.Empty<string>()),
-					CacheKeysWithCacheKeyInstanceUuid = new HashSet<ISI.Extensions.Caching.ClearCacheRequestCacheKeyWithCacheKeyInstanceUuid>(source.CacheKeysWithCacheKeyInstanceUuid.ToNullCheckedArray(cacheKeyWithCacheKeyInstanceUuid => new ISI.Extensions.Caching.ClearCacheRequestCacheKeyWithCacheKeyInstanceUuid()
+					CacheKeys = new(source.CacheKeys ?? Array.Empty<string>()),
+					CacheKeysWithCacheKeyInstanceUuid = new(source.CacheKeysWithCacheKeyInstanceUuid.ToNullCheckedArray(cacheKeyWithCacheKeyInstanceUuid => new ISI.Extensions.Caching.ClearCacheRequestCacheKeyWithCacheKeyInstanceUuid()
 					{
 						CacheKey = cacheKeyWithCacheKeyInstanceUuid.CacheKey,
 						CacheKeyInstanceUuid = cacheKeyWithCacheKeyInstanceUuid.CacheKeyInstanceUuid,
 					}) ?? Array.Empty<ClearCacheRequestCacheKeyWithCacheKeyInstanceUuid>(), new ISI.Extensions.Caching.ClearCacheRequestCacheKeyWithCacheKeyInstanceUuidEqualityComparer()),
-					CacheKeyPrefixes = new HashSet<string>(source.CacheKeyPrefixes ?? Array.Empty<string>()),
+					CacheKeyPrefixes = new(source.CacheKeyPrefixes ?? Array.Empty<string>()),
 				});
 
 				if (Configuration.EnterpriseCacheManagerApi.EnqueueIncomingClearRequests)

@@ -94,25 +94,25 @@ namespace ISI.Extensions.Scm
 		}
 
 		private SettingsActiveDirectory _activeDirectory = null;
-		public SettingsActiveDirectory ActiveDirectory => _activeDirectory ??= new SettingsActiveDirectory(this);
+		public SettingsActiveDirectory ActiveDirectory => _activeDirectory ??= new(this);
 
 		private SettingsScm _scm = null;
-		public SettingsScm Scm => _scm ??= new SettingsScm(this);
+		public SettingsScm Scm => _scm ??= new(this);
 
 		private SettingsCodeSigning _codeSigning = null;
-		public SettingsCodeSigning CodeSigning => _codeSigning ??= new SettingsCodeSigning(this);
+		public SettingsCodeSigning CodeSigning => _codeSigning ??= new(this);
 
 		private SettingsNuget _nuget = null;
-		public SettingsNuget Nuget => _nuget ??= new SettingsNuget(this);
+		public SettingsNuget Nuget => _nuget ??= new(this);
 
 		private SettingsVSExtensions _vsExtensions = null;
-		public SettingsVSExtensions VSExtensions => _vsExtensions ??= new SettingsVSExtensions(this);
+		public SettingsVSExtensions VSExtensions => _vsExtensions ??= new(this);
 
 		private SettingsJenkins _jenkins = null;
-		public SettingsJenkins Jenkins => _jenkins ??= new SettingsJenkins(this);
+		public SettingsJenkins Jenkins => _jenkins ??= new(this);
 
 		private SettingsFileStore _fileStore = null;
-		public SettingsFileStore FileStore => _fileStore ??= new SettingsFileStore(this);
+		public SettingsFileStore FileStore => _fileStore ??= new(this);
 
 		public string[] AllKeys => Values.Keys.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
@@ -157,7 +157,7 @@ namespace ISI.Extensions.Scm
 		internal void SetValue(string key, string value)
 		{
 			Values.Remove(key);
-			Values.Add(new KeyValuePair<string, string>(key, value));
+			Values.Add(new(key, value));
 		}
 
 		public override string ToString() => string.Join("\r\n", Values.Select(keyValue => string.Format("{0} => {1}", keyValue.Key, keyValue.Value)));

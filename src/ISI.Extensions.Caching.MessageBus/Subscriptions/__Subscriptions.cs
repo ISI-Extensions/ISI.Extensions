@@ -29,7 +29,7 @@ namespace ISI.Extensions.Caching.MessageBus
 
 		public static IEnumerable<ISI.Extensions.MessageBus.IMessageBusBuildRequest> GetAddSubscriptions(Configuration configuration)
 		{
-			configuration ??= new Configuration();
+			configuration ??= new();
 
 			return new[]
 			{

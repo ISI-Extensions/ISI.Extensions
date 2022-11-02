@@ -60,7 +60,7 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 			var serializeRequest = Encoding.UTF8.GetString(requestMessage.Body);
 			var request = _jsonSerializer.Deserialize(Type.GetType(requestMessage.Label), serializeRequest);
 
-			return new RequestContext<TRequest>(requestMessage, serializeRequest, request);
+			return new(requestMessage, serializeRequest, request);
 		}
 
 		protected virtual void BeginRequest()

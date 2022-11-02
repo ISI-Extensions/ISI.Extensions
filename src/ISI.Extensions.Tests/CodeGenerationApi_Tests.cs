@@ -68,7 +68,7 @@ namespace ISI.Extensions.Tests
 		{
 			var codeGenerationApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.CodeGenerationApi>();
 
-			codeGenerationApi.GenerateAssemblyInfoFile(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeGenerationApi.GenerateAssemblyInfoFileRequest()
+			codeGenerationApi.GenerateAssemblyInfoFile(new()
 			{
 				AssemblyInfoFullName = @"C:\Temp\Version.cs",
 				Version = "10.1.1.1",
@@ -89,12 +89,12 @@ namespace ISI.Extensions.Tests
 		public string CertificateFingerprint { get; set; }
 ";
 
-			var classDefinition = codeGenerationApi.ParseClassDefinition(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeGenerationApi.ParseClassDefinitionRequest()
+			var classDefinition = codeGenerationApi.ParseClassDefinition(new()
 			{
 				Definition = sample,
 			}).ClassDefinition;
 
-			var generatedClassDefinition = codeGenerationApi.GenerateClassDefinition(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeGenerationApi.GenerateClassDefinitionRequest()
+			var generatedClassDefinition = codeGenerationApi.GenerateClassDefinition(new()
 			{
 				ClassDefinition = classDefinition,
 				FormatPropertyName = ISI.Extensions.VisualStudio.StringCaseFormat.No,
@@ -121,12 +121,12 @@ namespace ISI.Extensions.Tests
 		public string CertificateFingerprint { get; set; }
 ";
 
-			var classDefinition = codeGenerationApi.ParseClassDefinition(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeGenerationApi.ParseClassDefinitionRequest()
+			var classDefinition = codeGenerationApi.ParseClassDefinition(new()
 			{
 				Definition = sample,
 			}).ClassDefinition;
 
-			var assignmentConversion = codeGenerationApi.GenerateClassDefinitionConversion(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeGenerationApi.GenerateClassDefinitionConversionRequest()
+			var assignmentConversion = codeGenerationApi.GenerateClassDefinitionConversion(new()
 			{
 				ClassDefinition = classDefinition,
 				FormatPropertyName = ISI.Extensions.VisualStudio.StringCaseFormat.No,
@@ -135,7 +135,7 @@ namespace ISI.Extensions.Tests
 				ConversionSeparator = ";",
 			}).Content;
 
-			var constructorConversion = codeGenerationApi.GenerateClassDefinitionConversion(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeGenerationApi.GenerateClassDefinitionConversionRequest()
+			var constructorConversion = codeGenerationApi.GenerateClassDefinitionConversion(new()
 			{
 				ClassDefinition = classDefinition,
 				FormatPropertyName = ISI.Extensions.VisualStudio.StringCaseFormat.No,

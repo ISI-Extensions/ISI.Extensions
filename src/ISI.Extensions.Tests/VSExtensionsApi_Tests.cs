@@ -74,14 +74,14 @@ namespace ISI.Extensions.Tests
 			var scmApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.ScmApi>();
 			var vsExtensionsApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.VSExtensionsApi>();
 
-			var authenticationToken = scmApi.GetAuthenticationToken(new ISI.Extensions.Scm.DataTransferObjects.ScmApi.GetAuthenticationTokenRequest()
+			var authenticationToken = scmApi.GetAuthenticationToken(new()
 			{
 				ScmManagementUrl = settings.Scm.WebServiceUrl,
 				UserName = settings.ActiveDirectory.UserName,
 				Password = settings.ActiveDirectory.Password,
 			}).AuthenticationToken;
 
-			vsExtensionsApi.UploadExtension(new ISI.Extensions.Scm.DataTransferObjects.VSExtensionsApi.UploadExtensionRequest()
+			vsExtensionsApi.UploadExtension(new()
 			{
 				RepositoryUrl = settings.VSExtensions.RepositoryUrl,
 				AuthenticationToken = authenticationToken,

@@ -37,7 +37,7 @@ namespace ISI.Extensions
 
 			public CronExpressionMinutes(string source)
 			{
-				Action throwError = () => throw new System.Exception(string.Format("Minutes: Cannot parse \"{0}\"", source));
+				Action throwError = () => throw new(string.Format("Minutes: Cannot parse \"{0}\"", source));
 
 				var parser = new ISI.Extensions.Parsers.DelimitedTextParser(',');
 
@@ -101,7 +101,7 @@ namespace ISI.Extensions
 
 			internal CronExpressionMinutes Clone()
 			{
-				return new CronExpressionMinutes(MinuteFlags);
+				return new(MinuteFlags);
 			}
 
 			public override string ToString()

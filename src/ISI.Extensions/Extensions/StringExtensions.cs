@@ -500,7 +500,7 @@ namespace ISI.Extensions.Extensions
 				return null;
 			}
 
-			return new UriBuilder(url);
+			return new(url);
 		}
 
 		public static Uri ToUri(this string url)

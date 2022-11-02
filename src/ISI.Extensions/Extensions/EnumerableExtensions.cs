@@ -137,7 +137,7 @@ namespace ISI.Extensions.Extensions
 			{
 				if (_semaphore == null)
 				{
-					_semaphore = new System.Threading.Semaphore(0, 1);
+					_semaphore = new(0, 1);
 				}
 				else
 				{
@@ -155,7 +155,7 @@ namespace ISI.Extensions.Extensions
 				{
 					if (_hasNextValue)
 					{
-						chunkEnumerable = new ChunkEnumerable<TValue>(this);
+						chunkEnumerable = new(this);
 
 						return true;
 					}
@@ -165,7 +165,7 @@ namespace ISI.Extensions.Extensions
 						_nextValue = _enumerator.Current;
 						_hasNextValue = true;
 
-						chunkEnumerable = new ChunkEnumerable<TValue>(this);
+						chunkEnumerable = new(this);
 
 						return true;
 					}
@@ -179,7 +179,7 @@ namespace ISI.Extensions.Extensions
 
 			internal ChunkEnumerator<TValue> GetNextChunkEnumerator()
 			{
-				return (_chunkEnumerator = new ChunkEnumerator<TValue>(this, _chunkSize));
+				return (_chunkEnumerator = new(this, _chunkSize));
 			}
 
 			public void Dispose()

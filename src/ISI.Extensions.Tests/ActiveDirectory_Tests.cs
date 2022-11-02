@@ -74,7 +74,7 @@ namespace ISI.Extensions.Tests
 
 			var securityApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Security.ISecurityApi>();
 
-			Console.WriteLine(securityApi.GetCurrentDomainName(new ISI.Extensions.Security.DataTransferObjects.SecurityApi.GetCurrentDomainNameRequest()).DomainName);
+			Console.WriteLine(securityApi.GetCurrentDomainName(new()).DomainName);
 		}
 
 		[Test]
@@ -86,19 +86,19 @@ namespace ISI.Extensions.Tests
 
 			var securityApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Security.ISecurityApi>();
 
-			Console.WriteLine(securityApi.AuthenticateUser(new ISI.Extensions.Security.DataTransferObjects.SecurityApi.AuthenticateUserRequest()
+			Console.WriteLine(securityApi.AuthenticateUser(new()
 			{
 				UserName = settings.ActiveDirectory.UserName,
 				Password = settings.ActiveDirectory.Password,
 			}).Authenticated.TrueFalse());
 
-			Console.WriteLine(securityApi.AuthenticateUser(new ISI.Extensions.Security.DataTransferObjects.SecurityApi.AuthenticateUserRequest()
+			Console.WriteLine(securityApi.AuthenticateUser(new()
 			{
 				UserName = string.Format("{0}-{1}", settings.ActiveDirectory.UserName, Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)),
 				Password = settings.ActiveDirectory.Password,
 			}).Authenticated.TrueFalse());
 
-			Console.WriteLine(securityApi.AuthenticateUser(new ISI.Extensions.Security.DataTransferObjects.SecurityApi.AuthenticateUserRequest()
+			Console.WriteLine(securityApi.AuthenticateUser(new()
 			{
 				UserName = settings.ActiveDirectory.UserName,
 				Password = string.Format("{0}-{1}", settings.ActiveDirectory.Password, Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)),
@@ -114,7 +114,7 @@ namespace ISI.Extensions.Tests
 
 			var securityApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Security.ISecurityApi>();
 
-			var users = securityApi.GetUsers(new ISI.Extensions.Security.DataTransferObjects.SecurityApi.GetUsersRequest()
+			var users = securityApi.GetUsers(new()
 			{
 				UserNames = new []{ settings.ActiveDirectory.UserName },
 			}).Users;
@@ -141,7 +141,7 @@ namespace ISI.Extensions.Tests
 
 			var securityApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Security.ISecurityApi>();
 
-			var users = securityApi.ListUsers(new ISI.Extensions.Security.DataTransferObjects.SecurityApi.ListUsersRequest()).Users;
+			var users = securityApi.ListUsers(new()).Users;
 
 			foreach (var user in users)
 			{
@@ -165,7 +165,7 @@ namespace ISI.Extensions.Tests
 
 			var securityApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Security.ISecurityApi>();
 
-			var roles = securityApi.ListRoles(new ISI.Extensions.Security.DataTransferObjects.SecurityApi.ListRolesRequest()).Roles;
+			var roles = securityApi.ListRoles(new()).Roles;
 
 			foreach (var role in roles)
 			{

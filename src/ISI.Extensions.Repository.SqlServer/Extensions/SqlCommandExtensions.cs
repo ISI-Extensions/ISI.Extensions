@@ -53,14 +53,14 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 
 				if (type == typeof(DateTime))
 				{
-					return new Microsoft.Data.SqlClient.SqlParameter(parameterName, System.Data.SqlDbType.DateTime2)
+					return new(parameterName, System.Data.SqlDbType.DateTime2)
 					{
 						Value = parameterValue
 					};
 				}
 			}
 
-			return new Microsoft.Data.SqlClient.SqlParameter(parameterName, parameterValue);
+			return new(parameterName, parameterValue);
 		}
 
 		public static Microsoft.Data.SqlClient.SqlParameter GetSqlParameter(this KeyValuePair<string, object> parameter)
@@ -117,7 +117,7 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 
 				Logger?.LogError(exception, message);
 
-				exception = new Exception(message, exception);
+				exception = new(message, exception);
 
 				throw exception;
 			}
@@ -146,7 +146,7 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 
 				Logger?.LogError(exception, message);
 
-				exception = new Exception(message, exception);
+				exception = new(message, exception);
 
 				throw exception;
 			}
@@ -175,7 +175,7 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 
 				Logger?.LogError(exception, message);
 
-				exception = new Exception(message, exception);
+				exception = new(message, exception);
 
 				throw exception;
 			}

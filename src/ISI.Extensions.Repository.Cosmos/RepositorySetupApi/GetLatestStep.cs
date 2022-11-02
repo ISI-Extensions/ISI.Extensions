@@ -38,7 +38,7 @@ namespace ISI.Extensions.Repository.Cosmos
 			{
 				var query = GetClient().CreateDocumentQuery<DatabaseMigrationStepRecord>(
 						Microsoft.Azure.Documents.Client.UriFactory.CreateDocumentCollectionUri(DatabaseName, DatabaseMigrationStepTableName),
-						new Microsoft.Azure.Documents.Client.FeedOptions {MaxItemCount = -1})
+						new() {MaxItemCount = -1})
 					.AsDocumentQuery();
 
 				while (query.HasMoreResults)

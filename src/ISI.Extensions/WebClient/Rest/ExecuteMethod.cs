@@ -50,7 +50,7 @@ namespace ISI.Extensions.WebClient
 		public static TResponse ExecuteFormRequestMethod<TResponse>(string httpMethod, Uri uri, HeaderCollection headers, FormDataCollection request, bool throwUnhandledException, System.Security.Authentication.SslProtocols? overRideSecurityProtocolTypes = null, System.Net.Security.RemoteCertificateValidationCallback serverCertificateValidationCallback = null, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates = null, System.Net.CookieContainer cookieContainer = null)
 			where TResponse : class
 		{
-			var response = ExecuteFormRequestMethod(new RestResponseTypeCollection()
+			var response = ExecuteFormRequestMethod(new()
 			{
 				DefaultRestResponseType = typeof(TResponse)
 			}, httpMethod, uri, headers, request, throwUnhandledException, overRideSecurityProtocolTypes, serverCertificateValidationCallback, clientCertificates, cookieContainer);
@@ -74,13 +74,13 @@ namespace ISI.Extensions.WebClient
 			where TResponse : class
 			where TErrorResponse : class
 		{
-			var response = ExecuteFormRequestMethod(new RestResponseTypeCollection()
+			var response = ExecuteFormRequestMethod(new()
 			{
 				DefaultRestResponseType = typeof(TResponse),
 				DefaultErrorRestResponseType = typeof(TErrorResponse),
 			}, httpMethod, uri, headers, request, throwUnhandledException, overRideSecurityProtocolTypes, serverCertificateValidationCallback, clientCertificates, cookieContainer);
 
-			return new RestResponse<TResponse, TErrorResponse>(response.StatusCode, (response.IsErrorResponse ? null : response.Response as TResponse), (response.IsErrorResponse ? response.Response as TErrorResponse : null));
+			return new(response.StatusCode, (response.IsErrorResponse ? null : response.Response as TResponse), (response.IsErrorResponse ? response.Response as TErrorResponse : null));
 		}
 
 
@@ -133,7 +133,7 @@ namespace ISI.Extensions.WebClient
 			where TRequest : class
 			where TResponse : class
 		{
-			var response = ExecuteMethod<TRequest>(new RestResponseTypeCollection()
+			var response = ExecuteMethod<TRequest>(new()
 			{
 				DefaultRestResponseType = typeof(TResponse)
 			}, httpMethod, uri, headers, request, throwUnhandledException, overRideSecurityProtocolTypes, serverCertificateValidationCallback, clientCertificates, cookieContainer);
@@ -159,13 +159,13 @@ namespace ISI.Extensions.WebClient
 			where TResponse : class
 			where TErrorResponse : class
 		{
-			var response = ExecuteMethod<TRequest>(new RestResponseTypeCollection()
+			var response = ExecuteMethod<TRequest>(new()
 			{
 				DefaultRestResponseType = typeof(TResponse),
 				DefaultErrorRestResponseType = typeof(TErrorResponse),
 			}, httpMethod, uri, headers, request, throwUnhandledException, overRideSecurityProtocolTypes, serverCertificateValidationCallback, clientCertificates, cookieContainer);
 
-			return new RestResponse<TResponse, TErrorResponse>(response.StatusCode, (response.IsErrorResponse ? null : response.Response as TResponse), (response.IsErrorResponse ? response.Response as TErrorResponse : null));
+			return new(response.StatusCode, (response.IsErrorResponse ? null : response.Response as TResponse), (response.IsErrorResponse ? response.Response as TErrorResponse : null));
 		}
 
 
@@ -238,7 +238,7 @@ namespace ISI.Extensions.WebClient
 
 			if (overRideSecurityProtocolTypes.HasValue && string.Equals(uri.Scheme, Uri.UriSchemeHttps, StringComparison.InvariantCultureIgnoreCase))
 			{
-				sslProtocolWebProxyWrapper = new SslProtocolWebProxy(uri, overRideSecurityProtocolTypes.Value, clientCertificates);
+				sslProtocolWebProxyWrapper = new(uri, overRideSecurityProtocolTypes.Value, clientCertificates);
 				clientCertificates = null;
 			}
 
@@ -253,7 +253,7 @@ namespace ISI.Extensions.WebClient
 					return webRequestDetails.BodyRaw;
 				});
 
-				cookieContainer ??= new System.Net.CookieContainer();
+				cookieContainer ??= new();
 				var webRequest = CreateWebRequest(contentType, acceptTypes, httpMethod, uri, headers, cookieContainer, sslProtocolWebProxyWrapper, serverCertificateValidationCallback, clientCertificates);
 
 				webRequestDetails.SetHeaders(webRequest.Headers);
@@ -272,7 +272,7 @@ namespace ISI.Extensions.WebClient
 				{
 					var location = webResponse.Headers["Location"];
 
-					var redirectUri = (location.StartsWith("/") ? (new UriBuilder(uri) {Path = location,}).Uri : new Uri(location));
+					var redirectUri = (location.StartsWith("/") ? (new UriBuilder(uri) {Path = location,}).Uri : new(location));
 
 					if (uri == redirectUri)
 					{

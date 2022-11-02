@@ -149,7 +149,7 @@ namespace ISI.Extensions.ConfigurationHelper.Extensions
 				}
 			}
 
-			return new ActiveEnvironmentConfig(environment, environments.ToArray());
+			return new(environment, environments.ToArray());
 		}
 	}
 }

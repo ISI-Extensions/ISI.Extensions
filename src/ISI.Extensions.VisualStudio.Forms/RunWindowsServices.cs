@@ -75,7 +75,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 				var projectKeys = projectFileNames.Distinct(StringComparer.InvariantCultureIgnoreCase).OrderBy(projectFileName => projectFileName, StringComparer.InvariantCultureIgnoreCase).Select(projectFileName =>
 				{
-					var solutionFullName = SolutionApi.GetClosestSolutionFullName(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetClosestSolutionFullNameRequest()
+					var solutionFullName = SolutionApi.GetClosestSolutionFullName(new()
 					{
 						FileName = projectFileName,
 					}).ClosestSolutionFullName;
@@ -91,7 +91,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 				foreach (var solutionGroupedProjectKeys in projectKeys.GroupBy(projectKey => projectKey.SolutionFullName, StringComparer.InvariantCultureIgnoreCase).OrderBy(solutionGroupedProjectKey => solutionGroupedProjectKey.Key, StringComparer.InvariantCultureIgnoreCase))
 				{
-					context.Solutions.Add(new Solution(solutionGroupedProjectKeys.Key, form.SolutionsPanel, (context.Solutions.Count % 2 == 1), selectAll || solutionGroupedProjectKeys.Any(projectKey => projectKey.Selected), start, solutionGroupedProjectKeys, false, false, OnChangedSelection));
+					context.Solutions.Add(new(solutionGroupedProjectKeys.Key, form.SolutionsPanel, (context.Solutions.Count % 2 == 1), selectAll || solutionGroupedProjectKeys.Any(projectKey => projectKey.Selected), start, solutionGroupedProjectKeys, false, false, OnChangedSelection));
 				}
 
 				//form.SolutionsPanel.Controls.AddRange(context.Solutions.OrderBy(solution => solution.Caption, StringComparer.InvariantCultureIgnoreCase).Select(solution => solution.Panel).ToArray());

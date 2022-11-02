@@ -28,7 +28,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.InwardIssueFieldsProgress Export()
 		{
-			return new ISI.Extensions.Jira.InwardIssueFieldsProgress()
+			return new()
 			{
 				Progress = Progress,
 				Total = Total,

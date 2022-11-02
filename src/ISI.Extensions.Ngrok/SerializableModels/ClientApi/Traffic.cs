@@ -28,7 +28,7 @@ namespace ISI.Extensions.Ngrok.SerializableModels.ClientApi
 	{
 		public ISI.Extensions.Ngrok.Traffic Export()
 		{
-			return new ISI.Extensions.Ngrok.Traffic()
+			return new()
 			{
 				TrafficUri = TrafficUri,
 				TrafficKey = TrafficKey,

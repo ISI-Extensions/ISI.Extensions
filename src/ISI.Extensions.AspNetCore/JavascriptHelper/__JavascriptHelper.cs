@@ -109,7 +109,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 
 			public JavaScriptDictionary()
 			{
-				_urls = new Dictionary<bool, Dictionary<bool, HtmlHelpers.ContentUrlCollection>>();
+				_urls = new();
 
 				Clear();
 			}
@@ -120,13 +120,13 @@ namespace ISI.Extensions.AspNetCore.Extensions
 			{
 				_urls.Clear();
 
-				_urls.Add(false, new Dictionary<bool, HtmlHelpers.ContentUrlCollection>());
-				_urls[false].Add(false, new HtmlHelpers.ContentUrlCollection());
-				_urls[false].Add(true, new HtmlHelpers.ContentUrlCollection());
+				_urls.Add(false, new());
+				_urls[false].Add(false, new());
+				_urls[false].Add(true, new());
 
-				_urls.Add(true, new Dictionary<bool, HtmlHelpers.ContentUrlCollection>());
-				_urls[true].Add(false, new HtmlHelpers.ContentUrlCollection());
-				_urls[true].Add(true, new HtmlHelpers.ContentUrlCollection());
+				_urls.Add(true, new());
+				_urls[true].Add(false, new());
+				_urls[true].Add(true, new());
 			}
 		}
 		public static JavaScriptDictionary GetJavaScriptUrls(this Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper htmlHelper)
@@ -135,7 +135,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 
 			if (!(viewData[JavascriptCollectionKey] is JavaScriptDictionary javaScriptUrls))
 			{
-				javaScriptUrls = new JavaScriptDictionary();
+				javaScriptUrls = new();
 
 				viewData[JavascriptCollectionKey] = javaScriptUrls;
 			}

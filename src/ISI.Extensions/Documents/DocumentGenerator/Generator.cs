@@ -96,7 +96,7 @@ namespace ISI.Extensions.Documents.DocumentGenerator
 			{
 				if (model == null)
 				{
-					throw new Exception("Cannot determine modelType, thus cannot determine which Content Generator to use");
+					throw new("Cannot determine modelType, thus cannot determine which Content Generator to use");
 				}
 
 				modelType = model.GetType();

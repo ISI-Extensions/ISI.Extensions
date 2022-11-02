@@ -26,7 +26,7 @@ namespace ISI.Extensions.Aspose.Extensions
 	{
 		public static global::Aspose.Cells.CellArea ToCellArea(this ISI.Extensions.SpreadSheets.CellArea cellArea)
 		{
-			return new global::Aspose.Cells.CellArea()
+			return new()
 			{
 				StartRow = cellArea.StartRow,
 				EndRow = cellArea.StopRow,
@@ -37,7 +37,7 @@ namespace ISI.Extensions.Aspose.Extensions
 
 		public static ISI.Extensions.SpreadSheets.CellArea ToCellArea(this global::Aspose.Cells.CellArea cellArea)
 		{
-			return new ISI.Extensions.SpreadSheets.CellArea()
+			return new()
 			{
 				StartRow = cellArea.StartRow,
 				StopRow = cellArea.EndRow,

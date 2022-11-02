@@ -40,7 +40,7 @@ namespace ISI.Extensions.Nuget
 
 			if ((clippedItem.Length >= 2) && string.Equals(clippedItem[0], ClipboardTokenHeader, StringComparison.InvariantCultureIgnoreCase))
 			{
-				nugetPackageKey = new ISI.Extensions.Nuget.NugetPackageKey()
+				nugetPackageKey = new()
 				{
 					Package = clippedItem[1],
 					Version = (clippedItem.Length >= 3 ? clippedItem[2] : null),

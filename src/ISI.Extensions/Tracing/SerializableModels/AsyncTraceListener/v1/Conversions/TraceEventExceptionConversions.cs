@@ -56,7 +56,7 @@ namespace ISI.Extensions.Tracing.SerializableModels.AsyncTraceListener.v1.Conver
 				Message = source.Message,
 				Exception = source.ErrorMessageFormatted(includeInnerExceptions: false),
 				StackTrace = source.StackTrace,
-				ExtraTrackingInformation = (source as ISI.Extensions.Tracing.IExtraTrackingInformationException)?.GetExtraTrackingInformation().ToNullCheckedCollection<KeyValuePair<string, string>, TraceEventExceptionExtraTrackingInformation, TraceEventExceptionExtraTrackingInformationCollection>(item => new TraceEventExceptionExtraTrackingInformation()
+				ExtraTrackingInformation = (source as ISI.Extensions.Tracing.IExtraTrackingInformationException)?.GetExtraTrackingInformation().ToNullCheckedCollection<KeyValuePair<string, string>, TraceEventExceptionExtraTrackingInformation, TraceEventExceptionExtraTrackingInformationCollection>(item => new()
 				{
 					Key = item.Key,
 					Value = item.Value

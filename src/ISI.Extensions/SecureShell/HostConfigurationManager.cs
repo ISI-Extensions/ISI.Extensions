@@ -38,7 +38,7 @@ namespace ISI.Extensions.SecureShell
 		{
 			if(!HostConfigurationLookUp.TryGetValue(GetHostKey(hostName, port, userName), out var hostConfiguration))
 			{
-				return new HostConfiguration()
+				return new()
 				{
 					HostName = hostName,
 					Port = port,
@@ -48,7 +48,7 @@ namespace ISI.Extensions.SecureShell
 				};
 			}
 
-			return new HostConfiguration()
+			return new()
 			{
 				HostName = hostConfiguration.HostName,
 				Port = hostConfiguration.Port,

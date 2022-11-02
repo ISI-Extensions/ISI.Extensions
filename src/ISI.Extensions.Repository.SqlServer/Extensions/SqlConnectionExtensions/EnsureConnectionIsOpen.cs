@@ -35,7 +35,7 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 				}
 				catch (Exception exception)
 				{
-					throw new Exception(string.Format("Error opening Connection to \"{0}\"", connection.ConnectionString), exception);
+					throw new(string.Format("Error opening Connection to \"{0}\"", connection.ConnectionString), exception);
 				}
 			}
 		}
@@ -50,7 +50,7 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 				}
 				catch (Exception exception)
 				{
-					throw new Exception(string.Format("Error opening Connection to \"{0}\"", connection.ConnectionString), exception);
+					throw new(string.Format("Error opening Connection to \"{0}\"", connection.ConnectionString), exception);
 				}
 			}
 		}

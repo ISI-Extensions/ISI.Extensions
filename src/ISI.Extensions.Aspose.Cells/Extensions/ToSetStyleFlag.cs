@@ -25,7 +25,7 @@ namespace ISI.Extensions.Aspose.Extensions
 	{
 		public static global::Aspose.Cells.StyleFlag ToSetStyleFlag(this ISI.Extensions.SpreadSheets.SetStyleFlag setStyleFlag)
 		{
-			return new global::Aspose.Cells.StyleFlag()
+			return new()
 			{
 				All = setStyleFlag.All,
 				Borders = setStyleFlag.Borders,

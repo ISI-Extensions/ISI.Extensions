@@ -37,7 +37,7 @@ namespace ISI.Extensions
 
 			public CronExpressionDaysOfWeek(string source)
 			{
-				Action throwError = () => throw new System.Exception(string.Format("DaysOfWeek: Cannot parse \"{0}\"", source));
+				Action throwError = () => throw new(string.Format("DaysOfWeek: Cannot parse \"{0}\"", source));
 
 				var parser = new ISI.Extensions.Parsers.DelimitedTextParser(',');
 
@@ -111,7 +111,7 @@ namespace ISI.Extensions
 
 			internal CronExpressionDaysOfWeek Clone()
 			{
-				return new CronExpressionDaysOfWeek(DaysOfWeekFlags);
+				return new(DaysOfWeekFlags);
 			}
 
 			internal CronExpressionDaysOfWeek ShiftDays(int days)
@@ -123,7 +123,7 @@ namespace ISI.Extensions
 					daysOfWeekFlags[(dayOfWeekIndex + maxDayOfWeek + days) % maxDayOfWeek] = DaysOfWeekFlags[dayOfWeekIndex];
 				}
 
-				return new CronExpressionDaysOfWeek(daysOfWeekFlags);
+				return new(daysOfWeekFlags);
 			}
 
 			public override string ToString()

@@ -91,7 +91,7 @@ namespace ISI.Extensions.Tests
 			{
 				if (!nugetPackages.TryGetValue(nugetPackage, out var nugetVersions))
 				{
-					nugetVersions = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+					nugetVersions = new(StringComparer.InvariantCultureIgnoreCase);
 					nugetPackages.Add(nugetPackage, nugetVersions);
 				}
 
@@ -99,7 +99,7 @@ namespace ISI.Extensions.Tests
 				{
 					nugetVersions.Add(nugetVersion);
 
-					var getLatestPackageVersionResponse = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+					var getLatestPackageVersionResponse = nugetApi.GetNugetPackageKey(new()
 					{
 						PackageId = nugetPackage,
 						PackageVersion = nugetVersion,
@@ -123,14 +123,14 @@ namespace ISI.Extensions.Tests
 			var solutionFullNames = new List<string>();
 			solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Cake.Addin");
 
-			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionDetailsRequest()
+			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new()
 			{
 				Solution = solution,
 			}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
 
 			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpdateNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
 			{
-				using (solutionApi.GetSolutionLock(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionLockRequest()
+				using (solutionApi.GetSolutionLock(new()
 				{
 					SolutionFullName = solutionDetails.SolutionFullName,
 					//AddToLog = addToLog,
@@ -151,7 +151,7 @@ namespace ISI.Extensions.Tests
 					sourceFullNames.RemoveAll(sourceFullName => sourceFullName.IndexOf("\\_ReSharper.Caches\\", StringComparison.InvariantCultureIgnoreCase) >= 0);
 
 
-					if (!sourceControlClientApi.UpdateWorkingCopy(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.UpdateWorkingCopyRequest()
+					if (!sourceControlClientApi.UpdateWorkingCopy(new()
 					{
 						FullName = solutionDetails.RootSourceDirectory,
 						IncludeExternals = true,
@@ -230,7 +230,7 @@ namespace ISI.Extensions.Tests
 
 			var existingNugetPackages = new Dictionary<string, HashSet<string>>(StringComparer.InvariantCultureIgnoreCase);
 
-			var existingNugetPackageKeys = nugetApi.ListNugetPackageKeys(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.ListNugetPackageKeysRequest()
+			var existingNugetPackageKeys = nugetApi.ListNugetPackageKeys(new()
 			{
 				Source = settings.Nuget.RepositoryName
 			}).NugetPackageKeys.NullCheckedWhere(nugetPackagKey => nugetPackagKey.Package.StartsWith("ISI.", StringComparison.InvariantCultureIgnoreCase), NullCheckCollectionResult.Empty);
@@ -239,7 +239,7 @@ namespace ISI.Extensions.Tests
 			{
 				if (!existingNugetPackages.TryGetValue(existingNugetPackageKey.Package, out var nugetVersions))
 				{
-					nugetVersions = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+					nugetVersions = new(StringComparer.InvariantCultureIgnoreCase);
 					existingNugetPackages.Add(existingNugetPackageKey.Package, nugetVersions);
 				}
 
@@ -284,12 +284,12 @@ namespace ISI.Extensions.Tests
 					}
 				}
 
-				nugetApi.NupkgPush(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.NupkgPushRequest()
+				nugetApi.NupkgPush(new()
 				{
 					NupkgFullNames = nupkgFullNames,
 					ApiKey = settings.Nuget.ApiKey,
 					RepositoryName = settings.Nuget.RepositoryName,
-					RepositoryUri = new Uri(settings.Nuget.RepositoryUrl),
+					RepositoryUri = new(settings.Nuget.RepositoryUrl),
 					//PackageChunksRepositoryUri = GetNullableUri(settings.Nuget.PackageChunksRepositoryUrl),
 				});
 			}
@@ -318,14 +318,14 @@ namespace ISI.Extensions.Tests
 			solutionFullNames.Add(@"F:\ISI\Clients\TFS\Tristar.Portal");
 			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Tristar.SolutionFullNames.txt"));
 
-			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionDetailsRequest()
+			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new()
 			{
 				Solution = solution,
 			}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
 
 			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpdateNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
 			{
-				using (solutionApi.GetSolutionLock(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionLockRequest()
+				using (solutionApi.GetSolutionLock(new()
 				{
 					SolutionFullName = solutionDetails.SolutionFullName,
 					//AddToLog = addToLog,
@@ -352,7 +352,7 @@ namespace ISI.Extensions.Tests
 
 					var dirtyFileNames = new HashSet<string>();
 
-					if (!sourceControlClientApi.UpdateWorkingCopy(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.UpdateWorkingCopyRequest()
+					if (!sourceControlClientApi.UpdateWorkingCopy(new()
 					{
 						FullName = solutionDetails.RootSourceDirectory,
 						IncludeExternals = true,
@@ -436,7 +436,7 @@ namespace ISI.Extensions.Tests
 					{
 						var commitLog = new StringBuilder();
 
-						if (!sourceControlClientApi.Commit(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.CommitRequest()
+						if (!sourceControlClientApi.Commit(new()
 						{
 							FullNames = dirtyFileNames,
 							LogMessage = "update t4 language version",
@@ -472,7 +472,7 @@ namespace ISI.Extensions.Tests
 
 				var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
 
-				var jobIds = jenkinsApi.GetJobIds(new ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi.GetJobIdsRequest()
+				var jobIds = jenkinsApi.GetJobIds(new()
 				{
 					JenkinsUrl = settings.Jenkins.JenkinsUrl,
 					UserName = settings.Jenkins.UserName,
@@ -484,14 +484,14 @@ namespace ISI.Extensions.Tests
 				solutionFullNames.AddRange(jobIds.Select(jobId => System.IO.Path.Combine(@"F:\ISI\Clients\TFS", jobId.TrimEnd(".Build"))));
 			}
 
-			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionDetailsRequest()
+			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new()
 			{
 				Solution = solution,
 			}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
 
 			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpdateNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
 			{
-				using (solutionApi.GetSolutionLock(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionLockRequest()
+				using (solutionApi.GetSolutionLock(new()
 				{
 					SolutionFullName = solutionDetails.SolutionFullName,
 					//AddToLog = addToLog,
@@ -499,7 +499,7 @@ namespace ISI.Extensions.Tests
 				{
 					logger.Log(LogLevel.Information, solutionDetails.SolutionName);
 
-					if (!sourceControlClientApi.UpdateWorkingCopy(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.UpdateWorkingCopyRequest()
+					if (!sourceControlClientApi.UpdateWorkingCopy(new()
 					{
 						FullName = solutionDetails.RootSourceDirectory,
 						IncludeExternals = true,
@@ -539,7 +539,7 @@ namespace ISI.Extensions.Tests
 					{
 						var commitLog = new StringBuilder();
 
-						if (!sourceControlClientApi.Commit(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.CommitRequest()
+						if (!sourceControlClientApi.Commit(new()
 						{
 							FullNames = dirtyFileNames,
 							LogMessage = "pin Cake.FileHelpers version",
@@ -566,7 +566,7 @@ namespace ISI.Extensions.Tests
 			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\ISI.SolutionFullNames.txt"));
 			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Tristar.SolutionFullNames.txt"));
 
-			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionDetailsRequest()
+			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new()
 			{
 				Solution = solution,
 			}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
@@ -576,7 +576,7 @@ namespace ISI.Extensions.Tests
 								 .OrderBy(solutionDetails => solutionDetails.UpdateNugetPackagesPriority)
 								 .ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
 			{
-				using (solutionApi.GetSolutionLock(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionLockRequest()
+				using (solutionApi.GetSolutionLock(new()
 				{
 					SolutionFullName = solutionDetails.SolutionFullName,
 					//AddToLog = addToLog,
@@ -584,7 +584,7 @@ namespace ISI.Extensions.Tests
 				{
 					logger.Log(LogLevel.Information, solutionDetails.SolutionName);
 
-					if (!sourceControlClientApi.UpdateWorkingCopy(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.UpdateWorkingCopyRequest()
+					if (!sourceControlClientApi.UpdateWorkingCopy(new()
 					{
 						FullName = solutionDetails.RootSourceDirectory,
 						IncludeExternals = true,
@@ -609,7 +609,7 @@ namespace ISI.Extensions.Tests
 
 					if (sourceFullNames.Any())
 					{
-						sourceControlClientApi.Delete(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.DeleteRequest()
+						sourceControlClientApi.Delete(new()
 						{
 							FullNames = sourceFullNames,
 						});
@@ -621,7 +621,7 @@ namespace ISI.Extensions.Tests
 					{
 						var commitLog = new StringBuilder();
 
-						if (!sourceControlClientApi.Commit(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.CommitRequest()
+						if (!sourceControlClientApi.Commit(new()
 						{
 							FullNames = dirtyFileNames,
 							LogMessage = "delete .vsext file",
@@ -648,14 +648,14 @@ namespace ISI.Extensions.Tests
 
 			var solutionFullNames = System.IO.File.ReadAllLines(@"S:\Tristar.SolutionFullNames.txt");
 
-			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionDetailsRequest()
+			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new()
 			{
 				Solution = solution,
 			}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
 
 			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpdateNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
 			{
-				using (solutionApi.GetSolutionLock(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionLockRequest()
+				using (solutionApi.GetSolutionLock(new()
 				{
 					SolutionFullName = solutionDetails.SolutionFullName,
 					//AddToLog = addToLog,
@@ -678,7 +678,7 @@ namespace ISI.Extensions.Tests
 
 					var dirtyFileNames = new HashSet<string>();
 
-					if (!sourceControlClientApi.UpdateWorkingCopy(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.UpdateWorkingCopyRequest()
+					if (!sourceControlClientApi.UpdateWorkingCopy(new()
 					{
 						FullName = solutionDetails.RootSourceDirectory,
 						IncludeExternals = true,
@@ -705,7 +705,7 @@ namespace ISI.Extensions.Tests
 					{
 						var commitLog = new StringBuilder();
 
-						if (!sourceControlClientApi.Commit(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.CommitRequest()
+						if (!sourceControlClientApi.Commit(new()
 						{
 							FullNames = dirtyFileNames,
 							LogMessage = "change icon file",

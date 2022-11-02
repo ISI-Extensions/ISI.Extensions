@@ -36,7 +36,7 @@ namespace ISI.Extensions.Jenkins.SerializableModels
 
 		public ISI.Extensions.Jenkins.AssignedLabel Export()
 		{
-			return new ISI.Extensions.Jenkins.AssignedLabel()
+			return new()
 			{
 				Name = Name,
 			};

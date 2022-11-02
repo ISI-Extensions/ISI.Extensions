@@ -118,7 +118,7 @@ namespace ISI.Extensions.AspNetCore
 
 			if (values != null)
 			{
-				result = new System.Collections.Specialized.NameValueCollection(values);
+				result = new(values);
 			}
 
 			return result;
@@ -130,7 +130,7 @@ namespace ISI.Extensions.AspNetCore
 
 			if (formValues.NullCheckedAny())
 			{
-				result = new System.Collections.Specialized.NameValueCollection();
+				result = new();
 
 				foreach (var formValue in formValues)
 				{
@@ -147,7 +147,7 @@ namespace ISI.Extensions.AspNetCore
 
 			if (cookies.NullCheckedAny())
 			{
-				result = new System.Collections.Specialized.NameValueCollection();
+				result = new();
 
 				foreach (var cookie in cookies)
 				{
@@ -164,7 +164,7 @@ namespace ISI.Extensions.AspNetCore
 
 			if (queryString.HasValue)
 			{
-				result = new System.Collections.Specialized.NameValueCollection();
+				result = new();
 
 				var values = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(queryString.Value);
 

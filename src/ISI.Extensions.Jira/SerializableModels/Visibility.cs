@@ -37,7 +37,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 		
 		public ISI.Extensions.Jira.Visibility Export()
 		{
-			return new ISI.Extensions.Jira.Visibility()
+			return new()
 			{
 				Type = Type,
 				Value = Value,

@@ -96,7 +96,7 @@ namespace ISI.Extensions.AspNetCore.Tests
 				hostConfigurator.Service<ServiceManager>(configurator =>
 				{
 					//configurator.ConstructUsing(serviceFactory => serviceProvider.GetService<ServiceManager>());
-					configurator.ConstructUsing(serviceFactory => new ServiceManager());
+					configurator.ConstructUsing(serviceFactory => new());
 					configurator.WhenStarted((service, control) =>
 					{
 						control.RequestAdditionalTime(TimeSpan.FromMinutes(10));

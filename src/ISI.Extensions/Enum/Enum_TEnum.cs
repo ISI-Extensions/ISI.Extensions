@@ -43,16 +43,16 @@ namespace ISI.Extensions
 			{
 				var type = typeof(TEnum);
 
-				_EnumInformations = new List<EnumInformation>();
-				_EnumInformationLookUp = new Dictionary<TEnum, EnumInformation>();
-				_ValueLookup = new Dictionary<string, TEnum>(StringComparer.InvariantCultureIgnoreCase);
-				_IndexLookup = new Dictionary<int, TEnum>();
-				_KeyLookup = new Dictionary<string, TEnum>(StringComparer.InvariantCultureIgnoreCase);
-				_AbbreviationLookup = new Dictionary<string, TEnum>(StringComparer.InvariantCultureIgnoreCase);
-				_DescriptionLookup = new Dictionary<string, TEnum>(StringComparer.InvariantCultureIgnoreCase);
-				_UuidLookup = new Dictionary<Guid, TEnum>();
+				_EnumInformations = new();
+				_EnumInformationLookUp = new();
+				_ValueLookup = new(StringComparer.InvariantCultureIgnoreCase);
+				_IndexLookup = new();
+				_KeyLookup = new(StringComparer.InvariantCultureIgnoreCase);
+				_AbbreviationLookup = new(StringComparer.InvariantCultureIgnoreCase);
+				_DescriptionLookup = new(StringComparer.InvariantCultureIgnoreCase);
+				_UuidLookup = new();
 
-				_EnumMemberLookUp = new Dictionary<TEnum, System.Runtime.Serialization.EnumMemberAttribute>();
+				_EnumMemberLookUp = new();
 
 				_IsNullable = (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(Nullable<>)));
 
@@ -63,7 +63,7 @@ namespace ISI.Extensions
 				
 				if (!type.IsEnum)
 				{
-					throw new Exception(string.Format("Cannot create Enum<T> when T is not a Enum, T is \"{0}\"", type.AssemblyQualifiedName));
+					throw new(string.Format("Cannot create Enum<T> when T is not a Enum, T is \"{0}\"", type.AssemblyQualifiedName));
 				}
 
 				var knownAliases = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);

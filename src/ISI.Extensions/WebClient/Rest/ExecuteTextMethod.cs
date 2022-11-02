@@ -29,10 +29,10 @@ namespace ISI.Extensions.WebClient
 
 		public static IRestResponseWrapper ExecuteTextMethod(string httpMethod, Uri uri, HeaderCollection headers, bool throwUnhandledException, System.Security.Authentication.SslProtocols? overRideSecurityProtocolTypes = null, System.Net.Security.RemoteCertificateValidationCallback serverCertificateValidationCallback = null, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates = null, System.Net.CookieContainer cookieContainer = null)
 		{
-			var response = ExecuteTextMethod<TextRequest>(new RestResponseTypeCollection()
+			var response = ExecuteTextMethod<TextRequest>(new()
 			{
 				DefaultRestResponseType = typeof(TextResponse)
-			}, httpMethod, uri, headers, new TextRequest(), throwUnhandledException, overRideSecurityProtocolTypes, serverCertificateValidationCallback, clientCertificates, cookieContainer);
+			}, httpMethod, uri, headers, new(), throwUnhandledException, overRideSecurityProtocolTypes, serverCertificateValidationCallback, clientCertificates, cookieContainer);
 
 			return response;
 		}
@@ -49,10 +49,10 @@ namespace ISI.Extensions.WebClient
 
 		public static IRestResponseWrapper ExecuteTextMethod(string httpMethod, Uri uri, HeaderCollection headers, string request, bool throwUnhandledException, System.Security.Authentication.SslProtocols? overRideSecurityProtocolTypes = null, System.Net.Security.RemoteCertificateValidationCallback serverCertificateValidationCallback = null, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates = null, System.Net.CookieContainer cookieContainer = null)
 		{
-			var response = ExecuteTextMethod<TextRequest>(new RestResponseTypeCollection()
+			var response = ExecuteTextMethod<TextRequest>(new()
 			{
 				DefaultRestResponseType = typeof(TextResponse)
-			}, httpMethod, uri, headers, new TextRequest()
+			}, httpMethod, uri, headers, new()
 			{
 				Content = request
 			}, throwUnhandledException, overRideSecurityProtocolTypes, serverCertificateValidationCallback, clientCertificates, cookieContainer);
@@ -74,7 +74,7 @@ namespace ISI.Extensions.WebClient
 		public static IRestResponseWrapper ExecuteTextMethod<TRequest>(string httpMethod, Uri uri, HeaderCollection headers, TRequest request, bool throwUnhandledException, System.Security.Authentication.SslProtocols? overRideSecurityProtocolTypes = null, System.Net.Security.RemoteCertificateValidationCallback serverCertificateValidationCallback = null, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates = null, System.Net.CookieContainer cookieContainer = null)
 			where TRequest : class
 		{
-			var response = ExecuteTextMethod<TRequest>(new RestResponseTypeCollection()
+			var response = ExecuteTextMethod<TRequest>(new()
 			{
 				DefaultRestResponseType = typeof(TextResponse)
 			}, httpMethod, uri, headers, request, throwUnhandledException, overRideSecurityProtocolTypes, serverCertificateValidationCallback, clientCertificates, cookieContainer);
@@ -100,13 +100,13 @@ namespace ISI.Extensions.WebClient
 			where TResponse : class
 			where TErrorResponse : class
 		{
-			var response = ExecuteTextMethod<TRequest>(new RestResponseTypeCollection()
+			var response = ExecuteTextMethod<TRequest>(new()
 			{
 				DefaultRestResponseType = typeof(TResponse),
 				DefaultErrorRestResponseType = typeof(TErrorResponse),
 			}, httpMethod, uri, headers, request, throwUnhandledException, overRideSecurityProtocolTypes, serverCertificateValidationCallback, clientCertificates, cookieContainer);
 
-			return new RestResponse<TResponse, TErrorResponse>(response.StatusCode, (response.IsErrorResponse ? null : response.Response as TResponse), (response.IsErrorResponse ? response.Response as TErrorResponse : null));
+			return new(response.StatusCode, (response.IsErrorResponse ? null : response.Response as TResponse), (response.IsErrorResponse ? response.Response as TErrorResponse : null));
 		}
 
 

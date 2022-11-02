@@ -36,12 +36,12 @@ namespace ISI.Extensions.DateTimeStamper
 
 		public ISI.Extensions.DateTimeStamper.DateTimeBubble DateTimeBubble()
 		{
-			return _DateTimeBubble ??= new ISI.Extensions.DateTimeStamper.DateTimeBubble(DateTime.UtcNow, DateTime.Now, () => { _DateTimeBubble = null; });
+			return _DateTimeBubble ??= new(DateTime.UtcNow, DateTime.Now, () => { _DateTimeBubble = null; });
 		}
 
 		public ISI.Extensions.DateTimeStamper.DateTimeBubble DateTimeBubble(ISI.Extensions.DateTimeStamper.DateTimeBubble dateTimeBubble)
 		{
-			return (_DateTimeBubble = new ISI.Extensions.DateTimeStamper.DateTimeBubble(dateTimeBubble.UtcNow, dateTimeBubble.Now, () => { _DateTimeBubble = null; }));
+			return (_DateTimeBubble = new(dateTimeBubble.UtcNow, dateTimeBubble.Now, () => { _DateTimeBubble = null; }));
 		}
 	}
 }

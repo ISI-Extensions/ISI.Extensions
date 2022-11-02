@@ -70,7 +70,7 @@ namespace ISI.Extensions.Svn
 		{
 			var response = new SourceControlClientApiDTOs.GetRootDirectoryResponse();
 
-			var svnResponse = GetWorkingCopyInfos(new DTOs.GetWorkingCopyInfosRequest()
+			var svnResponse = GetWorkingCopyInfos(new()
 			{
 				Source = request.FullName,
 				Depth = Depth.Empty,
@@ -85,7 +85,7 @@ namespace ISI.Extensions.Svn
 		{
 			var response = new SourceControlClientApiDTOs.ListResponse();
 
-			var apiResponse = List(new DTOs.ListRequest()
+			var apiResponse = List(new()
 			{
 				SourceUrl = request.SourceUrl,
 				AddToLog = request.AddToLog,
@@ -100,7 +100,7 @@ namespace ISI.Extensions.Svn
 		{
 			var response = new SourceControlClientApiDTOs.CheckOutResponse();
 
-			var apiResponse = CheckOut(new DTOs.CheckOutRequest()
+			var apiResponse = CheckOut(new()
 			{
 				SourceUrl = request.SourceUrl,
 				TargetFullName = request.TargetFullName,
@@ -116,7 +116,7 @@ namespace ISI.Extensions.Svn
 		{
 			var response = new SourceControlClientApiDTOs.CheckOutSingleFileResponse();
 
-			var apiResponse = CheckOutSingleFile(new DTOs.CheckOutSingleFileRequest()
+			var apiResponse = CheckOutSingleFile(new()
 			{
 				SourceUrl = request.SourceUrl,
 				TargetFullName = request.TargetFullName,
@@ -132,7 +132,7 @@ namespace ISI.Extensions.Svn
 		{
 			var response = new SourceControlClientApiDTOs.UpdateWorkingCopyResponse();
 
-			var apiResponse = UpdateWorkingCopy(new DTOs.UpdateWorkingCopyRequest()
+			var apiResponse = UpdateWorkingCopy(new()
 			{
 				FullName = request.FullName,
 				IncludeExternals = request.IncludeExternals,
@@ -148,7 +148,7 @@ namespace ISI.Extensions.Svn
 		{
 			var response = new SourceControlClientApiDTOs.AddResponse();
 
-			var apiResponse = Add(new DTOs.AddRequest()
+			var apiResponse = Add(new()
 			{
 				FullNames = request.FullNames,
 				AddToLog = request.AddToLog,
@@ -163,7 +163,7 @@ namespace ISI.Extensions.Svn
 		{
 			var response = new SourceControlClientApiDTOs.DeleteResponse();
 
-			var apiResponse = DeletePaths(new DTOs.DeleteRequest()
+			var apiResponse = DeletePaths(new()
 			{
 				FullNames = request.FullNames,
 				AddToLog = request.AddToLog,
@@ -178,7 +178,7 @@ namespace ISI.Extensions.Svn
 		{
 			var response = new SourceControlClientApiDTOs.CommitWorkingCopyResponse();
 
-			var apiResponse = CommitWorkingCopy(new DTOs.CommitWorkingCopyRequest()
+			var apiResponse = CommitWorkingCopy(new()
 			{
 				FullName = request.FullName,
 				LogMessage = request.LogMessage,
@@ -194,7 +194,7 @@ namespace ISI.Extensions.Svn
 		{
 			var response = new SourceControlClientApiDTOs.CommitResponse();
 
-			var apiResponse = Commit(new DTOs.CommitRequest()
+			var apiResponse = Commit(new()
 			{
 				FullNames = request.FullNames,
 				LogMessage = request.LogMessage,

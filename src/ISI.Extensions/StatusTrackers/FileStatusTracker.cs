@@ -140,13 +140,13 @@ namespace ISI.Extensions.StatusTrackers
 					var fileName = GetFileName(StatusTrackerKey, RunningFileNameExtension);
 					try
 					{
-						RunningFileStream = new System.IO.FileStream(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.DeleteOnClose);
+						RunningFileStream = new(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.DeleteOnClose);
 						RunningFileStream.WriteByte(255);
 						RunningFileStream.Flush();
 					}
 					catch (Exception exception)
 					{
-						throw new Exception(string.Format("Cannot create file: \"{0}\"", fileName), exception);
+						throw new(string.Format("Cannot create file: \"{0}\"", fileName), exception);
 					}
 				}
 
@@ -154,12 +154,12 @@ namespace ISI.Extensions.StatusTrackers
 					var fileName = GetFileName(StatusTrackerKey, CaptionFileNameExtension);
 					try
 					{
-						CaptionFileStream = new System.IO.FileStream(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.RandomAccess);
-						CaptionStreamWriter = new System.IO.StreamWriter(CaptionFileStream);
+						CaptionFileStream = new(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.RandomAccess);
+						CaptionStreamWriter = new(CaptionFileStream);
 					}
 					catch (Exception exception)
 					{
-						throw new Exception(string.Format("Cannot create file: \"{0}\"", fileName), exception);
+						throw new(string.Format("Cannot create file: \"{0}\"", fileName), exception);
 					}
 				}
 
@@ -167,12 +167,12 @@ namespace ISI.Extensions.StatusTrackers
 					var fileName = GetFileName(StatusTrackerKey, PercentFileNameExtension);
 					try
 					{
-						PercentFileStream = new System.IO.FileStream(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.RandomAccess);
-						PercentStreamWriter = new System.IO.StreamWriter(PercentFileStream);
+						PercentFileStream = new(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.RandomAccess);
+						PercentStreamWriter = new(PercentFileStream);
 					}
 					catch (Exception exception)
 					{
-						throw new Exception(string.Format("Cannot create file: \"{0}\"", fileName), exception);
+						throw new(string.Format("Cannot create file: \"{0}\"", fileName), exception);
 					}
 				}
 
@@ -180,12 +180,12 @@ namespace ISI.Extensions.StatusTrackers
 					var fileName = GetFileName(StatusTrackerKey, LogFileNameExtension);
 					try
 					{
-						LogFileStream = new System.IO.FileStream(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.None);
-						LogStreamWriter = new System.IO.StreamWriter(LogFileStream);
+						LogFileStream = new(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.None);
+						LogStreamWriter = new(LogFileStream);
 					}
 					catch (Exception exception)
 					{
-						throw new Exception(string.Format("Cannot create file: \"{0}\"", fileName), exception);
+						throw new(string.Format("Cannot create file: \"{0}\"", fileName), exception);
 					}
 				}
 			}

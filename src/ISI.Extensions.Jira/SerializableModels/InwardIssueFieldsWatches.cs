@@ -28,7 +28,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.InwardIssueFieldsWatches Export()
 		{
-			return new ISI.Extensions.Jira.InwardIssueFieldsWatches()
+			return new()
 			{
 				WatchesUrl = WatchesUrl,
 				WatchCount = WatchCount,

@@ -49,7 +49,7 @@ namespace ISI.Extensions.VisualStudio
 					var name = projectReferenceElement.GetElementByLocalName("Name")?.Value ?? System.IO.Path.GetFileNameWithoutExtension(path);
 					var projectUuid = projectReferenceElement.GetElementByLocalName("Project")?.Value?.ToGuidNullable();
 
-					projectReferences.Add(new ProjectReference()
+					projectReferences.Add(new()
 					{
 						Name = name,
 						Path = path,

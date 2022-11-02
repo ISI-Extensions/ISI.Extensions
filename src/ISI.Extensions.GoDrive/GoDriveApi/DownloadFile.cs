@@ -31,7 +31,7 @@ namespace ISI.Extensions.GoDrive
 
 			var cookieContainer = new System.Net.CookieContainer();
 
-			var downloadFileResponse = ISI.Extensions.WebClient.Rest.ExecuteGet<ISI.Extensions.WebClient.Rest.StreamResponse>(FormatUrl(request.FileName.DirectoryUrl), new ISI.Extensions.WebClient.HeaderCollection(), true, cookieContainer: cookieContainer);
+			var downloadFileResponse = ISI.Extensions.WebClient.Rest.ExecuteGet<ISI.Extensions.WebClient.Rest.StreamResponse>(FormatUrl(request.FileName.DirectoryUrl), new(), true, cookieContainer: cookieContainer);
 
 			downloadFileResponse.Stream.Rewind();
 

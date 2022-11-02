@@ -27,7 +27,7 @@ namespace ISI.Extensions.Nuget.Extensions
 
 			var files = new List<NuspecFile>(nuspec.Files ?? Array.Empty<NuspecFile>());
 
-			files.Insert(0, new NuspecFile()
+			files.Insert(0, new()
 			{
 				Target = "images\\",
 				SourcePattern = fullName,

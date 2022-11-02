@@ -34,7 +34,7 @@ namespace ISI.Extensions
 				generatedRandomKey[generatedRandomKeyIndex] = allowableCharacters[_generateRandomKeyRandom.Next(0, allowableCharacters.Length)];
 			}
 
-			return new string(generatedRandomKey);
+			return new(generatedRandomKey);
 		}
 	}
 }

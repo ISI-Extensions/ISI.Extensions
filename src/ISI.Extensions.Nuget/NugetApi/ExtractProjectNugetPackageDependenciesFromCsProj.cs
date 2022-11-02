@@ -60,7 +60,7 @@ namespace ISI.Extensions.Nuget
 						{
 							if (!string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 							{
-								throw new Exception(string.Format("Multiple versions of {0} found", packageId));
+								throw new(string.Format("Multiple versions of {0} found", packageId));
 							}
 						}
 						else
@@ -91,7 +91,7 @@ namespace ISI.Extensions.Nuget
 							{
 								if (!string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 								{
-									throw new Exception(string.Format("Multiple versions of {0} found", packageId));
+									throw new(string.Format("Multiple versions of {0} found", packageId));
 								}
 							}
 							else
@@ -160,14 +160,14 @@ namespace ISI.Extensions.Nuget
 						{
 							if (!string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 							{
-								throw new Exception(string.Format("Multiple versions of {0} found", packageId));
+								throw new(string.Format("Multiple versions of {0} found", packageId));
 							}
 						}
 						else
 						{
 							try
 							{
-								nugetPackageKey = new NugetPackageKey()
+								nugetPackageKey = new()
 								{
 									Package = packageId,
 									Version = packageVersion,

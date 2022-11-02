@@ -73,11 +73,11 @@ namespace ISI.Extensions.Tests
 
 			var nupkgFullName = System.IO.Directory.EnumerateFiles(@"F:\ISI\Internal Projects\ISI.Extensions\Nuget", "*.nupkg").First();
 
-			nugetApi.NupkgPush(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.NupkgPushRequest()
+			nugetApi.NupkgPush(new()
 			{
 				NupkgFullNames = new[] { nupkgFullName },
 				ApiKey = "xxxx",
-				RepositoryUri = new Uri("https://localhost:5001/nuget/v3/index.json"),
+				RepositoryUri = new("https://localhost:5001/nuget/v3/index.json"),
 			});
 		}
 
@@ -92,7 +92,7 @@ namespace ISI.Extensions.Tests
 			codeSigningApi.SignNupkgs(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.SignNupkgsRequest()
 			{
 				NupkgFullNames = System.IO.Directory.GetFiles(@"F:\ISI\Internal Projects\ISI.Extensions\Nuget"),
-				TimeStampUri = new Uri(settings.CodeSigning.TimeStampUrl),
+				TimeStampUri = new(settings.CodeSigning.TimeStampUrl),
 				CertificateFingerprint = settings.CodeSigning.CertificateFingerprint,
 				//CertificatePath = File(settings.CodeSigning.CertificateFileName),
 				//CertificatePassword = settings.CodeSigning.CertificatePassword,
@@ -105,7 +105,7 @@ namespace ISI.Extensions.Tests
 		{
 			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
 
-			var nuspec = nugetApi.GenerateNuspecFromProject(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GenerateNuspecFromProjectRequest()
+			var nuspec = nugetApi.GenerateNuspecFromProject(new()
 			{
 				ProjectFullName = @"F:\ISI\ISI.FrameWork\src\ISI.Wrappers\ISI.Wrappers.MassTransit\ISI.Wrappers.MassTransit.csproj",
 				TryGetPackageVersion = (string package, out string version) =>
@@ -137,7 +137,7 @@ namespace ISI.Extensions.Tests
 			nuspec.Owners = new[] { "Integrated  Solutions, Inc." };
 
 
-			var xxx = nugetApi.BuildNuspec(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.BuildNuspecRequest()
+			var xxx = nugetApi.BuildNuspec(new()
 			{
 				Nuspec = nuspec,
 			});
@@ -148,7 +148,7 @@ namespace ISI.Extensions.Tests
 		{
 			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
 
-			var nugetPackageKeys = nugetApi.ListNugetPackageKeys(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.ListNugetPackageKeysRequest()
+			var nugetPackageKeys = nugetApi.ListNugetPackageKeys(new()
 			{
 				Source = @"F:\ISI\Internal Projects\ISI.Extensions\Nuget",
 			}).NugetPackageKeys;
@@ -160,12 +160,12 @@ namespace ISI.Extensions.Tests
 		{
 			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
 
-			var packageVersion4 = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			var packageVersion4 = nugetApi.GetNugetPackageKey(new()
 			{
 				PackageId = "ISI.Extensions",
 			}).NugetPackageKey.Version;
 
-			var packageVersion = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			var packageVersion = nugetApi.GetNugetPackageKey(new()
 			{
 				PackageId = "ISI.Extensions",
 			}).NugetPackageKey.Version;
@@ -175,7 +175,7 @@ namespace ISI.Extensions.Tests
 			//	PackageId = "Microsoft.CSharp",
 			//}).NugetPackageKey.Version;
 
-			var packageVersion3 = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			var packageVersion3 = nugetApi.GetNugetPackageKey(new()
 			{
 				PackageId = "Aspose.Cells",
 			}).NugetPackageKey;
@@ -200,17 +200,17 @@ namespace ISI.Extensions.Tests
 			var nugetApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Nuget.NugetApi>();
 
 			var nugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
-			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new()
 			{
 				PackageId = "StackifyLib",
 				PackageVersion = "2.2.6",
 			}).NugetPackageKey);
-			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new()
 			{
 				PackageId = "Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv",
 				PackageVersion = "2.2.0",
 			}).NugetPackageKey);
-			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new()
 			{
 				PackageId = "Microsoft.ClearScript",
 				PackageVersion = "6.0.2",
@@ -232,7 +232,7 @@ namespace ISI.Extensions.Tests
 			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Tristar.SolutionFullNames.txt"));
 			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\ISI.SolutionFullNames.txt"));
 
-			solutionApi.UpdateNugetPackages(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.UpdateNugetPackagesRequest()
+			solutionApi.UpdateNugetPackages(new()
 			{
 				SolutionFullNames = solutionFullNames,
 				//UpdateWorkingCopyFromSourceControl = false,
@@ -283,14 +283,14 @@ namespace ISI.Extensions.Tests
 
 			var sourceNugetConfigFullName = @"F:\ISI\Clients\Tristar\nuget.config";
 
-			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionDetailsRequest()
+			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new()
 			{
 				Solution = solution,
 			}).SolutionDetails, ISI.Extensions.Extensions.NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
 
 			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpdateNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
 			{
-				using (solutionApi.GetSolutionLock(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetSolutionLockRequest()
+				using (solutionApi.GetSolutionLock(new()
 				{
 					SolutionFullName = solutionDetails.SolutionFullName,
 				}).Lock)
@@ -299,7 +299,7 @@ namespace ISI.Extensions.Tests
 
 					var dirtyFileNames = new HashSet<string>();
 
-					if (!sourceControlClientApi.UpdateWorkingCopy(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.UpdateWorkingCopyRequest()
+					if (!sourceControlClientApi.UpdateWorkingCopy(new()
 					{
 						FullName = solutionDetails.RootSourceDirectory,
 						IncludeExternals = true,
@@ -320,7 +320,7 @@ namespace ISI.Extensions.Tests
 					{
 						var commitLog = new StringBuilder();
 
-						if (!sourceControlClientApi.Commit(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.CommitRequest()
+						if (!sourceControlClientApi.Commit(new()
 						{
 							FullNames = dirtyFileNames,
 							LogMessage = "remove ISI from nuget.config",

@@ -30,7 +30,7 @@ namespace ISI.Extensions.Jenkins
 		{
 			var response = new DTOs.GetWorkspaceDirectoryResponse();
 
-			var jobConfigXml = GetJobConfigXml(new DTOs.GetJobConfigXmlRequest()
+			var jobConfigXml = GetJobConfigXml(new()
 			{
 				JenkinsUrl = request.JenkinsUrl,
 				UserName = request.UserName,

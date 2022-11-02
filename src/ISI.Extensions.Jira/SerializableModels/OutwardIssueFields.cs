@@ -28,7 +28,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.OutwardIssueFields Export()
 		{
-			return new ISI.Extensions.Jira.OutwardIssueFields()
+			return new()
 			{
 				Summary = Summary,
 				Status = Status?.Export(),

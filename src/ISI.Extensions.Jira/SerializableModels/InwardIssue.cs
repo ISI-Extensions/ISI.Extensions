@@ -28,7 +28,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.InwardIssue Export()
 		{
-			return new ISI.Extensions.Jira.InwardIssue()
+			return new()
 			{
 				InwardIssueId = InwardIssueId,
 				InwardIssueKey = InwardIssueKey,

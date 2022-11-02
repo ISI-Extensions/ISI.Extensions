@@ -52,7 +52,7 @@ namespace ISI.Extensions.Repository.Cosmos
 
 				if (recordDescription.PrimaryKeyPropertyDescriptions.NullCheckedCount() != 1)
 				{
-					throw new Exception("Record can only have one primary key");
+					throw new("Record can only have one primary key");
 				}
 
 				foreach (var propertyDescription in recordDescription.PropertyDescriptions)

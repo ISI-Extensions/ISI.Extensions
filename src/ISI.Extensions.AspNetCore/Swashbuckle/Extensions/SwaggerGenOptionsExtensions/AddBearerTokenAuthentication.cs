@@ -26,7 +26,7 @@ namespace ISI.Extensions.AspNetCore.Swashbuckle.Extensions
 		{
 			swaggerGenOptions.OperationFilter<BearerTokenOperationFilter>();
 
-			swaggerGenOptions.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme()
+			swaggerGenOptions.AddSecurityDefinition("Bearer", new()
 			{                                
 				Name = "Authorization",
 				Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,

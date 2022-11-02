@@ -37,7 +37,7 @@ namespace ISI.Extensions.Repository
 
 					if (!primaryKeyColumns.Any())
 					{
-						throw new Exception("missing primary key column");
+						throw new("missing primary key column");
 					}
 					else if (primaryKeyColumns.Length == 1)
 					{
@@ -45,7 +45,7 @@ namespace ISI.Extensions.Repository
 
 						if (!primaryKeyValues.Any())
 						{
-							throw new Exception("missing primary key");
+							throw new("missing primary key");
 						}
 						else if (primaryKeyValues.Count() == 1)
 						{
@@ -77,7 +77,7 @@ namespace ISI.Extensions.Repository
 						//multi-column primary key
 						if (!primaryKeyValues.Any())
 						{
-							throw new Exception("missing primary key");
+							throw new("missing primary key");
 						}
 						else if (primaryKeyValues.Count() == 1)
 						{

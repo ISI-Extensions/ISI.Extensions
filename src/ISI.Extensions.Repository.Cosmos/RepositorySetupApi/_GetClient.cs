@@ -27,7 +27,7 @@ namespace ISI.Extensions.Repository.Cosmos
 	{
 		private Microsoft.Azure.Documents.Client.DocumentClient GetClient()
 		{
-			return new Microsoft.Azure.Documents.Client.DocumentClient(new Uri(AccountEndpoint), AccountKey);
+			return new(new(AccountEndpoint), AccountKey);
 		}
 	}
 }

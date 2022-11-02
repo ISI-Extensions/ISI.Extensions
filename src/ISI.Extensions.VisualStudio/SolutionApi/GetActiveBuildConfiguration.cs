@@ -30,7 +30,7 @@ namespace ISI.Extensions.VisualStudio
 		{
 			var response = new DTOs.GetActiveBuildConfigurationResponse();
 
-			response.SolutionDetails = GetSolutionDetails(new DTOs.GetSolutionDetailsRequest()
+			response.SolutionDetails = GetSolutionDetails(new()
 			{
 				Solution = request.Solution,
 			}).SolutionDetails;
@@ -49,7 +49,7 @@ namespace ISI.Extensions.VisualStudio
 					}
 					else if (inPreSolution)
 					{
-						buildConfigurations.Add(new BuildConfiguration(line.Trim().Split(new[] { '\t', '=' }, StringSplitOptions.RemoveEmptyEntries).Last().Trim()));
+						buildConfigurations.Add(new(line.Trim().Split(new[] { '\t', '=' }, StringSplitOptions.RemoveEmptyEntries).Last().Trim()));
 					}
 					else if (line.IndexOf("GlobalSection(SolutionConfigurationPlatforms) = preSolution", StringComparison.CurrentCultureIgnoreCase) >= 0)
 					{
@@ -92,7 +92,7 @@ namespace ISI.Extensions.VisualStudio
 										}
 									}
 
-									config = new string(configArray);
+									config = new(configArray);
 
 									var parameters = config.Split(new[] { ';' }).Select(item => item.Split(new[] { '=' }).Select(piece => piece.Trim()).ToArray()).ToArray().Where(item => item.Length == 2).ToDictionary(pieces => pieces[0], pieces => pieces[1]);
 

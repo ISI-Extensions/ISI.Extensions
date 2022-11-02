@@ -64,7 +64,7 @@ namespace ISI.Extensions
 
 			if (!latitudeLongitude.HasValue)
 			{
-				throw new Exception(string.Format("\"{0}, {1}\" not parseable to a Latitude Longitude", latitude, longitude));
+				throw new(string.Format("\"{0}, {1}\" not parseable to a Latitude Longitude", latitude, longitude));
 			}
 
 			Latitude = latitudeLongitude.Latitude.GetValueOrDefault();
@@ -76,7 +76,7 @@ namespace ISI.Extensions
 
 			if (!latitudeLongitude.HasValue)
 			{
-				throw new Exception(string.Format("\"{0}\" not parseable to a Latitude Longitude", value));
+				throw new(string.Format("\"{0}\" not parseable to a Latitude Longitude", value));
 			}
 
 			Latitude = latitudeLongitude.Latitude.GetValueOrDefault();
@@ -94,7 +94,7 @@ namespace ISI.Extensions
 
 			if (!latitudeLongitude.HasValue)
 			{
-				throw new Exception(string.Format("\"{0}\" not parseable to a Latitude Longitude", value));
+				throw new(string.Format("\"{0}\" not parseable to a Latitude Longitude", value));
 			}
 
 			return latitudeLongitude.GetValueOrDefault();

@@ -34,7 +34,7 @@ namespace ISI.Extensions.Culture
 		{
 			if (!string.IsNullOrEmpty(cultureKey))
 			{
-				SetCulture(new System.Globalization.CultureInfo(cultureKey));
+				SetCulture(new(cultureKey));
 			}
 		}
 

@@ -37,7 +37,7 @@ namespace ISI.Extensions
 			var resourceNames = resourceAssembly.GetManifestResourceNames().OrderBy(resource => resource.ToLower());
 			foreach (var resourceName in resourceNames)
 			{
-				EmbeddedVolumeFileInfos.Add(resourceName.Substring(embeddedVolumeAssemblyNameLength), new EmbeddedVolumeFileInfo(resourceAssembly, resourceName, null));
+				EmbeddedVolumeFileInfos.Add(resourceName.Substring(embeddedVolumeAssemblyNameLength), new(resourceAssembly, resourceName, null));
 			}
 		}
 

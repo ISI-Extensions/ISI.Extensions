@@ -147,7 +147,7 @@ namespace ISI.Extensions.Repository
 				},
 			};
 
-			return new RecordPropertyDescription<TRecord>(propertyInfo, propertyAttributes, false);
+			return new(propertyInfo, propertyAttributes, false);
 		}
 	}
 }

@@ -40,7 +40,7 @@ namespace ISI.Extensions.VisualStudio
 				}
 				else
 				{
-					var solutionSourceDirectory = GetSolutionDetails(new DTOs.GetSolutionDetailsRequest()
+					var solutionSourceDirectory = GetSolutionDetails(new()
 					{
 						Solution = request.Solution,
 					}).SolutionDetails.SolutionDirectory;
@@ -65,7 +65,7 @@ namespace ISI.Extensions.VisualStudio
 			}
 			else
 			{
-				var solutionSourceDirectory = GetSolutionDetails(new DTOs.GetSolutionDetailsRequest()
+				var solutionSourceDirectory = GetSolutionDetails(new()
 				{
 					Solution = request.Solution,
 				}).SolutionDetails.SolutionDirectory;

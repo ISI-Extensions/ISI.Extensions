@@ -26,7 +26,7 @@ namespace ISI.Extensions.Aspose.Extensions
 	{
 		public static global::Aspose.Cells.CopyOptions ToCopyOptions(this ISI.Extensions.SpreadSheets.CopyOptions copyOptions)
 		{
-			return new global::Aspose.Cells.CopyOptions()
+			return new()
 			{
 				KeepMacros = copyOptions.KeepMacros,
 				ExtendToAdjacentRange = copyOptions.ExtendToAdjacentRange,
@@ -40,7 +40,7 @@ namespace ISI.Extensions.Aspose.Extensions
 
 		public static ISI.Extensions.SpreadSheets.CopyOptions ToCopyOptions(this global::Aspose.Cells.CopyOptions copyOptions)
 		{
-			return new ISI.Extensions.SpreadSheets.CopyOptions()
+			return new()
 			{
 				KeepMacros = copyOptions.KeepMacros,
 				ExtendToAdjacentRange = copyOptions.ExtendToAdjacentRange,

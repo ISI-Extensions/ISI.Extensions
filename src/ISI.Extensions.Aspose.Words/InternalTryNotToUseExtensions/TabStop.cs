@@ -27,7 +27,7 @@ namespace ISI.Extensions.Aspose.InternalTryNotToUseExtensions
 		{
 			if (!(documentTabStop is ISI.Extensions.Aspose.Words.DocumentTabStop asposeTabStop))
 			{
-				throw new Exception(string.Format("{0} is not of type {1}", nameof(documentTabStop), typeof(ISI.Extensions.Aspose.Words.DocumentTabStop).FullName));
+				throw new(string.Format("{0} is not of type {1}", nameof(documentTabStop), typeof(ISI.Extensions.Aspose.Words.DocumentTabStop).FullName));
 			}
 
 			return asposeTabStop._tabStop;

@@ -27,7 +27,7 @@ namespace ISI.Extensions.Svn
 	{
 		private string GetRepositoryRoot(string workingCopyDirectory)
 		{
-			return GetWorkingCopyInfos(new DTOs.GetWorkingCopyInfosRequest()
+			return GetWorkingCopyInfos(new()
 			{
 				Source = System.IO.Path.Combine(workingCopyDirectory),
 			})?.Infos?.First()?.RepositoryRoot?.ToString() ?? string.Empty;

@@ -32,7 +32,7 @@ namespace ISI.Extensions.MessageBus.Redis
 
 			var serializedMessage = JsonSerializer.Serialize(requestType, request, true);
 
-			return new MessageEnvelope()
+			return new()
 			{
 				OperationKey = operationKey,
 				RequestTimeOut = timeout,

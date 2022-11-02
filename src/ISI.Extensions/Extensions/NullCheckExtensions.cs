@@ -316,13 +316,13 @@ namespace ISI.Extensions.Extensions
 					case NullCheckCollectionResult.ReturnNull:
 						return null;
 					case NullCheckCollectionResult.Empty:
-						return new HashSet<TValue>();
+						return new();
 					default:
 						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
 				}
 			}
 
-			return new HashSet<TValue>(values);
+			return new(values);
 		}
 
 		public static HashSet<TResult> ToNullCheckedHashSet<TValue, TResult>(this IEnumerable<TValue> values, Func<TValue, TResult> converter, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.ReturnNull)
@@ -334,13 +334,13 @@ namespace ISI.Extensions.Extensions
 					case NullCheckCollectionResult.ReturnNull:
 						return null;
 					case NullCheckCollectionResult.Empty:
-						return new HashSet<TResult>();
+						return new();
 					default:
 						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
 				}
 			}
 
-			return new HashSet<TResult>(values.Select(converter));
+			return new(values.Select(converter));
 		}
 
 		public static TValueCollection ToNullCheckedCollection<TValue, TValueCollection>(this IEnumerable<TValue> values, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.ReturnNull)

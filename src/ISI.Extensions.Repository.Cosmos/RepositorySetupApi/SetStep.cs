@@ -46,11 +46,11 @@ namespace ISI.Extensions.Repository.Cosmos
 			{
 				await GetClient().CreateDocumentCollectionAsync(
 					Microsoft.Azure.Documents.Client.UriFactory.CreateDatabaseUri(DatabaseName),
-					new Microsoft.Azure.Documents.DocumentCollection
+					new()
 					{
 						Id = DatabaseMigrationStepTableName
 					},
-					new Microsoft.Azure.Documents.Client.RequestOptions {OfferThroughput = 1000});
+					new() {OfferThroughput = 1000});
 			}
 
 			var record = new DatabaseMigrationStepRecord()

@@ -68,7 +68,7 @@ namespace ISI.Extensions.Tests
 		{
 			var msBuildApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.MSBuildApi>();
 
-			var msBuildExeFullName = msBuildApi.GetMSBuildExeFullName(new ISI.Extensions.VisualStudio.DataTransferObjects.MSBuildApi.GetMSBuildExeFullNameRequest()).MSBuildExeFullName;
+			var msBuildExeFullName = msBuildApi.GetMSBuildExeFullName(new()).MSBuildExeFullName;
 
 		}
 	}

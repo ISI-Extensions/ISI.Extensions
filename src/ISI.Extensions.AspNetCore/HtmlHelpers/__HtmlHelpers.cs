@@ -129,7 +129,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 			public class ContentUrlComparer : IEqualityComparer<ISI.Extensions.AspNetCore.IContentUrl>
 			{
 				private static ContentUrlComparer _instance = null;
-				public static ContentUrlComparer Instance => _instance ??= new ContentUrlComparer();
+				public static ContentUrlComparer Instance => _instance ??= new();
 
 				private ContentUrlComparer()
 				{

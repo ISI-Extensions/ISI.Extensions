@@ -34,7 +34,7 @@ namespace ISI.Extensions.Scm
 
 			using (var remoteManagementClient = ISI.Extensions.Scm.ServiceReferences.Scm.RemoteManagementClient.GetClient(request.BuildArtifactManagementUrl))
 			{
-				response.DateTimeStampVersion = new ISI.Extensions.Scm.DateTimeStampVersion(remoteManagementClient.GetBuildArtifactEnvironmentDateTimeStampVersionAsync(request.AuthenticationToken, request.ArtifactName, request.Environment).GetAwaiter().GetResult());
+				response.DateTimeStampVersion = new(remoteManagementClient.GetBuildArtifactEnvironmentDateTimeStampVersionAsync(request.AuthenticationToken, request.ArtifactName, request.Environment).GetAwaiter().GetResult());
 			}
 
 			return response;

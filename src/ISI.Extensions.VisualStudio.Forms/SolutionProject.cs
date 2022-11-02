@@ -36,7 +36,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 		public string ProjectFullName => ProjectKey.ProjectFullName;
 
 		private string _projectName = null;
-		public string ProjectName => _projectName ??= ProjectApi.GetProjectName(new ISI.Extensions.VisualStudio.DataTransferObjects.ProjectApi.GetProjectNameRequest()
+		public string ProjectName => _projectName ??= ProjectApi.GetProjectName(new()
 		{
 			Project = ProjectFullName,
 		}).ProjectName;
@@ -89,7 +89,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			{
 				Width = solution.Panel.Width,
 				Height = 24,
-				Margin = new System.Windows.Forms.Padding(0),
+				Margin = new(0),
 			};
 			solution.Panel.Resize += (resizeSender, resizeArgs) =>
 			{
@@ -105,7 +105,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 		public virtual void PopulatePanel(Action<Solution> start)
 		{
-			RadioButton = new System.Windows.Forms.RadioButton()
+			RadioButton = new()
 			{
 				Top = 6,
 				Left = 36,
@@ -130,7 +130,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			};
 			Panel.Controls.Add(RadioButton);
 
-			ProjectLabel = new System.Windows.Forms.Label()
+			ProjectLabel = new()
 			{
 				Text = Caption,
 				AutoSize = false,
@@ -145,7 +145,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			ProjectLabel.Click += (clickSender, clickEventArgs) => Selected = !Selected;
 			Panel.Controls.Add(ProjectLabel);
 
-			StatusLabel = new System.Windows.Forms.Label()
+			StatusLabel = new()
 			{
 				Text = string.Empty,
 				Top = 7,
@@ -160,7 +160,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 			if (!WaitForExecuteProjectResponse)
 			{
-				StopButton = new System.Windows.Forms.Button()
+				StopButton = new()
 				{
 					Visible = false,
 					Text = "Stop",
@@ -173,7 +173,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 				StopButton.Click += (_, __) => { StopService(); };
 				Panel.Controls.Add(StopButton);
 
-				StartButton = new System.Windows.Forms.Button()
+				StartButton = new()
 				{
 					Visible = false,
 					Text = "Start",
@@ -187,7 +187,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 				Panel.Controls.Add(StartButton);
 			}
 
-			ViewRunLogButton = new System.Windows.Forms.Button()
+			ViewRunLogButton = new()
 			{
 				Visible = false,
 				Text = "View Log",
@@ -244,7 +244,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 			if (Selected)
 			{
-				tasks.Add(new TaskActions()
+				tasks.Add(new()
 				{
 					PreAction = () =>
 					{
@@ -253,7 +253,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 							Solution.OpenButton?.Invoke((System.Windows.Forms.MethodInvoker)delegate { Solution.OpenButton.Visible = false; });
 							ViewRunLogButton?.Invoke((System.Windows.Forms.MethodInvoker)delegate { ViewRunLogButton.Visible = false; });
 
-							var exeFileName = ProjectApi.GetExeFileName(new ISI.Extensions.VisualStudio.DataTransferObjects.ProjectApi.GetExeFileNameRequest()
+							var exeFileName = ProjectApi.GetExeFileName(new()
 							{
 								ProjectFileName = ProjectFullName,
 								BuildConfiguration = Solution.ActiveBuildConfiguration,
@@ -317,7 +317,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 									}
 
 									//ExecuteProjectInstance = System.Diagnostics.Process.Start(processStartInfo);
-									ExecuteProjectInstance = new System.Diagnostics.Process();
+									ExecuteProjectInstance = new();
 									ExecuteProjectInstance.StartInfo = processStartInfo;
 									ExecuteProjectInstance.Start();
 

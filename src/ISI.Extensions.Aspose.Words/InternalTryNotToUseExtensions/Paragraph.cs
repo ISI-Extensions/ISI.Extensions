@@ -27,7 +27,7 @@ namespace ISI.Extensions.Aspose.InternalTryNotToUseExtensions
 		{
 			if (!(documentParagraph is ISI.Extensions.Aspose.Words.DocumentParagraph asposeParagraph))
 			{
-				throw new Exception(string.Format("{0} is not of type {1}", nameof(documentParagraph), typeof(ISI.Extensions.Aspose.Words.DocumentParagraph).FullName));
+				throw new(string.Format("{0} is not of type {1}", nameof(documentParagraph), typeof(ISI.Extensions.Aspose.Words.DocumentParagraph).FullName));
 			}
 
 			return asposeParagraph._paragraph;

@@ -87,7 +87,7 @@ namespace ISI.Extensions
 
 				if (RmStartSession(out var handle, 0, key) != 0)
 				{
-					throw new Exception("Could not begin restart session.  Unable to determine file locker.");
+					throw new("Could not begin restart session.  Unable to determine file locker.");
 				}
 
 				try
@@ -101,7 +101,7 @@ namespace ISI.Extensions
 
 					if (RmRegisterResources(handle, (uint)resources.Length, resources, 0, null, 0, null) != 0)
 					{
-						throw new Exception("Could not register resource.");
+						throw new("Could not register resource.");
 					}
 
 					//Note: there's a race condition here -- the first call to RmGetList() returns
@@ -117,7 +117,7 @@ namespace ISI.Extensions
 						// Get the list
 						if (RmGetList(handle, out pnProcInfoNeeded, ref pnProcInfo, processInfo, ref lpdwRebootReasons) == 0)
 						{
-							processes = new List<System.Diagnostics.Process>((int)pnProcInfo);
+							processes = new((int)pnProcInfo);
 
 							// Enumerate all of the results and add them to the 
 							// list to be returned
@@ -135,12 +135,12 @@ namespace ISI.Extensions
 						}
 						else
 						{
-							throw new Exception("Could not list processes locking resource.");
+							throw new("Could not list processes locking resource.");
 						}
 					}
 					else if (rmGetListResponse != 0)
 					{
-						throw new Exception("Could not list processes locking resource. Failed to get size of result.");
+						throw new("Could not list processes locking resource. Failed to get size of result.");
 					}
 				}
 				finally

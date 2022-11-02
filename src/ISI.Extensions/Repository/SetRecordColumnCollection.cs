@@ -40,7 +40,7 @@ namespace ISI.Extensions.Repository
 		{
 			var propertyInfo = ISI.Extensions.Reflection.GetPropertyInfo(property);
 
-			Add(new SetRecordColumn<TRecord>()
+			Add(new()
 			{
 				RecordPropertyDescription = RecordDescription.GetRecordDescription<TRecord>().PropertyDescriptionLookup[propertyInfo.Name],
 				Values = new[] { value },
@@ -56,7 +56,7 @@ namespace ISI.Extensions.Repository
 		{
 			var propertyInfo = ISI.Extensions.Reflection.GetPropertyInfo(property);
 
-			Add(new SetRecordColumn<TRecord>()
+			Add(new()
 			{
 				RecordPropertyDescription = RecordDescription.GetRecordDescription<TRecord>().PropertyDescriptionLookup[propertyInfo.Name],
 				Values = values.NullCheckedSelect(value => (object)value),

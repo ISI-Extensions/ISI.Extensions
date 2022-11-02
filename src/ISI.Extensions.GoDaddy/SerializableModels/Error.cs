@@ -28,7 +28,7 @@ namespace ISI.Extensions.GoDaddy.SerializableModels
 	{
 		public ISI.Extensions.GoDaddy.Error Export()
 		{
-			return new ISI.Extensions.GoDaddy.Error()
+			return new()
 			{
 				Code = Code,
 				Fields = Fields.ToNullCheckedArray(field => field.Export()),
@@ -51,7 +51,7 @@ namespace ISI.Extensions.GoDaddy.SerializableModels
 	{
 		public ISI.Extensions.GoDaddy.ErrorField Export()
 		{
-			return new ISI.Extensions.GoDaddy.ErrorField()
+			return new()
 			{
 				Code = Code,
 				Message = Message,

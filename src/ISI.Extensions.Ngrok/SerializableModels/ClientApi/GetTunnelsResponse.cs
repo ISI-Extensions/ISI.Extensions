@@ -28,7 +28,7 @@ namespace ISI.Extensions.Ngrok.SerializableModels.ClientApi
 	{
 		public ISI.Extensions.Ngrok.DataTransferObjects.NGrokClientApi.GetTunnelsResponse Export()
 		{
-			return new ISI.Extensions.Ngrok.DataTransferObjects.NGrokClientApi.GetTunnelsResponse()
+			return new()
 			{
 				Tunnels = Tunnels.ToNullCheckedArray(source => source.Export()),
 				ClientApiUri = ClientApiUri,

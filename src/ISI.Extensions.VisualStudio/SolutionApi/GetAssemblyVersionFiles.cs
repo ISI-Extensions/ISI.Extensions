@@ -30,18 +30,18 @@ namespace ISI.Extensions.VisualStudio
 		{
 			var response = new DTOs.GetAssemblyVersionFilesResponse();
 
-			var solutionDetails = GetSolutionDetails(new DTOs.GetSolutionDetailsRequest()
+			var solutionDetails = GetSolutionDetails(new()
 			{
 				Solution = request.Solution,
 			}).SolutionDetails;
 
-			response.AssemblyVersionFiles = new ISI.Extensions.VisualStudio.AssemblyVersionFileDictionary();
+			response.AssemblyVersionFiles = new();
 
 			void addVersionFile(string assemblyGroupName, string assemblyInfoFullName)
 			{
 				//Console.WriteLine("addVersionFile(\"{0}\", \"{1}\")", assemblyGroupName, assemblyInfoFullName);
 
-				var assemblyVersion = GetAssemblyVersion(CodeGenerationApi.ParseAssemblyInfoFile(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeGenerationApi.ParseAssemblyInfoFileRequest()
+				var assemblyVersion = GetAssemblyVersion(CodeGenerationApi.ParseAssemblyInfoFile(new()
 				{
 					AssemblyInfoFullName = assemblyInfoFullName,
 				}).Version, request.BuildRevision);

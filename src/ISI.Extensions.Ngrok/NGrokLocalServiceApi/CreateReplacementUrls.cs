@@ -74,7 +74,7 @@ namespace ISI.Extensions.Ngrok
 
 						if (string.Equals(localUri.Scheme, externalUri.Scheme, StringComparison.InvariantCultureIgnoreCase))
 						{
-							tunnels.Add(new DTOs.Tunnel()
+							tunnels.Add(new()
 							{
 								TunnelName = existingTunnel.TunnelName,
 								LocalUrl = localUrl,
@@ -84,7 +84,7 @@ namespace ISI.Extensions.Ngrok
 						}
 						else
 						{
-							throw new Exception(string.Format("Existing Tunnel for port: {0} isn't of the correct scheme", localUri.Port));
+							throw new(string.Format("Existing Tunnel for port: {0} isn't of the correct scheme", localUri.Port));
 						}
 					}
 					else
@@ -133,7 +133,7 @@ namespace ISI.Extensions.Ngrok
 							{
 								if (existingTunnelLookupByExternalUrl.TryGetValue(externalUri.Uri.ToString(), out existingTunnel))
 								{
-									tunnels.Add(new DTOs.Tunnel()
+									tunnels.Add(new()
 									{
 										TunnelName = existingTunnel.TunnelName,
 										LocalUrl = localUrl,
@@ -219,7 +219,7 @@ namespace ISI.Extensions.Ngrok
 
 							if (tunnel != null)
 							{
-								tunnels.Add(new DTOs.Tunnel()
+								tunnels.Add(new()
 								{
 									TunnelName = tunnel.TunnelName,
 									LocalUrl = localUrl,

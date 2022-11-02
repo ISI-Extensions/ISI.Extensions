@@ -36,7 +36,7 @@ namespace ISI.Extensions.Jenkins.SerializableModels
 
 		public ISI.Extensions.Jenkins.BuildCause Export()
 		{
-			return new ISI.Extensions.Jenkins.BuildCause()
+			return new()
 			{
 				ShortDescription = ShortDescription,
 			};

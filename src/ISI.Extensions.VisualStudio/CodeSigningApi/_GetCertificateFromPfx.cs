@@ -30,10 +30,10 @@ namespace ISI.Extensions.VisualStudio
 		{
 			if (string.IsNullOrWhiteSpace(certificatePassword))
 			{
-				return new System.Security.Cryptography.X509Certificates.X509Certificate2(certificatePath);
+				return new(certificatePath);
 			}
 
-			return new System.Security.Cryptography.X509Certificates.X509Certificate2(certificatePath, certificatePassword);
+			return new(certificatePath, certificatePassword);
 		}
 	}
 }

@@ -60,7 +60,7 @@ namespace ISI.Extensions.Caching.MessageBus.Controllers
 
 			if((ProcessClearCacheQueueTaskTimer == null) && Configuration.EnterpriseCacheManagerApi.EnqueueIncomingClearRequests)
 			{
-				ProcessClearCacheQueueTaskTimer = new ISI.Extensions.Threads.TaskTimer(Logger, Configuration.EnterpriseCacheManagerApi.EnqueueIncomingClearRequestQueueInterval, Configuration.EnterpriseCacheManagerApi.EnqueueIncomingClearRequestQueueExceptionInterval);
+				ProcessClearCacheQueueTaskTimer = new(Logger, Configuration.EnterpriseCacheManagerApi.EnqueueIncomingClearRequestQueueInterval, Configuration.EnterpriseCacheManagerApi.EnqueueIncomingClearRequestQueueExceptionInterval);
 				ProcessClearCacheQueueTaskTimer.OnTimer += ProcessClearCacheQueue;
 				ProcessClearCacheQueueTaskTimer.Start();
 				ISI.Extensions.Threads.OnAppExit += () => ProcessClearCacheQueueTaskTimer.Stop();

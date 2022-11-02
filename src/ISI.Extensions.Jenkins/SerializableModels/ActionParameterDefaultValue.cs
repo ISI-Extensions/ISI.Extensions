@@ -37,7 +37,7 @@ namespace ISI.Extensions.Jenkins.SerializableModels
 
 		public ISI.Extensions.Jenkins.ActionParameterDefaultValue Export()
 		{
-			return new ISI.Extensions.Jenkins.ActionParameterDefaultValue()
+			return new()
 			{
 				Name = Name,
 				Value = Value,

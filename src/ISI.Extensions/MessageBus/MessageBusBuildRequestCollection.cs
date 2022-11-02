@@ -148,7 +148,7 @@ namespace ISI.Extensions.MessageBus
 						}
 						else
 						{
-							throw new Exception(string.Format("Named Channel Configuration: \"{0}\" not found", namedChannelConfigurationMessageBusBuildRequest.ChannelConfigurationName));
+							throw new(string.Format("Named Channel Configuration: \"{0}\" not found", namedChannelConfigurationMessageBusBuildRequest.ChannelConfigurationName));
 						}
 
 						break;
@@ -170,7 +170,7 @@ namespace ISI.Extensions.MessageBus
 						}
 						else
 						{
-							throw new Exception(string.Format("Named Channel Configuration: \"{0}\" not found", namedChannelConfigurationChannelPathSuffixMessageBusBuildRequest.ChannelConfigurationName));
+							throw new(string.Format("Named Channel Configuration: \"{0}\" not found", namedChannelConfigurationChannelPathSuffixMessageBusBuildRequest.ChannelConfigurationName));
 						}
 
 						break;
@@ -216,7 +216,7 @@ namespace ISI.Extensions.MessageBus
 			{
 				if (!existingMessageBusStartUpRequest.IsSameDefinition(messageBusBuildRequest))
 				{
-					throw new Exception(string.Format("Duplicate definitions for ChannelPath: \"{0}\"", messageBusBuildRequest.ChannelPath));
+					throw new(string.Format("Duplicate definitions for ChannelPath: \"{0}\"", messageBusBuildRequest.ChannelPath));
 				}
 
 				existingMessageBusStartUpRequest.MergeIn(messageBusBuildRequest);

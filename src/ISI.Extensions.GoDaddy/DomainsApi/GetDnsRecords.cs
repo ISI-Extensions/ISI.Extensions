@@ -47,10 +47,10 @@ namespace ISI.Extensions.GoDaddy
 			}
 			else if (!string.IsNullOrWhiteSpace(request.Name))
 			{
-				throw new Exception("Cannot specify a name without a record type");
+				throw new("Cannot specify a name without a record type");
 			}
 
-			var goDaddyResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet(new ISI.Extensions.WebClient.Rest.RestResponseTypeCollection()
+			var goDaddyResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet(new()
 			{
 				{ System.Net.HttpStatusCode.OK, typeof(SERIALIZABLE.DomainsApi.DnsRecord[]) },
 				{ System.Net.HttpStatusCode.BadRequest, typeof(SERIALIZABLE.Error) },

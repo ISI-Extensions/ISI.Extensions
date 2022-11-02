@@ -57,7 +57,7 @@ namespace ISI.Extensions.Serialization
 			Logger = logger;
 			DateTimeStamper = dateTimeStamper;
 
-			AvailableSerializers = new System.Collections.Concurrent.ConcurrentDictionary<Type, ISI.Extensions.Serialization.ISerializer>();
+			AvailableSerializers = new();
 			foreach (var exportedType in ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementationTypes<ISI.Extensions.Serialization.ISerializer>())
 			{
 				AvailableSerializers.TryAdd(exportedType, ServiceProvider.GetService(exportedType) as ISI.Extensions.Serialization.ISerializer);
@@ -66,28 +66,28 @@ namespace ISI.Extensions.Serialization
 			var defaultSerializerType = (!string.IsNullOrWhiteSpace(Configuration.DefaultSerializerType) ? Type.GetType(Configuration.DefaultSerializerType) : Type.GetType("ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer, ISI.Extensions.JsonSerialization.Newtonsoft") ?? typeof(ISI.Extensions.JsonSerialization.JsonSerializer));
 			if (defaultSerializerType == null)
 			{
-				throw new Exception(string.Format("Cannot find defaultSerializerType for \"{0}\"", Configuration.DefaultSerializerType));
+				throw new(string.Format("Cannot find defaultSerializerType for \"{0}\"", Configuration.DefaultSerializerType));
 			}
 			DefaultSerializer = ServiceProvider.GetService(defaultSerializerType) as ISI.Extensions.Serialization.ISerializer;
 
 			var defaultDataContractSerializerType = (!string.IsNullOrWhiteSpace(Configuration.DefaultDataContractSerializerType) ? Type.GetType(Configuration.DefaultDataContractSerializerType) : Type.GetType("ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer, ISI.Extensions.JsonSerialization.Newtonsoft") ?? typeof(ISI.Extensions.JsonSerialization.JsonDataContractSerializer));
 			if (defaultDataContractSerializerType == null)
 			{
-				throw new Exception(string.Format("Cannot find defaultDataContractSerializerType for \"{0}\"", Configuration.DefaultDataContractSerializerType));
+				throw new(string.Format("Cannot find defaultDataContractSerializerType for \"{0}\"", Configuration.DefaultDataContractSerializerType));
 			}
 			DefaultDataContractSerializer = ServiceProvider.GetService(defaultDataContractSerializerType) as ISI.Extensions.Serialization.ISerializer;
 
 			AvailableSerializers.TryAdd(defaultSerializerType, DefaultSerializer);
 			AvailableSerializers.TryAdd(defaultDataContractSerializerType, DefaultDataContractSerializer);
 
-			MappedSerializers = new System.Collections.Concurrent.ConcurrentDictionary<Type, ISI.Extensions.Serialization.ISerializer>();
+			MappedSerializers = new();
 
-			SerializationFormattingShowDeclaration = new System.Collections.Concurrent.ConcurrentDictionary<Type, bool>();
-			SerializationFormattingFriendlyFormatted = new System.Collections.Concurrent.ConcurrentDictionary<Type, bool>();
+			SerializationFormattingShowDeclaration = new();
+			SerializationFormattingFriendlyFormatted = new();
 
 			//SerializerContracts
 			{
-				SerializerContractNameLookupBySerializerContractType = new System.Collections.Concurrent.ConcurrentDictionary<Type, string>();
+				SerializerContractNameLookupBySerializerContractType = new();
 
 				foreach (var exportedType in ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementationTypes<ISI.Extensions.Serialization.ISerializerContract>())
 				{
@@ -99,7 +99,7 @@ namespace ISI.Extensions.Serialization
 
 			//SerializerContractNames
 			{
-				SerializerContractTypeLookupBySerializerContractName = new System.Collections.Concurrent.ConcurrentDictionary<string, Type>();
+				SerializerContractTypeLookupBySerializerContractName = new();
 
 				foreach (var exportedType in ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementationTypes<ISI.Extensions.Serialization.ISerializerContractName>())
 				{
@@ -118,8 +118,8 @@ namespace ISI.Extensions.Serialization
 
 			//SerializerContractUuids
 			{
-				SerializerContractUuidLookupBySerializerContractType = new System.Collections.Concurrent.ConcurrentDictionary<Type, Guid>();
-				SerializerContractTypeLookupBySerializerContractUuid = new System.Collections.Concurrent.ConcurrentDictionary<Guid, Type>();
+				SerializerContractUuidLookupBySerializerContractType = new();
+				SerializerContractTypeLookupBySerializerContractUuid = new();
 
 				foreach (var exportedType in ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementationTypes<ISI.Extensions.Serialization.ISerializerContractUuid>())
 				{
@@ -129,7 +129,7 @@ namespace ISI.Extensions.Serialization
 						SerializerContractUuidLookupBySerializerContractType.TryAdd(exportedType, serializerContractUuidAttribute.SerializerContractUuid);
 						if (!SerializerContractTypeLookupBySerializerContractUuid.TryAdd(serializerContractUuidAttribute.SerializerContractUuid, exportedType))
 						{
-							throw new Exception(string.Format("Multiple SerializerContractUuid found \"{0}\"", serializerContractUuidAttribute.SerializerContractUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)));
+							throw new(string.Format("Multiple SerializerContractUuid found \"{0}\"", serializerContractUuidAttribute.SerializerContractUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)));
 						}
 					}
 				}

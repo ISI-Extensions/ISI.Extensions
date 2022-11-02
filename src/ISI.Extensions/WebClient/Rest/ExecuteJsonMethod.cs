@@ -55,7 +55,7 @@ namespace ISI.Extensions.WebClient
 				responseType = typeof(JsonSerializedResponse<>).MakeGenericType(responseType.GenericTypeArguments);
 			}
 
-			var response = ExecuteFormRequestJsonMethod(new RestResponseTypeCollection()
+			var response = ExecuteFormRequestJsonMethod(new()
 			{
 				DefaultRestResponseType = responseType,
 			}, httpMethod, uri, headers, request, throwUnhandledException, overRideSecurityProtocolTypes, serverCertificateValidationCallback, clientCertificates, cookieContainer);
@@ -93,13 +93,13 @@ namespace ISI.Extensions.WebClient
 				errorResponseType = typeof(JsonSerializedResponse<>).MakeGenericType(errorResponseType.GenericTypeArguments);
 			}
 
-			var response = ExecuteFormRequestJsonMethod(new RestResponseTypeCollection()
+			var response = ExecuteFormRequestJsonMethod(new()
 			{
 				DefaultRestResponseType = responseType,
 				DefaultErrorRestResponseType = errorResponseType,
 			}, httpMethod, uri, headers, request, throwUnhandledException, overRideSecurityProtocolTypes, serverCertificateValidationCallback, clientCertificates, cookieContainer);
 
-			return new RestResponse<TResponse, TErrorResponse>(response.StatusCode, (response.IsErrorResponse ? null : response.Response as TResponse), (response.IsErrorResponse ? response.Response as TErrorResponse : null));
+			return new(response.StatusCode, (response.IsErrorResponse ? null : response.Response as TResponse), (response.IsErrorResponse ? response.Response as TErrorResponse : null));
 		}
 
 
@@ -159,7 +159,7 @@ namespace ISI.Extensions.WebClient
 				responseType = typeof(JsonSerializedResponse<>).MakeGenericType(responseType.GenericTypeArguments);
 			}
 
-			var response = ExecuteJsonMethod<TRequest>(new RestResponseTypeCollection()
+			var response = ExecuteJsonMethod<TRequest>(new()
 			{
 				DefaultRestResponseType = responseType,
 			}, httpMethod, uri, headers, request, throwUnhandledException, overRideSecurityProtocolTypes, serverCertificateValidationCallback, clientCertificates, cookieContainer);
@@ -199,13 +199,13 @@ namespace ISI.Extensions.WebClient
 				errorResponseType = typeof(JsonSerializedResponse<>).MakeGenericType(errorResponseType.GenericTypeArguments);
 			}
 
-			var response = ExecuteJsonMethod<TRequest>(new RestResponseTypeCollection()
+			var response = ExecuteJsonMethod<TRequest>(new()
 			{
 				DefaultRestResponseType = responseType,
 				DefaultErrorRestResponseType = errorResponseType,
 			}, httpMethod, uri, headers, request, throwUnhandledException, overRideSecurityProtocolTypes, serverCertificateValidationCallback, clientCertificates, cookieContainer);
 
-			return new RestResponse<TResponse, TErrorResponse>(response.StatusCode, (response.IsErrorResponse ? null : response.Response as TResponse), (response.IsErrorResponse ? response.Response as TErrorResponse : null));
+			return new(response.StatusCode, (response.IsErrorResponse ? null : response.Response as TResponse), (response.IsErrorResponse ? response.Response as TErrorResponse : null));
 		}
 
 

@@ -48,7 +48,7 @@ namespace ISI.Extensions
 
 				if (values.ContainsKey(key))
 				{
-					throw new Exception(string.Format("key: \"{0}\" already exists with value of \"{1}\" cannot add value \"{2}\"", key, values[key], value));
+					throw new(string.Format("key: \"{0}\" already exists with value of \"{1}\" cannot add value \"{2}\"", key, values[key], value));
 				}
 
 				values.Add(key, value);

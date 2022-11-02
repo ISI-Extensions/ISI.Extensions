@@ -54,7 +54,7 @@ namespace ISI.Extensions
 			}
 
 			private List<FileStream> _fileStreams = null;
-			protected List<FileStream> FileStreams => _fileStreams ??= new List<FileStream>();
+			protected List<FileStream> FileStreams => _fileStreams ??= new();
 
 			public void Add(string fileName)
 			{

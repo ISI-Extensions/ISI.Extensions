@@ -38,7 +38,7 @@ namespace ISI.Extensions.Caching.Extensions
 		{
 			using (var entry = cacheManager.CreateEntry(cacheKey))
 			{
-				entry.AbsoluteExpiration = new DateTimeOffset?(absoluteExpiration);
+				entry.AbsoluteExpiration = new(absoluteExpiration);
 				entry.Value = value;
 			}
 
@@ -49,7 +49,7 @@ namespace ISI.Extensions.Caching.Extensions
 		{
 			using (var entry = cacheManager.CreateEntry(cacheKey))
 			{
-				entry.AbsoluteExpirationRelativeToNow = new TimeSpan?(absoluteExpirationRelativeToNow);
+				entry.AbsoluteExpirationRelativeToNow = new(absoluteExpirationRelativeToNow);
 				entry.Value = value;
 			}
 

@@ -49,14 +49,14 @@ namespace ISI.Extensions.SshNet
 				{
 					if (string.IsNullOrEmpty(password))
 					{
-						return new Renci.SshNet.ConnectionInfo(server, port, userName, new Renci.SshNet.PrivateKeyAuthenticationMethod(userName, new Renci.SshNet.PrivateKeyFile(privateKeyStream)));
+						return new(server, port, userName, new Renci.SshNet.PrivateKeyAuthenticationMethod(userName, new Renci.SshNet.PrivateKeyFile(privateKeyStream)));
 					}
 
-					return new Renci.SshNet.ConnectionInfo(server, port, userName, new Renci.SshNet.PrivateKeyAuthenticationMethod(userName, new Renci.SshNet.PrivateKeyFile(privateKeyStream, password)));
+					return new(server, port, userName, new Renci.SshNet.PrivateKeyAuthenticationMethod(userName, new Renci.SshNet.PrivateKeyFile(privateKeyStream, password)));
 				}
 			}
 
-			return new Renci.SshNet.ConnectionInfo(server, port, userName, new Renci.SshNet.PasswordAuthenticationMethod(userName, password));
+			return new(server, port, userName, new Renci.SshNet.PasswordAuthenticationMethod(userName, password));
 		}
 	}
 }

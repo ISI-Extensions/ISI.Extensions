@@ -140,7 +140,7 @@ namespace ISI.Extensions.VisualStudio
 			var processRequest = new ISI.Extensions.Process.ProcessRequest()
 			{
 				Logger = logger,
-				ProcessExeFullName = GetMSBuildExeFullName(new DTOs.GetMSBuildExeFullNameRequest()
+				ProcessExeFullName = GetMSBuildExeFullName(new()
 				{
 					MsBuildPlatform = request.MsBuildPlatform,
 					MsBuildVersion = request.MsBuildVersion,
@@ -154,7 +154,7 @@ namespace ISI.Extensions.VisualStudio
 
 			if (processResponse.Errored)
 			{
-				throw new Exception("Error Executing MSBuild.exe");
+				throw new("Error Executing MSBuild.exe");
 			}
 
 			return response;

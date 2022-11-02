@@ -32,7 +32,7 @@ namespace ISI.Extensions.VisualStudio
 
 			var logger = new AddToLogLogger(request.AddToLog, Logger);
 
-			var solutionDirectory = SourceControlClientApi.GetRootDirectory(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.GetRootDirectoryRequest()
+			var solutionDirectory = SourceControlClientApi.GetRootDirectory(new()
 			{
 				FullName = request.SolutionFullName,
 			}).FullName;

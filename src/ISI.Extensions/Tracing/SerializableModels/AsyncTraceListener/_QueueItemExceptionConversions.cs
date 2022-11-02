@@ -28,7 +28,7 @@ namespace ISI.Extensions.Tracing.SerializableModels.AsyncTraceListener
 		{
 			if (exception != null)
 			{
-				return new QueueItemException()
+				return new()
 				{
 					ExceptionType = exception.GetType().FullName,
 					Message = exception.Message,

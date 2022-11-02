@@ -28,7 +28,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.IssueLinkType Export()
 		{
-			return new ISI.Extensions.Jira.IssueLinkType()
+			return new()
 			{
 				IssueLinkTypeId = IssueLinkTypeId,
 				Name = Name,

@@ -93,7 +93,7 @@ namespace ISI.Extensions.DataReader
 		{
 			var result = false;
 
-			StreamReader ??= new System.IO.StreamReader(Stream);
+			StreamReader ??= new(Stream);
 
 			while (!result && !TextParserContext.EndOfSource)
 			{

@@ -26,7 +26,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 	{
 		public override Task StopAsync(System.Threading.CancellationToken cancellationToken = default)
 		{
-			return BusControl?.StopAsync(cancellationToken) ?? Task.FromException(new Exception("BusControl not built"));
+			return BusControl?.StopAsync(cancellationToken) ?? Task.FromException(new("BusControl not built"));
 		}
 	}
 }

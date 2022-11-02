@@ -48,7 +48,7 @@ namespace ISI.Extensions.Ebcdic
 					isNegative = false;
 					break;
 				default:
-					throw new Exception("Format missing sign");
+					throw new("Format missing sign");
 			}
 
 			for (int byteIndex = packedEbcdic.Length * 2 - 1; byteIndex > 0; byteIndex--)
@@ -68,7 +68,7 @@ namespace ISI.Extensions.Ebcdic
 				long digit = Nibble(packedEbcdic, byteIndex);
 				if (digit > 9)
 				{
-					throw new Exception("Format with bad (high) digit");
+					throw new("Format with bad (high) digit");
 				}
 				intermediate = lo + digit;
 				lo = intermediate & 0xffffffff;

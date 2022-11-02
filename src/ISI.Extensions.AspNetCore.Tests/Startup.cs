@@ -63,7 +63,7 @@ namespace ISI.Extensions.AspNetCore.Tests
 			{
 				swaggerGenOptions.CustomOperationIds(apiDescription => apiDescription.TryGetMethodInfo(out var methodInfo) ? methodInfo.Name.TrimEnd("Async") : null);
 
-				swaggerGenOptions.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "ISI.Extensions.AspNetCore.Tests", Version = "v1" });
+				swaggerGenOptions.SwaggerDoc("v1", new() { Title = "ISI.Extensions.AspNetCore.Tests", Version = "v1" });
 
 				//swaggerGenOptions.AddSecurityDefinition(BearerAuthenticationHandler.Keys.Bearer, new Microsoft.OpenApi.Models.OpenApiSecurityScheme  
 				//{  

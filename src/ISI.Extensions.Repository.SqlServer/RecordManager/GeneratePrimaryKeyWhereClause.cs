@@ -73,7 +73,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 				if (primaryKeyColumnCount <= 0)
 				{
-					throw new Exception("No primary key defined");
+					throw new("No primary key defined");
 				}
 
 				var primaryKeyMaxCount = sqlServerConfiguration.PrimaryKeyMaxCount;
@@ -199,7 +199,7 @@ from #{2}", _formatColumnName(primaryKeyColumn.ColumnName), PrimaryKeyTempTableN
 				{
 					if (!Initialized)
 					{
-						throw new Exception(string.Format("\"{0}\" Method must be called before checking \"HasFilter\"", nameof(Initialize)));
+						throw new(string.Format("\"{0}\" Method must be called before checking \"HasFilter\"", nameof(Initialize)));
 					}
 
 					return HasValue;

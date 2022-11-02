@@ -47,7 +47,7 @@ namespace ISI.Extensions.Nuget.Forms
 			{
 				Width = parentControl.Width - 19,
 				Height = 26,
-				Margin = new System.Windows.Forms.Padding(0),
+				Margin = new(0),
 			};
 			parentControl.Controls.Add(Panel);
 
@@ -61,7 +61,7 @@ namespace ISI.Extensions.Nuget.Forms
 				Panel.BackColor = System.Drawing.Color.LightSkyBlue;
 			}
 
-			CheckBox = new System.Windows.Forms.CheckBox()
+			CheckBox = new()
 			{
 				Top = 6,
 				Left = 6,
@@ -71,7 +71,7 @@ namespace ISI.Extensions.Nuget.Forms
 			};
 			Panel.Controls.Add(CheckBox);
 
-			NugetLabel = new System.Windows.Forms.Label()
+			NugetLabel = new()
 			{
 				Text = Caption,
 				Top = 7,

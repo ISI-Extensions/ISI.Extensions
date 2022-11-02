@@ -35,7 +35,7 @@ namespace ISI.Extensions.Ascii
 			public AsciiRecordReaderEnumerator(System.IO.Stream sourceStream, IEnumerable<RecordDefinitionCollection<TIRecord>.IRecordDefinition> recordDefinitions, Func<TIRecord, bool> filter)
 			{
 				SourceStream = sourceStream;
-				SourceStreamReader = new System.IO.StreamReader(SourceStream);
+				SourceStreamReader = new(SourceStream);
 				RecordDefinitions = recordDefinitions.ToArray();
 				Filter = filter;
 

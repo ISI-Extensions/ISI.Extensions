@@ -37,7 +37,7 @@ namespace ISI.Extensions.Jenkins.SerializableModels
 
 		public ISI.Extensions.Jenkins.FilePathEdit Export()
 		{
-			return new ISI.Extensions.Jenkins.FilePathEdit()
+			return new()
 			{
 				EditType = EditType,
 				FilePath = FilePath,

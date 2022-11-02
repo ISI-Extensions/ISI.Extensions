@@ -32,7 +32,7 @@ namespace ISI.Extensions.VisualStudio
 			
 			foreach (var assemblyVersionFile in request.AssemblyVersionFiles)
 			{
-				GenerateAssemblyInfoFile(new DTOs.GenerateAssemblyInfoFileRequest()
+				GenerateAssemblyInfoFile(new()
 				{
 					AssemblyInfoFullName = assemblyVersionFile.FullName,
 					Version = assemblyVersionFile.AssemblyVersion,

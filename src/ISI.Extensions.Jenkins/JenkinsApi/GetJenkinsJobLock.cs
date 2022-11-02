@@ -30,7 +30,7 @@ namespace ISI.Extensions.Jenkins
 		{
 			var response = new DTOs.GetJenkinsJobLockResponse();
 
-			DisableJob(new DTOs.DisableJobRequest()
+			DisableJob(new()
 			{
 				JenkinsUrl = request.JenkinsUrl,
 				UserName = request.UserName,
@@ -44,7 +44,7 @@ namespace ISI.Extensions.Jenkins
 			var isRunning = true;
 			while (isRunning)
 			{
-				var runningJobIds = new HashSet<string>( GetRunningJobIds(new DTOs.GetRunningJobIdsRequest()
+				var runningJobIds = new HashSet<string>( GetRunningJobIds(new()
 				{
 					JenkinsUrl = request.JenkinsUrl,
 					UserName = request.UserName,
@@ -64,7 +64,7 @@ namespace ISI.Extensions.Jenkins
 				}
 			}
 
-			response.JenkinsJobLock = new JenkinsJobLock(() => EnableJob(new DTOs.EnableJobRequest()
+			response.JenkinsJobLock = new JenkinsJobLock(() => EnableJob(new()
 			{
 				JenkinsUrl = request.JenkinsUrl,
 				UserName = request.UserName,

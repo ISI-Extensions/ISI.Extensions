@@ -28,7 +28,7 @@ namespace ISI.Extensions.Ngrok.SerializableModels.ClientApi
 	{
 		public ISI.Extensions.Ngrok.Tunnel Export()
 		{
-			return new ISI.Extensions.Ngrok.Tunnel()
+			return new()
 			{
 				TunnelName = TunnelName,
 				LocalUrl = LocalUrl,

@@ -27,7 +27,7 @@ namespace ISI.Extensions.Aspose.InternalTryNotToUseExtensions
 		{
 			if (!(documentField is ISI.Extensions.Aspose.Words.DocumentField asposeField))
 			{
-				throw new Exception(string.Format("{0} is not of type {1}", nameof(documentField), typeof(ISI.Extensions.Aspose.Words.DocumentField).FullName));
+				throw new(string.Format("{0} is not of type {1}", nameof(documentField), typeof(ISI.Extensions.Aspose.Words.DocumentField).FullName));
 			}
 
 			return asposeField._field;

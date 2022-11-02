@@ -27,7 +27,7 @@ namespace ISI.Extensions.Aspose.InternalTryNotToUseExtensions
 		{
 			if (!(worksheetPivotTableCollection is ISI.Extensions.Aspose.Cells.WorksheetPivotTableCollection asposeWorksheetPivotTableCollection))
 			{
-				throw new Exception(string.Format("{0} is not of type {1}", nameof(worksheetPivotTableCollection), typeof(ISI.Extensions.Aspose.Cells.WorksheetPivotTableCollection).FullName));
+				throw new(string.Format("{0} is not of type {1}", nameof(worksheetPivotTableCollection), typeof(ISI.Extensions.Aspose.Cells.WorksheetPivotTableCollection).FullName));
 			}
 
 			return asposeWorksheetPivotTableCollection._pivotTables;

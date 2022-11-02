@@ -247,7 +247,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 					while (await dataReader.ReadAsync())
 					{
-						yield return new ISI.Extensions.Repository.ArchiveRecord<TRecord>()
+						yield return new()
 						{
 							ArchiveDateTime = dataReader.GetDateTime(0),
 							Record = reader(dataReader),

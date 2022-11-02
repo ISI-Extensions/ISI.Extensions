@@ -44,7 +44,7 @@ namespace ISI.Extensions.Repository
 		{
 			var propertyInfo = ISI.Extensions.Reflection.GetPropertyInfo(property);
 
-			Add(new RecordSortColumn<TRecord>()
+			Add(new()
 			{
 				RecordPropertyDescription = RecordDescription.GetRecordDescription<TRecord>().PropertyDescriptionLookup[propertyInfo.Name],
 				AscendingOrder = ascendingOrder

@@ -99,7 +99,7 @@ namespace ISI.Extensions.Parsers
 		{
 			if (!(context is DelimitedTextParserContext delimitedTextParserContext))
 			{
-				throw new Exception("context must not be null and of type DelimitedTextParserContext");
+				throw new("context must not be null and of type DelimitedTextParserContext");
 			}
 
 			var source = string.Empty;

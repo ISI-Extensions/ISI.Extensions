@@ -73,7 +73,7 @@ namespace ISI.Extensions.Tests
 
 			var remoteCodeSigningApi = new ISI.Extensions.Scm.RemoteCodeSigningApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
 
-			remoteCodeSigningApi.SignAssemblies(new ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigningApi.SignAssembliesRequest()
+			remoteCodeSigningApi.SignAssemblies(new()
 			{
 				RemoteCodeSigningServiceUrl = settings.CodeSigning.RemoteCodeSigningServiceUrl,
 				RemoteCodeSigningServicePassword = settings.CodeSigning.RemoteCodeSigningServicePassword,
@@ -96,7 +96,7 @@ namespace ISI.Extensions.Tests
 			codeSigningApi.SignVsixes(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.SignVsixesRequest()
 			{
 				VsixFullNames = new[] { @"F:\ISI\Internal Projects\ISI.Extensions.VisualStudio2019\src\ISI.Extensions.VisualStudio2019\bin\Debug\ISI.Extensions.VisualStudio2019.vsix" },
-				TimeStampUri = new Uri(settings.CodeSigning.TimeStampUrl),
+				TimeStampUri = new(settings.CodeSigning.TimeStampUrl),
 				CertificateFingerprint = settings.CodeSigning.CertificateFingerprint,
 				//CertificatePath = File(settings.CodeSigning.CertificateFileName),
 				//CertificatePassword = settings.CodeSigning.CertificatePassword,

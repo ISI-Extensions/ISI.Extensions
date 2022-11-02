@@ -31,7 +31,7 @@ namespace ISI.Extensions.WebClient
 
 			public DownloadFileResponse()
 			{
-				Headers = new System.Collections.Specialized.NameValueCollection();
+				Headers = new();
 			}
 		}
 

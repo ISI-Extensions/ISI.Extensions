@@ -107,7 +107,7 @@ namespace ISI.Extensions.SpreadSheets
 
 			var memberExpression = (System.Linq.Expressions.MemberExpression)property.Body;
 
-			RowOptions = rowOptions ?? (memberExpression.Member is System.Reflection.PropertyInfo propertyInfo ? AddSummaryRowOptions.GetAddSummaryRowOptions(propertyInfo).AddSummaryRowOptions : new AddSummaryRowOptions());
+			RowOptions = rowOptions ?? (memberExpression.Member is System.Reflection.PropertyInfo propertyInfo ? AddSummaryRowOptions.GetAddSummaryRowOptions(propertyInfo).AddSummaryRowOptions : new());
 
 			if (string.IsNullOrWhiteSpace(RowOptions.RowName))
 			{

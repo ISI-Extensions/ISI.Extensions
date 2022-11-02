@@ -37,7 +37,7 @@ namespace ISI.Extensions
 
 			public CronExpressionDaysOfMonth(string source)
 			{
-				Action throwError = () => throw new System.Exception(string.Format("DaysOfMonth: Cannot parse \"{0}\"", source));
+				Action throwError = () => throw new(string.Format("DaysOfMonth: Cannot parse \"{0}\"", source));
 
 				var parser = new ISI.Extensions.Parsers.DelimitedTextParser(',');
 
@@ -101,7 +101,7 @@ namespace ISI.Extensions
 
 			internal CronExpressionDaysOfMonth Clone()
 			{
-				return new CronExpressionDaysOfMonth(DaysOfMonthFlags);
+				return new(DaysOfMonthFlags);
 			}
 
 			internal CronExpressionDaysOfMonth ShiftDays(int days)
@@ -113,7 +113,7 @@ namespace ISI.Extensions
 					daysOfMonthFlags[(dayOfMonthIndex + maxDayOfMonth + days) % maxDayOfMonth] = DaysOfMonthFlags[dayOfMonthIndex];
 				}
 
-				return new CronExpressionDaysOfMonth(daysOfMonthFlags);
+				return new(daysOfMonthFlags);
 			}
 
 			public override string ToString()

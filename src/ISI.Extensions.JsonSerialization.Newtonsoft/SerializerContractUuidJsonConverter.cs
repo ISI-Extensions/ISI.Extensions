@@ -39,9 +39,9 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 			IDictionary<Type, Type> interfaceTypesWithDefaultImplementationType,
 			IDictionary<Guid, Type> serializerContractUuidToImplementationType)
 		{
-			InterfaceTypesWithDefaultImplementationType = new System.Collections.Concurrent.ConcurrentDictionary<Type, Type>(interfaceTypesWithDefaultImplementationType);
-			SerializerContractUuidToImplementationType = new System.Collections.Concurrent.ConcurrentDictionary<Guid, Type>(serializerContractUuidToImplementationType);
-			ImplementationTypeToSerializerContractUuid = new System.Collections.Concurrent.ConcurrentDictionary<Type, Guid>(serializerContractUuidToImplementationType.ToDictionary(keyValue => keyValue.Value, keyValue => keyValue.Key));
+			InterfaceTypesWithDefaultImplementationType = new(interfaceTypesWithDefaultImplementationType);
+			SerializerContractUuidToImplementationType = new(serializerContractUuidToImplementationType);
+			ImplementationTypeToSerializerContractUuid = new(serializerContractUuidToImplementationType.ToDictionary(keyValue => keyValue.Value, keyValue => keyValue.Key));
 		}
 
 		public override bool CanConvert(Type objectType) => (InterfaceTypesWithDefaultImplementationType.ContainsKey(objectType) || ImplementationTypeToSerializerContractUuid.ContainsKey(objectType));
@@ -148,7 +148,7 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 
 								if (!serializerContractUuidToImplementationType.TryAdd(serializerContractUuidAttribute.SerializerContractUuid, exportedType))
 								{
-									throw new Exception(string.Format("Multiple SerializerContractUuid found \"{0}\"", serializerContractUuidAttribute.SerializerContractUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)));
+									throw new(string.Format("Multiple SerializerContractUuid found \"{0}\"", serializerContractUuidAttribute.SerializerContractUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)));
 								}
 							}
 						}

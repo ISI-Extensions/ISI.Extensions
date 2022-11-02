@@ -32,31 +32,31 @@ namespace ISI.Extensions.Aspose
 			internal readonly global::Aspose.Cells.Workbook _workbook = null;
 
 			private global::Aspose.Cells.WorkbookDesigner _workbookDesigner = null;
-			protected global::Aspose.Cells.WorkbookDesigner WorkbookDesigner => (_workbookDesigner ??= new global::Aspose.Cells.WorkbookDesigner(_workbook));
+			protected global::Aspose.Cells.WorkbookDesigner WorkbookDesigner => (_workbookDesigner ??= new(_workbook));
 
 			public Workbook()
 			{
-				_workbook = new global::Aspose.Cells.Workbook();
+				_workbook = new();
 			}
 
 			public Workbook(string fileName)
 			{
-				_workbook = new global::Aspose.Cells.Workbook(fileName);
+				_workbook = new(fileName);
 			}
 
 			public Workbook(string fileName, ISI.Extensions.SpreadSheets.ILoadOptions loadOptions)
 			{
-				_workbook = new global::Aspose.Cells.Workbook(fileName, loadOptions.ToLoadOptions());
+				_workbook = new(fileName, loadOptions.ToLoadOptions());
 			}
 
 			public Workbook(System.IO.Stream stream)
 			{
-				_workbook = new global::Aspose.Cells.Workbook(stream);
+				_workbook = new(stream);
 			}
 
 			public Workbook(System.IO.Stream stream, ISI.Extensions.SpreadSheets.ILoadOptions loadOptions)
 			{
-				_workbook = new global::Aspose.Cells.Workbook(stream, loadOptions.ToLoadOptions());
+				_workbook = new(stream, loadOptions.ToLoadOptions());
 			}
 
 			public void SetDocumentProperties(ISI.Extensions.Documents.IDocumentProperties documentProperties)

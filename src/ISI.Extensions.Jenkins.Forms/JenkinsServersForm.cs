@@ -29,7 +29,7 @@ namespace ISI.Extensions.Jenkins.Forms
 	public partial class JenkinsServersForm : Form
 	{
 		private static ISI.Extensions.Jenkins.JenkinsSettings _jenkinsSettings = null;
-		protected ISI.Extensions.Jenkins.JenkinsSettings JenkinsSettings => _jenkinsSettings ??= new ISI.Extensions.Jenkins.JenkinsSettings();
+		protected ISI.Extensions.Jenkins.JenkinsSettings JenkinsSettings => _jenkinsSettings ??= new();
 
 		protected List<JenkinsServerPanel> JenkinsServerPanels { get; }
 
@@ -42,13 +42,13 @@ namespace ISI.Extensions.Jenkins.Forms
 			flpJenkinsServers.Visible = false;
 			btnCancel.Visible = false;
 
-			Icon = new Icon(ISI.Extensions.T4Resources.Artwork.GetLantern_icoStream());
+			Icon = new(ISI.Extensions.T4Resources.Artwork.GetLantern_icoStream());
 			ControlBox = true;
 			MaximizeBox = false;
 			MinimizeBox = false;
 			ShowIcon = true;
 
-			JenkinsServerPanels = new List<JenkinsServerPanel>();
+			JenkinsServerPanels = new();
 
 			btnOK.Click += (clickSender, clickEventArgs) =>
 			{
@@ -129,19 +129,19 @@ namespace ISI.Extensions.Jenkins.Forms
 			{
 				JenkinsServer = jenkinsServer;
 
-				flpJenkinsServer = new FlowLayoutPanel()
+				flpJenkinsServer = new()
 				{
 					AutoSize = true,
 					AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly,
-					Margin = new System.Windows.Forms.Padding(3, 3, 3, 0),
-					Size = new System.Drawing.Size(386, 24),
+					Margin = new(3, 3, 3, 0),
+					Size = new(386, 24),
 				};
 
-				btnEdit = new Button()
+				btnEdit = new()
 				{
-					Location = new System.Drawing.Point(1, 1),
-					Margin = new System.Windows.Forms.Padding(1),
-					Size = new System.Drawing.Size(80, 20),
+					Location = new(1, 1),
+					Margin = new(1),
+					Size = new(80, 20),
 					Text = "Edit",
 					UseVisualStyleBackColor = true,
 				};
@@ -157,13 +157,13 @@ namespace ISI.Extensions.Jenkins.Forms
 					}
 				};
 
-				lblDescription = new Label()
+				lblDescription = new()
 				{
 					AutoSize = true,
-					Location = new System.Drawing.Point(83, 1),
-					Margin = new System.Windows.Forms.Padding(4),
-					MinimumSize = new System.Drawing.Size(300, 17),
-					Size = new System.Drawing.Size(300, 17),
+					Location = new(83, 1),
+					Margin = new(4),
+					MinimumSize = new(300, 17),
+					Size = new(300, 17),
 				};
 				flpJenkinsServer.Controls.Add(lblDescription);
 			}

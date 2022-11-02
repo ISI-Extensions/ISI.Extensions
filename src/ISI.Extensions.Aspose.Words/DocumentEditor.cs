@@ -31,7 +31,7 @@ namespace ISI.Extensions.Aspose
 
 			public DocumentEditor(global::Aspose.Words.Document document)
 			{
-				_documentBuilder = new global::Aspose.Words.DocumentBuilder(document);
+				_documentBuilder = new(document);
 			}
 
 			public void SetMargins(double? topInInches = null, double? rightInInches = null, double? bottomInInches = null, double? leftInInches = null)

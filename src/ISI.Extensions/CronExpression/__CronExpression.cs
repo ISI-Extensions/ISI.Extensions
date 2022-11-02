@@ -31,11 +31,11 @@ namespace ISI.Extensions
 
 		public CronExpression()
 		{
-			Minutes = new CronExpressionMinutes();
-			Hours = new CronExpressionHours();
-			DaysOfMonth = new CronExpressionDaysOfMonth();
-			Months = new CronExpressionMonths();
-			DaysOfWeek = new CronExpressionDaysOfWeek();
+			Minutes = new();
+			Hours = new();
+			DaysOfMonth = new();
+			Months = new();
+			DaysOfWeek = new();
 		}
 
 		public CronExpression(string source)
@@ -51,11 +51,11 @@ namespace ISI.Extensions
 				Array.Resize(ref values, 5);
 			}
 
-			Minutes = new CronExpressionMinutes(values[0]);
-			Hours = new CronExpressionHours(values[1]);
-			DaysOfMonth = new CronExpressionDaysOfMonth(values[2]);
-			Months = new CronExpressionMonths(values[3]);
-			DaysOfWeek = new CronExpressionDaysOfWeek(values[4]);
+			Minutes = new(values[0]);
+			Hours = new(values[1]);
+			DaysOfMonth = new(values[2]);
+			Months = new(values[3]);
+			DaysOfWeek = new(values[4]);
 		}
 
 		private CronExpression(
@@ -74,7 +74,7 @@ namespace ISI.Extensions
 
 		internal CronExpression Clone()
 		{
-			return new CronExpression(Minutes, Hours, DaysOfMonth, Months, DaysOfWeek);
+			return new(Minutes, Hours, DaysOfMonth, Months, DaysOfWeek);
 		}
 
 		public CronExpression ShiftHours(int hours)
@@ -88,7 +88,7 @@ namespace ISI.Extensions
 			hours *= direction;
 			var days = (hours - (hours % 24)) / 24;
 
-			return new CronExpression(Minutes, Hours.ShiftHours(hours * direction), DaysOfMonth.ShiftDays(days * direction), Months.Clone(), DaysOfWeek.ShiftDays(days * direction));
+			return new(Minutes, Hours.ShiftHours(hours * direction), DaysOfMonth.ShiftDays(days * direction), Months.Clone(), DaysOfWeek.ShiftDays(days * direction));
 		}
 
 		public bool TryGetNextOccurrence(out DateTime nextOccurrence)
@@ -114,27 +114,27 @@ namespace ISI.Extensions
 					if (!Months.Any && !Months.MonthFlags[nextOccurrence.Month])
 					{
 						nextOccurrence = nextOccurrence.AddMonths(1);
-						nextOccurrence = new DateTime(nextOccurrence.Year, nextOccurrence.Month, 1, 0, 0, 0);
+						nextOccurrence = new(nextOccurrence.Year, nextOccurrence.Month, 1, 0, 0, 0);
 					}
 					else if (!DaysOfMonth.Any && !DaysOfMonth.DaysOfMonthFlags[nextOccurrence.Day])
 					{
 						nextOccurrence = nextOccurrence.AddDays(1);
-						nextOccurrence = new DateTime(nextOccurrence.Year, nextOccurrence.Month, nextOccurrence.Day, 0, 0, 0);
+						nextOccurrence = new(nextOccurrence.Year, nextOccurrence.Month, nextOccurrence.Day, 0, 0, 0);
 					}
 					else if (!DaysOfWeek.Any && !DaysOfWeek.DaysOfWeekFlags[(int)nextOccurrence.DayOfWeek])
 					{
 						nextOccurrence = nextOccurrence.AddDays(1);
-						nextOccurrence = new DateTime(nextOccurrence.Year, nextOccurrence.Month, nextOccurrence.Day, 0, 0, 0);
+						nextOccurrence = new(nextOccurrence.Year, nextOccurrence.Month, nextOccurrence.Day, 0, 0, 0);
 					}
 					else if (!Hours.Any && !Hours.HourFlags[nextOccurrence.Hour])
 					{
 						nextOccurrence = nextOccurrence.AddHours(1);
-						nextOccurrence = new DateTime(nextOccurrence.Year, nextOccurrence.Month, nextOccurrence.Day, nextOccurrence.Hour, 0, 0);
+						nextOccurrence = new(nextOccurrence.Year, nextOccurrence.Month, nextOccurrence.Day, nextOccurrence.Hour, 0, 0);
 					}
 					else if (!Minutes.Any && !Minutes.MinuteFlags[nextOccurrence.Minute])
 					{
 						nextOccurrence = nextOccurrence.AddMinutes(1);
-						nextOccurrence = new DateTime(nextOccurrence.Year, nextOccurrence.Month, nextOccurrence.Day, nextOccurrence.Hour, nextOccurrence.Minute, 0);
+						nextOccurrence = new(nextOccurrence.Year, nextOccurrence.Month, nextOccurrence.Day, nextOccurrence.Hour, nextOccurrence.Minute, 0);
 					}
 					else
 					{

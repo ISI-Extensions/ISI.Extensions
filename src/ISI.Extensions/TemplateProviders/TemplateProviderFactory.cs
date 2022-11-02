@@ -40,7 +40,7 @@ namespace ISI.Extensions.TemplateProviders
 
 			if (throwExceptionIfNotDefinedOrNotFound)
 			{
-				throw new Exception("Template provider either not defined or not found");
+				throw new("Template provider either not defined or not found");
 			}
 
 			return default;

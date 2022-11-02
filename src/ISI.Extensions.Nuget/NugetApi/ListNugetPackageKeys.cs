@@ -38,7 +38,7 @@ namespace ISI.Extensions.Nuget
 			var nugetResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{
 				Logger = new NullLogger(),
-				ProcessExeFullName = GetNugetExeFullName(new DTOs.GetNugetExeFullNameRequest()).NugetExeFullName,
+				ProcessExeFullName = GetNugetExeFullName(new()).NugetExeFullName,
 				Arguments = arguments.ToArray(),
 			});
 
@@ -54,7 +54,7 @@ namespace ISI.Extensions.Nuget
 
 					if (linePieces.Length == 2)
 					{
-						var nugetPackageKey = GetNugetPackageKey(new DTOs.GetNugetPackageKeyRequest()
+						var nugetPackageKey = GetNugetPackageKey(new()
 						{
 							PackageId = linePieces[0].Trim(),
 							PackageVersion = linePieces[1].Trim(),

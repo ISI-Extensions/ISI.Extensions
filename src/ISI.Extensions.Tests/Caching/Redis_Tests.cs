@@ -102,7 +102,7 @@ namespace ISI.Extensions.Tests.Caching
 			{
 				if (cachedKeys.Contains(key))
 				{
-					throw new Exception("Should not have asked for this item");
+					throw new("Should not have asked for this item");
 				}
 
 				if (int.TryParse(key, out var value) && (value <= 50))
@@ -154,7 +154,7 @@ namespace ISI.Extensions.Tests.Caching
 			{
 				if (cachedKeys.Contains(key))
 				{
-					throw new Exception("Should not have asked for this item");
+					throw new("Should not have asked for this item");
 				}
 
 				if (int.TryParse(key, out var value) && (value <= 50))

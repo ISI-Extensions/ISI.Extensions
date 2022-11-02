@@ -80,13 +80,13 @@ namespace ISI.Extensions.Tests
 			var packagerApi = new ISI.Extensions.VisualStudio.PackagerApi(logger, nugetApi, msBuildApi, codeGenerationApi, xmlTransformApi);
 			var buildScriptApi = new ISI.Extensions.Scm.BuildScriptApi(logger);
 			var sourceControlClientApi = new SourceControlClientApi(logger);
-			var solutionApi = new ISI.Extensions.VisualStudio.SolutionApi(logger, serialization, new ISI.Extensions.VisualStudio.VisualStudioSettings(serialization), buildScriptApi, sourceControlClientApi, codeGenerationApi, nugetApi);
+			var solutionApi = new ISI.Extensions.VisualStudio.SolutionApi(logger, serialization, new(serialization), buildScriptApi, sourceControlClientApi, codeGenerationApi, nugetApi);
 
 			var configuration = "Release";
 
 			var utcDateTime = DateTime.UtcNow;
 
-			var buildRevision = solutionApi.GetBuildRevision(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetBuildRevisionRequest()
+			var buildRevision = solutionApi.GetBuildRevision(new()
 			{
 				UtcDateTime = utcDateTime,
 			}).BuildRevision;
@@ -109,7 +109,7 @@ namespace ISI.Extensions.Tests
 			//	SolutionDirectory = System.IO.Path.GetDirectoryName(solutionFullName),
 			//});
 
-			var assemblyVersions = solutionApi.GetAssemblyVersionFiles(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.GetAssemblyVersionFilesRequest()
+			var assemblyVersions = solutionApi.GetAssemblyVersionFiles(new()
 			{
 				Solution = solutionFullName,
 				RootAssemblyVersionKey = rootAssemblyVersionKey,
@@ -119,7 +119,7 @@ namespace ISI.Extensions.Tests
 
 			var buildArtifactZipFileName = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(solutionFullName), @$"..\Publish\{artifactName}.{buildDateTimeStamp}.zip");
 
-			packagerApi.PackageComponents(new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.PackageComponentsRequest()
+			packagerApi.PackageComponents(new()
 			{
 				BuildPlatform = ISI.Extensions.VisualStudio.MSBuildPlatform.Automatic,
 				BuildVersion = ISI.Extensions.VisualStudio.MSBuildVersion.Latest,

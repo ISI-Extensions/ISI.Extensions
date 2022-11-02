@@ -40,7 +40,7 @@ namespace ISI.Extensions.Aspose
 				set => _range.Name = value;
 			}
 
-			public ISI.Extensions.SpreadSheets.IWorksheetCell this[int row, int column] => new WorksheetCell(new WorksheetCells(new Worksheet(_worksheets, _range.Worksheet), _range.Worksheet.Cells), _range[row, column]);
+			public ISI.Extensions.SpreadSheets.IWorksheetCell this[int row, int column] => new WorksheetCell(new(new(_worksheets, _range.Worksheet), _range.Worksheet.Cells), _range[row, column]);
 		}
 	}
 }

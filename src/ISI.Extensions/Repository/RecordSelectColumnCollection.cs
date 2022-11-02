@@ -47,7 +47,7 @@ namespace ISI.Extensions.Repository
 		{
 			var propertyInfo = ISI.Extensions.Reflection.GetPropertyInfo(property);
 
-			Add(new RecordSelectColumn<TRecord>()
+			Add(new()
 			{
 				RecordPropertyDescription = RecordDescription.GetRecordDescription<TRecord>().PropertyDescriptionLookup[propertyInfo.Name],
 			});

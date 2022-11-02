@@ -37,7 +37,7 @@ namespace ISI.Extensions.Nuget
 			var packagesConfigFullName = System.IO.Path.Combine(projectDirectory, "packages.config");
 			if (System.IO.File.Exists(packagesConfigFullName))
 			{
-				nugetPackageKeys.Merge(ExtractProjectNugetPackageDependenciesFromPackagesConfig(new DTOs.ExtractProjectNugetPackageDependenciesFromPackagesConfigRequest()
+				nugetPackageKeys.Merge(ExtractProjectNugetPackageDependenciesFromPackagesConfig(new()
 				{
 					PackagesConfigFullName = packagesConfigFullName,
 				}).NugetPackageKeys);
@@ -45,7 +45,7 @@ namespace ISI.Extensions.Nuget
 
 			if (request.ProjectFullName.EndsWith(".csproj", StringComparison.InvariantCultureIgnoreCase))
 			{
-				nugetPackageKeys.Merge(ExtractProjectNugetPackageDependenciesFromCsProj(new DTOs.ExtractProjectNugetPackageDependenciesFromCsProjRequest()
+				nugetPackageKeys.Merge(ExtractProjectNugetPackageDependenciesFromCsProj(new()
 				{
 					CsProjFullName = request.ProjectFullName,
 					TryGetPackageVersion = request.TryGetPackageVersion,

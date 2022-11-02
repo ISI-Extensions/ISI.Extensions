@@ -28,7 +28,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.Changelog Export()
 		{
-			return new ISI.Extensions.Jira.Changelog()
+			return new()
 			{
 				StartAt = StartAt,
 				MaxResults = MaxResults,

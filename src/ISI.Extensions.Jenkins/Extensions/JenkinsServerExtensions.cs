@@ -24,7 +24,7 @@ namespace ISI.Extensions.Jenkins.Extensions
 		public static TRequest ToRequest<TRequest>(this JenkinsServer jenkinsServer)
 			where TRequest : DataTransferObjects.JenkinsApi.AbstractRequest, new()
 		{
-			return new TRequest()
+			return new()
 			{
 				JenkinsUrl = jenkinsServer.JenkinsUrl,
 				UserName = jenkinsServer.UserName,

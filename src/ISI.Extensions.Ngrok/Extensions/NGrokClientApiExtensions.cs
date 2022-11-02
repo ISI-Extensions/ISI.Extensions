@@ -26,12 +26,12 @@ namespace ISI.Extensions.Ngrok.Extensions
 	{
 		public static bool DeleteAllCapturedTraffic(this ISI.Extensions.Ngrok.INGrokClientApi nGrokClientApi)
 		{
-			return nGrokClientApi.DeleteAllCapturedTraffic(new DTOs.DeleteAllCapturedTrafficRequest()).Success;
+			return nGrokClientApi.DeleteAllCapturedTraffic(new()).Success;
 		}
 
 		public static DTOs.GetCapturedTrafficResponse GetCapturedTraffic(this ISI.Extensions.Ngrok.INGrokClientApi nGrokClientApi, string tunnelName = null, int limit = 50)
 		{
-			return nGrokClientApi.GetCapturedTraffic(new DTOs.GetCapturedTrafficRequest()
+			return nGrokClientApi.GetCapturedTraffic(new()
 			{
 				TunnelName = tunnelName,
 				Limit = limit,
@@ -40,7 +40,7 @@ namespace ISI.Extensions.Ngrok.Extensions
 
 		public static DTOs.GetCapturedTrafficDetailResponse GetCapturedTrafficDetail(this ISI.Extensions.Ngrok.INGrokClientApi nGrokClientApi, string trafficKey)
 		{
-			return nGrokClientApi.GetCapturedTrafficDetail(new DTOs.GetCapturedTrafficDetailRequest()
+			return nGrokClientApi.GetCapturedTrafficDetail(new()
 			{
 				TrafficKey = trafficKey,
 			});
@@ -48,7 +48,7 @@ namespace ISI.Extensions.Ngrok.Extensions
 
 		public static DTOs.GetTunnelResponse GetTunnel(this ISI.Extensions.Ngrok.INGrokClientApi nGrokClientApi, string tunnelName)
 		{
-			return nGrokClientApi.GetTunnel(new DTOs.GetTunnelRequest()
+			return nGrokClientApi.GetTunnel(new()
 			{
 				TunnelName = tunnelName,
 			});
@@ -56,12 +56,12 @@ namespace ISI.Extensions.Ngrok.Extensions
 
 		public static DTOs.GetTunnelsResponse GetTunnels(this ISI.Extensions.Ngrok.INGrokClientApi nGrokClientApi)
 		{
-			return nGrokClientApi.GetTunnels(new DTOs.GetTunnelsRequest());
+			return nGrokClientApi.GetTunnels(new());
 		}
 
 		public static bool ReplayCapturedTraffic(this ISI.Extensions.Ngrok.INGrokClientApi nGrokClientApi, string trafficKey, string tunnelName = null)
 		{
-			return nGrokClientApi.ReplayCapturedTraffic(new DTOs.ReplayCapturedTrafficRequest()
+			return nGrokClientApi.ReplayCapturedTraffic(new()
 			{
 				TrafficKey = trafficKey,
 				TunnelName = tunnelName,

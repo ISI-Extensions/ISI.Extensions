@@ -43,7 +43,7 @@ namespace ISI.Extensions.Jenkins.SerializableModels
 
 		public ISI.Extensions.Jenkins.ChangeSetItem Export()
 		{
-			return new ISI.Extensions.Jenkins.ChangeSetItem()
+			return new()
 			{
 				AffectedPaths = AffectedPaths.ToNullCheckedArray(),
 				CommitId = CommitId,

@@ -41,7 +41,7 @@ namespace ISI.Extensions.Locks
 		{
 			if (LockTimeout < TimeSpan.MaxValue)
 			{
-				_cancellationTokenSource = new System.Threading.CancellationTokenSource(LockTimeout);
+				_cancellationTokenSource = new(LockTimeout);
 				_cancellationTokenSource.Token.Register(Dispose);
 			}
 		}

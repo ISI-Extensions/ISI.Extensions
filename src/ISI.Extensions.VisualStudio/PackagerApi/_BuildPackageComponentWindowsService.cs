@@ -147,7 +147,7 @@ namespace ISI.Extensions.VisualStudio
 
 			if (!packageComponent.DoNotXmlTransformConfigs)
 			{
-				XmlTransformApi.XmlTransformConfigsInProject(new ISI.Extensions.VisualStudio.DataTransferObjects.XmlTransformApi.XmlTransformConfigsInProjectRequest()
+				XmlTransformApi.XmlTransformConfigsInProject(new()
 				{
 					ProjectFullName = packageComponent.ProjectFullName,
 					DestinationDirectory = packageComponentDirectory,

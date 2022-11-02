@@ -47,7 +47,7 @@ namespace ISI.Extensions.GoDaddy
 
 						var dnsRecords = dnsRecordsGroupedByName.ToNullCheckedArray(SERIALIZABLE.DomainsApi.DnsRecord.ToSerializable);
 
-						var goDaddyResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPut(new ISI.Extensions.WebClient.Rest.RestResponseTypeCollection()
+						var goDaddyResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPut(new()
 						{
 							{ System.Net.HttpStatusCode.OK, typeof(SERIALIZABLE.DomainsApi.DnsRecord[]) },
 							{ System.Net.HttpStatusCode.BadRequest, typeof(SERIALIZABLE.Error) },

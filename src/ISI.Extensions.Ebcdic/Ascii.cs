@@ -36,7 +36,7 @@ namespace ISI.Extensions.Ebcdic
 				result[index] = Convert.ToChar(Translations.AsciiToEbcdic[Convert.ToInt32(chars[index])]);
 			}
 
-			return new string(result);
+			return new(result);
 		}
 
 		public static byte[] AsciiToEbcdic(byte[] ascii)

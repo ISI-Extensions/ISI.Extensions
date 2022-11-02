@@ -80,7 +80,7 @@ namespace ISI.Extensions.Tests
 			{
 				var externalIpAddress = ipifyApi.GetExternalIPv4().IpAddress;
 
-				var dnsRecords = domainsApi.GetDnsRecords(new ISI.Extensions.GoDaddy.DataTransferObjects.DomainsApi.GetDnsRecordsRequest()
+				var dnsRecords = domainsApi.GetDnsRecords(new()
 				{
 					ApiKey = settings.GetValue("GoDaddy.ApiKey"),
 					ApiSecret = settings.GetValue("GoDaddy.ApiSecret"),
@@ -100,7 +100,7 @@ namespace ISI.Extensions.Tests
 //Weight = source.Weight,
 				};
 
-				var xxx = domainsApi.SetDnsRecords(new ISI.Extensions.GoDaddy.DataTransferObjects.DomainsApi.SetDnsRecordsRequest()
+				var xxx = domainsApi.SetDnsRecords(new()
 				{
 					ApiKey = settings.GetValue("GoDaddy.ApiKey"),
 					ApiSecret = settings.GetValue("GoDaddy.ApiSecret"),

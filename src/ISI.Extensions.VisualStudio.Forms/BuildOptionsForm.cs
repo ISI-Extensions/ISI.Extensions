@@ -49,7 +49,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 		{
 			InitializeComponent();
 
-			Icon = new Icon(ISI.Extensions.T4Resources.Artwork.GetLantern_icoStream());
+			Icon = new(ISI.Extensions.T4Resources.Artwork.GetLantern_icoStream());
 			ControlBox = true;
 			MaximizeBox = false;
 			MinimizeBox = false;

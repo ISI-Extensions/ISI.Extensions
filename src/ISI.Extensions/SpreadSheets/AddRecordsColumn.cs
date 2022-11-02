@@ -107,7 +107,7 @@ namespace ISI.Extensions.SpreadSheets
 
 			var memberExpression = (System.Linq.Expressions.MemberExpression)property.Body;
 
-			ColumnOptions = columnOptions ?? (memberExpression.Member is System.Reflection.PropertyInfo propertyInfo ? AddRecordsColumnOptions.GetAddRecordsColumnOptions(propertyInfo).AddRecordsColumnOptions : new AddRecordsColumnOptions());
+			ColumnOptions = columnOptions ?? (memberExpression.Member is System.Reflection.PropertyInfo propertyInfo ? AddRecordsColumnOptions.GetAddRecordsColumnOptions(propertyInfo).AddRecordsColumnOptions : new());
 
 			if (string.IsNullOrWhiteSpace(ColumnOptions.ColumnName))
 			{

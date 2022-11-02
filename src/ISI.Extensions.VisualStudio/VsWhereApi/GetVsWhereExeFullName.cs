@@ -58,7 +58,7 @@ namespace ISI.Extensions.VisualStudio
 						{
 							var process = new System.Diagnostics.Process();
 							process.StartInfo.UseShellExecute = false;
-							process.StartInfo.FileName = NugetApi.GetNugetExeFullName(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetExeFullNameRequest()).NugetExeFullName;
+							process.StartInfo.FileName = NugetApi.GetNugetExeFullName(new()).NugetExeFullName;
 							process.StartInfo.Arguments = string.Format("install vswhere -ExcludeVersion -OutputDirectory \"{0}\"", tempDirectory);
 							process.Start();
 							process.WaitForExit();

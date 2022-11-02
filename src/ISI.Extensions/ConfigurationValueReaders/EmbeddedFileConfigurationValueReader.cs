@@ -77,7 +77,7 @@ namespace ISI.Extensions.ConfigurationValueReaders
 
 										if (pieces.Length == 1)
 										{
-											return new KeyValuePair<string, string>(pieces[0].Trim(), null);
+											return new(pieces[0].Trim(), null);
 										}
 
 										return new KeyValuePair<string, string>(pieces[0].Trim(), pieces[1].Trim());
@@ -89,7 +89,7 @@ namespace ISI.Extensions.ConfigurationValueReaders
 								{
 									if (valueByKey.ContainsKey(keyValuePair.Key))
 									{
-										throw new Exception(string.Format("key: \"{0}\" already exists with value of \"{1}\" cannot add value \"{2}\"", keyValuePair.Key, valueByKey[keyValuePair.Key], keyValuePair.Value));
+										throw new(string.Format("key: \"{0}\" already exists with value of \"{1}\" cannot add value \"{2}\"", keyValuePair.Key, valueByKey[keyValuePair.Key], keyValuePair.Value));
 									}
 
 									valueByKey.Add(keyValuePair);

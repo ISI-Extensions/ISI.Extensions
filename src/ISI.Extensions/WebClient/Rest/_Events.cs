@@ -30,7 +30,7 @@ namespace ISI.Extensions.WebClient
 
 		public static EventHandler GetEventHandler()
 		{
-			return _EventHandler ??= new EventHandler(() => { _EventHandler = null; });
+			return _EventHandler ??= new(() => { _EventHandler = null; });
 		}
 
 		public class WebRequestDetails
@@ -149,7 +149,7 @@ namespace ISI.Extensions.WebClient
 			public EventHandler(Action closeEventHandler)
 			{
 				_closeEventHandler = closeEventHandler;
-				WebRequestDetails = new WebRequestDetails();
+				WebRequestDetails = new();
 			}
 
 			internal void Execute()

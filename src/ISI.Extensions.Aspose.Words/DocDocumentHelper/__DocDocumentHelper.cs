@@ -43,17 +43,17 @@ namespace ISI.Extensions.Aspose
 
 			public ISI.Extensions.Documents.IDocumentEditor NewDocument()
 			{
-				return new DocumentEditor(new global::Aspose.Words.Document());
+				return new DocumentEditor(new());
 			}
 
 			public ISI.Extensions.Documents.IDocumentEditor Open(string fileName)
 			{
-				return new DocumentEditor(new global::Aspose.Words.Document(fileName));
+				return new DocumentEditor(new(fileName));
 			}
 
 			public ISI.Extensions.Documents.IDocumentEditor Open(System.IO.Stream stream)
 			{
-				return new DocumentEditor(new global::Aspose.Words.Document(stream));
+				return new DocumentEditor(new(stream));
 			}
 		}
 	}

@@ -31,7 +31,7 @@ namespace ISI.Extensions.Tests.Repository
 		{
 			var repositorySetupApi = new ISI.Extensions.Repository.Cosmos.RepositorySetupApi(Configuration, Logger, DateTimeStamper, ConnectionString);
 
-			repositorySetupApi.CreateRepository(new ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi.CreateRepositoryRequest());
+			repositorySetupApi.CreateRepository(new());
 		}
 	}
 }

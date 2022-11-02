@@ -72,13 +72,13 @@ namespace ISI.Extensions.Tests
 			var logger = ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();
 			var projectApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.ProjectApi>();
 
-			var xxx = projectApi.GetProjectReferences(new ISI.Extensions.VisualStudio.DataTransferObjects.ProjectApi.GetProjectReferencesRequest()
+			var xxx = projectApi.GetProjectReferences(new()
 			{
 				ProjectFileName = @"F:\ISI\ISI.FrameWork\src\ISI.Journal\ISI.Journal.Repository\ISI.Journal.Repository.csproj",
 			});
 
 
-			var yyy = projectApi.GetProjectReferences(new ISI.Extensions.VisualStudio.DataTransferObjects.ProjectApi.GetProjectReferencesRequest()
+			var yyy = projectApi.GetProjectReferences(new()
 			{
 				ProjectFileName = @"F:\ISI\Internal Projects\ISI.Extensions\src\ISI.Extensions.MessageBus.MassTransit.RabbitMQ\ISI.Extensions.MessageBus.MassTransit.RabbitMQ.csproj",
 			});

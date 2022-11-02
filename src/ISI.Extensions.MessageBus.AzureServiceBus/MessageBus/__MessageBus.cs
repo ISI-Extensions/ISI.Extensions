@@ -25,10 +25,10 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 	public partial class MessageBus  : ISI.Extensions.MessageBus.AbstractMessageBus
 	{
 		private static Microsoft.Azure.ServiceBus.ServiceBusConnection _connection = null;
-		protected Microsoft.Azure.ServiceBus.ServiceBusConnection Connection => _connection ??= new Microsoft.Azure.ServiceBus.ServiceBusConnection(Configuration.ConnectionString);
+		protected Microsoft.Azure.ServiceBus.ServiceBusConnection Connection => _connection ??= new(Configuration.ConnectionString);
 
 		private static Microsoft.Azure.ServiceBus.Management.ManagementClient _managementClient = null;
-		protected Microsoft.Azure.ServiceBus.Management.ManagementClient ManagementClient => _managementClient ??= new Microsoft.Azure.ServiceBus.Management.ManagementClient(Configuration.ConnectionString);
+		protected Microsoft.Azure.ServiceBus.Management.ManagementClient ManagementClient => _managementClient ??= new(Configuration.ConnectionString);
 
 		protected ISI.Extensions.JsonSerialization.IJsonSerializer JsonSerializer { get; }
 

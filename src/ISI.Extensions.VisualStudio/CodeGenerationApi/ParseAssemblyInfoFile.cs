@@ -53,7 +53,7 @@ namespace ISI.Extensions.VisualStudio
 							{
 								if (!attributeValues.TryGetValue(attributeKey, out var values))
 								{
-									values = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+									values = new(StringComparer.InvariantCultureIgnoreCase);
 									attributeValues.Add(attributeKey, values);
 								}
 

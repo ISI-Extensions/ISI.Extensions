@@ -68,7 +68,7 @@ namespace ISI.Extensions.Scm
 			}
 			
 			private SettingsCodeSigningToken _token = null;
-			public SettingsCodeSigningToken Token => _token ??= new SettingsCodeSigningToken(this.Settings);
+			public SettingsCodeSigningToken Token => _token ??= new(this.Settings);
 
 			public string DigestAlgorithm
 			{

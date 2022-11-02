@@ -42,8 +42,8 @@ namespace ISI.Extensions
 
 			public virtual void Execute()
 			{
-				_thread = new System.Threading.Thread(Start);
-				_cancellationTokenSource = new System.Threading.CancellationTokenSource();
+				_thread = new(Start);
+				_cancellationTokenSource = new();
 
 				IsActive = true;
 

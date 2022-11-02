@@ -68,7 +68,7 @@ namespace ISI.Extensions.Tests
 		{
 			var cakeApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Cake.CakeApi>();
 
-			cakeApi.ExecuteBuildTarget(new ISI.Extensions.Cake.DataTransferObjects.CakeApi.ExecuteBuildTargetRequest()
+			cakeApi.ExecuteBuildTarget(new()
 			{
 				BuildScriptFullName = @"F:\ISI\Internal Projects\ISI.Licenses\src\build.cake",
 				UseShell = true,

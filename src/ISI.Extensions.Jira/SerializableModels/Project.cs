@@ -28,7 +28,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.Project Export()
 		{
-			return new ISI.Extensions.Jira.Project()
+			return new()
 			{
 				ProjectId = ProjectId,
 				ProjectKey = ProjectKey,

@@ -39,7 +39,7 @@ namespace ISI.Extensions.Jenkins.SerializableModels
 
 		public ISI.Extensions.Jenkins.ActionParameter Export()
 		{
-			return new ISI.Extensions.Jenkins.ActionParameter()
+			return new()
 			{
 				DefaultValue = DefaultValue.NullCheckedConvert(x => x.Export()),
 				Description = Description,

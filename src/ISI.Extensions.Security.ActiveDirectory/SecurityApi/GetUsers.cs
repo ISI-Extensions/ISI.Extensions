@@ -33,7 +33,7 @@ namespace ISI.Extensions.Security.ActiveDirectory
 
 			if (string.IsNullOrWhiteSpace(request.DomainName))
 			{
-				request.DomainName = string.Format("LDAP://{0}", GetCurrentDomainName(new DTOs.GetCurrentDomainNameRequest()).DomainName);
+				request.DomainName = string.Format("LDAP://{0}", GetCurrentDomainName(new()).DomainName);
 			}
 
 			foreach (var userName in request.UserNames)
@@ -55,7 +55,7 @@ namespace ISI.Extensions.Security.ActiveDirectory
 
 					foreach (System.DirectoryServices.SearchResult searchResult in searchResults)
 					{
-						users.Add(new ISI.Extensions.Security.User()
+						users.Add(new()
 						{
 							Name = GetPropertyValue(searchResult, UserPropertyKey.NameKey),
 							EmailAddress = GetPropertyValue(searchResult, UserPropertyKey.EmailAddressKey),

@@ -28,7 +28,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	{
 		public ISI.Extensions.Jira.IssueFields Export()
 		{
-			return new ISI.Extensions.Jira.IssueFields()
+			return new()
 			{
 				IssueType = IssueType?.Export(),
 				Timespent = Timespent,

@@ -82,7 +82,7 @@ namespace ISI.Extensions.Tests
 				CodeSigningCertificateTokenCryptographicProvider = settings.CodeSigning.Token.CryptographicProvider,
 				CodeSigningCertificateTokenContainerName = settings.CodeSigning.Token.ContainerName,
 				CodeSigningCertificateTokenPassword = settings.CodeSigning.Token.Password,
-				TimeStampUri = new Uri(settings.CodeSigning.TimeStampUrl),
+				TimeStampUri = new(settings.CodeSigning.TimeStampUrl),
 				TimeStampDigestAlgorithm = ISI.Extensions.Enum<ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.CodeSigningDigestAlgorithm>.Parse(settings.CodeSigning.TimeStampDigestAlgorithm),
 				CertificateFileName = settings.CodeSigning.CertificateFileName,
 				CertificatePassword = settings.CodeSigning.CertificatePassword,
@@ -104,7 +104,7 @@ namespace ISI.Extensions.Tests
 			codeSigningApi.SignVsixes(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.SignVsixesRequest()
 			{
 				VsixFullNames = new[] { @"F:\ISI\Internal Projects\ISI.Extensions.VisualStudio2019\src\ISI.Extensions.VisualStudio2019\bin\Debug\ISI.Extensions.VisualStudio2019.vsix" },
-				TimeStampUri = new Uri(settings.CodeSigning.TimeStampUrl),
+				TimeStampUri = new(settings.CodeSigning.TimeStampUrl),
 				CertificateFingerprint = settings.CodeSigning.CertificateFingerprint,
 				//CertificatePath = File(settings.CodeSigning.CertificateFileName),
 				//CertificatePassword = settings.CodeSigning.CertificatePassword,

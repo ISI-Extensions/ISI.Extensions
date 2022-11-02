@@ -75,7 +75,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 				foreach (var solution in solutions)
 				{
-					context.Solutions.Add(new Solution(solution.Key, form.SolutionsPanel, (context.Solutions.Count % 2 == 1), selectAll || solution.Value, start, null, true, false, OnChangedSelection));
+					context.Solutions.Add(new(solution.Key, form.SolutionsPanel, (context.Solutions.Count % 2 == 1), selectAll || solution.Value, start, null, true, false, OnChangedSelection));
 				}
 
 				form.SolutionsPanel.Controls.AddRange(context.Solutions.Select(solution => solution.Panel).ToArray());

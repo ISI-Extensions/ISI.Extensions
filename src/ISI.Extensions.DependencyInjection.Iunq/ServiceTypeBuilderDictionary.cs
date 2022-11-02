@@ -28,7 +28,7 @@ namespace ISI.Extensions.DependencyInjection.Iunq
 
 		public ServiceTypeBuilderDictionary(Configuration configuration)
 		{
-			_serviceTypeBuilders = new System.Collections.Concurrent.ConcurrentDictionary<Type, ServiceTypeBuilder>(Environment.ProcessorCount * 2, configuration.ServiceTypeBuilderDictionaryInitialSize);
+			_serviceTypeBuilders = new(Environment.ProcessorCount * 2, configuration.ServiceTypeBuilderDictionaryInitialSize);
 		}
 
 		public void Add(ServiceTypeBuilder serviceTypeBuilder)

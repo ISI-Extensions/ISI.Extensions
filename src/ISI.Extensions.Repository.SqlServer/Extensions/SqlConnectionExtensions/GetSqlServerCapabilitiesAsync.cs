@@ -29,7 +29,7 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 		{
 			var serverVersion = await connection.GetServerVersionAsync();
 
-			return new SqlServerCapabilities()
+			return new()
 			{
 				ServerVersion = serverVersion,
 				SupportsNativePaging = (serverVersion.Major >= 11),

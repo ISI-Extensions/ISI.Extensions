@@ -34,7 +34,7 @@ namespace ISI.Extensions.Ngrok
 			{
 				foreach (var tunnelName in request.TunnelNames.ToNullCheckedArray(NullCheckCollectionResult.Empty))
 				{
-					NGrokClientApi.StopTunnel(new ISI.Extensions.Ngrok.DataTransferObjects.NGrokClientApi.StopTunnelRequest()
+					NGrokClientApi.StopTunnel(new()
 					{
 						TunnelName = tunnelName,
 					});

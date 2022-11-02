@@ -48,7 +48,7 @@ namespace ISI.Extensions.Scm
 				{
 					using (System.IO.Stream stream = System.IO.File.OpenRead(request.VsixFullName))
 					{
-						ISI.Extensions.WebClient.Upload.UploadFile(repositoryUri.Uri, new ISI.Extensions.WebClient.HeaderCollection(), stream, request.VsixFullName, "uploadFile", formValues);
+						ISI.Extensions.WebClient.Upload.UploadFile(repositoryUri.Uri, new(), stream, request.VsixFullName, "uploadFile", formValues);
 					}
 
 					tryAttemptsLeft = 0;

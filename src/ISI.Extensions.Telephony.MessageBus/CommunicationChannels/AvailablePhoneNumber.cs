@@ -40,7 +40,7 @@ namespace ISI.Extensions.Telephony.MessageBus.CommunicationChannels
 		[DataMember(Name = "latitudeLongitude", EmitDefaultValue = false)]
 		public LatitudeLongitude LatitudeLongitude
 		{
-			get => _latitudeLongitude ??= new LatitudeLongitude(); 
+			get => _latitudeLongitude ??= new(); 
 			set => _latitudeLongitude = value;
 		}
 

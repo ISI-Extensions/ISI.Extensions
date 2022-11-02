@@ -36,7 +36,7 @@ namespace ISI.Extensions.ConfigurationHelper.Extensions
 				return configuration;
 			}
 
-			throw new Exception("Missing ConfigurationAttribute");
+			throw new("Missing ConfigurationAttribute");
 		}
 	}
 }

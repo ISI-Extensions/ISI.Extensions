@@ -38,7 +38,7 @@ namespace ISI.Extensions.Jenkins.SerializableModels
 
 		public ISI.Extensions.Jenkins.Artifact Export()
 		{
-			return new ISI.Extensions.Jenkins.Artifact()
+			return new()
 			{
 				DisplayPath = DisplayPath,
 				FileName = FileName,

@@ -36,7 +36,7 @@ namespace ISI.Extensions.Jenkins
 			public static readonly string EnableJob = "/job/{jobId}/enable";
 			public static readonly string DisableJob = "/job/{jobId}/disable";
 			public static readonly string DeleteJob = "/job/{jobId}/doDelete";
-			public static readonly string CreateJobConfigXml = "/createItem?name={jobId}";
+			public static readonly string CreateJobConfigXml = "/createItem?name={jobId}&mode=job";
 			public static readonly string GetJobDataJson = "/job/{jobId}/api/json";
 			public static readonly string GetBuildDataJson = "/job/{jobId}/{build}/api/json";
 			public static readonly string GetQueuedItemJson = "/queue/item/{0}/api/json";

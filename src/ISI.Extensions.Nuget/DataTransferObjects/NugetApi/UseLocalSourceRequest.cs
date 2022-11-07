@@ -19,46 +19,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi;
-using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.VisualStudio
+namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public partial class SolutionApi
+	public delegate bool UseLocalSourceTryGetLocalProject(string projectName, out string projectFullName);
+	public delegate void UseLocalSourceAddLocalProjectToSolution(string projectFullName);
+
+	public partial class UseLocalSourceRequest
 	{
-		public DTOs.GetClosestSolutionFullNameResponse GetClosestSolutionFullName(DTOs.GetClosestSolutionFullNameRequest request)
-		{
-			var response = new DTOs.GetClosestSolutionFullNameResponse();
-
-			if (request.FileName.EndsWith(".sln", StringComparison.InvariantCultureIgnoreCase))
-			{
-				response.ClosestSolutionFullName = request.FileName;
-			}
-			else
-			{
-				var directory = (System.IO.File.Exists(request.FileName) ? System.IO.Path.GetDirectoryName(request.FileName) : request.FileName);
-
-				while (!string.IsNullOrWhiteSpace(directory) && string.IsNullOrWhiteSpace(response.ClosestSolutionFullName))
-				{
-					var fileName = System.IO.Directory.GetFiles(directory, "*.sln", System.IO.SearchOption.TopDirectoryOnly).FirstOrDefault();
-
-					if (!string.IsNullOrEmpty(fileName))
-					{
-						response.ClosestSolutionFullName = fileName;
-					}
-
-					directory = System.IO.Path.GetDirectoryName(directory);
-				}
-
-				if (string.IsNullOrWhiteSpace(response.ClosestSolutionFullName))
-				{
-					directory = (System.IO.File.Exists(request.FileName) ? System.IO.Path.GetDirectoryName(request.FileName) : request.FileName);
-
-					response.ClosestSolutionFullName = System.IO.Directory.GetFiles(directory, "*.sln", System.IO.SearchOption.AllDirectories).FirstOrDefault();
-				}
-			}
-
-			return response;
-		}
+		public string ProjectFullName { get; set; }
+		public UseLocalSourceTryGetLocalProject TryGetLocalProject { get; set; }
+		public UseLocalSourceAddLocalProjectToSolution AddLocalProjectToSolution { get; set; }
 	}
 }

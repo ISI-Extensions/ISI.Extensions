@@ -18,11 +18,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 {
-	public partial class GetProjectDetailsRequest
+	public delegate void UseLocalSourcePackagesProgress(string project, int index, int count);
+	public delegate void UseLocalSourcePackagesAddProject(string projectFullName);
+
+	public partial class UseLocalSourcePackagesRequest
 	{
-		public string Project { get; set; }
+		public string SolutionItem { get; set; }
+		public UseLocalSourcePackagesProgress Progress { get; set; }
+		public UseLocalSourcePackagesAddProject AddProject { get; set; }
 	}
 }

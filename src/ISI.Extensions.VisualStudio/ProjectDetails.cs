@@ -24,5 +24,7 @@ namespace ISI.Extensions.VisualStudio
 		public string ProjectName { get; set; }
 		public string ProjectDirectory { get; set; }
 		public string ProjectFullName { get; set; }
+
+		public override string ToString() => ProjectName;
 	}
 }

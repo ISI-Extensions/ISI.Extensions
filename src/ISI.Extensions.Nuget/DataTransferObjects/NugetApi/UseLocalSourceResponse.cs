@@ -18,11 +18,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
+namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public partial class GetProjectDetailsResponse
+	public partial class UseLocalSourceResponse
 	{
-		public ProjectDetails ProjectDetails { get; set; }
 	}
 }

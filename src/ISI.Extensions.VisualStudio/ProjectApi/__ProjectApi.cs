@@ -26,14 +26,11 @@ namespace ISI.Extensions.VisualStudio
 	public partial class ProjectApi
 	{
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
 
 		public ProjectApi(
-			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
+			Microsoft.Extensions.Logging.ILogger logger)
 		{
 			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
 		}
 	}
 }

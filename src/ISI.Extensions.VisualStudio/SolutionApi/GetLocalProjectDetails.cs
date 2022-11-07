@@ -19,61 +19,37 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi;
+using Microsoft.Extensions.Logging;
+using System.IO;
 
 namespace ISI.Extensions.VisualStudio
 {
 	public partial class SolutionApi
 	{
-		public DTOs.GetProjectDetailsResponse GetProjectDetails(DTOs.GetProjectDetailsRequest request)
+		public DTOs.GetLocalProjectDetailsResponse GetLocalProjectDetails(DTOs.GetLocalProjectDetailsRequest request)
 		{
-			var response = new DTOs.GetProjectDetailsResponse();
+			var response = new DTOs.GetLocalProjectDetailsResponse();
 
-			response.ProjectDetails = new();
+			var projectDetailsSet = new List<ProjectDetails>();
 
-			if (System.IO.Directory.Exists(request.Project))
+			var projectFullNames = System.IO.Directory.GetFiles(request.LocalDirectory, "*.csproj", System.IO.SearchOption.AllDirectories);
+
+			foreach (var projectFullName in projectFullNames)
 			{
-				var possibleProjectFullNames = System.IO.Directory.GetFiles(request.Project, "*.csproj", System.IO.SearchOption.AllDirectories);
-
-				if (possibleProjectFullNames.Length == 1)
+				var projectDetails = ProjectApi. GetProjectDetails(new ISI.Extensions.VisualStudio.DataTransferObjects.ProjectApi.GetProjectDetailsRequest()
 				{
-					response.ProjectDetails.ProjectFullName = possibleProjectFullNames.First();
-				}
-				else if (possibleProjectFullNames.Length > 1)
-				{
-					var possibleProjectName = System.IO.Path.GetFileName(request.Project);
+					Project = projectFullName,
+				}).ProjectDetails;
 
-					var possibleProjectFullName = possibleProjectFullNames.FirstOrDefault(possibleProjectFullName => string.Equals(System.IO.Path.GetFileNameWithoutExtension(possibleProjectFullName), possibleProjectName, StringComparison.InvariantCultureIgnoreCase));
-
-					if (!string.IsNullOrWhiteSpace(possibleProjectFullName))
-					{
-						response.ProjectDetails.ProjectName = possibleProjectFullName;
-					}
-					else
-					{
-						throw new(string.Format("Cannot determine which project to update \"{0}\"", request.Project));
-					}
-				}
-				else
+				if (projectDetails != null)
 				{
-					throw new(string.Format("Cannot find a project to update \"{0}\"", request.Project));
+					projectDetailsSet.Add(projectDetails);
 				}
 			}
 
-			if (System.IO.File.Exists(request.Project))
-			{
-				response.ProjectDetails.ProjectFullName = request.Project;
-			}
-
-			if (string.IsNullOrWhiteSpace(response.ProjectDetails.ProjectFullName))
-			{
-				return null;
-			}
-
-			response.ProjectDetails.ProjectName = System.IO.Path.GetFileNameWithoutExtension(response.ProjectDetails.ProjectFullName);
-			response.ProjectDetails.ProjectDirectory = System.IO.Path.GetDirectoryName(response.ProjectDetails.ProjectFullName);
-
+			response.ProjectDetailsSet = projectDetailsSet.ToArray();
+			
 			return response;
 		}
 	}

@@ -75,6 +75,24 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void UseLocalSourcePackages_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+
+			var logger = ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();
+			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
+			var sourceControlClientApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.SourceControlClientApi>();
+			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+
+			var useLocalSourcePackagesResponse = solutionApi.UseLocalSourcePackages(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.UseLocalSourcePackagesRequest()
+			{
+				SolutionItem = @"E:\Tristar\Comcast.Product.XClass.Portal.WebApplication",
+			});
+
+		}
+
+		[Test]
 		public void ListNugetPackages_Test()
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");

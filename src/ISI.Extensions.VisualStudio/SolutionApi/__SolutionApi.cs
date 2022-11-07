@@ -32,6 +32,7 @@ namespace ISI.Extensions.VisualStudio
 		protected ISI.Extensions.Scm.BuildScriptApi BuildScriptApi { get; }
 		protected ISI.Extensions.Scm.SourceControlClientApi SourceControlClientApi { get; }
 		protected ISI.Extensions.VisualStudio.CodeGenerationApi CodeGenerationApi { get; }
+		protected ISI.Extensions.VisualStudio.ProjectApi ProjectApi { get; }
 		protected ISI.Extensions.Nuget.NugetApi NugetApi { get; }
 
 		public SolutionApi(
@@ -41,6 +42,7 @@ namespace ISI.Extensions.VisualStudio
 			ISI.Extensions.Scm.BuildScriptApi buildScriptApi,
 			ISI.Extensions.Scm.SourceControlClientApi sourceControlClientApi,
 			ISI.Extensions.VisualStudio.CodeGenerationApi codeGenerationApi,
+			ISI.Extensions.VisualStudio.ProjectApi projectApi,
 			ISI.Extensions.Nuget.NugetApi nugetApi)
 		{
 			Logger = logger;
@@ -49,6 +51,7 @@ namespace ISI.Extensions.VisualStudio
 			BuildScriptApi = buildScriptApi;
 			SourceControlClientApi = sourceControlClientApi;
 			CodeGenerationApi = codeGenerationApi;
+			ProjectApi = projectApi;
 			NugetApi = nugetApi;
 		}
 	}

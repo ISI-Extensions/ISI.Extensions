@@ -80,7 +80,8 @@ namespace ISI.Extensions.Tests
 			var packagerApi = new ISI.Extensions.VisualStudio.PackagerApi(logger, nugetApi, msBuildApi, codeGenerationApi, xmlTransformApi);
 			var buildScriptApi = new ISI.Extensions.Scm.BuildScriptApi(logger);
 			var sourceControlClientApi = new SourceControlClientApi(logger);
-			var solutionApi = new ISI.Extensions.VisualStudio.SolutionApi(logger, serialization, new(serialization), buildScriptApi, sourceControlClientApi, codeGenerationApi, nugetApi);
+			var projectApi = new ISI.Extensions.VisualStudio.ProjectApi(logger);
+			var solutionApi = new ISI.Extensions.VisualStudio.SolutionApi(logger, serialization, new(serialization), buildScriptApi, sourceControlClientApi, codeGenerationApi, projectApi, nugetApi);
 
 			var configuration = "Release";
 

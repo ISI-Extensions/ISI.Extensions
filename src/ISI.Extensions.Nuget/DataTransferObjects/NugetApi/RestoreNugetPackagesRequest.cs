@@ -24,8 +24,8 @@ namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
 	public partial class RestoreNugetPackagesRequest
 	{
-		public string SolutionName { get; set; }
-		public string SolutionDirectory { get; set; }
+		public string Solution { get; set; }
+		public string PackagesConfigFileName { get; set; }
 
 		public string MSBuildExe { get; set; }
 

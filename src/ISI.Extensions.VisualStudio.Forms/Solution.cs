@@ -216,8 +216,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 					RestoreNugetPackagesResponse = new();
 					RestoreNugetPackagesResponse.ExitCode = NugetApi.RestoreNugetPackages(new()
 					{
-						SolutionName = SolutionDetails.SolutionName,
-						SolutionDirectory = SolutionDetails.SolutionDirectory,
+						Solution = SolutionDetails.SolutionFullName,
 						MSBuildExe = MSBuildApi.GetMSBuildExeFullName(new()).MSBuildExeFullName,
 					}).Success ? 0 : 1;
 

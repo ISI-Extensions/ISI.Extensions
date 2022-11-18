@@ -103,7 +103,7 @@ namespace ISI.Extensions.VisualStudio
 					{
 						NugetApi.RestoreNugetPackages(new()
 						{
-							SolutionName = solutionFullName,
+							Solution = solutionFullName,
 							MSBuildExe = MSBuildApi.GetMSBuildExeFullName(new()
 							{
 								MsBuildVersion = buildVersion,

@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,86 +30,97 @@ namespace ISI.Extensions.Repository.SqlServer
 		{
 			var response = new DTOs.SetStepResponse();
 
-			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionString))
+			var success = false;
+
+			foreach (var connectionString in new[] { MasterConnectionString, ConnectionString })
 			{
-				connection.Open();
-
-				var sql = new StringBuilder();
-
-				sql.Clear();
-				sql.Append("set nocount on\n");
-				sql.AppendFormat("use [{0}];\n", DatabaseName);
-				sql.Append("select count(*) as TableCount\n");
-				sql.AppendFormat("from [{0}].INFORMATION_SCHEMA.TABLES\n", DatabaseName);
-				sql.Append("where TABLE_SCHEMA = 'dbo' and\n");
-				sql.Append("			TABLE_NAME = 'DatabaseMigrationStep'\n");
-
-				var tableExists = false;
-
-				using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql.ToString(), connection))
+				if (!success)
 				{
-					tableExists = string.Format("{0}", command.ExecuteScalarWithExceptionTracingAsync().GetAwaiter().GetResult()).ToBoolean();
-				}
-
-				if (tableExists)
-				{
-					sql.Clear();
-					sql.Append("set nocount on\n");
-					sql.AppendFormat("use [{0}];\n", DatabaseName);
-					sql.Append("select count(*) as ColumnCount\n");
-					sql.AppendFormat("from [{0}].INFORMATION_SCHEMA.COLUMNS\n", DatabaseName);
-					sql.Append("where TABLE_SCHEMA = 'dbo' and\n");
-					sql.Append("			TABLE_NAME = 'DatabaseMigrationStep' and\n");
-					sql.Append("			COLUMN_NAME = 'CompletedDateTimeUtc'\n");
-
-					var columnExists = false;
-
-					using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql.ToString(), connection))
+					if (SqlConnection.TryGetSqlConnection(connectionString, false, out var connection))
 					{
-						columnExists = string.Format("{0}", command.ExecuteScalarWithExceptionTracingAsync().GetAwaiter().GetResult()).ToBoolean();
-					}
+						connection.Open();
 
-					if (!columnExists)
-					{
-						sql.Clear();
-						sql.Append("set nocount on\n");
-						sql.AppendFormat("use [{0}];\n", DatabaseName);
-						sql.Append("exec sp_rename 'dbo.DatabaseMigrationStep.CompletedDateTime', 'CompletedDateTimeUtc', 'COLUMN'\n");
-						connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
+						var sql = new StringBuilder();
 
 						sql.Clear();
 						sql.Append("set nocount on\n");
 						sql.AppendFormat("use [{0}];\n", DatabaseName);
-						sql.Append("alter table dbo.DatabaseMigrationStep add CompletedByKey varchar(255) null\n");
-						connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
+						sql.Append("select count(*) as TableCount\n");
+						sql.AppendFormat("from [{0}].INFORMATION_SCHEMA.TABLES\n", DatabaseName);
+						sql.Append("where TABLE_SCHEMA = 'dbo' and\n");
+						sql.Append("			TABLE_NAME = 'DatabaseMigrationStep'\n");
+
+						var tableExists = false;
+
+						using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql.ToString(), connection))
+						{
+							tableExists = string.Format("{0}", command.ExecuteScalarWithExceptionTracingAsync().GetAwaiter().GetResult()).ToBoolean();
+						}
+
+						if (tableExists)
+						{
+							sql.Clear();
+							sql.Append("set nocount on\n");
+							sql.AppendFormat("use [{0}];\n", DatabaseName);
+							sql.Append("select count(*) as ColumnCount\n");
+							sql.AppendFormat("from [{0}].INFORMATION_SCHEMA.COLUMNS\n", DatabaseName);
+							sql.Append("where TABLE_SCHEMA = 'dbo' and\n");
+							sql.Append("			TABLE_NAME = 'DatabaseMigrationStep' and\n");
+							sql.Append("			COLUMN_NAME = 'CompletedDateTimeUtc'\n");
+
+							var columnExists = false;
+
+							using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql.ToString(), connection))
+							{
+								columnExists = string.Format("{0}", command.ExecuteScalarWithExceptionTracingAsync().GetAwaiter().GetResult()).ToBoolean();
+							}
+
+							if (!columnExists)
+							{
+								sql.Clear();
+								sql.Append("set nocount on\n");
+								sql.AppendFormat("use [{0}];\n", DatabaseName);
+								sql.Append("exec sp_rename 'dbo.DatabaseMigrationStep.CompletedDateTime', 'CompletedDateTimeUtc', 'COLUMN'\n");
+								connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
+
+								sql.Clear();
+								sql.Append("set nocount on\n");
+								sql.AppendFormat("use [{0}];\n", DatabaseName);
+								sql.Append("alter table dbo.DatabaseMigrationStep add CompletedByKey varchar(255) null\n");
+								connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
+							}
+						}
+						else
+						{
+							sql.Clear();
+							sql.Append("set nocount on\n");
+							sql.AppendFormat("use [{0}];\n", DatabaseName);
+							sql.Append("CREATE TABLE dbo.DatabaseMigrationStep\n");
+							sql.Append("(\n");
+							sql.Append("	StepId int not null,\n");
+							sql.Append("	CompletedDateTimeUtc datetime not null,\n");
+							sql.Append("	CompletedByKey varchar(255) null,\n");
+							sql.Append("	CONSTRAINT PK_DatabaseMigrationStep PRIMARY KEY CLUSTERED (StepId)\n");
+							sql.Append(");\n");
+							connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
+						}
+
+						sql.Clear();
+						sql.Append("set nocount on\n");
+						sql.AppendFormat("use [{0}];\n", DatabaseName);
+						sql.Append("insert into dbo.DatabaseMigrationStep (StepId, CompletedDateTimeUtc, CompletedByKey)\n");
+						sql.Append("select @StepId, getutcdate(), @CompletedByKey;\n");
+
+						using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql.ToString(), connection))
+						{
+							command.Parameters.AddWithValue("@StepId", stepId);
+							command.Parameters.AddWithValue("@CompletedByKey", (string.IsNullOrWhiteSpace(CompletedBy) ? (object)DBNull.Value : (object)CompletedBy));
+							command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
+						}
+
+						connection.Dispose();
+						connection = null;
 					}
-				}
-				else
-				{
-					sql.Clear();
-					sql.Append("set nocount on\n");
-					sql.AppendFormat("use [{0}];\n", DatabaseName);
-					sql.Append("CREATE TABLE dbo.DatabaseMigrationStep\n");
-					sql.Append("(\n");
-					sql.Append("	StepId int not null,\n");
-					sql.Append("	CompletedDateTimeUtc datetime not null,\n");
-					sql.Append("	CompletedByKey varchar(255) null,\n");
-					sql.Append("	CONSTRAINT PK_DatabaseMigrationStep PRIMARY KEY CLUSTERED (StepId)\n");
-					sql.Append(");\n");
-					connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
-				}
-
-				sql.Clear();
-				sql.Append("set nocount on\n");
-				sql.AppendFormat("use [{0}];\n", DatabaseName);
-				sql.Append("insert into dbo.DatabaseMigrationStep (StepId, CompletedDateTimeUtc, CompletedByKey)\n");
-				sql.Append("select @StepId, getutcdate(), @CompletedByKey;\n");
-
-				using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql.ToString(), connection))
-				{
-					command.Parameters.AddWithValue("@StepId", stepId);
-					command.Parameters.AddWithValue("@CompletedByKey", (string.IsNullOrWhiteSpace(CompletedBy) ? (object)DBNull.Value : (object)CompletedBy));
-					command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
 				}
 			}
 

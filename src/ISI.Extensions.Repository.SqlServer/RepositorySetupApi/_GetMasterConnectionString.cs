@@ -18,55 +18,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 using Microsoft.Extensions.Configuration;
 using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
 
 namespace ISI.Extensions.Repository.SqlServer
 {
-	public partial class RepositorySetupApi : ISI.Extensions.Repository.IRepositorySetupApi
+	public partial class RepositorySetupApi
 	{
-		public Microsoft.Extensions.Logging.ILogger Logger { get; }
-		public ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
-		public ISI.Extensions.JsonSerialization.IJsonSerializer Serializer { get; }
-
-		private string _masterConnectionString = null;
-		public string MasterConnectionString => _masterConnectionString ??= GetMasterConnectionString();
-
-		protected Microsoft.Extensions.Configuration.IConfiguration Configuration { get; }
-
-		public string ConnectionString { get; }
-		public string DatabaseName { get; }
-
-		private string _completedBy = null;
-		public string CompletedBy => _completedBy ??= GetCompletedBy();
-
-		public RepositorySetupApi(
-			Microsoft.Extensions.Configuration.IConfiguration configuration,
-			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
-			ISI.Extensions.JsonSerialization.IJsonSerializer serializer,
-			string connectionString,
-			string databaseName = null,
-			string completedBy = null,
-			string masterConnectionString = null)
+		private string GetMasterConnectionString()
 		{
-			Configuration = configuration;
-			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
-			Serializer = serializer;
+			var connectionString = Configuration.GetConnectionString("master");
 
-			ConnectionString = Configuration.GetConnectionString(connectionString) ?? connectionString;
-
-			var connectionStringBuilder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(ConnectionString);
-
-			DatabaseName = (string.IsNullOrWhiteSpace(databaseName) ? connectionStringBuilder.InitialCatalog : databaseName).Replace("[", string.Empty).Replace("]", string.Empty);
-			_completedBy = (string.IsNullOrWhiteSpace(completedBy) ? connectionStringBuilder.UserID : completedBy);
-			if (string.IsNullOrWhiteSpace(_completedBy))
+			if (string.IsNullOrWhiteSpace(connectionString))
 			{
-				_completedBy = null;
+				return "master";
 			}
 
-			_masterConnectionString = masterConnectionString;
+			var masterConnectionStringBuilder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(connectionString);
+			var connectionStringBuilder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(ConnectionString);
+
+			if (!string.Equals(masterConnectionStringBuilder.DataSource, connectionStringBuilder.DataSource, StringComparison.InvariantCultureIgnoreCase))
+			{
+				masterConnectionStringBuilder.DataSource = connectionStringBuilder.DataSource;
+			}
+			
+			return masterConnectionStringBuilder.ConnectionString;
 		}
 	}
 }

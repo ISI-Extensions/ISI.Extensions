@@ -18,68 +18,41 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.Repository.SqlServer.Extensions;
-using System.Diagnostics;
+using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
 
 namespace ISI.Extensions.Repository.SqlServer
 {
 	public partial class RepositorySetupApi
 	{
-		public DTOs.GetLatestStepResponse GetLatestStep()
+		private string GetCompletedBy()
 		{
-			var response = new DTOs.GetLatestStepResponse();
-
-			var success = false;
-
-			foreach (var connectionString in new[] { MasterConnectionString, ConnectionString })
+			foreach (var connectionString in new[] { ConnectionString, MasterConnectionString, })
 			{
-				if (!success)
+				try
 				{
-					try
+					using (var connection = SqlConnection.GetSqlConnection(connectionString))
 					{
-						if (SqlConnection.TryGetSqlConnection(connectionString, false, out var connection))
+						connection.Open();
+
+						using (var command = new Microsoft.Data.SqlClient.SqlCommand("select ORIGINAL_LOGIN()", connection))
 						{
-							connection.Open();
+							var completedBy = string.Format("{0}", command.ExecuteScalar());
 
-							var sql = new StringBuilder();
-
-							sql.Append("set nocount on\n");
-							sql.AppendFormat("if db_id('{0}') is null\n", DatabaseName);
-							sql.Append("begin\n");
-							sql.Append("	select 0 as StepId\n");
-							sql.Append("end\n");
-							sql.Append("else\n");
-							sql.Append("begin\n");
-							sql.AppendFormat("  if (exists (select 1 from [{0}].INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = 'dbo' and TABLE_NAME = 'DatabaseMigrationStep'))\n", DatabaseName);
-							sql.Append("  begin\n");
-							sql.Append("		select max(StepId) as StepId\n");
-							sql.AppendFormat("		from [{0}].dbo.DatabaseMigrationStep\n", DatabaseName);
-							sql.Append("  end\n");
-							sql.Append("  else\n");
-							sql.Append("  begin\n");
-							sql.Append("	  select 0 as StepId\n");
-							sql.Append("  end\n");
-							sql.Append("end\n");
-
-							using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql.ToString(), connection))
+							if (!string.IsNullOrWhiteSpace(completedBy))
 							{
-								response.StepId = string.Format("{0}", command.ExecuteScalarWithExceptionTracingAsync().GetAwaiter().GetResult()).ToInt();
-								success = true;
+								return completedBy;
 							}
-
-							connection.Dispose();
 						}
 					}
-					catch (Exception exception)
-					{
+				}
+				catch
+				{
 
-					}
 				}
 			}
 
-			return response;
+			return null;
 		}
 	}
 }

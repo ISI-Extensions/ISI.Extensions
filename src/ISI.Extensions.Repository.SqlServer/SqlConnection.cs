@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -25,44 +25,64 @@ namespace ISI.Extensions.Repository.SqlServer
 	{
 		public static Microsoft.Data.SqlClient.SqlConnection GetSqlConnection(string connectionString, bool enableMultipleActiveResultSets = false)
 		{
-			var dbConnectionStringBuilder = new System.Data.Common.DbConnectionStringBuilder()
+			if (TryGetSqlConnection(connectionString, enableMultipleActiveResultSets, out var connection))
 			{
-				ConnectionString = connectionString,	
-			};
-
-			var appRoleName = dbConnectionStringBuilder.GetValue(ISI.Extensions.Repository.ConnectionStringParameterName.AppRoleName, true) ?? string.Empty;
-			var appRolePassword = dbConnectionStringBuilder.GetValue(ISI.Extensions.Repository.ConnectionStringParameterName.AppRolePassword, true) ?? string.Empty;
-
-			if (enableMultipleActiveResultSets)
-			{
-				dbConnectionStringBuilder.Add("MultipleActiveResultSets", "true");
+				return connection;
 			}
 
-			var connection = new Microsoft.Data.SqlClient.SqlConnection(dbConnectionStringBuilder.ConnectionString);
+			return null;
+		}
 
-			if (!string.IsNullOrWhiteSpace(appRoleName) && !string.IsNullOrWhiteSpace(appRolePassword))
+		public static bool TryGetSqlConnection(string connectionString, bool enableMultipleActiveResultSets, out Microsoft.Data.SqlClient.SqlConnection connection)
+		{
+			try
 			{
-				connection.StateChange += (sender, args) =>
+				var dbConnectionStringBuilder = new System.Data.Common.DbConnectionStringBuilder()
 				{
-					if ((args.OriginalState == System.Data.ConnectionState.Closed) ||
-					    (args.OriginalState == System.Data.ConnectionState.Connecting) &&
-					    (args.CurrentState == System.Data.ConnectionState.Open))
-					{
-						using (var command = new Microsoft.Data.SqlClient.SqlCommand("sp_setapprole", connection))
-						{
-							command.CommandType = System.Data.CommandType.StoredProcedure;
-
-							command.AddParameter("@rolename", appRoleName);
-							command.AddParameter("@password", appRolePassword);
-
-							command.CommandTimeout = 0;
-							command.ExecuteNonQuery();
-						}
-					}
+					ConnectionString = connectionString,
 				};
-			}
 
-			return connection;
+				var appRoleName = dbConnectionStringBuilder.GetValue(ISI.Extensions.Repository.ConnectionStringParameterName.AppRoleName, true) ?? string.Empty;
+				var appRolePassword = dbConnectionStringBuilder.GetValue(ISI.Extensions.Repository.ConnectionStringParameterName.AppRolePassword, true) ?? string.Empty;
+
+				if (enableMultipleActiveResultSets)
+				{
+					dbConnectionStringBuilder.Add("MultipleActiveResultSets", "true");
+				}
+
+				connection = new Microsoft.Data.SqlClient.SqlConnection(dbConnectionStringBuilder.ConnectionString);
+
+				if (!string.IsNullOrWhiteSpace(appRoleName) && !string.IsNullOrWhiteSpace(appRolePassword))
+				{
+					var _connection = connection;
+
+					connection.StateChange += (sender, args) =>
+					{
+						if ((args.OriginalState == System.Data.ConnectionState.Closed) ||
+								(args.OriginalState == System.Data.ConnectionState.Connecting) &&
+								(args.CurrentState == System.Data.ConnectionState.Open))
+						{
+							using (var command = new Microsoft.Data.SqlClient.SqlCommand("sp_setapprole", _connection))
+							{
+								command.CommandType = System.Data.CommandType.StoredProcedure;
+
+								command.AddParameter("@rolename", appRoleName);
+								command.AddParameter("@password", appRolePassword);
+
+								command.CommandTimeout = 0;
+								command.ExecuteNonQuery();
+							}
+						}
+					};
+				}
+				
+				return true;
+			}
+			catch
+			{
+				connection = null;
+				return false;
+			}
 		}
 	}
 }

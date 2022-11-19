@@ -27,8 +27,8 @@ namespace ISI.Extensions.Repository.SqlServer
 	public abstract partial class RecordManager<TRecord> : ISI.Extensions.Repository.RecordManager<TRecord>
 		where TRecord : class, IRecordManagerRecord, new()
 	{
-		protected virtual string ArchiveTableSuffix { get; } = "Archive";
-		protected virtual string ArchiveTableArchiveDateTimeColumnName { get; } = "ArchiveDateTime";
+		protected virtual string ArchiveTableSuffix => "Archive";
+		protected virtual string ArchiveTableArchiveDateTimeColumnName => "ArchiveDateTime";
 
 		protected ISI.Extensions.Repository.SqlServer.Configuration SqlServerConfiguration { get; }
 

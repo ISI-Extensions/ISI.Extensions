@@ -19,12 +19,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.Repository.SqlServer.Extensions;
+using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
+using SqlServerDTOs = ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi;
 
 namespace ISI.Extensions.Repository.SqlServer.Extensions
 {
 	public static partial class RepositorySetupApiExtensions
 	{
-		public static ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateUserRoleResponse CreateUserRole(this ISI.Extensions.Repository.IRepositorySetupApi repositorySetupApi, string userRole)
+		public static SqlServerDTOs.CreateUserRoleResponse CreateUserRole(this ISI.Extensions.Repository.IRepositorySetupApi repositorySetupApi, string userRole)
 		{
 			return (repositorySetupApi as ISI.Extensions.Repository.SqlServer.RepositorySetupApi)?.CreateUserRole(userRole);
 		}

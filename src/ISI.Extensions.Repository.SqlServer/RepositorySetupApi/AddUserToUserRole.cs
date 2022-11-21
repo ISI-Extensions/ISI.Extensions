@@ -18,15 +18,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using System.Diagnostics;
+using ISI.Extensions.Repository.Extensions;
 using ISI.Extensions.Repository.SqlServer.Extensions;
-using Microsoft.Extensions.Configuration;
 using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
+using SqlServerDTOs = ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi;
+using Microsoft.Extensions.Configuration;
 
 namespace ISI.Extensions.Repository.SqlServer
 {
 	public partial class RepositorySetupApi
 	{
-		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.AddUserToUserRoleResponse AddUserToUserRole(string userName, string userRole)
+		public SqlServerDTOs.AddUserToUserRoleResponse AddUserToUserRole(string userName, string userRole)
 		{
 			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionString))
 			{
@@ -34,9 +38,9 @@ namespace ISI.Extensions.Repository.SqlServer
 			}
 		}
 
-		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.AddUserToUserRoleResponse AddUserToUserRole(Microsoft.Data.SqlClient.SqlConnection connection, string userName, string userRole)
+		public SqlServerDTOs.AddUserToUserRoleResponse AddUserToUserRole(Microsoft.Data.SqlClient.SqlConnection connection, string userName, string userRole)
 		{
-			var response = new ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.AddUserToUserRoleResponse();
+			var response = new SqlServerDTOs.AddUserToUserRoleResponse();
 
 			connection.EnsureConnectionIsOpenAsync().Wait();
 

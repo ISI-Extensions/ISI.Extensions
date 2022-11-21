@@ -19,6 +19,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.Repository.SqlServer.Extensions;
+using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
+using SqlServerDTOs = ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi;
 
 namespace ISI.Extensions.Repository.SqlServer.Extensions
 {

@@ -18,14 +18,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
+using ISI.Extensions.Extensions;
+using System.Diagnostics;
+using ISI.Extensions.Repository.Extensions;
 using ISI.Extensions.Repository.SqlServer.Extensions;
+using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
+using SqlServerDTOs = ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi;
+using Microsoft.Extensions.Configuration;
 
 namespace ISI.Extensions.Repository.SqlServer
 {
 	public partial class RepositorySetupApi
 	{
-		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateUserResponse CreateUser(string userName, string password)
+		public SqlServerDTOs.CreateUserResponse CreateUser(string userName, string password = null)
 		{
 			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionString))
 			{
@@ -33,9 +38,9 @@ namespace ISI.Extensions.Repository.SqlServer
 			}
 		}
 
-		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateUserResponse CreateUser(Microsoft.Data.SqlClient.SqlConnection connection, string userName, string password)
+		public SqlServerDTOs.CreateUserResponse CreateUser(Microsoft.Data.SqlClient.SqlConnection connection, string userName, string password = null)
 		{
-			var response = new ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateUserResponse();
+			var response = new SqlServerDTOs.CreateUserResponse();
 
 			var sql = new StringBuilder();
 
@@ -53,7 +58,10 @@ namespace ISI.Extensions.Repository.SqlServer
 			{
 				sql.Clear();
 				sql.AppendFormat("use [{0}];\n", DatabaseName);
-				sql.AppendFormat("CREATE USER [{0}] FOR LOGIN [{0}];\n", userName);
+				sql.AppendFormat("IF NOT EXISTS (SELECT name FROM sys.database_principals WHERE name = '{0}')\n", userName);
+				sql.Append("begin\n");
+				sql.AppendFormat("  CREATE USER [{0}] FOR LOGIN [{0}];\n", userName);
+				sql.Append("end\n");
 				connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
 			}
 

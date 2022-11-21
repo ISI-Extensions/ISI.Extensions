@@ -18,8 +18,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
+using ISI.Extensions.Extensions;
+using System.Diagnostics;
+using ISI.Extensions.Repository.Extensions;
 using ISI.Extensions.Repository.SqlServer.Extensions;
+using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
+using SqlServerDTOs = ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi;
+using Microsoft.Extensions.Configuration;
 
 namespace ISI.Extensions.Repository.SqlServer
 {
@@ -29,12 +34,12 @@ namespace ISI.Extensions.Repository.SqlServer
 		{
 			var response = new DTOs.CreateRepositoryResponse();
 
-			var dataFileDirectory = (request as ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateRepositoryRequest)?.DataFileDirectory;
-			var logFileDirectory = (request as ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateRepositoryRequest)?.LogFileDirectory;
-			var schema = (request as ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateRepositoryRequest)?.Schema;
-			var userRole = (request as ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateRepositoryRequest)?.UserRole;
-			var userName = (request as ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateRepositoryRequest)?.UserName;
-			var password = (request as ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateRepositoryRequest)?.Password;
+			var dataFileDirectory = (request as SqlServerDTOs.CreateRepositoryRequest)?.DataFileDirectory;
+			var logFileDirectory = (request as SqlServerDTOs.CreateRepositoryRequest)?.LogFileDirectory;
+			var schema = (request as SqlServerDTOs.CreateRepositoryRequest)?.Schema;
+			var userRole = (request as SqlServerDTOs.CreateRepositoryRequest)?.UserRole;
+			var userName = (request as SqlServerDTOs.CreateRepositoryRequest)?.UserName;
+			var password = (request as SqlServerDTOs.CreateRepositoryRequest)?.Password;
 
 			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionString))
 			{

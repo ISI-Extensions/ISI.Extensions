@@ -18,15 +18,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
+using ISI.Extensions.Extensions;
+using System.Diagnostics;
 using ISI.Extensions.Repository.Extensions;
 using ISI.Extensions.Repository.SqlServer.Extensions;
+using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
+using SqlServerDTOs = ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi;
+using Microsoft.Extensions.Configuration;
 
 namespace ISI.Extensions.Repository.SqlServer
 {
 	public partial class RepositorySetupApi
 	{
-		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateDatabaseResponse CreateDatabase(string dataFileDirectory = null, string logFileDirectory = null)
+		public SqlServerDTOs.CreateDatabaseResponse CreateDatabase(string dataFileDirectory = null, string logFileDirectory = null)
 		{
 			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionString))
 			{
@@ -34,9 +38,9 @@ namespace ISI.Extensions.Repository.SqlServer
 			}
 		}
 		
-		public ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateDatabaseResponse CreateDatabase(Microsoft.Data.SqlClient.SqlConnection connection, string dataFileDirectory = null, string logFileDirectory = null)
+		public SqlServerDTOs.CreateDatabaseResponse CreateDatabase(Microsoft.Data.SqlClient.SqlConnection connection, string dataFileDirectory = null, string logFileDirectory = null)
 		{
-			var response = new ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateDatabaseResponse();
+			var response = new SqlServerDTOs.CreateDatabaseResponse();
 
 			var sql = new StringBuilder();
 

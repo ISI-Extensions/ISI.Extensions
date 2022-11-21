@@ -19,17 +19,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.Repository.SqlServer.Extensions;
+using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
+using SqlServerDTOs = ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi;
 
 namespace ISI.Extensions.Repository.SqlServer.Extensions
 {
 	public static partial class RepositorySetupApiExtensions
 	{
-		public static ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateSchemaResponse CreateSchema<TRecord>(this ISI.Extensions.Repository.IRepositorySetupApi repositorySetupApi)
+		public static SqlServerDTOs.CreateSchemaResponse CreateSchema<TRecord>(this ISI.Extensions.Repository.IRepositorySetupApi repositorySetupApi)
 		{
 			return (repositorySetupApi as ISI.Extensions.Repository.SqlServer.RepositorySetupApi)?.CreateSchema(RecordDescription.GetRecordDescription<TRecord>().Schema);
 		}
 
-		public static ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi.CreateSchemaResponse CreateSchema(this ISI.Extensions.Repository.IRepositorySetupApi repositorySetupApi, string schema)
+		public static SqlServerDTOs.CreateSchemaResponse CreateSchema(this ISI.Extensions.Repository.IRepositorySetupApi repositorySetupApi, string schema)
 		{
 			return (repositorySetupApi as ISI.Extensions.Repository.SqlServer.RepositorySetupApi)?.CreateSchema(schema);
 		}

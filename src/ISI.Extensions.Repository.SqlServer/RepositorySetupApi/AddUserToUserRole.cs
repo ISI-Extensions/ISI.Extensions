@@ -47,8 +47,8 @@ namespace ISI.Extensions.Repository.SqlServer
 			var sql = new StringBuilder();
 
 			sql.Clear();
-			sql.AppendFormat("use [{0}];\n", DatabaseName);
-			sql.AppendFormat("exec sp_addrolemember '{0}', '{1}';\n", userName, userRole);
+			sql.AppendFormat("USE [{0}];\n", DatabaseName);
+			sql.AppendFormat("ALTER ROLE [{0}] ADD MEMBER [{1}];\n", userRole, userName);
 
 			connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
 

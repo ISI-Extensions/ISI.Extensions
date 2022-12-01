@@ -137,7 +137,7 @@ namespace ISI.Extensions.Nuget
 							TargetFramework = (pathPieces.Length > 1 ? NuGet.Frameworks.NuGetFramework.Parse(pathPieces[1]) : null),
 						};
 
-						foreach (var assemblyFileName in assemblyGroup)
+						foreach (var assemblyFileName in assemblyGroup.Where(assemblyFileName => !assemblyFileName.EndsWith("msdia140.dll", StringComparison.InvariantCultureIgnoreCase)))
 						{
 							try
 							{
@@ -160,6 +160,7 @@ namespace ISI.Extensions.Nuget
 							}
 							catch (Exception exception)
 							{
+								Console.WriteLine(System.IO.Path.Combine(packageFullName, assemblyFileName));
 								Console.WriteLine(exception);
 							}
 						}

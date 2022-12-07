@@ -35,7 +35,5 @@ namespace ISI.Extensions.Topshelf
 
 		public TimeSpan StartTimeOut  { get; set; } = TimeSpan.FromSeconds(20);
 		public TimeSpan StopTimeOut { get; set; } = TimeSpan.FromMinutes(1);
-		public TimeSpan AdditionalStartTime { get; set; } = TimeSpan.FromMinutes(10);
-		public TimeSpan AdditionalStopTime { get; set; } = TimeSpan.FromMinutes(10);
 	}
 }

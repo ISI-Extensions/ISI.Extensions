@@ -231,6 +231,7 @@ namespace ISI.Extensions.Tests
 			//solutionFullNames.Add(@"F:\ISI\Clients\TFS\Tristar.AddressTools");
 			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Tristar.SolutionFullNames.txt"));
 			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\ISI.SolutionFullNames.txt"));
+			//solutionFullNames.Add(@"F:\ISI\Clients\TFS\Tristar.SecureData");
 
 			solutionApi.UpdateNugetPackages(new()
 			{

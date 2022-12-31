@@ -120,7 +120,9 @@ Task("Nuget")
 	{
 		var nupgkFiles = new FilePathCollection();
 
-		foreach(var project in solution.Projects.Where(project => project.Path.FullPath.EndsWith(".csproj") && !project.Name.EndsWith(".Tests") && !project.Name.EndsWith(".T4LocalContent")).OrderBy(project => project.Name, StringComparer.InvariantCultureIgnoreCase))
+		foreach(var project in solution.Projects.Where(project => project.Path.FullPath.EndsWith(".csproj") && 
+																															!project.Name.EndsWith(".Tests") && 
+																															!project.Name.EndsWith(".T4LocalContent")).OrderBy(project => project.Name, StringComparer.InvariantCultureIgnoreCase))
 		{
 			Information(project.Name);
 
@@ -139,6 +141,35 @@ Task("Nuget")
 					return false;
 				}
 			}).Nuspec;
+
+			var files = new List<ISI.Extensions.Nuget.NuspecFile>(nuspec.Files ?? new ISI.Extensions.Nuget.NuspecFile[0]);
+
+			{
+				var pdbFile = File(project.Path.GetDirectory() + "/bin/" + configuration + "/" + project.Name + ".pdb");
+				if(FileExists(pdbFile))
+				{
+					files.Add(new ISI.Extensions.Nuget.NuspecFile()
+					{
+						Target = "lib/net48",
+						SourcePattern = pdbFile.Path.FullPath,
+					});
+				}
+			}
+
+			{
+				var pdbFile = File(project.Path.GetDirectory() + "/bin/" + configuration + "/netstandard2.0/" + project.Name + ".pdb");
+				if(FileExists(pdbFile))
+				{
+					files.Add(new ISI.Extensions.Nuget.NuspecFile()
+					{
+						Target = "lib/netstandard2.0",
+						SourcePattern = pdbFile.Path.FullPath,
+					});
+				}
+			}
+
+			nuspec.Files = files;
+
 			nuspec.Version = assemblyVersion;
 			nuspec.IconUri = GetNullableUri(@"https://nuget.isi-net.com/Images/Lantern.png");
 			nuspec.ProjectUri = GetNullableUri(@"https://github.com/ISI-Extensions/ISI.Extensions");

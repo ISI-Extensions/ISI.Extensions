@@ -26,6 +26,22 @@ namespace ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi
 	[ISI.Extensions.Serialization.SerializerContractUuid("7300740d-30db-4297-ab26-416cc6d043e0")]
 	public class DeployConsoleApplication : IDeployComponent
 	{
+		[DataMember(Name = "pauseComponentUrl", EmitDefaultValue = false)]
+		public string PauseComponentUrl { get; set; }
+
+		[DataMember(Name = "checkComponentCanDeployStatusUrl", EmitDefaultValue = false)]
+		public string CheckComponentCanDeployStatusUrl { get; set; }
+
+		[DataMember(Name = "checkComponentCanDeployStatusIntervalInSeconds", EmitDefaultValue = false)]
+		public double? __CheckComponentCanDeployStatusIntervalInSeconds { get => CheckComponentCanDeployStatusInterval?.TotalSeconds; set => CheckComponentCanDeployStatusInterval = (value > 0 ? TimeSpan.FromSeconds(value.Value) : null); }
+		[IgnoreDataMember]
+		public TimeSpan? CheckComponentCanDeployStatusInterval { get; set; }
+
+		[DataMember(Name = "checkComponentCanDeployStatusTimeoutInSeconds", EmitDefaultValue = false)]
+		public double? __CheckComponentCanDeployStatusTimeoutInSeconds { get => CheckComponentCanDeployStatusTimeout?.TotalSeconds; set => CheckComponentCanDeployStatusTimeout = (value > 0 ? TimeSpan.FromSeconds(value.Value) : null); }
+		[IgnoreDataMember]
+		public TimeSpan? CheckComponentCanDeployStatusTimeout { get; set; }
+
 		[DataMember(Name = "deployToSubfolder", EmitDefaultValue = false)]
 		public string DeployToSubfolder { get; set; }
 

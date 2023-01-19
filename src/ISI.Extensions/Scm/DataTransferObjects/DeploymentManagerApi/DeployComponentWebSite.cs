@@ -21,6 +21,10 @@ namespace ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi
 {
 	public class DeployComponentWebSite : IDeployComponent
 	{
+		public string PauseComponentUrl { get; set; }
+		public string CheckComponentCanDeployStatusUrl { get; set; }
+		public TimeSpan CheckComponentCanDeployStatusInterval { get; set; } = TimeSpan.FromSeconds(30);
+		public TimeSpan CheckComponentCanDeployStatusTimeout { get; set; } = TimeSpan.FromMinutes(10);
 		public string PackageFolder { get; set; }
 		public string DeployToSubfolder { get; set; }
 		public IEnumerable<string> ExcludeFiles { get; set; }

@@ -23,7 +23,6 @@ using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi;
 using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi;
 
-
 namespace ISI.Extensions.Scm
 {
 	public partial class DeploymentManagerApi
@@ -125,50 +124,13 @@ namespace ISI.Extensions.Scm
 			{
 				switch (component)
 				{
-					case ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.DeployComponent deployComponent:
-						if (string.Equals(deployComponent.ComponentType, "ConsoleApplication", StringComparison.InvariantCultureIgnoreCase))
-						{
-							deployComponents.Add(new SerializableDTOs.DeployConsoleApplication()
-							{
-								PackageFolder = deployComponent.PackageFolder,
-								DeployToSubfolder = deployComponent.DeployToSubfolder,
-								ConsoleApplicationExe = deployComponent.ApplicationExe,
-								ExcludeFiles = getDeployComponentExcludeFiles(deployComponent.ExcludeFiles),
-							});
-							Logger.LogInformation(string.Format("  deployComponent.PackageFolder: {0}", deployComponent.PackageFolder));
-							Logger.LogInformation(string.Format("  deployComponent.DeployToSubfolder: {0}", deployComponent.DeployToSubfolder));
-							Logger.LogInformation(string.Format("  deployComponent.ConsoleApplicationExe: {0}", deployComponent.ApplicationExe));
-						}
-						else if (string.Equals(deployComponent.ComponentType, "WebSite", StringComparison.InvariantCultureIgnoreCase))
-						{
-							deployComponents.Add(new SerializableDTOs.DeployWebSite()
-							{
-								PackageFolder = deployComponent.PackageFolder,
-								DeployToSubfolder = deployComponent.DeployToSubfolder,
-								ExcludeFiles = getDeployComponentExcludeFiles(deployComponent.ExcludeFiles),
-							});
-							Logger.LogInformation(string.Format("  deployComponent.PackageFolder: {0}", deployComponent.PackageFolder));
-							Logger.LogInformation(string.Format("  deployComponent.DeployToSubfolder: {0}", deployComponent.DeployToSubfolder));
-						}
-						else if (string.Equals(deployComponent.ComponentType, "WindowsService", StringComparison.InvariantCultureIgnoreCase))
-						{
-							deployComponents.Add(new SerializableDTOs.DeployWindowsService()
-							{
-								PackageFolder = deployComponent.PackageFolder,
-								DeployToSubfolder = deployComponent.DeployToSubfolder,
-								WindowsServiceExe = deployComponent.ApplicationExe,
-								ExcludeFiles = getDeployComponentExcludeFiles(deployComponent.ExcludeFiles),
-							});
-							Logger.LogInformation(string.Format("  deployComponent.PackageFolder: {0}", deployComponent.PackageFolder));
-							Logger.LogInformation(string.Format("  deployComponent.DeployToSubfolder: {0}", deployComponent.DeployToSubfolder));
-							Logger.LogInformation(string.Format("  deployComponent.WindowsServiceExe: {0}", deployComponent.ApplicationExe));
-						}
-						break;
-
-					case ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.DeployComponentConsoleApplication deployComponentConsoleApplication:
+					case DTOs.DeployComponentConsoleApplication deployComponentConsoleApplication:
 						deployComponents.Add(new SerializableDTOs.DeployConsoleApplication()
 						{
-							PackageFolder = deployComponentConsoleApplication.PackageFolder,
+							PauseComponentUrl = deployComponentConsoleApplication.PauseComponentUrl,
+							CheckComponentCanDeployStatusUrl = deployComponentConsoleApplication.CheckComponentCanDeployStatusUrl,
+							CheckComponentCanDeployStatusInterval = deployComponentConsoleApplication.CheckComponentCanDeployStatusInterval,
+							CheckComponentCanDeployStatusTimeout = deployComponentConsoleApplication.CheckComponentCanDeployStatusTimeout,
 							DeployToSubfolder = deployComponentConsoleApplication.DeployToSubfolder,
 							ConsoleApplicationExe = deployComponentConsoleApplication.ConsoleApplicationExe,
 							ExcludeFiles = getDeployComponentExcludeFiles(deployComponentConsoleApplication.ExcludeFiles),
@@ -182,9 +144,13 @@ namespace ISI.Extensions.Scm
 						Logger.LogInformation(string.Format("  deployComponentConsoleApplication.ExecuteConsoleApplicationAfterInstallArguments: {0}", deployComponentConsoleApplication.ExecuteConsoleApplicationAfterInstallArguments));
 						break;
 
-					case ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.DeployComponentWebSite deployComponentWebSite:
+					case DTOs.DeployComponentWebSite deployComponentWebSite:
 						deployComponents.Add(new SerializableDTOs.DeployWebSite()
 						{
+							PauseComponentUrl = deployComponentWebSite.PauseComponentUrl,
+							CheckComponentCanDeployStatusUrl = deployComponentWebSite.CheckComponentCanDeployStatusUrl,
+							CheckComponentCanDeployStatusInterval = deployComponentWebSite.CheckComponentCanDeployStatusInterval,
+							CheckComponentCanDeployStatusTimeout = deployComponentWebSite.CheckComponentCanDeployStatusTimeout,
 							PackageFolder = deployComponentWebSite.PackageFolder,
 							DeployToSubfolder = deployComponentWebSite.DeployToSubfolder,
 							ExcludeFiles = getDeployComponentExcludeFiles(deployComponentWebSite.ExcludeFiles),
@@ -193,9 +159,13 @@ namespace ISI.Extensions.Scm
 						Logger.LogInformation(string.Format("  deployComponentWebSite.DeployToSubfolder: {0}", deployComponentWebSite.DeployToSubfolder));
 						break;
 
-					case ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.DeployComponentWindowsService deployComponentWindowsService:
+					case DTOs.DeployComponentWindowsService deployComponentWindowsService:
 						deployComponents.Add(new SerializableDTOs.DeployWindowsService()
 						{
+							PauseComponentUrl = deployComponentWindowsService.PauseComponentUrl,
+							CheckComponentCanDeployStatusUrl = deployComponentWindowsService.CheckComponentCanDeployStatusUrl,
+							CheckComponentCanDeployStatusInterval = deployComponentWindowsService.CheckComponentCanDeployStatusInterval,
+							CheckComponentCanDeployStatusTimeout = deployComponentWindowsService.CheckComponentCanDeployStatusTimeout,
 							PackageFolder = deployComponentWindowsService.PackageFolder,
 							DeployToSubfolder = deployComponentWindowsService.DeployToSubfolder,
 							WindowsServiceExe = deployComponentWindowsService.WindowsServiceExe,

@@ -50,6 +50,9 @@ namespace ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi
 
 		[DataMember(Name = "checkComponentCanDeployStatusJsonPathValue", EmitDefaultValue = false)]
 		public string CheckComponentCanDeployStatusJsonPathValue { get; set; }
+		
+		[DataMember(Name = "checkComponentCanDeployStatusCommentJsonPath", EmitDefaultValue = false)]
+		public string CheckComponentCanDeployStatusCommentJsonPath { get; set; }
 
 		[DataMember(Name = "waitForFileLocksMaxTimeOutInSeconds", EmitDefaultValue = false)]
 		public double? __WaitForFileLocksMaxTimeOutInSeconds { get => WaitForFileLocksMaxTimeOut?.TotalSeconds; set => WaitForFileLocksMaxTimeOut = (value > 0 ? TimeSpan.FromSeconds(value.Value) : null); }

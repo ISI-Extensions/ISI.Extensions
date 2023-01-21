@@ -24,5 +24,14 @@ namespace ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi
 {
 	public interface IDeployComponent
 	{
+		string PauseComponentUrl { get; set; }
+		string CheckComponentCanDeployStatusUrl { get; set; }
+		TimeSpan? CheckComponentCanDeployStatusInterval { get; set; }
+		TimeSpan? CheckComponentCanDeployStatusTimeout { get; set; }
+		int? CheckComponentCanDeployStatusHttpStatus { get; set; }
+		string CheckComponentCanDeployStatusJsonPath { get; set; }
+		string CheckComponentCanDeployStatusJsonPathValue { get; set; }
+		string CheckComponentCanDeployStatusCommentJsonPath { get; set; }
+		TimeSpan? WaitForFileLocksMaxTimeOut { get; set; }
 	}
 }

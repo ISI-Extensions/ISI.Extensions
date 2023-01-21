@@ -27,6 +27,7 @@ namespace ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi
 		public int? CheckComponentCanDeployStatusHttpStatus { get; set; }
 		public string CheckComponentCanDeployStatusJsonPath { get; set; }
 		public string CheckComponentCanDeployStatusJsonPathValue { get; set; }
+		public string CheckComponentCanDeployStatusCommentJsonPath { get; set; }
 		public TimeSpan? CheckComponentCanDeployStatusTimeout { get; set; }
 		public TimeSpan? WaitForFileLocksMaxTimeOut { get; set; }
 		public string PackageFolder { get; set; }

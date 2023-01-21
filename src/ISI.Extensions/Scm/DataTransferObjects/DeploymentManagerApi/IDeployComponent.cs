@@ -21,5 +21,6 @@ namespace ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi
 {
 	public interface IDeployComponent
 	{
+
 	}
 }

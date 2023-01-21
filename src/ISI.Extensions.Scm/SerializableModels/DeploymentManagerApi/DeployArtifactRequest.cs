@@ -51,9 +51,6 @@ namespace ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi
 
 		[DataMember(Name = "configurationKey", EmitDefaultValue = false)]
 		public string ConfigurationKey { get; set; }
-		
-		[DataMember(Name = "waitForFileLocksMaxTimeOutInSeconds", EmitDefaultValue = false)]
-		public long? WaitForFileLocksMaxTimeOutInSeconds { get; set; }
 
 		[DataMember(Name = "deployComponents", EmitDefaultValue = false)]
 		public IDeployComponent[] DeployComponents { get; set; }

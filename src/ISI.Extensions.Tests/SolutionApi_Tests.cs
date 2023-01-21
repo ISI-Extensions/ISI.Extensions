@@ -319,6 +319,7 @@ namespace ISI.Extensions.Tests
 			var replacements = new Dictionary<string, string>();
 			//replacements.Add("language=\"C#v3.5\"", "language=\"C#\"");
 			//replacements.Add(" Constants.", " EnvDTE.Constants.");
+			replacements.Add("Copyright (c) 2022, Integrated Solutions", "Copyright (c) 2023, Integrated Solutions");
 
 			var findContents = new List<string>();
 
@@ -333,8 +334,11 @@ namespace ISI.Extensions.Tests
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Telephony.WindowsService");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Desktop");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.WebApplication");
-			solutionFullNames.Add(@"F:\ISI\Clients\TFS\Tristar.Portal");
+			//solutionFullNames.Add(@"F:\ISI\Clients\TFS\Tristar.Portal");
 			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Tristar.SolutionFullNames.txt"));
+			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\ISI.SolutionFullNames.txt"));
+
+			solutionFullNames.RemoveAll(solutionFullName => !System.IO.Directory.Exists(solutionFullName));
 
 			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new()
 			{
@@ -353,10 +357,10 @@ namespace ISI.Extensions.Tests
 
 					var sourceFullNames = new List<string>();
 					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.csproj", System.IO.SearchOption.AllDirectories));
-					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.cs", System.IO.SearchOption.AllDirectories));
-					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.cshtml", System.IO.SearchOption.AllDirectories));
-					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.t4", System.IO.SearchOption.AllDirectories));
-					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.tt", System.IO.SearchOption.AllDirectories));
+					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.cs", System.IO.SearchOption.AllDirectories));
+					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.cshtml", System.IO.SearchOption.AllDirectories));
+					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.t4", System.IO.SearchOption.AllDirectories));
+					sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "*.tt", System.IO.SearchOption.AllDirectories));
 					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "web.config", System.IO.SearchOption.AllDirectories));
 					//sourceFullNames.AddRange(System.IO.Directory.GetFiles(solutionDetails.SolutionDirectory, "build.cake", System.IO.SearchOption.AllDirectories));
 
@@ -429,11 +433,11 @@ namespace ISI.Extensions.Tests
 							//	}
 							//}
 
-							if ((updatedContent.IndexOf("<LangVersion>latest</LangVersion>", StringComparison.InvariantCultureIgnoreCase) >= 0) &&
-									(updatedContent.IndexOf("<RuntimeIdentifiers>win</RuntimeIdentifiers>", StringComparison.InvariantCultureIgnoreCase) <= 0))
-							{
-								updatedContent = updatedContent.Replace("<LangVersion>latest</LangVersion>", "<LangVersion>latest</LangVersion>\r\n\t\t<RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>");
-							}
+							//if ((updatedContent.IndexOf("<LangVersion>latest</LangVersion>", StringComparison.InvariantCultureIgnoreCase) >= 0) &&
+							//		(updatedContent.IndexOf("<RuntimeIdentifiers>win</RuntimeIdentifiers>", StringComparison.InvariantCultureIgnoreCase) <= 0))
+							//{
+							//	updatedContent = updatedContent.Replace("<LangVersion>latest</LangVersion>", "<LangVersion>latest</LangVersion>\r\n\t\t<RuntimeIdentifiers>win;win-x64</RuntimeIdentifiers>");
+							//}
 
 							//if ((updatedContent.IndexOf("<LangVersion>latest</LangVersion>", StringComparison.InvariantCultureIgnoreCase) >= 0) &&
 							//		(updatedContent.IndexOf("<RuntimeIdentifiers>win</RuntimeIdentifiers>", StringComparison.InvariantCultureIgnoreCase) >= 0))
@@ -457,7 +461,7 @@ namespace ISI.Extensions.Tests
 						if (!sourceControlClientApi.Commit(new()
 						{
 							FullNames = dirtyFileNames,
-							LogMessage = "update t4 language version",
+							LogMessage = "update copyright year",
 							AddToLog = log => commitLog.AppendLine(log),
 						}).Success)
 						{

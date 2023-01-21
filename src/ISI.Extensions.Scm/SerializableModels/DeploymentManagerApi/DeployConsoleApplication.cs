@@ -41,6 +41,20 @@ namespace ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi
 		public double? __CheckComponentCanDeployStatusTimeoutInSeconds { get => CheckComponentCanDeployStatusTimeout?.TotalSeconds; set => CheckComponentCanDeployStatusTimeout = (value > 0 ? TimeSpan.FromSeconds(value.Value) : null); }
 		[IgnoreDataMember]
 		public TimeSpan? CheckComponentCanDeployStatusTimeout { get; set; }
+				
+		[DataMember(Name = "checkComponentCanDeployStatusHttpStatus", EmitDefaultValue = false)]
+		public int? CheckComponentCanDeployStatusHttpStatus { get; set; }
+
+		[DataMember(Name = "checkComponentCanDeployStatusJsonPath", EmitDefaultValue = false)]
+		public string CheckComponentCanDeployStatusJsonPath { get; set; }
+
+		[DataMember(Name = "checkComponentCanDeployStatusJsonPathValue", EmitDefaultValue = false)]
+		public string CheckComponentCanDeployStatusJsonPathValue { get; set; }
+
+		[DataMember(Name = "waitForFileLocksMaxTimeOutInSeconds", EmitDefaultValue = false)]
+		public double? __WaitForFileLocksMaxTimeOutInSeconds { get => WaitForFileLocksMaxTimeOut?.TotalSeconds; set => WaitForFileLocksMaxTimeOut = (value > 0 ? TimeSpan.FromSeconds(value.Value) : null); }
+		[IgnoreDataMember]
+		public TimeSpan? WaitForFileLocksMaxTimeOut { get; set; }
 
 		[DataMember(Name = "deployToSubfolder", EmitDefaultValue = false)]
 		public string DeployToSubfolder { get; set; }

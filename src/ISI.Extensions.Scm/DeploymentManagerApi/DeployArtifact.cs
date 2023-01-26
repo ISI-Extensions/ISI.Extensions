@@ -136,6 +136,7 @@ namespace ISI.Extensions.Scm
 							CheckComponentCanDeployStatusCommentJsonPath = deployComponentConsoleApplication.CheckComponentCanDeployStatusCommentJsonPath,
 							CheckComponentCanDeployStatusTimeout = deployComponentConsoleApplication.CheckComponentCanDeployStatusTimeout,
 							WaitForFileLocksMaxTimeOut = deployComponentConsoleApplication.WaitForFileLocksMaxTimeOut,
+							PackageFolder = deployComponentConsoleApplication.PackageFolder,
 							DeployToSubfolder = deployComponentConsoleApplication.DeployToSubfolder,
 							ConsoleApplicationExe = deployComponentConsoleApplication.ConsoleApplicationExe,
 							ExcludeFiles = getDeployComponentExcludeFiles(deployComponentConsoleApplication.ExcludeFiles),

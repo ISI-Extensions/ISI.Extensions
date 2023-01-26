@@ -121,8 +121,8 @@ Task("Nuget")
 		var nupgkFiles = new FilePathCollection();
 
 		foreach(var project in solution.Projects.Where(project => project.Path.FullPath.EndsWith(".csproj") && 
-																															!project.Name.EndsWith(".Tests") && 
-																															!project.Name.EndsWith(".T4LocalContent")).OrderBy(project => project.Name, StringComparer.InvariantCultureIgnoreCase))
+																	!project.Name.EndsWith(".Tests") && 
+																	!project.Name.EndsWith(".T4LocalContent")).OrderBy(project => project.Name, StringComparer.InvariantCultureIgnoreCase))
 		{
 			Information(project.Name);
 

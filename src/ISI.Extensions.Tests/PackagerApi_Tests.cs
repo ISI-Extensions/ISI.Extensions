@@ -94,10 +94,10 @@ namespace ISI.Extensions.Tests
 
 			var buildDateTimeStamp = string.Format("{0:yyyyMMdd.HHmmss}", utcDateTime);
 
-			var solutionFullName = @"F:\ISI\Clients\TFS\Comcast.ReferAFriend2019\src\Comcast.ReferAFriend2019.sln";
-			var rootProjectFullName = @"F:\ISI\Clients\TFS\Comcast.ReferAFriend2019\src\Comcast.ReferAFriend2019.Web\Comcast.ReferAFriend2019.Web.csproj";
-			var rootAssemblyVersionKey = "Comcast.ReferAFriend2019";
-			var artifactName = "Comcast.ReferAFriend2019";
+			var solutionFullName = @"F:\ISI\Clients\TFS\Tristar.DocumentBuilder.Portal.WebApplication\src\Tristar.DocumentBuilder.Portal.WebApplication.sln";
+			var rootProjectFullName = @"F:\ISI\Clients\TFS\Tristar.DocumentBuilder.Portal.WebApplication\src\Tristar.DocumentBuilder.Portal.WebApplication\Tristar.DocumentBuilder.Portal.WebApplication.csproj";
+			var rootAssemblyVersionKey = "Tristar.DocumentBuilder.Portal.WebApplication";
+			var artifactName = "Tristar.DocumentBuilder.Portal.WebApplication";
 
 			//solutionApi.CleanSolution(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.CleanSolutionRequest()
 			//{
@@ -120,6 +120,8 @@ namespace ISI.Extensions.Tests
 
 			var buildArtifactZipFileName = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(solutionFullName), @$"..\Publish\{artifactName}.{buildDateTimeStamp}.zip");
 
+			var bateTimeStampVersion = string.Format("{0}|{1}", buildDateTimeStamp, assemblyVersions[rootAssemblyVersionKey].AssemblyVersion);
+
 			packagerApi.PackageComponents(new()
 			{
 				BuildPlatform = ISI.Extensions.VisualStudio.MSBuildPlatform.Automatic,
@@ -129,6 +131,10 @@ namespace ISI.Extensions.Tests
 				SubDirectory = "Tristar",
 				PackageComponents = new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.IPackageComponent[]
 				{
+					new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.PackageComponentConsoleApplication()
+					{
+						ProjectFullName = @"F:\ISI\Clients\TFS\Tristar.DocumentBuilder.Portal.WebApplication\src\Tristar.Services\Tristar.Services.DocumentBuilder.MigrationTool\Tristar.Services.DocumentBuilder.MigrationTool.csproj",
+					},
 					new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.PackageComponentWebSite()
 					{
 						ProjectFullName = rootProjectFullName,

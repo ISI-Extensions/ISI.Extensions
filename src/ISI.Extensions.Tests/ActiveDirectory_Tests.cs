@@ -54,7 +54,7 @@ namespace ISI.Extensions.Tests
 
 				.AddSingleton<ISI.Extensions.JsonSerialization.IJsonSerializer, ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer>()
 				.AddSingleton<ISI.Extensions.Serialization.ISerialization, ISI.Extensions.Serialization.Serialization>()
-				.AddSingleton<ISI.Extensions.Security.ISecurityApi, ISI.Extensions.Security.ActiveDirectory.SecurityApi>()
+				.AddSingleton<ISI.Extensions.Security.ActiveDirectory.IActiveDirectoryApi, ISI.Extensions.Security.ActiveDirectory.ActiveDirectoryApi>()
 
 				.AddConfigurationRegistrations(configuration)
 				.ProcessServiceRegistrars()
@@ -72,7 +72,7 @@ namespace ISI.Extensions.Tests
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 			settings.OverrideWithEnvironmentVariables();
 
-			var securityApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Security.ISecurityApi>();
+			var securityApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Security.ActiveDirectory.IActiveDirectoryApi>();
 
 			Console.WriteLine(securityApi.GetCurrentDomainName(new()).DomainName);
 		}
@@ -84,7 +84,7 @@ namespace ISI.Extensions.Tests
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 			settings.OverrideWithEnvironmentVariables();
 
-			var securityApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Security.ISecurityApi>();
+			var securityApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Security.ActiveDirectory.IActiveDirectoryApi>();
 
 			Console.WriteLine(securityApi.AuthenticateUser(new()
 			{
@@ -112,7 +112,7 @@ namespace ISI.Extensions.Tests
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 			settings.OverrideWithEnvironmentVariables();
 
-			var securityApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Security.ISecurityApi>();
+			var securityApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Security.ActiveDirectory.IActiveDirectoryApi>();
 
 			var users = securityApi.GetUsers(new()
 			{
@@ -139,7 +139,7 @@ namespace ISI.Extensions.Tests
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 			settings.OverrideWithEnvironmentVariables();
 
-			var securityApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Security.ISecurityApi>();
+			var securityApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Security.ActiveDirectory.IActiveDirectoryApi>();
 
 			var users = securityApi.ListUsers(new()).Users;
 
@@ -163,7 +163,7 @@ namespace ISI.Extensions.Tests
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 			settings.OverrideWithEnvironmentVariables();
 
-			var securityApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Security.ISecurityApi>();
+			var securityApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Security.ActiveDirectory.IActiveDirectoryApi>();
 
 			var roles = securityApi.ListRoles(new()).Roles;
 

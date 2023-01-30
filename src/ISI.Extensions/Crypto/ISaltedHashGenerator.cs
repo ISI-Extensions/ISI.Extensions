@@ -15,18 +15,15 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace ISI.Extensions.Security
+namespace ISI.Extensions.Crypto
 {
-	public class UserAuthenticationPassword
+	public interface ISaltedHashGenerator
 	{
-		public Guid SaltedHashGeneratorTypeUuid { get; set; }
-		public string PasswordSalt { get; set; }
-		public string HashedPassword { get; set; }
-		public string CreateUserKey { get; set; }
-		public DateTime CreateDateTimeUtc { get; set; }
+		Guid SaltedHashGeneratorTypeUuid { get; }
+		string GenerateNewCryptoSalt();
+		string GeneratedHashedValue(string value, string cryptoSalt);
+		bool ValidateValue(string value, string cryptoSalt, string hashedValue);
 	}
 }

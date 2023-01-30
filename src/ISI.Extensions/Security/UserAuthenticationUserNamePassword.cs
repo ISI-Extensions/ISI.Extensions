@@ -21,11 +21,9 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Security
 {
-	public class UserAuthenticationUserNamePassword : IUserAuthentication, ISI.Extensions.Caching.IHasSettableCacheKeyWithInstanceUuidAndAbsoluteTimeExpiration
+	public class UserAuthenticationUserNamePassword : UserAuthenticationPassword, IUserAuthentication, ISI.Extensions.Caching.IHasSettableCacheKeyWithInstanceUuidAndAbsoluteTimeExpiration
 	{
 		public string UserAuthenticationKey { get; set; }
-		public string PasswordSalt { get; set; }
-		public string HashedPassword { get; set; }
 
 		public Guid UserUuid { get; set; }
 		
@@ -42,8 +40,6 @@ namespace ISI.Extensions.Security
 
 		public bool IsActive { get; set; }
 
-		public string CreateUserKey { get; set; }
-		public DateTime CreateDateTimeUtc { get; set; }
 		public string ModifyUserKey { get; set; }
 		public DateTime ModifyDateTimeUtc { get; set; }
 

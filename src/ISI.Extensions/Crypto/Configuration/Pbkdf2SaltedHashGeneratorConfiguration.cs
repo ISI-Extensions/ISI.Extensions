@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,18 +15,16 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace ISI.Extensions.Security
+namespace ISI.Extensions.Crypto
 {
-	public class UserAuthenticationPassword
+	public partial class Configuration
 	{
-		public Guid SaltedHashGeneratorTypeUuid { get; set; }
-		public string PasswordSalt { get; set; }
-		public string HashedPassword { get; set; }
-		public string CreateUserKey { get; set; }
-		public DateTime CreateDateTimeUtc { get; set; }
+		public class Pbkdf2SaltedHashGeneratorConfiguration
+		{
+			public int KeySize { get; set; } = 64;
+			public int Interations { get; set; } = 350000;
+		}
 	}
 }

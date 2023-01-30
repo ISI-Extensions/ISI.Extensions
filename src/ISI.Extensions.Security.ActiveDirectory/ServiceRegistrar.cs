@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,15 +18,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.Security
+namespace ISI.Extensions.Security.ActiveDirectory
 {
-	public class UserAuthenticationPassword
+	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
+	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
 	{
-		public Guid SaltedHashGeneratorTypeUuid { get; set; }
-		public string PasswordSalt { get; set; }
-		public string HashedPassword { get; set; }
-		public string CreateUserKey { get; set; }
-		public DateTime CreateDateTimeUtc { get; set; }
+		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
+		{
+			services.AddSingleton<IActiveDirectoryApi, ActiveDirectoryApi>();
+		}
 	}
 }

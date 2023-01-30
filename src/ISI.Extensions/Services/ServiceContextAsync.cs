@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,22 +15,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ISI.Extensions.Services
 {
-	public interface IServiceManagerAsync
+	public class ServiceContextAsync : IServiceContextAsync
 	{
-		Status Status { get; }
+		public Microsoft.Extensions.Configuration.IConfigurationRoot Configuration { get; set; }
+		public string Environment { get; set; }
+		public string[] Arguments { get; set; }
+		public IServiceProvider ServiceProvider { get; set; }
 
-		Task<bool> StartAsync(IServiceContextAsync serviceContext);
-		Task<bool> StopAsync(IServiceContextAsync serviceContext);
-
-		Task BeforeInstallAsync(IServiceContextAsync serviceContext);
-		Task AfterInstallAsync(IServiceContextAsync serviceContext);
-		Task BeforeUninstallAsync(IServiceContextAsync serviceContext);
-		Task AfterUninstallAsync(IServiceContextAsync serviceContext);
+		public System.Threading.CancellationToken CancellationToken { get; set; }
 	}
 }

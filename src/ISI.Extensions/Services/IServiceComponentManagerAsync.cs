@@ -23,12 +23,12 @@ namespace ISI.Extensions.Services
 {
 	public interface IServiceComponentManagerAsync
 	{
-		Task<bool> StartAsync(IServiceContext serviceContext);
-		Task<bool> StopAsync(IServiceContext serviceContext);
+		Task<bool> StartAsync(IServiceContextAsync serviceContext);
+		Task<bool> StopAsync(IServiceContextAsync serviceContext);
 
-		Task BeforeInstallAsync(IServiceContext serviceContext);
-		Task AfterInstallAsync(IServiceContext serviceContext);
-		Task BeforeUninstallAsync(IServiceContext serviceContext);
-		Task AfterUninstallAsync(IServiceContext serviceContext);
+		Task BeforeInstallAsync(IServiceContextAsync serviceContext);
+		Task AfterInstallAsync(IServiceContextAsync serviceContext);
+		Task BeforeUninstallAsync(IServiceContextAsync serviceContext);
+		Task AfterUninstallAsync(IServiceContextAsync serviceContext);
 	}
 }

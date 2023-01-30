@@ -28,20 +28,20 @@ namespace ISI.Extensions.Security
 		bool IsActive { get; }
 		
 		string CreateUserKey { get; }
-		DateTime CreateDateTime { get; }
+		DateTime CreateDateTimeUtc { get; }
 		string ModifyUserKey { get; }
-		DateTime ModifyDateTime { get; }
+		DateTime ModifyDateTimeUtc { get; }
 	}
 
 	public interface IUserAuthenticationHasUserAuthenticationRecovery : IUserAuthentication
 	{
 		Guid? UserAuthenticationRecoveryUuid { get; set; }
-		DateTime? UserAuthenticationRecoveryIssuedDateTime { get; set; }
+		DateTime? UserAuthenticationRecoveryIssuedDateTimeUtc { get; set; }
 	}
 
 	public interface IUserAuthenticationHasBadPasswordCounter : IUserAuthentication
 	{
 		int BadPasswordCount { get; set; }
-		DateTime? LastBadPasswordDateTime { get; set; }
+		DateTime? LastBadPasswordDateTimeUtc { get; set; }
 	}
 }

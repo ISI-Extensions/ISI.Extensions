@@ -28,8 +28,8 @@ namespace ISI.Extensions.Security.ActiveDirectory
 		public bool IsActive { get; set; }
 		
 		public string CreateUserKey { get; set; }
-		public DateTime CreateDateTime { get; set; }
+		public DateTime CreateDateTimeUtc { get; set; }
 		public string ModifyUserKey { get; set; }
-		public DateTime ModifyDateTime { get; set; }
+		public DateTime ModifyDateTimeUtc { get; set; }
 	}
 }

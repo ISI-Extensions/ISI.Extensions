@@ -25,6 +25,7 @@ namespace ISI.Extensions.Security
 	{
 		public string PasswordSalt { get; set; }
 		public string HashedPassword { get; set; }
-		public DateTime CreatedOnUtc { get; set; }
+		public string CreateUserKey { get; set; }
+		public DateTime CreateDateTimeUtc { get; set; }
 	}
 }

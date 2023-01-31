@@ -9,23 +9,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="DataTransferObjects\**" />
-	  <EmbeddedResource Remove="DataTransferObjects\**" />
-	  <None Remove="DataTransferObjects\**" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<Compile Include="..\ISI.Extensions.AssemblyInfo.cs" Link="Properties\ISI.Extensions.AssemblyInfo.cs" />
 		<Compile Include="..\ISI.Extensions.Version.cs" Link="Properties\ISI.Extensions.Version.cs" />
-		<Compile Include="DataTransferObjects\AbstractResponse.cs" />
-		<Compile Include="DataTransferObjects\AbstractRequest.cs" />
-		<Compile Include="DataTransferObjects\DomainsApi\GetDnsRecordsRequest.cs" />
-		<Compile Include="DataTransferObjects\DomainsApi\GetDnsRecordsResponse.cs" />
-		<Compile Include="DataTransferObjects\DomainsApi\SetDnsRecordsRequest.cs" />
-		<Compile Include="DataTransferObjects\DomainsApi\SetDnsRecordsResponse.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<None Include="..\ISI.Extensions.licenseheader" Link="ISI.Extensions.licenseheader" />
 	</ItemGroup>
 

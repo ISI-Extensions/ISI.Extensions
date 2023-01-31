@@ -12,9 +12,6 @@
 	<ItemGroup>
 		<Compile Include="..\ISI.Extensions.AssemblyInfo.cs" Link="Properties\ISI.Extensions.AssemblyInfo.cs" />
 		<Compile Include="..\ISI.Extensions.Version.cs" Link="Properties\ISI.Extensions.Version.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<None Include="..\ISI.Extensions.licenseheader" Link="ISI.Extensions.licenseheader" />
 	</ItemGroup>
 

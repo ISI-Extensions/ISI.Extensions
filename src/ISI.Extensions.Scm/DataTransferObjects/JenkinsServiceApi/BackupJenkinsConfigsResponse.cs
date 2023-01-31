@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.JenkinsServiceApi
 {
-	public partial class BackupJenkinsConfigsResponse
+	public class BackupJenkinsConfigsResponse
 	{
 		public bool Success { get; set; }
 	}

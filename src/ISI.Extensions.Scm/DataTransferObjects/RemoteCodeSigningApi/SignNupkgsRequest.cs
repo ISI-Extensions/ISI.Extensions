@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigningApi
 {
-	public partial class SignNupkgsRequest : AbstractRequest
+	public class SignNupkgsRequest : AbstractRequest
 	{
 		public string[] NupkgFullNames { get; set; }
 				

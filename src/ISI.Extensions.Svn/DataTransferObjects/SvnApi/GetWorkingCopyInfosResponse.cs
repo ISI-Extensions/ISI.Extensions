@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
-	public partial class GetWorkingCopyInfosResponse
+	public class GetWorkingCopyInfosResponse
 	{
 		public IEnumerable<WorkingCopyInfo> Infos { get; set; }
 	}

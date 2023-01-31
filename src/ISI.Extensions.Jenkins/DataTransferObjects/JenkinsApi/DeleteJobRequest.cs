@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi
 {
-	public partial class DeleteJobRequest : AbstractRequest
+	public class DeleteJobRequest : AbstractRequest
 	{
 		public string JobId { get; set; }
 	}

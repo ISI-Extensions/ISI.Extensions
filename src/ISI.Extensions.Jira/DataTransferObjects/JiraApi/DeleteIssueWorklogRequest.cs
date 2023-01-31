@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 {
-	public partial class DeleteIssueWorklogRequest : AbstractRequest
+	public class DeleteIssueWorklogRequest : AbstractRequest
 	{
 		public string IssueIdOrKey { get; set; }
 		public int WorklogId { get; set; }

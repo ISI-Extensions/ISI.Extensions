@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Git.DataTransferObjects.GitApi
 {
-	public partial class UpdateWorkingCopyRequest
+	public class UpdateWorkingCopyRequest
 	{
 		public string FullName { get; set; }
 		public bool IncludeSubModules { get; set; } = true;

@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi
 {
-	public partial class GetRootDirectoryRequest
+	public class GetRootDirectoryRequest
 	{
 		public string FullName { get; set; }
 	}

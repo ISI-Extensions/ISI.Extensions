@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Ngrok.DataTransferObjects.NGrokClientApi
 {
-	public partial class GetCapturedTrafficRequest
+	public class GetCapturedTrafficRequest
 	{
 		public string TunnelName { get; set; } = null;
 

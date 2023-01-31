@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi
 {
-	public partial class FindJenkinsConfigFileNamesResponse
+	public class FindJenkinsConfigFileNamesResponse
 	{
 		public string[] JenkinsConfigFileNames { get; set; }
 	}

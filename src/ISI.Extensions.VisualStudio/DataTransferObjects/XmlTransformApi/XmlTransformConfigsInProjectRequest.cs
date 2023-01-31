@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.XmlTransformApi
 {
-	public partial class XmlTransformConfigsInProjectRequest
+	public class XmlTransformConfigsInProjectRequest
 	{
 		public string ProjectFullName { get; set; }
 		public string DestinationDirectory { get; set; }

@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.JenkinsServiceApi
 {
-	public partial class UpdateNugetPackagesResponse
+	public class UpdateNugetPackagesResponse
 	{
 		public bool Success { get; set; }
 	}

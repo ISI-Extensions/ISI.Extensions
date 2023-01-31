@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Ngrok.DataTransferObjects.NGrokClientApi
 {
-	public partial class ReplayCapturedTrafficResponse
+	public class ReplayCapturedTrafficResponse
 	{
 		public bool Success { get; set; }
 	}

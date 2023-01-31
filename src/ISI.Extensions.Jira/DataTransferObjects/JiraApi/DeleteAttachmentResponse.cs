@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 {
-	public partial class DeleteAttachmentResponse
+	public class DeleteAttachmentResponse
 	{
 	}
 }

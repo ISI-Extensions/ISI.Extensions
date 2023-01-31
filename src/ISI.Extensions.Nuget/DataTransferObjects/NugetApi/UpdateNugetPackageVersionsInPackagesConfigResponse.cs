@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public partial class UpdateNugetPackageVersionsInPackagesConfigResponse
+	public class UpdateNugetPackageVersionsInPackagesConfigResponse
 	{
 		public string PackagesConfigXml { get; set; }
 	}

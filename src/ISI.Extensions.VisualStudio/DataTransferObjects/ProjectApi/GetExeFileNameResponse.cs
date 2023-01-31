@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.ProjectApi
 {
-	public partial class GetExeFileNameResponse
+	public class GetExeFileNameResponse
 	{
 		public string ExeFileName { get; set; }
 	}

@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Ngrok.DataTransferObjects.NGrokClientApi
 {
-	public partial class StopTunnelRequest
+	public class StopTunnelRequest
 	{
 		public string TunnelName { get; set; }
 	}

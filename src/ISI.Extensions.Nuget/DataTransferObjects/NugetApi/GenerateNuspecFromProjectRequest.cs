@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public partial class GenerateNuspecFromProjectRequest
+	public class GenerateNuspecFromProjectRequest
 	{
 		public string ProjectFullName { get; set; }
 		public TryGetPackageVersion TryGetPackageVersion { get; set; } = null;

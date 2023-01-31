@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 {
-	public partial class FindUsersRequest : AbstractRequest
+	public class FindUsersRequest : AbstractRequest
 	{
 		public string UserName { get; set; } = ".";
 		public int Skip { get; set; } = 0;

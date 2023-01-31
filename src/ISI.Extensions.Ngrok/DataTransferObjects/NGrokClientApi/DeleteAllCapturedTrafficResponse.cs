@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Ngrok.DataTransferObjects.NGrokClientApi
 {
-	public partial class DeleteAllCapturedTrafficResponse
+	public class DeleteAllCapturedTrafficResponse
 	{
 		public bool Success { get; set; }
 	}

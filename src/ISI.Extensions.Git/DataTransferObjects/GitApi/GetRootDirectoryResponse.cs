@@ -21,8 +21,9 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Git.DataTransferObjects.GitApi
 {
-	public partial class GetRootDirectoryResponse
+	public class GetRootDirectoryResponse
 	{
 		public string FullName { get; set; }
+		public Uri Uri { get; set; }
 	}
 }

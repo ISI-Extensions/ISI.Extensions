@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 {
-	public partial class CleanSolutionResponse
+	public class CleanSolutionResponse
 	{
 		public bool Success { get; set; }
 	}

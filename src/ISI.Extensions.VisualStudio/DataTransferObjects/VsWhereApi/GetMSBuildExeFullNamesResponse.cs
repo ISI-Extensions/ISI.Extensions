@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.VsWhereApi
 {
-	public partial class GetMSBuildExeFullNamesResponse
+	public class GetMSBuildExeFullNamesResponse
 	{
 		public string[] MSBuildExeFullNames { get; set; }
 	}

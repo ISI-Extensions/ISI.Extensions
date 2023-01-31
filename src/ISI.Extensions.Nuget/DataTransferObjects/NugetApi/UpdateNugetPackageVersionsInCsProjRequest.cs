@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public partial class UpdateNugetPackageVersionsInCsProjRequest
+	public class UpdateNugetPackageVersionsInCsProjRequest
 	{
 		public string CsProjXml { get; set; }
 		public TryGetNugetPackageKey TryGetNugetPackageKey { get; set; }

@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 {
-	public partial class FindIssuesResponse
+	public class FindIssuesResponse
 	{
 		public Issue[] Issues { get; set; }
 

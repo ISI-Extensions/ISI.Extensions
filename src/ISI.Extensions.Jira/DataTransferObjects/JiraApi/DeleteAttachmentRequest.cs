@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 {
-	public partial class DeleteAttachmentRequest : AbstractRequest
+	public class DeleteAttachmentRequest : AbstractRequest
 	{
 		public string AttachmentId { get; set; }
 	}

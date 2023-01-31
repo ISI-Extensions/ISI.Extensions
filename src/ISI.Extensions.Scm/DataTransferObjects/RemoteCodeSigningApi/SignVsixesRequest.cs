@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigningApi
 {
-	public partial class SignVsixesRequest : AbstractRequest
+	public class SignVsixesRequest : AbstractRequest
 	{
 		public string[] VsixFullNames { get; set; }
 				

@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.GoDrive.DataTransferObjects.GoDriveApi
 {
-	public partial class DownloadFileResponse
+	public class DownloadFileResponse
 	{
 		public System.IO.Stream Stream { get; set; }
 	}

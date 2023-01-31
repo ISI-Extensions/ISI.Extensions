@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.NAnt.DataTransferObjects.NAntApi
 {
-	public partial class IsBuildScriptFileRequest
+	public class IsBuildScriptFileRequest
 	{
 		public string BuildScriptFullName { get; set; }
 	}

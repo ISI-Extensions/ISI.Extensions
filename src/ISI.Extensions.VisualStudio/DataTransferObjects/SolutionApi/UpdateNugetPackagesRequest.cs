@@ -23,7 +23,7 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 {
 	public delegate IDisposable GetBuildServiceSolutionLock(string solutionFullName, ISI.Extensions.StatusTrackers.AddToLog addToLog);
 
-	public partial class UpdateNugetPackagesRequest
+	public class UpdateNugetPackagesRequest
 	{
 		public bool UpdateWorkingCopyFromSourceControl { get; set; } = true;
 		public bool CommitWorkingCopyToSourceControl { get; set; } = true;

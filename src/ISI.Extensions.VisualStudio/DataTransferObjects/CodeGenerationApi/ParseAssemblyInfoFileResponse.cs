@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeGenerationApi
 {
-	public partial class ParseAssemblyInfoFileResponse
+	public class ParseAssemblyInfoFileResponse
 	{
 		public string Title { get; set; }
 		public string Description { get; set; }

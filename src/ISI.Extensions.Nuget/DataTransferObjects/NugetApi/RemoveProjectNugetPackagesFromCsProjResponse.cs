@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public partial class RemoveProjectNugetPackagesFromCsProjResponse
+	public class RemoveProjectNugetPackagesFromCsProjResponse
 	{
 	}
 }

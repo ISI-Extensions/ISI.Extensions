@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 {
-	public partial class FindIssuesRequest : AbstractRequest
+	public class FindIssuesRequest : AbstractRequest
 	{
 		public string Jql { get; set; }
 		public bool ValidateQuery { get; set; } = true;

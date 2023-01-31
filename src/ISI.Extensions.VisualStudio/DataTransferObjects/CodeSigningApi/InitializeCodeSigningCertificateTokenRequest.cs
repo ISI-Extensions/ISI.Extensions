@@ -31,7 +31,7 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
 		ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; }
 	}
 
-	public partial class InitializeCodeSigningCertificateTokenRequest : IInitializeCodeSigningCertificateTokenRequest
+	public class InitializeCodeSigningCertificateTokenRequest : IInitializeCodeSigningCertificateTokenRequest
 	{
 		public string CodeSigningCertificateTokenCertificateFileName { get; set; }
 		public string CodeSigningCertificateTokenCryptographicProvider { get; set; }

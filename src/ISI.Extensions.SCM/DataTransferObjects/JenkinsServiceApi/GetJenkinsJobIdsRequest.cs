@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.JenkinsServiceApi
 {
-	public partial class GetJenkinsJobIdsRequest
+	public class GetJenkinsJobIdsRequest
 	{
 		public string SettingsFullName { get; set; }
 

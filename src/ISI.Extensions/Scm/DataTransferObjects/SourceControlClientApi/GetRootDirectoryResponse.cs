@@ -21,9 +21,10 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi
 {
-	public partial class GetRootDirectoryResponse
+	public class GetRootDirectoryResponse
 	{
 		public Guid SourceControlTypeUuid { get; set; }
 		public string FullName { get; set; }
+		public Uri Uri { get; set; }
 	}
 }

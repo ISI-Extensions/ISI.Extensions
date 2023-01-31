@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeGenerationApi
 {
-	public partial class GenerateClassDefinitionConversionRequest
+	public class GenerateClassDefinitionConversionRequest
 	{
 		public Guid CodeExtensionProviderUuid { get; set; } = ISI.Extensions.VisualStudio.CodeExtensionProviders.ISI.Extensions.CodeExtensionProvider.CodeExtensionProviderUuid;
 		public ClassDefinition ClassDefinition { get; set; }

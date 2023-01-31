@@ -7,7 +7,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public partial class RemoveProjectNugetPackagesFromCsProjRequest
+	public class RemoveProjectNugetPackagesFromCsProjRequest
 	{
 		public string CsProjFullName { get; set; }
 		public string[] NugetPackageNames { get; set; }

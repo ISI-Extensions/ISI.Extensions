@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
-	public partial class AddRequest
+	public class AddRequest
 	{
 		public IEnumerable<string> FullNames { get; set; }
 		public bool UseTortoiseSvn { get; set; } = false;

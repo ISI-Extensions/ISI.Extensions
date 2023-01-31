@@ -26,14 +26,14 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
 		string WorkingDirectory { get; }
 	}
 
-	public partial class SignNupkgsRequest : SignRequest, ISignNupkgsRequest
+	public class SignNupkgsRequest : SignRequest, ISignNupkgsRequest
 	{
 		public IEnumerable<string> NupkgFullNames { get; set; }
 
 		public string WorkingDirectory { get; set; }
 	}
 
-	public partial class SignNupkgsInDirectoryRequest : SignRequest, ISignNupkgsRequest
+	public class SignNupkgsInDirectoryRequest : SignRequest, ISignNupkgsRequest
 	{
 		public string NupkgsDirectory { get; set; }
 

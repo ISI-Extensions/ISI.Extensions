@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.JenkinsServiceApi
 {
-	public partial class NugetPackageKey
+	public class NugetPackageKey
 	{
 		public string PackageId { get; set; }
 		public string PackageVersion { get; set; }

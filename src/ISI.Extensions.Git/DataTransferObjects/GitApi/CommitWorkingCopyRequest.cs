@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Git.DataTransferObjects.GitApi
 {
-	public partial class CommitWorkingCopyRequest
+	public class CommitWorkingCopyRequest
 	{
 		public string FullName { get; set; }
 		public string LogMessage { get; set; }

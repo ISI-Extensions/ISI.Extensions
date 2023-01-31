@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
-	public partial class CheckOutRequest : ICredentials
+	public class CheckOutRequest : ICredentials
 	{
 		public string UserName { get; set; }
 		public string Password { get; set; }

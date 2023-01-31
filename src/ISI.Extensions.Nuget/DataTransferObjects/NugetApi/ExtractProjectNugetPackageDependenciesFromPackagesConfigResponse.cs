@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public partial class ExtractProjectNugetPackageDependenciesFromPackagesConfigResponse
+	public class ExtractProjectNugetPackageDependenciesFromPackagesConfigResponse
 	{
 		public NugetPackageKey[] NugetPackageKeys { get; set; }
 	}

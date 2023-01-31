@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigningApi
 {
-	public partial class SignAssembliesRequest : AbstractRequest
+	public class SignAssembliesRequest : AbstractRequest
 	{
 		public string[] AssemblyFullNames { get; set; }
 				

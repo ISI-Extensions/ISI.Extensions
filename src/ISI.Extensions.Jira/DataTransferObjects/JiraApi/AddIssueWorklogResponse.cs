@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 {
-	public partial class AddIssueWorklogResponse
+	public class AddIssueWorklogResponse
 	{
 		public int Skip { get; set; }
 		public int Take { get; set; }

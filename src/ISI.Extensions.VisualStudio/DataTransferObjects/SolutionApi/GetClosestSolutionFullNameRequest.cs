@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 {
-	public partial class GetClosestSolutionFullNameRequest
+	public class GetClosestSolutionFullNameRequest
 	{
 		public string FileName { get; set; }
 	}

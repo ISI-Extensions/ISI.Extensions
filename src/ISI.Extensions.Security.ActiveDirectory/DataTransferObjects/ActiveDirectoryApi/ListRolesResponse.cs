@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Security.ActiveDirectory.DataTransferObjects.ActiveDirectoryApi
 {
-	public partial class ListRolesResponse
+	public class ListRolesResponse
 	{
 		public IEnumerable<string> Roles { get; set; }	
 	}

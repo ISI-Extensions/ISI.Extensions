@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.JenkinsServiceApi
 {
-	public partial class BackupJenkinsConfigsRequest : AbstractRequest
+	public class BackupJenkinsConfigsRequest : AbstractRequest
 	{
 		public string SettingsFullName { get; set; }
 

@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.MSBuildApi
 {
-	public partial class GetMSBuildExeFullNameRequest
+	public class GetMSBuildExeFullNameRequest
 	{
 		public MSBuildVersion MsBuildVersion { get; set; } = MSBuildVersion.Automatic;
 		public MSBuildPlatform MsBuildPlatform { get; set; } = MSBuildPlatform.Automatic;

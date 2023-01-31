@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public partial class GetNugetServersResponse
+	public class GetNugetServersResponse
 	{
 		public NugetServer[] NugetServers { get; set; }
 	}

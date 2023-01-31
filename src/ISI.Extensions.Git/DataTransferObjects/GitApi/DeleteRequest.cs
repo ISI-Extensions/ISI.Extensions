@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Git.DataTransferObjects.GitApi
 {
-	public partial class DeleteRequest
+	public class DeleteRequest
 	{
 		public IEnumerable<string> FullNames { get; set; }
 

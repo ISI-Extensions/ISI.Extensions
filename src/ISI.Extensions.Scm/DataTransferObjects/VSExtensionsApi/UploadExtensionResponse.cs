@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.VSExtensionsApi
 {
-	public partial class UploadExtensionResponse
+	public class UploadExtensionResponse
 	{
 	}
 }

@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
-	public partial class WorkingCopyInfo
+	public class WorkingCopyInfo
 	{
 		public string Path { get; set; }
 		public string WorkingCopyRootPath { get; set; }

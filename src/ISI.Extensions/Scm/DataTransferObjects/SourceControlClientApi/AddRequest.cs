@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi
 {
-	public partial class AddRequest
+	public class AddRequest
 	{
 		public IEnumerable<string> FullNames { get; set; }
 

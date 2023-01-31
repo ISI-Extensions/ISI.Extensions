@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi
 {
-	public partial class GetJobStatusXmlResponse
+	public class GetJobStatusXmlResponse
 	{
 		public string StatusXml { get; set; }
 	}

@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeGenerationApi
 {
-	public partial class GenerateClassDefinitionConversionResponse
+	public class GenerateClassDefinitionConversionResponse
 	{
 		public string Content { get; set; }
 	}

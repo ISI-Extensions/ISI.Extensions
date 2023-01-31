@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public partial class GetNugetConfigFullNamesResponse
+	public class GetNugetConfigFullNamesResponse
 	{
 		public IEnumerable<string> NugetConfigFullNames { get; set; }
 	}

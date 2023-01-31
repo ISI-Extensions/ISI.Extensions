@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
-	public partial class GetStatusResponse
+	public class GetStatusResponse
 	{
 		public IEnumerable<(string Path, Status LocalContentStatus)> Statuses { get; set; }
 	}

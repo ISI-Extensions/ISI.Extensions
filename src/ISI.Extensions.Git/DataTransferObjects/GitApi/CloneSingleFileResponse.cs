@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Git.DataTransferObjects.GitApi
 {
-	public partial class CloneSingleFileResponse
+	public class CloneSingleFileResponse
 	{
 		public bool Success { get; set; }
 	}

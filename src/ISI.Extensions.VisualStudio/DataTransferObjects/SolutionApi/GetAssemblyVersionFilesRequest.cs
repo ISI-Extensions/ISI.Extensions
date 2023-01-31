@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 {
-	public partial class GetAssemblyVersionFilesRequest
+	public class GetAssemblyVersionFilesRequest
 	{
 		public string Solution { get; set; }
 		public string RootAssemblyVersionKey { get; set; }

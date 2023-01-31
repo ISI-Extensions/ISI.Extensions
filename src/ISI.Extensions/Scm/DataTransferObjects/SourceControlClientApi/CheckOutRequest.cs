@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi
 {
-	public partial class CheckOutRequest
+	public class CheckOutRequest
 	{
 		public Guid SourceControlTypeUuid { get; set; }
 		public string SourceUrl { get; set; }

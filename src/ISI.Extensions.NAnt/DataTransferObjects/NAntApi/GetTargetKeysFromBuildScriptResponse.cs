@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.NAnt.DataTransferObjects.NAntApi
 {
-	public partial class GetTargetKeysFromBuildScriptResponse
+	public class GetTargetKeysFromBuildScriptResponse
 	{
 		public string[] Targets { get; set; }
 	}

@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Ngrok.DataTransferObjects.NGrokLocalServiceApi
 {
-	public partial class CreateReplacementUrlsRequest
+	public class CreateReplacementUrlsRequest
 	{
 		public IEnumerable<string> LocalUrls { get; set; }
 	}

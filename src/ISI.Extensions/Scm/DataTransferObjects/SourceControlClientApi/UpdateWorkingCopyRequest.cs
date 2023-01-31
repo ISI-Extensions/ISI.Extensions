@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi
 {
-	public partial class UpdateWorkingCopyRequest
+	public class UpdateWorkingCopyRequest
 	{
 		public string FullName { get; set; }
 		public bool IncludeExternals { get; set; } = true;

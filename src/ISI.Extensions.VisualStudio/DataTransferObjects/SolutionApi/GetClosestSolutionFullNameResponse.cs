@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 {
-	public partial class GetClosestSolutionFullNameResponse
+	public class GetClosestSolutionFullNameResponse
 	{
 		public string ClosestSolutionFullName { get; set; }
 	}

@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi
 {
-	public partial class AddResponse
+	public class AddResponse
 	{
 		public bool Success { get; set; }
 	}

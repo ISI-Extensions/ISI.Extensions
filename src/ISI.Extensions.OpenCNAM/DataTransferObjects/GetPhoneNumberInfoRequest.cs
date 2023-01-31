@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.OpenCNAM.DataTransferObjects
 {
-	public partial class GetPhoneNumberInfoRequest
+	public class GetPhoneNumberInfoRequest
 	{
 		public string PhoneNumber { get; set; }
 	}

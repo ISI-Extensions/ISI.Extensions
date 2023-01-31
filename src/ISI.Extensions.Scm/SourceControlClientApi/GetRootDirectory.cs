@@ -32,7 +32,11 @@ namespace ISI.Extensions.Scm
 			var sourceControlClientApi = GetSourceControlClientApi(request.FullName);
 
 			response.SourceControlTypeUuid = sourceControlClientApi?.SourceControlTypeUuid ?? Guid.Empty;
-			response.FullName = sourceControlClientApi?.GetRootDirectory(request)?.FullName;
+
+			var rootDirectory = sourceControlClientApi?.GetRootDirectory(request);
+
+			response.FullName = rootDirectory?.FullName;
+			response.Uri = rootDirectory?.Uri;
 
 			return response;
 		}

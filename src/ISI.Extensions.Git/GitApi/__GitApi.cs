@@ -75,7 +75,8 @@ namespace ISI.Extensions.Git
 				FullName = request.FullName,
 			});
 
-			response.FullName = apiResponse.FullName;
+			response.FullName = apiResponse?.FullName;
+			response.Uri = apiResponse?.Uri;
 
 			return response;
 		}

@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 {
-	public partial class OpenSolutionRequest
+	public class OpenSolutionRequest
 	{
 		public string Solution { get; set; }
 		public string SolutionFilter { get; set; }

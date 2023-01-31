@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi
 {
-	public partial class CheckOutSingleFileResponse
+	public class CheckOutSingleFileResponse
 	{
 		public bool Success { get; set; }
 	}

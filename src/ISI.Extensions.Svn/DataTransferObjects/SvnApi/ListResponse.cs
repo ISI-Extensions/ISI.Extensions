@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
-	public partial class ListResponse
+	public class ListResponse
 	{
 		public string[] FileNames { get; set; }
 	}

@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 {
-	public partial class AddIssueWorklogRequest : AbstractRequest
+	public class AddIssueWorklogRequest : AbstractRequest
 	{
 		public string IssueIdOrKey { get; set; }
 		public DateTime StartedDateTime { get; set; }

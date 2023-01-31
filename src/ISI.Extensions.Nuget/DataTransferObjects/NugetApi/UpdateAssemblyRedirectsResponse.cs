@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public partial class UpdateAssemblyRedirectsResponse
+	public class UpdateAssemblyRedirectsResponse
 	{
 		public string AppConfigXml { get; set; }
 	}

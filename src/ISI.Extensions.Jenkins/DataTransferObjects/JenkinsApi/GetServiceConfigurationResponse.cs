@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi
 {
-	public partial class GetServiceConfigurationResponse
+	public class GetServiceConfigurationResponse
 	{
 		public string ServiceConfigurationYaml { get; set; }
 	}

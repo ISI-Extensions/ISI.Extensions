@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.ProjectApi
 {
-  public partial class GetProjectDetailsRequest
+  public class GetProjectDetailsRequest
   {
 	public string Project { get; set; }
   }

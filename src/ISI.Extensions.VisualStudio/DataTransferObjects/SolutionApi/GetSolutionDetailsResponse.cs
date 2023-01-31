@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 {
-	public partial class GetSolutionDetailsResponse
+	public class GetSolutionDetailsResponse
 	{
 		public SolutionDetails SolutionDetails { get; set; }
 	}

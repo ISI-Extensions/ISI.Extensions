@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.GoDaddy.DataTransferObjects.DomainsApi
 {
-	public partial class GetDnsRecordsResponse : AbstractResponse
+	public class GetDnsRecordsResponse : AbstractResponse
 	{
 		public ISI.Extensions.Dns.DnsRecord[] DnsRecords { get; set; }
 	}

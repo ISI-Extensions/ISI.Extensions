@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public partial class RestoreNugetPackagesRequest
+	public class RestoreNugetPackagesRequest
 	{
 		public string Solution { get; set; }
 		public string PackagesConfigFileName { get; set; }

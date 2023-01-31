@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
-	public partial class GetPropertiesResponse
+	public class GetPropertiesResponse
 	{
 		public IEnumerable<(string Path, IEnumerable<KeyValuePair<string, string>> Properties)> Properties { get; set; }
 	}

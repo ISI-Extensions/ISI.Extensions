@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeGenerationApi
 {
-	public partial class ResetAssemblyVersionFilesResponse
+	public class ResetAssemblyVersionFilesResponse
 	{
 	}
 }

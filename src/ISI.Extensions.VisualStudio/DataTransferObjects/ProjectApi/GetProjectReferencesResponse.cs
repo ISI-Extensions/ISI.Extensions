@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.ProjectApi
 {
-	public partial class GetProjectReferencesResponse
+	public class GetProjectReferencesResponse
 	{
 		public IEnumerable<ProjectReference> ProjectReferences { get; set; }
 	}

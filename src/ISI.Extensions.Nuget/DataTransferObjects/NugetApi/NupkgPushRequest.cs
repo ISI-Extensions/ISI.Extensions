@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public partial class NupkgPushRequest
+	public class NupkgPushRequest
 	{
 		public IEnumerable<string> NupkgFullNames { get; set; }
 

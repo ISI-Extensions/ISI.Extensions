@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.VSExtensionsApi
 {
-	public partial class UploadExtensionRequest
+	public class UploadExtensionRequest
 	{
 		public string RepositoryUrl { get; set; }
 		public string AuthenticationToken { get; set; }

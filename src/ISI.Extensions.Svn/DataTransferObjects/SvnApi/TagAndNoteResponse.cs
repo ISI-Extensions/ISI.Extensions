@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
-	public partial class TagAndNoteResponse
+	public class TagAndNoteResponse
 	{
 	}
 }

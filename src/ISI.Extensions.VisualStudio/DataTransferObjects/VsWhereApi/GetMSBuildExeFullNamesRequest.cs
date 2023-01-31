@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.VsWhereApi
 {
-	public partial class GetMSBuildExeFullNamesRequest
+	public class GetMSBuildExeFullNamesRequest
 	{
 
 		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }

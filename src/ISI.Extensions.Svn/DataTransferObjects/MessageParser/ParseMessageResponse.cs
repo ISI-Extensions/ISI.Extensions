@@ -19,7 +19,7 @@ using System.Text;
 
 namespace ISI.Extensions.Svn.DataTransferObjects.MessageParser
 {
-	public partial class ParseMessageResponse
+	public class ParseMessageResponse
 	{
 		public ParsedMessage[] ParsedMessages { get; set; }
 	}

@@ -25,7 +25,7 @@ namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 	public delegate bool UseLocalSourceTryGetLocalProject(string projectName, out string projectFullName);
 	public delegate void UseLocalSourceAddLocalProjectToSolution(string projectFullName);
 
-	public partial class UseLocalSourceRequest
+	public class UseLocalSourceRequest
 	{
 		public string ProjectFullName { get; set; }
 		public UseLocalSourceTryGetLocalProject TryGetLocalProject { get; set; }

@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi
 {
-	public partial class PackageComponentsResponse
+	public class PackageComponentsResponse
 	{
 	}
 }

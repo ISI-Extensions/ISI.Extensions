@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi
 {
-	public partial class DeleteRequest
+	public class DeleteRequest
 	{
 		public IEnumerable<string> FullNames { get; set; }
 

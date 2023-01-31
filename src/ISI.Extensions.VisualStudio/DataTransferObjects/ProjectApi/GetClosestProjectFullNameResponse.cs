@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.ProjectApi
 {
-	public partial class GetClosestProjectFullNameResponse
+	public class GetClosestProjectFullNameResponse
 	{
 		public string ClosestProjectFullName { get; set; }
 	}

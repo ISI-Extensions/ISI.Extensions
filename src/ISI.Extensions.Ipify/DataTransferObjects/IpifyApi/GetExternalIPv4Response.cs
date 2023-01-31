@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Ipify.DataTransferObjects.IpifyApi
 {
-	public partial class GetExternalIPv4Response
+	public class GetExternalIPv4Response
 	{
 		public string IpAddress { get; set; }
 	}

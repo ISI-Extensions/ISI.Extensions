@@ -30,20 +30,43 @@ namespace ISI.Extensions.Git
 		{
 			var response = new DTOs.GetRootDirectoryResponse();
 
-			var arguments = new List<string>();
-
-			arguments.Add("rev-parse");
-			arguments.Add("--show-toplevel");
-
-			var gitResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{
-				Logger = new NullLogger(),
-				ProcessExeFullName = "git",
-				Arguments = arguments.ToArray(),
-				WorkingDirectory = System.IO.Path.GetFullPath(request.FullName),
-			});
+				var arguments = new List<string>();
 
-			response.FullName = (gitResponse.Output ?? string.Empty).Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+				arguments.Add("rev-parse");
+				arguments.Add("--show-toplevel");
+
+				var gitResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				{
+					Logger = new NullLogger(),
+					ProcessExeFullName = "git",
+					Arguments = arguments.ToArray(),
+					WorkingDirectory = System.IO.Path.GetFullPath(request.FullName),
+				});
+
+				response.FullName = (gitResponse.Output ?? string.Empty).Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+			}
+
+			{
+				var arguments = new List<string>();
+
+				arguments.Add("--get remote.origin.url");
+
+				var gitResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				{
+					Logger = new NullLogger(),
+					ProcessExeFullName = "git",
+					Arguments = arguments.ToArray(),
+					WorkingDirectory = System.IO.Path.GetFullPath(request.FullName),
+				});
+
+				var url = (gitResponse.Output ?? string.Empty).Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+
+				if (!string.IsNullOrWhiteSpace(url))
+				{
+					response.Uri = new(url);
+				}
+			}
 
 			return response;
 		}

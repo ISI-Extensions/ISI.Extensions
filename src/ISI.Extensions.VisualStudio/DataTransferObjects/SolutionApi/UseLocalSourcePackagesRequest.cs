@@ -25,7 +25,7 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 	public delegate void UseLocalSourcePackagesProgress(string project, int index, int count);
 	public delegate void UseLocalSourcePackagesAddProject(string projectFullName);
 
-	public partial class UseLocalSourcePackagesRequest
+	public class UseLocalSourcePackagesRequest
 	{
 		public string SolutionItem { get; set; }
 		public UseLocalSourcePackagesProgress Progress { get; set; }

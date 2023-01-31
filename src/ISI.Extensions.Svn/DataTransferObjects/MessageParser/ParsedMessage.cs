@@ -19,7 +19,7 @@ using System.Text;
 
 namespace ISI.Extensions.Svn.DataTransferObjects.MessageParser
 {
-	public partial class ParsedMessage
+	public class ParsedMessage
 	{
 		public TicketAction? Action { get; set; }
 		public string[] TracTicketNumbers { get; set; }

@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi
 {
-	public partial class ExitRequest : AbstractRequest
+	public class ExitRequest : AbstractRequest
 	{
 		public bool WaitForJobsToFinish { get; set; }
 	}

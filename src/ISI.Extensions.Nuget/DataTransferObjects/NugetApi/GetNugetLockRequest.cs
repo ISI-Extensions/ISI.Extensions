@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public partial class GetNugetLockRequest
+	public class GetNugetLockRequest
 	{
 		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}

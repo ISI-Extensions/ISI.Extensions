@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Security.ActiveDirectory.DataTransferObjects.ActiveDirectoryApi
 {
-	public partial class AuthenticateUserRequest
+	public class AuthenticateUserRequest
 	{
 		public string DomainName { get; set; }
 		public string UserName { get; set; }

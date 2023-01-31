@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Cake.DataTransferObjects.CakeApi
 {
-	public partial class IsBuildScriptFileResponse
+	public class IsBuildScriptFileResponse
 	{
 		public bool IsBuildFile { get; set; }
 	}

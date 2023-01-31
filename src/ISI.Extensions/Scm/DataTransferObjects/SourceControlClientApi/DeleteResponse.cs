@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi
 {
-	public partial class DeleteResponse
+	public class DeleteResponse
 	{
 		public bool Success { get; set; }
 	}

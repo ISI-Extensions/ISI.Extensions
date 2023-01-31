@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi
 {
-	public partial class PackageComponentsRequest
+	public class PackageComponentsRequest
 	{
 		public string Configuration { get; set; }
 		public MSBuildVersion BuildVersion { get; set; } = MSBuildVersion.Automatic;

@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public partial class GetNugetExeFullNameResponse
+	public class GetNugetExeFullNameResponse
 	{
 		public string NugetExeFullName { get; set; }
 	}

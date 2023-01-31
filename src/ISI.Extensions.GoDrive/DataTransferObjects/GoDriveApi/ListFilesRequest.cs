@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.GoDrive.DataTransferObjects.GoDriveApi
 {
-	public partial class ListFilesRequest
+	public class ListFilesRequest
 	{
 		public string DirectoryUrl { get; set; }
 		public bool Recursive { get; set; }

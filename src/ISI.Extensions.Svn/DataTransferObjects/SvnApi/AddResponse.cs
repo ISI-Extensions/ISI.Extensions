@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
-	public partial class AddResponse
+	public class AddResponse
 	{
 		public bool Success { get; set; }
 	}

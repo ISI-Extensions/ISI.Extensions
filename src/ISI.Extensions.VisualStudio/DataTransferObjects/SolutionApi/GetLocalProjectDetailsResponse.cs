@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 {
-	public partial class GetLocalProjectDetailsResponse
+	public class GetLocalProjectDetailsResponse
 	{
 		public ProjectDetails[] ProjectDetailsSet { get; set; }
 	}

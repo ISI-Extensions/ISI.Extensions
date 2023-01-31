@@ -28,6 +28,8 @@ namespace ISI.Extensions.Tests
 	[TestFixture]
 	public class SourceControlClientApi_Tests
 	{
+		protected ISI.Extensions.Scm.ISourceControlClientApi SourceControlClientApi { get; set; }
+
 		[OneTimeSetUp]
 		public void OneTimeSetup()
 		{
@@ -60,6 +62,19 @@ namespace ISI.Extensions.Tests
 			var serviceProvider = services.BuildServiceProvider<ISI.Extensions.DependencyInjection.Iunq.ServiceProviderBuilder>(configuration);
 
 			serviceProvider.SetServiceLocator();
+
+			SourceControlClientApi = serviceProvider.GetService<ISI.Extensions.Scm.ISourceControlClientApi>();
+		}
+
+		[Test]
+		public void GetRootDirectory_Test()
+		{
+			var workingCopy = @"F:/ISI/Internal Projects/ISI.ServiceExample.ServiceApplication/src";
+
+			var getRootDirectoryResponse = SourceControlClientApi.GetRootDirectory(new ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi.GetRootDirectoryRequest()
+			{
+				FullName = workingCopy,
+			});
 		}
 	}
 }

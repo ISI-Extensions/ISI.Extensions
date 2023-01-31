@@ -24,6 +24,7 @@ namespace ISI.Extensions.Git.DataTransferObjects.GitApi
 	public class GetRootDirectoryResponse
 	{
 		public string FullName { get; set; }
-		public Uri Uri { get; set; }
+		public Uri SolutionUri { get; set; }
+		public Uri SourceControlUri { get; set; }
 	}
 }

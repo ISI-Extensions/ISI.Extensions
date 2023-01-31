@@ -25,6 +25,7 @@ namespace ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi
 	{
 		public Guid SourceControlTypeUuid { get; set; }
 		public string FullName { get; set; }
-		public Uri Uri { get; set; }
+		public Uri SolutionUri { get; set; }
+		public Uri SourceControlUri { get; set; }
 	}
 }

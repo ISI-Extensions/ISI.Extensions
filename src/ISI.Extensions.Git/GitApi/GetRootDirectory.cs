@@ -66,9 +66,11 @@ namespace ISI.Extensions.Git
 
 				if (!string.IsNullOrWhiteSpace(url))
 				{
+					response.SolutionUri = new(url);
+
 					url = url.TrimEnd(".git", StringComparison.InvariantCultureIgnoreCase);
 
-					response.Uri = new(url);
+					response.SourceControlUri = new(url);
 				}
 			}
 

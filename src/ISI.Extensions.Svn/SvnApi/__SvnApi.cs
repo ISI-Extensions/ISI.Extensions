@@ -77,7 +77,8 @@ namespace ISI.Extensions.Svn
 			}).Infos.FirstOrDefault();
 
 			response.FullName = svnResponse?.WorkingCopyRootPath ?? string.Empty;
-			response.Uri = svnResponse?.Uri;
+			response.SolutionUri = svnResponse?.Uri;
+			response.SourceControlUri = svnResponse?.Uri;
 
 			return response;
 		}

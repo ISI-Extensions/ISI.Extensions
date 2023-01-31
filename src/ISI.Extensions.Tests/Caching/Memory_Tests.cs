@@ -184,7 +184,7 @@ namespace ISI.Extensions.Tests.Caching
 					TestObjectUuid = testObjectUuid,
 					Description = string.Format("Description for {0:D}", testObjectUuid),
 					CacheKey = getCacheKey(testObjectUuid),
-					CacheAbsoluteDateTimeExpiration = DateTime.UtcNow.AddMinutes(5),
+					CacheAbsoluteDateTimeExpirationUtc = DateTime.UtcNow.AddMinutes(5),
 				});
 			}
 
@@ -207,7 +207,7 @@ namespace ISI.Extensions.Tests.Caching
 			public string Description { get; set; }
 
 			public string CacheKey { get; set; }
-			public DateTime CacheAbsoluteDateTimeExpiration { get; set; }
+			public DateTime CacheAbsoluteDateTimeExpirationUtc { get; set; }
 		}
 
 

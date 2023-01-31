@@ -27,7 +27,7 @@ namespace ISI.Extensions.Caching.Extensions
 		public static THasSettableCacheAbsoluteDateTimeExpiration SetCacheAbsoluteDateTimeExpiration<THasSettableCacheAbsoluteDateTimeExpiration>(this THasSettableCacheAbsoluteDateTimeExpiration hasSettableCacheAbsoluteDateTimeExpiration, DateTime absoluteDateTimeExpiration)
 			where THasSettableCacheAbsoluteDateTimeExpiration : ISI.Extensions.Caching.IHasSettableCacheAbsoluteDateTimeExpiration
 		{
-			hasSettableCacheAbsoluteDateTimeExpiration.CacheAbsoluteDateTimeExpiration = absoluteDateTimeExpiration;
+			hasSettableCacheAbsoluteDateTimeExpiration.CacheAbsoluteDateTimeExpirationUtc = absoluteDateTimeExpiration;
 
 			return hasSettableCacheAbsoluteDateTimeExpiration;
 		}

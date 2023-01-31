@@ -35,8 +35,8 @@ namespace ISI.Extensions.Security
 		Guid ISI.Extensions.Caching.IHasCacheKeyInstanceUuid.CacheKeyInstanceUuid => _cacheKeyInstanceUuid;
 		Guid ISI.Extensions.Caching.IHasSettableCacheKeyInstanceUuid.CacheKeyInstanceUuid {	set => _cacheKeyInstanceUuid = value; }
 
-		private DateTime _cacheAbsoluteDateTimeExpiration;
-		DateTime ISI.Extensions.Caching.IHasCacheAbsoluteDateTimeExpiration.CacheAbsoluteDateTimeExpiration => _cacheAbsoluteDateTimeExpiration;
-		DateTime ISI.Extensions.Caching.IHasSettableCacheAbsoluteDateTimeExpiration.CacheAbsoluteDateTimeExpiration { set => _cacheAbsoluteDateTimeExpiration = value; }
+		private DateTime _cacheAbsoluteDateTimeExpirationUtc;
+		DateTime ISI.Extensions.Caching.IHasCacheAbsoluteDateTimeExpiration.CacheAbsoluteDateTimeExpirationUtc => _cacheAbsoluteDateTimeExpirationUtc;
+		DateTime ISI.Extensions.Caching.IHasSettableCacheAbsoluteDateTimeExpiration.CacheAbsoluteDateTimeExpirationUtc { set => _cacheAbsoluteDateTimeExpirationUtc = value; }
 	}
 }

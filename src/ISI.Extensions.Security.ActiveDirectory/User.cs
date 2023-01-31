@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ISI.Extensions.Security
+namespace ISI.Extensions.Security.ActiveDirectory
 {
 	public class User
 	{

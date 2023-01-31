@@ -28,7 +28,7 @@ namespace ISI.Extensions.Caching.Extensions
 			where THasSettableCacheKeyWithAbsoluteTimeExpiration : ISI.Extensions.Caching.IHasSettableCacheKeyWithAbsoluteTimeExpiration
 		{
 			hasSettableCacheKeyWithAbsoluteTimeExpiration.CacheKey = cacheKey;
-			hasSettableCacheKeyWithAbsoluteTimeExpiration.CacheAbsoluteDateTimeExpiration = absoluteDateTimeExpiration;
+			hasSettableCacheKeyWithAbsoluteTimeExpiration.CacheAbsoluteDateTimeExpirationUtc = absoluteDateTimeExpiration;
 
 			return hasSettableCacheKeyWithAbsoluteTimeExpiration;
 		}

@@ -65,7 +65,7 @@ namespace ISI.Extensions.Caching
 			{
 				if (itemToCache is IHasCacheAbsoluteDateTimeExpiration absoluteTimeExpiration)
 				{
-					return GetAbsoluteTimeExpirationCacheEntryExpirationPolicy(absoluteTimeExpiration.CacheAbsoluteDateTimeExpiration);
+					return GetAbsoluteTimeExpirationCacheEntryExpirationPolicy(absoluteTimeExpiration.CacheAbsoluteDateTimeExpirationUtc);
 				}
 
 				if (itemToCache is IHasCacheSlidingTimeExpiration slidingTimeExpiration)

@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Security
 {
-	public class UserAuthenticationUserNamePassword : UserAuthenticationPassword, IUserAuthentication, ISI.Extensions.Caching.IHasSettableCacheKeyWithInstanceUuidAndAbsoluteTimeExpiration
+	public class UserAuthenticationUserNamePassword : UserAuthenticationPassword, IUserAuthentication
 	{
 		public string UserAuthenticationKey { get; set; }
 
@@ -42,17 +42,5 @@ namespace ISI.Extensions.Security
 
 		public string ModifyUserKey { get; set; }
 		public DateTime ModifyDateTimeUtc { get; set; }
-
-		private string _cacheKey;
-		string ISI.Extensions.Caching.IHasCacheKey.CacheKey => _cacheKey;
-		string ISI.Extensions.Caching.IHasSettableCacheKey.CacheKey { set => _ = value; }
-
-		private Guid _cacheKeyInstanceUuid;
-		Guid ISI.Extensions.Caching.IHasCacheKeyInstanceUuid.CacheKeyInstanceUuid => _cacheKeyInstanceUuid;
-		Guid ISI.Extensions.Caching.IHasSettableCacheKeyInstanceUuid.CacheKeyInstanceUuid {	set => _cacheKeyInstanceUuid = value; }
-
-		private DateTime _cacheAbsoluteDateTimeExpiration;
-		DateTime ISI.Extensions.Caching.IHasCacheAbsoluteDateTimeExpiration.CacheAbsoluteDateTimeExpiration => _cacheAbsoluteDateTimeExpiration;
-		DateTime ISI.Extensions.Caching.IHasSettableCacheAbsoluteDateTimeExpiration.CacheAbsoluteDateTimeExpiration { set => _cacheAbsoluteDateTimeExpiration = value; }
 	}
 }

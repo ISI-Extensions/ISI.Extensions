@@ -22,12 +22,12 @@ namespace ISI.Extensions.Caching
 {
 	public class AbsoluteDateTimeExpirationCacheEntryExpirationPolicy : ICacheEntryExpirationPolicy
 	{
-		protected DateTime? DateTime { get; }
+		protected DateTime? DateTimeUtc { get; }
 		protected TimeSpan? TimeSpan { get; }
 
-		public AbsoluteDateTimeExpirationCacheEntryExpirationPolicy(DateTime dateTime)
+		public AbsoluteDateTimeExpirationCacheEntryExpirationPolicy(DateTime dateTimeUtc)
 		{
-			DateTime = dateTime;
+			DateTimeUtc = dateTimeUtc;
 		}
 
 		public AbsoluteDateTimeExpirationCacheEntryExpirationPolicy(TimeSpan timeSpan)
@@ -37,9 +37,9 @@ namespace ISI.Extensions.Caching
 
 		public void SetCacheEntryExpiration(Microsoft.Extensions.Caching.Memory.ICacheEntry cacheEntry)
 		{
-			if (DateTime.HasValue)
+			if (DateTimeUtc.HasValue)
 			{
-				cacheEntry.SetAbsoluteExpiration(DateTime.Value);
+				cacheEntry.SetAbsoluteExpiration(DateTimeUtc.Value);
 			}
 
 			if (TimeSpan.HasValue)

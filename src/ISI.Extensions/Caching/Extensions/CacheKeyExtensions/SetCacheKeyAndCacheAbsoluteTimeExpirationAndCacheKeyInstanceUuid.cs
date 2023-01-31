@@ -29,7 +29,7 @@ namespace ISI.Extensions.Caching.Extensions
 		{
 			hasCacheKeyWithInstanceUuidAndAbsoluteTimeExpiration.CacheKey = cacheKey;
 			hasCacheKeyWithInstanceUuidAndAbsoluteTimeExpiration.CacheKeyInstanceUuid = cacheKeyInstanceUuid ?? Guid.NewGuid();
-			hasCacheKeyWithInstanceUuidAndAbsoluteTimeExpiration.CacheAbsoluteDateTimeExpiration = absoluteDateTimeExpiration;
+			hasCacheKeyWithInstanceUuidAndAbsoluteTimeExpiration.CacheAbsoluteDateTimeExpirationUtc = absoluteDateTimeExpiration;
 
 			return hasCacheKeyWithInstanceUuidAndAbsoluteTimeExpiration;
 		}

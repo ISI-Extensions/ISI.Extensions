@@ -36,7 +36,7 @@ namespace ISI.Extensions.Caching.Extensions
 
 			if ((source is ISI.Extensions.Caching.IHasCacheAbsoluteDateTimeExpiration sourceHasCacheAbsoluteDateTimeExpiration) && (target is ISI.Extensions.Caching.IHasSettableCacheAbsoluteDateTimeExpiration targetHasSettableCacheAbsoluteDateTimeExpiration))
 			{
-				targetHasSettableCacheAbsoluteDateTimeExpiration.CacheAbsoluteDateTimeExpiration = sourceHasCacheAbsoluteDateTimeExpiration.CacheAbsoluteDateTimeExpiration;
+				targetHasSettableCacheAbsoluteDateTimeExpiration.CacheAbsoluteDateTimeExpirationUtc = sourceHasCacheAbsoluteDateTimeExpiration.CacheAbsoluteDateTimeExpirationUtc;
 			}
 
 			if ((source is ISI.Extensions.Caching.IHasCacheSlidingTimeExpiration sourceHasCacheSlidingTimeExpiration) && (target is ISI.Extensions.Caching.IHasSettableCacheSlidingTimeExpiration targetHasSettableCacheSlidingTimeExpiration))

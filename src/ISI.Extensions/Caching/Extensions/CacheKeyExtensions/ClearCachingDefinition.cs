@@ -31,7 +31,7 @@ namespace ISI.Extensions.Caching.Extensions
 
 			if (hasSettableCacheKey is ISI.Extensions.Caching.IHasSettableCacheAbsoluteDateTimeExpiration hasSettableCacheAbsoluteDateTimeExpiration)
 			{
-				hasSettableCacheAbsoluteDateTimeExpiration.CacheAbsoluteDateTimeExpiration = DateTime.MaxValue;
+				hasSettableCacheAbsoluteDateTimeExpiration.CacheAbsoluteDateTimeExpirationUtc = DateTime.MaxValue;
 			}
 
 			if (hasSettableCacheKey is ISI.Extensions.Caching.IHasSettableCacheSlidingTimeExpiration hasSettableCacheSlidingTimeExpiration)

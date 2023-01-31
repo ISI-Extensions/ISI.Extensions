@@ -29,7 +29,7 @@ namespace ISI.Extensions.Security.ActiveDirectory
 		{
 			var response = new DTOs.GetUsersResponse();
 
-			var users = new List<ISI.Extensions.Security.User>();
+			var users = new List<ISI.Extensions.Security.ActiveDirectory.User>();
 
 			if (string.IsNullOrWhiteSpace(request.DomainName))
 			{

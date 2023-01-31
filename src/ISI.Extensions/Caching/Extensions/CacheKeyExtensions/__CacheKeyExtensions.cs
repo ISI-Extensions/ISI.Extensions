@@ -26,7 +26,7 @@ namespace ISI.Extensions.Caching.Extensions
 	{
 		public static string GetCacheKey(this ISI.Extensions.Caching.IHasCacheKey hasCacheKey) => hasCacheKey.CacheKey;
 		public static Guid GetCacheKeyInstanceUuid(this ISI.Extensions.Caching.IHasCacheKeyInstanceUuid hasCacheKeyInstanceUuid) => hasCacheKeyInstanceUuid.CacheKeyInstanceUuid;
-		public static DateTime GetCacheAbsoluteTimeExpiration(this ISI.Extensions.Caching.IHasCacheAbsoluteDateTimeExpiration hasCacheAbsoluteDateTimeExpiration) => hasCacheAbsoluteDateTimeExpiration.CacheAbsoluteDateTimeExpiration;
+		public static DateTime GetCacheAbsoluteTimeExpiration(this ISI.Extensions.Caching.IHasCacheAbsoluteDateTimeExpiration hasCacheAbsoluteDateTimeExpiration) => hasCacheAbsoluteDateTimeExpiration.CacheAbsoluteDateTimeExpirationUtc;
 		public static TimeSpan GetCacheSlidingTimeExpiration(this ISI.Extensions.Caching.IHasCacheSlidingTimeExpiration hasCacheSlidingTimeExpiration) => hasCacheSlidingTimeExpiration.CacheSlidingTimeExpiration;
 		public static int GetCacheTimeToLiveInSeconds(this ISI.Extensions.Caching.IHasCacheTimeToLive hasCacheTimeToLive) => hasCacheTimeToLive.CacheTimeToLiveInSeconds;
 	}

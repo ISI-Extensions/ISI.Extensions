@@ -124,6 +124,8 @@ namespace ISI.Extensions.Repository.SqlServer
 
 						connection.Dispose();
 						connection = null;
+
+						success = true;
 					}
 				}
 			}

@@ -31,5 +31,13 @@ namespace ISI.Extensions.Caching.Extensions
 
 			return hasSettableCacheKey;
 		}
+
+		public static THasSettableCacheKey SetCacheKey<THasSettableCacheKey>(this THasSettableCacheKey hasSettableCacheKey, ISI.Extensions.Caching.IHasCacheKey hasCacheKey)
+			where THasSettableCacheKey : ISI.Extensions.Caching.IHasSettableCacheKey
+		{
+			hasSettableCacheKey.CacheKey = hasCacheKey.CacheKey;
+
+			return hasSettableCacheKey;
+		}
 	}
 }

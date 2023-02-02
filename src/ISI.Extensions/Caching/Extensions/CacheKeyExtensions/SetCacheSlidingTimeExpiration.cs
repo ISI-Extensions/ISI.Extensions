@@ -31,5 +31,13 @@ namespace ISI.Extensions.Caching.Extensions
 
 			return hasSettableCacheSlidingTimeExpiration;
 		}
+
+		public static THasSettableCacheSlidingTimeExpiration SetCacheSlidingTimeExpiration<THasSettableCacheSlidingTimeExpiration>(this THasSettableCacheSlidingTimeExpiration hasSettableCacheSlidingTimeExpiration, ISI.Extensions.Caching.IHasCacheSlidingTimeExpiration hasCacheSlidingTimeExpiration)
+			where THasSettableCacheSlidingTimeExpiration : ISI.Extensions.Caching.IHasSettableCacheSlidingTimeExpiration
+		{
+			hasSettableCacheSlidingTimeExpiration.CacheSlidingTimeExpiration = hasCacheSlidingTimeExpiration.CacheSlidingTimeExpiration;
+
+			return hasSettableCacheSlidingTimeExpiration;
+		}
 	}
 }

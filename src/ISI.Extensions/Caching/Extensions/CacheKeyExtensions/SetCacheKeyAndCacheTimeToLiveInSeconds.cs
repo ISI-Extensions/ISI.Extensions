@@ -32,5 +32,14 @@ namespace ISI.Extensions.Caching.Extensions
 
 			return hasSettableCacheKeyWithTimeToLive;
 		}
+
+		public static THasSettableCacheKeyWithTimeToLive SetCacheKeyAndCacheTimeToLiveInSeconds<THasSettableCacheKeyWithTimeToLive>(this THasSettableCacheKeyWithTimeToLive hasSettableCacheKeyWithTimeToLive, ISI.Extensions.Caching.IHasCacheKeyWithTimeToLive hasCacheKeyWithTimeToLive)
+			where THasSettableCacheKeyWithTimeToLive : ISI.Extensions.Caching.IHasSettableCacheKeyWithTimeToLive
+		{
+			hasSettableCacheKeyWithTimeToLive.CacheKey = hasCacheKeyWithTimeToLive.CacheKey;
+			hasSettableCacheKeyWithTimeToLive.CacheTimeToLiveInSeconds = hasCacheKeyWithTimeToLive.CacheTimeToLiveInSeconds;
+
+			return hasSettableCacheKeyWithTimeToLive;
+		}
 	}
 }

@@ -24,10 +24,18 @@ namespace ISI.Extensions.Caching.Extensions
 {
 	public static partial class CacheKeyExtensions
 	{
-		public static THasSettableCacheAbsoluteDateTimeExpiration SetCacheAbsoluteDateTimeExpiration<THasSettableCacheAbsoluteDateTimeExpiration>(this THasSettableCacheAbsoluteDateTimeExpiration hasSettableCacheAbsoluteDateTimeExpiration, DateTime absoluteDateTimeExpiration)
+		public static THasSettableCacheAbsoluteDateTimeExpiration SetCacheAbsoluteDateTimeExpiration<THasSettableCacheAbsoluteDateTimeExpiration>(this THasSettableCacheAbsoluteDateTimeExpiration hasSettableCacheAbsoluteDateTimeExpiration, DateTime absoluteDateTimeExpirationUtc)
 			where THasSettableCacheAbsoluteDateTimeExpiration : ISI.Extensions.Caching.IHasSettableCacheAbsoluteDateTimeExpiration
 		{
-			hasSettableCacheAbsoluteDateTimeExpiration.CacheAbsoluteDateTimeExpirationUtc = absoluteDateTimeExpiration;
+			hasSettableCacheAbsoluteDateTimeExpiration.CacheAbsoluteDateTimeExpirationUtc = absoluteDateTimeExpirationUtc;
+
+			return hasSettableCacheAbsoluteDateTimeExpiration;
+		}
+
+		public static THasSettableCacheAbsoluteDateTimeExpiration SetCacheAbsoluteDateTimeExpiration<THasSettableCacheAbsoluteDateTimeExpiration>(this THasSettableCacheAbsoluteDateTimeExpiration hasSettableCacheAbsoluteDateTimeExpiration, ISI.Extensions.Caching.IHasCacheAbsoluteDateTimeExpiration hasCacheAbsoluteDateTimeExpiration)
+			where THasSettableCacheAbsoluteDateTimeExpiration : ISI.Extensions.Caching.IHasSettableCacheAbsoluteDateTimeExpiration
+		{
+			hasSettableCacheAbsoluteDateTimeExpiration.CacheAbsoluteDateTimeExpirationUtc = hasCacheAbsoluteDateTimeExpiration.CacheAbsoluteDateTimeExpirationUtc;
 
 			return hasSettableCacheAbsoluteDateTimeExpiration;
 		}

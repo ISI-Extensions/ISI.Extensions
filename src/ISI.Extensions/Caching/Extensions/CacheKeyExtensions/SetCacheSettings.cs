@@ -24,32 +24,32 @@ namespace ISI.Extensions.Caching.Extensions
 {
 	public static partial class CacheKeyExtensions
 	{
-		public static THasSettableCacheKey SetCacheSettings<THasSettableCacheKey>(this THasSettableCacheKey target, ISI.Extensions.Caching.IHasCacheKey source)
+		public static THasSettableCacheKey SetCacheSettings<THasSettableCacheKey>(this THasSettableCacheKey hasSettableCacheKey, ISI.Extensions.Caching.IHasCacheKey hasCacheKey)
 			where THasSettableCacheKey : ISI.Extensions.Caching.IHasSettableCacheKey
 		{
-			target.CacheKey = source.CacheKey;
+			hasSettableCacheKey.CacheKey = hasCacheKey.CacheKey;
 
-			if ((source is ISI.Extensions.Caching.IHasCacheKeyInstanceUuid sourceHasCacheKeyInstanceUuid) && (target is ISI.Extensions.Caching.IHasSettableCacheKeyInstanceUuid targetHasCacheKeyInstanceUuid))
+			if ((hasCacheKey is ISI.Extensions.Caching.IHasCacheKeyInstanceUuid sourceHasCacheKeyInstanceUuid) && (hasSettableCacheKey is ISI.Extensions.Caching.IHasSettableCacheKeyInstanceUuid targetHasCacheKeyInstanceUuid))
 			{
 				targetHasCacheKeyInstanceUuid.CacheKeyInstanceUuid = sourceHasCacheKeyInstanceUuid.CacheKeyInstanceUuid;
 			}
 
-			if ((source is ISI.Extensions.Caching.IHasCacheAbsoluteDateTimeExpiration sourceHasCacheAbsoluteDateTimeExpiration) && (target is ISI.Extensions.Caching.IHasSettableCacheAbsoluteDateTimeExpiration targetHasSettableCacheAbsoluteDateTimeExpiration))
+			if ((hasCacheKey is ISI.Extensions.Caching.IHasCacheAbsoluteDateTimeExpiration sourceHasCacheAbsoluteDateTimeExpiration) && (hasSettableCacheKey is ISI.Extensions.Caching.IHasSettableCacheAbsoluteDateTimeExpiration targetHasSettableCacheAbsoluteDateTimeExpiration))
 			{
 				targetHasSettableCacheAbsoluteDateTimeExpiration.CacheAbsoluteDateTimeExpirationUtc = sourceHasCacheAbsoluteDateTimeExpiration.CacheAbsoluteDateTimeExpirationUtc;
 			}
 
-			if ((source is ISI.Extensions.Caching.IHasCacheSlidingTimeExpiration sourceHasCacheSlidingTimeExpiration) && (target is ISI.Extensions.Caching.IHasSettableCacheSlidingTimeExpiration targetHasSettableCacheSlidingTimeExpiration))
+			if ((hasCacheKey is ISI.Extensions.Caching.IHasCacheSlidingTimeExpiration sourceHasCacheSlidingTimeExpiration) && (hasSettableCacheKey is ISI.Extensions.Caching.IHasSettableCacheSlidingTimeExpiration targetHasSettableCacheSlidingTimeExpiration))
 			{
 				targetHasSettableCacheSlidingTimeExpiration.CacheSlidingTimeExpiration = sourceHasCacheSlidingTimeExpiration.CacheSlidingTimeExpiration;
 			}
 
-			if ((source is ISI.Extensions.Caching.IHasCacheTimeToLive sourceHasCacheTimeToLive) && (target is ISI.Extensions.Caching.IHasSettableCacheTimeToLive targetHasSettableCacheTimeToLive))
+			if ((hasCacheKey is ISI.Extensions.Caching.IHasCacheTimeToLive sourceHasCacheTimeToLive) && (hasSettableCacheKey is ISI.Extensions.Caching.IHasSettableCacheTimeToLive targetHasSettableCacheTimeToLive))
 			{
 				targetHasSettableCacheTimeToLive.CacheTimeToLiveInSeconds = sourceHasCacheTimeToLive.CacheTimeToLiveInSeconds;
 			}
 
-			return target;
+			return hasSettableCacheKey;
 		}
 	}
 }

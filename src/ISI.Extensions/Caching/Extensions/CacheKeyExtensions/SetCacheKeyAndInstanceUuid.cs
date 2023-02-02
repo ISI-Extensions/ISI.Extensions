@@ -32,5 +32,14 @@ namespace ISI.Extensions.Caching.Extensions
 
 			return hasSettableCacheKeyWithInstanceUuid;
 		}
+
+		public static THasSettableCacheKeyWithInstanceUuid SetCacheKeyAndInstanceUuid<THasSettableCacheKeyWithInstanceUuid>(this THasSettableCacheKeyWithInstanceUuid hasSettableCacheKeyWithInstanceUuid, ISI.Extensions.Caching.IHasCacheKeyWithInstanceUuid hasCacheKeyWithInstanceUuid)
+			where THasSettableCacheKeyWithInstanceUuid : ISI.Extensions.Caching.IHasSettableCacheKeyWithInstanceUuid
+		{
+			hasSettableCacheKeyWithInstanceUuid.CacheKey = hasCacheKeyWithInstanceUuid.CacheKey;
+			hasSettableCacheKeyWithInstanceUuid.CacheKeyInstanceUuid = hasCacheKeyWithInstanceUuid.CacheKeyInstanceUuid;
+
+			return hasSettableCacheKeyWithInstanceUuid;
+		}
 	}
 }

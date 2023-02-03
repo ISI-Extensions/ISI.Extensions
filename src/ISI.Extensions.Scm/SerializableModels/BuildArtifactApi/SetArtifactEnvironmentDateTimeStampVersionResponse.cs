@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,63 +15,18 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Scm
+namespace ISI.Extensions.Scm.SerializableModels.BuildArtifactApi
 {
-	public class DateTimeStampVersion
+	[DataContract]
+	public class SetArtifactEnvironmentDateTimeStampVersionResponse
 	{
-		public string DateTimeStamp { get; set; }
-		public Version Version { get; set; }
-
-		public DateTimeStampVersion()
-		{
-
-		}
-		public DateTimeStampVersion(string dateTimeStampVersion)
-		{
-			Value = dateTimeStampVersion;
-		}
-		public DateTimeStampVersion(string dateTimeStamp, Version version)
-		{
-			DateTimeStamp = dateTimeStamp;
-			Version = version;
-		}
-		public DateTimeStampVersion(string dateTimeStamp, string version)
-		{
-			DateTimeStamp = dateTimeStamp;
-			Version = new(version);
-		}
-
-		public string Value
-		{
-			get => string.Format("{0}|{1}", DateTimeStamp, Version ?? new Version());
-			set
-			{
-				if (string.IsNullOrWhiteSpace(value))
-				{
-					DateTimeStamp = string.Empty;
-					Version = null;
-				}
-				else if (value.IndexOf("(") >= 0)
-				{
-					var pieces = string.Format("{0}(((-(-", value).Split(new[] { '(', ')', ' ', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries, p => p.Trim('-'));
-					DateTimeStamp = pieces[1];
-					Version = string.IsNullOrWhiteSpace(pieces[0]) ? null : new Version(pieces[0]);
-				}
-				else
-				{
-					var pieces = string.Format("{0}||||-|-", value).Split(new[] { '|', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries, p => p.Trim('-'));
-					DateTimeStamp = pieces[0];
-					Version = string.IsNullOrWhiteSpace(pieces[1]) ? null : new Version(pieces[1]);
-				}
-			}
-		}
-
-		public string Formatted()
-		{
-			return string.Format("{0} ({1})", Version, DateTimeStamp);
-		}
+		[DataMember(Name = "status", EmitDefaultValue = false)]
+		public string Status { get; set; }
 	}
 }

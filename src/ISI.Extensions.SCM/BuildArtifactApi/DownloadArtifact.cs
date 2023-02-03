@@ -19,8 +19,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Scm.DataTransferObjects.BuildArtifactApi;
+using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.BuildArtifactApi;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Scm
 {
@@ -28,14 +29,26 @@ namespace ISI.Extensions.Scm
 	{
 		public DTOs.DownloadArtifactResponse DownloadArtifact(DTOs.DownloadArtifactRequest request)
 		{
+			Logger.LogInformation(string.Format("DownloadArtifact, BuildArtifactManagementUrl: {0}", request.BuildArtifactManagementUrl));
+
+			var endPointVersion = GetEndpointVersion(request.BuildArtifactManagementUrl);
+
+			if (endPointVersion >= 4)
+			{
+				return DownloadArtifactV4(request);
+			}
+
+			return DownloadArtifactV1(request);
+		}
+
+		private DTOs.DownloadArtifactResponse DownloadArtifactV1(DTOs.DownloadArtifactRequest request)
+		{
 			var response = new DTOs.DownloadArtifactResponse();
 
 			var buildArtifactManagementUri = new UriBuilder(request.BuildArtifactManagementUrl);
 			buildArtifactManagementUri.AddDirectoryToPath("build-artifacts/download-artifact");
 			buildArtifactManagementUri.AddQueryStringParameter("artifactName", request.ArtifactName);
 			buildArtifactManagementUri.AddQueryStringParameter("dateTimeStamp", request.DateTimeStamp);
-
-			Logger.LogInformation(string.Format("DownloadArtifact, BuildArtifactManagementUrl: {0}", buildArtifactManagementUri.Uri));
 
 			buildArtifactManagementUri.AddQueryStringParameter("authenticationToken", request.AuthenticationToken);
 
@@ -49,5 +62,26 @@ namespace ISI.Extensions.Scm
 
 			return response;
 		}
+
+		private DTOs.DownloadArtifactResponse DownloadArtifactV4(DTOs.DownloadArtifactRequest request)
+		{
+			var response = new DTOs.DownloadArtifactResponse();
+
+			var buildArtifactManagementUri = new UriBuilder(request.BuildArtifactManagementUrl);
+			buildArtifactManagementUri.AddDirectoryToPath("api/v4/download-artifact");
+			buildArtifactManagementUri.AddQueryStringParameter("artifactName", request.ArtifactName);
+			buildArtifactManagementUri.AddQueryStringParameter("dateTimeStamp", request.DateTimeStamp);
+
+			using(var downloadFileResponse = ISI.Extensions.WebClient.Download.DownloadFile<ISI.Extensions.Stream.TempFileStream>(buildArtifactManagementUri.Uri, GetHeaders(request.AuthenticationToken), 1427))// any larger will cause an SSL request to fail
+			{
+				using (var stream = System.IO.File.OpenWrite(request.TargetFileName))
+				{
+					downloadFileResponse.Stream.CopyTo(stream);
+				}
+			}
+
+			return response;
+		}
+
 	}
 }

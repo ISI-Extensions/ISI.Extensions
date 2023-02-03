@@ -20,6 +20,8 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using DTOs = ISI.Extensions.Scm.DataTransferObjects.BuildArtifactApi;
+using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.BuildArtifactApi;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Scm
 {

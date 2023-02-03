@@ -19,8 +19,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Scm.DataTransferObjects.BuildArtifactApi;
+using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.BuildArtifactApi;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Scm
 {
@@ -28,13 +29,53 @@ namespace ISI.Extensions.Scm
 	{
 		public DTOs.GetArtifactDateTimeStampResponse GetArtifactDateTimeStamp(DTOs.GetArtifactDateTimeStampRequest request)
 		{
-			var response = new DTOs.GetArtifactDateTimeStampResponse();
-
 			Logger.LogInformation(string.Format("GetArtifactDateTimeStamp, BuildArtifactManagementUrl: {0}", request.BuildArtifactManagementUrl));
+
+			var endPointVersion = GetEndpointVersion(request.BuildArtifactManagementUrl);
+
+			if (endPointVersion >= 4)
+			{
+				return GetArtifactDateTimeStampV4(request);
+			}
+
+			return GetArtifactDateTimeStampV1(request);
+		}
+		
+		private DTOs.GetArtifactDateTimeStampResponse GetArtifactDateTimeStampV1(DTOs.GetArtifactDateTimeStampRequest request)
+		{
+			var response = new DTOs.GetArtifactDateTimeStampResponse();
 
 			using (var remoteManagementClient = ISI.Extensions.Scm.ServiceReferences.Scm.RemoteManagementClient.GetClient(request.BuildArtifactManagementUrl))
 			{
 				response.ArtifactDateTimeStamp = remoteManagementClient.GetArtifactDateTimeStampAsync(request.AuthenticationToken, request.DateTimeStamp).GetAwaiter().GetResult();
+			}
+
+			return response;
+		}
+
+		private DTOs.GetArtifactDateTimeStampResponse GetArtifactDateTimeStampV4(DTOs.GetArtifactDateTimeStampRequest request)
+		{
+			var response = new DTOs.GetArtifactDateTimeStampResponse();
+
+			var uri = new UriBuilder(request.BuildArtifactManagementUrl);
+			uri.SetPathAndQueryString("api/v4/get-artifact-date-time-stamp");
+
+			var restRequest = new SerializableDTOs.GetArtifactDateTimeStampRequest()
+			{
+				DateTimeStamp = request.DateTimeStamp,
+			};
+
+#if DEBUG
+			var xxx = ISI.Extensions.WebClient.Rest.GetEventHandler();
+#endif
+
+			var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.GetArtifactDateTimeStampRequest, SerializableDTOs.GetArtifactDateTimeStampResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request.AuthenticationToken), restRequest, false);
+
+			response.ArtifactDateTimeStamp = restResponse?.Response?.ArtifactDateTimeStamp;
+
+			if (restResponse?.Error?.Exception != null)
+			{
+				Logger.LogError(restResponse.Error.Exception, "Error");
 			}
 
 			return response;

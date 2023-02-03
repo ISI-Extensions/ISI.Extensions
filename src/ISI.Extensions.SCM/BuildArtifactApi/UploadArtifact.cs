@@ -12,15 +12,16 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Scm.DataTransferObjects.BuildArtifactApi;
+using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.BuildArtifactApi;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Scm
 {
@@ -28,19 +29,32 @@ namespace ISI.Extensions.Scm
 	{
 		public DTOs.UploadArtifactResponse UploadArtifact(DTOs.UploadArtifactRequest request)
 		{
+			Logger.LogInformation(string.Format("UploadArtifact, BuildArtifactManagementUrl: {0}", request.BuildArtifactManagementUrl));
+			Logger.LogInformation(string.Format("UploadArtifact, SourceFileName: {0}", request.SourceFileName));
+
+			var endPointVersion = GetEndpointVersion(request.BuildArtifactManagementUrl);
+
+			if (endPointVersion >= 4)
+			{
+				return UploadArtifactV4(request);
+			}
+
+			return UploadArtifactV1(request);
+		}
+
+		private DTOs.UploadArtifactResponse UploadArtifactV1(DTOs.UploadArtifactRequest request)
+		{
 			var response = new DTOs.UploadArtifactResponse();
 
 			var buildArtifactManagementUri = new UriBuilder(request.BuildArtifactManagementUrl);
 			buildArtifactManagementUri.AddDirectoryToPath("build-artifacts/upload-artifact");
 
-			Logger.LogInformation(string.Format("UploadArtifact, BuildArtifactManagementUrl: {0}", buildArtifactManagementUri.Uri));
-			Logger.LogInformation(string.Format("UploadArtifact, SourceFileName: {0}", request.SourceFileName));
-
 			buildArtifactManagementUri.AddQueryStringParameter("authenticationToken", request.AuthenticationToken);
 
 			var formValues = new System.Collections.Specialized.NameValueCollection();
 			formValues.Add("artifactName", request.ArtifactName);
-			formValues.Add("dateTimeStamp", request.DateTimeStamp);
+			formValues.Add("dateTimeStamp", request.DateTimeStampVersion.DateTimeStamp);
+			formValues.Add("version", request.DateTimeStampVersion.Version?.ToString());
 
 			var tryAttemptsLeft = request.MaxTries;
 			while (tryAttemptsLeft > 0)
@@ -70,5 +84,50 @@ namespace ISI.Extensions.Scm
 
 			return response;
 		}
+
+		private DTOs.UploadArtifactResponse UploadArtifactV4(DTOs.UploadArtifactRequest request)
+		{
+			var response = new DTOs.UploadArtifactResponse();
+
+			var buildArtifactManagementUri = new UriBuilder(request.BuildArtifactManagementUrl);
+			buildArtifactManagementUri.AddDirectoryToPath("api/v4/upload-artifact");
+
+			Logger.LogInformation(string.Format("UploadArtifact, BuildArtifactManagementUrl: {0}", buildArtifactManagementUri.Uri));
+			Logger.LogInformation(string.Format("UploadArtifact, SourceFileName: {0}", request.SourceFileName));
+
+			var formValues = new System.Collections.Specialized.NameValueCollection();
+			formValues.Add("artifactName", request.ArtifactName);
+			formValues.Add("dateTimeStamp", request.DateTimeStampVersion.DateTimeStamp);
+			formValues.Add("version", request.DateTimeStampVersion.Version?.ToString());
+
+			var tryAttemptsLeft = request.MaxTries;
+			while (tryAttemptsLeft > 0)
+			{
+				try
+				{
+					using (System.IO.Stream stream = System.IO.File.OpenRead(request.SourceFileName))
+					{
+						ISI.Extensions.WebClient.Upload.UploadFile(buildArtifactManagementUri.Uri, GetHeaders(request.AuthenticationToken), stream, request.SourceFileName, "buildArtifact", formValues);
+					}
+
+					tryAttemptsLeft = 0;
+				}
+				catch (Exception exception)
+				{
+					Logger.LogInformation(exception.ErrorMessageFormatted());
+
+					tryAttemptsLeft--;
+					if (tryAttemptsLeft < 0)
+					{
+						throw;
+					}
+
+					System.Threading.Thread.Sleep(5000);
+				}
+			}
+
+			return response;
+		}
+
 	}
 }

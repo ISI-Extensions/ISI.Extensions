@@ -133,10 +133,6 @@ namespace ISI.Extensions.WebClient
 			var boundary = string.Format("---------------------------{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.Base36));
 			var boundarybytes = System.Text.Encoding.UTF8.GetBytes(string.Format("\r\n--{0}\r\n", boundary));
 
-			var fileHeader = string.Empty;
-			byte[] fileHeaderBytes = null;
-			byte[] fileTrailer = null;
-
 			var formItems = new List<byte[]>();
 			long requestLen = 0;
 
@@ -155,9 +151,9 @@ namespace ISI.Extensions.WebClient
 			}
 
 
-			fileHeader = string.Format("Content-Disposition: form-data; name=\"{0}\"; filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n", fileFieldName, fileName, ISI.Extensions.MimeType.GetMimeType(fileName));
-			fileHeaderBytes = System.Text.Encoding.UTF8.GetBytes(fileHeader);
-			fileTrailer = System.Text.Encoding.UTF8.GetBytes(string.Format("\r\n--{0}--\r\n", boundary));
+			var fileHeader = string.Format("Content-Disposition: form-data; name=\"{0}\"; filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n", fileFieldName, fileName, ISI.Extensions.MimeType.GetMimeType(fileName));
+			var fileHeaderBytes = System.Text.Encoding.UTF8.GetBytes(fileHeader);
+			var fileTrailer = System.Text.Encoding.UTF8.GetBytes(string.Format("\r\n--{0}--\r\n", boundary));
 
 			requestLen += boundarybytes.Length + fileHeaderBytes.Length + fileTrailer.Length + stream.Length;
 

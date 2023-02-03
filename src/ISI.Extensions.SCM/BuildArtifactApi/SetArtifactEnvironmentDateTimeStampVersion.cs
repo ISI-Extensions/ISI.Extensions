@@ -12,21 +12,36 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Scm.DataTransferObjects.BuildArtifactApi;
+using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.BuildArtifactApi;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Scm
 {
 	public partial class BuildArtifactApi
 	{
 		public DTOs.SetArtifactEnvironmentDateTimeStampVersionResponse SetArtifactEnvironmentDateTimeStampVersion(DTOs.SetArtifactEnvironmentDateTimeStampVersionRequest request)
+		{
+			Logger.LogInformation(string.Format("SetArtifactEnvironmentDateTimeStampVersion, BuildArtifactManagementUrl: {0}", request.BuildArtifactManagementUrl));
+
+			var endPointVersion = GetEndpointVersion(request.BuildArtifactManagementUrl);
+
+			if (endPointVersion >= 4)
+			{
+				return SetArtifactEnvironmentDateTimeStampVersionV4(request);
+			}
+
+			return SetArtifactEnvironmentDateTimeStampVersionV1(request);
+		}
+
+		private DTOs.SetArtifactEnvironmentDateTimeStampVersionResponse SetArtifactEnvironmentDateTimeStampVersionV1(DTOs.SetArtifactEnvironmentDateTimeStampVersionRequest request)
 		{
 			var response = new DTOs.SetArtifactEnvironmentDateTimeStampVersionResponse();
 
@@ -35,8 +50,8 @@ namespace ISI.Extensions.Scm
 
 			buildArtifactManagementUri.AddQueryStringParameter("artifactName", request.ArtifactName);
 			buildArtifactManagementUri.AddQueryStringParameter("environment", request.Environment);
-			buildArtifactManagementUri.AddQueryStringParameter("dateTimeStampVersion", request.DateTimeStampVersion);
-			
+			buildArtifactManagementUri.AddQueryStringParameter("dateTimeStampVersion", request.DateTimeStampVersion.Value);
+
 			Logger.LogInformation(string.Format("SetArtifactEnvironmentDateTimeStampVersion, BuildArtifactManagementUrl: {0}", buildArtifactManagementUri.Uri));
 
 			buildArtifactManagementUri.AddQueryStringParameter("authenticationToken", request.AuthenticationToken);
@@ -46,7 +61,7 @@ namespace ISI.Extensions.Scm
 			var webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(buildArtifactManagementUri.Uri);
 			webRequest.Method = System.Net.WebRequestMethods.Http.Get;
 
-			using (var webResponse = (System.Net.HttpWebResponse) webRequest.GetResponse())
+			using (var webResponse = (System.Net.HttpWebResponse)webRequest.GetResponse())
 			{
 				//var httpWebResponse = webResponse as System.Net.HttpWebResponse;
 
@@ -61,6 +76,36 @@ namespace ISI.Extensions.Scm
 						throw new(string.Format("{0}: {1}\n{2}", webResponse.StatusCode, webResponse.StatusDescription, response.Status));
 					}
 				}
+			}
+
+			return response;
+		}
+
+		private DTOs.SetArtifactEnvironmentDateTimeStampVersionResponse SetArtifactEnvironmentDateTimeStampVersionV4(DTOs.SetArtifactEnvironmentDateTimeStampVersionRequest request)
+		{
+			var response = new DTOs.SetArtifactEnvironmentDateTimeStampVersionResponse();
+
+			var uri = new UriBuilder(request.BuildArtifactManagementUrl);
+			uri.SetPathAndQueryString("api/v4/set-artifact-environment-date-time-stamp-version");
+
+			var restRequest = new SerializableDTOs.SetArtifactEnvironmentDateTimeStampVersionRequest()
+			{
+				ArtifactName = request.ArtifactName,
+				Environment = request.Environment,
+				DateTimeStampVersion = request.DateTimeStampVersion.Value,
+			};
+
+#if DEBUG
+			var xxx = ISI.Extensions.WebClient.Rest.GetEventHandler();
+#endif
+
+			var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.SetArtifactEnvironmentDateTimeStampVersionRequest, SerializableDTOs.SetArtifactEnvironmentDateTimeStampVersionResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request.AuthenticationToken), restRequest, false);
+
+			response.Status = restResponse?.Response?.Status;
+
+			if (restResponse?.Error?.Exception != null)
+			{
+				Logger.LogError(restResponse.Error.Exception, "Error");
 			}
 
 			return response;

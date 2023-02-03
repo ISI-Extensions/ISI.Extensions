@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.FileStoreApi
 {
-	public partial class UploadFileResponse
+	public class UploadFileResponse
 	{
 	}
 }

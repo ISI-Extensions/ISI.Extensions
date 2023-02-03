@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.ScmApi
 {
-	public partial class GetAuthenticationTokenResponse
+	public class GetAuthenticationTokenResponse
 	{
 		public string AuthenticationToken { get; set; }
 	}

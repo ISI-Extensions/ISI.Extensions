@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.FileStoreApi
 {
-	public partial class UploadFileRequest
+	public class UploadFileRequest
 	{
 		public int MaxFileSegmentSize { get; set; } = 2000000;
 

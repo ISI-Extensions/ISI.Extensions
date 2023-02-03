@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi
 {
-	public partial class ExecuteBuildTargetResponse
+	public class ExecuteBuildTargetResponse
 	{
 		public string ExecutionOutputLog { get; set; }
 		public bool Success { get; set; }

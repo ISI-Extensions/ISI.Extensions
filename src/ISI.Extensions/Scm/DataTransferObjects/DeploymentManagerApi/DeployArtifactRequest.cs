@@ -21,14 +21,15 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi
 {
-	public partial class DeployArtifactRequest
+	public class DeployArtifactRequest
 	{
 		public string ServicesManagerUrl { get; set; }
-		public string Password { get; set; }
-		public string AuthenticationToken { get; set; }
+		public string ServicesManagerApiKey { get; set; }
 
 		public string BuildArtifactsApiUrl { get; set; }
-		public string ArtifactName { get; set; }
+		public string BuildArtifactName { get; set; }
+		public string BuildArtifactsApiKey { get; set; }
+
 		public string ArtifactDateTimeStampVersionUrl { get; set; }
 		public string ArtifactDownloadUrl { get; set; }
 		public string ToDateTimeStamp { get; set; }

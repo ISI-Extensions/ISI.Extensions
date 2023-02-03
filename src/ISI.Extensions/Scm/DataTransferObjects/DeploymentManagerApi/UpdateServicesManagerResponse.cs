@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi
 {
-	public partial class UpdateServicesManagerResponse
+	public class UpdateServicesManagerResponse
 	{
 		public string CurrentVersion { get; set; }
 		public string Log { get; set; }

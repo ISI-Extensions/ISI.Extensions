@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi
 {
-	public partial class UpdateServicesManagerRequest
+	public class UpdateServicesManagerRequest
 	{
 		public string ServicesManagerUrl { get; set; }
 		public string Password { get; set; }

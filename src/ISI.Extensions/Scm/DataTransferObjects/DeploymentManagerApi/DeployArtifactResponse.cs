@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi
 {
-	public partial class DeployArtifactResponse
+	public class DeployArtifactResponse
 	{
 		public IDeployComponentResponse[] DeployComponentResponses { get; set; }
 

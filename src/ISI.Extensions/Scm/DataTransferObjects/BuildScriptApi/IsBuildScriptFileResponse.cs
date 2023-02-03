@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.BuildScriptApi
 {
-	public partial class IsBuildScriptFileResponse
+	public class IsBuildScriptFileResponse
 	{
 		public bool IsBuildFile { get; set; }
 	}

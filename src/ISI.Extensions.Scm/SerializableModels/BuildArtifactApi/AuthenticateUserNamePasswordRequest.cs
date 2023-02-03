@@ -18,11 +18,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Scm.DataTransferObjects.BuildArtifactApi
+namespace ISI.Extensions.Scm.SerializableModels.BuildArtifactApi
 {
-	public class GetArtifactDateTimeStampVersionResponse
+	[DataContract]
+	public class AuthenticateUserNamePasswordRequest
 	{
-		public string ArtifactDateTimeStampVersion { get; set; }
+		[DataMember(Name = "userName", EmitDefaultValue = false)]
+		public string UserName { get; set; }
+
+		[DataMember(Name = "password", EmitDefaultValue = false)]
+		public string Password { get; set; }
 	}
 }

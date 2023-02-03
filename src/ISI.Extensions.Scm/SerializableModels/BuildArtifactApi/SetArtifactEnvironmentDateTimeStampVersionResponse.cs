@@ -26,7 +26,6 @@ namespace ISI.Extensions.Scm.SerializableModels.BuildArtifactApi
 	[DataContract]
 	public class SetArtifactEnvironmentDateTimeStampVersionResponse
 	{
-		[DataMember(Name = "status", EmitDefaultValue = false)]
-		public string Status { get; set; }
+
 	}
 }

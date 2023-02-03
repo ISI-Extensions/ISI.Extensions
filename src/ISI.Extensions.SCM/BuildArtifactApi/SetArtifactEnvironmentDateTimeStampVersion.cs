@@ -101,10 +101,10 @@ namespace ISI.Extensions.Scm
 
 			var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.SetArtifactEnvironmentDateTimeStampVersionRequest, SerializableDTOs.SetArtifactEnvironmentDateTimeStampVersionResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request.AuthenticationToken), restRequest, false);
 
-			response.Status = restResponse?.Response?.Status;
-
 			if (restResponse?.Error?.Exception != null)
 			{
+				response.Status = restResponse.Error.Exception.ErrorMessageFormatted();
+
 				Logger.LogError(restResponse.Error.Exception, "Error");
 			}
 

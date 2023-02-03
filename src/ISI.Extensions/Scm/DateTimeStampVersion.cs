@@ -41,7 +41,7 @@ namespace ISI.Extensions.Scm
 		public DateTimeStampVersion(string dateTimeStamp, string version)
 		{
 			DateTimeStamp = dateTimeStamp;
-			Version = new(version);
+			Version = string.IsNullOrWhiteSpace(version) ? null : new Version(version);
 		}
 
 		public string Value

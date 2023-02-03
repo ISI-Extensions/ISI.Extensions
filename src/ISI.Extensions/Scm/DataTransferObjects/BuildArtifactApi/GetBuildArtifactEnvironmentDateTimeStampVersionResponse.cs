@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.BuildArtifactApi
 {
-	public partial class GetBuildArtifactEnvironmentDateTimeStampVersionResponse
+	public class GetBuildArtifactEnvironmentDateTimeStampVersionResponse
 	{
 		public DateTimeStampVersion DateTimeStampVersion { get; set; }
 	}

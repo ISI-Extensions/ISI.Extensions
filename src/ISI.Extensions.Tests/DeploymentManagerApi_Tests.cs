@@ -79,7 +79,7 @@ namespace ISI.Extensions.Tests
 				//ServicesManagerUrl = "http://localhost:14258/",
 				//Password = "87BEF140-045B-42D7-AB87-3E59F162BC39",
 				ServicesManagerUrl = settings.GetValue("tfsSCM02-DeployManager-Url"),
-				Password = settings.GetValue("tfsSCM02-DeployManager-Password"),
+				ServicesManagerApiKey = settings.GetValue("tfsSCM02-DeployManager-Password"),
 				//ServicesManagerUrl = settings.GetValue("PRODUCTION-GOGS01-DeployManager-Url"),
 				//Password = settings.GetValue("PRODUCTION-GOGS01-DeployManager-Password"),
 			});

@@ -90,7 +90,7 @@ namespace ISI.Extensions.Scm
 			var response = new DTOs.UploadBuildArtifactResponse();
 
 			var buildArtifactsApiUri = new UriBuilder(request.BuildArtifactsApiUrl);
-			buildArtifactsApiUri.AddDirectoryToPath("api/v4/upload-artifact");
+			buildArtifactsApiUri.AddDirectoryToPath("api/v4/upload-build-artifact");
 
 			Logger.LogInformation(string.Format("UploadArtifact, BuildArtifactsApiUrl: {0}", buildArtifactsApiUri.Uri));
 			Logger.LogInformation(string.Format("UploadArtifact, SourceFileName: {0}", request.SourceFileName));

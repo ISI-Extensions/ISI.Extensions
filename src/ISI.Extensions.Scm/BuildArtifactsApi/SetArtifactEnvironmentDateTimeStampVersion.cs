@@ -90,7 +90,7 @@ namespace ISI.Extensions.Scm
 
 			var restRequest = new SerializableDTOs.SetArtifactEnvironmentDateTimeStampVersionRequest()
 			{
-				ArtifactName = request.BuildArtifactName,
+				BuildArtifactName = request.BuildArtifactName,
 				Environment = request.Environment,
 				DateTimeStampVersion = request.DateTimeStampVersion.Value,
 			};

@@ -26,8 +26,8 @@ namespace ISI.Extensions.Scm.SerializableModels.BuildArtifactsApi
 	[DataContract]
 	public class SetArtifactEnvironmentDateTimeStampVersionRequest
 	{
-		[DataMember(Name = "artifactName", EmitDefaultValue = false)]
-		public string ArtifactName { get; set; }
+		[DataMember(Name = "buildArtifactName", EmitDefaultValue = false)]
+		public string BuildArtifactName { get; set; }
 
 		[DataMember(Name = "environment", EmitDefaultValue = false)]
 		public string Environment { get; set; }

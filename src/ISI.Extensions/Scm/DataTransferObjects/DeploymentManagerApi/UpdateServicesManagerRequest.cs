@@ -24,7 +24,7 @@ namespace ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi
 	public class UpdateServicesManagerRequest
 	{
 		public string ServicesManagerUrl { get; set; }
-		public string Password { get; set; }
+		public string ServicesManagerApiKey { get; set; }
 
 		public int VerificationWaitInSeconds { get; set; } = 90;
 		public int VerificationMaxTries { get; set; } = 10;

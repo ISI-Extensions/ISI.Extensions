@@ -18,24 +18,53 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.BuildArtifactsApi;
+using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.BuildArtifactsApi;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Scm
 {
-	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
-	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
+	public partial class BuildArtifactsApi
 	{
-		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
+		private static readonly object _endPointVersionsLock = new();
+		private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, decimal> _endPointVersions = new();
+
+		private decimal GetEndpointVersion(string servicesManagerUrl)
 		{
-			services.AddSingleton<IBuildScriptApi, BuildScriptApi>();
-			services.AddSingleton<IBuildArtifactsApi, BuildArtifactsApi>();
-			services.AddSingleton<IDeploymentManagerApi, DeploymentManagerApi>();
-			services.AddSingleton<IFileStoreApi, FileStoreApi>();
-			services.AddSingleton<IScmApi, ScmApi>();
-			services.AddSingleton<ISourceControlClientApi, SourceControlClientApi>();
-			services.AddSingleton<JenkinsServiceApi>();
-			services.AddSingleton<RemoteCodeSigningApi>();
-			services.AddSingleton<VSExtensionsApi>();
+			if (!_endPointVersions.TryGetValue(servicesManagerUrl, out var endPointVersion))
+			{
+				lock (_endPointVersionsLock)
+				{
+					if (!_endPointVersions.TryGetValue(servicesManagerUrl, out endPointVersion))
+					{
+						endPointVersion = 1;
+
+						try
+						{
+							var uri = new UriBuilder(servicesManagerUrl);
+							uri.SetPathAndQueryString(string.Empty);
+
+							var restResponse = ISI.Extensions.WebClient.Rest.ExecuteGet<ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, new(), false);
+
+							var version = (string)null;
+							if((restResponse?.ResponseHeaders?.TryGetValue(HeaderKey.BuildArtifactsServiceVersion, out version)).GetValueOrDefault())
+							{
+								var buildArtifactsServiceVersion = new Version(version);
+
+								endPointVersion = (decimal)buildArtifactsServiceVersion.Major + (((decimal)buildArtifactsServiceVersion.Minor) * (decimal).1);
+							}
+						}
+						catch
+						{
+						}
+
+						_endPointVersions.TryAdd(servicesManagerUrl, endPointVersion);
+					}
+				}
+			}
+			
+			return endPointVersion;
 		}
 	}
 }

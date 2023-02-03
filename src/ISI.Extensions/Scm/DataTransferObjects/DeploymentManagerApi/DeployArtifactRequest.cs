@@ -27,7 +27,7 @@ namespace ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi
 		public string Password { get; set; }
 		public string AuthenticationToken { get; set; }
 
-		public string BuildArtifactManagementUrl { get; set; }
+		public string BuildArtifactsApiUrl { get; set; }
 		public string ArtifactName { get; set; }
 		public string ArtifactDateTimeStampVersionUrl { get; set; }
 		public string ArtifactDownloadUrl { get; set; }

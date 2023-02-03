@@ -305,7 +305,7 @@ namespace ISI.Extensions.Tests
 				nugetApi.NupkgPush(new()
 				{
 					NupkgFullNames = nupkgFullNames,
-					ApiKey = settings.Nuget.ApiKey,
+					NugetApiKey = settings.Nuget.ApiKey,
 					RepositoryName = settings.Nuget.RepositoryName,
 					RepositoryUri = new(settings.Nuget.RepositoryUrl),
 					//PackageChunksRepositoryUri = GetNullableUri(settings.Nuget.PackageChunksRepositoryUrl),

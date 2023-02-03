@@ -18,24 +18,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.Scm
+namespace ISI.Extensions.Scm.DataTransferObjects.BuildArtifactsApi
 {
-	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
-	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
+	public class UploadBuildArtifactRequest
 	{
-		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
-		{
-			services.AddSingleton<IBuildScriptApi, BuildScriptApi>();
-			services.AddSingleton<IBuildArtifactsApi, BuildArtifactsApi>();
-			services.AddSingleton<IDeploymentManagerApi, DeploymentManagerApi>();
-			services.AddSingleton<IFileStoreApi, FileStoreApi>();
-			services.AddSingleton<IScmApi, ScmApi>();
-			services.AddSingleton<ISourceControlClientApi, SourceControlClientApi>();
-			services.AddSingleton<JenkinsServiceApi>();
-			services.AddSingleton<RemoteCodeSigningApi>();
-			services.AddSingleton<VSExtensionsApi>();
-		}
+		public string BuildArtifactsApiUrl { get; set; }
+		public string BuildArtifactsApiKey { get; set; }
+		public string SourceFileName { get; set; }
+		public string BuildArtifactName { get; set; }
+		public DateTimeStampVersion DateTimeStampVersion { get; set; }
+		public int MaxTries { get; set; } = 3;
 	}
 }

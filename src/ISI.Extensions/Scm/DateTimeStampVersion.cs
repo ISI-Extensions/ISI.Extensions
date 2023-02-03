@@ -22,7 +22,7 @@ namespace ISI.Extensions.Scm
 {
 	public class DateTimeStampVersion
 	{
-		public string DateTimeStamp { get; set; }
+		public DateTimeStamp DateTimeStamp { get; set; }
 		public Version Version { get; set; }
 
 		public DateTimeStampVersion()
@@ -35,10 +35,24 @@ namespace ISI.Extensions.Scm
 		}
 		public DateTimeStampVersion(string dateTimeStamp, Version version)
 		{
-			DateTimeStamp = dateTimeStamp;
+			DateTimeStamp = new(dateTimeStamp);
 			Version = version;
 		}
 		public DateTimeStampVersion(string dateTimeStamp, string version)
+		{
+			DateTimeStamp = new(dateTimeStamp);
+			Version = string.IsNullOrWhiteSpace(version) ? null : new Version(version);
+		}
+		public DateTimeStampVersion(DateTimeStamp dateTimeStamp)
+		{
+			DateTimeStamp = dateTimeStamp;
+		}
+		public DateTimeStampVersion(DateTimeStamp dateTimeStamp, Version version)
+		{
+			DateTimeStamp = dateTimeStamp;
+			Version = version;
+		}
+		public DateTimeStampVersion(DateTimeStamp dateTimeStamp, string version)
 		{
 			DateTimeStamp = dateTimeStamp;
 			Version = string.IsNullOrWhiteSpace(version) ? null : new Version(version);
@@ -51,27 +65,24 @@ namespace ISI.Extensions.Scm
 			{
 				if (string.IsNullOrWhiteSpace(value))
 				{
-					DateTimeStamp = string.Empty;
+					DateTimeStamp = null;
 					Version = null;
 				}
 				else if (value.IndexOf("(") >= 0)
 				{
 					var pieces = string.Format("{0}(((-(-", value).Split(new[] { '(', ')', ' ', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries, p => p.Trim('-'));
-					DateTimeStamp = pieces[1];
+					DateTimeStamp = new(pieces[1]);
 					Version = string.IsNullOrWhiteSpace(pieces[0]) ? null : new Version(pieces[0]);
 				}
 				else
 				{
 					var pieces = string.Format("{0}||||-|-", value).Split(new[] { '|', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries, p => p.Trim('-'));
-					DateTimeStamp = pieces[0];
+					DateTimeStamp = new(pieces[0]);
 					Version = string.IsNullOrWhiteSpace(pieces[1]) ? null : new Version(pieces[1]);
 				}
 			}
 		}
 
-		public string Formatted()
-		{
-			return string.Format("{0} ({1})", Version, DateTimeStamp);
-		}
+		public override string ToString() => string.Format("{0} ({1})", Version, DateTimeStamp);
 	}
 }

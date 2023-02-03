@@ -18,24 +18,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.BuildArtifactsApi;
+using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.BuildArtifactsApi;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Scm
 {
-	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
-	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
+	public partial class BuildArtifactsApi
 	{
-		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
+		public class HeaderKey
 		{
-			services.AddSingleton<IBuildScriptApi, BuildScriptApi>();
-			services.AddSingleton<IBuildArtifactsApi, BuildArtifactsApi>();
-			services.AddSingleton<IDeploymentManagerApi, DeploymentManagerApi>();
-			services.AddSingleton<IFileStoreApi, FileStoreApi>();
-			services.AddSingleton<IScmApi, ScmApi>();
-			services.AddSingleton<ISourceControlClientApi, SourceControlClientApi>();
-			services.AddSingleton<JenkinsServiceApi>();
-			services.AddSingleton<RemoteCodeSigningApi>();
-			services.AddSingleton<VSExtensionsApi>();
+			public const string BuildArtifactsServiceVersion = "X-BuildArtifacts-Service-Version";
+		}
+
+		private ISI.Extensions.WebClient.HeaderCollection GetHeaders(string buildArtifactsApiKey)
+		{
+			var headers = new ISI.Extensions.WebClient.HeaderCollection();
+
+			if (!string.IsNullOrWhiteSpace(buildArtifactsApiKey))
+			{
+				headers.AddBearerAuthentication(buildArtifactsApiKey);
+			}
+
+			return headers;
 		}
 	}
 }

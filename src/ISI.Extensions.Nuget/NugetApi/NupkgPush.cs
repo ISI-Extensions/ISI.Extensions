@@ -43,9 +43,9 @@ namespace ISI.Extensions.Nuget
 
 					arguments.Add(string.Format("-Source \"{0}\"", source));
 
-					if (!string.IsNullOrWhiteSpace(request.ApiKey))
+					if (!string.IsNullOrWhiteSpace(request.NugetApiKey))
 					{
-						arguments.Add(string.Format("-ApiKey \"{0}\"", request.ApiKey));
+						arguments.Add(string.Format("-ApiKey \"{0}\"", request.NugetApiKey));
 					}
 
 					if (!string.IsNullOrWhiteSpace(request.WorkingDirectory))
@@ -139,7 +139,7 @@ namespace ISI.Extensions.Nuget
 								content.AppendFormat("{0}={1}&", "fileName", System.Web.HttpUtility.UrlEncode(System.IO.Path.GetFileName(nupkgFullName)));
 								content.AppendFormat("{0}={1}&", "finalSegment", System.Web.HttpUtility.UrlEncode((fileSegments.Any() ? "false" : "true")));
 
-								content.AppendFormat("{0}={1}&", "apiKey", System.Web.HttpUtility.UrlEncode(request.ApiKey));
+								content.AppendFormat("{0}={1}&", "apiKey", System.Web.HttpUtility.UrlEncode(request.NugetApiKey));
 								content.AppendFormat("{0}={1}&", "file", System.Web.HttpUtility.UrlEncode(Convert.ToBase64String(data)));
 
 								var encodedRequest = (new ASCIIEncoding()).GetBytes(content.ToString());

@@ -18,24 +18,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
+using DTOs = ISI.Extensions.Nuget.DataTransferObjects.NugetApi;
 
-namespace ISI.Extensions.Scm
+namespace ISI.Extensions.Nuget
 {
-	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
-	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
+	public partial class NugetApi
 	{
-		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
+		private ISI.Extensions.WebClient.HeaderCollection GetHeaders(string nugetApiKey)
 		{
-			services.AddSingleton<IBuildScriptApi, BuildScriptApi>();
-			services.AddSingleton<IBuildArtifactsApi, BuildArtifactsApi>();
-			services.AddSingleton<IDeploymentManagerApi, DeploymentManagerApi>();
-			services.AddSingleton<IFileStoreApi, FileStoreApi>();
-			services.AddSingleton<IScmApi, ScmApi>();
-			services.AddSingleton<ISourceControlClientApi, SourceControlClientApi>();
-			services.AddSingleton<JenkinsServiceApi>();
-			services.AddSingleton<RemoteCodeSigningApi>();
-			services.AddSingleton<VSExtensionsApi>();
+			var headers = new ISI.Extensions.WebClient.HeaderCollection();
+
+			if (!string.IsNullOrWhiteSpace(nugetApiKey))
+			{
+				headers.AddBearerAuthentication(nugetApiKey);
+			}
+
+			return headers;
 		}
 	}
 }

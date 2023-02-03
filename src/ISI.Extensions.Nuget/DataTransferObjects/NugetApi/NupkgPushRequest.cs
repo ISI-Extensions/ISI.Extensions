@@ -25,7 +25,7 @@ namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 	{
 		public IEnumerable<string> NupkgFullNames { get; set; }
 
-		public string ApiKey { get; set; }
+		public string NugetApiKey { get; set; }
 		
 		public string RepositoryName { get; set; }
 		

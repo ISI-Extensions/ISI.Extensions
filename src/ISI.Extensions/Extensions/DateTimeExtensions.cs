@@ -92,6 +92,38 @@ namespace ISI.Extensions.Extensions
 			new KeyValuePair<DateTimeFormat, string>(DateTimeFormat.WeekDayName, FormatWeekDayName),
 		});
 
+		private static DateTime ToDateTimeUtc(this DateTime dateTime)
+		{
+			if (dateTime.Kind != DateTimeKind.Utc)
+			{
+				dateTime = new(dateTime.Ticks, DateTimeKind.Utc);
+			}
+
+			return dateTime;
+		}
+
+		public static DateTime ToDateTimeUtc(this string value) => ToDateTimeUtc(value, DateTime.MinValue);
+
+		public static DateTime ToDateTimeUtc(this string value, DateTime defaultValue)
+		{
+			value ??= string.Empty;
+
+			if (DateTime.TryParse(value, out var parsedValue))
+			{
+				return parsedValue.ToDateTimeUtc();
+			}
+
+			foreach (var dateFormat in _dateFormats.Values)
+			{
+				if (DateTime.TryParseExact(value, dateFormat, null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out parsedValue))
+				{
+					return parsedValue.ToDateTimeUtc();
+				}
+			}
+
+			return defaultValue;
+		}
+
 		public static DateTime ToDateTime(this string value) => ToDateTime(value, DateTime.MinValue);
 
 		public static DateTime ToDateTime(this string value, DateTime defaultValue)

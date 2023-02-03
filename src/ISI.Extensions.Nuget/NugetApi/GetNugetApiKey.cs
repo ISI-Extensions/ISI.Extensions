@@ -18,24 +18,42 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Nuget.DataTransferObjects.NugetApi;
+using Microsoft.Extensions.Logging;
+using SerializableDTOs = ISI.Extensions.Nuget.SerializableModels;
 
-namespace ISI.Extensions.Scm
+namespace ISI.Extensions.Nuget
 {
-	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
-	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
+	public partial class NugetApi
 	{
-		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
+		public DTOs.GetNugetApiKeyResponse GetNugetApiKey(DTOs.GetNugetApiKeyRequest request)
 		{
-			services.AddSingleton<IBuildScriptApi, BuildScriptApi>();
-			services.AddSingleton<IBuildArtifactsApi, BuildArtifactsApi>();
-			services.AddSingleton<IDeploymentManagerApi, DeploymentManagerApi>();
-			services.AddSingleton<IFileStoreApi, FileStoreApi>();
-			services.AddSingleton<IScmApi, ScmApi>();
-			services.AddSingleton<ISourceControlClientApi, SourceControlClientApi>();
-			services.AddSingleton<JenkinsServiceApi>();
-			services.AddSingleton<RemoteCodeSigningApi>();
-			services.AddSingleton<VSExtensionsApi>();
+			var response = new DTOs.GetNugetApiKeyResponse();
+			
+			var uri = new UriBuilder(request.NugetApiUrl);
+			uri.SetPathAndQueryString("api/v4/authenticate-user-name-password");
+
+			var restRequest = new SerializableDTOs.AuthenticateUserNamePasswordRequest()
+			{
+				UserName = request.UserName,
+				Password = request.Password,
+			};
+
+#if DEBUG
+			var xxx = ISI.Extensions.WebClient.Rest.GetEventHandler();
+#endif
+
+			var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.AuthenticateUserNamePasswordRequest, SerializableDTOs.AuthenticateUserNamePasswordResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, new(), restRequest, false);
+
+			response.NugetApiKey = restResponse?.Response?.NugetApiKey;
+
+			if (restResponse?.Error?.Exception != null)
+			{
+				Logger.LogError(restResponse.Error.Exception, "Error");
+			}
+
+			return response;
 		}
 	}
 }

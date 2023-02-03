@@ -18,24 +18,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.BuildArtifactsApi;
+using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.BuildArtifactsApi;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Scm
 {
-	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
-	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
+	public partial class BuildArtifactsApi : IBuildArtifactsApi
 	{
-		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
+		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
+
+		public BuildArtifactsApi(
+			Microsoft.Extensions.Logging.ILogger logger = null)
 		{
-			services.AddSingleton<IBuildScriptApi, BuildScriptApi>();
-			services.AddSingleton<IBuildArtifactsApi, BuildArtifactsApi>();
-			services.AddSingleton<IDeploymentManagerApi, DeploymentManagerApi>();
-			services.AddSingleton<IFileStoreApi, FileStoreApi>();
-			services.AddSingleton<IScmApi, ScmApi>();
-			services.AddSingleton<ISourceControlClientApi, SourceControlClientApi>();
-			services.AddSingleton<JenkinsServiceApi>();
-			services.AddSingleton<RemoteCodeSigningApi>();
-			services.AddSingleton<VSExtensionsApi>();
+			Logger = logger ?? new ConsoleLogger();
 		}
 	}
 }

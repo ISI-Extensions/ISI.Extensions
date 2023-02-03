@@ -18,24 +18,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Scm
+namespace ISI.Extensions.Scm.SerializableModels.BuildArtifactsApi
 {
-	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
-	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
+	[DataContract]
+	public class SetArtifactEnvironmentDateTimeStampVersionRequest
 	{
-		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
-		{
-			services.AddSingleton<IBuildScriptApi, BuildScriptApi>();
-			services.AddSingleton<IBuildArtifactsApi, BuildArtifactsApi>();
-			services.AddSingleton<IDeploymentManagerApi, DeploymentManagerApi>();
-			services.AddSingleton<IFileStoreApi, FileStoreApi>();
-			services.AddSingleton<IScmApi, ScmApi>();
-			services.AddSingleton<ISourceControlClientApi, SourceControlClientApi>();
-			services.AddSingleton<JenkinsServiceApi>();
-			services.AddSingleton<RemoteCodeSigningApi>();
-			services.AddSingleton<VSExtensionsApi>();
-		}
+		[DataMember(Name = "artifactName", EmitDefaultValue = false)]
+		public string ArtifactName { get; set; }
+
+		[DataMember(Name = "environment", EmitDefaultValue = false)]
+		public string Environment { get; set; }
+
+		[DataMember(Name = "dateTimeStampVersion", EmitDefaultValue = false)]
+		public string DateTimeStampVersion { get; set; }
 	}
 }

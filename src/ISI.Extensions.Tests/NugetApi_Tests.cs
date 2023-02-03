@@ -76,7 +76,7 @@ namespace ISI.Extensions.Tests
 			nugetApi.NupkgPush(new()
 			{
 				NupkgFullNames = new[] { nupkgFullName },
-				ApiKey = "xxxx",
+				NugetApiKey = "xxxx",
 				RepositoryUri = new("https://localhost:5001/nuget/v3/index.json"),
 			});
 		}

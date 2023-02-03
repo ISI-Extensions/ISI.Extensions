@@ -73,7 +73,7 @@ namespace ISI.Extensions.Tests
 			var artifactFullName = @"C:\Temp\" + artifactName + ".png";
 
 			var scmApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.ScmApi>();
-			var buildArtifactApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.BuildArtifactApi>();
+			var buildArtifactApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.BuildArtifactsApi>();
 
 			var authenticationToken = scmApi.GetAuthenticationToken(new()
 			{
@@ -82,28 +82,28 @@ namespace ISI.Extensions.Tests
 				Password = settings.ActiveDirectory.Password,
 			}).AuthenticationToken;
 
-			var dateTimeStampVersion = buildArtifactApi.GetArtifactDateTimeStampVersion(new()
-			{
-				BuildArtifactManagementUrl = settings.Scm.WebServiceUrl,
-				AuthenticationToken = authenticationToken,
-			}).ArtifactDateTimeStampVersion;
+			var utcDateTime = DateTime.UtcNow;
 
-			buildArtifactApi.UploadArtifact(new()
+			var dateTimeStamp = new ISI.Extensions.Scm.DateTimeStamp(utcDateTime);
+
+			var dateTimeStampVersion = new ISI.Extensions.Scm.DateTimeStampVersion(dateTimeStamp);
+
+			buildArtifactApi.UploadBuildArtifact(new()
 			{
-				BuildArtifactManagementUrl = settings.Scm.WebServiceUrl,
-				AuthenticationToken = authenticationToken,
+				BuildArtifactsApiUrl = settings.Scm.WebServiceUrl,
+				BuildArtifactsApiKey = authenticationToken,
 				SourceFileName = artifactFullName,
-				ArtifactName = artifactName,
-				DateTimeStampVersion = new ISI.Extensions.Scm.DateTimeStampVersion(dateTimeStampVersion),
+				BuildArtifactName = artifactName,
+				DateTimeStampVersion = dateTimeStampVersion,
 			});
 
-			var setArtifactEnvironmentDateTimeStampVersionResponse = buildArtifactApi.SetArtifactEnvironmentDateTimeStampVersion(new()
+			var setArtifactEnvironmentDateTimeStampVersionResponse = buildArtifactApi.SetBuildArtifactEnvironmentDateTimeStampVersion(new()
 			{
-				BuildArtifactManagementUrl = settings.Scm.WebServiceUrl,
-				AuthenticationToken = authenticationToken,
-				ArtifactName = artifactName,
+				BuildArtifactsApiUrl = settings.Scm.WebServiceUrl,
+				BuildArtifactsApiKey = authenticationToken,
+				BuildArtifactName = artifactName,
 				Environment = "Test",
-				DateTimeStampVersion = new ISI.Extensions.Scm.DateTimeStampVersion(dateTimeStampVersion),
+				DateTimeStampVersion = dateTimeStampVersion,
 			});
 		}
 
@@ -117,7 +117,7 @@ namespace ISI.Extensions.Tests
 			var artifactFullName = @"C:\Temp\" + artifactName + ".zip";
 
 			var scmApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.ScmApi>();
-			var buildArtifactApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.BuildArtifactApi>();
+			var buildArtifactApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.BuildArtifactsApi>();
 
 			var authenticationToken = scmApi.GetAuthenticationToken(new()
 			{
@@ -128,17 +128,17 @@ namespace ISI.Extensions.Tests
 
 			var dateTimeStampVersion = buildArtifactApi.GetBuildArtifactEnvironmentDateTimeStampVersion(new()
 			{
-				BuildArtifactManagementUrl = settings.Scm.WebServiceUrl,
-				AuthenticationToken = authenticationToken,
-				ArtifactName = artifactName,
+				BuildArtifactsApiUrl = settings.Scm.WebServiceUrl,
+				BuildArtifactsApiKey = authenticationToken,
+				BuildArtifactName = artifactName,
 				Environment = "Build",
 			}).DateTimeStampVersion;
 
-			buildArtifactApi.DownloadArtifact(new()
+			buildArtifactApi.DownloadBuildArtifact(new()
 			{
-				BuildArtifactManagementUrl = settings.Scm.WebServiceUrl,
-				AuthenticationToken = authenticationToken,
-				ArtifactName = artifactName,
+				BuildArtifactsApiUrl = settings.Scm.WebServiceUrl,
+				BuildArtifactsApiKey = authenticationToken,
+				BuildArtifactName = artifactName,
 				DateTimeStamp = dateTimeStampVersion.DateTimeStamp,
 				TargetFileName = artifactFullName,
 			});

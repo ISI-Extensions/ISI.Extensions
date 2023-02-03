@@ -100,8 +100,8 @@ namespace ISI.Extensions.Scm
 		{
 			var response = new DTOs.DeployArtifactResponse();
 
-			var buildArtifactManagementUri = new UriBuilder(request.BuildArtifactManagementUrl);
-			buildArtifactManagementUri.Path = "remote-management/";
+			var buildArtifactsApiUri = new UriBuilder(request.BuildArtifactsApiUrl);
+			buildArtifactsApiUri.Path = "remote-management/";
 
 			var deployComponents = new List<SerializableDTOs.IDeployComponent>();
 
@@ -204,7 +204,7 @@ namespace ISI.Extensions.Scm
 
 			var restRequest = new SerializableDTOs.DeployArtifactRequest()
 			{
-				RemoteManagementUrl = buildArtifactManagementUri.Uri.ToString(),
+				RemoteManagementUrl = buildArtifactsApiUri.Uri.ToString(),
 				AuthenticationToken = request.AuthenticationToken,
 				ArtifactName = request.ArtifactName,
 				ArtifactDateTimeStampVersionUrl = request.ArtifactDateTimeStampVersionUrl,

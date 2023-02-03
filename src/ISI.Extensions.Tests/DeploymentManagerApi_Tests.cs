@@ -116,7 +116,7 @@ namespace ISI.Extensions.Tests
 				//Password = settings.GetValue("PRODUCTION-GOGS01-DeployManager-Password"),
 				AuthenticationToken = authenticationToken,
 
-				BuildArtifactManagementUrl = settings.Scm.WebServiceUrl,
+				BuildArtifactsApiUrl = settings.Scm.WebServiceUrl,
 				ArtifactName = artifactName,
 				ArtifactDateTimeStampVersionUrl = artifactDateTimeStampVersionUrl,
 				ArtifactDownloadUrl = artifactDownloadUrl,
@@ -143,7 +143,7 @@ namespace ISI.Extensions.Tests
 			settings.OverrideWithEnvironmentVariables();
 
 			var scmApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.ScmApi>();
-			var buildArtifactApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.BuildArtifactApi>();
+			var buildArtifactApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.BuildArtifactsApi>();
 			var deploymentManagerApi = new ISI.Extensions.Scm.DeploymentManagerApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
 
 			var artifactName = "ISI.WindowsService";
@@ -157,9 +157,9 @@ namespace ISI.Extensions.Tests
 
 			var dateTimeStampVersion = buildArtifactApi.GetBuildArtifactEnvironmentDateTimeStampVersion(new()
 			{
-				BuildArtifactManagementUrl = settings.Scm.WebServiceUrl,
-				AuthenticationToken = authenticationToken,
-				ArtifactName = artifactName,
+				BuildArtifactsApiUrl = settings.Scm.WebServiceUrl,
+				BuildArtifactsApiKey = authenticationToken,
+				BuildArtifactName = artifactName,
 				Environment = "UAT",
 			}).DateTimeStampVersion;
 
@@ -172,7 +172,7 @@ namespace ISI.Extensions.Tests
 
 				AuthenticationToken = authenticationToken,
 
-				BuildArtifactManagementUrl = settings.Scm.WebServiceUrl,
+				BuildArtifactsApiUrl = settings.Scm.WebServiceUrl,
 				ArtifactName = artifactName,
 				ToDateTimeStamp = dateTimeStampVersion.Value,
 				ToEnvironment = "Production",

@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,14 +15,32 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace ISI.Extensions.Scm.DataTransferObjects.JenkinsServiceApi
+namespace ISI.Extensions.Scm
 {
-	public class BackupJenkinsConfigsResponse
+	public partial class Settings
 	{
-		public bool Success { get; set; }
+		public class SettingsBuildArtifacts
+		{
+			protected Settings Settings { get; }
+
+			public SettingsBuildArtifacts(Settings settings)
+			{
+				Settings = settings;
+			}
+
+			public string ApiKey
+			{
+				get => Settings.GetValue(Settings.Key.BuildArtifactsApiKey);
+				set => Settings.SetValue(Settings.Key.BuildArtifactsApiKey, value);
+			}
+
+			public string ApiUrl
+			{
+				get => Settings.GetValue(Settings.Key.BuildArtifactsApiUrl);
+				set => Settings.SetValue(Settings.Key.BuildArtifactsApiUrl, value);
+			}
+		}
 	}
-}
+}  

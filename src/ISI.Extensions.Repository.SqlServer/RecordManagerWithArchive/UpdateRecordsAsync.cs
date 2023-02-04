@@ -19,13 +19,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Scm.SerializableModels.RemoteCodeSigningApi
+namespace ISI.Extensions.Repository.SqlServer
 {
-	[DataContract]
-	public partial class CreateSignAssembliesBatchResponse
+	public abstract partial class RecordManagerWithArchive<TRecord>
 	{
+		public override async Task<int> UpdateRecordsAsync(IEnumerable<TRecord> records, UpdateRecordFilterColumnCollection<TRecord> updateRecordFilterColumns)
+		{
+			var count = 0;
 
+			foreach (var updatedRecord in await PersistConvertedRecordsAsync(records, PersistenceMethod.Update, true, null, updateRecordFilterColumns, record => record, convertedRecord => convertedRecord, record => record.ArchiveDateTime))
+			{
+				count++;
+			}
+
+			return count;
+		}
 	}
 }

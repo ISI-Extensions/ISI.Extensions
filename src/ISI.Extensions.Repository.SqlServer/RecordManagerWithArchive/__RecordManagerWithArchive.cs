@@ -19,11 +19,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.Scm.DataTransferObjects.JenkinsServiceApi
+namespace ISI.Extensions.Repository.SqlServer
 {
-	public abstract class AbstractRequest
+	public abstract partial class RecordManagerWithArchive<TRecord> : RecordManager<TRecord>
+		where TRecord : class, IRecordManagerRecord, IRecordManagerRecordWithArchiveDateTime, new()
 	{
-		public string JenkinsServiceUrl { get; set; }
-		public string JenkinsServicePassword { get; set; }
+		protected RecordManagerWithArchive(
+			Microsoft.Extensions.Configuration.IConfiguration configuration,
+			ISI.Extensions.Repository.SqlServer.Configuration sqlServerConfiguration,
+			Microsoft.Extensions.Logging.ILogger logger,
+			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
+			ISI.Extensions.JsonSerialization.IJsonSerializer serializer,
+			string connectionString,
+			string schema = null,
+			string tableNamePrefix = null,
+			string tableName = null,
+			string tableAlias = null)
+			: base(configuration, sqlServerConfiguration, logger, dateTimeStamper, serializer, connectionString, schema, tableNamePrefix, tableName, tableAlias)
+		{
+		}
 	}
 }

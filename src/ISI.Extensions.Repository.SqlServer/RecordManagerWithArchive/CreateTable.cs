@@ -18,19 +18,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using ISI.Extensions.Repository.SqlServer.Extensions;
 
-namespace ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigningApi
+namespace ISI.Extensions.Repository.SqlServer
 {
-	public class SignNupkgsRequest : AbstractRequest
+	public abstract partial class RecordManagerWithArchive<TRecord>
 	{
-		public string[] NupkgFullNames { get; set; }
-				
-		public string OutputDirectory { get; set; }
-
-		public bool OverwriteAnyExistingSignature { get; set; } = false;
-		
-		public CodeSigningVerbosity Verbosity { get; set; } = CodeSigningVerbosity.Normal;
-
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
+		public override void CreateTable(CreateTableMode createTableMode = CreateTableMode.ErrorIfExists)
+		{
+			using (var connection = GetSqlConnection())
+			{
+				CreateTable(connection, createTableMode, true);
+			}
+		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,12 +18,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using ISI.Extensions.Repository.Extensions;
+using ISI.Extensions.Repository.SqlServer.Extensions;
 
-namespace ISI.Extensions.Scm.DataTransferObjects.JenkinsServiceApi
+namespace ISI.Extensions.Repository.SqlServer
 {
-	public class NugetPackageKey
+	public abstract partial class RecordManagerWithArchive<TRecord>
 	{
-		public string PackageId { get; set; }
-		public string PackageVersion { get; set; }
+		public override void BulkInsertRecords(IEnumerable<TRecord> records, bool keepIdentities = false, int bulkCopyTimeoutInSeconds = 3600, int batchSize = 1000, Action<string> batchLogger = null)
+		{
+			using (var connection = GetSqlConnection())
+			{
+				BulkInsertRecords(connection, records, keepIdentities, true, bulkCopyTimeoutInSeconds, batchSize, batchLogger);
+			}
+		}
+
+		public override void BulkInsertRecords(Microsoft.Data.SqlClient.SqlConnection connection, IEnumerable<TRecord> records, bool keepIdentities = false, int bulkCopyTimeoutInSeconds = 3600, int batchSize = 1000, Action<string> batchLogger = null)
+		{
+			BulkInsertRecords(connection, records, keepIdentities, true, bulkCopyTimeoutInSeconds, batchSize, batchLogger);
+		}
 	}
 }

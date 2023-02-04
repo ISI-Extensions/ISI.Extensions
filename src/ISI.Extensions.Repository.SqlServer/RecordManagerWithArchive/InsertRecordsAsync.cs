@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -19,20 +19,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
+using ISI.Extensions.Repository.Extensions;
+using ISI.Extensions.Repository.SqlServer.Extensions;
 
-namespace ISI.Extensions.Scm.SerializableModels.RemoteCodeSigningApi
+namespace ISI.Extensions.Repository.SqlServer
 {
-	[DataContract]
-	public class StatusTrackerSnapshot
+	public abstract partial class RecordManagerWithArchive<TRecord>
 	{
-		[DataMember(Name = "caption", EmitDefaultValue = false)]
-		public string Caption { get; set; }
-
-		[DataMember(Name = "percent", EmitDefaultValue = false)]
-		public int Percent { get; set; }
-
-		[DataMember(Name = "logEntries", EmitDefaultValue = false)]
-		public StatusTrackerSnapshotLogEntry[] LogEntries { get; set; }
+		public override async IAsyncEnumerable<TRecord> InsertRecordsAsync(IEnumerable<TRecord> records)
+		{
+			foreach (var record in await PersistConvertedRecordsAsync<TRecord>(records, PersistenceMethod.Insert, true, null, null, record => record, convertedRecord => convertedRecord, record => record.ArchiveDateTime))
+			{
+				yield return record;
+			}
+		}
 	}
 }

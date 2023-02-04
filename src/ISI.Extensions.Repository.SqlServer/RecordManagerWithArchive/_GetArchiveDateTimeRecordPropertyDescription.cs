@@ -19,10 +19,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.Scm.DataTransferObjects.RemoteCodeSigningApi
+namespace ISI.Extensions.Repository.SqlServer
 {
-	public class SignVsixesResponse
+	public abstract partial class RecordManagerWithArchive<TRecord>
 	{
-		public bool Success { get; set; }
+		protected IRecordPropertyDescription<TRecord> GetArchiveDateTimeRecordPropertyDescription()
+		{
+			return RecordPropertyDescription<TRecord>.GetArchiveDateTimeRecordPropertyDescription(ArchiveTableArchiveDateTimeColumnName);
+		}
 	}
 }

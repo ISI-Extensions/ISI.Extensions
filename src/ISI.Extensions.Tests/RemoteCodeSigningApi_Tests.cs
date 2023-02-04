@@ -71,17 +71,17 @@ namespace ISI.Extensions.Tests
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 			settings.OverrideWithEnvironmentVariables();
 
-			var remoteCodeSigningApi = new ISI.Extensions.Scm.RemoteCodeSigningApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+			//var remoteCodeSigningApi = new ISI.Extensions.Scm.RemoteCodeSigningApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
 
-			remoteCodeSigningApi.SignAssemblies(new()
-			{
-				RemoteCodeSigningServiceUrl = settings.CodeSigning.RemoteCodeSigningServiceUrl,
-				RemoteCodeSigningServicePassword = settings.CodeSigning.RemoteCodeSigningServicePassword,
-				AssemblyFullNames = new[]
-				{
-					@"F:\ISI\Internal Projects\ISI.SCM.Jenkins.WindowsService\src\ISI.SCM.Jenkins.WindowsService\bin\Debug\net5.0\ISI.SCM.Jenkins.WindowsService.exe",
-				}
-			});
+			//remoteCodeSigningApi.SignAssemblies(new()
+			//{
+			//	RemoteCodeSigningServiceUrl = settings.CodeSigning.RemoteCodeSigningServiceUrl,
+			//	RemoteCodeSigningServicePassword = settings.CodeSigning.RemoteCodeSigningServicePassword,
+			//	AssemblyFullNames = new[]
+			//	{
+			//		@"F:\ISI\Internal Projects\ISI.SCM.Jenkins.WindowsService\src\ISI.SCM.Jenkins.WindowsService\bin\Debug\net5.0\ISI.SCM.Jenkins.WindowsService.exe",
+			//	}
+			//});
 		}
 
 		[Test]

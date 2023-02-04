@@ -33,8 +33,6 @@ namespace ISI.Extensions.Scm
 			services.AddSingleton<IFileStoreApi, FileStoreApi>();
 			services.AddSingleton<IScmApi, ScmApi>();
 			services.AddSingleton<ISourceControlClientApi, SourceControlClientApi>();
-			services.AddSingleton<JenkinsServiceApi>();
-			services.AddSingleton<RemoteCodeSigningApi>();
 			services.AddSingleton<VSExtensionsApi>();
 		}
 	}

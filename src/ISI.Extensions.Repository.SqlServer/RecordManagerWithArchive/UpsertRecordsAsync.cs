@@ -18,20 +18,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Runtime.Serialization;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Scm.SerializableModels.JenkinsServiceApi
+namespace ISI.Extensions.Repository.SqlServer
 {
-	[DataContract]
-	public partial class GetStatusTrackerSnapshotResponse
+	public abstract partial class RecordManagerWithArchive<TRecord>
 	{
-		[DataMember(Name = "statusTrackerSnapshot", EmitDefaultValue = false)]
-		public StatusTrackerSnapshot StatusTrackerSnapshot { get; set; }
+		public override async IAsyncEnumerable<TRecord> UpsertRecordsAsync(IEnumerable<TRecord> records)
+		{
+			foreach (var record in await PersistConvertedRecordsAsync<TRecord>(records ?? Array.Empty<TRecord>(), PersistenceMethod.Upsert, true, null, null, record => record, convertedRecord => convertedRecord, record => record.ArchiveDateTime))
+			{
+				yield return record;
+			}
+		}
 
-		[DataMember(Name = "isFinished", EmitDefaultValue = false)]
-		public bool IsFinished { get; set; }
-
-		[DataMember(Name = "success", EmitDefaultValue = false)]
-		public bool? Success { get; set; }
+		public override async IAsyncEnumerable<TRecord> UpsertRecordsAsync(IEnumerable<TRecord> records, Action<TRecord> updateRecordProperties)
+		{
+			foreach (var record in await PersistConvertedRecordsAsync<TRecord>(records ?? Array.Empty<TRecord>(), PersistenceMethod.Upsert, true, updateRecordProperties, null, record => record, convertedRecord => convertedRecord, record => record.ArchiveDateTime))
+			{
+				yield return record;
+			}
+		}
 	}
 }

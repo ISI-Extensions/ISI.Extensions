@@ -146,6 +146,26 @@ namespace ISI.Extensions.Extensions
 			return defaultValue;
 		}
 
+		public static DateTime? ToDateTimeUtcNullable(this string value, DateTime? defaultValue = null)
+		{
+			value ??= string.Empty;
+
+			if (DateTime.TryParse(value, out var parsedValue))
+			{
+				return parsedValue.ToDateTimeUtc();
+			}
+
+			foreach (var dateFormat in _dateFormats.Values)
+			{
+				if (DateTime.TryParseExact(value, dateFormat, null, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out parsedValue))
+				{
+					return parsedValue.ToDateTimeUtc();
+				}
+			}
+
+			return defaultValue;
+		}
+
 		public static DateTime? ToDateTimeNullable(this string value, DateTime? defaultValue = null)
 		{
 			value ??= string.Empty;

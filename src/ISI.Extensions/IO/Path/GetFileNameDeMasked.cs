@@ -43,6 +43,8 @@ namespace ISI.Extensions
 				new("{ss}", FileNameMask.FileNameMaskType.DateTimeMask, "ss", "Time Stamp: Second"),
 				new("{fff}", FileNameMask.FileNameMaskType.DateTimeMask, "fff", "Time Stamp: Millisecond"),
 				new("{TempDirectory}", FileNameMask.FileNameMaskType.StringReplacement, System.IO.Path.GetTempPath, "Temp Directory"),
+				new("{PathRoot}", FileNameMask.FileNameMaskType.StringReplacement, ISI.Extensions.IO.Path.PathRoot, "PathRoot Directory"),
+				new("{DataRoot}", FileNameMask.FileNameMaskType.StringReplacement, ISI.Extensions.IO.Path.DataRoot, "DataRoot Directory"),
 			};
 
 			public static string GetFileNameDeMasked(string fileName, ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper = null)

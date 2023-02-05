@@ -20,6 +20,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Crypto
 {
+	[ISI.Extensions.Crypto.SaltedHashGenerator]
 	public class Pbkdf2SaltedHashGenerator : ISaltedHashGenerator
 	{
 		public const string SaltedHashGeneratorTypeUuid = "ada16a99-d528-4904-9ceb-b1506a2aed1d";

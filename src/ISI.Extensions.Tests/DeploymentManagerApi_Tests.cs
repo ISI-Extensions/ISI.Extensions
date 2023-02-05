@@ -137,6 +137,67 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void DeployArtifact2_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+			settings.OverrideWithEnvironmentVariables();
+
+			var scmApi = new ISI.Extensions.Scm.ScmApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+			var authenticationToken = scmApi.GetAuthenticationToken(new()
+			{
+				ScmManagementUrl = settings.Scm.WebServiceUrl,
+				UserName = settings.ActiveDirectory.UserName,
+				Password = settings.ActiveDirectory.Password,
+			}).AuthenticationToken;
+
+			var deploymentManagerApi = new ISI.Extensions.Scm.DeploymentManagerApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+			var buildArtifactsApi = new ISI.Extensions.Scm.BuildArtifactsApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+
+			var artifactName = "ISI.SCM.Scheduler.WindowsService";
+
+			var dateTimeStampVersion = buildArtifactsApi.GetBuildArtifactEnvironmentDateTimeStampVersion(new ()
+			{
+				BuildArtifactsApiUrl = settings.Scm.WebServiceUrl,
+				BuildArtifactsApiKey = authenticationToken,
+				
+				BuildArtifactName = artifactName,
+				Environment = "Build",
+			}).DateTimeStampVersion;
+
+			deploymentManagerApi.DeployArtifact(new()
+			{
+				ServicesManagerUrl = settings.GetValue("PRODUCTION-NS03-DeployManager-Url"),
+				ServicesManagerApiKey = settings.GetValue("PRODUCTION-NS03-DeployManager-Password"),
+
+				BuildArtifactsApiUrl = settings.Scm.WebServiceUrl,
+				BuildArtifactsApiKey = authenticationToken,
+
+				BuildArtifactName = artifactName,
+				ToDateTimeStamp = dateTimeStampVersion.Value,
+				ToEnvironment = "Production",
+				ConfigurationKey = "Production",
+				Components = new ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.IDeployComponent[]
+				{
+					new ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.DeployComponentConsoleApplication()
+					{
+						PackageFolder = "ISI\\ISI.Identity.MigrationTool",
+						DeployToSubfolder = "ISI.Identity.MigrationTool",
+						ConsoleApplicationExe = "ISI.Identity.MigrationTool.exe",
+						ExecuteConsoleApplicationAfterInstall = true,
+						ExecuteConsoleApplicationAfterInstallArguments = "-noWaitAtFinish",
+					},
+					new ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi.DeployComponentWindowsService()
+					{
+						PackageFolder = "ISI\\ISI.Identity.WindowsService",
+						DeployToSubfolder = "ISI.Identity.WindowsService",
+						WindowsServiceExe = "ISI.Identity.WindowsService.exe",
+					},
+				},
+			});
+		}
+
+		[Test]
 		public void PrePushArtifact_Test()
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");

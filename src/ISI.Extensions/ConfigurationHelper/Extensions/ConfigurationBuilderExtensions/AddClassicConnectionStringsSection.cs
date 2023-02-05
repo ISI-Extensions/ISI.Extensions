@@ -91,7 +91,7 @@ namespace ISI.Extensions.ConfigurationHelper.Extensions
 
 			if (string.IsNullOrEmpty(path))
 			{
-				throw new ArgumentException("InvalidFilePath: \"{0}\"", nameof(path));
+				throw new ArgumentException("InvalidFilePath: \"{0}\"", path);
 			}
 
 			return configurationBuilder.AddClassicConnectionStringsSectionFile(source =>

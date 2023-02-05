@@ -33,6 +33,7 @@ namespace ISI.Extensions
 			services.AddSingleton<ISI.Extensions.Serialization.ISerialization, ISI.Extensions.Serialization.Serialization>();
 			services.AddSingleton<ISI.Extensions.SecureShell.IHostConfigurationManager, ISI.Extensions.SecureShell.HostConfigurationManager>();
 			services.AddSingleton<ISI.Extensions.StatusTrackers.FileStatusTrackerFactory>();
+			services.AddSingleton<ISI.Extensions.Crypto.Pbkdf2SaltedHashGenerator>();
 		}
 	}
 }

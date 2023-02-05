@@ -36,7 +36,7 @@ namespace ISI.Extensions.ConfigurationHelper.Extensions
 		}
 		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddClassicConnectionStringsSectionFiles(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, string[] environments, GetClassicConnectionStringsSectionFilePath getPath, bool reloadOnChange)
 		{
-			return AddClassicConnectionStringsSectionFiles(configurationBuilder, null, environments, getPath, false);
+			return AddClassicConnectionStringsSectionFiles(configurationBuilder, null, environments, getPath, reloadOnChange);
 		}
 		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddClassicConnectionStringsSectionFiles(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, Microsoft.Extensions.FileProviders.IFileProvider provider, string[] environments, GetClassicConnectionStringsSectionFilePath getPath, bool reloadOnChange)
 		{
@@ -49,6 +49,28 @@ namespace ISI.Extensions.ConfigurationHelper.Extensions
 
 			return configurationBuilder;
 		}
+
+
+		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddDataPathClassicConnectionStringsSectionFile(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, string path)
+		{
+			return AddDataPathClassicConnectionStringsSectionFile(configurationBuilder, null, path, false);
+		}
+		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddDataPathClassicConnectionStringsSectionFile(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, Microsoft.Extensions.FileProviders.IFileProvider provider, string path)
+		{
+			return AddDataPathClassicConnectionStringsSectionFile(configurationBuilder, provider, path, false);
+		}
+		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddDataPathClassicConnectionStringsSectionFile(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, string path, bool reloadOnChange)
+		{
+			return AddDataPathClassicConnectionStringsSectionFile(configurationBuilder, null, path, reloadOnChange);
+		}
+		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddDataPathClassicConnectionStringsSectionFile(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, Microsoft.Extensions.FileProviders.IFileProvider provider, string path, bool reloadOnChange)
+		{
+			configurationBuilder.AddClassicConnectionStringsSectionFile(provider, System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, path), true, reloadOnChange);
+
+			return configurationBuilder;
+		}
+
+
 
 		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddClassicConnectionStringsSectionFile(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, string path)
 		{

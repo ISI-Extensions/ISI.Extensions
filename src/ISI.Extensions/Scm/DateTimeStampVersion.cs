@@ -43,6 +43,10 @@ namespace ISI.Extensions.Scm
 			DateTimeStamp = new(dateTimeStamp);
 			Version = string.IsNullOrWhiteSpace(version) ? null : new Version(version);
 		}
+		public DateTimeStampVersion(DateTime dateTimeUtc)
+		{
+			DateTimeStamp = new(dateTimeUtc);
+		}
 		public DateTimeStampVersion(DateTimeStamp dateTimeStamp)
 		{
 			DateTimeStamp = dateTimeStamp;
@@ -83,6 +87,11 @@ namespace ISI.Extensions.Scm
 			}
 		}
 
-		public override string ToString() => string.Format("{0} ({1})", Version, DateTimeStamp);
+		public override string ToString() => Value;
+		//public override string ToString() => string.Format("{0} ({1})", Version, DateTimeStamp);
+		public string Formatted() => string.Format("{0} ({1})", Version, DateTimeStamp);
+
+		public static implicit operator DateTimeStampVersion(string dateTimeStampVersion) => new(dateTimeStampVersion);
+		public static implicit operator DateTimeStampVersion(DateTimeStamp dateTimeStamp) => new(dateTimeStamp);
 	}
 }

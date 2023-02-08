@@ -27,11 +27,13 @@ namespace ISI.Extensions.Scm
 	{
 		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
+			services.AddSingleton<ISI.Extensions.Scm.BuildScriptApi>();
 			services.AddSingleton<IBuildScriptApi, BuildScriptApi>();
 			services.AddSingleton<IBuildArtifactsApi, BuildArtifactsApi>();
 			services.AddSingleton<IDeploymentManagerApi, DeploymentManagerApi>();
 			services.AddSingleton<IFileStoreApi, FileStoreApi>();
 			services.AddSingleton<IScmApi, ScmApi>();
+			services.AddSingleton<ISI.Extensions.Scm.SourceControlClientApi>();
 			services.AddSingleton<ISourceControlClientApi, SourceControlClientApi>();
 			services.AddSingleton<VSExtensionsApi>();
 		}

@@ -32,14 +32,33 @@ namespace ISI.Extensions.AspNetCore.Extensions
 
 			if (makeAbsolute)
 			{
-				var uriBuilder = new UriBuilder(urlHelper.ActionContext.HttpContext.Request.Host.Host)
+				var host = urlHelper.ActionContext.HttpContext.Request.Host.Host;
+				var scheme = urlHelper.ActionContext.HttpContext.Request.Scheme;
+				var port = urlHelper.ActionContext.HttpContext.Request.Host.Port;
+
+				if (urlHelper.ActionContext.HttpContext.Request.Headers.TryGetValue("X-Forwarded-Host", out var forwardedHost))
 				{
-					Scheme = urlHelper.ActionContext.HttpContext.Request.Scheme,
+					host = forwardedHost.NullCheckedFirstOrDefault();
+				}
+
+				if (urlHelper.ActionContext.HttpContext.Request.Headers.TryGetValue("X-Forwarded-Proto", out var forwardedScheme))
+				{
+					scheme = forwardedScheme.NullCheckedFirstOrDefault();
+				}
+
+				if (urlHelper.ActionContext.HttpContext.Request.Headers.TryGetValue("X-Forwarded-Port", out var forwardedPort))
+				{
+					port = forwardedPort.NullCheckedFirstOrDefault().ToIntNullable();
+				}
+
+				var uriBuilder = new UriBuilder(host)
+				{
+					Scheme = scheme,
 				};
 
-				if (urlHelper.ActionContext.HttpContext.Request.Host.Port.HasValue)
+				if (port.HasValue)
 				{
-					uriBuilder.Port = urlHelper.ActionContext.HttpContext.Request.Host.Port.Value;
+					uriBuilder.Port = port.Value;
 				}
 
 				uriBuilder.SetPathAndQueryString(url);

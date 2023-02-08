@@ -38,5 +38,9 @@ namespace ISI.Extensions.Scm
 		}
 
 		public override string ToString() => string.Format("{0:yyyyMMdd.HHmmss}", DateTimeUtc);
+
+		public static implicit operator DateTimeStamp(string dateTimeStamp) => new(dateTimeStamp);
+		public static implicit operator DateTimeStamp(DateTime dateTimeUtc) => new(dateTimeUtc);
+		public static implicit operator DateTimeStamp(DateTimeStampVersion dateTimeVersion) => new(dateTimeVersion.DateTimeStamp.DateTimeUtc);
 	}
 }

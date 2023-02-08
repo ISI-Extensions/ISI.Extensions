@@ -27,6 +27,6 @@ namespace ISI.Extensions.Scm.DataTransferObjects.BuildArtifactsApi
 		public string BuildArtifactsApiKey { get; set; }
 		public string BuildArtifactName { get; set; }
 		public string Environment { get; set; }
-		public DateTimeStampVersion DateTimeStampVersion { get; set; }
+		public ISI.Extensions.Scm.DateTimeStampVersion DateTimeStampVersion { get; set; }
 	}
 }

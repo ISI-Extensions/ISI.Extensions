@@ -32,7 +32,7 @@ namespace ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi
 
 		public string ArtifactDateTimeStampVersionUrl { get; set; }
 		public string ArtifactDownloadUrl { get; set; }
-		public string ToDateTimeStamp { get; set; }
+		public ISI.Extensions.Scm.DateTimeStampVersion ToDateTimeStamp { get; set; }
 		public string FromEnvironment { get; set; }
 		public string ToEnvironment { get; set; }
 		public string ConfigurationKey { get; set; }

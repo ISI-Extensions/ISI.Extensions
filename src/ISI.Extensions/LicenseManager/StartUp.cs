@@ -23,7 +23,7 @@ namespace ISI.Extensions.LicenseManager
 	[ISI.Extensions.StartUp]
 	public class StartUp : ISI.Extensions.IStartUp
 	{
-		[Obsolete("Not needed if your use \"ISI.Extensions.StartUp.Start()\"")]
+		[Obsolete("Not needed if you use \"ISI.Extensions.StartUp.Start()\"")]
 		public static void ApplyLicenses()
 		{
 			(new StartUp()).Start();

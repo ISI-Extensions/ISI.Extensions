@@ -120,7 +120,7 @@ namespace ISI.Extensions.Tests
 
 			var buildArtifactZipFileName = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(solutionFullName), @$"..\Publish\{artifactName}.{buildDateTimeStamp}.zip");
 
-			var bateTimeStampVersion = string.Format("{0}|{1}", buildDateTimeStamp, assemblyVersions[rootAssemblyVersionKey].AssemblyVersion);
+			var bateTimeStampVersion = new DateTimeStampVersion(buildDateTimeStamp, assemblyVersions[rootAssemblyVersionKey].AssemblyVersion);
 
 			packagerApi.PackageComponents(new()
 			{
@@ -141,8 +141,7 @@ namespace ISI.Extensions.Tests
 					},
 				},
 				PackageFullName = buildArtifactZipFileName,
-				PackageVersion = rootAssemblyVersionKey,
-				PackageBuildDateTimeStamp = buildDateTimeStamp,
+				PackageBuildDateTimeStampVersion = bateTimeStampVersion,
 			});
 
 

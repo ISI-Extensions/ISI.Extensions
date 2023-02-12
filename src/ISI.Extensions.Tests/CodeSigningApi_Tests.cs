@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using ISI.Extensions.ConfigurationHelper.Extensions;
 using ISI.Extensions.DependencyInjection.Extensions;
 using ISI.Extensions.Extensions;
@@ -103,9 +103,19 @@ namespace ISI.Extensions.Tests
 
 			codeSigningApi.SignVsixes(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.SignVsixesRequest()
 			{
-				VsixFullNames = new[] { @"F:\ISI\Internal Projects\ISI.Extensions.VisualStudio2019\src\ISI.Extensions.VisualStudio2019\bin\Debug\ISI.Extensions.VisualStudio2019.vsix" },
+				VsixFullNames = new[] { @"F:\ISI\Internal Projects\ISI.VisualStudio.Extensions\Publish\ISI.VisualStudio.Extensions.vsix" },
+				CodeSigningCertificateTokenCertificateFileName = settings.CodeSigning.Token.CertificateFileName,
+				CodeSigningCertificateTokenCryptographicProvider = settings.CodeSigning.Token.CryptographicProvider,
+				CodeSigningCertificateTokenContainerName = settings.CodeSigning.Token.ContainerName,
+				CodeSigningCertificateTokenPassword = settings.CodeSigning.Token.Password,
 				TimeStampUri = new(settings.CodeSigning.TimeStampUrl),
+				TimeStampDigestAlgorithm = ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.CodeSigningDigestAlgorithm.Sha256,
+				CertificateFileName = settings.CodeSigning.CertificateFileName,
+				CertificatePassword = settings.CodeSigning.CertificatePassword,
 				CertificateFingerprint = settings.CodeSigning.CertificateFingerprint,
+				DigestAlgorithm = ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.CodeSigningDigestAlgorithm.Sha256,
+				//Settings = settings,
+				//CertificateFingerprint = settings.CodeSigning.CertificateFingerprint,
 				//CertificatePath = File(settings.CodeSigning.CertificateFileName),
 				//CertificatePassword = settings.CodeSigning.CertificatePassword,
 			});

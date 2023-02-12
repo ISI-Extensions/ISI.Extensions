@@ -87,6 +87,8 @@ namespace ISI.Extensions.Scm
 			}
 		}
 
+		public bool HasValue => ((DateTimeStamp != null) || (Version != null));
+
 		public override string ToString() => Value;
 		//public override string ToString() => string.Format("{0} ({1})", Version, DateTimeStamp);
 		public string Formatted() => string.Format("{0} ({1})", Version, DateTimeStamp);

@@ -80,8 +80,7 @@ namespace ISI.Extensions.VisualStudio
 			logger.LogInformation("  SubDirectory: {0}", request.SubDirectory);
 			logger.LogInformation("  Package FullName: {0}", request.PackageFullName);
 			logger.LogInformation("  Package Name: {0}", request.PackageName);
-			logger.LogInformation("  Package Version: {0}", request.PackageVersion);
-			logger.LogInformation("  Package BuildDateTimeStamp: {0}", request.PackageBuildDateTimeStamp);
+			logger.LogInformation("  Package PackageBuildDateTimeStampVersion: {0}", request.PackageBuildDateTimeStampVersion);
 
 			using (var tempDirectory = new ISI.Extensions.IO.Path.TempDirectory())
 			{
@@ -147,9 +146,9 @@ namespace ISI.Extensions.VisualStudio
 
 				System.IO.Compression.ZipFile.CreateFromDirectory(tempDirectory.FullName, request.PackageFullName);
 
-				if (!string.IsNullOrWhiteSpace(request.PackageVersion) && !string.IsNullOrWhiteSpace(request.PackageBuildDateTimeStamp))
+				if (request.PackageBuildDateTimeStampVersion.HasValue)
 				{
-					System.IO.File.WriteAllText(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(request.PackageFullName), string.Format("{0}.Current.DateTimeStamp.Version.txt", request.PackageName)), string.Format("{0}|{1}", request.PackageBuildDateTimeStamp, request.PackageVersion));
+					System.IO.File.WriteAllText(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(request.PackageFullName), string.Format("{0}.Current.DateTimeStamp.Version.txt", request.PackageName)), request.PackageBuildDateTimeStampVersion.Value);
 				}
 			}
 

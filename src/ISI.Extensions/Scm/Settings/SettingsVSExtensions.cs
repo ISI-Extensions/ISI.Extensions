@@ -21,19 +21,37 @@ namespace ISI.Extensions.Scm
 {
 	public partial class Settings
 	{
-		public class SettingsVSExtensions
+		public class SettingsVsExtensions
 		{
 			protected Settings Settings { get; }
 
-			public SettingsVSExtensions(Settings settings)
+			public SettingsVsExtensions(Settings settings)
 			{
 				Settings = settings;
 			}
 
-			public string RepositoryUrl
+			public string ApiUrl
 			{
-				get => Settings.GetValue(Settings.Key.VSExtensionsRepositoryUrl);
-				set => Settings.SetValue(Settings.Key.VSExtensionsRepositoryUrl, value);
+				get => Settings.GetValue(Settings.Key.VsExtensionsApiUrl);
+				set => Settings.SetValue(Settings.Key.VsExtensionsApiUrl, value);
+			}
+
+			public string ApiKey
+			{
+				get => Settings.GetValue(Settings.Key.VsExtensionsApiKey);
+				set => Settings.SetValue(Settings.Key.VsExtensionsApiKey, value);
+			}
+
+			public string UserName
+			{
+				get => Settings.GetValue(Settings.Key.VsExtensionsUserName);
+				set => Settings.SetValue(Settings.Key.VsExtensionsUserName, value);
+			}
+
+			public string Password
+			{
+				get => Settings.GetValue(Settings.Key.VsExtensionsPassword);
+				set => Settings.SetValue(Settings.Key.VsExtensionsPassword, value);
 			}
 		}
 	}

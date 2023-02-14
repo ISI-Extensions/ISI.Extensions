@@ -49,15 +49,23 @@ namespace ISI.Extensions.Scm
 			public const string CodeSigningRemoteCodeSigningServiceUrl = nameof(CodeSigningRemoteCodeSigningServiceUrl);
 			public const string CodeSigningRemoteCodeSigningServicePassword = nameof(CodeSigningRemoteCodeSigningServicePassword);
 
-			public const string NugetApiKey = nameof(NugetApiKey);
+			public const string NugetApiUrl = nameof(NugetApiUrl);
 			public const string NugetRepositoryName = nameof(NugetRepositoryName);
 			public const string NugetRepositoryUrl = nameof(NugetRepositoryUrl);
 			public const string NugetPackageChunksRepositoryUrl = nameof(NugetPackageChunksRepositoryUrl);
+			public const string NugetApiKey = nameof(NugetApiKey);
+			public const string NugetUserName = nameof(NugetUserName);
+			public const string NugetPassword = nameof(NugetPassword);
 
-			public const string BuildArtifactsApiKey = nameof(BuildArtifactsApiKey);
 			public const string BuildArtifactsApiUrl = nameof(BuildArtifactsApiUrl);
+			public const string BuildArtifactsApiKey = nameof(BuildArtifactsApiKey);
+			public const string BuildArtifactsUserName = nameof(BuildArtifactsUserName);
+			public const string BuildArtifactsPassword = nameof(BuildArtifactsPassword);
 
-			public const string VSExtensionsRepositoryUrl = nameof(VSExtensionsRepositoryUrl);
+			public const string VsExtensionsApiUrl = nameof(VsExtensionsApiUrl);
+			public const string VsExtensionsApiKey = nameof(VsExtensionsApiKey);
+			public const string VsExtensionsUserName = nameof(VsExtensionsUserName);
+			public const string VsExtensionsPassword = nameof(VsExtensionsPassword);
 
 			public const string JenkinsServiceUrl = nameof(JenkinsServiceUrl);
 			public const string JenkinsServicePassword = nameof(JenkinsServicePassword);
@@ -111,8 +119,8 @@ namespace ISI.Extensions.Scm
 		private SettingsBuildArtifacts _buildArtifacts = null;
 		public SettingsBuildArtifacts BuildArtifacts => _buildArtifacts ??= new(this);
 
-		private SettingsVSExtensions _vsExtensions = null;
-		public SettingsVSExtensions VSExtensions => _vsExtensions ??= new(this);
+		private SettingsVsExtensions _vsExtensions = null;
+		public SettingsVsExtensions VsExtensions => _vsExtensions ??= new(this);
 
 		private SettingsJenkins _jenkins = null;
 		public SettingsJenkins Jenkins => _jenkins ??= new(this);

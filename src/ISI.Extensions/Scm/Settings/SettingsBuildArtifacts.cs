@@ -30,16 +30,28 @@ namespace ISI.Extensions.Scm
 				Settings = settings;
 			}
 
+			public string ApiUrl
+			{
+				get => Settings.GetValue(Settings.Key.BuildArtifactsApiUrl);
+				set => Settings.SetValue(Settings.Key.BuildArtifactsApiUrl, value);
+			}
+
 			public string ApiKey
 			{
 				get => Settings.GetValue(Settings.Key.BuildArtifactsApiKey);
 				set => Settings.SetValue(Settings.Key.BuildArtifactsApiKey, value);
 			}
 
-			public string ApiUrl
+			public string UserName
 			{
-				get => Settings.GetValue(Settings.Key.BuildArtifactsApiUrl);
-				set => Settings.SetValue(Settings.Key.BuildArtifactsApiUrl, value);
+				get => Settings.GetValue(Settings.Key.BuildArtifactsUserName);
+				set => Settings.SetValue(Settings.Key.BuildArtifactsUserName, value);
+			}
+
+			public string Password
+			{
+				get => Settings.GetValue(Settings.Key.BuildArtifactsPassword);
+				set => Settings.SetValue(Settings.Key.BuildArtifactsPassword, value);
 			}
 		}
 	}

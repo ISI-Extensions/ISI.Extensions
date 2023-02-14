@@ -30,10 +30,10 @@ namespace ISI.Extensions.Scm
 				Settings = settings;
 			}
 
-			public string ApiKey
+			public string ApiUrl
 			{
-				get => Settings.GetValue(Settings.Key.NugetApiKey);
-				set => Settings.SetValue(Settings.Key.NugetApiKey, value);
+				get => Settings.GetValue(Settings.Key.NugetApiUrl);
+				set => Settings.SetValue(Settings.Key.NugetApiUrl, value);
 			}
 
 			public string RepositoryName
@@ -52,6 +52,24 @@ namespace ISI.Extensions.Scm
 			{
 				get => Settings.GetValue(Settings.Key.NugetPackageChunksRepositoryUrl);
 				set => Settings.SetValue(Settings.Key.NugetPackageChunksRepositoryUrl, value);
+			}
+
+			public string ApiKey
+			{
+				get => Settings.GetValue(Settings.Key.NugetApiKey);
+				set => Settings.SetValue(Settings.Key.NugetApiKey, value);
+			}
+
+			public string UserName
+			{
+				get => Settings.GetValue(Settings.Key.NugetUserName);
+				set => Settings.SetValue(Settings.Key.NugetUserName, value);
+			}
+
+			public string Password
+			{
+				get => Settings.GetValue(Settings.Key.NugetPassword);
+				set => Settings.SetValue(Settings.Key.NugetPassword, value);
 			}
 		}
 	}

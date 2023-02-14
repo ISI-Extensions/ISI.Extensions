@@ -143,7 +143,7 @@ namespace ISI.Extensions.StatusTrackers
 
 			return new StatusTrackerSnapshot(caption, percent, logEntries);
 		}
-
+		
 		public IStatusTrackerSnapshot[] GetActiveStatusTrackerSnapshots(IEnumerable<string> statusTrackerKeys)
 		{
 			var statusTrackers = new List<IStatusTrackerSnapshot>();
@@ -162,5 +162,17 @@ namespace ISI.Extensions.StatusTrackers
 		}
 
 		public IStatusTrackerSnapshot[] GetActiveStatusTrackerSnapshots() => GetActiveStatusTrackerSnapshots(GetActiveStatusTrackerKeys());
+
+		public void DeleteStatusTracker(string statusTrackerKey)
+		{
+			foreach (var fileNameExtension in new [] {RunningFileNameExtension,CaptionFileNameExtension,PercentFileNameExtension,LogFileNameExtension,FinishedFileNameExtension})
+			{
+				var fileName = GetFileName(statusTrackerKey, fileNameExtension);
+				if (System.IO.File.Exists(fileName))
+				{
+					System.IO.File.Delete(fileName);
+				}
+			}
+		}
 	}
 }

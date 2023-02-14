@@ -35,7 +35,6 @@ namespace ISI.Extensions.Scm
 			services.AddSingleton<IScmApi, ScmApi>();
 			services.AddSingleton<ISI.Extensions.Scm.SourceControlClientApi>();
 			services.AddSingleton<ISourceControlClientApi, SourceControlClientApi>();
-			services.AddSingleton<VSExtensionsApi>();
 		}
 	}
 }

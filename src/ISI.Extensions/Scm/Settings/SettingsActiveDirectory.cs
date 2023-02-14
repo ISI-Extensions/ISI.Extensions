@@ -47,6 +47,8 @@ namespace ISI.Extensions.Scm
 				get => Settings.GetValue(Settings.Key.ActiveDirectoryPassword);
 				set => Settings.SetValue(Settings.Key.ActiveDirectoryPassword, value);
 			}
+
+			public string GetDomainUserName => string.Format("{0}\\{1}", Domain, UserName);
 		}
 	}
 }

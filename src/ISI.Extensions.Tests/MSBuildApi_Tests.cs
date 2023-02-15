@@ -64,12 +64,19 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
-		public void GenerateAssemblyInfoFile_Test()
+		public void GetMSBuildExeFullName_Test()
 		{
 			var msBuildApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.MSBuildApi>();
 
 			var msBuildExeFullName = msBuildApi.GetMSBuildExeFullName(new()).MSBuildExeFullName;
+		}
 
+		[Test]
+		public void GetVsixSigntoolExeFullName_Test()
+		{
+			var vsixSigntoolApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.VsixSigntoolApi>();
+
+			var vsWhereExeFullName = vsixSigntoolApi.GetVsixSigntoolExeFullName(new()).VsixSigntoolExeFullName;
 		}
 	}
 }

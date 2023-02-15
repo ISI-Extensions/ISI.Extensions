@@ -19,10 +19,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.VisualStudio.DataTransferObjects.VsWhereApi
+namespace ISI.Extensions.VisualStudio.DataTransferObjects.VsixSigntoolApi
 {
-	public class GetMSBuildExeFullNamesResponse
+	public class GetVsixSigntoolExeFullNameResponse
 	{
-		public string[] MSBuildExeFullNames { get; set; }
+		public string VsixSigntoolExeFullName { get; set; }
 	}
 }

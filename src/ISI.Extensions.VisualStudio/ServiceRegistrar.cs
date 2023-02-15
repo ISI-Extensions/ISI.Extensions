@@ -31,6 +31,7 @@ namespace ISI.Extensions.VisualStudio
 			services.AddSingleton<CodeGenerationApi>();
 			services.AddSingleton<CodeSigningApi>();
 			services.AddSingleton<VsWhereApi>();
+			services.AddSingleton<VsixSigntoolApi>();
 			services.AddSingleton<MSBuildApi>();
 			services.AddSingleton<PackagerApi>();
 			services.AddSingleton<ProjectApi>();

@@ -73,8 +73,8 @@ namespace ISI.Extensions.Tests
 			var logger = new ISI.Extensions.TextWriterLogger(TestContext.Progress);
 			var serialization = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Serialization.ISerialization>();
 			var nugetApi = new ISI.Extensions.Nuget.NugetApi(logger);
-			var vsWhereApi = new ISI.Extensions.VisualStudio.VsWhereApi(logger, nugetApi);
-			var msBuildApi = new ISI.Extensions.VisualStudio.MSBuildApi(logger, vsWhereApi);
+			var findToolsApi = new ISI.Extensions.VisualStudio.VsWhereApi(logger, nugetApi);
+			var msBuildApi = new ISI.Extensions.VisualStudio.MSBuildApi(logger, findToolsApi);
 			var codeGenerationApi = new ISI.Extensions.VisualStudio.CodeGenerationApi(logger);
 			var xmlTransformApi = new ISI.Extensions.VisualStudio.XmlTransformApi(logger);
 			var packagerApi = new ISI.Extensions.VisualStudio.PackagerApi(logger, nugetApi, msBuildApi, codeGenerationApi, xmlTransformApi);

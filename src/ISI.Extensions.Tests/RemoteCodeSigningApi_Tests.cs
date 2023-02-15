@@ -91,7 +91,8 @@ namespace ISI.Extensions.Tests
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 			settings.OverrideWithEnvironmentVariables();
 
-			var codeSigningApi = new ISI.Extensions.VisualStudio.CodeSigningApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+			var logger = new ISI.Extensions.TextWriterLogger(TestContext.Progress);
+			var codeSigningApi = new ISI.Extensions.VisualStudio.CodeSigningApi(logger, new ISI.Extensions.VisualStudio.VsixSigntoolApi(logger, new ISI.Extensions.Nuget.NugetApi(logger)));
 
 			codeSigningApi.SignVsixes(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.SignVsixesRequest()
 			{

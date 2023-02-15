@@ -87,7 +87,8 @@ namespace ISI.Extensions.Tests
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 
-			var codeSigningApi = new ISI.Extensions.VisualStudio.CodeSigningApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+			var logger = new ISI.Extensions.TextWriterLogger(TestContext.Progress);
+			var codeSigningApi = new ISI.Extensions.VisualStudio.CodeSigningApi(logger, new ISI.Extensions.VisualStudio.VsixSigntoolApi(logger, new ISI.Extensions.Nuget.NugetApi(logger)));
 
 			codeSigningApi.SignNupkgs(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.SignNupkgsRequest()
 			{

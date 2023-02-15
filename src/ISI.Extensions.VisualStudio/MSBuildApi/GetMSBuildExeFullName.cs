@@ -44,6 +44,42 @@ namespace ISI.Extensions.VisualStudio
 				request.MsBuildPlatform = (System.Environment.Is64BitOperatingSystem ? MSBuildPlatform.x64 : MSBuildPlatform.x86);
 			}
 
+
+			var arguments = new[]
+			{
+					"-products *",
+					"-requires Microsoft.Component.MSBuild",
+					"-property installationPath",
+				};
+
+			var processResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+			{
+				//Logger = logger,
+				ProcessExeFullName = VsWhereApi.GetVsWhereExeFullName(new()).VsWhereExeFullName,
+				Arguments = arguments,
+			});
+
+			if (processResponse.Errored)
+			{
+				throw new Exception("Cannot find or get VsWhere.exe");
+			}
+
+			var msBuildExeFullNames = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+
+			void addIfExists(string msBuildExeFullName)
+			{
+				if (System.IO.File.Exists(msBuildExeFullName))
+				{
+					msBuildExeFullNames.Add(msBuildExeFullName);
+				}
+			}
+
+			foreach (var visualStudioPath in processResponse.Output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+			{
+				addIfExists(System.IO.Path.Combine(visualStudioPath, "MSBuild", "Current", "Bin", "MSBuild.exe"));
+				addIfExists(System.IO.Path.Combine(visualStudioPath, "MSBuild", "Current", "Bin", "amd64", "MSBuild.exe"));
+			}
+
 			var vsVersions = new[]
 			{
 				"Enterprise",
@@ -52,43 +88,43 @@ namespace ISI.Extensions.VisualStudio
 				"BuildTools"
 			};
 
-			var msBuildFullNames = VsWhereApi.GetMSBuildExeFullNames(new()).MSBuildExeFullNames.ToList();
-
 			if (request.MsBuildPlatform == MSBuildPlatform.x64)
 			{
-				msBuildFullNames.RemoveAll(msBuildFullName => msBuildFullName.IndexOf(@"\amd64\", StringComparison.InvariantCultureIgnoreCase) < 0);
+				msBuildExeFullNames.RemoveWhere(msBuildFullName => msBuildFullName.IndexOf(@"\amd64\", StringComparison.InvariantCultureIgnoreCase) < 0);
 			}
 			else
 			{
-				msBuildFullNames.RemoveAll(msBuildFullName => msBuildFullName.IndexOf(@"\amd64\", StringComparison.InvariantCultureIgnoreCase) >= 0);
+				msBuildExeFullNames.RemoveWhere(msBuildFullName => msBuildFullName.IndexOf(@"\amd64\", StringComparison.InvariantCultureIgnoreCase) >= 0);
 			}
 
 			switch (request.MsBuildVersion)
 			{
 				case MSBuildVersion.MSBuild16:
-					msBuildFullNames.RemoveAll(msBuildFullName => msBuildFullName.IndexOf(@"\2019\", StringComparison.InvariantCultureIgnoreCase) < 0);
+					msBuildExeFullNames.RemoveWhere(msBuildFullName => msBuildFullName.IndexOf(@"\2019\", StringComparison.InvariantCultureIgnoreCase) < 0);
 					foreach (var vsVersion in vsVersions)
 					{
 						if (string.IsNullOrWhiteSpace(response.MSBuildExeFullName))
 						{
-							response.MSBuildExeFullName = msBuildFullNames.FirstOrDefault(msBuildFullName => msBuildFullName.IndexOf(string.Format(@"\{0}\", vsVersion), StringComparison.InvariantCultureIgnoreCase) > 0);
+							response.MSBuildExeFullName = msBuildExeFullNames.FirstOrDefault(msBuildFullName => msBuildFullName.IndexOf(string.Format(@"\{0}\", vsVersion), StringComparison.InvariantCultureIgnoreCase) > 0);
 						}
 					}
 					break;
+
 				case MSBuildVersion.MSBuild17:
-					msBuildFullNames.RemoveAll(msBuildFullName => msBuildFullName.IndexOf(@"\2022\", StringComparison.InvariantCultureIgnoreCase) < 0);
+					msBuildExeFullNames.RemoveWhere(msBuildFullName => msBuildFullName.IndexOf(@"\2022\", StringComparison.InvariantCultureIgnoreCase) < 0);
 					foreach (var vsVersion in vsVersions)
 					{
 						if (string.IsNullOrWhiteSpace(response.MSBuildExeFullName))
 						{
-							response.MSBuildExeFullName = msBuildFullNames.FirstOrDefault(msBuildFullName => msBuildFullName.IndexOf(string.Format(@"\{0}\", vsVersion), StringComparison.InvariantCultureIgnoreCase) > 0);
+							response.MSBuildExeFullName = msBuildExeFullNames.FirstOrDefault(msBuildFullName => msBuildFullName.IndexOf(string.Format(@"\{0}\", vsVersion), StringComparison.InvariantCultureIgnoreCase) > 0);
 						}
 					}
 					break;
+
 				default:
 					throw new ArgumentOutOfRangeException();
 			}
-			
+
 			return response;
 		}
 	}

@@ -79,54 +79,161 @@ namespace ISI.Extensions.VisualStudio
 							}
 						}
 
-						void sign(string fileName)
+						var vsixSigntoolExeFullName = VsixSigntoolApi.GetVsixSigntoolExeFullName(new()).VsixSigntoolExeFullName;
+
+						void sign(string[] fileNames)
 						{
-							logger.LogInformation(string.Format("Signing vsix package \"{0}\"", System.IO.Path.GetFileName(fileName)));
+							var arguments = new List<string>();
+							arguments.Add("sign");
 
-							using (var package = OpenVsixSignTool.Core.OpcPackage.Open(fileName, OpenVsixSignTool.Core.OpcPackageFileMode.ReadWrite))
+							if (request.DigestAlgorithm == DTOs.CodeSigningDigestAlgorithm.Sha256)
 							{
-								if (package.GetSignatures().Any() && !request.OverwriteAnyExistingSignature)
+								arguments.Add("/fd SHA256");
+							}
+							else if (request.DigestAlgorithm == DTOs.CodeSigningDigestAlgorithm.Sha384)
+							{
+								arguments.Add("/fd SHA384");
+							}
+							else if (request.DigestAlgorithm == DTOs.CodeSigningDigestAlgorithm.Sha512)
+							{
+								arguments.Add("/fd SHA512");
+							}
+
+							if (request.TimeStampUri != null)
+							{
+								if (request.TimeStampDigestAlgorithm == DTOs.CodeSigningDigestAlgorithm.Sha256)
 								{
-									throw new("The VSIX is already signed.");
+									arguments.Add("/td SHA256");
+									arguments.Add(string.Format("/tr \"{0}\"", request.TimeStampUri));
 								}
-
-								var signBuilder = package.CreateSignatureBuilder();
-
-								signBuilder.EnqueueNamedPreset<OpenVsixSignTool.Core.VSIXSignatureBuilderPreset>();
-
-								var hashAlgorithmName = GetHashAlgorithmName(request.DigestAlgorithm);
-
-								var signingConfiguration = new OpenVsixSignTool.Core.SignConfigurationSet(hashAlgorithmName, hashAlgorithmName, signingKey, certificate);
-
-								var signature = signBuilder.Sign(signingConfiguration);
-
-								if (request.TimeStampUri != null)
+								else
 								{
-									var timestampBuilder = signature.CreateTimestampBuilder();
-
-									var signResponse = timestampBuilder.SignAsync(request.TimeStampUri, GetHashAlgorithmName(request.TimeStampDigestAlgorithm)).GetAwaiter().GetResult();
-
-									if (signResponse == OpenVsixSignTool.Core.TimestampResult.Failed)
-									{
-										throw new("TimeStamping Signature Failed");
-									}
+									arguments.Add(string.Format("/t \"{0}\"", request.TimeStampUri));
 								}
 							}
 
-							logger.LogInformation(string.Format("Signed vsix package \"{0}\"", System.IO.Path.GetFileName(fileName)));
+							if (!string.IsNullOrWhiteSpace(request.CertificateFileName))
+							{
+								var certificateFileName = request.CertificateFileName;
+
+								if (certificateFileName.EndsWith(".cer", StringComparison.InvariantCultureIgnoreCase))
+								{
+									certificateFileName = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(certificateFileName), string.Format("{0}.pfx", System.IO.Path.GetFileNameWithoutExtension(certificateFileName)));
+
+									if (!System.IO.File.Exists(certificateFileName))
+									{
+										certificateFileName = request.CertificateFileName;
+									}
+								}
+
+								arguments.Add(string.Format("/f \"{0}\"", certificateFileName));
+
+								if (!string.IsNullOrWhiteSpace(request.CertificatePassword))
+								{
+									arguments.Add(string.Format("/p \"{0}\"", request.CertificatePassword));
+								}
+							}
+
+							if (!string.IsNullOrWhiteSpace(request.CertificateFingerprint))
+							{
+								arguments.Add(string.Format("/sha1 \"{0}\"", request.CertificateFingerprint));
+							}
+
+							//if (!string.IsNullOrWhiteSpace(request.CertificateSubjectName))
+							//{
+							//	arguments.Add(string.Format("/n \"{0}\"", request.CertificateSubjectName));
+							//}
+
+							//if (request.OverwriteAnyExistingSignature)
+							//{
+							//	arguments.Add("/as");
+							//}
+
+							switch (request.Verbosity)
+							{
+								case DTOs.CodeSigningVerbosity.Normal:
+									break;
+								case DTOs.CodeSigningVerbosity.Quiet:
+									arguments.Add("/q");
+									break;
+								case DTOs.CodeSigningVerbosity.Detailed:
+									arguments.Add("/v");
+									break;
+								default:
+									throw new ArgumentOutOfRangeException();
+							}
+
+							arguments.AddRange(fileNames.Select(fileName => string.Format("\"{0}\"", fileName)));
+
+							var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+							{
+								ProcessExeFullName = vsixSigntoolExeFullName,
+								Arguments = arguments,
+								Logger = (fileNames.NullCheckedCount() == 1 ? null : logger),
+							});
+
+							if (fileNames.NullCheckedCount() == 1)
+							{
+								if (waitForProcessResponse.Errored)
+								{
+									Logger.LogError(waitForProcessResponse.Output);
+								}
+
+								logger.LogInformation(string.Format("Signed vsix \"{0}\"", System.IO.Path.GetFileName(fileNames.First())));
+							}
 						}
+
+
+						//void signX(string fileName)
+						//{
+						//	logger.LogInformation(string.Format("Signing vsix package \"{0}\"", System.IO.Path.GetFileName(fileName)));
+
+						//	using (var package = OpenVsixSignTool.Core.OpcPackage.Open(fileName, OpenVsixSignTool.Core.OpcPackageFileMode.ReadWrite))
+						//	{
+						//		if (package.GetSignatures().Any() && !request.OverwriteAnyExistingSignature)
+						//		{
+						//			throw new("The VSIX is already signed.");
+						//		}
+
+						//		var signBuilder = package.CreateSignatureBuilder();
+
+						//		signBuilder.EnqueueNamedPreset<OpenVsixSignTool.Core.VSIXSignatureBuilderPreset>();
+
+						//		var hashAlgorithmName = GetHashAlgorithmName(request.DigestAlgorithm);
+
+						//		var signingConfiguration = new OpenVsixSignTool.Core.SignConfigurationSet(hashAlgorithmName, hashAlgorithmName, signingKey, certificate);
+
+						//		var signature = signBuilder.Sign(signingConfiguration);
+
+						//		if (request.TimeStampUri != null)
+						//		{
+						//			var timestampBuilder = signature.CreateTimestampBuilder();
+
+						//			var signResponse = timestampBuilder.SignAsync(request.TimeStampUri, GetHashAlgorithmName(request.TimeStampDigestAlgorithm)).GetAwaiter().GetResult();
+
+						//			if (signResponse == OpenVsixSignTool.Core.TimestampResult.Failed)
+						//			{
+						//				throw new("TimeStamping Signature Failed");
+						//			}
+						//		}
+						//	}
+
+						//	logger.LogInformation(string.Format("Signed vsix package \"{0}\"", System.IO.Path.GetFileName(fileName)));
+						//}
 
 						if (request.RunAsync)
 						{
 							logger.LogInformation("Running Async");
-							Parallel.ForEach(vsixFullNames, vsixFullName => sign(vsixFullName));
+							sign(vsixFullNames.ToArray());
+							//Parallel.ForEach(vsixFullNames, vsixFullName => sign(vsixFullName));
 						}
 						else
 						{
-							foreach (var vsixFullName in vsixFullNames)
-							{
-								sign(vsixFullName);
-							}
+							sign(vsixFullNames.ToArray());
+							//foreach (var vsixFullName in vsixFullNames)
+							//{
+							//	sign(vsixFullName);
+							//}
 						}
 
 						if (!string.IsNullOrWhiteSpace(request.OutputDirectory) && System.IO.Directory.Exists(request.OutputDirectory))

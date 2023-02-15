@@ -77,11 +77,6 @@ namespace ISI.Extensions.VisualStudio
 
 						void sign(string[] fileNames)
 						{
-							//if (fileNames.NullCheckedCount() == 1)
-							//{
-							//	logger.LogInformation(string.Format("Signing assembly \"{0}\"", System.IO.Path.GetFileName(fileNames.First())));
-							//}
-
 							var arguments = new List<string>();
 							arguments.Add("sign");
 

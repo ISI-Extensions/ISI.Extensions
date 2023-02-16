@@ -29,7 +29,6 @@ namespace ISI.Extensions.Scm
 		{
 			services.AddSingleton<ISI.Extensions.Scm.BuildScriptApi>();
 			services.AddSingleton<IBuildScriptApi, BuildScriptApi>();
-			services.AddSingleton<IBuildArtifactsApi, BuildArtifactsApi>();
 			services.AddSingleton<IDeploymentManagerApi, DeploymentManagerApi>();
 			services.AddSingleton<IFileStoreApi, FileStoreApi>();
 			services.AddSingleton<IScmApi, ScmApi>();

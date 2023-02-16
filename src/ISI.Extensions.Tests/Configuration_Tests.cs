@@ -47,8 +47,14 @@ namespace ISI.Extensions.Tests
 			var configuration = configurationBuilder.Build().ApplyConfigurationValueReaders();
 
 			var configurationTest = configuration.GetConfiguration<ISI.Extensions.Tests.Configuration>();
+		}
 
+		[Test]
+		public void NginxFileConfigurationValueReader_Test()
+		{
+			var valueReader = new ISI.Extensions.ConfigurationValueReaders.NginxFileConfigurationValueReader();
 
+			var xxx = valueReader.GetValue(new ISI.Extensions.ConfigurationValueReaders.ParsedValue(@"nginx:\\E:\Data\Nginx\sites-enabled\build-artifacts.isi-net.com.conf[https://build-artifacts.isi-net.com]"));
 		}
 	}
 }

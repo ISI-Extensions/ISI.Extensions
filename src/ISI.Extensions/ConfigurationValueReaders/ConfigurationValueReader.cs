@@ -27,6 +27,7 @@ namespace ISI.Extensions
 			{ISI.Extensions.ConfigurationValueReaders.EnvironmentVariableConfigurationValueReader.Prefix , new ISI.Extensions.ConfigurationValueReaders.EnvironmentVariableConfigurationValueReader() },
 			{ISI.Extensions.ConfigurationValueReaders.FileConfigurationValueReader.Prefix , new ISI.Extensions.ConfigurationValueReaders.FileConfigurationValueReader() },
 			{ISI.Extensions.ConfigurationValueReaders.FileNameDeMaskedConfigurationValueReader.Prefix , new ISI.Extensions.ConfigurationValueReaders.FileNameDeMaskedConfigurationValueReader() },
+			{ISI.Extensions.ConfigurationValueReaders.NginxFileConfigurationValueReader.Prefix , new ISI.Extensions.ConfigurationValueReaders.NginxFileConfigurationValueReader() },
 		};
 
 		public static string GetValue(string value)

@@ -23,7 +23,7 @@ namespace ISI.Extensions.Jira
 {
 	public class SimpleLink
 	{
-		public string SimpleLinkId { get; set; }
+		public long SimpleLinkId { get; set; }
 		public string StyleClass { get; set; }
 		public string IconClass { get; set; }
 		public string Label { get; set; }

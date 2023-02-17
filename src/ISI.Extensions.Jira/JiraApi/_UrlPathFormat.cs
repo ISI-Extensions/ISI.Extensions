@@ -29,7 +29,10 @@ namespace ISI.Extensions.Jira
 		private class UrlPathFormat
 		{
 			public static readonly string FindUsers = "/rest/api/2/user/search";
+			public static readonly string CreateUser = "/rest/api/2/user";
 			public static readonly string GetIssueFilters = "/rest/api/2/filter/favourite";
+			public static readonly string CreateIssue = "/rest/api/2/issue/";
+			public static readonly string AddIssueAttachment = "/rest/api/2/issue/{issueIdOrKey}/attachments";
 			public static readonly string FindIssues = "/rest/api/2/search";
 			public static readonly string ListIssueWorklogs = "/rest/api/2/issue/{issueIdOrKey}/worklog";
 			public static readonly string AddIssueWorklog = "/rest/api/2/issue/{issueIdOrKey}/worklog";
@@ -37,6 +40,15 @@ namespace ISI.Extensions.Jira
 			public static readonly string AddIssueComment = "/rest/api/2/issue/{issueIdOrKey}/comment";
 			public static readonly string DeleteAttachment = "/rest/api/2/attachment/{id}";
 			public static readonly string DeleteIssueWorklog = "/rest/api/2/issue/{issueIdOrKey}/worklog/{worklogId}";
+			public static readonly string ListRoles = "/rest/api/2/role";
+			public static readonly string CreateRole = "/rest/api/2/role";
+			public static readonly string ListPriorities = "/rest/api/2/priority";
+			public static readonly string ListIssueTypes = "/rest/api/2/issuetype";
+			public static readonly string ListProjects = "/rest/api/2/project";
+			public static readonly string ListProjectRoles = "/rest/api/2/project/{projectIdOrKey}/role";
+			public static readonly string ListBoards = "/rest/agile/1.0/board";
+			public static readonly string ListSprints = "/rest/agile/1.0/board/{boardId}/sprint";
+			public static readonly string FindSprintIssues = "/rest/agile/1.0/board/{boardId}/sprint/{sprintId}/issue";
 		}
 	}
 }

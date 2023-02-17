@@ -24,7 +24,7 @@ namespace ISI.Extensions.Jira
 	public class IssueType
 	{
 		public string IssueTypeUrl { get; set; }
-		public string IssueTypeId { get; set; }
+		public long IssueTypeId { get; set; }
 		public string Description { get; set; }
 		public string IconUrl { get; set; }
 		public string Name { get; set; }
@@ -33,6 +33,3 @@ namespace ISI.Extensions.Jira
 		public int HierarchyLevel { get; set; }
 	}
 }
-
-
-

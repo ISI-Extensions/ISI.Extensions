@@ -30,7 +30,7 @@ namespace ISI.Extensions.Jira
 		{
 			var response = new DTOs.AddIssueCommentResponse();
 
-			var uri = new UriBuilder(request.JiraApiUrl);
+			var uri = GetJiraApiUri(request);
 			uri.SetPathAndQueryString(UrlPathFormat.AddIssueComment.Replace(new Dictionary<string, string>()
 			{
 				{"{issueIdOrKey}", request.IssueIdOrKey}
@@ -42,16 +42,9 @@ namespace ISI.Extensions.Jira
 				Visibility = request.Visibility.NullCheckedConvert(SERIALIZABLE.Visibility.ToSerializable)
 			};
 
-			var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SERIALIZABLE.AddIssueCommentRequest, SERIALIZABLE.AddIssueCommentResponse>(uri.Uri, GetHeaders(request), jiraRequest, true, request.SslProtocols);
+			var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SERIALIZABLE.AddIssueCommentRequest, SERIALIZABLE.Comment>(uri.Uri, GetHeaders(request), jiraRequest, true, GetSslProtocols(request));
 
-			response.IssueCommentId = jiraResponse.IssueCommentId;
-			response.IssueCommentUrl = jiraResponse.IssueCommentUrl;
-			response.Author = jiraResponse.Author.Export();
-			response.Comment = jiraResponse.Comment;
-			response.UpdateAuthor = jiraResponse.UpdateAuthor.Export();
-			response.Created = jiraResponse.Created.ToDateTime();
-			response.Updated = jiraResponse.Updated.ToDateTimeNullable();
-			response.Visibility = jiraResponse.Visibility.Export();
+			response.Comment = jiraResponse?.Export();
 
 			return response;
 		}

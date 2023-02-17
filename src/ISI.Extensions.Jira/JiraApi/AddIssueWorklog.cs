@@ -30,7 +30,7 @@ namespace ISI.Extensions.Jira
 		{
 			var response = new DTOs.AddIssueWorklogResponse();
 
-			var uri = new UriBuilder(request.JiraApiUrl);
+			var uri = GetJiraApiUri(request);
 			uri.SetPathAndQueryString(UrlPathFormat.AddIssueWorklog.Replace(new Dictionary<string, string>()
 			{
 				{"{issueIdOrKey}", request.IssueIdOrKey}
@@ -44,7 +44,7 @@ namespace ISI.Extensions.Jira
 				Visibility = request.Visibility.NullCheckedConvert(SERIALIZABLE.Visibility.ToSerializable)
 			};
 
-			var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SERIALIZABLE.AddIssueWorklogRequest, SERIALIZABLE.AddIssueWorklogResponse>(uri.Uri, GetHeaders(request), jiraRequest, true, request.SslProtocols);
+			var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SERIALIZABLE.AddIssueWorklogRequest, SERIALIZABLE.AddIssueWorklogResponse>(uri.Uri, GetHeaders(request), jiraRequest, true, GetSslProtocols(request));
 
 			response.Skip = jiraResponse.Skip;
 			response.Take = jiraResponse.Take;

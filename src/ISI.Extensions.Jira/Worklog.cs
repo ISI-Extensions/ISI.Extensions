@@ -30,7 +30,7 @@ namespace ISI.Extensions.Jira
 		public User UpdateAuthor { get; set; }
 		public string Comment { get; set; }
 		public DateTime Created { get; set; }
-		public DateTime Updated { get; set; }
+		public DateTime? Updated { get; set; }
 		public DateTime Started { get; set; }
 		public TimeSpan TimeSpent { get; set; }
 		public Visibility Visibility { get; set; }

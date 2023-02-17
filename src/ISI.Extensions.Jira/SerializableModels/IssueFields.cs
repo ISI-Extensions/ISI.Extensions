@@ -36,12 +36,12 @@ namespace ISI.Extensions.Jira.SerializableModels
 				FixVersions = FixVersions.ToNullCheckedArray(x => x.Export()),
 				AggregateTimespent = AggregateTimespent,
 				Resolution = Resolution?.Export(),
-				ResolutionDate = ResolutionDate.ToDateTimeNullable(),
+				ResolutionDate = ResolutionDate,
 				WorkRatio = WorkRatio,
-				LastViewed = LastViewed.ToDateTimeNullable(),
+				LastViewed = LastViewed,
 				Watches = Watches?.Export(),
-				Created = Created.ToDateTime(),
-				Updated = Updated.ToDateTime(),
+				Created = Created,
+				Updated = Updated,
 				Priority = Priority?.Export(),
 				Labels = Labels.ToNullCheckedArray(),
 				TimeEstimate = TimeEstimate,
@@ -84,22 +84,30 @@ namespace ISI.Extensions.Jira.SerializableModels
 		public IssueResolution Resolution { get; set; }
 
 		[DataMember(Name = "resolutiondate", EmitDefaultValue = false)]
-		public string ResolutionDate { get; set; }
+		public string __ResolutionDate { get => (ResolutionDate.HasValue ? string.Format("{0:yyyy-MM-ddTHH:mm:ss.fffzz}00", (ResolutionDate?.Kind == DateTimeKind.Local ? ResolutionDate : ResolutionDate?.ToLocalTime())) : string.Empty); set => ResolutionDate = value.ToDateTimeNullable(); }
+		[IgnoreDataMember]
+		public DateTime? ResolutionDate { get; set; }
 
 		[DataMember(Name = "workratio", EmitDefaultValue = false)]
 		public int WorkRatio { get; set; }
 
 		[DataMember(Name = "lastViewed", EmitDefaultValue = false)]
-		public string LastViewed { get; set; }
+		public string __LastViewed { get => (LastViewed.HasValue ? string.Format("{0:yyyy-MM-ddTHH:mm:ss.fffzz}00", (LastViewed?.Kind == DateTimeKind.Local ? LastViewed : LastViewed?.ToLocalTime())) : string.Empty); set => LastViewed = value.ToDateTimeNullable(); }
+		[IgnoreDataMember]
+		public DateTime? LastViewed { get; set; }
 
 		[DataMember(Name = "watches", EmitDefaultValue = false)]
 		public InwardIssueFieldsWatches Watches { get; set; }
 
 		[DataMember(Name = "created", EmitDefaultValue = false)]
-		public string Created { get; set; }
+		public string __Created { get =>string.Format("{0:yyyy-MM-ddTHH:mm:ss.fffzz}00", (Created.Kind == DateTimeKind.Local ? Created : Created.ToLocalTime())); set => Created = value.ToDateTime(); }
+		[IgnoreDataMember]
+		public DateTime Created { get; set; }
 
 		[DataMember(Name = "updated", EmitDefaultValue = false)]
-		public string Updated { get; set; }
+		public string __Updated { get => (Updated.HasValue ? string.Format("{0:yyyy-MM-ddTHH:mm:ss.fffzz}00", (Updated?.Kind == DateTimeKind.Local ? Updated : Updated?.ToLocalTime())) : string.Empty); set => Updated = value.ToDateTimeNullable(); }
+		[IgnoreDataMember]
+		public DateTime? Updated { get; set; }
 
 		[DataMember(Name = "priority", EmitDefaultValue = false)]
 		public Priority Priority { get; set; }
@@ -158,7 +166,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 		public InwardIssueFieldsVotes Votes { get; set; }
 
 		[DataMember(Name = "statuscategorychangedate", EmitDefaultValue = false)]
-		public string __StatusCategoryChangeDate { get => StatusCategoryChangeDate.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => StatusCategoryChangeDate = value.ToDateTimeNullable(); }
+		public string __StatusCategoryChangeDate { get => (StatusCategoryChangeDate.HasValue ? string.Format("{0:yyyy-MM-ddTHH:mm:ss.fffzz}00", (StatusCategoryChangeDate?.Kind == DateTimeKind.Local ? StatusCategoryChangeDate : StatusCategoryChangeDate?.ToLocalTime())) : string.Empty); set => StatusCategoryChangeDate = value.ToDateTimeNullable(); }
 		[IgnoreDataMember]
 		public DateTime? StatusCategoryChangeDate { get; set; }
 

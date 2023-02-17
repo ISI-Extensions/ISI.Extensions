@@ -24,7 +24,7 @@ namespace ISI.Extensions.Jira
 	public class Project
 	{
 		public string ProjectUrl { get; set; }
-		public string ProjectId { get; set; }
+		public long ProjectId { get; set; }
 		public string ProjectKey { get; set; }
 		public string Name { get; set; }
 		public AvatarUrls AvatarUrls { get; set; }

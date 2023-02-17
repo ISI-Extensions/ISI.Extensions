@@ -30,7 +30,7 @@ namespace ISI.Extensions.Jira
 		{
 			var response = new DTOs.FindUsersResponse();
 			
-			var uri = new UriBuilder(request.JiraApiUrl);
+			var uri = GetJiraApiUri(request);
 			uri.SetPathAndQueryString(UrlPathFormat.FindUsers);
 			uri.AddQueryStringParameter("username", request.UserName);
 			uri.AddQueryStringParameter("startAt", request.Skip);
@@ -38,7 +38,7 @@ namespace ISI.Extensions.Jira
 			uri.AddQueryStringParameter("includeActive", request.IncludeActive);
 			uri.AddQueryStringParameter("includeInactive", request.IncludeInactive);
 
-			var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SERIALIZABLE.User[]>(uri.Uri, GetHeaders(request), true, request.SslProtocols);
+			var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SERIALIZABLE.User[]>(uri.Uri, GetHeaders(request), true, GetSslProtocols(request));
 
 			response.Users = jiraResponse.ToNullCheckedArray(x => x?.Export());
 

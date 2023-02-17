@@ -30,13 +30,13 @@ namespace ISI.Extensions.Jira
 		{
 			var response = new DTOs.ListIssueWorklogsResponse();
 			
-			var uri = new UriBuilder(request.JiraApiUrl);
+			var uri = GetJiraApiUri(request);
 			uri.SetPathAndQueryString(UrlPathFormat.ListIssueWorklogs.Replace(new Dictionary<string, string>()
 			{
 				{"{issueIdOrKey}", request.IssueIdOrKey}
 			}, StringComparer.InvariantCultureIgnoreCase));
 
-			var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SERIALIZABLE.ListIssueWorklogsResponse>(uri.Uri, GetHeaders(request), true, request.SslProtocols);
+			var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SERIALIZABLE.ListIssueWorklogsResponse>(uri.Uri, GetHeaders(request), true, GetSslProtocols(request));
 
 			response.Skip = jiraResponse.Skip;
 			response.Take = jiraResponse.Take;

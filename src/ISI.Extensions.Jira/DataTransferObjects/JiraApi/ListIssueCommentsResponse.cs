@@ -27,6 +27,6 @@ namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 		public int Skip { get; set; }
 		public int Take { get; set; }
 		public int Total { get; set; }
-		public IssueComment[] Comments { get; set; }
+		public Comment[] Comments { get; set; }
 	}
 }

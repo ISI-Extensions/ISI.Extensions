@@ -24,13 +24,6 @@ namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 {
 	public class AddIssueCommentResponse
 	{
-		public string IssueCommentId { get; set; }
-		public string IssueCommentUrl { get; set; }
-		public User Author { get; set; }
-		public string Comment { get; set; }
-		public User UpdateAuthor { get; set; }
-		public DateTime Created { get; set; }
-		public DateTime? Updated { get; set; }
-		public Visibility Visibility { get; set; }
+		public Comment Comment { get; set; }
 	}
 }

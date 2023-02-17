@@ -36,8 +36,8 @@ namespace ISI.Extensions.Jira.SerializableModels
 				Author = Author?.Export(),
 				UpdateAuthor = UpdateAuthor?.Export(),
 				Comment = Comment,
-				Created = Created.ToDateTime(),
-				Updated = Updated.ToDateTime(),
+				Created = Created,
+				Updated = Updated,
 				Started = Started.ToDateTime(),
 				TimeSpent = TimeSpan.FromSeconds(TimeSpentSeconds),
 				Visibility = Visibility?.Export(),
@@ -63,10 +63,14 @@ namespace ISI.Extensions.Jira.SerializableModels
 		public string Comment { get; set; }
 
 		[DataMember(Name = "created", EmitDefaultValue = false)]
-		public string Created { get; set; }
+		public string __Created { get =>string.Format("{0:yyyy-MM-ddTHH:mm:ss.fffzz}00", (Created.Kind == DateTimeKind.Local ? Created : Created.ToLocalTime())); set => Created = value.ToDateTime(); }
+		[IgnoreDataMember]
+		public DateTime Created { get; set; }
 
 		[DataMember(Name = "updated", EmitDefaultValue = false)]
-		public string Updated { get; set; }
+		public string __Updated { get => (Updated.HasValue ? string.Format("{0:yyyy-MM-ddTHH:mm:ss.fffzz}00", (Updated?.Kind == DateTimeKind.Local ? Updated : Updated?.ToLocalTime())) : string.Empty); set => Updated = value.ToDateTimeNullable(); }
+		[IgnoreDataMember]
+		public DateTime? Updated { get; set; }
 
 		[DataMember(Name = "started", EmitDefaultValue = false)]
 		public string Started { get; set; }

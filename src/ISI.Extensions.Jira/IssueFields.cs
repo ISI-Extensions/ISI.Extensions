@@ -40,7 +40,7 @@ namespace ISI.Extensions.Jira
 		public string AggregateTimeOriginalEstimate { get; set; }
 		public IssueLink[] IssueLinks { get; set; }
 		public User Assignee { get; set; }
-		public DateTime Updated { get; set; }
+		public DateTime? Updated { get; set; }
 		public Status Status { get; set; }
 		public string[] Components { get; set; }
 		public string TimeOriginalEstimate { get; set; }

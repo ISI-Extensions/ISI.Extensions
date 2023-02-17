@@ -23,7 +23,7 @@ namespace ISI.Extensions.Jira
 {
 	public class SharePermission
 	{
-		public string SharePermissionId { get; set; }
+		public long SharePermissionId { get; set; }
 		public string Type { get; set; }
 		public Project Project { get; set; }
 	}

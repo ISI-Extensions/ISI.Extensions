@@ -41,7 +41,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 		}
 
 		[DataMember(Name = "id", EmitDefaultValue = false)]
-		public string ProjectId { get; set; }
+		public long ProjectId { get; set; }
 
 		[DataMember(Name = "key", EmitDefaultValue = false)]
 		public string ProjectKey { get; set; }

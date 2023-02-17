@@ -115,6 +115,11 @@ namespace ISI.Extensions.Extensions
 			return uriBuilder;
 		}
 
+		public static UriBuilder AddQueryStringParameter(this UriBuilder uriBuilder, string name, long value)
+		{
+			return uriBuilder.AddQueryStringParameter(name, string.Format("{0}", value));
+		}
+
 		public static UriBuilder AddQueryStringParameter(this UriBuilder uriBuilder, string name, int value)
 		{
 			return uriBuilder.AddQueryStringParameter(name, string.Format("{0}", value));

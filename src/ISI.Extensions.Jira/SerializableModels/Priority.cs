@@ -38,7 +38,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 		}
 
 		[DataMember(Name = "id", EmitDefaultValue = false)]
-		public string PriorityId { get; set; }
+		public long PriorityId { get; set; }
 
 		[DataMember(Name = "name", EmitDefaultValue = false)]
 		public string Name { get; set; }

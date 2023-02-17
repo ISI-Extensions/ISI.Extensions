@@ -38,7 +38,7 @@ namespace ISI.Extensions.Jira
 			var skip = 0;
 			while (continueProcessing)
 			{
-				var uri = new UriBuilder(request.JiraApiUrl);
+				var uri = GetJiraApiUri(request);
 				uri.SetPathAndQueryString(UrlPathFormat.FindIssues);
 				uri.AddQueryStringParameter("jql", request.Jql);
 				uri.AddQueryStringParameter("startAt", skip);
@@ -56,7 +56,7 @@ namespace ISI.Extensions.Jira
 
 				var xxx = ISI.Extensions.WebClient.Rest.GetEventHandler();
 
-				var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SERIALIZABLE.FindIssuesResponse>(uri.Uri, GetHeaders(request), true, request.SslProtocols);
+				var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SERIALIZABLE.FindIssuesResponse>(uri.Uri, GetHeaders(request), true, GetSslProtocols(request));
 
 				issues.AddRange(jiraResponse.Issues.NullCheckedSelect(x => x?.Export(), NullCheckCollectionResult.Empty));
 				expand.UnionWith(jiraResponse.Expand?.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>());

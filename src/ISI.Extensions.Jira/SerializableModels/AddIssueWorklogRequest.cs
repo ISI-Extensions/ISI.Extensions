@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Jira.SerializableModels
 {
@@ -26,20 +27,12 @@ namespace ISI.Extensions.Jira.SerializableModels
 	public class AddIssueWorklogRequest
 	{
 		[DataMember(Name = "started", EmitDefaultValue = false)]
-		public string __StartedDateTime
-		{
-			get => string.Format("{0:yyyy-MM-ddTHH:mm:ss.fffzz}00", (StartedDateTime.Kind == DateTimeKind.Local ? StartedDateTime : StartedDateTime.ToLocalTime()));
-			set { }
-		}
+		public string __StartedDateTime { get => string.Format("{0:yyyy-MM-ddTHH:mm:ss.fffzz}00", (StartedDateTime.Kind == DateTimeKind.Local ? StartedDateTime : StartedDateTime.ToLocalTime())); set => StartedDateTime = value.ToDateTime(); }
 		[IgnoreDataMember]
 		public DateTime StartedDateTime { get; set; }
 
 		[DataMember(Name = "timeSpentSeconds", EmitDefaultValue = false)]
-		public double __TimeSpent
-		{
-			get => TimeSpent.TotalSeconds;
-			set { }
-		}
+		public double __TimeSpent { get => TimeSpent.TotalSeconds; set => TimeSpent = TimeSpan.FromSeconds(value); }
 		[IgnoreDataMember]
 		public TimeSpan TimeSpent { get; set; }
 

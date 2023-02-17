@@ -30,14 +30,14 @@ namespace ISI.Extensions.Jira
 		{
 			var response = new DTOs.ListIssueCommentsResponse();
 			
-			var uri = new UriBuilder(request.JiraApiUrl);
+			var uri = GetJiraApiUri(request);
 			uri.SetPathAndQueryString(UrlPathFormat.ListIssueComment.Replace(new Dictionary<string, string>()
 			{
 				{"{issueIdOrKey}", request.IssueIdOrKey}
 			}, StringComparer.InvariantCultureIgnoreCase));
 			//uri.AddQueryStringParameter("expand", "renderedBody");
 
-			var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SERIALIZABLE.ListIssueCommentsResponse>(uri.Uri, GetHeaders(request), true, request.SslProtocols);
+			var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SERIALIZABLE.ListIssueCommentsResponse>(uri.Uri, GetHeaders(request), true, GetSslProtocols(request));
 
 			response.Skip = jiraResponse.Skip;
 			response.Take = jiraResponse.Take;

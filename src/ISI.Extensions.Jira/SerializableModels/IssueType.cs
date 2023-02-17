@@ -42,7 +42,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 		}
 
 		[DataMember(Name = "id", EmitDefaultValue = false)]
-		public string IssueTypeId { get; set; }
+		public long IssueTypeId { get; set; }
 
 		[DataMember(Name = "self", EmitDefaultValue = false)]
 		public string IssueTypeUrl { get; set; }

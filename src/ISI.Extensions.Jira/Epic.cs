@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -12,42 +12,20 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Jira.SerializableModels
+namespace ISI.Extensions.Jira
 {
-	[DataContract]
-	public class AddIssueCommentResponse
+	public class Epic
 	{
-		[DataMember(Name = "id", EmitDefaultValue = false)]
-		public string IssueCommentId { get; set; }
-
-		[DataMember(Name = "self", EmitDefaultValue = false)]
-		public string IssueCommentUrl { get; set; }
-
-		[DataMember(Name = "author", EmitDefaultValue = false)]
-		public User Author { get; set; }
-
-		[DataMember(Name = "body", EmitDefaultValue = false)]
-		public string Comment { get; set; }
-		
-		[DataMember(Name = "updateAuthor", EmitDefaultValue = false)]
-		public User UpdateAuthor { get; set; }
-		
-		[DataMember(Name = "created", EmitDefaultValue = false)]
-		public string Created { get; set; }
-
-		[DataMember(Name = "updated", EmitDefaultValue = false)]
-		public string Updated { get; set; }
-
-		[DataMember(Name = "visibility", EmitDefaultValue = false)]
-		public Visibility Visibility { get; set; }
+		public long EpicId { get; set; }
+		public string Url { get; set; }
+		public string Name { get; set; }
+		public string Summary { get; set; }
+		public string Color { get; set; }
+		public bool Done { get; set; }
 	}
 }

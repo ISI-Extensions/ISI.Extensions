@@ -30,7 +30,7 @@ namespace ISI.Extensions.Jira
 		{
 			var response = new DTOs.DeleteIssueWorklogResponse();
 
-			var uri = new UriBuilder(request.JiraApiUrl);
+			var uri = GetJiraApiUri(request);
 			uri.SetPathAndQueryString(UrlPathFormat.DeleteIssueWorklog.Replace(new Dictionary<string, string>()
 			{
 				{"{issueIdOrKey}", request.IssueIdOrKey},
@@ -41,7 +41,7 @@ namespace ISI.Extensions.Jira
 			headers.Accept = ISI.Extensions.WebClient.Rest.AcceptJsonHeaderValue;
 			headers.ContentType = ISI.Extensions.WebClient.Rest.ContentTypeJsonHeaderValue;
 
-			var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteDelete(uri.Uri, headers, true, request.SslProtocols);
+			var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteDelete(uri.Uri, headers, true, GetSslProtocols(request));
 
 			return response;
 		}

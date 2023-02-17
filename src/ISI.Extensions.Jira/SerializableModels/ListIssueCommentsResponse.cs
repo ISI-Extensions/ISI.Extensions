@@ -36,7 +36,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 		public int Total { get; set; }
 
 		[DataMember(Name = "comments", EmitDefaultValue = false)]
-		public IssueComment[] Comments { get; set; }
+		public Comment[] Comments { get; set; }
 	}
 }
 

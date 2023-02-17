@@ -45,7 +45,9 @@ namespace ISI.Extensions.Jira.SerializableModels
 		public User Author { get; set; }
 
 		[DataMember(Name = "created", EmitDefaultValue = false)]
-		public string Created { get; set; }
+		public string __Created { get =>string.Format("{0:yyyy-MM-ddTHH:mm:ss.fffzz}00", (Created.Kind == DateTimeKind.Local ? Created : Created.ToLocalTime())); set => Created = value.ToDateTime(); }
+		[IgnoreDataMember]
+		public DateTime Created { get; set; }
 
 		[DataMember(Name = "items", EmitDefaultValue = false)]
 		public HistoryItem[] Items { get; set; }

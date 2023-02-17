@@ -30,7 +30,7 @@ namespace ISI.Extensions.Jira
 		{
 			var response = new DTOs.ListIssueFiltersResponse();
 			
-			var uri = new UriBuilder(request.JiraApiUrl);
+			var uri = GetJiraApiUri(request);
 			uri.SetPathAndQueryString(UrlPathFormat.GetIssueFilters);
 			uri.AddQueryStringParameter("enableSharedUsers", request.EnableSharedUsers);
 			if (request.Expand.NullCheckedAny())
@@ -38,7 +38,7 @@ namespace ISI.Extensions.Jira
 				uri.AddQueryStringParameter("expand", string.Join(",", request.Expand));
 			}
 
-			var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SERIALIZABLE.IssueFilter[]>(uri.Uri, GetHeaders(request), true, request.SslProtocols);
+			var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SERIALIZABLE.IssueFilter[]>(uri.Uri, GetHeaders(request), true, GetSslProtocols(request));
 
 			response.IssueFilters = jiraResponse.ToNullCheckedArray(x => x?.Export());
 

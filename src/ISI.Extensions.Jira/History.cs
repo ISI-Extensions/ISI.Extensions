@@ -25,7 +25,7 @@ namespace ISI.Extensions.Jira
 	{
 		public string HistoryId { get; set; }
 		public User Author { get; set; }
-		public string Created { get; set; }
+		public DateTime Created { get; set; }
 		public HistoryItem[] Items { get; set; }
 		public HistoryMetadata HistoryMetadata { get; set; }
 	}

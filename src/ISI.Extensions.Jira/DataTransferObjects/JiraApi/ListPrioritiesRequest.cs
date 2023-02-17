@@ -18,18 +18,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Jira
+namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 {
-	public class IssueComment
+	public class ListPrioritiesRequest : AbstractRequest
 	{
-		public string IssueCommentId { get; set; }
-		public string IssueCommentUrl { get; set; }
-		public User Author { get; set; }
-		public string Body { get; set; }
-		public User UpdateAuthor { get; set; }
-		public DateTime Created { get; set; }
-		public DateTime? Updated { get; set; }
-		public Visibility Visibility { get; set; }
 	}
 }

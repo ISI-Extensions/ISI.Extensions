@@ -26,7 +26,7 @@ namespace ISI.Extensions.Jira
 		public string PriorityUrl { get; set; }
 		public string IconUrl { get; set; }
 		public string Name { get; set; }
-		public string PriorityId { get; set; }
+		public long PriorityId { get; set; }
 	}
 }
 

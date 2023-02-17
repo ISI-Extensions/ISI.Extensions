@@ -102,7 +102,7 @@ namespace ISI.Extensions.Tests
 				JiraApiUrl = JiraUrl,
 				JiraApiUserName = JiraApiUserName,
 				JiraApiToken = JiraApiToken,
-				IssueIdOrKey = "MISC-596"
+				IssueIdOrKey = "TIP-262"
 			});
 		}
 

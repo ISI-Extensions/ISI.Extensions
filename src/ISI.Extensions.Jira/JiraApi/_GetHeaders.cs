@@ -26,15 +26,32 @@ namespace ISI.Extensions.Jira
 {
 	public partial class JiraApi
 	{
-		private ISI.Extensions.WebClient.HeaderCollection GetHeaders(DTOs.AbstractRequest request)
+		public class HeaderKeys
+		{
+			public const string ImpersonatedUser = "impersonate-user";
+			public const string AtlassianToken = "X-Atlassian-Token";
+			public const string ExperimentalApi = "X-ExperimentalApi";
+		}
+		public class HeaderValues
+		{
+			public const string AtlassianToken_NoCheck = "no-check";
+			public const string ExperimentalApi = "opt-in";
+		}
+
+		private ISI.Extensions.WebClient.HeaderCollection GetHeaders(DTOs.IRequest request, bool addExperimentalApiHeader = false)
 		{
 			var headers = new ISI.Extensions.WebClient.HeaderCollection();
 
 			headers.AddBasicAuthentication(request.JiraApiUserName, request.JiraApiToken);
 
-			if (!string.IsNullOrWhiteSpace(request.ImpersonatedUser) && !string.Equals(request.JiraApiUserName, request.ImpersonatedUser, StringComparison.InvariantCulture))
+			if (!string.IsNullOrWhiteSpace((request as DTOs.IRequestHasImpersonatedUser)?.ImpersonatedUser) && !string.Equals(request.JiraApiUserName, (request as DTOs.IRequestHasImpersonatedUser).ImpersonatedUser, StringComparison.InvariantCulture))
 			{
-				headers.Add("impersonate-user", request.ImpersonatedUser);
+				headers.Add("impersonate-user", (request as DTOs.IRequestHasImpersonatedUser).ImpersonatedUser);
+			}
+			
+			if (addExperimentalApiHeader)
+			{
+				headers.Add(HeaderKeys.ExperimentalApi, HeaderValues.ExperimentalApi);
 			}
 
 			return headers;

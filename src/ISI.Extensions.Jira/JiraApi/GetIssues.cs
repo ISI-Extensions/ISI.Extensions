@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,57 +26,31 @@ namespace ISI.Extensions.Jira
 {
 	public partial class JiraApi
 	{
-		public DTOs.FindIssuesResponse FindIssues(DTOs.FindIssuesRequest request)
+		public DTOs.GetIssuesResponse GetIssues(DTOs.GetIssuesRequest request)
 		{
-			var response = new DTOs.FindIssuesResponse();
+			var response = new DTOs.GetIssuesResponse();
 
 			var issues = new List<Issue>();
-			var expand = new HashSet<string>();
-			var warningMessages = new HashSet<string>();
 
-			var continueProcessing = true;
-			var skip = 0;
-			while (continueProcessing)
+			foreach (var issueIdOrKey in request.IssueIdOrKeys)
 			{
 				var uri = GetJiraApiUri(request);
-				uri.SetPathAndQueryString(UrlPathFormat.FindIssues);
-				uri.AddQueryStringParameter("jql", request.Jql);
-				uri.AddQueryStringParameter("startAt", skip);
-				//uri.AddQueryStringParameter("maxResults", request.Take);
-				uri.AddQueryStringParameter("validateQuery", request.ValidateQuery);
-				if (request.Fields.NullCheckedAny())
+				uri.SetPathAndQueryString(UrlPathFormat.GetIssues.Replace(new Dictionary<string, string>()
 				{
-					uri.AddQueryStringParameter("fields", string.Join(",", request.Fields));
-				}
-
-				if (request.Expand.NullCheckedAny())
-				{
-					uri.AddQueryStringParameter("expand", string.Join(",", request.Expand));
-				}
+					{"{issueIdOrKey}", string.Format("{0}", issueIdOrKey)},
+				}, StringComparer.InvariantCultureIgnoreCase));
 
 #if DEBUG
 				var xxx = ISI.Extensions.WebClient.Rest.GetEventHandler();
 #endif
 
-				var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SERIALIZABLE.FindIssuesResponse>(uri.Uri, GetHeaders(request), true, GetSslProtocols(request));
+				var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SERIALIZABLE.Issue>(uri.Uri, GetHeaders(request), true, GetSslProtocols(request));
 
-				issues.AddRange(jiraResponse.Issues.NullCheckedSelect(x => x?.Export(), NullCheckCollectionResult.Empty));
-				expand.UnionWith(jiraResponse.Expand?.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>());
-				warningMessages.UnionWith(jiraResponse.WarningMessages ?? Array.Empty<string>());
-
-				if (issues.Count < jiraResponse.Total)
-				{
-					skip += issues.Count;
-				}
-				else
-				{
-					continueProcessing = false;
-				}
+				issues.Add(jiraResponse?.Export());
 			}
 
 			response.Issues = issues.ToArray();
-			response.Expand = expand.ToArray();
-			response.WarningMessages = warningMessages.ToArray();
+
 
 			return response;
 		}

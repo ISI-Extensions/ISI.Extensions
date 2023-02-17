@@ -26,7 +26,7 @@ namespace ISI.Extensions.Slack
 {
 	public partial class SlackClient
 	{
-		public DTOs.SvnCommitHookResponse SvnCommitHook(DTOs.SvnCommitHookRequest request)
+		public DTOs.SvnCommitHookResponse SvnCommitHook(DTOs.ISvnCommitHookRequest request)
 		{
 			var response = new DTOs.SvnCommitHookResponse();
 
@@ -40,11 +40,18 @@ namespace ISI.Extensions.Slack
 					{"{token}", Configuration.SvnCommitHook.Token}
 				}));
 
+				var message = (request as DTOs.SvnCommitHookMessageRequest)?.Message;
+
+				if (request is DTOs.SvnCommitHookRequest svnCommitHookRequest)
+				{
+					message = string.Format("{0}\r\n{1}", svnCommitHookRequest.Log, string.Join("\r\n", svnCommitHookRequest.Directories ?? Array.Empty<string>()));
+				}
+
 				var payloadRequest = new SerializableModels.SvnCommitHookPayload()
 				{
 					Revision = request.Revision,
 					Author = request.Author,
-					Log = string.Format("{0}\r\n{1}", request.Message, string.Join("\r\n", request.Directories ?? Array.Empty<string>()))
+					Log = message,
 				};
 
 				var revisionUrl = (string.IsNullOrEmpty(request.RevisionUrl) ? Configuration.SvnCommitHook.RevisionUrl : request.RevisionUrl);

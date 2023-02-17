@@ -25,5 +25,6 @@ namespace ISI.Extensions.Svn
 		public string Author { get; set;}
 		public string Log { get; set;}
 		public string[] DirectoriesChanged { get; set; }
+		public (SvnCommitAction CommitAction, string Path, long? SourceRevision, string SourcePath)[] PathsChanged { get; set; }
 	}
 }

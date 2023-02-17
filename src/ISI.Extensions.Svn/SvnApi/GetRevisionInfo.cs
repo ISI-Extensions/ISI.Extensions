@@ -45,12 +45,52 @@ namespace ISI.Extensions.Svn
 				}).Output;
 			}
 
+			var pathsChanged = new List<(SvnCommitAction CommitAction, string Path, long? SourceRevision, string SourcePath)>();
+
+			var historyLines = getProperty("diff").Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+			var lastHistoryLine = (string)null;
+			foreach (var historyLine in historyLines)
+			{
+				if (historyLine.StartsWith("===================================================================", StringComparison.InvariantCultureIgnoreCase) && !string.IsNullOrWhiteSpace(lastHistoryLine))
+				{
+					var pieces = lastHistoryLine.Split(new[] { ':' }, 2);
+					if (pieces.Length > 1)
+					{
+						if (ISI.Extensions.Enum<SvnCommitAction>.TryParse(pieces[0], out var svnCommitAction))
+						{
+							var path = pieces[1].Trim();
+							var sourceRevision = (long?)null;
+							var sourcePath = (string)null;
+
+							if (svnCommitAction == SvnCommitAction.Copied)
+							{
+								var sourceIndex = path.IndexOf("(from rev", StringComparison.InvariantCultureIgnoreCase);
+								if (sourceIndex > 0)
+								{
+									sourcePath = path.Substring(sourceIndex).TrimStart("(from rev", StringComparison.InvariantCultureIgnoreCase).Trim();
+									path = path.Substring(0, sourceIndex);
+
+									pieces = sourcePath.Split(new[] { ',' }, 2);
+									sourceRevision = pieces[0].ToLong();
+									sourcePath = pieces[0].Trim().TrimEnd(')', ' ');
+								}
+							}
+
+							pathsChanged.Add((CommitAction: svnCommitAction, Path: path, SourceRevision: sourceRevision, SourcePath: sourcePath));
+						}
+					}
+				}
+
+				lastHistoryLine = historyLine;
+			}
+			
 			response.RevisionInfo = new RevisionInfo()
 			{
 				RevisionDateTime = getProperty("date").Trim('\n', '\r', ' ').Split(new[] { '(' }).First().Trim().ToDateTime(),
 				Author = getProperty("author").Trim('\n', '\r', ' '),
 				Log = getProperty("log").Trim('\n', '\r', ' '),
 				DirectoriesChanged = getProperty("dirs-changed").Trim('\n', '\r', ' ').Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries),
+				PathsChanged = pathsChanged.ToArray(),
 			};
 
 			return response;

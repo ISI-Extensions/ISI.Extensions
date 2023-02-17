@@ -32,6 +32,7 @@ namespace ISI.Extensions.Jira
 			public static readonly string CreateUser = "/rest/api/2/user";
 			public static readonly string GetIssueFilters = "/rest/api/2/filter/favourite";
 			public static readonly string CreateIssue = "/rest/api/2/issue/";
+			public static readonly string GetIssues = "/rest/api/2/issue/{issueIdOrKey}";
 			public static readonly string AddIssueAttachment = "/rest/api/2/issue/{issueIdOrKey}/attachments";
 			public static readonly string FindIssues = "/rest/api/2/search";
 			public static readonly string ListIssueWorklogs = "/rest/api/2/issue/{issueIdOrKey}/worklog";

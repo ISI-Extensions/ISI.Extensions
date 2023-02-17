@@ -97,5 +97,17 @@ namespace ISI.Extensions.Tests
 				Depth = ISI.Extensions.Svn.Depth.Infinity,
 			});
 		}
+
+		[Test]
+		public void GetRevisionInfo_Test()
+		{
+			var svnApi = new ISI.Extensions.Svn.SvnApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+
+			var getRevisionInfoResponse = svnApi.GetRevisionInfo(new()
+			{
+				RepositoryPath = @"\\isinySVN01\E$\SVN\ISI",
+				Revision = 110032,
+			});
+		}
 	}
 }

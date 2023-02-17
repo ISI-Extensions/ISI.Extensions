@@ -50,6 +50,7 @@ namespace ISI.Extensions.Svn
 				RevisionDateTime = getProperty("date").Trim('\n', '\r', ' ').Split(new[] { '(' }).First().Trim().ToDateTime(),
 				Author = getProperty("author").Trim('\n', '\r', ' '),
 				Log = getProperty("log").Trim('\n', '\r', ' '),
+				DirectoriesChanged = getProperty("dirs-changed").Trim('\n', '\r', ' ').Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries),
 			};
 
 			return response;

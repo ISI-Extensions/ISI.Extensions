@@ -24,5 +24,6 @@ namespace ISI.Extensions.Svn
 		public DateTime RevisionDateTime { get; set; }
 		public string Author { get; set;}
 		public string Log { get; set;}
+		public string[] DirectoriesChanged { get; set; }
 	}
 }

@@ -20,6 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using DTOs = ISI.Extensions.Jira.DataTransferObjects.JiraApi;
+using SERIALIZABLE = ISI.Extensions.Jira.SerializableModels;
 
 namespace ISI.Extensions.Jira
 {
@@ -30,8 +31,10 @@ namespace ISI.Extensions.Jira
 			public static readonly string FindUsers = "/rest/api/2/user/search";
 			public static readonly string GetIssueFilters = "/rest/api/2/filter/favourite";
 			public static readonly string FindIssues = "/rest/api/2/search";
-			public static readonly string GetIssueWorklogs = "/rest/api/2/issue/{issueIdOrKey}/worklog";
+			public static readonly string ListIssueWorklogs = "/rest/api/2/issue/{issueIdOrKey}/worklog";
 			public static readonly string AddIssueWorklog = "/rest/api/2/issue/{issueIdOrKey}/worklog";
+			public static readonly string ListIssueComment = "/rest/api/2/issue/{issueIdOrKey}/comment";
+			public static readonly string AddIssueComment = "/rest/api/2/issue/{issueIdOrKey}/comment";
 			public static readonly string DeleteAttachment = "/rest/api/2/attachment/{id}";
 			public static readonly string DeleteIssueWorklog = "/rest/api/2/issue/{issueIdOrKey}/worklog/{worklogId}";
 		}

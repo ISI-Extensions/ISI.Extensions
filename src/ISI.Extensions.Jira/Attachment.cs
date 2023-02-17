@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira
 {
-	public partial class Attachment
+	public class Attachment
 	{
 		public string IssueId { get; set; }
 		public string AttachmentId { get; set; }

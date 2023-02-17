@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira
 {
-	public partial class Visibility
+	public class Visibility
 	{
 		public string Type { get; set; }
 		public string Value { get; set; }

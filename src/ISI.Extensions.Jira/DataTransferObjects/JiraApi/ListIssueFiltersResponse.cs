@@ -21,11 +21,8 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 {
-	public class GetIssueWorklogsResponse
+	public class ListIssueFiltersResponse
 	{
-		public int Skip { get; set; }
-		public int Take { get; set; }
-		public int Total { get; set; }
-		public Worklog[] Worklogs { get; set; }
+		public IssueFilter[] IssueFilters { get; set; }
 	}
 }

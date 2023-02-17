@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira
 {
-	public partial class StatusCategory
+	public class StatusCategory
 	{
 		public string StatusCategoryId { get; set; }
 		public string StatusCategoryUrl { get; set; }

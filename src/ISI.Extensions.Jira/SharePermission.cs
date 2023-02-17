@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira
 {
-	public partial class SharePermission
+	public class SharePermission
 	{
 		public string SharePermissionId { get; set; }
 		public string Type { get; set; }

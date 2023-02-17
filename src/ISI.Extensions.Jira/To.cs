@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira
 {
-	public partial class To
+	public class To
 	{
 		public string ToId { get; set; }
 		public string ToUrl { get; set; }

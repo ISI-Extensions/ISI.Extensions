@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira
 {
-	public partial class Subscriptions
+	public class Subscriptions
 	{
 		public int Size { get; set; }
 		public int MaxResults { get; set; }

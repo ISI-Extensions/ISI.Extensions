@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira
 {
-	public partial class HistoryMetadataParticipant
+	public class HistoryMetadataParticipant
 	{
 		public string HistoryMetadataParticipantId { get; set; }
 		public string DisplayName { get; set; }

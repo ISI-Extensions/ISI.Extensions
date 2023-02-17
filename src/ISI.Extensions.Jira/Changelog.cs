@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira
 {
-	public partial class Changelog
+	public class Changelog
 	{
 		public int StartAt { get; set; }
 		public int MaxResults { get; set; }

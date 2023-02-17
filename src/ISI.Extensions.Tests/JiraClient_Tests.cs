@@ -93,11 +93,25 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
-		public void GetIssueFilters_Tests()
+		public void ListIssueComments_Tests()
 		{
 			var jiraApi = new ISI.Extensions.Jira.JiraApi();
 
-			var getIssueFiltersResponse = jiraApi.GetIssueFilters(new()
+			var getIssueCommentsResponse = jiraApi.ListIssueComments(new()
+			{
+				JiraApiUrl = JiraUrl,
+				JiraApiUserName = JiraApiUserName,
+				JiraApiToken = JiraApiToken,
+				IssueIdOrKey = "MISC-596"
+			});
+		}
+
+		[Test]
+		public void ListIssueFilters_Tests()
+		{
+			var jiraApi = new ISI.Extensions.Jira.JiraApi();
+
+			var getIssueFiltersResponse = jiraApi.ListIssueFilters(new()
 			{
 				JiraApiUrl = JiraUrl,
 				JiraApiUserName = JiraApiUserName,
@@ -183,7 +197,7 @@ namespace ISI.Extensions.Tests
 		{
 			var jiraApi = new ISI.Extensions.Jira.JiraApi();
 
-			var getIssueWorklogsResponse = jiraApi.GetIssueWorklogs(new()
+			var getIssueWorklogsResponse = jiraApi.ListIssueWorklogs(new()
 			{
 				JiraApiUrl = JiraUrl,
 				JiraApiUserName = JiraApiUserName,

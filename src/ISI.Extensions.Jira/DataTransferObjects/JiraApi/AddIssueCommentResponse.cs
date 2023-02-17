@@ -18,12 +18,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 {
-	public class GetIssueFiltersRequest : AbstractRequest
+	public class AddIssueCommentResponse
 	{
-		public string[] Expand { get; set; }
-		public bool EnableSharedUsers { get; set; } = true;
+		public string IssueCommentId { get; set; }
+		public string IssueCommentUrl { get; set; }
+		public User Author { get; set; }
+		public string Comment { get; set; }
+		public User UpdateAuthor { get; set; }
+		public DateTime Created { get; set; }
+		public DateTime? Updated { get; set; }
+		public Visibility Visibility { get; set; }
 	}
 }

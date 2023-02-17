@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira
 {
-	public partial class InwardIssueFieldsVotes
+	public class InwardIssueFieldsVotes
 	{
 		public string VotesUrl { get; set; }
 		public int Votes { get; set; }

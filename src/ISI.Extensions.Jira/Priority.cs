@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira
 {
-	public partial class Priority
+	public class Priority
 	{
 		public string PriorityUrl { get; set; }
 		public string IconUrl { get; set; }

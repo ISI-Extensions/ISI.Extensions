@@ -23,7 +23,7 @@ using System.Runtime.Serialization;
 namespace ISI.Extensions.Jira.SerializableModels
 {
 	[DataContract]
-	public partial class AddIssueWorklogRequest
+	public class AddIssueWorklogRequest
 	{
 		[DataMember(Name = "started", EmitDefaultValue = false)]
 		public string __StartedDateTime

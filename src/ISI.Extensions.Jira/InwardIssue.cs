@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira
 {
-	public partial class InwardIssue
+	public class InwardIssue
 	{
 		public string InwardIssueId { get; set; }
 		public string InwardIssueKey { get; set; }

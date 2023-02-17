@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira
 {
-	public partial class AvatarUrls
+	public class AvatarUrls
 	{
 		public string Resolution48X48Url { get; set; }
 		public string Resolution32X32Url { get; set; }

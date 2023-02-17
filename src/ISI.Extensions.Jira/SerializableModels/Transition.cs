@@ -24,7 +24,7 @@ using ISI.Extensions.Extensions;
 namespace ISI.Extensions.Jira.SerializableModels
 {
 	[DataContract]
-	public partial class Transition : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.Transition>
+	public class Transition : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.Transition>
 	{
 		public ISI.Extensions.Jira.Transition Export()
 		{

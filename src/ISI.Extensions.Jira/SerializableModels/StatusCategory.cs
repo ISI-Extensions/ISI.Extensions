@@ -23,7 +23,7 @@ using System.Runtime.Serialization;
 namespace ISI.Extensions.Jira.SerializableModels
 {
 	[DataContract]
-	public partial class StatusCategory : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.StatusCategory>
+	public class StatusCategory : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.StatusCategory>
 	{
 		public ISI.Extensions.Jira.StatusCategory Export()
 		{

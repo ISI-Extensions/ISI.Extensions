@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira
 {
-	public partial class IssueFixVersion
+	public class IssueFixVersion
 	{
 		public string IssueFixVersionId { get; set; }
 		public string IssueFixVersionUrl { get; set; }

@@ -18,21 +18,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Jira
+namespace ISI.Extensions.Jira.SerializableModels
 {
-	public class IssueFilter
+	[DataContract]
+	public class AddIssueCommentRequest
 	{
-		public string IssueFilterId { get; set; }
-		public string Name { get; set; }
-		public string Description { get; set; }
-		public string IssueFilterUrl { get; set; }
-		public User Owner { get; set; }
-		public string Jql { get; set; }
-		public string ViewUrl { get; set; }
-		public string SearchUrl { get; set; }
-		public bool Favorite { get; set; }
-		public SharePermission[] SharePermissions { get; set; }
-		public Subscriptions Subscriptions { get; set; }
+		[DataMember(Name = "body", EmitDefaultValue = false)]
+		public string Comment { get; set; }
+
+		[DataMember(Name = "visibility", EmitDefaultValue = false)]
+		public Visibility Visibility { get; set; }
 	}
 }

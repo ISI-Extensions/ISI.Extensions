@@ -23,7 +23,7 @@ using System.Runtime.Serialization;
 namespace ISI.Extensions.Jira.SerializableModels
 {
 	[DataContract]
-	public partial class HistoryItem : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.HistoryItem>
+	public class HistoryItem : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.HistoryItem>
 	{
 		public ISI.Extensions.Jira.HistoryItem Export()
 		{

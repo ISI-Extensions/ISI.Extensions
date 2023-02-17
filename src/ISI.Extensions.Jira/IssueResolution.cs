@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira
 {
-	public partial class IssueResolution
+	public class IssueResolution
 	{
 		public string IssueResolutionId { get; set; }
 		public string IssueResolutionUrl { get; set; }

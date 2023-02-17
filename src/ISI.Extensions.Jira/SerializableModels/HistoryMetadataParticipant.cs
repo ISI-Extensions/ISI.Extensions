@@ -23,7 +23,7 @@ using System.Runtime.Serialization;
 namespace ISI.Extensions.Jira.SerializableModels
 {
 	[DataContract]
-	public partial class HistoryMetadataParticipant : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.HistoryMetadataParticipant>
+	public class HistoryMetadataParticipant : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.HistoryMetadataParticipant>
 	{
 		public ISI.Extensions.Jira.HistoryMetadataParticipant Export()
 		{

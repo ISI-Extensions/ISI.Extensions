@@ -24,7 +24,7 @@ using ISI.Extensions.Extensions;
 namespace ISI.Extensions.Jira.SerializableModels
 {
 	[DataContract]
-	public partial class Priority : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.Priority>
+	public class Priority : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.Priority>
 	{
 		public ISI.Extensions.Jira.Priority Export()
 		{

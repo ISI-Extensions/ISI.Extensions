@@ -24,7 +24,7 @@ using ISI.Extensions.Extensions;
 namespace ISI.Extensions.Jira.SerializableModels
 {
 	[DataContract]
-	public partial class HistoryMetadata : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.HistoryMetadata>
+	public class HistoryMetadata : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.HistoryMetadata>
 	{
 		public ISI.Extensions.Jira.HistoryMetadata Export()
 		{

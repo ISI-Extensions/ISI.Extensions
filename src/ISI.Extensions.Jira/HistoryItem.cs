@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira
 {
-	public partial class HistoryItem
+	public class HistoryItem
 	{
 		public string Field { get; set; }
 		public string FieldType { get; set; }

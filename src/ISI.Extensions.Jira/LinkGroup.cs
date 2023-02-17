@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira
 {
-	public partial class LinkGroup
+	public class LinkGroup
 	{
 		public string LinkGroupId { get; set; }
 		public string StyleClass { get; set; }

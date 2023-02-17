@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira
 {
-	public partial class SimpleLink
+	public class SimpleLink
 	{
 		public string SimpleLinkId { get; set; }
 		public string StyleClass { get; set; }

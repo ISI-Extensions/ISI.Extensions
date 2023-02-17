@@ -18,21 +18,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Jira.DataTransferObjects.JiraApi;
+using SERIALIZABLE = ISI.Extensions.Jira.SerializableModels;
 
 namespace ISI.Extensions.Jira
 {
-	public class IssueFilter
+	public partial class JiraApi
 	{
-		public string IssueFilterId { get; set; }
-		public string Name { get; set; }
-		public string Description { get; set; }
-		public string IssueFilterUrl { get; set; }
-		public User Owner { get; set; }
-		public string Jql { get; set; }
-		public string ViewUrl { get; set; }
-		public string SearchUrl { get; set; }
-		public bool Favorite { get; set; }
-		public SharePermission[] SharePermissions { get; set; }
-		public Subscriptions Subscriptions { get; set; }
+		public DTOs.ListIssueFiltersResponse ListIssueFilters(DTOs.ListIssueFiltersRequest request)
+		{
+			var response = new DTOs.ListIssueFiltersResponse();
+			
+			var uri = new UriBuilder(request.JiraApiUrl);
+			uri.SetPathAndQueryString(UrlPathFormat.GetIssueFilters);
+			uri.AddQueryStringParameter("enableSharedUsers", request.EnableSharedUsers);
+			if (request.Expand.NullCheckedAny())
+			{
+				uri.AddQueryStringParameter("expand", string.Join(",", request.Expand));
+			}
+
+			var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SERIALIZABLE.IssueFilter[]>(uri.Uri, GetHeaders(request), true, request.SslProtocols);
+
+			response.IssueFilters = jiraResponse.ToNullCheckedArray(x => x?.Export());
+
+			return response;
+		}
 	}
 }

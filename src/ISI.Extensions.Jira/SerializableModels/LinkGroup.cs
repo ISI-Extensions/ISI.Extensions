@@ -24,7 +24,7 @@ using ISI.Extensions.Extensions;
 namespace ISI.Extensions.Jira.SerializableModels
 {
 	[DataContract]
-	public partial class LinkGroup : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.LinkGroup>
+	public class LinkGroup : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.LinkGroup>
 	{
 		public ISI.Extensions.Jira.LinkGroup Export()
 		{

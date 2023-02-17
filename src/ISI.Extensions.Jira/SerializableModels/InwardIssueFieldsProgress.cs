@@ -24,7 +24,7 @@ using ISI.Extensions.Extensions;
 namespace ISI.Extensions.Jira.SerializableModels
 {
 	[DataContract]
-	public partial class InwardIssueFieldsProgress : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.InwardIssueFieldsProgress>
+	public class InwardIssueFieldsProgress : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.InwardIssueFieldsProgress>
 	{
 		public ISI.Extensions.Jira.InwardIssueFieldsProgress Export()
 		{

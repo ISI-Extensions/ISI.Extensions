@@ -23,7 +23,7 @@ using System.Runtime.Serialization;
 namespace ISI.Extensions.Jira.SerializableModels
 {
 	[DataContract]
-	public partial class SimpleLink : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.SimpleLink>
+	public class SimpleLink : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.SimpleLink>
 	{
 		public ISI.Extensions.Jira.SimpleLink Export()
 		{

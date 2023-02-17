@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira
 {
-	public partial class Transition
+	public class Transition
 	{
 		public string TransitionId { get; set; }
 		public string Name { get; set; }

@@ -24,7 +24,7 @@ using ISI.Extensions.Extensions;
 namespace ISI.Extensions.Jira.SerializableModels
 {
 	[DataContract]
-	public partial class OutwardIssueFields : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.OutwardIssueFields>
+	public class OutwardIssueFields : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.OutwardIssueFields>
 	{
 		public ISI.Extensions.Jira.OutwardIssueFields Export()
 		{

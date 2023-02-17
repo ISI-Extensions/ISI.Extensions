@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira
 {
-	public partial class InwardIssueFieldsWatches
+	public class InwardIssueFieldsWatches
 	{
 		public string WatchesUrl { get; set; }
 		public int WatchCount { get; set; }

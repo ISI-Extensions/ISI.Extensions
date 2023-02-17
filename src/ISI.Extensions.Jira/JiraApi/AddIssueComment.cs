@@ -12,27 +12,48 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Jira.DataTransferObjects.JiraApi;
+using SERIALIZABLE = ISI.Extensions.Jira.SerializableModels;
 
 namespace ISI.Extensions.Jira
 {
-	public class IssueFilter
+	public partial class JiraApi
 	{
-		public string IssueFilterId { get; set; }
-		public string Name { get; set; }
-		public string Description { get; set; }
-		public string IssueFilterUrl { get; set; }
-		public User Owner { get; set; }
-		public string Jql { get; set; }
-		public string ViewUrl { get; set; }
-		public string SearchUrl { get; set; }
-		public bool Favorite { get; set; }
-		public SharePermission[] SharePermissions { get; set; }
-		public Subscriptions Subscriptions { get; set; }
+		public DTOs.AddIssueCommentResponse AddIssueComment(DTOs.AddIssueCommentRequest request)
+		{
+			var response = new DTOs.AddIssueCommentResponse();
+
+			var uri = new UriBuilder(request.JiraApiUrl);
+			uri.SetPathAndQueryString(UrlPathFormat.AddIssueComment.Replace(new Dictionary<string, string>()
+			{
+				{"{issueIdOrKey}", request.IssueIdOrKey}
+			}, StringComparer.InvariantCultureIgnoreCase));
+
+			var jiraRequest = new SERIALIZABLE.AddIssueCommentRequest()
+			{
+				Comment = request.Comment,
+				Visibility = request.Visibility.NullCheckedConvert(SERIALIZABLE.Visibility.ToSerializable)
+			};
+
+			var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SERIALIZABLE.AddIssueCommentRequest, SERIALIZABLE.AddIssueCommentResponse>(uri.Uri, GetHeaders(request), jiraRequest, true, request.SslProtocols);
+
+			response.IssueCommentId = jiraResponse.IssueCommentId;
+			response.IssueCommentUrl = jiraResponse.IssueCommentUrl;
+			response.Author = jiraResponse.Author.Export();
+			response.Comment = jiraResponse.Comment;
+			response.UpdateAuthor = jiraResponse.UpdateAuthor.Export();
+			response.Created = jiraResponse.Created.ToDateTime();
+			response.Updated = jiraResponse.Updated.ToDateTimeNullable();
+			response.Visibility = jiraResponse.Visibility.Export();
+
+			return response;
+		}
 	}
 }

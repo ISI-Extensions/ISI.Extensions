@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira
 {
-	public partial class IssueFields
+	public class IssueFields
 	{
 		public IssueType IssueType { get; set; }
 		public string Timespent { get; set; }

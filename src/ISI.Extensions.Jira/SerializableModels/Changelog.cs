@@ -24,7 +24,7 @@ using ISI.Extensions.Extensions;
 namespace ISI.Extensions.Jira.SerializableModels
 {
 	[DataContract]
-	public partial class Changelog : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.Changelog>
+	public class Changelog : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.Changelog>
 	{
 		public ISI.Extensions.Jira.Changelog Export()
 		{

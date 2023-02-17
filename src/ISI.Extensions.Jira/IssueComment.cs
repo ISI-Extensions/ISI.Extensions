@@ -21,18 +21,15 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira
 {
-	public class IssueFilter
+	public class IssueComment
 	{
-		public string IssueFilterId { get; set; }
-		public string Name { get; set; }
-		public string Description { get; set; }
-		public string IssueFilterUrl { get; set; }
-		public User Owner { get; set; }
-		public string Jql { get; set; }
-		public string ViewUrl { get; set; }
-		public string SearchUrl { get; set; }
-		public bool Favorite { get; set; }
-		public SharePermission[] SharePermissions { get; set; }
-		public Subscriptions Subscriptions { get; set; }
+		public string IssueCommentId { get; set; }
+		public string IssueCommentUrl { get; set; }
+		public User Author { get; set; }
+		public string Body { get; set; }
+		public User UpdateAuthor { get; set; }
+		public DateTime Created { get; set; }
+		public DateTime? Updated { get; set; }
+		public Visibility Visibility { get; set; }
 	}
 }

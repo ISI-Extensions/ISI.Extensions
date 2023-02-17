@@ -24,7 +24,7 @@ using ISI.Extensions.Extensions;
 namespace ISI.Extensions.Jira.SerializableModels
 {
 	[DataContract]
-	public partial class IssueResolution : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.IssueResolution>
+	public class IssueResolution : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.IssueResolution>
 	{
 		public ISI.Extensions.Jira.IssueResolution Export()
 		{

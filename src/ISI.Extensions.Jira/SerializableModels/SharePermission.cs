@@ -24,7 +24,7 @@ using ISI.Extensions.Extensions;
 namespace ISI.Extensions.Jira.SerializableModels
 {
 	[DataContract]
-	public partial class SharePermission : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.SharePermission>
+	public class SharePermission : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.SharePermission>
 	{
 		public ISI.Extensions.Jira.SharePermission Export()
 		{

@@ -24,7 +24,7 @@ using ISI.Extensions.Extensions;
 namespace ISI.Extensions.Jira.SerializableModels
 {
 	[DataContract]
-	public partial class Visibility : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.Visibility>
+	public class Visibility : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.Visibility>
 	{
 		public static Visibility ToSerializable(ISI.Extensions.Jira.Visibility visibility)
 		{

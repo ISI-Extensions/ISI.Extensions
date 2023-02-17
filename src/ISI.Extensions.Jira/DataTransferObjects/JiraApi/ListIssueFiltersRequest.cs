@@ -21,8 +21,9 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 {
-	public class GetIssueFiltersResponse
+	public class ListIssueFiltersRequest : AbstractRequest
 	{
-		public IssueFilter[] IssueFilters { get; set; }
+		public string[] Expand { get; set; }
+		public bool EnableSharedUsers { get; set; } = true;
 	}
 }

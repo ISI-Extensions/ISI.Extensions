@@ -24,7 +24,7 @@ using ISI.Extensions.Extensions;
 namespace ISI.Extensions.Jira.SerializableModels
 {
 	[DataContract]
-	public partial class AvatarUrls : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.AvatarUrls>
+	public class AvatarUrls : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.AvatarUrls>
 	{
 		public ISI.Extensions.Jira.AvatarUrls Export()
 		{

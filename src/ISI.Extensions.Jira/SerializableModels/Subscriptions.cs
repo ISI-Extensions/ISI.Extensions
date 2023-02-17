@@ -24,7 +24,7 @@ using ISI.Extensions.Extensions;
 namespace ISI.Extensions.Jira.SerializableModels
 {
 	[DataContract]
-	public partial class Subscriptions : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.Subscriptions>
+	public class Subscriptions : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.Subscriptions>
 	{
 		public ISI.Extensions.Jira.Subscriptions Export()
 		{

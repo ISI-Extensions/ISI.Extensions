@@ -24,7 +24,7 @@ using ISI.Extensions.Extensions;
 namespace ISI.Extensions.Jira.SerializableModels
 {
 	[DataContract]
-	public partial class IssueFixVersion : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.IssueFixVersion>
+	public class IssueFixVersion : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.IssueFixVersion>
 	{
 		public ISI.Extensions.Jira.IssueFixVersion Export()
 		{

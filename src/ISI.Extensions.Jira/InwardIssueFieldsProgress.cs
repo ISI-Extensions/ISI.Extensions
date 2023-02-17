@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira
 {
-	public partial class InwardIssueFieldsProgress
+	public class InwardIssueFieldsProgress
 	{
 		public int Progress { get; set; }
 		public int Total { get; set; }

@@ -24,7 +24,7 @@ using ISI.Extensions.Extensions;
 namespace ISI.Extensions.Jira.SerializableModels
 {
 	[DataContract]
-	public partial class Attachment : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.Attachment>
+	public class Attachment : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.Attachment>
 	{
 		public ISI.Extensions.Jira.Attachment Export()
 		{

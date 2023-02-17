@@ -26,21 +26,22 @@ namespace ISI.Extensions.Jira
 {
 	public partial class JiraApi
 	{
-		public DTOs.GetIssueFiltersResponse GetIssueFilters(DTOs.GetIssueFiltersRequest request)
+		public DTOs.ListIssueWorklogsResponse ListIssueWorklogs(DTOs.ListIssueWorklogsRequest request)
 		{
-			var response = new DTOs.GetIssueFiltersResponse();
+			var response = new DTOs.ListIssueWorklogsResponse();
 			
 			var uri = new UriBuilder(request.JiraApiUrl);
-			uri.SetPathAndQueryString(UrlPathFormat.GetIssueFilters);
-			uri.AddQueryStringParameter("enableSharedUsers", request.EnableSharedUsers);
-			if (request.Expand.NullCheckedAny())
+			uri.SetPathAndQueryString(UrlPathFormat.ListIssueWorklogs.Replace(new Dictionary<string, string>()
 			{
-				uri.AddQueryStringParameter("expand", string.Join(",", request.Expand));
-			}
+				{"{issueIdOrKey}", request.IssueIdOrKey}
+			}, StringComparer.InvariantCultureIgnoreCase));
 
-			var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SERIALIZABLE.IssueFilter[]>(uri.Uri, GetHeaders(request), true, request.SslProtocols);
+			var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SERIALIZABLE.ListIssueWorklogsResponse>(uri.Uri, GetHeaders(request), true, request.SslProtocols);
 
-			response.IssueFilters = jiraResponse.ToNullCheckedArray(x => x?.Export());
+			response.Skip = jiraResponse.Skip;
+			response.Take = jiraResponse.Take;
+			response.Total = jiraResponse.Total;
+			response.Worklogs = jiraResponse.Worklogs.ToNullCheckedArray(x => x?.Export());
 
 			return response;
 		}

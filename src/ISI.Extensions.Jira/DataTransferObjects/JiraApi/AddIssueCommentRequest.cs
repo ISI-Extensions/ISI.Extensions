@@ -18,27 +18,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Runtime.Serialization;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Jira.SerializableModels
+namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 {
-	[DataContract]
-	public class GetIssueWorklogsResponse
+	public class AddIssueCommentRequest : AbstractRequest
 	{
-		[DataMember(Name = "startAt", EmitDefaultValue = false)]
-		public int Skip { get; set; }
-
-		[DataMember(Name = "maxResults", EmitDefaultValue = false)]
-		public int Take { get; set; }
-
-		[DataMember(Name = "total", EmitDefaultValue = false)]
-		public int Total { get; set; }
-
-		[DataMember(Name = "worklogs", EmitDefaultValue = false)]
-		public Worklog[] Worklogs { get; set; }
+		public string IssueIdOrKey { get; set; }
+		public string Comment { get; set; }
+		public Visibility Visibility { get; set; }
 	}
 }
-
-
-

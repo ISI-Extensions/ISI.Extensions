@@ -23,7 +23,7 @@ using System.Runtime.Serialization;
 namespace ISI.Extensions.Jira.SerializableModels
 {
 	[DataContract]
-	public partial class FindIssuesResponse
+	public class FindIssuesResponse
 	{
 		[DataMember(Name = "expand", EmitDefaultValue = false)]
 		public string Expand { get; set; }

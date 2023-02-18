@@ -72,7 +72,7 @@ namespace ISI.Extensions.Svn
 
 									pieces = sourcePath.Split(new[] { ',' }, 2);
 									sourceRevision = pieces[0].ToLong();
-									sourcePath = pieces[0].Trim().TrimEnd(')', ' ');
+									sourcePath = pieces[1].Trim().TrimEnd(')', ' ');
 								}
 							}
 

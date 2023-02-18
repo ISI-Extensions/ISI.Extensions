@@ -106,7 +106,7 @@ namespace ISI.Extensions.Tests
 			var getRevisionInfoResponse = svnApi.GetRevisionInfo(new()
 			{
 				RepositoryPath = @"\\isinySVN01\E$\SVN\ISI",
-				Revision = 110032,
+				Revision = 144328,
 			});
 		}
 	}

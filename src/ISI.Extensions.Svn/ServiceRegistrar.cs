@@ -28,6 +28,7 @@ namespace ISI.Extensions.Svn
 	{
 		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
+			services.AddSingleton<MessageParser>();
 			services.AddSingleton<SvnApi>();
 		}
 	}

@@ -209,7 +209,7 @@ namespace ISI.Extensions.Scm
 				ArtifactName = request.BuildArtifactName,
 				ArtifactDateTimeStampVersionUrl = request.ArtifactDateTimeStampVersionUrl,
 				ArtifactDownloadUrl = request.ArtifactDownloadUrl,
-				ToDateTimeStamp = request.ToDateTimeStamp.DateTimeStamp.ToString(),
+				ToDateTimeStamp = request.ToDateTimeStamp?.DateTimeStamp?.ToString(),
 				FromEnvironment = request.FromEnvironment,
 				ToEnvironment = request.ToEnvironment,
 				ConfigurationKey = request.ConfigurationKey,

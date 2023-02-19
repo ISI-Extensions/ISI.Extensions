@@ -100,6 +100,65 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void AddNugetInstall_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "Tristar.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName);
+
+			var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+
+			var jobIds = jenkinsApi.GetJobIds(new()
+			{
+				JenkinsUrl = settings.Jenkins.JenkinsUrl,
+				UserName = settings.Jenkins.UserName,
+				ApiToken = settings.Jenkins.ApiToken,
+			}).JobIds;
+
+			foreach (var jobId in jobIds)
+			{
+				var configXml = jenkinsApi.GetJobConfigXml(new()
+				{
+					JenkinsUrl = settings.Jenkins.JenkinsUrl,
+					UserName = settings.Jenkins.UserName,
+					ApiToken = settings.Jenkins.ApiToken,
+					JobId = jobId,
+				}).ConfigXml;
+
+				if ((configXml.IndexOf("<command>dotnet cake", StringComparison.CurrentCulture) > 0) && (configXml.IndexOf("nuget install isi.cake.addin") < 0))
+				{
+					configXml = configXml.Replace("<command>dotnet cake", "<command>nuget install isi.cake.addin -verbosity quiet -OutputDirectory tools\ndotnet cake");
+
+					jenkinsApi.SetJobConfigXml(new()
+					{
+						JenkinsUrl = settings.Jenkins.JenkinsUrl,
+						UserName = settings.Jenkins.UserName,
+						ApiToken = settings.Jenkins.ApiToken,
+						JobId = jobId,
+						ConfigXml = configXml,
+					});
+
+					TestContext.Progress.WriteLine(jobId);
+				}
+
+				if ((configXml.IndexOf("<command>cd src", StringComparison.CurrentCulture) > 0) && (configXml.IndexOf("nuget install isi.cake.addin") < 0))
+				{
+					configXml = configXml.Replace("<command>cd src", "<command>cd src\nnuget install isi.cake.addin -verbosity quiet -OutputDirectory tools");
+
+					jenkinsApi.SetJobConfigXml(new()
+					{
+						JenkinsUrl = settings.Jenkins.JenkinsUrl,
+						UserName = settings.Jenkins.UserName,
+						ApiToken = settings.Jenkins.ApiToken,
+						JobId = jobId,
+						ConfigXml = configXml,
+					});
+
+					TestContext.Progress.WriteLine(jobId);
+				}
+			}
+		}
+
+		[Test]
 		public void SetJobConfigXml_Test()
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");

@@ -61,6 +61,9 @@ namespace ISI.Extensions.Scm.SerializableModels.DeploymentManagerApi
 
 		[DataMember(Name = "deployToSubfolder", EmitDefaultValue = false)]
 		public string DeployToSubfolder { get; set; }
+		
+		[DataMember(Name = "deployToSubfolderIconFileName", EmitDefaultValue = false)]
+		public string DeployToSubfolderIconFileName { get; set; }
 
 		[DataMember(Name = "packageFolder", EmitDefaultValue = false)]
 		public string PackageFolder { get; set; }

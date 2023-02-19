@@ -36,11 +36,13 @@ namespace ISI.Extensions.VisualStudio
 			logger.LogInformation("  ProjectName: {0}", projectName);
 			logger.LogInformation("  ProjectDirectory: {0}", projectDirectory);
 			logger.LogInformation("  PackageComponentDirectory: {0}", packageComponentDirectory);
+			logger.LogInformation("  IconFullName: {0}", packageComponent.IconFullName);
 
 			System.IO.Directory.CreateDirectory(packageComponentDirectory);
 
 			if (!string.IsNullOrWhiteSpace(packageComponent.IconFullName) && System.IO.File.Exists(packageComponent.IconFullName))
 			{
+				logger.LogInformation("  IconFullName: {0}", packageComponent.IconFullName);
 				ISI.Extensions.DirectoryIcon.SetDirectoryIcon(packageComponentDirectory, packageComponent.IconFullName);
 			}
 

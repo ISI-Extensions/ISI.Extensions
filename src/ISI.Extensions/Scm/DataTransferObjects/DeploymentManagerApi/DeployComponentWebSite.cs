@@ -32,6 +32,7 @@ namespace ISI.Extensions.Scm.DataTransferObjects.DeploymentManagerApi
 		public TimeSpan? WaitForFileLocksMaxTimeOut { get; set; }
 		public string PackageFolder { get; set; }
 		public string DeployToSubfolder { get; set; }
+		public string DeployToSubfolderIconFileName { get; set; }
 		public IEnumerable<string> ExcludeFiles { get; set; }
 	}
 }

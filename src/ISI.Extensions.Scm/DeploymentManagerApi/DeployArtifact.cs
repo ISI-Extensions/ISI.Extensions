@@ -138,6 +138,7 @@ namespace ISI.Extensions.Scm
 							WaitForFileLocksMaxTimeOut = deployComponentConsoleApplication.WaitForFileLocksMaxTimeOut,
 							PackageFolder = deployComponentConsoleApplication.PackageFolder,
 							DeployToSubfolder = deployComponentConsoleApplication.DeployToSubfolder,
+							DeployToSubfolderIconFileName = deployComponentConsoleApplication.DeployToSubfolderIconFileName,
 							ConsoleApplicationExe = deployComponentConsoleApplication.ConsoleApplicationExe,
 							ExcludeFiles = getDeployComponentExcludeFiles(deployComponentConsoleApplication.ExcludeFiles),
 							ExecuteConsoleApplicationAfterInstall = deployComponentConsoleApplication.ExecuteConsoleApplicationAfterInstall,
@@ -145,6 +146,7 @@ namespace ISI.Extensions.Scm
 						});
 						Logger.LogInformation(string.Format("  deployComponentConsoleApplication.PackageFolder: {0}", deployComponentConsoleApplication.PackageFolder));
 						Logger.LogInformation(string.Format("  deployComponentConsoleApplication.DeployToSubfolder: {0}", deployComponentConsoleApplication.DeployToSubfolder));
+						Logger.LogInformation(string.Format("  deployComponentConsoleApplication.DeployToSubfolderIconFileName: {0}", deployComponentConsoleApplication.DeployToSubfolderIconFileName));
 						Logger.LogInformation(string.Format("  deployComponentConsoleApplication.ConsoleApplicationExe: {0}", deployComponentConsoleApplication.ConsoleApplicationExe));
 						Logger.LogInformation(string.Format("  deployComponentConsoleApplication.ExecuteConsoleApplicationAfterInstall: {0}", deployComponentConsoleApplication.ExecuteConsoleApplicationAfterInstall.TrueFalse()));
 						Logger.LogInformation(string.Format("  deployComponentConsoleApplication.ExecuteConsoleApplicationAfterInstallArguments: {0}", deployComponentConsoleApplication.ExecuteConsoleApplicationAfterInstallArguments));
@@ -164,10 +166,12 @@ namespace ISI.Extensions.Scm
 							WaitForFileLocksMaxTimeOut = deployComponentWebSite.WaitForFileLocksMaxTimeOut,
 							PackageFolder = deployComponentWebSite.PackageFolder,
 							DeployToSubfolder = deployComponentWebSite.DeployToSubfolder,
+							DeployToSubfolderIconFileName = deployComponentWebSite.DeployToSubfolderIconFileName,
 							ExcludeFiles = getDeployComponentExcludeFiles(deployComponentWebSite.ExcludeFiles),
 						});
 						Logger.LogInformation(string.Format("  deployComponentWebSite.PackageFolder: {0}", deployComponentWebSite.PackageFolder));
 						Logger.LogInformation(string.Format("  deployComponentWebSite.DeployToSubfolder: {0}", deployComponentWebSite.DeployToSubfolder));
+						Logger.LogInformation(string.Format("  deployComponentWebSite.DeployToSubfolderIconFileName: {0}", deployComponentWebSite.DeployToSubfolderIconFileName));
 						break;
 
 					case DTOs.DeployComponentWindowsService deployComponentWindowsService:
@@ -184,12 +188,14 @@ namespace ISI.Extensions.Scm
 							WaitForFileLocksMaxTimeOut = deployComponentWindowsService.WaitForFileLocksMaxTimeOut,
 							PackageFolder = deployComponentWindowsService.PackageFolder,
 							DeployToSubfolder = deployComponentWindowsService.DeployToSubfolder,
+							DeployToSubfolderIconFileName = deployComponentWindowsService.DeployToSubfolderIconFileName,
 							WindowsServiceExe = deployComponentWindowsService.WindowsServiceExe,
 							ExcludeFiles = getDeployComponentExcludeFiles(deployComponentWindowsService.ExcludeFiles),
 							UninstallIfInstalled = deployComponentWindowsService.UninstallIfInstalled,
 						});
 						Logger.LogInformation(string.Format("  deployComponentWindowsService.PackageFolder: {0}", deployComponentWindowsService.PackageFolder));
 						Logger.LogInformation(string.Format("  deployComponentWindowsService.DeployToSubfolder: {0}", deployComponentWindowsService.DeployToSubfolder));
+						Logger.LogInformation(string.Format("  deployComponentWindowsService.DeployToSubfolderIconFileName: {0}", deployComponentWindowsService.DeployToSubfolderIconFileName));
 						Logger.LogInformation(string.Format("  deployComponentWindowsService.WindowsServiceExe: {0}", deployComponentWindowsService.WindowsServiceExe));
 						break;
 

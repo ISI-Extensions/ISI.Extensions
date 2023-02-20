@@ -71,10 +71,10 @@ namespace ISI.Extensions.Tests
 			var settings = new ISI.Extensions.SimpleKeyValueStorage(settingsFullName);
 
 			JiraUrl = settings.GetValue("JiraUrl");
-			//JiraApiUserName = settings.GetValue("JiraApiUserName");
-			//JiraApiToken = settings.GetValue("JiraApiToken");
-			JiraApiUserName = settings.GetValue("ActiveDirectoryUserName");
-			JiraApiToken = settings.GetValue("ActiveDirectoryPassword");
+			JiraApiUserName = settings.GetValue("JiraApiUserName");
+			JiraApiToken = settings.GetValue("JiraApiToken");
+			//JiraApiUserName = settings.GetValue("ActiveDirectoryUserName");
+			//JiraApiToken = settings.GetValue("ActiveDirectoryPassword");
 		}
 
 		[Test]
@@ -117,6 +117,23 @@ namespace ISI.Extensions.Tests
 				JiraApiUserName = JiraApiUserName,
 				JiraApiToken = JiraApiToken,
 				ImpersonatedUser = "rmuth",
+			});
+		}
+
+		[Test]
+		public void GetIssues_Tests()
+		{
+			var jiraApi = new ISI.Extensions.Jira.JiraApi();
+
+			var getIssuesResponse = jiraApi.GetIssues(new()
+			{
+				JiraApiUrl = JiraUrl,
+				JiraApiUserName = JiraApiUserName,
+				JiraApiToken = JiraApiToken,
+				IssueIdOrKeys = new []{ "TIP-262"}
+				//ImpersonatedUser = "rmuth",
+				//Jql = "assignee=currentuser() AND STATUS!=DONE ORDER BY created DESC",
+				//Jql = "STATUS!=DONE ORDER BY created DESC",
 			});
 		}
 

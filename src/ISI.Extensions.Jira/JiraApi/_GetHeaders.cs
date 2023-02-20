@@ -42,7 +42,14 @@ namespace ISI.Extensions.Jira
 		{
 			var headers = new ISI.Extensions.WebClient.HeaderCollection();
 
-			headers.AddBasicAuthentication(request.JiraApiUserName, request.JiraApiToken);
+			if (!string.IsNullOrWhiteSpace(request.JiraApiUserName) && !string.IsNullOrWhiteSpace(request.JiraApiToken))
+			{
+				headers.AddBasicAuthentication(request.JiraApiUserName, request.JiraApiToken);
+			}
+			else
+			{
+				headers.AddBasicAuthentication(Configuration.JiraApiUserName, Configuration.JiraApiToken);
+			}
 
 			if (!string.IsNullOrWhiteSpace((request as DTOs.IRequestHasImpersonatedUser)?.ImpersonatedUser) && !string.Equals(request.JiraApiUserName, (request as DTOs.IRequestHasImpersonatedUser).ImpersonatedUser, StringComparison.InvariantCulture))
 			{

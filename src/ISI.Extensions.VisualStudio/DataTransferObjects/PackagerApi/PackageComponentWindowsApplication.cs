@@ -23,7 +23,7 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi
 	{
 		public string ProjectFullName { get; set; }
 		
-		public string IconFullName { get; set; }
+		public string IconFileName { get; set; }
 
 		public bool DoNotXmlTransformConfigs { get; set; }
 

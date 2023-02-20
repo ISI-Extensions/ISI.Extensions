@@ -134,12 +134,12 @@ namespace ISI.Extensions.Tests
 					new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.PackageComponentConsoleApplication()
 					{
 						ProjectFullName = @"F:\ISI\Clients\TFS\Tristar.DocumentBuilder.Portal.WebApplication\src\Tristar.Services\Tristar.Services.DocumentBuilder.MigrationTool\Tristar.Services.DocumentBuilder.MigrationTool.csproj",
-						IconFullName = @"F:\ISI\Clients\TFS\Tristar.DocumentBuilder.Portal.WebApplication\src\Tristar.ico",
+						IconFileName = @"Tristar.ico",
 					},
 					new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.PackageComponentWebSite()
 					{
 						ProjectFullName = rootProjectFullName,
-						IconFullName = @"F:\ISI\Clients\TFS\Tristar.DocumentBuilder.Portal.WebApplication\src\Tristar.ico",
+						IconFileName = @"Tristar.ico",
 					},
 				},
 				PackageFullName = buildArtifactZipFileName,

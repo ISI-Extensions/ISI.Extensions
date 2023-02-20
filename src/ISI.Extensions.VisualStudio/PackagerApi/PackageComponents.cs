@@ -65,14 +65,7 @@ namespace ISI.Extensions.VisualStudio
 					throw new(string.Format("Cannot find a solution to update \"{0}\"", request.Solution));
 				}
 			}
-
-
-
-
-
-
-
-
+			
 			logger.LogInformation("Package Components");
 			logger.LogInformation("  Configuration: {0}", request.Configuration);
 			logger.LogInformation("  Build Platform: {0}", request.BuildPlatform.GetDescription());
@@ -151,6 +144,8 @@ namespace ISI.Extensions.VisualStudio
 					System.IO.File.WriteAllText(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(request.PackageFullName), string.Format("{0}.Current.DateTimeStamp.Version.txt", request.PackageName)), request.PackageBuildDateTimeStampVersion.Value);
 				}
 			}
+
+			logger.LogInformation("Finish");
 
 			return response;
 		}

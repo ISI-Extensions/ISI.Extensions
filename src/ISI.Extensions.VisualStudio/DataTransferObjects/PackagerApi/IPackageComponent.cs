@@ -24,7 +24,7 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi
 	public interface IPackageComponent
 	{
 		string ProjectFullName { get; set; }
-		string IconFullName { get; set; }
+		string IconFileName { get; set; }
 		bool DoNotXmlTransformConfigs { get; set; }
 		List<string> ExcludeFiles { get; set; }
 		AfterBuildPackageComponent AfterBuildPackageComponent { get; set; }

@@ -32,17 +32,26 @@ namespace ISI.Extensions.VisualStudio
 			var projectDirectory = System.IO.Path.GetDirectoryName(packageComponent.ProjectFullName);
 			var packageComponentDirectory = System.IO.Path.Combine(packageComponentsDirectory, projectName);
 
-			logger.LogInformation("Package Component Console Application");
-			logger.LogInformation("  ProjectName: {0}", projectName);
-			logger.LogInformation("  ProjectDirectory: {0}", projectDirectory);
-			logger.LogInformation("  PackageComponentDirectory: {0}", packageComponentDirectory);
+			logger.LogInformation("  Package Component Console Application");
+			logger.LogInformation("    ProjectName: {0}", projectName);
+			logger.LogInformation("    ProjectDirectory: {0}", projectDirectory);
+			logger.LogInformation("    PackageComponentDirectory: {0}", packageComponentDirectory);
 
 			System.IO.Directory.CreateDirectory(packageComponentDirectory);
 
-			if (!string.IsNullOrWhiteSpace(packageComponent.IconFullName) && System.IO.File.Exists(packageComponent.IconFullName))
+			if (!string.IsNullOrWhiteSpace(packageComponent.IconFileName) && string.IsNullOrWhiteSpace(System.IO.Path.GetDirectoryName(packageComponent.IconFileName)))
 			{
-				logger.LogInformation("  IconFullName: {0}", packageComponent.IconFullName);
-				ISI.Extensions.DirectoryIcon.SetDirectoryIcon(packageComponentDirectory, packageComponent.IconFullName);
+				var iconFullName = System.IO.Path.Combine(projectDirectory, packageComponent.IconFileName);
+				if (System.IO.File.Exists(iconFullName))
+				{
+					packageComponent.IconFileName = iconFullName;
+				}
+			}
+
+			if (!string.IsNullOrWhiteSpace(packageComponent.IconFileName) && System.IO.File.Exists(packageComponent.IconFileName))
+			{
+				logger.LogInformation("    IconFileName: {0}", packageComponent.IconFileName);
+				ISI.Extensions.DirectoryIcon.SetDirectoryIcon(packageComponentDirectory, packageComponent.IconFileName);
 			}
 
 			var projectBinDirectory = string.Format("{0}{1}", GetBinDirectory(packageComponent.ProjectFullName, configuration, buildPlatform, platformTarget).TrimEnd(System.IO.Path.DirectorySeparatorChar), System.IO.Path.DirectorySeparatorChar);
@@ -123,8 +132,6 @@ namespace ISI.Extensions.VisualStudio
 			CopyDeploymentFiles(projectDirectory, packageComponentDirectory);
 
 			packageComponent.AfterBuildPackageComponent?.Invoke(packageComponentsDirectory);
-
-			logger.LogInformation("Finish");
 		}
 	}
 }

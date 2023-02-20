@@ -138,6 +138,25 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void AddIssueComment_Tests()
+		{
+			var jiraApi = new ISI.Extensions.Jira.JiraApi();
+
+			var getIssuesResponse = jiraApi.AddIssueComment(new()
+			{
+				JiraApiUrl = JiraUrl,
+				JiraApiUserName = JiraApiUserName,
+				JiraApiToken = JiraApiToken,
+				IssueIdOrKey = "TIP-262",
+				Comment = "Hello World",
+
+				//ImpersonatedUser = "rmuth",
+				//Jql = "assignee=currentuser() AND STATUS!=DONE ORDER BY created DESC",
+				//Jql = "STATUS!=DONE ORDER BY created DESC",
+			});
+		}
+
+		[Test]
 		public void FindIssues_Tests()
 		{
 			var jiraApi = new ISI.Extensions.Jira.JiraApi();

@@ -31,23 +31,26 @@ namespace ISI.Extensions.ConfigurationValueReaders
 		{
 			Value = value;
 
-			var pieces = value.Split(new[] { ':' }, 2, StringSplitOptions.RemoveEmptyEntries);
-
-			if (pieces.Length > 1)
+			if (!string.IsNullOrWhiteSpace(Value))
 			{
-				Prefix = pieces[0].Trim();
+				var pieces = value.Split(new[] { ':' }, 2, StringSplitOptions.RemoveEmptyEntries);
 
-				pieces = pieces[1].Split(new[] { ';' }, 2, StringSplitOptions.RemoveEmptyEntries);
-
-				Key = pieces[0].Trim();
-				DefaultValue = (pieces.Length > 1 ? pieces[1].Trim() : string.Empty);
-
+				if (pieces.Length > 1)
 				{
-					var keyIndexOffset = Key.IndexOf("[");
-					if ((keyIndexOffset > 0) && Key.EndsWith("]"))
+					Prefix = pieces[0].Trim();
+
+					pieces = pieces[1].Split(new[] { ';' }, 2, StringSplitOptions.RemoveEmptyEntries);
+
+					Key = pieces[0].Trim();
+					DefaultValue = (pieces.Length > 1 ? pieces[1].Trim() : string.Empty);
+
 					{
-						KeyIndex = Key.Substring(keyIndexOffset).Trim('[', ']', ' ');
-						Key = Key.Substring(0, keyIndexOffset).Trim('[', ']', ' ');
+						var keyIndexOffset = Key.IndexOf("[");
+						if ((keyIndexOffset > 0) && Key.EndsWith("]"))
+						{
+							KeyIndex = Key.Substring(keyIndexOffset).Trim('[', ']', ' ');
+							Key = Key.Substring(0, keyIndexOffset).Trim('[', ']', ' ');
+						}
 					}
 				}
 			}

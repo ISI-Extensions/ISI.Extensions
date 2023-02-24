@@ -42,7 +42,6 @@ namespace ISI.Extensions.Repository.SqlServer
 
 		protected RecordManager(
 			Microsoft.Extensions.Configuration.IConfiguration configuration,
-			ISI.Extensions.Repository.SqlServer.Configuration sqlServerConfiguration,
 			Microsoft.Extensions.Logging.ILogger logger,
 			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
 			ISI.Extensions.JsonSerialization.IJsonSerializer serializer,
@@ -54,7 +53,8 @@ namespace ISI.Extensions.Repository.SqlServer
 			GetSqlConnectionDelegate getConnection = null)
 			: base(configuration, logger, dateTimeStamper, serializer)
 		{
-			SqlServerConfiguration = sqlServerConfiguration;
+			SqlServerConfiguration = new ISI.Extensions.Repository.SqlServer.Configuration();
+			configuration.GetSection(ISI.Extensions.Repository.SqlServer.Configuration.ConfigurationSectionName).Bind(SqlServerConfiguration);
 
 			ConnectionString = Configuration.GetConnectionString(connectionString) ?? connectionString;
 

@@ -12,31 +12,24 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.Repository.SqlServer.Extensions;
+using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
+using SqlServerDTOs = ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi;
 
-namespace ISI.Extensions.Repository.SqlServer
+namespace ISI.Extensions.Repository.SqlServer.Extensions
 {
-	public abstract partial class RecordManagerPrimaryKey<TRecord, TRecordPrimaryKey> : RecordManager<TRecord>, IRecordManagerPrimaryKey<TRecord, TRecordPrimaryKey>
-		where TRecord : class, IRecordManagerPrimaryKeyRecord<TRecordPrimaryKey>, new()
+	public static partial class RepositorySetupApiExtensions
 	{
-		protected RecordManagerPrimaryKey(
-			Microsoft.Extensions.Configuration.IConfiguration configuration,
-			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
-			ISI.Extensions.JsonSerialization.IJsonSerializer serializer,
-			string connectionString,
-			string schema = null,
-			string tableNamePrefix = null,
-			string tableName = null,
-			string tableAlias = null)
-			: base(configuration, logger, dateTimeStamper, serializer, connectionString, schema, tableNamePrefix, tableName, tableAlias)
+		public static ISI.Extensions.Repository.IEnumInformationRecordManager GetEnumInformationRecordManager(this ISI.Extensions.Repository.IRepositorySetupApi repositorySetupApi, string schema, string tableName, string enumIdColumnName, string enumUuidColumnName)
 		{
+			return new ISI.Extensions.Repository.SqlServer.EnumInformationRecordManager(repositorySetupApi.Configuration, repositorySetupApi.Logger, repositorySetupApi.DateTimeStamper, null, repositorySetupApi.GetConnectionString(), schema, tableName, enumIdColumnName, enumUuidColumnName);
 		}
 	}
 }

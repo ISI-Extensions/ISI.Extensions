@@ -30,7 +30,7 @@ namespace ISI.Extensions.Repository.Cosmos
 		public Microsoft.Extensions.Logging.ILogger Logger { get; }
 		public ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
 
-		protected Microsoft.Extensions.Configuration.IConfiguration Configuration { get; }
+		public Microsoft.Extensions.Configuration.IConfiguration Configuration { get; }
 
 		public string ConnectionString { get; }
 		public string DatabaseName { get; }

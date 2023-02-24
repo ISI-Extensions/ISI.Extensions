@@ -24,6 +24,10 @@ namespace ISI.Extensions.Repository
 {
 	public interface IRepositorySetupApi
 	{
+		Microsoft.Extensions.Logging.ILogger Logger { get; }
+		ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
+		Microsoft.Extensions.Configuration.IConfiguration Configuration { get; }
+
 		DTOs.DeleteRepositoryResponse DeleteRepository();
 		DTOs.CreateRepositoryResponse CreateRepository(DTOs.CreateRepositoryRequest request);
 		DTOs.GetLatestStepResponse GetLatestStep();

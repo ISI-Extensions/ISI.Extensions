@@ -29,7 +29,7 @@ namespace ISI.Extensions.Tests.Repository
 		[Test]
 		public void CreateDatabase_Test()
 		{
-			var repositorySetupApi = new ISI.Extensions.Repository.Cosmos.RepositorySetupApi(Configuration, Logger, DateTimeStamper, ConnectionString);
+			var repositorySetupApi = new ISI.Extensions.Repository.Cosmos.RepositorySetupApi(Configuration, Logger, DateTimeStamper, null, ConnectionString);
 
 			repositorySetupApi.CreateRepository(new());
 		}

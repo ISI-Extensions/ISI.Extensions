@@ -26,7 +26,6 @@ namespace ISI.Extensions.Repository.SqlServer
 	{
 		protected RecordManagerWithArchive(
 			Microsoft.Extensions.Configuration.IConfiguration configuration,
-			ISI.Extensions.Repository.SqlServer.Configuration sqlServerConfiguration,
 			Microsoft.Extensions.Logging.ILogger logger,
 			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
 			ISI.Extensions.JsonSerialization.IJsonSerializer serializer,
@@ -35,7 +34,7 @@ namespace ISI.Extensions.Repository.SqlServer
 			string tableNamePrefix = null,
 			string tableName = null,
 			string tableAlias = null)
-			: base(configuration, sqlServerConfiguration, logger, dateTimeStamper, serializer, connectionString, schema, tableNamePrefix, tableName, tableAlias)
+			: base(configuration, logger, dateTimeStamper, serializer, connectionString, schema, tableNamePrefix, tableName, tableAlias)
 		{
 		}
 	}

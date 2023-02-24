@@ -30,12 +30,11 @@ namespace ISI.Extensions.Tests.Repository
 		{
 			public ContactWithDataRecordManager(
 				Microsoft.Extensions.Configuration.IConfiguration configuration,
-				ISI.Extensions.Repository.SqlServer.Configuration sqlServerConfiguration,
 				Microsoft.Extensions.Logging.ILogger logger,
 				ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
 				ISI.Extensions.JsonSerialization.IJsonSerializer serializer,
 				string connectionString)
-				: base(configuration, sqlServerConfiguration, logger, dateTimeStamper, serializer, connectionString)
+				: base(configuration, logger, dateTimeStamper, serializer, connectionString)
 			{
 
 			}
@@ -50,7 +49,7 @@ namespace ISI.Extensions.Tests.Repository
 		[Test]
 		public void CreateTableContactWithDataRecord()
 		{
-			var recordManager = new ContactWithDataRecordManager(Configuration, SqlServerConfiguration, Logger, DateTimeStamper, Serializer, ConnectionString);
+			var recordManager = new ContactWithDataRecordManager(Configuration, Logger, DateTimeStamper, Serializer, ConnectionString);
 
 			recordManager.CreateTable();
 		}
@@ -58,7 +57,7 @@ namespace ISI.Extensions.Tests.Repository
 		[Test]
 		public void ContactWithDataV1_Get()
 		{
-			var recordManager = new ContactWithDataRecordManager(Configuration, SqlServerConfiguration, Logger, DateTimeStamper, Serializer, ConnectionString);
+			var recordManager = new ContactWithDataRecordManager(Configuration, Logger, DateTimeStamper, Serializer, ConnectionString);
 
 			var contactV1 = new ContactWithData()
 			{
@@ -96,7 +95,7 @@ namespace ISI.Extensions.Tests.Repository
 		[Test]
 		public void ContactWithDataV2_Get()
 		{
-			var recordManager = new ContactWithDataRecordManager(Configuration, SqlServerConfiguration, Logger, DateTimeStamper, Serializer, ConnectionString);
+			var recordManager = new ContactWithDataRecordManager(Configuration, Logger, DateTimeStamper, Serializer, ConnectionString);
 
 			var contactV2 = new ContactWithData()
 			{
@@ -136,7 +135,7 @@ namespace ISI.Extensions.Tests.Repository
 		[Test]
 		public void ContactWithData_Insert()
 		{
-			var recordManager = new ContactWithDataRecordManager(Configuration, SqlServerConfiguration, Logger, DateTimeStamper, Serializer, ConnectionString);
+			var recordManager = new ContactWithDataRecordManager(Configuration, Logger, DateTimeStamper, Serializer, ConnectionString);
 
 			var contact = new ContactWithData()
 			{
@@ -155,7 +154,7 @@ namespace ISI.Extensions.Tests.Repository
 		[Test]
 		public void ContactWithData_Update()
 		{
-			var recordManager = new ContactWithDataRecordManager(Configuration, SqlServerConfiguration, Logger, DateTimeStamper, Serializer, ConnectionString);
+			var recordManager = new ContactWithDataRecordManager(Configuration, Logger, DateTimeStamper, Serializer, ConnectionString);
 
 			var contact = new ContactWithData()
 			{
@@ -173,7 +172,7 @@ namespace ISI.Extensions.Tests.Repository
 		[Test]
 		public void ContactWithData_List()
 		{
-			var recordManager = new ContactWithDataRecordManager(Configuration, SqlServerConfiguration, Logger, DateTimeStamper, Serializer, ConnectionString);
+			var recordManager = new ContactWithDataRecordManager(Configuration, Logger, DateTimeStamper, Serializer, ConnectionString);
 
 			foreach (var record in recordManager.ListRecordsAsync().ToEnumerable())
 			{
@@ -184,7 +183,7 @@ namespace ISI.Extensions.Tests.Repository
 		[Test]
 		public void UpsertRecordsAsync_Test()
 		{
-			var recordManager = new ContactWithDataRecordManager(Configuration, SqlServerConfiguration, Logger, DateTimeStamper, Serializer, ConnectionString);
+			var recordManager = new ContactWithDataRecordManager(Configuration, Logger, DateTimeStamper, Serializer, ConnectionString);
 
 			recordManager.CreateTable(ISI.Extensions.Repository.CreateTableMode.DeleteAndCreateIfExists);
 

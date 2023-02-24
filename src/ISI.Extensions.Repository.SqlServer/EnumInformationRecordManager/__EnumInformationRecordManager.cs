@@ -29,7 +29,6 @@ namespace ISI.Extensions.Repository.SqlServer
 
 		public EnumInformationRecordManager(
 			Microsoft.Extensions.Configuration.IConfiguration configuration,
-			ISI.Extensions.Repository.SqlServer.Configuration sqlServerConfiguration,
 			Microsoft.Extensions.Logging.ILogger logger,
 			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
 			ISI.Extensions.JsonSerialization.IJsonSerializer serializer,
@@ -38,7 +37,7 @@ namespace ISI.Extensions.Repository.SqlServer
 			string tableName,
 			string enumIdColumnName,
 			string enumUuidColumnName)
-			: base(configuration, sqlServerConfiguration, logger, dateTimeStamper, serializer, connectionString, schema, null, tableName)
+			: base(configuration, logger, dateTimeStamper, serializer, connectionString, schema, null, tableName)
 		{
 			EnumIdColumnName = enumIdColumnName;
 			EnumUuidColumnName = enumUuidColumnName;

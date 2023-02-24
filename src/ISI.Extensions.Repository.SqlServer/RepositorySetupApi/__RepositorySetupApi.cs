@@ -32,12 +32,12 @@ namespace ISI.Extensions.Repository.SqlServer
 	{
 		public Microsoft.Extensions.Logging.ILogger Logger { get; }
 		public ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
-		public ISI.Extensions.JsonSerialization.IJsonSerializer Serializer { get; }
+		protected ISI.Extensions.JsonSerialization.IJsonSerializer Serializer { get; }
 
 		private string _masterConnectionString = null;
 		public string MasterConnectionString => _masterConnectionString ??= GetMasterConnectionString();
 
-		protected Microsoft.Extensions.Configuration.IConfiguration Configuration { get; }
+		public Microsoft.Extensions.Configuration.IConfiguration Configuration { get; }
 
 		public string ConnectionString { get; }
 		public string DatabaseName { get; }

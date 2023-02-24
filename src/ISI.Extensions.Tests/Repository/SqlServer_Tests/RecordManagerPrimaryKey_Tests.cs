@@ -67,12 +67,11 @@ namespace ISI.Extensions.Tests.Repository
 		{
 			public ContactRecordManager(
 				Microsoft.Extensions.Configuration.IConfiguration configuration,
-				ISI.Extensions.Repository.SqlServer.Configuration sqlServerConfiguration,
 				Microsoft.Extensions.Logging.ILogger logger,
 				ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
 				ISI.Extensions.JsonSerialization.IJsonSerializer serializer,
 				string connectionString)
-				: base(configuration, sqlServerConfiguration, logger, dateTimeStamper, serializer, connectionString)
+				: base(configuration, logger, dateTimeStamper, serializer, connectionString)
 			{
 
 			}
@@ -82,7 +81,7 @@ namespace ISI.Extensions.Tests.Repository
 		[Test]
 		public void CreateTableContactRecord()
 		{
-			var recordManager = new ContactRecordManager(Configuration, SqlServerConfiguration, Logger, DateTimeStamper, Serializer, ConnectionString);
+			var recordManager = new ContactRecordManager(Configuration, Logger, DateTimeStamper, Serializer, ConnectionString);
 
 			recordManager.CreateTable();
 		}
@@ -90,7 +89,7 @@ namespace ISI.Extensions.Tests.Repository
 		[Test]
 		public void Get()
 		{
-			var recordManager = new ContactRecordManager(Configuration, SqlServerConfiguration, Logger, DateTimeStamper, Serializer, ConnectionString);
+			var recordManager = new ContactRecordManager(Configuration, Logger, DateTimeStamper, Serializer, ConnectionString);
 
 			var contact = new Contact()
 			{
@@ -116,7 +115,7 @@ namespace ISI.Extensions.Tests.Repository
 		[Test]
 		public void Insert()
 		{
-			var recordManager = new ContactRecordManager(Configuration, SqlServerConfiguration, Logger, DateTimeStamper, Serializer, ConnectionString);
+			var recordManager = new ContactRecordManager(Configuration, Logger, DateTimeStamper, Serializer, ConnectionString);
 
 			var contact = new Contact()
 			{
@@ -135,7 +134,7 @@ namespace ISI.Extensions.Tests.Repository
 		[Test]
 		public void Update()
 		{
-			var recordManager = new ContactRecordManager(Configuration, SqlServerConfiguration, Logger, DateTimeStamper, Serializer, ConnectionString);
+			var recordManager = new ContactRecordManager(Configuration, Logger, DateTimeStamper, Serializer, ConnectionString);
 
 			var contact = new Contact()
 			{
@@ -153,7 +152,7 @@ namespace ISI.Extensions.Tests.Repository
 		[Test]
 		public void List()
 		{
-			var recordManager = new ContactRecordManager(Configuration, SqlServerConfiguration, Logger, DateTimeStamper, Serializer, ConnectionString);
+			var recordManager = new ContactRecordManager(Configuration, Logger, DateTimeStamper, Serializer, ConnectionString);
 
 			foreach (var record in recordManager.ListRecordsAsync().ToEnumerable())
 			{

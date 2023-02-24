@@ -82,16 +82,16 @@ namespace ISI.Extensions.Scm
 				set => Settings.SetValue(Settings.Key.CodeSigningRunAsync, value.TrueFalse());
 			}
 
-			public string RemoteCodeSigningServiceUrl
+			public string RemoteCodeSigningServiceApiUrl
 			{
-				get => Settings.GetValue(Settings.Key.CodeSigningRemoteCodeSigningServiceUrl);
-				set => Settings.SetValue(Settings.Key.CodeSigningRemoteCodeSigningServiceUrl, value);
+				get => Settings.GetValue(Settings.Key.CodeSigningRemoteCodeSigningServiceApiUrl);
+				set => Settings.SetValue(Settings.Key.CodeSigningRemoteCodeSigningServiceApiUrl, value);
 			}
 
-			public string RemoteCodeSigningServicePassword
+			public string RemoteCodeSigningServiceApiKey
 			{
-				get => Settings.GetValue(Settings.Key.CodeSigningRemoteCodeSigningServicePassword);
-				set => Settings.SetValue(Settings.Key.CodeSigningRemoteCodeSigningServicePassword, value);
+				get => Settings.GetValue(Settings.Key.CodeSigningRemoteCodeSigningServiceApiKey);
+				set => Settings.SetValue(Settings.Key.CodeSigningRemoteCodeSigningServiceApiKey, value);
 			}
 		}
 	}

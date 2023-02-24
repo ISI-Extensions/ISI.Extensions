@@ -31,8 +31,6 @@ namespace ISI.Extensions.Scm
 			public const string ActiveDirectoryUserName = nameof(ActiveDirectoryUserName);
 			public const string ActiveDirectoryPassword = nameof(ActiveDirectoryPassword);
 
-			public const string ScmWebServiceUrl = nameof(ScmWebServiceUrl);
-
 			public const string CodeSigningDoCodeSigning = nameof(CodeSigningDoCodeSigning);
 			public const string CodeSigningTimeStampUrl = nameof(CodeSigningTimeStampUrl);
 			public const string CodeSigningTimeStampDigestAlgorithm = nameof(CodeSigningTimeStampDigestAlgorithm);
@@ -46,8 +44,8 @@ namespace ISI.Extensions.Scm
 			public const string CodeSigningCertificateTokenRevocationPassword = nameof(CodeSigningCertificateTokenRevocationPassword);
 			public const string CodeSigningDigestAlgorithm = nameof(CodeSigningDigestAlgorithm);
 			public const string CodeSigningRunAsync = nameof(CodeSigningRunAsync);
-			public const string CodeSigningRemoteCodeSigningServiceUrl = nameof(CodeSigningRemoteCodeSigningServiceUrl);
-			public const string CodeSigningRemoteCodeSigningServicePassword = nameof(CodeSigningRemoteCodeSigningServicePassword);
+			public const string CodeSigningRemoteCodeSigningServiceApiUrl = nameof(CodeSigningRemoteCodeSigningServiceApiUrl);
+			public const string CodeSigningRemoteCodeSigningServiceApiKey = nameof(CodeSigningRemoteCodeSigningServiceApiKey);
 
 			public const string NugetApiUrl = nameof(NugetApiUrl);
 			public const string NugetRepositoryName = nameof(NugetRepositoryName);
@@ -67,8 +65,8 @@ namespace ISI.Extensions.Scm
 			public const string VsExtensionsUserName = nameof(VsExtensionsUserName);
 			public const string VsExtensionsPassword = nameof(VsExtensionsPassword);
 
-			public const string JenkinsServiceUrl = nameof(JenkinsServiceUrl);
-			public const string JenkinsServicePassword = nameof(JenkinsServicePassword);
+			public const string JenkinsServiceApiUrl = nameof(JenkinsServiceApiUrl);
+			public const string JenkinsServiceApiKey = nameof(JenkinsServiceApiKey);
 			public const string JenkinsUrl = nameof(JenkinsUrl);
 			public const string JenkinsUserName = nameof(JenkinsUserName);
 			public const string JenkinsApiToken = nameof(JenkinsApiToken);
@@ -106,9 +104,6 @@ namespace ISI.Extensions.Scm
 
 		private SettingsActiveDirectory _activeDirectory = null;
 		public SettingsActiveDirectory ActiveDirectory => _activeDirectory ??= new(this);
-
-		private SettingsScm _scm = null;
-		public SettingsScm Scm => _scm ??= new(this);
 
 		private SettingsCodeSigning _codeSigning = null;
 		public SettingsCodeSigning CodeSigning => _codeSigning ??= new(this);

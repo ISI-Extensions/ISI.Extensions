@@ -30,16 +30,16 @@ namespace ISI.Extensions.Scm
 				Settings = settings;
 			}
 
-			public string JenkinsServiceUrl
+			public string ApiUrl
 			{
-				get => Settings.GetValue(Settings.Key.JenkinsServiceUrl);
-				set => Settings.SetValue(Settings.Key.JenkinsServiceUrl, value);
+				get => Settings.GetValue(Settings.Key.JenkinsServiceApiUrl);
+				set => Settings.SetValue(Settings.Key.JenkinsServiceApiUrl, value);
 			}
 
-			public string JenkinsServicePassword
+			public string ApiKey
 			{
-				get => Settings.GetValue(Settings.Key.JenkinsServicePassword);
-				set => Settings.SetValue(Settings.Key.JenkinsServicePassword, value);
+				get => Settings.GetValue(Settings.Key.JenkinsServiceApiKey);
+				set => Settings.SetValue(Settings.Key.JenkinsServiceApiKey, value);
 			}
 
 			public string JenkinsUrl

@@ -127,7 +127,6 @@ namespace ISI.Extensions.Nuget
 							try
 							{
 								System.Net.ServicePointManager.Expect100Continue = true;
-								System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls;
 
 								var webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(repositoryUri.Uri.ToString());
 
@@ -164,6 +163,8 @@ namespace ISI.Extensions.Nuget
 							catch (Exception exception)
 							{
 								Logger.LogError(exception.Message);
+
+								System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls;
 
 								tryAttemptsLeft--;
 								if (tryAttemptsLeft < 0)

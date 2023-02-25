@@ -18,16 +18,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Repository
+namespace ISI.Extensions.Repository.SqlServer
 {
-	public interface IEnumInformationRecordManager
+	public partial class EnumInformationRecordManager
 	{
-		void CreateTable(CreateTableMode createTableMode = CreateTableMode.ErrorIfExists);
-		void DropTable();
+		public async Task UpsertEnumsAsync(IEnumerable<EnumInformationRecord> records)
+		{
+			await foreach (var record in UpsertRecordsAsync(records).ConfigureAwait(false))
+			{
 
-		Task UpsertEnumsAsync(IEnumerable<EnumInformationRecord> records);
-		Task DeleteAllRecordsAsync();
-		Task<int> DeleteRecordsAsync(IEnumerable<int> enumIds);
+			}
+		}
 	}
 }

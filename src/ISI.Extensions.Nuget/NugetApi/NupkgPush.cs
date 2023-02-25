@@ -115,6 +115,15 @@ namespace ISI.Extensions.Nuget
 					}
 
 					var repositoryUri = new UriBuilder(request.PackageChunksRepositoryUri);
+
+					var restResponse = ISI.Extensions.WebClient.Rest.ExecuteGet<ISI.Extensions.WebClient.Rest.TextResponse>(repositoryUri.Uri, new(), false);
+					var serverVersion = string.Empty;
+					restResponse?.ResponseHeaders?.TryGetValue("server", out serverVersion);
+					if(!(serverVersion ?? string.Empty).StartsWith("nginx", StringComparison.InvariantCultureIgnoreCase))
+					{
+						System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls;
+					}
+
 					repositoryUri.Path = "api/v2/package-chunk";
 
 					while (fileSegments.Any())
@@ -163,8 +172,6 @@ namespace ISI.Extensions.Nuget
 							catch (Exception exception)
 							{
 								Logger.LogError(exception.Message);
-
-								System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls;
 
 								tryAttemptsLeft--;
 								if (tryAttemptsLeft < 0)

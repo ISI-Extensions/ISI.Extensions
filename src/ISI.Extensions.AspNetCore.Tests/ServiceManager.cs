@@ -39,7 +39,7 @@ namespace ISI.Extensions.AspNetCore.Tests
 				.ConfigureWebHostDefaults(webHostBuilder =>
 				{
 					webHostBuilder.UseStartup<Startup>();
-					
+
 					webHostBuilder.ConfigureServices(services =>
 						{
 							services
@@ -48,14 +48,8 @@ namespace ISI.Extensions.AspNetCore.Tests
 								.AddAllConfigurations(configurationRoot)
 								.AddConfiguration<Microsoft.Extensions.Hosting.ConsoleLifetimeOptions>(configurationRoot)
 								.AddConfiguration<Microsoft.Extensions.Hosting.HostOptions>(configurationRoot)
-
 								.AddConfigurationRegistrations(configurationRoot)
 								.ProcessServiceRegistrars()
-
-								.AddSingleton<ISI.Extensions.StatusTrackers.FileStatusTrackerFactory>()
-								.AddSingleton<ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer>()
-
-								.AddSingleton<ISI.Extensions.Threads.ThreadManager>()
 
 								//.AddSingleton<Microsoft.Extensions.Logging.ILoggerFactory, Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory>()
 								//.AddSingleton<Microsoft.Extensions.Logging.ILoggerFactory, Microsoft.Extensions.Logging.LoggerFactory>()
@@ -78,30 +72,35 @@ namespace ISI.Extensions.AspNetCore.Tests
 						serverOptions.Limits.MaxConcurrentConnections = 100;
 						serverOptions.Limits.MaxConcurrentUpgradedConnections = 100;
 						serverOptions.Limits.MaxRequestBodySize = 30 * 1024 * 1024;
-						serverOptions.Limits.MinRequestBodyDataRate = new(bytesPerSecond: 100, gracePeriod: TimeSpan.FromSeconds(10));
-						serverOptions.Limits.MinResponseDataRate = new(bytesPerSecond: 100, gracePeriod: TimeSpan.FromSeconds(10));
+						serverOptions.Limits.MinRequestBodyDataRate = new Microsoft.AspNetCore.Server.Kestrel.Core.MinDataRate(bytesPerSecond: 100, gracePeriod: TimeSpan.FromSeconds(10));
+						serverOptions.Limits.MinResponseDataRate = new Microsoft.AspNetCore.Server.Kestrel.Core.MinDataRate(bytesPerSecond: 100, gracePeriod: TimeSpan.FromSeconds(10));
 						serverOptions.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2);
 						serverOptions.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(1);
 					});
 
+					//webHostBuilder.UseKestrel();
 					webHostBuilder.UseKestrel((builderContext, kestrelOptions) =>
 					{
-						kestrelOptions.Configure(configurationRoot.GetKestrelConfigurationSection(), reloadOnChange: false);
+						var kestrelConfiguration = configurationRoot.GetKestrelConfigurationSection();
+
+						kestrelOptions.Configure(kestrelConfiguration, reloadOnChange: false);
 					});
 				})
 
 				//.UseServiceProviderFactory(new ISI.Extensions.DependencyInjection.ServiceProviderFactory(configurationRoot))
-				
+
 				.Build();
+
 
 			await _webHost.StartAsync().ContinueWith(_ =>
 			{
 				var server = _webHost.Services.GetRequiredService<global::Microsoft.AspNetCore.Hosting.Server.IServer>();
 				var addressFeature = server.Features.Get<global::Microsoft.AspNetCore.Hosting.Server.Features.IServerAddressesFeature>();
 
+				Serilog.Log.Information("Address(es)");
 				foreach (var address in addressFeature.Addresses)
 				{
-					Serilog.Log.Information($"Address: {address}");
+					Serilog.Log.Information($"  {address}");
 				}
 
 				return _webHost.Services.SetServiceLocator();
@@ -115,7 +114,7 @@ namespace ISI.Extensions.AspNetCore.Tests
 			await _webHost.StopAsync();
 
 			_webHost.Dispose();
-			
+
 			return true;
 		}
 	}

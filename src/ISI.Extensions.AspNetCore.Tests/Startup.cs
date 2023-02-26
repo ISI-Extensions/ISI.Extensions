@@ -13,7 +13,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
-using ISI.Extensions.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -22,13 +25,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ISI.Extensions.Extensions;
+using Microsoft.AspNetCore.Http;
 using Serilog;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ISI.Extensions.AspNetCore.Extensions;
 
 namespace ISI.Extensions.AspNetCore.Tests
 {
@@ -46,51 +45,32 @@ namespace ISI.Extensions.AspNetCore.Tests
 		{
 			services
 				.AddControllersWithViews()
+				.AddRazorRuntimeCompilation(options => options.FileProviders.Add(new ISI.Extensions.VirtualFileVolumesFileProvider()))
 				.AddNewtonsoftJson()
 				;
-						
+
+//				.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+			//services.AddMicrosoftIdentityWebAppAuthentication(Configuration, Constants.AzureAdB2C, "X-OpenIdConnect", "X-Cookies");
+
+			services
+				.AddMvc()
+				.AddRazorPagesOptions(options =>
+				{
+					options.Conventions.AllowAnonymousToPage("/Index");
+				})
+				.AddMvcOptions(options => { })
+				;
+
+
 			//services
-			//	.AddAuthentication(BearerAuthenticationHandler.AuthenticationHandlerName)
-			//	.AddScheme<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions, BearerAuthenticationHandler>(BearerAuthenticationHandler.AuthenticationHandlerName, null)
+			//	.AddAuthentication(AuthenticationHandler.AuthenticationHandlerName)
+			//	.AddScheme<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions, AuthenticationHandler>(AuthenticationHandler.AuthenticationHandlerName, null)
 			//	;
 
 			//services.AddAuthorization(options =>
 			//{
-			//	options.AddPolicy(AuthorizationPolicy.PolicyName, policy => policy.Requirements.Add(new AuthorizationPolicy()));
+			//	options.AddPolicy(IsAuthenticatedAuthorizationPolicy.PolicyName, policy => policy.Requirements.Add(new IsAuthenticatedAuthorizationPolicy()));
 			//});
-
-			services.AddSwaggerGen(swaggerGenOptions =>
-			{
-				swaggerGenOptions.CustomOperationIds(apiDescription => apiDescription.TryGetMethodInfo(out var methodInfo) ? methodInfo.Name.TrimEnd("Async") : null);
-
-				swaggerGenOptions.SwaggerDoc("v1", new() { Title = "ISI.Extensions.AspNetCore.Tests", Version = "v1" });
-
-				//swaggerGenOptions.AddSecurityDefinition(BearerAuthenticationHandler.Keys.Bearer, new Microsoft.OpenApi.Models.OpenApiSecurityScheme  
-				//{  
-				//	Name = BearerAuthenticationHandler.Keys.Authorization,  
-				//	Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,  
-				//	Scheme = BearerAuthenticationHandler.Keys.Bearer,  
-				//	In = Microsoft.OpenApi.Models.ParameterLocation.Header,  
-				//	Description = "Bearer Authorization header using the Bearer scheme."  
-				//});  
-				
-				//swaggerGenOptions.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement  
-				//{  
-				//	{  
-				//		new Microsoft.OpenApi.Models.OpenApiSecurityScheme  
-				//		{  
-				//			Reference = new Microsoft.OpenApi.Models.OpenApiReference  
-				//			{  
-				//				Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,  
-				//				Id = BearerAuthenticationHandler.Keys.Bearer, 
-				//			}  
-				//		},  
-				//		new string[] {}  
-				//	}  
-				//});  
-			});
-
-			services.AddSwaggerGenNewtonsoftSupport();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -120,17 +100,11 @@ namespace ISI.Extensions.AspNetCore.Tests
 			applicationBuilder.UseDefaultFiles();
 
 			applicationBuilder.UseStaticFiles();
-			applicationBuilder.UseVirtualFileVolumesFileProvider();
 
 			applicationBuilder.UseRouting();
 
-			//applicationBuilder.UseHttpsRedirection();
-
 			applicationBuilder.UseAuthentication();
 			applicationBuilder.UseAuthorization();
-
-			applicationBuilder.UseSwagger();
-			applicationBuilder.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ISI.Extensions.AspNetCore.Tests v1"));
 
 			applicationBuilder.UseEndpoints(endpointRouteBuilder =>
 			{

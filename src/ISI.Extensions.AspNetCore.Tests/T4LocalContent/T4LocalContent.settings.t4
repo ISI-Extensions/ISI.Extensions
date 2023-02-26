@@ -16,6 +16,7 @@
 
 		readonly string[] LocalContentFileFolders = new string[] 
 				{
+						"wwwroot",
 						"StyleSheets",
 						"JavaScripts",
 						"Scripts",

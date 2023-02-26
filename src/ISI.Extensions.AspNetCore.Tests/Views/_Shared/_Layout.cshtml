@@ -14,26 +14,57 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 @using ISI.Extensions.AspNetCore.Extensions
 @model ISI.Extensions.AspNetCore.Tests.Models.BaseModel
-
-@{
-	Layout = ISI.Extensions.AspNetCore.Tests.T4Files.Views._Shared._Layout_cshtml;
-}
-
-@section StyleSheetIncludes
-{
-	@Html.AddStyleSheet(ISI.Extensions.AspNetCore.Tests.T4Links.StyleSheets._Shared._Layout_csless)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+	<title>@Model.Title</title>
+	<link rel="stylesheet" href="@ISI.Extensions.AspNetCore.Tests.T4Links.wwwroot.lib.bootstrap.dist.css.bootstrap_css" />
+	@Html.AddStyleSheet(ISI.Extensions.AspNetCore.Tests.T4Links.wwwroot.StyleSheets._Shared._Layout_css)
 	@RenderSection("StyleSheetIncludes", false)
-}
+</head>
+<body>
+<header>
+	<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+		<div class="container-fluid">
+			<a class="navbar-brand" asp-area="" asp-controller="Public" asp-action="Index">WebApplication6</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+				<ul class="navbar-nav flex-grow-1">
+					<li class="nav-item">
+						<a class="nav-link text-dark" asp-area="" asp-controller="Public" asp-action="Index">Home</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+					</li>
+				</ul>
+				<partial name="_LoginPartial" />
+			</div>
+		</div>
+	</nav>
+</header>
+<div class="container">
+	<main role="main" class="pb-3">
+		@RenderBody()
+	</main>
+</div>
 
-@RenderBody()
-
-@section JavaScriptIncludes
-{
-	@Html.AddJavaScript(ISI.Extensions.AspNetCore.Tests.T4Links.JavaScripts._Shared._Layout_csjs)
-	@RenderSection("JavaScriptIncludes", false)
-}
-
-@section JavaScriptContent
-{
-	@RenderSection("JavaScriptContent", false)
+<footer class="border-top footer text-muted">
+	<div class="container">
+		&copy; 2023 - WebApplication6
+	</div>
+</footer>
+<script src="@ISI.Extensions.AspNetCore.Tests.T4Links.wwwroot.lib.jquery.dist.jquery_js"></script>
+<script src="@ISI.Extensions.AspNetCore.Tests.T4Links.wwwroot.lib.bootstrap.dist.js.bootstrap_js"></script>
+	@Html.AddJavaScript(ISI.Extensions.AspNetCore.Tests.T4Links.wwwroot.JavaScripts._Shared._Layout_js)
+@RenderSection("JavaScriptIncludes", false)
+@RenderSection("JavaScriptContent", false)
+</body>
+</html>
 }

@@ -28,7 +28,6 @@ namespace ISI.Extensions.AspNetCore
 		private static ISI.Extensions.Caching.ICacheManager CacheManager => _cacheManager ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Caching.ICacheManager>();
 
 		private static Configuration _configuration = null;
-
 		private static Configuration Configuration => _configuration ??= ISI.Extensions.ServiceLocator.Current.GetService<Configuration>(() => new ISI.Extensions.DependencyInjection.RegistrationDeclarationByMapToType()
 		{
 			MapToType = typeof(Configuration),

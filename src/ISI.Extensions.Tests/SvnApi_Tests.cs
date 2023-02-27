@@ -109,5 +109,14 @@ namespace ISI.Extensions.Tests
 				Revision = 144328,
 			});
 		}
+
+		[Test]
+		public void ParseMessage_Test()
+		{
+			var messageParser = new ISI.Extensions.Svn.MessageParser();
+
+			var getRevisionInfoResponse = messageParser.ParseMessage(@"refs CD-4726, CD-4742: Adjusted XIT messaging for the winback offer.");
+
+		}
 	}
 }

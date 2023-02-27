@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,7 +49,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 				IssueLinks = IssueLinks.ToNullCheckedArray(x => x.Export()),
 				Assignee = Assignee?.Export(),
 				Status = Status?.Export(),
-				Components = Components.ToNullCheckedArray(),
+				Components = Components.ToNullCheckedArray(x => x.Export()),
 				TimeOriginalEstimate = TimeOriginalEstimate,
 				Description = Description,
 				AggregateTimeEstimate = AggregateTimeEstimate,
@@ -100,7 +100,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 		public InwardIssueFieldsWatches Watches { get; set; }
 
 		[DataMember(Name = "created", EmitDefaultValue = false)]
-		public string __Created { get =>string.Format("{0:yyyy-MM-ddTHH:mm:ss.fffzz}00", (Created.Kind == DateTimeKind.Local ? Created : Created.ToLocalTime())); set => Created = value.ToDateTime(); }
+		public string __Created { get => string.Format("{0:yyyy-MM-ddTHH:mm:ss.fffzz}00", (Created.Kind == DateTimeKind.Local ? Created : Created.ToLocalTime())); set => Created = value.ToDateTime(); }
 		[IgnoreDataMember]
 		public DateTime Created { get; set; }
 
@@ -131,7 +131,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 		public Status Status { get; set; }
 
 		[DataMember(Name = "components", EmitDefaultValue = false)]
-		public string[] Components { get; set; }
+		public IssueComponent[] Components { get; set; }
 
 		[DataMember(Name = "timeoriginalestimate", EmitDefaultValue = false)]
 		public string TimeOriginalEstimate { get; set; }
@@ -182,3 +182,9 @@ namespace ISI.Extensions.Jira.SerializableModels
 
 
 
+public class Component
+{
+	public string self { get; set; }
+	public string id { get; set; }
+	public string name { get; set; }
+}

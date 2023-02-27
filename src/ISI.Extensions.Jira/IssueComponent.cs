@@ -21,42 +21,10 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jira
 {
-	public class IssueFields
+	public class IssueComponent
 	{
-		public IssueType IssueType { get; set; }
-		public string Timespent { get; set; }
-		public Project Project { get; set; }
-		public IssueFixVersion[] FixVersions { get; set; }
-		public string AggregateTimespent { get; set; }
-		public IssueResolution Resolution { get; set; }
-		public DateTime? ResolutionDate { get; set; }
-		public int WorkRatio { get; set; }
-		public DateTime? LastViewed { get; set; }
-		public InwardIssueFieldsWatches Watches { get; set; }
-		public DateTime Created { get; set; }
-		public Priority Priority { get; set; }
-		public string[] Labels { get; set; }
-		public string TimeEstimate { get; set; }
-		public string AggregateTimeOriginalEstimate { get; set; }
-		public IssueLink[] IssueLinks { get; set; }
-		public User Assignee { get; set; }
-		public DateTime? Updated { get; set; }
-		public Status Status { get; set; }
-		public IssueComponent[] Components { get; set; }
-		public string TimeOriginalEstimate { get; set; }
-		public string Description { get; set; }
-		public string AggregateTimeEstimate { get; set; }
-		public string Summary { get; set; }
-		public User Creator { get; set; }
-		public User Reporter { get; set; }
-		public InwardIssueFieldsProgress AggregateProgress { get; set; }
-		public DateTime? DueDate { get; set; }
-		public InwardIssueFieldsProgress Progress { get; set; }
-		public InwardIssueFieldsVotes Votes { get; set; }
-		public DateTime? StatusCategoryChangeDate { get; set; }
-		public Attachment[] Attachments { get; set; }
+		public long IssueComponentId { get; set; }
+		public string IssueComponentUrl { get; set; }
+		public string Name { get; set; }
 	}
 }
-
-
-

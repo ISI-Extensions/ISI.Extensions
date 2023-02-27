@@ -68,10 +68,7 @@ namespace ISI.Extensions.WebClient
 					}
 				}
 
-				if (restResponseType == null)
-				{
-					restResponseType = (exception == null ? DefaultRestResponseType : DefaultErrorRestResponseType);
-				}
+				restResponseType ??= (exception == null ? DefaultRestResponseType : DefaultErrorRestResponseType);
 
 				var restResponseWrapper = Activator.CreateInstance(restResponseWrapperType.MakeGenericType(restResponseType)) as IRestResponseWrapper;
 

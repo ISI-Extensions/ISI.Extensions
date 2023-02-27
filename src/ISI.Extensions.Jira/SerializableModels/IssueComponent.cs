@@ -12,51 +12,37 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Jira
+namespace ISI.Extensions.Jira.SerializableModels
 {
-	public class IssueFields
+	[DataContract]
+	public class IssueComponent : ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jira.IssueComponent>
 	{
-		public IssueType IssueType { get; set; }
-		public string Timespent { get; set; }
-		public Project Project { get; set; }
-		public IssueFixVersion[] FixVersions { get; set; }
-		public string AggregateTimespent { get; set; }
-		public IssueResolution Resolution { get; set; }
-		public DateTime? ResolutionDate { get; set; }
-		public int WorkRatio { get; set; }
-		public DateTime? LastViewed { get; set; }
-		public InwardIssueFieldsWatches Watches { get; set; }
-		public DateTime Created { get; set; }
-		public Priority Priority { get; set; }
-		public string[] Labels { get; set; }
-		public string TimeEstimate { get; set; }
-		public string AggregateTimeOriginalEstimate { get; set; }
-		public IssueLink[] IssueLinks { get; set; }
-		public User Assignee { get; set; }
-		public DateTime? Updated { get; set; }
-		public Status Status { get; set; }
-		public IssueComponent[] Components { get; set; }
-		public string TimeOriginalEstimate { get; set; }
-		public string Description { get; set; }
-		public string AggregateTimeEstimate { get; set; }
-		public string Summary { get; set; }
-		public User Creator { get; set; }
-		public User Reporter { get; set; }
-		public InwardIssueFieldsProgress AggregateProgress { get; set; }
-		public DateTime? DueDate { get; set; }
-		public InwardIssueFieldsProgress Progress { get; set; }
-		public InwardIssueFieldsVotes Votes { get; set; }
-		public DateTime? StatusCategoryChangeDate { get; set; }
-		public Attachment[] Attachments { get; set; }
+		public ISI.Extensions.Jira.IssueComponent Export()
+		{
+			return new()
+			{
+				IssueComponentId = IssueComponentId,
+				IssueComponentUrl = IssueComponentUrl,
+				Name = Name,
+			};
+		}
+
+		[DataMember(Name = "id", EmitDefaultValue = false)]
+		public long IssueComponentId { get; set; }
+
+		[DataMember(Name = "self", EmitDefaultValue = false)]
+		public string IssueComponentUrl { get; set; }
+
+		[DataMember(Name = "name", EmitDefaultValue = false)]
+		public string Name { get; set; }
 	}
 }
-
-
-

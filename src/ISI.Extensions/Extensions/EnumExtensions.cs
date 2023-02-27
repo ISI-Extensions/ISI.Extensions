@@ -80,6 +80,18 @@ namespace ISI.Extensions.Extensions
 		{
 			return ISI.Extensions.Enum<TEnum?>.GetUuid(value);
 		}
+
+		public static string GetValueSource<TEnum>(this TEnum value, Enum.ValueSource valueSource)
+			where TEnum : System.Enum
+		{
+			return ISI.Extensions.Enum<TEnum>.GetValueSource(value, valueSource);
+		}
+		
+		public static string GetValueSource<TEnum>(this TEnum? value, Enum.ValueSource valueSource)
+			where TEnum : struct, System.Enum
+		{
+			return ISI.Extensions.Enum<TEnum?>.GetValueSource(value, valueSource);
+		}
 		
 		public static TEnumTo Convert<TEnumFrom, TEnumTo>(this TEnumFrom value, TEnumTo defaultValue = default)
 			where TEnumFrom : System.Enum

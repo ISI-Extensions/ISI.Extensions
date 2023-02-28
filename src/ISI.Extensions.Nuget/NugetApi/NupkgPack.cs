@@ -37,27 +37,66 @@ namespace ISI.Extensions.Nuget
 				request.OutputDirectory = System.IO.Path.GetDirectoryName(request.NuspecFullName);
 			}
 
-			var arguments = new List<string>();
-			arguments.Add("pack");
-			arguments.Add(string.Format("\"{0}\"", request.NuspecFullName));
-			arguments.Add(string.Format("-OutputDirectory \"{0}\"", request.OutputDirectory));
-			if (request.IncludeSymbols)
+			System.Environment.SetEnvironmentVariable("NUGET_ENABLE_LEGACY_CSPROJ_PACK", "true");
+
+			if ((System.Environment.GetEnvironmentVariable("NUGET_ENABLE_LEGACY_CSPROJ_PACK") ?? string.Empty).ToBoolean())
 			{
-				arguments.Add("--include-symbols");
+				var arguments = new List<string>();
+				arguments.Add("pack");
+				arguments.Add(string.Format("\"{0}\"", request.NuspecFullName));
+				arguments.Add(string.Format("-OutputDirectory \"{0}\"", request.OutputDirectory));
+				if (request.IncludeSymbols)
+				{
+					arguments.Add("--include-symbols");
+				}
+
+				if (request.IncludeSource)
+				{
+					arguments.Add(string.Format("--include-source \"{0}\"", request.WorkingDirectory));
+				}
+
+				ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				{
+					Logger = Logger, //new NullLogger(),
+					WorkingDirectory = request.WorkingDirectory,
+					ProcessExeFullName = GetNugetExeFullName(new()).NugetExeFullName,
+					Arguments = arguments,
+				});
 			}
-			if (request.IncludeSource)
+			else
 			{
-				arguments.Add(string.Format("--include-source \"{0}\"", request.WorkingDirectory));
+				if (string.IsNullOrWhiteSpace(request.CsProjFullName))
+				{
+					request.CsProjFullName = string.Format("{0}.csproj", request.NuspecFullName.TrimEnd(".nuspec"));
+				}
+
+
+
+				//dotnet pack  .\sample.csproj  -p:NuspecFile=.\nuget\check.nuspec  -p:NuspecBasePath=.\temp /p:Outputpath=package /p:PackageVersion=2.0.0-Dev
+				var arguments = new List<string>();
+				arguments.Add("pack");
+				arguments.Add(string.Format("\"{0}\"", request.CsProjFullName));
+				arguments.Add(string.Format("-p:NuspecFile=\"{0}\"", request.NuspecFullName));
+				arguments.Add(string.Format("/p:Outputpath=\"{0}\"", request.OutputDirectory));
+				if (request.IncludeSymbols)
+				{
+					arguments.Add("--include-symbols");
+				}
+
+				if (request.IncludeSource)
+				{
+					arguments.Add(string.Format("--include-source \"{0}\"", request.WorkingDirectory));
+				}
+
+				ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				{
+					Logger = Logger, //new NullLogger(),
+					WorkingDirectory = request.WorkingDirectory,
+					ProcessExeFullName = "dotnet",
+					Arguments = arguments,
+				});
 			}
 
-			ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-			{
-				Logger = Logger, //new NullLogger(),
-				WorkingDirectory = request.WorkingDirectory,
-				ProcessExeFullName = GetNugetExeFullName(new()).NugetExeFullName,
-				Arguments = arguments,
-			});
-			
 			Logger.LogInformation(string.Format("Packed \"{0}\"", System.IO.Path.GetFileName(request.NuspecFullName)));
 
 			return response;

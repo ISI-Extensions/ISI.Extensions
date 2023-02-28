@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using ISI.Extensions.ConfigurationHelper.Extensions;
 using ISI.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.DependencyInjection;
@@ -61,6 +61,24 @@ namespace ISI.Extensions.Tests
 			var serviceProvider = services.BuildServiceProvider<ISI.Extensions.DependencyInjection.Iunq.ServiceProviderBuilder>(configuration);
 
 			serviceProvider.SetServiceLocator();
+		}
+
+		[Test]
+		public void NupkgPack_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+
+			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+
+			nugetApi.NupkgPack(new()
+			{
+				NuspecFullName = @"ISI.Services.SCM.Jenkins\ISI.Services.SCM.Jenkins.nuspec",
+				OutputDirectory = @"F:\ISI\Internal Projects\ISI.SCM.Jenkins.WindowsService\Nuget",
+				IncludeSymbols = true,
+				IncludeSource = false,
+				WorkingDirectory = @"F:\ISI\Internal Projects\ISI.SCM.Jenkins.WindowsService\src",
+			});
 		}
 
 		[Test]
@@ -231,8 +249,9 @@ namespace ISI.Extensions.Tests
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Telephony.WindowsService");
 			//solutionFullNames.Add(@"F:\ISI\Clients\TFS\Tristar.AddressTools");
 			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Tristar.SolutionFullNames.txt"));
-			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\ISI.SolutionFullNames.txt"));
+			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\ISI.SolutionFullNames.txt"));
 			//solutionFullNames.Add(@"F:\ISI\Clients\TFS\Tristar.SecureData");
+			solutionFullNames.Add(@"G:\TFS\Tristar.Processor.Build");
 
 			solutionApi.UpdateNugetPackages(new()
 			{

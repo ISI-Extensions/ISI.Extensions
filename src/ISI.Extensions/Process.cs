@@ -137,6 +137,8 @@ namespace ISI.Extensions
 				RedirectStandardError = true,
 			};
 
+			request.Logger.LogInformation(string.Format("\"{0}\" {1}", request.ProcessExeFullName, processStartInfo.Arguments));
+
 			if (!string.IsNullOrWhiteSpace(request.WorkingDirectory))
 			{
 				processStartInfo.WorkingDirectory = request.WorkingDirectory;

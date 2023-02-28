@@ -237,5 +237,7 @@ namespace ISI.Extensions.Emails
 		public static bool operator !=(EmailAddress a, EmailAddress b) => !(a == b);
 		public override bool Equals(object o) => (this == (EmailAddress)o);
 		public override int GetHashCode() => Value.ToLower().GetHashCode();
+
+		public static implicit operator EmailAddress(string value) => new(value);
 	}
 }

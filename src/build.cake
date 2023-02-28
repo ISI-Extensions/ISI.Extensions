@@ -24,6 +24,8 @@ Information("AssemblyVersion: {0}", assemblyVersion);
 
 var nugetPackOutputDirectory = Argument("NugetPackOutputDirectory", "../Nuget");
 
+System.Environment.SetEnvironmentVariable("NUGET_ENABLE_LEGACY_CSPROJ_PACK", "true");
+
 Task("Clean")
 	.Does(() =>
 	{

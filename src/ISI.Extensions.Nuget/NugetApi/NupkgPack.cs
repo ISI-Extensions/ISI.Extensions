@@ -37,7 +37,26 @@ namespace ISI.Extensions.Nuget
 				request.OutputDirectory = System.IO.Path.GetDirectoryName(request.NuspecFullName);
 			}
 
-			if ((System.Environment.GetEnvironmentVariable("NUGET_ENABLE_LEGACY_CSPROJ_PACK") ?? string.Empty).ToBoolean())
+			if (string.IsNullOrWhiteSpace(request.CsProjFullName))
+			{
+				request.CsProjFullName = string.Format("{0}.csproj", request.NuspecFullName.TrimEnd(".nuspec"));
+			}
+
+			var useLegacyNuget = (System.Environment.GetEnvironmentVariable("NUGET_ENABLE_LEGACY_CSPROJ_PACK") ?? string.Empty).ToBoolean();
+
+			if (!useLegacyNuget)
+			{
+				var csProjXml = System.Xml.Linq.XElement.Parse(System.IO.File.ReadAllText(request.CsProjFullName));
+
+				var targetFramework = GetTargetFrameworkVersionFromCsProjXml(csProjXml);
+
+				if (targetFramework.StartsWith("net4", StringComparison.InvariantCultureIgnoreCase))
+				{
+					useLegacyNuget = true;
+				}
+			}
+
+			if (useLegacyNuget)
 			{
 				var arguments = new List<string>();
 				arguments.Add("pack");
@@ -67,11 +86,6 @@ namespace ISI.Extensions.Nuget
 			}
 			else
 			{
-				if (string.IsNullOrWhiteSpace(request.CsProjFullName))
-				{
-					request.CsProjFullName = string.Format("{0}.csproj", request.NuspecFullName.TrimEnd(".nuspec"));
-				}
-				
 				//dotnet pack  .\sample.csproj  -p:NuspecFile=.\nuget\check.nuspec  -p:NuspecBasePath=.\temp /p:Outputpath=package /p:PackageVersion=2.0.0-Dev
 				var arguments = new List<string>();
 				arguments.Add("pack");

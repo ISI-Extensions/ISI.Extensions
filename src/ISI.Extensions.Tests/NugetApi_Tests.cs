@@ -126,7 +126,7 @@ namespace ISI.Extensions.Tests
 
 			var nuspec = nugetApi.GenerateNuspecFromProject(new()
 			{
-				ProjectFullName = @"F:\ISI\ISI.FrameWork\src\ISI.Scheduler\ISI.Scheduler.Management.Rest\ISI.Scheduler.Management.Rest.csproj",
+				ProjectFullName = @"F:\ISI\ISI.FrameWork\src\ISI.CMS\ISI.CMS\ISI.CMS.csproj",
 				TryGetPackageVersion = (string package, out string version) =>
 					 {
 						 if (package.StartsWith("ISI.Extensions", StringComparison.InvariantCultureIgnoreCase))

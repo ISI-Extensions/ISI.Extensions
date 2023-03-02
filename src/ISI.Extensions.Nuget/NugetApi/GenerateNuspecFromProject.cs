@@ -99,7 +99,7 @@ namespace ISI.Extensions.Nuget
 
 			var possibleFiles = new Dictionary<string, string>();
 
-			if (targetFramework.StartsWith("v4", StringComparison.InvariantCultureIgnoreCase))
+			if (targetFramework.StartsWith("net4", StringComparison.InvariantCultureIgnoreCase))
 			{
 				possibleFiles.Add($"bin\\{request.Configuration}\\{projectName}.dll", "lib/net48");
 			}
@@ -110,7 +110,7 @@ namespace ISI.Extensions.Nuget
 
 			if (request.IncludePdb)
 			{
-				if (targetFramework.StartsWith("v4", StringComparison.InvariantCultureIgnoreCase))
+				if (targetFramework.StartsWith("net4", StringComparison.InvariantCultureIgnoreCase))
 				{
 					possibleFiles.Add($"bin\\{request.Configuration}\\{projectName}.pdb", "lib/net48");
 				}

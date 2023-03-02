@@ -26,7 +26,43 @@ namespace ISI.Extensions.Nuget
 {
 	public partial class NugetApi
 	{
-		public NuGet.Frameworks.NuGetFramework GetTargetFrameworkVersionFromCsProjXml(System.Xml.Linq.XElement csProjXml)
+		public string GetTargetFrameworkVersionFromCsProjXml(System.Xml.Linq.XElement csProjXml)
+		{
+			var sdkAttribute = csProjXml.GetAttributeByLocalName("Sdk")?.Value ?? string.Empty;
+
+			if (sdkAttribute.StartsWith("Microsoft.NET"))
+			{
+				var targetFrameworkVersion = csProjXml
+					.GetElementByLocalName("PropertyGroup")?
+					.GetElementByLocalName("TargetFramework")?
+					.Value;
+
+				if (string.IsNullOrWhiteSpace(targetFrameworkVersion))
+				{
+					targetFrameworkVersion = "net5.0";
+				}
+
+				return targetFrameworkVersion;
+			}
+			else
+			{
+				var targetFrameworkVersion = csProjXml
+					.GetElementByLocalName("PropertyGroup")?
+					.GetElementByLocalName("TargetFrameworkVersion")?
+					.Value;
+
+				if (string.IsNullOrWhiteSpace(targetFrameworkVersion))
+				{
+					targetFrameworkVersion = "v4.8";
+				}
+
+				targetFrameworkVersion = string.Format("net{0}", ISI.Extensions.StringFormat.StringNumericOnly(targetFrameworkVersion).Replace(".", string.Empty));
+
+				return targetFrameworkVersion;
+			}
+		}
+
+		public NuGet.Frameworks.NuGetFramework GetTargetNugetFrameworkVersionFromCsProjXml(System.Xml.Linq.XElement csProjXml)
 		{
 			var sdkAttribute = csProjXml.GetAttributeByLocalName("Sdk")?.Value ?? string.Empty;
 

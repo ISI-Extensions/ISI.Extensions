@@ -73,11 +73,11 @@ namespace ISI.Extensions.Tests
 
 			nugetApi.NupkgPack(new()
 			{
-				NuspecFullName = @"ISI.Services.SCM.Jenkins\ISI.Services.SCM.Jenkins.nuspec",
-				OutputDirectory = @"F:\ISI\Internal Projects\ISI.SCM.Jenkins.WindowsService\Nuget",
-				IncludeSymbols = true,
+				NuspecFullName = @"F:\ISI\ISI.FrameWork\src\ISI.Scheduler\ISI.Scheduler.Management.Rest\ISI.Scheduler.Management.Rest.nuspec",
+				OutputDirectory = @"F:\ISI\ISI.FrameWork\Nuget",
+				IncludeSymbols = false,
 				IncludeSource = false,
-				WorkingDirectory = @"F:\ISI\Internal Projects\ISI.SCM.Jenkins.WindowsService\src",
+				WorkingDirectory = @"F:\ISI\ISI.FrameWork\src",
 			});
 		}
 
@@ -126,7 +126,7 @@ namespace ISI.Extensions.Tests
 
 			var nuspec = nugetApi.GenerateNuspecFromProject(new()
 			{
-				ProjectFullName = @"F:\ISI\ISI.FrameWork\src\ISI.Wrappers\ISI.Wrappers.MassTransit\ISI.Wrappers.MassTransit.csproj",
+				ProjectFullName = @"F:\ISI\ISI.FrameWork\src\ISI.Scheduler\ISI.Scheduler.Management.Rest\ISI.Scheduler.Management.Rest.csproj",
 				TryGetPackageVersion = (string package, out string version) =>
 					 {
 						 if (package.StartsWith("ISI.Extensions", StringComparison.InvariantCultureIgnoreCase))
@@ -250,8 +250,9 @@ namespace ISI.Extensions.Tests
 			//solutionFullNames.Add(@"F:\ISI\Clients\TFS\Tristar.AddressTools");
 			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Tristar.SolutionFullNames.txt"));
 			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\ISI.SolutionFullNames.txt"));
+			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"G:\TFS\Solutions.txt"));
 			//solutionFullNames.Add(@"F:\ISI\Clients\TFS\Tristar.SecureData");
-			solutionFullNames.Add(@"G:\TFS\Tristar.Processor.Build");
+			//solutionFullNames.Add(@"G:\TFS\Tristar.Processor.Build");
 
 			solutionApi.UpdateNugetPackages(new()
 			{

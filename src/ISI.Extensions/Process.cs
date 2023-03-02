@@ -12,10 +12,11 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ISI.Extensions.Extensions;
 using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions
@@ -27,6 +28,7 @@ namespace ISI.Extensions
 			public string WorkingDirectory { get; set; }
 			public string ProcessExeFullName { get; set; }
 			public IEnumerable<string> Arguments { get; set; }
+			public IDictionary<string, string> EnvironmentVariables { get; set; }
 
 			public override string ToString() => string.Format("\"{0}\" {1}", ProcessExeFullName, string.Join(" ", Arguments ?? Array.Empty<string>()));
 		}
@@ -50,6 +52,23 @@ namespace ISI.Extensions
 				CreateNoWindow = false,
 			};
 
+			if (request.EnvironmentVariables.NullCheckedAny())
+			{
+				foreach (var environmentVariable in request.EnvironmentVariables)
+				{
+					if (processStartInfo.EnvironmentVariables.ContainsKey(environmentVariable.Key))
+					{
+						processStartInfo.EnvironmentVariables[environmentVariable.Key] = environmentVariable.Value;
+					}
+					else
+					{
+						processStartInfo.EnvironmentVariables.Add(environmentVariable.Key, environmentVariable.Value);
+					}
+				}
+			}
+
+			//Console.WriteLine(string.Format("\"{0}\" {1}", request.ProcessExeFullName, processStartInfo.Arguments));
+
 			if (!string.IsNullOrWhiteSpace(request.WorkingDirectory))
 			{
 				processStartInfo.WorkingDirectory = request.WorkingDirectory;
@@ -61,7 +80,7 @@ namespace ISI.Extensions
 					processStartInfo.WorkingDirectory = System.IO.Path.GetDirectoryName(processStartInfo.WorkingDirectory);
 				}
 			}
-			
+
 			var process = new System.Diagnostics.Process();
 			process.EnableRaisingEvents = false;
 			process.StartInfo = processStartInfo;
@@ -77,6 +96,7 @@ namespace ISI.Extensions
 			public string WorkingDirectory { get; set; }
 			public string ProcessExeFullName { get; set; }
 			public IEnumerable<string> Arguments { get; set; }
+			public IDictionary<string, string> EnvironmentVariables { get; set; }
 
 			public override string ToString() => string.Format("\"{0}\" {1}", ProcessExeFullName, string.Join(" ", Arguments ?? Array.Empty<string>()));
 		}
@@ -137,7 +157,27 @@ namespace ISI.Extensions
 				RedirectStandardError = true,
 			};
 
-			request.Logger.LogInformation(string.Format("\"{0}\" {1}", request.ProcessExeFullName, processStartInfo.Arguments));
+			if (request.EnvironmentVariables.NullCheckedAny())
+			{
+				foreach (var environmentVariable in request.EnvironmentVariables)
+				{
+					if (processStartInfo.EnvironmentVariables.ContainsKey(environmentVariable.Key))
+					{
+						processStartInfo.EnvironmentVariables[environmentVariable.Key] = environmentVariable.Value;
+					}
+					else
+					{
+						processStartInfo.EnvironmentVariables.Add(environmentVariable.Key, environmentVariable.Value);
+					}
+				}
+			}
+
+			//if (string.Equals(System.Environment.MachineName, "ronmuth", StringComparison.InvariantCultureIgnoreCase))
+			//{
+			//	request.Logger.LogInformation(string.Format("\"{0}\" {1}", request.ProcessExeFullName, processStartInfo.Arguments));
+			//}
+
+			//Console.WriteLine(string.Format("\"{0}\" {1}", request.ProcessExeFullName, processStartInfo.Arguments));
 
 			if (!string.IsNullOrWhiteSpace(request.WorkingDirectory))
 			{

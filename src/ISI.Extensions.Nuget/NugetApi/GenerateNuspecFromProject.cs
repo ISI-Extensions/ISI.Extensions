@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,19 +39,17 @@ namespace ISI.Extensions.Nuget
 			var fullNames = new List<string>();
 			fullNames.AddRange(System.IO.Directory.GetFiles(projectDirectory, "*.cs", System.IO.SearchOption.AllDirectories).Where(path => (path.IndexOf("\\obj\\") < 0) && (path.IndexOf("\\bin\\") < 0)));
 
+			var projectLines = System.IO.File.ReadAllLines(request.ProjectFullName);
+
+			foreach (var projectLine in projectLines)
 			{
-				var projectLines = System.IO.File.ReadAllLines(request.ProjectFullName);
-
-				foreach (var projectLine in projectLines)
+				if (projectLine.IndexOf("<Compile ", StringComparison.InvariantCulture) > 0)
 				{
-					if (projectLine.IndexOf("<Compile ", StringComparison.InvariantCulture) > 0)
-					{
-						var keyValues = projectLine.Replace("<Compile ", string.Empty).Replace("/>", string.Empty).Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries).Select(item => item.Split(new[] { "=\"", "\"" }, StringSplitOptions.None)).ToDictionary(item => item[0], item => item[1], StringComparer.CurrentCultureIgnoreCase);
+					var keyValues = projectLine.Replace("<Compile ", string.Empty).Replace("/>", string.Empty).Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries).Select(item => item.Split(new[] { "=\"", "\"" }, StringSplitOptions.None)).ToDictionary(item => item[0], item => item[1], StringComparer.CurrentCultureIgnoreCase);
 
-						if (keyValues.TryGetValue("Include", out var includedFile))
-						{
-							fullNames.Add(System.IO.Path.Combine(projectDirectory, includedFile));
-						}
+					if (keyValues.TryGetValue("Include", out var includedFile))
+					{
+						fullNames.Add(System.IO.Path.Combine(projectDirectory, includedFile));
 					}
 				}
 			}
@@ -92,6 +90,52 @@ namespace ISI.Extensions.Nuget
 				Package = dependency.Package,
 				Version = dependency.Version,
 			});
+
+			var csProjXml = System.Xml.Linq.XElement.Parse(string.Join("\n", projectLines));
+
+			var targetFramework = GetTargetFrameworkVersionFromCsProjXml(csProjXml);
+
+			var projectName = System.IO.Path.GetFileNameWithoutExtension(request.ProjectFullName);
+
+			var possibleFiles = new Dictionary<string, string>();
+
+			if (targetFramework.StartsWith("v4", StringComparison.InvariantCultureIgnoreCase))
+			{
+				possibleFiles.Add($"bin\\{request.Configuration}\\{projectName}.dll", "lib/net48");
+			}
+			else
+			{
+				possibleFiles.Add($"bin\\{request.Configuration}\\{targetFramework}\\{projectName}.dll", $"lib/{targetFramework}");
+			}
+
+			if (request.IncludePdb)
+			{
+				if (targetFramework.StartsWith("v4", StringComparison.InvariantCultureIgnoreCase))
+				{
+					possibleFiles.Add($"bin\\{request.Configuration}\\{projectName}.pdb", "lib/net48");
+				}
+				else
+				{
+					possibleFiles.Add($"bin\\{request.Configuration}\\{targetFramework}\\{projectName}.pdb", $"lib/{targetFramework}");
+				}
+			}
+
+			var files = new List<NuspecFile>();
+
+			foreach (var possibleFile in possibleFiles)
+			{
+				var fileName = System.IO.Path.Combine(projectDirectory, possibleFile.Key);
+				if (System.IO.File.Exists(fileName))
+				{
+					files.Add(new ISI.Extensions.Nuget.NuspecFile()
+					{
+						Target = possibleFile.Value,
+						SourcePattern = fileName,
+					});
+				}
+			}
+
+			response.Nuspec.Files = files;
 
 			return response;
 		}

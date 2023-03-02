@@ -24,6 +24,8 @@ namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 	public class GenerateNuspecFromProjectRequest
 	{
 		public string ProjectFullName { get; set; }
+		public string Configuration { get; set; } = "Release";
+		public bool IncludePdb { get; set; } = true;
 		public TryGetPackageVersion TryGetPackageVersion { get; set; } = null;
 		public bool BuildTargetFrameworks { get; set; } = true;
 	}

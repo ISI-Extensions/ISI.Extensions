@@ -35,7 +35,7 @@ namespace ISI.Extensions.Nuget
 
 			var csProjXml = System.Xml.Linq.XElement.Parse(request.CsProjXml);
 
-			var targetFrameworkVersion = GetTargetFrameworkVersionFromCsProjXml(csProjXml);
+			var targetFrameworkVersion = GetTargetNugetFrameworkVersionFromCsProjXml(csProjXml);
 
 			var projectXml = System.Xml.Linq.XElement.Parse(request.AppConfigXml);
 

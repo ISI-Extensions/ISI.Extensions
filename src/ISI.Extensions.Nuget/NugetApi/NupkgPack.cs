@@ -37,8 +37,6 @@ namespace ISI.Extensions.Nuget
 				request.OutputDirectory = System.IO.Path.GetDirectoryName(request.NuspecFullName);
 			}
 
-			System.Environment.SetEnvironmentVariable("NUGET_ENABLE_LEGACY_CSPROJ_PACK", "true");
-
 			if ((System.Environment.GetEnvironmentVariable("NUGET_ENABLE_LEGACY_CSPROJ_PACK") ?? string.Empty).ToBoolean())
 			{
 				var arguments = new List<string>();
@@ -59,6 +57,10 @@ namespace ISI.Extensions.Nuget
 				{
 					Logger = Logger, //new NullLogger(),
 					WorkingDirectory = request.WorkingDirectory,
+					EnvironmentVariables = new Dictionary<string, string>()
+					{
+						{ "NUGET_ENABLE_LEGACY_CSPROJ_PACK", "true" }
+					},
 					ProcessExeFullName = GetNugetExeFullName(new()).NugetExeFullName,
 					Arguments = arguments,
 				});
@@ -69,15 +71,15 @@ namespace ISI.Extensions.Nuget
 				{
 					request.CsProjFullName = string.Format("{0}.csproj", request.NuspecFullName.TrimEnd(".nuspec"));
 				}
-
-
-
+				
 				//dotnet pack  .\sample.csproj  -p:NuspecFile=.\nuget\check.nuspec  -p:NuspecBasePath=.\temp /p:Outputpath=package /p:PackageVersion=2.0.0-Dev
 				var arguments = new List<string>();
 				arguments.Add("pack");
 				arguments.Add(string.Format("\"{0}\"", request.CsProjFullName));
+				arguments.Add("--configuration Release");
+				arguments.Add("--no-build");
 				arguments.Add(string.Format("-p:NuspecFile=\"{0}\"", request.NuspecFullName));
-				arguments.Add(string.Format("/p:Outputpath=\"{0}\"", request.OutputDirectory));
+				arguments.Add(string.Format("-p:Outputpath=\"{0}\"", request.OutputDirectory));
 				if (request.IncludeSymbols)
 				{
 					arguments.Add("--include-symbols");

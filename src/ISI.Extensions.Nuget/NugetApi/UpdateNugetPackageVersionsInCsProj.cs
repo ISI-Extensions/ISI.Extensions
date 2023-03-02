@@ -69,7 +69,7 @@ namespace ISI.Extensions.Nuget
 
 			if (!sdkAttribute.StartsWith("Microsoft.NET", StringComparison.InvariantCultureIgnoreCase))
 			{
-				var targetFrameworkVersion = GetTargetFrameworkVersionFromCsProjXml(csProjXml);
+				var targetFrameworkVersion = GetTargetNugetFrameworkVersionFromCsProjXml(csProjXml);
 
 				foreach (var itemGroup in csProjXml.GetElementsByLocalName("ItemGroup"))
 				{

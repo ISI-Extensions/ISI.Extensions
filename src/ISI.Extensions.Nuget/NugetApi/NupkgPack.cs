@@ -62,6 +62,7 @@ namespace ISI.Extensions.Nuget
 				arguments.Add("pack");
 				arguments.Add(string.Format("\"{0}\"", request.NuspecFullName));
 				arguments.Add(string.Format("-OutputDirectory \"{0}\"", request.OutputDirectory));
+
 				if (request.IncludeSymbols)
 				{
 					arguments.Add("--include-symbols");
@@ -94,6 +95,7 @@ namespace ISI.Extensions.Nuget
 				arguments.Add("--no-build");
 				arguments.Add(string.Format("-p:NuspecFile=\"{0}\"", request.NuspecFullName));
 				arguments.Add(string.Format("-p:Outputpath=\"{0}\"", request.OutputDirectory));
+
 				if (request.IncludeSymbols)
 				{
 					arguments.Add("--include-symbols");

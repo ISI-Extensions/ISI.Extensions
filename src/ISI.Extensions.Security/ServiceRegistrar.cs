@@ -19,27 +19,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.Security
 {
-	public partial class Enum<TEnum>
+	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
+	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
 	{
-		public static string GetValueSource(TEnum value, Enum.ValueSource valueSource)
+		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
-			switch (valueSource)
-			{
-				case Enum.ValueSource.Description:
-					return GetDescription(value);
-
-				case Enum.ValueSource.Abbreviation:
-					return GetAbbreviation(value);
-
-				case Enum.ValueSource.Key:
-					return GetKey(value);
-
-				default:
-					throw new ArgumentOutOfRangeException(nameof(valueSource), valueSource, null);
-			}
+			services.AddSingleton<IApiKeyValidator, SaltedHashApiKeyValidator>();
 		}
 	}
 }

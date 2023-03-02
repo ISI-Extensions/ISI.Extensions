@@ -22,9 +22,7 @@ var buildRevision = GetBuildRevision(buildDateTime);
 var assemblyVersion = GetAssemblyVersion(ParseAssemblyInfo(assemblyVersionFile).AssemblyVersion, buildRevision);
 Information("AssemblyVersion: {0}", assemblyVersion);
 
-var nugetPackOutputDirectory = Argument("NugetPackOutputDirectory", "../Nuget");
-
-System.Environment.SetEnvironmentVariable("NUGET_ENABLE_LEGACY_CSPROJ_PACK", "true");
+var nugetPackOutputDirectory = Argument("NugetPackOutputDirectory", System.IO.Path.GetFullPath("../Nuget"));
 
 Task("Clean")
 	.Does(() =>
@@ -166,6 +164,7 @@ Task("Nuget")
 			NupkgPack(new ISI.Cake.Addin.Nuget.NupkgPackRequest()
 			{
 				NuspecFullName = nuspecFile.Path.FullPath,
+				CsProjFullName = project.Path.FullPath,
 				OutputDirectory = nugetPackOutputDirectory,
 			});
 

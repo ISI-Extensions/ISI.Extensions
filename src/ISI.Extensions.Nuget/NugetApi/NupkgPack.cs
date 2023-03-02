@@ -31,6 +31,8 @@ namespace ISI.Extensions.Nuget
 			var response = new DTOs.NupkgPackResponse();
 			
 			Logger.LogInformation(string.Format("Packing \"{0}\"", System.IO.Path.GetFileName(request.NuspecFullName)));
+			//Logger.LogInformation(string.Format("  WorkingDirectory = \"{0}\"", request.WorkingDirectory));
+			//Logger.LogInformation(string.Format("  OutputDirectory = \"{0}\"", request.OutputDirectory));
 
 			if (string.IsNullOrWhiteSpace(request.OutputDirectory))
 			{
@@ -91,6 +93,7 @@ namespace ISI.Extensions.Nuget
 				var arguments = new List<string>();
 				arguments.Add("pack");
 				arguments.Add(string.Format("\"{0}\"", request.CsProjFullName));
+				//arguments.Add("--verbosity Diagnostic");
 				arguments.Add("--configuration Release");
 				arguments.Add("--no-build");
 				arguments.Add(string.Format("-p:NuspecFile=\"{0}\"", request.NuspecFullName));

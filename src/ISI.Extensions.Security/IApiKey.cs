@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,31 +15,15 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.Security
 {
-	public partial class Enum<TEnum>
+	public interface IApiKey
 	{
-		public static string GetValueSource(TEnum value, Enum.ValueSource valueSource)
-		{
-			switch (valueSource)
-			{
-				case Enum.ValueSource.Description:
-					return GetDescription(value);
-
-				case Enum.ValueSource.Abbreviation:
-					return GetAbbreviation(value);
-
-				case Enum.ValueSource.Key:
-					return GetKey(value);
-
-				default:
-					throw new ArgumentOutOfRangeException(nameof(valueSource), valueSource, null);
-			}
-		}
+		Guid ApiKeyUuid { get; set; }
+		Guid SaltedHashGeneratorTypeUuid { get; set; }
+		string ApiKeySalt { get; set; }
+		string HashedApiKey { get; set; }
 	}
 }

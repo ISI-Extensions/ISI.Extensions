@@ -48,9 +48,20 @@ namespace ISI.Extensions.Repository.SqlServer
 			{
 				sql.Clear();
 				sql.AppendFormat("IF NOT EXISTS (SELECT name FROM master.sys.server_principals WHERE name = '{0}')\n", userName);
-				sql.Append("begin\n");
+				sql.Append("BEGIN\n");
 				sql.AppendFormat("  CREATE LOGIN [{0}] WITH PASSWORD = N'{1}';\n", userName, password);
-				sql.Append("end\n");
+				sql.Append("END\n");
+				connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
+			}
+
+			if (!string.IsNullOrWhiteSpace(userName) && string.IsNullOrWhiteSpace(password))
+			{
+				sql.Clear();
+				sql.AppendFormat("use [{0}];\n", DatabaseName);
+				sql.AppendFormat("IF NOT EXISTS (SELECT name FROM master.sys.server_principals WHERE name = '{0}')\n", userName);
+				sql.Append("BEGIN\n");
+				sql.AppendFormat("  CREATE USER [{0}] FOR LOGIN [{0}];\n", userName);
+				sql.Append("END\n");
 				connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
 			}
 
@@ -58,10 +69,10 @@ namespace ISI.Extensions.Repository.SqlServer
 			{
 				sql.Clear();
 				sql.AppendFormat("use [{0}];\n", DatabaseName);
-				sql.AppendFormat("IF NOT EXISTS (SELECT name FROM sys.database_principals WHERE name = '{0}')\n", userName);
-				sql.Append("begin\n");
+				sql.AppendFormat("IF NOT EXISTS (SELECT dbPrincipal.Name FROM sys.database_principals dbPrincipal JOIN master.sys.server_principals masterPrincipal ON dbPrincipal.sid = masterPrincipal.sid WHERE masterPrincipal.name = '{0}')\n", userName);
+				sql.Append("BEGIN\n");
 				sql.AppendFormat("  CREATE USER [{0}] FOR LOGIN [{0}];\n", userName);
-				sql.Append("end\n");
+				sql.Append("END\n");
 				connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
 			}
 

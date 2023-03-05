@@ -234,6 +234,17 @@ namespace ISI.Extensions.Tests
 				PackageId = "Microsoft.ClearScript",
 				PackageVersion = "6.0.2",
 			}).NugetPackageKey);
+			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new()
+			{
+				PackageId = "Microsoft.Graph",
+				PackageVersion = "4.54.0",
+			}).NugetPackageKey);
+			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new()
+			{
+				PackageId = "Microsoft.Graph.Core",
+				PackageVersion = "2.0.15",
+			}).NugetPackageKey);
+
 
 			var upsertAssemblyRedirectsNugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
 			//upsertAssemblyRedirectsNugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()

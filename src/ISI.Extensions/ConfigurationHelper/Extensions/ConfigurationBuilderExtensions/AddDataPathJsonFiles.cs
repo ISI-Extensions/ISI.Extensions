@@ -25,6 +25,31 @@ namespace ISI.Extensions.ConfigurationHelper.Extensions
 {
 	public static partial class ConfigurationBuilderExtensions
 	{
+		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddDataPathJsonFiles(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, string[] environments, GetClassicConnectionStringsSectionFilePath getPath)
+		{
+			return AddDataPathJsonFiles(configurationBuilder, null, environments, getPath, false);
+		}
+		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddDataPathJsonFiles(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, Microsoft.Extensions.FileProviders.IFileProvider provider, string[] environments, GetClassicConnectionStringsSectionFilePath getPath)
+		{
+			return AddDataPathJsonFiles(configurationBuilder, provider, environments, getPath, false);
+		}
+		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddDataPathJsonFiles(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, string[] environments, GetClassicConnectionStringsSectionFilePath getPath, bool reloadOnChange)
+		{
+			return AddDataPathJsonFiles(configurationBuilder, null, environments, getPath, reloadOnChange);
+		}
+		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddDataPathJsonFiles(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, Microsoft.Extensions.FileProviders.IFileProvider provider, string[] environments, GetClassicConnectionStringsSectionFilePath getPath, bool reloadOnChange)
+		{
+			var index = environments.Length;
+
+			while (index-- > 0)
+			{
+				configurationBuilder.AddDataPathJsonFile(provider, getPath(environments[index]), reloadOnChange);
+			}
+
+			return configurationBuilder;
+		}
+
+
 		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddDataPathJsonFile(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, string path)
 		{
 			return AddDataPathJsonFile(configurationBuilder, null, path, false);

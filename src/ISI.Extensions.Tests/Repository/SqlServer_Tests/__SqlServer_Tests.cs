@@ -26,8 +26,10 @@ namespace ISI.Extensions.Tests.Repository
 	[TestFixture]
 	public partial class SqlServer_Tests
 	{
-		protected const string ConnectionString = @"server=(local);database=ISI.Extensions.Repository.Tests;UID=Extensions.Repository.User;Password=38ac65e3-6865-4db0-ab84-f3515468a6e3";
-		protected const string MasterConnectionString = @"SERVER=(local);DATABASE=master;trusted_connection=true;";
+		//protected const string ConnectionString = @"server=(local);database=ISI.Extensions.Repository.Tests;UID=Extensions.Repository.User;Password=38ac65e3-6865-4db0-ab84-f3515468a6e3;TrustServerCertificate=Yes;";
+		protected const string ConnectionString = @"server=(local);database=ISI.Extensions.Repository.Tests;trusted_connection=true;TrustServerCertificate=Yes;";
+		//protected const string ConnectionString = @"server=(local);database=ISI.SCM.Nuget;trusted_connection=true;TrustServerCertificate=Yes;";
+		protected const string MasterConnectionString = @"SERVER=(local);DATABASE=master;trusted_connection=true;TrustServerCertificate=Yes;";
 
 		protected Microsoft.Extensions.Configuration.IConfiguration Configuration { get; set; }
 		protected ISI.Extensions.Repository.SqlServer.Configuration SqlServerConfiguration { get; set; }

@@ -67,11 +67,10 @@ namespace ISI.Extensions.ConfigurationHelper
 					}
 				}
 			}
-
+			
 			return _data;
 		}
-
-
+		
 		/// <remarks/>
 		[System.Serializable]
 		[System.ComponentModel.DesignerCategory("code")]

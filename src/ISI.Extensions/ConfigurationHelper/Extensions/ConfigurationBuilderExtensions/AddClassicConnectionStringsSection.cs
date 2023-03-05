@@ -51,6 +51,31 @@ namespace ISI.Extensions.ConfigurationHelper.Extensions
 		}
 
 
+		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddDataPathClassicConnectionStringsSectionFiles(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, string[] environments, GetClassicConnectionStringsSectionFilePath getPath)
+		{
+			return AddDataPathClassicConnectionStringsSectionFiles(configurationBuilder, null, environments, getPath, false);
+		}
+		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddDataPathClassicConnectionStringsSectionFiles(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, Microsoft.Extensions.FileProviders.IFileProvider provider, string[] environments, GetClassicConnectionStringsSectionFilePath getPath)
+		{
+			return AddDataPathClassicConnectionStringsSectionFiles(configurationBuilder, provider, environments, getPath, false);
+		}
+		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddDataPathClassicConnectionStringsSectionFiles(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, string[] environments, GetClassicConnectionStringsSectionFilePath getPath, bool reloadOnChange)
+		{
+			return AddDataPathClassicConnectionStringsSectionFiles(configurationBuilder, null, environments, getPath, reloadOnChange);
+		}
+		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddDataPathClassicConnectionStringsSectionFiles(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, Microsoft.Extensions.FileProviders.IFileProvider provider, string[] environments, GetClassicConnectionStringsSectionFilePath getPath, bool reloadOnChange)
+		{
+			var index = environments.Length;
+
+			while (index-- > 0)
+			{
+				configurationBuilder.AddDataPathClassicConnectionStringsSectionFile(provider, getPath(environments[index]), reloadOnChange);
+			}
+
+			return configurationBuilder;
+		}
+
+
 		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddDataPathClassicConnectionStringsSectionFile(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, string path)
 		{
 			return AddDataPathClassicConnectionStringsSectionFile(configurationBuilder, null, path, false);

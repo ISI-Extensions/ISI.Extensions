@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,8 +26,29 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 {
 	public static partial class SqlCommandExtensions
 	{
+		public static bool SendCommandsToLogger { get; set; } = false;
+
 		private static Microsoft.Extensions.Logging.ILogger _logger;
 		public static Microsoft.Extensions.Logging.ILogger Logger => _logger ??= ISI.Extensions.ServiceLocator.Current?.GetService<Microsoft.Extensions.Logging.ILogger>() ?? new ISI.Extensions.NullLogger();
+
+		public static string GetFormattedCommand(this Microsoft.Data.SqlClient.SqlCommand command)
+		{
+			var message = string.Format("CmdText: {0}", command.CommandText);
+
+			var parameters = new List<string>();
+			foreach (Microsoft.Data.SqlClient.SqlParameter commandParameter in command.Parameters)
+			{
+				parameters.Add(string.Format("{0}: {1}", commandParameter.ParameterName, commandParameter.Value));
+			}
+
+			if (parameters.Any())
+			{
+				message = string.Format("{0}\nParameters:\n{1}", message, string.Join("\n", parameters));
+			}
+
+			return message;
+		}
+
 
 		public static Microsoft.Data.SqlClient.SqlParameter GetSqlParameter(string parameterName, object parameterValue)
 		{
@@ -45,10 +66,15 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 				{
 					type = (new System.ComponentModel.NullableConverter(type)).UnderlyingType;
 				}
-				
+
+				if (SendCommandsToLogger)
+				{
+					Logger.LogInformation("  Parameter Name: \"{0}\" Value: \"{1}\" Type: \"{2}\"", parameterName, parameterValue, type.Name);
+				}
+
 				if (type == typeof(bool))
 				{
-					parameterValue = ((bool) parameterValue ? 1 : 0);
+					parameterValue = ((bool)parameterValue ? 1 : 0);
 				}
 
 				if (type == typeof(DateTime))
@@ -58,6 +84,19 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 						Value = parameterValue
 					};
 				}
+
+				//if (type == typeof(string))
+				//{
+				//	if (SendCommandsToLogger)
+				//	{
+				//		Logger.LogInformation("  used System.Data.SqlDbType.VarChar");
+				//	}
+
+				//	return new(parameterName, System.Data.SqlDbType.VarChar, -1)
+				//	{
+				//		Value = parameterValue
+				//	};
+				//}
 			}
 
 			return new(parameterName, parameterValue);
@@ -98,22 +137,16 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 		{
 			try
 			{
+				if (SendCommandsToLogger)
+				{
+					Logger.LogInformation(command.GetFormattedCommand());
+				}
+
 				return await command.ExecuteNonQueryAsync();
 			}
 			catch (Exception exception)
 			{
-				var message = string.Format("Error: {0}\nCmdText: {1}", exception.Message, command.CommandText);
-
-				var parameters = new List<string>();
-				foreach (Microsoft.Data.SqlClient.SqlParameter commandParameter in command.Parameters)
-				{
-					parameters.Add(string.Format("{0}: {1}", commandParameter.ParameterName, commandParameter.Value));
-				}
-
-				if (parameters.Any())
-				{
-					message = string.Format("{0}\nParameters:\n{1}", message, string.Join("\n", parameters));
-				}
+				var message = string.Format("Error: {0}\n{1}", exception.Message, command.GetFormattedCommand());
 
 				Logger?.LogError(exception, message);
 
@@ -127,22 +160,16 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 		{
 			try
 			{
+				if (SendCommandsToLogger)
+				{
+					Logger.LogInformation(command.GetFormattedCommand());
+				}
+
 				return await command.ExecuteScalarAsync();
 			}
 			catch (Exception exception)
 			{
-				var message = string.Format("Error: {0}\nCmdText: {1}", exception.Message, command.CommandText);
-
-				var parameters = new List<string>();
-				foreach (Microsoft.Data.SqlClient.SqlParameter commandParameter in command.Parameters)
-				{
-					parameters.Add(string.Format("{0}: {1}", commandParameter.ParameterName, commandParameter.Value));
-				}
-
-				if (parameters.Any())
-				{
-					message = string.Format("{0}\nParameters:\n{1}", message, string.Join("\n", parameters));
-				}
+				var message = string.Format("Error: {0}\n{1}", exception.Message, command.GetFormattedCommand());
 
 				Logger?.LogError(exception, message);
 
@@ -156,22 +183,16 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 		{
 			try
 			{
+				if (SendCommandsToLogger)
+				{
+					Logger.LogInformation(command.GetFormattedCommand());
+				}
+
 				return await command.ExecuteReaderAsync();
 			}
 			catch (Exception exception)
 			{
-				var message = string.Format("Error: {0}\nCmdText: {1}", exception.Message, command.CommandText);
-
-				var parameters = new List<string>();
-				foreach (Microsoft.Data.SqlClient.SqlParameter commandParameter in command.Parameters)
-				{
-					parameters.Add(string.Format("{0}: {1}", commandParameter.ParameterName, commandParameter.Value));
-				}
-
-				if (parameters.Any())
-				{
-					message = string.Format("{0}\nParameters:\n{1}", message, string.Join("\n", parameters));
-				}
+				var message = string.Format("Error: {0}\n{1}", exception.Message, command.GetFormattedCommand());
 
 				Logger?.LogError(exception, message);
 

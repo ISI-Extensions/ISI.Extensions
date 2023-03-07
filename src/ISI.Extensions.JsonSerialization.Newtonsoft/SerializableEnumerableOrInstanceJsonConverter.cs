@@ -41,9 +41,9 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 
 			var memberType = objectType.GenericTypeArguments.NullCheckedFirstOrDefault();
 
-			var instanceType = typeof(SerializableEnumerableOrInstance<>).MakeGenericType(memberType);
+			var instanceType = typeof(ISI.Extensions.Serialization.SerializableEnumerableOrInstance<>).MakeGenericType(memberType);
 
-			var instance = Activator.CreateInstance(instanceType) as ISerializableEnumerableOrInstanceSetValues;
+			var instance = Activator.CreateInstance(instanceType) as ISI.Extensions.Serialization.ISerializableEnumerableOrInstanceSetValues;
 
 			if (token.Type == global::Newtonsoft.Json.Linq.JTokenType.Array)
 			{
@@ -60,20 +60,6 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 		}
 	}
 
-	internal interface ISerializableEnumerableOrInstanceSetValues
-	{
-		void SetValues(IEnumerable<object> values);
-	}
-
-	internal class SerializableEnumerableOrInstance<TType> : ISI.Extensions.Serialization.ISerializableEnumerableOrInstance<TType>, ISerializableEnumerableOrInstanceSetValues
-	{
-		public TType[] Values { get; set; }
-
-		public IEnumerator<TType> GetEnumerator() => Values.AsEnumerable<TType>().GetEnumerator();
-		IEnumerator IEnumerable.GetEnumerator() => Values.GetEnumerator();
-
-		void ISerializableEnumerableOrInstanceSetValues.SetValues(IEnumerable<object> values) => Values = values.ToNullCheckedArray(value => (TType)Convert.ChangeType(value, typeof(TType)));
-	}
 
 	[GetJsonConverter]
 	public class GetSerializableEnumerableOrInstanceJsonConverter : IGetJsonConverter

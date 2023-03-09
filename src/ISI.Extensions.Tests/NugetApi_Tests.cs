@@ -261,9 +261,9 @@ namespace ISI.Extensions.Tests
 			//solutionFullNames.Add(@"F:\ISI\Clients\TFS\Tristar.AddressTools");
 			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Tristar.SolutionFullNames.txt"));
 			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\ISI.SolutionFullNames.txt"));
-			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"G:\TFS\Solutions.txt"));
+			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"G:\TFS\Solutions.txt"));
 			//solutionFullNames.Add(@"F:\ISI\Clients\TFS\Tristar.Scheduler");
-			solutionFullNames.Add(@"F:\ISI\Clients\TFS\Comcast.Military.Portal.Web");
+			//solutionFullNames.Add(@"F:\ISI\Clients\TFS\Comcast.Military.Portal.Web");
 			//solutionFullNames.Add(@"G:\TFS\Tristar.Processor.Build");
 
 			solutionApi.UpdateNugetPackages(new()

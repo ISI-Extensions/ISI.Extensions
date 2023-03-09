@@ -115,11 +115,11 @@ namespace ISI.Extensions.VisualStudio
 							switch (codeExtensionProvider)
 							{
 								case CodeExtensionProviders.ISI.Extensions.CodeExtensionProvider isiExtensionsCodeExtensionProvider:
-									propertyFormattedText.AppendFormat("\t\t{1}{2}string __{4} {{ get => {4}.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => value.{5}(); }}{0}", Environment.NewLine, (string.IsNullOrEmpty(property.AccessModifier) ? string.Empty : string.Format("{0} ", property.AccessModifier)), (string.IsNullOrEmpty(property.Accessor) ? string.Empty : string.Format("{0} ", property.Accessor)), property.PropertyType, FormatString(StringCaseFormat.No, property.PropertyName), setConversionFunctionName);
+									propertyFormattedText.AppendFormat("\t\t{1}{2}string __{4} {{ get => {4}.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => {4} = value.{5}(); }}{0}", Environment.NewLine, (string.IsNullOrEmpty(property.AccessModifier) ? string.Empty : string.Format("{0} ", property.AccessModifier)), (string.IsNullOrEmpty(property.Accessor) ? string.Empty : string.Format("{0} ", property.Accessor)), property.PropertyType, FormatString(StringCaseFormat.No, property.PropertyName), setConversionFunctionName);
 									break;
 
 								case CodeExtensionProviders.ISI.Libraries.CodeExtensionProvider isiLibrariesCodeExtensionProvider:
-									propertyFormattedText.AppendFormat("\t\t{1}{2}string __{4} {{ get => {4}.Formatted(Formatters.DateTimeFormat.DateTimeUniversalPrecise); set => value.{5}(DateTimeKind.Utc); }}{0}", Environment.NewLine, (string.IsNullOrEmpty(property.AccessModifier) ? string.Empty : string.Format("{0} ", property.AccessModifier)), (string.IsNullOrEmpty(property.Accessor) ? string.Empty : string.Format("{0} ", property.Accessor)), property.PropertyType, FormatString(StringCaseFormat.No, property.PropertyName), setConversionFunctionName);
+									propertyFormattedText.AppendFormat("\t\t{1}{2}string __{4} {{ get => {4}.Formatted(Formatters.DateTimeFormat.DateTimeUniversalPrecise); set => {4} = value.{5}(DateTimeKind.Utc); }}{0}", Environment.NewLine, (string.IsNullOrEmpty(property.AccessModifier) ? string.Empty : string.Format("{0} ", property.AccessModifier)), (string.IsNullOrEmpty(property.Accessor) ? string.Empty : string.Format("{0} ", property.Accessor)), property.PropertyType, FormatString(StringCaseFormat.No, property.PropertyName), setConversionFunctionName);
 									break;
 
 								default:

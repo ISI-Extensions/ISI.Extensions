@@ -25,12 +25,12 @@ namespace ISI.Extensions.Security
 
 		Guid UserUuid { get; }
 
-		bool IsActive { get; }
+		bool IsActive { get; set; }
 		
 		string CreateUserKey { get; }
 		DateTime CreateDateTimeUtc { get; }
-		string ModifyUserKey { get; }
-		DateTime ModifyDateTimeUtc { get; }
+		string ModifyUserKey { get; set; }
+		DateTime ModifyDateTimeUtc { get; set; }
 	}
 
 	public interface IUserAuthenticationHasUserAuthenticationRecovery : IUserAuthentication

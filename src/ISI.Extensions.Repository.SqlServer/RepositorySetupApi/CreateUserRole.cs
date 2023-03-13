@@ -30,31 +30,36 @@ namespace ISI.Extensions.Repository.SqlServer
 {
 	public partial class RepositorySetupApi
 	{
-		public SqlServerDTOs.CreateUserRoleResponse CreateUserRole(string userRole)
+		public bool TryCreateUserRole(string userRole)
 		{
 			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionString))
 			{
-				return CreateUserRole(connection, userRole);
+				return TryCreateUserRole(connection, userRole);
 			}
 		}
 
-		public SqlServerDTOs.CreateUserRoleResponse CreateUserRole(Microsoft.Data.SqlClient.SqlConnection connection, string userRole)
+		public bool TryCreateUserRole(Microsoft.Data.SqlClient.SqlConnection connection, string userRole)
 		{
-			var response = new SqlServerDTOs.CreateUserRoleResponse();
+			try
+			{
+				connection.EnsureConnectionIsOpenAsync().Wait();
 
-			connection.EnsureConnectionIsOpenAsync().Wait();
+				var sql = new StringBuilder();
 
-			var sql = new StringBuilder();
+				sql.Clear();
+				sql.AppendFormat("use [{0}];\n", DatabaseName);
+				sql.AppendFormat("CREATE ROLE [{0}] AUTHORIZATION db_securityadmin;\n", userRole);
+				sql.AppendFormat("GRANT CREATE SCHEMA TO [{0}];\n", userRole);
+				sql.AppendFormat("GRANT CREATE TABLE TO [{0}];\n", userRole);
 
-			sql.Clear();
-			sql.AppendFormat("use [{0}];\n", DatabaseName);
-			sql.AppendFormat("CREATE ROLE [{0}] AUTHORIZATION db_securityadmin;\n", userRole);
-			sql.AppendFormat("GRANT CREATE SCHEMA TO [{0}];\n", userRole);
-			sql.AppendFormat("GRANT CREATE TABLE TO [{0}];\n", userRole);
+				connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
 
-			connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
-
-			return response;
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
 		}
 	}
 }

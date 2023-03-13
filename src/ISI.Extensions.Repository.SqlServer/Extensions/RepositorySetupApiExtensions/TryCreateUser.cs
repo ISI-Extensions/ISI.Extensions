@@ -19,40 +19,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using System.Diagnostics;
-using ISI.Extensions.Repository.Extensions;
 using ISI.Extensions.Repository.SqlServer.Extensions;
 using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
 using SqlServerDTOs = ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi;
-using Microsoft.Extensions.Configuration;
 
-namespace ISI.Extensions.Repository.SqlServer
+namespace ISI.Extensions.Repository.SqlServer.Extensions
 {
-	public partial class RepositorySetupApi
+	public static partial class RepositorySetupApiExtensions
 	{
-		public SqlServerDTOs.AddUserToSchemaResponse AddUserToSchema(string userName, string schema)
+		public static bool TryCreateUser(this ISI.Extensions.Repository.IRepositorySetupApi repositorySetupApi, string userName, string password = null)
 		{
-			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionString))
-			{
-				return AddUserToSchema(connection, userName, schema);
-			}
-		}
-
-		public SqlServerDTOs.AddUserToSchemaResponse AddUserToSchema(Microsoft.Data.SqlClient.SqlConnection connection, string userName, string schema)
-		{
-			var response = new SqlServerDTOs.AddUserToSchemaResponse();
-
-			connection.EnsureConnectionIsOpenAsync().Wait();
-
-			var sql = new StringBuilder();
-
-			sql.Clear();
-			sql.AppendFormat("use [{0}];\n", DatabaseName);
-			sql.AppendFormat("GRANT ALTER, SELECT, INSERT, UPDATE, DELETE ON SCHEMA :: [{1}] TO [{0}];\n", userName, schema);
-
-			connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
-
-			return response;
+			return (repositorySetupApi as ISI.Extensions.Repository.SqlServer.RepositorySetupApi)?.TryCreateUser(userName, password) ?? false;
 		}
 	}
 }

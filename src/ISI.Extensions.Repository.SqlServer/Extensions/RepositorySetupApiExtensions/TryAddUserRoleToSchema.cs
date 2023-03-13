@@ -18,11 +18,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using ISI.Extensions.Repository.SqlServer.Extensions;
 using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
+using SqlServerDTOs = ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi;
 
-namespace ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi
+namespace ISI.Extensions.Repository.SqlServer.Extensions
 {
-	public partial class AddUserToSchemaResponse
+	public static partial class RepositorySetupApiExtensions
 	{
+		public static bool TryAddUserRoleToSchema<TRecord>(this ISI.Extensions.Repository.IRepositorySetupApi repositorySetupApi, string userRole)
+		{
+			return (repositorySetupApi as ISI.Extensions.Repository.SqlServer.RepositorySetupApi)?.TryAddUserRoleToSchema(userRole, RecordDescription.GetRecordDescription<TRecord>().Schema) ?? false;
+		}
+
+		public static bool TryAddUserRoleToSchema(this ISI.Extensions.Repository.IRepositorySetupApi repositorySetupApi, string userRole, string schema)
+		{
+			return (repositorySetupApi as ISI.Extensions.Repository.SqlServer.RepositorySetupApi)?.TryAddUserRoleToSchema(userRole, schema) ?? false;
+		}
 	}
 }

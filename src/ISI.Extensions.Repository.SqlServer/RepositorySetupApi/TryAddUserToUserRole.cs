@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,29 +30,34 @@ namespace ISI.Extensions.Repository.SqlServer
 {
 	public partial class RepositorySetupApi
 	{
-		public SqlServerDTOs.AddUserRoleToSchemaResponse AddUserRoleToSchema(string userRole, string schema)
+		public bool TryAddUserToUserRole(string userName, string userRole)
 		{
 			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionString))
 			{
-				return AddUserRoleToSchema(connection, userRole, schema);
+				return TryAddUserToUserRole(connection, userName, userRole);
 			}
 		}
 
-		public SqlServerDTOs.AddUserRoleToSchemaResponse AddUserRoleToSchema(Microsoft.Data.SqlClient.SqlConnection connection, string userRole, string schema)
+		public bool TryAddUserToUserRole(Microsoft.Data.SqlClient.SqlConnection connection, string userName, string userRole)
 		{
-			var response = new SqlServerDTOs.AddUserRoleToSchemaResponse();
+			try
+			{
+				connection.EnsureConnectionIsOpenAsync().Wait();
 
-			connection.EnsureConnectionIsOpenAsync().Wait();
+				var sql = new StringBuilder();
 
-			var sql = new StringBuilder();
+				sql.Clear();
+				sql.AppendFormat("USE [{0}];\n", DatabaseName);
+				sql.AppendFormat("ALTER ROLE [{0}] ADD MEMBER [{1}];\n", userRole, userName);
 
-			sql.Clear();
-			sql.AppendFormat("use [{0}];\n", DatabaseName);
-			sql.AppendFormat("GRANT ALTER, SELECT, INSERT, UPDATE, DELETE ON SCHEMA :: [{1}] TO [{0}];\n", userRole, schema);
+				connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
 
-			connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
-
-			return response;
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
 		}
 	}
 }

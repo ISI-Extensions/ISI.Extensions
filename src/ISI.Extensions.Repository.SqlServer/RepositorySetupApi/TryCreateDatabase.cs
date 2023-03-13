@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,24 +30,24 @@ namespace ISI.Extensions.Repository.SqlServer
 {
 	public partial class RepositorySetupApi
 	{
-		public SqlServerDTOs.CreateDatabaseResponse CreateDatabase(string dataFileDirectory = null, string logFileDirectory = null)
+		public bool TryCreateDatabase(string dataFileDirectory = null, string logFileDirectory = null)
 		{
 			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionString))
 			{
-				return CreateDatabase(connection, dataFileDirectory, logFileDirectory);
+				return TryCreateDatabase(connection, dataFileDirectory, logFileDirectory);
 			}
 		}
-		
-		public SqlServerDTOs.CreateDatabaseResponse CreateDatabase(Microsoft.Data.SqlClient.SqlConnection connection, string dataFileDirectory = null, string logFileDirectory = null)
+
+		public bool TryCreateDatabase(Microsoft.Data.SqlClient.SqlConnection connection, string dataFileDirectory = null, string logFileDirectory = null)
 		{
-			var response = new SqlServerDTOs.CreateDatabaseResponse();
-
-			var sql = new StringBuilder();
-
-			if (string.IsNullOrEmpty(dataFileDirectory) || string.IsNullOrEmpty(logFileDirectory))
+			try
 			{
-				sql.Clear();
-				sql.Append(@"
+				var sql = new StringBuilder();
+
+				if (string.IsNullOrEmpty(dataFileDirectory) || string.IsNullOrEmpty(logFileDirectory))
+				{
+					sql.Clear();
+					sql.Append(@"
 set nocount on
 
 declare @defaultDataDirectory nvarchar(4000)
@@ -77,26 +77,32 @@ end
 select @defaultDataDirectory as DefaultDataDirectory, @defaultLogDirectory as DefaultLogDirectory
 ");
 
-				using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql.ToString(), connection))
-				{
-					using (var dataReader = command.ExecuteReaderWithExceptionTracingAsync().GetAwaiter().GetResult())
+					using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql.ToString(), connection))
 					{
-						if (dataReader.Read())
+						using (var dataReader = command.ExecuteReaderWithExceptionTracingAsync().GetAwaiter().GetResult())
 						{
-							dataFileDirectory = dataReader.GetString("DefaultDataDirectory");
-							logFileDirectory = dataReader.GetString("DefaultLogDirectory");
+							if (dataReader.Read())
+							{
+								dataFileDirectory = dataReader.GetString("DefaultDataDirectory");
+								logFileDirectory = dataReader.GetString("DefaultLogDirectory");
+							}
 						}
 					}
 				}
+
+				sql.Clear();
+				sql.AppendFormat("CREATE DATABASE [{0}]\n", DatabaseName);
+				sql.AppendFormat("  ON PRIMARY (NAME = N'{0}.Data', FILENAME = N'{1}')\n", DatabaseName, System.IO.Path.Combine(dataFileDirectory, string.Format("{0}.mdf", DatabaseName)));
+				sql.AppendFormat("  LOG ON (NAME = N'{0}.Log', FILENAME = N'{1}');\n", DatabaseName, System.IO.Path.Combine(logFileDirectory, string.Format("{0}.ldf", DatabaseName)));
+
+				connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
+
+				return true;
 			}
-
-			sql.Clear();
-			sql.AppendFormat("CREATE DATABASE [{0}]\n", DatabaseName);
-			sql.AppendFormat("  ON PRIMARY (NAME = N'{0}.Data', FILENAME = N'{1}')\n", DatabaseName, System.IO.Path.Combine(dataFileDirectory, string.Format("{0}.mdf", DatabaseName)));
-			sql.AppendFormat("  LOG ON (NAME = N'{0}.Log', FILENAME = N'{1}');\n", DatabaseName, System.IO.Path.Combine(logFileDirectory, string.Format("{0}.ldf", DatabaseName)));
-			connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
-
-			return response;
+			catch
+			{
+				return false;
+			}
 		}
 	}
 }

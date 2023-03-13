@@ -27,9 +27,14 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 {
 	public static partial class RepositorySetupApiExtensions
 	{
-		public static SqlServerDTOs.CreateUserRoleResponse CreateUserRole(this ISI.Extensions.Repository.IRepositorySetupApi repositorySetupApi, string userRole)
+		public static bool TryCreateSchema<TRecord>(this ISI.Extensions.Repository.IRepositorySetupApi repositorySetupApi)
 		{
-			return (repositorySetupApi as ISI.Extensions.Repository.SqlServer.RepositorySetupApi)?.CreateUserRole(userRole);
+			return (repositorySetupApi as ISI.Extensions.Repository.SqlServer.RepositorySetupApi)?.TryCreateSchema(RecordDescription.GetRecordDescription<TRecord>().Schema) ?? false;
+		}
+
+		public static bool TryCreateSchema(this ISI.Extensions.Repository.IRepositorySetupApi repositorySetupApi, string schema)
+		{
+			return (repositorySetupApi as ISI.Extensions.Repository.SqlServer.RepositorySetupApi)?.TryCreateSchema(schema) ?? false;
 		}
 	}
 }

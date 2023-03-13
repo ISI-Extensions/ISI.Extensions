@@ -18,11 +18,45 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using System.Diagnostics;
+using ISI.Extensions.Repository.Extensions;
+using ISI.Extensions.Repository.SqlServer.Extensions;
 using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
+using SqlServerDTOs = ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi;
+using Microsoft.Extensions.Configuration;
 
-namespace ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi
+namespace ISI.Extensions.Repository.SqlServer
 {
-	public partial class AddUserRoleToSchemaResponse
+	public partial class RepositorySetupApi
 	{
+		public bool TryCreateSchema(string schema)
+		{
+			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionString))
+			{
+				return TryCreateSchema(connection, schema);
+			}
+		}
+
+		public bool TryCreateSchema(Microsoft.Data.SqlClient.SqlConnection connection, string schema)
+		{
+			try
+			{
+				connection.EnsureConnectionIsOpenAsync().Wait();
+
+				var sql = new StringBuilder();
+
+				sql.Clear();
+				sql.AppendFormat("use [{0}];\n", DatabaseName);
+				sql.AppendFormat("exec('CREATE SCHEMA [{0}]');\n", schema);
+				connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
+
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+		}
 	}
 }

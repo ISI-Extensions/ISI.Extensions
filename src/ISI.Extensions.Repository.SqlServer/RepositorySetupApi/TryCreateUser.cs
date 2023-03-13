@@ -30,53 +30,58 @@ namespace ISI.Extensions.Repository.SqlServer
 {
 	public partial class RepositorySetupApi
 	{
-		public SqlServerDTOs.CreateUserResponse CreateUser(string userName, string password = null)
+		public bool TryCreateUser(string userName, string password = null)
 		{
 			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionString))
 			{
-				return CreateUser(connection, userName, password);
+				return TryCreateUser(connection, userName, password);
 			}
 		}
 
-		public SqlServerDTOs.CreateUserResponse CreateUser(Microsoft.Data.SqlClient.SqlConnection connection, string userName, string password = null)
+		public bool TryCreateUser(Microsoft.Data.SqlClient.SqlConnection connection, string userName, string password = null)
 		{
-			var response = new SqlServerDTOs.CreateUserResponse();
-
-			var sql = new StringBuilder();
-
-			if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(password))
+			try
 			{
-				sql.Clear();
-				sql.AppendFormat("IF NOT EXISTS (SELECT name FROM master.sys.server_principals WHERE name = '{0}')\n", userName);
-				sql.Append("BEGIN\n");
-				sql.AppendFormat("  CREATE LOGIN [{0}] WITH PASSWORD = N'{1}';\n", userName, password);
-				sql.Append("END\n");
-				connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
-			}
+				var sql = new StringBuilder();
 
-			if (!string.IsNullOrWhiteSpace(userName) && string.IsNullOrWhiteSpace(password))
+				if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(password))
+				{
+					sql.Clear();
+					sql.AppendFormat("IF NOT EXISTS (SELECT name FROM master.sys.server_principals WHERE name = '{0}')\n", userName);
+					sql.Append("BEGIN\n");
+					sql.AppendFormat("  CREATE LOGIN [{0}] WITH PASSWORD = N'{1}';\n", userName, password);
+					sql.Append("END\n");
+					connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
+				}
+
+				if (!string.IsNullOrWhiteSpace(userName) && string.IsNullOrWhiteSpace(password))
+				{
+					sql.Clear();
+					sql.AppendFormat("use [{0}];\n", DatabaseName);
+					sql.AppendFormat("IF NOT EXISTS (SELECT name FROM master.sys.server_principals WHERE name = '{0}')\n", userName);
+					sql.Append("BEGIN\n");
+					sql.AppendFormat("  CREATE USER [{0}] FOR LOGIN [{0}];\n", userName);
+					sql.Append("END\n");
+					connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
+				}
+
+				if (!string.IsNullOrEmpty(userName))
+				{
+					sql.Clear();
+					sql.AppendFormat("use [{0}];\n", DatabaseName);
+					sql.AppendFormat("IF NOT EXISTS (SELECT dbPrincipal.Name FROM sys.database_principals dbPrincipal JOIN master.sys.server_principals masterPrincipal ON dbPrincipal.sid = masterPrincipal.sid WHERE masterPrincipal.name = '{0}')\n", userName);
+					sql.Append("BEGIN\n");
+					sql.AppendFormat("  CREATE USER [{0}] FOR LOGIN [{0}];\n", userName);
+					sql.Append("END\n");
+					connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
+				}
+
+				return true;
+			}
+			catch
 			{
-				sql.Clear();
-				sql.AppendFormat("use [{0}];\n", DatabaseName);
-				sql.AppendFormat("IF NOT EXISTS (SELECT name FROM master.sys.server_principals WHERE name = '{0}')\n", userName);
-				sql.Append("BEGIN\n");
-				sql.AppendFormat("  CREATE USER [{0}] FOR LOGIN [{0}];\n", userName);
-				sql.Append("END\n");
-				connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
+				return false;
 			}
-
-			if (!string.IsNullOrEmpty(userName))
-			{
-				sql.Clear();
-				sql.AppendFormat("use [{0}];\n", DatabaseName);
-				sql.AppendFormat("IF NOT EXISTS (SELECT dbPrincipal.Name FROM sys.database_principals dbPrincipal JOIN master.sys.server_principals masterPrincipal ON dbPrincipal.sid = masterPrincipal.sid WHERE masterPrincipal.name = '{0}')\n", userName);
-				sql.Append("BEGIN\n");
-				sql.AppendFormat("  CREATE USER [{0}] FOR LOGIN [{0}];\n", userName);
-				sql.Append("END\n");
-				connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
-			}
-
-			return response;
 		}
 	}
 }

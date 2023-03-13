@@ -19,40 +19,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using System.Diagnostics;
-using ISI.Extensions.Repository.Extensions;
 using ISI.Extensions.Repository.SqlServer.Extensions;
 using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
 using SqlServerDTOs = ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi;
-using Microsoft.Extensions.Configuration;
 
-namespace ISI.Extensions.Repository.SqlServer
+namespace ISI.Extensions.Repository.SqlServer.Extensions
 {
-	public partial class RepositorySetupApi
+	public static partial class RepositorySetupApiExtensions
 	{
-		public SqlServerDTOs.AddUserToUserRoleResponse AddUserToUserRole(string userName, string userRole)
+		public static bool TryCreateUserRole(this ISI.Extensions.Repository.IRepositorySetupApi repositorySetupApi, string userRole)
 		{
-			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionString))
-			{
-				return AddUserToUserRole(connection, userName, userRole);
-			}
-		}
-
-		public SqlServerDTOs.AddUserToUserRoleResponse AddUserToUserRole(Microsoft.Data.SqlClient.SqlConnection connection, string userName, string userRole)
-		{
-			var response = new SqlServerDTOs.AddUserToUserRoleResponse();
-
-			connection.EnsureConnectionIsOpenAsync().Wait();
-
-			var sql = new StringBuilder();
-
-			sql.Clear();
-			sql.AppendFormat("USE [{0}];\n", DatabaseName);
-			sql.AppendFormat("ALTER ROLE [{0}] ADD MEMBER [{1}];\n", userRole, userName);
-
-			connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
-
-			return response;
+			return (repositorySetupApi as ISI.Extensions.Repository.SqlServer.RepositorySetupApi)?.TryCreateUserRole(userRole) ?? false;
 		}
 	}
 }

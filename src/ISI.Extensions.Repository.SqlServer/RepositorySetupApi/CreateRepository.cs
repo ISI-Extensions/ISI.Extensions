@@ -47,32 +47,32 @@ namespace ISI.Extensions.Repository.SqlServer
 
 				var sql = new StringBuilder();
 
-				CreateDatabase(connection, dataFileDirectory, logFileDirectory);
+				TryCreateDatabase(connection, dataFileDirectory, logFileDirectory);
 
 				if (!string.IsNullOrWhiteSpace(userName) && !string.IsNullOrWhiteSpace(password))
 				{
-					CreateUser(connection, userName, password);
+					TryCreateUser(connection, userName, password);
 				}
 
 				if (!string.IsNullOrWhiteSpace(userRole))
 				{
-					CreateUserRole(connection, userRole);
+					TryCreateUserRole(connection, userRole);
 					if (!string.IsNullOrWhiteSpace(userName) && !string.IsNullOrWhiteSpace(password))
 					{
-						AddUserToUserRole(connection, userRole, userName);
+						TryAddUserToUserRole(connection, userRole, userName);
 					}
 				}
 
 				if (!string.IsNullOrWhiteSpace(schema))
 				{
-					CreateSchema(connection, schema);
+					TryCreateSchema(connection, schema);
 					if (!string.IsNullOrWhiteSpace(userRole))
 					{
-						AddUserRoleToSchema(connection, userRole, schema);
+						TryAddUserRoleToSchema(connection, userRole, schema);
 					}
 					else if (!string.IsNullOrWhiteSpace(userName) && !string.IsNullOrWhiteSpace(password))
 					{
-						AddUserToSchema(connection, userName, schema);
+						TryAddUserToSchema(connection, userName, schema);
 					}
 				}
 			}

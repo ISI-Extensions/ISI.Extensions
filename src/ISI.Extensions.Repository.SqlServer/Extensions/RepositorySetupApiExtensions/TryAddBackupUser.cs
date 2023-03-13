@@ -18,11 +18,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using ISI.Extensions.Repository.SqlServer.Extensions;
 using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
+using SqlServerDTOs = ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi;
 
-namespace ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi
+namespace ISI.Extensions.Repository.SqlServer.Extensions
 {
-	public partial class CreateDatabaseResponse
+	public static partial class RepositorySetupApiExtensions
 	{
+		public static bool TryAddBackupUser(this ISI.Extensions.Repository.IRepositorySetupApi repositorySetupApi, string backupUserName = @"NT AUTHORITY\SYSTEM")
+		{
+			try
+			{
+				var sqls = new[]
+				{
+					string.Format("create user [{0}] for login [{0}]", backupUserName),
+					string.Format("alter user [{0}] with default_schema=dbo", backupUserName),
+					string.Format("alter role [db_backupoperator] add member [{0}]", backupUserName),
+				};
+
+				foreach (var sql in sqls)
+				{
+					repositorySetupApi.ExecuteScript(sql);
+				}
+
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+		}
 	}
 }

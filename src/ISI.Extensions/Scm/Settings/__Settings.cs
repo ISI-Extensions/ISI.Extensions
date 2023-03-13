@@ -60,6 +60,11 @@ namespace ISI.Extensions.Scm
 			public const string BuildArtifactsUserName = nameof(BuildArtifactsUserName);
 			public const string BuildArtifactsPassword = nameof(BuildArtifactsPassword);
 
+			public const string DockerRegistryApiUrl = nameof(DockerRegistryApiUrl);
+			public const string DockerRegistryApiKey = nameof(DockerRegistryApiKey);
+			public const string DockerRegistryUserName = nameof(DockerRegistryUserName);
+			public const string DockerRegistryPassword = nameof(DockerRegistryPassword);
+
 			public const string VsExtensionsApiUrl = nameof(VsExtensionsApiUrl);
 			public const string VsExtensionsApiKey = nameof(VsExtensionsApiKey);
 			public const string VsExtensionsUserName = nameof(VsExtensionsUserName);
@@ -113,6 +118,9 @@ namespace ISI.Extensions.Scm
 
 		private SettingsBuildArtifacts _buildArtifacts = null;
 		public SettingsBuildArtifacts BuildArtifacts => _buildArtifacts ??= new(this);
+
+		private SettingsDockerRegistry _dockerRegistry = null;
+		public SettingsDockerRegistry DockerRegistry => _dockerRegistry ??= new(this);
 
 		private SettingsVsExtensions _vsExtensions = null;
 		public SettingsVsExtensions VsExtensions => _vsExtensions ??= new(this);

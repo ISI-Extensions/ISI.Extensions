@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using ISI.Extensions.ConfigurationHelper.Extensions;
 using ISI.Extensions.DependencyInjection.Extensions;
 using ISI.Extensions.Extensions;
@@ -116,7 +116,7 @@ namespace ISI.Extensions.Tests
 
 			var users = securityApi.GetUsers(new()
 			{
-				UserNames = new []{ settings.ActiveDirectory.UserName },
+				UserNames = new[] { settings.ActiveDirectory.UserName },
 			}).Users;
 
 			foreach (var user in users)
@@ -130,6 +130,12 @@ namespace ISI.Extensions.Tests
 				Console.WriteLine(string.Join("; ", user.Roles.ToNullCheckedArray(NullCheckCollectionResult.Empty)));
 				Console.WriteLine("=====================================");
 			}
+		}
+
+		[Test]
+		public void EnvironmentUserDomainName_Test()
+		{
+			Console.WriteLine(Environment.UserDomainName);
 		}
 
 		[Test]

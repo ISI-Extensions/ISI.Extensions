@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.AspNetCore.Extensions;
 using ISI.Extensions.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,6 +36,8 @@ namespace ISI.Extensions.AspNetCore.Tests.Controllers
 			Microsoft.AspNetCore.Mvc.IActionResult result = null;
 
 			var viewModel = new ISI.Extensions.AspNetCore.Tests.Models.Public.IndexModel();
+
+			var xxx = Url.GenerateRouteUrl(Routes.Public.RouteNames.Login, makeRootRelative: true);
 
 			result = View(ISI.Extensions.AspNetCore.Tests.T4Files.Views.Public.Index_cshtml, viewModel);
 

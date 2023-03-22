@@ -22,7 +22,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 {
 	public static class UrlHelperExtensions
 	{
-		public static string GenerateRouteUrl(this Microsoft.AspNetCore.Mvc.IUrlHelper urlHelper, string routeName, object routeValues = null, bool makeAbsolute = false)
+		public static string GenerateRouteUrl(this Microsoft.AspNetCore.Mvc.IUrlHelper urlHelper, string routeName, object routeValues = null, bool makeAbsolute = false, bool makeRootRelative = false)
 		{
 			var url = urlHelper.RouteUrl(new()
 			{
@@ -30,7 +30,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 				Values = new Microsoft.AspNetCore.Routing.RouteValueDictionary(routeValues),
 			});
 
-			if (makeAbsolute)
+			if (makeAbsolute || makeRootRelative)
 			{
 				var host = urlHelper.ActionContext.HttpContext.Request.Host.Host;
 				var scheme = urlHelper.ActionContext.HttpContext.Request.Scheme;
@@ -63,6 +63,21 @@ namespace ISI.Extensions.AspNetCore.Extensions
 
 				uriBuilder.SetPathAndQueryString(url);
 				url = uriBuilder.Uri.ToString();
+
+				if (makeRootRelative)
+				{
+					uriBuilder = new UriBuilder(host)
+					{
+						Scheme = scheme,
+					};
+
+					if (port.HasValue)
+					{
+						uriBuilder.Port = port.Value;
+					}
+
+					url = url.Substring(uriBuilder.Uri.ToString().Length - 1);
+				}
 			}
 
 			return url;

@@ -13,33 +13,15 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
-namespace ISI.Extensions.AspNetCore.Tests
-{
-	public partial class Routes
-	{
-		public partial class Public : IHasUrlRoute
-		{
-			string IHasUrlRoute.UrlRoot => UrlRoot;
-			
-			#pragma warning disable 649
-			public class RouteNames : IRouteNames
-			{
-				[RouteName] public const string Index = "Index-d5e85c00-0711-412d-853c-53b2a5ac7f8f";
-				[RouteName] public const string Login = "Login-f836b667-01b9-40b6-b815-4aa7ca51afee";
-				//${RouteNames}
-			}
-			#pragma warning restore 649
-
-			internal static readonly string UrlRoot = Routes.UrlRoot;
-		}
-	}
-}
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+[assembly: AssemblyTitle("ISI.Extensions.Repository.Cassandra")]
+[assembly: AssemblyDescription("")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyProduct("ISI.Extensions.Repository.Cassandra")]
+[assembly: AssemblyCulture("")]

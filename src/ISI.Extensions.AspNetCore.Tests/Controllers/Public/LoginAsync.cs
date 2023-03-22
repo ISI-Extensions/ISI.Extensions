@@ -22,24 +22,34 @@ using ISI.Extensions.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.AspNetCore.Tests
+namespace ISI.Extensions.AspNetCore.Tests.Controllers
 {
-	public partial class Routes
+	public partial class PublicController 
 	{
-		public partial class Public : IHasUrlRoute
+		[Microsoft.AspNetCore.Mvc.AcceptVerbs(nameof(Microsoft.AspNetCore.Http.HttpMethods.Get))]
+		[Microsoft.AspNetCore.Authorization.AllowAnonymous]
+		[ISI.Extensions.AspNetCore.NamedRoute(Routes.Public.RouteNames.Login, typeof(Routes.Public), "login")]
+		[ApiExplorerSettings(IgnoreApi = true)]
+		public virtual async Task<Microsoft.AspNetCore.Mvc.IActionResult> LoginAsync(System.Threading.CancellationToken cancellationToken = default)
 		{
-			string IHasUrlRoute.UrlRoot => UrlRoot;
-			
-			#pragma warning disable 649
-			public class RouteNames : IRouteNames
-			{
-				[RouteName] public const string Index = "Index-d5e85c00-0711-412d-853c-53b2a5ac7f8f";
-				[RouteName] public const string Login = "Login-f836b667-01b9-40b6-b815-4aa7ca51afee";
-				//${RouteNames}
-			}
-			#pragma warning restore 649
+			Microsoft.AspNetCore.Mvc.IActionResult result = null;
 
-			internal static readonly string UrlRoot = Routes.UrlRoot;
+			var viewModel = new ISI.Extensions.AspNetCore.Tests.Models.Public.LoginModel();
+
+			return result ?? View(ISI.Extensions.AspNetCore.Tests.T4Files.Views.Public.Login_cshtml, viewModel);
+		}
+
+		[Microsoft.AspNetCore.Mvc.AcceptVerbs(nameof(Microsoft.AspNetCore.Http.HttpMethods.Post))]
+		[Microsoft.AspNetCore.Authorization.AllowAnonymous]
+		[ISI.Extensions.AspNetCore.NamedRoute(Routes.Public.RouteNames.Login, typeof(Routes.Public), "login")]
+		[ApiExplorerSettings(IgnoreApi = true)]
+		public virtual async Task<Microsoft.AspNetCore.Mvc.IActionResult> LoginSaveAsync(System.Threading.CancellationToken cancellationToken = default)
+		{
+			Microsoft.AspNetCore.Mvc.IActionResult result = null;
+
+			var viewModel = new ISI.Extensions.AspNetCore.Tests.Models.Public.LoginModel();
+
+			return result ?? View(ISI.Extensions.AspNetCore.Tests.T4Files.Views.Public.Login_cshtml, viewModel);
 		}
 	}
 }

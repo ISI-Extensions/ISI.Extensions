@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,31 +15,24 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.AspNetCore.Tests
+namespace ISI.Extensions.JsonJwt
 {
-	public partial class Routes
+	[DataContract]
+	public class JwsSignedPayload
 	{
-		public partial class Public : IHasUrlRoute
-		{
-			string IHasUrlRoute.UrlRoot => UrlRoot;
-			
-			#pragma warning disable 649
-			public class RouteNames : IRouteNames
-			{
-				[RouteName] public const string Index = "Index-d5e85c00-0711-412d-853c-53b2a5ac7f8f";
-				[RouteName] public const string Login = "Login-f836b667-01b9-40b6-b815-4aa7ca51afee";
-				//${RouteNames}
-			}
-			#pragma warning restore 649
+		[DataMember(Name = "header", EmitDefaultValue = false)]
+		public object Header { get; set; }
 
-			internal static readonly string UrlRoot = Routes.UrlRoot;
-		}
+		[DataMember(Name = "protected", EmitDefaultValue = false)]
+		public string Protected { get; set; }
+
+		[DataMember(Name = "payload", EmitDefaultValue = false)]
+		public string Payload { get; set; }
+
+		[DataMember(Name = "signature", EmitDefaultValue = false)]
+		public string Signature { get; set; }
 	}
 }

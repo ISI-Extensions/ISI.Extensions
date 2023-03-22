@@ -1,4 +1,3 @@
-#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -11,35 +10,23 @@ Redistribution and use in source and binary forms, with or without modification,
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#endregion
  
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace ISI.Extensions.AspNetCore.Tests
-{
-	public partial class Routes
-	{
-		public partial class Public : IHasUrlRoute
-		{
-			string IHasUrlRoute.UrlRoot => UrlRoot;
-			
-			#pragma warning disable 649
-			public class RouteNames : IRouteNames
-			{
-				[RouteName] public const string Index = "Index-d5e85c00-0711-412d-853c-53b2a5ac7f8f";
-				[RouteName] public const string Login = "Login-f836b667-01b9-40b6-b815-4aa7ca51afee";
-				//${RouteNames}
-			}
-			#pragma warning restore 649
-
-			internal static readonly string UrlRoot = Routes.UrlRoot;
+jQuery.namespace("ISI.Extensions.AspNetCore.Tests.Public.Login", function(jQuery) {
+	var model = {};
+	var view = {};
+	var controller = {
+		setup: function (config) {
+			controller.eventBinder();
+		},
+		eventBinder: function () {
 		}
-	}
-}
+	};
+
+	return {
+		Setup: controller.setup
+	};
+} (jQuery));
+
+jQuery(document).ready(function (jQuery) {
+	ISI.Extensions.AspNetCore.Tests.Public.Login.Setup();
+});

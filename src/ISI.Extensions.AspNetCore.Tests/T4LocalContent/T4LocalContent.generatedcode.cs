@@ -83,6 +83,7 @@ namespace ISI.Extensions.AspNetCore.Tests
 				
 					public static readonly string _Layout_js = _root() + "_Layout.js";
 					public static readonly string Index_js = _root() + "Index.js";
+					public static readonly string Login_js = _root() + "Login.js";
 				}
 			}
 			[GeneratedCode("T4LocalContent", "1.0"), DebuggerNonUserCode]
@@ -226,6 +227,7 @@ namespace ISI.Extensions.AspNetCore.Tests
 				
 					public static readonly string _Layout_css = _root() + "_Layout.css";
 					public static readonly string Index_css = _root() + "Index.css";
+					public static readonly string Login_css = _root() + "Login.css";
 				}
 			}
 			public static readonly string favicon_ico = _root() + "favicon.ico";
@@ -258,6 +260,7 @@ namespace ISI.Extensions.AspNetCore.Tests
 			
 				public static readonly string _Layout_cshtml = _root() + "_Layout.cshtml";
 				public static readonly string Index_cshtml = _root() + "Index.cshtml";
+				public static readonly string Login_cshtml = _root() + "Login.cshtml";
 			}
 		}
 	}
@@ -357,6 +360,8 @@ namespace ISI.Extensions.AspNetCore.Tests
 					public static global::ISI.Extensions.AspNetCore.IContentUrl _Layout_js => __Layout_js ??= GetContentUrl(_root() + "_Layout.js", true);
 					private static global::ISI.Extensions.AspNetCore.IContentUrl _Index_js = null;
 					public static global::ISI.Extensions.AspNetCore.IContentUrl Index_js => _Index_js ??= GetContentUrl(_root() + "Index.js", true);
+					private static global::ISI.Extensions.AspNetCore.IContentUrl _Login_js = null;
+					public static global::ISI.Extensions.AspNetCore.IContentUrl Login_js => _Login_js ??= GetContentUrl(_root() + "Login.js", true);
 				}
 			}
 			[GeneratedCode("T4LocalContent", "1.0"), DebuggerNonUserCode]
@@ -559,6 +564,8 @@ namespace ISI.Extensions.AspNetCore.Tests
 					public static global::ISI.Extensions.AspNetCore.IContentUrl _Layout_css => __Layout_css ??= GetContentUrl(_root() + "_Layout.css", true);
 					private static global::ISI.Extensions.AspNetCore.IContentUrl _Index_css = null;
 					public static global::ISI.Extensions.AspNetCore.IContentUrl Index_css => _Index_css ??= GetContentUrl(_root() + "Index.css", true);
+					private static global::ISI.Extensions.AspNetCore.IContentUrl _Login_css = null;
+					public static global::ISI.Extensions.AspNetCore.IContentUrl Login_css => _Login_css ??= GetContentUrl(_root() + "Login.css", true);
 				}
 			}
 			private static global::ISI.Extensions.AspNetCore.IContentUrl _favicon_ico = null;

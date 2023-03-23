@@ -22,7 +22,7 @@ namespace ISI.Extensions
 {
 	public class InvariantCultureIgnoreCaseStringHashSet : ICollection<string>, IEnumerable<string>, System.Collections.IEnumerable, IReadOnlyCollection<string>, ISet<string>, System.Runtime.Serialization.IDeserializationCallback, System.Runtime.Serialization.ISerializable
 	{
-		private readonly HashSet<string> _hashSet = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+		private readonly HashSet<string> _hashSet = new(StringComparer.InvariantCultureIgnoreCase);
 
 		public InvariantCultureIgnoreCaseStringHashSet()
 		{

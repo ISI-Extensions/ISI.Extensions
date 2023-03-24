@@ -427,6 +427,24 @@ namespace ISI.Extensions.Extensions
 			return values.ToDictionary(keySelector, elementSelector);
 		}
 
+		public static KeyValuePair<TKey, TElement>[] ToNullCheckedKeyValueArray<TValue, TKey, TElement>(this IEnumerable<TValue> values, Func<TValue, TKey> keySelector, Func<TValue, TElement> elementSelector, NullCheckDictionaryResult ifNullReturn = NullCheckDictionaryResult.ReturnNull)
+		{
+			if (values == null)
+			{
+				switch (ifNullReturn)
+				{
+					case NullCheckDictionaryResult.ReturnNull:
+						return null;
+					case NullCheckDictionaryResult.Empty:
+						return Array.Empty<KeyValuePair<TKey, TElement>>();
+					default:
+						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
+				}
+			}
+
+			return values.Select(value => new KeyValuePair<TKey, TElement>(keySelector(value), elementSelector(value))).ToArray();
+		}
+
 		public static bool NullCheckedTryGetValue<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, out TValue value)
 		{
 			if (dictionary == null)

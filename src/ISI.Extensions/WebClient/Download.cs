@@ -164,5 +164,65 @@ namespace ISI.Extensions.WebClient
 
 			return response;
 		}
+
+		public delegate System.IO.Stream DownloadFileGetStreamDelegate(string fileName);
+
+		public static DownloadFileResponse DownloadFile(string url, HeaderCollection headers, DownloadFileGetStreamDelegate getStream, int? bufferSize = null)
+		{
+			return DownloadFile(new Uri(url), headers, getStream, bufferSize);
+		}
+
+		public static DownloadFileResponse DownloadFile(Uri uri, HeaderCollection headers, DownloadFileGetStreamDelegate getStream, int? bufferSize = null)
+		{
+			var response = new DownloadFileResponse();
+
+			var webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(uri);
+
+			headers?.ApplyToWebRequest(webRequest);
+
+			try
+			{
+				using (var webResponse = (System.Net.HttpWebResponse)webRequest.GetResponse())
+				{
+					if (webResponse.Headers.AllKeys.Contains(ISI.Extensions.WebClient.HeaderCollection.Keys.ContentDisposition))
+					{
+						response.FileName = new System.Net.Mime.ContentDisposition(webResponse.Headers[ISI.Extensions.WebClient.HeaderCollection.Keys.ContentDisposition]).FileName;
+					}
+
+					foreach (var key in webResponse.Headers.AllKeys)
+					{
+						response.Headers.Add(key, webResponse.Headers[key]);
+					}
+
+					using (var webResponseStream = webResponse.GetResponseStream())
+					{
+						if (webResponseStream != null)
+						{
+							var toStream = getStream(response.FileName);
+
+							if (bufferSize.HasValue)
+							{
+								webResponseStream.CopyTo(toStream, bufferSize.Value);
+							}
+							else
+							{
+								webResponseStream.CopyTo(toStream);
+							}
+
+							toStream.Rewind();
+						}
+					}
+				}
+			}
+#pragma warning disable CS0168 // Variable is declared but never used
+			catch (Exception exception)
+#pragma warning restore CS0168 // Variable is declared but never used
+			{
+
+				throw;
+			}
+
+			return response;
+		}
 	}
 }

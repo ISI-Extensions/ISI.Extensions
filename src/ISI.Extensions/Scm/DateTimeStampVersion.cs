@@ -92,6 +92,11 @@ namespace ISI.Extensions.Scm
 		public override string ToString() => Value;
 		//public override string ToString() => string.Format("{0} ({1})", Version, DateTimeStamp);
 		public string Formatted() => string.Format("{0} ({1})", Version, DateTimeStamp);
+		
+		public static bool operator ==(DateTimeStampVersion x, DateTimeStampVersion y) => ((x != null) && (y != null) && (x.Version == y.Version) && (x.DateTimeStamp == y.DateTimeStamp));
+		public static bool operator !=(DateTimeStampVersion x, DateTimeStampVersion y) => !(x == y);
+
+		public override bool Equals(object obj) => ((obj is DateTimeStampVersion other) && (this == other));
 
 		public static implicit operator DateTimeStampVersion(string dateTimeStampVersion) => new(dateTimeStampVersion);
 		public static implicit operator DateTimeStampVersion(DateTimeStamp dateTimeStamp) => new(dateTimeStamp);

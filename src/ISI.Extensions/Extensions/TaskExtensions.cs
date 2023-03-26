@@ -17,49 +17,39 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.Extensions.Logging;
-using DTOs = ISI.Extensions.Scm.DataTransferObjects.ScmApi;
+using System.Threading.Tasks;
 
-namespace ISI.Extensions.Scm
+namespace ISI.Extensions.Extensions
 {
-	public partial class ScmApi
+	public static class TaskExtensions
 	{
-		public DTOs.GetAuthenticationTokenResponse GetAuthenticationToken(DTOs.GetAuthenticationTokenRequest request)
+		public static void Forget(this Task task)
 		{
-			var response = new DTOs.GetAuthenticationTokenResponse();
+			// note: this code is inspired by a tweet from Ben Adams: https://twitter.com/ben_a_adams/status/1045060828700037125
+			// Only care about tasks that may fault (not completed) or are faulted,
+			// so fast-path for SuccessfullyCompleted and Canceled tasks.
+			if (!task.IsCompleted || task.IsFaulted)
+			{
+				// use "_" (Discard operation) to remove the warning IDE0058: Because this call is not awaited, execution of the current method continues before the call is completed
+				// https://docs.microsoft.com/en-us/dotnet/csharp/fundamentals/functional/discards?WT.mc_id=DT-MVP-5003978#a-standalone-discard
+				_ = ForgetAwaited(task);
+			}
 
-			Logger.LogInformation(string.Format("GetAuthenticationToken, ScmManagementUrl: {0}", request.ScmManagementUrl));
-
-			var tryAttemptsLeft = request.MaxTries;
-			while (tryAttemptsLeft > 0)
+			// Allocate the async/await state machine only when needed for performance reasons.
+			// More info about the state machine: https://blogs.msdn.microsoft.com/seteplia/2017/11/30/dissecting-the-async-methods-in-c/?WT.mc_id=DT-MVP-5003978
+			async static Task ForgetAwaited(Task task)
 			{
 				try
 				{
-					using (var remoteManagementClient = ISI.Extensions.Scm.ServiceReferences.Scm.RemoteManagementClient.GetClient(request.ScmManagementUrl))
-					{
-						response.AuthenticationToken = remoteManagementClient.GetAuthenticationTokenAsync(request.UserName, request.Password).GetAwaiter().GetResult();
-					}
-
-					tryAttemptsLeft = 0;
+					// No need to resume on the original SynchronizationContext, so use ConfigureAwait(false)
+					await task.ConfigureAwait(false);
 				}
-				catch (Exception exception)
+				catch
 				{
-					tryAttemptsLeft--;
-					if (tryAttemptsLeft < 0)
-					{
-						Logger.LogError("Error getting authentication token");
-						throw;
-					}
-
-					Logger.LogError(string.Format("Error getting authentication token, Sleeping for {0} seconds", request.ExceptionSleepForInSeconds));
-
-					System.Threading.Thread.Sleep(TimeSpan.FromSeconds(request.ExceptionSleepForInSeconds));
+					// Nothing to do here
 				}
 			}
-
-			return response;
 		}
 	}
 }

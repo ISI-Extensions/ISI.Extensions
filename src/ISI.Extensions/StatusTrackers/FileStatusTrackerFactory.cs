@@ -50,22 +50,22 @@ namespace ISI.Extensions.StatusTrackers
 
 		public FileStatusTracker CreateStatusTracker(string statusTrackerKey)
 		{
-			return new(statusTrackerKey, Configuration, Logger, DateTimeStamper, GetFileName);
+			return new(statusTrackerKey, Configuration, Logger, DateTimeStamper, GetStatusTrackerFileName);
 		}
 
-		protected string GetFileName(string statusTrackerKey, string fileNameExtension)
+		public string GetStatusTrackerFileName(string statusTrackerKey, string fileNameExtension)
 		{
 			return System.IO.Path.Combine(Configuration.FileStatusTrackerDirectory, string.Format("{0}{1}", statusTrackerKey, fileNameExtension));
 		}
 		
 		public bool IsRunning(string statusTrackerKey)
 		{
-			return System.IO.File.Exists(GetFileName(statusTrackerKey, RunningFileNameExtension));
+			return System.IO.File.Exists(GetStatusTrackerFileName(statusTrackerKey, RunningFileNameExtension));
 		}
 
 		public bool IsFinished(string statusTrackerKey)
 		{
-			return System.IO.File.Exists(GetFileName(statusTrackerKey, FinishedFileNameExtension));
+			return System.IO.File.Exists(GetStatusTrackerFileName(statusTrackerKey, FinishedFileNameExtension));
 		}
 
 		public bool IsSuccessful(string statusTrackerKey)
@@ -75,7 +75,7 @@ namespace ISI.Extensions.StatusTrackers
 				return false;
 			}
 
-			var fileName = GetFileName(statusTrackerKey, FinishedFileNameExtension);
+			var fileName = GetStatusTrackerFileName(statusTrackerKey, FinishedFileNameExtension);
 
 			var processes = ISI.Extensions.IO.Path.GetLockingProcesses(new[] { fileName });
 
@@ -130,9 +130,9 @@ namespace ISI.Extensions.StatusTrackers
 				return string.Empty;
 			};
 
-			var caption = readFile(GetFileName(statusTrackerKey, CaptionFileNameExtension));
-			var percent = readFile(GetFileName(statusTrackerKey, PercentFileNameExtension)).ToInt();
-			var logEntries = readFile(GetFileName(statusTrackerKey, LogFileNameExtension))
+			var caption = readFile(GetStatusTrackerFileName(statusTrackerKey, CaptionFileNameExtension));
+			var percent = readFile(GetStatusTrackerFileName(statusTrackerKey, PercentFileNameExtension)).ToInt();
+			var logEntries = readFile(GetStatusTrackerFileName(statusTrackerKey, LogFileNameExtension))
 				.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
 				.Select(l => l.Split(new[] { '\t' }, 2)).
 				Select(logParts => new StatusTrackerLogEntry()
@@ -167,7 +167,7 @@ namespace ISI.Extensions.StatusTrackers
 		{
 			foreach (var fileNameExtension in new [] {RunningFileNameExtension,CaptionFileNameExtension,PercentFileNameExtension,LogFileNameExtension,FinishedFileNameExtension})
 			{
-				var fileName = GetFileName(statusTrackerKey, fileNameExtension);
+				var fileName = GetStatusTrackerFileName(statusTrackerKey, fileNameExtension);
 				if (System.IO.File.Exists(fileName))
 				{
 					System.IO.File.Delete(fileName);

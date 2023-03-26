@@ -23,7 +23,7 @@ namespace ISI.Extensions.StatusTrackers
 {
 	public partial class FileStatusTrackerFactory
 	{
-		public delegate string GetFileNameDelegate(string statusTrackerKey, string fileNameExtension);
+		public delegate string GetStatusTrackerFileNameDelegate(string statusTrackerKey, string fileNameExtension);
 
 		public class FileStatusTracker : IStatusTracker, IDisposable
 		{
@@ -36,7 +36,7 @@ namespace ISI.Extensions.StatusTrackers
 			protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 			protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
 
-			protected GetFileNameDelegate GetFileName { get; }
+			protected GetStatusTrackerFileNameDelegate GetStatusTrackerFileName { get; }
 
 			private const int DefaultBufferSize = 4096;
 
@@ -128,16 +128,16 @@ namespace ISI.Extensions.StatusTrackers
 				Configuration configuration,
 				Microsoft.Extensions.Logging.ILogger logger,
 				ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
-				GetFileNameDelegate getFileName)
+				GetStatusTrackerFileNameDelegate getStatusTrackerFileName)
 			{
 				StatusTrackerKey = statusTrackerKey;
 				Configuration = configuration;
 				Logger = logger;
 				DateTimeStamper = dateTimeStamper;
-				GetFileName = getFileName;
+				GetStatusTrackerFileName = getStatusTrackerFileName;
 
 				{
-					var fileName = GetFileName(StatusTrackerKey, RunningFileNameExtension);
+					var fileName = GetStatusTrackerFileName(StatusTrackerKey, RunningFileNameExtension);
 					try
 					{
 						RunningFileStream = new(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.DeleteOnClose);
@@ -151,7 +151,7 @@ namespace ISI.Extensions.StatusTrackers
 				}
 
 				{
-					var fileName = GetFileName(StatusTrackerKey, CaptionFileNameExtension);
+					var fileName = GetStatusTrackerFileName(StatusTrackerKey, CaptionFileNameExtension);
 					try
 					{
 						CaptionFileStream = new(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.RandomAccess);
@@ -164,7 +164,7 @@ namespace ISI.Extensions.StatusTrackers
 				}
 
 				{
-					var fileName = GetFileName(StatusTrackerKey, PercentFileNameExtension);
+					var fileName = GetStatusTrackerFileName(StatusTrackerKey, PercentFileNameExtension);
 					try
 					{
 						PercentFileStream = new(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.RandomAccess);
@@ -177,7 +177,7 @@ namespace ISI.Extensions.StatusTrackers
 				}
 
 				{
-					var fileName = GetFileName(StatusTrackerKey, LogFileNameExtension);
+					var fileName = GetStatusTrackerFileName(StatusTrackerKey, LogFileNameExtension);
 					try
 					{
 						LogFileStream = new(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.None);
@@ -247,7 +247,7 @@ namespace ISI.Extensions.StatusTrackers
 				if (!Finished)
 				{
 					Finished = true;
-					System.IO.File.WriteAllText(GetFileName(StatusTrackerKey, FinishedFileNameExtension), string.Format("Success:\t{0}", successful.TrueFalse()));
+					System.IO.File.WriteAllText(GetStatusTrackerFileName(StatusTrackerKey, FinishedFileNameExtension), string.Format("Success:\t{0}", successful.TrueFalse()));
 				}
 			}
 
@@ -282,7 +282,7 @@ namespace ISI.Extensions.StatusTrackers
 				RunningFileStream = null;
 
 				{
-					var fileName = GetFileName(StatusTrackerKey, CaptionFileNameExtension);
+					var fileName = GetStatusTrackerFileName(StatusTrackerKey, CaptionFileNameExtension);
 					if (System.IO.File.Exists(fileName))
 					{
 						System.IO.File.Delete(fileName);
@@ -290,7 +290,7 @@ namespace ISI.Extensions.StatusTrackers
 				}
 
 				{
-					var fileName = GetFileName(StatusTrackerKey, PercentFileNameExtension);
+					var fileName = GetStatusTrackerFileName(StatusTrackerKey, PercentFileNameExtension);
 					if (System.IO.File.Exists(fileName))
 					{
 						System.IO.File.Delete(fileName);

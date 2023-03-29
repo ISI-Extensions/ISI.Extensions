@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+using ISI.Extensions.TypeLocator.Extensions;
 
 namespace ISI.Extensions.MessageBus.Extensions
 {
@@ -37,6 +38,11 @@ namespace ISI.Extensions.MessageBus.Extensions
 			}
 
 			services.AddSingleton(typeof(ISI.Extensions.MessageBus.IMessageBus), messageBusType);
+
+			foreach (var exportedType in ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementationTypes<MessageBusControllerAttribute>())
+			{
+				services.AddSingleton(exportedType);
+			}
 
 			return services;
 		}

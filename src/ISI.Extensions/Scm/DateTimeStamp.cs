@@ -46,6 +46,6 @@ namespace ISI.Extensions.Scm
 
 		public static implicit operator DateTimeStamp(string dateTimeStamp) => new(dateTimeStamp);
 		public static implicit operator DateTimeStamp(DateTime dateTimeUtc) => new(dateTimeUtc);
-		public static implicit operator DateTimeStamp(DateTimeStampVersion dateTimeVersion) => (dateTimeVersion?.DateTimeStamp == null ? null : new(dateTimeVersion.DateTimeStamp.DateTimeUtc));
+		//public static implicit operator DateTimeStamp(DateTimeStampVersion dateTimeVersion) => (dateTimeVersion?.DateTimeStamp == null ? null : new(dateTimeVersion.DateTimeStamp.DateTimeUtc));
 	}
 }

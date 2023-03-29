@@ -34,6 +34,7 @@ namespace ISI.Extensions.Tests
 		public void ApplyConfigurationValueReaders_Test()
 		{
 			var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
+			configurationBuilder.AddConfigurationDefaults();
 
 			var configurationsPath = string.Format("Configuration{0}", System.IO.Path.DirectorySeparatorChar);
 
@@ -44,9 +45,14 @@ namespace ISI.Extensions.Tests
 			configurationBuilder.AddJsonFiles(activeEnvironment.ActiveEnvironments, environment => $"appsettings.{environment}.json");
 			//configurationBuilder.AddDataPathJsonFile(System.IO.Path.Combine("ISI.Extensions.Tests", "appsettings.json"));
 			
-			var configuration = configurationBuilder.Build().ApplyConfigurationValueReaders();
+			var configurationRoot = configurationBuilder.Build().ApplyConfigurationValueReaders();
 
-			var configurationTest = configuration.GetConfiguration<ISI.Extensions.Tests.Configuration>();
+			var configurationTest = configurationRoot.GetConfiguration<ISI.Extensions.Tests.Configuration>();
+
+			foreach (var keyValuePair in configurationRoot.AsEnumerable())
+			{
+				System.Console.WriteLine($"  Config \"{keyValuePair.Key}\" => \"{keyValuePair.Value}\"");
+			}
 		}
 
 		[Test]

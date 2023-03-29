@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using ISI.Extensions.ConfigurationHelper.Extensions;
 using ISI.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.DependencyInjection;
@@ -367,6 +367,59 @@ namespace ISI.Extensions.Tests
 						}
 					}
 				}
+			}
+		}
+
+		[Test]
+		public void GetUsedNugetPackages_Test()
+		{
+			var logger = ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();
+			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
+			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+
+			var solutionFullNames = new List<string>();
+			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt"));
+
+			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new()
+			{
+				Solution = solution,
+			}).SolutionDetails, ISI.Extensions.Extensions.NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
+
+			var nugetPackageKeys = new Nuget.NugetPackageKeyDictionary();
+
+			foreach (var solutionDetails in solutionDetailsSet)
+			{
+				logger.Log(LogLevel.Information, solutionDetails.SolutionName);
+
+				foreach (var projectDetails in solutionDetails.ProjectDetailsSet)
+				{
+					nugetPackageKeys.Merge(nugetApi.ExtractProjectNugetPackageDependenciesFromCsProj(new()
+					{
+						BuildTargetFrameworks = false,
+						CsProjFullName = projectDetails.ProjectFullName,
+						DoNotCheckForDifferentVersions = true,
+					}).NugetPackageKeys.Where(nugetPackageKey => nugetPackageKey.Package.StartsWith("ISI.")));
+
+					var packagesConfigFullName = System.IO.Path.Combine(projectDetails.ProjectDirectory, "packages.config");
+					if (System.IO.File.Exists(packagesConfigFullName))
+					{
+						nugetPackageKeys.Merge(nugetApi.ExtractProjectNugetPackageDependenciesFromPackagesConfig(new()
+						{
+							PackagesConfigFullName = packagesConfigFullName,
+						}).NugetPackageKeys.Where(nugetPackageKey => nugetPackageKey.Package.StartsWith("ISI.")));
+					}
+				}
+			}
+
+			Console.WriteLine();
+			Console.WriteLine();
+			Console.WriteLine();
+			Console.WriteLine();
+			Console.WriteLine();
+
+			foreach (var nugetPackageKey in nugetPackageKeys.Where(nugetPackageKey => nugetPackageKey.Package.StartsWith("ISI.")).OrderBy(nugetPackageKey => nugetPackageKey.Package, StringComparer.InvariantCultureIgnoreCase).ThenBy(nugetPackageKey => nugetPackageKey.Version, StringComparer.InvariantCultureIgnoreCase))
+			{
+				Console.WriteLine($"{nugetPackageKey.Package} {nugetPackageKey.Version}");
 			}
 		}
 	}

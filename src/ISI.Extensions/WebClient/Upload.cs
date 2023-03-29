@@ -215,7 +215,7 @@ namespace ISI.Extensions.WebClient
 			{
 				if (response is System.Net.HttpWebResponse httpWebResponse)
 				{
-					var encoding = Encoding.GetEncoding(httpWebResponse.CharacterSet);
+					var encoding = Encoding.GetEncoding(httpWebResponse?.CharacterSet ?? Encoding.Default.WebName);
 
 					using (var responseStream = new System.IO.StreamReader(httpWebResponse.GetResponseStream(), encoding))
 					{

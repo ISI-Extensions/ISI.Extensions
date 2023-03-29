@@ -26,5 +26,6 @@ namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 		public string CsProjFullName { get; set; }
 		public TryGetPackageVersion TryGetPackageVersion { get; set; } = null;
 		public bool BuildTargetFrameworks { get; set; } = true;
+		public bool DoNotCheckForDifferentVersions { get; set; }
 	}
 }

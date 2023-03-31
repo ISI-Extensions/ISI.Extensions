@@ -32,26 +32,29 @@ namespace ISI.Extensions
 		{
 			var values = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
 
-			var lines = System.IO.File.ReadAllLines(FullName).ToList();
-
-			lines.RemoveAll(string.IsNullOrWhiteSpace);
-
-			foreach (var keyValue in lines.Select(line => line.Split(new[] { ':', '\t' }, 2)))
+			if (System.IO.File.Exists(FullName))
 			{
-				var key = keyValue.First().Trim();
+				var lines = System.IO.File.ReadAllLines(FullName).ToList();
 
-				var value = string.Empty;
-				if (keyValue.Length > 1)
+				lines.RemoveAll(string.IsNullOrWhiteSpace);
+
+				foreach (var keyValue in lines.Select(line => line.Split(new[] { ':', '\t' }, 2)))
 				{
-					value = keyValue[1].Trim();
-				}
+					var key = keyValue.First().Trim();
 
-				if (values.ContainsKey(key))
-				{
-					throw new(string.Format("key: \"{0}\" already exists with value of \"{1}\" cannot add value \"{2}\"", key, values[key], value));
-				}
+					var value = string.Empty;
+					if (keyValue.Length > 1)
+					{
+						value = keyValue[1].Trim();
+					}
 
-				values.Add(key, value);
+					if (values.ContainsKey(key))
+					{
+						throw new(string.Format("key: \"{0}\" already exists with value of \"{1}\" cannot add value \"{2}\"", key, values[key], value));
+					}
+
+					values.Add(key, value);
+				}
 			}
 
 			return values;
@@ -75,5 +78,15 @@ namespace ISI.Extensions
 		public bool TryGetValue(string key, out string value) => Values.TryGetValue(key, out value);
 
 		public IEnumerable<string> Keys => Values.Keys;
+
+		public void Save()
+		{
+			if (System.IO.File.Exists(FullName))
+			{
+				System.IO.File.Delete(FullName);
+			}
+
+			System.IO.File.WriteAllText(FullName, string.Join("\n", Values.Select(keyValue => string.Format("{0}\t{1}", keyValue.Key, keyValue.Value))));
+		}
 	}
 }

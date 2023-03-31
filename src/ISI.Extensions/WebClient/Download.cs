@@ -194,12 +194,12 @@ namespace ISI.Extensions.WebClient
 						response.Headers.Add(key, webResponse.Headers[key]);
 					}
 
+					var toStream = getStream(response.FileName);
+
 					using (var webResponseStream = webResponse.GetResponseStream())
 					{
 						if (webResponseStream != null)
 						{
-							var toStream = getStream(response.FileName);
-
 							if (bufferSize.HasValue)
 							{
 								webResponseStream.CopyTo(toStream, bufferSize.Value);

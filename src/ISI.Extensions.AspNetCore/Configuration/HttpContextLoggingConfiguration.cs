@@ -25,12 +25,12 @@ namespace ISI.Extensions.AspNetCore
 	{
 		public class HttpContextLoggingConfiguration
 		{
-			public bool RecordWebRequest { get; set; } = true;
 			public bool RecordWebRequestDetail { get; set; } = true;
 			public bool RecordIdentity { get; set; } = true;
 			public bool RecordServerVariables { get; set; } = true;
 			public bool RecordQueryString { get; set; } = true;
 			public bool RecordFormValues { get; set; } = true;
+			public bool RecordJsonBody { get; set; } = true;
 			public bool RecordCookies { get; set; } = true;
 		}
 	}

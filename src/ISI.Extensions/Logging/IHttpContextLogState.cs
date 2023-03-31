@@ -25,6 +25,7 @@ namespace ISI.Extensions.Logging
 		System.Collections.Specialized.NameValueCollection ServerVariables { get; }
 		System.Collections.Specialized.NameValueCollection QueryString { get; }
 		System.Collections.Specialized.NameValueCollection FormValues { get; }
+		string JsonBody { get; }
 		System.Collections.Specialized.NameValueCollection Cookies { get; }
 
 		Guid? VisitorUuid { get; }

@@ -50,14 +50,14 @@ namespace ISI.Extensions.AspNetCore.Swashbuckle
 						{
 							new()
 							{
-								Name = "Authorization",
+								Name = ISI.Extensions.WebClient.HeaderCollection.Keys.Authorization,
 								In = Microsoft.OpenApi.Models.ParameterLocation.Header,
 								BearerFormat = "Bearer token",
 
 								Reference = new()
 								{
 									Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
-									Id = "Bearer"
+									Id = ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer,
 								}
 							},
 							new string[]{ }

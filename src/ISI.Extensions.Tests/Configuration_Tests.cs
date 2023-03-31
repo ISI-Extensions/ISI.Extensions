@@ -34,7 +34,6 @@ namespace ISI.Extensions.Tests
 		public void ApplyConfigurationValueReaders_Test()
 		{
 			var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
-			configurationBuilder.AddConfigurationDefaults();
 
 			var configurationsPath = string.Format("Configuration{0}", System.IO.Path.DirectorySeparatorChar);
 

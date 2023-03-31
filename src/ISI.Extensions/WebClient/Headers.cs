@@ -31,7 +31,7 @@ namespace ISI.Extensions.WebClient
 
 	public class HeaderCollection : List<Header>
 	{
-		internal class Keys
+		public class Keys
 		{
 			public const string Authorization = nameof(Authorization);
 			public const string UserAgent = "User-Agent";

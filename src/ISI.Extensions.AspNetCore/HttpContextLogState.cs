@@ -16,6 +16,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.AspNetCore
 {
@@ -28,6 +29,7 @@ namespace ISI.Extensions.AspNetCore
 		public System.Collections.Specialized.NameValueCollection ServerVariables { get; }
 		public System.Collections.Specialized.NameValueCollection QueryString { get; }
 		public System.Collections.Specialized.NameValueCollection FormValues { get; }
+		public string JsonBody { get; }
 		public System.Collections.Specialized.NameValueCollection Cookies { get; }
 
 		public Guid? VisitorUuid { get; }
@@ -40,6 +42,7 @@ namespace ISI.Extensions.AspNetCore
 			System.Collections.Specialized.NameValueCollection serverVariables,
 			System.Collections.Specialized.NameValueCollection queryString, 
 			System.Collections.Specialized.NameValueCollection formValues,
+			string jsonBody,
 			System.Collections.Specialized.NameValueCollection cookies,
 			Guid? visitorUuid, 
 			Guid? visitUuid)
@@ -51,10 +54,46 @@ namespace ISI.Extensions.AspNetCore
 			ServerVariables = serverVariables;
 			QueryString = queryString;
 			FormValues = formValues;
+			JsonBody = jsonBody;
 			Cookies = cookies;
 
 			VisitorUuid = visitorUuid;
 			VisitUuid = visitUuid;
+		}
+
+		private void Format(StringBuilder stringBuilder, string nameValuesDescription, System.Collections.Specialized.NameValueCollection nameValues)
+		{
+			if (nameValues.NullCheckedAny())
+			{
+				stringBuilder.AppendFormat("{0}:\n", nameValuesDescription);
+				foreach (var key in nameValues.AllKeys)
+				{
+					stringBuilder.AppendFormat("  {0}: \"{1}\"\n", key, nameValues[key]);
+				}
+			}
+		}
+
+		public string Formatted()
+		{
+			var stringBuilder = new StringBuilder();
+
+			stringBuilder.AppendFormat("OperationKey: \"{0}\"\n", OperationKey);
+			stringBuilder.AppendFormat("ActivityKey: \"{0}\"\n", ActivityKey);
+			stringBuilder.AppendFormat("Identity.Name: \"{0}\"\n", Identity?.Name);
+			stringBuilder.AppendFormat("Identity.IsAuthenticated: \"{0}\"\n", (Identity?.IsAuthenticated ?? false).TrueFalse());
+			Format(stringBuilder, "ServerVariables", ServerVariables);
+			Format(stringBuilder, "QueryString", QueryString);
+			if (!string.IsNullOrWhiteSpace(JsonBody))
+			{
+				stringBuilder.AppendFormat("JsonBody:\n {0}\n", JsonBody);
+			}
+			Format(stringBuilder, "FormValues", FormValues);
+			Format(stringBuilder, "Cookies", Cookies);
+
+			stringBuilder.AppendFormat("VisitorUuid: \"{0}\"\n", VisitorUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
+			stringBuilder.AppendFormat("VisitUuid: \"{0}\"\n", VisitUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
+
+			return stringBuilder.ToString();
 		}
 	}
 }

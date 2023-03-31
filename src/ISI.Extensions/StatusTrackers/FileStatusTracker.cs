@@ -36,7 +36,7 @@ namespace ISI.Extensions.StatusTrackers
 			protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 			protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
 
-			protected GetStatusTrackerFileNameDelegate GetStatusTrackerFileName { get; }
+			private GetStatusTrackerFileNameDelegate _getStatusTrackerFileName { get; }
 
 			private const int DefaultBufferSize = 4096;
 
@@ -123,6 +123,8 @@ namespace ISI.Extensions.StatusTrackers
 				}
 			}
 
+			public string GetStatusTrackerFileName(string fileNameExtension) => _getStatusTrackerFileName(StatusTrackerKey, fileNameExtension);
+
 			public FileStatusTracker(
 				string statusTrackerKey,
 				Configuration configuration,
@@ -134,10 +136,10 @@ namespace ISI.Extensions.StatusTrackers
 				Configuration = configuration;
 				Logger = logger;
 				DateTimeStamper = dateTimeStamper;
-				GetStatusTrackerFileName = getStatusTrackerFileName;
+				_getStatusTrackerFileName = getStatusTrackerFileName;
 
 				{
-					var fileName = GetStatusTrackerFileName(StatusTrackerKey, RunningFileNameExtension);
+					var fileName = GetStatusTrackerFileName(RunningFileNameExtension);
 					try
 					{
 						RunningFileStream = new(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.DeleteOnClose);
@@ -151,7 +153,7 @@ namespace ISI.Extensions.StatusTrackers
 				}
 
 				{
-					var fileName = GetStatusTrackerFileName(StatusTrackerKey, CaptionFileNameExtension);
+					var fileName = GetStatusTrackerFileName(CaptionFileNameExtension);
 					try
 					{
 						CaptionFileStream = new(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.RandomAccess);
@@ -164,7 +166,7 @@ namespace ISI.Extensions.StatusTrackers
 				}
 
 				{
-					var fileName = GetStatusTrackerFileName(StatusTrackerKey, PercentFileNameExtension);
+					var fileName = GetStatusTrackerFileName(PercentFileNameExtension);
 					try
 					{
 						PercentFileStream = new(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.RandomAccess);
@@ -177,7 +179,7 @@ namespace ISI.Extensions.StatusTrackers
 				}
 
 				{
-					var fileName = GetStatusTrackerFileName(StatusTrackerKey, LogFileNameExtension);
+					var fileName = GetStatusTrackerFileName(LogFileNameExtension);
 					try
 					{
 						LogFileStream = new(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.None);
@@ -247,7 +249,7 @@ namespace ISI.Extensions.StatusTrackers
 				if (!Finished)
 				{
 					Finished = true;
-					System.IO.File.WriteAllText(GetStatusTrackerFileName(StatusTrackerKey, FinishedFileNameExtension), string.Format("Success:\t{0}", successful.TrueFalse()));
+					System.IO.File.WriteAllText(GetStatusTrackerFileName(FinishedFileNameExtension), string.Format("Success:\t{0}", successful.TrueFalse()));
 				}
 			}
 
@@ -282,7 +284,7 @@ namespace ISI.Extensions.StatusTrackers
 				RunningFileStream = null;
 
 				{
-					var fileName = GetStatusTrackerFileName(StatusTrackerKey, CaptionFileNameExtension);
+					var fileName = GetStatusTrackerFileName(CaptionFileNameExtension);
 					if (System.IO.File.Exists(fileName))
 					{
 						System.IO.File.Delete(fileName);
@@ -290,7 +292,7 @@ namespace ISI.Extensions.StatusTrackers
 				}
 
 				{
-					var fileName = GetStatusTrackerFileName(StatusTrackerKey, PercentFileNameExtension);
+					var fileName = GetStatusTrackerFileName(PercentFileNameExtension);
 					if (System.IO.File.Exists(fileName))
 					{
 						System.IO.File.Delete(fileName);

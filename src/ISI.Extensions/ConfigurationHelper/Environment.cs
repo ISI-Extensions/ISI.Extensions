@@ -38,9 +38,11 @@ namespace ISI.Extensions.ConfigurationHelper
 
 		public override bool Equals(object obj) => Equals(obj as string ?? string.Empty);
 
-		public static bool operator ==(string value, Environment environment) => environment.Equals(value);
+		public static bool operator ==(Environment x, Environment y) => x?.Equals(y) ?? false;
+		public static bool operator !=(Environment x, Environment y) => !(x?.Equals(y) ?? false);
 
-		public static bool operator !=(string value, Environment environment) => !(environment.Equals(value));
+		public static bool operator ==(string value, Environment environment) => environment?.Equals(value) ?? false;
+		public static bool operator !=(string value, Environment environment) => !(environment?.Equals(value) ?? false);
 
 		public override int GetHashCode() => Value.GetHashCode();
 

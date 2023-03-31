@@ -32,6 +32,13 @@ namespace ISI.Extensions.ConfigurationHelper.Extensions
 
 			var configurationProviders = new List<Microsoft.Extensions.Configuration.IConfigurationProvider>();
 
+			if (!configurationRoot.Providers.Any(provider => provider is ConfigurationDefaultsConfigurationProvider))
+			{
+				var configurationProvider = new ConfigurationDefaultsConfigurationProvider();
+
+				configurationProviders.Add(applyConfigurationValueReadersFilter(configurationProvider) ? new ISI.Extensions.ConfigurationValueReaders.ConfigurationProviderWrapper(configurationProvider) : configurationProvider);
+			}
+
 			foreach (var configurationProvider in configurationRoot.Providers)
 			{
 				configurationProviders.Add(applyConfigurationValueReadersFilter(configurationProvider) ? new ISI.Extensions.ConfigurationValueReaders.ConfigurationProviderWrapper(configurationProvider) : configurationProvider);

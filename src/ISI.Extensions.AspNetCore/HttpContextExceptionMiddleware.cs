@@ -36,7 +36,7 @@ namespace ISI.Extensions.AspNetCore
 			Next = next;
 		}
 
-		public async Task Invoke(Microsoft.AspNetCore.Http.HttpContext context)
+		public async Task InvokeAsync(Microsoft.AspNetCore.Http.HttpContext context)
 		{
 			try
 			{
@@ -44,9 +44,10 @@ namespace ISI.Extensions.AspNetCore
 			}
 			catch (Exception exception)
 			{
-				var httpContextHelper = new HttpContextHelper(context, null, null);
+				var httpContextHelper = new HttpContextHelper();
+				await httpContextHelper.LoadAsync(context, null, null);
 
-				var httpContextLogState = new HttpContextLogState(Logger.OperationKey(), Logger.ActivityKey(), httpContextHelper.Identity, httpContextHelper.ServerVariables, httpContextHelper.QueryString, httpContextHelper.FormValues, httpContextHelper.Cookies, httpContextHelper.VisitorUuid, httpContextHelper.VisitUuid);
+				var httpContextLogState = new HttpContextLogState(Logger.OperationKey(), Logger.ActivityKey(), httpContextHelper.Identity, httpContextHelper.ServerVariables, httpContextHelper.QueryString, httpContextHelper.FormValues, httpContextHelper.JsonBody, httpContextHelper.Cookies, httpContextHelper.VisitorUuid, httpContextHelper.VisitUuid);
 
 				Logger?.Log(LogLevel.Error, new(1), httpContextLogState, exception, Formatter);
 			}

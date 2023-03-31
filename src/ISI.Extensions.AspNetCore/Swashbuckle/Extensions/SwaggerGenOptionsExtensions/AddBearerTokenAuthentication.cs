@@ -26,11 +26,11 @@ namespace ISI.Extensions.AspNetCore.Swashbuckle.Extensions
 		{
 			swaggerGenOptions.OperationFilter<BearerTokenOperationFilter>();
 
-			swaggerGenOptions.AddSecurityDefinition("Bearer", new()
+			swaggerGenOptions.AddSecurityDefinition(ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer, new()
 			{                                
-				Name = "Authorization",
+				Name = ISI.Extensions.WebClient.HeaderCollection.Keys.Authorization,
 				Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
-				Scheme = "Bearer",
+				Scheme = ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer,
 				BearerFormat = bearerFormat,
 				In = Microsoft.OpenApi.Models.ParameterLocation.Header,
 				Description = description,

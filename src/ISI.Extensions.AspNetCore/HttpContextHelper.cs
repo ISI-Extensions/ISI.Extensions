@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ISI.Extensions.Extensions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -35,14 +36,22 @@ namespace ISI.Extensions.AspNetCore
 		internal System.Collections.Specialized.NameValueCollection ServerVariables = null;
 		internal System.Collections.Specialized.NameValueCollection QueryString = null;
 		internal System.Collections.Specialized.NameValueCollection FormValues = null;
+		internal string JsonBody = null;
 		internal System.Collections.Specialized.NameValueCollection Cookies = null;
 		internal Guid? VisitorUuid = null;
 		internal Guid? VisitUuid = null;
 
-		public HttpContextHelper(Microsoft.AspNetCore.Http.HttpContext context, Guid? visitorUuid, Guid? visitUuid)
+		public async System.Threading.Tasks.Task LoadAsync(Microsoft.AspNetCore.Http.HttpContext context, Guid? visitorUuid, Guid? visitUuid, System.Threading.CancellationToken cancellationToken = default)
 		{
 			if (context != null)
 			{
+				var syncIOFeature = context.Features.Get<Microsoft.AspNetCore.Http.Features.IHttpBodyControlFeature>();
+				if (syncIOFeature is not null)
+				{
+					syncIOFeature.AllowSynchronousIO = true;
+				}
+
+				
 				try
 				{
 					if (Configuration.HttpContextLogging.RecordIdentity)
@@ -96,6 +105,35 @@ namespace ISI.Extensions.AspNetCore
 
 				try
 				{
+					if (Configuration.HttpContextLogging.RecordJsonBody &&
+							!string.Equals(context?.Request.Method, ISI.Extensions.HttpVerb.Get.GetAbbreviation(), StringComparison.InvariantCultureIgnoreCase) &&
+							((context.Request.ContentType ?? string.Empty).IndexOf("json", StringComparison.InvariantCultureIgnoreCase) >= 0))
+					{
+						context.Request.EnableBuffering();
+
+						using (var stream = new System.IO.MemoryStream())
+						{
+							await context.Request.Body.CopyToAsync(stream, cancellationToken);
+
+							//stream.Rewind();
+
+							//stream.CopyToAsync(context.Request.Body).Wait();
+
+							stream.Rewind();
+
+							JsonBody = stream.TextReadToEnd();
+						}
+
+						//context.Request.Body.Rewind();
+					}
+				}
+				catch (Exception exception)
+				{
+					Logger?.LogError(exception, "Error getting FormValues");
+				}
+
+				try
+				{
 					if (Configuration.HttpContextLogging.RecordCookies)
 					{
 						Cookies = CloneNameValueCollection(context.Request.Cookies);
@@ -114,57 +152,48 @@ namespace ISI.Extensions.AspNetCore
 		#region CloneNameValueCollection
 		private static System.Collections.Specialized.NameValueCollection CloneNameValueCollection(System.Collections.Specialized.NameValueCollection values)
 		{
-			System.Collections.Specialized.NameValueCollection result = null;
-
-			if (values != null)
-			{
-				result = new(values);
-			}
-
-			return result;
+			return (values == null ? null : new(values));
 		}
 
 		private static System.Collections.Specialized.NameValueCollection CloneNameValueCollection(Microsoft.AspNetCore.Http.IFormCollection formValues)
 		{
-			System.Collections.Specialized.NameValueCollection result = null;
-
 			if (formValues.NullCheckedAny())
 			{
-				result = new();
+				var nameValues = new System.Collections.Specialized.NameValueCollection();
 
 				foreach (var formValue in formValues)
 				{
-					result.Add(formValue.Key, formValue.Value);
+					nameValues.Add(formValue.Key, formValue.Value);
 				}
+
+				return nameValues;
 			}
 
-			return result;
+			return null;
 		}
 
 		private static System.Collections.Specialized.NameValueCollection CloneNameValueCollection(Microsoft.AspNetCore.Http.IRequestCookieCollection cookies)
 		{
-			System.Collections.Specialized.NameValueCollection result = null;
-
 			if (cookies.NullCheckedAny())
 			{
-				result = new();
+				var nameValues = new System.Collections.Specialized.NameValueCollection();
 
 				foreach (var cookie in cookies)
 				{
-					result.Add(cookie.Key, cookie.Value);
+					nameValues.Add(cookie.Key, cookie.Value);
 				}
+
+				return nameValues;
 			}
 
-			return result;
+			return null;
 		}
 
 		private static System.Collections.Specialized.NameValueCollection CloneNameValueCollection(Microsoft.AspNetCore.Http.QueryString queryString)
 		{
-			System.Collections.Specialized.NameValueCollection result = null;
-
 			if (queryString.HasValue)
 			{
-				result = new();
+				var nameValues = new System.Collections.Specialized.NameValueCollection();
 
 				var values = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(queryString.Value);
 
@@ -172,21 +201,20 @@ namespace ISI.Extensions.AspNetCore
 				{
 					foreach (var stringValue in value.Value)
 					{
-						result.Add(value.Key, stringValue);
+						nameValues.Add(value.Key, stringValue);
 					}
 				}
 
+				return nameValues;
 			}
 
-			return result;
+			return null;
 		}
 		#endregion
 
 		#region Serialize
 		public string Serialize()
 		{
-			string result = null;
-
 			if (Configuration.HttpContextLogging.RecordWebRequestDetail)
 			{
 				using (var memoryStream = new System.IO.MemoryStream())
@@ -253,6 +281,12 @@ namespace ISI.Extensions.AspNetCore
 						{
 							SerializeCollection(xmlWriter, "FormValues", FormValues);
 						}
+						if (Configuration.HttpContextLogging.RecordJsonBody && !string.IsNullOrWhiteSpace(JsonBody))
+						{
+							xmlWriter.WriteStartElement("JsonBody");
+							xmlWriter.WriteValue(JsonBody);
+							xmlWriter.WriteEndElement();
+						}
 						if (Configuration.HttpContextLogging.RecordCookies && (Cookies != null))
 						{
 							SerializeCollection(xmlWriter, "Cookies", Cookies);
@@ -267,12 +301,12 @@ namespace ISI.Extensions.AspNetCore
 
 					using (var streamReader = new System.IO.StreamReader(memoryStream))
 					{
-						result = streamReader.ReadToEnd();
+						return streamReader.ReadToEnd();
 					}
 				}
 			}
 
-			return result;
+			return null;
 		}
 
 		private void SerializeCollection(System.Xml.XmlWriter xmlWriter, string collectionName, System.Collections.Specialized.NameValueCollection collection)

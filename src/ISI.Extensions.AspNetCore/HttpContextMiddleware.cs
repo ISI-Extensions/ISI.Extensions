@@ -12,47 +12,40 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+using ISI.Extensions.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.AspNetCore.Extensions
+namespace ISI.Extensions.AspNetCore
 {
-	public static class ApplicationBuilderExtensions
+	public class HttpContextMiddleware
 	{
-		public static Microsoft.AspNetCore.Builder.IApplicationBuilder UseHttpContextMiddleware(this Microsoft.AspNetCore.Builder.IApplicationBuilder applicationBuilder)
+		private static Microsoft.Extensions.Logging.ILogger _logger = null;
+		public Microsoft.Extensions.Logging.ILogger Logger => _logger ??= ISI.Extensions.ServiceLocator.Current?.GetService<Microsoft.Extensions.Logging.ILogger>() ?? new ISI.Extensions.NullLogger();
+
+		protected readonly Microsoft.AspNetCore.Http.RequestDelegate Next;
+
+		public HttpContextMiddleware(Microsoft.AspNetCore.Http.RequestDelegate next)
 		{
-			return applicationBuilder.UseMiddleware<HttpContextMiddleware>();
+			Next = next;
 		}
 
-		public static Microsoft.AspNetCore.Builder.IApplicationBuilder UseHttpContextExceptionMiddleware(this Microsoft.AspNetCore.Builder.IApplicationBuilder applicationBuilder)
+		public async Task InvokeAsync(Microsoft.AspNetCore.Http.HttpContext context)
 		{
-			return applicationBuilder.UseMiddleware<HttpContextExceptionMiddleware>();
-		}
+			var httpContextHelper = new HttpContextHelper();
+			await httpContextHelper.LoadAsync(context, null, null);
 
-		public static Microsoft.AspNetCore.Builder.IApplicationBuilder UseCORS(this Microsoft.AspNetCore.Builder.IApplicationBuilder applicationBuilder)
-		{
-			return applicationBuilder.UseMiddleware<CorsMiddleware>();
-		}
+			var httpContextLogState = new HttpContextLogState(Logger.OperationKey(), Logger.ActivityKey(), httpContextHelper.Identity, httpContextHelper.ServerVariables, httpContextHelper.QueryString, httpContextHelper.FormValues, httpContextHelper.JsonBody, httpContextHelper.Cookies, httpContextHelper.VisitorUuid, httpContextHelper.VisitUuid);
 
-		public static Microsoft.AspNetCore.Builder.IApplicationBuilder UseVirtualFileVolumesFileProvider(this Microsoft.AspNetCore.Builder.IApplicationBuilder applicationBuilder)
-		{
-			var virtualFileVolumesFileProvider = new VirtualFileVolumesFileProvider();
+			Logger?.Log(LogLevel.Information, httpContextLogState.Formatted());
 
-			foreach (var virtualFileVolume in virtualFileVolumesFileProvider.VirtualFileVolumes)
-			{
-				applicationBuilder.UseStaticFiles(new StaticFileOptions()
-				{
-					FileProvider = virtualFileVolumesFileProvider,
-					RequestPath = virtualFileVolume.PathPrefix,
-				});
-			}
-
-			return applicationBuilder;
+			await Next.Invoke(context);
 		}
 	}
 }

@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,17 +18,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+using NUnit.Framework;
 
-namespace ISI.Extensions.ConfigurationHelper.Extensions
+namespace ISI.Extensions.Tests
 {
-	public static partial class ConfigurationBuilderExtensions
+	[TestFixture]
+	public class Scm_Tests
 	{
-		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddConfigurationDefaults(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder)
+		[Test]
+		public void DateTimeStampVersion_HasValue_Test()
 		{
-			configurationBuilder.Add(new ConfigurationDefaultsConfigurationSource());
+			var dateTimeStampVersion = new ISI.Extensions.Scm.DateTimeStampVersion();
 
-			return configurationBuilder;
+			Assert.IsFalse(dateTimeStampVersion?.HasValue ?? false);
 		}
 	}
 }

@@ -89,11 +89,11 @@ namespace ISI.Extensions.Svn
 								break;
 
 							case "URL":
-								info.Uri = new(propertyValue.Trim());
+								info.Url = propertyValue.Trim();
 								break;
 
 							case "Repository Root":
-								info.RepositoryRoot = new(propertyValue.Trim());
+								info.RepositoryRoot = propertyValue.Trim();
 								break;
 
 							case "Revision":

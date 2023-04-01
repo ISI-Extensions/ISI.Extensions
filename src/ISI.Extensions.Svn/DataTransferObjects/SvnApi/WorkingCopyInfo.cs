@@ -25,8 +25,8 @@ namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 	{
 		public string Path { get; set; }
 		public string WorkingCopyRootPath { get; set; }
-		public Uri Uri { get; set; }
-		public Uri RepositoryRoot { get; set; }
+		public string Url { get; set; }
+		public string RepositoryRoot { get; set; }
 		public long Revision { get; set; }
 		public NodeKind NodeKind { get; set; }
 		public Schedule Schedule { get; set; }

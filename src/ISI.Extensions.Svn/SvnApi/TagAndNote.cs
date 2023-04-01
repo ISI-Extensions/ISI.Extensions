@@ -50,7 +50,7 @@ namespace ISI.Extensions.Svn
 			var trunkInfo = infos.FirstOrDefault(info => string.Equals(info.Path.TrimEnd('\\', '/'), workingCopyDirectory, StringComparison.CurrentCultureIgnoreCase));
 			if (trunkInfo != null)
 			{
-				var trunkUrl = GetTrunkUrl(trunkInfo.Uri);
+				var trunkUrl = GetTrunkUrl(trunkInfo.Url);
 
 				if (!string.IsNullOrEmpty(trunkUrl))
 				{
@@ -102,7 +102,7 @@ namespace ISI.Extensions.Svn
 							{
 								var info = infos.FirstOrDefault(info => string.Equals(info.Path.TrimEnd('\\', '/'), propertySet.Path.TrimEnd('\\', '/'), StringComparison.CurrentCultureIgnoreCase));
 
-								var url = info.Uri.ToString().Replace(trunkUrl, tagsUrl);
+								var url = info.Url.Replace(trunkUrl, tagsUrl);
 
 								var existingExternals = property.Value.Split(new string[] { "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
 

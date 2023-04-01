@@ -30,7 +30,7 @@ namespace ISI.Extensions.Svn
 			return GetWorkingCopyInfos(new()
 			{
 				Source = System.IO.Path.Combine(workingCopyDirectory),
-			})?.Infos?.First()?.Uri?.ToString() ?? string.Empty;
+			})?.Infos?.First()?.Url ?? string.Empty;
 		}
 	}
 }

@@ -36,8 +36,8 @@ namespace ISI.Extensions.Scm
 			var rootDirectory = sourceControlClientApi?.GetRootDirectory(request);
 
 			response.FullName = rootDirectory?.FullName;
-			response.SolutionUri = rootDirectory?.SolutionUri;
-			response.SourceControlUri = rootDirectory?.SourceControlUri;
+			response.SolutionUrl = rootDirectory?.SolutionUrl;
+			response.SourceControlUrl = rootDirectory?.SourceControlUrl;
 
 			return response;
 		}

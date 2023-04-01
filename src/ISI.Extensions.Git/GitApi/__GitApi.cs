@@ -76,8 +76,8 @@ namespace ISI.Extensions.Git
 			});
 
 			response.FullName = apiResponse?.FullName;
-			response.SolutionUri = apiResponse?.SolutionUri;
-			response.SourceControlUri = apiResponse?.SourceControlUri;
+			response.SolutionUrl = apiResponse?.SolutionUrl;
+			response.SourceControlUrl = apiResponse?.SourceControlUrl;
 
 			return response;
 		}

@@ -21,19 +21,19 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Assemblies
 {
-	public class Container : IContainer
+	public class AssembliesContainer : IAssembliesContainer
 	{
 		private static object _localContainerLock { get; } = new();
-		private static IContainer _localContainer { get; set; } = null;
-		public static IContainer LocalContainer => _localContainer ??= BuildLocalContainer();
+		private static IAssembliesContainer _localContainer { get; set; } = null;
+		public static IAssembliesContainer LocalContainer => _localContainer ??= BuildLocalContainer();
 
-		private static IContainer BuildLocalContainer()
+		private static IAssembliesContainer BuildLocalContainer()
 		{
 			lock (_localContainerLock)
 			{
 				if (_localContainer == null)
 				{
-					var localContainer = new Container();
+					var localContainer = new AssembliesContainer();
 					localContainer.Build();
 
 					return localContainer;
@@ -46,7 +46,7 @@ namespace ISI.Extensions.Assemblies
 		public Assembly[] Assemblies { get; private set; }
 		public Type[] Types { get; private set; }
 
-		public IContainer Build(IEnumerable<string> excludeAssemblyFileNames = null, bool includeExes = false)
+		public IAssembliesContainer Build(IEnumerable<string> excludeAssemblyFileNames = null, bool includeExes = false)
 		{
 			var executingAssembly = System.Reflection.Assembly.GetExecutingAssembly();
 
@@ -125,6 +125,5 @@ namespace ISI.Extensions.Assemblies
 
 			return this;
 		}
-
 	}
 }

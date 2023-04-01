@@ -37,7 +37,7 @@ namespace ISI.Extensions.Caching.MessageBus.Controllers
 		protected static ISI.Extensions.Threads.TaskTimer ProcessClearCacheQueueTaskTimer { get; private set; }
 
 		private ISI.Extensions.Caching.IEnterpriseCacheClient[] _enterpriseCacheClients = null;
-		protected ISI.Extensions.Caching.IEnterpriseCacheClient[] EnterpriseCacheClients => _enterpriseCacheClients ??= ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementations<ISI.Extensions.Caching.IEnterpriseCacheClient>(serviceType => ServiceProvider.GetService(serviceType) as ISI.Extensions.Caching.IEnterpriseCacheClient).ToArray();
+		protected ISI.Extensions.Caching.IEnterpriseCacheClient[] EnterpriseCacheClients => _enterpriseCacheClients ??= ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementations(serviceType => ServiceProvider.GetService(serviceType) as ISI.Extensions.Caching.IEnterpriseCacheClient).ToArray();
 
 		public EnterpriseCacheManagerApiController(
 			ISI.Extensions.Caching.Configuration configuration,

@@ -23,7 +23,7 @@ namespace ISI.Extensions.DependencyInjection.Extensions
 {
 	public static partial class ServiceCollectionExtensions
 	{
-		public static Microsoft.Extensions.DependencyInjection.IServiceCollection ProcessServiceRegistrars(this Microsoft.Extensions.DependencyInjection.IServiceCollection services, ISI.Extensions.TypeLocator.IContainer container = null)
+		public static Microsoft.Extensions.DependencyInjection.IServiceCollection ProcessServiceRegistrars(this Microsoft.Extensions.DependencyInjection.IServiceCollection services, ISI.Extensions.TypeLocator.ITypeLocatorContainer container = null)
 		{
 			container ??= ISI.Extensions.TypeLocator.Container.LocalContainer;
 

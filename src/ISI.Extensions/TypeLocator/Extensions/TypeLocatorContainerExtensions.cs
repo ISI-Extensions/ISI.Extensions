@@ -21,20 +21,20 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ISI.Extensions.TypeLocator.Extensions
 {
-	public static class ContainerExtensions
+	public static class TypeLocatorContainerExtensions
 	{
-		public static Type[] GetImplementationTypes<TServiceType>(this IContainer container) => container.GetImplementationTypes(typeof(TServiceType));
+		public static Type[] GetImplementationTypes<TServiceType>(this ITypeLocatorContainer container) => container.GetImplementationTypes(typeof(TServiceType));
 
 
-		public static object[] GetImplementations(this IContainer container, Type serviceType)
+		public static object[] GetImplementations(this ITypeLocatorContainer container, Type serviceType)
 		{
 			return GetImplementations(container, serviceType, Activator.CreateInstance);
 		}
-		public static object[] GetImplementations(this IContainer container, Type serviceType, System.IServiceProvider serviceProvider)
+		public static object[] GetImplementations(this ITypeLocatorContainer container, Type serviceType, System.IServiceProvider serviceProvider)
 		{
 			return GetImplementations(container, serviceType, serviceProvider.GetService);
 		}
-		public static object[] GetImplementations(this IContainer container, Type serviceType, Func<Type, object> createItem)
+		public static object[] GetImplementations(this ITypeLocatorContainer container, Type serviceType, Func<Type, object> createItem)
 		{
 			var types = container.GetImplementationTypes(serviceType);
 
@@ -42,15 +42,15 @@ namespace ISI.Extensions.TypeLocator.Extensions
 		}
 
 
-		public static TServiceType[] GetImplementations<TServiceType>(this IContainer container)
+		public static TServiceType[] GetImplementations<TServiceType>(this ITypeLocatorContainer container)
 		{
 			return GetImplementations<TServiceType>(container, serviceType => (TServiceType)Activator.CreateInstance(serviceType));
 		}
-		public static TServiceType[] GetImplementations<TServiceType>(this IContainer container, System.IServiceProvider serviceProvider)
+		public static TServiceType[] GetImplementations<TServiceType>(this ITypeLocatorContainer container, System.IServiceProvider serviceProvider)
 		{
 			return GetImplementations<TServiceType>(container, serviceType => (TServiceType)serviceProvider.GetService(serviceType));
 		}
-		public static TServiceType[] GetImplementations<TServiceType>(this IContainer container, Func<Type, TServiceType> createItem)
+		public static TServiceType[] GetImplementations<TServiceType>(this ITypeLocatorContainer container, Func<Type, TServiceType> createItem)
 		{
 			var types = container.GetImplementationTypes(typeof(TServiceType));
 
@@ -59,33 +59,33 @@ namespace ISI.Extensions.TypeLocator.Extensions
 
 
 
-		public static void ExecuteOnAll<TServiceType>(this IContainer container, Action<TServiceType> action)
+		public static void ExecuteOnAll<TServiceType>(this ITypeLocatorContainer container, Action<TServiceType> action)
 			where TServiceType : ISI.Extensions.TypeLocator.IExecute
 		{
 			ExecuteOnAll<TServiceType>(container, new[] { action });
 		}
-		public static void ExecuteOnAll<TServiceType>(this IContainer container, System.IServiceProvider serviceProvider, Action<TServiceType> action)
+		public static void ExecuteOnAll<TServiceType>(this ITypeLocatorContainer container, System.IServiceProvider serviceProvider, Action<TServiceType> action)
 			where TServiceType : ISI.Extensions.TypeLocator.IExecute
 		{
 			ExecuteOnAll<TServiceType>(container, serviceProvider, new[] { action });
 		}
-		public static void ExecuteOnAll<TServiceType>(this IContainer container, Func<Type, TServiceType> createItem, Action<TServiceType> action)
+		public static void ExecuteOnAll<TServiceType>(this ITypeLocatorContainer container, Func<Type, TServiceType> createItem, Action<TServiceType> action)
 			where TServiceType : ISI.Extensions.TypeLocator.IExecute
 		{
 			ExecuteOnAll<TServiceType>(container, createItem, new[] { action });
 		}
 
-		public static void ExecuteOnAll<TServiceType>(this IContainer container, params Action<TServiceType>[] actions)
+		public static void ExecuteOnAll<TServiceType>(this ITypeLocatorContainer container, params Action<TServiceType>[] actions)
 			where TServiceType : ISI.Extensions.TypeLocator.IExecute
 		{
 			ExecuteOnAll<TServiceType>(container, serviceType => (TServiceType)Activator.CreateInstance(serviceType), actions);
 		}
-		public static void ExecuteOnAll<TServiceType>(this IContainer container, System.IServiceProvider serviceProvider, params Action<TServiceType>[] actions)
+		public static void ExecuteOnAll<TServiceType>(this ITypeLocatorContainer container, System.IServiceProvider serviceProvider, params Action<TServiceType>[] actions)
 			where TServiceType : ISI.Extensions.TypeLocator.IExecute
 		{
 			ExecuteOnAll<TServiceType>(container, serviceType => (TServiceType)serviceProvider.GetService(serviceType), actions);
 		}
-		public static void ExecuteOnAll<TServiceType>(this IContainer container, Func<Type, TServiceType> createItem, params Action<TServiceType>[] actions)
+		public static void ExecuteOnAll<TServiceType>(this ITypeLocatorContainer container, Func<Type, TServiceType> createItem, params Action<TServiceType>[] actions)
 			where TServiceType : ISI.Extensions.TypeLocator.IExecute
 		{
 			foreach (var serviceType in container.GetImplementationTypes<TServiceType>())

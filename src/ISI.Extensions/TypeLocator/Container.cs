@@ -21,20 +21,20 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.TypeLocator
 {
-	public class Container : IContainer
+	public class Container : ITypeLocatorContainer
 	{
 		private static object _localContainerLock { get; } = new();
-		private static IContainer _localContainer { get; set; } = null;
-		public static IContainer LocalContainer => _localContainer ??= BuildLocalContainer();
+		private static ITypeLocatorContainer _localContainer { get; set; } = null;
+		public static ITypeLocatorContainer LocalContainer => _localContainer ??= BuildLocalContainer();
 
-		private static IContainer BuildLocalContainer()
+		private static ITypeLocatorContainer BuildLocalContainer()
 		{
-			lock (_localContainerLock)
+			lock (_localContainerLock) 
 			{
 				if (_localContainer == null)
 				{
 					var localContainer = new Container();
-					localContainer.Build(ISI.Extensions.Assemblies.Container.LocalContainer);
+					localContainer.Build(ISI.Extensions.Assemblies.AssembliesContainer.LocalContainer);
 
 					return localContainer;
 				}
@@ -45,15 +45,15 @@ namespace ISI.Extensions.TypeLocator
 
 		protected Dictionary<Type, List<Type>> ImplementationTypesLookup { get; } = new();
 
-		public IContainer Build(IEnumerable<string> excludeAssemblyFileNames = null, bool includeExes = false)
+		public ITypeLocatorContainer Build(IEnumerable<string> excludeAssemblyFileNames = null, bool includeExes = false)
 		{
-			var assembliesContainer = new ISI.Extensions.Assemblies.Container();
+			var assembliesContainer = new ISI.Extensions.Assemblies.AssembliesContainer();
 			assembliesContainer.Build(excludeAssemblyFileNames, includeExes);
 
 			return Build(assembliesContainer);
 		}
 
-		private IContainer Build(ISI.Extensions.Assemblies.IContainer assembliesContainer)
+		private ITypeLocatorContainer Build(ISI.Extensions.Assemblies.IAssembliesContainer assembliesContainer)
 		{
 			foreach (var type in assembliesContainer.Types)
 			{

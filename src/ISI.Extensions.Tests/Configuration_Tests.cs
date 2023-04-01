@@ -59,7 +59,7 @@ namespace ISI.Extensions.Tests
 		{
 			var valueReader = new ISI.Extensions.ConfigurationValueReaders.NginxFileConfigurationValueReader();
 
-			var xxx = valueReader.GetValue(new ISI.Extensions.ConfigurationValueReaders.ParsedValue(@"nginx:\\E:\Data\Nginx\sites-enabled\build-artifacts.isi-net.com.conf[https://build-artifacts.isi-net.com]"));
+			var xxx = valueReader.GetValue(new ISI.Extensions.ConfigurationValueReaders.ParsedValue(@"nginx:E:\Data\Nginx\sites-enabled\qa-rewardhub.tristarfulfillment.com.conf[http://qa-rewardhub.tristarfulfillment.com]"));
 		}
 	}
 }

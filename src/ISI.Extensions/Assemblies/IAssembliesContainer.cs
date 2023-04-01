@@ -19,10 +19,10 @@ using System.Text;
 
 namespace ISI.Extensions.Assemblies
 {
-	public interface IContainer
+	public interface IAssembliesContainer
 	{
 		System.Reflection.Assembly[] Assemblies { get; }
 		Type[] Types { get; }
-		IContainer Build(IEnumerable<string> excludeAssemblyFileNames = null, bool includedExes = false);
+		IAssembliesContainer Build(IEnumerable<string> excludeAssemblyFileNames = null, bool includedExes = false);
 	}
 }

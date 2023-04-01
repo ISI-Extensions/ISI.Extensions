@@ -19,9 +19,9 @@ using System.Text;
 
 namespace ISI.Extensions.TypeLocator
 {
-	public interface IContainer
+	public interface ITypeLocatorContainer
 	{
-		IContainer Build(IEnumerable<string> excludeAssemblyFileNames = null, bool includedExes = false);
+		ITypeLocatorContainer Build(IEnumerable<string> excludeAssemblyFileNames = null, bool includedExes = false);
 		Type[] GetImplementationTypes(Type type);
 	}
 }

@@ -24,20 +24,14 @@ namespace ISI.Extensions.Repository.SqlServer
 {
 	public abstract partial class RecordManager<TRecord>
 	{
-		public override async IAsyncEnumerable<TRecord> UpsertRecordsAsync(IEnumerable<TRecord> records)
+		public override async Task<IEnumerable<TRecord>> UpsertRecordsAsync(IEnumerable<TRecord> records)
 		{
-			foreach (var record in await PersistConvertedRecordsAsync<TRecord>(records ?? Array.Empty<TRecord>(), PersistenceMethod.Upsert, false, null))
-			{
-				yield return record;
-			}
+			return await PersistConvertedRecordsAsync<TRecord>(records ?? Array.Empty<TRecord>(), PersistenceMethod.Upsert, false, null);
 		}
 
-		public override async IAsyncEnumerable<TRecord> UpsertRecordsAsync(IEnumerable<TRecord> records, Action<TRecord> updateRecordProperties)
+		public override async Task<IEnumerable<TRecord>> UpsertRecordsAsync(IEnumerable<TRecord> records, Action<TRecord> updateRecordProperties)
 		{
-			foreach (var record in await PersistConvertedRecordsAsync<TRecord>(records ?? Array.Empty<TRecord>(), PersistenceMethod.Upsert, false, updateRecordProperties))
-			{
-				yield return record;
-			}
+			return await PersistConvertedRecordsAsync<TRecord>(records ?? Array.Empty<TRecord>(), PersistenceMethod.Upsert, false, updateRecordProperties);
 		}
 	}
 }

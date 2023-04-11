@@ -24,12 +24,9 @@ namespace ISI.Extensions.Repository
 {
 	public abstract partial class RecordManager<TRecord>
 	{
-		public virtual async IAsyncEnumerable<TRecord> UpsertRecordsAsync(IEnumerable<TRecord> records)
+		public virtual async Task<IEnumerable<TRecord>> UpsertRecordsAsync(IEnumerable<TRecord> records)
 		{
-			await foreach (var record in UpsertRecordsAsync(records, null))
-			{
-				yield return await UpsertRecordAsync(record);
-			}
+			return await UpsertRecordsAsync(records, null);
 		}
 
 		public virtual async Task<TRecord> UpsertRecordAsync(TRecord record)
@@ -42,22 +39,21 @@ namespace ISI.Extensions.Repository
 
 
 
-		public virtual async IAsyncEnumerable<TRecord> UpsertRecordsAsync(IEnumerable<TRecord> records, Action<TRecord> updateRecordProperties)
+		public virtual async Task<IEnumerable<TRecord>> UpsertRecordsAsync(IEnumerable<TRecord> records, Action<TRecord> updateRecordProperties)
 		{
 			foreach (var record in records ?? Array.Empty<TRecord>())
 			{
-				yield return await UpsertRecordAsync(record, updateRecordProperties);
+				await UpsertRecordAsync(record, updateRecordProperties);
 			}
+
+			return records;
 		}
 
 		public virtual async Task<TRecord> UpsertRecordAsync(TRecord record, Action<TRecord> updateRecordProperties)
 		{
-			await foreach (var upsertedRecord in UpsertRecordsAsync((record == null ? Array.Empty<TRecord>() : new[] {record})))
-			{
-				return upsertedRecord;
-			}
+			var records = await UpsertRecordsAsync(new[] { record }, updateRecordProperties);
 
-			return null;
+			return records.NullCheckedFirstOrDefault();
 		}
 	}
 }

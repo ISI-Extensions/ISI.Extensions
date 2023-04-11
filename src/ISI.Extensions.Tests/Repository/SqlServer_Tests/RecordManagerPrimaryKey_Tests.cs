@@ -77,7 +77,7 @@ namespace ISI.Extensions.Tests.Repository
 
 			}
 
-			public async IAsyncEnumerable<Contact> FindRecordsByFirstNameAsync(IEnumerable<string> firstNames, int skip = 0, int take = -1)
+			public async Task<IEnumerable<Contact>> FindRecordsByFirstNameAsync(IEnumerable<string> firstNames, int skip = 0, int take = -1)
 			{
 				var filters = new ISI.Extensions.Repository.RecordWhereColumnCollection<Contact>();
 
@@ -85,10 +85,7 @@ namespace ISI.Extensions.Tests.Repository
 
 				var whereClause = GenerateWhereClause(filters);
 
-				await foreach (var record in FindRecordsAsync(whereClause))
-				{
-					yield return record;
-				}
+				return await FindRecordsAsync(whereClause);
 			}
 		}
 
@@ -175,7 +172,7 @@ namespace ISI.Extensions.Tests.Repository
 
 			}
 
-			public async IAsyncEnumerable<NupkgRecord> GetRecordsAsync(IEnumerable<NupkgKey> nupkgKeys, int skip = 0, int take = -1)
+			public async Task<IEnumerable<NupkgRecord>> GetRecordsAsync(IEnumerable<NupkgKey> nupkgKeys, int skip = 0, int take = -1)
 			{
 				var filters = new ISI.Extensions.Repository.RecordWhereColumnCollection<NupkgRecord>(ISI.Extensions.Repository.WhereClauseOperator.Or);
 
@@ -192,13 +189,10 @@ namespace ISI.Extensions.Tests.Repository
 
 				var whereClause = GenerateWhereClause(filters);
 
-				await foreach (var record in FindRecordsAsync(whereClause))
-				{
-					yield return record;
-				}
+				return await FindRecordsAsync(whereClause);
 			}
 
-			public async IAsyncEnumerable<NupkgRecord> FindRecordsAsync(IEnumerable<string> packages, IEnumerable<string> packagePrefixes, IEnumerable<Guid> commitUuids, bool isActiveVersionOnly)
+			public async Task<IEnumerable<NupkgRecord>> FindRecordsAsync(IEnumerable<string> packages, IEnumerable<string> packagePrefixes, IEnumerable<Guid> commitUuids, bool isActiveVersionOnly)
 			{
 				var filters = new ISI.Extensions.Repository.RecordWhereColumnCollection<NupkgRecord>();
 
@@ -225,10 +219,7 @@ namespace ISI.Extensions.Tests.Repository
 
 				var whereClause = GenerateWhereClause(filters);
 
-				await foreach (var record in FindRecordsAsync(whereClause))
-				{
-					yield return record;
-				}
+				return await FindRecordsAsync(whereClause);
 			}
 		}
 
@@ -271,7 +262,7 @@ namespace ISI.Extensions.Tests.Repository
 					Package = "ISI.Extensions.VisualStudio",
 					Version = "10.0.8464.5254",
 				}
-			}).ToEnumerable().NullCheckedFirstOrDefault();
+			}).GetAwaiter().GetResult().NullCheckedFirstOrDefault();
 
 			Assert.AreEqual(testContact.Package, "ISI.Extensions.VisualStudio");
 			Assert.AreEqual(testContact.Version, "10.0.8464.5254");
@@ -306,7 +297,7 @@ namespace ISI.Extensions.Tests.Repository
 
 			Assert.AreEqual(contact.ContactUuid, testContact.ContactUuid);
 
-			var noContacts = recordManager.GetRecordsAsync(Array.Empty<Guid>()).ToEnumerable();
+			var noContacts = recordManager.GetRecordsAsync(Array.Empty<Guid>()).GetAwaiter().GetResult();
 
 			Assert.True(noContacts != null);
 
@@ -330,11 +321,11 @@ namespace ISI.Extensions.Tests.Repository
 
 			recordManager.InsertRecordAsync(contact).GetAwaiter().GetResult();
 
-			var testContact = recordManager.FindRecordsByFirstNameAsync(new[] { firstName }).ToEnumerable().NullCheckedFirstOrDefault();
+			var testContact = recordManager.FindRecordsByFirstNameAsync(new[] { firstName }).GetAwaiter().GetResult().NullCheckedFirstOrDefault();
 
 			Assert.AreEqual(contact.ContactUuid, testContact.ContactUuid);
 
-			var noContacts = recordManager.GetRecordsAsync(Array.Empty<Guid>()).ToEnumerable();
+			var noContacts = recordManager.GetRecordsAsync(Array.Empty<Guid>()).GetAwaiter().GetResult();
 
 			Assert.True(noContacts != null);
 
@@ -357,7 +348,7 @@ namespace ISI.Extensions.Tests.Repository
 
 			recordManager.InsertRecordAsync(null).GetAwaiter().GetResult();
 
-			recordManager.InsertRecordsAsync(null).ToEnumerable();
+			recordManager.InsertRecordsAsync(null).GetAwaiter().GetResult();
 		}
 
 		[Test]
@@ -383,7 +374,7 @@ namespace ISI.Extensions.Tests.Repository
 		{
 			var recordManager = new ContactRecordManager(Configuration, Logger, DateTimeStamper, Serializer, ConnectionString);
 
-			foreach (var record in recordManager.ListRecordsAsync().ToEnumerable())
+			foreach (var record in recordManager.ListRecordsAsync().GetAwaiter().GetResult())
 			{
 				Console.WriteLine($"{record.FirstName} {record.LastName}");
 			}

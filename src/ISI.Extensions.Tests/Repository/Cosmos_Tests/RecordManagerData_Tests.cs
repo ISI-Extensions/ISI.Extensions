@@ -85,7 +85,7 @@ namespace ISI.Extensions.Tests.Repository
 
 			Assert.AreEqual(contactV1.ContactUuid, testContact.ContactUuid);
 
-			var noContacts = recordManager.GetRecordsAsync(Array.Empty<Guid>()).ToEnumerable();
+			var noContacts = recordManager.GetRecordsAsync(Array.Empty<Guid>()).GetAwaiter().GetResult();
 
 			Assert.True(noContacts != null);
 
@@ -125,7 +125,7 @@ namespace ISI.Extensions.Tests.Repository
 
 			Assert.AreEqual(contactV2.ContactUuid, testContact.ContactUuid);
 
-			var noContacts = recordManager.GetRecordsAsync(Array.Empty<Guid>()).ToEnumerable();
+			var noContacts = recordManager.GetRecordsAsync(Array.Empty<Guid>()).GetAwaiter().GetResult();
 
 			Assert.True(noContacts != null);
 
@@ -148,7 +148,7 @@ namespace ISI.Extensions.Tests.Repository
 
 			recordManager.InsertRecordAsync(null).GetAwaiter().GetResult();
 
-			recordManager.InsertRecordsAsync(null).ToEnumerable();
+			recordManager.InsertRecordsAsync(null).GetAwaiter().GetResult();
 		}
 
 		[Test]
@@ -174,7 +174,7 @@ namespace ISI.Extensions.Tests.Repository
 		{
 			var recordManager = new ContactWithDataRecordManager(Configuration, Logger, DateTimeStamper, Serializer, ConnectionString);
 
-			foreach (var record in recordManager.ListRecordsAsync().ToEnumerable())
+			foreach (var record in recordManager.ListRecordsAsync().GetAwaiter().GetResult())
 			{
 				Console.WriteLine($"{record.FirstName} {record.LastName}");
 			}

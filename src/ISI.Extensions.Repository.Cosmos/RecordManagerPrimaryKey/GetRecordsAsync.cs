@@ -25,46 +25,25 @@ namespace ISI.Extensions.Repository.Cosmos
 {
 	public abstract partial class RecordManagerPrimaryKey<TRecord, TRecordPrimaryKey>
 	{
-		public virtual async IAsyncEnumerable<TRecord> GetRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, int skip = 0, int take = -1)
+		public virtual async Task<IEnumerable<TRecord>> GetRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, int skip = 0, int take = -1)
 		{
-			//var ids = new HashSet<string>(primaryKeyValues.Select(primaryKeyValue => primaryKeyValue.ToString()));
-
-			//var primaryKeyGetValue = RecordDescription.Description<TRecord>().PropertyDescriptions.First().GetValue;
-			//var query = GetClient().CreateDocumentQuery<TRecord>(
-			//		Microsoft.Azure.Documents.Client.UriFactory.CreateDocumentCollectionUri(DatabaseName, TableName),
-			//		new Microsoft.Azure.Documents.Client.FeedOptions { MaxItemCount = -1 })
-			//	.Where(record =>
-			//	{
-			//	})
-			//	.AsDocumentQuery();
-
-			//while (query.HasMoreResults)
-			//{
-			//	var records = await query.ExecuteNextAsync<TRecord>();
-
-			//	foreach (var record in records)
-			//	{
-			//		yield return record;
-			//	}
-			//}
-
-
-			foreach (var primaryKeyValue in primaryKeyValues)
+			if (primaryKeyValues.NullCheckedAny())
 			{
-				yield return await GetRecordAsync(primaryKeyValue);
+				var records = new List<TRecord>();
+
+				foreach (var primaryKeyValue in primaryKeyValues)
+				{
+					records.Add(await GetRecordAsync(primaryKeyValue));
+				}
+
+				return records;
 			}
 
+			return Array.Empty<TRecord>();
 		}
 
 		public virtual async Task<TRecord> GetRecordAsync(TRecordPrimaryKey primaryKeyValue)
 		{
-			//await foreach (var record in GetRecordsAsync(new[] { primaryKeyValue }))
-			//{
-			//	return record;
-			//}
-
-			//return null;
-
 			Microsoft.Azure.Documents.Document document = await GetClient().ReadDocumentAsync(Microsoft.Azure.Documents.Client.UriFactory.CreateDocumentUri(DatabaseName, TableName, primaryKeyValue.ToString()));
 
 			using (var stream = new System.IO.MemoryStream())

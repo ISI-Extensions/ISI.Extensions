@@ -24,22 +24,21 @@ namespace ISI.Extensions.Repository
 {
 	public abstract partial class RecordManager<TRecord>
 	{
-		public virtual async IAsyncEnumerable<TRecord> InsertRecordsAsync(IEnumerable<TRecord> records)
+		public virtual async Task<IEnumerable<TRecord>> InsertRecordsAsync(IEnumerable<TRecord> records)
 		{
 			foreach (var record in records ?? Array.Empty<TRecord>())
 			{
-				yield return await InsertRecordAsync(record);
+				await InsertRecordAsync(record);
 			}
+
+			return records;
 		}
 
 		public virtual async Task<TRecord> InsertRecordAsync(TRecord record)
 		{
-			await foreach (var insertedRecord in InsertRecordsAsync((record == null ? Array.Empty<TRecord>() : new[] {record})))
-			{
-				return insertedRecord;
-			}
+			var records = await InsertRecordsAsync(new[] { record });
 
-			return null;
+			return records.NullCheckedFirstOrDefault();
 		}
 	}
 }

@@ -24,24 +24,18 @@ namespace ISI.Extensions.Repository.SqlServer
 {
 	public abstract partial class RecordManagerPrimaryKey<TRecord, TRecordPrimaryKey>
 	{
-		public virtual async IAsyncEnumerable<TRecord> GetRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, int skip = 0, int take = -1)
+		public virtual async Task<IEnumerable<TRecord>> GetRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, int skip = 0, int take = -1)
 		{
 			var whereClause = GeneratePrimaryKeyWhereClause(primaryKeyValues);
 
-			await foreach (var record in FindRecordsAsync(whereClause, null, skip, take))
-			{
-				yield return record;
-			}
+			return await FindRecordsAsync(whereClause, null, skip, take);
 		}
 
 		public virtual async Task<TRecord> GetRecordAsync(TRecordPrimaryKey primaryKeyValue)
 		{
-			await foreach (var record in GetRecordsAsync(new[] { primaryKeyValue }))
-			{
-				return record;
-			}
+			var records = await GetRecordsAsync(new[] { primaryKeyValue });
 
-			return null;
+			return records.NullCheckedFirstOrDefault();
 		}
 	}
 }

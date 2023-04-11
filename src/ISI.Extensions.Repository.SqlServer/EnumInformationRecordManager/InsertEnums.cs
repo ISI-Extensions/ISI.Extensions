@@ -26,10 +26,7 @@ namespace ISI.Extensions.Repository.SqlServer
 	{
 		public async Task UpsertEnumsAsync(IEnumerable<EnumInformationRecord> records)
 		{
-			await foreach (var record in UpsertRecordsAsync(records).ConfigureAwait(false))
-			{
-
-			}
+			await UpsertRecordsAsync(records);
 		}
 	}
 }

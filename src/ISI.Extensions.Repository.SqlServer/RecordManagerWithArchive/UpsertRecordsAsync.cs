@@ -24,20 +24,14 @@ namespace ISI.Extensions.Repository.SqlServer
 {
 	public abstract partial class RecordManagerWithArchive<TRecord>
 	{
-		public override async IAsyncEnumerable<TRecord> UpsertRecordsAsync(IEnumerable<TRecord> records)
+		public override async Task<IEnumerable<TRecord>> UpsertRecordsAsync(IEnumerable<TRecord> records)
 		{
-			foreach (var record in await PersistConvertedRecordsAsync<TRecord>(records ?? Array.Empty<TRecord>(), PersistenceMethod.Upsert, true, null, null, record => record, convertedRecord => convertedRecord, record => record.ArchiveDateTime))
-			{
-				yield return record;
-			}
+			return await PersistConvertedRecordsAsync<TRecord>(records ?? Array.Empty<TRecord>(), PersistenceMethod.Upsert, true, null, null, record => record, convertedRecord => convertedRecord, record => record.ArchiveDateTime);
 		}
 
-		public override async IAsyncEnumerable<TRecord> UpsertRecordsAsync(IEnumerable<TRecord> records, Action<TRecord> updateRecordProperties)
+		public override async Task<IEnumerable<TRecord>> UpsertRecordsAsync(IEnumerable<TRecord> records, Action<TRecord> updateRecordProperties)
 		{
-			foreach (var record in await PersistConvertedRecordsAsync<TRecord>(records ?? Array.Empty<TRecord>(), PersistenceMethod.Upsert, true, updateRecordProperties, null, record => record, convertedRecord => convertedRecord, record => record.ArchiveDateTime))
-			{
-				yield return record;
-			}
+			return await PersistConvertedRecordsAsync<TRecord>(records ?? Array.Empty<TRecord>(), PersistenceMethod.Upsert, true, updateRecordProperties, null, record => record, convertedRecord => convertedRecord, record => record.ArchiveDateTime);
 		}
 	}
 }

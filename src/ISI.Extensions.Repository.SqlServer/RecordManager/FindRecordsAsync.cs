@@ -25,45 +25,33 @@ namespace ISI.Extensions.Repository.SqlServer
 {
 	public abstract partial class RecordManager<TRecord>
 	{
-		protected virtual async IAsyncEnumerable<TRecord> FindRecordsAsync(IWhereClause whereClause, IOrderByClause orderByClause = null, int skip = 0, int take = -1, int? commandTimeout = null)
+		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(IWhereClause whereClause, IOrderByClause orderByClause = null, int skip = 0, int take = -1, int? commandTimeout = null)
 		{
 			using (var connection = GetSqlConnection())
 			{
-				await foreach (var record in FindRecordsAsync(connection, whereClause, orderByClause, skip, take, commandTimeout))
-				{
-					yield return record;
-				}
+				return await FindRecordsAsync(connection, whereClause, orderByClause, skip, take, commandTimeout);
 			}
 		}
 
-		protected virtual async IAsyncEnumerable<TRecord> FindRecordsAsync(string fromClause, IWhereClause whereClause, IOrderByClause orderByClause = null, int skip = 0, int take = -1, int? commandTimeout = null)
+		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(string fromClause, IWhereClause whereClause, IOrderByClause orderByClause = null, int skip = 0, int take = -1, int? commandTimeout = null)
 		{
 			using (var connection = GetSqlConnection())
 			{
-				await foreach (var record in FindRecordsAsync(connection, fromClause, whereClause, orderByClause, skip, take, commandTimeout))
-				{
-					yield return record;
-				}
+				return await FindRecordsAsync(connection, fromClause, whereClause, orderByClause, skip, take, commandTimeout);
 			}
 		}
 
-		protected virtual async IAsyncEnumerable<TRecord> FindRecordsAsync(Microsoft.Data.SqlClient.SqlConnection connection, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take, int? commandTimeout = null)
+		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(Microsoft.Data.SqlClient.SqlConnection connection, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take, int? commandTimeout = null)
 		{
-			await foreach (var record in FindRecordsAsync(connection, GetFromClause(), whereClause, orderByClause, skip, take, commandTimeout))
-			{
-				yield return record;
-			}
+			return await FindRecordsAsync(connection, GetFromClause(), whereClause, orderByClause, skip, take, commandTimeout);
 		}
 
-		protected virtual async IAsyncEnumerable<TRecord> FindRecordsAsync(Microsoft.Data.SqlClient.SqlConnection connection, string fromClause, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take, int? commandTimeout = null)
+		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(Microsoft.Data.SqlClient.SqlConnection connection, string fromClause, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take, int? commandTimeout = null)
 		{
-			await foreach (var record in FindRecordsAsync(connection, null, fromClause, whereClause, orderByClause, skip, take, commandTimeout))
-			{
-				yield return record;
-			}
+			return await FindRecordsAsync(connection, null, fromClause, whereClause, orderByClause, skip, take, commandTimeout);
 		}
 
-		protected virtual async IAsyncEnumerable<TRecord> FindRecordsAsync(Microsoft.Data.SqlClient.SqlConnection connection, ISelectClause selectClause, string fromClause, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take, int? commandTimeout = null)
+		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(Microsoft.Data.SqlClient.SqlConnection connection, ISelectClause selectClause, string fromClause, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take, int? commandTimeout = null)
 		{
 			var sql = new StringBuilder();
 
@@ -188,39 +176,36 @@ namespace ISI.Extensions.Repository.SqlServer
 					}
 				}
 
-				await foreach (var record in FindRecordsAsync(connection, sql.ToString(), (whereClause as IWhereClauseWithGetParameters)?.GetParameters(), commandTimeout))
-				{
-					yield return record;
-				}
+				var records = await FindRecordsAsync(connection, sql.ToString(), (whereClause as IWhereClauseWithGetParameters)?.GetParameters(), commandTimeout);
 
 				sqlConnectionWhereClause?.Finalize(connection, sqlServerCapabilities);
+
+				return records;
 			}
+
+			return Array.Empty<TRecord>();
 		}
 
-		protected virtual async IAsyncEnumerable<TRecord> FindRecordsAsync(string sql, IDictionary<string, object> parameters)
+		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(string sql, IDictionary<string, object> parameters)
 		{
 			using (var connection = GetSqlConnection())
 			{
-				await foreach (var record in FindRecordsAsync(connection, sql, parameters, null))
-				{
-					yield return record;
-				}
+				return await FindRecordsAsync(connection, sql, parameters, null);
 			}
 		}
 
-		protected virtual async IAsyncEnumerable<TRecord> FindRecordsAsync(string sql, IDictionary<string, object> parameters, int commandTimeout)
+		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(string sql, IDictionary<string, object> parameters, int commandTimeout)
 		{
 			using (var connection = GetSqlConnection())
 			{
-				await foreach (var record in FindRecordsAsync(connection, sql, parameters, commandTimeout))
-				{
-					yield return record;
-				}
+				return await FindRecordsAsync(connection, sql, parameters, commandTimeout);
 			}
 		}
 
-		protected virtual async IAsyncEnumerable<TRecord> FindRecordsAsync(Microsoft.Data.SqlClient.SqlConnection connection, string sql, IDictionary<string, object> parameters, int? commandTimeout = null)
+		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(Microsoft.Data.SqlClient.SqlConnection connection, string sql, IDictionary<string, object> parameters, int? commandTimeout = null)
 		{
+			var records = new List<TRecord>();
+
 			await connection.EnsureConnectionIsOpenAsync();
 
 			using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql, connection))
@@ -237,10 +222,12 @@ namespace ISI.Extensions.Repository.SqlServer
 
 					while (await dataReader.ReadAsync())
 					{
-						yield return reader(dataReader);
+						records.Add(reader(dataReader));
 					}
 				}
 			}
+
+			return records;
 		}
 	}
 }

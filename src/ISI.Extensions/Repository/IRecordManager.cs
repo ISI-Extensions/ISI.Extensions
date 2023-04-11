@@ -30,10 +30,10 @@ namespace ISI.Extensions.Repository
 	public interface IRecordManager<TRecord> : IRecordManager
 		where TRecord : class, IRecordManagerRecord, new()
 	{
-		IAsyncEnumerable<TRecord> InsertRecordsAsync(IEnumerable<TRecord> records);
+		Task<IEnumerable<TRecord>> InsertRecordsAsync(IEnumerable<TRecord> records);
 		Task<TRecord> InsertRecordAsync(TRecord record);
 
-		IAsyncEnumerable<TRecord> UpsertRecordsAsync(IEnumerable<TRecord> records);
+		Task<IEnumerable<TRecord>> UpsertRecordsAsync(IEnumerable<TRecord> records);
 		Task<TRecord> UpsertRecordAsync(TRecord record);
 
 		Task<int> UpdateRecordsAsync(IEnumerable<TRecord> records);
@@ -45,7 +45,7 @@ namespace ISI.Extensions.Repository
 	public interface IRecordManagerPrimaryKey<TRecord, TRecordPrimaryKey> : IRecordManager<TRecord>
 		where TRecord : class, IRecordManagerPrimaryKeyRecord<TRecordPrimaryKey>, new()
 	{
-		IAsyncEnumerable<TRecord> GetRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, int skip = 0, int take = -1);
+		Task<IEnumerable<TRecord>> GetRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, int skip = 0, int take = -1);
 		Task<TRecord> GetRecordAsync(TRecordPrimaryKey primaryKeyValue);
 
 		Task<int> UpdateRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, SetRecordColumnCollection<TRecord> setRecordColumns);

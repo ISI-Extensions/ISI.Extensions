@@ -45,6 +45,7 @@ namespace ISI.Extensions
 				new("{TempDirectory}", FileNameMask.FileNameMaskType.StringReplacement, System.IO.Path.GetTempPath, "Temp Directory"),
 				new("{PathRoot}", FileNameMask.FileNameMaskType.StringReplacement, ISI.Extensions.IO.Path.PathRoot, "PathRoot Directory"),
 				new("{DataRoot}", FileNameMask.FileNameMaskType.StringReplacement, ISI.Extensions.IO.Path.DataRoot, "DataRoot Directory"),
+				new("{MachineName}", FileNameMask.FileNameMaskType.StringReplacement, System.Environment.MachineName.ToLower(), "MachineName"),
 			};
 
 			public static string GetFileNameDeMasked(string fileName, ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper = null)

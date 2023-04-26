@@ -56,7 +56,7 @@ namespace ISI.Extensions.ConfigurationValueReaders
 					return value;
 				}
 
-				var fileName = CheckForRedirectFileName(parsedValue.Key);
+				var fileName = CheckForRedirectFileName(ISI.Extensions.IO.Path.GetFileNameDeMasked(parsedValue.Key));
 
 				if (System.IO.File.Exists(fileName))
 				{

@@ -97,7 +97,9 @@ namespace ISI.Extensions.ConfigurationValueReaders
 
 			if (valueByKey != null)
 			{
-				if (valueByKey.TryGetValue(parsedValue.KeyIndex, out var value))
+				var keyIndex = parsedValue.KeyIndex.Replace("{MachineName}", System.Environment.MachineName.ToLower(), StringComparer.InvariantCultureIgnoreCase);
+
+				if (valueByKey.TryGetValue(keyIndex, out var value))
 				{
 					return value;
 				}

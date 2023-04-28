@@ -19,7 +19,7 @@ using System.Text;
 
 namespace ISI.Extensions.Caching
 {
-	public sealed class CacheKeyWithInstanceUuid : IHasCacheKey, IHasCacheKeyInstanceUuid
+	public sealed class CacheKeyWithInstanceUuid : IHasCacheKeyWithInstanceUuid
 	{
 		public string CacheKey { get; }
 		public Guid CacheKeyInstanceUuid { get; }

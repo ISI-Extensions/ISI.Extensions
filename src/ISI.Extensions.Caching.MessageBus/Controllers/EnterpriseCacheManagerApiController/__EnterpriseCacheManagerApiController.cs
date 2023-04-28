@@ -24,6 +24,7 @@ using MESSAGEBUS = ISI.Caching.MessageBus.v1;
 
 namespace ISI.Extensions.Caching.MessageBus.Controllers
 {
+	[ISI.Extensions.MessageBus.MessageBusController]
 	public partial class EnterpriseCacheManagerApiController
 	{
 		protected ISI.Extensions.Caching.Configuration Configuration { get; }

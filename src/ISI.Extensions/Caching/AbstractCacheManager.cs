@@ -127,7 +127,7 @@ namespace ISI.Extensions.Caching
 				{
 					if (item is ISI.Extensions.Caching.IHasCacheKeyInstanceUuid hasCacheKeyInstanceUuid)
 					{
-						if (hasCacheKeyInstanceUuid.CacheKeyInstanceUuid == cacheKeyWithCacheKeyInstanceUuid.CacheKeyInstanceUuid)
+						if (hasCacheKeyInstanceUuid.CacheKeyInstanceUuid != cacheKeyWithCacheKeyInstanceUuid.CacheKeyInstanceUuid)
 						{
 							Remove(cacheKeyWithCacheKeyInstanceUuid.CacheKey);
 						}

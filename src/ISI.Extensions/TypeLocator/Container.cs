@@ -53,7 +53,7 @@ namespace ISI.Extensions.TypeLocator
 			return Build(assembliesContainer);
 		}
 
-		private ITypeLocatorContainer Build(ISI.Extensions.Assemblies.IAssembliesContainer assembliesContainer)
+		internal ITypeLocatorContainer Build(ISI.Extensions.Assemblies.IAssembliesContainer assembliesContainer)
 		{
 			foreach (var type in assembliesContainer.Types)
 			{

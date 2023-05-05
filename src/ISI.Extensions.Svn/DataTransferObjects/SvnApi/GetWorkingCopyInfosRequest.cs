@@ -27,6 +27,7 @@ namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 		public string Password { get; set; }
 
 		public string Source { get; set; }
-		public Depth Depth { get; set; }	
+		public Depth Depth { get; set; }
+		public bool IncludeExternals { get; set; }
 	}
 }

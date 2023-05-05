@@ -38,9 +38,9 @@ namespace ISI.Extensions.Tests
 			svnApi.TagAndNote(new()
 			{
 				WorkingCopyDirectory = @"F:\ISI\Internal Projects\ISI.WebApplication",
-				Version = string.Format("4.1.{0}", buildRevision),
+				TagName = string.Format("4.1.{0} ({1:yyyyMMdd.HHmmss})", buildRevision, buildDateTimeStamp),
 				DateTimeStamp = buildDateTimeStamp,
-				TryGetExternalVersion = (string externalPath, out string externalVersion) =>
+				TryGetExternalTagName = (string externalPath, out string externalTagName) =>
 				{
 					var externalPathPieces = externalPath.Split(new[] { '/' }).ToList();
 					while (string.Equals(externalPathPieces.Last(), "trunk", StringComparison.InvariantCultureIgnoreCase))
@@ -51,16 +51,16 @@ namespace ISI.Extensions.Tests
 					switch (externalPathPieces.Last())
 					{
 						case "ISI.Extensions":
-							externalVersion = string.Format("1.1.{0}", buildRevision);
+							externalTagName = string.Format("1.1.{0} ({1:yyyyMMdd.HHmmss})", buildRevision, buildDateTimeStamp);
 							return true;
 
 						case "ISI.CMS":
-							externalVersion = string.Format("1.2.{0}", buildRevision);
+							externalTagName = string.Format("1.2.{0} ({1:yyyyMMdd.HHmmss})", buildRevision, buildDateTimeStamp);
 							return true;
 
 					}
 
-					externalVersion = string.Empty;
+					externalTagName = string.Empty;
 					return false;
 				},
 			});

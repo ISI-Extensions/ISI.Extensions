@@ -25,17 +25,17 @@ namespace ISI.Extensions.Svn
 {
 	public partial class SvnApi
 	{
-		private string GetTagsUrl(Uri uri, string version, DateTime dateTimeStamp, string dateTimeMask)
+		private string GetTagsUrl(Uri uri, string tagName, DateTime dateTimeStamp, string dateTimeMask)
 		{
 			if (uri != null)
 			{
-				return GetTagsUrl(uri.ToString(), version, dateTimeStamp, dateTimeMask);
+				return GetTagsUrl(uri.ToString(), tagName, dateTimeStamp, dateTimeMask);
 			}
 
 			return string.Empty;
 		}
 
-		private string GetTagsUrl(string url, string version, DateTime dateTimeStamp, string dateTimeMask)
+		private string GetTagsUrl(string url, string tagName, DateTime dateTimeStamp, string dateTimeMask)
 		{
 			if (string.IsNullOrWhiteSpace(url))
 			{
@@ -56,7 +56,7 @@ namespace ISI.Extensions.Svn
 			}
 
 			pathPieces.Add("tags");
-			pathPieces.Add(string.Format("{0}{1}", dateTimeStamp.ToString(dateTimeMask), version));
+			pathPieces.Add(string.Format("{0}{1}", dateTimeStamp.ToString(dateTimeMask), tagName));
 
 			uri.Path = string.Join("/", pathPieces);
 

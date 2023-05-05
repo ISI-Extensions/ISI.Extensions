@@ -50,6 +50,11 @@ namespace ISI.Extensions.Svn
 					break;
 			}
 
+			if (request.IncludeExternals)
+			{
+				arguments.Add("--include-externals");
+			}
+
 			AddCredentials(arguments, request);
 
 			var content = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()

@@ -39,6 +39,7 @@ namespace ISI.Extensions.Svn
 				Password = request.Password,
 				Source = request.WorkingCopyDirectory,
 				Depth = Depth.Infinity,
+				IncludeExternals = true,
 			}).Infos.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 			var workingCopyDirectory = request.WorkingCopyDirectory.TrimEnd('\\', '/');
@@ -56,7 +57,7 @@ namespace ISI.Extensions.Svn
 				{
 					Logger.LogInformation(string.Format("  trunkUrl=\"{0}\"", trunkUrl));
 
-					var tagsUrl = GetTagsUrl(trunkUrl, request.Version, request.DateTimeStamp, request.DateTimeMask);
+					var tagsUrl = GetTagsUrl(trunkUrl, request.TagName, request.DateTimeStamp, request.DateTimeMask);
 
 					if (!string.IsNullOrEmpty(tagsUrl))
 					{
@@ -70,14 +71,14 @@ namespace ISI.Extensions.Svn
 							Password = request.Password,
 							SourceUrl = trunkUrl,
 							TargetUrl = tagsUrl,
-							LogMessage = string.Format("Version: {0}\nDateTimeStamp: {1}", request.Version, request.DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise)),
+							LogMessage = string.Format("Version: {0}\nDateTimeStamp: {1}", request.TagName, request.DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise)),
 							CreateParents = true,
 						});
 
 						Logger.LogInformation("  trunk svn tag done");
 
 						Logger.LogInformation(string.Format("  TagsUrl=\"{0}\"", tagsUrl));
-						Logger.LogInformation(string.Format("  Version=\"{0}\"", request.Version));
+						Logger.LogInformation(string.Format("  Version=\"{0}\"", request.TagName));
 						Logger.LogInformation(string.Format("  DateTimeStamp=\"{0}\"", request.DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise)));
 
 						var propertySets = GetProperties(new()
@@ -90,9 +91,9 @@ namespace ISI.Extensions.Svn
 
 						var setPropertyRequests = new List<DTOs.SetRemotePropertyRequest>();
 
-						request.TryGetExternalVersion ??= (string path, out string version) =>
+						request.TryGetExternalTagName ??= (string path, out string tagName) =>
 						{
-							version = string.Empty;
+							tagName = string.Empty;
 							return false;
 						};
 
@@ -147,11 +148,11 @@ namespace ISI.Extensions.Svn
 
 									Logger.LogInformation(string.Format("      testing=\"{0}\"", uri.ToLower()));
 
-									if (request.TryGetExternalVersion(uri, out var externalVersion))
+									if (request.TryGetExternalTagName(uri, out var externalTagName))
 									{
 										var externalTrunkUri = new Uri(GetRemoteUrl(System.IO.Path.Combine(propertySet.Path, directory)));
 										var externalTrunkUrl = GetTrunkUrl(externalTrunkUri);
-										var externalTagsUrl = GetTagsUrl(externalTrunkUri, externalVersion, request.DateTimeStamp, request.DateTimeMask);
+										var externalTagsUrl = GetTagsUrl(externalTrunkUri, externalTagName, request.DateTimeStamp, request.DateTimeMask);
 
 										var trunkUri = new Uri(GetRemoteUrl(propertySet.Path));
 
@@ -163,7 +164,7 @@ namespace ISI.Extensions.Svn
 											Password = request.Password,
 											SourceUrl = externalTrunkUrl,
 											TargetUrl = externalTagsUrl,
-											LogMessage = string.Format("Version: {0}\nDateTimeStamp: {1}", externalVersion, request.DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise)),
+											LogMessage = string.Format("Version: {0}\nDateTimeStamp: {1}", externalTagName, request.DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise)),
 											CreateParents = true,
 										});
 

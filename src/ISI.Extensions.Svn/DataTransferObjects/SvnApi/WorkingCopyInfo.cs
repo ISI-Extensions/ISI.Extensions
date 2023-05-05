@@ -33,5 +33,7 @@ namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 		public string LastChangeAuthor { get; set; }
 		public long LastChangeRevision { get; set; }
 		public DateTime LastChangeTime { get; set; }
+
+		public override string ToString() => Path;
 	}
 }

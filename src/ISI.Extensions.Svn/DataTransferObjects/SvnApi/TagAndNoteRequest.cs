@@ -21,15 +21,17 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Svn.DataTransferObjects.SvnApi
 {
+	public delegate bool TryGetExternalTagName(string externalPath, out string externalTagName);
+
 	public class TagAndNoteRequest : ICredentials
 	{
 		public string UserName { get; set; }
 		public string Password { get; set; }
 
 		public string WorkingCopyDirectory { get; set; }
-		public string Version { get; set; }
+		public string TagName { get; set; }
 		public DateTime DateTimeStamp { get; set; }
 		public string DateTimeMask { get; set; } = "yyyy/MM/";
-		public TryGetExternalVersion TryGetExternalVersion { get; set; }
+		public TryGetExternalTagName TryGetExternalTagName { get; set; }
 	}
 }

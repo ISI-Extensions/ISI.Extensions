@@ -51,6 +51,7 @@ namespace ISI.Extensions.ConfigurationValueReaders
 							var scheme = (string)null;
 							var host = (string)null;
 							var port = 0;
+							var location = "/";
 							foreach (var line in lines)
 							{
 								if (line.IndexOf(" listen ", StringComparison.InvariantCultureIgnoreCase) >= 0)
@@ -66,13 +67,21 @@ namespace ISI.Extensions.ConfigurationValueReaders
 									host = line.Replace(" server_name ", string.Empty, StringComparer.InvariantCultureIgnoreCase).Trim(' ', ';');
 								}
 
+								if (line.IndexOf(" location ", StringComparison.InvariantCultureIgnoreCase) >= 0)
+								{
+									location = line.Replace(" location ", string.Empty, StringComparer.InvariantCultureIgnoreCase).Trim(' ', ';', '{');
+								}
+
 								if (line.IndexOf(" proxy_pass ", StringComparison.InvariantCultureIgnoreCase) >= 0)
 								{
 									var proxyHost = line.Replace(" proxy_pass ", string.Empty, StringComparer.InvariantCultureIgnoreCase).Trim(' ', ';');
 
 									if (!string.IsNullOrWhiteSpace(scheme) && !string.IsNullOrWhiteSpace(host))
 									{
-										var uri = new UriBuilder(scheme, host, port);
+										var uri = new UriBuilder(scheme, host, port)
+										{
+											Path = location,
+										};
 
 										foreach (var key in new[] { uri.ToString(), uri.ToString().Trim('/'), uri.Uri.ToString(), uri.Uri.ToString().Trim('/') })
 										{

@@ -80,6 +80,20 @@ namespace ISI.Extensions.Repository
 			});
 		}
 
+		public void Add<TProperty, TEntity>(Expression<Func<TRecord, TProperty>> property, WhereClauseStringComparisonOperator comparisonOperator, string value)
+			where TProperty : ISI.Extensions.Converters.IExportTo<TEntity>
+			where TEntity : class
+		{
+			var propertyInfo = ISI.Extensions.Reflection.GetPropertyInfo(property);
+
+			Add(new RecordWhereColumn<TRecord>()
+			{
+				RecordPropertyDescription = RecordDescription.GetRecordDescription<TRecord>().PropertyDescriptionLookup[propertyInfo.Name],
+				StringComparisonOperator = comparisonOperator,
+				Values = new[] { value },
+			});
+		}
+
 		public void Add<TProperty>(Expression<Func<TRecord, TProperty>> property, WhereClauseComparisonOperator comparisonOperator, TProperty value)
 		{
 			Add<TProperty>(property, comparisonOperator, null, null, new[] { value }, false, null, null);

@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.AspNetCore.Extensions
 {
-	public static class EnumExtensions
+	public static class SelectListExtensions
 	{
 		public static Microsoft.AspNetCore.Mvc.Rendering.SelectListItem[] ToSelectListItems<TEnum>(this TEnum selectedValue, ISI.Extensions.Enum.ValueSource keySource = Enum.ValueSource.Key, ISI.Extensions.Enum.ValueSource valueSource = Enum.ValueSource.Description)
 			where TEnum : System.Enum
@@ -34,6 +34,11 @@ namespace ISI.Extensions.AspNetCore.Extensions
 			where TEnum : struct, System.Enum
 		{
 			return ISI.Extensions.Enum<TEnum>.ToArray().ToNullCheckedArray(value => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(value.GetValueSource(valueSource), value.GetValueSource(keySource), value.Equals(selectedValue)));
+		}
+
+		public static Microsoft.AspNetCore.Mvc.Rendering.SelectListItem[] ToSelectListItems(this IEnumerable<string> values, string selectedValue = null)
+		{
+			return values.ToNullCheckedArray(value => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(value, value, (value ?? string.Empty).Equals(selectedValue ?? string.Empty)));
 		}
 	}
 }

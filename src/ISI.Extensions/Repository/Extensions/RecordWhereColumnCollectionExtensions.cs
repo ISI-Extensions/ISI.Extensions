@@ -129,6 +129,26 @@ namespace ISI.Extensions.Repository.Extensions
 			}
 		}
 
+		public static void AddIfNotNull<TRecord, TProperty, TEntity>(this RecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property, WhereClauseStringComparisonOperator whereClauseStringComparisonOperator, string value)
+			where TProperty : ISI.Extensions.Converters.IExportTo<TEntity>
+			where TEntity : class
+		{
+			if (value != null)
+			{
+				recordWhereColumns.Add<TProperty, TEntity>(property, whereClauseStringComparisonOperator, value);
+			}
+		}
+
+		public static void AddIfNotNullOrEmpty<TRecord, TProperty, TEntity>(this RecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property, WhereClauseStringComparisonOperator whereClauseStringComparisonOperator, string value)
+			where TProperty : ISI.Extensions.Converters.IExportTo<TEntity>
+			where TEntity : class
+		{
+			if (!string.IsNullOrEmpty(value))
+			{
+				recordWhereColumns.Add<TProperty, TEntity>(property, whereClauseStringComparisonOperator, value);
+			}
+		}
+
 		public static void AddIfNullCheckedAny<TRecord,TProperty>(this RecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property, WhereClauseEqualityOperator equalityOperator, IEnumerable<TProperty> values)
 		{
 			if (values.NullCheckedAny())

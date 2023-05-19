@@ -19,25 +19,134 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ISI.Extensions.SpreadSheets
 {
-	public partial class WorkbookRecordReader<TRecord>
+	public class WorkbookRecordReader<TRecord> : IEnumerable<WorksheetRecordReader<TRecord>>, IDisposable
+		where TRecord : class, new()
 	{
-		public partial class WorksheetRecordReader
-		{
-			protected ISI.Extensions.SpreadSheets.IWorksheet Worksheet { get; }
-			protected ISI.Extensions.Columns.IColumnInfo<TRecord>[] Columns { get; }
-			protected ISI.Extensions.Parsers.OnRead<TRecord>[] OnReads { get; }
+		protected ISI.Extensions.SpreadSheets.IWorkbook Workbook { get; }
+		protected bool DoWorkbookDisposable { get; }
+		protected IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> Columns { get; }
+		protected IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> OnReads { get; }
 
-			public WorksheetRecordReader(ISI.Extensions.SpreadSheets.IWorksheet worksheet, IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads)
+		private class WorkbookRecordReaderEnumerator : IEnumerator<WorksheetRecordReader<TRecord>>
+		{
+			protected ISI.Extensions.SpreadSheets.IWorkbook Workbook { get; }
+			protected System.Collections.IEnumerator RowEnumerator { get; set; }
+
+			protected IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> Columns { get; }
+			protected IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> OnReads { get; }
+
+			public WorkbookRecordReaderEnumerator(string fileName, IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads)
+				: this(columns, onReads)
 			{
-				Worksheet = worksheet;
-				Columns = columns.ToNullCheckedArray(NullCheckCollectionResult.Empty);
-				OnReads = onReads.ToNullCheckedArray(NullCheckCollectionResult.Empty);
+				var spreadSheetHelper = ISI.Extensions.ServiceLocator.Current.GetService<ISpreadSheetHelper>();
+
+				Workbook = spreadSheetHelper.Open(fileName);
 			}
 
-			public WorksheetRecords Records => new(Worksheet.Cells.Rows, Columns, OnReads);
+			public WorkbookRecordReaderEnumerator(System.IO.Stream stream, IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads)
+				: this(columns, onReads)
+			{
+				var spreadSheetHelper = ISI.Extensions.ServiceLocator.Current.GetService<ISpreadSheetHelper>();
+
+				Workbook = spreadSheetHelper.Open(stream);
+			}
+
+			public WorkbookRecordReaderEnumerator(ISI.Extensions.SpreadSheets.IWorkbook workbook, IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads)
+				: this(columns, onReads)
+			{
+				Workbook = workbook;
+			}
+
+			private WorkbookRecordReaderEnumerator(IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads)
+			{
+				Columns = columns;
+				OnReads = onReads;
+
+				Reset();
+			}
+
+			public void Reset()
+			{
+				Current = null;
+				(RowEnumerator as IDisposable)?.Dispose();
+				RowEnumerator = null;
+			}
+
+			public bool MoveNext()
+			{
+				RowEnumerator ??= Workbook.Worksheets.GetEnumerator();
+
+				if (!RowEnumerator.MoveNext())
+				{
+					Current = null;
+					return false;
+				}
+
+				Current = new WorksheetRecordReader<TRecord>(RowEnumerator.Current as IWorksheet, Columns, OnReads);
+
+				return true;
+			}
+
+			public WorksheetRecordReader<TRecord> Current { get; private set; }
+
+			object System.Collections.IEnumerator.Current => Current;
+
+			public void Dispose()
+			{
+
+			}
+		}
+
+		public WorkbookRecordReader(string fileName, IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns = null, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads = null)
+			: this(columns, onReads)
+		{
+			var spreadSheetHelper = ISI.Extensions.ServiceLocator.Current.GetService<ISpreadSheetHelper>();
+
+			Workbook = spreadSheetHelper.Open(fileName);
+			DoWorkbookDisposable = true;
+		}
+
+		public WorkbookRecordReader(System.IO.Stream stream, IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns = null, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads = null)
+			: this(columns, onReads)
+		{
+			var spreadSheetHelper = ISI.Extensions.ServiceLocator.Current.GetService<ISpreadSheetHelper>();
+
+			Workbook = spreadSheetHelper.Open(stream);
+			DoWorkbookDisposable = true;
+		}
+
+		public WorkbookRecordReader(ISI.Extensions.SpreadSheets.IWorkbook workbook, IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns = null, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads = null)
+			: this(columns, onReads)
+		{
+			Workbook = workbook;
+		}
+
+		private WorkbookRecordReader(IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads)
+		{
+			Columns = columns ?? ISI.Extensions.Columns.ColumnInfoCollection<TRecord>.GetDefault();
+			OnReads = onReads;
+		}
+
+		public IEnumerator<WorksheetRecordReader<TRecord>> GetEnumerator()
+		{
+			return new WorkbookRecordReaderEnumerator(Workbook, Columns, OnReads);
+		}
+
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+
+		public void Dispose()
+		{
+			if (DoWorkbookDisposable)
+			{
+				Workbook?.Dispose();
+			}
 		}
 	}
 }

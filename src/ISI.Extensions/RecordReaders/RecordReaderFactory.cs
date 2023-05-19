@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,25 +15,30 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Parsers
+namespace ISI.Extensions.RecordReaders
 {
-	public delegate void OnRead<TRecord>(object context, string source, IDictionary<string, int> columnLookup, ISI.Extensions.Columns.ColumnInfoCollection<TRecord> columns, ref int[] columnIndexes, ref object[] values)
-		where TRecord : class, new();
-
-	public interface IRecordParser<TRecord>
-		where TRecord : class, new()
+	public class RecordReaderFactory
 	{
-		IRecordParserResponse<TRecord> Read(object context, string source);
-		IRecordParserResponse<TRecord> Read(object context, System.IO.StreamReader stream);
+		public static IEnumerable<TRecord> GetRecordReaderByFileName<TRecord>(System.IO.Stream stream, string fileName, IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns = null, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads = null)
+			where TRecord : class, new()
+		{
+			var fileExtension = System.IO.Path.GetExtension(fileName);
 
-		string BuildHeaderRecord();
-		string GetUnparsedRecord(TRecord record);
-		string GetLastUnparsedHeader();
-		string GetLastUnparsedSource();
+			if(ISI.Extensions.TextParserFactory.FileExtensionToTextDelimiter.TryGetValue(fileExtension, out var textDelimiter))
+			{
+				var recordParser = ISI.Extensions.RecordParserFactory<TRecord>.GetRecordParser(textDelimiter, columns, onReads);
+
+				return new RecordParserReader<TRecord>(stream, recordParser);
+			}
+
+			if (string.Equals(fileExtension, "xlsx", StringComparison.InvariantCultureIgnoreCase) || string.Equals(fileExtension, "xls", StringComparison.InvariantCultureIgnoreCase))
+			{
+				return new ISI.Extensions.SpreadSheets.WorksheetRecordReader<TRecord>(stream, columns, onReads);
+			}
+
+			return null;
+		}
 	}
 }

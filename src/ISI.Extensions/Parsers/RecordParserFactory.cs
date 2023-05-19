@@ -26,7 +26,7 @@ namespace ISI.Extensions
 	{
 		public static ISI.Extensions.Parsers.OnRead<TRecord> GetHeadersOnFirstLineHandler()
 		{
-			return (object context, string source, IDictionary<string, int> columnLookup, ISI.Extensions.Columns.IColumnInfo<TRecord>[] columns, ref int[] columnIndexes, ref object[] values) =>
+			return (object context, string source, IDictionary<string, int> columnLookup, ISI.Extensions.Columns.ColumnInfoCollection<TRecord> columns, ref int[] columnIndexes, ref object[] values) =>
 			{
 				if ((context is Parsers.IRecordDepth recordDepthContext) && (recordDepthContext.Depth == 0))
 				{
@@ -56,7 +56,7 @@ namespace ISI.Extensions
 
 		public static ISI.Extensions.Parsers.OnRead<TRecord> GetHeaderPrefixHandler(string headerPrefix)
 		{
-			return (object context, string source, IDictionary<string, int> columnLookup, ISI.Extensions.Columns.IColumnInfo<TRecord>[] columns, ref int[] columnIndexes, ref object[] values) =>
+			return (object context, string source, IDictionary<string, int> columnLookup, ISI.Extensions.Columns.ColumnInfoCollection<TRecord> columns, ref int[] columnIndexes, ref object[] values) =>
 			{
 				var headerColumnValue = (values[0] is string ? (string)values[0] : string.Format("{0}", values[0]));
 

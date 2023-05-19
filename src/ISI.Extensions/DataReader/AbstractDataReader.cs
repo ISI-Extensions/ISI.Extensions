@@ -30,7 +30,7 @@ namespace ISI.Extensions.DataReader
 		public bool IsClosed { get; protected set; }
 		public int RecordsAffected { get; protected set; }
 
-		public int FieldCount { get; protected set; }
+		public virtual int FieldCount { get; protected set; }
 
 		public abstract bool NextResult();
 

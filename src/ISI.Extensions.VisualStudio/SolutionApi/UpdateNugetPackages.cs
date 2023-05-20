@@ -281,7 +281,7 @@ namespace ISI.Extensions.VisualStudio
 						}
 						catch (Exception exception)
 						{
-							logger.LogError(exception.Message);
+							logger.LogError(exception.ErrorMessageFormatted());
 							throw;
 						}
 

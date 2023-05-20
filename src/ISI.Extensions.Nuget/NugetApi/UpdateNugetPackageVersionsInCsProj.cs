@@ -135,10 +135,13 @@ namespace ISI.Extensions.Nuget
 
 									if (request.TryGetNugetPackageKey(packageId, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 									{
-										hintPath = nugetPackageKey.GetTargetFrameworkAssembly(targetFrameworkVersion).Assemblies.GetHintPath(assemblyName);
+										hintPath = nugetPackageKey.GetTargetFrameworkAssembly(targetFrameworkVersion)?.Assemblies?.GetHintPath(assemblyName);
 
-										packageAttribute.Value = packageAttribute.Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).First();
-										hintPathAttribute.Value = string.Format("{0}\\{1}", packagesPath, hintPath);
+										if (!string.IsNullOrWhiteSpace(hintPath))
+										{
+											packageAttribute.Value = packageAttribute.Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).First();
+											hintPathAttribute.Value = string.Format("{0}\\{1}", packagesPath, hintPath);
+										}
 									}
 								}
 							}

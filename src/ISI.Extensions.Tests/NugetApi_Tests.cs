@@ -234,16 +234,6 @@ namespace ISI.Extensions.Tests
 				PackageId = "Microsoft.ClearScript",
 				PackageVersion = "6.0.2",
 			}).NugetPackageKey);
-			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new()
-			{
-				PackageId = "Microsoft.Graph",
-				PackageVersion = "4.54.0",
-			}).NugetPackageKey);
-			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new()
-			{
-				PackageId = "Microsoft.Graph.Core",
-				PackageVersion = "2.0.15",
-			}).NugetPackageKey);
 
 
 			var upsertAssemblyRedirectsNugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
@@ -261,9 +251,9 @@ namespace ISI.Extensions.Tests
 			//solutionFullNames.Add(@"F:\ISI\Clients\TFS\Tristar.AddressTools");
 			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Tristar.SolutionFullNames.txt"));
 			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\ISI.SolutionFullNames.txt"));
-			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"G:\TFS\Solutions.txt"));
+			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"G:\TFS\Solutions.txt"));
 			//solutionFullNames.Add(@"F:\ISI\Clients\TFS\Tristar.Scheduler");
-			//solutionFullNames.Add(@"F:\ISI\Clients\TFS\Comcast.Military.Portal.Web");
+			solutionFullNames.Add(@"F:\ISI\Clients\TFS\Comcast.CallCenter.WebApi");
 			//solutionFullNames.Add(@"G:\TFS\Tristar.Processor.Build");
 
 			solutionApi.UpdateNugetPackages(new()

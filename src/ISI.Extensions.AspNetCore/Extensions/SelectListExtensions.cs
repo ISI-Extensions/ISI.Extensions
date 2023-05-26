@@ -30,6 +30,30 @@ namespace ISI.Extensions.AspNetCore.Extensions
 			return ISI.Extensions.Enum<TEnum>.ToArray().ToNullCheckedArray(value => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(value.GetValueSource(valueSource), value.GetValueSource(keySource), value.Equals(selectedValue)));
 		}
 
+		public static Microsoft.AspNetCore.Mvc.Rendering.SelectListItem[] ToSelectListItems<TEnum>(this IEnumerable<TEnum> selectedValues, ISI.Extensions.Enum.ValueSource keySource = Enum.ValueSource.Key, ISI.Extensions.Enum.ValueSource valueSource = Enum.ValueSource.Description)
+			where TEnum : System.Enum
+		{
+			var selected = new HashSet<TEnum>(selectedValues ?? Array.Empty<TEnum>());
+
+			return ISI.Extensions.Enum<TEnum>.ToArray().ToNullCheckedArray(value => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(value.GetValueSource(valueSource), value.GetValueSource(keySource), selected.Contains(value)));
+		}
+
+		public static Microsoft.AspNetCore.Mvc.Rendering.SelectListItem[] ToSelectListItems<TEnum>(this string selectedValue, ISI.Extensions.Enum.ValueSource keySource = Enum.ValueSource.Key, ISI.Extensions.Enum.ValueSource valueSource = Enum.ValueSource.Description)
+			where TEnum : System.Enum
+		{
+			var selected = ISI.Extensions.Enum<TEnum>.Parse(selectedValue);
+
+			return ISI.Extensions.Enum<TEnum>.ToArray().ToNullCheckedArray(value => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(value.GetValueSource(valueSource), value.GetValueSource(keySource), value.Equals(selected)));
+		}
+
+		public static Microsoft.AspNetCore.Mvc.Rendering.SelectListItem[] ToSelectListItems<TEnum>(this IEnumerable<string> selectedValues, ISI.Extensions.Enum.ValueSource keySource = Enum.ValueSource.Key, ISI.Extensions.Enum.ValueSource valueSource = Enum.ValueSource.Description)
+			where TEnum : System.Enum
+		{
+			var selected = new HashSet<TEnum>(selectedValues.ToNullCheckedArray(selectedValue => ISI.Extensions.Enum<TEnum>.Parse(selectedValue)));
+
+			return ISI.Extensions.Enum<TEnum>.ToArray().ToNullCheckedArray(value => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(value.GetValueSource(valueSource), value.GetValueSource(keySource), selected.Contains(value)));
+		}
+
 		public static Microsoft.AspNetCore.Mvc.Rendering.SelectListItem[] ToSelectListItems<TEnum>(this TEnum? selectedValue, ISI.Extensions.Enum.ValueSource keySource = Enum.ValueSource.Key, ISI.Extensions.Enum.ValueSource valueSource = Enum.ValueSource.Description)
 			where TEnum : struct, System.Enum
 		{
@@ -39,6 +63,13 @@ namespace ISI.Extensions.AspNetCore.Extensions
 		public static Microsoft.AspNetCore.Mvc.Rendering.SelectListItem[] ToSelectListItems(this IEnumerable<string> values, string selectedValue = null)
 		{
 			return values.ToNullCheckedArray(value => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(value, value, (value ?? string.Empty).Equals(selectedValue ?? string.Empty)));
+		}
+
+		public static Microsoft.AspNetCore.Mvc.Rendering.SelectListItem[] ToSelectListItems(this IEnumerable<string> values, IEnumerable<string> selectedValues, StringComparer stringComparer = null)
+		{
+			var selected = new HashSet<string>(selectedValues ?? Array.Empty<string>(), stringComparer ?? StringComparer.InvariantCultureIgnoreCase);
+
+			return values.ToNullCheckedArray(value => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(value, value,selected.Contains(value ?? string.Empty)));
 		}
 	}
 }

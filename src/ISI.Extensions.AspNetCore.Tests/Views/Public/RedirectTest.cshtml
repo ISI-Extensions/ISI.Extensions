@@ -1,0 +1,18 @@
+@using ISI.Extensions.AspNetCore.Extensions
+@model ISI.Extensions.AspNetCore.Tests.Models.Public.RedirectTestModel
+
+@{
+	Model.SetTitle("Redirect Test");
+	Layout = ISI.Extensions.AspNetCore.Tests.T4Files.Views.Public._Layout_cshtml;
+}
+
+@section StyleSheetIncludes {
+	@Html.AddStyleSheet(ISI.Extensions.AspNetCore.Tests.T4Links.wwwroot.StyleSheets.Public.RedirectTest_css)
+}
+
+@section JavaScriptIncludes {
+	@Html.AddJavaScript(ISI.Extensions.AspNetCore.Tests.T4Links.wwwroot.JavaScripts.Public.RedirectTest_js)
+}
+
+@section JavaScriptContent {
+}

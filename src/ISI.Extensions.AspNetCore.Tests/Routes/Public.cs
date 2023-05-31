@@ -35,6 +35,7 @@ namespace ISI.Extensions.AspNetCore.Tests
 			{
 				[RouteName] public const string Index = "Index-d5e85c00-0711-412d-853c-53b2a5ac7f8f";
 				[RouteName] public const string Login = "Login-f836b667-01b9-40b6-b815-4aa7ca51afee";
+				[RouteName] public const string RedirectTest = "RedirectTest-96cffdc3-c18c-4c53-a37c-1177c6d352cc";
 				//${RouteNames}
 			}
 			#pragma warning restore 649

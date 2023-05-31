@@ -40,7 +40,7 @@ namespace ISI.Extensions.AspNetCore.Tests.Controllers
 			var xxx = Url.GenerateRouteUrl(Routes.Public.RouteNames.Login, makeRootRelative: true);
 
 			result = View(ISI.Extensions.AspNetCore.Tests.T4Files.Views.Public.Index_cshtml, viewModel);
-
+			
 			return result;
 		}
 

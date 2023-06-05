@@ -24,16 +24,12 @@ namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 	public class NupkgPushRequest
 	{
 		public IEnumerable<string> NupkgFullNames { get; set; }
-
-		public string NugetApiKey { get; set; }
 		
 		public string RepositoryName { get; set; }
 		
 		public Uri RepositoryUri { get; set; }
 
-		public Uri PackageChunksRepositoryUri { get; set; }
-		public int PackageChunksMaxFileSegmentSize { get; set; } = 2000000;
-		public int PackageChunksMaxTries { get; set; } = 3;
+		public string NugetApiKey { get; set; }
 
 		public string WorkingDirectory { get; set; }
 	}

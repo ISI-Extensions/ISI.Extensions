@@ -115,7 +115,8 @@ namespace ISI.Extensions.Tests
 		{
 			var messageParser = new ISI.Extensions.Svn.MessageParser();
 
-			var getRevisionInfoResponse = messageParser.ParseMessage(@"refs CD-4726, CD-4742: Adjusted XIT messaging for the winback offer.");
+			var getRevisionInfoResponse = messageParser.ParseMessage(@" refs CD-4915
+Add support for day 70 qualified records based off of grace period.");
 
 		}
 	}

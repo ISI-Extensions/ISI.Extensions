@@ -130,7 +130,7 @@ namespace ISI.Extensions.Tests
 				JiraApiUrl = JiraUrl,
 				JiraApiUserName = JiraApiUserName,
 				JiraApiToken = JiraApiToken,
-				IssueIdOrKeys = new []{ "CD-4726", "CD-4742"}
+				IssueIdOrKeys = new []{ "CD-4915"}
 				//ImpersonatedUser = "rmuth",
 				//Jql = "assignee=currentuser() AND STATUS!=DONE ORDER BY created DESC",
 				//Jql = "STATUS!=DONE ORDER BY created DESC",

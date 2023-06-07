@@ -48,12 +48,6 @@ namespace ISI.Extensions.Scm
 				set => Settings.SetValue(Settings.Key.NugetRepositoryUrl, value);
 			}
 
-			public string PackageChunksRepositoryUrl
-			{
-				get => Settings.GetValue(Settings.Key.NugetPackageChunksRepositoryUrl);
-				set => Settings.SetValue(Settings.Key.NugetPackageChunksRepositoryUrl, value);
-			}
-
 			public string ApiKey
 			{
 				get => Settings.GetValue(Settings.Key.NugetApiKey);

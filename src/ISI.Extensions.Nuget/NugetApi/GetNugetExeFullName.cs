@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using ISI.Extensions.Extensions;
 using Microsoft.Extensions.Logging;
 using System;
@@ -32,43 +32,60 @@ namespace ISI.Extensions.Nuget
 		{
 			var response = new DTOs.GetNugetExeFullNameResponse();
 
+			const string nugetExeFileName = "nuget.exe";
+			const string NUGET_URL = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe";
+
 			if (string.IsNullOrWhiteSpace(_nugetExeFullName))
 			{
-				const string nugetExeFileName = "nuget.exe";
-				const string NUGET_URL = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe";
-
 				if (ISI.Extensions.IO.Path.IsInEnvironmentPath(nugetExeFileName, out var nugetExeFullName))
 				{
 					_nugetExeFullName = nugetExeFullName;
 				}
-				else
+			}
+
+			if (string.IsNullOrWhiteSpace(_nugetExeFullName))
+			{
+				if (ISI.Extensions.IO.Path.IsInEnvironmentPath("choco.exe", out var chocoExeFullName))
 				{
-					var uriCodeBase = new UriBuilder(GetType().Assembly.CodeBase);
+					var processResponse = ISI.Extensions.Process.WaitForProcessResponse(chocoExeFullName, new[] { "install", "nuget.commandline", "-y" });
+				}
+			}
 
-					var directory = System.IO.Path.GetDirectoryName(Uri.UnescapeDataString(uriCodeBase.Path));
+			if (string.IsNullOrWhiteSpace(_nugetExeFullName))
+			{
+				if (ISI.Extensions.IO.Path.IsInEnvironmentPath(nugetExeFileName, out var nugetExeFullName))
+				{
+					_nugetExeFullName = nugetExeFullName;
+				}
+			}
 
-					nugetExeFullName = System.IO.Path.Combine(directory, nugetExeFileName);
+			if (string.IsNullOrWhiteSpace(_nugetExeFullName))
+			{
+				var uriCodeBase = new UriBuilder(GetType().Assembly.CodeBase);
 
-					if (!System.IO.File.Exists(nugetExeFullName))
+				var directory = System.IO.Path.GetDirectoryName(Uri.UnescapeDataString(uriCodeBase.Path));
+
+				var nugetExeFullName = System.IO.Path.Combine(directory, nugetExeFileName);
+
+				if (!System.IO.File.Exists(nugetExeFullName))
+				{
+					using (var webClient = new System.Net.WebClient())
 					{
-						using (var webClient = new System.Net.WebClient())
-						{
-							webClient.DownloadFile(NUGET_URL, directory);
-						}
-
-						ISI.Extensions.IO.FileZone.RemoveZone(nugetExeFullName);
+						webClient.DownloadFile(NUGET_URL, directory);
 					}
 
-					if (!string.IsNullOrWhiteSpace(nugetExeFullName) && System.IO.File.Exists(nugetExeFullName))
-					{
-						var versionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(nugetExeFullName);
-						var productVersion = new System.Version(versionInfo.ProductVersion);
-						var minProductionVersion = new System.Version("5.8.1");
+					ISI.Extensions.IO.FileZone.RemoveZone(nugetExeFullName);
+				}
 
-						if (productVersion < minProductionVersion)
-						{
-							var processResponse = ISI.Extensions.Process.WaitForProcessResponse(nugetExeFullName, new[] { "update", "-self" });
-						}
+				if (!string.IsNullOrWhiteSpace(nugetExeFullName) && System.IO.File.Exists(nugetExeFullName))
+				{
+					var versionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(nugetExeFullName);
+					var productVersion = new System.Version(versionInfo.ProductVersion);
+					var minProductionVersion = new System.Version("5.8.1");
+
+					if (productVersion < minProductionVersion)
+					{
+						var processResponse = ISI.Extensions.Process.WaitForProcessResponse(nugetExeFullName, new[] { "update", "-self" });
 					}
 				}
 			}

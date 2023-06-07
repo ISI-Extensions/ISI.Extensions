@@ -50,7 +50,6 @@ namespace ISI.Extensions.Scm
 			public const string NugetApiUrl = nameof(NugetApiUrl);
 			public const string NugetRepositoryName = nameof(NugetRepositoryName);
 			public const string NugetRepositoryUrl = nameof(NugetRepositoryUrl);
-			public const string NugetPackageChunksRepositoryUrl = nameof(NugetPackageChunksRepositoryUrl);
 			public const string NugetApiKey = nameof(NugetApiKey);
 			public const string NugetUserName = nameof(NugetUserName);
 			public const string NugetPassword = nameof(NugetPassword);

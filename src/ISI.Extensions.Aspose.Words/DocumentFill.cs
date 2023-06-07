@@ -35,7 +35,7 @@ namespace ISI.Extensions.Aspose
 
 			public System.Drawing.Color Color { get => _fill.Color; set => _fill.Color = value; }
 			public double Opacity { get => _fill.Opacity; set => _fill.Opacity = value; }
-			public bool On { get => _fill.On; set => _fill.On = value; }
+			public bool Visible { get => _fill.Visible; set => _fill.Visible = value; }
 			public byte[] ImageBytes => _fill.ImageBytes;
 		}
 	}

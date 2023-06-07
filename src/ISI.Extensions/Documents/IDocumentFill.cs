@@ -25,7 +25,7 @@ namespace ISI.Extensions.Documents
 	{
 		System.Drawing.Color Color { get; set; }
 		double Opacity { get; set; }
-		bool On { get; set; }
+		bool Visible { get; set; }
 		byte[] ImageBytes { get; }
 	}
 }

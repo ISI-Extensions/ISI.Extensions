@@ -192,10 +192,9 @@ Task("Publish")
 		NupkgPush(new ISI.Cake.Addin.Nuget.NupkgPushRequest()
 		{
 			NupkgPaths = nupkgFiles,
-			ApiKey = settings.Nuget.ApiKey,
+			NugetApiKey = settings.Nuget.ApiKey,
 			RepositoryName = settings.Nuget.RepositoryName,
 			RepositoryUri = GetNullableUri(settings.Nuget.RepositoryUrl),
-			PackageChunksRepositoryUri = GetNullableUri(settings.Nuget.PackageChunksRepositoryUrl),
 		});
 	});
 

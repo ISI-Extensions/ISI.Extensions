@@ -18,6 +18,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\ISI.Extensions.JsonSerialization.Newtonsoft\ISI.Extensions.JsonSerialization.Newtonsoft.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Ngrok\ISI.Extensions.Ngrok.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Topshelf\ISI.Extensions.Topshelf.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.AspNetCore\ISI.Extensions.AspNetCore.csproj" />
 		<ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />

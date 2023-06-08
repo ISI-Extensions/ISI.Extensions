@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using ISI.Extensions.AspNetCore.Extensions;
 using ISI.Extensions.ConfigurationHelper.Extensions;
 using ISI.Extensions.DependencyInjection.Extensions;
+using ISI.Extensions.Ngrok.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -88,6 +89,8 @@ namespace ISI.Extensions.AspNetCore.Tests
 				})
 
 				//.UseServiceProviderFactory(new ISI.Extensions.DependencyInjection.ServiceProviderFactory(configurationRoot))
+
+				.UseNGrok()
 
 				.Build();
 

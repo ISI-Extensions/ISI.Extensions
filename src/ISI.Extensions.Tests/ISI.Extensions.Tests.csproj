@@ -54,7 +54,6 @@
 		<ProjectReference Include="..\ISI.Extensions.MessageBus.MassTransit\ISI.Extensions.MessageBus.MassTransit.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.MessageBus.Redis\ISI.Extensions.MessageBus.Redis.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Monitor\ISI.Extensions.Monitor.csproj" />
-		<ProjectReference Include="..\ISI.Extensions.NAnt\ISI.Extensions.NAnt.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Ngrok\ISI.Extensions.Ngrok.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Nuget\ISI.Extensions.Nuget.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.OpenCNAM\ISI.Extensions.OpenCNAM.csproj" />

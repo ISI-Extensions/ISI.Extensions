@@ -16,6 +16,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ISI.Extensions.DependencyInjection.Extensions;
 using ISI.Extensions.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,6 +46,8 @@ namespace ISI.Extensions.Ngrok
 			Logger = logger;
 			HostApplicationLifetime = hostApplicationLifetime;
 			NGrokLocalServiceApi = nGrokLocalServiceApi;
+
+			serviceProvider.SetServiceLocator();
 		}
 
 		public System.Threading.Tasks.Task StartAsync(System.Threading.CancellationToken cancellationToken)

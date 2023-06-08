@@ -36,7 +36,7 @@ namespace ISI.Extensions.Ngrok.SerializableModels.ClientApi
 		}
 
 		[DataMember(Name = "tunnels", EmitDefaultValue = false)]
-		public Ngrok.SerializableModels.ClientApi.Tunnel[] Tunnels { get; set; }
+		public Tunnel[] Tunnels { get; set; }
 
 		[DataMember(Name = "uri", EmitDefaultValue = false)]
 		public string ClientApiUri { get; set; }

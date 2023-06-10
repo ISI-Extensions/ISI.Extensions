@@ -95,8 +95,8 @@ namespace ISI.Extensions.Repository.SqlServer
 			using (var archiveConnection = GetSqlConnection())
 			{
 				var persistedConvertedRecordIndex = 0;
-
-				foreach (var recordBath in records.NullCheckedChunk(maxBatchSize))
+				
+				foreach (var recordBatch in records.NullCheckedChunk(maxBatchSize))
 				{
 					var persistedRecordSets = new List<(TRecord Record, TConvertedRecord ConvertedRecord)>();
 
@@ -127,7 +127,7 @@ namespace ISI.Extensions.Repository.SqlServer
 					var sqlSelects = new List<string>();
 					var sqlValues = new Dictionary<string, object>();
 
-					foreach (var record in recordBath)
+					foreach (var record in recordBatch)
 					{
 						updateRecordProperties?.Invoke(record);
 

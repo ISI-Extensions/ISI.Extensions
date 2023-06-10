@@ -21,63 +21,130 @@ namespace ISI.Extensions.Extensions
 {
 	public static class EnumExtensions
 	{
+		private static bool TryGetBaseEnumType<TEnum>(this TEnum value, out Type enumType)
+			where TEnum : System.Enum
+		{
+			if (typeof(TEnum) == typeof(System.Enum))
+			{
+				var enums = new System.Enum[] { value };
+
+				enumType = enums[0].GetType();
+
+				return true;
+			}
+
+			enumType = typeof(TEnum);
+
+			return false;
+		}
+
 		public static int? GetIndex<TEnum>(this TEnum value)
 			where TEnum : System.Enum
 		{
+			if (TryGetBaseEnumType(value, out var enumType))
+			{
+				return ISI.Extensions.Enum.GetIndex(enumType, value);
+			}
+
 			return ISI.Extensions.Enum<TEnum>.GetIndex(value);
 		}
 
 		public static int? GetIndex<TEnum>(this TEnum? value)
 			where TEnum : struct, System.Enum
 		{
+			if (value.HasValue && TryGetBaseEnumType(value.Value, out var enumType))
+			{
+				return ISI.Extensions.Enum.GetIndex(enumType, value);
+			}
+
 			return ISI.Extensions.Enum<TEnum?>.GetIndex(value);
 		}
 
 		public static string GetKey<TEnum>(this TEnum value)
 			where TEnum : System.Enum
 		{
+			if (TryGetBaseEnumType(value, out var enumType))
+			{
+				return ISI.Extensions.Enum.GetKey(enumType, value);
+			}
+
 			return ISI.Extensions.Enum<TEnum>.GetKey(value);
 		}
 
 		public static string GetKey<TEnum>(this TEnum? value)
 			where TEnum : struct, System.Enum
 		{
+			if (value.HasValue && TryGetBaseEnumType(value.Value, out var enumType))
+			{
+				return ISI.Extensions.Enum.GetKey(enumType, value);
+			}
+
 			return ISI.Extensions.Enum<TEnum?>.GetKey(value);
 		}
 
 		public static string GetAbbreviation<TEnum>(this TEnum value)
 			where TEnum : System.Enum
 		{
+			if (TryGetBaseEnumType(value, out var enumType))
+			{
+				return ISI.Extensions.Enum.GetAbbreviation(enumType, value);
+			}
+
 			return ISI.Extensions.Enum<TEnum>.GetAbbreviation(value);
 		}
 
 		public static string GetAbbreviation<TEnum>(this TEnum? value)
 			where TEnum : struct, System.Enum
 		{
+			if (value.HasValue && TryGetBaseEnumType(value.Value, out var enumType))
+			{
+				return ISI.Extensions.Enum.GetAbbreviation(enumType, value);
+			}
+
 			return ISI.Extensions.Enum<TEnum?>.GetAbbreviation(value);
 		}
 
 		public static string GetDescription<TEnum>(this TEnum value, bool addSpaceBetweenWords = true)
 			where TEnum : System.Enum
 		{
+			if (TryGetBaseEnumType(value, out var enumType))
+			{
+				return ISI.Extensions.Enum.GetDescription(enumType, value);
+			}
+
 			return ISI.Extensions.Enum<TEnum>.GetDescription(value, addSpaceBetweenWords);
 		}
 
 		public static string GetDescription<TEnum>(this TEnum? value, bool addSpaceBetweenWords = true)
 			where TEnum : struct, System.Enum
 		{
+			if (value.HasValue && TryGetBaseEnumType(value.Value, out var enumType))
+			{
+				return ISI.Extensions.Enum.GetDescription(enumType, value);
+			}
+
 			return ISI.Extensions.Enum<TEnum?>.GetDescription(value, addSpaceBetweenWords);
 		}
 
 		public static Guid GetUuid<TEnum>(this TEnum value)
 			where TEnum : System.Enum
 		{
+			if (TryGetBaseEnumType(value, out var enumType))
+			{
+				return ISI.Extensions.Enum.GetUuid(enumType, value) ?? Guid.Empty;
+			}
+
 			return ISI.Extensions.Enum<TEnum>.GetUuid(value).GetValueOrDefault();
 		}
 		
 		public static Guid? GetUuid<TEnum>(this TEnum? value)
 			where TEnum : struct, System.Enum
 		{
+			if (value.HasValue && TryGetBaseEnumType(value.Value, out var enumType))
+			{
+				return ISI.Extensions.Enum.GetUuid(enumType, value);
+			}
+
 			return ISI.Extensions.Enum<TEnum?>.GetUuid(value);
 		}
 

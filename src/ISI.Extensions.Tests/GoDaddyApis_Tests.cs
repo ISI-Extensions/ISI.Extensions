@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using ISI.Extensions.ConfigurationHelper.Extensions;
 using ISI.Extensions.DependencyInjection.Extensions;
 using ISI.Extensions.Extensions;
@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Extensions.Configuration;
 
 namespace ISI.Extensions.Tests
 {
@@ -35,13 +36,14 @@ namespace ISI.Extensions.Tests
 		public void OneTimeSetup()
 		{
 			var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
-			var configuration = configurationBuilder.Build();
+			configurationBuilder.AddJsonFile("appsettings.json", optional: false);
+			var configurationRoot = configurationBuilder.Build();
 
 			var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection()
 				.AddOptions()
-				.AddSingleton<Microsoft.Extensions.Configuration.IConfiguration>(configuration);
+				.AddSingleton<Microsoft.Extensions.Configuration.IConfiguration>(configurationRoot);
 
-			services.AddAllConfigurations(configuration)
+			services.AddAllConfigurations(configurationRoot)
 
 				//.AddSingleton<Microsoft.Extensions.Logging.ILoggerFactory, Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory>()
 				.AddSingleton<Microsoft.Extensions.Logging.ILoggerFactory, Microsoft.Extensions.Logging.LoggerFactory>()
@@ -58,13 +60,18 @@ namespace ISI.Extensions.Tests
 				.AddSingleton<ISI.Extensions.Ipify.IpifyApi>()
 				.AddSingleton<ISI.Extensions.GoDaddy.DomainsApi>()
 
-				.AddConfigurationRegistrations(configuration)
+				.AddConfigurationRegistrations(configurationRoot)
 				.ProcessServiceRegistrars()
 				;
 
-			ServiceProvider = services.BuildServiceProvider<ISI.Extensions.DependencyInjection.Iunq.ServiceProviderBuilder>(configuration);
+			ServiceProvider = services.BuildServiceProvider<ISI.Extensions.DependencyInjection.Iunq.ServiceProviderBuilder>(configurationRoot);
 
 			ServiceProvider.SetServiceLocator();
+
+			foreach (var keyValuePair in configurationRoot.AsEnumerable())
+			{
+				TestContext.Progress.WriteLine($"  Config \"{keyValuePair.Key}\" => \"{keyValuePair.Value}\"");
+			}
 		}
 
 		[Test]
@@ -91,13 +98,13 @@ namespace ISI.Extensions.Tests
 				{
 					Data = externalIpAddress,
 					Name = "@",
-//Port = source.Port,
-//Priority = source.Priority,
-//Protocol = source.Protocol,
-//Service = source.Service,
+					//Port = source.Port,
+					//Priority = source.Priority,
+					//Protocol = source.Protocol,
+					//Service = source.Service,
 					//Ttl = 3600,
 					RecordType = ISI.Extensions.Dns.RecordType.A,
-//Weight = source.Weight,
+					//Weight = source.Weight,
 				};
 
 				var xxx = domainsApi.SetDnsRecords(new()

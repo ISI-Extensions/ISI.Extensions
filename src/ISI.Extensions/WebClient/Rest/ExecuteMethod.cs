@@ -212,6 +212,26 @@ namespace ISI.Extensions.WebClient
 			{
 				webRequest.ServerCertificateValidationCallback += serverCertificateValidationCallback;
 			}
+			else if(RestConfiguration?.IgnoreServerCertificateValidationForSubjectsContaining?.NullCheckedAny() ?? false)
+			{
+				webRequest.ServerCertificateValidationCallback += (sender, certificate, chain, errors) =>
+				{
+					if (errors == System.Net.Security.SslPolicyErrors.None)
+					{
+						return true;
+					}
+
+					foreach (var subject in RestConfiguration.IgnoreServerCertificateValidationForSubjectsContaining)
+					{
+						if (certificate.Subject.IndexOf(subject, StringComparison.InvariantCultureIgnoreCase) >= 0)
+						{
+							return true;
+						}
+					}
+
+					return false;
+				};
+			}
 
 			if (clientCertificates != null)
 			{

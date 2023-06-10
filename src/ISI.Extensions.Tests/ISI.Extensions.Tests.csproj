@@ -140,4 +140,10 @@
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
 	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="C:\Users\ron.muth\.nuget\packages\aspose.slides.net\23.5.0\buildTransitive\\..\net6.0_native\aspose.slides.drawing.capi_vc14x64.dll" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="C:\Users\ron.muth\.nuget\packages\aspose.slides.net\23.5.0\buildTransitive\\..\net6.0_native\aspose.slides.drawing.capi_vc14x86.dll" />
+	</ItemGroup>
 </Project>

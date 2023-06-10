@@ -15,43 +15,18 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ISI.Extensions.WebClient
 {
 	public partial class Rest
 	{
-		private static ISI.Extensions.Serialization.ISerialization _serialization = null;
-		protected static ISI.Extensions.Serialization.ISerialization Serialization => _serialization ??= GetSerialization();
-
-		private static ISI.Extensions.Serialization.ISerialization GetSerialization()
+		[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
+		public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
 		{
-			var serialization = ISI.Extensions.ServiceLocator.Current?.GetService<ISI.Extensions.Serialization.ISerialization>();
+			public const string ConfigurationSectionName = "ISI.Extensions.WebClient.Rest";
 
-			if (serialization == null)
-			{
-				throw new("ISI.Extensions.Serialization.ISerialization is null");
-			}
-
-			return serialization;
+			public string[] IgnoreServerCertificateValidationForSubjectsContaining { get; set; }
 		}
-
-		private static Configuration _restConfiguration = null;
-		protected static Configuration RestConfiguration => _restConfiguration ??= ISI.Extensions.ServiceLocator.Current?.GetService<Configuration>();
-
-		public const string MethodHeaderKey = "X-HTTP-METHOD";
-
-		public const string AcceptAllHeaderValue = "*/*";
-		public const string AcceptTextHeaderValue = ISI.Extensions.MimeTypes.PlainText;
-		public const string AcceptXmlHeaderValue = ISI.Extensions.MimeTypes.Xml;
-		public const string AcceptTextXmlHeaderValue = ISI.Extensions.MimeTypes.TextXml;
-		public const string AcceptJsonHeaderValue = ISI.Extensions.MimeTypes.Json;
-
-		public const string ContentTypeApplicationFormUrlEncodedHeaderValue = "application/x-www-form-urlencoded";
-		public const string ContentTypeTextHeaderValue = ISI.Extensions.MimeTypes.PlainText;
-		public const string ContentTypeXmlHeaderValue = ISI.Extensions.MimeTypes.Xml;
-		public const string ContentTypeJsonHeaderValue = ISI.Extensions.MimeTypes.Json;
 	}
 }

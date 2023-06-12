@@ -23,6 +23,8 @@ namespace ISI.Extensions.WebClient
 {
 	public partial class Rest
 	{
+		public static IProxyWrapper ProxyWrapper { get; set; } = null;
+
 		private static ISI.Extensions.Serialization.ISerialization _serialization = null;
 		protected static ISI.Extensions.Serialization.ISerialization Serialization => _serialization ??= GetSerialization();
 
@@ -39,7 +41,21 @@ namespace ISI.Extensions.WebClient
 		}
 
 		private static Configuration _restConfiguration = null;
-		protected static Configuration RestConfiguration => _restConfiguration ??= ISI.Extensions.ServiceLocator.Current?.GetService<Configuration>();
+		public static Configuration RestConfiguration => _restConfiguration ??= ISI.Extensions.ServiceLocator.Current?.GetService<Configuration>() ?? new();
+
+		public static void AddIgnoreServerCertificateValidationForSubjectsContaining(string subject)
+		{
+			_restConfiguration ??= new();
+
+			if (!string.IsNullOrWhiteSpace(subject))
+			{
+				var ignoreServerCertificateValidationForSubjectsContaining = new HashSet<string>(RestConfiguration.IgnoreServerCertificateValidationForSubjectsContaining ?? Array.Empty<string>(), StringComparer.InvariantCultureIgnoreCase);
+
+				ignoreServerCertificateValidationForSubjectsContaining.Add(subject);
+
+				RestConfiguration.IgnoreServerCertificateValidationForSubjectsContaining = ignoreServerCertificateValidationForSubjectsContaining.ToArray();
+			}
+		}
 
 		public const string MethodHeaderKey = "X-HTTP-METHOD";
 

@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -186,12 +186,12 @@ namespace ISI.Extensions.WebClient
 		}
 
 
-		private static System.Net.HttpWebRequest CreateWebRequest(string contentType, string acceptTypes, string httpMethod, Uri uri, HeaderCollection headers, System.Net.CookieContainer cookieContainer, SslProtocolWebProxy sslProtocolWebProxyWrapper, System.Net.Security.RemoteCertificateValidationCallback serverCertificateValidationCallback, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates)
+		private static System.Net.HttpWebRequest CreateWebRequest(string contentType, string acceptTypes, string httpMethod, Uri uri, HeaderCollection headers, System.Net.CookieContainer cookieContainer, IProxyWrapper proxyWrapper, System.Net.Security.RemoteCertificateValidationCallback serverCertificateValidationCallback, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates)
 		{
-			var webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(sslProtocolWebProxyWrapper?.Uri ?? uri);
+			var webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(proxyWrapper?.Uri ?? uri);
 			webRequest.CookieContainer = cookieContainer;
 			webRequest.AllowAutoRedirect = false;
-			
+
 			//webRequest.Timeout = Int32.MaxValue;
 
 			if (headers.NullCheckedAny())
@@ -199,7 +199,7 @@ namespace ISI.Extensions.WebClient
 				headers.ApplyToWebRequest(webRequest);
 			}
 
-			webRequest.Proxy = sslProtocolWebProxyWrapper?.Proxy ?? System.Net.WebRequest.DefaultWebProxy;
+			webRequest.Proxy = proxyWrapper?.Proxy ?? System.Net.WebRequest.DefaultWebProxy;
 			webRequest.Method = httpMethod;
 			webRequest.ContentType = headers?.PreferredContentType ?? webRequest.ContentType;
 			if (!string.Equals(httpMethod, System.Net.WebRequestMethods.Http.Get))
@@ -212,7 +212,7 @@ namespace ISI.Extensions.WebClient
 			{
 				webRequest.ServerCertificateValidationCallback += serverCertificateValidationCallback;
 			}
-			else if(RestConfiguration?.IgnoreServerCertificateValidationForSubjectsContaining?.NullCheckedAny() ?? false)
+			else if (RestConfiguration?.IgnoreServerCertificateValidationForSubjectsContaining?.NullCheckedAny() ?? false)
 			{
 				webRequest.ServerCertificateValidationCallback += (sender, certificate, chain, errors) =>
 				{
@@ -227,6 +227,8 @@ namespace ISI.Extensions.WebClient
 						{
 							return true;
 						}
+
+						Console.WriteLine(certificate.Subject);
 					}
 
 					return false;
@@ -254,13 +256,15 @@ namespace ISI.Extensions.WebClient
 
 			IRestResponseWrapper response = null;
 
-			SslProtocolWebProxy sslProtocolWebProxyWrapper = null;
+			IProxyWrapper proxyWrapper = null;
 
 			if (overRideSecurityProtocolTypes.HasValue && string.Equals(uri.Scheme, Uri.UriSchemeHttps, StringComparison.InvariantCultureIgnoreCase))
 			{
-				sslProtocolWebProxyWrapper = new(uri, overRideSecurityProtocolTypes.Value, clientCertificates);
+				proxyWrapper = new SslProtocolWebProxy(uri, overRideSecurityProtocolTypes.Value, clientCertificates);
 				clientCertificates = null;
 			}
+			
+			proxyWrapper ??= ProxyWrapper;
 
 			System.IO.Stream requestStream = null;
 
@@ -274,7 +278,7 @@ namespace ISI.Extensions.WebClient
 				});
 
 				cookieContainer ??= new();
-				var webRequest = CreateWebRequest(contentType, acceptTypes, httpMethod, uri, headers, cookieContainer, sslProtocolWebProxyWrapper, serverCertificateValidationCallback, clientCertificates);
+				var webRequest = CreateWebRequest(contentType, acceptTypes, httpMethod, uri, headers, cookieContainer, proxyWrapper, serverCertificateValidationCallback, clientCertificates);
 
 				webRequestDetails.SetHeaders(webRequest.Headers);
 
@@ -292,7 +296,7 @@ namespace ISI.Extensions.WebClient
 				{
 					var location = webResponse.Headers["Location"];
 
-					var redirectUri = (location.StartsWith("/") ? (new UriBuilder(uri) {Path = location,}).Uri : new(location));
+					var redirectUri = (location.StartsWith("/") ? (new UriBuilder(uri) { Path = location, }).Uri : new(location));
 
 					if (uri == redirectUri)
 					{
@@ -305,7 +309,7 @@ namespace ISI.Extensions.WebClient
 
 						uri = redirectUri;
 
-						webRequest = CreateWebRequest(contentType, acceptTypes, httpMethod, uri, headers, cookieContainer, sslProtocolWebProxyWrapper, serverCertificateValidationCallback, clientCertificates);
+						webRequest = CreateWebRequest(contentType, acceptTypes, httpMethod, uri, headers, cookieContainer, proxyWrapper, serverCertificateValidationCallback, clientCertificates);
 
 						if (!string.Equals(httpMethod, System.Net.WebRequestMethods.Http.Get) && (request != null))
 						{
@@ -339,8 +343,8 @@ namespace ISI.Extensions.WebClient
 			requestStream?.Dispose();
 			requestStream = null;
 
-			sslProtocolWebProxyWrapper?.Dispose();
-			sslProtocolWebProxyWrapper = null;
+			(proxyWrapper as IDisposable)?.Dispose();
+			proxyWrapper = null;
 
 			_EventHandler?.Executed();
 

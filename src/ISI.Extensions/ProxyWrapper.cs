@@ -20,8 +20,26 @@ using System.Text;
 
 namespace ISI.Extensions
 {
+	public interface IProxyWrapper
+	{
+		System.Net.WebProxy Proxy { get; }
+		Uri Uri { get; }
+	}
+
+	public class ProxyWrapper : IProxyWrapper
+	{
+		public System.Net.WebProxy Proxy { get; }
+		public Uri Uri { get; }
+
+		public ProxyWrapper(System.Net.WebProxy webProxy)
+		{
+			Proxy = webProxy;
+			Uri = null;
+		}
+	}
+
 	//https://stackoverflow.com/questions/3791629/set-the-securityprotocol-ssl3-or-tls-on-the-net-httpwebrequest-per-request
-	public class SslProtocolWebProxy : IDisposable
+	public class SslProtocolWebProxy : IProxyWrapper, IDisposable
 	{
 		private string Host { get; }
 		private int Port { get; }

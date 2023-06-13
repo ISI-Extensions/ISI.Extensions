@@ -16,8 +16,8 @@
 
 	<ItemGroup>
 		<PackageReference Update="NETStandard.Library" Version="2.0.3" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
-		<PackageReference Include="StackExchange.Redis" Version="2.6.111" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
+		<PackageReference Include="StackExchange.Redis" Version="2.6.116" />
 	</ItemGroup>
 
 	<ItemGroup>

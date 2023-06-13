@@ -27,14 +27,16 @@ namespace ISI.Extensions.WebClient
 		public abstract class AbstractRestResponseWrapper<TResponse> : IRestResponseWrapper, IRestResponseWrapperAddResponse
 			where TResponse : class
 		{
+			public delegate TResponse ExtractResponseDelegate(System.IO.Stream stream, WebRequestDetails webRequestDetails);
+
 			public System.Net.HttpStatusCode StatusCode { get; set; }
 			public TResponse Response { get; set; }
 			public bool IsErrorResponse { get; set; }
 			public System.Exception Exception { get; set; }
 
-			protected Func<System.IO.Stream, WebRequestDetails, TResponse> ExtractResponse { get; }
+			protected ExtractResponseDelegate ExtractResponse { get; }
 
-			protected static readonly Func<System.IO.Stream, WebRequestDetails, TResponse> JsonExtractResponse = (stream, webRequestDetails) =>
+			protected static readonly ExtractResponseDelegate JsonExtractResponse = (stream, webRequestDetails) =>
 			{
 				if (webRequestDetails != null)
 				{
@@ -46,7 +48,7 @@ namespace ISI.Extensions.WebClient
 				return Serialization.Deserialize<TResponse>(stream, ISI.Extensions.Serialization.SerializationFormat.Json);
 			};
 
-			protected static readonly Func<System.IO.Stream, WebRequestDetails, TResponse> XmlExtractResponse = (stream, webRequestDetails) =>
+			protected static readonly ExtractResponseDelegate XmlExtractResponse = (stream, webRequestDetails) =>
 			{
 				if (webRequestDetails != null)
 				{
@@ -58,7 +60,7 @@ namespace ISI.Extensions.WebClient
 				return Serialization.Deserialize<TResponse>(stream, ISI.Extensions.Serialization.SerializationFormat.Xml);
 			};
 
-			public AbstractRestResponseWrapper(Func<System.IO.Stream, WebRequestDetails, TResponse> extractResponse)
+			public AbstractRestResponseWrapper(ExtractResponseDelegate extractResponse)
 			{
 				if (extractResponse == null)
 				{

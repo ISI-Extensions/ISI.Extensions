@@ -12,35 +12,65 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using NUnit.Framework;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Tests
+namespace ISI.Extensions
 {
-	[TestFixture]
-	public class AssemblyNameTests
+	public class FileLogger : Microsoft.Extensions.Logging.ILogger
 	{
-		[Test]
-		public void GetAssemblyNamePieces_Test()
+		protected string FullName { get; }
+
+		public FileLogger(string directory, string fileName = "log.txt")
 		{
-			var fileName = @"C:\Program Files\Integrated Solutions Inc\ISI.FileExplorer.Extensions\Microsoft.Extensions.Configuration.Binder.dll";
+			FullName = ISI.Extensions.IO.Path.GetFileNameNew(directory, fileName);
+		}
 
-			var assemblyName = System.Reflection.AssemblyName.GetAssemblyName(fileName);
+		public void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel, Microsoft.Extensions.Logging.EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+		{
+			formatter ??= (formatterState, formatterException) =>
+			{
+				if (formatterState is string stringValue)
+				{
+					return stringValue;
+				}
 
-			var name = assemblyName.FullName.Split(new[] { ',' }).First().Trim();
-			var assemblyVersion = assemblyName.Version.ToString();
-			var publicKeyToken = string.Concat(assemblyName.GetPublicKeyToken().Select(b => b.ToString("X2"))).ToLower();
+				if (formatterException != null)
+				{
+					return formatterException.ErrorMessageFormatted();
+				}
 
+				return formatterState.ToString();
+			};
 
-			Console.WriteLine("<dependentAssembly>");
-			Console.WriteLine($"\t<assemblyIdentity name=\"{name}\" publicKeyToken=\"{publicKeyToken}\" />");
-			Console.WriteLine($"\t<bindingRedirect oldVersion=\"0.0.0.0-{assemblyVersion}\" newVersion=\"{assemblyVersion}\" />");
-			Console.WriteLine("</dependentAssembly>");
+			System.IO.File.AppendAllText(FullName, string.Format("{0}{1}", formatter(state, exception), Environment.NewLine));
+		}
+
+		public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel)
+		{
+			return true;
+		}
+
+		public IDisposable BeginScope<TState>(TState state)
+		{
+			return new ConsoleLoggerScope<TState>(state);
+		}
+
+		public class ConsoleLoggerScope<TState> : IDisposable
+		{
+			protected TState State { get; }
+
+			public ConsoleLoggerScope(TState state)
+			{
+				State = state;
+			}
+
+			public void Dispose()
+			{
+			}
 		}
 	}
 }

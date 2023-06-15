@@ -77,73 +77,7 @@ namespace ISI.Extensions.VisualStudio
 
 						void sign(string[] fileNames)
 						{
-							var arguments = new List<string>();
-							arguments.Add("sign");
-
-							if (request.DigestAlgorithm == DTOs.CodeSigningDigestAlgorithm.Sha256)
-							{
-								arguments.Add("/fd SHA256");
-							}
-							else if (request.DigestAlgorithm == DTOs.CodeSigningDigestAlgorithm.Sha384)
-							{
-								arguments.Add("/fd SHA384");
-							}
-							else if (request.DigestAlgorithm == DTOs.CodeSigningDigestAlgorithm.Sha512)
-							{
-								arguments.Add("/fd SHA512");
-							}
-
-							if (request.TimeStampUri != null)
-							{
-								if (request.TimeStampDigestAlgorithm == DTOs.CodeSigningDigestAlgorithm.Sha256)
-								{
-									arguments.Add("/td SHA256");
-									arguments.Add(string.Format("/tr \"{0}\"", request.TimeStampUri));
-								}
-								else
-								{
-									arguments.Add(string.Format("/t \"{0}\"", request.TimeStampUri));
-								}
-							}
-
-							if (!string.IsNullOrWhiteSpace(request.CertificateFileName))
-							{
-								arguments.Add(string.Format("/f \"{0}\"", request.CertificateFileName));
-
-								if (!string.IsNullOrWhiteSpace(request.CertificatePassword))
-								{
-									arguments.Add(string.Format("/p \"{0}\"", request.CertificatePassword));
-								}
-							}
-
-							if (!string.IsNullOrWhiteSpace(request.CertificateFingerprint))
-							{
-								arguments.Add(string.Format("/sha1 \"{0}\"", request.CertificateFingerprint));
-							}
-
-							if (!string.IsNullOrWhiteSpace(request.CertificateSubjectName))
-							{
-								arguments.Add(string.Format("/n \"{0}\"", request.CertificateSubjectName));
-							}
-
-							if (request.OverwriteAnyExistingSignature)
-							{
-								arguments.Add("/as");
-							}
-
-							switch (request.Verbosity)
-							{
-								case DTOs.CodeSigningVerbosity.Normal:
-									break;
-								case DTOs.CodeSigningVerbosity.Quiet:
-									arguments.Add("/q");
-									break;
-								case DTOs.CodeSigningVerbosity.Detailed:
-									arguments.Add("/debug");
-									break;
-								default:
-									throw new ArgumentOutOfRangeException();
-							}
+							var arguments = GetSignAssemblyCommandArguments(request);
 
 							arguments.AddRange(fileNames.Select(fileName => string.Format("\"{0}\"", fileName)));
 

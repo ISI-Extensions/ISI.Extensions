@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -17,30 +17,33 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using NUnit.Framework;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Tests
+namespace ISI.Extensions
 {
-	[TestFixture]
-	public class AssemblyNameTests
+	public partial class IO
 	{
-		[Test]
-		public void GetAssemblyNamePieces_Test()
+		public partial class Path
 		{
-			var fileName = @"C:\Program Files\Integrated Solutions Inc\ISI.FileExplorer.Extensions\Microsoft.Extensions.Configuration.Binder.dll";
+			public static string GetFileNameNew(string fullName) => GetFileNameNew(System.IO.Path.GetDirectoryName(fullName), System.IO.Path.GetFileName(fullName));
 
-			var assemblyName = System.Reflection.AssemblyName.GetAssemblyName(fileName);
+			public static string GetFileNameNew(string directory, string fileName)
+			{
+				var fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(fileName);
+				var fileNameExtension = System.IO.Path.GetExtension(fileName);
+				var fileIndex = 1;
 
-			var name = assemblyName.FullName.Split(new[] { ',' }).First().Trim();
-			var assemblyVersion = assemblyName.Version.ToString();
-			var publicKeyToken = string.Concat(assemblyName.GetPublicKeyToken().Select(b => b.ToString("X2"))).ToLower();
+				var fullName = System.IO.Path.Combine(directory, fileName);
 
+				while (System.IO.File.Exists(fullName))
+				{
+					fullName = System.IO.Path.Combine(directory, $"{fileNameWithoutExtension}_{fileIndex}.{fileNameExtension}");
 
-			Console.WriteLine("<dependentAssembly>");
-			Console.WriteLine($"\t<assemblyIdentity name=\"{name}\" publicKeyToken=\"{publicKeyToken}\" />");
-			Console.WriteLine($"\t<bindingRedirect oldVersion=\"0.0.0.0-{assemblyVersion}\" newVersion=\"{assemblyVersion}\" />");
-			Console.WriteLine("</dependentAssembly>");
+					fileIndex++;
+				}
+
+				return fullName;
+			}
 		}
 	}
 }

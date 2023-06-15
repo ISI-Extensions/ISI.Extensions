@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -13,34 +13,30 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
+using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NUnit.Framework;
+using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi;
 
-namespace ISI.Extensions.Tests
+namespace ISI.Extensions.VisualStudio
 {
-	[TestFixture]
-	public class AssemblyNameTests
+	public partial class CodeSigningApi
 	{
-		[Test]
-		public void GetAssemblyNamePieces_Test()
+		public DTOs.GetSignAssemblyCommandResponse GetSignAssemblyCommand(DTOs.GetSignAssemblyCommandRequest request)
 		{
-			var fileName = @"C:\Program Files\Integrated Solutions Inc\ISI.FileExplorer.Extensions\Microsoft.Extensions.Configuration.Binder.dll";
+			var response = new DTOs.GetSignAssemblyCommandResponse();
+			
+			var arguments = GetSignAssemblyCommandArguments(request);
 
-			var assemblyName = System.Reflection.AssemblyName.GetAssemblyName(fileName);
+			arguments.Insert(0, "signtool.exe");
 
-			var name = assemblyName.FullName.Split(new[] { ',' }).First().Trim();
-			var assemblyVersion = assemblyName.Version.ToString();
-			var publicKeyToken = string.Concat(assemblyName.GetPublicKeyToken().Select(b => b.ToString("X2"))).ToLower();
+			response.Command = string.Join(" ", arguments);
 
-
-			Console.WriteLine("<dependentAssembly>");
-			Console.WriteLine($"\t<assemblyIdentity name=\"{name}\" publicKeyToken=\"{publicKeyToken}\" />");
-			Console.WriteLine($"\t<bindingRedirect oldVersion=\"0.0.0.0-{assemblyVersion}\" newVersion=\"{assemblyVersion}\" />");
-			Console.WriteLine("</dependentAssembly>");
+			return response;
 		}
 	}
 }

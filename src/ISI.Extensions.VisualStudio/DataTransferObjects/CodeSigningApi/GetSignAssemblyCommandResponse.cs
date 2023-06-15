@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,29 +18,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NUnit.Framework;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Tests
+namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
 {
-	[TestFixture]
-	public class AssemblyNameTests
+	public class GetSignAssemblyCommandResponse
 	{
-		[Test]
-		public void GetAssemblyNamePieces_Test()
-		{
-			var fileName = @"C:\Program Files\Integrated Solutions Inc\ISI.FileExplorer.Extensions\Microsoft.Extensions.Configuration.Binder.dll";
-
-			var assemblyName = System.Reflection.AssemblyName.GetAssemblyName(fileName);
-
-			var name = assemblyName.FullName.Split(new[] { ',' }).First().Trim();
-			var assemblyVersion = assemblyName.Version.ToString();
-			var publicKeyToken = string.Concat(assemblyName.GetPublicKeyToken().Select(b => b.ToString("X2"))).ToLower();
-
-
-			Console.WriteLine("<dependentAssembly>");
-			Console.WriteLine($"\t<assemblyIdentity name=\"{name}\" publicKeyToken=\"{publicKeyToken}\" />");
-			Console.WriteLine($"\t<bindingRedirect oldVersion=\"0.0.0.0-{assemblyVersion}\" newVersion=\"{assemblyVersion}\" />");
-			Console.WriteLine("</dependentAssembly>");
-		}
+		public string Command { get; set; }
 	}
 }

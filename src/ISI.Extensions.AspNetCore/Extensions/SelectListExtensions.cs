@@ -60,6 +60,11 @@ namespace ISI.Extensions.AspNetCore.Extensions
 			return ISI.Extensions.Enum<TEnum>.ToArray().ToNullCheckedArray(value => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(value.GetValueSource(valueSource), value.GetValueSource(keySource), value.Equals(selectedValue)));
 		}
 
+		public static Microsoft.AspNetCore.Mvc.Rendering.SelectListItem[] ToSelectListItems<TValue>(this IEnumerable<TValue> values, Func<TValue, string> keySource, Func<TValue, string> valueSource, string selectedValue = null)
+		{
+			return values.ToNullCheckedArray(value => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(valueSource(value), keySource(value), (keySource(value) ?? string.Empty).Equals(selectedValue ?? string.Empty)));
+		}
+
 		public static Microsoft.AspNetCore.Mvc.Rendering.SelectListItem[] ToSelectListItems(this IEnumerable<string> values, string selectedValue = null)
 		{
 			return values.ToNullCheckedArray(value => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(value, value, (value ?? string.Empty).Equals(selectedValue ?? string.Empty)));

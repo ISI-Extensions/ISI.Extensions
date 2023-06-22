@@ -66,7 +66,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void NoResponse_Test()
 		{
-			var url = @"http://dev-scheduler.tristarfulfillment.com:8731/ISI.Scheduler/rest/pause-service";
+			var url = @"http://dev-scheduler.xxxxx.com:8731/ISI.Scheduler/rest/pause-service";
 
 			var executeGetJsonResponse = ISI.Extensions.WebClient.Rest.ExecuteGet<ISI.Extensions.WebClient.Rest.TextResponse>(url, null, true);
 

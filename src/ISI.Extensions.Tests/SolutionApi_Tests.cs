@@ -87,7 +87,7 @@ namespace ISI.Extensions.Tests
 
 			var useLocalSourcePackagesResponse = solutionApi.UseLocalSourcePackages(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.UseLocalSourcePackagesRequest()
 			{
-				SolutionItem = @"E:\Tristar\Comcast.Product.XClass.Portal.WebApplication",
+				SolutionItem = @"E:\ISI\ISI.Product.ISI.Portal.WebApplication",
 			});
 
 		}
@@ -334,8 +334,6 @@ namespace ISI.Extensions.Tests
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Telephony.WindowsService");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Desktop");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.WebApplication");
-			//solutionFullNames.Add(@"F:\ISI\Clients\TFS\Tristar.Portal");
-			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Tristar.SolutionFullNames.txt"));
 			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\ISI.SolutionFullNames.txt"));
 
 			solutionFullNames.RemoveAll(solutionFullName => !System.IO.Directory.Exists(solutionFullName));
@@ -503,7 +501,7 @@ namespace ISI.Extensions.Tests
 
 				jobIds.RemoveWhere(jobId => !jobId.EndsWith(".Build", StringComparison.InvariantCulture));
 
-				solutionFullNames.AddRange(jobIds.Select(jobId => System.IO.Path.Combine(@"F:\ISI\Clients\TFS", jobId.TrimEnd(".Build"))));
+				solutionFullNames.AddRange(jobIds.Select(jobId => System.IO.Path.Combine(@"F:\ISI\Clients\ISI", jobId.TrimEnd(".Build"))));
 			}
 
 			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new()
@@ -586,7 +584,6 @@ namespace ISI.Extensions.Tests
 
 			var solutionFullNames = new List<string>();
 			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\ISI.SolutionFullNames.txt"));
-			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Tristar.SolutionFullNames.txt"));
 
 			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new()
 			{
@@ -668,7 +665,7 @@ namespace ISI.Extensions.Tests
 			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
 			var sourceControlClientApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.SourceControlClientApi>();
 
-			var solutionFullNames = System.IO.File.ReadAllLines(@"S:\Tristar.SolutionFullNames.txt");
+			var solutionFullNames = System.IO.File.ReadAllLines(@"S:\ISI.SolutionFullNames.txt");
 
 			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new()
 			{

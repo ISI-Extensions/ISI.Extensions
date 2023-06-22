@@ -94,10 +94,10 @@ namespace ISI.Extensions.Tests
 
 			var buildDateTimeStamp = string.Format("{0:yyyyMMdd.HHmmss}", utcDateTime);
 
-			var solutionFullName = @"F:\ISI\Clients\TFS\Tristar.DocumentBuilder.Portal.WebApplication\src\Tristar.DocumentBuilder.Portal.WebApplication.sln";
-			var rootProjectFullName = @"F:\ISI\Clients\TFS\Tristar.DocumentBuilder.Portal.WebApplication\src\Tristar.DocumentBuilder.Portal.WebApplication\Tristar.DocumentBuilder.Portal.WebApplication.csproj";
-			var rootAssemblyVersionKey = "Tristar.DocumentBuilder.Portal.WebApplication";
-			var artifactName = "Tristar.DocumentBuilder.Portal.WebApplication";
+			var solutionFullName = @"F:\ISI\Clients\ISI\ISI.DocumentBuilder.Portal.WebApplication\src\ISI.DocumentBuilder.Portal.WebApplication.sln";
+			var rootProjectFullName = @"F:\ISI\Clients\ISI\ISI.DocumentBuilder.Portal.WebApplication\src\ISI.DocumentBuilder.Portal.WebApplication\ISI.DocumentBuilder.Portal.WebApplication.csproj";
+			var rootAssemblyVersionKey = "ISI.DocumentBuilder.Portal.WebApplication";
+			var artifactName = "ISI.DocumentBuilder.Portal.WebApplication";
 
 			//solutionApi.CleanSolution(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.CleanSolutionRequest()
 			//{
@@ -128,18 +128,18 @@ namespace ISI.Extensions.Tests
 				BuildVersion = ISI.Extensions.VisualStudio.MSBuildVersion.Latest,
 				Configuration = configuration,
 				AssemblyVersionFiles = assemblyVersions,
-				SubDirectory = "Tristar",
+				SubDirectory = "ISI",
 				PackageComponents = new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.IPackageComponent[]
 				{
 					new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.PackageComponentConsoleApplication()
 					{
-						ProjectFullName = @"F:\ISI\Clients\TFS\Tristar.DocumentBuilder.Portal.WebApplication\src\Tristar.Services\Tristar.Services.DocumentBuilder.MigrationTool\Tristar.Services.DocumentBuilder.MigrationTool.csproj",
-						IconFileName = @"Tristar.ico",
+						ProjectFullName = @"F:\ISI\Clients\ISI\ISI.DocumentBuilder.Portal.WebApplication\src\ISI.Services\ISI.Services.DocumentBuilder.MigrationTool\ISI.Services.DocumentBuilder.MigrationTool.csproj",
+						IconFileName = @"ISI.ico",
 					},
 					new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.PackageComponentWebSite()
 					{
 						ProjectFullName = rootProjectFullName,
-						IconFileName = @"Tristar.ico",
+						IconFileName = @"ISI.ico",
 					},
 				},
 				PackageFullName = buildArtifactZipFileName,

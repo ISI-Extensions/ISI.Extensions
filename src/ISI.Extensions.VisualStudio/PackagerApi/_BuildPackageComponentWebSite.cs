@@ -138,7 +138,6 @@ namespace ISI.Extensions.VisualStudio
 						//msBuildRequest.Options.Targets.Add("restore");
 						//msBuildRequest.Options.Targets.Add("build");
 
-						//msbuild.exe" "F:\ISI\Clients\TFS\Tristar.Portal\src\Tristar.Portal.Web.Interface\Tristar.Portal.Web.Interface.csproj" /p:DeployOnBuild=true /p:PublishProfile="F:\ISI\Clients\TFS\Tristar.Portal\src\Tristar.Portal.Web.Interface\Properties\PublishProfiles\FolderProfile.pubxml"
 
 						MSBuildApi.MSBuild(msBuildRequest);
 

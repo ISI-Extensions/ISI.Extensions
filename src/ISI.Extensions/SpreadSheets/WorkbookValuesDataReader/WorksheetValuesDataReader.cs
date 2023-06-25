@@ -140,7 +140,7 @@ namespace ISI.Extensions.SpreadSheets
 					rawValues[columnIndex] = value;
 				}
 
-				TransformRecord?.Invoke(Depth, Columns, ref values);
+				TransformRecord?.Invoke(Depth, Columns, Source, ref values);
 
 				if (values != null)
 				{

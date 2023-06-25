@@ -147,6 +147,7 @@ namespace ISI.Extensions.DataReader
 					{
 						var record = RecordsEnumerator.Current;
 
+						Source = record;
 						Values = new object[FieldCount];
 
 						for (var columnIndex = 0; columnIndex < FieldCount; columnIndex++)
@@ -154,7 +155,7 @@ namespace ISI.Extensions.DataReader
 							Values[columnIndex] = Columns[columnIndex].GetValue(record);
 						}
 
-						TransformRecord?.Invoke(Depth, Columns, ref Values);
+						TransformRecord?.Invoke(Depth, Columns, Source, ref Values);
 
 						if (Values != null)
 						{

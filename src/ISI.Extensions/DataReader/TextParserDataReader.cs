@@ -101,6 +101,7 @@ namespace ISI.Extensions.DataReader
 
 				if (parserResult.Success)
 				{
+					Source = parserResult.Source;
 					Values = new object[parserResult.Record.Length];
 
 					for (var columnIndex = 0; columnIndex < parserResult.Record.Length; columnIndex++)
@@ -108,12 +109,17 @@ namespace ISI.Extensions.DataReader
 						Values[columnIndex] = parserResult.Record[columnIndex];
 					}
 
-					TransformRecord?.Invoke(Depth, Columns, ref Values);
+					TransformRecord?.Invoke(Depth, Columns, Source, ref Values);
 
 					if (Values != null)
 					{
 						result = true;
 					}
+				}
+				else
+				{
+					Source = null;
+					Values = null;
 				}
 			}
 

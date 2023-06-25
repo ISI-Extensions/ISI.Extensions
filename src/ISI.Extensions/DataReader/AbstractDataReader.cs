@@ -24,6 +24,7 @@ namespace ISI.Extensions.DataReader
 {
 	public abstract class AbstractDataReader : ISI.Extensions.DataReader.IDataReader
 	{
+		protected object Source = null;
 		protected object[] Values = null;
 
 		public int Depth { get; protected set; }

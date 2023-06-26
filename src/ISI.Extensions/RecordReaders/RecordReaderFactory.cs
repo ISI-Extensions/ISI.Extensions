@@ -21,7 +21,7 @@ namespace ISI.Extensions.RecordReaders
 {
 	public class RecordReaderFactory
 	{
-		public static IEnumerable<TRecord> GetRecordReaderByFileName<TRecord>(System.IO.Stream stream, string fileName, IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns = null, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads = null)
+		public static IEnumerable<TRecord> GetRecordReaderByFileName<TRecord>(System.IO.Stream stream, string fileName, IEnumerable<ISI.Extensions.Columns.IColumn<TRecord>> columns = null, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads = null)
 			where TRecord : class, new()
 		{
 			var fileExtension = System.IO.Path.GetExtension(fileName);

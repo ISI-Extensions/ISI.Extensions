@@ -27,24 +27,24 @@ namespace ISI.Extensions.SpreadSheets
 		protected IEnumerable<ISI.Extensions.SpreadSheets.IWorksheetCellsRow> Rows { get; }
 		protected System.Collections.IEnumerator RowEnumerator { get; set; }
 
-		protected ISI.Extensions.Columns.IColumnInfo[] Columns { get; }
+		protected ISI.Extensions.Columns.IColumn[] Columns { get; }
 		protected IDictionary<string, int> ColumnLookUp { get; }
 
 		protected ISI.Extensions.DataReader.TransformRecord TransformRecord { get; }
 
-		public WorksheetValuesDataReader(ISI.Extensions.SpreadSheets.IWorksheetCellsRowCollection rows, IEnumerable<ISI.Extensions.Columns.IColumnInfo> columns = null, ISI.Extensions.DataReader.TransformRecord transformRecord = null)
+		public WorksheetValuesDataReader(ISI.Extensions.SpreadSheets.IWorksheetCellsRowCollection rows, IEnumerable<ISI.Extensions.Columns.IColumn> columns = null, ISI.Extensions.DataReader.TransformRecord transformRecord = null)
 			: this(columns, transformRecord)
 		{
 			Rows = rows;
 		}
 
-		public WorksheetValuesDataReader(ISI.Extensions.SpreadSheets.IWorksheet worksheet, IEnumerable<ISI.Extensions.Columns.IColumnInfo> columns = null, ISI.Extensions.DataReader.TransformRecord transformRecord = null)
+		public WorksheetValuesDataReader(ISI.Extensions.SpreadSheets.IWorksheet worksheet, IEnumerable<ISI.Extensions.Columns.IColumn> columns = null, ISI.Extensions.DataReader.TransformRecord transformRecord = null)
 			: this(columns, transformRecord)
 		{
 			Rows = worksheet.Cells.Rows;
 		}
 
-		private WorksheetValuesDataReader(IEnumerable<ISI.Extensions.Columns.IColumnInfo> columns, ISI.Extensions.DataReader.TransformRecord transformRecord)
+		private WorksheetValuesDataReader(IEnumerable<ISI.Extensions.Columns.IColumn> columns, ISI.Extensions.DataReader.TransformRecord transformRecord)
 		{
 			Columns = columns.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 

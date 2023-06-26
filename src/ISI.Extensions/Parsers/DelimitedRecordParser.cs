@@ -32,18 +32,18 @@ namespace ISI.Extensions.Parsers
 		private string LastUnparsedHeader { get; set; } = null;
 		private string LastUnparsedSource { get; set; } = null;
 
-		protected ISI.Extensions.Columns.ColumnInfoCollection<TRecord> Columns { get; }
+		protected ISI.Extensions.Columns.ColumnCollection<TRecord> Columns { get; }
 		protected IDictionary<string, int> ColumnLookUp { get; }
 		private int[] _columnIndexes;
 		protected int[] ColumnIndexes => _columnIndexes;
 
 		protected OnRead<TRecord>[] OnReads { get; }
 
-		public DelimitedRecordParser(ISI.Extensions.Parsers.ITextParser textParser, IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns, IEnumerable<OnRead<TRecord>> onReads)
+		public DelimitedRecordParser(ISI.Extensions.Parsers.ITextParser textParser, IEnumerable<ISI.Extensions.Columns.IColumn<TRecord>> columns, IEnumerable<OnRead<TRecord>> onReads)
 		{
 			TextParser = textParser;
 
-			Columns = new ISI.Extensions.Columns.ColumnInfoCollection<TRecord>(columns ?? ISI.Extensions.Columns.ColumnInfoCollection<TRecord>.GetDefault());
+			Columns = new ISI.Extensions.Columns.ColumnCollection<TRecord>(columns ?? ISI.Extensions.Columns.ColumnCollection<TRecord>.GetDefault());
 
 			ColumnLookUp = new Dictionary<string, int>(StringComparer.InvariantCultureIgnoreCase);
 			for (var columnIndex = 0; columnIndex < Columns.Count; columnIndex++)

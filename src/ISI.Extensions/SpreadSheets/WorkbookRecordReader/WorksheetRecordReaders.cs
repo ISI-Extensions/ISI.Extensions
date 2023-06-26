@@ -30,7 +30,7 @@ namespace ISI.Extensions.SpreadSheets
 		protected bool DoWorkbookDisposable { get; }
 		protected ISI.Extensions.SpreadSheets.IWorksheet Worksheet { get; }
 
-		protected ISI.Extensions.Columns.IColumnInfo<TRecord>[] Columns { get; }
+		protected ISI.Extensions.Columns.IColumn<TRecord>[] Columns { get; }
 		protected ISI.Extensions.Parsers.OnRead<TRecord>[] OnReads { get; }
 
 		private class WorksheetRecordReaderEnumerator : IEnumerator<TRecord>
@@ -40,18 +40,18 @@ namespace ISI.Extensions.SpreadSheets
 			protected IEnumerable<ISI.Extensions.SpreadSheets.IWorksheetCellsRow> Rows { get; }
 			protected System.Collections.IEnumerator RowEnumerator { get; set; }
 
-			protected ISI.Extensions.Columns.ColumnInfoCollection<TRecord> Columns { get; }
+			protected ISI.Extensions.Columns.ColumnCollection<TRecord> Columns { get; }
 			protected IDictionary<string, int> ColumnLookUp { get; }
 			private int[] _columnIndexes;
 			protected int[] ColumnIndexes => _columnIndexes;
 
 			protected ISI.Extensions.Parsers.OnRead<TRecord>[] OnReads { get; }
 
-			public WorksheetRecordReaderEnumerator(IEnumerable<ISI.Extensions.SpreadSheets.IWorksheetCellsRow> rows, IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns, ISI.Extensions.Parsers.OnRead<TRecord>[] onReads)
+			public WorksheetRecordReaderEnumerator(IEnumerable<ISI.Extensions.SpreadSheets.IWorksheetCellsRow> rows, IEnumerable<ISI.Extensions.Columns.IColumn<TRecord>> columns, ISI.Extensions.Parsers.OnRead<TRecord>[] onReads)
 			{
 				Rows = rows;
 
-				Columns = new ISI.Extensions.Columns.ColumnInfoCollection<TRecord>((columns ?? ISI.Extensions.Columns.ColumnInfoCollection<TRecord>.GetDefault()));
+				Columns = new ISI.Extensions.Columns.ColumnCollection<TRecord>((columns ?? ISI.Extensions.Columns.ColumnCollection<TRecord>.GetDefault()));
 
 				ColumnLookUp = new Dictionary<string, int>(StringComparer.InvariantCultureIgnoreCase);
 				for (var columnIndex = 0; columnIndex < Columns.Count; columnIndex++)
@@ -161,7 +161,7 @@ namespace ISI.Extensions.SpreadSheets
 			}
 		}
 
-		public WorksheetRecordReader(string fileName, IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns = null, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads = null)
+		public WorksheetRecordReader(string fileName, IEnumerable<ISI.Extensions.Columns.IColumn<TRecord>> columns = null, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads = null)
 			: this(columns, onReads)
 		{
 			var spreadSheetHelper = ISI.Extensions.ServiceLocator.Current.GetService<ISpreadSheetHelper>();
@@ -171,7 +171,7 @@ namespace ISI.Extensions.SpreadSheets
 			Worksheet = Workbook.Worksheets.NullCheckedFirstOrDefault();
 		}
 
-		public WorksheetRecordReader(System.IO.Stream stream, IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns = null, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads = null)
+		public WorksheetRecordReader(System.IO.Stream stream, IEnumerable<ISI.Extensions.Columns.IColumn<TRecord>> columns = null, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads = null)
 			: this(columns, onReads)
 		{
 			var spreadSheetHelper = ISI.Extensions.ServiceLocator.Current.GetService<ISpreadSheetHelper>();
@@ -181,15 +181,15 @@ namespace ISI.Extensions.SpreadSheets
 			Worksheet = Workbook.Worksheets.NullCheckedFirstOrDefault();
 		}
 
-		public WorksheetRecordReader(ISI.Extensions.SpreadSheets.IWorksheet worksheet, IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns = null, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads = null)
+		public WorksheetRecordReader(ISI.Extensions.SpreadSheets.IWorksheet worksheet, IEnumerable<ISI.Extensions.Columns.IColumn<TRecord>> columns = null, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads = null)
 			: this(columns, onReads)
 		{
 			Worksheet = worksheet;
 		}
 
-		private WorksheetRecordReader(IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads)
+		private WorksheetRecordReader(IEnumerable<ISI.Extensions.Columns.IColumn<TRecord>> columns, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads)
 		{
-			Columns = (columns ?? ISI.Extensions.Columns.ColumnInfoCollection<TRecord>.GetDefault()).ToNullCheckedArray(NullCheckCollectionResult.Empty);
+			Columns = (columns ?? ISI.Extensions.Columns.ColumnCollection<TRecord>.GetDefault()).ToNullCheckedArray(NullCheckCollectionResult.Empty);
 			OnReads = onReads.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 		}
 

@@ -22,12 +22,12 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Columns
 {
-	public class ColumnInfoCollection<TRecord> : List<IColumnInfo<TRecord>>
+	public class ColumnCollection<TRecord> : List<IColumn<TRecord>>
 		where TRecord : class, new()
 	{
 		private static ISI.Extensions.DataContract.DataMemberPropertyInfo[] properties = null;
 
-		static ColumnInfoCollection()
+		static ColumnCollection()
 		{
 			var type = typeof(TRecord);
 
@@ -41,24 +41,24 @@ namespace ISI.Extensions.Columns
 			}
 		}
 
-		public static ColumnInfoCollection<TRecord> GetDefault()
+		public static ColumnCollection<TRecord> GetDefault()
 		{
-			var result = new ColumnInfoCollection<TRecord>();
+			var result = new ColumnCollection<TRecord>();
 
 			foreach (var property in properties)
 			{
-				result.Add(Activator.CreateInstance(typeof(ISI.Extensions.Columns.ColumnInfo<,>).MakeGenericType(typeof(TRecord), property.PropertyInfo.PropertyType), new object[] {property.DataMemberAttribute.Name, property.PropertyInfo, null, null}, null) as IColumnInfo<TRecord>);
+				result.Add(Activator.CreateInstance(typeof(ISI.Extensions.Columns.Column<,>).MakeGenericType(typeof(TRecord), property.PropertyInfo.PropertyType), new object[] {property.DataMemberAttribute.Name, property.PropertyInfo, null, null}, null) as IColumn<TRecord>);
 			}
 
 			return result;
 		}
 
-		public ColumnInfoCollection()
+		public ColumnCollection()
 		{
 			
 		}
 
-		public ColumnInfoCollection(IEnumerable<IColumnInfo<TRecord>> columns)
+		public ColumnCollection(IEnumerable<IColumn<TRecord>> columns)
 			: base(columns)
 		{
 			
@@ -66,39 +66,39 @@ namespace ISI.Extensions.Columns
 
 		public void Add<TProperty>(System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property)
 		{
-			base.Add(new ColumnInfo<TRecord, TProperty>(null, property, null, null));
+			base.Add(new Column<TRecord, TProperty>(null, property, null, null));
 		}
 
 		public void Add<TProperty>(System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property, Func<object, TProperty> transformValue)
 		{
-			base.Add(new ColumnInfo<TRecord, TProperty>(null, property, transformValue, null));
+			base.Add(new Column<TRecord, TProperty>(null, property, transformValue, null));
 		}
 
 		public void Add<TProperty>(System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property, Func<TRecord, string> formattedValue)
 		{
-			base.Add(new ColumnInfo<TRecord, TProperty>(null, property, null, formattedValue));
+			base.Add(new Column<TRecord, TProperty>(null, property, null, formattedValue));
 		}
 
 
 		public void Add<TProperty>(string columnName, System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property)
 		{
-			base.Add(new ColumnInfo<TRecord, TProperty>(new[] { columnName }, property, null, null));
+			base.Add(new Column<TRecord, TProperty>(new[] { columnName }, property, null, null));
 		}
 
 		public void Add<TProperty>(string columnName, System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property, Func<object, TProperty> transformValue)
 		{
-			base.Add(new ColumnInfo<TRecord, TProperty>(new[] { columnName }, property, transformValue, null));
+			base.Add(new Column<TRecord, TProperty>(new[] { columnName }, property, transformValue, null));
 		}
 
 
 		public void Add<TProperty>(IEnumerable<string> columnNames, System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property)
 		{
-			base.Add(new ColumnInfo<TRecord, TProperty>(columnNames, property, null, null));
+			base.Add(new Column<TRecord, TProperty>(columnNames, property, null, null));
 		}
 
 		public void Add<TProperty>(IEnumerable<string> columnNames, System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property, Func<object, TProperty> transformValue)
 		{
-			base.Add(new ColumnInfo<TRecord, TProperty>(columnNames, property, transformValue, null));
+			base.Add(new Column<TRecord, TProperty>(columnNames, property, transformValue, null));
 		}
 	}
 }

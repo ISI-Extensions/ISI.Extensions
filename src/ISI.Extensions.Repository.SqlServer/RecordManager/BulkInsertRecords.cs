@@ -46,13 +46,13 @@ namespace ISI.Extensions.Repository.SqlServer
 				throw new("Cannot ignore Identity on when there is an archive table");
 			}
 
-			var columns = new ISI.Extensions.Columns.ColumnInfoCollection<TRecord>();
+			var columns = new ISI.Extensions.Columns.ColumnCollection<TRecord>();
 
 			if (RecordDescription.GetRecordDescription<TRecord>().HasLocalClusteringIndex)
 			{
 				var localClusteringIndexIdPropertyDescription = RecordDescription.GetRecordDescription<HasLocalClusteringIndexRecord>().PropertyDescriptions.FirstOrDefault() as IRecordPropertyDescription;
 
-				columns.Add(new ISI.Extensions.Columns.ColumnInfo<TRecord, object>(
+				columns.Add(new ISI.Extensions.Columns.Column<TRecord, object>(
 					localClusteringIndexIdPropertyDescription.ColumnName,
 					record => true,
 					record => null
@@ -63,7 +63,7 @@ namespace ISI.Extensions.Repository.SqlServer
 			{
 				if (!keepIdentities && propertyDescription.RepositoryAssignedValueAttribute is IdentityAttribute)
 				{
-					columns.Add(new ISI.Extensions.Columns.ColumnInfo<TRecord, object>(
+					columns.Add(new ISI.Extensions.Columns.Column<TRecord, object>(
 						propertyDescription.ColumnName,
 						record => true,
 						record => null
@@ -71,7 +71,7 @@ namespace ISI.Extensions.Repository.SqlServer
 				}
 				else
 				{
-					columns.Add(new ISI.Extensions.Columns.ColumnInfo<TRecord, object>(
+					columns.Add(new ISI.Extensions.Columns.Column<TRecord, object>(
 						propertyDescription.ColumnName,
 						record => propertyDescription.PropertyInfo.GetValue(record) == null,
 						record =>
@@ -113,7 +113,7 @@ namespace ISI.Extensions.Repository.SqlServer
 					columns.RemoveAt(0);
 				}
 
-				columns.Insert(0, new ISI.Extensions.Columns.ColumnInfo<TRecord, DateTime>(
+				columns.Insert(0, new ISI.Extensions.Columns.Column<TRecord, DateTime>(
 					ArchiveTableArchiveDateTimeColumnName,
 					record => false,
 					record => ((ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime)record).ArchiveDateTime

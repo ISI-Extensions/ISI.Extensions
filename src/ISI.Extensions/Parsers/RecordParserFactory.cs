@@ -26,7 +26,7 @@ namespace ISI.Extensions
 	{
 		public static ISI.Extensions.Parsers.OnRead<TRecord> GetHeadersOnFirstLineHandler()
 		{
-			return (object context, string source, IDictionary<string, int> columnLookup, ISI.Extensions.Columns.ColumnInfoCollection<TRecord> columns, ref int[] columnIndexes, ref object[] values) =>
+			return (object context, string source, IDictionary<string, int> columnLookup, ISI.Extensions.Columns.ColumnCollection<TRecord> columns, ref int[] columnIndexes, ref object[] values) =>
 			{
 				if ((context is Parsers.IRecordDepth recordDepthContext) && (recordDepthContext.Depth == 0))
 				{
@@ -56,7 +56,7 @@ namespace ISI.Extensions
 
 		public static ISI.Extensions.Parsers.OnRead<TRecord> GetHeaderPrefixHandler(string headerPrefix)
 		{
-			return (object context, string source, IDictionary<string, int> columnLookup, ISI.Extensions.Columns.ColumnInfoCollection<TRecord> columns, ref int[] columnIndexes, ref object[] values) =>
+			return (object context, string source, IDictionary<string, int> columnLookup, ISI.Extensions.Columns.ColumnCollection<TRecord> columns, ref int[] columnIndexes, ref object[] values) =>
 			{
 				var headerColumnValue = (values[0] is string ? (string)values[0] : string.Format("{0}", values[0]));
 
@@ -87,17 +87,17 @@ namespace ISI.Extensions
 		}
 
 
-		public static ISI.Extensions.Parsers.IRecordParser<TRecord> GetRecordParser(char textDelimiter, IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns = null, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads = null)
+		public static ISI.Extensions.Parsers.IRecordParser<TRecord> GetRecordParser(char textDelimiter, IEnumerable<ISI.Extensions.Columns.IColumn<TRecord>> columns = null, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads = null)
 		{
 			return new ISI.Extensions.Parsers.DelimitedRecordParser<TRecord>(TextParserFactory.GetTextParser( textDelimiter), columns, onReads);
 		}
 
-		public static ISI.Extensions.Parsers.IRecordParser<TRecord> GetRecordParser(TextParserFactory.TextDelimiter textDelimiter, IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns = null, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads = null)
+		public static ISI.Extensions.Parsers.IRecordParser<TRecord> GetRecordParser(TextParserFactory.TextDelimiter textDelimiter, IEnumerable<ISI.Extensions.Columns.IColumn<TRecord>> columns = null, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads = null)
 		{
 			return new ISI.Extensions.Parsers.DelimitedRecordParser<TRecord>(TextParserFactory.GetTextParser(textDelimiter), columns, onReads);
 		}
 
-		public static ISI.Extensions.Parsers.IRecordParser<TRecord> GetRecordParserByFileName(string fileName, IEnumerable<ISI.Extensions.Columns.IColumnInfo<TRecord>> columns = null, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads = null)
+		public static ISI.Extensions.Parsers.IRecordParser<TRecord> GetRecordParserByFileName(string fileName, IEnumerable<ISI.Extensions.Columns.IColumn<TRecord>> columns = null, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads = null)
 		{
 			return GetRecordParser(TextParserFactory.GetTextDelimiterByFileName(fileName), columns, onReads);
 		}

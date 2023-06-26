@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Columns
 {
-	public class ColumnInfo<TRecord, TProperty> : IColumnInfo<TRecord>
+	public class Column<TRecord, TProperty> : IColumn<TRecord>
 		where TRecord : class, new()
 	{
 		public Type PropertyType => typeof(TProperty);
@@ -34,7 +34,7 @@ namespace ISI.Extensions.Columns
 		public Func<object, TProperty> TransformValue { get; }
 		public Func<TRecord, string> FormattedValue { get; }
 
-		public ColumnInfo(
+		public Column(
 			IEnumerable<string> columnNames,
 			System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property,
 			Func<object, TProperty> transformValue,
@@ -43,7 +43,7 @@ namespace ISI.Extensions.Columns
 		{
 		}
 
-		public ColumnInfo(
+		public Column(
 			string columnName,
 			Func<TRecord, bool> isNull,
 			Func<TRecord, object> getValue)
@@ -53,7 +53,7 @@ namespace ISI.Extensions.Columns
 			GetValue = record => (TProperty)getValue(record);
 		}
 
-		public ColumnInfo(
+		public Column(
 			string columnName,
 			System.Reflection.PropertyInfo propertyInfo,
 			Func<object, TProperty> transformValue,
@@ -62,7 +62,7 @@ namespace ISI.Extensions.Columns
 		{
 		}
 
-		public ColumnInfo(
+		public Column(
 			string columnName,
 			IEnumerable<string> columnNames,
 			System.Reflection.PropertyInfo propertyInfo,
@@ -170,21 +170,21 @@ namespace ISI.Extensions.Columns
 			FormattedValue = formattedValue ?? (record => string.Format("{0}", GetValue(record)));
 		}
 
-		Func<object, bool> IColumnInfo.IsNull { get; }
+		Func<object, bool> IColumn.IsNull { get; }
 
-		object IColumnInfo.GetValue(object record) => GetValue(record as TRecord);
+		object IColumn.GetValue(object record) => GetValue(record as TRecord);
 
-		object IColumnInfo<TRecord>.GetValue(TRecord record)
+		object IColumn<TRecord>.GetValue(TRecord record)
 		{
 			return GetValue(record);
 		}
 
-		void IColumnInfo<TRecord>.SetValue(TRecord record, object value)
+		void IColumn<TRecord>.SetValue(TRecord record, object value)
 		{
 			SetValue(record, (TProperty)value);
 		}
 
-		object IColumnInfo<TRecord>.TransformValue(object value)
+		object IColumn<TRecord>.TransformValue(object value)
 		{
 			if (TransformValue == null)
 			{
@@ -194,25 +194,25 @@ namespace ISI.Extensions.Columns
 			return TransformValue(value);
 		}
 
-		string IColumnInfo<TRecord>.FormattedValue(TRecord record)
+		string IColumn<TRecord>.FormattedValue(TRecord record)
 		{
 			return FormattedValue(record);
 		}
 	}
 
-	public class ColumnInfo : IColumnInfo
+	public class Column : IColumn
 	{
 		public string ColumnName { get; }
 		public Func<object, bool> IsNull { get; }
 		public Func<object, object> GetValue { get; }
 
-		public ColumnInfo(
+		public Column(
 			string columnName)
 			: this(columnName, record => true, record => null)
 		{
 		}
 
-		public ColumnInfo(
+		public Column(
 			string columnName,
 			Func<object, bool> isNull,
 			Func<object, object> getValue)
@@ -222,6 +222,6 @@ namespace ISI.Extensions.Columns
 			GetValue = getValue;
 		}
 
-		object IColumnInfo.GetValue(object record) => GetValue(record);
+		object IColumn.GetValue(object record) => GetValue(record);
 	}
 }

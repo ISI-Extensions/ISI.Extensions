@@ -46,7 +46,7 @@ namespace ISI.Extensions.Tests
 
 			using (var stream = System.IO.File.OpenRead(fullName))
 			{
-				var columns = ISI.Extensions.Columns.ColumnInfoCollection<Record>.GetDefault();
+				var columns = ISI.Extensions.Columns.ColumnCollection<Record>.GetDefault();
 
 				var parser = ISI.Extensions.RecordParserFactory<Record>.GetRecordParserByFileName(fullName, columns, new[] { ISI.Extensions.RecordParserFactory<Record>.GetHeadersOnFirstLineHandler() });
 

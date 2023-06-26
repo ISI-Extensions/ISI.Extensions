@@ -21,5 +21,5 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.DataReader
 {
-	public delegate void TransformRecord(int recordNumber, ISI.Extensions.Columns.IColumnInfo[] columns, object source, ref object[] values);
+	public delegate void TransformRecord(int recordNumber, ISI.Extensions.Columns.IColumn[] columns, object source, ref object[] values);
 }

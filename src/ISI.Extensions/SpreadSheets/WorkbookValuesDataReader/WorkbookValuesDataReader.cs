@@ -26,12 +26,12 @@ namespace ISI.Extensions.SpreadSheets
 	{
 		protected ISI.Extensions.SpreadSheets.IWorkbook Workbook { get; }
 
-		protected ISI.Extensions.Columns.IColumnInfo[] Columns { get; }
+		protected ISI.Extensions.Columns.IColumn[] Columns { get; }
 		protected IDictionary<string, int> ColumnLookUp { get; }
 
 		protected ISI.Extensions.DataReader.TransformRecord TransformRecord { get; }
 
-		public WorkbookValuesDataReader(string fileName, IEnumerable<ISI.Extensions.Columns.IColumnInfo> columns = null, ISI.Extensions.DataReader.TransformRecord transformRecord = null)
+		public WorkbookValuesDataReader(string fileName, IEnumerable<ISI.Extensions.Columns.IColumn> columns = null, ISI.Extensions.DataReader.TransformRecord transformRecord = null)
 			: this(columns, transformRecord)
 		{
 			var spreadSheetHelper = ISI.Extensions.ServiceLocator.Current.GetService<ISpreadSheetHelper>();
@@ -39,7 +39,7 @@ namespace ISI.Extensions.SpreadSheets
 			Workbook = spreadSheetHelper.Open(fileName);
 		}
 
-		public WorkbookValuesDataReader(System.IO.Stream stream, IEnumerable<ISI.Extensions.Columns.IColumnInfo> columns = null, ISI.Extensions.DataReader.TransformRecord transformRecord = null)
+		public WorkbookValuesDataReader(System.IO.Stream stream, IEnumerable<ISI.Extensions.Columns.IColumn> columns = null, ISI.Extensions.DataReader.TransformRecord transformRecord = null)
 			: this(columns, transformRecord)
 		{
 			var spreadSheetHelper = ISI.Extensions.ServiceLocator.Current.GetService<ISpreadSheetHelper>();
@@ -47,13 +47,13 @@ namespace ISI.Extensions.SpreadSheets
 			Workbook = spreadSheetHelper.Open(stream);
 		}
 
-		public WorkbookValuesDataReader(ISI.Extensions.SpreadSheets.IWorkbook workbook, IEnumerable<ISI.Extensions.Columns.IColumnInfo> columns = null, ISI.Extensions.DataReader.TransformRecord transformRecord = null)
+		public WorkbookValuesDataReader(ISI.Extensions.SpreadSheets.IWorkbook workbook, IEnumerable<ISI.Extensions.Columns.IColumn> columns = null, ISI.Extensions.DataReader.TransformRecord transformRecord = null)
 			: this(columns, transformRecord)
 		{
 			Workbook = workbook;
 		}
 
-		private WorkbookValuesDataReader(IEnumerable<ISI.Extensions.Columns.IColumnInfo> columns, ISI.Extensions.DataReader.TransformRecord transformRecord)
+		private WorkbookValuesDataReader(IEnumerable<ISI.Extensions.Columns.IColumn> columns, ISI.Extensions.DataReader.TransformRecord transformRecord)
 		{
 			Columns = columns.ToNullCheckedArray(ISI.Extensions.Extensions.NullCheckCollectionResult.Empty);
 

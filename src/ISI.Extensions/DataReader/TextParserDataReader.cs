@@ -30,14 +30,14 @@ namespace ISI.Extensions.DataReader
 		protected ISI.Extensions.Parsers.ITextParserContext TextParserContext => _textParserContext ??= TextParser.CreateTextParserContext();
 		protected ISI.Extensions.Parsers.ITextParser TextParser { get; }
 
-		protected ISI.Extensions.Columns.IColumnInfo[] Columns { get; }
+		protected ISI.Extensions.Columns.IColumn[] Columns { get; }
 		protected IDictionary<string, int> ColumnLookUp { get; }
 
 		protected ISI.Extensions.DataReader.TransformRecord TransformRecord { get; }
 
 		protected System.IO.StreamReader StreamReader { get; private set; }
 
-		public TextParserDataReader(System.IO.Stream stream, ISI.Extensions.Parsers.ITextParser textParser, IEnumerable<ISI.Extensions.Columns.IColumnInfo> columns = null, ISI.Extensions.DataReader.TransformRecord transformRecord = null)
+		public TextParserDataReader(System.IO.Stream stream, ISI.Extensions.Parsers.ITextParser textParser, IEnumerable<ISI.Extensions.Columns.IColumn> columns = null, ISI.Extensions.DataReader.TransformRecord transformRecord = null)
 		{
 			Stream = stream;
 			TextParser = textParser;

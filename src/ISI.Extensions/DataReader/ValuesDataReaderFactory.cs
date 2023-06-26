@@ -21,7 +21,7 @@ namespace ISI.Extensions.DataReader
 {
 	public class ValuesDataReaderFactory
 	{
-		public static ISI.Extensions.DataReader.IDataReader GetValuesDataReaderByFileName(System.IO.Stream stream, string fileName, IEnumerable<ISI.Extensions.Columns.IColumnInfo> columns = null, ISI.Extensions.DataReader.TransformRecord transformRecord = null)
+		public static ISI.Extensions.DataReader.IDataReader GetValuesDataReaderByFileName(System.IO.Stream stream, string fileName, IEnumerable<ISI.Extensions.Columns.IColumn> columns = null, ISI.Extensions.DataReader.TransformRecord transformRecord = null)
 		{
 			var fileExtension = System.IO.Path.GetExtension(fileName);
 

@@ -22,14 +22,14 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Columns
 {
-	public interface IColumnInfo
+	public interface IColumn
 	{
 		string ColumnName { get; }
 		Func<object, bool> IsNull { get; }
 		object GetValue(object record);
 	}
 
-	public interface IColumnInfo<TRecord> : IColumnInfo
+	public interface IColumn<TRecord> : IColumn
 		where TRecord : class, new()
 	{
 		Type PropertyType { get; }

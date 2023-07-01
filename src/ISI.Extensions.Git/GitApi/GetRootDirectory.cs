@@ -49,26 +49,32 @@ namespace ISI.Extensions.Git
 
 			if (!string.IsNullOrWhiteSpace(request.FullName))
 			{
-				var arguments = new List<string>();
-
-				arguments.Add("config");
-				arguments.Add("--get remote.origin.url");
-
-				var gitResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				try
 				{
-					Logger = new NullLogger(),
-					ProcessExeFullName = "git",
-					Arguments = arguments.ToArray(),
-					WorkingDirectory = System.IO.Path.GetFullPath(response.FullName),
-				});
+					var arguments = new List<string>();
 
-				var url = (gitResponse.Output ?? string.Empty).Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(line => !string.IsNullOrWhiteSpace(line));
+					arguments.Add("config");
+					arguments.Add("--get remote.origin.url");
 
-				if (!string.IsNullOrWhiteSpace(url))
+					var gitResponse = Process.WaitForProcessResponse(new Process.ProcessRequest()
+					{
+						Logger = new NullLogger(),
+						ProcessExeFullName = "git",
+						Arguments = arguments.ToArray(),
+						WorkingDirectory = System.IO.Path.GetFullPath(response.FullName),
+					});
+
+					var url = (gitResponse.Output ?? string.Empty).Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(line => !string.IsNullOrWhiteSpace(line));
+
+					if (!string.IsNullOrWhiteSpace(url))
+					{
+						response.SolutionUrl = url;
+
+						response.SourceControlUrl = url.TrimEnd(".git", StringComparison.InvariantCultureIgnoreCase);
+					}
+				}
+				catch (Exception exception)
 				{
-					response.SolutionUrl = url;
-
-					response.SourceControlUrl = url.TrimEnd(".git", StringComparison.InvariantCultureIgnoreCase);
 				}
 			}
 

@@ -118,6 +118,7 @@ namespace ISI.Extensions.SpreadSheets
 				if (!RowEnumerator.MoveNext())
 				{
 					Values = null;
+					FieldCount = -1;
 
 					return false;
 				}
@@ -162,6 +163,8 @@ namespace ISI.Extensions.SpreadSheets
 				{
 					Values = null;
 				}
+
+				FieldCount = Values.NullCheckedCount();
 			} while (Values == null);
 
 			return true;

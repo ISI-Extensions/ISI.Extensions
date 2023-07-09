@@ -68,7 +68,7 @@ namespace ISI.Extensions.DataReader
 			Depth = 0;
 			StreamReader = null;
 
-			FieldCount = Columns.Length;
+			FieldCount = -1;
 		}
 
 		public override string GetName(int columnIndex)
@@ -116,6 +116,8 @@ namespace ISI.Extensions.DataReader
 					}
 
 					TransformRecord?.Invoke(Depth, Columns, Source, ref Values);
+					
+					FieldCount = Values.NullCheckedCount();
 
 					if (Values != null)
 					{
@@ -126,6 +128,8 @@ namespace ISI.Extensions.DataReader
 				{
 					Source = null;
 					Values = null;
+
+					FieldCount = -1;
 				}
 			}
 

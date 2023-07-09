@@ -70,7 +70,7 @@ namespace ISI.Extensions.DataReader
 				}
 			}
 
-			FieldCount = Columns.Length;
+			FieldCount = -1;
 
 			TransformRecord = transformRecord;
 
@@ -148,14 +148,16 @@ namespace ISI.Extensions.DataReader
 						var record = RecordsEnumerator.Current;
 
 						Source = record;
-						Values = new object[FieldCount];
+						Values = new object[Columns.Length];
 
-						for (var columnIndex = 0; columnIndex < FieldCount; columnIndex++)
+						for (var columnIndex = 0; columnIndex < Columns.Length; columnIndex++)
 						{
 							Values[columnIndex] = Columns[columnIndex].GetValue(record);
 						}
 
 						TransformRecord?.Invoke(Depth, Columns, Source, ref Values);
+						
+						FieldCount = Values.NullCheckedCount();
 
 						if (Values != null)
 						{

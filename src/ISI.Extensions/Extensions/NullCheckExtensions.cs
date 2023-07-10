@@ -703,6 +703,24 @@ namespace ISI.Extensions.Extensions
 			return values.OrderBy(keySelector);
 		}
 
+		public static IOrderedEnumerable<TValue> NullCheckedOrderBy<TValue, TKey>(this IEnumerable<TValue> values, Func<TValue, TKey> keySelector, IComparer<TKey> comparer, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.Empty)
+		{
+			if (values == null)
+			{
+				switch (ifNullReturn)
+				{
+					case NullCheckCollectionResult.ReturnNull:
+						return null;
+					case NullCheckCollectionResult.Empty:
+						return (Array.Empty<TValue>()).OrderBy(keySelector, comparer);
+					default:
+						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
+				}
+			}
+
+			return values.OrderBy(keySelector, comparer);
+		}
+
 		public static IOrderedEnumerable<TValue> NullCheckedOrderByDescending<TValue, TKey>(this IEnumerable<TValue> values, Func<TValue, TKey> keySelector, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.Empty)
 		{
 			if (values == null)
@@ -719,6 +737,24 @@ namespace ISI.Extensions.Extensions
 			}
 
 			return values.OrderByDescending(keySelector);
+		}
+
+		public static IOrderedEnumerable<TValue> NullCheckedOrderByDescending<TValue, TKey>(this IEnumerable<TValue> values, Func<TValue, TKey> keySelector, IComparer<TKey> comparer, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.Empty)
+		{
+			if (values == null)
+			{
+				switch (ifNullReturn)
+				{
+					case NullCheckCollectionResult.ReturnNull:
+						return null;
+					case NullCheckCollectionResult.Empty:
+						return (Array.Empty<TValue>()).OrderByDescending(keySelector, comparer);
+					default:
+						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
+				}
+			}
+
+			return values.OrderByDescending(keySelector, comparer);
 		}
 	}
 }

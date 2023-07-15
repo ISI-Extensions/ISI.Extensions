@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,15 +21,40 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.FileStoreApi
 {
-	public class UploadFileRequest
+	public interface IUploadFileRequest
 	{
-		public int MaxFileSegmentSize { get; set; } = 2000000;
+		string FileStoreUrl { get; }
+		string UserName { get; }
+		string Password { get; }
+		string Version { get; }
+		Guid FileStoreUuid { get; }
+		string FileName { get; }
+		int MaxTries { get; }
+	}
 
+	public class UploadFileRequest : IUploadFileRequest
+	{
 		public string FileStoreUrl { get; set; }
 		public string UserName { get; set; }
 		public string Password { get; set; }
 		public string Version { get; set; }
 		public Guid FileStoreUuid { get; set; }
 		public string FileName { get; set; }
+
+		public int MaxTries { get; set; } = 3;
+	}
+
+	public class UploadFileStreamRequest : IUploadFileRequest
+	{
+		public string FileStoreUrl { get; set; }
+		public string UserName { get; set; }
+		public string Password { get; set; }
+		public string Version { get; set; }
+		public Guid FileStoreUuid { get; set; }
+		public string FileName { get; set; }
+
+		public System.IO.Stream FileStream { get; set; }
+
+		public int MaxTries { get; set; } = 3;
 	}
 }

@@ -25,7 +25,7 @@ namespace ISI.Extensions.AspNetCore
 	{
 		[Microsoft.AspNetCore.Mvc.AcceptVerbs(nameof(Microsoft.AspNetCore.Http.HttpMethods.Get))]
 		[Microsoft.AspNetCore.Authorization.AllowAnonymous]
-		[ISI.Extensions.AspNetCore.NamedRoute(Routes.jQueryNamespace, "JavaScripts/jquery.namespace.js")]
+		[ISI.Extensions.AspNetCore.NamedRoute(Routes.jQueryNamespace,Urls.jQueryNamespace)]
 		[Microsoft.AspNetCore.Mvc.ApiExplorerSettings(IgnoreApi = true)]
 		public virtual async Task<Microsoft.AspNetCore.Mvc.IActionResult> jQueryNamespaceAsync()
 		{

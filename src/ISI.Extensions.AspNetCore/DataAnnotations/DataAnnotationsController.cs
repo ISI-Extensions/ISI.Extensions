@@ -28,6 +28,11 @@ namespace ISI.Extensions.AspNetCore
 			public const string DataAnnotationValidationRules = "DataAnnotations-b1c358f2-5113-4bd3-993d-ff683bd1e0d2";
 		}
 
+		public class Urls
+		{
+			public const string DataAnnotationValidationRules = "/JavaScripts/data-annotations/validation-rules.js";
+		}
+
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 
 		public DataAnnotationsController(
@@ -55,7 +60,7 @@ namespace ISI.Extensions.AspNetCore
 
 		[Microsoft.AspNetCore.Mvc.AcceptVerbs(nameof(Microsoft.AspNetCore.Http.HttpMethods.Get))]
 		[Microsoft.AspNetCore.Authorization.AllowAnonymous]
-		[ISI.Extensions.AspNetCore.NamedRoute(Routes.DataAnnotationValidationRules, "JavaScripts/data-annotations/validation-rules.js")]
+		[ISI.Extensions.AspNetCore.NamedRoute(Routes.DataAnnotationValidationRules, Urls.DataAnnotationValidationRules)]
 		[Microsoft.AspNetCore.Mvc.ApiExplorerSettings(IgnoreApi = true)]
 		public virtual async Task<Microsoft.AspNetCore.Mvc.IActionResult> DataAnnotationValidationRulesAsync()
 		{

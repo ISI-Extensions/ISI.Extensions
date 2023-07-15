@@ -28,6 +28,11 @@ namespace ISI.Extensions.AspNetCore
 			public const string jQueryNamespace = "jQueryNamespace-2e71f4e8-35d4-43b3-a60f-9de11603230a";
 		}
 
+		public class Urls
+		{
+			public const string jQueryNamespace = "/JavaScripts/jquery.namespace.js";
+		}
+
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 
 		public jQueryController(

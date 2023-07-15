@@ -22,6 +22,6 @@ namespace ISI.Extensions.Scm
 {
 	public interface IFileStoreApi
 	{
-		DTOs.UploadFileResponse UploadFile(DTOs.UploadFileRequest request);
+		ISI.Extensions.Scm.DataTransferObjects.FileStoreApi.UploadFileResponse UploadFile(ISI.Extensions.Scm.DataTransferObjects.FileStoreApi.IUploadFileRequest request);
 	}
 }

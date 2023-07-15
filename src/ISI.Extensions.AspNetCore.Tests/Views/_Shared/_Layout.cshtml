@@ -56,12 +56,12 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 			&copy; 2023 - WebApplication6
 		</div>
 	</footer>
-	<script src="@ISI.Extensions.AspNetCore.Tests.T4Links.wwwroot.lib.jquery.dist.jquery_js"></script>
-	@Html.AddJavaScript(@Url.RouteUrl(ISI.Extensions.AspNetCore.jQueryController.Routes.jQueryNamespace))
-	<script src="@ISI.Extensions.AspNetCore.Tests.T4Links.wwwroot.lib.jquery_validation.dist.jquery_validate_js"></script>
-	<script src="@ISI.Extensions.AspNetCore.Tests.T4Links.wwwroot.lib.jquery_validation_unobtrusive.jquery_validate_unobtrusive_js"></script>
-@Html.AddJavaScript(@Url.RouteUrl(ISI.Extensions.AspNetCore.DataAnnotationsController.Routes.DataAnnotationValidationRules))
-	<script src="@ISI.Extensions.AspNetCore.Tests.T4Links.wwwroot.lib.bootstrap.dist.js.bootstrap_bundle_js"></script>
+	@Html.AddJavaScript(T4Links.wwwroot.lib.jquery.dist.jquery_js)
+	@Html.AddJavaScript(ISI.Extensions.AspNetCore.T4Links.JavaScripts.jQueryNamespace_js)
+	@Html.AddJavaScript(T4Links.wwwroot.lib.jquery_validation.dist.jquery_validate_js)
+	@Html.AddJavaScript(T4Links.wwwroot.lib.jquery_validation_unobtrusive.jquery_validate_unobtrusive_js)
+	@Html.AddJavaScript(ISI.Extensions.AspNetCore.T4Links.JavaScripts.DataAnnotations.DataAnnotationValidationRules_js)
+	@Html.AddJavaScript(ISI.Extensions.AspNetCore.Tests.T4Links.wwwroot.lib.bootstrap.dist.js.bootstrap_bundle_js)
 	@Html.AddJavaScript(ISI.Extensions.AspNetCore.Tests.T4Links.wwwroot.JavaScripts._Shared._Layout_js)
 	@RenderSection("JavaScriptIncludes", false)
 	@RenderSection("JavaScriptContent", false)

@@ -69,5 +69,6 @@ namespace ISI.Extensions.WebClient
 		public const string ContentTypeTextHeaderValue = ISI.Extensions.MimeTypes.PlainText;
 		public const string ContentTypeXmlHeaderValue = ISI.Extensions.MimeTypes.Xml;
 		public const string ContentTypeJsonHeaderValue = ISI.Extensions.MimeTypes.Json;
+		public const string ContentTypeJavascriptHeaderValue = "text/x-javascript";
 	}
 }

@@ -10,7 +10,7 @@ Redistribution and use in source and binary forms, with or without modification,
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *@
- 
+
 
 @using ISI.Extensions.AspNetCore.Extensions
 @model ISI.Extensions.AspNetCore.Tests.Models.BaseModel
@@ -28,43 +28,43 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 	@RenderSection("StyleSheetIncludes", false)
 </head>
 <body>
-<header>
-	<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-		<div class="container-fluid">
-			<a class="navbar-brand" asp-area="" asp-controller="Public" asp-action="Index">WebApplication6</a>
-			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-				<ul class="navbar-nav flex-grow-1">
-					<li class="nav-item">
-						<a class="nav-link text-dark" asp-area="" asp-controller="Public" asp-action="Index">Home</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-					</li>
-				</ul>
-				<partial name="_LoginPartial" />
+	<header>
+		<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+			<div class="container-fluid">
+				<a class="navbar-brand" asp-area="" asp-controller="Public" asp-action="Index">WebApplication6</a>
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+					<ul class="navbar-nav flex-grow-1">
+						<li class="nav-item">
+							<a class="nav-link text-dark" asp-area="" asp-controller="Public" asp-action="Index">Home</a>
+						</li>
+					</ul>
+				</div>
 			</div>
-		</div>
-	</nav>
-</header>
-<div class="container">
-	<main role="main" class="pb-3">
-		@RenderBody()
-	</main>
-</div>
-
-<footer class="border-top footer text-muted">
+		</nav>
+	</header>
 	<div class="container">
-		&copy; 2023 - WebApplication6
+		<main role="main" class="pb-3">
+			@RenderBody()
+		</main>
 	</div>
-</footer>
-<script src="@ISI.Extensions.AspNetCore.Tests.T4Links.wwwroot.lib.jquery.dist.jquery_js"></script>
-<script src="@ISI.Extensions.AspNetCore.Tests.T4Links.wwwroot.lib.bootstrap.dist.js.bootstrap_js"></script>
+
+	<footer class="border-top footer text-muted">
+		<div class="container">
+			&copy; 2023 - WebApplication6
+		</div>
+	</footer>
+	<script src="@ISI.Extensions.AspNetCore.Tests.T4Links.wwwroot.lib.jquery.dist.jquery_js"></script>
+	@Html.AddJavaScript(@Url.RouteUrl(ISI.Extensions.AspNetCore.jQueryController.Routes.jQueryNamespace))
+	<script src="@ISI.Extensions.AspNetCore.Tests.T4Links.wwwroot.lib.jquery_validation.dist.jquery_validate_js"></script>
+	<script src="@ISI.Extensions.AspNetCore.Tests.T4Links.wwwroot.lib.jquery_validation_unobtrusive.jquery_validate_unobtrusive_js"></script>
+@Html.AddJavaScript(@Url.RouteUrl(ISI.Extensions.AspNetCore.DataAnnotationsController.Routes.DataAnnotationValidationRules))
+	<script src="@ISI.Extensions.AspNetCore.Tests.T4Links.wwwroot.lib.bootstrap.dist.js.bootstrap_bundle_js"></script>
 	@Html.AddJavaScript(ISI.Extensions.AspNetCore.Tests.T4Links.wwwroot.JavaScripts._Shared._Layout_js)
-@RenderSection("JavaScriptIncludes", false)
-@RenderSection("JavaScriptContent", false)
+	@RenderSection("JavaScriptIncludes", false)
+	@RenderSection("JavaScriptContent", false)
 </body>
 </html>
 }

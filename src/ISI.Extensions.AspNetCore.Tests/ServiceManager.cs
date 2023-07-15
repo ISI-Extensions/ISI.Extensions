@@ -39,7 +39,7 @@ namespace ISI.Extensions.AspNetCore.Tests
 				.UseSerilog((context, services, loggerConfiguration) => LoggerConfigurator.UpdateLoggerConfiguration(loggerConfiguration, services, configurationRoot, environment))
 				.ConfigureWebHostDefaults(webHostBuilder =>
 				{
-					webHostBuilder.UseStartup<Startup>();
+					webHostBuilder.UseStartup<WebStartup>();
 
 					webHostBuilder.ConfigureServices(services =>
 						{

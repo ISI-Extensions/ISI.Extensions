@@ -1,6 +1,6 @@
 <#
 /*
-Copyright (c) 2022, Integrated Solutions, Inc.
+Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -512,6 +512,34 @@ public static partial class <#= projectFolderSlug #>
 						}
 					}
 				}
+
+				if(projectItem.ProjectItems != null)
+				{
+					foreach (ProjectItem subProjectItem in projectItem.ProjectItems)
+					{
+						foreach (var fileName in ExpandFileName(subProjectItem.Name))
+						{
+							if (!usedNames.Contains(fileName))
+							{
+#>
+	public static readonly string <#= CreateSlug(fileName, projectFolderSlug) #> = _root() + "<#= subProjectItem.Name #>";
+<#+
+		if (BuildT4Resources)
+		{
+#>
+	public static System.IO.Stream Get<#= CreateSlug(projectItem.Name) #>Stream()
+	{
+		return typeof(<#= Namespace #>.<#= ResourcesSubClassName #>).Assembly.GetManifestResourceStream(<#= CreateSlug(subProjectItem.Name) #>);
+	}
+<#+
+		}
+#>
+<#+
+								usedNames.Add(fileName);
+							}
+						}
+					}
+				}
 			}
 #>
 }
@@ -601,6 +629,24 @@ public static partial class <#= projectFolderSlug #>
 	public static global::ISI.Extensions.AspNetCore.IContentUrl <#= CreateSlug(fileName, projectFolderSlug) #> => _<#= CreateSlug(fileName, projectFolderSlug) #> ??= GetContentUrl(_root() + "<#= projectItem.Name #>", true);
 <#+
 							usedNames.Add(fileName);
+						}
+					}
+
+					if(projectItem.ProjectItems != null)
+					{
+						foreach (ProjectItem subProjectItem in projectItem.ProjectItems)
+						{
+							foreach (var fileName in ExpandFileName(subProjectItem.Name))
+							{
+								if (!usedNames.Contains(fileName))
+								{
+#>
+	private static global::ISI.Extensions.AspNetCore.IContentUrl _<#= CreateSlug(fileName, projectFolderSlug) #> = null;
+	public static global::ISI.Extensions.AspNetCore.IContentUrl <#= CreateSlug(fileName, projectFolderSlug) #> => _<#= CreateSlug(fileName, projectFolderSlug) #> ??= GetContentUrl(_root() + "<#= subProjectItem.Name #>", true);
+<#+
+									usedNames.Add(fileName);
+								}
+							}
 						}
 					}
 				}

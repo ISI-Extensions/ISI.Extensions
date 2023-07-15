@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ISI.Extensions.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,9 +32,9 @@ using Serilog;
 
 namespace ISI.Extensions.AspNetCore.Tests
 {
-	public class Startup
+	public class WebStartup
 	{
-		public Startup(IConfiguration configuration)
+		public WebStartup(IConfiguration configuration)
 		{
 			Configuration = configuration;
 		}
@@ -59,6 +60,7 @@ namespace ISI.Extensions.AspNetCore.Tests
 					options.Conventions.AllowAnonymousToPage("/Index");
 				})
 				.AddMvcOptions(options => { })
+				.AddISIAspNetCore();
 				;
 
 

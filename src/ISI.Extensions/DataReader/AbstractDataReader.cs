@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -120,26 +120,36 @@ namespace ISI.Extensions.DataReader
 		{
 			CheckColumnIndex(columnIndex);
 
-			return ISI.Extensions.Enum<TEnum>.Parse(GetString(columnIndex), defaultValue);
+			if (!IsNull(columnIndex))
+			{
+				return ISI.Extensions.Enum<TEnum>.Parse(GetString(columnIndex), defaultValue);
+			}
+
+			return default;
 		}
 
 		public virtual bool GetBoolean(int columnIndex)
 		{
 			CheckColumnIndex(columnIndex);
 
-			var columnType = Values[columnIndex].GetType();
+			if (!IsNull(columnIndex))
+			{
+				var columnType = Values[columnIndex].GetType();
 
-			if (columnType == typeof(bool))
-			{
-				return (bool)Values[columnIndex];
-			}
-			if (columnType == typeof(bool?))
-			{
-				return ((bool?)Values[columnIndex]).GetValueOrDefault();
-			}
-			if (columnType == typeof(int))
-			{
-				return ((int)Values[columnIndex] != 0);
+				if (columnType == typeof(bool))
+				{
+					return (bool)Values[columnIndex];
+				}
+
+				if (columnType == typeof(bool?))
+				{
+					return ((bool?)Values[columnIndex]).GetValueOrDefault();
+				}
+
+				if (columnType == typeof(int))
+				{
+					return ((int)Values[columnIndex] != 0);
+				}
 			}
 
 			return GetString(columnIndex).ToBoolean();
@@ -176,13 +186,19 @@ namespace ISI.Extensions.DataReader
 		{
 			CheckColumnIndex(columnIndex);
 
-			var columnType = Values[columnIndex].GetType();
-
-			if (columnType == typeof(byte))
+			if (!IsNull(columnIndex))
 			{
-				return (byte)Values[columnIndex];
+				var columnType = Values[columnIndex].GetType();
+
+				if (columnType == typeof(byte))
+				{
+					return (byte)Values[columnIndex];
+				}
+
+				return byte.Parse(GetString(columnIndex));
 			}
-			return byte.Parse(GetString(columnIndex));
+
+			return default;
 		}
 
 		public virtual long GetBytes(int columnIndex, long fieldOffset, byte[] buffer, int bufferOffset, int length)
@@ -217,15 +233,19 @@ namespace ISI.Extensions.DataReader
 		{
 			CheckColumnIndex(columnIndex);
 
-			var columnType = Values[columnIndex].GetType();
+			if (!IsNull(columnIndex))
+			{
+				var columnType = Values[columnIndex].GetType();
 
-			if (columnType == typeof(TimeSpan))
-			{
-				return (TimeSpan)Values[columnIndex];
-			}
-			if (columnType == typeof(TimeSpan?))
-			{
-				return ((TimeSpan?)Values[columnIndex]).GetValueOrDefault();
+				if (columnType == typeof(TimeSpan))
+				{
+					return (TimeSpan)Values[columnIndex];
+				}
+
+				if (columnType == typeof(TimeSpan?))
+				{
+					return ((TimeSpan?)Values[columnIndex]).GetValueOrDefault();
+				}
 			}
 
 			return GetString(columnIndex).ToTimeSpan();
@@ -242,15 +262,19 @@ namespace ISI.Extensions.DataReader
 		{
 			CheckColumnIndex(columnIndex);
 
-			var columnType = Values[columnIndex].GetType();
+			if (!IsNull(columnIndex))
+			{
+				var columnType = Values[columnIndex].GetType();
 
-			if (columnType == typeof(DateTime))
-			{
-				return (DateTime)Values[columnIndex];
-			}
-			if (columnType == typeof(DateTime?))
-			{
-				return ((DateTime?)Values[columnIndex]).GetValueOrDefault();
+				if (columnType == typeof(DateTime))
+				{
+					return (DateTime)Values[columnIndex];
+				}
+
+				if (columnType == typeof(DateTime?))
+				{
+					return ((DateTime?)Values[columnIndex]).GetValueOrDefault();
+				}
 			}
 
 			return GetString(columnIndex).ToDateTime();
@@ -267,18 +291,24 @@ namespace ISI.Extensions.DataReader
 		{
 			CheckColumnIndex(columnIndex);
 
-			var columnType = Values[columnIndex].GetType();
-
-			if (columnType == typeof(DateTime))
+			if (!IsNull(columnIndex))
 			{
-				return DateTime.SpecifyKind((DateTime) Values[columnIndex], DateTimeKind.Utc);
-			}
-			if (columnType == typeof(DateTime?))
-			{
-				return DateTime.SpecifyKind(((DateTime?) Values[columnIndex]).GetValueOrDefault(), DateTimeKind.Utc);
+				var columnType = Values[columnIndex].GetType();
+
+				if (columnType == typeof(DateTime))
+				{
+					return DateTime.SpecifyKind((DateTime)Values[columnIndex], DateTimeKind.Utc);
+				}
+
+				if (columnType == typeof(DateTime?))
+				{
+					return DateTime.SpecifyKind(((DateTime?)Values[columnIndex]).GetValueOrDefault(), DateTimeKind.Utc);
+				}
+
+				return DateTime.SpecifyKind(GetString(columnIndex).ToDateTime(), DateTimeKind.Utc);
 			}
 
-			return DateTime.SpecifyKind(GetString(columnIndex).ToDateTime(), DateTimeKind.Utc);
+			return default;
 		}
 
 		public virtual DateTime? GetDateTimeUtcNullable(int columnIndex)
@@ -292,15 +322,19 @@ namespace ISI.Extensions.DataReader
 		{
 			CheckColumnIndex(columnIndex);
 
-			var columnType = Values[columnIndex].GetType();
+			if (!IsNull(columnIndex))
+			{
+				var columnType = Values[columnIndex].GetType();
 
-			if (columnType == typeof(decimal))
-			{
-				return (decimal)Values[columnIndex];
-			}
-			if (columnType == typeof(decimal?))
-			{
-				return ((decimal?)Values[columnIndex]).GetValueOrDefault();
+				if (columnType == typeof(decimal))
+				{
+					return (decimal)Values[columnIndex];
+				}
+
+				if (columnType == typeof(decimal?))
+				{
+					return ((decimal?)Values[columnIndex]).GetValueOrDefault();
+				}
 			}
 
 			return GetString(columnIndex).ToDecimal();
@@ -323,7 +357,7 @@ namespace ISI.Extensions.DataReader
 			}
 			if (columnType == typeof(decimal?))
 			{
-				return (decimal?) Values[columnIndex];
+				return (decimal?)Values[columnIndex];
 			}
 
 			return GetString(columnIndex).ToDecimalNullable();
@@ -333,18 +367,24 @@ namespace ISI.Extensions.DataReader
 		{
 			CheckColumnIndex(columnIndex);
 
-			var columnType = Values[columnIndex].GetType();
-
-			if (columnType == typeof(Guid))
+			if (!IsNull(columnIndex))
 			{
-				return (Guid)Values[columnIndex];
-			}
-			if (columnType == typeof(Guid?))
-			{
-				return ((Guid?)Values[columnIndex]).GetValueOrDefault();
+				var columnType = Values[columnIndex].GetType();
+
+				if (columnType == typeof(Guid))
+				{
+					return (Guid)Values[columnIndex];
+				}
+
+				if (columnType == typeof(Guid?))
+				{
+					return ((Guid?)Values[columnIndex]).GetValueOrDefault();
+				}
+
+				return GetString(columnIndex).ToGuid();
 			}
 
-			return GetString(columnIndex).ToGuid();
+			return default;
 		}
 
 		public virtual Guid? GetGuidNullable(int columnIndex)
@@ -364,7 +404,7 @@ namespace ISI.Extensions.DataReader
 			}
 			if (columnType == typeof(Guid?))
 			{
-				return (Guid?) Values[columnIndex];
+				return (Guid?)Values[columnIndex];
 			}
 
 			return GetString(columnIndex).ToGuidNullable();
@@ -374,18 +414,24 @@ namespace ISI.Extensions.DataReader
 		{
 			CheckColumnIndex(columnIndex);
 
-			var columnType = Values[columnIndex].GetType();
-
-			if (columnType == typeof(short))
+			if (!IsNull(columnIndex))
 			{
-				return (short)Values[columnIndex];
-			}
-			if (columnType == typeof(short?))
-			{
-				return ((short?)Values[columnIndex]).GetValueOrDefault();
+				var columnType = Values[columnIndex].GetType();
+
+				if (columnType == typeof(short))
+				{
+					return (short)Values[columnIndex];
+				}
+
+				if (columnType == typeof(short?))
+				{
+					return ((short?)Values[columnIndex]).GetValueOrDefault();
+				}
+
+				return short.Parse(GetString(columnIndex));
 			}
 
-			return short.Parse(GetString(columnIndex));
+			return default;
 		}
 
 		public virtual int GetInt(int columnIndex)
@@ -407,15 +453,19 @@ namespace ISI.Extensions.DataReader
 		{
 			CheckColumnIndex(columnIndex);
 
-			var columnType = Values[columnIndex].GetType();
+			if (!IsNull(columnIndex))
+			{
+				var columnType = Values[columnIndex].GetType();
 
-			if (columnType == typeof(int))
-			{
-				return (int)Values[columnIndex];
-			}
-			if (columnType == typeof(int?))
-			{
-				return ((int?)Values[columnIndex]).GetValueOrDefault();
+				if (columnType == typeof(int))
+				{
+					return (int)Values[columnIndex];
+				}
+
+				if (columnType == typeof(int?))
+				{
+					return ((int?)Values[columnIndex]).GetValueOrDefault();
+				}
 			}
 
 			return GetString(columnIndex).ToInt();
@@ -440,15 +490,19 @@ namespace ISI.Extensions.DataReader
 		{
 			CheckColumnIndex(columnIndex);
 
-			var columnType = Values[columnIndex].GetType();
+			if (!IsNull(columnIndex))
+			{
+				var columnType = Values[columnIndex].GetType();
 
-			if (columnType == typeof(long))
-			{
-				return (long)Values[columnIndex];
-			}
-			if (columnType == typeof(long?))
-			{
-				return ((long?)Values[columnIndex]).GetValueOrDefault();
+				if (columnType == typeof(long))
+				{
+					return (long)Values[columnIndex];
+				}
+
+				if (columnType == typeof(long?))
+				{
+					return ((long?)Values[columnIndex]).GetValueOrDefault();
+				}
 			}
 
 			return GetString(columnIndex).ToLong();
@@ -458,15 +512,19 @@ namespace ISI.Extensions.DataReader
 		{
 			CheckColumnIndex(columnIndex);
 
-			var columnType = Values[columnIndex].GetType();
+			if (!IsNull(columnIndex))
+			{
+				var columnType = Values[columnIndex].GetType();
 
-			if (columnType == typeof(float))
-			{
-				return (float)Values[columnIndex];
-			}
-			if (columnType == typeof(float?))
-			{
-				return ((float?)Values[columnIndex]).GetValueOrDefault();
+				if (columnType == typeof(float))
+				{
+					return (float)Values[columnIndex];
+				}
+
+				if (columnType == typeof(float?))
+				{
+					return ((float?)Values[columnIndex]).GetValueOrDefault();
+				}
 			}
 
 			return GetString(columnIndex).ToFloat();
@@ -486,15 +544,19 @@ namespace ISI.Extensions.DataReader
 		{
 			CheckColumnIndex(columnIndex);
 
-			var columnType = Values[columnIndex].GetType();
+			if (!IsNull(columnIndex))
+			{
+				var columnType = Values[columnIndex].GetType();
 
-			if (columnType == typeof(double))
-			{
-				return (double)Values[columnIndex];
-			}
-			if (columnType == typeof(double?))
-			{
-				return ((double?)Values[columnIndex]).GetValueOrDefault();
+				if (columnType == typeof(double))
+				{
+					return (double)Values[columnIndex];
+				}
+
+				if (columnType == typeof(double?))
+				{
+					return ((double?)Values[columnIndex]).GetValueOrDefault();
+				}
 			}
 
 			return GetString(columnIndex).ToDouble();
@@ -514,11 +576,14 @@ namespace ISI.Extensions.DataReader
 		{
 			CheckColumnIndex(columnIndex);
 
-			var columnType = Values[columnIndex].GetType();
-
-			if (columnType == typeof(string))
+			if (!IsNull(columnIndex))
 			{
-				return (string)Values[columnIndex];
+				var columnType = Values[columnIndex].GetType();
+
+				if (columnType == typeof(string))
+				{
+					return (string)Values[columnIndex];
+				}
 			}
 
 			return string.Format("{0}", Values[columnIndex]);

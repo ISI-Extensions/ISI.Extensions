@@ -53,23 +53,19 @@ namespace ISI.Extensions.DataReader
 
 		protected void UpdateColumns()
 		{
-			var columns = new List<ISI.Extensions.Columns.IColumn>();
+			FieldCount = DataReader.FieldCount;
 
-			var schemaTable = GetSchemaTable();
+			Columns = new ISI.Extensions.Columns.IColumn[FieldCount];
 
 			ColumnLookUp.Clear();
-			for (var columnIndex = 0; columnIndex < schemaTable.Columns.Count; columnIndex++)
+			for (var columnIndex = 0; columnIndex < FieldCount; columnIndex++)
 			{
-				var column = schemaTable.Columns[columnIndex];
+				var columnName = DataReader.GetName(columnIndex);
 
-				columns.Add(new ISI.Extensions.Columns.Column(column.ColumnName, record => DataReader.IsDBNull(columnIndex), record => DataReader.GetValue(columnIndex)));
+				Columns[columnIndex] = new ISI.Extensions.Columns.Column(columnName, record => DataReader.IsDBNull(columnIndex), record => DataReader.GetValue(columnIndex));
 
-				ColumnLookUp.Add(column.ColumnName, columnIndex);
+				ColumnLookUp.Add(columnName, columnIndex);
 			}
-
-			Columns = columns.ToArray();
-
-			FieldCount = Columns.Length;
 		}
 
 		public override System.Data.DataTable GetSchemaTable() => DataReader.GetSchemaTable();

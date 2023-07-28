@@ -76,7 +76,7 @@ namespace ISI.Extensions.Extensions
 		{
 			try
 			{
-				using (var streamReader = new System.IO.StreamReader(stream))
+				using (var streamReader = new System.IO.StreamReader(stream, detectEncodingFromByteOrderMarks: true))
 				{
 					return streamReader.ReadToEnd();
 				}

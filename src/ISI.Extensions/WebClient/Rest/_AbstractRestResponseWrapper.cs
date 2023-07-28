@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -85,36 +85,94 @@ namespace ISI.Extensions.WebClient
 				{
 					using (var responseStream = webResponse.GetResponseStream())
 					{
+						var decompressedStream = (System.IO.Stream)null;
+
 						if (typeof(TResponse) == typeof(IgnoredResponse))
 						{
 							Response = new IgnoredResponse() as TResponse;
 						}
-						else if (typeof(TResponse).Implements<IRestStreamResponse>())
-						{
-							Response = Activator.CreateInstance<TResponse>();
-
-							((IRestStreamResponse)Response).StatusCode = StatusCode;
-							responseStream.CopyTo(((IRestStreamResponse)Response).Stream);
-							((IRestStreamResponse)Response).ResponseHeaders = new(webResponse?.Headers);
-						}
-						else if (typeof(TResponse).Implements<IRestContentResponse>())
-						{
-							Response = Activator.CreateInstance<TResponse>();
-
-							((IRestContentResponse)Response).StatusCode = StatusCode;
-							((IRestContentResponse)Response).Content = responseStream.TextReadToEnd();
-							webRequestDetails?.SetResponseRaw(((IRestContentResponse)Response).Content);
-							((IRestContentResponse)Response).ResponseHeaders = new(webResponse?.Headers);
-
-							if (exception != null)
-							{
-								exception = new RestException(StatusCode, webRequestDetails, exception);
-							}
-						}
 						else
 						{
-							Response = ExtractResponse(responseStream, webRequestDetails);
+							if (webResponse.Headers.TryGetValue("Content-Encoding", out var encodingHeaders))
+							{
+								foreach (var encodingHeader in encodingHeaders ?? Array.Empty<string>())
+								{
+									if (string.Equals(encodingHeader, "gzip", StringComparison.InvariantCultureIgnoreCase))
+									{
+										using (var zipStream = new System.IO.Compression.GZipStream(decompressedStream ?? responseStream, System.IO.Compression.CompressionMode.Decompress))
+										{
+											var stream = new System.IO.MemoryStream();
+											zipStream.CopyTo(stream);
+
+											decompressedStream?.Dispose();
+											decompressedStream = stream;
+											decompressedStream.Rewind();
+											stream = null;
+										}
+									}
+									else if (string.Equals(encodingHeader, "compress", StringComparison.InvariantCultureIgnoreCase))
+									{
+										throw new Exception("Cannot decompress compress streams");
+										//using (var zipStream = new System.IO.Compression.GZipStream(decompressedStream ?? responseStream, System.IO.Compression.CompressionMode.Decompress))
+										//{
+										//	var stream = new System.IO.MemoryStream();
+										//	zipStream.CopyTo(stream);
+
+										//	decompressedStream?.Dispose();
+										//	decompressedStream = stream;
+										//	decompressedStream.Rewind();
+										//	stream = null;
+										//}
+									}
+									else if (string.Equals(encodingHeader, "deflate", StringComparison.InvariantCultureIgnoreCase))
+									{
+										using (var deflateStream = new System.IO.Compression.DeflateStream(decompressedStream ?? responseStream, System.IO.Compression.CompressionMode.Decompress))
+										{
+											var stream = new System.IO.MemoryStream();
+											deflateStream.CopyTo(stream);
+
+											decompressedStream?.Dispose();
+											decompressedStream = stream;
+											decompressedStream.Rewind();
+											stream = null;
+										}
+									}
+									else
+									{
+										throw new Exception($"Cannot decompress {encodingHeader} streams");
+									}
+								}
+							}
+
+							if (typeof(TResponse).Implements<IRestStreamResponse>())
+							{
+								Response = Activator.CreateInstance<TResponse>();
+
+								((IRestStreamResponse)Response).StatusCode = StatusCode;
+								responseStream.CopyTo(((IRestStreamResponse)Response).Stream);
+								((IRestStreamResponse)Response).ResponseHeaders = new(webResponse?.Headers);
+							}
+							else if (typeof(TResponse).Implements<IRestContentResponse>())
+							{
+								Response = Activator.CreateInstance<TResponse>();
+
+								((IRestContentResponse)Response).StatusCode = StatusCode;
+								((IRestContentResponse)Response).Content = responseStream.TextReadToEnd();
+								webRequestDetails?.SetResponseRaw(((IRestContentResponse)Response).Content);
+								((IRestContentResponse)Response).ResponseHeaders = new(webResponse?.Headers);
+
+								if (exception != null)
+								{
+									exception = new RestException(StatusCode, webRequestDetails, exception);
+								}
+							}
+							else
+							{
+								Response = ExtractResponse(responseStream, webRequestDetails);
+							}
 						}
+
+						decompressedStream?.Dispose();
 					}
 				}
 

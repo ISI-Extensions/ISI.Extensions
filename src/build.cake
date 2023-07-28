@@ -189,12 +189,10 @@ Task("Publish")
 	{
 		var nupkgFiles = GetFiles(MakeAbsolute(Directory(nugetPackOutputDirectory)) + "/*.nupkg");
 
-		NupkgPush(new ISI.Cake.Addin.Nuget.NupkgPushRequest()
+		NupkgPush(new ISI.Cake.Addin.Nuget.NupkgPushUsingSettingsActiveDirectoryRequest()
 		{
 			NupkgPaths = nupkgFiles,
-			NugetApiKey = settings.Nuget.ApiKey,
-			RepositoryName = settings.Nuget.RepositoryName,
-			RepositoryUri = GetNullableUri(settings.Nuget.RepositoryUrl),
+			Settings = settings,
 		});
 	});
 

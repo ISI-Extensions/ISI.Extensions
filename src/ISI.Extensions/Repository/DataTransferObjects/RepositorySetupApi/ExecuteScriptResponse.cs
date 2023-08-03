@@ -23,6 +23,6 @@ namespace ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi
 {
 	public class ExecuteScriptResponse
 	{
-
+		public int RowAffected { get; set; }
 	}
 }

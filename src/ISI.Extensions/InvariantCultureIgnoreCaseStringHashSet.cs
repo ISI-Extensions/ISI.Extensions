@@ -88,8 +88,9 @@ namespace ISI.Extensions
 
 		public void TrimExcess() => _hashSet.TrimExcess();
 
-		public void UnionWith(IEnumerable<string> other) => _hashSet.UnionWith(other);
+		public void UnionWith(IEnumerable<string> other) => _hashSet.UnionWith(other ?? Array.Empty<string>());
 
+		public static implicit operator InvariantCultureIgnoreCaseStringHashSet(HashSet<string> values) => new(values);
 		public static implicit operator InvariantCultureIgnoreCaseStringHashSet(string[] values) => new(values);
 		public static implicit operator InvariantCultureIgnoreCaseStringHashSet(string value) => new(new [] { value });
 	}

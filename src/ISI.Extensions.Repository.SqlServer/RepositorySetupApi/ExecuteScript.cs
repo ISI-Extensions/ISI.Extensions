@@ -65,7 +65,7 @@ namespace ISI.Extensions.Repository.SqlServer
 					command.AddParameters(parameters);
 
 					command.CommandTimeout = 60 * 10;
-					command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
+					command.ExecuteNonQueryWithExceptionTracingAsync().ContinueWith(executeResponse => response.RowAffected = executeResponse.Result).Wait();
 				}
 			}
 

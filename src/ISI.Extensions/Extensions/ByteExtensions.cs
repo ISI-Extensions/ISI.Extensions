@@ -15,6 +15,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ISI.Extensions.Extensions
@@ -42,6 +43,24 @@ namespace ISI.Extensions.Extensions
 
 				return hash;
 			}
+		}
+
+		public static string ToHexString(this IEnumerable<byte> value)
+		{
+			if (value.NullCheckedAny())
+			{
+				var formatted = new StringBuilder(value.Count() * 2 + 200);
+
+				formatted.Append("0x");
+				foreach (var b in value)
+				{
+					formatted.AppendFormat("{0:x2}", b);
+				}
+
+				return formatted.ToString();
+			}
+
+			return string.Empty;
 		}
 	}
 }

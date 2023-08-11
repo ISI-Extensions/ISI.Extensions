@@ -20,7 +20,7 @@ using System.Text;
 using ISI.Extensions.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Libraries.DataAnnotations
+namespace ISI.Extensions.DataAnnotations
 {
 	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, AllowMultiple = false)]
 	public class DateRangeAttribute : System.ComponentModel.DataAnnotations.ValidationAttribute

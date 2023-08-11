@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ISI.Libraries.DataAnnotations
+namespace ISI.Extensions.DataAnnotations
 {
 	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, AllowMultiple = false)]
 	public class MustEndWithAttribute : System.ComponentModel.DataAnnotations.ValidationAttribute

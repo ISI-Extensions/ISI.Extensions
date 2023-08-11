@@ -19,7 +19,7 @@ using System.Linq;
 using System.Text;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Libraries.DataAnnotations
+namespace ISI.Extensions.DataAnnotations
 {
 	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, AllowMultiple = false)]
 	public class EmailAddressCaptionAttribute : System.ComponentModel.DataAnnotations.ValidationAttribute

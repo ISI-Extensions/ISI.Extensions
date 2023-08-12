@@ -23,18 +23,19 @@ namespace ISI.Extensions.DateTimeStamper
 	{
 		public DateTime UtcNow { get; }
 		public DateTime Now { get; }
-		private readonly Action _closeDateTimeBubble;
+
+		protected readonly Action CloseDateTimeBubble;
 
 		public DateTimeBubble(DateTime utcNow, DateTime now, Action closeDateTimeBubble)
 		{
 			UtcNow = utcNow;
 			Now = now;
-			_closeDateTimeBubble = closeDateTimeBubble;
+			CloseDateTimeBubble = closeDateTimeBubble;
 		}
 
-		public void Dispose()
+		public virtual void Dispose()
 		{
-			_closeDateTimeBubble?.Invoke();
+			CloseDateTimeBubble?.Invoke();
 		}
 	}
 }

@@ -121,6 +121,11 @@ namespace ISI.Extensions.DataReader
 
 					if (Values != null)
 					{
+						if (Values.Length < FieldCount)
+						{
+							Array.Resize(ref Values, FieldCount);
+						}
+
 						result = true;
 					}
 				}
@@ -128,8 +133,6 @@ namespace ISI.Extensions.DataReader
 				{
 					Source = null;
 					Values = null;
-
-					FieldCount = -1;
 				}
 			}
 

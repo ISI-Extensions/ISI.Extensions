@@ -84,6 +84,14 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 						Value = parameterValue
 					};
 				}
+				
+				if (type == typeof(string))
+				{
+					return new (parameterName, System.Data.SqlDbType.VarChar)
+					{
+						Value = parameterValue
+					};
+				}
 
 				//if (type == typeof(string))
 				//{

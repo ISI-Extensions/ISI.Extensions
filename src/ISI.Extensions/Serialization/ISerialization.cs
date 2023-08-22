@@ -43,9 +43,9 @@ namespace ISI.Extensions.Serialization
 		object Deserialize(string serializerContractName, System.IO.Stream fromStream, ISI.Extensions.Serialization.SerializationFormat serializationFormat = ISI.Extensions.Serialization.SerializationFormat.Unknown);
 		void Serialize(Type serializerContractType, object value, System.IO.Stream toStream, SerializationFormat serializationFormat = SerializationFormat.Unknown, bool? friendlyFormatted = null);
 		void Serialize<T>(object value, System.IO.Stream toStream, SerializationFormat serializationFormat = SerializationFormat.Unknown, bool? friendlyFormatted = null);
-		ISI.Extensions.Serialization.SerializedEntity Serialize(Type serializerContractType, object value, SerializationFormat serializationFormat = SerializationFormat.Unknown, bool? friendlyFormatted = null);
+		ISI.Extensions.Serialization.ISerializedEntity Serialize(Type serializerContractType, object value, SerializationFormat serializationFormat = SerializationFormat.Unknown, bool? friendlyFormatted = null);
 
-		ISI.Extensions.Serialization.SerializedEntity Serialize<T>(T value, SerializationFormat serializationFormat = SerializationFormat.Unknown, bool? friendlyFormatted = null)
+		ISI.Extensions.Serialization.ISerializedEntity Serialize<T>(T value, SerializationFormat serializationFormat = SerializationFormat.Unknown, bool? friendlyFormatted = null)
 			where T : class;
 
 		TDeserializeAs DeserializeAs<T, TDeserializeAs>(string serializedValue, ISI.Extensions.Serialization.SerializationFormat serializationFormat = ISI.Extensions.Serialization.SerializationFormat.Unknown);

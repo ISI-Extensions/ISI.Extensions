@@ -35,7 +35,7 @@ namespace ISI.Extensions.Serialization
 			GetSerializer<T>(serializationFormat).Serialize(typeof(T), value, toStream, friendlyFormatted.GetValueOrDefault(GetSerializationFormattingFriendlyFormatted(typeof(T))));
 		}
 
-		public ISI.Extensions.Serialization.SerializedEntity Serialize(Type serializerContractType, object value, SerializationFormat serializationFormat = SerializationFormat.Unknown, bool? friendlyFormatted = null)
+		public ISI.Extensions.Serialization.ISerializedEntity Serialize(Type serializerContractType, object value, SerializationFormat serializationFormat = SerializationFormat.Unknown, bool? friendlyFormatted = null)
 		{
 			var serializer = GetSerializer(serializerContractType, serializationFormat);
 
@@ -46,15 +46,15 @@ namespace ISI.Extensions.Serialization
 			}
 			if (!serializerContractUuid.IsNullOrEmpty())
 			{
-				return new(serializer.SerializationFormat, serializerContractUuid.Value, serializer.Serialize(serializerContractType, value, friendlyFormatted.GetValueOrDefault(GetSerializationFormattingFriendlyFormatted(serializerContractType))));
+				return new ISI.Extensions.Serialization.SerializedEntity(serializer.SerializationFormat, serializerContractUuid.Value, serializer.Serialize(serializerContractType, value, friendlyFormatted.GetValueOrDefault(GetSerializationFormattingFriendlyFormatted(serializerContractType))));
 			}
 
 			var serializerContractName = GetSerializerContractNameFromSerializerContractType(serializerContractType) ?? serializerContractType.AssemblyQualifiedNameWithoutVersion();
 
-			return new(serializer.SerializationFormat, serializerContractName, serializer.Serialize(serializerContractType, value, friendlyFormatted.GetValueOrDefault(GetSerializationFormattingFriendlyFormatted(serializerContractType))));
+			return new ISI.Extensions.Serialization.SerializedEntity(serializer.SerializationFormat, serializerContractName, serializer.Serialize(serializerContractType, value, friendlyFormatted.GetValueOrDefault(GetSerializationFormattingFriendlyFormatted(serializerContractType))));
 		}
 
-		public ISI.Extensions.Serialization.SerializedEntity Serialize<T>(T value, SerializationFormat serializationFormat = SerializationFormat.Unknown, bool? friendlyFormatted = null)
+		public ISI.Extensions.Serialization.ISerializedEntity Serialize<T>(T value, SerializationFormat serializationFormat = SerializationFormat.Unknown, bool? friendlyFormatted = null)
 			where T : class
 		{
 			var serializerContractType = typeof(T);

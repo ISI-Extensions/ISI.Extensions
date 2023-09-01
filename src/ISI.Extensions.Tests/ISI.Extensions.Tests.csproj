@@ -58,7 +58,10 @@
 		<ProjectReference Include="..\ISI.Extensions.Ngrok\ISI.Extensions.Ngrok.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Nuget\ISI.Extensions.Nuget.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.OpenCNAM\ISI.Extensions.OpenCNAM.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Repository.Cassandra\ISI.Extensions.Repository.Cassandra.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Repository.Cosmos\ISI.Extensions.Repository.Cosmos.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Repository.PostgreSQL\ISI.Extensions.Repository.PostgreSQL.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Repository.RavenDb\ISI.Extensions.Repository.RavenDb.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Repository.SqlServer\ISI.Extensions.Repository.SqlServer.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Scm\ISI.Extensions.Scm.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Security.ActiveDirectory\ISI.Extensions.Security.ActiveDirectory.csproj" />

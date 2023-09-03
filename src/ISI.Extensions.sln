@@ -116,7 +116,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.JsonJwt", "I
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Repository.RavenDb", "ISI.Extensions.Repository.RavenDb\ISI.Extensions.Repository.RavenDb.csproj", "{AB39D4F9-AE21-46B8-80BA-7602A8598A56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.Repository.PostgreSQL", "ISI.Extensions.Repository.PostgreSQL\ISI.Extensions.Repository.PostgreSQL.csproj", "{08F942CF-024E-4C7F-8D80-45720A383C21}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Repository.PostgreSQL", "ISI.Extensions.Repository.PostgreSQL\ISI.Extensions.Repository.PostgreSQL.csproj", "{08F942CF-024E-4C7F-8D80-45720A383C21}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.Keycloak", "ISI.Extensions.Keycloak\ISI.Extensions.Keycloak.csproj", "{08C4A27B-E82F-423C-AA00-FAB585AFC712}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -566,6 +568,14 @@ Global
 		{08F942CF-024E-4C7F-8D80-45720A383C21}.Release|Any CPU.Build.0 = Release|Any CPU
 		{08F942CF-024E-4C7F-8D80-45720A383C21}.Release|x64.ActiveCfg = Release|Any CPU
 		{08F942CF-024E-4C7F-8D80-45720A383C21}.Release|x64.Build.0 = Release|Any CPU
+		{08C4A27B-E82F-423C-AA00-FAB585AFC712}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08C4A27B-E82F-423C-AA00-FAB585AFC712}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08C4A27B-E82F-423C-AA00-FAB585AFC712}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{08C4A27B-E82F-423C-AA00-FAB585AFC712}.Debug|x64.Build.0 = Debug|Any CPU
+		{08C4A27B-E82F-423C-AA00-FAB585AFC712}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08C4A27B-E82F-423C-AA00-FAB585AFC712}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08C4A27B-E82F-423C-AA00-FAB585AFC712}.Release|x64.ActiveCfg = Release|Any CPU
+		{08C4A27B-E82F-423C-AA00-FAB585AFC712}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

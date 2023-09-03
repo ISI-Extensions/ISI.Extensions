@@ -103,9 +103,6 @@ namespace ISI.Extensions.Repository.PostgreSQL
 					var hasInserts = false;
 					var insertSql = new StringBuilder();
 
-					insertSql.Append("set nocount on\n");
-					insertSql.Append("\n");
-
 					if (repositoryAssignedValueColumnDefinitions.Any())
 					{
 						insertSql.Append("declare @RepositoryAssignedValues table\n");
@@ -147,7 +144,6 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 							var updateSql = new StringBuilder();
 
-							updateSql.Append("set nocount on\n");
 							updateSql.Append("update updateTable\n");
 							updateSql.Append("set\n");
 							var columnIndex = 1;

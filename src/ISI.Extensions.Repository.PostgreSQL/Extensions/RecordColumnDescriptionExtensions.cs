@@ -111,7 +111,7 @@ namespace ISI.Extensions.Repository.PostgreSQL.Extensions
 							return string.Format("  {0} varchar({1}) {2}", formatColumnName(columnDescription.ColumnName), columnDescription.PropertySize, NullClause(columnDescription.Nullable));
 						}
 
-						return string.Format("  {0} varchar(max) {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
+						return string.Format("  {0} text {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
 					}
 
 				default:

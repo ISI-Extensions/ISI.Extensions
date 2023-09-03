@@ -157,7 +157,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 			if (!string.IsNullOrWhiteSpace(Schema))
 			{
-				connection.ExecuteNonQueryAsync($"CREATE SCHEMA IF NOT EXISTS {Schema};").Wait();
+				connection.ExecuteNonQueryAsync($"CREATE SCHEMA IF NOT EXISTS {Schema.PostgreSQLFormatName()};").Wait();
 			}
 
 			if (tableExists)
@@ -183,7 +183,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 				if (!string.IsNullOrEmpty(primaryKeyName))
 				{
-					sql.AppendFormat("    constraint {0} primary key ({1})\n", primaryKeyName, string.Join(", ", recordDescription.PrimaryKeyPropertyDescriptions.OrderBy(propertyDescription => propertyDescription.PrimaryKeyAttribute.Order).Select(column => string.Format("{0}{1}", FormatColumnName(column.ColumnName), column.PrimaryKeyAttribute.AscendingOrder ? string.Empty : " desc"))));
+					sql.AppendFormat("    CONSTRAINT {0} PRIMARY KEY ({1})\n", primaryKeyName, string.Join(", ", recordDescription.PrimaryKeyPropertyDescriptions.OrderBy(propertyDescription => propertyDescription.PrimaryKeyAttribute.Order).Select(column => FormatColumnName(column.ColumnName))));
 				}
 
 				sql.Append("  )\n");
@@ -210,7 +210,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 		public virtual void CreateArchiveTable(Npgsql.NpgsqlConnection connection, CreateTableMode createTableMode = CreateTableMode.ErrorIfExists)
 		{
 			var sql = new StringBuilder();
-			
+
 			sql.Clear();
 			sql.Append("SELECT COUNT(1) FROM pg_tables WHERE schemaname = @SchemaName AND tablename = @TableName\n");
 			var tableExists = connection.ExecuteScalarAsync<int>(sql.ToString(), new[]
@@ -244,39 +244,36 @@ namespace ISI.Extensions.Repository.PostgreSQL
 				}
 			}
 
-			switch (createTableMode)
+			if (tableExists)
 			{
-				case CreateTableMode.DeleteAndCreateIfExists:
-					sql.AppendFormat("if OBJECT_ID('{0}') is not null\n", tableName);
-					sql.Append("begin\n");
-					sql.AppendFormat("  drop table {0}\n", tableName);
-					sql.Append("end\n");
-					break;
-				case CreateTableMode.TruncateIfExists:
-					sql.AppendFormat("if OBJECT_ID('{0}') is not null\n", tableName);
-					sql.Append("begin\n");
-					sql.AppendFormat("  truncate table {0}\n", tableName);
-					sql.Append("end\n");
-					sql.Append("else\n");
-					break;
+				switch (createTableMode)
+				{
+					case CreateTableMode.DeleteAndCreateIfExists:
+						connection.ExecuteNonQueryAsync($"DROP TABLE IF EXISTS {tableName};").Wait();
+						tableExists = false;
+						break;
+					case CreateTableMode.TruncateIfExists:
+						connection.ExecuteNonQueryAsync($"TRUNCATE TABLE {tableName};").Wait();
+						break;
+				}
 			}
 
-			sql.Append("begin\n");
-			sql.AppendFormat("  create table {0}\n", tableName);
-			sql.Append("  (\n");
-			sql.AppendFormat("    {0} datetime2 not null,\n", FormatColumnName(ArchiveTableArchiveDateTimeColumnName));
-			sql.AppendFormat("{0}{1}\n", string.Join(",\n", recordDescription.PropertyDescriptions.OrderBy(propertyDescription => propertyDescription.Order).Select(propertyDescription => string.Format("  {0}", propertyDescription.GetColumnDefinition(FormatColumnName)))), (string.IsNullOrEmpty(primaryKeyName) ? string.Empty : ","));
-
-			sql.Append("  )\n");
-
-			if (!string.IsNullOrEmpty(primaryKeyName))
+			if (!tableExists)
 			{
-				sql.AppendFormat("  create clustered index {0} on {1} ({2})\n", primaryKeyName, tableName, string.Join(", ", recordDescription.PrimaryKeyPropertyDescriptions.OrderBy(propertyDescription => propertyDescription.PrimaryKeyAttribute.Order).Select(column => FormatColumnName(column.ColumnName))));
+				sql.AppendFormat("CREATE TABLE {0}\n", tableName);
+				sql.Append("  (\n");
+				sql.AppendFormat("    {0} timestamp without time zone not null,\n", FormatColumnName(ArchiveTableArchiveDateTimeColumnName));
+				sql.AppendFormat("{0}{1}\n", string.Join(",\n", recordDescription.PropertyDescriptions.OrderBy(propertyDescription => propertyDescription.Order).Select(propertyDescription => string.Format("  {0}", propertyDescription.GetColumnDefinition(FormatColumnName)))), (string.IsNullOrEmpty(primaryKeyName) ? string.Empty : ","));
+
+				sql.Append("  )\n");
+
+				if (!string.IsNullOrEmpty(primaryKeyName))
+				{
+					sql.AppendFormat("  CREATE CLUSTERED INDEX {0} ON {1} ({2})\n", primaryKeyName, tableName, string.Join(", ", recordDescription.PrimaryKeyPropertyDescriptions.OrderBy(propertyDescription => propertyDescription.PrimaryKeyAttribute.Order).Select(column => FormatColumnName(column.ColumnName))));
+				}
+
+				ExecuteCreateArchiveTable(connection, sql.ToString());
 			}
-
-			sql.Append("end\n");
-
-			ExecuteCreateArchiveTable(connection, sql.ToString());
 		}
 
 		protected virtual void ExecuteCreateArchiveTable(Npgsql.NpgsqlConnection connection, string sql)

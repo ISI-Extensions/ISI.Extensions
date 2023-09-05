@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Aspose.InternalTryNotToUseExtensions;
+using NodeType = Aspose.Words.NodeType;
 
 namespace ISI.Extensions.Aspose
 {
@@ -90,7 +91,7 @@ namespace ISI.Extensions.Aspose
 
 			public bool IsComposite => _compositeNode.IsComposite;
 			public bool HasChildNodes => _compositeNode.HasChildNodes;
-			public ISI.Extensions.Documents.IDocumentNodeCollection ChildNodes => new DocumentNodeCollection(_compositeNode.ChildNodes);
+			public ISI.Extensions.Documents.IDocumentNodeCollection ChildNodes => new DocumentNodeCollection(_compositeNode.GetChildNodes(NodeType.Any, false));
 			public ISI.Extensions.Documents.IDocumentNode FirstChild => new DocumentNode(_compositeNode.FirstChild);
 			public ISI.Extensions.Documents.IDocumentNode LastChild => new DocumentNode(_compositeNode.LastChild);
 			public int Count => _compositeNode.Count;

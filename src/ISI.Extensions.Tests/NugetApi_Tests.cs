@@ -179,6 +179,11 @@ namespace ISI.Extensions.Tests
 		{
 			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
 
+			var packageVersion5 = nugetApi.GetNugetPackageKey(new()
+			{
+				PackageId = "Microsoft.Graph.Core",
+			}).NugetPackageKey;
+
 			var packageVersion4 = nugetApi.GetNugetPackageKey(new()
 			{
 				PackageId = "ISI.Extensions",

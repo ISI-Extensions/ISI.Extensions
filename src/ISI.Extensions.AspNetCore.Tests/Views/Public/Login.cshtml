@@ -33,3 +33,18 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 @section JavaScriptContent
 {
 }
+
+<form method="post" class="needs-validation" novalidate asp-route="@Routes.Public.RouteNames.Index">
+	<div class="row">
+		<div class="col">
+			@Html.LabelFor(model => model.File, "Package:", new { @class = "form-label" })
+			@Html.FileInputFor(model => model.File, new { @class = "form-control" })
+		</div>
+
+		<div class="w-100"><br /></div>
+
+		<div class="col">
+			<button class="btn btn-primary" type="submit">Add</button>
+		</div>
+	</div>
+</form>

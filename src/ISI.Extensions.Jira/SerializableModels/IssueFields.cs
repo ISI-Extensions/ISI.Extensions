@@ -89,7 +89,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 		public DateTime? ResolutionDate { get; set; }
 
 		[DataMember(Name = "workratio", EmitDefaultValue = false)]
-		public int WorkRatio { get; set; }
+		public long WorkRatio { get; set; }
 
 		[DataMember(Name = "lastViewed", EmitDefaultValue = false)]
 		public string __LastViewed { get => (LastViewed.HasValue ? string.Format("{0:yyyy-MM-ddTHH:mm:ss.fffzz}00", (LastViewed?.Kind == DateTimeKind.Local ? LastViewed : LastViewed?.ToLocalTime())) : string.Empty); set => LastViewed = value.ToDateTimeNullable(); }

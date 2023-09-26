@@ -30,7 +30,7 @@ namespace ISI.Extensions.Jira
 		public string AggregateTimespent { get; set; }
 		public IssueResolution Resolution { get; set; }
 		public DateTime? ResolutionDate { get; set; }
-		public int WorkRatio { get; set; }
+		public long WorkRatio { get; set; }
 		public DateTime? LastViewed { get; set; }
 		public InwardIssueFieldsWatches Watches { get; set; }
 		public DateTime Created { get; set; }

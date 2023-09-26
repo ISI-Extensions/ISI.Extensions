@@ -51,7 +51,6 @@ namespace ISI.Extensions.Jira
 
 			response.Issues = issues.ToArray();
 
-
 			return response;
 		}
 	}

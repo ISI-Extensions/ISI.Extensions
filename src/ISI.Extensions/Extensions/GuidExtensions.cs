@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -39,22 +39,22 @@ namespace ISI.Extensions.Extensions
 
 			var result = emptyValue;
 
-			if (value != Guid.Empty) 
+			if (value != Guid.Empty)
 			{
 				switch (format)
 				{
 					case GuidFormat.NoFormatting:
 						result = value.ToString("N");
 						break;
-					
+
 					case GuidFormat.WithHyphens:
 						result = value.ToString("D");
 						break;
-					
+
 					case GuidFormat.WithHyphensAndBrackets:
 						result = value.ToString("B");
 						break;
-					
+
 					case GuidFormat.WithHyphensAndParentheses:
 						result = value.ToString("P");
 						break;
@@ -78,7 +78,7 @@ namespace ISI.Extensions.Extensions
 							while (byteValue > 0)
 							{
 								var remainder = byteValue % 36;
-								byteBaseFormatted += base36[(int) remainder];
+								byteBaseFormatted += base36[(int)remainder];
 								byteValue = (byteValue - remainder) / 36;
 							}
 
@@ -99,36 +99,22 @@ namespace ISI.Extensions.Extensions
 
 		public static Guid ToGuid(this string value, Guid defaultValue)
 		{
-			if (string.IsNullOrEmpty(value))
+			if (!string.IsNullOrWhiteSpace(value) && Guid.TryParse(value, out var parsedValue))
 			{
-				return defaultValue;
+				return parsedValue;
 			}
-			
-			try
-			{
-				return new(value ?? string.Empty);
-			}
-			catch
-			{
-				return defaultValue;
-			}
+
+			return defaultValue;
 		}
 
 		public static Guid? ToGuidNullable(this string value, Guid? defaultValue = null)
 		{
-			if (string.IsNullOrEmpty(value))
+			if (!string.IsNullOrWhiteSpace(value) && Guid.TryParse(value, out var parsedValue))
 			{
-				return defaultValue;
+				return parsedValue;
 			}
-			
-			try
-			{
-				return new Guid(value ?? string.Empty);
-			}
-			catch
-			{
-				return defaultValue;
-			}
+
+			return defaultValue;
 		}
 
 		public static bool IsNullOrEmpty(this Guid? value)

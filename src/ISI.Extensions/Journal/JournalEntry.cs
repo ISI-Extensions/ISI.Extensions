@@ -22,9 +22,30 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Journal
 {
-	public interface IJournalEntryAssociation
+	public class JournalEntry : ISI.Extensions.Journal.IJournalEntry
 	{
-		Guid AssociationTypeUuid { get; }
-		string AssociationKey { get; }
+		public Guid? ParentJournalEntryUuid { get; set; }
+		public Guid JournalEntryUuid { get; set; }
+
+		public string Note { get; set; }
+
+		private IJournalEntryAssociationCollection _journalEntrynAssociations = null;
+		public IJournalEntryAssociationCollection JournalEntryAssociations
+		{
+			get => _journalEntrynAssociations ??= new JournalEntryAssociationCollection();
+			set => _journalEntrynAssociations = value;
+		}
+
+		private IJournalEntryTypeCollection _journalEntryTypes = null;
+		public IJournalEntryTypeCollection JournalEntryTypes
+		{
+			get => _journalEntryTypes ??= new JournalEntryTypeCollection();
+			set => _journalEntryTypes = new JournalEntryTypeCollection(value);
+		}
+
+		public string CreateUserKey { get; set; }
+		public Guid CreateUserUuid { get => CreateUserKey.ToGuid(); set => CreateUserKey = value.Formatted(GuidExtensions.GuidFormat.WithHyphens); }
+		public int? CreateUserId { get => CreateUserKey.ToIntNullable(); set => CreateUserKey = string.Format("{0}", value); }
+		public DateTime? CreateDateTimeUtc { get; set; }
 	}
 }

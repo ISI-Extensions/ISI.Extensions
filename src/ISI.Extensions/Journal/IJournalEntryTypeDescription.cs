@@ -22,9 +22,9 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Journal
 {
-	public interface IJournalEntryAssociation
+	public interface IJournalEntryTypeDescription
 	{
-		Guid AssociationTypeUuid { get; }
-		string AssociationKey { get; }
+		Guid JournalEntryTypeUuid { get; }
+		string Description { get; }
 	}
 }

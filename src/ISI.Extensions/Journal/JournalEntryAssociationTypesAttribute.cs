@@ -22,9 +22,13 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Journal
 {
-	public interface IJournalEntryAssociation
+	[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+	public class JournalEntryAssociationTypesAttribute : ISI.Extensions.TypeLocatorAttribute
 	{
-		Guid AssociationTypeUuid { get; }
-		string AssociationKey { get; }
+		public JournalEntryAssociationTypesAttribute()
+			: base(typeof(IJournalEntryAssociationTypes))
+		{
+			
+		}
 	}
 }

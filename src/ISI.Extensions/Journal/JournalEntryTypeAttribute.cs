@@ -22,9 +22,18 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Journal
 {
-	public interface IJournalEntryAssociation
+	[AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+	public class JournalEntryTypeAttribute : Attribute
 	{
-		Guid AssociationTypeUuid { get; }
-		string AssociationKey { get; }
+		public string Description { get; }
+		public string[] AuthorizedReadRoles { get; set; }
+
+		public JournalEntryTypeAttribute()
+		{
+		}
+		public JournalEntryTypeAttribute(string description)
+		{
+			Description = description;
+		}
 	}
 }

@@ -22,9 +22,32 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Journal
 {
-	public interface IJournalEntryAssociation
+	public class JournalEntryTypeCollection : IJournalEntryTypeCollection
 	{
-		Guid AssociationTypeUuid { get; }
-		string AssociationKey { get; }
+		private readonly HashSet<Guid> _journalEntryTypes = new();
+
+		public JournalEntryTypeCollection()
+		{
+
+		}
+		public JournalEntryTypeCollection(IEnumerable<Guid> journalEntryTypeUuids)
+		{
+			AddRange(journalEntryTypeUuids);
+		}
+
+		public void Add(Guid journalEntryTypeUuid)
+		{
+			_journalEntryTypes.Add(journalEntryTypeUuid);
+		}
+
+		public void AddRange(IEnumerable<Guid> journalEntryTypeUuids)
+		{
+			_journalEntryTypes.UnionWith(journalEntryTypeUuids);
+		}
+
+		public bool Contains(Guid journalEntryTypeUuid) => _journalEntryTypes.Contains(journalEntryTypeUuid);
+
+		public IEnumerator<Guid> GetEnumerator() => _journalEntryTypes.GetEnumerator();
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
 	}
 }

@@ -22,9 +22,15 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Journal
 {
-	public interface IJournalEntryAssociation
+	public interface IJournalEntry
 	{
-		Guid AssociationTypeUuid { get; }
-		string AssociationKey { get; }
+		Guid JournalEntryUuid { get; }
+		Guid? ParentJournalEntryUuid { get; }
+
+		string Note { get; }
+
+		IJournalEntryAssociationCollection JournalEntryAssociations { get; }
+
+		IJournalEntryTypeCollection JournalEntryTypes { get; }
 	}
 }

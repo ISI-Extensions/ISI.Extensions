@@ -22,9 +22,13 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Journal
 {
-	public interface IJournalEntryAssociation
+	public interface IJournalEntryAssociationCollection : IEnumerable<IJournalEntryAssociation>
 	{
-		Guid AssociationTypeUuid { get; }
-		string AssociationKey { get; }
+		void Add(IJournalEntryAssociation association);
+		void Add(Guid associationTypeUuid, string associationKey);
+		void Add(Guid associationTypeUuid, Guid associationUuid);
+		void Add(Guid associationTypeUuid, int associationId);
+		void Remove(Guid associationTypeUuid);
+		string this[Guid associationTypeUuid] { get; set; }
 	}
 }

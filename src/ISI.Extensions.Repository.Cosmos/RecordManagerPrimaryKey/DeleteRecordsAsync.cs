@@ -24,14 +24,14 @@ namespace ISI.Extensions.Repository.Cosmos
 {
 	public abstract partial class RecordManagerPrimaryKey<TRecord, TRecordPrimaryKey>
 	{
-		public async Task<int> DeleteRecordAsync(TRecordPrimaryKey primaryKeyValue)
+		public async Task<int> DeleteRecordAsync(TRecordPrimaryKey primaryKeyValue, System.Threading.CancellationToken cancellationToken = default)
 		{
-			var document = await GetClient().DeleteDocumentAsync(Microsoft.Azure.Documents.Client.UriFactory.CreateDocumentUri(DatabaseName, TableName, primaryKeyValue.ToString()));
+			var document = await GetClient().DeleteDocumentAsync(Microsoft.Azure.Documents.Client.UriFactory.CreateDocumentUri(DatabaseName, TableName, primaryKeyValue.ToString()).AbsolutePath, cancellationToken: cancellationToken);
 
 			return document != null ? 1 : 0;
 		}
 
-		public async Task<int> DeleteRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues)
+		public async Task<int> DeleteRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, System.Threading.CancellationToken cancellationToken = default)
 		{
 			var deletedCount = 0;
 
@@ -39,7 +39,7 @@ namespace ISI.Extensions.Repository.Cosmos
 			{
 				foreach (var primaryKeyValue in primaryKeyValues)
 				{
-					deletedCount += await DeleteRecordAsync(primaryKeyValue);
+					deletedCount += await DeleteRecordAsync(primaryKeyValue, cancellationToken);
 				}
 			}
 

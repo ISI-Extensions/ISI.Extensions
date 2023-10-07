@@ -19,13 +19,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.Repository.PostgreSQL.Extensions;
+using ISI.Extensions.Repository.SqlServer.Extensions;
 
-namespace ISI.Extensions.Repository.PostgreSQL
+namespace ISI.Extensions.Repository.SqlServer
 {
 	public abstract partial class RecordManager<TRecord>
 	{
-		protected virtual async Task<int> DeleteRecordsAsync(IWhereClause whereClause)
+		protected virtual async Task<int> DeleteRecordsAsync(IWhereClause whereClause, System.Threading.CancellationToken cancellationToken = default)
 		{
 			if (!(whereClause is IWhereClauseWithGetSql whereClauseWithGetSql))
 			{
@@ -45,13 +45,14 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 				var sqlConnectionWhereClause = whereClause as ISqlConnectionWhereClause;
 
-				sqlConnectionWhereClause?.Initialize(SqlServerConfiguration, connection);
+				var sqlServerCapabilities = await connection.GetSqlServerCapabilitiesAsync(cancellationToken: cancellationToken);
+				sqlConnectionWhereClause?.Initialize(SqlServerConfiguration, connection, sqlServerCapabilities);
 
 				var tableNameAlias = GetTableNameAlias(TableAlias);
 
-				sql.AppendFormat("DELETE {0}\n", tableNameAlias);
+				sql.AppendFormat("delete {0}\n", tableNameAlias);
 
-				sql.AppendFormat("FROM {0}\n", GetTableName());
+				sql.AppendFormat("from {0} with (RowLock)\n", GetTableName());
 				if (sqlConnectionWhereClause != null)
 				{
 					sql.Append(sqlConnectionWhereClause.GetJoinCause(tableNameAlias));
@@ -60,24 +61,24 @@ namespace ISI.Extensions.Repository.PostgreSQL
 				var whereClauseSql = whereClauseWithGetSql.GetSql();
 				if (!string.IsNullOrEmpty(whereClauseSql))
 				{
-					sql.Append("WHERE\n");
+					sql.Append("where\n");
 					sql.Append(whereClauseSql);
 				}
 
 				if (whereClause.IsFilter || whereClause.HasFilter)
 				{
-					await connection.EnsureConnectionIsOpenAsync();
+					await connection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
 
-					using (var command = new Npgsql.NpgsqlCommand(sql.ToString(), connection))
+					using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql.ToString(), connection))
 					{
 						command.CommandTimeout = 0;
 						command.AddParameters(whereClauseWithGetParameters.GetParameters());
 
-						deleteCount = await command.ExecuteNonQueryWithExceptionTracingAsync();
+						deleteCount = await command.ExecuteNonQueryWithExceptionTracingAsync(cancellationToken: cancellationToken);
 					}
 				}
 
-				sqlConnectionWhereClause?.Finalize(connection);
+				sqlConnectionWhereClause?.Finalize(connection, sqlServerCapabilities);
 			}
 
 			return deleteCount;

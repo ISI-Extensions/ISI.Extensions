@@ -141,7 +141,7 @@ namespace ISI.Extensions.Repository.PostgreSQL.Extensions
 			command.AddParameters((whereClause as IWhereClauseWithGetParameters)?.GetParameters());
 		}
 
-		public static async Task<int> ExecuteNonQueryWithExceptionTracingAsync(this Npgsql.NpgsqlCommand command)
+		public static async Task<int> ExecuteNonQueryWithExceptionTracingAsync(this Npgsql.NpgsqlCommand command, System.Threading.CancellationToken cancellationToken = default)
 		{
 			try
 			{
@@ -150,7 +150,7 @@ namespace ISI.Extensions.Repository.PostgreSQL.Extensions
 					Logger.LogInformation(command.GetFormattedCommand());
 				}
 
-				return await command.ExecuteNonQueryAsync();
+				return await command.ExecuteNonQueryAsync(cancellationToken);
 			}
 			catch (Exception exception)
 			{
@@ -164,7 +164,7 @@ namespace ISI.Extensions.Repository.PostgreSQL.Extensions
 			}
 		}
 
-		public static async Task<object> ExecuteScalarWithExceptionTracingAsync(this Npgsql.NpgsqlCommand command)
+		public static async Task<object> ExecuteScalarWithExceptionTracingAsync(this Npgsql.NpgsqlCommand command, System.Threading.CancellationToken cancellationToken = default)
 		{
 			try
 			{
@@ -173,7 +173,7 @@ namespace ISI.Extensions.Repository.PostgreSQL.Extensions
 					Logger.LogInformation(command.GetFormattedCommand());
 				}
 
-				return await command.ExecuteScalarAsync();
+				return await command.ExecuteScalarAsync(cancellationToken);
 			}
 			catch (Exception exception)
 			{
@@ -187,7 +187,7 @@ namespace ISI.Extensions.Repository.PostgreSQL.Extensions
 			}
 		}
 
-		public static async Task<Npgsql.NpgsqlDataReader> ExecuteReaderWithExceptionTracingAsync(this Npgsql.NpgsqlCommand command)
+		public static async Task<Npgsql.NpgsqlDataReader> ExecuteReaderWithExceptionTracingAsync(this Npgsql.NpgsqlCommand command, System.Threading.CancellationToken cancellationToken = default)
 		{
 			try
 			{
@@ -196,7 +196,7 @@ namespace ISI.Extensions.Repository.PostgreSQL.Extensions
 					Logger.LogInformation(command.GetFormattedCommand());
 				}
 
-				return await command.ExecuteReaderAsync();
+				return await command.ExecuteReaderAsync(cancellationToken);
 			}
 			catch (Exception exception)
 			{

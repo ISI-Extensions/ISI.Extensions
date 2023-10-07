@@ -25,9 +25,9 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 {
 	public static partial class SqlConnectionExtensions
 	{
-		public static async Task<Version> GetServerVersionAsync(this Microsoft.Data.SqlClient.SqlConnection connection)
+		public static async Task<Version> GetServerVersionAsync(this Microsoft.Data.SqlClient.SqlConnection connection, System.Threading.CancellationToken cancellationToken = default)
 		{
-			await connection.EnsureConnectionIsOpenAsync();
+			await connection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
 
 			var version = connection.ServerVersion;
 

@@ -18,34 +18,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Repository.RavenDb
+namespace ISI.Extensions.Security
 {
-	public abstract partial class RecordManagerPrimaryKey<TRecord, TRecordPrimaryKey>
+	public class Roles
 	{
-		public virtual async Task<int> DeleteRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, System.Threading.CancellationToken cancellationToken = default)
-		{
-			var deleteCount = 0;
-
-			using (var session = Store.OpenSession())
-			{
-				foreach (var primaryKeyValue in primaryKeyValues)
-				{
-					session.Delete(GetRavenKey(primaryKeyValue));
-
-					deleteCount++;
-				}
-
-				session.SaveChanges();
-			}
-
-			return deleteCount;
-		}
-
-		public virtual async Task<int> DeleteRecordAsync(TRecordPrimaryKey primaryKeyValue, System.Threading.CancellationToken cancellationToken = default)
-		{
-			return await DeleteRecordsAsync(new[] { primaryKeyValue }, cancellationToken);
-		}
+		public const string AnonymousUsers = "?";
+		public const string AuthenticatedUsers = "*";
 	}
 }

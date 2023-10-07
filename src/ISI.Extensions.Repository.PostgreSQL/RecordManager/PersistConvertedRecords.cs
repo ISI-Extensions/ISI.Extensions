@@ -26,7 +26,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 {
 	public abstract partial class RecordManager<TRecord>
 	{
-		protected virtual async Task<IEnumerable<TRecord>> PersistConvertedRecordsAsync<TConvertedRecord>(IEnumerable<TRecord> records, PersistenceMethod persistenceMethod, bool hasArchiveTable, Action<TRecord> updateRecordProperties = null, UpdateRecordFilterColumnCollection<TRecord> updateRecordColumns = null, Func<TRecord, TConvertedRecord> recordToConvertedRecordConverter = null, Func<TConvertedRecord, TRecord> convertedRecordToRecordConverter = null, Func<TRecord, DateTime> getArchiveDateTime = null)
+		protected virtual async Task<IEnumerable<TRecord>> PersistConvertedRecordsAsync<TConvertedRecord>(IEnumerable<TRecord> records, PersistenceMethod persistenceMethod, bool hasArchiveTable, Action<TRecord> updateRecordProperties = null, UpdateRecordFilterColumnCollection<TRecord> updateRecordColumns = null, Func<TRecord, TConvertedRecord> recordToConvertedRecordConverter = null, Func<TConvertedRecord, TRecord> convertedRecordToRecordConverter = null, Func<TRecord, DateTime> getArchiveDateTime = null, System.Threading.CancellationToken cancellationToken = default)
 			where TConvertedRecord : class
 		{
 			object GetValue(IRecordPropertyDescription<TConvertedRecord> recordPropertyDescription, TConvertedRecord convertedRecord)
@@ -170,9 +170,9 @@ namespace ISI.Extensions.Repository.PostgreSQL
 									command.AddParameter(string.Format("@primaryKey{0}", primaryKeyIndex++), (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
 								}
 
-								updateConnection.EnsureConnectionIsOpenAsync().Wait();
+								updateConnection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken).Wait(cancellationToken);
 
-								doInsert = !(string.Format("{0}", await command.ExecuteScalarWithExceptionTracingAsync())).ToBoolean();
+								doInsert = !(string.Format("{0}", await command.ExecuteScalarWithExceptionTracingAsync(cancellationToken: cancellationToken))).ToBoolean();
 							}
 						}
 
@@ -203,7 +203,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 							insertSql.Append("from @RepositoryAssignedValues\n");
 						}
 
-						await insertConnection.EnsureConnectionIsOpenAsync();
+						await insertConnection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
 
 						using (var command = new Npgsql.NpgsqlCommand(insertSql.ToString(), insertConnection))
 						{
@@ -213,9 +213,9 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 							if (repositoryAssignedValueColumnDefinitions.Any())
 							{
-								using (var dataReader = await command.ExecuteReaderWithExceptionTracingAsync())
+								using (var dataReader = await command.ExecuteReaderWithExceptionTracingAsync(cancellationToken: cancellationToken))
 								{
-									if (await dataReader.ReadAsync())
+									if (await dataReader.ReadAsync(cancellationToken))
 									{
 										persistedConvertedRecordIndex = (int)System.Convert.ChangeType(dataReader.GetValue(0), TypeCode.Int32);
 										var columnIndex = 1;
@@ -228,7 +228,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 							}
 							else
 							{
-								await command.ExecuteNonQueryWithExceptionTracingAsync();
+								await command.ExecuteNonQueryWithExceptionTracingAsync(cancellationToken: cancellationToken);
 							}
 						}
 					}
@@ -260,7 +260,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 						insertSql.AppendFormat("{0}\n", string.Join(" union all\n", sqlSelects));
 						insertSql.Append("\n");
 
-						await archiveConnection.EnsureConnectionIsOpenAsync();
+						await archiveConnection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
 
 						using (var command = new Npgsql.NpgsqlCommand(insertSql.ToString(), archiveConnection))
 						{
@@ -270,7 +270,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 							command.AddParameters(sqlValues);
 
-							await command.ExecuteNonQueryWithExceptionTracingAsync();
+							await command.ExecuteNonQueryWithExceptionTracingAsync(cancellationToken: cancellationToken);
 						}
 					}
 				}

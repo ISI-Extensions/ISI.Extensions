@@ -25,19 +25,19 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 {
 	public static partial class SqlConnectionExtensions
 	{
-		public static async Task<int> ExecuteNonQueryAsync(this Microsoft.Data.SqlClient.SqlConnection connection, string sql, string parameterName, object parameterValue, int? commandTimeout = null)
+		public static async Task<int> ExecuteNonQueryAsync(this Microsoft.Data.SqlClient.SqlConnection connection, string sql, string parameterName, object parameterValue, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await ExecuteNonQueryAsync(connection, sql, new KeyValuePair<string, object>(parameterName, parameterValue), commandTimeout);
+			return await ExecuteNonQueryAsync(connection, sql, new KeyValuePair<string, object>(parameterName, parameterValue), commandTimeout, cancellationToken);
 		}
 
-		public static async Task<int> ExecuteNonQueryAsync(this Microsoft.Data.SqlClient.SqlConnection connection, string sql, KeyValuePair<string, object> parameter, int? commandTimeout = null)
+		public static async Task<int> ExecuteNonQueryAsync(this Microsoft.Data.SqlClient.SqlConnection connection, string sql, KeyValuePair<string, object> parameter, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await ExecuteNonQueryAsync(connection, sql, new[] { parameter }, commandTimeout);
+			return await ExecuteNonQueryAsync(connection, sql, new[] { parameter }, commandTimeout, cancellationToken);
 		}
 
-		public static async Task<int> ExecuteNonQueryAsync(this Microsoft.Data.SqlClient.SqlConnection connection, string sql, IEnumerable<KeyValuePair<string, object>> parameters = null, int? commandTimeout = null)
+		public static async Task<int> ExecuteNonQueryAsync(this Microsoft.Data.SqlClient.SqlConnection connection, string sql, IEnumerable<KeyValuePair<string, object>> parameters = null, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
-			await connection.EnsureConnectionIsOpenAsync();
+			await connection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
 
 			using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql, connection))
 			{
@@ -48,7 +48,7 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 
 				command.AddParameters(parameters);
 
-				return await command.ExecuteNonQueryWithExceptionTracingAsync();
+				return await command.ExecuteNonQueryWithExceptionTracingAsync(cancellationToken: cancellationToken);
 			}
 		}
 	}

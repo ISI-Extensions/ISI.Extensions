@@ -25,12 +25,12 @@ namespace ISI.Extensions.Repository.SqlServer
 {
 	public abstract partial class RecordManagerPrimaryKey<TRecord, TRecordPrimaryKey>
 	{
-		public virtual async Task<int> UpdateRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, SetRecordColumnCollection<TRecord> setRecordColumns)
+		public virtual async Task<int> UpdateRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, SetRecordColumnCollection<TRecord> setRecordColumns, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await UpdateRecordsAsync(primaryKeyValues, setRecordColumns, false, null);
+			return await UpdateRecordsAsync(primaryKeyValues, setRecordColumns, false, null, cancellationToken: cancellationToken);
 		}
 
-		protected virtual async Task<int> UpdateRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, SetRecordColumnCollection<TRecord> setRecordColumns, bool hasArchiveTable, DateTime? archiveDateTime, int? commandTimeout = null)
+		protected virtual async Task<int> UpdateRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, SetRecordColumnCollection<TRecord> setRecordColumns, bool hasArchiveTable, DateTime? archiveDateTime, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
 			var updateCount = 0;
 
@@ -43,7 +43,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 				var sqlConnectionUpdateWhereClause = updateWhereClause as ISqlConnectionWhereClause;
 
-				var updateConnectionSqlServerCapabilities = await updateConnection.GetSqlServerCapabilitiesAsync();
+				var updateConnectionSqlServerCapabilities = await updateConnection.GetSqlServerCapabilitiesAsync(cancellationToken: cancellationToken);
 
 				sqlConnectionUpdateWhereClause?.Initialize(SqlServerConfiguration, updateConnection, updateConnectionSqlServerCapabilities);
 
@@ -81,9 +81,9 @@ namespace ISI.Extensions.Repository.SqlServer
 
 					command.AddParameters(updateWhereClause);
 
-					await updateConnection.EnsureConnectionIsOpenAsync();
+					await updateConnection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
 
-					updateCount += await command.ExecuteNonQueryWithExceptionTracingAsync();
+					updateCount += await command.ExecuteNonQueryWithExceptionTracingAsync(cancellationToken: cancellationToken);
 				}
 
 				if (hasArchiveTable)
@@ -94,7 +94,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 					var sqlConnectionArchiveWhereClause = archiveWhereClause as ISqlConnectionWhereClause;
 
-					var archiveConnectionSqlServerCapabilities = await archiveConnection.GetSqlServerCapabilitiesAsync();
+					var archiveConnectionSqlServerCapabilities = await archiveConnection.GetSqlServerCapabilitiesAsync(cancellationToken: cancellationToken);
 					sqlConnectionArchiveWhereClause?.Initialize(SqlServerConfiguration, archiveConnection, archiveConnectionSqlServerCapabilities);
 
 					var archiveSql = new StringBuilder();
@@ -113,7 +113,7 @@ namespace ISI.Extensions.Repository.SqlServer
 						archiveSql.Append(archiveWhereSql);
 					}
 
-					await archiveConnection.EnsureConnectionIsOpenAsync();
+					await archiveConnection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
 
 					using (var command = new Microsoft.Data.SqlClient.SqlCommand(archiveSql.ToString(), archiveConnection))
 					{
@@ -128,7 +128,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 						command.AddParameters(parameters);
 
-						await command.ExecuteNonQueryWithExceptionTracingAsync();
+						await command.ExecuteNonQueryWithExceptionTracingAsync(cancellationToken: cancellationToken);
 					}
 
 					sqlConnectionArchiveWhereClause?.Finalize(archiveConnection, archiveConnectionSqlServerCapabilities);

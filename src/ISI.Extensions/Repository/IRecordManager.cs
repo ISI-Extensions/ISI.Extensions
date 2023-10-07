@@ -30,34 +30,34 @@ namespace ISI.Extensions.Repository
 	public interface IRecordManager<TRecord> : IRecordManager
 		where TRecord : class, IRecordManagerRecord, new()
 	{
-		Task<IEnumerable<TRecord>> InsertRecordsAsync(IEnumerable<TRecord> records);
-		Task<TRecord> InsertRecordAsync(TRecord record);
+		Task<IEnumerable<TRecord>> InsertRecordsAsync(IEnumerable<TRecord> records, System.Threading.CancellationToken cancellationToken = default);
+		Task<TRecord> InsertRecordAsync(TRecord record, System.Threading.CancellationToken cancellationToken = default);
 
-		Task<IEnumerable<TRecord>> UpsertRecordsAsync(IEnumerable<TRecord> records);
-		Task<TRecord> UpsertRecordAsync(TRecord record);
+		Task<IEnumerable<TRecord>> UpsertRecordsAsync(IEnumerable<TRecord> records, System.Threading.CancellationToken cancellationToken = default);
+		Task<TRecord> UpsertRecordAsync(TRecord record, System.Threading.CancellationToken cancellationToken = default);
 
-		Task<int> UpdateRecordsAsync(IEnumerable<TRecord> records);
-		Task<int> UpdateRecordAsync(TRecord record);
-		Task<int> UpdateRecordsAsync(IEnumerable<TRecord> records, UpdateRecordFilterColumnCollection<TRecord> updateRecordFilterColumns);
-		Task<int> UpdateRecordAsync(TRecord record, UpdateRecordFilterColumnCollection<TRecord> updateRecordFilterColumns);
+		Task<int> UpdateRecordsAsync(IEnumerable<TRecord> records, System.Threading.CancellationToken cancellationToken = default);
+		Task<int> UpdateRecordAsync(TRecord record, System.Threading.CancellationToken cancellationToken = default);
+		Task<int> UpdateRecordsAsync(IEnumerable<TRecord> records, UpdateRecordFilterColumnCollection<TRecord> updateRecordFilterColumns, System.Threading.CancellationToken cancellationToken = default);
+		Task<int> UpdateRecordAsync(TRecord record, UpdateRecordFilterColumnCollection<TRecord> updateRecordFilterColumns, System.Threading.CancellationToken cancellationToken = default);
 	}
 
 	public interface IRecordManagerPrimaryKey<TRecord, TRecordPrimaryKey> : IRecordManager<TRecord>
 		where TRecord : class, IRecordManagerPrimaryKeyRecord<TRecordPrimaryKey>, new()
 	{
-		Task<IEnumerable<TRecord>> GetRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, int skip = 0, int take = -1);
-		Task<TRecord> GetRecordAsync(TRecordPrimaryKey primaryKeyValue);
+		Task<IEnumerable<TRecord>> GetRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, int skip = 0, int take = -1, System.Threading.CancellationToken cancellationToken = default);
+		Task<TRecord> GetRecordAsync(TRecordPrimaryKey primaryKeyValue, System.Threading.CancellationToken cancellationToken = default);
 
-		Task<int> UpdateRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, SetRecordColumnCollection<TRecord> setRecordColumns);
+		Task<int> UpdateRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, SetRecordColumnCollection<TRecord> setRecordColumns, System.Threading.CancellationToken cancellationToken = default);
 
-		Task<int> DeleteRecordAsync(TRecordPrimaryKey primaryKeyValue);
-		Task<int> DeleteRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues);
+		Task<int> DeleteRecordAsync(TRecordPrimaryKey primaryKeyValue, System.Threading.CancellationToken cancellationToken = default);
+		Task<int> DeleteRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, System.Threading.CancellationToken cancellationToken = default);
 	}
 
 	public interface IRecordManagerPrimaryKeyWithArchive<TRecord, TRecordPrimaryKey> : IRecordManagerPrimaryKey<TRecord, TRecordPrimaryKey>
 		where TRecord : class, IRecordManagerPrimaryKeyRecord<TRecordPrimaryKey>, IRecordManagerRecordWithArchiveDateTime, new()
 	{
-		IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> GetArchiveRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, DateTime? minArchiveDateTime, DateTime? maxArchiveDateTime, int skip = 0, int take = -1);
-		IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> GetArchiveRecordsAsync(TRecordPrimaryKey primaryKeyValue, DateTime? minArchiveDateTime, DateTime? maxArchiveDateTime, int skip = 0, int take = -1);
+		IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> GetArchiveRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, DateTime? minArchiveDateTime, DateTime? maxArchiveDateTime, int skip = 0, int take = -1, System.Threading.CancellationToken cancellationToken = default);
+		IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> GetArchiveRecordsAsync(TRecordPrimaryKey primaryKeyValue, DateTime? minArchiveDateTime, DateTime? maxArchiveDateTime, int skip = 0, int take = -1, System.Threading.CancellationToken cancellationToken = default);
 	}
 }

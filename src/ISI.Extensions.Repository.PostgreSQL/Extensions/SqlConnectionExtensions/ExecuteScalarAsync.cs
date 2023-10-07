@@ -25,19 +25,19 @@ namespace ISI.Extensions.Repository.PostgreSQL.Extensions
 {
 	public static partial class SqlConnectionExtensions
 	{
-		public static async Task<TProperty> ExecuteScalarAsync<TProperty>(this Npgsql.NpgsqlConnection connection, string sql, string parameterName, object parameterValue, int? commandTimeout = null)
+		public static async Task<TProperty> ExecuteScalarAsync<TProperty>(this Npgsql.NpgsqlConnection connection, string sql, string parameterName, object parameterValue, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await ExecuteScalarAsync<TProperty>(connection, sql, new KeyValuePair<string, object>(parameterName, parameterValue), commandTimeout);
+			return await ExecuteScalarAsync<TProperty>(connection, sql, new KeyValuePair<string, object>(parameterName, parameterValue), commandTimeout, cancellationToken);
 		}
 
-		public static async Task<TProperty> ExecuteScalarAsync<TProperty>(this Npgsql.NpgsqlConnection connection, string sql, KeyValuePair<string, object> parameter, int? commandTimeout = null)
+		public static async Task<TProperty> ExecuteScalarAsync<TProperty>(this Npgsql.NpgsqlConnection connection, string sql, KeyValuePair<string, object> parameter, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await ExecuteScalarAsync<TProperty>(connection, sql, new[] { parameter }, commandTimeout);
+			return await ExecuteScalarAsync<TProperty>(connection, sql, new[] { parameter }, commandTimeout, cancellationToken);
 		}
 
-		public static async Task<TProperty> ExecuteScalarAsync<TProperty>(this Npgsql.NpgsqlConnection connection, string sql, IEnumerable<KeyValuePair<string, object>> parameters = null, int? commandTimeout = null)
+		public static async Task<TProperty> ExecuteScalarAsync<TProperty>(this Npgsql.NpgsqlConnection connection, string sql, IEnumerable<KeyValuePair<string, object>> parameters = null, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
-			await connection.EnsureConnectionIsOpenAsync();
+			await connection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
 
 			using (var command = new Npgsql.NpgsqlCommand(sql, connection))
 			{
@@ -47,9 +47,9 @@ namespace ISI.Extensions.Repository.PostgreSQL.Extensions
 				}
 				command.AddParameters(parameters);
 
-				using (var dataReader = await command.ExecuteReaderWithExceptionTracingAsync())
+				using (var dataReader = await command.ExecuteReaderWithExceptionTracingAsync(cancellationToken: cancellationToken))
 				{
-					if (await dataReader.ReadAsync())
+					if (await dataReader.ReadAsync(cancellationToken))
 					{
 						var expectedType = typeof(TProperty);
 
@@ -134,19 +134,19 @@ namespace ISI.Extensions.Repository.PostgreSQL.Extensions
 			return default(TProperty);
 		}
 
-		public static async Task<object> ExecuteScalarAsync(this Npgsql.NpgsqlConnection connection, string sql, string parameterName, object parameterValue, int? commandTimeout = null)
+		public static async Task<object> ExecuteScalarAsync(this Npgsql.NpgsqlConnection connection, string sql, string parameterName, object parameterValue, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await ExecuteScalarAsync(connection, sql, new KeyValuePair<string, object>(parameterName, parameterValue), commandTimeout);
+			return await ExecuteScalarAsync(connection, sql, new KeyValuePair<string, object>(parameterName, parameterValue), commandTimeout, cancellationToken);
 		}
 
-		public static async Task<object> ExecuteScalarAsync(this Npgsql.NpgsqlConnection connection, string sql, KeyValuePair<string, object> parameter, int? commandTimeout = null)
+		public static async Task<object> ExecuteScalarAsync(this Npgsql.NpgsqlConnection connection, string sql, KeyValuePair<string, object> parameter, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await ExecuteScalarAsync(connection, sql, new[] { parameter }, commandTimeout);
+			return await ExecuteScalarAsync(connection, sql, new[] { parameter }, commandTimeout, cancellationToken);
 		}
 
-		public static async Task<object> ExecuteScalarAsync(this Npgsql.NpgsqlConnection connection, string sql, IEnumerable<KeyValuePair<string, object>> parameters = null, int? commandTimeout = null)
+		public static async Task<object> ExecuteScalarAsync(this Npgsql.NpgsqlConnection connection, string sql, IEnumerable<KeyValuePair<string, object>> parameters = null, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
-			await connection.EnsureConnectionIsOpenAsync();
+			await connection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
 
 			using (var command = new Npgsql.NpgsqlCommand(sql, connection))
 			{
@@ -156,7 +156,7 @@ namespace ISI.Extensions.Repository.PostgreSQL.Extensions
 				}
 				command.AddParameters(parameters);
 
-				return await command.ExecuteScalarWithExceptionTracingAsync();
+				return await command.ExecuteScalarWithExceptionTracingAsync(cancellationToken: cancellationToken);
 			}
 		}
 	}

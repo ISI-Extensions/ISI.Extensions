@@ -24,14 +24,14 @@ namespace ISI.Extensions.Repository.RavenDb
 {
 	public abstract partial class RecordManagerPrimaryKey<TRecord, TRecordPrimaryKey>
 	{
-		public override async Task<int> UpdateRecordAsync(TRecord record)
+		public override async Task<int> UpdateRecordAsync(TRecord record, System.Threading.CancellationToken cancellationToken = default)
 		{
-			await UpsertRecordsAsync(new[] { record });
+			await UpsertRecordsAsync(new[] { record }, cancellationToken);
 
 			return 1;
 		}
 
-		public async Task<int> UpdateRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, SetRecordColumnCollection<TRecord> setRecordColumns)
+		public async Task<int> UpdateRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, SetRecordColumnCollection<TRecord> setRecordColumns, System.Threading.CancellationToken cancellationToken = default)
 		{
 			throw new NotImplementedException();
 		}

@@ -25,12 +25,12 @@ namespace ISI.Extensions.Repository.PostgreSQL
 {
 	public abstract partial class RecordManagerPrimaryKey<TRecord, TRecordPrimaryKey>
 	{
-		public virtual async Task<int> UpdateRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, SetRecordColumnCollection<TRecord> setRecordColumns)
+		public virtual async Task<int> UpdateRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, SetRecordColumnCollection<TRecord> setRecordColumns, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await UpdateRecordsAsync(primaryKeyValues, setRecordColumns, false, null);
+			return await UpdateRecordsAsync(primaryKeyValues, setRecordColumns, false, null, cancellationToken: cancellationToken);
 		}
 
-		protected virtual async Task<int> UpdateRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, SetRecordColumnCollection<TRecord> setRecordColumns, bool hasArchiveTable, DateTime? archiveDateTime, int? commandTimeout = null)
+		protected virtual async Task<int> UpdateRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, SetRecordColumnCollection<TRecord> setRecordColumns, bool hasArchiveTable, DateTime? archiveDateTime, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
 			var updateCount = 0;
 
@@ -79,9 +79,9 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 					command.AddParameters(updateWhereClause);
 
-					await updateConnection.EnsureConnectionIsOpenAsync();
+					await updateConnection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
 
-					updateCount += await command.ExecuteNonQueryWithExceptionTracingAsync();
+					updateCount += await command.ExecuteNonQueryWithExceptionTracingAsync(cancellationToken: cancellationToken);
 				}
 
 				if (hasArchiveTable)
@@ -110,7 +110,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 						archiveSql.Append(archiveWhereSql);
 					}
 
-					await archiveConnection.EnsureConnectionIsOpenAsync();
+					await archiveConnection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
 
 					using (var command = new Npgsql.NpgsqlCommand(archiveSql.ToString(), archiveConnection))
 					{
@@ -125,7 +125,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 						command.AddParameters(parameters);
 
-						await command.ExecuteNonQueryWithExceptionTracingAsync();
+						await command.ExecuteNonQueryWithExceptionTracingAsync(cancellationToken: cancellationToken);
 					}
 
 					sqlConnectionArchiveWhereClause?.Finalize(archiveConnection);

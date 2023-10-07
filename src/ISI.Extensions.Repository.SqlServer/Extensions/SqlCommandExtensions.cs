@@ -141,7 +141,7 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 			command.AddParameters((whereClause as IWhereClauseWithGetParameters)?.GetParameters());
 		}
 
-		public static async Task<int> ExecuteNonQueryWithExceptionTracingAsync(this Microsoft.Data.SqlClient.SqlCommand command)
+		public static async Task<int> ExecuteNonQueryWithExceptionTracingAsync(this Microsoft.Data.SqlClient.SqlCommand command, System.Threading.CancellationToken cancellationToken = default)
 		{
 			try
 			{
@@ -150,7 +150,7 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 					Logger.LogInformation(command.GetFormattedCommand());
 				}
 
-				return await command.ExecuteNonQueryAsync();
+				return await command.ExecuteNonQueryAsync(cancellationToken);
 			}
 			catch (Exception exception)
 			{
@@ -164,7 +164,7 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 			}
 		}
 
-		public static async Task<object> ExecuteScalarWithExceptionTracingAsync(this Microsoft.Data.SqlClient.SqlCommand command)
+		public static async Task<object> ExecuteScalarWithExceptionTracingAsync(this Microsoft.Data.SqlClient.SqlCommand command, System.Threading.CancellationToken cancellationToken = default)
 		{
 			try
 			{
@@ -173,7 +173,7 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 					Logger.LogInformation(command.GetFormattedCommand());
 				}
 
-				return await command.ExecuteScalarAsync();
+				return await command.ExecuteScalarAsync(cancellationToken);
 			}
 			catch (Exception exception)
 			{
@@ -187,7 +187,7 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 			}
 		}
 
-		public static async Task<Microsoft.Data.SqlClient.SqlDataReader> ExecuteReaderWithExceptionTracingAsync(this Microsoft.Data.SqlClient.SqlCommand command)
+		public static async Task<Microsoft.Data.SqlClient.SqlDataReader> ExecuteReaderWithExceptionTracingAsync(this Microsoft.Data.SqlClient.SqlCommand command, System.Threading.CancellationToken cancellationToken = default)
 		{
 			try
 			{
@@ -196,7 +196,7 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 					Logger.LogInformation(command.GetFormattedCommand());
 				}
 
-				return await command.ExecuteReaderAsync();
+				return await command.ExecuteReaderAsync(cancellationToken);
 			}
 			catch (Exception exception)
 			{

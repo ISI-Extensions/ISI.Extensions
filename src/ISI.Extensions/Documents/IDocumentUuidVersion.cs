@@ -24,7 +24,7 @@ namespace ISI.Extensions.Documents
 	public interface IDocumentUuidVersion
 	{
 		Guid? DocumentUuid { get; }
-		int? DocumentVersion { get; }
+		long? DocumentVersion { get; }
 		bool HasValue { get; }
 		string Formatted();
 	}

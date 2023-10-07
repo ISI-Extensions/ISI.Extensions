@@ -24,19 +24,19 @@ namespace ISI.Extensions.Repository
 {
 	public abstract partial class RecordManager<TRecord>
 	{
-		public virtual async Task<IEnumerable<TRecord>> InsertRecordsAsync(IEnumerable<TRecord> records)
+		public virtual async Task<IEnumerable<TRecord>> InsertRecordsAsync(IEnumerable<TRecord> records, System.Threading.CancellationToken cancellationToken = default)
 		{
 			foreach (var record in records ?? Array.Empty<TRecord>())
 			{
-				await InsertRecordAsync(record);
+				await InsertRecordAsync(record, cancellationToken);
 			}
 
 			return records;
 		}
 
-		public virtual async Task<TRecord> InsertRecordAsync(TRecord record)
+		public virtual async Task<TRecord> InsertRecordAsync(TRecord record, System.Threading.CancellationToken cancellationToken = default)
 		{
-			var records = await InsertRecordsAsync(new[] { record });
+			var records = await InsertRecordsAsync(new[] { record }, cancellationToken);
 
 			return records.NullCheckedFirstOrDefault();
 		}

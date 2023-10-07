@@ -25,39 +25,39 @@ namespace ISI.Extensions.Repository.SqlServer
 {
 	public abstract partial class RecordManager<TRecord>
 	{
-		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(IWhereClause whereClause, IOrderByClause orderByClause = null, int skip = 0, int take = -1, int? commandTimeout = null)
+		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(IWhereClause whereClause, IOrderByClause orderByClause = null, int skip = 0, int take = -1, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
 			using (var connection = GetSqlConnection())
 			{
-				return await FindRecordsAsync(connection, whereClause, orderByClause, skip, take, commandTimeout);
+				return await FindRecordsAsync(connection, whereClause, orderByClause, skip, take, commandTimeout, cancellationToken);
 			}
 		}
 
-		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(string fromClause, IWhereClause whereClause, IOrderByClause orderByClause = null, int skip = 0, int take = -1, int? commandTimeout = null)
+		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(string fromClause, IWhereClause whereClause, IOrderByClause orderByClause = null, int skip = 0, int take = -1, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
 			using (var connection = GetSqlConnection())
 			{
-				return await FindRecordsAsync(connection, fromClause, whereClause, orderByClause, skip, take, commandTimeout);
+				return await FindRecordsAsync(connection, fromClause, whereClause, orderByClause, skip, take, commandTimeout, cancellationToken);
 			}
 		}
 
-		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(Microsoft.Data.SqlClient.SqlConnection connection, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take, int? commandTimeout = null)
+		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(Microsoft.Data.SqlClient.SqlConnection connection, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await FindRecordsAsync(connection, GetFromClause(), whereClause, orderByClause, skip, take, commandTimeout);
+			return await FindRecordsAsync(connection, GetFromClause(), whereClause, orderByClause, skip, take, commandTimeout, cancellationToken);
 		}
 
-		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(Microsoft.Data.SqlClient.SqlConnection connection, string fromClause, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take, int? commandTimeout = null)
+		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(Microsoft.Data.SqlClient.SqlConnection connection, string fromClause, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await FindRecordsAsync(connection, null, fromClause, whereClause, orderByClause, skip, take, commandTimeout);
+			return await FindRecordsAsync(connection, null, fromClause, whereClause, orderByClause, skip, take, commandTimeout, cancellationToken);
 		}
 
-		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(Microsoft.Data.SqlClient.SqlConnection connection, ISelectClause selectClause, string fromClause, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take, int? commandTimeout = null)
+		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(Microsoft.Data.SqlClient.SqlConnection connection, ISelectClause selectClause, string fromClause, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
 			var sql = new StringBuilder();
 
 			var sqlConnectionWhereClause = whereClause as ISqlConnectionWhereClause;
 
-			var sqlServerCapabilities = await connection.GetSqlServerCapabilitiesAsync();
+			var sqlServerCapabilities = await connection.GetSqlServerCapabilitiesAsync(cancellationToken: cancellationToken);
 
 			sqlConnectionWhereClause?.Initialize(SqlServerConfiguration, connection, sqlServerCapabilities);
 
@@ -176,7 +176,7 @@ namespace ISI.Extensions.Repository.SqlServer
 					}
 				}
 
-				var records = await FindRecordsAsync(connection, sql.ToString(), (whereClause as IWhereClauseWithGetParameters)?.GetParameters(), commandTimeout);
+				var records = await FindRecordsAsync(connection, sql.ToString(), (whereClause as IWhereClauseWithGetParameters)?.GetParameters(), commandTimeout, cancellationToken);
 
 				sqlConnectionWhereClause?.Finalize(connection, sqlServerCapabilities);
 
@@ -186,27 +186,27 @@ namespace ISI.Extensions.Repository.SqlServer
 			return Array.Empty<TRecord>();
 		}
 
-		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(string sql, IDictionary<string, object> parameters)
+		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(string sql, IDictionary<string, object> parameters, System.Threading.CancellationToken cancellationToken = default)
 		{
 			using (var connection = GetSqlConnection())
 			{
-				return await FindRecordsAsync(connection, sql, parameters, null);
+				return await FindRecordsAsync(connection, sql, parameters, null, cancellationToken);
 			}
 		}
 
-		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(string sql, IDictionary<string, object> parameters, int commandTimeout)
+		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(string sql, IDictionary<string, object> parameters, int commandTimeout, System.Threading.CancellationToken cancellationToken = default)
 		{
 			using (var connection = GetSqlConnection())
 			{
-				return await FindRecordsAsync(connection, sql, parameters, commandTimeout);
+				return await FindRecordsAsync(connection, sql, parameters, commandTimeout, cancellationToken);
 			}
 		}
 
-		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(Microsoft.Data.SqlClient.SqlConnection connection, string sql, IDictionary<string, object> parameters, int? commandTimeout = null)
+		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(Microsoft.Data.SqlClient.SqlConnection connection, string sql, IDictionary<string, object> parameters, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
 			var records = new List<TRecord>();
 
-			await connection.EnsureConnectionIsOpenAsync();
+			await connection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
 
 			using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql, connection))
 			{
@@ -216,11 +216,11 @@ namespace ISI.Extensions.Repository.SqlServer
 				}
 				command.AddParameters(parameters);
 
-				using (var dataReader = await command.ExecuteReaderWithExceptionTracingAsync())
+				using (var dataReader = await command.ExecuteReaderWithExceptionTracingAsync(cancellationToken: cancellationToken))
 				{
 					var reader = ExpressionBuilder.GetReader(dataReader, RecordDescription.GetRecordDescription<TRecord>().PropertyDescriptions, Serializer);
 
-					while (await dataReader.ReadAsync())
+					while (await dataReader.ReadAsync(cancellationToken))
 					{
 						records.Add(reader(dataReader));
 					}

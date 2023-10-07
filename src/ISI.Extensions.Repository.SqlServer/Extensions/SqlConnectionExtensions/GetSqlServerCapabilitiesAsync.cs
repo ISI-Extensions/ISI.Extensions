@@ -25,9 +25,9 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 {
 	public static partial class SqlConnectionExtensions
 	{
-		public static async Task<SqlServerCapabilities> GetSqlServerCapabilitiesAsync(this Microsoft.Data.SqlClient.SqlConnection connection)
+		public static async Task<SqlServerCapabilities> GetSqlServerCapabilitiesAsync(this Microsoft.Data.SqlClient.SqlConnection connection, System.Threading.CancellationToken cancellationToken = default)
 		{
-			var serverVersion = await connection.GetServerVersionAsync();
+			var serverVersion = await connection.GetServerVersionAsync(cancellationToken: cancellationToken);
 
 			return new()
 			{

@@ -24,16 +24,16 @@ namespace ISI.Extensions.Repository.PostgreSQL
 {
 	public abstract partial class RecordManagerPrimaryKey<TRecord, TRecordPrimaryKey>
 	{
-		public virtual async Task<int> DeleteRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues)
+		public virtual async Task<int> DeleteRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, System.Threading.CancellationToken cancellationToken = default)
 		{
 			var whereClause = GeneratePrimaryKeyWhereClause(primaryKeyValues);
 
-			return await DeleteRecordsAsync(whereClause);
+			return await DeleteRecordsAsync(whereClause, cancellationToken);
 		}
 
-		public virtual async Task<int> DeleteRecordAsync(TRecordPrimaryKey primaryKeyValue)
+		public virtual async Task<int> DeleteRecordAsync(TRecordPrimaryKey primaryKeyValue, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await DeleteRecordsAsync(new[] { primaryKeyValue });
+			return await DeleteRecordsAsync(new[] { primaryKeyValue }, cancellationToken);
 		}
 	}
 }

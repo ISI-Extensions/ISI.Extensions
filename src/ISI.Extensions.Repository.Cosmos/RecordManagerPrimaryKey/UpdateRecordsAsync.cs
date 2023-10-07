@@ -24,16 +24,16 @@ namespace ISI.Extensions.Repository.Cosmos
 {
 	public abstract partial class RecordManagerPrimaryKey<TRecord, TRecordPrimaryKey>
 	{
-		public override async Task<int> UpdateRecordAsync(TRecord record)
+		public override async Task<int> UpdateRecordAsync(TRecord record, System.Threading.CancellationToken cancellationToken = default)
 		{
 			var primaryKey = RecordDescription.GetRecordDescription<TRecord>().PropertyDescriptions.First().GetValue(record);
 
-			var document = await GetClient().ReplaceDocumentAsync(Microsoft.Azure.Documents.Client.UriFactory.CreateDocumentUri(DatabaseName, TableName, primaryKey.ToString()), record);
+			var document = await GetClient().ReplaceDocumentAsync(Microsoft.Azure.Documents.Client.UriFactory.CreateDocumentUri(DatabaseName, TableName, primaryKey.ToString()), record, cancellationToken: cancellationToken);
 		
 			return document != null ? 1 : 0;
 		}
 
-		public async Task<int> UpdateRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, SetRecordColumnCollection<TRecord> setRecordColumns)
+		public async Task<int> UpdateRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, SetRecordColumnCollection<TRecord> setRecordColumns, System.Threading.CancellationToken cancellationToken = default)
 		{
 			throw new NotImplementedException();
 		}

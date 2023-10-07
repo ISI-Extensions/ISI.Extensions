@@ -24,14 +24,14 @@ namespace ISI.Extensions.Repository
 {
 	public abstract partial class RecordManager<TRecord>
 	{
-		public virtual async Task<int> UpdateRecordsAsync(IEnumerable<TRecord> records)
+		public virtual async Task<int> UpdateRecordsAsync(IEnumerable<TRecord> records, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await UpdateRecordsAsync(records, null);
+			return await UpdateRecordsAsync(records, null, cancellationToken);
 		}
 
-		public virtual async Task<int> UpdateRecordAsync(TRecord record)
+		public virtual async Task<int> UpdateRecordAsync(TRecord record, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await UpdateRecordAsync(record, null);
+			return await UpdateRecordAsync(record, null, cancellationToken);
 		}
 
 
@@ -39,7 +39,7 @@ namespace ISI.Extensions.Repository
 
 
 
-		public virtual async Task<int> UpdateRecordsAsync(IEnumerable<TRecord> records, UpdateRecordFilterColumnCollection<TRecord> updateRecordFilterColumns)
+		public virtual async Task<int> UpdateRecordsAsync(IEnumerable<TRecord> records, UpdateRecordFilterColumnCollection<TRecord> updateRecordFilterColumns, System.Threading.CancellationToken cancellationToken = default)
 		{
 			var updateCount = 0;
 
@@ -47,16 +47,16 @@ namespace ISI.Extensions.Repository
 			{
 				foreach (var record in records)
 				{
-					updateCount += await UpdateRecordAsync(record, updateRecordFilterColumns);
+					updateCount += await UpdateRecordAsync(record, updateRecordFilterColumns, cancellationToken);
 				}
 			}
 
 			return updateCount;
 		}
 
-		public virtual async Task<int> UpdateRecordAsync(TRecord record, UpdateRecordFilterColumnCollection<TRecord> updateRecordFilterColumns)
+		public virtual async Task<int> UpdateRecordAsync(TRecord record, UpdateRecordFilterColumnCollection<TRecord> updateRecordFilterColumns, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await UpdateRecordsAsync((record == null ? Array.Empty<TRecord>() : new[] { record }), updateRecordFilterColumns);
+			return await UpdateRecordsAsync((record == null ? Array.Empty<TRecord>() : new[] { record }), updateRecordFilterColumns, cancellationToken);
 		}
 	}
 }

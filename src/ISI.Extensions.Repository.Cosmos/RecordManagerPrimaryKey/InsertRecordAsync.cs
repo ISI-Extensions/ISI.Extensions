@@ -24,11 +24,11 @@ namespace ISI.Extensions.Repository.Cosmos
 {
 	public abstract partial class RecordManagerPrimaryKey<TRecord, TRecordPrimaryKey>
 	{
-		public override async Task<TRecord> InsertRecordAsync(TRecord record)
+		public override async Task<TRecord> InsertRecordAsync(TRecord record, System.Threading.CancellationToken cancellationToken = default)
 		{
 			if (record != null)
 			{
-				await GetClient().CreateDocumentAsync(Microsoft.Azure.Documents.Client.UriFactory.CreateDocumentCollectionUri(DatabaseName, TableName), record);
+				await GetClient().CreateDocumentAsync(Microsoft.Azure.Documents.Client.UriFactory.CreateDocumentCollectionUri(DatabaseName, TableName), record, cancellationToken: cancellationToken);
 			}
 
 			return record;

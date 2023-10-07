@@ -24,9 +24,9 @@ namespace ISI.Extensions.Repository.SqlServer
 {
 	public partial class EnumInformationRecordManager
 	{
-		public async Task DeleteAllRecordsAsync()
+		public async Task DeleteAllRecordsAsync(System.Threading.CancellationToken cancellationToken = default)
 		{
-			await ExecuteNonQueryAsync(string.Format("truncate table {0}", GetTableName(addAlias: false)));
+			await ExecuteNonQueryAsync(string.Format("truncate table {0}", GetTableName(addAlias: false)), cancellationToken: cancellationToken);
 		}
 	}
 }

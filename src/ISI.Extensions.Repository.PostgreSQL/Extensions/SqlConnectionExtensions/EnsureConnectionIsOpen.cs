@@ -25,13 +25,13 @@ namespace ISI.Extensions.Repository.PostgreSQL.Extensions
 {
 	public static partial class SqlConnectionExtensions
 	{
-		public static async Task EnsureConnectionIsOpenAsync(this Npgsql.NpgsqlConnection connection)
+		public static async Task EnsureConnectionIsOpenAsync(this Npgsql.NpgsqlConnection connection, System.Threading.CancellationToken cancellationToken = default)
 		{
 			if (connection.State != System.Data.ConnectionState.Open)
 			{
 				try
 				{
-					await connection.OpenAsync();
+					await connection.OpenAsync(cancellationToken);
 				}
 				catch (Exception exception)
 				{

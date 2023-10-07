@@ -25,7 +25,7 @@ namespace ISI.Extensions.Documents
 	public class DocumentUuidVersion : IDocumentUuidVersion
 	{
 		public Guid? DocumentUuid { get; }
-		public int? DocumentVersion { get; }
+		public long? DocumentVersion { get; }
 
 		public DocumentUuidVersion(string documentUuidVersion)
 		{
@@ -37,11 +37,11 @@ namespace ISI.Extensions.Documents
 
 				if (pieces.Length > 1)
 				{
-					DocumentVersion = pieces[1].ToIntNullable();
+					DocumentVersion = pieces[1].ToLongNullable();
 				}
 			}
 		}
-		public DocumentUuidVersion(Guid documentUuid, int? documentVersion)
+		public DocumentUuidVersion(Guid documentUuid, long? documentVersion)
 		{
 			DocumentUuid = documentUuid;
 			DocumentVersion = documentVersion;
@@ -59,7 +59,7 @@ namespace ISI.Extensions.Documents
 			return Formatted(documentUuidVersion.DocumentUuid, documentUuidVersion.DocumentVersion);
 		}
 
-		public static string Formatted(Guid? documentUuid, int? documentVersion)
+		public static string Formatted(Guid? documentUuid, long? documentVersion)
 		{
 			return (documentUuid.HasValue ? (documentVersion.HasValue ? string.Format("{0:D}.{1}", documentUuid, documentVersion) : string.Format("{0:D}", documentUuid)) : string.Empty);
 		}

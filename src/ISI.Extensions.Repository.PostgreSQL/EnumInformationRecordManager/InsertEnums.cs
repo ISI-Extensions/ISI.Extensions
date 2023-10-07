@@ -24,9 +24,9 @@ namespace ISI.Extensions.Repository.PostgreSQL
 {
 	public partial class EnumInformationRecordManager
 	{
-		public async Task UpsertEnumsAsync(IEnumerable<EnumInformationRecord> records)
+		public async Task UpsertEnumsAsync(IEnumerable<EnumInformationRecord> records, System.Threading.CancellationToken cancellationToken = default)
 		{
-			await UpsertRecordsAsync(records);
+			await UpsertRecordsAsync(records, cancellationToken);
 		}
 	}
 }

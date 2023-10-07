@@ -25,13 +25,13 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 {
 	public static partial class SqlConnectionExtensions
 	{
-		public static async Task EnsureConnectionIsOpenAsync(this Microsoft.Data.SqlClient.SqlConnection connection)
+		public static async Task EnsureConnectionIsOpenAsync(this Microsoft.Data.SqlClient.SqlConnection connection, System.Threading.CancellationToken cancellationToken = default)
 		{
 			if (connection.State != System.Data.ConnectionState.Open)
 			{
 				try
 				{
-					await connection.OpenAsync();
+					await connection.OpenAsync(cancellationToken);
 				}
 				catch (Exception exception)
 				{

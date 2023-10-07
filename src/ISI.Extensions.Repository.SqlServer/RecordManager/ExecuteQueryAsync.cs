@@ -27,7 +27,7 @@ namespace ISI.Extensions.Repository.SqlServer
 	{
 		public delegate void ExecuteQuery_ProcessResults(Microsoft.Data.SqlClient.SqlDataReader dataReader);
 
-		protected virtual async Task ExecuteQueryAsync(ExecuteQuery_ProcessResults processResults, ISelectClause selectClause, IWhereClause whereClause = null, IOrderByClause orderByClause = null, int? commandTimeout = null)
+		protected virtual async Task ExecuteQueryAsync(ExecuteQuery_ProcessResults processResults, ISelectClause selectClause, IWhereClause whereClause = null, IOrderByClause orderByClause = null, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
 			using (var connection = GetSqlConnection())
 			{
@@ -35,7 +35,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 				var sqlConnectionWhereClause = whereClause as ISqlConnectionWhereClause;
 
-				var sqlServerCapabilities = await connection.GetSqlServerCapabilitiesAsync();
+				var sqlServerCapabilities = await connection.GetSqlServerCapabilitiesAsync(cancellationToken: cancellationToken);
 
 				sqlConnectionWhereClause?.Initialize(SqlServerConfiguration, connection, sqlServerCapabilities);
 
@@ -63,21 +63,21 @@ namespace ISI.Extensions.Repository.SqlServer
 					sql.Append(orderByClause.GetSql());
 				}
 
-				await ExecuteQueryAsync(processResults, connection, sql.ToString(), (whereClause as IWhereClauseWithGetParameters)?.GetParameters(), commandTimeout);
+				await ExecuteQueryAsync(processResults, connection, sql.ToString(), (whereClause as IWhereClauseWithGetParameters)?.GetParameters(), commandTimeout, cancellationToken);
 			}
 		}
 
-		protected virtual async Task ExecuteQueryAsync(ExecuteQuery_ProcessResults processResults, string sql, IDictionary<string, object> parameters = null, int? commandTimeout = null)
+		protected virtual async Task ExecuteQueryAsync(ExecuteQuery_ProcessResults processResults, string sql, IDictionary<string, object> parameters = null, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
 			using (var connection = GetSqlConnection())
 			{
-				await ExecuteQueryAsync(processResults, connection, sql, parameters, commandTimeout);
+				await ExecuteQueryAsync(processResults, connection, sql, parameters, commandTimeout, cancellationToken);
 			}
 		}
 
-		protected virtual async Task ExecuteQueryAsync(ExecuteQuery_ProcessResults processResults, Microsoft.Data.SqlClient.SqlConnection connection, string sql, IDictionary<string, object> parameters = null, int? commandTimeout = null)
+		protected virtual async Task ExecuteQueryAsync(ExecuteQuery_ProcessResults processResults, Microsoft.Data.SqlClient.SqlConnection connection, string sql, IDictionary<string, object> parameters = null, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
-			await connection.EnsureConnectionIsOpenAsync();
+			await connection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
 
 			using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql, connection))
 			{
@@ -87,7 +87,7 @@ namespace ISI.Extensions.Repository.SqlServer
 				}
 				command.AddParameters(parameters);
 
-				using (var dataReader = await command.ExecuteReaderWithExceptionTracingAsync())
+				using (var dataReader = await command.ExecuteReaderWithExceptionTracingAsync(cancellationToken: cancellationToken))
 				{
 					processResults(dataReader);
 				}

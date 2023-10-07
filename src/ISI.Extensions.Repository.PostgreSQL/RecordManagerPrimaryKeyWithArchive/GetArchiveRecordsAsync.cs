@@ -25,7 +25,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 {
 	public abstract partial class RecordManagerPrimaryKeyWithArchive<TRecord, TRecordPrimaryKey>
 	{
-		public virtual async IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> GetArchiveRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, DateTime? minArchiveDateTime, DateTime? maxArchiveDateTime, int skip = 0, int take = -1)
+		public virtual async IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> GetArchiveRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, DateTime? minArchiveDateTime, DateTime? maxArchiveDateTime, int skip = 0, int take = -1, System.Threading.CancellationToken cancellationToken = default)
 		{
 			var whereClause = GeneratePrimaryKeyWhereClause(primaryKeyValues);
 
@@ -33,15 +33,15 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 			var orderByClause = new ISI.Extensions.Repository.OrderByClause(string.Format("ORDER BY {0}, {1}", string.Join(", ", primaryKeyColumns.Select(pkc => FormatColumnName(pkc.ColumnName))), FormatColumnName(ArchiveTableArchiveDateTimeColumnName)));
 
-			await foreach (var record in FindArchiveRecordsAsync(minArchiveDateTime, maxArchiveDateTime, whereClause, orderByClause, skip, take))
+			await foreach (var record in FindArchiveRecordsAsync(minArchiveDateTime, maxArchiveDateTime, whereClause, orderByClause, skip, take, cancellationToken))
 			{
 				yield return record;
 			}
 		}
 
-		public virtual async IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> GetArchiveRecordsAsync(TRecordPrimaryKey primaryKeyValue, DateTime? minArchiveDateTime, DateTime? maxArchiveDateTime, int skip = 0, int take = -1)
+		public virtual async IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> GetArchiveRecordsAsync(TRecordPrimaryKey primaryKeyValue, DateTime? minArchiveDateTime, DateTime? maxArchiveDateTime, int skip = 0, int take = -1, System.Threading.CancellationToken cancellationToken = default)
 		{
-			await foreach (var record in GetArchiveRecordsAsync(new[] { primaryKeyValue }, minArchiveDateTime, maxArchiveDateTime, skip, take))
+			await foreach (var record in GetArchiveRecordsAsync(new[] { primaryKeyValue }, minArchiveDateTime, maxArchiveDateTime, skip, take, cancellationToken))
 			{
 				yield return record;
 			}

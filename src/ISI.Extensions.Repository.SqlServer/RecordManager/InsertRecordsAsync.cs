@@ -26,9 +26,9 @@ namespace ISI.Extensions.Repository.SqlServer
 {
 	public abstract partial class RecordManager<TRecord>
 	{
-		public override async Task<IEnumerable<TRecord>> InsertRecordsAsync(IEnumerable<TRecord> records)
+		public override async Task<IEnumerable<TRecord>> InsertRecordsAsync(IEnumerable<TRecord> records, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await PersistConvertedRecordsAsync<TRecord>(records, PersistenceMethod.Insert, false);
+			return await PersistConvertedRecordsAsync<TRecord>(records, PersistenceMethod.Insert, false, cancellationToken: cancellationToken);
 		}
 	}
 }

@@ -24,9 +24,9 @@ namespace ISI.Extensions.Repository.SqlServer
 {
 	public abstract partial class RecordManager<TRecord>
 	{
-		public virtual async Task<IEnumerable<TRecord>> ListRecordsAsync(int skip = 0, int take = -1)
+		public virtual async Task<IEnumerable<TRecord>> ListRecordsAsync(int skip = 0, int take = -1, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await FindRecordsAsync(null, null, skip, take);
+			return await FindRecordsAsync(null, null, skip, take, cancellationToken: cancellationToken);
 		}
 	}
 }

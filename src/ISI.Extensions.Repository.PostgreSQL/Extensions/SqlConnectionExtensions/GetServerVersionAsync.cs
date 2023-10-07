@@ -25,7 +25,7 @@ namespace ISI.Extensions.Repository.PostgreSQL.Extensions
 {
 	public static partial class SqlConnectionExtensions
 	{
-		public static async Task<Version> GetServerVersionAsync(this Npgsql.NpgsqlConnection connection)
+		public static async Task<Version> GetServerVersionAsync(this Npgsql.NpgsqlConnection connection, System.Threading.CancellationToken cancellationToken = default)
 		{
 			await connection.EnsureConnectionIsOpenAsync();
 

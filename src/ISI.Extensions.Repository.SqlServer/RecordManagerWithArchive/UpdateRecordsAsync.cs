@@ -24,11 +24,11 @@ namespace ISI.Extensions.Repository.SqlServer
 {
 	public abstract partial class RecordManagerWithArchive<TRecord>
 	{
-		public override async Task<int> UpdateRecordsAsync(IEnumerable<TRecord> records, UpdateRecordFilterColumnCollection<TRecord> updateRecordFilterColumns)
+		public override async Task<int> UpdateRecordsAsync(IEnumerable<TRecord> records, UpdateRecordFilterColumnCollection<TRecord> updateRecordFilterColumns, System.Threading.CancellationToken cancellationToken = default)
 		{
 			var count = 0;
 
-			foreach (var updatedRecord in await PersistConvertedRecordsAsync(records, PersistenceMethod.Update, true, null, updateRecordFilterColumns, record => record, convertedRecord => convertedRecord, record => record.ArchiveDateTime))
+			foreach (var updatedRecord in await PersistConvertedRecordsAsync(records, PersistenceMethod.Update, true, null, updateRecordFilterColumns, record => record, convertedRecord => convertedRecord, record => record.ArchiveDateTime, cancellationToken))
 			{
 				count++;
 			}

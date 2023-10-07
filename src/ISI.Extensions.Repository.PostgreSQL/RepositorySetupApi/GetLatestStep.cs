@@ -52,8 +52,8 @@ namespace ISI.Extensions.Repository.PostgreSQL
 							{
 								var sql = new StringBuilder();
 
-								sql.Append("SELECT MAX(StepId) as StepId\n");
-								sql.Append("FROM DatabaseMigrationStep\n");
+								sql.Append("SELECT MAX(\"StepId\") as \"StepId\"\n");
+								sql.Append("FROM \"DatabaseMigrationStep\"\n");
 
 								using (var command = new Npgsql.NpgsqlCommand(sql.ToString(), connection))
 								{

@@ -38,6 +38,8 @@ namespace ISI.Extensions.Tests.Repository
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; set; }
 		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; set; }
 		protected ISI.Extensions.JsonSerialization.IJsonSerializer Serializer { get; set; }
+		protected ISI.Extensions.Repository.IRepositorySetupApi RepositorySetupApi { get; set; }
+		protected ISI.Extensions.Repository.IMigrationApi MigrationApi { get; set; }
 
 		[OneTimeSetUp]
 		public void OneTimeSetup()
@@ -80,6 +82,10 @@ namespace ISI.Extensions.Tests.Repository
 			SqlServerConfiguration = serviceProvider.GetService<ISI.Extensions.Repository.PostgreSQL.Configuration>();
 			DateTimeStamper = serviceProvider.GetService<ISI.Extensions.DateTimeStamper.IDateTimeStamper>();
 			Serializer = serviceProvider.GetService<ISI.Extensions.JsonSerialization.IJsonSerializer>();
+			
+			RepositorySetupApi = new ISI.Extensions.Repository.PostgreSQL.RepositorySetupApi(Configuration, Logger, DateTimeStamper, Serializer, MasterConnectionString);
+
+			MigrationApi = new ISI.Extensions.Repository.MigrationApi(serviceProvider, RepositorySetupApi);
 		}
 	}
 }

@@ -25,30 +25,30 @@ namespace ISI.Extensions.Repository.SqlServer
 {
 	public abstract partial class RecordManager<TRecord>
 	{
-		protected virtual async Task<object> ExecuteScalarAsync(string sql, IDictionary<string, object> parameters = null, int? commandTimeout = null)
+		protected virtual async Task<object> ExecuteScalarAsync(string sql, IDictionary<string, object> parameters = null, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
 			using (var connection = GetSqlConnection())
 			{
-				return await connection.ExecuteScalarAsync(sql, parameters, commandTimeout);
+				return await connection.ExecuteScalarAsync(sql, parameters, commandTimeout, cancellationToken: cancellationToken);
 			}
 		}
 
-		protected virtual async Task<object> ExecuteScalarAsync(Microsoft.Data.SqlClient.SqlConnection connection, string sql, IDictionary<string, object> parameters = null, int? commandTimeout = null)
+		protected virtual async Task<object> ExecuteScalarAsync(Microsoft.Data.SqlClient.SqlConnection connection, string sql, IDictionary<string, object> parameters = null, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await connection.ExecuteScalarAsync(sql, parameters, commandTimeout);
+			return await connection.ExecuteScalarAsync(sql, parameters, commandTimeout, cancellationToken: cancellationToken);
 		}
 
-		protected virtual async Task<TProperty> ExecuteScalarAsync<TProperty>(string sql, IDictionary<string, object> parameters = null, int? commandTimeout = null)
+		protected virtual async Task<TProperty> ExecuteScalarAsync<TProperty>(string sql, IDictionary<string, object> parameters = null, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
 			using (var connection = GetSqlConnection())
 			{
-				return await connection.ExecuteScalarAsync<TProperty>(sql, parameters, commandTimeout);
+				return await connection.ExecuteScalarAsync<TProperty>(sql, parameters, commandTimeout, cancellationToken: cancellationToken);
 			}
 		}
 
-		protected virtual async Task<TProperty> ExecuteScalarAsync<TProperty>(Microsoft.Data.SqlClient.SqlConnection connection, string sql, IDictionary<string, object> parameters = null, int? commandTimeout = null)
+		protected virtual async Task<TProperty> ExecuteScalarAsync<TProperty>(Microsoft.Data.SqlClient.SqlConnection connection, string sql, IDictionary<string, object> parameters = null, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await connection.ExecuteScalarAsync<TProperty>(sql, parameters, commandTimeout);
+			return await connection.ExecuteScalarAsync<TProperty>(sql, parameters, commandTimeout, cancellationToken: cancellationToken);
 		}
 	}
 }

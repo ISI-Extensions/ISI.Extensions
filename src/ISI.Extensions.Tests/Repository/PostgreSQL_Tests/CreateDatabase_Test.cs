@@ -32,12 +32,17 @@ namespace ISI.Extensions.Tests.Repository
 		{
 			var repositorySetupApi = new ISI.Extensions.Repository.PostgreSQL.RepositorySetupApi(Configuration, Logger, DateTimeStamper, null, ConnectionString, masterConnectionString: MasterConnectionString);
 
+			var userName = repositorySetupApi.GetConnectionStringUserName();
+			var password = repositorySetupApi.GetConnectionStringPassword();
+			var userRole = "ISI.DocumentStorage.Users";
+			var schema = repositorySetupApi.GetSchema<ContactWithData>();
+
 			repositorySetupApi.CreateRepository(new ISI.Extensions.Repository.PostgreSQL.DataTransferObjects.RepositorySetupApi.CreateRepositoryRequest()
 			{
-				Schema = "Extensions",
-				UserRole = "Extensions.Repository.Users",
-				UserName = "testuser",
-				Password = "f2f5eeb1-55d9-441b-be56-8c976cac1338"
+				Schema = schema,
+				UserRole = userRole,
+				UserName = userName,
+				Password = password,
 			});
 		}
 	}

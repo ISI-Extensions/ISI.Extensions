@@ -25,17 +25,17 @@ namespace ISI.Extensions.Repository.SqlServer
 {
 	public abstract partial class RecordManager<TRecord>
 	{
-		protected virtual async Task<int> ExecuteNonQueryAsync(string sql, IDictionary<string, object> parameters = null)
+		protected virtual async Task<int> ExecuteNonQueryAsync(string sql, IDictionary<string, object> parameters = null, System.Threading.CancellationToken cancellationToken = default)
 		{
 			using (var connection = GetSqlConnection())
 			{
-				return await ExecuteNonQueryAsync(connection, sql, parameters);
+				return await ExecuteNonQueryAsync(connection, sql, parameters, cancellationToken);
 			}
 		}
 
-		protected virtual async Task<int> ExecuteNonQueryAsync(Microsoft.Data.SqlClient.SqlConnection connection, string sql, IDictionary<string, object> parameters = null)
+		protected virtual async Task<int> ExecuteNonQueryAsync(Microsoft.Data.SqlClient.SqlConnection connection, string sql, IDictionary<string, object> parameters = null, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await connection.ExecuteNonQueryAsync(sql, parameters);
+			return await connection.ExecuteNonQueryAsync(sql, parameters, cancellationToken: cancellationToken);
 		}
 	}
 }

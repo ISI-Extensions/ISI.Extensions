@@ -25,7 +25,7 @@ namespace ISI.Extensions.Repository.Cosmos
 {
 	public abstract partial class RecordManagerPrimaryKey<TRecord, TRecordPrimaryKey>
 	{
-		public virtual async Task<IEnumerable<TRecord>> GetRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, int skip = 0, int take = -1)
+		public virtual async Task<IEnumerable<TRecord>> GetRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, int skip = 0, int take = -1, System.Threading.CancellationToken cancellationToken = default)
 		{
 			if (primaryKeyValues.NullCheckedAny())
 			{
@@ -33,7 +33,7 @@ namespace ISI.Extensions.Repository.Cosmos
 
 				foreach (var primaryKeyValue in primaryKeyValues)
 				{
-					records.Add(await GetRecordAsync(primaryKeyValue));
+					records.Add(await GetRecordAsync(primaryKeyValue, cancellationToken));
 				}
 
 				return records;
@@ -42,9 +42,9 @@ namespace ISI.Extensions.Repository.Cosmos
 			return Array.Empty<TRecord>();
 		}
 
-		public virtual async Task<TRecord> GetRecordAsync(TRecordPrimaryKey primaryKeyValue)
+		public virtual async Task<TRecord> GetRecordAsync(TRecordPrimaryKey primaryKeyValue, System.Threading.CancellationToken cancellationToken = default)
 		{
-			Microsoft.Azure.Documents.Document document = await GetClient().ReadDocumentAsync(Microsoft.Azure.Documents.Client.UriFactory.CreateDocumentUri(DatabaseName, TableName, primaryKeyValue.ToString()));
+			Microsoft.Azure.Documents.Document document = await GetClient().ReadDocumentAsync(Microsoft.Azure.Documents.Client.UriFactory.CreateDocumentUri(DatabaseName, TableName, primaryKeyValue.ToString()), cancellationToken: cancellationToken);
 
 			using (var stream = new System.IO.MemoryStream())
 			{

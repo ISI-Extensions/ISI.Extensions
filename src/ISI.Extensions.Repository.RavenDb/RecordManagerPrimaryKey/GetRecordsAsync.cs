@@ -24,7 +24,7 @@ namespace ISI.Extensions.Repository.RavenDb
 {
 	public abstract partial class RecordManagerPrimaryKey<TRecord, TRecordPrimaryKey>
 	{
-		public virtual async Task<IEnumerable<TRecord>> GetRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, int skip = 0, int take = -1)
+		public virtual async Task<IEnumerable<TRecord>> GetRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, int skip = 0, int take = -1, System.Threading.CancellationToken cancellationToken = default)
 		{
 			var records = new List<TRecord>();
 
@@ -46,7 +46,7 @@ namespace ISI.Extensions.Repository.RavenDb
 			return records.ToArray();
 		}
 
-		public virtual async Task<TRecord> GetRecordAsync(TRecordPrimaryKey primaryKeyValue)
+		public virtual async Task<TRecord> GetRecordAsync(TRecordPrimaryKey primaryKeyValue, System.Threading.CancellationToken cancellationToken = default)
 		{
 			using (var session = Store.OpenSession())
 			{

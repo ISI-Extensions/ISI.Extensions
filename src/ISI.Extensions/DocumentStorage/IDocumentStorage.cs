@@ -23,8 +23,8 @@ namespace ISI.Extensions
 {
 	public interface IDocumentStorage
 	{
-		Task<Guid> SetDocumentAsync(ISI.Extensions.DocumentStorage.IDocument document, string userKey);
-		Task SetDocumentAsync(Guid documentUuid, ISI.Extensions.DocumentStorage.IDocument document, string userKey);
-		Task<ISI.Extensions.DocumentStorage.IDocument> GetDocumentAsync(Guid documentUuid, string userKey);
+		Task<Guid> SetDocumentAsync(ISI.Extensions.DocumentStorage.IDocument document, UserKey requestedByUserKey = null);
+		Task SetDocumentAsync(Guid documentUuid, ISI.Extensions.DocumentStorage.IDocument document, UserKey requestedByUserKey = null);
+		Task<ISI.Extensions.DocumentStorage.IDocument> GetDocumentAsync(Guid documentUuid, UserKey requestedByUserKey = null);
 	}
 }

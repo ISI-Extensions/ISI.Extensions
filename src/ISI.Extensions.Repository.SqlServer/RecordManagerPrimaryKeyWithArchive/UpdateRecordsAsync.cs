@@ -24,11 +24,11 @@ namespace ISI.Extensions.Repository.SqlServer
 {
 	public abstract partial class RecordManagerPrimaryKeyWithArchive<TRecord, TRecordPrimaryKey>
 	{
-		public override async Task<int> UpdateRecordsAsync(IEnumerable<TRecord> records, UpdateRecordFilterColumnCollection<TRecord> updateRecordFilterColumns)
+		public override async Task<int> UpdateRecordsAsync(IEnumerable<TRecord> records, UpdateRecordFilterColumnCollection<TRecord> updateRecordFilterColumns, System.Threading.CancellationToken cancellationToken = default)
 		{
 			var count = 0;
 
-			foreach (var updatedRecord in await PersistConvertedRecordsAsync(records, PersistenceMethod.Update, true, null, updateRecordFilterColumns, record => record, convertedRecord => convertedRecord, record => record.ArchiveDateTime))
+			foreach (var updatedRecord in await PersistConvertedRecordsAsync(records, PersistenceMethod.Update, true, null, updateRecordFilterColumns, record => record, convertedRecord => convertedRecord, record => record.ArchiveDateTime, cancellationToken))
 			{
 				count++;
 			}
@@ -36,9 +36,9 @@ namespace ISI.Extensions.Repository.SqlServer
 			return count;
 		}
 
-		public override async Task<int> UpdateRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, SetRecordColumnCollection<TRecord> setRecordColumns)
+		public override async Task<int> UpdateRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, SetRecordColumnCollection<TRecord> setRecordColumns, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await UpdateRecordsAsync(primaryKeyValues, setRecordColumns, true, null);
+			return await UpdateRecordsAsync(primaryKeyValues, setRecordColumns, true, null, cancellationToken: cancellationToken);
 		}
 	}
 }

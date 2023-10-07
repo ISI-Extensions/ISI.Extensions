@@ -39,7 +39,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 			var userName = (request as SqlServerDTOs.CreateRepositoryRequest)?.UserName;
 			var password = (request as SqlServerDTOs.CreateRepositoryRequest)?.Password;
 
-			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionString))
+			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionStringWithMasterDatabase))
 			{
 				connection.EnsureConnectionIsOpenAsync().Wait();
 

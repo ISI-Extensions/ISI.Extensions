@@ -30,6 +30,26 @@ namespace ISI.Extensions.Repository.PostgreSQL
 {
 	public partial class RepositorySetupApi
 	{
+		private string GetMasterConnectionStringWithMasterDatabase()
+		{
+			var connectionString = Configuration.GetConnectionString("master");
+
+			if (string.IsNullOrWhiteSpace(connectionString))
+			{
+				return "master";
+			}
+
+			var masterConnectionStringBuilder = new Npgsql.NpgsqlConnectionStringBuilder(connectionString);
+			var connectionStringBuilder = new Npgsql.NpgsqlConnectionStringBuilder(ConnectionString);
+
+			if (!string.Equals(masterConnectionStringBuilder.Host, connectionStringBuilder.Host, StringComparison.InvariantCultureIgnoreCase))
+			{
+				masterConnectionStringBuilder.Host = connectionStringBuilder.Host;
+			}
+			
+			return masterConnectionStringBuilder.ConnectionString;
+		}
+
 		private string GetMasterConnectionString()
 		{
 			var connectionString = Configuration.GetConnectionString("master");
@@ -45,6 +65,11 @@ namespace ISI.Extensions.Repository.PostgreSQL
 			if (!string.Equals(masterConnectionStringBuilder.Host, connectionStringBuilder.Host, StringComparison.InvariantCultureIgnoreCase))
 			{
 				masterConnectionStringBuilder.Host = connectionStringBuilder.Host;
+			}
+
+			if (!string.Equals(masterConnectionStringBuilder.Database, connectionStringBuilder.Database, StringComparison.InvariantCultureIgnoreCase))
+			{
+				masterConnectionStringBuilder.Database = connectionStringBuilder.Database;
 			}
 			
 			return masterConnectionStringBuilder.ConnectionString;

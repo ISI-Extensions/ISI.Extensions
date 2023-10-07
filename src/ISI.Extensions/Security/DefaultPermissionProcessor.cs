@@ -20,32 +20,53 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Repository.RavenDb
+namespace ISI.Extensions.Security
 {
-	public abstract partial class RecordManagerPrimaryKey<TRecord, TRecordPrimaryKey>
+	public class DefaultPermissionProcessor : IPermissionProcessor
 	{
-		public virtual async Task<int> DeleteRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, System.Threading.CancellationToken cancellationToken = default)
+		public virtual IEnumerable<string> GetUserRoles(string userKey)
 		{
-			var deleteCount = 0;
-
-			using (var session = Store.OpenSession())
-			{
-				foreach (var primaryKeyValue in primaryKeyValues)
-				{
-					session.Delete(GetRavenKey(primaryKeyValue));
-
-					deleteCount++;
-				}
-
-				session.SaveChanges();
-			}
-
-			return deleteCount;
+			return string.IsNullOrWhiteSpace(userKey) ? null : Array.Empty<string>();
 		}
 
-		public virtual async Task<int> DeleteRecordAsync(TRecordPrimaryKey primaryKeyValue, System.Threading.CancellationToken cancellationToken = default)
+		public virtual bool IsAuthorized(string userKey, IEnumerable<string> allowedRoles)
 		{
-			return await DeleteRecordsAsync(new[] { primaryKeyValue }, cancellationToken);
+			return IsAuthorized(GetUserRoles(userKey), allowedRoles);
+		}
+
+		public virtual bool IsAuthorized(IEnumerable<string> userRoles, IEnumerable<string> allowedRoles)
+		{
+			allowedRoles = new HashSet<string>(allowedRoles ?? Array.Empty<string>(), StringComparer.InvariantCultureIgnoreCase);
+
+			if (((HashSet<string>)allowedRoles).Contains(ISI.Extensions.Security.Roles.AnonymousUsers))
+			{
+				return true;
+			}
+
+			if (((HashSet<string>)allowedRoles).Contains(ISI.Extensions.Security.Roles.AuthenticatedUsers) && (userRoles != null))
+			{
+				return true;
+			}
+
+			foreach (var userRole in userRoles.ToNullCheckedArray(NullCheckCollectionResult.Empty))
+			{
+				if (((HashSet<string>)allowedRoles).Contains(userRole))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public virtual string[] GetDefaultPermissions()
+		{
+			return new[] { ISI.Extensions.Security.Roles.AnonymousUsers };
+		}
+
+		public virtual string[] GetDefaultAuthenticatedPermissions()
+		{
+			return new[] { ISI.Extensions.Security.Roles.AuthenticatedUsers };
 		}
 	}
 }

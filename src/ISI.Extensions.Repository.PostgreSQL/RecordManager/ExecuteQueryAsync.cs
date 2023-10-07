@@ -27,7 +27,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 	{
 		public delegate void ExecuteQuery_ProcessResults(Npgsql.NpgsqlDataReader dataReader);
 
-		protected virtual async Task ExecuteQueryAsync(ExecuteQuery_ProcessResults processResults, ISelectClause selectClause, IWhereClause whereClause = null, IOrderByClause orderByClause = null, int? commandTimeout = null)
+		protected virtual async Task ExecuteQueryAsync(ExecuteQuery_ProcessResults processResults, ISelectClause selectClause, IWhereClause whereClause = null, IOrderByClause orderByClause = null, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
 			using (var connection = GetSqlConnection())
 			{
@@ -61,21 +61,21 @@ namespace ISI.Extensions.Repository.PostgreSQL
 					sql.Append(orderByClause.GetSql());
 				}
 
-				await ExecuteQueryAsync(processResults, connection, sql.ToString(), (whereClause as IWhereClauseWithGetParameters)?.GetParameters(), commandTimeout);
+				await ExecuteQueryAsync(processResults, connection, sql.ToString(), (whereClause as IWhereClauseWithGetParameters)?.GetParameters(), commandTimeout, cancellationToken);
 			}
 		}
 
-		protected virtual async Task ExecuteQueryAsync(ExecuteQuery_ProcessResults processResults, string sql, IDictionary<string, object> parameters = null, int? commandTimeout = null)
+		protected virtual async Task ExecuteQueryAsync(ExecuteQuery_ProcessResults processResults, string sql, IDictionary<string, object> parameters = null, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
 			using (var connection = GetSqlConnection())
 			{
-				await ExecuteQueryAsync(processResults, connection, sql, parameters, commandTimeout);
+				await ExecuteQueryAsync(processResults, connection, sql, parameters, commandTimeout, cancellationToken);
 			}
 		}
 
-		protected virtual async Task ExecuteQueryAsync(ExecuteQuery_ProcessResults processResults, Npgsql.NpgsqlConnection connection, string sql, IDictionary<string, object> parameters = null, int? commandTimeout = null)
+		protected virtual async Task ExecuteQueryAsync(ExecuteQuery_ProcessResults processResults, Npgsql.NpgsqlConnection connection, string sql, IDictionary<string, object> parameters = null, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
-			await connection.EnsureConnectionIsOpenAsync();
+			await connection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
 
 			using (var command = new Npgsql.NpgsqlCommand(sql, connection))
 			{
@@ -85,7 +85,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 				}
 				command.AddParameters(parameters);
 
-				using (var dataReader = await command.ExecuteReaderWithExceptionTracingAsync())
+				using (var dataReader = await command.ExecuteReaderWithExceptionTracingAsync(cancellationToken: cancellationToken))
 				{
 					processResults(dataReader);
 				}

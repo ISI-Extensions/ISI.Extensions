@@ -26,8 +26,8 @@ namespace ISI.Extensions.Repository
 		void CreateTable(CreateTableMode createTableMode = CreateTableMode.ErrorIfExists);
 		void DropTable();
 
-		Task UpsertEnumsAsync(IEnumerable<EnumInformationRecord> records);
-		Task DeleteAllRecordsAsync();
-		Task<int> DeleteRecordsAsync(IEnumerable<int> enumIds);
+		Task UpsertEnumsAsync(IEnumerable<EnumInformationRecord> records, System.Threading.CancellationToken cancellationToken = default);
+		Task DeleteAllRecordsAsync(System.Threading.CancellationToken cancellationToken = default);
+		Task<int> DeleteRecordsAsync(IEnumerable<int> enumIds, System.Threading.CancellationToken cancellationToken = default);
 	}
 }

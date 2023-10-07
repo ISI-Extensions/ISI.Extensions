@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 namespace ISI.Extensions.Repository
 {
 	public delegate bool IsItOkToRunMigrationTool(IRepositorySetupApi repositorySetupApi);
+
 	public interface IMigrationApi
 	{
 		ISI.Extensions.Repository.DataTransferObjects.MigrationApi.MigrateResponse Migrate(IsItOkToRunMigrationTool isItOkToRunMigrationTool = null);

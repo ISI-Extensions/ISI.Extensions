@@ -25,51 +25,51 @@ namespace ISI.Extensions.Repository.SqlServer
 {
 	public abstract partial class RecordManager<TRecord>
 	{
-		protected virtual async IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> FindArchiveRecordsAsync(DateTime? minArchiveDateTime, DateTime? maxArchiveDateTime, IWhereClause whereClause, IOrderByClause orderByClause = null, int skip = 0, int take = -1)
+		protected virtual async IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> FindArchiveRecordsAsync(DateTime? minArchiveDateTime, DateTime? maxArchiveDateTime, IWhereClause whereClause, IOrderByClause orderByClause = null, int skip = 0, int take = -1, System.Threading.CancellationToken cancellationToken = default)
 		{
 			using (var connection = GetSqlConnection())
 			{
-				await foreach (var record in FindArchiveRecordsAsync(connection, minArchiveDateTime, maxArchiveDateTime, whereClause, orderByClause, skip, take))
+				await foreach (var record in FindArchiveRecordsAsync(connection, minArchiveDateTime, maxArchiveDateTime, whereClause, orderByClause, skip, take, cancellationToken))
 				{
 					yield return record;
 				}
 			}
 		}
 
-		protected virtual async IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> FindArchiveRecordsAsync(string fromClause, DateTime? minArchiveDateTime, DateTime? maxArchiveDateTime, IWhereClause whereClause, IOrderByClause orderByClause = null, int skip = 0, int take = -1)
+		protected virtual async IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> FindArchiveRecordsAsync(string fromClause, DateTime? minArchiveDateTime, DateTime? maxArchiveDateTime, IWhereClause whereClause, IOrderByClause orderByClause = null, int skip = 0, int take = -1, System.Threading.CancellationToken cancellationToken = default)
 		{
 			using (var connection = GetSqlConnection())
 			{
-				await foreach (var record in FindArchiveRecordsAsync(connection, fromClause, minArchiveDateTime, maxArchiveDateTime, whereClause, orderByClause, skip, take))
+				await foreach (var record in FindArchiveRecordsAsync(connection, fromClause, minArchiveDateTime, maxArchiveDateTime, whereClause, orderByClause, skip, take, cancellationToken))
 				{
 					yield return record;
 				}
 			}
 		}
 
-		protected virtual async IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> FindArchiveRecordsAsync(Microsoft.Data.SqlClient.SqlConnection connection, DateTime? minArchiveDateTime, DateTime? maxArchiveDateTime, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take)
+		protected virtual async IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> FindArchiveRecordsAsync(Microsoft.Data.SqlClient.SqlConnection connection, DateTime? minArchiveDateTime, DateTime? maxArchiveDateTime, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take, System.Threading.CancellationToken cancellationToken = default)
 		{
-			await foreach (var record in FindArchiveRecordsAsync(connection, string.Format("from {0} with (NoLock)", GetArchiveTableName(TableAlias)), minArchiveDateTime, maxArchiveDateTime, whereClause, orderByClause, skip, take))
+			await foreach (var record in FindArchiveRecordsAsync(connection, string.Format("from {0} with (NoLock)", GetArchiveTableName(TableAlias)), minArchiveDateTime, maxArchiveDateTime, whereClause, orderByClause, skip, take, cancellationToken))
 			{
 				yield return record;
 			}
 		}
 
-		protected virtual async IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> FindArchiveRecordsAsync(Microsoft.Data.SqlClient.SqlConnection connection, string fromClause, DateTime? minArchiveDateTime, DateTime? maxArchiveDateTime, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take)
+		protected virtual async IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> FindArchiveRecordsAsync(Microsoft.Data.SqlClient.SqlConnection connection, string fromClause, DateTime? minArchiveDateTime, DateTime? maxArchiveDateTime, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take, System.Threading.CancellationToken cancellationToken = default)
 		{
-			await foreach (var record in FindArchiveRecordsAsync(connection, null, fromClause, minArchiveDateTime, maxArchiveDateTime, whereClause, orderByClause, skip, take))
+			await foreach (var record in FindArchiveRecordsAsync(connection, null, fromClause, minArchiveDateTime, maxArchiveDateTime, whereClause, orderByClause, skip, take, cancellationToken))
 			{
 				yield return record;
 			}
 		}
 
-		protected virtual async IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> FindArchiveRecordsAsync(Microsoft.Data.SqlClient.SqlConnection connection, ISelectClause selectClause, string fromClause, DateTime? minArchiveDateTime, DateTime? maxArchiveDateTime, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take)
+		protected virtual async IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> FindArchiveRecordsAsync(Microsoft.Data.SqlClient.SqlConnection connection, ISelectClause selectClause, string fromClause, DateTime? minArchiveDateTime, DateTime? maxArchiveDateTime, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take, System.Threading.CancellationToken cancellationToken = default)
 		{
 			var sql = new StringBuilder();
 
 			var sqlConnectionWhereClause = whereClause as ISqlConnectionWhereClause;
 
-			var sqlServerCapabilities = await connection.GetSqlServerCapabilitiesAsync();
+			var sqlServerCapabilities = await connection.GetSqlServerCapabilitiesAsync(cancellationToken: cancellationToken);
 
 			sqlConnectionWhereClause?.Initialize(SqlServerConfiguration, connection, sqlServerCapabilities);
 
@@ -213,7 +213,7 @@ namespace ISI.Extensions.Repository.SqlServer
 					}
 				}
 
-				await foreach (var record in FindArchiveRecordsAsync(connection, sql.ToString(), (whereClause as IWhereClauseWithGetParameters)?.GetParameters()))
+				await foreach (var record in FindArchiveRecordsAsync(connection, sql.ToString(), (whereClause as IWhereClauseWithGetParameters)?.GetParameters(), cancellationToken))
 				{
 					yield return record;
 				}
@@ -222,30 +222,30 @@ namespace ISI.Extensions.Repository.SqlServer
 			}
 		}
 
-		protected virtual async IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> FindArchiveRecordsAsync(string sql, IDictionary<string, object> parameters)
+		protected virtual async IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> FindArchiveRecordsAsync(string sql, IDictionary<string, object> parameters, System.Threading.CancellationToken cancellationToken = default)
 		{
 			using (var connection = GetSqlConnection())
 			{
-				await foreach (var record in FindArchiveRecordsAsync(connection, sql, parameters))
+				await foreach (var record in FindArchiveRecordsAsync(connection, sql, parameters, cancellationToken))
 				{
 					yield return record;
 				}
 			}
 		}
 
-		protected virtual async IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> FindArchiveRecordsAsync(Microsoft.Data.SqlClient.SqlConnection connection, string sql, IDictionary<string, object> parameters)
+		protected virtual async IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> FindArchiveRecordsAsync(Microsoft.Data.SqlClient.SqlConnection connection, string sql, IDictionary<string, object> parameters, System.Threading.CancellationToken cancellationToken = default)
 		{
-			await connection.EnsureConnectionIsOpenAsync();
+			await connection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
 
 			using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql, connection))
 			{
 				command.AddParameters(parameters);
 
-				using (var dataReader = await command.ExecuteReaderWithExceptionTracingAsync())
+				using (var dataReader = await command.ExecuteReaderWithExceptionTracingAsync(cancellationToken: cancellationToken))
 				{
 					var reader = ExpressionBuilder.GetReader(dataReader, RecordDescription.GetRecordDescription<TRecord>().PropertyDescriptions, Serializer);
 
-					while (await dataReader.ReadAsync())
+					while (await dataReader.ReadAsync(cancellationToken))
 					{
 						yield return new()
 						{

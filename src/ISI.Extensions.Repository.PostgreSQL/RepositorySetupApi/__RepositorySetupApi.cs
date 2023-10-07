@@ -34,6 +34,9 @@ namespace ISI.Extensions.Repository.PostgreSQL
 		public ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
 		protected ISI.Extensions.JsonSerialization.IJsonSerializer Serializer { get; }
 
+		private string _masterConnectionStringWithMasterDatabase = null;
+		public string MasterConnectionStringWithMasterDatabase => _masterConnectionStringWithMasterDatabase ??= GetMasterConnectionStringWithMasterDatabase();
+
 		private string _masterConnectionString = null;
 		public string MasterConnectionString => _masterConnectionString ??= GetMasterConnectionString();
 
@@ -72,7 +75,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 				_completedBy = null;
 			}
 
-			_masterConnectionString = masterConnectionString;
+			_masterConnectionStringWithMasterDatabase = masterConnectionString;
 		}
 	}
 }

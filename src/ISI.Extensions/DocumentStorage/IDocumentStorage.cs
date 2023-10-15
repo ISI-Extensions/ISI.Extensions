@@ -18,13 +18,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DTOs = ISI.Extensions.DocumentStorage.DataTransferObjects;
 
 namespace ISI.Extensions
 {
 	public interface IDocumentStorage
 	{
-		Task<Guid> SetDocumentAsync(ISI.Extensions.DocumentStorage.IDocument document, UserKey requestedByUserKey = null);
-		Task SetDocumentAsync(Guid documentUuid, ISI.Extensions.DocumentStorage.IDocument document, UserKey requestedByUserKey = null);
-		Task<ISI.Extensions.DocumentStorage.IDocument> GetDocumentAsync(Guid documentUuid, UserKey requestedByUserKey = null);
+		Task<DTOs.SetDocumentResponse> SetDocumentAsync(DTOs.SetDocumentRequest request, System.Threading.CancellationToken cancellationToken = default);
+		Task<DTOs.GetDocumentResponse> GetDocumentAsync(DTOs.GetDocumentRequest request, System.Threading.CancellationToken cancellationToken = default);
 	}
 }

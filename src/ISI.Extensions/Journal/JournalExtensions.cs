@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,46 +15,24 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DTOs = ISI.Extensions.Journal.DataTransferObjects;
 
 namespace ISI.Extensions.Extensions
 {
-	public static class DocumentStorageExtensions
+	public static class JournalExtensions
 	{
-		public static async Task<Guid> SetDocumentAsync(this ISI.Extensions.IDocumentStorage documentStorage, ISI.Extensions.DocumentStorage.IDocument document, UserKey requestedByUserKey = null, System.Threading.CancellationToken cancellationToken = default)
+		public static async Task<DTOs.AddJournalEntryResponse> AddJournalEntryAsync(this IJournal journal, DTOs.AddJournalEntryRequest request, System.Threading.CancellationToken cancellationToken = default)
 		{
-			var setDocumentResponse = await documentStorage.SetDocumentAsync(new()
+			var response = new DTOs.AddJournalEntryResponse();
+
+			await journal.AddJournalEntriesAsync(new()
 			{
-				DocumentUuid = Guid.NewGuid(),
-				Document = document,
-				RequestedByUserKey = requestedByUserKey,
+				JournalEntries = new[] { request.JournalEntry },
 			}, cancellationToken);
 
-			return setDocumentResponse.DocumentUuid;
-		}
-
-		public static async Task SetDocumentStreamAsync(this ISI.Extensions.IDocumentStorage documentStorage, Guid documentUuid, ISI.Extensions.DocumentStorage.IDocument document, UserKey requestedByUserKey = null, System.Threading.CancellationToken cancellationToken = default)
-		{
-			await documentStorage.SetDocumentAsync(new()
-			{
-				DocumentUuid = documentUuid,
-				Document = document,
-				RequestedByUserKey = requestedByUserKey,
-			}, cancellationToken);
-
-		}
-
-		public static async Task<ISI.Extensions.DocumentStorage.IDocument> GetDocumentAsync(this ISI.Extensions.IDocumentStorage documentStorage, Guid documentUuid, UserKey requestedByUserKey = null, System.Threading.CancellationToken cancellationToken = default)
-		{
-			var getDocumentResponse = await documentStorage.GetDocumentAsync(new ()
-			{
-				DocumentUuid = documentUuid,
-				RequestedByUserKey = requestedByUserKey,
-			}, cancellationToken);
-
-			return getDocumentResponse.Document;
+			return response;
 		}
 	}
 }

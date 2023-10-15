@@ -18,13 +18,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DTOs = ISI.Extensions.DocumentStorage.DataTransferObjects;
 
 namespace ISI.Extensions.DocumentStorage
 {
 	public class NullDeviceDocumentStorage : IDocumentStorage
 	{
-		public async Task<Guid> SetDocumentAsync(ISI.Extensions.DocumentStorage.IDocument document, UserKey requestedByUserKey = null) => await Task.FromResult(Guid.Empty);
-		public async Task SetDocumentAsync(Guid documentUuid, ISI.Extensions.DocumentStorage.IDocument document, UserKey requestedByUserKey = null) => await Task.CompletedTask;
-		public async Task<ISI.Extensions.DocumentStorage.IDocument> GetDocumentAsync(Guid documentUuid, UserKey requestedByUserKey = null) => await Task.FromResult((ISI.Extensions.DocumentStorage.IDocument)null);
+		public async Task<DTOs.SetDocumentResponse> SetDocumentAsync(DTOs.SetDocumentRequest request, System.Threading.CancellationToken cancellationToken = default) => await Task.FromResult(new DTOs.SetDocumentResponse());
+		public async Task<DTOs.GetDocumentResponse> GetDocumentAsync(DTOs.GetDocumentRequest request, System.Threading.CancellationToken cancellationToken = default) => await Task.FromResult(new DTOs.GetDocumentResponse());
 	}
 }

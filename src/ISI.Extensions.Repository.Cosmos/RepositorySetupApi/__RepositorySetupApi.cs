@@ -23,7 +23,7 @@ using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
 
 namespace ISI.Extensions.Repository.Cosmos
 {
-	public partial class RepositorySetupApi : ISI.Extensions.Repository.IRepositorySetupApi
+	public partial class RepositorySetupApi : ISI.Extensions.Repository.IRepositorySetupApiWithConfigurationLoggerDateTimeStamper
 	{
 		public const string DatabaseMigrationStepTableName = "DatabaseMigrationStep";
 

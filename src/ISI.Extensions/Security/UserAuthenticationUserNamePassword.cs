@@ -40,7 +40,7 @@ namespace ISI.Extensions.Security
 
 		public bool IsActive { get; set; }
 
-		public string ModifyUserKey { get; set; }
+		public UserKey ModifyUserKey { get; set; }
 		public DateTime ModifyDateTimeUtc { get; set; }
 	}
 }

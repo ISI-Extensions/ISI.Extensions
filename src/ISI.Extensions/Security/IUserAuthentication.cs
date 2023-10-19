@@ -27,9 +27,9 @@ namespace ISI.Extensions.Security
 
 		bool IsActive { get; set; }
 		
-		string CreateUserKey { get; }
+		UserKey CreateUserKey { get; }
 		DateTime CreateDateTimeUtc { get; }
-		string ModifyUserKey { get; set; }
+		UserKey ModifyUserKey { get; set; }
 		DateTime ModifyDateTimeUtc { get; set; }
 	}
 

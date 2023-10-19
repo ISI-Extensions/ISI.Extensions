@@ -32,9 +32,9 @@ namespace ISI.Extensions.Telephony.Faxes
 		public ISI.Extensions.Telephony.Faxes.FaxMessageStatus? FaxStatus { get; set; }
 
 		public int? NumberOfPages { get; set; }
-		public Byte[] MediaStream { get; set; }
+		public byte[] MediaStream { get; set; }
 
+		public UserKey CreateUserKey { get; set; }
 		public DateTime CreateDateTimeUtc { get; set; }
-		public string CreateUserKey { get; set; }
 	}
 }

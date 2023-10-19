@@ -24,14 +24,16 @@ namespace ISI.Extensions.Repository
 {
 	public interface IRepositorySetupApi
 	{
-		Microsoft.Extensions.Logging.ILogger Logger { get; }
-		ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
-		Microsoft.Extensions.Configuration.IConfiguration Configuration { get; }
-
 		DTOs.DeleteRepositoryResponse DeleteRepository();
 		DTOs.CreateRepositoryResponse CreateRepository(DTOs.CreateRepositoryRequest request);
 		DTOs.GetLatestStepResponse GetLatestStep();
 		DTOs.SetStepResponse SetStep(int stepId);
 		DTOs.ExecuteScriptResponse ExecuteScript(string script, IDictionary<string, object> parameters = null);
+	}
+	public interface IRepositorySetupApiWithConfigurationLoggerDateTimeStamper : IRepositorySetupApi
+	{
+		Microsoft.Extensions.Configuration.IConfiguration Configuration { get; }
+		Microsoft.Extensions.Logging.ILogger Logger { get; }
+		ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
 	}
 }

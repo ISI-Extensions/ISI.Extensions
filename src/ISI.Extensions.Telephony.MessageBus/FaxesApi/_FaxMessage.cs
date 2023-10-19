@@ -43,7 +43,7 @@ namespace ISI.Extensions.Telephony.MessageBus
 				NumberOfPages = source.NumberOfPages,
 				MediaStream = source.MediaStream,
 				CreateDateTimeUtc = source.CreateDateTimeUtc,
-				CreateUserKey = source.CreateUserKey,
+				CreateUserKey = source.CreateUserKey?.Value,
 			};
 		}
 

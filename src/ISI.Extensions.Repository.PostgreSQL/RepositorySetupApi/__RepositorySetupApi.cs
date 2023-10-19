@@ -28,7 +28,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ISI.Extensions.Repository.PostgreSQL
 {
-	public partial class RepositorySetupApi : ISI.Extensions.Repository.IRepositorySetupApi
+	public partial class RepositorySetupApi : ISI.Extensions.Repository.IRepositorySetupApiWithConfigurationLoggerDateTimeStamper
 	{
 		public Microsoft.Extensions.Logging.ILogger Logger { get; }
 		public ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }

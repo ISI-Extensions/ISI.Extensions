@@ -26,7 +26,7 @@ namespace ISI.Extensions.Security
 		public Guid SaltedHashGeneratorTypeUuid { get; set; }
 		public string PasswordSalt { get; set; }
 		public string HashedPassword { get; set; }
-		public string CreateUserKey { get; set; }
+		public UserKey CreateUserKey { get; set; }
 		public DateTime CreateDateTimeUtc { get; set; }
 	}
 }

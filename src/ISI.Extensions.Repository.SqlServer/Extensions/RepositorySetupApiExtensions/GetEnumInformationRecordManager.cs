@@ -29,7 +29,14 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 	{
 		public static ISI.Extensions.Repository.IEnumInformationRecordManager GetEnumInformationRecordManager(this ISI.Extensions.Repository.IRepositorySetupApi repositorySetupApi, string schema, string tableName, string enumIdColumnName, string enumUuidColumnName)
 		{
-			return new ISI.Extensions.Repository.SqlServer.EnumInformationRecordManager(repositorySetupApi.Configuration, repositorySetupApi.Logger, repositorySetupApi.DateTimeStamper, null, repositorySetupApi.GetConnectionString(), schema, tableName, enumIdColumnName, enumUuidColumnName);
+			var repositorySetupApiWithConfigurationLoggerDateTimeStamper = repositorySetupApi as ISI.Extensions.Repository.IRepositorySetupApiWithConfigurationLoggerDateTimeStamper;
+
+			if (repositorySetupApiWithConfigurationLoggerDateTimeStamper == null)
+			{
+				throw new Exception("need repositorySetupApi to be IRepositorySetupApiWithConfigurationLoggerDateTimeStamper");
+			}
+
+			return new ISI.Extensions.Repository.SqlServer.EnumInformationRecordManager(repositorySetupApiWithConfigurationLoggerDateTimeStamper.Configuration, repositorySetupApiWithConfigurationLoggerDateTimeStamper.Logger, repositorySetupApiWithConfigurationLoggerDateTimeStamper.DateTimeStamper, null, repositorySetupApi.GetConnectionString(), schema, tableName, enumIdColumnName, enumUuidColumnName);
 		}
 	}
 }

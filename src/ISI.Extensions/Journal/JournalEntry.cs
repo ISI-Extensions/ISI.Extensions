@@ -43,9 +43,7 @@ namespace ISI.Extensions.Journal
 			set => _journalEntryTypes = new JournalEntryTypeCollection(value);
 		}
 
-		public string CreateUserKey { get; set; }
-		public Guid CreateUserUuid { get => CreateUserKey.ToGuid(); set => CreateUserKey = value.Formatted(GuidExtensions.GuidFormat.WithHyphens); }
-		public int? CreateUserId { get => CreateUserKey.ToIntNullable(); set => CreateUserKey = string.Format("{0}", value); }
+		public UserKey CreateUserKey { get; set; }
 		public DateTime? CreateDateTimeUtc { get; set; }
 	}
 }

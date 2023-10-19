@@ -34,5 +34,17 @@ namespace ISI.Extensions.Extensions
 
 			return response;
 		}
+
+		public static async Task<DTOs.AddJournalEntryResponse> AddJournalEntryAsync(this IJournal journal, ISI.Extensions.Journal.IJournalEntry journalEntry, System.Threading.CancellationToken cancellationToken = default)
+		{
+			var response = new DTOs.AddJournalEntryResponse();
+
+			await journal.AddJournalEntriesAsync(new()
+			{
+				JournalEntries = new[] { journalEntry },
+			}, cancellationToken);
+
+			return response;
+		}
 	}
 }

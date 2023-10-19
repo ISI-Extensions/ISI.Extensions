@@ -24,7 +24,9 @@ namespace ISI.Extensions.Security
 	public interface IPermissionProcessor
 	{
 		IEnumerable<string> GetUserRoles(string userKey);
+		IEnumerable<string> GetUserRoles(ISI.Extensions.UserKey userKey);
 		bool IsAuthorized(string userKey, IEnumerable<string> allowedRoles);
+		bool IsAuthorized(ISI.Extensions.UserKey userKey, IEnumerable<string> allowedRoles);
 		bool IsAuthorized(IEnumerable<string> userRoles, IEnumerable<string> allowedRoles);
 		string[] GetDefaultPermissions();
 		string[] GetDefaultAuthenticatedPermissions();

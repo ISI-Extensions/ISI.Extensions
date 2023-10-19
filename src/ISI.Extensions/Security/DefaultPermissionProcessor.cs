@@ -29,7 +29,17 @@ namespace ISI.Extensions.Security
 			return string.IsNullOrWhiteSpace(userKey) ? null : Array.Empty<string>();
 		}
 
+		public virtual IEnumerable<string> GetUserRoles(ISI.Extensions.UserKey userKey)
+		{
+			return string.IsNullOrWhiteSpace(userKey?.Value) ? null : Array.Empty<string>();
+		}
+
 		public virtual bool IsAuthorized(string userKey, IEnumerable<string> allowedRoles)
+		{
+			return IsAuthorized(GetUserRoles(userKey), allowedRoles);
+		}
+
+		public virtual bool IsAuthorized(ISI.Extensions.UserKey userKey, IEnumerable<string> allowedRoles)
 		{
 			return IsAuthorized(GetUserRoles(userKey), allowedRoles);
 		}

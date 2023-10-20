@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -12,51 +12,32 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Aspose.Extensions
 {
-	public static partial class PdfExtensions
+	public static partial class PrintRangeExtensions
 	{
-		public static void SetDocumentProperties(this global::Aspose.Pdf.Document document, ISI.Extensions.Documents.IDocumentProperties documentProperties)
+		public static global::Aspose.Pdf.Printing.PrintRange ToPrintRange(this System.Drawing.Printing.PrintRange printRange)
 		{
-			if (documentProperties != null)
+			switch (printRange)
 			{
-				var documentInfo = new global::Aspose.Pdf.DocumentInfo(document);
-
-				if (!(documentProperties is ISI.Extensions.Documents.IPdfDocumentProperties pdfDocumentProperties))
-				{
-					documentInfo.Subject = documentProperties.Subject;
-					documentInfo.Author = documentProperties.Author;
-					documentInfo.Keywords = documentProperties.Keywords;
-					documentInfo.Title = documentProperties.Title;
-				}
-				else
-				{
-					documentInfo.Subject = pdfDocumentProperties.Subject;
-					documentInfo.Author = pdfDocumentProperties.Author;
-					documentInfo.Keywords = pdfDocumentProperties.Keywords;
-					documentInfo.Title = pdfDocumentProperties.Title;
-				}
+				case System.Drawing.Printing.PrintRange.AllPages:
+					return global::Aspose.Pdf.Printing.PrintRange.AllPages;
+				case System.Drawing.Printing.PrintRange.Selection:
+					return global::Aspose.Pdf.Printing.PrintRange.Selection;
+				case System.Drawing.Printing.PrintRange.SomePages:
+					return global::Aspose.Pdf.Printing.PrintRange.SomePages;
+				case System.Drawing.Printing.PrintRange.CurrentPage:
+					return global::Aspose.Pdf.Printing.PrintRange.CurrentPage;
+				default:
+					throw new ArgumentOutOfRangeException(nameof(printRange), printRange, null);
 			}
-		}
-
-
-		public static ISI.Extensions.Documents.IDocumentProperties GetDocumentProperties(this global::Aspose.Pdf.Document document)
-		{
-			var documentInfo = new global::Aspose.Pdf.DocumentInfo(document);
-
-			return new ISI.Extensions.Aspose.Pdf.DocumentProperties()
-			{
-				Subject = documentInfo.Subject,
-				Author = documentInfo.Author,
-				Keywords = documentInfo.Keywords,
-				Title = documentInfo.Title
-			};
 		}
 	}
 }

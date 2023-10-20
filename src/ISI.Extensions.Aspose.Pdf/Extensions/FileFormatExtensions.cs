@@ -20,34 +20,25 @@ using System.Text;
 
 namespace ISI.Extensions.Aspose.Extensions
 {
-	public static partial class PdfExtensions
+	public static partial class FileFormatExtensions
 	{
 		public static global::Aspose.Pdf.SaveFormat ToSaveFormat(this ISI.Extensions.Documents.FileFormat fileFormat)
 		{
-			var result = global::Aspose.Pdf.SaveFormat.Pdf;
-
 			switch (fileFormat)
 			{
 				case ISI.Extensions.Documents.FileFormat.Default:
-					result = global::Aspose.Pdf.SaveFormat.Pdf;
-					break;
+					return global::Aspose.Pdf.SaveFormat.Pdf;
 				case ISI.Extensions.Documents.FileFormat.Doc:
-					result = global::Aspose.Pdf.SaveFormat.Doc;
-					break;
+					return global::Aspose.Pdf.SaveFormat.Doc;
 				case ISI.Extensions.Documents.FileFormat.Pdf:
-					result = global::Aspose.Pdf.SaveFormat.Pdf;
-					break;
+					return global::Aspose.Pdf.SaveFormat.Pdf;
 				case ISI.Extensions.Documents.FileFormat.Xps:
-					result = global::Aspose.Pdf.SaveFormat.Xps;
-					break;
+					return global::Aspose.Pdf.SaveFormat.Xps;
 				case ISI.Extensions.Documents.FileFormat.Html:
-					result = global::Aspose.Pdf.SaveFormat.Html;
-					break;
+					return global::Aspose.Pdf.SaveFormat.Html;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(fileFormat));
 			}
-
-			return result;
 		}
 	}
 }

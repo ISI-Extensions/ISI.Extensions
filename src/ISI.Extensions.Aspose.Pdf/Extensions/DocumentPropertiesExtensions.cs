@@ -17,20 +17,46 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace ISI.Extensions.Aspose
+namespace ISI.Extensions.Aspose.Extensions
 {
-	public partial class Pdf
+	public static partial class DocumentPropertiesExtensions
 	{
-		public partial class PdfDocumentHelper
+		public static void SetDocumentProperties(this global::Aspose.Pdf.Document document, ISI.Extensions.Documents.IDocumentProperties documentProperties)
 		{
-			public void Print(ISI.Extensions.Documents.IDocument document, string printerName)
+			if (documentProperties != null)
 			{
-				var docDocument = new global::Aspose.Pdf.Document(document.Stream);
+				var documentInfo = new global::Aspose.Pdf.DocumentInfo(document);
 
-				ISI.Extensions.Aspose.Extensions.PrintExtensions.Print(docDocument, printerName);
+				if (!(documentProperties is ISI.Extensions.Documents.IPdfDocumentProperties pdfDocumentProperties))
+				{
+					documentInfo.Subject = documentProperties.Subject;
+					documentInfo.Author = documentProperties.Author;
+					documentInfo.Keywords = documentProperties.Keywords;
+					documentInfo.Title = documentProperties.Title;
+				}
+				else
+				{
+					documentInfo.Subject = pdfDocumentProperties.Subject;
+					documentInfo.Author = pdfDocumentProperties.Author;
+					documentInfo.Keywords = pdfDocumentProperties.Keywords;
+					documentInfo.Title = pdfDocumentProperties.Title;
+				}
 			}
+		}
+
+
+		public static ISI.Extensions.Documents.IDocumentProperties GetDocumentProperties(this global::Aspose.Pdf.Document document)
+		{
+			var documentInfo = new global::Aspose.Pdf.DocumentInfo(document);
+
+			return new ISI.Extensions.Aspose.Pdf.DocumentProperties()
+			{
+				Subject = documentInfo.Subject,
+				Author = documentInfo.Author,
+				Keywords = documentInfo.Keywords,
+				Title = documentInfo.Title
+			};
 		}
 	}
 }

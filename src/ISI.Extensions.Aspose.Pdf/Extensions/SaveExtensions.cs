@@ -17,19 +17,63 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Aspose
+namespace ISI.Extensions.Aspose.Extensions
 {
-	public partial class Pdf
+	public static partial class SaveExtensions
 	{
-		public partial class PdfDocumentHelper
+		public static void Save(this global::Aspose.Pdf.Facades.Form form, System.IO.Stream documentStream, ISI.Extensions.Documents.FileFormat fileFormat)
 		{
-			public void Print(ISI.Extensions.Documents.IDocument document, string printerName)
+			if (documentStream != null)
 			{
-				var docDocument = new global::Aspose.Pdf.Document(document.Stream);
+				var format = fileFormat.ToSaveFormat();
 
-				ISI.Extensions.Aspose.Extensions.PrintExtensions.Print(docDocument, printerName);
+				if (format == global::Aspose.Pdf.SaveFormat.Pdf)
+				{
+					form.Save(documentStream);
+				}
+				else
+				{
+					using (var tempStream = new ISI.Extensions.Stream.TempFileStream())
+					{
+						form.Save(tempStream);
+
+						tempStream.Rewind();
+
+						var document = new global::Aspose.Pdf.Document(tempStream);
+
+						Save(document, documentStream, fileFormat);
+					}
+				}
+			}
+		}
+
+		public static void Save(this global::Aspose.Pdf.Document document, System.IO.Stream documentStream, ISI.Extensions.Documents.FileFormat fileFormat)
+		{
+			if (documentStream != null)
+			{
+				if (fileFormat == ISI.Extensions.Documents.FileFormat.Tiff)
+				{
+					using (var pdfConverter = new global::Aspose.Pdf.Facades.PdfConverter())
+					{
+						pdfConverter.Resolution = new(300);
+						pdfConverter.StartPage = 0;
+						pdfConverter.EndPage = document.Pages.Count;
+
+						pdfConverter.BindPdf(document);
+						
+						pdfConverter.DoConvert();
+
+						pdfConverter.SaveAsTIFF(documentStream);
+
+						pdfConverter.Close();
+					}
+				}
+				else
+				{
+					document.Save(documentStream, fileFormat.ToSaveFormat());
+				}
 			}
 		}
 	}

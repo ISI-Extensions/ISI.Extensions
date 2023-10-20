@@ -68,8 +68,8 @@ namespace ISI.Extensions.Aspose
 				{
 					var document = new global::Aspose.Pdf.Document(documentStreams.FirstOrDefault());
 
-					ISI.Extensions.Aspose.Extensions.PdfExtensions.Print(document, printerName);
-					ISI.Extensions.Aspose.Extensions.PdfExtensions.Save(document, documentStream, fileFormat);
+					ISI.Extensions.Aspose.Extensions.PrintExtensions.Print(document, printerName);
+					ISI.Extensions.Aspose.Extensions.SaveExtensions.Save(document, documentStream, fileFormat);
 				}
 				else if (documentStreamsCount > 1)
 				{
@@ -81,8 +81,8 @@ namespace ISI.Extensions.Aspose
 
 						var document = new global::Aspose.Pdf.Document(outputStream);
 
-						ISI.Extensions.Aspose.Extensions.PdfExtensions.Print(document, printerName);
-						ISI.Extensions.Aspose.Extensions.PdfExtensions.Save(document, documentStream, fileFormat);
+						ISI.Extensions.Aspose.Extensions.PrintExtensions.Print(document, printerName);
+						ISI.Extensions.Aspose.Extensions.SaveExtensions.Save(document, documentStream, fileFormat);
 					}
 				}
 

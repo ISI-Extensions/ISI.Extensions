@@ -172,13 +172,6 @@ namespace ISI.Extensions
 				}
 			}
 
-			//if (string.Equals(System.Environment.MachineName, "ronmuth", StringComparison.InvariantCultureIgnoreCase))
-			//{
-			//	request.Logger.LogInformation(string.Format("\"{0}\" {1}", request.ProcessExeFullName, processStartInfo.Arguments));
-			//}
-
-			//Console.WriteLine(string.Format("\"{0}\" {1}", request.ProcessExeFullName, processStartInfo.Arguments));
-
 			if (!string.IsNullOrWhiteSpace(request.WorkingDirectory))
 			{
 				processStartInfo.WorkingDirectory = request.WorkingDirectory;
@@ -199,7 +192,6 @@ namespace ISI.Extensions
 
 					if (!string.IsNullOrWhiteSpace(data))
 					{
-
 						output.AppendLine(data);
 
 						data = data.Replace("{", "{{").Replace("}", "}}");
@@ -223,13 +215,12 @@ namespace ISI.Extensions
 				};
 
 				process.BeginOutputReadLine();
+				process.BeginErrorReadLine();
 				process.WaitForExit();
 
 				response.ExitCode = process.ExitCode;
 
 				response.Output = output.ToString();
-
-				//processShell?.Close();
 
 				return response;
 			}

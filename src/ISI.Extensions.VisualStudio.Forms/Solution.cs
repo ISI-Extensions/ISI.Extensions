@@ -117,6 +117,10 @@ namespace ISI.Extensions.VisualStudio.Forms
 			Action = () =>
 			{
 				Logger.LogInformation("Start Clean Solution");
+
+				UpdateSolutionResponse = new();
+				RestoreNugetPackagesResponse = new();
+				BuildSolutionResponse = new();
 				CleanSolutionErrored = !(SolutionApi.CleanSolution(new()
 				{
 					Solution = SolutionDetails.SolutionDirectory,
@@ -160,12 +164,14 @@ namespace ISI.Extensions.VisualStudio.Forms
 				{
 					Logger.LogInformation("Start Update Solution");
 
+					RestoreNugetPackagesResponse = new();
+					BuildSolutionResponse = new();
 					UpdateSolutionResponse = new();
-
 					UpdateSolutionResponse.ExitCode = SourceControlClientApi.UpdateWorkingCopy(new()
 					{
 						FullName = SolutionDetails.RootSourceDirectory,
 						IncludeExternals = true,
+
 						AddToLog = value => UpdateSolutionResponse.AppendLine(value),
 					}).Success ? 0 : 1;
 
@@ -213,11 +219,14 @@ namespace ISI.Extensions.VisualStudio.Forms
 				{
 					Logger.LogInformation("Start Restore Nuget Packages");
 
+					BuildSolutionResponse = new();
 					RestoreNugetPackagesResponse = new();
 					RestoreNugetPackagesResponse.ExitCode = NugetApi.RestoreNugetPackages(new()
 					{
 						Solution = SolutionDetails.SolutionFullName,
 						MSBuildExe = MSBuildApi.GetMSBuildExeFullName(new()).MSBuildExeFullName,
+
+						AddToLog = value => RestoreNugetPackagesResponse.AppendLine(value),
 					}).Success ? 0 : 1;
 
 					Logger.LogInformation("Finish Restore Nuget Packages");
@@ -513,12 +522,25 @@ namespace ISI.Extensions.VisualStudio.Forms
 			};
 			ViewBuildLogButton.Click += (_, __) =>
 			{
-				(new ViewLogForm(string.Join("\n\n", new[]
+				var logs = new StringBuilder();
+
+				if (!string.IsNullOrWhiteSpace(UpdateSolutionResponse.Output))
 				{
-					UpdateSolutionResponse.Output,
-					RestoreNugetPackagesResponse.Output,
-					BuildSolutionResponse.Output,
-				}))).ShowDialog();
+					logs.AppendLine("Update Solution:");
+					logs.AppendLine(UpdateSolutionResponse.Output);
+				}
+				if (!string.IsNullOrWhiteSpace(RestoreNugetPackagesResponse.Output))
+				{
+					logs.AppendLine("Restore Nuget Packages:");
+					logs.AppendLine(RestoreNugetPackagesResponse.Output);
+				}
+				if (!string.IsNullOrWhiteSpace(BuildSolutionResponse.Output))
+				{
+					logs.AppendLine("Build Solution:");
+					logs.AppendLine(BuildSolutionResponse.Output);
+				}
+
+				(new ViewLogForm(logs.ToString())).ShowDialog();
 			};
 			SolutionPanel.Controls.Add(ViewBuildLogButton);
 

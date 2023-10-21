@@ -64,6 +64,20 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void RestoreNugetPackages_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+
+			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+
+			nugetApi.RestoreNugetPackages(new()
+			{
+				Solution = @"F:\ISI\Internal Projects\ISI.Cake.Addin",
+			});
+		}
+
+		[Test]
 		public void NupkgPack_Test()
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");

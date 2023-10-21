@@ -28,7 +28,7 @@ namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 		public string PackagesConfigFileName { get; set; }
 
 		public string MSBuildExe { get; set; }
-
+		
 		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

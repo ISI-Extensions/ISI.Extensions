@@ -29,107 +29,110 @@ namespace ISI.Extensions.Svn
 		{
 			var response = new DTOs.GetWorkingCopyInfosResponse();
 
-			var arguments = new List<string>();
-
-			arguments.Add("info");
-			arguments.Add(string.Format("\"{0}\"", request.Source.TrimEnd(System.IO.Path.DirectorySeparatorChar)));
-
-			switch (request.Depth)
+			if (SvnIsInstalled)
 			{
-				case Depth.Empty:
-					arguments.Add("--depth empty");
-					break;
-				case Depth.Files:
-					arguments.Add("--depth files");
-					break;
-				case Depth.Children:
-					arguments.Add("--depth immediates");
-					break;
-				case Depth.Infinity:
-					arguments.Add("--depth infinity");
-					break;
-			}
+				var arguments = new List<string>();
 
-			if (request.IncludeExternals)
-			{
-				arguments.Add("--include-externals");
-			}
+				arguments.Add("info");
+				arguments.Add(string.Format("\"{0}\"", request.Source.TrimEnd(System.IO.Path.DirectorySeparatorChar)));
 
-			AddCredentials(arguments, request);
-
-			var content = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-			{
-				Logger = new NullLogger(),
-				ProcessExeFullName = "svn",
-				Arguments = arguments.ToArray(),
-			}).Output;
-
-			var contentItems = content.Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-
-			var infos = new List<DTOs.WorkingCopyInfo>();
-
-			DTOs.WorkingCopyInfo info = null;
-
-			foreach (var contentItem in contentItems)
-			{
-				if (!string.IsNullOrWhiteSpace(contentItem))
+				switch (request.Depth)
 				{
-					var property = contentItem.Split(new string[] { ":" }, 2, StringSplitOptions.RemoveEmptyEntries);
+					case Depth.Empty:
+						arguments.Add("--depth empty");
+						break;
+					case Depth.Files:
+						arguments.Add("--depth files");
+						break;
+					case Depth.Children:
+						arguments.Add("--depth immediates");
+						break;
+					case Depth.Infinity:
+						arguments.Add("--depth infinity");
+						break;
+				}
 
-					if (property.Length >= 2)
+				if (request.IncludeExternals)
+				{
+					arguments.Add("--include-externals");
+				}
+
+				AddCredentials(arguments, request);
+
+				var content = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				{
+					Logger = new NullLogger(),
+					ProcessExeFullName = "svn",
+					Arguments = arguments.ToArray(),
+				}).Output;
+
+				var contentItems = content.Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+				var infos = new List<DTOs.WorkingCopyInfo>();
+
+				DTOs.WorkingCopyInfo info = null;
+
+				foreach (var contentItem in contentItems)
+				{
+					if (!string.IsNullOrWhiteSpace(contentItem))
 					{
-						var propertyKey = property[0];
-						var propertyValue = property[1];
+						var property = contentItem.Split(new string[] { ":" }, 2, StringSplitOptions.RemoveEmptyEntries);
 
-						switch (propertyKey)
+						if (property.Length >= 2)
 						{
-							case "Path":
-								info = new();
-								infos.Add(info);
-								info.Path = propertyValue.Trim();
-								break;
+							var propertyKey = property[0];
+							var propertyValue = property[1];
 
-							case "Working Copy Root Path":
-								info.WorkingCopyRootPath = propertyValue.Trim();
-								break;
+							switch (propertyKey)
+							{
+								case "Path":
+									info = new();
+									infos.Add(info);
+									info.Path = propertyValue.Trim();
+									break;
 
-							case "URL":
-								info.Url = propertyValue.Trim();
-								break;
+								case "Working Copy Root Path":
+									info.WorkingCopyRootPath = propertyValue.Trim();
+									break;
 
-							case "Repository Root":
-								info.RepositoryRoot = propertyValue.Trim();
-								break;
+								case "URL":
+									info.Url = propertyValue.Trim();
+									break;
 
-							case "Revision":
-								info.Revision = propertyValue.Trim().ToLong();
-								break;
+								case "Repository Root":
+									info.RepositoryRoot = propertyValue.Trim();
+									break;
 
-							case "Node Kind":
-								info.NodeKind = ISI.Extensions.Enum<NodeKind>.Parse(propertyValue.Trim());
-								break;
+								case "Revision":
+									info.Revision = propertyValue.Trim().ToLong();
+									break;
 
-							case "Schedule":
-								info.Schedule = ISI.Extensions.Enum<Schedule>.Parse(propertyValue.Trim());
-								break;
+								case "Node Kind":
+									info.NodeKind = ISI.Extensions.Enum<NodeKind>.Parse(propertyValue.Trim());
+									break;
 
-							case "Last Changed Author":
-								info.LastChangeAuthor = propertyValue.Trim();
-								break;
+								case "Schedule":
+									info.Schedule = ISI.Extensions.Enum<Schedule>.Parse(propertyValue.Trim());
+									break;
 
-							case "Last Changed Rev":
-								info.LastChangeRevision = propertyValue.Trim().ToLong();
-								break;
+								case "Last Changed Author":
+									info.LastChangeAuthor = propertyValue.Trim();
+									break;
 
-							case "Last Changed Date":
-								info.LastChangeTime = propertyValue.Trim().ToDateTime();
-								break;
+								case "Last Changed Rev":
+									info.LastChangeRevision = propertyValue.Trim().ToLong();
+									break;
+
+								case "Last Changed Date":
+									info.LastChangeTime = propertyValue.Trim().ToDateTime();
+									break;
+							}
 						}
 					}
 				}
-			}
 
-			response.Infos = infos;
+				response.Infos = infos;
+			}
 
 			return response;
 		}

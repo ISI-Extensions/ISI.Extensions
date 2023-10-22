@@ -29,26 +29,15 @@ namespace ISI.Extensions.Git
 		public DTOs.CommitWorkingCopyResponse CommitWorkingCopy(DTOs.CommitWorkingCopyRequest request)
 		{
 			var response = new DTOs.CommitWorkingCopyResponse();
-			
-			var arguments = new List<string>();
 
-			arguments.Add("commit");
-			arguments.Add("-all");
-			arguments.Add("-m");
-			arguments.Add(string.Format("\"{0}\"", request.LogMessage));
-
-			response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+			if (GitIsInstalled)
 			{
-				Logger = new AddToLogLogger(request.AddToLog, Logger),
-				ProcessExeFullName = "git",
-				Arguments = arguments.ToArray(),
-				WorkingDirectory = request.FullName,
-			}).Errored;
+				var arguments = new List<string>();
 
-			if (response.Success && request.PushToOrigin)
-			{
-				arguments.Clear();
-				arguments.Add("push");
+				arguments.Add("commit");
+				arguments.Add("-all");
+				arguments.Add("-m");
+				arguments.Add(string.Format("\"{0}\"", request.LogMessage));
 
 				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
@@ -57,6 +46,20 @@ namespace ISI.Extensions.Git
 					Arguments = arguments.ToArray(),
 					WorkingDirectory = request.FullName,
 				}).Errored;
+
+				if (response.Success && request.PushToOrigin)
+				{
+					arguments.Clear();
+					arguments.Add("push");
+
+					response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+					{
+						Logger = new AddToLogLogger(request.AddToLog, Logger),
+						ProcessExeFullName = "git",
+						Arguments = arguments.ToArray(),
+						WorkingDirectory = request.FullName,
+					}).Errored;
+				}
 			}
 
 			return response;

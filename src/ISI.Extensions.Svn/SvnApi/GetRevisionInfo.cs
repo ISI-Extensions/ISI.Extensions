@@ -30,68 +30,71 @@ namespace ISI.Extensions.Svn
 		{
 			var response = new DTOs.GetRevisionInfoResponse();
 
-			string getProperty(string propertyName)
+			if (SvnIsInstalled)
 			{
-				var arguments = new List<string>();
-
-				arguments.Add(propertyName);
-				arguments.Add(string.Format("-r {0}", request.Revision));
-				arguments.Add(string.Format("\"{0}\"", request.RepositoryPath));
-
-				return ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				string getProperty(string propertyName)
 				{
-					ProcessExeFullName = "svnlook",
-					Arguments = arguments.ToArray(),
-				}).Output;
-			}
+					var arguments = new List<string>();
 
-			var pathsChanged = new List<(SvnCommitAction CommitAction, string Path, long? SourceRevision, string SourcePath)>();
+					arguments.Add(propertyName);
+					arguments.Add(string.Format("-r {0}", request.Revision));
+					arguments.Add(string.Format("\"{0}\"", request.RepositoryPath));
 
-			var historyLines = getProperty("diff").Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-			var lastHistoryLine = (string)null;
-			foreach (var historyLine in historyLines)
-			{
-				if (historyLine.StartsWith("===================================================================", StringComparison.InvariantCultureIgnoreCase) && !string.IsNullOrWhiteSpace(lastHistoryLine))
-				{
-					var pieces = lastHistoryLine.Split(new[] { ':' }, 2);
-					if (pieces.Length > 1)
+					return ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 					{
-						if (ISI.Extensions.Enum<SvnCommitAction>.TryParse(pieces[0], out var svnCommitAction))
-						{
-							var path = pieces[1].Trim();
-							var sourceRevision = (long?)null;
-							var sourcePath = (string)null;
-
-							if (svnCommitAction == SvnCommitAction.Copied)
-							{
-								var sourceIndex = path.IndexOf("(from rev", StringComparison.InvariantCultureIgnoreCase);
-								if (sourceIndex > 0)
-								{
-									sourcePath = path.Substring(sourceIndex).TrimStart("(from rev", StringComparison.InvariantCultureIgnoreCase).Trim();
-									path = path.Substring(0, sourceIndex);
-
-									pieces = sourcePath.Split(new[] { ',' }, 2);
-									sourceRevision = pieces[0].ToLong();
-									sourcePath = pieces[1].Trim().TrimEnd(')', ' ');
-								}
-							}
-
-							pathsChanged.Add((CommitAction: svnCommitAction, Path: path, SourceRevision: sourceRevision, SourcePath: sourcePath));
-						}
-					}
+						ProcessExeFullName = "svnlook",
+						Arguments = arguments.ToArray(),
+					}).Output;
 				}
 
-				lastHistoryLine = historyLine;
+				var pathsChanged = new List<(SvnCommitAction CommitAction, string Path, long? SourceRevision, string SourcePath)>();
+
+				var historyLines = getProperty("diff").Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+				var lastHistoryLine = (string)null;
+				foreach (var historyLine in historyLines)
+				{
+					if (historyLine.StartsWith("===================================================================", StringComparison.InvariantCultureIgnoreCase) && !string.IsNullOrWhiteSpace(lastHistoryLine))
+					{
+						var pieces = lastHistoryLine.Split(new[] { ':' }, 2);
+						if (pieces.Length > 1)
+						{
+							if (ISI.Extensions.Enum<SvnCommitAction>.TryParse(pieces[0], out var svnCommitAction))
+							{
+								var path = pieces[1].Trim();
+								var sourceRevision = (long?)null;
+								var sourcePath = (string)null;
+
+								if (svnCommitAction == SvnCommitAction.Copied)
+								{
+									var sourceIndex = path.IndexOf("(from rev", StringComparison.InvariantCultureIgnoreCase);
+									if (sourceIndex > 0)
+									{
+										sourcePath = path.Substring(sourceIndex).TrimStart("(from rev", StringComparison.InvariantCultureIgnoreCase).Trim();
+										path = path.Substring(0, sourceIndex);
+
+										pieces = sourcePath.Split(new[] { ',' }, 2);
+										sourceRevision = pieces[0].ToLong();
+										sourcePath = pieces[1].Trim().TrimEnd(')', ' ');
+									}
+								}
+
+								pathsChanged.Add((CommitAction: svnCommitAction, Path: path, SourceRevision: sourceRevision, SourcePath: sourcePath));
+							}
+						}
+					}
+
+					lastHistoryLine = historyLine;
+				}
+
+				response.RevisionInfo = new RevisionInfo()
+				{
+					RevisionDateTime = getProperty("date").Trim('\n', '\r', ' ').Split(new[] { '(' }).First().Trim().ToDateTime(),
+					Author = getProperty("author").Trim('\n', '\r', ' '),
+					Log = getProperty("log").Trim('\n', '\r', ' '),
+					DirectoriesChanged = getProperty("dirs-changed").Trim('\n', '\r', ' ').Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries),
+					PathsChanged = pathsChanged.ToArray(),
+				};
 			}
-			
-			response.RevisionInfo = new RevisionInfo()
-			{
-				RevisionDateTime = getProperty("date").Trim('\n', '\r', ' ').Split(new[] { '(' }).First().Trim().ToDateTime(),
-				Author = getProperty("author").Trim('\n', '\r', ' '),
-				Log = getProperty("log").Trim('\n', '\r', ' '),
-				DirectoriesChanged = getProperty("dirs-changed").Trim('\n', '\r', ' ').Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries),
-				PathsChanged = pathsChanged.ToArray(),
-			};
 
 			return response;
 		}

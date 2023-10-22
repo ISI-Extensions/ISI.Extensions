@@ -28,26 +28,28 @@ namespace ISI.Extensions.Svn
 	{
 		public DTOs.DeleteResponse DeletePaths(DTOs.DeleteRequest request)
 		{
-			var response = new DTOs.DeleteResponse()
+			var response = new DTOs.DeleteResponse();
+
+			if (SvnIsInstalled)
 			{
-				Success = true,
-			};
+				response.Success = true;
 
-			var fullNames = request.FullNames.ToNullCheckedArray(System.IO.Path.GetFullPath, NullCheckCollectionResult.Empty);
+				var fullNames = request.FullNames.ToNullCheckedArray(System.IO.Path.GetFullPath, NullCheckCollectionResult.Empty);
 
-			foreach (var fullName in fullNames)
-			{
-				var arguments = new List<string>();
-
-				arguments.Add("delete");
-				arguments.Add(string.Format("\"{0}\"", fullName));
-
-				ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				foreach (var fullName in fullNames)
 				{
-					Logger = new NullLogger(),
-					ProcessExeFullName = "svn",
-					Arguments = arguments.ToArray(),
-				});
+					var arguments = new List<string>();
+
+					arguments.Add("delete");
+					arguments.Add(string.Format("\"{0}\"", fullName));
+
+					ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+					{
+						Logger = new NullLogger(),
+						ProcessExeFullName = "svn",
+						Arguments = arguments.ToArray(),
+					});
+				}
 			}
 
 			return response;

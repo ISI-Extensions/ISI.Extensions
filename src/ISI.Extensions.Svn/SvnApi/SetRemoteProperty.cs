@@ -28,62 +28,65 @@ namespace ISI.Extensions.Svn
 		public DTOs.SetRemotePropertyResponse SetRemoteProperty(DTOs.SetRemotePropertyRequest request)
 		{
 			var response = new DTOs.SetRemotePropertyResponse();
-			
-			var tempFolderName = System.IO.Path.GetTempFileName();
 
-			System.IO.File.Delete(tempFolderName);
-
+			if (SvnIsInstalled)
 			{
-				var arguments = new List<string>();
+				var tempFolderName = System.IO.Path.GetTempFileName();
 
-				arguments.Add("checkout --depth empty");
-				arguments.Add(string.Format("\"{0}\"", request.Uri));
-				arguments.Add(string.Format("\"{0}\"", tempFolderName));
-				AddCredentials(arguments, request);
+				System.IO.File.Delete(tempFolderName);
 
-				ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
-					Logger = new NullLogger(),
-					ProcessExeFullName = "svn",
-					Arguments = arguments.ToArray(),
-				});
-			}
+					var arguments = new List<string>();
 
-			{
-				var arguments = new List<string>();
+					arguments.Add("checkout --depth empty");
+					arguments.Add(string.Format("\"{0}\"", request.Uri));
+					arguments.Add(string.Format("\"{0}\"", tempFolderName));
+					AddCredentials(arguments, request);
 
-				arguments.Add(string.Format("propset {0}", request.Key));
-				arguments.Add(string.Format("\"{0}\"", request.Value));
-				arguments.Add(string.Format("\"{0}\"", tempFolderName));
-				AddCredentials(arguments, request);
+					ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+					{
+						Logger = new NullLogger(),
+						ProcessExeFullName = "svn",
+						Arguments = arguments.ToArray(),
+					});
+				}
 
-				ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
-					Logger = new NullLogger(),
-					ProcessExeFullName = "svn",
-					Arguments = arguments.ToArray(),
-				});
-			}
+					var arguments = new List<string>();
 
-			{
-				var arguments = new List<string>();
+					arguments.Add(string.Format("propset {0}", request.Key));
+					arguments.Add(string.Format("\"{0}\"", request.Value));
+					arguments.Add(string.Format("\"{0}\"", tempFolderName));
+					AddCredentials(arguments, request);
 
-				arguments.Add("commit");
-				arguments.Add(string.Format("\"{0}\"", tempFolderName));
-				arguments.Add(string.Format("--message \"{0}\" ", request.LogMessage));
-				AddCredentials(arguments, request);
+					ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+					{
+						Logger = new NullLogger(),
+						ProcessExeFullName = "svn",
+						Arguments = arguments.ToArray(),
+					});
+				}
 
-				ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
-					Logger = new NullLogger(),
-					ProcessExeFullName = "svn",
-					Arguments = arguments.ToArray(),
-				});
-			}
+					var arguments = new List<string>();
 
-			if (System.IO.Directory.Exists(tempFolderName))
-			{
-				System.IO.Directory.Delete(tempFolderName, true);
+					arguments.Add("commit");
+					arguments.Add(string.Format("\"{0}\"", tempFolderName));
+					arguments.Add(string.Format("--message \"{0}\" ", request.LogMessage));
+					AddCredentials(arguments, request);
+
+					ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+					{
+						Logger = new NullLogger(),
+						ProcessExeFullName = "svn",
+						Arguments = arguments.ToArray(),
+					});
+				}
+
+				if (System.IO.Directory.Exists(tempFolderName))
+				{
+					System.IO.Directory.Delete(tempFolderName, true);
+				}
 			}
 
 			return response;

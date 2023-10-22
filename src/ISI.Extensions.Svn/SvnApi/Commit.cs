@@ -28,54 +28,58 @@ namespace ISI.Extensions.Svn
 	{
 		public DTOs.CommitResponse Commit(DTOs.CommitRequest request)
 		{
-			var response = new DTOs.CommitResponse()
+			var response = new DTOs.CommitResponse();
+
+			if (SvnIsInstalled)
 			{
-				Success = true,
-			};
+				response.Success = true;
 
-			var fullNames = request.FullNames.ToNullCheckedArray(System.IO.Path.GetFullPath, NullCheckCollectionResult.Empty);
+				var fullNames = request.FullNames.ToNullCheckedArray(System.IO.Path.GetFullPath, NullCheckCollectionResult.Empty);
 
-			using (var tempFile = new ISI.Extensions.IO.Path.TempFile())
-			{
-				System.IO.File.WriteAllLines(tempFile.FullName, fullNames);
-
-				if (request.UseTortoiseSvn)
+				using (var tempFile = new ISI.Extensions.IO.Path.TempFile())
 				{
-					var arguments = new List<string>();
+					System.IO.File.WriteAllLines(tempFile.FullName, fullNames);
 
-					arguments.Add("/command:commit");
-					if (!string.IsNullOrWhiteSpace(request.LogMessage))
+					if (request.UseTortoiseSvn && TortoiseProcIsInstalled)
 					{
-						arguments.Add(string.Format("/logmsg:\"{0}\"", request.LogMessage));
+						var arguments = new List<string>();
+
+						arguments.Add("/command:commit");
+						if (!string.IsNullOrWhiteSpace(request.LogMessage))
+						{
+							arguments.Add(string.Format("/logmsg:\"{0}\"", request.LogMessage));
+						}
+
+						arguments.Add(string.Format("/pathfile :\"{0}\"", tempFile.FullName));
+						arguments.Add("/closeonend:0");
+
+						response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+						{
+							Logger = new AddToLogLogger(request.AddToLog, Logger),
+							ProcessExeFullName = "TortoiseProc",
+							Arguments = arguments.ToArray(),
+						}).Errored;
 					}
-					arguments.Add(string.Format("/pathfile :\"{0}\"", tempFile.FullName));
-					arguments.Add("/closeonend:0");
-
-					response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+					else
 					{
-						Logger = new AddToLogLogger(request.AddToLog, Logger),
-						ProcessExeFullName = "TortoiseProc",
-						Arguments = arguments.ToArray(),
-					}).Errored;
-				}
-				else
-				{
-					var arguments = new List<string>();
+						var arguments = new List<string>();
 
-					arguments.Add("commit");
-					if (!string.IsNullOrWhiteSpace(request.LogMessage))
-					{
-						arguments.Add(string.Format("-m \"{0}\"", request.LogMessage));
+						arguments.Add("commit");
+						if (!string.IsNullOrWhiteSpace(request.LogMessage))
+						{
+							arguments.Add(string.Format("-m \"{0}\"", request.LogMessage));
+						}
+
+						arguments.Add(string.Format("--targets \"{0}\"", tempFile.FullName));
+						AddCredentials(arguments, request);
+
+						response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+						{
+							Logger = new AddToLogLogger(request.AddToLog, Logger),
+							ProcessExeFullName = "svn",
+							Arguments = arguments.ToArray(),
+						}).Errored;
 					}
-					arguments.Add(string.Format("--targets \"{0}\"", tempFile.FullName));
-					AddCredentials(arguments, request);
-
-					response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-					{
-						Logger = new AddToLogLogger(request.AddToLog, Logger),
-						ProcessExeFullName = "svn",
-						Arguments = arguments.ToArray(),
-					}).Errored;
 				}
 			}
 

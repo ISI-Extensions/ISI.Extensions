@@ -29,19 +29,22 @@ namespace ISI.Extensions.Svn
 		{
 			var response = new DTOs.ExportResponse();
 
-			var arguments = new List<string>();
-
-			arguments.Add("export");
-			arguments.Add(string.Format("\"{0}\"", request.Source.TrimEnd(System.IO.Path.DirectorySeparatorChar)));
-			arguments.Add(string.Format("\"{0}\"", request.Target.TrimEnd(System.IO.Path.DirectorySeparatorChar)));
-			AddCredentials(arguments, request);
-
-			ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+			if (SvnIsInstalled)
 			{
-				Logger = new AddToLogLogger(request.AddToLog, Logger),
-				ProcessExeFullName = "svn",
-				Arguments = arguments.ToArray(),
-			});
+				var arguments = new List<string>();
+
+				arguments.Add("export");
+				arguments.Add(string.Format("\"{0}\"", request.Source.TrimEnd(System.IO.Path.DirectorySeparatorChar)));
+				arguments.Add(string.Format("\"{0}\"", request.Target.TrimEnd(System.IO.Path.DirectorySeparatorChar)));
+				AddCredentials(arguments, request);
+
+				ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				{
+					Logger = new AddToLogLogger(request.AddToLog, Logger),
+					ProcessExeFullName = "svn",
+					Arguments = arguments.ToArray(),
+				});
+			}
 
 			return response;
 		}

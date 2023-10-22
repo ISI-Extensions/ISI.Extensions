@@ -30,7 +30,7 @@ namespace ISI.Extensions
 
 			public static bool IsInEnvironmentPath(string exeFileName, out string fullName)
 			{
-				var processResponse = ISI.Extensions.Process.WaitForProcessResponse("where", null, exeFileName);
+				var processResponse = ISI.Extensions.Process.WaitForProcessResponse("where", exeFileName);
 
 				fullName = processResponse.ExitCode == 0 ? processResponse.Output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).First() : string.Empty;
 

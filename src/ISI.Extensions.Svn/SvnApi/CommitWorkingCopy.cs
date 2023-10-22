@@ -30,41 +30,45 @@ namespace ISI.Extensions.Svn
 		{
 			var response = new DTOs.CommitWorkingCopyResponse();
 
-			if (request.UseTortoiseSvn)
+			if (SvnIsInstalled)
 			{
-				var arguments = new List<string>();
-
-				arguments.Add("/command:commit");
-				arguments.Add(string.Format("/path:\"{0}\"", request.FullName));
-				if (!string.IsNullOrWhiteSpace(request.LogMessage))
+				if (request.UseTortoiseSvn && TortoiseProcIsInstalled)
 				{
-					arguments.Add(string.Format("/logmsg:\"{0}\"", request.LogMessage));
+					var arguments = new List<string>();
+
+					arguments.Add("/command:commit");
+					arguments.Add(string.Format("/path:\"{0}\"", request.FullName));
+					if (!string.IsNullOrWhiteSpace(request.LogMessage))
+					{
+						arguments.Add(string.Format("/logmsg:\"{0}\"", request.LogMessage));
+					}
+
+					arguments.Add("/closeonend:0");
+
+					response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+					{
+						Logger = new AddToLogLogger(request.AddToLog, Logger),
+						ProcessExeFullName = "TortoiseProc",
+						Arguments = arguments.ToArray(),
+					}).Errored;
 				}
-				arguments.Add("/closeonend:0");
-
-				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				else
 				{
-					Logger = new AddToLogLogger(request.AddToLog, Logger),
-					ProcessExeFullName = "TortoiseProc",
-					Arguments = arguments.ToArray(),
-				}).Errored;
-			}
-			else
-			{
-				var arguments = new List<string>();
+					var arguments = new List<string>();
 
-				arguments.Add("commit");
-				arguments.Add(string.Format("\"{0}\"", request.FullName));
-				arguments.Add(string.Format("-m \"{0}\"", request.LogMessage));
-				arguments.Add("--include-externals");
-				AddCredentials(arguments, request);
+					arguments.Add("commit");
+					arguments.Add(string.Format("\"{0}\"", request.FullName));
+					arguments.Add(string.Format("-m \"{0}\"", request.LogMessage));
+					arguments.Add("--include-externals");
+					AddCredentials(arguments, request);
 
-				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-				{
-					Logger = new AddToLogLogger(request.AddToLog, Logger),
-					ProcessExeFullName = "svn",
-					Arguments = arguments.ToArray(),
-				}).Errored;
+					response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+					{
+						Logger = new AddToLogLogger(request.AddToLog, Logger),
+						ProcessExeFullName = "svn",
+						Arguments = arguments.ToArray(),
+					}).Errored;
+				}
 			}
 
 			return response;

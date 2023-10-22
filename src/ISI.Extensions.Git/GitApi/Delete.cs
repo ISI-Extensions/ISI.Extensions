@@ -28,22 +28,24 @@ namespace ISI.Extensions.Git
 	{
 		public DTOs.DeleteResponse Delete(DTOs.DeleteRequest request)
 		{
-			var response = new DTOs.DeleteResponse()
-			{
-				Success = true,
-			};
+			var response = new DTOs.DeleteResponse();
 
-			var fullNames = request.FullNames.ToNullCheckedArray(System.IO.Path.GetFullPath, NullCheckCollectionResult.Empty);
-
-			foreach (var fullName in fullNames)
+			if (GitIsInstalled)
 			{
-				if (System.IO.File.Exists(fullName))
+				response.Success = true;
+
+				var fullNames = request.FullNames.ToNullCheckedArray(System.IO.Path.GetFullPath, NullCheckCollectionResult.Empty);
+
+				foreach (var fullName in fullNames)
 				{
-					System.IO.File.Delete(fullName);
-				}
-				else if (System.IO.Directory.Exists(fullName))
-				{
-					System.IO.Directory.Delete(fullName, true);
+					if (System.IO.File.Exists(fullName))
+					{
+						System.IO.File.Delete(fullName);
+					}
+					else if (System.IO.Directory.Exists(fullName))
+					{
+						System.IO.Directory.Delete(fullName, true);
+					}
 				}
 			}
 

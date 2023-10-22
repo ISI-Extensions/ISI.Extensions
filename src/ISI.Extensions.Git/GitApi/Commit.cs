@@ -28,24 +28,42 @@ namespace ISI.Extensions.Git
 	{
 		public DTOs.CommitResponse Commit(DTOs.CommitRequest request)
 		{
-			var response = new DTOs.CommitResponse()
+			var response = new DTOs.CommitResponse();
+
+			if (GitIsInstalled)
 			{
-				Success = true,
-			};
+				response.Success = true;
 
-			var fullNames = request.FullNames.ToNullCheckedArray(System.IO.Path.GetFullPath, NullCheckCollectionResult.Empty);
+				var fullNames = request.FullNames.ToNullCheckedArray(System.IO.Path.GetFullPath, NullCheckCollectionResult.Empty);
 
-			var rootFullName = ISI.Extensions.IO.Path.GetCommonPath(fullNames);
+				var rootFullName = ISI.Extensions.IO.Path.GetCommonPath(fullNames);
 
-			var arguments = new List<string>();
+				var arguments = new List<string>();
 
-			foreach (var fullName in fullNames)
-			{
+				foreach (var fullName in fullNames)
+				{
+					if (response.Success)
+					{
+						arguments.Clear();
+						arguments.Add("add");
+						arguments.Add(string.Format("\"{0}\"", fullName));
+
+						response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+						{
+							Logger = new AddToLogLogger(request.AddToLog, Logger),
+							ProcessExeFullName = "git",
+							Arguments = arguments.ToArray(),
+							WorkingDirectory = rootFullName,
+						}).Errored;
+					}
+				}
+
 				if (response.Success)
 				{
 					arguments.Clear();
-					arguments.Add("add");
-					arguments.Add(string.Format("\"{0}\"", fullName));
+					arguments.Add("commit");
+					arguments.Add("-m");
+					arguments.Add(string.Format("\"{0}\"", request.LogMessage));
 
 					response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 					{
@@ -55,36 +73,20 @@ namespace ISI.Extensions.Git
 						WorkingDirectory = rootFullName,
 					}).Errored;
 				}
-			}
 
-			if (response.Success)
-			{
-				arguments.Clear();
-				arguments.Add("commit");
-				arguments.Add("-m");
-				arguments.Add(string.Format("\"{0}\"", request.LogMessage));
-
-				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				if (response.Success && request.PushToOrigin)
 				{
-					Logger = new AddToLogLogger(request.AddToLog, Logger),
-					ProcessExeFullName = "git",
-					Arguments = arguments.ToArray(),
-					WorkingDirectory = rootFullName,
-				}).Errored;
-			}
+					arguments.Clear();
+					arguments.Add("push");
 
-			if (response.Success && request.PushToOrigin)
-			{
-				arguments.Clear();
-				arguments.Add("push");
-
-				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-				{
-					Logger = new AddToLogLogger(request.AddToLog, Logger),
-					ProcessExeFullName = "git",
-					Arguments = arguments.ToArray(),
-					WorkingDirectory = rootFullName,
-				}).Errored;
+					response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+					{
+						Logger = new AddToLogLogger(request.AddToLog, Logger),
+						ProcessExeFullName = "git",
+						Arguments = arguments.ToArray(),
+						WorkingDirectory = rootFullName,
+					}).Errored;
+				}
 			}
 
 			return response;

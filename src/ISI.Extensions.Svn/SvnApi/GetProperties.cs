@@ -28,73 +28,76 @@ namespace ISI.Extensions.Svn
 		public DTOs.GetPropertiesResponse GetProperties(DTOs.GetPropertiesRequest request)
 		{
 			var response = new DTOs.GetPropertiesResponse();
-			
-			var properties = new List<(string Path, IEnumerable<KeyValuePair<string, string>> Properties)>();
 
-			var arguments = new List<string>();
-
-			arguments.Add("proplist");
-			arguments.Add("-v");
-
-			switch (request.Depth)
+			if (SvnIsInstalled)
 			{
-				case Depth.Empty:
-					arguments.Add("--depth empty");
-					break;
-				case Depth.Files:
-					arguments.Add("--depth files");
-					break;
-				case Depth.Children:
-					arguments.Add("--depth immediates");
-					break;
-				case Depth.Infinity:
-					arguments.Add("--depth infinity");
-					break;
-			}
+				var properties = new List<(string Path, IEnumerable<KeyValuePair<string, string>> Properties)>();
 
-			arguments.Add(string.Format("\"{0}\"", request.Source.TrimEnd(System.IO.Path.DirectorySeparatorChar)));
+				var arguments = new List<string>();
 
-			AddCredentials(arguments, request);
+				arguments.Add("proplist");
+				arguments.Add("-v");
 
-			var content = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-			{
-				Logger = new NullLogger(),
-				ProcessExeFullName = "svn",
-				Arguments = arguments.ToArray(),
-			}).Output;
-
-			var contentItems = new Queue<string>(content.Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries));
-
-			var pathPropertyKey = string.Empty;
-			var pathProperties = (IDictionary<string, string>) null;
-
-			while (contentItems.Any())
-			{
-				var contentItem = contentItems.Dequeue();
-
-				if ((contentItem.Length > 0) && (contentItem[0] != ' '))
+				switch (request.Depth)
 				{
-					pathProperties = new Dictionary<string, string>();
-					properties.Add((Path: contentItem.Split(new string[] {"'"}, StringSplitOptions.RemoveEmptyEntries)[1], pathProperties));
+					case Depth.Empty:
+						arguments.Add("--depth empty");
+						break;
+					case Depth.Files:
+						arguments.Add("--depth files");
+						break;
+					case Depth.Children:
+						arguments.Add("--depth immediates");
+						break;
+					case Depth.Infinity:
+						arguments.Add("--depth infinity");
+						break;
 				}
-				else if ((contentItem.Length > 2) && (contentItem.Substring(0, 2) == "  ") && (contentItem[2] != ' '))
+
+				arguments.Add(string.Format("\"{0}\"", request.Source.TrimEnd(System.IO.Path.DirectorySeparatorChar)));
+
+				AddCredentials(arguments, request);
+
+				var content = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
-					if (pathProperties != null)
+					Logger = new NullLogger(),
+					ProcessExeFullName = "svn",
+					Arguments = arguments.ToArray(),
+				}).Output;
+
+				var contentItems = new Queue<string>(content.Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries));
+
+				var pathPropertyKey = string.Empty;
+				var pathProperties = (IDictionary<string, string>)null;
+
+				while (contentItems.Any())
+				{
+					var contentItem = contentItems.Dequeue();
+
+					if ((contentItem.Length > 0) && (contentItem[0] != ' '))
 					{
-						pathPropertyKey = contentItem.Trim();
-						pathProperties.Add(pathPropertyKey, string.Empty);
+						pathProperties = new Dictionary<string, string>();
+						properties.Add((Path: contentItem.Split(new string[] { "'" }, StringSplitOptions.RemoveEmptyEntries)[1], pathProperties));
+					}
+					else if ((contentItem.Length > 2) && (contentItem.Substring(0, 2) == "  ") && (contentItem[2] != ' '))
+					{
+						if (pathProperties != null)
+						{
+							pathPropertyKey = contentItem.Trim();
+							pathProperties.Add(pathPropertyKey, string.Empty);
+						}
+					}
+					else if ((contentItem.Length > 4) && (contentItem.Substring(0, 4) == "    ") && (contentItem[4] != ' '))
+					{
+						if (!string.IsNullOrWhiteSpace(pathPropertyKey) && (pathProperties != null))
+						{
+							pathProperties[pathPropertyKey] += string.Format("{0}\n", contentItem.Trim());
+						}
 					}
 				}
-				else if ((contentItem.Length > 4) && (contentItem.Substring(0, 4) == "    ") && (contentItem[4] != ' '))
-				{
-					if (!string.IsNullOrWhiteSpace(pathPropertyKey) && (pathProperties != null))
-					{
-						pathProperties[pathPropertyKey] += string.Format("{0}\n", contentItem.Trim());
-					}
-				}
-			}
 
-			response.Properties = properties;
+				response.Properties = properties;
+			}
 
 			return response;
 		}

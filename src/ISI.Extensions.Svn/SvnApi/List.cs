@@ -29,38 +29,41 @@ namespace ISI.Extensions.Svn
 		public DTOs.ListResponse List(DTOs.ListRequest request)
 		{
 			var response = new DTOs.ListResponse();
-			
-			var arguments = new List<string>();
 
-			arguments.Add("list");
-			arguments.Add(string.Format("\"{0}\"", request.SourceUrl));
-
-			switch (request.Depth)
+			if (SvnIsInstalled)
 			{
-				case Depth.Empty:
-					arguments.Add("--depth empty");
-					break;
-				case Depth.Files:
-					arguments.Add("--depth files");
-					break;
-				case Depth.Children:
-					arguments.Add("--depth immediates");
-					break;
-				case Depth.Infinity:
-					arguments.Add("--depth infinity");
-					break;
+				var arguments = new List<string>();
+
+				arguments.Add("list");
+				arguments.Add(string.Format("\"{0}\"", request.SourceUrl));
+
+				switch (request.Depth)
+				{
+					case Depth.Empty:
+						arguments.Add("--depth empty");
+						break;
+					case Depth.Files:
+						arguments.Add("--depth files");
+						break;
+					case Depth.Children:
+						arguments.Add("--depth immediates");
+						break;
+					case Depth.Infinity:
+						arguments.Add("--depth infinity");
+						break;
+				}
+
+				AddCredentials(arguments, request);
+
+				var content = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				{
+					Logger = new NullLogger(),
+					ProcessExeFullName = "svn",
+					Arguments = arguments.ToArray(),
+				}).Output;
+
+				response.FileNames = content.Split(new[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 			}
-
-			AddCredentials(arguments, request);
-
-			var content = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-			{
-				Logger = new NullLogger(),
-				ProcessExeFullName = "svn",
-				Arguments = arguments.ToArray(),
-			}).Output;
-
-			response.FileNames = content.Split(new [] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
 			return response;
 		}

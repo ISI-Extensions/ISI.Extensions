@@ -29,69 +29,72 @@ namespace ISI.Extensions.Svn
 		{
 			var response = new DTOs.GetStatusResponse();
 
-			var statuses = new List<(string Path, Status LocalContentStatus)>();
-
-			var arguments = new List<string>();
-
-			arguments.Add("status");
-			arguments.Add("-u");
-			arguments.Add(string.Format("\"{0}\"", request.Source.TrimEnd(System.IO.Path.DirectorySeparatorChar)));
-			AddCredentials(arguments, request);
-
-			var content = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+			if (SvnIsInstalled)
 			{
-				Logger = new NullLogger(),
-				ProcessExeFullName = "svn",
-				Arguments = arguments.ToArray(),
-			}).Output;
+				var statuses = new List<(string Path, Status LocalContentStatus)>();
 
-			var contentItems = content.Split(new string[] {"\r", "\n"}, StringSplitOptions.RemoveEmptyEntries);
+				var arguments = new List<string>();
 
-			foreach (var contentItem in contentItems)
-			{
-				if (contentItem[9] == ' ')
+				arguments.Add("status");
+				arguments.Add("-u");
+				arguments.Add(string.Format("\"{0}\"", request.Source.TrimEnd(System.IO.Path.DirectorySeparatorChar)));
+				AddCredentials(arguments, request);
+
+				var content = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
-					var itemInfo = contentItem.Substring(7).Trim().Split(new string[] {" "}, 2, StringSplitOptions.RemoveEmptyEntries);
+					Logger = new NullLogger(),
+					ProcessExeFullName = "svn",
+					Arguments = arguments.ToArray(),
+				}).Output;
 
-					var path = (itemInfo.Length > 1 ? itemInfo[1] : contentItem);
+				var contentItems = content.Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
-					switch (contentItem[0])
+				foreach (var contentItem in contentItems)
+				{
+					if (contentItem[9] == ' ')
 					{
-						case 'A':
-							statuses.Add((Path: path, LocalContentStatus: Status.Added));
-							break;
-						case 'C':
-							statuses.Add((Path: path, LocalContentStatus: Status.Conflicted));
-							break;
-						case 'D':
-							statuses.Add((Path: path, LocalContentStatus: Status.Deleted));
-							break;
-						case 'I':
-							statuses.Add((Path: path, LocalContentStatus: Status.Ignored));
-							break;
-						case 'M':
-							statuses.Add((Path: path, LocalContentStatus: Status.Modified));
-							break;
-						case 'R':
-							statuses.Add((Path: path, LocalContentStatus: Status.Replaced));
-							break;
-						case 'X':
-							statuses.Add((Path: path, LocalContentStatus: Status.External));
-							break;
-						case '?':
-							statuses.Add((Path: path, LocalContentStatus: Status.NotVersioned));
-							break;
-						case '!':
-							statuses.Add((Path: path, LocalContentStatus: Status.Missing));
-							break;
-						case '~':
-							statuses.Add((Path: path, LocalContentStatus: Status.Obstructed));
-							break;
+						var itemInfo = contentItem.Substring(7).Trim().Split(new string[] { " " }, 2, StringSplitOptions.RemoveEmptyEntries);
+
+						var path = (itemInfo.Length > 1 ? itemInfo[1] : contentItem);
+
+						switch (contentItem[0])
+						{
+							case 'A':
+								statuses.Add((Path: path, LocalContentStatus: Status.Added));
+								break;
+							case 'C':
+								statuses.Add((Path: path, LocalContentStatus: Status.Conflicted));
+								break;
+							case 'D':
+								statuses.Add((Path: path, LocalContentStatus: Status.Deleted));
+								break;
+							case 'I':
+								statuses.Add((Path: path, LocalContentStatus: Status.Ignored));
+								break;
+							case 'M':
+								statuses.Add((Path: path, LocalContentStatus: Status.Modified));
+								break;
+							case 'R':
+								statuses.Add((Path: path, LocalContentStatus: Status.Replaced));
+								break;
+							case 'X':
+								statuses.Add((Path: path, LocalContentStatus: Status.External));
+								break;
+							case '?':
+								statuses.Add((Path: path, LocalContentStatus: Status.NotVersioned));
+								break;
+							case '!':
+								statuses.Add((Path: path, LocalContentStatus: Status.Missing));
+								break;
+							case '~':
+								statuses.Add((Path: path, LocalContentStatus: Status.Obstructed));
+								break;
+						}
 					}
 				}
-			}
 
-			response.Statuses = statuses;
+				response.Statuses = statuses;
+			}
 
 			return response;
 		}

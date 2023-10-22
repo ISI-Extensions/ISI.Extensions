@@ -28,25 +28,29 @@ namespace ISI.Extensions.Svn
 		public DTOs.RemoteCopyResponse RemoteCopy(DTOs.RemoteCopyRequest request)
 		{
 			var response = new DTOs.RemoteCopyResponse();
-			
-			var arguments = new List<string>();
 
-			arguments.Add("copy");
-			arguments.Add(string.Format("\"{0}\"", new Uri(request.SourceUrl)));
-			arguments.Add(string.Format("\"{0}\"", new Uri(request.TargetUrl)));
-			if (request.CreateParents)
+			if (SvnIsInstalled)
 			{
-				arguments.Add("--parents");
+				var arguments = new List<string>();
+
+				arguments.Add("copy");
+				arguments.Add(string.Format("\"{0}\"", new Uri(request.SourceUrl)));
+				arguments.Add(string.Format("\"{0}\"", new Uri(request.TargetUrl)));
+				if (request.CreateParents)
+				{
+					arguments.Add("--parents");
+				}
+
+				arguments.Add(string.Format("--message \"{0}\" ", request.LogMessage));
+				AddCredentials(arguments, request);
+
+				ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				{
+					Logger = new AddToLogLogger(request.AddToLog, Logger),
+					ProcessExeFullName = "svn",
+					Arguments = arguments.ToArray(),
+				});
 			}
-			arguments.Add(string.Format("--message \"{0}\" ", request.LogMessage));
-			AddCredentials(arguments, request);
-
-			ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-			{
-				Logger = new AddToLogLogger(request.AddToLog, Logger),
-				ProcessExeFullName = "svn",
-				Arguments = arguments.ToArray(),
-			});
 
 			return response;
 		}

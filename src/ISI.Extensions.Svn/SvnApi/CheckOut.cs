@@ -29,39 +29,42 @@ namespace ISI.Extensions.Svn
 		public DTOs.CheckOutResponse CheckOut(DTOs.CheckOutRequest request)
 		{
 			var response = new DTOs.CheckOutResponse();
-			
-			if (request.UseTortoiseSvn)
+
+			if (SvnIsInstalled)
 			{
-				var arguments = new List<string>();
-
-				arguments.Add("/command:checkout");
-				arguments.Add(string.Format("/url:\"{0}\"", request.SourceUrl));
-				arguments.Add(string.Format("/path:\"{0}\"", request.TargetFullName));
-				arguments.Add("/closeonend:0");
-
-				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				if (request.UseTortoiseSvn && TortoiseProcIsInstalled)
 				{
-					Logger = new AddToLogLogger(request.AddToLog, Logger),
-					ProcessExeFullName = "TortoiseProc",
-					Arguments = arguments.ToArray(),
-				}).Errored;
-			}
-			else
-			{
-				var arguments = new List<string>();
+					var arguments = new List<string>();
 
-				arguments.Add("checkout");
-				arguments.Add(string.Format("\"{0}\"", request.SourceUrl));
-				arguments.Add(string.Format("\"{0}\"", request.TargetFullName));
-				arguments.Add("--include-externals");
-				AddCredentials(arguments, request);
+					arguments.Add("/command:checkout");
+					arguments.Add(string.Format("/url:\"{0}\"", request.SourceUrl));
+					arguments.Add(string.Format("/path:\"{0}\"", request.TargetFullName));
+					arguments.Add("/closeonend:0");
 
-				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+					response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+					{
+						Logger = new AddToLogLogger(request.AddToLog, Logger),
+						ProcessExeFullName = "TortoiseProc",
+						Arguments = arguments.ToArray(),
+					}).Errored;
+				}
+				else
 				{
-					Logger = new AddToLogLogger(request.AddToLog, Logger),
-					ProcessExeFullName = "svn",
-					Arguments = arguments.ToArray(),
-				}).Errored;
+					var arguments = new List<string>();
+
+					arguments.Add("checkout");
+					arguments.Add(string.Format("\"{0}\"", request.SourceUrl));
+					arguments.Add(string.Format("\"{0}\"", request.TargetFullName));
+					arguments.Add("--include-externals");
+					AddCredentials(arguments, request);
+
+					response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+					{
+						Logger = new AddToLogLogger(request.AddToLog, Logger),
+						ProcessExeFullName = "svn",
+						Arguments = arguments.ToArray(),
+					}).Errored;
+				}
 			}
 
 			return response;

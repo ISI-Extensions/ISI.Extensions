@@ -33,238 +33,243 @@ namespace ISI.Extensions.Svn
 
 			var response = new DTOs.TagAndNoteResponse();
 
-			var infos = GetWorkingCopyInfos(new()
+			if (SvnIsInstalled)
 			{
-				UserName = request.UserName,
-				Password = request.Password,
-				Source = request.WorkingCopyDirectory,
-				Depth = Depth.Infinity,
-				IncludeExternals = true,
-			}).Infos.ToNullCheckedArray(NullCheckCollectionResult.Empty);
-
-			var workingCopyDirectory = request.WorkingCopyDirectory.TrimEnd('\\', '/');
-			if (string.IsNullOrWhiteSpace(workingCopyDirectory))
-			{
-				workingCopyDirectory = ".";
-			}
-
-			var trunkInfo = infos.FirstOrDefault(info => string.Equals(info.Path.TrimEnd('\\', '/'), workingCopyDirectory, StringComparison.CurrentCultureIgnoreCase));
-			if (trunkInfo != null)
-			{
-				var trunkUrl = GetTrunkUrl(trunkInfo.Url);
-
-				if (!string.IsNullOrEmpty(trunkUrl))
+				var infos = GetWorkingCopyInfos(new()
 				{
-					Logger.LogInformation(string.Format("  trunkUrl=\"{0}\"", trunkUrl));
+					UserName = request.UserName,
+					Password = request.Password,
+					Source = request.WorkingCopyDirectory,
+					Depth = Depth.Infinity,
+					IncludeExternals = true,
+				}).Infos.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
-					var tagsUrl = GetTagsUrl(trunkUrl, request.TagName, request.DateTimeStamp, request.DateTimeMask);
+				var workingCopyDirectory = request.WorkingCopyDirectory.TrimEnd('\\', '/');
+				if (string.IsNullOrWhiteSpace(workingCopyDirectory))
+				{
+					workingCopyDirectory = ".";
+				}
 
-					if (!string.IsNullOrEmpty(tagsUrl))
+				var trunkInfo = infos.FirstOrDefault(info => string.Equals(info.Path.TrimEnd('\\', '/'), workingCopyDirectory, StringComparison.CurrentCultureIgnoreCase));
+				if (trunkInfo != null)
+				{
+					var trunkUrl = GetTrunkUrl(trunkInfo.Url);
+
+					if (!string.IsNullOrEmpty(trunkUrl))
 					{
-						Logger.LogInformation(string.Format("  tagsUrl=\"{0}\"", tagsUrl));
+						Logger.LogInformation(string.Format("  trunkUrl=\"{0}\"", trunkUrl));
 
-						Logger.LogInformation("  trunk svn tag start");
+						var tagsUrl = GetTagsUrl(trunkUrl, request.TagName, request.DateTimeStamp, request.DateTimeMask);
 
-						RemoteCopy(new()
+						if (!string.IsNullOrEmpty(tagsUrl))
 						{
-							UserName = request.UserName,
-							Password = request.Password,
-							SourceUrl = trunkUrl,
-							TargetUrl = tagsUrl,
-							LogMessage = string.Format("Version: {0}\nDateTimeStamp: {1}", request.TagName, request.DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise)),
-							CreateParents = true,
-						});
+							Logger.LogInformation(string.Format("  tagsUrl=\"{0}\"", tagsUrl));
 
-						Logger.LogInformation("  trunk svn tag done");
+							Logger.LogInformation("  trunk svn tag start");
 
-						Logger.LogInformation(string.Format("  TagsUrl=\"{0}\"", tagsUrl));
-						Logger.LogInformation(string.Format("  Version=\"{0}\"", request.TagName));
-						Logger.LogInformation(string.Format("  DateTimeStamp=\"{0}\"", request.DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise)));
-
-						var propertySets = GetProperties(new()
-						{
-							UserName = request.UserName,
-							Password = request.Password,
-							Source = request.WorkingCopyDirectory,
-							Depth = Depth.Infinity,
-						}).Properties.ToNullCheckedArray(NullCheckCollectionResult.Empty);
-
-						var setPropertyRequests = new List<DTOs.SetRemotePropertyRequest>();
-
-						request.TryGetExternalTagName ??= (string path, out string tagName) =>
-						{
-							tagName = string.Empty;
-							return false;
-						};
-
-						foreach (var propertySet in propertySets)
-						{
-							foreach (var property in propertySet.Properties.Where(p => string.Equals(p.Key, PropertyName.Externals, StringComparison.InvariantCultureIgnoreCase)))
+							RemoteCopy(new()
 							{
-								var info = infos.FirstOrDefault(info => string.Equals(info.Path.TrimEnd('\\', '/'), propertySet.Path.TrimEnd('\\', '/'), StringComparison.CurrentCultureIgnoreCase));
+								UserName = request.UserName,
+								Password = request.Password,
+								SourceUrl = trunkUrl,
+								TargetUrl = tagsUrl,
+								LogMessage = string.Format("Version: {0}\nDateTimeStamp: {1}", request.TagName, request.DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise)),
+								CreateParents = true,
+							});
 
-								var url = info.Url.Replace(trunkUrl, tagsUrl);
+							Logger.LogInformation("  trunk svn tag done");
 
-								var existingExternals = property.Value.Split(new string[] { "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
+							Logger.LogInformation(string.Format("  TagsUrl=\"{0}\"", tagsUrl));
+							Logger.LogInformation(string.Format("  Version=\"{0}\"", request.TagName));
+							Logger.LogInformation(string.Format("  DateTimeStamp=\"{0}\"", request.DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise)));
 
-								Logger.LogInformation(string.Format("  TagUrl=\"{0}\"", url));
-								Logger.LogInformation(string.Format("  Path=\"{0}\"", propertySet.Path));
-								Logger.LogInformation(string.Format("  Was:\n{0}", string.Join("\r\n", existingExternals)));
+							var propertySets = GetProperties(new()
+							{
+								UserName = request.UserName,
+								Password = request.Password,
+								Source = request.WorkingCopyDirectory,
+								Depth = Depth.Infinity,
+							}).Properties.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
-								for (var existingExternalIndex = 0; existingExternalIndex < existingExternals.Length; existingExternalIndex++)
+							var setPropertyRequests = new List<DTOs.SetRemotePropertyRequest>();
+
+							request.TryGetExternalTagName ??= (string path, out string tagName) =>
+							{
+								tagName = string.Empty;
+								return false;
+							};
+
+							foreach (var propertySet in propertySets)
+							{
+								foreach (var property in propertySet.Properties.Where(p => string.Equals(p.Key, PropertyName.Externals, StringComparison.InvariantCultureIgnoreCase)))
 								{
-									var existingExternal = existingExternals[existingExternalIndex];
+									var info = infos.FirstOrDefault(info => string.Equals(info.Path.TrimEnd('\\', '/'), propertySet.Path.TrimEnd('\\', '/'), StringComparison.CurrentCultureIgnoreCase));
 
-									var parts = (from object match in rgPropertyLineParser.Matches(existingExternal) select match.ToString().Trim());
+									var url = info.Url.Replace(trunkUrl, tagsUrl);
 
-									string uri = null;
-									string directory = null;
-									long? revision = null;
+									var existingExternals = property.Value.Split(new string[] { "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
 
-									foreach (var part in parts)
+									Logger.LogInformation(string.Format("  TagUrl=\"{0}\"", url));
+									Logger.LogInformation(string.Format("  Path=\"{0}\"", propertySet.Path));
+									Logger.LogInformation(string.Format("  Was:\n{0}", string.Join("\r\n", existingExternals)));
+
+									for (var existingExternalIndex = 0; existingExternalIndex < existingExternals.Length; existingExternalIndex++)
 									{
-										if (rgIsSVNUrl.Match(part).Success || part.StartsWith("^", StringComparison.InvariantCultureIgnoreCase))
+										var existingExternal = existingExternals[existingExternalIndex];
+
+										var parts = (from object match in rgPropertyLineParser.Matches(existingExternal) select match.ToString().Trim());
+
+										string uri = null;
+										string directory = null;
+										long? revision = null;
+
+										foreach (var part in parts)
 										{
-											var pieces = part.Split(new string[] { "@" }, StringSplitOptions.RemoveEmptyEntries);
-
-											uri = pieces[0].Trim();
-
-											if (pieces.Length > 1)
+											if (rgIsSVNUrl.Match(part).Success || part.StartsWith("^", StringComparison.InvariantCultureIgnoreCase))
 											{
-												revision = pieces[1].Trim().ToLongNullable();
+												var pieces = part.Split(new string[] { "@" }, StringSplitOptions.RemoveEmptyEntries);
+
+												uri = pieces[0].Trim();
+
+												if (pieces.Length > 1)
+												{
+													revision = pieces[1].Trim().ToLongNullable();
+												}
+											}
+											else if (part.StartsWith("-r", StringComparison.InvariantCultureIgnoreCase))
+											{
+												revision = part.Replace("-r", string.Empty).Trim().ToLongNullable();
+											}
+											else
+											{
+												directory = part.Trim();
 											}
 										}
-										else if (part.StartsWith("-r", StringComparison.InvariantCultureIgnoreCase))
+
+										revision ??= infos.FirstOrDefault(info => string.Equals(info.Path.TrimEnd('\\', '/'), System.IO.Path.Combine(propertySet.Path, directory).TrimEnd('\\', '/'), StringComparison.CurrentCultureIgnoreCase))?.Revision;
+
+										Logger.LogInformation(string.Format("      testing=\"{0}\"", uri.ToLower()));
+
+										if (request.TryGetExternalTagName(uri, out var externalTagName))
 										{
-											revision = part.Replace("-r", string.Empty).Trim().ToLongNullable();
+											var externalTrunkUri = new Uri(GetRemoteUrl(System.IO.Path.Combine(propertySet.Path, directory)));
+											var externalTrunkUrl = GetTrunkUrl(externalTrunkUri);
+											var externalTagsUrl = GetTagsUrl(externalTrunkUri, externalTagName, request.DateTimeStamp, request.DateTimeMask);
+
+											var trunkUri = new Uri(GetRemoteUrl(propertySet.Path));
+
+											Logger.LogInformation("  external svn tag start");
+
+											RemoteCopy(new()
+											{
+												UserName = request.UserName,
+												Password = request.Password,
+												SourceUrl = externalTrunkUrl,
+												TargetUrl = externalTagsUrl,
+												LogMessage = string.Format("Version: {0}\nDateTimeStamp: {1}", externalTagName, request.DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise)),
+												CreateParents = true,
+											});
+
+											Logger.LogInformation("  external svn tag done");
+
+											if (externalTrunkUri.ToString().Length > externalTrunkUrl.Length)
+											{
+												externalTagsUrl = string.Format("{0}{1}", externalTagsUrl, externalTrunkUri.ToString().Substring(externalTrunkUrl.Length));
+											}
+
+											externalTrunkUri = new(externalTagsUrl);
+
+											#region Make Relative
+
+											if (string.Equals(trunkUri.Scheme, externalTrunkUri.Scheme, StringComparison.InvariantCultureIgnoreCase))
+											{
+												if (string.Equals(trunkUri.Host, externalTrunkUri.Host, StringComparison.InvariantCultureIgnoreCase))
+												{
+													var trunkUrlPathParts = trunkUri.AbsolutePath.Split(new string[] { "\\", "/" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+													var externalTrunkUrlPathParts = externalTrunkUri.AbsolutePath.Split(new string[] { "\\", "/" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+													Logger.LogInformation(string.Format("      externalTrunkUrl=\"{0}\"", externalTrunkUrl));
+													Logger.LogInformation(string.Format("      externalTagsUrl=\"{0}\"", externalTagsUrl));
+
+													if (string.Equals(trunkUri.Scheme, "file", StringComparison.InvariantCultureIgnoreCase))
+													{
+														var trunkRepositoryRoot = System.IO.Path.GetDirectoryName(GetRepositoryRoot(externalTrunkUrl));
+														Logger.LogInformation(string.Format("      trunkRepositoryRoot=\"{0}\"", trunkRepositoryRoot));
+														var externalRepositoryRoot = System.IO.Path.GetDirectoryName(GetRepositoryRoot(externalTagsUrl));
+														Logger.LogInformation(string.Format("      externalRepositoryRoot=\"{0}\"", externalRepositoryRoot));
+
+														var trunkRepositoryHost = System.IO.Path.GetDirectoryName(trunkRepositoryRoot);
+														Logger.LogInformation(string.Format("      trunkRepositoryHost=\"{0}\"", trunkRepositoryHost));
+														var externalRepositoryHost = System.IO.Path.GetDirectoryName(externalRepositoryRoot);
+														Logger.LogInformation(string.Format("      externalRepositoryHost=\"{0}\"", externalRepositoryHost));
+
+														if (string.Equals(trunkRepositoryHost, externalRepositoryHost, StringComparison.InvariantCultureIgnoreCase))
+														{
+															var trunkRepositoryHostParts = trunkRepositoryHost.Split(new string[] { "\\", "/" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+															trunkUrlPathParts.RemoveRange(0, trunkRepositoryHostParts.Count() - 1);
+															externalTrunkUrlPathParts.RemoveRange(0, trunkRepositoryHostParts.Count() - 1);
+														}
+													}
+
+													if (trunkUrlPathParts.Any() && externalTrunkUrlPathParts.Any() && string.Equals(trunkUrlPathParts[0], externalTrunkUrlPathParts[0], StringComparison.InvariantCultureIgnoreCase))
+													{
+														externalTrunkUrlPathParts[0] = "^";
+													}
+													else
+													{
+														externalTrunkUrlPathParts[0] = "^/../" + externalTrunkUrlPathParts[0];
+													}
+
+													externalTagsUrl = string.Join("/", externalTrunkUrlPathParts.ToArray());
+												}
+											}
+
+											#endregion
+
+											existingExternals[existingExternalIndex] = string.Format("{0} {1}", externalTagsUrl, directory);
 										}
 										else
 										{
-											directory = part.Trim();
+											existingExternals[existingExternalIndex] = string.Format("{0}@{1} {2}", uri, revision, directory);
 										}
 									}
 
-									revision ??= infos.FirstOrDefault(info => string.Equals(info.Path.TrimEnd('\\', '/'), System.IO.Path.Combine(propertySet.Path, directory).TrimEnd('\\', '/'), StringComparison.CurrentCultureIgnoreCase))?.Revision;
+									var externals = string.Join("\r\n", existingExternals);
 
-									Logger.LogInformation(string.Format("      testing=\"{0}\"", uri.ToLower()));
+									Logger.LogInformation(string.Format("  Will Be:\n{0}", externals));
 
-									if (request.TryGetExternalTagName(uri, out var externalTagName))
+									setPropertyRequests.Add(new()
 									{
-										var externalTrunkUri = new Uri(GetRemoteUrl(System.IO.Path.Combine(propertySet.Path, directory)));
-										var externalTrunkUrl = GetTrunkUrl(externalTrunkUri);
-										var externalTagsUrl = GetTagsUrl(externalTrunkUri, externalTagName, request.DateTimeStamp, request.DateTimeMask);
-
-										var trunkUri = new Uri(GetRemoteUrl(propertySet.Path));
-
-										Logger.LogInformation("  external svn tag start");
-
-										RemoteCopy(new()
-										{
-											UserName = request.UserName,
-											Password = request.Password,
-											SourceUrl = externalTrunkUrl,
-											TargetUrl = externalTagsUrl,
-											LogMessage = string.Format("Version: {0}\nDateTimeStamp: {1}", externalTagName, request.DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise)),
-											CreateParents = true,
-										});
-
-										Logger.LogInformation("  external svn tag done");
-
-										if (externalTrunkUri.ToString().Length > externalTrunkUrl.Length)
-										{
-											externalTagsUrl = string.Format("{0}{1}", externalTagsUrl, externalTrunkUri.ToString().Substring(externalTrunkUrl.Length));
-										}
-
-										externalTrunkUri = new(externalTagsUrl);
-
-										#region Make Relative
-										if (string.Equals(trunkUri.Scheme, externalTrunkUri.Scheme, StringComparison.InvariantCultureIgnoreCase))
-										{
-											if (string.Equals(trunkUri.Host, externalTrunkUri.Host, StringComparison.InvariantCultureIgnoreCase))
-											{
-												var trunkUrlPathParts = trunkUri.AbsolutePath.Split(new string[] { "\\", "/" }, StringSplitOptions.RemoveEmptyEntries).ToList();
-												var externalTrunkUrlPathParts = externalTrunkUri.AbsolutePath.Split(new string[] { "\\", "/" }, StringSplitOptions.RemoveEmptyEntries).ToList();
-
-												Logger.LogInformation(string.Format("      externalTrunkUrl=\"{0}\"", externalTrunkUrl));
-												Logger.LogInformation(string.Format("      externalTagsUrl=\"{0}\"", externalTagsUrl));
-
-												if (string.Equals(trunkUri.Scheme, "file", StringComparison.InvariantCultureIgnoreCase))
-												{
-													var trunkRepositoryRoot = System.IO.Path.GetDirectoryName(GetRepositoryRoot(externalTrunkUrl));
-													Logger.LogInformation(string.Format("      trunkRepositoryRoot=\"{0}\"", trunkRepositoryRoot));
-													var externalRepositoryRoot = System.IO.Path.GetDirectoryName(GetRepositoryRoot(externalTagsUrl));
-													Logger.LogInformation(string.Format("      externalRepositoryRoot=\"{0}\"", externalRepositoryRoot));
-
-													var trunkRepositoryHost = System.IO.Path.GetDirectoryName(trunkRepositoryRoot);
-													Logger.LogInformation(string.Format("      trunkRepositoryHost=\"{0}\"", trunkRepositoryHost));
-													var externalRepositoryHost = System.IO.Path.GetDirectoryName(externalRepositoryRoot);
-													Logger.LogInformation(string.Format("      externalRepositoryHost=\"{0}\"", externalRepositoryHost));
-
-													if (string.Equals(trunkRepositoryHost, externalRepositoryHost, StringComparison.InvariantCultureIgnoreCase))
-													{
-														var trunkRepositoryHostParts = trunkRepositoryHost.Split(new string[] { "\\", "/" }, StringSplitOptions.RemoveEmptyEntries).ToList();
-
-														trunkUrlPathParts.RemoveRange(0, trunkRepositoryHostParts.Count() - 1);
-														externalTrunkUrlPathParts.RemoveRange(0, trunkRepositoryHostParts.Count() - 1);
-													}
-												}
-
-												if (trunkUrlPathParts.Any() && externalTrunkUrlPathParts.Any() && string.Equals(trunkUrlPathParts[0], externalTrunkUrlPathParts[0], StringComparison.InvariantCultureIgnoreCase))
-												{
-													externalTrunkUrlPathParts[0] = "^";
-												}
-												else
-												{
-													externalTrunkUrlPathParts[0] = "^/../" + externalTrunkUrlPathParts[0];
-												}
-
-												externalTagsUrl = string.Join("/", externalTrunkUrlPathParts.ToArray());
-											}
-										}
-										#endregion
-
-										existingExternals[existingExternalIndex] = string.Format("{0} {1}", externalTagsUrl, directory);
-									}
-									else
-									{
-										existingExternals[existingExternalIndex] = string.Format("{0}@{1} {2}", uri, revision, directory);
-									}
+										UserName = request.UserName,
+										Password = request.Password,
+										Uri = new(url),
+										Key = PropertyName.Externals,
+										Value = externals,
+										LogMessage = "setting externals' revision",
+									});
 								}
+							}
 
-								var externals = string.Join("\r\n", existingExternals);
-
-								Logger.LogInformation(string.Format("  Will Be:\n{0}", externals));
-
-								setPropertyRequests.Add(new()
-								{
-									UserName = request.UserName,
-									Password = request.Password,
-									Uri = new(url),
-									Key = PropertyName.Externals,
-									Value = externals,
-									LogMessage = "setting externals' revision",
-								});
+							foreach (var setRemotePropertyRequest in setPropertyRequests)
+							{
+								SetRemoteProperty(setRemotePropertyRequest);
 							}
 						}
-
-						foreach (var setRemotePropertyRequest in setPropertyRequests)
+						else
 						{
-							SetRemoteProperty(setRemotePropertyRequest);
+							Logger.LogInformation("Missing tagsUrl");
 						}
 					}
 					else
 					{
-						Logger.LogInformation("Missing tagsUrl");
+						Logger.LogInformation("Missing trunkUrl");
 					}
 				}
 				else
 				{
-					Logger.LogInformation("Missing trunkUrl");
+					Logger.LogInformation("Not under source Control");
 				}
-			}
-			else
-			{
-				Logger.LogInformation("Not under source Control");
 			}
 
 			return response;

@@ -34,43 +34,30 @@ svn up <file_you_want>
 		{
 			var response = new DTOs.CheckOutSingleFileResponse();
 
-			if (!System.IO.Directory.Exists(request.TargetFullName))
+			if (SvnIsInstalled)
 			{
-				System.IO.Directory.CreateDirectory(request.TargetFullName);
-			}
+				if (!System.IO.Directory.Exists(request.TargetFullName))
+				{
+					System.IO.Directory.CreateDirectory(request.TargetFullName);
+				}
 
-			var lastPathSeparatorIndex = request.SourceUrl.LastIndexOf("/", StringComparison.InvariantCultureIgnoreCase);
-			if (lastPathSeparatorIndex < 0)
-			{
-				lastPathSeparatorIndex = request.SourceUrl.LastIndexOf("\\", StringComparison.InvariantCultureIgnoreCase);
-			}
+				var lastPathSeparatorIndex = request.SourceUrl.LastIndexOf("/", StringComparison.InvariantCultureIgnoreCase);
+				if (lastPathSeparatorIndex < 0)
+				{
+					lastPathSeparatorIndex = request.SourceUrl.LastIndexOf("\\", StringComparison.InvariantCultureIgnoreCase);
+				}
 
-			var sourceUrl = request.SourceUrl.Substring(0, lastPathSeparatorIndex);
-			var fileName = request.SourceUrl.Substring(lastPathSeparatorIndex + 1);
+				var sourceUrl = request.SourceUrl.Substring(0, lastPathSeparatorIndex);
+				var fileName = request.SourceUrl.Substring(lastPathSeparatorIndex + 1);
 
-			var targetFullName = request.TargetFullName.TrimEnd(fileName, StringComparison.InvariantCultureIgnoreCase);
+				var targetFullName = request.TargetFullName.TrimEnd(fileName, StringComparison.InvariantCultureIgnoreCase);
 
-			var arguments = new List<string>();
+				var arguments = new List<string>();
 
-			arguments.Add("checkout");
-			arguments.Add(string.Format("\"{0}\"", sourceUrl));
-			arguments.Add(string.Format("\"{0}\"", targetFullName));
-			arguments.Add("--depth empty");
-			AddCredentials(arguments, request);
-
-			response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-			{
-				Logger = new AddToLogLogger(request.AddToLog, Logger),
-				ProcessExeFullName = "svn",
-				Arguments = arguments.ToArray(),
-			}).Errored;
-
-			if (response.Success)
-			{
-				arguments.Clear();
-
-				arguments.Add("update");
-				arguments.Add(string.Format("\"{0}\"", fileName));
+				arguments.Add("checkout");
+				arguments.Add(string.Format("\"{0}\"", sourceUrl));
+				arguments.Add(string.Format("\"{0}\"", targetFullName));
+				arguments.Add("--depth empty");
 				AddCredentials(arguments, request);
 
 				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
@@ -78,10 +65,26 @@ svn up <file_you_want>
 					Logger = new AddToLogLogger(request.AddToLog, Logger),
 					ProcessExeFullName = "svn",
 					Arguments = arguments.ToArray(),
-					WorkingDirectory = targetFullName,
 				}).Errored;
+
+				if (response.Success)
+				{
+					arguments.Clear();
+
+					arguments.Add("update");
+					arguments.Add(string.Format("\"{0}\"", fileName));
+					AddCredentials(arguments, request);
+
+					response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+					{
+						Logger = new AddToLogLogger(request.AddToLog, Logger),
+						ProcessExeFullName = "svn",
+						Arguments = arguments.ToArray(),
+						WorkingDirectory = targetFullName,
+					}).Errored;
+				}
 			}
-			
+
 			return response;
 		}
 	}

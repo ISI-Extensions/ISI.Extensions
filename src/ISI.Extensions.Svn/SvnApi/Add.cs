@@ -27,46 +27,48 @@ namespace ISI.Extensions.Svn
 	{
 		public DTOs.AddResponse Add(DTOs.AddRequest request)
 		{
-			var response = new DTOs.AddResponse()
+			var response = new DTOs.AddResponse();
+
+			if (SvnIsInstalled)
 			{
-				Success = true,
-			};
+				response.Success = true;
 
-			var fullNames = request.FullNames.ToNullCheckedArray(System.IO.Path.GetFullPath, NullCheckCollectionResult.Empty);
+				var fullNames = request.FullNames.ToNullCheckedArray(System.IO.Path.GetFullPath, NullCheckCollectionResult.Empty);
 
-			using (var tempFile = new ISI.Extensions.IO.Path.TempFile())
-			{
-				System.IO.File.WriteAllLines(tempFile.FullName, fullNames);
-
-				if (request.UseTortoiseSvn)
+				using (var tempFile = new ISI.Extensions.IO.Path.TempFile())
 				{
-					var arguments = new List<string>();
+					System.IO.File.WriteAllLines(tempFile.FullName, fullNames);
 
-					arguments.Add("/command:add");
-					arguments.Add(string.Format("/pathfile :\"{0}\"", tempFile.FullName));
-					arguments.Add("/closeonend:0");
-
-					ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+					if (request.UseTortoiseSvn && TortoiseProcIsInstalled)
 					{
-						Logger = new NullLogger(),
-						ProcessExeFullName = "TortoiseProc",
-						Arguments = arguments.ToArray(),
-					});
-				}
-				else
-				{
-					var arguments = new List<string>();
+						var arguments = new List<string>();
 
-					arguments.Add("add");
-					arguments.Add(string.Format("--targets \"{0}\"", tempFile.FullName));
-					arguments.Add("--parents");
+						arguments.Add("/command:add");
+						arguments.Add(string.Format("/pathfile :\"{0}\"", tempFile.FullName));
+						arguments.Add("/closeonend:0");
 
-					ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+						ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+						{
+							Logger = new NullLogger(),
+							ProcessExeFullName = "TortoiseProc",
+							Arguments = arguments.ToArray(),
+						});
+					}
+					else
 					{
-						Logger = new NullLogger(),
-						ProcessExeFullName = "svn",
-						Arguments = arguments.ToArray(),
-					});
+						var arguments = new List<string>();
+
+						arguments.Add("add");
+						arguments.Add(string.Format("--targets \"{0}\"", tempFile.FullName));
+						arguments.Add("--parents");
+
+						ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+						{
+							Logger = new NullLogger(),
+							ProcessExeFullName = "svn",
+							Arguments = arguments.ToArray(),
+						});
+					}
 				}
 			}
 

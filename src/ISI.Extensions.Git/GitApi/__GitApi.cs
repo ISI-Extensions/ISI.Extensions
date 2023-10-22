@@ -41,6 +41,9 @@ namespace ISI.Extensions.Git
 		{
 			Logger = logger ?? new ConsoleLogger();
 		}
+
+		protected static bool? _gitIsInstalled { get; set; } = null;
+		protected bool GitIsInstalled => _gitIsInstalled ??= ISI.Extensions.IO.Path.IsInEnvironmentPath("git");
 		
 		private const string SccDirectoryName = ".git";
 		Guid ISI.Extensions.Scm.ISourceControlClientApi.SourceControlTypeUuid => SourceControlTypeUuid.ToGuid();

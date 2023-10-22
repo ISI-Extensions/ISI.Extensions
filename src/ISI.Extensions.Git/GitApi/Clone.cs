@@ -29,19 +29,22 @@ namespace ISI.Extensions.Git
 		public DTOs.CloneResponse Clone(DTOs.CloneRequest request)
 		{
 			var response = new DTOs.CloneResponse();
-			
-			var arguments = new List<string>();
 
-			arguments.Add("clone");
-			arguments.Add(string.Format("\"{0}\"", request.SourceUrl));
-			arguments.Add(string.Format("\"{0}\"", request.TargetFullName));
-
-			response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+			if (GitIsInstalled)
 			{
-				Logger = new AddToLogLogger(request.AddToLog, Logger),
-				ProcessExeFullName = "git",
-				Arguments = arguments.ToArray(),
-			}).Errored;
+				var arguments = new List<string>();
+
+				arguments.Add("clone");
+				arguments.Add(string.Format("\"{0}\"", request.SourceUrl));
+				arguments.Add(string.Format("\"{0}\"", request.TargetFullName));
+
+				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				{
+					Logger = new AddToLogLogger(request.AddToLog, Logger),
+					ProcessExeFullName = "git",
+					Arguments = arguments.ToArray(),
+				}).Errored;
+			}
 
 			return response;
 		}

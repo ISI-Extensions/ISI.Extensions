@@ -18,14 +18,43 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.VisualStudio
 {
 	public partial class VisualStudioSettings
 	{
-		public string[] GetRunMicroServicesPreviouslySelectedProjectKeys()
+		public void UpdateRunServicesPreviouslySelectedProjectKeys(IEnumerable<string> removeProjectKeys, IEnumerable<string> addProjectKeys)
 		{
-			return Load()?.RunMicroServicesPreviouslySelectedProjectKeys ?? Array.Empty<string>();
+			Save(settings =>
+			{
+				var projectKeys = new HashSet<string>((settings.RunServicesPreviouslySelectedProjectKeys ?? Array.Empty<string>()), StringComparer.InvariantCultureIgnoreCase);
+
+				if (removeProjectKeys != null)
+				{
+					foreach (var removeProjectKey in removeProjectKeys)
+					{
+						projectKeys.RemoveWhere(projectKey => string.Equals(projectKey, removeProjectKey, StringComparison.InvariantCultureIgnoreCase));
+					}
+				}
+
+				if (addProjectKeys != null)
+				{
+					foreach (var addProjectKey in addProjectKeys)
+					{
+						projectKeys.Add(addProjectKey);
+					}
+				}
+
+				if (!settings.RunServicesPreviouslySelectedProjectKeys.Equals(projectKeys, StringComparer.InvariantCultureIgnoreCase, true))
+				{
+					settings.RunServicesPreviouslySelectedProjectKeys = projectKeys.ToArray();
+
+					return true;
+				}
+
+				return false;
+			});
 		}
 	}
 }

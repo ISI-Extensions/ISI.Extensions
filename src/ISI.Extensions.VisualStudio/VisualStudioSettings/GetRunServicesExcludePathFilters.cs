@@ -18,43 +18,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.VisualStudio
 {
 	public partial class VisualStudioSettings
 	{
-		public void UpdateRunWindowsServicesPreviouslySelectedProjectKeys(IEnumerable<string> removeProjectKeys, IEnumerable<string> addProjectKeys)
+		public string[] GetRunServicesExcludePathFilters()
 		{
-			Save(settings =>
-			{
-				var projectKeys = new HashSet<string>((settings.RunWindowsServicesPreviouslySelectedProjectKeys ?? Array.Empty<string>()), StringComparer.InvariantCultureIgnoreCase);
-
-				if (removeProjectKeys != null)
-				{
-					foreach (var removeProjectKey in removeProjectKeys)
-					{
-						projectKeys.RemoveWhere(projectKey => string.Equals(projectKey, removeProjectKey, StringComparison.InvariantCultureIgnoreCase));
-					}
-				}
-
-				if (addProjectKeys != null)
-				{
-					foreach (var addProjectKey in addProjectKeys)
-					{
-						projectKeys.Add(addProjectKey);
-					}
-				}
-
-				if (!settings.RunWindowsServicesPreviouslySelectedProjectKeys.Equals(projectKeys, StringComparer.InvariantCultureIgnoreCase, true))
-				{
-					settings.RunWindowsServicesPreviouslySelectedProjectKeys = projectKeys.ToArray();
-
-					return true;
-				}
-
-				return false;
-			});
+			return Load()?.RunServicesExcludePathFilters ?? Array.Empty<string>();
 		}
 	}
 }

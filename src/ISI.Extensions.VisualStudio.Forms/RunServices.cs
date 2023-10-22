@@ -49,7 +49,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 					form.StartButton.Enabled = context.Solutions.Any(solution => solution.Selected);
 				}
 
-				var excludedPathFilters = VisualStudioSettings.GetRunWindowsServicesExcludePathFilters();
+				var excludedPathFilters = VisualStudioSettings.GetRunServicesExcludePathFilters();
 				var projectFileNames = new System.Collections.Concurrent.ConcurrentBag<string>();
 				var maxCheckDirectoryDepth = VisualStudioSettings.GetMaxCheckDirectoryDepth() - 1;
 
@@ -75,7 +75,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 					}
 				});
 
-				var previouslySelectedProjectKeys = new HashSet<string>(VisualStudioSettings.GetRunWindowsServicesPreviouslySelectedProjectKeys(), StringComparer.InvariantCultureIgnoreCase);
+				var previouslySelectedProjectKeys = new HashSet<string>(VisualStudioSettings.GetRunServicesPreviouslySelectedProjectKeys(), StringComparer.InvariantCultureIgnoreCase);
 
 				var projectKeys = projectFileNames.Distinct(StringComparer.InvariantCultureIgnoreCase).OrderBy(projectFileName => projectFileName, StringComparer.InvariantCultureIgnoreCase).Select(projectFileName =>
 				{
@@ -111,7 +111,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 				var removeProjectKeys = form.SolutionsContext.Solutions.SelectMany(solution => solution.SolutionProjects.Select(project => project.ProjectKey));
 				var addProjectKeys = form.SolutionsContext.Solutions.Where(solution => solution.Selected).SelectMany(solution => solution.SolutionProjects.Where(projectKey => projectKey.Selected).Select(project => project.ProjectKey));
 
-				VisualStudioSettings.UpdateRunWindowsServicesPreviouslySelectedProjectKeys(removeProjectKeys.Select(projectKey => projectKey.Value), addProjectKeys.Select(projectKey => projectKey.Value));
+				VisualStudioSettings.UpdateRunServicesPreviouslySelectedProjectKeys(removeProjectKeys.Select(projectKey => projectKey.Value), addProjectKeys.Select(projectKey => projectKey.Value));
 			};
 
 			void OnCloseForm(SolutionsForm form)

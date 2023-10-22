@@ -24,31 +24,31 @@ namespace ISI.Extensions.VisualStudio
 {
 	public partial class VisualStudioSettings
 	{
-		public void UpdateRunMicroServicesPreviouslySelectedProjectKeys(IEnumerable<string> removeProjectKeys, IEnumerable<string> addProjectKeys)
+		public void UpdateRunServicesExcludePathFilters(IEnumerable<string> removeExcludePathFilters, IEnumerable<string> addExcludePathFilters)
 		{
 			Save(settings =>
 			{
-				var projectKeys = new HashSet<string>((settings.RunMicroServicesPreviouslySelectedProjectKeys ?? Array.Empty<string>()), StringComparer.InvariantCultureIgnoreCase);
+				var excludePathFilters = new HashSet<string>((settings.RunServicesExcludePathFilters ?? Array.Empty<string>()), StringComparer.InvariantCultureIgnoreCase);
 
-				if (removeProjectKeys != null)
+				if (removeExcludePathFilters != null)
 				{
-					foreach (var removeProjectKey in removeProjectKeys)
+					foreach (var removeExcludePathFilter in removeExcludePathFilters)
 					{
-						projectKeys.RemoveWhere(projectKey => string.Equals(projectKey, removeProjectKey, StringComparison.InvariantCultureIgnoreCase));
+						excludePathFilters.RemoveWhere(jenkinsConfig => string.Equals(jenkinsConfig, removeExcludePathFilter, StringComparison.InvariantCultureIgnoreCase));
 					}
 				}
 
-				if (addProjectKeys != null)
+				if (addExcludePathFilters != null)
 				{
-					foreach (var addProjectKey in addProjectKeys)
+					foreach (var addExcludePathFilter in addExcludePathFilters)
 					{
-						projectKeys.Add(addProjectKey);
+						excludePathFilters.Add(addExcludePathFilter);
 					}
 				}
 
-				if (!settings.RunMicroServicesPreviouslySelectedProjectKeys.Equals(projectKeys, StringComparer.InvariantCultureIgnoreCase, true))
+				if (!settings.RunServicesExcludePathFilters.Equals(excludePathFilters, StringComparer.InvariantCultureIgnoreCase, true))
 				{
-					settings.RunMicroServicesPreviouslySelectedProjectKeys = projectKeys.ToArray();
+					settings.RunServicesExcludePathFilters = excludePathFilters.ToArray();
 
 					return true;
 				}

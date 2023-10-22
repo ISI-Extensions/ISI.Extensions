@@ -40,22 +40,10 @@ namespace ISI.Extensions.VisualStudio.SerializableModels
 		[DataMember(Name = "refreshSolutionsPreviouslySelectedSolutions", EmitDefaultValue = false)]
 		public string[] RefreshSolutionsPreviouslySelectedSolutions { get; set; }
 
-		[DataMember(Name = "runMigrationToolsExcludePathFilters", EmitDefaultValue = false)]
-		public string[] RunMigrationToolsExcludePathFilters { get; set; }
+		[DataMember(Name = "runServicesExcludePathFilters", EmitDefaultValue = false)]
+		public string[] RunServicesExcludePathFilters { get; set; }
 
-		[DataMember(Name = "runMigrationToolsPreviouslySelectedProjectKeys", EmitDefaultValue = false)]
-		public string[] RunMigrationToolsPreviouslySelectedProjectKeys { get; set; }
-
-		[DataMember(Name = "runMicroServicesExcludePathFilters", EmitDefaultValue = false)]
-		public string[] RunMicroServicesExcludePathFilters { get; set; }
-
-		[DataMember(Name = "runMicroServicesPreviouslySelectedProjectKeys", EmitDefaultValue = false)]
-		public string[] RunMicroServicesPreviouslySelectedProjectKeys { get; set; }
-
-		[DataMember(Name = "runWindowsServicesExcludePathFilters", EmitDefaultValue = false)]
-		public string[] RunWindowsServicesExcludePathFilters { get; set; }
-
-		[DataMember(Name = "runWindowsServicesPreviouslySelectedProjectKeys", EmitDefaultValue = false)]
-		public string[] RunWindowsServicesPreviouslySelectedProjectKeys { get; set; }
+		[DataMember(Name = "runServicesPreviouslySelectedProjectKeys", EmitDefaultValue = false)]
+		public string[] RunServicesPreviouslySelectedProjectKeys { get; set; }
 	}
 }

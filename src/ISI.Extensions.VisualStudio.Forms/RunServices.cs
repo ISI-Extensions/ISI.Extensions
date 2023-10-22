@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -22,7 +22,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ISI.Extensions.VisualStudio.Forms
 {
-	public class RunMigrationTools
+	public class RunServices
 	{
 		private static ISI.Extensions.VisualStudio.VisualStudioSettings _visualStudioSettings = null;
 		protected static ISI.Extensions.VisualStudio.VisualStudioSettings VisualStudioSettings => _visualStudioSettings ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.VisualStudioSettings>();
@@ -41,15 +41,15 @@ namespace ISI.Extensions.VisualStudio.Forms
 			{
 				var context = new SolutionsContext();
 
-				form.Text = "Run MigrationTool(s)";
-				form.StartButton.Text = "Run";
+				form.Text = "Run Service(s)";
+				form.StartButton.Text = "Start";
 
 				void OnChangedSelection()
 				{
 					form.StartButton.Enabled = context.Solutions.Any(solution => solution.Selected);
 				}
 
-				var excludedPathFilters = VisualStudioSettings.GetRunMigrationToolsExcludePathFilters();
+				var excludedPathFilters = VisualStudioSettings.GetRunWindowsServicesExcludePathFilters();
 				var projectFileNames = new System.Collections.Concurrent.ConcurrentBag<string>();
 				var maxCheckDirectoryDepth = VisualStudioSettings.GetMaxCheckDirectoryDepth() - 1;
 
@@ -57,28 +57,25 @@ namespace ISI.Extensions.VisualStudio.Forms
 				{
 					if (System.IO.File.Exists(selectedItemPath))
 					{
-						if (selectedItemPath.EndsWith(".MigrationTool.csproj", StringComparison.InvariantCultureIgnoreCase))
-						{
-							projectFileNames.Add(selectedItemPath);
-						}
-						else if (selectedItemPath.EndsWith(".MigrationTools.csproj", StringComparison.InvariantCultureIgnoreCase))
+						if (selectedItemPath.EndsWith(".WindowsService.csproj", StringComparison.InvariantCultureIgnoreCase) || selectedItemPath.EndsWith(".ServiceApplication.csproj", StringComparison.InvariantCultureIgnoreCase))
 						{
 							projectFileNames.Add(selectedItemPath);
 						}
 					}
 					else if (System.IO.Directory.Exists(selectedItemPath))
 					{
-						foreach (var projectFileName in ISI.Extensions.IO.Path.EnumerateFiles(selectedItemPath, "*.csproj", excludedPathFilters, maxCheckDirectoryDepth))
+						foreach (var projectFileName in ISI.Extensions.IO.Path.EnumerateFiles(selectedItemPath, "*.WindowsService.csproj", excludedPathFilters, maxCheckDirectoryDepth))
 						{
-							if (projectFileName.EndsWith(".MigrationTool.csproj", StringComparison.InvariantCultureIgnoreCase) || projectFileName.EndsWith(".MigrationTools.csproj", StringComparison.InvariantCultureIgnoreCase))
-							{
-								projectFileNames.Add(projectFileName);
-							}
+							projectFileNames.Add(projectFileName);
+						}
+						foreach (var projectFileName in ISI.Extensions.IO.Path.EnumerateFiles(selectedItemPath, "*.ServiceApplication.csproj", excludedPathFilters, maxCheckDirectoryDepth))
+						{
+							projectFileNames.Add(projectFileName);
 						}
 					}
 				});
 
-				var previouslySelectedProjectKeys = new HashSet<string>(VisualStudioSettings.GetRunMigrationToolsPreviouslySelectedProjectKeys(), StringComparer.InvariantCultureIgnoreCase);
+				var previouslySelectedProjectKeys = new HashSet<string>(VisualStudioSettings.GetRunWindowsServicesPreviouslySelectedProjectKeys(), StringComparer.InvariantCultureIgnoreCase);
 
 				var projectKeys = projectFileNames.Distinct(StringComparer.InvariantCultureIgnoreCase).OrderBy(projectFileName => projectFileName, StringComparer.InvariantCultureIgnoreCase).Select(projectFileName =>
 				{
@@ -98,7 +95,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 				foreach (var solutionGroupedProjectKeys in projectKeys.GroupBy(projectKey => projectKey.SolutionFullName, StringComparer.InvariantCultureIgnoreCase).OrderBy(solutionGroupedProjectKey => solutionGroupedProjectKey.Key, StringComparer.InvariantCultureIgnoreCase))
 				{
-					context.Solutions.Add(new(solutionGroupedProjectKeys.Key, form.SolutionsPanel, (context.Solutions.Count % 2 == 1), selectAll || solutionGroupedProjectKeys.Any(projectKey => projectKey.Selected), start, solutionGroupedProjectKeys, false, true, OnChangedSelection));
+					context.Solutions.Add(new(solutionGroupedProjectKeys.Key, form.SolutionsPanel, (context.Solutions.Count % 2 == 1), selectAll || solutionGroupedProjectKeys.Any(projectKey => projectKey.Selected), start, solutionGroupedProjectKeys, false, false, OnChangedSelection));
 				}
 
 				//form.SolutionsPanel.Controls.AddRange(context.Solutions.OrderBy(solution => solution.Caption, StringComparer.InvariantCultureIgnoreCase).Select(solution => solution.Panel).ToArray());
@@ -109,23 +106,29 @@ namespace ISI.Extensions.VisualStudio.Forms
 				return context;
 			};
 
-			void UpdatePreviouslySelectedSolutions(SolutionsForm form)
+			void UpdatePreviouslySelectedProjectKeys(SolutionsForm form)
 			{
 				var removeProjectKeys = form.SolutionsContext.Solutions.SelectMany(solution => solution.SolutionProjects.Select(project => project.ProjectKey));
 				var addProjectKeys = form.SolutionsContext.Solutions.Where(solution => solution.Selected).SelectMany(solution => solution.SolutionProjects.Where(projectKey => projectKey.Selected).Select(project => project.ProjectKey));
 
-				VisualStudioSettings.UpdateRunMigrationToolsPreviouslySelectedProjectKeys(removeProjectKeys.Select(projectKey => projectKey.Value), addProjectKeys.Select(projectKey => projectKey.Value));
+				VisualStudioSettings.UpdateRunWindowsServicesPreviouslySelectedProjectKeys(removeProjectKeys.Select(projectKey => projectKey.Value), addProjectKeys.Select(projectKey => projectKey.Value));
 			};
 
 			void OnCloseForm(SolutionsForm form)
 			{
-
+				foreach (var solution in form.SolutionsContext.Solutions)
+				{
+					foreach (var solutionProject in solution.SolutionProjects)
+					{
+						solutionProject.StopService();
+					}
+				}
 			};
 
-			return new ISI.Extensions.VisualStudio.Forms.SolutionsForm(BuildSolutions, UpdatePreviouslySelectedSolutions, OnCloseForm)
+			return new ISI.Extensions.VisualStudio.Forms.SolutionsForm(BuildSolutions, UpdatePreviouslySelectedProjectKeys, OnCloseForm)
 			{
 				ShowExecuteProjectsCheckBox = true,
-				ShowShowProjectExecutionInTaskbarCheckBox = false,
+				ShowShowProjectExecutionInTaskbarCheckBox = true,
 				ExitOnClose = exitOnClose,
 			};
 		}

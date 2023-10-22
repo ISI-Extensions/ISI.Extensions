@@ -80,7 +80,7 @@ namespace ISI.Extensions.Svn
 			{
 				Source = request.FullName,
 				Depth = Depth.Empty,
-			}).Infos.FirstOrDefault();
+			}).Infos.NullCheckedFirstOrDefault();
 
 			response.FullName = svnResponse?.WorkingCopyRootPath ?? string.Empty;
 			response.SolutionUrl = svnResponse?.Url;

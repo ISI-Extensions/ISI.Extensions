@@ -5,10 +5,10 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ISI.Extensions.VisualStudio.Forms.Tests")]
+[assembly: AssemblyTitle("ISI.Extensions.Jenkins.Forms.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("ISI.Extensions.VisualStudio.Forms.Tests")]
+[assembly: AssemblyProduct("ISI.Extensions.Jenkins.Forms.Tests")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -17,7 +17,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("7286dcf9-526f-4ea3-b982-86a4b9e94850")]
+[assembly: Guid("e18addec-07e6-473d-9a2f-aa80792147c2")]
 
 // Version information for an assembly consists of the following four values:
 //

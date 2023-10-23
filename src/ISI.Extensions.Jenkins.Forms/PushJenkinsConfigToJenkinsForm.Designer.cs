@@ -49,20 +49,12 @@ namespace ISI.Extensions.Jenkins.Forms
 			this.lblJenkinsServers = new System.Windows.Forms.Label();
 			this.cboJenkinsServers = new System.Windows.Forms.ComboBox();
 			this.btnEditJenkinsServers = new System.Windows.Forms.Button();
-			this.tplJenkinsServer = new System.Windows.Forms.TableLayoutPanel();
-			this.lblJenkinsUrl = new System.Windows.Forms.Label();
-			this.txtJenkinsUrl = new System.Windows.Forms.TextBox();
-			this.lblUserName = new System.Windows.Forms.Label();
-			this.txtUserName = new System.Windows.Forms.TextBox();
-			this.lblApiToken = new System.Windows.Forms.Label();
-			this.txtApiToken = new System.Windows.Forms.TextBox();
 			this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
 			this.btnDone = new System.Windows.Forms.Button();
 			this.btnPush = new System.Windows.Forms.Button();
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.tplForm.SuspendLayout();
 			this.tplJenkinsServers.SuspendLayout();
-			this.tplJenkinsServer.SuspendLayout();
 			this.flpButtons.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -72,19 +64,17 @@ namespace ISI.Extensions.Jenkins.Forms
 			this.tplForm.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tplForm.Controls.Add(this.flpJenkinsConfigs, 0, 0);
 			this.tplForm.Controls.Add(this.tplJenkinsServers, 0, 2);
-			this.tplForm.Controls.Add(this.tplJenkinsServer, 0, 3);
-			this.tplForm.Controls.Add(this.flpButtons, 0, 5);
+			this.tplForm.Controls.Add(this.flpButtons, 0, 4);
 			this.tplForm.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tplForm.Location = new System.Drawing.Point(0, 0);
 			this.tplForm.Name = "tplForm";
-			this.tplForm.RowCount = 6;
-			this.tplForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tplForm.RowCount = 5;
+			this.tplForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 120F));
 			this.tplForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
 			this.tplForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
-			this.tplForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 93F));
 			this.tplForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
-			this.tplForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
-			this.tplForm.Size = new System.Drawing.Size(671, 413);
+			this.tplForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+			this.tplForm.Size = new System.Drawing.Size(671, 421);
 			this.tplForm.TabIndex = 0;
 			// 
 			// flpJenkinsConfigs
@@ -95,7 +85,7 @@ namespace ISI.Extensions.Jenkins.Forms
 			this.flpJenkinsConfigs.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
 			this.flpJenkinsConfigs.Location = new System.Drawing.Point(3, 3);
 			this.flpJenkinsConfigs.Name = "flpJenkinsConfigs";
-			this.flpJenkinsConfigs.Size = new System.Drawing.Size(665, 228);
+			this.flpJenkinsConfigs.Size = new System.Drawing.Size(665, 324);
 			this.flpJenkinsConfigs.TabIndex = 0;
 			this.flpJenkinsConfigs.WrapContents = false;
 			// 
@@ -109,7 +99,7 @@ namespace ISI.Extensions.Jenkins.Forms
 			this.tplJenkinsServers.Controls.Add(this.cboJenkinsServers, 1, 0);
 			this.tplJenkinsServers.Controls.Add(this.btnEditJenkinsServers, 2, 0);
 			this.tplJenkinsServers.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tplJenkinsServers.Location = new System.Drawing.Point(0, 244);
+			this.tplJenkinsServers.Location = new System.Drawing.Point(0, 340);
 			this.tplJenkinsServers.Margin = new System.Windows.Forms.Padding(0);
 			this.tplJenkinsServers.Name = "tplJenkinsServers";
 			this.tplJenkinsServers.RowCount = 1;
@@ -145,83 +135,6 @@ namespace ISI.Extensions.Jenkins.Forms
 			this.btnEditJenkinsServers.Text = "Edit";
 			this.btnEditJenkinsServers.UseVisualStyleBackColor = true;
 			// 
-			// tplJenkinsServer
-			// 
-			this.tplJenkinsServer.ColumnCount = 2;
-			this.tplForm.SetColumnSpan(this.tplJenkinsServer, 2);
-			this.tplJenkinsServer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
-			this.tplJenkinsServer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tplJenkinsServer.Controls.Add(this.lblJenkinsUrl, 0, 0);
-			this.tplJenkinsServer.Controls.Add(this.txtJenkinsUrl, 1, 0);
-			this.tplJenkinsServer.Controls.Add(this.lblUserName, 0, 1);
-			this.tplJenkinsServer.Controls.Add(this.txtUserName, 1, 1);
-			this.tplJenkinsServer.Controls.Add(this.lblApiToken, 0, 2);
-			this.tplJenkinsServer.Controls.Add(this.txtApiToken, 1, 2);
-			this.tplJenkinsServer.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tplJenkinsServer.Location = new System.Drawing.Point(0, 275);
-			this.tplJenkinsServer.Margin = new System.Windows.Forms.Padding(0);
-			this.tplJenkinsServer.Name = "tplJenkinsServer";
-			this.tplJenkinsServer.RowCount = 3;
-			this.tplJenkinsServer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
-			this.tplJenkinsServer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
-			this.tplJenkinsServer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
-			this.tplJenkinsServer.Size = new System.Drawing.Size(671, 93);
-			this.tplJenkinsServer.TabIndex = 5;
-			// 
-			// lblJenkinsUrl
-			// 
-			this.lblJenkinsUrl.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lblJenkinsUrl.Location = new System.Drawing.Point(3, 0);
-			this.lblJenkinsUrl.Name = "lblJenkinsUrl";
-			this.lblJenkinsUrl.Size = new System.Drawing.Size(94, 31);
-			this.lblJenkinsUrl.TabIndex = 1;
-			this.lblJenkinsUrl.Text = "Jenkins Url:";
-			this.lblJenkinsUrl.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// txtJenkinsUrl
-			// 
-			this.txtJenkinsUrl.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.txtJenkinsUrl.Location = new System.Drawing.Point(103, 3);
-			this.txtJenkinsUrl.Name = "txtJenkinsUrl";
-			this.txtJenkinsUrl.Size = new System.Drawing.Size(565, 20);
-			this.txtJenkinsUrl.TabIndex = 1;
-			// 
-			// lblUserName
-			// 
-			this.lblUserName.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lblUserName.Location = new System.Drawing.Point(3, 31);
-			this.lblUserName.Name = "lblUserName";
-			this.lblUserName.Size = new System.Drawing.Size(94, 31);
-			this.lblUserName.TabIndex = 2;
-			this.lblUserName.Text = "UserName:";
-			this.lblUserName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// txtUserName
-			// 
-			this.txtUserName.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.txtUserName.Location = new System.Drawing.Point(103, 34);
-			this.txtUserName.Name = "txtUserName";
-			this.txtUserName.Size = new System.Drawing.Size(565, 20);
-			this.txtUserName.TabIndex = 3;
-			// 
-			// lblApiToken
-			// 
-			this.lblApiToken.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lblApiToken.Location = new System.Drawing.Point(3, 62);
-			this.lblApiToken.Name = "lblApiToken";
-			this.lblApiToken.Size = new System.Drawing.Size(94, 31);
-			this.lblApiToken.TabIndex = 3;
-			this.lblApiToken.Text = "Api Token:";
-			this.lblApiToken.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// txtApiToken
-			// 
-			this.txtApiToken.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.txtApiToken.Location = new System.Drawing.Point(103, 65);
-			this.txtApiToken.Name = "txtApiToken";
-			this.txtApiToken.Size = new System.Drawing.Size(565, 20);
-			this.txtApiToken.TabIndex = 4;
-			// 
 			// flpButtons
 			// 
 			this.flpButtons.Controls.Add(this.btnDone);
@@ -229,9 +142,9 @@ namespace ISI.Extensions.Jenkins.Forms
 			this.flpButtons.Controls.Add(this.btnCancel);
 			this.flpButtons.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-			this.flpButtons.Location = new System.Drawing.Point(3, 381);
+			this.flpButtons.Location = new System.Drawing.Point(3, 384);
 			this.flpButtons.Name = "flpButtons";
-			this.flpButtons.Size = new System.Drawing.Size(665, 29);
+			this.flpButtons.Size = new System.Drawing.Size(665, 34);
 			this.flpButtons.TabIndex = 0;
 			this.flpButtons.WrapContents = false;
 			// 
@@ -269,16 +182,14 @@ namespace ISI.Extensions.Jenkins.Forms
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(671, 413);
+			this.ClientSize = new System.Drawing.Size(671, 421);
 			this.ControlBox = false;
 			this.Controls.Add(this.tplForm);
 			this.MinimumSize = new System.Drawing.Size(687, 429);
 			this.Name = "PushJenkinsConfigToJenkinsForm";
-			this.Text = "Jenkins Config(s)";
+			this.Text = "Push Jenkins Config(s)";
 			this.tplForm.ResumeLayout(false);
 			this.tplJenkinsServers.ResumeLayout(false);
-			this.tplJenkinsServer.ResumeLayout(false);
-			this.tplJenkinsServer.PerformLayout();
 			this.flpButtons.ResumeLayout(false);
 			this.ResumeLayout(false);
 
@@ -293,14 +204,6 @@ namespace ISI.Extensions.Jenkins.Forms
 		private System.Windows.Forms.Label lblJenkinsServers;
 		private System.Windows.Forms.ComboBox cboJenkinsServers;
 		private System.Windows.Forms.Button btnEditJenkinsServers;
-
-		private System.Windows.Forms.TableLayoutPanel tplJenkinsServer;
-		private System.Windows.Forms.Label lblJenkinsUrl;
-		private System.Windows.Forms.TextBox txtJenkinsUrl;
-		private System.Windows.Forms.Label lblUserName;
-		private System.Windows.Forms.TextBox txtUserName;
-		private System.Windows.Forms.Label lblApiToken;
-		private System.Windows.Forms.TextBox txtApiToken;
 
 		private System.Windows.Forms.FlowLayoutPanel flpButtons;
 		private System.Windows.Forms.Button btnCancel;

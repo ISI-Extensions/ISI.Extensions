@@ -107,7 +107,10 @@ namespace ISI.Extensions.Jenkins.Forms
 
 				if (cboJenkinsServers.Items.Count > 0)
 				{
-					JenkinsServer = ((ISI.Extensions.Jenkins.JenkinsServer)cboJenkinsServers.Items[selectedIndex]);
+					_jenkinsServer = ((ISI.Extensions.Jenkins.JenkinsServer)cboJenkinsServers.Items[selectedIndex]);
+					txtJenkinsUrl.Text = _jenkinsServer.JenkinsUrl;
+					txtUserName.Text = _jenkinsServer.UserName;
+					txtApiToken.Text = _jenkinsServer.ApiToken;
 				}
 			};
 

@@ -37,53 +37,6 @@ namespace ISI.Extensions.Jenkins.Forms
 
 		protected string[] SelectedItemPaths { get; }
 
-		private ISI.Extensions.Jenkins.JenkinsServer _jenkinsServer = null;
-		protected ISI.Extensions.Jenkins.JenkinsServer JenkinsServer
-		{
-			get
-			{
-				_jenkinsServer ??= new()
-				{
-					JenkinsServerUuid = Guid.NewGuid(),
-				};
-
-				_jenkinsServer.JenkinsUrl = txtJenkinsUrl.Text ?? string.Empty;
-				_jenkinsServer.UserName = txtUserName.Text ?? string.Empty;
-				_jenkinsServer.ApiToken = txtApiToken.Text ?? string.Empty;
-
-				return _jenkinsServer;
-			}
-			set
-			{
-				_jenkinsServer = value ?? new ISI.Extensions.Jenkins.JenkinsServer()
-				{
-					JenkinsServerUuid = Guid.NewGuid(),
-				};
-
-				txtJenkinsUrl.Text = _jenkinsServer.JenkinsUrl;
-				txtUserName.Text = _jenkinsServer.UserName;
-				txtApiToken.Text = _jenkinsServer.ApiToken;
-
-				if (cboJenkinsServers.Items.Count > 0)
-				{
-					var selectedIndex = cboJenkinsServers.SelectedIndex;
-
-					for (int index = 0; index < cboJenkinsServers.Items.Count; index++)
-					{
-						if (((ISI.Extensions.Jenkins.JenkinsServer)cboJenkinsServers.Items[index]).JenkinsServerUuid == _jenkinsServer.JenkinsServerUuid)
-						{
-							selectedIndex = index;
-						}
-					}
-
-					if (cboJenkinsServers.SelectedIndex != selectedIndex)
-					{
-						cboJenkinsServers.SelectedIndex = selectedIndex;
-					}
-				}
-			}
-		}
-
 		protected List<JenkinsConfig> JenkinsConfigs { get; }
 
 		public bool ExitOnClose { get; set; }
@@ -115,46 +68,29 @@ namespace ISI.Extensions.Jenkins.Forms
 			{
 				var selectedIndex = (cboJenkinsServers.SelectedIndex < 0 ? 0 : cboJenkinsServers.SelectedIndex);
 
-				tplJenkinsServer.Enabled = (selectedIndex <= 0);
-
 				btnEditJenkinsServers.Text = (selectedIndex <= 0 ? "Add" : "Edit");
-
-				if (cboJenkinsServers.Items.Count > 0)
-				{
-					JenkinsServer = ((ISI.Extensions.Jenkins.JenkinsServer)cboJenkinsServers.Items[selectedIndex]);
-
-					var jenkinsServer = JenkinsServer.GetDecodedJenkinsServer();
-
-					var jobIds = new HashSet<string>(JenkinsApi.GetJobIds(new()
-					{
-						JenkinsUrl = jenkinsServer.JenkinsUrl,
-						UserName = jenkinsServer.UserName,
-						ApiToken = jenkinsServer.ApiToken,
-					}).JobIds.ToNullCheckedArray(NullCheckCollectionResult.Empty), StringComparer.CurrentCultureIgnoreCase);
-
-					foreach (var jenkinsConfig in JenkinsConfigs)
-					{
-						jenkinsConfig.Selected = jobIds.Contains(jenkinsConfig.JobId);
-					}
-				}
-				else
-				{
-					foreach (var jenkinsConfig in JenkinsConfigs)
-					{
-						jenkinsConfig.Selected = true;
-					}
-				}
+				btnPush.Enabled = (selectedIndex > 0);
 			};
 
 			btnEditJenkinsServers.Click += (sender, args) =>
 			{
-				using (var form = new ISI.Extensions.Jenkins.Forms.EditJenkinsServerForm(JenkinsServer))
+				var selectedIndex = (cboJenkinsServers.SelectedIndex < 0 ? 0 : cboJenkinsServers.SelectedIndex);
+
+				var jenkinsServer = ((ISI.Extensions.Jenkins.JenkinsServer)cboJenkinsServers.Items[selectedIndex]);
+
+				using (var form = new ISI.Extensions.Jenkins.Forms.EditJenkinsServerForm(jenkinsServer))
 				{
 					if (form.ShowDialog() == DialogResult.OK)
 					{
 						UpdateJenkinsServers();
 
-						JenkinsServer = form.JenkinsServer;
+						for (int index = 0; index < cboJenkinsServers.Items.Count; index++)
+						{
+							if (((ISI.Extensions.Jenkins.JenkinsServer)cboJenkinsServers.Items[index]).JenkinsServerUuid == form.JenkinsServer.JenkinsServerUuid)
+							{
+								cboJenkinsServers.SelectedIndex = index;
+							}
+						}
 					}
 				}
 			};
@@ -174,49 +110,57 @@ namespace ISI.Extensions.Jenkins.Forms
 
 			btnPush.Click += (clickSender, clickEventArgs) =>
 			{
-				btnCancel.Enabled = false;
-				btnPush.Enabled = false;
+				var selectedIndex = (cboJenkinsServers.SelectedIndex < 0 ? 0 : cboJenkinsServers.SelectedIndex);
 
-				tplJenkinsServers.Enabled = false;
-				tplJenkinsServer.Enabled = false;
-
-				foreach (var jenkinsConfig in JenkinsConfigs)
+				if (selectedIndex > 0)
 				{
-					jenkinsConfig.Panel.Enabled = false;
-				}
+					Cursor = System.Windows.Forms.Cursors.AppStarting;
 
-				foreach (var jenkinsConfig in JenkinsConfigs.Where(jenkinsConfig => jenkinsConfig.Selected))
-				{
-					jenkinsConfig.SetStatus(TaskActionStatus.Running, "Pushing");
+					var jenkinsServer = ((ISI.Extensions.Jenkins.JenkinsServer)cboJenkinsServers.Items[selectedIndex]).GetDecodedJenkinsServer();
 
-					try
+					btnCancel.Enabled = false;
+					btnPush.Enabled = false;
+
+					tplJenkinsServers.Enabled = false;
+
+					foreach (var jenkinsConfig in JenkinsConfigs)
 					{
-						var content = System.IO.File.ReadAllText(jenkinsConfig.JenkinsConfigFullName);
+						jenkinsConfig.Enabled = false;
+					}
 
-						var jenkinsServer = JenkinsServer.GetDecodedJenkinsServer();
+					foreach (var jenkinsConfig in JenkinsConfigs.Where(jenkinsConfig => jenkinsConfig.Selected))
+					{
+						jenkinsConfig.SetStatus(TaskActionStatus.Running, "Pushing");
 
-						JenkinsApi.SetJobConfigXml(new()
+						try
 						{
-							JenkinsUrl = jenkinsServer.JenkinsUrl,
-							UserName = jenkinsServer.UserName,
-							ApiToken = jenkinsServer.ApiToken,
-							JobId = jenkinsConfig.JobId,
-							ConfigXml = content,
-						});
+							var content = System.IO.File.ReadAllText(jenkinsConfig.JenkinsConfigFullName);
 
-						jenkinsConfig.SetStatus(TaskActionStatus.Success, "Done");
-					}
-					catch (Exception exception)
-					{
-						Console.WriteLine(exception);
+							JenkinsApi.SetJobConfigXml(new()
+							{
+								JenkinsUrl = jenkinsServer.JenkinsUrl,
+								UserName = jenkinsServer.UserName,
+								ApiToken = jenkinsServer.ApiToken,
+								JobId = jenkinsConfig.JobId,
+								ConfigXml = content,
+							});
 
-						jenkinsConfig.SetStatus(TaskActionStatus.Errored, "Failed");
+							jenkinsConfig.SetStatus(TaskActionStatus.Success, "Done");
+						}
+						catch (Exception exception)
+						{
+							Console.WriteLine(exception);
+
+							jenkinsConfig.SetStatus(TaskActionStatus.Errored, "Failed");
+						}
 					}
+
+					btnCancel.Visible = false;
+					btnPush.Visible = false;
+					btnDone.Visible = true;
+
+					Cursor = System.Windows.Forms.Cursors.Arrow;
 				}
-
-				btnCancel.Visible = false;
-				btnPush.Visible = false;
-				btnDone.Visible = true;
 			};
 
 			btnDone.Click += (clickSender, clickEventArgs) =>
@@ -247,7 +191,7 @@ namespace ISI.Extensions.Jenkins.Forms
 
 			cboJenkinsServers.Items.Add(new ISI.Extensions.Jenkins.JenkinsServer()
 			{
-				JenkinsServerUuid = Guid.Empty,
+				JenkinsServerUuid = Guid.NewGuid(),
 				JenkinsUrl = string.Empty,
 				Description = string.Empty,
 			});
@@ -255,24 +199,6 @@ namespace ISI.Extensions.Jenkins.Forms
 			foreach (var jenkinsServer in JenkinsSettings.GetJenkinsServers())
 			{
 				cboJenkinsServers.Items.Add(jenkinsServer);
-			}
-
-			if (JenkinsConfigs.Any())
-			{
-				var directory = ISI.Extensions.IO.Path.GetCommonPath(JenkinsConfigs.Select(jenkinsConfig => jenkinsConfig.JenkinsConfigFullName));
-
-				var jenkinsServerUuid = JenkinsSettings.FindJenkinsServerByDirectory(directory, true)?.JenkinsServerUuid ?? Guid.Empty;
-
-				if (jenkinsServerUuid != Guid.Empty)
-				{
-					for (int index = 0; index < cboJenkinsServers.Items.Count; index++)
-					{
-						if (((ISI.Extensions.Jenkins.JenkinsServer)cboJenkinsServers.Items[index]).JenkinsServerUuid == jenkinsServerUuid)
-						{
-							cboJenkinsServers.SelectedIndex = index;
-						}
-					}
-				}
 			}
 		}
 
@@ -291,9 +217,27 @@ namespace ISI.Extensions.Jenkins.Forms
 				JenkinsConfigs.Add(new(jenkinsConfigFileName));
 			}
 
-			this.flpJenkinsConfigs.Controls.AddRange(JenkinsConfigs.Select(jenkinsConfig => jenkinsConfig.Panel).ToArray());
+			flpJenkinsConfigs.Controls.AddRange(JenkinsConfigs.Select(jenkinsConfig => jenkinsConfig.Panel).ToArray());
 
 			UpdateJenkinsServers();
+
+			if (JenkinsConfigs.Any())
+			{
+				var directory = ISI.Extensions.IO.Path.GetCommonPath(JenkinsConfigs.Select(jenkinsConfig => jenkinsConfig.JenkinsConfigFullName));
+
+				var jenkinsServerUuid = JenkinsSettings.FindJenkinsServerByDirectory(directory, true)?.JenkinsServerUuid ?? Guid.Empty;
+
+				if (jenkinsServerUuid != Guid.Empty)
+				{
+					for (int index = 0; index < cboJenkinsServers.Items.Count; index++)
+					{
+						if (((ISI.Extensions.Jenkins.JenkinsServer)cboJenkinsServers.Items[index]).JenkinsServerUuid == jenkinsServerUuid)
+						{
+							cboJenkinsServers.SelectedIndex = index;
+						}
+					}
+				}
+			}
 
 			flpJenkinsConfigs.Visible = true;
 			btnCancel.Visible = true;
@@ -312,7 +256,14 @@ namespace ISI.Extensions.Jenkins.Forms
 
 			private FlowLayoutPanel flpJenkinsConfig { get; }
 			private CheckBox cboJenkinsConfig { get; }
+			private Label lblJobId { get; }
 			private Label lblStatus { get; }
+
+			public bool Enabled
+			{
+				get => cboJenkinsConfig.Enabled;
+				set => cboJenkinsConfig.Enabled = value;
+			}
 
 			public bool Selected
 			{
@@ -337,22 +288,29 @@ namespace ISI.Extensions.Jenkins.Forms
 
 				cboJenkinsConfig = new()
 				{
-					Text = JobId,
 					Name = string.Format("cboJenkinsConfig_{0}", this.GetHashCode()),
-					Width = 400,
+					Width = 20,
 					Height = 17,
-					Margin = new(1, 1, 1, 1),
-					Checked = true,
+					Margin = new(1, 1, 1, 1)
 				};
 				flpJenkinsConfig.Controls.Add(cboJenkinsConfig);
+
+				lblJobId = new()
+				{
+					Text = JobId,
+					AutoSize = true,
+					Margin = new(4),
+					MinimumSize = new(300, 17),
+					Size = new(200, 17),
+				};
+				flpJenkinsConfig.Controls.Add(lblJobId);
 
 				lblStatus = new()
 				{
 					AutoSize = true,
-					Location = new(83, 1),
 					Margin = new(4),
 					MinimumSize = new(300, 17),
-					Size = new(240, 17),
+					Size = new(200, 17),
 				};
 				flpJenkinsConfig.Controls.Add(lblStatus);
 			}
@@ -363,13 +321,13 @@ namespace ISI.Extensions.Jenkins.Forms
 				{
 					lblStatus.Invoke((System.Windows.Forms.MethodInvoker)delegate
 					{
-						lblStatus.ForeColor = taskActionStatus.GetColor();
+						lblStatus.ForeColor = taskActionStatus.GetColor(lblStatus);
 						lblStatus.Text = status;
 					});
 				}
 				else
 				{
-					lblStatus.ForeColor = taskActionStatus.GetColor();
+					lblStatus.ForeColor = taskActionStatus.GetColor(lblStatus);
 					lblStatus.Text = status;
 				}
 			}

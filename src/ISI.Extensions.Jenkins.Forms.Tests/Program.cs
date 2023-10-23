@@ -9,7 +9,7 @@ using ISI.Extensions.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.VisualStudio.Forms.Tests
+namespace ISI.Extensions.Jenkins.Forms.Tests
 {
 	static class Program
 	{
@@ -29,7 +29,7 @@ namespace ISI.Extensions.VisualStudio.Forms.Tests
 				.AddSingleton<Microsoft.Extensions.Logging.ILoggerFactory, Microsoft.Extensions.Logging.LoggerFactory>()
 				.AddLogging(builder => builder
 						.AddConsole()
-					//.AddFilter(level => level >= Microsoft.Extensions.Logging.LogLevel.Information)
+				//.AddFilter(level => level >= Microsoft.Extensions.Logging.LogLevel.Information)
 				)
 				.AddSingleton<Microsoft.Extensions.Logging.ILogger>(_ => new ISI.Extensions.ConsoleLogger())
 
@@ -52,8 +52,7 @@ namespace ISI.Extensions.VisualStudio.Forms.Tests
 
 			var selectedItemPaths = new[]
 			{
-				@"F:\ISI\Internal Projects\ISI.Gravity.WindowsService\",
-				@"F:\ISI\Internal Projects\ISI.Identity.WindowsService\",
+				@"G:\Samples\",
 			};
 
 			System.Windows.Forms.Application.EnableVisualStyles();
@@ -61,7 +60,8 @@ namespace ISI.Extensions.VisualStudio.Forms.Tests
 
 			System.Windows.Forms.Application.EnableVisualStyles();
 
-			var form = ISI.Extensions.VisualStudio.Forms.RefreshSolutions.CreateForm(selectedItemPaths, true);
+			//var form = new ISI.Extensions.Jenkins.Forms.PullJenkinsConfigFromJenkinsForm(selectedItemPaths);
+			var form = new ISI.Extensions.Jenkins.Forms.PushJenkinsConfigToJenkinsForm(selectedItemPaths);
 
 			System.Windows.Forms.Application.Run(form);
 		}

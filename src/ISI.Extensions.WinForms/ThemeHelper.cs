@@ -23,6 +23,8 @@ namespace ISI.Extensions.WinForms
 {
 	public class ThemeHelper
 	{
+		public static bool IsDarkTheme => Dark.Net.DarkNet.Instance.EffectiveCurrentProcessThemeIsDark;
+
 		public static void SetWindowThemeForms(System.Windows.Forms.Form form)
 		{
 			Dark.Net.DarkNet.Instance.SetWindowThemeForms(form, Dark.Net.Theme.Dark, new Dark.Net.ThemeOptions()
@@ -30,8 +32,8 @@ namespace ISI.Extensions.WinForms
 				ApplyThemeToDescendentFormsScrollbars = true,
 			});
 
-			form.BackColor = Dark.Net.DarkNet.Instance.EffectiveCurrentProcessThemeIsDark ? System.Drawing.Color.FromArgb(19, 19, 19) : System.Drawing.Color.White;
-			form.ForeColor = Dark.Net.DarkNet.Instance.EffectiveCurrentProcessThemeIsDark ? System.Drawing.Color.White : System.Drawing.Color.Black;
+			form.BackColor = IsDarkTheme ? System.Drawing.Color.FromArgb(19, 19, 19) : System.Drawing.Color.White;
+			form.ForeColor = IsDarkTheme ? System.Drawing.Color.White : System.Drawing.Color.Black;
 			ChangeTheme(form.Controls, form.BackColor, form.ForeColor);
 
 		}

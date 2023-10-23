@@ -36,13 +36,10 @@ namespace ISI.Extensions.Jenkins.Forms
 		{
 			get
 			{
-				if (_jenkinsServer == null)
+				_jenkinsServer ??= new()
 				{
-					_jenkinsServer = new()
-					{
-						JenkinsServerUuid = Guid.NewGuid(),
-					};
-				}
+					JenkinsServerUuid = Guid.NewGuid(),
+				};
 
 				_jenkinsServer.JenkinsUrl = txtJenkinsUrl.Text ?? string.Empty;
 				_jenkinsServer.UserName = txtUserName.Text ?? string.Empty;
@@ -84,6 +81,8 @@ namespace ISI.Extensions.Jenkins.Forms
 		public PickJenkinsServerForm(ISI.Extensions.Jenkins.JenkinsServer jenkinsServer)
 		{
 			InitializeComponent();
+
+			ISI.Extensions.WinForms.ThemeHelper.SetWindowThemeForms(this);
 
 			JenkinsSettings.ApplyFormSize(nameof(PickJenkinsServerForm), this);
 

@@ -55,6 +55,8 @@ namespace ISI.Extensions.Jenkins.Forms
 		{
 			InitializeComponent();
 
+			ISI.Extensions.WinForms.ThemeHelper.SetWindowThemeForms(this);
+
 			JenkinsSettings.ApplyFormSize(nameof(EditJenkinsServerForm), this);
 
 			flpDirectories.Visible = false;

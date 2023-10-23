@@ -124,6 +124,10 @@
       <Project>{b857b791-3f8a-445c-8f9d-2619b2689019}</Project>
       <Name>ISI.Extensions.Jenkins</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ISI.Extensions.WinForms\ISI.Extensions.WinForms.csproj">
+      <Project>{d2964752-7094-43c6-89f4-f1d4417474c7}</Project>
+      <Name>ISI.Extensions.WinForms</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj">
       <Project>{09cea440-36de-4036-8c18-be4e476c1477}</Project>
       <Name>ISI.Extensions</Name>

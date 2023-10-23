@@ -49,7 +49,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 		{
 			InitializeComponent();
 
-			ISI.Extensions.WinForms.ThemeHelper.SetWindowThemeForms(this);
+			ISI.Extensions.WinForms.ThemeHelper.SyncTheme(this);
 
 			Icon = new(ISI.Extensions.T4Resources.Artwork.GetLantern_icoStream());
 			ControlBox = true;

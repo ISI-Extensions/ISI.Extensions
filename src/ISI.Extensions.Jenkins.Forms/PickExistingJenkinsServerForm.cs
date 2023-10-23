@@ -39,7 +39,7 @@ namespace ISI.Extensions.Jenkins.Forms
 		{
 			InitializeComponent();
 
-			ISI.Extensions.WinForms.ThemeHelper.SetWindowThemeForms(this);
+			ISI.Extensions.WinForms.ThemeHelper.SyncTheme(this);
 
 			JenkinsSettings.ApplyFormSize(nameof(JenkinsServersForm), this);
 

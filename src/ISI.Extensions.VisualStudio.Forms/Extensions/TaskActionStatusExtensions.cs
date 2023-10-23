@@ -23,7 +23,7 @@ namespace ISI.Extensions.VisualStudio.Forms.Extensions
 {
 	public static class TaskActionStatusExtensions
 	{
-		public static System.Drawing.Color GetColor(this TaskActionStatus taskActionStatus)
+		public static System.Drawing.Color GetColor(this TaskActionStatus taskActionStatus, System.Windows.Forms.Control control)
 		{
 			switch (taskActionStatus)
 			{
@@ -35,7 +35,9 @@ namespace ISI.Extensions.VisualStudio.Forms.Extensions
 					return System.Drawing.Color.Red;
 			}
 
-			return System.Drawing.SystemColors.ControlText;
+			return ISI.Extensions.WinForms.ThemeHelper.GetColors(control).ForeColor;
+
+			//return System.Drawing.SystemColors.ControlText;
 		}
 	}
 }

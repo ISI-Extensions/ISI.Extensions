@@ -76,13 +76,13 @@ namespace ISI.Extensions.VisualStudio.Forms
 			{
 				StatusLabel.Invoke((System.Windows.Forms.MethodInvoker)delegate
 			 {
-				 StatusLabel.ForeColor = taskActionStatus.GetColor();
+				 StatusLabel.ForeColor = taskActionStatus.GetColor(StatusLabel);
 				 StatusLabel.Text = status;
 			 });
 			}
 			else
 			{
-				StatusLabel.ForeColor = taskActionStatus.GetColor();
+				StatusLabel.ForeColor = taskActionStatus.GetColor(StatusLabel);
 				StatusLabel.Text = status;
 			}
 		}

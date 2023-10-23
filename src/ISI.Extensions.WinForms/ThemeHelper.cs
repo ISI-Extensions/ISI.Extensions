@@ -25,7 +25,19 @@ namespace ISI.Extensions.WinForms
 	{
 		public static bool IsDarkTheme => Dark.Net.DarkNet.Instance.EffectiveCurrentProcessThemeIsDark;
 
-		public static void SetWindowThemeForms(System.Windows.Forms.Form form)
+		public static (System.Drawing.Color BackColor, System.Drawing.Color ForeColor) GetColors(System.Windows.Forms.Control control)
+		{
+			switch (control)
+			{
+				case System.Windows.Forms.Label label:
+					return (BackColor: (IsDarkTheme ? System.Drawing.Color.FromArgb(25, 25, 25) : System.Drawing.SystemColors.Window), ForeColor: (IsDarkTheme ? System.Drawing.Color.White : System.Drawing.SystemColors.WindowText));
+
+				default:
+					return (BackColor: (IsDarkTheme ? System.Drawing.Color.FromArgb(25, 25, 25) : System.Drawing.SystemColors.Window), ForeColor: (IsDarkTheme ? System.Drawing.Color.White : System.Drawing.SystemColors.WindowText));
+			}
+		}
+
+		public static void SyncTheme(System.Windows.Forms.Form form)
 		{
 			Dark.Net.DarkNet.Instance.SetWindowThemeForms(form, Dark.Net.Theme.Dark, new Dark.Net.ThemeOptions()
 			{
@@ -34,32 +46,69 @@ namespace ISI.Extensions.WinForms
 
 			form.BackColor = IsDarkTheme ? System.Drawing.Color.FromArgb(19, 19, 19) : System.Drawing.Color.White;
 			form.ForeColor = IsDarkTheme ? System.Drawing.Color.White : System.Drawing.Color.Black;
-			ChangeTheme(form.Controls, form.BackColor, form.ForeColor);
 
+			SyncTheme(form.Controls);
+		}
+
+		public static void SyncTheme(System.Windows.Forms.Control control)
+		{
+			ChangeTheme(control, GetColors(control));
+		}
+
+		public static void ChangeTheme(System.Windows.Forms.Control control, (System.Drawing.Color BackColor, System.Drawing.Color ForeColor) colors)
+		{
+			ChangeTheme(control, colors.BackColor, colors.ForeColor);
+		}
+
+		public static void ChangeTheme(System.Windows.Forms.Control control, System.Drawing.Color backColor, System.Drawing.Color foreColor)
+		{
+			if (control is System.Windows.Forms.Panel)
+			{
+				ChangeTheme(control.Controls, backColor, foreColor);
+				control.BackColor = backColor;
+				control.ForeColor = foreColor;
+			}
+			else if (control is System.Windows.Forms.Button)
+			{
+				control.BackColor = backColor;
+				control.ForeColor = foreColor;
+			}
+			else if (control is System.Windows.Forms.TextBox)
+			{
+				control.BackColor = backColor;
+				control.ForeColor = foreColor;
+			}
+			else if (control is System.Windows.Forms.Label)
+			{
+				control.BackColor = backColor;
+				control.ForeColor = foreColor;
+			}
+			else if (control is System.Windows.Forms.CheckBox)
+			{
+				control.BackColor = backColor;
+				control.ForeColor = foreColor;
+			}
+		}
+
+		public static void SyncTheme(System.Windows.Forms.Control.ControlCollection container)
+		{
+			foreach (System.Windows.Forms.Control control in container)
+			{
+				SyncTheme(control);
+			}
+		}
+
+		public static void ChangeTheme(System.Windows.Forms.Control.ControlCollection container, (System.Drawing.Color BackColor, System.Drawing.Color ForeColor) colors)
+		{
+			ChangeTheme(container, colors.BackColor, colors.ForeColor);
 		}
 
 		public static void ChangeTheme(System.Windows.Forms.Control.ControlCollection container, System.Drawing.Color backColor, System.Drawing.Color foreColor)
 		{
-			foreach (System.Windows.Forms.Control component in container)
+			foreach (System.Windows.Forms.Control control in container)
 			{
-				if (component is System.Windows.Forms.Panel)
-				{
-					ChangeTheme(component.Controls, backColor, foreColor);
-					component.BackColor = backColor;
-					component.ForeColor = foreColor;
-				}
-				else if (component is System.Windows.Forms.Button)
-				{
-					component.BackColor = backColor;
-					component.ForeColor = foreColor;
-				}
-				else if (component is System.Windows.Forms.TextBox)
-				{
-					component.BackColor = backColor;
-					component.ForeColor = foreColor;
-				}
+				ChangeTheme(control, backColor, foreColor);
 			}
 		}
-
 	}
 }

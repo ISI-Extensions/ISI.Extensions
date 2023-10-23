@@ -36,7 +36,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 		{
 			InitializeComponent();
 
-			ISI.Extensions.WinForms.ThemeHelper.SetWindowThemeForms(this);
+			ISI.Extensions.WinForms.ThemeHelper.SyncTheme(this);
 
 			VisualStudioSettings.ApplyFormSize(this);
 

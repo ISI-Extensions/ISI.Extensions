@@ -79,7 +79,7 @@ namespace ISI.Extensions.Nuget.Forms
 				Width = 240,
 				Height = 17,
 #if DEBUG
-				BackColor = System.Drawing.Color.Chartreuse,
+				//BackColor = System.Drawing.Color.Chartreuse,
 #endif
 			};
 			NugetLabel.Click += (clickSender, clickEventArgs) => Selected = !Selected;

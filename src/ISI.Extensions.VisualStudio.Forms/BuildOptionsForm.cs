@@ -49,6 +49,8 @@ namespace ISI.Extensions.VisualStudio.Forms
 		{
 			InitializeComponent();
 
+			ISI.Extensions.WinForms.ThemeHelper.SetWindowThemeForms(this);
+
 			Icon = new(ISI.Extensions.T4Resources.Artwork.GetLantern_icoStream());
 			ControlBox = true;
 			MaximizeBox = false;
@@ -61,77 +63,6 @@ namespace ISI.Extensions.VisualStudio.Forms
 			cboBuildSolution.Checked = buildSolution;
 			cboExecuteProjects.Checked = executeProjects;
 			cboShowProjectExecutionInTaskbar.Checked = showProjectExecutionInTaskbar;
-
-			//cboCleanSolution.CheckedChanged += (_, __) =>
-			//{
-			//	var @checked = cboCleanSolution.Checked;
-
-			//	if (@checked)
-			//	{
-			//		if (!cboBuildSolution.Checked)
-			//		{
-			//			cboBuildSolution.Checked = true;
-			//		}
-			//	}
-			//};
-
-			//cboUpdateSolution.CheckedChanged += (_, __) =>
-			//{
-			//	var @checked = cboUpdateSolution.Checked;
-
-			//	if (@checked)
-			//	{
-			//		if (!cboRestoreNugetPackages.Checked)
-			//		{
-			//			cboRestoreNugetPackages.Checked = true;
-			//		}
-			//		if (!cboBuildSolution.Checked)
-			//		{
-			//			cboBuildSolution.Checked = true;
-			//		}
-			//	}
-			//};
-
-			//cboRestoreNugetPackages.CheckedChanged += (_, __) =>
-			//{
-			//	var @checked = cboRestoreNugetPackages.Checked;
-
-			//	if (@checked)
-			//	{
-			//		if (!cboBuildSolution.Checked)
-			//		{
-			//			cboBuildSolution.Checked = true;
-			//		}
-			//	}
-			//};
-
-			//cboBuildSolution.CheckedChanged += (_, __) =>
-			//{
-			//	var @checked = cboBuildSolution.Checked;
-
-			//	if (@checked)
-			//	{
-			//		if (!cboRestoreNugetPackages.Checked)
-			//		{
-			//			cboRestoreNugetPackages.Checked = true;
-			//		}
-			//	}
-			//	else
-			//	{
-			//		if (cboCleanSolution.Checked)
-			//		{
-			//			cboCleanSolution.Checked = false;
-			//		}
-			//		if (cboUpdateSolution.Checked)
-			//		{
-			//			cboUpdateSolution.Checked = false;
-			//		}
-			//		if (cboRestoreNugetPackages.Checked)
-			//		{
-			//			cboRestoreNugetPackages.Checked = false;
-			//		}
-			//	}
-			//};
 
 			cboExecuteProjects.CheckedChanged += (_, __) =>
 			{

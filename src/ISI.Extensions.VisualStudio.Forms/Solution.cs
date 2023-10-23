@@ -450,7 +450,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 				Width = 240,
 				Height = 17,
 #if DEBUG
-				BackColor = System.Drawing.Color.Chartreuse,
+				//BackColor = System.Drawing.Color.Chartreuse,
 #endif
 			};
 			SolutionLabel.Click += (clickSender, clickEventArgs) => Selected = !Selected;
@@ -464,7 +464,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 				Width = 150,
 				Height = 17,
 #if DEBUG
-				BackColor = System.Drawing.Color.Chocolate,
+				//BackColor = System.Drawing.Color.Chocolate,
 #endif
 			};
 			SolutionPanel.Controls.Add(StatusLabel);

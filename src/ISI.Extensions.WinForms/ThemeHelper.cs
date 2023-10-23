@@ -12,71 +12,52 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using ISI.Extensions.VisualStudio.Forms.Extensions;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.VisualStudio.Forms
+namespace ISI.Extensions.WinForms
 {
-	public partial class ViewLogForm : Form
+	public class ThemeHelper
 	{
-		private static ISI.Extensions.VisualStudio.VisualStudioSettings _visualStudioSettings = null;
-		protected ISI.Extensions.VisualStudio.VisualStudioSettings VisualStudioSettings => _visualStudioSettings ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.VisualStudioSettings>();
-
-		public ViewLogForm(string log)
+		public static void SetWindowThemeForms(System.Windows.Forms.Form form)
 		{
-			InitializeComponent();
-
-			ISI.Extensions.WinForms.ThemeHelper.SetWindowThemeForms(this);
-
-			VisualStudioSettings.ApplyFormSize(this);
-
-			Icon = new(ISI.Extensions.T4Resources.Artwork.GetLantern_icoStream());
-			ControlBox = true;
-			MaximizeBox = false;
-			MinimizeBox = false;
-			ShowIcon = true;
-
-			btnOK.Click += (_, __) =>
+			Dark.Net.DarkNet.Instance.SetWindowThemeForms(form, Dark.Net.Theme.Dark, new Dark.Net.ThemeOptions()
 			{
-				if (Modal)
-				{
-					DialogResult = System.Windows.Forms.DialogResult.OK;
-				}
-				else
-				{
-					Close();
-				}
-			};
+				ApplyThemeToDescendentFormsScrollbars = true,
+			});
 
-			txtLog.Text = log;
-			txtLog.SelectionStart = 0;
-			txtLog.SelectionLength = 0;
+			form.BackColor = Dark.Net.DarkNet.Instance.EffectiveCurrentProcessThemeIsDark ? System.Drawing.Color.FromArgb(19, 19, 19) : System.Drawing.Color.White;
+			form.ForeColor = Dark.Net.DarkNet.Instance.EffectiveCurrentProcessThemeIsDark ? System.Drawing.Color.White : System.Drawing.Color.Black;
+			ChangeTheme(form.Controls, form.BackColor, form.ForeColor);
 
-			Closing += (_, __) => { VisualStudioSettings.RecordFormSize(this); };
 		}
 
-		public void OnChange(bool isAppend, string log)
+		public static void ChangeTheme(System.Windows.Forms.Control.ControlCollection container, System.Drawing.Color backColor, System.Drawing.Color foreColor)
 		{
-			if (isAppend)
+			foreach (System.Windows.Forms.Control component in container)
 			{
-				txtLog.Text += log;
-			}
-			else
-			{
-				txtLog.Text = log;
-				txtLog.SelectionStart = 0;
-				txtLog.SelectionLength = 0;
+				if (component is System.Windows.Forms.Panel)
+				{
+					ChangeTheme(component.Controls, backColor, foreColor);
+					component.BackColor = backColor;
+					component.ForeColor = foreColor;
+				}
+				else if (component is System.Windows.Forms.Button)
+				{
+					component.BackColor = backColor;
+					component.ForeColor = foreColor;
+				}
+				else if (component is System.Windows.Forms.TextBox)
+				{
+					component.BackColor = backColor;
+					component.ForeColor = foreColor;
+				}
 			}
 		}
+
 	}
 }

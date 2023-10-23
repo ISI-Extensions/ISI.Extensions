@@ -47,8 +47,8 @@ namespace ISI.Extensions.VisualStudio.Forms.Tests
 
 			var selectedItemPaths = new[]
 			{
-				@"F:\ISI\Clients\ISI\ISI.Scheduler\",
-				@"F:\ISI\Clients\ISI\ISI.Portal\",
+				@"F:\ISI\Internal Projects\ISI.Gravity.WindowsService\",
+				@"F:\ISI\Internal Projects\ISI.Identity.WindowsService\",
 			};
 
 			System.Windows.Forms.Application.EnableVisualStyles();

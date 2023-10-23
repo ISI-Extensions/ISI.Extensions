@@ -116,7 +116,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 				Width = 240,
 				Height = 17,
 #if DEBUG
-				BackColor = System.Drawing.Color.Violet,
+				//BackColor = System.Drawing.Color.Violet,
 #endif
 			};
 			SolutionFilterLabel.Click += (clickSender, clickEventArgs) => Selected = !Selected;

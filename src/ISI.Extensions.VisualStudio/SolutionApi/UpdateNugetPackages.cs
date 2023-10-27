@@ -38,21 +38,7 @@ namespace ISI.Extensions.VisualStudio
 
 			var nugetPackageKeys = request.NugetPackageKeys ?? new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
 
-			//logger.LogInformation("Update Nuget Packages For Solutions:");
-			//foreach (var solutionFullName in request.SolutionFullNames)
-			//{
-			//	logger.LogInformation(string.Format("  {0}", solutionFullName));
-			//}
-			//logger.LogInformation(string.Empty);
-			
 			var solutionFullNames = request.SolutionFullNames.Where(solution => System.IO.Directory.Exists(solution) || System.IO.File.Exists(solution)).ToArray();
-
-			//logger.LogInformation("Update Nuget Packages For Solutions:");
-			//foreach (var solutionFullName in solutionFullNames)
-			//{
-			//	logger.LogInformation(string.Format("  {0}", solutionFullName));
-			//}
-			//logger.LogInformation(string.Empty);
 
 			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => GetSolutionDetails(new()
 			{

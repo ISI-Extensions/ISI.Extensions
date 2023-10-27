@@ -73,9 +73,7 @@ namespace ISI.Extensions.Nuget
 
 				foreach (var itemGroup in csProjXml.GetElementsByLocalName("ItemGroup"))
 				{
-					var references = itemGroup.GetElementsByLocalName("Reference").ToNullCheckedArray(NullCheckCollectionResult.Empty);
-
-					foreach (var reference in references)
+					foreach (var reference in itemGroup.GetElementsByLocalName("Reference").ToNullCheckedArray(NullCheckCollectionResult.Empty))
 					{
 						var packageAttribute = reference.GetAttributeByLocalName("Include");
 
@@ -196,6 +194,93 @@ namespace ISI.Extensions.Nuget
 							if (packageVersionElement != null)
 							{
 								packageVersionElement.Value = nugetPackageKey.Version;
+							}
+						}
+					}
+				}
+
+				string getUpdatedPathing(string pathing)
+				{
+					if (pathing.IndexOf("\\packages\\", StringComparison.InvariantCultureIgnoreCase) > 0)
+					{
+						var pathParts = pathing.Split('\\');
+
+						for (var pathPartIndex = 0; pathPartIndex < pathParts.Length - 1; pathPartIndex++)
+						{
+							if (string.Equals(pathParts[pathPartIndex], "packages", StringComparison.InvariantCultureIgnoreCase))
+							{
+								var packageQueue = new Queue<string>(pathParts[pathPartIndex + 1].Split('.'));
+
+								var packageId = string.Empty;
+								var packageVersion = string.Empty;
+
+								while (packageQueue.Any())
+								{
+									var packagePiece = packageQueue.Dequeue();
+
+									if (!string.IsNullOrWhiteSpace(packageVersion))
+									{
+										packageVersion = $"{packageVersion}.{packagePiece}";
+									}
+									else if(!packagePiece.ToIntNullable().HasValue)
+									{
+										packageId = $"{packageId}.{packagePiece}".Trim('.');
+									}
+									else
+									{
+										packageVersion = packagePiece;
+									}
+								}
+
+								if (request.TryGetNugetPackageKey(packageId, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
+								{
+									pathParts[pathPartIndex + 1] = $"{packageId}.{nugetPackageKey.Version}";
+								}
+							}
+						}
+
+						pathing = string.Join("\\", pathParts);
+					}
+
+					return pathing;
+				}
+
+				foreach (var import in csProjXml.GetElementsByLocalName("Import"))
+				{
+					foreach (var attributeName in new [] { "Project", "Condition"} )
+					{
+						var attribute = import.GetAttributeByLocalName(attributeName);
+						var attributeValue = attribute?.Value;
+
+						if (!string.IsNullOrWhiteSpace(attributeValue))
+						{
+							var updatedAttributeValue = getUpdatedPathing(attributeValue);
+
+							if (!string.Equals(attributeValue, updatedAttributeValue, StringComparison.InvariantCultureIgnoreCase))
+							{
+								attribute.Value = updatedAttributeValue;
+							}
+						}
+					}
+				}
+
+				foreach (var target in csProjXml.GetElementsByLocalName("Target"))
+				{
+					foreach (var errorElement in target.GetElementsByLocalName("Error").ToNullCheckedArray(NullCheckCollectionResult.Empty))
+					{
+						foreach (var attributeName in new[] { "Condition", "Text" })
+						{
+							var attribute = errorElement.GetAttributeByLocalName(attributeName);
+							var attributeValue = attribute?.Value;
+
+							if (!string.IsNullOrWhiteSpace(attributeValue))
+							{
+								var updatedAttributeValue = getUpdatedPathing(attributeValue);
+
+								if (!string.Equals(attributeValue, updatedAttributeValue, StringComparison.InvariantCultureIgnoreCase))
+								{
+									attribute.Value = updatedAttributeValue;
+								}
 							}
 						}
 					}

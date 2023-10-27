@@ -32,7 +32,71 @@ namespace ISI.Extensions.Nuget
 			{
 				using (var stream = System.IO.File.OpenRead(SettingsFileName))
 				{
-					return Serialization.Deserialize<ISI.Extensions.Nuget.SerializableModels.NugetSettings>(stream, ISI.Extensions.Serialization.SerializationFormat.Json);
+					var settings = Serialization.Deserialize<ISI.Extensions.Nuget.SerializableModels.NugetSettings>(stream, ISI.Extensions.Serialization.SerializationFormat.Json);
+
+					settings.UpdateNugetPackages ??= new()
+					{
+						NugetSettingsNugetPackageKeys = new[]
+						{
+							new ISI.Extensions.Nuget.SerializableModels.NugetSettingsNugetPackageKey()
+							{
+								PackageId = "StackifyLib",
+								PackageVersion = "2.2.6",
+							},
+							new ISI.Extensions.Nuget.SerializableModels.NugetSettingsNugetPackageKey()
+							{
+								PackageId = "Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv",
+								PackageVersion = "2.2.0",
+							},
+							new ISI.Extensions.Nuget.SerializableModels.NugetSettingsNugetPackageKey()
+							{
+								PackageId = "Microsoft.ClearScript",
+								PackageVersion = "6.0.2",
+							},
+						},
+						IgnorePackageIds = new[]
+						{
+							"ISI.CMS.T4CMS",
+							"ISI.CMS.T4CMS.MSSQL",
+							"ISI.CMS.T4CMS.FileSystem",
+							"ISI.CMS.T4CMS.SqlServer",
+							"ISI.Extensions.T4LocalContent",
+							"ISI.Extensions.T4LocalContent.Embedded",
+							"ISI.Extensions.T4LocalContent.RazorEngine",
+							"ISI.Extensions.T4LocalContent.Resources",
+							"ISI.Extensions.T4LocalContent.VirtualFiles",
+							"ISI.Extensions.T4LocalContent.Web",
+							"ISI.Extensions.T4LocalContent.WebPortableArea",
+							"ISI.Extensions.T4LocalContent",
+							"ISI.Extensions.T4LocalContent.Embedded",
+							"ISI.Extensions.T4LocalContent.Resources",
+							"ISI.Extensions.T4LocalContent.VirtualFiles",
+							"ISI.Extensions.T4LocalContent.Web",
+							"ISI.Extensions.T4LocalContent.WebPortableArea",
+							"ISI.Libraries.T4LocalContent",
+							"ISI.Libraries.T4LocalContent.Embedded",
+							"ISI.Libraries.T4LocalContent.RazorEngine",
+							"ISI.Libraries.T4LocalContent.Resources",
+							"ISI.Libraries.T4LocalContent.VirtualFiles",
+							"ISI.Libraries.T4LocalContent.Web",
+							"ISI.Libraries.T4LocalContent.WebPortableArea",
+							"ISI.Libraries.T4LocalContent",
+							"ISI.Libraries.T4LocalContent.Embedded",
+							"ISI.Libraries.T4LocalContent.Resources",
+							"ISI.Libraries.T4LocalContent.VirtualFiles",
+							"ISI.Libraries.T4LocalContent.Web",
+							"ISI.Libraries.T4LocalContent.WebPortableArea",
+							"Microsoft.ClearScript",
+							"jQuery",
+							"AccumailGoldConnections.NETToolkit",
+							"nsoftware.InPay",
+							"nsoftware.InPtech",
+							"nsoftware.InShip",
+							"nsoftware.IPWorksSSH",
+						},
+					};
+
+					return settings;
 				}
 			}
 		}

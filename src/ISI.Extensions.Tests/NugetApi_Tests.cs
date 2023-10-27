@@ -236,23 +236,32 @@ namespace ISI.Extensions.Tests
 		{
 			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
 			var nugetApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Nuget.NugetApi>();
+			var nugetSettings = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Nuget.NugetSettings>().Load();
 
 			var nugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
-			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new()
+			foreach (var nugetSettingsNugetPackageKey in nugetSettings?.UpdateNugetPackages?.NugetSettingsNugetPackageKeys ?? Array.Empty<ISI.Extensions.Nuget.SerializableModels.NugetSettingsNugetPackageKey>())
 			{
-				PackageId = "StackifyLib",
-				PackageVersion = "2.2.6",
-			}).NugetPackageKey);
-			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new()
-			{
-				PackageId = "Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv",
-				PackageVersion = "2.2.0",
-			}).NugetPackageKey);
-			nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new()
-			{
-				PackageId = "Microsoft.ClearScript",
-				PackageVersion = "6.0.2",
-			}).NugetPackageKey);
+				nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new()
+				{
+					PackageId = nugetSettingsNugetPackageKey.PackageId,
+					PackageVersion = nugetSettingsNugetPackageKey.PackageVersion,
+				}).NugetPackageKey);
+			}
+			//nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new()
+			//{
+			//	PackageId = "StackifyLib",
+			//	PackageVersion = "2.2.6",
+			//}).NugetPackageKey);
+			//nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new()
+			//{
+			//	PackageId = "Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv",
+			//	PackageVersion = "2.2.0",
+			//}).NugetPackageKey);
+			//nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new()
+			//{
+			//	PackageId = "Microsoft.ClearScript",
+			//	PackageVersion = "6.0.2",
+			//}).NugetPackageKey);
 
 
 			var upsertAssemblyRedirectsNugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
@@ -279,33 +288,34 @@ namespace ISI.Extensions.Tests
 				NugetPackageKeys = nugetPackageKeys,
 				UpsertAssemblyRedirectsNugetPackageKeys = upsertAssemblyRedirectsNugetPackageKeys,
 				RemoveAssemblyRedirects = removeAssemblyRedirects,
-				IgnorePackageIds = new[]
-				{
-					"ISI.CMS.T4CMS",
-					"ISI.CMS.T4CMS.MSSQL",
-					"ISI.CMS.T4CMS.FileSystem",
-					"ISI.CMS.T4CMS.SqlServer",
-					"ISI.Extensions.T4LocalContent",
-					"ISI.Extensions.T4LocalContent.Embedded",
-					"ISI.Extensions.T4LocalContent.RazorEngine",
-					"ISI.Extensions.T4LocalContent.Resources",
-					"ISI.Extensions.T4LocalContent.VirtualFiles",
-					"ISI.Extensions.T4LocalContent.Web",
-					"ISI.Extensions.T4LocalContent.WebPortableArea",
-					"ISI.Extensions.T4LocalContent",
-					"ISI.Extensions.T4LocalContent.Embedded",
-					"ISI.Extensions.T4LocalContent.Resources",
-					"ISI.Extensions.T4LocalContent.VirtualFiles",
-					"ISI.Extensions.T4LocalContent.Web",
-					"ISI.Extensions.T4LocalContent.WebPortableArea",
-					"Microsoft.ClearScript",
-					"jQuery",
-					"AccumailGoldConnections.NETToolkit",
-					"nsoftware.InPay",
-					"nsoftware.InPtech",
-					"nsoftware.InShip",
-					"nsoftware.IPWorksSSH",
-				}
+				IgnorePackageIds = nugetSettings?.UpdateNugetPackages?.IgnorePackageIds,
+				//IgnorePackageIds = new[]
+				//{
+				//	"ISI.CMS.T4CMS",
+				//	"ISI.CMS.T4CMS.MSSQL",
+				//	"ISI.CMS.T4CMS.FileSystem",
+				//	"ISI.CMS.T4CMS.SqlServer",
+				//	"ISI.Extensions.T4LocalContent",
+				//	"ISI.Extensions.T4LocalContent.Embedded",
+				//	"ISI.Extensions.T4LocalContent.RazorEngine",
+				//	"ISI.Extensions.T4LocalContent.Resources",
+				//	"ISI.Extensions.T4LocalContent.VirtualFiles",
+				//	"ISI.Extensions.T4LocalContent.Web",
+				//	"ISI.Extensions.T4LocalContent.WebPortableArea",
+				//	"ISI.Extensions.T4LocalContent",
+				//	"ISI.Extensions.T4LocalContent.Embedded",
+				//	"ISI.Extensions.T4LocalContent.Resources",
+				//	"ISI.Extensions.T4LocalContent.VirtualFiles",
+				//	"ISI.Extensions.T4LocalContent.Web",
+				//	"ISI.Extensions.T4LocalContent.WebPortableArea",
+				//	"Microsoft.ClearScript",
+				//	"jQuery",
+				//	"AccumailGoldConnections.NETToolkit",
+				//	"nsoftware.InPay",
+				//	"nsoftware.InPtech",
+				//	"nsoftware.InShip",
+				//	"nsoftware.IPWorksSSH",
+				//},
 			});
 		}
 

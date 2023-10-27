@@ -23,12 +23,12 @@ using System.Runtime.Serialization;
 namespace ISI.Extensions.Nuget.SerializableModels
 {
 	[DataContract]
-	public class NugetSettings
+	public class NugetSettingsNugetPackageKey
 	{
-		[DataMember(Name = "formLocationAndSizes", EmitDefaultValue = false)]
-		public NugetSettingsFormLocationAndSize[] FormLocationAndSizes { get; set; }
+		[DataMember(Name = "packageId", EmitDefaultValue = false)]
+		public string PackageId { get; set; }
 
-		[DataMember(Name = "updateNugetPackages", EmitDefaultValue = false)]
-		public NugetSettingsUpdateNugetPackages UpdateNugetPackages { get; set; }
+		[DataMember(Name = "packageVersion", EmitDefaultValue = false)]
+		public string PackageVersion { get; set; }
 	}
 }

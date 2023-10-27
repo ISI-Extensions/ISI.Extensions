@@ -27,28 +27,18 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ISI.Extensions.Nuget.Forms
 {
-	public partial class SelectNugetPackagesForm : Form
+	public partial class ViewLogForm : Form
 	{
 		private static ISI.Extensions.Nuget.NugetSettings _nugetSettings = null;
 		protected ISI.Extensions.Nuget.NugetSettings NugetSettings => _nugetSettings ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Nuget.NugetSettings>();
 
-		public IList<NugetPackage> NugetPackages { get; } = new List<NugetPackage>();
-
-		private static HashSet<string> _previousPackageIds { get; } = new(StringComparer.CurrentCultureIgnoreCase);
-		private static HashSet<string> _previouslySelectedPackageIds { get; } = new(StringComparer.CurrentCultureIgnoreCase);
-
-		public SelectNugetPackagesForm(IEnumerable<NugetPackageKey> nugetPackageKeys)
+		public ViewLogForm(string log)
 		{
 			InitializeComponent();
 
 			ISI.Extensions.WinForms.ThemeHelper.SyncTheme(this);
 
-			NugetSettings.ApplyFormSize(nameof(SelectNugetPackagesForm), this);
-
-			CloseButton.Visible = false;
-			OkButton.Visible = false;
-
-			ForeColor = DefaultForeColor;
+			NugetSettings.ApplyFormSize(this);
 
 			Icon = new(ISI.Extensions.T4Resources.Artwork.GetLantern_icoStream());
 			ControlBox = true;
@@ -56,71 +46,37 @@ namespace ISI.Extensions.Nuget.Forms
 			MinimizeBox = false;
 			ShowIcon = true;
 
-			Shown += (shownSender, shownArgs) =>
+			btnOK.Click += (_, __) =>
 			{
-				var allSelected = !_previousPackageIds.Any();
-
-				foreach (var nugetPackageKey in nugetPackageKeys)
+				if (Modal)
 				{
-					NugetPackages.Add(new(nugetPackageKey, NugetPackagesPanel, (NugetPackages.Count % 2 == 1), allSelected || !_previousPackageIds.Contains(nugetPackageKey.Package) || _previouslySelectedPackageIds.Contains(nugetPackageKey.Package)));
-				}
-
-				NugetPackagesPanel.Resize += (resizeSender, resizeArgs) =>
-				{
-					var parentControl = (Control)resizeSender;
-
-					foreach (var nugetPackage in NugetPackages)
-					{
-						if (nugetPackage.Panel.Size.Width != parentControl.Size.Width)
-						{
-							nugetPackage.Panel.Size = new(parentControl.Size.Width, nugetPackage.Panel.Size.Height);
-						}
-					}
-				};
-
-				OkButton.Visible = true;
-				CloseButton.Visible = true;
-			};
-
-			OkButton.Click += (clickSender, clickEventArgs) =>
-			{
-				foreach (var nugetPackage in NugetPackages)
-				{
-					_previousPackageIds.Add(nugetPackage.NugetPackageKey.Package);
-
-					if (nugetPackage.Selected)
-					{
-						_previouslySelectedPackageIds.Add(nugetPackage.NugetPackageKey.Package);
-					}
-					else
-					{
-						_previouslySelectedPackageIds.Remove(nugetPackage.NugetPackageKey.Package);
-					}
-				}
-
-				NugetSettings.RecordFormSize(this);
-
-				if (this.Modal)
-				{
-					this.DialogResult = System.Windows.Forms.DialogResult.OK;
+					DialogResult = System.Windows.Forms.DialogResult.OK;
 				}
 				else
 				{
-					this.Close();
+					Close();
 				}
 			};
 
-			CloseButton.Click += (clickSender, clickEventArgs) =>
+			txtLog.Text = log;
+			txtLog.SelectionStart = 0;
+			txtLog.SelectionLength = 0;
+
+			Closing += (_, __) => { NugetSettings.RecordFormSize(this); };
+		}
+
+		public void OnChange(bool isAppend, string log)
+		{
+			if (isAppend)
 			{
-				if (this.Modal)
-				{
-					this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-				}
-				else
-				{
-					this.Close();
-				}
-			};
+				txtLog.Text += log;
+			}
+			else
+			{
+				txtLog.Text = log;
+				txtLog.SelectionStart = 0;
+				txtLog.SelectionLength = 0;
+			}
 		}
 	}
 }

@@ -45,7 +45,7 @@ namespace ISI.Extensions.VisualStudio
 			//}
 			//logger.LogInformation(string.Empty);
 			
-			var solutionFullNames = request.SolutionFullNames.Where(System.IO.Directory.Exists).ToArray();
+			var solutionFullNames = request.SolutionFullNames.Where(solution => System.IO.Directory.Exists(solution) || System.IO.File.Exists(solution)).ToArray();
 
 			//logger.LogInformation("Update Nuget Packages For Solutions:");
 			//foreach (var solutionFullName in solutionFullNames)

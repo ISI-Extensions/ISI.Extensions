@@ -19,7 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.Jenkins.Forms.Extensions
+namespace ISI.Extensions.Nuget.Forms.Extensions
 {
 	public static class TaskActionStatusExtensions
 	{

@@ -59,6 +59,12 @@ namespace ISI.Extensions.Nuget.Forms.Extensions
 			return formLocationAndSizes.NullCheckedFirstOrDefault(formLocationAndSize => string.Equals(formLocationAndSize.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
 		}
 
+		public static void ApplyFormSize(this NugetSettings jenkinsSettings, System.Windows.Forms.Form form)
+		{
+			ApplyFormSize(jenkinsSettings.Load()?.FormLocationAndSizes, form.GetType().Name, form);
+		}
+
+
 		public static void ApplyFormSize(this NugetSettings jenkinsSettings, string formName, System.Windows.Forms.Form form)
 		{
 			ApplyFormSize(jenkinsSettings.Load()?.FormLocationAndSizes, formName, form);

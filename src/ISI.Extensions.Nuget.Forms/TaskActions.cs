@@ -19,23 +19,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.Jenkins.Forms.Extensions
+namespace ISI.Extensions.Nuget.Forms
 {
-	public static class TaskActionStatusExtensions
+	public class TaskActions
 	{
-		public static System.Drawing.Color GetColor(this TaskActionStatus taskActionStatus, System.Windows.Forms.Control control)
-		{
-			switch (taskActionStatus)
-			{
-				case TaskActionStatus.Running:
-					return System.Drawing.Color.Yellow;
-				case TaskActionStatus.Success:
-					return System.Drawing.Color.Green;
-				case TaskActionStatus.Errored:
-					return System.Drawing.Color.Red;
-			}
-
-			return ISI.Extensions.WinForms.ThemeHelper.GetColors(control).ForeColor;
-		}
+		public Action PreAction { get; set; }
+		public Action Action { get; set; }
+		public Action PostAction { get; set; }
 	}
 }

@@ -37,7 +37,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 		public static System.Windows.Forms.Form CreateForm(IEnumerable<string> selectedItemPaths, bool exitOnClose = false)
 		{
-			SolutionsForm.ISolutionsContext BuildSolutions(SolutionsForm form, Action<Solution> start)
+			SolutionsForm.ISolutionsContext buildSolutions(SolutionsForm form, Action<Solution> start)
 			{
 				var context = new SolutionsContext();
 
@@ -125,7 +125,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 				}
 			};
 
-			return new ISI.Extensions.VisualStudio.Forms.SolutionsForm(BuildSolutions, UpdatePreviouslySelectedProjectKeys, OnCloseForm)
+			return new ISI.Extensions.VisualStudio.Forms.SolutionsForm(buildSolutions, UpdatePreviouslySelectedProjectKeys, OnCloseForm)
 			{
 				ShowExecuteProjectsCheckBox = true,
 				ShowShowProjectExecutionInTaskbarCheckBox = true,

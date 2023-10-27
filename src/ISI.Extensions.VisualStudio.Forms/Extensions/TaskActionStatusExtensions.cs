@@ -36,8 +36,6 @@ namespace ISI.Extensions.VisualStudio.Forms.Extensions
 			}
 
 			return ISI.Extensions.WinForms.ThemeHelper.GetColors(control).ForeColor;
-
-			//return System.Drawing.SystemColors.ControlText;
 		}
 	}
 }

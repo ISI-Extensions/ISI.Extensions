@@ -52,6 +52,7 @@ namespace ISI.Extensions.Nuget.Forms.Tests
 
 			var selectedItemPaths = new[]
 			{
+				@"F:\ISI\Internal Projects\ISI.WebApplication\",
 				@"F:\ISI\Internal Projects\ISI.Gravity.WindowsService\",
 				@"F:\ISI\Internal Projects\ISI.Identity.WindowsService\",
 			};

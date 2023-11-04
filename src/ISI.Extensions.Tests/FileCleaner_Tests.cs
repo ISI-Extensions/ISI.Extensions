@@ -23,24 +23,59 @@ using NUnit.Framework;
 namespace ISI.Extensions.Tests
 {
 	[TestFixture]
-	public class AssemblyName_Tests
+	public class FileCleaner_Tests
 	{
 		[Test]
-		public void GetAssemblyNamePieces_Test()
+		public void DeleteNotUsedFiles_Test()
 		{
-			var fileName = @"C:\Program Files\Integrated Solutions Inc\ISI.FileExplorer.Extensions\Microsoft.Extensions.Configuration.Binder.dll";
+			var doNotDeleteFileNames = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
 
-			var assemblyName = System.Reflection.AssemblyName.GetAssemblyName(fileName);
+			doNotDeleteFileNames.Add("update.asp");
+			doNotDeleteFileNames.Add(".asp");
 
-			var name = assemblyName.FullName.Split(new[] { ',' }).First().Trim();
-			var assemblyVersion = assemblyName.Version.ToString();
-			var publicKeyToken = string.Concat(assemblyName.GetPublicKeyToken().Select(b => b.ToString("X2"))).ToLower();
+			var files = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
 
+			var rootDirectory = @"P:\P-Waste";
 
-			Console.WriteLine("<dependentAssembly>");
-			Console.WriteLine($"\t<assemblyIdentity name=\"{name}\" publicKeyToken=\"{publicKeyToken}\" />");
-			Console.WriteLine($"\t<bindingRedirect oldVersion=\"0.0.0.0-{assemblyVersion}\" newVersion=\"{assemblyVersion}\" />");
-			Console.WriteLine("</dependentAssembly>");
+			foreach (var subDirectory in new [] { "App", "Shared" })
+			{
+				var directory = System.IO.Path.Combine(rootDirectory, subDirectory);
+
+				foreach (var fullName in System.IO.Directory.EnumerateFiles(directory, "*", System.IO.SearchOption.AllDirectories))
+				{
+					files.Add(fullName, System.IO.File.ReadAllText(fullName));
+				}
+			}
+
+			var filesToDelete = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+
+			var keepLooking = true;
+
+			while (keepLooking)
+			{
+				keepLooking = false;
+
+				foreach (var fullName in files.Keys.Where(fullName => !doNotDeleteFileNames.Contains(System.IO.Path.GetFileName(fullName))))
+				{
+					var fileName = System.IO.Path.GetFileName(fullName);
+
+					if (!files.Where(file => !string.Equals(file.Key, fullName, StringComparison.InvariantCultureIgnoreCase)).Any(file => file.Value.IndexOf(fileName, StringComparison.InvariantCultureIgnoreCase) >= 0))
+					{
+						filesToDelete.Add(fullName);
+						keepLooking = true;
+					}
+				}
+
+				foreach (var fileToDelete in filesToDelete)
+				{
+					files.Remove(fileToDelete);
+				}
+			}
+
+			foreach (var fileToDelete in filesToDelete)
+			{
+				System.IO.File.Delete(fileToDelete);
+			}
 		}
 	}
 }

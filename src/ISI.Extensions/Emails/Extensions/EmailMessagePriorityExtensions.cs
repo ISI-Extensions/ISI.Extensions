@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,17 +15,40 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
-namespace ISI.Extensions.Emails
+namespace ISI.Extensions.Emails.Extensions
 {
-	public interface IMailMessageAlternateView
+	public static class EmailMessagePriorityExtensions
 	{
-		System.Net.Mime.ContentType ContentType { get; set; }
-		byte[] Content { get; set; }
-		string ContentId { get; set; }
-		IMailMessageLinkedResource[] LinkedResources { get; set; }
-		System.Net.Mime.TransferEncoding TransferEncoding { get; set; }
+		public static System.Net.Mail.MailPriority ToMailPriority(this EmailMessagePriority emailMessagePriority)
+		{
+			switch (emailMessagePriority)
+			{
+				case EmailMessagePriority.Normal:
+					return System.Net.Mail.MailPriority.Normal;
+				case EmailMessagePriority.Low:
+					return System.Net.Mail.MailPriority.Low;
+				case EmailMessagePriority.High:
+					return System.Net.Mail.MailPriority.High;
+				default:
+					throw new ArgumentOutOfRangeException(nameof(emailMessagePriority), emailMessagePriority, null);
+			}
+		}
+
+		public static EmailMessagePriority ToEmailMessagePriority(this System.Net.Mail.MailPriority mailPriority)
+		{
+			switch (mailPriority)
+			{
+				case System.Net.Mail.MailPriority.Normal:
+					return EmailMessagePriority.Normal;
+				case System.Net.Mail.MailPriority.Low:
+					return EmailMessagePriority.Low;
+				case System.Net.Mail.MailPriority.High:
+					return EmailMessagePriority.High;
+				default:
+					throw new ArgumentOutOfRangeException(nameof(mailPriority), mailPriority, null);
+			}
+		}
 	}
 }

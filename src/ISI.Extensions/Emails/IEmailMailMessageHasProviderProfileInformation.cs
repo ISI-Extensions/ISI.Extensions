@@ -20,8 +20,8 @@ using System.Text;
 
 namespace ISI.Extensions.Emails
 {
-	public interface IMailMessageAlternateViewCollection : ICollection<IMailMessageAlternateView>
+	public interface IEmailMailMessageHasProviderProfileInformation
 	{
-
+		string ProviderProfileKey { get; set; }
 	}
 }

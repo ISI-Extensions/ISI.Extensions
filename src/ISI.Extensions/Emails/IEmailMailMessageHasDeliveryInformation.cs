@@ -15,32 +15,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net.Mime;
 using System.Text;
-using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Emails
 {
-	public class MailMessageLinkedResource : IMailMessageLinkedResource
+	public interface IEmailMailMessageHasDeliveryInformation
 	{
-		public MailMessageLinkedResource()
-		{
-
-		}
-
-		public MailMessageLinkedResource(System.Net.Mail.LinkedResource linkedResource)
-		{
-			ContentLink = linkedResource.ContentLink;
-			Content = linkedResource.ContentStream.ReadBytes();
-			ContentType = linkedResource.ContentType;
-			TransferEncoding = linkedResource.TransferEncoding;
-		}
-
-		public Uri ContentLink { get ; set ; }
-		public byte[] Content { get ; set ; }
-		public ContentType ContentType { get ; set ; }
-		public TransferEncoding TransferEncoding { get ; set ; }
+		string DeliveryChannelName { get; set; }
 	}
 }

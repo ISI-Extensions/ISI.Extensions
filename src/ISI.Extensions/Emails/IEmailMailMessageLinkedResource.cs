@@ -20,7 +20,7 @@ using System.Text;
 
 namespace ISI.Extensions.Emails
 {
-	public interface IMailMessageLinkedResource
+	public interface IEmailMailMessageLinkedResource
 	{
 		Uri ContentLink { get; set; }
 		byte[] Content { get; set; }

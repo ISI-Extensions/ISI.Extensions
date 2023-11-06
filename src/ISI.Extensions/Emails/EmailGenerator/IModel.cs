@@ -27,8 +27,8 @@ namespace ISI.Extensions.Emails.EmailGenerator
 		ISI.Extensions.Emails.IEmailAddress[] ToEmailAddresses { get; }
 		ISI.Extensions.Emails.IEmailAddress[] CcEmailAddresses { get; }
 		ISI.Extensions.Emails.IEmailAddress[] BccEmailAddresses { get; }
-		System.Net.Mail.MailPriority Priority { get; }
+		EmailMessagePriority Priority { get; }
 		string Subject { get; set; }
-		IMailMessageAttachment[] Attachments { get; set; }
+		IEmailMailMessageAttachment[] Attachments { get; set; }
 	}
 }

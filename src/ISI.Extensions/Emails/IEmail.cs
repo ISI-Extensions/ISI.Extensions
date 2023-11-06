@@ -25,7 +25,7 @@ namespace ISI.Extensions.Emails
 	{
 		Guid EmailUuid { get; set; }
 		ISI.Extensions.Emails.EmailStatus EmailStatus { get; set; }
-		ISI.Extensions.Emails.IMailMessage MailMessage { get; set; }
+		ISI.Extensions.Emails.IEmailMailMessage MailMessage { get; set; }
 		string EmailGeneratorModelSerializerContractName { get; set; }
 		string EmailGeneratorModelSerialized { get; set; }
 		DateTime? ScheduledSendDateTime { get; }

@@ -17,12 +17,39 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ISI.Extensions.Emails
 {
-	public interface IMailMessageHasSystemNetMailMailMessage
+	public interface IEmailMailMessage
 	{
-		System.Net.Mail.MailMessage Message { get; }
+		IEmailAddress From { get; set; }
+
+		IEmailAddress Sender { get; set; }
+
+		IEmailAddress[] ReplyTo { get; set; }
+
+		IEmailAddress[] To { get; set; }
+		IEmailAddress[] CC { get; set; }
+		IEmailAddress[] Bcc { get; set; }
+
+		EmailMessagePriority Priority { get; set; }
+
+		EmailMessageDeliveryNotificationOption DeliveryNotificationOptions { get; set; }
+
+		int? HeadersEncoding { get; set; }
+		System.Collections.Specialized.NameValueCollection Headers { get; }
+
+		int? SubjectEncoding { get; set; }
+		string Subject { get; set; }
+
+		int? BodyEncoding { get; set; }
+		string Body { get; set; }
+		bool IsBodyHtml { get; set; }
+
+		IEmailMailMessageAttachment[] Attachments { get; set; }
+
+		IEmailMailMessageAlternateView[] AlternateViews { get; set; }
+
+		IEmailMailMessage Clone();
 	}
 }

@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,32 +15,38 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace ISI.Extensions.Emails
 {
-	public interface IEmailSender : IDisposable
+	public class EmailMailMessage : IEmailMailMessage
 	{
-		IEmailSenderResponse Send(ISI.Extensions.Emails.IEmail email);
-		IEmailSenderResponse Send(ISI.Extensions.Emails.EmailGenerator.IModel emailGeneratorModel);
-		IEmailSenderResponse Send(ISI.Extensions.Emails.IEmailMailMessage message);
-		IEmailSenderResponse Send(System.Net.Mail.MailMessage message);
-		IEmailSenderResponse Send(string from, string recipients, string subject, string body);
+		public IEmailAddress From { get; set; }
+		public IEmailAddress Sender { get; set; }
+		public IEmailAddress[] ReplyTo { get; set; }
+		public IEmailAddress[] To { get; set; }
+		public IEmailAddress[] CC { get; set; }
+		public IEmailAddress[] Bcc { get; set; }
+		
+		public EmailMessagePriority Priority { get; set; }
+		public EmailMessageDeliveryNotificationOption DeliveryNotificationOptions { get; set; }
+		
+		public int? HeadersEncoding { get; set; }
+		public System.Collections.Specialized.NameValueCollection Headers { get; }
+		
+		public int? SubjectEncoding { get; set; }
+		public string Subject { get; set; }
+		
+		public int? BodyEncoding { get; set; }
+		public string Body { get; set; }
+		public bool IsBodyHtml { get; set; }
+		
+		public IEmailMailMessageAttachment[] Attachments { get; set; }
+		public IEmailMailMessageAlternateView[] AlternateViews { get; set; }
 
-		TResponse Send<TResponse>(ISI.Extensions.Emails.IEmail email)
-			where TResponse : class, ISI.Extensions.Emails.IEmailSenderResponse, new();
-
-		TResponse Send<TResponse>(ISI.Extensions.Emails.EmailGenerator.IModel emailGeneratorModel)
-			where TResponse : class, ISI.Extensions.Emails.IEmailSenderResponse, new();
-
-		TResponse Send<TResponse>(string from, string recipients, string subject, string body)
-			where TResponse : class, ISI.Extensions.Emails.IEmailSenderResponse, new();
-
-		TResponse Send<TResponse>(ISI.Extensions.Emails.IEmailMailMessage message)
-			where TResponse : class, ISI.Extensions.Emails.IEmailSenderResponse, new();
-
-		TResponse Send<TResponse>(System.Net.Mail.MailMessage message)
-			where TResponse : class, ISI.Extensions.Emails.IEmailSenderResponse, new();
+		public IEmailMailMessage Clone()
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

@@ -22,15 +22,15 @@ namespace ISI.Extensions.Emails.EmailGenerator
 {
 	public interface IGenerator
 	{
-		ISI.Extensions.Emails.IMailMessage GenerateEmail<TModel>(TModel model)
+		ISI.Extensions.Emails.IEmailMailMessage GenerateEmail<TModel>(TModel model)
 			where TModel : class, IModel;
 
 		TResult GenerateEmail<TResult, TModel>(TModel model)
 			where TModel : class, IModel
-			where TResult : ISI.Extensions.Emails.IMailMessage, new();
+			where TResult : ISI.Extensions.Emails.IEmailMailMessage, new();
 
 		TResult GenerateEmail<TResult, TModel>(TModel model, TResult instance)
 			where TModel : class, IModel
-			where TResult : ISI.Extensions.Emails.IMailMessage;
+			where TResult : ISI.Extensions.Emails.IEmailMailMessage;
 	}
 }

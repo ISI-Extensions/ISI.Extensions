@@ -275,11 +275,9 @@ namespace ISI.Extensions.Emails.EmailGenerator
 
 
 
-		public virtual TResult GenerateEmail<TResult>(TModel model, TResult instance)
-			where TResult : ISI.Extensions.Emails.IMailMessage
+		public virtual TResult GenerateEmail<TResult>(TModel model, TResult emailMailMessage)
+			where TResult : ISI.Extensions.Emails.IEmailMailMessage
 		{
-			var result = instance;
-
 			if (string.IsNullOrWhiteSpace(model.Subject))
 			{
 				var subjectView = GetSubjectContent(model);
@@ -289,44 +287,47 @@ namespace ISI.Extensions.Emails.EmailGenerator
 				model.Subject = subjectView;
 			}
 
-			result.Subject = model.Subject.Replace("\r", string.Empty).Replace("\n", string.Empty);
+			emailMailMessage.Subject = model.Subject.Replace("\r", string.Empty).Replace("\n", string.Empty);
 
 			if (model.ReplyToEmailAddress != null)
 			{
-				result.ReplyTo = new[] { model.ReplyToEmailAddress };
+				emailMailMessage.ReplyTo = new[] { model.ReplyToEmailAddress };
 			}
 
 			if (model.FromEmailAddress != null)
 			{
-				result.From = model.FromEmailAddress;
+				emailMailMessage.From = model.FromEmailAddress;
 			}
 
 			if (model.ToEmailAddresses.NullCheckedAny())
 			{
-				result.To = model.ToEmailAddresses;
+				emailMailMessage.To = model.ToEmailAddresses;
 			}
 
 			if (model.CcEmailAddresses.NullCheckedAny())
 			{
-				result.CC = model.CcEmailAddresses;
+				emailMailMessage.CC = model.CcEmailAddresses;
 			}
 
 			if (model.BccEmailAddresses.NullCheckedAny())
 			{
-				result.Bcc = model.BccEmailAddresses;
+				emailMailMessage.Bcc = model.BccEmailAddresses;
 			}
 
-			result.Priority = model.Priority;
+			emailMailMessage.Priority = model.Priority;
 
 			if (model.Attachments != null)
 			{
-				foreach (var attachment in model.Attachments)
-				{
-					result.Attachments.Add(attachment);
-				}
+				var attachments = new List<IEmailMailMessageAttachment>(emailMailMessage.Attachments ?? Array.Empty<IEmailMailMessageAttachment>());
+
+				attachments.AddRange(model.Attachments);
+
+				emailMailMessage.Attachments = attachments.ToArray();
 			}
 
 			//must be in this order re: http://stackoverflow.com/questions/5188605/gmail-displays-plain-text-email-instead-html
+			var alternateViews = new List<IEmailMailMessageAlternateView>(emailMailMessage.AlternateViews ?? Array.Empty<IEmailMailMessageAlternateView>());
+
 			var plainView = GetPlainTextContent(model);
 			if (!string.IsNullOrWhiteSpace(plainView))
 			{
@@ -334,7 +335,7 @@ namespace ISI.Extensions.Emails.EmailGenerator
 
 				if (!string.IsNullOrWhiteSpace(plainView))
 				{
-					result.AlternateViews.Add(new MailMessageAlternateView(plainView, null, ISI.Extensions.Emails.MailMessageAlternateView.PlainTextMediaType));
+					alternateViews.Add(new EmailMailMessageAlternateView(plainView, null, ISI.Extensions.Emails.EmailMailMessageAlternateView.PlainTextMediaType));
 				}
 			}
 
@@ -345,11 +346,13 @@ namespace ISI.Extensions.Emails.EmailGenerator
 
 				if (!string.IsNullOrWhiteSpace(mhtmlView))
 				{
-					result.AlternateViews.Add(new MailMessageAlternateView(mhtmlView, null, ISI.Extensions.Emails.MailMessageAlternateView.MthmlMediaType));
+					alternateViews.Add(new EmailMailMessageAlternateView(mhtmlView, null, ISI.Extensions.Emails.EmailMailMessageAlternateView.MthmlMediaType));
 				}
 			}
 
-			if (result is IMailMessageHasTrackingInformation trackingInformation)
+			emailMailMessage.AlternateViews = alternateViews.ToArray();
+
+			if (emailMailMessage is IEmailMailMessageHasTrackingInformation trackingInformation)
 			{
 				trackingInformation.Track = Track(model);
 				trackingInformation.TrackOpens = TrackOpens(model);
@@ -362,27 +365,27 @@ namespace ISI.Extensions.Emails.EmailGenerator
 				trackingInformation.GoogleAnalyticsCampaigns = (GoogleAnalyticsCampaigns(model) ?? new string[] { }).ToArray();
 			}
 
-			if (result is IMailMessageHasMetadataInformation metadataInformation)
+			if (emailMailMessage is IEmailMailMessageHasMetadataInformation metadataInformation)
 			{
 				metadataInformation.Metadata = Metadata(model);
 			}
 
-			if (result is IMailMessageHasBillingInformation billingInformation)
+			if (emailMailMessage is IEmailMailMessageHasBillingInformation billingInformation)
 			{
 				billingInformation.BillingAccountNumber = BillingAccountNumber(model);
 			}
 
-			if (result is IMailMessageHasDeliveryInformation deliveryInformation)
+			if (emailMailMessage is IEmailMailMessageHasDeliveryInformation deliveryInformation)
 			{
 				deliveryInformation.DeliveryChannelName = DeliveryChannelName(model);
 			}
 
-			if (result is IMailMessageHasProviderProfileInformation providerProfileInformation)
+			if (emailMailMessage is IEmailMailMessageHasProviderProfileInformation providerProfileInformation)
 			{
 				providerProfileInformation.ProviderProfileKey = ProfileKey(model);
 			}
 
-			return result;
+			return emailMailMessage;
 		}
 	}
 }

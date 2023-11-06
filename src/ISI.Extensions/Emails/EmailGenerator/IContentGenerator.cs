@@ -39,7 +39,7 @@ namespace ISI.Extensions.Emails.EmailGenerator
 		string BillingAccountNumber(TModel model);
 
 		TResult GenerateEmail<TResult>(TModel model, TResult instance) 
-			where TResult : ISI.Extensions.Emails.IMailMessage;
+			where TResult : ISI.Extensions.Emails.IEmailMailMessage;
 	}
 
 	public interface IContentGenerator

@@ -20,16 +20,8 @@ using System.Text;
 
 namespace ISI.Extensions.Emails
 {
-	public interface IMailMessageHasTrackingInformation
+	public interface IEmailMailMessageHasMetadataInformation
 	{
-		bool Track { get; set; }
-		bool TrackOpens { get; set; }
-		bool TrackClicks { get; set; }
-		string TrackingDomain { get; set; }
-		string SigningDomain { get; set; }
-		string ReturnPathDomain { get; set; }
-		string[] TrackingTags { get; set; }
-		string[] GoogleAnalyticsDomains { get; set; }
-		string[] GoogleAnalyticsCampaigns { get; set; }
+		IDictionary<string, string> Metadata { get; set; }
 	}
 }

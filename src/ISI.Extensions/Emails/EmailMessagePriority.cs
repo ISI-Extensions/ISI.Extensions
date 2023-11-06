@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,32 +15,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace ISI.Extensions.Emails
 {
-	public interface IEmailSender : IDisposable
+	public enum EmailMessagePriority
 	{
-		IEmailSenderResponse Send(ISI.Extensions.Emails.IEmail email);
-		IEmailSenderResponse Send(ISI.Extensions.Emails.EmailGenerator.IModel emailGeneratorModel);
-		IEmailSenderResponse Send(ISI.Extensions.Emails.IEmailMailMessage message);
-		IEmailSenderResponse Send(System.Net.Mail.MailMessage message);
-		IEmailSenderResponse Send(string from, string recipients, string subject, string body);
-
-		TResponse Send<TResponse>(ISI.Extensions.Emails.IEmail email)
-			where TResponse : class, ISI.Extensions.Emails.IEmailSenderResponse, new();
-
-		TResponse Send<TResponse>(ISI.Extensions.Emails.EmailGenerator.IModel emailGeneratorModel)
-			where TResponse : class, ISI.Extensions.Emails.IEmailSenderResponse, new();
-
-		TResponse Send<TResponse>(string from, string recipients, string subject, string body)
-			where TResponse : class, ISI.Extensions.Emails.IEmailSenderResponse, new();
-
-		TResponse Send<TResponse>(ISI.Extensions.Emails.IEmailMailMessage message)
-			where TResponse : class, ISI.Extensions.Emails.IEmailSenderResponse, new();
-
-		TResponse Send<TResponse>(System.Net.Mail.MailMessage message)
-			where TResponse : class, ISI.Extensions.Emails.IEmailSenderResponse, new();
+		[ISI.Extensions.EnumGuid("65503603-71bc-41e5-8b1b-ff6bc8ee75c2")] Normal,
+		[ISI.Extensions.EnumGuid("467e24f4-55a5-4f37-a094-730bda40f0ed")] Low,
+		[ISI.Extensions.EnumGuid("918de0dd-e78d-445f-aef3-afb2ebab7393")] High,
 	}
 }

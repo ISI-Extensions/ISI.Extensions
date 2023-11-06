@@ -17,11 +17,34 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Emails
 {
-	public interface IMailMessageHasBillingInformation
+	public class EmailMailMessageAlternateView : IEmailMailMessageAlternateView
 	{
-		string BillingAccountNumber { get; set; }
+		public const string MthmlMediaType = ISI.Extensions.MimeTypes.Html;
+		public const string PlainTextMediaType = ISI.Extensions.MimeTypes.PlainText;
+
+		public EmailMailMessageAlternateView()
+		{
+
+		}
+		public EmailMailMessageAlternateView(string content, Encoding contentEncoding, string mediaType)
+		{
+			var alternateView = System.Net.Mail.AlternateView.CreateAlternateViewFromString(content, contentEncoding, mediaType);
+
+			ContentType = alternateView.ContentType;
+			Content = alternateView.ContentStream.ReadBytes();
+			LinkedResources = alternateView.LinkedResources.ToNullCheckedArray(linkedResource => new EmailMailMessageLinkedResource(linkedResource));
+			TransferEncoding = alternateView.TransferEncoding;
+		}
+
+
+		public System.Net.Mime.ContentType ContentType { get; set; }
+		public byte[] Content { get; set; }
+		public string ContentId { get; set; }
+		public IEmailMailMessageLinkedResource[] LinkedResources { get; set; }
+		public System.Net.Mime.TransferEncoding TransferEncoding { get; set; }
 	}
 }

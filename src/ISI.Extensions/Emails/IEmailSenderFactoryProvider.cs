@@ -26,6 +26,6 @@ namespace ISI.Extensions.Emails
 		IEmailSender EmailSender { get; }
 		bool IsHandled(ISI.Extensions.Emails.IEmail email);
 		bool IsHandled(ISI.Extensions.Emails.EmailGenerator.IModel emailGeneratorModel);
-		bool IsHandled(ISI.Extensions.Emails.IMailMessage message);
+		bool IsHandled(ISI.Extensions.Emails.IEmailMailMessage message);
 	}
 }

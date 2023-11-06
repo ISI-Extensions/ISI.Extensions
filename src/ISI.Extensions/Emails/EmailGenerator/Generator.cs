@@ -124,7 +124,7 @@ namespace ISI.Extensions.Emails.EmailGenerator
 			return contentGenerator;
 		}
 
-		public virtual ISI.Extensions.Emails.IMailMessage GenerateEmail<TModel>(TModel model)
+		public virtual ISI.Extensions.Emails.IEmailMailMessage GenerateEmail<TModel>(TModel model)
 			where TModel : class, IModel
 		{
 			throw new NotImplementedException();
@@ -133,14 +133,14 @@ namespace ISI.Extensions.Emails.EmailGenerator
 
 		public virtual TResult GenerateEmail<TResult, TModel>(TModel model)
 			where TModel : class, IModel
-			where TResult : ISI.Extensions.Emails.IMailMessage, new()
+			where TResult : ISI.Extensions.Emails.IEmailMailMessage, new()
 		{
 			return GenerateEmail<TResult, TModel>(model, new());
 		}
 
 		public virtual TResult GenerateEmail<TResult, TModel>(TModel model, TResult instance)
 			where TModel : class, IModel
-			where TResult : ISI.Extensions.Emails.IMailMessage
+			where TResult : ISI.Extensions.Emails.IEmailMailMessage
 		{
 			var mailMessage = default(TResult);
 

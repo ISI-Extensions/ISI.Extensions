@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -12,22 +12,20 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace ISI.Extensions.Emails
 {
-	public interface IMailMessageAttachment
+	[Flags]
+	public enum EmailMessageDeliveryNotificationOption
 	{
-		System.Net.Mime.ContentType ContentType { get; set; }
-		byte[] Content { get; set; }
-		public string ContentId { get; set; }
-		IMailMessageAttachmentContentDisposition ContentDisposition { get; set; }
-		string Name { get; set; }
-		public int? NameEncoding { get; set; }
-		System.Net.Mime.TransferEncoding TransferEncoding { get; set; }
+		[ISI.Extensions.EnumGuid("3c452c24-fcc3-4d2f-8f99-1377fe311192")] None = 0,
+		[ISI.Extensions.EnumGuid("c769350c-2817-45d5-a773-53945cba949c")] OnSuccess = 1,
+		[ISI.Extensions.EnumGuid("06772ed4-a4eb-4c02-8012-cdf700cc59a1")] OnFailure = 2,
+		[ISI.Extensions.EnumGuid("918de0dd-e78d-445f-aef3-afb2ebab7393")] Delay = 4,
+		[ISI.Extensions.EnumGuid("1e626a10-fb21-4e51-bce6-7c96ec0b198d")] Never = 134217728,
 	}
 }

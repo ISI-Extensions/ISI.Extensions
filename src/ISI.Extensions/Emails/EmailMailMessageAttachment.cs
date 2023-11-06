@@ -17,11 +17,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Emails
 {
-	public interface IMailMessageHasMetadataInformation
+	public class EmailMailMessageAttachment : IEmailMailMessageAttachment
 	{
-		IDictionary<string, string> Metadata { get; set; }
+		public EmailMailMessageAttachment()
+		{
+
+		}
+
+		public EmailMailMessageAttachment(System.IO.Stream stream, string name)
+		{
+			Content = stream.ReadBytes();
+			Name = name;
+		}
+
+		public System.Net.Mime.ContentType ContentType { get; set; }
+		public byte[] Content { get; set; }
+		public string ContentId { get; set; }
+		public IEmailMailMessageAttachmentContentDisposition ContentDisposition { get; set; }
+		public string Name { get; set; }
+		public int? NameEncoding { get; set; }
+		public System.Net.Mime.TransferEncoding TransferEncoding { get; set; }
 	}
 }

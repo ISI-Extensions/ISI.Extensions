@@ -20,36 +20,8 @@ using System.Text;
 
 namespace ISI.Extensions.Emails
 {
-	public interface IMailMessage
+	public interface IEmailMailMessageHasBillingInformation
 	{
-		IEmailAddress From { get; set; }
-
-		IEmailAddress Sender { get; set; }
-
-		IEmailAddress[] ReplyTo { get; set; }
-
-		IEmailAddress[] To { get; set; }
-		IEmailAddress[] CC { get; set; }
-		IEmailAddress[] Bcc { get; set; }
-
-		System.Net.Mail.MailPriority Priority { get; set; }
-
-		System.Net.Mail.DeliveryNotificationOptions DeliveryNotificationOptions { get; set; }
-
-		int? HeadersEncoding { get; set; }
-		System.Collections.Specialized.NameValueCollection Headers { get; }
-
-		int? SubjectEncoding { get; set; }
-		string Subject { get; set; }
-
-		int? BodyEncoding { get; set; }
-		string Body { get; set; }
-		bool IsBodyHtml { get; set; }
-
-		IMailMessageAttachmentCollection Attachments { get; set; }
-
-		IMailMessageAlternateViewCollection AlternateViews { get; set; }
-
-		IMailMessage Clone();
+		string BillingAccountNumber { get; set; }
 	}
 }

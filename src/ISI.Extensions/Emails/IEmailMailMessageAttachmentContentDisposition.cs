@@ -17,29 +17,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
 
 namespace ISI.Extensions.Emails
 {
-	public class MailMessageAttachment : IMailMessageAttachment
+	public interface IEmailMailMessageAttachmentContentDisposition
 	{
-		public MailMessageAttachment()
-		{
-
-		}
-
-		public MailMessageAttachment(System.IO.Stream stream, string name)
-		{
-			Content = stream.ReadBytes();
-			Name = name;
-		}
-
-		public System.Net.Mime.ContentType ContentType { get; set; }
-		public byte[] Content { get; set; }
-		public string ContentId { get; set; }
-		public IMailMessageAttachmentContentDisposition ContentDisposition { get; set; }
-		public string Name { get; set; }
-		public int? NameEncoding { get; set; }
-		public System.Net.Mime.TransferEncoding TransferEncoding { get; set; }
+		System.Net.Mime.ContentDisposition ContentDisposition { get; set; }
+		DateTime CreationDate { get; set; }
+		string DispositionType { get; set; }
+		string FileName { get; set; }
+		bool Inline { get; set; }
+		DateTime ModificationDate { get; set; }
+		DateTime ReadDate { get; set; }
+		long Size { get; set; }
 	}
 }

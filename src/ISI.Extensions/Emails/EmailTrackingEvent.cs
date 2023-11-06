@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Emails
 {
-	public class EmailTrackingEvent : IEmailTrackingEvent, ISI.Extensions.Serialization.IHasSerializedEntityWithSerializerContractName
+	public class EmailTrackingEvent : IEmailTrackingEvent
 	{
 		public string MessageKey { get; set; }
 		public Guid EmailUuid { get; set; }
@@ -35,10 +35,6 @@ namespace ISI.Extensions.Emails
 		public string IpAddress { get; set; }
 		public string Source { get; set; }
 
-		public string DetailsSerializerContractName { get; set; }
-		public string DetailsSerialized { get; set; }
-
-		string ISI.Extensions.Serialization.IHasSerializerContractName.SerializerContractName => DetailsSerializerContractName;
-		string ISI.Extensions.Serialization.ISerializedEntity.SerializedValue => DetailsSerialized;
+		public string RawProviderEvent { get; set; }
 	}
 }

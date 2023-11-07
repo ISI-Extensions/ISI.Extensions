@@ -20,11 +20,11 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Emails
 {
-	public class EmailAddress
+	public class EmailAddress : IEmailAddress
 	{
 		public const string CaptionRegexPattern = "(?:[a-zA-Z\\d!#$%&\'*\\(\\)\\-/=?^_`{|}~]+\\x20*|\"(?:(?=[\\x01-\\x7f])[^\"\\\\]|\\\\[\\x01-\\x7f])*\"\\x20*)*";
 		public const string AddressRegexPattern = "(?<EmailName>(?!\\.)(?>\\.?[a-zA-Z\\d!#$%&\'*+\\-/=?^_`{|}~]+)+|\\\"(?:(?=[\\x01-\\x7f])[^\\\"\\\\]|\\\\[\\x01-\\x7f])*\\\")@(?<EmailDomain>(?:(?!-)[a-zA-Z\\d\\-]+(?<!-)\\.)+[a-zA-Z]{2,}|\\[(?:(?:(?(?<!\\[)\\.)(?:25[0-5]|2[0-4]\\d|[01]?\\d?\\d)){4}|[a-zA-Z\\d\\-]*[a-zA-Z\\d]:(?:(?=[\\x01-\\x7f])[^\\\\\\[\\]]|\\\\[\\x01-\\x7f])+)\\])";
-		public static string EmailAddressRegexPattern = "^(?:(?<EmailCaption>(?>" + CaptionRegexPattern + ")*)(?<angle><))?" + AddressRegexPattern + "(?(angle)>)$";
+		public static readonly string EmailAddressRegexPattern = "^(?:(?<EmailCaption>(?>" + CaptionRegexPattern + ")*)(?<angle><))?" + AddressRegexPattern + "(?(angle)>)$";
 				
 		private static readonly System.Text.RegularExpressions.Regex EmailAddressRegex = new(EmailAddressRegexPattern, System.Text.RegularExpressions.RegexOptions.ECMAScript | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
@@ -61,7 +61,7 @@ namespace ISI.Extensions.Emails
 		{
 			SetValue(mailAddress.Address, mailAddress.DisplayName);
 		}
-		public EmailAddress(EmailAddress emailAddress)
+		public EmailAddress(IEmailAddress emailAddress)
 			: this()
 		{
 			SetValue(emailAddress.Address, emailAddress.Caption);
@@ -111,7 +111,7 @@ namespace ISI.Extensions.Emails
 			return EmailAddressRegex.Match(Address ?? string.Empty).Success;
 		}
 
-		public EmailAddress Clone()
+		public IEmailAddress Clone()
 		{
 			return new EmailAddress()
 			{
@@ -132,19 +132,17 @@ namespace ISI.Extensions.Emails
 			return new System.Net.Mail.MailAddress(Address, Caption);
 		}
 
-		public static EmailAddress Create(string address, string caption)
+		public static IEmailAddress Create(string address, string caption)
 		{
-			EmailAddress result = null;
-
 			if (!string.IsNullOrWhiteSpace(address))
 			{
-				result = new EmailAddress(address, caption);
+				return new EmailAddress(address, caption);
 			}
 
-			return result;
+			return null;
 		}
 
-		public static bool TryCreateEmailAddress(string value, out EmailAddress emailAddress)
+		public static bool TryCreateEmailAddress(string value, out IEmailAddress emailAddress)
 		{
 			var matchEmailAddress = EmailAddressRegex.Match(value ?? string.Empty);
 
@@ -187,7 +185,7 @@ namespace ISI.Extensions.Emails
 
 			return null;
 		}
-		public static EmailAddress Create(EmailAddress emailAddress)
+		public static IEmailAddress Create(IEmailAddress emailAddress)
 		{
 			if (emailAddress != null)
 			{

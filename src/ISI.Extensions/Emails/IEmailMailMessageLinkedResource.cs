@@ -22,9 +22,12 @@ namespace ISI.Extensions.Emails
 {
 	public interface IEmailMailMessageLinkedResource
 	{
-		Uri ContentLink { get; set; }
+		Uri ContentLinkUri { get; set; }
 		byte[] Content { get; set; }
-		System.Net.Mime.ContentType ContentType { get; set; }
-		System.Net.Mime.TransferEncoding TransferEncoding { get; set; }
+		string ContentId { get; set; }
+		IEmailMailMessageContentType ContentType { get; set; }
+		EmailMessageTransferEncoding TransferEncoding { get; set; }
+
+		IEmailMailMessageLinkedResource Clone();
 	}
 }

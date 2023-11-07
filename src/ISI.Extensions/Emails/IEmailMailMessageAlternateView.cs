@@ -22,10 +22,12 @@ namespace ISI.Extensions.Emails
 {
 	public interface IEmailMailMessageAlternateView
 	{
-		System.Net.Mime.ContentType ContentType { get; set; }
 		byte[] Content { get; set; }
 		string ContentId { get; set; }
 		IEmailMailMessageLinkedResource[] LinkedResources { get; set; }
-		System.Net.Mime.TransferEncoding TransferEncoding { get; set; }
+		IEmailMailMessageContentType ContentType { get; set; }
+		EmailMessageTransferEncoding TransferEncoding { get; set; }
+
+		IEmailMailMessageAlternateView Clone();
 	}
 }

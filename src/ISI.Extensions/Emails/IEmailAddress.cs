@@ -21,5 +21,9 @@ namespace ISI.Extensions.Emails
 {
 	public interface IEmailAddress
 	{
+		public string Address { get; set; }
+		public string Caption { get; set; }
+
+		IEmailAddress Clone();
 	}
 }

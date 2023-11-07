@@ -22,7 +22,6 @@ namespace ISI.Extensions.Emails.EmailGenerator
 {
 	public interface IModel
 	{
-		ISI.Extensions.Emails.IEmailAddress ReplyToEmailAddress { get; }
 		ISI.Extensions.Emails.IEmailAddress FromEmailAddress { get; }
 		ISI.Extensions.Emails.IEmailAddress[] ToEmailAddresses { get; }
 		ISI.Extensions.Emails.IEmailAddress[] CcEmailAddresses { get; }

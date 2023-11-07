@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -12,48 +12,51 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Emails
+namespace ISI.Extensions.Emails.Extensions
 {
-	public class EmailMailMessageAttachment : IEmailMailMessageAttachment
+	public static class ContentTypeExtensions
 	{
-		public EmailMailMessageAttachment()
+		public static System.Net.Mime.ContentType ToContentType(this IEmailMailMessageContentType emailMailMessageContentType)
 		{
-
-		}
-
-		public EmailMailMessageAttachment(System.IO.Stream stream, string name)
-		{
-			Content = stream.ReadBytes();
-			Name = name;
-		}
-
-		public byte[] Content { get; set; }
-		public string ContentId { get; set; }
-		public IEmailMailMessageAttachmentContentDisposition ContentDisposition { get; set; }
-		public string Name { get; set; }
-		public int? NameEncoding { get; set; }
-		public IEmailMailMessageContentType ContentType { get; set; }
-		public EmailMessageTransferEncoding TransferEncoding { get; set; }
-
-		IEmailMailMessageAttachment IEmailMailMessageAttachment.Clone()
-		{
-			return new EmailMailMessageAttachment()
+			var contentType = new System.Net.Mime.ContentType()
 			{
-				Content = Content.ToNullCheckedArray(),
-				ContentId = ContentId,
-				ContentDisposition = ContentDisposition.Clone(),
-				Name = Name,
-				NameEncoding = NameEncoding,
-				ContentType = ContentType.Clone(),
-				TransferEncoding = TransferEncoding,
+				Boundary = emailMailMessageContentType.Boundary,
+				CharSet = emailMailMessageContentType.CharSet,
+				MediaType = emailMailMessageContentType.MediaType,
+				Name = emailMailMessageContentType.Name,
 			};
+
+			foreach (var parameter in emailMailMessageContentType.Parameters ?? new Dictionary<string, string>())
+			{
+				contentType.Parameters[parameter.Key] = parameter.Value;
+			}
+
+			return contentType;
+		}
+
+		public static IEmailMailMessageContentType ToContentType(this System.Net.Mime.ContentType emailMailMessageContentType)
+		{
+			var contentType = new EmailMailMessageContentType()
+			{
+				Boundary = emailMailMessageContentType.Boundary,
+				CharSet = emailMailMessageContentType.CharSet,
+				MediaType = emailMailMessageContentType.MediaType,
+				Name = emailMailMessageContentType.Name,
+			};
+
+			foreach (var parameterKey in emailMailMessageContentType.Parameters.Keys)
+			{
+				var key = string.Format("{0}", parameterKey);
+
+				contentType.Parameters.Add(key, emailMailMessageContentType.Parameters[key]);
+			}
+
+			return contentType;
 		}
 	}
 }

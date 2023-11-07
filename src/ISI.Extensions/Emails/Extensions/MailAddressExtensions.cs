@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,45 +15,30 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Emails
+namespace ISI.Extensions.Emails.Extensions
 {
-	public class EmailMailMessageAttachment : IEmailMailMessageAttachment
+	public static class MailAddressExtensions
 	{
-		public EmailMailMessageAttachment()
+		public static System.Net.Mail.MailAddress ToMailAddress(this IEmailAddress emailAddress)
 		{
-
-		}
-
-		public EmailMailMessageAttachment(System.IO.Stream stream, string name)
-		{
-			Content = stream.ReadBytes();
-			Name = name;
-		}
-
-		public byte[] Content { get; set; }
-		public string ContentId { get; set; }
-		public IEmailMailMessageAttachmentContentDisposition ContentDisposition { get; set; }
-		public string Name { get; set; }
-		public int? NameEncoding { get; set; }
-		public IEmailMailMessageContentType ContentType { get; set; }
-		public EmailMessageTransferEncoding TransferEncoding { get; set; }
-
-		IEmailMailMessageAttachment IEmailMailMessageAttachment.Clone()
-		{
-			return new EmailMailMessageAttachment()
+			if (string.IsNullOrWhiteSpace(emailAddress.Caption))
 			{
-				Content = Content.ToNullCheckedArray(),
-				ContentId = ContentId,
-				ContentDisposition = ContentDisposition.Clone(),
-				Name = Name,
-				NameEncoding = NameEncoding,
-				ContentType = ContentType.Clone(),
-				TransferEncoding = TransferEncoding,
-			};
+				return new System.Net.Mail.MailAddress(emailAddress.Address);
+			}
+
+			return new System.Net.Mail.MailAddress(emailAddress.Address, emailAddress.Caption);
+		}
+
+		public static IEmailAddress ToEmailAddress(this System.Net.Mail.MailAddress mailAddress)
+		{
+			if (string.IsNullOrWhiteSpace(mailAddress.DisplayName))
+			{
+				return new EmailAddress(mailAddress.Address);
+			}
+
+			return new EmailAddress(mailAddress.Address, mailAddress.DisplayName);
 		}
 	}
 }

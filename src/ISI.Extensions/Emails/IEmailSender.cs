@@ -22,25 +22,25 @@ namespace ISI.Extensions.Emails
 {
 	public interface IEmailSender : IDisposable
 	{
-		IEmailSenderResponse Send(ISI.Extensions.Emails.IEmail email);
-		IEmailSenderResponse Send(ISI.Extensions.Emails.EmailGenerator.IModel emailGeneratorModel);
-		IEmailSenderResponse Send(ISI.Extensions.Emails.IEmailMailMessage message);
+		IEmailSenderResponse Send(IEmail email);
+		IEmailSenderResponse Send(EmailGenerator.IModel emailGeneratorModel);
+		IEmailSenderResponse Send(IEmailMailMessage message);
 		IEmailSenderResponse Send(System.Net.Mail.MailMessage message);
 		IEmailSenderResponse Send(string from, string recipients, string subject, string body);
 
-		TResponse Send<TResponse>(ISI.Extensions.Emails.IEmail email)
-			where TResponse : class, ISI.Extensions.Emails.IEmailSenderResponse, new();
+		TResponse Send<TResponse>(IEmail email)
+			where TResponse : class, IEmailSenderResponse, new();
 
-		TResponse Send<TResponse>(ISI.Extensions.Emails.EmailGenerator.IModel emailGeneratorModel)
-			where TResponse : class, ISI.Extensions.Emails.IEmailSenderResponse, new();
+		TResponse Send<TResponse>(EmailGenerator.IModel emailGeneratorModel)
+			where TResponse : class, IEmailSenderResponse, new();
 
 		TResponse Send<TResponse>(string from, string recipients, string subject, string body)
-			where TResponse : class, ISI.Extensions.Emails.IEmailSenderResponse, new();
+			where TResponse : class, IEmailSenderResponse, new();
 
-		TResponse Send<TResponse>(ISI.Extensions.Emails.IEmailMailMessage message)
-			where TResponse : class, ISI.Extensions.Emails.IEmailSenderResponse, new();
+		TResponse Send<TResponse>(IEmailMailMessage message)
+			where TResponse : class, IEmailSenderResponse, new();
 
 		TResponse Send<TResponse>(System.Net.Mail.MailMessage message)
-			where TResponse : class, ISI.Extensions.Emails.IEmailSenderResponse, new();
+			where TResponse : class, IEmailSenderResponse, new();
 	}
 }

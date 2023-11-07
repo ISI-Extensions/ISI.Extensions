@@ -21,7 +21,7 @@ namespace ISI.Extensions.Emails.Extensions
 {
 	public static class EmailMessageDeliveryNotificationOptionExtensions
 	{
-		public static System.Net.Mail.DeliveryNotificationOptions ToMailPriority(this EmailMessageDeliveryNotificationOption emailMessageDeliveryNotificationOption)
+		public static System.Net.Mail.DeliveryNotificationOptions ToDeliveryNotificationOptions(this EmailMessageDeliveryNotificationOption emailMessageDeliveryNotificationOption)
 		{
 			var deliveryNotificationOption = System.Net.Mail.DeliveryNotificationOptions.None;
 
@@ -48,7 +48,7 @@ namespace ISI.Extensions.Emails.Extensions
 			return deliveryNotificationOption;
 		}
 
-		public static EmailMessageDeliveryNotificationOption ToMailPriority(this System.Net.Mail.DeliveryNotificationOptions deliveryNotificationOption)
+		public static EmailMessageDeliveryNotificationOption ToEmailMessageDeliveryNotificationOption(this System.Net.Mail.DeliveryNotificationOptions deliveryNotificationOption)
 		{
 			var emailMessageDeliveryNotificationOption = EmailMessageDeliveryNotificationOption.None;
 

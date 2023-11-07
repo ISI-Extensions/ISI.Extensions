@@ -22,12 +22,14 @@ namespace ISI.Extensions.Emails
 {
 	public interface IEmailMailMessageAttachment
 	{
-		System.Net.Mime.ContentType ContentType { get; set; }
 		byte[] Content { get; set; }
-		public string ContentId { get; set; }
+		string ContentId { get; set; }
 		IEmailMailMessageAttachmentContentDisposition ContentDisposition { get; set; }
 		string Name { get; set; }
-		public int? NameEncoding { get; set; }
-		System.Net.Mime.TransferEncoding TransferEncoding { get; set; }
+		int? NameEncoding { get; set; }
+		IEmailMailMessageContentType ContentType { get; set; }
+		EmailMessageTransferEncoding TransferEncoding { get; set; }
+
+		IEmailMailMessageAttachment Clone();
 	}
 }

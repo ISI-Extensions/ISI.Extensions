@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,17 +15,16 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ISI.Extensions.Emails
 {
-	public interface IEmailSenderUpdatable : ISI.Extensions.Emails.IEmail
+	public enum EmailMessageTransferEncoding
 	{
-		new DateTime? ScheduledSendDateTime { get; set; }
-		new DateTime? LastAttemptSendDateTime { get; set; }
-		new int? SendAttemptCount { get; set; }
-		new DateTime? SentDateTime { get; set; }
+		[ISI.Extensions.EnumGuid("f5209bed-d1a7-4138-b999-75664cee19ca")] Unknown,
+		[ISI.Extensions.EnumGuid("6bf3d8ef-0553-42ff-a53b-48b958d03a3a")] QuotedPrintable,
+		[ISI.Extensions.EnumGuid("539824d2-c9cb-4576-ad7b-916668a1ae2e")] Base64,
+		[ISI.Extensions.EnumGuid("5bb43d0e-ad74-4d5d-9609-f0bb30b87eee")] SevenBit,
+		[ISI.Extensions.EnumGuid("4e4486f9-2152-45e5-9a49-ee93659f2726")] EightBit,
 	}
 }

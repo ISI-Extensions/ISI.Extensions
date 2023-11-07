@@ -23,9 +23,9 @@ namespace ISI.Extensions.Emails
 	public interface IEmailSenderResponse
 	{
 		Guid? EmailUuid { get; set; }
-		ISI.Extensions.Emails.SentStatus? SentStatus { get; set; }
+		SentStatus? SentStatus { get; set; }
 		string Message { get; set; }
 
-		ISI.Extensions.Emails.IEmailSenderResponseRecipient[] RecipientResponses { get; set; }
+		IEmailSenderResponseRecipient[] RecipientResponses { get; set; }
 	}
 }

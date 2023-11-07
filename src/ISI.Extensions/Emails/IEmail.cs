@@ -24,13 +24,12 @@ namespace ISI.Extensions.Emails
 	public interface IEmail
 	{
 		Guid EmailUuid { get; set; }
-		ISI.Extensions.Emails.EmailStatus EmailStatus { get; set; }
-		ISI.Extensions.Emails.IEmailMailMessage MailMessage { get; set; }
-		string EmailGeneratorModelSerializerContractName { get; set; }
-		string EmailGeneratorModelSerialized { get; set; }
-		DateTime? ScheduledSendDateTime { get; }
-		DateTime? LastAttemptSendDateTime { get; }
+		EmailStatus EmailStatus { get; set; }
+		IEmailMailMessage EmailMailMessage { get; set; }
+
+		DateTime? ScheduledSendDateTimeUtc { get; }
+		DateTime? LastAttemptSendDateTimeUtc { get; }
 		int? SendAttemptCount { get; }
-		DateTime? SentDateTime { get; }
+		DateTime? SentDateTimeUtc { get; }
 	}
 }

@@ -26,8 +26,6 @@ namespace ISI.Extensions.Emails
 
 		IEmailAddress Sender { get; set; }
 
-		IEmailAddress[] ReplyTo { get; set; }
-
 		IEmailAddress[] To { get; set; }
 		IEmailAddress[] CC { get; set; }
 		IEmailAddress[] Bcc { get; set; }
@@ -37,7 +35,7 @@ namespace ISI.Extensions.Emails
 		EmailMessageDeliveryNotificationOption DeliveryNotificationOptions { get; set; }
 
 		int? HeadersEncoding { get; set; }
-		System.Collections.Specialized.NameValueCollection Headers { get; }
+		IDictionary<string, string> Headers { get; }
 
 		int? SubjectEncoding { get; set; }
 		string Subject { get; set; }

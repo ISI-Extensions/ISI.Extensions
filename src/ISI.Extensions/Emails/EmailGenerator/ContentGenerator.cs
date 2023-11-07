@@ -289,11 +289,6 @@ namespace ISI.Extensions.Emails.EmailGenerator
 
 			emailMailMessage.Subject = model.Subject.Replace("\r", string.Empty).Replace("\n", string.Empty);
 
-			if (model.ReplyToEmailAddress != null)
-			{
-				emailMailMessage.ReplyTo = new[] { model.ReplyToEmailAddress };
-			}
-
 			if (model.FromEmailAddress != null)
 			{
 				emailMailMessage.From = model.FromEmailAddress;

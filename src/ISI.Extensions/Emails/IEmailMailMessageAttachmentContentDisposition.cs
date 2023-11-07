@@ -23,13 +23,14 @@ namespace ISI.Extensions.Emails
 {
 	public interface IEmailMailMessageAttachmentContentDisposition
 	{
-		System.Net.Mime.ContentDisposition ContentDisposition { get; set; }
-		DateTime CreationDate { get; set; }
+		DateTime CreationDateUtc { get; set; }
 		string DispositionType { get; set; }
 		string FileName { get; set; }
 		bool Inline { get; set; }
-		DateTime ModificationDate { get; set; }
-		DateTime ReadDate { get; set; }
+		DateTime ModificationDateUtc { get; set; }
+		DateTime ReadDateUtc { get; set; }
 		long Size { get; set; }
+
+		IEmailMailMessageAttachmentContentDisposition Clone();
 	}
 }

@@ -24,8 +24,8 @@ namespace ISI.Extensions.Emails
 	{
 		string EmailAddress { get; set; }
 		string TrackingKey { get; set; }
-		ISI.Extensions.Emails.SentStatus? SentStatus { get; set; }
-		ISI.Extensions.Emails.RejectReason? RejectReason { get; set; }
+		SentStatus? SentStatus { get; set; }
+		RejectReason? RejectReason { get; set; }
 		string Message { get; set; }
 	}
 }

@@ -30,10 +30,10 @@ namespace ISI.Extensions.Scm
 				Settings = settings;
 			}
 
-			public string ApiUrl
+			public string DomainName
 			{
-				get => Settings.GetValue(Settings.Key.DockerRegistryApiUrl);
-				set => Settings.SetValue(Settings.Key.DockerRegistryApiUrl, value);
+				get => Settings.GetValue(Settings.Key.DockerRegistryDomainName);
+				set => Settings.SetValue(Settings.Key.DockerRegistryDomainName, value);
 			}
 
 			public string ApiKey

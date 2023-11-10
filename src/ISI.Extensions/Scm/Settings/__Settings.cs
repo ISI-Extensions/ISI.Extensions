@@ -59,7 +59,7 @@ namespace ISI.Extensions.Scm
 			public const string BuildArtifactsUserName = nameof(BuildArtifactsUserName);
 			public const string BuildArtifactsPassword = nameof(BuildArtifactsPassword);
 
-			public const string DockerRegistryApiUrl = nameof(DockerRegistryApiUrl);
+			public const string DockerRegistryDomainName = nameof(DockerRegistryDomainName);
 			public const string DockerRegistryApiKey = nameof(DockerRegistryApiKey);
 			public const string DockerRegistryUserName = nameof(DockerRegistryUserName);
 			public const string DockerRegistryPassword = nameof(DockerRegistryPassword);

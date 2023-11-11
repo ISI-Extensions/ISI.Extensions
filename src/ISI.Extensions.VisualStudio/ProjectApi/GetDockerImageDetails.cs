@@ -25,9 +25,9 @@ namespace ISI.Extensions.VisualStudio
 {
 	public partial class ProjectApi
 	{
-		public DTOs.GetProjectReferencesResponse GetProjectReferences(DTOs.GetProjectReferencesRequest request)
+		public DTOs.GetDockerImageDetailsResponse GetDockerImageDetails(DTOs.GetDockerImageDetailsRequest request)
 		{
-			var response = new DTOs.GetProjectReferencesResponse();
+			var response = new DTOs.GetDockerImageDetailsResponse();
 
 			var projectDetails = GetProjectDetails(new()
 			{
@@ -38,37 +38,21 @@ namespace ISI.Extensions.VisualStudio
 			{
 				var csProjXml = System.Xml.Linq.XElement.Load(projectDetails.ProjectFullName);
 
-				var projectReferences = new List<ProjectReference>();
+				var sdkAttribute = csProjXml.GetAttributeByLocalName("Sdk")?.Value ?? string.Empty;
 
-				foreach (var itemGroup in csProjXml.GetElementsByLocalName("ItemGroup"))
+				if (sdkAttribute.StartsWith("Microsoft.NET", StringComparison.InvariantCultureIgnoreCase))
 				{
-					foreach (var projectReferenceElement in itemGroup.GetElementsByLocalName("ProjectReference"))
+					var propertyGroupElement = csProjXml.GetElementsByLocalName("PropertyGroup").NullCheckedFirstOrDefault();
+
+					if (propertyGroupElement != null)
 					{
-						var path = projectReferenceElement.GetAttributeByLocalName("Include").Value;
-						var rootPath = System.IO.Path.GetDirectoryName(projectDetails.ProjectFullName);
-						while (path.StartsWith("..\\", StringComparison.InvariantCultureIgnoreCase))
-						{
-							rootPath = System.IO.Path.GetDirectoryName(rootPath);
-							path = path.Substring(3);
-						}
-
-						path = System.IO.Path.Combine(rootPath, path);
-
-						var name = projectReferenceElement.GetElementByLocalName("Name")?.Value ?? System.IO.Path.GetFileNameWithoutExtension(path);
-						var projectUuid = projectReferenceElement.GetElementByLocalName("Project")?.Value?.ToGuidNullable();
-
-						projectReferences.Add(new()
-						{
-							Name = name,
-							Path = path,
-							ProjectUuid = projectUuid,
-						});
+						response.TargetOperatingSystem = propertyGroupElement.GetElementByLocalName("DockerDefaultTargetOS")?.Value ?? string.Empty;
+						response.ContainerImageName = propertyGroupElement.GetElementByLocalName("ContainerImageName")?.Value ?? string.Empty;
+						response.ContainerImageTag = propertyGroupElement.GetElementByLocalName("ContainerImageTag")?.Value ?? string.Empty;
 					}
 				}
-
-				response.ProjectReferences = projectReferences;
 			}
-
+			
 			return response;
 		}
 	}

@@ -24,6 +24,6 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.ProjectApi
 {
 	public class GetProjectReferencesRequest
 	{
-		public string ProjectFileName { get; set; }
+		public string Project { get; set; }
 	}
 }

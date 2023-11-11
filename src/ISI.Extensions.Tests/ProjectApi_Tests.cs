@@ -74,16 +74,28 @@ namespace ISI.Extensions.Tests
 
 			var xxx = projectApi.GetProjectReferences(new()
 			{
-				ProjectFileName = @"F:\ISI\ISI.FrameWork\src\ISI.Journal\ISI.Journal.Repository\ISI.Journal.Repository.csproj",
+				Project = @"F:\ISI\ISI.FrameWork\src\ISI.Journal\ISI.Journal.Repository\ISI.Journal.Repository.csproj",
 			});
-
-
+			
 			var yyy = projectApi.GetProjectReferences(new()
 			{
-				ProjectFileName = @"F:\ISI\Internal Projects\ISI.Extensions\src\ISI.Extensions.MessageBus.MassTransit.RabbitMQ\ISI.Extensions.MessageBus.MassTransit.RabbitMQ.csproj",
+				Project = @"F:\ISI\Internal Projects\ISI.Extensions\src\ISI.Extensions.MessageBus.MassTransit.RabbitMQ\ISI.Extensions.MessageBus.MassTransit.RabbitMQ.csproj",
 			});
+		}
 
+		[Test]
+		public void GetDockerImageDetails_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 
+			var logger = ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();
+			var projectApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.ProjectApi>();
+
+			var xxx = projectApi.GetDockerImageDetails(new()
+			{
+				Project = @"F:\ISI\Internal Projects\ISI.DocumentStorage.ServiceApplication\src\ISI.DocumentStorage.ServiceApplication",
+			});
 		}
 	}
 }

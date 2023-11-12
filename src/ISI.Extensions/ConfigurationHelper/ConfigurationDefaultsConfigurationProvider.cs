@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using ISI.Extensions.Extensions;
 using ISI.Extensions.TypeLocator.Extensions;
 
 namespace ISI.Extensions.ConfigurationHelper
@@ -55,7 +56,19 @@ namespace ISI.Extensions.ConfigurationHelper
 				{
 					var propertyValue = property.GetValue(source);
 
-					if (property.PropertyType == typeof(string))
+					if (property.PropertyType == typeof(string[]))
+					{
+						var values = (string[]) propertyValue;
+
+						if (values.NullCheckedAny())
+						{
+							for (var valueIndex = 0; valueIndex < values.Length; valueIndex++)
+							{
+								Data.Add(string.Format("{0}{1}[{2}]", prefix, property.Name, valueIndex), string.Format("{0}", values[valueIndex]));
+							}
+						}
+					}
+					else if (property.PropertyType == typeof(string))
 					{
 						Data.Add(string.Format("{0}{1}", prefix, property.Name), string.Format("{0}", propertyValue));
 					}

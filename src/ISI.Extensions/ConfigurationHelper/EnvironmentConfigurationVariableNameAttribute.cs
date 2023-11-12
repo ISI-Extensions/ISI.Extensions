@@ -19,11 +19,11 @@ using System.Text;
 
 namespace ISI.Extensions
 {
-	public class EnvironmentConfigurationAttribute : System.Attribute
+	public class EnvironmentConfigurationVariableNameAttribute : System.Attribute
 	{
 		public string EnvironmentVariableName { get; }
 
-		public EnvironmentConfigurationAttribute(string environmentVariableName)
+		public EnvironmentConfigurationVariableNameAttribute(string environmentVariableName)
 		{
 			EnvironmentVariableName = environmentVariableName;
 		}

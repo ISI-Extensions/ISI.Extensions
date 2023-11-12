@@ -47,7 +47,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 					recordIndexName = recordIndexName.Substring(0, 128);
 				}
 
-				sql.AppendFormat("  CREATE{3}{4} INDEX {0} ON {1} ({2})\n", recordIndexName, tableName, string.Join(", ", recordIndex.Columns.Select(column => string.Format("{0}{1}", FormatColumnName(column.RecordPropertyDescription.ColumnName), column.AscendingOrder ? string.Empty : " desc"))), (recordIndex.Unique ? " unique" : string.Empty), (recordIndex.Clustered ? " clustered" : string.Empty));
+				sql.AppendFormat("  CREATE{3}{4} INDEX {0} ON {1} ({2});\n", recordIndexName, tableName, string.Join(", ", recordIndex.Columns.Select(column => string.Format("{0}{1}", FormatColumnName(column.RecordPropertyDescription.ColumnName), column.AscendingOrder ? string.Empty : " desc"))), (recordIndex.Unique ? " unique" : string.Empty), (recordIndex.Clustered ? " clustered" : string.Empty));
 			}
 
 			return sql.ToString();

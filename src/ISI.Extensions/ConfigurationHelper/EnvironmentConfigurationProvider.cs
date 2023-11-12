@@ -60,7 +60,7 @@ namespace ISI.Extensions.ConfigurationHelper
 			{
 				if (property.CanRead)
 				{
-					var environmentConfigurationAttribute = property.GetCustomAttribute<EnvironmentConfigurationAttribute>();
+					var environmentConfigurationAttribute = property.GetCustomAttribute<EnvironmentConfigurationVariableNameAttribute>();
 
 					if (property.PropertyType == typeof(string[]))
 					{

@@ -186,7 +186,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 					sql.AppendFormat("    CONSTRAINT {0} PRIMARY KEY ({1})\n", primaryKeyName, string.Join(", ", recordDescription.PrimaryKeyPropertyDescriptions.OrderBy(propertyDescription => propertyDescription.PrimaryKeyAttribute.Order).Select(column => FormatColumnName(column.ColumnName))));
 				}
 
-				sql.Append("  )\n");
+				sql.Append("  );\n");
 
 				sql.Append(GetCreateIndexesSql(tableName, recordDescription));
 

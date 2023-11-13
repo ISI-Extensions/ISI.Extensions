@@ -23,13 +23,13 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 {
 	public partial class MessageBus
 	{
-		public override async Task PublishAsync<TRequest>(TRequest request, System.Threading.CancellationToken cancellationToken = default)
+		public override async Task PublishAsync<TRequest>(TRequest request, MessageBusMessageHeaderCollection headers = null, System.Threading.CancellationToken cancellationToken = default)
 			where TRequest : class
 		{
-			await PublishAsync(GetChannelName<TRequest>(), request, cancellationToken);
+			await PublishAsync(GetChannelName<TRequest>(), request, headers, cancellationToken);
 		}
 
-		public override async Task PublishAsync<TRequest>(string channelName, TRequest request, System.Threading.CancellationToken cancellationToken = default)
+		public override async Task PublishAsync<TRequest>(string channelName, TRequest request, MessageBusMessageHeaderCollection headers = null, System.Threading.CancellationToken cancellationToken = default)
 			where TRequest : class
 		{
 			if (string.IsNullOrWhiteSpace(channelName))
@@ -37,7 +37,7 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 				channelName = GetChannelName<TRequest>();
 			}
 
-			var messageEnvelope = GetMessageEnvelope(request, TimeSpan.MaxValue);
+			var messageEnvelope = GetMessageEnvelope(request, headers, TimeSpan.MaxValue);
 
 			var queueClient = new Microsoft.Azure.ServiceBus.QueueClient(Connection, channelName, default, Microsoft.Azure.ServiceBus.RetryPolicy.NoRetry);
 			//var queueClient = new Microsoft.Azure.ServiceBus.QueueClient(Connection, channelName, Microsoft.Azure.ServiceBus.ReceiveMode.PeekLock, new Microsoft.Azure.ServiceBus.RetryExponential(TimeSpan.Zero, TimeSpan.FromSeconds(30.0), Configuration.DefaultChannel.RetryLimit));

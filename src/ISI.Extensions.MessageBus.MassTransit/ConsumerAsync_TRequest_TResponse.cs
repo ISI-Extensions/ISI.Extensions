@@ -28,11 +28,13 @@ namespace ISI.Extensions.MessageBus.MassTransit
 		where TResponse : class
 	{
 		private readonly Func<TRequest, Task<TResponse>> _processor;
+		private readonly IsAuthorizedDelegate _isAuthorized;
 		private readonly ISI.Extensions.MessageBus.OnError<TRequest, TResponse> _onError;
 
-		public ConsumerAsync(Func<TRequest, Task<TResponse>> processor, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
+		public ConsumerAsync(Func<TRequest, Task<TResponse>> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
 		{
 			_processor = processor;
+			_isAuthorized = isAuthorized ?? ((headers, request) => true);
 			_onError = onError;
 		}
 
@@ -45,22 +47,25 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 				BeginRequest();
 
-				response = await _processor(context.Message);
+				if (_isAuthorized(GetRequestHeaders(context), context.Message))
+				{
+					response = await _processor(context.Message);
 
-				if ((context.Message is ISI.Extensions.MessageBus.ICorrelatedBy<Guid> requestCorrelatedByGuid) && (response is ISI.Extensions.MessageBus.ICorrelatedBy<Guid> responseCorrelatedByGuid))
-				{
-					responseCorrelatedByGuid.CorrelationId = requestCorrelatedByGuid.CorrelationId;
-				}
-				else if ((context.Message is ISI.Extensions.MessageBus.ICorrelatedBy<int> requestCorrelatedByInt) && (response is ISI.Extensions.MessageBus.ICorrelatedBy<int> responseCorrelatedByInt))
-				{
-					responseCorrelatedByInt.CorrelationId = requestCorrelatedByInt.CorrelationId;
-				}
-				else if ((context.Message is ISI.Extensions.MessageBus.ICorrelatedBy<long> requestCorrelatedByLong) && (response is ISI.Extensions.MessageBus.ICorrelatedBy<long> responseCorrelatedByLong))
-				{
-					responseCorrelatedByLong.CorrelationId = requestCorrelatedByLong.CorrelationId;
-				}
+					if ((context.Message is ISI.Extensions.MessageBus.ICorrelatedBy<Guid> requestCorrelatedByGuid) && (response is ISI.Extensions.MessageBus.ICorrelatedBy<Guid> responseCorrelatedByGuid))
+					{
+						responseCorrelatedByGuid.CorrelationId = requestCorrelatedByGuid.CorrelationId;
+					}
+					else if ((context.Message is ISI.Extensions.MessageBus.ICorrelatedBy<int> requestCorrelatedByInt) && (response is ISI.Extensions.MessageBus.ICorrelatedBy<int> responseCorrelatedByInt))
+					{
+						responseCorrelatedByInt.CorrelationId = requestCorrelatedByInt.CorrelationId;
+					}
+					else if ((context.Message is ISI.Extensions.MessageBus.ICorrelatedBy<long> requestCorrelatedByLong) && (response is ISI.Extensions.MessageBus.ICorrelatedBy<long> responseCorrelatedByLong))
+					{
+						responseCorrelatedByLong.CorrelationId = requestCorrelatedByLong.CorrelationId;
+					}
 
-				await context.RespondAsync<TResponse>(response);
+					await context.RespondAsync<TResponse>(response);
+				}
 
 				EndRequest();
 			}

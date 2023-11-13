@@ -23,13 +23,13 @@ namespace ISI.Extensions.MessageBus
 {
 	public abstract partial class AbstractMessageBus
 	{
-		public virtual async Task PublishAsync<TRequest>(TRequest request, System.Threading.CancellationToken cancellationToken = default)
+		public virtual async Task PublishAsync<TRequest>(TRequest request, MessageBusMessageHeaderCollection headers = null, System.Threading.CancellationToken cancellationToken = default)
 			where TRequest : class
 		{
-			await PublishAsync<TRequest>(null, request, cancellationToken);
+			await PublishAsync<TRequest>(null, request, headers, cancellationToken);
 		} 
 
-		public abstract Task PublishAsync<TRequest>(string queueName, TRequest request, System.Threading.CancellationToken cancellationToken = default) 
+		public abstract Task PublishAsync<TRequest>(string queueName, TRequest request, MessageBusMessageHeaderCollection headers = null, System.Threading.CancellationToken cancellationToken = default) 
 			where TRequest : class;
 	}
 }

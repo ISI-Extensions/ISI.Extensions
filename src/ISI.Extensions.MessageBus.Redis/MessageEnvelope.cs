@@ -24,8 +24,8 @@ namespace ISI.Extensions.MessageBus.Redis
 	[DataContract]
 	public class MessageEnvelope
 	{
-		[DataMember(Name = "operationKey", EmitDefaultValue = false)]
-		public string OperationKey { get; set; }
+		[DataMember(Name = "headers", EmitDefaultValue = false)]
+		public MessageEnvelopeHeader[] Headers { get; set; }
 
 		[DataMember(Name = "requestTimeOut", EmitDefaultValue = false)]
 		public string __RequestTimeOut { get => RequestTimeOut.Formatted(TimeSpanExtensions.TimeSpanFormat.Precise); set => RequestTimeOut = value.ToTimeSpanNullable(); }
@@ -40,5 +40,15 @@ namespace ISI.Extensions.MessageBus.Redis
 
 		[DataMember(Name = "responseChannelName", EmitDefaultValue = false)]
 		public string ResponseChannelName { get; set; }
+	}
+
+	[DataContract]
+	public class MessageEnvelopeHeader
+	{
+		[DataMember(Name = "key", EmitDefaultValue = false)]
+		public string Key { get; set; }
+
+		[DataMember(Name = "value", EmitDefaultValue = false)]
+		public string Value { get; set; }
 	}
 }

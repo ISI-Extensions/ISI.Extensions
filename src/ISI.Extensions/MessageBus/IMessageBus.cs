@@ -31,25 +31,25 @@ namespace ISI.Extensions.MessageBus
 
 		Task StopAsync(System.Threading.CancellationToken cancellationToken = default);
 
-		Task PublishAsync<TRequest>(TRequest request, System.Threading.CancellationToken cancellationToken = default)
+		Task PublishAsync<TRequest>(TRequest request, MessageBusMessageHeaderCollection headers = null, System.Threading.CancellationToken cancellationToken = default)
 			where TRequest : class;
 
-		Task PublishAsync<TRequest>(string channelName, TRequest request, System.Threading.CancellationToken cancellationToken = default)
+		Task PublishAsync<TRequest>(string channelName, TRequest request, MessageBusMessageHeaderCollection headers = null, System.Threading.CancellationToken cancellationToken = default)
 			where TRequest : class;
 
-		Task<TResponse> PublishAsync<TRequest, TResponse>(TRequest request, TimeSpan? timeout = null, TimeSpan? timeToLive = null, System.Threading.CancellationToken cancellationToken = default)
+		Task<TResponse> PublishAsync<TRequest, TResponse>(TRequest request, MessageBusMessageHeaderCollection headers = null, TimeSpan? timeout = null, TimeSpan? timeToLive = null, System.Threading.CancellationToken cancellationToken = default)
 			where TRequest : class
 			where TResponse : class;
 
-		Task<TResponse> PublishAsync<TRequest, TResponse>(string channelName, TRequest request, TimeSpan? timeout = null, TimeSpan? timeToLive = null, System.Threading.CancellationToken cancellationToken = default)
+		Task<TResponse> PublishAsync<TRequest, TResponse>(string channelName, TRequest request, MessageBusMessageHeaderCollection headers = null, TimeSpan? timeout = null, TimeSpan? timeToLive = null, System.Threading.CancellationToken cancellationToken = default)
 			where TRequest : class
 			where TResponse : class;
 
-		Task<TResponse> PublishAsync<TRequest, TResponse>(Type requestType, TRequest request, TimeSpan? timeout = null, TimeSpan? timeToLive = null, System.Threading.CancellationToken cancellationToken = default)
+		Task<TResponse> PublishAsync<TRequest, TResponse>(Type requestType, TRequest request, MessageBusMessageHeaderCollection headers = null, TimeSpan? timeout = null, TimeSpan? timeToLive = null, System.Threading.CancellationToken cancellationToken = default)
 			where TRequest : class
 			where TResponse : class;
 
-		Task<TResponse> PublishAsync<TRequest, TResponse>(string channelName, Type requestType, TRequest request, TimeSpan? timeout = null, TimeSpan? timeToLive = null, System.Threading.CancellationToken cancellationToken = default)
+		Task<TResponse> PublishAsync<TRequest, TResponse>(string channelName, Type requestType, TRequest request, MessageBusMessageHeaderCollection headers = null, TimeSpan? timeout = null, TimeSpan? timeToLive = null, System.Threading.CancellationToken cancellationToken = default)
 			where TRequest : class
 			where TResponse : class;
 	}

@@ -24,7 +24,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 {
 	public partial class MessageBus
 	{
-		public override async Task PublishAsync<TRequest>(TRequest request, System.Threading.CancellationToken cancellationToken = default)
+		public override async Task PublishAsync<TRequest>(TRequest request, MessageBusMessageHeaderCollection headers = null, System.Threading.CancellationToken cancellationToken = default)
 			where TRequest : class
 		{
 			await BusControl.Publish<TRequest>(request, context =>
@@ -32,10 +32,15 @@ namespace ISI.Extensions.MessageBus.MassTransit
 				var operationKey = UpdateRequest(context.Message);
 
 				context.Headers.Set(ISI.Extensions.Diagnostics.OperationKeyHeaderKey, operationKey);
+
+				foreach (var header in headers ?? new MessageBusMessageHeaderCollection())
+				{
+					context.Headers.Set(header.Key, header.Value);
+				}
 			}, cancellationToken);
 		}
 
-		public override async Task PublishAsync<TRequest>(string channelName, TRequest request, System.Threading.CancellationToken cancellationToken = default)
+		public override async Task PublishAsync<TRequest>(string channelName, TRequest request, MessageBusMessageHeaderCollection headers = null, System.Threading.CancellationToken cancellationToken = default)
 			where TRequest : class
 		{
 			throw new NotImplementedException();

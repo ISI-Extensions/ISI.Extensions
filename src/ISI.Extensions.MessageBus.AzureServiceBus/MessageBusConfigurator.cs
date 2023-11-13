@@ -60,11 +60,13 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 			}
 		}
 
-		public void Subscribe<TController, TRequest, TResponse>(Func<TController, TRequest, Task<TResponse>> processor, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
+		public void Subscribe<TController, TRequest, TResponse>(Func<TController, TRequest, Task<TResponse>> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
 			where TController : class
 			where TRequest : class
 			where TResponse : class
 		{
+			isAuthorized ??= (headers, request) => true;
+
 			var requestChannelName = _getChannelName(typeof(TRequest));
 
 			CreateQueue(requestChannelName);
@@ -87,10 +89,12 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 				});
 		}
 
-		public void Subscribe<TController, TRequest>(Func<TController, TRequest, Task> processor, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
+		public void Subscribe<TController, TRequest>(Func<TController, TRequest, Task> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
 			where TController : class
 			where TRequest : class
 		{
+			isAuthorized ??= (headers, request) => true;
+
 			var requestChannelName = _getChannelName(typeof(TRequest));
 
 			CreateQueue(requestChannelName);
@@ -114,11 +118,13 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 		}
 
 
-		public void Subscribe<TController, TRequest, TResponse>(Func<TController> getController, Func<TController, TRequest, Task<TResponse>> processor, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
+		public void Subscribe<TController, TRequest, TResponse>(Func<TController> getController, Func<TController, TRequest, Task<TResponse>> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
 			where TController : class
 			where TRequest : class
 			where TResponse : class
 		{
+			isAuthorized ??= (headers, request) => true;
+
 			var requestChannelName = _getChannelName(typeof(TRequest));
 
 			CreateQueue(requestChannelName);
@@ -141,10 +147,12 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 				});
 		}
 
-		public void Subscribe<TController, TRequest>(Func<TController> getController, Func<TController, TRequest, Task> processor, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
+		public void Subscribe<TController, TRequest>(Func<TController> getController, Func<TController, TRequest, Task> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
 			where TController : class
 			where TRequest : class
 		{
+			isAuthorized ??= (headers, request) => true;
+
 			var requestChannelName = _getChannelName(typeof(TRequest));
 
 			CreateQueue(requestChannelName);
@@ -172,10 +180,12 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 
 
 
-		public void Subscribe<TRequest, TResponse>(Func<TRequest, Task<TResponse>> processor, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
+		public void Subscribe<TRequest, TResponse>(Func<TRequest, Task<TResponse>> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
 			where TRequest : class
 			where TResponse : class
 		{
+			isAuthorized ??= (headers, request) => true;
+
 			var requestChannelName = _getChannelName(typeof(TRequest));
 
 			CreateQueue(requestChannelName);
@@ -198,9 +208,11 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 				});
 		}
 
-		public void Subscribe<TRequest>(Func<TRequest, Task> processor, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
+		public void Subscribe<TRequest>(Func<TRequest, Task> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
 			where TRequest : class
 		{
+			isAuthorized ??= (headers, request) => true;
+
 			var requestChannelName = _getChannelName(typeof(TRequest));
 
 			CreateQueue(requestChannelName);

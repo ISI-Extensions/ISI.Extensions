@@ -26,6 +26,7 @@ namespace ISI.Extensions.MessageBus.Redis
 		where TRequest : class
 	{
 		private readonly Func<TRequest, Task> _processor;
+		private readonly IsAuthorizedDelegate _isAuthorized;
 		private readonly ISI.Extensions.MessageBus.OnError<TRequest> _onError;
 
 		public ConsumerAsync(
@@ -33,10 +34,12 @@ namespace ISI.Extensions.MessageBus.Redis
 			StackExchange.Redis.ConnectionMultiplexer connection,
 			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer,
 			Func<TRequest, Task> processor, 
+			IsAuthorizedDelegate isAuthorized = null,
 			ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
 			: base(serviceProvider, connection, jsonSerializer)
 		{
 			_processor = processor;
+			_isAuthorized = isAuthorized ?? ((headers, request) => true);
 			_onError = onError;
 		}
 
@@ -54,7 +57,10 @@ namespace ISI.Extensions.MessageBus.Redis
 
 				BeginRequest();
 
-				await _processor(requestContext.Request);
+				if (_isAuthorized(GetRequestHeaders(requestContext.MessageEnvelope), requestContext.Request))
+				{
+					await _processor(requestContext.Request);
+				}
 
 				EndRequest();
 			}

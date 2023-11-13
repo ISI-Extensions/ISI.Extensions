@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +29,7 @@ namespace ISI.Extensions.MessageBus.Redis
 	{
 		private readonly Func<TController> _getController;
 		private readonly Func<TController, TRequest, Task<TResponse>> _processor;
+		private readonly IsAuthorizedDelegate _isAuthorized;
 		private readonly ISI.Extensions.MessageBus.OnError<TRequest, TResponse> _onError;
 
 		public ControllerConsumerAsync(
@@ -36,12 +37,14 @@ namespace ISI.Extensions.MessageBus.Redis
 			StackExchange.Redis.ConnectionMultiplexer connection,
 			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer,
 			Func<TController> getController,
-			Func<TController, TRequest, Task<TResponse>> processor, 
+			Func<TController, TRequest, Task<TResponse>> processor,
+			IsAuthorizedDelegate isAuthorized = null,
 			ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
 			: base(serviceProvider, connection, jsonSerializer)
 		{
 			_getController = getController;
 			_processor = processor;
+			_isAuthorized = isAuthorized ?? ((headers, request) => true);
 			_onError = onError;
 		}
 
@@ -63,31 +66,34 @@ namespace ISI.Extensions.MessageBus.Redis
 
 				BeginRequest();
 
-				var controller = _getController();
-
-				if (requestContext.MessageEnvelope.RequestTimeOut.HasValue)
+				if (_isAuthorized(GetRequestHeaders(requestContext.MessageEnvelope), requestContext.Request))
 				{
-					cancellationTokenSource.CancelAfter(requestContext.MessageEnvelope.RequestTimeOut.Value);
+					var controller = _getController();
 
-					try
+					if (requestContext.MessageEnvelope.RequestTimeOut.HasValue)
+					{
+						cancellationTokenSource.CancelAfter(requestContext.MessageEnvelope.RequestTimeOut.Value);
+
+						try
+						{
+							response = await _processor(controller, requestContext.Request);
+						}
+						catch (TaskCanceledException)
+						{
+							throw new ISI.Extensions.MessageBus.MessageBusConsumerTimeOutException(requestContext.MessageEnvelope.RequestTimeOut.Value);
+						}
+					}
+					else
 					{
 						response = await _processor(controller, requestContext.Request);
 					}
-					catch (TaskCanceledException)
-					{
-						throw new ISI.Extensions.MessageBus.MessageBusConsumerTimeOutException(requestContext.MessageEnvelope.RequestTimeOut.Value);
-					}
+
+					UpdateResponse(requestContext.Request, response);
+
+					var responseMessageSerialized = GetResponseMessageSerialized(response);
+
+					await _connection.GetSubscriber().PublishAsync(requestContext.MessageEnvelope.ResponseChannelName, responseMessageSerialized);
 				}
-				else
-				{
-					response = await _processor(controller, requestContext.Request);
-				}
-
-				UpdateResponse(requestContext.Request, response);
-
-				var responseMessageSerialized = GetResponseMessageSerialized(response);
-
-				await _connection.GetSubscriber().PublishAsync(requestContext.MessageEnvelope.ResponseChannelName, responseMessageSerialized);
 
 				EndRequest();
 			}

@@ -62,7 +62,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 		private interface IPublishRequestClientWrapper<TResponse> : IPublishRequestClientWrapper
 			where TResponse : class
 		{
-			Task<TResponse> GetResponse(IBus busControl, object request, System.Threading.CancellationToken cancellationToken);
+			Task<TResponse> GetResponse(IBus busControl, object request, MessageBusMessageHeaderCollection headers, System.Threading.CancellationToken cancellationToken);
 		}
 
 		private class PublishRequestClientWrapper<TRequest, TResponse> : IPublishRequestClientWrapper<TResponse>
@@ -81,7 +81,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 				_timeToLive = timeToLive;
 			}
 
-			public async Task<TResponse> GetResponse(IBus busControl, object request, System.Threading.CancellationToken cancellationToken)
+			public async Task<TResponse> GetResponse(IBus busControl, object request, MessageBusMessageHeaderCollection headers, System.Threading.CancellationToken cancellationToken)
 			{
 				if (_client == null)
 				{
@@ -99,6 +99,11 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 						context.Headers.Set(ISI.Extensions.MessageBus.AbstractMessageBus.RequestTimeOutHeaderKey, _timeout.Formatted(TimeSpanExtensions.TimeSpanFormat.Precise));
 						context.Headers.Set(ISI.Extensions.Diagnostics.OperationKeyHeaderKey, operationKey);
+						
+						foreach (var header in headers ?? new MessageBusMessageHeaderCollection())
+						{
+							context.Headers.Set(header.Key, header.Value);
+						}
 
 						context.CorrelationId = NewId.NextGuid();
 					});

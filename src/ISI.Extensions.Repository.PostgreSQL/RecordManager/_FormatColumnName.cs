@@ -18,28 +18,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.MessageBus.AzureServiceBus
+namespace ISI.Extensions.Repository.PostgreSQL
 {
-	public partial class MessageBus
+	public abstract partial class RecordManager<TRecord>
 	{
-		protected virtual Microsoft.Azure.ServiceBus.Message GetMessageEnvelope<TRequest>(TRequest request, MessageBusMessageHeaderCollection headers, TimeSpan timeout, string responseChannelName = null)
+		protected override string FormatColumnName(string columnName)
 		{
-			var operationKey = (System.Diagnostics.Trace.CorrelationManager.LogicalOperationStack.Count > 0 ? System.Diagnostics.Trace.CorrelationManager.LogicalOperationStack.Peek().ToString() : string.Format("{0:D}", Guid.NewGuid()));
-
-			var requestType = typeof(TRequest);
-
-			var serializedMessage = JsonSerializer.Serialize(requestType, request, true);
-
-			return new(Encoding.UTF8.GetBytes(serializedMessage))
-			{
-				MessageId = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
-				ReplyTo = responseChannelName,
-				Label = requestType.AssemblyQualifiedNameWithoutVersion(),
-				SessionId = operationKey,
-				TimeToLive = timeout,
-			};
+			return string.Format("\"{0}\"", columnName.Trim('\"'));
 		}
 	}
 }

@@ -30,12 +30,14 @@ namespace ISI.Extensions.MessageBus.MassTransit
 	{
 		private readonly Func<TController> _getController;
 		private readonly Func<TController, TRequest, Task<TResponse>> _processor;
+		private readonly IsAuthorizedDelegate _isAuthorized;
 		private readonly ISI.Extensions.MessageBus.OnError<TRequest, TResponse> _onError;
 
-		public ControllerConsumerAsync(Func<TController> getController, Func<TController, TRequest, Task<TResponse>> processor, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
+		public ControllerConsumerAsync(Func<TController> getController, Func<TController, TRequest, Task<TResponse>> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
 		{
 			_getController = getController;
 			_processor = processor;
+			_isAuthorized = isAuthorized ?? ((headers, request) => true);
 			_onError = onError;
 		}
 
@@ -51,42 +53,45 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 				BeginRequest();
 
-				var controller = _getController();
-
-				if (context.Headers.TryGetHeader(ISI.Extensions.MessageBus.AbstractMessageBus.RequestTimeOutHeaderKey, out var requestTimeOutValue))
+				if (_isAuthorized(GetRequestHeaders(context), context.Message))
 				{
-					var timeOut = ((string) requestTimeOutValue).ToTimeSpan();
+					var controller = _getController();
 
-					cancellationTokenSource.CancelAfter(timeOut);
+					if (context.Headers.TryGetHeader(ISI.Extensions.MessageBus.AbstractMessageBus.RequestTimeOutHeaderKey, out var requestTimeOutValue))
+					{
+						var timeOut = ((string)requestTimeOutValue).ToTimeSpan();
 
-					try
+						cancellationTokenSource.CancelAfter(timeOut);
+
+						try
+						{
+							response = await _processor(controller, context.Message);
+						}
+						catch (TaskCanceledException)
+						{
+							throw new ISI.Extensions.MessageBus.MessageBusConsumerTimeOutException(timeOut);
+						}
+					}
+					else
 					{
 						response = await _processor(controller, context.Message);
 					}
-					catch (TaskCanceledException)
+
+					if ((context.Message is ISI.Extensions.MessageBus.ICorrelatedBy<Guid> requestCorrelatedByGuid) && (response is ISI.Extensions.MessageBus.ICorrelatedBy<Guid> responseCorrelatedByGuid))
 					{
-						throw new ISI.Extensions.MessageBus.MessageBusConsumerTimeOutException(timeOut);
+						responseCorrelatedByGuid.CorrelationId = requestCorrelatedByGuid.CorrelationId;
 					}
-				}
-				else
-				{
-					response = await _processor(controller, context.Message);
-				}
+					else if ((context.Message is ISI.Extensions.MessageBus.ICorrelatedBy<int> requestCorrelatedByInt) && (response is ISI.Extensions.MessageBus.ICorrelatedBy<int> responseCorrelatedByInt))
+					{
+						responseCorrelatedByInt.CorrelationId = requestCorrelatedByInt.CorrelationId;
+					}
+					else if ((context.Message is ISI.Extensions.MessageBus.ICorrelatedBy<long> requestCorrelatedByLong) && (response is ISI.Extensions.MessageBus.ICorrelatedBy<long> responseCorrelatedByLong))
+					{
+						responseCorrelatedByLong.CorrelationId = requestCorrelatedByLong.CorrelationId;
+					}
 
-				if ((context.Message is ISI.Extensions.MessageBus.ICorrelatedBy<Guid> requestCorrelatedByGuid) && (response is ISI.Extensions.MessageBus.ICorrelatedBy<Guid> responseCorrelatedByGuid))
-				{
-					responseCorrelatedByGuid.CorrelationId = requestCorrelatedByGuid.CorrelationId;
+					await context.RespondAsync<TResponse>(response);
 				}
-				else if ((context.Message is ISI.Extensions.MessageBus.ICorrelatedBy<int> requestCorrelatedByInt) && (response is ISI.Extensions.MessageBus.ICorrelatedBy<int> responseCorrelatedByInt))
-				{
-					responseCorrelatedByInt.CorrelationId = requestCorrelatedByInt.CorrelationId;
-				}
-				else if ((context.Message is ISI.Extensions.MessageBus.ICorrelatedBy<long> requestCorrelatedByLong) && (response is ISI.Extensions.MessageBus.ICorrelatedBy<long> responseCorrelatedByLong))
-				{
-					responseCorrelatedByLong.CorrelationId = requestCorrelatedByLong.CorrelationId;
-				}
-
-				await context.RespondAsync<TResponse>(response);
 
 				EndRequest();
 			}

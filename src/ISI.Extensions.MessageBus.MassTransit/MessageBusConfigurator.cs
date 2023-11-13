@@ -34,35 +34,35 @@ namespace ISI.Extensions.MessageBus.MassTransit
 			_serviceProvider = serviceProvider;
 			_receiveEndpointConfigurator = receiveEndpointConfigurator;
 		}
-		public void Subscribe<TController, TRequest, TResponse>(Func<TController, TRequest, Task<TResponse>> processor, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
+		public void Subscribe<TController, TRequest, TResponse>(Func<TController, TRequest, Task<TResponse>> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
 			where TController : class
 			where TRequest : class
 			where TResponse : class
 		{
-			_receiveEndpointConfigurator.Consumer(typeof(ControllerConsumerAsync<TController, TRequest, TResponse>), type => new ControllerConsumerAsync<TController, TRequest, TResponse>(_serviceProvider.GetService<TController>, processor, onError));
+			_receiveEndpointConfigurator.Consumer(typeof(ControllerConsumerAsync<TController, TRequest, TResponse>), type => new ControllerConsumerAsync<TController, TRequest, TResponse>(_serviceProvider.GetService<TController>, processor, isAuthorized, onError));
 		}
 
-		public void Subscribe<TController, TRequest>(Func<TController, TRequest, Task> processor, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
+		public void Subscribe<TController, TRequest>(Func<TController, TRequest, Task> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
 			where TController : class
 			where TRequest : class
 		{
-			_receiveEndpointConfigurator.Consumer(typeof(ControllerConsumerAsync<TController, TRequest>), type => new ControllerConsumerAsync<TController, TRequest>(_serviceProvider.GetService<TController>, processor, onError));
+			_receiveEndpointConfigurator.Consumer(typeof(ControllerConsumerAsync<TController, TRequest>), type => new ControllerConsumerAsync<TController, TRequest>(_serviceProvider.GetService<TController>, processor, isAuthorized, onError));
 		}
 
 
-		public void Subscribe<TController, TRequest, TResponse>(Func<TController> getController, Func<TController, TRequest, Task<TResponse>> processor, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
+		public void Subscribe<TController, TRequest, TResponse>(Func<TController> getController, Func<TController, TRequest, Task<TResponse>> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
 			where TController : class
 			where TRequest : class
 			where TResponse : class
 		{
-			_receiveEndpointConfigurator.Consumer(typeof(ControllerConsumerAsync<TController, TRequest, TResponse>), type => new ControllerConsumerAsync<TController, TRequest, TResponse>(getController, processor, onError));
+			_receiveEndpointConfigurator.Consumer(typeof(ControllerConsumerAsync<TController, TRequest, TResponse>), type => new ControllerConsumerAsync<TController, TRequest, TResponse>(getController, processor, isAuthorized, onError));
 		}
 
-		public void Subscribe<TController, TRequest>(Func<TController> getController, Func<TController, TRequest, Task> processor, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
+		public void Subscribe<TController, TRequest>(Func<TController> getController, Func<TController, TRequest, Task> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
 			where TController : class
 			where TRequest : class
 		{
-			_receiveEndpointConfigurator.Consumer(typeof(ControllerConsumerAsync<TController, TRequest>), type => new ControllerConsumerAsync<TController, TRequest>(getController, processor, onError));
+			_receiveEndpointConfigurator.Consumer(typeof(ControllerConsumerAsync<TController, TRequest>), type => new ControllerConsumerAsync<TController, TRequest>(getController, processor, isAuthorized, onError));
 		}
 
 
@@ -70,17 +70,17 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 
 		
-		public void Subscribe<TRequest, TResponse>(Func<TRequest, Task<TResponse>> processor, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
+		public void Subscribe<TRequest, TResponse>(Func<TRequest, Task<TResponse>> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
 			where TRequest : class
 			where TResponse : class
 		{
-			_receiveEndpointConfigurator.Consumer(typeof(ConsumerAsync<TRequest, TResponse>), type => new ConsumerAsync<TRequest, TResponse>(processor, onError));
+			_receiveEndpointConfigurator.Consumer(typeof(ConsumerAsync<TRequest, TResponse>), type => new ConsumerAsync<TRequest, TResponse>(processor, isAuthorized, onError));
 		}
 
-		public void Subscribe<TRequest>(Func<TRequest, Task> processor, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
+		public void Subscribe<TRequest>(Func<TRequest, Task> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
 			where TRequest : class
 		{
-			_receiveEndpointConfigurator.Consumer(typeof(ConsumerAsync<TRequest>), type => new ConsumerAsync<TRequest>(processor, onError));
+			_receiveEndpointConfigurator.Consumer(typeof(ConsumerAsync<TRequest>), type => new ConsumerAsync<TRequest>(processor, isAuthorized, onError));
 		}
 
 	}

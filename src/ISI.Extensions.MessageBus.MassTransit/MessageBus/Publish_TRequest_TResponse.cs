@@ -24,32 +24,32 @@ namespace ISI.Extensions.MessageBus.MassTransit
 {
 	public partial class MessageBus
 	{
-		public override async Task<TResponse> PublishAsync<TRequest, TResponse>(TRequest request, TimeSpan? timeout = null, TimeSpan? timeToLive = null, System.Threading.CancellationToken cancellationToken = default)
+		public override async Task<TResponse> PublishAsync<TRequest, TResponse>(TRequest request, MessageBusMessageHeaderCollection headers = null, TimeSpan? timeout = null, TimeSpan? timeToLive = null, System.Threading.CancellationToken cancellationToken = default)
 			where TRequest : class
 			where TResponse : class
 		{
 			var publishRequestClientWrapper = GetPublishRequestClientWrapper(typeof(TRequest), typeof(TResponse), timeout, timeToLive) as IPublishRequestClientWrapper<TResponse>;
 
-			return await publishRequestClientWrapper.GetResponse(BusControl, request, cancellationToken);
+			return await publishRequestClientWrapper.GetResponse(BusControl, request, headers, cancellationToken);
 		}
 
-		public override async Task<TResponse> PublishAsync<TRequest, TResponse>(string channelName, TRequest request, TimeSpan? timeout = null, TimeSpan? timeToLive = null, System.Threading.CancellationToken cancellationToken = default)
+		public override async Task<TResponse> PublishAsync<TRequest, TResponse>(string channelName, TRequest request, MessageBusMessageHeaderCollection headers = null, TimeSpan? timeout = null, TimeSpan? timeToLive = null, System.Threading.CancellationToken cancellationToken = default)
 			where TRequest : class
 			where TResponse : class
 		{
 			throw new NotImplementedException();
 		}
 
-		public override async Task<TResponse> PublishAsync<TRequest, TResponse>(Type requestType, TRequest request, TimeSpan? timeout = null, TimeSpan? timeToLive = null, System.Threading.CancellationToken cancellationToken = default)
+		public override async Task<TResponse> PublishAsync<TRequest, TResponse>(Type requestType, TRequest request, MessageBusMessageHeaderCollection headers = null, TimeSpan? timeout = null, TimeSpan? timeToLive = null, System.Threading.CancellationToken cancellationToken = default)
 			where TRequest : class
 			where TResponse : class
 		{
 			var publishRequestClientWrapper = GetPublishRequestClientWrapper(requestType, typeof(TResponse), timeout, timeToLive) as IPublishRequestClientWrapper<TResponse>;
 
-			return await publishRequestClientWrapper.GetResponse(BusControl, request, cancellationToken);
+			return await publishRequestClientWrapper.GetResponse(BusControl, request, headers, cancellationToken);
 		}
 
-		public override async Task<TResponse> PublishAsync<TRequest, TResponse>(string channelName, Type requestType, TRequest request, TimeSpan? timeout = null, TimeSpan? timeToLive = null, System.Threading.CancellationToken cancellationToken = default)
+		public override async Task<TResponse> PublishAsync<TRequest, TResponse>(string channelName, Type requestType, TRequest request, MessageBusMessageHeaderCollection headers = null, TimeSpan? timeout = null, TimeSpan? timeToLive = null, System.Threading.CancellationToken cancellationToken = default)
 			where TRequest : class
 			where TResponse : class
 		{

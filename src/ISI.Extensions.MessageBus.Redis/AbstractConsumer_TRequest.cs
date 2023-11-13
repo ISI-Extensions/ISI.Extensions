@@ -42,6 +42,18 @@ namespace ISI.Extensions.MessageBus.Redis
 			_jsonSerializer = jsonSerializer;
 		}
 
+		protected ISI.Extensions.MessageBus.MessageBusMessageHeaderCollection GetRequestHeaders(ISI.Extensions.MessageBus.Redis.MessageEnvelope messageEnvelope)
+		{
+			var headers = new ISI.Extensions.MessageBus.MessageBusMessageHeaderCollection();
+
+			foreach (var header in messageEnvelope?.Headers ?? Array.Empty<MessageEnvelopeHeader>())
+			{
+				headers.Add(header.Key, header.Value);
+			}
+
+			return headers;
+		}
+
 		protected string OperationKey
 		{
 			get
@@ -75,7 +87,7 @@ namespace ISI.Extensions.MessageBus.Redis
 
 		protected virtual void SetTrackingKeys(IRequestContext requestContext)
 		{
-			var operationKey = requestContext.MessageEnvelope?.OperationKey ?? string.Empty;
+			var operationKey = requestContext.MessageEnvelope?.Headers?.NullCheckedFirstOrDefault(header => string.Equals(header.Key, MessageBusMessageHeaderCollection.Keys.OperationKey))?.Value ?? string.Empty;
 
 			if (requestContext.Request is ISI.Extensions.IHasOperationKey hasOperationKey)
 			{

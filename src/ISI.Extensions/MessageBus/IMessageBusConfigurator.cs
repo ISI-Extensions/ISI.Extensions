@@ -21,33 +21,35 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.MessageBus
 {
+	public delegate bool IsAuthorizedDelegate(MessageBusMessageHeaderCollection headers, object request);
+
 	public interface IMessageBusConfigurator
 	{
-		void Subscribe<TController, TRequest, TResponse>(Func<TController, TRequest, Task<TResponse>> processor, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
+		void Subscribe<TController, TRequest, TResponse>(Func<TController, TRequest, Task<TResponse>> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
 			where TController : class
 			where TRequest : class
 			where TResponse : class;
 
-		void Subscribe<TController, TRequest>(Func<TController, TRequest, Task> processor, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
+		void Subscribe<TController, TRequest>(Func<TController, TRequest, Task> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
 			where TController : class
 			where TRequest : class;
 
 
-		void Subscribe<TController, TRequest, TResponse>(Func<TController> getController, Func<TController, TRequest, Task<TResponse>> processor, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
+		void Subscribe<TController, TRequest, TResponse>(Func<TController> getController, Func<TController, TRequest, Task<TResponse>> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
 			where TController : class
 			where TRequest : class
 			where TResponse : class;
 
-		void Subscribe<TController, TRequest>(Func<TController> getController, Func<TController, TRequest, Task> processor, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
+		void Subscribe<TController, TRequest>(Func<TController> getController, Func<TController, TRequest, Task> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
 			where TController : class
 			where TRequest : class;
 
 
-		void Subscribe<TRequest, TResponse>(Func<TRequest, Task<TResponse>> processor, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
+		void Subscribe<TRequest, TResponse>(Func<TRequest, Task<TResponse>> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
 			where TRequest : class
 			where TResponse : class;
 
-		void Subscribe<TRequest>(Func<TRequest, Task> processor, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
+		void Subscribe<TRequest>(Func<TRequest, Task> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
 			where TRequest : class;
 	}
 }

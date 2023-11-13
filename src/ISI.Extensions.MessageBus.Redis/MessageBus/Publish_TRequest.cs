@@ -23,18 +23,18 @@ namespace ISI.Extensions.MessageBus.Redis
 {
 	public partial class MessageBus
 	{
-		public override async Task PublishAsync<TRequest>(TRequest request, System.Threading.CancellationToken cancellationToken = default)
+		public override async Task PublishAsync<TRequest>(TRequest request, MessageBusMessageHeaderCollection headers = null, System.Threading.CancellationToken cancellationToken = default)
 			where TRequest : class
 		{
-			await PublishAsync(GetChannelName<TRequest>(), request, cancellationToken);
+			await PublishAsync(GetChannelName<TRequest>(), request, headers, cancellationToken);
 		}
 
-		public override async Task PublishAsync<TRequest>(string channelName, TRequest request, System.Threading.CancellationToken cancellationToken = default)
+		public override async Task PublishAsync<TRequest>(string channelName, TRequest request, MessageBusMessageHeaderCollection headers = null, System.Threading.CancellationToken cancellationToken = default)
 			where TRequest : class
 		{
 			var publisher = Connection.GetSubscriber();
 
-			var messageEnvelope = GetMessageEnvelope(request);
+			var messageEnvelope = GetMessageEnvelope(request, headers);
 
 			var message = JsonSerializer.Serialize(typeof(MessageEnvelope), messageEnvelope, true);
 

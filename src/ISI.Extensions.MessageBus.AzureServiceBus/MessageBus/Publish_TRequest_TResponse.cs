@@ -24,14 +24,14 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 {
 	public partial class MessageBus
 	{
-		public override async Task<TResponse> PublishAsync<TRequest, TResponse>(string channelName, TRequest request, TimeSpan? timeout = null, TimeSpan? timeToLive = null, System.Threading.CancellationToken cancellationToken = default)
+		public override async Task<TResponse> PublishAsync<TRequest, TResponse>(string channelName, TRequest request, MessageBusMessageHeaderCollection headers = null, TimeSpan? timeout = null, TimeSpan? timeToLive = null, System.Threading.CancellationToken cancellationToken = default)
 			where TRequest : class
 			where TResponse : class
 		{
-			return await PublishAsync<TRequest, TResponse>(channelName, typeof(TRequest), request, timeout, timeToLive, cancellationToken);
+			return await PublishAsync<TRequest, TResponse>(channelName, typeof(TRequest), request, headers, timeout, timeToLive, cancellationToken);
 		}
 
-		public override async Task<TResponse> PublishAsync<TRequest, TResponse>(string channelName, Type requestType, TRequest request, TimeSpan? timeout = null, TimeSpan? timeToLive = null, System.Threading.CancellationToken cancellationToken = default)
+		public override async Task<TResponse> PublishAsync<TRequest, TResponse>(string channelName, Type requestType, TRequest request, MessageBusMessageHeaderCollection headers = null, TimeSpan? timeout = null, TimeSpan? timeToLive = null, System.Threading.CancellationToken cancellationToken = default)
 			where TRequest : class
 			where TResponse : class
 		{
@@ -46,7 +46,7 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 				channelName = GetChannelName<TRequest>();
 			}
 
-			var messageEnvelope = GetMessageEnvelope(request, timeout ?? Configuration.DefaultResponseTimeOut, responseChannelName);
+			var messageEnvelope = GetMessageEnvelope(request, headers, timeout ?? Configuration.DefaultResponseTimeOut, responseChannelName);
 
 			var temporaryQueueDescription = new Microsoft.Azure.ServiceBus.Management.QueueDescription(responseChannelName)
 			{

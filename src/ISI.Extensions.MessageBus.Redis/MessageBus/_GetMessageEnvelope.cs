@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,9 +24,11 @@ namespace ISI.Extensions.MessageBus.Redis
 {
 	public partial class MessageBus
 	{
-		protected virtual MessageEnvelope GetMessageEnvelope<TRequest>(TRequest request, TimeSpan? timeout = null, string responseChannelName = null)
+		protected virtual MessageEnvelope GetMessageEnvelope<TRequest>(TRequest request, MessageBusMessageHeaderCollection headers, TimeSpan? timeout = null, string responseChannelName = null)
 		{
-			var operationKey = (System.Diagnostics.Trace.CorrelationManager.LogicalOperationStack.Count > 0 ? System.Diagnostics.Trace.CorrelationManager.LogicalOperationStack.Peek().ToString() : string.Format("{0:D}", Guid.NewGuid()));
+			headers ??= new MessageBusMessageHeaderCollection();
+
+			headers.OperationKey = (System.Diagnostics.Trace.CorrelationManager.LogicalOperationStack.Count > 0 ? System.Diagnostics.Trace.CorrelationManager.LogicalOperationStack.Peek().ToString() : string.Format("{0:D}", Guid.NewGuid()));
 
 			var requestType = typeof(TRequest);
 
@@ -34,7 +36,11 @@ namespace ISI.Extensions.MessageBus.Redis
 
 			return new()
 			{
-				OperationKey = operationKey,
+				Headers = headers.ToNullCheckedArray(header => new MessageEnvelopeHeader()
+				{
+					Key = header.Key,
+					Value = header.Value,
+				}),
 				RequestTimeOut = timeout,
 				MessageTypeName = requestType.AssemblyQualifiedNameWithoutVersion(),
 				SerializedMessage = serializedMessage,

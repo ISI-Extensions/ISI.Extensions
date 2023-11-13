@@ -30,6 +30,18 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 		public abstract Task Consume(global::MassTransit.ConsumeContext<TRequest> context);
 
+		protected ISI.Extensions.MessageBus.MessageBusMessageHeaderCollection GetRequestHeaders(global::MassTransit.ConsumeContext<TRequest> context)
+		{
+			var headers = new ISI.Extensions.MessageBus.MessageBusMessageHeaderCollection();
+
+			foreach (var header in context.Headers.GetAll())
+			{
+				headers.Add(header.Key, $"{header.Value}");
+			}
+
+			return headers;
+		}
+
 		protected string OperationKey
 		{
 			get

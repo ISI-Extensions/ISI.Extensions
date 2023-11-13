@@ -43,7 +43,7 @@ namespace ISI.Extensions.MessageBus.Redis
 			_jsonSerializer = jsonSerializer;
 		}
 
-		public void Subscribe<TController, TRequest, TResponse>(Func<TController, TRequest, Task<TResponse>> processor, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
+		public void Subscribe<TController, TRequest, TResponse>(Func<TController, TRequest, Task<TResponse>> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
 			where TController : class
 			where TRequest : class
 			where TResponse : class
@@ -54,13 +54,13 @@ namespace ISI.Extensions.MessageBus.Redis
 
 			publisher.Subscribe(requestChannelName, (redisChannel, redisValue) =>
 			{
-				var handler = new ControllerConsumerAsync<TController, TRequest, TResponse>(_serviceProvider, _connection, _jsonSerializer, _serviceProvider.GetService<TController>, processor, onError);
+				var handler = new ControllerConsumerAsync<TController, TRequest, TResponse>(_serviceProvider, _connection, _jsonSerializer, _serviceProvider.GetService<TController>, processor, isAuthorized, onError);
 
 				handler.Consume(redisChannel, redisValue).Wait();
 			});
 		}
 
-		public void Subscribe<TController, TRequest>(Func<TController, TRequest, Task> processor, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
+		public void Subscribe<TController, TRequest>(Func<TController, TRequest, Task> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
 			where TController : class
 			where TRequest : class
 		{
@@ -70,14 +70,14 @@ namespace ISI.Extensions.MessageBus.Redis
 
 			publisher.Subscribe(requestChannelName, (redisChannel, redisValue) =>
 			{
-				var handler = new ControllerConsumerAsync<TController, TRequest>(_serviceProvider, _connection, _jsonSerializer, _serviceProvider.GetService<TController>, processor, onError);
+				var handler = new ControllerConsumerAsync<TController, TRequest>(_serviceProvider, _connection, _jsonSerializer, _serviceProvider.GetService<TController>, processor, isAuthorized, onError);
 
 				handler.Consume(redisChannel, redisValue).Wait();
 			});
 		}
 
 
-		public void Subscribe<TController, TRequest, TResponse>(Func<TController> getController, Func<TController, TRequest, Task<TResponse>> processor, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
+		public void Subscribe<TController, TRequest, TResponse>(Func<TController> getController, Func<TController, TRequest, Task<TResponse>> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
 			where TController : class
 			where TRequest : class
 			where TResponse : class
@@ -88,13 +88,13 @@ namespace ISI.Extensions.MessageBus.Redis
 
 			publisher.Subscribe(requestChannelName, (redisChannel, redisValue) =>
 			{
-				var handler = new ControllerConsumerAsync<TController, TRequest, TResponse>(_serviceProvider, _connection, _jsonSerializer, _serviceProvider.GetService<TController>, processor, onError);
+				var handler = new ControllerConsumerAsync<TController, TRequest, TResponse>(_serviceProvider, _connection, _jsonSerializer, _serviceProvider.GetService<TController>, processor, isAuthorized, onError);
 
 				handler.Consume(redisChannel, redisValue).Wait();
 			});
 		}
 
-		public void Subscribe<TController, TRequest>(Func<TController> getController, Func<TController, TRequest, Task> processor, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
+		public void Subscribe<TController, TRequest>(Func<TController> getController, Func<TController, TRequest, Task> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
 			where TController : class
 			where TRequest : class
 		{
@@ -104,7 +104,7 @@ namespace ISI.Extensions.MessageBus.Redis
 
 			publisher.Subscribe(requestChannelName, (redisChannel, redisValue) =>
 			{
-				var handler = new ControllerConsumerAsync<TController, TRequest>(_serviceProvider, _connection, _jsonSerializer, _serviceProvider.GetService<TController>, processor, onError);
+				var handler = new ControllerConsumerAsync<TController, TRequest>(_serviceProvider, _connection, _jsonSerializer, _serviceProvider.GetService<TController>, processor, isAuthorized, onError);
 
 				handler.Consume(redisChannel, redisValue).Wait();
 			});
@@ -115,7 +115,7 @@ namespace ISI.Extensions.MessageBus.Redis
 
 
 
-		public void Subscribe<TRequest, TResponse>(Func<TRequest, Task<TResponse>> processor, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
+		public void Subscribe<TRequest, TResponse>(Func<TRequest, Task<TResponse>> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
 			where TRequest : class
 			where TResponse : class
 		{
@@ -125,13 +125,13 @@ namespace ISI.Extensions.MessageBus.Redis
 
 			publisher.Subscribe(requestChannelName, (redisChannel, redisValue) =>
 			{
-				var handler = new ConsumerAsync<TRequest, TResponse>(_serviceProvider, _connection, _jsonSerializer, processor, onError);
+				var handler = new ConsumerAsync<TRequest, TResponse>(_serviceProvider, _connection, _jsonSerializer, processor, isAuthorized, onError);
 
 				handler.Consume(redisChannel, redisValue).Wait();
 			});
 		}
 
-		public void Subscribe<TRequest>(Func<TRequest, Task> processor, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
+		public void Subscribe<TRequest>(Func<TRequest, Task> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
 			where TRequest : class
 		{
 			var publisher = _connection.GetSubscriber();
@@ -140,7 +140,7 @@ namespace ISI.Extensions.MessageBus.Redis
 
 			publisher.Subscribe(requestChannelName, (redisChannel, redisValue) =>
 			{
-				var handler = new ConsumerAsync<TRequest>(_serviceProvider, _connection, _jsonSerializer, processor, onError);
+				var handler = new ConsumerAsync<TRequest>(_serviceProvider, _connection, _jsonSerializer, processor, isAuthorized, onError);
 
 				handler.Consume(redisChannel, redisValue).Wait();
 			});

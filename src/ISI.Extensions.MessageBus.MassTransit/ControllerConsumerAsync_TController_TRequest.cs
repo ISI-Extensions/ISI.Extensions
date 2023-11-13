@@ -29,12 +29,14 @@ namespace ISI.Extensions.MessageBus.MassTransit
 	{
 		private readonly Func<TController> _getController;
 		private readonly Func<TController, TRequest, Task> _processor;
+		private readonly IsAuthorizedDelegate _isAuthorized;
 		private readonly ISI.Extensions.MessageBus.OnError<TRequest> _onError;
 
-		public ControllerConsumerAsync(Func<TController> getController, Func<TController, TRequest, Task> processor, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
+		public ControllerConsumerAsync(Func<TController> getController, Func<TController, TRequest, Task> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
 		{
 			_getController = getController;
 			_processor = processor;
+			_isAuthorized = isAuthorized ?? ((headers, request) => true);
 			_onError = onError;
 		}
 
@@ -46,9 +48,12 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 				BeginRequest();
 
-				var controller = _getController();
+				if (_isAuthorized(GetRequestHeaders(context), context.Message))
+				{
+					var controller = _getController();
 
-				await _processor(controller, context.Message);
+					await _processor(controller, context.Message);
+				}
 
 				EndRequest();
 			}

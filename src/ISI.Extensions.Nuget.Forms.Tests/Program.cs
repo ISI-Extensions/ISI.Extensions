@@ -17,13 +17,13 @@ namespace ISI.Extensions.Nuget.Forms.Tests
 		static void Main(string[] args)
 		{
 			var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
-			var configuration = configurationBuilder.Build();
+			var configurationRoot = configurationBuilder.Build().ApplyConfigurationValueReaders();
 
 			var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection()
 				.AddOptions()
-				.AddSingleton<Microsoft.Extensions.Configuration.IConfiguration>(configuration);
+				.AddSingleton<Microsoft.Extensions.Configuration.IConfiguration>(configurationRoot);
 
-			services.AddAllConfigurations(configuration)
+			services.AddAllConfigurations(configurationRoot)
 
 				//.AddSingleton<Microsoft.Extensions.Logging.ILoggerFactory, Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory>()
 				.AddSingleton<Microsoft.Extensions.Logging.ILoggerFactory, Microsoft.Extensions.Logging.LoggerFactory>()
@@ -38,11 +38,11 @@ namespace ISI.Extensions.Nuget.Forms.Tests
 				.AddSingleton<ISI.Extensions.JsonSerialization.IJsonSerializer, ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer>()
 				.AddSingleton<ISI.Extensions.Serialization.ISerialization, ISI.Extensions.Serialization.Serialization>()
 
-				.AddConfigurationRegistrations(configuration)
-				.ProcessServiceRegistrars()
+				.AddConfigurationRegistrations(configurationRoot)
+				.ProcessServiceRegistrars(configurationRoot)
 				;
 
-			var serviceProvider = services.BuildServiceProvider<ISI.Extensions.DependencyInjection.Iunq.ServiceProviderBuilder>(configuration);
+			var serviceProvider = services.BuildServiceProvider<ISI.Extensions.DependencyInjection.Iunq.ServiceProviderBuilder>(configurationRoot);
 
 			serviceProvider.SetServiceLocator();
 

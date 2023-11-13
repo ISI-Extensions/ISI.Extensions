@@ -30,7 +30,7 @@ namespace ISI.Extensions.Tests.Repository
 		[Test]
 		public void CreateDatabase_Test()
 		{
-			var repositorySetupApi = new ISI.Extensions.Repository.PostgreSQL.RepositorySetupApi(Configuration, Logger, DateTimeStamper, null, ConnectionString, masterConnectionString: MasterConnectionString);
+			var repositorySetupApi = new ISI.Extensions.Repository.PostgreSQL.RepositorySetupApi(ConfigurationRoot, Logger, DateTimeStamper, null, ConnectionString, masterConnectionString: MasterConnectionString);
 
 			var userName = repositorySetupApi.GetConnectionStringUserName();
 			var password = repositorySetupApi.GetConnectionStringPassword();

@@ -50,7 +50,7 @@ namespace ISI.Extensions.AspNetCore.Tests
 								.AddConfiguration<Microsoft.Extensions.Hosting.ConsoleLifetimeOptions>(configurationRoot)
 								.AddConfiguration<Microsoft.Extensions.Hosting.HostOptions>(configurationRoot)
 								.AddConfigurationRegistrations(configurationRoot)
-								.ProcessServiceRegistrars()
+								.ProcessServiceRegistrars(configurationRoot)
 
 								//.AddSingleton<Microsoft.Extensions.Logging.ILoggerFactory, Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory>()
 								//.AddSingleton<Microsoft.Extensions.Logging.ILoggerFactory, Microsoft.Extensions.Logging.LoggerFactory>()

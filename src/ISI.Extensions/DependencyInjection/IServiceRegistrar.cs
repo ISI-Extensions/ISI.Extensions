@@ -28,4 +28,9 @@ namespace ISI.Extensions.DependencyInjection
 	{
 		int Priority { get; }
 	}
+
+	public interface IServiceRegistrarWithConfigurationRoot : IServiceRegistrar
+	{
+		void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services, Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot);
+	}
 }

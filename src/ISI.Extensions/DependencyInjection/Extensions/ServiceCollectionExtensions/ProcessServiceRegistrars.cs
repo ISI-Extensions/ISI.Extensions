@@ -23,7 +23,7 @@ namespace ISI.Extensions.DependencyInjection.Extensions
 {
 	public static partial class ServiceCollectionExtensions
 	{
-		public static Microsoft.Extensions.DependencyInjection.IServiceCollection ProcessServiceRegistrars(this Microsoft.Extensions.DependencyInjection.IServiceCollection services, ISI.Extensions.TypeLocator.ITypeLocatorContainer container = null)
+		public static Microsoft.Extensions.DependencyInjection.IServiceCollection ProcessServiceRegistrars(this Microsoft.Extensions.DependencyInjection.IServiceCollection services, Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot, ISI.Extensions.TypeLocator.ITypeLocatorContainer container = null)
 		{
 			container ??= ISI.Extensions.TypeLocator.Container.LocalContainer;
 
@@ -31,7 +31,14 @@ namespace ISI.Extensions.DependencyInjection.Extensions
 
 			foreach (var serviceRegistrar in serviceRegistrars.OrderBy(serviceRegistrar => (serviceRegistrar as IServiceRegistrarWithPriority)?.Priority ?? int.MinValue))
 			{
-				serviceRegistrar.ServiceRegister(services);
+				if (serviceRegistrar is IServiceRegistrarWithConfigurationRoot serviceRegistrarWithConfigurationRoot)
+				{
+					serviceRegistrarWithConfigurationRoot.ServiceRegister(services, configurationRoot);
+				}
+				else
+				{
+					serviceRegistrar.ServiceRegister(services);
+				}
 			}
 
 			return services;

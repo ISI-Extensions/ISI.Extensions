@@ -33,7 +33,7 @@ namespace ISI.Extensions.Tests.Repository
 		protected const string ConnectionString = @"Host=localhost;Username=testuser;Password=f2f5eeb1-55d9-441b-be56-8c976cac1338;Database=""ISI.Extensions"";";
 		protected const string MasterConnectionString = @"Host=localhost;Username=masteradmin;Password=9ab831ceb061;Database=postgres;";
 
-		protected Microsoft.Extensions.Configuration.IConfiguration Configuration { get; set; }
+		protected Microsoft.Extensions.Configuration.IConfigurationRoot ConfigurationRoot { get; set; }
 		protected ISI.Extensions.Repository.PostgreSQL.Configuration SqlServerConfiguration { get; set; }
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; set; }
 		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; set; }
@@ -45,13 +45,13 @@ namespace ISI.Extensions.Tests.Repository
 		public void OneTimeSetup()
 		{
 			var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
-			Configuration = configurationBuilder.Build();
+			ConfigurationRoot = configurationBuilder.Build().ApplyConfigurationValueReaders();
 
 			var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection()
 				.AddOptions()
-				.AddSingleton<Microsoft.Extensions.Configuration.IConfiguration>(Configuration);
+				.AddSingleton<Microsoft.Extensions.Configuration.IConfiguration>(ConfigurationRoot);
 
-			services.AddAllConfigurations(Configuration)
+			services.AddAllConfigurations(ConfigurationRoot)
 
 				//.AddSingleton<Microsoft.Extensions.Logging.ILoggerFactory, Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory>()
 				.AddSingleton<Microsoft.Extensions.Logging.ILoggerFactory, Microsoft.Extensions.Logging.LoggerFactory>()
@@ -67,11 +67,11 @@ namespace ISI.Extensions.Tests.Repository
 				.AddSingleton<ISI.Extensions.Serialization.ISerialization, ISI.Extensions.Serialization.Serialization>()
 				.AddSingleton<ISI.Extensions.Security.ActiveDirectory.IActiveDirectoryApi, ISI.Extensions.Security.ActiveDirectory.ActiveDirectoryApi>()
 
-				.AddConfigurationRegistrations(Configuration)
-				.ProcessServiceRegistrars()
+				.AddConfigurationRegistrations(ConfigurationRoot)
+				.ProcessServiceRegistrars(ConfigurationRoot)
 				;
 
-			var serviceProvider = services.BuildServiceProvider<ISI.Extensions.DependencyInjection.Iunq.ServiceProviderBuilder>(Configuration);
+			var serviceProvider = services.BuildServiceProvider<ISI.Extensions.DependencyInjection.Iunq.ServiceProviderBuilder>(ConfigurationRoot);
 
 			serviceProvider.SetServiceLocator();
 
@@ -83,7 +83,7 @@ namespace ISI.Extensions.Tests.Repository
 			DateTimeStamper = serviceProvider.GetService<ISI.Extensions.DateTimeStamper.IDateTimeStamper>();
 			Serializer = serviceProvider.GetService<ISI.Extensions.JsonSerialization.IJsonSerializer>();
 			
-			RepositorySetupApi = new ISI.Extensions.Repository.PostgreSQL.RepositorySetupApi(Configuration, Logger, DateTimeStamper, Serializer, MasterConnectionString);
+			RepositorySetupApi = new ISI.Extensions.Repository.PostgreSQL.RepositorySetupApi(ConfigurationRoot, Logger, DateTimeStamper, Serializer, MasterConnectionString);
 
 			MigrationApi = new ISI.Extensions.Repository.MigrationApi(serviceProvider, RepositorySetupApi);
 		}

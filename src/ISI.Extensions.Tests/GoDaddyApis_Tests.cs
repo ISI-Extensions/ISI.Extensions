@@ -37,7 +37,7 @@ namespace ISI.Extensions.Tests
 		{
 			var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
 			configurationBuilder.AddJsonFile("appsettings.json", optional: false);
-			var configurationRoot = configurationBuilder.Build();
+			var configurationRoot = configurationBuilder.Build().ApplyConfigurationValueReaders();
 
 			var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection()
 				.AddOptions()
@@ -61,7 +61,7 @@ namespace ISI.Extensions.Tests
 				.AddSingleton<ISI.Extensions.GoDaddy.DomainsApi>()
 
 				.AddConfigurationRegistrations(configurationRoot)
-				.ProcessServiceRegistrars()
+				.ProcessServiceRegistrars(configurationRoot)
 				;
 
 			ServiceProvider = services.BuildServiceProvider<ISI.Extensions.DependencyInjection.Iunq.ServiceProviderBuilder>(configurationRoot);

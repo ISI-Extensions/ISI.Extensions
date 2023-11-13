@@ -43,7 +43,7 @@ namespace ISI.Extensions.Caching.MessageBus
 
 				response.AddSubscriptions.Add(messageBusQueueConfigurator =>
 				{
-					messageBusQueueConfigurator.Subscribe<Controllers.EnterpriseCacheManagerApiController, MESSAGEBUS.ClearCacheRequest>(async (service, request) => await Task.Run(() => service.ClearCache(request)));
+					messageBusQueueConfigurator.Subscribe<Controllers.EnterpriseCacheManagerApiController, MESSAGEBUS.ClearCacheRequest>(async (service, request, cancellationToken) => await Task.Run(() => service.ClearCache(request), cancellationToken));
 				});
 
 				return response;

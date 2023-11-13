@@ -26,14 +26,14 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 		where TRequest : class
 		where TResponse : class
 	{
-		private readonly Func<TRequest, Task<TResponse>> _processor;
+		private readonly MessageBusConfigurator<TRequest, TResponse>.ProcessorDelegate _processor;
 		private readonly ISI.Extensions.MessageBus.OnError<TRequest, TResponse> _onError;
 
 		public ConsumerAsync(
 			System.IServiceProvider serviceProvider,
 			string connectionString,
 			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer,
-			Func<TRequest, Task<TResponse>> processor,
+			MessageBusConfigurator<TRequest, TResponse>.ProcessorDelegate processor,
 			ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
 			: base(serviceProvider, connectionString, jsonSerializer)
 		{
@@ -45,6 +45,8 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 		{
 			TResponse response = null;
 
+			var cancellationTokenSource = new System.Threading.CancellationTokenSource();
+
 			var requestContext = (RequestContext<TRequest>)null;
 
 			try
@@ -55,7 +57,7 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 
 				BeginRequest();
 
-				response = await _processor(requestContext.Request);
+				response = await _processor(requestContext.Request, cancellationTokenSource.Token);
 
 				UpdateResponse(requestContext.Request, response);
 

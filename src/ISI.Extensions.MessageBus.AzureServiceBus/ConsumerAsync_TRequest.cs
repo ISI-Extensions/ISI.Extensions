@@ -25,14 +25,14 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 	public class ConsumerAsync<TRequest> : AbstractConsumer<TRequest>
 		where TRequest : class
 	{
-		private readonly Func<TRequest, Task> _processor;
+		private readonly MessageBusConfigurator<TRequest>.ProcessorDelegate _processor;
 		private readonly ISI.Extensions.MessageBus.OnError<TRequest> _onError;
 
 		public ConsumerAsync(
 			System.IServiceProvider serviceProvider,
 			string connectionString,
 			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer,
-			Func<TRequest, Task> processor, 
+			MessageBusConfigurator<TRequest>.ProcessorDelegate processor, 
 			ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
 			: base(serviceProvider, connectionString, jsonSerializer)
 		{
@@ -42,6 +42,8 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 
 		public override async Task Consume(Microsoft.Azure.ServiceBus.Message requestMessage)
 		{
+			var cancellationTokenSource = new System.Threading.CancellationTokenSource();
+
 			var requestContext = (RequestContext<TRequest>)null;
 
 			try
@@ -52,7 +54,7 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 
 				BeginRequest();
 
-				await _processor(requestContext.Request);
+				await _processor(requestContext.Request, cancellationTokenSource.Token);
 
 				EndRequest();
 			}

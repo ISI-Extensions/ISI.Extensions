@@ -27,8 +27,8 @@ namespace ISI.Extensions.MessageBus.Redis
 		where TRequest : class
 		where TResponse : class
 	{
-		private readonly Func<TController> _getController;
-		private readonly Func<TController, TRequest, Task<TResponse>> _processor;
+		private readonly GetControllerMessageBusConfigurator<TController>.GetControllerDelegate _getController;
+		private readonly ControllerMessageBusConfigurator<TController, TRequest, TResponse>.ProcessorDelegate _processor;
 		private readonly IsAuthorizedDelegate _isAuthorized;
 		private readonly ISI.Extensions.MessageBus.OnError<TRequest, TResponse> _onError;
 
@@ -36,8 +36,8 @@ namespace ISI.Extensions.MessageBus.Redis
 			System.IServiceProvider serviceProvider,
 			StackExchange.Redis.ConnectionMultiplexer connection,
 			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer,
-			Func<TController> getController,
-			Func<TController, TRequest, Task<TResponse>> processor,
+			GetControllerMessageBusConfigurator<TController>.GetControllerDelegate getController,
+			ControllerMessageBusConfigurator<TController, TRequest, TResponse>.ProcessorDelegate processor,
 			IsAuthorizedDelegate isAuthorized = null,
 			ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
 			: base(serviceProvider, connection, jsonSerializer)
@@ -76,7 +76,7 @@ namespace ISI.Extensions.MessageBus.Redis
 
 						try
 						{
-							response = await _processor(controller, requestContext.Request);
+							response = await _processor(controller, requestContext.Request, cancellationTokenSource.Token);
 						}
 						catch (TaskCanceledException)
 						{
@@ -85,7 +85,7 @@ namespace ISI.Extensions.MessageBus.Redis
 					}
 					else
 					{
-						response = await _processor(controller, requestContext.Request);
+						response = await _processor(controller, requestContext.Request, cancellationTokenSource.Token);
 					}
 
 					UpdateResponse(requestContext.Request, response);

@@ -26,7 +26,7 @@ namespace ISI.Extensions.MessageBus.Redis
 		where TRequest : class
 		where TResponse : class
 	{
-		private readonly Func<TRequest, Task<TResponse>> _processor;
+		private readonly MessageBusConfigurator<TRequest, TResponse>.ProcessorDelegate _processor;
 		private readonly IsAuthorizedDelegate _isAuthorized;
 		private readonly ISI.Extensions.MessageBus.OnError<TRequest, TResponse> _onError;
 
@@ -34,7 +34,7 @@ namespace ISI.Extensions.MessageBus.Redis
 			System.IServiceProvider serviceProvider,
 			StackExchange.Redis.ConnectionMultiplexer connection,
 			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer,
-			Func<TRequest, Task<TResponse>> processor, 
+			MessageBusConfigurator<TRequest, TResponse>.ProcessorDelegate processor, 
 			IsAuthorizedDelegate isAuthorized = null,
 			ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
 			: base(serviceProvider, connection, jsonSerializer)
@@ -47,6 +47,8 @@ namespace ISI.Extensions.MessageBus.Redis
 		public override async Task Consume(StackExchange.Redis.RedisChannel redisChannel, StackExchange.Redis.RedisValue redisValue)
 		{
 			TResponse response = null;
+
+			var cancellationTokenSource = new System.Threading.CancellationTokenSource();
 
 			var serializedMessageEnvelope = redisValue.ToString();
 
@@ -62,7 +64,7 @@ namespace ISI.Extensions.MessageBus.Redis
 
 				if (_isAuthorized(GetRequestHeaders(requestContext.MessageEnvelope), requestContext.Request))
 				{
-					response = await _processor(requestContext.Request);
+					response = await _processor(requestContext.Request, cancellationTokenSource.Token);
 				}
 
 				UpdateResponse(requestContext.Request, response);

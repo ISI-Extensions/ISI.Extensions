@@ -28,12 +28,12 @@ namespace ISI.Extensions.MessageBus.MassTransit
 		where TRequest : class
 		where TResponse : class
 	{
-		private readonly Func<TController> _getController;
-		private readonly Func<TController, TRequest, Task<TResponse>> _processor;
+		private readonly GetControllerMessageBusConfigurator<TController>.GetControllerDelegate _getController;
+		private readonly ControllerMessageBusConfigurator<TController, TRequest, TResponse>.ProcessorDelegate _processor;
 		private readonly IsAuthorizedDelegate _isAuthorized;
 		private readonly ISI.Extensions.MessageBus.OnError<TRequest, TResponse> _onError;
 
-		public ControllerConsumerAsync(Func<TController> getController, Func<TController, TRequest, Task<TResponse>> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
+		public ControllerConsumerAsync(GetControllerMessageBusConfigurator<TController>.GetControllerDelegate getController, ControllerMessageBusConfigurator<TController, TRequest, TResponse>.ProcessorDelegate processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
 		{
 			_getController = getController;
 			_processor = processor;
@@ -44,8 +44,10 @@ namespace ISI.Extensions.MessageBus.MassTransit
 		public override async Task Consume(global::MassTransit.ConsumeContext<TRequest> context)
 		{
 			TResponse response = null;
-
+			
 			var cancellationTokenSource = new System.Threading.CancellationTokenSource();
+
+			context.CancellationToken.Register(() => cancellationTokenSource.Cancel());
 
 			try
 			{
@@ -65,7 +67,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 						try
 						{
-							response = await _processor(controller, context.Message);
+							response = await _processor(controller, context.Message, cancellationTokenSource.Token);
 						}
 						catch (TaskCanceledException)
 						{
@@ -74,7 +76,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 					}
 					else
 					{
-						response = await _processor(controller, context.Message);
+						response = await _processor(controller, context.Message, cancellationTokenSource.Token);
 					}
 
 					if ((context.Message is ISI.Extensions.MessageBus.ICorrelatedBy<Guid> requestCorrelatedByGuid) && (response is ISI.Extensions.MessageBus.ICorrelatedBy<Guid> responseCorrelatedByGuid))

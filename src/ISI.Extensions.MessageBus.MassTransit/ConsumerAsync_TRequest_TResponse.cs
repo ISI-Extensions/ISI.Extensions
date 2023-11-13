@@ -27,11 +27,11 @@ namespace ISI.Extensions.MessageBus.MassTransit
 		where TRequest : class
 		where TResponse : class
 	{
-		private readonly Func<TRequest, Task<TResponse>> _processor;
+		private readonly MessageBusConfigurator<TRequest, TResponse>.ProcessorDelegate _processor;
 		private readonly IsAuthorizedDelegate _isAuthorized;
 		private readonly ISI.Extensions.MessageBus.OnError<TRequest, TResponse> _onError;
 
-		public ConsumerAsync(Func<TRequest, Task<TResponse>> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
+		public ConsumerAsync(MessageBusConfigurator<TRequest, TResponse>.ProcessorDelegate processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
 		{
 			_processor = processor;
 			_isAuthorized = isAuthorized ?? ((headers, request) => true);
@@ -41,6 +41,11 @@ namespace ISI.Extensions.MessageBus.MassTransit
 		public override async Task Consume(global::MassTransit.ConsumeContext<TRequest> context)
 		{
 			TResponse response = null;
+
+			var cancellationTokenSource = new System.Threading.CancellationTokenSource();
+
+			context.CancellationToken.Register(() => cancellationTokenSource.Cancel());
+
 			try
 			{
 				SetTrackingKeys(context);
@@ -49,7 +54,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 				if (_isAuthorized(GetRequestHeaders(context), context.Message))
 				{
-					response = await _processor(context.Message);
+					response = await _processor(context.Message, cancellationTokenSource.Token);
 
 					if ((context.Message is ISI.Extensions.MessageBus.ICorrelatedBy<Guid> requestCorrelatedByGuid) && (response is ISI.Extensions.MessageBus.ICorrelatedBy<Guid> responseCorrelatedByGuid))
 					{

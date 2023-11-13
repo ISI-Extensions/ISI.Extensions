@@ -27,16 +27,16 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 		where TRequest : class
 		where TResponse : class
 	{
-		private readonly Func<TController> _getController;
-		private readonly Func<TController, TRequest, Task<TResponse>> _processor;
+		private readonly GetControllerMessageBusConfigurator<TController>.GetControllerDelegate _getController;
+		private readonly ControllerMessageBusConfigurator<TController, TRequest, TResponse>.ProcessorDelegate _processor;
 		private readonly ISI.Extensions.MessageBus.OnError<TRequest, TResponse> _onError;
 
 		public ControllerConsumerAsync(
 			System.IServiceProvider serviceProvider,
 			string connectionString,
 			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer,
-			Func<TController> getController,
-			Func<TController, TRequest, Task<TResponse>> processor, 
+			GetControllerMessageBusConfigurator<TController>.GetControllerDelegate getController,
+			ControllerMessageBusConfigurator<TController, TRequest, TResponse>.ProcessorDelegate processor, 
 			ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
 			: base(serviceProvider, connectionString, jsonSerializer)
 		{
@@ -69,7 +69,7 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 
 					try
 					{
-						response = await _processor(controller, requestContext.Request);
+						response = await _processor(controller, requestContext.Request, cancellationTokenSource.Token);
 					}
 					catch (TaskCanceledException)
 					{
@@ -78,7 +78,7 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 				}
 				else
 				{
-					response = await _processor(controller, requestContext.Request);
+					response = await _processor(controller, requestContext.Request, cancellationTokenSource.Token);
 				}
 
 				UpdateResponse(requestContext.Request, response);

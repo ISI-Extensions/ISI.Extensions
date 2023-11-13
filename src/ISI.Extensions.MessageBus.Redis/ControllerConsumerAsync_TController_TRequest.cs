@@ -26,8 +26,8 @@ namespace ISI.Extensions.MessageBus.Redis
 		where TController : class
 		where TRequest : class
 	{
-		private readonly Func<TController> _getController;
-		private readonly Func<TController, TRequest, Task> _processor;
+		private readonly GetControllerMessageBusConfigurator<TController>.GetControllerDelegate _getController;
+		private readonly ControllerMessageBusConfigurator<TController, TRequest>.ProcessorDelegate _processor;
 		private readonly IsAuthorizedDelegate _isAuthorized;
 		private readonly ISI.Extensions.MessageBus.OnError<TRequest> _onError;
 
@@ -35,8 +35,8 @@ namespace ISI.Extensions.MessageBus.Redis
 			System.IServiceProvider serviceProvider,
 			StackExchange.Redis.ConnectionMultiplexer connection,
 			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer,
-			Func<TController> getController,
-			Func<TController, TRequest, Task> processor, 
+			GetControllerMessageBusConfigurator<TController>.GetControllerDelegate getController,
+			ControllerMessageBusConfigurator<TController, TRequest>.ProcessorDelegate processor, 
 			IsAuthorizedDelegate isAuthorized = null,
 			ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
 			: base(serviceProvider, connection, jsonSerializer)
@@ -49,6 +49,8 @@ namespace ISI.Extensions.MessageBus.Redis
 
 		public override async Task Consume(StackExchange.Redis.RedisChannel redisChannel, StackExchange.Redis.RedisValue redisValue)
 		{
+			var cancellationTokenSource = new System.Threading.CancellationTokenSource();
+
 			var serializedMessageEnvelope = redisValue.ToString();
 
 			var requestContext = (RequestContext<TRequest>)null;
@@ -65,7 +67,7 @@ namespace ISI.Extensions.MessageBus.Redis
 				{
 					var controller = _getController();
 
-					await _processor(controller, requestContext.Request);
+					await _processor(controller, requestContext.Request, cancellationTokenSource.Token);
 				}
 
 				EndRequest();

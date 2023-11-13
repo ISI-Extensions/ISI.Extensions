@@ -27,12 +27,12 @@ namespace ISI.Extensions.MessageBus.MassTransit
 		where TController : class
 		where TRequest : class
 	{
-		private readonly Func<TController> _getController;
-		private readonly Func<TController, TRequest, Task> _processor;
+		private readonly GetControllerMessageBusConfigurator<TController>.GetControllerDelegate _getController;
+		private readonly ControllerMessageBusConfigurator<TController, TRequest>.ProcessorDelegate _processor;
 		private readonly IsAuthorizedDelegate _isAuthorized;
 		private readonly ISI.Extensions.MessageBus.OnError<TRequest> _onError;
 
-		public ControllerConsumerAsync(Func<TController> getController, Func<TController, TRequest, Task> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
+		public ControllerConsumerAsync(GetControllerMessageBusConfigurator<TController>.GetControllerDelegate getController, ControllerMessageBusConfigurator<TController, TRequest>.ProcessorDelegate processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
 		{
 			_getController = getController;
 			_processor = processor;
@@ -44,6 +44,10 @@ namespace ISI.Extensions.MessageBus.MassTransit
 		{
 			try
 			{
+				var cancellationTokenSource = new System.Threading.CancellationTokenSource();
+
+				context.CancellationToken.Register(() => cancellationTokenSource.Cancel());
+
 				SetTrackingKeys(context);
 
 				BeginRequest();
@@ -52,7 +56,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 				{
 					var controller = _getController();
 
-					await _processor(controller, context.Message);
+					await _processor(controller, context.Message, cancellationTokenSource.Token);
 				}
 
 				EndRequest();

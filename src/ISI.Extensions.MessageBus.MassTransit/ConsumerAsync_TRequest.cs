@@ -26,11 +26,11 @@ namespace ISI.Extensions.MessageBus.MassTransit
 	public class ConsumerAsync<TRequest> : AbstractConsumer<TRequest>
 		where TRequest : class
 	{
-		private readonly Func<TRequest, Task> _processor;
+		private readonly MessageBusConfigurator<TRequest>.ProcessorDelegate _processor;
 		private readonly IsAuthorizedDelegate _isAuthorized;
 		private readonly ISI.Extensions.MessageBus.OnError<TRequest> _onError;
 
-		public ConsumerAsync(Func<TRequest, Task> processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
+		public ConsumerAsync(MessageBusConfigurator<TRequest>.ProcessorDelegate processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
 		{
 			_processor = processor;
 			_isAuthorized = isAuthorized ?? ((headers, request) => true);
@@ -39,6 +39,10 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 		public override async Task Consume(global::MassTransit.ConsumeContext<TRequest> context)
 		{
+			var cancellationTokenSource = new System.Threading.CancellationTokenSource();
+
+			context.CancellationToken.Register(() => cancellationTokenSource.Cancel());
+
 			try
 			{
 				SetTrackingKeys(context);
@@ -47,7 +51,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 				if (_isAuthorized(GetRequestHeaders(context), context.Message))
 				{
-					await _processor(context.Message);
+					await _processor(context.Message, cancellationTokenSource.Token);
 				}
 
 				EndRequest();

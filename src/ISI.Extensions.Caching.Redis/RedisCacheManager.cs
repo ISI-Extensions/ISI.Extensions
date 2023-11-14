@@ -27,6 +27,8 @@ namespace ISI.Extensions.Caching.Redis
 	{
 		public Guid CacheManagerInstanceUuid { get; } = Guid.NewGuid();
 
+		public event OnClearCache OnClearCache;
+
 		private const string HmGetScript = (@"return redis.call('HMGET', KEYS[1], unpack(ARGV))");
 		private const string AbsoluteExpirationKey = "absexp";
 		private const string SlidingExpirationKey = "sldexp";
@@ -147,6 +149,8 @@ namespace ISI.Extensions.Caching.Redis
 
 		public void ClearCache()
 		{
+			OnClearCache?.Invoke(null);
+			
 			var endpoints = Connection.GetEndPoints();
 
 			var server = Connection.GetServer(endpoints.First());
@@ -162,6 +166,8 @@ namespace ISI.Extensions.Caching.Redis
 			}
 			else
 			{
+				OnClearCache?.Invoke(request);
+			
 				foreach (var cacheKey in request.CacheKeys.ToNullCheckedArray(NullCheckCollectionResult.Empty))
 				{
 					Remove(cacheKey);

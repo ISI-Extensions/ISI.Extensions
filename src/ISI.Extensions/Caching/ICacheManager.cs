@@ -35,15 +35,19 @@ namespace ISI.Extensions.Caching
 
 	public delegate ICacheEntryExpirationPolicy DefaultCacheEntryExpirationPolicyGetter(object itemToCache);
 
+	public delegate void OnClearCache(ISI.Extensions.Caching.ClearCacheRequest clearCacheRequest);
+
 	public interface ICacheManager : IDisposable
 	{
 		Guid CacheManagerInstanceUuid { get; }
+
+		event OnClearCache OnClearCache;
 		
 		bool TryGetValue(string cacheKey, out object value);
 		Microsoft.Extensions.Caching.Memory.ICacheEntry CreateEntry(string key);
 		
 		void ClearCache();
-		void ClearCache(ISI.Extensions.Caching.ClearCacheRequest clearCacheRequest);
+		void ClearCache(ISI.Extensions.Caching.ClearCacheRequest request);
 		void Remove(string key);
 		void RemoveByCacheKeyPrefix(string cacheKeyPrefix);
 		void Remove(IEnumerable<ClearCacheRequestCacheKeyWithCacheKeyInstanceUuid> cacheKeysWithCacheKeyInstanceUuid);

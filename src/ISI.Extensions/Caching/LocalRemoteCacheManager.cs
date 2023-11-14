@@ -26,6 +26,8 @@ namespace ISI.Extensions.Caching
 	{
 		public Guid CacheManagerInstanceUuid { get; } = Guid.NewGuid();
 		
+		public event OnClearCache OnClearCache;
+
 		protected ICacheManager LocalCacheManager { get; }
 		protected ICacheManager RemoteCacheManager { get; }
 
@@ -63,14 +65,18 @@ namespace ISI.Extensions.Caching
 
 		public void ClearCache()
 		{
+			OnClearCache?.Invoke(null);
+			
 			LocalCacheManager?.ClearCache();
 			RemoteCacheManager?.ClearCache();
 		}
 
-		public void ClearCache(ClearCacheRequest clearCacheRequest)
+		public void ClearCache(ClearCacheRequest request)
 		{
-			LocalCacheManager?.ClearCache(clearCacheRequest);
-			RemoteCacheManager?.ClearCache(clearCacheRequest);
+			OnClearCache?.Invoke(request);
+			
+			LocalCacheManager?.ClearCache(request);
+			RemoteCacheManager?.ClearCache(request);
 		}
 
 		public void Remove(string cacheKey)

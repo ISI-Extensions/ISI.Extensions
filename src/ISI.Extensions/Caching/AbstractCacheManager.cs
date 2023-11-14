@@ -24,6 +24,8 @@ namespace ISI.Extensions.Caching
 	{
 		public Guid CacheManagerInstanceUuid { get; } = Guid.NewGuid();
 
+		public event OnClearCache OnClearCache;
+
 		protected ISI.Extensions.Caching.Configuration Configuration { get; }
 
 		protected string CacheKeyPrefix => Configuration.CacheKeyPrefix;
@@ -88,6 +90,11 @@ namespace ISI.Extensions.Caching
 
 		public abstract Microsoft.Extensions.Caching.Memory.ICacheEntry CreateEntry(string cacheKey);
 
+		protected virtual void InvokeOnClearCache(ClearCacheRequest request)
+		{
+			OnClearCache?.Invoke(request);
+		}
+
 		public abstract void ClearCache();
 
 		public virtual void ClearCache(ClearCacheRequest request)
@@ -98,6 +105,8 @@ namespace ISI.Extensions.Caching
 			}
 			else
 			{
+				InvokeOnClearCache(request);
+
 				foreach (var cacheKey in request.CacheKeys.ToNullCheckedArray(NullCheckCollectionResult.Empty))
 				{
 					Remove(cacheKey);

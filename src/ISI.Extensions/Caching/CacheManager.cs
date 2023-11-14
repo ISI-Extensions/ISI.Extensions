@@ -63,6 +63,8 @@ namespace ISI.Extensions.Caching
 
 		public override void ClearCache()
 		{
+			InvokeOnClearCache(null);
+
 			InnerMemoryCacheClearMethodInfo?.Invoke(InnerMemoryCache, null);
 		}
 

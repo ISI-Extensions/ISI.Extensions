@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -20,39 +20,10 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Nuget
+namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public partial class NugetSettings
+	public class GetNugetSettingsResponse
 	{
-		public void Save(Func<ISI.Extensions.Nuget.SerializableModels.NugetSettings, bool> updateSettings)
-		{
-			using (new ISI.Extensions.Locks.FileLock(SettingsFileName))
-			{
-				ISI.Extensions.Nuget.SerializableModels.NugetSettings settings = null;
-
-				if (System.IO.File.Exists(SettingsFileName))
-				{
-					using (var stream = System.IO.File.OpenRead(SettingsFileName))
-					{
-						settings = Serialization.Deserialize<ISI.Extensions.Nuget.SerializableModels.NugetSettings>(stream);
-					}
-				}
-
-				settings = settings ?? new ISI.Extensions.Nuget.SerializableModels.NugetSettings();
-
-				if (updateSettings(settings))
-				{
-					if (System.IO.File.Exists(SettingsFileName))
-					{
-						System.IO.File.Move(SettingsFileName, string.Format("{0}.{1}", SettingsFileName, DateTime.UtcNow.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeSortablePrecise)));
-					}
-
-					using (var stream = System.IO.File.OpenWrite(SettingsFileName))
-					{
-						Serialization.Serialize<ISI.Extensions.Nuget.SerializableModels.NugetSettings>(settings, stream, ISI.Extensions.Serialization.SerializationFormat.Json, true);
-					}
-				}
-			}
-		}
+		public NugetSettings NugetSettings { get; set; }
 	}
 }

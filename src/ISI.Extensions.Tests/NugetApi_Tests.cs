@@ -69,7 +69,7 @@ namespace ISI.Extensions.Tests
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 
-			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.Nuget.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
 
 			nugetApi.RestoreNugetPackages(new()
 			{
@@ -83,7 +83,7 @@ namespace ISI.Extensions.Tests
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 
-			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.Nuget.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
 
 			nugetApi.NupkgPack(new()
 			{
@@ -101,7 +101,7 @@ namespace ISI.Extensions.Tests
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 
-			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.Nuget.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
 
 			var nupkgFullName = System.IO.Directory.EnumerateFiles(@"F:\ISI\Internal Projects\ISI.Extensions\Nuget", "*.nupkg").First();
 
@@ -120,7 +120,7 @@ namespace ISI.Extensions.Tests
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 
 			var logger = new ISI.Extensions.TextWriterLogger(TestContext.Progress);
-			var codeSigningApi = new ISI.Extensions.VisualStudio.CodeSigningApi(logger, new ISI.Extensions.VisualStudio.VsixSigntoolApi(logger, new ISI.Extensions.Nuget.NugetApi(logger)));
+			var codeSigningApi = new ISI.Extensions.VisualStudio.CodeSigningApi(logger, new ISI.Extensions.VisualStudio.VsixSigntoolApi(logger, new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.Nuget.Configuration(), logger, new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer())));
 
 			codeSigningApi.SignNupkgs(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.SignNupkgsRequest()
 			{
@@ -136,7 +136,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void Nuspec_Test()
 		{
-			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.Nuget.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
 
 			var nuspec = nugetApi.GenerateNuspecFromProject(new()
 			{
@@ -179,7 +179,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void ListNugetPackageKeys_Test()
 		{
-			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.Nuget.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
 
 			var nugetPackageKeys = nugetApi.ListNugetPackageKeys(new()
 			{
@@ -191,11 +191,17 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void GetLatestPackageVersion_Test()
 		{
-			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.Nuget.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
 
 			var packageVersion5 = nugetApi.GetNugetPackageKey(new()
 			{
 				PackageId = "Microsoft.Graph.Core",
+			}).NugetPackageKey;
+
+			var packageVersion7 = nugetApi.GetNugetPackageKey(new()
+			{
+				PackageId = packageVersion5.Package,
+				PackageVersion = packageVersion5.Version,
 			}).NugetPackageKey;
 
 			var packageVersion4 = nugetApi.GetNugetPackageKey(new()
@@ -236,10 +242,9 @@ namespace ISI.Extensions.Tests
 		{
 			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
 			var nugetApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Nuget.NugetApi>();
-			var nugetSettings = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Nuget.NugetSettings>().Load();
 
 			var nugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
-			foreach (var nugetSettingsNugetPackageKey in nugetSettings?.UpdateNugetPackages?.NugetSettingsNugetPackageKeys ?? Array.Empty<ISI.Extensions.Nuget.SerializableModels.NugetSettingsNugetPackageKey>())
+			foreach (var nugetSettingsNugetPackageKey in nugetApi.GetNugetSettings(new ())?.NugetSettings?.UpdateNugetPackages?.NugetSettingsNugetPackageKeys ?? Array.Empty<ISI.Extensions.Nuget.NugetSettingsNugetPackageKey>())
 			{
 				nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new()
 				{
@@ -288,7 +293,7 @@ namespace ISI.Extensions.Tests
 				NugetPackageKeys = nugetPackageKeys,
 				UpsertAssemblyRedirectsNugetPackageKeys = upsertAssemblyRedirectsNugetPackageKeys,
 				RemoveAssemblyRedirects = removeAssemblyRedirects,
-				IgnorePackageIds = nugetSettings?.UpdateNugetPackages?.IgnorePackageIds,
+				IgnorePackageIds = nugetApi.GetNugetSettings(new ())?.NugetSettings?.UpdateNugetPackages?.IgnorePackageIds,
 				//IgnorePackageIds = new[]
 				//{
 				//	"ISI.CMS.T4CMS",
@@ -388,7 +393,7 @@ namespace ISI.Extensions.Tests
 		{
 			var logger = ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();
 			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
-			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.Nuget.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
 
 			var solutionFullNames = new List<string>();
 			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\Central.SolutionFullNames.txt"));

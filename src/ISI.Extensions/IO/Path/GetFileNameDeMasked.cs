@@ -46,6 +46,8 @@ namespace ISI.Extensions
 				new("{PathRoot}", FileNameMask.FileNameMaskType.StringReplacement, ISI.Extensions.IO.Path.PathRoot, "PathRoot Directory"),
 				new("{DataRoot}", FileNameMask.FileNameMaskType.StringReplacement, ISI.Extensions.IO.Path.DataRoot, "DataRoot Directory"),
 				new("{MachineName}", FileNameMask.FileNameMaskType.StringReplacement, System.Environment.MachineName.ToLower(), "MachineName"),
+				new("{LocalApplicationData}", FileNameMask.FileNameMaskType.StringReplacement, () => System.Environment.GetEnvironmentVariable("LOCALAPPDATA"), "LocalApplicationData"),
+				new("{ApplicationData}", FileNameMask.FileNameMaskType.StringReplacement, () => System.Environment.GetEnvironmentVariable("APPDATA"), "ApplicationData"),
 			};
 
 			public static string GetFileNameDeMasked(string fileName, ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper = null)

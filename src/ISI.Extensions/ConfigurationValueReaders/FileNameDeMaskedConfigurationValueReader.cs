@@ -25,9 +25,8 @@ namespace ISI.Extensions.ConfigurationValueReaders
 
 		string IConfigurationValueReader.Prefix => Prefix;
 
-		public string GetValue(ParsedValue parsedValue)
-		{
-			return ISI.Extensions.IO.Path.GetFileNameDeMasked(parsedValue.Key);
-		}
+		public string GetValue(ParsedValue parsedValue)=> ISI.Extensions.IO.Path.GetFileNameDeMasked(parsedValue.Key);
+
+		public static string PrefixWithColon => $"{Prefix}:";
 	}
 }

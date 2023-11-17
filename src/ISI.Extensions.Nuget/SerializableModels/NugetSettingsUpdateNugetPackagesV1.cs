@@ -19,16 +19,38 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
+using ISI.Extensions.Extensions;
+using LOCALENTITIES = ISI.Extensions.Nuget;
 
 namespace ISI.Extensions.Nuget.SerializableModels
 {
 	[DataContract]
-	public class NugetSettingsNugetPackageKey
+	[ISI.Extensions.Serialization.PreferredSerializerJsonDataContract]
+	[ISI.Extensions.Serialization.SerializerContractUuid("481fa150-09b6-4e38-8b85-f6a5967b55dd")]
+	public class NugetSettingsUpdateNugetPackagesV1 : INugetSettingsUpdateNugetPackages
 	{
-		[DataMember(Name = "packageId", EmitDefaultValue = false)]
-		public string PackageId { get; set; }
+		public static INugetSettingsUpdateNugetPackages ToSerializable(LOCALENTITIES.NugetSettingsUpdateNugetPackages source)
+		{
+			return new NugetSettingsUpdateNugetPackagesV1()
+			{
+				NugetSettingsNugetPackageKeys = source.NugetSettingsNugetPackageKeys.ToNullCheckedArray(NugetSettingsNugetPackageKeyV1.ToSerializable),
+				IgnorePackageIds = source.IgnorePackageIds.ToNullCheckedArray(),
+			};
+		}
 
-		[DataMember(Name = "packageVersion", EmitDefaultValue = false)]
-		public string PackageVersion { get; set; }
+		public LOCALENTITIES.NugetSettingsUpdateNugetPackages Export()
+		{
+			return new LOCALENTITIES.NugetSettingsUpdateNugetPackages()
+			{
+				NugetSettingsNugetPackageKeys = NugetSettingsNugetPackageKeys.ToNullCheckedArray(nugetSettingsNugetPackageKey => nugetSettingsNugetPackageKey.Export()),
+				IgnorePackageIds = IgnorePackageIds.ToNullCheckedArray(),
+			};
+		}
+
+		[DataMember(Name = "nugetPackageKeys", EmitDefaultValue = false)]
+		public INugetSettingsNugetPackageKey[] NugetSettingsNugetPackageKeys { get; set; }
+
+		[DataMember(Name = "ignorePackageIds", EmitDefaultValue = false)]
+		public string[] IgnorePackageIds { get; set; }
 	}
 }

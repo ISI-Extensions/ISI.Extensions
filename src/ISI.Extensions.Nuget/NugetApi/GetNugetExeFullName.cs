@@ -13,14 +13,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
-using ISI.Extensions.Extensions;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using ISI.Extensions.JsonSerialization.Extensions;
+using ISI.Extensions.Nuget.Extensions;
 using DTOs = ISI.Extensions.Nuget.DataTransferObjects.NugetApi;
+using SerializableDTOs = ISI.Extensions.Nuget.SerializableModels;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Nuget
 {

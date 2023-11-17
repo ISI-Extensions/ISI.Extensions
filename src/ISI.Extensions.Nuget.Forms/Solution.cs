@@ -27,9 +27,6 @@ namespace ISI.Extensions.Nuget.Forms
 {
 	public class Solution
 	{
-		private static ISI.Extensions.Nuget.NugetSettings _nugetSettings = null;
-		protected ISI.Extensions.Nuget.NugetSettings NugetSettings => _nugetSettings ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Nuget.NugetSettings>();
-
 		private static ISI.Extensions.Nuget.NugetApi _nugetApi = null;
 		protected ISI.Extensions.Nuget.NugetApi NugetApi => _nugetApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Nuget.NugetApi>();
 
@@ -108,16 +105,6 @@ namespace ISI.Extensions.Nuget.Forms
 
 				try
 				{
-					var nugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
-					foreach (var nugetSettingsNugetPackageKey in NugetSettings.Load()?.UpdateNugetPackages?.NugetSettingsNugetPackageKeys ?? Array.Empty<ISI.Extensions.Nuget.SerializableModels.NugetSettingsNugetPackageKey>())
-					{
-						nugetPackageKeys.TryAdd(NugetApi.GetNugetPackageKey(new()
-						{
-							PackageId = nugetSettingsNugetPackageKey.PackageId,
-							PackageVersion = nugetSettingsNugetPackageKey.PackageVersion,
-						}).NugetPackageKey);
-					}
-
 					var upsertAssemblyRedirectsNugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
 
 					SolutionApi.UpdateNugetPackages(new()
@@ -125,8 +112,8 @@ namespace ISI.Extensions.Nuget.Forms
 						SolutionFullNames = new [] { SolutionDetails.SolutionFullName },
 						UpdateWorkingCopyFromSourceControl = true,
 						CommitWorkingCopyToSourceControl = true,
-						IgnorePackageIds = NugetSettings.Load()?.UpdateNugetPackages?.IgnorePackageIds,
-						NugetPackageKeys = nugetPackageKeys,
+						IgnorePackageIds = NugetApi.GetNugetSettings(new ())?.NugetSettings?.UpdateNugetPackages?.IgnorePackageIds,
+						NugetPackageKeys = NugetPackageKeys,
 						UpsertAssemblyRedirectsNugetPackageKeys = upsertAssemblyRedirectsNugetPackageKeys,
 						AddToLog = value => UpdateNugetPackagesResponse.AppendLine(value),
 					});
@@ -156,10 +143,12 @@ namespace ISI.Extensions.Nuget.Forms
 		protected System.Windows.Forms.Control SolutionPanel { get; private set; }
 		public System.Windows.Forms.Control Panel { get; }
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
+		protected ISI.Extensions.Nuget.NugetPackageKeyDictionary NugetPackageKeys { get; }
 
-		public Solution(string solutionFullName, System.Windows.Forms.Control parentControl, bool highlighted, bool selected, Action<Solution> start, Action onChangeSelected, Microsoft.Extensions.Logging.ILogger logger = null)
+		public Solution(string solutionFullName, System.Windows.Forms.Control parentControl, bool highlighted, bool selected, Action<Solution> start, Action onChangeSelected, Microsoft.Extensions.Logging.ILogger logger, ISI.Extensions.Nuget.NugetPackageKeyDictionary nugetPackageKeys = null)
 		{
 			Logger = logger ?? new ISI.Extensions.ConsoleLogger();
+			NugetPackageKeys = nugetPackageKeys ?? new NugetPackageKeyDictionary();
 
 			var getActiveBuildConfigurationResponse = SolutionApi.GetActiveBuildConfiguration(new()
 			{
@@ -181,6 +170,7 @@ namespace ISI.Extensions.Nuget.Forms
 			Selected = selected;
 
 			OnChangeSelected = onChangeSelected;
+			NugetPackageKeys = nugetPackageKeys;
 		}
 
 		protected Solution()

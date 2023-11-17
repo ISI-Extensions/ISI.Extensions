@@ -29,8 +29,8 @@ namespace ISI.Extensions.Nuget.Forms
 {
 	public partial class SelectNugetPackagesForm : Form
 	{
-		private static ISI.Extensions.Nuget.NugetSettings _nugetSettings = null;
-		protected ISI.Extensions.Nuget.NugetSettings NugetSettings => _nugetSettings ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Nuget.NugetSettings>();
+		private static ISI.Extensions.Nuget.NugetApi _nugetApi = null;
+		protected ISI.Extensions.Nuget.NugetApi NugetApi => _nugetApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Nuget.NugetApi>();
 
 		public IList<NugetPackage> NugetPackages { get; } = new List<NugetPackage>();
 
@@ -43,7 +43,7 @@ namespace ISI.Extensions.Nuget.Forms
 
 			ISI.Extensions.WinForms.ThemeHelper.SyncTheme(this);
 
-			NugetSettings.ApplyFormSize(nameof(SelectNugetPackagesForm), this);
+			NugetApi.ApplyFormSize(nameof(SelectNugetPackagesForm), this);
 
 			CloseButton.Visible = false;
 			OkButton.Visible = false;
@@ -98,7 +98,7 @@ namespace ISI.Extensions.Nuget.Forms
 					}
 				}
 
-				NugetSettings.RecordFormSize(this);
+				NugetApi.RecordFormSize(this);
 
 				if (this.Modal)
 				{

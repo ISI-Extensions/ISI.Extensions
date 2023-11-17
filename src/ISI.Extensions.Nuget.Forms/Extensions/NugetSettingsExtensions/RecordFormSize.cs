@@ -24,14 +24,10 @@ namespace ISI.Extensions.Nuget.Forms.Extensions
 {
 	public static partial class NugetSettingsExtensions
 	{
-		private static SerializableModels.NugetSettingsFormLocationAndSize[] RecordFormSize(IEnumerable<SerializableModels.NugetSettingsFormLocationAndSize> formLocationAndSizes, System.Windows.Forms.Form form)
-		{
-			return RecordFormSize(formLocationAndSizes, form.GetType().Name, form);
-		}
 
-		private static SerializableModels.NugetSettingsFormLocationAndSize[] RecordFormSize(IEnumerable<SerializableModels.NugetSettingsFormLocationAndSize> formLocationAndSizes, string formName, System.Windows.Forms.Form form)
+		private static NugetSettingsFormLocationAndSize[] RecordFormSize(IEnumerable<NugetSettingsFormLocationAndSize> formLocationAndSizes, string formName, System.Windows.Forms.Form form)
 		{
-			var formLocationAndSize = new SerializableModels.NugetSettingsFormLocationAndSize()
+			var formLocationAndSize = new NugetSettingsFormLocationAndSize()
 			{
 				FormName = formName,
 				Left = form.Left,
@@ -46,9 +42,9 @@ namespace ISI.Extensions.Nuget.Forms.Extensions
 			{
 				formLocationAndSizes = formLocationAndSizes.ToNullCheckedList(NullCheckCollectionResult.Empty).ToList();
 
-				((List<SerializableModels.NugetSettingsFormLocationAndSize>) formLocationAndSizes).RemoveAll(_ => string.Equals(_.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
+				((List<NugetSettingsFormLocationAndSize>) formLocationAndSizes).RemoveAll(_ => string.Equals(_.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
 
-				((List<SerializableModels.NugetSettingsFormLocationAndSize>) formLocationAndSizes).Add(formLocationAndSize);
+				((List<NugetSettingsFormLocationAndSize>) formLocationAndSizes).Add(formLocationAndSize);
 
 				return formLocationAndSizes.ToArray();
 			}
@@ -56,20 +52,23 @@ namespace ISI.Extensions.Nuget.Forms.Extensions
 			return null;
 		}
 
-		public static void RecordFormSize(this NugetSettings jenkinsSettings, System.Windows.Forms.Form form)
+		public static void RecordFormSize(this NugetApi nugetApi, System.Windows.Forms.Form form)
 		{
-			jenkinsSettings.Save(settings =>
+			nugetApi.UpdateNugetSettings(new()
 			{
-				var formLocationAndSizes = RecordFormSize(settings.FormLocationAndSizes, form);
-
-				if (formLocationAndSizes == null)
+				UpdateSettings = nugetSettings =>
 				{
-					return false;
+					var formLocationAndSizes = RecordFormSize(nugetSettings.FormLocationAndSizes, form.GetType().Name, form);
+
+					if (formLocationAndSizes == null)
+					{
+						return false;
+					}
+
+					nugetSettings.FormLocationAndSizes = formLocationAndSizes;
+
+					return true;
 				}
-
-				settings.FormLocationAndSizes = RecordFormSize(settings.FormLocationAndSizes, form);
-
-				return true;
 			});
 		}
 	}

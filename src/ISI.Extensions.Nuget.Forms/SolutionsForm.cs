@@ -37,8 +37,8 @@ namespace ISI.Extensions.Nuget.Forms
 		public delegate ISolutionsContext UpdateNugetPackagesDelegate(SolutionsForm form, Action<Solution> start);
 		public delegate void OnCloseFormDelegate(SolutionsForm form);
 
-		private static ISI.Extensions.Nuget.NugetSettings _nugetSettings = null;
-		protected ISI.Extensions.Nuget.NugetSettings NugetSettings => _nugetSettings ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Nuget.NugetSettings>();
+		private static ISI.Extensions.Nuget.NugetApi _nugetApi = null;
+		protected ISI.Extensions.Nuget.NugetApi NugetApi => _nugetApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Nuget.NugetApi>();
 
 		protected internal ISolutionsContext SolutionsContext { get; set; }
 
@@ -60,7 +60,7 @@ namespace ISI.Extensions.Nuget.Forms
 
 			SolutionsPanel.ControlAdded += (sender, args) => ISI.Extensions.WinForms.ThemeHelper.SyncTheme(args.Control);
 
-			NugetSettings.ApplyFormSize(this);
+			NugetApi.ApplyFormSize(this);
 
 			CloseButton.Visible = false;
 			StartButton.Visible = false;
@@ -194,7 +194,7 @@ namespace ISI.Extensions.Nuget.Forms
 
 			Closing += (_, __) =>
 			{
-				NugetSettings.RecordFormSize(this);
+				NugetApi.RecordFormSize(this);
 			};
 		}
 	}

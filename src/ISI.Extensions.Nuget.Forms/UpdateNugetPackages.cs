@@ -24,6 +24,9 @@ namespace ISI.Extensions.Nuget.Forms
 {
 	public class UpdateNugetPackages
 	{
+		private static ISI.Extensions.Nuget.NugetApi _nugetApi = null;
+		protected static ISI.Extensions.Nuget.NugetApi NugetApi => _nugetApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Nuget.NugetApi>();
+
 		private static ISI.Extensions.VisualStudio.VisualStudioSettings _visualStudioSettings = null;
 		protected static ISI.Extensions.VisualStudio.VisualStudioSettings VisualStudioSettings => _visualStudioSettings ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.VisualStudioSettings>();
 
@@ -72,9 +75,20 @@ namespace ISI.Extensions.Nuget.Forms
 
 				var selectAll = !solutions.Values.Any(value => value);
 
+				var nugetPackageKeys = new NugetPackageKeyDictionary();
+				foreach (var nugetSettingsNugetPackageKey in NugetApi.GetNugetSettings(new ())?.NugetSettings?.UpdateNugetPackages?.NugetSettingsNugetPackageKeys ?? Array.Empty<NugetSettingsNugetPackageKey>())
+				{
+					nugetPackageKeys.TryAdd(NugetApi.GetNugetPackageKey(new()
+					{
+						PackageId = nugetSettingsNugetPackageKey.PackageId,
+						PackageVersion = nugetSettingsNugetPackageKey.PackageVersion,
+					}).NugetPackageKey);
+				}
+
+
 				foreach (var solution in solutions)
 				{
-					context.Solutions.Add(new(solution.Key, form.SolutionsPanel, (context.Solutions.Count % 2 == 1), selectAll || solution.Value, start, OnChangedSelection));
+					context.Solutions.Add(new(solution.Key, form.SolutionsPanel, (context.Solutions.Count % 2 == 1), selectAll || solution.Value, start, OnChangedSelection, null, nugetPackageKeys));
 				}
 
 				form.SolutionsPanel.Controls.AddRange(context.Solutions.Select(solution => solution.Panel).ToArray());

@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,17 +18,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
+using LOCALENTITIES = ISI.Extensions.Nuget;
 
 namespace ISI.Extensions.Nuget.SerializableModels
 {
-	[DataContract]
-	public class NugetSettings
+	public interface INugetSettingsNugetPackageKey : ISI.Extensions.Converters.IExportTo<LOCALENTITIES.NugetSettingsNugetPackageKey>
 	{
-		[DataMember(Name = "formLocationAndSizes", EmitDefaultValue = false)]
-		public NugetSettingsFormLocationAndSize[] FormLocationAndSizes { get; set; }
-
-		[DataMember(Name = "updateNugetPackages", EmitDefaultValue = false)]
-		public NugetSettingsUpdateNugetPackages UpdateNugetPackages { get; set; }
 	}
 }

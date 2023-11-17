@@ -72,7 +72,7 @@ namespace ISI.Extensions.Tests
 			settings.OverrideWithEnvironmentVariables();
 
 			var logger = new ISI.Extensions.TextWriterLogger(TestContext.Progress);
-			var codeSigningApi = new ISI.Extensions.VisualStudio.CodeSigningApi(logger, new ISI.Extensions.VisualStudio.VsixSigntoolApi(logger, new ISI.Extensions.Nuget.NugetApi(logger)));
+			var codeSigningApi = new ISI.Extensions.VisualStudio.CodeSigningApi(logger, new ISI.Extensions.VisualStudio.VsixSigntoolApi(logger, new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.Nuget.Configuration(), logger, new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer())));
 
 			var fileNames = System.IO.Directory.GetFiles(@"F:\ISI\Internal Projects\ISI.Extensions\Nuget");
 
@@ -101,7 +101,7 @@ namespace ISI.Extensions.Tests
 			settings.OverrideWithEnvironmentVariables();
 
 			var logger = new ISI.Extensions.TextWriterLogger(TestContext.Progress);
-			var codeSigningApi = new ISI.Extensions.VisualStudio.CodeSigningApi(logger, new ISI.Extensions.VisualStudio.VsixSigntoolApi(logger, new ISI.Extensions.Nuget.NugetApi(logger)));
+			var codeSigningApi = new ISI.Extensions.VisualStudio.CodeSigningApi(logger, new ISI.Extensions.VisualStudio.VsixSigntoolApi(logger, new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.Nuget.Configuration(), logger, new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer())));
 
 			codeSigningApi.SignVsixes(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.SignVsixesRequest()
 			{

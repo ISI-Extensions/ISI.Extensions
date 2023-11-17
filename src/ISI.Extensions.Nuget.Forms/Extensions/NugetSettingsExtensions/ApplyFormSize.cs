@@ -24,13 +24,21 @@ namespace ISI.Extensions.Nuget.Forms.Extensions
 {
 	public static partial class NugetSettingsExtensions
 	{
-		private static void ApplyFormSize(SerializableModels.NugetSettingsFormLocationAndSize[] formLocationAndSizes, System.Windows.Forms.Form form)
+		public static NugetSettingsFormLocationAndSize GetFormLocationAndSize(this IEnumerable<NugetSettingsFormLocationAndSize> formLocationAndSizes, string formName)
 		{
-			ApplyFormSize(formLocationAndSizes, form.GetType().Name, form);
+			return formLocationAndSizes.NullCheckedFirstOrDefault(formLocationAndSize => string.Equals(formLocationAndSize.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
 		}
 
-		private static void ApplyFormSize(SerializableModels.NugetSettingsFormLocationAndSize[] formLocationAndSizes, string formName, System.Windows.Forms.Form form)
+		public static void ApplyFormSize(this NugetApi nugetApi, System.Windows.Forms.Form form)
 		{
+			ApplyFormSize(nugetApi, form.GetType().Name, form);
+		}
+
+
+		public static void ApplyFormSize(this NugetApi nugetApi, string formName, System.Windows.Forms.Form form)
+		{
+			var formLocationAndSizes = nugetApi.GetNugetSettings(new()).NugetSettings.FormLocationAndSizes ?? Array.Empty<NugetSettingsFormLocationAndSize>();
+
 			var formSizeAndLocation = formLocationAndSizes.GetFormLocationAndSize(formName);
 
 			if (formSizeAndLocation != null)
@@ -52,22 +60,6 @@ namespace ISI.Extensions.Nuget.Forms.Extensions
 				form.Width = formSizeAndLocation.Width;
 				form.Height = formSizeAndLocation.Height;
 			}
-		}
-
-		public static SerializableModels.NugetSettingsFormLocationAndSize GetFormLocationAndSize(this IEnumerable<SerializableModels.NugetSettingsFormLocationAndSize> formLocationAndSizes, string formName)
-		{
-			return formLocationAndSizes.NullCheckedFirstOrDefault(formLocationAndSize => string.Equals(formLocationAndSize.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
-		}
-
-		public static void ApplyFormSize(this NugetSettings jenkinsSettings, System.Windows.Forms.Form form)
-		{
-			ApplyFormSize(jenkinsSettings.Load()?.FormLocationAndSizes, form.GetType().Name, form);
-		}
-
-
-		public static void ApplyFormSize(this NugetSettings jenkinsSettings, string formName, System.Windows.Forms.Form form)
-		{
-			ApplyFormSize(jenkinsSettings.Load()?.FormLocationAndSizes, formName, form);
 		}
 	}
 }

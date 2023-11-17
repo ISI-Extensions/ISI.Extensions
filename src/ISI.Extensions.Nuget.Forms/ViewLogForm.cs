@@ -29,8 +29,8 @@ namespace ISI.Extensions.Nuget.Forms
 {
 	public partial class ViewLogForm : Form
 	{
-		private static ISI.Extensions.Nuget.NugetSettings _nugetSettings = null;
-		protected ISI.Extensions.Nuget.NugetSettings NugetSettings => _nugetSettings ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Nuget.NugetSettings>();
+		private static ISI.Extensions.Nuget.NugetApi _nugetApi = null;
+		protected ISI.Extensions.Nuget.NugetApi NugetApi => _nugetApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Nuget.NugetApi>();
 
 		public ViewLogForm(string log)
 		{
@@ -38,7 +38,7 @@ namespace ISI.Extensions.Nuget.Forms
 
 			ISI.Extensions.WinForms.ThemeHelper.SyncTheme(this);
 
-			NugetSettings.ApplyFormSize(this);
+			NugetApi.ApplyFormSize(this);
 
 			Icon = new(ISI.Extensions.T4Resources.Artwork.GetLantern_icoStream());
 			ControlBox = true;
@@ -62,7 +62,7 @@ namespace ISI.Extensions.Nuget.Forms
 			txtLog.SelectionStart = 0;
 			txtLog.SelectionLength = 0;
 
-			Closing += (_, __) => { NugetSettings.RecordFormSize(this); };
+			Closing += (_, __) => { NugetApi.RecordFormSize(this); };
 		}
 
 		public void OnChange(bool isAppend, string log)

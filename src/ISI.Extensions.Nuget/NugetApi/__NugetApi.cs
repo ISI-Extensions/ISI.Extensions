@@ -19,19 +19,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.JsonSerialization.Extensions;
+using ISI.Extensions.Nuget.Extensions;
 using DTOs = ISI.Extensions.Nuget.DataTransferObjects.NugetApi;
+using SerializableDTOs = ISI.Extensions.Nuget.SerializableModels;
 using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Nuget
 {
 	public partial class NugetApi
 	{
+		protected Configuration Configuration { get; }
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
+		protected ISI.Extensions.JsonSerialization.IJsonSerializer JsonSerializer { get; }
 
 		public NugetApi(
-			Microsoft.Extensions.Logging.ILogger logger = null)
+			Configuration configuration,
+			Microsoft.Extensions.Logging.ILogger logger,
+			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer)
 		{
-			Logger = logger ?? new ConsoleLogger();
+			Configuration = configuration;
+			Logger = logger;
+			JsonSerializer = jsonSerializer;
 		}
 	}
 }

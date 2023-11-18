@@ -26,9 +26,9 @@ namespace ISI.Extensions.VisualStudio
 {
 	public partial class SolutionApi 
 	{
+		protected Configuration Configuration { get; }
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected ISI.Extensions.Serialization.ISerialization Serialization { get; }
-		protected VisualStudioSettings VisualStudioSettings { get; }
+		protected ISI.Extensions.JsonSerialization.IJsonSerializer JsonSerializer { get; }
 		protected ISI.Extensions.Scm.BuildScriptApi BuildScriptApi { get; }
 		protected ISI.Extensions.Scm.SourceControlClientApi SourceControlClientApi { get; }
 		protected ISI.Extensions.VisualStudio.CodeGenerationApi CodeGenerationApi { get; }
@@ -36,18 +36,18 @@ namespace ISI.Extensions.VisualStudio
 		protected ISI.Extensions.Nuget.NugetApi NugetApi { get; }
 
 		public SolutionApi(
+			Configuration configuration,
 			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.Serialization.ISerialization serialization,
-			VisualStudioSettings visualStudioSettings,
+			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer,
 			ISI.Extensions.Scm.BuildScriptApi buildScriptApi,
 			ISI.Extensions.Scm.SourceControlClientApi sourceControlClientApi,
 			ISI.Extensions.VisualStudio.CodeGenerationApi codeGenerationApi,
 			ISI.Extensions.VisualStudio.ProjectApi projectApi,
 			ISI.Extensions.Nuget.NugetApi nugetApi)
 		{
+			Configuration = configuration;
 			Logger = logger;
-			Serialization = serialization;
-			VisualStudioSettings = visualStudioSettings;
+			JsonSerializer = jsonSerializer;
 			BuildScriptApi = buildScriptApi;
 			SourceControlClientApi = sourceControlClientApi;
 			CodeGenerationApi = codeGenerationApi;

@@ -18,6 +18,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Nuget.Extensions;
+using ISI.Extensions.VisualStudio.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ISI.Extensions.Nuget.Forms
@@ -27,8 +29,8 @@ namespace ISI.Extensions.Nuget.Forms
 		private static ISI.Extensions.Nuget.NugetApi _nugetApi = null;
 		protected static ISI.Extensions.Nuget.NugetApi NugetApi => _nugetApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Nuget.NugetApi>();
 
-		private static ISI.Extensions.VisualStudio.VisualStudioSettings _visualStudioSettings = null;
-		protected static ISI.Extensions.VisualStudio.VisualStudioSettings VisualStudioSettings => _visualStudioSettings ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.VisualStudioSettings>();
+		private static ISI.Extensions.VisualStudio.SolutionApi _solutionApi = null;
+		protected static ISI.Extensions.VisualStudio.SolutionApi SolutionApi => _solutionApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
 
 		public class SolutionsContext : SolutionsForm.ISolutionsContext
 		{
@@ -49,9 +51,9 @@ namespace ISI.Extensions.Nuget.Forms
 					form.StartButton.Enabled = context.Solutions.Any(solution => solution.Selected);
 				}
 
-				var excludedPathFilters = VisualStudioSettings.GetRefreshSolutionsExcludePathFilters();
+				var excludedPathFilters = SolutionApi.GetRefreshSolutionsExcludePathFilters();
 				var solutionFileNames = new System.Collections.Concurrent.ConcurrentBag<string>();
-				var maxCheckDirectoryDepth = VisualStudioSettings.GetMaxCheckDirectoryDepth() - 1;
+				var maxCheckDirectoryDepth = SolutionApi.GetMaxCheckDirectoryDepth() - 1;
 
 				Parallel.ForEach(selectedItemPaths, selectedItemPath =>
 				{
@@ -80,8 +82,8 @@ namespace ISI.Extensions.Nuget.Forms
 				{
 					nugetPackageKeys.TryAdd(NugetApi.GetNugetPackageKey(new()
 					{
-						PackageId = nugetSettingsNugetPackageKey.PackageId,
-						PackageVersion = nugetSettingsNugetPackageKey.PackageVersion,
+						Package = nugetSettingsNugetPackageKey.PackageId,
+						Version = nugetSettingsNugetPackageKey.PackageVersion,
 					}).NugetPackageKey);
 				}
 

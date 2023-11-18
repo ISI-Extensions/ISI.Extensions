@@ -125,7 +125,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			this.cboBuildSolution.Text = "Build";
 			this.cboBuildSolution.UseVisualStyleBackColor = true;
 			// 
-			// cboRestoreNugetPackages
+			// cboRestoreVisualStudioPackages
 			// 
 			this.cboRestoreNugetPackages.AutoSize = true;
 			this.cboRestoreNugetPackages.Location = new System.Drawing.Point(129, 6);

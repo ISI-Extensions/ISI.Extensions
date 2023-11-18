@@ -24,7 +24,6 @@ namespace ISI.Extensions.Nuget.Forms.Extensions
 {
 	public static partial class NugetSettingsExtensions
 	{
-
 		private static NugetSettingsFormLocationAndSize[] RecordFormSize(IEnumerable<NugetSettingsFormLocationAndSize> formLocationAndSizes, string formName, System.Windows.Forms.Form form)
 		{
 			var formLocationAndSize = new NugetSettingsFormLocationAndSize()

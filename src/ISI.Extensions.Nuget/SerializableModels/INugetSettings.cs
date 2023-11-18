@@ -24,6 +24,7 @@ using LOCALENTITIES = ISI.Extensions.Nuget;
 
 namespace ISI.Extensions.Nuget.SerializableModels
 {
+	[ISI.Extensions.Serialization.SerializerDefaultImplementationType(typeof(NugetSettingsV1))]
 	public interface INugetSettings : ISI.Extensions.Converters.IExportTo<LOCALENTITIES.NugetSettings>
 	{
 	}

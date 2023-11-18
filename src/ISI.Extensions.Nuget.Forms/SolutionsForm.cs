@@ -130,7 +130,7 @@ namespace ISI.Extensions.Nuget.Forms
 			{
 				SolutionsContext = updateNugetPackages(this, solution =>
 				{
-					solution.UpdateNugetPackagesButton?.Invoke((System.Windows.Forms.MethodInvoker)delegate { solution.UpdateNugetPackagesButton.Visible = false; });
+					solution.UpgradeNugetPackagesButton?.Invoke((System.Windows.Forms.MethodInvoker)delegate { solution.UpgradeNugetPackagesButton.Visible = false; });
 					solution.ViewLogButton?.Invoke((System.Windows.Forms.MethodInvoker)delegate { solution.ViewLogButton.Visible = false; });
 
 					foreach (var solutionTask in solution.GetTasks())

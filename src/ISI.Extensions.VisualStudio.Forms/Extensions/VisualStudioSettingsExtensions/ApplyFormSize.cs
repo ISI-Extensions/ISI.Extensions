@@ -24,13 +24,21 @@ namespace ISI.Extensions.VisualStudio.Forms.Extensions
 {
 	public static partial class VisualStudioSettingsExtensions
 	{
-		private static void ApplyFormSize(SerializableModels.VisualStudioSettingsFormLocationAndSize[] formLocationAndSizes, System.Windows.Forms.Form form)
+		public static VisualStudioSettingsFormLocationAndSize GetFormLocationAndSize(this IEnumerable<VisualStudioSettingsFormLocationAndSize> formLocationAndSizes, string formName)
 		{
-			ApplyFormSize(formLocationAndSizes, form.GetType().Name, form);
+			return formLocationAndSizes.NullCheckedFirstOrDefault(formLocationAndSize => string.Equals(formLocationAndSize.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
 		}
 
-		private static void ApplyFormSize(SerializableModels.VisualStudioSettingsFormLocationAndSize[] formLocationAndSizes, string formName, System.Windows.Forms.Form form)
+		public static void ApplyFormSize(this SolutionApi solutionApi, System.Windows.Forms.Form form)
 		{
+			ApplyFormSize(solutionApi, form.GetType().Name, form);
+		}
+
+
+		public static void ApplyFormSize(this SolutionApi solutionApi, string formName, System.Windows.Forms.Form form)
+		{
+			var formLocationAndSizes = solutionApi.GetVisualStudioSettings(new()).VisualStudioSettings.FormLocationAndSizes ?? Array.Empty<VisualStudioSettingsFormLocationAndSize>();
+
 			var formSizeAndLocation = formLocationAndSizes.GetFormLocationAndSize(formName);
 
 			if (formSizeAndLocation != null)
@@ -52,21 +60,6 @@ namespace ISI.Extensions.VisualStudio.Forms.Extensions
 				form.Width = formSizeAndLocation.Width;
 				form.Height = formSizeAndLocation.Height;
 			}
-		}
-
-		public static SerializableModels.VisualStudioSettingsFormLocationAndSize GetFormLocationAndSize(this IEnumerable<SerializableModels.VisualStudioSettingsFormLocationAndSize> formLocationAndSizes, string formName)
-		{
-			return formLocationAndSizes.NullCheckedFirstOrDefault(formLocationAndSize => string.Equals(formLocationAndSize.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
-		}
-
-		public static void ApplyFormSize(this VisualStudioSettings visualStudioSettings, System.Windows.Forms.Form form)
-		{
-			ApplyFormSize(visualStudioSettings.Load()?.FormLocationAndSizes, form.GetType().Name, form);
-		}
-
-		public static void ApplyFormSize(this VisualStudioSettings visualStudioSettings, string formName, System.Windows.Forms.Form form)
-		{
-			ApplyFormSize(visualStudioSettings.Load()?.FormLocationAndSizes, formName, form);
 		}
 	}
 }

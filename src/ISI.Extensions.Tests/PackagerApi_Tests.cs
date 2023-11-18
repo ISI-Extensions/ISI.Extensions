@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using ISI.Extensions.ConfigurationHelper.Extensions;
 using ISI.Extensions.DependencyInjection.Extensions;
 using ISI.Extensions.Extensions;
@@ -71,7 +71,7 @@ namespace ISI.Extensions.Tests
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 
 			var logger = new ISI.Extensions.TextWriterLogger(TestContext.Progress);
-			var serialization = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Serialization.ISerialization>();
+			var serialization = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.JsonSerialization.IJsonSerializer>();
 			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.Nuget.Configuration(), logger, new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
 			var findToolsApi = new ISI.Extensions.VisualStudio.VsWhereApi(logger, nugetApi);
 			var msBuildApi = new ISI.Extensions.VisualStudio.MSBuildApi(logger, findToolsApi);
@@ -81,7 +81,7 @@ namespace ISI.Extensions.Tests
 			var buildScriptApi = new ISI.Extensions.Scm.BuildScriptApi(logger);
 			var sourceControlClientApi = new SourceControlClientApi(logger);
 			var projectApi = new ISI.Extensions.VisualStudio.ProjectApi(logger);
-			var solutionApi = new ISI.Extensions.VisualStudio.SolutionApi(logger, serialization, new(serialization), buildScriptApi, sourceControlClientApi, codeGenerationApi, projectApi, nugetApi);
+			var solutionApi = new ISI.Extensions.VisualStudio.SolutionApi(new ISI.Extensions.VisualStudio.Configuration(), logger, serialization, buildScriptApi, sourceControlClientApi, codeGenerationApi, projectApi, nugetApi);
 
 			var configuration = "Release";
 
@@ -104,7 +104,7 @@ namespace ISI.Extensions.Tests
 			//	Solution = solutionFullName,
 			//});
 
-			//nugetApi.RestoreNugetPackages(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.RestoreNugetPackagesRequest()
+			//nugetApi.RestoreVisualStudioPackages(new ISI.Extensions.VisualStudio.DataTransferObjects.VisualStudioApi.RestoreVisualStudioPackagesRequest()
 			//{
 			//	MSBuildExe = msBuildApi.GetMSBuildExeFullName(new ISI.Extensions.VisualStudio.DataTransferObjects.MSBuildApi.GetMSBuildExeFullNameRequest()).MSBuildExeFullName,
 			//	SolutionDirectory = System.IO.Path.GetDirectoryName(solutionFullName),

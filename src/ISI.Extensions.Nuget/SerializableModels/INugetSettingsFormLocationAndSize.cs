@@ -24,6 +24,7 @@ using LOCALENTITIES = ISI.Extensions.Nuget;
 
 namespace ISI.Extensions.Nuget.SerializableModels
 {
+	[ISI.Extensions.Serialization.SerializerDefaultImplementationType(typeof(NugetSettingsFormLocationAndSizeV1))]
 	public interface INugetSettingsFormLocationAndSize : ISI.Extensions.Converters.IExportTo<LOCALENTITIES.NugetSettingsFormLocationAndSize>
 	{
 	}

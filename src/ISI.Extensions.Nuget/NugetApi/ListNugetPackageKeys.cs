@@ -59,8 +59,8 @@ namespace ISI.Extensions.Nuget
 					{
 						var nugetPackageKey = GetNugetPackageKey(new()
 						{
-							PackageId = linePieces[0].Trim(),
-							PackageVersion = linePieces[1].Trim(),
+							Package = linePieces[0].Trim(),
+							Version = linePieces[1].Trim(),
 							Source = request.Source,
 						}).NugetPackageKey;
 

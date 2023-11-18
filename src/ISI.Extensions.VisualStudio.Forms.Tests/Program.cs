@@ -69,6 +69,7 @@ namespace ISI.Extensions.VisualStudio.Forms.Tests
 			{
 				@"F:\ISI\Internal Projects\ISI.Gravity.WindowsService\",
 				@"F:\ISI\Internal Projects\ISI.Identity.WindowsService\",
+				@"F:\ISI\Internal Projects\ISI.Acme.ServiceApplication\",
 			};
 
 			System.Windows.Forms.Application.EnableVisualStyles();
@@ -76,7 +77,7 @@ namespace ISI.Extensions.VisualStudio.Forms.Tests
 
 			System.Windows.Forms.Application.EnableVisualStyles();
 
-			var form = ISI.Extensions.VisualStudio.Forms.RefreshSolutions.CreateForm(selectedItemPaths, true);
+			var form = ISI.Extensions.VisualStudio.Forms.RunServices.CreateForm(selectedItemPaths, true);
 
 			System.Windows.Forms.Application.Run(form);
 		}

@@ -29,8 +29,8 @@ namespace ISI.Extensions.VisualStudio.Forms
 {
 	public partial class ViewLogForm : Form
 	{
-		private static ISI.Extensions.VisualStudio.VisualStudioSettings _visualStudioSettings = null;
-		protected ISI.Extensions.VisualStudio.VisualStudioSettings VisualStudioSettings => _visualStudioSettings ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.VisualStudioSettings>();
+		private static ISI.Extensions.VisualStudio.SolutionApi _solutionApi = null;
+		protected ISI.Extensions.VisualStudio.SolutionApi SolutionApi => _solutionApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
 
 		public ViewLogForm(string log)
 		{
@@ -38,7 +38,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 			ISI.Extensions.WinForms.ThemeHelper.SyncTheme(this);
 
-			VisualStudioSettings.ApplyFormSize(this);
+			SolutionApi.ApplyFormSize(this);
 
 			Icon = new(ISI.Extensions.T4Resources.Artwork.GetLantern_icoStream());
 			ControlBox = true;
@@ -62,7 +62,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			txtLog.SelectionStart = 0;
 			txtLog.SelectionLength = 0;
 
-			Closing += (_, __) => { VisualStudioSettings.RecordFormSize(this); };
+			Closing += (_, __) => { SolutionApi.RecordFormSize(this); };
 		}
 
 		public void OnChange(bool isAppend, string log)

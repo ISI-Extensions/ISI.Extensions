@@ -28,9 +28,6 @@ namespace ISI.Extensions.VisualStudio.Forms
 {
 	public partial class BuildOptionsForm : Form
 	{
-		private static ISI.Extensions.VisualStudio.VisualStudioSettings _visualStudioSettings = null;
-		protected ISI.Extensions.VisualStudio.VisualStudioSettings VisualStudioSettings => _visualStudioSettings ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.VisualStudioSettings>();
-
 		public bool ShowCleanSolutionCheckBox { get; set; } = true;
 		public bool ShowUpdateSolutionCheckBox { get; set; } = true;
 		public bool ShowRestoreNugetPackagesCheckBox { get; set; } = true;

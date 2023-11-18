@@ -46,9 +46,9 @@ namespace ISI.Extensions.Nuget
 				return System.IO.Path.Combine(getCachedNugetPackageKeyDirectory(package), $"{package}_{version}.json");
 			}
 
-			if (!string.IsNullOrWhiteSpace(request.PackageVersion))
+			if (!string.IsNullOrWhiteSpace(request.Version))
 			{
-				var cachedNugetPackageKeyFullName = getCachedNugetPackageKeyFullName(request.PackageId, request.PackageVersion);
+				var cachedNugetPackageKeyFullName = getCachedNugetPackageKeyFullName(request.Package, request.Version);
 
 				if (System.IO.File.Exists(cachedNugetPackageKeyFullName))
 				{
@@ -66,11 +66,11 @@ namespace ISI.Extensions.Nuget
 					var arguments = new List<string>();
 
 					arguments.Add("install");
-					arguments.Add(request.PackageId);
+					arguments.Add(request.Package);
 					arguments.Add("-DependencyVersion ignore");
-					if (!string.IsNullOrWhiteSpace(request.PackageVersion))
+					if (!string.IsNullOrWhiteSpace(request.Version))
 					{
-						arguments.Add(string.Format("-Version {0}", request.PackageVersion));
+						arguments.Add(string.Format("-Version {0}", request.Version));
 					}
 					if (!string.IsNullOrWhiteSpace(request.Source))
 					{
@@ -95,8 +95,8 @@ namespace ISI.Extensions.Nuget
 
 						response.NugetPackageKey = new()
 						{
-							Package = request.PackageId,
-							Version = System.IO.Path.GetFileName(packageFullName).Substring(request.PackageId.Length + 1),
+							Package = request.Package,
+							Version = System.IO.Path.GetFileName(packageFullName).Substring(request.Package.Length + 1),
 						};
 
 						var nupkgFullName = System.IO.Directory.GetFiles(packageFullName, "*.nupkg").NullCheckedFirstOrDefault();

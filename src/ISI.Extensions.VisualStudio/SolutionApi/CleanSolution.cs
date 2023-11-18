@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.VisualStudio.Extensions;
 using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi;
 using Microsoft.Extensions.Logging;
 
@@ -39,14 +40,14 @@ namespace ISI.Extensions.VisualStudio
 
 				if (System.IO.Directory.Exists(solutionSourceDirectory))
 				{
-					if (!ISI.Extensions.IO.Path.CheckForExistence(solutionSourceDirectory, "*.sln", ISI.Extensions.VisualStudio.VisualStudioSettings.DefaultExcludePathFilters, VisualStudioSettings.GetMaxCheckDirectoryDepth()))
+					if (!ISI.Extensions.IO.Path.CheckForExistence(solutionSourceDirectory, "*.sln", this.GetDefaultExcludePathFilters(), this.GetMaxCheckDirectoryDepth()))
 					{
 						solutionSourceDirectory = System.IO.Path.Combine(solutionSourceDirectory, "src");
 					}
 
 					if (System.IO.Directory.Exists(solutionSourceDirectory))
 					{
-						var solutionFileName = ISI.Extensions.IO.Path.EnumerateFiles(solutionSourceDirectory, "*.sln", ISI.Extensions.VisualStudio.VisualStudioSettings.DefaultExcludePathFilters, VisualStudioSettings.GetMaxCheckDirectoryDepth()).FirstOrDefault();
+						var solutionFileName = ISI.Extensions.IO.Path.EnumerateFiles(solutionSourceDirectory, "*.sln", this.GetDefaultExcludePathFilters(), this.GetMaxCheckDirectoryDepth()).FirstOrDefault();
 
 						if (!string.IsNullOrEmpty(solutionFileName))
 						{

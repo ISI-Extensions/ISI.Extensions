@@ -18,14 +18,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.VisualStudio.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ISI.Extensions.VisualStudio.Forms
 {
 	public class RefreshSolutions
 	{
-		private static ISI.Extensions.VisualStudio.VisualStudioSettings _visualStudioSettings = null;
-		protected static ISI.Extensions.VisualStudio.VisualStudioSettings VisualStudioSettings => _visualStudioSettings ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.VisualStudioSettings>();
+		private static ISI.Extensions.VisualStudio.SolutionApi _solutionApi = null;
+		protected static ISI.Extensions.VisualStudio.SolutionApi SolutionApi => _solutionApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
 
 		public class SolutionsContext : SolutionsForm.ISolutionsContext
 		{
@@ -46,9 +47,9 @@ namespace ISI.Extensions.VisualStudio.Forms
 					form.StartButton.Enabled = context.Solutions.Any(solution => solution.Selected);
 				}
 
-				var excludedPathFilters = VisualStudioSettings.GetRefreshSolutionsExcludePathFilters();
+				var excludedPathFilters = SolutionApi.GetRefreshSolutionsExcludePathFilters();
 				var solutionFileNames = new System.Collections.Concurrent.ConcurrentBag<string>();
-				var maxCheckDirectoryDepth = VisualStudioSettings.GetMaxCheckDirectoryDepth() - 1; 
+				var maxCheckDirectoryDepth = SolutionApi.GetMaxCheckDirectoryDepth() - 1; 
 
 				Parallel.ForEach(selectedItemPaths, selectedItemPath =>
 				{
@@ -68,7 +69,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 					}
 				});
 
-				var previouslySelectedSolutionFileNames = new HashSet<string>(VisualStudioSettings.GetRefreshSolutionsPreviouslySelectedSolutions(), StringComparer.InvariantCultureIgnoreCase);
+				var previouslySelectedSolutionFileNames = new HashSet<string>(SolutionApi.GetRefreshSolutionsPreviouslySelectedSolutions(), StringComparer.InvariantCultureIgnoreCase);
 				var solutions = solutionFileNames.Distinct(StringComparer.InvariantCultureIgnoreCase).OrderBy(solutionFullName => solutionFullName, StringComparer.InvariantCultureIgnoreCase).ToDictionary(solutionFileName => solutionFileName, solutionFileName => previouslySelectedSolutionFileNames.Contains(solutionFileName));
 
 				var selectAll = !solutions.Values.Any(value => value);
@@ -90,12 +91,12 @@ namespace ISI.Extensions.VisualStudio.Forms
 				var removeSolutionFilterKeys = form.SolutionsContext.Solutions.SelectMany(solution => solution.SolutionFilters.Select(solutionFilter => solutionFilter.SolutionFilterKey));
 				var addSolutionFilterKeys = form.SolutionsContext.Solutions.Where(solution => solution.Selected).SelectMany(solution => solution.SolutionFilters.Where(solutionFilter => solutionFilter.Selected).Select(solutionFilter => solutionFilter.SolutionFilterKey));
 
-				VisualStudioSettings.UpdatePreviouslySelectedSolutionFilterKeys(removeSolutionFilterKeys.Select(solutionFilterKey => solutionFilterKey.Value), addSolutionFilterKeys.Select(solutionFilterKey => solutionFilterKey.Value));
+				SolutionApi.UpdatePreviouslySelectedSolutionFilterKeys(removeSolutionFilterKeys.Select(solutionFilterKey => solutionFilterKey.Value), addSolutionFilterKeys.Select(solutionFilterKey => solutionFilterKey.Value));
 
 				var removeSolutions = form.SolutionsContext.Solutions.Select(solution => solution.SolutionDetails.SolutionFullName);
 				var addSolutions = form.SolutionsContext.Solutions.Where(solution => solution.Selected).Select(solution => solution.SolutionDetails.SolutionFullName);
 
-				VisualStudioSettings.UpdateRefreshSolutionsPreviouslySelectedSolutions(removeSolutions, addSolutions);
+				SolutionApi.UpdateRefreshSolutionsPreviouslySelectedSolutions(removeSolutions, addSolutions);
 			};
 
 			void OnCloseForm(SolutionsForm form)

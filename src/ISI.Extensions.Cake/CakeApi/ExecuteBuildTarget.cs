@@ -32,14 +32,6 @@ namespace ISI.Extensions.Cake
 
 			var response = new DTOs.ExecuteBuildTargetResponse();
 
-			ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-			{
-				Logger = logger,
-				ProcessExeFullName = "nuget.exe",
-				Arguments = new[] { "install", "ISI.Cake.AddIn", "-verbosity quiet", "-OutputDirectory tools" },
-				WorkingDirectory = System.IO.Path.GetDirectoryName(request.BuildScriptFullName),
-			});
-
 			var arguments = new List<string>();
 
 			if (!string.IsNullOrWhiteSpace(request.Target))

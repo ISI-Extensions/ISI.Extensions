@@ -41,8 +41,8 @@ namespace ISI.Extensions.VisualStudio.Forms
 		public delegate void UpdatePreviouslySelectedSolutionsDelegate(SolutionsForm form);
 		public delegate void OnCloseFormDelegate(SolutionsForm form);
 
-		private static ISI.Extensions.VisualStudio.VisualStudioSettings _visualStudioSettings = null;
-		protected ISI.Extensions.VisualStudio.VisualStudioSettings VisualStudioSettings => _visualStudioSettings ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.VisualStudioSettings>();
+		private static ISI.Extensions.VisualStudio.SolutionApi _solutionApi = null;
+		protected ISI.Extensions.VisualStudio.SolutionApi SolutionApi => _solutionApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
 
 		protected internal ISolutionsContext SolutionsContext { get; set; }
 
@@ -72,7 +72,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 			SolutionsPanel.ControlAdded += (sender, args) => ISI.Extensions.WinForms.ThemeHelper.SyncTheme(args.Control);
 
-			VisualStudioSettings.ApplyFormSize(this);
+			SolutionApi.ApplyFormSize(this);
 
 			CloseButton.Visible = false;
 			StartButton.Visible = false;
@@ -248,7 +248,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 			Closing += (_, __) =>
 			{
-				VisualStudioSettings.RecordFormSize(this);
+				SolutionApi.RecordFormSize(this);
 			};
 		}
 	}

@@ -23,8 +23,8 @@ namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
 	public class GetNugetPackageKeyRequest
 	{
-		public string PackageId { get; set; }
-		public string PackageVersion { get; set; }
+		public string Package { get; set; }
+		public string Version { get; set; }
 		public string Source { get; set; }
 		public IEnumerable<string> NugetConfigFullNames { get; set; }
 	}

@@ -119,8 +119,8 @@ namespace ISI.Extensions.Tests
 
 					var getLatestPackageVersionResponse = nugetApi.GetNugetPackageKey(new()
 					{
-						PackageId = nugetPackage,
-						PackageVersion = nugetVersion,
+						Package = nugetPackage,
+						Version = nugetVersion,
 					});
 
 					if (getLatestPackageVersionResponse?.NugetPackageKey?.Dependencies != null)
@@ -146,7 +146,7 @@ namespace ISI.Extensions.Tests
 				Solution = solution,
 			}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
 
-			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpdateNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
+			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpgradeNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
 			{
 				using (solutionApi.GetSolutionLock(new()
 				{
@@ -308,7 +308,6 @@ namespace ISI.Extensions.Tests
 					NugetApiKey = settings.Nuget.ApiKey,
 					RepositoryName = settings.Nuget.RepositoryName,
 					RepositoryUri = new(settings.Nuget.RepositoryUrl),
-					//PackageChunksRepositoryUri = GetNullableUri(settings.Nuget.PackageChunksRepositoryUrl),
 				});
 			}
 		}
@@ -343,7 +342,7 @@ namespace ISI.Extensions.Tests
 				Solution = solution,
 			}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
 
-			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpdateNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
+			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpgradeNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
 			{
 				using (solutionApi.GetSolutionLock(new()
 				{
@@ -509,7 +508,7 @@ namespace ISI.Extensions.Tests
 				Solution = solution,
 			}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
 
-			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpdateNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
+			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpgradeNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
 			{
 				using (solutionApi.GetSolutionLock(new()
 				{
@@ -592,7 +591,7 @@ namespace ISI.Extensions.Tests
 
 			foreach (var solutionDetails in solutionDetailsSet
 								 .Where(solutionDetails => !string.IsNullOrWhiteSpace(solutionDetails.RootSourceDirectory))
-								 .OrderBy(solutionDetails => solutionDetails.UpdateNugetPackagesPriority)
+								 .OrderBy(solutionDetails => solutionDetails.UpgradeNugetPackagesPriority)
 								 .ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
 			{
 				using (solutionApi.GetSolutionLock(new()
@@ -672,7 +671,7 @@ namespace ISI.Extensions.Tests
 				Solution = solution,
 			}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
 
-			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpdateNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
+			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpgradeNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
 			{
 				using (solutionApi.GetSolutionLock(new()
 				{

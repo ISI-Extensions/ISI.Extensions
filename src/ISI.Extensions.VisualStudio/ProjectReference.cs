@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.Nuget.SerializableModels;
+using ISI.Extensions.VisualStudio.SerializableModels;
 
 namespace ISI.Extensions.VisualStudio
 {

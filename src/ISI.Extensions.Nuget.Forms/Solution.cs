@@ -79,35 +79,35 @@ namespace ISI.Extensions.Nuget.Forms
 		protected internal System.Windows.Forms.CheckBox CheckBox { get; set; }
 		protected internal System.Windows.Forms.Label SolutionLabel { get; set; }
 		protected internal System.Windows.Forms.Label StatusLabel { get; set; }
-		protected internal System.Windows.Forms.Button UpdateNugetPackagesButton { get; set; }
+		protected internal System.Windows.Forms.Button UpgradeNugetPackagesButton { get; set; }
 		protected internal System.Windows.Forms.Button ViewLogButton { get; set; }
 
-		protected Process.ProcessResponse UpdateNugetPackagesResponse { get; private set; } = new();
-		public bool UpdateNugetPackagesErrored => UpdateNugetPackagesResponse.Errored;
-		private TaskActions _updateNugetPackages = null;
-		protected TaskActions UpdateNugetPackages => _updateNugetPackages ??= new()
+		protected Process.ProcessResponse UpgradeNugetPackagesResponse { get; private set; } = new();
+		public bool UpgradeNugetPackagesErrored => UpgradeNugetPackagesResponse.Errored;
+		private TaskActions _upgradeNugetPackages = null;
+		protected TaskActions UpgradeNugetPackages => _upgradeNugetPackages ??= new()
 		{
 			PreAction = () =>
 			{
-				if (UpdateNugetPackagesButton != null)
+				if (UpgradeNugetPackagesButton != null)
 				{
-					UpdateNugetPackagesButton.Visible = false;
+					UpgradeNugetPackagesButton.Visible = false;
 				}
 				CheckBox.Enabled = false;
 				ViewLogButton.Visible = false;
-				SetStatus(TaskActionStatus.Default, "updating ...");
+				SetStatus(TaskActionStatus.Default, "upgrading ...");
 			},
 			Action = () =>
 			{
-				Logger.LogInformation("Start Updating Solution");
+				Logger.LogInformation("Start Upgrading Solution");
 
-				UpdateNugetPackagesResponse = new();
+				UpgradeNugetPackagesResponse = new();
 
 				try
 				{
 					var upsertAssemblyRedirectsNugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
 
-					SolutionApi.UpdateNugetPackages(new()
+					SolutionApi.UpgradeNugetPackages(new()
 					{
 						SolutionFullNames = new [] { SolutionDetails.SolutionFullName },
 						UpdateWorkingCopyFromSourceControl = true,
@@ -115,27 +115,27 @@ namespace ISI.Extensions.Nuget.Forms
 						IgnorePackageIds = NugetApi.GetNugetSettings(new ())?.NugetSettings?.UpdateNugetPackages?.IgnorePackageIds,
 						NugetPackageKeys = NugetPackageKeys,
 						UpsertAssemblyRedirectsNugetPackageKeys = upsertAssemblyRedirectsNugetPackageKeys,
-						AddToLog = value => UpdateNugetPackagesResponse.AppendLine(value),
+						AddToLog = value => UpgradeNugetPackagesResponse.AppendLine(value),
 					});
 
-					UpdateNugetPackagesResponse.ExitCode = 0;
+					UpgradeNugetPackagesResponse.ExitCode = 0;
 				}
 				catch (Exception exception)
 				{
-					UpdateNugetPackagesResponse.ExitCode = 1;
+					UpgradeNugetPackagesResponse.ExitCode = 1;
 				}
 
 				Logger.LogInformation("Finish Build Solution");
 			},
 			PostAction = () =>
 			{
-				SetStatus((UpdateNugetPackagesErrored ? TaskActionStatus.Errored : TaskActionStatus.Default), (UpdateNugetPackagesErrored ? "Errored Updating" : "Completed"));
+				SetStatus((UpgradeNugetPackagesErrored ? TaskActionStatus.Errored : TaskActionStatus.Default), (UpgradeNugetPackagesErrored ? "Errored Updating" : "Completed"));
 				CheckBox.Enabled = true;
 
 				ViewLogButton.Visible = true;
-				if (UpdateNugetPackagesButton != null)
+				if (UpgradeNugetPackagesButton != null)
 				{
-					UpdateNugetPackagesButton.Visible = true;
+					UpgradeNugetPackagesButton.Visible = true;
 				}
 			}
 		};
@@ -227,7 +227,7 @@ namespace ISI.Extensions.Nuget.Forms
 			};
 			SolutionPanel.Controls.Add(StatusLabel);
 
-			UpdateNugetPackagesButton = new()
+			UpgradeNugetPackagesButton = new()
 			{
 				Visible = false,
 				Text = "Update",
@@ -237,11 +237,11 @@ namespace ISI.Extensions.Nuget.Forms
 				Height = 20,
 				BackColor = System.Drawing.SystemColors.ButtonFace,
 			};
-			UpdateNugetPackagesButton.Click += (_, __) =>
+			UpgradeNugetPackagesButton.Click += (_, __) =>
 			{
 				start(this);
 			};
-			SolutionPanel.Controls.Add(UpdateNugetPackagesButton);
+			SolutionPanel.Controls.Add(UpgradeNugetPackagesButton);
 
 			ViewLogButton = new()
 			{
@@ -257,10 +257,10 @@ namespace ISI.Extensions.Nuget.Forms
 			{
 				var logs = new StringBuilder();
 
-				if (!string.IsNullOrWhiteSpace(UpdateNugetPackagesResponse.Output))
+				if (!string.IsNullOrWhiteSpace(UpgradeNugetPackagesResponse.Output))
 				{
 					logs.AppendLine("Build Solution:");
-					logs.AppendLine(UpdateNugetPackagesResponse.Output);
+					logs.AppendLine(UpgradeNugetPackagesResponse.Output);
 				}
 
 				(new ViewLogForm(logs.ToString())).ShowDialog();
@@ -276,7 +276,7 @@ namespace ISI.Extensions.Nuget.Forms
 				foreach (var button in new[]
 				{
 					ViewLogButton,
-					UpdateNugetPackagesButton,
+					UpgradeNugetPackagesButton,
 				})
 				{
 					if (button != null)
@@ -303,7 +303,7 @@ namespace ISI.Extensions.Nuget.Forms
 		{
 			var tasks = new List<TaskActions>();
 
-			tasks.Add(UpdateNugetPackages);
+			tasks.Add(UpgradeNugetPackages);
 
 			return tasks.ToArray();
 		}

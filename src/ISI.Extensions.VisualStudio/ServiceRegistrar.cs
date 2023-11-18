@@ -35,7 +35,6 @@ namespace ISI.Extensions.VisualStudio
 			services.AddSingleton<MSBuildApi>();
 			services.AddSingleton<PackagerApi>();
 			services.AddSingleton<ProjectApi>();
-			services.AddSingleton<VisualStudioSettings>();
 			services.AddSingleton<SolutionApi>();
 			services.AddSingleton<XmlTransformApi>();
 		}

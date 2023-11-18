@@ -195,23 +195,23 @@ namespace ISI.Extensions.Tests
 
 			var packageVersion5 = nugetApi.GetNugetPackageKey(new()
 			{
-				PackageId = "Microsoft.Graph.Core",
+				Package = "Microsoft.Graph.Core",
 			}).NugetPackageKey;
 
 			var packageVersion7 = nugetApi.GetNugetPackageKey(new()
 			{
-				PackageId = packageVersion5.Package,
-				PackageVersion = packageVersion5.Version,
+				Package = packageVersion5.Package,
+				Version = packageVersion5.Version,
 			}).NugetPackageKey;
 
 			var packageVersion4 = nugetApi.GetNugetPackageKey(new()
 			{
-				PackageId = "ISI.Extensions",
+				Package = "ISI.Extensions",
 			}).NugetPackageKey.Version;
 
 			var packageVersion = nugetApi.GetNugetPackageKey(new()
 			{
-				PackageId = "ISI.Extensions",
+				Package = "ISI.Extensions",
 			}).NugetPackageKey.Version;
 
 			//var packageVersion2 = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
@@ -221,7 +221,7 @@ namespace ISI.Extensions.Tests
 
 			var packageVersion3 = nugetApi.GetNugetPackageKey(new()
 			{
-				PackageId = "Aspose.Cells",
+				Package = "Aspose.Cells",
 			}).NugetPackageKey;
 		}
 
@@ -248,8 +248,8 @@ namespace ISI.Extensions.Tests
 			{
 				nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new()
 				{
-					PackageId = nugetSettingsNugetPackageKey.PackageId,
-					PackageVersion = nugetSettingsNugetPackageKey.PackageVersion,
+					Package = nugetSettingsNugetPackageKey.PackageId,
+					Version = nugetSettingsNugetPackageKey.PackageVersion,
 				}).NugetPackageKey);
 			}
 			//nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new()
@@ -283,7 +283,7 @@ namespace ISI.Extensions.Tests
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Telephony.WindowsService");
 			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\ISI.SolutionFullNames.txt"));
 
-			solutionApi.UpdateNugetPackages(new()
+			solutionApi.UpgradeNugetPackages(new()
 			{
 				SolutionFullNames = solutionFullNames,
 				//UpdateWorkingCopyFromSourceControl = false,
@@ -340,7 +340,7 @@ namespace ISI.Extensions.Tests
 				Solution = solution,
 			}).SolutionDetails, ISI.Extensions.Extensions.NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
 
-			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpdateNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
+			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpgradeNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
 			{
 				using (solutionApi.GetSolutionLock(new()
 				{

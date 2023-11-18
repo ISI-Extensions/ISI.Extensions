@@ -24,14 +24,9 @@ namespace ISI.Extensions.VisualStudio.Forms.Extensions
 {
 	public static partial class VisualStudioSettingsExtensions
 	{
-		private static SerializableModels.VisualStudioSettingsFormLocationAndSize[] RecordFormSize(IEnumerable<SerializableModels.VisualStudioSettingsFormLocationAndSize> formLocationAndSizes, System.Windows.Forms.Form form)
+		private static VisualStudioSettingsFormLocationAndSize[] RecordFormSize(IEnumerable<VisualStudioSettingsFormLocationAndSize> formLocationAndSizes, string formName, System.Windows.Forms.Form form)
 		{
-			return RecordFormSize(formLocationAndSizes, form.GetType().Name, form);
-		}
-
-		private static SerializableModels.VisualStudioSettingsFormLocationAndSize[] RecordFormSize(IEnumerable<SerializableModels.VisualStudioSettingsFormLocationAndSize> formLocationAndSizes, string formName, System.Windows.Forms.Form form)
-		{
-			var formLocationAndSize = new SerializableModels.VisualStudioSettingsFormLocationAndSize()
+			var formLocationAndSize = new VisualStudioSettingsFormLocationAndSize()
 			{
 				FormName = formName,
 				Left = form.Left,
@@ -46,9 +41,9 @@ namespace ISI.Extensions.VisualStudio.Forms.Extensions
 			{
 				formLocationAndSizes = formLocationAndSizes.ToNullCheckedList(NullCheckCollectionResult.Empty).ToList();
 
-				((List<SerializableModels.VisualStudioSettingsFormLocationAndSize>) formLocationAndSizes).RemoveAll(_ => string.Equals(_.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
+				((List<VisualStudioSettingsFormLocationAndSize>) formLocationAndSizes).RemoveAll(_ => string.Equals(_.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
 
-				((List<SerializableModels.VisualStudioSettingsFormLocationAndSize>) formLocationAndSizes).Add(formLocationAndSize);
+				((List<VisualStudioSettingsFormLocationAndSize>) formLocationAndSizes).Add(formLocationAndSize);
 
 				return formLocationAndSizes.ToArray();
 			}
@@ -56,20 +51,23 @@ namespace ISI.Extensions.VisualStudio.Forms.Extensions
 			return null;
 		}
 
-		public static void RecordFormSize(this VisualStudioSettings visualStudioSettings, System.Windows.Forms.Form form)
+		public static void RecordFormSize(this SolutionApi solutionApi, System.Windows.Forms.Form form)
 		{
-			visualStudioSettings.Save(settings =>
+			solutionApi.UpdateVisualStudioSettings(new()
 			{
-				var formLocationAndSizes = RecordFormSize(settings.FormLocationAndSizes, form);
-
-				if (formLocationAndSizes == null)
+				UpdateSettings = nugetSettings =>
 				{
-					return false;
+					var formLocationAndSizes = RecordFormSize(nugetSettings.FormLocationAndSizes, form.GetType().Name, form);
+
+					if (formLocationAndSizes == null)
+					{
+						return false;
+					}
+
+					nugetSettings.FormLocationAndSizes = formLocationAndSizes;
+
+					return true;
 				}
-
-				settings.FormLocationAndSizes = RecordFormSize(settings.FormLocationAndSizes, form);
-
-				return true;
 			});
 		}
 	}

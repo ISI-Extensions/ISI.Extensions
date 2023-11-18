@@ -19,13 +19,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.JsonSerialization.Extensions;
 using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi;
+using SerializableDTOs = ISI.Extensions.VisualStudio.SerializableModels;
 
 namespace ISI.Extensions.VisualStudio
 {
 	public partial class SolutionApi
 	{
+		public const string SolutionDetailsFileName = ".solutionDetails.json";
+		public const string SolutionPreferencesFileName = ".solutionPreferences.json";
+
 		public DTOs.GetSolutionDetailsResponse GetSolutionDetails(DTOs.GetSolutionDetailsRequest request)
 		{
 			var logger = new AddToLogLogger(request.AddToLog, Logger);
@@ -98,16 +103,21 @@ namespace ISI.Extensions.VisualStudio
 				FullName = response.SolutionDetails.SolutionDirectory,
 			}).FullName;
 
-			var solutionDetailsFullName = System.IO.Path.Combine(response.SolutionDetails.SolutionDirectory, SerializableModels.SolutionDetails.FileName);
-			if (System.IO.File.Exists(solutionDetailsFullName))
+			var solutionPreferencesFullName = System.IO.Path.Combine(response.SolutionDetails.SolutionDirectory, SolutionPreferencesFileName);
+			if (!System.IO.File.Exists(solutionPreferencesFullName))
 			{
-				using (var stream = System.IO.File.OpenRead(solutionDetailsFullName))
-				{
-					var storedSolutionDetails = Serialization.Deserialize<SerializableModels.SolutionDetails>(stream, ISI.Extensions.Serialization.SerializationFormat.Json);
+				solutionPreferencesFullName = System.IO.Path.Combine(response.SolutionDetails.SolutionDirectory, SolutionDetailsFileName);
+			}
 
-					response.SolutionDetails.UpdateNugetPackagesPriority = storedSolutionDetails.UpdateNugetPackagesPriority ?? int.MaxValue;
+			if (System.IO.File.Exists(solutionPreferencesFullName))
+			{
+				using (var stream = System.IO.File.OpenRead(solutionPreferencesFullName))
+				{
+					var storedSolutionDetails = JsonSerializer.Deserialize<SerializableDTOs.ISolutionPreferences>(stream)?.Export();
+
+					response.SolutionDetails.UpgradeNugetPackagesPriority = storedSolutionDetails.UpgradeNugetPackagesPriority ?? int.MaxValue;
 					response.SolutionDetails.ExecuteBuildScriptTargetAfterUpdateNugetPackages = storedSolutionDetails.ExecuteBuildScriptTargetAfterUpdateNugetPackages;
-					response.SolutionDetails.DoNotUpdatePackageIds = storedSolutionDetails.DoNotUpdatePackageIds;
+					response.SolutionDetails.DoNotUpdatePackages = storedSolutionDetails.DoNotUpgradePackages;
 				}
 			}
 

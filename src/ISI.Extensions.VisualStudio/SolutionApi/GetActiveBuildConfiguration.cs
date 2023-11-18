@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.VisualStudio.Extensions;
 using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi;
 using Microsoft.Extensions.Logging;
 
@@ -64,7 +65,7 @@ namespace ISI.Extensions.VisualStudio
 
 					if (System.IO.Directory.Exists(visualStudioConfigDirectory))
 					{
-						var configurationFiles = ISI.Extensions.IO.Path.EnumerateFiles(visualStudioConfigDirectory, "*.suo", VisualStudioSettings.DefaultExcludePathFilters, VisualStudioSettings.GetMaxCheckDirectoryDepth());
+						var configurationFiles = ISI.Extensions.IO.Path.EnumerateFiles(visualStudioConfigDirectory, "*.suo", this.GetDefaultExcludePathFilters(), this.GetMaxCheckDirectoryDepth());
 
 						if (configurationFiles.Any())
 						{

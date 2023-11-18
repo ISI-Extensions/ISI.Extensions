@@ -18,15 +18,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.VisualStudio.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ISI.Extensions.VisualStudio.Forms
 {
 	public class RunServices
 	{
-		private static ISI.Extensions.VisualStudio.VisualStudioSettings _visualStudioSettings = null;
-		protected static ISI.Extensions.VisualStudio.VisualStudioSettings VisualStudioSettings => _visualStudioSettings ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.VisualStudioSettings>();
-		
 		private static ISI.Extensions.VisualStudio.SolutionApi _solutionApi = null;
 		protected static ISI.Extensions.VisualStudio.SolutionApi SolutionApi => _solutionApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
 
@@ -49,9 +47,9 @@ namespace ISI.Extensions.VisualStudio.Forms
 					form.StartButton.Enabled = context.Solutions.Any(solution => solution.Selected);
 				}
 
-				var excludedPathFilters = VisualStudioSettings.GetRunServicesExcludePathFilters();
+				var excludedPathFilters = SolutionApi.GetRunServicesExcludePathFilters();
 				var projectFileNames = new System.Collections.Concurrent.ConcurrentBag<string>();
-				var maxCheckDirectoryDepth = VisualStudioSettings.GetMaxCheckDirectoryDepth() - 1;
+				var maxCheckDirectoryDepth = SolutionApi.GetMaxCheckDirectoryDepth() - 1;
 
 				Parallel.ForEach(selectedItemPaths, selectedItemPath =>
 				{
@@ -75,7 +73,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 					}
 				});
 
-				var previouslySelectedProjectKeys = new HashSet<string>(VisualStudioSettings.GetRunServicesPreviouslySelectedProjectKeys(), StringComparer.InvariantCultureIgnoreCase);
+				var previouslySelectedProjectKeys = new HashSet<string>(SolutionApi.GetRunServicesPreviouslySelectedProjectKeys(), StringComparer.InvariantCultureIgnoreCase);
 
 				var projectKeys = projectFileNames.Distinct(StringComparer.InvariantCultureIgnoreCase).OrderBy(projectFileName => projectFileName, StringComparer.InvariantCultureIgnoreCase).Select(projectFileName =>
 				{
@@ -111,7 +109,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 				var removeProjectKeys = form.SolutionsContext.Solutions.SelectMany(solution => solution.SolutionProjects.Select(project => project.ProjectKey));
 				var addProjectKeys = form.SolutionsContext.Solutions.Where(solution => solution.Selected).SelectMany(solution => solution.SolutionProjects.Where(projectKey => projectKey.Selected).Select(project => project.ProjectKey));
 
-				VisualStudioSettings.UpdateRunServicesPreviouslySelectedProjectKeys(removeProjectKeys.Select(projectKey => projectKey.Value), addProjectKeys.Select(projectKey => projectKey.Value));
+				SolutionApi.UpdateRunServicesPreviouslySelectedProjectKeys(removeProjectKeys.Select(projectKey => projectKey.Value), addProjectKeys.Select(projectKey => projectKey.Value));
 			};
 
 			void OnCloseForm(SolutionsForm form)

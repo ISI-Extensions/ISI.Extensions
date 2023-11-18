@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.VisualStudio.Extensions;
 using ISI.Extensions.VisualStudio.Forms.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -27,9 +28,6 @@ namespace ISI.Extensions.VisualStudio.Forms
 {
 	public class Solution
 	{
-		private static ISI.Extensions.VisualStudio.VisualStudioSettings _visualStudioSettings = null;
-		protected ISI.Extensions.VisualStudio.VisualStudioSettings VisualStudioSettings => _visualStudioSettings ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.VisualStudioSettings>();
-
 		private static ISI.Extensions.Scm.ISourceControlClientApi _sourceControlClientApi = null;
 		protected ISI.Extensions.Scm.ISourceControlClientApi SourceControlClientApi => _sourceControlClientApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.ISourceControlClientApi>();
 
@@ -355,7 +353,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 			if (showSolutionFilterKeys)
 			{
-				var previouslySelectedSolutionFilterKeys = new HashSet<string>(VisualStudioSettings.GetPreviouslySelectedSolutionFilterKeys(), StringComparer.InvariantCultureIgnoreCase);
+				var previouslySelectedSolutionFilterKeys = new HashSet<string>(SolutionApi.GetPreviouslySelectedSolutionFilterKeys(), StringComparer.InvariantCultureIgnoreCase);
 
 				var solutionFilters = SolutionDetails.SolutionFilterDetailsSet
 					.NullCheckedOrderBy(solutionFilterDetails => System.IO.Path.GetFileNameWithoutExtension(solutionFilterDetails.SolutionFilterFullName))

@@ -24,7 +24,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ISI.Extensions.Nuget.Forms
 {
-	public class UpdateNugetPackages
+	public class UpgradeNugetPackages
 	{
 		private static ISI.Extensions.Nuget.NugetApi _nugetApi = null;
 		protected static ISI.Extensions.Nuget.NugetApi NugetApi => _nugetApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Nuget.NugetApi>();
@@ -43,8 +43,8 @@ namespace ISI.Extensions.Nuget.Forms
 			{
 				var context = new SolutionsContext();
 
-				form.Text = "Update Nuget Packages";
-				form.StartButton.Text = "Update";
+				form.Text = "Upgrade Nuget Packages";
+				form.StartButton.Text = "Upgrade";
 
 				void OnChangedSelection()
 				{

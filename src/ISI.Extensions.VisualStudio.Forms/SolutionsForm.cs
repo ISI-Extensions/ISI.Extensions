@@ -63,11 +63,11 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 		protected internal bool CleanSolution { get; set; } = true;
 		protected internal bool UpdateSolution { get; set; } = true;
-		protected internal bool UpgradeNugetPackages { get; set; } = true;
-		protected internal bool CommitSolution { get; set; } = true;
+		protected internal bool UpgradeNugetPackages { get; set; } = false;
+		protected internal bool CommitSolution { get; set; } = false;
 		protected internal bool RestoreNugetPackages { get; set; } = true;
 		protected internal bool BuildSolution { get; set; } = true;
-		protected internal bool ExecuteProjects { get; set; } = true;
+		protected internal bool ExecuteProjects { get; set; } = false;
 		protected internal bool ShowProjectExecutionInTaskbar { get; set; } = true;
 		protected internal bool ExitOnClose { get; set; }
 

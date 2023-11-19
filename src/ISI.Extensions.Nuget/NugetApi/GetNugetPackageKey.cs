@@ -48,6 +48,42 @@ namespace ISI.Extensions.Nuget
 				return System.IO.Path.Combine(getCachedNugetPackageKeyDirectory(package), $"{package}_{version}.json");
 			}
 
+			if (string.IsNullOrWhiteSpace(request.Version))
+			{
+				var arguments = new List<string>();
+
+				arguments.Add("search");
+				arguments.Add(request.Package);
+				if (!string.IsNullOrWhiteSpace(request.Source))
+				{
+					arguments.Add(string.Format("-Source \"{0}\"", request.Source));
+				}
+				if (request.NugetConfigFullNames.NullCheckedAny())
+				{
+					arguments.AddRange(GetConfigFileArguments(request.NugetConfigFullNames));
+				}
+
+				var nugetResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				{
+					Logger = new NullLogger(),
+					ProcessExeFullName = GetNugetExeFullName(new()).NugetExeFullName,
+					Arguments = arguments.ToArray(),
+				});
+
+				foreach (var line in nugetResponse.Output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+				{
+					var linePieces = line.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+
+					if (linePieces.Length >= 3)
+					{
+						if (string.Equals(linePieces[0], ">", StringComparison.InvariantCultureIgnoreCase) && string.Equals(linePieces[1], request.Package, StringComparison.InvariantCultureIgnoreCase))
+						{
+							request.Version = linePieces[2];
+						}
+					}
+				}
+			}
+
 			if (!string.IsNullOrWhiteSpace(request.Version))
 			{
 				var cachedNugetPackageKeyFullName = getCachedNugetPackageKeyFullName(request.Package, request.Version);

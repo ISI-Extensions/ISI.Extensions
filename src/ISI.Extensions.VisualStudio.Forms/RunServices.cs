@@ -126,6 +126,8 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 			return new ISI.Extensions.VisualStudio.Forms.SolutionsForm(runServicesInSolutions, UpdatePreviouslySelectedProjectKeys, OnCloseForm)
 			{
+				ShowUpgradeNugetPackagesCheckBox = false,
+				ShowCommitSolutionCheckBox = false,
 				ShowExecuteProjectsCheckBox = true,
 				ShowShowProjectExecutionInTaskbarCheckBox = true,
 				ExitOnClose = exitOnClose,

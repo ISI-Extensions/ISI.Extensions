@@ -162,7 +162,9 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 			return new ISI.Extensions.VisualStudio.Forms.SolutionsForm(upgradeNugetPackagesInSolutions, UpdatePreviouslySelectedSolutions, OnCloseForm)
 			{
+				UpgradeNugetPackages = true,
 				ShowUpgradeNugetPackagesCheckBox = true,
+				CommitSolution = true,
 				ShowCommitSolutionCheckBox = true,
 				ShowExecuteProjectsCheckBox = false,
 				ShowShowProjectExecutionInTaskbarCheckBox = false,

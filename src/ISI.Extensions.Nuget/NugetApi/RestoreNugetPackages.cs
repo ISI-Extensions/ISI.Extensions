@@ -55,12 +55,12 @@ namespace ISI.Extensions.Nuget
 					}
 					else
 					{
-						throw new(string.Format("Cannot determine which solution to update \"{0}\"", request.Solution));
+						throw new(string.Format("Cannot determine which solution to restore for \"{0}\"", request.Solution));
 					}
 				}
 				else
 				{
-					throw new(string.Format("Cannot find a solution to update \"{0}\"", request.Solution));
+					throw new(string.Format("Cannot find a solution to restore for \"{0}\"", request.Solution));
 				}
 			}
 

@@ -295,7 +295,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 					ViewBuildLogButton.Visible = false;
 					RestoreNugetPackagesResponse = new();
 					BuildSolutionResponse = new();
-					SetStatus(TaskActionStatus.Default, "updating packages ...");
+					SetStatus(TaskActionStatus.Default, "restoring nuget packages ...");
 				}
 			},
 			Action = () =>

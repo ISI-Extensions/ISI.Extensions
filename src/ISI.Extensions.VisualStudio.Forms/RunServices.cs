@@ -128,6 +128,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			{
 				ShowUpgradeNugetPackagesCheckBox = false,
 				ShowCommitSolutionCheckBox = false,
+				ExecuteProjects = true,
 				ShowExecuteProjectsCheckBox = true,
 				ShowShowProjectExecutionInTaskbarCheckBox = true,
 				ExitOnClose = exitOnClose,

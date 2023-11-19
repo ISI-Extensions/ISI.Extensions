@@ -45,11 +45,14 @@ namespace ISI.Extensions.VisualStudio.Forms
 		{
 			this.tplForm = new System.Windows.Forms.TableLayoutPanel();
 			this.SolutionsPanel = new System.Windows.Forms.FlowLayoutPanel();
+			this.tplButtons = new System.Windows.Forms.TableLayoutPanel();
+			this.lblStatus = new System.Windows.Forms.Label();
 			this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
 			this.CloseButton = new System.Windows.Forms.Button();
 			this.StopButton = new System.Windows.Forms.Button();
 			this.StartButton = new System.Windows.Forms.Button();
 			this.tplForm.SuspendLayout();
+			this.tplButtons.SuspendLayout();
 			this.flpButtons.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -58,13 +61,13 @@ namespace ISI.Extensions.VisualStudio.Forms
 			this.tplForm.ColumnCount = 1;
 			this.tplForm.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tplForm.Controls.Add(this.SolutionsPanel, 0, 0);
-			this.tplForm.Controls.Add(this.flpButtons, 0, 1);
+			this.tplForm.Controls.Add(this.tplButtons, 0, 1);
 			this.tplForm.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tplForm.Location = new System.Drawing.Point(0, 0);
 			this.tplForm.Name = "tplForm";
 			this.tplForm.RowCount = 2;
 			this.tplForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tplForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
+			this.tplForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
 			this.tplForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tplForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tplForm.Size = new System.Drawing.Size(671, 413);
@@ -82,9 +85,31 @@ namespace ISI.Extensions.VisualStudio.Forms
 			this.SolutionsPanel.Location = new System.Drawing.Point(3, 3);
 			this.SolutionsPanel.MinimumSize = new System.Drawing.Size(665, 214);
 			this.SolutionsPanel.Name = "SolutionsPanel";
-			this.SolutionsPanel.Size = new System.Drawing.Size(665, 372);
+			this.SolutionsPanel.Size = new System.Drawing.Size(665, 367);
 			this.SolutionsPanel.TabIndex = 0;
 			this.SolutionsPanel.WrapContents = false;
+			// 
+			// tplButtons
+			// 
+			this.tplButtons.ColumnCount = 2;
+			this.tplButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tplButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tplButtons.Controls.Add(this.lblStatus, 0, 0);
+			this.tplButtons.Controls.Add(this.flpButtons, 1, 0);
+			this.tplButtons.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tplButtons.Location = new System.Drawing.Point(3, 376);
+			this.tplButtons.Name = "tplButtons";
+			this.tplButtons.RowCount = 1;
+			this.tplButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tplButtons.Size = new System.Drawing.Size(665, 34);
+			this.tplButtons.TabIndex = 0;
+			// 
+			// lblStatus
+			// 
+			this.lblStatus.Location = new System.Drawing.Point(3,6);
+			this.lblStatus.Name = "lblStatus";
+			this.lblStatus.Size = new System.Drawing.Size(300, 25);
+			this.lblStatus.TabIndex = 0;
 			// 
 			// flpButtons
 			// 
@@ -96,15 +121,15 @@ namespace ISI.Extensions.VisualStudio.Forms
 			this.flpButtons.Controls.Add(this.StopButton);
 			this.flpButtons.Controls.Add(this.StartButton);
 			this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-			this.flpButtons.Location = new System.Drawing.Point(3, 381);
+			this.flpButtons.Location = new System.Drawing.Point(335, 3);
 			this.flpButtons.Name = "flpButtons";
-			this.flpButtons.Size = new System.Drawing.Size(665, 29);
+			this.flpButtons.Size = new System.Drawing.Size(327, 28);
 			this.flpButtons.TabIndex = 0;
 			this.flpButtons.WrapContents = false;
 			// 
 			// CloseButton
 			// 
-			this.CloseButton.Location = new System.Drawing.Point(583, 3);
+			this.CloseButton.Location = new System.Drawing.Point(245, 3);
 			this.CloseButton.Name = "CloseButton";
 			this.CloseButton.Size = new System.Drawing.Size(79, 25);
 			this.CloseButton.TabIndex = 4;
@@ -114,7 +139,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			// StopButton
 			// 
 			this.StopButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.StopButton.Location = new System.Drawing.Point(498, 3);
+			this.StopButton.Location = new System.Drawing.Point(160, 3);
 			this.StopButton.Name = "StopButton";
 			this.StopButton.Size = new System.Drawing.Size(79, 25);
 			this.StopButton.TabIndex = 3;
@@ -123,7 +148,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			// 
 			// StartButton
 			// 
-			this.StartButton.Location = new System.Drawing.Point(413, 3);
+			this.StartButton.Location = new System.Drawing.Point(75, 3);
 			this.StartButton.Name = "StartButton";
 			this.StartButton.Size = new System.Drawing.Size(79, 25);
 			this.StartButton.TabIndex = 3;
@@ -134,7 +159,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			base.CancelButton = this.CancelButton;
+			this.CancelButton = this.CancelButton;
 			this.ClientSize = new System.Drawing.Size(671, 413);
 			this.ControlBox = false;
 			this.Controls.Add(this.tplForm);
@@ -142,7 +167,8 @@ namespace ISI.Extensions.VisualStudio.Forms
 			this.Name = "SolutionsForm";
 			this.Text = "Solution(s)";
 			this.tplForm.ResumeLayout(false);
-			this.tplForm.PerformLayout();
+			this.tplButtons.ResumeLayout(false);
+			this.tplButtons.PerformLayout();
 			this.flpButtons.ResumeLayout(false);
 			this.ResumeLayout(false);
 
@@ -152,7 +178,8 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 		private System.Windows.Forms.TableLayoutPanel tplForm;
 		protected internal System.Windows.Forms.FlowLayoutPanel SolutionsPanel;
-
+		private System.Windows.Forms.TableLayoutPanel tplButtons;
+		protected internal System.Windows.Forms.Label lblStatus;
 		private System.Windows.Forms.FlowLayoutPanel flpButtons;
 		protected internal System.Windows.Forms.Button StartButton;
 		protected internal System.Windows.Forms.Button StopButton;

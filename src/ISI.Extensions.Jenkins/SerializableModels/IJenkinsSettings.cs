@@ -15,68 +15,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using ISI.Extensions.Nuget.Forms.Extensions;
-using Microsoft.Extensions.DependencyInjection;
+using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
+using LOCALENTITIES = ISI.Extensions.Jenkins;
 
-namespace ISI.Extensions.Nuget.Forms
+namespace ISI.Extensions.Jenkins.SerializableModels
 {
-	public partial class ViewLogForm : Form
+	[ISI.Extensions.Serialization.SerializerDefaultImplementationType(typeof(JenkinsSettingsV1))]
+	public interface IJenkinsSettings : ISI.Extensions.Converters.IExportTo<LOCALENTITIES.JenkinsSettings>
 	{
-		private static ISI.Extensions.Nuget.NugetApi _nugetApi = null;
-		protected ISI.Extensions.Nuget.NugetApi NugetApi => _nugetApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Nuget.NugetApi>();
-
-		public ViewLogForm(string log)
-		{
-			InitializeComponent();
-
-			ISI.Extensions.WinForms.ThemeHelper.SyncTheme(this);
-
-			NugetApi.ApplyFormSize(this);
-
-			Icon = new(ISI.Extensions.T4Resources.Artwork.GetLantern_icoStream());
-			ControlBox = true;
-			MaximizeBox = false;
-			MinimizeBox = false;
-			ShowIcon = true;
-
-			btnOK.Click += (_, __) =>
-			{
-				if (Modal)
-				{
-					DialogResult = System.Windows.Forms.DialogResult.OK;
-				}
-				else
-				{
-					Close();
-				}
-			};
-
-			txtLog.Text = log;
-			txtLog.SelectionStart = 0;
-			txtLog.SelectionLength = 0;
-
-			Closing += (_, __) => { NugetApi.RecordFormSize(this); };
-		}
-
-		public void OnChange(bool isAppend, string log)
-		{
-			if (isAppend)
-			{
-				txtLog.Text += log;
-			}
-			else
-			{
-				txtLog.Text = log;
-				txtLog.SelectionStart = 0;
-				txtLog.SelectionLength = 0;
-			}
-		}
 	}
 }

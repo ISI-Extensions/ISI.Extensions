@@ -19,16 +19,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi;
 
 namespace ISI.Extensions.Jenkins
 {
-	public partial class JenkinsSettings
+	public partial class JenkinsApi
 	{
-		public ISI.Extensions.Jenkins.JenkinsServer[] GetJenkinsServers()
+		public DTOs.SetJenkinsSettingsResponse SetJenkinsSettings(DTOs.SetJenkinsSettingsRequest request)
 		{
-			var jenkinsServers = (Load()?.JenkinsServers ?? Array.Empty<ISI.Extensions.Jenkins.SerializableModels.JenkinsSettingsJenkinsServer>());
+			var response = new DTOs.SetJenkinsSettingsResponse();
+			
+			var jenkinsSettingsFullName = GetJenkinsSettingsFullName();
 
-			return jenkinsServers.Select(Convert).OrderBy(jenkinsServer => jenkinsServer.DisplayDescription, StringComparer.InvariantCultureIgnoreCase).ToArray();
+			if (!string.IsNullOrWhiteSpace(jenkinsSettingsFullName))
+			{
+				using (new ISI.Extensions.Locks.FileLock(jenkinsSettingsFullName))
+				{
+					SetJenkinsSettings(jenkinsSettingsFullName, request.JenkinsSettings);
+				}
+			}
+
+			return response;
 		}
 	}
 }

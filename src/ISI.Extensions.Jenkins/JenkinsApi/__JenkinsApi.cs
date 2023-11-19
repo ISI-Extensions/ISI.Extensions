@@ -25,19 +25,20 @@ namespace ISI.Extensions.Jenkins
 {
 	public partial class JenkinsApi
 	{
+		protected Configuration Configuration { get; }
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
+		protected ISI.Extensions.JsonSerialization.IJsonSerializer JsonSerializer { get; }
 
 		public const string JenkinsConfigFileNameExtension = ".jenkinsConfig";
 
-		public JenkinsApi()
-		{
-			Logger = new ConsoleLogger();
-		}
-
 		public JenkinsApi(
-			Microsoft.Extensions.Logging.ILogger logger)
+			Configuration configuration,
+			Microsoft.Extensions.Logging.ILogger logger,
+			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer)
 		{
-			Logger = logger ?? new ConsoleLogger();
+			Configuration = configuration;
+			Logger = logger;
+			JsonSerializer = jsonSerializer;
 		}
 	}
 }

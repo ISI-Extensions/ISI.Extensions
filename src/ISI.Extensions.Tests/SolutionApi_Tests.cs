@@ -489,7 +489,7 @@ namespace ISI.Extensions.Tests
 				var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 				var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName);
 
-				var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+				var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.Jenkins.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
 
 				var jobIds = jenkinsApi.GetJobIds(new()
 				{

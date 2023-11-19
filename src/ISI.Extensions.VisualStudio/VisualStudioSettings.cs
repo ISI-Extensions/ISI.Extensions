@@ -39,5 +39,9 @@ namespace ISI.Extensions.VisualStudio
 		public string[] RunServicesExcludePathFilters { get; set; }
 
 		public string[] RunServicesPreviouslySelectedProjectKeys { get; set; }
+
+		public string[] UpgradeNugetPackagesExcludePathFilters { get; set; }
+
+		public string[] UpgradeNugetPackagesPreviouslySelectedProjectKeys { get; set; }
 	}
 }

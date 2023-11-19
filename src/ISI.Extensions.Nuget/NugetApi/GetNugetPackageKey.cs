@@ -34,6 +34,8 @@ namespace ISI.Extensions.Nuget
 		{
 			var response = new DTOs.GetNugetPackageKeyResponse();
 
+			var usedCachedNugetPackageKey = false;
+
 			var nugetPackageKeyCacheDirectory = GetNugetPackageKeyCacheDirectory();
 
 			string getCachedNugetPackageKeyDirectory(string package)
@@ -55,6 +57,7 @@ namespace ISI.Extensions.Nuget
 					using (var stream = System.IO.File.OpenRead(cachedNugetPackageKeyFullName))
 					{
 						response.NugetPackageKey = JsonSerializer.Deserialize<SerializableDTOs.INugetPackageKey>(stream)?.Export();
+						usedCachedNugetPackageKey = true;
 					}
 				}
 			}
@@ -93,38 +96,64 @@ namespace ISI.Extensions.Nuget
 					{
 						var packageFullName = System.IO.Directory.GetDirectories(tempDirectory.FullName).First();
 
-						response.NugetPackageKey = new()
+						var package = request.Package;
+						var version = System.IO.Path.GetFileName(packageFullName).Substring(request.Package.Length + 1);
+
+						var cachedNugetPackageKeyFullName = getCachedNugetPackageKeyFullName(package, version);
+
+						if (System.IO.File.Exists(cachedNugetPackageKeyFullName))
 						{
-							Package = request.Package,
-							Version = System.IO.Path.GetFileName(packageFullName).Substring(request.Package.Length + 1),
-						};
-
-						var nupkgFullName = System.IO.Directory.GetFiles(packageFullName, "*.nupkg").NullCheckedFirstOrDefault();
-						if (!string.IsNullOrWhiteSpace(nupkgFullName))
-						{
-							var nugetPackageDependencies = new HashSet<NugetPackageDependency>();
-
-							var nuspecFullName = System.IO.Path.Combine(packageFullName, string.Format("{0}.nuspec", System.IO.Path.GetFileNameWithoutExtension(nupkgFullName)));
-
-							using (var zipSteam = System.IO.File.OpenRead(nupkgFullName))
+							using (var stream = System.IO.File.OpenRead(cachedNugetPackageKeyFullName))
 							{
-								using (var zipArchive = new System.IO.Compression.ZipArchive(zipSteam, System.IO.Compression.ZipArchiveMode.Read))
-								{
-									var archiveEntry = zipArchive.Entries.FirstOrDefault(file => file.Name.EndsWith(".nuspec", StringComparison.InvariantCultureIgnoreCase));
-
-									archiveEntry?.ExtractToFile(nuspecFullName);
-								}
+								response.NugetPackageKey = JsonSerializer.Deserialize<SerializableDTOs.INugetPackageKey>(stream)?.Export();
+								usedCachedNugetPackageKey = true;
 							}
+						}
 
-							var nuspecXml = System.Xml.Linq.XElement.Parse(System.IO.File.ReadAllText(nuspecFullName));
-
-							foreach (var metadata in nuspecXml.GetElementsByLocalName("metadata"))
+						if (response.NugetPackageKey == null)
+						{
+							response.NugetPackageKey = new()
 							{
-								foreach (var dependencies in metadata.GetElementsByLocalName("dependencies"))
+								Package = package,
+								Version = version,
+							};
+
+							var nupkgFullName = System.IO.Directory.GetFiles(packageFullName, "*.nupkg").NullCheckedFirstOrDefault();
+							if (!string.IsNullOrWhiteSpace(nupkgFullName))
+							{
+								var nugetPackageDependencies = new HashSet<NugetPackageDependency>();
+
+								var nuspecFullName = System.IO.Path.Combine(packageFullName, string.Format("{0}.nuspec", System.IO.Path.GetFileNameWithoutExtension(nupkgFullName)));
+
+								using (var zipSteam = System.IO.File.OpenRead(nupkgFullName))
 								{
-									foreach (var dependencyGroup in dependencies.GetElementsByLocalName("group"))
+									using (var zipArchive = new System.IO.Compression.ZipArchive(zipSteam, System.IO.Compression.ZipArchiveMode.Read))
 									{
-										foreach (var dependency in dependencyGroup.GetElementsByLocalName("dependency"))
+										var archiveEntry = zipArchive.Entries.FirstOrDefault(file => file.Name.EndsWith(".nuspec", StringComparison.InvariantCultureIgnoreCase));
+
+										archiveEntry?.ExtractToFile(nuspecFullName);
+									}
+								}
+
+								var nuspecXml = System.Xml.Linq.XElement.Parse(System.IO.File.ReadAllText(nuspecFullName));
+
+								foreach (var metadata in nuspecXml.GetElementsByLocalName("metadata"))
+								{
+									foreach (var dependencies in metadata.GetElementsByLocalName("dependencies"))
+									{
+										foreach (var dependencyGroup in dependencies.GetElementsByLocalName("group"))
+										{
+											foreach (var dependency in dependencyGroup.GetElementsByLocalName("dependency"))
+											{
+												nugetPackageDependencies.Add(new()
+												{
+													Package = dependency.GetAttributeByLocalName("id")?.Value ?? string.Empty,
+													Version = dependency.GetAttributeByLocalName("version")?.Value ?? string.Empty,
+												});
+											}
+										}
+
+										foreach (var dependency in dependencies.GetElementsByLocalName("dependency"))
 										{
 											nugetPackageDependencies.Add(new()
 											{
@@ -133,73 +162,65 @@ namespace ISI.Extensions.Nuget
 											});
 										}
 									}
-									foreach (var dependency in dependencies.GetElementsByLocalName("dependency"))
+								}
+
+								response.NugetPackageKey.Dependencies = nugetPackageDependencies.ToArray();
+							}
+
+
+							var assemblyFullNames = System.IO.Directory.GetFiles(packageFullName, "*.dll", System.IO.SearchOption.AllDirectories)
+								.OrderBy(assemblyFullName => assemblyFullName, StringComparer.InvariantCultureIgnoreCase)
+								.Select(assemblyFullName => assemblyFullName.Substring(packageFullName.Length).Trim('\\'))
+								.Where(assemblyFileName => assemblyFileName.StartsWith("lib\\", StringComparison.InvariantCultureIgnoreCase));
+
+							var nugetPackageKeyTargetFrameworks = new List<NugetPackageKeyTargetFramework>();
+
+							foreach (var assemblyGroup in assemblyFullNames.GroupBy(System.IO.Path.GetDirectoryName, StringComparer.InvariantCultureIgnoreCase))
+							{
+								var pathPieces = assemblyGroup.Key.Split(new[] { '\\', '/' });
+
+								var nugetPackageKeyTargetFrameworkAssemblies = new List<NugetPackageKeyTargetFrameworkAssembly>();
+
+								var nugetPackageKeyTargetFramework = new NugetPackageKeyTargetFramework()
+								{
+									TargetFramework = (pathPieces.Length > 1 ? NuGet.Frameworks.NuGetFramework.Parse(pathPieces[1]) : null),
+								};
+
+								foreach (var assemblyFileName in assemblyGroup.Where(assemblyFileName => !assemblyFileName.EndsWith("msdia140.dll", StringComparison.InvariantCultureIgnoreCase)))
+								{
+									try
 									{
-										nugetPackageDependencies.Add(new()
+										var assemblyName = System.Reflection.AssemblyName.GetAssemblyName(System.IO.Path.Combine(packageFullName, assemblyFileName));
+
+										var nugetPackageKeyTargetFrameworkAssembly = new NugetPackageKeyTargetFrameworkAssembly()
 										{
-											Package = dependency.GetAttributeByLocalName("id")?.Value ?? string.Empty,
-											Version = dependency.GetAttributeByLocalName("version")?.Value ?? string.Empty,
-										});
+											AssemblyName = assemblyName.FullName.Split(new[] { ',' }).First().Trim(),
+											AssemblyFileName = System.IO.Path.GetFileName(assemblyFileName),
+											HintPath = string.Format("{0}\\{1}", System.IO.Path.GetFileName(packageFullName), assemblyFileName.Replace("/", "\\")),
+											AssemblyVersion = assemblyName.Version.ToString(),
+											PublicKeyToken = string.Concat(assemblyName.GetPublicKeyToken().Select(b => b.ToString("X2"))).ToLower(),
+										};
+
+										nugetPackageKeyTargetFrameworkAssemblies.Add(nugetPackageKeyTargetFrameworkAssembly);
+
+										nugetPackageKeyTargetFramework.Assemblies = nugetPackageKeyTargetFrameworkAssemblies.ToArray();
+
+										nugetPackageKeyTargetFrameworks.Add(nugetPackageKeyTargetFramework);
+									}
+									catch (Exception exception)
+									{
+										Console.WriteLine(System.IO.Path.Combine(packageFullName, assemblyFileName));
+										Console.WriteLine(exception);
 									}
 								}
 							}
 
-							response.NugetPackageKey.Dependencies = nugetPackageDependencies.ToArray();
+							response.NugetPackageKey.TargetFrameworks = nugetPackageKeyTargetFrameworks.ToArray();
 						}
-
-
-						var assemblyFullNames = System.IO.Directory.GetFiles(packageFullName, "*.dll", System.IO.SearchOption.AllDirectories)
-							.OrderBy(assemblyFullName => assemblyFullName, StringComparer.InvariantCultureIgnoreCase)
-							.Select(assemblyFullName => assemblyFullName.Substring(packageFullName.Length).Trim('\\'))
-							.Where(assemblyFileName => assemblyFileName.StartsWith("lib\\", StringComparison.InvariantCultureIgnoreCase));
-
-						var nugetPackageKeyTargetFrameworks = new List<NugetPackageKeyTargetFramework>();
-
-						foreach (var assemblyGroup in assemblyFullNames.GroupBy(System.IO.Path.GetDirectoryName, StringComparer.InvariantCultureIgnoreCase))
-						{
-							var pathPieces = assemblyGroup.Key.Split(new[] { '\\', '/' });
-
-							var nugetPackageKeyTargetFrameworkAssemblies = new List<NugetPackageKeyTargetFrameworkAssembly>();
-
-							var nugetPackageKeyTargetFramework = new NugetPackageKeyTargetFramework()
-							{
-								TargetFramework = (pathPieces.Length > 1 ? NuGet.Frameworks.NuGetFramework.Parse(pathPieces[1]) : null),
-							};
-
-							foreach (var assemblyFileName in assemblyGroup.Where(assemblyFileName => !assemblyFileName.EndsWith("msdia140.dll", StringComparison.InvariantCultureIgnoreCase)))
-							{
-								try
-								{
-									var assemblyName = System.Reflection.AssemblyName.GetAssemblyName(System.IO.Path.Combine(packageFullName, assemblyFileName));
-
-									var nugetPackageKeyTargetFrameworkAssembly = new NugetPackageKeyTargetFrameworkAssembly()
-									{
-										AssemblyName = assemblyName.FullName.Split(new[] { ',' }).First().Trim(),
-										AssemblyFileName = System.IO.Path.GetFileName(assemblyFileName),
-										HintPath = string.Format("{0}\\{1}", System.IO.Path.GetFileName(packageFullName), assemblyFileName.Replace("/", "\\")),
-										AssemblyVersion = assemblyName.Version.ToString(),
-										PublicKeyToken = string.Concat(assemblyName.GetPublicKeyToken().Select(b => b.ToString("X2"))).ToLower(),
-									};
-
-									nugetPackageKeyTargetFrameworkAssemblies.Add(nugetPackageKeyTargetFrameworkAssembly);
-
-									nugetPackageKeyTargetFramework.Assemblies = nugetPackageKeyTargetFrameworkAssemblies.ToArray();
-
-									nugetPackageKeyTargetFrameworks.Add(nugetPackageKeyTargetFramework);
-								}
-								catch (Exception exception)
-								{
-									Console.WriteLine(System.IO.Path.Combine(packageFullName, assemblyFileName));
-									Console.WriteLine(exception);
-								}
-							}
-						}
-
-						response.NugetPackageKey.TargetFrameworks = nugetPackageKeyTargetFrameworks.ToArray();
 					}
 				}
 
-				if ((response.NugetPackageKey != null) && !string.IsNullOrWhiteSpace(nugetPackageKeyCacheDirectory))
+				if ((response.NugetPackageKey != null) && !usedCachedNugetPackageKey && !string.IsNullOrWhiteSpace(nugetPackageKeyCacheDirectory))
 				{
 					System.IO.Directory.CreateDirectory(getCachedNugetPackageKeyDirectory(response.NugetPackageKey.Package));
 

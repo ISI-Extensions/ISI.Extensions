@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,14 +18,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Nuget.Forms
+namespace ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi
 {
-	public enum TaskActionStatus
+	public class GetJenkinsSettingsResponse
 	{
-		Default,
-		Running,
-		Success,
-		Errored
+		public JenkinsSettings JenkinsSettings { get; set; }
 	}
 }

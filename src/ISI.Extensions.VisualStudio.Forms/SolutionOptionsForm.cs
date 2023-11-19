@@ -26,10 +26,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ISI.Extensions.VisualStudio.Forms
 {
-	public partial class BuildOptionsForm : Form
+	public partial class SolutionOptionsForm : Form
 	{
 		public bool ShowCleanSolutionCheckBox { get; set; } = true;
 		public bool ShowUpdateSolutionCheckBox { get; set; } = true;
+		public bool ShowCommitSolutionCheckBox { get; set; } = false;
+		public bool ShowUpgradeNugetPackagesCheckBox { get; set; } = false;
 		public bool ShowRestoreNugetPackagesCheckBox { get; set; } = true;
 		public bool ShowBuildSolutionCheckBox { get; set; } = true;
 		public bool ShowExecuteProjectsCheckBox { get; set; } = false;
@@ -37,12 +39,14 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 		public bool CleanSolution => cboCleanSolution.Checked;
 		public bool UpdateSolution => cboUpdateSolution.Checked;
+		public bool CommitSolution => cboCommitSolution.Checked;
+		public bool UpgradeNugetPackages => cboUpgradeNugetPackages.Checked;
 		public bool RestoreNugetPackages => cboRestoreNugetPackages.Checked;
 		public bool BuildSolution => cboBuildSolution.Checked;
 		public bool ExecuteProjects => cboExecuteProjects.Checked;
 		public bool ShowProjectExecutionInTaskbar => cboShowProjectExecutionInTaskbar.Checked;
 
-		public BuildOptionsForm(bool cleanSolution, bool updateSolution, bool restoreNugetPackages, bool buildSolution, bool executeProjects, bool showProjectExecutionInTaskbar)
+		public SolutionOptionsForm(bool cleanSolution, bool updateSolution, bool upgradeNugetPackages, bool commitSolution, bool restoreNugetPackages, bool buildSolution, bool executeProjects, bool showProjectExecutionInTaskbar)
 		{
 			InitializeComponent();
 
@@ -56,6 +60,8 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 			cboCleanSolution.Checked = cleanSolution;
 			cboUpdateSolution.Checked = updateSolution;
+			cboCommitSolution.Checked = upgradeNugetPackages && commitSolution;
+			cboUpgradeNugetPackages.Checked = upgradeNugetPackages;
 			cboRestoreNugetPackages.Checked = restoreNugetPackages;
 			cboBuildSolution.Checked = buildSolution;
 			cboExecuteProjects.Checked = executeProjects;
@@ -93,6 +99,8 @@ namespace ISI.Extensions.VisualStudio.Forms
 				cboCleanSolution.Visible = ShowCleanSolutionCheckBox;
 				cboUpdateSolution.Visible = ShowUpdateSolutionCheckBox;
 				cboRestoreNugetPackages.Visible = ShowRestoreNugetPackagesCheckBox;
+				cboCommitSolution.Visible = ShowUpgradeNugetPackagesCheckBox && ShowCommitSolutionCheckBox;
+				cboUpgradeNugetPackages.Visible = ShowUpgradeNugetPackagesCheckBox;
 				cboBuildSolution.Visible = ShowBuildSolutionCheckBox;
 				cboExecuteProjects.Visible = ShowExecuteProjectsCheckBox;
 				cboShowProjectExecutionInTaskbar.Visible = ShowExecuteProjectsCheckBox && ShowShowProjectExecutionInTaskbarCheckBox;

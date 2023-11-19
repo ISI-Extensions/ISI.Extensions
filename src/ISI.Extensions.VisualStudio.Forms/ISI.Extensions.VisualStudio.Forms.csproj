@@ -43,11 +43,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BuildOptionsForm.cs">
+    <Compile Include="UpgradeNugetPackagesInSolutions.cs" />
+    <Compile Include="SolutionOptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BuildOptionsForm.designer.cs">
-      <DependentUpon>BuildOptionsForm.cs</DependentUpon>
+    <Compile Include="SolutionOptionsForm.designer.cs">
+      <DependentUpon>SolutionOptionsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Extensions\TaskActionStatusExtensions.cs" />
     <Compile Include="SolutionFilterKey.cs" />
@@ -90,9 +91,21 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ISI.Extensions.Git\ISI.Extensions.Git.csproj">
+      <Project>{f74ceb8a-b302-4a89-8310-9c1d964f3f6b}</Project>
+      <Name>ISI.Extensions.Git</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ISI.Extensions.Nuget\ISI.Extensions.Nuget.csproj">
       <Project>{caef609e-9d95-4ca3-9044-eab1ec41bc69}</Project>
       <Name>ISI.Extensions.Nuget</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ISI.Extensions.Scm\ISI.Extensions.Scm.csproj">
+      <Project>{0876c2a7-4873-4c4d-88d2-4142bde31c03}</Project>
+      <Name>ISI.Extensions.Scm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ISI.Extensions.Svn\ISI.Extensions.Svn.csproj">
+      <Project>{71545b03-6b5c-4a70-af52-a372075a3d05}</Project>
+      <Name>ISI.Extensions.Svn</Name>
     </ProjectReference>
     <ProjectReference Include="..\ISI.Extensions.VisualStudio\ISI.Extensions.VisualStudio.csproj">
       <Project>{6b55f503-9291-4d3a-bbe7-8a29c752f7e3}</Project>
@@ -113,8 +126,8 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="BuildOptionsForm.resx">
-      <DependentUpon>BuildOptionsForm.cs</DependentUpon>
+    <EmbeddedResource Include="SolutionOptionsForm.resx">
+      <DependentUpon>SolutionOptionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SolutionsForm.resx">
       <DependentUpon>SolutionsForm.cs</DependentUpon>

@@ -18,20 +18,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Runtime.Serialization;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Jenkins.SerializableModels
+namespace ISI.Extensions.Jenkins
 {
-	[DataContract]
-	public class JenkinsSettings
+	public class JenkinsSettingsFormLocationAndSize
 	{
-		[DataMember(Name = "jenkinsServers", EmitDefaultValue = false)]
-		public JenkinsSettingsJenkinsServer[] JenkinsServers { get; set; }
+		public string FormName { get; set; }
 
-		[DataMember(Name = "formLocationAndSizes", EmitDefaultValue = false)]
-		public JenkinsSettingsFormLocationAndSize[] FormLocationAndSizes { get; set; }
-
-		[DataMember(Name = "maxCheckDirectoryDepth", EmitDefaultValue = false)]
-		public int MaxCheckDirectoryDepth { get; set; } = 5;
+		public int Left { get; set; }
+		public int Top { get; set; }
+		public int Width { get; set; }
+		public int Height { get; set; }
 	}
 }

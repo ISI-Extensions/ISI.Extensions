@@ -78,9 +78,9 @@ namespace ISI.Extensions.Nuget.Forms.Tests
 
 			System.Windows.Forms.Application.EnableVisualStyles();
 
-			var form = ISI.Extensions.Nuget.Forms.UpgradeNugetPackages.CreateForm(selectedItemPaths, true);
+			//var form = ISI.Extensions.Nuget.Forms.UpgradeNugetPackages.CreateForm(selectedItemPaths, true);
 
-			System.Windows.Forms.Application.Run(form);
+			//System.Windows.Forms.Application.Run(form);
 		}
 	}
 }

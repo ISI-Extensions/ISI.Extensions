@@ -31,11 +31,12 @@ namespace ISI.Extensions.VisualStudio.Forms
 		public class SolutionsContext : SolutionsForm.ISolutionsContext
 		{
 			public IList<Solution> Solutions { get; } = new List<Solution>();
+			public SolutionsForm.SortSolutionsDelegate SortSolutions { get; } = null;
 		}
 
 		public static System.Windows.Forms.Form CreateForm(IEnumerable<string> selectedItemPaths, bool exitOnClose = false)
 		{
-			SolutionsForm.ISolutionsContext buildSolutions(SolutionsForm form, Action<Solution> start)
+			SolutionsForm.ISolutionsContext runServicesInSolutions(SolutionsForm form, Action<Solution> start)
 			{
 				var context = new SolutionsContext();
 
@@ -93,7 +94,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 				foreach (var solutionGroupedProjectKeys in projectKeys.GroupBy(projectKey => projectKey.SolutionFullName, StringComparer.InvariantCultureIgnoreCase).OrderBy(solutionGroupedProjectKey => solutionGroupedProjectKey.Key, StringComparer.InvariantCultureIgnoreCase))
 				{
-					context.Solutions.Add(new(solutionGroupedProjectKeys.Key, form.SolutionsPanel, (context.Solutions.Count % 2 == 1), selectAll || solutionGroupedProjectKeys.Any(projectKey => projectKey.Selected), start, solutionGroupedProjectKeys, false, false, OnChangedSelection));
+					context.Solutions.Add(new(solutionGroupedProjectKeys.Key, form.SolutionsPanel, (context.Solutions.Count % 2 == 1), selectAll || solutionGroupedProjectKeys.Any(projectKey => projectKey.Selected), start, solutionGroupedProjectKeys, null, false, false, OnChangedSelection, null));
 				}
 
 				//form.SolutionsPanel.Controls.AddRange(context.Solutions.OrderBy(solution => solution.Caption, StringComparer.InvariantCultureIgnoreCase).Select(solution => solution.Panel).ToArray());
@@ -123,7 +124,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 				}
 			};
 
-			return new ISI.Extensions.VisualStudio.Forms.SolutionsForm(buildSolutions, UpdatePreviouslySelectedProjectKeys, OnCloseForm)
+			return new ISI.Extensions.VisualStudio.Forms.SolutionsForm(runServicesInSolutions, UpdatePreviouslySelectedProjectKeys, OnCloseForm)
 			{
 				ShowExecuteProjectsCheckBox = true,
 				ShowShowProjectExecutionInTaskbarCheckBox = true,

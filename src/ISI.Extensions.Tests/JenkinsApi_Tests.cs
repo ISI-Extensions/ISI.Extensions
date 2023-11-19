@@ -69,7 +69,7 @@ namespace ISI.Extensions.Tests
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName);
 
-			var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+			var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.Jenkins.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
 
 			jenkinsApi.QuietDown(new()
 			{
@@ -86,7 +86,7 @@ namespace ISI.Extensions.Tests
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName);
 
-			var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+			var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.Jenkins.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
 
 			var jobId = "Backup.JenkinsConfigs";
 
@@ -105,7 +105,7 @@ namespace ISI.Extensions.Tests
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName);
 
-			var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+			var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.Jenkins.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
 
 			var jobIds = jenkinsApi.GetJobIds(new()
 			{
@@ -164,7 +164,7 @@ namespace ISI.Extensions.Tests
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName);
 
-			var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+			var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.Jenkins.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
 
 			var jenkinsConfigFullName = @"XXXXXXXXXXXXXXXXXXXX.jenkinsConfig";
 
@@ -188,7 +188,7 @@ namespace ISI.Extensions.Tests
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName);
 
-			var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+			var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.Jenkins.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
 
 			var serviceConfigurationYaml = jenkinsApi.GetServiceConfiguration(new()
 			{
@@ -204,7 +204,7 @@ namespace ISI.Extensions.Tests
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName);
 
-			var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+			var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.Jenkins.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
 
 			var jobIds = jenkinsApi.GetJobIds(new()
 			{
@@ -233,7 +233,7 @@ namespace ISI.Extensions.Tests
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName);
 
-			var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+			var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.Jenkins.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
 
 			var jobId = "ISI.Web.Build";
 

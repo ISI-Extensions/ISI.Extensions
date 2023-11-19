@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,24 +18,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Nuget.Forms.Extensions
+namespace ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi
 {
-	public static class TaskActionStatusExtensions
-	{
-		public static System.Drawing.Color GetColor(this TaskActionStatus taskActionStatus, System.Windows.Forms.Control control)
-		{
-			switch (taskActionStatus)
-			{
-				case TaskActionStatus.Running:
-					return System.Drawing.Color.Yellow;
-				case TaskActionStatus.Success:
-					return System.Drawing.Color.Green;
-				case TaskActionStatus.Errored:
-					return System.Drawing.Color.Red;
-			}
+	public delegate bool UpdateJenkinsSettingsDelegate(JenkinsSettings jenkinsSettings);
 
-			return ISI.Extensions.WinForms.ThemeHelper.GetColors(control).ForeColor;
-		}
+	public class UpdateJenkinsSettingsRequest
+	{
+		public UpdateJenkinsSettingsDelegate UpdateSettings { get; set; }
 	}
 }

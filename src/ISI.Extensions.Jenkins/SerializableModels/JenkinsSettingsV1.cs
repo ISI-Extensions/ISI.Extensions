@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -12,47 +12,50 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
+using LOCALENTITIES = ISI.Extensions.Jenkins;
 
-namespace ISI.Extensions.Jenkins
+namespace ISI.Extensions.Jenkins.SerializableModels
 {
-	public partial class JenkinsSettings
+	[DataContract]
+	[ISI.Extensions.Serialization.PreferredSerializerJsonDataContract]
+	[ISI.Extensions.Serialization.SerializerContractUuid("7db52468-f772-4c3e-8d0d-18c08d7b9b73")]
+	public class JenkinsSettingsV1 : IJenkinsSettings
 	{
-		public void Save(Func<ISI.Extensions.Jenkins.SerializableModels.JenkinsSettings, bool> updateSettings)
+		public static IJenkinsSettings ToSerializable(LOCALENTITIES.JenkinsSettings source)
 		{
-			using (new ISI.Extensions.Locks.FileLock(SettingsFileName))
+			return new JenkinsSettingsV1()
 			{
-				ISI.Extensions.Jenkins.SerializableModels.JenkinsSettings settings = null;
-
-				if (System.IO.File.Exists(SettingsFileName))
-				{
-					using (var stream = System.IO.File.OpenRead(SettingsFileName))
-					{
-						settings = Serialization.Deserialize<ISI.Extensions.Jenkins.SerializableModels.JenkinsSettings>(stream);
-					}
-				}
-
-				settings = settings ?? new ISI.Extensions.Jenkins.SerializableModels.JenkinsSettings();
-
-				if (updateSettings(settings))
-				{
-					if (System.IO.File.Exists(SettingsFileName))
-					{
-						System.IO.File.Move(SettingsFileName, string.Format("{0}.{1}", SettingsFileName, DateTime.UtcNow.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeSortablePrecise)));
-					}
-
-					using (var stream = System.IO.File.OpenWrite(SettingsFileName))
-					{
-						Serialization.Serialize<ISI.Extensions.Jenkins.SerializableModels.JenkinsSettings>(settings, stream, ISI.Extensions.Serialization.SerializationFormat.Json, true);
-					}
-				}
-			}
+				JenkinsServers = source.JenkinsServers.ToNullCheckedArray(JenkinsSettingsJenkinsServerV1.ToSerializable),
+				FormLocationAndSizes = source.FormLocationAndSizes.ToNullCheckedArray(JenkinsSettingsFormLocationAndSizeV1.ToSerializable),
+				MaxCheckDirectoryDepth = source.MaxCheckDirectoryDepth,
+			};
 		}
+
+		public LOCALENTITIES.JenkinsSettings Export()
+		{
+			return new LOCALENTITIES.JenkinsSettings()
+			{
+				JenkinsServers = JenkinsServers.ToNullCheckedArray(jenkinsServer => jenkinsServer.Export()),
+				FormLocationAndSizes = FormLocationAndSizes.ToNullCheckedArray(formLocationAndSize => formLocationAndSize.Export()),
+				MaxCheckDirectoryDepth = MaxCheckDirectoryDepth,
+			};
+		}
+
+		[DataMember(Name = "jenkinsServers", EmitDefaultValue = false)]
+		public IJenkinsSettingsJenkinsServer[] JenkinsServers { get; set; }
+
+		[DataMember(Name = "formLocationAndSizes", EmitDefaultValue = false)]
+		public IJenkinsSettingsFormLocationAndSize[] FormLocationAndSizes { get; set; }
+
+		[DataMember(Name = "maxCheckDirectoryDepth", EmitDefaultValue = false)]
+		public int MaxCheckDirectoryDepth { get; set; } = 5;
 	}
 }

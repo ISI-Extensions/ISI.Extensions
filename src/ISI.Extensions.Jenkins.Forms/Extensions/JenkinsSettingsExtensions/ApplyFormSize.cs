@@ -24,13 +24,21 @@ namespace ISI.Extensions.Jenkins.Forms.Extensions
 {
 	public static partial class JenkinsSettingsExtensions
 	{
-		private static void ApplyFormSize(SerializableModels.JenkinsSettingsFormLocationAndSize[] formLocationAndSizes, System.Windows.Forms.Form form)
+		public static JenkinsSettingsFormLocationAndSize GetFormLocationAndSize(this IEnumerable<JenkinsSettingsFormLocationAndSize> formLocationAndSizes, string formName)
 		{
-			ApplyFormSize(formLocationAndSizes, form.GetType().Name, form);
+			return formLocationAndSizes.NullCheckedFirstOrDefault(formLocationAndSize => string.Equals(formLocationAndSize.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
 		}
 
-		private static void ApplyFormSize(SerializableModels.JenkinsSettingsFormLocationAndSize[] formLocationAndSizes, string formName, System.Windows.Forms.Form form)
+		public static void ApplyFormSize(this JenkinsApi jenkinsApi, System.Windows.Forms.Form form)
 		{
+			ApplyFormSize(jenkinsApi, form.GetType().Name, form);
+		}
+
+
+		public static void ApplyFormSize(this JenkinsApi jenkinsApi, string formName, System.Windows.Forms.Form form)
+		{
+			var formLocationAndSizes = jenkinsApi.GetJenkinsSettings(new()).JenkinsSettings.FormLocationAndSizes ?? Array.Empty<JenkinsSettingsFormLocationAndSize>();
+
 			var formSizeAndLocation = formLocationAndSizes.GetFormLocationAndSize(formName);
 
 			if (formSizeAndLocation != null)
@@ -52,16 +60,6 @@ namespace ISI.Extensions.Jenkins.Forms.Extensions
 				form.Width = formSizeAndLocation.Width;
 				form.Height = formSizeAndLocation.Height;
 			}
-		}
-
-		public static SerializableModels.JenkinsSettingsFormLocationAndSize GetFormLocationAndSize(this IEnumerable<SerializableModels.JenkinsSettingsFormLocationAndSize> formLocationAndSizes, string formName)
-		{
-			return formLocationAndSizes.NullCheckedFirstOrDefault(formLocationAndSize => string.Equals(formLocationAndSize.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
-		}
-
-		public static void ApplyFormSize(this JenkinsSettings jenkinsSettings, string formName, System.Windows.Forms.Form form)
-		{
-			ApplyFormSize(jenkinsSettings.Load()?.FormLocationAndSizes, formName, form);
 		}
 	}
 }

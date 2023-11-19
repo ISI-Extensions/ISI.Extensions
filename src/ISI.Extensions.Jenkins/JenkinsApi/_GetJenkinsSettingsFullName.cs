@@ -18,61 +18,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.JsonSerialization.Extensions;
+using ISI.Extensions.Jenkins.Extensions;
+using DTOs = ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi;
+using SerializableDTOs = ISI.Extensions.Jenkins.SerializableModels;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Jenkins
 {
-	public partial class JenkinsSettings
+	public partial class JenkinsApi
 	{
-		private static ISI.Extensions.Serialization.ISerialization _serialization = null;
-		protected static ISI.Extensions.Serialization.ISerialization Serialization => _serialization ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Serialization.ISerialization>();
-
-		protected string SettingsFileName { get; }
-
-		public JenkinsSettings()
+		private string GetJenkinsSettingsFullName()
 		{
-			var configurationDirectory = System.IO.Path.Combine(Environment.GetEnvironmentVariable("APPDATA"), "ISI.Extensions");
+			var jenkinsSettingsFullName = Configuration.JenkinsSettingsFullName;
 
-			System.IO.Directory.CreateDirectory(configurationDirectory);
-
-			SettingsFileName = System.IO.Path.Combine(configurationDirectory, "jenkins.settings.json");
-		}
-
-		private ISI.Extensions.Jenkins.JenkinsServer Convert(ISI.Extensions.Jenkins.SerializableModels.JenkinsSettingsJenkinsServer jenkinsServer)
-		{
-			if (jenkinsServer == null)
+			if (!string.IsNullOrWhiteSpace(jenkinsSettingsFullName) && jenkinsSettingsFullName.StartsWith(ISI.Extensions.ConfigurationValueReaders.FileNameDeMaskedConfigurationValueReader.PrefixWithColon, StringComparison.InvariantCultureIgnoreCase))
 			{
-				return null;
+				jenkinsSettingsFullName = ISI.Extensions.IO.Path.GetFileNameDeMasked(jenkinsSettingsFullName.TrimStart(ISI.Extensions.ConfigurationValueReaders.FileNameDeMaskedConfigurationValueReader.PrefixWithColon));
 			}
 
-			return new()
+			if (!string.IsNullOrWhiteSpace(jenkinsSettingsFullName))
 			{
-				JenkinsServerUuid = jenkinsServer.JenkinsServerUuid,
-				Description = jenkinsServer.Description,
-				JenkinsUrl = jenkinsServer.JenkinsUrl,
-				UserName = jenkinsServer.UserName,
-				ApiToken = jenkinsServer.ApiToken,
-				Directories = jenkinsServer.Directories ?? Array.Empty<string>(),
-			};
-		}
-
-		private ISI.Extensions.Jenkins.SerializableModels.JenkinsSettingsJenkinsServer Convert(ISI.Extensions.Jenkins.JenkinsServer jenkinsServer)
-		{
-			if (jenkinsServer == null)
-			{
-				return null;
+				System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(jenkinsSettingsFullName));
 			}
 
-			return new()
-			{
-				JenkinsServerUuid = jenkinsServer.JenkinsServerUuid,
-				Description = jenkinsServer.Description,
-				JenkinsUrl = jenkinsServer.JenkinsUrl,
-				UserName = jenkinsServer.UserName,
-				ApiToken = jenkinsServer.ApiToken,
-				Directories = jenkinsServer.Directories ?? Array.Empty<string>(),
-			};
+			return jenkinsSettingsFullName;
 		}
 	}
 }

@@ -19,36 +19,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
-using LOCALENTITIES = ISI.Extensions.Jenkins;
+using DTOs = ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi;
 
-namespace ISI.Extensions.Jenkins.SerializableModels
+namespace ISI.Extensions.Jenkins
 {
-	[DataContract]
-	public  class BuildAction: ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jenkins.BuildAction>
+	public partial class JenkinsApi
 	{
-		public static BuildAction ToSerializable(ISI.Extensions.Jenkins.BuildAction source)
+		public DTOs.GetJenkinsSettingsResponse GetJenkinsSettings(DTOs.GetJenkinsSettingsRequest request)
 		{
-			return source.NullCheckedConvert(value => new BuildAction()
-			{
-				Parameters = value.Parameters.ToNullCheckedArray(ActionParameter.ToSerializable),
-				Causes = value.Causes.ToNullCheckedArray(BuildCause.ToSerializable),
-			});
+			var response = new DTOs.GetJenkinsSettingsResponse();
+			
+			var nugetSettingsFullName = GetJenkinsSettingsFullName();
+
+			response.JenkinsSettings = GetJenkinsSettings(nugetSettingsFullName);
+
+			return response;
 		}
-
-		public ISI.Extensions.Jenkins.BuildAction Export()
-		{
-			return new()
-			{
-				Parameters = Parameters.ToNullCheckedArray(x => x.Export()),
-				Causes = Causes.ToNullCheckedArray(x => x.Export()),
-			};
-		}
-
-		[DataMember(Name = "parameters", EmitDefaultValue = false)]
-		public ActionParameter[] Parameters { get; set; }
-
-		[DataMember(Name = "causes", EmitDefaultValue = false)]
-		public BuildCause[] Causes { get; set; }
 	}
 }

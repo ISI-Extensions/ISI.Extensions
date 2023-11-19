@@ -18,8 +18,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Runtime.Serialization;
 using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
+using LOCALENTITIES = ISI.Extensions.Jenkins;
 
 namespace ISI.Extensions.Jenkins.SerializableModels
 {

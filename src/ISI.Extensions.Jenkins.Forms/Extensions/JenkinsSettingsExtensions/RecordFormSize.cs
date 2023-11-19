@@ -24,14 +24,9 @@ namespace ISI.Extensions.Jenkins.Forms.Extensions
 {
 	public static partial class JenkinsSettingsExtensions
 	{
-		private static SerializableModels.JenkinsSettingsFormLocationAndSize[] RecordFormSize(IEnumerable<SerializableModels.JenkinsSettingsFormLocationAndSize> formLocationAndSizes, System.Windows.Forms.Form form)
+		private static JenkinsSettingsFormLocationAndSize[] RecordFormSize(IEnumerable<JenkinsSettingsFormLocationAndSize> formLocationAndSizes, string formName, System.Windows.Forms.Form form)
 		{
-			return RecordFormSize(formLocationAndSizes, form.GetType().Name, form);
-		}
-
-		private static SerializableModels.JenkinsSettingsFormLocationAndSize[] RecordFormSize(IEnumerable<SerializableModels.JenkinsSettingsFormLocationAndSize> formLocationAndSizes, string formName, System.Windows.Forms.Form form)
-		{
-			var formLocationAndSize = new SerializableModels.JenkinsSettingsFormLocationAndSize()
+			var formLocationAndSize = new JenkinsSettingsFormLocationAndSize()
 			{
 				FormName = formName,
 				Left = form.Left,
@@ -46,9 +41,9 @@ namespace ISI.Extensions.Jenkins.Forms.Extensions
 			{
 				formLocationAndSizes = formLocationAndSizes.ToNullCheckedList(NullCheckCollectionResult.Empty).ToList();
 
-				((List<SerializableModels.JenkinsSettingsFormLocationAndSize>) formLocationAndSizes).RemoveAll(_ => string.Equals(_.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
+				((List<JenkinsSettingsFormLocationAndSize>) formLocationAndSizes).RemoveAll(_ => string.Equals(_.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
 
-				((List<SerializableModels.JenkinsSettingsFormLocationAndSize>) formLocationAndSizes).Add(formLocationAndSize);
+				((List<JenkinsSettingsFormLocationAndSize>) formLocationAndSizes).Add(formLocationAndSize);
 
 				return formLocationAndSizes.ToArray();
 			}
@@ -56,20 +51,23 @@ namespace ISI.Extensions.Jenkins.Forms.Extensions
 			return null;
 		}
 
-		public static void RecordFormSize(this JenkinsSettings jenkinsSettings, System.Windows.Forms.Form form)
+		public static void RecordFormSize(this JenkinsApi jenkinsApi, System.Windows.Forms.Form form)
 		{
-			jenkinsSettings.Save(settings =>
+			jenkinsApi.UpdateJenkinsSettings(new()
 			{
-				var formLocationAndSizes = RecordFormSize(settings.FormLocationAndSizes, form);
-
-				if (formLocationAndSizes == null)
+				UpdateSettings = jenkinsSettings =>
 				{
-					return false;
+					var formLocationAndSizes = RecordFormSize(jenkinsSettings.FormLocationAndSizes, form.GetType().Name, form);
+
+					if (formLocationAndSizes == null)
+					{
+						return false;
+					}
+
+					jenkinsSettings.FormLocationAndSizes = formLocationAndSizes;
+
+					return true;
 				}
-
-				settings.FormLocationAndSizes = RecordFormSize(settings.FormLocationAndSizes, form);
-
-				return true;
 			});
 		}
 	}

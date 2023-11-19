@@ -41,6 +41,8 @@ namespace ISI.Extensions.VisualStudio.SerializableModels
 				RefreshSolutionsPreviouslySelectedSolutions = source.RefreshSolutionsPreviouslySelectedSolutions.ToNullCheckedArray(),
 				RunServicesExcludePathFilters = source.RunServicesExcludePathFilters.ToNullCheckedArray(),
 				RunServicesPreviouslySelectedProjectKeys = source.RunServicesPreviouslySelectedProjectKeys.ToNullCheckedArray(),
+				UpgradeNugetPackagesExcludePathFilters = source.UpgradeNugetPackagesExcludePathFilters.ToNullCheckedArray(),
+				UpgradeNugetPackagesPreviouslySelectedProjectKeys = source.UpgradeNugetPackagesPreviouslySelectedProjectKeys.ToNullCheckedArray(),
 			};
 		}
 
@@ -56,6 +58,8 @@ namespace ISI.Extensions.VisualStudio.SerializableModels
 				RefreshSolutionsPreviouslySelectedSolutions = RefreshSolutionsPreviouslySelectedSolutions.ToNullCheckedArray(),
 				RunServicesExcludePathFilters = RunServicesExcludePathFilters.ToNullCheckedArray(),
 				RunServicesPreviouslySelectedProjectKeys = RunServicesPreviouslySelectedProjectKeys.ToNullCheckedArray(),
+				UpgradeNugetPackagesExcludePathFilters = UpgradeNugetPackagesExcludePathFilters.ToNullCheckedArray(),
+				UpgradeNugetPackagesPreviouslySelectedProjectKeys = UpgradeNugetPackagesPreviouslySelectedProjectKeys.ToNullCheckedArray(),
 			};
 		}
 
@@ -82,5 +86,11 @@ namespace ISI.Extensions.VisualStudio.SerializableModels
 
 		[DataMember(Name = "runServicesPreviouslySelectedProjectKeys", EmitDefaultValue = false)]
 		public string[] RunServicesPreviouslySelectedProjectKeys { get; set; }
+
+		[DataMember(Name = "upgradeNugetPackagesExcludePathFilters", EmitDefaultValue = false)]
+		public string[] UpgradeNugetPackagesExcludePathFilters { get; set; }
+
+		[DataMember(Name = "upgradeNugetPackagesPreviouslySelectedProjectKeys", EmitDefaultValue = false)]
+		public string[] UpgradeNugetPackagesPreviouslySelectedProjectKeys { get; set; }
 	}
 }

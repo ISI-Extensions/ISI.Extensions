@@ -19,36 +19,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
-using LOCALENTITIES = ISI.Extensions.Jenkins;
 
-namespace ISI.Extensions.Jenkins.SerializableModels
+namespace ISI.Extensions.Jenkins
 {
-	[DataContract]
-	public  class BuildAction: ISI.Extensions.Converters.IExportTo<ISI.Extensions.Jenkins.BuildAction>
+	public class JenkinsSettingsJenkinsServer
 	{
-		public static BuildAction ToSerializable(ISI.Extensions.Jenkins.BuildAction source)
-		{
-			return source.NullCheckedConvert(value => new BuildAction()
-			{
-				Parameters = value.Parameters.ToNullCheckedArray(ActionParameter.ToSerializable),
-				Causes = value.Causes.ToNullCheckedArray(BuildCause.ToSerializable),
-			});
-		}
+		public Guid JenkinsServerUuid { get; set; }
 
-		public ISI.Extensions.Jenkins.BuildAction Export()
-		{
-			return new()
-			{
-				Parameters = Parameters.ToNullCheckedArray(x => x.Export()),
-				Causes = Causes.ToNullCheckedArray(x => x.Export()),
-			};
-		}
+		public string Description { get; set; }
 
-		[DataMember(Name = "parameters", EmitDefaultValue = false)]
-		public ActionParameter[] Parameters { get; set; }
+		public string JenkinsUrl { get; set; }
 
-		[DataMember(Name = "causes", EmitDefaultValue = false)]
-		public BuildCause[] Causes { get; set; }
+		public string UserName { get; set; }
+
+		public string ApiToken { get; set; }
+
+		public string[] Directories { get; set; }
 	}
 }

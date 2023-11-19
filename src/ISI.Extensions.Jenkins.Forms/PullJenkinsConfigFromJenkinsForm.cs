@@ -23,17 +23,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.Jenkins.Extensions;
 using ISI.Extensions.Jenkins.Forms.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ISI.Extensions.Jenkins.Forms
 {
 	public partial class PullJenkinsConfigFromJenkinsForm : Form
 	{
-		private static ISI.Extensions.Jenkins.JenkinsSettings _jenkinsSettings = null;
-		protected ISI.Extensions.Jenkins.JenkinsSettings JenkinsSettings => _jenkinsSettings ??= new();
-
 		private static ISI.Extensions.Jenkins.JenkinsApi _jenkinsApi = null;
-		protected ISI.Extensions.Jenkins.JenkinsApi JenkinsApi => _jenkinsApi ??= new();
+		protected ISI.Extensions.Jenkins.JenkinsApi JenkinsApi => _jenkinsApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Jenkins.JenkinsApi>();
 
 		protected string[] SelectedItemPaths { get; }
 
@@ -47,7 +46,7 @@ namespace ISI.Extensions.Jenkins.Forms
 
 			ISI.Extensions.WinForms.ThemeHelper.SyncTheme(this);
 
-			JenkinsSettings.ApplyFormSize(nameof(PullJenkinsConfigFromJenkinsForm), this);
+			JenkinsApi.ApplyFormSize(nameof(PullJenkinsConfigFromJenkinsForm), this);
 
 			flpJenkinsConfigs.Visible = false;
 			btnDone.Visible = false;
@@ -208,7 +207,7 @@ namespace ISI.Extensions.Jenkins.Forms
 
 			btnDone.Click += (clickSender, clickEventArgs) =>
 			{
-				JenkinsSettings.RecordFormSize(this);
+				JenkinsApi.RecordFormSize(this);
 
 				if (this.Modal)
 				{
@@ -239,7 +238,7 @@ namespace ISI.Extensions.Jenkins.Forms
 				Description = string.Empty,
 			});
 
-			foreach (var jenkinsServer in JenkinsSettings.GetJenkinsServers())
+			foreach (var jenkinsServer in JenkinsApi.GetJenkinsServers())
 			{
 				cboJenkinsServers.Items.Add(jenkinsServer);
 			}
@@ -258,7 +257,7 @@ namespace ISI.Extensions.Jenkins.Forms
 			{
 				var directory = ISI.Extensions.IO.Path.GetCommonPath(SelectedItemPaths);
 
-				var jenkinsServerUuid = JenkinsSettings.FindJenkinsServerByDirectory(directory, true)?.JenkinsServerUuid ?? Guid.Empty;
+				var jenkinsServerUuid = JenkinsApi.FindJenkinsServerByDirectory(directory, true)?.JenkinsServerUuid ?? Guid.Empty;
 
 				if (jenkinsServerUuid != Guid.Empty)
 				{

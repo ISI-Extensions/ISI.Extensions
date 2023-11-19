@@ -22,14 +22,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ISI.Extensions.Jenkins.Extensions;
 using ISI.Extensions.Jenkins.Forms.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ISI.Extensions.Jenkins.Forms
 {
 	public partial class PickJenkinsServerForm : Form
 	{
-		private static ISI.Extensions.Jenkins.JenkinsSettings _jenkinsSettings = null;
-		protected ISI.Extensions.Jenkins.JenkinsSettings JenkinsSettings => _jenkinsSettings ??= new();
+		private static ISI.Extensions.Jenkins.JenkinsApi _jenkinsApi = null;
+		protected ISI.Extensions.Jenkins.JenkinsApi JenkinsApi => _jenkinsApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Jenkins.JenkinsApi>();
 
 		private ISI.Extensions.Jenkins.JenkinsServer _jenkinsServer = null;
 		public ISI.Extensions.Jenkins.JenkinsServer JenkinsServer
@@ -84,7 +86,7 @@ namespace ISI.Extensions.Jenkins.Forms
 
 			ISI.Extensions.WinForms.ThemeHelper.SyncTheme(this);
 
-			JenkinsSettings.ApplyFormSize(nameof(PickJenkinsServerForm), this);
+			JenkinsApi.ApplyFormSize(nameof(PickJenkinsServerForm), this);
 
 			btnOK.Visible = false;
 			btnCancel.Visible = false;
@@ -137,7 +139,7 @@ namespace ISI.Extensions.Jenkins.Forms
 
 			btnOK.Click += (clickSender, clickEventArgs) =>
 			{
-				JenkinsSettings.RecordFormSize(this);
+				JenkinsApi.RecordFormSize(this);
 
 				if (this.Modal)
 				{
@@ -163,7 +165,7 @@ namespace ISI.Extensions.Jenkins.Forms
 				Description = string.Empty,
 			});
 
-			foreach (var jenkinsServer in JenkinsSettings.GetJenkinsServers())
+			foreach (var jenkinsServer in JenkinsApi.GetJenkinsServers())
 			{
 				cboJenkinsServers.Items.Add(jenkinsServer);
 			}

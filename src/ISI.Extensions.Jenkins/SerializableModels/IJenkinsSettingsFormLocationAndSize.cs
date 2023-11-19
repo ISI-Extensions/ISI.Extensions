@@ -15,26 +15,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
+using LOCALENTITIES = ISI.Extensions.Jenkins;
 
-namespace ISI.Extensions.Jenkins
+namespace ISI.Extensions.Jenkins.SerializableModels
 {
-	public partial class JenkinsSettings
+	[ISI.Extensions.Serialization.SerializerDefaultImplementationType(typeof(JenkinsSettingsFormLocationAndSizeV1))]
+	public interface IJenkinsSettingsFormLocationAndSize : ISI.Extensions.Converters.IExportTo<LOCALENTITIES.JenkinsSettingsFormLocationAndSize>
 	{
-		public ISI.Extensions.Jenkins.SerializableModels.JenkinsSettings Load()
-		{
-			if (!System.IO.File.Exists(SettingsFileName))
-			{
-				return new();
-			}
-
-			using (new ISI.Extensions.Locks.FileLock(SettingsFileName))
-			{
-				using (var stream = System.IO.File.OpenRead(SettingsFileName))
-				{
-					return Serialization.Deserialize<ISI.Extensions.Jenkins.SerializableModels.JenkinsSettings>(stream, ISI.Extensions.Serialization.SerializationFormat.Json);
-				}
-			}
-		}
 	}
 }

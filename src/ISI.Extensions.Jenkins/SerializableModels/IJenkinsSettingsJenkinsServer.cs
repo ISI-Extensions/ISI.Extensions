@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -19,14 +19,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
+using LOCALENTITIES = ISI.Extensions.Jenkins;
 
-namespace ISI.Extensions.Jenkins
+namespace ISI.Extensions.Jenkins.SerializableModels
 {
-	public partial class JenkinsSettings
+	[ISI.Extensions.Serialization.SerializerDefaultImplementationType(typeof(JenkinsSettingsJenkinsServerV1))]
+	public interface IJenkinsSettingsJenkinsServer : ISI.Extensions.Converters.IExportTo<LOCALENTITIES.JenkinsSettingsJenkinsServer>
 	{
-		public int GetMaxCheckDirectoryDepth()
-		{
-			return Load()?.MaxCheckDirectoryDepth ?? 5;
-		}
 	}
 }

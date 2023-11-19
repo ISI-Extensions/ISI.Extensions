@@ -22,14 +22,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ISI.Extensions.Jenkins.Extensions;
 using ISI.Extensions.Jenkins.Forms.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ISI.Extensions.Jenkins.Forms
 {
 	public partial class PickExistingJenkinsServerForm : Form
 	{
-		private static ISI.Extensions.Jenkins.JenkinsSettings _jenkinsSettings = null;
-		protected ISI.Extensions.Jenkins.JenkinsSettings JenkinsSettings => _jenkinsSettings ??= new();
+		private static ISI.Extensions.Jenkins.JenkinsApi _jenkinsApi = null;
+		protected ISI.Extensions.Jenkins.JenkinsApi JenkinsApi => _jenkinsApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Jenkins.JenkinsApi>();
 
 		protected List<JenkinsServerPanel> JenkinsServerPanels { get; }
 
@@ -41,7 +43,7 @@ namespace ISI.Extensions.Jenkins.Forms
 
 			ISI.Extensions.WinForms.ThemeHelper.SyncTheme(this);
 
-			JenkinsSettings.ApplyFormSize(nameof(JenkinsServersForm), this);
+			JenkinsApi.ApplyFormSize(nameof(JenkinsServersForm), this);
 
 			flpJenkinsServers.Visible = false;
 			btnCancel.Visible = false;
@@ -81,7 +83,7 @@ namespace ISI.Extensions.Jenkins.Forms
 		{
 			Cursor = System.Windows.Forms.Cursors.AppStarting;
 
-			foreach (var jenkinsServer in JenkinsSettings.GetJenkinsServers())
+			foreach (var jenkinsServer in JenkinsApi.GetJenkinsServers())
 			{
 				AddJenkinsServerPanel(jenkinsServer);
 			}
@@ -110,7 +112,7 @@ namespace ISI.Extensions.Jenkins.Forms
 		{
 			JenkinsServer = jenkinsServer;
 
-			JenkinsSettings.RecordFormSize(this);
+			JenkinsApi.RecordFormSize(this);
 
 			if (this.Modal)
 			{

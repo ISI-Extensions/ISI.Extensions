@@ -59,6 +59,16 @@ namespace ISI.Extensions.VisualStudio.Extensions
 			return solutionApi.GetVisualStudioSettings(new())?.VisualStudioSettings?.RunServicesPreviouslySelectedProjectKeys ?? Array.Empty<string>();
 		}
 
+		public static string[] GetUpgradeNugetPackagesExcludePathFilters(this SolutionApi solutionApi)
+		{
+			return solutionApi.GetVisualStudioSettings(new())?.VisualStudioSettings?.UpgradeNugetPackagesExcludePathFilters ?? Array.Empty<string>();
+		}
+
+		public static string[] GetUpgradeNugetPackagesPreviouslySelectedProjectKeys(this SolutionApi solutionApi)
+		{
+			return solutionApi.GetVisualStudioSettings(new())?.VisualStudioSettings?.UpgradeNugetPackagesPreviouslySelectedProjectKeys ?? Array.Empty<string>();
+		}
+
 		public static void UpdatePreviouslySelectedSolutionFilterKeys(this SolutionApi solutionApi, IEnumerable<string> removeSolutionFilterKeys, IEnumerable<string> addSolutionFilterKeys)
 		{
 			solutionApi.UpdateVisualStudioSettings(new()
@@ -131,42 +141,6 @@ namespace ISI.Extensions.VisualStudio.Extensions
 			});
 		}
 
-		public static void UpdateRunServicesExcludePathFilters(this SolutionApi solutionApi, IEnumerable<string> removeExcludePathFilters, IEnumerable<string> addExcludePathFilters)
-		{
-			solutionApi.UpdateVisualStudioSettings(new()
-			{
-				UpdateSettings = settings =>
-				{
-					var excludePathFilters = new HashSet<string>((settings.RunServicesExcludePathFilters ?? Array.Empty<string>()), StringComparer.InvariantCultureIgnoreCase);
-
-					if (removeExcludePathFilters != null)
-					{
-						foreach (var removeExcludePathFilter in removeExcludePathFilters)
-						{
-							excludePathFilters.RemoveWhere(jenkinsConfig => string.Equals(jenkinsConfig, removeExcludePathFilter, StringComparison.InvariantCultureIgnoreCase));
-						}
-					}
-
-					if (addExcludePathFilters != null)
-					{
-						foreach (var addExcludePathFilter in addExcludePathFilters)
-						{
-							excludePathFilters.Add(addExcludePathFilter);
-						}
-					}
-
-					if (!settings.RunServicesExcludePathFilters.Equals(excludePathFilters, StringComparer.InvariantCultureIgnoreCase, true))
-					{
-						settings.RunServicesExcludePathFilters = excludePathFilters.ToArray();
-
-						return true;
-					}
-
-					return false;
-				},
-			});
-		}
-
 		public static void UpdateRunServicesPreviouslySelectedProjectKeys(this SolutionApi solutionApi, IEnumerable<string> removeProjectKeys, IEnumerable<string> addProjectKeys)
 		{
 			solutionApi.UpdateVisualStudioSettings(new()
@@ -194,6 +168,42 @@ namespace ISI.Extensions.VisualStudio.Extensions
 					if (!settings.RunServicesPreviouslySelectedProjectKeys.Equals(projectKeys, StringComparer.InvariantCultureIgnoreCase, true))
 					{
 						settings.RunServicesPreviouslySelectedProjectKeys = projectKeys.ToArray();
+
+						return true;
+					}
+
+					return false;
+				},
+			});
+		}
+
+		public static void UpdateUpgradeNugetPackagesPreviouslySelectedProjectKeys(this SolutionApi solutionApi, IEnumerable<string> removeProjectKeys, IEnumerable<string> addProjectKeys)
+		{
+			solutionApi.UpdateVisualStudioSettings(new()
+			{
+				UpdateSettings = settings =>
+				{
+					var projectKeys = new HashSet<string>((settings.UpgradeNugetPackagesPreviouslySelectedProjectKeys ?? Array.Empty<string>()), StringComparer.InvariantCultureIgnoreCase);
+
+					if (removeProjectKeys != null)
+					{
+						foreach (var removeProjectKey in removeProjectKeys)
+						{
+							projectKeys.RemoveWhere(projectKey => string.Equals(projectKey, removeProjectKey, StringComparison.InvariantCultureIgnoreCase));
+						}
+					}
+
+					if (addProjectKeys != null)
+					{
+						foreach (var addProjectKey in addProjectKeys)
+						{
+							projectKeys.Add(addProjectKey);
+						}
+					}
+
+					if (!settings.UpgradeNugetPackagesPreviouslySelectedProjectKeys.Equals(projectKeys, StringComparer.InvariantCultureIgnoreCase, true))
+					{
+						settings.UpgradeNugetPackagesPreviouslySelectedProjectKeys = projectKeys.ToArray();
 
 						return true;
 					}

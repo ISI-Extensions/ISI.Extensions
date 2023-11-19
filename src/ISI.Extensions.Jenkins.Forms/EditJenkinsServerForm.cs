@@ -22,6 +22,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ISI.Extensions.Jenkins.Extensions;
 using ISI.Extensions.Jenkins.Forms.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -29,8 +30,8 @@ namespace ISI.Extensions.Jenkins.Forms
 {
 	public partial class EditJenkinsServerForm : Form
 	{
-		private static ISI.Extensions.Jenkins.JenkinsSettings _jenkinsSettings = null;
-		protected ISI.Extensions.Jenkins.JenkinsSettings JenkinsSettings => _jenkinsSettings ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Jenkins.JenkinsSettings>();
+		private static ISI.Extensions.Jenkins.JenkinsApi _jenkinsApi = null;
+		protected ISI.Extensions.Jenkins.JenkinsApi JenkinsApi => _jenkinsApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Jenkins.JenkinsApi>();
 
 		protected List<DirectoryPanel> DirectoryPanels { get; }
 
@@ -57,7 +58,7 @@ namespace ISI.Extensions.Jenkins.Forms
 
 			ISI.Extensions.WinForms.ThemeHelper.SyncTheme(this);
 
-			JenkinsSettings.ApplyFormSize(nameof(EditJenkinsServerForm), this);
+			JenkinsApi.ApplyFormSize(nameof(EditJenkinsServerForm), this);
 
 			flpDirectories.Visible = false;
 			btnCancel.Visible = false;
@@ -72,7 +73,7 @@ namespace ISI.Extensions.Jenkins.Forms
 
 			if (jenkinsServerUuid.HasValue)
 			{
-				JenkinsServer = JenkinsSettings.GetJenkinsServer(jenkinsServerUuid.Value);
+				JenkinsServer = JenkinsApi.GetJenkinsServer(jenkinsServerUuid.Value);
 			}
 
 			if (JenkinsServer == null)
@@ -123,7 +124,7 @@ namespace ISI.Extensions.Jenkins.Forms
 
 			btnOK.Click += (clickSender, clickEventArgs) =>
 			{
-				JenkinsSettings.RecordFormSize(this);
+				JenkinsApi.RecordFormSize(this);
 
 				JenkinsServer.JenkinsUrl = txtJenkinsUrl.Text;
 				JenkinsServer.Description = txtDescription.Text;

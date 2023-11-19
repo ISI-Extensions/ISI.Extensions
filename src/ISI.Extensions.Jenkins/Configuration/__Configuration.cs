@@ -22,11 +22,11 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Jenkins
 {
-	public partial class JenkinsSettings
+	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
+	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
 	{
-		public ISI.Extensions.Jenkins.JenkinsServer GetJenkinsServer(Guid jenkinsServerUuid)
-		{
-			return Convert((Load()?.JenkinsServers ?? Array.Empty<ISI.Extensions.Jenkins.SerializableModels.JenkinsSettingsJenkinsServer>()).FirstOrDefault(jenkinsServer => jenkinsServer.JenkinsServerUuid == jenkinsServerUuid));
-		}
+		public const string ConfigurationSectionName = "ISI.Extensions.Jenkins";
+
+		public string JenkinsSettingsFullName { get; set; } = @"FileNameDeMasked:{ApplicationData}\ISI.Extensions\jenkins.settings.json";
 	}
 }

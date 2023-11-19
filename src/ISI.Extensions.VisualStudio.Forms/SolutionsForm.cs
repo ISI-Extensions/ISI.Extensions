@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,15 +29,21 @@ namespace ISI.Extensions.VisualStudio.Forms
 {
 	public partial class SolutionsForm : Form
 	{
+		public delegate void SortSolutionsDelegate(bool updateSolution, bool upgradeNugetPackages, Action<string> setStatus);
+
 		public interface ISolutionsContext
 		{
 			IList<Solution> Solutions { get; }
+
+			SortSolutionsDelegate SortSolutions { get; }
 		}
 
+		public bool ShowUpgradeNugetPackagesCheckBox { get; set; } = false;
+		public bool ShowCommitSolutionCheckBox { get; set; } = false;
 		public bool ShowExecuteProjectsCheckBox { get; set; } = false;
 		public bool ShowShowProjectExecutionInTaskbarCheckBox { get; set; } = false;
 
-		public delegate ISolutionsContext BuildSolutionsDelegate(SolutionsForm form, Action<Solution> start);
+		public delegate ISolutionsContext ExecuteActionsInSolutionsDelegate(SolutionsForm form, Action<Solution> start);
 		public delegate void UpdatePreviouslySelectedSolutionsDelegate(SolutionsForm form);
 		public delegate void OnCloseFormDelegate(SolutionsForm form);
 
@@ -57,6 +63,8 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 		protected internal bool CleanSolution { get; set; } = true;
 		protected internal bool UpdateSolution { get; set; } = true;
+		protected internal bool UpgradeNugetPackages { get; set; } = true;
+		protected internal bool CommitSolution { get; set; } = true;
 		protected internal bool RestoreNugetPackages { get; set; } = true;
 		protected internal bool BuildSolution { get; set; } = true;
 		protected internal bool ExecuteProjects { get; set; } = true;
@@ -64,7 +72,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 		protected internal bool ExitOnClose { get; set; }
 
 
-		public SolutionsForm(BuildSolutionsDelegate buildSolutions, UpdatePreviouslySelectedSolutionsDelegate updatePreviouslySelectedSolutions, OnCloseFormDelegate onCloseForm)
+		public SolutionsForm(ExecuteActionsInSolutionsDelegate executeActionsInSolutions, UpdatePreviouslySelectedSolutionsDelegate updatePreviouslySelectedSolutions, OnCloseFormDelegate onCloseForm)
 		{
 			InitializeComponent();
 
@@ -140,10 +148,12 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 			Shown += (shownSender, shownArgs) =>
 			{
-				SolutionsContext = buildSolutions(this, solution =>
+				SolutionsContext = executeActionsInSolutions(this, solution =>
 				{
-					using (var form = new BuildOptionsForm(CleanSolution, UpdateSolution, RestoreNugetPackages, BuildSolution, ExecuteProjects, ShowProjectExecutionInTaskbar)
+					using (var form = new SolutionOptionsForm(CleanSolution, UpdateSolution, UpgradeNugetPackages, CommitSolution, RestoreNugetPackages, BuildSolution, ExecuteProjects, ShowProjectExecutionInTaskbar)
 					{
+						ShowUpgradeNugetPackagesCheckBox = ShowUpgradeNugetPackagesCheckBox,
+						ShowCommitSolutionCheckBox = ShowUpgradeNugetPackagesCheckBox && ShowCommitSolutionCheckBox,
 						ShowExecuteProjectsCheckBox = ShowExecuteProjectsCheckBox,
 						ShowShowProjectExecutionInTaskbarCheckBox = ShowShowProjectExecutionInTaskbarCheckBox,
 					})
@@ -156,12 +166,14 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 							CleanSolution = form.CleanSolution;
 							UpdateSolution = form.UpdateSolution;
+							CommitSolution = form.CommitSolution;
+							UpgradeNugetPackages = form.UpgradeNugetPackages;
 							RestoreNugetPackages = form.RestoreNugetPackages;
 							BuildSolution = form.BuildSolution;
 							ExecuteProjects = form.ExecuteProjects;
 							ShowProjectExecutionInTaskbar = form.ShowProjectExecutionInTaskbar;
 
-							foreach (var solutionTask in solution.GetTasks(CleanSolution, UpdateSolution, RestoreNugetPackages, BuildSolution, ExecuteProjects, ShowProjectExecutionInTaskbar))
+							foreach (var solutionTask in solution.GetTasks(CleanSolution, UpdateSolution, UpgradeNugetPackages, CommitSolution, RestoreNugetPackages, BuildSolution, ExecuteProjects, ShowProjectExecutionInTaskbar))
 							{
 								BackgroundTasks.Enqueue(solutionTask);
 							}
@@ -187,8 +199,10 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 			StartButton.Click += (_, __) =>
 			{
-				using (var form = new BuildOptionsForm(CleanSolution, UpdateSolution, RestoreNugetPackages, BuildSolution, ExecuteProjects, ShowProjectExecutionInTaskbar)
+				using (var form = new SolutionOptionsForm(CleanSolution, UpdateSolution, UpgradeNugetPackages, CommitSolution, RestoreNugetPackages, BuildSolution, ExecuteProjects, ShowProjectExecutionInTaskbar)
 				{
+					ShowUpgradeNugetPackagesCheckBox = ShowUpgradeNugetPackagesCheckBox,
+					ShowCommitSolutionCheckBox = ShowUpgradeNugetPackagesCheckBox && ShowCommitSolutionCheckBox,
 					ShowExecuteProjectsCheckBox = ShowExecuteProjectsCheckBox,
 					ShowShowProjectExecutionInTaskbarCheckBox = ShowShowProjectExecutionInTaskbarCheckBox,
 				})
@@ -199,6 +213,8 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 						CleanSolution = form.CleanSolution;
 						UpdateSolution = form.UpdateSolution;
+						CommitSolution = form.CommitSolution;
+						UpgradeNugetPackages = form.UpgradeNugetPackages;
 						RestoreNugetPackages = form.RestoreNugetPackages;
 						BuildSolution = form.BuildSolution;
 						ExecuteProjects = form.ExecuteProjects;
@@ -211,9 +227,22 @@ namespace ISI.Extensions.VisualStudio.Forms
 							IsFirstRefresh = false;
 						}
 
+						SolutionsContext.SortSolutions?.Invoke(UpdateSolution, UpgradeNugetPackages, status =>
+						{
+							lblStatus.Invoke((System.Windows.Forms.MethodInvoker)delegate
+							{
+								lblStatus.Text = status;
+							});
+						});
+
+						lblStatus.Invoke((System.Windows.Forms.MethodInvoker)delegate
+						{
+							lblStatus.Text = string.Empty;
+						});
+
 						foreach (var solution in SolutionsContext.Solutions.Where(solution => solution.Selected))
 						{
-							foreach (var solutionTask in solution.GetTasks(CleanSolution, UpdateSolution, RestoreNugetPackages, BuildSolution, ExecuteProjects, ShowProjectExecutionInTaskbar))
+							foreach (var solutionTask in solution.GetTasks(CleanSolution, UpdateSolution, UpgradeNugetPackages, CommitSolution, RestoreNugetPackages, BuildSolution, ExecuteProjects, ShowProjectExecutionInTaskbar))
 							{
 								BackgroundTasks.Enqueue(solutionTask);
 							}

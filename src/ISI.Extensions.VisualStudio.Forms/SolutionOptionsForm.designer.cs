@@ -15,7 +15,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 namespace ISI.Extensions.VisualStudio.Forms
 {
-	partial class BuildOptionsForm
+	partial class SolutionOptionsForm
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -49,6 +49,8 @@ namespace ISI.Extensions.VisualStudio.Forms
 			this.cboExecuteProjects = new System.Windows.Forms.CheckBox();
 			this.cboBuildSolution = new System.Windows.Forms.CheckBox();
 			this.cboRestoreNugetPackages = new System.Windows.Forms.CheckBox();
+			this.cboCommitSolution = new System.Windows.Forms.CheckBox();
+			this.cboUpgradeNugetPackages = new System.Windows.Forms.CheckBox();
 			this.cboUpdateSolution = new System.Windows.Forms.CheckBox();
 			this.cboCleanSolution = new System.Windows.Forms.CheckBox();
 			this.btnCancel = new System.Windows.Forms.Button();
@@ -79,16 +81,17 @@ namespace ISI.Extensions.VisualStudio.Forms
 			// flpButtons
 			// 
 			this.flpButtons.AutoSize = true;
-			this.flpButtons.Controls.Add(this.cboShowProjectExecutionInTaskbar);
 			this.flpButtons.Controls.Add(this.cboExecuteProjects);
 			this.flpButtons.Controls.Add(this.cboBuildSolution);
 			this.flpButtons.Controls.Add(this.cboRestoreNugetPackages);
+			this.flpButtons.Controls.Add(this.cboCommitSolution);
+			this.flpButtons.Controls.Add(this.cboUpgradeNugetPackages);
 			this.flpButtons.Controls.Add(this.cboUpdateSolution);
 			this.flpButtons.Controls.Add(this.cboCleanSolution);
 			this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
 			this.flpButtons.Location = new System.Drawing.Point(3, 3);
 			this.flpButtons.Name = "flpButtons";
-			this.flpButtons.Size = new System.Drawing.Size(334, 25);
+			this.flpButtons.Size = new System.Drawing.Size(544, 25);
 			this.flpButtons.TabIndex = 0;
 			this.flpButtons.WrapContents = false;
 			// 
@@ -103,38 +106,60 @@ namespace ISI.Extensions.VisualStudio.Forms
 			this.cboShowProjectExecutionInTaskbar.Text = "Show Execute Project In Taskbar";
 			this.cboShowProjectExecutionInTaskbar.UseVisualStyleBackColor = true;
 			// 
-			// cboExecuteProject
+			// cboExecuteProjects
 			// 
 			this.cboExecuteProjects.AutoSize = true;
-			this.cboExecuteProjects.Location = new System.Drawing.Point(285, 6);
+			this.cboExecuteProjects.Location = new System.Drawing.Point(495, 6);
 			this.cboExecuteProjects.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
-			this.cboExecuteProjects.Name = "cboExecuteProject";
+			this.cboExecuteProjects.Name = "cboExecuteProjects";
 			this.cboExecuteProjects.Size = new System.Drawing.Size(46, 17);
-			this.cboExecuteProjects.TabIndex = 4;
+			this.cboExecuteProjects.TabIndex = 10;
 			this.cboExecuteProjects.Text = "Run";
 			this.cboExecuteProjects.UseVisualStyleBackColor = true;
 			// 
 			// cboBuildSolution
 			// 
 			this.cboBuildSolution.AutoSize = true;
-			this.cboBuildSolution.Location = new System.Drawing.Point(230, 6);
+			this.cboBuildSolution.Location = new System.Drawing.Point(440, 6);
 			this.cboBuildSolution.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
 			this.cboBuildSolution.Name = "cboBuildSolution";
 			this.cboBuildSolution.Size = new System.Drawing.Size(49, 17);
-			this.cboBuildSolution.TabIndex = 5;
+			this.cboBuildSolution.TabIndex = 9;
 			this.cboBuildSolution.Text = "Build";
 			this.cboBuildSolution.UseVisualStyleBackColor = true;
 			// 
-			// cboRestoreVisualStudioPackages
+			// cboRestoreNugetPackages
 			// 
 			this.cboRestoreNugetPackages.AutoSize = true;
-			this.cboRestoreNugetPackages.Location = new System.Drawing.Point(129, 6);
+			this.cboRestoreNugetPackages.Location = new System.Drawing.Point(339, 6);
 			this.cboRestoreNugetPackages.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
 			this.cboRestoreNugetPackages.Name = "cboRestoreNugetPackages";
 			this.cboRestoreNugetPackages.Size = new System.Drawing.Size(95, 17);
-			this.cboRestoreNugetPackages.TabIndex = 4;
+			this.cboRestoreNugetPackages.TabIndex = 8;
 			this.cboRestoreNugetPackages.Text = "Restore Nuget";
 			this.cboRestoreNugetPackages.UseVisualStyleBackColor = true;
+			// 
+			// cboCommitSolution
+			// 
+			this.cboCommitSolution.AutoSize = true;
+			this.cboCommitSolution.Location = new System.Drawing.Point(234, 6);
+			this.cboCommitSolution.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
+			this.cboCommitSolution.Name = "cboCommitSolution";
+			this.cboCommitSolution.Size = new System.Drawing.Size(99, 17);
+			this.cboCommitSolution.TabIndex = 7;
+			this.cboCommitSolution.Text = "Commit Solution";
+			this.cboCommitSolution.UseVisualStyleBackColor = true;
+			// 
+			// cboUpgradeNugetPackages
+			// 
+			this.cboUpgradeNugetPackages.AutoSize = true;
+			this.cboUpgradeNugetPackages.Location = new System.Drawing.Point(129, 6);
+			this.cboUpgradeNugetPackages.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
+			this.cboUpgradeNugetPackages.Name = "cboUpgradeNugetPackages";
+			this.cboUpgradeNugetPackages.Size = new System.Drawing.Size(99, 17);
+			this.cboUpgradeNugetPackages.TabIndex = 6;
+			this.cboUpgradeNugetPackages.Text = "Upgrade Nuget";
+			this.cboUpgradeNugetPackages.UseVisualStyleBackColor = true;
 			// 
 			// cboUpdateSolution
 			// 
@@ -143,7 +168,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			this.cboUpdateSolution.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
 			this.cboUpdateSolution.Name = "cboUpdateSolution";
 			this.cboUpdateSolution.Size = new System.Drawing.Size(61, 17);
-			this.cboUpdateSolution.TabIndex = 4;
+			this.cboUpdateSolution.TabIndex = 5;
 			this.cboUpdateSolution.Text = "Update";
 			this.cboUpdateSolution.UseVisualStyleBackColor = true;
 			// 
@@ -179,7 +204,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			this.btnOK.Text = "OK";
 			this.btnOK.UseVisualStyleBackColor = true;
 			// 
-			// BuildOptionsForm
+			// SolutionOptionsForm
 			// 
 			this.AcceptButton = this.btnOK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -191,9 +216,9 @@ namespace ISI.Extensions.VisualStudio.Forms
 			this.MaximizeBox = false;
 			this.MaximumSize = new System.Drawing.Size(720, 70);
 			this.MinimizeBox = false;
-			this.Name = "BuildOptionsForm";
+			this.Name = "SolutionOptionsForm";
 			this.ShowInTaskbar = false;
-			this.Text = "Build Options";
+			this.Text = "Solution Options";
 			this.tlpForm.ResumeLayout(false);
 			this.tlpForm.PerformLayout();
 			this.flpButtons.ResumeLayout(false);
@@ -208,6 +233,8 @@ namespace ISI.Extensions.VisualStudio.Forms
 		private System.Windows.Forms.FlowLayoutPanel flpButtons;
 		private System.Windows.Forms.CheckBox cboCleanSolution;
 		private System.Windows.Forms.CheckBox cboUpdateSolution;
+		private System.Windows.Forms.CheckBox cboCommitSolution;
+		private System.Windows.Forms.CheckBox cboUpgradeNugetPackages;
 		private System.Windows.Forms.CheckBox cboRestoreNugetPackages;
 		private System.Windows.Forms.CheckBox cboBuildSolution;
 		private System.Windows.Forms.CheckBox cboExecuteProjects;

@@ -32,15 +32,12 @@ namespace ISI.Extensions.Nuget
 		private NugetSettings GetNugetSettings(string nugetSettingsFullName)
 		{
 			var nugetSettings = (NugetSettings)null;
-			 
+
 			if (!string.IsNullOrWhiteSpace(nugetSettingsFullName) && System.IO.File.Exists(nugetSettingsFullName))
 			{
-				using (new ISI.Extensions.Locks.FileLock(nugetSettingsFullName))
+				using (var stream = System.IO.File.OpenRead(nugetSettingsFullName))
 				{
-					using (var stream = System.IO.File.OpenRead(nugetSettingsFullName))
-					{
-						nugetSettings = JsonSerializer.Deserialize<SerializableDTOs.INugetSettings>(stream)?.Export();
-					}
+					nugetSettings = JsonSerializer.Deserialize<SerializableDTOs.INugetSettings>(stream)?.Export();
 				}
 			}
 

@@ -20,40 +20,9 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Jenkins
+namespace ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi
 {
-	public partial class JenkinsSettings
+	public class SetJenkinsSettingsResponse
 	{
-		private IDictionary<string, ISI.Extensions.Jenkins.SerializableModels.JenkinsSettingsJenkinsServer> GetJenkinsServersByDirectory()
-		{
-			var jenkinsServers = (Load()?.JenkinsServers ?? Array.Empty<ISI.Extensions.Jenkins.SerializableModels.JenkinsSettingsJenkinsServer>());
-
-			var jenkinsServersByDirectory = new Dictionary<string, ISI.Extensions.Jenkins.SerializableModels.JenkinsSettingsJenkinsServer>(StringComparer.InvariantCultureIgnoreCase);
-
-			foreach (var jenkinsServer in jenkinsServers)
-			{
-				foreach (var directory in jenkinsServer.Directories ?? Array.Empty<string>())
-				{
-					jenkinsServersByDirectory.Add(directory, jenkinsServer);
-				}
-			}
-
-			return jenkinsServersByDirectory;
-		}
-
-		public ISI.Extensions.Jenkins.JenkinsServer FindJenkinsServerByDirectory(string directory, bool useClosestAncestryDirectory)
-		{
-			var jenkinsServersByDirectory = GetJenkinsServersByDirectory();
-
-			jenkinsServersByDirectory.TryGetValue(directory, out var jenkinsServer);
-
-			if (useClosestAncestryDirectory && (jenkinsServer == null))
-			{
-				jenkinsServer = jenkinsServersByDirectory.Where(credential => directory.StartsWith(credential.Key, StringComparison.InvariantCultureIgnoreCase)).OrderByDescending(credential => credential.Key.Length).FirstOrDefault().Value;
-
-			}
-			
-			return Convert(jenkinsServer);
-		}
 	}
 }

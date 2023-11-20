@@ -30,7 +30,7 @@ namespace ISI.Extensions.VisualStudio
 		{
 			var projectDirectoryFullName = System.IO.Path.GetDirectoryName(projectFullName);
 
-			foreach (var framework in new[] { "net7.0", "net6.0", "net5.0" })
+			foreach (var framework in new[] { "net9.0", "net8.0", "net7.0", "net6.0", "net5.0" })
 			{
 				var binDirectory = System.IO.Path.Combine(projectDirectoryFullName, "bin", configuration, framework);
 
@@ -67,13 +67,6 @@ namespace ISI.Extensions.VisualStudio
 
 
 			return System.IO.Path.Combine(projectDirectoryFullName, "bin", configuration);
-
-			//if (string.IsNullOrWhiteSpace(platform) || string.Equals(platform, "Any CPU", StringComparison.InvariantCultureIgnoreCase))
-			//{
-			//	return System.IO.Path.Combine(projectDirectoryFullName, "bin", configuration);
-			//}
-
-			//return System.IO.Path.Combine(projectDirectoryFullName, "bin", configuration, platform);
 		}
 	}
 }

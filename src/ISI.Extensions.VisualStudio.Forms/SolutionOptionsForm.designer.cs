@@ -45,8 +45,8 @@ namespace ISI.Extensions.VisualStudio.Forms
 		{
 			this.tlpForm = new System.Windows.Forms.TableLayoutPanel();
 			this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
-			this.cboShowProjectExecutionInTaskbar = new System.Windows.Forms.CheckBox();
 			this.cboExecuteProjects = new System.Windows.Forms.CheckBox();
+			this.cboShowProjectExecutionInTaskbar = new System.Windows.Forms.CheckBox();
 			this.cboBuildSolution = new System.Windows.Forms.CheckBox();
 			this.cboRestoreNugetPackages = new System.Windows.Forms.CheckBox();
 			this.cboCommitSolution = new System.Windows.Forms.CheckBox();
@@ -67,7 +67,6 @@ namespace ISI.Extensions.VisualStudio.Forms
 			this.tlpForm.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 85F));
 			this.tlpForm.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 85F));
 			this.tlpForm.Controls.Add(this.flpButtons, 0, 0);
-			this.tlpForm.Controls.Add(this.cboShowProjectExecutionInTaskbar, 1, 0);
 			this.tlpForm.Controls.Add(this.btnCancel, 2, 0);
 			this.tlpForm.Controls.Add(this.btnOK, 3, 0);
 			this.tlpForm.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -82,6 +81,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			// 
 			this.flpButtons.AutoSize = true;
 			this.flpButtons.Controls.Add(this.cboExecuteProjects);
+			this.flpButtons.Controls.Add(this.cboShowProjectExecutionInTaskbar);
 			this.flpButtons.Controls.Add(this.cboBuildSolution);
 			this.flpButtons.Controls.Add(this.cboRestoreNugetPackages);
 			this.flpButtons.Controls.Add(this.cboCommitSolution);
@@ -91,25 +91,14 @@ namespace ISI.Extensions.VisualStudio.Forms
 			this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
 			this.flpButtons.Location = new System.Drawing.Point(3, 3);
 			this.flpButtons.Name = "flpButtons";
-			this.flpButtons.Size = new System.Drawing.Size(544, 25);
+			this.flpButtons.Size = new System.Drawing.Size(659, 25);
 			this.flpButtons.TabIndex = 0;
 			this.flpButtons.WrapContents = false;
-			// 
-			// cboShowProjectExecutionInTaskbar
-			// 
-			this.cboShowProjectExecutionInTaskbar.AutoSize = true;
-			this.cboShowProjectExecutionInTaskbar.Location = new System.Drawing.Point(723, 6);
-			this.cboShowProjectExecutionInTaskbar.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
-			this.cboShowProjectExecutionInTaskbar.Name = "cboShowProjectExecutionInTaskbar";
-			this.cboShowProjectExecutionInTaskbar.Size = new System.Drawing.Size(1, 17);
-			this.cboShowProjectExecutionInTaskbar.TabIndex = 4;
-			this.cboShowProjectExecutionInTaskbar.Text = "Show Execute Project In Taskbar";
-			this.cboShowProjectExecutionInTaskbar.UseVisualStyleBackColor = true;
 			// 
 			// cboExecuteProjects
 			// 
 			this.cboExecuteProjects.AutoSize = true;
-			this.cboExecuteProjects.Location = new System.Drawing.Point(495, 6);
+			this.cboExecuteProjects.Location = new System.Drawing.Point(610, 6);
 			this.cboExecuteProjects.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
 			this.cboExecuteProjects.Name = "cboExecuteProjects";
 			this.cboExecuteProjects.Size = new System.Drawing.Size(46, 17);
@@ -117,10 +106,21 @@ namespace ISI.Extensions.VisualStudio.Forms
 			this.cboExecuteProjects.Text = "Run";
 			this.cboExecuteProjects.UseVisualStyleBackColor = true;
 			// 
+			// cboShowProjectExecutionInTaskbar
+			// 
+			this.cboShowProjectExecutionInTaskbar.AutoSize = true;
+			this.cboShowProjectExecutionInTaskbar.Location = new System.Drawing.Point(497, 6);
+			this.cboShowProjectExecutionInTaskbar.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
+			this.cboShowProjectExecutionInTaskbar.Name = "cboShowProjectExecutionInTaskbar";
+			this.cboShowProjectExecutionInTaskbar.Size = new System.Drawing.Size(107, 17);
+			this.cboShowProjectExecutionInTaskbar.TabIndex = 4;
+			this.cboShowProjectExecutionInTaskbar.Text = "Show In Taskbar";
+			this.cboShowProjectExecutionInTaskbar.UseVisualStyleBackColor = true;
+			// 
 			// cboBuildSolution
 			// 
 			this.cboBuildSolution.AutoSize = true;
-			this.cboBuildSolution.Location = new System.Drawing.Point(440, 6);
+			this.cboBuildSolution.Location = new System.Drawing.Point(442, 6);
 			this.cboBuildSolution.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
 			this.cboBuildSolution.Name = "cboBuildSolution";
 			this.cboBuildSolution.Size = new System.Drawing.Size(49, 17);
@@ -131,7 +131,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			// cboRestoreNugetPackages
 			// 
 			this.cboRestoreNugetPackages.AutoSize = true;
-			this.cboRestoreNugetPackages.Location = new System.Drawing.Point(339, 6);
+			this.cboRestoreNugetPackages.Location = new System.Drawing.Point(341, 6);
 			this.cboRestoreNugetPackages.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
 			this.cboRestoreNugetPackages.Name = "cboRestoreNugetPackages";
 			this.cboRestoreNugetPackages.Size = new System.Drawing.Size(95, 17);
@@ -145,7 +145,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			this.cboCommitSolution.Location = new System.Drawing.Point(234, 6);
 			this.cboCommitSolution.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
 			this.cboCommitSolution.Name = "cboCommitSolution";
-			this.cboCommitSolution.Size = new System.Drawing.Size(99, 17);
+			this.cboCommitSolution.Size = new System.Drawing.Size(101, 17);
 			this.cboCommitSolution.TabIndex = 7;
 			this.cboCommitSolution.Text = "Commit Solution";
 			this.cboCommitSolution.UseVisualStyleBackColor = true;

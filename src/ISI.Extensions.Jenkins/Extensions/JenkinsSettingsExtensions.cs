@@ -85,8 +85,7 @@ namespace ISI.Extensions.Jenkins.Extensions
 
 			if (useClosestAncestryDirectory && (jenkinsServer == null))
 			{
-				jenkinsServer = jenkinsServersByDirectory.Where(credential => directory.StartsWith(credential.Key, StringComparison.InvariantCultureIgnoreCase)).OrderByDescending(credential => credential.Key.Length).FirstOrDefault().Value;
-
+				jenkinsServer = jenkinsServersByDirectory.Where(js => directory.StartsWith(js.Key, StringComparison.InvariantCultureIgnoreCase)).OrderByDescending(js => js.Key.Length).FirstOrDefault().Value;
 			}
 
 			return Convert(jenkinsServer);

@@ -72,7 +72,7 @@ namespace ISI.Extensions.Nuget
 
 				foreach (var line in nugetResponse.Output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
 				{
-					var linePieces = line.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+					var linePieces = line.Split(new[] {  '|', '\t' }, StringSplitOptions.RemoveEmptyEntries).Select(value => value.Trim()).ToArray();
 
 					if (linePieces.Length >= 3)
 					{

@@ -193,6 +193,11 @@ namespace ISI.Extensions.Tests
 		{
 			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.Nuget.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
 
+			var packageVersion8 = nugetApi.GetNugetPackageKey(new()
+			{
+				Package = "DataTech.AccuMail-64",
+			}).NugetPackageKey;
+
 			var packageVersion5 = nugetApi.GetNugetPackageKey(new()
 			{
 				Package = "Microsoft.Graph.Core",

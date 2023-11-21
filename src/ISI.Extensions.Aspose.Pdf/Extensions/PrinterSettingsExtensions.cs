@@ -30,7 +30,7 @@ namespace ISI.Extensions.Aspose.Extensions
 				return null;
 			}
 
-			return new global::Aspose.Pdf.Printing.PrinterSettings()
+			var asposePrinterSettings = new global::Aspose.Pdf.Printing.PrinterSettings()
 			{
 				Copies = printerSettings.Copies,
 				Collate = printerSettings.Collate,
@@ -38,13 +38,19 @@ namespace ISI.Extensions.Aspose.Extensions
 				FromPage = printerSettings.FromPage,
 				MaximumPage = printerSettings.MaximumPage,
 				MinimumPage = printerSettings.MinimumPage,
-				PrintFileName = printerSettings.PrintFileName,
 				PrintRange = printerSettings.PrintRange.ToPrintRange(),
 				PrintToFile = printerSettings.PrintToFile,
 				PrinterName = printerSettings.PrinterName,
 				//PrinterUri = printerSettings.PrinterUri,
 				ToPage = printerSettings.ToPage,
 			};
+
+			if (!string.IsNullOrWhiteSpace(printerSettings.PrintFileName))
+			{
+				asposePrinterSettings.PrintFileName = printerSettings.PrintFileName;
+			}
+
+			return asposePrinterSettings;
 		}
 	}
 }

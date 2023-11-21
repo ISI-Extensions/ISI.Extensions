@@ -232,7 +232,11 @@ namespace ISI.Extensions.Jenkins.Forms
 					{
 						if (((ISI.Extensions.Jenkins.JenkinsServer)cboJenkinsServers.Items[index]).JenkinsServerUuid == jenkinsServerUuid)
 						{
-							cboJenkinsServers.SelectedIndex = index;
+							var selectedIndex = index;
+							cboJenkinsServers.Invoke((System.Windows.Forms.MethodInvoker)delegate
+							{
+								cboJenkinsServers.SelectedIndex = selectedIndex;
+							});
 						}
 					}
 				}

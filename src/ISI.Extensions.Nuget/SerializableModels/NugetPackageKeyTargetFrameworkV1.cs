@@ -42,7 +42,7 @@ namespace ISI.Extensions.Nuget.SerializableModels
 		{
 			return new LOCALENTITIES.NugetPackageKeyTargetFramework()
 			{
-				TargetFramework = NuGet.Frameworks.NuGetFramework.Parse(TargetFramework),
+				TargetFramework = (string.IsNullOrWhiteSpace(TargetFramework) ? null : NuGet.Frameworks.NuGetFramework.Parse(TargetFramework)),
 				Assemblies = Assemblies.ToNullCheckedArray(assembly => assembly.Export()),
 			};
 		}

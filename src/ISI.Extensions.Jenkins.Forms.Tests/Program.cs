@@ -67,7 +67,7 @@ namespace ISI.Extensions.Jenkins.Forms.Tests
 
 			var selectedItemPaths = new[]
 			{
-				@"G:\Samples\",
+				@"F:\ISI\Clients\TFS\Upgrade Nuget Packages\src\jenkins\",
 			};
 
 			System.Windows.Forms.Application.EnableVisualStyles();

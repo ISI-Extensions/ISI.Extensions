@@ -26,19 +26,16 @@ namespace ISI.Extensions.Jira
 {
 	public partial class JiraApi
 	{
-		private long? GetIssueTypeId(DTOs.IRequest request, object issueTypeIdOrName)
+		private long? GetIssueTypeId(DTOs.IRequest request, JiraKey issueTypeIdOrName)
 		{
-			var issueTypeName = string.Format("{0}", issueTypeIdOrName);
-			var issueTypeId = issueTypeName.ToLongNullable();
-
-			if (!issueTypeId.HasValue)
+			if (issueTypeIdOrName?.IsKey ?? false)
 			{
 				var issueTypes = ListIssueTypes(MakeRequest<DTOs.ListIssueTypesRequest>(request))?.IssueTypes;
 
-				issueTypeId = issueTypes.NullCheckedFirstOrDefault(issueType => string.Equals(issueType.Name, issueTypeName, StringComparison.InvariantCultureIgnoreCase))?.IssueTypeId;
+				return issueTypes.NullCheckedFirstOrDefault(issueType => string.Equals(issueType.Name, issueTypeIdOrName.Key, StringComparison.InvariantCultureIgnoreCase))?.IssueTypeId;
 			}
 
-			return issueTypeId;
+			return issueTypeIdOrName?.Id;
 		}
 	}
 }

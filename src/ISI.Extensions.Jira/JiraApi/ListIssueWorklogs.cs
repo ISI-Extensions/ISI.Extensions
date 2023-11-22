@@ -33,7 +33,7 @@ namespace ISI.Extensions.Jira
 			var uri = GetJiraApiUri(request);
 			uri.SetPathAndQueryString(UrlPathFormat.ListIssueWorklogs.Replace(new Dictionary<string, string>()
 			{
-				{"{issueIdOrKey}", request.IssueIdOrKey}
+				{"{issueIdOrKey}", request.IssueIdOrKey.ToString()}
 			}, StringComparer.InvariantCultureIgnoreCase));
 
 			var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SERIALIZABLE.ListIssueWorklogsResponse>(uri.Uri, GetHeaders(request), true, GetSslProtocols(request));

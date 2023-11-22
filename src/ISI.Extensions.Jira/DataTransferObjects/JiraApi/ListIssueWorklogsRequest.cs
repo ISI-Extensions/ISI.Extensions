@@ -23,6 +23,6 @@ namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 {
 	public class ListIssueWorklogsRequest : AbstractRequest
 	{
-		public string IssueIdOrKey { get; set; }
+		public JiraKey IssueIdOrKey { get; set; }
 	}
 }

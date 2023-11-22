@@ -28,6 +28,6 @@ namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 		public int Take { get; set; }
 		public string BoardType { get; set; }
 		public string Name { get; set; }
-		public object ProjectIdOrKey { get; set; }
+		public JiraKey ProjectIdOrKey { get; set; }
 	}
 }

@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.Jira.Extensions;
 using DTOs = ISI.Extensions.Jira.DataTransferObjects.JiraApi;
 using SERIALIZABLE = ISI.Extensions.Jira.SerializableModels;
 
@@ -49,10 +50,9 @@ namespace ISI.Extensions.Jira
 				uri.AddQueryStringParameter("name", request.Name);
 			}
 
-			var projectIdOrKey = string.Format("{0}", request.ProjectIdOrKey);
-			if (!string.IsNullOrWhiteSpace(projectIdOrKey))
+			if (request.ProjectIdOrKey.HasValue())
 			{
-				uri.AddQueryStringParameter("projectIdOrKey", projectIdOrKey);
+				uri.AddQueryStringParameter("projectIdOrKey", request.ProjectIdOrKey.ToString());
 			}
 
 			var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SERIALIZABLE.ListBoardsResponse>(uri.Uri, GetHeaders(request), true, GetSslProtocols(request));

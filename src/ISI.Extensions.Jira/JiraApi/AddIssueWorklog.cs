@@ -33,7 +33,7 @@ namespace ISI.Extensions.Jira
 			var uri = GetJiraApiUri(request);
 			uri.SetPathAndQueryString(UrlPathFormat.AddIssueWorklog.Replace(new Dictionary<string, string>()
 			{
-				{"{issueIdOrKey}", request.IssueIdOrKey}
+				{"{issueIdOrKey}", request.IssueIdOrKey.ToString()}
 			}, StringComparer.InvariantCultureIgnoreCase));
 
 			var jiraRequest = new SERIALIZABLE.AddIssueWorklogRequest()
@@ -49,7 +49,7 @@ namespace ISI.Extensions.Jira
 			response.Skip = jiraResponse.Skip;
 			response.Take = jiraResponse.Take;
 			response.Total = jiraResponse.Total;
-			response.Worklogs = jiraResponse.Worklogs.ToNullCheckedArray(x => x?.Export());
+			response.Worklogs = (jiraResponse.Worklogs.ToNullCheckedArray(x => x?.Export(), NullCheckCollectionResult.ReturnNull) ?? new[] { jiraResponse?.Export() }).Where(workLog => workLog != null).ToArray();
 
 			return response;
 		}

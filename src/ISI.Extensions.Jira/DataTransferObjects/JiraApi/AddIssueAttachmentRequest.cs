@@ -24,7 +24,7 @@ namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 {
 	public class AddIssueAttachmentRequest : AbstractRequest
 	{
-		public object IssueIdOrKey { get; set; }
+		public JiraKey IssueIdOrKey { get; set; }
 
 		public string FileName { get; set; }
 

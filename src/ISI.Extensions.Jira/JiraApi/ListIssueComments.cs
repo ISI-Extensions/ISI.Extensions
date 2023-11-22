@@ -33,7 +33,7 @@ namespace ISI.Extensions.Jira
 			var uri = GetJiraApiUri(request);
 			uri.SetPathAndQueryString(UrlPathFormat.ListIssueComment.Replace(new Dictionary<string, string>()
 			{
-				{"{issueIdOrKey}", request.IssueIdOrKey}
+				{"{issueIdOrKey}", request.IssueIdOrKey.ToString()}
 			}, StringComparer.InvariantCultureIgnoreCase));
 			//uri.AddQueryStringParameter("expand", "renderedBody");
 

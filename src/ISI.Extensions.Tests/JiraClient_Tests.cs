@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,7 +50,7 @@ namespace ISI.Extensions.Tests
 				.AddSingleton<Microsoft.Extensions.Logging.ILoggerFactory, Microsoft.Extensions.Logging.LoggerFactory>()
 				.AddLogging(builder => builder
 						.AddConsole()
-					//.AddFilter(level => level >= Microsoft.Extensions.Logging.LogLevel.Information)
+				//.AddFilter(level => level >= Microsoft.Extensions.Logging.LogLevel.Information)
 				)
 				.AddSingleton<Microsoft.Extensions.Logging.ILogger>(_ => new ISI.Extensions.TextWriterLogger(TestContext.Progress))
 
@@ -67,12 +67,12 @@ namespace ISI.Extensions.Tests
 
 			serviceProvider.SetServiceLocator();
 
-			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "Tristar.keyValue");
 			var settings = new ISI.Extensions.SimpleKeyValueStorage(settingsFullName);
 
-			JiraUrl = settings.GetValue("JiraUrl");
-			JiraApiUserName = settings.GetValue("JiraApiUserName");
-			JiraApiToken = settings.GetValue("JiraApiToken");
+			JiraUrl = settings.GetValue("cJiraUrl");
+			JiraApiUserName = settings.GetValue("cJiraApiUserName");
+			JiraApiToken = settings.GetValue("cJiraApiToken");
 			//JiraApiUserName = settings.GetValue("ActiveDirectoryUserName");
 			//JiraApiToken = settings.GetValue("ActiveDirectoryPassword");
 		}
@@ -130,10 +130,45 @@ namespace ISI.Extensions.Tests
 				JiraApiUrl = JiraUrl,
 				JiraApiUserName = JiraApiUserName,
 				JiraApiToken = JiraApiToken,
-				IssueIdOrKeys = new []{ "CD-4915"}
+				IssueIdOrKeys = new[] { "CD-4915" }
 				//ImpersonatedUser = "rmuth",
 				//Jql = "assignee=currentuser() AND STATUS!=DONE ORDER BY created DESC",
 				//Jql = "STATUS!=DONE ORDER BY created DESC",
+			});
+		}
+
+		[Test]
+		public void ListSprints_Tests()
+		{
+			var jiraApi = new ISI.Extensions.Jira.JiraApi();
+
+			var getIssuesResponse = jiraApi.ListSprints(new()
+			{
+				JiraApiUrl = JiraUrl,
+				JiraApiUserName = JiraApiUserName,
+				JiraApiToken = JiraApiToken,
+				BoardIdOrName = 6,
+				State = ISI.Extensions.Jira.SprintState.Active,
+
+				//ImpersonatedUser = "rmuth",
+				//Jql = "assignee=currentuser() AND STATUS!=DONE ORDER BY created DESC",
+				//Jql = "STATUS!=DONE ORDER BY created DESC",
+			});
+		}
+
+		[Test]
+		public void FindSprintIssues_Tests()
+		{
+			var jiraApi = new ISI.Extensions.Jira.JiraApi();
+
+			var getIssuesResponse = jiraApi.FindSprintIssues(new()
+			{
+				JiraApiUrl = JiraUrl,
+				JiraApiUserName = JiraApiUserName,
+				JiraApiToken = JiraApiToken,
+				BoardIdOrName = 6,
+				SprintIdOrName = 143,
+				Jql = "assignee=currentuser()",
 			});
 		}
 
@@ -148,7 +183,7 @@ namespace ISI.Extensions.Tests
 				JiraApiUserName = JiraApiUserName,
 				JiraApiToken = JiraApiToken,
 				IssueIdOrKey = "TIP-262",
-				Comment = "Hello World",
+				Comment = "Hello World AGAIN",
 
 				//ImpersonatedUser = "rmuth",
 				//Jql = "assignee=currentuser() AND STATUS!=DONE ORDER BY created DESC",
@@ -170,6 +205,49 @@ namespace ISI.Extensions.Tests
 				Jql = "assignee=currentuser() AND STATUS!=DONE ORDER BY created DESC",
 				//Jql = "STATUS!=DONE ORDER BY created DESC",
 			});
+		}
+
+		[Test]
+		public void AddIssueAttachment_Tests()
+		{
+			var jiraApi = new ISI.Extensions.Jira.JiraApi();
+
+			var impersonatedUser = "ljones";
+
+			var findIssuesResponse = jiraApi.FindIssues(new()
+			{
+				JiraApiUrl = JiraUrl,
+				JiraApiUserName = JiraApiUserName,
+				JiraApiToken = JiraApiToken,
+				ImpersonatedUser = impersonatedUser, //user must have access to above project
+				Jql = "project=CD AND status IN (Closed,Canceled,Resolved) AND attachments IS NOT EMPTY AND updatedDate < 2020-12-22",
+				Fields = new[] { "attachment" },
+				//Take = 1001, //1,000 is the max the API will return
+			});
+
+			if (findIssuesResponse.Issues.NullCheckedAny())
+			{
+				using (var stream = System.IO.File.OpenRead(@"C:\Temp\pizza.jpg"))
+				{
+					var issues = findIssuesResponse.Issues;
+
+					foreach (var issue in issues)
+					{
+						stream.Rewind();
+
+						jiraApi.AddIssueAttachment(new()
+						{
+							JiraApiUrl = JiraUrl,
+							JiraApiUserName = JiraApiUserName,
+							JiraApiToken = JiraApiToken,
+							IssueIdOrKey = issue.IssueKey,
+							FileName = "pizza.jpg",
+							FileStream = stream,
+							ImpersonatedUser = impersonatedUser, //user must have 'delete all attachments project permission'
+						});
+					}
+				}
+			}
 		}
 
 		[Test]
@@ -221,7 +299,7 @@ namespace ISI.Extensions.Tests
 				JiraApiUserName = JiraApiUserName,
 				JiraApiToken = JiraApiToken,
 				ImpersonatedUser = "rmuth",
-				IssueIdOrKey = "DEV-13",
+				IssueIdOrKey = "TIP-262",
 				Comment = "Worked on this",
 				StartedDateTime = DateTime.Now - TimeSpan.FromHours(5),
 				TimeSpent = TimeSpan.FromHours(4),
@@ -267,6 +345,28 @@ namespace ISI.Extensions.Tests
 			//		}
 			//	}
 			//}
+		}
+
+		[Test]
+		public void GetCodeReviewRequest_Tests()
+		{
+			var jiraApi = new ISI.Extensions.Jira.JiraApi();
+			
+			var listIssueCommentsResponse = jiraApi.ListIssueComments(new()
+			{
+				JiraApiUrl = JiraUrl,
+				JiraApiUserName = JiraApiUserName,
+				JiraApiToken = JiraApiToken,
+				ImpersonatedUser = "rmuth",
+				IssueIdOrKey = "CD-5310",
+			});
+
+
+
+
+
+
+
 		}
 	}
 }

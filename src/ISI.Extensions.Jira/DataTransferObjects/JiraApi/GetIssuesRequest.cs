@@ -24,6 +24,6 @@ namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 {
 	public class GetIssuesRequest : AbstractRequest
 	{
-		public object[] IssueIdOrKeys { get; set; }
+		public JiraKeyCollection IssueIdOrKeys { get; set; }
 	}
 }

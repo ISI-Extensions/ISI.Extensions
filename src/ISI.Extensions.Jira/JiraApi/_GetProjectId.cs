@@ -26,19 +26,16 @@ namespace ISI.Extensions.Jira
 {
 	public partial class JiraApi
 	{
-		private long? GetProjectId(DTOs.IRequest request, object projectIdOrKey)
+		private long? GetProjectId(DTOs.IRequest request, JiraKey projectIdOrKey)
 		{
-			var projectKey = string.Format("{0}", projectIdOrKey);
-			var projectId = projectKey.ToLongNullable();
-
-			if (!projectId.HasValue)
+			if (projectIdOrKey?.IsKey ?? false)
 			{
 				var projects = ListProjects(MakeRequest<DTOs.ListProjectsRequest>(request))?.Projects;
 
-				projectId = projects.NullCheckedFirstOrDefault(project => string.Equals(project.ProjectKey, projectKey, StringComparison.InvariantCultureIgnoreCase))?.ProjectId;
+				return projects.NullCheckedFirstOrDefault(project => string.Equals(project.ProjectKey, projectIdOrKey.Key, StringComparison.InvariantCultureIgnoreCase))?.ProjectId;
 			}
 
-			return projectId;
+			return projectIdOrKey?.Id;
 		}
 	}
 }

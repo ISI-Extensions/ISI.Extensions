@@ -26,19 +26,16 @@ namespace ISI.Extensions.Jira
 {
 	public partial class JiraApi
 	{
-		private long? GetSprintId(DTOs.IRequest request, object boardIdOrName, object sprintIdOrName)
+		private long? GetSprintId(DTOs.IRequest request, JiraKey boardIdOrName, JiraKey sprintIdOrName)
 		{
-			var sprintName = string.Format("{0}", sprintIdOrName);
-			var sprintId = sprintName.ToLongNullable();
-
-			if (!sprintId.HasValue)
+			if (sprintIdOrName?.IsKey ?? false)
 			{
 				var sprints = ListSprints(MakeRequest<DTOs.ListSprintsRequest>(request, newRequest => newRequest.BoardIdOrName = boardIdOrName))?.Sprints;
 
-				sprintId = sprints.NullCheckedFirstOrDefault(sprint => string.Equals(sprint.Name, sprintName, StringComparison.InvariantCultureIgnoreCase))?.SprintId;
+				return sprints.NullCheckedFirstOrDefault(sprint => string.Equals(sprint.Name, sprintIdOrName.Key, StringComparison.InvariantCultureIgnoreCase))?.SprintId;
 			}
 
-			return sprintId;
+			return sprintIdOrName?.Id;
 		}
 	}
 }

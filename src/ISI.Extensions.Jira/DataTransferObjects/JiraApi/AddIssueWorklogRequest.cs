@@ -23,7 +23,7 @@ namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 {
 	public class AddIssueWorklogRequest : AbstractRequest
 	{
-		public string IssueIdOrKey { get; set; }
+		public JiraKey IssueIdOrKey { get; set; }
 		public DateTime StartedDateTime { get; set; }
 		public TimeSpan TimeSpent { get; set; }
 		public string Comment { get; set; }

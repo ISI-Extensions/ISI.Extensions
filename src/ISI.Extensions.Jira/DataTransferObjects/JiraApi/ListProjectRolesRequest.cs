@@ -24,6 +24,6 @@ namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 {
 	public class ListProjectRolesRequest : AbstractRequest
 	{
-		public object ProjectIdOrKey { get; set; }
+		public JiraKey ProjectIdOrKey { get; set; }
 	}
 }

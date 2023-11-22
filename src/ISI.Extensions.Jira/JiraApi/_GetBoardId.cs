@@ -26,19 +26,16 @@ namespace ISI.Extensions.Jira
 {
 	public partial class JiraApi
 	{
-		private long? GetBoardId(DTOs.IRequest request, object projectIdOrKey, object boardIdOrName)
+		private long? GetBoardId(DTOs.IRequest request, JiraKey projectIdOrKey, JiraKey boardIdOrName)
 		{
-			var boardName = string.Format("{0}", boardIdOrName);
-			var boardId = boardName.ToLongNullable();
-
-			if (!boardId.HasValue)
+			if (boardIdOrName?.IsKey ?? false)
 			{
 				var boards = ListBoards(MakeRequest<DTOs.ListBoardsRequest>(request, newRequest => newRequest.ProjectIdOrKey = projectIdOrKey))?.Boards;
 
-				boardId = boards.NullCheckedFirstOrDefault(board => string.Equals(board.Name, boardName, StringComparison.InvariantCultureIgnoreCase))?.BoardId;
+				return boards.NullCheckedFirstOrDefault(board => string.Equals(board.Name, boardIdOrName.Key, StringComparison.InvariantCultureIgnoreCase))?.BoardId;
 			}
 
-			return boardId;
+			return boardIdOrName?.Id;
 		}
 	}
 }

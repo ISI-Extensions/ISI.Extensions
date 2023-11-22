@@ -27,8 +27,8 @@ namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 		public long Skip { get; set; }
 		public int Take { get; set; }
 
-		public object BoardIdOrName { get; set; }
-		public object SprintIdOrName { get; set; }
+		public JiraKey BoardIdOrName { get; set; }
+		public JiraKey SprintIdOrName { get; set; }
 
 		public string Jql { get; set; }
 	}

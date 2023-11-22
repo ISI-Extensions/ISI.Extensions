@@ -24,18 +24,18 @@ namespace ISI.Extensions.Jira.DataTransferObjects.JiraApi
 {
 	public class CreateIssueRequest : AbstractRequest
 	{
-		public object ProjectIdOrKey { get; set; }
+		public JiraKey ProjectIdOrKey { get; set; }
 
 		public string Summary { get; set; }
 
-		public object IssueTypeIdOrName { get; set; }
+		public JiraKey IssueTypeIdOrName { get; set; }
 
 		public string Assignee { get; set; }
 
 		public string Reporter { get; set; }
 		public bool CreateReporterIfNotFound { get; set; }
 
-		public object PriorityIdOrName { get; set; }
+		public JiraKey PriorityIdOrName { get; set; }
 
 		public string[] Labels { get; set; }
 

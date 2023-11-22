@@ -26,19 +26,16 @@ namespace ISI.Extensions.Jira
 {
 	public partial class JiraApi
 	{
-		private long? GetPriorityId(DTOs.IRequest request, object priorityIdOrName)
+		private long? GetPriorityId(DTOs.IRequest request, JiraKey priorityIdOrName)
 		{
-			var priorityName = string.Format("{0}", priorityIdOrName);
-			var priorityId = priorityName.ToLongNullable();
-
-			if (!priorityId.HasValue)
+			if (priorityIdOrName?.IsKey ?? false)
 			{
 				var priorities = ListPriorities(MakeRequest<DTOs.ListPrioritiesRequest>(request))?.Priorities;
 
-				priorityId = priorities.NullCheckedFirstOrDefault(priority => string.Equals(priority.Name, priorityName, StringComparison.InvariantCultureIgnoreCase))?.PriorityId;
+				return priorities.NullCheckedFirstOrDefault(priority => string.Equals(priority.Name, priorityIdOrName.Key, StringComparison.InvariantCultureIgnoreCase))?.PriorityId;
 			}
 
-			return priorityId;
+			return priorityIdOrName?.Id;
 		}
 	}
 }

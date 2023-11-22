@@ -33,7 +33,7 @@ namespace ISI.Extensions.Jira
 			var uri = GetJiraApiUri(request);
 			uri.SetPathAndQueryString(UrlPathFormat.DeleteIssueWorklog.Replace(new Dictionary<string, string>()
 			{
-				{"{issueIdOrKey}", request.IssueIdOrKey},
+				{"{issueIdOrKey}", request.IssueIdOrKey.ToString()},
 				{"{worklogId}", string.Format("{0}", request.WorklogId)},
 			}, StringComparer.InvariantCultureIgnoreCase));
 

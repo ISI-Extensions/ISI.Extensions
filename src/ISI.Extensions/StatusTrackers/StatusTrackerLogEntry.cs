@@ -22,6 +22,7 @@ namespace ISI.Extensions.StatusTrackers
 	public class StatusTrackerLogEntry : IStatusTrackerLogEntry
 	{
 		public DateTime DateTimeStamp { get; set; }
+		public LogEntryLevel LogEntryLevel { get; set; }
 		public string Description { get; set; }
 	}
 }

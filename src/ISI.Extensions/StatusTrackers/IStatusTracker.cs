@@ -19,10 +19,17 @@ using System.Text;
 
 namespace ISI.Extensions.StatusTrackers
 {
+	public enum LogEntryLevel
+	{
+		Information,
+		Warning,
+		Error,
+	}
+
 	public delegate void OnStatusChange(string caption, int percent);
 	public delegate void OnLogUpdate(IEnumerable<IStatusTrackerLogEntry> logEntries);
 	public delegate void OnAddToLog(IStatusTrackerLogEntry logEntry);
-	public delegate void AddToLog(string description);
+	public delegate void AddToLog(LogEntryLevel logEntryLevel, string description);
 }
 
 namespace ISI.Extensions
@@ -45,6 +52,7 @@ namespace ISI.Extensions
 		void AddToLog(System.Exception exception);
 		void AddToLog(string logEntry, System.Exception exception);
 		void AddToLog(string logEntry);
+		void AddToLog(DateTime dateTimeStamp, ISI.Extensions.StatusTrackers.LogEntryLevel logEntryLevel, string logEntry);
 		void AddToLog(DateTime dateTimeStamp, string logEntry);
 		void AddToLog(IEnumerable<IStatusTrackerLogEntry> logEntries);
 		IEnumerable<IStatusTrackerLogEntry> GetLogEntries();
@@ -53,6 +61,7 @@ namespace ISI.Extensions
 	public interface IStatusTrackerLogEntry
 	{
 		DateTime DateTimeStamp { get; }
+		ISI.Extensions.StatusTrackers.LogEntryLevel LogEntryLevel { get; }
 		string Description { get; }
 	}
 }

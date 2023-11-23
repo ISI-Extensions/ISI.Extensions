@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,12 +57,12 @@ namespace ISI.Extensions.VisualStudio
 			{
 				foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
 				{
-					using (getBuildServiceSolutionLock(solutionDetails.SolutionFullName, description => logger.LogInformation(description)))
+					using (getBuildServiceSolutionLock(solutionDetails.SolutionFullName, (logEntryLevel, description) => logger.LogInformation(description)))
 					{
 						using (GetSolutionLock(new()
 						{
 							SolutionFullName = solutionDetails.SolutionFullName,
-							AddToLog = description => logger.LogInformation(description),
+							AddToLog = (logEntryLevel, description) => logger.LogInformation(description),
 						}).Lock)
 						{
 							logger.LogInformation(string.Format("Updating {0} from Source Control", solutionDetails.SolutionName));
@@ -71,7 +71,7 @@ namespace ISI.Extensions.VisualStudio
 							{
 								FullName = solutionDetails.RootSourceDirectory,
 								IncludeExternals = true,
-								AddToLog = description => logger.LogInformation(description),
+								AddToLog = (logEntryLevel, description) => logger.LogInformation(description),
 							}).Success)
 							{
 								var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
@@ -87,22 +87,22 @@ namespace ISI.Extensions.VisualStudio
 					Solution = solution,
 				}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
 			}
-			
+
 			logger.LogInformation("Upgrade Nuget Packages For Solutions:");
 			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpgradeNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
 			{
 				logger.LogInformation(string.Format("  {0}", solutionDetails.SolutionName));
 			}
 			logger.LogInformation(string.Empty);
-			
+
 			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpgradeNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
 			{
-				using (getBuildServiceSolutionLock(solutionDetails.SolutionFullName, description => logger.LogInformation(description)))
+				using (getBuildServiceSolutionLock(solutionDetails.SolutionFullName, (logEntryLevel, description) => logger.LogInformation(description)))
 				{
 					using (GetSolutionLock(new()
 					{
 						SolutionFullName = solutionDetails.SolutionFullName,
-						AddToLog = description => logger.LogInformation(description),
+						AddToLog = (logEntryLevel, description) => logger.LogInformation(description),
 					}).Lock)
 					{
 						logger.LogInformation(string.Format("Updating {0} from Source Control", solutionDetails.SolutionName));
@@ -115,7 +115,7 @@ namespace ISI.Extensions.VisualStudio
 							{
 								FullName = solutionDetails.RootSourceDirectory,
 								IncludeExternals = true,
-								AddToLog = description => logger.LogInformation(description),
+								AddToLog = (logEntryLevel, description) => logger.LogInformation(description),
 							}).Success)
 							{
 								var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
@@ -164,7 +164,7 @@ namespace ISI.Extensions.VisualStudio
 							bool tryGetNugetPackageKey(string package, out ISI.Extensions.Nuget.NugetPackageKey nugetPackageKey)
 							{
 								logger.LogInformation($"  tryGetNugetPackageKey for {package}");
-								
+
 								if (solutionIgnorePackageIds.Contains(package))
 								{
 									nugetPackageKey = null;
@@ -179,7 +179,7 @@ namespace ISI.Extensions.VisualStudio
 
 								using (NugetApi.GetNugetLock(new()
 								{
-									AddToLog = description => logger.LogInformation(description),
+									AddToLog = (logEntryLevel, description) => logger.LogInformation(description),
 								}).Lock)
 								{
 									addNugetPackageKey(package);
@@ -306,7 +306,7 @@ namespace ISI.Extensions.VisualStudio
 									{
 										Attributes = System.IO.FileAttributes.Normal
 									};
-									
+
 									foreach (var fileSystemInfo in directoryInfo.GetFileSystemInfos("*", System.IO.SearchOption.AllDirectories))
 									{
 										fileSystemInfo.Attributes = System.IO.FileAttributes.Normal;
@@ -324,7 +324,7 @@ namespace ISI.Extensions.VisualStudio
 							{
 								FullNames = dirtyFileNames,
 								LogMessage = "update nuget packages",
-								AddToLog = description => logger.LogInformation(description),
+								AddToLog = (logEntryLevel, description) => logger.LogInformation(description),
 							}).Success)
 							{
 								var exception = new Exception(string.Format("Error committing \"{0}\"", solutionDetails.RootSourceDirectory));
@@ -356,7 +356,7 @@ namespace ISI.Extensions.VisualStudio
 										(ParameterName: "NugetPackOutputDirectory", ParameterValue: nugetPackOutputDirectory)
 									},
 									UseShell = false,
-									AddToLog = description => logger.LogInformation(description),
+									AddToLog = (logEntryLevel, description) => logger.LogInformation(description),
 								});
 
 								if (executeBuildTargetResponse.Success)

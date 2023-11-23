@@ -125,7 +125,7 @@ namespace ISI.Extensions.Tests
 						{
 							FullNames = dirtyFileNames,
 							LogMessage = "update connection string name XXXXXXXXXXXXXXXXXXXXX to XXXXXXXXXXXXXXXXXXXXX.XXXXXXXXXXXXXXXXXXXXX",
-							AddToLog = log => commitLog.AppendLine(log),
+							AddToLog = (logEntryLevel, description) => commitLog.AppendLine(description),
 						}).Success)
 						{
 							var exception = new Exception(string.Format("Error committing \"{0}\"", solutionDetails.RootSourceDirectory));

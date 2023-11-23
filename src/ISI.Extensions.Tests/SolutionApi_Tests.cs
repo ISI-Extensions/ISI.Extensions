@@ -459,7 +459,7 @@ namespace ISI.Extensions.Tests
 						{
 							FullNames = dirtyFileNames,
 							LogMessage = "update copyright year",
-							AddToLog = log => commitLog.AppendLine(log),
+							AddToLog = (logEntryLevel, description) => commitLog.AppendLine(description),
 						}).Success)
 						{
 							var exception = new Exception(string.Format("Error committing \"{0}\"", solutionDetails.RootSourceDirectory));
@@ -562,7 +562,7 @@ namespace ISI.Extensions.Tests
 						{
 							FullNames = dirtyFileNames,
 							LogMessage = "pin Cake.FileHelpers version",
-							AddToLog = log => commitLog.AppendLine(log),
+							AddToLog = (logEntryLevel, log) => commitLog.AppendLine(log),
 						}).Success)
 						{
 							var exception = new Exception(string.Format("Error commiting \"{0}\"", solutionDetails.RootSourceDirectory));
@@ -643,7 +643,7 @@ namespace ISI.Extensions.Tests
 						{
 							FullNames = dirtyFileNames,
 							LogMessage = "delete .vsext file",
-							AddToLog = log => commitLog.AppendLine(log),
+							AddToLog = (logEntryLevel, description) => commitLog.AppendLine(description),
 						}).Success)
 						{
 							var exception = new Exception(string.Format("Error commiting \"{0}\"", solutionDetails.RootSourceDirectory));
@@ -727,7 +727,7 @@ namespace ISI.Extensions.Tests
 						{
 							FullNames = dirtyFileNames,
 							LogMessage = "change icon file",
-							AddToLog = log => commitLog.AppendLine(log),
+							AddToLog = (logEntryLevel, description) => commitLog.AppendLine(description),
 						}).Success)
 						{
 							if (commitLog.ToString().IndexOf("Your branch is up to date with 'origin/main'.", StringComparison.InvariantCultureIgnoreCase) < 0)

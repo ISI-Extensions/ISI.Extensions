@@ -352,18 +352,47 @@ namespace ISI.Extensions.Tests
 		{
 			var jiraApi = new ISI.Extensions.Jira.JiraApi();
 			
-			var listIssueCommentsResponse = jiraApi.ListIssueComments(new()
+			var issue = jiraApi.GetIssues(new()
 			{
 				JiraApiUrl = JiraUrl,
 				JiraApiUserName = JiraApiUserName,
 				JiraApiToken = JiraApiToken,
 				ImpersonatedUser = "rmuth",
-				IssueIdOrKey = "CD-5310",
-			});
+				IssueIdOrKeys = new [] { "CD-5310" },
+			}).Issues.NullCheckedFirstOrDefault();
 
+			var comments = jiraApi.ListIssueComments(new()
+				{
+					JiraApiUrl = JiraUrl,
+					JiraApiUserName = JiraApiUserName,
+					JiraApiToken = JiraApiToken,
+					ImpersonatedUser = "rmuth",
+					IssueIdOrKey = "CD-5310",
+				}).Comments
+				.NullCheckedWhere(comment => comment.Body.IndexOf("*Repository*:", StringComparison.InvariantCultureIgnoreCase) >= 0)
+				.NullCheckedWhere(comment => comment.Body.IndexOf("*Revision*:", StringComparison.InvariantCultureIgnoreCase) >= 0)
+				.ToNullCheckedArray();
 
+			var message = new StringBuilder();
 
+			//message.AppendLine($"@here Please CR <{issue.IssueUrl}|{issue.IssueKey}>");
+			message.AppendLine($"@here Please CR [{issue.IssueKey}]({issue.IssueUrl})");
 
+			foreach (var comment in comments.OrderBy(comment => comment.Created))
+			{
+				var revisionLine = comment.Body.Split(new[] { '\r', '\n' }).NullCheckedFirstOrDefault(l => l.StartsWith("*Revision*:", StringComparison.InvariantCultureIgnoreCase));
+
+				if (!string.IsNullOrWhiteSpace(revisionLine))
+				{
+					var revisionLinePieces = revisionLine.Split(new[] { '[', '|', ']' }, StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).ToArray();
+
+					var revision = revisionLinePieces[1].Trim('r');
+					var revisionUrl = revisionLinePieces[2].Trim();
+
+					//message.AppendLine($"<{revisionUrl}|{revision}>");
+					message.AppendLine($"[{revision}]({revisionUrl})");
+				}
+			}
 
 
 

@@ -99,7 +99,7 @@ namespace ISI.Extensions
 		}
 		public void AddToLog(string logEntry, System.Exception exception)
 		{
-			AddToLog(DateTimeStamper.CurrentDateTime(), string.Format("Error: {1}{0}{2}", Environment.NewLine, logEntry, exception.ErrorMessageFormatted("  ")));
+			AddToLog(DateTimeStamper.CurrentDateTime(), ISI.Extensions.StatusTrackers.LogEntryLevel.Error, string.Format("Error: {1}{0}{2}", Environment.NewLine, logEntry, exception.ErrorMessageFormatted("  ")));
 		}
 		public void AddToLog(string logEntry)
 		{
@@ -107,11 +107,16 @@ namespace ISI.Extensions
 		}
 		public void AddToLog(DateTime dateTimeStamp, string logEntry)
 		{
+			AddToLog(dateTimeStamp, ISI.Extensions.StatusTrackers.LogEntryLevel.Information, logEntry);
+		}
+		public void AddToLog(DateTime dateTimeStamp, ISI.Extensions.StatusTrackers.LogEntryLevel logEntryLevel, string logEntry)
+		{
 			AddToLog(new IStatusTrackerLogEntry[]
 			{
 				new ISI.Extensions.StatusTrackers.StatusTrackerLogEntry()
 				{
 					DateTimeStamp = dateTimeStamp,
+					LogEntryLevel = logEntryLevel,
 					Description = logEntry,
 				}
 			});

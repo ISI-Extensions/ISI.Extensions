@@ -177,10 +177,10 @@ namespace ISI.Extensions.VisualStudio.Forms
 						FullName = SolutionDetails.RootSourceDirectory,
 						IncludeExternals = true,
 
-						AddToLog = value =>
+						AddToLog = (logEntryLevel, description) =>
 						{
-							UpdateSolutionResponse.AppendLine(value);
-							Logger.LogInformation(value);
+							UpdateSolutionResponse.AppendLine(description);
+							Logger.LogInformation(description);
 						},
 					}).Success ? 0 : 1;
 
@@ -243,10 +243,10 @@ namespace ISI.Extensions.VisualStudio.Forms
 							IgnorePackageIds = NugetApi.GetNugetSettings(new ())?.NugetSettings?.UpdateNugetPackages?.IgnorePackageIds,
 							NugetPackageKeys = NugetPackageKeys,
 							UpsertAssemblyRedirectsNugetPackageKeys = upsertAssemblyRedirectsNugetPackageKeys,
-							AddToLog = value =>
+							AddToLog = (logEntryLevel, description) =>
 							{
-								Logger.LogInformation(value);
-								UpgradeNugetPackagesResponse.AppendLine(value);
+								Logger.LogInformation(description);
+								UpgradeNugetPackagesResponse.AppendLine(description);
 							},
 						});
 					
@@ -309,10 +309,10 @@ namespace ISI.Extensions.VisualStudio.Forms
 						Solution = SolutionDetails.SolutionFullName,
 						MSBuildExe = MSBuildApi.GetMSBuildExeFullName(new()).MSBuildExeFullName,
 
-						AddToLog = value =>
+						AddToLog = (logEntryLevel, description) =>
 						{
-							Logger.LogInformation(value);
-							RestoreNugetPackagesResponse.AppendLine(value);
+							Logger.LogInformation(description);
+							RestoreNugetPackagesResponse.AppendLine(description);
 						},
 					}).Success ? 0 : 1;
 
@@ -366,10 +366,10 @@ namespace ISI.Extensions.VisualStudio.Forms
 						FullName = SolutionDetails.SolutionFullName,
 						MsBuildPlatform = ActiveBuildConfiguration.MSBuildPlatform,
 
-						AddToLog = value =>
+						AddToLog = (logEntryLevel, description) =>
 						{
-							Logger.LogInformation(value);
-							BuildSolutionResponse.AppendLine(value);
+							Logger.LogInformation(description);
+							BuildSolutionResponse.AppendLine(description);
 						},
 					};
 

@@ -105,6 +105,10 @@ namespace ISI.Extensions
 		{
 			AddToLog(DateTimeStamper.CurrentDateTime(), logEntry);
 		}
+		public void AddToLog(ISI.Extensions.StatusTrackers.LogEntryLevel logEntryLevel, string logEntry)
+		{
+			AddToLog(DateTimeStamper.CurrentDateTime(), logEntryLevel, logEntry);
+		}
 		public void AddToLog(DateTime dateTimeStamp, string logEntry)
 		{
 			AddToLog(dateTimeStamp, ISI.Extensions.StatusTrackers.LogEntryLevel.Information, logEntry);

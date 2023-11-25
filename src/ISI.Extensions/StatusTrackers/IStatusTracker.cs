@@ -52,6 +52,7 @@ namespace ISI.Extensions
 		void AddToLog(System.Exception exception);
 		void AddToLog(string logEntry, System.Exception exception);
 		void AddToLog(string logEntry);
+		void AddToLog(ISI.Extensions.StatusTrackers.LogEntryLevel logEntryLevel, string logEntry);
 		void AddToLog(DateTime dateTimeStamp, ISI.Extensions.StatusTrackers.LogEntryLevel logEntryLevel, string logEntry);
 		void AddToLog(DateTime dateTimeStamp, string logEntry);
 		void AddToLog(IEnumerable<IStatusTrackerLogEntry> logEntries);

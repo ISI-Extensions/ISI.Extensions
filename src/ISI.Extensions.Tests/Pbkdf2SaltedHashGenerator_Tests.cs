@@ -37,9 +37,9 @@ namespace ISI.Extensions.Tests
 
 			var hashedPassword = saltedHashGenerator.GeneratedHashedValue(goodPassword, passwordSalt);
 
-			Assert.IsTrue(saltedHashGenerator.ValidateValue(goodPassword, passwordSalt, hashedPassword));
+			Assert.That(saltedHashGenerator.ValidateValue(goodPassword, passwordSalt, hashedPassword));
 
-			Assert.IsFalse(saltedHashGenerator.ValidateValue(badPassword, passwordSalt, hashedPassword));
+			Assert.That(!saltedHashGenerator.ValidateValue(badPassword, passwordSalt, hashedPassword));
 		}
 	}
 }

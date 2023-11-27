@@ -83,13 +83,13 @@ namespace ISI.Extensions.Tests.Repository
 
 			var testContact = recordManager.GetRecordAsync(contactV1.ContactUuid).GetAwaiter().GetResult();
 
-			Assert.AreEqual(contactV1.ContactUuid, testContact.ContactUuid);
+			Assert.That(contactV1.ContactUuid == testContact.ContactUuid);
 
 			var noContacts = recordManager.GetRecordsAsync(Array.Empty<Guid>()).GetAwaiter().GetResult();
 
-			Assert.True(noContacts != null);
+			Assert.That(noContacts != null);
 
-			Assert.False(noContacts.Any());
+			Assert.That(!noContacts.Any());
 		}
 
 		[Test]
@@ -123,13 +123,13 @@ namespace ISI.Extensions.Tests.Repository
 
 			var testContact = recordManager.GetRecordAsync(contactV2.ContactUuid).GetAwaiter().GetResult();
 
-			Assert.AreEqual(contactV2.ContactUuid, testContact.ContactUuid);
+			Assert.That(contactV2.ContactUuid == testContact.ContactUuid);
 
 			var noContacts = recordManager.GetRecordsAsync(Array.Empty<Guid>()).GetAwaiter().GetResult();
 
-			Assert.True(noContacts != null);
+			Assert.That(noContacts != null);
 
-			Assert.False(noContacts.Any());
+			Assert.That(!noContacts.Any());
 		}
 
 		[Test]

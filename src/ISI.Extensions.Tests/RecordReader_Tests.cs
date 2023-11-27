@@ -36,7 +36,7 @@ namespace ISI.Extensions.Tests
 
 			var values = parser.Read(context, data);
 
-			Assert.True(string.Equals(data, values.Source, StringComparison.Ordinal));
+			Assert.That(string.Equals(data, values.Source, StringComparison.Ordinal));
 		}
 
 		[Test]

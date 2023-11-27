@@ -43,14 +43,14 @@ namespace ISI.Extensions.Tests
 
 				var fileSystemPathFile = ISI.Extensions.FileSystem.GetFileSystemPathFile(attributedFullPath);
 
-				Assert.IsTrue(fileSystemPathFile is ISI.Extensions.SmbFileSystem.SmbFileSystemPathFile);
-				Assert.AreEqual(fileSystemPathFile.Server, Server);
-				Assert.AreEqual(fileSystemPathFile.UserName, UserName);
-				Assert.AreEqual(fileSystemPathFile.Password, Password);
-				Assert.AreEqual(fileSystemPathFile.Directory, directory);
-				Assert.AreEqual(fileSystemPathFile.PathName, pathName);
-				Assert.AreEqual(fileSystemPathFile.FullPath(), fullPath);
-				Assert.AreEqual(fileSystemPathFile.AttributedFullPath(), attributedFullPath);
+				Assert.That(fileSystemPathFile is ISI.Extensions.SmbFileSystem.SmbFileSystemPathFile);
+				Assert.That(string.Equals(fileSystemPathFile.Server, Server, StringComparison.Ordinal));
+				Assert.That(string.Equals(fileSystemPathFile.UserName, UserName, StringComparison.Ordinal));
+				Assert.That(string.Equals(fileSystemPathFile.Password, Password, StringComparison.Ordinal));
+				Assert.That(string.Equals(fileSystemPathFile.Directory, directory, StringComparison.Ordinal));
+				Assert.That(string.Equals(fileSystemPathFile.PathName, pathName, StringComparison.Ordinal));
+				Assert.That(string.Equals(fileSystemPathFile.FullPath(), fullPath, StringComparison.Ordinal));
+				Assert.That(string.Equals(fileSystemPathFile.AttributedFullPath(), attributedFullPath, StringComparison.Ordinal));
 			}
 
 			{
@@ -61,12 +61,12 @@ namespace ISI.Extensions.Tests
 
 				var fileSystemPathFile = ISI.Extensions.FileSystem.GetFileSystemPathFile(attributedFullPath);
 
-				Assert.IsTrue(fileSystemPathFile is ISI.Extensions.SmbFileSystem.SmbFileSystemPathFile);
-				Assert.AreEqual((fileSystemPathFile as ISI.Extensions.SmbFileSystem.ISmbFileSystemPath).Drive, drive);
-				Assert.AreEqual(fileSystemPathFile.Directory, directory);
-				Assert.AreEqual(fileSystemPathFile.PathName, pathName);
-				Assert.AreEqual(fileSystemPathFile.FullPath(), fullPath);
-				Assert.AreEqual(fileSystemPathFile.AttributedFullPath(), attributedFullPath);
+				Assert.That(fileSystemPathFile is ISI.Extensions.SmbFileSystem.SmbFileSystemPathFile);
+				Assert.That(string.Equals((fileSystemPathFile as ISI.Extensions.SmbFileSystem.ISmbFileSystemPath).Drive, drive, StringComparison.Ordinal));
+				Assert.That(string.Equals(fileSystemPathFile.Directory, directory, StringComparison.Ordinal));
+				Assert.That(string.Equals(fileSystemPathFile.PathName, pathName, StringComparison.Ordinal));
+				Assert.That(string.Equals(fileSystemPathFile.FullPath(), fullPath, StringComparison.Ordinal));
+				Assert.That(string.Equals(fileSystemPathFile.AttributedFullPath(), attributedFullPath, StringComparison.Ordinal));
 			}
 		}
 
@@ -81,14 +81,14 @@ namespace ISI.Extensions.Tests
 
 			var fileSystemPathDirectory = ISI.Extensions.FileSystem.GetFileSystemPathDirectory(attributedFullPath);
 
-			Assert.IsTrue(fileSystemPathDirectory is ISI.Extensions.SmbFileSystem.SmbFileSystemPathDirectory);
-			Assert.AreEqual(fileSystemPathDirectory.Server, Server);
-			Assert.AreEqual(fileSystemPathDirectory.UserName, UserName);
-			Assert.AreEqual(fileSystemPathDirectory.Password, Password);
-			Assert.AreEqual(fileSystemPathDirectory.Directory, directory);
-			Assert.AreEqual(fileSystemPathDirectory.PathName, pathName);
-			Assert.AreEqual(fileSystemPathDirectory.FullPath(), fullPath);
-			Assert.AreEqual(fileSystemPathDirectory.AttributedFullPath(), attributedFullPath);
+			Assert.That(fileSystemPathDirectory is ISI.Extensions.SmbFileSystem.SmbFileSystemPathDirectory);
+			Assert.That(string.Equals(fileSystemPathDirectory.Server, Server, StringComparison.Ordinal));
+			Assert.That(string.Equals(fileSystemPathDirectory.UserName, UserName, StringComparison.Ordinal));
+			Assert.That(string.Equals(fileSystemPathDirectory.Password, Password, StringComparison.Ordinal));
+			Assert.That(string.Equals(fileSystemPathDirectory.Directory, directory, StringComparison.Ordinal));
+			Assert.That(string.Equals(fileSystemPathDirectory.PathName, pathName, StringComparison.Ordinal));
+			Assert.That(string.Equals(fileSystemPathDirectory.FullPath(), fullPath, StringComparison.Ordinal));
+			Assert.That(string.Equals(fileSystemPathDirectory.AttributedFullPath(), attributedFullPath, StringComparison.Ordinal));
 		}
 		
 		[Test]
@@ -104,14 +104,14 @@ namespace ISI.Extensions.Tests
 
 			var fileSystemPathDirectory = ISI.Extensions.FileSystem.GetFileSystemPathFile(attributedFullPath).GetParentFileSystemPathDirectory();
 
-			Assert.IsTrue(fileSystemPathDirectory is ISI.Extensions.SmbFileSystem.SmbFileSystemPathDirectory);
-			Assert.AreEqual(fileSystemPathDirectory.Server, Server);
-			Assert.AreEqual(fileSystemPathDirectory.UserName, UserName);
-			Assert.AreEqual(fileSystemPathDirectory.Password, Password);
-			Assert.AreEqual(fileSystemPathDirectory.Directory, rootDirectory);
-			Assert.AreEqual(fileSystemPathDirectory.PathName, localDirectory);
-			Assert.AreEqual(fileSystemPathDirectory.FullPath(), $"{rootDirectory}\\{localDirectory}");
-			Assert.AreEqual(fileSystemPathDirectory.AttributedFullPath(), $"smb:\\\\{UserName}:{Password}@{Server}\\{rootDirectory}\\{localDirectory}");
+			Assert.That(fileSystemPathDirectory is ISI.Extensions.SmbFileSystem.SmbFileSystemPathDirectory);
+			Assert.That(string.Equals(fileSystemPathDirectory.Server, Server, StringComparison.Ordinal));
+			Assert.That(string.Equals(fileSystemPathDirectory.UserName, UserName, StringComparison.Ordinal));
+			Assert.That(string.Equals(fileSystemPathDirectory.Password, Password, StringComparison.Ordinal));
+			Assert.That(string.Equals(fileSystemPathDirectory.Directory, rootDirectory, StringComparison.Ordinal));
+			Assert.That(string.Equals(fileSystemPathDirectory.PathName, localDirectory, StringComparison.Ordinal));
+			Assert.That(string.Equals(fileSystemPathDirectory.FullPath(), $"{rootDirectory}\\{localDirectory}", StringComparison.Ordinal));
+			Assert.That(string.Equals(fileSystemPathDirectory.AttributedFullPath(), $"smb:\\\\{UserName}:{Password}@{Server}\\{rootDirectory}\\{localDirectory}", StringComparison.Ordinal));
 		}
 
 		[Test]
@@ -129,7 +129,7 @@ namespace ISI.Extensions.Tests
 		{
 			var attributedFullPath = $"smb:\\{UserName}:{Password}@{Server}/setup.exe";
 
-			Assert.IsTrue(ISI.Extensions.FileSystem.FileExists(attributedFullPath));
+			Assert.That(ISI.Extensions.FileSystem.FileExists(attributedFullPath));
 		}
 
 		[Test]
@@ -137,7 +137,7 @@ namespace ISI.Extensions.Tests
 		{
 			var attributedFullPath = $"smb:\\{UserName}:{Password}@{Server}/support";
 
-			Assert.IsTrue(ISI.Extensions.FileSystem.DirectoryExists(attributedFullPath));
+			Assert.That(ISI.Extensions.FileSystem.DirectoryExists(attributedFullPath));
 		}
 
 		[Test]
@@ -147,11 +147,11 @@ namespace ISI.Extensions.Tests
 
 			ISI.Extensions.FileSystem.CreateDirectory(attributedFullPath);
 
-			Assert.IsTrue(ISI.Extensions.FileSystem.DirectoryExists(attributedFullPath));
+			Assert.That(ISI.Extensions.FileSystem.DirectoryExists(attributedFullPath));
 
 			ISI.Extensions.FileSystem.RemoveDirectory(attributedFullPath);
 
-			Assert.IsFalse(ISI.Extensions.FileSystem.DirectoryExists(attributedFullPath));
+			Assert.That(!ISI.Extensions.FileSystem.DirectoryExists(attributedFullPath));
 		}
 
 		[Test]
@@ -179,7 +179,7 @@ namespace ISI.Extensions.Tests
 				}
 			}
 
-			Assert.IsTrue(ISI.Extensions.FileSystem.FileExists(attributedFullPath));
+			Assert.That(ISI.Extensions.FileSystem.FileExists(attributedFullPath));
 
 			using (var stream = new System.IO.MemoryStream())
 			{
@@ -193,12 +193,12 @@ namespace ISI.Extensions.Tests
 
 				var readContent = stream.TextReadToEnd();
 
-				Assert.AreEqual(content, readContent);
+				Assert.That(string.Equals(content, readContent, StringComparison.Ordinal));
 			}
 
 			ISI.Extensions.FileSystem.RemoveFile(attributedFullPath);
 
-			Assert.IsFalse(ISI.Extensions.FileSystem.FileExists(attributedFullPath));
+			Assert.That(!ISI.Extensions.FileSystem.FileExists(attributedFullPath));
 		}
 	}
 }

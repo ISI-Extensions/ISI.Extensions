@@ -264,8 +264,8 @@ namespace ISI.Extensions.Tests.Repository
 				}
 			}).GetAwaiter().GetResult().NullCheckedFirstOrDefault();
 
-			Assert.AreEqual(testContact.Package, "ISI.Extensions.VisualStudio");
-			Assert.AreEqual(testContact.Version, "10.0.8464.5254");
+			Assert.That(string.Equals(testContact.Package, "ISI.Extensions.VisualStudio", StringComparison.Ordinal));
+			Assert.That(string.Equals(testContact.Version, "10.0.8464.5254", StringComparison.Ordinal));
 		}
 
 
@@ -295,13 +295,13 @@ namespace ISI.Extensions.Tests.Repository
 
 			var testContact = recordManager.GetRecordAsync(contact.ContactUuid).GetAwaiter().GetResult();
 
-			Assert.AreEqual(contact.ContactUuid, testContact.ContactUuid);
+			Assert.That(contact.ContactUuid == testContact.ContactUuid);
 
 			var noContacts = recordManager.GetRecordsAsync(Array.Empty<Guid>()).GetAwaiter().GetResult();
 
-			Assert.True(noContacts != null);
+			Assert.That(noContacts != null);
 
-			Assert.False(noContacts.Any());
+			Assert.That(!noContacts.Any());
 		}
 
 		[Test]
@@ -323,13 +323,13 @@ namespace ISI.Extensions.Tests.Repository
 
 			var testContact = recordManager.FindRecordsByFirstNameAsync(new[] { firstName }).GetAwaiter().GetResult().NullCheckedFirstOrDefault();
 
-			Assert.AreEqual(contact.ContactUuid, testContact.ContactUuid);
+			Assert.That(contact.ContactUuid == testContact.ContactUuid);
 
 			var noContacts = recordManager.GetRecordsAsync(Array.Empty<Guid>()).GetAwaiter().GetResult();
 
-			Assert.True(noContacts != null);
+			Assert.That(noContacts != null);
 
-			Assert.False(noContacts.Any());
+			Assert.That(!noContacts.Any());
 		}
 
 		[Test]

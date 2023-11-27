@@ -30,7 +30,7 @@ namespace ISI.Extensions.Tests
 		{
 			var dateTimeStampVersion = new ISI.Extensions.Scm.DateTimeStampVersion();
 
-			Assert.IsFalse(dateTimeStampVersion?.HasValue ?? false);
+			Assert.That(!dateTimeStampVersion?.HasValue ?? false);
 		}
 	}
 }

@@ -53,7 +53,7 @@ namespace ISI.Extensions.Tests
 			var classTransient2 = serviceProvider.GetService<IClassTransient>();
 			classTransient2.Value = Guid.NewGuid().ToString("D");
 
-			Assert.IsFalse(string.Equals(classTransient1.Value, classTransient2.Value, StringComparison.CurrentCulture));
+			Assert.That(!string.Equals(classTransient1.Value, classTransient2.Value, StringComparison.CurrentCulture));
 
 
 
@@ -64,7 +64,7 @@ namespace ISI.Extensions.Tests
 
 			var classSingleton2 = serviceProvider.GetService<IClassSingleton>();
 
-			Assert.IsTrue(string.Equals(classSingleton1.Value, classSingleton2.Value, StringComparison.CurrentCulture));
+			Assert.That(string.Equals(classSingleton1.Value, classSingleton2.Value, StringComparison.CurrentCulture));
 
 
 
@@ -77,13 +77,13 @@ namespace ISI.Extensions.Tests
 
 				var classScopedA2 = serviceScopeA.ServiceProvider.GetService<IClassScoped>();
 
-				Assert.IsTrue(string.Equals(classScopedA1.Value, classScopedA2.Value, StringComparison.CurrentCulture));
+				Assert.That(string.Equals(classScopedA1.Value, classScopedA2.Value, StringComparison.CurrentCulture));
 
 				using (var serviceScopeB = serviceProvider.CreateScope())
 				{
 					var classScopedB1 = serviceScopeB.ServiceProvider.GetService<IClassScoped>();
 
-					Assert.IsFalse(string.Equals(classScopedA1.Value, classScopedB1.Value, StringComparison.CurrentCulture));
+					Assert.That(!string.Equals(classScopedA1.Value, classScopedB1.Value, StringComparison.CurrentCulture));
 				}
 			}
 
@@ -92,8 +92,8 @@ namespace ISI.Extensions.Tests
 
 			var classComplex = serviceProvider.GetService<IClassComplex>();
 
-			Assert.IsFalse(string.Equals(classTransient1.Value, classComplex.ClassTransient.Value, StringComparison.CurrentCulture));
-			Assert.IsTrue(string.Equals(classSingleton1.Value, classComplex.ClassSingleton.Value, StringComparison.CurrentCulture));
+			Assert.That(!string.Equals(classTransient1.Value, classComplex.ClassTransient.Value, StringComparison.CurrentCulture));
+			Assert.That(string.Equals(classSingleton1.Value, classComplex.ClassSingleton.Value, StringComparison.CurrentCulture));
 
 
 			serviceProvider.Register(typeof(IGeneric<IClassSingleton>), typeof(ClassGeneric<IClassSingleton>), Microsoft.Extensions.DependencyInjection.ServiceLifetime.Singleton);

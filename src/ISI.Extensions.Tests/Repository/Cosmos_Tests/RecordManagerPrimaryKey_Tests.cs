@@ -84,13 +84,13 @@ namespace ISI.Extensions.Tests.Repository
 
 			var testContact = recordManager.GetRecordAsync(contact.ContactUuid).GetAwaiter().GetResult();
 
-			Assert.AreEqual(contact.ContactUuid, testContact.ContactUuid);
+			Assert.That(contact.ContactUuid == testContact.ContactUuid);
 
 			var noContacts = recordManager.GetRecordsAsync(Array.Empty<Guid>()).GetAwaiter().GetResult();
 
-			Assert.True(noContacts != null);
+			Assert.That(noContacts != null);
 
-			Assert.False(noContacts.Any());
+			Assert.That(!noContacts.Any());
 		}
 
 		[Test]

@@ -16,6 +16,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
@@ -73,9 +74,19 @@ namespace ISI.Extensions.Columns
 			ColumnNames = (columnNames ?? new[] { propertyInfo.Name }).ToArray();
 			var columnType = typeof(TProperty);
 			var isNullable = (columnType.IsGenericType && (columnType.GetGenericTypeDefinition() == typeof(Nullable<>)));
-			GetValue = record => (TProperty)propertyInfo.GetValue(record);   // property.Compile();
-			SetValue = (record, value) => propertyInfo.SetValue(record, value);
 
+			var propertyValueGetterSetterAttribute = propertyInfo.GetCustomAttribute<ISI.Extensions.Extensions.Converters.PropertyValueGetterSetterAttribute>(true);
+
+			if (propertyValueGetterSetterAttribute != null)
+			{
+				GetValue = record => (TProperty)propertyValueGetterSetterAttribute.GetPropertyValue(record);
+			}
+			else
+			{
+				GetValue = record => (TProperty)propertyInfo.GetValue(record);   // property.Compile();
+			}
+
+			SetValue = (record, value) => propertyInfo.SetValue(record, value);
 
 			IsNull = record =>
 			{
@@ -210,6 +221,25 @@ namespace ISI.Extensions.Columns
 			string columnName)
 			: this(columnName, record => true, record => null)
 		{
+		}
+
+		public Column(
+			ISI.Extensions.DataContract.DataMemberPropertyInfo property)
+		{
+			ColumnName = property.PropertyName;
+
+			IsNull = record => (property.PropertyInfo.GetValue(record) == null);
+
+			var propertyValueGetterSetterAttribute = property.PropertyInfo.GetCustomAttribute<ISI.Extensions.Extensions.Converters.PropertyValueGetterSetterAttribute>(true);
+
+			if (propertyValueGetterSetterAttribute != null)
+			{
+				GetValue = propertyValueGetterSetterAttribute.GetPropertyValue;
+			}
+			else
+			{
+				GetValue = property.PropertyInfo.GetValue;
+			}
 		}
 
 		public Column(

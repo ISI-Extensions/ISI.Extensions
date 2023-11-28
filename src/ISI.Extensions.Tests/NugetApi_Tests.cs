@@ -87,11 +87,11 @@ namespace ISI.Extensions.Tests
 
 			nugetApi.NupkgPack(new()
 			{
-				NuspecFullName = @"F:\ISI\ISI.FrameWork\src\ISI.Scheduler\ISI.Scheduler.Management.Rest\ISI.Scheduler.Management.Rest.nuspec",
-				OutputDirectory = @"F:\ISI\ISI.FrameWork\Nuget",
+				NuspecFullName = @"F:\ISI\Clients\West River Systems\wrs.extensions\src\WRS.Extensions.Testing\WRS.Extensions.Testing.nuspec",
+				OutputDirectory = @"F:\ISI\Clients\West River Systems\wrs.extensions\Nuget",
 				IncludeSymbols = false,
 				IncludeSource = false,
-				WorkingDirectory = @"F:\ISI\ISI.FrameWork\src",
+				WorkingDirectory = @"F:\ISI\Clients\West River Systems\wrs.extensions\src",
 			});
 		}
 

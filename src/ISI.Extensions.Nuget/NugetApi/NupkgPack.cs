@@ -37,6 +37,13 @@ namespace ISI.Extensions.Nuget
 			//Logger.LogInformation(string.Format("  WorkingDirectory = \"{0}\"", request.WorkingDirectory));
 			//Logger.LogInformation(string.Format("  OutputDirectory = \"{0}\"", request.OutputDirectory));
 
+			var nuspecXml = System.Xml.Linq.XElement.Load(request.NuspecFullName);
+			var metadataXml = nuspecXml.GetElementByLocalName("metadata");
+			var package = metadataXml.GetElementByLocalName("id")?.Value;
+			var version = metadataXml.GetElementByLocalName("version")?.Value;
+			var nupkgFileName = $"{package}.{version}.nupkg";
+			var nupkgFullName = System.IO.Path.Combine(request.OutputDirectory, nupkgFileName);
+			
 			if (string.IsNullOrWhiteSpace(request.OutputDirectory))
 			{
 				request.OutputDirectory = System.IO.Path.GetDirectoryName(request.NuspecFullName);
@@ -61,7 +68,7 @@ namespace ISI.Extensions.Nuget
 				}
 			}
 
-			if (useLegacyNuget)
+			void legacyNugetPack()
 			{
 				var arguments = new List<string>();
 				arguments.Add("pack");
@@ -89,6 +96,11 @@ namespace ISI.Extensions.Nuget
 					ProcessExeFullName = GetNugetExeFullName(new()).NugetExeFullName,
 					Arguments = arguments,
 				});
+			}
+
+			if (useLegacyNuget)
+			{
+				legacyNugetPack();
 			}
 			else
 			{
@@ -119,9 +131,17 @@ namespace ISI.Extensions.Nuget
 					ProcessExeFullName = "dotnet",
 					Arguments = arguments,
 				});
+
+				if (!System.IO.File.Exists(nupkgFullName))
+				{
+					legacyNugetPack();
+				}
 			}
 
-			Logger.LogInformation(string.Format("Packed \"{0}\"", System.IO.Path.GetFileName(request.NuspecFullName)));
+			if (System.IO.File.Exists(nupkgFullName))
+			{
+				Logger.LogInformation(string.Format("Packed \"{0}\"", System.IO.Path.GetFileName(request.NuspecFullName)));
+			}
 
 			return response;
 		}

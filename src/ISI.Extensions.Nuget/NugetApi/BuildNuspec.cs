@@ -33,7 +33,7 @@ namespace ISI.Extensions.Nuget
 		{
 			var response = new DTOs.BuildNuspecResponse();
 
-			var package = new ISI.Extensions.Nuget.SerializableModels.package()
+			var package = new SerializableDTOs.package()
 			{
 				metadata = new(),
 			};
@@ -68,7 +68,7 @@ namespace ISI.Extensions.Nuget
 			{
 				package.metadata.licenseUrl = request.Nuspec.LicenseUri.ToString();
 			}
-			package.metadata.license = request.Nuspec.License.NullCheckedConvert(license => new ISI.Extensions.Nuget.SerializableModels.packageMetadataLicense()
+			package.metadata.license = request.Nuspec.License.NullCheckedConvert(license => new SerializableDTOs.packageMetadataLicense()
 			{
 				type = license.LicenseType,
 				version = license.Version,
@@ -85,7 +85,7 @@ namespace ISI.Extensions.Nuget
 
 			package.metadata.tags = string.Join(", ", request.Nuspec.Tags.ToNullCheckedArray(NullCheckCollectionResult.Empty));
 
-			package.metadata.repository = request.Nuspec.Repository.NullCheckedConvert(repository => new ISI.Extensions.Nuget.SerializableModels.packageMetadataRepository()
+			package.metadata.repository = request.Nuspec.Repository.NullCheckedConvert(repository => new SerializableDTOs.packageMetadataRepository()
 			{
 				type = repository.RepositoryType,
 				url = repository.RepositoryUri.ToString(),
@@ -93,20 +93,20 @@ namespace ISI.Extensions.Nuget
 				commit = repository.Commit,
 			});
 
-			package.metadata.packageTypes = request.Nuspec.PackageTypes.ToNullCheckedArray(packageType => new ISI.Extensions.Nuget.SerializableModels.packageMetadataPackageType()
+			package.metadata.packageTypes = request.Nuspec.PackageTypes.ToNullCheckedArray(packageType => new SerializableDTOs.packageMetadataPackageType()
 			{
 				name = packageType.Name,
 				version = packageType.Version,
 			}, NullCheckCollectionResult.ReturnNull);
 
-			package.metadata.dependencies = request.Nuspec.Dependencies.NullCheckedConvert(dependencies => new ISI.Extensions.Nuget.SerializableModels.packageMetadataDependencies()
+			package.metadata.dependencies = request.Nuspec.Dependencies.NullCheckedConvert(dependencies => new SerializableDTOs.packageMetadataDependencies()
 			{
 				Items = dependencies.ToNullCheckedArray(dependency =>
 				{
 					switch (dependency)
 					{
 						case NuspecDependency nuspecDependency:
-							return new ISI.Extensions.Nuget.SerializableModels.dependency()
+							return new SerializableDTOs.dependency()
 							{
 								id = nuspecDependency.Package,
 								version = nuspecDependency.Version,
@@ -115,10 +115,10 @@ namespace ISI.Extensions.Nuget
 							} as object;
 
 						case NuspecDependencyGroup nuspecDependencyGroup:
-							return new ISI.Extensions.Nuget.SerializableModels.dependencyGroup()
+							return new SerializableDTOs.dependencyGroup()
 							{
 								targetFramework = nuspecDependencyGroup.TargetFramework,
-								dependency = nuspecDependencyGroup.Dependencies.ToNullCheckedArray(d => new ISI.Extensions.Nuget.SerializableModels.dependency()
+								dependency = nuspecDependencyGroup.Dependencies.ToNullCheckedArray(d => new SerializableDTOs.dependency()
 								{
 									id = d.Package,
 									version = d.Version,
@@ -133,7 +133,7 @@ namespace ISI.Extensions.Nuget
 				}, NullCheckCollectionResult.ReturnNull)
 			});
 
-			package.files = request.Nuspec.Files.ToNullCheckedArray(file => new ISI.Extensions.Nuget.SerializableModels.packageFile()
+			package.files = request.Nuspec.Files.ToNullCheckedArray(file => new SerializableDTOs.packageFile()
 			{
 				src = file.SourcePattern,
 				target = (string.IsNullOrWhiteSpace(file.Target) ? null : file.Target),
@@ -142,7 +142,7 @@ namespace ISI.Extensions.Nuget
 
 			using (var stream = new System.IO.MemoryStream())
 			{
-				var xmlSerializer = new System.Xml.Serialization.XmlSerializer(typeof(ISI.Extensions.Nuget.SerializableModels.package));
+				var xmlSerializer = new System.Xml.Serialization.XmlSerializer(typeof(SerializableDTOs.package));
 
 				var xmlSerializerNamespaces = new System.Xml.Serialization.XmlSerializerNamespaces();
 				xmlSerializerNamespaces.Add(string.Empty, string.Empty);

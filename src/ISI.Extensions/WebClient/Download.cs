@@ -72,9 +72,9 @@ namespace ISI.Extensions.WebClient
 			{
 				using (var webResponse = (System.Net.HttpWebResponse)webRequest.GetResponse())
 				{
-					if (webResponse.Headers.AllKeys.Contains(ISI.Extensions.WebClient.HeaderCollection.Keys.ContentDisposition))
+					if (webResponse.Headers.TryGetValue(ISI.Extensions.WebClient.HeaderCollection.Keys.ContentDisposition, out var headerValues))
 					{
-						response.FileName = new System.Net.Mime.ContentDisposition(webResponse.Headers[ISI.Extensions.WebClient.HeaderCollection.Keys.ContentDisposition]).FileName;
+						response.FileName = new System.Net.Mime.ContentDisposition(headerValues.First()).FileName;
 					}
 
 					foreach (var key in webResponse.Headers.AllKeys)
@@ -127,9 +127,9 @@ namespace ISI.Extensions.WebClient
 			{
 				using (var webResponse = (System.Net.HttpWebResponse)webRequest.GetResponse())
 				{
-					if (webResponse.Headers.AllKeys.Contains(ISI.Extensions.WebClient.HeaderCollection.Keys.ContentDisposition))
+					if (webResponse.Headers.TryGetValue(ISI.Extensions.WebClient.HeaderCollection.Keys.ContentDisposition, out var headerValues))
 					{
-						response.FileName = new System.Net.Mime.ContentDisposition(webResponse.Headers[ISI.Extensions.WebClient.HeaderCollection.Keys.ContentDisposition]).FileName;
+						response.FileName = new System.Net.Mime.ContentDisposition(headerValues.First()).FileName;
 					}
 
 					foreach (var key in webResponse.Headers.AllKeys)
@@ -184,9 +184,9 @@ namespace ISI.Extensions.WebClient
 			{
 				using (var webResponse = (System.Net.HttpWebResponse)webRequest.GetResponse())
 				{
-					if (webResponse.Headers.AllKeys.Contains(ISI.Extensions.WebClient.HeaderCollection.Keys.ContentDisposition))
+					if (webResponse.Headers.TryGetValue(ISI.Extensions.WebClient.HeaderCollection.Keys.ContentDisposition, out var headerValues))
 					{
-						response.FileName = new System.Net.Mime.ContentDisposition(webResponse.Headers[ISI.Extensions.WebClient.HeaderCollection.Keys.ContentDisposition]).FileName;
+						response.FileName = new System.Net.Mime.ContentDisposition(headerValues.First()).FileName;
 					}
 
 					foreach (var key in webResponse.Headers.AllKeys)

@@ -40,5 +40,25 @@ namespace ISI.Extensions.RecordReaders
 
 			return null;
 		}
+
+		public static IEnumerable<IEnumerable<TRecord>> GetRecordReadersByFileName<TRecord>(System.IO.Stream stream, string fileName, IEnumerable<ISI.Extensions.Columns.IColumn<TRecord>> columns = null, IEnumerable<ISI.Extensions.Parsers.OnRead<TRecord>> onReads = null)
+			where TRecord : class, new()
+		{
+			var fileExtension = System.IO.Path.GetExtension(fileName);
+
+			if(ISI.Extensions.TextParserFactory.FileExtensionToTextDelimiter.TryGetValue(fileExtension, out var textDelimiter))
+			{
+				var recordParser = ISI.Extensions.RecordParserFactory<TRecord>.GetRecordParser(textDelimiter, columns, onReads);
+
+				return new[] { new RecordParserReader<TRecord>(stream, recordParser) };
+			}
+
+			if (string.Equals(fileExtension, "xlsx", StringComparison.InvariantCultureIgnoreCase) || string.Equals(fileExtension, "xls", StringComparison.InvariantCultureIgnoreCase))
+			{
+				return new ISI.Extensions.SpreadSheets.WorkbookRecordReader<TRecord>(stream, columns, onReads);
+			}
+
+			return null;
+		}
 	}
 }

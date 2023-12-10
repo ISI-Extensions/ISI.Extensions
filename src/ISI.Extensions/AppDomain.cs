@@ -27,6 +27,11 @@ namespace ISI.Extensions
 
 		public static bool TryUseCustomAppDomain(UnhandledExceptionEventHandler unhandledExceptionEventHandler, out int exitCode)
 		{
+			return TryUseCustomAppDomain(unhandledExceptionEventHandler, null, out exitCode);
+		}
+
+		public static bool TryUseCustomAppDomain(UnhandledExceptionEventHandler unhandledExceptionEventHandler, string[] arguments, out int exitCode)
+		{
 			exitCode = 0;
 
 			if (System.AppDomain.CurrentDomain.IsDefaultAppDomain())
@@ -38,7 +43,7 @@ namespace ISI.Extensions
 					customDomain.UnhandledException += unhandledExceptionEventHandler;
 				}
 
-				exitCode = customDomain.ExecuteAssembly(System.Reflection.Assembly.GetEntryAssembly().Location);
+				exitCode = customDomain.ExecuteAssembly(System.Reflection.Assembly.GetEntryAssembly().Location, arguments);
 
 				System.AppDomain.Unload(customDomain);
 

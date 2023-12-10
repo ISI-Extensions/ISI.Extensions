@@ -26,6 +26,8 @@ namespace ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi
 		public string FullName { get; set; }
 		public bool IncludeExternals { get; set; } = true;
 
+		public bool UseWindowsClient { get; set; } = true;
+
 		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

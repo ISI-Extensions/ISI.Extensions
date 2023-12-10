@@ -144,6 +144,7 @@ namespace ISI.Extensions.Svn
 			{
 				FullName = request.FullName,
 				IncludeExternals = request.IncludeExternals,
+				UseTortoiseSvn = request.UseWindowsClient,
 				AddToLog = request.AddToLog,
 			});
 

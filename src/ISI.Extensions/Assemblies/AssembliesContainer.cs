@@ -69,7 +69,7 @@ namespace ISI.Extensions.Assemblies
 
 			var types = new List<Type>();
 
-			foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic))
+			foreach (var assembly in System.AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic))
 			{
 				try
 				{
@@ -97,7 +97,7 @@ namespace ISI.Extensions.Assemblies
 				{
 					var assemblyName = AssemblyName.GetAssemblyName(assemblyFileName);
 
-					var assembly = AppDomain.CurrentDomain.Load(assemblyName);
+					var assembly = System.AppDomain.CurrentDomain.Load(assemblyName);
 
 					notLoadedAssemblies.Add(assembly);
 

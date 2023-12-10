@@ -172,7 +172,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 								updateConnection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken).Wait(cancellationToken);
 
-								doInsert = !(string.Format("{0}", await command.ExecuteScalarWithExceptionTracingAsync(cancellationToken: cancellationToken))).ToBoolean();
+								doInsert &= !(string.Format("{0}", await command.ExecuteScalarWithExceptionTracingAsync(cancellationToken: cancellationToken))).ToBoolean();
 							}
 						}
 

@@ -126,7 +126,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.Jenkins.Form
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.Nuget.Forms.Tests", "ISI.Extensions.Nuget.Forms.Tests\ISI.Extensions.Nuget.Forms.Tests.csproj", "{290A4FFD-9390-4200-B16A-7DA8029663A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.S3", "ISI.Extensions.S3\ISI.Extensions.S3.csproj", "{3E3AF8E4-CDFB-4D33-9228-18E9A75624E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.S3", "ISI.Extensions.S3\ISI.Extensions.S3.csproj", "{3E3AF8E4-CDFB-4D33-9228-18E9A75624E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.Azure", "ISI.Extensions.Azure\ISI.Extensions.Azure.csproj", "{3BEF3A11-FE5B-4F67-B4A7-103F91C69CDD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -616,6 +618,14 @@ Global
 		{3E3AF8E4-CDFB-4D33-9228-18E9A75624E4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3E3AF8E4-CDFB-4D33-9228-18E9A75624E4}.Release|x64.ActiveCfg = Release|Any CPU
 		{3E3AF8E4-CDFB-4D33-9228-18E9A75624E4}.Release|x64.Build.0 = Release|Any CPU
+		{3BEF3A11-FE5B-4F67-B4A7-103F91C69CDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BEF3A11-FE5B-4F67-B4A7-103F91C69CDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BEF3A11-FE5B-4F67-B4A7-103F91C69CDD}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3BEF3A11-FE5B-4F67-B4A7-103F91C69CDD}.Debug|x64.Build.0 = Debug|Any CPU
+		{3BEF3A11-FE5B-4F67-B4A7-103F91C69CDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BEF3A11-FE5B-4F67-B4A7-103F91C69CDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BEF3A11-FE5B-4F67-B4A7-103F91C69CDD}.Release|x64.ActiveCfg = Release|Any CPU
+		{3BEF3A11-FE5B-4F67-B4A7-103F91C69CDD}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

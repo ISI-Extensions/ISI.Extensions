@@ -13,10 +13,10 @@ namespace ISI.Extensions.S3
 		public async Task<DTOs.WriteResponse> WriteAsync(DTOs.WriteRequest request, System.Threading.CancellationToken cancellationToken = default)
 		{
 			var response = new DTOs.WriteResponse();
-			
+
 			var bucketExistsArgs = new Minio.DataModel.Args.BucketExistsArgs().WithBucket(BucketName);
 			var bucketExists = await MinioClient.BucketExistsAsync(bucketExistsArgs, cancellationToken).ConfigureAwait(false);
-			
+
 			if (!bucketExists)
 			{
 				var makeBucketArgs = new Minio.DataModel.Args.MakeBucketArgs().WithBucket(BucketName);
@@ -26,10 +26,12 @@ namespace ISI.Extensions.S3
 			request.Stream.Rewind();
 
 			var putObjectArgs = new Minio.DataModel.Args.PutObjectArgs()
-				.WithBucket(BucketName)
-				.WithStreamData(request.Stream)
-				.WithFileName(request.FullName)
-				.WithContentType(ISI.Extensions.MimeType.GetMimeType(request.FullName));
+					.WithBucket(BucketName)
+					.WithObject(request.FullName)
+					.WithContentType(ISI.Extensions.MimeType.GetMimeType(request.FullName))
+					.WithStreamData(request.Stream)
+					.WithObjectSize(request.Stream.Length)
+				;
 
 			await MinioClient.PutObjectAsync(putObjectArgs, cancellationToken).ConfigureAwait(false);
 

@@ -24,6 +24,6 @@ namespace ISI.Extensions.Azure.DataTransferObjects.AzureBlobClient
 {
 	public class FileExistsResponse
 	{
-		public bool FileExisted { get; set; }
+		public bool FileExists { get; set; }
 	}
 }

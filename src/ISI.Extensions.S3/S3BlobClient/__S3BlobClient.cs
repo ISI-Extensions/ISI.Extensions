@@ -9,21 +9,11 @@ using DTOs = ISI.Extensions.S3.DataTransferObjects.S3BlobClient;
 
 namespace ISI.Extensions.S3
 {
-	public partial class S3BlobClient 
+	public partial class S3BlobClient
 	{
-		protected string EndpointAddress { get; }
-		protected int EndpointPort { get; }
-		protected bool EndpointIsSecure { get; }
-		protected string AccessKey { get; }
-		protected string SecretKey { get; }
 		protected string BucketName { get; }
 
-		private Minio.IMinioClient _minioClient = null;
-		protected Minio.IMinioClient MinioClient => _minioClient ??= new Minio.MinioClient()
-			.WithEndpoint(EndpointAddress, EndpointPort)
-			.WithCredentials(AccessKey, SecretKey)
-			.WithSSL(EndpointIsSecure)
-			.Build();
+		protected Minio.IMinioClient MinioClient { get; }
 
 		public const string DirectorySeparator = "/";
 
@@ -35,12 +25,12 @@ namespace ISI.Extensions.S3
 		{
 			var endPointUri = new Uri(endpointUrl);
 
-			EndpointAddress = endPointUri.Host;
-			EndpointPort = endPointUri.Port;
-			EndpointIsSecure = string.Equals(endPointUri.Scheme, "https", StringComparison.InvariantCultureIgnoreCase);
+			MinioClient = new Minio.MinioClient()
+				.WithEndpoint(endPointUri.Host, endPointUri.Port)
+				.WithCredentials(accessKey, secretKey)
+				.WithSSL(string.Equals(endPointUri.Scheme, "https", StringComparison.InvariantCultureIgnoreCase))
+				.Build();
 
-			AccessKey = accessKey;
-			SecretKey = secretKey;
 			BucketName = bucketName;
 		}
 	}

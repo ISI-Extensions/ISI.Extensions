@@ -24,6 +24,6 @@ namespace ISI.Extensions.S3.DataTransferObjects.S3BlobClient
 {
 	public class FileExistsResponse
 	{
-		public bool FileExisted { get; set; }
+		public bool FileExists { get; set; }
 	}
 }

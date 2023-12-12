@@ -19,7 +19,7 @@ namespace ISI.Extensions.S3
 				FullName = request.FullName,
 			}, cancellationToken).ConfigureAwait(false);
 
-			if (fileExistsResponse.FileExisted)
+			if (fileExistsResponse.FileExists)
 			{
 				var args = new Minio.DataModel.Args.RemoveObjectArgs()
 					.WithBucket(BucketName)

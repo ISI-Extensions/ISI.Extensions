@@ -31,7 +31,7 @@ namespace ISI.Extensions.Azure
 			
 			var blob = Container.GetBlobClient(request.FullName);
 
-			await blob.ExistsAsync(cancellationToken: cancellationToken).ContinueWith(task => response.FileExisted = task.Result.Value, cancellationToken);
+			await blob.ExistsAsync(cancellationToken: cancellationToken).ContinueWith(task => response.FileExists = task.Result.Value, cancellationToken);
 
 			return response;
 		}

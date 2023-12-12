@@ -22,7 +22,7 @@ namespace ISI.Extensions.S3
 
 				var statObjectResponse = await MinioClient.StatObjectAsync(statObjectArgs, cancellationToken);
 
-				response.FileExisted = !string.IsNullOrWhiteSpace(statObjectResponse.ObjectName);
+				response.FileExists = ((statObjectResponse?.LastModified ?? DateTime.MinValue) != DateTime.MinValue);
 			}
 			catch
 			{

@@ -13,10 +13,22 @@ namespace ISI.Extensions.S3
 		public async Task<DTOs.DeleteFileIfExistsResponse> DeleteFileIfExistsAsync(DTOs.DeleteFileIfExistsRequest request, System.Threading.CancellationToken cancellationToken = default)
 		{
 			var response = new DTOs.DeleteFileIfExistsResponse();
-			
-			//var blob = MinioClient.GetBlobClient(request.FullName);
 
-			//await blob.DeleteIfExistsAsync(cancellationToken: cancellationToken).ContinueWith(task => response.FileExisted = task.Result.Value, cancellationToken);
+			var fileExistsResponse = await FileExistsAsync(new()
+			{
+				FullName = request.FullName,
+			}, cancellationToken).ConfigureAwait(false);
+
+			if (fileExistsResponse.FileExisted)
+			{
+				var args = new Minio.DataModel.Args.RemoveObjectArgs()
+					.WithBucket(BucketName)
+					.WithObject(request.FullName);
+
+				await MinioClient.RemoveObjectAsync(args, cancellationToken).ConfigureAwait(false);
+
+				response.FileExisted = true;
+			}
 
 			return response;
 		}

@@ -14,9 +14,21 @@ namespace ISI.Extensions.S3
 		{
 			var response = new DTOs.ReadResponse();
 			
-			//var blob = Container.GetBlobClient(request.FullName);
+			var bucketExistsArgs = new Minio.DataModel.Args.BucketExistsArgs().WithBucket(BucketName);
+			var bucketExists = await MinioClient.BucketExistsAsync(bucketExistsArgs, cancellationToken).ConfigureAwait(false);
 
-			//await blob.DownloadToAsync(request.Stream, cancellationToken);
+			if (bucketExists)
+			{
+				var getObjectArgs = new Minio.DataModel.Args.GetObjectArgs()
+					.WithBucket(BucketName)
+					.WithObject(request.FullName)
+					.WithCallbackStream((stream) =>
+					{
+						stream.CopyTo(request.Stream);
+					});
+
+				await MinioClient.GetObjectAsync(getObjectArgs, cancellationToken);
+			}
 
 			return response;
 		}

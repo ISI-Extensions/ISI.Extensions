@@ -15,38 +15,23 @@ namespace ISI.Extensions.S3
 			var response = new DTOs.WriteResponse();
 			
 			var bucketExistsArgs = new Minio.DataModel.Args.BucketExistsArgs().WithBucket(BucketName);
+			var bucketExists = await MinioClient.BucketExistsAsync(bucketExistsArgs, cancellationToken).ConfigureAwait(false);
 			
-			var found = await MinioClient.BucketExistsAsync(bucketExistsArgs, cancellationToken).ConfigureAwait(false);
-			
-			if (!found)
+			if (!bucketExists)
 			{
-				var mbArgs = new Minio.DataModel.Args.MakeBucketArgs().WithBucket(BucketName);
-				await MinioClient.MakeBucketAsync(mbArgs, cancellationToken).ConfigureAwait(false);
+				var makeBucketArgs = new Minio.DataModel.Args.MakeBucketArgs().WithBucket(BucketName);
+				await MinioClient.MakeBucketAsync(makeBucketArgs, cancellationToken).ConfigureAwait(false);
 			}
-			// Upload a file to bucket.
-			//var putObjectArgs = new Minio.DataModel.Args.PutObjectArgs()
-			//	.WithBucket(bucketName)
-			//	.WithObject(objectName)
-			//	.WithFileName(filePath)
-			//	.WithContentType(contentType);
-			//await MinioClient.PutObjectAsync(putObjectArgs, cancellationToken).ConfigureAwait(false);
 
+			request.Stream.Rewind();
 
+			var putObjectArgs = new Minio.DataModel.Args.PutObjectArgs()
+				.WithBucket(BucketName)
+				.WithStreamData(request.Stream)
+				.WithFileName(request.FullName)
+				.WithContentType(ISI.Extensions.MimeType.GetMimeType(request.FullName));
 
-
-
-			//var writeFile = request.OverWriteExisting;
-
-			//if (!writeFile)
-			//{
-			//	writeFile = !(await blob.ExistsAsync(cancellationToken)).Value;
-			//}
-
-			//if (writeFile)
-			//{
-			//	request.Stream.Rewind();
-			//	await blob.UploadAsync(request.Stream, request.OverWriteExisting, cancellationToken);
-			//}
+			await MinioClient.PutObjectAsync(putObjectArgs, cancellationToken).ConfigureAwait(false);
 
 			return response;
 		}

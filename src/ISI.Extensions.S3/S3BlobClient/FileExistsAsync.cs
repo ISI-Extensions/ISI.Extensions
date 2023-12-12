@@ -13,10 +13,20 @@ namespace ISI.Extensions.S3
 		public async Task<DTOs.FileExistsResponse> FileExistsAsync(DTOs.FileExistsRequest request, System.Threading.CancellationToken cancellationToken = default)
 		{
 			var response = new DTOs.FileExistsResponse();
-			
-			//var blob = Container.GetBlobClient(request.FullName);
 
-			//await blob.ExistsAsync(cancellationToken: cancellationToken).ContinueWith(task => response.FileExisted = task.Result.Value, cancellationToken);
+			try
+			{
+				var statObjectArgs = new Minio.DataModel.Args.StatObjectArgs()
+					.WithBucket(BucketName)
+					.WithObject(request.FullName);
+
+				var statObjectResponse = await MinioClient.StatObjectAsync(statObjectArgs, cancellationToken);
+
+				response.FileExisted = !string.IsNullOrWhiteSpace(statObjectResponse.ObjectName);
+			}
+			catch
+			{
+			}
 
 			return response;
 		}

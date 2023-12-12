@@ -180,11 +180,11 @@ namespace ISI.Extensions
 
 				asyncStateStreamBuffer.SendingStream.BeginRead(asyncStateStreamBuffer.Buffer, 0, asyncStateStreamBuffer.Buffer.Length, OnReceive, asyncStateStreamBuffer);
 			}
-			catch
+			catch(Exception exception)
 			{
 				Close(asyncStateStreamBuffer);
 
-				throw;
+				throw new Exception($"Uri: {Uri.ToString()}", exception);
 			}
 		}
 

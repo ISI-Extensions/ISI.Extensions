@@ -174,11 +174,16 @@ namespace ISI.Extensions.Repository.SqlServer
 									command.AddParameter(string.Format("@primaryKey{0}", primaryKeyIndex++), (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
 								}
 
-								updateConnection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken).Wait(cancellationToken);
-
-								if (persistenceMethod == PersistenceMethod.Upsert)
+								if ((persistenceMethod == PersistenceMethod.Upsert) || (persistenceMethod == PersistenceMethod.Insert))
 								{
-									doInsert &= !(string.Format("{0}", await command.ExecuteScalarWithExceptionTracingAsync(cancellationToken: cancellationToken))).ToBoolean();
+									updateConnection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken).Wait(cancellationToken);
+
+									var updated = (string.Format("{0}", await command.ExecuteScalarWithExceptionTracingAsync(cancellationToken: cancellationToken))).ToBoolean();
+
+									if (persistenceMethod == PersistenceMethod.Upsert)
+									{
+										doInsert = !updated;
+									}
 								}
 							}
 						}

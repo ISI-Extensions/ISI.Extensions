@@ -28,9 +28,14 @@ namespace ISI.Extensions.VisualStudio
 {
 	public partial class SolutionApi 
 	{
-		private void SetVisualStudioSettings(string nugetSettingsFullName, VisualStudioSettings visualStudioSettings)
+		private void SetVisualStudioSettings(string visualStudioSettingsFullName, VisualStudioSettings visualStudioSettings)
 		{
-			using (var stream = System.IO.File.OpenWrite(nugetSettingsFullName))
+			if (System.IO.File.Exists(visualStudioSettingsFullName))
+			{
+				System.IO.File.Delete(visualStudioSettingsFullName);
+			}
+
+			using (var stream = System.IO.File.OpenWrite(visualStudioSettingsFullName))
 			{
 				JsonSerializer.Serialize(SerializableDTOs.VisualStudioSettingsV1.ToSerializable(visualStudioSettings), stream, true);
 			}

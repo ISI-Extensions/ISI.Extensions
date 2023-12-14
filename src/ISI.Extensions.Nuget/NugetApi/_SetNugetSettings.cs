@@ -31,6 +31,11 @@ namespace ISI.Extensions.Nuget
 	{
 		private void SetNugetSettings(string nugetSettingsFullName, NugetSettings nugetSettings)
 		{
+			if (System.IO.File.Exists(nugetSettingsFullName))
+			{
+				System.IO.File.Delete(nugetSettingsFullName);
+			}
+
 			using (var stream = System.IO.File.OpenWrite(nugetSettingsFullName))
 			{
 				JsonSerializer.Serialize(SerializableDTOs.NugetSettingsV1.ToSerializable(nugetSettings), stream, true);

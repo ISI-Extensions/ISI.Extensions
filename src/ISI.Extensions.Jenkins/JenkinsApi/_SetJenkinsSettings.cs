@@ -31,6 +31,11 @@ namespace ISI.Extensions.Jenkins
 	{
 		private void SetJenkinsSettings(string jenkinsSettingsFullName, JenkinsSettings jenkinsSettings)
 		{
+			if (System.IO.File.Exists(jenkinsSettingsFullName))
+			{
+				System.IO.File.Delete(jenkinsSettingsFullName);
+			}
+
 			using (var stream = System.IO.File.OpenWrite(jenkinsSettingsFullName))
 			{
 				JsonSerializer.Serialize(SerializableDTOs.JenkinsSettingsV1.ToSerializable(jenkinsSettings), stream, true);

@@ -135,7 +135,7 @@ namespace ISI.Extensions
 				requestorTcpClient.Close();
 				responderTcpClient?.Close();
 
-				throw;
+				//throw new Exception($"Uri: {Uri.ToString()}", exception);
 			}
 		}
 
@@ -184,7 +184,7 @@ namespace ISI.Extensions
 			{
 				Close(asyncStateStreamBuffer);
 
-				throw new Exception($"Uri: {Uri.ToString()}", exception);
+				//throw new Exception($"Uri: {Uri.ToString()}", exception);
 			}
 		}
 

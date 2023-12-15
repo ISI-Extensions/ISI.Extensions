@@ -170,7 +170,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 									command.AddParameter(string.Format("@primaryKey{0}", primaryKeyIndex++), (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
 								}
 
-								if ((persistenceMethod == PersistenceMethod.Upsert) || (persistenceMethod == PersistenceMethod.Insert))
+								if ((persistenceMethod == PersistenceMethod.Upsert) || (persistenceMethod == PersistenceMethod.Update))
 								{
 									updateConnection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken).Wait(cancellationToken);
 

@@ -45,6 +45,9 @@ namespace ISI.Extensions.Git
 		protected static bool? _gitIsInstalled { get; set; } = null;
 		protected bool GitIsInstalled => _gitIsInstalled ??= ISI.Extensions.IO.Path.IsInEnvironmentPath("git");
 		
+		protected static bool? _tortoiseGitProcIsInstalled { get; set; } = null;
+		protected bool TortoiseGitProcIsInstalled => _tortoiseGitProcIsInstalled ??= ISI.Extensions.IO.Path.IsInEnvironmentPath("TortoiseGitProc");
+
 		private const string SccDirectoryName = ".git";
 		Guid ISI.Extensions.Scm.ISourceControlClientApi.SourceControlTypeUuid => SourceControlTypeUuid.ToGuid();
 		bool ISI.Extensions.Scm.ISourceControlClientApi.IsSccDirectory(string directoryName) => string.Equals(System.IO.Path.GetFileName(directoryName), SccDirectoryName, StringComparison.InvariantCultureIgnoreCase);
@@ -140,6 +143,7 @@ namespace ISI.Extensions.Git
 			{
 				FullName = request.FullName,
 				IncludeSubModules = request.IncludeExternals,
+				UseTortoiseGit = request.UseWindowsClient,
 				AddToLog = request.AddToLog,
 			});
 

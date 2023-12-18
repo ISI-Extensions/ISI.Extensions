@@ -31,25 +31,27 @@ namespace ISI.Extensions.Git
 
 			if (GitIsInstalled)
 			{
-				var arguments = new List<string>();
-
-				arguments.Add("pull");
-
-				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				if (request.UseTortoiseGit && TortoiseGitProcIsInstalled)
 				{
-					Logger = new AddToLogLogger(request.AddToLog, Logger),
-					ProcessExeFullName = "git",
-					Arguments = arguments.ToArray(),
-					WorkingDirectory = request.FullName,
-				}).Errored;
+					var arguments = new List<string>();
 
-				if (response.Success && request.IncludeSubModules)
+					arguments.Add("/command:pull");
+					arguments.Add(string.Format("/path:\"{0}\"", request.FullName));
+
+					arguments.Add("/closeonend:2");
+
+					response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+					{
+						Logger = new AddToLogLogger(request.AddToLog, Logger),
+						ProcessExeFullName = "TortoiseGitProc",
+						Arguments = arguments.ToArray(),
+					}).Errored;
+				}
+				else
 				{
-					arguments.Clear();
-					arguments.Add("submodule");
-					arguments.Add("update");
-					arguments.Add("--recursive");
-					arguments.Add("--remote");
+					var arguments = new List<string>();
+
+					arguments.Add("pull");
 
 					response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 					{
@@ -58,6 +60,23 @@ namespace ISI.Extensions.Git
 						Arguments = arguments.ToArray(),
 						WorkingDirectory = request.FullName,
 					}).Errored;
+
+					if (response.Success && request.IncludeSubModules)
+					{
+						arguments.Clear();
+						arguments.Add("submodule");
+						arguments.Add("update");
+						arguments.Add("--recursive");
+						arguments.Add("--remote");
+
+						response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+						{
+							Logger = new AddToLogLogger(request.AddToLog, Logger),
+							ProcessExeFullName = "git",
+							Arguments = arguments.ToArray(),
+							WorkingDirectory = request.FullName,
+						}).Errored;
+					}
 				}
 			}
 

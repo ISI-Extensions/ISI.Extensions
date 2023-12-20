@@ -31,7 +31,7 @@ namespace ISI.Extensions.Git
 
 			if (GitIsInstalled)
 			{
-				if (request.UseTortoiseGit && TortoiseGitProcIsInstalled)
+				if (false && request.UseTortoiseGit && TortoiseGitProcIsInstalled)
 				{
 					var arguments = new List<string>();
 

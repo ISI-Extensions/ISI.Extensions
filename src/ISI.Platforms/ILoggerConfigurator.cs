@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -19,12 +19,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.Repository
+namespace ISI.Platforms
 {
-	public delegate bool IsItOkToRunMigrationTool(IRepositorySetupApi repositorySetupApi);
-
-	public interface IMigrationApi
+	public interface ILoggerConfigurator
 	{
-		ISI.Extensions.Repository.DataTransferObjects.MigrationApi.MigrateResponse Migrate(string namespacePrefix = null, IsItOkToRunMigrationTool isItOkToRunMigrationTool = null);
+		void SetBaseLogger(Type typeOfProgram, Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot, string activeEnvironment);
+		void CloseAndFlush();
+		void AddLogger(object hostConfigurator);
+		void Error(Exception exception, string message);
+		void AddLogger(Microsoft.Extensions.Hosting.IHostBuilder hostBuilder, Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot, string activeEnvironment);
+		void Information(string message);
+		void AddRequestLogging(object applicationBuilder);
 	}
 }

@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,16 +15,15 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace ISI.Extensions.Repository
+namespace ISI.Platforms.ServiceApplication
 {
-	public delegate bool IsItOkToRunMigrationTool(IRepositorySetupApi repositorySetupApi);
-
-	public interface IMigrationApi
+	public partial class Configuration
 	{
-		ISI.Extensions.Repository.DataTransferObjects.MigrationApi.MigrateResponse Migrate(string namespacePrefix = null, IsItOkToRunMigrationTool isItOkToRunMigrationTool = null);
+		public class MessageBusConfiguration
+		{
+			public long MaxOverTheMessageBusDocumentSize { get; set; } = 256000;
+		}
 	}
 }

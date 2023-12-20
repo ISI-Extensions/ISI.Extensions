@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +25,7 @@ namespace ISI.Extensions.Repository
 {
 	public partial class MigrationApi
 	{
-		public ISI.Extensions.Repository.DataTransferObjects.MigrationApi.MigrateResponse Migrate(IsItOkToRunMigrationTool isItOkToRunMigrationTool = null)
+		public ISI.Extensions.Repository.DataTransferObjects.MigrationApi.MigrateResponse Migrate(string namespacePrefix = null, IsItOkToRunMigrationTool isItOkToRunMigrationTool = null)
 		{
 			var response = new ISI.Extensions.Repository.DataTransferObjects.MigrationApi.MigrateResponse();
 
@@ -39,12 +39,15 @@ namespace ISI.Extensions.Repository
 			{
 				var migrationStepNumber = migrationStepType.Name.Split(new[] { '_' })[1].ToInt();
 
-				if (migrationSteps.TryGetValue(migrationStepNumber, out var duplicateMigrationStepType))
+				if (string.IsNullOrWhiteSpace(namespacePrefix) || migrationStepType.Namespace.StartsWith(namespacePrefix, StringComparison.InvariantCultureIgnoreCase))
 				{
-					throw new(string.Format("Both Steps: \"{0}\" and \"{1}\" have the same StepNumber: {2}", duplicateMigrationStepType.Name, migrationStepType.Name, migrationStepNumber));
-				}
+					if (migrationSteps.TryGetValue(migrationStepNumber, out var duplicateMigrationStepType))
+					{
+						throw new(string.Format("Both Steps: \"{0}\" and \"{1}\" have the same StepNumber: {2}", duplicateMigrationStepType.Name, migrationStepType.Name, migrationStepNumber));
+					}
 
-				migrationSteps.Add(migrationStepNumber, migrationStepType);
+					migrationSteps.Add(migrationStepNumber, migrationStepType);
+				}
 			}
 
 			if (migrationSteps.Any())

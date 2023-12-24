@@ -281,10 +281,11 @@ namespace ISI.Extensions.Tests
 			//}).NugetPackageKey);
 
 			var removeAssemblyRedirects = new List<string>();
-			removeAssemblyRedirects.Add("Microsoft.Identity*");
+			//removeAssemblyRedirects.Add("Microsoft.Identity*");
 
 			var solutionFullNames = new List<string>();
 			//solutionFullNames.Add(@"F:\ISI\ISI.FrameWork");
+			solutionFullNames.Add(@"F:\ISI\Clients\West River Systems\wrs.models.interface.restapi");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Telephony.WindowsService");
 			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\ISI.SolutionFullNames.txt"));
 

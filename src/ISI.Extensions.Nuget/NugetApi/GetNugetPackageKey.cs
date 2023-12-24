@@ -60,7 +60,7 @@ namespace ISI.Extensions.Nuget
 				}
 				if (request.NugetConfigFullNames.NullCheckedAny())
 				{
-					arguments.AddRange(GetConfigFileArguments(request.NugetConfigFullNames));
+					arguments.AddRange(GetSourcesFromConfigFileArguments(request.NugetConfigFullNames));
 				}
 
 				var nugetResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
@@ -72,13 +72,16 @@ namespace ISI.Extensions.Nuget
 
 				foreach (var line in nugetResponse.Output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
 				{
-					var linePieces = line.Split(new[] {  '|', '\t' }, StringSplitOptions.RemoveEmptyEntries).Select(value => value.Trim()).ToArray();
-
-					if (linePieces.Length >= 3)
+					if (string.IsNullOrWhiteSpace(request.Version))
 					{
-						if (string.Equals(linePieces[0], ">", StringComparison.InvariantCultureIgnoreCase) && string.Equals(linePieces[1], request.Package, StringComparison.InvariantCultureIgnoreCase))
+						var linePieces = line.Split(new[] { ' ', '|', '\t' }, StringSplitOptions.RemoveEmptyEntries).Select(value => value.Trim()).Where(value => !string.IsNullOrWhiteSpace(value)).ToArray();
+
+						if (linePieces.Length >= 3)
 						{
-							request.Version = linePieces[2];
+							if (string.Equals(linePieces[0], ">", StringComparison.InvariantCultureIgnoreCase) && string.Equals(linePieces[1], request.Package, StringComparison.InvariantCultureIgnoreCase))
+							{
+								request.Version = linePieces[2];
+							}
 						}
 					}
 				}

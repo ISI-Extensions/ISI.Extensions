@@ -31,12 +31,14 @@ namespace ISI.Extensions.Git
 
 			if (GitIsInstalled)
 			{
-				if (false && request.UseTortoiseGit && TortoiseGitProcIsInstalled)
+				if (false & request.UseTortoiseGit && TortoiseGitProcIsInstalled)
 				{
 					var arguments = new List<string>();
 
 					arguments.Add("/command:pull");
 					arguments.Add(string.Format("/path:\"{0}\"", request.FullName));
+
+					arguments.Add("/autostart");
 
 					arguments.Add("/closeonend:2");
 

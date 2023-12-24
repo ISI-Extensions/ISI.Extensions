@@ -40,5 +40,62 @@ namespace ISI.Extensions.Nuget
 
 			return arguments;
 		}
+
+		private static IDictionary<string, string[]> _sourcesByConfigFile = null;
+		private static IDictionary<string, string[]> SourcesByConfigFile => _sourcesByConfigFile ??= new Dictionary<string, string[]>(StringComparer.InvariantCultureIgnoreCase);
+
+		private IEnumerable<string> GetSourcesFromConfigFileArguments(IEnumerable<string> nugetConfigFullNames)
+		{
+			var arguments = new List<string>();
+
+			foreach (var nugetConfigFullName in nugetConfigFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty))
+			{
+				if (!SourcesByConfigFile.TryGetValue(nugetConfigFullName, out var sources))
+				{
+					var _sources = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+
+					if (System.IO.File.Exists(nugetConfigFullName))
+					{
+						var nugetConfigXml = System.Xml.Linq.XElement.Parse(System.IO.File.ReadAllText(nugetConfigFullName));
+
+						foreach (var packageSources in nugetConfigXml.GetElementsByLocalName("packageSources"))
+						{
+							foreach (var packageSource in packageSources.GetElementsByLocalName("add"))
+							{
+								var packageSourceKey = packageSource.GetAttributeByLocalName("value")?.Value ?? string.Empty;
+
+								if (!string.IsNullOrWhiteSpace(packageSourceKey))
+								{
+									_sources.Add(packageSourceKey);
+								}
+							}
+						}
+
+						foreach (var disabledPackageSources in nugetConfigXml.GetElementsByLocalName("disabledPackageSources"))
+						{
+							foreach (var disabledPackageSource in disabledPackageSources.GetElementsByLocalName("add"))
+							{
+								var disabledPackageSourceKey = disabledPackageSource.GetAttributeByLocalName("key")?.Value ?? string.Empty;
+
+								if (!string.IsNullOrWhiteSpace(disabledPackageSourceKey))
+								{
+									_sources.Remove(disabledPackageSourceKey);
+								}
+							}
+						}
+					}
+
+					sources = _sources.ToArray();
+					SourcesByConfigFile.Add(nugetConfigFullName, sources);
+				}
+
+				foreach (var source in sources)
+				{
+					arguments.Add(string.Format("-Source \"{0}\"", source));
+				}
+			}
+
+			return arguments;
+		}
 	}
 }

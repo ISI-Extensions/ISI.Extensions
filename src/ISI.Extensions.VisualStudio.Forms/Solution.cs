@@ -616,10 +616,20 @@ namespace ISI.Extensions.VisualStudio.Forms
 			{
 				var logs = new StringBuilder();
 
+				if (!string.IsNullOrWhiteSpace(CleanSolutionResponse.Output))
+				{
+					logs.AppendLine("Clean Solution:");
+					logs.AppendLine(CleanSolutionResponse.Output);
+				}
 				if (!string.IsNullOrWhiteSpace(UpdateSolutionResponse.Output))
 				{
 					logs.AppendLine("Update Solution:");
 					logs.AppendLine(UpdateSolutionResponse.Output);
+				}
+				if (!string.IsNullOrWhiteSpace(UpgradeNugetPackagesResponse.Output))
+				{
+					logs.AppendLine("Upgrade Nuget Packages:");
+					logs.AppendLine(UpgradeNugetPackagesResponse.Output);
 				}
 				if (!string.IsNullOrWhiteSpace(RestoreNugetPackagesResponse.Output))
 				{

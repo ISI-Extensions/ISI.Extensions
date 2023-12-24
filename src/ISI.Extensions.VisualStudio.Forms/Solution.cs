@@ -172,6 +172,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 						AddToLog = (logEntryLevel, description) =>
 						{
+							UpdateStatus(description);
 							UpdateSolutionResponse.AppendLine(description);
 							Logger.LogInformation(description);
 						},
@@ -235,6 +236,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 							UpsertAssemblyRedirectsNugetPackageKeys = upsertAssemblyRedirectsNugetPackageKeys,
 							AddToLog = (logEntryLevel, description) =>
 							{
+								UpdateStatus(description);
 								Logger.LogInformation(description);
 								UpgradeNugetPackagesResponse.AppendLine(description);
 							},
@@ -299,6 +301,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 						AddToLog = (logEntryLevel, description) =>
 						{
+							UpdateStatus(description);
 							Logger.LogInformation(description);
 							RestoreNugetPackagesResponse.AppendLine(description);
 						},
@@ -355,6 +358,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 						AddToLog = (logEntryLevel, description) =>
 						{
+							UpdateStatus(description);
 							Logger.LogInformation(description);
 							BuildSolutionResponse.AppendLine(description);
 						},
@@ -397,10 +401,23 @@ namespace ISI.Extensions.VisualStudio.Forms
 		protected System.Windows.Forms.Control SolutionPanel { get; private set; }
 		public System.Windows.Forms.Control Panel { get; }
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
+		protected Action<string> UpdateStatus { get; }
 
-		public Solution(string solutionFullName, System.Windows.Forms.Control parentControl, bool highlighted, bool selected, Action<Solution> start, IEnumerable<ProjectKey> projectKeys, ISI.Extensions.Nuget.NugetPackageKeyDictionary nugetPackageKeys, bool showSolutionFilterKeys, bool waitForExecuteProjectResponse, Action onChangeSelected, Microsoft.Extensions.Logging.ILogger logger)
+		public Solution(string solutionFullName, System.Windows.Forms.Control parentControl, bool highlighted, bool selected, Action<Solution> start, IEnumerable<ProjectKey> projectKeys, ISI.Extensions.Nuget.NugetPackageKeyDictionary nugetPackageKeys, bool showSolutionFilterKeys, bool waitForExecuteProjectResponse, Action onChangeSelected, Action<string> setStatus, Microsoft.Extensions.Logging.ILogger logger)
 		{
 			Logger = logger ?? new ISI.Extensions.ConsoleLogger();
+
+			if (setStatus == null)
+			{
+				UpdateStatus = status => { };
+			}
+			else
+			{
+				UpdateStatus = status =>
+				{
+					setStatus((status ?? string.Empty).Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault() ?? string.Empty);
+				};
+			}
 
 			var getActiveBuildConfigurationResponse = SolutionApi.GetActiveBuildConfiguration(new()
 			{

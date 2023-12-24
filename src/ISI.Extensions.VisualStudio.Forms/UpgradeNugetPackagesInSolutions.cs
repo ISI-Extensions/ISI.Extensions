@@ -132,7 +132,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 				foreach (var solution in solutions)
 				{
-					context.Solutions.Add(new(solution.Key, form.SolutionsPanel, (context.Solutions.Count % 2 == 1), selectAll || solution.Value, start, null, context.NugetPackageKeys, true, false, OnChangedSelection, null));
+					context.Solutions.Add(new(solution.Key, form.SolutionsPanel, (context.Solutions.Count % 2 == 1), selectAll || solution.Value, start, null, context.NugetPackageKeys, true, false, OnChangedSelection, form.SetStatus, null));
 				}
 
 				form.SolutionsPanel.Controls.AddRange(context.Solutions.Select(solution => solution.Panel).ToArray());

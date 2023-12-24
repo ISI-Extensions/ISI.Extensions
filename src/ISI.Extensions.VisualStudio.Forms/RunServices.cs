@@ -94,7 +94,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 				foreach (var solutionGroupedProjectKeys in projectKeys.GroupBy(projectKey => projectKey.SolutionFullName, StringComparer.InvariantCultureIgnoreCase).OrderBy(solutionGroupedProjectKey => solutionGroupedProjectKey.Key, StringComparer.InvariantCultureIgnoreCase))
 				{
-					context.Solutions.Add(new(solutionGroupedProjectKeys.Key, form.SolutionsPanel, (context.Solutions.Count % 2 == 1), selectAll || solutionGroupedProjectKeys.Any(projectKey => projectKey.Selected), start, solutionGroupedProjectKeys, null, false, false, OnChangedSelection, null));
+					context.Solutions.Add(new(solutionGroupedProjectKeys.Key, form.SolutionsPanel, (context.Solutions.Count % 2 == 1), selectAll || solutionGroupedProjectKeys.Any(projectKey => projectKey.Selected), start, solutionGroupedProjectKeys, null, false, false, OnChangedSelection, form.SetStatus, null));
 				}
 
 				//form.SolutionsPanel.Controls.AddRange(context.Solutions.OrderBy(solution => solution.Caption, StringComparer.InvariantCultureIgnoreCase).Select(solution => solution.Panel).ToArray());

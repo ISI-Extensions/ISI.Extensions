@@ -71,7 +71,6 @@ namespace ISI.Extensions.VisualStudio.Forms
 		protected internal bool ShowProjectExecutionInTaskbar { get; set; } = true;
 		protected internal bool ExitOnClose { get; set; }
 
-
 		public SolutionsForm(ExecuteActionsInSolutionsDelegate executeActionsInSolutions, UpdatePreviouslySelectedSolutionsDelegate updatePreviouslySelectedSolutions, OnCloseFormDelegate onCloseForm)
 		{
 			InitializeComponent();
@@ -227,18 +226,9 @@ namespace ISI.Extensions.VisualStudio.Forms
 							IsFirstRefresh = false;
 						}
 
-						SolutionsContext.SortSolutions?.Invoke(UpdateSolution, UpgradeNugetPackages, status =>
-						{
-							lblStatus.Invoke((System.Windows.Forms.MethodInvoker)delegate
-							{
-								lblStatus.Text = status;
-							});
-						});
+						SolutionsContext.SortSolutions?.Invoke(UpdateSolution, UpgradeNugetPackages, SetStatus);
 
-						lblStatus.Invoke((System.Windows.Forms.MethodInvoker)delegate
-						{
-							lblStatus.Text = string.Empty;
-						});
+						SetStatus(string.Empty);
 
 						foreach (var solution in SolutionsContext.Solutions.Where(solution => solution.Selected))
 						{
@@ -279,6 +269,14 @@ namespace ISI.Extensions.VisualStudio.Forms
 			{
 				SolutionApi.RecordFormSize(this);
 			};
+		}
+
+		public void SetStatus(string status)
+		{
+			lblStatus.Invoke((System.Windows.Forms.MethodInvoker)delegate
+			{
+				lblStatus.Text = status;
+			});
 		}
 	}
 }

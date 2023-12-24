@@ -99,6 +99,8 @@ namespace ISI.Extensions.VisualStudio.Forms
 		protected internal System.Windows.Forms.Button OpenButton { get; set; }
 		protected internal System.Windows.Forms.Button ViewBuildLogButton { get; set; }
 
+		protected internal System.Diagnostics.Stopwatch Stopwatch { get; } = new ();
+
 		protected Process.ProcessResponse CleanSolutionResponse { get; private set; } = new();
 		protected bool CleanSolutionErrored { get; private set; }
 		private TaskActions _cleanSolution = null;
@@ -113,11 +115,6 @@ namespace ISI.Extensions.VisualStudio.Forms
 				OpenButton.Visible = false;
 				CheckBox.Enabled = false;
 				ViewBuildLogButton.Visible = false;
-				CleanSolutionResponse = new();
-				UpdateSolutionResponse = new();
-				UpgradeNugetPackagesResponse = new();
-				RestoreNugetPackagesResponse = new();
-				BuildSolutionResponse = new();
 				SetStatus(TaskActionStatus.Default, "cleaning ...");
 			},
 			Action = () =>
@@ -159,10 +156,6 @@ namespace ISI.Extensions.VisualStudio.Forms
 					OpenButton.Visible = false;
 					CheckBox.Enabled = false;
 					ViewBuildLogButton.Visible = false;
-					UpdateSolutionResponse = new();
-					UpgradeNugetPackagesResponse = new();
-					RestoreNugetPackagesResponse = new();
-					BuildSolutionResponse = new();
 					SetStatus(TaskActionStatus.Default, "updating from source control ...");
 				}
 			},
@@ -219,9 +212,6 @@ namespace ISI.Extensions.VisualStudio.Forms
 					OpenButton.Visible = false;
 					CheckBox.Enabled = false;
 					ViewBuildLogButton.Visible = false;
-					UpgradeNugetPackagesResponse = new();
-					RestoreNugetPackagesResponse = new();
-					BuildSolutionResponse = new();
 					SetStatus(TaskActionStatus.Default, "upgrading nuget packages ...");
 				}
 			},
@@ -293,8 +283,6 @@ namespace ISI.Extensions.VisualStudio.Forms
 					OpenButton.Visible = false;
 					CheckBox.Enabled = false;
 					ViewBuildLogButton.Visible = false;
-					RestoreNugetPackagesResponse = new();
-					BuildSolutionResponse = new();
 					SetStatus(TaskActionStatus.Default, "restoring nuget packages ...");
 				}
 			},
@@ -351,7 +339,6 @@ namespace ISI.Extensions.VisualStudio.Forms
 					OpenButton.Visible = false;
 					CheckBox.Enabled = false;
 					ViewBuildLogButton.Visible = false;
-					BuildSolutionResponse = new();
 					SetStatus(TaskActionStatus.Default, "building ...");
 				}
 			},
@@ -404,6 +391,8 @@ namespace ISI.Extensions.VisualStudio.Forms
 				}
 			}
 		};
+
+		protected Process.ProcessResponse StopWatchResponse { get; private set; } = new();
 
 		protected System.Windows.Forms.Control SolutionPanel { get; private set; }
 		public System.Windows.Forms.Control Panel { get; }
@@ -641,6 +630,10 @@ namespace ISI.Extensions.VisualStudio.Forms
 					logs.AppendLine("Build Solution:");
 					logs.AppendLine(BuildSolutionResponse.Output);
 				}
+				if (!string.IsNullOrWhiteSpace(StopWatchResponse.Output))
+				{
+					logs.AppendLine(StopWatchResponse.Output);
+				}
 
 				(new ViewLogForm(logs.ToString())).ShowDialog();
 			};
@@ -683,8 +676,22 @@ namespace ISI.Extensions.VisualStudio.Forms
 		{
 			var tasks = new List<TaskActions>();
 
+			CleanSolutionResponse = new();
+			UpdateSolutionResponse = new();
+			UpgradeNugetPackagesResponse = new();
+			RestoreNugetPackagesResponse = new();
+			BuildSolutionResponse = new();
+			StopWatchResponse = new();
+
 			if (!SolutionProjects.Any() || SolutionProjects.All(project => project.ExecuteProjectInstance == null))
 			{
+				tasks.Add(new TaskActions()
+				{
+					PreAction = () => Stopwatch.Start(),
+					Action = () => { },
+					PostAction = () => { },
+				});
+
 				if (cleanSolution)
 				{
 					tasks.Add(CleanSolution);
@@ -711,6 +718,17 @@ namespace ISI.Extensions.VisualStudio.Forms
 				{
 					tasks.Add(BuildSolution);
 				}
+
+				tasks.Add(new TaskActions()
+				{
+					PreAction = () => { },
+					Action = () => { },
+					PostAction = () =>
+					{
+						Stopwatch.Stop();
+						StopWatchResponse.Output = $"\nTook {Stopwatch.Elapsed.Formatted(TimeSpanExtensions.TimeSpanFormat.Short)}";
+					},
+				});
 
 				if (executeProjects)
 				{

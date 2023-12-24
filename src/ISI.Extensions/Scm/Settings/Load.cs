@@ -30,6 +30,19 @@ namespace ISI.Extensions.Scm
 			{
 				var keyValueStorage = new ISI.Extensions.SimpleKeyValueStorage(settingsFullName);
 
+				if (keyValueStorage.TryGetValue("secrets-redirect", out var redirectFileName))
+				{
+					if (string.IsNullOrWhiteSpace(System.IO.Path.GetDirectoryName(redirectFileName)))
+					{
+						redirectFileName = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(settingsFullName), redirectFileName);
+					}
+
+					if (!string.IsNullOrWhiteSpace(redirectFileName) && System.IO.File.Exists(redirectFileName))
+					{
+						keyValueStorage = new ISI.Extensions.SimpleKeyValueStorage(redirectFileName);
+					}
+				}
+
 				foreach (var key in keyValueStorage.Keys)
 				{
 					values.Add(key, keyValueStorage.GetValue(key));

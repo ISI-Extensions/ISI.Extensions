@@ -29,18 +29,6 @@ namespace ISI.Extensions.Nuget
 {
 	public partial class NugetApi
 	{
-		private IEnumerable<string> GetConfigFileArguments(IEnumerable<string> nugetConfigFullNames)
-		{
-			var arguments = new List<string>();
-
-			foreach (var nugetConfigFullName in nugetConfigFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty))
-			{
-				arguments.Add(string.Format("-ConfigFile \"{0}\"", nugetConfigFullName));
-			}
-
-			return arguments;
-		}
-
 		private static IDictionary<string, string[]> _sourcesByConfigFile = null;
 		private static IDictionary<string, string[]> SourcesByConfigFile => _sourcesByConfigFile ??= new Dictionary<string, string[]>(StringComparer.InvariantCultureIgnoreCase);
 

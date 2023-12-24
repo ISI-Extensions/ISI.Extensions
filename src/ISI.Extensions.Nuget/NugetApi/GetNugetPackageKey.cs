@@ -120,7 +120,7 @@ namespace ISI.Extensions.Nuget
 					}
 					if (request.NugetConfigFullNames.NullCheckedAny())
 					{
-						arguments.AddRange(GetConfigFileArguments(request.NugetConfigFullNames));
+						arguments.AddRange(GetSourcesFromConfigFileArguments(request.NugetConfigFullNames));
 					}
 
 					var nugetResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()

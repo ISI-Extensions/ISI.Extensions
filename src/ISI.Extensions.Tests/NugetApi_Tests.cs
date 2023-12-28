@@ -87,29 +87,29 @@ namespace ISI.Extensions.Tests
 
 			nugetApi.NupkgPack(new()
 			{
-				NuspecFullName = @"F:\ISI\Clients\West River Systems\wrs.extensions\src\WRS.Extensions.Testing\WRS.Extensions.Testing.nuspec",
-				OutputDirectory = @"F:\ISI\Clients\West River Systems\wrs.extensions\Nuget",
+				NuspecFullName = @"F:\ISI\Clients\XXX\XXX.extensions\src\XXX.Extensions.Testing\XXX.Extensions.Testing.nuspec",
+				OutputDirectory = @"F:\ISI\Clients\XXX\XXX.extensions\Nuget",
 				IncludeSymbols = false,
 				IncludeSource = false,
-				WorkingDirectory = @"F:\ISI\Clients\West River Systems\wrs.extensions\src",
+				WorkingDirectory = @"F:\ISI\Clients\XXX\XXX.extensions\src",
 			});
 		}
 
 		[Test]
-		public void NupkgPush_To_ISI_SCM_Artifacts_WindowsService_Test()
+		public void NupkgPush_Test()
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 
 			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.Nuget.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
 
-			var nupkgFullName = System.IO.Directory.EnumerateFiles(@"F:\ISI\Internal Projects\ISI.Extensions\Nuget", "*.nupkg").First();
+			var nupkgFullName = System.IO.Directory.EnumerateFiles(@"F:\ISI\Clients\XXX\XXX.extensions\Nuget", "*.nupkg").First();
 
 			nugetApi.NupkgPush(new()
 			{
 				NupkgFullNames = new[] { nupkgFullName },
-				NugetApiKey = "xxxx",
-				RepositoryUri = new("https://localhost:5001/nuget/v3/index.json"),
+				NugetApiKey = settings.Nuget.ApiKey,
+				RepositoryName = settings.Nuget.RepositoryName,
 			});
 		}
 
@@ -285,7 +285,6 @@ namespace ISI.Extensions.Tests
 
 			var solutionFullNames = new List<string>();
 			//solutionFullNames.Add(@"F:\ISI\ISI.FrameWork");
-			solutionFullNames.Add(@"F:\ISI\Clients\West River Systems\wrs.models.interface.restapi");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Telephony.WindowsService");
 			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\ISI.SolutionFullNames.txt"));
 

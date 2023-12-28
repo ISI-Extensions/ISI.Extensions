@@ -23,5 +23,6 @@ namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
 	public class NupkgPushResponse
 	{
+		public bool Success { get; set; }
 	}
 }

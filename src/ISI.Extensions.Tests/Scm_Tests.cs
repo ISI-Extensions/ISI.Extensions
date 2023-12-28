@@ -26,6 +26,13 @@ namespace ISI.Extensions.Tests
 	public class Scm_Tests
 	{
 		[Test]
+		public void Settings_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName);
+		}
+
+		[Test]
 		public void DateTimeStampVersion_HasValue_Test()
 		{
 			var dateTimeStampVersion = new ISI.Extensions.Scm.DateTimeStampVersion();

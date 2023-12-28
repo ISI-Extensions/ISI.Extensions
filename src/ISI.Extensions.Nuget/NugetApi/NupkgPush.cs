@@ -33,6 +33,8 @@ namespace ISI.Extensions.Nuget
 		{
 			var response = new DTOs.NupkgPushResponse();
 
+			response.Success = true;
+
 			foreach (var nupkgFullName in request.NupkgFullNames)
 			{
 				var source = (string.IsNullOrWhiteSpace(request.RepositoryUri?.ToString()) ? request.RepositoryName : request.RepositoryUri?.ToString());
@@ -49,14 +51,22 @@ namespace ISI.Extensions.Nuget
 					arguments.Add(string.Format("-ApiKey \"{0}\"", request.NugetApiKey));
 				}
 
-				if (!string.IsNullOrWhiteSpace(request.WorkingDirectory))
-				{
-					var nugetConfigFullName = System.IO.Path.Combine(request.WorkingDirectory, "nuget.config");
+				var workingDirectory = string.IsNullOrWhiteSpace(request.WorkingDirectory) ? System.IO.Path.GetDirectoryName(nupkgFullName) : request.WorkingDirectory;
 
-					if (System.IO.File.Exists(nugetConfigFullName))
+				if (!string.IsNullOrWhiteSpace(workingDirectory))
+				{
+					var nugetConfigFullNames = GetNugetConfigFullNames(new()
 					{
-						arguments.Add("-ConfigFile");
-						arguments.Add(string.Format("\"{0}\"", nugetConfigFullName));
+						WorkingCopyDirectory = workingDirectory,
+					}).NugetConfigFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty);
+
+					foreach (var nugetConfigFullName in nugetConfigFullNames)
+					{
+						if (System.IO.File.Exists(nugetConfigFullName))
+						{
+							arguments.Add("-ConfigFile");
+							arguments.Add(string.Format("\"{0}\"", nugetConfigFullName));
+						}
 					}
 				}
 
@@ -65,7 +75,7 @@ namespace ISI.Extensions.Nuget
 				var nugetResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
 					Logger = Logger, //new NullLogger(),
-					WorkingDirectory = request.WorkingDirectory,
+					WorkingDirectory = workingDirectory,
 					ProcessExeFullName = GetNugetExeFullName(new()).NugetExeFullName,
 					Arguments = arguments.ToArray(),
 				});
@@ -73,6 +83,8 @@ namespace ISI.Extensions.Nuget
 				if (nugetResponse.Errored)
 				{
 					Logger.LogError(string.Format("Error pushing \"{0}\" to \"{1}\"\n{2}", System.IO.Path.GetFileName(nupkgFullName), source, nugetResponse.Output));
+
+					response.Success = false;
 				}
 				else
 				{

@@ -361,7 +361,10 @@ namespace ISI.Extensions.VisualStudio
 
 								if (executeBuildTargetResponse.Success)
 								{
-									//System.Threading.Thread.Sleep(TimeSpan.FromMinutes(4));
+									if (!System.IO.Directory.Exists(nugetPackOutputDirectory))
+									{
+										System.Threading.Thread.Sleep(TimeSpan.FromMinutes(4));
+									}
 								}
 								else
 								{

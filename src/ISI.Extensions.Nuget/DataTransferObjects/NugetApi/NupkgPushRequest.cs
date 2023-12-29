@@ -23,6 +23,8 @@ namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
 	public class NupkgPushRequest
 	{
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
+
 		public IEnumerable<string> NupkgFullNames { get; set; }
 		
 		public string RepositoryName { get; set; }

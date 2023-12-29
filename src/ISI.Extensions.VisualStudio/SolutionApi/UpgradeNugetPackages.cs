@@ -361,7 +361,7 @@ namespace ISI.Extensions.VisualStudio
 
 								if (executeBuildTargetResponse.Success)
 								{
-									System.Threading.Thread.Sleep(TimeSpan.FromMinutes(4));
+									//System.Threading.Thread.Sleep(TimeSpan.FromMinutes(4));
 								}
 								else
 								{

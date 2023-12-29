@@ -33,13 +33,15 @@ namespace ISI.Extensions.Nuget
 		{
 			var response = new DTOs.NupkgPushResponse();
 
+			var logger = new AddToLogLogger(request.AddToLog, Logger);
+
 			response.Success = true;
 
 			foreach (var nupkgFullName in request.NupkgFullNames)
 			{
 				var source = (string.IsNullOrWhiteSpace(request.RepositoryUri?.ToString()) ? request.RepositoryName : request.RepositoryUri?.ToString());
 
-				Logger.LogInformation(string.Format("Pushing \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), source));
+				logger.LogInformation(string.Format("Pushing \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), source));
 
 				var arguments = new List<string>();
 				arguments.Add("push");
@@ -74,7 +76,7 @@ namespace ISI.Extensions.Nuget
 
 				var nugetResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
-					Logger = Logger, //new NullLogger(),
+					Logger = logger, //new NullLogger(),
 					WorkingDirectory = workingDirectory,
 					ProcessExeFullName = GetNugetExeFullName(new()).NugetExeFullName,
 					Arguments = arguments.ToArray(),
@@ -82,13 +84,13 @@ namespace ISI.Extensions.Nuget
 
 				if (nugetResponse.Errored)
 				{
-					Logger.LogError(string.Format("Error pushing \"{0}\" to \"{1}\"\n{2}", System.IO.Path.GetFileName(nupkgFullName), source, nugetResponse.Output));
+					logger.LogError(string.Format("Error pushing \"{0}\" to \"{1}\"\n{2}", System.IO.Path.GetFileName(nupkgFullName), source, nugetResponse.Output));
 
 					response.Success = false;
 				}
 				else
 				{
-					Logger.LogInformation(string.Format("Pushed \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), source));
+					logger.LogInformation(string.Format("Pushed \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), source));
 				}
 			}
 

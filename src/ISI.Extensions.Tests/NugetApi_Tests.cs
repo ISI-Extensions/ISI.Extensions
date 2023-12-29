@@ -286,6 +286,7 @@ namespace ISI.Extensions.Tests
 			var solutionFullNames = new List<string>();
 			//solutionFullNames.Add(@"F:\ISI\ISI.FrameWork");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Telephony.WindowsService");
+			solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.SCM.RemoteCodeSigning.WindowsService");
 			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\ISI.SolutionFullNames.txt"));
 
 			solutionApi.UpgradeNugetPackages(new()

@@ -165,6 +165,8 @@ namespace ISI.Extensions.VisualStudio.Forms
 				UpgradeNugetPackages = true,
 				ShowUpgradeNugetPackagesCheckBox = true,
 				CommitSolution = true,
+				RestoreNugetPackages = false,
+				BuildSolution = false,
 				ShowCommitSolutionCheckBox = true,
 				ShowExecuteProjectsCheckBox = false,
 				ShowShowProjectExecutionInTaskbarCheckBox = false,

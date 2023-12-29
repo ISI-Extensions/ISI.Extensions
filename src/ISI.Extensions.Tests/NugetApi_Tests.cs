@@ -193,6 +193,11 @@ namespace ISI.Extensions.Tests
 		{
 			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.Nuget.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
 
+			var packageVersion4 = nugetApi.GetNugetPackageKey(new()
+			{
+				Package = "ISI.Extensions",
+			}).NugetPackageKey.Version;
+
 			var packageVersion8 = nugetApi.GetNugetPackageKey(new()
 			{
 				Package = "DataTech.AccuMail-64",
@@ -208,11 +213,6 @@ namespace ISI.Extensions.Tests
 				Package = packageVersion5.Package,
 				Version = packageVersion5.Version,
 			}).NugetPackageKey;
-
-			var packageVersion4 = nugetApi.GetNugetPackageKey(new()
-			{
-				Package = "ISI.Extensions",
-			}).NugetPackageKey.Version;
 
 			var packageVersion = nugetApi.GetNugetPackageKey(new()
 			{
@@ -286,6 +286,9 @@ namespace ISI.Extensions.Tests
 			var solutionFullNames = new List<string>();
 			//solutionFullNames.Add(@"F:\ISI\ISI.FrameWork");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Telephony.WindowsService");
+			solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.NginxManagerAgent.ServiceApplication");
+			solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Cake.Addin");
+			solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.SCM.Jenkins.WindowsService");
 			solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.SCM.RemoteCodeSigning.WindowsService");
 			//solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\ISI.SolutionFullNames.txt"));
 

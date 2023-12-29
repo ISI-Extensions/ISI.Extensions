@@ -26,6 +26,12 @@ namespace ISI.Extensions.VisualStudio
 {
 	public partial class SolutionApi
 	{
+		internal class SolutionDetailsWithNugetPackageDependencies : ISI.Extensions.VisualStudio.SolutionDetails
+		{
+			public bool IsBuilt { get; set; }
+			public HashSet<string> NugetPackageDependencies { get; set; }
+		}
+
 		public DTOs.UpgradeNugetPackagesResponse UpgradeNugetPackages(DTOs.UpgradeNugetPackagesRequest request)
 		{
 			var logger = new AddToLogLogger(request.AddToLog, Logger);
@@ -40,11 +46,35 @@ namespace ISI.Extensions.VisualStudio
 
 			var solutionFullNames = request.SolutionFullNames.Where(solution => System.IO.Directory.Exists(solution) || System.IO.File.Exists(solution)).ToArray();
 
-			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => GetSolutionDetails(new()
+			var isProjectBuilt = new Dictionary<string, bool>(StringComparer.InvariantCultureIgnoreCase);
+
+			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution =>
 			{
-				Solution = solution,
-				AddToLog = request.AddToLog,
-			}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
+				var solutionDetails = GetSolutionDetails(new()
+				{
+					Solution = solution,
+					AddToLog = request.AddToLog,
+				}).SolutionDetails;
+
+				if (solutionDetails == null)
+				{
+					return null;
+				}
+
+				return new SolutionDetailsWithNugetPackageDependencies()
+				{
+					SolutionName = solutionDetails.SolutionName,
+					SolutionDirectory = solutionDetails.SolutionDirectory,
+					SolutionFullName = solutionDetails.SolutionFullName,
+					RootSourceDirectory = solutionDetails.RootSourceDirectory,
+					ProjectDetailsSet = solutionDetails.ProjectDetailsSet.ToNullCheckedArray(),
+					SolutionFilterDetailsSet = solutionDetails.SolutionFilterDetailsSet.ToNullCheckedArray(),
+					UpgradeNugetPackagesPriority = solutionDetails.UpgradeNugetPackagesPriority,
+					ExecuteBuildScriptTargetAfterUpdateNugetPackages = solutionDetails.ExecuteBuildScriptTargetAfterUpdateNugetPackages,
+					DoNotUpdatePackages = solutionDetails.DoNotUpdatePackages.ToNullCheckedArray(),
+					IsBuilt = false,
+				};
+			}, NullCheckCollectionResult.Empty).Where(solutionDetails => solutionDetails != null).ToArray();
 
 			logger.LogInformation("Update Nuget Packages For Solutions:");
 			foreach (var solutionDetails in solutionDetailsSet)
@@ -53,7 +83,7 @@ namespace ISI.Extensions.VisualStudio
 			}
 			logger.LogInformation(string.Empty);
 
-			if (request.UpdateWorkingCopyFromSourceControl)
+			if (request.UpdateWorkingCopyFromSourceControl && (solutionDetailsSet.Length > 1))
 			{
 				foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
 				{
@@ -81,22 +111,77 @@ namespace ISI.Extensions.VisualStudio
 						}
 					}
 				}
+			}
 
-				solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => GetSolutionDetails(new()
+			solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution =>
+			{
+				var solutionDetails = GetSolutionDetails(new()
 				{
 					Solution = solution,
-				}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
+					AddToLog = request.AddToLog,
+				}).SolutionDetails;
+
+				if (solutionDetails == null)
+				{
+					return null;
+				}
+
+				var nugetPackageDependencies = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+
+				foreach (var projectDetails in solutionDetails.ProjectDetailsSet)
+				{
+					if (!isProjectBuilt.ContainsKey(projectDetails.ProjectName))
+					{
+						isProjectBuilt.Add(projectDetails.ProjectName, false);
+
+						var projectNugetPackageDependencies = NugetApi.GetProjectNugetPackageDependencies(new()
+						{
+							ProjectFullName = projectDetails.ProjectFullName,
+						}).NugetPackageKeys;
+
+						foreach (var projectNugetPackageDependency in projectNugetPackageDependencies)
+						{
+							nugetPackageDependencies.Add(projectNugetPackageDependency.Package);
+						}
+					}
+				}
+
+				return new SolutionDetailsWithNugetPackageDependencies()
+				{
+					SolutionName = solutionDetails.SolutionName,
+					SolutionDirectory = solutionDetails.SolutionDirectory,
+					SolutionFullName = solutionDetails.SolutionFullName,
+					RootSourceDirectory = solutionDetails.RootSourceDirectory,
+					ProjectDetailsSet = solutionDetails.ProjectDetailsSet.ToNullCheckedArray(),
+					SolutionFilterDetailsSet = solutionDetails.SolutionFilterDetailsSet.ToNullCheckedArray(),
+					UpgradeNugetPackagesPriority = solutionDetails.UpgradeNugetPackagesPriority,
+					ExecuteBuildScriptTargetAfterUpdateNugetPackages = solutionDetails.ExecuteBuildScriptTargetAfterUpdateNugetPackages,
+					DoNotUpdatePackages = solutionDetails.DoNotUpdatePackages.ToNullCheckedArray(),
+					IsBuilt = false,
+					NugetPackageDependencies = nugetPackageDependencies,
+				};
+			}, NullCheckCollectionResult.Empty).Where(solutionDetails => solutionDetails != null).ToArray();
+
+			foreach (var solutionDetails in solutionDetailsSet)
+			{
+				solutionDetails.NugetPackageDependencies.RemoveWhere(nugetPackageDependency => !isProjectBuilt.ContainsKey(nugetPackageDependency));
 			}
 
-			logger.LogInformation("Upgrade Nuget Packages For Solutions:");
-			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpgradeNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
+			while (solutionDetailsSet.Any(solutionDetails => !solutionDetails.IsBuilt))
 			{
-				logger.LogInformation(string.Format("  {0}", solutionDetails.SolutionName));
-			}
-			logger.LogInformation(string.Empty);
+				var solutionDetails = solutionDetailsSet
+																.Where(solutionDetails => !solutionDetails.IsBuilt)
+																.Where(solutionDetails => solutionDetails.NugetPackageDependencies.All(nugetPackageDependency => isProjectBuilt[nugetPackageDependency]))
+																.OrderBy(solutionDetails => solutionDetails.UpgradeNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase)
+																.FirstOrDefault() ??
+															solutionDetailsSet
+																.Where(solutionDetails => !solutionDetails.IsBuilt)
+																.OrderBy(solutionDetails => solutionDetails.UpgradeNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase)
+																.FirstOrDefault();
 
-			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpgradeNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
-			{
+				var stopWatch = new System.Diagnostics.Stopwatch();
+				stopWatch.Start();
+
 				using (getBuildServiceSolutionLock(solutionDetails.SolutionFullName, (logEntryLevel, description) => logger.LogInformation(description)))
 				{
 					using (GetSolutionLock(new()
@@ -123,6 +208,8 @@ namespace ISI.Extensions.VisualStudio
 								throw exception;
 							}
 						}
+
+						logger.LogInformation(string.Format("Upgrading Nuget Packages in {0}", solutionDetails.SolutionName));
 
 						try
 						{
@@ -410,7 +497,18 @@ namespace ISI.Extensions.VisualStudio
 							logger.LogInformation(string.Format("Built {0}", solutionDetails.SolutionName));
 						}
 					}
+
+					foreach (var projectDetails in solutionDetails.ProjectDetailsSet)
+					{
+						isProjectBuilt[projectDetails.ProjectName] = true;
+					}
+
+					solutionDetails.IsBuilt = true;
 				}
+
+				stopWatch.Stop();
+				logger.LogInformation($"Nuget Upgrade took: {stopWatch.Elapsed.Formatted(TimeSpanExtensions.TimeSpanFormat.Default)}");
+				logger.LogInformation(string.Empty);
 			}
 
 			return response;

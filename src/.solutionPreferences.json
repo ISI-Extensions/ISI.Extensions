@@ -1,4 +1,4 @@
-{
-	"_serializerContractUuid": "9b824062-df6f-4a3b-9fe0-e6f80efe9263",
-	"executeBuildScriptTargetAfterUpgradeNugetPackages": "Nuget-Publish"
+﻿{
+  "_serializerContractUuid": "9b824062-df6f-4a3b-9fe0-e6f80efe9263",
+  "executeBuildScriptTargetAfterUpgradeNugetPackages": "Nuget-Publish"
 }

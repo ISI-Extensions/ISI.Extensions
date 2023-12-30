@@ -29,16 +29,6 @@ namespace ISI.Extensions.VisualStudio.SerializableModels
 	[ISI.Extensions.Serialization.SerializerContractUuid("134d0c4b-72d0-42ff-b1c9-8b3433dc6626")]
 	public class SolutionPreferencesV1 : ISolutionPreferences
 	{
-		public static ISolutionPreferences ToSerializable(LOCALENTITIES.SolutionPreferences source)
-		{
-			return new SolutionPreferencesV1()
-			{
-				UpdateNugetPackagesPriority = source.UpgradeNugetPackagesPriority,
-				ExecuteBuildScriptTargetAfterUpdateNugetPackages = source.ExecuteBuildScriptTargetAfterUpgradeNugetPackages,
-				DoNotUpdatePackageIds = source.DoNotUpgradePackages.ToNullCheckedArray(),
-			};
-		}
-
 		public LOCALENTITIES.SolutionPreferences Export()
 		{
 			return new LOCALENTITIES.SolutionPreferences()

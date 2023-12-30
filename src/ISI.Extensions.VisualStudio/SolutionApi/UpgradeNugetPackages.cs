@@ -72,7 +72,7 @@ namespace ISI.Extensions.VisualStudio
 					SolutionFilterDetailsSet = solutionDetails.SolutionFilterDetailsSet.ToNullCheckedArray(),
 					UpgradeNugetPackagesPriority = solutionDetails.UpgradeNugetPackagesPriority,
 					ExecuteBuildScriptTargetAfterUpgradeNugetPackages = solutionDetails.ExecuteBuildScriptTargetAfterUpgradeNugetPackages,
-					DoNotUpdatePackages = solutionDetails.DoNotUpdatePackages.ToNullCheckedArray(),
+					DoNotUpgradePackages = solutionDetails.DoNotUpgradePackages.ToNullCheckedArray(),
 					IsBuilt = false,
 				};
 			}, NullCheckCollectionResult.Empty).Where(solutionDetails => solutionDetails != null).ToArray();
@@ -168,7 +168,7 @@ namespace ISI.Extensions.VisualStudio
 					SolutionFilterDetailsSet = solutionDetails.SolutionFilterDetailsSet.ToNullCheckedArray(),
 					UpgradeNugetPackagesPriority = solutionDetails.UpgradeNugetPackagesPriority,
 					ExecuteBuildScriptTargetAfterUpgradeNugetPackages = solutionDetails.ExecuteBuildScriptTargetAfterUpgradeNugetPackages,
-					DoNotUpdatePackages = solutionDetails.DoNotUpdatePackages.ToNullCheckedArray(),
+					DoNotUpgradePackages = solutionDetails.DoNotUpgradePackages.ToNullCheckedArray(),
 					IsBuilt = false,
 					NugetPackageDependencies = new HashSet<string>(nugetPackageDependencies, StringComparer.InvariantCultureIgnoreCase),
 					NugetPackageDependenciesFromOtherSolutions = new HashSet<string>(nugetPackageDependencies, StringComparer.InvariantCultureIgnoreCase),
@@ -240,7 +240,7 @@ namespace ISI.Extensions.VisualStudio
 								WorkingCopyDirectory = solutionDetails.SolutionDirectory,
 							}).NugetConfigFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
-							var solutionIgnorePackageIds = new HashSet<string>(solutionDetails.DoNotUpdatePackages ?? Array.Empty<string>(), StringComparer.InvariantCultureIgnoreCase);
+							var solutionIgnorePackageIds = new HashSet<string>(solutionDetails.DoNotUpgradePackages ?? Array.Empty<string>(), StringComparer.InvariantCultureIgnoreCase);
 							solutionIgnorePackageIds.UnionWith(ignorePackageIds);
 
 							void addNugetPackageKey(string package)

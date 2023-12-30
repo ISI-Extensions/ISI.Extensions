@@ -159,9 +159,9 @@ namespace ISI.Extensions.VisualStudio.Forms
 					{
 						if (form.ShowDialog() == DialogResult.OK)
 						{
-							solution.RefreshButton?.Invoke((System.Windows.Forms.MethodInvoker)delegate { solution.RefreshButton.Visible = false; });
-							solution.OpenButton?.Invoke((System.Windows.Forms.MethodInvoker)delegate { solution.OpenButton.Visible = false; });
-							solution.ViewBuildLogButton?.Invoke((System.Windows.Forms.MethodInvoker)delegate { solution.ViewBuildLogButton.Visible = false; });
+							solution.SetButtonVisibility(solution.RefreshButton, false);
+							solution.SetButtonVisibility(solution.OpenButton, false);
+							solution.SetButtonVisibility(solution.ViewBuildLogButton, false);
 
 							CleanSolution = form.CleanSolution;
 							UpdateSolution = form.UpdateSolution;
@@ -172,7 +172,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 							ExecuteProjects = form.ExecuteProjects;
 							ShowProjectExecutionInTaskbar = form.ShowProjectExecutionInTaskbar;
 
-							foreach (var solutionTask in solution.GetTasks(CleanSolution, UpdateSolution, RestoreNugetPackages, BuildSolution, ExecuteProjects, ShowProjectExecutionInTaskbar))
+							foreach (var solutionTask in solution.GetTasks(true, CleanSolution, UpdateSolution, RestoreNugetPackages, BuildSolution, ExecuteProjects, ShowProjectExecutionInTaskbar))
 							{
 								BackgroundTasks.Enqueue(solutionTask);
 							}

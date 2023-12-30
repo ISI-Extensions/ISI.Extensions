@@ -97,7 +97,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 		protected internal System.Windows.Forms.Button OpenButton { get; set; }
 		protected internal System.Windows.Forms.Button ViewBuildLogButton { get; set; }
 
-		protected void SetButtonVisibility(System.Windows.Forms.Button button, bool isVisible)
+		protected internal void SetButtonVisibility(System.Windows.Forms.Button button, bool isVisible)
 		{
 			if (button != null)
 			{
@@ -115,7 +115,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			}
 		}
 
-		protected void SetCheckBoxEnabled(System.Windows.Forms.CheckBox checkBox, bool isEnabled)
+		protected internal void SetCheckBoxEnabled(System.Windows.Forms.CheckBox checkBox, bool isEnabled)
 		{
 			if (checkBox != null)
 			{

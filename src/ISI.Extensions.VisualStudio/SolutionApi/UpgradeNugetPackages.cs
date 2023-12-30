@@ -507,14 +507,20 @@ namespace ISI.Extensions.VisualStudio
 								{
 									nugetPackageKeys.Clear();
 								}
+
+								solutionLogger.LogInformation(string.Format("Built {0}", solutionDetails.SolutionName));
 							}
 							catch (Exception exception)
 							{
 								solutionLogger.LogError(exception.ErrorMessageFormatted());
-								throw;
-							}
 
-							solutionLogger.LogInformation(string.Format("Built {0}", solutionDetails.SolutionName));
+								request.BuildScriptError?.Invoke(solutionDetails.SolutionFullName);
+
+								if (!request.ContinueOnBuildScriptError)
+								{
+									throw;
+								}
+							}
 						}
 					}
 

@@ -23,5 +23,6 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 {
 	public class UpgradeNugetPackagesResponse
 	{
+
 	}
 }

@@ -280,6 +280,14 @@ namespace ISI.Extensions.VisualStudio.Forms
 												solution.UpgradeNugetPackagesPostAction(!RestoreNugetPackages && !BuildSolution, RestoreNugetPackages && !BuildSolution);
 											}
 										},
+										BuildScriptError = (solutionFullName) =>
+										{
+											if (solutionsBySolutionFullName.TryGetValue(solutionFullName, out var solution))
+											{
+												solution.UpgradeNugetPackagesResponse.ExitCode = -1;
+											}
+										},
+										ContinueOnBuildScriptError = true,
 									});
 								},
 								PostAction = () => { },

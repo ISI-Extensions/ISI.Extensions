@@ -26,6 +26,7 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 	public delegate void UpgradeNugetPackagesPreActionDelegate(string solutionFullName);
 	public delegate void UpgradeNugetPackagesSetStatusDelegate(string solutionFullName, string description);
 	public delegate void UpgradeNugetPackagesPostActionDelegate(string solutionFullName);
+	public delegate void UpgradeNugetPackagesBuildScriptErrorDelegate(string solutionFullName);
 
 	public class UpgradeNugetPackagesRequest
 	{
@@ -51,5 +52,8 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 		public UpgradeNugetPackagesPostActionDelegate PostAction { get; set; }
 
 		public GetBuildServiceSolutionLockDelegate GetBuildServiceSolutionLock { get; set; } = null;
+
+		public UpgradeNugetPackagesBuildScriptErrorDelegate BuildScriptError { get; set; }
+		public bool ContinueOnBuildScriptError { get; set; }
 	}
 }

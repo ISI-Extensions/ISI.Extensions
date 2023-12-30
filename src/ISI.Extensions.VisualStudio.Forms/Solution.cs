@@ -136,102 +136,6 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 		protected internal System.Diagnostics.Stopwatch Stopwatch { get; } = new();
 
-		protected Process.ProcessResponse CleanSolutionResponse { get; private set; } = new();
-		protected bool CleanSolutionErrored { get; private set; }
-		private TaskActions _cleanSolution = null;
-		protected TaskActions CleanSolution => _cleanSolution ??= new()
-		{
-			PreAction = () =>
-			{
-				if (RefreshButton != null)
-				{
-					RefreshButton.Visible = false;
-				}
-				OpenButton.Visible = false;
-				CheckBox.Enabled = false;
-				ViewBuildLogButton.Visible = false;
-				SetStatus(TaskActionStatus.Default, "cleaning ...");
-			},
-			Action = () =>
-			{
-				Logger.LogInformation("Start Clean Solution");
-
-				CleanSolutionErrored = !(SolutionApi.CleanSolution(new()
-				{
-					Solution = SolutionDetails.SolutionDirectory,
-				}).Success);
-
-				Logger.LogInformation("Finish Clean Solution");
-			},
-			PostAction = () =>
-			{
-				SetStatus((CleanSolutionErrored ? TaskActionStatus.Errored : TaskActionStatus.Default), (CleanSolutionErrored ? "Errored Cleaning" : "Completed"));
-				CheckBox.Enabled = true;
-				if (RefreshButton != null)
-				{
-					RefreshButton.Visible = true;
-				}
-				ViewBuildLogButton.Visible = true;
-			}
-		};
-
-		protected Process.ProcessResponse UpdateSolutionResponse { get; private set; } = new();
-		protected bool UpdateSolutionErrored => UpdateSolutionResponse.Errored;
-		private TaskActions _updateSolution = null;
-		protected TaskActions UpdateSolution => _updateSolution ??= new()
-		{
-			PreAction = () =>
-			{
-				if (!CleanSolutionErrored)
-				{
-					if (RefreshButton != null)
-					{
-						RefreshButton.Visible = false;
-					}
-					OpenButton.Visible = false;
-					CheckBox.Enabled = false;
-					ViewBuildLogButton.Visible = false;
-					SetStatus(TaskActionStatus.Default, "updating from source control ...");
-				}
-			},
-			Action = () =>
-			{
-				if (!CleanSolutionErrored)
-				{
-					Logger.LogInformation("Start Update Solution");
-
-					UpdateSolutionResponse.ExitCode = SourceControlClientApi.UpdateWorkingCopy(new()
-					{
-						FullName = SolutionDetails.RootSourceDirectory,
-						IncludeExternals = true,
-
-						AddToLog = (logEntryLevel, description) =>
-						{
-							UpdateStatus(description);
-							UpdateSolutionResponse.AppendLine(description);
-							Logger.LogInformation(description);
-						},
-					}).Success ? 0 : 1;
-
-					Logger.LogInformation("Finish Update Solution");
-				}
-			},
-			PostAction = () =>
-			{
-				if (!CleanSolutionErrored)
-				{
-					SetStatus((UpdateSolutionErrored ? TaskActionStatus.Errored : TaskActionStatus.Default), (UpdateSolutionErrored ? "Errored Updating" : "Completed"));
-					CheckBox.Enabled = true;
-					OpenButton.Visible = true;
-					if (RefreshButton != null)
-					{
-						RefreshButton.Visible = true;
-					}
-				}
-				ViewBuildLogButton.Visible = true;
-			}
-		};
-
 		public Process.ProcessResponse UpgradeNugetPackagesResponse { get; private set; } = new();
 		protected bool UpgradeNugetPackagesErrored => UpgradeNugetPackagesResponse.Errored;
 
@@ -257,11 +161,104 @@ namespace ISI.Extensions.VisualStudio.Forms
 			{
 				SetStatus((UpgradeNugetPackagesErrored ? TaskActionStatus.Errored : TaskActionStatus.Default), (UpgradeNugetPackagesErrored ? "Errored Upgrading Nuget Packages" : "Completed"));
 				SetCheckBoxEnabled(CheckBox, true);
-				SetButtonVisibility(OpenButton, true);
-				SetButtonVisibility(RefreshButton, true);
+				SetButtonVisibility(OpenButton, showOpenButton);
+				SetButtonVisibility(RefreshButton, showRefreshButton);
 			}
 			SetButtonVisibility(ViewBuildLogButton, true);
 		}
+
+		protected Process.ProcessResponse CleanSolutionResponse { get; private set; } = new();
+		protected bool CleanSolutionErrored { get; private set; }
+		private TaskActions _cleanSolution = null;
+		protected TaskActions CleanSolution => _cleanSolution ??= new()
+		{
+			PreAction = () =>
+			{
+				if (!UpgradeNugetPackagesErrored)
+				{
+					SetButtonVisibility(RefreshButton, false);
+					SetButtonVisibility(OpenButton, false);
+					SetCheckBoxEnabled(CheckBox, false);
+					SetButtonVisibility(ViewBuildLogButton, false);
+					SetStatus(TaskActionStatus.Default, "cleaning ...");
+				}
+			},
+			Action = () =>
+			{
+				if (!UpgradeNugetPackagesErrored)
+				{
+					Logger.LogInformation("Start Clean Solution");
+
+					CleanSolutionErrored = !(SolutionApi.CleanSolution(new()
+					{
+						Solution = SolutionDetails.SolutionDirectory,
+					}).Success);
+
+					Logger.LogInformation("Finish Clean Solution");
+				}
+			},
+			PostAction = () =>
+			{
+				if (!UpgradeNugetPackagesErrored)
+				{
+					SetStatus((CleanSolutionErrored ? TaskActionStatus.Errored : TaskActionStatus.Default), (CleanSolutionErrored ? "Errored Cleaning" : "Completed"));
+					SetCheckBoxEnabled(CheckBox, true);
+					SetButtonVisibility(OpenButton, true);
+					SetButtonVisibility(RefreshButton, true);
+				}
+			}
+		};
+
+		protected Process.ProcessResponse UpdateSolutionResponse { get; private set; } = new();
+		protected bool UpdateSolutionErrored => UpdateSolutionResponse.Errored;
+		private TaskActions _updateSolution = null;
+		protected TaskActions UpdateSolution => _updateSolution ??= new()
+		{
+			PreAction = () =>
+			{
+				if (!UpgradeNugetPackagesErrored && !CleanSolutionErrored)
+				{
+					SetButtonVisibility(RefreshButton, false);
+					SetButtonVisibility(OpenButton, false);
+					SetCheckBoxEnabled(CheckBox, false);
+					SetButtonVisibility(ViewBuildLogButton, false);
+					SetStatus(TaskActionStatus.Default, "updating from source control ...");
+				}
+			},
+			Action = () =>
+			{
+				if (!UpgradeNugetPackagesErrored && !CleanSolutionErrored)
+				{
+					Logger.LogInformation("Start Update Solution");
+
+					UpdateSolutionResponse.ExitCode = SourceControlClientApi.UpdateWorkingCopy(new()
+					{
+						FullName = SolutionDetails.RootSourceDirectory,
+						IncludeExternals = true,
+
+						AddToLog = (logEntryLevel, description) =>
+						{
+							UpdateStatus(description);
+							UpdateSolutionResponse.AppendLine(description);
+							Logger.LogInformation(description);
+						},
+					}).Success ? 0 : 1;
+
+					Logger.LogInformation("Finish Update Solution");
+				}
+			},
+			PostAction = () =>
+			{
+				if (!UpgradeNugetPackagesErrored && !CleanSolutionErrored)
+				{
+					SetStatus((UpdateSolutionErrored ? TaskActionStatus.Errored : TaskActionStatus.Default), (UpdateSolutionErrored ? "Errored Updating" : "Completed"));
+					SetCheckBoxEnabled(CheckBox, true);
+					SetButtonVisibility(OpenButton, true);
+					SetButtonVisibility(RefreshButton, true);
+				}
+				SetButtonVisibility(ViewBuildLogButton, true);
+			}
+		};
 
 		protected Process.ProcessResponse RestoreNugetPackagesResponse { get; private set; } = new();
 		protected bool RestoreNugetPackagesErrored => RestoreNugetPackagesResponse.Errored;
@@ -270,21 +267,18 @@ namespace ISI.Extensions.VisualStudio.Forms
 		{
 			PreAction = () =>
 			{
-				if (!CleanSolutionErrored && !UpdateSolutionErrored && !UpgradeNugetPackagesErrored)
+				if (!UpgradeNugetPackagesErrored && !CleanSolutionErrored && !UpdateSolutionErrored)
 				{
-					if (RefreshButton != null)
-					{
-						RefreshButton.Visible = false;
-					}
-					OpenButton.Visible = false;
-					CheckBox.Enabled = false;
-					ViewBuildLogButton.Visible = false;
+					SetButtonVisibility(RefreshButton, false);
+					SetButtonVisibility(OpenButton, false);
+					SetCheckBoxEnabled(CheckBox, false);
+					SetButtonVisibility(ViewBuildLogButton, false);
 					SetStatus(TaskActionStatus.Default, "restoring nuget packages ...");
 				}
 			},
 			Action = () =>
 			{
-				if (!CleanSolutionErrored && !UpdateSolutionErrored && !UpgradeNugetPackagesErrored)
+				if (!UpgradeNugetPackagesErrored && !CleanSolutionErrored && !UpdateSolutionErrored)
 				{
 					Logger.LogInformation("Start Restore Nuget Packages");
 
@@ -306,17 +300,14 @@ namespace ISI.Extensions.VisualStudio.Forms
 			},
 			PostAction = () =>
 			{
-				if (!CleanSolutionErrored && !UpdateSolutionErrored && !UpgradeNugetPackagesErrored)
+				if (!UpgradeNugetPackagesErrored && !CleanSolutionErrored && !UpdateSolutionErrored)
 				{
 					SetStatus((RestoreNugetPackagesErrored ? TaskActionStatus.Errored : TaskActionStatus.Default), (RestoreNugetPackagesErrored ? "Errored Restoring Nuget Packages" : "Completed"));
-					CheckBox.Enabled = true;
-					OpenButton.Visible = true;
+					SetCheckBoxEnabled(CheckBox, true);
+					SetButtonVisibility(OpenButton, true);
+					SetButtonVisibility(RefreshButton, true);
 				}
-				ViewBuildLogButton.Visible = true;
-				if (RefreshButton != null)
-				{
-					RefreshButton.Visible = true;
-				}
+				SetButtonVisibility(ViewBuildLogButton, true);
 			}
 		};
 
@@ -327,21 +318,18 @@ namespace ISI.Extensions.VisualStudio.Forms
 		{
 			PreAction = () =>
 			{
-				if (!CleanSolutionErrored && !UpdateSolutionErrored && !UpgradeNugetPackagesErrored && !RestoreNugetPackagesErrored)
+				if (!UpgradeNugetPackagesErrored && !CleanSolutionErrored && !UpdateSolutionErrored && !RestoreNugetPackagesErrored)
 				{
-					if (RefreshButton != null)
-					{
-						RefreshButton.Visible = false;
-					}
-					OpenButton.Visible = false;
-					CheckBox.Enabled = false;
-					ViewBuildLogButton.Visible = false;
+					SetButtonVisibility(RefreshButton, false);
+					SetButtonVisibility(OpenButton, false);
+					SetCheckBoxEnabled(CheckBox, false);
+					SetButtonVisibility(ViewBuildLogButton, false);
 					SetStatus(TaskActionStatus.Default, "building ...");
 				}
 			},
 			Action = () =>
 			{
-				if (!CleanSolutionErrored && !UpdateSolutionErrored && !UpgradeNugetPackagesErrored && !RestoreNugetPackagesErrored)
+				if (!UpgradeNugetPackagesErrored && !CleanSolutionErrored && !UpdateSolutionErrored && !RestoreNugetPackagesErrored)
 				{
 					Logger.LogInformation("Start Build Solution");
 
@@ -376,17 +364,14 @@ namespace ISI.Extensions.VisualStudio.Forms
 			},
 			PostAction = () =>
 			{
-				if (!CleanSolutionErrored && !UpdateSolutionErrored && !UpgradeNugetPackagesErrored && !RestoreNugetPackagesErrored)
+				if (!UpgradeNugetPackagesErrored && !CleanSolutionErrored && !UpdateSolutionErrored && !RestoreNugetPackagesErrored)
 				{
 					SetStatus((BuildSolutionErrored ? TaskActionStatus.Errored : TaskActionStatus.Default), (BuildSolutionErrored ? "Errored Building" : "Completed"));
-					CheckBox.Enabled = true;
-					OpenButton.Visible = true;
+					SetCheckBoxEnabled(CheckBox, true);
+					SetButtonVisibility(OpenButton, true);
+					SetButtonVisibility(RefreshButton, true);
 				}
-				ViewBuildLogButton.Visible = true;
-				if (RefreshButton != null)
-				{
-					RefreshButton.Visible = true;
-				}
+				SetButtonVisibility(ViewBuildLogButton, true);
 			}
 		};
 

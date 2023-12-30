@@ -29,7 +29,7 @@ namespace ISI.Extensions.VisualStudio
 		internal class SolutionDetailsWithNugetPackageDependencies : ISI.Extensions.VisualStudio.SolutionDetails
 		{
 			public bool IsBuilt { get; set; }
-			public HashSet<string> NugetPackageDependencies { get; set; }
+			public HashSet<string> NugetPackageDependenciesFromOtherSolutions { get; set; }
 		}
 
 		public DTOs.UpgradeNugetPackagesResponse UpgradeNugetPackages(DTOs.UpgradeNugetPackagesRequest request)
@@ -70,7 +70,7 @@ namespace ISI.Extensions.VisualStudio
 					ProjectDetailsSet = solutionDetails.ProjectDetailsSet.ToNullCheckedArray(),
 					SolutionFilterDetailsSet = solutionDetails.SolutionFilterDetailsSet.ToNullCheckedArray(),
 					UpgradeNugetPackagesPriority = solutionDetails.UpgradeNugetPackagesPriority,
-					ExecuteBuildScriptTargetAfterUpdateNugetPackages = solutionDetails.ExecuteBuildScriptTargetAfterUpdateNugetPackages,
+					ExecuteBuildScriptTargetAfterUpgradeNugetPackages = solutionDetails.ExecuteBuildScriptTargetAfterUpgradeNugetPackages,
 					DoNotUpdatePackages = solutionDetails.DoNotUpdatePackages.ToNullCheckedArray(),
 					IsBuilt = false,
 				};
@@ -155,23 +155,28 @@ namespace ISI.Extensions.VisualStudio
 					ProjectDetailsSet = solutionDetails.ProjectDetailsSet.ToNullCheckedArray(),
 					SolutionFilterDetailsSet = solutionDetails.SolutionFilterDetailsSet.ToNullCheckedArray(),
 					UpgradeNugetPackagesPriority = solutionDetails.UpgradeNugetPackagesPriority,
-					ExecuteBuildScriptTargetAfterUpdateNugetPackages = solutionDetails.ExecuteBuildScriptTargetAfterUpdateNugetPackages,
+					ExecuteBuildScriptTargetAfterUpgradeNugetPackages = solutionDetails.ExecuteBuildScriptTargetAfterUpgradeNugetPackages,
 					DoNotUpdatePackages = solutionDetails.DoNotUpdatePackages.ToNullCheckedArray(),
 					IsBuilt = false,
-					NugetPackageDependencies = nugetPackageDependencies,
+					NugetPackageDependenciesFromOtherSolutions = nugetPackageDependencies,
 				};
 			}, NullCheckCollectionResult.Empty).Where(solutionDetails => solutionDetails != null).ToArray();
 
 			foreach (var solutionDetails in solutionDetailsSet)
 			{
-				solutionDetails.NugetPackageDependencies.RemoveWhere(nugetPackageDependency => !isProjectBuilt.ContainsKey(nugetPackageDependency));
+				solutionDetails.NugetPackageDependenciesFromOtherSolutions.RemoveWhere(nugetPackageDependency => !isProjectBuilt.ContainsKey(nugetPackageDependency));
 			}
 
 			while (solutionDetailsSet.Any(solutionDetails => !solutionDetails.IsBuilt))
 			{
 				var solutionDetails = solutionDetailsSet
 																.Where(solutionDetails => !solutionDetails.IsBuilt)
-																.Where(solutionDetails => solutionDetails.NugetPackageDependencies.All(nugetPackageDependency => isProjectBuilt[nugetPackageDependency]))
+																.Where(solutionDetails => solutionDetails.NugetPackageDependenciesFromOtherSolutions.All(nugetPackageDependency => isProjectBuilt[nugetPackageDependency]))
+																.OrderBy(solutionDetails => solutionDetails.UpgradeNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase)
+																.FirstOrDefault() ??
+															solutionDetailsSet
+																.Where(solutionDetails => !solutionDetails.IsBuilt)
+																.Where(solutionDetails => !solutionDetails.NugetPackageDependenciesFromOtherSolutions.Any())
 																.OrderBy(solutionDetails => solutionDetails.UpgradeNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase)
 																.FirstOrDefault() ??
 															solutionDetailsSet
@@ -234,17 +239,6 @@ namespace ISI.Extensions.VisualStudio
 									logger.LogInformation(string.Format("  Added {0} {1}", getLatestPackageVersionResponse.NugetPackageKey.Package, getLatestPackageVersionResponse.NugetPackageKey.Version));
 
 									nugetPackageKeys.TryAdd(getLatestPackageVersionResponse.NugetPackageKey);
-
-									//if (getLatestPackageVersionResponse.NugetPackageKey.Dependencies.NullCheckedAny())
-									//{
-									//	foreach (var nugetPackageDependency in getLatestPackageVersionResponse.NugetPackageKey.Dependencies)
-									//	{
-									//		if (!nugetPackageKeys.ContainsKey(nugetPackageDependency.Package))
-									//		{
-									//			addNugetPackageKey(nugetPackageDependency.Package);
-									//		}
-									//	}
-									//}
 								}
 							}
 
@@ -423,7 +417,7 @@ namespace ISI.Extensions.VisualStudio
 						logger.LogInformation(string.Format("Upgraded Nuget Packages in {0}", solutionDetails.SolutionName));
 					}
 
-					if (!string.IsNullOrWhiteSpace(solutionDetails.ExecuteBuildScriptTargetAfterUpdateNugetPackages))
+					if (!string.IsNullOrWhiteSpace(solutionDetails.ExecuteBuildScriptTargetAfterUpgradeNugetPackages))
 					{
 						if (BuildScriptApi.TryGetBuildScript(solutionDetails.SolutionDirectory, out var buildScriptFullName))
 						{
@@ -437,7 +431,7 @@ namespace ISI.Extensions.VisualStudio
 								var executeBuildTargetResponse = BuildScriptApi.ExecuteBuildTarget(new()
 								{
 									BuildScriptFullName = buildScriptFullName,
-									Target = solutionDetails.ExecuteBuildScriptTargetAfterUpdateNugetPackages,
+									Target = solutionDetails.ExecuteBuildScriptTargetAfterUpgradeNugetPackages,
 									Parameters = new[]
 									{
 										(ParameterName: "NugetPackOutputDirectory", ParameterValue: nugetPackOutputDirectory)

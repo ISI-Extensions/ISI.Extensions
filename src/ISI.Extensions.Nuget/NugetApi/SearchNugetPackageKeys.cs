@@ -29,19 +29,14 @@ namespace ISI.Extensions.Nuget
 {
 	public partial class NugetApi
 	{
-		public DTOs.ListNugetPackageKeysResponse ListNugetPackageKeys(DTOs.ListNugetPackageKeysRequest request)
+		public DTOs.SearchNugetPackageKeysResponse SearchNugetPackageKeys(DTOs.SearchNugetPackageKeysRequest request)
 		{
-			var response = new DTOs.ListNugetPackageKeysResponse();
+			var response = new DTOs.SearchNugetPackageKeysResponse();
 
 			var arguments = new List<string>();
 
-			arguments.Add("list");
-
-			if (!string.IsNullOrWhiteSpace(request.Search))
-			{
-				arguments.Add(request.Search);
-			}
-
+			arguments.Add("search");
+			arguments.Add(request.Search);
 			if (!string.IsNullOrWhiteSpace(request.Source))
 			{
 				arguments.Add(string.Format("-Source \"{0}\"", request.Source));
@@ -50,8 +45,6 @@ namespace ISI.Extensions.Nuget
 			{
 				arguments.AddRange(GetSourcesFromConfigFileArguments(request.NugetConfigFullNames));
 			}
-
-			arguments.Add("-NonInteractive");
 
 			var nugetResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{
@@ -64,33 +57,34 @@ namespace ISI.Extensions.Nuget
 			{
 				var nugetPackageKeys = new List<NugetPackageKey>();
 
-				var lines = nugetResponse.Output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-
-				foreach (var line in lines)
+				foreach (var line in nugetResponse.Output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
 				{
-					var linePieces = line.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+					var linePieces = line.Split(new[] { ' ', '|', '\t' }, StringSplitOptions.RemoveEmptyEntries).Select(value => value.Trim()).Where(value => !string.IsNullOrWhiteSpace(value)).ToArray();
 
-					if (linePieces.Length == 2)
+					if (linePieces.Length >= 3)
 					{
-						var package = linePieces[0].Trim();
-
-						if (!request.ExactMatchOnly || string.Equals(package, request.Search, StringComparison.InvariantCultureIgnoreCase))
+						if (string.Equals(linePieces[0], ">", StringComparison.InvariantCultureIgnoreCase))
 						{
-							var nugetPackageKey = GetNugetPackageKey(new()
-							{
-								Package = package,
-								Version = linePieces[1].Trim(),
-								Source = request.Source,
-							}).NugetPackageKey;
+							var package = linePieces[1].Trim();
 
-							if (nugetPackageKey != null)
+							if (!request.ExactMatchOnly || string.Equals(package, request.Search, StringComparison.InvariantCultureIgnoreCase))
 							{
-								nugetPackageKeys.Add(nugetPackageKey);
+								var nugetPackageKey = GetNugetPackageKey(new()
+								{
+									Package = package,
+									Version = linePieces[2].Trim(),
+									Source = request.Source,
+								}).NugetPackageKey;
+
+								if (nugetPackageKey != null)
+								{
+									nugetPackageKeys.Add(nugetPackageKey);
+								}
 							}
 						}
 					}
 				}
-
+				 
 				response.NugetPackageKeys = nugetPackageKeys.ToArray();
 			}
 

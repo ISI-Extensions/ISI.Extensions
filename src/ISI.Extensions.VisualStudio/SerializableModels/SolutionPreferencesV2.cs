@@ -34,7 +34,7 @@ namespace ISI.Extensions.VisualStudio.SerializableModels
 			return new SolutionPreferencesV2()
 			{
 				UpgradeNugetPackagesPriority = source.UpgradeNugetPackagesPriority,
-				ExecuteBuildScriptTargetAfterUpdateNugetPackages = source.ExecuteBuildScriptTargetAfterUpdateNugetPackages,
+				ExecuteBuildScriptTargetAfterUpgradeNugetPackages = source.ExecuteBuildScriptTargetAfterUpgradeNugetPackages,
 				DoNotUpgradePackages = source.DoNotUpgradePackages.ToNullCheckedArray(),
 			};
 		}
@@ -44,7 +44,7 @@ namespace ISI.Extensions.VisualStudio.SerializableModels
 			return new LOCALENTITIES.SolutionPreferences()
 			{
 				UpgradeNugetPackagesPriority = UpgradeNugetPackagesPriority,
-				ExecuteBuildScriptTargetAfterUpdateNugetPackages = ExecuteBuildScriptTargetAfterUpdateNugetPackages,
+				ExecuteBuildScriptTargetAfterUpgradeNugetPackages = ExecuteBuildScriptTargetAfterUpgradeNugetPackages,
 				DoNotUpgradePackages = DoNotUpgradePackages.ToNullCheckedArray(),
 			};
 		}
@@ -52,8 +52,8 @@ namespace ISI.Extensions.VisualStudio.SerializableModels
 		[DataMember(Name = "upgradeNugetPackagesPriority", EmitDefaultValue = false)]
 		public int? UpgradeNugetPackagesPriority { get; set; }
 
-		[DataMember(Name = "executeBuildScriptTargetAfterUpdateNugetPackages", EmitDefaultValue = false)]
-		public string ExecuteBuildScriptTargetAfterUpdateNugetPackages { get; set; }
+		[DataMember(Name = "executeBuildScriptTargetAfterUpgradeNugetPackages", EmitDefaultValue = false)]
+		public string ExecuteBuildScriptTargetAfterUpgradeNugetPackages { get; set; }
 
 		[DataMember(Name = "doNotUpgradePackages", EmitDefaultValue = false)]
 		public string[] DoNotUpgradePackages { get; set; }

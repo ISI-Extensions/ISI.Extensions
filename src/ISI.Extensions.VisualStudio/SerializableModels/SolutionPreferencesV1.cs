@@ -34,7 +34,7 @@ namespace ISI.Extensions.VisualStudio.SerializableModels
 			return new SolutionPreferencesV1()
 			{
 				UpdateNugetPackagesPriority = source.UpgradeNugetPackagesPriority,
-				ExecuteBuildScriptTargetAfterUpdateNugetPackages = source.ExecuteBuildScriptTargetAfterUpdateNugetPackages,
+				ExecuteBuildScriptTargetAfterUpdateNugetPackages = source.ExecuteBuildScriptTargetAfterUpgradeNugetPackages,
 				DoNotUpdatePackageIds = source.DoNotUpgradePackages.ToNullCheckedArray(),
 			};
 		}
@@ -44,7 +44,7 @@ namespace ISI.Extensions.VisualStudio.SerializableModels
 			return new LOCALENTITIES.SolutionPreferences()
 			{
 				UpgradeNugetPackagesPriority = UpdateNugetPackagesPriority,
-				ExecuteBuildScriptTargetAfterUpdateNugetPackages = ExecuteBuildScriptTargetAfterUpdateNugetPackages,
+				ExecuteBuildScriptTargetAfterUpgradeNugetPackages = ExecuteBuildScriptTargetAfterUpdateNugetPackages,
 				DoNotUpgradePackages = DoNotUpdatePackageIds.ToNullCheckedArray(),
 			};
 		}

@@ -50,40 +50,26 @@ namespace ISI.Extensions.Nuget
 
 			if (string.IsNullOrWhiteSpace(request.Version))
 			{
-				var arguments = new List<string>();
+				var foundNugetPackageKey = ListNugetPackageKeys(new()
+				                           {
+					                           Search = request.Package,
+					                           ExactMatchOnly = true,
+					                           Source = request.Source,
+					                           NugetConfigFullNames = request.NugetConfigFullNames,
+				                           }).NugetPackageKeys.NullCheckedFirstOrDefault() ??
+				                           SearchNugetPackageKeys(new()
+				                           {
+					                           Search = request.Package,
+					                           ExactMatchOnly = true,
+					                           Source = request.Source,
+					                           NugetConfigFullNames = request.NugetConfigFullNames,
+				                           }).NugetPackageKeys.NullCheckedFirstOrDefault();
 
-				arguments.Add("search");
-				arguments.Add(request.Package);
-				if (!string.IsNullOrWhiteSpace(request.Source))
+				if (foundNugetPackageKey != null)
 				{
-					arguments.Add(string.Format("-Source \"{0}\"", request.Source));
-				}
-				if (request.NugetConfigFullNames.NullCheckedAny())
-				{
-					arguments.AddRange(GetSourcesFromConfigFileArguments(request.NugetConfigFullNames));
-				}
+					response.NugetPackageKey = foundNugetPackageKey;
 
-				var nugetResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-				{
-					Logger = new NullLogger(),
-					ProcessExeFullName = GetNugetExeFullName(new()).NugetExeFullName,
-					Arguments = arguments.ToArray(),
-				});
-
-				foreach (var line in nugetResponse.Output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
-				{
-					if (string.IsNullOrWhiteSpace(request.Version))
-					{
-						var linePieces = line.Split(new[] { ' ', '|', '\t' }, StringSplitOptions.RemoveEmptyEntries).Select(value => value.Trim()).Where(value => !string.IsNullOrWhiteSpace(value)).ToArray();
-
-						if (linePieces.Length >= 3)
-						{
-							if (string.Equals(linePieces[0], ">", StringComparison.InvariantCultureIgnoreCase) && string.Equals(linePieces[1], request.Package, StringComparison.InvariantCultureIgnoreCase))
-							{
-								request.Version = linePieces[2];
-							}
-						}
-					}
+					return response;
 				}
 			}
 

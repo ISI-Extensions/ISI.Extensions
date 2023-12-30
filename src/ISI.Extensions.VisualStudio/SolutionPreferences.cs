@@ -23,7 +23,7 @@ namespace ISI.Extensions.VisualStudio
 	{
 		public int? UpgradeNugetPackagesPriority { get; set; }
 
-		public string ExecuteBuildScriptTargetAfterUpdateNugetPackages { get; set; }
+		public string ExecuteBuildScriptTargetAfterUpgradeNugetPackages { get; set; }
 
 		public string[] DoNotUpgradePackages { get; set; }
 	}

@@ -257,7 +257,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			{
 				if (!CleanSolutionErrored && !UpdateSolutionErrored)
 				{
-					SetStatus((UpgradeNugetPackagesErrored ? TaskActionStatus.Errored : TaskActionStatus.Default), (UpdateSolutionErrored ? "Errored Upgrading Nuget Packages" : "Completed"));
+					SetStatus((UpgradeNugetPackagesErrored ? TaskActionStatus.Errored : TaskActionStatus.Default), (UpgradeNugetPackagesErrored ? "Errored Upgrading Nuget Packages" : "Completed"));
 					CheckBox.Enabled = true;
 					OpenButton.Visible = true;
 					if (RefreshButton != null)

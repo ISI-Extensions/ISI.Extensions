@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2023, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,24 +15,18 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.VisualStudio
+namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public class SolutionDetails
+	public class SearchNugetPackageKeysRequest
 	{
-		public string SolutionName { get; set; }
-		public string SolutionDirectory { get; set; }
-		public string SolutionFullName { get; set; }
-		public string RootSourceDirectory { get; set; }
-
-		public ProjectDetails[] ProjectDetailsSet { get; set; }
-		public SolutionFilterDetails[] SolutionFilterDetailsSet { get; set; }
-
-		public int UpgradeNugetPackagesPriority { get; set; } = int.MaxValue;
-		public string ExecuteBuildScriptTargetAfterUpgradeNugetPackages { get; set; }
-		public string[] DoNotUpdatePackages { get; set; }
-
-		public override string ToString() => SolutionName;
+		public string Search { get; set; }
+		public bool ExactMatchOnly { get; set; }
+		public string Source { get; set; }
+		public IEnumerable<string> NugetConfigFullNames { get; set; }
 	}
 }

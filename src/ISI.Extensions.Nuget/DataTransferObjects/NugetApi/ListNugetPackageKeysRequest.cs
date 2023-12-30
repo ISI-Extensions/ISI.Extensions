@@ -23,6 +23,9 @@ namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
 	public class ListNugetPackageKeysRequest
 	{
+		public string Search { get; set; }
+		public bool ExactMatchOnly { get; set; }
 		public string Source { get; set; }
+		public IEnumerable<string> NugetConfigFullNames { get; set; }
 	}
 }

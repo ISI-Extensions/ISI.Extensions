@@ -116,7 +116,7 @@ namespace ISI.Extensions.VisualStudio
 					var storedSolutionDetails = JsonSerializer.Deserialize<SerializableDTOs.ISolutionPreferences>(stream)?.Export();
 
 					response.SolutionDetails.UpgradeNugetPackagesPriority = storedSolutionDetails.UpgradeNugetPackagesPriority ?? int.MaxValue;
-					response.SolutionDetails.ExecuteBuildScriptTargetAfterUpdateNugetPackages = storedSolutionDetails.ExecuteBuildScriptTargetAfterUpdateNugetPackages;
+					response.SolutionDetails.ExecuteBuildScriptTargetAfterUpgradeNugetPackages = storedSolutionDetails.ExecuteBuildScriptTargetAfterUpgradeNugetPackages;
 					response.SolutionDetails.DoNotUpdatePackages = storedSolutionDetails.DoNotUpgradePackages;
 				}
 			}

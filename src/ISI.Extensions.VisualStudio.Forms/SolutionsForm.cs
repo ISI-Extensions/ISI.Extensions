@@ -24,18 +24,15 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ISI.Extensions.VisualStudio.Forms.Extensions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.VisualStudio.Forms
 {
 	public partial class SolutionsForm : Form
 	{
-		public delegate void SortSolutionsDelegate(bool updateSolution, bool upgradeNugetPackages, Action<string> setStatus);
-
 		public interface ISolutionsContext
 		{
 			IList<Solution> Solutions { get; }
-
-			SortSolutionsDelegate SortSolutions { get; }
 		}
 
 		public bool ShowUpgradeNugetPackagesCheckBox { get; set; } = false;
@@ -49,6 +46,9 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 		private static ISI.Extensions.VisualStudio.SolutionApi _solutionApi = null;
 		protected ISI.Extensions.VisualStudio.SolutionApi SolutionApi => _solutionApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
+
+		private static ISI.Extensions.Nuget.NugetApi _nugetApi = null;
+		protected ISI.Extensions.Nuget.NugetApi NugetApi => _nugetApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Nuget.NugetApi>();
 
 		protected internal ISolutionsContext SolutionsContext { get; set; }
 
@@ -172,7 +172,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 							ExecuteProjects = form.ExecuteProjects;
 							ShowProjectExecutionInTaskbar = form.ShowProjectExecutionInTaskbar;
 
-							foreach (var solutionTask in solution.GetTasks(CleanSolution, UpdateSolution, UpgradeNugetPackages, CommitSolution, RestoreNugetPackages, BuildSolution, ExecuteProjects, ShowProjectExecutionInTaskbar))
+							foreach (var solutionTask in solution.GetTasks(CleanSolution, UpdateSolution, RestoreNugetPackages, BuildSolution, ExecuteProjects, ShowProjectExecutionInTaskbar))
 							{
 								BackgroundTasks.Enqueue(solutionTask);
 							}
@@ -226,13 +226,69 @@ namespace ISI.Extensions.VisualStudio.Forms
 							IsFirstRefresh = false;
 						}
 
-						SolutionsContext.SortSolutions?.Invoke(UpdateSolution, UpgradeNugetPackages, SetStatus);
-
 						SetStatus(string.Empty);
+
+						var resetResponses = true;
+
+						if (UpgradeNugetPackages)
+						{
+							resetResponses = false;
+
+							BackgroundTasks.Enqueue(new TaskActions()
+							{
+								PreAction = () => { },
+								Action = () =>
+								{
+									var solutionsBySolutionFullName = SolutionsContext.Solutions.Where(solution => solution.Selected).ToDictionary(solution => solution.SolutionDetails.SolutionFullName, _ => _, StringComparer.InvariantCultureIgnoreCase);
+
+									foreach (var solution in solutionsBySolutionFullName.Values)
+									{
+										solution.ResetResponses();
+									}
+
+									SolutionApi.UpgradeNugetPackages(new()
+									{
+										SolutionFullNames = solutionsBySolutionFullName.Values.Select(solution => solution.SolutionDetails.SolutionFullName),
+										UpdateWorkingCopyFromSourceControl = UpdateSolution,
+										CommitWorkingCopyToSourceControl = CommitSolution,
+										IgnorePackageIds = NugetApi.GetNugetSettings(new())?.NugetSettings?.UpdateNugetPackages?.IgnorePackageIds,
+										NugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary(),
+										UpsertAssemblyRedirectsNugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary(),
+										AddToLog = (logEntryLevel, description) =>
+										{
+										},
+										PreAction = (solutionFullName) =>
+										{
+											if (solutionsBySolutionFullName.TryGetValue(solutionFullName, out var solution))
+											{
+												solution.UpgradeNugetPackagesPreAction();
+											}
+										},
+										SetStatus = (solutionFullName, description) =>
+										{
+											if (solutionsBySolutionFullName.TryGetValue(solutionFullName, out var solution))
+											{
+												solution.UpdateStatus?.Invoke(description);
+												solution.Logger.LogInformation(description);
+												solution.UpgradeNugetPackagesResponse.AppendLine(description);
+											}
+										},
+										PostAction = (solutionFullName) =>
+										{
+											if (solutionsBySolutionFullName.TryGetValue(solutionFullName, out var solution))
+											{
+												solution.UpgradeNugetPackagesPostAction(!RestoreNugetPackages && !BuildSolution, RestoreNugetPackages && !BuildSolution);
+											}
+										},
+									});
+								},
+								PostAction = () => { },
+							});
+						}
 
 						foreach (var solution in SolutionsContext.Solutions.Where(solution => solution.Selected))
 						{
-							foreach (var solutionTask in solution.GetTasks(CleanSolution, UpdateSolution, UpgradeNugetPackages, CommitSolution, RestoreNugetPackages, BuildSolution, ExecuteProjects, ShowProjectExecutionInTaskbar))
+							foreach (var solutionTask in solution.GetTasks(resetResponses, CleanSolution, UpdateSolution, RestoreNugetPackages, BuildSolution, ExecuteProjects, ShowProjectExecutionInTaskbar))
 							{
 								BackgroundTasks.Enqueue(solutionTask);
 							}

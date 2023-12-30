@@ -29,6 +29,7 @@ namespace ISI.Extensions.VisualStudio
 		internal class SolutionDetailsWithNugetPackageDependencies : ISI.Extensions.VisualStudio.SolutionDetails
 		{
 			public bool IsBuilt { get; set; }
+			public HashSet<string> NugetPackageDependencies { get; set; }
 			public HashSet<string> NugetPackageDependenciesFromOtherSolutions { get; set; }
 		}
 
@@ -83,29 +84,40 @@ namespace ISI.Extensions.VisualStudio
 			}
 			logger.LogInformation(string.Empty);
 
+			ILogger getSolutionLogger(string solutionFullName)
+			{
+				if (request.SetStatus != null)
+				{
+					return new AddToLogLogger((level, description) => request.SetStatus(solutionFullName, description), logger);
+				}
+				return logger;
+			}
+
 			if (request.UpdateWorkingCopyFromSourceControl && (solutionDetailsSet.Length > 1))
 			{
 				foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
 				{
-					using (getBuildServiceSolutionLock(solutionDetails.SolutionFullName, (logEntryLevel, description) => logger.LogInformation(description)))
+					var solutionLogger = getSolutionLogger(solutionDetails.SolutionFullName);
+
+					using (getBuildServiceSolutionLock(solutionDetails.SolutionFullName, (logEntryLevel, description) => solutionLogger.LogInformation(description)))
 					{
 						using (GetSolutionLock(new()
 						{
 							SolutionFullName = solutionDetails.SolutionFullName,
-							AddToLog = (logEntryLevel, description) => logger.LogInformation(description),
+							AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
 						}).Lock)
 						{
-							logger.LogInformation(string.Format("Updating {0} from Source Control", solutionDetails.SolutionName));
+							solutionLogger.LogInformation(string.Format("Updating {0} from Source Control", solutionDetails.SolutionName));
 
 							if (!SourceControlClientApi.UpdateWorkingCopy(new()
 							{
 								FullName = solutionDetails.RootSourceDirectory,
 								IncludeExternals = true,
-								AddToLog = (logEntryLevel, description) => logger.LogInformation(description),
+								AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
 							}).Success)
 							{
 								var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
-								logger.LogError(exception.Message);
+								solutionLogger.LogError(exception.Message);
 								throw exception;
 							}
 						}
@@ -158,7 +170,8 @@ namespace ISI.Extensions.VisualStudio
 					ExecuteBuildScriptTargetAfterUpgradeNugetPackages = solutionDetails.ExecuteBuildScriptTargetAfterUpgradeNugetPackages,
 					DoNotUpdatePackages = solutionDetails.DoNotUpdatePackages.ToNullCheckedArray(),
 					IsBuilt = false,
-					NugetPackageDependenciesFromOtherSolutions = nugetPackageDependencies,
+					NugetPackageDependencies = new HashSet<string>(nugetPackageDependencies, StringComparer.InvariantCultureIgnoreCase),
+					NugetPackageDependenciesFromOtherSolutions = new HashSet<string>(nugetPackageDependencies, StringComparer.InvariantCultureIgnoreCase),
 				};
 			}, NullCheckCollectionResult.Empty).Where(solutionDetails => solutionDetails != null).ToArray();
 
@@ -187,15 +200,19 @@ namespace ISI.Extensions.VisualStudio
 				var stopWatch = new System.Diagnostics.Stopwatch();
 				stopWatch.Start();
 
-				using (getBuildServiceSolutionLock(solutionDetails.SolutionFullName, (logEntryLevel, description) => logger.LogInformation(description)))
+				var solutionLogger = getSolutionLogger(solutionDetails.SolutionFullName);
+
+				using (getBuildServiceSolutionLock(solutionDetails.SolutionFullName, (logEntryLevel, description) => solutionLogger.LogInformation(description)))
 				{
+					request.PreAction?.Invoke(solutionDetails.SolutionFullName);
+
 					using (GetSolutionLock(new()
 					{
 						SolutionFullName = solutionDetails.SolutionFullName,
-						AddToLog = (logEntryLevel, description) => logger.LogInformation(description),
+						AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
 					}).Lock)
 					{
-						logger.LogInformation(string.Format("Updating {0} from Source Control", solutionDetails.SolutionName));
+						solutionLogger.LogInformation(string.Format("Updating {0} from Source Control", solutionDetails.SolutionName));
 
 						var dirtyFileNames = new HashSet<string>();
 
@@ -205,16 +222,16 @@ namespace ISI.Extensions.VisualStudio
 							{
 								FullName = solutionDetails.RootSourceDirectory,
 								IncludeExternals = true,
-								AddToLog = (logEntryLevel, description) => logger.LogInformation(description),
+								AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
 							}).Success)
 							{
 								var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
-								logger.LogError(exception.Message);
+								solutionLogger.LogError(exception.Message);
 								throw exception;
 							}
 						}
 
-						logger.LogInformation(string.Format("Upgrading Nuget Packages in {0}", solutionDetails.SolutionName));
+						solutionLogger.LogInformation(string.Format("Upgrading Nuget Packages in {0}", solutionDetails.SolutionName));
 
 						try
 						{
@@ -236,7 +253,7 @@ namespace ISI.Extensions.VisualStudio
 
 								if (getLatestPackageVersionResponse.NugetPackageKey != null)
 								{
-									logger.LogInformation(string.Format("  Added {0} {1}", getLatestPackageVersionResponse.NugetPackageKey.Package, getLatestPackageVersionResponse.NugetPackageKey.Version));
+									solutionLogger.LogInformation(string.Format("  Added {0} {1}", getLatestPackageVersionResponse.NugetPackageKey.Package, getLatestPackageVersionResponse.NugetPackageKey.Version));
 
 									nugetPackageKeys.TryAdd(getLatestPackageVersionResponse.NugetPackageKey);
 								}
@@ -244,7 +261,7 @@ namespace ISI.Extensions.VisualStudio
 
 							bool tryGetNugetPackageKey(string package, out ISI.Extensions.Nuget.NugetPackageKey nugetPackageKey)
 							{
-								logger.LogInformation($"  tryGetNugetPackageKey for {package}");
+								solutionLogger.LogInformation($"  tryGetNugetPackageKey for {package}");
 
 								if (solutionIgnorePackageIds.Contains(package))
 								{
@@ -258,22 +275,30 @@ namespace ISI.Extensions.VisualStudio
 									return true;
 								}
 
-								using (NugetApi.GetNugetLock(new()
-								{
-									AddToLog = (logEntryLevel, description) => logger.LogInformation(description),
-								}).Lock)
-								{
-									addNugetPackageKey(package);
-								}
+								//using (NugetApi.GetNugetLock(new()
+								//{
+								//	AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
+								//}).Lock)
+								//{
+								//	addNugetPackageKey(package);
+								//}
+
+								addNugetPackageKey(package);
+
 
 								return nugetPackageKeys.TryGetValue(package, out nugetPackageKey);
 							}
 
-							logger.LogInformation("Updating Projects");
+							Parallel.ForEach(solutionDetails.NugetPackageDependencies, nugetPackageDependency =>
+							{
+								tryGetNugetPackageKey(nugetPackageDependency, out var _);
+							});
+
+							solutionLogger.LogInformation("Updating Projects");
 
 							foreach (var projectDetails in solutionDetails.ProjectDetailsSet.OrderBy(projectDetails => projectDetails.ProjectFullName, StringComparer.InvariantCultureIgnoreCase))
 							{
-								logger.LogInformation(string.Format("  {0}", projectDetails.ProjectName));
+								solutionLogger.LogInformation(string.Format("  {0}", projectDetails.ProjectName));
 
 								var packagesConfigFullName = System.IO.Path.Combine(projectDetails.ProjectDirectory, "packages.config");
 
@@ -372,7 +397,7 @@ namespace ISI.Extensions.VisualStudio
 						}
 						catch (Exception exception)
 						{
-							logger.LogError(exception.ErrorMessageFormatted());
+							solutionLogger.LogError(exception.ErrorMessageFormatted());
 							throw;
 						}
 
@@ -398,31 +423,31 @@ namespace ISI.Extensions.VisualStudio
 							}
 							catch (Exception exception)
 							{
-								logger.LogError(string.Format("Error deleting Resharper Cache \"{0}\"", solutionDetails.SolutionDirectory));
+								solutionLogger.LogError(string.Format("Error deleting Resharper Cache \"{0}\"", solutionDetails.SolutionDirectory));
 							}
 
 							if (!SourceControlClientApi.Commit(new()
 							{
 								FullNames = dirtyFileNames,
 								LogMessage = "update nuget packages",
-								AddToLog = (logEntryLevel, description) => logger.LogInformation(description),
+								AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
 							}).Success)
 							{
 								var exception = new Exception(string.Format("Error committing \"{0}\"", solutionDetails.RootSourceDirectory));
-								logger.LogError(exception.Message);
+								solutionLogger.LogError(exception.Message);
 								throw exception;
 							}
 						}
 
-						logger.LogInformation(string.Format("Upgraded Nuget Packages in {0}", solutionDetails.SolutionName));
+						solutionLogger.LogInformation(string.Format("Upgraded Nuget Packages in {0}", solutionDetails.SolutionName));
 					}
 
 					if (!string.IsNullOrWhiteSpace(solutionDetails.ExecuteBuildScriptTargetAfterUpgradeNugetPackages))
 					{
 						if (BuildScriptApi.TryGetBuildScript(solutionDetails.SolutionDirectory, out var buildScriptFullName))
 						{
-							logger.LogInformation(string.Format("Building {0}", solutionDetails.SolutionName));
-							logger.LogInformation(string.Format("  BuildScriptFullName: {0}", buildScriptFullName));
+							solutionLogger.LogInformation(string.Format("Building {0}", solutionDetails.SolutionName));
+							solutionLogger.LogInformation(string.Format("  BuildScriptFullName: {0}", buildScriptFullName));
 
 							try
 							{
@@ -437,20 +462,21 @@ namespace ISI.Extensions.VisualStudio
 										(ParameterName: "NugetPackOutputDirectory", ParameterValue: nugetPackOutputDirectory)
 									},
 									UseShell = false,
-									AddToLog = (logEntryLevel, description) => logger.LogInformation(description),
+									AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
 								});
 
 								if (executeBuildTargetResponse.Success)
 								{
 									if (!System.IO.Directory.Exists(nugetPackOutputDirectory))
 									{
+										logger.LogInformation(string.Format("Sleeping for 4 min because \"{0}\" doesn't exist", nugetPackOutputDirectory));
 										System.Threading.Thread.Sleep(TimeSpan.FromMinutes(4));
 									}
 								}
 								else
 								{
 									var exception = new Exception(string.Format("Error Building \"{0}\"", solutionDetails.RootSourceDirectory));
-									logger.LogError(exception.Message);
+									solutionLogger.LogError(exception.Message);
 									throw exception;
 								}
 
@@ -463,12 +489,12 @@ namespace ISI.Extensions.VisualStudio
 
 									if (updatedNugetPackageKeys.NullCheckedAny())
 									{
-										logger.LogInformation(string.Format("Refreshing NugetPackageKeys From: \"{0}\"", nugetPackOutputDirectory));
+										solutionLogger.LogInformation(string.Format("Refreshing NugetPackageKeys From: \"{0}\"", nugetPackOutputDirectory));
 										foreach (var updatedNugetPackageKey in updatedNugetPackageKeys)
 										{
-											logger.LogInformation(string.Format("  {0} => {1}", updatedNugetPackageKey.Package, updatedNugetPackageKey.Version));
+											solutionLogger.LogInformation(string.Format("  {0} => {1}", updatedNugetPackageKey.Package, updatedNugetPackageKey.Version));
 										}
-										logger.LogInformation(string.Empty);
+										solutionLogger.LogInformation(string.Empty);
 
 										nugetPackageKeys.Merge(updatedNugetPackageKeys);
 									}
@@ -484,11 +510,11 @@ namespace ISI.Extensions.VisualStudio
 							}
 							catch (Exception exception)
 							{
-								logger.LogError(exception.ErrorMessageFormatted());
+								solutionLogger.LogError(exception.ErrorMessageFormatted());
 								throw;
 							}
 
-							logger.LogInformation(string.Format("Built {0}", solutionDetails.SolutionName));
+							solutionLogger.LogInformation(string.Format("Built {0}", solutionDetails.SolutionName));
 						}
 					}
 
@@ -498,11 +524,13 @@ namespace ISI.Extensions.VisualStudio
 					}
 
 					solutionDetails.IsBuilt = true;
+
+					request.PostAction?.Invoke(solutionDetails.SolutionFullName);
 				}
 
 				stopWatch.Stop();
-				logger.LogInformation($"Nuget Upgrade took: {stopWatch.Elapsed.Formatted(TimeSpanExtensions.TimeSpanFormat.Default)}");
-				logger.LogInformation(string.Empty);
+				solutionLogger.LogInformation($"Nuget Upgrade took: {stopWatch.Elapsed.Formatted(TimeSpanExtensions.TimeSpanFormat.Default)}");
+				solutionLogger.LogInformation(string.Empty);
 			}
 
 			return response;

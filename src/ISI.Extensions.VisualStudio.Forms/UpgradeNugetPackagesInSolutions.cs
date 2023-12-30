@@ -29,14 +29,9 @@ namespace ISI.Extensions.VisualStudio.Forms
 		private static ISI.Extensions.VisualStudio.SolutionApi _solutionApi = null;
 		protected static ISI.Extensions.VisualStudio.SolutionApi SolutionApi => _solutionApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
 
-		private static ISI.Extensions.Scm.SourceControlClientApi _sourceControlClientApi = null;
-		protected static ISI.Extensions.Scm.SourceControlClientApi SourceControlClientApi => _sourceControlClientApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.SourceControlClientApi>();
-
 		public class SolutionsContext : SolutionsForm.ISolutionsContext
 		{
 			public IList<Solution> Solutions { get; set; } = new List<Solution>();
-			public SolutionsForm.SortSolutionsDelegate SortSolutions { get; set; } = null;
-			public ISI.Extensions.Nuget.NugetPackageKeyDictionary NugetPackageKeys { get; } = new();
 		}
 
 		public static System.Windows.Forms.Form CreateForm(IEnumerable<string> selectedItemPaths, bool exitOnClose = false)
@@ -44,56 +39,6 @@ namespace ISI.Extensions.VisualStudio.Forms
 			SolutionsForm.ISolutionsContext upgradeNugetPackagesInSolutions(SolutionsForm form, Action<Solution> start)
 			{
 				var context = new SolutionsContext();
-
-				context.SortSolutions = (updateSolution, upgradeNugetPackages, setStatus) =>
-				{
-					if (upgradeNugetPackages)
-					{
-						var solutionDetailsSet = context.Solutions.ToNullCheckedArray(solution => SolutionApi.GetSolutionDetails(new()
-						{
-							Solution = solution.SolutionDetails.SolutionFullName,
-						}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
-
-
-						if (updateSolution)
-						{
-							foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
-							{
-								setStatus(string.Format("Updating {0} from Source Control", solutionDetails.SolutionName));
-
-								if (!SourceControlClientApi.UpdateWorkingCopy(new()
-								{
-									FullName = solutionDetails.RootSourceDirectory,
-									IncludeExternals = true,
-								}).Success)
-								{
-									var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
-									setStatus(exception.Message);
-									throw exception;
-								}
-							}
-
-							solutionDetailsSet = context.Solutions.ToNullCheckedArray(solution => SolutionApi.GetSolutionDetails(new()
-							{
-								Solution = solution.SolutionDetails.SolutionFullName,
-							}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
-						}
-
-						var sortedSolutions = new List<Solution>();
-
-						var solutionsBySolutionFullName = context.Solutions.ToDictionary(solution => solution.SolutionDetails.SolutionFullName, solution => solution, StringComparer.InvariantCultureIgnoreCase);
-
-						foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpgradeNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
-						{
-							if (solutionsBySolutionFullName.TryGetValue(solutionDetails.SolutionFullName, out var solution))
-							{
-								sortedSolutions.Add(solution);
-							}
-						}
-
-						context.Solutions = sortedSolutions;
-					}
-				};
 
 				form.Text = "Upgrade Nuget Packages In Solution(s)";
 				form.StartButton.Text = "Upgrade";
@@ -132,7 +77,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 				foreach (var solution in solutions)
 				{
-					context.Solutions.Add(new(solution.Key, form.SolutionsPanel, (context.Solutions.Count % 2 == 1), selectAll || solution.Value, start, null, context.NugetPackageKeys, true, false, OnChangedSelection, form.SetStatus, null));
+					context.Solutions.Add(new(solution.Key, form.SolutionsPanel, (context.Solutions.Count % 2 == 1), selectAll || solution.Value, start, null, true, false, OnChangedSelection, form.SetStatus, null));
 				}
 
 				form.SolutionsPanel.Controls.AddRange(context.Solutions.Select(solution => solution.Panel).ToArray());

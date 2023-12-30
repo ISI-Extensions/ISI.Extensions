@@ -21,7 +21,11 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 {
-	public delegate IDisposable GetBuildServiceSolutionLock(string solutionFullName, ISI.Extensions.StatusTrackers.AddToLog addToLog);
+	public delegate IDisposable GetBuildServiceSolutionLockDelegate(string solutionFullName, ISI.Extensions.StatusTrackers.AddToLog addToLog);
+
+	public delegate void UpgradeNugetPackagesPreActionDelegate(string solutionFullName);
+	public delegate void UpgradeNugetPackagesSetStatusDelegate(string solutionFullName, string description);
+	public delegate void UpgradeNugetPackagesPostActionDelegate(string solutionFullName);
 
 	public class UpgradeNugetPackagesRequest
 	{
@@ -42,6 +46,10 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 
 		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 
-		public GetBuildServiceSolutionLock GetBuildServiceSolutionLock { get; set; } = null;
+		public UpgradeNugetPackagesPreActionDelegate PreAction { get; set; }
+		public UpgradeNugetPackagesSetStatusDelegate SetStatus { get; set; }
+		public UpgradeNugetPackagesPostActionDelegate PostAction { get; set; }
+
+		public GetBuildServiceSolutionLockDelegate GetBuildServiceSolutionLock { get; set; } = null;
 	}
 }

@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,8 +48,6 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 		public virtual SolutionDetails SolutionDetails { get; }
 		public virtual BuildConfiguration ActiveBuildConfiguration { get; }
-		protected ISI.Extensions.Nuget.NugetPackageKeyDictionary NugetPackageKeys { get; }
-		protected bool CommitSolution { get; private set; }
 
 		public bool Selected
 		{
@@ -99,7 +97,44 @@ namespace ISI.Extensions.VisualStudio.Forms
 		protected internal System.Windows.Forms.Button OpenButton { get; set; }
 		protected internal System.Windows.Forms.Button ViewBuildLogButton { get; set; }
 
-		protected internal System.Diagnostics.Stopwatch Stopwatch { get; } = new ();
+		protected void SetButtonVisibility(System.Windows.Forms.Button button, bool isVisible)
+		{
+			if (button != null)
+			{
+				if (button.InvokeRequired)
+				{
+					button.Invoke((System.Windows.Forms.MethodInvoker)delegate
+					{
+						button.Visible = isVisible;
+					});
+				}
+				else
+				{
+					button.Visible = isVisible;
+				}
+			}
+		}
+
+		protected void SetCheckBoxEnabled(System.Windows.Forms.CheckBox checkBox, bool isEnabled)
+		{
+			if (checkBox != null)
+			{
+				if (checkBox.InvokeRequired)
+				{
+					checkBox.Invoke((System.Windows.Forms.MethodInvoker)delegate
+					{
+						checkBox.Enabled = isEnabled;
+					});
+				}
+				else
+				{
+					checkBox.Enabled = isEnabled;
+				}
+			}
+		}
+
+
+		protected internal System.Diagnostics.Stopwatch Stopwatch { get; } = new();
 
 		protected Process.ProcessResponse CleanSolutionResponse { get; private set; } = new();
 		protected bool CleanSolutionErrored { get; private set; }
@@ -197,77 +232,36 @@ namespace ISI.Extensions.VisualStudio.Forms
 			}
 		};
 
-		protected Process.ProcessResponse UpgradeNugetPackagesResponse { get; private set; } = new();
+		public Process.ProcessResponse UpgradeNugetPackagesResponse { get; private set; } = new();
 		protected bool UpgradeNugetPackagesErrored => UpgradeNugetPackagesResponse.Errored;
-		private TaskActions _upgradeNugetPackages = null;
-		protected TaskActions UpgradeNugetPackages => _upgradeNugetPackages ??= new()
+
+		public void UpgradeNugetPackagesPreAction()
 		{
-			PreAction = () =>
+			if (!CleanSolutionErrored && !UpdateSolutionErrored)
 			{
-				if (!CleanSolutionErrored && !UpdateSolutionErrored)
-				{
-					if (RefreshButton != null)
-					{
-						RefreshButton.Visible = false;
-					}
-					OpenButton.Visible = false;
-					CheckBox.Enabled = false;
-					ViewBuildLogButton.Visible = false;
-					SetStatus(TaskActionStatus.Default, "upgrading nuget packages ...");
-				}
-			},
-			Action = () =>
-			{
-				if (!CleanSolutionErrored && !UpdateSolutionErrored)
-				{
-					Logger.LogInformation("Start Upgrade Nuget Packages");
-					
-					var upsertAssemblyRedirectsNugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
+				SetButtonVisibility(RefreshButton, false);
+				SetButtonVisibility(OpenButton, false);
+				SetCheckBoxEnabled(CheckBox, false);
+				SetButtonVisibility(ViewBuildLogButton, false);
+				SetStatus(TaskActionStatus.Default, "upgrading nuget packages ...");
 
-					try
-					{
-						SolutionApi.UpgradeNugetPackages(new()
-						{
-							SolutionFullNames = new [] { SolutionDetails.SolutionFullName },
-							UpdateWorkingCopyFromSourceControl = false,
-							CommitWorkingCopyToSourceControl = CommitSolution,
-							IgnorePackageIds = NugetApi.GetNugetSettings(new ())?.NugetSettings?.UpdateNugetPackages?.IgnorePackageIds,
-							NugetPackageKeys = NugetPackageKeys,
-							UpsertAssemblyRedirectsNugetPackageKeys = upsertAssemblyRedirectsNugetPackageKeys,
-							AddToLog = (logEntryLevel, description) =>
-							{
-								UpdateStatus(description);
-								Logger.LogInformation(description);
-								UpgradeNugetPackagesResponse.AppendLine(description);
-							},
-						});
-					
-						UpgradeNugetPackagesResponse.ExitCode = 0;
-					}
-					catch (Exception exception)
-					{
-						UpgradeNugetPackagesResponse.AppendLine(exception.ErrorMessageFormatted());
-						UpgradeNugetPackagesResponse.ExitCode = 1;
-					}
-
-					Logger.LogInformation("Finish Upgrade Nuget Packages");
-				}
-			},
-			PostAction = () =>
-			{
-				if (!CleanSolutionErrored && !UpdateSolutionErrored)
-				{
-					SetStatus((UpgradeNugetPackagesErrored ? TaskActionStatus.Errored : TaskActionStatus.Default), (UpgradeNugetPackagesErrored ? "Errored Upgrading Nuget Packages" : "Completed"));
-					CheckBox.Enabled = true;
-					OpenButton.Visible = true;
-					if (RefreshButton != null)
-					{
-						RefreshButton.Visible = true;
-					}
-				}
-				ViewBuildLogButton.Visible = true;
+				Logger.LogInformation("Start Upgrade Nuget Packages");
 			}
-		};
+		}
+
+		public void UpgradeNugetPackagesPostAction(bool showOpenButton, bool showRefreshButton)
+		{
+			Logger.LogInformation("Finish Upgrade Nuget Packages");
+
+			if (!CleanSolutionErrored && !UpdateSolutionErrored)
+			{
+				SetStatus((UpgradeNugetPackagesErrored ? TaskActionStatus.Errored : TaskActionStatus.Default), (UpgradeNugetPackagesErrored ? "Errored Upgrading Nuget Packages" : "Completed"));
+				SetCheckBoxEnabled(CheckBox, true);
+				SetButtonVisibility(OpenButton, true);
+				SetButtonVisibility(RefreshButton, true);
+			}
+			SetButtonVisibility(ViewBuildLogButton, true);
+		}
 
 		protected Process.ProcessResponse RestoreNugetPackagesResponse { get; private set; } = new();
 		protected bool RestoreNugetPackagesErrored => RestoreNugetPackagesResponse.Errored;
@@ -400,10 +394,10 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 		protected System.Windows.Forms.Control SolutionPanel { get; private set; }
 		public System.Windows.Forms.Control Panel { get; }
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected Action<string> UpdateStatus { get; }
+		public Microsoft.Extensions.Logging.ILogger Logger { get; }
+		public Action<string> UpdateStatus { get; }
 
-		public Solution(string solutionFullName, System.Windows.Forms.Control parentControl, bool highlighted, bool selected, Action<Solution> start, IEnumerable<ProjectKey> projectKeys, ISI.Extensions.Nuget.NugetPackageKeyDictionary nugetPackageKeys, bool showSolutionFilterKeys, bool waitForExecuteProjectResponse, Action onChangeSelected, Action<string> setStatus, Microsoft.Extensions.Logging.ILogger logger)
+		public Solution(string solutionFullName, System.Windows.Forms.Control parentControl, bool highlighted, bool selected, Action<Solution> start, IEnumerable<ProjectKey> projectKeys, bool showSolutionFilterKeys, bool waitForExecuteProjectResponse, Action onChangeSelected, Action<string> setStatus, Microsoft.Extensions.Logging.ILogger logger)
 		{
 			Logger = logger ?? new ISI.Extensions.ConsoleLogger();
 
@@ -443,8 +437,6 @@ namespace ISI.Extensions.VisualStudio.Forms
 					Project = projectKey.ProjectFullName,
 				}).ProjectName, Caption, StringComparison.InvariantCultureIgnoreCase)) ?? projectKeys.First()).Selected = true;
 			}
-
-			NugetPackageKeys = nugetPackageKeys ?? new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
 
 			SolutionProjects = projectKeys.OrderBy(projectKey => ProjectApi.GetProjectName(new()
 			{
@@ -689,16 +681,24 @@ namespace ISI.Extensions.VisualStudio.Forms
 			SolutionPanel.Resize += (resizeSender, resizeArgs) => { Resize(); };
 		}
 
-		public virtual TaskActions[] GetTasks(bool cleanSolution, bool updateSolution, bool upgradeNugetPackages, bool commitSolution, bool restoreNugetPackages, bool buildSolution, bool executeProjects, bool showProjectExecutionInTaskbar)
+		public void ResetResponses()
 		{
-			var tasks = new List<TaskActions>();
-
 			CleanSolutionResponse = new();
 			UpdateSolutionResponse = new();
 			UpgradeNugetPackagesResponse = new();
 			RestoreNugetPackagesResponse = new();
 			BuildSolutionResponse = new();
 			StopWatchResponse = new();
+		}
+
+		public virtual TaskActions[] GetTasks(bool resetResponses, bool cleanSolution, bool updateSolution, bool restoreNugetPackages, bool buildSolution, bool executeProjects, bool showProjectExecutionInTaskbar)
+		{
+			var tasks = new List<TaskActions>();
+
+			if (resetResponses)
+			{
+				ResetResponses();
+			}
 
 			if (!SolutionProjects.Any() || SolutionProjects.All(project => project.ExecuteProjectInstance == null))
 			{
@@ -718,13 +718,6 @@ namespace ISI.Extensions.VisualStudio.Forms
 				{
 					tasks.Add(UpdateSolution);
 				}
-
-				if (upgradeNugetPackages)
-				{
-					tasks.Add(UpgradeNugetPackages);
-				}
-
-				CommitSolution = commitSolution;
 
 				if (restoreNugetPackages)
 				{

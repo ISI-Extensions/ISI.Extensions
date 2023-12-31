@@ -30,6 +30,7 @@ namespace ISI.Extensions.Caching
 
 		public static ClearCacheLock ClearCacheLock = null;
 
+		public virtual IEnumerable<ISI.Extensions.MessageBus.IMessageBusBuildRequest> GetAddSubscriptions() => Array.Empty<ISI.Extensions.MessageBus.IMessageBusBuildRequest>();
 
 		public DTOs.ClearCacheResponse ClearCache(DTOs.ClearCacheRequest request)
 		{

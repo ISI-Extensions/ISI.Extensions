@@ -24,6 +24,54 @@ namespace ISI.Extensions.Repository.Extensions
 {
 	public static partial class RecordWhereColumnCollectionExtensions
 	{
+		public static void AddIfNotNullOrEmpty<TRecord>(this IRecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, Guid>> property, WhereClauseEqualityOperator comparisonOperator, Guid value)
+		{
+			if (value != Guid.Empty)
+			{
+				recordWhereColumns.Add(property, comparisonOperator, value);
+			}
+		}
+
+		public static void AddIfNotNullOrEmpty<TRecord>(this IRecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, Guid?>> property, WhereClauseEqualityOperator comparisonOperator, Guid value)
+		{
+			if (value != Guid.Empty)
+			{
+				recordWhereColumns.Add(property, comparisonOperator, value);
+			}
+		}
+
+		public static void AddIfNotNullOrEmpty<TRecord>(this IRecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, Guid>> property, WhereClauseEqualityOperator comparisonOperator, Guid? value)
+		{
+			if (!value.IsNullOrEmpty())
+			{
+				recordWhereColumns.Add(property, comparisonOperator, value.Value);
+			}
+		}
+
+		public static void AddIfNotNullOrEmpty<TRecord>(this IRecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, Guid?>> property, WhereClauseEqualityOperator comparisonOperator, Guid? value)
+		{
+			if (!value.IsNullOrEmpty())
+			{
+				recordWhereColumns.Add(property, comparisonOperator, value.Value);
+			}
+		}
+
+		public static void AddIfNotNull<TRecord>(this IRecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, Guid>> property, WhereClauseEqualityOperator comparisonOperator, Guid? value)
+		{
+			if (value.HasValue)
+			{
+				recordWhereColumns.Add(property, comparisonOperator, value.Value);
+			}
+		}
+
+		public static void AddIfNotNull<TRecord>(this IRecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, Guid?>> property, WhereClauseEqualityOperator comparisonOperator, Guid? value)
+		{
+			if (value.HasValue)
+			{
+				recordWhereColumns.Add(property, comparisonOperator, value.Value);
+			}
+		}
+
 		public static void AddIfNotNull<TRecord>(this IRecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, DateTime>> property, WhereClauseComparisonOperator comparisonOperator, DateTime? value)
 		{
 			if (value.HasValue)

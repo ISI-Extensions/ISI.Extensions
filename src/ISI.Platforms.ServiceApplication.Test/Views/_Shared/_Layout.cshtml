@@ -1,0 +1,74 @@
+@*
+Copyright (c) 2023, Integrated Solutions, Inc.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+		* Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+		* Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+		* Neither the name of the Integrated Solutions, Inc. nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*@
+
+
+@model ISI.Platforms.ServiceApplication.Test.Models.BaseModel
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+	<title>@Model.Title</title>
+	@Html.AddStyleSheet(T4Links.wwwroot.lib.bootstrap.dist.css.bootstrap_css)
+	@Html.AddStyleSheet(T4Links.wwwroot.lib.bootstrap.dist.css.bootstrap_grid_css)
+	@Html.AddStyleSheet(T4Links.wwwroot.lib.bootstrap.dist.css.bootstrap_reboot_css)
+	@Html.AddStyleSheet(T4Links.wwwroot.lib.bootstrap.dist.css.bootstrap_utilities_css)
+	@Html.AddStyleSheet(T4Links.wwwroot.StyleSheets._Shared.theme_css)
+	@Html.AddStyleSheet(T4Links.wwwroot.StyleSheets._Shared._Layout_css)
+	@await RenderSectionAsync("StyleSheetIncludes", false)
+</head>
+<body class="d-flex flex-column min-vh-100">
+	<header>
+		<nav class="navbar bg-light" aria-label="ISI.Platforms.ServiceApplication.Test, Integrated Solutoins, Inc.">
+			<div class="container-fluid">
+				<button class="navbar-toggler ml-auto" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbarLight" aria-controls="offcanvasNavbarLight">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<a class="navbar-brand me-auto ms-2" asp-route="@Routes.Public.RouteNames.Index">ISI.Platforms.ServiceApplication.Test</a>
+				<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbarLight" aria-labelledby="offcanvasNavbarLightLabel">
+					<div class="offcanvas-header">
+						<h5 class="offcanvas-title" id="offcanvasNavbarLightLabel">Navigation</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+					</div>
+					<div class="offcanvas-body">
+						<ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+
+							</ul>
+					</div>
+				</div>
+			</div>
+		</nav>
+	</header>
+	<div class="container">
+		<main role="main" class="pb-3">
+			@RenderBody()
+		</main>
+	</div>
+
+	<footer class="mt-auto border-top footer text-muted">
+		&nbsp;&nbsp; &copy; @DateTime.UtcNow.Year - Integrated Solutions, Inc.  &nbsp;&nbsp; @typeof(ISI.Platforms.ServiceApplication.Test.Program).Namespace: @ISI.Extensions.SystemInformation.GetAssemblyVersion(typeof(ISI.Platforms.ServiceApplication.Test.Program).Assembly)
+	</footer>
+	@Html.AddJavaScript(T4Links.wwwroot.lib.jquery.dist.jquery_js)
+	@Html.AddJavaScript(ISI.Extensions.AspNetCore.T4Links.JavaScripts.jQueryNamespace_js)
+	@Html.AddJavaScript(T4Links.wwwroot.lib.jquery_validation.dist.jquery_validate_js)
+	@Html.AddJavaScript(T4Links.wwwroot.lib.jquery_validation_unobtrusive.jquery_validate_unobtrusive_js)
+	@Html.AddJavaScript(ISI.Extensions.AspNetCore.T4Links.JavaScripts.DataAnnotations.DataAnnotationValidationRules_js)
+	@Html.AddJavaScript(T4Links.wwwroot.lib.bootstrap.dist.js.bootstrap_bundle_js)
+	@Html.AddJavaScript(T4Links.wwwroot.JavaScripts._Shared._Layout_js)
+	@await RenderSectionAsync("JavaScriptIncludes", false)
+	@await RenderSectionAsync("JavaScriptContent", false)
+</body>
+</html>

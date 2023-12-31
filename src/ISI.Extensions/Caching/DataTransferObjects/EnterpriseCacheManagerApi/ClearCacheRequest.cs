@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Caching.DataTransferObjects.EnterpriseCacheManagerApi
 {
-	public partial class ClearCacheRequest
+	public class ClearCacheRequest
 	{
 		public IEnumerable<string> CacheKeyScopes { get; set; }
 		public bool ClearAll { get; set; }

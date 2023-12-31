@@ -34,39 +34,42 @@ namespace ISI.Platforms.ServiceApplication
 		private Microsoft.Extensions.Hosting.IHost _host;
 		private ISI.Extensions.MessageBus.IMessageBus _messageBus;
 
-		public async Task<bool> StartAsync(ServiceApplicationStartupRequest request)
+		public async Task<bool> StartAsync()
 		{
 			var hostBuilder = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder();
 
-			request.LoggerConfigurator.AddLogger(hostBuilder, request.ConfigurationRoot, request.ActiveEnvironment);
+			Startup.Context.LoggerConfigurator.AddLogger(hostBuilder, Startup.Context.ConfigurationRoot, Startup.Context.ActiveEnvironment);
 
 			hostBuilder.ConfigureWebHostDefaults(webHostBuilder =>
 			{
+				var configuration = Startup.Context.ConfigurationRoot.GetConfiguration<Configuration>();
+
+				webHostBuilder.UseSetting(WebHostDefaults.ApplicationKey, Startup.Context.RootAssembly.FullName);
+
 				webHostBuilder.UseStartup<WebStartup>();
 
 				webHostBuilder.ConfigureServices(services =>
 				{
 					services
 						.AddOptions()
-						.AddSingleton<Microsoft.Extensions.Configuration.IConfiguration>(request.ConfigurationRoot)
-						.AddAllConfigurations(request.ConfigurationRoot)
-						.AddConfiguration<Microsoft.Extensions.Hosting.ConsoleLifetimeOptions>(request.ConfigurationRoot)
-						.AddConfiguration<Microsoft.Extensions.Hosting.HostOptions>(request.ConfigurationRoot)
+						.AddSingleton<Microsoft.Extensions.Configuration.IConfiguration>(Startup.Context.ConfigurationRoot)
+						.AddAllConfigurations(Startup.Context.ConfigurationRoot)
+						.AddConfiguration<Microsoft.Extensions.Hosting.ConsoleLifetimeOptions>(Startup.Context.ConfigurationRoot)
+						.AddConfiguration<Microsoft.Extensions.Hosting.HostOptions>(Startup.Context.ConfigurationRoot)
 
-						.AddConfigurationRegistrations(request.ConfigurationRoot)
-						.ProcessServiceRegistrars(request.ConfigurationRoot)
+						.AddConfigurationRegistrations(Startup.Context.ConfigurationRoot)
+						.ProcessServiceRegistrars(Startup.Context.ConfigurationRoot)
 
-						.AddTransient<Microsoft.Extensions.Logging.ILogger>(serviceProvider => serviceProvider.GetService<Microsoft.Extensions.Logging.ILoggerFactory>().CreateLogger<Program>())
+						.AddTransient<Microsoft.Extensions.Logging.ILogger>(serviceProvider => serviceProvider.GetService<Microsoft.Extensions.Logging.ILoggerFactory>().CreateLogger<Startup>())
 						.AddSingleton<Microsoft.Extensions.FileProviders.IFileProvider>(provider => provider.GetService<Microsoft.Extensions.Options.IOptions<Microsoft.AspNetCore.Builder.StaticFileOptions>>().Value.FileProvider)
+						;
 
-						.AddSingleton<ISI.Extensions.IJournal, ISI.Extensions.Journal.NullDeviceJournal>()
+					if (configuration.UseMessageBus)
+					{
+						services.AddMessageBus(Startup.Context.ConfigurationRoot);
+					}
 
-						.AddSingleton<Microsoft.Extensions.Caching.Memory.IMemoryCache>(provider => new Microsoft.Extensions.Caching.Memory.MemoryCache(new Microsoft.Extensions.Caching.Memory.MemoryCacheOptions()))
-						.AddSingleton<ISI.Extensions.Caching.ICacheManager, ISI.Extensions.Caching.CacheManager<Microsoft.Extensions.Caching.Memory.IMemoryCache>>()
-						.AddSingleton<ISI.Extensions.Caching.IEnterpriseCacheManagerApi, ISI.Extensions.Caching.MessageBus.EnterpriseCacheManagerApi>()
-
-						.AddMessageBus(request.ConfigurationRoot)
-
+					services
 						.AddSingleton<ISI.Extensions.Security.IPermissionProcessor, ISI.Extensions.Security.DefaultPermissionProcessor>()
 
 						.AddSingleton<RoutingHelper>()
@@ -79,7 +82,7 @@ namespace ISI.Platforms.ServiceApplication
 
 				webHostBuilder.UseKestrel((builderContext, kestrelOptions) =>
 				{
-					var kestrelConfiguration = request.ConfigurationRoot.GetKestrelConfigurationSection();
+					var kestrelConfiguration = Startup.Context.ConfigurationRoot.GetKestrelConfigurationSection();
 
 					kestrelOptions.Configure(kestrelConfiguration, reloadOnChange: false);
 				});
@@ -99,24 +102,25 @@ namespace ISI.Platforms.ServiceApplication
 					logMessageBuilder.AppendLine($"  {address}");
 					RoutingHelper.SetBaseUrl(address);
 				}
-				request.LoggerConfigurator.Information(logMessageBuilder.ToString());
+				Startup.Context.LoggerConfigurator.Information(logMessageBuilder.ToString());
 
-				var configuration = request.ConfigurationRoot.GetConfiguration<Configuration>();
+				var configuration = Startup.Context.ConfigurationRoot.GetConfiguration<Configuration>();
 
 				if (configuration.UseMessageBus)
 				{
 					_messageBus = _host.Services.GetRequiredService<ISI.Extensions.MessageBus.IMessageBus>();
+					var enterpriseCacheManagerApi = _host.Services.GetService<ISI.Extensions.Caching.IEnterpriseCacheManagerApi>();
 
 					_messageBus.Build(_host.Services, new ISI.Extensions.MessageBus.MessageBusBuildRequestCollection()
 					{
-						request.GetAddSubscriptions,
-						ISI.Extensions.Caching.MessageBus.Subscriptions.GetAddSubscriptions,
+						Startup.Context.GetAddSubscriptions,
+						enterpriseCacheManagerApi.GetAddSubscriptions,
 					});
 
 					_messageBus.StartAsync();
 				}
 
-				request.PostStartup?.Invoke(_host);
+				Startup.Context.PostStartup?.Invoke(_host);
 
 				return _host.Services.SetServiceLocator();
 			});

@@ -18,18 +18,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.ConfigurationHelper.Extensions;
+using ISI.Extensions.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ISI.Extensions.Caching.MessageBus
 {
 	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
-	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrarWithPriority
+	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrarWithConfigurationRoot
 	{
-		public int Priority => 100;
-
 		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
-			services.AddSingleton<ISI.Extensions.Caching.IEnterpriseCacheManagerApi, EnterpriseCacheManagerApi>();
+
+		}
+
+		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services, Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot)
+		{
+			var configuration = configurationRoot.GetConfiguration<ISI.Extensions.Caching.Configuration>();
+
+			if (string.Equals(configuration?.EnterpriseCacheManagerApi?.EnterpriseCacheManagerApiImplementation ?? string.Empty, "MessageBus", StringComparison.InvariantCultureIgnoreCase))
+			{
+				services.AddSingleton<ISI.Extensions.Caching.IEnterpriseCacheManagerApi, EnterpriseCacheManagerApi>();
+			}
 		}
 	}
 }

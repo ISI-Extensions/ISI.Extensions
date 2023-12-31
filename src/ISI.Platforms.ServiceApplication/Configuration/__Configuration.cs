@@ -24,8 +24,6 @@ namespace ISI.Platforms.ServiceApplication
 	{
 		public const string ConfigurationSectionName = "ISI.Platforms.ServiceApplication";
 
-		public bool UseMessageBus { get; set; } = true;
-
-		public MessageBusConfiguration MessageBus { get; set; } = new();
+		public bool UseMessageBus { get; set; } = false;
 	}
 }

@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,27 +34,28 @@ namespace ISI.Platforms.ServiceApplication
 {
 	public class WebStartup
 	{
+		public IConfiguration Configuration { get; }
+
 		public WebStartup(IConfiguration configuration)
 		{
 			Configuration = configuration;
 		}
 
-		public IConfiguration Configuration { get; }
-
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services
-				.AddControllersWithViews()
-				.AddISIAspNetCore()
-				.AddRazorRuntimeCompilation(options => options.FileProviders.Add(new ISI.Extensions.VirtualFileVolumesFileProvider()))
-				.AddNewtonsoftJson(options =>
-				{
-					options.SerializerSettings.Converters = ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer.JsonConverters();
-					options.SerializerSettings.DateParseHandling = global::Newtonsoft.Json.DateParseHandling.None;
-				})
-				;
-			
+			var mvcBuilder = services
+					.AddControllersWithViews()
+					.AddApplicationPart(Startup.Context.RootAssembly)
+					.AddISIAspNetCore()
+					.AddRazorRuntimeCompilation(options => options.FileProviders.Add(new ISI.Extensions.VirtualFileVolumesFileProvider()))
+					.AddNewtonsoftJson(options =>
+					{
+						options.SerializerSettings.Converters = ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer.JsonConverters();
+						options.SerializerSettings.DateParseHandling = global::Newtonsoft.Json.DateParseHandling.None;
+					})
+					;
+
 			/*
 			services
 				.AddAuthentication(AuthenticationHandler.AuthenticationHandlerName)
@@ -109,12 +110,17 @@ namespace ISI.Platforms.ServiceApplication
 				applicationBuilder.UseDeveloperExceptionPage();
 			}
 
-			Program._loggerConfigurator.AddRequestLogging(applicationBuilder);
+			Startup.Context.LoggerConfigurator.AddRequestLogging(applicationBuilder);
 
 
 			applicationBuilder.UseDefaultFiles();
 
-			applicationBuilder.UseStaticFiles();
+			var wwwroot = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(ISI.Extensions.IO.Path.GetRootBinDirectory(Startup.Context.RootAssembly)), "wwwroot");
+
+			applicationBuilder.UseStaticFiles(new Microsoft.AspNetCore.Builder.StaticFileOptions()
+			{
+				FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(wwwroot)
+			});
 
 			applicationBuilder.UseRouting();
 
@@ -123,8 +129,8 @@ namespace ISI.Platforms.ServiceApplication
 			applicationBuilder.UseAuthentication();
 			applicationBuilder.UseAuthorization();
 
-			applicationBuilder.UseSwagger();
-			applicationBuilder.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v2/swagger.json", "ISI.DocumentStorage.ServiceApplication v2"));
+			//applicationBuilder.UseSwagger();
+			//applicationBuilder.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v2/swagger.json", "ISI.DocumentStorage.ServiceApplication v2"));
 
 			applicationBuilder.UseEndpoints(endpointRouteBuilder =>
 			{

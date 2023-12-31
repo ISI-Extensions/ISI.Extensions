@@ -26,8 +26,15 @@ namespace ISI.Platforms.ServiceApplication.Test
 	{
 		public static int Main(string[] args)
 		{
-
-			return 0;
+			return ISI.Platforms.ServiceApplication.Startup.Main(new()
+			{
+				RootAssembly = typeof(Program).Assembly,
+				//ConfigurationRoot = source.ConfigurationRoot,
+				LoggerConfigurator = new ISI.Platforms.Serilog.LoggerConfigurator(),
+				//ActiveEnvironment = source.ActiveEnvironment,
+				Args = args,
+				//PostStartup = source.PostStartup,
+			});
 		}
 	}
 }

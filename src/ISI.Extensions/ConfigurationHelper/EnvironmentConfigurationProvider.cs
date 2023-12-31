@@ -87,7 +87,7 @@ namespace ISI.Extensions.ConfigurationHelper
 					}
 					else if (property.PropertyType == typeof(string))
 					{
-						if (environmentVariables.TryGetValue(environmentConfigurationAttribute.EnvironmentVariableName, out var value))
+						if ((environmentConfigurationAttribute != null) && environmentVariables.TryGetValue(environmentConfigurationAttribute.EnvironmentVariableName, out var value))
 						{
 							Data.Add(string.Format("{0}{1}", prefix, property.Name), string.Format("{0}", value));
 						}
@@ -123,7 +123,7 @@ namespace ISI.Extensions.ConfigurationHelper
 							AddData(environmentVariables, property.PropertyType, string.Format("{0}{1}:", prefix, property.Name));
 						}
 					}
-					else
+					else if(environmentConfigurationAttribute != null)
 					{
 						if (environmentVariables.TryGetValue(environmentConfigurationAttribute.EnvironmentVariableName, out var value))
 						{

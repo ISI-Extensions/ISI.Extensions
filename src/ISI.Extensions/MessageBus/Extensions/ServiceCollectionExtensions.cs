@@ -26,15 +26,15 @@ namespace ISI.Extensions.MessageBus.Extensions
 	{
 		public static Microsoft.Extensions.DependencyInjection.IServiceCollection AddMessageBus(this Microsoft.Extensions.DependencyInjection.IServiceCollection services, Microsoft.Extensions.Configuration.IConfiguration configuration)
 		{
-			var dependencyInjectionConfiguration = new Configuration();
+			var messageBusConfiguration = new Configuration();
 
-			configuration.Bind(ISI.Extensions.MessageBus.Configuration.ConfigurationSectionName, dependencyInjectionConfiguration);
+			configuration.Bind(ISI.Extensions.MessageBus.Configuration.ConfigurationSectionName, messageBusConfiguration);
 
-			var messageBusType = Type.GetType(dependencyInjectionConfiguration.MessageBusType);
+			var messageBusType = Type.GetType(messageBusConfiguration.MessageBusType);
 
 			if (messageBusType == null)
 			{
-				throw new InvalidMessageBusTypeException(dependencyInjectionConfiguration.MessageBusType);
+				throw new InvalidMessageBusTypeException(messageBusConfiguration.MessageBusType);
 			}
 
 			services.AddSingleton(typeof(ISI.Extensions.MessageBus.IMessageBus), messageBusType);

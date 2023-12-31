@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Caching.DataTransferObjects.EnterpriseCacheManagerApi
 {
-	public partial class ClearCacheResponse
+	public class ClearCacheResponse
 	{
 		public ClearCacheLockFilterResponse ClearCacheLockFilterResponse { get; set; }
 	}

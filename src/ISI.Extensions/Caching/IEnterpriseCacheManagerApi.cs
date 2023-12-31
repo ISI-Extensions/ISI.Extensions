@@ -31,5 +31,6 @@ namespace ISI.Extensions.Caching
 		ClearCacheLock GetClearCacheThreadLock(ClearCacheLockFilter clearCacheFilter);
 		ClearCacheLock GetClearCacheThreadLock(DTOs.ClearCacheLockFilterResponse clearCacheFilter);
 		ClearCacheLock GetClearCacheThreadLock();
+		IEnumerable<ISI.Extensions.MessageBus.IMessageBusBuildRequest> GetAddSubscriptions();
 	}
 }

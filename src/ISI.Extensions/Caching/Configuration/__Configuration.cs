@@ -26,6 +26,8 @@ namespace ISI.Extensions.Caching
 	{
 		public const string ConfigurationSectionName = "ISI.Extensions.Caching";
 		
+		public string CacheManagerImplementation { get; set; }
+
 		public string CacheKeyPrefix { get; set; } = string.Empty;
 
 		public TimeSpan DefaultAbsoluteExpirationDuration { get; set; } = TimeSpan.FromMinutes(5);

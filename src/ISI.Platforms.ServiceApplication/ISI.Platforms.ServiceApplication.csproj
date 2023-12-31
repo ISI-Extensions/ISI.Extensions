@@ -29,7 +29,6 @@
 		<PackageReference Include="Microsoft.AspNetCore.Routing.Abstractions" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
 		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />

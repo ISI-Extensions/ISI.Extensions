@@ -93,6 +93,11 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 			{
 				implementationType = defaultImplementationType;
 			}
+			
+			if (implementationType == null)
+			{
+				throw new Exception($"implementationType not found for serializerContractUuid: {serializerContractUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)}");
+			}
 
 			var implementation = Activator.CreateInstance(implementationType);
 

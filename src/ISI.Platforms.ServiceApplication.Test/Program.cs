@@ -28,6 +28,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 		{
 			return ISI.Platforms.ServiceApplication.Startup.Main(new()
 			{
+				RootType = typeof(Program),
 				RootAssembly = typeof(Program).Assembly,
 				//ConfigurationRoot = source.ConfigurationRoot,
 				LoggerConfigurator = new ISI.Platforms.Serilog.LoggerConfigurator(),

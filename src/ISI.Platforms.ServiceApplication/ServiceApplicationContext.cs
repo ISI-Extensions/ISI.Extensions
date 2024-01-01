@@ -27,6 +27,7 @@ namespace ISI.Platforms.ServiceApplication
 
 	public class ServiceApplicationContext
 	{
+		public Type RootType { get; set; }
 		public System.Reflection.Assembly RootAssembly { get; set; }
 
 		public Microsoft.Extensions.Configuration.IConfigurationRoot ConfigurationRoot { get; set; }

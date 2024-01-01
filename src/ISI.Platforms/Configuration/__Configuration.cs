@@ -24,6 +24,8 @@ namespace ISI.Platforms
 	{
 		public const string ConfigurationSectionName = "ISI.Platforms";
 
+		public bool UseMessageBus { get; set; } = false;
+
 		public string LogDirectory { get; set; }
 	}
 }

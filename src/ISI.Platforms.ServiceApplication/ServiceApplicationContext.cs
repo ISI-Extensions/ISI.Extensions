@@ -22,6 +22,8 @@ using System.Threading.Tasks;
 namespace ISI.Platforms.ServiceApplication
 {
 	public delegate void ServiceApplicationContextPostStartupDelegate(Microsoft.Extensions.Hosting.IHost host);
+	public delegate void ServiceApplicationContextWebStartupMvcBuilderDelegate(Microsoft.Extensions.DependencyInjection.IMvcBuilder mvcBuilder);
+	public delegate void ServiceApplicationContextWebStartupConfigureServicesDelegate(Microsoft.Extensions.DependencyInjection.IServiceCollection services);
 
 	public class ServiceApplicationContext
 	{
@@ -36,6 +38,8 @@ namespace ISI.Platforms.ServiceApplication
 		
 		public Func<IEnumerable<ISI.Extensions.MessageBus.IMessageBusBuildRequest>> GetAddSubscriptions { get; set; }
 
+		public ServiceApplicationContextWebStartupMvcBuilderDelegate WebStartupMvcBuilder { get; set; }
+		public ServiceApplicationContextWebStartupConfigureServicesDelegate WebStartupConfigureServices { get; set; }
 		public ServiceApplicationContextPostStartupDelegate PostStartup { get; set; }
 	}
 }

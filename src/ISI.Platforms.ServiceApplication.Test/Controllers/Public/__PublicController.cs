@@ -24,10 +24,10 @@ namespace ISI.Platforms.ServiceApplication.Test.Controllers
 {
 	public partial class PublicController : Controller
 	{
-		protected Configuration Configuration { get; }
+		protected ISI.Platforms.Configuration Configuration { get; }
 
 		public PublicController(
-			Configuration configuration,
+			ISI.Platforms.Configuration configuration,
 			Microsoft.Extensions.Logging.ILogger logger)
 			: base(logger)
 		{

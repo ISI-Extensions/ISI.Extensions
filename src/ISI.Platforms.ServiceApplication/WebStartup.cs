@@ -41,8 +41,7 @@ namespace ISI.Platforms.ServiceApplication
 			Configuration = configuration;
 		}
 
-		// This method gets called by the runtime. Use this method to add services to the container.
-		public void ConfigureServices(IServiceCollection services)
+		public void ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
 			var mvcBuilder = services
 					.AddControllersWithViews()
@@ -55,6 +54,9 @@ namespace ISI.Platforms.ServiceApplication
 						options.SerializerSettings.DateParseHandling = global::Newtonsoft.Json.DateParseHandling.None;
 					})
 					;
+
+			Startup.Context.WebStartupMvcBuilder?.Invoke(mvcBuilder);
+			Startup.Context.WebStartupConfigureServices?.Invoke(services);
 
 			/*
 			services
@@ -112,7 +114,6 @@ namespace ISI.Platforms.ServiceApplication
 
 			Startup.Context.LoggerConfigurator.AddRequestLogging(applicationBuilder);
 
-
 			applicationBuilder.UseDefaultFiles();
 
 			var wwwroot = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(ISI.Extensions.IO.Path.GetRootBinDirectory(Startup.Context.RootAssembly)), "wwwroot");
@@ -123,8 +124,6 @@ namespace ISI.Platforms.ServiceApplication
 			});
 
 			applicationBuilder.UseRouting();
-
-			//applicationBuilder.UseHttpsRedirection();
 
 			applicationBuilder.UseAuthentication();
 			applicationBuilder.UseAuthorization();

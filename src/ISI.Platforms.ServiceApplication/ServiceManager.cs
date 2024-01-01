@@ -42,7 +42,7 @@ namespace ISI.Platforms.ServiceApplication
 
 			hostBuilder.ConfigureWebHostDefaults(webHostBuilder =>
 			{
-				var configuration = Startup.Context.ConfigurationRoot.GetConfiguration<Configuration>();
+				var configuration = Startup.Context.ConfigurationRoot.GetConfiguration<ISI.Platforms.Configuration>();
 
 				webHostBuilder.UseSetting(WebHostDefaults.ApplicationKey, Startup.Context.RootAssembly.FullName);
 
@@ -104,7 +104,7 @@ namespace ISI.Platforms.ServiceApplication
 				}
 				Startup.Context.LoggerConfigurator.Information(logMessageBuilder.ToString());
 
-				var configuration = Startup.Context.ConfigurationRoot.GetConfiguration<Configuration>();
+				var configuration = Startup.Context.ConfigurationRoot.GetConfiguration<ISI.Platforms.Configuration>();
 
 				if (configuration.UseMessageBus)
 				{

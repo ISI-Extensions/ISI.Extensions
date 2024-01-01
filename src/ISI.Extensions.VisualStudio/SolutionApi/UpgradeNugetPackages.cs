@@ -261,7 +261,7 @@ namespace ISI.Extensions.VisualStudio
 
 							bool tryGetNugetPackageKey(string package, out ISI.Extensions.Nuget.NugetPackageKey nugetPackageKey)
 							{
-								solutionLogger.LogInformation($"  tryGetNugetPackageKey for {package}");
+								//solutionLogger.LogInformation($"  tryGetNugetPackageKey for {package}");
 
 								if (solutionIgnorePackageIds.Contains(package))
 								{

@@ -489,6 +489,13 @@ namespace ISI.Extensions.VisualStudio
 
 									if (updatedNugetPackageKeys.NullCheckedAny())
 									{
+										solutionLogger.LogInformation(string.Format("Locally Caching NugetPackages From: \"{0}\"", nugetPackOutputDirectory));
+										NugetApi.LocallyCacheNupkgs(new()
+										{
+											NupkgFullNames = updatedNugetPackageKeys.Select(nugetPackageKey => System.IO.Path.Combine(nugetPackOutputDirectory, $"{nugetPackageKey.Package}.{nugetPackageKey.Version}")),
+											AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
+										});
+										
 										solutionLogger.LogInformation(string.Format("Refreshing NugetPackageKeys From: \"{0}\"", nugetPackOutputDirectory));
 										foreach (var updatedNugetPackageKey in updatedNugetPackageKeys)
 										{

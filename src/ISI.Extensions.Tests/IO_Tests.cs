@@ -34,6 +34,16 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void xxxx_Test()
+		{
+			var tartFullName = @"E:\Temp\test-34\55555\baby.tab";
+
+			System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(tartFullName));
+
+			System.IO.File.Copy(@"E:\Temp\baby.tab", tartFullName);
+		}
+
+		[Test]
 		public void GetRelativePath_Test()
 		{
 			{

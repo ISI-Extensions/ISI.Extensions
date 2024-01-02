@@ -180,7 +180,7 @@ namespace ISI.Extensions.VisualStudio
 				solutionDetails.NugetPackageDependenciesFromOtherSolutions.RemoveWhere(nugetPackageDependency => !isProjectBuilt.ContainsKey(nugetPackageDependency));
 			}
 
-			while (solutionDetailsSet.Any(solutionDetails => !solutionDetails.IsBuilt))
+			while (solutionDetailsSet.Any(solutionDetails => !solutionDetails.IsBuilt) && !request.CancellationToken.IsCancellationRequested)
 			{
 				var solutionDetails = solutionDetailsSet
 																.Where(solutionDetails => !solutionDetails.IsBuilt)
@@ -492,7 +492,7 @@ namespace ISI.Extensions.VisualStudio
 										solutionLogger.LogInformation(string.Format("Locally Caching NugetPackages From: \"{0}\"", nugetPackOutputDirectory));
 										NugetApi.LocallyCacheNupkgs(new()
 										{
-											NupkgFullNames = updatedNugetPackageKeys.Select(nugetPackageKey => System.IO.Path.Combine(nugetPackOutputDirectory, $"{nugetPackageKey.Package}.{nugetPackageKey.Version}")),
+											NupkgFullNames = updatedNugetPackageKeys.Select(nugetPackageKey => System.IO.Path.Combine(nugetPackOutputDirectory, $"{nugetPackageKey.Package}.{nugetPackageKey.Version}.nupkg")),
 											AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
 										});
 										

@@ -19,13 +19,36 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.JsonSerialization.Extensions;
+using ISI.Extensions.Nuget.Extensions;
+using DTOs = ISI.Extensions.Nuget.DataTransferObjects.NugetApi;
+using SerializableDTOs = ISI.Extensions.Nuget.SerializableModels;
+using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
+namespace ISI.Extensions.Nuget
 {
-	public class LocallyCacheNupkgsRequest
+	public partial class NugetApi
 	{
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
+		private string GetNugetGlobalPackagesDirectory()
+		{
+			if (!string.IsNullOrWhiteSpace(Configuration.NugetGlobalPackagesDirectory))
+			{
+				var arguments = new List<string>();
+				arguments.Add("locals");
+				arguments.Add("global-packages");
+				arguments.Add("-list");
 
-		public IEnumerable<string> NupkgFullNames { get; set; }
+				var nugetResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				{
+					Logger = new NullLogger(),
+					ProcessExeFullName = GetNugetExeFullName(new()).NugetExeFullName,
+					Arguments = arguments.ToArray(),
+				});
+
+				Configuration.NugetGlobalPackagesDirectory = nugetResponse.Output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+			}
+
+			return Configuration.NugetGlobalPackagesDirectory;
+		}
 	}
 }

@@ -55,5 +55,7 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 
 		public UpgradeNugetPackagesBuildScriptErrorDelegate BuildScriptError { get; set; }
 		public bool ContinueOnBuildScriptError { get; set; }
+
+		public System.Threading.CancellationToken CancellationToken { get; set; } = default;
 	}
 }

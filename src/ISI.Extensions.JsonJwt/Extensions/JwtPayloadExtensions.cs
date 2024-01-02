@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,17 +15,45 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
+namespace ISI.Extensions.JsonJwt.Extensions
 {
-	public class LocallyCacheNupkgsRequest
+	public static class JwtPayloadExtensions
 	{
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
+		public static T Deserialize<T>(this System.IdentityModel.Tokens.Jwt.JwtPayload jwtPayload) 
+			where T : class, new()
+		{
+			var response = new T();
 
-		public IEnumerable<string> NupkgFullNames { get; set; }
+			var columns = ISI.Extensions.Columns.ColumnCollection<T>.GetDefault();
+
+			foreach (var column in columns)
+			{
+				if (column.PropertyType == typeof(string[]))
+				{
+					if (jwtPayload.TryGetValue(column.ColumnName, out var value))
+					{
+						var values = new System.Collections.Generic.List<string>();
+
+						if (value is System.Collections.IEnumerable jArray)
+						{
+							foreach (var item in jArray)
+							{
+								values.Add(string.Format("{0}", item));
+							}
+						}
+
+						column.SetValue(response, values.ToArray());
+					}
+				}
+				else if (jwtPayload.TryGetValue(column.ColumnName, out var value))
+				{
+					column.SetValue(response, value);
+				}
+			}
+
+			return response;
+		}
 	}
 }

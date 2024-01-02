@@ -24,15 +24,18 @@ namespace ISI.Extensions.JsonJwt
 	public class JwsSignedPayload
 	{
 		[DataMember(Name = "header", EmitDefaultValue = false)]
-		public object Header { get; set; }
+		public Dictionary<string, string> UnProtectedHeader { get; set; }
 
 		[DataMember(Name = "protected", EmitDefaultValue = false)]
-		public string Protected { get; set; }
+		public string ProtectedHeader { get; set; }
 
 		[DataMember(Name = "payload", EmitDefaultValue = false)]
 		public string Payload { get; set; }
 
 		[DataMember(Name = "signature", EmitDefaultValue = false)]
 		public string Signature { get; set; }
+
+		[IgnoreDataMember]
+		public string JwtPayload =>  $"{ProtectedHeader}.{Payload}.{Signature}";
 	}
 }

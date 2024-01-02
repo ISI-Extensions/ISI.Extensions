@@ -46,14 +46,31 @@ namespace ISI.Extensions.Nuget
 					arguments.Add(string.Format("\"{0}\"", nupkgFullName));
 					arguments.Add(string.Format("-Source \"{0}\"", tempDirectory.FullName));
 
-					arguments.Add(string.Format("\"{0}\"", nupkgFullName));
-
 					var nugetResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 					{
 						Logger = logger, //new NullLogger(),
 						ProcessExeFullName = GetNugetExeFullName(new()).NugetExeFullName,
 						Arguments = arguments.ToArray(),
 					});
+
+					var  nugetGlobalPackagesDirectory = GetNugetGlobalPackagesDirectory();
+
+					if (!string.IsNullOrWhiteSpace(nugetGlobalPackagesDirectory) && System.IO.Directory.Exists(nugetGlobalPackagesDirectory))
+					{
+						foreach (var sourceFullName in System.IO.Directory.GetFiles(tempDirectory.FullName, "*", System.IO.SearchOption.AllDirectories))
+						{
+							var relativeName = sourceFullName.Substring(tempDirectory.FullName.Length);
+
+							var targetFullName = System.IO.Path.Combine(nugetGlobalPackagesDirectory, relativeName);
+
+							if (!System.IO.File.Exists(targetFullName))
+							{
+								System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(targetFullName));
+
+								System.IO.File.Copy(sourceFullName, targetFullName, true);
+							}
+						}
+					}
 				}
 			}
 

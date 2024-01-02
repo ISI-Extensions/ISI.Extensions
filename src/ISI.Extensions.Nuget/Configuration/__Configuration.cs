@@ -30,5 +30,7 @@ namespace ISI.Extensions.Nuget
 		public string NugetSettingsFullName { get; set; } = @"FileNameDeMasked:{ApplicationData}\ISI.Extensions\nuget.settings.json";
 
 		public string NugetPackageKeyCacheDirectory { get; set; } = @"FileNameDeMasked:{LocalApplicationData}\ISI.Extensions\NugetPackageKeyCache";
+
+		public string NugetGlobalPackagesDirectory { get; set; }
 	}
 }

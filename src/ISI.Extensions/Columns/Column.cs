@@ -103,7 +103,28 @@ namespace ISI.Extensions.Columns
 			{
 				var type = typeof(TProperty);
 
-				if (type == typeof(string))
+				if (type == typeof(string[]))
+				{
+					transformValue = value =>
+					{
+						var values = new List<string>();
+
+						if (value is System.Collections.IEnumerable enumerable)
+						{
+							foreach (var item in enumerable)
+							{
+								values.Add(string.Format("{0}", item));
+							}
+						}
+						else
+						{
+							values.Add(string.Format("{0}", value));
+						}
+
+						return (TProperty)(object)(values.ToArray());
+					};
+				}
+				else if (type == typeof(string))
 				{
 					transformValue = value => (value is string stringValue ? (TProperty)(object)stringValue : (TProperty)(object)string.Format("{0}", value));
 				}

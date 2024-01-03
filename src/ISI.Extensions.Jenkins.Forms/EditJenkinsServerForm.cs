@@ -76,14 +76,11 @@ namespace ISI.Extensions.Jenkins.Forms
 				JenkinsServer = JenkinsApi.GetJenkinsServer(jenkinsServerUuid.Value);
 			}
 
-			if (JenkinsServer == null)
+			JenkinsServer ??= new()
 			{
-				JenkinsServer = new()
-				{
-					JenkinsServerUuid = Guid.NewGuid(),
-					UserName = "%USERNAME%",
-				};
-			}
+				JenkinsServerUuid = Guid.NewGuid(),
+				UserName = "%USERNAME%",
+			};
 
 			btnAddDirectory.Click += (sender, args) =>
 			{
@@ -98,7 +95,7 @@ namespace ISI.Extensions.Jenkins.Forms
 
 			DirectoryPanels = new();
 
-			this.Shown += OnShown;
+			Shown += OnShown;
 		}
 
 		private void OnShown(object sender, EventArgs eventArgs)
@@ -131,8 +128,11 @@ namespace ISI.Extensions.Jenkins.Forms
 				JenkinsServer.UserName = txtUserName.Text;
 				JenkinsServer.ApiToken = txtApiToken.Text;
 				JenkinsServer.Directories = DirectoryPanels.Where(directoryPanel => !directoryPanel.Delete).Select(directoryPanel => directoryPanel.Directory).ToArray();
-
-				//JenkinsSettings.SetJenkinsServer(JenkinsServer);
+				
+				JenkinsApi.SetJenkinsServerSettings(new()
+				{
+					JenkinsServer = JenkinsServer,
+				});
 
 				if (this.Modal)
 				{

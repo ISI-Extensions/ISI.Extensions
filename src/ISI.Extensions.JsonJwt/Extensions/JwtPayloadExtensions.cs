@@ -30,26 +30,9 @@ namespace ISI.Extensions.JsonJwt.Extensions
 
 			foreach (var column in columns)
 			{
-				if (column.PropertyType == typeof(string[]))
+				if (jwtPayload.TryGetValue(column.ColumnName, out var value))
 				{
-					if (jwtPayload.TryGetValue(column.ColumnName, out var value))
-					{
-						var values = new System.Collections.Generic.List<string>();
-
-						if (value is System.Collections.IEnumerable jArray)
-						{
-							foreach (var item in jArray)
-							{
-								values.Add(string.Format("{0}", item));
-							}
-						}
-
-						column.SetValue(response, values.ToArray());
-					}
-				}
-				else if (jwtPayload.TryGetValue(column.ColumnName, out var value))
-				{
-					column.SetValue(response, value);
+					column.SetValue(response, column.TransformValue(value));
 				}
 			}
 

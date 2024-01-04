@@ -41,13 +41,13 @@ namespace ISI.Extensions.Columns
 			}
 		}
 
-		public static ColumnCollection<TRecord> GetDefault()
+		public static ColumnCollection<TRecord> GetDefault(ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer = null)
 		{
 			var result = new ColumnCollection<TRecord>();
 
 			foreach (var property in properties)
 			{
-				result.Add(Activator.CreateInstance(typeof(ISI.Extensions.Columns.Column<,>).MakeGenericType(typeof(TRecord), property.PropertyInfo.PropertyType), new object[] {property.DataMemberAttribute.Name, property.PropertyInfo, null, null}, null) as IColumn<TRecord>);
+				result.Add(Activator.CreateInstance(typeof(ISI.Extensions.Columns.Column<,>).MakeGenericType(typeof(TRecord), property.PropertyInfo.PropertyType), new object[] {property.DataMemberAttribute.Name, property.PropertyInfo, null, null, jsonSerializer}, null) as IColumn<TRecord>);
 			}
 
 			return result;

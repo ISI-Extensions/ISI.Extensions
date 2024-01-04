@@ -12,14 +12,16 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.JsonSerialization.Extensions;
 
 namespace ISI.Extensions.Columns
 {
@@ -58,8 +60,9 @@ namespace ISI.Extensions.Columns
 			string columnName,
 			System.Reflection.PropertyInfo propertyInfo,
 			Func<object, TProperty> transformValue,
-			Func<TRecord, string> formattedValue)
-		: this(columnName, new[] { columnName }, propertyInfo, transformValue, formattedValue)
+			Func<TRecord, string> formattedValue,
+			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer = null)
+		: this(columnName, new[] { columnName }, propertyInfo, transformValue, formattedValue, jsonSerializer)
 		{
 		}
 
@@ -68,7 +71,8 @@ namespace ISI.Extensions.Columns
 			IEnumerable<string> columnNames,
 			System.Reflection.PropertyInfo propertyInfo,
 			Func<object, TProperty> transformValue,
-			Func<TRecord, string> formattedValue)
+			Func<TRecord, string> formattedValue,
+			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer = null)
 		{
 			ColumnName = (string.IsNullOrWhiteSpace(columnName) ? propertyInfo.Name : columnName);
 			ColumnNames = (columnNames ?? new[] { propertyInfo.Name }).ToArray();
@@ -99,104 +103,8 @@ namespace ISI.Extensions.Columns
 			};
 
 
-			if (transformValue == null)
-			{
-				var type = typeof(TProperty);
+			transformValue ??= GetTransformValue<TProperty>(jsonSerializer);
 
-				if (type == typeof(string[]))
-				{
-					transformValue = value =>
-					{
-						var values = new List<string>();
-
-						if (value is System.Collections.IEnumerable enumerable)
-						{
-							foreach (var item in enumerable)
-							{
-								values.Add(string.Format("{0}", item));
-							}
-						}
-						else
-						{
-							values.Add(string.Format("{0}", value));
-						}
-
-						return (TProperty)(object)(values.ToArray());
-					};
-				}
-				else if (type == typeof(string))
-				{
-					transformValue = value => (value is string stringValue ? (TProperty)(object)stringValue : (TProperty)(object)string.Format("{0}", value));
-				}
-				else if (type == typeof(Guid))
-				{
-					transformValue = value => (value is string stringValue ? (TProperty)(object)stringValue.ToGuid() : (value is Guid @guid ? (TProperty)(object)@guid : (TProperty)(object)string.Format("{0}", value).ToGuid()));
-				}
-				else if (type == typeof(Guid?))
-				{
-					transformValue = value => (value is string stringValue ? (TProperty)(object)stringValue.ToGuidNullable() : (value is Guid? ? (TProperty)(object)(Guid?)value : (TProperty)(object)string.Format("{0}", value).ToGuidNullable()));
-				}
-				else if (type == typeof(int))
-				{
-					transformValue = value => (value is string stringValue ? (TProperty)(object)stringValue.ToInt() : (value is int @int ? (TProperty)(object)@int : (TProperty)(object)string.Format("{0}", value).ToInt()));
-				}
-				else if (type == typeof(int?))
-				{
-					transformValue = value => (value is string stringValue ? (TProperty)(object)stringValue.ToIntNullable() : (value is int? ? (TProperty)(object)(int?)value : (TProperty)(object)string.Format("{0}", value).ToIntNullable()));
-				}
-				else if (type == typeof(long))
-				{
-					transformValue = value => (value is string stringValue ? (TProperty)(object)stringValue.ToLong() : (value is long @long ? (TProperty)(object)@long : (TProperty)(object)string.Format("{0}", value).ToLong()));
-				}
-				else if (type == typeof(long?))
-				{
-					transformValue = value => (value is string stringValue ? (TProperty)(object)stringValue.ToLongNullable() : (value is long? ? (TProperty)(object)(long?)value : (TProperty)(object)string.Format("{0}", value).ToLongNullable()));
-				}
-				else if (type == typeof(double))
-				{
-					transformValue = value => (value is string stringValue ? (TProperty)(object)stringValue.ToDouble() : (value is double @double ? (TProperty)(object)@double : (TProperty)(object)string.Format("{0}", value).ToDouble()));
-				}
-				else if (type == typeof(double?))
-				{
-					transformValue = value => (value is string stringValue ? (TProperty)(object)stringValue.ToDoubleNullable() : (value is double? ? (TProperty)(object)(double?)value : (TProperty)(object)string.Format("{0}", value).ToDoubleNullable()));
-				}
-				else if (type == typeof(decimal))
-				{
-					transformValue = value => (value is string stringValue ? (TProperty)(object)stringValue.ToDecimal() : (value is decimal @decimal ? (TProperty)(object)@decimal : (TProperty)(object)string.Format("{0}", value).ToDecimal()));
-				}
-				else if (type == typeof(decimal?))
-				{
-					transformValue = value => (value is string stringValue ? (TProperty)(object)stringValue.ToDecimalNullable() : (value is decimal? ? (TProperty)(object)(decimal?)value : (TProperty)(object)string.Format("{0}", value).ToDecimalNullable()));
-				}
-				else if (type == typeof(bool))
-				{
-					transformValue = value => (value is string stringValue ? (TProperty)(object)stringValue.ToBoolean() : (value is bool @bool ? (TProperty)(object)@bool : (TProperty)(object)string.Format("{0}", value).ToBoolean()));
-				}
-				else if (type == typeof(bool?))
-				{
-					transformValue = value => (value is string stringValue ? (TProperty)(object)stringValue.ToBooleanNullable() : (value is bool? ? (TProperty)(object)(bool?)value : (TProperty)(object)string.Format("{0}", value).ToBooleanNullable()));
-				}
-				else if (type == typeof(DateTime))
-				{
-					transformValue = value => (value is string stringValue ? (TProperty)(object)stringValue.ToDateTime() : (value is DateTime @DateTime ? (TProperty)(object)@DateTime : (TProperty)(object)string.Format("{0}", value).ToDateTime()));
-				}
-				else if (type == typeof(DateTime?))
-				{
-					transformValue = value => (value is string stringValue ? (TProperty)(object)stringValue.ToDateTimeNullable() : (value is DateTime? ? (TProperty)(object)(DateTime?)value : (TProperty)(object)string.Format("{0}", value).ToDateTimeNullable()));
-				}
-				else if (type == typeof(TimeSpan))
-				{
-					transformValue = value => (value is string stringValue ? (TProperty)(object)stringValue.ToTimeSpan() : (value is TimeSpan @TimeSpan ? (TProperty)(object)@TimeSpan : (TProperty)(object)string.Format("{0}", value).ToTimeSpan()));
-				}
-				else if (type == typeof(TimeSpan?))
-				{
-					transformValue = value => (value is string stringValue ? (TProperty)(object)stringValue.ToTimeSpanNullable() : (value is TimeSpan? ? (TProperty)(object)(TimeSpan?)value : (TProperty)(object)string.Format("{0}", value).ToTimeSpanNullable()));
-				}
-				else if (ISI.Extensions.Enum.IsEnum(type))
-				{
-					transformValue = value => (value is string stringValue ? (TProperty)(object)(ISI.Extensions.Enum.Parse(type, stringValue)) : (TProperty)(object)(ISI.Extensions.Enum.Parse(type, string.Format("{0}", value))));
-				}
-			}
 			TransformValue = transformValue;
 
 			FormattedValue = formattedValue ?? (record => string.Format("{0}", GetValue(record)));
@@ -224,6 +132,147 @@ namespace ISI.Extensions.Columns
 			}
 
 			return TransformValue(value);
+		}
+
+		private Func<object, TTransformValueProperty> GetTransformValue<TTransformValueProperty>(ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer)
+		{
+			Func<object, TTransformValueProperty> transformValue = null;
+
+			var type = typeof(TTransformValueProperty);
+
+			if (type == typeof(string[]))
+			{
+				transformValue = value =>
+				{
+					var values = new List<string>();
+
+					if (value is System.Collections.IEnumerable enumerable)
+					{
+						foreach (var item in enumerable)
+						{
+							values.Add(string.Format("{0}", item));
+						}
+					}
+					else
+					{
+						values.Add(string.Format("{0}", value));
+					}
+
+					return (TTransformValueProperty)(object)(values.ToArray());
+				};
+			}
+			else if (type == typeof(string))
+			{
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue : (TTransformValueProperty)(object)string.Format("{0}", value));
+			}
+			else if (type == typeof(Guid))
+			{
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToGuid() : (value is Guid @guid ? (TTransformValueProperty)(object)@guid : (TTransformValueProperty)(object)string.Format("{0}", value).ToGuid()));
+			}
+			else if (type == typeof(Guid?))
+			{
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToGuidNullable() : (value is Guid? ? (TTransformValueProperty)(object)(Guid?)value : (TTransformValueProperty)(object)string.Format("{0}", value).ToGuidNullable()));
+			}
+			else if (type == typeof(int))
+			{
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToInt() : (value is int @int ? (TTransformValueProperty)(object)@int : (TTransformValueProperty)(object)string.Format("{0}", value).ToInt()));
+			}
+			else if (type == typeof(int?))
+			{
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToIntNullable() : (value is int? ? (TTransformValueProperty)(object)(int?)value : (TTransformValueProperty)(object)string.Format("{0}", value).ToIntNullable()));
+			}
+			else if (type == typeof(long))
+			{
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToLong() : (value is long @long ? (TTransformValueProperty)(object)@long : (TTransformValueProperty)(object)string.Format("{0}", value).ToLong()));
+			}
+			else if (type == typeof(long?))
+			{
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToLongNullable() : (value is long? ? (TTransformValueProperty)(object)(long?)value : (TTransformValueProperty)(object)string.Format("{0}", value).ToLongNullable()));
+			}
+			else if (type == typeof(double))
+			{
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToDouble() : (value is double @double ? (TTransformValueProperty)(object)@double : (TTransformValueProperty)(object)string.Format("{0}", value).ToDouble()));
+			}
+			else if (type == typeof(double?))
+			{
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToDoubleNullable() : (value is double? ? (TTransformValueProperty)(object)(double?)value : (TTransformValueProperty)(object)string.Format("{0}", value).ToDoubleNullable()));
+			}
+			else if (type == typeof(decimal))
+			{
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToDecimal() : (value is decimal @decimal ? (TTransformValueProperty)(object)@decimal : (TTransformValueProperty)(object)string.Format("{0}", value).ToDecimal()));
+			}
+			else if (type == typeof(decimal?))
+			{
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToDecimalNullable() : (value is decimal? ? (TTransformValueProperty)(object)(decimal?)value : (TTransformValueProperty)(object)string.Format("{0}", value).ToDecimalNullable()));
+			}
+			else if (type == typeof(bool))
+			{
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToBoolean() : (value is bool @bool ? (TTransformValueProperty)(object)@bool : (TTransformValueProperty)(object)string.Format("{0}", value).ToBoolean()));
+			}
+			else if (type == typeof(bool?))
+			{
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToBooleanNullable() : (value is bool? ? (TTransformValueProperty)(object)(bool?)value : (TTransformValueProperty)(object)string.Format("{0}", value).ToBooleanNullable()));
+			}
+			else if (type == typeof(DateTime))
+			{
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToDateTime() : (value is DateTime @DateTime ? (TTransformValueProperty)(object)@DateTime : (TTransformValueProperty)(object)string.Format("{0}", value).ToDateTime()));
+			}
+			else if (type == typeof(DateTime?))
+			{
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToDateTimeNullable() : (value is DateTime? ? (TTransformValueProperty)(object)(DateTime?)value : (TTransformValueProperty)(object)string.Format("{0}", value).ToDateTimeNullable()));
+			}
+			else if (type == typeof(TimeSpan))
+			{
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToTimeSpan() : (value is TimeSpan @TimeSpan ? (TTransformValueProperty)(object)@TimeSpan : (TTransformValueProperty)(object)string.Format("{0}", value).ToTimeSpan()));
+			}
+			else if (type == typeof(TimeSpan?))
+			{
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToTimeSpanNullable() : (value is TimeSpan? ? (TTransformValueProperty)(object)(TimeSpan?)value : (TTransformValueProperty)(object)string.Format("{0}", value).ToTimeSpanNullable()));
+			}
+			else if (ISI.Extensions.Enum.IsEnum(type))
+			{
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)(ISI.Extensions.Enum.Parse(type, stringValue)) : (TTransformValueProperty)(object)(ISI.Extensions.Enum.Parse(type, string.Format("{0}", value))));
+			}
+			else if (type.IsClass && (jsonSerializer != null) && (type.GetCustomAttribute<System.Runtime.Serialization.DataContractAttribute>() != null))
+			{
+				transformValue = value =>
+				{
+					if (value is System.Text.Json.JsonElement jsonElement)
+					{
+						return (TTransformValueProperty)jsonSerializer.Deserialize(type, jsonElement.ToString());
+					}
+
+					throw new Exception("could not deserialize");
+				};
+			}
+			else if ((jsonSerializer != null) && TryGetJsonDeserializableTypeFromEnumerableType(type, out var elementType))
+			{
+				transformValue = value =>
+				{
+					if (value is System.Text.Json.JsonElement jsonElement)
+					{
+						return (TTransformValueProperty)jsonSerializer.Deserialize(type, jsonElement.ToString());
+					}
+
+					return default;
+				};
+			}
+
+			return transformValue;
+		}
+
+		private bool TryGetJsonDeserializableTypeFromEnumerableType(Type type, out Type elementType)
+		{
+			elementType = type.GetInterfaces()
+				.Where(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+				.Select(t => t.GetGenericArguments().NullCheckedFirstOrDefault()).NullCheckedFirstOrDefault();
+
+			if (elementType == null)
+			{
+				return false;
+			}
+
+			return (elementType.GetCustomAttribute<System.Runtime.Serialization.DataContractAttribute>() != null);
 		}
 
 		string IColumn<TRecord>.FormattedValue(TRecord record)

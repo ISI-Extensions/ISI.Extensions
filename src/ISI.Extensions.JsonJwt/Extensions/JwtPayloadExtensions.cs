@@ -21,12 +21,12 @@ namespace ISI.Extensions.JsonJwt.Extensions
 {
 	public static class JwtPayloadExtensions
 	{
-		public static T Deserialize<T>(this System.IdentityModel.Tokens.Jwt.JwtPayload jwtPayload) 
+		public static T Deserialize<T>(this System.IdentityModel.Tokens.Jwt.JwtPayload jwtPayload, ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer = null) 
 			where T : class, new()
 		{
 			var response = new T();
 
-			var columns = ISI.Extensions.Columns.ColumnCollection<T>.GetDefault();
+			var columns = ISI.Extensions.Columns.ColumnCollection<T>.GetDefault(jsonSerializer);
 
 			foreach (var column in columns)
 			{

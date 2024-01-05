@@ -16,26 +16,15 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Runtime.Serialization;
 
-namespace ISI.Extensions.JsonJwt
+namespace ISI.Extensions.JsonJwt.JwtAlgorithms
 {
-	[DataContract]
-	public class JwsSignedPayload
+	public interface IJwtAlgorithm
 	{
-		[DataMember(Name = "header", EmitDefaultValue = false)]
-		public Dictionary<string, string> UnProtectedHeader { get; set; }
+		string AlgorithmType { get; }
 
-		[DataMember(Name = "protected", EmitDefaultValue = false)]
-		public string ProtectedHeader { get; set; }
+		bool IsAsymmetric { get; }
 
-		[DataMember(Name = "payload", EmitDefaultValue = false)]
-		public string Payload { get; set; }
-
-		[DataMember(Name = "signature", EmitDefaultValue = false)]
-		public string Signature { get; set; }
-
-		[IgnoreDataMember]
-		public string JwtPayload =>  $"{ProtectedHeader}.{Payload}.{Signature}";
+		byte[] Sign(byte[] secretKey, byte[] content);
 	}
 }

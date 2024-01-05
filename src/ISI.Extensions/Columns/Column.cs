@@ -144,6 +144,11 @@ namespace ISI.Extensions.Columns
 			{
 				transformValue = value =>
 				{
+					if (value is System.Text.Json.JsonElement jsonElement)
+					{
+						return (TTransformValueProperty)jsonSerializer.Deserialize(type, jsonElement.ToString());
+					}
+
 					var values = new List<string>();
 
 					if (value is System.Collections.IEnumerable enumerable)

@@ -299,11 +299,14 @@ namespace ISI.Extensions.VisualStudio.Forms
 							});
 						}
 
-						foreach (var solution in SolutionsContext.Solutions.Where(solution => solution.Selected))
+						if (!UpgradeNugetPackages || RestoreNugetPackages || BuildSolution)
 						{
-							foreach (var solutionTask in solution.GetTasks(resetResponses, CleanSolution, UpdateSolution, RestoreNugetPackages, BuildSolution, ExecuteProjects, ShowProjectExecutionInTaskbar))
+							foreach (var solution in SolutionsContext.Solutions.Where(solution => solution.Selected))
 							{
-								BackgroundTasks.Enqueue(solutionTask);
+								foreach (var solutionTask in solution.GetTasks(resetResponses, CleanSolution, UpdateSolution, RestoreNugetPackages, BuildSolution, ExecuteProjects, ShowProjectExecutionInTaskbar))
+								{
+									BackgroundTasks.Enqueue(solutionTask);
+								}
 							}
 						}
 

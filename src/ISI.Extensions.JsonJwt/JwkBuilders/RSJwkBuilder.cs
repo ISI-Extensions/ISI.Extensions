@@ -27,6 +27,9 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 	{
 		public string AlgorithmKey => $"ES{HashSize}";
 
+		private const int DefaultHasSize = 256;
+		private const int DefaultKeySize = 2048;
+
 		private int _hashSize;
 		public int HashSize
 		{
@@ -81,8 +84,8 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 		public RSJwkBuilder(
 			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer,
 			string serializedJwk,
-			int hashSize = 256,
-			int keySize = 2048)
+			int hashSize = DefaultHasSize,
+			int keySize = DefaultKeySize)
 		{
 			JsonSerializer = jsonSerializer;
 

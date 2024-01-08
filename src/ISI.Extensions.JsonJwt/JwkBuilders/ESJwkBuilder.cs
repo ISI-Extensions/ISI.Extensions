@@ -26,6 +26,8 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 	{
 		public string AlgorithmKey => $"ES{HashSize}";
 
+		private const int DefaultHasSize = 256;
+
 		private int _hashSize;
 		public int HashSize
 		{
@@ -85,10 +87,14 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 		{
 			JsonSerializer = jsonSerializer;
 
-			if (!string.IsNullOrWhiteSpace(serializedJwk))
+			if (string.IsNullOrWhiteSpace(serializedJwk))
+			{
+				HashSize = hashSize ?? DefaultHasSize;
+			}
+			else
 			{
 				var jwkDetails = JsonSerializer.Deserialize<SerializableEntitiesDTOs.ESJwkDetails>(serializedJwk);
-				hashSize = jwkDetails.HashSize ?? hashSize;
+				HashSize = jwkDetails.HashSize ?? hashSize ?? DefaultHasSize;
 
 				var ecParameters = ECDsa.ExportParameters(true);
 
@@ -102,8 +108,6 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 
 				ECDsa.ImportParameters(ecParameters);
 			}
-
-			HashSize = hashSize ?? 2048;
 		}
 		
 		public string GetSerializedJwk()

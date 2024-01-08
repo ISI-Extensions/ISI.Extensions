@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.JsonJwt.Extensions;
 using ISI.Extensions.JsonSerialization.Extensions;
 using ISI.Extensions.TypeLocator.Extensions;
 using SerializableEntitiesDTOs = ISI.Extensions.JsonJwt.SerializableEntities;
@@ -27,9 +28,29 @@ namespace ISI.Extensions.JsonJwt
 {
 	public partial class JwtEncoder
 	{
-		//public bool ValidateJwt(Jwt jwt, string secretKey = null)
-		//{
+		public bool ValidateJwt(SerializableEntitiesDTOs.SignedJwt signedJwt, Jwt jwt, GetSerializedJwkFromAccountKeyDelegate getSerializedJwkFromAccountKey, string secretKey = null)
+		{
+			var jwtHeader = jwt.DeserializeHeader<SerializableEntitiesDTOs.JwtHeader>();
 
-		//}
+			if (!string.IsNullOrWhiteSpace(jwtHeader.AccountKey) && !string.IsNullOrWhiteSpace(jwtHeader.SerializedJwk))
+			{
+				throw new Exception("Kid and Jwk cannot both exist");
+			}
+
+			if (string.IsNullOrWhiteSpace(jwtHeader.AlgorithmKey))
+			{
+				throw new Exception("Algorithm not defined");
+			}
+
+			if (!string.IsNullOrWhiteSpace(jwtHeader.AccountKey))
+			{
+				jwtHeader.SerializedJwk = getSerializedJwkFromAccountKey(jwtHeader.AccountKey);
+			}
+
+			using (var jwkBuilder = JwkBuilderFactory.GetJwkBuilder(jwtHeader.AlgorithmKey, jwtHeader.SerializedJwk))
+			{
+				return jwkBuilder.VerifySignature(signedJwt.GetHeaderDotPayload(), signedJwt.Signature);
+			}
+		}
 	}
 }

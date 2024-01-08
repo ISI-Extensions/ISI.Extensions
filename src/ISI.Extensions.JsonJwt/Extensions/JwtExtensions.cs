@@ -21,6 +21,14 @@ namespace ISI.Extensions.JsonJwt.Extensions
 {
 	public static class JwtExtensions
 	{
+		public static Jwt AddAccountKey(this Jwt jwt, string accountKey) 
+		{
+			jwt.Header.Remove("kid");
+			jwt.Header.Add("kid", accountKey);
+
+			return jwt;
+		}
+
 		public static T DeserializePayload<T>(this Jwt jwt, ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer = null) 
 			where T : class, new()
 		{
@@ -31,6 +39,24 @@ namespace ISI.Extensions.JsonJwt.Extensions
 			foreach (var column in columns)
 			{
 				if (jwt.Payload.TryGetValue(column.ColumnName, out var value))
+				{
+					column.SetValue(response, column.TransformValue(value));
+				}
+			}
+
+			return response;
+		}
+
+		public static T DeserializeHeader<T>(this Jwt jwt, ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer = null) 
+			where T : class, new()
+		{
+			var response = new T();
+
+			var columns = ISI.Extensions.Columns.ColumnCollection<T>.GetDefault(jsonSerializer);
+
+			foreach (var column in columns)
+			{
+				if (jwt.Header.TryGetValue(column.ColumnName, out var value))
 				{
 					column.SetValue(response, column.TransformValue(value));
 				}

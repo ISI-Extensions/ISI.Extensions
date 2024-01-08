@@ -17,17 +17,17 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ISI.Extensions.JsonJwt.JwtAlgorithms
+namespace ISI.Extensions.JsonJwt
 {
-	[AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
-	public class JwtAlgorithmAttribute : ISI.Extensions.TypeLocatorAttribute
+	public class JwtAlgorithmKey
 	{
-		public string AlgorithmType { get; }
+		public const string Default = ES256;
 
-		public JwtAlgorithmAttribute(string algorithmType)
-			: base(typeof(ISI.Extensions.Documents.DocumentGenerator.IContentGenerator))
-		{
-			AlgorithmType = algorithmType;
-		}
+		public const string ES256 = nameof(ES256);
+		public const string ES384 = nameof(ES384);
+		public const string ES512 = nameof(ES512);
+		public const string RS256 = nameof(ES256);
+		public const string RS384 = nameof(ES384);
+		public const string RS512 = nameof(ES512);
 	}
 }

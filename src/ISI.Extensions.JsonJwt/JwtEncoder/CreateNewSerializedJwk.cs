@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,24 +15,23 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using ISI.Extensions.JsonSerialization.Extensions;
+using ISI.Extensions.TypeLocator.Extensions;
+using SerializableEntitiesDTOs = ISI.Extensions.JsonJwt.SerializableEntities;
 
-namespace ISI.Extensions.JsonJwt.JwtAlgorithms
+namespace ISI.Extensions.JsonJwt
 {
-	[JwtAlgorithm(JwtAlgorithm)]
-	public class HMACSHA512JwtAlgorithm : IJwtAlgorithm
+	public partial class JwtEncoder
 	{
-		internal const string JwtAlgorithm = "HS512";
-
-		public string AlgorithmType => JwtAlgorithm;
-
-		public bool IsAsymmetric => false;
-
-		public byte[] Sign(byte[] secretKey, byte[] content)
+		public string CreateNewSerializedJwk(string jwtAlgorithmKey = JwtAlgorithmKey.Default)
 		{
-			using (var hasher = new System.Security.Cryptography.HMACSHA512(secretKey))
+			using (var jwkBuilder = JwkBuilderFactory.GetJwkBuilder(jwtAlgorithmKey))
 			{
-				return hasher.ComputeHash(content);
+				return jwkBuilder.GetSerializedJwk();
 			}
 		}
 	}

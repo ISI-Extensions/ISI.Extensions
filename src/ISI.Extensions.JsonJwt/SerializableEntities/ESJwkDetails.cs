@@ -16,24 +16,23 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.JsonJwt.JwtAlgorithms
+namespace ISI.Extensions.JsonJwt.SerializableEntities
 {
-	[JwtAlgorithm(JwtAlgorithm)]
-	public class HMACSHA384JwtAlgorithm : IJwtAlgorithm
+	[DataContract]
+	public class ESJwkDetails
 	{
-		internal const string JwtAlgorithm = "HS384";
+		[DataMember(Name = "hashSize", Order = 1)]
+		public int? HashSize { get; set; }
 
-		public string AlgorithmType => JwtAlgorithm;
+		[DataMember(Name = "d", Order = 2)]
+		public string D { get; set; }
 
-		public bool IsAsymmetric => false;
+		[DataMember(Name = "x", Order = 3)]
+		public string X { get; set; }
 
-		public byte[] Sign(byte[] secretKey, byte[] content)
-		{
-			using (var hasher = new System.Security.Cryptography.HMACSHA384(secretKey))
-			{
-				return hasher.ComputeHash(content);
-			}
-		}
+		[DataMember(Name = "y", Order = 4)]
+		public string Y { get; set; }
 	}
 }

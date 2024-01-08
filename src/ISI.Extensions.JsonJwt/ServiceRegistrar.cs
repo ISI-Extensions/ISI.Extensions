@@ -28,6 +28,7 @@ namespace ISI.Extensions.JsonJwt
 	{
 		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
+			services.AddSingleton<ISI.Extensions.JsonJwt.JwkBuilders.JwkBuilderFactory>();
 			services.AddSingleton<JwtEncoder>();
 		}
 	}

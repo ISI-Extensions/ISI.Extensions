@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,25 +15,39 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using ISI.Extensions.JsonSerialization.Extensions;
+using ISI.Extensions.TypeLocator.Extensions;
+using SerializableEntitiesDTOs = ISI.Extensions.JsonJwt.SerializableEntities;
 
-namespace ISI.Extensions.JsonJwt.JwtAlgorithms
+namespace ISI.Extensions.JsonJwt
 {
-	[JwtAlgorithm(JwtAlgorithm)]
-	public class HMACSHA256JwtAlgorithm : IJwtAlgorithm
+	public partial class JwtEncoder
 	{
-		internal const string JwtAlgorithm = "HS256";
-
-		public string AlgorithmType => JwtAlgorithm;
-
-		public bool IsAsymmetric => false;
-
-		public byte[] Sign(byte[] secretKey, byte[] content)
+		public static byte[] Base64DecodeToBytes(string value)
 		{
-			using (var hasher = new System.Security.Cryptography.HMACSHA256(secretKey))
+			value = value.Replace("-", "+").Replace("_", "/");
+
+			switch (value.Length % 4)
 			{
-				return hasher.ComputeHash(content);
+				case 0:
+					break;
+				case 2:
+					value += "==";
+					break;
+				case 3:
+					value += "=";
+					break;
+				default:
+					throw new Exception("Not Valid");
 			}
+
+			return Convert.FromBase64String(value);
 		}
+
+		public static string Base64DecodeToString(string value) => System.Text.Encoding.UTF8.GetString(Base64DecodeToBytes(value));
 	}
 }

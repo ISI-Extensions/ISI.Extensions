@@ -19,25 +19,25 @@ using System.Text;
 
 namespace ISI.Extensions.JsonJwt.Extensions
 {
-	public static class JwtSecurityTokenExtensions
-	{
-		public static string GetSerializedJwt(this System.IdentityModel.Tokens.Jwt.JwtSecurityToken jwtSecurityToken)
-		{
-			{
-				if (jwtSecurityToken.Header.TryGetValue("jwt", out var header))
-				{
-					return header.ToString();
-				}
-			}
+	//public static class JwtSecurityTokenExtensions
+	//{
+	//	public static string GetSerializedJwt(this System.IdentityModel.Tokens.Jwt.JwtSecurityToken jwtSecurityToken)
+	//	{
+	//		{
+	//			if (jwtSecurityToken.Header.TryGetValue("jwt", out var header))
+	//			{
+	//				return header.ToString();
+	//			}
+	//		}
 
-			{
-				if (jwtSecurityToken.Header.TryGetValue("jwk", out var header))
-				{
-					return header.ToString();
-				}
-			}
+	//		{
+	//			if (jwtSecurityToken.Header.TryGetValue("jwk", out var header))
+	//			{
+	//				return header.ToString();
+	//			}
+	//		}
 
-			return null;
-		}
-	}
+	//		return null;
+	//	}
+	//}
 }

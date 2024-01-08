@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,20 +58,15 @@ namespace ISI.Extensions.Assemblies
 				assemblyFileNames.UnionWith(System.IO.Directory.GetFiles(executingDirectoryName, "*.exe", System.IO.SearchOption.TopDirectoryOnly).Select(fileName => System.IO.Path.Combine(executingDirectoryName, fileName)));
 			}
 
-			if (excludeAssemblyFileNames.NullCheckedAny())
-			{
-				excludeAssemblyFileNames = new HashSet<string>(excludeAssemblyFileNames, StringComparer.CurrentCultureIgnoreCase);
-
-				assemblyFileNames.RemoveWhere(excludeAssemblyFileNames.Contains);
-			}
-
-			assemblyFileNames.RemoveWhere(assemblyFileName => string.Equals(System.IO.Path.GetFileNameWithoutExtension(assemblyFileName), "Microsoft.IdentityModel.Tokens", StringComparison.InvariantCultureIgnoreCase));
+			var excludeAssemblyNames = new HashSet<string>((excludeAssemblyFileNames.NullCheckedSelect(System.IO.Path.GetFileNameWithoutExtension) ?? Array.Empty<string>()), StringComparer.InvariantCultureIgnoreCase);
+			excludeAssemblyNames.Add("Microsoft.IdentityModel.Protocols.OpenIdConnect");
+			excludeAssemblyNames.Add("Microsoft.IdentityModel.Tokens");
 
 			var assemblies = new List<Assembly>();
 
 			var types = new List<Type>();
 
-			foreach (var assembly in System.AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic))
+			foreach (var assembly in System.AppDomain.CurrentDomain.GetAssemblies().Where(assembly => !(excludeAssemblyNames.Contains(System.IO.Path.GetFileNameWithoutExtension(assembly.Location)) && !assembly.IsDynamic)))
 			{
 				try
 				{
@@ -93,7 +88,7 @@ namespace ISI.Extensions.Assemblies
 
 			var notLoadedAssemblies = new List<Assembly>();
 
-			foreach (var assemblyFileName in assemblyFileNames)
+			foreach (var assemblyFileName in assemblyFileNames.Where(assemblyFileName => !(excludeAssemblyNames.Contains(System.IO.Path.GetFileNameWithoutExtension(assemblyFileName)))))
 			{
 				try
 				{

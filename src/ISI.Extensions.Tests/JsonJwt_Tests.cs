@@ -87,35 +87,25 @@ namespace ISI.Extensions.Tests
 			[Test]
 			public void Deserialize_Test()
 			{
-				var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
-				var configuration = configurationBuilder.Build();
-
-				var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection()
-					.AddOptions()
-					.AddSingleton<Microsoft.Extensions.Configuration.IConfiguration>(configuration);
-
-				services.AddAllConfigurations(configuration);
-
-				var serviceProvider = services.BuildServiceProvider<ISI.Extensions.DependencyInjection.Iunq.ServiceProviderBuilder>(configuration);
-
 				var jsonSerializer = new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer();
+				var jwkBuilderFactory = new ISI.Extensions.JsonJwt.JwkBuilders.JwkBuilderFactory(jsonSerializer);
+				var jwtEncoder = new ISI.Extensions.JsonJwt.JwtEncoder(new ISI.Extensions.DateTimeStamper.LocalMachineDateTimeStamper(), jsonSerializer, jwkBuilderFactory);
 
 				var signedJwt = @"eyJhbGciOiJFUzI1NiIsImtpZCI6Imh0dHBzOi8vbG9jYWxob3N0OjE1NjMzL2FjbWUtYWNjb3VudHMvOWRkOTdkMmItODY4My00YzQ0LWI5OGUtM2JkYjE3NzI5ZWVjIiwibm9uY2UiOiJNNzlTTzJKNDJEWUk3TEhPSUNCVE83IiwidXJsIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6MTU2MzMvYWNtZS1vcmRlcnMvY3JlYXRlIn0.eyJpZGVudGlmaWVycyI6W3sidHlwZSI6ImRucyIsInZhbHVlIjoiKi55b3VyLmRvbWFpbi5uYW1lIn1dfQ.pnUwQYhNNW7vIA_FWapKfY0WHrhwpUJ5dDQG7RSO6arO2_48gNkJJwrYFvY2YsE7XC5RmgUwvNCoD03XSqE_Pg";
 
-				var jwtSecurityTokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+				//var jwtSecurityTokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
 
-				if (jwtSecurityTokenHandler.CanReadToken(signedJwt))
-				{
-					var jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(signedJwt);
+				//if (jwtSecurityTokenHandler.CanReadToken(signedJwt))
+				//{
+				//	var jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(signedJwt);
 
-					var request = jwtSecurityToken.Payload.Deserialize<NewOrderRequest>(jsonSerializer);
-				}
+				//	var request = jwtSecurityToken.Payload.Deserialize<NewOrderRequest>(jsonSerializer);
+				//}
 
 				signedJwt = @"eyJhbGciOiJFUzI1NiIsImp3ayI6eyJjcnYiOiJQLTI1NiIsImt0eSI6IkVDIiwieCI6IkdyeDViVnd1aDZyV2xoaWlxQ2lPOVEzcUhvOVN5cUoyanFFSmlfVVhDRm8iLCJ5IjoiX0E1UGhzdkVNWTA4RWVWcHdlN0lXWU1mcWpOWEhycEN2aEdjUHI1b0RMVSJ9LCJub25jZSI6IlZDODI3M1dIVTg3T1RPR0dPMjUxQkciLCJ1cmwiOiJodHRwczovL2xvY2FsaG9zdDoxNTYzMy9hY21lLWFjY291bnRzL2NyZWF0ZSJ9.eyJjb250YWN0IjpbImFkbWluQGV4YW1wbGUuY29tIl0sInRlcm1zT2ZTZXJ2aWNlQWdyZWVkIjp0cnVlfQ.s84kdQ5EjOmkgmZh0LHoXjk8YcBhJc01hPcxoYAfC4SgJ7SSGQTY_8Zf-mv1k1J9x31maN0AE4GbqGyWr2qI1w";
 
-				var jwtEncoder = new ISI.Extensions.JsonJwt.JwtEncoder(new ISI.Extensions.DateTimeStamper.LocalMachineDateTimeStamper(), jsonSerializer);
 
-				if (jwtEncoder.TryDecodeSignedJwt(signedJwt, out var jwt))
+				if (jwtEncoder.TryDecodeSignedJwt(signedJwt, kid => null, out var jwt))
 				{
 					var request = jwt.DeserializePayload<NewAccountRequest>(jsonSerializer);
 				}

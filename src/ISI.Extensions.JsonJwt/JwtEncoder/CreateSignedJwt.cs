@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,34 +15,46 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using System.Runtime.Serialization;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using ISI.Extensions.JsonJwt.Extensions;
+using ISI.Extensions.JsonSerialization.Extensions;
+using ISI.Extensions.TypeLocator.Extensions;
+using SerializableEntitiesDTOs = ISI.Extensions.JsonJwt.SerializableEntities;
 
-namespace ISI.Extensions.JsonJwt.SerializableEntities
+namespace ISI.Extensions.JsonJwt
 {
-	[DataContract]
-	public class SignedJwt
+	public partial class JwtEncoder
 	{
-		public SignedJwt()
+		public SerializableEntitiesDTOs.SignedJwt CreateSignedJwt(string serializedJwk, Jwt jwt)
 		{
+			var signedJwt = new SerializableEntitiesDTOs.SignedJwt();
 
+			var jwtHeader = jwt.DeserializeHeader<SerializableEntitiesDTOs.JwtHeader>();
+
+			using (var jwkBuilder = JwkBuilderFactory.GetJwkBuilder(jwtHeader.AlgorithmKey, jwtHeader.SerializedJwk))
+			{
+				if (!jwt.Header.ContainsKey("kid"))
+				{
+					jwt.Header.Remove("jwk");
+					jwt.Header.Add("jwk", serializedJwk);
+				}
+
+				var header = jwt.Header.ToDictionary(keyValue => keyValue.Key, keyValue => UrlEncode(Encoding.UTF8.GetBytes(keyValue.Value?.ToString() ?? string.Empty)));
+
+				signedJwt.Header = UrlEncode(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(header)));
+
+				if (jwt.Payload.NullCheckedAny())
+				{
+					signedJwt.Header = UrlEncode(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(jwt.Payload)));
+				}
+
+				signedJwt.Signature = jwkBuilder.GetSignature(signedJwt.GetHeaderDotPayload());
+			}
+
+			return signedJwt;
 		}
-		public SignedJwt(string signedJwt)
-		{
-			var parts = signedJwt.Split('.');
-
-			Header = parts[0];
-			Payload = parts[1];
-			Signature = parts[2];
-		}
-
-		[DataMember(Name = "protected", EmitDefaultValue = false)]
-		public string Header { get; set; }
-
-		[DataMember(Name = "payload", EmitDefaultValue = false)]
-		public string Payload { get; set; }
-
-		[DataMember(Name = "signature", EmitDefaultValue = false)]
-		public string Signature { get; set; }
 	}
 }

@@ -17,14 +17,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ISI.Extensions.JsonJwt.JwtAlgorithms
+namespace ISI.Extensions.JsonJwt.Extensions
 {
-	public interface IJwtAlgorithm
+	public static class SignedJwtExtensions
 	{
-		string AlgorithmType { get; }
-
-		bool IsAsymmetric { get; }
-
-		byte[] Sign(byte[] secretKey, byte[] content);
+		public static string GetSignedJwt(this ISI.Extensions.JsonJwt.SerializableEntities.SignedJwt signedJwt) => $"{signedJwt.Header}.{signedJwt.Payload}.{signedJwt.Signature}";
+		public static string GetHeaderDotPayload(this ISI.Extensions.JsonJwt.SerializableEntities.SignedJwt signedJwt) => $"{signedJwt.Header}.{signedJwt.Payload}";
 	}
 }

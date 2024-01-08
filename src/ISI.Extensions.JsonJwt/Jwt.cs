@@ -26,7 +26,5 @@ namespace ISI.Extensions.JsonJwt
 
 		private IDictionary<string, object> _payload = null;
 		public IDictionary<string, object> Payload { get => _payload ??= new Dictionary<string, object>(StringComparer.InvariantCultureIgnoreCase); set => _payload = new Dictionary<string, object>(value ?? new Dictionary<string, object>(), StringComparer.InvariantCultureIgnoreCase); }
-		
-		public string Signature { get; set; }
 	}
 }

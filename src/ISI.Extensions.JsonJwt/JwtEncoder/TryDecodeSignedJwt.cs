@@ -27,74 +27,32 @@ namespace ISI.Extensions.JsonJwt
 {
 	public partial class JwtEncoder
 	{
-		public bool TryDecodeSignedJwt(string signedJwt, out Jwt jwt) => TryDecodeSignedJwt(new SerializableEntitiesDTOs.SignedJwt(signedJwt), null, out jwt);
+		public bool TryDecodeSignedJwt(string signedJwt, GetSerializedJwkFromAccountKeyDelegate getSerializedJwkFromAccountKey, out Jwt jwt) => TryDecodeSignedJwt(new SerializableEntitiesDTOs.SignedJwt(signedJwt), getSerializedJwkFromAccountKey, null, out jwt);
 
-		public bool TryDecodeSignedJwt(SerializableEntitiesDTOs.SignedJwt signedJwt, out Jwt jwt) => TryDecodeSignedJwt(signedJwt, null, out jwt);
+		public bool TryDecodeSignedJwt(SerializableEntitiesDTOs.SignedJwt signedJwt, GetSerializedJwkFromAccountKeyDelegate getSerializedJwkFromAccountKey, out Jwt jwt) => TryDecodeSignedJwt(signedJwt, getSerializedJwkFromAccountKey, null, out jwt);
 
-		public bool TryDecodeSignedJwt(string signedJwt, string secretKey, out Jwt jwt) => TryDecodeSignedJwt(new SerializableEntitiesDTOs.SignedJwt(signedJwt), secretKey, out jwt);
+		public bool TryDecodeSignedJwt(string signedJwt, GetSerializedJwkFromAccountKeyDelegate getSerializedJwkFromAccountKey, string secretKey, out Jwt jwt) => TryDecodeSignedJwt(new SerializableEntitiesDTOs.SignedJwt(signedJwt), getSerializedJwkFromAccountKey, secretKey, out jwt);
 
-		public bool TryDecodeSignedJwt(SerializableEntitiesDTOs.SignedJwt signedJwt, string secretKey, out Jwt jwt)
+		public bool TryDecodeSignedJwt(SerializableEntitiesDTOs.SignedJwt signedJwt, GetSerializedJwkFromAccountKeyDelegate getSerializedJwkFromAccountKey, string secretKey, out Jwt jwt)
 		{
-			jwt = new Jwt()
-			{
-				Signature = signedJwt.Signature,
-			};
-
-			var jwtSecurityTokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
-
-			if (jwtSecurityTokenHandler.CanReadToken($"{signedJwt.ProtectedHeader}.{signedJwt.Payload}.{signedJwt.Signature}"))
-			{
-				var jwtToken = jwtSecurityTokenHandler.ReadJwtToken($"{signedJwt.ProtectedHeader}.{signedJwt.Payload}.{signedJwt.Signature}");
-
-				foreach (var header in jwtToken.Header)
-				{
-					jwt.Header.Add(header.Key, header.Value);
-				}
-
-				foreach (var item in jwtToken.Payload)
-				{
-					jwt.Payload.Add(item.Key, item.Value);
-				}
-
-				return true;
-			}
+			jwt = new Jwt();
 
 			if (CanReadSignedJwt(signedJwt))
 			{
-				jwt.Header = JsonSerializer.Deserialize<Dictionary<string, object>>(Base64Decode(signedJwt.ProtectedHeader));
+				jwt.Header = JsonSerializer.Deserialize<Dictionary<string, object>>(Base64DecodeToString(signedJwt.Header));
 
-				if (!string.IsNullOrWhiteSpace(signedJwt.Payload))
+				if (ValidateJwt(signedJwt, jwt, getSerializedJwkFromAccountKey, secretKey))
 				{
-					jwt.Payload.Add("payload", Base64Decode(signedJwt.Payload));
+					if (!string.IsNullOrWhiteSpace(signedJwt.Payload))
+					{
+						jwt.Payload = JsonSerializer.Deserialize<Dictionary<string, object>>(Base64DecodeToString(signedJwt.Payload));
+					}
+
+					return true;
 				}
-
-				return true;
-
-				//return ValidateJwt(jwt, secretKey);
 			}
 
 			return false;
-		}
-
-		private string Base64Decode(string value)
-		{
-			value = value.Replace("-", "+").Replace("_", "/");
-
-			switch (value.Length % 4)
-			{
-				case 0:
-					break;
-				case 2:
-					value += "==";
-					break;
-				case 3:
-					value += "=";
-					break;
-				default:
-					throw new Exception("Not Valid");
-			}
-
-			return System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(value));
 		}
 	}
 }

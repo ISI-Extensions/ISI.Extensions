@@ -21,28 +21,15 @@ using System.Runtime.Serialization;
 namespace ISI.Extensions.JsonJwt.SerializableEntities
 {
 	[DataContract]
-	public class SignedJwt
+	public class JwtHeader
 	{
-		public SignedJwt()
-		{
+		[DataMember(Name = "alg", EmitDefaultValue = false)]
+		public string AlgorithmKey { get; set; }
 
-		}
-		public SignedJwt(string signedJwt)
-		{
-			var parts = signedJwt.Split('.');
+		[DataMember(Name = "jwk", EmitDefaultValue = false)]
+		public string SerializedJwk { get; set; }
 
-			Header = parts[0];
-			Payload = parts[1];
-			Signature = parts[2];
-		}
-
-		[DataMember(Name = "protected", EmitDefaultValue = false)]
-		public string Header { get; set; }
-
-		[DataMember(Name = "payload", EmitDefaultValue = false)]
-		public string Payload { get; set; }
-
-		[DataMember(Name = "signature", EmitDefaultValue = false)]
-		public string Signature { get; set; }
+		[DataMember(Name = "kid", EmitDefaultValue = false)]
+		public string AccountKey { get; set; }
 	}
 }

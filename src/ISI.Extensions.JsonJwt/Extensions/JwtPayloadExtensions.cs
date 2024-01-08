@@ -19,24 +19,24 @@ using System.Text;
 
 namespace ISI.Extensions.JsonJwt.Extensions
 {
-	public static class JwtPayloadExtensions
-	{
-		public static T Deserialize<T>(this System.IdentityModel.Tokens.Jwt.JwtPayload jwtPayload, ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer = null) 
-			where T : class, new()
-		{
-			var response = new T();
+	//public static class JwtPayloadExtensions
+	//{
+	//	public static T Deserialize<T>(this System.IdentityModel.Tokens.Jwt.JwtPayload jwtPayload, ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer = null) 
+	//		where T : class, new()
+	//	{
+	//		var response = new T();
 
-			var columns = ISI.Extensions.Columns.ColumnCollection<T>.GetDefault(jsonSerializer);
+	//		var columns = ISI.Extensions.Columns.ColumnCollection<T>.GetDefault(jsonSerializer);
 
-			foreach (var column in columns)
-			{
-				if (jwtPayload.TryGetValue(column.ColumnName, out var value))
-				{
-					column.SetValue(response, column.TransformValue(value));
-				}
-			}
+	//		foreach (var column in columns)
+	//		{
+	//			if (jwtPayload.TryGetValue(column.ColumnName, out var value))
+	//			{
+	//				column.SetValue(response, column.TransformValue(value));
+	//			}
+	//		}
 
-			return response;
-		}
-	}
+	//		return response;
+	//	}
+	//}
 }

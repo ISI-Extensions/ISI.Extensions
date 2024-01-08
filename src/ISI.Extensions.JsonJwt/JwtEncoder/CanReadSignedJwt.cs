@@ -32,6 +32,6 @@ namespace ISI.Extensions.JsonJwt
 			return RegexJws.IsMatch(signedJwt);
 		}
 
-		public bool CanReadSignedJwt(SerializableEntitiesDTOs.SignedJwt signedJwt) => CanReadSignedJwt($"{signedJwt.ProtectedHeader}.{signedJwt.Payload}.{signedJwt.Signature}");
+		public bool CanReadSignedJwt(SerializableEntitiesDTOs.SignedJwt signedJwt) => CanReadSignedJwt($"{signedJwt.Header}.{signedJwt.Payload}.{signedJwt.Signature}");
 	}
 }

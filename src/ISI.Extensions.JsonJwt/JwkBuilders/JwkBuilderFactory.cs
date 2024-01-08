@@ -12,37 +12,39 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
+using ISI.Extensions.JsonSerialization.Extensions;
 
-namespace ISI.Extensions.JsonJwt.SerializableEntities
+namespace ISI.Extensions.JsonJwt.JwkBuilders
 {
-	[DataContract]
-	public class SignedJwt
+	public class JwkBuilderFactory
 	{
-		public SignedJwt()
-		{
+		protected ISI.Extensions.JsonSerialization.IJsonSerializer JsonSerializer { get; }
 
-		}
-		public SignedJwt(string signedJwt)
+		public JwkBuilderFactory(
+			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer)
 		{
-			var parts = signedJwt.Split('.');
-
-			Header = parts[0];
-			Payload = parts[1];
-			Signature = parts[2];
+			JsonSerializer = jsonSerializer;
 		}
 
-		[DataMember(Name = "protected", EmitDefaultValue = false)]
-		public string Header { get; set; }
+		public IJwkBuilder GetJwkBuilder(string algorithmKey, string serializedJwk = null)
+		{
+			if (algorithmKey.StartsWith("ES", StringComparison.InvariantCultureIgnoreCase))
+			{
+				return new ESJwkBuilder(JsonSerializer, serializedJwk, algorithmKey.Substring(2).ToInt());
+			} 
+			
+			if (algorithmKey.StartsWith("RS", StringComparison.InvariantCultureIgnoreCase))
+			{
+				return new RSJwkBuilder(JsonSerializer, serializedJwk, algorithmKey.Substring(2).ToInt());
+			}
 
-		[DataMember(Name = "payload", EmitDefaultValue = false)]
-		public string Payload { get; set; }
-
-		[DataMember(Name = "signature", EmitDefaultValue = false)]
-		public string Signature { get; set; }
+			throw new NotSupportedException();
+		}
 	}
 }

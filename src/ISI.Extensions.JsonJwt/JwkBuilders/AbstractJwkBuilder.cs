@@ -56,7 +56,7 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 		public virtual bool VerifySignature(string headerDotPayload, string signature)
 		{
 			var headerDotPayloadBytes = Encoding.ASCII.GetBytes(headerDotPayload);
-			var signatureBytes = Encoding.ASCII.GetBytes(signature);
+			var signatureBytes = JwtEncoder.Base64DecodeToBytes(signature);
 
 			var signer = Org.BouncyCastle.Security.SignerUtilities.GetSigner(SigningAlgorithm);
 			signer.Init(false, PublicKey);
@@ -70,7 +70,19 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 			return Org.BouncyCastle.Pkcs.PrivateKeyInfoFactory.CreatePrivateKeyInfo(AsymmetricCipherKeyPair.Private).GetDerEncoded();
 		}
 
-		public string GetPem()
+		public string GetPublicPem()
+		{
+			using (var stringWriter = new System.IO.StringWriter())
+			{
+				var pemWriter = new Org.BouncyCastle.OpenSsl.PemWriter(stringWriter);
+
+				pemWriter.WriteObject(AsymmetricCipherKeyPair.Public);
+
+				return stringWriter.ToString();
+			}
+		}
+
+		public string GetPrivatePem()
 		{
 			using (var stringWriter = new System.IO.StringWriter())
 			{

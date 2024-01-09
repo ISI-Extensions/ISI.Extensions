@@ -94,9 +94,17 @@ namespace ISI.Extensions.Tests
 			var context = AcmeApi.GetAcmeHostContext(new()
 			{
 				AcmeHostDirectoryUri = AcmeHostUri,
-				Pem = jwtBuilder.GetPem(),
+				Pem = jwtBuilder.GetPrivatePem(),
 			}).AcmeHostContext;
-			
+
+			var publicPem = jwtBuilder.GetPublicPem();
+			var xxx = jwtBuilder.GetSerializedJwk();
+
+			jwtBuilder = JwkBuilderFactory.GetJwkBuilder(ISI.Extensions.JsonJwt.JwkAlgorithmKey.ES256);
+
+			var jwtPublicPem = jwtBuilder.GetPublicPem();
+			var yyy = jwtBuilder.GetSerializedJwk();
+
 			System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(AccountPemFullName));
 			System.IO.File.WriteAllText(AccountPemFullName, context.Pem);
 

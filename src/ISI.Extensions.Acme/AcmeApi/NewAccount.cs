@@ -47,6 +47,12 @@ namespace ISI.Extensions.Acme
 
 			var signedJwt = JwtEncoder.BuildSignedJwt(request.AcmeHostContext.Pem, null, jwt);
 
+			if (JwtEncoder.TryDecodeSignedJwt(signedJwt, key => null, out var _jwt))
+			{
+
+			}
+
+
 			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<ISI.Extensions.JsonJwt.SerializableEntities.SignedJwt, ISI.Extensions.WebClient.Rest.SerializedResponse<ISI.Extensions.Acme.SerializableModels.Accounts.NewAccountResponse>>(uri, GetHeaders(request), signedJwt, true);
 
 			if (acmeResponse.ResponseHeaders.TryGetValue(ISI.Extensions.JsonJwt.HeaderKey.ReplayNonce, out var nonce))

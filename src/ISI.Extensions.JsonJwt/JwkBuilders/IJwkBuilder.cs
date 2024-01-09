@@ -31,7 +31,8 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 
 		string GetSerializedJwk();
 		byte[] GetDer();
-		public string GetPem();
+		string GetPublicPem();
+		string GetPrivatePem();
 
 		string GetSignature(string headerDotPayload);
 		bool VerifySignature(string headerDotPayload, string signature);

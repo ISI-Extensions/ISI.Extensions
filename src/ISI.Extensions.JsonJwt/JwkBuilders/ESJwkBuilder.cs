@@ -57,21 +57,21 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 			}
 		}
 
-		protected override string HashAlgorithm
+		protected Org.BouncyCastle.Asn1.DerObjectIdentifier CurveIdentifier
 		{
 			get
 			{
 				switch (HashSize)
 				{
-					case 256: return "SHA-256withECDSA";
-					case 384: return "SHA-384withECDSA";
-					case 512: return "SHA-512withECDSA";
+					case 256: return Org.BouncyCastle.Asn1.Sec.SecObjectIdentifiers.SecP256r1;
+					case 384: return Org.BouncyCastle.Asn1.Sec.SecObjectIdentifiers.SecP384r1;
+					case 512: return Org.BouncyCastle.Asn1.Sec.SecObjectIdentifiers.SecP521r1;
 					default: throw new NotImplementedException();
 				}
 			}
 		}
 
-		protected override string SigningAlgorithm
+		protected override string HashAlgorithm
 		{
 			get
 			{
@@ -85,8 +85,22 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 			}
 		}
 
+		protected override string SigningAlgorithm
+		{
+			get
+			{
+				switch (HashSize)
+				{
+					case 256: return "SHA-256withECDSA";
+					case 384: return "SHA-384withECDSA";
+					case 512: return "SHA-512withECDSA";
+					default: throw new NotImplementedException();
+				}
+			}
+		}
+
 		private Org.BouncyCastle.Crypto.AsymmetricKeyParameter _publicKey = null;
-		protected virtual Org.BouncyCastle.Crypto.AsymmetricKeyParameter PublicKey => _publicKey ?? base.PublicKey;
+		protected override Org.BouncyCastle.Crypto.AsymmetricKeyParameter PublicKey => _publicKey ?? base.PublicKey;
 
 		protected int FieldSize { get; }
 
@@ -126,9 +140,10 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 			var jwkDetails = JsonSerializer.Deserialize<SerializableEntitiesDTOs.ESJwkDetails>(serializedJwk);
 
 			var curve = Org.BouncyCastle.Asn1.Nist.NistNamedCurves.GetByName(CurveName).Curve;
+
 			var ecPoint = curve.CreatePoint(new Org.BouncyCastle.Math.BigInteger(JwtEncoder.Base64DecodeToBytes(jwkDetails.X)), new Org.BouncyCastle.Math.BigInteger(JwtEncoder.Base64DecodeToBytes(jwkDetails.Y)));
 
-			_publicKey = new Org.BouncyCastle.Crypto.Parameters.ECPublicKeyParameters("ECDH", ecPoint, Org.BouncyCastle.Asn1.Sec.SecObjectIdentifiers.SecP521r1);
+			_publicKey = new Org.BouncyCastle.Crypto.Parameters.ECPublicKeyParameters("ECDSA", ecPoint, CurveIdentifier);
 		}
 
 		public override string GetSerializedJwk()
@@ -137,9 +152,9 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 
 			var jwt = new SerializableEntitiesDTOs.ESJwk()
 			{
-				CurveName = $"P-{HashSize}",
-				X = JwtEncoder.UrlEncode(ecPublicKeyParameters.Q.AffineXCoord.GetEncoded()),
-				Y = JwtEncoder.UrlEncode(ecPublicKeyParameters.Q.AffineYCoord.GetEncoded()),
+				CurveName = CurveName,
+				X = JwtEncoder.UrlEncode(ecPublicKeyParameters.Q.AffineXCoord.ToBigInteger().ToByteArrayUnsigned()),
+				Y = JwtEncoder.UrlEncode(ecPublicKeyParameters.Q.AffineYCoord.ToBigInteger().ToByteArrayUnsigned()),
 			};
 
 			return JsonSerializer.Serialize(jwt, false);

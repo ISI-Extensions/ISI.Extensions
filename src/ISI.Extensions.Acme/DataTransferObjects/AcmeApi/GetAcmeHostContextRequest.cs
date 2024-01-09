@@ -25,7 +25,7 @@ namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 	public class GetAcmeHostContextRequest
 	{
 		public Uri AcmeHostDirectoryUri { get; set; }
-		public string SerializedJwk { get; set; }
+		public string Pem { get; set; }
 		public string AccountKey { get; set; }
 	}
 }

@@ -19,19 +19,66 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
 using ISI.Extensions.JsonSerialization.Extensions;
-using ISI.Extensions.TypeLocator.Extensions;
 using SerializableEntitiesDTOs = ISI.Extensions.JsonJwt.SerializableEntities;
 
-namespace ISI.Extensions.JsonJwt
+namespace ISI.Extensions.JsonJwt.JwkBuilders
 {
-	public partial class JwtEncoder
+	public abstract class AbstractJwkBuilder
 	{
-		public (string JwkAlgorithmKey, string SerializedJwk) CreateNewSerializedJwk(string jwkAlgorithmKey = JwkAlgorithmKey.Default)
+		public abstract JwkAlgorithmKey JwkAlgorithmKey { get; }
+
+		public int HashSize { get; }
+
+		protected abstract string HashAlgorithm { get; }
+		protected abstract string SigningAlgorithm { get; }
+
+		protected Org.BouncyCastle.Crypto.AsymmetricCipherKeyPair AsymmetricCipherKeyPair { get; set; }
+		protected virtual Org.BouncyCastle.Crypto.AsymmetricKeyParameter PublicKey => AsymmetricCipherKeyPair.Public;
+
+		protected ISI.Extensions.JsonSerialization.IJsonSerializer JsonSerializer { get; }
+
+
+		public AbstractJwkBuilder(
+			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer,
+			int hashSize)
 		{
-			using (var jwkBuilder = JwkBuilderFactory.GetJwkBuilder(jwkAlgorithmKey))
+			JsonSerializer = jsonSerializer;
+
+			HashSize = hashSize;
+		}
+
+		public abstract string GetSerializedJwk();
+
+		public abstract string GetSignature(string headerDotPayload);
+
+		public virtual bool VerifySignature(string headerDotPayload, string signature)
+		{
+			var headerDotPayloadBytes = Encoding.ASCII.GetBytes(headerDotPayload);
+			var signatureBytes = Encoding.ASCII.GetBytes(signature);
+
+			var signer = Org.BouncyCastle.Security.SignerUtilities.GetSigner(SigningAlgorithm);
+			signer.Init(false, PublicKey);
+			signer.BlockUpdate(headerDotPayloadBytes, 0, headerDotPayloadBytes.Length);
+
+			return signer.VerifySignature(signatureBytes);
+		}
+
+		public byte[] GetDer()
+		{
+			return Org.BouncyCastle.Pkcs.PrivateKeyInfoFactory.CreatePrivateKeyInfo(AsymmetricCipherKeyPair.Private).GetDerEncoded();
+		}
+
+		public string GetPem()
+		{
+			using (var stringWriter = new System.IO.StringWriter())
 			{
-				return (JwkAlgorithmKey: jwkAlgorithmKey, SerializedJwk: jwkBuilder.GetSerializedJwk());
+				var pemWriter = new Org.BouncyCastle.OpenSsl.PemWriter(stringWriter);
+
+				pemWriter.WriteObject(AsymmetricCipherKeyPair);
+
+				return stringWriter.ToString();
 			}
 		}
 	}

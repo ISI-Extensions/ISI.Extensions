@@ -28,32 +28,31 @@ namespace ISI.Extensions.JsonJwt
 {
 	public partial class JwtEncoder
 	{
-		public SerializableEntitiesDTOs.SignedJwt BuildSignedJwt(string jwkAlgorithmKey, string serializedJwk, string acmeAccountKey, Jwt jwt)
+		public SerializableEntitiesDTOs.SignedJwt BuildSignedJwt(string pem, string acmeAccountKey, Jwt jwt)
 		{
 			var signedJwt = new SerializableEntitiesDTOs.SignedJwt();
 
-			using (var jwkBuilder = JwkBuilderFactory.GetJwkBuilder(jwkAlgorithmKey, serializedJwk))
+			var jwkBuilder = JwkBuilderFactory.GetJwkBuilder(pem);
+
+			jwt.SetJwkAlgorithmKey(jwkBuilder.JwkAlgorithmKey.GetKey());
+
+			if (string.IsNullOrWhiteSpace(acmeAccountKey))
 			{
-				jwt.SetJwkAlgorithmKey(jwkAlgorithmKey);
-
-				if (string.IsNullOrWhiteSpace(acmeAccountKey))
-				{
-					jwt.SetSerializedJwk(serializedJwk);
-				}
-				else
-				{
-					jwt.SetAcmeAccountKey(acmeAccountKey);
-				}
-
-				signedJwt.Header = UrlEncode(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(jwt.Header)));
-
-				if (jwt.Payload.NullCheckedAny())
-				{
-					signedJwt.Payload = UrlEncode(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(jwt.Payload)));
-				}
-
-				signedJwt.Signature = jwkBuilder.GetSignature(signedJwt.GetHeaderDotPayload());
+				jwt.SetSerializedJwk(jwkBuilder.GetSerializedJwk());
 			}
+			else
+			{
+				jwt.SetAcmeAccountKey(acmeAccountKey);
+			}
+
+			signedJwt.Header = UrlEncode(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(jwt.Header)));
+
+			if (jwt.Payload.NullCheckedAny())
+			{
+				signedJwt.Payload = UrlEncode(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(jwt.Payload)));
+			}
+
+			signedJwt.Signature = jwkBuilder.GetSignature(signedJwt.GetHeaderDotPayload());
 
 			return signedJwt;
 		}

@@ -35,23 +35,78 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 			JsonSerializer = jsonSerializer;
 		}
 
-		public IJwkBuilder GetJwkBuilder(string algorithmKey = JwkAlgorithmKey.Default, string serializedJwk = null)
+		public IJwkBuilder GetJwkBuilder(JwkAlgorithmKey jwkAlgorithmKey)
 		{
-			if (algorithmKey.StartsWith("ES", StringComparison.InvariantCultureIgnoreCase))
+			switch (jwkAlgorithmKey)
 			{
-				return new ESJwkBuilder(JsonSerializer, serializedJwk, algorithmKey.Substring(2).ToInt());
-			}
+				case JwkAlgorithmKey.ES256:
+					return new ESJwkBuilder(JsonSerializer, 256);
 
-			if (algorithmKey.StartsWith("RS", StringComparison.InvariantCultureIgnoreCase))
-			{
-				return new RSJwkBuilder(JsonSerializer, serializedJwk, algorithmKey.Substring(2).ToInt());
-			}
+				case JwkAlgorithmKey.ES384:
+					return new ESJwkBuilder(JsonSerializer, 384);
 
-			throw new NotSupportedException();
+				case JwkAlgorithmKey.ES512:
+					return new ESJwkBuilder(JsonSerializer, 512);
+
+				case JwkAlgorithmKey.RS256:
+					return new RSJwkBuilder(JsonSerializer);
+
+				default:
+					throw new ArgumentOutOfRangeException(nameof(jwkAlgorithmKey), jwkAlgorithmKey, null);
+			}
 		}
 
-		public string GetSerializedJwkFromPem(string pem)
+		public IJwkBuilder GetJwkBuilder(string pem)
 		{
+			IJwkBuilder GetJwkBuilderFromKey(Org.BouncyCastle.Crypto.AsymmetricKeyParameter asymmetricKeyParameter)
+			{
+				var jwkAlgorithmKey = (string)null;
+				var asymmetricCipherKeyPair = (Org.BouncyCastle.Crypto.AsymmetricCipherKeyPair)null;
+
+				if (asymmetricKeyParameter is Org.BouncyCastle.Crypto.Parameters.RsaPrivateCrtKeyParameters rsaPrivateCrtKeyParameters)
+				{
+					var publicKey = new Org.BouncyCastle.Crypto.Parameters.RsaKeyParameters(false, rsaPrivateCrtKeyParameters.Modulus, rsaPrivateCrtKeyParameters.PublicExponent);
+
+					asymmetricCipherKeyPair = new Org.BouncyCastle.Crypto.AsymmetricCipherKeyPair(publicKey, asymmetricKeyParameter);
+
+					return new RSJwkBuilder(JsonSerializer, asymmetricCipherKeyPair);
+				}
+
+				if (asymmetricKeyParameter is Org.BouncyCastle.Crypto.Parameters.ECPrivateKeyParameters privateKey)
+				{
+					var ecPoint = privateKey.Parameters.G.Multiply(privateKey.D);
+
+					Org.BouncyCastle.Asn1.DerObjectIdentifier derObjectIdentifier = null;
+
+					switch (privateKey.Parameters.Curve.FieldSize)
+					{
+						case 256:
+							derObjectIdentifier = Org.BouncyCastle.Asn1.Sec.SecObjectIdentifiers.SecP256r1;
+							break;
+
+						case 384:
+							derObjectIdentifier = Org.BouncyCastle.Asn1.Sec.SecObjectIdentifiers.SecP384r1;
+							break;
+
+						case 521:
+							derObjectIdentifier = Org.BouncyCastle.Asn1.Sec.SecObjectIdentifiers.SecP521r1;
+							break;
+
+						default:
+							throw new NotSupportedException();
+					}
+
+					var publicKey = new Org.BouncyCastle.Crypto.Parameters.ECPublicKeyParameters("EC", ecPoint, derObjectIdentifier);
+
+					asymmetricCipherKeyPair = new Org.BouncyCastle.Crypto.AsymmetricCipherKeyPair(publicKey, asymmetricKeyParameter);
+
+					return new ESJwkBuilder(JsonSerializer, asymmetricCipherKeyPair, privateKey.Parameters.Curve.FieldSize);
+				}
+
+				throw new NotSupportedException();
+			};
+
+
 			using (var reader = new System.IO.StringReader(pem))
 			{
 				var pemReader = new Org.BouncyCastle.OpenSsl.PemReader(reader);
@@ -59,10 +114,10 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 				switch (pemReader.ReadObject())
 				{
 					case Org.BouncyCastle.Crypto.AsymmetricCipherKeyPair asymmetricCipherKeyPair:
-						return GetSerializedJwkFromKey(asymmetricCipherKeyPair.Private);
+						return GetJwkBuilderFromKey(asymmetricCipherKeyPair.Private);
 
 					case Org.BouncyCastle.Crypto.AsymmetricKeyParameter asymmetricKeyParameter:
-						return GetSerializedJwkFromKey(asymmetricKeyParameter);
+						return GetJwkBuilderFromKey(asymmetricKeyParameter);
 
 					default:
 						throw new NotSupportedException();
@@ -70,95 +125,20 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 			}
 		}
 
-		private string GetSerializedJwkFromKey(Org.BouncyCastle.Crypto.AsymmetricKeyParameter asymmetricKeyParameter)
+		public IJwkBuilder GetJwkBuilder(JwkAlgorithmKey jwkAlgorithmKey, string serializedJwk)
 		{
-			var jwkAlgorithmKey = (string)null;
-			var asymmetricCipherKeyPair = (Org.BouncyCastle.Crypto.AsymmetricCipherKeyPair)null;
-
-			if (asymmetricKeyParameter is Org.BouncyCastle.Crypto.Parameters.RsaPrivateCrtKeyParameters rsaPrivateCrtKeyParameters)
+			switch (jwkAlgorithmKey)
 			{
-				var publicKey = new Org.BouncyCastle.Crypto.Parameters.RsaKeyParameters(false, rsaPrivateCrtKeyParameters.Modulus, rsaPrivateCrtKeyParameters.PublicExponent);
+				case JwkAlgorithmKey.ES256:
+				case JwkAlgorithmKey.ES384:
+				case JwkAlgorithmKey.ES512:
+					return new ESJwkBuilder(JsonSerializer, serializedJwk, jwkAlgorithmKey.GetKey().Substring(2).ToInt());
 
-				jwkAlgorithmKey = JwkAlgorithmKey.RS256;
-
-				asymmetricCipherKeyPair = new Org.BouncyCastle.Crypto.AsymmetricCipherKeyPair(publicKey, asymmetricKeyParameter);
-			}
-			else if (asymmetricKeyParameter is Org.BouncyCastle.Crypto.Parameters.ECPrivateKeyParameters privateKey)
-			{
-				var ecPoint = privateKey.Parameters.G.Multiply(privateKey.D);
-
-				Org.BouncyCastle.Asn1.DerObjectIdentifier derObjectIdentifier = null;
-
-				switch (privateKey.Parameters.Curve.FieldSize)
-				{
-					case 256:
-						derObjectIdentifier = Org.BouncyCastle.Asn1.Sec.SecObjectIdentifiers.SecP256r1;
-						jwkAlgorithmKey = JwkAlgorithmKey.ES256;
-						break;
-
-					case 384:
-						derObjectIdentifier = Org.BouncyCastle.Asn1.Sec.SecObjectIdentifiers.SecP384r1;
-						jwkAlgorithmKey = JwkAlgorithmKey.ES384;
-						break;
-
-					case 521:
-						derObjectIdentifier = Org.BouncyCastle.Asn1.Sec.SecObjectIdentifiers.SecP521r1;
-						jwkAlgorithmKey = JwkAlgorithmKey.ES512;
-						break;
-
-					default:
-						throw new NotSupportedException();
-				}
-
-				var publicKey = new Org.BouncyCastle.Crypto.Parameters.ECPublicKeyParameters("EC", ecPoint, derObjectIdentifier);
-
-				asymmetricCipherKeyPair = new Org.BouncyCastle.Crypto.AsymmetricCipherKeyPair(publicKey, asymmetricKeyParameter);
-			}
-			else
-			{
-				throw new NotSupportedException();
-			}
-
-
-			if (jwkAlgorithmKey == JwkAlgorithmKey.RS256)
-			{
-				var rsaKeyParameters = (Org.BouncyCastle.Crypto.Parameters.RsaKeyParameters)asymmetricCipherKeyPair.Public;
-
-				var jwt = new SerializableEntitiesDTOs.RSJwk()
-				{
-					Exponent = JwtEncoder.UrlEncode(rsaKeyParameters.Exponent.ToByteArrayUnsigned()),
-					Modulus = JwtEncoder.UrlEncode(rsaKeyParameters.Modulus.ToByteArrayUnsigned()),
-				};
-
-				return JsonSerializer.Serialize(jwt, false);
-			}
-			else
-			{
-				var ecPublicKeyParameters = (Org.BouncyCastle.Crypto.Parameters.ECPublicKeyParameters)asymmetricCipherKeyPair.Public;
-
-				var jwt = new SerializableEntitiesDTOs.ESJwk()
-				{
-					X = JwtEncoder.UrlEncode(ecPublicKeyParameters.Q.AffineXCoord.GetEncoded()),
-					Y = JwtEncoder.UrlEncode(ecPublicKeyParameters.Q.AffineYCoord.GetEncoded()),
-				};
-
-				switch (jwkAlgorithmKey)
-				{
-					case JwkAlgorithmKey.ES256:
-						jwt.CurveName = "P-256";
-						break;
-
-					case JwkAlgorithmKey.ES384:
-						jwt.CurveName = "P-384";
-						break;
-
-					case JwkAlgorithmKey.ES512:
-						jwt.CurveName = "P-512";
-						break;
-
-				}
-
-				return JsonSerializer.Serialize(jwt, false);
+				case JwkAlgorithmKey.RS256:
+					return new RSJwkBuilder(JsonSerializer, serializedJwk);
+				
+				default:
+					throw new ArgumentOutOfRangeException(nameof(jwkAlgorithmKey), jwkAlgorithmKey, null);
 			}
 		}
 	}

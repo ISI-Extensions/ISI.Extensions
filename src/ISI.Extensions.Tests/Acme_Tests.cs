@@ -33,11 +33,9 @@ namespace ISI.Extensions.Tests
 	public class Acme_Tests
 	{
 		protected readonly Uri AcmeHostUri = new Uri(@"https://localhost:15633/directory");
-		protected readonly string AccountJwkAlgorithmKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.JwkAlgorithmKey");
-		protected readonly string AccountSerializedJwkFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.SerializedJwk");
+		public readonly string AccountPemFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.pem");
 
-		protected string GetJwkAlgorithmKey() => System.IO.File.ReadAllText(AccountJwkAlgorithmKeyFullName);
-		protected string GetSerializedJwk() => System.IO.File.ReadAllText(AccountSerializedJwkFullName);
+		protected string GetAccountPem() => System.IO.File.ReadAllText(AccountPemFullName);
 
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; set; }
 		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; set; }
@@ -91,19 +89,16 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void CreateNewAcmeAccount()
 		{
-			var getSerializedJwkResponse = JwtEncoder.CreateNewSerializedJwk();
-
-			System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(AccountSerializedJwkFullName));
-			System.IO.File.WriteAllText(AccountJwkAlgorithmKeyFullName, getSerializedJwkResponse.JwkAlgorithmKey);
-			System.IO.File.WriteAllText(AccountSerializedJwkFullName, getSerializedJwkResponse.SerializedJwk);
+			var jwtBuilder = JwkBuilderFactory.GetJwkBuilder(ISI.Extensions.JsonJwt.JwkAlgorithmKey.ES256);
 
 			var context = AcmeApi.GetAcmeHostContext(new()
 			{
 				AcmeHostDirectoryUri = AcmeHostUri,
+				Pem = jwtBuilder.GetPem(),
 			}).AcmeHostContext;
-
-			context.JwkAlgorithmKey = getSerializedJwkResponse.JwkAlgorithmKey;
-			context.SerializedJwk = getSerializedJwkResponse.SerializedJwk;
+			
+			System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(AccountPemFullName));
+			System.IO.File.WriteAllText(AccountPemFullName, context.Pem);
 
 			var response = AcmeApi.NewAccount(new()
 			{

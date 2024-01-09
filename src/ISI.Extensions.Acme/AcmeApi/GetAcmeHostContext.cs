@@ -37,7 +37,7 @@ namespace ISI.Extensions.Acme
 			response.AcmeHostContext = new()
 			{
 				AcmeHostDirectory = getDirectoryResponse.AcmeHostDirectory,
-				SerializedJwk = request.SerializedJwk,
+				Pem = request.Pem,
 				AccountKey = request.AccountKey,
 			};
 

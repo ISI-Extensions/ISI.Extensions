@@ -45,35 +45,7 @@ namespace ISI.Extensions.Acme
 
 			jwt.AddToPayload(acmeRequest, JsonSerializer);
 
-			var signedJwt = JwtEncoder.BuildSignedJwt(request.AcmeHostContext.JwkAlgorithmKey, request.AcmeHostContext.SerializedJwk, null, jwt);
-
-			using (var jwkBuilder = JwkBuilderFactory.GetJwkBuilder())
-			{
-				var jwkAlgorithmKey = jwkBuilder.JwkAlgorithmKey;
-				var serializedJwk = jwkBuilder.GetSerializedJwk();
-
-				var jwt1 = new ISI.Extensions.JsonJwt.Jwt();
-				jwt1.Header.Add(ISI.Extensions.JsonJwt.HeaderKey.Nonce, request.AcmeHostContext.Nonce);
-
-				jwt1.AddToPayload(acmeRequest, JsonSerializer);
-
-				var signature = jwkBuilder.GetSignature(signedJwt.GetHeaderDotPayload());
-
-
-				var x = jwkBuilder.VerifySignature(signedJwt.GetHeaderDotPayload(), signature);
-
-			}
-
-
-			using (var jwkBuilder = JwkBuilderFactory.GetJwkBuilder(request.AcmeHostContext.JwkAlgorithmKey, request.AcmeHostContext.SerializedJwk))
-			{
-				var yy = jwkBuilder.GetSignature(signedJwt.GetHeaderDotPayload());
-
-				signedJwt.Signature = yy;
-
-				var x = jwkBuilder.VerifySignature(signedJwt.GetHeaderDotPayload(), signedJwt.Signature);
-			}
-
+			var signedJwt = JwtEncoder.BuildSignedJwt(request.AcmeHostContext.Pem, null, jwt);
 
 			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<ISI.Extensions.JsonJwt.SerializableEntities.SignedJwt, ISI.Extensions.WebClient.Rest.SerializedResponse<ISI.Extensions.Acme.SerializableModels.Accounts.NewAccountResponse>>(uri, GetHeaders(request), signedJwt, true);
 

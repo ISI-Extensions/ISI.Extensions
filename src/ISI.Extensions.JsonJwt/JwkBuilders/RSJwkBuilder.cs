@@ -25,152 +25,76 @@ using SerializableEntitiesDTOs = ISI.Extensions.JsonJwt.SerializableEntities;
 
 namespace ISI.Extensions.JsonJwt.JwkBuilders
 {
-	public class RSJwkBuilder : IJwkBuilder
+	public class RSJwkBuilder : AbstractJwkBuilder, IJwkBuilder
 	{
-		public string JwkAlgorithmKey => $"ES{HashSize}";
+		public override JwkAlgorithmKey JwkAlgorithmKey => JwkAlgorithmKey.RS256;
 
-		private const int DefaultHasSize = 256;
+		private const int DefaultHashSize = 256;
 		private const int DefaultKeySize = 2048;
 
-		private int _hashSize;
-		public int HashSize
-		{
-			get => _hashSize;
-			private set
-			{
-				_hashSize = value;
+		protected override string HashAlgorithm => $"SHA{HashSize}";
+		protected override string SigningAlgorithm => $"SHA-{HashSize}withRSA";
 
-				switch (value)
-				{
-					case 256:
-						HashAlgorithm = System.Security.Cryptography.SHA256.Create();
-						break;
-
-					case 384:
-						HashAlgorithm = System.Security.Cryptography.SHA384.Create();
-						break;
-
-					case 512:
-						HashAlgorithm = System.Security.Cryptography.SHA512.Create();
-						break;
-
-					default:
-						throw new System.InvalidOperationException("illegal SHA2 hash size");
-				}
-			}
-		}
-
-		private int _keySize;
-		public int KeySize
-		{
-			get => _keySize;
-			private set
-			{
-				_keySize = value;
-
-				if ((KeySize < 2048) || (KeySize > 4096))
-				{
-					throw new InvalidOperationException("illegal RSA key bit length");
-				}
-			}
-		}
-
-		protected System.Security.Cryptography.HashAlgorithm HashAlgorithm { get; private set; }
-
-		private System.Security.Cryptography.RSACryptoServiceProvider _rsaCryptoServiceProvider = null;
-		protected System.Security.Cryptography.RSACryptoServiceProvider RSACryptoServiceProvider => _rsaCryptoServiceProvider ??= new System.Security.Cryptography.RSACryptoServiceProvider(KeySize);
-
-
-		protected ISI.Extensions.JsonSerialization.IJsonSerializer JsonSerializer { get; }
+		public int KeySize { get; }
 
 		public RSJwkBuilder(
 			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer,
-			string serializedJwk,
-			int hashSize = DefaultHasSize,
+			int hashSize = DefaultHashSize,
 			int keySize = DefaultKeySize)
+			: base(jsonSerializer, hashSize)
 		{
-			JsonSerializer = jsonSerializer;
-
-			HashSize = hashSize;
-
 			KeySize = keySize;
 
-			if (!string.IsNullOrWhiteSpace(serializedJwk))
+			var generator = Org.BouncyCastle.Security.GeneratorUtilities.GetKeyPairGenerator("RSA");
+			var generatorParams = new Org.BouncyCastle.Crypto.Parameters.RsaKeyGenerationParameters(Org.BouncyCastle.Math.BigInteger.ValueOf(0x10001), new Org.BouncyCastle.Security.SecureRandom(), (int)keySize, 128);
+			generator.Init(generatorParams);
+
+			AsymmetricCipherKeyPair = generator.GenerateKeyPair();
+		}
+
+		public RSJwkBuilder(
+			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer,
+			Org.BouncyCastle.Crypto.AsymmetricCipherKeyPair asymmetricCipherKeyPair)
+			: base(jsonSerializer, DefaultHashSize)
+		{
+			KeySize = DefaultKeySize;
+
+			AsymmetricCipherKeyPair = asymmetricCipherKeyPair;
+		}
+
+		public RSJwkBuilder(
+			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer,
+			string serializedJwk)
+			: base(jsonSerializer, DefaultHashSize)
+		{
+			throw new NotImplementedException();
+		}
+		
+		public override string GetSerializedJwk()
+		{
+			var rsaKeyParameters = (Org.BouncyCastle.Crypto.Parameters.RsaKeyParameters)AsymmetricCipherKeyPair.Public;
+
+			var jwt = new SerializableEntitiesDTOs.RSJwk()
 			{
-				try
-				{
-					RSACryptoServiceProvider.FromXmlString(serializedJwk);
-				}
-				catch (PlatformNotSupportedException)
-				{
-					FromXmlString(serializedJwk);
-				}
-			}
+				Exponent = JwtEncoder.UrlEncode(rsaKeyParameters.Exponent.ToByteArrayUnsigned()),
+				Modulus = JwtEncoder.UrlEncode(rsaKeyParameters.Modulus.ToByteArrayUnsigned()),
+			};
+
+			return JsonSerializer.Serialize(jwt, false);
 		}
 
-		public string GetSerializedJwk()
+		public override string GetSignature(string headerDotPayload)
 		{
-			var keyParams = RSACryptoServiceProvider.ExportParameters(false);
+			var headerDotPayloadBytes = Encoding.ASCII.GetBytes(headerDotPayload);
 
-			return JsonSerializer.Serialize(new SerializableEntitiesDTOs.RSJwk()
-			{
-				Exponent = JwtEncoder.UrlEncode(keyParams.Exponent),
-				Modulus = JwtEncoder.UrlEncode(keyParams.Modulus),
-			});
-		}
+			var signer = Org.BouncyCastle.Security.SignerUtilities.GetSigner(SigningAlgorithm);
+			signer.Init(true, AsymmetricCipherKeyPair.Private);
+			signer.BlockUpdate(headerDotPayloadBytes, 0, headerDotPayloadBytes.Length);
 
+			var signatureBytes = signer.GenerateSignature();
 
-		public string GetSignature(string headerDotPayload)
-		{
-			return JwtEncoder.UrlEncode(RSACryptoServiceProvider.SignData(Encoding.ASCII.GetBytes(headerDotPayload), HashAlgorithm));
-		}
-
-		public bool VerifySignature(string headerDotPayload, string signature)
-		{
-			return RSACryptoServiceProvider.VerifyData(Encoding.ASCII.GetBytes(headerDotPayload), HashAlgorithm, JwtEncoder.Base64DecodeToBytes(signature));
-		}
-
-		//  https://github.com/dotnet/corefx/issues/23686#issuecomment-383245291
-		private void FromXmlString(string jwk)
-		{
-			var parameters = new System.Security.Cryptography.RSAParameters();
-
-			var jwkXml = System.Xml.Linq.XElement.Parse(jwk);
-
-			var rsaKeyValueElement = jwkXml.GetElementByLocalName("RSAKeyValue");
-			if (rsaKeyValueElement != null)
-			{
-				byte[] getNodeValue(string nodeName)
-				{
-					var element = rsaKeyValueElement.GetElementByLocalName(nodeName);
-
-					if (element != null)
-					{
-						return (string.IsNullOrEmpty(element.Value) ? null : Convert.FromBase64String(element.Value));
-					}
-
-					return null;
-				}
-
-				parameters.Modulus = getNodeValue(nameof(parameters.Modulus));
-				parameters.Exponent = getNodeValue(nameof(parameters.Exponent));
-				parameters.P = getNodeValue(nameof(parameters.P));
-				parameters.Q = getNodeValue(nameof(parameters.Q));
-				parameters.DP = getNodeValue(nameof(parameters.DP));
-				parameters.DQ = getNodeValue(nameof(parameters.DQ));
-				parameters.InverseQ = getNodeValue(nameof(parameters.InverseQ));
-				parameters.D = getNodeValue(nameof(parameters.D));
-			}
-
-			RSACryptoServiceProvider.ImportParameters(parameters);
-		}
-
-		public void Dispose()
-		{
-			_rsaCryptoServiceProvider?.Dispose();
-			_rsaCryptoServiceProvider = null;
-			HashAlgorithm?.Dispose();
-			HashAlgorithm = null;
+			return JwtEncoder.UrlEncode(signatureBytes);
 		}
 	}
 }
+

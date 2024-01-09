@@ -37,7 +37,7 @@ namespace ISI.Extensions.JsonJwt
 				throw new Exception("Kid and Jwk cannot both exist");
 			}
 
-			if (string.IsNullOrWhiteSpace(jwtHeader.JwkAlgorithmKey))
+			if (!jwtHeader.JwkAlgorithmKey.HasValue)
 			{
 				throw new Exception("Algorithm not defined");
 			}
@@ -47,10 +47,9 @@ namespace ISI.Extensions.JsonJwt
 				jwtHeader.SerializedJwk = getSerializedJwkFromAccountKey(jwtHeader.AcmeAccountKey);
 			}
 
-			using (var jwkBuilder = JwkBuilderFactory.GetJwkBuilder(jwtHeader.JwkAlgorithmKey, jwtHeader.SerializedJwk))
-			{
-				return jwkBuilder.VerifySignature(signedJwt.GetHeaderDotPayload(), signedJwt.Signature);
-			}
+			var jwkBuilder = JwkBuilderFactory.GetJwkBuilder(jwtHeader.JwkAlgorithmKey.Value, jwtHeader.SerializedJwk);
+
+			return jwkBuilder.VerifySignature(signedJwt.GetHeaderDotPayload(), signedJwt.Signature);
 		}
 	}
 }

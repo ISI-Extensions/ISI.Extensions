@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.Serialization;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.JsonJwt.SerializableEntities
 {
@@ -24,7 +25,9 @@ namespace ISI.Extensions.JsonJwt.SerializableEntities
 	public class JwtHeader
 	{
 		[DataMember(Name = HeaderKey.JwkAlgorithmKey, EmitDefaultValue = false)]
-		public string JwkAlgorithmKey { get; set; }
+		public string __JwkAlgorithmKey { get => JwkAlgorithmKey.GetKey(); set => JwkAlgorithmKey = ISI.Extensions.Enum<JwkAlgorithmKey?>.ParseKey(value); }
+		[IgnoreDataMember]
+		public JwkAlgorithmKey? JwkAlgorithmKey { get; set; }
 
 		[DataMember(Name = HeaderKey.SerializedJwk, EmitDefaultValue = false)]
 		public string SerializedJwk { get; set; }

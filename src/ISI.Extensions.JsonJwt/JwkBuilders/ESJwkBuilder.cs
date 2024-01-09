@@ -25,120 +25,150 @@ using SerializableEntitiesDTOs = ISI.Extensions.JsonJwt.SerializableEntities;
 
 namespace ISI.Extensions.JsonJwt.JwkBuilders
 {
-	public class ESJwkBuilder : IJwkBuilder
+	public class ESJwkBuilder : AbstractJwkBuilder, IJwkBuilder
 	{
-		public string JwkAlgorithmKey => $"ES{HashSize}";
-
-		private const int DefaultHasSize = 256;
-
-		private int _hashSize;
-		public int HashSize
-		{
-			get => _hashSize;
-			private set
-			{
-				_hashSize = value;
-
-				switch (value)
-				{
-					case 256:
-						HashAlgorithmName = System.Security.Cryptography.HashAlgorithmName.SHA256;
-						break;
-
-					case 384:
-						HashAlgorithmName = System.Security.Cryptography.HashAlgorithmName.SHA384;
-						break;
-
-					case 512:
-						HashAlgorithmName = System.Security.Cryptography.HashAlgorithmName.SHA512;
-						break;
-				}
-			}
-		}
-
-		protected System.Security.Cryptography.HashAlgorithmName HashAlgorithmName { get; private set; }
-
-		protected System.Security.Cryptography.ECCurve ECCurve
+		public override JwkAlgorithmKey JwkAlgorithmKey
 		{
 			get
 			{
 				switch (HashSize)
 				{
-					case 256:
-						return System.Security.Cryptography.ECCurve.NamedCurves.nistP256;
-
-					case 384:
-						return System.Security.Cryptography.ECCurve.NamedCurves.nistP384;
-
-					case 512:
-						return System.Security.Cryptography.ECCurve.NamedCurves.nistP521;
+					case 256: return JwkAlgorithmKey.ES256;
+					case 384: return JwkAlgorithmKey.ES384;
+					case 512: return JwkAlgorithmKey.ES512;
+					default: throw new NotImplementedException();
 				}
-
-				throw new NotImplementedException();
 			}
 		}
 
-		private System.Security.Cryptography.ECDsa _ecDsa = null;
-		protected System.Security.Cryptography.ECDsa ECDsa => _ecDsa ??= System.Security.Cryptography.ECDsa.Create(ECCurve);
+		private const int DefaultHashSize = 256;
 
-		protected ISI.Extensions.JsonSerialization.IJsonSerializer JsonSerializer { get; }
+		protected string CurveName
+		{
+			get
+			{
+				switch (HashSize)
+				{
+					case 256: return "P-256";
+					case 384: return "P-384";
+					case 512: return "P-512";
+					default: throw new NotImplementedException();
+				}
+			}
+		}
+
+		protected override string HashAlgorithm
+		{
+			get
+			{
+				switch (HashSize)
+				{
+					case 256: return "SHA-256withECDSA";
+					case 384: return "SHA-384withECDSA";
+					case 512: return "SHA-512withECDSA";
+					default: throw new NotImplementedException();
+				}
+			}
+		}
+
+		protected override string SigningAlgorithm
+		{
+			get
+			{
+				switch (HashSize)
+				{
+					case 256: return "SHA256";
+					case 384: return "SHA384";
+					case 512: return "SHA512";
+					default: throw new NotImplementedException();
+				}
+			}
+		}
+
+		private Org.BouncyCastle.Crypto.AsymmetricKeyParameter _publicKey = null;
+		protected virtual Org.BouncyCastle.Crypto.AsymmetricKeyParameter PublicKey => _publicKey ?? base.PublicKey;
+
+		protected int FieldSize { get; }
+
+		public ESJwkBuilder(
+			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer,
+			int hashSize = DefaultHashSize)
+		: base(jsonSerializer, hashSize)
+		{
+			var keyPairGenerator = Org.BouncyCastle.Security.GeneratorUtilities.GetKeyPairGenerator("ECDSA");
+
+			var ecKeyGenerationParameters = new Org.BouncyCastle.Crypto.Parameters.ECKeyGenerationParameters(Org.BouncyCastle.Crypto.EC.CustomNamedCurves.GetOid(CurveName), new Org.BouncyCastle.Security.SecureRandom());
+
+			keyPairGenerator.Init(ecKeyGenerationParameters);
+
+			AsymmetricCipherKeyPair = keyPairGenerator.GenerateKeyPair();
+
+			FieldSize = ((Org.BouncyCastle.Crypto.Parameters.ECPrivateKeyParameters)AsymmetricCipherKeyPair.Private).Parameters.Curve.FieldSize / 8;
+		}
+
+		public ESJwkBuilder(
+			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer,
+			Org.BouncyCastle.Crypto.AsymmetricCipherKeyPair asymmetricCipherKeyPair,
+			int hashSize)
+		: base(jsonSerializer, hashSize)
+		{
+			AsymmetricCipherKeyPair = asymmetricCipherKeyPair;
+
+			FieldSize = ((Org.BouncyCastle.Crypto.Parameters.ECPrivateKeyParameters)AsymmetricCipherKeyPair.Private).Parameters.Curve.FieldSize / 8;
+		}
 
 		public ESJwkBuilder(
 			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer,
 			string serializedJwk,
-			int? hashSize = null)
+			int hashSize)
+		: base(jsonSerializer, hashSize)
 		{
-			JsonSerializer = jsonSerializer;
+			var jwkDetails = JsonSerializer.Deserialize<SerializableEntitiesDTOs.ESJwkDetails>(serializedJwk);
 
-			if (string.IsNullOrWhiteSpace(serializedJwk))
-			{
-				HashSize = hashSize ?? DefaultHasSize;
-			}
-			else
-			{
-				var jwkDetails = JsonSerializer.Deserialize<SerializableEntitiesDTOs.ESJwkDetails>(serializedJwk);
-				HashSize = jwkDetails.HashSize ?? hashSize ?? DefaultHasSize;
+			var curve = Org.BouncyCastle.Asn1.Nist.NistNamedCurves.GetByName(CurveName).Curve;
+			var ecPoint = curve.CreatePoint(new Org.BouncyCastle.Math.BigInteger(JwtEncoder.Base64DecodeToBytes(jwkDetails.X)), new Org.BouncyCastle.Math.BigInteger(JwtEncoder.Base64DecodeToBytes(jwkDetails.Y)));
 
-				var ecParameters = ECDsa.ExportParameters(true);
-
-				if (!string.IsNullOrWhiteSpace(jwkDetails.D))
-				{
-					ecParameters.D = JwtEncoder.Base64DecodeToBytes(jwkDetails.D);
-				}
-
-				ecParameters.Q.X = JwtEncoder.Base64DecodeToBytes(jwkDetails.X);
-				ecParameters.Q.Y = JwtEncoder.Base64DecodeToBytes(jwkDetails.Y);
-
-				ECDsa.ImportParameters(ecParameters);
-			}
+			_publicKey = new Org.BouncyCastle.Crypto.Parameters.ECPublicKeyParameters("ECDH", ecPoint, Org.BouncyCastle.Asn1.Sec.SecObjectIdentifiers.SecP521r1);
 		}
-		
-		public string GetSerializedJwk()
-		{
-			var ecParameters = ECDsa.ExportParameters(false);
 
-			return JsonSerializer.Serialize(new SerializableEntitiesDTOs.ESJwk()
+		public override string GetSerializedJwk()
+		{
+			var ecPublicKeyParameters = (Org.BouncyCastle.Crypto.Parameters.ECPublicKeyParameters)AsymmetricCipherKeyPair.Public;
+
+			var jwt = new SerializableEntitiesDTOs.ESJwk()
 			{
 				CurveName = $"P-{HashSize}",
-				X = JwtEncoder.UrlEncode(ecParameters.Q.X),
-				Y = JwtEncoder.UrlEncode(ecParameters.Q.Y),
-			});
-		}
-		
-		public string GetSignature(string headerDotPayload)
-		{
-			return JwtEncoder.UrlEncode(ECDsa.SignData(Encoding.ASCII.GetBytes(headerDotPayload), HashAlgorithmName));
+				X = JwtEncoder.UrlEncode(ecPublicKeyParameters.Q.AffineXCoord.GetEncoded()),
+				Y = JwtEncoder.UrlEncode(ecPublicKeyParameters.Q.AffineYCoord.GetEncoded()),
+			};
+
+			return JsonSerializer.Serialize(jwt, false);
 		}
 
-		public bool VerifySignature(string headerDotPayload, string signature)
+		public override string GetSignature(string headerDotPayload)
 		{
-			return ECDsa.VerifyData(Encoding.ASCII.GetBytes(headerDotPayload), JwtEncoder.Base64DecodeToBytes(signature), HashAlgorithmName);
-		}
+			var headerDotPayloadBytes = Encoding.ASCII.GetBytes(headerDotPayload);
 
-		public void Dispose()
-		{
-			_ecDsa?.Dispose();
-			_ecDsa = null;
+			var signer = Org.BouncyCastle.Security.SignerUtilities.GetSigner(SigningAlgorithm);
+			signer.Init(true, AsymmetricCipherKeyPair.Private);
+			signer.BlockUpdate(headerDotPayloadBytes, 0, headerDotPayloadBytes.Length);
+
+			var signature = signer.GenerateSignature();
+			var sequence = (Org.BouncyCastle.Asn1.Asn1Sequence)Org.BouncyCastle.Asn1.Asn1Object.FromByteArray(signature);
+
+			var nums = sequence
+				.OfType<Org.BouncyCastle.Asn1.DerInteger>()
+				.Select(i => i.Value.ToByteArrayUnsigned())
+				.ToArray();
+
+			var signatureBytes = new byte[FieldSize * nums.Length];
+
+			for (var i = 0; i < nums.Length; ++i)
+			{
+				Array.Copy(nums[i], 0, signatureBytes, FieldSize * (i + 1) - nums[i].Length, nums[i].Length);
+			}
+
+			return JwtEncoder.UrlEncode(signatureBytes);
 		}
 	}
 }

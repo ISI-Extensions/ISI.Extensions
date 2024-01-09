@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,22 +15,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
-using ISI.Extensions.JsonSerialization.Extensions;
-using SerializableEntitiesDTOs = ISI.Extensions.JsonJwt.SerializableEntities;
 
-namespace ISI.Extensions.JsonJwt.JwkBuilders
+namespace ISI.Extensions.Acme
 {
-	public interface IJwkBuilder : IDisposable
+	public class AcmeHostDirectory
 	{
-		string JwkAlgorithmKey { get; }
-
-		bool VerifySignature(string headerDotPayload, string signature);
-		string GetSignature(string headerDotPayload);
-		string GetSerializedJwk();
+		public string NewNonceUrl { get; set; }
+		public string NewAccountUrl { get; set; }
+		public string NewOrderUrl { get; set; }
+		public string RevokeCertificateUrl { get; set; }
+		public string KeyChangeUrl { get; set; }
+		public AcmeHostDirectoryMetadata Metadata { get; set; }
 	}
 }

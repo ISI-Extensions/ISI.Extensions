@@ -238,7 +238,25 @@ namespace ISI.Extensions.Columns
 			{
 				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)(ISI.Extensions.Enum.Parse(type, stringValue)) : (TTransformValueProperty)(object)(ISI.Extensions.Enum.Parse(type, string.Format("{0}", value))));
 			}
-			else if (type.IsClass && (jsonSerializer != null) && (type.GetCustomAttribute<System.Runtime.Serialization.DataContractAttribute>() != null))
+			else if (type.IsClass && (jsonSerializer != null) && IsElementTypeDeserializable(type))
+			{
+				transformValue = value =>
+				{
+					if (value is System.Text.Json.JsonElement jsonElement)
+					{
+						return (TTransformValueProperty)jsonSerializer.Deserialize(type, jsonElement.ToString());
+					}
+					
+					if (string.Equals(value.GetType().FullName, "Newtonsoft.Json.Linq.JArray", StringComparison.InvariantCultureIgnoreCase) ||
+					    string.Equals(value.GetType().FullName, "Newtonsoft.Json.Linq.JObject", StringComparison.InvariantCultureIgnoreCase))
+					{
+						return (TTransformValueProperty)jsonSerializer.Deserialize(type, value.ToString());
+					}
+
+					return default;
+				};
+			}
+			else if ((jsonSerializer != null) && TryGetElementTypeFromEnumerableType(type, out var elementType) && IsElementTypeDeserializable(elementType))
 			{
 				transformValue = value =>
 				{
@@ -247,16 +265,10 @@ namespace ISI.Extensions.Columns
 						return (TTransformValueProperty)jsonSerializer.Deserialize(type, jsonElement.ToString());
 					}
 
-					throw new Exception("could not deserialize");
-				};
-			}
-			else if ((jsonSerializer != null) && TryGetJsonDeserializableTypeFromEnumerableType(type, out var elementType))
-			{
-				transformValue = value =>
-				{
-					if (value is System.Text.Json.JsonElement jsonElement)
+					if (string.Equals(value.GetType().FullName, "Newtonsoft.Json.Linq.JArray", StringComparison.InvariantCultureIgnoreCase) ||
+					    string.Equals(value.GetType().FullName, "Newtonsoft.Json.Linq.JObject", StringComparison.InvariantCultureIgnoreCase))
 					{
-						return (TTransformValueProperty)jsonSerializer.Deserialize(type, jsonElement.ToString());
+						return (TTransformValueProperty)jsonSerializer.Deserialize(type, value.ToString());
 					}
 
 					return default;
@@ -266,18 +278,15 @@ namespace ISI.Extensions.Columns
 			return transformValue;
 		}
 
-		private bool TryGetJsonDeserializableTypeFromEnumerableType(Type type, out Type elementType)
+		private bool IsElementTypeDeserializable(Type elementType) => (elementType.GetCustomAttribute<System.Runtime.Serialization.DataContractAttribute>() != null);
+
+		private bool TryGetElementTypeFromEnumerableType(Type type, out Type elementType)
 		{
 			elementType = type.GetInterfaces()
 				.Where(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IEnumerable<>))
 				.Select(t => t.GetGenericArguments().NullCheckedFirstOrDefault()).NullCheckedFirstOrDefault();
 
-			if (elementType == null)
-			{
-				return false;
-			}
-
-			return (elementType.GetCustomAttribute<System.Runtime.Serialization.DataContractAttribute>() != null);
+			return (elementType != null);
 		}
 
 		string IColumn<TRecord>.FormattedValue(TRecord record)

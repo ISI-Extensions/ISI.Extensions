@@ -20,17 +20,18 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
-using ISI.Extensions.JsonSerialization.Extensions;
-using SerializableEntitiesDTOs = ISI.Extensions.JsonJwt.SerializableEntities;
 
-namespace ISI.Extensions.JsonJwt.JwkBuilders
+namespace ISI.Extensions.Acme.SerializableModels.Accounts
 {
-	public interface IJwkBuilder : IDisposable
+	[DataContract]
+	public class UpdateAccountRequest
 	{
-		string JwkAlgorithmKey { get; }
+		[DataMember(Name = "status", EmitDefaultValue = false)]
+		public string __AccountStatus { get => AccountStatus.GetAbbreviation(); set => AccountStatus = ISI.Extensions.Enum<AcmeAccountStatus?>.Parse(value); }
+		[IgnoreDataMember]
+		public AcmeAccountStatus? AccountStatus { get; set; }
 
-		bool VerifySignature(string headerDotPayload, string signature);
-		string GetSignature(string headerDotPayload);
-		string GetSerializedJwk();
+		[DataMember(Name = "contact", EmitDefaultValue = false)]
+		public string[] Contacts { get; set; }
 	}
 }

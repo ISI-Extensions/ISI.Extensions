@@ -19,18 +19,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
-using ISI.Extensions.JsonSerialization.Extensions;
-using SerializableEntitiesDTOs = ISI.Extensions.JsonJwt.SerializableEntities;
+using DTOs = ISI.Extensions.Acme.DataTransferObjects.AcmeApi;
 
-namespace ISI.Extensions.JsonJwt.JwkBuilders
+namespace ISI.Extensions.Acme
 {
-	public interface IJwkBuilder : IDisposable
+	public partial class AcmeApi
 	{
-		string JwkAlgorithmKey { get; }
+		private ISI.Extensions.WebClient.HeaderCollection GetHeaders(DTOs.IRequest request)
+		{
+			var headers = new ISI.Extensions.WebClient.HeaderCollection();
 
-		bool VerifySignature(string headerDotPayload, string signature);
-		string GetSignature(string headerDotPayload);
-		string GetSerializedJwk();
+			return headers;
+		}
 	}
 }

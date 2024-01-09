@@ -20,17 +20,29 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
-using ISI.Extensions.JsonSerialization.Extensions;
-using SerializableEntitiesDTOs = ISI.Extensions.JsonJwt.SerializableEntities;
 
-namespace ISI.Extensions.JsonJwt.JwkBuilders
+namespace ISI.Extensions.Acme.SerializableModels.Orders
 {
-	public interface IJwkBuilder : IDisposable
+	[DataContract]
+	public class GetAuthorizationResponse
 	{
-		string JwkAlgorithmKey { get; }
+		[DataMember(Name = "status", EmitDefaultValue = false)]
+		public string __AuthorizationStatus { get => AuthorizationStatus.GetAbbreviation(); set => AuthorizationStatus = ISI.Extensions.Enum<AcmeOrderCertificateIdentifierAuthorizationStatus>.ParseAbbreviation(value); }
+		[IgnoreDataMember]
+		public AcmeOrderCertificateIdentifierAuthorizationStatus AuthorizationStatus { get; set; }
 
-		bool VerifySignature(string headerDotPayload, string signature);
-		string GetSignature(string headerDotPayload);
-		string GetSerializedJwk();
+		[DataMember(Name = "expires", EmitDefaultValue = false)]
+		public string __RequestExpiresDateTimeUtc { get => RequestExpiresDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => RequestExpiresDateTimeUtc = value.ToDateTimeUtcNullable(); }
+		[IgnoreDataMember]
+		public DateTime? RequestExpiresDateTimeUtc { get; set; }
+
+		[DataMember(Name = "identifier", EmitDefaultValue = false)]
+		public OrderCertificateIdentifier Identifier { get; set; }
+
+		[DataMember(Name = "challenges", EmitDefaultValue = false)]
+		public AuthorizationChallenge[] Challenges { get; set; }
+
+		[DataMember(Name = "wildcard", EmitDefaultValue = false)]
+		public bool? Wildcard { get; set; }
 	}
 }

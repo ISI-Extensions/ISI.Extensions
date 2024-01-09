@@ -19,18 +19,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
-using ISI.Extensions.JsonSerialization.Extensions;
-using SerializableEntitiesDTOs = ISI.Extensions.JsonJwt.SerializableEntities;
+using DTOs = ISI.Extensions.Acme.DataTransferObjects.AcmeApi;
 
-namespace ISI.Extensions.JsonJwt.JwkBuilders
+namespace ISI.Extensions.Acme
 {
-	public interface IJwkBuilder : IDisposable
+	public partial class AcmeApi
 	{
-		string JwkAlgorithmKey { get; }
+		public DTOs.GetDirectoryResponse GetDirectory(DTOs.GetDirectoryRequest request)
+		{
+			var response = new DTOs.GetDirectoryResponse();
+			
+			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<ISI.Extensions.Acme.SerializableModels.Directory.GetDirectoryResponse>(request.AcmeHostDirectoryUri, null, true);
 
-		bool VerifySignature(string headerDotPayload, string signature);
-		string GetSignature(string headerDotPayload);
-		string GetSerializedJwk();
+			response.AcmeHostDirectory = new()
+			{
+				NewNonceUrl = acmeResponse.NewNonceUrl,
+				NewAccountUrl = acmeResponse.NewAccountUrl,
+				NewOrderUrl = acmeResponse.NewOrderUrl,
+				RevokeCertificateUrl = acmeResponse.RevokeCertificateUrl,
+				KeyChangeUrl = acmeResponse.KeyChangeUrl,
+				Metadata = acmeResponse.Metadata.NullCheckedConvert(metadata => new AcmeHostDirectoryMetadata()
+				{
+					TermsOfServiceUrl = metadata.TermsOfServiceUrl,
+					WebsiteUrl = metadata.WebsiteUrl,
+					CaaIdentities = metadata.CaaIdentities.ToNullCheckedArray(),
+					ExternalAccountRequired = metadata.ExternalAccountRequired,
+				}),
+			};
+			
+			return response;
+		}
 	}
 }

@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,22 +15,15 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
-using ISI.Extensions.JsonSerialization.Extensions;
-using SerializableEntitiesDTOs = ISI.Extensions.JsonJwt.SerializableEntities;
 
-namespace ISI.Extensions.JsonJwt.JwkBuilders
+namespace ISI.Extensions.Acme
 {
-	public interface IJwkBuilder : IDisposable
+	public enum AcmeOrderCertificateIdentifierAuthorizationChallengeStatus
 	{
-		string JwkAlgorithmKey { get; }
-
-		bool VerifySignature(string headerDotPayload, string signature);
-		string GetSignature(string headerDotPayload);
-		string GetSerializedJwk();
+		[ISI.Extensions.EnumGuid("ef507e73-de04-4149-b5f9-150dea30a0db", "Pending", "pending")] Pending,
+		[ISI.Extensions.EnumGuid("7847e828-ca76-4dda-b168-20e1b38a6502", "Processing", "processing")] Processing,
+		[ISI.Extensions.EnumGuid("b598e953-6b66-493b-b97b-bdfc8d8a8020", "Valid", "valid")] Valid,
+		[ISI.Extensions.EnumGuid("208feb27-d882-408a-ae48-70ae7b8d5c38", "Invalid", "invalid")] Invalid,
 	}
 }

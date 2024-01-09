@@ -29,6 +29,7 @@
 		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.0" />
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\ISI.Extensions.Acme\ISI.Extensions.Acme.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.JsonJwt\ISI.Extensions.JsonJwt.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.S3\ISI.Extensions.S3.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Azure\ISI.Extensions.Azure.csproj" />

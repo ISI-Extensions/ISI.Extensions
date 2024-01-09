@@ -19,18 +19,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
-using ISI.Extensions.JsonSerialization.Extensions;
-using SerializableEntitiesDTOs = ISI.Extensions.JsonJwt.SerializableEntities;
 
-namespace ISI.Extensions.JsonJwt.JwkBuilders
+namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 {
-	public interface IJwkBuilder : IDisposable
+	public class NewAccountResponse
 	{
-		string JwkAlgorithmKey { get; }
+		public string AcmeAccountKey { get; set; }
+		public string SerializedJwk { get; set; }
 
-		bool VerifySignature(string headerDotPayload, string signature);
-		string GetSignature(string headerDotPayload);
-		string GetSerializedJwk();
+		public AcmeAccountStatus AccountStatus { get; set; }
+
+		public string AccountName { get; set; }
+		public string[] Contacts { get; set; }
+		public bool? TermsOfServiceAgreed { get; set; }
+		public bool? OnlyReturnExisting { get; set; }
+		public string OrdersUrl { get; set; }
 	}
 }

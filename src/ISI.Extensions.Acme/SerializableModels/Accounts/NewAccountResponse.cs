@@ -20,17 +20,39 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
-using ISI.Extensions.JsonSerialization.Extensions;
-using SerializableEntitiesDTOs = ISI.Extensions.JsonJwt.SerializableEntities;
 
-namespace ISI.Extensions.JsonJwt.JwkBuilders
+namespace ISI.Extensions.Acme.SerializableModels.Accounts
 {
-	public interface IJwkBuilder : IDisposable
+	[DataContract]
+	public class NewAccountResponse
 	{
-		string JwkAlgorithmKey { get; }
+		[DataMember(Name = "id", EmitDefaultValue = false)]
+		public string AcmeAccountKey { get; set; }
 
-		bool VerifySignature(string headerDotPayload, string signature);
-		string GetSignature(string headerDotPayload);
-		string GetSerializedJwk();
+		[DataMember(Name = "key", EmitDefaultValue = false)]
+		public string SerializedJwk { get; set; }
+
+		[DataMember(Name = "status", EmitDefaultValue = false)]
+		public string __AccountStatus { get => AccountStatus.GetAbbreviation(); set => AccountStatus = ISI.Extensions.Enum<AcmeAccountStatus>.ParseAbbreviation(value); }
+		[IgnoreDataMember]
+		public AcmeAccountStatus AccountStatus { get; set; }
+
+		[DataMember(Name = "accountName", EmitDefaultValue = false)]
+		public string AccountName { get; set; }
+
+		[DataMember(Name = "contact", EmitDefaultValue = false)]
+		public string[] Contacts { get; set; }
+
+		[DataMember(Name = "termsOfServiceAgreed", EmitDefaultValue = false)]
+		public bool? TermsOfServiceAgreed { get; set; }
+
+		[DataMember(Name = "onlyReturnExisting", EmitDefaultValue = false)]
+		public bool? OnlyReturnExisting { get; set; }
+
+		//[DataMember(Name = "externalAccountBinding ", EmitDefaultValue = false)]
+		//public object ExternalAccountBinding { get; set; }
+
+		[DataMember(Name = "orders", EmitDefaultValue = false)]
+		public string OrdersUrl { get; set; }
 	}
 }

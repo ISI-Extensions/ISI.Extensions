@@ -20,17 +20,22 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
-using ISI.Extensions.JsonSerialization.Extensions;
-using SerializableEntitiesDTOs = ISI.Extensions.JsonJwt.SerializableEntities;
 
-namespace ISI.Extensions.JsonJwt.JwkBuilders
+namespace ISI.Extensions.Acme.SerializableModels.Directory
 {
-	public interface IJwkBuilder : IDisposable
+	[DataContract]
+	public class GetDirectoryResponseMetadata
 	{
-		string JwkAlgorithmKey { get; }
+		[DataMember(Name = "termsOfService", EmitDefaultValue = false)]
+		public string TermsOfServiceUrl { get; set; }
 
-		bool VerifySignature(string headerDotPayload, string signature);
-		string GetSignature(string headerDotPayload);
-		string GetSerializedJwk();
+		[DataMember(Name = "website", EmitDefaultValue = false)]
+		public string WebsiteUrl { get; set; }
+
+		[DataMember(Name = "caaIdentities", EmitDefaultValue = false)]
+		public string[] CaaIdentities { get; set; }
+
+		[DataMember(Name = "externalAccountRequired", EmitDefaultValue = false)]
+		public bool ExternalAccountRequired { get; set; }
 	}
 }

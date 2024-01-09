@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,7 +15,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
 using ISI.Extensions.JsonSerialization.Extensions;
 using SerializableEntitiesDTOs = ISI.Extensions.JsonJwt.SerializableEntities;
@@ -24,7 +27,7 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 {
 	public class ESJwkBuilder : IJwkBuilder
 	{
-		public string AlgorithmKey => $"ES{HashSize}";
+		public string JwkAlgorithmKey => $"ES{HashSize}";
 
 		private const int DefaultHasSize = 256;
 

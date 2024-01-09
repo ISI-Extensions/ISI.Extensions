@@ -19,18 +19,34 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
-using ISI.Extensions.JsonSerialization.Extensions;
-using SerializableEntitiesDTOs = ISI.Extensions.JsonJwt.SerializableEntities;
+using DTOs = ISI.Extensions.Acme.DataTransferObjects.AcmeApi;
 
-namespace ISI.Extensions.JsonJwt.JwkBuilders
+namespace ISI.Extensions.Acme
 {
-	public interface IJwkBuilder : IDisposable
+	public partial class AcmeApi
 	{
-		string JwkAlgorithmKey { get; }
+		public DTOs.GetAcmeHostContextResponse GetAcmeHostContext(DTOs.GetAcmeHostContextRequest request)
+		{
+			var response = new DTOs.GetAcmeHostContextResponse();
 
-		bool VerifySignature(string headerDotPayload, string signature);
-		string GetSignature(string headerDotPayload);
-		string GetSerializedJwk();
+			var getDirectoryResponse = GetDirectory(new()
+			{
+				AcmeHostDirectoryUri = request.AcmeHostDirectoryUri,
+			});
+
+			response.AcmeHostContext = new()
+			{
+				AcmeHostDirectory = getDirectoryResponse.AcmeHostDirectory,
+				SerializedJwk = request.SerializedJwk,
+				AccountKey = request.AccountKey,
+			};
+
+			GetNewNonce(new()
+			{
+				AcmeHostContext = response.AcmeHostContext,
+			});
+			
+			return response;
+		}
 	}
 }

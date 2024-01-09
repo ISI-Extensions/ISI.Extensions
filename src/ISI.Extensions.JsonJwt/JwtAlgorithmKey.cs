@@ -19,7 +19,7 @@ using System.Text;
 
 namespace ISI.Extensions.JsonJwt
 {
-	public class JwtAlgorithmKey
+	public class JwkAlgorithmKey
 	{
 		public const string Default = ES256;
 
@@ -27,7 +27,7 @@ namespace ISI.Extensions.JsonJwt
 		public const string ES384 = nameof(ES384);
 		public const string ES512 = nameof(ES512);
 		public const string RS256 = nameof(ES256);
-		public const string RS384 = nameof(ES384);
-		public const string RS512 = nameof(ES512);
+		//public const string RS384 = nameof(ES384);
+		//public const string RS512 = nameof(ES512);
 	}
 }

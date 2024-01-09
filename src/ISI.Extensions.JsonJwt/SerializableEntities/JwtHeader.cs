@@ -23,13 +23,13 @@ namespace ISI.Extensions.JsonJwt.SerializableEntities
 	[DataContract]
 	public class JwtHeader
 	{
-		[DataMember(Name = "alg", EmitDefaultValue = false)]
-		public string AlgorithmKey { get; set; }
+		[DataMember(Name = HeaderKey.JwkAlgorithmKey, EmitDefaultValue = false)]
+		public string JwkAlgorithmKey { get; set; }
 
-		[DataMember(Name = "jwk", EmitDefaultValue = false)]
+		[DataMember(Name = HeaderKey.SerializedJwk, EmitDefaultValue = false)]
 		public string SerializedJwk { get; set; }
 
-		[DataMember(Name = "kid", EmitDefaultValue = false)]
-		public string AccountKey { get; set; }
+		[DataMember(Name = HeaderKey.AcmeAccountKey, EmitDefaultValue = false)]
+		public string AcmeAccountKey { get; set; }
 	}
 }

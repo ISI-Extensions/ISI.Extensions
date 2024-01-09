@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,22 +15,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
-using ISI.Extensions.JsonSerialization.Extensions;
-using SerializableEntitiesDTOs = ISI.Extensions.JsonJwt.SerializableEntities;
 
-namespace ISI.Extensions.JsonJwt.JwkBuilders
+namespace ISI.Extensions.Acme
 {
-	public interface IJwkBuilder : IDisposable
+	public enum AcmeOrderCertificateIdentifierAuthorizationStatus
 	{
-		string JwkAlgorithmKey { get; }
-
-		bool VerifySignature(string headerDotPayload, string signature);
-		string GetSignature(string headerDotPayload);
-		string GetSerializedJwk();
+		[ISI.Extensions.EnumGuid("d109cf68-3862-42ec-a75c-953a4eb43a17", "Pending", "pending")] Pending,
+		[ISI.Extensions.EnumGuid("a92f4443-df35-4177-8722-ce96ee2cc938", "Valid", "valid")] Valid,
+		[ISI.Extensions.EnumGuid("d5ac03df-fe5b-4dc7-b12b-b3fc91fa35da", "Invalid", "invalid")] Invalid,
+		[ISI.Extensions.EnumGuid("0cf6bc66-a35f-49f7-8fb7-002f9b131ae0", "Deactivated", "deactivated")] Deactivated,
+		[ISI.Extensions.EnumGuid("944bce9a-eea4-44c3-b64d-d628df001af2", "Expired", "expired")] Expired,
+		[ISI.Extensions.EnumGuid("ffc05286-29cf-4972-aa90-45844eb69c07", "Revoked", "revoked")] Revoked,
 	}
 }

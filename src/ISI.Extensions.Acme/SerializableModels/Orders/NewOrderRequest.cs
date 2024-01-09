@@ -20,17 +20,23 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
-using ISI.Extensions.JsonSerialization.Extensions;
-using SerializableEntitiesDTOs = ISI.Extensions.JsonJwt.SerializableEntities;
 
-namespace ISI.Extensions.JsonJwt.JwkBuilders
+namespace ISI.Extensions.Acme.SerializableModels.Orders
 {
-	public interface IJwkBuilder : IDisposable
+	[DataContract]
+	public class NewOrderRequest
 	{
-		string JwkAlgorithmKey { get; }
+		[DataMember(Name = "notBefore", EmitDefaultValue = false)]
+		public string __CertificateNotBeforeDateTimeUtc { get => CertificateNotBeforeDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => CertificateNotBeforeDateTimeUtc = value.ToDateTimeUtcNullable(); }
+		[IgnoreDataMember]
+		public DateTime? CertificateNotBeforeDateTimeUtc { get; set; }
 
-		bool VerifySignature(string headerDotPayload, string signature);
-		string GetSignature(string headerDotPayload);
-		string GetSerializedJwk();
+		[DataMember(Name = "notAfter", EmitDefaultValue = false)]
+		public string __CertificateNotAfterDateTimeUtc { get => CertificateNotAfterDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => CertificateNotAfterDateTimeUtc = value.ToDateTimeUtcNullable(); }
+		[IgnoreDataMember]
+		public DateTime? CertificateNotAfterDateTimeUtc { get; set; }
+
+		[DataMember(Name = "identifiers", EmitDefaultValue = false)]
+		public OrderCertificateIdentifier[] CertificateIdentifiers { get; set; }
 	}
 }

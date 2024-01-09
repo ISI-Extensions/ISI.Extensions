@@ -20,17 +20,19 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
-using ISI.Extensions.JsonSerialization.Extensions;
-using SerializableEntitiesDTOs = ISI.Extensions.JsonJwt.SerializableEntities;
 
-namespace ISI.Extensions.JsonJwt.JwkBuilders
+namespace ISI.Extensions.Acme.SerializableModels.Orders
 {
-	public interface IJwkBuilder : IDisposable
+	[DataContract]
+	public class Error
 	{
-		string JwkAlgorithmKey { get; }
+		[DataMember(Name = "type", EmitDefaultValue = false)]
+		public string ErrorType { get; set; }
 
-		bool VerifySignature(string headerDotPayload, string signature);
-		string GetSignature(string headerDotPayload);
-		string GetSerializedJwk();
+		[DataMember(Name = "detail", EmitDefaultValue = false)]
+		public string Detail { get; set; }
+
+		[DataMember(Name = "subproblems", EmitDefaultValue = false)]
+		public ErrorSubProblem[] SubProblems { get; set; }
 	}
 }

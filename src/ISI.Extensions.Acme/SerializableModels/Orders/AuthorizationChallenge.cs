@@ -20,17 +20,31 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
-using ISI.Extensions.JsonSerialization.Extensions;
-using SerializableEntitiesDTOs = ISI.Extensions.JsonJwt.SerializableEntities;
 
-namespace ISI.Extensions.JsonJwt.JwkBuilders
+namespace ISI.Extensions.Acme.SerializableModels.Orders
 {
-	public interface IJwkBuilder : IDisposable
+	[DataContract]
+	public class AuthorizationChallenge
 	{
-		string JwkAlgorithmKey { get; }
+		[DataMember(Name = "type", EmitDefaultValue = false)]
+		public string __ChallengeType { get => ChallengeType.GetAbbreviation(); set => ChallengeType = ISI.Extensions.Enum<AcmeOrderCertificateIdentifierAuthorizationChallengeType>.ParseAbbreviation(value); }
+		[IgnoreDataMember]
+		public AcmeOrderCertificateIdentifierAuthorizationChallengeType ChallengeType { get; set; }
 
-		bool VerifySignature(string headerDotPayload, string signature);
-		string GetSignature(string headerDotPayload);
-		string GetSerializedJwk();
+		[DataMember(Name = "status", EmitDefaultValue = false)]
+		public string __ChallengeStatus { get => ChallengeStatus.GetAbbreviation(); set => ChallengeStatus = ISI.Extensions.Enum<AcmeOrderCertificateIdentifierAuthorizationChallengeStatus>.ParseAbbreviation(value); }
+		[IgnoreDataMember]
+		public AcmeOrderCertificateIdentifierAuthorizationChallengeStatus ChallengeStatus { get; set; }
+
+		[DataMember(Name = "url", EmitDefaultValue = false)]
+		public string ChallengeUrl { get; set; }
+
+		[DataMember(Name = "token", EmitDefaultValue = false)]
+		public string Token { get; set; }
+
+		[DataMember(Name = "validated", EmitDefaultValue = false)]
+		public string __ValidatedDateTimeUtc { get => ValidatedDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => ValidatedDateTimeUtc = value.ToDateTimeUtcNullable(); }
+		[IgnoreDataMember]
+		public DateTime? ValidatedDateTimeUtc { get; set; }
 	}
 }

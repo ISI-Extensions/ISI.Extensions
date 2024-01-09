@@ -32,22 +32,22 @@ namespace ISI.Extensions.JsonJwt
 		{
 			var jwtHeader = jwt.DeserializeHeader<SerializableEntitiesDTOs.JwtHeader>();
 
-			if (!string.IsNullOrWhiteSpace(jwtHeader.AccountKey) && !string.IsNullOrWhiteSpace(jwtHeader.SerializedJwk))
+			if (!string.IsNullOrWhiteSpace(jwtHeader.AcmeAccountKey) && !string.IsNullOrWhiteSpace(jwtHeader.SerializedJwk))
 			{
 				throw new Exception("Kid and Jwk cannot both exist");
 			}
 
-			if (string.IsNullOrWhiteSpace(jwtHeader.AlgorithmKey))
+			if (string.IsNullOrWhiteSpace(jwtHeader.JwkAlgorithmKey))
 			{
 				throw new Exception("Algorithm not defined");
 			}
 
-			if (!string.IsNullOrWhiteSpace(jwtHeader.AccountKey))
+			if (!string.IsNullOrWhiteSpace(jwtHeader.AcmeAccountKey))
 			{
-				jwtHeader.SerializedJwk = getSerializedJwkFromAccountKey(jwtHeader.AccountKey);
+				jwtHeader.SerializedJwk = getSerializedJwkFromAccountKey(jwtHeader.AcmeAccountKey);
 			}
 
-			using (var jwkBuilder = JwkBuilderFactory.GetJwkBuilder(jwtHeader.AlgorithmKey, jwtHeader.SerializedJwk))
+			using (var jwkBuilder = JwkBuilderFactory.GetJwkBuilder(jwtHeader.JwkAlgorithmKey, jwtHeader.SerializedJwk))
 			{
 				return jwkBuilder.VerifySignature(signedJwt.GetHeaderDotPayload(), signedJwt.Signature);
 			}

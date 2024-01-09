@@ -1,10 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Deterministic>false</Deterministic>
     <LangVersion>latest</LangVersion>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <Deterministic>false</Deterministic>
-    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\ISI.Extensions.AssemblyInfo.cs" Link="Properties\ISI.Extensions.AssemblyInfo.cs" />
@@ -12,12 +11,7 @@
     <None Include="..\ISI.Extensions.licenseheader" Link="ISI.Extensions.licenseheader" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Update="NETStandard.Library" Version="2.0.3" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
-    <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\ISI.Extensions.JsonJwt\ISI.Extensions.JsonJwt.csproj" />
     <ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />
   </ItemGroup>
 </Project>

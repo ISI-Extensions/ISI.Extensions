@@ -20,17 +20,18 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
-using ISI.Extensions.JsonSerialization.Extensions;
-using SerializableEntitiesDTOs = ISI.Extensions.JsonJwt.SerializableEntities;
 
-namespace ISI.Extensions.JsonJwt.JwkBuilders
+namespace ISI.Extensions.Acme.SerializableModels.Orders
 {
-	public interface IJwkBuilder : IDisposable
+	[DataContract]
+	public class OrderCertificateIdentifier
 	{
-		string JwkAlgorithmKey { get; }
+		[DataMember(Name = "type", EmitDefaultValue = false)]
+		public string __CertificateIdentifierType { get => CertificateIdentifierType.GetAbbreviation(); set => CertificateIdentifierType = ISI.Extensions.Enum<AcmeOrderCertificateIdentifierType>.ParseAbbreviation(value); }
+		[IgnoreDataMember]
+		public AcmeOrderCertificateIdentifierType CertificateIdentifierType { get; set; }
 
-		bool VerifySignature(string headerDotPayload, string signature);
-		string GetSignature(string headerDotPayload);
-		string GetSerializedJwk();
+		[DataMember(Name = "value", EmitDefaultValue = false)]
+		public string CertificateIdentifierValue { get; set; }
 	}
 }

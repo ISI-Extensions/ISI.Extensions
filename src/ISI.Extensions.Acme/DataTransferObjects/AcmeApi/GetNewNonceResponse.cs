@@ -12,49 +12,18 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.JsonJwt.Extensions;
-using ISI.Extensions.JsonSerialization.Extensions;
-using ISI.Extensions.TypeLocator.Extensions;
-using SerializableEntitiesDTOs = ISI.Extensions.JsonJwt.SerializableEntities;
 
-namespace ISI.Extensions.JsonJwt
+namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 {
-	public partial class JwtEncoder
+	public class GetNewNonceResponse
 	{
-		public SerializableEntitiesDTOs.SignedJwt CreateSignedJwt(string serializedJwk, Jwt jwt)
-		{
-			var signedJwt = new SerializableEntitiesDTOs.SignedJwt();
-
-			var jwtHeader = jwt.DeserializeHeader<SerializableEntitiesDTOs.JwtHeader>();
-
-			using (var jwkBuilder = JwkBuilderFactory.GetJwkBuilder(jwtHeader.AlgorithmKey, jwtHeader.SerializedJwk))
-			{
-				if (!jwt.Header.ContainsKey("kid"))
-				{
-					jwt.Header.Remove("jwk");
-					jwt.Header.Add("jwk", serializedJwk);
-				}
-
-				var header = jwt.Header.ToDictionary(keyValue => keyValue.Key, keyValue => UrlEncode(Encoding.UTF8.GetBytes(keyValue.Value?.ToString() ?? string.Empty)));
-
-				signedJwt.Header = UrlEncode(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(header)));
-
-				if (jwt.Payload.NullCheckedAny())
-				{
-					signedJwt.Header = UrlEncode(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(jwt.Payload)));
-				}
-
-				signedJwt.Signature = jwkBuilder.GetSignature(signedJwt.GetHeaderDotPayload());
-			}
-
-			return signedJwt;
-		}
+		public string Nonce { get; set; }
 	}
 }

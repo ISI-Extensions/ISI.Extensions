@@ -21,7 +21,7 @@ namespace ISI.Extensions.JsonJwt.Extensions
 {
 	//public static class JwtSecurityTokenExtensions
 	//{
-	//	public static string GetSerializedJwt(this System.IdentityModel.Tokens.Jwt.JwtSecurityToken jwtSecurityToken)
+	//	public static string GetSerializedJwk(this System.IdentityModel.Tokens.Jwt.JwtSecurityToken jwtSecurityToken)
 	//	{
 	//		{
 	//			if (jwtSecurityToken.Header.TryGetValue("jwt", out var header))

@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,22 +15,16 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
-using ISI.Extensions.JsonSerialization.Extensions;
-using SerializableEntitiesDTOs = ISI.Extensions.JsonJwt.SerializableEntities;
 
-namespace ISI.Extensions.JsonJwt.JwkBuilders
+namespace ISI.Extensions.Acme
 {
-	public interface IJwkBuilder : IDisposable
+	public enum AcmeOrderStatus
 	{
-		string JwkAlgorithmKey { get; }
-
-		bool VerifySignature(string headerDotPayload, string signature);
-		string GetSignature(string headerDotPayload);
-		string GetSerializedJwk();
+		[ISI.Extensions.EnumGuid("31664f17-6a6d-4a10-90ee-866dc414e2a8", "Pending", "pending")] Pending,
+		[ISI.Extensions.EnumGuid("87f620f5-2df8-4c17-9a74-2f248b7fdd90", "Ready", "ready")] Ready,
+		[ISI.Extensions.EnumGuid("3e85a92f-0fb2-445e-94f2-019a9bf87808", "Processing", "processing")] Processing,
+		[ISI.Extensions.EnumGuid("e1ecff96-95f9-4e06-bae3-45b4ea1d43da", "Valid", "valid")] Valid,
+		[ISI.Extensions.EnumGuid("3585ba4a-de32-4a0e-ae7d-88afdd2e7c05", "Invalid", "invalid")] Invalid,
 	}
 }

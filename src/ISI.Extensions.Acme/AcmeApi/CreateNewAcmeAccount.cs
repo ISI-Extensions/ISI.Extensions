@@ -26,9 +26,9 @@ namespace ISI.Extensions.Acme
 {
 	public partial class AcmeApi
 	{
-		public DTOs.NewAccountResponse NewAccount(DTOs.NewAccountRequest request)
+		public DTOs.CreateNewAcmeAccountResponse CreateNewAcmeAccount(DTOs.CreateNewAcmeAccountRequest request)
 		{
-			var response = new DTOs.NewAccountResponse();
+			var response = new DTOs.CreateNewAcmeAccountResponse();
 
 			var uri = new Uri(request.AcmeHostContext.AcmeHostDirectory.NewAccountUrl);
 
@@ -46,12 +46,6 @@ namespace ISI.Extensions.Acme
 			jwt.AddToPayload(acmeRequest, JsonSerializer);
 
 			var signedJwt = JwtEncoder.BuildSignedJwt(request.AcmeHostContext.JwkAlgorithmKey, request.AcmeHostContext.Pem, null, jwt);
-
-			if (JwtEncoder.TryDecodeSignedJwt(signedJwt, key => null, out var _jwt))
-			{
-
-			}
-
 
 			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<ISI.Extensions.JsonJwt.SerializableEntities.SignedJwt, ISI.Extensions.WebClient.Rest.SerializedResponse<ISI.Extensions.Acme.SerializableModels.Accounts.NewAccountResponse>>(uri, GetHeaders(request), signedJwt, true);
 

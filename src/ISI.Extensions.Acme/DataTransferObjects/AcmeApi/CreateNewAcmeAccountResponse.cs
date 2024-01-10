@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 {
-	public class NewAccountResponse
+	public class CreateNewAcmeAccountResponse
 	{
 		public string AcmeAccountKey { get; set; }
 		public string SerializedJwk { get; set; }

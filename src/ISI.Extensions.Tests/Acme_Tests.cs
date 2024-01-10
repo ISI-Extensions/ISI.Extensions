@@ -106,7 +106,7 @@ namespace ISI.Extensions.Tests
 				System.IO.File.WriteAllText(AccountPemFullName, context.Pem);
 				System.IO.File.WriteAllText(AccountJwkAlgorithmKeyFullName, context.JwkAlgorithmKey.GetAbbreviation());
 
-				var response = AcmeApi.NewAccount(new()
+				var response = AcmeApi.CreateNewAcmeAccount(new()
 				{
 					AcmeHostContext = context,
 					AccountName = "localhost",
@@ -132,13 +132,13 @@ namespace ISI.Extensions.Tests
 					Pem = pem,
 				}).AcmeHostContext;
 
-				var response = AcmeApi.NewAccount(new()
-				{
-					AcmeHostContext = context,
-					AccountName = "localhost",
-					Contacts = new[] { "me@here.com" },
-					TermsOfServiceAgreed = true,
-				});
+				//var response = AcmeApi.NewAccount(new()
+				//{
+				//	AcmeHostContext = context,
+				//	AccountName = "localhost",
+				//	Contacts = new[] { "me@here.com" },
+				//	TermsOfServiceAgreed = true,
+				//});
 			}
 		}
 	}

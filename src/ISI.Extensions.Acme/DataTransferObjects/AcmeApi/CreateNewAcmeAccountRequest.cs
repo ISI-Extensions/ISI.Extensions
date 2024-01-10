@@ -7,7 +7,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 {
-	public class NewAccountRequest : IRequest
+	public class CreateNewAcmeAccountRequest : IRequest
 	{
 		public AcmeHostContext AcmeHostContext { get; set; }
 

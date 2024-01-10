@@ -23,11 +23,12 @@ using Microsoft.Extensions.Logging;
 
 namespace ISI.Platforms.AspNetCore
 {
-	public class CookieAndBearerAuthenticationHandler : Microsoft.AspNetCore.Authentication.AuthenticationHandler<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions>
+	public class CookieAndBearerAuthenticationHandler : Microsoft.AspNetCore.Authentication.AuthenticationHandler<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions>, IAuthenticationHandler
 	{
 		public const string AuthenticationHandlerName = nameof(CookieAndBearerAuthenticationHandler);
 
 		public static string CookieName { get; set; } = "Authentication";
+		string IAuthenticationHandler.CookieName => CookieName;
 
 		protected Configuration Configuration { get; }
 		protected ISI.Extensions.IAuthenticationIdentityApi AuthenticationIdentityApi { get; }

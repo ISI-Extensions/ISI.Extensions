@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,40 +18,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace ISI.Platforms.AspNetCore.Extensions
+namespace ISI.Platforms.AspNetCore
 {
-	public static partial class ServiceApplicationContextExtensions
+	public interface IAuthenticationHandler
 	{
-		public static ServiceApplicationContext AddCookieAndBearerAuthentication(this ServiceApplicationContext context, string cookieName)
-		{
-			if (!string.IsNullOrWhiteSpace(cookieName))
-			{
-				CookieAndBearerAuthenticationHandler.CookieName = cookieName;
-			}
-
-			var webStartupConfigureServices = context.WebStartupConfigureServices;
-			context.WebStartupConfigureServices = services =>
-			{
-				webStartupConfigureServices?.Invoke(services);
-
-				services
-					.AddSingleton<IAuthenticationHandler, CookieAndBearerAuthenticationHandler>()
-					.AddAuthentication(CookieAndBearerAuthenticationHandler.AuthenticationHandlerName)
-					.AddScheme<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions, CookieAndBearerAuthenticationHandler>(CookieAndBearerAuthenticationHandler.AuthenticationHandlerName, null)
-					;
-
-				services.AddAuthorization(options =>
-				{
-					options.AddPolicy(CookieAndBearerAuthorizationPolicy.PolicyName, policy => policy.Requirements.Add(new CookieAndBearerAuthorizationPolicy()));
-				});
-			};
-
-			return context;
-		}
+		string CookieName { get; }
+		Task<System.IdentityModel.Tokens.Jwt.JwtSecurityToken> GetJwtSecurityTokenAsync(ISI.Extensions.IAuthenticationIdentityUser authenticationIdentityUser, IEnumerable<System.Security.Claims.Claim> claims = null);
+		Task<IEnumerable<System.Security.Claims.Claim>> GetUserClaimsAsync(ISI.Extensions.IAuthenticationIdentityUser authenticationIdentityUser);
 	}
 }

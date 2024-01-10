@@ -23,7 +23,9 @@ namespace ISI.Extensions.JsonJwt
 	{
 		ES256,
 		ES384,
-		ES512,
-		RS256
+		ES521,
+		RS256,
+		RS384,
+		RS512,
 	}
 }

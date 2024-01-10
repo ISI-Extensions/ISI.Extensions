@@ -45,97 +45,37 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 				case JwkAlgorithmKey.ES384:
 					return new ESJwkBuilder(JsonSerializer, 384);
 
-				case JwkAlgorithmKey.ES512:
-					return new ESJwkBuilder(JsonSerializer, 512);
+				case JwkAlgorithmKey.ES521:
+					return new ESJwkBuilder(JsonSerializer, 521);
 
 				case JwkAlgorithmKey.RS256:
-					return new RSJwkBuilder(JsonSerializer);
+					return new RSJwkBuilder(JsonSerializer, 256);
+
+				case JwkAlgorithmKey.RS384:
+					return new RSJwkBuilder(JsonSerializer, 384);
+
+				case JwkAlgorithmKey.RS512:
+					return new RSJwkBuilder(JsonSerializer, 512);
 
 				default:
 					throw new ArgumentOutOfRangeException(nameof(jwkAlgorithmKey), jwkAlgorithmKey, null);
 			}
 		}
 
-		public IJwkBuilder GetJwkBuilder(string pem)
-		{
-			IJwkBuilder GetJwkBuilderFromKey(Org.BouncyCastle.Crypto.AsymmetricKeyParameter asymmetricKeyParameter)
-			{
-				var jwkAlgorithmKey = (string)null;
-				var asymmetricCipherKeyPair = (Org.BouncyCastle.Crypto.AsymmetricCipherKeyPair)null;
 
-				if (asymmetricKeyParameter is Org.BouncyCastle.Crypto.Parameters.RsaPrivateCrtKeyParameters rsaPrivateCrtKeyParameters)
-				{
-					var publicKey = new Org.BouncyCastle.Crypto.Parameters.RsaKeyParameters(false, rsaPrivateCrtKeyParameters.Modulus, rsaPrivateCrtKeyParameters.PublicExponent);
-
-					asymmetricCipherKeyPair = new Org.BouncyCastle.Crypto.AsymmetricCipherKeyPair(publicKey, asymmetricKeyParameter);
-
-					return new RSJwkBuilder(JsonSerializer, asymmetricCipherKeyPair);
-				}
-
-				if (asymmetricKeyParameter is Org.BouncyCastle.Crypto.Parameters.ECPrivateKeyParameters privateKey)
-				{
-					var ecPoint = privateKey.Parameters.G.Multiply(privateKey.D);
-
-					Org.BouncyCastle.Asn1.DerObjectIdentifier derObjectIdentifier = null;
-
-					switch (privateKey.Parameters.Curve.FieldSize)
-					{
-						case 256:
-							derObjectIdentifier = Org.BouncyCastle.Asn1.Sec.SecObjectIdentifiers.SecP256r1;
-							break;
-
-						case 384:
-							derObjectIdentifier = Org.BouncyCastle.Asn1.Sec.SecObjectIdentifiers.SecP384r1;
-							break;
-
-						case 521:
-							derObjectIdentifier = Org.BouncyCastle.Asn1.Sec.SecObjectIdentifiers.SecP521r1;
-							break;
-
-						default:
-							throw new NotSupportedException();
-					}
-
-					var publicKey = new Org.BouncyCastle.Crypto.Parameters.ECPublicKeyParameters("EC", ecPoint, derObjectIdentifier);
-
-					asymmetricCipherKeyPair = new Org.BouncyCastle.Crypto.AsymmetricCipherKeyPair(publicKey, asymmetricKeyParameter);
-
-					return new ESJwkBuilder(JsonSerializer, asymmetricCipherKeyPair, privateKey.Parameters.Curve.FieldSize);
-				}
-
-				throw new NotSupportedException();
-			};
-
-
-			using (var reader = new System.IO.StringReader(pem))
-			{
-				var pemReader = new Org.BouncyCastle.OpenSsl.PemReader(reader);
-
-				switch (pemReader.ReadObject())
-				{
-					case Org.BouncyCastle.Crypto.AsymmetricCipherKeyPair asymmetricCipherKeyPair:
-						return GetJwkBuilderFromKey(asymmetricCipherKeyPair.Private);
-
-					case Org.BouncyCastle.Crypto.AsymmetricKeyParameter asymmetricKeyParameter:
-						return GetJwkBuilderFromKey(asymmetricKeyParameter);
-
-					default:
-						throw new NotSupportedException();
-				}
-			}
-		}
-
-		public IJwkBuilder GetJwkBuilder(JwkAlgorithmKey jwkAlgorithmKey, string serializedJwk)
+		public IJwkBuilder GetJwkBuilder(JwkAlgorithmKey jwkAlgorithmKey, string serializedJwkOrPem)
 		{
 			switch (jwkAlgorithmKey)
 			{
 				case JwkAlgorithmKey.ES256:
 				case JwkAlgorithmKey.ES384:
-				case JwkAlgorithmKey.ES512:
-					return new ESJwkBuilder(JsonSerializer, serializedJwk, jwkAlgorithmKey.GetKey().Substring(2).ToInt());
+				case JwkAlgorithmKey.ES521:
+					return new ESJwkBuilder(JsonSerializer, serializedJwkOrPem);
 
 				case JwkAlgorithmKey.RS256:
-					return new RSJwkBuilder(JsonSerializer, serializedJwk);
+				case JwkAlgorithmKey.RS384:
+				case JwkAlgorithmKey.RS512:
+					return new RSJwkBuilder(JsonSerializer, serializedJwkOrPem);
 				
 				default:
 					throw new ArgumentOutOfRangeException(nameof(jwkAlgorithmKey), jwkAlgorithmKey, null);

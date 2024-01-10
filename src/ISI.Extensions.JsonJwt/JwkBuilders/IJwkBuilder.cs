@@ -25,13 +25,11 @@ using SerializableEntitiesDTOs = ISI.Extensions.JsonJwt.SerializableEntities;
 
 namespace ISI.Extensions.JsonJwt.JwkBuilders
 {
-	public interface IJwkBuilder
+	public interface IJwkBuilder : IDisposable
 	{
 		JwkAlgorithmKey JwkAlgorithmKey { get; }
 
 		string GetSerializedJwk();
-		byte[] GetDer();
-		string GetPublicPem();
 		string GetPrivatePem();
 
 		string GetSignature(string headerDotPayload);

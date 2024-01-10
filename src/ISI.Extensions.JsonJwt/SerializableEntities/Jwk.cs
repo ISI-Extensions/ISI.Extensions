@@ -17,22 +17,34 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.Serialization;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.JsonJwt.SerializableEntities
 {
 	[DataContract]
-	public class ESJwkDetails
+	public class Jwk
 	{
-		[DataMember(Name = "hashSize", Order = 1)]
-		public int? HashSize { get; set; }
+		[DataMember(Name = "kty", EmitDefaultValue = false)]
+		public string __JwtKeyType { get => JwtKeyType.GetAbbreviation(); set => JwtKeyType = ISI.Extensions.Enum<JwtKeyType>.ParseAbbreviation(value); }
+		[IgnoreDataMember]
+		public JwtKeyType JwtKeyType { get; set; }
 
-		[DataMember(Name = "d", Order = 2)]
+		[DataMember(Name = "crv", EmitDefaultValue = false)]
+		public string CurveName { get; set; }
+		
+		[DataMember(Name = "d", EmitDefaultValue = false)]
 		public string D { get; set; }
 
-		[DataMember(Name = "x", Order = 3)]
+		[DataMember(Name = "x", EmitDefaultValue = false)]
 		public string X { get; set; }
 
-		[DataMember(Name = "y", Order = 4)]
+		[DataMember(Name = "y", EmitDefaultValue = false)]
 		public string Y { get; set; }
+
+		[DataMember(Name = "e", EmitDefaultValue = false)]
+		public string Exponent { get; set; }
+
+		[DataMember(Name = "n", EmitDefaultValue = false)]
+		public string Modulus { get; set; }
 	}
 }

@@ -45,7 +45,7 @@ namespace ISI.Extensions.Acme
 
 			jwt.AddToPayload(acmeRequest, JsonSerializer);
 
-			var signedJwt = JwtEncoder.BuildSignedJwt(request.AcmeHostContext.Pem, null, jwt);
+			var signedJwt = JwtEncoder.BuildSignedJwt(request.AcmeHostContext.JwkAlgorithmKey, request.AcmeHostContext.Pem, null, jwt);
 
 			if (JwtEncoder.TryDecodeSignedJwt(signedJwt, key => null, out var _jwt))
 			{

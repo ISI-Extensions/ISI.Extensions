@@ -47,9 +47,10 @@ namespace ISI.Extensions.JsonJwt
 				jwtHeader.SerializedJwk = getSerializedJwkFromAccountKey(jwtHeader.AcmeAccountKey);
 			}
 
-			var jwkBuilder = JwkBuilderFactory.GetJwkBuilder(jwtHeader.JwkAlgorithmKey.Value, jwtHeader.SerializedJwk);
-
-			return jwkBuilder.VerifySignature(signedJwt.GetHeaderDotPayload(), signedJwt.Signature);
+			using (var jwkBuilder = JwkBuilderFactory.GetJwkBuilder(jwtHeader.JwkAlgorithmKey.Value, jwtHeader.SerializedJwk))
+			{
+				return jwkBuilder.VerifySignature(signedJwt.GetHeaderDotPayload(), signedJwt.Signature);
+			}
 		}
 	}
 }

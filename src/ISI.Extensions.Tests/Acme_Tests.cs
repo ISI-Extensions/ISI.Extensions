@@ -34,8 +34,10 @@ namespace ISI.Extensions.Tests
 	{
 		protected readonly Uri AcmeHostUri = new Uri(@"https://localhost:15633/directory");
 		public readonly string AccountPemFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.pem");
+		public readonly string AccountJwkAlgorithmKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.JwkAlgorithmKey");
 
 		protected string GetAccountPem() => System.IO.File.ReadAllText(AccountPemFullName);
+		protected ISI.Extensions.JsonJwt.JwkAlgorithmKey GetAccountJwkAlgorithmKey() => ISI.Extensions.Enum<ISI.Extensions.JsonJwt.JwkAlgorithmKey>.Parse(System.IO.File.ReadAllText(AccountJwkAlgorithmKeyFullName));
 
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; set; }
 		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; set; }
@@ -53,20 +55,20 @@ namespace ISI.Extensions.Tests
 			var configuration = configurationBuilder.Build();
 
 			var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection()
-				.AddOptions()
-				.AddSingleton<Microsoft.Extensions.Configuration.IConfiguration>(configuration)
+					.AddOptions()
+					.AddSingleton<Microsoft.Extensions.Configuration.IConfiguration>(configuration)
 
-				.AddSingleton<Microsoft.Extensions.Logging.ILogger>(_ => new ISI.Extensions.ConsoleLogger())
+					.AddSingleton<Microsoft.Extensions.Logging.ILogger>(_ => new ISI.Extensions.ConsoleLogger())
 
-				.AddSingleton<ISI.Extensions.DateTimeStamper.IDateTimeStamper, ISI.Extensions.DateTimeStamper.LocalMachineDateTimeStamper>()
+					.AddSingleton<ISI.Extensions.DateTimeStamper.IDateTimeStamper, ISI.Extensions.DateTimeStamper.LocalMachineDateTimeStamper>()
 
-				.AddSingleton<ISI.Extensions.JsonSerialization.IJsonSerializer, ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer>()
-				.AddSingleton<ISI.Extensions.Serialization.ISerialization, ISI.Extensions.Serialization.Serialization>()
+					.AddSingleton<ISI.Extensions.JsonSerialization.IJsonSerializer, ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer>()
+					.AddSingleton<ISI.Extensions.Serialization.ISerialization, ISI.Extensions.Serialization.Serialization>()
 
-				.AddSingleton<ISI.Extensions.JsonJwt.JwkBuilders.JwkBuilderFactory>()
-				.AddSingleton<ISI.Extensions.JsonJwt.JwtEncoder>()
+					.AddSingleton<ISI.Extensions.JsonJwt.JwkBuilders.JwkBuilderFactory>()
+					.AddSingleton<ISI.Extensions.JsonJwt.JwtEncoder>()
 
-				.AddSingleton<ISI.Extensions.Acme.AcmeApi>()
+					.AddSingleton<ISI.Extensions.Acme.AcmeApi>()
 
 				;
 
@@ -75,7 +77,7 @@ namespace ISI.Extensions.Tests
 			var serviceProvider = services.BuildServiceProvider<ISI.Extensions.DependencyInjection.Iunq.ServiceProviderBuilder>(configuration);
 			serviceProvider.SetServiceLocator();
 
-			
+
 
 			Logger = serviceProvider.GetService<Microsoft.Extensions.Logging.ILogger>();
 			DateTimeStamper = serviceProvider.GetService<ISI.Extensions.DateTimeStamper.IDateTimeStamper>();
@@ -89,32 +91,55 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void CreateNewAcmeAccount()
 		{
-			var jwtBuilder = JwkBuilderFactory.GetJwkBuilder(ISI.Extensions.JsonJwt.JwkAlgorithmKey.ES256);
+			var jwkAlgorithmKey = ISI.Extensions.JsonJwt.JwkAlgorithmKey.ES521;
 
-			var context = AcmeApi.GetAcmeHostContext(new()
+			using (var jwtBuilder = JwkBuilderFactory.GetJwkBuilder(jwkAlgorithmKey))
 			{
-				AcmeHostDirectoryUri = AcmeHostUri,
-				Pem = jwtBuilder.GetPrivatePem(),
-			}).AcmeHostContext;
+				var context = AcmeApi.GetAcmeHostContext(new()
+				{
+					AcmeHostDirectoryUri = AcmeHostUri,
+					JwkAlgorithmKey = jwkAlgorithmKey,
+					Pem = jwtBuilder.GetPrivatePem(),
+				}).AcmeHostContext;
 
-			var publicPem = jwtBuilder.GetPublicPem();
-			var xxx = jwtBuilder.GetSerializedJwk();
+				System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(AccountPemFullName));
+				System.IO.File.WriteAllText(AccountPemFullName, context.Pem);
+				System.IO.File.WriteAllText(AccountJwkAlgorithmKeyFullName, context.JwkAlgorithmKey.GetAbbreviation());
 
-			jwtBuilder = JwkBuilderFactory.GetJwkBuilder(ISI.Extensions.JsonJwt.JwkAlgorithmKey.ES256);
+				var response = AcmeApi.NewAccount(new()
+				{
+					AcmeHostContext = context,
+					AccountName = "localhost",
+					Contacts = new[] { "me@here.com" },
+					TermsOfServiceAgreed = true,
+				});
+			}
+		}
 
-			var jwtPublicPem = jwtBuilder.GetPublicPem();
-			var yyy = jwtBuilder.GetSerializedJwk();
 
-			System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(AccountPemFullName));
-			System.IO.File.WriteAllText(AccountPemFullName, context.Pem);
+		[Test]
+		public void CreateNewAcmeOrder()
+		{
+			var pem = GetAccountPem();
+			var jwkAlgorithmKey = GetAccountJwkAlgorithmKey();
 
-			var response = AcmeApi.NewAccount(new()
+			using (var jwtBuilder = JwkBuilderFactory.GetJwkBuilder(jwkAlgorithmKey, pem))
 			{
-				AcmeHostContext = context,
-				AccountName = "localhost",
-				Contacts = new[] { "me@here.com" },
-				TermsOfServiceAgreed = true,
-			});
+				var context = AcmeApi.GetAcmeHostContext(new()
+				{
+					AcmeHostDirectoryUri = AcmeHostUri,
+					JwkAlgorithmKey = jwkAlgorithmKey,
+					Pem = pem,
+				}).AcmeHostContext;
+
+				var response = AcmeApi.NewAccount(new()
+				{
+					AcmeHostContext = context,
+					AccountName = "localhost",
+					Contacts = new[] { "me@here.com" },
+					TermsOfServiceAgreed = true,
+				});
+			}
 		}
 	}
 }

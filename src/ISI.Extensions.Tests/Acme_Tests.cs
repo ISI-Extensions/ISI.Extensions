@@ -35,9 +35,11 @@ namespace ISI.Extensions.Tests
 		protected readonly Uri AcmeHostUri = new Uri(@"https://localhost:15633/directory");
 		public readonly string AccountPemFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.pem");
 		public readonly string AccountJwkAlgorithmKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.JwkAlgorithmKey");
+		public readonly string AccountSerializedJwkFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.SerializedJwk");
 
 		protected string GetAccountPem() => System.IO.File.ReadAllText(AccountPemFullName);
 		protected ISI.Extensions.JsonJwt.JwkAlgorithmKey GetAccountJwkAlgorithmKey() => ISI.Extensions.Enum<ISI.Extensions.JsonJwt.JwkAlgorithmKey>.Parse(System.IO.File.ReadAllText(AccountJwkAlgorithmKeyFullName));
+		protected string GetAccountSerializedJwk() => System.IO.File.ReadAllText(AccountSerializedJwkFullName);
 
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; set; }
 		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; set; }
@@ -99,12 +101,14 @@ namespace ISI.Extensions.Tests
 				{
 					AcmeHostDirectoryUri = AcmeHostUri,
 					JwkAlgorithmKey = jwkAlgorithmKey,
+					SerializedJwk = jwtBuilder.GetSerializedJwk(),
 					Pem = jwtBuilder.GetPrivatePem(),
 				}).AcmeHostContext;
 
 				System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(AccountPemFullName));
 				System.IO.File.WriteAllText(AccountPemFullName, context.Pem);
 				System.IO.File.WriteAllText(AccountJwkAlgorithmKeyFullName, context.JwkAlgorithmKey.GetAbbreviation());
+				System.IO.File.WriteAllText(AccountSerializedJwkFullName, context.SerializedJwk);
 
 				var response = AcmeApi.CreateNewAcmeAccount(new()
 				{
@@ -122,6 +126,7 @@ namespace ISI.Extensions.Tests
 		{
 			var pem = GetAccountPem();
 			var jwkAlgorithmKey = GetAccountJwkAlgorithmKey();
+			var serializedJwk = GetAccountSerializedJwk();
 
 			using (var jwtBuilder = JwkBuilderFactory.GetJwkBuilder(jwkAlgorithmKey, pem))
 			{
@@ -129,16 +134,22 @@ namespace ISI.Extensions.Tests
 				{
 					AcmeHostDirectoryUri = AcmeHostUri,
 					JwkAlgorithmKey = jwkAlgorithmKey,
+					SerializedJwk = serializedJwk,
 					Pem = pem,
 				}).AcmeHostContext;
 
-				//var response = AcmeApi.NewAccount(new()
-				//{
-				//	AcmeHostContext = context,
-				//	AccountName = "localhost",
-				//	Contacts = new[] { "me@here.com" },
-				//	TermsOfServiceAgreed = true,
-				//});
+				var response = AcmeApi.CreateNewAcmeOrder(new()
+				{
+					AcmeHostContext = context,
+					CertificateIdentifiers = new[]
+					{
+						new ISI.Extensions.Acme.AcmeOrderCertificateIdentifier()
+						{
+							CertificateIdentifierType = ISI.Extensions.Acme.AcmeOrderCertificateIdentifierType.Dns,
+							CertificateIdentifierValue = "*.isi-net.com",
+						}
+					}
+				});
 			}
 		}
 	}

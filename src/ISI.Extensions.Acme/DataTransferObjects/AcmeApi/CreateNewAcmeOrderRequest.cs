@@ -19,20 +19,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Acme.SerializableModels.Orders
+namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 {
-	[DataContract]
-	public class ErrorSubProblem
+	public class CreateNewAcmeOrderRequest : IRequest
 	{
-		[DataMember(Name = "type", EmitDefaultValue = false)]
-		public string ErrorType { get; set; }
+		public AcmeHostContext AcmeHostContext { get; set; }
 
-		[DataMember(Name = "detail", EmitDefaultValue = false)]
-		public string Detail { get; set; }
+		public DateTime? CertificateNotBeforeDateTimeUtc { get; set; }
+		public DateTime? CertificateNotAfterDateTimeUtc { get; set; }
 
-		[DataMember(Name = "identifier", EmitDefaultValue = false)]
-		public OrderCertificateIdentifier Identifier { get; set; }
+		public AcmeOrderCertificateIdentifier[] CertificateIdentifiers { get; set; }
 	}
 }

@@ -30,9 +30,9 @@ namespace ISI.Extensions.Acme
 		{
 			var response = new DTOs.CreateNewAcmeAccountResponse();
 
-			var uri = new Uri(request.AcmeHostContext.AcmeHostDirectory.NewAccountUrl);
+			var uri = new Uri(request.AcmeHostContext.AcmeHostDirectory.CreateNewAccountUrl);
 
-			var acmeRequest = new ISI.Extensions.Acme.SerializableModels.Accounts.NewAccountRequest()
+			var acmeRequest = new ISI.Extensions.Acme.SerializableModels.Accounts.CreateNewAccountRequest()
 			{
 				AccountName = request.AccountName,
 				Contacts = request.Contacts.ToNullCheckedArray(),
@@ -45,23 +45,26 @@ namespace ISI.Extensions.Acme
 
 			jwt.AddToPayload(acmeRequest, JsonSerializer);
 
-			var signedJwt = JwtEncoder.BuildSignedJwt(request.AcmeHostContext.JwkAlgorithmKey, request.AcmeHostContext.Pem, null, jwt);
+			var signedJwt = JwtEncoder.BuildSignedJwt(request.AcmeHostContext.JwkAlgorithmKey, request.AcmeHostContext.SerializedJwk, request.AcmeHostContext.Pem, null, jwt);
 
-			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<ISI.Extensions.JsonJwt.SerializableEntities.SignedJwt, ISI.Extensions.WebClient.Rest.SerializedResponse<ISI.Extensions.Acme.SerializableModels.Accounts.NewAccountResponse>>(uri, GetHeaders(request), signedJwt, true);
+			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<ISI.Extensions.JsonJwt.SerializableEntities.SignedJwt, ISI.Extensions.WebClient.Rest.SerializedResponse<ISI.Extensions.Acme.SerializableModels.Accounts.CreateNewAccountResponse>>(uri, GetHeaders(request), signedJwt, true);
 
 			if (acmeResponse.ResponseHeaders.TryGetValue(ISI.Extensions.JsonJwt.HeaderKey.ReplayNonce, out var nonce))
 			{
 				request.AcmeHostContext.Nonce = nonce;
 			}
 
-			response.AcmeAccountKey = acmeResponse.Response.AcmeAccountKey;
-			response.SerializedJwk = acmeResponse.Response.SerializedJwk;
-			response.AccountStatus = acmeResponse.Response.AccountStatus;
-			response.AccountName = acmeResponse.Response.AccountName;
-			response.Contacts = acmeResponse.Response.Contacts.ToNullCheckedArray();
-			response.TermsOfServiceAgreed = acmeResponse.Response.TermsOfServiceAgreed;
-			response.OnlyReturnExisting = acmeResponse.Response.OnlyReturnExisting;
-			response.OrdersUrl = acmeResponse.Response.OrdersUrl;
+			response.AcmeAccount = acmeResponse.Response.NullCheckedConvert(source => new AcmeAccount()
+			{
+				AcmeAccountKey = acmeResponse.Response.AcmeAccountKey,
+				SerializedJwk = acmeResponse.Response.SerializedJwk,
+				AccountStatus = acmeResponse.Response.AccountStatus,
+				AccountName = acmeResponse.Response.AccountName,
+				Contacts = acmeResponse.Response.Contacts.ToNullCheckedArray(),
+				TermsOfServiceAgreed = acmeResponse.Response.TermsOfServiceAgreed,
+				OnlyReturnExisting = acmeResponse.Response.OnlyReturnExisting,
+				OrdersUrl = acmeResponse.Response.OrdersUrl,
+			});
 
 			return response;
 		}

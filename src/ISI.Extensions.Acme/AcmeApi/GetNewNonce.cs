@@ -29,7 +29,7 @@ namespace ISI.Extensions.Acme
 		{
 			var response = new DTOs.GetNewNonceResponse();
 
-			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteHead<ISI.Extensions.WebClient.Rest.TextResponse>(request.AcmeHostContext.AcmeHostDirectory.NewNonceUrl, null, true);
+			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteHead<ISI.Extensions.WebClient.Rest.TextResponse>(request.AcmeHostContext.AcmeHostDirectory.CreateNewNonceUrl, null, true);
 
 			if (acmeResponse.ResponseHeaders.TryGetValue(ISI.Extensions.JsonJwt.HeaderKey.ReplayNonce, out var nonce))
 			{

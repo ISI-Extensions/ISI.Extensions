@@ -24,30 +24,15 @@ using System.Runtime.Serialization;
 namespace ISI.Extensions.Acme.SerializableModels.Orders
 {
 	[DataContract]
-	public class GetChallengeResponse
+	public class AcmeOrderErrorSubProblem
 	{
 		[DataMember(Name = "type", EmitDefaultValue = false)]
-		public string __ChallengeType { get => ChallengeType.GetAbbreviation(); set => ChallengeType = ISI.Extensions.Enum<AcmeOrderCertificateIdentifierAuthorizationChallengeType>.ParseAbbreviation(value); }
-		[IgnoreDataMember]
-		public AcmeOrderCertificateIdentifierAuthorizationChallengeType ChallengeType { get; set; }
+		public string ErrorType { get; set; }
 
-		[DataMember(Name = "url", EmitDefaultValue = false)]
-		public string ChallengeUrl { get; set; }
+		[DataMember(Name = "detail", EmitDefaultValue = false)]
+		public string Detail { get; set; }
 
-		[DataMember(Name = "status", EmitDefaultValue = false)]
-		public string __ChallengeStatus { get => ChallengeStatus.GetAbbreviation(); set => ChallengeStatus = ISI.Extensions.Enum<AcmeOrderCertificateIdentifierAuthorizationChallengeStatus>.ParseAbbreviation(value); }
-		[IgnoreDataMember]
-		public AcmeOrderCertificateIdentifierAuthorizationChallengeStatus ChallengeStatus { get; set; }
-
-		[DataMember(Name = "validated", EmitDefaultValue = false)]
-		public string __ValidatedDateTimeUtc { get => ValidatedDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => ValidatedDateTimeUtc = value.ToDateTimeUtcNullable(); }
-		[IgnoreDataMember]
-		public DateTime? ValidatedDateTimeUtc { get; set; }
-
-		[DataMember(Name = "token", EmitDefaultValue = false)]
-		public string Token { get; set; }
-
-		[DataMember(Name = "error", EmitDefaultValue = false)]
-		public AcmeOrderError Error { get; set; }
+		[DataMember(Name = "identifier", EmitDefaultValue = false)]
+		public AcmeOrderCertificateIdentifier Identifier { get; set; }
 	}
 }

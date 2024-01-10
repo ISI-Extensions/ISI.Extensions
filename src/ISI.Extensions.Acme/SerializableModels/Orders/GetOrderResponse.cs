@@ -47,7 +47,7 @@ namespace ISI.Extensions.Acme.SerializableModels.Orders
 		public DateTime? CertificateNotAfterDateTimeUtc { get; set; }
 
 		[DataMember(Name = "identifiers", EmitDefaultValue = false)]
-		public OrderCertificateIdentifier[] Identifiers { get; set; }
+		public AcmeOrderCertificateIdentifier[] Identifiers { get; set; }
 
 		[DataMember(Name = "authorizations", EmitDefaultValue = false)]
 		public string[] AuthorizationsUrls { get; set; }
@@ -59,6 +59,6 @@ namespace ISI.Extensions.Acme.SerializableModels.Orders
 		public string GetCertificateUrl { get; set; }
 
 		[DataMember(Name = "error", EmitDefaultValue = false)]
-		public Error Error { get; set; }
+		public AcmeOrderError Error { get; set; }
 	}
 }

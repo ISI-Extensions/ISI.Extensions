@@ -24,30 +24,19 @@ using System.Runtime.Serialization;
 namespace ISI.Extensions.Acme.SerializableModels.Orders
 {
 	[DataContract]
-	public class GetChallengeResponse
+	public class CreateNewAcmeOrderRequest
 	{
-		[DataMember(Name = "type", EmitDefaultValue = false)]
-		public string __ChallengeType { get => ChallengeType.GetAbbreviation(); set => ChallengeType = ISI.Extensions.Enum<AcmeOrderCertificateIdentifierAuthorizationChallengeType>.ParseAbbreviation(value); }
+		[DataMember(Name = "notBefore", EmitDefaultValue = false)]
+		public string __CertificateNotBeforeDateTimeUtc { get => CertificateNotBeforeDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => CertificateNotBeforeDateTimeUtc = value.ToDateTimeUtcNullable(); }
 		[IgnoreDataMember]
-		public AcmeOrderCertificateIdentifierAuthorizationChallengeType ChallengeType { get; set; }
+		public DateTime? CertificateNotBeforeDateTimeUtc { get; set; }
 
-		[DataMember(Name = "url", EmitDefaultValue = false)]
-		public string ChallengeUrl { get; set; }
-
-		[DataMember(Name = "status", EmitDefaultValue = false)]
-		public string __ChallengeStatus { get => ChallengeStatus.GetAbbreviation(); set => ChallengeStatus = ISI.Extensions.Enum<AcmeOrderCertificateIdentifierAuthorizationChallengeStatus>.ParseAbbreviation(value); }
+		[DataMember(Name = "notAfter", EmitDefaultValue = false)]
+		public string __CertificateNotAfterDateTimeUtc { get => CertificateNotAfterDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => CertificateNotAfterDateTimeUtc = value.ToDateTimeUtcNullable(); }
 		[IgnoreDataMember]
-		public AcmeOrderCertificateIdentifierAuthorizationChallengeStatus ChallengeStatus { get; set; }
+		public DateTime? CertificateNotAfterDateTimeUtc { get; set; }
 
-		[DataMember(Name = "validated", EmitDefaultValue = false)]
-		public string __ValidatedDateTimeUtc { get => ValidatedDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => ValidatedDateTimeUtc = value.ToDateTimeUtcNullable(); }
-		[IgnoreDataMember]
-		public DateTime? ValidatedDateTimeUtc { get; set; }
-
-		[DataMember(Name = "token", EmitDefaultValue = false)]
-		public string Token { get; set; }
-
-		[DataMember(Name = "error", EmitDefaultValue = false)]
-		public AcmeOrderError Error { get; set; }
+		[DataMember(Name = "identifiers", EmitDefaultValue = false)]
+		public AcmeOrderCertificateIdentifier[] CertificateIdentifiers { get; set; }
 	}
 }

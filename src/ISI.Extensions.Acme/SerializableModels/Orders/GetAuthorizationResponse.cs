@@ -37,7 +37,7 @@ namespace ISI.Extensions.Acme.SerializableModels.Orders
 		public DateTime? RequestExpiresDateTimeUtc { get; set; }
 
 		[DataMember(Name = "identifier", EmitDefaultValue = false)]
-		public OrderCertificateIdentifier Identifier { get; set; }
+		public AcmeOrderCertificateIdentifier Identifier { get; set; }
 
 		[DataMember(Name = "challenges", EmitDefaultValue = false)]
 		public AuthorizationChallenge[] Challenges { get; set; }

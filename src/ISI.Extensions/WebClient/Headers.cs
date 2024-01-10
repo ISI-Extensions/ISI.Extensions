@@ -34,6 +34,7 @@ namespace ISI.Extensions.WebClient
 		public class Keys
 		{
 			public const string Authorization = nameof(Authorization);
+			public const string Host = nameof(Host);
 			public const string UserAgent = "User-Agent";
 			public const string ContentType = "Content-Type";
 			public const string Accept = nameof(Accept);
@@ -135,6 +136,16 @@ namespace ISI.Extensions.WebClient
 			return header;
 		}
 
+		public string Host
+		{
+			get => this.FirstOrDefault(header => string.Equals(header.Key, Keys.Host, StringComparison.InvariantCultureIgnoreCase))?.Value ?? string.Empty;
+			set
+			{
+				this.RemoveAll(header => string.Equals(header.Key, Keys.Host, StringComparison.InvariantCultureIgnoreCase));
+				Add(Keys.Host, value);
+			}
+		}
+
 		public string UserAgent
 		{
 			get => this.FirstOrDefault(header => string.Equals(header.Key, Keys.UserAgent, StringComparison.InvariantCultureIgnoreCase))?.Value ?? string.Empty;
@@ -209,7 +220,11 @@ namespace ISI.Extensions.WebClient
 		{
 			foreach (var header in this.Where(h => !string.IsNullOrEmpty(h.Key)))
 			{
-				if (string.Equals(header.Key, Keys.UserAgent, StringComparison.InvariantCultureIgnoreCase))
+				if (string.Equals(header.Key, Keys.Host, StringComparison.InvariantCultureIgnoreCase))
+				{
+					request.Host = header.Value;
+				}
+				else if (string.Equals(header.Key, Keys.UserAgent, StringComparison.InvariantCultureIgnoreCase))
 				{
 					request.UserAgent = header.Value;
 				}

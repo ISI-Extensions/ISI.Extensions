@@ -38,6 +38,7 @@ namespace ISI.Extensions.Acme
 			{
 				AcmeHostDirectory = getDirectoryResponse.AcmeHostDirectory,
 				JwkAlgorithmKey = request.JwkAlgorithmKey,
+				SerializedJwk = request.SerializedJwk,
 				Pem = request.Pem,
 				AccountKey = request.AccountKey,
 			};

@@ -21,9 +21,9 @@ namespace ISI.Extensions.Acme
 {
 	public class AcmeHostDirectory
 	{
-		public string NewNonceUrl { get; set; }
-		public string NewAccountUrl { get; set; }
-		public string NewOrderUrl { get; set; }
+		public string CreateNewNonceUrl { get; set; }
+		public string CreateNewAccountUrl { get; set; }
+		public string CreateNewOrderUrl { get; set; }
 		public string RevokeCertificateUrl { get; set; }
 		public string KeyChangeUrl { get; set; }
 		public AcmeHostDirectoryMetadata Metadata { get; set; }

@@ -33,9 +33,9 @@ namespace ISI.Extensions.Acme
 
 			response.AcmeHostDirectory = new()
 			{
-				NewNonceUrl = acmeResponse.NewNonceUrl,
-				NewAccountUrl = acmeResponse.NewAccountUrl,
-				NewOrderUrl = acmeResponse.NewOrderUrl,
+				CreateNewNonceUrl = acmeResponse.CreateNewNonceUrl,
+				CreateNewAccountUrl = acmeResponse.CreateNewAccountUrl,
+				CreateNewOrderUrl = acmeResponse.CreateNewOrderUrl,
 				RevokeCertificateUrl = acmeResponse.RevokeCertificateUrl,
 				KeyChangeUrl = acmeResponse.KeyChangeUrl,
 				Metadata = acmeResponse.Metadata.NullCheckedConvert(metadata => new AcmeHostDirectoryMetadata()

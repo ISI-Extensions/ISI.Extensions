@@ -23,6 +23,5 @@ namespace ISI.Extensions.Acme
 	{
 		[ISI.Extensions.EnumGuid("30559c27-3f87-45a9-821a-61bb9def04dd", "DNS-01", "dns-01")] Dns01,
 		[ISI.Extensions.EnumGuid("3ad71ed7-0759-45cf-bd7a-fe97cc834edb", "HTTP-01", "http-01")] Http01,
-		[ISI.Extensions.EnumGuid("c1d08e1f-6f34-4c48-a5c2-591e6beb39d9", "KEY-01", "key-01")] Key01,
 	}
 }

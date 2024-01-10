@@ -24,15 +24,6 @@ namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 {
 	public class CreateNewAcmeAccountResponse
 	{
-		public string AcmeAccountKey { get; set; }
-		public string SerializedJwk { get; set; }
-
-		public AcmeAccountStatus AccountStatus { get; set; }
-
-		public string AccountName { get; set; }
-		public string[] Contacts { get; set; }
-		public bool? TermsOfServiceAgreed { get; set; }
-		public bool? OnlyReturnExisting { get; set; }
-		public string OrdersUrl { get; set; }
+		public AcmeAccount AcmeAccount { get; set; }
 	}
 }

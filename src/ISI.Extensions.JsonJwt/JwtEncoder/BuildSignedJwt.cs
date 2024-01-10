@@ -28,7 +28,7 @@ namespace ISI.Extensions.JsonJwt
 {
 	public partial class JwtEncoder
 	{
-		public SerializableEntitiesDTOs.SignedJwt BuildSignedJwt(JwkAlgorithmKey jwkAlgorithmKey,  string pem, string acmeAccountKey, Jwt jwt)
+		public SerializableEntitiesDTOs.SignedJwt BuildSignedJwt(JwkAlgorithmKey jwkAlgorithmKey, string serializedJwk,  string pem, string acmeAccountKey, Jwt jwt)
 		{
 			var signedJwt = new SerializableEntitiesDTOs.SignedJwt();
 
@@ -38,7 +38,7 @@ namespace ISI.Extensions.JsonJwt
 
 				if (string.IsNullOrWhiteSpace(acmeAccountKey))
 				{
-					jwt.SetSerializedJwk(jwkBuilder.GetSerializedJwk());
+					jwt.SetSerializedJwk(serializedJwk);
 				}
 				else
 				{

@@ -27,13 +27,13 @@ namespace ISI.Extensions.Acme.SerializableModels.Directory
 	public class GetDirectoryResponse
 	{
 		[DataMember(Name = "newNonce", EmitDefaultValue = false)]
-		public string NewNonceUrl { get; set; }
+		public string CreateNewNonceUrl { get; set; }
 
 		[DataMember(Name = "newAccount", EmitDefaultValue = false)]
-		public string NewAccountUrl { get; set; }
+		public string CreateNewAccountUrl { get; set; }
 
 		[DataMember(Name = "newOrder", EmitDefaultValue = false)]
-		public string NewOrderUrl { get; set; }
+		public string CreateNewOrderUrl { get; set; }
 
 		[DataMember(Name = "revokeCert", EmitDefaultValue = false)]
 		public string RevokeCertificateUrl { get; set; }

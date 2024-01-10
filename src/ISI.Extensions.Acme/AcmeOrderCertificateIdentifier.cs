@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,25 +18,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Acme.SerializableModels.Orders
+namespace ISI.Extensions.Acme
 {
-	[DataContract]
-	public class NewOrderRequest
+	public class AcmeOrderCertificateIdentifier
 	{
-		[DataMember(Name = "notBefore", EmitDefaultValue = false)]
-		public string __CertificateNotBeforeDateTimeUtc { get => CertificateNotBeforeDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => CertificateNotBeforeDateTimeUtc = value.ToDateTimeUtcNullable(); }
-		[IgnoreDataMember]
-		public DateTime? CertificateNotBeforeDateTimeUtc { get; set; }
-
-		[DataMember(Name = "notAfter", EmitDefaultValue = false)]
-		public string __CertificateNotAfterDateTimeUtc { get => CertificateNotAfterDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => CertificateNotAfterDateTimeUtc = value.ToDateTimeUtcNullable(); }
-		[IgnoreDataMember]
-		public DateTime? CertificateNotAfterDateTimeUtc { get; set; }
-
-		[DataMember(Name = "identifiers", EmitDefaultValue = false)]
-		public OrderCertificateIdentifier[] CertificateIdentifiers { get; set; }
+		public AcmeOrderCertificateIdentifierType CertificateIdentifierType { get; set; }
+		public string CertificateIdentifierValue { get; set; }
 	}
 }

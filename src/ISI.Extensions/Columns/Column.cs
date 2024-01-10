@@ -246,9 +246,9 @@ namespace ISI.Extensions.Columns
 					{
 						return (TTransformValueProperty)jsonSerializer.Deserialize(type, jsonElement.ToString());
 					}
-					
+
 					if (string.Equals(value.GetType().FullName, "Newtonsoft.Json.Linq.JArray", StringComparison.InvariantCultureIgnoreCase) ||
-					    string.Equals(value.GetType().FullName, "Newtonsoft.Json.Linq.JObject", StringComparison.InvariantCultureIgnoreCase))
+							string.Equals(value.GetType().FullName, "Newtonsoft.Json.Linq.JObject", StringComparison.InvariantCultureIgnoreCase))
 					{
 						return (TTransformValueProperty)jsonSerializer.Deserialize(type, value.ToString());
 					}
@@ -260,13 +260,18 @@ namespace ISI.Extensions.Columns
 			{
 				transformValue = value =>
 				{
+					if (value is string stringValue)
+					{
+						return (TTransformValueProperty)jsonSerializer.Deserialize(type, stringValue);
+					}
+
 					if (value is System.Text.Json.JsonElement jsonElement)
 					{
 						return (TTransformValueProperty)jsonSerializer.Deserialize(type, jsonElement.ToString());
 					}
 
 					if (string.Equals(value.GetType().FullName, "Newtonsoft.Json.Linq.JArray", StringComparison.InvariantCultureIgnoreCase) ||
-					    string.Equals(value.GetType().FullName, "Newtonsoft.Json.Linq.JObject", StringComparison.InvariantCultureIgnoreCase))
+							string.Equals(value.GetType().FullName, "Newtonsoft.Json.Linq.JObject", StringComparison.InvariantCultureIgnoreCase))
 					{
 						return (TTransformValueProperty)jsonSerializer.Deserialize(type, value.ToString());
 					}

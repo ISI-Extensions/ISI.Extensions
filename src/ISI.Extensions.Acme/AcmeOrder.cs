@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,47 +18,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Acme.SerializableModels.Orders
+namespace ISI.Extensions.Acme
 {
-	[DataContract]
-	public class NewOrderResponse
+	public class AcmeOrder
 	{
-		[DataMember(Name = "status", EmitDefaultValue = false)]
-		public string __Status { get => OrderStatus.GetAbbreviation(); set => OrderStatus = ISI.Extensions.Enum<AcmeOrderStatus>.ParseAbbreviation(value); }
-		[IgnoreDataMember]
 		public AcmeOrderStatus OrderStatus { get; set; }
-
-		[DataMember(Name = "expires", EmitDefaultValue = false)]
-		public string __RequestExpiresDateTimeUtc { get => RequestExpiresDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => RequestExpiresDateTimeUtc = value.ToDateTimeUtcNullable(); }
-		[IgnoreDataMember]
 		public DateTime? RequestExpiresDateTimeUtc { get; set; }
-
-		[DataMember(Name = "notBefore", EmitDefaultValue = false)]
-		public string __CertificateNotBeforeDateTimeUtc { get => CertificateNotBeforeDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => CertificateNotBeforeDateTimeUtc = value.ToDateTimeUtcNullable(); }
-		[IgnoreDataMember]
 		public DateTime? CertificateNotBeforeDateTimeUtc { get; set; }
-
-		[DataMember(Name = "notAfter", EmitDefaultValue = false)]
-		public string __CertificateNotAfterDateTimeUtc { get => CertificateNotAfterDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => CertificateNotAfterDateTimeUtc = value.ToDateTimeUtcNullable(); }
-		[IgnoreDataMember]
 		public DateTime? CertificateNotAfterDateTimeUtc { get; set; }
-
-		[DataMember(Name = "identifiers", EmitDefaultValue = false)]
-		public OrderCertificateIdentifier[] CertificateIdentifiers { get; set; }
-
-		[DataMember(Name = "authorizations", EmitDefaultValue = false)]
+		public AcmeOrderCertificateIdentifier[] CertificateIdentifiers { get; set; }
 		public string[] AuthorizationsUrls { get; set; }
-
-		[DataMember(Name = "finalize", EmitDefaultValue = false)]
 		public string FinalizeOrderUrl { get; set; }
-
-		[DataMember(Name = "certificate", EmitDefaultValue = false)]
 		public string GetCertificateUrl { get; set; }
-
-		[DataMember(Name = "error", EmitDefaultValue = false)]
-		public Error Error { get; set; }
+		public AcmeOrderError Error { get; set; }
 	}
 }

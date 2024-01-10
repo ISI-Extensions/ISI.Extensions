@@ -21,18 +21,38 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Acme.SerializableModels.Orders
+namespace ISI.Extensions.Acme.SerializableModels.Accounts
 {
 	[DataContract]
-	public class Error
+	public class CreateNewAccountResponse
 	{
-		[DataMember(Name = "type", EmitDefaultValue = false)]
-		public string ErrorType { get; set; }
+		[DataMember(Name = "id", EmitDefaultValue = false)]
+		public string AcmeAccountKey { get; set; }
 
-		[DataMember(Name = "detail", EmitDefaultValue = false)]
-		public string Detail { get; set; }
+		[DataMember(Name = "key", EmitDefaultValue = false)]
+		public string SerializedJwk { get; set; }
 
-		[DataMember(Name = "subproblems", EmitDefaultValue = false)]
-		public ErrorSubProblem[] SubProblems { get; set; }
+		[DataMember(Name = "status", EmitDefaultValue = false)]
+		public string __AccountStatus { get => AccountStatus.GetAbbreviation(); set => AccountStatus = ISI.Extensions.Enum<AcmeAccountStatus>.ParseAbbreviation(value); }
+		[IgnoreDataMember]
+		public AcmeAccountStatus AccountStatus { get; set; }
+
+		[DataMember(Name = "accountName", EmitDefaultValue = false)]
+		public string AccountName { get; set; }
+
+		[DataMember(Name = "contact", EmitDefaultValue = false)]
+		public string[] Contacts { get; set; }
+
+		[DataMember(Name = "termsOfServiceAgreed", EmitDefaultValue = false)]
+		public bool? TermsOfServiceAgreed { get; set; }
+
+		[DataMember(Name = "onlyReturnExisting", EmitDefaultValue = false)]
+		public bool? OnlyReturnExisting { get; set; }
+
+		//[DataMember(Name = "externalAccountBinding ", EmitDefaultValue = false)]
+		//public object ExternalAccountBinding { get; set; }
+
+		[DataMember(Name = "orders", EmitDefaultValue = false)]
+		public string OrdersUrl { get; set; }
 	}
 }

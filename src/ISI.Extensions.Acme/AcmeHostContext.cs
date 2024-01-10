@@ -26,7 +26,9 @@ namespace ISI.Extensions.Acme
 		public string Nonce { get; set; }
 
 		public ISI.Extensions.JsonJwt.JwkAlgorithmKey JwkAlgorithmKey { get; set; }
+		public string SerializedJwk { get; set; }
 		public string Pem { get; set; }
+
 		public string AccountKey { get; set; }
 	}
 }

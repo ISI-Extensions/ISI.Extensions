@@ -60,7 +60,7 @@ namespace ISI.Platforms.ServiceApplication
 
 			Context.ConfigurationRoot = configurationBuilder.Build().ApplyConfigurationValueReaders();
 			Context.ActiveEnvironment = activeEnvironment.ActiveEnvironment;
-			Context.LoggerConfigurator.SetBaseLogger(typeof(Startup), Context.ConfigurationRoot, activeEnvironment.ActiveEnvironment);
+			Context.LoggerConfigurator?.SetBaseLogger(typeof(Startup), Context.ConfigurationRoot, activeEnvironment.ActiveEnvironment);
 			
 			var showConfig = Context.Args.NullCheckedAny(arg => string.Equals(arg, "--showConfig", StringComparison.InvariantCultureIgnoreCase));
 #if DEBUG

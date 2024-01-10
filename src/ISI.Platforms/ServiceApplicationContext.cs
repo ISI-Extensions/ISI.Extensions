@@ -12,50 +12,39 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Platforms.AspNetCore.Extensions;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Platforms.ServiceApplication.Test
+namespace ISI.Platforms
 {
-	public class Program
+	public delegate void ServiceApplicationContextPostStartupDelegate(Microsoft.Extensions.Hosting.IHost host);
+	public delegate void ServiceApplicationContextWebStartupMvcBuilderDelegate(Microsoft.Extensions.DependencyInjection.IMvcBuilder mvcBuilder);
+	public delegate void ServiceApplicationContextWebStartupConfigureServicesDelegate(Microsoft.Extensions.DependencyInjection.IServiceCollection services);
+	public delegate void ServiceApplicationContextConfigureApplicationDelegate(Microsoft.AspNetCore.Builder.IApplicationBuilder applicationBuilder, Microsoft.AspNetCore.Hosting.IWebHostEnvironment webHostingEnvironment);
+
+	public class ServiceApplicationContext
 	{
-		public static int Main(string[] args)
-		{
-			var context = new ServiceApplicationContext()
-			{
-				RootType = typeof(Program),
-				RootAssembly = typeof(Program).Assembly,
-				
-				//ConfigurationRoot = source.ConfigurationRoot,
-				
-				LoggerConfigurator = new ISI.Platforms.Serilog.LoggerConfigurator(),
-				
-				//ActiveEnvironment = source.ActiveEnvironment,
+		public Type RootType { get; set; }
+		public System.Reflection.Assembly RootAssembly { get; set; }
 
-				Args = args,
+		public Microsoft.Extensions.Configuration.IConfigurationRoot ConfigurationRoot { get; set; }
+		public ISI.Platforms.ILoggerConfigurator LoggerConfigurator { get; set; }
+		
+		public string ActiveEnvironment { get; set; }
+		
+		public string[] Args { get; set; }
+		
+		public ISI.Extensions.MessageBus.GetAddMessageBusSubscriptionsDelegate GetAddMessageBusSubscriptions { get; set; }
 
-				//GetAddMessageBusSubscriptions = request.GetAddMessageBusSubscriptions,
-				
-				//WebStartupMvcBuilder = request.WebStartupMvcBuilder,
-				//WebStartupConfigureServices = request.WebStartupConfigureServices,
-				
-				//ConfigureApplication = request.ConfigureApplication,
-				
-				//PostStartup = request.PostStartup,
-			};
+		public ServiceApplicationContextWebStartupMvcBuilderDelegate WebStartupMvcBuilder { get; set; }
+		public ServiceApplicationContextWebStartupConfigureServicesDelegate WebStartupConfigureServices { get; set; }
 
-			context.WebStartupConfigureServices = services => services.AddSingleton<ISI.Extensions.IAuthenticationIdentityApi, AuthenticationIdentityApi>();
+		public ServiceApplicationContextConfigureApplicationDelegate ConfigureApplication { get; set; }
 
-			context.AddSwaggerConfiguration();
-
-			return ISI.Platforms.ServiceApplication.Startup.Main(context);
-		}
+		public ServiceApplicationContextPostStartupDelegate PostStartup { get; set; }
 	}
 }

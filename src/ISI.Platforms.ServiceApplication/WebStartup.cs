@@ -57,51 +57,6 @@ namespace ISI.Platforms.ServiceApplication
 
 			Startup.Context.WebStartupMvcBuilder?.Invoke(mvcBuilder);
 			Startup.Context.WebStartupConfigureServices?.Invoke(services);
-
-			/*
-			services
-				.AddAuthentication(AuthenticationHandler.AuthenticationHandlerName)
-				.AddScheme<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions, AuthenticationHandler>(AuthenticationHandler.AuthenticationHandlerName, null)
-				;
-
-			services.AddAuthorization(options =>
-			{
-				options.AddPolicy(AuthorizationPolicy.PolicyName, policy => policy.Requirements.Add(new AuthorizationPolicy()));
-			});
-
-			services.AddSwaggerGen(swaggerGenOptions =>
-			{
-				swaggerGenOptions.CustomOperationIds(apiDescription => apiDescription.TryGetMethodInfo(out var methodInfo) ? methodInfo.Name.TrimEnd("Async") : null);
-
-				swaggerGenOptions.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "ISI.DocumentStorage.ServiceApplication", Version = "v1" });
-
-				swaggerGenOptions.AddSecurityDefinition(AuthenticationHandler.Keys.Bearer, new Microsoft.OpenApi.Models.OpenApiSecurityScheme  
-				{  
-					Name = AuthenticationHandler.Keys.Authorization,  
-					Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,  
-					Scheme = AuthenticationHandler.Keys.Bearer,  
-					In = Microsoft.OpenApi.Models.ParameterLocation.Header,  
-					Description = "Bearer Authorization header using the Bearer scheme."  
-				});  
-				
-				swaggerGenOptions.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement  
-				{  
-					{  
-						new Microsoft.OpenApi.Models.OpenApiSecurityScheme  
-						{  
-							Reference = new Microsoft.OpenApi.Models.OpenApiReference  
-							{  
-								Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,  
-								Id = AuthenticationHandler.Keys.Bearer, 
-							}  
-						},  
-						new string[] {}  
-					}  
-				});  
-			});
-
-			services.AddSwaggerGenNewtonsoftSupport();
-			*/
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -128,9 +83,8 @@ namespace ISI.Platforms.ServiceApplication
 			applicationBuilder.UseAuthentication();
 			applicationBuilder.UseAuthorization();
 
-			//applicationBuilder.UseSwagger();
-			//applicationBuilder.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v2/swagger.json", "ISI.DocumentStorage.ServiceApplication v2"));
-
+			Startup.Context.ConfigureApplication?.Invoke(applicationBuilder, webHostingEnvironment);
+			
 			applicationBuilder.UseEndpoints(endpointRouteBuilder =>
 			{
 				endpointRouteBuilder.MapControllers();

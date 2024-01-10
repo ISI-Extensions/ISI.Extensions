@@ -113,7 +113,7 @@ namespace ISI.Platforms.ServiceApplication
 
 					_messageBus.Build(_host.Services, new ISI.Extensions.MessageBus.MessageBusBuildRequestCollection()
 					{
-						Startup.Context.GetAddSubscriptions,
+						Startup.Context.GetAddMessageBusSubscriptions,
 						enterpriseCacheManagerApi.GetAddSubscriptions,
 					});
 

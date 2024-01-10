@@ -12,50 +12,31 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Platforms.AspNetCore.Extensions;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Platforms.ServiceApplication.Test
+namespace ISI.Platforms.AspNetCore
 {
-	public class Program
+	public class CookieAndBearerAuthorizationPolicy : Microsoft.AspNetCore.Authorization.AuthorizationHandler<CookieAndBearerAuthorizationPolicy>, Microsoft.AspNetCore.Authorization.IAuthorizationRequirement
 	{
-		public static int Main(string[] args)
+		public const string PolicyName = nameof(CookieAndBearerAuthorizationPolicy);
+
+		protected override Task HandleRequirementAsync(Microsoft.AspNetCore.Authorization.AuthorizationHandlerContext context, CookieAndBearerAuthorizationPolicy requirement)
 		{
-			var context = new ServiceApplicationContext()
+			if (!context.User.HasClaim(claim => string.Equals(claim.Type, System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub, StringComparison.Ordinal)))
 			{
-				RootType = typeof(Program),
-				RootAssembly = typeof(Program).Assembly,
-				
-				//ConfigurationRoot = source.ConfigurationRoot,
-				
-				LoggerConfigurator = new ISI.Platforms.Serilog.LoggerConfigurator(),
-				
-				//ActiveEnvironment = source.ActiveEnvironment,
+				context.Fail();
 
-				Args = args,
+				return Task.CompletedTask;
+			}
 
-				//GetAddMessageBusSubscriptions = request.GetAddMessageBusSubscriptions,
-				
-				//WebStartupMvcBuilder = request.WebStartupMvcBuilder,
-				//WebStartupConfigureServices = request.WebStartupConfigureServices,
-				
-				//ConfigureApplication = request.ConfigureApplication,
-				
-				//PostStartup = request.PostStartup,
-			};
+			context.Succeed(requirement);
 
-			context.WebStartupConfigureServices = services => services.AddSingleton<ISI.Extensions.IAuthenticationIdentityApi, AuthenticationIdentityApi>();
-
-			context.AddSwaggerConfiguration();
-
-			return ISI.Platforms.ServiceApplication.Startup.Main(context);
+			return Task.CompletedTask;
 		}
 	}
 }

@@ -22,6 +22,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ISI.Extensions.MessageBus
 {
+	public delegate IEnumerable<ISI.Extensions.MessageBus.IMessageBusBuildRequest> GetAddMessageBusSubscriptionsDelegate();
+
 	public class MessageBusBuildRequestCollection : List<MessageBusBuildRequest>
 	{
 		public static ISI.Extensions.MessageBus.Configuration Configuration { get; set; }
@@ -47,7 +49,7 @@ namespace ISI.Extensions.MessageBus
 			Add(new[] { addSubscriptions });
 		}
 
-		public void Add(Func<IEnumerable<IMessageBusBuildRequest>> addSubscriptions)
+		public void Add(GetAddMessageBusSubscriptionsDelegate addSubscriptions)
 		{
 			foreach (var messageBusBuildRequest in addSubscriptions())
 			{

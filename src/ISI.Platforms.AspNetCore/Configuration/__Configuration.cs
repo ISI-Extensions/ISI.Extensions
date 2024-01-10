@@ -18,29 +18,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Platforms.ServiceApplication
+namespace ISI.Platforms.AspNetCore
 {
-	public delegate void ServiceApplicationContextPostStartupDelegate(Microsoft.Extensions.Hosting.IHost host);
-	public delegate void ServiceApplicationContextWebStartupMvcBuilderDelegate(Microsoft.Extensions.DependencyInjection.IMvcBuilder mvcBuilder);
-	public delegate void ServiceApplicationContextWebStartupConfigureServicesDelegate(Microsoft.Extensions.DependencyInjection.IServiceCollection services);
-
-	public class ServiceApplicationContext
+	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
+	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
 	{
-		public Type RootType { get; set; }
-		public System.Reflection.Assembly RootAssembly { get; set; }
+		public const string ConfigurationSectionName = "ISI.Platforms.AspNetCore";
 
-		public Microsoft.Extensions.Configuration.IConfigurationRoot ConfigurationRoot { get; set; }
-		public ISI.Platforms.ILoggerConfigurator LoggerConfigurator { get; set; }
-		
-		public string ActiveEnvironment { get; set; }
-		
-		public string[] Args { get; set; }
-		
-		public Func<IEnumerable<ISI.Extensions.MessageBus.IMessageBusBuildRequest>> GetAddSubscriptions { get; set; }
-
-		public ServiceApplicationContextWebStartupMvcBuilderDelegate WebStartupMvcBuilder { get; set; }
-		public ServiceApplicationContextWebStartupConfigureServicesDelegate WebStartupConfigureServices { get; set; }
-		public ServiceApplicationContextPostStartupDelegate PostStartup { get; set; }
+		public JwtConfiguration Jwt { get; set; } = new()
+		{
+			EncryptionKey = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
+		};
 	}
 }

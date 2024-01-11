@@ -16,7 +16,7 @@
 
 	<ItemGroup>
 		<PackageReference Update="NETStandard.Library" Version="2.0.3" />
-	  <PackageReference Include="Aspose.Cells" Version="23.12.0" />
+	  <PackageReference Include="Aspose.Cells" Version="24.1.0" />
 	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
 	</ItemGroup>
 

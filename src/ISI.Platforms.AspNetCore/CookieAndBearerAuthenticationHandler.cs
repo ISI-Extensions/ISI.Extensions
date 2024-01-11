@@ -25,7 +25,7 @@ namespace ISI.Platforms.AspNetCore
 {
 	public class CookieAndBearerAuthenticationHandler : Microsoft.AspNetCore.Authentication.AuthenticationHandler<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions>, IAuthenticationHandler
 	{
-		public const string AuthenticationHandlerName = nameof(CookieAndBearerAuthenticationHandler);
+		public static string AuthenticationHandlerName { get; internal set; }
 
 		public static string CookieName { get; set; } = "Authentication";
 		string IAuthenticationHandler.CookieName => CookieName;

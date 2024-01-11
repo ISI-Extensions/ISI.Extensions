@@ -30,6 +30,6 @@ namespace ISI.Extensions
 		
 		IEnumerable<string> Roles { get; }
 		
-		bool IsActive { get; set; }
+		bool IsActive { get; }
 	}
 }

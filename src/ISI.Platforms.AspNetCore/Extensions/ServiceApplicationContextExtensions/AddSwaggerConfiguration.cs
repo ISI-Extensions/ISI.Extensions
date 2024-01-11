@@ -12,13 +12,13 @@ namespace ISI.Platforms.AspNetCore.Extensions
 {
 	public static partial class ServiceApplicationContextExtensions
 	{
-		public static ServiceApplicationContext AddSwaggerConfiguration(this ServiceApplicationContext context)
+		public static ServiceApplicationContext AddSwaggerConfiguration(this ServiceApplicationContext context, string applicationName = null, int? version = null, bool useBearer = false)
 		{
-			var applicationName = context.RootAssembly.FullName.Split(new[] { ',' }).First();
+			applicationName ??= context.RootAssembly.FullName.Split(new[] { ',' }).First();
 
-			if (Version.TryParse(ISI.Extensions.SystemInformation.GetAssemblyVersion(context.RootAssembly), out var version))
+			if (!version.HasValue && Version.TryParse(ISI.Extensions.SystemInformation.GetAssemblyVersion(context.RootAssembly), out var assemblyVersion))
 			{
-				version = new Version(1, 0);
+				version = assemblyVersion.Major;
 			}
 
 			var configureApplication = context.ConfigureApplication;
@@ -27,7 +27,7 @@ namespace ISI.Platforms.AspNetCore.Extensions
 				configureApplication?.Invoke(applicationBuilder, webHostingEnvironment);
 
 				applicationBuilder.UseSwagger();
-				applicationBuilder.UseSwaggerUI(c => c.SwaggerEndpoint($"/swagger/v{version.Major}/swagger.json", $"{applicationName} v{version.Major}"));
+				applicationBuilder.UseSwaggerUI(c => c.SwaggerEndpoint($"/swagger/v{version}/swagger.json", $"{applicationName} v{version}"));
 			};
 
 			var webStartupConfigureServices = context.WebStartupConfigureServices;
@@ -39,35 +39,38 @@ namespace ISI.Platforms.AspNetCore.Extensions
 				{
 					swaggerGenOptions.CustomOperationIds(apiDescription => apiDescription.TryGetMethodInfo(out var methodInfo) ? methodInfo.Name.TrimEnd("Async") : null);
 
-					swaggerGenOptions.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo()
+					swaggerGenOptions.SwaggerDoc($"v{version}", new Microsoft.OpenApi.Models.OpenApiInfo()
 					{
 						Title = applicationName,
-						Version = $"v{version.Major}"
+						Version = $"v{version}",
 					});
 
-					swaggerGenOptions.AddSecurityDefinition(ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer, new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+					if (useBearer)
 					{
-						Name = ISI.Extensions.WebClient.HeaderCollection.Keys.Authorization,
-						Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
-						Scheme = ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer,
-						In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-						Description = "Bearer Authorization header using the Bearer scheme."
-					});
-
-					swaggerGenOptions.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
-					{
+						swaggerGenOptions.AddSecurityDefinition(ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer, new Microsoft.OpenApi.Models.OpenApiSecurityScheme()
 						{
-							new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+							Name = ISI.Extensions.WebClient.HeaderCollection.Keys.Authorization,
+							Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+							Scheme = ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer,
+							In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+							Description = "Bearer Authorization header using the Bearer scheme.",
+						});
+
+						swaggerGenOptions.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement()
+						{
 							{
-								Reference = new Microsoft.OpenApi.Models.OpenApiReference
+								new Microsoft.OpenApi.Models.OpenApiSecurityScheme()
 								{
-									Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
-									Id = ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer,
-								}
-							},
-							new string[] { }
-						}
-					});
+									Reference = new Microsoft.OpenApi.Models.OpenApiReference()
+									{
+										Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+										Id = ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer,
+									}
+								},
+								new string[] { }
+							}
+						});
+					}
 				});
 
 				services.AddSwaggerGenNewtonsoftSupport();

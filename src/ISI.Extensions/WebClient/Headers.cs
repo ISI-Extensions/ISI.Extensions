@@ -41,8 +41,10 @@ namespace ISI.Extensions.WebClient
 			public const string Expect = nameof(Expect);
 			public const string Referer = nameof(Referer);
 			public const string AuthorizationToken = nameof(AuthorizationToken);
-			public const string Basic = "Basic ";
-			public const string Bearer = "Bearer ";
+			public const string Basic = nameof(Basic);
+			public const string BasicAuthenticationPrefix = "Basic ";
+			public const string Bearer = nameof(Bearer);
+			public const string BearerAuthenticationPrefix = "Bearer ";
 			public const string ContentDisposition = "Content-Disposition";
 		}
 
@@ -108,7 +110,7 @@ namespace ISI.Extensions.WebClient
 
 		public Header AddBasicAuthentication(string userName, string password)
 		{
-			var authenticationToken = string.Format("{0}{1}", Keys.Basic, Convert.ToBase64String(Encoding.Default.GetBytes(string.Format("{0}:{1}", userName, password))));
+			var authenticationToken = string.Format("{0}{1}", Keys.BasicAuthenticationPrefix, Convert.ToBase64String(Encoding.Default.GetBytes(string.Format("{0}:{1}", userName, password))));
 
 			var header = new Header()
 			{
@@ -123,7 +125,7 @@ namespace ISI.Extensions.WebClient
 
 		public Header AddBearerAuthentication(string token)
 		{
-			var authenticationToken = string.Format("{0}{1}", Keys.Bearer, token);
+			var authenticationToken = string.Format("{0}{1}", Keys.BearerAuthenticationPrefix, token);
 
 			var header = new Header()
 			{
@@ -250,11 +252,11 @@ namespace ISI.Extensions.WebClient
 				}
 				else if (string.Equals(header.Key, Keys.Authorization, StringComparison.InvariantCultureIgnoreCase))
 				{
-					if (header.Value.StartsWith(Keys.Basic, StringComparison.InvariantCultureIgnoreCase))
+					if (header.Value.StartsWith(Keys.BasicAuthenticationPrefix, StringComparison.InvariantCultureIgnoreCase))
 					{
 						request.Headers[Keys.Authorization] = header.Value;
 					}
-					else if (header.Value.StartsWith(Keys.Bearer, StringComparison.InvariantCultureIgnoreCase))
+					else if (header.Value.StartsWith(Keys.BearerAuthenticationPrefix, StringComparison.InvariantCultureIgnoreCase))
 					{
 						request.Headers[Keys.Authorization] = header.Value;
 					}
@@ -276,7 +278,7 @@ namespace ISI.Extensions.WebClient
 							if (values.Length >= 2)
 							{
 								request.Credentials = new System.Net.CredentialCache();
-								((System.Net.CredentialCache)request.Credentials).Add(request.RequestUri, Keys.Basic.Trim(), new(values[0], values[1]));
+								((System.Net.CredentialCache)request.Credentials).Add(request.RequestUri, Keys.Basic, new(values[0], values[1]));
 								request.PreAuthenticate = true;
 							}
 							else

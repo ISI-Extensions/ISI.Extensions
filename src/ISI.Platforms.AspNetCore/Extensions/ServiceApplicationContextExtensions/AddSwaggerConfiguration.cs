@@ -21,15 +21,6 @@ namespace ISI.Platforms.AspNetCore.Extensions
 				version = assemblyVersion.Major;
 			}
 
-			var configureApplication = context.ConfigureApplication;
-			context.ConfigureApplication = (applicationBuilder, webHostingEnvironment) =>
-			{
-				configureApplication?.Invoke(applicationBuilder, webHostingEnvironment);
-
-				applicationBuilder.UseSwagger();
-				applicationBuilder.UseSwaggerUI(c => c.SwaggerEndpoint($"/swagger/v{version}/swagger.json", $"{applicationName} v{version}"));
-			};
-
 			var webStartupConfigureServices = context.WebStartupConfigureServices;
 			context.WebStartupConfigureServices = services =>
 			{
@@ -74,6 +65,15 @@ namespace ISI.Platforms.AspNetCore.Extensions
 				});
 
 				services.AddSwaggerGenNewtonsoftSupport();
+			};
+
+			var configureApplication = context.ConfigureApplication;
+			context.ConfigureApplication = (applicationBuilder, webHostingEnvironment) =>
+			{
+				configureApplication?.Invoke(applicationBuilder, webHostingEnvironment);
+
+				applicationBuilder.UseSwagger();
+				applicationBuilder.UseSwaggerUI(swaggerUIOptions => swaggerUIOptions.SwaggerEndpoint($"/swagger/v{version}/swagger.json", $"{applicationName} v{version}"));
 			};
 
 			return context;

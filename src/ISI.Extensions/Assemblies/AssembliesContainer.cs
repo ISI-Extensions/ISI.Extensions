@@ -66,7 +66,7 @@ namespace ISI.Extensions.Assemblies
 
 			var types = new List<Type>();
 
-			foreach (var assembly in System.AppDomain.CurrentDomain.GetAssemblies().Where(assembly => !(excludeAssemblyNames.Contains(System.IO.Path.GetFileNameWithoutExtension(assembly.Location)) && !assembly.IsDynamic)))
+			foreach (var assembly in System.AppDomain.CurrentDomain.GetAssemblies().Where(assembly => !assembly.IsDynamic && !(excludeAssemblyNames.Contains(System.IO.Path.GetFileNameWithoutExtension(assembly.Location)))))
 			{
 				try
 				{

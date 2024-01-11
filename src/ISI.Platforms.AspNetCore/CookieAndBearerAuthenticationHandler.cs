@@ -127,7 +127,7 @@ namespace ISI.Platforms.AspNetCore
 
 					var validateApiKeyResponse = await AuthenticationIdentityApi.ValidateApiKeyAsync(new ()
 					{
-						ApiKey = authenticationHeaderValue.NullCheckedFirstOrDefault()?.TrimStart(ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer).Trim(),
+						ApiKey = authenticationHeaderValue.NullCheckedFirstOrDefault()?.TrimStart(ISI.Extensions.WebClient.HeaderCollection.Keys.BearerAuthenticationPrefix).Trim(),
 					});
 
 					if (validateApiKeyResponse.UserUuid.HasValue)

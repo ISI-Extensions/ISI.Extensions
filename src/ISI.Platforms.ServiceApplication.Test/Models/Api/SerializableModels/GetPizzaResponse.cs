@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,52 +18,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Platforms.AspNetCore.Extensions;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
 
-namespace ISI.Platforms.ServiceApplication.Test
+namespace ISI.Platforms.ServiceApplication.Test.Models.Api.SerializableModels
 {
-	public class Program
+	[DataContract]
+	public class GetPizzaResponse
 	{
-		public static int Main(string[] args)
-		{
-			var context = new ServiceApplicationContext()
-			{
-				RootType = typeof(Program),
-				RootAssembly = typeof(Program).Assembly,
-				
-				//ConfigurationRoot = source.ConfigurationRoot,
-				
-				LoggerConfigurator = new ISI.Platforms.Serilog.LoggerConfigurator(),
-				
-				//ActiveEnvironment = source.ActiveEnvironment,
+		[DataMember(Name = "pizzaUuid", EmitDefaultValue = false)]
+		public Guid PizzaUuid { get; set; }
 
-				Args = args,
+		[DataMember(Name = "description", EmitDefaultValue = false)]
+		public string Description { get; set; }
 
-				//GetAddMessageBusSubscriptions = request.GetAddMessageBusSubscriptions,
-				
-				//WebStartupMvcBuilder = request.WebStartupMvcBuilder,
-				//WebStartupConfigureServices = request.WebStartupConfigureServices,
-				
-				//ConfigureApplication = request.ConfigureApplication,
-				
-				//PostStartup = request.PostStartup,
-			};
-
-			context.AddCookieAndBearerAuthentication("CookieAndBearerAuthentication", "CookieAndBearerPolicy");
-
-			var webStartupConfigureServices = context.WebStartupConfigureServices;
-			context.WebStartupConfigureServices = services =>
-			{
-				webStartupConfigureServices?.Invoke(services);
-				
-				services.AddSingleton<ISI.Extensions.IAuthenticationIdentityApi, AuthenticationIdentityApi>();
-			};
-
-			context.AddSwaggerConfiguration(useBearer: true);
-
-			return ISI.Platforms.ServiceApplication.Startup.Main(context);
-		}
 	}
 }

@@ -23,6 +23,7 @@ namespace ISI.Extensions.Acme
 	{
 		[ISI.Extensions.EnumGuid("495aedce-1aac-4fcd-8a38-f813380f17eb")] Csr,
 		[ISI.Extensions.EnumGuid("8a40c916-f5d8-410e-be41-2123a3e386e7")] Key,
+		[ISI.Extensions.EnumGuid("0f526b75-e068-4947-83ed-7fa3f6a16069")] KeyPassword,
 		[ISI.Extensions.EnumGuid("ec4c381a-55f7-48dc-895f-4cd0d402336e")] Crt,
 		[ISI.Extensions.EnumGuid("a03c5263-76d1-4b43-bd5b-676faaed27bc")] Pem,
 		[ISI.Extensions.EnumGuid("615dd5cd-87da-4b3e-8f4a-2b550015d6cb")] Pfx,

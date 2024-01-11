@@ -24,22 +24,23 @@ using System.Runtime.Serialization;
 namespace ISI.Extensions.Acme.SerializableModels.Orders
 {
 	[DataContract]
-	public class CreateNewAcmeOrderRequest
+	[ISI.Extensions.Serialization.PreferredSerializerJsonDataContract]
+	[ISI.Extensions.Serialization.SerializerContractUuid("628fa16b-36b7-45e1-8f67-bd4e3d27b831")]
+	public class AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook : IAcmeOrderCertificateDomainPostRenewalAction
 	{
-		[DataMember(Name = "notBefore", EmitDefaultValue = false)]
-		public string __CertificateNotBeforeDateTimeUtc { get => CertificateNotBeforeDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => CertificateNotBeforeDateTimeUtc = value.ToDateTimeUtcNullable(); }
+		[DataMember(Name = "pushWebHooks", EmitDefaultValue = false)]
+		public AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHookPushWebHook[] PushWebHooks { get; set; }
+	}
+
+	[DataContract]
+	public class AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHookPushWebHook
+	{
+		[DataMember(Name = "certificateType", EmitDefaultValue = false)]
+		public string __CertificateType { get => CertificateType.GetUuid().Formatted(GuidExtensions.GuidFormat.WithHyphens); set => CertificateType = ISI.Extensions.Enum<ISI.Extensions.Acme.CertificateType>.ParseUuid(value); }
 		[IgnoreDataMember]
-		public DateTime? CertificateNotBeforeDateTimeUtc { get; set; }
+		public ISI.Extensions.Acme.CertificateType CertificateType { get; set; }
 
-		[DataMember(Name = "notAfter", EmitDefaultValue = false)]
-		public string __CertificateNotAfterDateTimeUtc { get => CertificateNotAfterDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => CertificateNotAfterDateTimeUtc = value.ToDateTimeUtcNullable(); }
-		[IgnoreDataMember]
-		public DateTime? CertificateNotAfterDateTimeUtc { get; set; }
-
-		[DataMember(Name = "identifiers", EmitDefaultValue = false)]
-		public AcmeOrderCertificateIdentifier[] CertificateIdentifiers { get; set; }
-
-		[DataMember(Name = "postRenewalActions", EmitDefaultValue = false)]
-		public IAcmeOrderCertificateDomainPostRenewalAction[] PostRenewalActions { get; set; }
+		[DataMember(Name = "postUrl", EmitDefaultValue = false)]
+		public string PostUrl { get; set; }
 	}
 }

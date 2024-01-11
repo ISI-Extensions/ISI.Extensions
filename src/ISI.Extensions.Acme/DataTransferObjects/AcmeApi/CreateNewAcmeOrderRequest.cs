@@ -30,5 +30,7 @@ namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 		public DateTime? CertificateNotAfterDateTimeUtc { get; set; }
 
 		public AcmeOrderCertificateIdentifier[] CertificateIdentifiers { get; set; }
+
+		public IAcmeOrderCertificateDomainPostRenewalAction[] PostRenewalActions { get; set; }
 	}
 }

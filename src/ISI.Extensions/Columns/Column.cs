@@ -149,6 +149,11 @@ namespace ISI.Extensions.Columns
 						return (TTransformValueProperty)jsonSerializer.Deserialize(type, jsonElement.ToString());
 					}
 
+					if ((jsonSerializer != null) && (value is string stringValue))
+					{
+						return (TTransformValueProperty)jsonSerializer.Deserialize(type, stringValue);
+					}
+
 					var values = new List<string>();
 
 					if (value is System.Collections.IEnumerable enumerable)
@@ -245,6 +250,11 @@ namespace ISI.Extensions.Columns
 					if (value is System.Text.Json.JsonElement jsonElement)
 					{
 						return (TTransformValueProperty)jsonSerializer.Deserialize(type, jsonElement.ToString());
+					}
+					
+					if (value is string stringValue)
+					{
+						return (TTransformValueProperty)jsonSerializer.Deserialize(type, stringValue);
 					}
 
 					if (string.Equals(value.GetType().FullName, "Newtonsoft.Json.Linq.JArray", StringComparison.InvariantCultureIgnoreCase) ||

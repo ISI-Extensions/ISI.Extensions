@@ -148,6 +148,25 @@ namespace ISI.Extensions.Tests
 							CertificateIdentifierType = ISI.Extensions.Acme.AcmeOrderCertificateIdentifierType.Dns,
 							CertificateIdentifierValue = "*.isi-net.com",
 						}
+					},
+					PostRenewalActions = new []
+					{
+						new ISI.Extensions.Acme.AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook()
+						{
+							PushWebHooks = new []
+							{
+								new ISI.Extensions.Acme.AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHookPushWebHook()
+								{
+									CertificateType = ISI.Extensions.Acme.CertificateType.Key,
+									PostUrl = @"https://nginx/upload-certificate?domain=*.isi-net.com.key",
+								},
+								new ISI.Extensions.Acme.AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHookPushWebHook()
+								{
+									CertificateType = ISI.Extensions.Acme.CertificateType.Pem,
+									PostUrl = @"https://nginx/upload-certificate?domain=*.isi-net.com.pem",
+								},
+							}
+						}
 					}
 				});
 			}

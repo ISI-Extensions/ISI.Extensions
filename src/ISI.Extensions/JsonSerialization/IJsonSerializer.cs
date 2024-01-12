@@ -25,5 +25,6 @@ namespace ISI.Extensions.JsonSerialization
 		object Deserialize(Type type, System.IO.Stream stream);
 		string Serialize(Type type, object value, bool friendlyFormatted = false);
 		void Serialize(Type type, object value, System.IO.Stream toStream, bool friendlyFormatted = false);
+		HashSet<Type> GetSerializableInterfaceTypes();
 	}
 }

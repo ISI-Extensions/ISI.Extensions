@@ -140,7 +140,24 @@ namespace ISI.Extensions.Columns
 
 			var type = typeof(TTransformValueProperty);
 
-			if (type == typeof(string[]))
+			if ((jsonSerializer != null) && type.IsInterface && jsonSerializer.GetSerializableInterfaceTypes().Contains(type))
+			{
+				transformValue = value =>
+				{
+					if ((jsonSerializer != null) && (value is System.Text.Json.JsonElement jsonElement))
+					{
+						return (TTransformValueProperty)jsonSerializer.Deserialize(type, jsonElement.ToString());
+					}
+
+					if ((jsonSerializer != null) && (value is string stringValue))
+					{
+						return (TTransformValueProperty)jsonSerializer.Deserialize(type, stringValue);
+					}
+
+					return default;
+				};
+			}
+			else if (type == typeof(string[]))
 			{
 				transformValue = value =>
 				{
@@ -243,7 +260,7 @@ namespace ISI.Extensions.Columns
 			{
 				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)(ISI.Extensions.Enum.Parse(type, stringValue)) : (TTransformValueProperty)(object)(ISI.Extensions.Enum.Parse(type, string.Format("{0}", value))));
 			}
-			else if (type.IsClass && (jsonSerializer != null) && IsElementTypeDeserializable(type))
+			else if (type.IsClass && (jsonSerializer != null) && IsElementTypeDeserializable(jsonSerializer, type))
 			{
 				transformValue = value =>
 				{
@@ -251,7 +268,7 @@ namespace ISI.Extensions.Columns
 					{
 						return (TTransformValueProperty)jsonSerializer.Deserialize(type, jsonElement.ToString());
 					}
-					
+
 					if (value is string stringValue)
 					{
 						return (TTransformValueProperty)jsonSerializer.Deserialize(type, stringValue);
@@ -266,7 +283,7 @@ namespace ISI.Extensions.Columns
 					return default;
 				};
 			}
-			else if ((jsonSerializer != null) && TryGetElementTypeFromEnumerableType(type, out var elementType) && IsElementTypeDeserializable(elementType))
+			else if ((jsonSerializer != null) && TryGetElementTypeFromEnumerableType(type, out var elementType) && IsElementTypeDeserializable(jsonSerializer, elementType))
 			{
 				transformValue = value =>
 				{
@@ -293,7 +310,20 @@ namespace ISI.Extensions.Columns
 			return transformValue;
 		}
 
-		private bool IsElementTypeDeserializable(Type elementType) => (elementType.GetCustomAttribute<System.Runtime.Serialization.DataContractAttribute>() != null);
+		private bool IsElementTypeDeserializable(ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer, Type elementType)
+		{
+			if (elementType.GetCustomAttribute<System.Runtime.Serialization.DataContractAttribute>() != null)
+			{
+				return true;
+			}
+
+			if (jsonSerializer.GetSerializableInterfaceTypes().Contains(elementType))
+			{
+				return true;
+			}
+
+			return false;
+		}
 
 		private bool TryGetElementTypeFromEnumerableType(Type type, out Type elementType)
 		{

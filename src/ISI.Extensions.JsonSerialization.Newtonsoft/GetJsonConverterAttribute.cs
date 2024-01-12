@@ -19,6 +19,11 @@ using System.Text;
 
 namespace ISI.Extensions.JsonSerialization.Newtonsoft
 {
+	public interface IJsonConverterWithGetSerializableInterfaceTypes
+	{
+		IEnumerable<Type> GetSerializableInterfaceTypes();
+	}
+
 	public interface IGetJsonConverter
 	{
 		global::Newtonsoft.Json.JsonConverter GetJsonConverter();

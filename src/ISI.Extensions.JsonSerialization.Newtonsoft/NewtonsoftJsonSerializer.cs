@@ -25,7 +25,6 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 	{
 		private static readonly object _jsonConverterLock = new();
 		private static global::Newtonsoft.Json.JsonConverter[] _jsonConverters = null;
-
 		public static global::Newtonsoft.Json.JsonConverter[] JsonConverters()
 		{
 			if (_jsonConverters == null)
@@ -52,6 +51,42 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 		public ISI.Extensions.Serialization.SerializationFormat SerializationFormat => ISI.Extensions.Serialization.SerializationFormat.Json;
 		public bool UsesDataContract => true;
 		public string ContentType => ISI.Extensions.MimeTypes.Json;
+
+		//IJsonConverterWithGetSerializableInterfaces
+
+		private static HashSet<Type> _serializableInterfaceTypes = null;
+		public HashSet<Type> GetSerializableInterfaceTypes()
+		{
+			if (_serializableInterfaceTypes == null)
+			{
+				var jsonConverters = JsonConverters();
+				lock (_jsonConverterLock)
+				{
+					if (_jsonConverters == null)
+					{
+						if (_serializableInterfaceTypes == null)
+						{
+							var serializableInterfaceTypes = new HashSet<Type>();
+
+							foreach (var jsonConverter in jsonConverters)
+							{
+								if (jsonConverter is IJsonConverterWithGetSerializableInterfaceTypes jsonConverterWithGetSerializableInterfaces)
+								{
+									serializableInterfaceTypes.UnionWith(jsonConverterWithGetSerializableInterfaces.GetSerializableInterfaceTypes());
+								}
+							}
+
+							_serializableInterfaceTypes = serializableInterfaceTypes;
+						}
+					}
+				}
+			}
+
+			return _serializableInterfaceTypes;
+		}
+
+
+
 
 		public object Deserialize(Type type, string serializedValue)
 		{

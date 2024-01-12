@@ -17,16 +17,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ISI.Extensions.Extensions;
 using ISI.Extensions.JsonSerialization.Newtonsoft.Extensions;
 using ISI.Extensions.Serialization;
 using ISI.Extensions.TypeLocator.Extensions;
 
 namespace ISI.Extensions.JsonSerialization.Newtonsoft
 {
-	public class SerializerObjectTypeJsonConverter : global::Newtonsoft.Json.JsonConverter
+	public class SerializerObjectTypeJsonConverter : global::Newtonsoft.Json.JsonConverter, IJsonConverterWithGetSerializableInterfaceTypes
 	{
 		public const string SerializerTypeKey = "type";
 
+		protected Type[] SerializableInterfaceTypes { get; }
 		protected System.Collections.Concurrent.ConcurrentDictionary<Type, Type> InterfaceTypesWithDefaultImplementationType { get; }
 		protected System.Collections.Concurrent.ConcurrentDictionary<string, Type> SerializerObjectTypeToImplementationType { get; }
 		protected System.Collections.Concurrent.ConcurrentDictionary<Type, string> ImplementationTypeToSerializerSlackObjectType { get; }
@@ -35,9 +37,11 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 		public override bool CanRead => true;
 
 		public SerializerObjectTypeJsonConverter(
+			IEnumerable<Type> serializableInterfaceTypes,
 			IDictionary<Type, Type> interfaceTypesWithDefaultImplementationType,
 			IDictionary<string, Type> serializerObjectTypeToImplementationType)
 		{
+			SerializableInterfaceTypes = serializableInterfaceTypes.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 			InterfaceTypesWithDefaultImplementationType = new(interfaceTypesWithDefaultImplementationType);
 			SerializerObjectTypeToImplementationType = new(serializerObjectTypeToImplementationType, StringComparer.InvariantCultureIgnoreCase);
 			ImplementationTypeToSerializerSlackObjectType = new(serializerObjectTypeToImplementationType.ToDictionary(keyValue => keyValue.Value, keyValue => keyValue.Key));
@@ -114,6 +118,8 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 
 			return implementation;
 		}
+
+		IEnumerable<Type> IJsonConverterWithGetSerializableInterfaceTypes.GetSerializableInterfaceTypes() => SerializableInterfaceTypes;
 	}
 
 	[GetJsonConverter]
@@ -130,6 +136,7 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 				{
 					if (_jsonConverter == null)
 					{
+						var serializableInterfaceTypes = new HashSet<Type>();
 						var interfaceTypesWithDefaultImplementationType = new System.Collections.Concurrent.ConcurrentDictionary<Type, Type>();
 						var serializerObjectTypeToImplementationType = new System.Collections.Concurrent.ConcurrentDictionary<string, Type>(StringComparer.InvariantCultureIgnoreCase);
 
@@ -140,6 +147,8 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 							{
 								foreach (var interfaceType in exportedType.GetInterfaces())
 								{
+									serializableInterfaceTypes.Add(interfaceType);
+
 									var serializerDefaultImplementationTypeAttribute = ((ISI.Extensions.Serialization.SerializerDefaultImplementationTypeAttribute[])(interfaceType.GetCustomAttributes(typeof(ISI.Extensions.Serialization.SerializerDefaultImplementationTypeAttribute), false))).FirstOrDefault();
 
 									interfaceTypesWithDefaultImplementationType.TryAdd(interfaceType, serializerDefaultImplementationTypeAttribute?.DefaultImplementationType);
@@ -152,7 +161,7 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 							}
 						}
 
-						_jsonConverter = new SerializerObjectTypeJsonConverter(interfaceTypesWithDefaultImplementationType, serializerObjectTypeToImplementationType);
+						_jsonConverter = new SerializerObjectTypeJsonConverter(serializableInterfaceTypes, interfaceTypesWithDefaultImplementationType, serializerObjectTypeToImplementationType);
 					}
 				}
 			}

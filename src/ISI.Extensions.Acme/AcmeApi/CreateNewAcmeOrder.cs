@@ -41,9 +41,7 @@ namespace ISI.Extensions.Acme
 					CertificateIdentifierType = certificateIdentifier.CertificateIdentifierType,
 					CertificateIdentifierValue = certificateIdentifier.CertificateIdentifierValue,
 				}),
-				PostRenewalActions = request.PostRenewalActions.NullCheckedConvert(postRenewalActions => new ISI.Extensions.Acme.SerializableModels.Orders.AcmeOrderCertificateDomainPostRenewalActions()
-				{
-					PostRenewalActions = request.PostRenewalActions.ToNullCheckedArray(postRenewalAction =>
+				PostRenewalActions = request.PostRenewalActions.ToNullCheckedArray(postRenewalAction =>
 					{
 						switch (postRenewalAction)
 						{
@@ -61,7 +59,6 @@ namespace ISI.Extensions.Acme
 								throw new ArgumentOutOfRangeException(nameof(postRenewalAction));
 						}
 					}),
-				}),
 			};
 
 			var jwt = new ISI.Extensions.JsonJwt.Jwt();

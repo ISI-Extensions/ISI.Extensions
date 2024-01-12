@@ -30,6 +30,8 @@ namespace ISI.Extensions.Caching.Redis
 			JsonSerializer = jsonSerializer;
 		}
 
+		public HashSet<Type> GetSerializableInterfaceTypes() => JsonSerializer.GetSerializableInterfaceTypes();
+
 		public object Deserialize(Type type, string serializedValue) => JsonSerializer.Deserialize(type, serializedValue);
 
 		public object Deserialize(Type type, System.IO.Stream stream) => JsonSerializer.Deserialize(type, stream);

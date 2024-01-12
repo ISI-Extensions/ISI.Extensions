@@ -40,15 +40,6 @@ namespace ISI.Extensions.Acme.SerializableModels.Orders
 		public AcmeOrderCertificateIdentifier[] CertificateIdentifiers { get; set; }
 
 		[DataMember(Name = "postRenewalActions", EmitDefaultValue = false)]
-		public AcmeOrderCertificateDomainPostRenewalActions PostRenewalActions { get; set; }
-	}
-
-
-	//Had to do this because of jwt serialilzation
-	[DataContract]
-	public class AcmeOrderCertificateDomainPostRenewalActions
-	{
-		[DataMember(Name = "postRenewalActions", EmitDefaultValue = false)]
 		public IAcmeOrderCertificateDomainPostRenewalAction[] PostRenewalActions { get; set; }
 	}
 }

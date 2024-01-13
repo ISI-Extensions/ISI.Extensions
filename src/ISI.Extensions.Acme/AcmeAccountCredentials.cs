@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,21 +18,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Acme.SerializableModels.Orders
+namespace ISI.Extensions.Acme
 {
-	[DataContract]
-	public class AcmeOrderErrorSubProblem
+	public class AcmeAccountCredentials
 	{
-		[DataMember(Name = "type", EmitDefaultValue = false)]
-		public string ErrorType { get; set; }
+		public ISI.Extensions.JsonJwt.JwkAlgorithmKey JwkAlgorithmKey { get; set; }
 
-		[DataMember(Name = "detail", EmitDefaultValue = false)]
-		public string Detail { get; set; }
+		public string Pem { get; set; }
 
-		[DataMember(Name = "identifier", EmitDefaultValue = false)]
-		public AcmeOrderCertificateIdentifier Identifier { get; set; }
+		public string SerializedJwk { get; set; }
 	}
 }

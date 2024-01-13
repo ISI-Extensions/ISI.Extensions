@@ -19,37 +19,40 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.JsonJwt.Extensions;
-using ISI.Extensions.JsonSerialization.Extensions;
-using DTOs = ISI.Extensions.Acme.DataTransferObjects.AcmeApi;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Acme
+namespace ISI.Extensions.Acme.SerializableModels.AcmeAccounts
 {
-	public partial class AcmeApi
+	[DataContract]
+	public class CreateNewAccountResponse
 	{
-		public DTOs.GetDirectoryResponse GetDirectory(DTOs.GetDirectoryRequest request)
-		{
-			var response = new DTOs.GetDirectoryResponse();
-			
-			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<ISI.Extensions.Acme.SerializableModels.Directory.GetDirectoryResponse>(request.AcmeHostDirectoryUri, null, true);
+		[DataMember(Name = "id", EmitDefaultValue = false)]
+		public string AcmeAccountKey { get; set; }
 
-			response.AcmeHostDirectory = new()
-			{
-				CreateNewNonceUrl = acmeResponse.CreateNewNonceUrl,
-				CreateNewAccountUrl = acmeResponse.CreateNewAccountUrl,
-				CreateNewOrderUrl = acmeResponse.CreateNewOrderUrl,
-				RevokeCertificateUrl = acmeResponse.RevokeCertificateUrl,
-				KeyChangeUrl = acmeResponse.KeyChangeUrl,
-				Metadata = acmeResponse.Metadata.NullCheckedConvert(metadata => new AcmeHostDirectoryMetadata()
-				{
-					TermsOfServiceUrl = metadata.TermsOfServiceUrl,
-					WebsiteUrl = metadata.WebsiteUrl,
-					CaaIdentities = metadata.CaaIdentities.ToNullCheckedArray(),
-					ExternalAccountRequired = metadata.ExternalAccountRequired,
-				}),
-			};
-			
-			return response;
-		}
+		[DataMember(Name = "key", EmitDefaultValue = false)]
+		public string SerializedJwk { get; set; }
+
+		[DataMember(Name = "status", EmitDefaultValue = false)]
+		public string __AccountStatus { get => AccountStatus.GetAbbreviation(); set => AccountStatus = ISI.Extensions.Enum<AcmeAccountStatus>.ParseAbbreviation(value); }
+		[IgnoreDataMember]
+		public AcmeAccountStatus AccountStatus { get; set; }
+
+		[DataMember(Name = "accountName", EmitDefaultValue = false)]
+		public string AccountName { get; set; }
+
+		[DataMember(Name = "contact", EmitDefaultValue = false)]
+		public string[] Contacts { get; set; }
+
+		[DataMember(Name = "termsOfServiceAgreed", EmitDefaultValue = false)]
+		public bool? TermsOfServiceAgreed { get; set; }
+
+		[DataMember(Name = "onlyReturnExisting", EmitDefaultValue = false)]
+		public bool? OnlyReturnExisting { get; set; }
+
+		//[DataMember(Name = "externalAccountBinding ", EmitDefaultValue = false)]
+		//public object ExternalAccountBinding { get; set; }
+
+		[DataMember(Name = "orders", EmitDefaultValue = false)]
+		public string OrdersUrl { get; set; }
 	}
 }

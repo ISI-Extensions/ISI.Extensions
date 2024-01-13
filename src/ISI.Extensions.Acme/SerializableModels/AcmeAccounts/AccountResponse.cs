@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,33 +21,38 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Acme.SerializableModels.Orders
+namespace ISI.Extensions.Acme.SerializableModels.AcmeAccounts
 {
 	[DataContract]
-	public class GetChallengeResponse
+	public class AccountResponse
 	{
-		[DataMember(Name = "type", EmitDefaultValue = false)]
-		public string __ChallengeType { get => ChallengeType.GetAbbreviation(); set => ChallengeType = ISI.Extensions.Enum<AcmeOrderCertificateIdentifierAuthorizationChallengeType>.ParseAbbreviation(value); }
-		[IgnoreDataMember]
-		public AcmeOrderCertificateIdentifierAuthorizationChallengeType ChallengeType { get; set; }
+		[DataMember(Name = "id", EmitDefaultValue = false)]
+		public string AcmeAccountKey { get; set; }
 
-		[DataMember(Name = "url", EmitDefaultValue = false)]
-		public string ChallengeUrl { get; set; }
+		[DataMember(Name = "key", EmitDefaultValue = false)]
+		public string SerializedJwk { get; set; }
 
 		[DataMember(Name = "status", EmitDefaultValue = false)]
-		public string __ChallengeStatus { get => ChallengeStatus.GetAbbreviation(); set => ChallengeStatus = ISI.Extensions.Enum<AcmeOrderCertificateIdentifierAuthorizationChallengeStatus>.ParseAbbreviation(value); }
+		public string __AccountStatus { get => AccountStatus.GetAbbreviation(); set => AccountStatus = ISI.Extensions.Enum<AcmeAccountStatus>.ParseAbbreviation(value); }
 		[IgnoreDataMember]
-		public AcmeOrderCertificateIdentifierAuthorizationChallengeStatus ChallengeStatus { get; set; }
+		public AcmeAccountStatus AccountStatus { get; set; }
 
-		[DataMember(Name = "validated", EmitDefaultValue = false)]
-		public string __ValidatedDateTimeUtc { get => ValidatedDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => ValidatedDateTimeUtc = value.ToDateTimeUtcNullable(); }
-		[IgnoreDataMember]
-		public DateTime? ValidatedDateTimeUtc { get; set; }
+		[DataMember(Name = "accountName", EmitDefaultValue = false)]
+		public string AccountName { get; set; }
 
-		[DataMember(Name = "token", EmitDefaultValue = false)]
-		public string Token { get; set; }
+		[DataMember(Name = "contact", EmitDefaultValue = false)]
+		public string[] Contacts { get; set; }
 
-		[DataMember(Name = "error", EmitDefaultValue = false)]
-		public AcmeOrderError Error { get; set; }
+		[DataMember(Name = "termsOfServiceAgreed", EmitDefaultValue = false)]
+		public bool? TermsOfServiceAgreed { get; set; }
+
+		[DataMember(Name = "onlyReturnExisting", EmitDefaultValue = false)]
+		public bool? OnlyReturnExisting { get; set; }
+
+		//[DataMember(Name = "externalAccountBinding ", EmitDefaultValue = false)]
+		//public object ExternalAccountBinding { get; set; }
+
+		[DataMember(Name = "orders", EmitDefaultValue = false)]
+		public string OrdersUrl { get; set; }
 	}
 }

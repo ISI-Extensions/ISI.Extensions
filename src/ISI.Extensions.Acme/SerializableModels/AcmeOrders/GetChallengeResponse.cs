@@ -19,37 +19,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.JsonJwt.Extensions;
-using ISI.Extensions.JsonSerialization.Extensions;
-using DTOs = ISI.Extensions.Acme.DataTransferObjects.AcmeApi;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Acme
+namespace ISI.Extensions.Acme.SerializableModels.AcmeOrders
 {
-	public partial class AcmeApi
+	[DataContract]
+	public class GetChallengeResponse
 	{
-		public DTOs.GetDirectoryResponse GetDirectory(DTOs.GetDirectoryRequest request)
-		{
-			var response = new DTOs.GetDirectoryResponse();
-			
-			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<ISI.Extensions.Acme.SerializableModels.Directory.GetDirectoryResponse>(request.AcmeHostDirectoryUri, null, true);
+		[DataMember(Name = "type", EmitDefaultValue = false)]
+		public string __ChallengeType { get => ChallengeType.GetAbbreviation(); set => ChallengeType = ISI.Extensions.Enum<AcmeOrderCertificateIdentifierAuthorizationChallengeType>.ParseAbbreviation(value); }
+		[IgnoreDataMember]
+		public AcmeOrderCertificateIdentifierAuthorizationChallengeType ChallengeType { get; set; }
 
-			response.AcmeHostDirectory = new()
-			{
-				CreateNewNonceUrl = acmeResponse.CreateNewNonceUrl,
-				CreateNewAccountUrl = acmeResponse.CreateNewAccountUrl,
-				CreateNewOrderUrl = acmeResponse.CreateNewOrderUrl,
-				RevokeCertificateUrl = acmeResponse.RevokeCertificateUrl,
-				KeyChangeUrl = acmeResponse.KeyChangeUrl,
-				Metadata = acmeResponse.Metadata.NullCheckedConvert(metadata => new AcmeHostDirectoryMetadata()
-				{
-					TermsOfServiceUrl = metadata.TermsOfServiceUrl,
-					WebsiteUrl = metadata.WebsiteUrl,
-					CaaIdentities = metadata.CaaIdentities.ToNullCheckedArray(),
-					ExternalAccountRequired = metadata.ExternalAccountRequired,
-				}),
-			};
-			
-			return response;
-		}
+		[DataMember(Name = "url", EmitDefaultValue = false)]
+		public string ChallengeUrl { get; set; }
+
+		[DataMember(Name = "status", EmitDefaultValue = false)]
+		public string __ChallengeStatus { get => ChallengeStatus.GetAbbreviation(); set => ChallengeStatus = ISI.Extensions.Enum<AcmeOrderCertificateIdentifierAuthorizationChallengeStatus>.ParseAbbreviation(value); }
+		[IgnoreDataMember]
+		public AcmeOrderCertificateIdentifierAuthorizationChallengeStatus ChallengeStatus { get; set; }
+
+		[DataMember(Name = "validated", EmitDefaultValue = false)]
+		public string __ValidatedDateTimeUtc { get => ValidatedDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => ValidatedDateTimeUtc = value.ToDateTimeUtcNullable(); }
+		[IgnoreDataMember]
+		public DateTime? ValidatedDateTimeUtc { get; set; }
+
+		[DataMember(Name = "token", EmitDefaultValue = false)]
+		public string Token { get; set; }
+
+		[DataMember(Name = "error", EmitDefaultValue = false)]
+		public AcmeOrderError Error { get; set; }
 	}
 }

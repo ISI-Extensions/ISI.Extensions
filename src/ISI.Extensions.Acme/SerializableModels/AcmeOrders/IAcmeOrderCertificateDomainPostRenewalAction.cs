@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,15 +18,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Acme.SerializableModels.Orders
+namespace ISI.Extensions.Acme.SerializableModels.AcmeOrders
 {
-	[DataContract]
-	public class FinalizeOrderRequest
+	public interface IAcmeOrderCertificateDomainPostRenewalAction
 	{
-		[DataMember(Name = "csr", EmitDefaultValue = false)]
-		public string Csr { get; set; }
 	}
 }

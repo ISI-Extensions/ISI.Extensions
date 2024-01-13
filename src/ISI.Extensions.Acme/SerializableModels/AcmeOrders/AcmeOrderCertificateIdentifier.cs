@@ -21,30 +21,17 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Acme.SerializableModels.Orders
+namespace ISI.Extensions.Acme.SerializableModels.AcmeOrders
 {
 	[DataContract]
-	public class AuthorizationChallenge
+	public class AcmeOrderCertificateIdentifier
 	{
 		[DataMember(Name = "type", EmitDefaultValue = false)]
-		public string __ChallengeType { get => ChallengeType.GetAbbreviation(); set => ChallengeType = ISI.Extensions.Enum<AcmeOrderCertificateIdentifierAuthorizationChallengeType>.ParseAbbreviation(value); }
+		public string __CertificateIdentifierType { get => CertificateIdentifierType.GetAbbreviation(); set => CertificateIdentifierType = ISI.Extensions.Enum<AcmeOrderCertificateIdentifierType>.ParseAbbreviation(value); }
 		[IgnoreDataMember]
-		public AcmeOrderCertificateIdentifierAuthorizationChallengeType ChallengeType { get; set; }
+		public AcmeOrderCertificateIdentifierType CertificateIdentifierType { get; set; }
 
-		[DataMember(Name = "status", EmitDefaultValue = false)]
-		public string __ChallengeStatus { get => ChallengeStatus.GetAbbreviation(); set => ChallengeStatus = ISI.Extensions.Enum<AcmeOrderCertificateIdentifierAuthorizationChallengeStatus>.ParseAbbreviation(value); }
-		[IgnoreDataMember]
-		public AcmeOrderCertificateIdentifierAuthorizationChallengeStatus ChallengeStatus { get; set; }
-
-		[DataMember(Name = "url", EmitDefaultValue = false)]
-		public string ChallengeUrl { get; set; }
-
-		[DataMember(Name = "token", EmitDefaultValue = false)]
-		public string Token { get; set; }
-
-		[DataMember(Name = "validated", EmitDefaultValue = false)]
-		public string __ValidatedDateTimeUtc { get => ValidatedDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => ValidatedDateTimeUtc = value.ToDateTimeUtcNullable(); }
-		[IgnoreDataMember]
-		public DateTime? ValidatedDateTimeUtc { get; set; }
+		[DataMember(Name = "value", EmitDefaultValue = false)]
+		public string CertificateIdentifierValue { get; set; }
 	}
 }

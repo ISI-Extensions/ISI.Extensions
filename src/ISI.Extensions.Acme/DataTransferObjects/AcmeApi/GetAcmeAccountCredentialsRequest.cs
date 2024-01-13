@@ -19,19 +19,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Acme.SerializableModels.Accounts
+namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 {
-	[DataContract]
-	public class UpdateAccountRequest
+	public class GetAcmeAccountCredentialsRequest
 	{
-		[DataMember(Name = "status", EmitDefaultValue = false)]
-		public string __AccountStatus { get => AccountStatus.GetAbbreviation(); set => AccountStatus = ISI.Extensions.Enum<AcmeAccountStatus?>.Parse(value); }
-		[IgnoreDataMember]
-		public AcmeAccountStatus? AccountStatus { get; set; }
-
-		[DataMember(Name = "contact", EmitDefaultValue = false)]
-		public string[] Contacts { get; set; }
+		public string FullName { get; set; }
 	}
 }

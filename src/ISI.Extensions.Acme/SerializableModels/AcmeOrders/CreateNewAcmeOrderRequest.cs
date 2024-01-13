@@ -19,37 +19,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.JsonJwt.Extensions;
-using ISI.Extensions.JsonSerialization.Extensions;
-using DTOs = ISI.Extensions.Acme.DataTransferObjects.AcmeApi;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Acme
+namespace ISI.Extensions.Acme.SerializableModels.AcmeOrders
 {
-	public partial class AcmeApi
+	[DataContract]
+	public class CreateNewAcmeOrderRequest
 	{
-		public DTOs.GetDirectoryResponse GetDirectory(DTOs.GetDirectoryRequest request)
-		{
-			var response = new DTOs.GetDirectoryResponse();
-			
-			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<ISI.Extensions.Acme.SerializableModels.Directory.GetDirectoryResponse>(request.AcmeHostDirectoryUri, null, true);
+		[DataMember(Name = "notBefore", EmitDefaultValue = false)]
+		public string __CertificateNotBeforeDateTimeUtc { get => CertificateNotBeforeDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => CertificateNotBeforeDateTimeUtc = value.ToDateTimeUtcNullable(); }
+		[IgnoreDataMember]
+		public DateTime? CertificateNotBeforeDateTimeUtc { get; set; }
 
-			response.AcmeHostDirectory = new()
-			{
-				CreateNewNonceUrl = acmeResponse.CreateNewNonceUrl,
-				CreateNewAccountUrl = acmeResponse.CreateNewAccountUrl,
-				CreateNewOrderUrl = acmeResponse.CreateNewOrderUrl,
-				RevokeCertificateUrl = acmeResponse.RevokeCertificateUrl,
-				KeyChangeUrl = acmeResponse.KeyChangeUrl,
-				Metadata = acmeResponse.Metadata.NullCheckedConvert(metadata => new AcmeHostDirectoryMetadata()
-				{
-					TermsOfServiceUrl = metadata.TermsOfServiceUrl,
-					WebsiteUrl = metadata.WebsiteUrl,
-					CaaIdentities = metadata.CaaIdentities.ToNullCheckedArray(),
-					ExternalAccountRequired = metadata.ExternalAccountRequired,
-				}),
-			};
-			
-			return response;
-		}
+		[DataMember(Name = "notAfter", EmitDefaultValue = false)]
+		public string __CertificateNotAfterDateTimeUtc { get => CertificateNotAfterDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => CertificateNotAfterDateTimeUtc = value.ToDateTimeUtcNullable(); }
+		[IgnoreDataMember]
+		public DateTime? CertificateNotAfterDateTimeUtc { get; set; }
+
+		[DataMember(Name = "identifiers", EmitDefaultValue = false)]
+		public AcmeOrderCertificateIdentifier[] CertificateIdentifiers { get; set; }
+
+		[DataMember(Name = "postRenewalActions", EmitDefaultValue = false)]
+		public IAcmeOrderCertificateDomainPostRenewalAction[] PostRenewalActions { get; set; }
 	}
 }

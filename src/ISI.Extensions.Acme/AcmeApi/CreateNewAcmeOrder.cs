@@ -20,6 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.JsonJwt.Extensions;
+using ISI.Extensions.JsonSerialization.Extensions;
 using DTOs = ISI.Extensions.Acme.DataTransferObjects.AcmeApi;
 
 namespace ISI.Extensions.Acme
@@ -32,11 +33,11 @@ namespace ISI.Extensions.Acme
 
 			var uri = new Uri(request.AcmeHostContext.AcmeHostDirectory.CreateNewOrderUrl);
 
-			var acmeRequest = new ISI.Extensions.Acme.SerializableModels.Orders.CreateNewAcmeOrderRequest()
+			var acmeRequest = new ISI.Extensions.Acme.SerializableModels.AcmeOrders.CreateNewAcmeOrderRequest()
 			{
 				CertificateNotBeforeDateTimeUtc = request.CertificateNotBeforeDateTimeUtc,
 				CertificateNotAfterDateTimeUtc = request.CertificateNotAfterDateTimeUtc,
-				CertificateIdentifiers = request.CertificateIdentifiers.ToNullCheckedArray(certificateIdentifier => new ISI.Extensions.Acme.SerializableModels.Orders.AcmeOrderCertificateIdentifier()
+				CertificateIdentifiers = request.CertificateIdentifiers.ToNullCheckedArray(certificateIdentifier => new ISI.Extensions.Acme.SerializableModels.AcmeOrders.AcmeOrderCertificateIdentifier()
 				{
 					CertificateIdentifierType = certificateIdentifier.CertificateIdentifierType,
 					CertificateIdentifierValue = certificateIdentifier.CertificateIdentifierValue,
@@ -46,20 +47,20 @@ namespace ISI.Extensions.Acme
 						switch (postRenewalAction)
 						{
 							case AcmeOrderCertificateDomainPostRenewalActionAcmeAgentNginxManagerAgentWebHook acmeOrderCertificateDomainPostRenewalActionAcmeAgentNginxManagerAgentWebHook:
-								return new ISI.Extensions.Acme.SerializableModels.Orders.AcmeOrderCertificateDomainPostRenewalActionAcmeAgentNginxManagerAgentWebHook()
+								return new ISI.Extensions.Acme.SerializableModels.AcmeOrders.AcmeOrderCertificateDomainPostRenewalActionAcmeAgentNginxManagerAgentWebHook()
 								{
 									SetCertificatesUrl = acmeOrderCertificateDomainPostRenewalActionAcmeAgentNginxManagerAgentWebHook.SetCertificatesUrl,
-								} as ISI.Extensions.Acme.SerializableModels.Orders.IAcmeOrderCertificateDomainPostRenewalAction;
+								} as ISI.Extensions.Acme.SerializableModels.AcmeOrders.IAcmeOrderCertificateDomainPostRenewalAction;
 
 							case AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook acmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook:
-								return new ISI.Extensions.Acme.SerializableModels.Orders.AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook()
+								return new ISI.Extensions.Acme.SerializableModels.AcmeOrders.AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook()
 								{
-									PushWebHooks = acmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook.PushWebHooks.ToNullCheckedArray(pushWebHook => new ISI.Extensions.Acme.SerializableModels.Orders.AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHookPushWebHook()
+									PushWebHooks = acmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook.PushWebHooks.ToNullCheckedArray(pushWebHook => new ISI.Extensions.Acme.SerializableModels.AcmeOrders.AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHookPushWebHook()
 									{
 										CertificateType = pushWebHook.CertificateType,
 										PostUrl = pushWebHook.PostUrl,
 									})
-								} as ISI.Extensions.Acme.SerializableModels.Orders.IAcmeOrderCertificateDomainPostRenewalAction;
+								} as ISI.Extensions.Acme.SerializableModels.AcmeOrders.IAcmeOrderCertificateDomainPostRenewalAction;
 
 							default:
 								throw new ArgumentOutOfRangeException(nameof(postRenewalAction));
@@ -77,11 +78,11 @@ namespace ISI.Extensions.Acme
 #if DEBUG
 			if (JwtEncoder.TryDecodeSignedJwt(signedJwt, null, out var _jwt))
 			{
-				var _request = _jwt.DeserializePayload<ISI.Extensions.Acme.SerializableModels.Orders.CreateNewAcmeOrderRequest>(JsonSerializer);
+				var _request = _jwt.DeserializePayload<ISI.Extensions.Acme.SerializableModels.AcmeOrders.CreateNewAcmeOrderRequest>(JsonSerializer);
 			}
 #endif
 
-			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<ISI.Extensions.JsonJwt.SerializableEntities.SignedJwt, ISI.Extensions.WebClient.Rest.SerializedResponse<ISI.Extensions.Acme.SerializableModels.Orders.CreateNewAcmeOrderResponse>>(uri, GetHeaders(request), signedJwt, true);
+			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<ISI.Extensions.JsonJwt.SerializableEntities.SignedJwt, ISI.Extensions.WebClient.Rest.SerializedResponse<ISI.Extensions.Acme.SerializableModels.AcmeOrders.CreateNewAcmeOrderResponse>>(uri, GetHeaders(request), signedJwt, true);
 
 			if (acmeResponse.ResponseHeaders.TryGetValue(ISI.Extensions.JsonJwt.HeaderKey.ReplayNonce, out var nonce))
 			{

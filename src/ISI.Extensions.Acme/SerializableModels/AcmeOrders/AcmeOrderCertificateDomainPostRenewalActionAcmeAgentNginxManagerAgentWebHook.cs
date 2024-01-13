@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Acme.SerializableModels.Orders
+namespace ISI.Extensions.Acme.SerializableModels.AcmeOrders
 {
 	[DataContract]
 	[ISI.Extensions.Serialization.PreferredSerializerJsonDataContract]

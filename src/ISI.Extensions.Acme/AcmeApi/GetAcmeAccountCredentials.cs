@@ -19,20 +19,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
+using ISI.Extensions.JsonJwt.Extensions;
+using ISI.Extensions.JsonSerialization.Extensions;
+using DTOs = ISI.Extensions.Acme.DataTransferObjects.AcmeApi;
 
-namespace ISI.Extensions.Acme.SerializableModels.Orders
+namespace ISI.Extensions.Acme
 {
-	[DataContract]
-	public class AcmeOrderError
+	public partial class AcmeApi
 	{
-		[DataMember(Name = "type", EmitDefaultValue = false)]
-		public string ErrorType { get; set; }
+		public DTOs.GetAcmeAccountCredentialsResponse GetAcmeAccountCredentials(DTOs.GetAcmeAccountCredentialsRequest request)
+		{
+			var response = new DTOs.GetAcmeAccountCredentialsResponse();
 
-		[DataMember(Name = "detail", EmitDefaultValue = false)]
-		public string Detail { get; set; }
+			if (System.IO.File.Exists(request.FullName))
+			{
+				var serializedAcmeAccountCredentials = System.IO.File.ReadAllText(request.FullName);
 
-		[DataMember(Name = "subproblems", EmitDefaultValue = false)]
-		public AcmeOrderErrorSubProblem[] SubProblems { get; set; }
+				var serializableAcmeAccountCredentials = JsonSerializer.Deserialize<ISI.Extensions.Acme.SerializableModels.AcmeAccountCredentials>(serializedAcmeAccountCredentials);
+
+				response.AcmeAccountCredentials = serializableAcmeAccountCredentials.NullCheckedConvert(source => new AcmeAccountCredentials()
+				{
+					JwkAlgorithmKey = source.JwkAlgorithmKey,
+					Pem = source.Pem,
+					SerializedJwk = source.SerializedJwk,
+				});
+			}
+
+			response.AcmeAccountCredentials ??= new();
+
+			return response;
+		}
 	}
 }

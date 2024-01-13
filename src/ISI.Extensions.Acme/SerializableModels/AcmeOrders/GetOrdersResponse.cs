@@ -19,37 +19,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.JsonJwt.Extensions;
-using ISI.Extensions.JsonSerialization.Extensions;
-using DTOs = ISI.Extensions.Acme.DataTransferObjects.AcmeApi;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Acme
+namespace ISI.Extensions.Acme.SerializableModels.AcmeOrders
 {
-	public partial class AcmeApi
+	[DataContract]
+	public class GetOrdersResponse
 	{
-		public DTOs.GetDirectoryResponse GetDirectory(DTOs.GetDirectoryRequest request)
-		{
-			var response = new DTOs.GetDirectoryResponse();
-			
-			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<ISI.Extensions.Acme.SerializableModels.Directory.GetDirectoryResponse>(request.AcmeHostDirectoryUri, null, true);
-
-			response.AcmeHostDirectory = new()
-			{
-				CreateNewNonceUrl = acmeResponse.CreateNewNonceUrl,
-				CreateNewAccountUrl = acmeResponse.CreateNewAccountUrl,
-				CreateNewOrderUrl = acmeResponse.CreateNewOrderUrl,
-				RevokeCertificateUrl = acmeResponse.RevokeCertificateUrl,
-				KeyChangeUrl = acmeResponse.KeyChangeUrl,
-				Metadata = acmeResponse.Metadata.NullCheckedConvert(metadata => new AcmeHostDirectoryMetadata()
-				{
-					TermsOfServiceUrl = metadata.TermsOfServiceUrl,
-					WebsiteUrl = metadata.WebsiteUrl,
-					CaaIdentities = metadata.CaaIdentities.ToNullCheckedArray(),
-					ExternalAccountRequired = metadata.ExternalAccountRequired,
-				}),
-			};
-			
-			return response;
-		}
+		[DataMember(Name = "orders", EmitDefaultValue = false)]
+		public string[] OrdersUrls { get; set; }
 	}
 }

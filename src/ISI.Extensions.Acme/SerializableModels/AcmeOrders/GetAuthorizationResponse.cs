@@ -21,44 +21,28 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Acme.SerializableModels.Orders
+namespace ISI.Extensions.Acme.SerializableModels.AcmeOrders
 {
 	[DataContract]
-	public class CreateNewAcmeOrderResponse
+	public class GetAuthorizationResponse
 	{
 		[DataMember(Name = "status", EmitDefaultValue = false)]
-		public string __Status { get => OrderStatus.GetAbbreviation(); set => OrderStatus = ISI.Extensions.Enum<AcmeOrderStatus>.ParseAbbreviation(value); }
+		public string __AuthorizationStatus { get => AuthorizationStatus.GetAbbreviation(); set => AuthorizationStatus = ISI.Extensions.Enum<AcmeOrderCertificateIdentifierAuthorizationStatus>.ParseAbbreviation(value); }
 		[IgnoreDataMember]
-		public AcmeOrderStatus OrderStatus { get; set; }
+		public AcmeOrderCertificateIdentifierAuthorizationStatus AuthorizationStatus { get; set; }
 
 		[DataMember(Name = "expires", EmitDefaultValue = false)]
 		public string __RequestExpiresDateTimeUtc { get => RequestExpiresDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => RequestExpiresDateTimeUtc = value.ToDateTimeUtcNullable(); }
 		[IgnoreDataMember]
 		public DateTime? RequestExpiresDateTimeUtc { get; set; }
 
-		[DataMember(Name = "notBefore", EmitDefaultValue = false)]
-		public string __CertificateNotBeforeDateTimeUtc { get => CertificateNotBeforeDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => CertificateNotBeforeDateTimeUtc = value.ToDateTimeUtcNullable(); }
-		[IgnoreDataMember]
-		public DateTime? CertificateNotBeforeDateTimeUtc { get; set; }
+		[DataMember(Name = "identifier", EmitDefaultValue = false)]
+		public AcmeOrderCertificateIdentifier Identifier { get; set; }
 
-		[DataMember(Name = "notAfter", EmitDefaultValue = false)]
-		public string __CertificateNotAfterDateTimeUtc { get => CertificateNotAfterDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => CertificateNotAfterDateTimeUtc = value.ToDateTimeUtcNullable(); }
-		[IgnoreDataMember]
-		public DateTime? CertificateNotAfterDateTimeUtc { get; set; }
+		[DataMember(Name = "challenges", EmitDefaultValue = false)]
+		public AuthorizationChallenge[] Challenges { get; set; }
 
-		[DataMember(Name = "identifiers", EmitDefaultValue = false)]
-		public AcmeOrderCertificateIdentifier[] CertificateIdentifiers { get; set; }
-
-		[DataMember(Name = "authorizations", EmitDefaultValue = false)]
-		public string[] AuthorizationsUrls { get; set; }
-
-		[DataMember(Name = "finalize", EmitDefaultValue = false)]
-		public string FinalizeOrderUrl { get; set; }
-
-		[DataMember(Name = "certificate", EmitDefaultValue = false)]
-		public string GetCertificateUrl { get; set; }
-
-		[DataMember(Name = "error", EmitDefaultValue = false)]
-		public AcmeOrderError Error { get; set; }
+		[DataMember(Name = "wildcard", EmitDefaultValue = false)]
+		public bool? Wildcard { get; set; }
 	}
 }

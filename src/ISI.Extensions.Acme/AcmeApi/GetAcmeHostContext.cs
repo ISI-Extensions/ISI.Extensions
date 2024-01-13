@@ -19,6 +19,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.JsonJwt.Extensions;
+using ISI.Extensions.JsonSerialization.Extensions;
 using DTOs = ISI.Extensions.Acme.DataTransferObjects.AcmeApi;
 
 namespace ISI.Extensions.Acme

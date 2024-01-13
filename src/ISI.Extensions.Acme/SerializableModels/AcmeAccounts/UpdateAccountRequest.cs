@@ -21,17 +21,17 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Acme.SerializableModels.Orders
+namespace ISI.Extensions.Acme.SerializableModels.AcmeAccounts
 {
 	[DataContract]
-	public class AcmeOrderCertificateIdentifier
+	public class UpdateAccountRequest
 	{
-		[DataMember(Name = "type", EmitDefaultValue = false)]
-		public string __CertificateIdentifierType { get => CertificateIdentifierType.GetAbbreviation(); set => CertificateIdentifierType = ISI.Extensions.Enum<AcmeOrderCertificateIdentifierType>.ParseAbbreviation(value); }
+		[DataMember(Name = "status", EmitDefaultValue = false)]
+		public string __AccountStatus { get => AccountStatus.GetAbbreviation(); set => AccountStatus = ISI.Extensions.Enum<AcmeAccountStatus?>.Parse(value); }
 		[IgnoreDataMember]
-		public AcmeOrderCertificateIdentifierType CertificateIdentifierType { get; set; }
+		public AcmeAccountStatus? AccountStatus { get; set; }
 
-		[DataMember(Name = "value", EmitDefaultValue = false)]
-		public string CertificateIdentifierValue { get; set; }
+		[DataMember(Name = "contact", EmitDefaultValue = false)]
+		public string[] Contacts { get; set; }
 	}
 }

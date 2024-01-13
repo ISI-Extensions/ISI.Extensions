@@ -19,14 +19,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
+using ISI.Extensions.JsonJwt.Extensions;
+using ISI.Extensions.JsonSerialization.Extensions;
+using DTOs = ISI.Extensions.Acme.DataTransferObjects.AcmeApi;
 
-namespace ISI.Extensions.Acme.SerializableModels.Orders
+namespace ISI.Extensions.Acme
 {
-	[DataContract]
-	public class GetOrdersResponse
+	public partial class AcmeApi
 	{
-		[DataMember(Name = "orders", EmitDefaultValue = false)]
-		public string[] OrdersUrls { get; set; }
+		public DTOs.SetAcmeAccountCredentialsResponse SetAcmeAccountCredentials(DTOs.SetAcmeAccountCredentialsRequest request)
+		{
+			var response = new DTOs.SetAcmeAccountCredentialsResponse();
+
+			if (System.IO.File.Exists(request.FullName))
+			{
+				System.IO.File.Delete(request.FullName);
+			}
+
+			System.IO.File.WriteAllText(request.FullName, JsonSerializer.Serialize(new ISI.Extensions.Acme.SerializableModels.AcmeAccountCredentials()
+			{
+				JwkAlgorithmKey = request.AcmeAccountCredentials.JwkAlgorithmKey,
+				Pem = request.AcmeAccountCredentials.Pem,
+				SerializedJwk = request.AcmeAccountCredentials.SerializedJwk,
+			}));
+			
+			return response;
+		}
 	}
 }

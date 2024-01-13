@@ -70,7 +70,7 @@ namespace ISI.Extensions.Tests
 	""y"": ""hMUtT4ORvQopm1QfR5Q-9KvM-39j0HowlINU78Lw8xs""
 }", out var jwt))
 			{
-				var request = jwt.DeserializePayload<ISI.Extensions.Acme.SerializableModels.Accounts.CreateNewAccountRequest>(jsonSerializer);
+				var request = jwt.DeserializePayload<ISI.Extensions.Acme.SerializableModels.AcmeAccounts.CreateNewAccountRequest>(jsonSerializer);
 			}
 		}
 	}

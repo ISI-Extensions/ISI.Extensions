@@ -20,6 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.JsonJwt.Extensions;
+using ISI.Extensions.JsonSerialization.Extensions;
 using DTOs = ISI.Extensions.Acme.DataTransferObjects.AcmeApi;
 
 namespace ISI.Extensions.Acme
@@ -32,7 +33,7 @@ namespace ISI.Extensions.Acme
 
 			var uri = new Uri(request.AcmeHostContext.AcmeHostDirectory.CreateNewAccountUrl);
 
-			var acmeRequest = new ISI.Extensions.Acme.SerializableModels.Accounts.CreateNewAccountRequest()
+			var acmeRequest = new ISI.Extensions.Acme.SerializableModels.AcmeAccounts.CreateNewAccountRequest()
 			{
 				AccountName = request.AccountName,
 				Contacts = request.Contacts.ToNullCheckedArray(),
@@ -47,7 +48,7 @@ namespace ISI.Extensions.Acme
 
 			var signedJwt = JwtEncoder.BuildSignedJwt(request.AcmeHostContext.JwkAlgorithmKey, request.AcmeHostContext.SerializedJwk, request.AcmeHostContext.Pem, null, jwt);
 
-			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<ISI.Extensions.JsonJwt.SerializableEntities.SignedJwt, ISI.Extensions.WebClient.Rest.SerializedResponse<ISI.Extensions.Acme.SerializableModels.Accounts.CreateNewAccountResponse>>(uri, GetHeaders(request), signedJwt, true);
+			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<ISI.Extensions.JsonJwt.SerializableEntities.SignedJwt, ISI.Extensions.WebClient.Rest.SerializedResponse<ISI.Extensions.Acme.SerializableModels.AcmeAccounts.CreateNewAccountResponse>>(uri, GetHeaders(request), signedJwt, true);
 
 			if (acmeResponse.ResponseHeaders.TryGetValue(ISI.Extensions.JsonJwt.HeaderKey.ReplayNonce, out var nonce))
 			{

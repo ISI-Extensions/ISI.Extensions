@@ -19,37 +19,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.JsonJwt.Extensions;
-using ISI.Extensions.JsonSerialization.Extensions;
-using DTOs = ISI.Extensions.Acme.DataTransferObjects.AcmeApi;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Acme
+namespace ISI.Extensions.Acme.SerializableModels.AcmeOrders
 {
-	public partial class AcmeApi
+	[DataContract]
+	[ISI.Extensions.Serialization.PreferredSerializerJsonDataContract]
+	[ISI.Extensions.Serialization.SerializerContractUuid("628fa16b-36b7-45e1-8f67-bd4e3d27b831")]
+	public class AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook : IAcmeOrderCertificateDomainPostRenewalAction
 	{
-		public DTOs.GetDirectoryResponse GetDirectory(DTOs.GetDirectoryRequest request)
-		{
-			var response = new DTOs.GetDirectoryResponse();
-			
-			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<ISI.Extensions.Acme.SerializableModels.Directory.GetDirectoryResponse>(request.AcmeHostDirectoryUri, null, true);
+		[DataMember(Name = "pushWebHooks", EmitDefaultValue = false)]
+		public AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHookPushWebHook[] PushWebHooks { get; set; }
+	}
 
-			response.AcmeHostDirectory = new()
-			{
-				CreateNewNonceUrl = acmeResponse.CreateNewNonceUrl,
-				CreateNewAccountUrl = acmeResponse.CreateNewAccountUrl,
-				CreateNewOrderUrl = acmeResponse.CreateNewOrderUrl,
-				RevokeCertificateUrl = acmeResponse.RevokeCertificateUrl,
-				KeyChangeUrl = acmeResponse.KeyChangeUrl,
-				Metadata = acmeResponse.Metadata.NullCheckedConvert(metadata => new AcmeHostDirectoryMetadata()
-				{
-					TermsOfServiceUrl = metadata.TermsOfServiceUrl,
-					WebsiteUrl = metadata.WebsiteUrl,
-					CaaIdentities = metadata.CaaIdentities.ToNullCheckedArray(),
-					ExternalAccountRequired = metadata.ExternalAccountRequired,
-				}),
-			};
-			
-			return response;
-		}
+	[DataContract]
+	public class AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHookPushWebHook
+	{
+		[DataMember(Name = "certificateType", EmitDefaultValue = false)]
+		public string __CertificateType { get => CertificateType.GetUuid().Formatted(GuidExtensions.GuidFormat.WithHyphens); set => CertificateType = ISI.Extensions.Enum<ISI.Extensions.Acme.CertificateType>.ParseUuid(value); }
+		[IgnoreDataMember]
+		public ISI.Extensions.Acme.CertificateType CertificateType { get; set; }
+
+		[DataMember(Name = "postUrl", EmitDefaultValue = false)]
+		public string PostUrl { get; set; }
 	}
 }

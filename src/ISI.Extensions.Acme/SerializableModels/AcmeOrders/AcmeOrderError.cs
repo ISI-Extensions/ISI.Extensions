@@ -21,26 +21,18 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Acme.SerializableModels.Orders
+namespace ISI.Extensions.Acme.SerializableModels.AcmeOrders
 {
 	[DataContract]
-	[ISI.Extensions.Serialization.PreferredSerializerJsonDataContract]
-	[ISI.Extensions.Serialization.SerializerContractUuid("628fa16b-36b7-45e1-8f67-bd4e3d27b831")]
-	public class AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook : IAcmeOrderCertificateDomainPostRenewalAction
+	public class AcmeOrderError
 	{
-		[DataMember(Name = "pushWebHooks", EmitDefaultValue = false)]
-		public AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHookPushWebHook[] PushWebHooks { get; set; }
-	}
+		[DataMember(Name = "type", EmitDefaultValue = false)]
+		public string ErrorType { get; set; }
 
-	[DataContract]
-	public class AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHookPushWebHook
-	{
-		[DataMember(Name = "certificateType", EmitDefaultValue = false)]
-		public string __CertificateType { get => CertificateType.GetUuid().Formatted(GuidExtensions.GuidFormat.WithHyphens); set => CertificateType = ISI.Extensions.Enum<ISI.Extensions.Acme.CertificateType>.ParseUuid(value); }
-		[IgnoreDataMember]
-		public ISI.Extensions.Acme.CertificateType CertificateType { get; set; }
+		[DataMember(Name = "detail", EmitDefaultValue = false)]
+		public string Detail { get; set; }
 
-		[DataMember(Name = "postUrl", EmitDefaultValue = false)]
-		public string PostUrl { get; set; }
+		[DataMember(Name = "subproblems", EmitDefaultValue = false)]
+		public AcmeOrderErrorSubProblem[] SubProblems { get; set; }
 	}
 }

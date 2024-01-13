@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Acme.SerializableModels.Accounts
+namespace ISI.Extensions.Acme.SerializableModels.AcmeAccounts
 {
 	[DataContract]
 	public class KeyChangeRequest

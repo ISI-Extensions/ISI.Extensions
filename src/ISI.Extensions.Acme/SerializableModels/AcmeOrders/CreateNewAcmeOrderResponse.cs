@@ -21,10 +21,10 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Acme.SerializableModels.Orders
+namespace ISI.Extensions.Acme.SerializableModels.AcmeOrders
 {
 	[DataContract]
-	public class GetOrderResponse
+	public class CreateNewAcmeOrderResponse
 	{
 		[DataMember(Name = "status", EmitDefaultValue = false)]
 		public string __Status { get => OrderStatus.GetAbbreviation(); set => OrderStatus = ISI.Extensions.Enum<AcmeOrderStatus>.ParseAbbreviation(value); }
@@ -47,7 +47,7 @@ namespace ISI.Extensions.Acme.SerializableModels.Orders
 		public DateTime? CertificateNotAfterDateTimeUtc { get; set; }
 
 		[DataMember(Name = "identifiers", EmitDefaultValue = false)]
-		public AcmeOrderCertificateIdentifier[] Identifiers { get; set; }
+		public AcmeOrderCertificateIdentifier[] CertificateIdentifiers { get; set; }
 
 		[DataMember(Name = "authorizations", EmitDefaultValue = false)]
 		public string[] AuthorizationsUrls { get; set; }

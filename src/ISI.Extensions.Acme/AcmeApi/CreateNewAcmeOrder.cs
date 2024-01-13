@@ -45,6 +45,12 @@ namespace ISI.Extensions.Acme
 					{
 						switch (postRenewalAction)
 						{
+							case AcmeOrderCertificateDomainPostRenewalActionAcmeAgentNginxManagerAgentWebHook acmeOrderCertificateDomainPostRenewalActionAcmeAgentNginxManagerAgentWebHook:
+								return new ISI.Extensions.Acme.SerializableModels.Orders.AcmeOrderCertificateDomainPostRenewalActionAcmeAgentNginxManagerAgentWebHook()
+								{
+									SetCertificatesUrl = acmeOrderCertificateDomainPostRenewalActionAcmeAgentNginxManagerAgentWebHook.SetCertificatesUrl,
+								} as ISI.Extensions.Acme.SerializableModels.Orders.IAcmeOrderCertificateDomainPostRenewalAction;
+
 							case AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook acmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook:
 								return new ISI.Extensions.Acme.SerializableModels.Orders.AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook()
 								{

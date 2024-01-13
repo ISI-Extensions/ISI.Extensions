@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -145,8 +145,16 @@ namespace ISI.Extensions.WebClient
 
 		public static (System.Net.HttpStatusCode HttpStatusCode, string Body) UploadFile(Uri uri, HeaderCollection headers, System.IO.Stream stream, string fileName, string fileFieldName = "uploadFile", System.Collections.Specialized.NameValueCollection formValues = null)
 		{
-			stream.Rewind();
+			return UploadFiles(uri, headers, new[] { (Stream: stream, FileName: fileName, FileFieldName: fileFieldName) }, formValues);
+		}
 
+		public static (System.Net.HttpStatusCode HttpStatusCode, string Body) UploadFiles(string url, HeaderCollection headers, IEnumerable<(System.IO.Stream Stream, string FileName, string FileFieldName)> files, System.Collections.Specialized.NameValueCollection formValues = null)
+		{
+			return UploadFiles(new Uri(url), headers, files, formValues);
+		}
+
+		public static (System.Net.HttpStatusCode HttpStatusCode, string Body) UploadFiles(Uri uri, HeaderCollection headers, IEnumerable<(System.IO.Stream Stream, string FileName, string FileFieldName)> files, System.Collections.Specialized.NameValueCollection formValues = null)
+		{
 			var boundary = string.Format("---------------------------{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.Base36));
 			var boundarybytes = System.Text.Encoding.UTF8.GetBytes(string.Format("\r\n--{0}\r\n", boundary));
 
@@ -167,12 +175,21 @@ namespace ISI.Extensions.WebClient
 				}
 			}
 
+			string getFileHeader((System.IO.Stream Stream, string FileName, string FileFieldName) file)
+			{
+				return string.Format("Content-Disposition: form-data; name=\"{0}\"; filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n", file.FileFieldName, file.FileName, ISI.Extensions.MimeType.GetMimeType(file.FileName));
+			}
 
-			var fileHeader = string.Format("Content-Disposition: form-data; name=\"{0}\"; filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n", fileFieldName, fileName, ISI.Extensions.MimeType.GetMimeType(fileName));
-			var fileHeaderBytes = System.Text.Encoding.UTF8.GetBytes(fileHeader);
-			var fileTrailer = System.Text.Encoding.UTF8.GetBytes(string.Format("\r\n--{0}--\r\n", boundary));
+			foreach (var file in files)
+			{
+				file.Stream.Rewind();
 
-			requestLen += boundarybytes.Length + fileHeaderBytes.Length + fileTrailer.Length + stream.Length;
+				var fileHeader = getFileHeader(file);
+				var fileHeaderBytes = System.Text.Encoding.UTF8.GetBytes(fileHeader);
+				var fileTrailer = System.Text.Encoding.UTF8.GetBytes(string.Format("\r\n--{0}--\r\n", boundary));
+
+				requestLen += boundarybytes.Length + fileHeaderBytes.Length + fileTrailer.Length + file.Stream.Length;
+			}
 
 			var webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(uri);
 
@@ -200,13 +217,21 @@ namespace ISI.Extensions.WebClient
 					requestStream.Write(item, 0, item.Length);
 				}
 
-				requestStream.Write(boundarybytes, 0, boundarybytes.Length);
-				requestStream.Write(fileHeaderBytes, 0, fileHeaderBytes.Length);
+				foreach (var file in files)
+				{
+					requestStream.Write(boundarybytes, 0, boundarybytes.Length);
 
-				var chunkSize = 1427; // any larger will cause an SSL request to fail
-				stream.CopyTo(requestStream, chunkSize: chunkSize);
+					var fileHeader = getFileHeader(file);
+					var fileHeaderBytes = System.Text.Encoding.UTF8.GetBytes(fileHeader);
 
-				requestStream.Write(fileTrailer, 0, fileTrailer.Length);
+					requestStream.Write(fileHeaderBytes, 0, fileHeaderBytes.Length);
+
+					var chunkSize = 1427; // any larger will cause an SSL request to fail
+					file.Stream.CopyTo(requestStream, chunkSize: chunkSize);
+
+					var fileTrailer = System.Text.Encoding.UTF8.GetBytes(string.Format("\r\n--{0}--\r\n", boundary));
+					requestStream.Write(fileTrailer, 0, fileTrailer.Length);
+				}
 
 				requestStream.Flush();
 			}

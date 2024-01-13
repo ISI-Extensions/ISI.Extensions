@@ -23,6 +23,9 @@ namespace ISI.Extensions.Acme
 {
 	public class AcmeOrderCertificateDomainPostRenewalActionAcmeAgentNginxManagerAgentWebHook : IAcmeOrderCertificateDomainPostRenewalAction
 	{
+		public string HeaderAuthenticationKey { get; set; }
+		public string HeaderAuthenticationValue { get; set; }
+
 		public string SetCertificatesUrl { get; set; }
 	}
 }

@@ -28,6 +28,8 @@ namespace ISI.Extensions.Acme
 		[ISI.Extensions.EnumGuid("f8d7ab2e-a3ba-42db-bf16-95b088060154")] CaBundleCrt,
 		[ISI.Extensions.EnumGuid("a03c5263-76d1-4b43-bd5b-676faaed27bc")] Pem,
 		[ISI.Extensions.EnumGuid("615dd5cd-87da-4b3e-8f4a-2b550015d6cb")] Pfx,
+		[ISI.Extensions.EnumGuid("a0665289-4ff8-44ea-8ed6-d1a85af31262")] PfxPassword,
 		[ISI.Extensions.EnumGuid("e712a8cd-a7b4-4028-b9b0-cd72a54a2b54")] Jks,
+		[ISI.Extensions.EnumGuid("9a041f7b-3c2a-4a66-b74c-5a301c8ef3cc")] JksPassword,
 	}
 }

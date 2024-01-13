@@ -19,31 +19,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.JsonJwt.Extensions;
-using ISI.Extensions.JsonSerialization.Extensions;
-using DTOs = ISI.Extensions.Acme.DataTransferObjects.AcmeApi;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Acme
+namespace ISI.Extensions.Acme.SerializableModels.AcmeOrders
 {
-	public partial class AcmeApi
+	[DataContract]
+	[ISI.Extensions.Serialization.PreferredSerializerJsonDataContract]
+	[ISI.Extensions.Serialization.SerializerContractUuid("7e97c133-e1c7-43d8-a960-757ec9ca870d")]
+	public class AcmeOrderCertificateDomainPostRenewalActionAcmeAgentNginxWebHook : IAcmeOrderCertificateDomainPostRenewalAction
 	{
-		public DTOs.SetAcmeAccountCredentialsResponse SetAcmeAccountCredentials(DTOs.SetAcmeAccountCredentialsRequest request)
-		{
-			var response = new DTOs.SetAcmeAccountCredentialsResponse();
+		[DataMember(Name = "headerAuthenticationKey", EmitDefaultValue = false)]
+		public string HeaderAuthenticationKey { get; set; }
 
-			if (System.IO.File.Exists(request.FullName))
-			{
-				System.IO.File.Delete(request.FullName);
-			}
+		[DataMember(Name = "headerAuthenticationValue", EmitDefaultValue = false)]
+		public string HeaderAuthenticationValue { get; set; }
 
-			System.IO.File.WriteAllText(request.FullName, JsonSerializer.Serialize(new ISI.Extensions.Acme.SerializableModels.AcmeAccountCredentials()
-			{
-				JwkAlgorithmKey = request.AcmeAccountCredentials.JwkAlgorithmKey,
-				Pem = request.AcmeAccountCredentials.Pem,
-				SerializedJwk = request.AcmeAccountCredentials.SerializedJwk,
-			}, true));
-			
-			return response;
-		}
+		[DataMember(Name = "setCertificatesUrl", EmitDefaultValue = false)]
+		public string SetCertificatesUrl { get; set; }
 	}
 }

@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,32 +18,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using ISI.Extensions.JsonJwt.Extensions;
-using ISI.Extensions.JsonSerialization.Extensions;
-using DTOs = ISI.Extensions.Acme.DataTransferObjects.AcmeApi;
 
 namespace ISI.Extensions.Acme
 {
-	public partial class AcmeApi
+	public class AcmeOrderCertificateDomainPostRenewalActionAcmeAgentNginxWebHook : IAcmeOrderCertificateDomainPostRenewalAction
 	{
-		public DTOs.SetAcmeAccountCredentialsResponse SetAcmeAccountCredentials(DTOs.SetAcmeAccountCredentialsRequest request)
-		{
-			var response = new DTOs.SetAcmeAccountCredentialsResponse();
+		public string HeaderAuthenticationKey { get; set; }
+		public string HeaderAuthenticationValue { get; set; }
 
-			if (System.IO.File.Exists(request.FullName))
-			{
-				System.IO.File.Delete(request.FullName);
-			}
-
-			System.IO.File.WriteAllText(request.FullName, JsonSerializer.Serialize(new ISI.Extensions.Acme.SerializableModels.AcmeAccountCredentials()
-			{
-				JwkAlgorithmKey = request.AcmeAccountCredentials.JwkAlgorithmKey,
-				Pem = request.AcmeAccountCredentials.Pem,
-				SerializedJwk = request.AcmeAccountCredentials.SerializedJwk,
-			}, true));
-			
-			return response;
-		}
+		public string SetCertificatesUrl { get; set; }
 	}
 }

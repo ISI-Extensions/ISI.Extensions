@@ -46,15 +46,27 @@ namespace ISI.Extensions.Acme
 					{
 						switch (postRenewalAction)
 						{
+							case AcmeOrderCertificateDomainPostRenewalActionAcmeAgentNginxWebHook acmeOrderCertificateDomainPostRenewalActionAcmeAgentNginxWebHook:
+								return new ISI.Extensions.Acme.SerializableModels.AcmeOrders.AcmeOrderCertificateDomainPostRenewalActionAcmeAgentNginxWebHook()
+								{
+									HeaderAuthenticationKey = acmeOrderCertificateDomainPostRenewalActionAcmeAgentNginxWebHook.HeaderAuthenticationKey,
+									HeaderAuthenticationValue = acmeOrderCertificateDomainPostRenewalActionAcmeAgentNginxWebHook.HeaderAuthenticationValue,
+									SetCertificatesUrl = acmeOrderCertificateDomainPostRenewalActionAcmeAgentNginxWebHook.SetCertificatesUrl,
+								} as ISI.Extensions.Acme.SerializableModels.AcmeOrders.IAcmeOrderCertificateDomainPostRenewalAction;
+
 							case AcmeOrderCertificateDomainPostRenewalActionAcmeAgentNginxManagerAgentWebHook acmeOrderCertificateDomainPostRenewalActionAcmeAgentNginxManagerAgentWebHook:
 								return new ISI.Extensions.Acme.SerializableModels.AcmeOrders.AcmeOrderCertificateDomainPostRenewalActionAcmeAgentNginxManagerAgentWebHook()
 								{
+									HeaderAuthenticationKey = acmeOrderCertificateDomainPostRenewalActionAcmeAgentNginxManagerAgentWebHook.HeaderAuthenticationKey,
+									HeaderAuthenticationValue = acmeOrderCertificateDomainPostRenewalActionAcmeAgentNginxManagerAgentWebHook.HeaderAuthenticationValue,
 									SetCertificatesUrl = acmeOrderCertificateDomainPostRenewalActionAcmeAgentNginxManagerAgentWebHook.SetCertificatesUrl,
 								} as ISI.Extensions.Acme.SerializableModels.AcmeOrders.IAcmeOrderCertificateDomainPostRenewalAction;
 
 							case AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook acmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook:
 								return new ISI.Extensions.Acme.SerializableModels.AcmeOrders.AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook()
 								{
+									HeaderAuthenticationKey = acmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook.HeaderAuthenticationKey,
+									HeaderAuthenticationValue = acmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook.HeaderAuthenticationValue,
 									PushWebHooks = acmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook.PushWebHooks.ToNullCheckedArray(pushWebHook => new ISI.Extensions.Acme.SerializableModels.AcmeOrders.AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHookPushWebHook()
 									{
 										CertificateType = pushWebHook.CertificateType,

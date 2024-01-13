@@ -10,7 +10,7 @@ using DTOs = ISI.Extensions.Acme.DataTransferObjects.AcmeApi;
 
 namespace ISI.Extensions.Acme
 {
-	public partial class AcmeApi
+	public partial class AcmeApi : IAcmeApi
 	{
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }

@@ -19,31 +19,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.JsonJwt.Extensions;
-using ISI.Extensions.JsonSerialization.Extensions;
-using DTOs = ISI.Extensions.Acme.DataTransferObjects.AcmeApi;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ISI.Extensions.Acme
 {
-	public partial class AcmeApi
+	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
+	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
 	{
-		public DTOs.SetAcmeAccountCredentialsResponse SetAcmeAccountCredentials(DTOs.SetAcmeAccountCredentialsRequest request)
+		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
-			var response = new DTOs.SetAcmeAccountCredentialsResponse();
-
-			if (System.IO.File.Exists(request.FullName))
-			{
-				System.IO.File.Delete(request.FullName);
-			}
-
-			System.IO.File.WriteAllText(request.FullName, JsonSerializer.Serialize(new ISI.Extensions.Acme.SerializableModels.AcmeAccountCredentials()
-			{
-				JwkAlgorithmKey = request.AcmeAccountCredentials.JwkAlgorithmKey,
-				Pem = request.AcmeAccountCredentials.Pem,
-				SerializedJwk = request.AcmeAccountCredentials.SerializedJwk,
-			}, true));
-			
-			return response;
+			services.AddSingleton<IAcmeApi, AcmeApi>();
 		}
 	}
 }

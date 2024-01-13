@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,32 +18,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using ISI.Extensions.JsonJwt.Extensions;
-using ISI.Extensions.JsonSerialization.Extensions;
 using DTOs = ISI.Extensions.Acme.DataTransferObjects.AcmeApi;
 
 namespace ISI.Extensions.Acme
 {
-	public partial class AcmeApi
+	public interface IAcmeApi
 	{
-		public DTOs.SetAcmeAccountCredentialsResponse SetAcmeAccountCredentials(DTOs.SetAcmeAccountCredentialsRequest request)
-		{
-			var response = new DTOs.SetAcmeAccountCredentialsResponse();
-
-			if (System.IO.File.Exists(request.FullName))
-			{
-				System.IO.File.Delete(request.FullName);
-			}
-
-			System.IO.File.WriteAllText(request.FullName, JsonSerializer.Serialize(new ISI.Extensions.Acme.SerializableModels.AcmeAccountCredentials()
-			{
-				JwkAlgorithmKey = request.AcmeAccountCredentials.JwkAlgorithmKey,
-				Pem = request.AcmeAccountCredentials.Pem,
-				SerializedJwk = request.AcmeAccountCredentials.SerializedJwk,
-			}, true));
-			
-			return response;
-		}
+		DTOs.CreateNewAcmeAccountResponse CreateNewAcmeAccount(DTOs.CreateNewAcmeAccountRequest request);
+		DTOs.CreateNewAcmeOrderResponse CreateNewAcmeOrder(DTOs.CreateNewAcmeOrderRequest request);
+		DTOs.GetAcmeAccountCredentialsResponse GetAcmeAccountCredentials(DTOs.GetAcmeAccountCredentialsRequest request);
+		DTOs.SetAcmeAccountCredentialsResponse SetAcmeAccountCredentials(DTOs.SetAcmeAccountCredentialsRequest request);
+		DTOs.GetNewNonceResponse GetNewNonce(DTOs.GetNewNonceRequest request);
+		DTOs.GetDirectoryResponse GetDirectory(DTOs.GetDirectoryRequest request);
+		DTOs.GetAcmeHostContextResponse GetAcmeHostContext(DTOs.GetAcmeHostContextRequest request);
 	}
 }

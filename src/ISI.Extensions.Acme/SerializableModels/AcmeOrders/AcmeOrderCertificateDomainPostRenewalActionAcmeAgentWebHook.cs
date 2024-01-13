@@ -28,6 +28,12 @@ namespace ISI.Extensions.Acme.SerializableModels.AcmeOrders
 	[ISI.Extensions.Serialization.SerializerContractUuid("628fa16b-36b7-45e1-8f67-bd4e3d27b831")]
 	public class AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook : IAcmeOrderCertificateDomainPostRenewalAction
 	{
+		[DataMember(Name = "headerAuthenticationKey", EmitDefaultValue = false)]
+		public string HeaderAuthenticationKey { get; set; }
+
+		[DataMember(Name = "headerAuthenticationValue", EmitDefaultValue = false)]
+		public string HeaderAuthenticationValue { get; set; }
+
 		[DataMember(Name = "pushWebHooks", EmitDefaultValue = false)]
 		public AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHookPushWebHook[] PushWebHooks { get; set; }
 	}

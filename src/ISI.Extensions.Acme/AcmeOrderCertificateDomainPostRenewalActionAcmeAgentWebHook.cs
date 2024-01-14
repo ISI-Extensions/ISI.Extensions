@@ -26,13 +26,6 @@ namespace ISI.Extensions.Acme
 		public string HeaderAuthenticationKey { get; set; }
 		public string HeaderAuthenticationValue { get; set; }
 
-		public AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHookPushWebHook[] PushWebHooks { get; set; }
-	}
-
-	public class AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHookPushWebHook
-	{
-		public ISI.Extensions.Acme.CertificateType CertificateType { get; set; }
-
-		public string PostUrl { get; set; }
+		public string SetCertificatesUrl { get; set; }
 	}
 }

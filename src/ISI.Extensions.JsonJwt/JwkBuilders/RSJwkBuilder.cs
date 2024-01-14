@@ -118,9 +118,6 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 				var certificate = System.Security.Cryptography.X509Certificates.X509Certificate2.CreateFromPem(serializedJwkOrPem);
 
 				_rsaCryptoServiceProvider = (System.Security.Cryptography.RSACryptoServiceProvider)certificate.PrivateKey;
-
-				var hashSize1 = certificate.GetCertHash().Length;
-				var hashSize2 = certificate.GetCertHashString().Length;
 			}
 			else
 			{

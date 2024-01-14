@@ -156,40 +156,7 @@ namespace ISI.Extensions.WebClient
 		public static (System.Net.HttpStatusCode HttpStatusCode, string Body) UploadFiles(Uri uri, HeaderCollection headers, IEnumerable<(System.IO.Stream Stream, string FileName, string FileFieldName)> files, System.Collections.Specialized.NameValueCollection formValues = null)
 		{
 			var boundary = string.Format("---------------------------{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.Base36));
-			var boundarybytes = System.Text.Encoding.UTF8.GetBytes(string.Format("\r\n--{0}\r\n", boundary));
-
-			var formItems = new List<byte[]>();
-			long requestLen = 0;
-
-			if (formValues != null)
-			{
-				foreach (var key in formValues.AllKeys)
-				{
-					var itemString = string.Format("Content-Disposition: form-data; name=\"{0}\"\r\n\r\n{1}", key, formValues[key]);
-					var itemBytes = System.Text.Encoding.UTF8.GetBytes(itemString);
-
-					requestLen += itemBytes.Length;
-					requestLen += boundarybytes.Length;
-
-					formItems.Add(itemBytes);
-				}
-			}
-
-			string getFileHeader((System.IO.Stream Stream, string FileName, string FileFieldName) file)
-			{
-				return string.Format("Content-Disposition: form-data; name=\"{0}\"; filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n", file.FileFieldName, file.FileName, ISI.Extensions.MimeType.GetMimeType(file.FileName));
-			}
-
-			foreach (var file in files)
-			{
-				file.Stream.Rewind();
-
-				var fileHeader = getFileHeader(file);
-				var fileHeaderBytes = System.Text.Encoding.UTF8.GetBytes(fileHeader);
-				var fileTrailer = System.Text.Encoding.UTF8.GetBytes(string.Format("\r\n--{0}--\r\n", boundary));
-
-				requestLen += boundarybytes.Length + fileHeaderBytes.Length + fileTrailer.Length + file.Stream.Length;
-			}
+			var boundarybytes = System.Text.Encoding.UTF8.GetBytes(string.Format("{0}--{1}{0}", Environment.NewLine, boundary));
 
 			var webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(uri);
 
@@ -203,6 +170,43 @@ namespace ISI.Extensions.WebClient
 			webRequest.ContentType = "multipart/form-data; boundary=" + boundary;
 
 			webRequest.Method = System.Net.WebRequestMethods.Http.Post;
+
+			var formItems = new List<byte[]>();
+			long requestLen = 0;
+
+			if (formValues != null)
+			{
+				foreach (var key in formValues.AllKeys)
+				{
+					var itemString = string.Format("Content-Disposition: form-data; name=\"{1}\"{0}{0}{2}", Environment.NewLine, key, formValues[key]);
+					var itemBytes = System.Text.Encoding.UTF8.GetBytes(itemString);
+
+					requestLen += itemBytes.Length;
+					requestLen += boundarybytes.Length;
+
+					formItems.Add(itemBytes);
+				}
+			}
+
+			string getFileHeader((System.IO.Stream Stream, string FileName, string FileFieldName) file)
+			{
+				return string.Format("Content-Disposition: form-data; name=\"{1}\"; filename=\"{2}\"{0}Content-Type: {3}{0}{0}", Environment.NewLine, file.FileFieldName, file.FileName, ISI.Extensions.MimeType.GetMimeType(file.FileName));
+			}
+
+			foreach (var file in files)
+			{
+				file.Stream.Rewind();
+
+				var fileHeader = getFileHeader(file);
+				var fileHeaderBytes = System.Text.Encoding.UTF8.GetBytes(fileHeader);
+
+				requestLen += boundarybytes.Length + fileHeaderBytes.Length + file.Stream.Length;
+			}
+
+
+			var fileTrailer = System.Text.Encoding.UTF8.GetBytes(string.Format("{0}--{1}--{0}", Environment.NewLine, boundary));
+			requestLen += fileTrailer.Length;
+
 			webRequest.ContentLength = requestLen;
 
 			//webRequest.Expect = string.Empty;
@@ -228,10 +232,9 @@ namespace ISI.Extensions.WebClient
 
 					var chunkSize = 1427; // any larger will cause an SSL request to fail
 					file.Stream.CopyTo(requestStream, chunkSize: chunkSize);
-
-					var fileTrailer = System.Text.Encoding.UTF8.GetBytes(string.Format("\r\n--{0}--\r\n", boundary));
-					requestStream.Write(fileTrailer, 0, fileTrailer.Length);
 				}
+
+				requestStream.Write(fileTrailer, 0, fileTrailer.Length);
 
 				requestStream.Flush();
 			}

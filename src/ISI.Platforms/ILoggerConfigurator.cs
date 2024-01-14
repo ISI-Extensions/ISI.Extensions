@@ -23,7 +23,7 @@ namespace ISI.Platforms
 {
 	public interface ILoggerConfigurator
 	{
-		void SetBaseLogger(Type typeOfProgram, Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot, string activeEnvironment);
+		void SetBaseLogger(ServiceApplicationContext context);
 		void CloseAndFlush();
 		void AddLogger(object hostConfigurator);
 		void Error(Exception exception, string message);

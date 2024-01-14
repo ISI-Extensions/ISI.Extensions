@@ -38,8 +38,10 @@ namespace ISI.Extensions.VisualStudio
 			{
 				case RSA:
 					return certificate.GetRSAPrivateKey();
+
 				case Ecc:
 					return certificate.GetECDsaPrivateKey();
+
 				default:
 					throw new InvalidOperationException("Unknown certificate signing algorithm.");
 			}

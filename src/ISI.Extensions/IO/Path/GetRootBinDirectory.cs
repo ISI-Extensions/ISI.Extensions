@@ -35,6 +35,11 @@ namespace ISI.Extensions
 					rootBinDirectory = System.IO.Path.GetDirectoryName(rootBinDirectory);
 				}
 
+				if (string.IsNullOrWhiteSpace(rootBinDirectory))
+				{
+					rootBinDirectory = GetBinDirectory(assembly);
+				}
+
 				return rootBinDirectory;
 			}
 		}

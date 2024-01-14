@@ -34,19 +34,7 @@ namespace ISI.Extensions.Acme.SerializableModels.AcmeOrders
 		[DataMember(Name = "headerAuthenticationValue", EmitDefaultValue = false)]
 		public string HeaderAuthenticationValue { get; set; }
 
-		[DataMember(Name = "pushWebHooks", EmitDefaultValue = false)]
-		public AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHookPushWebHook[] PushWebHooks { get; set; }
-	}
-
-	[DataContract]
-	public class AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHookPushWebHook
-	{
-		[DataMember(Name = "certificateType", EmitDefaultValue = false)]
-		public string __CertificateType { get => CertificateType.GetUuid().Formatted(GuidExtensions.GuidFormat.WithHyphens); set => CertificateType = ISI.Extensions.Enum<ISI.Extensions.Acme.CertificateType>.ParseUuid(value); }
-		[IgnoreDataMember]
-		public ISI.Extensions.Acme.CertificateType CertificateType { get; set; }
-
-		[DataMember(Name = "postUrl", EmitDefaultValue = false)]
-		public string PostUrl { get; set; }
+		[DataMember(Name = "setCertificatesUrl", EmitDefaultValue = false)]
+		public string SetCertificatesUrl { get; set; }
 	}
 }

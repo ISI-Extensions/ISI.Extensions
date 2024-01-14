@@ -67,11 +67,7 @@ namespace ISI.Extensions.Acme
 								{
 									HeaderAuthenticationKey = acmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook.HeaderAuthenticationKey,
 									HeaderAuthenticationValue = acmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook.HeaderAuthenticationValue,
-									PushWebHooks = acmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook.PushWebHooks.ToNullCheckedArray(pushWebHook => new ISI.Extensions.Acme.SerializableModels.AcmeOrders.AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHookPushWebHook()
-									{
-										CertificateType = pushWebHook.CertificateType,
-										PostUrl = pushWebHook.PostUrl,
-									})
+									SetCertificatesUrl = acmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook.SetCertificatesUrl,
 								} as ISI.Extensions.Acme.SerializableModels.AcmeOrders.IAcmeOrderCertificateDomainPostRenewalAction;
 
 							default:

@@ -26,13 +26,13 @@ namespace ISI.Platforms.Serilog
 {
 	public class LoggerConfigurator : ISI.Platforms.ILoggerConfigurator
 	{
-		public void SetBaseLogger(Type typeOfProgram, Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot, string activeEnvironment)
+		public void SetBaseLogger(ServiceApplicationContext context)
 		{
-			global::Serilog.Log.Logger = UpdateLoggerConfiguration(null, null, configurationRoot, activeEnvironment).CreateLogger();
+			global::Serilog.Log.Logger = UpdateLoggerConfiguration(null, null, context.ConfigurationRoot, context.ActiveEnvironment).CreateLogger();
 
-			global::Serilog.Log.Information($"Starting {typeOfProgram.Namespace}");
-			global::Serilog.Log.Information($"Version: {ISI.Extensions.SystemInformation.GetAssemblyVersion(typeOfProgram.Assembly)}");
-			global::Serilog.Log.Information($"Data: {System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, typeOfProgram.Namespace)}");
+			global::Serilog.Log.Information($"Starting {context.RootType.Namespace}");
+			global::Serilog.Log.Information($"Version: {ISI.Extensions.SystemInformation.GetAssemblyVersion(context.RootAssembly)}");
+			global::Serilog.Log.Information($"Data: {System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, context.RootType.Namespace)}");
 		}
 
 		public void AddLogger(object hostConfigurator)

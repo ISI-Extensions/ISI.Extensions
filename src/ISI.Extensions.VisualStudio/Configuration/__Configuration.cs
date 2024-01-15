@@ -27,6 +27,8 @@ namespace ISI.Extensions.VisualStudio
 	{
 		public const string ConfigurationSectionName = "ISI.Extensions.VisualStudio";
 
+		public string VsWhereExeFullName { get; set; } = @"FileNameDeMasked:{LocalApplicationData}\ISI.Extensions\vswhere.exe";
+
 		public string VisualStudioSettingsFullName { get; set; } = @"FileNameDeMasked:{ApplicationData}\ISI.Extensions\visualStudio.settings.json";
 	}
 }

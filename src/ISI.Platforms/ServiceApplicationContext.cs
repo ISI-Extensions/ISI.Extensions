@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,30 +21,61 @@ using System.Threading.Tasks;
 
 namespace ISI.Platforms
 {
-	public delegate void ServiceApplicationContextPostStartupDelegate(Microsoft.Extensions.Hosting.IHost host);
 	public delegate void ServiceApplicationContextWebStartupMvcBuilderDelegate(Microsoft.Extensions.DependencyInjection.IMvcBuilder mvcBuilder);
 	public delegate void ServiceApplicationContextWebStartupConfigureServicesDelegate(Microsoft.Extensions.DependencyInjection.IServiceCollection services);
 	public delegate void ServiceApplicationContextConfigureApplicationDelegate(Microsoft.AspNetCore.Builder.IApplicationBuilder applicationBuilder, Microsoft.AspNetCore.Hosting.IWebHostEnvironment webHostingEnvironment);
+	public delegate void ServiceApplicationContextPostStartupDelegate(Microsoft.Extensions.Hosting.IHost host);
 
-	public class ServiceApplicationContext
+	public interface IServiceApplicationContextAddActions
 	{
-		public Type RootType { get; set; }
-		public System.Reflection.Assembly RootAssembly { get; set; }
+		Microsoft.Extensions.Configuration.IConfigurationRoot ConfigurationRoot { get; set; }
 
-		public Microsoft.Extensions.Configuration.IConfigurationRoot ConfigurationRoot { get; set; }
+		string ActiveEnvironment { get; set; }
+
+		ISI.Extensions.MessageBus.GetAddMessageBusSubscriptionsDelegate GetAddMessageBusSubscriptions { get; set; }
+
+		ServiceApplicationContextWebStartupMvcBuilderDelegate WebStartupMvcBuilder { get; set; }
+		ServiceApplicationContextWebStartupConfigureServicesDelegate WebStartupConfigureServices { get; set; }
+
+		ServiceApplicationContextConfigureApplicationDelegate ConfigureApplication { get; set; }
+
+		ServiceApplicationContextPostStartupDelegate PostStartup { get; set; }
+	}
+
+	public class ServiceApplicationContext : IServiceApplicationContextAddActions
+	{
+		public Type RootType { get; }
+		public System.Reflection.Assembly RootAssembly { get; }
+
+		public Microsoft.Extensions.Configuration.IConfigurationRoot ConfigurationRoot { get; private set; }
+		Microsoft.Extensions.Configuration.IConfigurationRoot IServiceApplicationContextAddActions.ConfigurationRoot { get => ConfigurationRoot; set => ConfigurationRoot = value; }
+
 		public ISI.Platforms.ILoggerConfigurator LoggerConfigurator { get; set; }
-		
-		public string ActiveEnvironment { get; set; }
-		
+
+		public string ActiveEnvironment { get; private set; }
+		string IServiceApplicationContextAddActions.ActiveEnvironment { get => ActiveEnvironment; set => ActiveEnvironment = value; }
+
 		public string[] Args { get; set; }
-		
-		public ISI.Extensions.MessageBus.GetAddMessageBusSubscriptionsDelegate GetAddMessageBusSubscriptions { get; set; }
 
-		public ServiceApplicationContextWebStartupMvcBuilderDelegate WebStartupMvcBuilder { get; set; }
-		public ServiceApplicationContextWebStartupConfigureServicesDelegate WebStartupConfigureServices { get; set; }
+		public ISI.Extensions.MessageBus.GetAddMessageBusSubscriptionsDelegate GetAddMessageBusSubscriptions { get; private set; }
+		ISI.Extensions.MessageBus.GetAddMessageBusSubscriptionsDelegate IServiceApplicationContextAddActions.GetAddMessageBusSubscriptions { get => GetAddMessageBusSubscriptions; set => GetAddMessageBusSubscriptions = value; }
 
-		public ServiceApplicationContextConfigureApplicationDelegate ConfigureApplication { get; set; }
+		public ServiceApplicationContextWebStartupMvcBuilderDelegate WebStartupMvcBuilder { get; private set; }
+		ServiceApplicationContextWebStartupMvcBuilderDelegate IServiceApplicationContextAddActions.WebStartupMvcBuilder { get => WebStartupMvcBuilder; set => WebStartupMvcBuilder = value; }
 
-		public ServiceApplicationContextPostStartupDelegate PostStartup { get; set; }
+		public ServiceApplicationContextWebStartupConfigureServicesDelegate WebStartupConfigureServices { get; private set; }
+		ServiceApplicationContextWebStartupConfigureServicesDelegate IServiceApplicationContextAddActions.WebStartupConfigureServices { get => WebStartupConfigureServices; set => WebStartupConfigureServices = value; }
+
+		public ServiceApplicationContextConfigureApplicationDelegate ConfigureApplication { get; private set; }
+		ServiceApplicationContextConfigureApplicationDelegate IServiceApplicationContextAddActions.ConfigureApplication { get => ConfigureApplication; set => ConfigureApplication = value; }
+
+		public ServiceApplicationContextPostStartupDelegate PostStartup { get; private set; }
+		ServiceApplicationContextPostStartupDelegate IServiceApplicationContextAddActions.PostStartup { get => PostStartup; set => PostStartup = value; }
+
+		public ServiceApplicationContext(Type rootType)
+		{
+			RootType = rootType;
+			RootAssembly = rootType.Assembly;
+		}
 	}
 }

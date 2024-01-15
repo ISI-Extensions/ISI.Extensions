@@ -46,7 +46,7 @@ namespace ISI.Extensions.AspNetCore.Tests
 		{
 			services
 				.AddControllersWithViews()
-				.AddRazorRuntimeCompilation(options => options.FileProviders.Add(new ISI.Extensions.VirtualFileVolumesFileProvider()))
+				//.AddRazorRuntimeCompilation(options => options.FileProviders.Add(new ISI.Extensions.VirtualFileVolumesFileProvider()))
 				.AddNewtonsoftJson()
 				;
 

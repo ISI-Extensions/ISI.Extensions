@@ -196,7 +196,11 @@ namespace ISI.Extensions.VisualStudio
 
 			CopyDeploymentFiles(projectDirectory, packageComponentDirectory);
 			
-			packageComponent.AfterBuildPackageComponent?.Invoke(packageComponentsDirectory);
+			packageComponent.AfterBuildPackageComponent?.Invoke(new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.AfterBuildPackageComponentContext()
+			{
+				ProjectFullName = packageComponent.ProjectFullName,
+				PackageComponentDirectory = packageComponentsDirectory,
+			});
 		}
 	}
 }

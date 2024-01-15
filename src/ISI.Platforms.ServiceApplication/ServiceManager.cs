@@ -120,7 +120,7 @@ namespace ISI.Platforms.ServiceApplication
 					_messageBus.StartAsync();
 				}
 
-				Startup.Context.PostStartup?.Invoke(_host);
+				Startup.Context.PostStartup.Invoke(_host);
 
 				return _host.Services.SetServiceLocator();
 			});

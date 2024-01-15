@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Platforms.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -21,11 +22,8 @@ namespace ISI.Platforms.AspNetCore.Extensions
 				version = assemblyVersion.Major;
 			}
 
-			var webStartupConfigureServices = context.WebStartupConfigureServices;
-			context.WebStartupConfigureServices = services =>
+			context.AddWebStartupConfigureServices(services =>
 			{
-				webStartupConfigureServices?.Invoke(services);
-
 				services.AddSwaggerGen(swaggerGenOptions =>
 				{
 					swaggerGenOptions.CustomOperationIds(apiDescription => apiDescription.TryGetMethodInfo(out var methodInfo) ? methodInfo.Name.TrimEnd("Async") : null);
@@ -65,16 +63,13 @@ namespace ISI.Platforms.AspNetCore.Extensions
 				});
 
 				services.AddSwaggerGenNewtonsoftSupport();
-			};
+			});
 
-			var configureApplication = context.ConfigureApplication;
-			context.ConfigureApplication = (applicationBuilder, webHostingEnvironment) =>
+			context.AddConfigureApplication((applicationBuilder, webHostingEnvironment) =>
 			{
-				configureApplication?.Invoke(applicationBuilder, webHostingEnvironment);
-
 				applicationBuilder.UseSwagger();
 				applicationBuilder.UseSwaggerUI(swaggerUIOptions => swaggerUIOptions.SwaggerEndpoint($"/swagger/v{version}/swagger.json", $"{applicationName} v{version}"));
-			};
+			});
 
 			return context;
 		}

@@ -21,9 +21,11 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.SecureShell
 {
-	[ISI.Extensions.ConfigurationHelper.Configuration("ISI.Extensions.SecureShell")]
-	public partial class Configuration
+	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
+	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
 	{
+		public const string ConfigurationSectionName = "ISI.Extensions.SecureShell";
+
 		public TimeSpan DefaultTimeOut { get; } = TimeSpan.FromMinutes(1);
 
 		public string DefaultEncryptionAlgorithms { get; }

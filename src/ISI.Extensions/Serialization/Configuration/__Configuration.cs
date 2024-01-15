@@ -21,9 +21,11 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Serialization
 {
-	[ISI.Extensions.ConfigurationHelper.Configuration("ISI.Extensions.Serialization")]
-	public partial class Configuration
+	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
+	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
 	{
+		public const string ConfigurationSectionName = "ISI.Extensions.Serialization";
+
 		public string DefaultSerializerType { get; set; }
 		public string DefaultDataContractSerializerType { get; set; }
 	}

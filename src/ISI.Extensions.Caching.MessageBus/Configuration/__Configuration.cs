@@ -21,9 +21,11 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Caching.MessageBus
 {
-	[ISI.Extensions.ConfigurationHelper.Configuration("ISI.Extensions.Caching.MessageBus")]
+	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
 	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
 	{
+		public const string ConfigurationSectionName = "ISI.Extensions.Caching.MessageBus";
+
 		public string QueueSuffix { get; set; }
 	}
 }

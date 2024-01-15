@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Locks.Redis
 {
-	[ISI.Extensions.ConfigurationHelper.Configuration("ISI.Extensions.Locks.Redis")]
+	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
 	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
 	{
 		public const string ConfigurationSectionName = "ISI.Extensions.Locks.Redis";

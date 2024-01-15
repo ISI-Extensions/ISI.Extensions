@@ -13,7 +13,9 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.4" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
+		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="7.2.0" />
 		<PackageReference Include="NETStandard.Library" Version="2.0.3" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
@@ -67,6 +69,7 @@
 		<ProjectReference Include="..\ISI.Extensions.Repository.PostgreSQL\ISI.Extensions.Repository.PostgreSQL.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Repository.RavenDb\ISI.Extensions.Repository.RavenDb.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Repository.SqlServer\ISI.Extensions.Repository.SqlServer.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Sbom\ISI.Extensions.Sbom.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Scm\ISI.Extensions.Scm.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Security.ActiveDirectory\ISI.Extensions.Security.ActiveDirectory.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.SharpCompress\ISI.Extensions.SharpCompress.csproj" />

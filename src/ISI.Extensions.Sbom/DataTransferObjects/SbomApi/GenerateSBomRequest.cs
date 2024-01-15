@@ -19,28 +19,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.VsWhereApi;
-using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.VisualStudio
+namespace ISI.Extensions.Sbom.DataTransferObjects.SbomApi
 {
-	public partial class VsWhereApi
+	public class GenerateSBomRequest
 	{
-		protected Configuration Configuration { get; }
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
-		protected ISI.Extensions.Nuget.NugetApi NugetApi { get; }
-
-		public VsWhereApi(
-			Configuration configuration,
-			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
-			ISI.Extensions.Nuget.NugetApi nugetApi)
-		{
-			Configuration = configuration;
-			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
-			NugetApi = nugetApi;
-		}
+		public string PackageComponentDirectory { get; set; }
+		public string PackageSourceDirectory { get; set; }
+		public string PackageName { get; set; }
+		public string PackageVersion { get; set; }
+		public string PackageAuthor { get; set; }
+		public Uri PackageNamespace { get; set; }
 	}
 }

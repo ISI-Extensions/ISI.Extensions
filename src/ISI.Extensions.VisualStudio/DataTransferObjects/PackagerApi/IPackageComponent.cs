@@ -19,14 +19,13 @@ using System.Text;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi
 {
-	public delegate void AfterBuildPackageComponent(string packageComponentDirectory);
-
 	public interface IPackageComponent
 	{
 		string ProjectFullName { get; set; }
 		string IconFileName { get; set; }
 		bool DoNotXmlTransformConfigs { get; set; }
 		List<string> ExcludeFiles { get; set; }
-		AfterBuildPackageComponent AfterBuildPackageComponent { get; set; }
+
+		AfterBuildPackageComponentDelegate AfterBuildPackageComponent { get; set; }
 	}
 }

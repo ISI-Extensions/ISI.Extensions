@@ -22,6 +22,7 @@ using ISI.Extensions.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using  ISI.Platforms.Extensions;
 
 namespace ISI.Platforms.AspNetCore.Extensions
 {
@@ -37,11 +38,8 @@ namespace ISI.Platforms.AspNetCore.Extensions
 
 			CookieAndBearerAuthorizationPolicy.PolicyName = policyName;
 
-			var webStartupConfigureServices = context.WebStartupConfigureServices;
-			context.WebStartupConfigureServices = services =>
+			context.AddWebStartupConfigureServices(services =>
 			{
-				webStartupConfigureServices?.Invoke(services);
-
 				services
 					.AddSingleton<IAuthenticationHandler, CookieAndBearerAuthenticationHandler>()
 					.AddAuthentication(CookieAndBearerAuthenticationHandler.AuthenticationHandlerName)
@@ -52,7 +50,7 @@ namespace ISI.Platforms.AspNetCore.Extensions
 				{
 					options.AddPolicy(CookieAndBearerAuthorizationPolicy.PolicyName, policy => policy.Requirements.Add(new CookieAndBearerAuthorizationPolicy()));
 				});
-			};
+			});
 
 			return context;
 		}

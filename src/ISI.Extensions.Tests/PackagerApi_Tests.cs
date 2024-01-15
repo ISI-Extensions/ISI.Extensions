@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using ISI.Extensions.ConfigurationHelper.Extensions;
 using ISI.Extensions.DependencyInjection.Extensions;
 using ISI.Extensions.Extensions;
@@ -73,7 +73,7 @@ namespace ISI.Extensions.Tests
 			var logger = new ISI.Extensions.TextWriterLogger(TestContext.Progress);
 			var serialization = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.JsonSerialization.IJsonSerializer>();
 			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.Nuget.Configuration(), logger, new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
-			var findToolsApi = new ISI.Extensions.VisualStudio.VsWhereApi(logger, nugetApi);
+			var findToolsApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.VsWhereApi>();
 			var msBuildApi = new ISI.Extensions.VisualStudio.MSBuildApi(logger, findToolsApi);
 			var codeGenerationApi = new ISI.Extensions.VisualStudio.CodeGenerationApi(logger);
 			var xmlTransformApi = new ISI.Extensions.VisualStudio.XmlTransformApi(logger);
@@ -82,6 +82,7 @@ namespace ISI.Extensions.Tests
 			var sourceControlClientApi = new SourceControlClientApi(logger);
 			var projectApi = new ISI.Extensions.VisualStudio.ProjectApi(logger);
 			var solutionApi = new ISI.Extensions.VisualStudio.SolutionApi(new ISI.Extensions.VisualStudio.Configuration(), logger, serialization, buildScriptApi, sourceControlClientApi, codeGenerationApi, projectApi, nugetApi);
+			var sbomApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Sbom.SbomApi>();
 
 			var configuration = "Release";
 
@@ -94,10 +95,10 @@ namespace ISI.Extensions.Tests
 
 			var buildDateTimeStamp = string.Format("{0:yyyyMMdd.HHmmss}", utcDateTime);
 
-			var solutionFullName = @"F:\ISI\Clients\ISI\ISI.DocumentBuilder.Portal.WebApplication\src\ISI.DocumentBuilder.Portal.WebApplication.sln";
-			var rootProjectFullName = @"F:\ISI\Clients\ISI\ISI.DocumentBuilder.Portal.WebApplication\src\ISI.DocumentBuilder.Portal.WebApplication\ISI.DocumentBuilder.Portal.WebApplication.csproj";
-			var rootAssemblyVersionKey = "ISI.DocumentBuilder.Portal.WebApplication";
-			var artifactName = "ISI.DocumentBuilder.Portal.WebApplication";
+			var solutionFullName = @"F:\ISI\Internal Projects\ISI.WebApplication\src\ISI.WebApplication.sln";
+			var rootProjectFullName = @"F:\ISI\Internal Projects\ISI.WebApplication\src\ISI.WebApplication\ISI.WebApplication.csproj";
+			var rootAssemblyVersionKey = "ISI.WebApplication";
+			var artifactName = "ISI.WebApplication";
 
 			//solutionApi.CleanSolution(new ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi.CleanSolutionRequest()
 			//{
@@ -131,15 +132,47 @@ namespace ISI.Extensions.Tests
 				SubDirectory = "ISI",
 				PackageComponents = new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.IPackageComponent[]
 				{
-					new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.PackageComponentConsoleApplication()
-					{
-						ProjectFullName = @"F:\ISI\Clients\ISI\ISI.DocumentBuilder.Portal.WebApplication\src\ISI.Services\ISI.Services.DocumentBuilder.MigrationTool\ISI.Services.DocumentBuilder.MigrationTool.csproj",
-						IconFileName = @"ISI.ico",
-					},
+					//new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.PackageComponentConsoleApplication()
+					//{
+					//	ProjectFullName = @"F:\ISI\Clients\ISI\ISI.DocumentBuilder.Portal.WebApplication\src\ISI.Services\ISI.Services.DocumentBuilder.MigrationTool\ISI.Services.DocumentBuilder.MigrationTool.csproj",
+					//	IconFileName = @"ISI.ico",
+					//},
 					new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.PackageComponentWebSite()
 					{
 						ProjectFullName = rootProjectFullName,
 						IconFileName = @"ISI.ico",
+						AfterBuildPackageComponent = context =>
+						{
+							var packageName = System.IO.Path.GetFileNameWithoutExtension(context.ProjectFullName);
+							var packageSourceDirectory = System.IO.Path.GetDirectoryName(context.ProjectFullName);
+
+							sbomApi.GenerateSBom(new()
+							{
+								PackageComponentDirectory = context.PackageComponentDirectory,
+								PackageSourceDirectory = packageSourceDirectory,
+								PackageName = packageName,
+								PackageVersion = assemblyVersions[rootAssemblyVersionKey].AssemblyVersion,
+								PackageAuthor = "ISI",
+								PackageNamespace = new Uri(@"https://www.isi-net.com/packages"),
+							});
+
+
+							//var arguments = new List<string>();
+
+							//arguments.Add("generate");
+							//arguments.Add($"-b \"{context.PackageComponentDirectory}\"");
+							//arguments.Add($"-bc \"{packageSourceDirectory}\"");
+							//arguments.Add($"-pn \"{packageName}\"");
+							//arguments.Add($"-pv \"{assemblyVersions[rootAssemblyVersionKey].AssemblyVersion}\"");
+							//arguments.Add($"-ps \"ISI\"");
+							//arguments.Add("-nsb \"https:\\www.isi-net.com\\");
+
+							//var xx = ISI.Extensions.Process.WaitForProcessResponse(new Process.ProcessRequest()
+							//{
+							//	ProcessExeFullName = "sbom-tool",
+							//	Arguments = arguments,
+							//});
+						}
 					},
 				},
 				PackageFullName = buildArtifactZipFileName,

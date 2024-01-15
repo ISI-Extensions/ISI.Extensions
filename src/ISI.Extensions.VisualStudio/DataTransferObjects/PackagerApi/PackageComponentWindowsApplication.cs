@@ -40,6 +40,6 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi
 			"appsettings.Development.json",
 		});
 
-		public AfterBuildPackageComponent AfterBuildPackageComponent { get; set; } = null;
+		public AfterBuildPackageComponentDelegate AfterBuildPackageComponent { get; set; } = null;
 	}
 }

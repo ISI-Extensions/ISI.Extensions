@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Platforms.AspNetCore.Extensions;
+using ISI.Platforms.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -28,38 +29,19 @@ namespace ISI.Platforms.ServiceApplication.Test
 	{
 		public static int Main(string[] args)
 		{
-			var context = new ServiceApplicationContext()
+			var context = new ServiceApplicationContext(typeof(Program))
 			{
-				RootType = typeof(Program),
-				RootAssembly = typeof(Program).Assembly,
-				
-				//ConfigurationRoot = source.ConfigurationRoot,
-				
 				LoggerConfigurator = new ISI.Platforms.Serilog.LoggerConfigurator(),
 				
-				//ActiveEnvironment = source.ActiveEnvironment,
-
 				Args = args,
-
-				//GetAddMessageBusSubscriptions = request.GetAddMessageBusSubscriptions,
-				
-				//WebStartupMvcBuilder = request.WebStartupMvcBuilder,
-				//WebStartupConfigureServices = request.WebStartupConfigureServices,
-				
-				//ConfigureApplication = request.ConfigureApplication,
-				
-				//PostStartup = request.PostStartup,
 			};
 
 			context.AddCookieAndBearerAuthentication("CookieAndBearerAuthentication", "CookieAndBearerPolicy");
 
-			var webStartupConfigureServices = context.WebStartupConfigureServices;
-			context.WebStartupConfigureServices = services =>
+			context.AddWebStartupConfigureServices(services =>
 			{
-				webStartupConfigureServices?.Invoke(services);
-				
 				services.AddSingleton<ISI.Extensions.IAuthenticationIdentityApi, AuthenticationIdentityApi>();
-			};
+			});
 
 			context.AddSwaggerConfiguration(useBearer: true);
 

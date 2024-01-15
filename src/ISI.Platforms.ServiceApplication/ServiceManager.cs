@@ -109,7 +109,7 @@ namespace ISI.Platforms.ServiceApplication
 				if (configuration.UseMessageBus)
 				{
 					_messageBus = _host.Services.GetRequiredService<ISI.Extensions.MessageBus.IMessageBus>();
-					var enterpriseCacheManagerApi = _host.Services.GetService<ISI.Extensions.Caching.IEnterpriseCacheManagerApi>();
+					var enterpriseCacheManagerApi = _host.Services.GetRequiredService<ISI.Extensions.Caching.IEnterpriseCacheManagerApi>();
 
 					_messageBus.Build(_host.Services, new ISI.Extensions.MessageBus.MessageBusBuildRequestCollection()
 					{
@@ -120,9 +120,11 @@ namespace ISI.Platforms.ServiceApplication
 					_messageBus.StartAsync();
 				}
 
-				Startup.Context.PostStartup.Invoke(_host);
+				_host.Services.SetServiceLocator();
 
-				return _host.Services.SetServiceLocator();
+				Startup.Context.PostStartup?.Invoke(_host);
+
+				return _host.Services;
 			});
 
 			return true;

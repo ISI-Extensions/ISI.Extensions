@@ -36,7 +36,7 @@ namespace ISI.Extensions.Journal
 		{
 			var configuration = configurationRoot.GetConfiguration<ISI.Extensions.Journal.Configuration>();
 
-			if (!string.IsNullOrWhiteSpace(configuration?.JournalImplementation) ||
+			if (string.IsNullOrWhiteSpace(configuration?.JournalImplementation) ||
 					string.Equals(configuration?.JournalImplementation ?? string.Empty, "Null", StringComparison.InvariantCultureIgnoreCase))
 			{
 				services.AddSingleton<ISI.Extensions.IJournal, NullDeviceJournal>();

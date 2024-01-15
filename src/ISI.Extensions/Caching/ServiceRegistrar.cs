@@ -36,14 +36,14 @@ namespace ISI.Extensions.Caching
 		{
 			var configuration = configurationRoot.GetConfiguration<ISI.Extensions.Caching.Configuration>();
 
-			if (!string.IsNullOrWhiteSpace(configuration?.CacheManagerImplementation) ||
+			if (string.IsNullOrWhiteSpace(configuration?.CacheManagerImplementation) ||
 					string.Equals(configuration?.CacheManagerImplementation ?? string.Empty, "Memory", StringComparison.InvariantCultureIgnoreCase))
 			{
 				services.AddSingleton<Microsoft.Extensions.Caching.Memory.IMemoryCache>(provider => new Microsoft.Extensions.Caching.Memory.MemoryCache(new Microsoft.Extensions.Caching.Memory.MemoryCacheOptions()));
 				services.AddSingleton<ISI.Extensions.Caching.ICacheManager, ISI.Extensions.Caching.CacheManager<Microsoft.Extensions.Caching.Memory.IMemoryCache>>();
 			}
 
-			if (!string.IsNullOrWhiteSpace(configuration?.EnterpriseCacheManagerApi?.EnterpriseCacheManagerApiImplementation) ||
+			if (string.IsNullOrWhiteSpace(configuration?.EnterpriseCacheManagerApi?.EnterpriseCacheManagerApiImplementation) ||
 					string.Equals(configuration?.EnterpriseCacheManagerApi?.EnterpriseCacheManagerApiImplementation ?? string.Empty, "Null", StringComparison.InvariantCultureIgnoreCase))
 			{
 				services.AddSingleton<ISI.Extensions.Caching.IEnterpriseCacheManagerApi, NullEnterpriseCacheManagerApi>();

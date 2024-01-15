@@ -10,7 +10,7 @@ Redistribution and use in source and binary forms, with or without modification,
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *@
- 
+
 
 @model ISI.Platforms.ServiceApplication.Test.Models.BaseModel
 <!DOCTYPE html>
@@ -32,12 +32,12 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 </head>
 <body class="d-flex flex-column min-vh-100">
 	<header>
-		<nav class="navbar bg-light" aria-label="ISI.Platforms.ServiceApplication.Test, Integrated Solutoins, Inc.">
+		<nav class="navbar bg-light" aria-label="@Html.GetApplicationDisplayName(), Integrated Solutoins, Inc.">
 			<div class="container-fluid">
 				<button class="navbar-toggler ml-auto" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbarLight" aria-controls="offcanvasNavbarLight">
 					<span class="navbar-toggler-icon"></span>
 				</button>
-				<a class="navbar-brand me-auto ms-2" asp-route="@Routes.Public.RouteNames.Index">ISI.Platforms.ServiceApplication.Test</a>
+				<a class="navbar-brand me-auto ms-2" asp-route="@Routes.Public.RouteNames.Index">@Html.GetApplicationDisplayName()</a>
 				<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbarLight" aria-labelledby="offcanvasNavbarLightLabel">
 					<div class="offcanvas-header">
 						<h5 class="offcanvas-title" id="offcanvasNavbarLightLabel">Navigation</h5>
@@ -45,8 +45,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 					</div>
 					<div class="offcanvas-body">
 						<ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-
-							</ul>
+							@if (User?.Identity?.IsAuthenticated ?? false)
+							{
+							}
+						</ul>
 					</div>
 				</div>
 			</div>
@@ -58,8 +60,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		</main>
 	</div>
 
-	<footer class="mt-auto border-top footer text-muted">
-		&nbsp;&nbsp; &copy; @DateTime.UtcNow.Year - Integrated Solutions, Inc.  &nbsp;&nbsp; @typeof(ISI.Platforms.ServiceApplication.Test.Program).Namespace: @ISI.Extensions.SystemInformation.GetAssemblyVersion(typeof(ISI.Platforms.ServiceApplication.Test.Program).Assembly)
+	<footer class="border-top footer text-muted navbar fixed-bottom">
+		&nbsp;&nbsp; &copy; @DateTime.UtcNow.Year - Integrated Solutions, Inc.  &nbsp;&nbsp; @Html.GetApplicationName(): @Html.GetApplicationVersion()
 	</footer>
 	@Html.AddJavaScript(T4Links.wwwroot.lib.jquery.dist.jquery_js)
 	@Html.AddJavaScript(ISI.Extensions.AspNetCore.T4Links.JavaScripts.jQueryNamespace_js)

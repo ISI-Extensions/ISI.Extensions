@@ -1,8 +1,9 @@
 body {
+	padding-bottom: 40px;
 }
 
 .footer {
-	height: 30px;
+	height: 40px;
 	background: #f0f0f0;
 	width: 100%;
 }

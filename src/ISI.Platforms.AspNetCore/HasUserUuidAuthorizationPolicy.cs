@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -12,47 +12,31 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using  ISI.Platforms.Extensions;
 
-namespace ISI.Platforms.AspNetCore.Extensions
+namespace ISI.Platforms.AspNetCore
 {
-	public static partial class ServiceApplicationContextExtensions
+	public class HasUserUuidAuthorizationPolicy : Microsoft.AspNetCore.Authorization.AuthorizationHandler<HasUserUuidAuthorizationPolicy>, Microsoft.AspNetCore.Authorization.IAuthorizationRequirement
 	{
-		public static ServiceApplicationContext AddCookieAndBearerAuthentication(this ServiceApplicationContext context, string authenticationHandlerName, string policyName, string cookieName = null)
+		public static string PolicyName { get; internal set; }
+
+		protected override Task HandleRequirementAsync(Microsoft.AspNetCore.Authorization.AuthorizationHandlerContext context, HasUserUuidAuthorizationPolicy requirement)
 		{
-			CookieAndBearerAuthenticationHandler.AuthenticationHandlerName = authenticationHandlerName;
-			if (!string.IsNullOrWhiteSpace(cookieName))
+			if (!context.User.HasClaim(claim => string.Equals(claim.Type, System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub, StringComparison.Ordinal)))
 			{
-				CookieAndBearerAuthenticationHandler.CookieName = cookieName;
+				context.Fail();
+
+				return Task.CompletedTask;
 			}
 
-			HasUserUuidAuthorizationPolicy.PolicyName = policyName;
+			context.Succeed(requirement);
 
-			context.AddWebStartupConfigureServices(services =>
-			{
-				services
-					.AddSingleton<IAuthenticationHandler, CookieAndBearerAuthenticationHandler>()
-					.AddAuthentication(CookieAndBearerAuthenticationHandler.AuthenticationHandlerName)
-					.AddScheme<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions, CookieAndBearerAuthenticationHandler>(CookieAndBearerAuthenticationHandler.AuthenticationHandlerName, null)
-					;
-
-				services.AddAuthorization(options =>
-				{
-					options.AddPolicy(HasUserUuidAuthorizationPolicy.PolicyName, policy => policy.Requirements.Add(new HasUserUuidAuthorizationPolicy()));
-				});
-			});
-
-			return context;
+			return Task.CompletedTask;
 		}
 	}
 }

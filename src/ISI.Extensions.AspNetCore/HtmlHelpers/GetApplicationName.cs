@@ -12,31 +12,42 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Platforms.AspNetCore
+namespace ISI.Extensions.AspNetCore.Extensions
 {
-	public class CookieAndBearerAuthorizationPolicy : Microsoft.AspNetCore.Authorization.AuthorizationHandler<CookieAndBearerAuthorizationPolicy>, Microsoft.AspNetCore.Authorization.IAuthorizationRequirement
+	public static partial class HtmlHelpers
 	{
-		public static string PolicyName { get; internal set; }
-
-		protected override Task HandleRequirementAsync(Microsoft.AspNetCore.Authorization.AuthorizationHandlerContext context, CookieAndBearerAuthorizationPolicy requirement)
+		public static Microsoft.AspNetCore.Html.IHtmlContent GetApplicationName(this Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper htmlHelper)
 		{
-			if (!context.User.HasClaim(claim => string.Equals(claim.Type, System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub, StringComparison.Ordinal)))
-			{
-				context.Fail();
+			var executingAssembly = System.Reflection.Assembly.GetEntryAssembly();
 
-				return Task.CompletedTask;
-			}
+			var applicationName = executingAssembly.FullName.Split(new[] { ',' }).First();
 
-			context.Succeed(requirement);
+			return new Microsoft.AspNetCore.Html.HtmlString(applicationName);
+		}
 
-			return Task.CompletedTask;
+		public static Microsoft.AspNetCore.Html.IHtmlContent GetApplicationDisplayName(this Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper htmlHelper)
+		{
+			var executingAssembly = System.Reflection.Assembly.GetEntryAssembly();
+
+			var applicationDisplayName = executingAssembly.FullName.Split(new[] { ',' }).First().TrimEnd(".ServiceApplication", ".WindowsService");
+
+			return new Microsoft.AspNetCore.Html.HtmlString(applicationDisplayName);
+		}
+
+		public static Microsoft.AspNetCore.Html.IHtmlContent GetApplicationVersion(this Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper htmlHelper)
+		{
+			var executingAssembly = System.Reflection.Assembly.GetEntryAssembly();
+
+			var applicationVersion = ISI.Extensions.SystemInformation.GetAssemblyVersion(executingAssembly);
+
+			return new Microsoft.AspNetCore.Html.HtmlString(applicationVersion);
 		}
 	}
 }

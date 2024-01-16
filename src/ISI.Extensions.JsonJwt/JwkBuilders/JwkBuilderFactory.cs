@@ -75,7 +75,7 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 				case JwkAlgorithmKey.RS256:
 				case JwkAlgorithmKey.RS384:
 				case JwkAlgorithmKey.RS512:
-					return new RSJwkBuilder(JsonSerializer, serializedJwkOrPem);
+					return new RSJwkBuilder(JsonSerializer, jwkAlgorithmKey, serializedJwkOrPem);
 				
 				default:
 					throw new ArgumentOutOfRangeException(nameof(jwkAlgorithmKey), jwkAlgorithmKey, null);

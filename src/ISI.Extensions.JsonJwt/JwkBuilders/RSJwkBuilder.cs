@@ -106,9 +106,10 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 			HashSize = hashSize;
 			KeySize = keySize;
 		}
-		
+
 		public RSJwkBuilder(
 			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer,
+			ISI.Extensions.JsonJwt.JwkAlgorithmKey jwkAlgorithmKey,
 			string serializedJwkOrPem)
 		{
 			JsonSerializer = jsonSerializer;
@@ -123,12 +124,21 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 			{
 				try
 				{
-					RSACryptoServiceProvider.FromXmlString(serializedJwkOrPem);
+					FromJsonString(serializedJwkOrPem);
 				}
 				catch (PlatformNotSupportedException)
 				{
-					FromXmlString(serializedJwkOrPem);
+					try
+					{
+						RSACryptoServiceProvider.FromXmlString(serializedJwkOrPem);
+					}
+					catch (PlatformNotSupportedException)
+					{
+						FromXmlString(serializedJwkOrPem);
+					}
 				}
+
+				HashSize = jwkAlgorithmKey.GetKey().Substring(2).ToInt();
 			}
 		}
 
@@ -155,6 +165,18 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 		}
 
 		public string GetPrivatePem() => RSACryptoServiceProvider.ExportRSAPrivateKeyPem();
+
+		private void FromJsonString(string jwk)
+		{
+			var parameters = new System.Security.Cryptography.RSAParameters();
+
+			var jwkJsonl = JsonSerializer.Deserialize<SerializableEntitiesDTOs.Jwk>(jwk);
+
+			parameters.Modulus = JwtEncoder.Base64DecodeToBytes(jwkJsonl.Modulus);
+			parameters.Exponent = JwtEncoder.Base64DecodeToBytes(jwkJsonl.Exponent);
+
+			RSACryptoServiceProvider.ImportParameters(parameters);
+		}
 
 		//  https://github.com/dotnet/corefx/issues/23686#issuecomment-383245291
 		private void FromXmlString(string jwk)

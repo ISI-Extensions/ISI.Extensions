@@ -23,7 +23,7 @@ namespace ISI.Platforms.AspNetCore
 {
 	public class HasUserUuidAuthorizationPolicy : Microsoft.AspNetCore.Authorization.AuthorizationHandler<HasUserUuidAuthorizationPolicy>, Microsoft.AspNetCore.Authorization.IAuthorizationRequirement
 	{
-		public static string PolicyName { get; internal set; }
+		public static string PolicyName { get; set; } = nameof(HasUserUuidAuthorizationPolicy);
 
 		protected override Task HandleRequirementAsync(Microsoft.AspNetCore.Authorization.AuthorizationHandlerContext context, HasUserUuidAuthorizationPolicy requirement)
 		{

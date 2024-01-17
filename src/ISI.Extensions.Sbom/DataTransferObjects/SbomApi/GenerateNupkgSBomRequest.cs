@@ -22,13 +22,15 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Sbom.DataTransferObjects.SbomApi
 {
-	public class GenerateSBomRequest
+	public class GenerateNupkgSBomRequest
 	{
-		public string PackageComponentDirectory { get; set; }
-		public string PackageSourceDirectory { get; set; }
-		public string PackageName { get; set; }
-		public string PackageVersion { get; set; }
-		public string PackageAuthor { get; set; }
-		public Uri PackageNamespace { get; set; }
+		public string ProjectFullName { get; set; }
+
+		public string Configuration { get; set; }
+
+		public string NupkgName { get; set; }
+		public string NupkgVersion { get; set; }
+		public string NupkgAuthor { get; set; }
+		public Uri NupkgNamespace { get; set; }
 	}
 }

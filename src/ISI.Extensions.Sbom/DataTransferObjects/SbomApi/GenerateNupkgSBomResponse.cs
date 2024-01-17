@@ -18,16 +18,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
+namespace ISI.Extensions.Sbom.DataTransferObjects.SbomApi
 {
-	public class GenerateNuspecFromProjectRequest
+	public class GenerateNupkgSBomResponse
 	{
-		public string ProjectFullName { get; set; }
-		public string Configuration { get; set; } = "Release";
-		public bool IncludePdb { get; set; } = true;
-		public bool IncludeSBom { get; set; } = false;
-		public TryGetPackageVersion TryGetPackageVersion { get; set; } = null;
-		public bool BuildTargetFrameworks { get; set; } = true;
 	}
 }

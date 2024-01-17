@@ -65,6 +65,24 @@ namespace ISI.Extensions.Scm
 				get => Settings.GetValue(Settings.Key.NugetPassword);
 				set => Settings.SetValue(Settings.Key.NugetPassword, value);
 			}
+
+			public string NuSpecCopyright
+			{
+				get => Settings.GetValue(Settings.Key.NugetNuSpecCopyright);
+				set => Settings.SetValue(Settings.Key.NugetNuSpecCopyright, value);
+			}
+
+			public string NuSpecAuthor
+			{
+				get => Settings.GetValue(Settings.Key.NugetNuSpecAuthor);
+				set => Settings.SetValue(Settings.Key.NugetNuSpecAuthor, value);
+			}
+
+			public string NuSpecOwner
+			{
+				get => Settings.GetValue(Settings.Key.NugetNuSpecOwner);
+				set => Settings.SetValue(Settings.Key.NugetNuSpecOwner, value);
+			}
 		}
 	}
 }

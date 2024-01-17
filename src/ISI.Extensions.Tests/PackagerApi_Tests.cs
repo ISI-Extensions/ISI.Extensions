@@ -146,7 +146,7 @@ namespace ISI.Extensions.Tests
 							var packageName = System.IO.Path.GetFileNameWithoutExtension(context.ProjectFullName);
 							var packageSourceDirectory = System.IO.Path.GetDirectoryName(context.ProjectFullName);
 
-							sbomApi.GenerateSBom(new()
+							sbomApi.GeneratePackageSBom(new()
 							{
 								PackageComponentDirectory = context.PackageComponentDirectory,
 								PackageSourceDirectory = packageSourceDirectory,

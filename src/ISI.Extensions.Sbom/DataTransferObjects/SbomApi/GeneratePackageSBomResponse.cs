@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Sbom.DataTransferObjects.SbomApi
 {
-	public class GenerateSBomResponse
+	public class GeneratePackageSBomResponse
 	{
 	}
 }

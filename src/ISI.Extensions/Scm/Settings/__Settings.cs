@@ -47,12 +47,18 @@ namespace ISI.Extensions.Scm
 			public const string CodeSigningRemoteCodeSigningServiceApiUrl = nameof(CodeSigningRemoteCodeSigningServiceApiUrl);
 			public const string CodeSigningRemoteCodeSigningServiceApiKey = nameof(CodeSigningRemoteCodeSigningServiceApiKey);
 
+			public const string SBomAuthor = nameof(SBomAuthor);
+			public const string SBomNamespace = nameof(SBomNamespace);
+
 			public const string NugetApiUrl = nameof(NugetApiUrl);
 			public const string NugetRepositoryName = nameof(NugetRepositoryName);
 			public const string NugetRepositoryUrl = nameof(NugetRepositoryUrl);
 			public const string NugetApiKey = nameof(NugetApiKey);
 			public const string NugetUserName = nameof(NugetUserName);
 			public const string NugetPassword = nameof(NugetPassword);
+			public const string NugetNuSpecCopyright = nameof(NugetNuSpecCopyright);
+			public const string NugetNuSpecAuthor = nameof(NugetNuSpecAuthor);
+			public const string NugetNuSpecOwner = nameof(NugetNuSpecOwner);
 
 			public const string BuildArtifactsApiUrl = nameof(BuildArtifactsApiUrl);
 			public const string BuildArtifactsApiKey = nameof(BuildArtifactsApiKey);
@@ -111,6 +117,9 @@ namespace ISI.Extensions.Scm
 
 		private SettingsCodeSigning _codeSigning = null;
 		public SettingsCodeSigning CodeSigning => _codeSigning ??= new(this);
+
+		private SettingsSBom _sBom = null;
+		public SettingsSBom SBom => _sBom ??= new(this);
 
 		private SettingsNuget _nuget = null;
 		public SettingsNuget Nuget => _nuget ??= new(this);

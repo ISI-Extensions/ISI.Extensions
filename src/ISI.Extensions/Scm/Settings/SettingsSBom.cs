@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,19 +15,33 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
+namespace ISI.Extensions.Scm
 {
-	public class GenerateNuspecFromProjectRequest
+	public partial class Settings
 	{
-		public string ProjectFullName { get; set; }
-		public string Configuration { get; set; } = "Release";
-		public bool IncludePdb { get; set; } = true;
-		public bool IncludeSBom { get; set; } = false;
-		public TryGetPackageVersion TryGetPackageVersion { get; set; } = null;
-		public bool BuildTargetFrameworks { get; set; } = true;
+		public class SettingsSBom
+		{
+			protected Settings Settings { get; }
+
+			public SettingsSBom(Settings settings)
+			{
+				Settings = settings;
+			}
+
+			public string Author
+			{
+				get => Settings.GetValue(Settings.Key.SBomAuthor);
+				set => Settings.SetValue(Settings.Key.SBomAuthor, value);
+			}
+
+			public string Namespace
+			{
+				get => Settings.GetValue(Settings.Key.SBomNamespace);
+				set => Settings.SetValue(Settings.Key.SBomNamespace, value);
+			}
+
+		}
 	}
 }

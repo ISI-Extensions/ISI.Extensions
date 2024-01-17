@@ -12,53 +12,23 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Sbom.DataTransferObjects.SbomApi;
 
-namespace ISI.Extensions.Sbom
+namespace ISI.Extensions.Sbom.DataTransferObjects.SbomApi
 {
-	public partial class SbomApi
+	public class GeneratePackageSBomRequest
 	{
-		public DTOs.GenerateSBomResponse GenerateSBom(DTOs.GenerateSBomRequest request)
-		{
-			var response = new DTOs.GenerateSBomResponse();
-
-			var sBomToolExeFullName = GetSBomToolExeFullName(new()).SBomToolExeFullName;
-
-			var arguments = new List<string>();
-
-			arguments.Add("/c");
-			arguments.Add(sBomToolExeFullName);
-			arguments.Add("generate");
-			arguments.Add($"-b \"{System.IO.Path.Combine(request.PackageComponentDirectory, request.PackageName)}\"");
-			arguments.Add($"-bc \"{request.PackageSourceDirectory}\"");
-			arguments.Add($"-pn \"{request.PackageName}\"");
-			arguments.Add($"-pv \"{request.PackageVersion}\"");
-			arguments.Add($"-ps \"{request.PackageAuthor}\"");
-			arguments.Add($"-nsb \"{request.PackageNamespace}\"");
-
-			var process = new System.Diagnostics.Process();
-			process.StartInfo.UseShellExecute = false;
-			process.StartInfo.FileName = "cmd.exe";
-			process.StartInfo.Arguments = string.Join(" ", arguments);
-			process.StartInfo.RedirectStandardOutput = true;
-			process.StartInfo.RedirectStandardError = true;
-			process.Start();
-			process.WaitForExit();
-
-			var output = $"{process.StandardOutput.ReadToEnd()}\n{process.StandardError.ReadToEnd()}";
-
-			System.IO.Directory.CreateDirectory(System.IO.Path.Combine(request.PackageComponentDirectory, request.PackageName, "_manifest"));
-
-			System.IO.File.WriteAllText(System.IO.Path.Combine(request.PackageComponentDirectory, request.PackageName, "_manifest", "tool-output.txt"), output);
-
-			return response;
-		}
+		public string PackageComponentDirectory { get; set; }
+		public string PackageSourceDirectory { get; set; }
+		public string PackageName { get; set; }
+		public string PackageVersion { get; set; }
+		public string PackageAuthor { get; set; }
+		public Uri PackageNamespace { get; set; }
 	}
 }

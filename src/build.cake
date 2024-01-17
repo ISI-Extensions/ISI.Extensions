@@ -142,7 +142,8 @@ Task("Nuget")
 
 					version = string.Empty;
 					return false;
-				}
+				},
+				IncludeSBom = false,
 			}).Nuspec;
 
 			nuspec.Version = assemblyVersion;

@@ -56,6 +56,7 @@ namespace ISI.Extensions.Scm
 			public const string NugetApiKey = nameof(NugetApiKey);
 			public const string NugetUserName = nameof(NugetUserName);
 			public const string NugetPassword = nameof(NugetPassword);
+			public const string NugetNuSpecIconUrl = nameof(NugetNuSpecIconUrl);
 			public const string NugetNuSpecCopyright = nameof(NugetNuSpecCopyright);
 			public const string NugetNuSpecAuthor = nameof(NugetNuSpecAuthor);
 			public const string NugetNuSpecOwner = nameof(NugetNuSpecOwner);

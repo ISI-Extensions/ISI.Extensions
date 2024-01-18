@@ -66,6 +66,12 @@ namespace ISI.Extensions.Scm
 				set => Settings.SetValue(Settings.Key.NugetPassword, value);
 			}
 
+			public string NuSpecIconUrl
+			{
+				get => Settings.GetValue(Settings.Key.NugetNuSpecIconUrl);
+				set => Settings.SetValue(Settings.Key.NugetNuSpecIconUrl, value);
+			}
+
 			public string NuSpecCopyright
 			{
 				get => Settings.GetValue(Settings.Key.NugetNuSpecCopyright);

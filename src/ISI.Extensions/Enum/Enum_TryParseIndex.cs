@@ -28,15 +28,15 @@ namespace ISI.Extensions
 		{
 			var @enum = GetEnumWrapperInstance(enumType);
 
-			var methodInfo = @enum.GetType().GetMethod(nameof(Enum.IEnum.TryParseIndex), System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+			var methodInfo = @enum.GetType().GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public)
+				.First(methodInfo => string.Equals(methodInfo.Name, nameof(Enum.IEnum.TryParseIndex), StringComparison.InvariantCultureIgnoreCase) && methodInfo.GetParameters()[0].ParameterType == typeof(string));
 
-			var args = new object[3];
+			var args = new object[2];
 			args[0] = value;
-			args[1] = Activator.CreateInstance(enumType);
 
 			var success = (bool) (methodInfo?.Invoke(@enum, args) ?? false);
 
-			parsedValue = args[2];
+			parsedValue = args[1];
 
 			return success;
 		}
@@ -45,15 +45,15 @@ namespace ISI.Extensions
 		{
 			var @enum = GetEnumWrapperInstance(enumType);
 
-			var methodInfo = @enum.GetType().GetMethod(nameof(Enum.IEnum.TryParseIndex), System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+			var methodInfo = @enum.GetType().GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public)
+				.First(methodInfo => string.Equals(methodInfo.Name, nameof(Enum.IEnum.TryParseIndex), StringComparison.InvariantCultureIgnoreCase) && methodInfo.GetParameters()[0].ParameterType == typeof(int));
 
-			var args = new object[3];
+			var args = new object[2];
 			args[0] = value;
-			args[1] = Activator.CreateInstance(enumType);
 
 			var success = (bool) (methodInfo?.Invoke(@enum, args) ?? false);
 
-			parsedValue = args[2];
+			parsedValue = args[1];
 
 			return success;
 		}

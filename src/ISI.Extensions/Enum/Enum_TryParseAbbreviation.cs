@@ -30,13 +30,12 @@ namespace ISI.Extensions
 
 			var methodInfo = @enum.GetType().GetMethod(nameof(Enum.IEnum.TryParseAbbreviation), System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
 
-			var args = new object[3];
+			var args = new object[2];
 			args[0] = value;
-			args[1] = Activator.CreateInstance(enumType);
 
 			var success = (bool) (methodInfo?.Invoke(@enum, args) ?? false);
 
-			parsedValue = args[2];
+			parsedValue = args[1];
 
 			return success;
 		}

@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -16,43 +16,46 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using NUnit.Framework;
+using DTOs = ISI.Extensions.S3.DataTransferObjects.S3BlobClient;
+using Minio;
 
-namespace ISI.Extensions.Tests
+namespace ISI.Extensions.S3
 {
-	[TestFixture]
-	public class Enum_Tests
+	public partial class S3BlobClient
 	{
-		public enum MyEnum
+		public async Task<DTOs.ListFilesResponse> ListFilesAsync(DTOs.ListFilesRequest request, System.Threading.CancellationToken cancellationToken = default)
 		{
-			[ISI.Extensions.EnumGuid("8cc7bc04-c312-4aa7-842f-ef1fe374cdee")] Yes,
-			[ISI.Extensions.EnumGuid("acaa9be7-b2d1-4ff5-b654-0102cfa74891")] No,
-		}
+			var response = new DTOs.ListFilesResponse();
 
-		[Test]
-		public void Enum_Test()
-		{
-			var t1 = MyEnum.No;
-			var t2 = t1.GetUuid();
+			try
+			{
+				var listObjectArgs = new Minio.DataModel.Args.ListObjectsArgs()
+					.WithBucket(BucketName)
+					.WithPrefix(request.Prefix);
 
+				var listObjectResponse = MinioClient.ListObjectsAsync(listObjectArgs, cancellationToken);
 
-			var t4 = (System.Enum)t1;
+				var fileNames = new HashSet<string>(StringComparer.InvariantCulture);
 
-			var t5 = t4.GetUuid();
+				using (var subscription = listObjectResponse.Subscribe(
+								 item => fileNames.Add(item.Key),
+								 ex => Console.WriteLine("OnError: {0}", ex.Message),
+								 () => Console.WriteLine("OnComplete: {0}")))
+				{
+					listObjectResponse.Wait();
+				}
 
-			var xxx = ISI.Extensions.Enum<MyEnum>.ParseUuid((Guid?)null);
-			var xxxy = ISI.Extensions.Enum<MyEnum?>.ParseUuid((Guid?)null);
+				response.FileNames = fileNames.ToArray();
+			}
+			catch
+			{
+			}
 
-			ISI.Extensions.Enum.TryParseUuid(typeof(MyEnum?), (Guid?)null, out var parsedValueNull);
-			ISI.Extensions.Enum.TryParseUuid(typeof(MyEnum?), "acaa9be7-b2d1-4ff5-b654-0102cfa74891", out var parsedValueS);
-			ISI.Extensions.Enum.TryParseUuid(typeof(MyEnum?), Guid.Parse("acaa9be7-b2d1-4ff5-b654-0102cfa74891"), out var parsedValue);
-
-			var x1 = ISI.Extensions.Enum.ParseUuid(typeof(MyEnum?), (Guid?)null);
-			var x2 = ISI.Extensions.Enum.ParseUuid(typeof(MyEnum?), "acaa9be7-b2d1-4ff5-b654-0102cfa74891");
-			var x3 = ISI.Extensions.Enum.ParseUuid(typeof(MyEnum?), Guid.Parse("acaa9be7-b2d1-4ff5-b654-0102cfa74891"));
+			return response;
 		}
 	}
 }

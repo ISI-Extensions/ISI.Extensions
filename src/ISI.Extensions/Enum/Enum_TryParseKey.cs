@@ -32,11 +32,10 @@ namespace ISI.Extensions
 
 			var args = new object[3];
 			args[0] = value;
-			args[1] = Activator.CreateInstance(enumType);
 
 			var success = (bool) (methodInfo?.Invoke(@enum, args) ?? false);
 
-			parsedValue = args[2];
+			parsedValue = args[1];
 
 			return success;
 		}

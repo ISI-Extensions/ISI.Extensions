@@ -45,5 +45,15 @@ namespace ISI.Extensions
 
 			return defaultValue;
 		}
+
+		public static TEnum ParseUuid(Guid? value, TEnum defaultValue = default)
+		{
+			if (value.HasValue && _UuidLookup.TryGetValue(value.Value, out var lookupUuid))
+			{
+				return lookupUuid;
+			}
+
+			return defaultValue;
+		}
 	}
 }

@@ -31,54 +31,49 @@ namespace ISI.Extensions.Sbom
 			
 			var sBomToolExeFullName = GetSBomToolExeFullName(new()).SBomToolExeFullName;
 
-			var projectDirectory = System.IO.Path.GetDirectoryName(request.ProjectFullName);
-
-			var projectLines = System.IO.File.ReadAllLines(request.ProjectFullName);
-
-			var csProjXml = System.Xml.Linq.XElement.Parse(string.Join("\n", projectLines));
-			//var isNet4WebProject = projectLines.Any(projectLine => projectLine.IndexOf("Microsoft.WebApplication.targets", StringComparison.InvariantCultureIgnoreCase) >= 0);
-			var targetFramework = GetTargetFrameworkVersionFromCsProjXml(csProjXml);
-
-			var nupgkComponentDirectory = System.IO.Path.Combine(projectDirectory, "bin", request.Configuration, targetFramework);
-			if (targetFramework.StartsWith("net4", StringComparison.InvariantCultureIgnoreCase))
+			ISI.Extensions.Locks.FileLock.Lock(sBomToolExeFullName, () =>
 			{
-				nupgkComponentDirectory = System.IO.Path.Combine(projectDirectory, "bin", request.Configuration);
-			}
+				var projectDirectory = System.IO.Path.GetDirectoryName(request.ProjectFullName);
 
+				var projectLines = System.IO.File.ReadAllLines(request.ProjectFullName);
 
-			var arguments = new List<string>();
+				var csProjXml = System.Xml.Linq.XElement.Parse(string.Join("\n", projectLines));
 
-			arguments.Add("/c");
-			arguments.Add(sBomToolExeFullName);
-			arguments.Add("generate");
-			arguments.Add($"-b \"{nupgkComponentDirectory}\"");
-			arguments.Add($"-bc \"{projectDirectory}\"");
-			arguments.Add($"-pn \"{request.NupkgName}\"");
-			arguments.Add($"-pv \"{request.NupkgVersion}\"");
-			arguments.Add($"-ps \"{request.NupkgAuthor}\"");
-			arguments.Add($"-nsb \"{request.NupkgNamespace}\"");
+				var targetFramework = GetTargetFrameworkVersionFromCsProjXml(csProjXml);
 
-			var process = new System.Diagnostics.Process();
-			process.StartInfo.UseShellExecute = false;
-			process.StartInfo.FileName = "cmd.exe";
-			process.StartInfo.Arguments = string.Join(" ", arguments);
-			process.StartInfo.RedirectStandardOutput = true;
-			process.StartInfo.RedirectStandardError = true;
-			process.Start();
-			process.WaitForExit();
+				var nupgkComponentDirectory = System.IO.Path.Combine(projectDirectory, "bin", request.Configuration, targetFramework);
+				if (targetFramework.StartsWith("net4", StringComparison.InvariantCultureIgnoreCase))
+				{
+					nupgkComponentDirectory = System.IO.Path.Combine(projectDirectory, "bin", request.Configuration);
+				}
 
-			var output = $"{process.StandardOutput.ReadToEnd()}\n{process.StandardError.ReadToEnd()}";
+				var arguments = new List<string>();
 
-			System.IO.Directory.CreateDirectory(System.IO.Path.Combine(nupgkComponentDirectory, "_manifest"));
+				arguments.Add("/c");
+				arguments.Add(sBomToolExeFullName);
+				arguments.Add("generate");
+				arguments.Add($"-b \"{nupgkComponentDirectory}\"");
+				arguments.Add($"-bc \"{projectDirectory}\"");
+				arguments.Add($"-pn \"{request.NupkgName}\"");
+				arguments.Add($"-pv \"{request.NupkgVersion}\"");
+				arguments.Add($"-ps \"{request.NupkgAuthor}\"");
+				arguments.Add($"-nsb \"{request.NupkgNamespace}\"");
 
-			System.IO.File.WriteAllText(System.IO.Path.Combine(nupgkComponentDirectory, "_manifest", "tool-output.txt"), output);
+				var process = new System.Diagnostics.Process();
+				process.StartInfo.UseShellExecute = false;
+				process.StartInfo.FileName = "cmd.exe";
+				process.StartInfo.Arguments = string.Join(" ", arguments);
+				process.StartInfo.RedirectStandardOutput = true;
+				process.StartInfo.RedirectStandardError = true;
+				process.Start();
+				process.WaitForExit();
 
-			//System.IO.Directory.Move(System.IO.Path.Combine(nupgkComponentDirectory, "_manifest"), System.IO.Path.Combine(nupgkComponentDirectory, "manifest"));
+				var output = $"{process.StandardOutput.ReadToEnd()}\n{process.StandardError.ReadToEnd()}";
 
-			//if (System.IO.Directory.Exists(System.IO.Path.Combine(nupgkComponentDirectory, "manifest", "spdx_2.2")))
-			//{
-			//	System.IO.Directory.Move(System.IO.Path.Combine(nupgkComponentDirectory, "manifest", "spdx_2.2"), System.IO.Path.Combine(nupgkComponentDirectory, "manifest", "spdx2.2"));
-			//}
+				System.IO.Directory.CreateDirectory(System.IO.Path.Combine(nupgkComponentDirectory, "_manifest"));
+
+				System.IO.File.WriteAllText(System.IO.Path.Combine(nupgkComponentDirectory, "_manifest", "tool-output.txt"), output);
+			});
 
 			return response;
 		}

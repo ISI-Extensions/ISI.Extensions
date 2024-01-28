@@ -31,32 +31,35 @@ namespace ISI.Extensions.Sbom
 
 			var sBomToolExeFullName = GetSBomToolExeFullName(new()).SBomToolExeFullName;
 
-			var arguments = new List<string>();
+			ISI.Extensions.Locks.FileLock.Lock(sBomToolExeFullName, () =>
+			{
+				var arguments = new List<string>();
 
-			arguments.Add("/c");
-			arguments.Add(sBomToolExeFullName);
-			arguments.Add("generate");
-			arguments.Add($"-b \"{System.IO.Path.Combine(request.PackageComponentDirectory, request.PackageName)}\"");
-			arguments.Add($"-bc \"{request.PackageSourceDirectory}\"");
-			arguments.Add($"-pn \"{request.PackageName}\"");
-			arguments.Add($"-pv \"{request.PackageVersion}\"");
-			arguments.Add($"-ps \"{request.PackageAuthor}\"");
-			arguments.Add($"-nsb \"{request.PackageNamespace}\"");
+				arguments.Add("/c");
+				arguments.Add(sBomToolExeFullName);
+				arguments.Add("generate");
+				arguments.Add($"-b \"{System.IO.Path.Combine(request.PackageComponentDirectory, request.PackageName)}\"");
+				arguments.Add($"-bc \"{request.PackageSourceDirectory}\"");
+				arguments.Add($"-pn \"{request.PackageName}\"");
+				arguments.Add($"-pv \"{request.PackageVersion}\"");
+				arguments.Add($"-ps \"{request.PackageAuthor}\"");
+				arguments.Add($"-nsb \"{request.PackageNamespace}\"");
 
-			var process = new System.Diagnostics.Process();
-			process.StartInfo.UseShellExecute = false;
-			process.StartInfo.FileName = "cmd.exe";
-			process.StartInfo.Arguments = string.Join(" ", arguments);
-			process.StartInfo.RedirectStandardOutput = true;
-			process.StartInfo.RedirectStandardError = true;
-			process.Start();
-			process.WaitForExit();
+				var process = new System.Diagnostics.Process();
+				process.StartInfo.UseShellExecute = false;
+				process.StartInfo.FileName = "cmd.exe";
+				process.StartInfo.Arguments = string.Join(" ", arguments);
+				process.StartInfo.RedirectStandardOutput = true;
+				process.StartInfo.RedirectStandardError = true;
+				process.Start();
+				process.WaitForExit();
 
-			var output = $"{process.StandardOutput.ReadToEnd()}\n{process.StandardError.ReadToEnd()}";
+				var output = $"{process.StandardOutput.ReadToEnd()}\n{process.StandardError.ReadToEnd()}";
 
-			System.IO.Directory.CreateDirectory(System.IO.Path.Combine(request.PackageComponentDirectory, request.PackageName, "_manifest"));
+				System.IO.Directory.CreateDirectory(System.IO.Path.Combine(request.PackageComponentDirectory, request.PackageName, "_manifest"));
 
-			System.IO.File.WriteAllText(System.IO.Path.Combine(request.PackageComponentDirectory, request.PackageName, "_manifest", "tool-output.txt"), output);
+				System.IO.File.WriteAllText(System.IO.Path.Combine(request.PackageComponentDirectory, request.PackageName, "_manifest", "tool-output.txt"), output);
+			});
 
 			return response;
 		}

@@ -36,7 +36,7 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 				{
 					case 256: return JwkAlgorithmKey.ES256;
 					case 384: return JwkAlgorithmKey.ES384;
-					case 521: return JwkAlgorithmKey.ES521;
+					case 521: return JwkAlgorithmKey.ES512;
 					default: throw new NotImplementedException();
 				}
 			}

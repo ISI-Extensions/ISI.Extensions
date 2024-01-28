@@ -67,12 +67,15 @@ namespace ISI.Extensions.Tests
 
 			serviceProvider.SetServiceLocator();
 
-			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "Tristar.keyValue");
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = new ISI.Extensions.SimpleKeyValueStorage(settingsFullName);
 
-			JiraUrl = settings.GetValue("cJiraUrl");
-			JiraApiUserName = settings.GetValue("cJiraApiUserName");
-			JiraApiToken = settings.GetValue("cJiraApiToken");
+			JiraUrl = settings.GetValue("JiraUrl");
+			JiraApiUserName = settings.GetValue("xJiraApiUserName");
+			JiraApiToken = settings.GetValue("xJiraApiToken");
+			//JiraUrl = @"https://tristarfulfillment.atlassian.net/";
+			//JiraApiUserName = @"TristarJiraAgent@tristarfulfillment.com";
+			//JiraApiToken = @"ATATT3xFfGF0WHPSCtGpMgi8Lfv8MiXGtTuMfSAA4o4NKO3RRvApW4UTAI6muvdNoqbNLpY-0iLaJ4P2trx0DCOupDaiUgWMRJIuM4Oft4ZbI0hspBpsX-L5aaToo9tc_4zZGg8v7vK8Kfe5CwP0vN7XN1QZedsO8GI8fgdzUgl8TMRSjJAbxik=DC9306E1";
 			//JiraApiUserName = settings.GetValue("ActiveDirectoryUserName");
 			//JiraApiToken = settings.GetValue("ActiveDirectoryPassword");
 		}

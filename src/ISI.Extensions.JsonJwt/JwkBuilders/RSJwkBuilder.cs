@@ -40,6 +40,16 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 					default: throw new NotImplementedException();
 				}
 			}
+			set
+			{
+				switch (value)
+				{
+					case JwkAlgorithmKey.RS256: HashSize = 256; break;
+					case JwkAlgorithmKey.RS384: HashSize = 384; break;
+					case JwkAlgorithmKey.RS512: HashSize = 512; break;
+					default: throw new ArgumentOutOfRangeException(nameof(value), value, null);
+				}
+			}
 		}
 
 		private const int DefaultHashSize = 256;
@@ -116,9 +126,26 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 
 			if (serializedJwkOrPem.IndexOf("PRIVATE KEY", StringComparison.InvariantCultureIgnoreCase) >= 0)
 			{
-				var certificate = System.Security.Cryptography.X509Certificates.X509Certificate2.CreateFromPem(serializedJwkOrPem);
+				var pem = serializedJwkOrPem.AsSpan();
 
-				_rsaCryptoServiceProvider = (System.Security.Cryptography.RSACryptoServiceProvider)certificate.PrivateKey;
+				if (System.Security.Cryptography.PemEncoding.TryFind(serializedJwkOrPem, out var pemFields))
+				{
+					JwkAlgorithmKey = jwkAlgorithmKey;
+
+					var keyBytes = new byte[pemFields.DecodedDataLength];
+
+					if (Convert.TryFromBase64Chars(pem[pemFields.Base64Data], keyBytes, out int written) || (written != keyBytes.Length))
+					{
+						RSACryptoServiceProvider.ImportRSAPrivateKey(keyBytes, out var _);
+					}
+				}
+
+
+
+
+				//var certificate = System.Security.Cryptography.X509Certificates.X509Certificate2.CreateFromPem(serializedJwkOrPem);
+
+				//_rsaCryptoServiceProvider = (System.Security.Cryptography.RSACryptoServiceProvider)certificate.PrivateKey;
 			}
 			else
 			{

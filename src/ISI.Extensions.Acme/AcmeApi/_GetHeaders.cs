@@ -31,6 +31,8 @@ namespace ISI.Extensions.Acme
 		{
 			var headers = new ISI.Extensions.WebClient.HeaderCollection();
 
+			headers.ContentType = "application/jose+json";
+
 			return headers;
 		}
 	}

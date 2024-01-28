@@ -45,7 +45,7 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 				case JwkAlgorithmKey.ES384:
 					return new ESJwkBuilder(JsonSerializer, 384);
 
-				case JwkAlgorithmKey.ES521:
+				case JwkAlgorithmKey.ES512:
 					return new ESJwkBuilder(JsonSerializer, 521);
 
 				case JwkAlgorithmKey.RS256:
@@ -69,7 +69,7 @@ namespace ISI.Extensions.JsonJwt.JwkBuilders
 			{
 				case JwkAlgorithmKey.ES256:
 				case JwkAlgorithmKey.ES384:
-				case JwkAlgorithmKey.ES521:
+				case JwkAlgorithmKey.ES512:
 					return new ESJwkBuilder(JsonSerializer, serializedJwkOrPem);
 
 				case JwkAlgorithmKey.RS256:

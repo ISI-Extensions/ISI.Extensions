@@ -27,9 +27,9 @@ namespace ISI.Extensions.Acme.SerializableModels.AcmeAccounts
 	public class UpdateAccountRequest
 	{
 		[DataMember(Name = "status", EmitDefaultValue = false)]
-		public string __AccountStatus { get => AccountStatus.GetAbbreviation(); set => AccountStatus = ISI.Extensions.Enum<AcmeAccountStatus?>.Parse(value); }
+		public string __AccountStatus { get => AccountStatus.GetAbbreviation(); set => AccountStatus = ISI.Extensions.Enum<AccountStatus?>.Parse(value); }
 		[IgnoreDataMember]
-		public AcmeAccountStatus? AccountStatus { get; set; }
+		public AccountStatus? AccountStatus { get; set; }
 
 		[DataMember(Name = "contact", EmitDefaultValue = false)]
 		public string[] Contacts { get; set; }

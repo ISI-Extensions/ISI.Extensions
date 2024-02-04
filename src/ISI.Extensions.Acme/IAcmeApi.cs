@@ -24,12 +24,16 @@ namespace ISI.Extensions.Acme
 {
 	public interface IAcmeApi
 	{
-		DTOs.CreateNewAcmeAccountResponse CreateNewAcmeAccount(DTOs.CreateNewAcmeAccountRequest request);
-		DTOs.CreateNewAcmeOrderResponse CreateNewAcmeOrder(DTOs.CreateNewAcmeOrderRequest request);
-		DTOs.GetAcmeAccountCredentialsResponse GetAcmeAccountCredentials(DTOs.GetAcmeAccountCredentialsRequest request);
-		DTOs.SetAcmeAccountCredentialsResponse SetAcmeAccountCredentials(DTOs.SetAcmeAccountCredentialsRequest request);
+		DTOs.CreateNewAccountResponse CreateNewAccount(DTOs.CreateNewAccountRequest request);
+		DTOs.CreateNewOrderResponse CreateNewOrder(DTOs.CreateNewOrderRequest request);
+		DTOs.GetAccountCredentialsResponse GetAccountCredentials(DTOs.GetAccountCredentialsRequest request);
+		DTOs.SetAccountCredentialsResponse SetAccountCredentials(DTOs.SetAccountCredentialsRequest request);
 		DTOs.GetNewNonceResponse GetNewNonce(DTOs.GetNewNonceRequest request);
 		DTOs.GetDirectoryResponse GetDirectory(DTOs.GetDirectoryRequest request);
-		DTOs.GetAcmeHostContextResponse GetAcmeHostContext(DTOs.GetAcmeHostContextRequest request);
+		DTOs.GetHostContextResponse GetHostContext(DTOs.GetHostContextRequest request);
+		DTOs.GetAuthorizationResponse GetAuthorization(DTOs.GetAuthorizationRequest request);
+		DTOs.CreateNewHostContextResponse CreateNewHostContext(DTOs.CreateNewHostContextRequest request);
+		DTOs.GetCertificateResponse GetCertificate(DTOs.GetCertificateRequest request);
+		DTOs.FinalizeOrderResponse FinalizeOrder(DTOs.FinalizeOrderRequest request);
 	}
 }

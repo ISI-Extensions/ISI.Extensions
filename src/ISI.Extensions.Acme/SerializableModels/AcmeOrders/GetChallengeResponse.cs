@@ -27,17 +27,17 @@ namespace ISI.Extensions.Acme.SerializableModels.AcmeOrders
 	public class GetChallengeResponse
 	{
 		[DataMember(Name = "type", EmitDefaultValue = false)]
-		public string __ChallengeType { get => ChallengeType.GetAbbreviation(); set => ChallengeType = ISI.Extensions.Enum<AcmeOrderCertificateIdentifierAuthorizationChallengeType>.ParseAbbreviation(value); }
+		public string __ChallengeType { get => ChallengeType.GetAbbreviation(); set => ChallengeType = ISI.Extensions.Enum<OrderCertificateIdentifierAuthorizationChallengeType>.ParseAbbreviation(value); }
 		[IgnoreDataMember]
-		public AcmeOrderCertificateIdentifierAuthorizationChallengeType ChallengeType { get; set; }
+		public OrderCertificateIdentifierAuthorizationChallengeType ChallengeType { get; set; }
 
 		[DataMember(Name = "url", EmitDefaultValue = false)]
 		public string ChallengeUrl { get; set; }
 
 		[DataMember(Name = "status", EmitDefaultValue = false)]
-		public string __ChallengeStatus { get => ChallengeStatus.GetAbbreviation(); set => ChallengeStatus = ISI.Extensions.Enum<AcmeOrderCertificateIdentifierAuthorizationChallengeStatus>.ParseAbbreviation(value); }
+		public string __ChallengeStatus { get => ChallengeStatus.GetAbbreviation(); set => ChallengeStatus = ISI.Extensions.Enum<OrderCertificateIdentifierAuthorizationChallengeStatus>.ParseAbbreviation(value); }
 		[IgnoreDataMember]
-		public AcmeOrderCertificateIdentifierAuthorizationChallengeStatus ChallengeStatus { get; set; }
+		public OrderCertificateIdentifierAuthorizationChallengeStatus ChallengeStatus { get; set; }
 
 		[DataMember(Name = "validated", EmitDefaultValue = false)]
 		public string __ValidatedDateTimeUtc { get => ValidatedDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => ValidatedDateTimeUtc = value.ToDateTimeUtcNullable(); }
@@ -48,6 +48,6 @@ namespace ISI.Extensions.Acme.SerializableModels.AcmeOrders
 		public string Token { get; set; }
 
 		[DataMember(Name = "error", EmitDefaultValue = false)]
-		public AcmeOrderError Error { get; set; }
+		public OrderError Error { get; set; }
 	}
 }

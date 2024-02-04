@@ -21,6 +21,6 @@ namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 {
 	public interface IRequest
 	{
-		AcmeHostContext AcmeHostContext { get; }
+		HostContext HostContext { get; }
 	}
 }

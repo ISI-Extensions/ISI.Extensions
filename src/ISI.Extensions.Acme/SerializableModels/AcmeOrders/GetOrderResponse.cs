@@ -27,9 +27,9 @@ namespace ISI.Extensions.Acme.SerializableModels.AcmeOrders
 	public class GetOrderResponse
 	{
 		[DataMember(Name = "status", EmitDefaultValue = false)]
-		public string __Status { get => OrderStatus.GetAbbreviation(); set => OrderStatus = ISI.Extensions.Enum<AcmeOrderStatus>.ParseAbbreviation(value); }
+		public string __Status { get => OrderStatus.GetAbbreviation(); set => OrderStatus = ISI.Extensions.Enum<OrderStatus>.ParseAbbreviation(value); }
 		[IgnoreDataMember]
-		public AcmeOrderStatus OrderStatus { get; set; }
+		public OrderStatus OrderStatus { get; set; }
 
 		[DataMember(Name = "expires", EmitDefaultValue = false)]
 		public string __RequestExpiresDateTimeUtc { get => RequestExpiresDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => RequestExpiresDateTimeUtc = value.ToDateTimeUtcNullable(); }
@@ -47,7 +47,7 @@ namespace ISI.Extensions.Acme.SerializableModels.AcmeOrders
 		public DateTime? CertificateNotAfterDateTimeUtc { get; set; }
 
 		[DataMember(Name = "identifiers", EmitDefaultValue = false)]
-		public AcmeOrderCertificateIdentifier[] Identifiers { get; set; }
+		public OrderCertificateIdentifier[] Identifiers { get; set; }
 
 		[DataMember(Name = "authorizations", EmitDefaultValue = false)]
 		public string[] AuthorizationsUrls { get; set; }
@@ -59,6 +59,6 @@ namespace ISI.Extensions.Acme.SerializableModels.AcmeOrders
 		public string GetCertificateUrl { get; set; }
 
 		[DataMember(Name = "error", EmitDefaultValue = false)]
-		public AcmeOrderError Error { get; set; }
+		public OrderError Error { get; set; }
 	}
 }

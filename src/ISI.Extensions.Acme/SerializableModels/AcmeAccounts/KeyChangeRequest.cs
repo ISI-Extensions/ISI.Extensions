@@ -30,6 +30,6 @@ namespace ISI.Extensions.Acme.SerializableModels.AcmeAccounts
 		public string AcmeAccountUrl { get; set; }
 
 		[DataMember(Name = "oldKey", EmitDefaultValue = false)]
-		public string OldSerializedJwk { get; set; }
+		public string OldSerializedJsonWebKey { get; set; }
 	}
 }

@@ -24,6 +24,6 @@ namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 {
 	public class GetDirectoryResponse
 	{
-		public AcmeHostDirectory AcmeHostDirectory { get; set; }
+		public HostDirectory HostDirectory { get; set; }
 	}
 }

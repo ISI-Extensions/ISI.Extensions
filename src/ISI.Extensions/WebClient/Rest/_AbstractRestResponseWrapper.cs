@@ -157,8 +157,9 @@ namespace ISI.Extensions.WebClient
 								Response = Activator.CreateInstance<TResponse>();
 
 								((IRestContentResponse)Response).StatusCode = StatusCode;
-								((IRestContentResponse)Response).Content = responseStream.TextReadToEnd();
-								webRequestDetails?.SetResponseRaw(((IRestContentResponse)Response).Content);
+								var content = responseStream.TextReadToEnd();
+								((IRestContentResponse)Response).Content = content;
+								webRequestDetails?.SetResponseRaw(content);
 								((IRestContentResponse)Response).ResponseHeaders = new(webResponse?.Headers);
 
 								if (exception != null)

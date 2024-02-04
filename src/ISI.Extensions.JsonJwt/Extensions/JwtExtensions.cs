@@ -15,47 +15,151 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using ISI.Extensions.Extensions;
 using ISI.Extensions.JsonSerialization.Extensions;
 
 namespace ISI.Extensions.JsonJwt.Extensions
 {
 	public static class JwtExtensions
 	{
-		public static Jwt SetJwkAlgorithmKey(this Jwt jwt, string jwkAlgorithmKey)
+		public static void AddToPayload<TValue>(this Microsoft.IdentityModel.Tokens.SecurityTokenDescriptor securityTokenDescriptor, TValue value)
+			where TValue : class, new()
 		{
-			jwt.Header.Remove(HeaderKey.JwkAlgorithmKey);
-			if (!string.IsNullOrWhiteSpace(jwkAlgorithmKey))
-			{
-				jwt.Header.Add(HeaderKey.JwkAlgorithmKey, jwkAlgorithmKey);
-			}
+			var columns = ISI.Extensions.Columns.ColumnCollection<TValue>.GetDefault();
 
-			return jwt;
+			foreach (var column in columns)
+			{
+				var columnValue = column.GetValue(value);
+
+				if (columnValue != null)
+				{
+					if (column.PropertyType.IsPrimitive)
+					{
+						securityTokenDescriptor.Claims.Add(column.ColumnName, columnValue);
+					}
+					else if (column.PropertyType.IsGenericType && (column.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>)) && (new System.ComponentModel.NullableConverter(column.PropertyType)).UnderlyingType.IsPrimitive)
+					{
+						securityTokenDescriptor.Claims.Add(column.ColumnName, columnValue);
+					}
+					else if (columnValue is string stringValue)
+					{
+						if (!string.IsNullOrWhiteSpace(stringValue))
+						{
+							securityTokenDescriptor.Claims.Add(column.ColumnName, stringValue);
+						}
+					}
+					else if (typeof(System.Collections.IEnumerable).IsAssignableFrom(column.PropertyType))
+					{
+						var elementType = column.PropertyType.GetInterfaces()
+							.Where(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+							.Select(t => t.GetGenericArguments().NullCheckedFirstOrDefault()).NullCheckedFirstOrDefault();
+
+						var columnValues = columnValue as System.Collections.IEnumerable;
+
+						if (elementType.IsPrimitive || (elementType == typeof(string)))
+						{
+							securityTokenDescriptor.Claims.Add(column.ColumnName, columnValue);
+						}
+						else
+						{
+							var dictionaries = new List<Dictionary<string, object>>();
+
+							foreach (var columnValuesValue in columnValues)
+							{
+								dictionaries.Add(getPayloadDictionary(columnValuesValue));
+							}
+
+							securityTokenDescriptor.Claims.Add(column.ColumnName, dictionaries);
+						}
+					}
+					else
+					{
+						securityTokenDescriptor.Claims.Add(column.ColumnName, getPayloadDictionary(columnValue));
+					}
+				}
+			}
 		}
 
-		public static Jwt SetAcmeAccountKey(this Jwt jwt, string accountKey)
+		private static Dictionary<string, object> getPayloadDictionary(object value)
 		{
-			jwt.Header.Remove(HeaderKey.AcmeAccountKey);
-			if (!string.IsNullOrWhiteSpace(accountKey))
+			if (value != null)
 			{
-				jwt.Header.Add(HeaderKey.AcmeAccountKey, accountKey);
+				var valueType = value.GetType();
+
+				ISI.Extensions.DataContract.DataMemberPropertyInfo[] properties = null;
+
+				if (valueType.IsDefined(typeof(System.Runtime.Serialization.DataContractAttribute), false))
+				{
+					properties = ISI.Extensions.DataContract.GetDataMemberPropertyInfos(valueType).OrderBy(property => property.Order).ToArray();
+				}
+				else
+				{
+					properties = valueType.GetProperties().Where(propertyInfo => propertyInfo.CanRead).Select(property => new ISI.Extensions.DataContract.DataMemberPropertyInfo(new() { Name = property.Name }, property, false)).OrderBy(property => property.Order).ToArray();
+				}
+
+				var payloadDictionary = new Dictionary<string, object>();
+
+				foreach (var property in properties)
+				{
+					var propertyValue = property.PropertyInfo.GetValue(value);
+
+					if (propertyValue != null)
+					{
+						if (property.PropertyInfo.PropertyType.IsPrimitive)
+						{
+							payloadDictionary.Add(property.DataMemberAttribute?.Name ?? property.PropertyInfo.Name, propertyValue);
+						}
+						else if (property.PropertyInfo.PropertyType.IsGenericType && (property.PropertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>)) && (new System.ComponentModel.NullableConverter(property.PropertyInfo.PropertyType)).UnderlyingType.IsPrimitive)
+						{
+							payloadDictionary.Add(property.DataMemberAttribute?.Name ?? property.PropertyInfo.Name, propertyValue);
+						}
+						else if (propertyValue is string stringValue)
+						{
+							if (!string.IsNullOrWhiteSpace(stringValue))
+							{
+								payloadDictionary.Add(property.DataMemberAttribute?.Name ?? property.PropertyInfo.Name, stringValue);
+							}
+						}
+						else if (typeof(System.Collections.IEnumerable).IsAssignableFrom(property.PropertyInfo.PropertyType))
+						{
+							var elementType = property.PropertyInfo.PropertyType.GetInterfaces()
+								.Where(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+								.Select(t => t.GetGenericArguments().NullCheckedFirstOrDefault()).NullCheckedFirstOrDefault();
+
+							var propertyValues = propertyValue as System.Collections.IEnumerable;
+
+							if (elementType.IsPrimitive || (elementType == typeof(string)))
+							{
+								payloadDictionary.Add(property.DataMemberAttribute?.Name ?? property.PropertyInfo.Name, propertyValue);
+							}
+							else
+							{
+								var dictionaries = new List<Dictionary<string, object>>();
+
+								foreach (var propertyValuesValue in propertyValues)
+								{
+									dictionaries.Add(getPayloadDictionary(propertyValuesValue));
+								}
+
+								payloadDictionary.Add(property.DataMemberAttribute?.Name ?? property.PropertyInfo.Name, dictionaries.ToArray());
+							}
+						}
+						else
+						{
+							payloadDictionary.Add(property.DataMemberAttribute?.Name ?? property.PropertyInfo.Name, getPayloadDictionary(propertyValue));
+						}
+					}
+				}
+
+				return payloadDictionary;
 			}
 
-			return jwt;
+			return null;
 		}
 
-		public static Jwt SetSerializedJwk(this Jwt jwt, string serializedJwk)
-		{
-			jwt.Header.Remove(HeaderKey.SerializedJwk);
-			if (!string.IsNullOrWhiteSpace(serializedJwk))
-			{
-				jwt.Header.Add(HeaderKey.SerializedJwk, serializedJwk);
-			}
-
-			return jwt;
-		}
-
-		public static void AddToPayload<TValue>(this Jwt jwt, TValue value, ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer = null)
+		public static void AddToPayload<TValue>(this List<System.Security.Claims.Claim> claims, TValue value, ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer = null)
 			where TValue : class, new()
 		{
 			var columns = ISI.Extensions.Columns.ColumnCollection<TValue>.GetDefault(jsonSerializer);
@@ -66,20 +170,20 @@ namespace ISI.Extensions.JsonJwt.Extensions
 
 				if (column.PropertyType.IsPrimitive)
 				{
-					jwt.Payload.Add(column.ColumnName, columnValue.ToString());
+					claims.Add(new System.Security.Claims.Claim(column.ColumnName, columnValue.ToString()));
 				}
 				else if (columnValue is string stringValue)
 				{
-					jwt.Payload.Add(column.ColumnName, stringValue);
+					claims.Add(new System.Security.Claims.Claim(column.ColumnName, stringValue));
 				}
 				else if ((jsonSerializer != null) && (columnValue != null))
 				{
-					jwt.Payload.Add(column.ColumnName, jsonSerializer.Serialize(columnValue, false));
+					claims.Add(new System.Security.Claims.Claim(column.ColumnName, jsonSerializer.Serialize(columnValue, false)));
 				}
 			}
 		}
 
-		public static T DeserializePayload<T>(this Jwt jwt, ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer = null)
+		public static T DeserializePayload<T>(this System.IdentityModel.Tokens.Jwt.JwtSecurityToken jwt, ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer = null)
 			where T : class, new()
 		{
 			var response = new T();
@@ -97,7 +201,7 @@ namespace ISI.Extensions.JsonJwt.Extensions
 			return response;
 		}
 
-		public static T DeserializeHeader<T>(this Jwt jwt, ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer = null)
+		public static T DeserializeHeader<T>(this System.IdentityModel.Tokens.Jwt.JwtSecurityToken jwt, ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer = null)
 			where T : class, new()
 		{
 			var response = new T();
@@ -115,23 +219,5 @@ namespace ISI.Extensions.JsonJwt.Extensions
 			return response;
 		}
 
-		public static string GetSerializedJwk(this Jwt jwt)
-		{
-			{
-				if (jwt.Header.TryGetValue("jwt", out var header))
-				{
-					return header.ToString();
-				}
-			}
-
-			{
-				if (jwt.Header.TryGetValue("jwk", out var header))
-				{
-					return header.ToString();
-				}
-			}
-
-			return null;
-		}
 	}
 }

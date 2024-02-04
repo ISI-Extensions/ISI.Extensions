@@ -26,15 +26,10 @@ namespace ISI.Extensions.Acme.SerializableModels
 	[DataContract]
 	public class AcmeAccountCredentials
 	{
-		[DataMember(Name = "jwkAlgorithmKey", EmitDefaultValue = false)]
-		public string __JwkAlgorithmKey { get => JwkAlgorithmKey.GetKey(); set => JwkAlgorithmKey = ISI.Extensions.Enum<ISI.Extensions.JsonJwt.JwkAlgorithmKey>.ParseKey(value); }
-		[IgnoreDataMember]
-		public ISI.Extensions.JsonJwt.JwkAlgorithmKey JwkAlgorithmKey { get; set; }
-
 		[DataMember(Name = "pem", EmitDefaultValue = false)]
 		public string Pem { get; set; }
 
-		[DataMember(Name = "serializedJwk", EmitDefaultValue = false)]
-		public string SerializedJwk { get; set; }
+		[DataMember(Name = "serializedJsonWebKey", EmitDefaultValue = false)]
+		public string SerializedJsonWebKey { get; set; }
 	}
 }

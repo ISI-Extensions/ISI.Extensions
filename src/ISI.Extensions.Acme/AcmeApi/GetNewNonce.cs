@@ -31,11 +31,11 @@ namespace ISI.Extensions.Acme
 		{
 			var response = new DTOs.GetNewNonceResponse();
 
-			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteHead<ISI.Extensions.WebClient.Rest.TextResponse>(request.AcmeHostContext.AcmeHostDirectory.CreateNewNonceUrl, null, true);
+			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteHead<ISI.Extensions.WebClient.Rest.TextResponse>(request.HostContext.HostDirectory.CreateNewNonceUrl, null, true);
 
-			if (acmeResponse.ResponseHeaders.TryGetValue(ISI.Extensions.JsonJwt.HeaderKey.ReplayNonce, out var nonce))
+			if (acmeResponse.ResponseHeaders.TryGetValue(HeaderKey.ReplayNonce, out var nonce))
 			{
-				request.AcmeHostContext.Nonce = nonce;
+				request.HostContext.Nonce = nonce;
 				response.Nonce = nonce;
 			}
 

@@ -31,16 +31,16 @@ namespace ISI.Extensions.Acme
 		{
 			var response = new DTOs.GetDirectoryResponse();
 			
-			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<ISI.Extensions.Acme.SerializableModels.Directory.GetDirectoryResponse>(request.AcmeHostDirectoryUri, null, true);
+			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<ISI.Extensions.Acme.SerializableModels.Directory.GetDirectoryResponse>(request.HostDirectoryUri, null, true);
 
-			response.AcmeHostDirectory = new()
+			response.HostDirectory = new()
 			{
 				CreateNewNonceUrl = acmeResponse.CreateNewNonceUrl,
 				CreateNewAccountUrl = acmeResponse.CreateNewAccountUrl,
 				CreateNewOrderUrl = acmeResponse.CreateNewOrderUrl,
 				RevokeCertificateUrl = acmeResponse.RevokeCertificateUrl,
 				KeyChangeUrl = acmeResponse.KeyChangeUrl,
-				Metadata = acmeResponse.Metadata.NullCheckedConvert(metadata => new AcmeHostDirectoryMetadata()
+				Metadata = acmeResponse.Metadata.NullCheckedConvert(metadata => new HostDirectoryMetadata()
 				{
 					TermsOfServiceUrl = metadata.TermsOfServiceUrl,
 					WebsiteUrl = metadata.WebsiteUrl,

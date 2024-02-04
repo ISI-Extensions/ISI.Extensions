@@ -27,15 +27,15 @@ namespace ISI.Extensions.Acme.SerializableModels.AcmeAccounts
 	public class AccountResponse
 	{
 		[DataMember(Name = "id", EmitDefaultValue = false)]
-		public string AcmeAccountKey { get; set; }
+		public string AccountKey { get; set; }
 
 		[DataMember(Name = "key", EmitDefaultValue = false)]
-		public string SerializedJwk { get; set; }
+		public string SerializedJsonWebKey { get; set; }
 
 		[DataMember(Name = "status", EmitDefaultValue = false)]
-		public string __AccountStatus { get => AccountStatus.GetAbbreviation(); set => AccountStatus = ISI.Extensions.Enum<AcmeAccountStatus>.ParseAbbreviation(value); }
+		public string __AccountStatus { get => AccountStatus.GetAbbreviation(); set => AccountStatus = ISI.Extensions.Enum<AccountStatus>.ParseAbbreviation(value); }
 		[IgnoreDataMember]
-		public AcmeAccountStatus AccountStatus { get; set; }
+		public AccountStatus AccountStatus { get; set; }
 
 		[DataMember(Name = "accountName", EmitDefaultValue = false)]
 		public string AccountName { get; set; }

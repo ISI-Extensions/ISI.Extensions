@@ -27,14 +27,14 @@ namespace ISI.Extensions.Acme.SerializableModels.AcmeOrders
 	public class AuthorizationChallenge
 	{
 		[DataMember(Name = "type", EmitDefaultValue = false)]
-		public string __ChallengeType { get => ChallengeType.GetAbbreviation(); set => ChallengeType = ISI.Extensions.Enum<AcmeOrderCertificateIdentifierAuthorizationChallengeType>.ParseAbbreviation(value); }
+		public string __ChallengeType { get => ChallengeType.GetAbbreviation(); set => ChallengeType = ISI.Extensions.Enum<OrderCertificateIdentifierAuthorizationChallengeType>.ParseAbbreviation(value); }
 		[IgnoreDataMember]
-		public AcmeOrderCertificateIdentifierAuthorizationChallengeType ChallengeType { get; set; }
+		public OrderCertificateIdentifierAuthorizationChallengeType ChallengeType { get; set; }
 
 		[DataMember(Name = "status", EmitDefaultValue = false)]
-		public string __ChallengeStatus { get => ChallengeStatus.GetAbbreviation(); set => ChallengeStatus = ISI.Extensions.Enum<AcmeOrderCertificateIdentifierAuthorizationChallengeStatus>.ParseAbbreviation(value); }
+		public string __ChallengeStatus { get => ChallengeStatus.GetAbbreviation(); set => ChallengeStatus = ISI.Extensions.Enum<OrderCertificateIdentifierAuthorizationChallengeStatus>.ParseAbbreviation(value); }
 		[IgnoreDataMember]
-		public AcmeOrderCertificateIdentifierAuthorizationChallengeStatus ChallengeStatus { get; set; }
+		public OrderCertificateIdentifierAuthorizationChallengeStatus ChallengeStatus { get; set; }
 
 		[DataMember(Name = "url", EmitDefaultValue = false)]
 		public string ChallengeUrl { get; set; }

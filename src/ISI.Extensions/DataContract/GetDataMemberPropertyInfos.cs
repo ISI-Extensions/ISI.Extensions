@@ -39,16 +39,20 @@ namespace ISI.Extensions
 
 					foreach (var propertyInfo in type.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.GetProperty))
 					{
-						var dataMemberAttribute = propertyInfo.GetCustomAttributes(typeof(System.Runtime.Serialization.DataMemberAttribute), false).FirstOrDefault() as System.Runtime.Serialization.DataMemberAttribute;
-						var isKey = propertyInfo.GetCustomAttributes(typeof (System.Runtime.Serialization.DataContractMemberKeyAttribute), false).Any();
-
-						if (dataMemberAttribute != null)
+						var ignoreDataMemberAttribute = propertyInfo.GetCustomAttributes(typeof(System.Runtime.Serialization.IgnoreDataMemberAttribute), false).FirstOrDefault() as System.Runtime.Serialization.IgnoreDataMemberAttribute;
+						if (ignoreDataMemberAttribute == null)
 						{
-							var property = new DataMemberPropertyInfo(dataMemberAttribute, propertyInfo, isKey)
+							var dataMemberAttribute = propertyInfo.GetCustomAttributes(typeof(System.Runtime.Serialization.DataMemberAttribute), false).FirstOrDefault() as System.Runtime.Serialization.DataMemberAttribute;
+							var isKey = propertyInfo.GetCustomAttributes(typeof(System.Runtime.Serialization.DataContractMemberKeyAttribute), false).Any();
+
+							if (dataMemberAttribute != null)
 							{
-								Order = properties.Count
-							};
-							properties.Add(property);
+								var property = new DataMemberPropertyInfo(dataMemberAttribute, propertyInfo, isKey)
+								{
+									Order = properties.Count
+								};
+								properties.Add(property);
+							}
 						}
 					}
 

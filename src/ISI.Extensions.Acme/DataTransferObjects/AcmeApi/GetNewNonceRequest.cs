@@ -22,8 +22,8 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 {
-	public class GetNewNonceRequest
+	public class GetNewNonceRequest //: IRequest - do not implement because we don't have first nonce yet
 	{
-		public AcmeHostContext AcmeHostContext { get; set; }
+		public HostContext HostContext { get; set; }
 	}
 }

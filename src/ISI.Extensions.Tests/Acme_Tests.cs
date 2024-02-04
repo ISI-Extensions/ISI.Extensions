@@ -32,19 +32,19 @@ namespace ISI.Extensions.Tests
 	[TestFixture]
 	public class Acme_Tests
 	{
-		protected readonly Uri AcmeHostUri = new Uri(@"https://acme-staging-v02.api.letsencrypt.org/directory");
+		protected readonly Uri HostDirectoryUri = new Uri(@"https://acme-staging-v02.api.letsencrypt.org/directory");
 		protected readonly string AccountPemFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.pem");
-		protected readonly string AccountJwkAlgorithmKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.JwkAlgorithmKey");
-		protected readonly string AccountSerializedJwkFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.SerializedJwk");
+		protected readonly string AccountSerializedJsonWebKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.SerializedJsonWebKey");
+		protected readonly string AccountKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.key");
 
 		//protected readonly Uri AcmeHostUri = new Uri(@"https://localhost:15633/directory");
 		//protected readonly string AccountPemFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.pem");
-		//protected readonly string AccountJwkAlgorithmKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.JwkAlgorithmKey");
-		//protected readonly string AccountSerializedJwkFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.SerializedJwk");
+		//protected readonly string AccountSerializedJsonWebKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.SerializedJsonWebKey");
+		//protected readonly string AccountKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.key");
 
 		protected string GetAccountPem() => System.IO.File.ReadAllText(AccountPemFullName);
-		protected ISI.Extensions.JsonJwt.JwkAlgorithmKey GetAccountJwkAlgorithmKey() => ISI.Extensions.Enum<ISI.Extensions.JsonJwt.JwkAlgorithmKey>.Parse(System.IO.File.ReadAllText(AccountJwkAlgorithmKeyFullName));
-		protected string GetAccountSerializedJwk() => System.IO.File.ReadAllText(AccountSerializedJwkFullName);
+		protected string GetAccountSerializedJsonWebKey() => System.IO.File.ReadAllText(AccountSerializedJsonWebKeyFullName);
+		protected string GetAccountKey() => System.IO.File.ReadAllText(AccountKeyFullName);
 
 		protected IServiceProvider ServiceProvider { get; set; }
 
@@ -52,8 +52,6 @@ namespace ISI.Extensions.Tests
 		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; set; }
 
 		protected ISI.Extensions.JsonSerialization.IJsonSerializer JsonSerializer { get; set; }
-		protected ISI.Extensions.JsonJwt.JwkBuilders.JwkBuilderFactory JwkBuilderFactory { get; set; }
-		protected ISI.Extensions.JsonJwt.JwtEncoder JwtEncoder { get; set; }
 
 		protected ISI.Extensions.Acme.AcmeApi AcmeApi { get; set; }
 		protected ISI.Extensions.GoDaddy.DomainsApi DomainsApi { get; set; }
@@ -75,9 +73,6 @@ namespace ISI.Extensions.Tests
 					.AddSingleton<ISI.Extensions.JsonSerialization.IJsonSerializer, ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer>()
 					.AddSingleton<ISI.Extensions.Serialization.ISerialization, ISI.Extensions.Serialization.Serialization>()
 
-					.AddSingleton<ISI.Extensions.JsonJwt.JwkBuilders.JwkBuilderFactory>()
-					.AddSingleton<ISI.Extensions.JsonJwt.JwtEncoder>()
-
 					.AddSingleton<ISI.Extensions.Acme.AcmeApi>()
 
 				;
@@ -85,123 +80,171 @@ namespace ISI.Extensions.Tests
 			services.AddAllConfigurations(configuration);
 
 			ServiceProvider = services.BuildServiceProvider<ISI.Extensions.DependencyInjection.Iunq.ServiceProviderBuilder>(configuration);
-			
+
 			ServiceProvider.SetServiceLocator();
-			
+
 			Logger = ServiceProvider.GetService<Microsoft.Extensions.Logging.ILogger>();
 			DateTimeStamper = ServiceProvider.GetService<ISI.Extensions.DateTimeStamper.IDateTimeStamper>();
 			JsonSerializer = ServiceProvider.GetService<ISI.Extensions.JsonSerialization.IJsonSerializer>();
-			JwkBuilderFactory = ServiceProvider.GetService<ISI.Extensions.JsonJwt.JwkBuilders.JwkBuilderFactory>();
-			JwtEncoder = ServiceProvider.GetService<ISI.Extensions.JsonJwt.JwtEncoder>();
 			AcmeApi = ServiceProvider.GetService<ISI.Extensions.Acme.AcmeApi>();
 			DomainsApi = ServiceProvider.GetService<ISI.Extensions.GoDaddy.DomainsApi>();
 		}
 
 
 		[Test]
-		public void CreateNewAcmeAccount()
+		public void CreateNewAccount()
 		{
-			var jwkAlgorithmKey = ISI.Extensions.JsonJwt.JwkAlgorithmKey.RS256;
-
-			using (var jwtBuilder = JwkBuilderFactory.GetJwkBuilder(jwkAlgorithmKey))
+			var context = AcmeApi.CreateNewHostContext(new()
 			{
-				var context = AcmeApi.GetAcmeHostContext(new()
-				{
-					AcmeHostDirectoryUri = AcmeHostUri,
-					JwkAlgorithmKey = jwkAlgorithmKey,
-					SerializedJwk = jwtBuilder.GetSerializedJwk(),
-					Pem = jwtBuilder.GetPrivatePem(),
-				}).AcmeHostContext;
+				HostDirectoryUri = HostDirectoryUri,
+			}).HostContext;
 
-				System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(AccountPemFullName));
-				System.IO.File.WriteAllText(AccountPemFullName, context.Pem);
-				System.IO.File.WriteAllText(AccountJwkAlgorithmKeyFullName, context.JwkAlgorithmKey.GetAbbreviation());
-				System.IO.File.WriteAllText(AccountSerializedJwkFullName, context.SerializedJwk);
+			System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(AccountPemFullName));
+			System.IO.File.WriteAllText(AccountPemFullName, context.Pem);
+			System.IO.File.WriteAllText(AccountSerializedJsonWebKeyFullName, context.SerializedJsonWebKey);
 
-				var response = AcmeApi.CreateNewAcmeAccount(new()
-				{
-					AcmeHostContext = context,
-					//AccountName = "localhost",
-					Contacts = new[] { "ron.muth@isi-net.com" },
-					TermsOfServiceAgreed = true,
-				});
-			}
+			var response = AcmeApi.CreateNewAccount(new()
+			{
+				HostContext = context,
+				//AccountName = "localhost",
+				Contacts = new[] { "ron.muth@isi-net.com" },
+				TermsOfServiceAgreed = true,
+			});
+
+			System.IO.File.WriteAllText(AccountKeyFullName, response.Account.AccountKey);
 		}
 
 
 		[Test]
-		public void CreateNewAcmeOrder()
+		public void CreateNewOrder()
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 
 			var pem = GetAccountPem();
-			var jwkAlgorithmKey = GetAccountJwkAlgorithmKey();
-			var serializedJwk = GetAccountSerializedJwk();
+			var serializedJsonWebKey = GetAccountSerializedJsonWebKey();
+			var accountKey = GetAccountKey();
 
-			using (var jwtBuilder = JwkBuilderFactory.GetJwkBuilder(jwkAlgorithmKey, pem))
+			var context = AcmeApi.GetHostContext(new()
 			{
-				var context = AcmeApi.GetAcmeHostContext(new()
-				{
-					AcmeHostDirectoryUri = AcmeHostUri,
-					JwkAlgorithmKey = jwkAlgorithmKey,
-					SerializedJwk = serializedJwk,
-					Pem = pem,
-				}).AcmeHostContext;
+				HostDirectoryUri = HostDirectoryUri,
+				SerializedJsonWebKey = serializedJsonWebKey,
+				Pem = pem,
+				AccountKey = accountKey,
+			}).HostContext;
 
-				var createNewAcmeOrderResponse = AcmeApi.CreateNewAcmeOrder(new()
+			var createNewOrderResponse = AcmeApi.CreateNewOrder(new()
+			{
+				HostContext = context,
+				CertificateIdentifiers = new[]
 				{
-					AcmeHostContext = context,
-					CertificateIdentifiers = new[]
+					new ISI.Extensions.Acme.OrderCertificateIdentifier()
 					{
-						new ISI.Extensions.Acme.AcmeOrderCertificateIdentifier()
-						{
-							CertificateIdentifierType = ISI.Extensions.Acme.AcmeOrderCertificateIdentifierType.Dns,
-							CertificateIdentifierValue = "muthmanor.com,*.muthmanor.com",
-						}
-					},
-					//PostRenewalActions = new []
-					//{
-					//	new ISI.Extensions.Acme.AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook()
-					//	{
-					//		SetCertificatesUrl = @"https://nginx/upload-certificates",
-					//	}
-					//}
+						CertificateIdentifierType = ISI.Extensions.Acme.OrderCertificateIdentifierType.Dns,
+						CertificateIdentifierValue = "www.muthmanor.com",
+					}
+				},
+				//PostRenewalActions = new []
+				//{
+				//	new ISI.Extensions.Acme.AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook()
+				//	{
+				//		SetCertificatesUrl = @"https://nginx/upload-certificates",
+				//	}
+				//}
+			});
+
+			//var orderCertificateIdentifier = createNewOrderResponse.Order.CertificateIdentifiers.First(c => c.CertificateIdentifierType == ISI.Extensions.Acme.OrderCertificateIdentifierType.Dns);
+
+
+			var getAuthorizationResponse = AcmeApi.GetAuthorization(new()
+			{
+				HostContext = context,
+				AuthorizationsUrl = createNewOrderResponse.Order.AuthorizationsUrls.First(),
+			});
+
+
+			var challenge = getAuthorizationResponse.Challenges.NullCheckedFirstOrDefault(challenge => challenge.ChallengeType == ISI.Extensions.Acme.OrderCertificateIdentifierAuthorizationChallengeType.Dns01);
+
+
+
+
+
+
+			var dnsRecords = DomainsApi.GetDnsRecords(new()
+			{
+				ApiKey = settings.GetValue("GoDaddy.ApiKey"),
+				ApiSecret = settings.GetValue("GoDaddy.ApiSecret"),
+				DomainName = "MuthManor.com",
+			}).DnsRecords;
+
+			var dnsRecord = new ISI.Extensions.Dns.DnsRecord()
+			{
+				Data = challenge.Token,
+				Name = "_acme-challenge",
+				//Port = source.Port,
+				//Priority = source.Priority,
+				//Protocol = source.Protocol,
+				//Service = source.Service,
+				//Ttl = 3600,
+				RecordType = ISI.Extensions.Dns.RecordType.TXT,
+				//Weight = source.Weight,
+			};
+
+			var xxx = DomainsApi.SetDnsRecords(new()
+			{
+				ApiKey = settings.GetValue("GoDaddy.ApiKey"),
+				ApiSecret = settings.GetValue("GoDaddy.ApiSecret"),
+				DomainName = "MuthManor.com",
+				DnsRecords = new[] { dnsRecord },
+			});
+
+
+
+
+			var certificateSigningRequestParameters = new ISI.Extensions.Acme.CertificateSigningRequestParameters()
+			{
+				CountryName = "US",
+				State = "New York",
+				Locality = "Glen Cove",
+				Organization = "MuthManor",
+				OrganizationUnit = null,
+				CommonName = "_.muthmanor.com",
+			};
+
+
+			using (var certificateSigningKey = System.Security.Cryptography.RSA.Create(4096))
+			{
+				var certificateSigningRequest = new System.Security.Cryptography.X509Certificates.CertificateRequest(
+					certificateSigningRequestParameters.GetSubjectName(),
+					certificateSigningKey,
+					System.Security.Cryptography.HashAlgorithmName.SHA256,
+					System.Security.Cryptography.RSASignaturePadding.Pkcs1);
+				
+				var finalizeOrderResponse = AcmeApi.FinalizeOrder(new()
+				{
+					HostContext = context,
+					Order = createNewOrderResponse.Order,
+					CertificateSigningRequestPem = certificateSigningRequest.CreateSigningRequestPem(),
 				});
 
-				var acmeOrderCertificateIdentifier = createNewAcmeOrderResponse.AcmeOrder.CertificateIdentifiers.First(c => c.CertificateIdentifierType == ISI.Extensions.Acme.AcmeOrderCertificateIdentifierType.Dns);
 
-
-				var dnsRecords = DomainsApi.GetDnsRecords(new()
+				var getCertificateResponse = AcmeApi.GetCertificate(new()
 				{
-					ApiKey = settings.GetValue("GoDaddy.ApiKey"),
-					ApiSecret = settings.GetValue("GoDaddy.ApiSecret"),
-					DomainName = "MuthManor.com",
-				}).DnsRecords;
-
-				var dnsRecord = new ISI.Extensions.Dns.DnsRecord()
-				{
-					Data = acmeOrderCertificateIdentifier.CertificateIdentifierValue,
-					Name = "_acme-challenge",
-					//Port = source.Port,
-					//Priority = source.Priority,
-					//Protocol = source.Protocol,
-					//Service = source.Service,
-					//Ttl = 3600,
-					RecordType = ISI.Extensions.Dns.RecordType.TXT,
-					//Weight = source.Weight,
-				};
-
-				var xxx = DomainsApi.SetDnsRecords(new()
-				{
-					ApiKey = settings.GetValue("GoDaddy.ApiKey"),
-					ApiSecret = settings.GetValue("GoDaddy.ApiSecret"),
-					DomainName = "MuthManor.com",
-					DnsRecords = new[] { dnsRecord },
+					HostContext = context,
+					GetCertificateUrl = finalizeOrderResponse.Order.GetCertificateUrl,
 				});
 
 
+				var certificatePem = getCertificateResponse.CertificatePem;
+
+				// other stuff could have modified the request here, but you aren't
+				// using any of the extra fancy options
+
+				//System.IO.File.WriteAllText("fa.key", certificateSigningKey.ExportPkcs8PrivateKeyPem());
+				//System.IO.File.WriteAllText("fa.csr", certificateSigningRequest.CreateSigningRequestPem());
+				//System.IO.File.WriteAllText("publickey.pem", certificateSigningKey.ExportSubjectPublicKeyInfoPem());
 			}
+
 		}
 	}
 }

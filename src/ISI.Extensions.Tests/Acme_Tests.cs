@@ -36,6 +36,8 @@ namespace ISI.Extensions.Tests
 		protected readonly string AccountPemFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.pem");
 		protected readonly string AccountSerializedJsonWebKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.SerializedJsonWebKey");
 		protected readonly string AccountKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.key");
+		protected readonly string CertificateKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.certificate.key");
+		protected readonly string CertificateFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.certificate.crt");
 
 		//protected readonly Uri AcmeHostUri = new Uri(@"https://localhost:15633/directory");
 		//protected readonly string AccountPemFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.pem");
@@ -103,7 +105,7 @@ namespace ISI.Extensions.Tests
 			System.IO.File.WriteAllText(AccountPemFullName, context.Pem);
 			System.IO.File.WriteAllText(AccountSerializedJsonWebKeyFullName, context.SerializedJsonWebKey);
 
-			var response = AcmeApi.CreateNewAccount(new()
+			var createNewAccountResponse = AcmeApi.CreateNewAccount(new()
 			{
 				HostContext = context,
 				//AccountName = "localhost",
@@ -111,7 +113,7 @@ namespace ISI.Extensions.Tests
 				TermsOfServiceAgreed = true,
 			});
 
-			System.IO.File.WriteAllText(AccountKeyFullName, response.Account.AccountKey);
+			System.IO.File.WriteAllText(AccountKeyFullName, createNewAccountResponse.Account.AccountKey);
 		}
 
 
@@ -124,6 +126,8 @@ namespace ISI.Extensions.Tests
 			var pem = GetAccountPem();
 			var serializedJsonWebKey = GetAccountSerializedJsonWebKey();
 			var accountKey = GetAccountKey();
+
+			var domainName = "muthmanor.com";
 
 			var context = AcmeApi.GetHostContext(new()
 			{
@@ -141,7 +145,7 @@ namespace ISI.Extensions.Tests
 					new ISI.Extensions.Acme.OrderCertificateIdentifier()
 					{
 						CertificateIdentifierType = ISI.Extensions.Acme.OrderCertificateIdentifierType.Dns,
-						CertificateIdentifierValue = "www.muthmanor.com",
+						CertificateIdentifierValue = domainName,
 					}
 				},
 				//PostRenewalActions = new []
@@ -159,14 +163,18 @@ namespace ISI.Extensions.Tests
 			var getAuthorizationResponse = AcmeApi.GetAuthorization(new()
 			{
 				HostContext = context,
-				AuthorizationsUrl = createNewOrderResponse.Order.AuthorizationsUrls.First(),
+				AuthorizationUrl = createNewOrderResponse.Order.AuthorizationUrls.First(),
 			});
 
 
 			var challenge = getAuthorizationResponse.Challenges.NullCheckedFirstOrDefault(challenge => challenge.ChallengeType == ISI.Extensions.Acme.OrderCertificateIdentifierAuthorizationChallengeType.Dns01);
 
 
-
+			var dnsToken = AcmeApi.CalculateDnsToken(new()
+			{
+				HostContext = context,
+				ChallengeToken = challenge.Token,
+			}).DnsToken;
 
 
 
@@ -174,76 +182,97 @@ namespace ISI.Extensions.Tests
 			{
 				ApiKey = settings.GetValue("GoDaddy.ApiKey"),
 				ApiSecret = settings.GetValue("GoDaddy.ApiSecret"),
-				DomainName = "MuthManor.com",
+				DomainName = domainName,
 			}).DnsRecords;
 
 			var dnsRecord = new ISI.Extensions.Dns.DnsRecord()
 			{
-				Data = challenge.Token,
+				Data = dnsToken,
 				Name = "_acme-challenge",
 				//Port = source.Port,
 				//Priority = source.Priority,
 				//Protocol = source.Protocol,
 				//Service = source.Service,
-				//Ttl = 3600,
+				Ttl = TimeSpan.FromMinutes(10),
 				RecordType = ISI.Extensions.Dns.RecordType.TXT,
 				//Weight = source.Weight,
 			};
 
-			var xxx = DomainsApi.SetDnsRecords(new()
+			var setDnsRecordsResponse = DomainsApi.SetDnsRecords(new()
 			{
 				ApiKey = settings.GetValue("GoDaddy.ApiKey"),
 				ApiSecret = settings.GetValue("GoDaddy.ApiSecret"),
-				DomainName = "MuthManor.com",
+				DomainName = domainName,
 				DnsRecords = new[] { dnsRecord },
 			});
 
+			System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
 
-
-
-			var certificateSigningRequestParameters = new ISI.Extensions.Acme.CertificateSigningRequestParameters()
+			var completeChallengeResponse = AcmeApi.CompleteChallenge(new()
 			{
-				CountryName = "US",
-				State = "New York",
-				Locality = "Glen Cove",
-				Organization = "MuthManor",
-				OrganizationUnit = null,
-				CommonName = "_.muthmanor.com",
-			};
+				HostContext = context,
+				ChallengeUrl = challenge.ChallengeUrl,
+			});
+
+			System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
 
 
-			using (var certificateSigningKey = System.Security.Cryptography.RSA.Create(4096))
+			var getChallengeResponse = AcmeApi.GetChallenge(new()
 			{
-				var certificateSigningRequest = new System.Security.Cryptography.X509Certificates.CertificateRequest(
-					certificateSigningRequestParameters.GetSubjectName(),
-					certificateSigningKey,
-					System.Security.Cryptography.HashAlgorithmName.SHA256,
-					System.Security.Cryptography.RSASignaturePadding.Pkcs1);
-				
-				var finalizeOrderResponse = AcmeApi.FinalizeOrder(new()
+				HostContext = context,
+				ChallengeUrl = challenge.ChallengeUrl,
+			});
+
+
+			System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
+
+			var createCertificateSigningRequestResponse = AcmeApi.CreateCertificateSigningRequest(new()
+			{
+				CertificateSigningRequestParameters = new ISI.Extensions.Acme.CertificateSigningRequestParameters()
 				{
-					HostContext = context,
-					Order = createNewOrderResponse.Order,
-					CertificateSigningRequestPem = certificateSigningRequest.CreateSigningRequestPem(),
-				});
+					CountryName = "US",
+					State = "New York",
+					Locality = "Glen Cove",
+					Organization = "MuthManor",
+					OrganizationUnit = null,
+					CommonName = domainName,
+				},
+			});
 
 
-				var getCertificateResponse = AcmeApi.GetCertificate(new()
-				{
-					HostContext = context,
-					GetCertificateUrl = finalizeOrderResponse.Order.GetCertificateUrl,
-				});
+			var finalizeOrderResponse = AcmeApi.FinalizeOrder(new()
+			{
+				HostContext = context,
+				Order = createNewOrderResponse.Order,
+				CertificateSigningRequest = createCertificateSigningRequestResponse.CertificateSigningRequest,
+			});
+
+			System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
+
+			var getOrderResponse = AcmeApi.GetOrder(new()
+			{
+				HostContext = context,
+				OrderUrl = createNewOrderResponse.Order.OrderKey,
+			});
 
 
-				var certificatePem = getCertificateResponse.CertificatePem;
+			var getCertificateResponse = AcmeApi.GetCertificate(new()
+			{
+				HostContext = context,
+				GetCertificateUrl = getOrderResponse.Order.GetCertificateUrl,
+			});
 
-				// other stuff could have modified the request here, but you aren't
-				// using any of the extra fancy options
+			var certificatePem = getCertificateResponse.CertificatePem;
 
-				//System.IO.File.WriteAllText("fa.key", certificateSigningKey.ExportPkcs8PrivateKeyPem());
-				//System.IO.File.WriteAllText("fa.csr", certificateSigningRequest.CreateSigningRequestPem());
-				//System.IO.File.WriteAllText("publickey.pem", certificateSigningKey.ExportSubjectPublicKeyInfoPem());
-			}
+			System.IO.File.WriteAllText(CertificateKeyFullName, createCertificateSigningRequestResponse.PrivateKeyPem);
+			System.IO.File.WriteAllText(CertificateFullName, certificatePem);
+
+			// other stuff could have modified the request here, but you aren't
+			// using any of the extra fancy options
+
+			//System.IO.File.WriteAllText("fa.key", certificateSigningKey.ExportPkcs8PrivateKeyPem());
+			//System.IO.File.WriteAllText("fa.csr", certificateSigningRequest.CreateSigningRequestPem());
+			//System.IO.File.WriteAllText("publickey.pem", certificateSigningKey.ExportSubjectPublicKeyInfoPem());
 
 		}
 	}

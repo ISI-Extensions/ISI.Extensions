@@ -26,6 +26,6 @@ namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 	{
 		public HostContext HostContext { get; set; }
 
-		public string AuthorizationsUrl { get; set; }
+		public string AuthorizationUrl { get; set; }
 	}
 }

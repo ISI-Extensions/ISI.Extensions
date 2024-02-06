@@ -27,6 +27,6 @@ namespace ISI.Extensions.Acme.SerializableModels.AcmeOrders
 	public class FinalizeOrderRequest
 	{
 		[DataMember(Name = "csr", EmitDefaultValue = false)]
-		public string CertificateSigningRequestPem { get; set; }
+		public string CertificateSigningRequest { get; set; }
 	}
 }

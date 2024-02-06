@@ -41,7 +41,10 @@ namespace ISI.Extensions.WebClient
 			public FormDataCollection FormData { get; private set; } = null;
 			public string BodyRaw { get; private set; } = null;
 
+			public System.Net.HttpStatusCode StatusCode { get; private set; }
+
 			public string ResponseRaw { get; private set; } = null;
+			public System.Net.WebHeaderCollection ResponseHeaders { get; private set; } = null;
 
 			internal void Clear()
 			{
@@ -51,7 +54,10 @@ namespace ISI.Extensions.WebClient
 				FormData = null;
 				BodyRaw = null;
 
+				StatusCode = default;
+
 				ResponseRaw = null;
+				ResponseHeaders = null;
 			}
 
 			internal void SetHttpMethod(string httpMethod)
@@ -73,6 +79,16 @@ namespace ISI.Extensions.WebClient
 			internal void SetBodyRaw(string bodyRaw)
 			{
 				BodyRaw = bodyRaw;
+			}
+			
+			internal void SetStatusCode(System.Net.HttpStatusCode statusCode)
+			{
+				StatusCode = statusCode;
+			}
+
+			internal void SetResponseHeaders(System.Net.WebHeaderCollection responseHeaders)
+			{
+				ResponseHeaders = responseHeaders;
 			}
 
 			internal void SetResponseRaw(string responseRaw)

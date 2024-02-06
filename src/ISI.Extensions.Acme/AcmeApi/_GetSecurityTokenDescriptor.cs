@@ -27,28 +27,28 @@ namespace ISI.Extensions.Acme
 {
 	public partial class AcmeApi
 	{
-		private Microsoft.IdentityModel.Tokens.SecurityTokenDescriptor GetSecurityTokenDescriptor(HostContext acmeHostContext, string kid = null)
+		private Microsoft.IdentityModel.Tokens.SecurityTokenDescriptor GetSecurityTokenDescriptor(HostContext hostContext, string kid = null)
 		{
-			using (var rsaCryptoServiceProvider = new System.Security.Cryptography.RSACryptoServiceProvider())
+			var privateKey = System.Security.Cryptography.ECDsa.Create();
+			privateKey.ImportFromPem(hostContext.Pem);
+
+			var securityKey = new Microsoft.IdentityModel.Tokens.ECDsaSecurityKey(privateKey);
+			if (!string.IsNullOrWhiteSpace(kid))
 			{
-				var privateKey = System.Security.Cryptography.ECDsa.Create();
-				privateKey.ImportFromPem(acmeHostContext.Pem);
-
-				var securityKey = new Microsoft.IdentityModel.Tokens.ECDsaSecurityKey(privateKey);
-				if (!string.IsNullOrWhiteSpace(kid))
-				{
-					securityKey.KeyId = kid;
-				}
-
-				var securityTokenDescriptor = new Microsoft.IdentityModel.Tokens.SecurityTokenDescriptor()
-				{
-					AdditionalHeaderClaims = new Dictionary<string, object>(),
-					Claims = new Dictionary<string, object>(),
-					SigningCredentials = new Microsoft.IdentityModel.Tokens.SigningCredentials(securityKey, Microsoft.IdentityModel.Tokens.SecurityAlgorithms.EcdsaSha256),
-				};
-
-				return securityTokenDescriptor;
+				securityKey.KeyId = kid;
 			}
+
+			var securityTokenDescriptor = new Microsoft.IdentityModel.Tokens.SecurityTokenDescriptor()
+			{
+				Expires = null,
+				IssuedAt = null,
+				NotBefore = null,
+				AdditionalHeaderClaims = new Dictionary<string, object>(),
+				Claims = new Dictionary<string, object>(),
+				SigningCredentials = new Microsoft.IdentityModel.Tokens.SigningCredentials(securityKey, Microsoft.IdentityModel.Tokens.SecurityAlgorithms.EcdsaSha256),
+			};
+
+			return securityTokenDescriptor;
 		}
 	}
 }

@@ -68,7 +68,10 @@ namespace ISI.Platforms.AspNetCore.Extensions
 			context.AddConfigureApplication((applicationBuilder, webHostingEnvironment) =>
 			{
 				applicationBuilder.UseSwagger();
-				applicationBuilder.UseSwaggerUI(swaggerUIOptions => swaggerUIOptions.SwaggerEndpoint($"/swagger/v{version}/swagger.json", $"{applicationName} v{version}"));
+				applicationBuilder.UseSwaggerUI(swaggerUIOptions =>
+				{
+					swaggerUIOptions.SwaggerEndpoint($"/swagger/v{version}/swagger.json", $"{applicationName} v{version}");
+				});
 			});
 
 			return context;

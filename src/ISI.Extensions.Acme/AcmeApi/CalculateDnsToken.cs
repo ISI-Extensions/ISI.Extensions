@@ -12,22 +12,44 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.JsonJwt.Extensions;
+using ISI.Extensions.JsonSerialization.Extensions;
+using DTOs = ISI.Extensions.Acme.DataTransferObjects.AcmeApi;
 
-namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
+namespace ISI.Extensions.Acme
 {
-	public class FinalizeOrderRequest : IRequest
+	public partial class AcmeApi
 	{
-		public HostContext HostContext { get; set; }
+		public DTOs.CalculateDnsTokenResponse CalculateDnsToken(DTOs.CalculateDnsTokenRequest request)
+		{
+			var response = new DTOs.CalculateDnsTokenResponse();
 
-		public Order Order { get; set; }
-		
-		public byte[] CertificateSigningRequest { get; set; }
+			using (var privateKey = System.Security.Cryptography.ECDsa.Create())
+			{
+				privateKey.ImportFromPem(request.HostContext.Pem);
+
+				var securityKey = new Microsoft.IdentityModel.Tokens.ECDsaSecurityKey(privateKey);
+
+				using (var sha = System.Security.Cryptography.SHA256.Create())
+				{
+					var jwkHash = securityKey.ComputeJwkThumbprint();
+					var jwkThumb = UrlEncode(jwkHash);
+
+					var keyAuthz = $"{request.ChallengeToken}.{jwkThumb}";
+					var keyAuthzDig = sha.ComputeHash(Encoding.UTF8.GetBytes(keyAuthz));
+					
+					response.DnsToken = UrlEncode(keyAuthzDig);
+				}
+			}
+
+			return response;
+		}
 	}
 }

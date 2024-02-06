@@ -33,15 +33,7 @@ namespace ISI.Extensions.Acme
 			
 			var uri = new Uri(request.GetCertificateUrl);
 
-			var securityTokenDescriptor = GetSecurityTokenDescriptor(request.HostContext, request.HostContext.AccountKey);
-			securityTokenDescriptor.AdditionalHeaderClaims.Add(HeaderKey.Nonce, request.HostContext.Nonce);
-			securityTokenDescriptor.AdditionalHeaderClaims.Add(HeaderKey.Url, uri.ToString());
-
-			var token = (new Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler()).CreateToken(securityTokenDescriptor);
-			
-			var signedJwt = new ISI.Extensions.JsonJwt.SerializableEntities.SignedJwt(token);
-
-			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<ISI.Extensions.JsonJwt.SerializableEntities.SignedJwt, ISI.Extensions.WebClient.Rest.TextResponse>(uri, GetHeaders(request), signedJwt, true);
+			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<ISI.Extensions.WebClient.Rest.TextResponse>(uri, GetHeaders(request), true);
 
 			response.CertificatePem = acmeResponse.Content;
 

@@ -22,12 +22,10 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 {
-	public class FinalizeOrderRequest : IRequest
+	public class CreateCertificateSigningRequestRequest
 	{
-		public HostContext HostContext { get; set; }
+		public int KeySize { get; set; } = 4096;
 
-		public Order Order { get; set; }
-		
-		public byte[] CertificateSigningRequest { get; set; }
+		public ISI.Extensions.Acme.CertificateSigningRequestParameters CertificateSigningRequestParameters { get; set; }
 	}
 }

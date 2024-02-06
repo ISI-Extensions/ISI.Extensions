@@ -65,12 +65,14 @@ namespace ISI.Extensions.Acme
 				request.HostContext.Nonce = nonce;
 			}
 
-			acmeResponse.ResponseHeaders.TryGetValue(HeaderKey.Location, out var acmeAccountKey);
-
+			if (acmeResponse.ResponseHeaders.TryGetValue(HeaderKey.Location, out var accountUrl))
+			{
+				request.HostContext.AccountKey = accountUrl;
+			}
 
 			response.Account = acmeResponse.Response.NullCheckedConvert(source => new Account()
 			{
-				AccountKey = acmeAccountKey,
+				AccountKey = accountUrl,
 				SerializedJsonWebKey = JsonSerializer.Serialize(acmeResponse.Response.JsonWebKey),
 				AccountStatus = acmeResponse.Response.AccountStatus,
 				AccountName = acmeResponse.Response.AccountName,

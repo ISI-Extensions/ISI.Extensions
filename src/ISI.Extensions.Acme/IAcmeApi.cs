@@ -35,5 +35,9 @@ namespace ISI.Extensions.Acme
 		DTOs.CreateNewHostContextResponse CreateNewHostContext(DTOs.CreateNewHostContextRequest request);
 		DTOs.GetCertificateResponse GetCertificate(DTOs.GetCertificateRequest request);
 		DTOs.FinalizeOrderResponse FinalizeOrder(DTOs.FinalizeOrderRequest request);
+		DTOs.CompleteChallengeResponse CompleteChallenge(DTOs.CompleteChallengeRequest request);
+		DTOs.GetChallengeResponse GetChallenge(DTOs.GetChallengeRequest request);
+		DTOs.GetOrderResponse GetOrder(DTOs.GetOrderRequest request);
+		DTOs.CreateCertificateSigningRequestResponse CreateCertificateSigningRequest(DTOs.CreateCertificateSigningRequestRequest request);
 	}
 }

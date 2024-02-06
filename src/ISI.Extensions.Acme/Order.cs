@@ -23,14 +23,14 @@ namespace ISI.Extensions.Acme
 {
 	public class Order
 	{
+		public string OrderKey { get; set; }
 		public OrderStatus OrderStatus { get; set; }
 		public DateTime? RequestExpiresDateTimeUtc { get; set; }
 		public DateTime? CertificateNotBeforeDateTimeUtc { get; set; }
 		public DateTime? CertificateNotAfterDateTimeUtc { get; set; }
 		public OrderCertificateIdentifier[] CertificateIdentifiers { get; set; }
-		public string[] AuthorizationsUrls { get; set; }
+		public string[] AuthorizationUrls { get; set; }
 		public string FinalizeOrderUrl { get; set; }
 		public string GetCertificateUrl { get; set; }
-		public OrderError Error { get; set; }
 	}
 }

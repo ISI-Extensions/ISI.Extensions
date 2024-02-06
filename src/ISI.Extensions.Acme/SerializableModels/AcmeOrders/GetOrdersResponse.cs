@@ -27,6 +27,6 @@ namespace ISI.Extensions.Acme.SerializableModels.AcmeOrders
 	public class GetOrdersResponse
 	{
 		[DataMember(Name = "orders", EmitDefaultValue = false)]
-		public string[] OrdersUrls { get; set; }
+		public string[] OrderUrls { get; set; }
 	}
 }

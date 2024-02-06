@@ -12,22 +12,39 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.JsonJwt.Extensions;
+using ISI.Extensions.JsonSerialization.Extensions;
+using DTOs = ISI.Extensions.Acme.DataTransferObjects.AcmeApi;
 
-namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
+namespace ISI.Extensions.Acme
 {
-	public class FinalizeOrderRequest : IRequest
+	public partial class AcmeApi
 	{
-		public HostContext HostContext { get; set; }
+		public DTOs.CreateCertificateSigningRequestResponse CreateCertificateSigningRequest(DTOs.CreateCertificateSigningRequestRequest request)
+		{
+			var response = new DTOs.CreateCertificateSigningRequestResponse();
 
-		public Order Order { get; set; }
-		
-		public byte[] CertificateSigningRequest { get; set; }
+			using (var certificateSigningKey = System.Security.Cryptography.RSA.Create(4096))
+			{
+				var certificateSigningRequest = new System.Security.Cryptography.X509Certificates.CertificateRequest(
+					request.CertificateSigningRequestParameters.GetSubjectName(),
+					certificateSigningKey,
+					System.Security.Cryptography.HashAlgorithmName.SHA256,
+					System.Security.Cryptography.RSASignaturePadding.Pkcs1);
+
+				response.CertificateSigningRequest = certificateSigningRequest.CreateSigningRequest();
+
+				response.PrivateKeyPem = certificateSigningKey.ExportRSAPrivateKeyPem();
+			}
+
+			return response;
+		}
 	}
 }

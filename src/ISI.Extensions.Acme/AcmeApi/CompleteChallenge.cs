@@ -27,46 +27,39 @@ namespace ISI.Extensions.Acme
 {
 	public partial class AcmeApi
 	{
-		public DTOs.CreateNewHostContextResponse CreateNewHostContext(DTOs.CreateNewHostContextRequest request)
+		public DTOs.CompleteChallengeResponse CompleteChallenge(DTOs.CompleteChallengeRequest request)
 		{
-			var response = new DTOs.CreateNewHostContextResponse();
+			var response = new DTOs.CompleteChallengeResponse();
 
-			using (var privateKey = System.Security.Cryptography.ECDsa.Create(System.Security.Cryptography.ECCurve.NamedCurves.nistP256))
-			using (var publicKey = System.Security.Cryptography.ECDsa.Create(privateKey.ExportParameters(false)))
+			var uri = new Uri(request.ChallengeUrl);
+
+			var securityTokenDescriptor = GetSecurityTokenDescriptor(request.HostContext, request.HostContext.AccountKey);
+			securityTokenDescriptor.AdditionalHeaderClaims.Add(HeaderKey.Nonce, request.HostContext.Nonce);
+			securityTokenDescriptor.AdditionalHeaderClaims.Add(HeaderKey.Url, uri.ToString());
+
+			var token = (new Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler()).CreateToken(securityTokenDescriptor);
+
+			var signedJwt = new ISI.Extensions.JsonJwt.SerializableEntities.SignedJwt(token);
+
+#if DEBUG
+			var xxx = ISI.Extensions.WebClient.Rest.GetEventHandler();
+#endif
+
+			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<ISI.Extensions.JsonJwt.SerializableEntities.SignedJwt, ISI.Extensions.WebClient.Rest.SerializedResponse<ISI.Extensions.Acme.SerializableModels.AcmeOrders.CompleteChallengeResponse>>(uri, GetHeaders(request), signedJwt, true);
+
+			if (acmeResponse.ResponseHeaders.TryGetValue(HeaderKey.ReplayNonce, out var nonce))
 			{
-				var jsonWebKey = Microsoft.IdentityModel.Tokens.JsonWebKeyConverter.ConvertFromECDsaSecurityKey(new Microsoft.IdentityModel.Tokens.ECDsaSecurityKey(publicKey)).NullCheckedConvert(source => new ISI.Extensions.JsonJwt.SerializableEntities.JsonWebKey()
-				{
-					Alg = source.Alg,
-					Crv = source.Crv,
-					D = source.D,
-					DP = source.DP,
-					DQ = source.DQ,
-					E = source.E,
-					K = source.K,
-					KeyOps = source.KeyOps.ToNullCheckedArray(),
-					Kid = source.Kid,
-					Kty = source.Kty,
-					N = source.N,
-					Oth = source.Oth.ToNullCheckedArray(),
-					P = source.P,
-					Q = source.Q,
-					QI = source.QI,
-					Use = source.Use,
-					X = source.X,
-					X5c = source.X5c.ToNullCheckedArray(),
-					X5t = source.X5t,
-					X5tS256 = source.X5tS256,
-					X5u = source.X5u,
-					Y = source.Y,
-				});
-
-				response.HostContext = GetHostContext(new()
-				{
-					HostDirectoryUri = request.HostDirectoryUri,
-					SerializedJsonWebKey = JsonSerializer.Serialize(jsonWebKey, false),
-					Pem = privateKey.ExportECPrivateKeyPem(),
-				}).HostContext;
+				request.HostContext.Nonce = nonce;
 			}
+
+			response.AuthorizationChallenge = acmeResponse.Response.NullCheckedConvert(source => new AuthorizationChallenge()
+			{
+				ChallengeType = source.ChallengeType,
+				ChallengeStatus = source.ChallengeStatus,
+				ChallengeUrl = source.ChallengeUrl,
+				Token = source.Token,
+				ValidatedDateTimeUtc = source.ValidatedDateTimeUtc,
+			});
 
 			return response;
 		}

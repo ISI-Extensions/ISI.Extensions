@@ -28,6 +28,8 @@ namespace ISI.Extensions.Acme
 
 		public string Detail { get; set; }
 
+		public string Status { get; set; }
+
 		public OrderErrorSubProblem[] SubProblems { get; set; }
 	}
 }

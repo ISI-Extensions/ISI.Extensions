@@ -22,12 +22,10 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 {
-	public class FinalizeOrderRequest : IRequest
+	public class GetChallengeResponse
 	{
-		public HostContext HostContext { get; set; }
-
-		public Order Order { get; set; }
+		public AuthorizationChallenge Challenge { get; set; }
 		
-		public byte[] CertificateSigningRequest { get; set; }
+		public OrderError Error { get; set; }
 	}
 }

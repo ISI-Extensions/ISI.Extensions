@@ -24,6 +24,8 @@ namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 {
 	public class CreateNewOrderResponse
 	{
-		public Order Order { get; set; }	
+		public Order Order { get; set; }
+
+		public OrderError Error { get; set; }
 	}
 }

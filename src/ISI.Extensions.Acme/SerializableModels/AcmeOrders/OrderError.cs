@@ -32,6 +32,9 @@ namespace ISI.Extensions.Acme.SerializableModels.AcmeOrders
 		[DataMember(Name = "detail", EmitDefaultValue = false)]
 		public string Detail { get; set; }
 
+		[DataMember(Name = "status", EmitDefaultValue = false)]
+		public string Status { get; set; }
+
 		[DataMember(Name = "subproblems", EmitDefaultValue = false)]
 		public OrderErrorSubProblem[] SubProblems { get; set; }
 	}

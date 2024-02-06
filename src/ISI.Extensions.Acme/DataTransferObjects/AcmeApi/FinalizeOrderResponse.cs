@@ -24,6 +24,8 @@ namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 {
 	public class FinalizeOrderResponse
 	{
-		public Order Order { get; set; }	
+		public Order Order { get; set; }
+
+		public OrderError Error { get; set; }
 	}
 }

@@ -50,7 +50,7 @@ namespace ISI.Extensions.Acme.SerializableModels.AcmeOrders
 		public OrderCertificateIdentifier[] CertificateIdentifiers { get; set; }
 
 		[DataMember(Name = "authorizations", EmitDefaultValue = false)]
-		public string[] AuthorizationsUrls { get; set; }
+		public string[] AuthorizationUrls { get; set; }
 
 		[DataMember(Name = "finalize", EmitDefaultValue = false)]
 		public string FinalizeOrderUrl { get; set; }

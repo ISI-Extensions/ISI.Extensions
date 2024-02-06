@@ -97,8 +97,12 @@ namespace ISI.Extensions.Acme
 				request.HostContext.Nonce = nonce;
 			}
 
+
+			acmeResponse.ResponseHeaders.TryGetValue(HeaderKey.Location, out var orderUrl);
+
 			response.Order = acmeResponse.Response.NullCheckedConvert(source => new Order()
 			{
+				OrderKey = orderUrl,
 				OrderStatus = source.OrderStatus,
 				RequestExpiresDateTimeUtc = source.RequestExpiresDateTimeUtc,
 				CertificateNotBeforeDateTimeUtc = source.CertificateNotBeforeDateTimeUtc,
@@ -108,24 +112,26 @@ namespace ISI.Extensions.Acme
 					CertificateIdentifierType = certificateIdentifier.CertificateIdentifierType,
 					CertificateIdentifierValue = certificateIdentifier.CertificateIdentifierValue,
 				}),
-				AuthorizationsUrls = source.AuthorizationsUrls.ToNullCheckedArray(),
+				AuthorizationUrls = source.AuthorizationsUrls.ToNullCheckedArray(),
 				FinalizeOrderUrl = source.FinalizeOrderUrl,
 				GetCertificateUrl = source.GetCertificateUrl,
-				Error = source.Error.NullCheckedConvert(error => new OrderError()
+			});
+
+			response.Error = acmeResponse.Response?.Error.NullCheckedConvert(error => new OrderError()
+			{
+				ErrorType = error.ErrorType,
+				Detail = error.Detail,
+				Status = error.Status,
+				SubProblems = error.SubProblems.ToNullCheckedArray(subProblem => new OrderErrorSubProblem()
 				{
-					ErrorType = error.ErrorType,
-					Detail = error.Detail,
-					SubProblems = error.SubProblems.ToNullCheckedArray(subProblem => new OrderErrorSubProblem()
+					ErrorType = subProblem.ErrorType,
+					Detail = subProblem.Detail,
+					Identifier = subProblem.Identifier.NullCheckedConvert(identifier => new OrderCertificateIdentifier()
 					{
-						ErrorType = subProblem.ErrorType,
-						Detail = subProblem.Detail,
-						Identifier = subProblem.Identifier.NullCheckedConvert(identifier => new OrderCertificateIdentifier()
-						{
-							CertificateIdentifierType = identifier.CertificateIdentifierType,
-							CertificateIdentifierValue = identifier.CertificateIdentifierValue,
-						}),
+						CertificateIdentifierType = identifier.CertificateIdentifierType,
+						CertificateIdentifierValue = identifier.CertificateIdentifierValue,
 					}),
-				})
+				}),
 			});
 
 			return response;

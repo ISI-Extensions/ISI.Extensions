@@ -26,6 +26,8 @@ namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 	{
 		public HostContext HostContext { get; set; }
 
+		public string DomainName { get; set; }
+
 		public string ChallengeToken { get; set; }
 	}
 }

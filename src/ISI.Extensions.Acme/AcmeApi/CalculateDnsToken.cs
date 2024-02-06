@@ -31,6 +31,25 @@ namespace ISI.Extensions.Acme
 		{
 			var response = new DTOs.CalculateDnsTokenResponse();
 
+			var domainNameQueue = new Queue<string>(request.DomainName.Split('.', StringSplitOptions.RemoveEmptyEntries).Reverse());
+
+			var domainName = new List<string>();
+			domainName.Insert(0, domainNameQueue.Dequeue());
+			domainName.Insert(0, domainNameQueue.Dequeue());
+			response.DomainName = string.Join(".", domainName);
+
+			domainName.Clear();
+			while (domainNameQueue.Any())
+			{
+				var path = domainNameQueue.Dequeue();
+				if (!string.Equals(path, "*", StringComparison.InvariantCultureIgnoreCase))
+				{
+					domainName.Insert(0, path);
+				}
+			}
+			domainName.Insert(0, "_acme-challenge");
+			response.DnsRecordName = string.Join(".", domainName);
+
 			using (var privateKey = System.Security.Cryptography.ECDsa.Create())
 			{
 				privateKey.ImportFromPem(request.HostContext.Pem);
@@ -44,7 +63,7 @@ namespace ISI.Extensions.Acme
 
 					var keyAuthz = $"{request.ChallengeToken}.{jwkThumb}";
 					var keyAuthzDig = sha.ComputeHash(Encoding.UTF8.GetBytes(keyAuthz));
-					
+
 					response.DnsToken = UrlEncode(keyAuthzDig);
 				}
 			}

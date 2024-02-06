@@ -62,7 +62,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 					}
 					else if (System.IO.Directory.Exists(selectedItemPath))
 					{
-						foreach (var solutionFullName in ISI.Extensions.IO.Path.EnumerateFiles(selectedItemPath, "*.sln", excludedPathFilters, maxCheckDirectoryDepth))
+						foreach (var solutionFullName in new HashSet<string>( ISI.Extensions.IO.Path.EnumerateFiles(selectedItemPath, "*.sln", excludedPathFilters, maxCheckDirectoryDepth).Where(fullName => string.Equals(System.IO.Path.GetExtension(fullName), "sln", StringComparison.InvariantCultureIgnoreCase)), StringComparer.InvariantCultureIgnoreCase))
 						{
 							solutionFileNames.Add(solutionFullName);
 						}

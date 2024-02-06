@@ -127,7 +127,7 @@ namespace ISI.Extensions.Tests
 			var serializedJsonWebKey = GetAccountSerializedJsonWebKey();
 			var accountKey = GetAccountKey();
 
-			var domainName = "muthmanor.com";
+			var domainName = "www.muthmanor.com";
 
 			var context = AcmeApi.GetHostContext(new()
 			{
@@ -170,25 +170,26 @@ namespace ISI.Extensions.Tests
 			var challenge = getAuthorizationResponse.Challenges.NullCheckedFirstOrDefault(challenge => challenge.ChallengeType == ISI.Extensions.Acme.OrderCertificateIdentifierAuthorizationChallengeType.Dns01);
 
 
-			var dnsToken = AcmeApi.CalculateDnsToken(new()
+			var calculateDnsTokenResponse = AcmeApi.CalculateDnsToken(new()
 			{
 				HostContext = context,
-				ChallengeToken = challenge.Token,
-			}).DnsToken;
-
-
-
-			var dnsRecords = DomainsApi.GetDnsRecords(new()
-			{
-				ApiKey = settings.GetValue("GoDaddy.ApiKey"),
-				ApiSecret = settings.GetValue("GoDaddy.ApiSecret"),
 				DomainName = domainName,
-			}).DnsRecords;
+				ChallengeToken = challenge.Token,
+			});
+
+
+
+			//var dnsRecords = DomainsApi.GetDnsRecords(new()
+			//{
+			//	ApiKey = settings.GetValue("GoDaddy.ApiKey"),
+			//	ApiSecret = settings.GetValue("GoDaddy.ApiSecret"),
+			//	DomainName = domainName,
+			//}).DnsRecords;
 
 			var dnsRecord = new ISI.Extensions.Dns.DnsRecord()
 			{
-				Data = dnsToken,
-				Name = "_acme-challenge",
+				Data = calculateDnsTokenResponse.DnsToken,
+				Name = calculateDnsTokenResponse.DnsRecordName,
 				//Port = source.Port,
 				//Priority = source.Priority,
 				//Protocol = source.Protocol,
@@ -202,7 +203,7 @@ namespace ISI.Extensions.Tests
 			{
 				ApiKey = settings.GetValue("GoDaddy.ApiKey"),
 				ApiSecret = settings.GetValue("GoDaddy.ApiSecret"),
-				DomainName = domainName,
+				DomainName = calculateDnsTokenResponse.DomainName,
 				DnsRecords = new[] { dnsRecord },
 			});
 

@@ -77,7 +77,7 @@ namespace ISI.Extensions.VisualStudio.Forms.Tests
 
 			System.Windows.Forms.Application.EnableVisualStyles();
 
-			var form = ISI.Extensions.VisualStudio.Forms.UpgradeNugetPackagesInSolutions.CreateForm(selectedItemPaths, true);
+			var form = ISI.Extensions.VisualStudio.Forms.RefreshSolutions.CreateForm(selectedItemPaths, true);
 
 			System.Windows.Forms.Application.Run(form);
 		}

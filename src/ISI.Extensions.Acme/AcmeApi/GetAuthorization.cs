@@ -37,7 +37,6 @@ namespace ISI.Extensions.Acme
 			var xxx = ISI.Extensions.WebClient.Rest.GetEventHandler();
 #endif
 
-			//var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<ISI.Extensions.JsonJwt.SerializableEntities.SignedJwt, ISI.Extensions.WebClient.Rest.SerializedResponse<ISI.Extensions.Acme.SerializableModels.AcmeOrders.GetAuthorizationResponse>>(uri, GetHeaders(request), signedJwt, true);
 			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<ISI.Extensions.WebClient.Rest.SerializedResponse<ISI.Extensions.Acme.SerializableModels.AcmeOrders.GetAuthorizationResponse>>(uri, GetHeaders(request), true);
 
 			if (acmeResponse.ResponseHeaders.TryGetValue(HeaderKey.ReplayNonce, out var nonce))
@@ -45,22 +44,25 @@ namespace ISI.Extensions.Acme
 				request.HostContext.Nonce = nonce;
 			}
 
-			response.AuthorizationStatus = acmeResponse.Response.AuthorizationStatus;
-			response.RequestExpiresDateTimeUtc = acmeResponse.Response.RequestExpiresDateTimeUtc;
-			response.Identifier = acmeResponse.Response.Identifier.NullCheckedConvert(source => new OrderCertificateIdentifier()
+			response.Authorization = acmeResponse?.Response.NullCheckedConvert(source => new Authorization()
 			{
-				CertificateIdentifierType = source.CertificateIdentifierType,
-				CertificateIdentifierValue = source.CertificateIdentifierValue,
+				AuthorizationStatus = source.AuthorizationStatus,
+				RequestExpiresDateTimeUtc = source.RequestExpiresDateTimeUtc,
+				CertificateIdentifier = acmeResponse.Response.CertificateIdentifier.NullCheckedConvert(identifier => new OrderCertificateIdentifier()
+				{
+					CertificateIdentifierType = identifier.CertificateIdentifierType,
+					CertificateIdentifierValue = identifier.CertificateIdentifierValue,
+				}),
+				Challenges = source.Challenges.ToNullCheckedArray(challenge => new AuthorizationChallenge()
+				{
+					ChallengeType = challenge.ChallengeType,
+					ChallengeStatus = challenge.ChallengeStatus,
+					ChallengeUrl = challenge.ChallengeUrl,
+					Token = challenge.Token,
+					ValidatedDateTimeUtc = challenge.ValidatedDateTimeUtc,
+				}),
+				Wildcard = source.Wildcard,
 			});
-			response.Challenges = acmeResponse.Response.Challenges.ToNullCheckedArray(source => new AuthorizationChallenge()
-			{
-				ChallengeType = source.ChallengeType,
-				ChallengeStatus = source.ChallengeStatus,
-				ChallengeUrl = source.ChallengeUrl,
-				Token = source.Token,
-				ValidatedDateTimeUtc = source.ValidatedDateTimeUtc,
-			});
-			response.Wildcard = acmeResponse.Response.Wildcard;
 
 			return response;
 		}

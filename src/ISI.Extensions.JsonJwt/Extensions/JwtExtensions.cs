@@ -183,7 +183,7 @@ namespace ISI.Extensions.JsonJwt.Extensions
 			}
 		}
 
-		public static T DeserializePayload<T>(this System.IdentityModel.Tokens.Jwt.JwtSecurityToken jwt, ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer = null)
+		public static T DeserializePayload<T>(this System.IdentityModel.Tokens.Jwt.JwtSecurityToken jwtSecurityToken, ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer = null)
 			where T : class, new()
 		{
 			var response = new T();
@@ -192,7 +192,7 @@ namespace ISI.Extensions.JsonJwt.Extensions
 
 			foreach (var column in columns)
 			{
-				if (jwt.Payload.TryGetValue(column.ColumnName, out var value))
+				if (jwtSecurityToken.Payload.TryGetValue(column.ColumnName, out var value))
 				{
 					column.SetValue(response, column.TransformValue(value));
 				}
@@ -201,7 +201,7 @@ namespace ISI.Extensions.JsonJwt.Extensions
 			return response;
 		}
 
-		public static T DeserializeHeader<T>(this System.IdentityModel.Tokens.Jwt.JwtSecurityToken jwt, ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer = null)
+		public static T DeserializeHeader<T>(this System.IdentityModel.Tokens.Jwt.JwtSecurityToken jwtSecurityToken, ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer = null)
 			where T : class, new()
 		{
 			var response = new T();
@@ -210,7 +210,7 @@ namespace ISI.Extensions.JsonJwt.Extensions
 
 			foreach (var column in columns)
 			{
-				if (jwt.Header.TryGetValue(column.ColumnName, out var value))
+				if (jwtSecurityToken.Header.TryGetValue(column.ColumnName, out var value))
 				{
 					column.SetValue(response, column.TransformValue(value));
 				}
@@ -219,5 +219,18 @@ namespace ISI.Extensions.JsonJwt.Extensions
 			return response;
 		}
 
+		public static bool TryGetSerializedJsonWebKey(this System.IdentityModel.Tokens.Jwt.JwtSecurityToken jwtSecurityToken, out string serializedJsonWebKey)
+		{
+			if (jwtSecurityToken.Header.TryGetValue("jwk", out var jwk))
+			{
+				serializedJsonWebKey = string.Format("{0}", jwk);
+
+				return true;
+			}
+
+			serializedJsonWebKey = null;
+			
+			return false;
+		}
 	}
 }

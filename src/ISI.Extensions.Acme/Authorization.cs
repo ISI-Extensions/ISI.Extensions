@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,12 +18,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
+namespace ISI.Extensions.Acme
 {
-	public class GetAuthorizationResponse
+	public class Authorization
 	{
-		public Authorization Authorization { get; set; }
+		public OrderCertificateIdentifierAuthorizationStatus AuthorizationStatus { get; set; }
+
+		public DateTime? RequestExpiresDateTimeUtc { get; set; }
+
+		public OrderCertificateIdentifier CertificateIdentifier { get; set; }
+
+		public AuthorizationChallenge[] Challenges { get; set; }
+
+		public bool? Wildcard { get; set; }
 	}
 }

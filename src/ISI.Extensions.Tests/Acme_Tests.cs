@@ -101,10 +101,6 @@ namespace ISI.Extensions.Tests
 				HostDirectoryUri = HostDirectoryUri,
 			}).HostContext;
 
-			System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(AccountPemFullName));
-			System.IO.File.WriteAllText(AccountPemFullName, context.Pem);
-			System.IO.File.WriteAllText(AccountSerializedJsonWebKeyFullName, context.SerializedJsonWebKey);
-
 			var createNewAccountResponse = AcmeApi.CreateNewAccount(new()
 			{
 				HostContext = context,
@@ -113,6 +109,9 @@ namespace ISI.Extensions.Tests
 				TermsOfServiceAgreed = true,
 			});
 
+			System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(AccountPemFullName));
+			System.IO.File.WriteAllText(AccountPemFullName, context.Pem);
+			System.IO.File.WriteAllText(AccountSerializedJsonWebKeyFullName, context.SerializedJsonWebKey);
 			System.IO.File.WriteAllText(AccountKeyFullName, createNewAccountResponse.Account.AccountKey);
 		}
 
@@ -167,7 +166,7 @@ namespace ISI.Extensions.Tests
 			});
 
 
-			var challenge = getAuthorizationResponse.Challenges.NullCheckedFirstOrDefault(challenge => challenge.ChallengeType == ISI.Extensions.Acme.OrderCertificateIdentifierAuthorizationChallengeType.Dns01);
+			var challenge = getAuthorizationResponse.Authorization.Challenges.NullCheckedFirstOrDefault(challenge => challenge.ChallengeType == ISI.Extensions.Acme.OrderCertificateIdentifierAuthorizationChallengeType.Dns01);
 
 
 			var calculateDnsTokenResponse = AcmeApi.CalculateDnsToken(new()

@@ -50,9 +50,9 @@ namespace ISI.Extensions.Acme
 
 			securityTokenDescriptor.AddToPayload(acmeRequest);
 
-			var token = (new Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler()).CreateToken(securityTokenDescriptor);
+			var jsonWebToken = (new Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler()).CreateToken(securityTokenDescriptor);
 
-			var signedJwt = new ISI.Extensions.JsonJwt.SerializableEntities.SignedJwt(token);
+			var signedJwt = new ISI.Extensions.JsonJwt.SerializableEntities.SignedJwt(jsonWebToken);
 
 #if DEBUG
 			var xxx = ISI.Extensions.WebClient.Rest.GetEventHandler();
@@ -79,7 +79,6 @@ namespace ISI.Extensions.Acme
 				Contacts = acmeResponse.Response.Contacts.ToNullCheckedArray(),
 				TermsOfServiceAgreed = request.TermsOfServiceAgreed,
 				OnlyReturnExisting = request.OnlyReturnExisting,
-				//OrdersUrl = acmeResponse.Response.OrdersUrl,
 			});
 
 			return response;

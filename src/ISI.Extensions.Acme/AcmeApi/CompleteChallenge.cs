@@ -37,9 +37,9 @@ namespace ISI.Extensions.Acme
 			securityTokenDescriptor.AdditionalHeaderClaims.Add(HeaderKey.Nonce, request.HostContext.Nonce);
 			securityTokenDescriptor.AdditionalHeaderClaims.Add(HeaderKey.Url, uri.ToString());
 
-			var token = (new Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler()).CreateToken(securityTokenDescriptor);
+			var jsonWebToken = (new Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler()).CreateToken(securityTokenDescriptor);
 
-			var signedJwt = new ISI.Extensions.JsonJwt.SerializableEntities.SignedJwt(token);
+			var signedJwt = new ISI.Extensions.JsonJwt.SerializableEntities.SignedJwt(jsonWebToken);
 
 #if DEBUG
 			var xxx = ISI.Extensions.WebClient.Rest.GetEventHandler();

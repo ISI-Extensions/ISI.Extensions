@@ -22,8 +22,12 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.GoDaddy.DataTransferObjects.DomainsApi
 {
-	public class SetDnsRecordsRequest : AbstractRequest
+	public class SetDnsRecordsRequest : IRequest
 	{
+		public string Url { get; set; }
+		public string ApiKey { get; set; }
+		public string ApiSecret { get; set; }
+
 		public string DomainName { get; set; }
 		public ISI.Extensions.Dns.DnsRecord[] DnsRecords { get; set; }
 	}

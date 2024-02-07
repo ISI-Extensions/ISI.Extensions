@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Acme
 {
-	public interface IAcmeOrderCertificateDomainPostRenewalAction
+	public interface IOrderCertificateDomainPostRenewalAction
 	{
 	}
 }

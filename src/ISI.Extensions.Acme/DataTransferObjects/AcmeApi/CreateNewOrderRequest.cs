@@ -31,6 +31,6 @@ namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 
 		public OrderCertificateIdentifier[] CertificateIdentifiers { get; set; }
 
-		public IAcmeOrderCertificateDomainPostRenewalAction[] PostRenewalActions { get; set; }
+		public IOrderCertificateDomainPostRenewalAction[] PostRenewalActions { get; set; }
 	}
 }

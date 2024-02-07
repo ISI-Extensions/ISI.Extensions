@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Acme
 {
-	public class OrderCertificateDomainPostRenewalActionAcmeAgentNginxWebHook : IAcmeOrderCertificateDomainPostRenewalAction
+	public class OrderCertificateDomainPostRenewalActionAcmeAgentNginxWebHook : IOrderCertificateDomainPostRenewalAction
 	{
 		public string HeaderAuthenticationKey { get; set; }
 		public string HeaderAuthenticationValue { get; set; }

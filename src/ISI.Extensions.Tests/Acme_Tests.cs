@@ -94,7 +94,7 @@ namespace ISI.Extensions.Tests
 
 
 		[Test]
-		public void CreateNewAccount()
+		public void CreateNewAccount_Test()
 		{
 			var context = AcmeApi.CreateNewHostContext(new()
 			{
@@ -115,9 +115,8 @@ namespace ISI.Extensions.Tests
 			System.IO.File.WriteAllText(AccountKeyFullName, createNewAccountResponse.Account.AccountKey);
 		}
 
-
 		[Test]
-		public void CreateNewOrder()
+		public void CreateNewOrder_Test()
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
@@ -274,6 +273,54 @@ namespace ISI.Extensions.Tests
 			//System.IO.File.WriteAllText("fa.csr", certificateSigningRequest.CreateSigningRequestPem());
 			//System.IO.File.WriteAllText("publickey.pem", certificateSigningKey.ExportSubjectPublicKeyInfoPem());
 
+		}
+
+		[Test]
+		public void ProcessNewOrder_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+
+			var pem = GetAccountPem();
+			var serializedJsonWebKey = GetAccountSerializedJsonWebKey();
+			var accountKey = GetAccountKey();
+
+			var domainName = "*.muthmanor.com";
+
+			var context = AcmeApi.GetHostContext(new()
+			{
+				HostDirectoryUri = HostDirectoryUri,
+				SerializedJsonWebKey = serializedJsonWebKey,
+				Pem = pem,
+				AccountKey = accountKey,
+			}).HostContext;
+
+			var createNewOrderResponse = AcmeApi.ProcessNewOrder(new ISI.Extensions.Acme.DataTransferObjects.AcmeApi.ProcessNewOrderUsingDnsRequest()
+			{
+				HostContext = context,
+
+				DomainName = domainName,
+
+				CountryName = "US",
+				State = "New York",
+				Locality = "Glen Cove",
+				Organization = "MuthManor",
+				OrganizationUnit = null,
+
+				SetDnsRecord = (rootDomainName, dnsRecord) =>
+				{
+					DomainsApi.SetDnsRecords(new()
+					{
+						ApiKey = settings.GetValue("GoDaddy.ApiKey"),
+						ApiSecret = settings.GetValue("GoDaddy.ApiSecret"),
+						DomainName = rootDomainName,
+						DnsRecords = new[] { dnsRecord },
+					});
+				},
+			});
+
+			System.IO.File.WriteAllText(CertificateKeyFullName, createNewOrderResponse.PrivateKeyPem);
+			System.IO.File.WriteAllText(CertificateFullName, createNewOrderResponse.CertificatePem);
 		}
 	}
 }

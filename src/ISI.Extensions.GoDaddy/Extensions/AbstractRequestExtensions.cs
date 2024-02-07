@@ -22,7 +22,7 @@ namespace ISI.Extensions.GoDaddy.Extensions
 {
 	public static class AbstractRequestExtensions
 	{
-		public static ISI.Extensions.WebClient.HeaderCollection GetHeaders(this DTOs.AbstractRequest request, Configuration configuration)
+		public static ISI.Extensions.WebClient.HeaderCollection GetHeaders(this DTOs.IRequest request, Configuration configuration)
 		{
 			var headers = new ISI.Extensions.WebClient.HeaderCollection();
 
@@ -36,7 +36,7 @@ namespace ISI.Extensions.GoDaddy.Extensions
 			return headers;
 		}
 
-		public static string GetUrl(this DTOs.AbstractRequest request, Configuration configuration)
+		public static string GetUrl(this DTOs.IRequest request, Configuration configuration)
 		{
 			return (string.IsNullOrWhiteSpace(request.Url) ? configuration.Url : request.Url);
 		}

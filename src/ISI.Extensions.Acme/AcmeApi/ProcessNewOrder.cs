@@ -29,109 +29,150 @@ namespace ISI.Extensions.Acme
 	{
 		public DTOs.ProcessNewOrderResponse ProcessNewOrder(DTOs.IProcessNewOrderRequest request)
 		{
+			switch (request)
+			{
+				case DTOs.ProcessNewOrderUsingDnsRequest processNewOrderUsingDnsRequest:
+					return ProcessNewOrderUsingDns(processNewOrderUsingDnsRequest);
+
+				case DTOs.ProcessNewOrderUsingExistingCertificateRequest processNewOrderUsingExistingCertificateRequest:
+					return ProcessNewOrderUsingExistingCertificate(processNewOrderUsingExistingCertificateRequest);
+
+				default:
+					throw new ArgumentOutOfRangeException(nameof(request));
+			}
+		}
+
+		private DTOs.ProcessNewOrderResponse ProcessNewOrderUsingExistingCertificate(DTOs.ProcessNewOrderUsingExistingCertificateRequest request)
+		{
 			var response = new DTOs.ProcessNewOrderResponse();
 
-			if (request is DTOs.ProcessNewOrderUsingDnsRequest processNewOrderUsingDnsRequest)
+			var createNewOrderResponse = CreateNewOrder(new()
 			{
-				var createNewOrderResponse = CreateNewOrder(new()
+				HostContext = request.HostContext,
+				CertificateIdentifiers = new[]
 				{
-					HostContext = request.HostContext,
-					CertificateNotBeforeDateTimeUtc = processNewOrderUsingDnsRequest.CertificateNotBeforeDateTimeUtc,
-					CertificateNotAfterDateTimeUtc = processNewOrderUsingDnsRequest.CertificateNotAfterDateTimeUtc,
-					CertificateIdentifiers = new[]
+					new ISI.Extensions.Acme.OrderCertificateIdentifier()
 					{
-						new ISI.Extensions.Acme.OrderCertificateIdentifier()
-						{
-							CertificateIdentifierType = ISI.Extensions.Acme.OrderCertificateIdentifierType.Dns,
-							CertificateIdentifierValue = request.DomainName,
-						}
-					},
-					PostRenewalActions = request.PostRenewalActions,
-				});
+						CertificateIdentifierType = ISI.Extensions.Acme.OrderCertificateIdentifierType.Dns,
+						CertificateIdentifierValue = request.DomainName,
+					}
+				},
+				PostRenewalActions = request.PostRenewalActions,
+			});
 
-				var getAuthorizationResponse = GetAuthorization(new()
+			var getOrderResponse = GetOrder(new()
+			{
+				HostContext = request.HostContext,
+				OrderUrl = createNewOrderResponse.Order.OrderKey,
+			});
+
+			response.GetCertificateUrl = getOrderResponse.Order.GetCertificateUrl;
+
+			return response;
+		}
+
+		private DTOs.ProcessNewOrderResponse ProcessNewOrderUsingDns(DTOs.ProcessNewOrderUsingDnsRequest request)
+		{
+			var response = new DTOs.ProcessNewOrderResponse();
+
+			var createNewOrderResponse = CreateNewOrder(new()
+			{
+				HostContext = request.HostContext,
+				CertificateNotBeforeDateTimeUtc = request.CertificateNotBeforeDateTimeUtc,
+				CertificateNotAfterDateTimeUtc = request.CertificateNotAfterDateTimeUtc,
+				CertificateIdentifiers = new[]
 				{
-					HostContext = request.HostContext,
-					AuthorizationUrl = createNewOrderResponse.Order.AuthorizationUrls.First(),
-				});
-
-				var challenge = getAuthorizationResponse.Authorization.Challenges.NullCheckedFirstOrDefault(challenge => challenge.ChallengeType == ISI.Extensions.Acme.OrderCertificateIdentifierAuthorizationChallengeType.Dns01);
-
-				var calculateDnsTokenResponse = CalculateDnsToken(new()
-				{
-					HostContext = request.HostContext,
-					DomainName = request.DomainName,
-					ChallengeToken = challenge.Token,
-				});
-
-				var dnsRecord = new ISI.Extensions.Dns.DnsRecord()
-				{
-					Data = calculateDnsTokenResponse.DnsToken,
-					Name = calculateDnsTokenResponse.DnsRecordName,
-					Ttl = TimeSpan.FromMinutes(10),
-					RecordType = ISI.Extensions.Dns.RecordType.TXT,
-				};
-
-				processNewOrderUsingDnsRequest.SetDnsRecord(calculateDnsTokenResponse.DomainName, dnsRecord);
-
-				System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
-
-				var completeChallengeResponse = CompleteChallenge(new()
-				{
-					HostContext = request.HostContext,
-					ChallengeUrl = challenge.ChallengeUrl,
-				});
-
-				System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
-
-
-				var getChallengeResponse = GetChallenge(new()
-				{
-					HostContext = request.HostContext,
-					ChallengeUrl = challenge.ChallengeUrl,
-				});
-
-
-				System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
-
-				var createCertificateSigningRequestResponse = CreateCertificateSigningRequest(new()
-				{
-					CertificateSigningRequestParameters = new ISI.Extensions.Acme.CertificateSigningRequestParameters()
+					new ISI.Extensions.Acme.OrderCertificateIdentifier()
 					{
-						CountryName = processNewOrderUsingDnsRequest.CountryName,
-						State = processNewOrderUsingDnsRequest.State,
-						Locality = processNewOrderUsingDnsRequest.Locality,
-						Organization = processNewOrderUsingDnsRequest.Organization,
-						OrganizationUnit = processNewOrderUsingDnsRequest.OrganizationUnit,
-						CommonName = request.DomainName,
-					},
-				});
+						CertificateIdentifierType = ISI.Extensions.Acme.OrderCertificateIdentifierType.Dns,
+						CertificateIdentifierValue = request.DomainName,
+					}
+				},
+				PostRenewalActions = request.PostRenewalActions,
+			});
 
-				response.PrivateKeyPem = createCertificateSigningRequestResponse.PrivateKeyPem;
+			var getAuthorizationResponse = GetAuthorization(new()
+			{
+				HostContext = request.HostContext,
+				AuthorizationUrl = createNewOrderResponse.Order.AuthorizationUrls.First(),
+			});
 
-				var finalizeOrderResponse = FinalizeOrder(new()
+			var challenge = getAuthorizationResponse.Authorization.Challenges.NullCheckedFirstOrDefault(challenge => challenge.ChallengeType == ISI.Extensions.Acme.OrderCertificateIdentifierAuthorizationChallengeType.Dns01);
+
+			var calculateDnsTokenResponse = CalculateDnsToken(new()
+			{
+				HostContext = request.HostContext,
+				DomainName = request.DomainName,
+				ChallengeToken = challenge.Token,
+			});
+
+			var dnsRecord = new ISI.Extensions.Dns.DnsRecord()
+			{
+				Data = calculateDnsTokenResponse.DnsToken,
+				Name = calculateDnsTokenResponse.DnsRecordName,
+				Ttl = TimeSpan.FromMinutes(10),
+				RecordType = ISI.Extensions.Dns.RecordType.TXT,
+			};
+
+			request.SetDnsRecord(calculateDnsTokenResponse.DomainName, dnsRecord);
+
+			System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
+
+			var completeChallengeResponse = CompleteChallenge(new()
+			{
+				HostContext = request.HostContext,
+				ChallengeUrl = challenge.ChallengeUrl,
+			});
+
+			System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
+
+
+			var getChallengeResponse = GetChallenge(new()
+			{
+				HostContext = request.HostContext,
+				ChallengeUrl = challenge.ChallengeUrl,
+			});
+
+
+			System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
+
+			var createCertificateSigningRequestResponse = CreateCertificateSigningRequest(new()
+			{
+				CertificateSigningRequestParameters = new ISI.Extensions.Acme.CertificateSigningRequestParameters()
 				{
-					HostContext = request.HostContext,
-					Order = createNewOrderResponse.Order,
-					CertificateSigningRequest = createCertificateSigningRequestResponse.CertificateSigningRequest,
-				});
+					CountryName = request.CountryName,
+					State = request.State,
+					Locality = request.Locality,
+					Organization = request.Organization,
+					OrganizationUnit = request.OrganizationUnit,
+					CommonName = request.DomainName,
+				},
+			});
 
-				System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
+			response.PrivateKeyPem = createCertificateSigningRequestResponse.PrivateKeyPem;
 
-				var getOrderResponse = GetOrder(new()
-				{
-					HostContext = request.HostContext,
-					OrderUrl = createNewOrderResponse.Order.OrderKey,
-				});
+			var finalizeOrderResponse = FinalizeOrder(new()
+			{
+				HostContext = request.HostContext,
+				Order = createNewOrderResponse.Order,
+				CertificateSigningRequest = createCertificateSigningRequestResponse.CertificateSigningRequest,
+			});
+
+			System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
+
+			var getOrderResponse = GetOrder(new()
+			{
+				HostContext = request.HostContext,
+				OrderUrl = createNewOrderResponse.Order.OrderKey,
+			});
 
 
-				var getCertificateResponse = GetCertificate(new()
-				{
-					GetCertificateUrl = getOrderResponse.Order.GetCertificateUrl,
-				});
+			var getCertificateResponse = GetCertificate(new()
+			{
+				GetCertificateUrl = getOrderResponse.Order.GetCertificateUrl,
+			});
 
-				response.CertificatePem = getCertificateResponse.CertificatePem;
-			}
+			response.CertificatePem = getCertificateResponse.CertificatePem;
 
 			return response;
 		}

@@ -9,6 +9,8 @@ namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 {
 	public class GetCertificateResponse
 	{
+		public byte[] CertificatePfx { get; set; }
 		public string CertificatePem { get; set; }
+		public string CertificatePassword { get; set; }
 	}
 }

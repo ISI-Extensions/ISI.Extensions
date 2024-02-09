@@ -24,7 +24,7 @@ namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 {
 	public class ProcessNewOrderResponse
 	{
-		public string GetCertificateUrl { get; set; }
+		public string GetCertificatesUrl { get; set; }
 
 		public string PrivateKeyPem { get; set; }
 		public string CertificatePem { get; set; }

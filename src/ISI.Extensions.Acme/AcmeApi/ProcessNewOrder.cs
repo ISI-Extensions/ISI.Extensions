@@ -66,7 +66,7 @@ namespace ISI.Extensions.Acme
 				OrderUrl = createNewOrderResponse.Order.OrderKey,
 			});
 
-			response.GetCertificateUrl = getOrderResponse.Order.GetCertificateUrl;
+			response.GetCertificatesUrl = getOrderResponse.Order.GetCertificatesUrl;
 
 			return response;
 		}
@@ -169,7 +169,7 @@ namespace ISI.Extensions.Acme
 
 			var getCertificateResponse = GetCertificate(new()
 			{
-				GetCertificateUrl = getOrderResponse.Order.GetCertificateUrl,
+				GetCertificatesUrl = getOrderResponse.Order.GetCertificatesUrl,
 			});
 
 			response.CertificatePem = getCertificateResponse.CertificatePem;

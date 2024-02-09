@@ -72,7 +72,7 @@ namespace ISI.Extensions.Acme
 				}),
 				AuthorizationUrls = source.AuthorizationUrls.ToNullCheckedArray(),
 				FinalizeOrderUrl = source.FinalizeOrderUrl,
-				GetCertificateUrl = source.GetCertificateUrl,
+				GetCertificatesUrl = source.GetCertificateUrl,
 			});
 
 			response.Error = acmeResponse.Response?.Error.NullCheckedConvert(error => new ISI.Extensions.Acme.OrderError()

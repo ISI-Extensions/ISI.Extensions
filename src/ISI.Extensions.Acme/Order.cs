@@ -31,6 +31,6 @@ namespace ISI.Extensions.Acme
 		public OrderCertificateIdentifier[] CertificateIdentifiers { get; set; }
 		public string[] AuthorizationUrls { get; set; }
 		public string FinalizeOrderUrl { get; set; }
-		public string GetCertificateUrl { get; set; }
+		public string GetCertificatesUrl { get; set; }
 	}
 }

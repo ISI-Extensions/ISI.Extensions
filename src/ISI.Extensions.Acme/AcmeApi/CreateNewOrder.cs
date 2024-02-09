@@ -114,7 +114,7 @@ namespace ISI.Extensions.Acme
 				}),
 				AuthorizationUrls = source.AuthorizationsUrls.ToNullCheckedArray(),
 				FinalizeOrderUrl = source.FinalizeOrderUrl,
-				GetCertificateUrl = source.GetCertificateUrl,
+				GetCertificatesUrl = source.GetCertificateUrl,
 			});
 
 			response.Error = acmeResponse.Response?.Error.NullCheckedConvert(error => new OrderError()

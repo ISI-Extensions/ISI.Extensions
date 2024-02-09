@@ -258,7 +258,7 @@ namespace ISI.Extensions.Tests
 			var getCertificateResponse = AcmeApi.GetCertificate(new()
 			{
 				HostContext = context,
-				GetCertificateUrl = getOrderResponse.Order.GetCertificateUrl,
+				GetCertificatesUrl = getOrderResponse.Order.GetCertificatesUrl,
 			});
 
 			var certificatePem = getCertificateResponse.CertificatePem;

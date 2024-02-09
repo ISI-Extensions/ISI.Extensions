@@ -11,7 +11,7 @@ namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 	{
 		public HostContext HostContext { get; set; }
 
-		public string GetCertificateUrl { get; set; }
+		public string GetCertificatesUrl { get; set; }
 
 		public bool GetPrivateKey { get; set; }
 

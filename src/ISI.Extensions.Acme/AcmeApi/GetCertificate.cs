@@ -31,7 +31,7 @@ namespace ISI.Extensions.Acme
 		{
 			var response = new DTOs.GetCertificateResponse();
 
-			var uri = new UriBuilder(request.GetCertificateUrl);
+			var uri = new UriBuilder(request.GetCertificatesUrl);
 			if (request.GetPrivateKey)
 			{
 				uri.AddQueryStringParameter("getPrivateKey", true);

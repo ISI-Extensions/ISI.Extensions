@@ -56,7 +56,7 @@ namespace ISI.Extensions.Acme.SerializableModels.AcmeOrders
 		public string FinalizeOrderUrl { get; set; }
 
 		[DataMember(Name = "certificate", EmitDefaultValue = false)]
-		public string GetCertificateUrl { get; set; }
+		public string GetCertificatesUrl { get; set; }
 
 		[DataMember(Name = "error", EmitDefaultValue = false)]
 		public OrderError Error { get; set; }

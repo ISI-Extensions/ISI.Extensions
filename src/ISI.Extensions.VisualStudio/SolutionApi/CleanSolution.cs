@@ -113,8 +113,8 @@ namespace ISI.Extensions.VisualStudio
 
 											try
 											{
-												string package = keyValues["id"];
-												string version = keyValues["version"];
+												var package = keyValues["id"];
+												var version = keyValues["version"];
 
 												usedPackages.Add(string.Format("{0}.{1}", package, version));
 											}

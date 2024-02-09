@@ -32,6 +32,5 @@ namespace ISI.Extensions.Acme
 		public string[] Contacts { get; set; }
 		public bool? TermsOfServiceAgreed { get; set; }
 		public bool? OnlyReturnExisting { get; set; }
-		public string OrdersUrl { get; set; }
 	}
 }

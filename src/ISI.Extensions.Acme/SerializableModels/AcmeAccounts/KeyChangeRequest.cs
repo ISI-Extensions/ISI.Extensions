@@ -27,7 +27,7 @@ namespace ISI.Extensions.Acme.SerializableModels.AcmeAccounts
 	public class KeyChangeRequest
 	{
 		[DataMember(Name = "account", EmitDefaultValue = false)]
-		public string AcmeAccountUrl { get; set; }
+		public string AccountKey { get; set; }
 
 		[DataMember(Name = "oldKey", EmitDefaultValue = false)]
 		public string OldSerializedJsonWebKey { get; set; }

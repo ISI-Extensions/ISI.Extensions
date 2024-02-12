@@ -87,7 +87,7 @@ namespace ISI.Extensions.JsonJwt.Extensions
 			if (value != null)
 			{
 				var valueType = value.GetType();
-
+				
 				ISI.Extensions.DataContract.DataMemberPropertyInfo[] properties = null;
 
 				if (valueType.IsDefined(typeof(System.Runtime.Serialization.DataContractAttribute), false))
@@ -100,6 +100,12 @@ namespace ISI.Extensions.JsonJwt.Extensions
 				}
 
 				var payloadDictionary = new Dictionary<string, object>();
+
+				var serializerContractUuidAttribute = ((ISI.Extensions.Serialization.SerializerContractUuidAttribute[])(valueType.GetCustomAttributes(typeof(ISI.Extensions.Serialization.SerializerContractUuidAttribute), false))).FirstOrDefault();
+				if (serializerContractUuidAttribute != null)
+				{
+					payloadDictionary.Add(ISI.Extensions.Serialization.SerializerContractUuidAttribute.SerializerContractUuidKey, serializerContractUuidAttribute.SerializerContractUuid);
+				}
 
 				foreach (var property in properties)
 				{

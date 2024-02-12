@@ -50,5 +50,13 @@ namespace ISI.Extensions.Acme
 
 			return securityTokenDescriptor;
 		}
+
+		private string CreateToken(Microsoft.IdentityModel.Tokens.SecurityTokenDescriptor securityTokenDescriptor, bool setDefaultTimesOnTokenCreation = true)
+		{
+			return (new Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler()
+			{
+				SetDefaultTimesOnTokenCreation = setDefaultTimesOnTokenCreation,
+			}).CreateToken(securityTokenDescriptor);
+		}
 	}
 }

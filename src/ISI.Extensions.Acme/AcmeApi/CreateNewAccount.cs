@@ -50,7 +50,7 @@ namespace ISI.Extensions.Acme
 
 			securityTokenDescriptor.AddToPayload(acmeRequest);
 
-			var jsonWebToken = (new Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler()).CreateToken(securityTokenDescriptor);
+			var jsonWebToken = CreateToken(securityTokenDescriptor);
 
 			var signedJwt = new ISI.Extensions.JsonJwt.SerializableEntities.SignedJwt(jsonWebToken);
 

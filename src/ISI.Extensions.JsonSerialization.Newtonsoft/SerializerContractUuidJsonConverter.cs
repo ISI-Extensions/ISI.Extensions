@@ -26,8 +26,6 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 {
 	public class SerializerContractUuidJsonConverter : global::Newtonsoft.Json.JsonConverter, IJsonConverterWithGetSerializableInterfaceTypes
 	{
-		public const string SerializerContractUuidKey = "_serializerContractUuid";
-
 		protected Type[] SerializableInterfaceTypes { get; }
 		protected System.Collections.Concurrent.ConcurrentDictionary<Type, Type> InterfaceTypesWithDefaultImplementationType { get; }
 		protected System.Collections.Concurrent.ConcurrentDictionary<Guid, Type> SerializerContractUuidToImplementationType { get; }
@@ -57,7 +55,7 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 
 			if (ImplementationTypeToSerializerContractUuid.TryGetValue(objectType, out var serializerContractUuid))
 			{
-				jsonObject.AddFirst(new global::Newtonsoft.Json.Linq.JProperty(SerializerContractUuidKey, serializerContractUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)));
+				jsonObject.AddFirst(new global::Newtonsoft.Json.Linq.JProperty(ISI.Extensions.Serialization.SerializerContractUuidAttribute.SerializerContractUuidKey, serializerContractUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)));
 			}
 
 			foreach (var propertyInfo in objectType.GetProperties())
@@ -86,7 +84,7 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 
 			var jsonObject = global::Newtonsoft.Json.Linq.JObject.Load(reader);
 
-			var serializerContractUuid = jsonObject.Value<string>(SerializerContractUuidKey).ToGuid();
+			var serializerContractUuid = jsonObject.Value<string>(ISI.Extensions.Serialization.SerializerContractUuidAttribute.SerializerContractUuidKey).ToGuid();
 
 			if (serializerContractUuid != Guid.Empty)
 			{

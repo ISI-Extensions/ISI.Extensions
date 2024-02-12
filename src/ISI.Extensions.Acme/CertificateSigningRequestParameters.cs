@@ -34,34 +34,5 @@ namespace ISI.Extensions.Acme
 		public string OrganizationUnit { get; set; }
 
 		public string CommonName { get; set; }
-
-		public string GetSubjectName()
-		{
-			var parameters = new Dictionary<string, string>();
-
-			void addParameter(string key, string value)
-			{
-				if (!string.IsNullOrWhiteSpace(value))
-				{
-					if (value.IndexOf(",", StringComparison.InvariantCultureIgnoreCase) >= 0)
-					{
-						parameters.Add(key, $"[{value}]");
-					}
-					else
-					{
-						parameters.Add(key, value);
-					}
-				}
-			}
-
-			addParameter("C", CountryName);
-			addParameter("ST", State);
-			addParameter("L", Locality);
-			addParameter("O", Organization);
-			addParameter("OU", OrganizationUnit);
-			addParameter("CN", CommonName);
-
-			return string.Join(", ", parameters.Select(parameter => $"{parameter.Key}={parameter.Value}"));
-		}
 	}
 }

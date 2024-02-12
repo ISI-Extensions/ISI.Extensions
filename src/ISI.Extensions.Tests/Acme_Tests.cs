@@ -32,17 +32,26 @@ namespace ISI.Extensions.Tests
 	[TestFixture]
 	public class Acme_Tests
 	{
-		protected readonly Uri HostDirectoryUri = new Uri(@"https://acme-staging-v02.api.letsencrypt.org/directory");
-		protected readonly string AccountPemFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.pem");
-		protected readonly string AccountSerializedJsonWebKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.SerializedJsonWebKey");
-		protected readonly string AccountKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.key");
-		protected readonly string CertificateKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.certificate.key");
-		protected readonly string CertificateFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.certificate.crt");
+		//protected readonly Uri HostDirectoryUri = new Uri(@"https://acme-v02.api.letsencrypt.org/directory");
+		//protected readonly string AccountPemFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-account.pem");
+		//protected readonly string AccountSerializedJsonWebKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-account.SerializedJsonWebKey");
+		//protected readonly string AccountKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-account.key");
+		//protected readonly string CertificateKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-account.certificate.key");
+		//protected readonly string CertificateFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-account.certificate.crt");
 
-		//protected readonly Uri AcmeHostUri = new Uri(@"https://localhost:15633/directory");
-		//protected readonly string AccountPemFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.pem");
-		//protected readonly string AccountSerializedJsonWebKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.SerializedJsonWebKey");
-		//protected readonly string AccountKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.key");
+		//protected readonly Uri HostDirectoryUri = new Uri(@"https://acme-staging-v02.api.letsencrypt.org/directory");
+		//protected readonly string AccountPemFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.pem");
+		//protected readonly string AccountSerializedJsonWebKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.SerializedJsonWebKey");
+		//protected readonly string AccountKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.key");
+		//protected readonly string CertificateKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.certificate.key");
+		//protected readonly string CertificateFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.certificate.crt");
+
+		protected readonly Uri HostDirectoryUri = new Uri(@"https://localhost:15633/directory");
+		protected readonly string AccountPemFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.pem");
+		protected readonly string AccountSerializedJsonWebKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.SerializedJsonWebKey");
+		protected readonly string AccountKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.key");
+		protected readonly string CertificateKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.certificate.key");
+		protected readonly string CertificateFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.certificate.crt");
 
 		protected string GetAccountPem() => System.IO.File.ReadAllText(AccountPemFullName);
 		protected string GetAccountSerializedJsonWebKey() => System.IO.File.ReadAllText(AccountSerializedJsonWebKeyFullName);
@@ -76,7 +85,6 @@ namespace ISI.Extensions.Tests
 					.AddSingleton<ISI.Extensions.Serialization.ISerialization, ISI.Extensions.Serialization.Serialization>()
 
 					.AddSingleton<ISI.Extensions.Acme.AcmeApi>()
-
 				;
 
 			services.AddAllConfigurations(configuration);
@@ -92,9 +100,8 @@ namespace ISI.Extensions.Tests
 			DomainsApi = ServiceProvider.GetService<ISI.Extensions.GoDaddy.DomainsApi>();
 		}
 
-
 		[Test]
-		public void CreateNewAccount_Test()
+		public void CreateNewAccount_LetsEncrypt_Test()
 		{
 			var context = AcmeApi.CreateNewHostContext(new()
 			{
@@ -105,6 +112,28 @@ namespace ISI.Extensions.Tests
 			{
 				HostContext = context,
 				//AccountName = "localhost",
+				Contacts = new[] { "ron.muth@isi-net.com" },
+				TermsOfServiceAgreed = true,
+			});
+
+			System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(AccountPemFullName));
+			System.IO.File.WriteAllText(AccountPemFullName, context.Pem);
+			System.IO.File.WriteAllText(AccountSerializedJsonWebKeyFullName, context.SerializedJsonWebKey);
+			System.IO.File.WriteAllText(AccountKeyFullName, createNewAccountResponse.Account.AccountKey);
+		}
+
+		[Test]
+		public void CreateNewAccount_CertificateManager_Test()
+		{
+			var context = AcmeApi.CreateNewHostContext(new()
+			{
+				HostDirectoryUri = HostDirectoryUri,
+			}).HostContext;
+
+			var createNewAccountResponse = AcmeApi.CreateNewAccount(new()
+			{
+				HostContext = context,
+				AccountName = "localhost",
 				Contacts = new[] { "ron.muth@isi-net.com" },
 				TermsOfServiceAgreed = true,
 			});
@@ -146,36 +175,22 @@ namespace ISI.Extensions.Tests
 						CertificateIdentifierValue = domainName,
 					}
 				},
-				//PostRenewalActions = new []
-				//{
-				//	new ISI.Extensions.Acme.AcmeOrderCertificateDomainPostRenewalActionAcmeAgentWebHook()
-				//	{
-				//		SetCertificatesUrl = @"https://nginx/upload-certificates",
-				//	}
-				//}
 			});
-
-			//var orderCertificateIdentifier = createNewOrderResponse.Order.CertificateIdentifiers.First(c => c.CertificateIdentifierType == ISI.Extensions.Acme.OrderCertificateIdentifierType.Dns);
-
 
 			var getAuthorizationResponse = AcmeApi.GetAuthorization(new()
 			{
 				HostContext = context,
 				AuthorizationUrl = createNewOrderResponse.Order.AuthorizationUrls.First(),
 			});
-
-
+			
 			var challenge = getAuthorizationResponse.Authorization.Challenges.NullCheckedFirstOrDefault(challenge => challenge.ChallengeType == ISI.Extensions.Acme.OrderCertificateIdentifierAuthorizationChallengeType.Dns01);
-
-
+			
 			var calculateDnsTokenResponse = AcmeApi.CalculateDnsToken(new()
 			{
 				HostContext = context,
 				DomainName = domainName,
 				ChallengeToken = challenge.Token,
 			});
-
-
 
 			//var dnsRecords = DomainsApi.GetDnsRecords(new()
 			//{
@@ -238,7 +253,6 @@ namespace ISI.Extensions.Tests
 				},
 			});
 
-
 			var finalizeOrderResponse = AcmeApi.FinalizeOrder(new()
 			{
 				HostContext = context,
@@ -265,18 +279,10 @@ namespace ISI.Extensions.Tests
 
 			System.IO.File.WriteAllText(CertificateKeyFullName, createCertificateSigningRequestResponse.PrivateKeyPem);
 			System.IO.File.WriteAllText(CertificateFullName, certificatePem);
-
-			// other stuff could have modified the request here, but you aren't
-			// using any of the extra fancy options
-
-			//System.IO.File.WriteAllText("fa.key", certificateSigningKey.ExportPkcs8PrivateKeyPem());
-			//System.IO.File.WriteAllText("fa.csr", certificateSigningRequest.CreateSigningRequestPem());
-			//System.IO.File.WriteAllText("publickey.pem", certificateSigningKey.ExportSubjectPublicKeyInfoPem());
-
 		}
 
 		[Test]
-		public void ProcessNewOrder_Test()
+		public void ProcessNewOrder_LetsEncrypt_Test()
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
@@ -321,6 +327,42 @@ namespace ISI.Extensions.Tests
 
 			System.IO.File.WriteAllText(CertificateKeyFullName, createNewOrderResponse.PrivateKeyPem);
 			System.IO.File.WriteAllText(CertificateFullName, createNewOrderResponse.CertificatePem);
+		}
+
+		[Test]
+		public void ProcessNewOrder_CertificateManager_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+
+			var pem = GetAccountPem();
+			var serializedJsonWebKey = GetAccountSerializedJsonWebKey();
+			var accountKey = GetAccountKey();
+
+			var domainName = "*.isi-net.com";
+
+			var context = AcmeApi.GetHostContext(new()
+			{
+				HostDirectoryUri = HostDirectoryUri,
+				SerializedJsonWebKey = serializedJsonWebKey,
+				Pem = pem,
+				AccountKey = accountKey,
+			}).HostContext;
+
+			var createNewOrderResponse = AcmeApi.ProcessNewOrder(new ISI.Extensions.Acme.DataTransferObjects.AcmeApi.ProcessNewOrderUsingExistingCertificateRequest()
+			{
+				HostContext = context,
+
+				DomainName = domainName,
+
+				PostRenewalActions = new[]
+				{
+					new ISI.Extensions.Acme.OrderCertificateDomainPostRenewalActionAcmeAgentWebHook()
+					{
+						SetCertificatesUrl = @"https://nginx/upload-certificates",
+					}
+				}
+			});
 		}
 	}
 }

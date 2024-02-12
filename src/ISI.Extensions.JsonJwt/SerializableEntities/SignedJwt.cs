@@ -32,7 +32,7 @@ namespace ISI.Extensions.JsonJwt.SerializableEntities
 			var parts = signedJwt.Split('.');
 
 			Header = parts[0];
-			Payload = parts[1];
+			Payload = string.IsNullOrWhiteSpace(parts[1]) ? null : parts[1];
 			Signature = parts[2];
 		}
 

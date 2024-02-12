@@ -25,6 +25,8 @@ namespace ISI.Extensions.Serialization
 	[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
 	public class SerializerContractUuidAttribute : ISI.Extensions.TypeLocatorAttribute
 	{
+		public const string SerializerContractUuidKey = "_serializerContractUuid";
+
 		public Guid SerializerContractUuid { get; }
 
 		public SerializerContractUuidAttribute(string serializerContractUuid)

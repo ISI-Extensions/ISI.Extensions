@@ -82,7 +82,18 @@ namespace ISI.Extensions.Acme
 
 			securityTokenDescriptor.AddToPayload(acmeRequest);
 
-			var jsonWebToken = (new Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler()).CreateToken(securityTokenDescriptor);
+			var jsonWebToken = CreateToken(securityTokenDescriptor);
+
+#if DEBUG
+			var jwtSecurityTokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+
+			if (jwtSecurityTokenHandler.CanReadToken(jsonWebToken))
+			{
+				var jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(jsonWebToken);
+
+				var YYY = jwtSecurityToken.DeserializePayload<ISI.Extensions.Acme.SerializableModels.AcmeOrders.CreateNewOrderRequest>(JsonSerializer);
+			}
+#endif
 			
 			var signedJwt = new ISI.Extensions.JsonJwt.SerializableEntities.SignedJwt(jsonWebToken);
 

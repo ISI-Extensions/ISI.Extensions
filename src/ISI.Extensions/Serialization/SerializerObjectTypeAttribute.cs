@@ -25,6 +25,8 @@ namespace ISI.Extensions.Serialization
 	[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
 	public class SerializerObjectTypeAttribute : ISI.Extensions.TypeLocatorAttribute
 	{
+		public const string SerializerTypeKey = "type";
+
 		public string ObjectTypeName { get; }
 
 		public SerializerObjectTypeAttribute(string objectTypeName)

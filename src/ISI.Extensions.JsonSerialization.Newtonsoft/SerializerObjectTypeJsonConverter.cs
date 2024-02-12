@@ -26,8 +26,6 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 {
 	public class SerializerObjectTypeJsonConverter : global::Newtonsoft.Json.JsonConverter, IJsonConverterWithGetSerializableInterfaceTypes
 	{
-		public const string SerializerTypeKey = "type";
-
 		protected Type[] SerializableInterfaceTypes { get; }
 		protected System.Collections.Concurrent.ConcurrentDictionary<Type, Type> InterfaceTypesWithDefaultImplementationType { get; }
 		protected System.Collections.Concurrent.ConcurrentDictionary<string, Type> SerializerObjectTypeToImplementationType { get; }
@@ -57,7 +55,7 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 
 			if (ImplementationTypeToSerializerSlackObjectType.TryGetValue(objectType, out var serializerObjectType))
 			{
-				jsonObject.AddFirst(new global::Newtonsoft.Json.Linq.JProperty(SerializerTypeKey, serializerObjectType));
+				jsonObject.AddFirst(new global::Newtonsoft.Json.Linq.JProperty(ISI.Extensions.Serialization.SerializerObjectTypeAttribute.SerializerTypeKey, serializerObjectType));
 			}
 
 			foreach (var propertyInfo in objectType.GetProperties())
@@ -86,7 +84,7 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 
 			var jsonObject = global::Newtonsoft.Json.Linq.JObject.Load(reader);
 
-			var serializerObjectType = jsonObject.Value<string>(SerializerTypeKey);
+			var serializerObjectType = jsonObject.Value<string>(ISI.Extensions.Serialization.SerializerObjectTypeAttribute.SerializerTypeKey);
 
 			if (!string.IsNullOrWhiteSpace(serializerObjectType))
 			{

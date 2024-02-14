@@ -139,7 +139,30 @@ namespace ISI.Extensions.Repository.SqlServer
 						target.SqlRowsCopied += (sender, args) => batchLogger(string.Format("{0} records inserted into archive", args.RowsCopied));
 					}
 
-					target.WriteToServer(dataReader);
+					try
+					{
+						target.WriteToServer(dataReader);
+					}
+					catch (Microsoft.Data.SqlClient.SqlException sqlException)
+					{
+						//https://stackoverflow.com/questions/10442686/received-an-invalid-column-length-from-the-bcp-client-for-colid-6
+						const string invalidColumnLengthExceptionMessage = "Received an invalid column length from the bcp client for colid";
+						if (sqlException.Message.Contains(invalidColumnLengthExceptionMessage))
+						{
+							var columnIndex = sqlException.Message.Substring(invalidColumnLengthExceptionMessage.Length + 1).Trim().ToInt() - 1;
+
+							var sortedColumnMappings = typeof(Microsoft.Data.SqlClient.SqlBulkCopy).GetField("_sortedColumnMappings", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(target);
+							var items = (object[])sortedColumnMappings.GetType().GetField("_items", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(sortedColumnMappings);
+
+							var itemData = items[columnIndex].GetType().GetField("_metadata", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+							var metadata = itemData.GetValue(items[columnIndex]);
+
+							var columnName = metadata.GetType().GetField("column", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(metadata);
+							var columnLength = metadata.GetType().GetField("length", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(metadata);
+
+							throw new Exception(string.Format("Column: \"{0}\" contains data with a length greater than: {1}", columnName, columnLength), sqlException);
+						}
+					}
 
 					batchLogger?.Invoke(string.Format("{0} records inserted into archive", target.RowsCopied));
 				}

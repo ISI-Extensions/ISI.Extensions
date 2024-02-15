@@ -79,12 +79,7 @@ namespace ISI.Extensions.ConfigurationHelper.Extensions
 
 								if (!string.IsNullOrWhiteSpace(machineEnvironmentVariableValue))
 								{
-									environmentConfiguration = environmentsConfiguration.Environments.NullCheckedFirstOrDefault(e => e.Machines.NullCheckedContains(machineEnvironmentVariableValue, StringComparer.InvariantCultureIgnoreCase));
-
-									if (environmentConfiguration == null)
-									{
-										environmentConfiguration = environmentsConfiguration.Environments.NullCheckedFirstOrDefault(e => string.Equals(e.EnvironmentName, machineEnvironmentVariableValue, StringComparison.InvariantCultureIgnoreCase));
-									}
+									environmentConfiguration = environmentsConfiguration.Environments.NullCheckedFirstOrDefault(e => e.Machines.NullCheckedContains(machineEnvironmentVariableValue, StringComparer.InvariantCultureIgnoreCase)) ?? environmentsConfiguration.Environments.NullCheckedFirstOrDefault(e => string.Equals(e.EnvironmentName, machineEnvironmentVariableValue, StringComparison.InvariantCultureIgnoreCase));
 								}
 							}
 						}
@@ -92,7 +87,7 @@ namespace ISI.Extensions.ConfigurationHelper.Extensions
 				}
 			}
 
-			bool hasMachineEnvironmentConfig = false;
+			var hasMachineEnvironmentConfig = false;
 			if (!string.IsNullOrWhiteSpace(machineEnvironmentFileName))
 			{
 				var machineEnvironmentConfigFileInfo = fileProvider.GetFileInfo(machineEnvironmentFileName);
@@ -193,7 +188,7 @@ namespace ISI.Extensions.ConfigurationHelper.Extensions
 				{
 					Data.Add($"{ActiveEnvironmentConfiguration.ConfigurationSectionName}:ActiveEnvironment", ActiveEnvironmentConfiguration.ActiveEnvironment);
 
-					for (var index = 0; index < ActiveEnvironmentConfiguration.ActiveEnvironment.Length; index++)
+					for (var index = 0; index < ActiveEnvironmentConfiguration.ActiveEnvironments.Length; index++)
 					{
 						Data.Add($"{ActiveEnvironmentConfiguration.ConfigurationSectionName}:ActiveEnvironments:{index}", ActiveEnvironmentConfiguration.ActiveEnvironments[index]);
 					}

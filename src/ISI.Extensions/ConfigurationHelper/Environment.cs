@@ -47,5 +47,7 @@ namespace ISI.Extensions.ConfigurationHelper
 		public override int GetHashCode() => Value.GetHashCode();
 
 		public override string ToString() => Value;
+
+		public static implicit operator Environment(string environment) => new(environment);
 	}
 }

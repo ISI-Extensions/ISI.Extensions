@@ -41,18 +41,18 @@ namespace ISI.Platforms.ServiceApplication
 
 			var configurationsPath = string.Format("Configuration{0}", System.IO.Path.DirectorySeparatorChar);
 
-			var activeEnvironment = configurationBuilder.GetActiveEnvironmentConfig($"{configurationsPath}isi.extensions.environmentsConfig.json");
+			var activeEnvironmentConfiguration = configurationBuilder.GetActiveEnvironmentConfiguration($"{configurationsPath}isi.extensions.environmentsConfig.json");
 
 			var connectionStringPath = string.Format("Configuration{0}", System.IO.Path.DirectorySeparatorChar);
 			configurationBuilder.AddClassicConnectionStringsSectionFile($"{connectionStringPath}connectionStrings.config", true);
-			configurationBuilder.AddClassicConnectionStringsSectionFiles(activeEnvironment.ActiveEnvironments, environment => $"{connectionStringPath}connectionStrings.{environment}.config");
+			configurationBuilder.AddClassicConnectionStringsSectionFiles(activeEnvironmentConfiguration.ActiveEnvironments, environment => $"{connectionStringPath}connectionStrings.{environment}.config");
 #if !DEBUG
 			configurationBuilder.AddDataPathClassicConnectionStringsSectionFile(System.IO.Path.Combine(Context.RootType.Namespace, "connectionStrings.config"));
 #endif
 
 			configurationBuilder.SetBasePath(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
 			configurationBuilder.AddJsonFile("appsettings.json", optional: true);
-			configurationBuilder.AddJsonFiles(activeEnvironment.ActiveEnvironments, environment => $"appsettings.{environment}.json");
+			configurationBuilder.AddJsonFiles(activeEnvironmentConfiguration.ActiveEnvironments, environment => $"appsettings.{environment}.json");
 #if !DEBUG
 			configurationBuilder.AddDataPathJsonFile(System.IO.Path.Combine(Context.RootType.Namespace, "appsettings.json"));
 #endif
@@ -60,7 +60,7 @@ namespace ISI.Platforms.ServiceApplication
 			configurationBuilder.AddEnvironmentConfiguration();
 
 			Context.SetConfigurationRoot(configurationBuilder.Build().ApplyConfigurationValueReaders());
-			Context.SetActiveEnvironment(activeEnvironment.ActiveEnvironment);
+			Context.SetActiveEnvironment(activeEnvironmentConfiguration.ActiveEnvironment);
 			Context.LoggerConfigurator?.SetBaseLogger(Context);
 
 			var showConfig = Context.Args.NullCheckedAny(arg => string.Equals(arg, "--showConfig", StringComparison.InvariantCultureIgnoreCase));
@@ -74,8 +74,8 @@ namespace ISI.Platforms.ServiceApplication
 					System.Console.WriteLine($"  EV \"{environmentVariable.Key}\" => \"{environmentVariable.Value}\"");
 				}
 
-				System.Console.WriteLine($"ActiveEnvironment: {activeEnvironment.ActiveEnvironment}");
-				System.Console.WriteLine($"ActiveEnvironments: {string.Join(", ", activeEnvironment.ActiveEnvironments.Select(e => string.Format("\"{0}\"", e)))}");
+				System.Console.WriteLine($"ActiveEnvironment: {activeEnvironmentConfiguration.ActiveEnvironment}");
+				System.Console.WriteLine($"ActiveEnvironments: {string.Join(", ", activeEnvironmentConfiguration.ActiveEnvironments.Select(e => string.Format("\"{0}\"", e)))}");
 
 				foreach (var keyValuePair in Context.ConfigurationRoot.AsEnumerable())
 				{

@@ -40,26 +40,26 @@ namespace ISI.Extensions.AspNetCore.Tests
 
 			var configurationsPath = string.Format("Configuration{0}", System.IO.Path.DirectorySeparatorChar);
 
-			var activeEnvironment = configurationBuilder.GetActiveEnvironmentConfig($"{configurationsPath}isi.extensions.environmentsConfig.json");
+			var activeEnvironmentConfiguration = configurationBuilder.GetActiveEnvironmentConfiguration($"{configurationsPath}isi.extensions.environmentsConfig.json");
 
 			configurationBuilder.SetBasePath(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
 			configurationBuilder.AddJsonFile("appsettings.json", optional: false);
-			configurationBuilder.AddJsonFiles(activeEnvironment.ActiveEnvironments, environment => $"appsettings.{environment}.json");
+			configurationBuilder.AddJsonFiles(activeEnvironmentConfiguration.ActiveEnvironments, environment => $"appsettings.{environment}.json");
 			configurationBuilder.AddDataPathJsonFile(System.IO.Path.Combine(typeof(Program).Namespace, "appsettings.json"));
 
 			configurationBuilder.AddEnvironmentVariables();
 
 			var configurationRoot = configurationBuilder.Build().ApplyConfigurationValueReaders();
 
-			Serilog.Log.Logger = LoggerConfigurator.UpdateLoggerConfiguration(null, null, configurationRoot, activeEnvironment.ActiveEnvironment).CreateLogger();
+			Serilog.Log.Logger = LoggerConfigurator.UpdateLoggerConfiguration(null, null, configurationRoot, activeEnvironmentConfiguration.ActiveEnvironment).CreateLogger();
 
 			Serilog.Log.Information($"Starting {typeof(Program).Namespace}");
 			Serilog.Log.Information($"Version: {ISI.Extensions.SystemInformation.GetAssemblyVersion(typeof(Program).Assembly)}");
 			Serilog.Log.Information($"Data: {System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, typeof(Program).Namespace)}");
 
 #if DEBUG
-			Serilog.Log.Information($"ActiveEnvironment: {activeEnvironment.ActiveEnvironment}");
-			Serilog.Log.Information($"ActiveEnvironments: {string.Join(", ", activeEnvironment.ActiveEnvironments.Select(e => string.Format("\"{0}\"", e)))}");
+			Serilog.Log.Information($"ActiveEnvironment: {activeEnvironmentConfiguration.ActiveEnvironment}");
+			Serilog.Log.Information($"ActiveEnvironments: {string.Join(", ", activeEnvironmentConfiguration.ActiveEnvironments.Select(e => string.Format("\"{0}\"", e)))}");
 
 			foreach (System.Collections.DictionaryEntry environmentVariable in Environment.GetEnvironmentVariables())
 			{
@@ -103,7 +103,7 @@ namespace ISI.Extensions.AspNetCore.Tests
 					configurator.WhenStarted((service, control) =>
 					{
 						control.RequestAdditionalTime(TimeSpan.FromMinutes(10));
-						service.StartAsync(configurationRoot, activeEnvironment.ActiveEnvironment, args).Wait();
+						service.StartAsync(configurationRoot, activeEnvironmentConfiguration.ActiveEnvironment, args).Wait();
 						return true;
 					});
 					configurator.WhenStopped((service, control) =>

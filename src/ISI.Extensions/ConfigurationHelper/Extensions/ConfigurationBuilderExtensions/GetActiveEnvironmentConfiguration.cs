@@ -12,10 +12,11 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
@@ -25,7 +26,7 @@ namespace ISI.Extensions.ConfigurationHelper.Extensions
 {
 	public static partial class ConfigurationBuilderExtensions
 	{
-		public static ActiveEnvironmentConfig GetActiveEnvironmentConfig(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, string environmentConfigPath = "")
+		public static ActiveEnvironmentConfiguration GetActiveEnvironmentConfiguration(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, string environmentConfigPath = "")
 		{
 			var machineEnvironmentFileName = "MachineEnvironment.config";
 			var machineEnvironmentVariableName = (string)null;
@@ -149,7 +150,57 @@ namespace ISI.Extensions.ConfigurationHelper.Extensions
 				}
 			}
 
-			return new(environment, environments.ToArray());
+			var activeEnvironmentConfiguration = new ActiveEnvironmentConfiguration()
+			{
+				ActiveEnvironment = environment,
+				ActiveEnvironments = environments.ToArray(),
+			};
+
+			configurationBuilder.Add(new ActiveEnvironmentConfigurationSource(activeEnvironmentConfiguration));
+
+			return activeEnvironmentConfiguration;
+		}
+
+		public class ActiveEnvironmentConfigurationSource : Microsoft.Extensions.Configuration.IConfigurationSource
+		{
+			protected ActiveEnvironmentConfiguration ActiveEnvironmentConfiguration { get; }
+
+			public ActiveEnvironmentConfigurationSource(ActiveEnvironmentConfiguration activeEnvironmentConfiguration)
+			{
+				ActiveEnvironmentConfiguration = activeEnvironmentConfiguration;
+			}
+
+			public Microsoft.Extensions.Configuration.IConfigurationProvider Build(Microsoft.Extensions.Configuration.IConfigurationBuilder builder)
+			{
+				return new ActiveEnvironmentConfigurationProvider(ActiveEnvironmentConfiguration);
+			}
+		}
+
+		public class ActiveEnvironmentConfigurationProvider : Microsoft.Extensions.Configuration.ConfigurationProvider
+		{
+			private bool _loaded = false;
+
+			protected ActiveEnvironmentConfiguration ActiveEnvironmentConfiguration { get; }
+
+			public ActiveEnvironmentConfigurationProvider(ActiveEnvironmentConfiguration activeEnvironmentConfiguration)
+			{
+				ActiveEnvironmentConfiguration = activeEnvironmentConfiguration;
+			}
+
+			public override void Load()
+			{
+				if (!_loaded)
+				{
+					Data.Add($"{ActiveEnvironmentConfiguration.ConfigurationSectionName}:ActiveEnvironment", ActiveEnvironmentConfiguration.ActiveEnvironment);
+
+					for (var index = 0; index < ActiveEnvironmentConfiguration.ActiveEnvironment.Length; index++)
+					{
+						Data.Add($"{ActiveEnvironmentConfiguration.ConfigurationSectionName}:ActiveEnvironments:{index}", ActiveEnvironmentConfiguration.ActiveEnvironments[index]);
+					}
+
+					_loaded = true;
+				}
+			}
 		}
 	}
 }

@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,42 +45,18 @@ namespace ISI.Extensions.VisualStudio
 
 			var nugetPackageKeys = request.NugetPackageKeys ?? new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
 
-			var solutionFullNames = request.SolutionFullNames.Where(solution => System.IO.Directory.Exists(solution) || System.IO.File.Exists(solution)).ToArray();
+			var solutionFullNames = request.SolutionFullNames
+				.NullCheckedSelect(solution => GetSolutionFullName(new() { Solution = solution }).SolutionFullName, NullCheckCollectionResult.Empty)
+				.Where(solutionFullName => !string.IsNullOrWhiteSpace(solutionFullName))
+				.OrderBy(solutionFullName => System.IO.Path.GetFileNameWithoutExtension(solutionFullName), StringComparer.InvariantCultureIgnoreCase)
+				.ToArray();
 
 			var isProjectBuilt = new Dictionary<string, bool>(StringComparer.InvariantCultureIgnoreCase);
 
-			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution =>
-			{
-				var solutionDetails = GetSolutionDetails(new()
-				{
-					Solution = solution,
-					AddToLog = request.AddToLog,
-				}).SolutionDetails;
-
-				if (solutionDetails == null)
-				{
-					return null;
-				}
-
-				return new SolutionDetailsWithNugetPackageDependencies()
-				{
-					SolutionName = solutionDetails.SolutionName,
-					SolutionDirectory = solutionDetails.SolutionDirectory,
-					SolutionFullName = solutionDetails.SolutionFullName,
-					RootSourceDirectory = solutionDetails.RootSourceDirectory,
-					ProjectDetailsSet = solutionDetails.ProjectDetailsSet.ToNullCheckedArray(),
-					SolutionFilterDetailsSet = solutionDetails.SolutionFilterDetailsSet.ToNullCheckedArray(),
-					UpgradeNugetPackagesPriority = solutionDetails.UpgradeNugetPackagesPriority,
-					ExecuteBuildScriptTargetAfterUpgradeNugetPackages = solutionDetails.ExecuteBuildScriptTargetAfterUpgradeNugetPackages,
-					DoNotUpgradePackages = solutionDetails.DoNotUpgradePackages.ToNullCheckedArray(),
-					IsBuilt = false,
-				};
-			}, NullCheckCollectionResult.Empty).Where(solutionDetails => solutionDetails != null).ToArray();
-
 			logger.LogInformation("Update Nuget Packages For Solutions:");
-			foreach (var solutionDetails in solutionDetailsSet)
+			foreach (var solutionFullName in solutionFullNames)
 			{
-				logger.LogInformation(string.Format("  {0}", solutionDetails.SolutionName));
+				logger.LogInformation(string.Format("  {0}", solutionFullName));
 			}
 			logger.LogInformation(string.Empty);
 
@@ -93,87 +69,89 @@ namespace ISI.Extensions.VisualStudio
 				return logger;
 			}
 
-			if (request.UpdateWorkingCopyFromSourceControl && (solutionDetailsSet.Length > 1))
+			if (request.UpdateWorkingCopyFromSourceControl && solutionFullNames.Any())
 			{
-				foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
+				foreach (var solutionFullName in solutionFullNames)
 				{
-					var solutionLogger = getSolutionLogger(solutionDetails.SolutionFullName);
+					var solutionLogger = getSolutionLogger(solutionFullName);
 
-					using (getBuildServiceSolutionLock(solutionDetails.SolutionFullName, (logEntryLevel, description) => solutionLogger.LogInformation(description)))
+					using (getBuildServiceSolutionLock(solutionFullName, (logEntryLevel, description) => solutionLogger.LogInformation(description)))
 					{
 						using (GetSolutionLock(new()
 						{
-							SolutionFullName = solutionDetails.SolutionFullName,
+							SolutionFullName = solutionFullName,
 							AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
 						}).Lock)
 						{
-							solutionLogger.LogInformation(string.Format("Updating {0} from Source Control", solutionDetails.SolutionName));
+							solutionLogger.LogInformation(string.Format("Updating {0} from Source Control", solutionFullName));
+
+							var rootSourceDirectory = SourceControlClientApi.GetRootDirectory(new()
+							{
+								FullName = System.IO.Path.GetDirectoryName(solutionFullName),
+							}).FullName;
 
 							if (!SourceControlClientApi.UpdateWorkingCopy(new()
 							{
-								FullName = solutionDetails.RootSourceDirectory,
+								FullName = rootSourceDirectory,
 								IncludeExternals = true,
 								AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
 							}).Success)
 							{
-								var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
+								var exception = new Exception(string.Format("Error updating \"{0}\"", rootSourceDirectory));
 								solutionLogger.LogError(exception.Message);
 								throw exception;
 							}
+
+							solutionLogger.LogInformation(string.Format("Updated {0} from Source Control", rootSourceDirectory));
 						}
 					}
 				}
 			}
 
-			solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution =>
-			{
-				var solutionDetails = GetSolutionDetails(new()
+			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution =>
 				{
-					Solution = solution,
-					AddToLog = request.AddToLog,
-				}).SolutionDetails;
-
-				if (solutionDetails == null)
-				{
-					return null;
-				}
-
-				var nugetPackageDependencies = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
-
-				foreach (var projectDetails in solutionDetails.ProjectDetailsSet)
-				{
-					if (!isProjectBuilt.ContainsKey(projectDetails.ProjectName))
+					var solutionDetails = GetSolutionDetails(new()
 					{
-						isProjectBuilt.Add(projectDetails.ProjectName, false);
+						Solution = solution,
+						AddToLog = request.AddToLog,
+					}).SolutionDetails;
 
-						var projectNugetPackageDependencies = NugetApi.GetProjectNugetPackageDependencies(new()
-						{
-							ProjectFullName = projectDetails.ProjectFullName,
-						}).NugetPackageKeys;
+					var nugetPackageDependencies = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
 
-						foreach (var projectNugetPackageDependency in projectNugetPackageDependencies)
+					foreach (var projectDetails in solutionDetails.ProjectDetailsSet)
+					{
+						if (!isProjectBuilt.ContainsKey(projectDetails.ProjectName))
 						{
-							nugetPackageDependencies.Add(projectNugetPackageDependency.Package);
+							isProjectBuilt.Add(projectDetails.ProjectName, false);
+
+							var projectNugetPackageDependencies = NugetApi.GetProjectNugetPackageDependencies(new()
+							{
+								ProjectFullName = projectDetails.ProjectFullName,
+							}).NugetPackageKeys;
+
+							foreach (var projectNugetPackageDependency in projectNugetPackageDependencies)
+							{
+								nugetPackageDependencies.Add(projectNugetPackageDependency.Package);
+							}
 						}
 					}
-				}
 
-				return new SolutionDetailsWithNugetPackageDependencies()
-				{
-					SolutionName = solutionDetails.SolutionName,
-					SolutionDirectory = solutionDetails.SolutionDirectory,
-					SolutionFullName = solutionDetails.SolutionFullName,
-					RootSourceDirectory = solutionDetails.RootSourceDirectory,
-					ProjectDetailsSet = solutionDetails.ProjectDetailsSet.ToNullCheckedArray(),
-					SolutionFilterDetailsSet = solutionDetails.SolutionFilterDetailsSet.ToNullCheckedArray(),
-					UpgradeNugetPackagesPriority = solutionDetails.UpgradeNugetPackagesPriority,
-					ExecuteBuildScriptTargetAfterUpgradeNugetPackages = solutionDetails.ExecuteBuildScriptTargetAfterUpgradeNugetPackages,
-					DoNotUpgradePackages = solutionDetails.DoNotUpgradePackages.ToNullCheckedArray(),
-					IsBuilt = false,
-					NugetPackageDependencies = new HashSet<string>(nugetPackageDependencies, StringComparer.InvariantCultureIgnoreCase),
-					NugetPackageDependenciesFromOtherSolutions = new HashSet<string>(nugetPackageDependencies, StringComparer.InvariantCultureIgnoreCase),
-				};
-			}, NullCheckCollectionResult.Empty).Where(solutionDetails => solutionDetails != null).ToArray();
+					return new SolutionDetailsWithNugetPackageDependencies()
+					{
+						SolutionName = solutionDetails.SolutionName,
+						SolutionDirectory = solutionDetails.SolutionDirectory,
+						SolutionFullName = solutionDetails.SolutionFullName,
+						RootSourceDirectory = solutionDetails.RootSourceDirectory,
+						ProjectDetailsSet = solutionDetails.ProjectDetailsSet.ToNullCheckedArray(),
+						SolutionFilterDetailsSet = solutionDetails.SolutionFilterDetailsSet.ToNullCheckedArray(),
+						UpgradeNugetPackagesPriority = solutionDetails.UpgradeNugetPackagesPriority,
+						ExecuteBuildScriptTargetAfterUpgradeNugetPackages = solutionDetails.ExecuteBuildScriptTargetAfterUpgradeNugetPackages,
+						DoNotUpgradePackages = solutionDetails.DoNotUpgradePackages.ToNullCheckedArray(),
+						IsBuilt = false,
+						NugetPackageDependencies = new HashSet<string>(nugetPackageDependencies, StringComparer.InvariantCultureIgnoreCase),
+						NugetPackageDependenciesFromOtherSolutions = new HashSet<string>(nugetPackageDependencies, StringComparer.InvariantCultureIgnoreCase),
+					};
+				}, NullCheckCollectionResult.Empty).Where(solutionDetails => solutionDetails != null).ToArray();
 
 			foreach (var solutionDetails in solutionDetailsSet)
 			{
@@ -261,8 +239,6 @@ namespace ISI.Extensions.VisualStudio
 
 							bool tryGetNugetPackageKey(string package, out ISI.Extensions.Nuget.NugetPackageKey nugetPackageKey)
 							{
-								//solutionLogger.LogInformation($"  tryGetNugetPackageKey for {package}");
-
 								if (solutionIgnorePackageIds.Contains(package))
 								{
 									nugetPackageKey = null;
@@ -275,16 +251,7 @@ namespace ISI.Extensions.VisualStudio
 									return true;
 								}
 
-								//using (NugetApi.GetNugetLock(new()
-								//{
-								//	AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
-								//}).Lock)
-								//{
-								//	addNugetPackageKey(package);
-								//}
-
 								addNugetPackageKey(package);
-
 
 								return nugetPackageKeys.TryGetValue(package, out nugetPackageKey);
 							}
@@ -495,7 +462,7 @@ namespace ISI.Extensions.VisualStudio
 											NupkgFullNames = updatedNugetPackageKeys.Select(nugetPackageKey => System.IO.Path.Combine(nugetPackOutputDirectory, $"{nugetPackageKey.Package}.{nugetPackageKey.Version}.nupkg")),
 											AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
 										});
-										
+
 										solutionLogger.LogInformation(string.Format("Refreshing NugetPackageKeys From: \"{0}\"", nugetPackOutputDirectory));
 										foreach (var updatedNugetPackageKey in updatedNugetPackageKeys)
 										{

@@ -49,7 +49,7 @@ namespace ISI.Extensions.Nuget
 				{
 					if (!string.Equals(package.Version, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 					{
-						throw new(string.Format("Multiple versions of {0} found", package.Id));
+						throw new(string.Format("Multiple versions of {0} found in {1}", package.Id, request.PackagesConfigFullName));
 					}
 				}
 				else

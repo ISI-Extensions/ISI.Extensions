@@ -32,130 +32,85 @@ namespace ISI.Extensions.VisualStudio
 
 			var response = new DTOs.GetSolutionDetailsResponse();
 
-			response.SolutionDetails = new();
-
-			if (System.IO.Directory.Exists(request.Solution))
+			var solutionFullName = GetSolutionFullName(new()
 			{
-				var possibleSolutionFullNames = System.IO.Directory.GetFiles(request.Solution, "*.sln", System.IO.SearchOption.AllDirectories);
+				Solution = request.Solution,
+				AddToLog = request.AddToLog,
+			}).SolutionFullName;
 
-				if (possibleSolutionFullNames.Length == 1)
+			if (!string.IsNullOrWhiteSpace(solutionFullName))
+			{
+				response.SolutionDetails = new()
 				{
-					response.SolutionDetails.SolutionFullName = possibleSolutionFullNames.First();
+					SolutionFullName = solutionFullName,
+				};
+
+				response.SolutionDetails.SolutionName = System.IO.Path.GetFileNameWithoutExtension(response.SolutionDetails.SolutionFullName);
+				response.SolutionDetails.SolutionDirectory = System.IO.Path.GetDirectoryName(response.SolutionDetails.SolutionFullName);
+				response.SolutionDetails.RootSourceDirectory = SourceControlClientApi.GetRootDirectory(new()
+				{
+					FullName = response.SolutionDetails.SolutionDirectory,
+				}).FullName;
+
+				var solutionPreferences = GetSolutionPreferences(new()
+				{
+					SolutionDirectory = response.SolutionDetails.SolutionDirectory,
+				}).SolutionPreferences;
+
+				if (solutionPreferences != null)
+				{
+					response.SolutionDetails.UpgradeNugetPackagesPriority = solutionPreferences.UpgradeNugetPackagesPriority ?? int.MaxValue;
+					response.SolutionDetails.ExecuteBuildScriptTargetAfterUpgradeNugetPackages = solutionPreferences.ExecuteBuildScriptTargetAfterUpgradeNugetPackages;
+					response.SolutionDetails.DoNotUpgradePackages = solutionPreferences.DoNotUpgradePackages;
 				}
-				else if (possibleSolutionFullNames.Length > 1)
+
+				if (!string.IsNullOrWhiteSpace(response.SolutionDetails.SolutionFullName))
 				{
-					var possibleSolutionName = System.IO.Path.GetFileName(request.Solution);
+					var projectDetailsSet = new List<ProjectDetails>();
 
-					var possibleSolutionFullName = possibleSolutionFullNames.FirstOrDefault(possibleSolutionFullName => string.Equals(System.IO.Path.GetFileNameWithoutExtension(possibleSolutionFullName), possibleSolutionName, StringComparison.InvariantCultureIgnoreCase));
+					var solutionLines = System.IO.File.ReadAllLines(response.SolutionDetails.SolutionFullName);
 
-					if (string.IsNullOrWhiteSpace(possibleSolutionFullName))
+					foreach (var solutionLine in solutionLines)
 					{
-						possibleSolutionFullName = possibleSolutionFullNames.FirstOrDefault(possibleSolutionFullName => string.Equals(System.IO.Path.GetFileNameWithoutExtension(possibleSolutionFullName).Replace(" ", string.Empty).Replace(".", string.Empty), possibleSolutionName, StringComparison.InvariantCultureIgnoreCase));
-					}
-
-					if (string.IsNullOrWhiteSpace(possibleSolutionFullName))
-					{
-						possibleSolutionFullName = possibleSolutionFullNames.OrderBy(possibleSolutionFullName => possibleSolutionFullName.Split(new[] { '/', '\\' }).Length).FirstOrDefault();
-					}
-
-					if (!string.IsNullOrWhiteSpace(possibleSolutionFullName))
-					{
-						response.SolutionDetails.SolutionFullName = possibleSolutionFullName;
-					}
-					else
-					{
-						var message = string.Format("Cannot determine which solution to update \"{0}\"", request.Solution);
-
-						logger.LogError(message);
-
-						throw new(message);
-					}
-				}
-				else
-				{
-					var message = string.Format("Cannot find a solution to update \"{0}\"", request.Solution);
-
-					logger.LogError(message);
-
-					throw new(message);
-				}
-			}
-
-			if (System.IO.File.Exists(request.Solution))
-			{
-				response.SolutionDetails.SolutionFullName = request.Solution;
-			}
-
-			if (string.IsNullOrWhiteSpace(response.SolutionDetails.SolutionFullName))
-			{
-				return null;
-			}
-
-			response.SolutionDetails.SolutionName = System.IO.Path.GetFileNameWithoutExtension(response.SolutionDetails.SolutionFullName);
-			response.SolutionDetails.SolutionDirectory = System.IO.Path.GetDirectoryName(response.SolutionDetails.SolutionFullName);
-			response.SolutionDetails.RootSourceDirectory = SourceControlClientApi.GetRootDirectory(new()
-			{
-				FullName = response.SolutionDetails.SolutionDirectory,
-			}).FullName;
-
-			var solutionPreferences = GetSolutionPreferences(new()
-			{
-				SolutionDirectory = response.SolutionDetails.SolutionDirectory,
-			}).SolutionPreferences;
-
-			if (solutionPreferences != null)
-			{
-				response.SolutionDetails.UpgradeNugetPackagesPriority = solutionPreferences.UpgradeNugetPackagesPriority ?? int.MaxValue;
-				response.SolutionDetails.ExecuteBuildScriptTargetAfterUpgradeNugetPackages = solutionPreferences.ExecuteBuildScriptTargetAfterUpgradeNugetPackages;
-				response.SolutionDetails.DoNotUpgradePackages = solutionPreferences.DoNotUpgradePackages;
-			}
-
-			if (!string.IsNullOrWhiteSpace(response.SolutionDetails.SolutionFullName))
-			{
-				var projectDetailsSet = new List<ProjectDetails>();
-
-				var solutionLines = System.IO.File.ReadAllLines(response.SolutionDetails.SolutionFullName);
-
-				foreach (var solutionLine in solutionLines)
-				{
-					if (solutionLine.Trim().StartsWith("Project(", StringComparison.InvariantCultureIgnoreCase))
-					{
-						var pieces = solutionLine.Split(new[] { '=' }).ToList();
-
-						pieces = pieces[1].Split(new[] { '"' }).Select(piece => piece.Trim()).ToList();
-
-						pieces.RemoveAll(piece => string.Equals(piece, ","));
-						pieces.RemoveAll(string.IsNullOrWhiteSpace);
-
-						if (pieces[1].EndsWith(".csproj", StringComparison.InvariantCultureIgnoreCase))
+						if (solutionLine.Trim().StartsWith("Project(", StringComparison.InvariantCultureIgnoreCase))
 						{
-							var projFullName = System.IO.Path.Combine(response.SolutionDetails.SolutionDirectory, pieces[1]);
+							var pieces = solutionLine.Split(new[] { '=' }).ToList();
 
-							projectDetailsSet.Add(new()
+							pieces = pieces[1].Split(new[] { '"' }).Select(piece => piece.Trim()).ToList();
+
+							pieces.RemoveAll(piece => string.Equals(piece, ","));
+							pieces.RemoveAll(string.IsNullOrWhiteSpace);
+
+							if (pieces[1].EndsWith(".csproj", StringComparison.InvariantCultureIgnoreCase))
 							{
-								ProjectName = System.IO.Path.GetFileNameWithoutExtension(projFullName),
-								ProjectDirectory = System.IO.Path.GetDirectoryName(projFullName),
-								ProjectFullName = projFullName,
-							});
+								var projFullName = System.IO.Path.Combine(response.SolutionDetails.SolutionDirectory, pieces[1]);
+
+								projectDetailsSet.Add(new()
+								{
+									ProjectName = System.IO.Path.GetFileNameWithoutExtension(projFullName),
+									ProjectDirectory = System.IO.Path.GetDirectoryName(projFullName),
+									ProjectFullName = projFullName,
+								});
+							}
 						}
 					}
-				}
 
-				response.SolutionDetails.ProjectDetailsSet = projectDetailsSet.ToArray();
+					response.SolutionDetails.ProjectDetailsSet = projectDetailsSet.ToArray();
 
-				var solutionFilterDetailsSet = new List<SolutionFilterDetails>();
+					var solutionFilterDetailsSet = new List<SolutionFilterDetails>();
 
-				foreach (var solutionFilterFullName in System.IO.Directory.EnumerateFiles(response.SolutionDetails.SolutionDirectory, "*.slnf", System.IO.SearchOption.TopDirectoryOnly))
-				{
-					solutionFilterDetailsSet.Add(new()
+					foreach (var solutionFilterFullName in System.IO.Directory.EnumerateFiles(response.SolutionDetails.SolutionDirectory, "*.slnf", System.IO.SearchOption.TopDirectoryOnly))
 					{
-						SolutionFilterName = System.IO.Path.GetFileNameWithoutExtension(solutionFilterFullName),
-						SolutionFilterDirectory = response.SolutionDetails.SolutionDirectory,
-						SolutionFilterFullName = solutionFilterFullName,
-					});
-				}
+						solutionFilterDetailsSet.Add(new()
+						{
+							SolutionFilterName = System.IO.Path.GetFileNameWithoutExtension(solutionFilterFullName),
+							SolutionFilterDirectory = response.SolutionDetails.SolutionDirectory,
+							SolutionFilterFullName = solutionFilterFullName,
+						});
+					}
 
-				response.SolutionDetails.SolutionFilterDetailsSet = solutionFilterDetailsSet.ToArray();
+					response.SolutionDetails.SolutionFilterDetailsSet = solutionFilterDetailsSet.ToArray();
+				}
 			}
 
 			return response;

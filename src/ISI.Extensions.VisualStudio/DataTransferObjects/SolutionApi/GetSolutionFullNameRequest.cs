@@ -20,18 +20,12 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Tests
+namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 {
-	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
-	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
+	public class GetSolutionFullNameRequest
 	{
-		public const string ConfigurationSectionName = "ISI.Extensions.Tests";
+		public string Solution { get; set; }
 
-		public string FileName { get; set; }
-		public string FileUserName { get; set; }
-		public string EnvUserName { get; set; }
-		public string FirstExistingDirectory { get; set; }
-		public string FileNameDeMasked { get; set; }
-		public string StringArray { get; set; }
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

@@ -37,7 +37,7 @@ namespace ISI.Extensions.Tests
 
 			var configurationsPath = string.Format("Configuration{0}", System.IO.Path.DirectorySeparatorChar);
 
-			var activeEnvironment = configurationBuilder.GetActiveEnvironmentConfig($"{configurationsPath}isi.extensions.environmentsConfig.json");
+			var activeEnvironment = configurationBuilder.GetActiveEnvironmentConfiguration($"{configurationsPath}isi.extensions.environmentsConfig.json");
 
 			//configurationBuilder.SetBasePath(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
 			configurationBuilder.AddJsonFile("appsettings.json", optional: false);
@@ -59,8 +59,8 @@ namespace ISI.Extensions.Tests
 		{
 			var valueReader = new ISI.Extensions.ConfigurationValueReaders.NginxFileConfigurationValueReader();
 
-			var xxx = valueReader.GetValue(new ISI.Extensions.ConfigurationValueReaders.ParsedValue(@"nginx:E:\Data\Nginx\sites-enabled\qa-rewardhub.tristarfulfillment.com.conf[http://qa-rewardhub.tristarfulfillment.com:14080]"));
-			var yyy = valueReader.GetValue(new ISI.Extensions.ConfigurationValueReaders.ParsedValue(@"nginx:E:\Data\Nginx\sites-enabled\qa-rewardhub.tristarfulfillment.com.conf[http://qa-rewardhub.tristarfulfillment.com:14080/molson]"));
+			var xxx = valueReader.GetValue(new ISI.Extensions.ConfigurationValueReaders.ParsedValue(@"nginx:E:\Data\Nginx\sites-enabled\qa-rewardhub.xxxx.com.conf[http://qa-rewardhub.xxxx.com:14080]"));
+			var yyy = valueReader.GetValue(new ISI.Extensions.ConfigurationValueReaders.ParsedValue(@"nginx:E:\Data\Nginx\sites-enabled\qa-rewardhub.xxx.com.conf[http://qa-rewardhub.xxx.com:14080/uuuuu]"));
 		}
 	}
 }

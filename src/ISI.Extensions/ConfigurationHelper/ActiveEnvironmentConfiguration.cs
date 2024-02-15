@@ -19,18 +19,13 @@ using System.Text;
 
 namespace ISI.Extensions.ConfigurationHelper
 {
-	public class ActiveEnvironmentConfig
+	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
+	public class ActiveEnvironmentConfiguration : ISI.Extensions.ConfigurationHelper.IConfiguration
 	{
-		public string ActiveEnvironment { get; }
-		public string[] ActiveEnvironments { get; }
+		public const string ConfigurationSectionName = "ISI.Extensions.ActiveEnvironment";
 
-		public ActiveEnvironmentConfig(
-			string activeEnvironment,
-			string[] activeEnvironments)
-		{
-			ActiveEnvironment = activeEnvironment;
-			ActiveEnvironments = activeEnvironments ?? new[] {activeEnvironment};
-		}
+		public string ActiveEnvironment { get; set; }
+		public string[] ActiveEnvironments { get; set; }
 
 		public override string ToString() => ActiveEnvironment;
 	}

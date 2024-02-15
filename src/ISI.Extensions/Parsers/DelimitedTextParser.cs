@@ -87,6 +87,23 @@ namespace ISI.Extensions.Parsers
 		}
 
 		public char Delimiter { get; }
+		
+		private bool _startedParsing = false;
+
+		private char _textQualifier = '\"';
+		public char TextQualifier
+		{
+			get => _textQualifier;
+			set
+			{
+				if (_startedParsing)
+				{
+					throw new Exception("Cannot change TextQualifier after parsing has started");
+				}
+
+				_textQualifier = value;
+			}
+		}
 
 		public DelimitedTextParser(char delimiter)
 		{
@@ -102,6 +119,11 @@ namespace ISI.Extensions.Parsers
 				throw new("context must not be null and of type DelimitedTextParserContext");
 			}
 
+			if (!_startedParsing)
+			{
+				_startedParsing = true;
+			}
+
 			var source = string.Empty;
 			var values = new List<string>();
 
@@ -113,7 +135,7 @@ namespace ISI.Extensions.Parsers
 				}
 
 				var endOfLine = false;
-				var isInQuotes = false;
+				var isInTextQualifier = false;
 
 				var sourceValue = string.Empty;
 				const int sourceBufferSize = 2048;
@@ -200,7 +222,7 @@ namespace ISI.Extensions.Parsers
 
 				while (!endOfLine)
 				{
-					if (startOfField && (isInQuotes = delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset] == '"'))
+					if (startOfField && (isInTextQualifier = delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset] == TextQualifier))
 					{
 						delimitedTextParserContext.IncrementBufferOffset(stream);
 						addToSourceValue('"');
@@ -210,51 +232,50 @@ namespace ISI.Extensions.Parsers
 
 					addToSourceValue(delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset]);
 
-					switch (delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset])
+					var cursorValue = delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset];
+
+					if (cursorValue == TextQualifier)
 					{
-						case '"':
+						delimitedTextParserContext.IncrementBufferOffset(stream);
+						if (delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset] == TextQualifier)
+						{
 							delimitedTextParserContext.IncrementBufferOffset(stream);
-							if (delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset] == '"')
-							{
-								delimitedTextParserContext.IncrementBufferOffset(stream);
-								addToFieldValue('"');
-								addToSourceValue('"');
-							}
-							else
-							{
-								isInQuotes = false;
-							}
-							break;
-
-						case '\r':
-						case '\n':
-							if (isInQuotes)
-							{
-								addToFieldValue(delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset]);
-								delimitedTextParserContext.IncrementBufferOffset(stream);
-							}
-							else
-							{
-								endOfLine = true;
-								while ((delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset] == '\r') || (delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset] == '\n'))
-								{
-									addToSourceValue(delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset]);
-									delimitedTextParserContext.IncrementBufferOffset(stream);
-								}
-							}
-							break;
-
-						default:
-							if (!isInQuotes && (delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset] == Delimiter))
-							{
-								endOfField = true;
-							}
-							else
-							{
-								addToFieldValue(delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset]);
-							}
+							addToFieldValue(TextQualifier);
+							addToSourceValue(TextQualifier);
+						}
+						else
+						{
+							isInTextQualifier = false;
+						}
+					}
+					else if ((cursorValue == '\r') || (cursorValue == '\n'))
+					{
+						if (isInTextQualifier)
+						{
+							addToFieldValue(delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset]);
 							delimitedTextParserContext.IncrementBufferOffset(stream);
-							break;
+						}
+						else
+						{
+							endOfLine = true;
+							while ((delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset] == '\r') || (delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset] == '\n'))
+							{
+								addToSourceValue(delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset]);
+								delimitedTextParserContext.IncrementBufferOffset(stream);
+							}
+						}
+					}
+					else
+					{
+						if (!isInTextQualifier && (delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset] == Delimiter))
+						{
+							endOfField = true;
+						}
+						else
+						{
+							addToFieldValue(delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset]);
+						}
+						delimitedTextParserContext.IncrementBufferOffset(stream);
 					}
 
 					if (delimitedTextParserContext.EndOfStream)
@@ -276,7 +297,7 @@ namespace ISI.Extensions.Parsers
 
 						startOfField = true;
 						endOfField = false;
-						isInQuotes = false;
+						isInTextQualifier = false;
 					}
 				}
 			}
@@ -290,11 +311,11 @@ namespace ISI.Extensions.Parsers
 			{
 				var value = string.Format("{0}", recordValue);
 
-				value = value.Replace("\"", "\"\"");
+				value = value.Replace($"{TextQualifier}", $"{TextQualifier}{TextQualifier}");
 
 				if ((value.IndexOf(Delimiter) >= 0) || (value.IndexOf('\r') >= 0) || (value.IndexOf('\n') >= 0))
 				{
-					value = string.Format("\"{0}\"", value);
+					value = $"{TextQualifier}{value}{TextQualifier}";
 				}
 
 				return value;

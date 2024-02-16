@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,7 +87,7 @@ namespace ISI.Extensions.Parsers
 		}
 
 		public char Delimiter { get; }
-		
+
 		private bool _startedParsing = false;
 
 		private char _textQualifier = '\"';
@@ -102,6 +102,21 @@ namespace ISI.Extensions.Parsers
 				}
 
 				_textQualifier = value;
+			}
+		}
+
+		private long? _maxValueSize = null;
+		public long? MaxValueSize
+		{
+			get => _maxValueSize;
+			set
+			{
+				if (_startedParsing)
+				{
+					throw new Exception("Cannot change MaxValueSize after parsing has started");
+				}
+
+				_maxValueSize = value;
 			}
 		}
 
@@ -209,7 +224,12 @@ namespace ISI.Extensions.Parsers
 				{
 					if (fieldBufferOffset > 0)
 					{
-						return string.Format("{0}{1}", fieldValue, new string(fieldBuffer, 0, fieldBufferOffset));
+						fieldValue = string.Format("{0}{1}", fieldValue, new string(fieldBuffer, 0, fieldBufferOffset));
+					}
+
+					if (MaxValueSize.HasValue && (fieldValue.Length >= MaxValueSize))
+					{
+						throw new Exception($"Field Value too big, fieldIndex = {values.Count}");
 					}
 
 					return fieldValue;

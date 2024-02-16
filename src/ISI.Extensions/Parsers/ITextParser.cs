@@ -24,6 +24,9 @@ namespace ISI.Extensions.Parsers
 {
 	public interface ITextParser
 	{
+		char Delimiter { get; }
+		char TextQualifier { get; set; }
+		long? MaxValueSize { get; set; }
 		ITextParserContext CreateTextParserContext();
 		ITextParserResponse Read(ITextParserContext context, string source);
 		ITextParserResponse Read(ITextParserContext context, System.IO.StreamReader stream);

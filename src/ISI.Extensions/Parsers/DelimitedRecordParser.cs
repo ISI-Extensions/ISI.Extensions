@@ -140,7 +140,10 @@ namespace ISI.Extensions.Parsers
 
 		string IRecordParser<TRecord>.GetUnparsedRecord(TRecord record)
 		{
-			return TextParser.GetUnparsed(ColumnIndexes.Where(columnIndex => columnIndex >= 0).Select(columnIndex => string.Format("{0}", Columns[columnIndex].GetValue(record))));
+			var textQualifier = $"{TextParser.TextQualifier}";
+			var textQualifierReplacement = $"{TextParser.TextQualifier}{TextParser.TextQualifier}";
+
+			return TextParser.GetUnparsed(ColumnIndexes.Where(columnIndex => columnIndex >= 0).Select(columnIndex => string.Format("{0}", Columns[columnIndex].GetValue(record)).Replace(textQualifier, textQualifierReplacement)));
 		}
 
 		string IRecordParser<TRecord>.GetLastUnparsedHeader() => LastUnparsedHeader;

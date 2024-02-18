@@ -17,15 +17,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ISI.Extensions.ContentGenerator
 {
 	public interface IGenerator
 	{
-		GenerateContentResponse GenerateContent<TModel>(TModel model)
+		Task<GenerateContentResponse> GenerateContentAsync<TModel>(TModel model, System.Threading.CancellationToken cancellationToken = default)
 			where TModel : class, IModel;
 
-		GenerateContentResponse GenerateContent<TModel>(System.IO.Stream templateStream, TModel model)
+		Task<GenerateContentResponse> GenerateContentAsync<TModel>(System.IO.Stream templateStream, TModel model, System.Threading.CancellationToken cancellationToken = default)
 			where TModel : class, IModel;
 	}
 }

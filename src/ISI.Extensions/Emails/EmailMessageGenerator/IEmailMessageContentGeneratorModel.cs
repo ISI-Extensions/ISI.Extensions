@@ -18,10 +18,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ISI.Extensions.Emails
+namespace ISI.Extensions.Emails.EmailMessageGenerator
 {
-	public interface IEmailMailMessageHasDeliveryInformation
+	public interface IEmailMessageContentGeneratorModel
 	{
-		string DeliveryChannelName { get; set; }
+		ISI.Extensions.Emails.IEmailAddress FromEmailAddress { get; }
+		ISI.Extensions.Emails.IEmailAddress[] ToEmailAddresses { get; }
+		ISI.Extensions.Emails.IEmailAddress[] CcEmailAddresses { get; }
+		ISI.Extensions.Emails.IEmailAddress[] BccEmailAddresses { get; }
+		EmailMessagePriority Priority { get; }
+		string Subject { get; set; }
+		IEmailMailMessageAttachment[] Attachments { get; set; }
 	}
 }

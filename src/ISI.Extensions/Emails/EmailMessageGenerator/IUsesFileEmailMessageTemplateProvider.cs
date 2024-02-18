@@ -17,11 +17,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace ISI.Extensions.Emails
+namespace ISI.Extensions.Emails.EmailMessageGenerator
 {
-	public interface IEmailMailMessageHasBillingInformation
+	public interface IUsesFileEmailMessageTemplateProvider
 	{
-		string BillingAccountNumber { get; set; }
+		string SubjectTemplateFileName { get; }
+		string PlainTextTemplateFileName { get; }
+		string MhtmlTemplateFileName { get; }
+	}
+
+	public interface IUsesFileTemplateProviderWithGetTemplateFileName
+	{
+		string GetSubjectTemplateFileName(object model);
+		string GetPlainTextTemplateFileName(object model);
+		string GetMhtmlTemplateFileName(object model);
 	}
 }

@@ -23,25 +23,28 @@ namespace ISI.Extensions.Emails
 {
 	public class EmailMailMessageAttachmentContentDisposition : IEmailMailMessageAttachmentContentDisposition
 	{
-		public DateTime CreationDateUtc { get; set; }
-		public string DispositionType { get; set; }
 		public string FileName { get; set; }
-		public bool Inline { get; set; }
-		public DateTime ModificationDateUtc { get; set; }
-		public DateTime ReadDateUtc { get; set; }
 		public long Size { get; set; }
+		public bool Inline { get; set; }
+		
+		public string DispositionType { get; set; }
+		
+		public DateTime ReadDateUtc { get; set; }
+
+		public DateTime CreationDateUtc { get; set; }
+		public DateTime ModificationDateUtc { get; set; }
 
 		IEmailMailMessageAttachmentContentDisposition IEmailMailMessageAttachmentContentDisposition.Clone()
 		{
 			return new EmailMailMessageAttachmentContentDisposition()
 			{
-				CreationDateUtc = CreationDateUtc,
-				DispositionType = DispositionType,
 				FileName = FileName,
-				Inline = Inline,
-				ModificationDateUtc = ModificationDateUtc,
-				ReadDateUtc = ReadDateUtc,
 				Size = Size,
+				Inline = Inline,
+				DispositionType = DispositionType,
+				ReadDateUtc = ReadDateUtc,
+				CreationDateUtc = CreationDateUtc,
+				ModificationDateUtc = ModificationDateUtc,
 			};
 		}
 	}

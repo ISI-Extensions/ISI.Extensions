@@ -12,22 +12,23 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.DependencyInjection.Extensions;
 using ISI.Extensions.TypeLocator.Extensions;
 
-namespace ISI.Extensions.Emails.EmailGenerator
+namespace ISI.Extensions.Emails.EmailMessageGenerator
 {
-	public class Generator : IGenerator
+	public class EmailMessageGenerator : IEmailMessageGenerator
 	{
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 
-		public Generator(
+		public EmailMessageGenerator(
 			Microsoft.Extensions.Logging.ILogger logger)
 		{
 			Logger = logger;
@@ -49,11 +50,11 @@ namespace ISI.Extensions.Emails.EmailGenerator
 						{
 							var __contentGenerators = new Dictionary<Type, Type>();
 
-							var genericContentGeneratorInterfaceType = typeof(IContentGenerator<>);
+							var genericContentGeneratorInterfaceType = typeof(IEmailMessageContentGenerator<>);
 
 							var localContainer = ISI.Extensions.TypeLocator.Container.LocalContainer;
 
-							var contentGeneratorTypes = localContainer.GetImplementationTypes<IContentGenerator>();
+							var contentGeneratorTypes = localContainer.GetImplementationTypes<IMessageContentGenerator>();
 
 							foreach (var contentGeneratorType in contentGeneratorTypes)
 							{
@@ -72,7 +73,7 @@ namespace ISI.Extensions.Emails.EmailGenerator
 									{
 										MapToType = contentGeneratorType,
 										ServiceLifetime = Microsoft.Extensions.DependencyInjection.ServiceLifetime.Singleton,
-									}) as IContentGenerator;
+									}) as IMessageContentGenerator;
 
 									modelType = contentGenerator.ModelType;
 								}
@@ -90,8 +91,8 @@ namespace ISI.Extensions.Emails.EmailGenerator
 		}
 		#endregion
 
-		protected virtual IContentGenerator<TModel> GetContentGenerator<TModel>(IModel model)
-			where TModel : class, IModel
+		protected virtual async Task<IEmailMessageContentGenerator<TModel>> GetContentGeneratorAsync<TModel>(IEmailMessageContentGeneratorModel model, System.Threading.CancellationToken cancellationToken = default)
+			where TModel : class, IEmailMessageContentGeneratorModel
 		{
 			var modelType = typeof(TModel);
 
@@ -102,53 +103,52 @@ namespace ISI.Extensions.Emails.EmailGenerator
 
 			if (!ContentGenerators.ContainsKey(modelType))
 			{
-				throw new GeneratorNotFoundException(string.Format("Cannot find Content Generator for \"{0}\"\nRegistered Content Generators:\n{1}", modelType.FullName, string.Join("\n", ContentGenerators.Select(cg => cg.Key.AssemblyQualifiedNameWithoutVersion()))));
+				throw new EmailMessageGeneratorNotFoundException(string.Format("Cannot find Content Generator for \"{0}\"\nRegistered Content Generators:\n{1}", modelType.FullName, string.Join("\n", ContentGenerators.Select(cg => cg.Key.AssemblyQualifiedNameWithoutVersion()))));
 			}
 
 			var contentGeneratorType = ContentGenerators[modelType];
 
 			if (contentGeneratorType == null)
 			{
-				throw new GeneratorNotFoundException(string.Format("Cannot find Content Generator for \"{0}\"\nRegistered Content Generators:\n{1}", modelType.FullName, string.Join("\n", ContentGenerators.Select(cg => cg.Key.AssemblyQualifiedNameWithoutVersion()))));
+				throw new EmailMessageGeneratorNotFoundException(string.Format("Cannot find Content Generator for \"{0}\"\nRegistered Content Generators:\n{1}", modelType.FullName, string.Join("\n", ContentGenerators.Select(cg => cg.Key.AssemblyQualifiedNameWithoutVersion()))));
 			}
 
 			if (!(ISI.Extensions.ServiceLocator.Current?.GetService(contentGeneratorType, () => new ISI.Extensions.DependencyInjection.RegistrationDeclarationByMapToType()
 			{
 				MapToType = contentGeneratorType,
 				ServiceLifetime = Microsoft.Extensions.DependencyInjection.ServiceLifetime.Singleton,
-			}) is IContentGenerator<TModel> contentGenerator))
+			}) is IEmailMessageContentGenerator<TModel> contentGenerator))
 			{
-				throw new GeneratorCannotBeCreatedException(string.Format("Cannot not create instance of \"{0}\" (111)", contentGeneratorType.FullName));
+				throw new EmailMessageGeneratorCannotBeCreatedException(string.Format("Cannot not create instance of \"{0}\" (111)", contentGeneratorType.FullName));
 			}
 
 			return contentGenerator;
 		}
 
-		public virtual ISI.Extensions.Emails.IEmailMailMessage GenerateEmail<TModel>(TModel model)
-			where TModel : class, IModel
+		public virtual async Task<ISI.Extensions.Emails.IEmailMailMessage> GenerateEmailMessageAsync<TModel>(TModel model, System.Threading.CancellationToken cancellationToken = default)
+			where TModel : class, IEmailMessageContentGeneratorModel
 		{
-			throw new NotImplementedException();
-			//return GenerateEmail<ISI.Extensions.Emails.MailMessage, TModel>(model);
+			return await GenerateEmailMessageAsync<ISI.Extensions.Emails.EmailMailMessage, TModel>(model, cancellationToken);
 		}
 
-		public virtual TResult GenerateEmail<TResult, TModel>(TModel model)
-			where TModel : class, IModel
+		public virtual async Task<TResult> GenerateEmailMessageAsync<TResult, TModel>(TModel model, System.Threading.CancellationToken cancellationToken = default)
+			where TModel : class, IEmailMessageContentGeneratorModel
 			where TResult : ISI.Extensions.Emails.IEmailMailMessage, new()
 		{
-			return GenerateEmail<TResult, TModel>(model, new());
+			return await GenerateEmailMessageAsync<TResult, TModel>(model, new(), cancellationToken);
 		}
 
-		public virtual TResult GenerateEmail<TResult, TModel>(TModel model, TResult instance)
-			where TModel : class, IModel
+		public virtual async Task<TResult> GenerateEmailMessageAsync<TResult, TModel>(TModel model, TResult instance, System.Threading.CancellationToken cancellationToken = default)
+			where TModel : class, IEmailMessageContentGeneratorModel
 			where TResult : ISI.Extensions.Emails.IEmailMailMessage
 		{
 			var mailMessage = default(TResult);
 
-			var contentGenerator = GetContentGenerator<TModel>(model);
+			var contentGenerator = (await GetContentGeneratorAsync<TModel>(model, cancellationToken));
 
 			if (!(model is ISI.Extensions.Culture.IHasCultureKey cultureModel))
 			{
-				mailMessage = contentGenerator.GenerateEmail(model, instance);
+				mailMessage = (await contentGenerator.GenerateEmailAsync(model, instance, cancellationToken));
 			}
 			else
 			{
@@ -159,7 +159,7 @@ namespace ISI.Extensions.Emails.EmailGenerator
 						cultureModel.CultureKey = System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName.ToLower();
 					}
 
-					mailMessage = contentGenerator.GenerateEmail(model, instance);
+					mailMessage = (await contentGenerator.GenerateEmailAsync(model, instance, cancellationToken));
 				}
 			}
 

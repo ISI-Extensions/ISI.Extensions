@@ -12,11 +12,12 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.DependencyInjection.Extensions;
 using ISI.Extensions.TypeLocator.Extensions;
@@ -104,16 +105,16 @@ namespace ISI.Extensions.ContentGenerator
 			return ContentGenerators[modelType];
 		}
 
-		protected virtual IContentGenerator<TModel> GetContentGenerator<TModel>()
+		protected virtual async Task<IContentGenerator<TModel>> GetContentGeneratorAsync<TModel>(System.Threading.CancellationToken cancellationToken = default)
 			where TModel : class, IModel
 		{
 			var contentGeneratorType = GetContentGeneratorType<TModel>();
 
 			if (!(ServiceProvider.GetService(contentGeneratorType, () => new ISI.Extensions.DependencyInjection.RegistrationDeclarationByMapToType()
-			    {
-						MapToType = contentGeneratorType,
-						ServiceLifetime = Microsoft.Extensions.DependencyInjection.ServiceLifetime.Singleton,
-			    }) is IContentGenerator<TModel> contentGenerator))
+			{
+				MapToType = contentGeneratorType,
+				ServiceLifetime = Microsoft.Extensions.DependencyInjection.ServiceLifetime.Singleton,
+			}) is IContentGenerator<TModel> contentGenerator))
 			{
 				throw new GeneratorCannotBeCreatedException(string.Format("Cannot not create instance of \"{0}\"", contentGeneratorType.FullName));
 			}
@@ -121,20 +122,20 @@ namespace ISI.Extensions.ContentGenerator
 			return contentGenerator;
 		}
 
-		public GenerateContentResponse GenerateContent<TModel>(TModel model)
+		public async Task<GenerateContentResponse> GenerateContentAsync<TModel>(TModel model, System.Threading.CancellationToken cancellationToken = default)
 			where TModel : class, IModel
 		{
-			var contentGenerator = GetContentGenerator<TModel>();
+			var contentGenerator = (await GetContentGeneratorAsync<TModel>(cancellationToken));
 
-			return contentGenerator.GenerateContent(model);
+			return await contentGenerator.GenerateContentAsync(model, cancellationToken);
 		}
 
-		public GenerateContentResponse GenerateContent<TModel>(System.IO.Stream templateStream, TModel model)
+		public async Task<GenerateContentResponse> GenerateContentAsync<TModel>(System.IO.Stream templateStream, TModel model, System.Threading.CancellationToken cancellationToken = default)
 			where TModel : class, IModel
 		{
-			var contentGenerator = GetContentGenerator<TModel>();
+			var contentGenerator = (await GetContentGeneratorAsync<TModel>(cancellationToken));
 
-			return contentGenerator.GenerateContent(templateStream, model);
+			return await contentGenerator.GenerateContentAsync(templateStream, model, cancellationToken);
 		}
 	}
 }

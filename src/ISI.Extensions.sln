@@ -146,7 +146,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Acme", "ISI.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Platforms.AspNetCore", "ISI.Platforms.AspNetCore\ISI.Platforms.AspNetCore.csproj", "{36E4B59E-6F13-4296-A4F3-4762AA564685}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.Sbom", "ISI.Extensions.Sbom\ISI.Extensions.Sbom.csproj", "{F9884B9C-C6DC-4F43-A81A-F2F9B0BAAAF9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Sbom", "ISI.Extensions.Sbom\ISI.Extensions.Sbom.csproj", "{F9884B9C-C6DC-4F43-A81A-F2F9B0BAAAF9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

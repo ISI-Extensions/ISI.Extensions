@@ -22,11 +22,11 @@ namespace ISI.Extensions.Emails
 {
 	public interface IEmailMailMessageAlternateView
 	{
+		string ContentKey { get; set; }
 		byte[] Content { get; set; }
-		string ContentId { get; set; }
-		IEmailMailMessageLinkedResource[] LinkedResources { get; set; }
 		IEmailMailMessageContentType ContentType { get; set; }
 		EmailMessageTransferEncoding TransferEncoding { get; set; }
+		IEmailMailMessageLinkedResource[] LinkedResources { get; set; }
 
 		IEmailMailMessageAlternateView Clone();
 	}

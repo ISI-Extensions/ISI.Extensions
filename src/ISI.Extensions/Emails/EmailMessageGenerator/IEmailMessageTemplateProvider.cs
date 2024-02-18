@@ -12,24 +12,24 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace ISI.Extensions.Emails
+namespace ISI.Extensions.Emails.EmailMessageGenerator
 {
-	public interface IEmailMailMessageHasTrackingInformation
+	public interface IEmailMessageTemplateProvider
 	{
-		bool Track { get; set; }
-		bool TrackOpens { get; set; }
-		bool TrackClicks { get; set; }
-		string TrackingDomain { get; set; }
-		string SigningDomain { get; set; }
-		string ReturnPathDomain { get; set; }
-		string[] TrackingTags { get; set; }
-		string[] GoogleAnalyticsDomains { get; set; }
-		string[] GoogleAnalyticsCampaigns { get; set; }
+		bool IsTemplateProviderFor(object contentGenerator);
+
+		Task<string> GetSubjectTemplateKeyAsync(object contentGenerator, object model, System.Threading.CancellationToken cancellationToken = default);
+		Task<string> GetPlainTextTemplateKeyAsync(object contentGenerator, object model, System.Threading.CancellationToken cancellationToken = default);
+		Task<string> GetMhtmlTemplateKeyAsync(object contentGenerator, object model, System.Threading.CancellationToken cancellationToken = default);
+
+		Task<string> GetTemplateCacheKeyAsync(object contentGenerator, string templateKey, object model, System.Threading.CancellationToken cancellationToken = default);
+		Task<System.IO.Stream> GetTemplateStreamAsync(string templateCacheKey, System.Threading.CancellationToken cancellationToken = default);
 	}
 }

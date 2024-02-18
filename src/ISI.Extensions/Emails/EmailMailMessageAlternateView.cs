@@ -41,21 +41,21 @@ namespace ISI.Extensions.Emails
 			TransferEncoding = alternateView.TransferEncoding.ToEmailMessageTransferEncoding();
 		}
 
+		public string ContentKey { get; set; }
 		public byte[] Content { get; set; }
-		public string ContentId { get; set; }
-		public IEmailMailMessageLinkedResource[] LinkedResources { get; set; }
 		public IEmailMailMessageContentType ContentType { get; set; }
 		public EmailMessageTransferEncoding TransferEncoding { get; set; }
+		public IEmailMailMessageLinkedResource[] LinkedResources { get; set; }
 
 		IEmailMailMessageAlternateView IEmailMailMessageAlternateView.Clone()
 		{
 			return new EmailMailMessageAlternateView()
 			{
+				ContentKey = ContentKey,
 				Content = Content.ToNullCheckedArray(),
-				ContentId = ContentId,
-				LinkedResources = LinkedResources.ToNullCheckedArray(linkedResource => linkedResource.Clone()),
 				ContentType = ContentType.Clone(),
 				TransferEncoding = TransferEncoding,
+				LinkedResources = LinkedResources.ToNullCheckedArray(linkedResource => linkedResource.Clone()),
 			};
 		}
 	}

@@ -19,22 +19,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.Emails.EmailGenerator
+namespace ISI.Extensions.Emails.EmailMessageGenerator
 {
-	public class GeneratorCannotBeCreatedException : Exception
+	public class EmailMessageGeneratorCannotBeCreatedException : Exception
 	{
-		public GeneratorCannotBeCreatedException()
+		public EmailMessageGeneratorCannotBeCreatedException()
 		{
 
 		}
 
-		public GeneratorCannotBeCreatedException(string message)
+		public EmailMessageGeneratorCannotBeCreatedException(string message)
 			: base(message)
 		{
 
 		}
 
-		public GeneratorCannotBeCreatedException(string message, Exception innerException)
+		public EmailMessageGeneratorCannotBeCreatedException(string message, Exception innerException)
 			: base(message, innerException)
 		{
 

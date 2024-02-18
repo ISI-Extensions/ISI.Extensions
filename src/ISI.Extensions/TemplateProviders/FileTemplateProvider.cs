@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ using ISI.Extensions.Extensions;
 namespace ISI.Extensions.TemplateProviders
 {
 	[ISI.Extensions.TemplateProviders.TemplateProvider]
-	public class FileTemplateProvider : ISI.Extensions.TemplateProviders.ITemplateProvider, ISI.Extensions.Emails.EmailGenerator.ITemplateProvider
+	public class FileTemplateProvider : ISI.Extensions.TemplateProviders.ITemplateProvider, ISI.Extensions.Emails.EmailMessageGenerator.IEmailMessageTemplateProvider
 	{
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 		protected Microsoft.Extensions.FileProviders.IFileProvider FileProvider { get; }
@@ -40,8 +40,8 @@ namespace ISI.Extensions.TemplateProviders
 		{
 			return (contentGenerator is ISI.Extensions.TemplateProviders.IUsesFileTemplateProvider) ||
 						 (contentGenerator is ISI.Extensions.TemplateProviders.IUsesFileTemplateProviderWithGetTemplateFileName) ||
-						 (contentGenerator is ISI.Extensions.Emails.EmailGenerator.IUsesFileTemplateProvider) ||
-						 (contentGenerator is ISI.Extensions.Emails.EmailGenerator.IUsesFileTemplateProviderWithGetTemplateFileName);
+						 (contentGenerator is ISI.Extensions.Emails.EmailMessageGenerator.IUsesFileEmailMessageTemplateProvider) ||
+						 (contentGenerator is ISI.Extensions.Emails.EmailMessageGenerator.IUsesFileTemplateProviderWithGetTemplateFileName);
 		}
 
 		private string GenerateTemplateCacheKey(string templateKey, object model)
@@ -86,7 +86,7 @@ namespace ISI.Extensions.TemplateProviders
 			return templateCacheKey;
 		}
 
-		public string GetTemplateCacheKey(object contentGenerator, string templateKey, object model)
+		public async Task<string> GetTemplateCacheKeyAsync(object contentGenerator, string templateKey, object model, System.Threading.CancellationToken cancellationToken = default)
 		{
 			if (!IsTemplateProviderFor(contentGenerator))
 			{
@@ -103,7 +103,7 @@ namespace ISI.Extensions.TemplateProviders
 			return GenerateTemplateCacheKey(templateKey, model);
 		}
 
-		public System.IO.Stream GetTemplateStream(string templateCacheKey)
+		public async Task<System.IO.Stream> GetTemplateStreamAsync(string templateCacheKey, System.Threading.CancellationToken cancellationToken = default)
 		{
 			if (!FileProvider.GetFileInfo(templateCacheKey).Exists)
 			{
@@ -113,7 +113,7 @@ namespace ISI.Extensions.TemplateProviders
 			return FileProvider.GetFileInfo(templateCacheKey).CreateReadStream();
 		}
 
-		string ISI.Extensions.TemplateProviders.ITemplateProvider.GetTemplateKey(object contentGenerator, object model)
+		async Task<string> ISI.Extensions.TemplateProviders.ITemplateProvider.GetTemplateKeyAsync(object contentGenerator, object model, System.Threading.CancellationToken cancellationToken = default)
 		{
 			if (!IsTemplateProviderFor(contentGenerator))
 			{
@@ -145,7 +145,7 @@ namespace ISI.Extensions.TemplateProviders
 			return templateFileName;
 		}
 
-		string ISI.Extensions.Emails.EmailGenerator.ITemplateProvider.GetSubjectTemplateKey(object contentGenerator, object model)
+		async Task<string> ISI.Extensions.Emails.EmailMessageGenerator.IEmailMessageTemplateProvider.GetSubjectTemplateKeyAsync(object contentGenerator, object model, System.Threading.CancellationToken cancellationToken = default)
 		{
 			if (!IsTemplateProviderFor(contentGenerator))
 			{
@@ -155,7 +155,7 @@ namespace ISI.Extensions.TemplateProviders
 			var templateFileName = string.Empty;
 
 			{
-				if (contentGenerator is ISI.Extensions.Emails.EmailGenerator.IUsesFileTemplateProvider templateFileNameProvider)
+				if (contentGenerator is ISI.Extensions.Emails.EmailMessageGenerator.IUsesFileEmailMessageTemplateProvider templateFileNameProvider)
 				{
 
 					templateFileName = templateFileNameProvider.SubjectTemplateFileName;
@@ -163,7 +163,7 @@ namespace ISI.Extensions.TemplateProviders
 			}
 
 			{
-				if (contentGenerator is ISI.Extensions.Emails.EmailGenerator.IUsesFileTemplateProviderWithGetTemplateFileName templateFileNameProvider)
+				if (contentGenerator is ISI.Extensions.Emails.EmailMessageGenerator.IUsesFileTemplateProviderWithGetTemplateFileName templateFileNameProvider)
 				{
 					templateFileName = templateFileNameProvider.GetSubjectTemplateFileName(model);
 				}
@@ -172,7 +172,7 @@ namespace ISI.Extensions.TemplateProviders
 			return templateFileName;
 		}
 
-		string ISI.Extensions.Emails.EmailGenerator.ITemplateProvider.GetPlainTextTemplateKey(object contentGenerator, object model)
+		async Task<string> ISI.Extensions.Emails.EmailMessageGenerator.IEmailMessageTemplateProvider.GetPlainTextTemplateKeyAsync(object contentGenerator, object model, System.Threading.CancellationToken cancellationToken = default)
 		{
 			if (!IsTemplateProviderFor(contentGenerator))
 			{
@@ -182,7 +182,7 @@ namespace ISI.Extensions.TemplateProviders
 			var templateFileName = string.Empty;
 
 			{
-				if (contentGenerator is ISI.Extensions.Emails.EmailGenerator.IUsesFileTemplateProvider templateFileNameProvider)
+				if (contentGenerator is ISI.Extensions.Emails.EmailMessageGenerator.IUsesFileEmailMessageTemplateProvider templateFileNameProvider)
 				{
 
 					templateFileName = templateFileNameProvider.PlainTextTemplateFileName;
@@ -190,7 +190,7 @@ namespace ISI.Extensions.TemplateProviders
 			}
 
 			{
-				if (contentGenerator is ISI.Extensions.Emails.EmailGenerator.IUsesFileTemplateProviderWithGetTemplateFileName templateFileNameProvider)
+				if (contentGenerator is ISI.Extensions.Emails.EmailMessageGenerator.IUsesFileTemplateProviderWithGetTemplateFileName templateFileNameProvider)
 				{
 					templateFileName = templateFileNameProvider.GetPlainTextTemplateFileName(model);
 				}
@@ -199,7 +199,7 @@ namespace ISI.Extensions.TemplateProviders
 			return templateFileName;
 		}
 
-		string ISI.Extensions.Emails.EmailGenerator.ITemplateProvider.GetMhtmlTemplateKey(object contentGenerator, object model)
+		async Task<string> ISI.Extensions.Emails.EmailMessageGenerator.IEmailMessageTemplateProvider.GetMhtmlTemplateKeyAsync(object contentGenerator, object model, System.Threading.CancellationToken cancellationToken = default)
 		{
 			if (!IsTemplateProviderFor(contentGenerator))
 			{
@@ -209,7 +209,7 @@ namespace ISI.Extensions.TemplateProviders
 			var templateFileName = string.Empty;
 
 			{
-				if (contentGenerator is ISI.Extensions.Emails.EmailGenerator.IUsesFileTemplateProvider templateFileNameProvider)
+				if (contentGenerator is ISI.Extensions.Emails.EmailMessageGenerator.IUsesFileEmailMessageTemplateProvider templateFileNameProvider)
 				{
 
 					templateFileName = templateFileNameProvider.MhtmlTemplateFileName;
@@ -217,7 +217,7 @@ namespace ISI.Extensions.TemplateProviders
 			}
 
 			{
-				if (contentGenerator is ISI.Extensions.Emails.EmailGenerator.IUsesFileTemplateProviderWithGetTemplateFileName templateFileNameProvider)
+				if (contentGenerator is ISI.Extensions.Emails.EmailMessageGenerator.IUsesFileTemplateProviderWithGetTemplateFileName templateFileNameProvider)
 				{
 					templateFileName = templateFileNameProvider.GetMhtmlTemplateFileName(model);
 				}

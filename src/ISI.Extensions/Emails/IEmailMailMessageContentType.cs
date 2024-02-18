@@ -22,10 +22,10 @@ namespace ISI.Extensions.Emails
 {
 	public interface IEmailMailMessageContentType
 	{
+		string Name { get; set; }
 		string Boundary { get; set; }
 		string CharSet { get; set; }
 		string MediaType { get; set; }
-		string Name { get; set; }
 		IDictionary<string, string> Parameters { get; }
 
 		IEmailMailMessageContentType Clone();

@@ -17,11 +17,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace ISI.Extensions.Emails
+namespace ISI.Extensions
 {
-	public interface IEmailMailMessageHasMetadataInformation
+	[AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
+	public class EmailMessageGeneratorAttribute : ISI.Extensions.TypeLocatorAttribute
 	{
-		IDictionary<string, string> Metadata { get; set; }
+		public EmailMessageGeneratorAttribute()
+			: base(typeof(ISI.Extensions.Emails.EmailMessageGenerator.IMessageContentGenerator))
+		{
+		}
 	}
 }

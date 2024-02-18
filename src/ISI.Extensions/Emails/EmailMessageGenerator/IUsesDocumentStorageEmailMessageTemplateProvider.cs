@@ -19,10 +19,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions.Emails
+namespace ISI.Extensions.Emails.EmailMessageGenerator
 {
-	public interface IHasEmailUuid
+	public interface IUsesDocumentStorageEmailMessageTemplateProvider
 	{
-		Guid EmailUuid { get; set; }
+		Guid SubjectTemplateDocumentUuid { get; }
+		Guid PlainTextTemplateDocumentUuid { get; }
+		Guid MhtmlTemplateDocumentUuid { get; }
+	}
+
+	public interface IUsesDocumentStorageTemplateProviderWithGetTemplateDocumentUuid
+	{
+		Guid GetSubjectTemplateDocumentUuid(object model);
+		Guid GetPlainTextTemplateDocumentUuid(object model);
+		Guid GetMhtmlTemplateDocumentUuid(object model);
 	}
 }

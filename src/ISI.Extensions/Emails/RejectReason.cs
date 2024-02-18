@@ -22,15 +22,15 @@ namespace ISI.Extensions.Emails
 {
 	public enum RejectReason
 	{
-		[ISI.Extensions.EnumGuid("7c64d5ad-483c-4839-b499-7a8f45a26a93", "Hard Bounce", Aliases = new[] { "hard_bounce", "hard-bounce" })] HardBounce,
-		[ISI.Extensions.EnumGuid("0e927d0e-7f03-40a5-be59-22eb196c1c28", "Soft Bounce", Aliases = new[] { "soft_bounce", "soft-bounce" })] SoftBounce,
-		[ISI.Extensions.EnumGuid("ab5996d2-ebd1-4fa2-a86b-e1b746f04a6a", "Spam", Aliases = new[] { "spam" })] Spam,
-		[ISI.Extensions.EnumGuid("a42d792f-57fa-4e1d-b403-7ddefb603a74", "Unsubscribe", Aliases = new[] { "unsub" })] Unsubscribe,
-		[ISI.Extensions.EnumGuid("537ccbf3-fba7-4940-998d-afdf625ac673", "Custom", Aliases = new[] { "custom" })] Custom,
-		[ISI.Extensions.EnumGuid("f694aa72-b7d0-4292-aab9-ea8f99dc15ac", "Invalid Sender", Aliases = new[] { "invalid-sender" })] InvalidSender,
-		[ISI.Extensions.EnumGuid("558aea16-c37c-4a94-9cca-1784c3e48237", "Invalid", Aliases = new[] { "invalid" })] Invalid,
-		[ISI.Extensions.EnumGuid("c9464685-9d33-42ac-ba72-2ac254b199ba", "Test Mode Limit", Aliases = new[] { "test-mode-limit" })] TestModeLimit,
-		[ISI.Extensions.EnumGuid("810ad6ec-529d-461b-99c6-7f5cd22a7384", "Unsigned", Aliases = new[] { "unsigned" })] Unsigned,
-		[ISI.Extensions.EnumGuid("7a2b3abb-eb20-4bb1-950c-82a1ebc8ec2c", "Rule", Aliases = new[] { "rule" })] Rule,
+		[ISI.Extensions.EnumGuid("7c64d5ad-483c-4839-b499-7a8f45a26a93", "Hard Bounce")] HardBounce,
+		[ISI.Extensions.EnumGuid("0e927d0e-7f03-40a5-be59-22eb196c1c28", "Soft Bounce")] SoftBounce,
+		[ISI.Extensions.EnumGuid("ab5996d2-ebd1-4fa2-a86b-e1b746f04a6a", "Spam")] Spam,
+		[ISI.Extensions.EnumGuid("a42d792f-57fa-4e1d-b403-7ddefb603a74", "Unsubscribe")] Unsubscribe,
+		[ISI.Extensions.EnumGuid("537ccbf3-fba7-4940-998d-afdf625ac673", "Custom")] Custom,
+		[ISI.Extensions.EnumGuid("f694aa72-b7d0-4292-aab9-ea8f99dc15ac", "Invalid Sender")] InvalidSender,
+		[ISI.Extensions.EnumGuid("558aea16-c37c-4a94-9cca-1784c3e48237", "Invalid")] Invalid,
+		[ISI.Extensions.EnumGuid("c9464685-9d33-42ac-ba72-2ac254b199ba", "Test Mode Limit")] TestModeLimit,
+		[ISI.Extensions.EnumGuid("810ad6ec-529d-461b-99c6-7f5cd22a7384", "Unsigned")] Unsigned,
+		[ISI.Extensions.EnumGuid("7a2b3abb-eb20-4bb1-950c-82a1ebc8ec2c", "Rule")] Rule,
 	}
 }

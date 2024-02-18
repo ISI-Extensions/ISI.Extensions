@@ -12,11 +12,12 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.TypeLocator.Extensions;
 using ISI.Extensions.DependencyInjection.Extensions;
@@ -87,7 +88,7 @@ namespace ISI.Extensions.Documents.DocumentGenerator
 		}
 		#endregion
 
-		protected virtual IContentGenerator<TModel> GetContentGenerator<TModel>(IModel model)
+		protected virtual async Task<IContentGenerator<TModel>> GetContentGeneratorAsync<TModel>(IModel model, System.Threading.CancellationToken cancellationToken = default)
 			where TModel : class, IModel
 		{
 			var modelType = typeof(TModel);
@@ -119,36 +120,36 @@ namespace ISI.Extensions.Documents.DocumentGenerator
 			return contentGenerator;
 		}
 
-		public virtual void GenerateDocument<TModel>(TModel model, ISI.Extensions.Documents.IDocumentProperties documentProperties, string printerName, System.IO.Stream documentStream, ISI.Extensions.Documents.FileFormat fileFormat)
+		public virtual async Task GenerateDocumentAsync<TModel>(TModel model, ISI.Extensions.Documents.IDocumentProperties documentProperties, string printerName, System.IO.Stream documentStream, ISI.Extensions.Documents.FileFormat fileFormat, System.Threading.CancellationToken cancellationToken = default)
 			where TModel : class, IModel
 		{
-			var contentGenerator = GetContentGenerator<TModel>(model);
+			var contentGenerator = (await GetContentGeneratorAsync<TModel>(model, cancellationToken));
 
-			contentGenerator.GenerateDocument(model, documentProperties, printerName, documentStream, fileFormat);
+			await contentGenerator.GenerateDocumentAsync(model, documentProperties, printerName, documentStream, fileFormat, cancellationToken);
 		}
 
-		public virtual void GenerateDocument<TModel>(IEnumerable<TModel> models, ISI.Extensions.Documents.IDocumentProperties documentProperties, string printerName, System.IO.Stream documentStream, ISI.Extensions.Documents.FileFormat fileFormat)
+		public virtual async Task GenerateDocumentAsync<TModel>(IEnumerable<TModel> models, ISI.Extensions.Documents.IDocumentProperties documentProperties, string printerName, System.IO.Stream documentStream, ISI.Extensions.Documents.FileFormat fileFormat, System.Threading.CancellationToken cancellationToken = default)
 			where TModel : class, IModel
 		{
-			var contentGenerator = GetContentGenerator<TModel>(null);
+			var contentGenerator = (await GetContentGeneratorAsync<TModel>(null, cancellationToken));
 
-			contentGenerator.GenerateDocument(models, documentProperties, printerName, documentStream, fileFormat);
+			await contentGenerator.GenerateDocumentAsync(models, documentProperties, printerName, documentStream, fileFormat, cancellationToken);
 		}
 
-		public virtual void GenerateDocument<TModel>(System.IO.Stream templateStream, TModel model, ISI.Extensions.Documents.IDocumentProperties documentProperties, string printerName, System.IO.Stream documentStream, ISI.Extensions.Documents.FileFormat fileFormat)
+		public virtual async Task GenerateDocumentAsync<TModel>(System.IO.Stream templateStream, TModel model, ISI.Extensions.Documents.IDocumentProperties documentProperties, string printerName, System.IO.Stream documentStream, ISI.Extensions.Documents.FileFormat fileFormat, System.Threading.CancellationToken cancellationToken = default)
 			where TModel : class, IModel
 		{
-			var contentGenerator = GetContentGenerator<TModel>(model);
+			var contentGenerator = (await GetContentGeneratorAsync<TModel>(model, cancellationToken));
 
-			contentGenerator.GenerateDocument(templateStream, model, documentProperties, printerName, documentStream, fileFormat);
+			await contentGenerator.GenerateDocumentAsync(templateStream, model, documentProperties, printerName, documentStream, fileFormat, cancellationToken);
 		}
 
-		public virtual void GenerateDocument<TModel>(System.IO.Stream templateStream, IEnumerable<TModel> models, ISI.Extensions.Documents.IDocumentProperties documentProperties, string printerName, System.IO.Stream documentStream, ISI.Extensions.Documents.FileFormat fileFormat)
+		public virtual async Task GenerateDocumentAsync<TModel>(System.IO.Stream templateStream, IEnumerable<TModel> models, ISI.Extensions.Documents.IDocumentProperties documentProperties, string printerName, System.IO.Stream documentStream, ISI.Extensions.Documents.FileFormat fileFormat, System.Threading.CancellationToken cancellationToken = default)
 			where TModel : class, IModel
 		{
-			var contentGenerator = GetContentGenerator<TModel>(null);
+			var contentGenerator = (await GetContentGeneratorAsync<TModel>(null, cancellationToken));
 
-			contentGenerator.GenerateDocument(templateStream, models, documentProperties, printerName, documentStream, fileFormat);
+			await contentGenerator.GenerateDocumentAsync(templateStream, models, documentProperties, printerName, documentStream, fileFormat, cancellationToken);
 		}
 	}
 }

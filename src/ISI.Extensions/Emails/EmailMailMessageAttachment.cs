@@ -34,11 +34,11 @@ namespace ISI.Extensions.Emails
 			Name = name;
 		}
 
-		public byte[] Content { get; set; }
-		public string ContentId { get; set; }
-		public IEmailMailMessageAttachmentContentDisposition ContentDisposition { get; set; }
+		public string ContentKey { get; set; }
 		public string Name { get; set; }
 		public int? NameEncoding { get; set; }
+		public byte[] Content { get; set; }
+		public IEmailMailMessageAttachmentContentDisposition ContentDisposition { get; set; }
 		public IEmailMailMessageContentType ContentType { get; set; }
 		public EmailMessageTransferEncoding TransferEncoding { get; set; }
 
@@ -46,11 +46,11 @@ namespace ISI.Extensions.Emails
 		{
 			return new EmailMailMessageAttachment()
 			{
-				Content = Content.ToNullCheckedArray(),
-				ContentId = ContentId,
-				ContentDisposition = ContentDisposition.Clone(),
+				ContentKey = ContentKey,
 				Name = Name,
 				NameEncoding = NameEncoding,
+				Content = Content.ToNullCheckedArray(),
+				ContentDisposition = ContentDisposition.Clone(),
 				ContentType = ContentType.Clone(),
 				TransferEncoding = TransferEncoding,
 			};

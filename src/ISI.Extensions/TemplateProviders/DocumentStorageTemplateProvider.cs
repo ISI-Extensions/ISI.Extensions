@@ -25,7 +25,7 @@ using ISI.Extensions.Extensions;
 namespace ISI.Extensions.TemplateProviders
 {
 	[ISI.Extensions.TemplateProviders.TemplateProvider]
-	public class DocumentStorageTemplateProvider : ISI.Extensions.TemplateProviders.ITemplateProvider, ISI.Extensions.Emails.EmailGenerator.ITemplateProvider
+	public class DocumentStorageTemplateProvider : ISI.Extensions.TemplateProviders.ITemplateProvider, ISI.Extensions.Emails.EmailMessageGenerator.IEmailMessageTemplateProvider
 	{
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 		protected ISI.Extensions.IDocumentStorage DocumentStorage { get; }
@@ -42,11 +42,11 @@ namespace ISI.Extensions.TemplateProviders
 		{
 			return (contentGenerator is ISI.Extensions.TemplateProviders.IUsesDocumentStorageTemplateProvider) ||
 			       (contentGenerator is ISI.Extensions.TemplateProviders.IUsesDocumentStorageTemplateProviderWithGetTemplateDocumentUuid) ||
-			       (contentGenerator is ISI.Extensions.Emails.EmailGenerator.IUsesDocumentStorageTemplateProvider) ||
-			       (contentGenerator is ISI.Extensions.Emails.EmailGenerator.IUsesDocumentStorageTemplateProviderWithGetTemplateDocumentUuid);
+			       (contentGenerator is ISI.Extensions.Emails.EmailMessageGenerator.IUsesDocumentStorageEmailMessageTemplateProvider) ||
+			       (contentGenerator is ISI.Extensions.Emails.EmailMessageGenerator.IUsesDocumentStorageTemplateProviderWithGetTemplateDocumentUuid);
 		}
 
-		public string GetTemplateCacheKey(object contentGenerator, string templateKey, object model)
+		public async Task<string> GetTemplateCacheKeyAsync(object contentGenerator, string templateKey, object model, System.Threading.CancellationToken cancellationToken = default)
 		{
 			if (!IsTemplateProviderFor(contentGenerator))
 			{
@@ -63,11 +63,11 @@ namespace ISI.Extensions.TemplateProviders
 			return templateKey;
 		}
 
-		public System.IO.Stream GetTemplateStream(string templateCacheKey)
+		public async Task<System.IO.Stream> GetTemplateStreamAsync(string templateCacheKey, System.Threading.CancellationToken cancellationToken = default)
 		{
 			var templateDocumentUuid = templateCacheKey.ToGuid();
 
-			var document = DocumentStorage.GetDocumentAsync(templateDocumentUuid).GetAwaiter().GetResult();
+			var document = await DocumentStorage.GetDocumentAsync(templateDocumentUuid);
 
 			if (document == null)
 			{
@@ -77,7 +77,7 @@ namespace ISI.Extensions.TemplateProviders
 			return document.Stream;
 		}
 		
-		string ISI.Extensions.TemplateProviders.ITemplateProvider.GetTemplateKey(object contentGenerator, object model)
+		async Task<string> ISI.Extensions.TemplateProviders.ITemplateProvider.GetTemplateKeyAsync(object contentGenerator, object model, System.Threading.CancellationToken cancellationToken = default)
 		{
 			if (!IsTemplateProviderFor(contentGenerator))
 			{
@@ -109,7 +109,7 @@ namespace ISI.Extensions.TemplateProviders
 			return templateDocumentUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens);
 		}
 		
-		string ISI.Extensions.Emails.EmailGenerator.ITemplateProvider.GetSubjectTemplateKey(object contentGenerator, object model)
+		async Task<string> ISI.Extensions.Emails.EmailMessageGenerator.IEmailMessageTemplateProvider.GetSubjectTemplateKeyAsync(object contentGenerator, object model, System.Threading.CancellationToken cancellationToken = default)
 		{
 			if (!IsTemplateProviderFor(contentGenerator))
 			{
@@ -119,7 +119,7 @@ namespace ISI.Extensions.TemplateProviders
 			var templateDocumentUuid = Guid.Empty;
 
 			{
-				if (contentGenerator is ISI.Extensions.Emails.EmailGenerator.IUsesDocumentStorageTemplateProvider templateDocumentUuidProvider)
+				if (contentGenerator is ISI.Extensions.Emails.EmailMessageGenerator.IUsesDocumentStorageEmailMessageTemplateProvider templateDocumentUuidProvider)
 				{
 
 					templateDocumentUuid = templateDocumentUuidProvider.SubjectTemplateDocumentUuid;
@@ -127,7 +127,7 @@ namespace ISI.Extensions.TemplateProviders
 			}
 
 			{
-				if (contentGenerator is ISI.Extensions.Emails.EmailGenerator.IUsesDocumentStorageTemplateProviderWithGetTemplateDocumentUuid templateDocumentUuidProvider)
+				if (contentGenerator is ISI.Extensions.Emails.EmailMessageGenerator.IUsesDocumentStorageTemplateProviderWithGetTemplateDocumentUuid templateDocumentUuidProvider)
 				{
 					templateDocumentUuid = templateDocumentUuidProvider.GetSubjectTemplateDocumentUuid(model);
 				}
@@ -136,7 +136,7 @@ namespace ISI.Extensions.TemplateProviders
 			return templateDocumentUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens);
 		}
 		
-		string ISI.Extensions.Emails.EmailGenerator.ITemplateProvider.GetPlainTextTemplateKey(object contentGenerator, object model)
+		async Task<string> ISI.Extensions.Emails.EmailMessageGenerator.IEmailMessageTemplateProvider.GetPlainTextTemplateKeyAsync(object contentGenerator, object model, System.Threading.CancellationToken cancellationToken = default)
 		{
 			if (!IsTemplateProviderFor(contentGenerator))
 			{
@@ -146,7 +146,7 @@ namespace ISI.Extensions.TemplateProviders
 			var templateDocumentUuid = Guid.Empty;
 
 			{
-				if (contentGenerator is ISI.Extensions.Emails.EmailGenerator.IUsesDocumentStorageTemplateProvider templateDocumentUuidProvider)
+				if (contentGenerator is ISI.Extensions.Emails.EmailMessageGenerator.IUsesDocumentStorageEmailMessageTemplateProvider templateDocumentUuidProvider)
 				{
 
 					templateDocumentUuid = templateDocumentUuidProvider.PlainTextTemplateDocumentUuid;
@@ -154,7 +154,7 @@ namespace ISI.Extensions.TemplateProviders
 			}
 
 			{
-				if (contentGenerator is ISI.Extensions.Emails.EmailGenerator.IUsesDocumentStorageTemplateProviderWithGetTemplateDocumentUuid templateDocumentUuidProvider)
+				if (contentGenerator is ISI.Extensions.Emails.EmailMessageGenerator.IUsesDocumentStorageTemplateProviderWithGetTemplateDocumentUuid templateDocumentUuidProvider)
 				{
 					templateDocumentUuid = templateDocumentUuidProvider.GetPlainTextTemplateDocumentUuid(model);
 				}
@@ -163,7 +163,7 @@ namespace ISI.Extensions.TemplateProviders
 			return templateDocumentUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens);
 		}
 
-		string ISI.Extensions.Emails.EmailGenerator.ITemplateProvider.GetMhtmlTemplateKey(object contentGenerator, object model)
+		async Task<string> ISI.Extensions.Emails.EmailMessageGenerator.IEmailMessageTemplateProvider.GetMhtmlTemplateKeyAsync(object contentGenerator, object model, System.Threading.CancellationToken cancellationToken = default)
 		{
 			if (!IsTemplateProviderFor(contentGenerator))
 			{
@@ -173,7 +173,7 @@ namespace ISI.Extensions.TemplateProviders
 			var templateDocumentUuid = Guid.Empty;
 
 			{
-				if (contentGenerator is ISI.Extensions.Emails.EmailGenerator.IUsesDocumentStorageTemplateProvider templateDocumentUuidProvider)
+				if (contentGenerator is ISI.Extensions.Emails.EmailMessageGenerator.IUsesDocumentStorageEmailMessageTemplateProvider templateDocumentUuidProvider)
 				{
 
 					templateDocumentUuid = templateDocumentUuidProvider.MhtmlTemplateDocumentUuid;
@@ -181,7 +181,7 @@ namespace ISI.Extensions.TemplateProviders
 			}
 
 			{
-				if (contentGenerator is ISI.Extensions.Emails.EmailGenerator.IUsesDocumentStorageTemplateProviderWithGetTemplateDocumentUuid templateDocumentUuidProvider)
+				if (contentGenerator is ISI.Extensions.Emails.EmailMessageGenerator.IUsesDocumentStorageTemplateProviderWithGetTemplateDocumentUuid templateDocumentUuidProvider)
 				{
 					templateDocumentUuid = templateDocumentUuidProvider.GetMhtmlTemplateDocumentUuid(model);
 				}

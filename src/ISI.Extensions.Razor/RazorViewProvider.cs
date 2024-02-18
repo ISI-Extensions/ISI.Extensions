@@ -15,19 +15,68 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Razor
 {
-	public class VirtualTempDataProvider: Microsoft.AspNetCore.Mvc.ViewFeatures.ITempDataProvider
+	public class RazorViewProvider : RazorLight.Razor.RazorLightProject
 	{
-		public IDictionary<string, object> LoadTempData(Microsoft.AspNetCore.Http.HttpContext context) => new Dictionary<string, object>();
+		public delegate string GetRazorViewStringContentDelegate(string templateKey);
+		public delegate System.IO.Stream GetRazorViewStreamContentDelegate(string templateKey);
 
-		public void SaveTempData(Microsoft.AspNetCore.Http.HttpContext context, IDictionary<string, object> values)
+		private static readonly Dictionary<string, RazorLight.Razor.RazorLightProjectItem> _razorViews = new();
+		private static readonly object _razorViewsLock = new();
+
+		public bool TryAdd(string templateKey, GetRazorViewStringContentDelegate getRazorViewStringContent)
 		{
+			if (!_razorViews.ContainsKey(templateKey))
+			{
+				lock (_razorViewsLock)
+				{
+					if (!_razorViews.ContainsKey(templateKey))
+					{
+						_razorViews.Add(templateKey, new RazorStringView(templateKey, getRazorViewStringContent(templateKey)));
+
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		public bool TryAdd(string templateKey, GetRazorViewStreamContentDelegate getRazorViewStreamContent)
+		{
+			if (!_razorViews.ContainsKey(templateKey))
+			{
+				lock (_razorViewsLock)
+				{
+					if (!_razorViews.ContainsKey(templateKey))
+					{
+						_razorViews.Add(templateKey, new RazorStreamView(templateKey, getRazorViewStreamContent(templateKey)));
+
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		public override async Task<RazorLight.Razor.RazorLightProjectItem> GetItemAsync(string templateKey)
+		{
+			if (_razorViews.TryGetValue(templateKey, out var razorView))
+			{
+				return razorView;
+			}
+
+			return null;
+		}
+
+		public override async Task<IEnumerable<RazorLight.Razor.RazorLightProjectItem>> GetImportsAsync(string templateKey)
+		{
+			return await Task.FromResult(System.Linq.Enumerable.Empty<RazorLight.Razor.RazorLightProjectItem>());
 		}
 	}
 }

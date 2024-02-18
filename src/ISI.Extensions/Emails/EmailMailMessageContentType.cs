@@ -22,10 +22,10 @@ namespace ISI.Extensions.Emails
 {
 	public class EmailMailMessageContentType : IEmailMailMessageContentType
 	{
+		public string Name { get; set; }
 		public string Boundary { get; set; }
 		public string CharSet { get; set; }
 		public string MediaType { get; set; }
-		public string Name { get; set; }
 
 		private IDictionary<string, string> _parameters = null;
 		public IDictionary<string, string> Parameters => _parameters ??= new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
@@ -34,10 +34,10 @@ namespace ISI.Extensions.Emails
 		{
 			return new EmailMailMessageContentType()
 			{
+				Name = Name,
 				Boundary = Boundary,
 				CharSet = CharSet,
 				MediaType = MediaType,
-				Name = Name,
 				_parameters = Parameters.ToNullCheckedDictionary(parameter => parameter.Key, parameter => parameter.Value, StringComparer.InvariantCultureIgnoreCase),
 			};
 		}

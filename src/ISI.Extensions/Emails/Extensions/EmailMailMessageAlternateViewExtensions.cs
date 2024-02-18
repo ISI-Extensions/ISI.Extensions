@@ -26,7 +26,7 @@ namespace ISI.Extensions.Emails.Extensions
 		{
 			var alternateView = new System.Net.Mail.AlternateView(new System.IO.MemoryStream(emailMailMessageAlternateView.Content), emailMailMessageAlternateView.ContentType.ToContentType())
 			{
-				ContentId = emailMailMessageAlternateView.ContentId,
+				ContentId = emailMailMessageAlternateView.ContentKey,
 				TransferEncoding = emailMailMessageAlternateView.TransferEncoding.ToTransferEncoding(),
 			};
 
@@ -43,7 +43,7 @@ namespace ISI.Extensions.Emails.Extensions
 			return new EmailMailMessageAlternateView()
 			{
 				Content = alternateView.ContentStream.ReadBytes(),
-				ContentId = alternateView.ContentId,
+				ContentKey = alternateView.ContentId,
 				LinkedResources = alternateView.LinkedResources.ToNullCheckedArray(linkedResource => new EmailMailMessageLinkedResource(linkedResource)),
 				ContentType = alternateView.ContentType.ToContentType(),
 				TransferEncoding = alternateView.TransferEncoding.ToEmailMessageTransferEncoding(),

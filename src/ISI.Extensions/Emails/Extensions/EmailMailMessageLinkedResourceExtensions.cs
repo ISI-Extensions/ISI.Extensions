@@ -27,7 +27,7 @@ namespace ISI.Extensions.Emails.Extensions
 			var alternateView = new System.Net.Mail.LinkedResource(new System.IO.MemoryStream(emailMailMessageLinkedResource.Content), emailMailMessageLinkedResource.ContentType.ToContentType())
 			{
 				ContentLink = emailMailMessageLinkedResource.ContentLinkUri,
-				ContentId = emailMailMessageLinkedResource.ContentId,
+				ContentId = emailMailMessageLinkedResource.ContentKey,
 				TransferEncoding = emailMailMessageLinkedResource.TransferEncoding.ToTransferEncoding(),
 			};
 

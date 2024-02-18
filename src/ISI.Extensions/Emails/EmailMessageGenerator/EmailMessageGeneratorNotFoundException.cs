@@ -17,11 +17,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace ISI.Extensions.Emails.EmailGenerator
+namespace ISI.Extensions.Emails.EmailMessageGenerator
 {
-	public interface IModelHasDeliveryInformation : IModel
+	public class EmailMessageGeneratorNotFoundException : Exception
 	{
-		string DeliveryChannelName { get; }
+		public EmailMessageGeneratorNotFoundException()
+		{
+
+		}
+
+		public EmailMessageGeneratorNotFoundException(string message)
+			: base(message)
+		{
+
+		}
+
+		public EmailMessageGeneratorNotFoundException(string message, Exception innerException)
+			: base(message, innerException)
+		{
+
+		}
 	}
 }

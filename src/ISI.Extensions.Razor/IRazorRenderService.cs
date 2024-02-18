@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,22 +15,20 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
-namespace ISI.Extensions.Emails.EmailGenerator
+namespace ISI.Extensions.Razor
 {
-	public interface IGenerator
+	public delegate string GetTemplateCacheKey(string templateKey, object model);
+	public delegate System.IO.Stream GetTemplateStream(string templateCacheKey);
+
+	public interface IRazorRenderService
 	{
-		ISI.Extensions.Emails.IEmailMailMessage GenerateEmail<TModel>(TModel model)
-			where TModel : class, IModel;
-
-		TResult GenerateEmail<TResult, TModel>(TModel model)
-			where TModel : class, IModel
-			where TResult : ISI.Extensions.Emails.IEmailMailMessage, new();
-
-		TResult GenerateEmail<TResult, TModel>(TModel model, TResult instance)
-			where TModel : class, IModel
-			where TResult : ISI.Extensions.Emails.IEmailMailMessage;
+		//string HtmlRender(string templateKey, string template, object model);
+		//string HtmlRender(string templateKey, GetTemplateStream getTemplateStream, object model);
+		//string HtmlRender(GetTemplateCacheKey getTemplateCacheKey, GetTemplateStream getTemplateStream, string templateKey, object model);
+		//string PlainTextRender(string templateKey, string template, object model);
+		//string PlainTextRender(string templateKey, GetTemplateStream getTemplateStream, object model);
+		//string PlainTextRender(GetTemplateCacheKey getTemplateCacheKey, GetTemplateStream getTemplateStream, string templateKey, object model);
 	}
 }

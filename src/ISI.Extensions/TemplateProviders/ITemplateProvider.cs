@@ -25,8 +25,8 @@ namespace ISI.Extensions.TemplateProviders
 	{
 		bool IsTemplateProviderFor(object contentGenerator);
 
-		string GetTemplateKey(object contentGenerator, object model);
-		string GetTemplateCacheKey(object contentGenerator, string templateKey, object model);
-		System.IO.Stream GetTemplateStream(string templateCacheKey);
+		Task<string> GetTemplateKeyAsync(object contentGenerator, object model, System.Threading.CancellationToken cancellationToken = default);
+		Task<string> GetTemplateCacheKeyAsync(object contentGenerator, string templateKey, object model, System.Threading.CancellationToken cancellationToken = default);
+		Task<System.IO.Stream> GetTemplateStreamAsync(string templateCacheKey, System.Threading.CancellationToken cancellationToken = default);
 	}
 }

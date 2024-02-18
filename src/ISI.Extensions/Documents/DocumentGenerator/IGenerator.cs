@@ -17,21 +17,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ISI.Extensions.Documents.DocumentGenerator
 {
 	public interface IGenerator
 	{
-		void GenerateDocument<TModel>(TModel model, ISI.Extensions.Documents.IDocumentProperties documentProperties = null, string printerName = null, System.IO.Stream documentStream = null, ISI.Extensions.Documents.FileFormat fileFormat = ISI.Extensions.Documents.FileFormat.Default)
+		Task GenerateDocumentAsync<TModel>(TModel model, ISI.Extensions.Documents.IDocumentProperties documentProperties = null, string printerName = null, System.IO.Stream documentStream = null, ISI.Extensions.Documents.FileFormat fileFormat = ISI.Extensions.Documents.FileFormat.Default, System.Threading.CancellationToken cancellationToken = default)
 			where TModel : class, IModel;
 
-		void GenerateDocument<TModel>(IEnumerable<TModel> models, ISI.Extensions.Documents.IDocumentProperties documentProperties = null, string printerName = null, System.IO.Stream documentStream = null, ISI.Extensions.Documents.FileFormat fileFormat = ISI.Extensions.Documents.FileFormat.Default)
+		Task GenerateDocumentAsync<TModel>(IEnumerable<TModel> models, ISI.Extensions.Documents.IDocumentProperties documentProperties = null, string printerName = null, System.IO.Stream documentStream = null, ISI.Extensions.Documents.FileFormat fileFormat = ISI.Extensions.Documents.FileFormat.Default, System.Threading.CancellationToken cancellationToken = default)
 			where TModel : class, IModel;
 
-		void GenerateDocument<TModel>(System.IO.Stream templateStream, TModel model, ISI.Extensions.Documents.IDocumentProperties documentProperties = null, string printerName = null, System.IO.Stream documentStream = null, ISI.Extensions.Documents.FileFormat fileFormat = ISI.Extensions.Documents.FileFormat.Default)
+		Task GenerateDocumentAsync<TModel>(System.IO.Stream templateStream, TModel model, ISI.Extensions.Documents.IDocumentProperties documentProperties = null, string printerName = null, System.IO.Stream documentStream = null, ISI.Extensions.Documents.FileFormat fileFormat = ISI.Extensions.Documents.FileFormat.Default, System.Threading.CancellationToken cancellationToken = default)
 			where TModel : class, IModel;
 
-		void GenerateDocument<TModel>(System.IO.Stream templateStream, IEnumerable<TModel> models, ISI.Extensions.Documents.IDocumentProperties documentProperties = null, string printerName = null, System.IO.Stream documentStream = null, ISI.Extensions.Documents.FileFormat fileFormat = ISI.Extensions.Documents.FileFormat.Default)
+		Task GenerateDocumentAsync<TModel>(System.IO.Stream templateStream, IEnumerable<TModel> models, ISI.Extensions.Documents.IDocumentProperties documentProperties = null, string printerName = null, System.IO.Stream documentStream = null, ISI.Extensions.Documents.FileFormat fileFormat = ISI.Extensions.Documents.FileFormat.Default, System.Threading.CancellationToken cancellationToken = default)
 			where TModel : class, IModel;
 	}
 }

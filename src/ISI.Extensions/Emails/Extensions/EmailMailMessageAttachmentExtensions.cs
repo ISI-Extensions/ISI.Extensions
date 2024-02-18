@@ -26,7 +26,7 @@ namespace ISI.Extensions.Emails.Extensions
 		{
 			var attachment = new System.Net.Mail.Attachment(new System.IO.MemoryStream(emailMailMessageAttachment.Content), emailMailMessageAttachment.ContentType.ToContentType())
 			{
-				ContentId = emailMailMessageAttachment.ContentId,
+				ContentId = emailMailMessageAttachment.ContentKey,
 				Name = emailMailMessageAttachment.Name,
 				TransferEncoding = emailMailMessageAttachment.TransferEncoding.ToTransferEncoding(),
 			};
@@ -51,7 +51,7 @@ namespace ISI.Extensions.Emails.Extensions
 		{
 			var emailMailMessageAttachment = new EmailMailMessageAttachment( attachment.ContentStream, attachment.Name)
 			{
-				ContentId = attachment.ContentId,
+				ContentKey = attachment.ContentId,
 				NameEncoding = attachment.NameEncoding?.CodePage,
 				TransferEncoding = attachment.TransferEncoding.ToEmailMessageTransferEncoding(),
 				ContentDisposition = new EmailMailMessageAttachmentContentDisposition()

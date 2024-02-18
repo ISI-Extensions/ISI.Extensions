@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,13 +15,27 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
-namespace ISI.Extensions.Emails.EmailGenerator
+namespace ISI.Extensions.Razor
 {
-	public interface IModelHasProviderProfileInformation : IModel
+	public class RazorStringView : RazorLight.Razor.RazorLightProjectItem
 	{
-		string ProviderProfileKey { get; }
+		private readonly string _stringContent;
+
+		public RazorStringView(string key, string stringContent)
+		{
+			Key = key;
+			_stringContent = stringContent;
+		}
+
+		public override string Key { get; }
+
+		public override bool Exists => _stringContent != null;
+
+		public override System.IO.Stream Read()
+		{
+			return new System.IO.MemoryStream(Encoding.UTF8.GetBytes(_stringContent));
+		}
 	}
 }

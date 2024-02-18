@@ -32,27 +32,27 @@ namespace ISI.Extensions.Emails
 
 		public EmailMailMessageLinkedResource(System.Net.Mail.LinkedResource linkedResource)
 		{
-			ContentLinkUri = linkedResource.ContentLink;
+			ContentKey = linkedResource.ContentId;
 			Content = linkedResource.ContentStream.ReadBytes();
-			ContentId = linkedResource.ContentId;
 			ContentType = linkedResource.ContentType.ToContentType();
+			ContentLinkUri = linkedResource.ContentLink;
 			TransferEncoding = linkedResource.TransferEncoding.ToEmailMessageTransferEncoding();
 		}
 
-		public Uri ContentLinkUri { get; set; }
+		public string ContentKey { get; set; }
 		public byte[] Content { get; set; }
-		public string ContentId { get; set; }
 		public IEmailMailMessageContentType ContentType { get; set; }
+		public Uri ContentLinkUri { get; set; }
 		public EmailMessageTransferEncoding TransferEncoding { get; set; }
 
 		IEmailMailMessageLinkedResource IEmailMailMessageLinkedResource.Clone()
 		{
 			return new EmailMailMessageLinkedResource()
 			{
-				ContentLinkUri = (ContentLinkUri != null ? new Uri(ContentLinkUri.ToString()) : null),
+				ContentKey = ContentKey,
 				Content = Content.ToNullCheckedArray(),
-				ContentId = ContentId,
 				ContentType = ContentType.Clone(),
+				ContentLinkUri = (ContentLinkUri != null ? new Uri(ContentLinkUri.ToString()) : null),
 				TransferEncoding = TransferEncoding,
 			};
 		}

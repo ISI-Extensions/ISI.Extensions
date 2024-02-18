@@ -12,11 +12,12 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.ContentGenerator
@@ -38,53 +39,53 @@ namespace ISI.Extensions.ContentGenerator
 			Logger = logger;
 		}
 		protected ContentGenerator(
-			Microsoft.Extensions.Logging.ILogger logger, 
+			Microsoft.Extensions.Logging.ILogger logger,
 			ISI.Extensions.TemplateProviders.ITemplateProvider templateProvider)
 			: this(logger)
 		{
 			_templateProvider = templateProvider;
 		}
 		protected ContentGenerator(
-			Microsoft.Extensions.Logging.ILogger logger, 
+			Microsoft.Extensions.Logging.ILogger logger,
 			Func<ISI.Extensions.TemplateProviders.ITemplateProvider> getTemplateProvider)
 			: this(logger)
 		{
 			_getTemplateProvider = getTemplateProvider;
 		}
 
-		protected virtual System.IO.Stream GetTemplateStream(string templateCacheKey)
+		protected virtual async Task<System.IO.Stream> GetTemplateStreamAsync(string templateCacheKey, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return TemplateProvider.GetTemplateStream(templateCacheKey);
+			return await TemplateProvider.GetTemplateStreamAsync(templateCacheKey, cancellationToken);
 		}
 
-		protected virtual string GetTemplateCacheKey(string templateKey, IModel model)
+		protected virtual async Task<string> GetTemplateCacheKeyAsync(string templateKey, IModel model, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return TemplateProvider.GetTemplateCacheKey(this, templateKey, model);
+			return await TemplateProvider.GetTemplateCacheKeyAsync(this, templateKey, model, cancellationToken);
 		}
 
-		protected virtual string GetTemplateKey(IModel model)
+		protected virtual async Task<string> GetTemplateKeyAsync(IModel model, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return TemplateProvider.GetTemplateKey(this, model);
+			return await TemplateProvider.GetTemplateKeyAsync(this, model, cancellationToken);
 		}
 
-		public virtual GenerateContentResponse GenerateContent(TModel model)
+		public virtual async Task<GenerateContentResponse> GenerateContentAsync(TModel model, System.Threading.CancellationToken cancellationToken = default)
 		{
-			var templateKey = GetTemplateKey(model);
+			var templateKey = (await GetTemplateKeyAsync(model, cancellationToken));
 
-			var templateCacheKey = GetTemplateCacheKey(templateKey, model);
+			var templateCacheKey = (await GetTemplateCacheKeyAsync(templateKey, model, cancellationToken));
 
-			using (var templateStream = GetTemplateStream(templateCacheKey))
+			using (var templateStream = (await GetTemplateStreamAsync(templateCacheKey, cancellationToken)))
 			{
-				return GenerateContent(templateStream, model);
+				return await GenerateContentAsync(templateStream, model, cancellationToken);
 			}
 		}
 
-		public virtual GenerateContentResponse GenerateContent(System.IO.Stream templateStream, TModel model)
+		public virtual async Task<GenerateContentResponse> GenerateContentAsync(System.IO.Stream templateStream, TModel model, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return GenerateContent(templateStream.TextReadToEnd(), model);
+			return await GenerateContentAsync(templateStream.TextReadToEnd(), model, cancellationToken);
 		}
 
-		public virtual GenerateContentResponse GenerateContent(string template, TModel model)
+		public virtual async Task<GenerateContentResponse> GenerateContentAsync(string template, TModel model, System.Threading.CancellationToken cancellationToken = default)
 		{
 			return new()
 			{

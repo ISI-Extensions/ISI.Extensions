@@ -17,11 +17,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace ISI.Extensions.Emails.EmailGenerator
+namespace ISI.Extensions.Emails.EmailMessageGenerator
 {
-	public interface IModelHasMetadataInformation : IModel
+	public interface IEmailMessageContentGenerator<TModel> : IMessageContentGenerator
+		where TModel : IEmailMessageContentGeneratorModel
 	{
-		IDictionary<string, string> Metadata { get; set; }
+		Task<string> GetSubjectContentAsync(TModel model, System.Threading.CancellationToken cancellationToken = default);
+		Task<string> GetPlainTextContentAsync(TModel model, System.Threading.CancellationToken cancellationToken = default);
+		Task<string> GetMhtmlContentAsync(TModel model, System.Threading.CancellationToken cancellationToken = default);
+
+		Task<TResult> GenerateEmailAsync<TResult>(TModel model, TResult instance, System.Threading.CancellationToken cancellationToken = default) 
+			where TResult : ISI.Extensions.Emails.IEmailMailMessage;
+	}
+
+	public interface IMessageContentGenerator
+	{
+		Type ModelType { get; }
 	}
 }

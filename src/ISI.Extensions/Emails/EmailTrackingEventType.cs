@@ -24,15 +24,15 @@ namespace ISI.Extensions.Emails
 	public enum EmailTrackingEventType
 	{
 		[ISI.Extensions.EnumGuid("1cbc1782-c106-4278-9005-041220504178")] SendAttempt,
-		[ISI.Extensions.EnumGuid("d727aa1a-658b-41fd-8eb9-073fe64bfeab", "Send", Aliases = new[] { "send" })] Send,
-		[ISI.Extensions.EnumGuid("4d9bbd0d-89ef-4e68-8a1f-6d0228e33a6a", "Deferral", Aliases = new[] { "deferral" })] Deferral,
-		[ISI.Extensions.EnumGuid("4e957079-b81a-43b9-96c3-2ba10274bf83", "Hard Bounce", Aliases = new[] { "hard_bounce", "hard-bounce" })] HardBounce,
-		[ISI.Extensions.EnumGuid("bb4fa2c6-3de8-475d-be16-a88d6119e14f", "Soft Bounce", Aliases = new[] { "soft_bounce", "soft-bounce" })] SoftBounce,
-		[ISI.Extensions.EnumGuid("33ade975-eeae-4050-9c0e-5c2ee65b0b90", "Open", Aliases = new[] { "open" })] Open,
-		[ISI.Extensions.EnumGuid("410d5b5c-902b-49af-8b33-3567c07ebae8", "Click", Aliases = new[] { "click" })] Click,
-		[ISI.Extensions.EnumGuid("ae1da485-2e46-447e-95db-0b8d4627c14f", "Spam", Aliases = new[] { "spam" })] Spam,
-		[ISI.Extensions.EnumGuid("7f461a82-5185-4cb7-9390-fe16270006f6", "Unsubscribe", Aliases = new[] { "unsub" })] Unsubscribe,
-		[ISI.Extensions.EnumGuid("a2e13ad7-c7bd-4aea-81ce-15dcedd32bb5", "Reject", Aliases = new[] { "reject" })] Reject,
+		[ISI.Extensions.EnumGuid("d727aa1a-658b-41fd-8eb9-073fe64bfeab", "Send")] Send,
+		[ISI.Extensions.EnumGuid("4d9bbd0d-89ef-4e68-8a1f-6d0228e33a6a", "Deferral")] Deferral,
+		[ISI.Extensions.EnumGuid("4e957079-b81a-43b9-96c3-2ba10274bf83", "Hard Bounce")] HardBounce,
+		[ISI.Extensions.EnumGuid("bb4fa2c6-3de8-475d-be16-a88d6119e14f", "Soft Bounce")] SoftBounce,
+		[ISI.Extensions.EnumGuid("33ade975-eeae-4050-9c0e-5c2ee65b0b90", "Open")] Open,
+		[ISI.Extensions.EnumGuid("410d5b5c-902b-49af-8b33-3567c07ebae8", "Click")] Click,
+		[ISI.Extensions.EnumGuid("ae1da485-2e46-447e-95db-0b8d4627c14f", "Spam")] Spam,
+		[ISI.Extensions.EnumGuid("7f461a82-5185-4cb7-9390-fe16270006f6", "Unsubscribe")] Unsubscribe,
+		[ISI.Extensions.EnumGuid("a2e13ad7-c7bd-4aea-81ce-15dcedd32bb5", "Reject")] Reject,
 		[ISI.Extensions.EnumGuid("2e43d8c1-27ea-4803-8c0a-a413d08c1d18")] HasBadEmailAddress,
 	}
 }

@@ -17,19 +17,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.Emails.EmailGenerator
+namespace ISI.Extensions.Razor
 {
-	public interface IModelHasTracking : IModel
+	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
+	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
 	{
-		bool Track { get; }
-		bool TrackOpens { get; }
-		bool TrackClicks { get; }
-		string TrackingDomain { get; }
-		string SigningDomain { get; }
-		string ReturnPathDomain { get; }
-		string[] TrackingTags { get; }
-		string[] GoogleAnalyticsDomains { get; }
-		string[] GoogleAnalyticsCampaigns { get; }
+		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
+		{
+			services.AddSingleton<IRazorRenderService, RazorRenderService>();
+		}
 	}
 }

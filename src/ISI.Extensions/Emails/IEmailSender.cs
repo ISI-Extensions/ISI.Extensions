@@ -24,6 +24,6 @@ namespace ISI.Extensions.Emails
 	{
 		IEmailSenderResponse Send(IEmail email);
 		IEmailSenderResponse Send(IEmailMailMessage message);
-		IEmailSenderResponse Send(string from, string recipients, string subject, string body);
+		IEmailSenderResponse Send(string from, string to, string subject, string body);
 	}
 }

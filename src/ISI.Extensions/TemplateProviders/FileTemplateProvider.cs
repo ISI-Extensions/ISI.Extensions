@@ -184,7 +184,6 @@ namespace ISI.Extensions.TemplateProviders
 			{
 				if (contentGenerator is ISI.Extensions.Emails.EmailMessageGenerator.IUsesFileEmailMessageTemplateProvider templateFileNameProvider)
 				{
-
 					templateFileName = templateFileNameProvider.PlainTextTemplateFileName;
 				}
 			}

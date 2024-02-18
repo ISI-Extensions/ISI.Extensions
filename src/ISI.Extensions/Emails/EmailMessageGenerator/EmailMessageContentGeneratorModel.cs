@@ -16,37 +16,25 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Emails.Extensions
+namespace ISI.Extensions.Emails.EmailMessageGenerator
 {
-	public static class MailAddressExtensions
+	public abstract class EmailMessageContentGeneratorModel : ISI.Extensions.Emails.EmailMessageGenerator.IEmailMessageContentGeneratorModel
 	{
-		public static string Formatted(this IEmailAddress emailAddress)
-		{
-			var caption = emailAddress?.Caption?.Trim();
-			var address = (emailAddress?.Address ?? string.Empty).Trim();
+		public ISI.Extensions.Emails.EmailAddress FromEmailAddress { get; set; }
+		public ISI.Extensions.Emails.EmailAddressCollection ToEmailAddresses { get; set; }
+		public ISI.Extensions.Emails.EmailAddressCollection CcEmailAddresses { get; set; }
+		public ISI.Extensions.Emails.EmailAddressCollection BccEmailAddresses { get; set; }
 
-			return string.IsNullOrEmpty(caption) ? address : string.Format("{0}<{1}>", caption, address);
-		}
+		public string Subject { get; set; }
+		
+		public ISI.Extensions.Emails.EmailMessagePriority Priority { get; set; }
+		public ISI.Extensions.Emails.IEmailMailMessageAttachment[] Attachments { get; set; }
 
-		public static System.Net.Mail.MailAddress ToMailAddress(this IEmailAddress emailAddress)
-		{
-			if (string.IsNullOrWhiteSpace(emailAddress.Caption))
-			{
-				return new System.Net.Mail.MailAddress(emailAddress.Address);
-			}
-
-			return new System.Net.Mail.MailAddress(emailAddress.Address, emailAddress.Caption);
-		}
-
-		public static IEmailAddress ToEmailAddress(this System.Net.Mail.MailAddress mailAddress)
-		{
-			if (string.IsNullOrWhiteSpace(mailAddress.DisplayName))
-			{
-				return new EmailAddress(mailAddress.Address);
-			}
-
-			return new EmailAddress(mailAddress.Address, mailAddress.DisplayName);
-		}
+		ISI.Extensions.Emails.IEmailAddress ISI.Extensions.Emails.EmailMessageGenerator.IEmailMessageContentGeneratorModel.FromEmailAddress => FromEmailAddress;
+		ISI.Extensions.Emails.IEmailAddress[] ISI.Extensions.Emails.EmailMessageGenerator.IEmailMessageContentGeneratorModel.ToEmailAddresses => ToEmailAddresses.ToNullCheckedArray();
+		ISI.Extensions.Emails.IEmailAddress[] ISI.Extensions.Emails.EmailMessageGenerator.IEmailMessageContentGeneratorModel.CcEmailAddresses => CcEmailAddresses.ToNullCheckedArray();
+		ISI.Extensions.Emails.IEmailAddress[] ISI.Extensions.Emails.EmailMessageGenerator.IEmailMessageContentGeneratorModel.BccEmailAddresses => BccEmailAddresses.ToNullCheckedArray();
 	}
 }

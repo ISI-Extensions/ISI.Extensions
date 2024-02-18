@@ -114,7 +114,7 @@ namespace ISI.Extensions.Emails
 		}
 		#endregion
 
-		public virtual async Task<TResult> GenerateEmailAsync<TResult>(TModel model, TResult emailMailMessage, System.Threading.CancellationToken cancellationToken = default)
+		public virtual async Task<TResult> GenerateEmailMessageAsync<TResult>(TModel model, TResult emailMailMessage, System.Threading.CancellationToken cancellationToken = default)
 			where TResult : ISI.Extensions.Emails.IEmailMailMessage
 		{
 			if (string.IsNullOrWhiteSpace(model.Subject))

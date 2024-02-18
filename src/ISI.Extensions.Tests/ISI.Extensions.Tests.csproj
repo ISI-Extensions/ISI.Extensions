@@ -5,6 +5,7 @@
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<Deterministic>false</Deterministic>
 		<Platforms>AnyCPU;x64</Platforms>
+		<PreserveCompilationContext>true</PreserveCompilationContext>
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Include="..\ISI.Extensions.AssemblyInfo.cs" Link="Properties\ISI.Extensions.AssemblyInfo.cs" />
@@ -33,6 +34,8 @@
 	<ItemGroup>
 		<ProjectReference Include="..\ISI.Extensions.Acme\ISI.Extensions.Acme.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.JsonJwt\ISI.Extensions.JsonJwt.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Keycloak\ISI.Extensions.Keycloak.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Razor\ISI.Extensions.Razor.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.S3\ISI.Extensions.S3.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Azure\ISI.Extensions.Azure.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Ascii\ISI.Extensions.Ascii.csproj" />
@@ -80,13 +83,27 @@
 		<ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<None Update="T4LocalContent\T4LocalContent.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>T4LocalContent.generatedcode.cs</LastGenOutput>
-		</None>
+		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
 	</ItemGroup>
 	<ItemGroup>
-		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+		<None Remove="appsettings.json" />
+		<None Remove="EmailMessageTemplates\TestEmail\Mhtml.cshtml" />
+		<None Remove="EmailMessageTemplates\TestEmail\MhtmlInclude.cshtml" />
+		<None Remove="EmailMessageTemplates\TestEmail\PlainText.cshtml" />
+		<None Remove="EmailMessageTemplates\TestEmail\_MhtmlLayout-es.cshtml" />
+		<None Remove="EmailMessageTemplates\TestEmail\_MhtmlLayout.cshtml" />
+	</ItemGroup>
+	<ItemGroup>
+		<Content Include="appsettings.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="EmailMessageTemplates\TestEmail\Mhtml.cshtml" />
+		<EmbeddedResource Include="EmailMessageTemplates\TestEmail\MhtmlInclude.cshtml" />
+		<EmbeddedResource Include="EmailMessageTemplates\TestEmail\PlainText.cshtml" />
+		<EmbeddedResource Include="EmailMessageTemplates\TestEmail\_MhtmlLayout-es.cshtml" />
+		<EmbeddedResource Include="EmailMessageTemplates\TestEmail\_MhtmlLayout.cshtml" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Update="T4LocalContent\T4LocalContent.generatedcode.cs">
@@ -96,75 +113,9 @@
 		</Compile>
 	</ItemGroup>
 	<ItemGroup>
-		<EmbeddedResource Include="**\*.ascx" />
-		<EmbeddedResource Include="**\*.aspx" />
-		<EmbeddedResource Include="**\*.cscss" />
-		<EmbeddedResource Include="**\*.cshtml" />
-		<EmbeddedResource Include="**\*.csjs" />
-		<EmbeddedResource Include="**\*.csless" />
-		<EmbeddedResource Include="**\*.css" />
-		<EmbeddedResource Include="**\*.csscss" />
-		<EmbeddedResource Include="**\*.cssx" />
-		<EmbeddedResource Include="**\*.eot" />
-		<EmbeddedResource Include="**\*.gif" />
-		<EmbeddedResource Include="**\*.ico" />
-		<EmbeddedResource Include="**\*.icon" />
-		<EmbeddedResource Include="**\*.jpg" />
-		<EmbeddedResource Include="**\*.js" />
-		<EmbeddedResource Include="**\*.jsx" />
-		<EmbeddedResource Include="**\*.less" />
-		<EmbeddedResource Include="**\*.lessx" />
-		<EmbeddedResource Include="**\*.m4v" />
-		<EmbeddedResource Include="**\*.mp4" />
-		<EmbeddedResource Include="**\*.oga" />
-		<EmbeddedResource Include="**\*.ogg" />
-		<EmbeddedResource Include="**\*.ogv" />
-		<EmbeddedResource Include="**\*.otf" />
-		<EmbeddedResource Include="**\*.png" />
-		<EmbeddedResource Include="**\*.scss" />
-		<EmbeddedResource Include="**\*.scssx" />
-		<EmbeddedResource Include="**\*.spx" />
-		<EmbeddedResource Include="**\*.svg" />
-		<EmbeddedResource Include="**\*.svgz" />
-		<EmbeddedResource Include="**\*.swf" />
-		<EmbeddedResource Include="**\*.ttf" />
-		<EmbeddedResource Include="**\*.txt" />
-		<EmbeddedResource Include="**\*.vbcss" />
-		<EmbeddedResource Include="**\*.vbhtml" />
-		<EmbeddedResource Include="**\*.vbjs" />
-		<EmbeddedResource Include="**\*.vbless" />
-		<EmbeddedResource Include="**\*.vbscss" />
-		<EmbeddedResource Include="**\*.webm" />
-		<EmbeddedResource Include="**\*.woff" />
-		<EmbeddedResource Include="**\web.config" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Compile Remove="obj\**" />
-	  <EmbeddedResource Remove="obj\**" />
-	  <None Remove="obj\**" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Content Remove="C:\Users\ron.muth\.nuget\packages\microsoft.testplatform.testhost\17.8.0\build\netcoreapp3.1\x64\testhost.dll" />
-	  <Content Remove="C:\Users\ron.muth\.nuget\packages\microsoft.testplatform.testhost\17.8.0\build\netcoreapp3.1\x64\testhost.exe" />
-	</ItemGroup>
-	<ItemGroup>
-	  <None Remove="appsettings.json" />
-	  <None Remove="C:\Users\ron.muth\.nuget\packages\nunit3testadapter\4.5.0\build\netcoreapp3.1\nunit.engine.api.dll" />
-	  <None Remove="C:\Users\ron.muth\.nuget\packages\nunit3testadapter\4.5.0\build\netcoreapp3.1\nunit.engine.core.dll" />
-	  <None Remove="C:\Users\ron.muth\.nuget\packages\nunit3testadapter\4.5.0\build\netcoreapp3.1\nunit.engine.dll" />
-	  <None Remove="C:\Users\ron.muth\.nuget\packages\nunit3testadapter\4.5.0\build\netcoreapp3.1\NUnit3.TestAdapter.dll" />
-	  <None Remove="C:\Users\ron.muth\.nuget\packages\nunit3testadapter\4.5.0\build\netcoreapp3.1\NUnit3.TestAdapter.pdb" />
-	  <None Remove="C:\Users\ron.muth\.nuget\packages\nunit3testadapter\4.5.0\build\netcoreapp3.1\testcentric.engine.metadata.dll" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Content Include="appsettings.json">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Content>
-	</ItemGroup>
-	<ItemGroup>
-	  <None Remove="C:\Users\ron.muth\.nuget\packages\aspose.slides.net\23.5.0\buildTransitive\\..\net6.0_native\aspose.slides.drawing.capi_vc14x64.dll" />
-	</ItemGroup>
-	<ItemGroup>
-	  <None Remove="C:\Users\ron.muth\.nuget\packages\aspose.slides.net\23.5.0\buildTransitive\\..\net6.0_native\aspose.slides.drawing.capi_vc14x86.dll" />
+		<None Update="T4LocalContent\T4LocalContent.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>T4LocalContent.generatedcode.cs</LastGenOutput>
+		</None>
 	</ItemGroup>
 </Project>

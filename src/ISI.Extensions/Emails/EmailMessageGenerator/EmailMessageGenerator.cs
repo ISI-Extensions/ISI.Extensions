@@ -54,7 +54,7 @@ namespace ISI.Extensions.Emails.EmailMessageGenerator
 
 							var localContainer = ISI.Extensions.TypeLocator.Container.LocalContainer;
 
-							var contentGeneratorTypes = localContainer.GetImplementationTypes<IMessageContentGenerator>();
+							var contentGeneratorTypes = localContainer.GetImplementationTypes<IMessageMessageContentGenerator>();
 
 							foreach (var contentGeneratorType in contentGeneratorTypes)
 							{
@@ -73,7 +73,7 @@ namespace ISI.Extensions.Emails.EmailMessageGenerator
 									{
 										MapToType = contentGeneratorType,
 										ServiceLifetime = Microsoft.Extensions.DependencyInjection.ServiceLifetime.Singleton,
-									}) as IMessageContentGenerator;
+									}) as IMessageMessageContentGenerator;
 
 									modelType = contentGenerator.ModelType;
 								}
@@ -142,13 +142,13 @@ namespace ISI.Extensions.Emails.EmailMessageGenerator
 			where TModel : class, IEmailMessageContentGeneratorModel
 			where TResult : ISI.Extensions.Emails.IEmailMailMessage
 		{
-			var mailMessage = default(TResult);
+			var emailMailMessage = default(TResult);
 
 			var contentGenerator = (await GetContentGeneratorAsync<TModel>(model, cancellationToken));
 
 			if (!(model is ISI.Extensions.Culture.IHasCultureKey cultureModel))
 			{
-				mailMessage = (await contentGenerator.GenerateEmailAsync(model, instance, cancellationToken));
+				emailMailMessage = (await contentGenerator.GenerateEmailMessageAsync(model, instance, cancellationToken));
 			}
 			else
 			{
@@ -159,11 +159,11 @@ namespace ISI.Extensions.Emails.EmailMessageGenerator
 						cultureModel.CultureKey = System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName.ToLower();
 					}
 
-					mailMessage = (await contentGenerator.GenerateEmailAsync(model, instance, cancellationToken));
+					emailMailMessage = (await contentGenerator.GenerateEmailMessageAsync(model, instance, cancellationToken));
 				}
 			}
 
-			return mailMessage;
+			return emailMailMessage;
 		}
 	}
 }

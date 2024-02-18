@@ -35,6 +35,7 @@ namespace ISI.Extensions
 			services.AddSingleton<ISI.Extensions.StatusTrackers.FileStatusTrackerFactory>();
 			services.AddSingleton<ISI.Extensions.Crypto.Pbkdf2SaltedHashGenerator>();
 			services.AddSingleton<ISI.Extensions.Threads.ThreadManager>();
+			services.AddSingleton<ISI.Extensions.Emails.EmailMessageGenerator.IEmailMessageGenerator, ISI.Extensions.Emails.EmailMessageGenerator.EmailMessageGenerator>();
 		}
 	}
 }

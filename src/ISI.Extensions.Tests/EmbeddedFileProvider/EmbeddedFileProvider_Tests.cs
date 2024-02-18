@@ -41,7 +41,7 @@ namespace ISI.Extensions.Tests.EmbeddedFileProvider
 		public void EmbeddedVolumesFileProvider_Test()
 		{
 			ISI.Extensions.StartUp.Start();
-			//ISI.Extensions.VirtualFileVolumesFileProvider.Register(typeof(EmbeddedFileProvider_Tests));
+			ISI.Extensions.VirtualFileVolumesFileProvider.RegisterEmbeddedVolume(typeof(EmbeddedFileProvider_Tests));
 
 			var fileProvider = new ISI.Extensions.VirtualFileVolumesFileProvider();
 

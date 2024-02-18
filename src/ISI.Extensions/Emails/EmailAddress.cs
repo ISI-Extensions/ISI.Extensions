@@ -16,6 +16,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ISI.Extensions.Emails.Extensions;
 using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Emails
@@ -101,7 +102,7 @@ namespace ISI.Extensions.Emails
 		#region Value
 		public string Value
 		{
-			get => Format(Address, Caption);
+			get => this.Formatted();
 			set => SetValue(value, string.Empty);
 		}
 		#endregion
@@ -120,12 +121,7 @@ namespace ISI.Extensions.Emails
 			};
 		}
 
-		#region ToString
-		public override string ToString()
-		{
-			return Format(Address, Caption);
-		}
-		#endregion
+		public override string ToString() => this.Formatted();
 
 		public System.Net.Mail.MailAddress ToMailAddress()
 		{
@@ -216,14 +212,6 @@ namespace ISI.Extensions.Emails
 			return result;
 		}
 
-		public static string Format(string address, string caption)
-		{
-			caption = caption?.Trim();
-			address = (address ?? string.Empty).Trim();
-
-			return string.IsNullOrEmpty(caption) ? address : string.Format("{0}<{1}>", caption, address);
-		}
-		
 		public static bool operator ==(EmailAddress a, EmailAddress b)
 		{
 			a ??= new EmailAddress();

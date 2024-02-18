@@ -21,18 +21,18 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Emails.EmailMessageGenerator
 {
-	public interface IEmailMessageContentGenerator<TModel> : IMessageContentGenerator
+	public interface IEmailMessageContentGenerator<TModel> : IMessageMessageContentGenerator
 		where TModel : IEmailMessageContentGeneratorModel
 	{
 		Task<string> GetSubjectContentAsync(TModel model, System.Threading.CancellationToken cancellationToken = default);
 		Task<string> GetPlainTextContentAsync(TModel model, System.Threading.CancellationToken cancellationToken = default);
 		Task<string> GetMhtmlContentAsync(TModel model, System.Threading.CancellationToken cancellationToken = default);
 
-		Task<TResult> GenerateEmailAsync<TResult>(TModel model, TResult instance, System.Threading.CancellationToken cancellationToken = default) 
+		Task<TResult> GenerateEmailMessageAsync<TResult>(TModel model, TResult instance, System.Threading.CancellationToken cancellationToken = default) 
 			where TResult : ISI.Extensions.Emails.IEmailMailMessage;
 	}
 
-	public interface IMessageContentGenerator
+	public interface IMessageMessageContentGenerator
 	{
 		Type ModelType { get; }
 	}

@@ -26,14 +26,13 @@ namespace ISI.Extensions.Razor
 		protected RazorViewProvider RazorViewProvider { get; }
 		protected RazorLight.RazorLightEngine RazorLightEngine { get; }
 
-		protected RazorEmailMessageContentGenerator(Microsoft.Extensions.Logging.ILogger logger)
+		protected RazorEmailMessageContentGenerator(
+			Microsoft.Extensions.Logging.ILogger logger)
 			: base(logger)
 		{
-			RazorViewProvider = new RazorViewProvider();
+			RazorViewProvider = new RazorViewProvider(null, templateKey => TemplateProvider.GetTemplateStreamAsync(templateKey).GetAwaiter().GetResult());
 			RazorLightEngine = new RazorLight.RazorLightEngineBuilder().UseProject(RazorViewProvider).Build();
 		}
-
-
 
 		public override async Task<string> GetSubjectContentAsync(TModel model, System.Threading.CancellationToken cancellationToken = default)
 		{
@@ -43,8 +42,6 @@ namespace ISI.Extensions.Razor
 			{
 				return string.Empty;
 			}
-
-			RazorViewProvider.TryAdd(subjectTemplateKey, templateKey => TemplateProvider.GetTemplateStreamAsync(templateKey, cancellationToken).GetAwaiter().GetResult());
 
 			return await RazorLightEngine.CompileRenderAsync(subjectTemplateKey, model);
 		}
@@ -58,8 +55,6 @@ namespace ISI.Extensions.Razor
 				return string.Empty;
 			}
 
-			RazorViewProvider.TryAdd(plainTextTemplateKey, templateKey => TemplateProvider.GetTemplateStreamAsync(templateKey, cancellationToken).GetAwaiter().GetResult());
-
 			return await RazorLightEngine.CompileRenderAsync(plainTextTemplateKey, model);
 		}
 
@@ -71,8 +66,6 @@ namespace ISI.Extensions.Razor
 			{
 				return string.Empty;
 			}
-
-			RazorViewProvider.TryAdd(mhtmlTemplateKey, templateKey => TemplateProvider.GetTemplateStreamAsync(templateKey, cancellationToken).GetAwaiter().GetResult());
 
 			return await RazorLightEngine.CompileRenderAsync(mhtmlTemplateKey, model);
 		}

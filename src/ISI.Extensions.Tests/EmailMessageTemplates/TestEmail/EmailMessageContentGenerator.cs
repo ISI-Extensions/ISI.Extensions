@@ -15,38 +15,29 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace ISI.Extensions.Emails.Extensions
+namespace ISI.Extensions.Tests.EmailMessageGenerator.TestEmail
 {
-	public static class MailAddressExtensions
+	[ISI.Extensions.EmailMessageContentGenerator]
+	public class EmailMessageContentGenerator : ISI.Extensions.Razor.RazorEmailMessageContentGenerator<TestEmailModel>, ISI.Extensions.Emails.EmailMessageGenerator.IUsesFileEmailMessageTemplateProvider
 	{
-		public static string Formatted(this IEmailAddress emailAddress)
+		static EmailMessageContentGenerator()
 		{
-			var caption = emailAddress?.Caption?.Trim();
-			var address = (emailAddress?.Address ?? string.Empty).Trim();
 
-			return string.IsNullOrEmpty(caption) ? address : string.Format("{0}<{1}>", caption, address);
 		}
 
-		public static System.Net.Mail.MailAddress ToMailAddress(this IEmailAddress emailAddress)
+		public EmailMessageContentGenerator(
+			Microsoft.Extensions.Logging.ILogger logger)
+			: base(logger)
 		{
-			if (string.IsNullOrWhiteSpace(emailAddress.Caption))
-			{
-				return new System.Net.Mail.MailAddress(emailAddress.Address);
-			}
 
-			return new System.Net.Mail.MailAddress(emailAddress.Address, emailAddress.Caption);
 		}
 
-		public static IEmailAddress ToEmailAddress(this System.Net.Mail.MailAddress mailAddress)
-		{
-			if (string.IsNullOrWhiteSpace(mailAddress.DisplayName))
-			{
-				return new EmailAddress(mailAddress.Address);
-			}
-
-			return new EmailAddress(mailAddress.Address, mailAddress.DisplayName);
-		}
+		public string SubjectTemplateFileName => null;
+		public string PlainTextTemplateFileName => T4Files.EmailMessageTemplates.TestEmail.PlainText_cshtml;
+		public string MhtmlTemplateFileName => T4Files.EmailMessageTemplates.TestEmail.Mhtml_cshtml;
 	}
 }

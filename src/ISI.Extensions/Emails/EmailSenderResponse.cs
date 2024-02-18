@@ -17,18 +17,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ISI.Extensions.Razor
+namespace ISI.Extensions.Emails
 {
-	public delegate string GetTemplateCacheKey(string templateKey, object model);
-	public delegate System.IO.Stream GetTemplateStream(string templateCacheKey);
-
-	public interface IRazorRenderService
+	public class EmailSenderResponse : IEmailSenderResponse
 	{
-		//string HtmlRender(string templateKey, string template, object model);
-		//string HtmlRender(string templateKey, GetTemplateStream getTemplateStream, object model);
-		//string HtmlRender(GetTemplateCacheKey getTemplateCacheKey, GetTemplateStream getTemplateStream, string templateKey, object model);
-		//string PlainTextRender(string templateKey, string template, object model);
-		//string PlainTextRender(string templateKey, GetTemplateStream getTemplateStream, object model);
-		//string PlainTextRender(GetTemplateCacheKey getTemplateCacheKey, GetTemplateStream getTemplateStream, string templateKey, object model);
+		public Guid? EmailUuid { get; set; }
+		public SentStatus? SentStatus { get; set; }
+		public string Message { get; set; }
+		public IEmailSenderResponseRecipient[] RecipientResponses { get; set; }
 	}
 }

@@ -1,6 +1,6 @@
-﻿<#+
+<#+
 		readonly string Namespace = "ISI.Extensions.Tests";
-
+		
 		readonly bool IsWebRoot = false;
 		readonly bool BuildT4Files = true;
 		readonly string FilesSubClassName = "T4Files";
@@ -8,7 +8,7 @@
 		readonly string LinksSubClassName = "T4Links";
 		readonly bool BuildT4Embedded = true;
 		readonly string EmbeddedSubClassName = "T4Embedded";
-		readonly bool BuildT4Resources = true;
+		readonly bool BuildT4Resources = false;
 		readonly string ResourcesSubClassName = "T4Resources";
 
 		readonly string AreasRootFolder = "Areas";
@@ -16,7 +16,7 @@
 
 		readonly string[] LocalContentFileFolders = new string[] 
 				{
-				"EmbeddedFiles",
+						"wwwroot",
 						"StyleSheets",
 						"JavaScripts",
 						"Scripts",
@@ -24,7 +24,8 @@
 						"Content",
 						"Templates",
 						"DocumentTemplates",
-						"EmailTemplates",
+						"EmailMessageTemplates",
+						"NotificationTemplates",
 						"EmbeddedFileProvider",
 				};
 

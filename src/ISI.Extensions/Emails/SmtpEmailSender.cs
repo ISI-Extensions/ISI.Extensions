@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -22,19 +22,20 @@ using ISI.Extensions.Extensions;
 namespace ISI.Extensions.Emails
 {
 	[EmailSender(EmailProviderUuid, EmailProviderName)]
-	public class LocalhostEmailSender : System.Net.Mail.SmtpClient, IEmailSender
+	public class SmtpEmailSender : System.Net.Mail.SmtpClient, IEmailSender
 	{
-		public const string EmailProviderUuid = "6c4bc02c-c1ea-4860-8c6d-bfb4aca98291";
-		public const string EmailProviderName = nameof(LocalhostEmailSender);
+		public const string EmailProviderUuid = "96e5b9a9-7abe-400a-bb6e-67a9614bbaf5";
+		public const string EmailProviderName = nameof(SmtpEmailSender);
 
 		Guid IEmailSender.EmailProviderUuid => EmailProviderUuid.ToGuid();
 		string IEmailSender.EmailProviderName => EmailProviderName;
 
 		private readonly object _sendSync = new();
 
-		public LocalhostEmailSender()
+		public SmtpEmailSender(string host, int port = 25)
 		{
-			Host = "localhost";
+			Host = host;
+			Port = port;
 		}
 
 		public IEmailSenderResponse Send(string from, string to, string subject, string body)

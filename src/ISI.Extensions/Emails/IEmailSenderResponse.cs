@@ -23,7 +23,8 @@ namespace ISI.Extensions.Emails
 	public interface IEmailSenderResponse
 	{
 		Guid? EmailUuid { get; set; }
-		SentStatus? SentStatus { get; set; }
+		Guid? EmailProviderUuid { get; set; }
+
 		string Message { get; set; }
 
 		IEmailSenderResponseRecipient[] RecipientResponses { get; set; }

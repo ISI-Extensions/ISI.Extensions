@@ -23,8 +23,8 @@ namespace ISI.Extensions.Emails
 	{
 		public string EmailAddress { get; set; }
 		public string TrackingKey { get; set; }
-		public SentStatus? SentStatus { get; set; }
-		public RejectReason? RejectReason { get; set; }
+		public EmailSenderSentStatus? SentStatus { get; set; }
+		public EmailSenderRejectReason? RejectReason { get; set; }
 		public string Message { get; set; }
 	}
 }

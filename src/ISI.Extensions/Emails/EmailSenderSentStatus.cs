@@ -20,7 +20,7 @@ using System.Text;
 
 namespace ISI.Extensions.Emails
 {
-	public enum SentStatus
+	public enum EmailSenderSentStatus
 	{
 		[ISI.Extensions.EnumGuid("486ef4c6-6f3c-4e9b-833e-077e313e82ff")] Sent,
 		[ISI.Extensions.EnumGuid("e36a0f98-cc1b-4df2-8e98-8182aba03d85")] Queued,

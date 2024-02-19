@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,18 +15,26 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace ISI.Extensions.Emails
 {
-	public interface IEmailSender : IDisposable
+	public class Email : IEmail
 	{
-		Guid EmailProviderUuid { get; }
-		string EmailProviderName { get; }
+		public Guid EmailUuid { get; set; }
+		public EmailStatus EmailStatus { get; set; }
+		public IEmailMailMessage EmailMailMessage { get; set; }
 
-		IEmailSenderResponse Send(IEmail email);
-		IEmailSenderResponse Send(IEmailMailMessage message);
-		IEmailSenderResponse Send(string from, string to, string subject, string body);
+		public Guid? EmailProviderUuid { get; set; }
+
+		public DateTime? ScheduledSendDateTimeUtc { get; set; }
+		public DateTime? LastAttemptSendDateTimeUtc { get; set; }
+		public int? SendAttemptCount { get; set; }
+		public DateTime? SentDateTimeUtc { get; set; }
+
+		public ISI.Extensions.UserKey CreateUserKey { get; set; }
+		public DateTime CreateDateTimeUtc { get; set; }
+		public ISI.Extensions.UserKey ModifyUserKey { get; set; }
+		public DateTime ModifyDateTimeUtc { get; set; }
 	}
 }

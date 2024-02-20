@@ -183,6 +183,12 @@ namespace ISI.Extensions.WebClient
 						decompressedStream?.Dispose();
 					}
 				}
+				else
+				{
+					webRequestDetails?.SetStatusCode(StatusCode);
+					webRequestDetails?.SetResponseHeaders(webResponse?.Headers);
+					webRequestDetails?.SetException(exception);
+				}
 
 				IsErrorResponse = isErrorResponse;
 

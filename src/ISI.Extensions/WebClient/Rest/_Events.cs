@@ -43,6 +43,8 @@ namespace ISI.Extensions.WebClient
 
 			public System.Net.HttpStatusCode StatusCode { get; private set; }
 
+			public System.Exception Exception { get; private set; }
+
 			public string ResponseRaw { get; private set; } = null;
 			public System.Net.WebHeaderCollection ResponseHeaders { get; private set; } = null;
 
@@ -55,6 +57,8 @@ namespace ISI.Extensions.WebClient
 				BodyRaw = null;
 
 				StatusCode = default;
+
+				Exception = null;
 
 				ResponseRaw = null;
 				ResponseHeaders = null;
@@ -84,6 +88,11 @@ namespace ISI.Extensions.WebClient
 			internal void SetStatusCode(System.Net.HttpStatusCode statusCode)
 			{
 				StatusCode = statusCode;
+			}
+			
+			internal void SetException(System.Exception exception)
+			{
+				Exception = exception;
 			}
 
 			internal void SetResponseHeaders(System.Net.WebHeaderCollection responseHeaders)

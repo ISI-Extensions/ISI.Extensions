@@ -336,7 +336,7 @@ namespace ISI.Extensions.WebClient
 			}
 			catch (Exception exception)
 			{
-				response = restResponseTypes.GetRestResponse(restResponseWrapperType, null, null, true, exception);
+				response = restResponseTypes.GetRestResponse(restResponseWrapperType, null, webRequestDetails, true, exception);
 			}
 
 			requestStream?.Close();

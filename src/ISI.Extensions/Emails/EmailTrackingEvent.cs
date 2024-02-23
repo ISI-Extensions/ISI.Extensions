@@ -26,14 +26,12 @@ namespace ISI.Extensions.Emails
 		public string MessageKey { get; set; }
 		public Guid EmailUuid { get; set; }
 		public string RecipientEmailAddress { get; set; }
+
 		public EmailTrackingEventType? EventType { get; set; }
 		public DateTime EventDateTimeUtc { get; set; }
 
-		public string SenderEmailAddress { get; set; }
-		public string Subject { get; set; }
 		public string Url { get; set; }
 		public string IpAddress { get; set; }
-		public string Source { get; set; }
 
 		public string RawProviderEvent { get; set; }
 	}

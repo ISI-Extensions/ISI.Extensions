@@ -25,6 +25,8 @@ namespace ISI.Extensions.Emails
 		Guid? EmailUuid { get; set; }
 		Guid? EmailProviderUuid { get; set; }
 
+		EmailSenderSentStatus? SentStatus { get; set; }
+
 		string Message { get; set; }
 
 		IEmailSenderResponseRecipient[] RecipientResponses { get; set; }

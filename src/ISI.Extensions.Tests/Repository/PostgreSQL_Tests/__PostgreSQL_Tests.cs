@@ -30,7 +30,8 @@ namespace ISI.Extensions.Tests.Repository
 	[TestFixture]
 	public partial class PostgreSQL_Tests
 	{
-		protected const string ConnectionString = @"Host=localhost;Username=testuser;Password=f2f5eeb1-55d9-441b-be56-8c976cac1338;Database=""ISI.Extensions"";";
+		//protected const string ConnectionString = @"Host=localhost;Username=testuser;Password=f2f5eeb1-55d9-441b-be56-8c976cac1338;Database=""ISI.Extensions"";";
+		protected const string ConnectionString = @"Host=localhost;Username=masteradmin;Password=9ab831ceb061;Database=""ISI.Extensions"";";
 		protected const string MasterConnectionString = @"Host=localhost;Username=masteradmin;Password=9ab831ceb061;Database=postgres;";
 
 		protected Microsoft.Extensions.Configuration.IConfigurationRoot ConfigurationRoot { get; set; }

@@ -179,9 +179,9 @@ namespace ISI.Extensions.Repository.PostgreSQL
 			{
 				sql.AppendFormat("CREATE TABLE {0}\n", tableName);
 				sql.Append("  (\n");
-				sql.AppendFormat("{0}{1}\n", string.Join(",\n", recordDescription.PropertyDescriptions.OrderBy(propertyDescription => propertyDescription.Order).Select(propertyDescription => string.Format("  {0}", propertyDescription.GetColumnDefinition(FormatColumnName)))), (string.IsNullOrEmpty(primaryKeyName) ? string.Empty : ","));
+				sql.AppendFormat("{0}{1}\n", string.Join(",\n", recordDescription.PropertyDescriptions.OrderBy(propertyDescription => propertyDescription.Order).Select(propertyDescription => string.Format("  {0}", propertyDescription.GetColumnDefinition(FormatColumnName)))), (string.IsNullOrWhiteSpace(primaryKeyName) ? string.Empty : ","));
 
-				if (!string.IsNullOrEmpty(primaryKeyName))
+				if (!string.IsNullOrWhiteSpace(primaryKeyName))
 				{
 					sql.AppendFormat("    CONSTRAINT {0} PRIMARY KEY ({1})\n", primaryKeyName, string.Join(", ", recordDescription.PrimaryKeyPropertyDescriptions.OrderBy(propertyDescription => propertyDescription.PrimaryKeyAttribute.Order).Select(column => FormatColumnName(column.ColumnName))));
 				}
@@ -225,7 +225,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 			var tableName = FormatArchiveTableName(string.Format("{0}{1}", TableName, ArchiveTableSuffix), null, false);
 
-			var primaryKeyName = string.Format("{0}{1}", RecordDescription.GetRecordDescription<TRecord>().TableName, ArchiveTableSuffix).PostgreSQLFormatName();
+			var primaryKeyName = string.Format("{0}{1}Index", RecordDescription.GetRecordDescription<TRecord>().TableName, ArchiveTableSuffix).PostgreSQLFormatName();
 
 			if (!recordDescription.PrimaryKeyPropertyDescriptions.NullCheckedAny())
 			{
@@ -263,13 +263,12 @@ namespace ISI.Extensions.Repository.PostgreSQL
 				sql.AppendFormat("CREATE TABLE {0}\n", tableName);
 				sql.Append("  (\n");
 				sql.AppendFormat("    {0} timestamp without time zone not null,\n", FormatColumnName(ArchiveTableArchiveDateTimeColumnName));
-				sql.AppendFormat("{0}{1}\n", string.Join(",\n", recordDescription.PropertyDescriptions.OrderBy(propertyDescription => propertyDescription.Order).Select(propertyDescription => string.Format("  {0}", propertyDescription.GetColumnDefinition(FormatColumnName)))), (string.IsNullOrEmpty(primaryKeyName) ? string.Empty : ","));
+				sql.AppendFormat("{0}\n", string.Join(",\n", recordDescription.PropertyDescriptions.OrderBy(propertyDescription => propertyDescription.Order).Select(propertyDescription => string.Format("  {0}", propertyDescription.GetColumnDefinition(FormatColumnName)))));
+				sql.Append("  );\n");
 
-				sql.Append("  )\n");
-
-				if (!string.IsNullOrEmpty(primaryKeyName))
+				if (!string.IsNullOrWhiteSpace(primaryKeyName))
 				{
-					sql.AppendFormat("  CREATE CLUSTERED INDEX {0} ON {1} ({2})\n", primaryKeyName, tableName, string.Join(", ", recordDescription.PrimaryKeyPropertyDescriptions.OrderBy(propertyDescription => propertyDescription.PrimaryKeyAttribute.Order).Select(column => FormatColumnName(column.ColumnName))));
+					sql.AppendFormat("  CREATE INDEX {0} ON {1} ({2})\n", primaryKeyName, tableName, string.Join(", ", recordDescription.PrimaryKeyPropertyDescriptions.OrderBy(propertyDescription => propertyDescription.PrimaryKeyAttribute.Order).Select(column => FormatColumnName(column.ColumnName))));
 				}
 
 				ExecuteCreateArchiveTable(connection, sql.ToString());

@@ -88,7 +88,7 @@ namespace ISI.Extensions.Emails
 					{
 						EmailAddress = recipient.Formatted(),
 						SentStatus = response.SentStatus,
-					});
+					} as IEmailSenderResponseRecipient);
 				}
 			}
 

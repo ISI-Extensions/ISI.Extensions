@@ -34,6 +34,8 @@ namespace ISI.Extensions.Emails
 		int? SendAttemptCount { get; set; }
 		DateTime? SentDateTimeUtc { get; set; }
 
+		IEmailSenderResponse EmailSenderResponse { get; set; }
+
 		ISI.Extensions.UserKey CreateUserKey { get; set; }
 		DateTime CreateDateTimeUtc { get; set; }
 		ISI.Extensions.UserKey ModifyUserKey { get; set; }

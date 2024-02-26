@@ -15,7 +15,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Emails
 {
@@ -26,17 +28,75 @@ namespace ISI.Extensions.Emails
 		public IEmailMailMessage EmailMailMessage { get; set; }
 
 		public Guid? EmailProviderUuid { get; set; }
+		public string EmailProviderDeliveryChannelName { get; set; }
+		private InvariantCultureIgnoreCaseStringDictionary<string> _emailProviderMetadata = null;
+		public IDictionary<string, string> EmailProviderMetadata { get => _emailProviderMetadata ??= new(); set => _emailProviderMetadata = new(value.ToNullCheckedDictionary(keyValue => keyValue.Key, keyValue => keyValue.Value, NullCheckDictionaryResult.Empty)); }
+		public string BillingAccountNumber { get; set; }
+
+		public bool Track { get; set; }
+		public bool TrackOpens { get; set; }
+		public bool TrackClicks { get; set; }
+		public string TrackingDomain { get; set; }
+		public string TrackingSigningDomain { get; set; }
+		public string TrackingReturnPathDomain { get; set; }
+		public string[] TrackingTags { get; set; }
+		public string[] TrackingGoogleAnalyticsDomains { get; set; }
+		public string[] TrackingGoogleAnalyticsCampaigns { get; set; }
 
 		public DateTime? ScheduledSendDateTimeUtc { get; set; }
 		public DateTime? LastAttemptSendDateTimeUtc { get; set; }
 		public int? SendAttemptCount { get; set; }
 		public DateTime? SentDateTimeUtc { get; set; }
-		
+
 		public IEmailSenderResponse EmailSenderResponse { get; set; }
 
 		public ISI.Extensions.UserKey CreateUserKey { get; set; }
 		public DateTime CreateDateTimeUtc { get; set; }
 		public ISI.Extensions.UserKey ModifyUserKey { get; set; }
 		public DateTime ModifyDateTimeUtc { get; set; }
+
+		public static string EncodeToSubjectLineQuotedPrintable(string value)
+		{
+			if (string.IsNullOrEmpty(value))
+			{
+				return value;
+			}
+
+			var quotedPrintable = new StringBuilder();
+
+			var toEncode = new List<byte>();
+
+			void AddEncoded()
+			{
+				if (toEncode.Any())
+				{
+					quotedPrintable.AppendFormat("=?utf-8?Q?={0}?=", string.Join("=", toEncode.Select(v => string.Format("{0:X2}", v))));
+					toEncode.Clear();
+				}
+			}
+
+			var bytes = Encoding.UTF8.GetBytes(value);
+			foreach (var v in bytes)
+			{
+				// The following are not required to be encoded:
+				// - Tab (ASCII 9)
+				// - Space (ASCII 32)
+				// - Characters 33 to 126, except for the equal sign (61).
+
+				if ((v == 9) || ((v >= 32) && (v <= 60)) || ((v >= 62) && (v <= 126)))
+				{
+					AddEncoded();
+					quotedPrintable.Append(Convert.ToChar(v));
+				}
+				else
+				{
+					toEncode.Add(v);
+				}
+			}
+
+			AddEncoded();
+
+			return quotedPrintable.ToString();
+		}
 	}
 }

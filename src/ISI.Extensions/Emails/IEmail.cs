@@ -28,7 +28,20 @@ namespace ISI.Extensions.Emails
 		IEmailMailMessage EmailMailMessage { get; set; }
 
 		Guid? EmailProviderUuid { get; set; }
+		string EmailProviderDeliveryChannelName { get; set; }
+		IDictionary<string, string> EmailProviderMetadata { get; set; }
+		string BillingAccountNumber { get; set; }
 
+		bool Track { get; set; }
+		bool TrackOpens { get; set; }
+		bool TrackClicks { get; set; }
+		string TrackingDomain { get; set; }
+		string TrackingSigningDomain { get; set; }
+		string TrackingReturnPathDomain { get; set; }
+		string[] TrackingTags { get; set; }
+		string[] TrackingGoogleAnalyticsDomains { get; set; }
+		string[] TrackingGoogleAnalyticsCampaigns { get; set; }
+		
 		DateTime? ScheduledSendDateTimeUtc { get; set; }
 		DateTime? LastAttemptSendDateTimeUtc { get; set; }
 		int? SendAttemptCount { get; set; }

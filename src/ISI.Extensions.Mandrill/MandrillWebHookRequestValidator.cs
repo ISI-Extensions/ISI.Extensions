@@ -24,7 +24,9 @@ namespace ISI.Extensions.Mandrill
 
 	public class MandrillWebHookRequestValidator
 	{
-		public bool IsValid(string url, string signature, System.Collections.Specialized.NameValueCollection values, TryGetMandrillWebHook tryGetMandrillWebHook)
+		public const string MandrillSignatureHeaderKey = "X-Mandrill-Signature";
+
+		public static bool IsValid(string url, string signature, System.Collections.Specialized.NameValueCollection values, TryGetMandrillWebHook tryGetMandrillWebHook)
 		{
 			if (!string.IsNullOrEmpty(signature))
 			{
@@ -33,7 +35,7 @@ namespace ISI.Extensions.Mandrill
 					var data = new System.Text.StringBuilder();
 					data.Append(url);
 
-					foreach (var key in values.AllKeys.OrderBy(v => v))
+					foreach (var key in values.AllKeys.OrderBy(key => key))
 					{
 						data.Append(key);
 						data.Append(values[key]);

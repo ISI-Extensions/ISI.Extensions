@@ -17,25 +17,40 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Mandrill.SerializableModels.MandrillWebHooksApi
+namespace ISI.Extensions.Mandrill.SerializableModels.MandrillWebHooks
 {
 	[DataContract]
-	public class UpdateWebHooksResponse : WebHook
+	public class WebHookEventLocation
 	{
-		[DataMember(Name = "status")]
-		public string Status { get; set; }
+		[DataMember(Name = "country_short", EmitDefaultValue = false)]
+		public string CountryShort { get; set; }
 
-		[DataMember(Name = "code")]
-		public string Code { get; set; }
+		[DataMember(Name = "country_long", EmitDefaultValue = false)]
+		public string CountryLong { get; set; }
 
-		[DataMember(Name = "name")]
-		public string Name { get; set; }
+		[DataMember(Name = "region", EmitDefaultValue = false)]
+		public string Region { get; set; }
 
-		[DataMember(Name = "message")]
-		public string Message { get; set; }
+		[DataMember(Name = "city", EmitDefaultValue = false)]
+		public string City { get; set; }
+
+		[DataMember(Name = "postal_code", EmitDefaultValue = false)]
+		public string PostalCode { get; set; }
+
+		[DataMember(Name = "timezone", EmitDefaultValue = false)]
+		public string Timezone { get; set; }
+
+		[DataMember(Name = "latitude", EmitDefaultValue = false)]
+		public string __Latitude { get => string.Format("{0}", Latitude); set => Latitude = value.ToDoubleNullable(); }
+		[IgnoreDataMember]
+		public double? Latitude { get; set; }
+
+		[DataMember(Name = "longitude", EmitDefaultValue = false)]
+		public string __Longitude { get => string.Format("{0}", Longitude); set => Longitude = value.ToDoubleNullable(); }
+		[IgnoreDataMember]
+		public double? Longitude { get; set; }
 	}
 }

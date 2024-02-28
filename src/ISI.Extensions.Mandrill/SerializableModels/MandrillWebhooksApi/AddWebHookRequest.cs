@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Mandrill.SerializableModels.MandrillWebhooksApi
+namespace ISI.Extensions.Mandrill.SerializableModels.MandrillWebHooksApi
 {
 	[DataContract]
 	public class AddWebHookRequest
@@ -30,7 +30,7 @@ namespace ISI.Extensions.Mandrill.SerializableModels.MandrillWebhooksApi
 		public string ApiKey { get; set; }
 
 		[DataMember(Name = "url", EmitDefaultValue = false)]
-		public string WebhookUrl { get; set; }
+		public string WebHookUrl { get; set; }
 
 		[DataMember(Name = "description", EmitDefaultValue = false)]
 		public string Description { get; set; }

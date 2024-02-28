@@ -19,11 +19,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Mandrill.DataTransferObjects.MandrillWebhooksApi;
+using DTOs = ISI.Extensions.Mandrill.DataTransferObjects.MandrillWebHooksApi;
 
 namespace ISI.Extensions.Mandrill
 {
-	public interface IMandrillWebhooksApi
+	public interface IMandrillWebHooksApi
 	{
 		Task<DTOs.ListWebHooksResponse> ListWebHooksAsync(DTOs.ListWebHooksRequest request, System.Threading.CancellationToken cancellationToken = default);
 		Task<DTOs.UpdateWebHooksResponse> UpdateWebHooksAsync(DTOs.UpdateWebHooksRequest request, System.Threading.CancellationToken cancellationToken = default);

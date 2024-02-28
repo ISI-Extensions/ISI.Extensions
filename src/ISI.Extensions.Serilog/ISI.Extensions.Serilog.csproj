@@ -12,7 +12,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Serilog" Version="3.1.1" />
-		<PackageReference Include="Serilog.Enrichers.AssemblyName" Version="1.0.9" />
+		<PackageReference Include="Serilog.Enrichers.AssemblyName" Version="2.0.0" />
 		<PackageReference Include="Serilog.Enrichers.EnrichedProperties" Version="1.0.63" />
 		<PackageReference Include="Serilog.Enrichers.Environment" Version="2.3.0" />
 		<PackageReference Include="Serilog.Enrichers.Process" Version="2.0.2" />

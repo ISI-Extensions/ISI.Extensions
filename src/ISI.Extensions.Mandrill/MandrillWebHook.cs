@@ -23,7 +23,7 @@ namespace ISI.Extensions.Mandrill
 	{
 		public Guid MandrillProfileUuid { get; set; }
 		public string WebHookKey { get; set; }
-		public string WebhookUrl { get; set; }
+		public string WebHookUrl { get; set; }
 		public string Description { get; set; }
 		public string AuthorizationKey { get; set; }
 		public string[] Events { get; set; }

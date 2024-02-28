@@ -17,25 +17,32 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Mandrill.SerializableModels.MandrillWebHooksApi
+namespace ISI.Extensions.Mandrill.SerializableModels.MandrillWebHooks
 {
 	[DataContract]
-	public class UpdateWebHooksResponse : WebHook
+	public class WebHookEventMessageSmtpEvent
 	{
-		[DataMember(Name = "status")]
-		public string Status { get; set; }
+		[DataMember(Name = "ts")]
+		public string __DateTimeStamp { get; set; }
+		[IgnoreDataMember]
+		public DateTime DateTimeStamp => (new ISI.Extensions.EpochDateTime(__DateTimeStamp.ToLong())).Value;
 
-		[DataMember(Name = "code")]
-		public string Code { get; set; }
+		[DataMember(Name = "type")]
+		public string Type { get; set; }
 
-		[DataMember(Name = "name")]
-		public string Name { get; set; }
+		[DataMember(Name = "diag", EmitDefaultValue = false)]
+		public string DiagnosticMessage { get; set; }
 
-		[DataMember(Name = "message")]
-		public string Message { get; set; }
+		[DataMember(Name = "source_ip", EmitDefaultValue = false)]
+		public string SourceIpAddress { get; set; }
+
+		[DataMember(Name = "destination_ip", EmitDefaultValue = false)]
+		public string DestinationIpAddress { get; set; }
+
+		[DataMember(Name = "size", EmitDefaultValue = false)]
+		public int? MessageSize { get; set; }
 	}
 }

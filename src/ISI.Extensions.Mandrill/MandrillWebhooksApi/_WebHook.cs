@@ -19,12 +19,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Mandrill.DataTransferObjects.MandrillWebhooksApi;
-using SerializableDTOs = ISI.Extensions.Mandrill.SerializableModels.MandrillWebhooksApi;
+using DTOs = ISI.Extensions.Mandrill.DataTransferObjects.MandrillWebHooksApi;
+using SerializableDTOs = ISI.Extensions.Mandrill.SerializableModels.MandrillWebHooksApi;
 
 namespace ISI.Extensions.Mandrill
 {
-	public partial class MandrillWebhooksApi
+	public partial class MandrillWebHooksApi
 	{
 		private MandrillWebHook Convert(SerializableDTOs.WebHook source, Guid mandrillProfileUuid)
 		{
@@ -32,7 +32,7 @@ namespace ISI.Extensions.Mandrill
 			{
 				MandrillProfileUuid = mandrillProfileUuid,
 				WebHookKey = source.WebHookKey,
-				WebhookUrl = source.WebhookUrl,
+				WebHookUrl = source.WebHookUrl,
 				Description = source.Description,
 				AuthorizationKey = source.AuthorizationKey,
 				Events = source.Events.ToNullCheckedArray(),

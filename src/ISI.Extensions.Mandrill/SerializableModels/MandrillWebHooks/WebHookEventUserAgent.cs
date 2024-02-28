@@ -17,25 +17,56 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Mandrill.SerializableModels.MandrillWebHooksApi
+namespace ISI.Extensions.Mandrill.SerializableModels.MandrillWebHooks
 {
 	[DataContract]
-	public class UpdateWebHooksResponse : WebHook
+	public class WebHookEventUserAgent
 	{
-		[DataMember(Name = "status")]
-		public string Status { get; set; }
+		[DataMember(Name = "mobile", EmitDefaultValue = false)]
+		public bool Mobile { get; set; }
 
-		[DataMember(Name = "code")]
-		public string Code { get; set; }
+		[DataMember(Name = "os_company", EmitDefaultValue = false)]
+		public string OsCompany { get; set; }
 
-		[DataMember(Name = "name")]
-		public string Name { get; set; }
+		[DataMember(Name = "os_company_url", EmitDefaultValue = false)]
+		public string OsCompanyUrl { get; set; }
 
-		[DataMember(Name = "message")]
-		public string Message { get; set; }
+		[DataMember(Name = "os_family", EmitDefaultValue = false)]
+		public string OsFamily { get; set; }
+
+		[DataMember(Name = "os_icon", EmitDefaultValue = false)]
+		public string OsIcon { get; set; }
+
+		[DataMember(Name = "os_name", EmitDefaultValue = false)]
+		public string OsName { get; set; }
+
+		[DataMember(Name = "os_url", EmitDefaultValue = false)]
+		public string OsUrl { get; set; }
+
+		[DataMember(Name = "type", EmitDefaultValue = false)]
+		public string Type { get; set; }
+
+		[DataMember(Name = "ua_company", EmitDefaultValue = false)]
+		public string UserAgentCompany { get; set; }
+
+		[DataMember(Name = "ua_company_url", EmitDefaultValue = false)]
+		public string UserAgentCompanyUrl { get; set; }
+
+		[DataMember(Name = "ua_family", EmitDefaultValue = false)]
+		public string UserAgentFamily { get; set; }
+
+		[DataMember(Name = "ua_icon", EmitDefaultValue = false)]
+		public string UserAgentIcon { get; set; }
+
+		[DataMember(Name = "ua_name", EmitDefaultValue = false)]
+		public string UserAgentName { get; set; }
+
+		[DataMember(Name = "ua_url", EmitDefaultValue = false)]
+		public string UserAgentUrl { get; set; }
+
+		[DataMember(Name = "ua_version", EmitDefaultValue = false)]
+		public string UserAgentVersion { get; set; }
 	}
 }

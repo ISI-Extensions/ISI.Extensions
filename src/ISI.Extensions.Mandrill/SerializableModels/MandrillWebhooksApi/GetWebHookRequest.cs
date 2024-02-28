@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Mandrill.SerializableModels.MandrillWebhooksApi
+namespace ISI.Extensions.Mandrill.SerializableModels.MandrillWebHooksApi
 {
 	[DataContract]
 	public class GetWebHookRequest

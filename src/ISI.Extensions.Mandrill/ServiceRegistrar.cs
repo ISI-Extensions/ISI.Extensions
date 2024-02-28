@@ -28,7 +28,7 @@ namespace ISI.Extensions.Mandrill
 	{
 		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
-			services.AddSingleton<IMandrillWebhooksApi, MandrillWebhooksApi>();
+			services.AddSingleton<IMandrillWebHooksApi, MandrillWebHooksApi>();
 			services.AddSingleton<IMandrillMessagesApi, MandrillMessagesApi>();
 		}
 	}

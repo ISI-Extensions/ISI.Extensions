@@ -20,12 +20,12 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using Microsoft.Extensions.Logging;
-using DTOs = ISI.Extensions.Mandrill.DataTransferObjects.MandrillWebhooksApi;
-using SerializableDTOs = ISI.Extensions.Mandrill.SerializableModels.MandrillWebhooksApi;
+using DTOs = ISI.Extensions.Mandrill.DataTransferObjects.MandrillWebHooksApi;
+using SerializableDTOs = ISI.Extensions.Mandrill.SerializableModels.MandrillWebHooksApi;
 
 namespace ISI.Extensions.Mandrill
 {
-	public partial class MandrillWebhooksApi
+	public partial class MandrillWebHooksApi
 	{
 		public async Task<DTOs.UpdateWebHooksResponse> UpdateWebHooksAsync(DTOs.UpdateWebHooksRequest request, System.Threading.CancellationToken cancellationToken = default)
 		{
@@ -34,7 +34,7 @@ namespace ISI.Extensions.Mandrill
 			if (MandrillProfilesApi.TryGetMandrillProfile(request.MandrillProfileUuid, out var mandrillProfile))
 			{
 				var uri = GetMessageApiUri(mandrillProfile);
-				uri.AddDirectoryToPath("webhooks/info.json");
+				uri.AddDirectoryToPath("webHooks/info.json");
 
 				var restRequest = new SerializableDTOs.UpdateWebHooksRequest()
 				{

@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -12,30 +12,48 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Mandrill.SerializableModels.MandrillWebHooksApi
+namespace ISI.Extensions.Mandrill
 {
-	[DataContract]
-	public class UpdateWebHooksResponse : WebHook
+	public delegate bool TryGetMandrillWebHook(string url, out MandrillWebHook mandrillWebHook);
+
+	public class MandrillWebHookRequestValidator
 	{
-		[DataMember(Name = "status")]
-		public string Status { get; set; }
+		public bool IsValid(string url, string signature, System.Collections.Specialized.NameValueCollection values, TryGetMandrillWebHook tryGetMandrillWebHook)
+		{
+			if (!string.IsNullOrEmpty(signature))
+			{
+				if (tryGetMandrillWebHook(url, out var mandrillWebHook))
+				{
+					var data = new System.Text.StringBuilder();
+					data.Append(url);
 
-		[DataMember(Name = "code")]
-		public string Code { get; set; }
+					foreach (var key in values.AllKeys.OrderBy(v => v))
+					{
+						data.Append(key);
+						data.Append(values[key]);
+					}
 
-		[DataMember(Name = "name")]
-		public string Name { get; set; }
+					var encodeKey = System.Text.Encoding.UTF8.GetBytes(mandrillWebHook.WebHookKey);
+					var messageBytes = System.Text.Encoding.UTF8.GetBytes(data.ToString());
 
-		[DataMember(Name = "message")]
-		public string Message { get; set; }
+					using (var hasher = new System.Security.Cryptography.HMACSHA1(encodeKey))
+					{
+						var computedSignature = Convert.ToBase64String(hasher.ComputeHash(messageBytes));
+
+						return (computedSignature == signature);
+					}
+				}
+
+				throw new Exception(string.Format("Webhook key for \"{0}\" not found", url));
+			}
+
+			return false;
+		}
 	}
 }

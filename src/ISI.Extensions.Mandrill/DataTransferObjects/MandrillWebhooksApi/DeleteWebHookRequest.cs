@@ -20,7 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Mandrill.DataTransferObjects.MandrillWebhooksApi
+namespace ISI.Extensions.Mandrill.DataTransferObjects.MandrillWebHooksApi
 {
 	public class DeleteWebHookRequest
 	{

@@ -31,6 +31,7 @@ namespace ISI.Extensions.VisualStudio
 		protected ISI.Extensions.JsonSerialization.IJsonSerializer JsonSerializer { get; }
 		protected ISI.Extensions.Scm.BuildScriptApi BuildScriptApi { get; }
 		protected ISI.Extensions.Scm.SourceControlClientApi SourceControlClientApi { get; }
+		protected ISI.Extensions.VisualStudio.MSBuildApi MSBuildApi { get; }
 		protected ISI.Extensions.VisualStudio.CodeGenerationApi CodeGenerationApi { get; }
 		protected ISI.Extensions.VisualStudio.ProjectApi ProjectApi { get; }
 		protected ISI.Extensions.Nuget.NugetApi NugetApi { get; }
@@ -41,6 +42,7 @@ namespace ISI.Extensions.VisualStudio
 			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer,
 			ISI.Extensions.Scm.BuildScriptApi buildScriptApi,
 			ISI.Extensions.Scm.SourceControlClientApi sourceControlClientApi,
+			ISI.Extensions.VisualStudio.MSBuildApi msBuildApi,
 			ISI.Extensions.VisualStudio.CodeGenerationApi codeGenerationApi,
 			ISI.Extensions.VisualStudio.ProjectApi projectApi,
 			ISI.Extensions.Nuget.NugetApi nugetApi)
@@ -50,6 +52,7 @@ namespace ISI.Extensions.VisualStudio
 			JsonSerializer = jsonSerializer;
 			BuildScriptApi = buildScriptApi;
 			SourceControlClientApi = sourceControlClientApi;
+			MSBuildApi = msBuildApi;
 			CodeGenerationApi = codeGenerationApi;
 			ProjectApi = projectApi;
 			NugetApi = nugetApi;

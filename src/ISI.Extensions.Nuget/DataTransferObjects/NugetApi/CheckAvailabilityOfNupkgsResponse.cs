@@ -22,8 +22,8 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public class LocallyCacheNupkgsResponse
+	public class CheckAvailabilityOfNupkgsResponse
 	{
-		public NugetPackageKey[] CachedNugetPackageKeys { get; set; }
+		public (NugetPackageKey NugetPackageKey, bool Available)[] NupkgAvailabilities { get; set; }
 	}
 }

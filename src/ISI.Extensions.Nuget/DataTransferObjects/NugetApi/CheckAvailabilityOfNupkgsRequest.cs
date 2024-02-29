@@ -22,8 +22,12 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public class LocallyCacheNupkgsResponse
+	public class CheckAvailabilityOfNupkgsRequest
 	{
-		public NugetPackageKey[] CachedNugetPackageKeys { get; set; }
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
+
+		public IEnumerable<NugetPackageKey> NugetPackageKeys { get; set; }
+
+		public string Source { get; set; }
 	}
 }

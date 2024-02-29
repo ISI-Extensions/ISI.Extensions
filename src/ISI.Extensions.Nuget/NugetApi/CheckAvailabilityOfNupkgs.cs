@@ -29,66 +29,53 @@ namespace ISI.Extensions.Nuget
 {
 	public partial class NugetApi
 	{
-		public DTOs.LocallyCacheNupkgsResponse LocallyCacheNupkgs(DTOs.LocallyCacheNupkgsRequest request)
+		public DTOs.CheckAvailabilityOfNupkgsResponse CheckAvailabilityOfNupkgs(DTOs.CheckAvailabilityOfNupkgsRequest request)
 		{
-			var response = new DTOs.LocallyCacheNupkgsResponse();
+			var response = new DTOs.CheckAvailabilityOfNupkgsResponse();
 
 			var logger = new AddToLogLogger(request.AddToLog, Logger);
 
-			logger.LogInformation("Locally Caching NugetPackages");
-
-			var nugetGlobalPackagesDirectory = GetNugetGlobalPackagesDirectory();
-
-			var cachedNugetPackageKeys = new List<NugetPackageKey>();
-
-			using (var tempDirectory = new ISI.Extensions.IO.Path.TempDirectory())
+			if (string.IsNullOrWhiteSpace(request.Source))
 			{
-				foreach (var nupkgFullName in request.NupkgFullNames)
+				logger.LogInformation("Check Availability Of Nupkgs");
+			}
+			else
+			{
+				logger.LogInformation($"Check Availability Of Nupkgs using Source: {request.Source}");
+			}
+
+			var nupkgAvailabilities = new List<(NugetPackageKey NugetPackageKey, bool Available)>();
+
+			foreach (var nugetPackageKey in request.NugetPackageKeys)
+			{
+				logger.LogInformation($"Checking for {nugetPackageKey.Package} {nugetPackageKey.Version}");
+
+				var available = false;
+
+				var foundNugetPackageKeys = SearchNugetPackageKeys(new()
 				{
-					logger.LogInformation(string.Format("Locally Caching \"{0}\"", System.IO.Path.GetFileName(nupkgFullName)));
+					Search = nugetPackageKey.Package,
+					ExactMatchOnly = true,
+					Source = request.Source,
+				}).NugetPackageKeys ?? Array.Empty<NugetPackageKey>();
 
-					var arguments = new List<string>();
-					arguments.Add("add");
-					arguments.Add(string.Format("\"{0}\"", nupkgFullName));
-					arguments.Add(string.Format("-Source \"{0}\"", tempDirectory.FullName));
-
-					var nugetResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				foreach (var foundNugetPackageKey in foundNugetPackageKeys)
+				{
+					if (string.Equals(foundNugetPackageKey.Package, nugetPackageKey.Package, StringComparison.InvariantCultureIgnoreCase))
 					{
-						Logger = logger, //new NullLogger(),
-						ProcessExeFullName = GetNugetExeFullName(new()).NugetExeFullName,
-						Arguments = arguments.ToArray(),
-					});
-
-					var responsePieces = nugetResponse.Output.Split(' ');
-					if ((responsePieces.Length >= 3) && string.Equals(responsePieces[0], "Installed", StringComparison.InvariantCultureIgnoreCase))
-					{
-						cachedNugetPackageKeys.Add(new()
+						if (string.Equals(foundNugetPackageKey.Version, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 						{
-							Package = responsePieces[1],
-							Version = responsePieces[2],
-						});
-					}
+							available = true;
 
-					if (!string.IsNullOrWhiteSpace(nugetGlobalPackagesDirectory) && System.IO.Directory.Exists(nugetGlobalPackagesDirectory))
-					{
-						foreach (var sourceFullName in System.IO.Directory.GetFiles(tempDirectory.FullName, "*", System.IO.SearchOption.AllDirectories))
-						{
-							var relativeName = sourceFullName.Substring(tempDirectory.FullName.Length);
-
-							var targetFullName = System.IO.Path.Combine(nugetGlobalPackagesDirectory, relativeName);
-
-							if (!System.IO.File.Exists(targetFullName))
-							{
-								System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(targetFullName));
-
-								System.IO.File.Copy(sourceFullName, targetFullName, true);
-							}
+							logger.LogInformation($"  {nugetPackageKey.Package} {nugetPackageKey.Version} available");
 						}
 					}
 				}
+
+				nupkgAvailabilities.Add((NugetPackageKey: nugetPackageKey, Available: available));
 			}
 
-			response.CachedNugetPackageKeys = cachedNugetPackageKeys.ToArray();
+			response.NupkgAvailabilities = nupkgAvailabilities.ToArray();
 
 			return response;
 		}

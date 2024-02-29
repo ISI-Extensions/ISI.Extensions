@@ -81,7 +81,7 @@ namespace ISI.Extensions.Tests
 			var buildScriptApi = new ISI.Extensions.Scm.BuildScriptApi(logger);
 			var sourceControlClientApi = new SourceControlClientApi(logger);
 			var projectApi = new ISI.Extensions.VisualStudio.ProjectApi(logger);
-			var solutionApi = new ISI.Extensions.VisualStudio.SolutionApi(new ISI.Extensions.VisualStudio.Configuration(), logger, serialization, buildScriptApi, sourceControlClientApi, codeGenerationApi, projectApi, nugetApi);
+			var solutionApi = new ISI.Extensions.VisualStudio.SolutionApi(new ISI.Extensions.VisualStudio.Configuration(), logger, serialization, buildScriptApi, sourceControlClientApi, msBuildApi, codeGenerationApi, projectApi, nugetApi);
 			var sbomApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Sbom.SbomApi>();
 
 			var configuration = "Release";

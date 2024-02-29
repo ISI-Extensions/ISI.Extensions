@@ -48,7 +48,7 @@ namespace ISI.Extensions.VisualStudio
 			var solutionFullNames = request.SolutionFullNames
 				.NullCheckedSelect(solution => GetSolutionFullName(new() { Solution = solution }).SolutionFullName, NullCheckCollectionResult.Empty)
 				.Where(solutionFullName => !string.IsNullOrWhiteSpace(solutionFullName))
-				.OrderBy(solutionFullName => System.IO.Path.GetFileNameWithoutExtension(solutionFullName), StringComparer.InvariantCultureIgnoreCase)
+				.OrderBy(System.IO.Path.GetFileNameWithoutExtension, StringComparer.InvariantCultureIgnoreCase)
 				.ToArray();
 
 			var isProjectBuilt = new Dictionary<string, bool>(StringComparer.InvariantCultureIgnoreCase);
@@ -420,6 +420,14 @@ namespace ISI.Extensions.VisualStudio
 							{
 								var nugetPackOutputDirectory = System.IO.Path.Combine(solutionDetails.RootSourceDirectory, "Nuget");
 
+								NugetApi.RestoreNugetPackages(new()
+								{
+									Solution = solutionDetails.SolutionFullName,
+									MSBuildExe = MSBuildApi.GetMSBuildExeFullName(new()).MSBuildExeFullName,
+
+									AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
+								});
+
 								var executeBuildTargetResponse = BuildScriptApi.ExecuteBuildTarget(new()
 								{
 									BuildScriptFullName = buildScriptFullName,
@@ -456,8 +464,7 @@ namespace ISI.Extensions.VisualStudio
 
 									if (updatedNugetPackageKeys.NullCheckedAny())
 									{
-										solutionLogger.LogInformation(string.Format("Locally Caching NugetPackages From: \"{0}\"", nugetPackOutputDirectory));
-										NugetApi.LocallyCacheNupkgs(new()
+										var locallyCacheNupkgsResponse = NugetApi.LocallyCacheNupkgs(new()
 										{
 											NupkgFullNames = updatedNugetPackageKeys.Select(nugetPackageKey => System.IO.Path.Combine(nugetPackOutputDirectory, $"{nugetPackageKey.Package}.{nugetPackageKey.Version}.nupkg")),
 											AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
@@ -471,6 +478,27 @@ namespace ISI.Extensions.VisualStudio
 										solutionLogger.LogInformation(string.Empty);
 
 										nugetPackageKeys.Merge(updatedNugetPackageKeys);
+
+										//var cachedNugetPackageKeys = locallyCacheNupkgsResponse.CachedNugetPackageKeys;
+										//var maxAttemptsToCheckAvailability = 5;
+
+										//while (cachedNugetPackageKeys.Any() && (maxAttemptsToCheckAvailability-- > 0))
+										//{
+										//	var checkAvailabilityOfNupkgsResponse = NugetApi.CheckAvailabilityOfNupkgs(new()
+										//	{
+										//		NugetPackageKeys = cachedNugetPackageKeys,
+										//		AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
+										//	});
+
+										//	cachedNugetPackageKeys = checkAvailabilityOfNupkgsResponse.NupkgAvailabilities.Where(nupkgAvailability => !nupkgAvailability.Available).Select(nupkgAvailability => nupkgAvailability.NugetPackageKey).ToArray();
+
+										//	if (cachedNugetPackageKeys.Any() && (maxAttemptsToCheckAvailability > 0))
+										//	{
+										//		solutionLogger.LogInformation("  The following Nupkg(s) not available yet, will check again in 30 seconds");
+
+										//		System.Threading.Thread.Sleep(TimeSpan.FromSeconds(30));
+										//	}
+										//}
 									}
 									else
 									{

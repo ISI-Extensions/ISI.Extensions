@@ -71,7 +71,7 @@ namespace ISI.Extensions.Nuget
 				target = request.Solution;
 			}
 
-			var arguments = string.Format("restore \"{0}\" -PackagesDirectory \"{1}\" -NonInteractive -MSBuildPath \"{2}\"", target, System.IO.Path.Combine(solutionDirectory, "packages"), System.IO.Path.GetDirectoryName(request.MSBuildExe));
+			var arguments = string.Format("restore \"{0}\" -NoHttpCache -PackagesDirectory \"{1}\" -NonInteractive -MSBuildPath \"{2}\"", target, System.IO.Path.Combine(solutionDirectory, "packages"), System.IO.Path.GetDirectoryName(request.MSBuildExe));
 
 			var nugetExeFullName = GetNugetExeFullName(new()).NugetExeFullName;
 

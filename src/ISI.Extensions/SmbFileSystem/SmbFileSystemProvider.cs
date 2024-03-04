@@ -187,7 +187,7 @@ namespace ISI.Extensions.SmbFileSystem
 			}
 			catch (Exception exception)
 			{
-				throw new("attributedFileName = " + fileSystemPathFile.AttributedFullPath(), exception);
+				throw new("[FileExists] attributedFileName = " + fileSystemPathFile.AttributedFullPath(), exception);
 			}
 		}
 
@@ -206,7 +206,7 @@ namespace ISI.Extensions.SmbFileSystem
 			}
 			catch (Exception exception)
 			{
-				throw new("attributedFileName = " + fileSystemPathDirectory.AttributedFullPath(), exception);
+				throw new("[DirectoryExists] attributedFileName = " + fileSystemPathDirectory.AttributedFullPath(), exception);
 			}
 		}
 
@@ -226,7 +226,7 @@ namespace ISI.Extensions.SmbFileSystem
 			}
 			catch (Exception exception)
 			{
-				throw new("attributedFileName = " + fileSystemPathDirectory.AttributedFullPath(), exception);
+				throw new("[CreateDirectory] attributedFileName = " + fileSystemPathDirectory.AttributedFullPath(), exception);
 			}
 		}
 
@@ -246,7 +246,7 @@ namespace ISI.Extensions.SmbFileSystem
 			}
 			catch (Exception exception)
 			{
-				throw new("attributedFileName = " + fileSystemPathDirectory.AttributedFullPath(), exception);
+				throw new("[RemoveDirectory] attributedFileName = " + fileSystemPathDirectory.AttributedFullPath(), exception);
 			}
 		}
 
@@ -266,7 +266,7 @@ namespace ISI.Extensions.SmbFileSystem
 			}
 			catch (Exception exception)
 			{
-				throw new("attributedFileName = " + fileSystemPathFile.AttributedFullPath(), exception);
+				throw new("[RemoveFile] attributedFileName = " + fileSystemPathFile.AttributedFullPath(), exception);
 			}
 		}
 

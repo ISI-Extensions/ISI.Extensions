@@ -37,6 +37,11 @@ namespace ISI.Platforms.ServiceApplication
 
 			System.AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
 
+			var showConfig = Context.Args.NullCheckedAny(arg => string.Equals(arg, "--showConfig", StringComparison.InvariantCultureIgnoreCase));
+#if DEBUG
+			showConfig = true;
+#endif
+
 			var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
 
 			var configurationsPath = string.Format("Configuration{0}", System.IO.Path.DirectorySeparatorChar);
@@ -57,16 +62,12 @@ namespace ISI.Platforms.ServiceApplication
 			configurationBuilder.AddDataPathJsonFile(System.IO.Path.Combine(Context.RootType.Namespace, "appsettings.json"));
 #endif
 
-			configurationBuilder.AddEnvironmentConfiguration();
+			configurationBuilder.AddEnvironmentConfiguration(showConfig);
 
 			Context.SetConfigurationRoot(configurationBuilder.Build().ApplyConfigurationValueReaders());
 			Context.SetActiveEnvironment(activeEnvironmentConfiguration.ActiveEnvironment);
 			Context.LoggerConfigurator?.SetBaseLogger(Context);
 
-			var showConfig = Context.Args.NullCheckedAny(arg => string.Equals(arg, "--showConfig", StringComparison.InvariantCultureIgnoreCase));
-#if DEBUG
-			showConfig = true;
-#endif
 			if (showConfig)
 			{
 				foreach (System.Collections.DictionaryEntry environmentVariable in Environment.GetEnvironmentVariables())

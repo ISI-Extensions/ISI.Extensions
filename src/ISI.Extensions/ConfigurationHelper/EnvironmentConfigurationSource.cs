@@ -21,9 +21,16 @@ namespace ISI.Extensions.ConfigurationHelper
 {
 	public class EnvironmentConfigurationSource : Microsoft.Extensions.Configuration.IConfigurationSource
 	{
+		private bool _showConfig { get; }
+
+		public EnvironmentConfigurationSource(bool showConfig)
+		{
+			_showConfig = showConfig;
+		}
+
 		public Microsoft.Extensions.Configuration.IConfigurationProvider Build(Microsoft.Extensions.Configuration.IConfigurationBuilder builder)
 		{
-			return new EnvironmentConfigurationProvider();
+			return new EnvironmentConfigurationProvider(_showConfig);
 		}
 	}
 }

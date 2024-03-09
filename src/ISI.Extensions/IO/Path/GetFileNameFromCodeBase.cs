@@ -30,7 +30,14 @@ namespace ISI.Extensions
 			{
 				var uri = new UriBuilder(codeBase);
 
-				return Uri.UnescapeDataString(uri.Path).Replace("/", "\\");
+				var fileName = Uri.UnescapeDataString(uri.Path);
+
+				if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
+				{
+					fileName = fileName.Replace("/", "\\");
+				}
+
+				return fileName;
 			}
 		}
 	}

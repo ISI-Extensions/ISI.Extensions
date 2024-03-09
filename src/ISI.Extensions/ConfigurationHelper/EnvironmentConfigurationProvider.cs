@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +26,17 @@ namespace ISI.Extensions.ConfigurationHelper
 	public class EnvironmentConfigurationProvider : Microsoft.Extensions.Configuration.ConfigurationProvider
 	{
 		private bool _loaded = false;
+		private bool _showConfig { get; }
+
+		public EnvironmentConfigurationProvider(bool showConfig)
+		{
+			_showConfig = showConfig;
+		}
+
+		private readonly Dictionary<string, string> _knownEnvironmentMaps = new()
+		{
+			{ "KESTREL_ENDPOINTS_HTTP_URL", "Kestrel:Endpoints:Http:Url"},
+		};
 
 		public override void Load()
 		{
@@ -44,6 +55,11 @@ namespace ISI.Extensions.ConfigurationHelper
 				{
 					if (configurationType.GetCustomAttribute(typeof(ISI.Extensions.ConfigurationHelper.ConfigurationAttribute)) is ConfigurationAttribute configurationAttribute)
 					{
+						if (_showConfig)
+						{
+							System.Console.WriteLine($"  EV-SECTION ConfigurationSectionName => \"{configurationAttribute.ConfigurationSectionName}\"");
+						}
+
 						AddData(environmentVariables, configurationType, string.Format("{0}:", configurationAttribute.ConfigurationSectionName));
 					}
 				}
@@ -52,6 +68,22 @@ namespace ISI.Extensions.ConfigurationHelper
 				foreach (var keyValue in environmentVariables.Where(keyValue => keyValue.Key.StartsWith(connectionStringPrefix, StringComparison.InvariantCultureIgnoreCase)))
 				{
 					Data.Add(string.Format("ConnectionStrings:{0}", keyValue.Key.Substring(connectionStringPrefix.Length)), keyValue.Value);
+				}
+
+				foreach (var knownEnvironmentMap in _knownEnvironmentMaps)
+				{
+					if (environmentVariables.TryGetValue(knownEnvironmentMap.Key, out var value))
+					{
+						Data.Add(knownEnvironmentMap.Value, value);
+					}
+				}
+
+				if (_showConfig)
+				{
+					foreach (var environmentVariable in Data)
+					{
+						System.Console.WriteLine($"  EV-MAP \"{environmentVariable.Key}\" => \"{environmentVariable.Value}\"");
+					}
 				}
 
 				_loaded = true;
@@ -64,9 +96,24 @@ namespace ISI.Extensions.ConfigurationHelper
 
 			foreach (var property in properties)
 			{
+				if (_showConfig)
+				{
+					System.Console.WriteLine($"    CanRead => \"{property.CanRead.TrueFalse()}\"");
+				}
+
 				if (property.CanRead)
 				{
 					var environmentConfigurationAttribute = property.GetCustomAttribute<EnvironmentConfigurationVariableNameAttribute>();
+
+					if (environmentConfigurationAttribute != null)
+					{
+						var environmentVariablePrefix = $"{prefix}{environmentConfigurationAttribute.EnvironmentVariableName}[";
+
+						if (_showConfig)
+						{
+							System.Console.WriteLine($"    environmentVariablePrefix => \"{environmentVariablePrefix}\"");
+						}
+					}
 
 					if (property.PropertyType == typeof(string[]))
 					{
@@ -91,10 +138,15 @@ namespace ISI.Extensions.ConfigurationHelper
 							}
 						}
 					}
-					else if (property.PropertyType == typeof(string))
+					else if ((property.PropertyType == typeof(string)) || (property.PropertyType == typeof(int)) || (property.PropertyType == typeof(bool)) || property.PropertyType.IsEnum)
 					{
 						if ((environmentConfigurationAttribute != null) && environmentVariables.TryGetValue(environmentConfigurationAttribute.EnvironmentVariableName, out var value))
 						{
+							if (_showConfig)
+							{
+								System.Console.WriteLine($"      {string.Format("{0}{1}", prefix, property.Name)} => \"{value}\"");
+							}
+
 							Data.Add(string.Format("{0}{1}", prefix, property.Name), string.Format("{0}", value));
 						}
 					}
@@ -129,7 +181,7 @@ namespace ISI.Extensions.ConfigurationHelper
 							AddData(environmentVariables, property.PropertyType, string.Format("{0}{1}:", prefix, property.Name));
 						}
 					}
-					else if(environmentConfigurationAttribute != null)
+					else if (environmentConfigurationAttribute != null)
 					{
 						if (environmentVariables.TryGetValue(environmentConfigurationAttribute.EnvironmentVariableName, out var value))
 						{

@@ -24,9 +24,9 @@ namespace ISI.Extensions.ConfigurationHelper.Extensions
 {
 	public static partial class ConfigurationBuilderExtensions
 	{
-		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddEnvironmentConfiguration(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder)
+		public static Microsoft.Extensions.Configuration.IConfigurationBuilder AddEnvironmentConfiguration(this Microsoft.Extensions.Configuration.IConfigurationBuilder configurationBuilder, bool showConfig = false)
 		{
-			configurationBuilder.Add(new EnvironmentConfigurationSource());
+			configurationBuilder.Add(new EnvironmentConfigurationSource(showConfig));
 
 			return configurationBuilder;
 		}

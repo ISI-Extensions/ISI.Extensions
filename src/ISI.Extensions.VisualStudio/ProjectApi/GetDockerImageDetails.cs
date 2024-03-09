@@ -48,7 +48,7 @@ namespace ISI.Extensions.VisualStudio
 					{
 						response.TargetOperatingSystem = propertyGroupElement.GetElementByLocalName("DockerDefaultTargetOS")?.Value ?? string.Empty;
 						response.ContainerRepository = propertyGroupElement.GetElementByLocalName("ContainerRepository")?.Value ?? propertyGroupElement.GetElementByLocalName("ContainerImageName")?.Value ?? string.Empty;
-						response.ContainerImageTag = propertyGroupElement.GetElementByLocalName("ContainerImageTag")?.Value ?? string.Empty;
+						response.ContainerImageTag = propertyGroupElement.GetElementByLocalName("ContainerImageTag")?.Value ?? "latest";
 					}
 				}
 			}

@@ -23,26 +23,13 @@ namespace ISI.Extensions.SpreadSheets
 {
 	public interface IWorksheetCellsRow
 	{
-		/// <summary>Applies formats for a whole row.</summary>
-		/// <param name="style">The style object which will be applied.</param>
-		/// <param name="flag">Flags which indicates applied formatting properties.</param>
 		void ApplyStyle(ISI.Extensions.SpreadSheets.ICellStyle style, ISI.Extensions.SpreadSheets.SetStyleFlag flag);
 		
-		/// <summary>Gets the index of this row.</summary>
 		int Index { get; }
 
-		/// <summary>Gets and sets the row height in unit of Points.</summary>
 		double Height { get; set; }
 
-		/// <summary>Indicates whether the row is hidden.</summary>
 		bool IsHidden { get; set; }
-
-		/// <summary>Gets the style of this row.</summary>
-		/// <remarks>
-		/// You have to call Column.ApplyStyle() method to save your changing with the row style,
-		/// otherwise it will not effect.
-		/// </remarks>
-		ISI.Extensions.SpreadSheets.ICellStyle Style { get; }
 
 		ISI.Extensions.SpreadSheets.IWorksheetCell LastCell { get; }
 

@@ -24,9 +24,16 @@ namespace ISI.Platforms.Elk
 	{
 		public const string ConfigurationSectionName = "ISI.Platforms.Elk";
 
+		[ISI.Extensions.EnvironmentConfigurationVariableName("ELK_NODE_URL")]
 		public string NodeUrl { get; set; }
+
+		[ISI.Extensions.EnvironmentConfigurationVariableName("ELK_USERNAME")]
 		public string UserName { get; set; }
+
+		[ISI.Extensions.EnvironmentConfigurationVariableName("ELK_PASSWORD")]
 		public string Password { get; set; }
+
+		[ISI.Extensions.EnvironmentConfigurationVariableName("ELK_INDEX_FORMAT")]
 		public string IndexFormat { get; set; } = "custom-index-{0:yyyy.MM}";
 	}
 }

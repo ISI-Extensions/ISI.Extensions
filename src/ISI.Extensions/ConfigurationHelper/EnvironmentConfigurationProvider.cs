@@ -48,6 +48,12 @@ namespace ISI.Extensions.ConfigurationHelper
 					}
 				}
 
+				const string connectionStringPrefix = "CONNECTION_STRING_";
+				foreach (var keyValue in environmentVariables.Where(keyValue => keyValue.Key.StartsWith(connectionStringPrefix, StringComparison.InvariantCultureIgnoreCase)))
+				{
+					Data.Add(string.Format("ConnectionStrings:{0}", keyValue.Key.Substring(connectionStringPrefix.Length)), keyValue.Value);
+				}
+
 				_loaded = true;
 			}
 		}

@@ -56,8 +56,6 @@ namespace ISI.Extensions.Aspose
 				set => _row.IsHidden = value;
 			}
 
-			public ISI.Extensions.SpreadSheets.ICellStyle Style => _row.Style.NullCheckedConvert(style => new ISI.Extensions.Aspose.Cells.CellStyle(_worksheetRows._worksheetCells._worksheet._worksheets._workbook, _row.Style));
-
 			public ISI.Extensions.SpreadSheets.IWorksheetCell LastCell => new WorksheetCell(_worksheetRows._worksheetCells, _row.LastCell);
 
 			public ISI.Extensions.SpreadSheets.IWorksheetCell GetCellOrNull(int columnIndex)

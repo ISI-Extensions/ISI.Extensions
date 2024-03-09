@@ -28,6 +28,7 @@ namespace ISI.Extensions.MessageBus
 
 		public string MessageBusType { get; set; } = null;
 
+		[ISI.Extensions.EnvironmentConfigurationVariableName("MESSAGE_BUS_CONNECTION_STRING")]
 		public string ConnectionString { get; set; } = null;
 
 		public string UserName { get; set; } = string.Empty;

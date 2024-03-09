@@ -67,8 +67,6 @@ namespace ISI.Extensions
 				}
 			}
 
-			//Console.WriteLine(string.Format("\"{0}\" {1}", request.ProcessExeFullName, processStartInfo.Arguments));
-
 			if (!string.IsNullOrWhiteSpace(request.WorkingDirectory))
 			{
 				processStartInfo.WorkingDirectory = request.WorkingDirectory;
@@ -81,9 +79,11 @@ namespace ISI.Extensions
 				}
 			}
 
-			var process = new System.Diagnostics.Process();
-			process.EnableRaisingEvents = false;
-			process.StartInfo = processStartInfo;
+			var process = new System.Diagnostics.Process
+			{
+				EnableRaisingEvents = false,
+				StartInfo = processStartInfo,
+			};
 			process.Start();
 		}
 

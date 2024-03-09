@@ -3,7 +3,26 @@ docker run --name pgsql -e POSTGRES_PASSWORD=test1234 -d  -p 5432:5432 -v E:/Pos
 docker exec -it pgsql psql -U postgres
 
 
-CREATE USER MasterAdmin --createdb --superuser --login --createrole
+CREATE ROLE masteradmin WITH
+  LOGIN
+  NOSUPERUSER
+  INHERIT
+  CREATEDB
+  CREATEROLE
+  NOREPLICATION
+  NOBYPASSRLS
+  ENCRYPTED PASSWORD 'SCRAM-SHA-256$4096:LCpApgGxF7cZ+g1L1wgakg==$82SuBgNyZ9MOZXu/SwRfSBXqUA+rGlszxkGn+RK+/Yg=:kmFboulR01CoRVCmOLid0wpWoKigqaHvt9JOe/fcjsA=';
+
+GRANT postgres TO masteradmin;
+
+
+
+
+
+
+
+
+CREATE USER MasterAdmin --createdb --superuser --login --createrole;
 ALTER USER MasterAdmin WITH PASSWORD '9ab831ceb061';
 GRANT "Create role" TO MasterAdmin;
 GRANT Create DB TO MasterAdmin;

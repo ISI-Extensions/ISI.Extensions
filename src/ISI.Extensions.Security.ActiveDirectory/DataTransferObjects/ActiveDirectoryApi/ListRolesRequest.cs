@@ -22,8 +22,15 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Security.ActiveDirectory.DataTransferObjects.ActiveDirectoryApi
 {
-	public class ListRolesRequest
+	public class ListRolesRequest : ILdapRequestWithBindCredentials
 	{
+		public string LdapHost { get; set; }
+		public int? LdapPort { get; set; }
+		public bool LdapStartTls { get; set; }
+		public bool LdapSecureSocketLayer { get; set; }
+		public string LdapBindUser { get; set; }
+		public string LdapBindPassword { get; set; }
+
 		public string DomainName { get; set; }
 	}
 }

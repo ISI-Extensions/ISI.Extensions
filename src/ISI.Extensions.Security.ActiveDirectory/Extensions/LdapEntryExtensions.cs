@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,54 +22,53 @@ using ISI.Extensions.Extensions;
 using ISI.Extensions.Security.ActiveDirectory.Extensions;
 using DTOs = ISI.Extensions.Security.ActiveDirectory.DataTransferObjects.ActiveDirectoryApi;
 
-namespace ISI.Extensions.Security.ActiveDirectory
+namespace ISI.Extensions.Security.ActiveDirectory.Extensions
 {
-	public partial class ActiveDirectoryApi
+	internal static class LdapEntryExtensions
 	{
-		public DTOs.AuthenticateUserResponse AuthenticateUser(DTOs.AuthenticateUserRequest request)
+		internal static string GetPropertyValue(this Novell.Directory.Ldap.LdapEntry ldapEntry, string propertyKey)
 		{
-			var response = new DTOs.AuthenticateUserResponse();
-
-			if (Environment.OSVersion.Platform == PlatformID.Unix)
+			try
 			{
-				try
-				{
-					using (var ldapConnection = new Novell.Directory.Ldap.LdapConnection())
-					{
-						ldapConnection.Connect(request);
+				var ldapAttribute = ldapEntry.GetAttribute(propertyKey);
 
-						ldapConnection.Bind(request.UserName, request.Password);
-
-						response.Authenticated = true;
-					}
-				}
-				catch
-				{
-				}
+				return ldapAttribute.StringValue;
 			}
-			else
+			catch
 			{
-				try
-				{
-					if (string.IsNullOrWhiteSpace(request.DomainName))
-					{
-						request.DomainName = string.Format("LDAP://{0}", GetCurrentDomainName(new()).DomainName);
-					}
-
-					var directoryEntry = new System.DirectoryServices.DirectoryEntry(request.DomainName, request.UserName, request.Password);
-
-					var directorySearcher = new System.DirectoryServices.DirectorySearcher(directoryEntry);
-
-					var searchResult = directorySearcher.FindOne();
-
-					response.Authenticated = true;
-				}
-				catch
-				{
-				}
 			}
 
-			return response;
+			return string.Empty;
+		}
+
+		internal static string[] GetPropertyValues(this Novell.Directory.Ldap.LdapEntry ldapEntry, string propertyKey)
+		{
+			try
+			{
+				var ldapAttribute = ldapEntry.GetAttribute(propertyKey);
+
+				if (ldapAttribute.StringValueArray.NullCheckedAny())
+				{
+					var values = new HashSet<string>();
+
+					foreach (var property in ldapAttribute.StringValueArray)
+					{
+						var propertyValues = string.Format("{0}", property).Split(new[] { '=', ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+						if (propertyValues.Length >= 2)
+						{
+							values.Add(propertyValues[1]);
+						}
+					}
+
+					return values.ToArray();
+				}
+			}
+			catch
+			{
+			}
+
+			return Array.Empty<string>();
 		}
 	}
 }

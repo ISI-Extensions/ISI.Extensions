@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,19 +15,21 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Security.ActiveDirectory.DataTransferObjects.ActiveDirectoryApi;
 
-namespace ISI.Extensions.Security.ActiveDirectory
+namespace ISI.Extensions.Security.ActiveDirectory.DataTransferObjects.ActiveDirectoryApi
 {
-	public partial class ActiveDirectoryApi
+	public interface ILdapRequest
 	{
-		internal class GroupPropertyKey
-		{
-			public const string NameKey = "name";
-		}
+		string LdapHost { get; }
+		int? LdapPort { get; }
+		bool LdapStartTls { get; }
+		bool LdapSecureSocketLayer { get; }
+	}
+
+	public interface ILdapRequestWithBindCredentials : ILdapRequest
+	{
+		string LdapBindUser { get; }
+		string LdapBindPassword { get; }
 	}
 }

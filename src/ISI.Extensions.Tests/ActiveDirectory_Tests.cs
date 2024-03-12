@@ -88,7 +88,7 @@ namespace ISI.Extensions.Tests
 
 			Console.WriteLine(securityApi.AuthenticateUser(new()
 			{
-				UserName = settings.ActiveDirectory.UserName,
+				UserName = $"{settings.ActiveDirectory.Domain}\\{settings.ActiveDirectory.UserName}",
 				Password = settings.ActiveDirectory.Password,
 			}).Authenticated.TrueFalse());
 
@@ -100,7 +100,7 @@ namespace ISI.Extensions.Tests
 
 			Console.WriteLine(securityApi.AuthenticateUser(new()
 			{
-				UserName = settings.ActiveDirectory.UserName,
+				UserName = $"{settings.ActiveDirectory.Domain}\\{settings.ActiveDirectory.UserName}",
 				Password = string.Format("{0}-{1}", settings.ActiveDirectory.Password, Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)),
 			}).Authenticated.TrueFalse());
 		}
@@ -171,7 +171,12 @@ namespace ISI.Extensions.Tests
 
 			var securityApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Security.ActiveDirectory.IActiveDirectoryApi>();
 
-			var roles = securityApi.ListRoles(new()).Roles;
+			var roles = securityApi.ListRoles(new()
+			{
+				LdapHost = "isinyns02.isi-net.com",
+				LdapBindUser = $"{settings.ActiveDirectory.Domain}\\{settings.ActiveDirectory.UserName}",
+				LdapBindPassword = settings.ActiveDirectory.Password,
+			}).Roles;
 
 			foreach (var role in roles)
 			{

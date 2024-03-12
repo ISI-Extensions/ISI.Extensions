@@ -148,7 +148,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Platforms.AspNetCore", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Sbom", "ISI.Extensions.Sbom\ISI.Extensions.Sbom.csproj", "{F9884B9C-C6DC-4F43-A81A-F2F9B0BAAAF9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.Mandrill", "ISI.Extensions.Mandrill\ISI.Extensions.Mandrill.csproj", "{72F5623D-4A4C-4BC9-937F-C582F12330FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Mandrill", "ISI.Extensions.Mandrill\ISI.Extensions.Mandrill.csproj", "{72F5623D-4A4C-4BC9-937F-C582F12330FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

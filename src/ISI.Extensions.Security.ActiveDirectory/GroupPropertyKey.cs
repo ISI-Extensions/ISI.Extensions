@@ -24,52 +24,8 @@ using DTOs = ISI.Extensions.Security.ActiveDirectory.DataTransferObjects.ActiveD
 
 namespace ISI.Extensions.Security.ActiveDirectory
 {
-	public partial class ActiveDirectoryApi
+	internal class GroupPropertyKey
 	{
-		public DTOs.AuthenticateUserResponse AuthenticateUser(DTOs.AuthenticateUserRequest request)
-		{
-			var response = new DTOs.AuthenticateUserResponse();
-
-			if (Environment.OSVersion.Platform == PlatformID.Unix)
-			{
-				try
-				{
-					using (var ldapConnection = new Novell.Directory.Ldap.LdapConnection())
-					{
-						ldapConnection.Connect(request);
-
-						ldapConnection.Bind(request.UserName, request.Password);
-
-						response.Authenticated = true;
-					}
-				}
-				catch
-				{
-				}
-			}
-			else
-			{
-				try
-				{
-					if (string.IsNullOrWhiteSpace(request.DomainName))
-					{
-						request.DomainName = string.Format("LDAP://{0}", GetCurrentDomainName(new()).DomainName);
-					}
-
-					var directoryEntry = new System.DirectoryServices.DirectoryEntry(request.DomainName, request.UserName, request.Password);
-
-					var directorySearcher = new System.DirectoryServices.DirectorySearcher(directoryEntry);
-
-					var searchResult = directorySearcher.FindOne();
-
-					response.Authenticated = true;
-				}
-				catch
-				{
-				}
-			}
-
-			return response;
-		}
+		public const string NameKey = "name";
 	}
 }

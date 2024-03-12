@@ -124,6 +124,8 @@ namespace ISI.Platforms.Serilog
 				});
 			}
 
+			Console.WriteLine($"LogDirectory => {platformsConfiguration?.LogDirectory}");
+
 			if (!string.IsNullOrWhiteSpace(platformsConfiguration?.LogDirectory))
 			{
 				loggerConfiguration.WriteTo.File(System.IO.Path.Combine(platformsConfiguration.LogDirectory, "log.txt"), rollingInterval: RollingInterval.Day);

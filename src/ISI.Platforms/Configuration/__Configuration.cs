@@ -27,6 +27,9 @@ namespace ISI.Platforms
 		[ISI.Extensions.EnvironmentConfigurationVariableName("USE_MESSAGE_BUS")]
 		public bool UseMessageBus { get; set; } = false;
 
+		[ISI.Extensions.EnvironmentConfigurationVariableName("BASE_URL")]
+		public string BaseUrl { get; set; }
+
 		[ISI.Extensions.EnvironmentConfigurationVariableName("LOG_DIRECTORY")]
 		public string LogDirectory { get; set; }
 	}

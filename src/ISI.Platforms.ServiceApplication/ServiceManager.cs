@@ -97,6 +97,8 @@ namespace ISI.Platforms.ServiceApplication
 
 			await _host.StartAsync().ContinueWith(_ =>
 			{
+				var configuration = Startup.Context.ConfigurationRoot.GetConfiguration<ISI.Platforms.Configuration>();
+
 				var server = _host.Services.GetRequiredService<global::Microsoft.AspNetCore.Hosting.Server.IServer>();
 				var addressFeature = server.Features.Get<global::Microsoft.AspNetCore.Hosting.Server.Features.IServerAddressesFeature>();
 
@@ -109,7 +111,10 @@ namespace ISI.Platforms.ServiceApplication
 				}
 				Startup.Context.LoggerConfigurator.Information(logMessageBuilder.ToString());
 
-				var configuration = Startup.Context.ConfigurationRoot.GetConfiguration<ISI.Platforms.Configuration>();
+				if (!string.IsNullOrWhiteSpace(configuration.BaseUrl))
+				{
+					RoutingHelper.SetBaseUrl(configuration.BaseUrl);
+				}
 
 				if (configuration.UseMessageBus)
 				{

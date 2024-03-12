@@ -151,8 +151,8 @@ namespace ISI.Extensions.Repository.PostgreSQL
 							updateSql.AppendFormat("from {0}\n", GetTableName("updateTable"));
 							updateSql.Append("where\n");
 							var primaryKeyIndex = 1;
-							updateSql.AppendFormat("      {0}\n", string.Join(" and\n", primaryKeyPropertyDescriptions.Select(property => string.Format("    {0} = @primaryKey{1}", FormatColumnName(property.ColumnName), primaryKeyIndex++))));
-							updateSql.Append("select @@RowCount");
+							updateSql.AppendFormat("      {0};\n", string.Join(" and\n", primaryKeyPropertyDescriptions.Select(property => string.Format("    {0} = @primaryKey{1}", FormatColumnName(property.ColumnName), primaryKeyIndex++))));
+							updateSql.Append("GET DIAGNOSTICS integer_var = ROW_COUNT;");
 
 							using (var command = new Npgsql.NpgsqlCommand(updateSql.ToString(), updateConnection))
 							{
@@ -203,12 +203,12 @@ namespace ISI.Extensions.Repository.PostgreSQL
 					if (hasInserts)
 					{
 						insertSql.AppendFormat("{0}\n", string.Join(" union all\n", sqlSelects));
-						insertSql.Append("\n");
+						insertSql.Append(";\n");
 
 						if (repositoryAssignedValueColumnDefinitions.Any())
 						{
 							insertSql.AppendFormat("select InsertedRecordIndex, {0}\n", string.Join(", ", repositoryAssignedValuePropertyDescriptions.Select(property => string.Format("[{0}]", property.ColumnName))));
-							insertSql.Append("from @RepositoryAssignedValues\n");
+							insertSql.Append("from @RepositoryAssignedValues;\n");
 						}
 
 						await insertConnection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
@@ -266,7 +266,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 						}
 
 						insertSql.AppendFormat("{0}\n", string.Join(" union all\n", sqlSelects));
-						insertSql.Append("\n");
+						insertSql.Append(";\n");
 
 						await archiveConnection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
 

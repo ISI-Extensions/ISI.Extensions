@@ -142,6 +142,7 @@ namespace ISI.Extensions.Tests.Repository
 				ContactUuid = Guid.NewGuid(),
 				FirstName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
 				LastName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
+				TimeStamp = DateTime.UtcNow,
 			};
 
 			recordManager.InsertRecordAsync(contact).GetAwaiter().GetResult();
@@ -161,6 +162,7 @@ namespace ISI.Extensions.Tests.Repository
 				ContactUuid = Guid.NewGuid(),
 				FirstName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
 				LastName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
+				TimeStamp = DateTime.UtcNow,
 			};
 
 			recordManager.InsertRecordAsync(contact).GetAwaiter().GetResult();

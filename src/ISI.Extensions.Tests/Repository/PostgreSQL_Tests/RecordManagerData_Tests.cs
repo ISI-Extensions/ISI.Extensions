@@ -26,7 +26,7 @@ namespace ISI.Extensions.Tests.Repository
 	[TestFixture]
 	public partial class PostgreSQL_Tests
 	{
-		public class ContactWithDataRecordManager : ISI.Extensions.Repository.PostgreSQL.RecordManagerPrimaryKey<ContactWithData, Guid>
+		public class ContactWithDataRecordManager : ISI.Extensions.Repository.PostgreSQL.RecordManagerPrimaryKeyWithArchive<ContactWithData, Guid>
 		{
 			public ContactWithDataRecordManager(
 				Microsoft.Extensions.Configuration.IConfiguration configuration,
@@ -79,7 +79,7 @@ namespace ISI.Extensions.Tests.Repository
 				Zip = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
 			};
 
-			recordManager.InsertRecordAsync(contactV1).GetAwaiter().GetResult();
+			recordManager.UpsertRecordAsync(contactV1).GetAwaiter().GetResult();
 
 			var testContact = recordManager.GetRecordAsync(contactV1.ContactUuid).GetAwaiter().GetResult();
 
@@ -142,6 +142,7 @@ namespace ISI.Extensions.Tests.Repository
 				ContactUuid = Guid.NewGuid(),
 				FirstName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
 				LastName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
+				TimeStamp = DateTime.UtcNow,
 			};
 
 			recordManager.InsertRecordAsync(contact).GetAwaiter().GetResult();
@@ -161,6 +162,7 @@ namespace ISI.Extensions.Tests.Repository
 				ContactUuid = Guid.NewGuid(),
 				FirstName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
 				LastName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
+				TimeStamp = DateTime.UtcNow,
 			};
 
 			recordManager.InsertRecordAsync(contact).GetAwaiter().GetResult();

@@ -20,7 +20,7 @@ using System.Text;
 namespace ISI.Extensions.Tests.Repository
 {
 	[ISI.Extensions.Repository.Record(Schema = "Contacts", TableName = "ContactWithData")]
-	public class ContactWithData : ISI.Extensions.Repository.IRecordManagerPrimaryKeyRecord<Guid>
+	public class ContactWithData : ISI.Extensions.Repository.IRecordManagerPrimaryKeyRecord<Guid>, ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime
 	{
 		[ISI.Extensions.Repository.PrimaryKey]
 		[ISI.Extensions.Repository.RecordProperty(ColumnName = "ContactUuid")]
@@ -37,7 +37,10 @@ namespace ISI.Extensions.Tests.Repository
 
 		[ISI.Extensions.Repository.RecordProperty(ColumnName = "ContactData")]
 		public IContactData ContactData { get; set; }
-
+		
 		Guid ISI.Extensions.Repository.IRecordManagerPrimaryKeyRecord<Guid>.PrimaryKey => ContactUuid;
+
+		[ISI.Extensions.Repository.IgnoreRecordProperty]
+		DateTime ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime.ArchiveDateTime => TimeStamp;
 	}
 }

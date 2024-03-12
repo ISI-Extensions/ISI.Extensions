@@ -174,7 +174,7 @@ namespace ISI.Extensions.Tests
 			var roles = securityApi.ListRoles(new()
 			{
 				LdapHost = "isinyns02.isi-net.com",
-				LdapBindUser = $"{settings.ActiveDirectory.Domain}\\{settings.ActiveDirectory.UserName}",
+				LdapBindUserName = $"{settings.ActiveDirectory.Domain}\\{settings.ActiveDirectory.UserName}",
 				LdapBindPassword = settings.ActiveDirectory.Password,
 			}).Roles;
 

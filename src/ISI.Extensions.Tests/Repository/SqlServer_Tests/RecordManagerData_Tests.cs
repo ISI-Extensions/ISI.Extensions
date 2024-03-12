@@ -26,7 +26,7 @@ namespace ISI.Extensions.Tests.Repository
 	[TestFixture]
 	public partial class SqlServer_Tests
 	{
-		public class ContactWithDataRecordManager : ISI.Extensions.Repository.SqlServer.RecordManagerPrimaryKey<ContactWithData, Guid>
+		public class ContactWithDataRecordManager : ISI.Extensions.Repository.SqlServer.RecordManagerPrimaryKeyWithArchive<ContactWithData, Guid>
 		{
 			public ContactWithDataRecordManager(
 				Microsoft.Extensions.Configuration.IConfiguration configuration,
@@ -142,6 +142,7 @@ namespace ISI.Extensions.Tests.Repository
 				ContactUuid = Guid.NewGuid(),
 				FirstName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
 				LastName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
+				TimeStamp = DateTime.UtcNow,
 			};
 
 			recordManager.InsertRecordAsync(contact).GetAwaiter().GetResult();
@@ -161,6 +162,7 @@ namespace ISI.Extensions.Tests.Repository
 				ContactUuid = Guid.NewGuid(),
 				FirstName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
 				LastName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
+				TimeStamp = DateTime.UtcNow,
 			};
 
 			recordManager.InsertRecordAsync(contact).GetAwaiter().GetResult();
@@ -200,6 +202,7 @@ namespace ISI.Extensions.Tests.Repository
 					ContactUuid = contactUuid,
 					FirstName = firstName,
 					LastName = lastName,
+					TimeStamp = DateTime.UtcNow,
 					ContactData = new ContactDataV1()
 					{
 						ContactUuid = contactUuid,

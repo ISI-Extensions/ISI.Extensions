@@ -29,7 +29,7 @@ namespace ISI.Extensions.Security.ActiveDirectory.DataTransferObjects.ActiveDire
 
 	public interface ILdapRequestWithBindCredentials : ILdapRequest
 	{
-		string LdapBindUser { get; }
+		string LdapBindUserName { get; }
 		string LdapBindPassword { get; }
 	}
 }

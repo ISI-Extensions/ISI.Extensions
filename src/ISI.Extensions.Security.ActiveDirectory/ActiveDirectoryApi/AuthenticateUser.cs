@@ -38,7 +38,11 @@ namespace ISI.Extensions.Security.ActiveDirectory
 					{
 						ldapConnection.Connect(request);
 
-						ldapConnection.Bind(request.UserName, request.Password);
+						var fqdn = ldapConnection.GetFQDN();
+
+						var userName = $"{request.UserName.Split(new[] { '\\', '/' }).Last()}@{fqdn}";
+
+						ldapConnection.Bind(userName, request.Password);
 
 						response.Authenticated = true;
 					}

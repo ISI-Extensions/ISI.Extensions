@@ -32,7 +32,7 @@ namespace ISI.Extensions.Security.ActiveDirectory.Extensions
 
 			if (request.LdapSecureSocketLayer)
 			{
-				Console.WriteLine("ldapConnection.SecureSocketLayer = true");
+				//Console.WriteLine("ldapConnection.SecureSocketLayer = true");
 				ldapConnection.SecureSocketLayer = true;
 				ldapPort ??= 689;
 			}
@@ -41,19 +41,19 @@ namespace ISI.Extensions.Security.ActiveDirectory.Extensions
 
 			if (request.LdapStartTls)
 			{
-				Console.WriteLine("ldapConnection.StartTls()");
+				//Console.WriteLine("ldapConnection.StartTls()");
 				ldapConnection.StartTls();
 			}
 
-			Console.WriteLine($"ldapConnection.Host = {request.LdapHost}");
-			Console.WriteLine($"ldapConnection.Port = {ldapPort}");
+			//Console.WriteLine($"ldapConnection.Host = {request.LdapHost}");
+			//Console.WriteLine($"ldapConnection.Port = {ldapPort}");
 			ldapConnection.Connect(request.LdapHost, ldapPort.Value);
 		}
 
 		public static void Bind(this Novell.Directory.Ldap.LdapConnection ldapConnection, DTOs.ILdapRequestWithBindCredentials request)
 		{
-			Console.WriteLine($"ldapConnection.LdapBindUserName = {request.LdapBindUserName}");
-			Console.WriteLine($"ldapConnection.LdapBindPassword = {request.LdapBindPassword}");
+			//Console.WriteLine($"ldapConnection.LdapBindUserName = {request.LdapBindUserName}");
+			//Console.WriteLine($"ldapConnection.LdapBindPassword = {request.LdapBindPassword}");
 
 			ldapConnection.Bind(request.LdapBindUserName, request.LdapBindPassword);
 		}
@@ -63,6 +63,13 @@ namespace ISI.Extensions.Security.ActiveDirectory.Extensions
 			var ldapSearchResults = ldapConnection.Search(string.Empty, Novell.Directory.Ldap.LdapConnection.ScopeBase, "(objectClass=*)", new[] { UserPropertyKey.DefaultNamingContext }, false);
 
 			return ldapSearchResults.First().GetPropertyValue(UserPropertyKey.DefaultNamingContext);
+		}
+
+		public static string GetFQDN(this Novell.Directory.Ldap.LdapConnection ldapConnection)
+		{
+			var defaultNamingContext = ldapConnection.GetDefaultNamingContext();
+
+			return string.Join(".", defaultNamingContext.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(value => value.Split(new[] { '=' }).Last()));
 		}
 	}
 }

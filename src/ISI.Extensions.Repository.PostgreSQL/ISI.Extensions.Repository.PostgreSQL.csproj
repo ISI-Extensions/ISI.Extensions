@@ -18,6 +18,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ISI.Extensions.JsonSerialization.Newtonsoft\ISI.Extensions.JsonSerialization.Newtonsoft.csproj" />
+    <ProjectReference Include="..\ISI.Extensions.PostgreSQL\ISI.Extensions.PostgreSQL.csproj" />
     <ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />
   </ItemGroup>
 </Project>

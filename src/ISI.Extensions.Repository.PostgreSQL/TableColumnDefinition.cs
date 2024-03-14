@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.PostgreSQL.Extensions;
 using ISI.Extensions.Repository.PostgreSQL.Extensions;
 
 namespace ISI.Extensions.Repository.PostgreSQL
@@ -34,7 +35,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 		{
 			var result = new List<TableColumnDefinition>();
 
-			using (var connection = SqlConnection.GetSqlConnection(connectionString))
+			using (var connection = ISI.Extensions.PostgreSQL.SqlConnection.GetSqlConnection(connectionString))
 			{
 				connection.Open();
 

@@ -18,6 +18,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using System.Linq.Expressions;
+using ISI.Extensions.PostgreSQL.Extensions;
+using ISI.Extensions.Repository.Extensions;
+using ISI.Extensions.Repository.PostgreSQL.Extensions;
+using Microsoft.Extensions.Configuration;
 
 namespace ISI.Extensions.Repository.PostgreSQL
 {

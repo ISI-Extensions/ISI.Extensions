@@ -150,6 +150,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Sbom", "ISI.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Mandrill", "ISI.Extensions.Mandrill\ISI.Extensions.Mandrill.csproj", "{72F5623D-4A4C-4BC9-937F-C582F12330FD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.PostgreSQL", "ISI.Extensions.PostgreSQL\ISI.Extensions.PostgreSQL.csproj", "{09EDDB29-4527-45CD-B7C4-81CA6E564ACB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -726,6 +728,14 @@ Global
 		{72F5623D-4A4C-4BC9-937F-C582F12330FD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{72F5623D-4A4C-4BC9-937F-C582F12330FD}.Release|x64.ActiveCfg = Release|Any CPU
 		{72F5623D-4A4C-4BC9-937F-C582F12330FD}.Release|x64.Build.0 = Release|Any CPU
+		{09EDDB29-4527-45CD-B7C4-81CA6E564ACB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09EDDB29-4527-45CD-B7C4-81CA6E564ACB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09EDDB29-4527-45CD-B7C4-81CA6E564ACB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{09EDDB29-4527-45CD-B7C4-81CA6E564ACB}.Debug|x64.Build.0 = Debug|Any CPU
+		{09EDDB29-4527-45CD-B7C4-81CA6E564ACB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09EDDB29-4527-45CD-B7C4-81CA6E564ACB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09EDDB29-4527-45CD-B7C4-81CA6E564ACB}.Release|x64.ActiveCfg = Release|Any CPU
+		{09EDDB29-4527-45CD-B7C4-81CA6E564ACB}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

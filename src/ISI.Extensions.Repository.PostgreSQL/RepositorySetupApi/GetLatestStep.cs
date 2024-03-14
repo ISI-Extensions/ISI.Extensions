@@ -20,6 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Diagnostics;
+using ISI.Extensions.PostgreSQL.Extensions;
 using ISI.Extensions.Repository.Extensions;
 using ISI.Extensions.Repository.PostgreSQL.Extensions;
 using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
@@ -42,7 +43,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 				{
 					try
 					{
-						if (SqlConnection.TryGetSqlConnection(connectionString, false, out var connection))
+						if (ISI.Extensions.PostgreSQL.SqlConnection.TryGetSqlConnection(connectionString, false, out var connection))
 						{
 							connection.Open();
 

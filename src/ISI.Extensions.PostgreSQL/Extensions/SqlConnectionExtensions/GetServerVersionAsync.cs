@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,47 +15,30 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 using ISI.Extensions.Repository.Extensions;
-using ISI.Extensions.Repository.PostgreSQL.Extensions;
 
-namespace ISI.Extensions.Repository.PostgreSQL
+namespace ISI.Extensions.PostgreSQL.Extensions
 {
-	public class SqlConnection
+	public static partial class SqlConnectionExtensions
 	{
-		public static Npgsql.NpgsqlConnection GetSqlConnection(string connectionString, bool enableMultipleActiveResultSets = false)
+		public static async Task<Version> GetServerVersionAsync(this Npgsql.NpgsqlConnection connection, System.Threading.CancellationToken cancellationToken = default)
 		{
-			if (TryGetSqlConnection(connectionString, enableMultipleActiveResultSets, out var connection))
+			await connection.EnsureConnectionIsOpenAsync();
+
+			var version = connection.ServerVersion;
+
+			if (Version.TryParse(version, out var serverVersion))
 			{
-				return connection;
+				return serverVersion;
 			}
 
-			return null;
-		}
+			var pieces = string.Format("{0}.....", version).Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries).ToNullCheckedArray(value => value.ToInt());
 
-		public static bool TryGetSqlConnection(string connectionString, bool enableMultipleActiveResultSets, out Npgsql.NpgsqlConnection connection)
-		{
-			try
-			{
-				var dbConnectionStringBuilder = new System.Data.Common.DbConnectionStringBuilder()
-				{
-					ConnectionString = connectionString,
-				};
-
-				if (enableMultipleActiveResultSets)
-				{
-					throw new Exception("enableMultipleActiveResultSets not implemented");
-				}
-
-				connection = new Npgsql.NpgsqlConnection(dbConnectionStringBuilder.ConnectionString);
-				
-				return true;
-			}
-			catch
-			{
-				connection = null;
-				return false;
-			}
+			return new(pieces[0], pieces[1], pieces[2], pieces[3]);
 		}
 	}
 }

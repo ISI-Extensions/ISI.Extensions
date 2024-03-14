@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,20 +15,44 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using ISI.Extensions.Repository.Extensions;
 
-namespace ISI.Extensions.Repository.PostgreSQL.Extensions
+namespace ISI.Extensions.PostgreSQL.Extensions
 {
-	internal static class NameExtensions
+	public static partial class SqlConnectionExtensions
 	{
-		internal static string PostgreSQLFormatName(this string name)
+		public static async Task EnsureConnectionIsOpenAsync(this Npgsql.NpgsqlConnection connection, System.Threading.CancellationToken cancellationToken = default)
 		{
-			if (!string.Equals(name, name.ToLower(), StringComparison.CurrentCulture) || (name.IndexOf('.') >= 0))
+			if (connection.State != System.Data.ConnectionState.Open)
 			{
-				name = $"\"{name}\"";
+				try
+				{
+					await connection.OpenAsync(cancellationToken);
+				}
+				catch (Exception exception)
+				{
+					throw new(string.Format("Error opening Connection to \"{0}\"", connection.ConnectionString), exception);
+				}
 			}
+		}
 
-			return name;
+		public static void EnsureConnectionIsOpen(this Npgsql.NpgsqlConnection connection)
+		{
+			if (connection.State != System.Data.ConnectionState.Open)
+			{
+				try
+				{
+					connection.Open();
+				}
+				catch (Exception exception)
+				{
+					throw new(string.Format("Error opening Connection to \"{0}\"", connection.ConnectionString), exception);
+				}
+			}
 		}
 	}
 }

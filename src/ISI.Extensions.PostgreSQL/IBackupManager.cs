@@ -19,40 +19,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.Repository.Extensions;
+using DTOs = ISI.Extensions.PostgreSQL.DataTransferObjects.BackupManager;
 
-namespace ISI.Extensions.Repository.PostgreSQL.Extensions
+namespace ISI.Extensions.PostgreSQL
 {
-	public static partial class SqlConnectionExtensions
+	public interface IBackupManager
 	{
-		public static async Task EnsureConnectionIsOpenAsync(this Npgsql.NpgsqlConnection connection, System.Threading.CancellationToken cancellationToken = default)
-		{
-			if (connection.State != System.Data.ConnectionState.Open)
-			{
-				try
-				{
-					await connection.OpenAsync(cancellationToken);
-				}
-				catch (Exception exception)
-				{
-					throw new(string.Format("Error opening Connection to \"{0}\"", connection.ConnectionString), exception);
-				}
-			}
-		}
-
-		public static void EnsureConnectionIsOpen(this Npgsql.NpgsqlConnection connection)
-		{
-			if (connection.State != System.Data.ConnectionState.Open)
-			{
-				try
-				{
-					connection.Open();
-				}
-				catch (Exception exception)
-				{
-					throw new(string.Format("Error opening Connection to \"{0}\"", connection.ConnectionString), exception);
-				}
-			}
-		}
+		DTOs.BackupDatabaseResponse BackupDatabase(DTOs.IBackupDatabaseRequest request);
 	}
 }

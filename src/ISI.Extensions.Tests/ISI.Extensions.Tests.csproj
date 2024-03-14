@@ -35,6 +35,7 @@
 		<ProjectReference Include="..\ISI.Extensions.Acme\ISI.Extensions.Acme.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.JsonJwt\ISI.Extensions.JsonJwt.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Keycloak\ISI.Extensions.Keycloak.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.PostgreSQL\ISI.Extensions.PostgreSQL.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Razor\ISI.Extensions.Razor.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.S3\ISI.Extensions.S3.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Azure\ISI.Extensions.Azure.csproj" />

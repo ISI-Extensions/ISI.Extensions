@@ -20,6 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Diagnostics;
+using ISI.Extensions.PostgreSQL.Extensions;
 using ISI.Extensions.Repository.Extensions;
 using ISI.Extensions.Repository.PostgreSQL.Extensions;
 using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
@@ -39,7 +40,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 			var userName = (request as SqlServerDTOs.CreateRepositoryRequest)?.UserName;
 			var password = (request as SqlServerDTOs.CreateRepositoryRequest)?.Password;
 
-			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionStringWithMasterDatabase))
+			using (var connection = ISI.Extensions.PostgreSQL.SqlConnection.GetSqlConnection(MasterConnectionStringWithMasterDatabase))
 			{
 				connection.EnsureConnectionIsOpenAsync().Wait();
 

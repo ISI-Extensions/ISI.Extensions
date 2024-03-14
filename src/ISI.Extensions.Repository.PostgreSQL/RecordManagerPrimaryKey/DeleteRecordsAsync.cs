@@ -19,6 +19,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.PostgreSQL.Extensions;
+using ISI.Extensions.Repository.PostgreSQL.Extensions;
 
 namespace ISI.Extensions.Repository.PostgreSQL
 {

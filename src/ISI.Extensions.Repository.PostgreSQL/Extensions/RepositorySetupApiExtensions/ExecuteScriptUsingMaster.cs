@@ -29,7 +29,7 @@ namespace ISI.Extensions.Repository.PostgreSQL.Extensions
 	{
 		public static DTOs.ExecuteScriptResponse ExecuteScriptUsingMaster(this ISI.Extensions.Repository.IRepositorySetupApi repositorySetupApi, string script, IDictionary<string, object> parameters = null)
 		{
-			using (var connection = SqlConnection.GetSqlConnection(GetMasterConnectionString(repositorySetupApi)))
+			using (var connection = ISI.Extensions.PostgreSQL.SqlConnection.GetSqlConnection(GetMasterConnectionString(repositorySetupApi)))
 			{
 				connection.Open();
 

@@ -18,6 +18,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using System.Linq.Expressions;
+using ISI.Extensions.PostgreSQL.Extensions;
+using ISI.Extensions.Repository.Extensions;
+using ISI.Extensions.Repository.PostgreSQL.Extensions;
 using Microsoft.Extensions.Configuration;
 
 namespace ISI.Extensions.Repository.PostgreSQL
@@ -63,7 +68,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 			TableName = (string.IsNullOrEmpty(tableName) ? RecordDescription.GetRecordDescription<TRecord>().TableName : tableName);
 			TableAlias = tableAlias;
 
-			GetSqlConnection = getConnection ?? (enableMultipleActiveResultSets => ISI.Extensions.Repository.PostgreSQL.SqlConnection.GetSqlConnection(ConnectionString, enableMultipleActiveResultSets));
+			GetSqlConnection = getConnection ?? (enableMultipleActiveResultSets => ISI.Extensions.PostgreSQL.SqlConnection.GetSqlConnection(ConnectionString, enableMultipleActiveResultSets));
 		}
 
 		protected override string DefaultOrderByClause => "ORDER BY CURRENT_TIMESTAMP\n";

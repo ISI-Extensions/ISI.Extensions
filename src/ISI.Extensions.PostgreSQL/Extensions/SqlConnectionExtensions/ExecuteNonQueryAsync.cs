@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.Repository.Extensions;
 
-namespace ISI.Extensions.Repository.PostgreSQL.Extensions
+namespace ISI.Extensions.PostgreSQL.Extensions
 {
 	public static partial class SqlConnectionExtensions
 	{

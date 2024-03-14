@@ -20,6 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Diagnostics;
+using ISI.Extensions.PostgreSQL.Extensions;
 using ISI.Extensions.Repository.Extensions;
 using ISI.Extensions.Repository.PostgreSQL.Extensions;
 using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
@@ -32,7 +33,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 	{
 		public bool TryAddUserToSchema(string userName, string schema)
 		{
-			using (var connection = SqlConnection.GetSqlConnection(MasterConnectionString))
+			using (var connection = ISI.Extensions.PostgreSQL.SqlConnection.GetSqlConnection(MasterConnectionString))
 			{
 				return TryAddUserToSchema(connection, userName, schema);
 			}

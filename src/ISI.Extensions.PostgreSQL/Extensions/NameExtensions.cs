@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,30 +15,20 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using ISI.Extensions.Repository.Extensions;
 
-namespace ISI.Extensions.Repository.PostgreSQL.Extensions
+namespace ISI.Extensions.PostgreSQL.Extensions
 {
-	public static partial class SqlConnectionExtensions
+	internal static class NameExtensions
 	{
-		public static async Task<Version> GetServerVersionAsync(this Npgsql.NpgsqlConnection connection, System.Threading.CancellationToken cancellationToken = default)
+		internal static string PostgreSQLFormatName(this string name)
 		{
-			await connection.EnsureConnectionIsOpenAsync();
-
-			var version = connection.ServerVersion;
-
-			if (Version.TryParse(version, out var serverVersion))
+			if (!string.Equals(name, name.ToLower(), StringComparison.CurrentCulture) || (name.IndexOf('.') >= 0))
 			{
-				return serverVersion;
+				name = $"\"{name}\"";
 			}
 
-			var pieces = string.Format("{0}.....", version).Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries).ToNullCheckedArray(value => value.ToInt());
-
-			return new(pieces[0], pieces[1], pieces[2], pieces[3]);
+			return name;
 		}
 	}
 }

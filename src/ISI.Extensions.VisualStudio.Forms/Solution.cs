@@ -192,6 +192,13 @@ namespace ISI.Extensions.VisualStudio.Forms
 					CleanSolutionErrored = !(SolutionApi.CleanSolution(new()
 					{
 						Solution = SolutionDetails.SolutionDirectory,
+
+						AddToLog = (logEntryLevel, description) =>
+						{
+							UpdateStatus(description);
+							CleanSolutionResponse.AppendLine(description);
+							Logger.LogInformation(description);
+						},
 					}).Success);
 
 					Logger.LogInformation("Finish Clean Solution");

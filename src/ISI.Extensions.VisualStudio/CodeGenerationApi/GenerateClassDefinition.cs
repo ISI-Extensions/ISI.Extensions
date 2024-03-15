@@ -110,16 +110,18 @@ namespace ISI.Extensions.VisualStudio
 						propertyFormattedText.AppendFormat("\t\t[DataMember(Name = \"{1}\"{2})]{0}", Environment.NewLine, FormatAttributeName(request.IncludeDataContractAttributes, property.PropertyName, property.DataMemberName), (request.EmitDefaultValueFalse ? ", EmitDefaultValue = false" : string.Empty));
 						if ((request.PreferredSerializer == PreferredSerializer.Json) && (string.Equals(property.PropertyType, "DateTime", StringComparison.InvariantCulture) || string.Equals(property.PropertyType, "DateTime?", StringComparison.InvariantCulture)))
 						{
+							var setFormatFunctionName = (property.PropertyName.EndsWith("Utc", StringComparison.InvariantCulture) ? "DateTimeUniversalPrecise" : "DateTimePrecise");
 							var setConversionFunctionName = (property.PropertyName.EndsWith("Utc", StringComparison.InvariantCulture) ? (string.Equals(property.PropertyType, "DateTime?", StringComparison.CurrentCulture) ? "ToDateTimeUtcNullable" : "ToDateTimeUtc") : (string.Equals(property.PropertyType, "DateTime?", StringComparison.CurrentCulture) ? "ToDateTimeNullable" : "ToDateTime"));
+							var setConversionFunctionType = (property.PropertyName.EndsWith("Utc", StringComparison.InvariantCulture) ? "Utc" : "Local");
 
 							switch (codeExtensionProvider)
 							{
 								case CodeExtensionProviders.ISI.Extensions.CodeExtensionProvider isiExtensionsCodeExtensionProvider:
-									propertyFormattedText.AppendFormat("\t\t{1}{2}string __{4} {{ get => {4}.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => {4} = value.{5}(); }}{0}", Environment.NewLine, (string.IsNullOrEmpty(property.AccessModifier) ? string.Empty : string.Format("{0} ", property.AccessModifier)), (string.IsNullOrEmpty(property.Accessor) ? string.Empty : string.Format("{0} ", property.Accessor)), property.PropertyType, FormatString(StringCaseFormat.No, property.PropertyName), setConversionFunctionName);
+									propertyFormattedText.AppendFormat("\t\t{1}{2}string __{4} {{ get => {4}.Formatted(DateTimeExtensions.DateTimeFormat.{5}); set => {4} = value.{6}(); }}{0}", Environment.NewLine, (string.IsNullOrEmpty(property.AccessModifier) ? string.Empty : string.Format("{0} ", property.AccessModifier)), (string.IsNullOrEmpty(property.Accessor) ? string.Empty : string.Format("{0} ", property.Accessor)), property.PropertyType, FormatString(StringCaseFormat.No, property.PropertyName), setFormatFunctionName, setConversionFunctionName);
 									break;
 
 								case CodeExtensionProviders.ISI.Libraries.CodeExtensionProvider isiLibrariesCodeExtensionProvider:
-									propertyFormattedText.AppendFormat("\t\t{1}{2}string __{4} {{ get => {4}.Formatted(Formatters.DateTimeFormat.DateTimeUniversalPrecise); set => {4} = value.{5}(DateTimeKind.Utc); }}{0}", Environment.NewLine, (string.IsNullOrEmpty(property.AccessModifier) ? string.Empty : string.Format("{0} ", property.AccessModifier)), (string.IsNullOrEmpty(property.Accessor) ? string.Empty : string.Format("{0} ", property.Accessor)), property.PropertyType, FormatString(StringCaseFormat.No, property.PropertyName), setConversionFunctionName);
+									propertyFormattedText.AppendFormat("\t\t{1}{2}string __{4} {{ get => {4}.Formatted(Formatters.DateTimeFormat.{5}); set => {4} = value.{6}(DateTimeKind.{7}); }}{0}", Environment.NewLine, (string.IsNullOrEmpty(property.AccessModifier) ? string.Empty : string.Format("{0} ", property.AccessModifier)), (string.IsNullOrEmpty(property.Accessor) ? string.Empty : string.Format("{0} ", property.Accessor)), property.PropertyType, FormatString(StringCaseFormat.No, property.PropertyName), setFormatFunctionName, setConversionFunctionName, setConversionFunctionType);
 									break;
 
 								default:

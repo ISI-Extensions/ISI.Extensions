@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -36,7 +36,7 @@ namespace ISI.Extensions.StatusTrackers
 			protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 			protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
 
-			private GetStatusTrackerFileNameDelegate _getStatusTrackerFileName { get; }
+			protected GetStatusTrackerFileNameDelegate GetStatusTrackerFileName { get; }
 
 			private const int DefaultBufferSize = 4096;
 
@@ -102,7 +102,7 @@ namespace ISI.Extensions.StatusTrackers
 					}
 				}
 			}
-			
+
 			public void SetCaptionPercent(string caption, int percent)
 			{
 				lock (SyncLock)
@@ -123,8 +123,6 @@ namespace ISI.Extensions.StatusTrackers
 				}
 			}
 
-			public string GetStatusTrackerFileName(string fileNameExtension) => _getStatusTrackerFileName(StatusTrackerKey, fileNameExtension);
-
 			public FileStatusTracker(
 				string statusTrackerKey,
 				Configuration configuration,
@@ -136,10 +134,10 @@ namespace ISI.Extensions.StatusTrackers
 				Configuration = configuration;
 				Logger = logger;
 				DateTimeStamper = dateTimeStamper;
-				_getStatusTrackerFileName = getStatusTrackerFileName;
+				GetStatusTrackerFileName = getStatusTrackerFileName;
 
 				{
-					var fileName = GetStatusTrackerFileName(RunningFileNameExtension);
+					var fileName = GetStatusTrackerFileName(StatusTrackerKey, RunningFileNameExtension);
 					try
 					{
 						RunningFileStream = new(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.DeleteOnClose);
@@ -153,7 +151,7 @@ namespace ISI.Extensions.StatusTrackers
 				}
 
 				{
-					var fileName = GetStatusTrackerFileName(CaptionFileNameExtension);
+					var fileName = GetStatusTrackerFileName(StatusTrackerKey, CaptionFileNameExtension);
 					try
 					{
 						CaptionFileStream = new(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.RandomAccess);
@@ -166,7 +164,7 @@ namespace ISI.Extensions.StatusTrackers
 				}
 
 				{
-					var fileName = GetStatusTrackerFileName(PercentFileNameExtension);
+					var fileName = GetStatusTrackerFileName(StatusTrackerKey, PercentFileNameExtension);
 					try
 					{
 						PercentFileStream = new(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.RandomAccess);
@@ -179,7 +177,7 @@ namespace ISI.Extensions.StatusTrackers
 				}
 
 				{
-					var fileName = GetStatusTrackerFileName(LogFileNameExtension);
+					var fileName = GetStatusTrackerFileName(StatusTrackerKey, LogFileNameExtension);
 					try
 					{
 						LogFileStream = new(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.None);
@@ -216,7 +214,7 @@ namespace ISI.Extensions.StatusTrackers
 
 			public void AddToLog(DateTime dateTimeStamp, string logEntry)
 			{
-				AddToLog(dateTimeStamp, LogEntryLevel.Information,  logEntry);
+				AddToLog(dateTimeStamp, LogEntryLevel.Information, logEntry);
 			}
 
 			public void AddToLog(DateTime dateTimeStamp, LogEntryLevel logEntryLevel, string logEntry)
@@ -260,7 +258,7 @@ namespace ISI.Extensions.StatusTrackers
 				if (!Finished)
 				{
 					Finished = true;
-					System.IO.File.WriteAllText(GetStatusTrackerFileName(FinishedFileNameExtension), string.Format("Success:\t{0}", successful.TrueFalse()));
+					System.IO.File.WriteAllText(GetStatusTrackerFileName(StatusTrackerKey, FinishedFileNameExtension), string.Format("Success:\t{0}", successful.TrueFalse()));
 				}
 			}
 
@@ -268,6 +266,9 @@ namespace ISI.Extensions.StatusTrackers
 			{
 				return _logEntries.ToArray();
 			}
+
+			private IDictionary<string, string> _keyValues = null;
+			public IDictionary<string, string> KeyValues => _keyValues ??= new FileStatusTrackerDictionary(StatusTrackerKey, GetStatusTrackerFileName);
 
 			public void Dispose()
 			{
@@ -295,7 +296,7 @@ namespace ISI.Extensions.StatusTrackers
 				RunningFileStream = null;
 
 				{
-					var fileName = GetStatusTrackerFileName(CaptionFileNameExtension);
+					var fileName = GetStatusTrackerFileName(StatusTrackerKey, CaptionFileNameExtension);
 					if (System.IO.File.Exists(fileName))
 					{
 						System.IO.File.Delete(fileName);
@@ -303,11 +304,165 @@ namespace ISI.Extensions.StatusTrackers
 				}
 
 				{
-					var fileName = GetStatusTrackerFileName(PercentFileNameExtension);
+					var fileName = GetStatusTrackerFileName(StatusTrackerKey, PercentFileNameExtension);
 					if (System.IO.File.Exists(fileName))
 					{
 						System.IO.File.Delete(fileName);
 					}
+				}
+			}
+		}
+
+		internal class FileStatusTrackerDictionary : IDictionary<string, string>
+		{
+			protected string StatusTrackerKey { get; }
+			protected GetStatusTrackerFileNameDelegate GetStatusTrackerFileName { get; }
+
+			internal FileStatusTrackerDictionary(
+				string statusTrackerKey,
+				GetStatusTrackerFileNameDelegate getStatusTrackerFileName)
+			{
+				StatusTrackerKey = statusTrackerKey;
+				GetStatusTrackerFileName = getStatusTrackerFileName;
+			}
+
+			protected string GetStatusTrackerKeyValueFileName(string statusTrackerKey, string key) => GetStatusTrackerFileName(statusTrackerKey, $"{key}{FileStatusTrackerFactory.KeyValueFileNameExtension}");
+
+			protected string[] GetKeys()
+			{
+				var fullNamePrefix = GetStatusTrackerFileName(StatusTrackerKey, string.Empty);
+				var directory = System.IO.Path.GetDirectoryName(fullNamePrefix);
+				var fileNamePrefix = System.IO.Path.GetFileName(fullNamePrefix);
+
+				var fullNames = System.IO.Directory.GetFiles(directory, $"*{FileStatusTrackerFactory.KeyValueFileNameExtension}", System.IO.SearchOption.TopDirectoryOnly);
+
+				return fullNames.ToNullCheckedArray(fullName => System.IO.Path.GetFileName(fullName).TrimStart(fileNamePrefix, StringComparison.InvariantCultureIgnoreCase).TrimEnd(FileStatusTrackerFactory.KeyValueFileNameExtension, StringComparison.InvariantCultureIgnoreCase), NullCheckCollectionResult.Empty);
+			}
+
+			protected string GetValue(string key)
+			{
+				var fullName = GetStatusTrackerKeyValueFileName(StatusTrackerKey, key);
+
+				if (System.IO.File.Exists(fullName))
+				{
+					return System.IO.File.ReadAllText(fullName);
+				}
+
+				return null;
+			}
+
+			protected IDictionary<string, string> GetKeyValues()
+			{
+				var keys = GetKeys();
+				var keyValues = new Dictionary<string, string>();
+
+				foreach (var key in keys)
+				{
+					keyValues.Add(key, GetValue(key));
+				}
+
+				return keyValues;
+			}
+
+			public IEnumerator<KeyValuePair<string, string>> GetEnumerator() => GetKeyValues().GetEnumerator();
+			System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+
+			public void Add(KeyValuePair<string, string> item) => Add(item.Key, item.Value);
+			public void Add(string key, string value)
+			{
+				var fullName = GetStatusTrackerKeyValueFileName(StatusTrackerKey, key);
+
+				if (System.IO.File.Exists(fullName))
+				{
+					throw new System.ArgumentException("An element with the same key already exists");
+				}
+
+				System.IO.File.WriteAllText(fullName, value);
+			}
+
+			public bool Contains(KeyValuePair<string, string> item) => ContainsKey(item.Key);
+			public bool ContainsKey(string key)
+			{
+				var fullName = GetStatusTrackerKeyValueFileName(StatusTrackerKey, key);
+
+				if (System.IO.File.Exists(fullName))
+				{
+					return true;
+				}
+
+				return false;
+			}
+
+			public bool TryGetValue(string key, out string value)
+			{
+				var fullName = GetStatusTrackerKeyValueFileName(StatusTrackerKey, key);
+
+				if (System.IO.File.Exists(fullName))
+				{
+					value = System.IO.File.ReadAllText(fullName);
+
+					return true;
+				}
+
+				value = null;
+				return false;
+			}
+
+			public string this[string key]
+			{
+				get
+				{
+					if (TryGetValue(key, out var value))
+					{
+						return value;
+					}
+
+					throw new System.Collections.Generic.KeyNotFoundException("key");
+				}
+				set
+				{
+					var fullName = GetStatusTrackerKeyValueFileName(StatusTrackerKey, key);
+
+					System.IO.File.WriteAllText(fullName, value);
+				}
+			}
+
+			public ICollection<string> Keys => GetKeys();
+
+			public ICollection<string> Values => GetKeyValues().Values;
+
+			public int Count => GetKeys().Length;
+
+			public bool IsReadOnly => false;
+
+			public void CopyTo(KeyValuePair<string, string>[] array, int arrayIndex) => GetKeyValues().CopyTo(array, arrayIndex);
+
+			public bool Remove(KeyValuePair<string, string> item) => Remove(item.Key);
+			public bool Remove(string key)
+			{
+				var fullName = GetStatusTrackerKeyValueFileName(StatusTrackerKey, key);
+
+				if (System.IO.File.Exists(fullName))
+				{
+					System.IO.File.Delete(fullName);
+
+					return true;
+				}
+
+				return false;
+			}
+
+			public void Clear()
+			{
+				var fullNamePrefix = GetStatusTrackerFileName(StatusTrackerKey, string.Empty);
+				var directory = System.IO.Path.GetDirectoryName(fullNamePrefix);
+				var fileNamePrefix = System.IO.Path.GetFileName(fullNamePrefix);
+
+				var fullNames = System.IO.Directory.GetFiles(directory, $"*{FileStatusTrackerFactory.KeyValueFileNameExtension}", System.IO.SearchOption.TopDirectoryOnly);
+
+				foreach (var fullName in fullNames)
+				{
+					System.IO.File.Delete(fullName);
 				}
 			}
 		}

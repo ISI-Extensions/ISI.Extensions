@@ -19,52 +19,17 @@ using System.Text;
 
 namespace ISI.Extensions.StatusTrackers
 {
-	public enum LogEntryLevel
+	public interface IStatusTrackerFactory
 	{
-		Information,
-		Warning,
-		Error,
-	}
-
-	public delegate void OnStatusChange(string caption, int percent);
-	public delegate void OnLogUpdate(IEnumerable<IStatusTrackerLogEntry> logEntries);
-	public delegate void OnAddToLog(IStatusTrackerLogEntry logEntry);
-	public delegate void AddToLog(LogEntryLevel logEntryLevel, string description);
-}
-
-namespace ISI.Extensions
-{
-	public interface IStatusTrackerSnapshot
-	{
-		string Caption { get; }
-		int Percent { get; }
-		IEnumerable<IStatusTrackerLogEntry> GetLogEntries();
-	}
-
-	public interface IStatusTracker
-	{
-		event ISI.Extensions.StatusTrackers.OnStatusChange OnStatusChangeEvents;
-		event ISI.Extensions.StatusTrackers.OnLogUpdate OnLogUpdateEvents;
-		event ISI.Extensions.StatusTrackers.OnAddToLog OnAddToLogEvents;
-		string Caption { get; set; }
-		int Percent { get; set; }
-		void SetCaptionPercent(string caption, int percent);
-		void AddToLog(System.Exception exception);
-		void AddToLog(string logEntry, System.Exception exception);
-		void AddToLog(string logEntry);
-		void AddToLog(ISI.Extensions.StatusTrackers.LogEntryLevel logEntryLevel, string logEntry);
-		void AddToLog(DateTime dateTimeStamp, ISI.Extensions.StatusTrackers.LogEntryLevel logEntryLevel, string logEntry);
-		void AddToLog(DateTime dateTimeStamp, string logEntry);
-		void AddToLog(IEnumerable<IStatusTrackerLogEntry> logEntries);
-		IEnumerable<IStatusTrackerLogEntry> GetLogEntries();
-
-		IDictionary<string, string> KeyValues { get; }
-	}
-
-	public interface IStatusTrackerLogEntry
-	{
-		DateTime DateTimeStamp { get; }
-		ISI.Extensions.StatusTrackers.LogEntryLevel LogEntryLevel { get; }
-		string Description { get; }
+		IStatusTracker CreateStatusTracker(string statusTrackerKey);
+		string GetStatusTrackerFileName(string statusTrackerKey, string fileNameExtension);
+		bool IsRunning(string statusTrackerKey);
+		bool IsFinished(string statusTrackerKey);
+		bool IsSuccessful(string statusTrackerKey);
+		HashSet<string> GetActiveStatusTrackerKeys();
+		IStatusTrackerSnapshot GetStatusTrackerSnapshot(string statusTrackerKey);
+		IStatusTrackerSnapshot[] GetActiveStatusTrackerSnapshots(IEnumerable<string> statusTrackerKeys);
+		IStatusTrackerSnapshot[] GetActiveStatusTrackerSnapshots();
+		void DeleteStatusTracker(string statusTrackerKey);
 	}
 }

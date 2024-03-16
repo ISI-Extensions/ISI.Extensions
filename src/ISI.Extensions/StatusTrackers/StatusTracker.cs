@@ -142,6 +142,9 @@ namespace ISI.Extensions
 				}
 			}
 		}
+
+		private IDictionary<string, string> _keyValues = null;
+		public IDictionary<string, string> KeyValues => _keyValues ??= new InvariantCultureIgnoreCaseStringDictionary<string>();
 		
 		public IEnumerable<IStatusTrackerLogEntry> GetLogEntries()
 		{

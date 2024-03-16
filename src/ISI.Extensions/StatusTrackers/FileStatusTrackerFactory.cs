@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,12 +21,13 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.StatusTrackers
 {
-	public partial class FileStatusTrackerFactory
+	public partial class FileStatusTrackerFactory : IStatusTrackerFactory
 	{
 		public const string RunningFileNameExtension = ".Running.txt";
 		public const string CaptionFileNameExtension = ".Caption.txt";
 		public const string PercentFileNameExtension = ".Percent.txt";
 		public const string LogFileNameExtension = ".Log.txt";
+		public const string KeyValueFileNameExtension = ".KeyValue.txt";
 		public const string FinishedFileNameExtension = ".Finished.txt";
 
 		protected Configuration Configuration { get; }
@@ -48,16 +49,16 @@ namespace ISI.Extensions.StatusTrackers
 			}
 		}
 
-		public FileStatusTracker CreateStatusTracker(string statusTrackerKey)
+		public IStatusTracker CreateStatusTracker(string statusTrackerKey)
 		{
-			return new(statusTrackerKey, Configuration, Logger, DateTimeStamper, GetStatusTrackerFileName);
+			return new FileStatusTracker(statusTrackerKey, Configuration, Logger, DateTimeStamper, GetStatusTrackerFileName);
 		}
 
 		public string GetStatusTrackerFileName(string statusTrackerKey, string fileNameExtension)
 		{
 			return System.IO.Path.Combine(Configuration.FileStatusTrackerDirectory, string.Format("{0}{1}", statusTrackerKey, fileNameExtension));
 		}
-		
+
 		public bool IsRunning(string statusTrackerKey)
 		{
 			return System.IO.File.Exists(GetStatusTrackerFileName(statusTrackerKey, RunningFileNameExtension));
@@ -96,7 +97,7 @@ namespace ISI.Extensions.StatusTrackers
 		{
 			var statusTrackerKeys = new HashSet<string>();
 
-			foreach (var fileName in System.IO.Directory.GetFiles(Configuration.FileStatusTrackerDirectory, string.Format("*{0}", RunningFileNameExtension)))
+			foreach (var fileName in System.IO.Directory.GetFiles(Configuration.FileStatusTrackerDirectory, $"*{RunningFileNameExtension}", System.IO.SearchOption.TopDirectoryOnly))
 			{
 				statusTrackerKeys.Add(System.IO.Path.GetFileName(fileName.Substring(0, fileName.Length - RunningFileNameExtension.Length)));
 			}
@@ -106,7 +107,7 @@ namespace ISI.Extensions.StatusTrackers
 
 		public IStatusTrackerSnapshot GetStatusTrackerSnapshot(string statusTrackerKey)
 		{
-			Func<string, string> readFile = fileName =>
+			string ReadFile(string fileName)
 			{
 				if (System.IO.File.Exists(fileName))
 				{
@@ -128,11 +129,11 @@ namespace ISI.Extensions.StatusTrackers
 				}
 
 				return string.Empty;
-			};
+			}
 
-			var caption = readFile(GetStatusTrackerFileName(statusTrackerKey, CaptionFileNameExtension));
-			var percent = readFile(GetStatusTrackerFileName(statusTrackerKey, PercentFileNameExtension)).ToInt();
-			var logEntries = readFile(GetStatusTrackerFileName(statusTrackerKey, LogFileNameExtension))
+			var caption = ReadFile(GetStatusTrackerFileName(statusTrackerKey, CaptionFileNameExtension));
+			var percent = ReadFile(GetStatusTrackerFileName(statusTrackerKey, PercentFileNameExtension)).ToInt();
+			var logEntries = ReadFile(GetStatusTrackerFileName(statusTrackerKey, LogFileNameExtension))
 				.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
 				.Select(l => l.Split(new[] { '\t' }, 2)).
 				Select(logParts => new StatusTrackerLogEntry()
@@ -143,7 +144,7 @@ namespace ISI.Extensions.StatusTrackers
 
 			return new StatusTrackerSnapshot(caption, percent, logEntries);
 		}
-		
+
 		public IStatusTrackerSnapshot[] GetActiveStatusTrackerSnapshots(IEnumerable<string> statusTrackerKeys)
 		{
 			var statusTrackers = new List<IStatusTrackerSnapshot>();
@@ -165,7 +166,7 @@ namespace ISI.Extensions.StatusTrackers
 
 		public void DeleteStatusTracker(string statusTrackerKey)
 		{
-			foreach (var fileNameExtension in new [] {RunningFileNameExtension,CaptionFileNameExtension,PercentFileNameExtension,LogFileNameExtension,FinishedFileNameExtension})
+			foreach (var fileNameExtension in new[] { RunningFileNameExtension, CaptionFileNameExtension, PercentFileNameExtension, LogFileNameExtension, FinishedFileNameExtension })
 			{
 				var fileName = GetStatusTrackerFileName(statusTrackerKey, fileNameExtension);
 				if (System.IO.File.Exists(fileName))

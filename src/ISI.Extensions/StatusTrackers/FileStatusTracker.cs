@@ -25,7 +25,7 @@ namespace ISI.Extensions.StatusTrackers
 	{
 		public delegate string GetStatusTrackerFileNameDelegate(string statusTrackerKey, string fileNameExtension);
 
-		public class FileStatusTracker : IStatusTracker, IDisposable
+		public class FileStatusTracker : IStatusTracker
 		{
 			public string StatusTrackerKey { get; }
 			public event ISI.Extensions.StatusTrackers.OnStatusChange OnStatusChangeEvents;
@@ -55,7 +55,7 @@ namespace ISI.Extensions.StatusTrackers
 			protected System.IO.FileStream LogFileStream { get; set; }
 			protected System.IO.StreamWriter LogStreamWriter { get; set; }
 
-			protected bool Finished { get; set; }
+			public bool Finished { get; protected set; }
 
 			private string _caption = string.Empty;
 			public string Caption

@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -33,6 +33,7 @@ namespace ISI.Extensions
 		public int MaxLogSize { get; set; } = 100000;
 
 		private string _caption = string.Empty;
+
 		public string Caption
 		{
 			get => _caption;
@@ -47,6 +48,7 @@ namespace ISI.Extensions
 		}
 
 		private int _percent = 0;
+
 		public int Percent
 		{
 			get => _percent;
@@ -58,6 +60,7 @@ namespace ISI.Extensions
 					{
 						value = 0;
 					}
+
 					if (value > 100)
 					{
 						value = 100;
@@ -79,10 +82,12 @@ namespace ISI.Extensions
 				{
 					percent = 0;
 				}
+
 				if (percent > 100)
 				{
 					percent = 100;
 				}
+
 				_percent = percent;
 
 				OnStatusChangeEvents?.Invoke(Caption, Percent);
@@ -97,22 +102,27 @@ namespace ISI.Extensions
 		{
 			AddToLog(string.Empty, exception);
 		}
+
 		public void AddToLog(string logEntry, System.Exception exception)
 		{
 			AddToLog(DateTimeStamper.CurrentDateTime(), ISI.Extensions.StatusTrackers.LogEntryLevel.Error, string.Format("Error: {1}{0}{2}", Environment.NewLine, logEntry, exception.ErrorMessageFormatted("  ")));
 		}
+
 		public void AddToLog(string logEntry)
 		{
 			AddToLog(DateTimeStamper.CurrentDateTime(), logEntry);
 		}
+
 		public void AddToLog(ISI.Extensions.StatusTrackers.LogEntryLevel logEntryLevel, string logEntry)
 		{
 			AddToLog(DateTimeStamper.CurrentDateTime(), logEntryLevel, logEntry);
 		}
+
 		public void AddToLog(DateTime dateTimeStamp, string logEntry)
 		{
 			AddToLog(dateTimeStamp, ISI.Extensions.StatusTrackers.LogEntryLevel.Information, logEntry);
 		}
+
 		public void AddToLog(DateTime dateTimeStamp, ISI.Extensions.StatusTrackers.LogEntryLevel logEntryLevel, string logEntry)
 		{
 			AddToLog(new IStatusTrackerLogEntry[]
@@ -125,6 +135,7 @@ namespace ISI.Extensions
 				}
 			});
 		}
+
 		public void AddToLog(IEnumerable<IStatusTrackerLogEntry> logEntries)
 		{
 			lock (_syncLock)
@@ -145,10 +156,18 @@ namespace ISI.Extensions
 
 		private IDictionary<string, string> _keyValues = null;
 		public IDictionary<string, string> KeyValues => _keyValues ??= new InvariantCultureIgnoreCaseStringDictionary<string>();
-		
+
 		public IEnumerable<IStatusTrackerLogEntry> GetLogEntries()
 		{
 			return _logEntries.ToArray();
+		}
+
+		public void Finish(bool successful)
+		{
+		}
+
+		void IDisposable.Dispose()
+		{
 		}
 	}
 }

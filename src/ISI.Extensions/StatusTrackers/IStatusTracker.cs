@@ -41,7 +41,7 @@ namespace ISI.Extensions
 		IEnumerable<IStatusTrackerLogEntry> GetLogEntries();
 	}
 
-	public interface IStatusTracker
+	public interface IStatusTracker : IDisposable
 	{
 		event ISI.Extensions.StatusTrackers.OnStatusChange OnStatusChangeEvents;
 		event ISI.Extensions.StatusTrackers.OnLogUpdate OnLogUpdateEvents;
@@ -59,6 +59,8 @@ namespace ISI.Extensions
 		IEnumerable<IStatusTrackerLogEntry> GetLogEntries();
 
 		IDictionary<string, string> KeyValues { get; }
+
+		void Finish(bool successful);
 	}
 
 	public interface IStatusTrackerLogEntry

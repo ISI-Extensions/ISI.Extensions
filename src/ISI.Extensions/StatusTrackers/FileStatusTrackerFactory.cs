@@ -51,12 +51,17 @@ namespace ISI.Extensions.StatusTrackers
 
 		public IStatusTracker CreateStatusTracker(string statusTrackerKey)
 		{
-			return new FileStatusTracker(statusTrackerKey, Configuration, Logger, DateTimeStamper, GetStatusTrackerFileName);
+			return new FileStatusTracker(statusTrackerKey, Configuration, Logger, DateTimeStamper, GetStatusTrackerFileName, GetStatusTrackerKeyValueFileName);
 		}
 
 		public string GetStatusTrackerFileName(string statusTrackerKey, string fileNameExtension)
 		{
-			return System.IO.Path.Combine(Configuration.FileStatusTrackerDirectory, string.Format("{0}{1}", statusTrackerKey, fileNameExtension));
+			return System.IO.Path.Combine(Configuration.FileStatusTrackerDirectory, $"{statusTrackerKey}{fileNameExtension}");
+		}
+
+		public string GetStatusTrackerKeyValueFileName(string statusTrackerKey, string key)
+		{
+			return GetStatusTrackerFileName(statusTrackerKey, $"-{key}{FileStatusTrackerFactory.KeyValueFileNameExtension}");
 		}
 
 		public bool IsRunning(string statusTrackerKey)
@@ -93,7 +98,22 @@ namespace ISI.Extensions.StatusTrackers
 			return content.FirstOrDefault().Split(new[] { '\t' }, StringSplitOptions.None)[1].ToBoolean();
 		}
 
-		public HashSet<string> GetActiveStatusTrackerKeys()
+		public bool TryStatusTrackerGetKeyValue(string statusTrackerKey, string key, out string value)
+		{
+			var fullName = GetStatusTrackerKeyValueFileName(statusTrackerKey, key);
+
+			if (System.IO.File.Exists(fullName))
+			{
+				value = System.IO.File.ReadAllText(fullName);
+
+				return true;
+			}
+
+			value = null;
+			return false;
+		}
+
+		public IEnumerable<string> GetActiveStatusTrackerKeys()
 		{
 			var statusTrackerKeys = new HashSet<string>();
 

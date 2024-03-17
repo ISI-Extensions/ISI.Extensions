@@ -24,6 +24,7 @@ namespace ISI.Extensions.StatusTrackers
 	public partial class FileStatusTrackerFactory
 	{
 		public delegate string GetStatusTrackerFileNameDelegate(string statusTrackerKey, string fileNameExtension);
+		public delegate string GetStatusTrackerKeyValueFileNameDelegate(string statusTrackerKey, string key);
 
 		public class FileStatusTracker : IStatusTracker
 		{
@@ -37,6 +38,7 @@ namespace ISI.Extensions.StatusTrackers
 			protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
 
 			protected GetStatusTrackerFileNameDelegate GetStatusTrackerFileName { get; }
+			protected GetStatusTrackerKeyValueFileNameDelegate GetStatusTrackerKeyValueFileName { get; }
 
 			private const int DefaultBufferSize = 4096;
 
@@ -128,13 +130,15 @@ namespace ISI.Extensions.StatusTrackers
 				Configuration configuration,
 				Microsoft.Extensions.Logging.ILogger logger,
 				ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
-				GetStatusTrackerFileNameDelegate getStatusTrackerFileName)
+				GetStatusTrackerFileNameDelegate getStatusTrackerFileName,
+				GetStatusTrackerKeyValueFileNameDelegate getStatusTrackerKeyValueFileName)
 			{
 				StatusTrackerKey = statusTrackerKey;
 				Configuration = configuration;
 				Logger = logger;
 				DateTimeStamper = dateTimeStamper;
 				GetStatusTrackerFileName = getStatusTrackerFileName;
+				GetStatusTrackerKeyValueFileName = getStatusTrackerKeyValueFileName;
 
 				{
 					var fileName = GetStatusTrackerFileName(StatusTrackerKey, RunningFileNameExtension);
@@ -268,7 +272,7 @@ namespace ISI.Extensions.StatusTrackers
 			}
 
 			private IDictionary<string, string> _keyValues = null;
-			public IDictionary<string, string> KeyValues => _keyValues ??= new FileStatusTrackerDictionary(StatusTrackerKey, GetStatusTrackerFileName);
+			public IDictionary<string, string> KeyValues => _keyValues ??= new FileStatusTrackerDictionary(StatusTrackerKey, GetStatusTrackerKeyValueFileName);
 
 			public void Dispose()
 			{
@@ -316,21 +320,19 @@ namespace ISI.Extensions.StatusTrackers
 		internal class FileStatusTrackerDictionary : IDictionary<string, string>
 		{
 			protected string StatusTrackerKey { get; }
-			protected GetStatusTrackerFileNameDelegate GetStatusTrackerFileName { get; }
+			protected GetStatusTrackerKeyValueFileNameDelegate GetStatusTrackerKeyValueFileName { get; }
 
 			internal FileStatusTrackerDictionary(
 				string statusTrackerKey,
-				GetStatusTrackerFileNameDelegate getStatusTrackerFileName)
+				GetStatusTrackerKeyValueFileNameDelegate getStatusTrackerKeyValueFileName)
 			{
 				StatusTrackerKey = statusTrackerKey;
-				GetStatusTrackerFileName = getStatusTrackerFileName;
+				GetStatusTrackerKeyValueFileName = getStatusTrackerKeyValueFileName;
 			}
-
-			protected string GetStatusTrackerKeyValueFileName(string statusTrackerKey, string key) => GetStatusTrackerFileName(statusTrackerKey, $"{key}{FileStatusTrackerFactory.KeyValueFileNameExtension}");
 
 			protected string[] GetKeys()
 			{
-				var fullNamePrefix = GetStatusTrackerFileName(StatusTrackerKey, string.Empty);
+				var fullNamePrefix = GetStatusTrackerKeyValueFileName(StatusTrackerKey, string.Empty).TrimEnd(FileStatusTrackerFactory.KeyValueFileNameExtension, StringComparison.InvariantCultureIgnoreCase);
 				var directory = System.IO.Path.GetDirectoryName(fullNamePrefix);
 				var fileNamePrefix = System.IO.Path.GetFileName(fullNamePrefix);
 
@@ -454,7 +456,7 @@ namespace ISI.Extensions.StatusTrackers
 
 			public void Clear()
 			{
-				var fullNamePrefix = GetStatusTrackerFileName(StatusTrackerKey, string.Empty);
+				var fullNamePrefix = GetStatusTrackerKeyValueFileName(StatusTrackerKey, string.Empty).TrimEnd(FileStatusTrackerFactory.KeyValueFileNameExtension, StringComparison.InvariantCultureIgnoreCase);
 				var directory = System.IO.Path.GetDirectoryName(fullNamePrefix);
 				var fileNamePrefix = System.IO.Path.GetFileName(fullNamePrefix);
 

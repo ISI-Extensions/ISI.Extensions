@@ -22,14 +22,14 @@ namespace ISI.Extensions.StatusTrackers
 	public interface IStatusTrackerFactory
 	{
 		IStatusTracker CreateStatusTracker(string statusTrackerKey);
-		string GetStatusTrackerFileName(string statusTrackerKey, string fileNameExtension);
-		bool IsRunning(string statusTrackerKey);
-		bool IsFinished(string statusTrackerKey);
-		bool IsSuccessful(string statusTrackerKey);
-		HashSet<string> GetActiveStatusTrackerKeys();
+		IEnumerable<string> GetActiveStatusTrackerKeys();
 		IStatusTrackerSnapshot GetStatusTrackerSnapshot(string statusTrackerKey);
 		IStatusTrackerSnapshot[] GetActiveStatusTrackerSnapshots(IEnumerable<string> statusTrackerKeys);
 		IStatusTrackerSnapshot[] GetActiveStatusTrackerSnapshots();
+		bool IsRunning(string statusTrackerKey);
+		bool IsFinished(string statusTrackerKey);
+		bool IsSuccessful(string statusTrackerKey);
+		bool TryStatusTrackerGetKeyValue(string statusTrackerKey, string key, out string value);
 		void DeleteStatusTracker(string statusTrackerKey);
 	}
 }

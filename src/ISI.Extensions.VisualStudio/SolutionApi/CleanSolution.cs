@@ -139,7 +139,14 @@ namespace ISI.Extensions.VisualStudio
 
 									if (!usedPackages.Contains(package))
 									{
-										System.IO.Directory.Delete(packageDirectory, true);
+										try
+										{
+											System.IO.Directory.Delete(packageDirectory, true);
+										}
+										catch (Exception exception)
+										{
+											throw new Exception($"Could not delete \"{packageDirectory}\"", exception);
+										}
 									}
 								}
 							}

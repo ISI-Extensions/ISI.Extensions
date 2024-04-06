@@ -30,15 +30,14 @@ namespace ISI.Extensions
 
 			protected readonly object _syncLock = new();
 
-			private List<ISI.Extensions.Threads.ThreadWrapper> _runningThreads = null;
-			public IList<ISI.Extensions.Threads.ThreadWrapper> RunningThreads => _runningThreads ?? (_runningThreads = new());
+			private List<ISI.Extensions.Threads.IThreadWrapper> _runningThreads = null;
+			public IList<ISI.Extensions.Threads.IThreadWrapper> RunningThreads => _runningThreads ?? (_runningThreads = new());
 
 			private void RemoveInActiveThreads()
 			{
-				_runningThreads?.RemoveAll(i => !i.IsActive);
+				_runningThreads?.RemoveAll(thread => !thread.IsActive);
 			}
-
-
+			
 			public void CheckTimeouts()
 			{
 				lock (_syncLock)
@@ -49,8 +48,7 @@ namespace ISI.Extensions
 
 			public bool Start()
 			{
-				_timer = new(
-					state => { CheckTimeouts(); }, null, new(0), TimeSpan.FromMinutes(10));
+				_timer = new(state => { CheckTimeouts(); }, null, new(0), TimeSpan.FromMinutes(10));
 
 				return true;
 			}

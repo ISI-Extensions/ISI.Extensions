@@ -31,7 +31,7 @@ namespace ISI.Extensions
 			protected readonly object _syncLock = new();
 
 			private List<ISI.Extensions.Threads.IThreadWrapper> _runningThreads = null;
-			public IList<ISI.Extensions.Threads.IThreadWrapper> RunningThreads => _runningThreads ?? (_runningThreads = new());
+			public IList<ISI.Extensions.Threads.IThreadWrapper> RunningThreads => _runningThreads ??= new();
 
 			private void RemoveInActiveThreads()
 			{

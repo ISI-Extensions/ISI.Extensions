@@ -25,6 +25,7 @@ namespace ISI.Platforms
 	public delegate void ServiceApplicationContextWebStartupMvcBuilderDelegate(Microsoft.Extensions.DependencyInjection.IMvcBuilder mvcBuilder);
 	public delegate void ServiceApplicationContextWebStartupConfigureServicesDelegate(Microsoft.Extensions.DependencyInjection.IServiceCollection services);
 	public delegate void ServiceApplicationContextConfigureApplicationDelegate(Microsoft.AspNetCore.Builder.IApplicationBuilder applicationBuilder, Microsoft.AspNetCore.Hosting.IWebHostEnvironment webHostingEnvironment);
+	public delegate void ServiceApplicationContextPreMessageBusBuildDelegate(Microsoft.Extensions.Hosting.IHost host);
 	public delegate void ServiceApplicationContextPostStartupDelegate(Microsoft.Extensions.Hosting.IHost host);
 
 	public interface IServiceApplicationContextAddActions
@@ -41,6 +42,8 @@ namespace ISI.Platforms
 		ServiceApplicationContextWebStartupConfigureServicesDelegate WebStartupConfigureServices { get; set; }
 
 		ServiceApplicationContextConfigureApplicationDelegate ConfigureApplication { get; set; }
+
+		ServiceApplicationContextPreMessageBusBuildDelegate PreMessageBusBuild { get; set; }
 
 		ServiceApplicationContextPostStartupDelegate PostStartup { get; set; }
 	}
@@ -74,6 +77,9 @@ namespace ISI.Platforms
 
 		public ServiceApplicationContextConfigureApplicationDelegate ConfigureApplication { get; private set; }
 		ServiceApplicationContextConfigureApplicationDelegate IServiceApplicationContextAddActions.ConfigureApplication { get => ConfigureApplication; set => ConfigureApplication = value; }
+
+		public ServiceApplicationContextPreMessageBusBuildDelegate PreMessageBusBuild { get; private set; }
+		ServiceApplicationContextPreMessageBusBuildDelegate IServiceApplicationContextAddActions.PreMessageBusBuild { get => PreMessageBusBuild; set => PreMessageBusBuild = value; }
 
 		public ServiceApplicationContextPostStartupDelegate PostStartup { get; private set; }
 		ServiceApplicationContextPostStartupDelegate IServiceApplicationContextAddActions.PostStartup { get => PostStartup; set => PostStartup = value; }

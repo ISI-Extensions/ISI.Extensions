@@ -118,13 +118,13 @@ namespace ISI.Platforms.ServiceApplication
 
 				if (configuration.UseMessageBus)
 				{
+					Startup.Context.PreMessageBusBuild?.Invoke(_host);
+
 					_messageBus = _host.Services.GetRequiredService<ISI.Extensions.MessageBus.IMessageBus>();
-					var enterpriseCacheManagerApi = _host.Services.GetRequiredService<ISI.Extensions.Caching.IEnterpriseCacheManagerApi>();
 
 					_messageBus.Build(_host.Services, new ISI.Extensions.MessageBus.MessageBusBuildRequestCollection()
 					{
 						Startup.Context.GetAddMessageBusSubscriptions,
-						enterpriseCacheManagerApi.GetAddSubscriptions,
 					});
 
 					_messageBus.StartAsync();

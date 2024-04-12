@@ -12,43 +12,27 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Platforms.AspNetCore.Extensions;
 using ISI.Platforms.Extensions;
-using ISI.Platforms.ServiceApplication.Extensions;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Platforms.ServiceApplication.Test
+namespace ISI.Platforms.ServiceApplication.Extensions
 {
-	public class Program
+	public static class EnterpriseCacheManagerExtensions
 	{
-		public static int Main(string[] args)
+		public static void AddEnterpriseCacheManager(this ISI.Platforms.IServiceApplicationContextAddActions context)
 		{
-			var context = new ServiceApplicationContext(typeof(Program))
+			context.AddPreMessageBusBuild(host =>
 			{
-				LoggerConfigurator = new ISI.Platforms.Serilog.LoggerConfigurator(),
-				
-				Args = args,
-			};
+				var enterpriseCacheManagerApi = host.Services.GetRequiredService<ISI.Extensions.Caching.IEnterpriseCacheManagerApi>();
 
-			context.AddCookieAndBearerAuthentication("CookieAndBearerAuthentication", "CookieAndBearerPolicy");
-
-			context.AddWebStartupConfigureServices(services =>
-			{
-				services.AddSingleton<ISI.Extensions.IAuthenticationIdentityApi, AuthenticationIdentityApi>();
+				context.AddGetAddMessageBusSubscriptions(enterpriseCacheManagerApi.GetAddSubscriptions);
 			});
-
-			context.AddSwaggerConfiguration(useBearer: true);
-
-			context.AddEnterpriseCacheManager();
-
-			return ISI.Platforms.ServiceApplication.Startup.Main(context);
 		}
 	}
 }

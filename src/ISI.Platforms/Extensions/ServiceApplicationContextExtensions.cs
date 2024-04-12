@@ -95,6 +95,17 @@ namespace ISI.Platforms.Extensions
 			};
 		}
 
+		public static void AddPreMessageBusBuild(this IServiceApplicationContextAddActions context, ServiceApplicationContextPreMessageBusBuildDelegate action)
+		{
+			var preMessageBusBuild = context.PreMessageBusBuild;
+			context.PreMessageBusBuild = host =>
+			{
+				preMessageBusBuild?.Invoke(host);
+
+				action(host);
+			};
+		}
+
 		public static void AddPostStartup(this IServiceApplicationContextAddActions context, ServiceApplicationContextPostStartupDelegate action)
 		{
 			var postStartup = context.PostStartup;

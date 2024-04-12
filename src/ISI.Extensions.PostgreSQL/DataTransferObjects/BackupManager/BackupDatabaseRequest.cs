@@ -24,6 +24,7 @@ namespace ISI.Extensions.PostgreSQL.DataTransferObjects.BackupManager
 		public string Password { get; set; }
 
 		public string Database { get; set; }
+
 		public string LocalBackupDirectory { get; set; }
 	}
 	public class BackupDatabaseUsingConnectionStringRequest : IBackupDatabaseRequest
@@ -31,8 +32,9 @@ namespace ISI.Extensions.PostgreSQL.DataTransferObjects.BackupManager
 		public ISI.Extensions.IStatusTracker StatusTracker { get; set; }
 
 		public string ConnectionString { get; set; }
-		
+
 		public string Database { get; set; }
+
 		public string LocalBackupDirectory { get; set; }
 	}
 }

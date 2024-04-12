@@ -158,7 +158,7 @@ namespace ISI.Extensions.StatusTrackers
 					var fileName = GetStatusTrackerFileName(StatusTrackerKey, CaptionFileNameExtension);
 					try
 					{
-						CaptionFileStream = new(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.RandomAccess);
+						CaptionFileStream = new(fileName, System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.RandomAccess);
 						CaptionStreamWriter = new(CaptionFileStream);
 					}
 					catch (Exception exception)
@@ -171,7 +171,7 @@ namespace ISI.Extensions.StatusTrackers
 					var fileName = GetStatusTrackerFileName(StatusTrackerKey, PercentFileNameExtension);
 					try
 					{
-						PercentFileStream = new(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.RandomAccess);
+						PercentFileStream = new(fileName, System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.RandomAccess);
 						PercentStreamWriter = new(PercentFileStream);
 					}
 					catch (Exception exception)
@@ -184,7 +184,8 @@ namespace ISI.Extensions.StatusTrackers
 					var fileName = GetStatusTrackerFileName(StatusTrackerKey, LogFileNameExtension);
 					try
 					{
-						LogFileStream = new(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.None);
+						LogFileStream = new(fileName, System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.None);
+						LogFileStream.Position = LogFileStream.Length;
 						LogStreamWriter = new(LogFileStream);
 					}
 					catch (Exception exception)

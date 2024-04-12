@@ -79,7 +79,7 @@ namespace ISI.Extensions.Tests
 				UserName = "postgres",
 				Password = settings.GetValue("Postgres-Password"),
 				Database = "ISI.Identity",
-				BackupDirectory = "/var/lib/postgresql-dump",
+				LocalBackupDirectory = "/var/lib/postgresql-dump",
 			});
 		}
 	}

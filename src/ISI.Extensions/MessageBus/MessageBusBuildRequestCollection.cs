@@ -41,19 +41,28 @@ namespace ISI.Extensions.MessageBus
 
 		public void Add(IEnumerable<Action<IMessageBusConfigurator>> addSubscriptions)
 		{
-			DefaultChannelMessageBusBuildRequest.AddSubscriptions.AddRange(addSubscriptions);
+			if (addSubscriptions != null)
+			{
+				DefaultChannelMessageBusBuildRequest.AddSubscriptions.AddRange(addSubscriptions);
+			}
 		}
 
 		public void Add(Action<IMessageBusConfigurator> addSubscriptions)
 		{
-			Add(new[] { addSubscriptions });
+			if (addSubscriptions != null)
+			{
+				Add(new[] { addSubscriptions });
+			}
 		}
 
 		public void Add(GetAddMessageBusSubscriptionsDelegate addSubscriptions)
 		{
-			foreach (var messageBusBuildRequest in addSubscriptions())
+			if (addSubscriptions != null)
 			{
-				Add(messageBusBuildRequest);
+				foreach (var messageBusBuildRequest in addSubscriptions())
+				{
+					Add(messageBusBuildRequest);
+				}
 			}
 		}
 

@@ -31,6 +31,10 @@ namespace ISI.Extensions.PostgreSQL
 		{
 			var response = new DTOs.BackupDatabaseResponse();
 
+			var statusTracker = request.StatusTracker ?? new ISI.Extensions.StatusTracker();
+
+			statusTracker.AddToLog($"Backing up database {request.Database}");
+
 			var sql = new StringBuilder();
 
 			var tempTableName = $"dump-{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}";
@@ -50,8 +54,8 @@ namespace ISI.Extensions.PostgreSQL
 
 			sql.AppendLine($"DROP TABLE IF EXISTS \"{tempTableName}\";");
 			sql.AppendLine($"CREATE TABLE \"{tempTableName}\" (str text);");
-			sql.AppendLine($"COPY \"{tempTableName}\" FROM PROGRAM 'pg_dump --dbname=postgresql://{userName}:{password}@127.0.0.1:{port}/{request.Database}  --file={request.BackupDirectory}/{fileName}.dumping';");
-			sql.AppendLine($"COPY \"{tempTableName}\" FROM PROGRAM 'mv {request.BackupDirectory}/{fileName}.dumping {request.BackupDirectory}/{fileName}.sql';");
+			sql.AppendLine($"COPY \"{tempTableName}\" FROM PROGRAM 'pg_dump --dbname=postgresql://{userName}:{password}@127.0.0.1:{port}/{request.Database}  --file={request.LocalBackupDirectory}/{fileName}.dumping';");
+			sql.AppendLine($"COPY \"{tempTableName}\" FROM PROGRAM 'mv {request.LocalBackupDirectory}/{fileName}.dumping {request.LocalBackupDirectory}/{fileName}.sql';");
 			sql.AppendLine($"DROP TABLE IF EXISTS \"{tempTableName}\";");
 
 			var connectionString = $"Host={host};Username={userName};Password={password};Database=postgres;";
@@ -67,7 +71,9 @@ namespace ISI.Extensions.PostgreSQL
 				}
 			}
 
-			response.FileName = $"{request.BackupDirectory}/{fileName}.sql";
+			response.FileName = $"{request.LocalBackupDirectory}/{fileName}.sql";
+
+			statusTracker.AddToLog($"Backed up database {request.Database} to \"{response.FileName}\"");
 			
 			return response;
 		}

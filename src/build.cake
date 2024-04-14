@@ -3,6 +3,7 @@
 #tool nuget:?package=7-Zip.CommandLine
 #addin nuget:?package=Cake.7zip
 #addin nuget:?package=ISI.Cake.AddIn&loaddependencies=true
+#addin nuget:?package=Cake.Git
 
 //mklink /D Secrets S:\
 var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
@@ -23,6 +24,20 @@ var assemblyVersion = GetAssemblyVersion(ParseAssemblyInfo(assemblyVersionFile).
 Information("AssemblyVersion: {0}", assemblyVersion);
 
 var nugetPackOutputDirectory = Argument("NugetPackOutputDirectory", System.IO.Path.GetFullPath("../Nuget"));
+
+Task("GetVersion")
+	.Does(() =>
+	{
+		var lastCommit = GitLogTip("../");
+
+		Information(@$"
+Last commit {lastCommit.Sha}
+Short message: {lastCommit.MessageShort}
+Author:        {lastCommit.Author.Name}
+Authored:      {lastCommit.Author.When:yyyy-MM-dd HH:mm:ss}
+Committer:     {lastCommit.Committer.Name}
+Committed:     {lastCommit.Committer.When:yyyy-MM-dd HH:mm:ss}");	
+	});
 
 Task("Clean")
 	.Does(() =>

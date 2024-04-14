@@ -25,7 +25,7 @@ namespace ISI.Extensions.Repository
 	{
 		public string Name { get; set; }
 
-		public RecordIndexColumn<TRecord>[] Columns { get; set; } = Array.Empty<RecordIndexColumn<TRecord>>();
+		public RecordIndexColumn<TRecord>[] Columns { get; set; } = [];
 
 		public bool Clustered { get; set; }
 		public bool Unique { get; set; }

@@ -29,6 +29,7 @@ namespace ISI.Platforms.AspNetCore
 
 	public interface ICookieAuthenticationHandler : IAuthenticationHandler
 	{
-		string CookieName { get; }
+		string AuthenticationHandlerName { get; set; }
+		string CookieName { get; set; }
 	}
 }

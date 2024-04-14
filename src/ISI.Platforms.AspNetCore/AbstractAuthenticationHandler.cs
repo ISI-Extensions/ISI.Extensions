@@ -23,15 +23,13 @@ using Microsoft.Extensions.Logging;
 
 namespace ISI.Platforms.AspNetCore
 {
-	public abstract class AbstractAuthenticationHandler : Microsoft.AspNetCore.Authentication.AuthenticationHandler<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions>, IAuthenticationHandler
+	public abstract class AbstractAuthenticationHandler : Microsoft.AspNetCore.Authentication.AuthenticationHandler<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions>, ISI.Platforms.AspNetCore.IAuthenticationHandler
 	{
-		public static string AuthenticationHandlerName { get; internal set; }
-
-		protected Configuration Configuration { get; }
+		protected ISI.Platforms.AspNetCore.Configuration Configuration { get; }
 		protected ISI.Extensions.IAuthenticationIdentityApi AuthenticationIdentityApi { get; }
 
 		public AbstractAuthenticationHandler(
-			Configuration configuration,
+			ISI.Platforms.AspNetCore.Configuration configuration,
 			Microsoft.Extensions.Options.IOptionsMonitor<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions> options,
 			Microsoft.Extensions.Logging.ILoggerFactory logger,
 			System.Text.Encodings.Web.UrlEncoder encoder,
@@ -42,6 +40,8 @@ namespace ISI.Platforms.AspNetCore
 			Configuration = configuration;
 			AuthenticationIdentityApi = authenticationIdentityApi;
 		}
+
+		protected abstract string GetAuthenticationHandlerName();
 
 		public async Task<System.IdentityModel.Tokens.Jwt.JwtSecurityToken> GetJwtSecurityTokenAsync(ISI.Extensions.IAuthenticationIdentityUser authenticationIdentityUser, IEnumerable<System.Security.Claims.Claim> claims = null)
 		{
@@ -169,7 +169,7 @@ namespace ISI.Platforms.AspNetCore
 
 						var principal = new System.Security.Claims.ClaimsPrincipal(new[]
 						{
-							new System.Security.Claims.ClaimsIdentity(jwtToken.Claims, AuthenticationHandlerName),
+							new System.Security.Claims.ClaimsIdentity(jwtToken.Claims, GetAuthenticationHandlerName()),
 						});
 
 						var ticket = new Microsoft.AspNetCore.Authentication.AuthenticationTicket(principal, Scheme.Name);

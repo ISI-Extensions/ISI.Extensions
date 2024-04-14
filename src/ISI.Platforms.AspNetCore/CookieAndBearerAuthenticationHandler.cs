@@ -25,8 +25,11 @@ namespace ISI.Platforms.AspNetCore
 {
 	public class CookieAndBearerAuthenticationHandler : AbstractAuthenticationHandler, ICookieAuthenticationHandler
 	{
-		public static string CookieName { get; set; } = "Authentication";
-		string ICookieAuthenticationHandler.CookieName => CookieName;
+		private const string DefaultAuthenticationHandlerName = nameof(CookieAndBearerAuthenticationHandler);
+		private const string DefaultCookieName = "Authentication";
+
+		protected string AuthenticationHandlerName { get; set; } = DefaultAuthenticationHandlerName;
+		protected string CookieName { get; set; } = DefaultCookieName;
 
 		public CookieAndBearerAuthenticationHandler(
 			Configuration configuration,
@@ -39,6 +42,20 @@ namespace ISI.Platforms.AspNetCore
 		{
 
 		}
+
+		string ICookieAuthenticationHandler.AuthenticationHandlerName
+		{
+			get => AuthenticationHandlerName;
+			set => AuthenticationHandlerName = string.IsNullOrWhiteSpace(value) ? DefaultAuthenticationHandlerName : value;
+		}
+
+		string ICookieAuthenticationHandler.CookieName
+		{
+			get => CookieName;
+			set => CookieName = string.IsNullOrWhiteSpace(value) ? DefaultCookieName : value;
+		}
+
+		protected override string GetAuthenticationHandlerName() => CookieName;
 
 		protected override bool TryGetAuthenticationHeaderValue(out string authenticationHeaderValue)
 		{

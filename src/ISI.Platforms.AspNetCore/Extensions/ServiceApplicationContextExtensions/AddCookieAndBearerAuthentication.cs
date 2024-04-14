@@ -28,27 +28,30 @@ namespace ISI.Platforms.AspNetCore.Extensions
 {
 	public static partial class ServiceApplicationContextExtensions
 	{
-		public static ServiceApplicationContext AddCookieAndBearerAuthentication(this ServiceApplicationContext context, string authenticationHandlerName, string policyName, string cookieName = null)
+		public static ServiceApplicationContext AddCookieAndBearerAuthentication(this ServiceApplicationContext context, string authenticationHandlerName = null, string policyName = null, string cookieName = null)
 		{
-			CookieAndBearerAuthenticationHandler.AuthenticationHandlerName = authenticationHandlerName;
-			if (!string.IsNullOrWhiteSpace(cookieName))
-			{
-				CookieAndBearerAuthenticationHandler.CookieName = cookieName;
-			}
-
-			HasUserUuidAuthorizationPolicy.PolicyName = policyName;
+			var authorizationPolicy = new HasUserUuidAuthorizationPolicy(policyName);
 
 			context.AddWebStartupConfigureServices(services =>
 			{
 				services
-					.AddSingleton<IAuthenticationHandler, CookieAndBearerAuthenticationHandler>()
-					.AddAuthentication(CookieAndBearerAuthenticationHandler.AuthenticationHandlerName)
-					.AddScheme<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions, CookieAndBearerAuthenticationHandler>(CookieAndBearerAuthenticationHandler.AuthenticationHandlerName, null)
+					.AddSingleton<CookieAndBearerAuthenticationHandler>()
+					.AddSingleton<IAuthenticationHandler>(serviceProvider =>
+					{
+						var authenticationHandler = serviceProvider.GetService<CookieAndBearerAuthenticationHandler>() as ICookieAuthenticationHandler;
+
+						authenticationHandler.AuthenticationHandlerName = authenticationHandlerName;
+						authenticationHandler.CookieName = cookieName;
+
+						return authenticationHandler;
+					})
+					.AddAuthentication(authenticationHandlerName)
+					.AddScheme<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions, CookieAndBearerAuthenticationHandler>(authenticationHandlerName, null)
 					;
 
 				services.AddAuthorization(options =>
 				{
-					options.AddPolicy(HasUserUuidAuthorizationPolicy.PolicyName, policy => policy.Requirements.Add(new HasUserUuidAuthorizationPolicy()));
+					options.AddPolicy(authorizationPolicy.PolicyName, policy => policy.Requirements.Add(authorizationPolicy));
 				});
 			});
 

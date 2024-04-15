@@ -23,16 +23,39 @@ using Microsoft.Extensions.Logging;
 
 namespace ISI.Platforms.AspNetCore
 {
-	public class CookieAndBearerAuthenticationHandler : AbstractAuthenticationHandler, ICookieAuthenticationHandler
+	public interface ICookieAndBearerAuthenticationSettings : IAuthenticationSettings
 	{
-		private const string DefaultAuthenticationHandlerName = nameof(CookieAndBearerAuthenticationHandler);
+		string AuthenticationHandlerName { get; }
+		string CookieName { get; }
+	}
+
+	public class CookieAndBearerAuthenticationSettings : ICookieAndBearerAuthenticationSettings
+	{
+		private const string DefaultAuthenticationHandlerName = "CookieAndBearerAuthenticationHandler";
 		private const string DefaultCookieName = "Authentication";
 
-		protected string AuthenticationHandlerName { get; set; } = DefaultAuthenticationHandlerName;
-		protected string CookieName { get; set; } = DefaultCookieName;
+		private static string _authenticationHandlerName = DefaultAuthenticationHandlerName;
+		public string AuthenticationHandlerName
+		{
+			get => _authenticationHandlerName;
+			set => _authenticationHandlerName = string.IsNullOrWhiteSpace(value) ? DefaultAuthenticationHandlerName : value;
+		}
+
+		private static string _cookieName = DefaultCookieName;
+		public string CookieName
+		{
+			get => _cookieName;
+			set => _cookieName = string.IsNullOrWhiteSpace(value) ? DefaultCookieName : value;
+		}
+	}
+
+	public class CookieAndBearerAuthenticationHandler<TCookieAndBearerAuthenticationSettings> : AbstractAuthenticationHandler, ISI.Platforms.AspNetCore.IAuthenticationHandler 
+		where TCookieAndBearerAuthenticationSettings : ICookieAndBearerAuthenticationSettings, new()
+	{
+		protected ICookieAndBearerAuthenticationSettings CookieAndBearerAuthenticationSettings { get; }
 
 		public CookieAndBearerAuthenticationHandler(
-			Configuration configuration,
+			ISI.Platforms.AspNetCore.Configuration configuration,
 			Microsoft.Extensions.Options.IOptionsMonitor<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions> options,
 			Microsoft.Extensions.Logging.ILoggerFactory logger,
 			System.Text.Encodings.Web.UrlEncoder encoder,
@@ -40,22 +63,11 @@ namespace ISI.Platforms.AspNetCore
 			ISI.Extensions.IAuthenticationIdentityApi authenticationIdentityApi)
 			: base(configuration, options, logger, encoder, clock, authenticationIdentityApi)
 		{
-
+			CookieAndBearerAuthenticationSettings = new TCookieAndBearerAuthenticationSettings();
 		}
 
-		string ICookieAuthenticationHandler.AuthenticationHandlerName
-		{
-			get => AuthenticationHandlerName;
-			set => AuthenticationHandlerName = string.IsNullOrWhiteSpace(value) ? DefaultAuthenticationHandlerName : value;
-		}
 
-		string ICookieAuthenticationHandler.CookieName
-		{
-			get => CookieName;
-			set => CookieName = string.IsNullOrWhiteSpace(value) ? DefaultCookieName : value;
-		}
-
-		protected override string GetAuthenticationHandlerName() => CookieName;
+		protected override string GetAuthenticationHandlerName() => CookieAndBearerAuthenticationSettings.CookieName;
 
 		protected override bool TryGetAuthenticationHeaderValue(out string authenticationHeaderValue)
 		{
@@ -73,7 +85,7 @@ namespace ISI.Platforms.AspNetCore
 
 		protected override bool TryGetAuthenticationCookieValue(out string authenticationCookieValue)
 		{
-			if (Request.Cookies.TryGetValue(CookieName, out var _authenticationCookieValue))
+			if (Request.Cookies.TryGetValue(CookieAndBearerAuthenticationSettings.CookieName, out var _authenticationCookieValue))
 			{
 				authenticationCookieValue = _authenticationCookieValue;
 

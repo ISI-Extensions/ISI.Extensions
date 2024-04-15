@@ -34,24 +34,23 @@ namespace ISI.Platforms.AspNetCore.Extensions
 
 			context.AddWebStartupConfigureServices(services =>
 			{
-				services
-					.AddSingleton<CookieAndBearerAuthenticationHandler>()
-					.AddSingleton<IAuthenticationHandler>(serviceProvider =>
-					{
-						var authenticationHandler = serviceProvider.GetService<CookieAndBearerAuthenticationHandler>() as ICookieAuthenticationHandler;
+				var authenticationHandlerSettings = new CookieAndBearerAuthenticationSettings();
 
-						authenticationHandler.AuthenticationHandlerName = authenticationHandlerName;
-						authenticationHandler.CookieName = cookieName;
+				authenticationHandlerSettings.AuthenticationHandlerName = authenticationHandlerName;
+				authenticationHandlerSettings.CookieName = cookieName;
 
-						return authenticationHandler;
-					})
-					.AddAuthentication(authenticationHandlerName)
-					.AddScheme<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions, CookieAndBearerAuthenticationHandler>(authenticationHandlerName, null)
-					;
-
-				services.AddAuthorization(options =>
+				context.AddWebStartupConfigureServices(services =>
 				{
-					options.AddPolicy(authorizationPolicy.PolicyName, policy => policy.Requirements.Add(authorizationPolicy));
+					services
+						.AddSingleton<ISI.Platforms.AspNetCore.IAuthenticationHandler, CookieAndBearerAuthenticationHandler<CookieAndBearerAuthenticationSettings>>()
+						.AddAuthentication(authenticationHandlerSettings.AuthenticationHandlerName)
+						.AddScheme<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions, CookieAndBearerAuthenticationHandler<CookieAndBearerAuthenticationSettings>>(authenticationHandlerSettings.AuthenticationHandlerName, null)
+						;
+
+					services.AddAuthorization(options =>
+					{
+						options.AddPolicy(authorizationPolicy.PolicyName, policy => policy.Requirements.Add(authorizationPolicy));
+					});
 				});
 			});
 

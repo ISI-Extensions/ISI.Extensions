@@ -39,7 +39,7 @@ namespace ISI.Platforms.ServiceApplication
 			var hostBuilder = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder();
 
 			Startup.Context.LoggerConfigurator.AddLogger(hostBuilder, Startup.Context.ConfigurationRoot, Startup.Context.ActiveEnvironment);
-			
+
 			hostBuilder
 				.ConfigureServices((hostContext, services) =>
 			{
@@ -104,17 +104,26 @@ namespace ISI.Platforms.ServiceApplication
 
 				var logMessageBuilder = new System.Text.StringBuilder();
 				logMessageBuilder.AppendLine("Address(es)");
-				foreach (var address in addressFeature.Addresses)
+				if (string.IsNullOrWhiteSpace(configuration.BaseUrl))
 				{
-					logMessageBuilder.AppendLine($"  {address}");
-					RoutingHelper.SetBaseUrl(address);
+					foreach (var address in addressFeature.Addresses)
+					{
+						logMessageBuilder.AppendLine($"  {address}");
+						RoutingHelper.SetBaseUrl(address);
+					}
+				}
+				else
+				{
+					foreach (var address in addressFeature.Addresses)
+					{
+						logMessageBuilder.AppendLine($"  internal {address}");
+					}
+
+					logMessageBuilder.AppendLine($"  {configuration.BaseUrl}");
+					RoutingHelper.SetBaseUrl(configuration.BaseUrl);
 				}
 				Startup.Context.LoggerConfigurator.Information(logMessageBuilder.ToString());
 
-				if (!string.IsNullOrWhiteSpace(configuration.BaseUrl))
-				{
-					RoutingHelper.SetBaseUrl(configuration.BaseUrl);
-				}
 
 				if (configuration.UseMessageBus)
 				{

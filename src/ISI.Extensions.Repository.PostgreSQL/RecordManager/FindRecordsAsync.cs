@@ -97,13 +97,13 @@ namespace ISI.Extensions.Repository.PostgreSQL
 					sql.Append(orderByClause.GetSql());
 				}
 
-				if (skip > 0 || take >= 0)
+				if (take > 0)
 				{
-					sql.AppendFormat("OFFSET ({0}) ROWS\n", skip);
-					if (take > 0)
-					{
-						sql.AppendFormat("FETCH NEXT ({0}) ROWS ONLY\n", take);
-					}
+					sql.AppendFormat("LIMIT {0}\n", take);
+				}
+				if (skip > 0)
+				{
+					sql.AppendFormat("OFFSET {0}\n", skip);
 				}
 
 				var records = await FindRecordsAsync(connection, sql.ToString(), (whereClause as IWhereClauseWithGetParameters)?.GetParameters(), commandTimeout, cancellationToken);

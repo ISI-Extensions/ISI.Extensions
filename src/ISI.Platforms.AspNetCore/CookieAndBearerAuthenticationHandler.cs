@@ -25,8 +25,9 @@ namespace ISI.Platforms.AspNetCore
 {
 	public interface ICookieAndBearerAuthenticationSettings : IAuthenticationSettings
 	{
-		string AuthenticationHandlerName { get; }
 		string CookieName { get; }
+		string ApiKeyHeaderName { get; }
+		string AuthorizationHeaderName { get; }
 	}
 
 	public class CookieAndBearerAuthenticationSettings : ICookieAndBearerAuthenticationSettings
@@ -47,9 +48,23 @@ namespace ISI.Platforms.AspNetCore
 			get => _cookieName;
 			set => _cookieName = string.IsNullOrWhiteSpace(value) ? DefaultCookieName : value;
 		}
+
+		private static string _apiKeyHeaderName = DefaultCookieName;
+		public string ApiKeyHeaderName
+		{
+			get => _apiKeyHeaderName;
+			set => _apiKeyHeaderName =  value;
+		}
+
+		private static string _authorizationHeaderName = ISI.Extensions.WebClient.HeaderCollection.Keys.Authorization;
+		public string AuthorizationHeaderName
+		{
+			get => _authorizationHeaderName;
+			set => _authorizationHeaderName = string.IsNullOrWhiteSpace(value) ? ISI.Extensions.WebClient.HeaderCollection.Keys.Authorization : value;
+		}
 	}
 
-	public class CookieAndBearerAuthenticationHandler<TCookieAndBearerAuthenticationSettings> : AbstractAuthenticationHandler, ISI.Platforms.AspNetCore.IAuthenticationHandler 
+	public class CookieAndBearerAuthenticationHandler<TCookieAndBearerAuthenticationSettings> : AbstractAuthenticationHandler, ISI.Platforms.AspNetCore.IAuthenticationHandler
 		where TCookieAndBearerAuthenticationSettings : ICookieAndBearerAuthenticationSettings, new()
 	{
 		protected ICookieAndBearerAuthenticationSettings CookieAndBearerAuthenticationSettings { get; }
@@ -71,11 +86,24 @@ namespace ISI.Platforms.AspNetCore
 
 		protected override bool TryGetAuthenticationHeaderValue(out string authenticationHeaderValue)
 		{
-			if (Request.Headers.TryGetValue(ISI.Extensions.WebClient.HeaderCollection.Keys.Authorization, out var _authenticationHeaderValue))
+			if(!string.IsNullOrWhiteSpace(CookieAndBearerAuthenticationSettings.ApiKeyHeaderName))
 			{
-				authenticationHeaderValue = _authenticationHeaderValue.NullCheckedFirstOrDefault();
+				if (Request.Headers.TryGetValue(CookieAndBearerAuthenticationSettings.ApiKeyHeaderName, out var _authenticationHeaderValue))
+				{
+					authenticationHeaderValue = _authenticationHeaderValue.NullCheckedFirstOrDefault();
 
-				return true;
+					return true;
+				}
+			}
+
+			if(!string.IsNullOrWhiteSpace(CookieAndBearerAuthenticationSettings.AuthorizationHeaderName))
+			{
+				if (Request.Headers.TryGetValue(CookieAndBearerAuthenticationSettings.AuthorizationHeaderName, out var _authenticationHeaderValue))
+				{
+					authenticationHeaderValue = _authenticationHeaderValue.NullCheckedFirstOrDefault();
+
+					return true;
+				}
 			}
 
 			authenticationHeaderValue = null;

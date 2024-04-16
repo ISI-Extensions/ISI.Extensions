@@ -73,18 +73,12 @@ namespace ISI.Platforms.ServiceApplication
 
 			var rootDirectory = ISI.Extensions.IO.Path.GetRootBinDirectory(Startup.Context.RootAssembly);
 			
-			//System.Console.WriteLine($"  RootAssembly.CodeBase => \"{Startup.Context.RootAssembly.CodeBase}\"");
-			//System.Console.WriteLine($"  GetFileNameFromCodeBase => \"{ISI.Extensions.IO.Path.GetFileNameFromCodeBase(Startup.Context.RootAssembly.CodeBase)}\"");
-			//System.Console.WriteLine($"  GetDirectoryName => \"{System.IO.Path.GetDirectoryName(ISI.Extensions.IO.Path.GetFileNameFromCodeBase(Startup.Context.RootAssembly.CodeBase))}\"");
-			//System.Console.WriteLine($"  rootDirectory => \"{rootDirectory}\"");
-			
+		
 			if (string.Equals(System.IO.Path.GetFileName(rootDirectory), "bin", StringComparison.InvariantCultureIgnoreCase))
 			{
 				rootDirectory = System.IO.Path.GetDirectoryName(rootDirectory);
 			}
 			var wwwroot = System.IO.Path.Combine(rootDirectory, "wwwroot");
-
-			//System.Console.WriteLine($"  wwwroot => \"{wwwroot}\"");
 
 			applicationBuilder.UseStaticFiles(new Microsoft.AspNetCore.Builder.StaticFileOptions()
 			{

@@ -22,13 +22,13 @@ using ISI.Extensions.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using  ISI.Platforms.Extensions;
+using ISI.Platforms.Extensions;
 
 namespace ISI.Platforms.AspNetCore.Extensions
 {
 	public static partial class ServiceApplicationContextExtensions
 	{
-		public static ServiceApplicationContext AddCookieAndBearerAuthentication(this ServiceApplicationContext context, string authenticationHandlerName = null, string policyName = null, string cookieName = null)
+		public static ServiceApplicationContext AddCookieAndBearerAuthentication(this ServiceApplicationContext context, string authenticationHandlerName = null, string policyName = null, string cookieName = null, string apiKeyHeaderName = null)
 		{
 			var authorizationPolicy = new HasUserUuidAuthorizationPolicy(policyName);
 
@@ -38,19 +38,17 @@ namespace ISI.Platforms.AspNetCore.Extensions
 
 				authenticationHandlerSettings.AuthenticationHandlerName = authenticationHandlerName;
 				authenticationHandlerSettings.CookieName = cookieName;
+				authenticationHandlerSettings.ApiKeyHeaderName = apiKeyHeaderName;
 
-				context.AddWebStartupConfigureServices(services =>
+				services
+					.AddSingleton<ISI.Platforms.AspNetCore.IAuthenticationHandler, CookieAndBearerAuthenticationHandler<CookieAndBearerAuthenticationSettings>>()
+					.AddAuthentication(authenticationHandlerSettings.AuthenticationHandlerName)
+					.AddScheme<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions, CookieAndBearerAuthenticationHandler<CookieAndBearerAuthenticationSettings>>(authenticationHandlerSettings.AuthenticationHandlerName, null)
+					;
+
+				services.AddAuthorization(options =>
 				{
-					services
-						.AddSingleton<ISI.Platforms.AspNetCore.IAuthenticationHandler, CookieAndBearerAuthenticationHandler<CookieAndBearerAuthenticationSettings>>()
-						.AddAuthentication(authenticationHandlerSettings.AuthenticationHandlerName)
-						.AddScheme<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions, CookieAndBearerAuthenticationHandler<CookieAndBearerAuthenticationSettings>>(authenticationHandlerSettings.AuthenticationHandlerName, null)
-						;
-
-					services.AddAuthorization(options =>
-					{
-						options.AddPolicy(authorizationPolicy.PolicyName, policy => policy.Requirements.Add(authorizationPolicy));
-					});
+					options.AddPolicy(authorizationPolicy.PolicyName, policy => policy.Requirements.Add(authorizationPolicy));
 				});
 			});
 

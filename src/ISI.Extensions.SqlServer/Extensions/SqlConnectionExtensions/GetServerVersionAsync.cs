@@ -21,35 +21,24 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.Repository.Extensions;
 
-namespace ISI.Extensions.Repository.SqlServer.Extensions
+namespace ISI.Extensions.SqlServer.Extensions
 {
 	public static partial class SqlConnectionExtensions
 	{
-		public static async Task<int> ExecuteNonQueryAsync(this Microsoft.Data.SqlClient.SqlConnection connection, string sql, string parameterName, object parameterValue, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
-		{
-			return await ExecuteNonQueryAsync(connection, sql, new KeyValuePair<string, object>(parameterName, parameterValue), commandTimeout, cancellationToken);
-		}
-
-		public static async Task<int> ExecuteNonQueryAsync(this Microsoft.Data.SqlClient.SqlConnection connection, string sql, KeyValuePair<string, object> parameter, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
-		{
-			return await ExecuteNonQueryAsync(connection, sql, new[] { parameter }, commandTimeout, cancellationToken);
-		}
-
-		public static async Task<int> ExecuteNonQueryAsync(this Microsoft.Data.SqlClient.SqlConnection connection, string sql, IEnumerable<KeyValuePair<string, object>> parameters = null, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
+		public static async Task<Version> GetServerVersionAsync(this Microsoft.Data.SqlClient.SqlConnection connection, System.Threading.CancellationToken cancellationToken = default)
 		{
 			await connection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
 
-			using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql, connection))
+			var version = connection.ServerVersion;
+
+			if (Version.TryParse(version, out var serverVersion))
 			{
-				if (commandTimeout.HasValue)
-				{
-					command.CommandTimeout = commandTimeout.Value;
-				}
-
-				command.AddParameters(parameters);
-
-				return await command.ExecuteNonQueryWithExceptionTracingAsync(cancellationToken: cancellationToken);
+				return serverVersion;
 			}
+
+			var pieces = string.Format("{0}.....", version).Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries).ToNullCheckedArray(value => value.ToInt());
+
+			return new(pieces[0], pieces[1], pieces[2], pieces[3]);
 		}
 	}
 }

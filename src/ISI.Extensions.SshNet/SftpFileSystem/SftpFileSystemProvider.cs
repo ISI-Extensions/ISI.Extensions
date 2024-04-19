@@ -34,6 +34,11 @@ namespace ISI.Extensions.SshNet.SftpFileSystem
 
 		protected virtual string EncodeFileName(string fileName)
 		{
+			if (fileName.StartsWith("~/.."))
+			{
+				return string.Format("/home{0}", fileName.Substring(4));
+			}
+
 			if (fileName.StartsWith("/~"))
 			{
 				return string.Format("${{HOME}}{0}", fileName.Substring(2));

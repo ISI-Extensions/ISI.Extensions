@@ -26,7 +26,7 @@ namespace ISI.Extensions.Repository.SqlServer
 	public interface ISqlConnectionWhereClause : IWhereClause, IWhereClauseWithSql, IWhereClauseWithGetSql, IWhereClauseWithParameters, IWhereClauseWithGetParameters
 	{
 		string GetJoinCause(string tableNameAlias);
-		void Initialize(ISI.Extensions.Repository.SqlServer.Configuration sqlServerConfiguration, Microsoft.Data.SqlClient.SqlConnection connection, SqlServerCapabilities sqlServerCapabilities);
-		void Finalize(Microsoft.Data.SqlClient.SqlConnection connection, SqlServerCapabilities sqlServerCapabilities);
+		void Initialize(ISI.Extensions.Repository.SqlServer.Configuration sqlServerConfiguration, Microsoft.Data.SqlClient.SqlConnection connection, ISI.Extensions.SqlServer.SqlServerCapabilities sqlServerCapabilities);
+		void Finalize(Microsoft.Data.SqlClient.SqlConnection connection, ISI.Extensions.SqlServer.SqlServerCapabilities sqlServerCapabilities);
 	}
 }

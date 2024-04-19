@@ -19,11 +19,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.PostgreSQL.Extensions;
+using ISI.Extensions.SqlServer.Extensions;
 using ISI.Extensions.Repository.Extensions;
-using DTOs = ISI.Extensions.PostgreSQL.DataTransferObjects.BackupManager;
+using DTOs = ISI.Extensions.SqlServer.DataTransferObjects.BackupManager;
 
-namespace ISI.Extensions.PostgreSQL
+namespace ISI.Extensions.SqlServer
 {
 	public partial class BackupManager
 	{
@@ -35,22 +35,19 @@ namespace ISI.Extensions.PostgreSQL
 
 			statusTracker.AddToLog($"Backing up database {request.Database}");
 
-			var tempTableName = $"dump-{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}";
-
 			var fileNameDateTimeUtc = request.FileNameDateTimeUtc ?? DateTimeStamper.CurrentDateTimeUtc();
 
 			var fileName = $"{request.Database}.{fileNameDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeSortablePrecise)}";
 
-			var connectionStringBuilder = new Npgsql.NpgsqlConnectionStringBuilder();
+			var connectionStringBuilder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder();
 			switch (request)
 			{
 				case DTOs.BackupDatabaseRequest backupDatabaseRequest:
-					connectionStringBuilder.Host = backupDatabaseRequest.Host;
-					connectionStringBuilder.Port = backupDatabaseRequest.Port ?? 5432;
-					connectionStringBuilder.Username = backupDatabaseRequest.UserName;
+					connectionStringBuilder.DataSource = backupDatabaseRequest.Port.HasValue ? $"{backupDatabaseRequest.Host}:{backupDatabaseRequest.Port}" : backupDatabaseRequest.Host;
+					connectionStringBuilder.UserID = backupDatabaseRequest.UserName;
 					connectionStringBuilder.Password = backupDatabaseRequest.Password;
 					break;
-				
+
 				case DTOs.BackupDatabaseUsingConnectionStringRequest backupDatabaseUsingConnectionStringRequest:
 					connectionStringBuilder.ConnectionString = backupDatabaseUsingConnectionStringRequest.ConnectionString;
 					break;
@@ -59,25 +56,24 @@ namespace ISI.Extensions.PostgreSQL
 					throw new ArgumentOutOfRangeException(nameof(request));
 			}
 
-			using (var connection = ISI.Extensions.PostgreSQL.SqlConnection.GetSqlConnection(connectionStringBuilder.ConnectionString))
+			connectionStringBuilder.TrustServerCertificate = true;
+
+			using (var connection = ISI.Extensions.SqlServer.SqlConnection.GetSqlConnection(connectionStringBuilder.ConnectionString))
 			{
 				connection.Open();
 
 				var sql = new StringBuilder();
-				sql.AppendLine($"DROP TABLE IF EXISTS \"{tempTableName}\";");
-				sql.AppendLine($"CREATE TABLE \"{tempTableName}\" (str text);");
-				sql.AppendLine($"COPY \"{tempTableName}\" FROM PROGRAM 'pg_dump --dbname=postgresql://{connectionStringBuilder.Username}:{connectionStringBuilder.Password}@127.0.0.1:{connectionStringBuilder.Port}/{request.Database}  --file={request.LocalBackupDirectory}/{fileName}.dumping';");
-				sql.AppendLine($"COPY \"{tempTableName}\" FROM PROGRAM 'mv {request.LocalBackupDirectory}/{fileName}.dumping {request.LocalBackupDirectory}/{fileName}.sql';");
-				sql.AppendLine($"DROP TABLE IF EXISTS \"{tempTableName}\";");
+				sql.AppendLine($"BACKUP DATABASE [{request.Database}]");
+				sql.AppendLine($"TO DISK = '{request.LocalBackupDirectory}\\{fileName}.bak';");
 
-				using (var command = new Npgsql.NpgsqlCommand(sql.ToString(), connection))
+				using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql.ToString(), connection))
 				{
 					command.CommandTimeout = TimeSpan.FromHours(3).Seconds;
 					command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
 				}
 			}
 
-			response.FileName = $"{fileName}.sql";
+			response.FileName = $"{fileName}.bak";
 
 			statusTracker.AddToLog($"Backed up database {request.Database} to \"{response.FileName}\"");
 

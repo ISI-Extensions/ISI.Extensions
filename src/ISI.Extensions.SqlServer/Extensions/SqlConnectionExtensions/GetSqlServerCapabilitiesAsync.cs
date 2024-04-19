@@ -21,24 +21,19 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.Repository.Extensions;
 
-namespace ISI.Extensions.Repository.SqlServer.Extensions
+namespace ISI.Extensions.SqlServer.Extensions
 {
 	public static partial class SqlConnectionExtensions
 	{
-		public static async Task<Version> GetServerVersionAsync(this Microsoft.Data.SqlClient.SqlConnection connection, System.Threading.CancellationToken cancellationToken = default)
+		public static async Task<SqlServerCapabilities> GetSqlServerCapabilitiesAsync(this Microsoft.Data.SqlClient.SqlConnection connection, System.Threading.CancellationToken cancellationToken = default)
 		{
-			await connection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
+			var serverVersion = await connection.GetServerVersionAsync(cancellationToken: cancellationToken);
 
-			var version = connection.ServerVersion;
-
-			if (Version.TryParse(version, out var serverVersion))
+			return new()
 			{
-				return serverVersion;
-			}
-
-			var pieces = string.Format("{0}.....", version).Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries).ToNullCheckedArray(value => value.ToInt());
-
-			return new(pieces[0], pieces[1], pieces[2], pieces[3]);
+				ServerVersion = serverVersion,
+				SupportsNativePaging = (serverVersion.Major >= 11),
+			};
 		}
 	}
 }

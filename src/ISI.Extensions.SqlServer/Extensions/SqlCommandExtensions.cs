@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.Repository.SqlServer.Extensions
+namespace ISI.Extensions.SqlServer.Extensions
 {
 	public static partial class SqlCommandExtensions
 	{
@@ -136,9 +136,9 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 			}
 		}
 
-		public static void AddParameters(this Microsoft.Data.SqlClient.SqlCommand command, IWhereClause whereClause)
+		public static void AddParameters(this Microsoft.Data.SqlClient.SqlCommand command, ISI.Extensions.Repository.IWhereClause whereClause)
 		{
-			command.AddParameters((whereClause as IWhereClauseWithGetParameters)?.GetParameters());
+			command.AddParameters((whereClause as ISI.Extensions.Repository.IWhereClauseWithGetParameters)?.GetParameters());
 		}
 
 		public static async Task<int> ExecuteNonQueryWithExceptionTracingAsync(this Microsoft.Data.SqlClient.SqlCommand command, System.Threading.CancellationToken cancellationToken = default)

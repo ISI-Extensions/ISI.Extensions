@@ -27,6 +27,7 @@ namespace ISI.Extensions.StatusTrackers
 		[ISI.Extensions.EnvironmentConfigurationVariableName("ISI_STATUS_TRACKER_FACTORY_IMPLEMENTATION")]
 		public string StatusTrackerFactoryImplementation { get; set; } = nameof(FileStatusTrackerFactory);
 
+		[ISI.Extensions.EnvironmentConfigurationVariableName("ISI_STATUS_TRACKER_FILE_STATUS_TRACKER_DIRECTORY")]
 		public string FileStatusTrackerDirectory { get; set; } = "FileStatusTrackerDirectory";
 	}
 }

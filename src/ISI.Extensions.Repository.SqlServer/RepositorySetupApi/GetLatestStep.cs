@@ -22,6 +22,7 @@ using ISI.Extensions.Extensions;
 using System.Diagnostics;
 using ISI.Extensions.Repository.Extensions;
 using ISI.Extensions.Repository.SqlServer.Extensions;
+using ISI.Extensions.SqlServer.Extensions;
 using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
 using SqlServerDTOs = ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi;
 using Microsoft.Extensions.Configuration;
@@ -42,7 +43,7 @@ namespace ISI.Extensions.Repository.SqlServer
 				{
 					try
 					{
-						if (SqlConnection.TryGetSqlConnection(connectionString, false, out var connection))
+						if (ISI.Extensions.SqlServer.SqlConnection.TryGetSqlConnection(connectionString, false, out var connection))
 						{
 							connection.Open();
 

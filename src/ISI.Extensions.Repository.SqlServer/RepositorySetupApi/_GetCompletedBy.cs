@@ -36,7 +36,7 @@ namespace ISI.Extensions.Repository.SqlServer
 			{
 				try
 				{
-					using (var connection = SqlConnection.GetSqlConnection(connectionString))
+					using (var connection = ISI.Extensions.SqlServer.SqlConnection.GetSqlConnection(connectionString))
 					{
 						connection.Open();
 

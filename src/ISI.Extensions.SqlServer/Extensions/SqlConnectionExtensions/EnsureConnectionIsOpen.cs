@@ -21,19 +21,38 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.Repository.Extensions;
 
-namespace ISI.Extensions.Repository.SqlServer.Extensions
+namespace ISI.Extensions.SqlServer.Extensions
 {
 	public static partial class SqlConnectionExtensions
 	{
-		public static async Task<SqlServerCapabilities> GetSqlServerCapabilitiesAsync(this Microsoft.Data.SqlClient.SqlConnection connection, System.Threading.CancellationToken cancellationToken = default)
+		public static async Task EnsureConnectionIsOpenAsync(this Microsoft.Data.SqlClient.SqlConnection connection, System.Threading.CancellationToken cancellationToken = default)
 		{
-			var serverVersion = await connection.GetServerVersionAsync(cancellationToken: cancellationToken);
-
-			return new()
+			if (connection.State != System.Data.ConnectionState.Open)
 			{
-				ServerVersion = serverVersion,
-				SupportsNativePaging = (serverVersion.Major >= 11),
-			};
+				try
+				{
+					await connection.OpenAsync(cancellationToken);
+				}
+				catch (Exception exception)
+				{
+					throw new(string.Format("Error opening Connection to \"{0}\"", connection.ConnectionString), exception);
+				}
+			}
+		}
+
+		public static void EnsureConnectionIsOpen(this Microsoft.Data.SqlClient.SqlConnection connection)
+		{
+			if (connection.State != System.Data.ConnectionState.Open)
+			{
+				try
+				{
+					connection.Open();
+				}
+				catch (Exception exception)
+				{
+					throw new(string.Format("Error opening Connection to \"{0}\"", connection.ConnectionString), exception);
+				}
+			}
 		}
 	}
 }

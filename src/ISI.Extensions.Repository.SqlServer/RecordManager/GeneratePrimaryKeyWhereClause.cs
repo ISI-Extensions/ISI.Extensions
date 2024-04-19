@@ -20,6 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.Repository.SqlServer.Extensions;
+using ISI.Extensions.SqlServer.Extensions;
 
 namespace ISI.Extensions.Repository.SqlServer
 {
@@ -65,7 +66,7 @@ namespace ISI.Extensions.Repository.SqlServer
 				base.Reset();
 			}
 
-			public void Initialize(ISI.Extensions.Repository.SqlServer.Configuration sqlServerConfiguration, Microsoft.Data.SqlClient.SqlConnection connection, SqlServerCapabilities sqlServerCapabilities)
+			public void Initialize(ISI.Extensions.Repository.SqlServer.Configuration sqlServerConfiguration, Microsoft.Data.SqlClient.SqlConnection connection, ISI.Extensions.SqlServer.SqlServerCapabilities sqlServerCapabilities)
 			{
 				var primaryKeyColumns = RecordDescription.GetRecordDescription<TRecord>().PrimaryKeyPropertyDescriptions;
 
@@ -187,7 +188,7 @@ from #{2}", _formatColumnName(primaryKeyColumn.ColumnName), PrimaryKeyTempTableN
 				Initialized = true;
 			}
 
-			public void Finalize(Microsoft.Data.SqlClient.SqlConnection connection, SqlServerCapabilities sqlServerCapabilities)
+			public void Finalize(Microsoft.Data.SqlClient.SqlConnection connection, ISI.Extensions.SqlServer.SqlServerCapabilities sqlServerCapabilities)
 			{
 
 			}

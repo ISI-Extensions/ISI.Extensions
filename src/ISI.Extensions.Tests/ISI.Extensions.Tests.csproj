@@ -77,6 +77,7 @@
 		<ProjectReference Include="..\ISI.Extensions.Scm\ISI.Extensions.Scm.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Security.ActiveDirectory\ISI.Extensions.Security.ActiveDirectory.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.SharpCompress\ISI.Extensions.SharpCompress.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.SqlServer\ISI.Extensions.SqlServer.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.SshNet\ISI.Extensions.SshNet.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Svn\ISI.Extensions.Svn.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Telephony.MessageBus\ISI.Extensions.Telephony.MessageBus.csproj" />

@@ -63,7 +63,7 @@ namespace ISI.Extensions.Repository.SqlServer
 			TableName = (string.IsNullOrEmpty(tableName) ? RecordDescription.GetRecordDescription<TRecord>().TableName : tableName);
 			TableAlias = tableAlias;
 
-			GetSqlConnection = getConnection ?? (enableMultipleActiveResultSets => ISI.Extensions.Repository.SqlServer.SqlConnection.GetSqlConnection(ConnectionString, enableMultipleActiveResultSets));
+			GetSqlConnection = getConnection ?? (enableMultipleActiveResultSets => ISI.Extensions.SqlServer.SqlConnection.GetSqlConnection(ConnectionString, enableMultipleActiveResultSets));
 		}
 
 		protected override string DefaultOrderByClause => "order by CURRENT_TIMESTAMP\n";

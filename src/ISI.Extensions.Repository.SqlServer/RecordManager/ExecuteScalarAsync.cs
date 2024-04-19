@@ -20,6 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.Repository.SqlServer.Extensions;
+using ISI.Extensions.SqlServer.Extensions;
 
 namespace ISI.Extensions.Repository.SqlServer
 {

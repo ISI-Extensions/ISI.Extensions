@@ -28,7 +28,7 @@ using System.Text;
 namespace ISI.Extensions.Tests
 {
 	[TestFixture]
-	public class Postgres_Tests
+	public class PostgreSQL_Tests
 	{
 		[OneTimeSetUp]
 		public void OneTimeSetup()

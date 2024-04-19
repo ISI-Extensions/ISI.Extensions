@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.PostgreSQL.DataTransferObjects.BackupManager
+namespace ISI.Extensions.SqlServer.DataTransferObjects.BackupManager
 {
 	public interface IBackupDatabaseRequest
 	{

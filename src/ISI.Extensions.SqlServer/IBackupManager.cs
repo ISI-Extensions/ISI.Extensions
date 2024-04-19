@@ -19,42 +19,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using System.Diagnostics;
-using ISI.Extensions.Repository.Extensions;
-using ISI.Extensions.Repository.SqlServer.Extensions;
-using ISI.Extensions.SqlServer.Extensions;
-using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
-using SqlServerDTOs = ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi;
-using Microsoft.Extensions.Configuration;
+using DTOs = ISI.Extensions.SqlServer.DataTransferObjects.BackupManager;
 
-namespace ISI.Extensions.Repository.SqlServer
+namespace ISI.Extensions.SqlServer
 {
-	public partial class RepositorySetupApi
+	public interface IBackupManager
 	{
-		public DTOs.DeleteRepositoryResponse DeleteRepository()
-		{
-			var response = new DTOs.DeleteRepositoryResponse();
-
-			using (var connection = ISI.Extensions.SqlServer.SqlConnection.GetSqlConnection(MasterConnectionString))
-			{
-				connection.Open();
-
-				var sql = new StringBuilder();
-
-				sql.AppendFormat("if db_id('{0}') is not null\n", DatabaseName);
-				sql.Append("begin\n");
-				sql.AppendFormat("	ALTER DATABASE [{0}] SET multi_user WITH ROLLBACK IMMEDIATE;\n", DatabaseName);
-				sql.AppendFormat("	ALTER DATABASE [{0}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;\n", DatabaseName);
-				sql.AppendFormat("	DROP DATABASE [{0}];\n", DatabaseName);
-				sql.Append("end\n");
-
-				using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql.ToString(), connection))
-				{
-					command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
-				}
-			}
-
-			return response;
-		}
+		DTOs.BackupDatabaseResponse BackupDatabase(DTOs.IBackupDatabaseRequest request);
 	}
 }

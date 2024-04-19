@@ -18,41 +18,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using ISI.Extensions.Repository.Extensions;
 
-namespace ISI.Extensions.Repository.SqlServer.Extensions
+namespace ISI.Extensions.SqlServer
 {
-	public static partial class SqlConnectionExtensions
+	public class SqlServerCapabilities
 	{
-		public static async Task EnsureConnectionIsOpenAsync(this Microsoft.Data.SqlClient.SqlConnection connection, System.Threading.CancellationToken cancellationToken = default)
-		{
-			if (connection.State != System.Data.ConnectionState.Open)
-			{
-				try
-				{
-					await connection.OpenAsync(cancellationToken);
-				}
-				catch (Exception exception)
-				{
-					throw new(string.Format("Error opening Connection to \"{0}\"", connection.ConnectionString), exception);
-				}
-			}
-		}
-
-		public static void EnsureConnectionIsOpen(this Microsoft.Data.SqlClient.SqlConnection connection)
-		{
-			if (connection.State != System.Data.ConnectionState.Open)
-			{
-				try
-				{
-					connection.Open();
-				}
-				catch (Exception exception)
-				{
-					throw new(string.Format("Error opening Connection to \"{0}\"", connection.ConnectionString), exception);
-				}
-			}
-		}
+		public Version ServerVersion { get; set; }
+		public bool SupportsNativePaging { get; set; }
 	}
 }

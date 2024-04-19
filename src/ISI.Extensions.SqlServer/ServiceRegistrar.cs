@@ -18,12 +18,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.Repository.SqlServer
+namespace ISI.Extensions.SqlServer
 {
-	public class SqlServerCapabilities
+	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
+	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
 	{
-		public Version ServerVersion { get; set; }
-		public bool SupportsNativePaging { get; set; }
+		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
+		{
+			services.AddSingleton<IBackupManager, BackupManager>();
+		}
 	}
 }

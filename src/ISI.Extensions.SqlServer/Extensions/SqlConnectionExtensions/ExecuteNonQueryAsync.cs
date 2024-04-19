@@ -18,38 +18,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using ISI.Extensions.Repository.Extensions;
 
-namespace ISI.Extensions.Repository.SqlServer
+namespace ISI.Extensions.SqlServer.Extensions
 {
-	public delegate void InitializeDelegate(ISI.Extensions.Repository.SqlServer.Configuration sqlServerConfiguration, Microsoft.Data.SqlClient.SqlConnection connection, ISI.Extensions.SqlServer.SqlServerCapabilities sqlServerCapabilities);
-	public delegate void FinalizeDelegate(Microsoft.Data.SqlClient.SqlConnection connection, ISI.Extensions.SqlServer.SqlServerCapabilities sqlServerCapabilities);
-	public delegate string GetJoinCauseDelegate(string tableNameAlias);
-
-	public class SqlConnectionWhereClause : WhereClause, ISqlConnectionWhereClause, IWhereClause, IWhereClauseWithSql, IWhereClauseWithGetSql, IWhereClauseWithParameters, IWhereClauseWithGetParameters
+	public static partial class SqlConnectionExtensions
 	{
-		public List<InitializeDelegate> InitializeActions { get; } = new();
-		public List<FinalizeDelegate> FinalizeActions { get; } = new();
-		public List<GetJoinCauseDelegate> JoinCauseBuilders { get; } = new();
-
-
-		public string GetJoinCause(string tableNameAlias)
+		public static async Task<int> ExecuteNonQueryAsync(this Microsoft.Data.SqlClient.SqlConnection connection, string sql, string parameterName, object parameterValue, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return string.Join("\n", JoinCauseBuilders.Select(joinCauseBuilder => joinCauseBuilder(tableNameAlias)));
+			return await ExecuteNonQueryAsync(connection, sql, new KeyValuePair<string, object>(parameterName, parameterValue), commandTimeout, cancellationToken);
 		}
 
-		public void Initialize(ISI.Extensions.Repository.SqlServer.Configuration sqlServerConfiguration, Microsoft.Data.SqlClient.SqlConnection connection, ISI.Extensions.SqlServer.SqlServerCapabilities sqlServerCapabilities)
+		public static async Task<int> ExecuteNonQueryAsync(this Microsoft.Data.SqlClient.SqlConnection connection, string sql, KeyValuePair<string, object> parameter, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
-			foreach (var initialize in InitializeActions)
-			{
-				initialize(sqlServerConfiguration, connection, sqlServerCapabilities);
-			}
+			return await ExecuteNonQueryAsync(connection, sql, new[] { parameter }, commandTimeout, cancellationToken);
 		}
 
-		public void Finalize(Microsoft.Data.SqlClient.SqlConnection connection, ISI.Extensions.SqlServer.SqlServerCapabilities sqlServerCapabilities)
+		public static async Task<int> ExecuteNonQueryAsync(this Microsoft.Data.SqlClient.SqlConnection connection, string sql, IEnumerable<KeyValuePair<string, object>> parameters = null, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
-			foreach (var finalizeAction in FinalizeActions)
+			await connection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
+
+			using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql, connection))
 			{
-				finalizeAction(connection, sqlServerCapabilities);
+				if (commandTimeout.HasValue)
+				{
+					command.CommandTimeout = commandTimeout.Value;
+				}
+
+				command.AddParameters(parameters);
+
+				return await command.ExecuteNonQueryWithExceptionTracingAsync(cancellationToken: cancellationToken);
 			}
 		}
 	}

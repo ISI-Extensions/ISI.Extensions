@@ -17,9 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using ISI.Extensions.Repository.Extensions;
-using ISI.Extensions.Repository.SqlServer.Extensions;
+using ISI.Extensions.SqlServer.Extensions;
 
-namespace ISI.Extensions.Repository.SqlServer
+namespace ISI.Extensions.SqlServer
 {
 	public class SqlConnection
 	{

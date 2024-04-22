@@ -74,7 +74,7 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
-		public void ListRepositoriesUsers_Tests()
+		public void ListRepositories_Tests()
 		{
 			var scmManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.ScmManager.IScmManagerApi>();
 

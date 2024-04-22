@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,60 +37,113 @@ namespace ISI.Extensions.Nuget
 
 			response.Success = true;
 
-			foreach (var nupkgFullName in request.NupkgFullNames)
+			if (Environment.OSVersion.Platform == PlatformID.Unix)
 			{
-				var source = (string.IsNullOrWhiteSpace(request.RepositoryUri?.ToString()) ? request.RepositoryName : request.RepositoryUri?.ToString());
+				var serviceLocatorDirectoryUrl = (string.IsNullOrWhiteSpace(request.RepositoryUri?.ToString()) ? request.RepositoryName : request.RepositoryUri?.ToString());
 
-				logger.LogInformation(string.Format("Pushing \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), source));
+				var workingDirectory = string.IsNullOrWhiteSpace(request.WorkingDirectory) ? System.IO.Path.GetDirectoryName(request.NupkgFullNames.FirstOrDefault()) : request.WorkingDirectory;
 
-				var arguments = new List<string>();
-				arguments.Add("push");
+				//if (!string.IsNullOrWhiteSpace(workingDirectory))
+				//{
+				//	var nugetConfigFullNames = GetNugetConfigFullNames(new()
+				//	{
+				//		WorkingCopyDirectory = workingDirectory,
+				//	}).NugetConfigFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
-				arguments.Add(string.Format("-Source \"{0}\"", source));
+				//	foreach (var nugetConfigFullName in nugetConfigFullNames)
+				//	{
+				//		if (System.IO.File.Exists(nugetConfigFullName))
+				//		{
+				//			arguments.Add("-ConfigFile");
+				//			arguments.Add(string.Format("\"{0}\"", nugetConfigFullName));
+				//		}
+				//	}
+				//}
 
-				if (!string.IsNullOrWhiteSpace(request.NugetApiKey))
+
+
+				//var serviceLocatorDirectory = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableDTOs.ServiceLocatorDirectory>(serviceLocatorDirectoryUrl, null, true);
+				var serviceLocatorDirectoryJson = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<ISI.Extensions.WebClient.Rest.TextResponse>(serviceLocatorDirectoryUrl, null, true);
+				var serviceLocatorDirectory = JsonSerializer.Deserialize<SerializableDTOs.ServiceLocatorDirectory>(serviceLocatorDirectoryJson.Content.Replace("\"@id\"", "\"url\"").Replace("\"@type\"", "\"resource\""));
+
+				var packagePublishUrl = serviceLocatorDirectory.Resources.NullCheckedFirstOrDefault(resource => resource.Resource.StartsWith("PackagePublish", StringComparison.InvariantCultureIgnoreCase))?.Url;
+
+				if (string.IsNullOrWhiteSpace(packagePublishUrl))
 				{
-					arguments.Add(string.Format("-ApiKey \"{0}\"", request.NugetApiKey));
+					throw new Exception("cannot find packagePublishUrl");
 				}
 
-				var workingDirectory = string.IsNullOrWhiteSpace(request.WorkingDirectory) ? System.IO.Path.GetDirectoryName(nupkgFullName) : request.WorkingDirectory;
-
-				if (!string.IsNullOrWhiteSpace(workingDirectory))
+				foreach (var nupkgFullName in request.NupkgFullNames)
 				{
-					var nugetConfigFullNames = GetNugetConfigFullNames(new()
-					{
-						WorkingCopyDirectory = workingDirectory,
-					}).NugetConfigFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty);
+					var nupkgFileName = System.IO.Path.GetFileName(nupkgFullName);
 
-					foreach (var nugetConfigFullName in nugetConfigFullNames)
+					logger.LogInformation(string.Format("Pushing \"{0}\" to \"{1}\"", nupkgFileName, serviceLocatorDirectoryUrl));
+
+					using (var stream = System.IO.File.OpenRead(nupkgFullName))
 					{
-						if (System.IO.File.Exists(nugetConfigFullName))
+						ISI.Extensions.WebClient.Upload.UploadFile(packagePublishUrl, GetHeaders(request.NugetApiKey), stream, nupkgFileName, method: System.Net.WebRequestMethods.Http.Put);
+					}
+					
+					logger.LogInformation(string.Format("Pushed \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), serviceLocatorDirectoryUrl));
+				}
+			}
+			else
+			{
+				foreach (var nupkgFullName in request.NupkgFullNames)
+				{
+					var source = (string.IsNullOrWhiteSpace(request.RepositoryUri?.ToString()) ? request.RepositoryName : request.RepositoryUri?.ToString());
+
+					logger.LogInformation(string.Format("Pushing \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), source));
+
+					var arguments = new List<string>();
+					arguments.Add("push");
+
+					arguments.Add(string.Format("-Source \"{0}\"", source));
+
+					if (!string.IsNullOrWhiteSpace(request.NugetApiKey))
+					{
+						arguments.Add(string.Format("-ApiKey \"{0}\"", request.NugetApiKey));
+					}
+
+					var workingDirectory = string.IsNullOrWhiteSpace(request.WorkingDirectory) ? System.IO.Path.GetDirectoryName(nupkgFullName) : request.WorkingDirectory;
+
+					if (!string.IsNullOrWhiteSpace(workingDirectory))
+					{
+						var nugetConfigFullNames = GetNugetConfigFullNames(new()
 						{
-							arguments.Add("-ConfigFile");
-							arguments.Add(string.Format("\"{0}\"", nugetConfigFullName));
+							WorkingCopyDirectory = workingDirectory,
+						}).NugetConfigFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty);
+
+						foreach (var nugetConfigFullName in nugetConfigFullNames)
+						{
+							if (System.IO.File.Exists(nugetConfigFullName))
+							{
+								arguments.Add("-ConfigFile");
+								arguments.Add(string.Format("\"{0}\"", nugetConfigFullName));
+							}
 						}
 					}
-				}
 
-				arguments.Add(string.Format("\"{0}\"", nupkgFullName));
+					arguments.Add(string.Format("\"{0}\"", nupkgFullName));
 
-				var nugetResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-				{
-					Logger = logger, //new NullLogger(),
-					WorkingDirectory = workingDirectory,
-					ProcessExeFullName = GetNugetExeFullName(new()).NugetExeFullName,
-					Arguments = arguments.ToArray(),
-				});
+					var nugetResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+					{
+						Logger = logger, //new NullLogger(),
+						WorkingDirectory = workingDirectory,
+						ProcessExeFullName = GetNugetExeFullName(new()).NugetExeFullName,
+						Arguments = arguments.ToArray(),
+					});
 
-				if (nugetResponse.Errored)
-				{
-					logger.LogError(string.Format("Error pushing \"{0}\" to \"{1}\"\n{2}", System.IO.Path.GetFileName(nupkgFullName), source, nugetResponse.Output));
+					if (nugetResponse.Errored)
+					{
+						logger.LogError(string.Format("Error pushing \"{0}\" to \"{1}\"\n{2}", System.IO.Path.GetFileName(nupkgFullName), source, nugetResponse.Output));
 
-					response.Success = false;
-				}
-				else
-				{
-					logger.LogInformation(string.Format("Pushed \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), source));
+						response.Success = false;
+					}
+					else
+					{
+						logger.LogInformation(string.Format("Pushed \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), source));
+					}
 				}
 			}
 

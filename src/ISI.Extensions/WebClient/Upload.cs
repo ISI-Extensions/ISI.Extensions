@@ -41,12 +41,12 @@ namespace ISI.Extensions.WebClient
 		}
 
 
-		public static void UploadFileByChunk(string url, HeaderCollection headers, System.IO.Stream stream, string fileName, int maxFileSegmentSize = 1000000, int maxTries = 3)
+		public static void UploadFileByChunk(string url, HeaderCollection headers, System.IO.Stream stream, string fileName, int maxFileSegmentSize = 1000000, int maxTries = 3, string method = null)
 		{
-			UploadFileByChunk(new Uri(url), headers, stream, fileName, maxFileSegmentSize, maxTries);
+			UploadFileByChunk(new Uri(url), headers, stream, fileName, maxFileSegmentSize, maxTries, method);
 		}
 
-		public static void UploadFileByChunk(Uri uri, HeaderCollection headers, System.IO.Stream stream, string fileName, int maxFileSegmentSize = 1000000, int maxTries = 3)
+		public static void UploadFileByChunk(Uri uri, HeaderCollection headers, System.IO.Stream stream, string fileName, int maxFileSegmentSize = 1000000, int maxTries = 3, string method = null)
 		{
 			var fileSegments = new Queue<byte[]>();
 
@@ -89,7 +89,7 @@ namespace ISI.Extensions.WebClient
 
 						headers?.ApplyToWebRequest(webRequest);
 
-						webRequest.Method = System.Net.WebRequestMethods.Http.Post;
+						webRequest.Method = string.IsNullOrWhiteSpace(method) ? System.Net.WebRequestMethods.Http.Post : method;
 						webRequest.ContentType = "application/x-www-form-urlencoded";
 
 						var content = new StringBuilder();
@@ -138,22 +138,22 @@ namespace ISI.Extensions.WebClient
 			}
 		}
 
-		public static (System.Net.HttpStatusCode HttpStatusCode, string Body) UploadFile(string url, HeaderCollection headers, System.IO.Stream stream, string fileName, string fileFieldName = "uploadFile", System.Collections.Specialized.NameValueCollection formValues = null)
+		public static (System.Net.HttpStatusCode HttpStatusCode, string Body) UploadFile(string url, HeaderCollection headers, System.IO.Stream stream, string fileName, string fileFieldName = "uploadFile", System.Collections.Specialized.NameValueCollection formValues = null, string method = null)
 		{
-			return UploadFile(new Uri(url), headers, stream, fileName, fileFieldName, formValues);
+			return UploadFile(new Uri(url), headers, stream, fileName, fileFieldName, formValues, method);
 		}
 
-		public static (System.Net.HttpStatusCode HttpStatusCode, string Body) UploadFile(Uri uri, HeaderCollection headers, System.IO.Stream stream, string fileName, string fileFieldName = "uploadFile", System.Collections.Specialized.NameValueCollection formValues = null)
+		public static (System.Net.HttpStatusCode HttpStatusCode, string Body) UploadFile(Uri uri, HeaderCollection headers, System.IO.Stream stream, string fileName, string fileFieldName = "uploadFile", System.Collections.Specialized.NameValueCollection formValues = null, string method = null)
 		{
-			return UploadFiles(uri, headers, new[] { (Stream: stream, FileName: fileName, FileFieldName: fileFieldName) }, formValues);
+			return UploadFiles(uri, headers, new[] { (Stream: stream, FileName: fileName, FileFieldName: fileFieldName) }, formValues, method);
 		}
 
-		public static (System.Net.HttpStatusCode HttpStatusCode, string Body) UploadFiles(string url, HeaderCollection headers, IEnumerable<(System.IO.Stream Stream, string FileName, string FileFieldName)> files, System.Collections.Specialized.NameValueCollection formValues = null)
+		public static (System.Net.HttpStatusCode HttpStatusCode, string Body) UploadFiles(string url, HeaderCollection headers, IEnumerable<(System.IO.Stream Stream, string FileName, string FileFieldName)> files, System.Collections.Specialized.NameValueCollection formValues = null, string method = null)
 		{
-			return UploadFiles(new Uri(url), headers, files, formValues);
+			return UploadFiles(new Uri(url), headers, files, formValues, method);
 		}
 
-		public static (System.Net.HttpStatusCode HttpStatusCode, string Body) UploadFiles(Uri uri, HeaderCollection headers, IEnumerable<(System.IO.Stream Stream, string FileName, string FileFieldName)> files, System.Collections.Specialized.NameValueCollection formValues = null)
+		public static (System.Net.HttpStatusCode HttpStatusCode, string Body) UploadFiles(Uri uri, HeaderCollection headers, IEnumerable<(System.IO.Stream Stream, string FileName, string FileFieldName)> files, System.Collections.Specialized.NameValueCollection formValues = null, string method = null)
 		{
 			var boundary = string.Format("---------------------------{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.Base36));
 			var boundarybytes = System.Text.Encoding.UTF8.GetBytes(string.Format("{0}--{1}{0}", Environment.NewLine, boundary));
@@ -168,8 +168,7 @@ namespace ISI.Extensions.WebClient
 			}
 
 			webRequest.ContentType = "multipart/form-data; boundary=" + boundary;
-
-			webRequest.Method = System.Net.WebRequestMethods.Http.Post;
+			webRequest.Method = string.IsNullOrWhiteSpace(method) ? System.Net.WebRequestMethods.Http.Post : method;
 
 			var formItems = new List<byte[]>();
 			long requestLen = 0;
@@ -249,7 +248,7 @@ namespace ISI.Extensions.WebClient
 					{
 						var body = responseStream.ReadToEnd();
 
-						if (httpWebResponse.StatusCode != System.Net.HttpStatusCode.OK)
+						if ((httpWebResponse.StatusCode != System.Net.HttpStatusCode.OK) || (httpWebResponse.StatusCode != System.Net.HttpStatusCode.Created))
 						{
 							throw new(string.Format("{0}: {1}\n{2}", httpWebResponse.StatusCode, httpWebResponse.StatusDescription, body));
 						}

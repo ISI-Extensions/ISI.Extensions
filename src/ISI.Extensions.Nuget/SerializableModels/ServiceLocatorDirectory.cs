@@ -19,28 +19,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.JsonSerialization.Extensions;
-using ISI.Extensions.Nuget.Extensions;
-using DTOs = ISI.Extensions.Nuget.DataTransferObjects.NugetApi;
-using SerializableDTOs = ISI.Extensions.Nuget.SerializableModels;
-using Microsoft.Extensions.Logging;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Nuget
+namespace ISI.Extensions.Nuget.SerializableModels
 {
-	public partial class NugetApi
+	[DataContract]
+	public class ServiceLocatorDirectory
 	{
-		public const string NuGetHeaderName = "X-NuGet-ApiKey";
+		[DataMember(Name = "version", EmitDefaultValue = false)]
+		public string Version { get; set; }
 
-		private ISI.Extensions.WebClient.HeaderCollection GetHeaders(string nugetApiKey)
-		{
-			var headers = new ISI.Extensions.WebClient.HeaderCollection();
+		[DataMember(Name = "resources", EmitDefaultValue = false)]
+		public ServiceLocatorDirectoryResource[] Resources { get; set; }
+	}
 
-			if (!string.IsNullOrWhiteSpace(nugetApiKey))
-			{
-				headers.Add(NuGetHeaderName, nugetApiKey);
-			}
+	public class ServiceLocatorDirectoryResource
+	{
+		[DataMember(Name = "url", EmitDefaultValue = false)]
+		public string Url { get; set; }
 
-			return headers;
-		}
+		[DataMember(Name = "resource", EmitDefaultValue = false)]
+		public string Resource { get; set; }
 	}
 }

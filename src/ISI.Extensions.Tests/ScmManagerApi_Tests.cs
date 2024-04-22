@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -13,44 +13,29 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using ISI.Extensions.ConfigurationHelper.Extensions;
 using ISI.Extensions.DependencyInjection.Extensions;
 using ISI.Extensions.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace ISI.Extensions.Tests
 {
 	[TestFixture]
-	public class Compression_Tests
+	public class ScmManagerApi_Tests
 	{
-		public readonly string[] SourceFileParentDirectoryUrls = new[]
-		{
-			"godrives://mft.rrc.texas.gov/link/ec380e91-5926-4d63-891a-42877a81d32f", //OrganizationFilesSubDirectory
-			"godrives://mft.rrc.texas.gov/link/caf63b5f-2218-42e5-8e55-9f88673477e7", //GasLedgersFilesSubDirectory
-			"godrives://mft.rrc.texas.gov/link/abdf8b13-cc23-4489-b942-2ecd1171fae1", //OilLedgersFilesSubDirectory
-		};
-
-		public readonly string[] SourceFileNameRegexes = new[]
-		{
-			@"^orf.+\.ebc\.gz?$",
-			@"^olf.+\.ebc\.gz?$",
-			@"^gsf.+\.ebc\.gz?$",
-			//@"^orf.+\.ebc(?:\.gz)?$",
-			//@"^olf.+\.ebc(?:\.gz)?$",
-			//@"^gsf.+\.ebc(?:\.gz)?$",
-		};
+		public string ScmManagerApiUrl { get; set; }
+		public string ScmManagerApiToken { get; set; }
 
 		[OneTimeSetUp]
 		public void OneTimeSetup()
 		{
-			ISI.Extensions.StartUp.Start();
-
 			var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
 			var configurationRoot = configurationBuilder.Build().ApplyConfigurationValueReaders();
 
@@ -80,90 +65,58 @@ namespace ISI.Extensions.Tests
 			var serviceProvider = services.BuildServiceProvider<ISI.Extensions.DependencyInjection.Iunq.ServiceProviderBuilder>(configurationRoot);
 
 			serviceProvider.SetServiceLocator();
+
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = new ISI.Extensions.SimpleKeyValueStorage(settingsFullName);
+
+			ScmManagerApiUrl = settings.GetValue("SCMMANAGER-URL");
+			ScmManagerApiToken = settings.GetValue("SCMMANAGER.BackupAgent.ApiKey");
 		}
 
 		[Test]
-		public void Expander_7zip_Test()
+		public void ListRepositoriesUsers_Tests()
 		{
-			var sourceFileUrl = @"C:\Users\ron.muth\Downloads\FacilityTransactionsArchive.20220316021546194.e44e2852-98f0-46bb-a7c3-fbba73125e1d.7z";
+			var scmManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.ScmManager.IScmManagerApi>();
 
-			var fileStreams = new ISI.Extensions.Stream.FileStreamCollection();
-
-			using (var stream = new System.IO.MemoryStream())
+			var apiResponse = scmManagerApi.ListRepositories(new()
 			{
-				using (var fileSystemStream = ISI.Extensions.FileSystem.OpenRead(sourceFileUrl))
-				{
-					fileSystemStream.CopyTo(stream);
-					stream.Flush();
-				}
-
-				stream.Rewind();
-
-				fileStreams.Add(sourceFileUrl, stream, true, null);
-			}
+				ScmManagerApiUrl = ScmManagerApiUrl,
+				ScmManagerApiToken = ScmManagerApiToken,
+			});
 		}
 
 		[Test]
-		public void Expander_gz_Test()
+		public void ListRepositoryChangeSets_Tests()
 		{
-			var sourceFileUrl = @"C:\Users\ron.muth\Downloads\dbf900.ebc.gz";
+			var scmManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.ScmManager.IScmManagerApi>();
 
-			var fileStreams = new ISI.Extensions.Stream.FileStreamCollection();
-
-			using (var stream = new System.IO.MemoryStream())
+			var apiResponse = scmManagerApi.ListRepositoryChangeSets(new()
 			{
-				using (var fileSystemStream = ISI.Extensions.FileSystem.OpenRead(sourceFileUrl))
-				{
-					fileSystemStream.CopyTo(stream);
-					stream.Flush();
-				}
-
-				stream.Rewind();
-
-				fileStreams.Add(sourceFileUrl, stream, true, null);
-			}
+				ScmManagerApiUrl = ScmManagerApiUrl,
+				ScmManagerApiToken = ScmManagerApiToken,
+				Namespace = "ISI",
+				Name = "ISI.SqlServerBackupAgent.ServiceApplication",
+			});
 		}
 
 		[Test]
-		public void lz_Test()
+		public void ExportRepository_Tests()
 		{
-			var uncompressedFullName = @"E:\ISI\ISI.Identity.20240420.205134049.bak";
+			var scmManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.ScmManager.IScmManagerApi>();
 
-			var compressedFullName = $"{uncompressedFullName}.tar.lz";
+			var backupFullName = @"E:\ISI\ISI.SqlServerBackupAgent.ServiceApplication.20240420.205134049.bak";
 
-			using (var compressedFileStream = System.IO.File.Create(compressedFullName))
+			using (var backupFileStream = System.IO.File.Create(backupFullName))
 			{
-				using (var writer = global::SharpCompress.Writers.WriterFactory.Open(compressedFileStream, global::SharpCompress.Common.ArchiveType.Tar, global::SharpCompress.Common.CompressionType.LZip))
+				var apiResponse = scmManagerApi.ExportRepository(new()
 				{
-					using (var uncompressedFileStream = System.IO.File.OpenRead(uncompressedFullName))
-					{
-						writer.Write(System.IO.Path.GetFileName(uncompressedFullName), uncompressedFileStream, null);
-					}
-				}
-			}
-
-			var extractDirectoryFullName = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(uncompressedFullName), System.IO.Path.GetFileNameWithoutExtension(uncompressedFullName));
-			System.IO.Directory.CreateDirectory(extractDirectoryFullName);
-			using (var compressedFileStream = System.IO.File.OpenRead(compressedFullName))
-			{
-				using (var reader = global::SharpCompress.Readers.ReaderFactory.Open(compressedFileStream))
-				{
-					while (reader.MoveToNextEntry())
-					{
-						if (!reader.Entry.IsDirectory)
-						{
-							using (var entryStream = reader.OpenEntryStream())
-							{
-								var extractFullName = System.IO.Path.Combine(extractDirectoryFullName, System.IO.Path.GetFileName(reader.Entry.Key));
-
-								using (var extractFileStream = System.IO.File.Create(extractFullName))
-								{
-									entryStream.CopyTo(extractFileStream);
-								}
-							}
-						}
-					}
-				}
+					ScmManagerApiUrl = ScmManagerApiUrl,
+					ScmManagerApiToken = ScmManagerApiToken,
+					Namespace = "ISI",
+					Name = "ISI.SqlServerBackupAgent.ServiceApplication",
+					Type = "git",
+					DownloadStream = backupFileStream,
+				});
 			}
 		}
 	}

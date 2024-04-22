@@ -152,7 +152,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Mandrill", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.PostgreSQL", "ISI.Extensions.PostgreSQL\ISI.Extensions.PostgreSQL.csproj", "{09EDDB29-4527-45CD-B7C4-81CA6E564ACB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.SqlServer", "ISI.Extensions.SqlServer\ISI.Extensions.SqlServer.csproj", "{2F59916C-3CCF-44EE-B981-17A88E21277B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.SqlServer", "ISI.Extensions.SqlServer\ISI.Extensions.SqlServer.csproj", "{2F59916C-3CCF-44EE-B981-17A88E21277B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.ScmManager", "ISI.Extensions.ScmManager\ISI.Extensions.ScmManager.csproj", "{6F4C3DC1-C4F6-4158-B9BD-150921B71AFC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -746,6 +748,14 @@ Global
 		{2F59916C-3CCF-44EE-B981-17A88E21277B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2F59916C-3CCF-44EE-B981-17A88E21277B}.Release|x64.ActiveCfg = Release|Any CPU
 		{2F59916C-3CCF-44EE-B981-17A88E21277B}.Release|x64.Build.0 = Release|Any CPU
+		{6F4C3DC1-C4F6-4158-B9BD-150921B71AFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F4C3DC1-C4F6-4158-B9BD-150921B71AFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F4C3DC1-C4F6-4158-B9BD-150921B71AFC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6F4C3DC1-C4F6-4158-B9BD-150921B71AFC}.Debug|x64.Build.0 = Debug|Any CPU
+		{6F4C3DC1-C4F6-4158-B9BD-150921B71AFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F4C3DC1-C4F6-4158-B9BD-150921B71AFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F4C3DC1-C4F6-4158-B9BD-150921B71AFC}.Release|x64.ActiveCfg = Release|Any CPU
+		{6F4C3DC1-C4F6-4158-B9BD-150921B71AFC}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

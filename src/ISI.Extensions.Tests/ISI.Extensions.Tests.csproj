@@ -74,6 +74,7 @@
 		<ProjectReference Include="..\ISI.Extensions.Repository.RavenDb\ISI.Extensions.Repository.RavenDb.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Repository.SqlServer\ISI.Extensions.Repository.SqlServer.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Sbom\ISI.Extensions.Sbom.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.ScmManager\ISI.Extensions.ScmManager.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Scm\ISI.Extensions.Scm.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Security.ActiveDirectory\ISI.Extensions.Security.ActiveDirectory.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.SharpCompress\ISI.Extensions.SharpCompress.csproj" />

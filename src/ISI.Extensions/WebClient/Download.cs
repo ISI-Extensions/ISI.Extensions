@@ -53,18 +53,19 @@ namespace ISI.Extensions.WebClient
 			}
 		}
 
-		public static DownloadFileResponse<TStream> DownloadFile<TStream>(string url, HeaderCollection headers, int? bufferSize = null)
+		public static DownloadFileResponse<TStream> DownloadFile<TStream>(string url, HeaderCollection headers, int? bufferSize = null, System.Net.CookieContainer cookieContainer = null)
 			where TStream : System.IO.Stream, new()
 		{
-			return DownloadFile<TStream>(new Uri(url), headers, bufferSize);
+			return DownloadFile<TStream>(new Uri(url), headers, bufferSize, cookieContainer);
 		}
 
-		public static DownloadFileResponse<TStream> DownloadFile<TStream>(Uri uri, HeaderCollection headers, int? bufferSize = null)
+		public static DownloadFileResponse<TStream> DownloadFile<TStream>(Uri uri, HeaderCollection headers, int? bufferSize = null, System.Net.CookieContainer cookieContainer = null)
 			where TStream : System.IO.Stream, new()
 		{
 			var response = new DownloadFileResponse<TStream>();
 
 			var webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(uri);
+			webRequest.CookieContainer = cookieContainer;
 
 			headers?.ApplyToWebRequest(webRequest);
 
@@ -110,16 +111,17 @@ namespace ISI.Extensions.WebClient
 			return response;
 		}
 
-		public static DownloadFileResponse DownloadFile(string url, HeaderCollection headers, System.IO.Stream toStream, int? bufferSize = null)
+		public static DownloadFileResponse DownloadFile(string url, HeaderCollection headers, System.IO.Stream toStream, int? bufferSize = null, System.Net.CookieContainer cookieContainer = null)
 		{
-			return DownloadFile(new Uri(url), headers, toStream, bufferSize);
+			return DownloadFile(new Uri(url), headers, toStream, bufferSize, cookieContainer);
 		}
 
-		public static DownloadFileResponse DownloadFile(Uri uri, HeaderCollection headers, System.IO.Stream toStream, int? bufferSize = null)
+		public static DownloadFileResponse DownloadFile(Uri uri, HeaderCollection headers, System.IO.Stream toStream, int? bufferSize = null, System.Net.CookieContainer cookieContainer = null)
 		{
 			var response = new DownloadFileResponse();
 
 			var webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(uri);
+			webRequest.CookieContainer = cookieContainer;
 
 			headers?.ApplyToWebRequest(webRequest);
 
@@ -167,16 +169,17 @@ namespace ISI.Extensions.WebClient
 
 		public delegate System.IO.Stream DownloadFileGetStreamDelegate(string fileName);
 
-		public static DownloadFileResponse DownloadFile(string url, HeaderCollection headers, DownloadFileGetStreamDelegate getStream, int? bufferSize = null)
+		public static DownloadFileResponse DownloadFile(string url, HeaderCollection headers, DownloadFileGetStreamDelegate getStream, int? bufferSize = null, System.Net.CookieContainer cookieContainer = null)
 		{
-			return DownloadFile(new Uri(url), headers, getStream, bufferSize);
+			return DownloadFile(new Uri(url), headers, getStream, bufferSize, cookieContainer);
 		}
 
-		public static DownloadFileResponse DownloadFile(Uri uri, HeaderCollection headers, DownloadFileGetStreamDelegate getStream, int? bufferSize = null)
+		public static DownloadFileResponse DownloadFile(Uri uri, HeaderCollection headers, DownloadFileGetStreamDelegate getStream, int? bufferSize = null, System.Net.CookieContainer cookieContainer = null)
 		{
 			var response = new DownloadFileResponse();
 
 			var webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(uri);
+			webRequest.CookieContainer = cookieContainer;
 
 			headers?.ApplyToWebRequest(webRequest);
 

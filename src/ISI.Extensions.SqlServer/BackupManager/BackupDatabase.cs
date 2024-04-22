@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.SqlServer.Extensions;
 using ISI.Extensions.Repository.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.SqlServer.DataTransferObjects.BackupManager;
 
 namespace ISI.Extensions.SqlServer
@@ -57,6 +58,8 @@ namespace ISI.Extensions.SqlServer
 			}
 
 			connectionStringBuilder.TrustServerCertificate = true;
+
+			Logger.LogInformation($"ConnectionString: {connectionStringBuilder.GetServerName()}");
 
 			using (var connection = ISI.Extensions.SqlServer.SqlConnection.GetSqlConnection(connectionStringBuilder.ConnectionString))
 			{

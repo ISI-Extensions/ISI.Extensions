@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.PostgreSQL.Extensions;
 using ISI.Extensions.Repository.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.PostgreSQL.DataTransferObjects.BackupManager;
 
 namespace ISI.Extensions.PostgreSQL
@@ -58,6 +59,8 @@ namespace ISI.Extensions.PostgreSQL
 				default:
 					throw new ArgumentOutOfRangeException(nameof(request));
 			}
+
+			Logger.LogInformation($"ConnectionString: {connectionStringBuilder.GetServerName()}");
 
 			using (var connection = ISI.Extensions.PostgreSQL.SqlConnection.GetSqlConnection(connectionStringBuilder.ConnectionString))
 			{

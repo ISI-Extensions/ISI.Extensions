@@ -248,7 +248,7 @@ namespace ISI.Extensions.WebClient
 					{
 						var body = responseStream.ReadToEnd();
 
-						if ((httpWebResponse.StatusCode != System.Net.HttpStatusCode.OK) || (httpWebResponse.StatusCode != System.Net.HttpStatusCode.Created))
+						if ((httpWebResponse.StatusCode != System.Net.HttpStatusCode.OK) && (httpWebResponse.StatusCode != System.Net.HttpStatusCode.Created))
 						{
 							throw new(string.Format("{0}: {1}\n{2}", httpWebResponse.StatusCode, httpWebResponse.StatusDescription, body));
 						}

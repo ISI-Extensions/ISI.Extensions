@@ -39,7 +39,12 @@ namespace ISI.Extensions.Nuget
 
 			if (Environment.OSVersion.Platform == PlatformID.Unix)
 			{
+				//logger.LogInformation("Using Unix");
+
 				var serviceLocatorDirectoryUrl = (string.IsNullOrWhiteSpace(request.RepositoryUri?.ToString()) ? request.RepositoryName : request.RepositoryUri?.ToString());
+
+				//logger.LogInformation($"serviceLocatorDirectoryUrl: {serviceLocatorDirectoryUrl}");
+
 
 				var workingDirectory = string.IsNullOrWhiteSpace(request.WorkingDirectory) ? System.IO.Path.GetDirectoryName(request.NupkgFullNames.FirstOrDefault()) : request.WorkingDirectory;
 
@@ -64,7 +69,24 @@ namespace ISI.Extensions.Nuget
 
 				//var serviceLocatorDirectory = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableDTOs.ServiceLocatorDirectory>(serviceLocatorDirectoryUrl, null, true);
 				var serviceLocatorDirectoryJson = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<ISI.Extensions.WebClient.Rest.TextResponse>(serviceLocatorDirectoryUrl, null, true);
+
+				if (string.IsNullOrWhiteSpace(serviceLocatorDirectoryJson.Content))
+				{
+					throw new Exception("cannot download serviceLocatorDirectory");
+				}
+
+				//logger.LogInformation($"serviceLocatorDirectoryJson.Content: {serviceLocatorDirectoryJson.Content}");
+
 				var serviceLocatorDirectory = JsonSerializer.Deserialize<SerializableDTOs.ServiceLocatorDirectory>(serviceLocatorDirectoryJson.Content.Replace("\"@id\"", "\"url\"").Replace("\"@type\"", "\"resource\""));
+
+				//logger.LogInformation($"serviceLocatorDirectory.Version: {serviceLocatorDirectory.Version}");
+				//logger.LogInformation($"serviceLocatorDirectory.Resources.NullCheckedCount(): {serviceLocatorDirectory.Resources.NullCheckedCount()}");
+
+				//for (int i = 0; i < serviceLocatorDirectory.Resources.NullCheckedCount(); i++)
+				//{
+				//	logger.LogInformation($"serviceLocatorDirectory.Resources[{i}].Resource: {serviceLocatorDirectory.Resources[i].Resource}");
+				//	logger.LogInformation($"serviceLocatorDirectory.Resources[{i}].Url: {serviceLocatorDirectory.Resources[i].Url}");
+				//}
 
 				var packagePublishUrl = serviceLocatorDirectory.Resources.NullCheckedFirstOrDefault(resource => resource.Resource.StartsWith("PackagePublish", StringComparison.InvariantCultureIgnoreCase))?.Url;
 
@@ -73,17 +95,28 @@ namespace ISI.Extensions.Nuget
 					throw new Exception("cannot find packagePublishUrl");
 				}
 
+				//logger.LogInformation($"packagePublishUrl: {packagePublishUrl}");
+
 				foreach (var nupkgFullName in request.NupkgFullNames)
 				{
 					var nupkgFileName = System.IO.Path.GetFileName(nupkgFullName);
 
 					logger.LogInformation(string.Format("Pushing \"{0}\" to \"{1}\"", nupkgFileName, serviceLocatorDirectoryUrl));
 
-					using (var stream = System.IO.File.OpenRead(nupkgFullName))
+					using (var client = new System.Net.WebClient())
 					{
-						ISI.Extensions.WebClient.Upload.UploadFile(packagePublishUrl, GetHeaders(request.NugetApiKey), stream, nupkgFileName, method: System.Net.WebRequestMethods.Http.Put);
+						//client.Credentials = System.Net.CredentialCache.DefaultCredentials;
+						client.Headers.Add(NuGetHeaderName, request.NugetApiKey);
+						client.UploadFile(packagePublishUrl, System.Net.WebRequestMethods.Http.Put, nupkgFullName);
 					}
-					
+
+
+
+					//using (var stream = System.IO.File.OpenRead(nupkgFullName))
+					//{
+					//	var uploadResponse = ISI.Extensions.WebClient.Upload.UploadFile(packagePublishUrl, GetHeaders(request.NugetApiKey), stream, nupkgFileName, method: System.Net.WebRequestMethods.Http.Put);
+					//}
+
 					logger.LogInformation(string.Format("Pushed \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), serviceLocatorDirectoryUrl));
 				}
 			}

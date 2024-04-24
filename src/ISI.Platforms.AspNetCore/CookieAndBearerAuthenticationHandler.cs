@@ -64,7 +64,7 @@ namespace ISI.Platforms.AspNetCore
 		}
 	}
 
-	public class CookieAndBearerAuthenticationHandler<TCookieAndBearerAuthenticationSettings> : AbstractAuthenticationHandler, ISI.Platforms.AspNetCore.IAuthenticationHandler
+	public class CookieAndBearerAuthenticationHandler<TCookieAndBearerAuthenticationSettings> : AbstractAuthenticationHandler, ISI.Platforms.AspNetCore.ICookieAuthenticationHandler
 		where TCookieAndBearerAuthenticationSettings : ICookieAndBearerAuthenticationSettings, new()
 	{
 		protected ICookieAndBearerAuthenticationSettings CookieAndBearerAuthenticationSettings { get; }
@@ -81,6 +81,8 @@ namespace ISI.Platforms.AspNetCore
 			CookieAndBearerAuthenticationSettings = new TCookieAndBearerAuthenticationSettings();
 		}
 
+		string ISI.Platforms.AspNetCore.ICookieAuthenticationHandler.AuthenticationHandlerName => CookieAndBearerAuthenticationSettings.AuthorizationHeaderName;
+		string ISI.Platforms.AspNetCore.ICookieAuthenticationHandler.CookieName => CookieAndBearerAuthenticationSettings.CookieName;
 
 		protected override string GetAuthenticationHandlerName() => CookieAndBearerAuthenticationSettings.CookieName;
 

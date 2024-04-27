@@ -38,6 +38,7 @@ namespace ISI.Extensions.Acme
 
 			System.IO.File.WriteAllText(request.FullName, JsonSerializer.Serialize(new ISI.Extensions.Acme.SerializableModels.AcmeAccountCredentials()
 			{
+				AccountKey = request.AccountCredentials.AccountKey,
 				Pem = request.AccountCredentials.Pem,
 				SerializedJsonWebKey = request.AccountCredentials.SerializedJsonWebKey,
 			}, true));

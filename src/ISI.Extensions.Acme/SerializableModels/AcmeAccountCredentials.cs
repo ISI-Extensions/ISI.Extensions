@@ -26,6 +26,9 @@ namespace ISI.Extensions.Acme.SerializableModels
 	[DataContract]
 	public class AcmeAccountCredentials
 	{
+		[DataMember(Name = "accountKey", EmitDefaultValue = false)]
+		public string AccountKey { get; set; }
+
 		[DataMember(Name = "pem", EmitDefaultValue = false)]
 		public string Pem { get; set; }
 

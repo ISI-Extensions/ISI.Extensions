@@ -69,6 +69,8 @@ namespace ISI.Extensions.WebClient
 
 			headers?.ApplyToWebRequest(webRequest);
 
+			webRequest.Method = System.Net.WebRequestMethods.Http.Get;
+
 			try
 			{
 				using (var webResponse = (System.Net.HttpWebResponse)webRequest.GetResponse())
@@ -124,6 +126,8 @@ namespace ISI.Extensions.WebClient
 			webRequest.CookieContainer = cookieContainer;
 
 			headers?.ApplyToWebRequest(webRequest);
+			
+			webRequest.Method = System.Net.WebRequestMethods.Http.Get;
 
 			try
 			{
@@ -182,6 +186,8 @@ namespace ISI.Extensions.WebClient
 			webRequest.CookieContainer = cookieContainer;
 
 			headers?.ApplyToWebRequest(webRequest);
+			
+			webRequest.Method = System.Net.WebRequestMethods.Http.Get;
 
 			try
 			{

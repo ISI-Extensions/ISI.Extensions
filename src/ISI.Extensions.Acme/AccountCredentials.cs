@@ -23,6 +23,8 @@ namespace ISI.Extensions.Acme
 {
 	public class AccountCredentials
 	{
+		public string AccountKey { get; set; }
+
 		public string Pem { get; set; }
 
 		public string SerializedJsonWebKey { get; set; }

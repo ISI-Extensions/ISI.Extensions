@@ -39,6 +39,7 @@ namespace ISI.Extensions.Acme
 
 				response.AcmeAccountCredentials = serializableAcmeAccountCredentials.NullCheckedConvert(source => new AccountCredentials()
 				{
+					AccountKey = source.AccountKey,
 					Pem = source.Pem,
 					SerializedJsonWebKey = source.SerializedJsonWebKey,
 				});

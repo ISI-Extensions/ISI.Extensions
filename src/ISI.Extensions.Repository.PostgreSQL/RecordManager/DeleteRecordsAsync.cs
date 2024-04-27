@@ -53,8 +53,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 				var tableNameAlias = GetTableNameAlias(TableAlias);
 
-				sql.AppendFormat("DELETE {0}\n", tableNameAlias);
-
+				sql.Append("DELETE\n");
 				sql.AppendFormat("FROM {0}\n", GetTableName());
 				if (sqlConnectionWhereClause != null)
 				{

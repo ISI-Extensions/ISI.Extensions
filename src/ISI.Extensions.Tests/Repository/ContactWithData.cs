@@ -41,6 +41,6 @@ namespace ISI.Extensions.Tests.Repository
 		Guid ISI.Extensions.Repository.IRecordManagerPrimaryKeyRecord<Guid>.PrimaryKey => ContactUuid;
 
 		[ISI.Extensions.Repository.IgnoreRecordProperty]
-		DateTime ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime.ArchiveDateTime => TimeStamp;
+		DateTime ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime.ArchiveDateTimeUtc => TimeStamp;
 	}
 }

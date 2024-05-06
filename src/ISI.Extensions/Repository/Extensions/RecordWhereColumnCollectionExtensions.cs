@@ -113,7 +113,7 @@ namespace ISI.Extensions.Repository.Extensions
 		}
 
 		public static void AddArchiveDateTimeRange<TRecord>(this IRecordWhereColumnCollection<TRecord> recordWhereColumns, IRecordPropertyDescription<TRecord> recordDescription, DateTime? startDateTime, DateTime? stopDateTime)
-			where TRecord : ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime
+			where TRecord : ISI.Extensions.Repository.IRecordManagerRecordWithArchive
 		{
 			if (startDateTime.HasValue && stopDateTime.HasValue)
 			{

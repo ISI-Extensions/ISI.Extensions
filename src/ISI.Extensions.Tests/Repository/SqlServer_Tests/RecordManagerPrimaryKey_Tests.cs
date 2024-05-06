@@ -46,7 +46,7 @@ namespace ISI.Extensions.Tests.Repository
 
 			Guid ISI.Extensions.Repository.IRecordManagerPrimaryKeyRecord<Guid>.PrimaryKey => ContactUuid;
 
-			DateTime ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime.ArchiveDateTime => TimeStamp;
+			DateTime ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime.ArchiveDateTimeUtc => TimeStamp;
 
 			ISI.Extensions.Repository.RecordIndexCollection<Contact> ISI.Extensions.Repository.IRecordIndexDescriptions<Contact>.GetRecordIndexes()
 			{
@@ -115,7 +115,7 @@ namespace ISI.Extensions.Tests.Repository
 			[ISI.Extensions.Repository.RecordProperty(ColumnName = "CommitUuid")]
 			public Guid CommitUuid { get; set; }
 
-			DateTime ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime.ArchiveDateTime => ModifyDateTimeUtc;
+			DateTime ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime.ArchiveDateTimeUtc => ModifyDateTimeUtc;
 
 			ISI.Extensions.Repository.RecordIndexCollection<NupkgRecord> ISI.Extensions.Repository.IRecordIndexDescriptions<NupkgRecord>.GetRecordIndexes()
 			{

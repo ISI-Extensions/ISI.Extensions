@@ -137,7 +137,7 @@ namespace ISI.Extensions.Repository
 
 		public static RecordPropertyDescription<TRecord> GetArchiveDateTimeRecordPropertyDescription(string archiveTableArchiveDateTimeColumnName)
 		{
-			var propertyInfo = typeof(ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.GetProperty).First(property => string.Equals(property.Name, nameof(ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime.ArchiveDateTime), StringComparison.CurrentCulture));
+			var propertyInfo = typeof(ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.GetProperty).First(property => string.Equals(property.Name, nameof(ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime.ArchiveDateTimeUtc), StringComparison.CurrentCulture));
 
 			var propertyAttributes = new System.Attribute[]
 			{

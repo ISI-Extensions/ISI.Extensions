@@ -20,18 +20,25 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Repository.SqlServer
+namespace ISI.Extensions.Repository
 {
-	public abstract partial class RecordManagerPrimaryKeyWithArchive<TRecord, TRecordPrimaryKey>
+	public abstract partial class RecordManager<TRecord>
 	{
-		public override async Task<IEnumerable<TRecord>> UpsertRecordsAsync(IEnumerable<TRecord> records, System.Threading.CancellationToken cancellationToken = default)
-		{
-			return await PersistConvertedRecordsAsync<TRecord>(records ?? Array.Empty<TRecord>(), PersistenceMethod.Upsert, true, null, null, record => record, convertedRecord => convertedRecord, GetRecordArchiveDateTimeUtc(), cancellationToken);
-		}
+		public delegate System.DateTime GetRecordArchiveDateTimeUtcDelegate<TRecord>(TRecord record);
 
-		public override async Task<IEnumerable<TRecord>> UpsertRecordsAsync(IEnumerable<TRecord> records, Action<TRecord> updateRecordProperties, System.Threading.CancellationToken cancellationToken = default)
+		protected GetRecordArchiveDateTimeUtcDelegate<TRecord> GetRecordArchiveDateTimeUtc()
 		{
-			return await PersistConvertedRecordsAsync<TRecord>(records ?? Array.Empty<TRecord>(), PersistenceMethod.Upsert, true, updateRecordProperties, null, record => record, convertedRecord => convertedRecord, GetRecordArchiveDateTimeUtc(), cancellationToken);
+			var archiveDateTimeUtc = DateTimeStamper.CurrentDateTimeUtc();
+
+			return record =>
+			{
+				if (record is ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime recordManagerRecordWithArchiveDateTime)
+				{
+					return recordManagerRecordWithArchiveDateTime.ArchiveDateTimeUtc;
+				}
+
+				return archiveDateTimeUtc;
+			};
 		}
 	}
 }

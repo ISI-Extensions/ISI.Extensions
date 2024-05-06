@@ -55,7 +55,7 @@ namespace ISI.Extensions.Repository
 	}
 
 	public interface IRecordManagerPrimaryKeyWithArchive<TRecord, TRecordPrimaryKey> : IRecordManagerPrimaryKey<TRecord, TRecordPrimaryKey>
-		where TRecord : class, IRecordManagerPrimaryKeyRecord<TRecordPrimaryKey>, IRecordManagerRecordWithArchiveDateTime, new()
+		where TRecord : class, IRecordManagerPrimaryKeyRecord<TRecordPrimaryKey>, IRecordManagerRecordWithArchive, new()
 	{
 		IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> GetArchiveRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, DateTime? minArchiveDateTime, DateTime? maxArchiveDateTime, int skip = 0, int take = -1, System.Threading.CancellationToken cancellationToken = default);
 		IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> GetArchiveRecordsAsync(TRecordPrimaryKey primaryKeyValue, DateTime? minArchiveDateTime, DateTime? maxArchiveDateTime, int skip = 0, int take = -1, System.Threading.CancellationToken cancellationToken = default);

@@ -74,7 +74,7 @@ namespace ISI.Extensions.Tests.Repository
 			Guid ISI.Extensions.Repository.IRecordManagerPrimaryKeyRecord<Guid>.PrimaryKey => EmailUuid;
 
 			[ISI.Extensions.Repository.IgnoreRecordProperty]
-			DateTime ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime.ArchiveDateTime => ModifyDateTimeUtc;
+			DateTime ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime.ArchiveDateTimeUtc => ModifyDateTimeUtc;
 
 			ISI.Extensions.Repository.RecordIndexCollection<EmailRecord> ISI.Extensions.Repository.IRecordIndexDescriptions<EmailRecord>.GetRecordIndexes()
 			{

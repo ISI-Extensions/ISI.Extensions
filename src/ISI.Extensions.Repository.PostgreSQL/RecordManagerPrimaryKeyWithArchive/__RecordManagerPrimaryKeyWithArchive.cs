@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 namespace ISI.Extensions.Repository.PostgreSQL
 {
 	public abstract partial class RecordManagerPrimaryKeyWithArchive<TRecord, TRecordPrimaryKey> : RecordManagerPrimaryKey<TRecord, TRecordPrimaryKey>, IRecordManagerPrimaryKeyWithArchive<TRecord, TRecordPrimaryKey>
-		where TRecord : class, IRecordManagerPrimaryKeyRecord<TRecordPrimaryKey>, IRecordManagerRecordWithArchiveDateTime, new()
+		where TRecord : class, IRecordManagerPrimaryKeyRecord<TRecordPrimaryKey>, IRecordManagerRecordWithArchive, new()
 	{
 		protected RecordManagerPrimaryKeyWithArchive(
 			Microsoft.Extensions.Configuration.IConfiguration configuration,

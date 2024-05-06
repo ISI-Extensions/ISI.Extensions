@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 namespace ISI.Extensions.Repository.PostgreSQL
 {
 	public abstract partial class RecordManagerWithArchive<TRecord> : RecordManager<TRecord>
-		where TRecord : class, IRecordManagerRecord, IRecordManagerRecordWithArchiveDateTime, new()
+		where TRecord : class, IRecordManagerRecord, IRecordManagerRecordWithArchive, new()
 	{
 		protected RecordManagerWithArchive(
 			Microsoft.Extensions.Configuration.IConfiguration configuration,

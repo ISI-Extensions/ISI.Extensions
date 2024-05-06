@@ -29,7 +29,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 {
 	public abstract partial class RecordManager<TRecord>
 	{
-		protected virtual async Task<IEnumerable<TRecord>> PersistConvertedRecordsAsync<TConvertedRecord>(IEnumerable<TRecord> records, PersistenceMethod persistenceMethod, bool hasArchiveTable, Action<TRecord> updateRecordProperties = null, UpdateRecordFilterColumnCollection<TRecord> updateRecordColumns = null, Func<TRecord, TConvertedRecord> recordToConvertedRecordConverter = null, Func<TConvertedRecord, TRecord> convertedRecordToRecordConverter = null, Func<TRecord, DateTime> getArchiveDateTime = null, System.Threading.CancellationToken cancellationToken = default)
+		protected virtual async Task<IEnumerable<TRecord>> PersistConvertedRecordsAsync<TConvertedRecord>(IEnumerable<TRecord> records, PersistenceMethod persistenceMethod, bool hasArchiveTable, Action<TRecord> updateRecordProperties = null, UpdateRecordFilterColumnCollection<TRecord> updateRecordColumns = null, Func<TRecord, TConvertedRecord> recordToConvertedRecordConverter = null, Func<TConvertedRecord, TRecord> convertedRecordToRecordConverter = null, GetRecordArchiveDateTimeUtcDelegate<TRecord> getArchiveDateTimeUtc = null, System.Threading.CancellationToken cancellationToken = default)
 			where TConvertedRecord : class
 		{
 			object GetValue(IRecordPropertyDescription<TConvertedRecord> recordPropertyDescription, TConvertedRecord convertedRecord)
@@ -81,11 +81,11 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 			convertedRecordToRecordConverter ??= record => record as TRecord;
 
-			if (getArchiveDateTime == null)
+			if (getArchiveDateTimeUtc == null)
 			{
 				var archiveDateTimeUtc = DateTimeStamper.CurrentDateTime();
 
-				getArchiveDateTime = record => archiveDateTimeUtc;
+				getArchiveDateTimeUtc = record => archiveDateTimeUtc;
 			}
 
 			if (repositoryAssignedValueColumnDefinitions.Any())
@@ -276,7 +276,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 							sqlSelects.Add(string.Format("SELECT {0}", string.Join(", ", archivePropertyIndexes.Select(propertyIndex => string.Format("@value_{0}_{1}", selectIndex, propertyIndex)))));
 
 							var valueIndex = 1;
-							sqlValues.Add(string.Format("@value_{0}_{1}", selectIndex, valueIndex++), getArchiveDateTime(persistedRecordSet.Record));
+							sqlValues.Add(string.Format("@value_{0}_{1}", selectIndex, valueIndex++), getArchiveDateTimeUtc(persistedRecordSet.Record));
 							foreach (var property in archivePropertyDescriptions)
 							{
 								sqlValues.Add(string.Format("@value_{0}_{1}", selectIndex, valueIndex++), (property.IsNull(persistedRecordSet.ConvertedRecord) ? DBNull.Value : GetValue(property, persistedRecordSet.ConvertedRecord)));

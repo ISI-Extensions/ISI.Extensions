@@ -28,7 +28,9 @@ namespace ISI.Extensions.Repository.SqlServer
 		{
 			var count = 0;
 
-			foreach (var updatedRecord in await PersistConvertedRecordsAsync(records, PersistenceMethod.Update, true, null, updateRecordFilterColumns, record => record, convertedRecord => convertedRecord, record => record.ArchiveDateTime, cancellationToken))
+			var getRecordArchiveDateTimeUtc = GetRecordArchiveDateTimeUtc();
+
+			foreach (var updatedRecord in await PersistConvertedRecordsAsync(records, PersistenceMethod.Update, true, null, updateRecordFilterColumns, record => record, convertedRecord => convertedRecord, getRecordArchiveDateTimeUtc, cancellationToken))
 			{
 				count++;
 			}

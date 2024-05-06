@@ -28,7 +28,7 @@ namespace ISI.Extensions.Repository.SqlServer
 	{
 		public override async Task<IEnumerable<TRecord>> InsertRecordsAsync(IEnumerable<TRecord> records, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await PersistConvertedRecordsAsync<TRecord>(records, PersistenceMethod.Insert, true, null, null, record => record, convertedRecord => convertedRecord, record => record.ArchiveDateTime, cancellationToken);
+			return await PersistConvertedRecordsAsync<TRecord>(records, PersistenceMethod.Insert, true, null, null, record => record, convertedRecord => convertedRecord, GetRecordArchiveDateTimeUtc(), cancellationToken);
 		}
 	}
 }

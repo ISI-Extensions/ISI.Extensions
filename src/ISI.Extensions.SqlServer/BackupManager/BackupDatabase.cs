@@ -59,7 +59,9 @@ namespace ISI.Extensions.SqlServer
 
 			connectionStringBuilder.TrustServerCertificate = true;
 
-			Logger.LogInformation($"ConnectionString: {connectionStringBuilder.GetServerName()}");
+			Logger.LogInformation($"ServerName: {connectionStringBuilder.GetServerName()}");
+			Logger.LogInformation($"ServerPort: {connectionStringBuilder.GetServerPort()}");
+			Logger.LogInformation($"ConnectionString: {connectionStringBuilder.ConnectionString}");
 
 			using (var connection = ISI.Extensions.SqlServer.SqlConnection.GetSqlConnection(connectionStringBuilder.ConnectionString))
 			{

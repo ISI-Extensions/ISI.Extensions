@@ -120,11 +120,20 @@ namespace ISI.Extensions.Repository.SqlServer
 					columns.RemoveAt(0);
 				}
 
+				var archiveDateTimeUtc = DateTimeStamper.CurrentDateTimeUtc();
+				
 				columns.Insert(0, new ISI.Extensions.Columns.Column<TRecord, DateTime>(
 					ArchiveTableArchiveDateTimeColumnName,
 					record => false,
-					record => ((ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime)record).ArchiveDateTime
-				));
+					record =>
+					{
+						if (record is ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime recordManagerRecordWithArchiveDateTime)
+						{
+							return recordManagerRecordWithArchiveDateTime.ArchiveDateTimeUtc;
+						}
+
+						return archiveDateTimeUtc;
+					}));
 
 				var dataReader = new ISI.Extensions.DataReader.EnumerableDataReader<TRecord>(records, columns, null);
 

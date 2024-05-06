@@ -61,8 +61,13 @@ namespace ISI.Extensions.Repository
 
 	}
 
-	public interface IRecordManagerRecordWithArchiveDateTime : IRecordManagerRecord
+	public interface IRecordManagerRecordWithArchive : IRecordManagerRecord
 	{
-		DateTime ArchiveDateTime { get; }
+
+	}
+
+	public interface IRecordManagerRecordWithArchiveDateTime : IRecordManagerRecordWithArchive
+	{
+		DateTime ArchiveDateTimeUtc { get; }
 	}
 }

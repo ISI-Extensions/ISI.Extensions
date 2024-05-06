@@ -28,7 +28,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 		{
 			var count = 0;
 
-			foreach (var updatedRecord in await PersistConvertedRecordsAsync(records, PersistenceMethod.Update, true, null, updateRecordFilterColumns, record => record, convertedRecord => convertedRecord, record => record.ArchiveDateTime, cancellationToken))
+			foreach (var updatedRecord in await PersistConvertedRecordsAsync(records, PersistenceMethod.Update, true, null, updateRecordFilterColumns, record => record, convertedRecord => convertedRecord, GetRecordArchiveDateTimeUtc(), cancellationToken))
 			{
 				count++;
 			}

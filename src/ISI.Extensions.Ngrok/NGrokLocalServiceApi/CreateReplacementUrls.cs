@@ -41,7 +41,7 @@ namespace ISI.Extensions.Ngrok
 
 				void RefreshTunnels()
 				{
-					var existingTunnels = NGrokClientApi.GetTunnels().Tunnels ?? Array.Empty<Tunnel>();
+					var existingTunnels = NGrokClientApi.GetTunnels().Tunnels ?? [];
 
 					foreach (var existingTunnel in existingTunnels)
 					{

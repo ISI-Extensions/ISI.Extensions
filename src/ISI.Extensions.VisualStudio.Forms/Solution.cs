@@ -452,7 +452,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 				SolutionFilters = solutionFilters.ToArray();
 			}
 
-			SolutionFilters ??= Array.Empty<SolutionFilter>();
+			SolutionFilters ??= [];
 
 			PopulatePanel(highlighted, start);
 

@@ -67,7 +67,7 @@ namespace ISI.Extensions.Security.ActiveDirectory.Extensions
 			{
 			}
 
-			return Array.Empty<string>();
+			return [];
 		}
 	}
 }

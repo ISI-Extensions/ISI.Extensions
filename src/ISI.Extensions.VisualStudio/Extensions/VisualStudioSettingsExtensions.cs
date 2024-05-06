@@ -31,42 +31,42 @@ namespace ISI.Extensions.VisualStudio.Extensions
 
 		public static string[] GetDefaultExcludePathFilters(this SolutionApi solutionApi)
 		{
-			return solutionApi.GetVisualStudioSettings(new())?.VisualStudioSettings?.DefaultExcludePathFilters ?? Array.Empty<string>();
+			return solutionApi.GetVisualStudioSettings(new())?.VisualStudioSettings?.DefaultExcludePathFilters ?? [];
 		}
 
 		public static string[] GetPreviouslySelectedSolutionFilterKeys(this SolutionApi solutionApi)
 		{
-			return solutionApi.GetVisualStudioSettings(new())?.VisualStudioSettings?.PreviouslySelectedSolutionFilterKeys ?? Array.Empty<string>();
+			return solutionApi.GetVisualStudioSettings(new())?.VisualStudioSettings?.PreviouslySelectedSolutionFilterKeys ?? [];
 		}
 
 		public static string[] GetRefreshSolutionsExcludePathFilters(this SolutionApi solutionApi)
 		{
-			return solutionApi.GetVisualStudioSettings(new())?.VisualStudioSettings?.RefreshSolutionsExcludePathFilters ?? Array.Empty<string>();
+			return solutionApi.GetVisualStudioSettings(new())?.VisualStudioSettings?.RefreshSolutionsExcludePathFilters ?? [];
 		}
 
 		public static string[] GetRefreshSolutionsPreviouslySelectedSolutions(this SolutionApi solutionApi)
 		{
-			return solutionApi.GetVisualStudioSettings(new())?.VisualStudioSettings?.RefreshSolutionsPreviouslySelectedSolutions ?? Array.Empty<string>();
+			return solutionApi.GetVisualStudioSettings(new())?.VisualStudioSettings?.RefreshSolutionsPreviouslySelectedSolutions ?? [];
 		}
 
 		public static string[] GetRunServicesExcludePathFilters(this SolutionApi solutionApi)
 		{
-			return solutionApi.GetVisualStudioSettings(new())?.VisualStudioSettings?.RunServicesExcludePathFilters ?? Array.Empty<string>();
+			return solutionApi.GetVisualStudioSettings(new())?.VisualStudioSettings?.RunServicesExcludePathFilters ?? [];
 		}
 
 		public static string[] GetRunServicesPreviouslySelectedProjectKeys(this SolutionApi solutionApi)
 		{
-			return solutionApi.GetVisualStudioSettings(new())?.VisualStudioSettings?.RunServicesPreviouslySelectedProjectKeys ?? Array.Empty<string>();
+			return solutionApi.GetVisualStudioSettings(new())?.VisualStudioSettings?.RunServicesPreviouslySelectedProjectKeys ?? [];
 		}
 
 		public static string[] GetUpgradeNugetPackagesExcludePathFilters(this SolutionApi solutionApi)
 		{
-			return solutionApi.GetVisualStudioSettings(new())?.VisualStudioSettings?.UpgradeNugetPackagesExcludePathFilters ?? Array.Empty<string>();
+			return solutionApi.GetVisualStudioSettings(new())?.VisualStudioSettings?.UpgradeNugetPackagesExcludePathFilters ?? [];
 		}
 
 		public static string[] GetUpgradeNugetPackagesPreviouslySelectedProjectKeys(this SolutionApi solutionApi)
 		{
-			return solutionApi.GetVisualStudioSettings(new())?.VisualStudioSettings?.UpgradeNugetPackagesPreviouslySelectedProjectKeys ?? Array.Empty<string>();
+			return solutionApi.GetVisualStudioSettings(new())?.VisualStudioSettings?.UpgradeNugetPackagesPreviouslySelectedProjectKeys ?? [];
 		}
 
 		public static void UpdatePreviouslySelectedSolutionFilterKeys(this SolutionApi solutionApi, IEnumerable<string> removeSolutionFilterKeys, IEnumerable<string> addSolutionFilterKeys)
@@ -75,7 +75,7 @@ namespace ISI.Extensions.VisualStudio.Extensions
 			{
 				UpdateSettings = settings =>
 				{
-					var solutionFilterKeys = new HashSet<string>((settings.PreviouslySelectedSolutionFilterKeys ?? Array.Empty<string>()), StringComparer.InvariantCultureIgnoreCase);
+					var solutionFilterKeys = new HashSet<string>((settings.PreviouslySelectedSolutionFilterKeys ?? []), StringComparer.InvariantCultureIgnoreCase);
 
 					if (removeSolutionFilterKeys != null)
 					{
@@ -111,7 +111,7 @@ namespace ISI.Extensions.VisualStudio.Extensions
 			{
 				UpdateSettings = settings =>
 				{
-					var solutions = new HashSet<string>((settings.RefreshSolutionsPreviouslySelectedSolutions ?? Array.Empty<string>()), StringComparer.InvariantCultureIgnoreCase);
+					var solutions = new HashSet<string>((settings.RefreshSolutionsPreviouslySelectedSolutions ?? []), StringComparer.InvariantCultureIgnoreCase);
 
 					if (removeSolutions != null)
 					{
@@ -147,7 +147,7 @@ namespace ISI.Extensions.VisualStudio.Extensions
 			{
 				UpdateSettings = settings =>
 				{
-					var projectKeys = new HashSet<string>((settings.RunServicesPreviouslySelectedProjectKeys ?? Array.Empty<string>()), StringComparer.InvariantCultureIgnoreCase);
+					var projectKeys = new HashSet<string>((settings.RunServicesPreviouslySelectedProjectKeys ?? []), StringComparer.InvariantCultureIgnoreCase);
 
 					if (removeProjectKeys != null)
 					{
@@ -183,7 +183,7 @@ namespace ISI.Extensions.VisualStudio.Extensions
 			{
 				UpdateSettings = settings =>
 				{
-					var projectKeys = new HashSet<string>((settings.UpgradeNugetPackagesPreviouslySelectedProjectKeys ?? Array.Empty<string>()), StringComparer.InvariantCultureIgnoreCase);
+					var projectKeys = new HashSet<string>((settings.UpgradeNugetPackagesPreviouslySelectedProjectKeys ?? []), StringComparer.InvariantCultureIgnoreCase);
 
 					if (removeProjectKeys != null)
 					{

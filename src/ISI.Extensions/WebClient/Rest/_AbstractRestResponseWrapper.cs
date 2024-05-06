@@ -98,7 +98,7 @@ namespace ISI.Extensions.WebClient
 						{
 							if (webResponse.Headers.TryGetValue("Content-Encoding", out var encodingHeaders))
 							{
-								foreach (var encodingHeader in encodingHeaders ?? Array.Empty<string>())
+								foreach (var encodingHeader in encodingHeaders ?? [])
 								{
 									if (string.Equals(encodingHeader, "gzip", StringComparison.InvariantCultureIgnoreCase))
 									{

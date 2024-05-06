@@ -37,7 +37,7 @@ namespace ISI.Extensions.VisualStudio.Forms.Extensions
 
 		public static void ApplyFormSize(this SolutionApi solutionApi, string formName, System.Windows.Forms.Form form)
 		{
-			var formLocationAndSizes = solutionApi.GetVisualStudioSettings(new()).VisualStudioSettings.FormLocationAndSizes ?? Array.Empty<VisualStudioSettingsFormLocationAndSize>();
+			var formLocationAndSizes = solutionApi.GetVisualStudioSettings(new()).VisualStudioSettings.FormLocationAndSizes ?? [];
 
 			var formSizeAndLocation = formLocationAndSizes.GetFormLocationAndSize(formName);
 

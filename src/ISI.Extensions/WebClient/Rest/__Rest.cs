@@ -49,7 +49,7 @@ namespace ISI.Extensions.WebClient
 
 			if (!string.IsNullOrWhiteSpace(subject))
 			{
-				var ignoreServerCertificateValidationForSubjectsContaining = new HashSet<string>(RestConfiguration.IgnoreServerCertificateValidationForSubjectsContaining ?? Array.Empty<string>(), StringComparer.InvariantCultureIgnoreCase);
+				var ignoreServerCertificateValidationForSubjectsContaining = new HashSet<string>(RestConfiguration.IgnoreServerCertificateValidationForSubjectsContaining ?? [], StringComparer.InvariantCultureIgnoreCase);
 
 				ignoreServerCertificateValidationForSubjectsContaining.Add(subject);
 

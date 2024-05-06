@@ -49,7 +49,7 @@ namespace ISI.Extensions.Tracing.SerializableModels.AsyncTraceListener.v1.Conver
 				return source.NullCheckedConvert(values => new TraceEventKeyValueCollection(values.AllKeys.Select(key => new TraceEventKeyValue()
 				{
 					Key = key,
-					Value = string.Join(", ", values.GetValues(key) ?? Array.Empty<string>()),
+					Value = string.Join(", ", values.GetValues(key) ?? []),
 				})));
 			}
 			catch

@@ -24,7 +24,7 @@ using System.Runtime.Serialization;
 namespace ISI.Extensions.Slack.SerializableModels
 {
 	[DataContract]
-	public partial class WebHookChallengeResponse
+	public class WebHookChallengeResponse
 	{
 		[DataMember(Name = "challenge", EmitDefaultValue = false)]
 		public string Challenge { get; set; }

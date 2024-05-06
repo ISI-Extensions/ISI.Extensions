@@ -24,7 +24,7 @@ using System.Runtime.Serialization;
 namespace ISI.Extensions.Slack.SerializableModels
 {
 	[DataContract]
-	public partial class ChatPostMessageRequest
+	public class ChatPostMessageRequest
 	{
 		[DataMember(Name = "channel", EmitDefaultValue = false)]
 		public string Channel { get; set; }

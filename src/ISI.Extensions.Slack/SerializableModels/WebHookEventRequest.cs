@@ -25,7 +25,7 @@ namespace ISI.Extensions.Slack.SerializableModels
 {
 	[ISI.Extensions.Serialization.SerializerObjectType("event_callback")]
 	[DataContract]
-	public partial class WebHookEventRequest : IWebHookRequest
+	public class WebHookEventRequest : IWebHookRequest
 	{
 		[DataMember(Name = "token", EmitDefaultValue = false)]
 		public string Token { get; set; }

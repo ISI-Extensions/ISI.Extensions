@@ -61,8 +61,8 @@ namespace ISI.Extensions.Jira
 				var jiraResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SERIALIZABLE.FindIssuesResponse>(uri.Uri, GetHeaders(request), true, GetSslProtocols(request));
 
 				issues.AddRange(jiraResponse.Issues.NullCheckedSelect(x => x?.Export(), NullCheckCollectionResult.Empty));
-				expand.UnionWith(jiraResponse.Expand?.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>());
-				warningMessages.UnionWith(jiraResponse.WarningMessages ?? Array.Empty<string>());
+				expand.UnionWith(jiraResponse.Expand?.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries) ?? []);
+				warningMessages.UnionWith(jiraResponse.WarningMessages ?? []);
 
 				if (issues.Count < jiraResponse.Total)
 				{

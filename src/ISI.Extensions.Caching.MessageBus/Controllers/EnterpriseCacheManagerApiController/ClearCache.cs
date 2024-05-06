@@ -33,15 +33,15 @@ namespace ISI.Extensions.Caching.MessageBus.Controllers
 			{
 				var clearCacheRequest = request.NullCheckedConvert(source => new ISI.Extensions.Caching.ClearCacheRequest()
 				{
-					CacheKeyScopes = new(source.CacheKeyScopes ?? Array.Empty<string>()),
+					CacheKeyScopes = new(source.CacheKeyScopes ?? []),
 					ClearAll = source.ClearAll,
-					CacheKeys = new(source.CacheKeys ?? Array.Empty<string>()),
+					CacheKeys = new(source.CacheKeys ?? []),
 					CacheKeysWithCacheKeyInstanceUuid = new(source.CacheKeysWithCacheKeyInstanceUuid.ToNullCheckedArray(cacheKeyWithCacheKeyInstanceUuid => new ISI.Extensions.Caching.ClearCacheRequestCacheKeyWithCacheKeyInstanceUuid()
 					{
 						CacheKey = cacheKeyWithCacheKeyInstanceUuid.CacheKey,
 						CacheKeyInstanceUuid = cacheKeyWithCacheKeyInstanceUuid.CacheKeyInstanceUuid,
-					}) ?? Array.Empty<ClearCacheRequestCacheKeyWithCacheKeyInstanceUuid>(), new ISI.Extensions.Caching.ClearCacheRequestCacheKeyWithCacheKeyInstanceUuidEqualityComparer()),
-					CacheKeyPrefixes = new(source.CacheKeyPrefixes ?? Array.Empty<string>()),
+					}) ?? [], new ISI.Extensions.Caching.ClearCacheRequestCacheKeyWithCacheKeyInstanceUuidEqualityComparer()),
+					CacheKeyPrefixes = new(source.CacheKeyPrefixes ?? []),
 				});
 
 				if (Configuration.EnterpriseCacheManagerApi.EnqueueIncomingClearRequests)

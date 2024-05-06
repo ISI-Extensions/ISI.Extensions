@@ -24,7 +24,7 @@ using System.Runtime.Serialization;
 namespace ISI.Extensions.Slack.SerializableModels
 {
 	[DataContract]
-	public partial class WebHookEventResponse
+	public class WebHookEventResponse
 	{
 	}
 }

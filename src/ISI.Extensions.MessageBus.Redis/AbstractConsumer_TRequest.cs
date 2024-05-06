@@ -46,7 +46,7 @@ namespace ISI.Extensions.MessageBus.Redis
 		{
 			var headers = new ISI.Extensions.MessageBus.MessageBusMessageHeaderCollection();
 
-			foreach (var header in messageEnvelope?.Headers ?? Array.Empty<MessageEnvelopeHeader>())
+			foreach (var header in messageEnvelope?.Headers ?? [])
 			{
 				headers.Add(header.Key, header.Value);
 			}

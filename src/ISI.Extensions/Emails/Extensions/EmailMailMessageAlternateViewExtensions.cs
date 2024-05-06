@@ -31,7 +31,7 @@ namespace ISI.Extensions.Emails.Extensions
 				TransferEncoding = emailMailMessageAlternateView.TransferEncoding.ToTransferEncoding(),
 			};
 
-			foreach (var linkedResource in emailMailMessageAlternateView.LinkedResources ?? Array.Empty<IEmailMailMessageLinkedResource>())
+			foreach (var linkedResource in emailMailMessageAlternateView.LinkedResources ?? [])
 			{
 				alternateView.LinkedResources.Add(linkedResource.ToEmailMailMessageLinkedResource());
 			}

@@ -33,7 +33,7 @@ namespace ISI.Extensions.Jenkins
 			{
 				UpdateSettings = jenkinsSettings =>
 				{
-					var jenkinsServers = new List<JenkinsSettingsJenkinsServer>(jenkinsSettings.JenkinsServers ?? Array.Empty<JenkinsSettingsJenkinsServer>());
+					var jenkinsServers = new List<JenkinsSettingsJenkinsServer>(jenkinsSettings.JenkinsServers ?? []);
 
 					jenkinsServers.RemoveAll(jenkinsServer => jenkinsServer.JenkinsServerUuid == request.JenkinsServer.JenkinsServerUuid);
 

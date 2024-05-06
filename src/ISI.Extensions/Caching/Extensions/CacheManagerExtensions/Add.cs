@@ -36,7 +36,7 @@ namespace ISI.Extensions.Caching.Extensions
 			if (item is ISI.Extensions.Caching.IHasProxyCacheKeys hasProxyCacheKeys)
 			{
 				var proxyCacheKeys = new HashSet<string>(StringComparer.Ordinal);
-				proxyCacheKeys.UnionWith(hasProxyCacheKeys.ProxyCacheKeys ?? Array.Empty<string>());
+				proxyCacheKeys.UnionWith(hasProxyCacheKeys.ProxyCacheKeys ?? []);
 				proxyCacheKeys.Remove(cacheKey);
 
 				if (proxyCacheKeys.Any())

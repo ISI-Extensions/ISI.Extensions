@@ -32,6 +32,6 @@ namespace ISI.Extensions.Ngrok
 
 		public string PlaceHolderTunnelName { get; set; } = "placeHolderTunnel";
 
-		public TunnelConfiguration[] Tunnels { get; set; } = Array.Empty<TunnelConfiguration>();
+		public TunnelConfiguration[] Tunnels { get; set; } = [];
 	}
 }

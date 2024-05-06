@@ -38,7 +38,7 @@ namespace ISI.Extensions.Jenkins.Extensions
 				JenkinsUrl = jenkinsServer.JenkinsUrl,
 				UserName = jenkinsServer.UserName,
 				ApiToken = jenkinsServer.ApiToken,
-				Directories = jenkinsServer.Directories ?? Array.Empty<string>(),
+				Directories = jenkinsServer.Directories ?? [],
 			};
 		}
 
@@ -56,19 +56,19 @@ namespace ISI.Extensions.Jenkins.Extensions
 				JenkinsUrl = jenkinsServer.JenkinsUrl,
 				UserName = jenkinsServer.UserName,
 				ApiToken = jenkinsServer.ApiToken,
-				Directories = jenkinsServer.Directories ?? Array.Empty<string>(),
+				Directories = jenkinsServer.Directories ?? [],
 			};
 		}
 		
 		private static IDictionary<string, JenkinsSettingsJenkinsServer> GetJenkinsServersByDirectory(JenkinsApi jenkinsApi)
 		{
-			var jenkinsServers = (jenkinsApi.GetJenkinsSettings(new())?.JenkinsSettings?.JenkinsServers ?? Array.Empty<JenkinsSettingsJenkinsServer>());
+			var jenkinsServers = (jenkinsApi.GetJenkinsSettings(new())?.JenkinsSettings?.JenkinsServers ?? []);
 
 			var jenkinsServersByDirectory = new Dictionary<string, JenkinsSettingsJenkinsServer>(StringComparer.InvariantCultureIgnoreCase);
 
 			foreach (var jenkinsServer in jenkinsServers)
 			{
-				foreach (var directory in jenkinsServer.Directories ?? Array.Empty<string>())
+				foreach (var directory in jenkinsServer.Directories ?? [])
 				{
 					jenkinsServersByDirectory.Add(directory, jenkinsServer);
 				}
@@ -93,14 +93,14 @@ namespace ISI.Extensions.Jenkins.Extensions
 		
 		public static ISI.Extensions.Jenkins.JenkinsServer[] GetJenkinsServers(this JenkinsApi jenkinsApi)
 		{
-			var jenkinsServers = (jenkinsApi.GetJenkinsSettings(new())?.JenkinsSettings?.JenkinsServers ?? Array.Empty<JenkinsSettingsJenkinsServer>());
+			var jenkinsServers = (jenkinsApi.GetJenkinsSettings(new())?.JenkinsSettings?.JenkinsServers ?? []);
 
 			return jenkinsServers.Select(Convert).OrderBy(jenkinsServer => jenkinsServer.DisplayDescription, StringComparer.InvariantCultureIgnoreCase).ToArray();
 		}
 
 		public static ISI.Extensions.Jenkins.JenkinsServer GetJenkinsServer(this JenkinsApi jenkinsApi, Guid jenkinsServerUuid)
 		{
-			return Convert((jenkinsApi.GetJenkinsSettings(new())?.JenkinsSettings?.JenkinsServers ?? Array.Empty<JenkinsSettingsJenkinsServer>()).FirstOrDefault(jenkinsServer => jenkinsServer.JenkinsServerUuid == jenkinsServerUuid));
+			return Convert((jenkinsApi.GetJenkinsSettings(new())?.JenkinsSettings?.JenkinsServers ?? []).FirstOrDefault(jenkinsServer => jenkinsServer.JenkinsServerUuid == jenkinsServerUuid));
 		}
 		
 		public static int GetMaxCheckDirectoryDepth(this JenkinsApi jenkinsApi)

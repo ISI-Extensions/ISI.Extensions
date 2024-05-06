@@ -249,7 +249,7 @@ namespace ISI.Extensions.Tests
 			var nugetApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Nuget.NugetApi>();
 
 			var nugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
-			foreach (var nugetSettingsNugetPackageKey in nugetApi.GetNugetSettings(new ())?.NugetSettings?.UpdateNugetPackages?.NugetSettingsNugetPackageKeys ?? Array.Empty<ISI.Extensions.Nuget.NugetSettingsNugetPackageKey>())
+			foreach (var nugetSettingsNugetPackageKey in nugetApi.GetNugetSettings(new ())?.NugetSettings?.UpdateNugetPackages?.NugetSettingsNugetPackageKeys ?? [])
 			{
 				nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new()
 				{

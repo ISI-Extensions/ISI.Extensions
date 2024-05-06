@@ -44,7 +44,7 @@ namespace ISI.Extensions.Slack
 
 				if (request is DTOs.SvnCommitHookRequest svnCommitHookRequest)
 				{
-					message = string.Format("{0}\r\n{1}", svnCommitHookRequest.Log, string.Join("\r\n", svnCommitHookRequest.Directories ?? Array.Empty<string>()));
+					message = string.Format("{0}\r\n{1}", svnCommitHookRequest.Log, string.Join("\r\n", svnCommitHookRequest.Directories ?? []));
 				}
 
 				var payloadRequest = new SerializableModels.SvnCommitHookPayload()

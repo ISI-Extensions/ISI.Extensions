@@ -25,7 +25,7 @@ namespace ISI.Extensions.Slack.SerializableModels
 {
 	[ISI.Extensions.Serialization.SerializerObjectType("url_verification")]
 	[DataContract]
-	public partial class WebHookChallengeRequest : IWebHookRequest
+	public class WebHookChallengeRequest : IWebHookRequest
 	{
 		[DataMember(Name = "token", EmitDefaultValue = false)]
 		public string Token { get; set; }

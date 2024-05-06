@@ -42,7 +42,7 @@ namespace ISI.Extensions.Jira
 			_jiraKeys = values.ToNullCheckedArray(value => new JiraKey(value));
 		}
 
-		public IEnumerator<JiraKey> GetEnumerator() => (new List<JiraKey>(_jiraKeys ?? Array.Empty<JiraKey>())).GetEnumerator();
+		public IEnumerator<JiraKey> GetEnumerator() => (new List<JiraKey>(_jiraKeys ?? [])).GetEnumerator();
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 

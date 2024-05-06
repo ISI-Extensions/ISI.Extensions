@@ -218,7 +218,7 @@ namespace ISI.Extensions.VisualStudio
 								WorkingCopyDirectory = solutionDetails.SolutionDirectory,
 							}).NugetConfigFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
-							var solutionIgnorePackageIds = new HashSet<string>(solutionDetails.DoNotUpgradePackages ?? Array.Empty<string>(), StringComparer.InvariantCultureIgnoreCase);
+							var solutionIgnorePackageIds = new HashSet<string>(solutionDetails.DoNotUpgradePackages ?? [], StringComparer.InvariantCultureIgnoreCase);
 							solutionIgnorePackageIds.UnionWith(ignorePackageIds);
 
 							void addNugetPackageKey(string package)

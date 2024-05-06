@@ -56,7 +56,7 @@ namespace ISI.Extensions.Repository
 
 		public virtual async Task<int> UpdateRecordAsync(TRecord record, UpdateRecordFilterColumnCollection<TRecord> updateRecordFilterColumns, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await UpdateRecordsAsync((record == null ? Array.Empty<TRecord>() : new[] { record }), updateRecordFilterColumns, cancellationToken);
+			return await UpdateRecordsAsync((record == null ? [] : new[] { record }), updateRecordFilterColumns, cancellationToken);
 		}
 	}
 }

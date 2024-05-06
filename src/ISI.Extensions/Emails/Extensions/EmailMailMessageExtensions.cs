@@ -38,17 +38,17 @@ namespace ISI.Extensions.Emails.Extensions
 				IsBodyHtml = emailMailMessage.IsBodyHtml,
 			};
 
-			foreach (var emailAddress in  emailMailMessage.To ?? Array.Empty<IEmailAddress>())
+			foreach (var emailAddress in  emailMailMessage.To ?? [])
 			{
 				mailMessage.To.Add(emailAddress.ToMailAddress());
 			}
 
-			foreach (var emailAddress in  emailMailMessage.CC ?? Array.Empty<IEmailAddress>())
+			foreach (var emailAddress in  emailMailMessage.CC ?? [])
 			{
 				mailMessage.CC.Add(emailAddress.ToMailAddress());
 			}
 
-			foreach (var emailAddress in  emailMailMessage.Bcc ?? Array.Empty<IEmailAddress>())
+			foreach (var emailAddress in  emailMailMessage.Bcc ?? [])
 			{
 				mailMessage.Bcc.Add(emailAddress.ToMailAddress());
 			}
@@ -73,12 +73,12 @@ namespace ISI.Extensions.Emails.Extensions
 				mailMessage.BodyEncoding = System.Text.Encoding.GetEncoding(emailMailMessage.BodyEncoding.GetValueOrDefault());
 			}
 
-			foreach (var emailMailMessageAttachment in emailMailMessage.Attachments ?? Array.Empty<IEmailMailMessageAttachment>())
+			foreach (var emailMailMessageAttachment in emailMailMessage.Attachments ?? [])
 			{
 				mailMessage.Attachments.Add(emailMailMessageAttachment.ToAttachment());
 			}
 
-			foreach (var emailMailMessageAttachment in emailMailMessage.AlternateViews ?? Array.Empty<IEmailMailMessageAlternateView>())
+			foreach (var emailMailMessageAttachment in emailMailMessage.AlternateViews ?? [])
 			{
 				mailMessage.AlternateViews.Add(emailMailMessageAttachment.ToAlternateView());
 			}

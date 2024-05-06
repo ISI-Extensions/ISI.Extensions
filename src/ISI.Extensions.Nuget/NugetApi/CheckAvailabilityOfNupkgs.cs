@@ -57,7 +57,7 @@ namespace ISI.Extensions.Nuget
 					Search = nugetPackageKey.Package,
 					ExactMatchOnly = true,
 					Source = request.Source,
-				}).NugetPackageKeys ?? Array.Empty<NugetPackageKey>();
+				}).NugetPackageKeys ?? [];
 
 				foreach (var foundNugetPackageKey in foundNugetPackageKeys)
 				{

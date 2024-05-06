@@ -152,7 +152,7 @@ namespace ISI.Extensions.Emails
 
 			if (model.Attachments != null)
 			{
-				var attachments = new List<IEmailMailMessageAttachment>(emailMailMessage.Attachments ?? Array.Empty<IEmailMailMessageAttachment>());
+				var attachments = new List<IEmailMailMessageAttachment>(emailMailMessage.Attachments ?? []);
 
 				attachments.AddRange(model.Attachments);
 
@@ -160,7 +160,7 @@ namespace ISI.Extensions.Emails
 			}
 
 			//must be in this order re: http://stackoverflow.com/questions/5188605/gmail-displays-plain-text-email-instead-html
-			var alternateViews = new List<IEmailMailMessageAlternateView>(emailMailMessage.AlternateViews ?? Array.Empty<IEmailMailMessageAlternateView>());
+			var alternateViews = new List<IEmailMailMessageAlternateView>(emailMailMessage.AlternateViews ?? []);
 
 			var plainView = (await GetPlainTextContentAsync(model, cancellationToken));
 			if (!string.IsNullOrWhiteSpace(plainView))

@@ -239,7 +239,7 @@ namespace ISI.Extensions.Extensions
 					case NullCheckCollectionResult.ReturnNull:
 						return null;
 					case NullCheckCollectionResult.Empty:
-						return Array.Empty<TValue>();
+						return [];
 					default:
 						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
 				}
@@ -257,7 +257,7 @@ namespace ISI.Extensions.Extensions
 					case NullCheckCollectionResult.ReturnNull:
 						return null;
 					case NullCheckCollectionResult.Empty:
-						return Array.Empty<TResult>();
+						return [];
 					default:
 						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
 				}
@@ -436,7 +436,7 @@ namespace ISI.Extensions.Extensions
 					case NullCheckDictionaryResult.ReturnNull:
 						return null;
 					case NullCheckDictionaryResult.Empty:
-						return Array.Empty<KeyValuePair<TKey, TElement>>();
+						return [];
 					default:
 						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
 				}

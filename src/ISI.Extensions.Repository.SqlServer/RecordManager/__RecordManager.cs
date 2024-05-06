@@ -28,7 +28,7 @@ namespace ISI.Extensions.Repository.SqlServer
 		where TRecord : class, IRecordManagerRecord, new()
 	{
 		protected virtual string ArchiveTableSuffix => "Archive";
-		protected virtual string ArchiveTableArchiveDateTimeColumnName => "ArchiveDateTime";
+		protected virtual string ArchiveTableArchiveDateTimeColumnName => "ArchiveDateTimeUtc";
 
 		protected ISI.Extensions.Repository.SqlServer.Configuration SqlServerConfiguration { get; }
 

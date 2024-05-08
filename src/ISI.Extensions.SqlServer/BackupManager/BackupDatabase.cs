@@ -44,7 +44,8 @@ namespace ISI.Extensions.SqlServer
 			switch (request)
 			{
 				case DTOs.BackupDatabaseRequest backupDatabaseRequest:
-					connectionStringBuilder.DataSource = backupDatabaseRequest.Port.HasValue ? $"{backupDatabaseRequest.Host}:{backupDatabaseRequest.Port}" : backupDatabaseRequest.Host;
+					//connectionStringBuilder.DataSource = backupDatabaseRequest.Port.HasValue ? $"{backupDatabaseRequest.Host}:{backupDatabaseRequest.Port}" : backupDatabaseRequest.Host;
+					connectionStringBuilder.DataSource = backupDatabaseRequest.Host;
 					connectionStringBuilder.UserID = backupDatabaseRequest.UserName;
 					connectionStringBuilder.Password = backupDatabaseRequest.Password;
 					break;
@@ -60,8 +61,8 @@ namespace ISI.Extensions.SqlServer
 			connectionStringBuilder.TrustServerCertificate = true;
 
 			Logger.LogInformation($"ServerName: {connectionStringBuilder.GetServerName()}");
-			Logger.LogInformation($"ServerPort: {connectionStringBuilder.GetServerPort()}");
-			Logger.LogInformation($"ConnectionString: {connectionStringBuilder.ConnectionString}");
+			//Logger.LogInformation($"ServerPort: {connectionStringBuilder.GetServerPort()}");
+			//Logger.LogInformation($"ConnectionString: {connectionStringBuilder.ConnectionString}");
 
 			using (var connection = ISI.Extensions.SqlServer.SqlConnection.GetSqlConnection(connectionStringBuilder.ConnectionString))
 			{

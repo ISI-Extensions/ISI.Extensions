@@ -39,54 +39,42 @@ namespace ISI.Extensions.Nuget
 
 			if (Environment.OSVersion.Platform == PlatformID.Unix)
 			{
-				//logger.LogInformation("Using Unix");
-
 				var serviceLocatorDirectoryUrl = (string.IsNullOrWhiteSpace(request.RepositoryUri?.ToString()) ? request.RepositoryName : request.RepositoryUri?.ToString());
-
-				//logger.LogInformation($"serviceLocatorDirectoryUrl: {serviceLocatorDirectoryUrl}");
-
 
 				var workingDirectory = string.IsNullOrWhiteSpace(request.WorkingDirectory) ? System.IO.Path.GetDirectoryName(request.NupkgFullNames.FirstOrDefault()) : request.WorkingDirectory;
 
-				//if (!string.IsNullOrWhiteSpace(workingDirectory))
-				//{
-				//	var nugetConfigFullNames = GetNugetConfigFullNames(new()
-				//	{
-				//		WorkingCopyDirectory = workingDirectory,
-				//	}).NugetConfigFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty);
+				if(!Uri.TryCreate(serviceLocatorDirectoryUrl, UriKind.Absolute, out var serviceLocatorDirectoryUri))
+				{
+					var nugetConfigFullNames = GetNugetConfigFullNames(new()
+					{
+						WorkingCopyDirectory = workingDirectory,
+					}).NugetConfigFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
-				//	foreach (var nugetConfigFullName in nugetConfigFullNames)
-				//	{
-				//		if (System.IO.File.Exists(nugetConfigFullName))
-				//		{
-				//			arguments.Add("-ConfigFile");
-				//			arguments.Add(string.Format("\"{0}\"", nugetConfigFullName));
-				//		}
-				//	}
-				//}
+					foreach (var nugetConfigFullName in nugetConfigFullNames)
+					{
+						if (serviceLocatorDirectoryUri == null)
+						{
+							var packageSources = GetPackageSourcesFromNugetConfig(new()
+							{
+								NugetConfigFullName = nugetConfigFullName,
+							}).PackageSources.ToNullCheckedDictionary(packageSource => packageSource.Key, packageSource => packageSource.Url, StringComparer.InvariantCultureIgnoreCase, NullCheckDictionaryResult.Empty);
 
+							if (packageSources.TryGetValue(serviceLocatorDirectoryUrl, out var packageSourceUrl))
+							{
+								Uri.TryCreate(packageSourceUrl, UriKind.Absolute, out serviceLocatorDirectoryUri);
+							}
+						}
+					}
+				}
 
-
-				//var serviceLocatorDirectory = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableDTOs.ServiceLocatorDirectory>(serviceLocatorDirectoryUrl, null, true);
-				var serviceLocatorDirectoryJson = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<ISI.Extensions.WebClient.Rest.TextResponse>(serviceLocatorDirectoryUrl, null, true);
+				var serviceLocatorDirectoryJson = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<ISI.Extensions.WebClient.Rest.TextResponse>(serviceLocatorDirectoryUri, null, true);
 
 				if (string.IsNullOrWhiteSpace(serviceLocatorDirectoryJson.Content))
 				{
 					throw new Exception("cannot download serviceLocatorDirectory");
 				}
 
-				//logger.LogInformation($"serviceLocatorDirectoryJson.Content: {serviceLocatorDirectoryJson.Content}");
-
 				var serviceLocatorDirectory = JsonSerializer.Deserialize<SerializableDTOs.ServiceLocatorDirectory>(serviceLocatorDirectoryJson.Content.Replace("\"@id\"", "\"url\"").Replace("\"@type\"", "\"resource\""));
-
-				//logger.LogInformation($"serviceLocatorDirectory.Version: {serviceLocatorDirectory.Version}");
-				//logger.LogInformation($"serviceLocatorDirectory.Resources.NullCheckedCount(): {serviceLocatorDirectory.Resources.NullCheckedCount()}");
-
-				//for (int i = 0; i < serviceLocatorDirectory.Resources.NullCheckedCount(); i++)
-				//{
-				//	logger.LogInformation($"serviceLocatorDirectory.Resources[{i}].Resource: {serviceLocatorDirectory.Resources[i].Resource}");
-				//	logger.LogInformation($"serviceLocatorDirectory.Resources[{i}].Url: {serviceLocatorDirectory.Resources[i].Url}");
-				//}
 
 				var packagePublishUrl = serviceLocatorDirectory.Resources.NullCheckedFirstOrDefault(resource => resource.Resource.StartsWith("PackagePublish", StringComparison.InvariantCultureIgnoreCase))?.Url;
 
@@ -94,8 +82,6 @@ namespace ISI.Extensions.Nuget
 				{
 					throw new Exception("cannot find packagePublishUrl");
 				}
-
-				//logger.LogInformation($"packagePublishUrl: {packagePublishUrl}");
 
 				foreach (var nupkgFullName in request.NupkgFullNames)
 				{
@@ -105,17 +91,9 @@ namespace ISI.Extensions.Nuget
 
 					using (var client = new System.Net.WebClient())
 					{
-						//client.Credentials = System.Net.CredentialCache.DefaultCredentials;
 						client.Headers.Add(NuGetHeaderName, request.NugetApiKey);
 						client.UploadFile(packagePublishUrl, System.Net.WebRequestMethods.Http.Put, nupkgFullName);
 					}
-
-
-
-					//using (var stream = System.IO.File.OpenRead(nupkgFullName))
-					//{
-					//	var uploadResponse = ISI.Extensions.WebClient.Upload.UploadFile(packagePublishUrl, GetHeaders(request.NugetApiKey), stream, nupkgFileName, method: System.Net.WebRequestMethods.Http.Put);
-					//}
 
 					logger.LogInformation(string.Format("Pushed \"{0}\" to \"{1}\"", System.IO.Path.GetFileName(nupkgFullName), serviceLocatorDirectoryUrl));
 				}

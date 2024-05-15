@@ -103,7 +103,7 @@ namespace ISI.Extensions.Tests
 
 			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.Nuget.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
 
-			var nupkgFullName = System.IO.Directory.EnumerateFiles(@"F:\ISI\Clients\XXX\XXX.extensions\Nuget", "*.nupkg").First();
+			var nupkgFullName = System.IO.Directory.EnumerateFiles(@"F:\ISI\Internal Projects\ISI.Extensions\Nuget", "*.nupkg").First();
 
 			nugetApi.NupkgPush(new()
 			{

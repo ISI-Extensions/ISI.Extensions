@@ -96,7 +96,7 @@ namespace ISI.Extensions
 			public string WorkingDirectory { get; set; }
 			public string ProcessExeFullName { get; set; }
 			public IEnumerable<string> Arguments { get; set; }
-			public IDictionary<string, string> EnvironmentVariables { get; set; }
+			public InvariantCultureIgnoreCaseStringDictionary<string> EnvironmentVariables { get; set; }
 
 			public override string ToString() => string.Format("\"{0}\" {1}", ProcessExeFullName, string.Join(" ", Arguments ?? Array.Empty<string>()));
 		}

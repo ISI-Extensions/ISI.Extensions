@@ -25,7 +25,8 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.ProjectApi
 	public class GetDockerImageDetailsResponse
 	{
 		public string TargetOperatingSystem { get; set; }
+		public string ContainerRegistry { get; set; }
 		public string ContainerRepository { get; set; }
-		public string ContainerImageTag { get; set; }
+		public string[] ContainerImageTags { get; set; }
 	}
 }

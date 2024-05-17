@@ -19,42 +19,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.ProjectApi;
 
-namespace ISI.Extensions.VisualStudio
+namespace ISI.Extensions.VisualStudio.DataTransferObjects.ProjectApi
 {
-	public partial class ProjectApi
+	public class SetDockerImageDetailsRequest
 	{
-		public DTOs.GetDockerImageDetailsResponse GetDockerImageDetails(DTOs.GetDockerImageDetailsRequest request)
-		{
-			var response = new DTOs.GetDockerImageDetailsResponse();
+		public string Project { get; set; }
 
-			var projectDetails = GetProjectDetails(new()
-			{
-				Project = request.Project,
-			}).ProjectDetails;
-
-			if (projectDetails != null)
-			{
-				var csProjXml = System.Xml.Linq.XElement.Load(projectDetails.ProjectFullName);
-
-				var sdkAttribute = csProjXml.GetAttributeByLocalName("Sdk")?.Value ?? string.Empty;
-
-				if (sdkAttribute.StartsWith("Microsoft.NET", StringComparison.InvariantCultureIgnoreCase))
-				{
-					var propertyGroupElement = csProjXml.GetElementsByLocalName("PropertyGroup").NullCheckedFirstOrDefault();
-
-					if (propertyGroupElement != null)
-					{
-						response.TargetOperatingSystem = propertyGroupElement.GetElementByLocalName("DockerDefaultTargetOS")?.Value ?? string.Empty;
-						response.ContainerRegistry = propertyGroupElement.GetElementByLocalName("ContainerRegistry")?.Value ?? string.Empty;
-						response.ContainerRepository = propertyGroupElement.GetElementByLocalName("ContainerRepository")?.Value ?? propertyGroupElement.GetElementByLocalName("ContainerImageName")?.Value ?? string.Empty;
-						response.ContainerImageTags = (propertyGroupElement.GetElementByLocalName("ContainerImageTags")?.Value ?? propertyGroupElement.GetElementByLocalName("ContainerImageTag")?.Value ?? "latest").Split(';');
-					}
-				}
-			}
-			
-			return response;
-		}
+		public string TargetOperatingSystem { get; set; }
+		public string ContainerRegistry { get; set; }
+		public string ContainerRepository { get; set; }
+		public string[] ContainerImageTags { get; set; }
 	}
 }

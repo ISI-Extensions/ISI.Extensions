@@ -97,5 +97,27 @@ namespace ISI.Extensions.Tests
 				Project = @"F:\ISI\Internal Projects\ISI.DocumentStorage.ServiceApplication\src\ISI.DocumentStorage.ServiceApplication",
 			});
 		}
+
+		[Test]
+		public void SetDockerImageDetails_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+
+			var logger = ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();
+			var projectApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.ProjectApi>();
+
+			var dockerTag = "v4.0.8903.28300";
+
+			var xxx = projectApi.SetDockerImageDetails(new()
+			{
+				Project = @"F:\ISI\Internal Projects\ISI.SCM.Nuget.ServiceApplication\src\ISI.SCM.Nuget.ServiceApplication\ISI.SCM.Nuget.ServiceApplication.csproj",
+				ContainerImageTags = new []
+				{
+					dockerTag,
+					"latest",
+				},
+			});
+		}
 	}
 }

@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,9 +25,9 @@ namespace ISI.Extensions.VisualStudio
 {
 	public partial class ProjectApi
 	{
-		public DTOs.GetDockerImageDetailsResponse GetDockerImageDetails(DTOs.GetDockerImageDetailsRequest request)
+		public DTOs.SetDockerImageDetailsResponse SetDockerImageDetails(DTOs.SetDockerImageDetailsRequest request)
 		{
-			var response = new DTOs.GetDockerImageDetailsResponse();
+			var response = new DTOs.SetDockerImageDetailsResponse();
 
 			var projectDetails = GetProjectDetails(new()
 			{
@@ -36,7 +36,10 @@ namespace ISI.Extensions.VisualStudio
 
 			if (projectDetails != null)
 			{
-				var csProjXml = System.Xml.Linq.XElement.Load(projectDetails.ProjectFullName);
+				response.ProjectFullName = projectDetails.ProjectFullName;
+				response.ProjectXml = System.IO.File.ReadAllText(response.ProjectFullName);
+
+				var csProjXml = System.Xml.Linq.XElement.Parse(response.ProjectXml);
 
 				var sdkAttribute = csProjXml.GetAttributeByLocalName("Sdk")?.Value ?? string.Empty;
 
@@ -46,14 +49,54 @@ namespace ISI.Extensions.VisualStudio
 
 					if (propertyGroupElement != null)
 					{
-						response.TargetOperatingSystem = propertyGroupElement.GetElementByLocalName("DockerDefaultTargetOS")?.Value ?? string.Empty;
-						response.ContainerRegistry = propertyGroupElement.GetElementByLocalName("ContainerRegistry")?.Value ?? string.Empty;
-						response.ContainerRepository = propertyGroupElement.GetElementByLocalName("ContainerRepository")?.Value ?? propertyGroupElement.GetElementByLocalName("ContainerImageName")?.Value ?? string.Empty;
-						response.ContainerImageTags = (propertyGroupElement.GetElementByLocalName("ContainerImageTags")?.Value ?? propertyGroupElement.GetElementByLocalName("ContainerImageTag")?.Value ?? "latest").Split(';');
+						var isDirty = false;
+
+						if (!string.IsNullOrWhiteSpace(request.TargetOperatingSystem))
+						{
+							propertyGroupElement.SetOrAddElementByLocalName("DockerDefaultTargetOS", request.TargetOperatingSystem);
+
+							isDirty = true;
+						}
+
+						if (!string.IsNullOrWhiteSpace(request.ContainerRegistry))
+						{
+							propertyGroupElement.SetOrAddElementByLocalName("ContainerRegistry", request.ContainerRegistry);
+
+							isDirty = true;
+						}
+
+						if (!string.IsNullOrWhiteSpace(request.ContainerRepository))
+						{
+							propertyGroupElement.SetOrAddElementByLocalName("ContainerRepository", request.ContainerRepository);
+
+							isDirty = true;
+						}
+
+						if (request.ContainerImageTags.NullCheckedAny())
+						{
+							propertyGroupElement.GetElementByLocalName("ContainerImageTag")?.Remove();
+							propertyGroupElement.GetElementByLocalName("ContainerImageTags")?.Remove();
+
+							if (request.ContainerImageTags.Length == 1)
+							{
+								propertyGroupElement.SetOrAddElementByLocalName("ContainerImageTag", request.ContainerImageTags.First());
+							}
+							else
+							{
+								propertyGroupElement.SetOrAddElementByLocalName("ContainerImageTags", string.Join(";", request.ContainerImageTags));
+							}
+
+							isDirty = true;
+						}
+
+						if (isDirty)
+						{
+							System.IO.File.WriteAllText(response.ProjectFullName, csProjXml.ToString());
+						}
 					}
 				}
 			}
-			
+
 			return response;
 		}
 	}

@@ -55,5 +55,19 @@ namespace ISI.Extensions.Extensions
 		{
 			return xElement?.Elements()?.GetElementByLocalName(localName, stringComparison);
 		}
+
+		public static void SetOrAddElementByLocalName(this System.Xml.Linq.XElement xElement, string localName, string value, StringComparison stringComparison = StringComparison.InvariantCultureIgnoreCase)
+		{
+			var element = xElement.GetElementByLocalName(localName);
+
+			if (element == null)
+			{
+				xElement.Add(new System.Xml.Linq.XElement(localName, value));
+			}
+			else
+			{
+				element.Value = value;
+			}
+		}
 	}
 }

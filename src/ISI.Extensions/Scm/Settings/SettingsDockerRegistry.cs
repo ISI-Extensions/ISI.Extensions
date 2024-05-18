@@ -53,6 +53,8 @@ namespace ISI.Extensions.Scm
 				get => Settings.GetValue(Settings.Key.DockerRegistryPassword);
 				set => Settings.SetValue(Settings.Key.DockerRegistryPassword, value);
 			}
+
+			public string GetEnvironmentFileFullName(string environment)=> Settings.GetValue($"{Settings.Key.EnvironmentFileFullName}-{environment}");
 		}
 	}
 }  

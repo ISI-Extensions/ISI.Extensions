@@ -70,6 +70,7 @@ namespace ISI.Extensions.Scm
 			public const string DockerRegistryApiKey = nameof(DockerRegistryApiKey);
 			public const string DockerRegistryUserName = nameof(DockerRegistryUserName);
 			public const string DockerRegistryPassword = nameof(DockerRegistryPassword);
+			public const string EnvironmentFileFullName = nameof(EnvironmentFileFullName);
 
 			public const string VsExtensionsApiUrl = nameof(VsExtensionsApiUrl);
 			public const string VsExtensionsApiKey = nameof(VsExtensionsApiKey);

@@ -28,6 +28,8 @@ namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
 		
 		public string Context { get; set; }
 
+		public string[] EnvironmentFileFullNames { get; set; }
+
 		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

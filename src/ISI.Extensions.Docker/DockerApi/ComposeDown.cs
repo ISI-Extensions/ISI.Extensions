@@ -45,6 +45,17 @@ namespace ISI.Extensions.Docker
 				arguments.Add($"--context {request.Context}");
 			}
 
+			if (request.EnvironmentFileFullNames.NullCheckedAny())
+			{
+				foreach (var environmentFileFullName in request.EnvironmentFileFullNames)
+				{
+					if (!string.IsNullOrWhiteSpace(environmentFileFullName))
+					{
+						arguments.Add($"--env-file \"{environmentFileFullName}\"");
+					}
+				}
+			}
+
 			arguments.Add("--progress plain");
 
 			arguments.Add("down");

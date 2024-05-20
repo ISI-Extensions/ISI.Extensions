@@ -19,18 +19,46 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.JsonSerialization.Extensions;
+using DTOs = ISI.Extensions.Docker.DataTransferObjects.DockerApi;
+using SERIALIZABLEMODELS = ISI.Extensions.Docker.SerializableModels;
 
-namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
+namespace ISI.Extensions.Docker
 {
-	public class ComposeUpRequest
+	public partial class DockerApi
 	{
-		public string ComposeDirectory{ get; set; }
-		
-		public string Context { get; set; }
+		private InvariantCultureIgnoreCaseStringDictionary<string> CreateEnvironmentVariables(string[] environmentFileFullNames, InvariantCultureIgnoreCaseStringDictionary<string> environmentVariables)
+		{
+			var response = new InvariantCultureIgnoreCaseStringDictionary<string>();
+			
+			if (environmentFileFullNames.NullCheckedAny())
+			{
+				foreach (var environmentFileFullName in environmentFileFullNames)
+				{
+					if (!string.IsNullOrWhiteSpace(environmentFileFullName))
+					{
+						if (System.IO.File.Exists(environmentFileFullName))
+						{
+							var lines = System.IO.File.ReadAllLines(environmentFileFullName).Where(line => !string.IsNullOrWhiteSpace(line) && (line.IndexOf("=") > 0));
+							foreach (var line in lines)
+							{
+								var keyValue = line.Split(new[] { '=' }, 2, StringSplitOptions.None);
+								response[keyValue[0]] = keyValue[1];
+							}
+						}
+					}
+				}
+			}
 
-		public string[] EnvironmentFileFullNames { get; set; }
-		public InvariantCultureIgnoreCaseStringDictionary<string> EnvironmentVariables { get; set; }
+			if (environmentVariables != null)
+			{
+				foreach (var keyValue in environmentVariables)
+				{
+					response[keyValue.Key] = keyValue.Value;
+				}
+			}
 
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
+			return response;
+		}
 	}
 }

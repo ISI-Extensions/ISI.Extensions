@@ -101,9 +101,9 @@ namespace ISI.Extensions.ConfigurationValueReaders
 
 								foreach (var keyValuePair in valuesByKey)
 								{
-									if (valueByKey.ContainsKey(keyValuePair.Key))
+									if (valueByKey.TryGetValue(keyValuePair.Key, out var value))
 									{
-										throw new(string.Format("key: \"{0}\" already exists with value of \"{1}\" cannot add value \"{2}\"", keyValuePair.Key, valueByKey[keyValuePair.Key], keyValuePair.Value));
+										throw new(string.Format("key: \"{0}\" already exists with value of \"{1}\" cannot add value \"{2}\"", keyValuePair.Key, value, keyValuePair.Value));
 									}
 
 									valueByKey.Add(keyValuePair);

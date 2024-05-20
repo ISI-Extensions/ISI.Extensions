@@ -20,6 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.JsonSerialization.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Docker.DataTransferObjects.DockerApi;
 using SERIALIZABLEMODELS = ISI.Extensions.Docker.SerializableModels;
 
@@ -45,40 +46,34 @@ namespace ISI.Extensions.Docker
 				arguments.Add($"--context {request.Context}");
 			}
 			
-			if (request.EnvironmentFileFullNames.NullCheckedAny())
-			{
-				foreach (var environmentFileFullName in request.EnvironmentFileFullNames)
-				{
-					if (!string.IsNullOrWhiteSpace(environmentFileFullName))
-					{
-						arguments.Add($"--env-file \"{environmentFileFullName}\"");
-					}
-				}
-			}
-
 			arguments.Add("--progress plain");
 
-			arguments.Add("pull");
-
-			var environmentVariables = new InvariantCultureIgnoreCaseStringDictionary<string>();
-			environmentVariables = AddDockerContextServerApiVersion(environmentVariables, request.Context);
-
-			var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+			using (var tempEnvironmentFiles = new TempEnvironmentFiles(request.ComposeDirectory, request.EnvironmentFileFullNames, request.EnvironmentVariables))
 			{
-				Logger = logger,
-				ProcessExeFullName = "docker-compose",
-				Arguments = arguments.ToArray(),
-				WorkingDirectory = request.ComposeDirectory,
-				EnvironmentVariables = environmentVariables,
-			});
+				arguments.AddRange(tempEnvironmentFiles.GetDockerComposeArguments());
 
-			response.Output = waitForProcessResponse.Output;
+				arguments.Add("compose");
+				arguments.Add("pull");
 
-			response.Errored = waitForProcessResponse.Errored;
+				logger.LogInformation($"docker {string.Join(" ", arguments)}");
 
-			if (response.Errored)
-			{
-				throw new Exception($"Error pulling\n{waitForProcessResponse.Output}");
+				var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				{
+					Logger = logger,
+					ProcessExeFullName = "docker-compose",
+					Arguments = arguments.ToArray(),
+					WorkingDirectory = request.ComposeDirectory,
+					EnvironmentVariables = AddDockerContextServerApiVersion(null, request.Context),
+				});
+
+				response.Output = waitForProcessResponse.Output;
+
+				response.Errored = waitForProcessResponse.Errored;
+
+				if (response.Errored)
+				{
+					throw new Exception($"Error pulling\n{waitForProcessResponse.Output}");
+				}
 			}
 
 			return response;

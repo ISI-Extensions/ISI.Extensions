@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -13,24 +13,26 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
+namespace ISI.Extensions.Tests
 {
-	public class ComposeUpRequest
+	[TestFixture]
+	public class InvariantCultureIgnoreCaseStringDictionary_Tests
 	{
-		public string ComposeDirectory{ get; set; }
-		
-		public string Context { get; set; }
+		[Test]
+		public void Test()
+		{
+			var xxx = new InvariantCultureIgnoreCaseStringDictionary<string>();
 
-		public string[] EnvironmentFileFullNames { get; set; }
-		public InvariantCultureIgnoreCaseStringDictionary<string> EnvironmentVariables { get; set; }
+			xxx["ddd"] = "yyyy";
+			xxx["ddd"] = "zzzz";
 
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
+			Console.WriteLine(xxx["ddd"]);
+		}
 	}
 }

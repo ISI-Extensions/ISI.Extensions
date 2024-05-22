@@ -52,10 +52,9 @@ namespace ISI.Extensions.Docker
 			{
 				arguments.AddRange(tempEnvironmentFiles.GetDockerComposeArguments());
 
-				arguments.Add("compose");
 				arguments.Add("pull");
 
-				logger.LogInformation($"docker {string.Join(" ", arguments)}");
+				logger.LogInformation($"docker-compose {string.Join(" ", arguments)}");
 
 				var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{

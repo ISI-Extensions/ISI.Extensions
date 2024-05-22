@@ -52,7 +52,6 @@ namespace ISI.Extensions.Docker
 			{
 				arguments.AddRange(tempEnvironmentFiles.GetDockerComposeArguments());
 
-				arguments.Add("compose");
 				arguments.Add("down");
 
 				if (request.RemoveVolumes)
@@ -60,7 +59,7 @@ namespace ISI.Extensions.Docker
 					arguments.Add("-v");
 				}
 
-				logger.LogInformation($"docker {string.Join(" ", arguments)}");
+				logger.LogInformation($"docker-compose {string.Join(" ", arguments)}");
 
 				var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{

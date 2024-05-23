@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -12,53 +12,33 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi;
-using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.VisualStudio
 {
-	public partial class SolutionApi
+	public class Solution
 	{
-		public DTOs.GetClosestSolutionFullNameResponse GetClosestSolutionFullName(DTOs.GetClosestSolutionFullNameRequest request)
+		public static readonly string SearchPattern = "*.sln*";
+
+		public static bool SolutionFileNameFilter(string fullName)
 		{
-			var response = new DTOs.GetClosestSolutionFullNameResponse();
+			var fileNameExtension = System.IO.Path.GetExtension(fullName);
 
-			if (request.FileName.EndsWith(".sln", StringComparison.InvariantCultureIgnoreCase) || request.FileName.EndsWith(".slnx", StringComparison.InvariantCultureIgnoreCase))
-			{
-				response.ClosestSolutionFullName = request.FileName;
-			}
-			else
-			{
-				var directory = (System.IO.File.Exists(request.FileName) ? System.IO.Path.GetDirectoryName(request.FileName) : request.FileName);
+			return (string.Equals(fileNameExtension, ".sln", StringComparison.InvariantCultureIgnoreCase) || string.Equals(fileNameExtension, ".slnx", StringComparison.InvariantCultureIgnoreCase));
+		}
 
-				while (!string.IsNullOrWhiteSpace(directory) && string.IsNullOrWhiteSpace(response.ClosestSolutionFullName))
-				{
-					var fileName = ISI.Extensions.VisualStudio.Solution.FindSolutionFullNames(directory, System.IO.SearchOption.TopDirectoryOnly).FirstOrDefault();
+		public static IEnumerable<string> FindSolutionFullNames(string path, System.IO.SearchOption searchOption = System.IO.SearchOption.AllDirectories)
+		{
+			return System.IO.Directory.GetFiles(path, ISI.Extensions.VisualStudio.Solution.SearchPattern, searchOption).Where(SolutionFileNameFilter);
+		}
 
-					if (!string.IsNullOrEmpty(fileName))
-					{
-						response.ClosestSolutionFullName = fileName;
-					}
-
-					directory = System.IO.Path.GetDirectoryName(directory);
-				}
-
-				if (string.IsNullOrWhiteSpace(response.ClosestSolutionFullName))
-				{
-					directory = (System.IO.File.Exists(request.FileName) ? System.IO.Path.GetDirectoryName(request.FileName) : request.FileName);
-
-					response.ClosestSolutionFullName = ISI.Extensions.VisualStudio.Solution.FindSolutionFullNames(directory, System.IO.SearchOption.AllDirectories).FirstOrDefault();
-				}
-			}
-
-			return response;
+		public static IEnumerable<string> EnumerateSolutionFiles(string path, string[] ignorePatterns, int maxDepth = int.MaxValue)
+		{
+			return ISI.Extensions.IO.Path.EnumerateFiles(path, SearchPattern, ignorePatterns, maxDepth).Where(SolutionFileNameFilter);
 		}
 	}
 }

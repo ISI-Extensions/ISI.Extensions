@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +39,7 @@ namespace ISI.Extensions.VisualStudio
 
 			if (!string.IsNullOrWhiteSpace(request.Solution) && System.IO.Directory.Exists(request.Solution))
 			{
-				var possibleSolutionFullNames = System.IO.Directory.GetFiles(request.Solution, "*.sln", System.IO.SearchOption.AllDirectories);
+				var possibleSolutionFullNames = ISI.Extensions.VisualStudio.Solution.FindSolutionFullNames(request.Solution, System.IO.SearchOption.AllDirectories).ToArray();
 
 				if (possibleSolutionFullNames.Length == 1)
 				{
@@ -65,7 +65,7 @@ namespace ISI.Extensions.VisualStudio
 					throw new(string.Format("Cannot find a solution to update \"{0}\"", request.Solution));
 				}
 			}
-			
+
 			logger.LogInformation("Package Components");
 			logger.LogInformation("  Configuration: {0}", request.Configuration);
 			logger.LogInformation("  Build Platform: {0}", request.BuildPlatform.GetDescription());
@@ -96,9 +96,9 @@ namespace ISI.Extensions.VisualStudio
 					{
 						solutionFullName = System.IO.Path.GetDirectoryName(packageComponent.ProjectFullName);
 
-						while (!string.IsNullOrWhiteSpace(solutionFullName) && !solutionFullName.EndsWith(".sln", StringComparison.InvariantCultureIgnoreCase))
+						while (!string.IsNullOrWhiteSpace(solutionFullName) && !solutionFullName.EndsWith(".sln", StringComparison.InvariantCultureIgnoreCase) && !solutionFullName.EndsWith(".slnx", StringComparison.InvariantCultureIgnoreCase))
 						{
-							var possibleSolutionFullName = System.IO.Directory.GetFiles(solutionFullName, "*.sln", System.IO.SearchOption.TopDirectoryOnly).NullCheckedFirstOrDefault();
+							var possibleSolutionFullName = ISI.Extensions.VisualStudio.Solution.FindSolutionFullNames(solutionFullName, System.IO.SearchOption.TopDirectoryOnly).NullCheckedFirstOrDefault();
 
 							if (string.IsNullOrWhiteSpace(possibleSolutionFullName))
 							{

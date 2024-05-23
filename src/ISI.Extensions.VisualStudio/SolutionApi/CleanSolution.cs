@@ -42,14 +42,14 @@ namespace ISI.Extensions.VisualStudio
 
 				if (System.IO.Directory.Exists(solutionSourceDirectory))
 				{
-					if (!ISI.Extensions.IO.Path.CheckForExistence(solutionSourceDirectory, "*.sln", this.GetDefaultExcludePathFilters(), this.GetMaxCheckDirectoryDepth()))
+					if (!ISI.Extensions.VisualStudio.Solution.EnumerateSolutionFiles(solutionSourceDirectory, this.GetDefaultExcludePathFilters(), this.GetMaxCheckDirectoryDepth()).NullCheckedAny())
 					{
 						solutionSourceDirectory = System.IO.Path.Combine(solutionSourceDirectory, "src");
 					}
 
 					if (System.IO.Directory.Exists(solutionSourceDirectory))
 					{
-						var solutionFileName = ISI.Extensions.IO.Path.EnumerateFiles(solutionSourceDirectory, "*.sln", this.GetDefaultExcludePathFilters(), this.GetMaxCheckDirectoryDepth()).FirstOrDefault();
+						var solutionFileName = ISI.Extensions.VisualStudio.Solution.EnumerateSolutionFiles(solutionSourceDirectory, this.GetDefaultExcludePathFilters(), this.GetMaxCheckDirectoryDepth()).FirstOrDefault();
 
 						if (!string.IsNullOrEmpty(solutionFileName))
 						{
@@ -60,9 +60,7 @@ namespace ISI.Extensions.VisualStudio
 								System.IO.Directory.Delete(resharperCacheDirectory, true);
 							}
 
-							var solutionContentLines = System.IO.File.ReadAllLines(solutionFileName).ToList();
-
-							var projectFileNames = solutionContentLines.Where(l => l.StartsWith("Project(")).Select(l => l.Split(new[] { ',' }, StringSplitOptions.None)[1].Trim(' ', '\"')).Select(projectFileName => System.IO.Path.Combine(solutionSourceDirectory, projectFileName));
+							var projectFileNames = ProjectFileNamesFromSolutionFullName(solutionFileName, true);
 
 							var usedPackages = new HashSet<string>();
 

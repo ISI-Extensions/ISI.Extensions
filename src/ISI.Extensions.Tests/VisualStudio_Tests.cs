@@ -138,6 +138,22 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void GetSolutionDetails_Test()
+		{
+			var logger = ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();
+			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
+			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.Nuget.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
+
+			var solutionFullNames = new List<string>();
+			solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.AcmeAgent.WindowsService\");
+
+			var solutionDetailsSet = solutionFullNames.ToNullCheckedArray(solution => solutionApi.GetSolutionDetails(new()
+			{
+				Solution = solution,
+			}).SolutionDetails, ISI.Extensions.Extensions.NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
+		}
+
+		[Test]
 		public void GetUsedVisualStudioPackages_Test()
 		{
 			var logger = ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();

@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,36 +66,13 @@ namespace ISI.Extensions.VisualStudio
 
 				if (!string.IsNullOrWhiteSpace(response.SolutionDetails.SolutionFullName))
 				{
-					var projectDetailsSet = new List<ProjectDetails>();
-
-					var solutionLines = System.IO.File.ReadAllLines(response.SolutionDetails.SolutionFullName);
-
-					foreach (var solutionLine in solutionLines)
-					{
-						if (solutionLine.Trim().StartsWith("Project(", StringComparison.InvariantCultureIgnoreCase))
+					response.SolutionDetails.ProjectDetailsSet = ProjectFileNamesFromSolutionFullName(response.SolutionDetails.SolutionFullName, true)
+						.ToNullCheckedArray(projectFullName => new ProjectDetails()
 						{
-							var pieces = solutionLine.Split(new[] { '=' }).ToList();
-
-							pieces = pieces[1].Split(new[] { '"' }).Select(piece => piece.Trim()).ToList();
-
-							pieces.RemoveAll(piece => string.Equals(piece, ","));
-							pieces.RemoveAll(string.IsNullOrWhiteSpace);
-
-							if (pieces[1].EndsWith(".csproj", StringComparison.InvariantCultureIgnoreCase))
-							{
-								var projFullName = System.IO.Path.Combine(response.SolutionDetails.SolutionDirectory, pieces[1]);
-
-								projectDetailsSet.Add(new()
-								{
-									ProjectName = System.IO.Path.GetFileNameWithoutExtension(projFullName),
-									ProjectDirectory = System.IO.Path.GetDirectoryName(projFullName),
-									ProjectFullName = projFullName,
-								});
-							}
-						}
-					}
-
-					response.SolutionDetails.ProjectDetailsSet = projectDetailsSet.ToArray();
+							ProjectName = System.IO.Path.GetFileNameWithoutExtension(projectFullName),
+							ProjectDirectory = System.IO.Path.GetDirectoryName(projectFullName),
+							ProjectFullName = projectFullName,
+						});
 
 					var solutionFilterDetailsSet = new List<SolutionFilterDetails>();
 

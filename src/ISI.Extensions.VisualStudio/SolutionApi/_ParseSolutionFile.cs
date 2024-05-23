@@ -26,39 +26,53 @@ namespace ISI.Extensions.VisualStudio
 {
 	public partial class SolutionApi
 	{
-		public DTOs.GetClosestSolutionFullNameResponse GetClosestSolutionFullName(DTOs.GetClosestSolutionFullNameRequest request)
+		private string[] ProjectFileNamesFromSolutionFullName(string solutionFullName, bool returnProjectFullNames)
 		{
-			var response = new DTOs.GetClosestSolutionFullNameResponse();
+			var solutionLines = System.IO.File.ReadAllLines(solutionFullName);
 
-			if (request.FileName.EndsWith(".sln", StringComparison.InvariantCultureIgnoreCase) || request.FileName.EndsWith(".slnx", StringComparison.InvariantCultureIgnoreCase))
+			if (returnProjectFullNames)
 			{
-				response.ClosestSolutionFullName = request.FileName;
+				return ProjectFileNamesFromSolutionContentLines(solutionLines, System.IO.Path.GetDirectoryName(solutionFullName));
 			}
-			else
-			{
-				var directory = (System.IO.File.Exists(request.FileName) ? System.IO.Path.GetDirectoryName(request.FileName) : request.FileName);
 
-				while (!string.IsNullOrWhiteSpace(directory) && string.IsNullOrWhiteSpace(response.ClosestSolutionFullName))
+			return ProjectFileNamesFromSolutionContentLines(solutionLines);
+		}
+
+		private string[] ProjectFileNamesFromSolutionContentLines(IEnumerable<string> solutionLines)
+		{
+			return solutionLines
+				.Select(solutionLine =>
 				{
-					var fileName = ISI.Extensions.VisualStudio.Solution.FindSolutionFullNames(directory, System.IO.SearchOption.TopDirectoryOnly).FirstOrDefault();
-
-					if (!string.IsNullOrEmpty(fileName))
+					if (solutionLine.Trim().StartsWith("Project(", StringComparison.InvariantCultureIgnoreCase))
 					{
-						response.ClosestSolutionFullName = fileName;
+						var pieces = solutionLine.Split(new[] { '=' }).ToList();
+
+						pieces = pieces[1].Split(new[] { '"' }).Select(piece => piece.Trim()).ToList();
+
+						pieces.RemoveAll(piece => string.Equals(piece, ","));
+						pieces.RemoveAll(string.IsNullOrWhiteSpace);
+
+						return pieces[1];
+
+						//return solutionLine.Split(new[] { ',' }, StringSplitOptions.None)[1].Trim(' ', '\"');
 					}
 
-					directory = System.IO.Path.GetDirectoryName(directory);
-				}
+					if (solutionLine.Trim().StartsWith("<Project", StringComparison.InvariantCultureIgnoreCase))
+					{
+						return solutionLine.Split(new[] { '\"' }, StringSplitOptions.None)[1].Trim(' ', '\"');
+					}
 
-				if (string.IsNullOrWhiteSpace(response.ClosestSolutionFullName))
-				{
-					directory = (System.IO.File.Exists(request.FileName) ? System.IO.Path.GetDirectoryName(request.FileName) : request.FileName);
+					return (string)null;
+				})
+				.Where(projectFileName => !string.IsNullOrWhiteSpace(projectFileName) && string.Equals(System.IO.Path.GetExtension(projectFileName), ".csproj", StringComparison.InvariantCultureIgnoreCase))
+				.ToArray();
+		}
 
-					response.ClosestSolutionFullName = ISI.Extensions.VisualStudio.Solution.FindSolutionFullNames(directory, System.IO.SearchOption.AllDirectories).FirstOrDefault();
-				}
-			}
-
-			return response;
+		private string[] ProjectFileNamesFromSolutionContentLines(IEnumerable<string> solutionLines, string solutionSourceDirectory)
+		{
+			return ProjectFileNamesFromSolutionContentLines(solutionLines)
+				.Select(projectFileName => System.IO.Path.Combine(solutionSourceDirectory, projectFileName))
+				.ToArray();
 		}
 	}
 }

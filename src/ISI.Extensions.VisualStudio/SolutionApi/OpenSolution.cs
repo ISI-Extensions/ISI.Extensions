@@ -72,14 +72,14 @@ namespace ISI.Extensions.VisualStudio
 
 				if (System.IO.Directory.Exists(solutionSourceDirectory))
 				{
-					if (!System.IO.Directory.GetFiles(solutionSourceDirectory, "*.sln").Any())
+					if (!ISI.Extensions.VisualStudio.Solution.FindSolutionFullNames(solutionSourceDirectory).NullCheckedAny())
 					{
 						solutionSourceDirectory = System.IO.Path.Combine(solutionSourceDirectory, "src");
 					}
 
 					if (System.IO.Directory.Exists(solutionSourceDirectory))
 					{
-						solutionFileName = System.IO.Directory.GetFiles(solutionSourceDirectory, "*.sln").FirstOrDefault();
+						solutionFileName = ISI.Extensions.VisualStudio.Solution.FindSolutionFullNames(solutionSourceDirectory).FirstOrDefault();
 					}
 				}
 			}

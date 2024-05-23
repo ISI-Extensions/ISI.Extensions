@@ -34,7 +34,7 @@ namespace ISI.Extensions.VisualStudio
 
 			if (System.IO.Directory.Exists(request.Solution))
 			{
-				var possibleSolutionFullNames = System.IO.Directory.GetFiles(request.Solution, "*.sln", System.IO.SearchOption.AllDirectories);
+				var possibleSolutionFullNames = ISI.Extensions.VisualStudio.Solution.FindSolutionFullNames(request.Solution, System.IO.SearchOption.AllDirectories).ToArray();
 
 				if (possibleSolutionFullNames.Length == 1)
 				{

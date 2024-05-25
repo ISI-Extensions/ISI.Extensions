@@ -55,7 +55,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 				{
 					if (System.IO.File.Exists(selectedItemPath))
 					{
-						if (selectedItemPath.EndsWith(".sln", StringComparison.InvariantCultureIgnoreCase))
+						if (ISI.Extensions.VisualStudio.Solution.IsSolutionFileName(selectedItemPath))
 						{
 							solutionFileNames.Add(selectedItemPath);
 						}

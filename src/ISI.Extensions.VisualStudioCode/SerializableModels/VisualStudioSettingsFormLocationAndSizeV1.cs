@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -12,33 +12,60 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
+using LOCALENTITIES = ISI.Extensions.VisualStudioCode;
 
-namespace ISI.Extensions.VisualStudio
+namespace ISI.Extensions.VisualStudioCode.SerializableModels
 {
-	public class Solution
+	[DataContract]
+	[ISI.Extensions.Serialization.PreferredSerializerJsonDataContract]
+	[ISI.Extensions.Serialization.SerializerContractUuid("0b5f557c-259c-47bc-b99e-acb6c8d12ecd")]
+	public class VisualStudioCodeSettingsFormLocationAndSizeV1 : IVisualStudioCodeSettingsFormLocationAndSize
 	{
-		public static readonly string SearchPattern = "*.sln*";
-
-		public static bool IsSolutionFileName(string fullName)
+		public static IVisualStudioCodeSettingsFormLocationAndSize ToSerializable(LOCALENTITIES.VisualStudioCodeSettingsFormLocationAndSize source)
 		{
-			var fileNameExtension = System.IO.Path.GetExtension(fullName);
-
-			return (string.Equals(fileNameExtension, ".sln", StringComparison.InvariantCultureIgnoreCase) || string.Equals(fileNameExtension, ".slnx", StringComparison.InvariantCultureIgnoreCase));
+			return new VisualStudioCodeSettingsFormLocationAndSizeV1()
+			{
+				FormName = source.FormName,
+				Left = source.Left,
+				Top = source.Top,
+				Width = source.Width,
+				Height = source.Height,
+			};
 		}
 
-		public static IEnumerable<string> FindSolutionFullNames(string path, System.IO.SearchOption searchOption = System.IO.SearchOption.AllDirectories)
+		public LOCALENTITIES.VisualStudioCodeSettingsFormLocationAndSize Export()
 		{
-			return System.IO.Directory.GetFiles(path, ISI.Extensions.VisualStudio.Solution.SearchPattern, searchOption).Where(IsSolutionFileName);
+			return new LOCALENTITIES.VisualStudioCodeSettingsFormLocationAndSize()
+			{
+				FormName = FormName,
+				Left = Left,
+				Top = Top,
+				Width = Width,
+				Height = Height,
+			};
 		}
 
-		public static IEnumerable<string> EnumerateSolutionFiles(string path, string[] ignorePatterns, int maxDepth = int.MaxValue)
-		{
-			return ISI.Extensions.IO.Path.EnumerateFiles(path, SearchPattern, ignorePatterns, maxDepth).Where(IsSolutionFileName);
-		}
+		[DataMember(Name = "formName", EmitDefaultValue = false)]
+		public string FormName { get; set; }
+
+		[DataMember(Name = "left", EmitDefaultValue = false)]
+		public int Left { get; set; }
+
+		[DataMember(Name = "top", EmitDefaultValue = false)]
+		public int Top { get; set; }
+
+		[DataMember(Name = "width", EmitDefaultValue = false)]
+		public int Width { get; set; }
+
+		[DataMember(Name = "height", EmitDefaultValue = false)]
+		public int Height { get; set; }
 	}
 }

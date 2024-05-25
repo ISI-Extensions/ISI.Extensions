@@ -1,4 +1,3 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32112.339
@@ -156,7 +155,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.SqlServer", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.ScmManager", "ISI.Extensions.ScmManager\ISI.Extensions.ScmManager.csproj", "{6F4C3DC1-C4F6-4158-B9BD-150921B71AFC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.Docker", "ISI.Extensions.Docker\ISI.Extensions.Docker.csproj", "{731E846B-27C2-4613-9E92-25242969A75F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Docker", "ISI.Extensions.Docker\ISI.Extensions.Docker.csproj", "{731E846B-27C2-4613-9E92-25242969A75F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.VisualStudioCode", "ISI.Extensions.VisualStudioCode\ISI.Extensions.VisualStudioCode.csproj", "{9294CDD1-3BE2-4739-8CA5-E0E98FAD529F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.VisualStudioCode.Forms", "ISI.Extensions.VisualStudioCode.Forms\ISI.Extensions.VisualStudioCode.Forms.csproj", "{311C3BEF-399A-436D-A6B9-07CE8B669A0A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.VisualStudioCode.Forms.Tests", "ISI.Extensions.VisualStudioCode.Forms.Tests\ISI.Extensions.VisualStudioCode.Forms.Tests.csproj", "{DEAF621E-F656-43DF-8274-27ED7364F0F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -182,6 +187,22 @@ Global
 		{22AD4CA5-F540-44AB-A890-7E424CAE5E26}.Release|Any CPU.Build.0 = Release|Any CPU
 		{22AD4CA5-F540-44AB-A890-7E424CAE5E26}.Release|x64.ActiveCfg = Release|x64
 		{22AD4CA5-F540-44AB-A890-7E424CAE5E26}.Release|x64.Build.0 = Release|x64
+		{311C3BEF-399A-436D-A6B9-07CE8B669A0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{311C3BEF-399A-436D-A6B9-07CE8B669A0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{311C3BEF-399A-436D-A6B9-07CE8B669A0A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{311C3BEF-399A-436D-A6B9-07CE8B669A0A}.Debug|x64.Build.0 = Debug|Any CPU
+		{311C3BEF-399A-436D-A6B9-07CE8B669A0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{311C3BEF-399A-436D-A6B9-07CE8B669A0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{311C3BEF-399A-436D-A6B9-07CE8B669A0A}.Release|x64.ActiveCfg = Release|Any CPU
+		{311C3BEF-399A-436D-A6B9-07CE8B669A0A}.Release|x64.Build.0 = Release|Any CPU
+		{9294CDD1-3BE2-4739-8CA5-E0E98FAD529F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9294CDD1-3BE2-4739-8CA5-E0E98FAD529F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9294CDD1-3BE2-4739-8CA5-E0E98FAD529F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9294CDD1-3BE2-4739-8CA5-E0E98FAD529F}.Debug|x64.Build.0 = Debug|Any CPU
+		{9294CDD1-3BE2-4739-8CA5-E0E98FAD529F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9294CDD1-3BE2-4739-8CA5-E0E98FAD529F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9294CDD1-3BE2-4739-8CA5-E0E98FAD529F}.Release|x64.ActiveCfg = Release|Any CPU
+		{9294CDD1-3BE2-4739-8CA5-E0E98FAD529F}.Release|x64.Build.0 = Release|Any CPU
 		{C16F1EB0-3F4B-4DDA-86CA-1B921F802F30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C16F1EB0-3F4B-4DDA-86CA-1B921F802F30}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C16F1EB0-3F4B-4DDA-86CA-1B921F802F30}.Debug|x64.ActiveCfg = Debug|x64
@@ -190,6 +211,14 @@ Global
 		{C16F1EB0-3F4B-4DDA-86CA-1B921F802F30}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C16F1EB0-3F4B-4DDA-86CA-1B921F802F30}.Release|x64.ActiveCfg = Release|x64
 		{C16F1EB0-3F4B-4DDA-86CA-1B921F802F30}.Release|x64.Build.0 = Release|x64
+		{DEAF621E-F656-43DF-8274-27ED7364F0F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEAF621E-F656-43DF-8274-27ED7364F0F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEAF621E-F656-43DF-8274-27ED7364F0F2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DEAF621E-F656-43DF-8274-27ED7364F0F2}.Debug|x64.Build.0 = Debug|Any CPU
+		{DEAF621E-F656-43DF-8274-27ED7364F0F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEAF621E-F656-43DF-8274-27ED7364F0F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEAF621E-F656-43DF-8274-27ED7364F0F2}.Release|x64.ActiveCfg = Release|Any CPU
+		{DEAF621E-F656-43DF-8274-27ED7364F0F2}.Release|x64.Build.0 = Release|Any CPU
 		{E35A6320-9071-4C16-A9AD-2E6D3E16AF22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E35A6320-9071-4C16-A9AD-2E6D3E16AF22}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E35A6320-9071-4C16-A9AD-2E6D3E16AF22}.Debug|x64.ActiveCfg = Debug|x64

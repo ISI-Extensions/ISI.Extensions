@@ -12,36 +12,35 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using ISI.Extensions.VisualStudio.Extensions;
+using ISI.Extensions.VisualStudioCode.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.VisualStudio.Forms
+namespace ISI.Extensions.VisualStudioCode.Forms
 {
-	public class UpgradeNugetPackagesInSolutions
+	public class RefreshSolutions
 	{
-		private static ISI.Extensions.VisualStudio.SolutionApi _solutionApi = null;
-		protected static ISI.Extensions.VisualStudio.SolutionApi SolutionApi => _solutionApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
+		private static ISI.Extensions.VisualStudioCode.SolutionApi _solutionApi = null;
+		protected static ISI.Extensions.VisualStudioCode.SolutionApi SolutionApi => _solutionApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudioCode.SolutionApi>();
 
 		public class SolutionsContext : SolutionsForm.ISolutionsContext
 		{
-			public IList<Solution> Solutions { get; set; } = new List<Solution>();
+			public IList<Solution> Solutions { get; } = new List<Solution>();
 		}
 
 		public static System.Windows.Forms.Form CreateForm(IEnumerable<string> selectedItemPaths, bool exitOnClose = false)
 		{
-			SolutionsForm.ISolutionsContext upgradeNugetPackagesInSolutions(SolutionsForm form, Action<Solution> start)
+			SolutionsForm.ISolutionsContext refreshSolutions(SolutionsForm form, Action<Solution> start)
 			{
 				var context = new SolutionsContext();
 
-				form.Text = "Upgrade Nuget Packages In Solution(s)";
-				form.StartButton.Text = "Upgrade";
+				form.Text = "Refresh Solution(s)";
+				form.StartButton.Text = "Refresh";
 
 				void OnChangedSelection()
 				{
@@ -54,16 +53,9 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 				Parallel.ForEach(selectedItemPaths, selectedItemPath =>
 				{
-					if (System.IO.File.Exists(selectedItemPath))
+					if (System.IO.Directory.Exists(selectedItemPath))
 					{
-						if (ISI.Extensions.VisualStudio.Solution.IsSolutionFileName(selectedItemPath))
-						{
-							solutionFileNames.Add(selectedItemPath);
-						}
-					}
-					else if (System.IO.Directory.Exists(selectedItemPath))
-					{
-						foreach (var solutionFullName in new HashSet<string>(ISI.Extensions.VisualStudio.Solution.EnumerateSolutionFiles(selectedItemPath, excludedPathFilters, maxCheckDirectoryDepth), StringComparer.InvariantCultureIgnoreCase))
+						foreach (var solutionFullName in new HashSet<string>(ISI.Extensions.VisualStudioCode.Solution.EnumerateSolutionFiles(selectedItemPath, excludedPathFilters, maxCheckDirectoryDepth), StringComparer.InvariantCultureIgnoreCase))
 						{
 							solutionFileNames.Add(solutionFullName);
 						}
@@ -77,7 +69,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 				foreach (var solution in solutions)
 				{
-					context.Solutions.Add(new(solution.Key, form.SolutionsPanel, (context.Solutions.Count % 2 == 1), selectAll || solution.Value, start, null, true, false, OnChangedSelection, form.SetStatus, null));
+					context.Solutions.Add(new(solution.Key, form.SolutionsPanel, (context.Solutions.Count % 2 == 1), selectAll || solution.Value, start, OnChangedSelection, form.SetStatus, null));
 				}
 
 				form.SolutionsPanel.Controls.AddRange(context.Solutions.Select(solution => solution.Panel).ToArray());
@@ -89,15 +81,10 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 			void UpdatePreviouslySelectedSolutions(SolutionsForm form)
 			{
-				var removeSolutionFilterKeys = form.SolutionsContext.Solutions.SelectMany(solution => solution.SolutionFilters.Select(solutionFilter => solutionFilter.SolutionFilterKey));
-				var addSolutionFilterKeys = form.SolutionsContext.Solutions.Where(solution => solution.Selected).SelectMany(solution => solution.SolutionFilters.Where(solutionFilter => solutionFilter.Selected).Select(solutionFilter => solutionFilter.SolutionFilterKey));
-
-				SolutionApi.UpdatePreviouslySelectedSolutionFilterKeys(removeSolutionFilterKeys.Select(solutionFilterKey => solutionFilterKey.Value), addSolutionFilterKeys.Select(solutionFilterKey => solutionFilterKey.Value));
-
 				var removeSolutions = form.SolutionsContext.Solutions.Select(solution => solution.SolutionDetails.SolutionFullName);
 				var addSolutions = form.SolutionsContext.Solutions.Where(solution => solution.Selected).Select(solution => solution.SolutionDetails.SolutionFullName);
 
-				SolutionApi.UpdateUpgradeNugetPackagesPreviouslySelectedProjectKeys(removeSolutions, addSolutions);
+				SolutionApi.UpdateRefreshSolutionsPreviouslySelectedSolutions(removeSolutions, addSolutions);
 			};
 
 			void OnCloseForm(SolutionsForm form)
@@ -105,16 +92,8 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 			};
 
-			return new ISI.Extensions.VisualStudio.Forms.SolutionsForm(upgradeNugetPackagesInSolutions, UpdatePreviouslySelectedSolutions, OnCloseForm)
+			return new ISI.Extensions.VisualStudioCode.Forms.SolutionsForm(refreshSolutions, UpdatePreviouslySelectedSolutions, OnCloseForm)
 			{
-				UpgradeNugetPackages = true,
-				ShowUpgradeNugetPackagesCheckBox = true,
-				CommitSolution = true,
-				RestoreNugetPackages = false,
-				BuildSolution = false,
-				ShowCommitSolutionCheckBox = true,
-				ShowExecuteProjectsCheckBox = false,
-				ShowShowProjectExecutionInTaskbarCheckBox = false,
 				ExitOnClose = exitOnClose,
 			};
 		}

@@ -79,7 +79,7 @@ namespace ISI.Extensions
 				}
 			}
 
-			var process = new System.Diagnostics.Process
+			var process = new System.Diagnostics.Process()
 			{
 				EnableRaisingEvents = false,
 				StartInfo = processStartInfo,

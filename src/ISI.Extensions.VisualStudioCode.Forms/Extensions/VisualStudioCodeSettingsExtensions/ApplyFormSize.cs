@@ -12,33 +12,54 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.VisualStudio
+namespace ISI.Extensions.VisualStudioCode.Forms.Extensions
 {
-	public class Solution
+	public static partial class VisualStudioCodeSettingsExtensions
 	{
-		public static readonly string SearchPattern = "*.sln*";
-
-		public static bool IsSolutionFileName(string fullName)
+		public static VisualStudioCodeSettingsFormLocationAndSize GetFormLocationAndSize(this IEnumerable<VisualStudioCodeSettingsFormLocationAndSize> formLocationAndSizes, string formName)
 		{
-			var fileNameExtension = System.IO.Path.GetExtension(fullName);
-
-			return (string.Equals(fileNameExtension, ".sln", StringComparison.InvariantCultureIgnoreCase) || string.Equals(fileNameExtension, ".slnx", StringComparison.InvariantCultureIgnoreCase));
+			return formLocationAndSizes.NullCheckedFirstOrDefault(formLocationAndSize => string.Equals(formLocationAndSize.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
 		}
 
-		public static IEnumerable<string> FindSolutionFullNames(string path, System.IO.SearchOption searchOption = System.IO.SearchOption.AllDirectories)
+		public static void ApplyFormSize(this SolutionApi solutionApi, System.Windows.Forms.Form form)
 		{
-			return System.IO.Directory.GetFiles(path, ISI.Extensions.VisualStudio.Solution.SearchPattern, searchOption).Where(IsSolutionFileName);
+			ApplyFormSize(solutionApi, form.GetType().Name, form);
 		}
 
-		public static IEnumerable<string> EnumerateSolutionFiles(string path, string[] ignorePatterns, int maxDepth = int.MaxValue)
+
+		public static void ApplyFormSize(this SolutionApi solutionApi, string formName, System.Windows.Forms.Form form)
 		{
-			return ISI.Extensions.IO.Path.EnumerateFiles(path, SearchPattern, ignorePatterns, maxDepth).Where(IsSolutionFileName);
+			var formLocationAndSizes = solutionApi.GetVisualStudioCodeSettings(new()).VisualStudioCodeSettings.FormLocationAndSizes ?? [];
+
+			var formSizeAndLocation = formLocationAndSizes.GetFormLocationAndSize(formName);
+
+			if (formSizeAndLocation != null)
+			{
+				var workingArea = System.Windows.Forms.Screen.FromControl(form).WorkingArea;
+
+				if (formSizeAndLocation.Top + formSizeAndLocation.Height > workingArea.Height)
+				{
+					formSizeAndLocation.Top = 0;
+				}
+
+				if (formSizeAndLocation.Left + formSizeAndLocation.Width > workingArea.Width)
+				{
+					formSizeAndLocation.Left = 0;
+				}
+
+				form.Left = formSizeAndLocation.Left;
+				form.Top = formSizeAndLocation.Top;
+				form.Width = formSizeAndLocation.Width;
+				form.Height = formSizeAndLocation.Height;
+			}
 		}
 	}
 }

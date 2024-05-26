@@ -84,5 +84,42 @@ namespace ISI.Extensions.VisualStudioCode.Extensions
 				},
 			});
 		}
+
+
+		public static void UpdateUpgradeNodeModulesPreviouslySelectedProjectKeys(this SolutionApi solutionApi, IEnumerable<string> removeProjectKeys, IEnumerable<string> addProjectKeys)
+		{
+			solutionApi.UpdateVisualStudioCodeSettings(new()
+			{
+				UpdateSettings = settings =>
+				{
+					var projectKeys = new HashSet<string>((settings.UpgradeNodeModulesPreviouslySelectedProjectKeys ?? []), StringComparer.InvariantCultureIgnoreCase);
+
+					if (removeProjectKeys != null)
+					{
+						foreach (var removeProjectKey in removeProjectKeys)
+						{
+							projectKeys.RemoveWhere(projectKey => string.Equals(projectKey, removeProjectKey, StringComparison.InvariantCultureIgnoreCase));
+						}
+					}
+
+					if (addProjectKeys != null)
+					{
+						foreach (var addProjectKey in addProjectKeys)
+						{
+							projectKeys.Add(addProjectKey);
+						}
+					}
+
+					if (!settings.UpgradeNodeModulesPreviouslySelectedProjectKeys.Equals(projectKeys, StringComparer.InvariantCultureIgnoreCase, true))
+					{
+						settings.UpgradeNodeModulesPreviouslySelectedProjectKeys = projectKeys.ToArray();
+
+						return true;
+					}
+
+					return false;
+				},
+			});
+		}
 	}
 }

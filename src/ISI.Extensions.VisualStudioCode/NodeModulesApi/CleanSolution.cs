@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -17,28 +17,58 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
+using DTOs = ISI.Extensions.VisualStudioCode.DataTransferObjects.NodeModulesApi;
 
 namespace ISI.Extensions.VisualStudioCode
 {
-	public class Solution
+	public partial class NodeModulesApi
 	{
-		public static readonly string SearchPattern = "package.json";
-
-		public static bool IsSolutionFileName(string fullName)
+		public DTOs.CleanSolutionResponse CleanSolution(DTOs.CleanSolutionRequest request)
 		{
-			var fileName = System.IO.Path.GetFileName(fullName);
+			var logger = new AddToLogLogger(request.AddToLog, Logger);
 
-			return string.Equals(fileName, SearchPattern, StringComparison.InvariantCultureIgnoreCase);
-		}
+			var response = new DTOs.CleanSolutionResponse();
 
-		public static IEnumerable<string> FindSolutionFullNames(string path, System.IO.SearchOption searchOption = System.IO.SearchOption.AllDirectories)
-		{
-			return System.IO.Directory.GetFiles(path, ISI.Extensions.VisualStudioCode.Solution.SearchPattern, searchOption);
-		}
+			try
+			{
+				var solutionSourceDirectory = SolutionApi.GetSolutionDetails(new()
+				{
+					Solution = request.Solution,
+				}).SolutionDetails?.SolutionDirectory;
 
-		public static IEnumerable<string> EnumerateSolutionFiles(string path, string[] ignorePatterns, int maxDepth = int.MaxValue)
-		{
-			return ISI.Extensions.IO.Path.EnumerateFiles(path, SearchPattern, ignorePatterns, maxDepth);
+				if (!string.IsNullOrWhiteSpace(solutionSourceDirectory) && System.IO.Directory.Exists(solutionSourceDirectory))
+				{
+					var nodeModulesDirectory = System.IO.Path.Combine(solutionSourceDirectory, "node_modules");
+
+					if (System.IO.Directory.Exists(nodeModulesDirectory))
+					{
+						var processResponse = ISI.Extensions.Process.WaitForProcessResponse(new Process.ProcessRequest()
+						{
+							ProcessExeFullName = "rmdir",
+							Arguments = new [] {
+								"/S",
+								"/Q",
+								nodeModulesDirectory,
+							},
+							WorkingDirectory = solutionSourceDirectory,
+							Logger = logger,
+						});
+
+						response.Success = !processResponse.Errored;
+					}
+				}
+			}
+			catch (Exception exception)
+			{
+				logger.LogError(exception.ErrorMessageFormatted());
+
+				response.Success = false;
+			}
+
+			return response;
 		}
 	}
 }

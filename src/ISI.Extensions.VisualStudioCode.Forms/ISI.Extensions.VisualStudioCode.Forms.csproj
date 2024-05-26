@@ -57,6 +57,7 @@
     </Compile>
     <Compile Include="TaskActions.cs" />
     <Compile Include="TaskActionStatus.cs" />
+    <Compile Include="UpgradeNodeModulesInSolutions.cs" />
     <Compile Include="ViewLogForm.cs">
       <SubType>Form</SubType>
     </Compile>

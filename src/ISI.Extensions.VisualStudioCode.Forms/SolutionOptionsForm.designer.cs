@@ -45,7 +45,11 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 		{
 			this.tlpForm = new System.Windows.Forms.TableLayoutPanel();
 			this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
+			this.cboInstallNodeModules = new System.Windows.Forms.CheckBox();
+			this.cboCommitSolution = new System.Windows.Forms.CheckBox();
+			this.cboUpgradeNodeModules = new System.Windows.Forms.CheckBox();
 			this.cboUpdateSolution = new System.Windows.Forms.CheckBox();
+			this.cboCleanSolution = new System.Windows.Forms.CheckBox();
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.btnOK = new System.Windows.Forms.Button();
 			this.tlpForm.SuspendLayout();
@@ -73,13 +77,50 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 			// flpButtons
 			// 
 			this.flpButtons.AutoSize = true;
+			this.flpButtons.Controls.Add(this.cboInstallNodeModules);
+			this.flpButtons.Controls.Add(this.cboCommitSolution);
+			this.flpButtons.Controls.Add(this.cboUpgradeNodeModules);
 			this.flpButtons.Controls.Add(this.cboUpdateSolution);
+			this.flpButtons.Controls.Add(this.cboCleanSolution);
 			this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
 			this.flpButtons.Location = new System.Drawing.Point(3, 3);
 			this.flpButtons.Name = "flpButtons";
 			this.flpButtons.Size = new System.Drawing.Size(659, 25);
 			this.flpButtons.TabIndex = 0;
 			this.flpButtons.WrapContents = false;
+			// 
+			// cboInstallNodeModules
+			// 
+			this.cboInstallNodeModules.AutoSize = true;
+			this.cboInstallNodeModules.Location = new System.Drawing.Point(341, 6);
+			this.cboInstallNodeModules.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
+			this.cboInstallNodeModules.Name = "cboInstallNodeModules";
+			this.cboInstallNodeModules.Size = new System.Drawing.Size(95, 17);
+			this.cboInstallNodeModules.TabIndex = 8;
+			this.cboInstallNodeModules.Text = "Install Node Modules";
+			this.cboInstallNodeModules.UseVisualStyleBackColor = true;
+			// 
+			// cboCommitSolution
+			// 
+			this.cboCommitSolution.AutoSize = true;
+			this.cboCommitSolution.Location = new System.Drawing.Point(234, 6);
+			this.cboCommitSolution.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
+			this.cboCommitSolution.Name = "cboCommitSolution";
+			this.cboCommitSolution.Size = new System.Drawing.Size(101, 17);
+			this.cboCommitSolution.TabIndex = 7;
+			this.cboCommitSolution.Text = "Commit Solution";
+			this.cboCommitSolution.UseVisualStyleBackColor = true;
+			// 
+			// cboUpgradeNodeModules
+			// 
+			this.cboUpgradeNodeModules.AutoSize = true;
+			this.cboUpgradeNodeModules.Location = new System.Drawing.Point(129, 6);
+			this.cboUpgradeNodeModules.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
+			this.cboUpgradeNodeModules.Name = "cboUpgradeNodeModules";
+			this.cboUpgradeNodeModules.Size = new System.Drawing.Size(99, 17);
+			this.cboUpgradeNodeModules.TabIndex = 6;
+			this.cboUpgradeNodeModules.Text = "Upgrade Node Modules";
+			this.cboUpgradeNodeModules.UseVisualStyleBackColor = true;
 			// 
 			// cboUpdateSolution
 			// 
@@ -91,6 +132,17 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 			this.cboUpdateSolution.TabIndex = 5;
 			this.cboUpdateSolution.Text = "Update";
 			this.cboUpdateSolution.UseVisualStyleBackColor = true;
+			// 
+			// cboCleanSolution
+			// 
+			this.cboCleanSolution.AutoSize = true;
+			this.cboCleanSolution.Location = new System.Drawing.Point(3, 6);
+			this.cboCleanSolution.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
+			this.cboCleanSolution.Name = "cboCleanSolution";
+			this.cboCleanSolution.Size = new System.Drawing.Size(53, 17);
+			this.cboCleanSolution.TabIndex = 4;
+			this.cboCleanSolution.Text = "Clean";
+			this.cboCleanSolution.UseVisualStyleBackColor = true;
 			// 
 			// btnCancel
 			// 
@@ -140,7 +192,11 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 
 		private System.Windows.Forms.TableLayoutPanel tlpForm;
 		private System.Windows.Forms.FlowLayoutPanel flpButtons;
+		private System.Windows.Forms.CheckBox cboCleanSolution;
 		private System.Windows.Forms.CheckBox cboUpdateSolution;
+		private System.Windows.Forms.CheckBox cboCommitSolution;
+		private System.Windows.Forms.CheckBox cboUpgradeNodeModules;
+		private System.Windows.Forms.CheckBox cboInstallNodeModules;
 		private System.Windows.Forms.Button btnCancel;
 		private System.Windows.Forms.Button btnOK;
 	}

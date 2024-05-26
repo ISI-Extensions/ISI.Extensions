@@ -35,5 +35,9 @@ namespace ISI.Extensions.VisualStudioCode
 		public string[] RefreshSolutionsExcludePathFilters { get; set; }
 
 		public string[] RefreshSolutionsPreviouslySelectedSolutions { get; set; }
+
+		public string[] UpgradeNodeModulesExcludePathFilters { get; set; }
+
+		public string[] UpgradeNodeModulesPreviouslySelectedProjectKeys { get; set; }
 	}
 }

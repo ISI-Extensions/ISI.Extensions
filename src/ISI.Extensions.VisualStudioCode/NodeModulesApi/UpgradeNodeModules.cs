@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -12,33 +12,54 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
+using DTOs = ISI.Extensions.VisualStudioCode.DataTransferObjects.NodeModulesApi;
 
 namespace ISI.Extensions.VisualStudioCode
 {
-	public class Solution
+	public partial class NodeModulesApi
 	{
-		public static readonly string SearchPattern = "package.json";
-
-		public static bool IsSolutionFileName(string fullName)
+		public DTOs.UpgradeNodeModulesResponse UpgradeNodeModules(DTOs.UpgradeNodeModulesRequest request)
 		{
-			var fileName = System.IO.Path.GetFileName(fullName);
+			var logger = new AddToLogLogger(request.AddToLog, Logger);
 
-			return string.Equals(fileName, SearchPattern, StringComparison.InvariantCultureIgnoreCase);
-		}
+			var response = new DTOs.UpgradeNodeModulesResponse();
+			
+			try
+			{
+				var solutionSourceDirectory = SolutionApi.GetSolutionDetails(new()
+				{
+					Solution = request.Solution,
+				}).SolutionDetails?.SolutionDirectory;
 
-		public static IEnumerable<string> FindSolutionFullNames(string path, System.IO.SearchOption searchOption = System.IO.SearchOption.AllDirectories)
-		{
-			return System.IO.Directory.GetFiles(path, ISI.Extensions.VisualStudioCode.Solution.SearchPattern, searchOption);
-		}
+				if (!string.IsNullOrWhiteSpace(solutionSourceDirectory) && System.IO.Directory.Exists(solutionSourceDirectory))
+				{
+					var processResponse = ISI.Extensions.Process.WaitForProcessResponse(new Process.ProcessRequest()
+					{
+						ProcessExeFullName = "ncu.cmd",
+						Arguments = new [] { "--upgrade" },
+						WorkingDirectory = solutionSourceDirectory,
+						Logger = logger,
+					});
 
-		public static IEnumerable<string> EnumerateSolutionFiles(string path, string[] ignorePatterns, int maxDepth = int.MaxValue)
-		{
-			return ISI.Extensions.IO.Path.EnumerateFiles(path, SearchPattern, ignorePatterns, maxDepth);
+					response.Success = !processResponse.Errored;
+				}
+			}
+			catch (Exception exception)
+			{
+				logger.LogError(exception.ErrorMessageFormatted());
+
+				response.Success = false;
+			}
+
+			return response;
 		}
 	}
 }

@@ -33,6 +33,9 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 		private static ISI.Extensions.VisualStudioCode.SolutionApi _solutionApi = null;
 		protected ISI.Extensions.VisualStudioCode.SolutionApi SolutionApi => _solutionApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudioCode.SolutionApi>();
 
+		private static ISI.Extensions.VisualStudioCode.NodeModulesApi _nodeModulesApi = null;
+		protected ISI.Extensions.VisualStudioCode.NodeModulesApi NodeModulesApi => _nodeModulesApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudioCode.NodeModulesApi>();
+
 		private string _caption = null;
 		public virtual string Caption => _caption ??= SolutionDetails.SolutionName;
 
@@ -122,7 +125,87 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 
 		protected internal System.Diagnostics.Stopwatch Stopwatch { get; } = new();
 
-		protected Process.ProcessResponse UpdateSolutionResponse { get; private set; } = new();
+		public Process.ProcessResponse UpgradeNodeModulesResponse { get; private set; } = new();
+		protected bool UpgradeNodeModulesErrored => UpgradeNodeModulesResponse.Errored;
+
+		public void UpgradeNodeModulesPreAction()
+		{
+			if (!CleanSolutionErrored && !UpdateSolutionErrored)
+			{
+				SetButtonVisibility(RefreshButton, false);
+				SetButtonVisibility(OpenButton, false);
+				SetCheckBoxEnabled(CheckBox, false);
+				SetButtonVisibility(ViewBuildLogButton, false);
+				SetStatus(TaskActionStatus.Default, "upgrading node modules ...");
+
+				Logger.LogInformation("Start Upgrade Node Modules");
+			}
+		}
+
+		public void UpgradeNodeModulesPostAction(bool showOpenButton, bool showRefreshButton)
+		{
+			Logger.LogInformation("Finish Upgrade Node Modules");
+
+			if (!CleanSolutionErrored && !UpdateSolutionErrored)
+			{
+				SetStatus((UpgradeNodeModulesErrored ? TaskActionStatus.Errored : TaskActionStatus.Default), (UpgradeNodeModulesErrored ? "Errored Upgrading Node Modules" : "Completed"));
+				SetCheckBoxEnabled(CheckBox, true);
+				SetButtonVisibility(OpenButton, showOpenButton);
+				SetButtonVisibility(RefreshButton, showRefreshButton);
+			}
+			SetButtonVisibility(ViewBuildLogButton, true);
+		}
+
+		protected Process.ProcessResponse CleanSolutionResponse { get; private set; } = new();
+		protected bool CleanSolutionErrored { get; private set; }
+		private TaskActions _cleanSolution = null;
+		protected TaskActions CleanSolution => _cleanSolution ??= new()
+		{
+			PreAction = () =>
+			{
+				if (!UpgradeNodeModulesErrored)
+				{
+					SetButtonVisibility(RefreshButton, false);
+					SetButtonVisibility(OpenButton, false);
+					SetCheckBoxEnabled(CheckBox, false);
+					SetButtonVisibility(ViewBuildLogButton, false);
+					SetStatus(TaskActionStatus.Default, "cleaning ...");
+				}
+			},
+			Action = () =>
+			{
+				if (!UpgradeNodeModulesErrored)
+				{
+					Logger.LogInformation("Start Clean Solution");
+
+					CleanSolutionErrored = !(NodeModulesApi.CleanSolution(new()
+					{
+						Solution = SolutionDetails.SolutionDirectory,
+
+						AddToLog = (logEntryLevel, description) =>
+						{
+							UpdateStatus(description);
+							CleanSolutionResponse.AppendLine(description);
+							Logger.LogInformation(description);
+						},
+					}).Success);
+
+					Logger.LogInformation("Finish Clean Solution");
+				}
+			},
+			PostAction = () =>
+			{
+				if (!UpgradeNodeModulesErrored)
+				{
+					SetStatus((CleanSolutionErrored ? TaskActionStatus.Errored : TaskActionStatus.Default), (CleanSolutionErrored ? "Errored Cleaning" : "Completed"));
+					SetCheckBoxEnabled(CheckBox, true);
+					SetButtonVisibility(OpenButton, true);
+					SetButtonVisibility(RefreshButton, true);
+				}
+			}
+		};
+
+		public Process.ProcessResponse UpdateSolutionResponse { get; private set; } = new();
 		protected bool UpdateSolutionErrored => UpdateSolutionResponse.Errored;
 		private TaskActions _updateSolution = null;
 		protected TaskActions UpdateSolution => _updateSolution ??= new()
@@ -160,6 +243,56 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 				SetCheckBoxEnabled(CheckBox, true);
 				SetButtonVisibility(OpenButton, true);
 				SetButtonVisibility(RefreshButton, true);
+				SetButtonVisibility(ViewBuildLogButton, true);
+			}
+		};
+
+		protected Process.ProcessResponse InstallNodeModulesResponse { get; private set; } = new();
+		protected bool InstallNodeModulesErrored => InstallNodeModulesResponse.Errored;
+		private TaskActions _installNodeModules = null;
+		protected TaskActions InstallNodeModules => _installNodeModules ??= new()
+		{
+			PreAction = () =>
+			{
+				if (!UpgradeNodeModulesErrored && !CleanSolutionErrored && !UpdateSolutionErrored)
+				{
+					SetButtonVisibility(RefreshButton, false);
+					SetButtonVisibility(OpenButton, false);
+					SetCheckBoxEnabled(CheckBox, false);
+					SetButtonVisibility(ViewBuildLogButton, false);
+					SetStatus(TaskActionStatus.Default, "restoring nuget packages ...");
+				}
+			},
+			Action = () =>
+			{
+				if (!UpgradeNodeModulesErrored && !CleanSolutionErrored && !UpdateSolutionErrored)
+				{
+					Logger.LogInformation("Start Install Node Modules");
+
+					InstallNodeModulesResponse.ExitCode = NodeModulesApi.InstallNodeModules(new()
+					{
+						Solution = SolutionDetails.SolutionFullName,
+
+						AddToLog = (logEntryLevel, description) =>
+						{
+							UpdateStatus(description);
+							Logger.LogInformation(description);
+							InstallNodeModulesResponse.AppendLine(description);
+						},
+					}).Success ? 0 : 1;
+
+					Logger.LogInformation("Finish Install Node Modules");
+				}
+			},
+			PostAction = () =>
+			{
+				if (!UpgradeNodeModulesErrored && !CleanSolutionErrored && !UpdateSolutionErrored)
+				{
+					SetStatus((InstallNodeModulesErrored ? TaskActionStatus.Errored : TaskActionStatus.Default), (InstallNodeModulesErrored ? "Errored Installing Node Modules" : "Completed"));
+					SetCheckBoxEnabled(CheckBox, true);
+					SetButtonVisibility(OpenButton, true);
+					SetButtonVisibility(RefreshButton, true);
+				}
 				SetButtonVisibility(ViewBuildLogButton, true);
 			}
 		};
@@ -300,10 +433,25 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 			{
 				var logs = new StringBuilder();
 
+				if (!string.IsNullOrWhiteSpace(CleanSolutionResponse.Output))
+				{
+					logs.AppendLine("Clean Solution:");
+					logs.AppendLine(CleanSolutionResponse.Output);
+				}
 				if (!string.IsNullOrWhiteSpace(UpdateSolutionResponse.Output))
 				{
 					logs.AppendLine("Update Solution:");
 					logs.AppendLine(UpdateSolutionResponse.Output);
+				}
+				if (!string.IsNullOrWhiteSpace(UpgradeNodeModulesResponse.Output))
+				{
+					logs.AppendLine("Upgrade Node Modules:");
+					logs.AppendLine(UpgradeNodeModulesResponse.Output);
+				}
+				if (!string.IsNullOrWhiteSpace(InstallNodeModulesResponse.Output))
+				{
+					logs.AppendLine("Install Node Modules:");
+					logs.AppendLine(InstallNodeModulesResponse.Output);
 				}
 				if (!string.IsNullOrWhiteSpace(StopWatchResponse.Output))
 				{
@@ -353,7 +501,7 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 			StopWatchResponse = new();
 		}
 
-		public virtual TaskActions[] GetTasks(bool resetResponses, bool updateSolution)
+		public virtual TaskActions[] GetTasks(bool resetResponses, bool cleanSolution, bool updateSolution, bool installNodeModules)
 		{
 			var tasks = new List<TaskActions>();
 
@@ -369,9 +517,19 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 				PostAction = () => { },
 			});
 
+			if (cleanSolution)
+			{
+				tasks.Add(CleanSolution);
+			}
+
 			if (updateSolution)
 			{
 				tasks.Add(UpdateSolution);
+			}
+
+			if (installNodeModules)
+			{
+				tasks.Add(InstallNodeModules);
 			}
 
 			tasks.Add(new TaskActions()

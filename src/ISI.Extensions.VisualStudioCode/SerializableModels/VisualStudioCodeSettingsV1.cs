@@ -39,6 +39,8 @@ namespace ISI.Extensions.VisualStudioCode.SerializableModels
 				PreviouslySelectedSolutionFilterKeys = source.PreviouslySelectedSolutionFilterKeys.ToNullCheckedArray(),
 				RefreshSolutionsExcludePathFilters = source.RefreshSolutionsExcludePathFilters.ToNullCheckedArray(),
 				RefreshSolutionsPreviouslySelectedSolutions = source.RefreshSolutionsPreviouslySelectedSolutions.ToNullCheckedArray(),
+				UpgradeNodeModulesExcludePathFilters = source.UpgradeNodeModulesExcludePathFilters.ToNullCheckedArray(),
+				UpgradeNodeModulesPreviouslySelectedProjectKeys = source.UpgradeNodeModulesPreviouslySelectedProjectKeys.ToNullCheckedArray(),
 			};
 		}
 
@@ -52,6 +54,8 @@ namespace ISI.Extensions.VisualStudioCode.SerializableModels
 				PreviouslySelectedSolutionFilterKeys = PreviouslySelectedSolutionFilterKeys.ToNullCheckedArray(),
 				RefreshSolutionsExcludePathFilters = RefreshSolutionsExcludePathFilters.ToNullCheckedArray(),
 				RefreshSolutionsPreviouslySelectedSolutions = RefreshSolutionsPreviouslySelectedSolutions.ToNullCheckedArray(),
+				UpgradeNodeModulesExcludePathFilters = UpgradeNodeModulesExcludePathFilters.ToNullCheckedArray(),
+				UpgradeNodeModulesPreviouslySelectedProjectKeys = UpgradeNodeModulesPreviouslySelectedProjectKeys.ToNullCheckedArray(),
 			};
 		}
 
@@ -72,5 +76,11 @@ namespace ISI.Extensions.VisualStudioCode.SerializableModels
 
 		[DataMember(Name = "refreshSolutionsPreviouslySelectedSolutions", EmitDefaultValue = false)]
 		public string[] RefreshSolutionsPreviouslySelectedSolutions { get; set; }
+
+		[DataMember(Name = "upgradeNodeModulesExcludePathFilters", EmitDefaultValue = false)]
+		public string[] UpgradeNodeModulesExcludePathFilters { get; set; }
+
+		[DataMember(Name = "upgradeNodeModulesPreviouslySelectedProjectKeys", EmitDefaultValue = false)]
+		public string[] UpgradeNodeModulesPreviouslySelectedProjectKeys { get; set; }
 	}
 }

@@ -35,12 +35,21 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 			IList<Solution> Solutions { get; }
 		}
 
+		public bool ShowUpgradeNodeModulesCheckBox { get; set; } = false;
+		public bool ShowCommitSolutionCheckBox { get; set; } = false;
+
 		public delegate ISolutionsContext ExecuteActionsInSolutionsDelegate(SolutionsForm form, Action<Solution> start);
 		public delegate void UpdatePreviouslySelectedSolutionsDelegate(SolutionsForm form);
 		public delegate void OnCloseFormDelegate(SolutionsForm form);
 
+		private static ISI.Extensions.Scm.ISourceControlClientApi _sourceControlClientApi = null;
+		protected ISI.Extensions.Scm.ISourceControlClientApi SourceControlClientApi => _sourceControlClientApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.ISourceControlClientApi>();
+
 		private static ISI.Extensions.VisualStudioCode.SolutionApi _solutionApi = null;
 		protected ISI.Extensions.VisualStudioCode.SolutionApi SolutionApi => _solutionApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudioCode.SolutionApi>();
+
+		private static ISI.Extensions.VisualStudioCode.NodeModulesApi _nodeModulesApi = null;
+		protected ISI.Extensions.VisualStudioCode.NodeModulesApi NodeModulesApi => _nodeModulesApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudioCode.NodeModulesApi>();
 
 		protected internal ISolutionsContext SolutionsContext { get; set; }
 
@@ -54,7 +63,11 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 
 		protected internal bool IsFirstRefresh { get; private set; } = true;
 
+		protected internal bool CleanSolution { get; set; } = true;
 		protected internal bool UpdateSolution { get; set; } = true;
+		protected internal bool UpgradeNodeModules { get; set; } = false;
+		protected internal bool CommitSolution { get; set; } = false;
+		protected internal bool InstallNodeModules { get; set; } = true;
 		protected internal bool ExitOnClose { get; set; }
 
 		public SolutionsForm(ExecuteActionsInSolutionsDelegate executeActionsInSolutions, UpdatePreviouslySelectedSolutionsDelegate updatePreviouslySelectedSolutions, OnCloseFormDelegate onCloseForm)
@@ -135,7 +148,11 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 			{
 				SolutionsContext = executeActionsInSolutions(this, solution =>
 				{
-					using (var form = new SolutionOptionsForm(UpdateSolution))
+					using (var form = new SolutionOptionsForm(CleanSolution, UpdateSolution, UpgradeNodeModules, CommitSolution, InstallNodeModules)
+					{
+						ShowUpgradeNodeModulesCheckBox = ShowUpgradeNodeModulesCheckBox,
+						ShowCommitSolutionCheckBox = ShowUpgradeNodeModulesCheckBox && ShowCommitSolutionCheckBox,
+					})
 					{
 						if (form.ShowDialog() == DialogResult.OK)
 						{
@@ -145,7 +162,7 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 
 							UpdateSolution = form.UpdateSolution;
 
-							foreach (var solutionTask in solution.GetTasks(true, UpdateSolution))
+							foreach (var solutionTask in solution.GetTasks(true, CleanSolution, UpdateSolution, InstallNodeModules))
 							{
 								BackgroundTasks.Enqueue(solutionTask);
 							}
@@ -172,7 +189,11 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 
 			StartButton.Click += (_, __) =>
 			{
-				using (var form = new SolutionOptionsForm(UpdateSolution))
+				using (var form = new SolutionOptionsForm(CleanSolution, UpdateSolution, UpgradeNodeModules, CommitSolution, InstallNodeModules)
+				{
+					ShowUpgradeNodeModulesCheckBox = ShowUpgradeNodeModulesCheckBox,
+					ShowCommitSolutionCheckBox = ShowUpgradeNodeModulesCheckBox && ShowCommitSolutionCheckBox,
+				})
 				{
 					if (form.ShowDialog() == DialogResult.OK)
 					{
@@ -180,7 +201,11 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 
 						StartButton.Visible = false;
 
+						CleanSolution = form.CleanSolution;
 						UpdateSolution = form.UpdateSolution;
+						CommitSolution = form.CommitSolution;
+						UpgradeNodeModules = form.UpgradeNodeModules;
+						InstallNodeModules = form.InstallNodeModules;
 
 						if (IsFirstRefresh)
 						{
@@ -193,11 +218,88 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 
 						var resetResponses = true;
 
-						foreach (var solution in SolutionsContext.Solutions.Where(solution => solution.Selected))
+						if (UpgradeNodeModules)
 						{
-							foreach (var solutionTask in solution.GetTasks(resetResponses, UpdateSolution))
+							resetResponses = false;
+
+							BackgroundTasks.Enqueue(new TaskActions()
 							{
-								BackgroundTasks.Enqueue(solutionTask);
+								PreAction = () => { },
+								Action = () =>
+								{
+									var solutionsBySolutionFullName = SolutionsContext.Solutions.Where(solution => solution.Selected).ToDictionary(solution => solution.SolutionDetails.SolutionFullName, _ => _, StringComparer.InvariantCultureIgnoreCase);
+
+									foreach (var solution in solutionsBySolutionFullName.Values)
+									{
+										solution.ResetResponses();
+									}
+
+									foreach (var solution in solutionsBySolutionFullName.Values)
+									{
+										solution.UpgradeNodeModulesPreAction();
+
+										if (form.UpdateSolution)
+										{
+											solution.UpdateSolutionResponse.ExitCode = SourceControlClientApi.UpdateWorkingCopy(new()
+											{
+												FullName = solution.SolutionDetails.RootSourceDirectory,
+												IncludeExternals = true,
+
+												AddToLog = (logEntryLevel, description) =>
+												{
+													solution.UpdateStatus?.Invoke(description);
+													solution.Logger.LogInformation(description);
+													solution.UpdateSolutionResponse.AppendLine(description);
+												},
+											}).Success ? 0 : 1;
+										}
+
+										if (form.UpgradeNodeModules && !solution.UpdateSolutionResponse.Errored)
+										{
+											solution.UpgradeNodeModulesResponse.ExitCode = NodeModulesApi.UpgradeNodeModules(new()
+											{
+												Solution = solution.SolutionDetails.RootSourceDirectory,
+
+												AddToLog = (logEntryLevel, description) =>
+												{
+													solution.UpdateStatus?.Invoke(description);
+													solution.Logger.LogInformation(description);
+													solution.UpgradeNodeModulesResponse.AppendLine(description);
+												},
+											}).Success ? 0 : 1;
+										}
+
+
+										if (form.CommitSolution && !solution.UpdateSolutionResponse.Errored && !solution.UpgradeNodeModulesResponse.Errored)
+										{
+											SourceControlClientApi.CommitWorkingCopy(new()
+											{
+												FullName = solution.SolutionDetails.RootSourceDirectory,
+
+												AddToLog = (logEntryLevel, description) =>
+												{
+													solution.UpdateStatus?.Invoke(description);
+													solution.Logger.LogInformation(description);
+													solution.UpdateSolutionResponse.AppendLine(description);
+												},
+											});
+										}
+
+										solution.UpgradeNodeModulesPostAction(!InstallNodeModules, InstallNodeModules);
+									}
+								},
+								PostAction = () => { },
+							});
+						}
+
+						if (!UpgradeNodeModules || InstallNodeModules)
+						{
+							foreach (var solution in SolutionsContext.Solutions.Where(solution => solution.Selected))
+							{
+								foreach (var solutionTask in solution.GetTasks(resetResponses, CleanSolution, UpdateSolution, InstallNodeModules))
+								{
+									BackgroundTasks.Enqueue(solutionTask);
+								}
 							}
 						}
 

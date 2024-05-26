@@ -29,9 +29,9 @@ namespace ISI.Extensions.VisualStudio
 	{
 		public DTOs.CleanSolutionResponse CleanSolution(DTOs.CleanSolutionRequest request)
 		{
-			var response = new DTOs.CleanSolutionResponse();
-
 			var logger = new AddToLogLogger(request.AddToLog, Logger);
+
+			var response = new DTOs.CleanSolutionResponse();
 
 			try
 			{
@@ -40,7 +40,7 @@ namespace ISI.Extensions.VisualStudio
 					Solution = request.Solution,
 				}).SolutionDetails?.SolutionDirectory;
 
-				if (System.IO.Directory.Exists(solutionSourceDirectory))
+				if (!string.IsNullOrWhiteSpace(solutionSourceDirectory) && System.IO.Directory.Exists(solutionSourceDirectory))
 				{
 					if (!ISI.Extensions.VisualStudio.Solution.EnumerateSolutionFiles(solutionSourceDirectory, this.GetDefaultExcludePathFilters(), this.GetMaxCheckDirectoryDepth()).NullCheckedAny())
 					{

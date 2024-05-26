@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -17,28 +17,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.VisualStudioCode
+namespace ISI.Extensions.VisualStudioCode.DataTransferObjects.NodeModulesApi
 {
-	public class Solution
+	public class UpgradeNodeModulesResponse
 	{
-		public static readonly string SearchPattern = "package.json";
-
-		public static bool IsSolutionFileName(string fullName)
-		{
-			var fileName = System.IO.Path.GetFileName(fullName);
-
-			return string.Equals(fileName, SearchPattern, StringComparison.InvariantCultureIgnoreCase);
-		}
-
-		public static IEnumerable<string> FindSolutionFullNames(string path, System.IO.SearchOption searchOption = System.IO.SearchOption.AllDirectories)
-		{
-			return System.IO.Directory.GetFiles(path, ISI.Extensions.VisualStudioCode.Solution.SearchPattern, searchOption);
-		}
-
-		public static IEnumerable<string> EnumerateSolutionFiles(string path, string[] ignorePatterns, int maxDepth = int.MaxValue)
-		{
-			return ISI.Extensions.IO.Path.EnumerateFiles(path, SearchPattern, ignorePatterns, maxDepth);
-		}
+		public bool Success { get; set; }
 	}
 }

@@ -28,11 +28,19 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 {
 	public partial class SolutionOptionsForm : Form
 	{
+		public bool ShowCleanSolutionCheckBox { get; set; } = true;
 		public bool ShowUpdateSolutionCheckBox { get; set; } = true;
+		public bool ShowCommitSolutionCheckBox { get; set; } = false;
+		public bool ShowUpgradeNodeModulesCheckBox { get; set; } = false;
+		public bool ShowInstallNodeModulesCheckBox { get; set; } = true;
 
+		public bool CleanSolution => cboCleanSolution.Checked;
 		public bool UpdateSolution => cboUpdateSolution.Checked;
+		public bool CommitSolution => cboCommitSolution.Checked;
+		public bool UpgradeNodeModules => cboUpgradeNodeModules.Checked;
+		public bool InstallNodeModules => cboInstallNodeModules.Checked;
 
-		public SolutionOptionsForm(bool updateSolution)
+		public SolutionOptionsForm(bool cleanSolution, bool updateSolution, bool upgradeNodeModules, bool commitSolution, bool installNodeModules)
 		{
 			InitializeComponent();
 
@@ -44,7 +52,11 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 			MinimizeBox = false;
 			ShowIcon = true;
 
+			cboCleanSolution.Checked = cleanSolution;
 			cboUpdateSolution.Checked = updateSolution;
+			cboCommitSolution.Checked = upgradeNodeModules && commitSolution;
+			cboUpgradeNodeModules.Checked = upgradeNodeModules;
+			cboInstallNodeModules.Checked = installNodeModules;
 
 			btnOK.Click += (clickSender, clickEventArgs) =>
 			{
@@ -68,7 +80,11 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 
 			Shown += (shownSender, shownArgs) =>
 			{
+				cboCleanSolution.Visible = ShowCleanSolutionCheckBox;
 				cboUpdateSolution.Visible = ShowUpdateSolutionCheckBox;
+				cboInstallNodeModules.Visible = ShowInstallNodeModulesCheckBox;
+				cboCommitSolution.Visible = ShowUpgradeNodeModulesCheckBox && ShowCommitSolutionCheckBox;
+				cboUpgradeNodeModules.Visible = ShowUpgradeNodeModulesCheckBox;
 			};
 		}
 	}

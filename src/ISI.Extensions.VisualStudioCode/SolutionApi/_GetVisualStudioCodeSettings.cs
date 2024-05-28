@@ -34,9 +34,17 @@ namespace ISI.Extensions.VisualStudioCode
 
 			if (!string.IsNullOrWhiteSpace(visualStudioSettingsFullName) && System.IO.File.Exists(visualStudioSettingsFullName))
 			{
-				using (var stream = System.IO.File.OpenRead(visualStudioSettingsFullName))
+				try
 				{
-					visualStudioCodeSettings = JsonSerializer.Deserialize<SerializableDTOs.IVisualStudioCodeSettings>(stream)?.Export();
+					using (var stream = System.IO.File.OpenRead(visualStudioSettingsFullName))
+					{
+						visualStudioCodeSettings = JsonSerializer.Deserialize<SerializableDTOs.IVisualStudioCodeSettings>(stream)?.Export();
+					}
+				}
+				catch (Exception exception)
+				{
+					//Console.WriteLine(exception);
+					//throw;
 				}
 			}
 

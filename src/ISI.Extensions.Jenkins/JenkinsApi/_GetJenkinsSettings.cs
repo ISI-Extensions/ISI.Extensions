@@ -35,9 +35,17 @@ namespace ISI.Extensions.Jenkins
 
 			if (!string.IsNullOrWhiteSpace(jenkinsSettingsFullName) && System.IO.File.Exists(jenkinsSettingsFullName))
 			{
-				using (var stream = System.IO.File.OpenRead(jenkinsSettingsFullName))
+				try
 				{
-					jenkinsSettings = JsonSerializer.Deserialize<SerializableDTOs.IJenkinsSettings>(stream)?.Export();
+					using (var stream = System.IO.File.OpenRead(jenkinsSettingsFullName))
+					{
+						jenkinsSettings = JsonSerializer.Deserialize<SerializableDTOs.IJenkinsSettings>(stream)?.Export();
+					}
+				}
+				catch (Exception exception)
+				{
+					//Console.WriteLine(exception);
+					//throw;
 				}
 			}
 

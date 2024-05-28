@@ -35,9 +35,17 @@ namespace ISI.Extensions.Nuget
 
 			if (!string.IsNullOrWhiteSpace(nugetSettingsFullName) && System.IO.File.Exists(nugetSettingsFullName))
 			{
-				using (var stream = System.IO.File.OpenRead(nugetSettingsFullName))
+				try
 				{
-					nugetSettings = JsonSerializer.Deserialize<SerializableDTOs.INugetSettings>(stream)?.Export();
+					using (var stream = System.IO.File.OpenRead(nugetSettingsFullName))
+					{
+						nugetSettings = JsonSerializer.Deserialize<SerializableDTOs.INugetSettings>(stream)?.Export();
+					}
+				}
+				catch (Exception exception)
+				{
+					//Console.WriteLine(exception);
+					//throw;
 				}
 			}
 

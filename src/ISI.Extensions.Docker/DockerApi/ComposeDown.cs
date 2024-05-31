@@ -36,20 +36,22 @@ namespace ISI.Extensions.Docker
 
 			var arguments = new List<string>();
 
-			if (!string.IsNullOrWhiteSpace(request.Context))
-			{
-				if (!DockerContexts.ContainsKey(request.Context))
-				{
-					throw new Exception($"Context \"{request.Context}\" not found");
-				}
-
-				arguments.Add($"--context {request.Context}");
-			}
-
-			arguments.Add("--progress plain");
-
 			using (var tempEnvironmentFiles = new TempEnvironmentFiles(request.ComposeDirectory, request.EnvironmentFileFullNames, request.EnvironmentVariables))
 			{
+				if (!string.IsNullOrWhiteSpace(request.Context))
+				{
+					if (!DockerContexts.ContainsKey(request.Context))
+					{
+						throw new Exception($"Context \"{request.Context}\" not found");
+					}
+
+					arguments.Add($"--context {request.Context}");
+				}
+
+				arguments.Add("compose");
+
+				arguments.Add("--progress plain");
+
 				arguments.AddRange(tempEnvironmentFiles.GetDockerComposeArguments());
 
 				arguments.Add("down");
@@ -59,12 +61,12 @@ namespace ISI.Extensions.Docker
 					arguments.Add("-v");
 				}
 
-				logger.LogInformation($"docker-compose {string.Join(" ", arguments)}");
+				logger.LogInformation($"docker {string.Join(" ", arguments)}");
 
 				var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
 					Logger = logger,
-					ProcessExeFullName = "docker-compose",
+					ProcessExeFullName = "docker",
 					Arguments = arguments.ToArray(),
 					WorkingDirectory = request.ComposeDirectory,
 					EnvironmentVariables = AddDockerContextServerApiVersion(null, request.Context),

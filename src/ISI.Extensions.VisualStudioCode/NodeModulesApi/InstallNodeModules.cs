@@ -30,7 +30,10 @@ namespace ISI.Extensions.VisualStudioCode
 		{
 			var logger = new AddToLogLogger(request.AddToLog, Logger);
 
-			var response = new DTOs.InstallNodeModulesResponse();
+			var response = new DTOs.InstallNodeModulesResponse()
+			{
+				Success = true,
+			};
 
 			try
 			{

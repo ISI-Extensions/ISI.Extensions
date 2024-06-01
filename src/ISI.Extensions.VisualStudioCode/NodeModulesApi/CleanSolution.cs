@@ -30,7 +30,10 @@ namespace ISI.Extensions.VisualStudioCode
 		{
 			var logger = new AddToLogLogger(request.AddToLog, Logger);
 
-			var response = new DTOs.CleanSolutionResponse();
+			var response = new DTOs.CleanSolutionResponse()
+			{
+				Success = true,
+			};
 
 			try
 			{
@@ -47,12 +50,8 @@ namespace ISI.Extensions.VisualStudioCode
 					{
 						var processResponse = ISI.Extensions.Process.WaitForProcessResponse(new Process.ProcessRequest()
 						{
-							ProcessExeFullName = "rmdir",
-							Arguments = new [] {
-								"/S",
-								"/Q",
-								nodeModulesDirectory,
-							},
+							ProcessExeFullName = "cmd.exe",
+							Arguments = new[] { "/c", "rmdir", "/S", "/Q", nodeModulesDirectory, },
 							WorkingDirectory = solutionSourceDirectory,
 							Logger = logger,
 						});

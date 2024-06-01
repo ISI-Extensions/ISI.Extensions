@@ -83,26 +83,33 @@ namespace ISI.Extensions.VisualStudio
 							AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
 						}).Lock)
 						{
-							solutionLogger.LogInformation(string.Format("Updating {0} from Source Control", solutionFullName));
-
 							var rootSourceDirectory = SourceControlClientApi.GetRootDirectory(new()
 							{
 								FullName = System.IO.Path.GetDirectoryName(solutionFullName),
 							}).FullName;
 
-							if (!SourceControlClientApi.UpdateWorkingCopy(new()
+							if (string.IsNullOrWhiteSpace(rootSourceDirectory))
 							{
-								FullName = rootSourceDirectory,
-								IncludeExternals = true,
-								AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
-							}).Success)
-							{
-								var exception = new Exception(string.Format("Error updating \"{0}\"", rootSourceDirectory));
-								solutionLogger.LogError(exception.Message);
-								throw exception;
+								solutionLogger.LogInformation(string.Format("{0} is not under source control", solutionFullName));
 							}
+							else
+							{
+								solutionLogger.LogInformation(string.Format("Updating {0} from Source Control", solutionFullName));
 
-							solutionLogger.LogInformation(string.Format("Updated {0} from Source Control", rootSourceDirectory));
+								if (!SourceControlClientApi.UpdateWorkingCopy(new()
+								    {
+									    FullName = rootSourceDirectory,
+									    IncludeExternals = true,
+									    AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
+								    }).Success)
+								{
+									var exception = new Exception(string.Format("Error updating \"{0}\"", rootSourceDirectory));
+									solutionLogger.LogError(exception.Message);
+									throw exception;
+								}
+
+								solutionLogger.LogInformation(string.Format("Updated {0} from Source Control", rootSourceDirectory));
+							}
 						}
 					}
 				}
@@ -190,26 +197,33 @@ namespace ISI.Extensions.VisualStudio
 						AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
 					}).Lock)
 					{
-						solutionLogger.LogInformation(string.Format("Updating {0} from Source Control", solutionDetails.SolutionName));
-
 						var dirtyFileNames = new HashSet<string>();
 
 						if (request.UpdateWorkingCopyFromSourceControl)
 						{
-							if (!SourceControlClientApi.UpdateWorkingCopy(new()
+							if (string.IsNullOrWhiteSpace(solutionDetails.RootSourceDirectory))
 							{
-								FullName = solutionDetails.RootSourceDirectory,
-								IncludeExternals = true,
-								AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
-							}).Success)
+								solutionLogger.LogInformation(string.Format("{0} is not under source control", solutionDetails.SolutionFullName));
+							}
+							else
 							{
-								var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
-								solutionLogger.LogError(exception.Message);
-								throw exception;
+								solutionLogger.LogInformation(string.Format("Updating {0} from Source Control", solutionDetails.SolutionName));
+
+								if (!SourceControlClientApi.UpdateWorkingCopy(new()
+								    {
+									    FullName = solutionDetails.RootSourceDirectory,
+									    IncludeExternals = true,
+									    AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
+								    }).Success)
+								{
+									var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
+									solutionLogger.LogError(exception.Message);
+									throw exception;
+								}
+
+								solutionLogger.LogInformation(string.Format("Upgrading Nuget Packages in {0}", solutionDetails.SolutionName));
 							}
 						}
-
-						solutionLogger.LogInformation(string.Format("Upgrading Nuget Packages in {0}", solutionDetails.SolutionName));
 
 						try
 						{

@@ -240,18 +240,25 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 
 										if (form.UpdateSolution)
 										{
-											solution.UpdateSolutionResponse.ExitCode = SourceControlClientApi.UpdateWorkingCopy(new()
+											if (string.IsNullOrWhiteSpace(solution.SolutionDetails.RootSourceDirectory))
 											{
-												FullName = (string.IsNullOrWhiteSpace(solution.SolutionDetails.RootSourceDirectory) ? solution.SolutionDetails.SolutionDirectory : solution.SolutionDetails.RootSourceDirectory),
-												IncludeExternals = true,
-
-												AddToLog = (logEntryLevel, description) =>
+												solution.UpdateSolutionResponse.ExitCode = 0;
+											}
+											else
+											{
+												solution.UpdateSolutionResponse.ExitCode = SourceControlClientApi.UpdateWorkingCopy(new()
 												{
-													solution.UpdateStatus?.Invoke(description);
-													solution.Logger.LogInformation(description);
-													solution.UpdateSolutionResponse.AppendLine(description);
-												},
-											}).Success ? 0 : 1;
+													FullName = solution.SolutionDetails.RootSourceDirectory,
+													IncludeExternals = true,
+
+													AddToLog = (logEntryLevel, description) =>
+													{
+														solution.UpdateStatus?.Invoke(description);
+														solution.Logger.LogInformation(description);
+														solution.UpdateSolutionResponse.AppendLine(description);
+													},
+												}).Success ? 0 : 1;
+											}
 										}
 
 										if (form.UpgradeNodeModules && !solution.UpdateSolutionResponse.Errored)
@@ -272,17 +279,20 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 
 										if (form.CommitSolution && !solution.UpdateSolutionResponse.Errored && !solution.UpgradeNodeModulesResponse.Errored)
 										{
-											SourceControlClientApi.CommitWorkingCopy(new()
+											if (!string.IsNullOrWhiteSpace(solution.SolutionDetails.RootSourceDirectory))
 											{
-												FullName = (string.IsNullOrWhiteSpace(solution.SolutionDetails.RootSourceDirectory) ? solution.SolutionDetails.SolutionDirectory : solution.SolutionDetails.RootSourceDirectory),
-
-												AddToLog = (logEntryLevel, description) =>
+												SourceControlClientApi.CommitWorkingCopy(new()
 												{
-													solution.UpdateStatus?.Invoke(description);
-													solution.Logger.LogInformation(description);
-													solution.UpdateSolutionResponse.AppendLine(description);
-												},
-											});
+													FullName = solution.SolutionDetails.RootSourceDirectory,
+
+													AddToLog = (logEntryLevel, description) =>
+													{
+														solution.UpdateStatus?.Invoke(description);
+														solution.Logger.LogInformation(description);
+														solution.UpdateSolutionResponse.AppendLine(description);
+													},
+												});
+											}
 										}
 
 										solution.UpgradeNodeModulesPostAction(!InstallNodeModules, InstallNodeModules);

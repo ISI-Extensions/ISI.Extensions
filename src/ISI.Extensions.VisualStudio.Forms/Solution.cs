@@ -238,18 +238,25 @@ namespace ISI.Extensions.VisualStudio.Forms
 				{
 					Logger.LogInformation("Start Update Solution");
 
-					UpdateSolutionResponse.ExitCode = SourceControlClientApi.UpdateWorkingCopy(new()
+					if (string.IsNullOrWhiteSpace(SolutionDetails.RootSourceDirectory))
 					{
-						FullName = SolutionDetails.RootSourceDirectory,
-						IncludeExternals = true,
-
-						AddToLog = (logEntryLevel, description) =>
+						UpdateSolutionResponse.ExitCode = 0;
+					}
+					else
+					{
+						UpdateSolutionResponse.ExitCode = SourceControlClientApi.UpdateWorkingCopy(new()
 						{
-							UpdateStatus(description);
-							UpdateSolutionResponse.AppendLine(description);
-							Logger.LogInformation(description);
-						},
-					}).Success ? 0 : 1;
+							FullName = SolutionDetails.RootSourceDirectory,
+							IncludeExternals = true,
+
+							AddToLog = (logEntryLevel, description) =>
+							{
+								UpdateStatus(description);
+								UpdateSolutionResponse.AppendLine(description);
+								Logger.LogInformation(description);
+							},
+						}).Success ? 0 : 1;
+					}
 
 					Logger.LogInformation("Finish Update Solution");
 				}

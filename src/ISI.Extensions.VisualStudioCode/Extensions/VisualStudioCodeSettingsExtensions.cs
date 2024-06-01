@@ -39,11 +39,6 @@ namespace ISI.Extensions.VisualStudioCode.Extensions
 			return solutionApi.GetVisualStudioCodeSettings(new())?.VisualStudioCodeSettings?.PreviouslySelectedSolutionFilterKeys ?? [];
 		}
 
-		public static string[] GetRefreshSolutionsExcludePathFilters(this SolutionApi solutionApi)
-		{
-			return solutionApi.GetVisualStudioCodeSettings(new())?.VisualStudioCodeSettings?.RefreshSolutionsExcludePathFilters ?? [];
-		}
-
 		public static string[] GetRefreshSolutionsPreviouslySelectedSolutions(this SolutionApi solutionApi)
 		{
 			return solutionApi.GetVisualStudioCodeSettings(new())?.VisualStudioCodeSettings?.RefreshSolutionsPreviouslySelectedSolutions ?? [];

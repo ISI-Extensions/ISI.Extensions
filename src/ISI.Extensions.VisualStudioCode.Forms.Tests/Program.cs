@@ -67,9 +67,7 @@ namespace ISI.Extensions.VisualStudioCode.Forms.Tests
 
 			var selectedItemPaths = new[]
 			{
-				@"F:\ISI\Clients\West River Systems\wrs.uisandbox.interface.ui\",
-				@"F:\ISI\Clients\West River Systems\wrs.models.interface.ui\",
-				@"F:\ISI\Clients\West River Systems\wrs.identity.interface.ui\",
+				@"E:\VueJs\quasar-project\",
 			};
 
 			System.Windows.Forms.Application.EnableVisualStyles();

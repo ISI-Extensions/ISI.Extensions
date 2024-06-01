@@ -39,29 +39,14 @@ namespace ISI.Extensions.VisualStudio.Extensions
 			return solutionApi.GetVisualStudioSettings(new())?.VisualStudioSettings?.PreviouslySelectedSolutionFilterKeys ?? [];
 		}
 
-		public static string[] GetRefreshSolutionsExcludePathFilters(this SolutionApi solutionApi)
-		{
-			return solutionApi.GetVisualStudioSettings(new())?.VisualStudioSettings?.RefreshSolutionsExcludePathFilters ?? [];
-		}
-
 		public static string[] GetRefreshSolutionsPreviouslySelectedSolutions(this SolutionApi solutionApi)
 		{
 			return solutionApi.GetVisualStudioSettings(new())?.VisualStudioSettings?.RefreshSolutionsPreviouslySelectedSolutions ?? [];
 		}
 
-		public static string[] GetRunServicesExcludePathFilters(this SolutionApi solutionApi)
-		{
-			return solutionApi.GetVisualStudioSettings(new())?.VisualStudioSettings?.RunServicesExcludePathFilters ?? [];
-		}
-
 		public static string[] GetRunServicesPreviouslySelectedProjectKeys(this SolutionApi solutionApi)
 		{
 			return solutionApi.GetVisualStudioSettings(new())?.VisualStudioSettings?.RunServicesPreviouslySelectedProjectKeys ?? [];
-		}
-
-		public static string[] GetUpgradeNugetPackagesExcludePathFilters(this SolutionApi solutionApi)
-		{
-			return solutionApi.GetVisualStudioSettings(new())?.VisualStudioSettings?.UpgradeNugetPackagesExcludePathFilters ?? [];
 		}
 
 		public static string[] GetUpgradeNugetPackagesPreviouslySelectedProjectKeys(this SolutionApi solutionApi)

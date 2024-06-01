@@ -37,11 +37,8 @@ namespace ISI.Extensions.VisualStudio.SerializableModels
 				MaxCheckDirectoryDepth = source.MaxCheckDirectoryDepth,
 				DefaultExcludePathFilters = source.DefaultExcludePathFilters.ToNullCheckedArray(),
 				PreviouslySelectedSolutionFilterKeys = source.PreviouslySelectedSolutionFilterKeys.ToNullCheckedArray(),
-				RefreshSolutionsExcludePathFilters = source.RefreshSolutionsExcludePathFilters.ToNullCheckedArray(),
 				RefreshSolutionsPreviouslySelectedSolutions = source.RefreshSolutionsPreviouslySelectedSolutions.ToNullCheckedArray(),
-				RunServicesExcludePathFilters = source.RunServicesExcludePathFilters.ToNullCheckedArray(),
 				RunServicesPreviouslySelectedProjectKeys = source.RunServicesPreviouslySelectedProjectKeys.ToNullCheckedArray(),
-				UpgradeNugetPackagesExcludePathFilters = source.UpgradeNugetPackagesExcludePathFilters.ToNullCheckedArray(),
 				UpgradeNugetPackagesPreviouslySelectedProjectKeys = source.UpgradeNugetPackagesPreviouslySelectedProjectKeys.ToNullCheckedArray(),
 			};
 		}
@@ -54,11 +51,8 @@ namespace ISI.Extensions.VisualStudio.SerializableModels
 				MaxCheckDirectoryDepth = MaxCheckDirectoryDepth,
 				DefaultExcludePathFilters = DefaultExcludePathFilters.ToNullCheckedArray(),
 				PreviouslySelectedSolutionFilterKeys = PreviouslySelectedSolutionFilterKeys.ToNullCheckedArray(),
-				RefreshSolutionsExcludePathFilters = RefreshSolutionsExcludePathFilters.ToNullCheckedArray(),
 				RefreshSolutionsPreviouslySelectedSolutions = RefreshSolutionsPreviouslySelectedSolutions.ToNullCheckedArray(),
-				RunServicesExcludePathFilters = RunServicesExcludePathFilters.ToNullCheckedArray(),
 				RunServicesPreviouslySelectedProjectKeys = RunServicesPreviouslySelectedProjectKeys.ToNullCheckedArray(),
-				UpgradeNugetPackagesExcludePathFilters = UpgradeNugetPackagesExcludePathFilters.ToNullCheckedArray(),
 				UpgradeNugetPackagesPreviouslySelectedProjectKeys = UpgradeNugetPackagesPreviouslySelectedProjectKeys.ToNullCheckedArray(),
 			};
 		}
@@ -75,20 +69,11 @@ namespace ISI.Extensions.VisualStudio.SerializableModels
 		[DataMember(Name = "previouslySelectedSolutionFilterKeys", EmitDefaultValue = false)]
 		public string[] PreviouslySelectedSolutionFilterKeys { get; set; }
 
-		[DataMember(Name = "refreshSolutionsExcludePathFilters", EmitDefaultValue = false)]
-		public string[] RefreshSolutionsExcludePathFilters { get; set; }
-
 		[DataMember(Name = "refreshSolutionsPreviouslySelectedSolutions", EmitDefaultValue = false)]
 		public string[] RefreshSolutionsPreviouslySelectedSolutions { get; set; }
 
-		[DataMember(Name = "runServicesExcludePathFilters", EmitDefaultValue = false)]
-		public string[] RunServicesExcludePathFilters { get; set; }
-
 		[DataMember(Name = "runServicesPreviouslySelectedProjectKeys", EmitDefaultValue = false)]
 		public string[] RunServicesPreviouslySelectedProjectKeys { get; set; }
-
-		[DataMember(Name = "upgradeNugetPackagesExcludePathFilters", EmitDefaultValue = false)]
-		public string[] UpgradeNugetPackagesExcludePathFilters { get; set; }
 
 		[DataMember(Name = "upgradeNugetPackagesPreviouslySelectedProjectKeys", EmitDefaultValue = false)]
 		public string[] UpgradeNugetPackagesPreviouslySelectedProjectKeys { get; set; }

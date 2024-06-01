@@ -58,6 +58,7 @@ namespace ISI.Extensions.VisualStudioCode
 				"obj",
 				"Resources",
 				"packages",
+				"node_modules",
 				"_ReSharper.Caches",
 			};
 

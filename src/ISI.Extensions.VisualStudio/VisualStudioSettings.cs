@@ -32,15 +32,9 @@ namespace ISI.Extensions.VisualStudio
 
 		public string[] PreviouslySelectedSolutionFilterKeys { get; set; }
 
-		public string[] RefreshSolutionsExcludePathFilters { get; set; }
-
 		public string[] RefreshSolutionsPreviouslySelectedSolutions { get; set; }
 
-		public string[] RunServicesExcludePathFilters { get; set; }
-
 		public string[] RunServicesPreviouslySelectedProjectKeys { get; set; }
-
-		public string[] UpgradeNugetPackagesExcludePathFilters { get; set; }
 
 		public string[] UpgradeNugetPackagesPreviouslySelectedProjectKeys { get; set; }
 	}

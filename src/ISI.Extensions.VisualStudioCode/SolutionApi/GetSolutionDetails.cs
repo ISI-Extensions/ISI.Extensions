@@ -41,7 +41,17 @@ namespace ISI.Extensions.VisualStudioCode
 
 			if (!string.IsNullOrWhiteSpace(solutionFullName))
 			{
-				var solutionPackage = JsonSerializer.Deserialize<SerializableModels.SolutionPackage>(System.IO.File.ReadAllText(solutionFullName))?.Export();
+				var solutionPackage = (SolutionPackage)null;
+
+				try
+				{
+					solutionPackage = JsonSerializer.Deserialize<ISI.Extensions.VisualStudioCode.SerializableModels.SolutionPackage>(System.IO.File.ReadAllText(solutionFullName))?.Export();
+				}
+				catch (Exception exception)
+				{
+					//Console.WriteLine(exception);
+					//throw;
+				}
 
 				var solutionDirectory = System.IO.Path.GetDirectoryName(solutionFullName);
 

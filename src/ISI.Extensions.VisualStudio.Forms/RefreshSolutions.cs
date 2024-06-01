@@ -47,7 +47,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 					form.StartButton.Enabled = context.Solutions.Any(solution => solution.Selected);
 				}
 
-				var excludedPathFilters = SolutionApi.GetRefreshSolutionsExcludePathFilters();
+				var excludedPathFilters = SolutionApi.GetDefaultExcludePathFilters();
 				var solutionFileNames = new System.Collections.Concurrent.ConcurrentBag<string>();
 				var maxCheckDirectoryDepth = SolutionApi.GetMaxCheckDirectoryDepth() - 1;
 

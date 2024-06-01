@@ -67,7 +67,7 @@ namespace ISI.Extensions.VisualStudioCode.Forms.Tests
 
 			var selectedItemPaths = new[]
 			{
-				@"E:\VueJs\quasar-project\",
+				@"E:\VueJs\",
 			};
 
 			System.Windows.Forms.Application.EnableVisualStyles();

@@ -50,8 +50,8 @@ namespace ISI.Extensions.VisualStudioCode
 					{
 						var processResponse = ISI.Extensions.Process.WaitForProcessResponse(new Process.ProcessRequest()
 						{
-							ProcessExeFullName = "cmd.exe",
-							Arguments = new[] { "/c", "rmdir", "/S", "/Q", nodeModulesDirectory, },
+							ProcessExeFullName = @"cmd.exe",
+							Arguments = new[] { "/c", "rmdir", "/S", "/Q", "node_modules", },
 							WorkingDirectory = solutionSourceDirectory,
 							Logger = logger,
 						});

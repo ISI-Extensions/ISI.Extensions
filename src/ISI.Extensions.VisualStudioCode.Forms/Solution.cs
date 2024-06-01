@@ -269,7 +269,7 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 					SetButtonVisibility(OpenButton, false);
 					SetCheckBoxEnabled(CheckBox, false);
 					SetButtonVisibility(ViewBuildLogButton, false);
-					SetStatus(TaskActionStatus.Default, "restoring nuget packages ...");
+					SetStatus(TaskActionStatus.Default, "installing node modules ...");
 				}
 			},
 			Action = () =>

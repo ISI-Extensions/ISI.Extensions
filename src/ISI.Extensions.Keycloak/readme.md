@@ -5,7 +5,7 @@
     ports:
     - '8090:8080'
     networks:
-      - wrs-default-network
+      - isi-default-network
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin

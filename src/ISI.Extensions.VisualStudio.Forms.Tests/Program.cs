@@ -67,9 +67,8 @@ namespace ISI.Extensions.VisualStudio.Forms.Tests
 
 			var selectedItemPaths = new[]
 			{
-				//@"F:\ISI\Internal Projects\ISI.Gravity.WindowsService\",
-				@"F:\ISI\Internal Projects\ISI.CertificateManager.ServiceApplication\",
-				//@"F:\ISI\Internal Projects\ISI.Acme.ServiceApplication\",
+				@"F:\ISI\Internal Projects\ISI.Gravity.WindowsService\",
+				@"F:\ISI\Internal Projects\ISI.Acme.ServiceApplication\",
 			};
 
 			System.Windows.Forms.Application.EnableVisualStyles();

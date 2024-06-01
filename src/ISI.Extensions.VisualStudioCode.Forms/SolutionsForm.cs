@@ -242,7 +242,7 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 										{
 											solution.UpdateSolutionResponse.ExitCode = SourceControlClientApi.UpdateWorkingCopy(new()
 											{
-												FullName = solution.SolutionDetails.RootSourceDirectory,
+												FullName = (string.IsNullOrWhiteSpace(solution.SolutionDetails.RootSourceDirectory) ? solution.SolutionDetails.SolutionDirectory : solution.SolutionDetails.RootSourceDirectory),
 												IncludeExternals = true,
 
 												AddToLog = (logEntryLevel, description) =>
@@ -258,7 +258,7 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 										{
 											solution.UpgradeNodeModulesResponse.ExitCode = NodeModulesApi.UpgradeNodeModules(new()
 											{
-												Solution = solution.SolutionDetails.RootSourceDirectory,
+												Solution = (string.IsNullOrWhiteSpace(solution.SolutionDetails.RootSourceDirectory) ? solution.SolutionDetails.SolutionDirectory : solution.SolutionDetails.RootSourceDirectory),
 
 												AddToLog = (logEntryLevel, description) =>
 												{
@@ -274,7 +274,7 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 										{
 											SourceControlClientApi.CommitWorkingCopy(new()
 											{
-												FullName = solution.SolutionDetails.RootSourceDirectory,
+												FullName = (string.IsNullOrWhiteSpace(solution.SolutionDetails.RootSourceDirectory) ? solution.SolutionDetails.SolutionDirectory : solution.SolutionDetails.RootSourceDirectory),
 
 												AddToLog = (logEntryLevel, description) =>
 												{

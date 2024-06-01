@@ -35,7 +35,7 @@ namespace ISI.Extensions.VisualStudioCode
 				Solution = request.Solution,
 			}).SolutionDetails;
 
-			var sourceDirectory = solutionDetails.RootSourceDirectory ?? solutionDetails.SolutionDirectory;
+			var sourceDirectory = (string.IsNullOrWhiteSpace(solutionDetails.RootSourceDirectory) ? solutionDetails.SolutionDirectory : solutionDetails.RootSourceDirectory);
 
 			if (System.IO.Directory.Exists(sourceDirectory))
 			{

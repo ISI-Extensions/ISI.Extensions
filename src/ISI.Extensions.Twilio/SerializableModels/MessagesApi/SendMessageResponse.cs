@@ -19,12 +19,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Telephony.CommunicationChannels
+namespace ISI.Extensions.Twilio.SerializableModels.MessagesApi
 {
-	public enum EmergencyStatus
+	[DataContract]
+	public class SendMessageResponse : Message
 	{
-		InActive,
-		Active,
 	}
 }

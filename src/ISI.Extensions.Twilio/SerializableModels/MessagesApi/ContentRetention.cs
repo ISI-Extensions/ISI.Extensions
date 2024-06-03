@@ -18,42 +18,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Telephony.DataTransferObjects.CommunicationChannelsApi
+namespace ISI.Extensions.Twilio.SerializableModels.MessagesApi
 {
-	public class AddIncomingPhoneNumberRequest
+	[DataContract]
+	public enum ContentRetention
 	{
-		public string OperationKey { get; set; }
-		public string RequestKey { get; set; }
-
-		public string PhoneNumber { get; set; }
-		public string PhoneNumberAccountKey { get; set; }
-		public string FriendlyName { get; set; }
-
-		public string TrunkKey { get; set; }
-
-		public bool? VoiceCallerIdLookup { get; set; }
-
-		public ISI.Extensions.Telephony.CommunicationChannels.IncomingCallReceiveMode? IncomingCallReceiveMode { get; set; }
-		public string IncomingCallApplicationKey { get; set; }
-
-		public string IncomingCallHandlerKey { get; set; }
-
-		public ISI.Extensions.HttpVerb? IncomingCallMethod { get; set; }
-		public string IncomingCallUrl { get; set; }
-
-		public ISI.Extensions.HttpVerb? IncomingCallFallbackMethod { get; set; }
-		public string IncomingCallFallbackUrl { get; set; }
-
-		public ISI.Extensions.HttpVerb? CallStatusUrlMethod { get; set; }
-		public string CallStatusUrl { get; set; }
-
-		public string IncomingMessageHandlerKey { get; set; }
-		public string IncomingMessageApplicationKey { get; set; }
-		public ISI.Extensions.HttpVerb? IncomingMessageMethod { get; set; }
-		public string IncomingMessageUrl { get; set; }
-
-		public ISI.Extensions.HttpVerb? IncomingMessageFallbackMethod { get; set; }
-		public string IncomingMessageFallbackUrl { get; set; }
+		[EnumMember(Value = "retain")] Retain,
 	}
 }

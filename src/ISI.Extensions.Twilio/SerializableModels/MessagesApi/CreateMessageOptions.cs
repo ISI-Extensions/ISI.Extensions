@@ -18,11 +18,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Telephony.DataTransferObjects.CommunicationChannelsApi
+namespace ISI.Extensions.Twilio.SerializableModels.MessagesApi
 {
-	public class DeleteIncomingPhoneNumberResponse
+	public class CreateMessageOptions
 	{
-		public bool Success { get; set; }
+		public string PathAccountSid { get; set; }
+		public string To { get; set; }
+		public string From { get; set; }
+		public string MessagingServiceSid { get; set; }
+		public string Body { get; set; }
+		public string[] MediaUrl { get; set; }
+		public string StatusCallback { get; set; }
+		public string ApplicationSid { get; set; }
+		public decimal? MaxPrice { get; set; }
+		public bool? ProvideFeedback { get; set; }
+		public int? Attempt { get; set; }
+		public int? ValidityPeriod { get; set; }
+		public bool? ForceDelivery { get; set; }
+		public ContentRetention ContentRetention { get; set; }
+		public AddressRetention AddressRetention { get; set; }
+		public bool? SmartEncoded { get; set; }
+		public string[] PersistentAction { get; set; }
 	}
 }

@@ -18,11 +18,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Twilio.DataTransferObjects.MessagesApi;
 
-namespace ISI.Extensions.Telephony.DataTransferObjects.CommunicationChannelsApi
+namespace ISI.Extensions.Twilio
 {
-	public partial class DeleteIncomingPhoneNumberRequest
+	public partial class MessagesApi
 	{
-		public string PhoneNumberKey { get; set; }
+		private static readonly string Version = ISI.Extensions.SystemInformation.GetAssemblyVersion(typeof(MessagesApi).Assembly);
+
+		protected ISI.Extensions.WebClient.HeaderCollection GetHeaders(DTOs.IRequest request)
+		{
+			var headers = new ISI.Extensions.WebClient.HeaderCollection();
+
+			headers.UserAgent = string.Format("ISI.Extensions.Twilio/{0}", Version);
+			headers.AddBasicAuthentication(request.AuthorizationKey, request.AuthorizationToken);
+
+			return headers;
+		}
 	}
 }

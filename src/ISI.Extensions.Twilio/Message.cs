@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,14 +15,25 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace ISI.Extensions.Telephony.DataTransferObjects.CommunicationChannelsApi
+namespace ISI.Extensions.Twilio
 {
-	public class AddIncomingPhoneNumberResponse
+	public class Message
 	{
-		public string PhoneNumberKey { get; set; }
+		public string AccountKey { get; set; }
+		public string MessageKey { get; set; }
+		public string From { get; set; }
+		public string To { get; set; }
+		public string Body { get; set; }
+		public int NumSegments { get; set; }
+		public int NumMedia { get; set; }
+		public ISI.Extensions.Telephony.Messages.MessageStatus? MessageStatus { get; set; }
+		public ISI.Extensions.Telephony.Messages.Direction? Direction { get; set; }
+		public string Price { get; set; }
+		public string Uri { get; set; }
+		public DateTime? CreatedDateTimeUtc { get; set; }
+		public DateTime? UpdatedDateTimeUtc { get; set; }
+		public DateTime? SentDateTimeUtc { get; set; }
 	}
 }

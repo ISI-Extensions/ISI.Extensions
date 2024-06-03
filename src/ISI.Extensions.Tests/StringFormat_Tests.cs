@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,30 +18,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NUnit.Framework;
 
-namespace ISI.Extensions.Telephony.DataTransferObjects.CommunicationChannelsApi
+namespace ISI.Extensions.Tests
 {
-	public abstract class AbstractFindAvailablePhoneNumbersRequest
+	[TestFixture]
+	public class StringFormat_Tests
 	{
-		public string AccountKey { get; set; }
-
-		public string IsoCountry { get; set; } = "US";
-		public ISI.Extensions.Telephony.CommunicationChannels.PhoneNumberType PhoneNumberType { get; set; } = ISI.Extensions.Telephony.CommunicationChannels.PhoneNumberType.Local;
-
-		public bool? SmsEnabled { get; set; }
-		public bool? MmsEnabled { get; set; }
-		public bool? VoiceEnabled { get; set; }
-		public bool? FaxEnabled { get; set; }
-		public bool? ExcludeAllAddressRequired { get; set; }
-		public bool? ExcludeLocalAddressRequired { get; set; }
-		public bool? ExcludeForeignAddressRequired { get; set; }
-
-		public bool? Beta { get; set; }
-
-		/// <summary>
-		/// A pattern to match phone numbers on. Valid characters are '*' and [0-9a-zA-Z]. The '*' character will match any single digit.
-		/// 
-		/// </summary>
-		public string Contains { get; set; }
+		[Test]
+		public void SplitCase_Test()
+		{
+			var xx = ISI.Extensions.StringFormat.SplitCase("MooseWasHere");
+		}
 	}
 }

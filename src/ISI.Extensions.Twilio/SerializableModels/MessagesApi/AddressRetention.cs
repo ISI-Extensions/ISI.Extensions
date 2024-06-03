@@ -18,18 +18,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DTOs = ISI.Extensions.Telephony.DataTransferObjects.CommunicationChannelsApi;
+using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Telephony.Extensions
+namespace ISI.Extensions.Twilio.SerializableModels.MessagesApi
 {
-	public static class CommunicationChannelsApiExtensions
+	[DataContract]
+	public enum AddressRetention
 	{
-		public static DTOs.DeleteIncomingPhoneNumberResponse DeleteIncomingPhoneNumber(this ISI.Extensions.Telephony.ICommunicationChannelsApi communicationChannelApi, string phoneNumberKey)
-		{
-			return communicationChannelApi.DeleteIncomingPhoneNumber(new()
-			{
-				PhoneNumberKey = phoneNumberKey,
-			});
-		}
+		[EnumMember(Value = "retain")] Retain,
 	}
 }

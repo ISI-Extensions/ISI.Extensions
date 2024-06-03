@@ -18,16 +18,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Runtime.Serialization;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Telephony.CommunicationChannels
+namespace ISI.Extensions.Twilio.DataTransferObjects.MessagesApi
 {
-	public enum AddressRequirement
+	public class SendMessageResponse
 	{
-		None,
-		Any,
-		Local,
-		Foreign,
+		public Message Message { get; set; }
+
+		public int? ErrorCode { get; set; }
+		public string ErrorMessage { get; set; }
 	}
 }

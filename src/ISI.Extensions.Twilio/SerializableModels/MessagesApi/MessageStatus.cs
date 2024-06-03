@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,15 +15,25 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Telephony.CommunicationChannels
+namespace ISI.Extensions.Twilio.SerializableModels.MessagesApi
 {
-	public enum Origin
+	[DataContract]
+	public enum MessageStatus
 	{
-		Twilio,
-		Hosted,
+		[EnumMember(Value = "queued")] Queued,
+		[EnumMember(Value = "sending")] Sending,
+		[EnumMember(Value = "sent")] Sent,
+		[EnumMember(Value = "failed")] Failed,
+		[EnumMember(Value = "delivered")] Delivered,
+		[EnumMember(Value = "undelivered")] Undelivered,
+		[EnumMember(Value = "receiving")] Receiving,
+		[EnumMember(Value = "received")] Received,
+		[EnumMember(Value = "accepted")] Accepted,
+		[EnumMember(Value = "scheduled")] Scheduled,
+		[EnumMember(Value = "read")] Read,
+		[EnumMember(Value = "partially_delivered")] PartiallyDelivered,
 	}
 }

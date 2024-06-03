@@ -18,20 +18,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Twilio.DataTransferObjects.MessagesApi;
 
-namespace ISI.Extensions.Telephony.DataTransferObjects.CommunicationChannelsApi
+namespace ISI.Extensions.Twilio
 {
-	public class FindAvailablePhoneNumbersNearLatitiudeLongitudeRequest : AbstractFindAvailablePhoneNumbersRequest
+	public partial class MessagesApi
 	{
-		/// <summary>
-		/// Given a latitude/longitude pair lat,long find geographically close numbers within Distance miles.
-		/// 
-		/// </summary>
-		public ISI.Extensions.LatitudeLongitude NearLatitudeLongitude { get; set; }
-
-		/// <summary>
-		/// Specifies the search radius for a Near- query in miles. If not specified this defaults to 25 miles.
-		/// </summary>
-		public int Distance { get; set; } = 25;
+		protected string GetUrl(string path)
+		{
+			return string.Format("{0}/{1}", "https://api.twilio.com/2010-04-01", path);
+		}
 	}
 }

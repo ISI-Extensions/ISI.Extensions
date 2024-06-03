@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,14 +15,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Telephony.DataTransferObjects.CommunicationChannelsApi
+namespace ISI.Extensions.Twilio.SerializableModels.MessagesApi
 {
-	public class FindAvailablePhoneNumbersResponse
+	[DataContract]
+	public enum Direction
 	{
-		public ISI.Extensions.Telephony.CommunicationChannels.AvailablePhoneNumber[] AvailablePhoneNumbers { get; set; }
+		[EnumMember(Value = "inbound")] Inbound,
+		[EnumMember(Value = "outbound-api")] OutboundApi,
+		[EnumMember(Value = "outbound-call")] OutboundCall,
+		[EnumMember(Value = "outbound-reply")] OutboundReply,
 	}
 }

@@ -30,9 +30,9 @@ namespace ISI.Extensions.Twilio
 		{
 			var response = new DTOs.SendMessageResponse();
 
-			var uri = new UriBuilder(GetUrl("Accounts/{accountKey}/Messages.json".Replace(new Dictionary<string, string>()
+			var uri = new UriBuilder(GetUrl("Accounts/{authorizationKey}/Messages.json".Replace(new Dictionary<string, string>()
 			{
-				{ "{accountKey}", request.AccountKey },
+				{ "{authorizationKey}", request.AuthorizationKey },
 			})));
 
 			var formData = new ISI.Extensions.WebClient.Rest.FormDataCollection();
@@ -48,11 +48,8 @@ namespace ISI.Extensions.Twilio
 			formData.ConditionalAdd(request.MaxPrice.HasValue, nameof(SerializableModelsDTOs.CreateMessageOptions.MaxPrice), () => string.Format("{0}", request.MaxPrice));
 			formData.ConditionalAdd(request.ProvideFeedback, nameof(SerializableModelsDTOs.CreateMessageOptions.ProvideFeedback), () => "true");
 			formData.ConditionalAdd(request.ValidityPeriodInSeconds.HasValue, nameof(SerializableModelsDTOs.CreateMessageOptions.ValidityPeriod), () => string.Format("{0}", request.ValidityPeriodInSeconds));
-			//formData.ConditionalAdd(!string.IsNullOrEmpty(request.MaxRate), nameof(SerializableModelsDTOs.CreateMessageOptions.MaxRate), () => request.MaxRate);
 			formData.ConditionalAdd(request.ForceDelivery, nameof(SerializableModelsDTOs.CreateMessageOptions.ForceDelivery), () => "true");
 			formData.ConditionalAdd(!string.IsNullOrEmpty(request.ProviderKey), nameof(SerializableModelsDTOs.CreateMessageOptions.PathAccountSid), () => request.ProviderKey);
-			//formData.ConditionalAdd(request.ContentRetention.HasValue, nameof(SerializableModelsDTOs.CreateMessageOptions.ContentRetention), () => ISI.Libraries.Enum<ISI.Wrappers.Twilio.SerializableEntities.Messaging.ContentRetention>.Abbreviation(ISI.Libraries.Enum<ISI.Wrappers.Twilio.SerializableEntities.Messaging.ContentRetention>.Convert(request.ContentRetention)));
-			//formData.ConditionalAdd(request.AddressRetention.HasValue, nameof(SerializableModelsDTOs.CreateMessageOptions.AddressRetention), () => ISI.Libraries.Enum<ISI.Wrappers.Twilio.SerializableEntities.Messaging.AddressRetention>.Abbreviation(ISI.Libraries.Enum<ISI.Wrappers.Twilio.SerializableEntities.Messaging.AddressRetention>.Convert(request.AddressRetention)));
 			formData.ConditionalAdd(request.SmartEncoded, nameof(SerializableModelsDTOs.CreateMessageOptions.SmartEncoded), () => "true");
 
 			var serviceResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<ISI.Extensions.WebClient.Rest.FormDataCollection, SerializableModelsDTOs.SendMessageResponse>(uri.Uri, GetHeaders(request), formData, true);

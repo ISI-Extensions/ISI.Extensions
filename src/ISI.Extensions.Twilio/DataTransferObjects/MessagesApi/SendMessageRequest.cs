@@ -12,8 +12,6 @@ namespace ISI.Extensions.Twilio.DataTransferObjects.MessagesApi
 		public string AuthorizationKey { get; set; }
 		public string AuthorizationToken { get; set; }
 
-		public string AccountKey { get; set; }
-
 		public string From { get; set; }
 		public string To { get; set; }
 		public string Body { get; set; }

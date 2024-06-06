@@ -161,7 +161,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.VisualStudio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.VisualStudioCode.Forms.Tests", "ISI.Extensions.VisualStudioCode.Forms.Tests\ISI.Extensions.VisualStudioCode.Forms.Tests.csproj", "{DEAF621E-F656-43DF-8274-27ED7364F0F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.Twilio", "ISI.Extensions.Twilio\ISI.Extensions.Twilio.csproj", "{6B9A57A3-02B6-48DD-8095-AB7E2C77F3E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Twilio", "ISI.Extensions.Twilio\ISI.Extensions.Twilio.csproj", "{6B9A57A3-02B6-48DD-8095-AB7E2C77F3E7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

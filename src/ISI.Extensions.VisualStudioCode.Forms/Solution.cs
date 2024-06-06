@@ -369,7 +369,7 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 
 			if (highlighted)
 			{
-				Panel.BackColor = (ISI.Extensions.WinForms.ThemeHelper.IsDarkTheme ? System.Drawing.Color.LightSlateGray : System.Drawing.Color.LightSkyBlue);
+				Panel.Tag = ISI.Extensions.WinForms.ThemeHelper.IsHighlighted;
 			}
 
 			CheckBox = new()

@@ -25,16 +25,17 @@ namespace ISI.Extensions.WinForms
 	{
 		public static bool IsDarkTheme => Dark.Net.DarkNet.Instance.EffectiveCurrentProcessThemeIsDark;
 
+		public const string IsHighlighted = nameof(IsHighlighted);
+
 		public static (System.Drawing.Color BackColor, System.Drawing.Color ForeColor) GetColors(System.Windows.Forms.Control control)
 		{
-			switch (control)
+			if(string.Equals(control.Tag as string ?? string.Empty, IsHighlighted))
 			{
-				case System.Windows.Forms.Label label:
-					return (BackColor: (IsDarkTheme ? System.Drawing.Color.FromArgb(25, 25, 25) : System.Drawing.SystemColors.Window), ForeColor: (IsDarkTheme ? System.Drawing.Color.White : System.Drawing.SystemColors.WindowText));
+				return (BackColor: (IsDarkTheme ? System.Drawing.Color.LightSlateGray : System.Drawing.Color.LightSkyBlue), ForeColor: (IsDarkTheme ? System.Drawing.Color.White : System.Drawing.SystemColors.WindowText));
 
-				default:
-					return (BackColor: (IsDarkTheme ? System.Drawing.Color.FromArgb(25, 25, 25) : System.Drawing.SystemColors.Window), ForeColor: (IsDarkTheme ? System.Drawing.Color.White : System.Drawing.SystemColors.WindowText));
 			}
+
+			return (BackColor: (IsDarkTheme ? System.Drawing.Color.FromArgb(25, 25, 25) : System.Drawing.SystemColors.Window), ForeColor: (IsDarkTheme ? System.Drawing.Color.White : System.Drawing.SystemColors.WindowText));
 		}
 
 		public static void SyncTheme(System.Windows.Forms.Form form)

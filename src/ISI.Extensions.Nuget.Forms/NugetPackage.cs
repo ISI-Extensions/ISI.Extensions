@@ -58,7 +58,7 @@ namespace ISI.Extensions.Nuget.Forms
 		{
 			if (highlighted)
 			{
-				Panel.BackColor = System.Drawing.Color.LightSkyBlue;
+				Panel.Tag = ISI.Extensions.WinForms.ThemeHelper.IsHighlighted;
 			}
 
 			CheckBox = new()

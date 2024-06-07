@@ -27,11 +27,11 @@ namespace ISI.Extensions
 		{
 			portReservations ??= new Dictionary<string, int>(StringComparer.InvariantCultureIgnoreCase);
 
-			var fullName = GetPortReservationsFullName(portReservationsFullName);
+			portReservationsFullName = GetPortReservationsFullName(portReservationsFullName);
 
-			if (System.IO.File.Exists(fullName))
+			if (System.IO.File.Exists(portReservationsFullName))
 			{
-				System.IO.File.Delete(fullName);
+				System.IO.File.Delete(portReservationsFullName);
 			}
 
 			System.IO.File.WriteAllLines(portReservationsFullName, portReservations.Select(keyValue => $"{keyValue.Key}\t{keyValue.Value}"));

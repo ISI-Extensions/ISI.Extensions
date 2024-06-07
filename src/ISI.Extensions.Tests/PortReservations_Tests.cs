@@ -67,11 +67,57 @@ namespace ISI.Extensions.Tests
 			{
 				profilesJsonNode[portReservation.Key]["applicationUrl"] = $"{portReservation.Value.Schema}://localhost:{portReservation.Value.Port + 1}";
 			}
-			
+
 			Console.WriteLine(launchSettingsJsonNode.ToJsonString(new System.Text.Json.JsonSerializerOptions()
 			{
 				WriteIndented = true,
 			}));
+		}
+
+		[Test]
+		public void CheckProjectPortReservations_Test()
+		{
+			var fullName = @"F:\ISI\Internal Projects\ISI.Telephony.ServiceApplication\src\ISI.Telephony.ServiceApplication\ISI.Telephony.ServiceApplication.csproj";
+
+			var projectName = System.IO.Path.GetFileNameWithoutExtension(fullName);
+
+			var launchSettingsJsonFullName = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(fullName), "Properties", "launchSettings.json");
+
+			if (System.IO.File.Exists(launchSettingsJsonFullName))
+			{
+				var launchSettingsJsonNode = System.Text.Json.Nodes.JsonNode.Parse(System.IO.File.ReadAllText(launchSettingsJsonFullName));
+
+				var profilesJsonNode = launchSettingsJsonNode["profiles"];
+
+				if (profilesJsonNode != null)
+				{
+					var launchSettingJsonNode = profilesJsonNode[projectName];
+
+					if (launchSettingJsonNode != null)
+					{
+						var applicationUrlJsonNode = launchSettingJsonNode["applicationUrl"];
+
+						if (applicationUrlJsonNode != null)
+						{
+							var applicationUri = new UriBuilder(applicationUrlJsonNode.GetValue<string>());
+
+							if (!ISI.Extensions.PortReservations.TrySetPortReservations(projectName, applicationUri.Port))
+							{
+								var port = ISI.Extensions.PortReservations.GetNewPortReservation(projectName);
+
+								applicationUri.Port = port;
+
+								launchSettingJsonNode["applicationUrl"] = applicationUri.Uri.ToString();
+
+								System.IO.File.WriteAllText(launchSettingsJsonFullName, launchSettingsJsonNode.ToJsonString(new System.Text.Json.JsonSerializerOptions()
+								{
+									WriteIndented = true,
+								}));
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 }

@@ -30,11 +30,10 @@
 	<blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
 	<triggers/>
 	<concurrentBuild>false</concurrentBuild>
-	<customWorkspace>E:\${JOB_NAME}</customWorkspace>
+	<customWorkspace>F:\${JOB_NAME}</customWorkspace>
 	<builders>
 		<hudson.tasks.BatchFile>
-			<command>cd src&#13;
-dotnet cake --Target=Default</command>
+			<command>dotnet cake --Target=Default</command>
 			<configuredLocalRules/>
 		</hudson.tasks.BatchFile>
 	</builders>

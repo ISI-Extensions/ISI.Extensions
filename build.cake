@@ -12,10 +12,10 @@ var settings = GetSettings(settingsFullName);
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
 
-var solutionPath = File("./ISI.Extensions.sln");
+var solutionPath = File("./src/ISI.Extensions.sln");
 var solution = ParseSolution(solutionPath);
 
-var assemblyVersionFile = File("./ISI.Extensions.Version.cs");
+var assemblyVersionFile = File("./src/ISI.Extensions.Version.cs");
 
 var buildDateTime = DateTime.UtcNow;
 var buildDateTimeStamp = GetDateTimeStamp(buildDateTime);
@@ -23,7 +23,7 @@ var buildRevision = GetBuildRevision(buildDateTime);
 var assemblyVersion = GetAssemblyVersion(ParseAssemblyInfo(assemblyVersionFile).AssemblyVersion, buildRevision);
 Information("AssemblyVersion: {0}", assemblyVersion);
 
-var nugetPackOutputDirectory = Argument("NugetPackOutputDirectory", System.IO.Path.GetFullPath("../Nuget"));
+var nugetPackOutputDirectory = Argument("NugetPackOutputDirectory", System.IO.Path.GetFullPath("./Nuget"));
 
 Task("GetVersion")
 	.Does(() =>

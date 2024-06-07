@@ -40,7 +40,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Tests", "ISI
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{5E2AEF11-B578-4316-8285-E91B89B83014}"
 	ProjectSection(SolutionItems) = preProject
-		build.cake = build.cake
+		..\build.cake = ..\build.cake
+		..\jenkins\ISI.Extensions.Build.jenkinsConfig = ..\jenkins\ISI.Extensions.Build.jenkinsConfig
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Extensions.Cake", "ISI.Extensions.Cake\ISI.Extensions.Cake.csproj", "{FB861B75-7B2D-4D3F-93FC-87E2667A516C}"
@@ -803,8 +804,7 @@ Global
 		SolutionGuid = {62A1D168-E856-4549-B190-6143E2B16B1B}
 	EndGlobalSection
 EndGlobal
-g|Any CPU.ActiveCfg = Debug|Any CPU
-		{731E846B-27C2-4613-9E92-25242969A75F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+.0 = Debug|Any CPU
 		{731E846B-27C2-4613-9E92-25242969A75F}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{731E846B-27C2-4613-9E92-25242969A75F}.Debug|x64.Build.0 = Debug|Any CPU
 		{731E846B-27C2-4613-9E92-25242969A75F}.Release|Any CPU.ActiveCfg = Release|Any CPU

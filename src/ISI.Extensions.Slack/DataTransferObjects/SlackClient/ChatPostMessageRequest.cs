@@ -23,7 +23,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Slack.DataTransferObjects.SlackClient
 {
-	public partial class ChatPostMessageRequest : IHasBearerToken
+	public class ChatPostMessageRequest : IHasBearerToken
 	{
 		public string BearerToken { get; set; }
 

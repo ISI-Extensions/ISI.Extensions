@@ -20,9 +20,25 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Slack.DataTransferObjects.SlackClient
+namespace ISI.Extensions
 {
-	public class ChatPostMessageResponse
+	public partial class PortReservations 
 	{
+		private static string GetPortReservationsFullName(string portReservationsFullName = null)
+		{
+			portReservationsFullName = (string.IsNullOrWhiteSpace(portReservationsFullName) ? @"FileNameDeMasked:{ApplicationData}\ISI.Extensions\portReservations.tab" : portReservationsFullName);
+
+			if (!string.IsNullOrWhiteSpace(portReservationsFullName) && portReservationsFullName.StartsWith(ISI.Extensions.ConfigurationValueReaders.FileNameDeMaskedConfigurationValueReader.PrefixWithColon, StringComparison.InvariantCultureIgnoreCase))
+			{
+				portReservationsFullName = ISI.Extensions.IO.Path.GetFileNameDeMasked(portReservationsFullName.TrimStart(ISI.Extensions.ConfigurationValueReaders.FileNameDeMaskedConfigurationValueReader.PrefixWithColon));
+			}
+
+			if (!string.IsNullOrWhiteSpace(portReservationsFullName))
+			{
+				System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(portReservationsFullName));
+			}
+
+			return portReservationsFullName;
+		}
 	}
 }

@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -17,12 +17,40 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Slack.DataTransferObjects.SlackClient
+namespace ISI.Extensions
 {
-	public class ChatPostMessageResponse
+	public partial class PortReservations
 	{
+		public static int GetNewPortReservation(string reservationName, string portReservationsFullName = null)
+		{
+			var portReservations = GetPortReservations(portReservationsFullName);
+
+			if (portReservations.TryGetValue(reservationName, out var reservedPort))
+			{
+				return reservedPort;
+			}
+
+			var port = 15000;
+
+			if (portReservations.Any())
+			{
+				var ports = new HashSet<int>(portReservations.Values);
+
+				port = ports.Min() + 1;
+
+				while (ports.Contains(port))
+				{
+					port++;
+				}
+			}
+
+			portReservations.Add(reservationName, port);
+
+			SetPortReservations(portReservations, portReservationsFullName);
+
+			return port;
+		}
 	}
 }

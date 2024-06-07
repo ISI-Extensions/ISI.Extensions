@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 using NUnit.Framework;
 
 namespace ISI.Extensions.Tests
@@ -77,7 +78,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void CheckProjectPortReservations_Test()
 		{
-			var fullName = @"F:\ISI\Internal Projects\ISI.Telephony.ServiceApplication\src\ISI.Telephony.ServiceApplication\ISI.Telephony.ServiceApplication.csproj";
+			var fullName = @"F:\ISI\Internal Projects\ISI.Extensions\src\ISI.Extensions.AspNetCore.Tests\ISI.Extensions.AspNetCore.Tests.csproj";
 
 			var projectName = System.IO.Path.GetFileNameWithoutExtension(fullName);
 
@@ -99,15 +100,20 @@ namespace ISI.Extensions.Tests
 
 						if (applicationUrlJsonNode != null)
 						{
-							var applicationUri = new UriBuilder(applicationUrlJsonNode.GetValue<string>());
+							var applicationUris = applicationUrlJsonNode.GetValue<string>().Split(new[] { ';' }).ToNullCheckedArray(applicationUrl => new UriBuilder(applicationUrl));
 
-							if (!ISI.Extensions.PortReservations.TrySetPortReservations(projectName, applicationUri.Port))
+							var trySetPortReservationsResponse = ISI.Extensions.PortReservations.TrySetPortReservations(projectName, applicationUris.ToNullCheckedArray(applicationUri => applicationUri.Port));
+
+							if (!trySetPortReservationsResponse.Success)
 							{
-								var port = ISI.Extensions.PortReservations.GetNewPortReservation(projectName);
+								foreach (var applicationUri in applicationUris.Where(applicationUri => trySetPortReservationsResponse.UsedPorts.Contains(applicationUri.Port)))
+								{
+									var port = ISI.Extensions.PortReservations.GetNewPortReservation(projectName);
 
-								applicationUri.Port = port;
+									applicationUri.Port = port;
+								}
 
-								launchSettingJsonNode["applicationUrl"] = applicationUri.Uri.ToString();
+								launchSettingJsonNode["applicationUrl"] = string.Join(";", applicationUris.Select(applicationUri => applicationUri.Uri.ToString()));
 
 								System.IO.File.WriteAllText(launchSettingsJsonFullName, launchSettingsJsonNode.ToJsonString(new System.Text.Json.JsonSerializerOptions()
 								{

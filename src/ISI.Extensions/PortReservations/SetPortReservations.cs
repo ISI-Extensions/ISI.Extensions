@@ -23,9 +23,9 @@ namespace ISI.Extensions
 {
 	public partial class PortReservations
 	{
-		public static void SetPortReservations(IDictionary<string, int> portReservations, string portReservationsFullName = null)
+		public static void SetPortReservations(IDictionary<string, int[]> portReservations, string portReservationsFullName = null)
 		{
-			portReservations ??= new Dictionary<string, int>(StringComparer.InvariantCultureIgnoreCase);
+			portReservations ??= new Dictionary<string, int[]>(StringComparer.InvariantCultureIgnoreCase);
 
 			portReservationsFullName = GetPortReservationsFullName(portReservationsFullName);
 
@@ -34,7 +34,7 @@ namespace ISI.Extensions
 				System.IO.File.Delete(portReservationsFullName);
 			}
 
-			System.IO.File.WriteAllLines(portReservationsFullName, portReservations.Select(keyValue => $"{keyValue.Key}\t{keyValue.Value}"));
+			System.IO.File.WriteAllLines(portReservationsFullName, portReservations.Select(keyValue => $"{keyValue.Key}\t{string.Join(";", keyValue.Value)}"));
 		}
 	}
 }

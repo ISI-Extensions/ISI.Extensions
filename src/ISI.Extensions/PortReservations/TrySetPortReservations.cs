@@ -23,32 +23,43 @@ namespace ISI.Extensions
 {
 	public partial class PortReservations
 	{
-		public static bool TrySetPortReservations(string reservationName, int port, string portReservationsFullName = null)
+		public static (bool Success, int[] UsedPorts) TrySetPortReservations(string reservationName, int[] ports, string portReservationsFullName = null)
 		{
 			var portReservations = GetPortReservations(portReservationsFullName);
 
-			if (portReservations.TryGetValue(reservationName, out var reservedPort))
-			{
-				if (reservedPort != port)
-				{
-					portReservations[reservationName] = port;
+			var existingPorts = new HashSet<int>(portReservations.Where(portReservation => !string.Equals(portReservation.Key, reservationName, StringComparison.InvariantCultureIgnoreCase)).SelectMany(portReservation => portReservation.Value));
 
-					SetPortReservations(portReservations, portReservationsFullName);
+			var usedPorts = ports.Where(existingPorts.Contains).ToArray();
+
+			if (portReservations.TryGetValue(reservationName, out var reservedPorts))
+			{
+				if (reservedPorts.All(ports.Contains) && ports.All(reservedPorts.Contains))
+				{
+					return (Success: true, UsedPorts: null);
 				}
 
-				return true;
+				if (!usedPorts.Any())
+				{
+					portReservations[reservationName] = ports;
+
+					SetPortReservations(portReservations, portReservationsFullName);
+
+					return (Success: true, UsedPorts: null);
+				}
+
+				return (Success: false, UsedPorts: usedPorts);
 			}
 
-			if (portReservations.Any(portReservation => portReservation.Value == port))
+			if (usedPorts.Any())
 			{
-				return false;
+				return (Success: false, UsedPorts: usedPorts);
 			}
 
-			portReservations.Add(reservationName, port);
+			portReservations.Add(reservationName, ports);
 
 			SetPortReservations(portReservations, portReservationsFullName);
 
-			return true;
+			return (Success: true, UsedPorts: null);
 		}
 	}
 }

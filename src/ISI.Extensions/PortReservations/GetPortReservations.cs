@@ -23,9 +23,9 @@ namespace ISI.Extensions
 {
 	public partial class PortReservations
 	{
-		public static IDictionary<string, int> GetPortReservations(string portReservationsFullName = null)
+		public static IDictionary<string, int[]> GetPortReservations(string portReservationsFullName = null)
 		{
-			var portReservations = new Dictionary<string, int>(StringComparer.InvariantCultureIgnoreCase);
+			var portReservations = new Dictionary<string, int[]>(StringComparer.InvariantCultureIgnoreCase);
 
 			var fullName = GetPortReservationsFullName(portReservationsFullName);
 
@@ -42,7 +42,7 @@ namespace ISI.Extensions
 							throw new Exception($"Cannot parse line \"{line}\"");
 						}
 
-						portReservations.Add(lineParts.First(), lineParts.Last().ToInt());
+						portReservations.Add(lineParts.First(), lineParts.Last().Split(new []{';'}).ToNullCheckedArray(port => port.ToInt()));
 					}
 				}
 			}

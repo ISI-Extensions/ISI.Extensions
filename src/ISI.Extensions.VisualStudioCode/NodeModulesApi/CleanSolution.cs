@@ -51,7 +51,19 @@ namespace ISI.Extensions.VisualStudioCode
 
 				foreach (var fileInfo in directoryInfo.GetFiles())
 				{
-					fileInfo.IsReadOnly = false;
+					try
+					{
+						if (fileInfo.IsReadOnly)
+						{
+							fileInfo.IsReadOnly = false;
+						}
+
+						fileInfo.Delete();
+					}
+					catch (Exception exception)
+					{
+						Console.WriteLine($"Could not clear readOnly on {fileInfo.FullName}");
+					}
 				}  
 	
 				directoryInfo.Delete(true);  

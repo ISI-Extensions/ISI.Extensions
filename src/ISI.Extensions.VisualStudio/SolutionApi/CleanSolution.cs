@@ -52,7 +52,19 @@ namespace ISI.Extensions.VisualStudio
 
 				foreach (var fileInfo in directoryInfo.GetFiles())
 				{
-					fileInfo.IsReadOnly = false;
+					try
+					{
+						if (fileInfo.IsReadOnly)
+						{
+							fileInfo.IsReadOnly = false;
+						}
+
+						fileInfo.Delete();
+					}
+					catch (Exception exception)
+					{
+						Console.WriteLine($"Could not clear readOnly on {fileInfo.FullName}");
+					}
 				}
 
 				directoryInfo.Delete(true);
@@ -80,13 +92,15 @@ namespace ISI.Extensions.VisualStudio
 						{
 							deleteDirectory(System.IO.Path.Combine(solutionSourceDirectory, "_ReSharper.Caches"));
 
+							deleteDirectory(System.IO.Path.Combine(solutionSourceDirectory, "packages"));
+
 							deleteDirectory(System.IO.Path.Combine(solutionSourceDirectory, "tools"));
 
 							deleteDirectory(System.IO.Path.Combine(solutionSourceDirectory, "..", "tools"));
 
 							var projectFileNames = ProjectFileNamesFromSolutionFullName(solutionFileName, true);
 
-							var usedPackages = new HashSet<string>();
+							//var usedPackages = new HashSet<string>();
 
 							foreach (var projectFileName in projectFileNames.Where(System.IO.File.Exists))
 							{
@@ -118,52 +132,52 @@ namespace ISI.Extensions.VisualStudio
 								}
 
 
-								var packageFileName = System.IO.Path.Combine(projectDirectory, "packages.config");
-								if (System.IO.File.Exists(packageFileName))
-								{
-									foreach (var line in System.IO.File.ReadAllLines(packageFileName))
-									{
-										if (line.Trim().StartsWith("<package ", StringComparison.InvariantCultureIgnoreCase))
-										{
-											var keyValues = line.Replace("<package ", string.Empty).Replace("/>", string.Empty).Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Select(item => item.Split(new[] { "=\"", "\"" }, StringSplitOptions.None)).ToDictionary(item => item[0], item => item[1], StringComparer.InvariantCultureIgnoreCase);
+								//var packageFileName = System.IO.Path.Combine(projectDirectory, "packages.config");
+								//if (System.IO.File.Exists(packageFileName))
+								//{
+								//	foreach (var line in System.IO.File.ReadAllLines(packageFileName))
+								//	{
+								//		if (line.Trim().StartsWith("<package ", StringComparison.InvariantCultureIgnoreCase))
+								//		{
+								//			var keyValues = line.Replace("<package ", string.Empty).Replace("/>", string.Empty).Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Select(item => item.Split(new[] { "=\"", "\"" }, StringSplitOptions.None)).ToDictionary(item => item[0], item => item[1], StringComparer.InvariantCultureIgnoreCase);
 
-											try
-											{
-												var package = keyValues["id"];
-												var version = keyValues["version"];
+								//			try
+								//			{
+								//				var package = keyValues["id"];
+								//				var version = keyValues["version"];
 
-												usedPackages.Add(string.Format("{0}.{1}", package, version));
-											}
-											catch (Exception exception)
-											{
+								//				usedPackages.Add(string.Format("{0}.{1}", package, version));
+								//			}
+								//			catch (Exception exception)
+								//			{
 
-											}
-										}
-									}
-								}
+								//			}
+								//		}
+								//	}
+								//}
 							}
 
-							var packagesDirectory = System.IO.Path.Combine(solutionSourceDirectory, "packages");
+							//var packagesDirectory = System.IO.Path.Combine(solutionSourceDirectory, "packages");
 
-							if (System.IO.Directory.Exists(packagesDirectory))
-							{
-								foreach (var packageDirectory in System.IO.Directory.GetDirectories(packagesDirectory))
-								{
-									var package = packageDirectory.Split(new[] { '\\' }).Last();
+							//if (System.IO.Directory.Exists(packagesDirectory))
+							//{
+							//	foreach (var packageDirectory in System.IO.Directory.GetDirectories(packagesDirectory))
+							//	{
+							//		var package = packageDirectory.Split(new[] { '\\' }).Last();
 
-									if (!usedPackages.Contains(package))
-									{
-										try
-										{
-											deleteDirectory(packageDirectory);
-										}
-										catch (Exception exception)
-										{
-											throw new Exception($"Could not delete \"{packageDirectory}\"", exception);
-										}
-									}
-								}
-							}
+							//		if (!usedPackages.Contains(package))
+							//		{
+							//			try
+							//			{
+							//				deleteDirectory(packageDirectory);
+							//			}
+							//			catch (Exception exception)
+							//			{
+							//				throw new Exception($"Could not delete \"{packageDirectory}\"", exception);
+							//			}
+							//		}
+							//	}
+							//}
 						}
 					}
 				}

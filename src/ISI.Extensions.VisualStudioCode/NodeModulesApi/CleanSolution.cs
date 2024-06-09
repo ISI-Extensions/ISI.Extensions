@@ -35,6 +35,28 @@ namespace ISI.Extensions.VisualStudioCode
 				Success = true,
 			};
 
+			void deleteDirectory(string directory)
+			{
+				DeleteFolderRecursive(new System.IO.DirectoryInfo(directory));
+			}
+
+			void DeleteFolderRecursive(System.IO.DirectoryInfo directoryInfo)  
+			{  
+				directoryInfo.Attributes = System.IO.FileAttributes.Normal;
+
+				foreach (var childDirectoryInfo in directoryInfo.GetDirectories())
+				{
+					DeleteFolderRecursive(childDirectoryInfo);
+				}
+
+				foreach (var fileInfo in directoryInfo.GetFiles())
+				{
+					fileInfo.IsReadOnly = false;
+				}  
+	
+				directoryInfo.Delete(true);  
+			}  
+			
 			try
 			{
 				var solutionSourceDirectory = SolutionApi.GetSolutionDetails(new()
@@ -48,15 +70,16 @@ namespace ISI.Extensions.VisualStudioCode
 
 					if (System.IO.Directory.Exists(nodeModulesDirectory))
 					{
-						var processResponse = ISI.Extensions.Process.WaitForProcessResponse(new Process.ProcessRequest()
-						{
-							ProcessExeFullName = @"cmd.exe",
-							Arguments = new[] { "/c", "rmdir", "/S", "/Q", "node_modules", },
-							WorkingDirectory = solutionSourceDirectory,
-							Logger = logger,
-						});
+						deleteDirectory(nodeModulesDirectory);
+						//var processResponse = ISI.Extensions.Process.WaitForProcessResponse(new Process.ProcessRequest()
+						//{
+						//	ProcessExeFullName = @"cmd.exe",
+						//	Arguments = new[] { "/c", "rmdir", "/S", "/Q", "node_modules", },
+						//	WorkingDirectory = solutionSourceDirectory,
+						//	Logger = logger,
+						//});
 
-						response.Success = !processResponse.Errored;
+						//response.Success = !processResponse.Errored;
 					}
 				}
 			}

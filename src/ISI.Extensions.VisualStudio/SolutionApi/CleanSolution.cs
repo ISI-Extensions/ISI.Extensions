@@ -35,11 +35,14 @@ namespace ISI.Extensions.VisualStudio
 
 			void deleteDirectory(string directory)
 			{
-				DeleteFolderRecursive(new System.IO.DirectoryInfo(directory));
+				if (System.IO.Directory.Exists(directory))
+				{
+					DeleteFolderRecursive(new System.IO.DirectoryInfo(directory));
+				}
 			}
 
-			void DeleteFolderRecursive(System.IO.DirectoryInfo directoryInfo)  
-			{  
+			void DeleteFolderRecursive(System.IO.DirectoryInfo directoryInfo)
+			{
 				directoryInfo.Attributes = System.IO.FileAttributes.Normal;
 
 				foreach (var childDirectoryInfo in directoryInfo.GetDirectories())
@@ -50,11 +53,11 @@ namespace ISI.Extensions.VisualStudio
 				foreach (var fileInfo in directoryInfo.GetFiles())
 				{
 					fileInfo.IsReadOnly = false;
-				}  
-	
-				directoryInfo.Delete(true);  
-			}  
-			
+				}
+
+				directoryInfo.Delete(true);
+			}
+
 			try
 			{
 				var solutionSourceDirectory = GetSolutionDetails(new()
@@ -75,12 +78,11 @@ namespace ISI.Extensions.VisualStudio
 
 						if (!string.IsNullOrEmpty(solutionFileName))
 						{
-							var resharperCacheDirectory = System.IO.Path.Combine(solutionSourceDirectory, "_ReSharper.Caches");
+							deleteDirectory(System.IO.Path.Combine(solutionSourceDirectory, "_ReSharper.Caches"));
 
-							if (System.IO.Directory.Exists(resharperCacheDirectory))
-							{
-								deleteDirectory(resharperCacheDirectory);
-							}
+							deleteDirectory(System.IO.Path.Combine(solutionSourceDirectory, "tools"));
+
+							deleteDirectory(System.IO.Path.Combine(solutionSourceDirectory, "..", "tools"));
 
 							var projectFileNames = ProjectFileNamesFromSolutionFullName(solutionFileName, true);
 
@@ -92,17 +94,9 @@ namespace ISI.Extensions.VisualStudio
 
 								var projectDirectory = System.IO.Path.GetDirectoryName(projectFileName);
 
-								var binDirectory = System.IO.Path.Combine(projectDirectory, "bin");
-								if (System.IO.Directory.Exists(binDirectory))
-								{
-									deleteDirectory(binDirectory);
-								}
+								deleteDirectory(System.IO.Path.Combine(projectDirectory, "bin"));
 
-								var objDirectory = System.IO.Path.Combine(projectDirectory, "obj");
-								if (System.IO.Directory.Exists(objDirectory))
-								{
-									deleteDirectory(objDirectory);
-								}
+								deleteDirectory(System.IO.Path.Combine(projectDirectory, "obj"));
 
 								if (projectContentLines.Any(line => line.IndexOf("ISI.Libraries.ClearScript.dll", StringComparison.InvariantCultureIgnoreCase) >= 0))
 								{

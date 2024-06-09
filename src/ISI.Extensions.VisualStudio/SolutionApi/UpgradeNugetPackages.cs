@@ -439,6 +439,8 @@ namespace ISI.Extensions.VisualStudio
 									Solution = solutionDetails.SolutionFullName,
 									MSBuildExe = MSBuildApi.GetMSBuildExeFullName(new()).MSBuildExeFullName,
 
+									UsePackagesDirectory = solutionDetails.UsePackagesDirectory,
+
 									AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
 								});
 

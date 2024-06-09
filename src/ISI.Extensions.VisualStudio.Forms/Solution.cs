@@ -301,6 +301,8 @@ namespace ISI.Extensions.VisualStudio.Forms
 						Solution = SolutionDetails.SolutionFullName,
 						MSBuildExe = MSBuildApi.GetMSBuildExeFullName(new()).MSBuildExeFullName,
 
+						UsePackagesDirectory = SolutionDetails.UsePackagesDirectory,
+
 						AddToLog = (logEntryLevel, description) =>
 						{
 							UpdateStatus(description);

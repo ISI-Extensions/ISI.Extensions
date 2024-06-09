@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,7 +71,19 @@ namespace ISI.Extensions.Nuget
 				target = request.Solution;
 			}
 
-			var arguments = string.Format("restore \"{0}\" -NoHttpCache -PackagesDirectory \"{1}\" -NonInteractive -MSBuildPath \"{2}\"", target, System.IO.Path.Combine(solutionDirectory, "packages"), System.IO.Path.GetDirectoryName(request.MSBuildExe));
+			var arguments = new List<string>();
+			arguments.Add("restore");
+			arguments.Add($"\"{target}\"");
+			if (request.UsePackagesDirectory)
+			{
+				arguments.Add($"-PackagesDirectory \"{System.IO.Path.Combine(solutionDirectory, "packages")}\"");
+			}
+			//arguments.Add("-NoHttpCache");
+			arguments.Add("-NonInteractive");
+			if(!string.IsNullOrWhiteSpace(request.MSBuildExe) && System.IO.File.Exists(request.MSBuildExe))
+			{
+				arguments.Add($"-MSBuildPath \"{System.IO.Path.GetDirectoryName(request.MSBuildExe)}\"");
+			}
 
 			var nugetExeFullName = GetNugetExeFullName(new()).NugetExeFullName;
 
@@ -79,7 +91,7 @@ namespace ISI.Extensions.Nuget
 			{
 				Logger = new AddToLogLogger(request.AddToLog, Logger),
 				ProcessExeFullName = nugetExeFullName,
-				Arguments = new[] { arguments },
+				Arguments = arguments,
 			}).Errored;
 
 			return response;

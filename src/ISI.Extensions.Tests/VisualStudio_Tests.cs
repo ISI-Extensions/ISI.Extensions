@@ -154,6 +154,24 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void CleanSolution_Test()
+		{
+			var logger = ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();
+			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
+
+			var solutionFullNames = new List<string>();
+			solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.AcmeAgent.WindowsService\");
+
+			foreach (var solutionFullName in solutionFullNames)
+			{
+				solutionApi.CleanSolution(new()
+				{
+					Solution = solutionFullName,
+				});
+			}
+		}
+
+		[Test]
 		public void GetUsedVisualStudioPackages_Test()
 		{
 			var logger = ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();

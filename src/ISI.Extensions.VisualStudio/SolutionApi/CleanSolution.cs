@@ -33,6 +33,28 @@ namespace ISI.Extensions.VisualStudio
 
 			var response = new DTOs.CleanSolutionResponse();
 
+			void deleteDirectory(string directory)
+			{
+				DeleteFolderRecursive(new System.IO.DirectoryInfo(directory));
+			}
+
+			void DeleteFolderRecursive(System.IO.DirectoryInfo directoryInfo)  
+			{  
+				directoryInfo.Attributes = System.IO.FileAttributes.Normal;
+
+				foreach (var childDirectoryInfo in directoryInfo.GetDirectories())
+				{
+					DeleteFolderRecursive(childDirectoryInfo);
+				}
+
+				foreach (var fileInfo in directoryInfo.GetFiles())
+				{
+					fileInfo.IsReadOnly = false;
+				}  
+	
+				directoryInfo.Delete(true);  
+			}  
+			
 			try
 			{
 				var solutionSourceDirectory = GetSolutionDetails(new()
@@ -57,7 +79,7 @@ namespace ISI.Extensions.VisualStudio
 
 							if (System.IO.Directory.Exists(resharperCacheDirectory))
 							{
-								System.IO.Directory.Delete(resharperCacheDirectory, true);
+								deleteDirectory(resharperCacheDirectory);
 							}
 
 							var projectFileNames = ProjectFileNamesFromSolutionFullName(solutionFileName, true);
@@ -73,13 +95,13 @@ namespace ISI.Extensions.VisualStudio
 								var binDirectory = System.IO.Path.Combine(projectDirectory, "bin");
 								if (System.IO.Directory.Exists(binDirectory))
 								{
-									System.IO.Directory.Delete(binDirectory, true);
+									deleteDirectory(binDirectory);
 								}
 
 								var objDirectory = System.IO.Path.Combine(projectDirectory, "obj");
 								if (System.IO.Directory.Exists(objDirectory))
 								{
-									System.IO.Directory.Delete(objDirectory, true);
+									deleteDirectory(objDirectory);
 								}
 
 								if (projectContentLines.Any(line => line.IndexOf("ISI.Libraries.ClearScript.dll", StringComparison.InvariantCultureIgnoreCase) >= 0))
@@ -139,7 +161,7 @@ namespace ISI.Extensions.VisualStudio
 									{
 										try
 										{
-											System.IO.Directory.Delete(packageDirectory, true);
+											deleteDirectory(packageDirectory);
 										}
 										catch (Exception exception)
 										{

@@ -29,6 +29,8 @@ namespace ISI.Extensions.VisualStudio
 		public ProjectDetails[] ProjectDetailsSet { get; set; }
 		public SolutionFilterDetails[] SolutionFilterDetailsSet { get; set; }
 
+		public bool UsePackagesDirectory { get; set; }
+
 		public int UpgradeNugetPackagesPriority { get; set; } = int.MaxValue;
 		public string ExecuteBuildScriptTargetAfterUpgradeNugetPackages { get; set; }
 		public string[] DoNotUpgradePackages { get; set; }

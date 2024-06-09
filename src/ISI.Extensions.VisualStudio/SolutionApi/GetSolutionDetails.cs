@@ -74,6 +74,15 @@ namespace ISI.Extensions.VisualStudio
 							ProjectFullName = projectFullName,
 						});
 
+					response.SolutionDetails.UsePackagesDirectory = false;
+					for (int projectIndex = 0; (!response.SolutionDetails.UsePackagesDirectory && (projectIndex < response.SolutionDetails.ProjectDetailsSet.Length)); projectIndex++)
+					{
+						if (System.IO.File.ReadAllText(response.SolutionDetails.ProjectDetailsSet[projectIndex].ProjectFullName).IndexOf("<HintPath>", StringComparison.InvariantCultureIgnoreCase) >= 0)
+						{
+							response.SolutionDetails.UsePackagesDirectory = true;
+						}
+					}
+
 					var solutionFilterDetailsSet = new List<SolutionFilterDetails>();
 
 					foreach (var solutionFilterFullName in System.IO.Directory.EnumerateFiles(response.SolutionDetails.SolutionDirectory, "*.slnf", System.IO.SearchOption.TopDirectoryOnly))

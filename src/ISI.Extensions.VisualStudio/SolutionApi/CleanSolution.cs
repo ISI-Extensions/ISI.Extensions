@@ -33,41 +33,70 @@ namespace ISI.Extensions.VisualStudio
 
 			var response = new DTOs.CleanSolutionResponse();
 
-			void deleteDirectory(string directory)
+			void deleteDirectory(object directory)
 			{
-				if (System.IO.Directory.Exists(directory))
+				if (directory is System.IO.DirectoryInfo directoryInfo)
 				{
-					DeleteFolderRecursive(new System.IO.DirectoryInfo(directory));
-				}
-			}
+					directoryInfo.Attributes = System.IO.FileAttributes.Normal;
 
-			void DeleteFolderRecursive(System.IO.DirectoryInfo directoryInfo)
-			{
-				directoryInfo.Attributes = System.IO.FileAttributes.Normal;
-
-				foreach (var childDirectoryInfo in directoryInfo.GetDirectories())
-				{
-					DeleteFolderRecursive(childDirectoryInfo);
-				}
-
-				foreach (var fileInfo in directoryInfo.GetFiles())
-				{
-					try
+					foreach (var childDirectoryInfo in directoryInfo.GetDirectories())
 					{
-						if (fileInfo.IsReadOnly)
+						deleteDirectory(childDirectoryInfo);
+					}
+
+					foreach (var fileInfo in directoryInfo.GetFiles())
+					{
+						try
 						{
-							fileInfo.IsReadOnly = false;
-						}
+							fileInfo.Attributes = System.IO.FileAttributes.Normal;
 
-						fileInfo.Delete();
+							fileInfo.Delete();
+						}
+						catch (Exception exception)
+						{
+							Console.WriteLine($"Could not clear readOnly on {fileInfo.FullName}");
+						}
 					}
-					catch (Exception exception)
+
+					var maxRetries = 10;
+					var millisecondsDelay = 30;
+
+					while (maxRetries > 0)
 					{
-						Console.WriteLine($"Could not clear readOnly on {fileInfo.FullName}");
+						try
+						{
+							directoryInfo.Delete(true);
+							maxRetries = -1;
+						}
+						catch (System.IO.IOException exception)
+						{
+							if (maxRetries-- < 0)
+							{
+								Console.WriteLine(exception);
+								throw;
+							}
+							System.Threading.Thread.Sleep(millisecondsDelay);
+						}
+						catch (UnauthorizedAccessException exception)
+						{
+							if (maxRetries-- < 0)
+							{
+								Console.WriteLine(exception);
+								throw;
+							}
+							System.Threading.Thread.Sleep(millisecondsDelay);
+						}
+						catch (Exception exception)
+						{
+							Console.WriteLine(exception);
+							throw;
+						}
 					}
 				}
-
-				directoryInfo.Delete(true);
+				else if ((directory is string directoryName) && !string.IsNullOrWhiteSpace(directoryName) && System.IO.Directory.Exists(directoryName))
+				{
+					deleteDirectory(new System.IO.DirectoryInfo(directoryName));
+				}
 			}
 
 			try

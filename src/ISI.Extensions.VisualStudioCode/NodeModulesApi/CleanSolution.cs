@@ -35,40 +35,72 @@ namespace ISI.Extensions.VisualStudioCode
 				Success = true,
 			};
 
-			void deleteDirectory(string directory)
+			void deleteDirectory(object directory)
 			{
-				DeleteFolderRecursive(new System.IO.DirectoryInfo(directory));
+				if (directory is System.IO.DirectoryInfo directoryInfo)
+				{
+					directoryInfo.Attributes = System.IO.FileAttributes.Normal;
+
+					foreach (var childDirectoryInfo in directoryInfo.GetDirectories())
+					{
+						deleteDirectory(childDirectoryInfo);
+					}
+
+					foreach (var fileInfo in directoryInfo.GetFiles())
+					{
+						try
+						{
+							fileInfo.Attributes = System.IO.FileAttributes.Normal;
+
+							fileInfo.Delete();
+						}
+						catch (Exception exception)
+						{
+							Console.WriteLine($"Could not clear readOnly on {fileInfo.FullName}");
+						}
+					}
+
+					var maxRetries = 10;
+					var millisecondsDelay = 30;
+
+					while (maxRetries > 0)
+					{
+						try
+						{
+							directoryInfo.Delete(true);
+							maxRetries = -1;
+						}
+						catch (System.IO.IOException exception)
+						{
+							if (maxRetries-- < 0)
+							{
+								Console.WriteLine(exception);
+								throw;
+							}
+							System.Threading.Thread.Sleep(millisecondsDelay);
+						}
+						catch (UnauthorizedAccessException exception)
+						{
+							if (maxRetries-- < 0)
+							{
+								Console.WriteLine(exception);
+								throw;
+							}
+							System.Threading.Thread.Sleep(millisecondsDelay);
+						}
+						catch (Exception exception)
+						{
+							Console.WriteLine(exception);
+							throw;
+						}
+					}
+				}
+				else if ((directory is string directoryName) && !string.IsNullOrWhiteSpace(directoryName) && System.IO.Directory.Exists(directoryName))
+				{
+					deleteDirectory(new System.IO.DirectoryInfo(directoryName));
+				}
 			}
 
-			void DeleteFolderRecursive(System.IO.DirectoryInfo directoryInfo)  
-			{  
-				directoryInfo.Attributes = System.IO.FileAttributes.Normal;
-
-				foreach (var childDirectoryInfo in directoryInfo.GetDirectories())
-				{
-					DeleteFolderRecursive(childDirectoryInfo);
-				}
-
-				foreach (var fileInfo in directoryInfo.GetFiles())
-				{
-					try
-					{
-						if (fileInfo.IsReadOnly)
-						{
-							fileInfo.IsReadOnly = false;
-						}
-
-						fileInfo.Delete();
-					}
-					catch (Exception exception)
-					{
-						Console.WriteLine($"Could not clear readOnly on {fileInfo.FullName}");
-					}
-				}  
-	
-				directoryInfo.Delete(true);  
-			}  
-			
 			try
 			{
 				var solutionSourceDirectory = SolutionApi.GetSolutionDetails(new()

@@ -77,9 +77,12 @@ namespace ISI.Extensions.VisualStudio
 					response.SolutionDetails.UsePackagesDirectory = false;
 					for (int projectIndex = 0; (!response.SolutionDetails.UsePackagesDirectory && (projectIndex < response.SolutionDetails.ProjectDetailsSet.Length)); projectIndex++)
 					{
-						if (System.IO.File.ReadAllText(response.SolutionDetails.ProjectDetailsSet[projectIndex].ProjectFullName).IndexOf("<HintPath>", StringComparison.InvariantCultureIgnoreCase) >= 0)
+						if (System.IO.File.Exists(response.SolutionDetails.ProjectDetailsSet[projectIndex].ProjectFullName))
 						{
-							response.SolutionDetails.UsePackagesDirectory = true;
+							if (System.IO.File.ReadAllText(response.SolutionDetails.ProjectDetailsSet[projectIndex].ProjectFullName).IndexOf("<HintPath>", StringComparison.InvariantCultureIgnoreCase) >= 0)
+							{
+								response.SolutionDetails.UsePackagesDirectory = true;
+							}
 						}
 					}
 

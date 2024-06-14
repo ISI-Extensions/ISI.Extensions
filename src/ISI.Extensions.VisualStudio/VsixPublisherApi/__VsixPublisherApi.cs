@@ -19,25 +19,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.Extensions.DependencyInjection;
+using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.VsixPublisherApi;
 
 namespace ISI.Extensions.VisualStudio
 {
-	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
-	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
+	public partial class VsixPublisherApi
 	{
-		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
+		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
+		protected ISI.Extensions.JsonSerialization.IJsonSerializer JsonSerializer { get; }
+		protected ISI.Extensions.VisualStudio.VsWhereApi VsWhereApi { get; }
+
+		public VsixPublisherApi(
+			Microsoft.Extensions.Logging.ILogger logger,
+			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer,
+			ISI.Extensions.VisualStudio.VsWhereApi vsWhereApi)
 		{
-			services.AddSingleton<VsixPublisherApi>();
-			services.AddSingleton<CodeGenerationApi>();
-			services.AddSingleton<CodeSigningApi>();
-			services.AddSingleton<VsWhereApi>();
-			services.AddSingleton<VsixSigntoolApi>();
-			services.AddSingleton<MSBuildApi>();
-			services.AddSingleton<PackagerApi>();
-			services.AddSingleton<ProjectApi>();
-			services.AddSingleton<SolutionApi>();
-			services.AddSingleton<XmlTransformApi>();
+			Logger = logger;
+			JsonSerializer = jsonSerializer;
+			VsWhereApi = vsWhereApi;
 		}
 	}
 }

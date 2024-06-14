@@ -19,25 +19,45 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.VisualStudio
+namespace ISI.Extensions.VisualStudio.DataTransferObjects.VsixPublisherApi
 {
-	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
-	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
+	public class GenerateVsixPublishManifestRequest
 	{
-		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
-		{
-			services.AddSingleton<VsixPublisherApi>();
-			services.AddSingleton<CodeGenerationApi>();
-			services.AddSingleton<CodeSigningApi>();
-			services.AddSingleton<VsWhereApi>();
-			services.AddSingleton<VsixSigntoolApi>();
-			services.AddSingleton<MSBuildApi>();
-			services.AddSingleton<PackagerApi>();
-			services.AddSingleton<ProjectApi>();
-			services.AddSingleton<SolutionApi>();
-			services.AddSingleton<XmlTransformApi>();
-		}
+		public string PublisherKey { get; set; }
+		public string InternalName { get; set; }
+		public string Version { get; set; }
+
+		public string VsixManifestFullName { get; set; }
+
+		public string ReadMeFullName { get; set; }
+
+		public GenerateVsixPublishManifestRequestPricingCategory PriceCategory { get; set; }
+		public string[] Categories { get; set; }
+		public string[] Tags { get; set; }
+
+		public bool Public { get; set; } = true;
+		public bool QuestionAndAnswer { get; set; } = true;
+	}
+
+	public enum GenerateVsixPublishManifestRequestPricingCategory
+	{
+		Free,
+		Paid,
+		Trial,
+	}
+
+	public enum GenerateVsixPublishManifestRequestCategory
+	{
+		Build,
+		Coding,
+		Data,
+		Documentation,
+		Modeling,
+		Other,
+		Performance,
+		ProgrammingLanguages,
+		Reporting,
+		Security,
 	}
 }

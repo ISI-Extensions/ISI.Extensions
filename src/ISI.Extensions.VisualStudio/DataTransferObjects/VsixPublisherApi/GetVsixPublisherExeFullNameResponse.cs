@@ -19,25 +19,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.VisualStudio
+namespace ISI.Extensions.VisualStudio.DataTransferObjects.VsixPublisherApi
 {
-	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
-	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
+	public class GetVsixPublisherExeFullNameResponse
 	{
-		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
-		{
-			services.AddSingleton<VsixPublisherApi>();
-			services.AddSingleton<CodeGenerationApi>();
-			services.AddSingleton<CodeSigningApi>();
-			services.AddSingleton<VsWhereApi>();
-			services.AddSingleton<VsixSigntoolApi>();
-			services.AddSingleton<MSBuildApi>();
-			services.AddSingleton<PackagerApi>();
-			services.AddSingleton<ProjectApi>();
-			services.AddSingleton<SolutionApi>();
-			services.AddSingleton<XmlTransformApi>();
-		}
+		public string VsixPublisherExeFullName { get; set; }
 	}
 }

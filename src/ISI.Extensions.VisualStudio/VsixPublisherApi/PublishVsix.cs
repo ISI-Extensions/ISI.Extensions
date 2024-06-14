@@ -58,7 +58,6 @@ namespace ISI.Extensions.VisualStudio
 				ReadMeFullName = request.ReadMeFullName,
 				PriceCategory = request.PriceCategory,
 				Categories = request.Categories.ToNullCheckedArray(),
-				Tags = request.Tags.ToNullCheckedArray(),
 				Public = request.Public,
 				QuestionAndAnswer = request.QuestionAndAnswer,
 			});

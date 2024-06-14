@@ -93,11 +93,6 @@ namespace ISI.Extensions.Tests
 					"Data",
 					"Modeling",
 				},
-				Tags = new[]
-				{
-					"Cake",
-					"Jenkins",
-				},
 			});
 		}
 	}

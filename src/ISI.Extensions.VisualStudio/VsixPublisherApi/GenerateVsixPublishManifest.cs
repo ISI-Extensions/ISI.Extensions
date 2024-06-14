@@ -89,7 +89,7 @@ namespace ISI.Extensions.VisualStudio
 					//Version = request.Version,
 					InternalName = request.InternalName,
 					//Language = vsixManifestMetadataIdentityXml.GetAttributeByLocalName("Language")?.Value,
-					Tags = request.Tags.ToNullCheckedArray(),
+					//Tags = request.Tags.ToNullCheckedArray(),
 				},
 
 				Overview = request.ReadMeFullName,

@@ -34,7 +34,6 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.VsixPublisherApi
 
 		public GenerateVsixPublishManifestRequestPricingCategory PriceCategory { get; set; }
 		public string[] Categories { get; set; }
-		public string[] Tags { get; set; }
 
 		public bool Public { get; set; } = true;
 		public bool QuestionAndAnswer { get; set; } = true;

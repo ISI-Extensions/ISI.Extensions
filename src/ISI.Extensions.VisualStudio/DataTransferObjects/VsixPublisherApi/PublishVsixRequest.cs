@@ -42,5 +42,7 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.VsixPublisherApi
 
 		public bool Public { get; set; } = true;
 		public bool QuestionAndAnswer { get; set; } = true;
+		
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

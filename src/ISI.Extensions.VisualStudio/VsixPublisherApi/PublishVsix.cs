@@ -28,7 +28,10 @@ namespace ISI.Extensions.VisualStudio
 		public DTOs.PublishVsixResponse PublishVsix(DTOs.PublishVsixRequest request)
 		{
 			var response = new DTOs.PublishVsixResponse();
-			
+
+			var logger = new AddToLogLogger(request.AddToLog, Logger);
+
+
 			//VsixPublisher.exe login -personalAccessToken "{Personal Access Token}" -publisherName "{Publisher Name}"
 
 			//VsixPublisher.exe publish -payload "{path to vsix}" -publishManifest "{path to vs-publish.json}" -ignoreWarnings "VSIXValidatorWarning01,VSIXValidatorWarning02"
@@ -72,12 +75,17 @@ namespace ISI.Extensions.VisualStudio
 			{
 				System.IO.File.WriteAllText(tempVsixPublishManifestFile.FullName, generateVsixPublishManifestResponse.VsixPublishManifest);
 
-				var publishResponse = ISI.Extensions.Process.WaitForProcessResponse(vsixPublisherExeFullName, new[]
+				var publishResponse = ISI.Extensions.Process.WaitForProcessResponse(new Process.ProcessRequest()
 				{
-					"publish",
-					$"-payload \"{request.VsixFullName}\"",
-					$"-publishManifest \"{tempVsixPublishManifestFile.FullName}\"",
-					$"-personalAccessToken \"{request.PersonalAccessToken}\"",
+					Logger = logger,
+					ProcessExeFullName = vsixPublisherExeFullName,
+					Arguments = new[]
+					{
+						"publish",
+						$"-payload \"{request.VsixFullName}\"",
+						$"-publishManifest \"{tempVsixPublishManifestFile.FullName}\"",
+						$"-personalAccessToken \"{request.PersonalAccessToken}\"",
+					},
 				});
 
 				if (publishResponse.Errored)

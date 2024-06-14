@@ -76,7 +76,8 @@ namespace ISI.Extensions.Tests
 
 			vsixPublisherApi.PublishVsix(new()
 			{
-				PersonalAccessToken = settings.GetValue("Azure-PAT"),
+				PublisherKey = settings.VsExtensions.PublisherKey,
+				PersonalAccessToken = settings.VsExtensions.PublisherPersonalAccessToken,
 
 				InternalName = "ISI-VisualStudio-Extensions",
 				Version = dateTimeStampVersion.Version.ToString(),

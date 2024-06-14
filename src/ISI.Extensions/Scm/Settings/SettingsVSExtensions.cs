@@ -53,6 +53,18 @@ namespace ISI.Extensions.Scm
 				get => Settings.GetValue(Settings.Key.VsExtensionsPassword);
 				set => Settings.SetValue(Settings.Key.VsExtensionsPassword, value);
 			}
+
+			public string PublisherKey
+			{
+				get => Settings.GetValue(Settings.Key.VsExtensionsPublisherKey);
+				set => Settings.SetValue(Settings.Key.VsExtensionsPublisherKey, value);
+			}
+
+			public string PublisherPersonalAccessToken
+			{
+				get => Settings.GetValue(Settings.Key.VsExtensionsPublisherPersonalAccessToken);
+				set => Settings.SetValue(Settings.Key.VsExtensionsPublisherPersonalAccessToken, value);
+			}
 		}
 	}
 }

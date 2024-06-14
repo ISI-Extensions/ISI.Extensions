@@ -76,6 +76,8 @@ namespace ISI.Extensions.Scm
 			public const string VsExtensionsApiKey = nameof(VsExtensionsApiKey);
 			public const string VsExtensionsUserName = nameof(VsExtensionsUserName);
 			public const string VsExtensionsPassword = nameof(VsExtensionsPassword);
+			public const string VsExtensionsPublisherKey = nameof(VsExtensionsPublisherKey);
+			public const string VsExtensionsPublisherPersonalAccessToken = nameof(VsExtensionsPublisherPersonalAccessToken);
 
 			public const string JenkinsServiceApiUrl = nameof(JenkinsServiceApiUrl);
 			public const string JenkinsServiceApiKey = nameof(JenkinsServiceApiKey);

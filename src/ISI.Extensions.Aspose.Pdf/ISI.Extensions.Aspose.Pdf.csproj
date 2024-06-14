@@ -16,7 +16,7 @@
 
 	<ItemGroup>
 		<PackageReference Update="NETStandard.Library" Version="2.0.3" />
-	  <PackageReference Include="Aspose.PDF" Version="24.5.1" />
+	  <PackageReference Include="Aspose.PDF" Version="24.6.0" />
 	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>

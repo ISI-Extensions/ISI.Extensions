@@ -20,20 +20,16 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Dns
+namespace ISI.Extensions.NameCheap.DataTransferObjects.DomainsApi
 {
-	public class DnsRecord
+	public class SetDnsRecordsRequest : IRequest
 	{
-		public string Name { get; set; }
-		public RecordType RecordType { get; set; }
-		public string Data { get; set; }
-		public int Port { get; set; }
-		public int Priority { get; set; } = 10;
-		public string Protocol { get; set; }
-		public string Service { get; set; }
-		public TimeSpan Ttl { get; set; } = TimeSpan.FromHours(1);
-		public int Weight { get; set; }
+		public string Url { get; set; }
+		public string ApiUser { get; set; }
+		public string ApiKey { get; set; }
 
-		public override string ToString() => $"{Name} {RecordType} {Data}";
+		public string DomainName { get; set; }
+
+		public ISI.Extensions.Dns.DnsRecord[] DnsRecords { get; set; }
 	}
 }

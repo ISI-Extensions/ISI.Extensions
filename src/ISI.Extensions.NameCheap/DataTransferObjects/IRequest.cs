@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,25 +15,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Dns
+namespace ISI.Extensions.NameCheap.DataTransferObjects
 {
-	public class DnsRecord
+	public interface IRequest
 	{
-		public string Name { get; set; }
-		public RecordType RecordType { get; set; }
-		public string Data { get; set; }
-		public int Port { get; set; }
-		public int Priority { get; set; } = 10;
-		public string Protocol { get; set; }
-		public string Service { get; set; }
-		public TimeSpan Ttl { get; set; } = TimeSpan.FromHours(1);
-		public int Weight { get; set; }
-
-		public override string ToString() => $"{Name} {RecordType} {Data}";
+		string Url { get; }
+		string ApiUser { get; }
+		string ApiKey { get; }
 	}
 }

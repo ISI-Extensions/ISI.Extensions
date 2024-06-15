@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -12,28 +12,41 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.NameCheap.DataTransferObjects;
 
-namespace ISI.Extensions.Dns
+namespace ISI.Extensions.NameCheap.Extensions
 {
-	public class DnsRecord
+	public static class AbstractRequestExtensions
 	{
-		public string Name { get; set; }
-		public RecordType RecordType { get; set; }
-		public string Data { get; set; }
-		public int Port { get; set; }
-		public int Priority { get; set; } = 10;
-		public string Protocol { get; set; }
-		public string Service { get; set; }
-		public TimeSpan Ttl { get; set; } = TimeSpan.FromHours(1);
-		public int Weight { get; set; }
+		public static ISI.Extensions.WebClient.HeaderCollection GetHeaders(this DTOs.IRequest request, Configuration configuration)
+		{
+			var headers = new ISI.Extensions.WebClient.HeaderCollection();
 
-		public override string ToString() => $"{Name} {RecordType} {Data}";
+			return headers;
+		}
+
+		private static string _clientIp = null;
+
+		public static UriBuilder GetUrl(this ISI.Extensions.Ipify.IpifyApi ipifyApi, DTOs.IRequest request, Configuration configuration)
+		{
+			var uri = new UriBuilder(string.IsNullOrWhiteSpace(request.Url) ? configuration.Url : request.Url);
+
+			var apiUser = (string.IsNullOrWhiteSpace(request.ApiUser) ? configuration.ApiUser : request.ApiUser);
+			var apiKey = (string.IsNullOrWhiteSpace(request.ApiKey) ? configuration.ApiKey : request.ApiKey);
+
+			var clientIp = _clientIp ??= ipifyApi.GetExternalIPv4().IpAddress;
+
+			uri.AddQueryStringParameter("ApiUser", apiUser);
+			uri.AddQueryStringParameter("ApiKey", apiKey);
+			uri.AddQueryStringParameter("UserName", apiUser);
+			uri.AddQueryStringParameter("ClientIp", clientIp);
+
+			return uri;
+		}
 	}
 }

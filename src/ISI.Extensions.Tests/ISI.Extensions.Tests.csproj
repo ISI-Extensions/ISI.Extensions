@@ -26,6 +26,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="SSH.NET" Version="2024.0.0" />
 		<PackageReference Include="System.IO.Compression" Version="4.3.0" />
 		<PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
 		<PackageReference Include="System.Management" Version="8.0.0" />
@@ -36,6 +37,7 @@
 		<ProjectReference Include="..\ISI.Extensions.Docker\ISI.Extensions.Docker.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.JsonJwt\ISI.Extensions.JsonJwt.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Keycloak\ISI.Extensions.Keycloak.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.NameCheap\ISI.Extensions.NameCheap.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.PostgreSQL\ISI.Extensions.PostgreSQL.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Razor\ISI.Extensions.Razor.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.S3\ISI.Extensions.S3.csproj" />

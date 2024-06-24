@@ -12,41 +12,61 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Platforms.Extensions;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
+namespace ISI.Platforms.AspNetCore.Extensions
 {
-	public interface IRestoreNugetPackagesRequest
+	public static partial class ServiceApplicationContextExtensions
 	{
-		public string MSBuildExe { get; set; }
-		
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
-	}
+		public static ServiceApplicationContext AddCors(this ServiceApplicationContext context, string corsPolicyName, IEnumerable<string> corsPolicyOrigins, bool allowAnyHeader = true, bool allowAnyMethod = true, bool allowCredentials = true)
+		{
+			context.AddWebHostBuilderConfigureServices((webHostBuilder, services) =>
+			{
+				services.AddCors(options =>
+				{
+					options.AddPolicy(corsPolicyName,
+						policy =>
+						{
+							policy.WithOrigins(corsPolicyOrigins.ToArray());
+							if (allowAnyHeader)
+							{
+								policy.AllowAnyHeader();
+							}
 
-	public class RestoreNugetPackagesRequest : IRestoreNugetPackagesRequest
-	{
-		public string Solution { get; set; }
-		public string PackagesConfigFileName { get; set; }
+							if (allowAnyMethod)
+							{
+								policy.AllowAnyMethod();
+							}
 
-		public bool UsePackagesDirectory { get; set; }
+							if (allowCredentials)
+							{
+								policy.AllowCredentials();
+							}
+							// see https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#access-control-expose-headers
+							// exposed headers such as X-Wrs-User-Role must be exposed during CORS transfers explicitly
+							//policy.WithExposedHeaders(UserRoleHeaderHandler
+							//	.AddResponseHeaderNames(UserUuidHeaderHandler.AddResponseHeaderNames()).ToArray());
+						});
+				});
 
-		public string MSBuildExe { get; set; }
-		
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
-	}
+			});
 
-	public class RestoreNugetPackagesUsingSolutionDetailsRequest : IRestoreNugetPackagesRequest
-	{
-		public ISI.Extensions.VisualStudio.SolutionDetails SolutionDetails { get; set; }
+			context.AddConfigureApplication((applicationBuilder, webHostingEnvironment) =>
+			{
+				applicationBuilder.UseCors(corsPolicyName);
+			});
 
-		public string MSBuildExe { get; set; }
-		
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
+			return context;
+		}
 	}
 }

@@ -81,6 +81,8 @@ namespace ISI.Platforms.ServiceApplication
 
 						.ProcessMigrationSteps()
 						;
+				
+					Startup.Context.WebHostBuilderConfigureServices?.Invoke(webHostBuilder, services);
 				});
 
 				webHostBuilder.UseContentRoot(System.IO.Directory.GetCurrentDirectory());

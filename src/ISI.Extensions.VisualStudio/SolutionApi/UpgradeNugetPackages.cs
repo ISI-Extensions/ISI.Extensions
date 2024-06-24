@@ -434,12 +434,10 @@ namespace ISI.Extensions.VisualStudio
 							{
 								var nugetPackOutputDirectory = System.IO.Path.Combine(solutionDetails.RootSourceDirectory, "Nuget");
 
-								NugetApi.RestoreNugetPackages(new()
+								NugetApi.RestoreNugetPackages(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.RestoreNugetPackagesUsingSolutionDetailsRequest()
 								{
-									Solution = solutionDetails.SolutionFullName,
+									SolutionDetails = solutionDetails,
 									MSBuildExe = MSBuildApi.GetMSBuildExeFullName(new()).MSBuildExeFullName,
-
-									UsePackagesDirectory = solutionDetails.UsePackagesDirectory,
 
 									AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
 								});

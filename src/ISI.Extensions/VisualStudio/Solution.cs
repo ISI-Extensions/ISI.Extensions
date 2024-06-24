@@ -23,12 +23,14 @@ namespace ISI.Extensions.VisualStudio
 	public class Solution
 	{
 		public static readonly string SearchPattern = "*.sln*";
+		public static readonly string SolutionExtension = ".sln";
+		public static readonly string SolutionExtensionX = ".slnx";
 
 		public static bool IsSolutionFileName(string fullName)
 		{
 			var fileNameExtension = System.IO.Path.GetExtension(fullName);
 
-			return (string.Equals(fileNameExtension, ".sln", StringComparison.InvariantCultureIgnoreCase) || string.Equals(fileNameExtension, ".slnx", StringComparison.InvariantCultureIgnoreCase));
+			return (string.Equals(fileNameExtension, SolutionExtension, StringComparison.InvariantCultureIgnoreCase) || string.Equals(fileNameExtension, SolutionExtensionX, StringComparison.InvariantCultureIgnoreCase));
 		}
 
 		public static IEnumerable<string> FindSolutionFullNames(string path, System.IO.SearchOption searchOption = System.IO.SearchOption.AllDirectories)

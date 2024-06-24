@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,26 +40,43 @@ namespace ISI.Extensions.VisualStudio
 			{
 				var buildConfigurations = new List<BuildConfiguration>();
 
-				var lines = System.IO.File.ReadAllLines(request.Solution);
-				var inPreSolution = false;
-				foreach (var line in lines)
+				if (string.Equals(System.IO.Path.GetExtension(response.SolutionDetails.SolutionFullName), ISI.Extensions.VisualStudio.Solution.SolutionExtensionX, StringComparison.InvariantCultureIgnoreCase))
 				{
-					if (inPreSolution && line.IndexOf("EndGlobalSection", StringComparison.CurrentCultureIgnoreCase) >= 0)
+					var solutionXml = System.Xml.Linq.XElement.Load(response.SolutionDetails.SolutionFullName);
+					foreach (var configurationElement in solutionXml.GetElementsByLocalName("Configurations"))
 					{
-						inPreSolution = false;
+						foreach (var platformElement in configurationElement.GetElementsByLocalName("Platform"))
+						{
+							var nameAttribute = platformElement.GetAttributeByLocalName("Name");
+							if (nameAttribute != null)
+							{
+								buildConfigurations.Add(new (nameAttribute.Value));
+							}
+						}
 					}
-					else if (inPreSolution)
+				}
+				else if (string.Equals(System.IO.Path.GetExtension(response.SolutionDetails.SolutionFullName), ISI.Extensions.VisualStudio.Solution.SolutionExtension, StringComparison.InvariantCultureIgnoreCase))
+				{
+					var lines = System.IO.File.ReadAllLines(response.SolutionDetails.SolutionFullName);
+					var inPreSolution = false;
+					foreach (var line in lines)
 					{
-						buildConfigurations.Add(new(line.Trim().Split(new[] { '\t', '=' }, StringSplitOptions.RemoveEmptyEntries).Last().Trim()));
-					}
-					else if (line.IndexOf("GlobalSection(SolutionConfigurationPlatforms) = preSolution", StringComparison.CurrentCultureIgnoreCase) >= 0)
-					{
-						inPreSolution = true;
+						if (inPreSolution && line.IndexOf("EndGlobalSection", StringComparison.CurrentCultureIgnoreCase) >= 0)
+						{
+							inPreSolution = false;
+						}
+						else if (inPreSolution)
+						{
+							buildConfigurations.Add(new(line.Trim().Split(new[] { '\t', '=' }, StringSplitOptions.RemoveEmptyEntries).Last().Trim()));
+						}
+						else if (line.IndexOf("GlobalSection(SolutionConfigurationPlatforms) = preSolution", StringComparison.CurrentCultureIgnoreCase) >= 0)
+						{
+							inPreSolution = true;
+						}
 					}
 				}
 
 				#region .vs
-
 				{
 					var visualStudioConfigDirectory = System.IO.Path.Combine(response.SolutionDetails.SolutionDirectory, ".vs", response.SolutionDetails.SolutionName);
 

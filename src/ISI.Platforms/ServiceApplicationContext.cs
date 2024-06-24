@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Platforms
 {
+	public delegate void ServiceApplicationContextWebHostBuilderConfigureServicesDelegate(Microsoft.AspNetCore.Hosting.IWebHostBuilder webHostBuilder, Microsoft.Extensions.DependencyInjection.IServiceCollection services);
 	public delegate void ServiceApplicationContextHostBuilderConfigureServicesDelegate(Microsoft.Extensions.Hosting.HostBuilderContext hostContext, Microsoft.Extensions.DependencyInjection.IServiceCollection services);
 	public delegate void ServiceApplicationContextWebStartupMvcBuilderDelegate(Microsoft.Extensions.DependencyInjection.IMvcBuilder mvcBuilder);
 	public delegate void ServiceApplicationContextWebStartupConfigureServicesDelegate(Microsoft.Extensions.DependencyInjection.IServiceCollection services);
@@ -37,6 +38,7 @@ namespace ISI.Platforms
 		ISI.Extensions.MessageBus.GetAddMessageBusSubscriptionsDelegate GetAddMessageBusSubscriptions { get; set; }
 
 		ServiceApplicationContextHostBuilderConfigureServicesDelegate HostBuilderConfigureServices { get; set; }
+		ServiceApplicationContextWebHostBuilderConfigureServicesDelegate WebHostBuilderConfigureServices { get; set; }
 
 		ServiceApplicationContextWebStartupMvcBuilderDelegate WebStartupMvcBuilder { get; set; }
 		ServiceApplicationContextWebStartupConfigureServicesDelegate WebStartupConfigureServices { get; set; }
@@ -68,6 +70,9 @@ namespace ISI.Platforms
 
 		public ServiceApplicationContextHostBuilderConfigureServicesDelegate HostBuilderConfigureServices { get; private set; }
 		ServiceApplicationContextHostBuilderConfigureServicesDelegate IServiceApplicationContextAddActions.HostBuilderConfigureServices { get => HostBuilderConfigureServices; set => HostBuilderConfigureServices = value; }
+
+		public ServiceApplicationContextWebHostBuilderConfigureServicesDelegate WebHostBuilderConfigureServices { get; private set; }
+		ServiceApplicationContextWebHostBuilderConfigureServicesDelegate IServiceApplicationContextAddActions.WebHostBuilderConfigureServices { get => WebHostBuilderConfigureServices; set => WebHostBuilderConfigureServices = value; }
 
 		public ServiceApplicationContextWebStartupMvcBuilderDelegate WebStartupMvcBuilder { get; private set; }
 		ServiceApplicationContextWebStartupMvcBuilderDelegate IServiceApplicationContextAddActions.WebStartupMvcBuilder { get => WebStartupMvcBuilder; set => WebStartupMvcBuilder = value; }

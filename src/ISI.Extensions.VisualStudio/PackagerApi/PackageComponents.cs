@@ -96,7 +96,7 @@ namespace ISI.Extensions.VisualStudio
 					{
 						solutionFullName = System.IO.Path.GetDirectoryName(packageComponent.ProjectFullName);
 
-						while (!string.IsNullOrWhiteSpace(solutionFullName) && !solutionFullName.EndsWith(".sln", StringComparison.InvariantCultureIgnoreCase) && !solutionFullName.EndsWith(".slnx", StringComparison.InvariantCultureIgnoreCase))
+						while (!string.IsNullOrWhiteSpace(solutionFullName) && !solutionFullName.EndsWith(ISI.Extensions.VisualStudio.Solution.SolutionExtension, StringComparison.InvariantCultureIgnoreCase) && !solutionFullName.EndsWith(ISI.Extensions.VisualStudio.Solution.SolutionExtensionX, StringComparison.InvariantCultureIgnoreCase))
 						{
 							var possibleSolutionFullName = ISI.Extensions.VisualStudio.Solution.FindSolutionFullNames(solutionFullName, System.IO.SearchOption.TopDirectoryOnly).NullCheckedFirstOrDefault();
 

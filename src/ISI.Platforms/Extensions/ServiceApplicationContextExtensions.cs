@@ -62,6 +62,17 @@ namespace ISI.Platforms.Extensions
 			};
 		}
 
+		public static void AddWebHostBuilderConfigureServices(this IServiceApplicationContextAddActions context, ServiceApplicationContextWebHostBuilderConfigureServicesDelegate action)
+		{
+			var webHostBuilderConfigureServices = context.WebHostBuilderConfigureServices;
+			context.WebHostBuilderConfigureServices = (hostContext, services) =>
+			{
+				webHostBuilderConfigureServices?.Invoke(hostContext, services);
+
+				action(hostContext, services);
+			};
+		}
+
 		public static void AddWebStartupMvcBuilder(this IServiceApplicationContextAddActions context, ServiceApplicationContextWebStartupMvcBuilderDelegate action)
 		{
 			var webStartupMvcBuilder = context.WebStartupMvcBuilder;

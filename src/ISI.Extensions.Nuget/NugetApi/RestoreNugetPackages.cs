@@ -29,70 +29,90 @@ namespace ISI.Extensions.Nuget
 {
 	public partial class NugetApi
 	{
-		public DTOs.RestoreNugetPackagesResponse RestoreNugetPackages(DTOs.RestoreNugetPackagesRequest request)
+		public DTOs.RestoreNugetPackagesResponse RestoreNugetPackages(DTOs.IRestoreNugetPackagesRequest request)
 		{
 			var response = new DTOs.RestoreNugetPackagesResponse();
 
-			var target = request.PackagesConfigFileName;
+			var usePackagesDirectory = (request as DTOs.RestoreNugetPackagesRequest)?.UsePackagesDirectory ?? (request as DTOs.RestoreNugetPackagesUsingSolutionDetailsRequest)?.SolutionDetails?.UsePackagesDirectory ?? false;
 
-			if (!string.IsNullOrWhiteSpace(request.Solution) && System.IO.Directory.Exists(request.Solution))
+			var solutionDirectory = (string)null;
+			var targets = new List<string>();
+
+			switch (request)
 			{
-				var possibleSolutionFullNames = ISI.Extensions.VisualStudio.Solution.FindSolutionFullNames(request.Solution, System.IO.SearchOption.AllDirectories).ToArray();
-
-				if (possibleSolutionFullNames.Length == 1)
-				{
-					request.Solution = possibleSolutionFullNames.First();
-				}
-				else if (possibleSolutionFullNames.Length > 1)
-				{
-					var possibleSolutionName = System.IO.Path.GetFileName(request.Solution);
-
-					var possibleSolutionFullName = possibleSolutionFullNames.FirstOrDefault(possibleSolutionFullName => string.Equals(System.IO.Path.GetFileNameWithoutExtension(possibleSolutionFullName), possibleSolutionName, StringComparison.InvariantCultureIgnoreCase));
-
-					if (!string.IsNullOrWhiteSpace(possibleSolutionFullName))
+				case DTOs.RestoreNugetPackagesRequest restoreNugetPackagesRequest:
 					{
-						request.Solution = possibleSolutionFullName;
+						if (!string.IsNullOrWhiteSpace(restoreNugetPackagesRequest.Solution) && System.IO.Directory.Exists(restoreNugetPackagesRequest.Solution))
+						{
+							var possibleSolutionFullNames = ISI.Extensions.VisualStudio.Solution.FindSolutionFullNames(restoreNugetPackagesRequest.Solution, System.IO.SearchOption.AllDirectories).ToArray();
+
+							if (possibleSolutionFullNames.Length == 1)
+							{
+								restoreNugetPackagesRequest.Solution = possibleSolutionFullNames.First();
+							}
+							else if (possibleSolutionFullNames.Length > 1)
+							{
+								var possibleSolutionName = System.IO.Path.GetFileName(restoreNugetPackagesRequest.Solution);
+
+								var possibleSolutionFullName = possibleSolutionFullNames.FirstOrDefault(possibleSolutionFullName => string.Equals(System.IO.Path.GetFileNameWithoutExtension(possibleSolutionFullName), possibleSolutionName, StringComparison.InvariantCultureIgnoreCase));
+
+								if (!string.IsNullOrWhiteSpace(possibleSolutionFullName))
+								{
+									restoreNugetPackagesRequest.Solution = possibleSolutionFullName;
+								}
+								else
+								{
+									throw new(string.Format("Cannot determine which solution to restore for \"{0}\"", restoreNugetPackagesRequest.Solution));
+								}
+							}
+							else
+							{
+								throw new(string.Format("Cannot find a solution to restore for \"{0}\"", restoreNugetPackagesRequest.Solution));
+							}
+						}
+
+						solutionDirectory = System.IO.Path.GetDirectoryName(restoreNugetPackagesRequest.Solution);
+						targets.Add(restoreNugetPackagesRequest.Solution);
 					}
-					else
-					{
-						throw new(string.Format("Cannot determine which solution to restore for \"{0}\"", request.Solution));
-					}
-				}
-				else
-				{
-					throw new(string.Format("Cannot find a solution to restore for \"{0}\"", request.Solution));
-				}
-			}
+					break;
 
-			var solutionDirectory = System.IO.Path.GetDirectoryName(request.Solution);
+				case DTOs.RestoreNugetPackagesUsingSolutionDetailsRequest restoreNugetPackagesUsingSolutionDetailsRequest:
+					solutionDirectory = restoreNugetPackagesUsingSolutionDetailsRequest.SolutionDetails.SolutionDirectory;
+					targets.AddRange(restoreNugetPackagesUsingSolutionDetailsRequest.SolutionDetails.ProjectDetailsSet.Select(projectDetails => projectDetails.ProjectFullName));
+					break;
 
-			if (string.IsNullOrWhiteSpace(target))
-			{
-				target = request.Solution;
-			}
-
-			var arguments = new List<string>();
-			arguments.Add("restore");
-			arguments.Add($"\"{target}\"");
-			if (request.UsePackagesDirectory)
-			{
-				arguments.Add($"-PackagesDirectory \"{System.IO.Path.Combine(solutionDirectory, "packages")}\"");
-			}
-			//arguments.Add("-NoHttpCache");
-			arguments.Add("-NonInteractive");
-			if(!string.IsNullOrWhiteSpace(request.MSBuildExe) && System.IO.File.Exists(request.MSBuildExe))
-			{
-				arguments.Add($"-MSBuildPath \"{System.IO.Path.GetDirectoryName(request.MSBuildExe)}\"");
+				default:
+					throw new ArgumentOutOfRangeException(nameof(request));
 			}
 
 			var nugetExeFullName = GetNugetExeFullName(new()).NugetExeFullName;
 
-			response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+			response.Success = targets.Any();
+
+			foreach (var target in targets)
 			{
-				Logger = new AddToLogLogger(request.AddToLog, Logger),
-				ProcessExeFullName = nugetExeFullName,
-				Arguments = arguments,
-			}).Errored;
+				var arguments = new List<string>();
+				arguments.Add("restore");
+				arguments.Add($"\"{target}\"");
+				if (usePackagesDirectory)
+				{
+					arguments.Add($"-PackagesDirectory \"{System.IO.Path.Combine(solutionDirectory, "packages")}\"");
+				}
+
+				//arguments.Add("-NoHttpCache");
+				arguments.Add("-NonInteractive");
+				if (!string.IsNullOrWhiteSpace(request.MSBuildExe) && System.IO.File.Exists(request.MSBuildExe))
+				{
+					arguments.Add($"-MSBuildPath \"{System.IO.Path.GetDirectoryName(request.MSBuildExe)}\"");
+				}
+
+				response.Success &= !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				{
+					Logger = new AddToLogLogger(request.AddToLog, Logger),
+					ProcessExeFullName = nugetExeFullName,
+					Arguments = arguments,
+				}).Errored;
+			}
 
 			return response;
 		}

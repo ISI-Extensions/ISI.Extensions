@@ -296,12 +296,10 @@ namespace ISI.Extensions.VisualStudio.Forms
 				{
 					Logger.LogInformation("Start Restore Nuget Packages");
 
-					RestoreNugetPackagesResponse.ExitCode = NugetApi.RestoreNugetPackages(new()
+					RestoreNugetPackagesResponse.ExitCode = NugetApi.RestoreNugetPackages(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.RestoreNugetPackagesUsingSolutionDetailsRequest()
 					{
-						Solution = SolutionDetails.SolutionFullName,
+						SolutionDetails = SolutionDetails,
 						MSBuildExe = MSBuildApi.GetMSBuildExeFullName(new()).MSBuildExeFullName,
-
-						UsePackagesDirectory = SolutionDetails.UsePackagesDirectory,
 
 						AddToLog = (logEntryLevel, description) =>
 						{

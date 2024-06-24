@@ -101,7 +101,7 @@ namespace ISI.Extensions.VisualStudio
 
 					if (false)
 					{
-						NugetApi.RestoreNugetPackages(new()
+						NugetApi.RestoreNugetPackages(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.RestoreNugetPackagesRequest()
 						{
 							Solution = solutionFullName,
 							MSBuildExe = MSBuildApi.GetMSBuildExeFullName(new()

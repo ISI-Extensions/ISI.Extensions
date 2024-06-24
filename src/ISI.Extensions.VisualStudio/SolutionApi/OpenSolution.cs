@@ -59,7 +59,7 @@ namespace ISI.Extensions.VisualStudio
 					}
 				}
 			}
-			else if (request.Solution.EndsWith(".sln", StringComparison.InvariantCultureIgnoreCase))
+			else if (request.Solution.EndsWith(ISI.Extensions.VisualStudio.Solution.SolutionExtension, StringComparison.InvariantCultureIgnoreCase))
 			{
 				solutionFileName = request.Solution;
 			}

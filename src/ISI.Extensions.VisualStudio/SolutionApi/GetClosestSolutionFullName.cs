@@ -30,7 +30,7 @@ namespace ISI.Extensions.VisualStudio
 		{
 			var response = new DTOs.GetClosestSolutionFullNameResponse();
 
-			if (request.FileName.EndsWith(".sln", StringComparison.InvariantCultureIgnoreCase) || request.FileName.EndsWith(".slnx", StringComparison.InvariantCultureIgnoreCase))
+			if (request.FileName.EndsWith(ISI.Extensions.VisualStudio.Solution.SolutionExtension, StringComparison.InvariantCultureIgnoreCase) || request.FileName.EndsWith(ISI.Extensions.VisualStudio.Solution.SolutionExtensionX, StringComparison.InvariantCultureIgnoreCase))
 			{
 				response.ClosestSolutionFullName = request.FileName;
 			}

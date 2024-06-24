@@ -71,7 +71,7 @@ namespace ISI.Extensions.Tests
 
 			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.Nuget.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
 
-			nugetApi.RestoreNugetPackages(new()
+			nugetApi.RestoreNugetPackages(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.RestoreNugetPackagesRequest()
 			{
 				Solution = @"F:\ISI\Internal Projects\ISI.Cake.Addin",
 			});

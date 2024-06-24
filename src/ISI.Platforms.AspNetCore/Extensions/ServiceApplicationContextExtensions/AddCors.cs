@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.ConfigurationHelper.Extensions;
 using ISI.Extensions.Extensions;
 using ISI.Platforms.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -28,8 +29,21 @@ namespace ISI.Platforms.AspNetCore.Extensions
 {
 	public static partial class ServiceApplicationContextExtensions
 	{
-		public static ServiceApplicationContext AddCors(this ServiceApplicationContext context, string corsPolicyName, IEnumerable<string> corsPolicyOrigins, bool allowAnyHeader = true, bool allowAnyMethod = true, bool allowCredentials = true)
+		public static ServiceApplicationContext AddCors(this ServiceApplicationContext context, string corsPolicyName, IEnumerable<string> corsPolicyOrigins = null, bool? allowAnyHeader = null, bool? allowAnyMethod = null, bool? allowCredentials = null)
 		{
+			var configuration = context.ConfigurationRoot.GetConfiguration<ISI.Platforms.AspNetCore.Configuration>();
+
+			corsPolicyOrigins = new HashSet<string>(corsPolicyOrigins ?? [], StringComparer.InvariantCultureIgnoreCase);
+			if (configuration?.Cors?.PolicyOrigins?.NullCheckedAny() ?? false)
+			{
+				((HashSet<string>)corsPolicyOrigins).UnionWith(configuration.Cors.PolicyOrigins);
+			}
+
+			if (!corsPolicyOrigins.Any())
+			{
+				throw new Exception("Cannot add CORS without PolicyOrigins");
+			}
+
 			context.AddWebHostBuilderConfigureServices((webHostBuilder, services) =>
 			{
 				services.AddCors(options =>
@@ -38,17 +52,17 @@ namespace ISI.Platforms.AspNetCore.Extensions
 						policy =>
 						{
 							policy.WithOrigins(corsPolicyOrigins.ToArray());
-							if (allowAnyHeader)
+							if (allowAnyHeader ?? configuration?.Cors?.AllowAnyHeader ?? false)
 							{
 								policy.AllowAnyHeader();
 							}
 
-							if (allowAnyMethod)
+							if (allowAnyMethod ?? configuration?.Cors?.AllowAnyMethod ?? false)
 							{
 								policy.AllowAnyMethod();
 							}
 
-							if (allowCredentials)
+							if (allowCredentials ?? configuration?.Cors?.AllowCredentials ?? false)
 							{
 								policy.AllowCredentials();
 							}

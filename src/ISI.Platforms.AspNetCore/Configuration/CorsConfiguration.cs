@@ -18,20 +18,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
 namespace ISI.Platforms.AspNetCore
 {
-	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
-	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
+	public partial class Configuration
 	{
-		public const string ConfigurationSectionName = "ISI.Platforms.AspNetCore";
-
-		public JwtConfiguration Jwt { get; set; } = new()
+		public class CorsConfiguration
 		{
-			EncryptionKey = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
-		};
+			[ISI.Extensions.EnvironmentConfigurationVariableName("CORS_POLICY_ORIGINS")]
+			public string[] PolicyOrigins { get; set; }
 
-		public CorsConfiguration Cors { get; set; } = new();
+			[ISI.Extensions.EnvironmentConfigurationVariableName("CORS_ALLOW_ANY_HEADER")]
+			public bool AllowAnyHeader { get; set; }
+
+			[ISI.Extensions.EnvironmentConfigurationVariableName("CORS_ALLOW_ANY_METHOD")]
+			public bool AllowAnyMethod { get; set; }
+
+			[ISI.Extensions.EnvironmentConfigurationVariableName("CORS_ALLOW_CREDENTIALS")]
+			public bool AllowCredentials { get; set; }
+		}
 	}
 }

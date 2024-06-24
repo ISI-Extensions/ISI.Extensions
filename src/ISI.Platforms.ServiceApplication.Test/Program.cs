@@ -46,6 +46,8 @@ namespace ISI.Platforms.ServiceApplication.Test
 
 			context.AddSwaggerConfiguration(useBearer: true);
 
+			context.AddCors("CorsPolicy", new[] { "*" });
+
 			context.AddEnterpriseCacheManager();
 
 			return ISI.Platforms.ServiceApplication.Startup.Main(context);

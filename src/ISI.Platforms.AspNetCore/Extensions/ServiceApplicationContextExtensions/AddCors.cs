@@ -29,7 +29,7 @@ namespace ISI.Platforms.AspNetCore.Extensions
 {
 	public static partial class ServiceApplicationContextExtensions
 	{
-		public static ServiceApplicationContext AddCors(this ServiceApplicationContext context, string corsPolicyName, IEnumerable<string> corsPolicyOrigins = null, bool? allowAnyHeader = null, bool? allowAnyMethod = null, bool? allowCredentials = null)
+		public static ServiceApplicationContext AddCors(this ServiceApplicationContext context, IEnumerable<string> corsPolicyOrigins = null, bool? allowAnyHeader = null, bool? allowAnyMethod = null, bool? allowCredentials = null)
 		{
 			context.AddWebHostBuilderConfigureServices((webHostBuilder, services) =>
 			{
@@ -48,36 +48,35 @@ namespace ISI.Platforms.AspNetCore.Extensions
 
 				services.AddCors(options =>
 				{
-					options.AddPolicy(corsPolicyName,
-						policy =>
+					options.AddDefaultPolicy(policy =>
+					{
+						policy.WithOrigins(corsPolicyOrigins.ToArray());
+						if (allowAnyHeader ?? configuration?.Cors?.AllowAnyHeader ?? true)
 						{
-							policy.WithOrigins(corsPolicyOrigins.ToArray());
-							if (allowAnyHeader ?? configuration?.Cors?.AllowAnyHeader ?? true)
-							{
-								policy.AllowAnyHeader();
-							}
+							policy.AllowAnyHeader();
+						}
 
-							if (allowAnyMethod ?? configuration?.Cors?.AllowAnyMethod ?? true)
-							{
-								policy.AllowAnyMethod();
-							}
+						if (allowAnyMethod ?? configuration?.Cors?.AllowAnyMethod ?? true)
+						{
+							policy.AllowAnyMethod();
+						}
 
-							if (allowCredentials ?? configuration?.Cors?.AllowCredentials ?? true)
-							{
-								policy.AllowCredentials();
-							}
-							// see https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#access-control-expose-headers
-							// exposed headers such as X-Wrs-User-Role must be exposed during CORS transfers explicitly
-							//policy.WithExposedHeaders(UserRoleHeaderHandler
-							//	.AddResponseHeaderNames(UserUuidHeaderHandler.AddResponseHeaderNames()).ToArray());
-						});
+						if (allowCredentials ?? configuration?.Cors?.AllowCredentials ?? true)
+						{
+							policy.AllowCredentials();
+						}
+						// see https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#access-control-expose-headers
+						// exposed headers such as X-Wrs-User-Role must be exposed during CORS transfers explicitly
+						//policy.WithExposedHeaders(UserRoleHeaderHandler
+						//	.AddResponseHeaderNames(UserUuidHeaderHandler.AddResponseHeaderNames()).ToArray());
+					});
 				});
 
 			});
 
 			context.AddConfigureApplication((applicationBuilder, webHostingEnvironment) =>
 			{
-				applicationBuilder.UseCors(corsPolicyName);
+				applicationBuilder.UseCors();
 			});
 
 			return context;

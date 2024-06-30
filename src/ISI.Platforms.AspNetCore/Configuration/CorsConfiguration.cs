@@ -29,13 +29,13 @@ namespace ISI.Platforms.AspNetCore
 			public string[] PolicyOrigins { get; set; }
 
 			[ISI.Extensions.EnvironmentConfigurationVariableName("CORS_ALLOW_ANY_HEADER")]
-			public bool AllowAnyHeader { get; set; }
+			public bool? AllowAnyHeader { get; set; }
 
 			[ISI.Extensions.EnvironmentConfigurationVariableName("CORS_ALLOW_ANY_METHOD")]
-			public bool AllowAnyMethod { get; set; }
+			public bool? AllowAnyMethod { get; set; }
 
 			[ISI.Extensions.EnvironmentConfigurationVariableName("CORS_ALLOW_CREDENTIALS")]
-			public bool AllowCredentials { get; set; }
+			public bool? AllowCredentials { get; set; }
 		}
 	}
 }

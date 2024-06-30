@@ -33,7 +33,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 			var context = new ServiceApplicationContext(typeof(Program))
 			{
 				LoggerConfigurator = new ISI.Platforms.Serilog.LoggerConfigurator(),
-				
+
 				Args = args,
 			};
 
@@ -46,7 +46,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 
 			context.AddSwaggerConfiguration(useBearer: true);
 
-			context.AddCors("CorsPolicy", new[] { "*" });
+			context.AddCors(new[] { "*" });
 
 			context.AddEnterpriseCacheManager();
 

@@ -15,6 +15,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using ISI.Extensions.Extensions;
 using Microsoft.Extensions.DependencyInjection;
@@ -158,8 +159,19 @@ namespace ISI.Extensions.StatusTrackers
 					var fileName = GetStatusTrackerFileName(StatusTrackerKey, CaptionFileNameExtension);
 					try
 					{
+						var caption = string.Empty;
+						if (System.IO.File.Exists(fileName))
+						{
+							caption = System.IO.File.ReadAllText(fileName);
+						}
+
 						CaptionFileStream = new(fileName, System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.RandomAccess);
 						CaptionStreamWriter = new(CaptionFileStream);
+
+						if (!string.IsNullOrWhiteSpace(caption))
+						{
+							_caption = caption;
+						}
 					}
 					catch (Exception exception)
 					{
@@ -171,8 +183,19 @@ namespace ISI.Extensions.StatusTrackers
 					var fileName = GetStatusTrackerFileName(StatusTrackerKey, PercentFileNameExtension);
 					try
 					{
+						var percent = 0;
+						if (System.IO.File.Exists(fileName))
+						{
+							percent = ((System.IO.File.ReadAllLines(fileName) ?? []).FirstOrDefault() ?? string.Empty).ToInt();
+						}
+
 						PercentFileStream = new(fileName, System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.RandomAccess);
 						PercentStreamWriter = new(PercentFileStream);
+
+						if (percent > 0)
+						{
+							_percent = percent;
+						}
 					}
 					catch (Exception exception)
 					{
@@ -184,9 +207,32 @@ namespace ISI.Extensions.StatusTrackers
 					var fileName = GetStatusTrackerFileName(StatusTrackerKey, LogFileNameExtension);
 					try
 					{
+						var logEntries = (IEnumerable<IStatusTrackerLogEntry>)null;
+
+						if (System.IO.File.Exists(fileName))
+						{
+							logEntries = System.IO.File.ReadAllText(fileName)
+								.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+								.Select(l => l.Split(new[] { '\t' }, 2)).
+								Select(logParts => new StatusTrackerLogEntry()
+								{
+									DateTimeStamp = logParts[0].ToDateTime(),
+									Description = System.Web.HttpUtility.UrlDecode(logParts[1]),
+								});
+
+						}
+
 						LogFileStream = new(fileName, System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.None);
 						LogFileStream.Position = LogFileStream.Length;
 						LogStreamWriter = new(LogFileStream);
+
+						if (logEntries.NullCheckedAny())
+						{
+							lock (SyncLock)
+							{
+								_logEntries.AddRange(logEntries);
+							}
+						}
 					}
 					catch (Exception exception)
 					{
@@ -241,11 +287,6 @@ namespace ISI.Extensions.StatusTrackers
 				{
 					lock (SyncLock)
 					{
-						while (_logEntries.Count >= MaxLogSize)
-						{
-							_logEntries.RemoveAt(0);
-						}
-
 						_logEntries.Add(logEntry);
 
 						LogStreamWriter.Write("{0}\t{1}\r\n", logEntry.DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise), System.Web.HttpUtility.UrlEncode(logEntry.Description));
@@ -269,6 +310,11 @@ namespace ISI.Extensions.StatusTrackers
 
 			public IEnumerable<IStatusTrackerLogEntry> GetLogEntries()
 			{
+				if (_logEntries.Count > MaxLogSize)
+				{
+					return _logEntries.Skip(_logEntries.Count - MaxLogSize).ToArray();
+				}
+
 				return _logEntries.ToArray();
 			}
 

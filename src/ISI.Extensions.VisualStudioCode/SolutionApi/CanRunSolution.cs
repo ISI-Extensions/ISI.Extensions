@@ -26,9 +26,18 @@ namespace ISI.Extensions.VisualStudioCode
 {
 	public partial class SolutionApi
 	{
-		public DTOs.OpenSolutionResponse OpenSolution(DTOs.OpenSolutionRequest request)
+		private bool CanRunSolution(string sourceDirectory)
 		{
-			var response = new DTOs.OpenSolutionResponse();
+			if (!string.IsNullOrWhiteSpace(sourceDirectory) && System.IO.Directory.Exists(sourceDirectory))
+			{
+				return ISI.Extensions.VisualStudioCode.Solution.IsQuasarProject(sourceDirectory);
+			}
+
+			return false;
+		}
+		public DTOs.CanRunSolutionResponse CanRunSolution(DTOs.CanRunSolutionRequest request)
+		{
+			var response = new DTOs.CanRunSolutionResponse();
 
 			var solutionDetails = GetSolutionDetails(new()
 			{
@@ -37,17 +46,7 @@ namespace ISI.Extensions.VisualStudioCode
 
 			var sourceDirectory = (string.IsNullOrWhiteSpace(solutionDetails.RootSourceDirectory) ? solutionDetails.SolutionDirectory : solutionDetails.RootSourceDirectory);
 
-			if (!string.IsNullOrWhiteSpace(sourceDirectory) && System.IO.Directory.Exists(sourceDirectory))
-			{
-				ISI.Extensions.Process.ExecuteShell(new Process.ExecuteShellRequest()
-				{
-					ProcessExeFullName = "code",
-					Arguments = new[] { "." },
-					WorkingDirectory = sourceDirectory,
-					UseShellExecute = false,
-					CreateNoWindow = true,
-				});
-			}
+			response.CanRun = CanRunSolution(sourceDirectory);
 
 			return response;
 		}

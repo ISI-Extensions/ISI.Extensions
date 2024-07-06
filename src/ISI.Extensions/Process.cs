@@ -29,6 +29,8 @@ namespace ISI.Extensions
 			public string ProcessExeFullName { get; set; }
 			public IEnumerable<string> Arguments { get; set; }
 			public IDictionary<string, string> EnvironmentVariables { get; set; }
+			public bool UseShellExecute { get; set; } = true;
+			public bool CreateNoWindow { get; set; } = false;
 
 			public override string ToString() => string.Format("\"{0}\" {1}", ProcessExeFullName, string.Join(" ", Arguments ?? Array.Empty<string>()));
 		}
@@ -48,8 +50,8 @@ namespace ISI.Extensions
 			{
 				Arguments = string.Join(" ", request.Arguments ?? Array.Empty<string>()),
 				WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal,
-				UseShellExecute = true,
-				CreateNoWindow = false,
+				UseShellExecute = request.UseShellExecute,
+				CreateNoWindow = request.CreateNoWindow,
 			};
 
 			if (request.EnvironmentVariables.NullCheckedAny())

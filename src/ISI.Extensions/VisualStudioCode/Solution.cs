@@ -23,6 +23,7 @@ namespace ISI.Extensions.VisualStudioCode
 	public class Solution
 	{
 		public static readonly string SearchPattern = "package.json";
+		public static readonly string QuasarSearchPattern = "quasar.config.js";
 
 		public static bool IsSolutionFileName(string fullName)
 		{
@@ -39,6 +40,11 @@ namespace ISI.Extensions.VisualStudioCode
 		public static IEnumerable<string> EnumerateSolutionFiles(string path, string[] ignorePatterns, int maxDepth = int.MaxValue)
 		{
 			return ISI.Extensions.IO.Path.EnumerateFiles(path, SearchPattern, ignorePatterns, maxDepth);
+		}
+
+		public static bool IsQuasarProject(string path, System.IO.SearchOption searchOption = System.IO.SearchOption.TopDirectoryOnly)
+		{
+			return System.IO.Directory.GetFiles(path, ISI.Extensions.VisualStudioCode.Solution.QuasarSearchPattern, searchOption).Any();
 		}
 	}
 }

@@ -41,6 +41,8 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 
 		public virtual SolutionDetails SolutionDetails { get; }
 
+		protected bool ShowRunSolutionButton { get; }
+
 		public bool Selected
 		{
 			get => CheckBox.Checked;
@@ -84,6 +86,7 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 		protected internal System.Windows.Forms.Label StatusLabel { get; set; }
 		protected internal System.Windows.Forms.Button RefreshButton { get; set; }
 		protected internal System.Windows.Forms.Button OpenButton { get; set; }
+		protected internal System.Windows.Forms.Button RunSolutionButton { get; set; }
 		protected internal System.Windows.Forms.Button ViewBuildLogButton { get; set; }
 
 		protected internal void SetButtonVisibility(System.Windows.Forms.Button button, bool isVisible)
@@ -134,6 +137,7 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 			{
 				SetButtonVisibility(RefreshButton, false);
 				SetButtonVisibility(OpenButton, false);
+				SetButtonVisibility(RunSolutionButton, false);
 				SetCheckBoxEnabled(CheckBox, false);
 				SetButtonVisibility(ViewBuildLogButton, false);
 				SetStatus(TaskActionStatus.Default, "upgrading node modules ...");
@@ -152,6 +156,7 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 				SetCheckBoxEnabled(CheckBox, true);
 				SetButtonVisibility(OpenButton, showOpenButton);
 				SetButtonVisibility(RefreshButton, showRefreshButton);
+				SetButtonVisibility(RunSolutionButton, ShowRunSolutionButton);
 			}
 			SetButtonVisibility(ViewBuildLogButton, true);
 		}
@@ -167,6 +172,7 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 				{
 					SetButtonVisibility(RefreshButton, false);
 					SetButtonVisibility(OpenButton, false);
+					SetButtonVisibility(RunSolutionButton, false);
 					SetCheckBoxEnabled(CheckBox, false);
 					SetButtonVisibility(ViewBuildLogButton, false);
 					SetStatus(TaskActionStatus.Default, "cleaning ...");
@@ -200,6 +206,7 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 					SetStatus((CleanSolutionErrored ? TaskActionStatus.Errored : TaskActionStatus.Default), (CleanSolutionErrored ? "Errored Cleaning" : "Completed"));
 					SetCheckBoxEnabled(CheckBox, true);
 					SetButtonVisibility(OpenButton, true);
+					SetButtonVisibility(RunSolutionButton, ShowRunSolutionButton);
 					SetButtonVisibility(RefreshButton, true);
 				}
 			}
@@ -214,6 +221,7 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 			{
 				SetButtonVisibility(RefreshButton, false);
 				SetButtonVisibility(OpenButton, false);
+				SetButtonVisibility(RunSolutionButton, false);
 				SetCheckBoxEnabled(CheckBox, false);
 				SetButtonVisibility(ViewBuildLogButton, false);
 				SetStatus(TaskActionStatus.Default, "updating from source control ...");
@@ -251,6 +259,7 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 				SetStatus((UpdateSolutionErrored ? TaskActionStatus.Errored : TaskActionStatus.Default), (UpdateSolutionErrored ? "Errored Updating" : "Completed"));
 				SetCheckBoxEnabled(CheckBox, true);
 				SetButtonVisibility(OpenButton, true);
+				SetButtonVisibility(RunSolutionButton, ShowRunSolutionButton);
 				SetButtonVisibility(RefreshButton, true);
 				SetButtonVisibility(ViewBuildLogButton, true);
 			}
@@ -267,6 +276,7 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 				{
 					SetButtonVisibility(RefreshButton, false);
 					SetButtonVisibility(OpenButton, false);
+					SetButtonVisibility(RunSolutionButton, false);
 					SetCheckBoxEnabled(CheckBox, false);
 					SetButtonVisibility(ViewBuildLogButton, false);
 					SetStatus(TaskActionStatus.Default, "installing node modules ...");
@@ -300,6 +310,7 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 					SetStatus((InstallNodeModulesErrored ? TaskActionStatus.Errored : TaskActionStatus.Default), (InstallNodeModulesErrored ? "Errored Installing Node Modules" : "Completed"));
 					SetCheckBoxEnabled(CheckBox, true);
 					SetButtonVisibility(OpenButton, true);
+					SetButtonVisibility(RunSolutionButton, ShowRunSolutionButton);
 					SetButtonVisibility(RefreshButton, true);
 				}
 				SetButtonVisibility(ViewBuildLogButton, true);
@@ -333,6 +344,11 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 			{
 				Solution = solutionFullName,
 			}).SolutionDetails;
+
+			ShowRunSolutionButton = SolutionApi.CanRunSolution(new()
+			{
+				Solution = solutionFullName,
+			}).CanRun;
 
 			Panel = new System.Windows.Forms.Panel()
 			{
@@ -428,12 +444,34 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 			};
 			SolutionPanel.Controls.Add(OpenButton);
 
+			if (ShowRunSolutionButton)
+			{
+				RunSolutionButton = new()
+				{
+					Visible = false,
+					Text = "Run",
+					Top = 4,
+					Left = 520,
+					Width = 80,
+					Height = 20,
+					BackColor = System.Drawing.SystemColors.ButtonFace,
+				};
+				RunSolutionButton.Click += (_, __) =>
+				{
+					Task.Run(() => SolutionApi.RunSolution(new()
+					{
+						Solution = SolutionDetails.SolutionDirectory,
+					}));
+				};
+				SolutionPanel.Controls.Add(RunSolutionButton);
+			}
+
 			ViewBuildLogButton = new()
 			{
 				Visible = false,
 				Text = "View Log",
 				Top = 4,
-				Left = 520,
+				Left = 610,
 				Width = 80,
 				Height = 20,
 				BackColor = System.Drawing.SystemColors.ButtonFace,
@@ -481,6 +519,7 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 				{
 					ViewBuildLogButton,
 					OpenButton,
+					RunSolutionButton,
 					RefreshButton,
 				})
 				{

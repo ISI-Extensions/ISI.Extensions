@@ -29,6 +29,7 @@ namespace ISI.Extensions
 			public string ProcessExeFullName { get; set; }
 			public IEnumerable<string> Arguments { get; set; }
 			public IDictionary<string, string> EnvironmentVariables { get; set; }
+			public System.Diagnostics.ProcessWindowStyle ProcessWindowStyle { get; set; } = System.Diagnostics.ProcessWindowStyle.Normal;
 			public bool UseShellExecute { get; set; } = true;
 			public bool CreateNoWindow { get; set; } = false;
 
@@ -49,7 +50,7 @@ namespace ISI.Extensions
 			var processStartInfo = new System.Diagnostics.ProcessStartInfo(request.ProcessExeFullName)
 			{
 				Arguments = string.Join(" ", request.Arguments ?? Array.Empty<string>()),
-				WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal,
+				WindowStyle = request.ProcessWindowStyle,
 				UseShellExecute = request.UseShellExecute,
 				CreateNoWindow = request.CreateNoWindow,
 			};
@@ -86,6 +87,7 @@ namespace ISI.Extensions
 				EnableRaisingEvents = false,
 				StartInfo = processStartInfo,
 			};
+
 			process.Start();
 		}
 

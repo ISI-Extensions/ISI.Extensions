@@ -44,7 +44,8 @@ namespace ISI.Extensions.VisualStudioCode
 					ProcessExeFullName = "code",
 					Arguments = new[] { "." },
 					WorkingDirectory = sourceDirectory,
-					UseShellExecute = false,
+					ProcessWindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
+					UseShellExecute = true,
 					CreateNoWindow = true,
 				});
 			}

@@ -88,7 +88,7 @@ namespace ISI.Extensions.Tests
 				{
 					ApiUser = settings.GetValue("NameCheap.ApiUser"),
 					ApiKey = settings.GetValue("NameCheap.ApiKey"),
-					DomainName = "whizzia.com",
+					DomainName = "muthmanor.com",
 				}).DnsRecords;
 
 			}

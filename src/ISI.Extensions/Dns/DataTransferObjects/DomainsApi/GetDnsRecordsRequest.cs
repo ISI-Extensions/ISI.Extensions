@@ -18,26 +18,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.Dns.DataTransferObjects.DomainsApi
 {
-	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
-	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrarWithPriority
+	public class GetDnsRecordsRequest
 	{
-		public int Priority => 100;
+		public Guid DnsProviderUuid { get; set; }
 
-		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
-		{
-			services.AddSingleton<ISI.Extensions.IApplicationBus, ISI.Extensions.ApplicationBus>();
-			services.AddSingleton<ISI.Extensions.Serialization.ISerialization, ISI.Extensions.Serialization.Serialization>();
-			services.AddSingleton<ISI.Extensions.SecureShell.IHostConfigurationManager, ISI.Extensions.SecureShell.HostConfigurationManager>();
-			services.AddSingleton<ISI.Extensions.StatusTrackers.FileStatusTrackerFactory>();
-			services.AddSingleton<ISI.Extensions.Crypto.Pbkdf2SaltedHashGenerator>();
-			services.AddSingleton<ISI.Extensions.Threads.ThreadManager>();
-			services.AddSingleton<ISI.Extensions.Emails.EmailMessageGenerator.IEmailMessageGenerator, ISI.Extensions.Emails.EmailMessageGenerator.EmailMessageGenerator>();
-			services.AddSingleton<ISI.Extensions.Emails.LocalhostEmailSender>();
-			services.AddSingleton<ISI.Extensions.Dns.IDomainsApi, ISI.Extensions.Dns.DomainsApi>();
-		}
+		public string Url { get; set; }
+		public string ApiUser { get; set; }
+		public string ApiKey { get; set; }
+
+		public string DomainName { get; set; }
 	}
 }

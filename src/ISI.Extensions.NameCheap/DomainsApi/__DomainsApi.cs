@@ -8,8 +8,12 @@ using DTOs = ISI.Extensions.NameCheap.DataTransferObjects.DomainsApi;
 
 namespace ISI.Extensions.NameCheap
 {
-	public partial class DomainsApi
+	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "NameCheap")]
+	public partial class DomainsApi : ISI.Extensions.Dns.IDomainsApi
 	{
+		internal const string _dnsProviderUuid = "14746b87-ec50-4eb5-ace9-ae685a76a328";
+		public static Guid DnsProviderUuid { get; } = _dnsProviderUuid.ToGuid();
+
 		protected Configuration Configuration { get; }
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
@@ -25,6 +29,37 @@ namespace ISI.Extensions.NameCheap
 			Logger = logger;
 			DateTimeStamper = dateTimeStamper;
 			IpifyApi = ipifyApi;
+		}
+
+		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsResponse ISI.Extensions.Dns.IDomainsApi.GetDnsRecords(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsRequest request)
+		{
+			var response = new ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsResponse();
+
+			response.DnsRecords = GetDnsRecords(new DTOs.GetDnsRecordsRequest()
+			{
+				Url = request.Url,
+				ApiUser = request.ApiUser,
+				ApiKey = request.ApiKey,
+				DomainName = request.DomainName,
+			}).DnsRecords;
+
+			return response;
+		}
+
+		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.SetDnsRecordsResponse ISI.Extensions.Dns.IDomainsApi.SetDnsRecords(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.SetDnsRecordsRequest request)
+		{
+			var response = new ISI.Extensions.Dns.DataTransferObjects.DomainsApi.SetDnsRecordsResponse();
+
+			SetDnsRecords(new DTOs.SetDnsRecordsRequest()
+			{
+				Url = request.Url,
+				ApiUser = request.ApiUser,
+				ApiKey = request.ApiKey,
+				DomainName = request.DomainName,
+				DnsRecords = request.DnsRecords,
+			});
+
+			return response;
 		}
 	}
 }

@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,29 +15,22 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions
 {
-	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
-	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrarWithPriority
+	[AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
+	public class DomainsApiAttribute : ISI.Extensions.TypeLocatorAttribute
 	{
-		public int Priority => 100;
+		public Guid DnsProviderUuid { get; }
+		public string Description { get; }
 
-		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
+		public DomainsApiAttribute(string dnsProviderUuid, string description)
+			: base(typeof(ISI.Extensions.Dns.IDomainsApi))
 		{
-			services.AddSingleton<ISI.Extensions.IApplicationBus, ISI.Extensions.ApplicationBus>();
-			services.AddSingleton<ISI.Extensions.Serialization.ISerialization, ISI.Extensions.Serialization.Serialization>();
-			services.AddSingleton<ISI.Extensions.SecureShell.IHostConfigurationManager, ISI.Extensions.SecureShell.HostConfigurationManager>();
-			services.AddSingleton<ISI.Extensions.StatusTrackers.FileStatusTrackerFactory>();
-			services.AddSingleton<ISI.Extensions.Crypto.Pbkdf2SaltedHashGenerator>();
-			services.AddSingleton<ISI.Extensions.Threads.ThreadManager>();
-			services.AddSingleton<ISI.Extensions.Emails.EmailMessageGenerator.IEmailMessageGenerator, ISI.Extensions.Emails.EmailMessageGenerator.EmailMessageGenerator>();
-			services.AddSingleton<ISI.Extensions.Emails.LocalhostEmailSender>();
-			services.AddSingleton<ISI.Extensions.Dns.IDomainsApi, ISI.Extensions.Dns.DomainsApi>();
+			DnsProviderUuid = dnsProviderUuid.ToGuid();
+			Description = description;
 		}
 	}
 }

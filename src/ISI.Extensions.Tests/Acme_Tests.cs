@@ -32,12 +32,12 @@ namespace ISI.Extensions.Tests
 	[TestFixture]
 	public class Acme_Tests
 	{
-		//protected readonly Uri HostDirectoryUri = new Uri(@"https://acme-v02.api.letsencrypt.org/directory");
-		//protected readonly string AccountPemFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-account.pem");
-		//protected readonly string AccountSerializedJsonWebKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-account.SerializedJsonWebKey");
-		//protected readonly string AccountKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-account.key");
-		//protected readonly string CertificateKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-account.certificate.key");
-		//protected readonly string CertificateFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-account.certificate.crt");
+		protected readonly Uri HostDirectoryUri = new Uri(@"https://acme-v02.api.letsencrypt.org/directory");
+		protected readonly string AccountPemFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-account.pem");
+		protected readonly string AccountSerializedJsonWebKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-account.SerializedJsonWebKey");
+		protected readonly string AccountKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-account.key");
+		protected readonly string CertificateKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-account.certificate.key");
+		protected readonly string CertificateFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-account.certificate.crt");
 
 		//protected readonly Uri HostDirectoryUri = new Uri(@"https://acme-staging-v02.api.letsencrypt.org/directory");
 		//protected readonly string AccountPemFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.pem");
@@ -46,12 +46,12 @@ namespace ISI.Extensions.Tests
 		//protected readonly string CertificateKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.certificate.key");
 		//protected readonly string CertificateFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.certificate.crt");
 
-		protected readonly Uri HostDirectoryUri = new Uri(@"https://localhost:15633/directory");
-		protected readonly string AccountPemFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.pem");
-		protected readonly string AccountSerializedJsonWebKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.SerializedJsonWebKey");
-		protected readonly string AccountKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.key");
-		protected readonly string CertificateKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.certificate.key");
-		protected readonly string CertificateFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.certificate.crt");
+		//protected readonly Uri HostDirectoryUri = new Uri(@"https://localhost:15633/directory");
+		//protected readonly string AccountPemFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.pem");
+		//protected readonly string AccountSerializedJsonWebKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.SerializedJsonWebKey");
+		//protected readonly string AccountKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.key");
+		//protected readonly string CertificateKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.certificate.key");
+		//protected readonly string CertificateFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.certificate.crt");
 
 		protected string GetAccountPem() => System.IO.File.ReadAllText(AccountPemFullName);
 		protected string GetAccountSerializedJsonWebKey() => System.IO.File.ReadAllText(AccountSerializedJsonWebKeyFullName);
@@ -65,7 +65,7 @@ namespace ISI.Extensions.Tests
 		protected ISI.Extensions.JsonSerialization.IJsonSerializer JsonSerializer { get; set; }
 
 		protected ISI.Extensions.Acme.AcmeApi AcmeApi { get; set; }
-		protected ISI.Extensions.GoDaddy.DomainsApi DomainsApi { get; set; }
+		protected ISI.Extensions.Dns.IDomainsApi DomainsApi { get; set; }
 
 		[OneTimeSetUp]
 		public void OneTimeSetUp()
@@ -97,7 +97,7 @@ namespace ISI.Extensions.Tests
 			DateTimeStamper = ServiceProvider.GetService<ISI.Extensions.DateTimeStamper.IDateTimeStamper>();
 			JsonSerializer = ServiceProvider.GetService<ISI.Extensions.JsonSerialization.IJsonSerializer>();
 			AcmeApi = ServiceProvider.GetService<ISI.Extensions.Acme.AcmeApi>();
-			DomainsApi = ServiceProvider.GetService<ISI.Extensions.GoDaddy.DomainsApi>();
+			DomainsApi = ServiceProvider.GetService<ISI.Extensions.Dns.DomainsApi>();
 		}
 
 		[Test]
@@ -214,8 +214,9 @@ namespace ISI.Extensions.Tests
 
 			var setDnsRecordsResponse = DomainsApi.SetDnsRecords(new()
 			{
-				ApiKey = settings.GetValue("GoDaddy.ApiKey"),
-				ApiSecret = settings.GetValue("GoDaddy.ApiSecret"),
+				DnsProviderUuid = ISI.Extensions.GoDaddy.DomainsApi.DnsProviderUuid,
+				ApiUser = settings.GetValue("GoDaddy.ApiKey"),
+				ApiKey = settings.GetValue("GoDaddy.ApiSecret"),
 				DomainName = calculateDnsTokenResponse.DomainName,
 				DnsRecords = new[] { dnsRecord },
 			});
@@ -315,10 +316,11 @@ namespace ISI.Extensions.Tests
 
 				SetDnsRecord = (rootDomainName, dnsRecord) =>
 				{
-					DomainsApi.SetDnsRecords(new()
+					DomainsApi.SetDnsRecords(new ()
 					{
-						ApiKey = settings.GetValue("GoDaddy.ApiKey"),
-						ApiSecret = settings.GetValue("GoDaddy.ApiSecret"),
+						DnsProviderUuid = ISI.Extensions.NameCheap.DomainsApi.DnsProviderUuid,
+						ApiUser = settings.GetValue("NameCheap.ApiUser"),
+						ApiKey = settings.GetValue("NameCheap.ApiKey"),
 						DomainName = rootDomainName,
 						DnsRecords = new[] { dnsRecord },
 					});

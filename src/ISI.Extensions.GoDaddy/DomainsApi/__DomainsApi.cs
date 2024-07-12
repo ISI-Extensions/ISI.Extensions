@@ -25,8 +25,12 @@ using SERIALIZABLE = ISI.Extensions.GoDaddy.SerializableModels;
 
 namespace ISI.Extensions.GoDaddy
 {
-	public partial class DomainsApi
+	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "GoDaddy")]
+	public partial class DomainsApi : ISI.Extensions.Dns.IDomainsApi
 	{
+		internal const string _dnsProviderUuid = "72924eef-4777-4c35-87df-568da79cf8aa";
+		public static Guid DnsProviderUuid { get; } = _dnsProviderUuid.ToGuid();
+
 		protected Configuration Configuration { get; }
 
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
@@ -41,6 +45,37 @@ namespace ISI.Extensions.GoDaddy
 
 			Logger = logger;
 			DateTimeStamper = dateTimeStamper;
+		}
+
+		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsResponse ISI.Extensions.Dns.IDomainsApi.GetDnsRecords(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsRequest request)
+		{
+			var response = new ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsResponse();
+
+			response.DnsRecords = GetDnsRecords(new DTOs.GetDnsRecordsRequest()
+			{
+				Url = request.Url,
+				ApiKey = request.ApiUser,
+				ApiSecret = request.ApiKey,
+				DomainName = request.DomainName,
+			}).DnsRecords;
+
+			return response;
+		}
+
+		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.SetDnsRecordsResponse ISI.Extensions.Dns.IDomainsApi.SetDnsRecords(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.SetDnsRecordsRequest request)
+		{
+			var response = new ISI.Extensions.Dns.DataTransferObjects.DomainsApi.SetDnsRecordsResponse();
+
+			SetDnsRecords(new DTOs.SetDnsRecordsRequest()
+			{
+				Url = request.Url,
+				ApiKey = request.ApiUser,
+				ApiSecret = request.ApiKey,
+				DomainName = request.DomainName,
+				DnsRecords = request.DnsRecords,
+			});
+
+			return response;
 		}
 	}
 }

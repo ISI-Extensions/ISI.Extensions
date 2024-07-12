@@ -116,5 +116,38 @@ namespace ISI.Extensions.Tests
 				});
 			}
 		}
+
+		[Test]
+		public void SSL_Verify_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+
+			var domainsApi = ServiceProvider.GetService<ISI.Extensions.GoDaddy.DomainsApi>();
+
+			using (var eventHandler = ISI.Extensions.WebClient.Rest.GetEventHandler())
+			{
+				var dnsRecord = new ISI.Extensions.Dns.DnsRecord()
+				{
+					Data = "xxxxxxxxxxxxxxxxxxxxxxx",
+					Name = "xxxxxxxxxxxxxxxxxxxxxxxxx",
+					//Port = source.Port,
+					//Priority = source.Priority,
+					//Protocol = source.Protocol,
+					//Service = source.Service,
+					//Ttl = 3600,
+					RecordType = ISI.Extensions.Dns.RecordType.CNAME,
+					//Weight = source.Weight,
+				};
+
+				var xxx = domainsApi.SetDnsRecords(new()
+				{
+					ApiKey = settings.GetValue("GoDaddy.ApiKey"),
+					ApiSecret = settings.GetValue("GoDaddy.ApiSecret"),
+					DomainName = "westriversystems.com",
+					DnsRecords = new[] { dnsRecord },
+				});
+			}
+		}
 	}
 }

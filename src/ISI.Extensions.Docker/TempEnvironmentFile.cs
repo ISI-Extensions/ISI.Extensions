@@ -62,11 +62,6 @@ namespace ISI.Extensions.Docker
 			}
 
 			EnvironmentFiles = environmentFiles.ToNullCheckedArray();
-
-			foreach (var environmentFile in EnvironmentFiles)
-			{
-				Console.WriteLine(environmentFile.FullName);
-			}
 		}
 
 		public string[] GetFileNames() => EnvironmentFiles.ToNullCheckedArray(environmentFile => environmentFile.FileName);

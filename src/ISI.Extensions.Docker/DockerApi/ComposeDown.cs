@@ -50,6 +50,11 @@ namespace ISI.Extensions.Docker
 
 				arguments.Add("compose");
 
+				if (!string.IsNullOrWhiteSpace(request.ProjectName))
+				{
+					arguments.Add($"--project-name {request.ProjectName}");
+				}
+
 				arguments.Add("--progress plain");
 
 				arguments.AddRange(tempEnvironmentFiles.GetDockerComposeArguments());

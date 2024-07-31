@@ -52,6 +52,9 @@ namespace ISI.Extensions.Docker
 	{
 		protected TempEnvironmentFile[] EnvironmentFiles { get; }
 
+		private InvariantCultureIgnoreCaseStringDictionary<string> _environmentVariables = null;
+		protected InvariantCultureIgnoreCaseStringDictionary<string> EnvironmentVariables => _environmentVariables ??= GetEnvironmentVariables();
+
 		public TempEnvironmentFiles(string composeDirectory, IEnumerable<string> sourceFullNames, InvariantCultureIgnoreCaseStringDictionary<string> environmentVariables)
 		{
 			var environmentFiles = sourceFullNames.ToNullCheckedList(sourceFullName => new TempEnvironmentFile(sourceFullName, composeDirectory), NullCheckCollectionResult.Empty);
@@ -67,6 +70,45 @@ namespace ISI.Extensions.Docker
 		public string[] GetFileNames() => EnvironmentFiles.ToNullCheckedArray(environmentFile => environmentFile.FileName);
 
 		public string[] GetDockerComposeArguments() => GetFileNames().ToNullCheckedArray(environmentFileName => $"--env-file={environmentFileName}");
+
+		protected InvariantCultureIgnoreCaseStringDictionary<string> GetEnvironmentVariables()
+		{
+			var environmentVariables = new InvariantCultureIgnoreCaseStringDictionary<string>();
+
+			if (EnvironmentFiles.NullCheckedAny())
+			{
+				foreach (var environmentFile in EnvironmentFiles)
+				{
+					var lines = System.IO.File.ReadAllLines(environmentFile.FullName);
+
+					for (var lineIndex = 0; lineIndex < lines.Length; lineIndex++)
+					{
+						var line = lines[lineIndex].Trim();
+
+						if (!string.IsNullOrWhiteSpace(line) && !line.StartsWith("#"))
+						{
+							var lineParts = line.Split(new[] { '=' }, 2);
+
+							if (lineParts.Length == 2)
+							{
+								if (environmentVariables.ContainsKey(lineParts[0]))
+								{
+									environmentVariables[lineParts[0]] = lineParts[1];
+								}
+								else
+								{
+									environmentVariables.Add(lineParts[0], lineParts[1]);
+								}
+							}
+						}
+					}
+				}
+			}
+
+			return environmentVariables;
+		}
+
+		public bool TryGetValue(string key, out string value) => EnvironmentVariables.TryGetValue(key, out value);
 
 		public void Dispose()
 		{

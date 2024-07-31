@@ -38,6 +38,8 @@ namespace ISI.Extensions.Docker
 
 			using (var tempEnvironmentFiles = new TempEnvironmentFiles(request.ComposeDirectory, request.EnvironmentFileFullNames, request.EnvironmentVariables))
 			{
+				request.OnComposeUpStart?.Invoke(tempEnvironmentFiles.TryGetValue);
+
 				if (!string.IsNullOrWhiteSpace(request.Context))
 				{
 					if (!DockerContexts.ContainsKey(request.Context))
@@ -77,6 +79,8 @@ namespace ISI.Extensions.Docker
 				response.Output = waitForProcessResponse.Output;
 
 				response.Errored = waitForProcessResponse.Errored;
+								
+				request.OnComposeUpFinish?.Invoke(tempEnvironmentFiles.TryGetValue, response.Errored);
 
 				if (response.Errored)
 				{

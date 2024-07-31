@@ -22,23 +22,5 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
 {
-	public delegate void OnComposePullStartDelegate(TryGetEnvironmentValueDelegate tryGetEnvironmentValue);
-	public delegate void OnComposePullFinishDelegate(TryGetEnvironmentValueDelegate tryGetEnvironmentValue, bool errored);
-
-	public class ComposePullRequest
-	{
-		public string ComposeDirectory{ get; set; }
-		
-		public string ProjectName { get; set; }
-
-		public string Context { get; set; }
-
-		public string[] EnvironmentFileFullNames { get; set; }
-		public InvariantCultureIgnoreCaseStringDictionary<string> EnvironmentVariables { get; set; }
-		
-		public OnComposePullStartDelegate OnComposePullStart { get; set; } = null;
-		public OnComposePullFinishDelegate OnComposePullFinish { get; set; } = null;
-
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
-	}
+	public delegate bool TryGetEnvironmentValueDelegate(string key, out string value);
 }

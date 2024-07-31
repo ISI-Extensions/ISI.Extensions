@@ -22,6 +22,9 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
 {
+	public delegate void OnComposeDownStartDelegate(TryGetEnvironmentValueDelegate tryGetEnvironmentValue);
+	public delegate void OnComposeDownFinishDelegate(TryGetEnvironmentValueDelegate tryGetEnvironmentValue, bool errored);
+
 	public class ComposeDownRequest
 	{
 		public string ComposeDirectory { get; set; }
@@ -34,6 +37,9 @@ namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
 		public InvariantCultureIgnoreCaseStringDictionary<string> EnvironmentVariables { get; set; }
 
 		public bool RemoveVolumes { get; set; }
+
+		public OnComposeDownStartDelegate OnComposeDownStart { get; set; } = null;
+		public OnComposeDownFinishDelegate OnComposeDownFinish { get; set; } = null;
 
 		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}

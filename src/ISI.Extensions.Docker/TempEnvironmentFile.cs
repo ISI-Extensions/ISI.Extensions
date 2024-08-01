@@ -53,7 +53,7 @@ namespace ISI.Extensions.Docker
 		protected TempEnvironmentFile[] EnvironmentFiles { get; }
 
 		private InvariantCultureIgnoreCaseStringDictionary<string> _environmentVariables = null;
-		protected InvariantCultureIgnoreCaseStringDictionary<string> EnvironmentVariables => _environmentVariables ??= GetEnvironmentVariables();
+		internal InvariantCultureIgnoreCaseStringDictionary<string> EnvironmentVariables => _environmentVariables ??= GetEnvironmentVariables();
 
 		public TempEnvironmentFiles(string composeDirectory, IEnumerable<string> sourceFullNames, InvariantCultureIgnoreCaseStringDictionary<string> environmentVariables)
 		{
@@ -107,8 +107,6 @@ namespace ISI.Extensions.Docker
 
 			return environmentVariables;
 		}
-
-		public bool TryGetValue(string key, out string value) => EnvironmentVariables.TryGetValue(key, out value);
 
 		public void Dispose()
 		{

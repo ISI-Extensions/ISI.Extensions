@@ -118,8 +118,19 @@ namespace ISI.Extensions.Tests
 			var xxx = dockerApi.ComposeDown(new()
 			{
 				Context = "isinydocker01",
-				ComposeDirectory = @"F:\ISI\Internal Projects\ISI.Docker.Recipes\isinydocker01\scheduler",
+				ComposeDirectory = @"F:\ISI\Internal Projects\ISI.Docker.Recipes\isinydocker01\scmmanager",
 				RemoveVolumes = true,
+				EnvironmentFileFullNames = new []
+				{
+					@"S:\ISI.Production.env"
+				},
+				OnComposeDownStart = tryGetEnvironmentValue =>
+				{
+					if (tryGetEnvironmentValue("MESSAGE_BUS_CONNECTION_STRING", out var value))
+					{
+						Console.WriteLine(value);
+					}
+				},
 				AddToLog = (level, description) => Console.WriteLine(description),
 			});
 		}
@@ -132,7 +143,7 @@ namespace ISI.Extensions.Tests
 			var xxx = dockerApi.ComposePull(new()
 			{
 				Context = "isinydocker01",
-				ComposeDirectory = @"F:\ISI\Internal Projects\ISI.Docker.Recipes\isinydocker01\scheduler",
+				ComposeDirectory = @"F:\ISI\Internal Projects\ISI.Docker.Recipes\isinydocker01\scmmanager",
 				AddToLog = (level, description) => Console.WriteLine(description),
 			});
 		}
@@ -145,7 +156,7 @@ namespace ISI.Extensions.Tests
 			var xxx = dockerApi.ComposeUp(new()
 			{
 				Context = "isinydocker01",
-				ComposeDirectory = @"F:\ISI\Internal Projects\ISI.Docker.Recipes\isinydocker01\scheduler",
+				ComposeDirectory = @"F:\ISI\Internal Projects\ISI.Docker.Recipes\isinydocker01\scmmanager",
 				AddToLog = (level, description) => Console.WriteLine(description),
 			});
 		}

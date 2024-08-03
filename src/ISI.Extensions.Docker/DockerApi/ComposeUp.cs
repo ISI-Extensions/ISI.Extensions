@@ -40,6 +40,13 @@ namespace ISI.Extensions.Docker
 			{
 				request.OnComposeUpStart?.Invoke(tempEnvironmentFiles.EnvironmentVariables.TryGetValue);
 
+				//logger.LogInformation("tempEnvironmentFiles.EnvironmentVariables");
+				//foreach (var environmentVariable in tempEnvironmentFiles.EnvironmentVariables)
+				//{
+				//	logger.LogInformation($"{environmentVariable.Key}={environmentVariable.Value}");
+				//}
+				//logger.LogInformation("tempEnvironmentFiles.EnvironmentVariables");
+
 				if (!string.IsNullOrWhiteSpace(request.Context))
 				{
 					if (!DockerContexts.ContainsKey(request.Context))
@@ -51,7 +58,7 @@ namespace ISI.Extensions.Docker
 				}
 
 				arguments.Add("compose");
-				
+
 				if (!string.IsNullOrWhiteSpace(request.ProjectName))
 				{
 					arguments.Add($"--project-name {request.ProjectName}");
@@ -79,7 +86,7 @@ namespace ISI.Extensions.Docker
 				response.Output = waitForProcessResponse.Output;
 
 				response.Errored = waitForProcessResponse.Errored;
-								
+
 				request.OnComposeUpFinish?.Invoke(tempEnvironmentFiles.EnvironmentVariables.TryGetValue, response.Errored);
 
 				if (response.Errored)

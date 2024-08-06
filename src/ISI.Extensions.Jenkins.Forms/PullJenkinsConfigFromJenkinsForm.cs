@@ -332,6 +332,20 @@ namespace ISI.Extensions.Jenkins.Forms
 					Size = new(200, 17),
 				};
 				flpJenkinsConfig.Controls.Add(lblJobId);
+				lblJobId.Click += (sender, args) =>
+				{
+					if (cboJenkinsConfig.InvokeRequired)
+					{
+						cboJenkinsConfig.Invoke((System.Windows.Forms.MethodInvoker)delegate
+						{
+							cboJenkinsConfig.Checked = !cboJenkinsConfig.Checked;
+						});
+					}
+					else
+					{
+						cboJenkinsConfig.Checked = !cboJenkinsConfig.Checked;
+					}
+				};
 
 				lblStatus = new()
 				{

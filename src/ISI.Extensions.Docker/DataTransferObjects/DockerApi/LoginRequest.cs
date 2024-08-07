@@ -24,6 +24,8 @@ namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
 {
 	public class LoginRequest
 	{
+		public string Context { get; set; }
+
 		public string Host { get; set; }
 
 		public string UserName { get; set; }

@@ -49,12 +49,12 @@ namespace ISI.Extensions.Docker
 
 			if (!string.IsNullOrWhiteSpace(request.UserName))
 			{
-				arguments.Add($"-u \"{request.UserName}\"");
+				arguments.Add($"--username \"{request.UserName}\"");
 			}
 
 			if (!string.IsNullOrWhiteSpace(request.Password))
 			{
-				arguments.Add($"-p \"{request.Password}\"");
+				arguments.Add($"--password \"{request.Password}\"");
 			}
 
 			if (!string.IsNullOrWhiteSpace(request.Host))

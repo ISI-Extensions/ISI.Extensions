@@ -12,58 +12,20 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.JsonSerialization.Extensions;
-using DTOs = ISI.Extensions.Docker.DataTransferObjects.DockerApi;
-using SERIALIZABLEMODELS = ISI.Extensions.Docker.SerializableModels;
 
-namespace ISI.Extensions.Docker
+namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
 {
-	public partial class DockerApi
+	public class BuildImageResponse
 	{
-		public DTOs.GetServerApiVersionResponse GetServerApiVersion(DTOs.GetServerApiVersionRequest request)
-		{
-			var response = new DTOs.GetServerApiVersionResponse();
+		public string Output { get; set; }
 
-			//var arguments = new List<string>();
-
-			//if (!string.IsNullOrWhiteSpace(request.Context))
-			//{
-			//	if (!DockerContexts.ContainsKey(request.Context))
-			//	{
-			//		throw new Exception($"Context \"{request.Context}\" not found");
-			//	}
-
-			//	arguments.Add($"--context {request.Context}");
-			//}
-
-			//arguments.Add("version");
-			//arguments.Add("--format json");
-
-			//var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-			//{
-			//	Logger = new NullLogger(),
-			//	ProcessExeFullName = "docker",
-			//	Arguments = arguments.ToArray(),
-			//});
-
-			//if (waitForProcessResponse.Errored)
-			//{
-			//	throw new Exception($"Context \"{request.Context}\" errored trying to get the Api Version\n{waitForProcessResponse.Output}");
-			//}
-
-			//var source = Serializer.Deserialize<SERIALIZABLEMODELS.DockerVersion>(waitForProcessResponse.Output);
-
-			//response.ServerApiVersion = source?.Server?.ApiVersion;
-			response.ServerApiVersion = "1.43";
-			
-			return response;
-		}
+		public bool Errored { get; set; }
 	}
 }

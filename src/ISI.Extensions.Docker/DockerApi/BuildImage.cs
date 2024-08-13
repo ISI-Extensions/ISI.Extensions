@@ -28,17 +28,17 @@ namespace ISI.Extensions.Docker
 {
 	public partial class DockerApi
 	{
-		public DTOs.ComposeUpResponse ComposeUp(DTOs.ComposeUpRequest request)
+		public DTOs.BuildImageResponse BuildImage(DTOs.BuildImageRequest request)
 		{
 			var logger = new AddToLogLogger(request.AddToLog, Logger);
 
-			var response = new DTOs.ComposeUpResponse();
+			var response = new DTOs.BuildImageResponse();
 
 			var arguments = new List<string>();
 
-			using (var tempEnvironmentFiles = new TempEnvironmentFiles(request.ComposeDirectory, request.EnvironmentFileFullNames, request.EnvironmentVariables))
+			using (var tempEnvironmentFiles = new TempEnvironmentFiles(request.AppDirectory, request.EnvironmentFileFullNames, request.EnvironmentVariables))
 			{
-				request.OnComposeUpStart?.Invoke(tempEnvironmentFiles.EnvironmentVariables.TryGetValue);
+				request.OnBuildStart?.Invoke(tempEnvironmentFiles.EnvironmentVariables.TryGetValue);
 
 				if (!string.IsNullOrWhiteSpace(request.Context))
 				{
@@ -50,20 +50,44 @@ namespace ISI.Extensions.Docker
 					arguments.Add($"--context {request.Context}");
 				}
 
-				arguments.Add("compose");
-
-				if (!string.IsNullOrWhiteSpace(request.ProjectName))
-				{
-					arguments.Add($"--project-name {request.ProjectName}");
-				}
-
-				arguments.Add("--progress plain");
+				arguments.Add("build");
 
 				arguments.AddRange(tempEnvironmentFiles.GetDockerComposeArguments());
 
-				arguments.Add("up");
+				if (request.BuildArguments.NullCheckedAny())
+				{
+					foreach (var buildArgument in request.BuildArguments)
+					{
+						arguments.Add($"--build-arg \"{buildArgument.Key}={buildArgument.Value}\"");
+					}
+				}
 
-				arguments.Add("-d");
+				var containerRegistry = request.ContainerRegistry ?? string.Empty;
+
+				var containerRepository = request.ContainerRepository;
+				var containerImageTags = (request.ContainerImageTags.NullCheckedAny() ? request.ContainerImageTags : new[] { " latest" });
+
+				if (string.IsNullOrWhiteSpace(containerRegistry))
+				{
+					for (var index = 0; index < containerImageTags.Length; index++)
+					{
+						containerImageTags[index] = $"{containerRepository}:{containerImageTags[index]}";
+					}
+				}
+				else
+				{
+					for (var index = 0; index < containerImageTags.Length; index++)
+					{
+						containerImageTags[index] = $"{containerRegistry}/{containerRepository}:{containerImageTags[index]}";
+					}
+				}
+
+				foreach (var containerImageTag in containerImageTags)
+				{
+					arguments.Add($"--tag {containerImageTag}");
+				}
+
+				arguments.Add(".");
 
 				logger.LogInformation($"docker {string.Join(" ", arguments)}");
 
@@ -72,7 +96,7 @@ namespace ISI.Extensions.Docker
 					Logger = logger,
 					ProcessExeFullName = "docker",
 					Arguments = arguments.ToArray(),
-					WorkingDirectory = request.ComposeDirectory,
+					WorkingDirectory = request.AppDirectory,
 					EnvironmentVariables = AddDockerContextServerApiVersion(null, request.Context),
 				});
 
@@ -80,12 +104,29 @@ namespace ISI.Extensions.Docker
 
 				response.Errored = waitForProcessResponse.Errored;
 
-				request.OnComposeUpFinish?.Invoke(tempEnvironmentFiles.EnvironmentVariables.TryGetValue, response.Errored);
-
-				if (response.Errored)
+				if (!response.Errored)
 				{
-					throw new Exception($"Error upping\n{waitForProcessResponse.Output}");
+					if (!string.IsNullOrWhiteSpace(containerRegistry) && containerImageTags.NullCheckedAny())
+					{
+						foreach (var containerImageTag in request.ContainerImageTags)
+						{
+							var pushImageResponse = PushImage(new()
+							{
+								AppDirectory = request.AppDirectory,
+								Context = request.Context,
+								ContainerImageTag = containerImageTag,
+								RemoveImage = true,
+								AddToLog = request.AddToLog,
+							});
+
+							response.Output += "\n" + pushImageResponse.Output;
+
+							response.Errored |= pushImageResponse.Errored;
+						}
+					}
 				}
+
+				request.OnBuildFinish?.Invoke(tempEnvironmentFiles.EnvironmentVariables.TryGetValue, response.Errored);
 			}
 
 			return response;

@@ -31,7 +31,7 @@ Task("GetVersion")
 		var lastCommit = GitLogTip("../");
 
 		Information(@$"
-Last commit {lastCommit.Sha}
+Last commit:   {lastCommit.Sha}
 Short message: {lastCommit.MessageShort}
 Author:        {lastCommit.Author.Name}
 Authored:      {lastCommit.Author.When:yyyy-MM-dd HH:mm:ss}

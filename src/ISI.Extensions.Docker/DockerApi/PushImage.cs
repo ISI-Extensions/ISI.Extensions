@@ -20,7 +20,6 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.JsonSerialization.Extensions;
-using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Docker.DataTransferObjects.DockerApi;
 using SERIALIZABLEMODELS = ISI.Extensions.Docker.SerializableModels;
 
@@ -28,64 +27,54 @@ namespace ISI.Extensions.Docker
 {
 	public partial class DockerApi
 	{
-		public DTOs.ComposeUpResponse ComposeUp(DTOs.ComposeUpRequest request)
+		public DTOs.PushImageResponse PushImage(DTOs.PushImageRequest request)
 		{
 			var logger = new AddToLogLogger(request.AddToLog, Logger);
 
-			var response = new DTOs.ComposeUpResponse();
+			var response = new DTOs.PushImageResponse();
 
 			var arguments = new List<string>();
 
-			using (var tempEnvironmentFiles = new TempEnvironmentFiles(request.ComposeDirectory, request.EnvironmentFileFullNames, request.EnvironmentVariables))
+			if (!string.IsNullOrWhiteSpace(request.Context))
 			{
-				request.OnComposeUpStart?.Invoke(tempEnvironmentFiles.EnvironmentVariables.TryGetValue);
-
-				if (!string.IsNullOrWhiteSpace(request.Context))
+				if (!DockerContexts.ContainsKey(request.Context))
 				{
-					if (!DockerContexts.ContainsKey(request.Context))
-					{
-						throw new Exception($"Context \"{request.Context}\" not found");
-					}
-
-					arguments.Add($"--context {request.Context}");
+					throw new Exception($"Context \"{request.Context}\" not found");
 				}
 
-				arguments.Add("compose");
+				arguments.Add($"--context {request.Context}");
+			}
 
-				if (!string.IsNullOrWhiteSpace(request.ProjectName))
+			arguments.Add("push");
+
+			arguments.Add(request.ContainerImageTag);
+
+			var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+			{
+				Logger = logger,
+				ProcessExeFullName = "docker",
+				Arguments = arguments.ToArray(),
+				WorkingDirectory = request.AppDirectory,
+				EnvironmentVariables = AddDockerContextServerApiVersion(null, request.Context),
+			});
+
+			response.Output = waitForProcessResponse.Output;
+
+			response.Errored = waitForProcessResponse.Errored;
+
+			if (!waitForProcessResponse.Errored && request.RemoveImage)
+			{
+				var removeImageResponse = RemoveImage(new()
 				{
-					arguments.Add($"--project-name {request.ProjectName}");
-				}
-
-				arguments.Add("--progress plain");
-
-				arguments.AddRange(tempEnvironmentFiles.GetDockerComposeArguments());
-
-				arguments.Add("up");
-
-				arguments.Add("-d");
-
-				logger.LogInformation($"docker {string.Join(" ", arguments)}");
-
-				var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-				{
-					Logger = logger,
-					ProcessExeFullName = "docker",
-					Arguments = arguments.ToArray(),
-					WorkingDirectory = request.ComposeDirectory,
-					EnvironmentVariables = AddDockerContextServerApiVersion(null, request.Context),
+					AppDirectory = request.AppDirectory,
+					Context = request.Context,
+					ContainerImageTag = request.ContainerImageTag,
+					AddToLog = request.AddToLog,
 				});
 
-				response.Output = waitForProcessResponse.Output;
+				response.Output += "\n" + removeImageResponse.Output;
 
-				response.Errored = waitForProcessResponse.Errored;
-
-				request.OnComposeUpFinish?.Invoke(tempEnvironmentFiles.EnvironmentVariables.TryGetValue, response.Errored);
-
-				if (response.Errored)
-				{
-					throw new Exception($"Error upping\n{waitForProcessResponse.Output}");
-				}
+				response.Errored |= removeImageResponse.Errored;
 			}
 
 			return response;

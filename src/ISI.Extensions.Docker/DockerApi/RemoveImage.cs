@@ -56,7 +56,6 @@ namespace ISI.Extensions.Docker
 				Logger = logger,
 				ProcessExeFullName = "docker",
 				Arguments = arguments.ToArray(),
-				WorkingDirectory = request.AppDirectory,
 				EnvironmentVariables = AddDockerContextServerApiVersion(null, request.Context),
 			});
 

@@ -29,6 +29,8 @@ namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
 	{
 		public string AppDirectory { get; set; }
 
+		public string DockerFileFullName { get; set; }
+
 		public string Context { get; set; }
 
 		public string[] EnvironmentFileFullNames { get; set; }

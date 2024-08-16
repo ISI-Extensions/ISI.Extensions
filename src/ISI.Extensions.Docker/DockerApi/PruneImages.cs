@@ -19,15 +19,59 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.JsonSerialization.Extensions;
+using DTOs = ISI.Extensions.Docker.DataTransferObjects.DockerApi;
+using SERIALIZABLEMODELS = ISI.Extensions.Docker.SerializableModels;
 
-namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
+namespace ISI.Extensions.Docker
 {
-	public class RemoveImageRequest
+	public partial class DockerApi
 	{
-		public string Context { get; set; }
+		public DTOs.PruneImagesResponse PruneImages(DTOs.PruneImagesRequest request)
+		{
+			var logger = new AddToLogLogger(request.AddToLog, Logger);
 
-		public string ContainerImageTag { get; set; }
+			var response = new DTOs.PruneImagesResponse();
 
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
+			var arguments = new List<string>();
+
+			if (!string.IsNullOrWhiteSpace(request.Context))
+			{
+				if (!DockerContexts.ContainsKey(request.Context))
+				{
+					throw new Exception($"Context \"{request.Context}\" not found");
+				}
+
+				arguments.Add($"--context {request.Context}");
+			}
+
+			arguments.Add("image");
+
+			arguments.Add("prune");
+
+			if (request.All)
+			{
+				arguments.Add("--all");
+			}
+
+			if (request.Force)
+			{
+				arguments.Add("--force");
+			}
+
+			var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+			{
+				Logger = logger,
+				ProcessExeFullName = "docker",
+				Arguments = arguments.ToArray(),
+				EnvironmentVariables = AddDockerContextServerApiVersion(null, request.Context),
+			});
+
+			response.Output = waitForProcessResponse.Output;
+
+			response.Errored = waitForProcessResponse.Errored;
+
+			return response;
+		}
 	}
 }

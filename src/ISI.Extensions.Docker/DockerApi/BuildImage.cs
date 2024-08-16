@@ -87,7 +87,14 @@ namespace ISI.Extensions.Docker
 					arguments.Add($"--tag {containerImageTag}");
 				}
 
-				arguments.Add(".");
+				if (string.IsNullOrWhiteSpace(request.DockerFileFullName))
+				{
+					arguments.Add(".");
+				}
+				else
+				{
+					arguments.Add($"\"{request.DockerFileFullName}\"");
+				}
 
 				logger.LogInformation($"docker {string.Join(" ", arguments)}");
 
@@ -112,7 +119,6 @@ namespace ISI.Extensions.Docker
 						{
 							var pushImageResponse = PushImage(new()
 							{
-								AppDirectory = request.AppDirectory,
 								Context = request.Context,
 								ContainerImageTag = containerImageTag,
 								RemoveImage = true,

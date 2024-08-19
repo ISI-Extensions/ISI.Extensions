@@ -138,7 +138,7 @@ namespace ISI.Extensions.ConfigurationHelper
 							}
 						}
 					}
-					else if ((property.PropertyType == typeof(string)) || (property.PropertyType == typeof(int)) || (property.PropertyType == typeof(bool)) || property.PropertyType.IsEnum)
+					else if ((property.PropertyType == typeof(string)) || (property.PropertyType == typeof(int)) || (property.PropertyType == typeof(bool)) ||  (property.PropertyType == typeof(TimeSpan)) || property.PropertyType.IsEnum)
 					{
 						if ((environmentConfigurationAttribute != null) && environmentVariables.TryGetValue(environmentConfigurationAttribute.EnvironmentVariableName, out var value))
 						{

@@ -26,9 +26,5 @@ namespace ISI.Extensions.ScmManager
 	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
 	{
 		public const string ConfigurationSectionName = "ISI.Extensions.ScmManager";
-
-		public string JiraApiUrl { get; set; }
-		public string JiraApiUserName { get; set; }
-		public string JiraApiToken { get; set; }
 	}
 }

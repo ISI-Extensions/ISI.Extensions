@@ -40,7 +40,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 			{
 				var columnName = filter.RecordPropertyDescription.ColumnName;
 
-				var filterValueMaxCount = SqlServerConfiguration.FilterValueMaxCount;
+				var filterValueMaxCount = PostgreSQLConfiguration.FilterValueMaxCount;
 				var filterValueCount = 0;
 				var filterValueIndex = filterIndex;
 				var filterParameters = new Dictionary<string, object>(StringComparer.InvariantCultureIgnoreCase);

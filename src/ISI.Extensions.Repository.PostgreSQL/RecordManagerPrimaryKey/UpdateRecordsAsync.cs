@@ -44,7 +44,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 				var sqlConnectionUpdateWhereClause = updateWhereClause as ISqlConnectionWhereClause;
 
-				sqlConnectionUpdateWhereClause?.Initialize(SqlServerConfiguration, updateConnection);
+				sqlConnectionUpdateWhereClause?.Initialize(PostgreSQLConfiguration, updateConnection);
 
 				var updateSql = new StringBuilder();
 
@@ -93,7 +93,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 					var sqlConnectionArchiveWhereClause = archiveWhereClause as ISqlConnectionWhereClause;
 
-					sqlConnectionArchiveWhereClause?.Initialize(SqlServerConfiguration, archiveConnection);
+					sqlConnectionArchiveWhereClause?.Initialize(PostgreSQLConfiguration, archiveConnection);
 
 					var archiveSql = new StringBuilder();
 

@@ -35,7 +35,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 		protected virtual string ArchiveTableSuffix => "Archive";
 		protected virtual string ArchiveTableArchiveDateTimeColumnName => "ArchiveDateTimeUtc";
 
-		protected ISI.Extensions.Repository.PostgreSQL.Configuration SqlServerConfiguration { get; }
+		protected ISI.Extensions.Repository.PostgreSQL.Configuration PostgreSQLConfiguration { get; }
 
 		protected string ConnectionString { get; }
 		protected string Schema { get; }
@@ -58,8 +58,8 @@ namespace ISI.Extensions.Repository.PostgreSQL
 			GetSqlConnectionDelegate getConnection = null)
 			: base(configuration, logger, dateTimeStamper, serializer)
 		{
-			SqlServerConfiguration = new ISI.Extensions.Repository.PostgreSQL.Configuration();
-			configuration.GetSection(ISI.Extensions.Repository.PostgreSQL.Configuration.ConfigurationSectionName).Bind(SqlServerConfiguration);
+			PostgreSQLConfiguration = new ISI.Extensions.Repository.PostgreSQL.Configuration();
+			configuration.GetSection(ISI.Extensions.Repository.PostgreSQL.Configuration.ConfigurationSectionName).Bind(PostgreSQLConfiguration);
 
 			ConnectionString = Configuration.GetConnectionString(connectionString) ?? connectionString;
 

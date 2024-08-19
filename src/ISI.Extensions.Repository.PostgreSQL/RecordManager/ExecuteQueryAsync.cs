@@ -39,7 +39,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 				var sqlConnectionWhereClause = whereClause as ISqlConnectionWhereClause;
 
-				sqlConnectionWhereClause?.Initialize(SqlServerConfiguration, connection);
+				sqlConnectionWhereClause?.Initialize(PostgreSQLConfiguration, connection);
 
 				var whereSql = (whereClause as IWhereClauseWithGetSql)?.GetSql();
 

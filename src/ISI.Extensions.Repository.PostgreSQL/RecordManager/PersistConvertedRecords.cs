@@ -292,7 +292,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 						using (var command = new Npgsql.NpgsqlCommand(insertSql.ToString(), connection))
 						{
-							command.CommandTimeout = SqlServerConfiguration.ArchiveTableCommandTimeout;
+							command.CommandTimeout = PostgreSQLConfiguration.ArchiveTableCommandTimeout;
 
 							command.CommandType = System.Data.CommandType.Text;
 

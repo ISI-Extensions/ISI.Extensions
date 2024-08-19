@@ -126,7 +126,6 @@ namespace ISI.Platforms.ServiceApplication
 				}
 				Startup.Context.LoggerConfigurator.Information(logMessageBuilder.ToString());
 
-
 				if (configuration.UseMessageBus)
 				{
 					Startup.Context.PreMessageBusBuild?.Invoke(_host);

@@ -45,3 +45,9 @@ ALTER USER youruser WITH SUPERUSER;
 
 
 docker run --name pgadmin -p 5051:80 -e "PGADMIN_DEFAULT_EMAIL=user@baeldung.com" -e "PGADMIN_DEFAULT_PASSWORD=baeldung" -d dpage/pgadmin4
+
+
+
+ pg_dump --format=custom --dbname=postgresql://xxxx:xxxxxx@127.0.0.1/db --file=/home/installer/db.dump
+
+pg_restore -U postgres --format=c --dbname=db --create --verbose db.dump

@@ -69,8 +69,8 @@ namespace ISI.Extensions.PostgreSQL
 				var sql = new StringBuilder();
 				sql.AppendLine($"DROP TABLE IF EXISTS \"{tempTableName}\";");
 				sql.AppendLine($"CREATE TABLE \"{tempTableName}\" (str text);");
-				sql.AppendLine($"COPY \"{tempTableName}\" FROM PROGRAM 'pg_dump --dbname=postgresql://{connectionStringBuilder.Username}:{connectionStringBuilder.Password}@127.0.0.1:{connectionStringBuilder.Port}/{request.Database}  --file={request.LocalBackupDirectory}/{fileName}.dumping';");
-				sql.AppendLine($"COPY \"{tempTableName}\" FROM PROGRAM 'mv {request.LocalBackupDirectory}/{fileName}.dumping {request.LocalBackupDirectory}/{fileName}.sql';");
+				sql.AppendLine($"COPY \"{tempTableName}\" FROM PROGRAM 'pg_dump --format=custom --dbname=postgresql://{connectionStringBuilder.Username}:{connectionStringBuilder.Password}@127.0.0.1:{connectionStringBuilder.Port}/{request.Database}  --file={request.LocalBackupDirectory}/{fileName}.dumping';");
+				sql.AppendLine($"COPY \"{tempTableName}\" FROM PROGRAM 'mv {request.LocalBackupDirectory}/{fileName}.dumping {request.LocalBackupDirectory}/{fileName}.dump';");
 				sql.AppendLine($"DROP TABLE IF EXISTS \"{tempTableName}\";");
 
 				using (var command = new Npgsql.NpgsqlCommand(sql.ToString(), connection))

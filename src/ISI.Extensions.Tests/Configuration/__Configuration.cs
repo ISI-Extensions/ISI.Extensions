@@ -32,6 +32,9 @@ namespace ISI.Extensions.Tests
 		public string EnvUserName { get; set; }
 		public string FirstExistingDirectory { get; set; }
 		public string FileNameDeMasked { get; set; }
-		public string StringArray { get; set; }
+		public string[] StringArray { get; set; }
+
+		[ISI.Extensions.EnvironmentConfigurationVariableName("ENV_STRING_ARRAY")]
+		public string[] EnvStringArray { get; set; } = new[] { "Ron", "Muth" };
 	}
 }

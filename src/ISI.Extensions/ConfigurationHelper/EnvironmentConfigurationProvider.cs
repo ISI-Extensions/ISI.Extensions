@@ -119,11 +119,11 @@ namespace ISI.Extensions.ConfigurationHelper
 					{
 						if (environmentConfigurationAttribute != null)
 						{
-							var environmentVariablePrefix = $"{prefix}{environmentConfigurationAttribute.EnvironmentVariableName}[";
+							var environmentVariablePrefix = $"{environmentConfigurationAttribute.EnvironmentVariableName}:";
 
 							var values = environmentVariables
-								.Where(value => value.Key.StartsWith(environmentVariablePrefix) && value.Key.EndsWith("]"))
-								.Select(value => new KeyValuePair<int?, string>(value.Key.Substring(environmentVariablePrefix.Length, value.Key.Length - environmentVariablePrefix.Length - 1).ToIntNullable(), value.Value))
+								.Where(value => value.Key.StartsWith(environmentVariablePrefix))
+								.Select(value => new KeyValuePair<int?, string>(value.Key.Substring(environmentVariablePrefix.Length, value.Key.Length - environmentVariablePrefix.Length).ToIntNullable(), value.Value))
 								.Where(value => value.Key.HasValue)
 								.ToNullCheckedArray(value => new KeyValuePair<int, string>(value.Key.Value, value.Value))
 								.OrderBy(value => value.Key)
@@ -133,7 +133,7 @@ namespace ISI.Extensions.ConfigurationHelper
 							{
 								for (var valueIndex = 0; valueIndex < values.Length; valueIndex++)
 								{
-									Data.Add(string.Format("{0}{1}[{2}]", prefix, property.Name, valueIndex), string.Format("{0}", values[valueIndex]));
+									Data.Add(string.Format("{0}{1}:{2}", prefix, property.Name, valueIndex), string.Format("{0}", values[valueIndex]));
 								}
 							}
 						}

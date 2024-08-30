@@ -26,8 +26,10 @@ namespace ISI.Extensions.Caching.Redis
 	{
 		public const string ConfigurationSectionName = "ISI.Extensions.Caching.Redis";
 
+		[ISI.Extensions.EnvironmentConfigurationVariableName("ISI_EXTENSIONS_CACHING_REDIS_CONNECTION_STRING")]
 		public string ConnectionString { get; set; } = "localhost";
 
+		[ISI.Extensions.EnvironmentConfigurationVariableName("ISI_EXTENSIONS_CACHING_REDIS_DATABASE")]
 		public int Database { get; set; } = 0;
 	}
 }

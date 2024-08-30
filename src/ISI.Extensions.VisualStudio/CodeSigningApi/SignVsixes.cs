@@ -79,7 +79,7 @@ namespace ISI.Extensions.VisualStudio
 							}
 						}
 
-						var vsixSigntoolExeFullName = VsixSigntoolApi.GetVsixSigntoolExeFullName(new()).VsixSigntoolExeFullName;
+						var vsixSigntoolExeFullName = GetVsixSigntoolExeFullName(new()).VsixSigntoolExeFullName;
 
 						void sign(string[] fileNames)
 						{

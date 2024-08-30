@@ -12,26 +12,26 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.VsixSigntoolApi;
+using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi;
 using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.VisualStudio
 {
-	public partial class VsixSigntoolApi
+	public partial class CodeSigningApi
 	{
 		private static string _vsixSigntoolExeFullName = string.Empty;
 
 		public DTOs.GetVsixSigntoolExeFullNameResponse GetVsixSigntoolExeFullName(DTOs.GetVsixSigntoolExeFullNameRequest request)
 		{
 			var response = new DTOs.GetVsixSigntoolExeFullNameResponse();
-			
+
 			const string vsixSigntoolExeFileName = "vsixsigntool.exe";
 
 			if (string.IsNullOrEmpty(_vsixSigntoolExeFullName))
@@ -43,7 +43,7 @@ namespace ISI.Extensions.VisualStudio
 
 				if (string.IsNullOrEmpty(_vsixSigntoolExeFullName))
 				{
-					var uriCodeBase = new UriBuilder(typeof(ISI.Extensions.Nuget.NugetApi).Assembly.CodeBase);
+					var uriCodeBase = new UriBuilder(typeof(ISI.Extensions.VisualStudio.CodeSigningApi).Assembly.CodeBase);
 
 					var directoryName = System.IO.Path.GetDirectoryName(Uri.UnescapeDataString(uriCodeBase.Path));
 
@@ -51,22 +51,17 @@ namespace ISI.Extensions.VisualStudio
 
 					if (!System.IO.File.Exists(vsixSigntoolExeFullName))
 					{
-						var tempDirectory = System.IO.Path.GetTempFileName();
-						System.IO.File.Delete(tempDirectory);
-						System.IO.Directory.CreateDirectory(tempDirectory);
-
+						using (var tempDirectory = new ISI.Extensions.IO.Path.TempDirectory())
 						{
 							var process = new System.Diagnostics.Process();
 							process.StartInfo.UseShellExecute = false;
 							process.StartInfo.FileName = NugetApi.GetNugetExeFullName(new()).NugetExeFullName;
-							process.StartInfo.Arguments = string.Format("install Microsoft.VSSDK.Vsixsigntool -ExcludeVersion -OutputDirectory \"{0}\"", tempDirectory);
+							process.StartInfo.Arguments = string.Format("install Microsoft.VSSDK.Vsixsigntool -ExcludeVersion -OutputDirectory \"{0}\"", tempDirectory.FullName);
 							process.Start();
 							process.WaitForExit();
+
+							System.IO.File.Copy(System.IO.Path.Combine(tempDirectory.FullName, "Microsoft.VSSDK.VsixSignTool", "tools", "vssdk", vsixSigntoolExeFileName), vsixSigntoolExeFullName);
 						}
-
-						System.IO.File.Copy(System.IO.Path.Combine(tempDirectory, "Microsoft.VSSDK.VsixSignTool", "tools", "vssdk", vsixSigntoolExeFileName), vsixSigntoolExeFullName);
-
-						System.IO.Directory.Delete(tempDirectory, true);
 					}
 
 					if (System.IO.File.Exists(vsixSigntoolExeFullName))

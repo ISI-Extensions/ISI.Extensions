@@ -13,30 +13,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
-using ISI.Extensions.Extensions;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.VisualStudio
+namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
 {
-	public partial class CodeSigningApi
+	public class GetSigntoolExeFullNameResponse
 	{
-		public DTOs.GetSignAssemblyCommandResponse GetSignAssemblyCommand(DTOs.GetSignAssemblyCommandRequest request)
-		{
-			var response = new DTOs.GetSignAssemblyCommandResponse();
-			
-			var arguments = GetSignAssemblyCommandArguments(request);
-
-			arguments.Insert(0, "signtool.exe");
-
-			response.Command = string.Join(" ", arguments);
-
-			return response;
-		}
+		public string SigntoolExeFullName { get; set; }
 	}
 }

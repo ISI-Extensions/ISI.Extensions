@@ -28,4 +28,8 @@
 		<ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="DataTransferObjects\VsixSigntoolApi\" />
+	</ItemGroup>
+
 </Project>

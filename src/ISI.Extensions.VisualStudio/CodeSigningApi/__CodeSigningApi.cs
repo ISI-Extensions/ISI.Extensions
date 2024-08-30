@@ -27,14 +27,14 @@ namespace ISI.Extensions.VisualStudio
 	public partial class CodeSigningApi 
 	{
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected VsixSigntoolApi VsixSigntoolApi { get; }
+		protected ISI.Extensions.Nuget.NugetApi NugetApi { get; }
 
 		public CodeSigningApi(
 			Microsoft.Extensions.Logging.ILogger logger,
-			VsixSigntoolApi vsixSigntoolApi)
+			ISI.Extensions.Nuget.NugetApi nugetApi)
 		{
 			Logger = logger;
-			VsixSigntoolApi = vsixSigntoolApi;
+			NugetApi = nugetApi;
 		}
 	}
 }

@@ -75,6 +75,8 @@ namespace ISI.Extensions.VisualStudio
 							}
 						}
 
+						var signtoolExeFullName = GetSigntoolExeFullName(new()).SigntoolExeFullName;
+
 						void sign(string[] fileNames)
 						{
 							var arguments = GetSignAssemblyCommandArguments(request);
@@ -83,7 +85,7 @@ namespace ISI.Extensions.VisualStudio
 
 							var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 							{
-								ProcessExeFullName = "signtool.exe",
+								ProcessExeFullName = signtoolExeFullName,
 								Arguments = arguments,
 								Logger = (fileNames.NullCheckedCount() == 1 ? null : logger),
 							});

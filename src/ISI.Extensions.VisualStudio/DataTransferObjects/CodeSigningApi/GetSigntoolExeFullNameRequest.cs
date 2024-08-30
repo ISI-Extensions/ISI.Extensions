@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
 {
-	public class GetSignAssemblyCommandRequest : SignRequest, ISignAssembliesRequest
+	public class GetSigntoolExeFullNameRequest
 	{
 	}
 }

@@ -31,6 +31,11 @@ namespace ISI.Extensions.Docker
 			FileName = $"Temp-{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}.env";
 			FullName = System.IO.Path.Combine(composeDirectory, FileName);
 
+			if (!System.IO.File.Exists(sourceFullName))
+			{
+				throw new System.IO.FileNotFoundException($"File not found: \"{sourceFullName}\"");
+			}
+
 			System.IO.File.Copy(sourceFullName, FullName);
 		}
 

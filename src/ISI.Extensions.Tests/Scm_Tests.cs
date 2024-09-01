@@ -30,6 +30,8 @@ namespace ISI.Extensions.Tests
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName);
+
+			var xxx = settings.DockerRegistry.GetEnvironmentFileFullName("BASE");
 		}
 
 		[Test]

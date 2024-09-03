@@ -35,6 +35,6 @@ namespace ISI.Extensions.Tests
 		public string[] StringArray { get; set; }
 
 		[ISI.Extensions.EnvironmentConfigurationVariableName("ENV_STRING_ARRAY")]
-		public string[] EnvStringArray { get; set; } = new[] { "Ron", "Muth" };
+		public string[] EnvStringArray { get; set; } //= new[] { "Ron", "Muth" };
 	}
 }

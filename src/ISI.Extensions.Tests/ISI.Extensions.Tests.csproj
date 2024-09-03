@@ -93,6 +93,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<None Remove="appsettings.json" />
+		<None Remove="appsettings.ronmuth.json" />
 		<None Remove="EmailMessageTemplates\TestEmail\Mhtml.cshtml" />
 		<None Remove="EmailMessageTemplates\TestEmail\MhtmlInclude.cshtml" />
 		<None Remove="EmailMessageTemplates\TestEmail\PlainText.cshtml" />
@@ -101,6 +102,10 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Content Include="appsettings.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="appsettings.ronmuth.json">
+			<DependentUpon>appsettings.json</DependentUpon>
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>

@@ -33,7 +33,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void ApplyConfigurationValueReaders_Test()
 		{
-			System.Environment.SetEnvironmentVariable("ENV_STRING_ARRAY:0", "RonWasHere");
+			System.Environment.SetEnvironmentVariable("ENV_STRING_ARRAY:1", "RonWasHere");
 
 			var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
 
@@ -52,7 +52,7 @@ namespace ISI.Extensions.Tests
 
 			var configurationTest = configurationRoot.GetConfiguration<ISI.Extensions.Tests.Configuration>();
 
-			foreach (var keyValuePair in configurationRoot.AsEnumerable())
+			foreach (var keyValuePair in configurationRoot.AsEnumerable().OrderBy(keyValuePair => keyValuePair.Key, StringComparer.InvariantCultureIgnoreCase))
 			{
 				System.Console.WriteLine($"  Config \"{keyValuePair.Key}\" => \"{keyValuePair.Value}\"");
 			}

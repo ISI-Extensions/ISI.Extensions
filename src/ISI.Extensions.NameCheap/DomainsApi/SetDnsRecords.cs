@@ -66,7 +66,7 @@ namespace ISI.Extensions.NameCheap
 
 			var domainNamePieces = request.DomainName.Split(new[] { '.' });
 
-			var uri = IpifyApi.GetUrl(request, Configuration);
+			var uri = request.GetUrl(IpifyApi, Configuration);
 			uri.AddQueryStringParameter("Command", "namecheap.domains.dns.setHosts");
 			uri.AddQueryStringParameter("SLD", domainNamePieces.First());
 			uri.AddQueryStringParameter("TLD", domainNamePieces.Last());
@@ -102,37 +102,6 @@ namespace ISI.Extensions.NameCheap
 			}
 
 			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteTextGet(uri.Uri, request.GetHeaders(Configuration), true);
-
-			/*
-			var apiRequest = new SerializableDTOs.SetDnsRecordsRequest()
-			{
-				AuthDetails = new()
-				{
-					//ParentUserType = source.ParentUserType,
-					ParentUserId = 0,
-					//UserId = source.UserId,
-					UserName = (string.IsNullOrWhiteSpace(request.ApiUser) ? Configuration.ApiUser : request.ApiUser),
-					//ClientIp = source.ClientIp,
-					//EndUserIp = source.EndUserIp,
-					AdminUserName = (string.IsNullOrWhiteSpace(request.ApiUser) ? Configuration.ApiUser : request.ApiUser),
-					//DisableSecurityNotification = source.DisableSecurityNotification,
-					//AllowWhenDomainLocked = source.AllowWhenDomainLocked,
-					//ProceedWhenDomainLockedFlag = source.ProceedWhenDomainLockedFlag,
-					//DefaultChargeForUserName = source.DefaultChargeForUserName,
-					Roles = new[] { "user" },
-				},
-				DnsRecords = new()
-				{
-					DnsRecordKeyValues = dnsRecordKeyValues.ToArray(),
-					SLD = domainNamePieces.First(),
-					TLD = domainNamePieces.Last(),
-				}
-			};
-
-
-
-			var apiResponse = Rest.ExecuteJsonPost<SerializableDTOs.SetDnsRecordsRequest, ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, request.GetHeaders(Configuration), apiRequest, true);
-			*/
 
 			return response;
 		}

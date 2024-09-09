@@ -40,6 +40,13 @@ namespace ISI.Extensions.Acme
 					System.Security.Cryptography.HashAlgorithmName.SHA256,
 					System.Security.Cryptography.RSASignaturePadding.Pkcs1);
 
+				if (request.CertificateSigningRequestParameters.CommonName.StartsWith("*."))
+				{
+					var subjectAlternativeNameBuilder = new System.Security.Cryptography.X509Certificates.SubjectAlternativeNameBuilder();
+					subjectAlternativeNameBuilder.AddDnsName(request.CertificateSigningRequestParameters.CommonName.TrimStart("*."));
+					certificateSigningRequest.CertificateExtensions.Add(subjectAlternativeNameBuilder.Build());
+				}
+
 				response.CertificateSigningRequest = certificateSigningRequest.CreateSigningRequest();
 
 				response.PrivateKeyPem = certificateSigningKey.ExportRSAPrivateKeyPem();

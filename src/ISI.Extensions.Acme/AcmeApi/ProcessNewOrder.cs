@@ -75,64 +75,76 @@ namespace ISI.Extensions.Acme
 		{
 			var response = new DTOs.ProcessNewOrderResponse();
 
+			var domainNames = new List<string>();
+			domainNames.Add(request.DomainName);
+			if (request.DomainName.StartsWith("*."))
+			{
+				domainNames.Add(request.DomainName.TrimStart("*."));
+			}
+
 			var createNewOrderResponse = CreateNewOrder(new()
 			{
 				HostContext = request.HostContext,
 				CertificateNotBeforeDateTimeUtc = request.CertificateNotBeforeDateTimeUtc,
 				CertificateNotAfterDateTimeUtc = request.CertificateNotAfterDateTimeUtc,
-				CertificateIdentifiers = new[]
+				CertificateIdentifiers = domainNames.ToNullCheckedArray(domainName => new ISI.Extensions.Acme.OrderCertificateIdentifier()
 				{
-					new ISI.Extensions.Acme.OrderCertificateIdentifier()
-					{
-						CertificateIdentifierType = ISI.Extensions.Acme.OrderCertificateIdentifierType.Dns,
-						CertificateIdentifierValue = request.DomainName,
-					}
-				},
+					CertificateIdentifierType = ISI.Extensions.Acme.OrderCertificateIdentifierType.Dns,
+					CertificateIdentifierValue = domainName,
+				}),
 				PostRenewalActions = request.PostRenewalActions,
 			});
 
-			var getAuthorizationResponse = GetAuthorization(new()
+			foreach (var authorizationUrl in createNewOrderResponse.Order.AuthorizationUrls)
 			{
-				HostContext = request.HostContext,
-				AuthorizationUrl = createNewOrderResponse.Order.AuthorizationUrls.First(),
-			});
+				var getAuthorizationResponse = GetAuthorization(new()
+				{
+					HostContext = request.HostContext,
+					AuthorizationUrl = authorizationUrl,
+				});
 
-			var challenge = getAuthorizationResponse.Authorization.Challenges.NullCheckedFirstOrDefault(challenge => challenge.ChallengeType == ISI.Extensions.Acme.OrderCertificateIdentifierAuthorizationChallengeType.Dns01);
+				foreach (var challenge in getAuthorizationResponse.Authorization.Challenges.NullCheckedWhere(challenge => challenge.ChallengeType == ISI.Extensions.Acme.OrderCertificateIdentifierAuthorizationChallengeType.Dns01))
+				{
+					var calculateDnsTokenResponse = CalculateDnsToken(new()
+					{
+						HostContext = request.HostContext,
+						DomainName = getAuthorizationResponse.Authorization.CertificateIdentifier.CertificateIdentifierValue,
+						ChallengeToken = challenge.Token,
+					});
 
-			var calculateDnsTokenResponse = CalculateDnsToken(new()
-			{
-				HostContext = request.HostContext,
-				DomainName = request.DomainName,
-				ChallengeToken = challenge.Token,
-			});
+					var dnsRecord = new ISI.Extensions.Dns.DnsRecord()
+					{
+						Data = calculateDnsTokenResponse.DnsToken,
+						Name = calculateDnsTokenResponse.DnsRecordName,
+						Ttl = TimeSpan.FromMinutes(10),
+						RecordType = ISI.Extensions.Dns.RecordType.TXT,
+					};
 
-			var dnsRecord = new ISI.Extensions.Dns.DnsRecord()
-			{
-				Data = calculateDnsTokenResponse.DnsToken,
-				Name = calculateDnsTokenResponse.DnsRecordName,
-				Ttl = TimeSpan.FromMinutes(10),
-				RecordType = ISI.Extensions.Dns.RecordType.TXT,
-			};
+					var lookupClient = new DnsClient.LookupClient();
+					var txtRecords =  lookupClient.QueryAsync($"{calculateDnsTokenResponse.DnsRecordName}.{calculateDnsTokenResponse.DomainName}", DnsClient.QueryType.TXT).GetAwaiter().GetResult().Answers.TxtRecords().ToNullCheckedArray();
 
-			request.SetDnsRecord(calculateDnsTokenResponse.DomainName, dnsRecord);
+					if (!txtRecords.NullCheckedAny(txtRecord => string.Equals(txtRecord.Text.NullCheckedFirstOrDefault() ?? string.Empty, calculateDnsTokenResponse.DnsToken, StringComparison.InvariantCulture)))
+					{
+						request.SetDnsRecord(calculateDnsTokenResponse.DomainName, dnsRecord);
 
-			System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
+						System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
+					}
 
-			var completeChallengeResponse = CompleteChallenge(new()
-			{
-				HostContext = request.HostContext,
-				ChallengeUrl = challenge.ChallengeUrl,
-			});
+					var completeChallengeResponse = CompleteChallenge(new()
+					{
+						HostContext = request.HostContext,
+						ChallengeUrl = challenge.ChallengeUrl,
+					});
 
-			System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
+					System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
 
-
-			var getChallengeResponse = GetChallenge(new()
-			{
-				HostContext = request.HostContext,
-				ChallengeUrl = challenge.ChallengeUrl,
-			});
-
+					var getChallengeResponse = GetChallenge(new()
+					{
+						HostContext = request.HostContext,
+						ChallengeUrl = challenge.ChallengeUrl,
+					});
+				}
+			}
 
 			System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
 

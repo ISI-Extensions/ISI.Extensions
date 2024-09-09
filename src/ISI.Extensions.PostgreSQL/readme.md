@@ -48,6 +48,29 @@ docker run --name pgadmin -p 5051:80 -e "PGADMIN_DEFAULT_EMAIL=user@baeldung.com
 
 
 
- pg_dump --format=custom --dbname=postgresql://xxxx:xxxxxx@127.0.0.1/db --file=/home/installer/db.dump
+pg_dump --format=custom --dbname=postgresql://xxxx:xxxxxx@127.0.0.1/db --file=/home/installer/db.dump
+
+
+pg_dump --format=custom --dbname=postgresql://xxxx:xxxxxx@127.0.0.1/db --file=/home/installer/db.dump
 
 pg_restore -U postgres --format=c --dbname=db --create --verbose db.dump
+
+
+
+
+
+on source docker host
+docker exec -it postgres bash
+
+pg_dump --format=custom --dbname=postgresql://postgres:xxxxxx@127.0.0.1/db --file=/var/lib/postgresql/dump/dbxxxxxxxxxxx.dump  ##this puts it on nas in the postgres-dump folder, copy it to the postgres-dump folder for the env you want to restore it
+
+
+on target postgres server:
+create ALL users
+create db and make sure it has the same owner and same users with same permissions
+
+on target docker host
+docker exec -it postgres bash
+
+pg_restore -U postgres --format=c --dbname=dbxxxxxxxxxxx --create --verbose /var/lib/postgresql/dump/dbxxxxxxxxxxx.dump
+

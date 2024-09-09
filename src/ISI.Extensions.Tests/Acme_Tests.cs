@@ -308,19 +308,28 @@ namespace ISI.Extensions.Tests
 
 				DomainName = domainName,
 
-				CountryName = "US",
-				State = "New York",
-				Locality = "Glen Cove",
-				Organization = "MuthManor",
 				OrganizationUnit = null,
+
+				Organization = "MuthManor",
+				Locality = "Glen Cove",
+				State = "New York",
+
+				CountryName = "US",
 
 				SetDnsRecord = (rootDomainName, dnsRecord) =>
 				{
 					DomainsApi.SetDnsRecords(new ()
 					{
-						DnsProviderUuid = ISI.Extensions.NameCheap.DomainsApi.DnsProviderUuid,
-						ApiUser = settings.GetValue("NameCheap.ApiUser"),
-						ApiKey = settings.GetValue("NameCheap.ApiKey"),
+						//DnsProviderUuid = ISI.Extensions.GoDaddy.DomainsApi.DnsProviderUuid,
+						//ApiUser = settings.GetValue("GoDaddy.ApiKey"),
+						//ApiKey = settings.GetValue("GoDaddy.ApiSecret"),
+
+						//DnsProviderUuid = ISI.Extensions.NameCheap.DomainsApi.DnsProviderUuid,
+						//ApiUser = settings.GetValue("NameCheap.ApiUser"),
+						//ApiKey = settings.GetValue("NameCheap.ApiKey"),
+
+						DnsProviderUuid = ManualDomainsApi.DnsProviderUuid,
+
 						DomainName = rootDomainName,
 						DnsRecords = new[] { dnsRecord },
 					});
@@ -334,9 +343,6 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void ProcessNewOrder_CertificateManager_Test()
 		{
-			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
-			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
-
 			var pem = GetAccountPem();
 			var serializedJsonWebKey = GetAccountSerializedJsonWebKey();
 			var accountKey = GetAccountKey();
@@ -365,6 +371,54 @@ namespace ISI.Extensions.Tests
 					}
 				}
 			});
+		}
+	}
+
+	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "ManualDomainsApi")]
+	public class ManualDomainsApi : ISI.Extensions.Dns.IDomainsApi
+	{
+		internal const string _dnsProviderUuid = "d83036c2-5fc3-48d7-9d14-945be141107e";
+		public static Guid DnsProviderUuid { get; } = _dnsProviderUuid.ToGuid();
+
+		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
+		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
+
+		public ManualDomainsApi(
+			Microsoft.Extensions.Logging.ILogger logger,
+			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
+		{
+			Logger = logger;
+			DateTimeStamper = dateTimeStamper;
+		}
+
+		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsProvidersResponse ISI.Extensions.Dns.IDomainsApi.GetDnsProviders(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsProvidersRequest request)
+		{
+			throw new NotImplementedException();
+		}
+
+		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsResponse ISI.Extensions.Dns.IDomainsApi.GetDnsRecords(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsRequest request)
+		{
+			throw new NotImplementedException();
+		}
+
+		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.SetDnsRecordsResponse ISI.Extensions.Dns.IDomainsApi.SetDnsRecords(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.SetDnsRecordsRequest request)
+		{
+			var response = new ISI.Extensions.Dns.DataTransferObjects.DomainsApi.SetDnsRecordsResponse();
+
+			var stringBuilder = new StringBuilder();
+
+			stringBuilder.AppendLine($"Domain Name: {request.DomainName}");
+			foreach (var dnsRecord in request.DnsRecords)
+			{
+				stringBuilder.AppendLine();
+				stringBuilder.AppendLine($"RecordType: {dnsRecord.RecordType}");
+				stringBuilder.AppendLine($"Name: {dnsRecord.Name}");
+				stringBuilder.AppendLine($"Data: {dnsRecord.Data}");
+			}
+
+			System.Diagnostics.Debugger.Break();
+
+			return response;
 		}
 	}
 }

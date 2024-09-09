@@ -11,6 +11,9 @@
 		<None Include="..\ISI.Extensions.licenseheader" Link="ISI.Extensions.licenseheader" />
 	</ItemGroup>
 	<ItemGroup>
+	  <PackageReference Include="DnsClient" Version="1.8.0" />
+	</ItemGroup>
+	<ItemGroup>
 		<ProjectReference Include="..\ISI.Extensions.JsonJwt\ISI.Extensions.JsonJwt.csproj" />
 		<ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />
 	</ItemGroup>

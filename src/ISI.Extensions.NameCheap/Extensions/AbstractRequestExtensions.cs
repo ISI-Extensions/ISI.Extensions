@@ -32,7 +32,7 @@ namespace ISI.Extensions.NameCheap.Extensions
 
 		private static string _clientIp = null;
 
-		public static UriBuilder GetUrl(this ISI.Extensions.Ipify.IpifyApi ipifyApi, DTOs.IRequest request, Configuration configuration)
+		public static UriBuilder GetUrl(this DTOs.IRequest request, ISI.Extensions.Ipify.IpifyApi ipifyApi, Configuration configuration)
 		{
 			var uri = new UriBuilder(string.IsNullOrWhiteSpace(request.Url) ? configuration.Url : request.Url);
 

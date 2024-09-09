@@ -324,11 +324,11 @@ namespace ISI.Extensions.Tests
 						//ApiUser = settings.GetValue("GoDaddy.ApiKey"),
 						//ApiKey = settings.GetValue("GoDaddy.ApiSecret"),
 
-						//DnsProviderUuid = ISI.Extensions.NameCheap.DomainsApi.DnsProviderUuid,
-						//ApiUser = settings.GetValue("NameCheap.ApiUser"),
-						//ApiKey = settings.GetValue("NameCheap.ApiKey"),
+						DnsProviderUuid = ISI.Extensions.NameCheap.DomainsApi.DnsProviderUuid,
+						ApiUser = settings.GetValue("NameCheap.ApiUser"),
+						ApiKey = settings.GetValue("NameCheap.ApiKey"),
 
-						DnsProviderUuid = ManualDomainsApi.DnsProviderUuid,
+						//DnsProviderUuid = ManualDomainsApi.DnsProviderUuid,
 
 						DomainName = rootDomainName,
 						DnsRecords = new[] { dnsRecord },

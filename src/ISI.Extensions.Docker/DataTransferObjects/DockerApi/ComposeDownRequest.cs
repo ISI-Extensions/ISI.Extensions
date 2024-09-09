@@ -31,6 +31,7 @@ namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
 
 		public string ProjectName { get; set; }
 
+		public string Host { get; set; }
 		public string Context { get; set; }
 
 		public string[] EnvironmentFileFullNames { get; set; }

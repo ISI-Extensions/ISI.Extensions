@@ -35,6 +35,11 @@ namespace ISI.Extensions.Docker
 
 			var arguments = new List<string>();
 
+			if (!string.IsNullOrWhiteSpace(request.Host))
+			{
+				arguments.Add($"--host {request.Host}");
+			}
+
 			if (!string.IsNullOrWhiteSpace(request.Context))
 			{
 				if (!DockerContexts.ContainsKey(request.Context))
@@ -56,7 +61,7 @@ namespace ISI.Extensions.Docker
 				Logger = logger,
 				ProcessExeFullName = "docker",
 				Arguments = arguments.ToArray(),
-				EnvironmentVariables = AddDockerContextServerApiVersion(null, request.Context),
+				EnvironmentVariables = AddDockerContextServerApiVersion(null, request.Host, request.Context),
 			});
 
 			response.Output = waitForProcessResponse.Output;

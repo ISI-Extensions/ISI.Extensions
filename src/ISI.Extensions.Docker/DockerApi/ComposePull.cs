@@ -40,6 +40,11 @@ namespace ISI.Extensions.Docker
 			{
 				request.OnComposePullStart?.Invoke(tempEnvironmentFiles.EnvironmentVariables.TryGetValue);
 
+				if (!string.IsNullOrWhiteSpace(request.Host))
+				{
+					arguments.Add($"--host {request.Host}");
+				}
+
 				if (!string.IsNullOrWhiteSpace(request.Context))
 				{
 					if (!DockerContexts.ContainsKey(request.Context))
@@ -71,7 +76,7 @@ namespace ISI.Extensions.Docker
 					ProcessExeFullName = "docker",
 					Arguments = arguments.ToArray(),
 					WorkingDirectory = request.ComposeDirectory,
-					EnvironmentVariables = AddDockerContextServerApiVersion(null, request.Context),
+					EnvironmentVariables = AddDockerContextServerApiVersion(null, request.Host, request.Context),
 				});
 
 				response.Output = waitForProcessResponse.Output;

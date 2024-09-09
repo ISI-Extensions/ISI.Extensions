@@ -32,6 +32,14 @@ namespace ISI.Extensions.Docker
 
 		private IDictionary<string, DockerContext> GetDockerContexts() => ListContexts(new()).Contexts.ToNullCheckedDictionary(context => context.Name, context => context, StringComparer.InvariantCultureIgnoreCase, NullCheckDictionaryResult.Empty);
 
+		protected string GetDockerHostServerApiVersion(string host)
+		{
+			return GetServerApiVersion(new()
+			{
+				Host = host,
+			}).ServerApiVersion;
+		}
+
 		protected string GetDockerContextServerApiVersion(string context)
 		{
 			if (DockerContexts.TryGetValue(context, out var dockerContext))
@@ -53,18 +61,25 @@ namespace ISI.Extensions.Docker
 			return null;
 		}
 
-		protected InvariantCultureIgnoreCaseStringDictionary<string> AddDockerContextServerApiVersion(InvariantCultureIgnoreCaseStringDictionary<string> environmentVariables, string context)
+		protected InvariantCultureIgnoreCaseStringDictionary<string> AddDockerContextServerApiVersion(InvariantCultureIgnoreCaseStringDictionary<string> environmentVariables, string host, string context)
 		{
 			environmentVariables ??= new();
 
-			if (!string.IsNullOrWhiteSpace(context))
-			{
-				var serverApiVersion = GetDockerContextServerApiVersion(context);
+			var serverApiVersion = string.Empty;
 
-				if (!string.IsNullOrWhiteSpace(serverApiVersion))
-				{
-					environmentVariables.Add("DOCKER_API_VERSION", serverApiVersion);
-				}
+			if (string.IsNullOrWhiteSpace(serverApiVersion) && !string.IsNullOrWhiteSpace(host))
+			{
+				serverApiVersion = GetDockerHostServerApiVersion(host);
+			}
+
+			if (string.IsNullOrWhiteSpace(serverApiVersion) && !string.IsNullOrWhiteSpace(context))
+			{
+				serverApiVersion = GetDockerContextServerApiVersion(context);
+			}
+
+			if (!string.IsNullOrWhiteSpace(serverApiVersion))
+			{
+				environmentVariables.Add("DOCKER_API_VERSION", serverApiVersion);
 			}
 
 			return environmentVariables;

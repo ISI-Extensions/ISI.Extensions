@@ -24,6 +24,7 @@ namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
 {
 	public class PushImageRequest
 	{
+		public string Host { get; set; }
 		public string Context { get; set; }
 
 		public string ContainerImageTag { get; set; }

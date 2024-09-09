@@ -35,7 +35,11 @@ namespace ISI.Extensions.Docker
 			
 			var arguments = new List<string>();
 
-			if (!string.IsNullOrWhiteSpace(request.Context))
+			if (!string.IsNullOrWhiteSpace(request.Host))
+			{
+				arguments.Add($"--host {request.Host}");
+			}
+			else if (!string.IsNullOrWhiteSpace(request.Context))
 			{
 				if (!DockerContexts.ContainsKey(request.Context))
 				{
@@ -57,9 +61,9 @@ namespace ISI.Extensions.Docker
 				arguments.Add($"--password \"{request.Password}\"");
 			}
 
-			if (!string.IsNullOrWhiteSpace(request.Host))
+			if (!string.IsNullOrWhiteSpace(request.FQDN))
 			{
-				arguments.Add(request.Host);
+				arguments.Add(request.FQDN);
 			}
 
 			var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()

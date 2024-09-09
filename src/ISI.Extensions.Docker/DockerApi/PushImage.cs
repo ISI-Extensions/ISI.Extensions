@@ -39,8 +39,7 @@ namespace ISI.Extensions.Docker
 			{
 				arguments.Add($"--host {request.Host}");
 			}
-
-			if (!string.IsNullOrWhiteSpace(request.Context))
+			else if (!string.IsNullOrWhiteSpace(request.Context))
 			{
 				if (!DockerContexts.ContainsKey(request.Context))
 				{

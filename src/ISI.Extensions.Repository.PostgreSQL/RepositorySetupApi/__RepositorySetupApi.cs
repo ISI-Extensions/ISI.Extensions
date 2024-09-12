@@ -66,7 +66,17 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 			ConnectionString = Configuration.GetConnectionString(connectionString) ?? connectionString;
 
-			var connectionStringBuilder = new Npgsql.NpgsqlConnectionStringBuilder(ConnectionString);
+			var dbConnectionStringBuilder = new System.Data.Common.DbConnectionStringBuilder()
+			{
+				ConnectionString = connectionString,
+			};
+
+			if (dbConnectionStringBuilder.ContainsKey("schemaName"))
+			{
+				dbConnectionStringBuilder.Remove("schemaName");
+			}
+
+			var connectionStringBuilder = new Npgsql.NpgsqlConnectionStringBuilder(dbConnectionStringBuilder.ConnectionString);
 
 			DatabaseName = (string.IsNullOrWhiteSpace(databaseName) ? connectionStringBuilder.Database : databaseName);
 

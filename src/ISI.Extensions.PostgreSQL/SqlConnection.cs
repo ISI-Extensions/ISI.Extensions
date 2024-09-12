@@ -42,6 +42,11 @@ namespace ISI.Extensions.PostgreSQL
 					ConnectionString = connectionString,
 				};
 
+				if (dbConnectionStringBuilder.ContainsKey("schemaName"))
+				{
+					dbConnectionStringBuilder.Remove("schemaName");
+				}
+
 				if (enableMultipleActiveResultSets)
 				{
 					throw new Exception("enableMultipleActiveResultSets not implemented");

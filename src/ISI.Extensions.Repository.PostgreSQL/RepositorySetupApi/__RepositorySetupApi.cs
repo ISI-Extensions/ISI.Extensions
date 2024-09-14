@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +26,7 @@ using ISI.Extensions.Repository.PostgreSQL.Extensions;
 using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
 using SqlServerDTOs = ISI.Extensions.Repository.PostgreSQL.DataTransferObjects.RepositorySetupApi;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Repository.PostgreSQL
 {
@@ -66,17 +67,26 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 			ConnectionString = Configuration.GetConnectionString(connectionString) ?? connectionString;
 
-			var dbConnectionStringBuilder = new System.Data.Common.DbConnectionStringBuilder()
+			try
 			{
-				ConnectionString = connectionString,
-			};
+				var dbConnectionStringBuilder = new System.Data.Common.DbConnectionStringBuilder()
+				{
+					ConnectionString = connectionString,
+				};
 
-			if (dbConnectionStringBuilder.ContainsKey("schemaName"))
+				if (dbConnectionStringBuilder.ContainsKey("schemaName"))
+				{
+					dbConnectionStringBuilder.Remove("schemaName");
+					ConnectionString = dbConnectionStringBuilder.ConnectionString;
+				}
+			}
+			catch (Exception exception)
 			{
-				dbConnectionStringBuilder.Remove("schemaName");
+				Logger.LogError(exception, $"ConnectString: {connectionString}");
+				throw;
 			}
 
-			var connectionStringBuilder = new Npgsql.NpgsqlConnectionStringBuilder(dbConnectionStringBuilder.ConnectionString);
+			var connectionStringBuilder = new Npgsql.NpgsqlConnectionStringBuilder(ConnectionString);
 
 			DatabaseName = (string.IsNullOrWhiteSpace(databaseName) ? connectionStringBuilder.Database : databaseName);
 
@@ -84,6 +94,28 @@ namespace ISI.Extensions.Repository.PostgreSQL
 			if (string.IsNullOrWhiteSpace(_completedBy))
 			{
 				_completedBy = null;
+			}
+
+			if (!string.IsNullOrWhiteSpace(masterConnectionString))
+			{
+				try
+				{
+					var dbConnectionStringBuilder = new System.Data.Common.DbConnectionStringBuilder()
+					{
+						ConnectionString = masterConnectionString,
+					};
+
+					if (dbConnectionStringBuilder.ContainsKey("schemaName"))
+					{
+						dbConnectionStringBuilder.Remove("schemaName");
+						masterConnectionString = dbConnectionStringBuilder.ConnectionString;
+					}
+				}
+				catch (Exception exception)
+				{
+					Logger.LogError(exception, $"ConnectString: {masterConnectionString}");
+					throw;
+				}
 			}
 
 			_masterConnectionStringWithMasterDatabase = masterConnectionString;

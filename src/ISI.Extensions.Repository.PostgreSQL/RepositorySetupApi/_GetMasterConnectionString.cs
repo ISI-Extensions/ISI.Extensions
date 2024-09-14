@@ -26,6 +26,7 @@ using ISI.Extensions.Repository.PostgreSQL.Extensions;
 using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
 using SqlServerDTOs = ISI.Extensions.Repository.PostgreSQL.DataTransferObjects.RepositorySetupApi;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Repository.PostgreSQL
 {
@@ -38,6 +39,25 @@ namespace ISI.Extensions.Repository.PostgreSQL
 			if (string.IsNullOrWhiteSpace(connectionString))
 			{
 				return "master";
+			}
+
+			try
+			{
+				var dbConnectionStringBuilder = new System.Data.Common.DbConnectionStringBuilder()
+				{
+					ConnectionString = connectionString,
+				};
+
+				if (dbConnectionStringBuilder.ContainsKey("schemaName"))
+				{
+					dbConnectionStringBuilder.Remove("schemaName");
+					connectionString = dbConnectionStringBuilder.ConnectionString;
+				}
+			}
+			catch (Exception exception)
+			{
+				Logger.LogError(exception, $"ConnectString: {connectionString}");
+				throw;
 			}
 
 			var masterConnectionStringBuilder = new Npgsql.NpgsqlConnectionStringBuilder(connectionString);
@@ -58,6 +78,25 @@ namespace ISI.Extensions.Repository.PostgreSQL
 			if (string.IsNullOrWhiteSpace(connectionString))
 			{
 				return "master";
+			}
+
+			try
+			{
+				var dbConnectionStringBuilder = new System.Data.Common.DbConnectionStringBuilder()
+				{
+					ConnectionString = connectionString,
+				};
+
+				if (dbConnectionStringBuilder.ContainsKey("schemaName"))
+				{
+					dbConnectionStringBuilder.Remove("schemaName");
+					connectionString = dbConnectionStringBuilder.ConnectionString;
+				}
+			}
+			catch (Exception exception)
+			{
+				Logger.LogError(exception, $"ConnectString: {connectionString}");
+				throw;
 			}
 
 			var masterConnectionStringBuilder = new Npgsql.NpgsqlConnectionStringBuilder(connectionString);

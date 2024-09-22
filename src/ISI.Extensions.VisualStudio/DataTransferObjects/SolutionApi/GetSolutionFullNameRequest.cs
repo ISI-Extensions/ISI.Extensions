@@ -26,6 +26,8 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 	{
 		public string Solution { get; set; }
 
+		public bool ThrowErrorIfNoSolutionFound { get; set; } = true;
+
 		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

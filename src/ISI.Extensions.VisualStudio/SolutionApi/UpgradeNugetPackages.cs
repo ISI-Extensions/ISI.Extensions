@@ -46,7 +46,11 @@ namespace ISI.Extensions.VisualStudio
 			var nugetPackageKeys = request.NugetPackageKeys ?? new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
 
 			var solutionFullNames = request.SolutionFullNames
-				.NullCheckedSelect(solution => GetSolutionFullName(new() { Solution = solution }).SolutionFullName, NullCheckCollectionResult.Empty)
+				.NullCheckedSelect(solution => GetSolutionFullName(new()
+				{
+					Solution = solution,
+					ThrowErrorIfNoSolutionFound = false,
+				}).SolutionFullName, NullCheckCollectionResult.Empty)
 				.Where(solutionFullName => !string.IsNullOrWhiteSpace(solutionFullName))
 				.OrderBy(System.IO.Path.GetFileNameWithoutExtension, StringComparer.InvariantCultureIgnoreCase)
 				.ToArray();

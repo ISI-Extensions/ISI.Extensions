@@ -75,7 +75,10 @@ namespace ISI.Extensions.VisualStudio
 
 					logger.LogError(message);
 
-					throw new(message);
+					if (request.ThrowErrorIfNoSolutionFound)
+					{
+						throw new(message);
+					}
 				}
 			}
 

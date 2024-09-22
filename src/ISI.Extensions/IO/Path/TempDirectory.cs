@@ -36,6 +36,12 @@ namespace ISI.Extensions
 					DeleteDirectory = true;
 				}
 
+				public TempDirectory(string directoryName)
+				{
+					FullName = GetTempDirectoryName(directoryName);
+					DeleteDirectory = true;
+				}
+
 				public void Dispose()
 				{
 					if (DeleteDirectory)

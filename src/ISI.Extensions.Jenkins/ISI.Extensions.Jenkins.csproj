@@ -19,6 +19,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\ISI.Extensions.Git\ISI.Extensions.Git.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Svn\ISI.Extensions.Svn.csproj" />
 		<ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />
 	</ItemGroup>
 

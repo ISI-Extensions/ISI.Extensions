@@ -71,7 +71,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 			{
 				var dbConnectionStringBuilder = new System.Data.Common.DbConnectionStringBuilder()
 				{
-					ConnectionString = connectionString,
+					ConnectionString = ConnectionString,
 				};
 
 				if (dbConnectionStringBuilder.ContainsKey("schemaName"))

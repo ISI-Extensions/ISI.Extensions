@@ -100,6 +100,25 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void GetWorkspaceDetails_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName);
+
+			var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.Jenkins.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
+
+			var jobId = "Backup.JenkinsConfigs";
+
+			var xxx = jenkinsApi.GetWorkspaceDetails(new()
+			{
+				JenkinsUrl = settings.Jenkins.JenkinsUrl,
+				UserName = settings.Jenkins.UserName,
+				ApiToken = settings.Jenkins.ApiToken,
+				JobId = jobId,
+			});
+		}
+
+		[Test]
 		public void AddNugetInstall_Test()
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");

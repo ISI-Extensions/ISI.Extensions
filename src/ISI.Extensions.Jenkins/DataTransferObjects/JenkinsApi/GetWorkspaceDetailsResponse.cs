@@ -21,8 +21,13 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi
 {
-	public class GetWorkspaceDirectoryRequest : AbstractRequest
+	public class GetWorkspaceDetailsResponse
 	{
-		public string JobId { get; set; }
+		public string JobConfigXml { get; set; }
+
+		public string WorkspaceDirectory { get; set; }
+
+		public Guid? SourceControlTypeUuid { get; set; }
+		public string SourceControlUrl { get; set; }
 	}
 }

@@ -30,12 +30,15 @@ namespace ISI.Extensions.VisualStudio
 		{
 			var response = new DTOs.GetSignAssemblyCommandResponse();
 
-			var signtoolExeFullName = GetSigntoolExeFullName(new()).SigntoolExeFullName;
-
-			if (request.UseShortPathName)
+			var signtoolExeFullName = GetSigntoolExeFullName(new()
 			{
-				signtoolExeFullName = ISI.Extensions.IO.Path.GetShortPathName(signtoolExeFullName);
-			}
+				UseShortPathName = request.UseShortPathName,
+			}).SigntoolExeFullName;
+
+			//if (request.UseShortPathName)
+			//{
+			//	signtoolExeFullName = ISI.Extensions.IO.Path.GetShortPathName(signtoolExeFullName);
+			//}
 
 			var arguments = GetSignAssemblyCommandArguments(request);
 

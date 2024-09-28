@@ -47,6 +47,12 @@ namespace ISI.Extensions.VisualStudio
 
 					var directoryName = System.IO.Path.GetDirectoryName(Uri.UnescapeDataString(uriCodeBase.Path));
 
+					if (request.UseShortPathName)
+					{
+						directoryName = System.IO.Path.Combine(System.IO.Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System)), "Temp");
+						System.IO.Directory.CreateDirectory(directoryName);
+					}
+
 					var signtoolExeFullName = System.IO.Path.Combine(directoryName, signtoolExeFileName);
 
 					if (!System.IO.File.Exists(signtoolExeFullName))

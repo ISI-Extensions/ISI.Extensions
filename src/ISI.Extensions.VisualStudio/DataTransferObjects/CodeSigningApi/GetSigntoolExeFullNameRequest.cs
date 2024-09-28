@@ -24,5 +24,6 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
 {
 	public class GetSigntoolExeFullNameRequest
 	{
+		public bool UseShortPathName { get; set; }
 	}
 }

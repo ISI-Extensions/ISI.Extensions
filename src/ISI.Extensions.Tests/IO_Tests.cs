@@ -26,6 +26,12 @@ namespace ISI.Extensions.Tests
 	public class IO_Tests
 	{
 		[Test]
+		public void GetShortPathName_Test()
+		{
+			var xxx =ISI.Extensions.IO.Path.GetShortPathName(@"F:\ISI\Internal Projects\ISI.FileExplorer.Extensions\tools\Addins\ISI.Extensions.VisualStudio.10.0.9037.37282\lib\netstandard2.0\signtool.exe");
+		}
+
+		[Test]
 		public void GetDirectoryName_Test()
 		{
 			var xxx = System.IO.Path.GetDirectoryName(@"C:\Temp\Pizza");

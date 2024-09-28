@@ -32,7 +32,6 @@ namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 	public class RestoreNugetPackagesRequest : IRestoreNugetPackagesRequest
 	{
 		public string Solution { get; set; }
-		public string PackagesConfigFileName { get; set; }
 
 		public bool UsePackagesDirectory { get; set; }
 

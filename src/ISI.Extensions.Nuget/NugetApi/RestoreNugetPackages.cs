@@ -91,27 +91,30 @@ namespace ISI.Extensions.Nuget
 
 			foreach (var target in targets)
 			{
-				var arguments = new List<string>();
-				arguments.Add("restore");
-				arguments.Add($"\"{target}\"");
-				if (usePackagesDirectory)
+				if (!target.EndsWith(ISI.Extensions.VisualStudio.Solution.SolutionExtensionX, StringComparison.InvariantCultureIgnoreCase))
 				{
-					arguments.Add($"-PackagesDirectory \"{System.IO.Path.Combine(solutionDirectory, "packages")}\"");
-				}
+					var arguments = new List<string>();
+					arguments.Add("restore");
+					arguments.Add($"\"{target}\"");
+					if (usePackagesDirectory)
+					{
+						arguments.Add($"-PackagesDirectory \"{System.IO.Path.Combine(solutionDirectory, "packages")}\"");
+					}
 
-				//arguments.Add("-NoHttpCache");
-				arguments.Add("-NonInteractive");
-				if (!string.IsNullOrWhiteSpace(request.MSBuildExe) && System.IO.File.Exists(request.MSBuildExe))
-				{
-					arguments.Add($"-MSBuildPath \"{System.IO.Path.GetDirectoryName(request.MSBuildExe)}\"");
-				}
+					//arguments.Add("-NoHttpCache");
+					arguments.Add("-NonInteractive");
+					if (!string.IsNullOrWhiteSpace(request.MSBuildExe) && System.IO.File.Exists(request.MSBuildExe))
+					{
+						arguments.Add($"-MSBuildPath \"{System.IO.Path.GetDirectoryName(request.MSBuildExe)}\"");
+					}
 
-				response.Success &= !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-				{
-					Logger = new AddToLogLogger(request.AddToLog, Logger),
-					ProcessExeFullName = nugetExeFullName,
-					Arguments = arguments,
-				}).Errored;
+					response.Success &= !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+					{
+						Logger = new AddToLogLogger(request.AddToLog, Logger),
+						ProcessExeFullName = nugetExeFullName,
+						Arguments = arguments,
+					}).Errored;
+				}
 			}
 
 			return response;

@@ -756,5 +756,77 @@ namespace ISI.Extensions.Extensions
 
 			return values.OrderByDescending(keySelector, comparer);
 		}
+
+		public static System.Linq.ILookup<TKey, TValue> ToNullCheckedLookup<TValue, TKey, TElement>(IEnumerable<TValue> values, Func<TValue, TKey> keySelector, Func<TValue, TElement> elementSelector, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.Empty)
+		{
+			if (values == null)
+			{
+				switch (ifNullReturn)
+				{
+					case NullCheckCollectionResult.ReturnNull:
+						return null;
+					case NullCheckCollectionResult.Empty:
+						return (Array.Empty<TValue>()).ToLookup(keySelector);
+					default:
+						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
+				}
+			}
+
+			return values.ToLookup(keySelector);
+		}
+
+		public static System.Linq.ILookup<TKey, TElement> ToNullCheckedLookup<TValue, TKey, TElement>(IEnumerable<TValue> values, Func<TValue, TKey> keySelector, Func<TValue, TElement> elementSelector, IEqualityComparer<TKey> comparer, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.Empty)
+		{
+			if (values == null)
+			{
+				switch (ifNullReturn)
+				{
+					case NullCheckCollectionResult.ReturnNull:
+						return null;
+					case NullCheckCollectionResult.Empty:
+						return (Array.Empty<TValue>()).ToLookup(keySelector, elementSelector, comparer);
+					default:
+						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
+				}
+			}
+
+			return values.ToLookup(keySelector, elementSelector, comparer);
+		}
+
+		public static System.Linq.ILookup<TKey, TValue> ToNullCheckedLookup<TValue, TKey>(IEnumerable<TValue> values, Func<TValue, TKey> keySelector, IEqualityComparer<TKey> comparer, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.Empty)
+		{
+			if (values == null)
+			{
+				switch (ifNullReturn)
+				{
+					case NullCheckCollectionResult.ReturnNull:
+						return null;
+					case NullCheckCollectionResult.Empty:
+						return (Array.Empty<TValue>()).ToLookup(keySelector, comparer);
+					default:
+						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
+				}
+			}
+
+			return values.ToLookup(keySelector, comparer);
+		}
+
+		public static System.Linq.ILookup<TKey, TValue> ToNullCheckedLookup<TValue, TKey>(IEnumerable<TValue> values, Func<TValue, TKey> keySelector, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.Empty)
+		{
+			if (values == null)
+			{
+				switch (ifNullReturn)
+				{
+					case NullCheckCollectionResult.ReturnNull:
+						return null;
+					case NullCheckCollectionResult.Empty:
+						return (Array.Empty<TValue>()).ToLookup(keySelector);
+					default:
+						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
+				}
+			}
+
+			return values.ToLookup(keySelector);
+		}
 	}
 }

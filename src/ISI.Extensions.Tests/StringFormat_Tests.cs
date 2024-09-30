@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 using NUnit.Framework;
 
 namespace ISI.Extensions.Tests
@@ -29,6 +30,18 @@ namespace ISI.Extensions.Tests
 		public void SplitCase_Test()
 		{
 			var xx = ISI.Extensions.StringFormat.SplitCase("MooseWasHere");
+		}
+
+		[Test]
+		public void GuidBase36_Test()
+		{
+			var uuid = Guid.NewGuid();
+
+			var base36 = uuid.Formatted(GuidExtensions.GuidFormat.Base36);
+
+			var parsedUuid = base36.ToGuid();
+
+			Assert.Equals(uuid, parsedUuid);
 		}
 	}
 }

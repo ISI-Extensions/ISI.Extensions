@@ -46,6 +46,11 @@ namespace ISI.Extensions
 					}
 				}
 
+				if (string.IsNullOrWhiteSpace(dataRoot) && (Environment.OSVersion.Platform == PlatformID.Unix))
+				{
+					dataRoot =  "/etc";
+				}
+
 				if (string.IsNullOrWhiteSpace(dataRoot))
 				{
 					dataRoot = System.IO.Path.Combine(PathRoot, "Data");

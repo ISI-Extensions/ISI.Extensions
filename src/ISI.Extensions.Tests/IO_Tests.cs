@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +28,68 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void GetShortPathName_Test()
 		{
-			var xxx =ISI.Extensions.IO.Path.GetShortPathName(@"F:\ISI\Internal Projects\ISI.FileExplorer.Extensions\tools\Addins\ISI.Extensions.VisualStudio.10.0.9037.37282\lib\netstandard2.0\signtool.exe");
+			var xxx = ISI.Extensions.IO.Path.GetShortPathName(@"F:\ISI\Internal Projects\ISI.FileExplorer.Extensions\tools\Addins\ISI.Extensions.VisualStudio.10.0.9037.37282\lib\netstandard2.0\signtool.exe");
+		}
+
+		[Test]
+		public void Drives_Test()
+		{
+			var mosPsks = new System.Management.ManagementObjectSearcher("SELECT * FROM Win32_LogicalDiskToPartition");
+
+			// Loop through each object (disk) retrieved by WMI
+
+			foreach (System.Management.ManagementObject moDisk in mosPsks.Get())
+			{
+					foreach (var moDiskProperty in moDisk.Properties)
+					{
+						Console.WriteLine($"  {moDiskProperty.Name} => {moDiskProperty.Value}");
+					}
+
+					Console.WriteLine();
+			}
+
+			var mosDisks = new System.Management.ManagementObjectSearcher("SELECT * FROM Win32_DiskDrive");
+
+			// Loop through each object (disk) retrieved by WMI
+
+			foreach (System.Management.ManagementObject moDisk in mosDisks.Get())
+			{
+				if (string.Equals(moDisk["DeviceID"], @"\\.\PHYSICALDRIVE10"))
+				{
+					Console.WriteLine(moDisk["Model"]);
+					foreach (var moDiskProperty in moDisk.Properties)
+					{
+						Console.WriteLine($"  {moDiskProperty.Name} => {moDiskProperty.Value}");
+					}
+
+					Console.WriteLine();
+				}
+			}
+
+			foreach (var drive in System.IO.DriveInfo.GetDrives().Where(drive => drive.IsReady))
+			{
+				Console.WriteLine(drive.VolumeLabel);
+			}
+
+			var searcher = new System.Management.ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_DiskPartition");
+
+			foreach (var queryObj in searcher.Get())
+			{
+				if ((uint)queryObj["DiskIndex"] == 10)
+				{
+
+
+
+
+					Console.WriteLine("-----------------------------------");
+					Console.WriteLine("Win32_DiskPartition instance");
+
+					foreach (var queryObjProperty in queryObj.Properties)
+					{
+						Console.WriteLine($"  {queryObjProperty.Name} => {queryObjProperty.Value}");
+					}
+				}
+			}
 		}
 
 		[Test]

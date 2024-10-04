@@ -58,6 +58,9 @@ namespace ISI.Extensions.Tests.Repository
 			[ISI.Extensions.Repository.RecordProperty(ColumnName = "EmailMailMessageHashCode")]
 			public int EmailMailMessageHashCode { get; set; }
 
+			[ISI.Extensions.Repository.RecordProperty(ColumnName = "CreateNodeId")]
+			public int? CreateNodeId { get; set; }
+
 			[ISI.Extensions.Repository.RecordProperty(ColumnName = "EmailStatusUuid")]
 			public Guid EmailStatusUuid { get; set; }
 
@@ -80,6 +83,14 @@ namespace ISI.Extensions.Tests.Repository
 			{
 				return new ISI.Extensions.Repository.RecordIndexCollection<EmailRecord>()
 				{
+					new ISI.Extensions.Repository.RecordIndex<EmailRecord>()
+					{
+						Unique = true,
+						Columns = (new ISI.Extensions.Repository.RecordIndexColumnCollection<EmailRecord>()
+						{
+							{ record => record.CreateNodeId },
+						}).ToArray(),
+					},
 					new ISI.Extensions.Repository.RecordIndexColumnCollection<EmailRecord>()
 					{
 						{ record => record.EmailStatusUuid },

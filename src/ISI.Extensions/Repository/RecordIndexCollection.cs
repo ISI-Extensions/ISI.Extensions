@@ -30,11 +30,6 @@ namespace ISI.Extensions.Repository
 
 		public void Add(string name, RecordIndexColumnCollection<TRecord> indexDefinition, bool unique = false, bool clustered = false)
 		{
-			if (string.IsNullOrWhiteSpace(name))
-			{
-				name = string.Format("idx{0}", string.Join(string.Empty, indexDefinition.Select(column => column.RecordPropertyDescription.ColumnName)));
-			}
-
 			Add(new RecordIndex<TRecord>()
 			{
 				Name = name,

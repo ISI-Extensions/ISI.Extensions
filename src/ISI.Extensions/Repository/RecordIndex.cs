@@ -23,7 +23,12 @@ namespace ISI.Extensions.Repository
 {
 	public class RecordIndex<TRecord>
 	{
-		public string Name { get; set; }
+		private string _name = null;
+		public string Name
+		{
+			get => (string.IsNullOrWhiteSpace(_name) ? $"idx{(Clustered ? "Clust" : string.Empty)}{(Unique ? "Unq" : string.Empty)}{string.Join(string.Empty, Columns.Select(column => column.RecordPropertyDescription.ColumnName))}" : _name);
+			set => _name = value;
+		}
 
 		public RecordIndexColumn<TRecord>[] Columns { get; set; } = [];
 

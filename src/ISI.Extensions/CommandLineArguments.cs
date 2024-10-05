@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,14 +23,15 @@ namespace ISI.Extensions
 	public class CommandLineArguments
 	{
 		public string Command { get; }
-		protected IDictionary<string, string> Parameters { get; } = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
-		protected IList<string> Values { get; } = new List<string>();
+
+		private readonly IDictionary<string, string> _parameters = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+		private readonly IList<string> _values = new List<string>();
 
 		public CommandLineArguments(string command, IDictionary<string, string> parameters = null, IList<string> values = null)
 		{
 			Command = command;
-			Parameters = parameters ?? new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
-			Values = values ?? new List<string>();
+			_parameters = parameters ?? new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+			_values = values ?? new List<string>();
 		}
 
 		public CommandLineArguments(string[] args, int originIndex = 0)
@@ -55,12 +56,12 @@ namespace ISI.Extensions
 					{
 						if (!string.IsNullOrEmpty(parameterName))
 						{
-							Parameters.Add(parameterName, arg);
+							_parameters.Add(parameterName, arg);
 							parameterName = string.Empty;
 						}
 						else
 						{
-							Values.Add(arg);
+							_values.Add(arg);
 						}
 					}
 				}
@@ -71,7 +72,7 @@ namespace ISI.Extensions
 		{
 			var parameterValue = string.Join(delimiter, parameterValues);
 
-			Parameters.Add(parameterName, parameterValue);
+			_parameters.Add(parameterName, parameterValue);
 		}
 
 		public void AddParameter(string parameterName, string parameterValue)
@@ -81,14 +82,14 @@ namespace ISI.Extensions
 
 		public void AddValue(string value)
 		{
-			Values.Add(value);
+			_values.Add(value);
 		}
 
-		public bool TryGetParameterValue(string parameterName, out string parameterValue) => Parameters.TryGetValue(parameterName, out parameterValue);
+		public bool TryGetParameterValue(string parameterName, out string parameterValue) => _parameters.TryGetValue(parameterName, out parameterValue);
 
 		public bool TryGetParameterValues(string parameterName, out string[] parameterValues, string[] delimiters, bool trimValues = true, bool removeEmptyValues = true)
 		{
-			if (Parameters.TryGetValue(parameterName, out var value))
+			if (_parameters.TryGetValue(parameterName, out var value))
 			{
 				parameterValues = value.Split(delimiters, StringSplitOptions.None);
 
@@ -124,7 +125,7 @@ namespace ISI.Extensions
 
 		public string[] GetParameterValues(string parameterName, string[] delimiters, bool trimValues = true, bool removeEmptyValues = true, string[] defaultValues = null)
 		{
-			if (TryGetParameterValues(parameterName, out var parameterValues, delimiters,  trimValues ,  removeEmptyValues))
+			if (TryGetParameterValues(parameterName, out var parameterValues, delimiters, trimValues, removeEmptyValues))
 			{
 				return parameterValues;
 			}
@@ -134,15 +135,15 @@ namespace ISI.Extensions
 
 		public string[] GetParameterValues(string parameterName, string delimiter = ";", bool trimValues = true, bool removeEmptyValues = true, string[] defaultValues = null) => GetParameterValues(parameterName, new[] { delimiter }, trimValues, removeEmptyValues, defaultValues);
 
-
+		public string[] Values => _values.ToArray();
 
 		public string ToArguments()
 		{
 			var arguments = new List<string>();
 
 			arguments.Add(Command);
-			arguments.Add(string.Join(" ", Parameters.Select(parameter => string.Format("\"-{0}\" \"{1}\"", parameter.Key, parameter.Value))));
-			arguments.Add(string.Join(" ", Values.Select(value => string.Format("\"{0}\"", value))));
+			arguments.Add(string.Join(" ", _parameters.Select(parameter => string.Format("\"-{0}\" \"{1}\"", parameter.Key, parameter.Value))));
+			arguments.Add(string.Join(" ", _values.Select(value => string.Format("\"{0}\"", value))));
 
 			var result = string.Join(" ", arguments);
 

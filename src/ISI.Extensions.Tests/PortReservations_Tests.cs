@@ -27,6 +27,12 @@ namespace ISI.Extensions.Tests
 	public class PortReservations_Tests
 	{
 		[Test]
+		public void NetworkInformation_Test()
+		{
+			var xxx = ISI.Extensions.NetworkInformation.GetNetworkInterfaces();
+		}
+
+		[Test]
 		public void ReadLaunchSettings_Test()
 		{
 			var fullName = @"F:\ISI\Internal Projects\ISI.Telephony.ServiceApplication\src\ISI.Telephony.ServiceApplication\Properties\launchSettings.json";

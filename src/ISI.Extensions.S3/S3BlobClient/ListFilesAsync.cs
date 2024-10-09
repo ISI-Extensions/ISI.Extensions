@@ -37,16 +37,13 @@ namespace ISI.Extensions.S3
 					.WithBucket(BucketName)
 					.WithPrefix(request.Prefix);
 
-				var listObjectResponse = MinioClient.ListObjectsAsync(listObjectArgs, cancellationToken);
+				var listObjectResponse = MinioClient.ListObjectsEnumAsync(listObjectArgs, cancellationToken);
 
 				var fileNames = new HashSet<string>(StringComparer.InvariantCulture);
 
-				using (var subscription = listObjectResponse.Subscribe(
-								 item => fileNames.Add(item.Key),
-								 ex => Console.WriteLine("OnError: {0}", ex.Message),
-								 () => Console.WriteLine("OnComplete: {0}")))
+				await foreach (var item in MinioClient.ListObjectsEnumAsync(listObjectArgs, cancellationToken).ConfigureAwait(false))
 				{
-					listObjectResponse.Wait();
+					fileNames.Add(item.Key);
 				}
 
 				response.FileNames = fileNames.ToArray();

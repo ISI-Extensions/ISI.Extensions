@@ -460,7 +460,15 @@ namespace ISI.Extensions.VisualStudio
 
 								if (executeBuildTargetResponse.Success)
 								{
-									if (!System.IO.Directory.Exists(nugetPackOutputDirectory))
+									if (System.IO.Directory.Exists(nugetPackOutputDirectory))
+									{
+										if (System.IO.Directory.EnumerateFiles(nugetPackOutputDirectory, "*.nupkg").Any())
+										{
+											logger.LogInformation("Sleeping for 1 min to let nuget server build cache");
+											System.Threading.Thread.Sleep(TimeSpan.FromMinutes(1));
+										}
+									}
+									else
 									{
 										logger.LogInformation(string.Format("Sleeping for 4 min because \"{0}\" doesn't exist", nugetPackOutputDirectory));
 										System.Threading.Thread.Sleep(TimeSpan.FromMinutes(4));

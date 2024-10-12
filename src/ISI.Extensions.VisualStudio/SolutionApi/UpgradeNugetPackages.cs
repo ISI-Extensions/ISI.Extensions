@@ -458,23 +458,7 @@ namespace ISI.Extensions.VisualStudio
 									AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
 								});
 
-								if (executeBuildTargetResponse.Success)
-								{
-									if (System.IO.Directory.Exists(nugetPackOutputDirectory))
-									{
-										if (System.IO.Directory.EnumerateFiles(nugetPackOutputDirectory, "*.nupkg").Any())
-										{
-											logger.LogInformation("Sleeping for 1 min to let nuget server build cache");
-											System.Threading.Thread.Sleep(TimeSpan.FromMinutes(1));
-										}
-									}
-									else
-									{
-										logger.LogInformation(string.Format("Sleeping for 4 min because \"{0}\" doesn't exist", nugetPackOutputDirectory));
-										System.Threading.Thread.Sleep(TimeSpan.FromMinutes(4));
-									}
-								}
-								else
+								if (!executeBuildTargetResponse.Success)
 								{
 									var exception = new Exception(string.Format("Error Building \"{0}\"", solutionDetails.RootSourceDirectory));
 									solutionLogger.LogError(exception.Message);
@@ -490,7 +474,7 @@ namespace ISI.Extensions.VisualStudio
 
 									if (updatedNugetPackageKeys.NullCheckedAny())
 									{
-										var locallyCacheNupkgsResponse = NugetApi.LocallyCacheNupkgs(new()
+										NugetApi.LocallyCacheNupkgs(new()
 										{
 											NupkgFullNames = updatedNugetPackageKeys.Select(nugetPackageKey => System.IO.Path.Combine(nugetPackOutputDirectory, $"{nugetPackageKey.Package}.{nugetPackageKey.Version}.nupkg")),
 											AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
@@ -505,26 +489,10 @@ namespace ISI.Extensions.VisualStudio
 
 										nugetPackageKeys.Merge(updatedNugetPackageKeys);
 
-										//var cachedNugetPackageKeys = locallyCacheNupkgsResponse.CachedNugetPackageKeys;
-										//var maxAttemptsToCheckAvailability = 5;
-
-										//while (cachedNugetPackageKeys.Any() && (maxAttemptsToCheckAvailability-- > 0))
-										//{
-										//	var checkAvailabilityOfNupkgsResponse = NugetApi.CheckAvailabilityOfNupkgs(new()
-										//	{
-										//		NugetPackageKeys = cachedNugetPackageKeys,
-										//		AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
-										//	});
-
-										//	cachedNugetPackageKeys = checkAvailabilityOfNupkgsResponse.NupkgAvailabilities.Where(nupkgAvailability => !nupkgAvailability.Available).Select(nupkgAvailability => nupkgAvailability.NugetPackageKey).ToArray();
-
-										//	if (cachedNugetPackageKeys.Any() && (maxAttemptsToCheckAvailability > 0))
-										//	{
-										//		solutionLogger.LogInformation("  The following Nupkg(s) not available yet, will check again in 30 seconds");
-
-										//		System.Threading.Thread.Sleep(TimeSpan.FromSeconds(30));
-										//	}
-										//}
+										NugetApi.ClearLocalHttpCache(new()
+										{
+											AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
+										});
 									}
 									else
 									{

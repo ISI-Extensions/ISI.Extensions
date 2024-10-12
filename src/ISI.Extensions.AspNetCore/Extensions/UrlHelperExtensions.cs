@@ -15,6 +15,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using ISI.Extensions.Extensions;
 
@@ -38,7 +39,14 @@ namespace ISI.Extensions.AspNetCore.Extensions
 
 				if (urlHelper.ActionContext.HttpContext.Request.Headers.TryGetValue("X-Forwarded-Host", out var forwardedHost))
 				{
-					host = forwardedHost.NullCheckedFirstOrDefault();
+					var hostParts = (forwardedHost.NullCheckedFirstOrDefault() ?? string.Empty).Split(new[] { ':' }, 2);
+
+					host = hostParts.First();
+
+					if (hostParts.Length == 2)
+					{
+						port = hostParts[1].ToIntNullable();
+					}
 				}
 
 				if (urlHelper.ActionContext.HttpContext.Request.Headers.TryGetValue("X-Forwarded-Proto", out var forwardedScheme))

@@ -28,23 +28,57 @@ namespace ISI.Platforms.AspNetCore.Extensions
 {
 	public static partial class ServiceApplicationContextExtensions
 	{
-		public static ServiceApplicationContext AddCookieAndBearerAuthentication(this ServiceApplicationContext context, string authenticationHandlerName = null, string policyName = null, string cookieName = null, string apiKeyHeaderName = null)
+		public class AddCookieAndBearerAuthenticationRequest
 		{
-			var authorizationPolicy = new HasUserUuidAuthorizationPolicy(policyName);
+			public string AuthenticationHandlerName { get; set; }
+
+			public string PolicyName { get; set; }
+			
+			public string CookieName { get; set; }
+
+			public string ApiKeyHeaderName { get; set; }
+			
+			public Microsoft.AspNetCore.Http.PathString LoginPath { get; set; } = null;
+			public Microsoft.AspNetCore.Http.PathString LogoutPath { get; set; } = null;
+		}
+
+
+		//public static ServiceApplicationContext AddCookieAndBearerAuthentication(this ServiceApplicationContext context, string authenticationHandlerName = null, string policyName = null, string cookieName = null, string apiKeyHeaderName = null)
+		public static ServiceApplicationContext AddCookieAndBearerAuthentication(this ServiceApplicationContext context, AddCookieAndBearerAuthenticationRequest request = null)
+		{
+			var authorizationPolicy = new HasUserUuidAuthorizationPolicy(request?.PolicyName);
 
 			context.AddWebStartupConfigureServices(services =>
 			{
 				var authenticationHandlerSettings = new CookieAndBearerAuthenticationSettings();
 
-				authenticationHandlerSettings.AuthenticationHandlerName = authenticationHandlerName;
-				authenticationHandlerSettings.CookieName = cookieName;
-				authenticationHandlerSettings.ApiKeyHeaderName = apiKeyHeaderName;
+				authenticationHandlerSettings.AuthenticationHandlerName = request?.AuthenticationHandlerName;
+				authenticationHandlerSettings.CookieName = request?.CookieName;
+				authenticationHandlerSettings.ApiKeyHeaderName = request?.ApiKeyHeaderName;
 
-				services
-					.AddSingleton<ISI.Platforms.AspNetCore.IAuthenticationHandler, CookieAndBearerAuthenticationHandler<CookieAndBearerAuthenticationSettings>>()
+				services.AddSingleton<ISI.Platforms.AspNetCore.IAuthenticationHandler, CookieAndBearerAuthenticationHandler<CookieAndBearerAuthenticationSettings>>();
+
+				var authenticationBuilders = services
 					.AddAuthentication(authenticationHandlerSettings.AuthenticationHandlerName)
 					.AddScheme<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions, CookieAndBearerAuthenticationHandler<CookieAndBearerAuthenticationSettings>>(authenticationHandlerSettings.AuthenticationHandlerName, null)
 					;
+
+				if ((request?.LoginPath != null) || (request?.LogoutPath != null))
+				{
+					authenticationBuilders
+						.AddCookie(authenticationHandlerSettings.AuthenticationHandlerName, configureOptions =>
+						{
+							if (request?.LoginPath != null)
+							{
+								configureOptions.LoginPath = request.LoginPath;
+							}
+
+							if (request?.LogoutPath != null)
+							{
+								configureOptions.LogoutPath = request.LogoutPath;
+							}
+						});
+				}
 
 				services.AddAuthorization(options =>
 				{

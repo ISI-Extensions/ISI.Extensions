@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -12,49 +12,17 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Platforms.AspNetCore.Extensions;
-using ISI.Platforms.Extensions;
-using ISI.Platforms.ServiceApplication.Extensions;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Platforms.ServiceApplication.Test
+namespace ISI.Extensions.Tailscale.DataTransferObjects.TailscaleApi
 {
-	public class Program
+	public class CreateAuthKeyResponse
 	{
-		public static int Main(string[] args)
-		{
-			var context = new ServiceApplicationContext(typeof(Program))
-			{
-				LoggerConfigurator = new ISI.Platforms.Serilog.LoggerConfigurator(),
-
-				Args = args,
-			};
-
-			context.AddCookieAndBearerAuthentication(new()
-			{
-				AuthenticationHandlerName = "CookieAndBearerAuthentication",
-				PolicyName = "CookieAndBearerPolicy",
-			});
-
-			context.AddWebStartupConfigureServices(services =>
-			{
-				services.AddSingleton<ISI.Extensions.IAuthenticationIdentityApi, AuthenticationIdentityApi>();
-			});
-
-			context.AddSwaggerConfiguration(useBearer: true);
-
-			context.AddCors(new[] { "*" });
-
-			context.AddEnterpriseCacheManager();
-
-			return ISI.Platforms.ServiceApplication.Startup.Main(context);
-		}
 	}
 }

@@ -26,7 +26,10 @@ namespace ISI.Extensions.Repository.PostgreSQL
 	{
 		public async Task UpsertEnumsAsync(IEnumerable<EnumInformationRecord> records, System.Threading.CancellationToken cancellationToken = default)
 		{
-			await UpsertRecordsAsync(records, cancellationToken);
+			await foreach (var record in UpsertRecordsAsync(records, cancellationToken))
+			{
+
+			}
 		}
 	}
 }

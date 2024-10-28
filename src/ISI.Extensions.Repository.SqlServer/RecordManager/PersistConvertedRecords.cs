@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +27,7 @@ namespace ISI.Extensions.Repository.SqlServer
 {
 	public abstract partial class RecordManager<TRecord>
 	{
-		protected virtual async Task<IEnumerable<TRecord>> PersistConvertedRecordsAsync<TConvertedRecord>(IEnumerable<TRecord> records, PersistenceMethod persistenceMethod, bool hasArchiveTable, Action<TRecord> updateRecordProperties = null, UpdateRecordFilterColumnCollection<TRecord> updateRecordColumns = null, Func<TRecord, TConvertedRecord> recordToConvertedRecordConverter = null, Func<TConvertedRecord, TRecord> convertedRecordToRecordConverter = null, GetRecordArchiveDateTimeUtcDelegate<TRecord> getArchiveDateTimeUtc = null, System.Threading.CancellationToken cancellationToken = default)
+		protected virtual async IAsyncEnumerable<TRecord> PersistConvertedRecordsAsync<TConvertedRecord>(IEnumerable<TRecord> records, PersistenceMethod persistenceMethod, bool hasArchiveTable, Action<TRecord> updateRecordProperties = null, UpdateRecordFilterColumnCollection<TRecord> updateRecordColumns = null, Func<TRecord, TConvertedRecord> recordToConvertedRecordConverter = null, Func<TConvertedRecord, TRecord> convertedRecordToRecordConverter = null, GetRecordArchiveDateTimeUtcDelegate<TRecord> getArchiveDateTimeUtc = null, System.Threading.CancellationToken cancellationToken = default)
 			where TConvertedRecord : class
 		{
 			object GetValue(IRecordPropertyDescription<TConvertedRecord> recordPropertyDescription, TConvertedRecord convertedRecord)
@@ -60,7 +60,7 @@ namespace ISI.Extensions.Repository.SqlServer
 			}
 
 			var maxBatchSize = (int)(1500 / (insertPropertyDescriptions.Count + (hasArchiveTable ? 1 : 0)));
-			
+
 			var repositoryAssignedValueColumnDefinitions = new List<TableColumnDefinition>();
 			foreach (var repositoryAssignedPropertyDescription in repositoryAssignedValuePropertyDescriptions)
 			{
@@ -96,7 +96,7 @@ namespace ISI.Extensions.Repository.SqlServer
 			using (var archiveConnection = GetSqlConnection())
 			{
 				var persistedConvertedRecordIndex = 0;
-				
+
 				foreach (var recordBatch in records.NullCheckedChunk(maxBatchSize))
 				{
 					var persistedRecordSets = new List<(TRecord Record, TConvertedRecord ConvertedRecord)>();
@@ -278,7 +278,7 @@ namespace ISI.Extensions.Repository.SqlServer
 						using (var command = new Microsoft.Data.SqlClient.SqlCommand(insertSql.ToString(), archiveConnection))
 						{
 							command.CommandTimeout = SqlServerConfiguration.ArchiveTableCommandTimeout;
-							
+
 							command.CommandType = System.Data.CommandType.Text;
 
 							command.AddParameters(sqlValues);
@@ -289,7 +289,10 @@ namespace ISI.Extensions.Repository.SqlServer
 				}
 			}
 
-			return persistedConvertedRecords.Select(convertedRecordToRecordConverter);
+			foreach (var record in persistedConvertedRecords.Select(convertedRecordToRecordConverter))
+			{
+				yield return record;
+			}
 		}
 	}
 }

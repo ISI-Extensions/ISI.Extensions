@@ -26,9 +26,12 @@ namespace ISI.Extensions.Repository.SqlServer
 {
 	public abstract partial class RecordManagerPrimaryKeyWithArchive<TRecord, TRecordPrimaryKey>
 	{
-		public override async Task<IEnumerable<TRecord>> InsertRecordsAsync(IEnumerable<TRecord> records, System.Threading.CancellationToken cancellationToken = default)
+		public override async IAsyncEnumerable<TRecord> InsertRecordsAsync(IEnumerable<TRecord> records, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await PersistConvertedRecordsAsync<TRecord>(records, PersistenceMethod.Insert, true, null, null, record => record, convertedRecord => convertedRecord, GetRecordArchiveDateTimeUtc(), cancellationToken);
+			await foreach (var insertedRecord in PersistConvertedRecordsAsync<TRecord>(records, PersistenceMethod.Insert, true, null, null, record => record, convertedRecord => convertedRecord, GetRecordArchiveDateTimeUtc(), cancellationToken))
+			{
+				yield return insertedRecord;
+			}
 		}
 	}
 }

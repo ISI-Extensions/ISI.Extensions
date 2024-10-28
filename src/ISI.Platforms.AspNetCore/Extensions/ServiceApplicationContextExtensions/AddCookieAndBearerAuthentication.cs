@@ -30,16 +30,16 @@ namespace ISI.Platforms.AspNetCore.Extensions
 	{
 		public class AddCookieAndBearerAuthenticationRequest
 		{
-			public string AuthenticationHandlerName { get; set; }
+			public string AuthenticationScheme { get; set; }
 
 			public string PolicyName { get; set; }
 			
 			public string CookieName { get; set; }
 
 			public string ApiKeyHeaderName { get; set; }
-			
-			public Microsoft.AspNetCore.Http.PathString LoginPath { get; set; } = null;
-			public Microsoft.AspNetCore.Http.PathString LogoutPath { get; set; } = null;
+
+			//public Microsoft.AspNetCore.Http.PathString LoginPath { get; set; } = null;
+			//public Microsoft.AspNetCore.Http.PathString LogoutPath { get; set; } = null;
 		}
 
 
@@ -50,35 +50,19 @@ namespace ISI.Platforms.AspNetCore.Extensions
 
 			context.AddWebStartupConfigureServices(services =>
 			{
-				var authenticationHandlerSettings = new CookieAndBearerAuthenticationSettings();
-
-				authenticationHandlerSettings.AuthenticationHandlerName = request?.AuthenticationHandlerName;
-				authenticationHandlerSettings.CookieName = request?.CookieName;
-				authenticationHandlerSettings.ApiKeyHeaderName = request?.ApiKeyHeaderName;
+				var authenticationHandlerSettings = new CookieAndBearerAuthenticationSettings()
+				{
+					AuthenticationScheme = request?.AuthenticationScheme,
+					CookieName = request?.CookieName,
+					ApiKeyHeaderName = request?.ApiKeyHeaderName,
+				};
 
 				services.AddSingleton<ISI.Platforms.AspNetCore.IAuthenticationHandler, CookieAndBearerAuthenticationHandler<CookieAndBearerAuthenticationSettings>>();
 
 				var authenticationBuilders = services
-					.AddAuthentication(authenticationHandlerSettings.AuthenticationHandlerName)
-					.AddScheme<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions, CookieAndBearerAuthenticationHandler<CookieAndBearerAuthenticationSettings>>(authenticationHandlerSettings.AuthenticationHandlerName, null)
+					.AddAuthentication(authenticationHandlerSettings.AuthenticationScheme)
+					.AddScheme<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions, CookieAndBearerAuthenticationHandler<CookieAndBearerAuthenticationSettings>>(authenticationHandlerSettings.AuthenticationScheme, null)
 					;
-
-				if ((request?.LoginPath != null) || (request?.LogoutPath != null))
-				{
-					authenticationBuilders
-						.AddCookie(authenticationHandlerSettings.AuthenticationHandlerName, configureOptions =>
-						{
-							if (request?.LoginPath != null)
-							{
-								configureOptions.LoginPath = request.LoginPath;
-							}
-
-							if (request?.LogoutPath != null)
-							{
-								configureOptions.LogoutPath = request.LogoutPath;
-							}
-						});
-				}
 
 				services.AddAuthorization(options =>
 				{

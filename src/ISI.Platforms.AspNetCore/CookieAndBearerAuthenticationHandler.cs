@@ -32,14 +32,14 @@ namespace ISI.Platforms.AspNetCore
 
 	public class CookieAndBearerAuthenticationSettings : ICookieAndBearerAuthenticationSettings
 	{
-		private const string DefaultAuthenticationHandlerName = "CookieAndBearerAuthenticationHandler";
+		private const string DefaultAuthenticationScheme = "CookieAndBearerAuthenticationScheme";
 		private const string DefaultCookieName = "Authentication";
 
-		private static string _authenticationHandlerName = DefaultAuthenticationHandlerName;
-		public string AuthenticationHandlerName
+		private static string _authenticationScheme = DefaultAuthenticationScheme;
+		public string AuthenticationScheme
 		{
-			get => _authenticationHandlerName;
-			set => _authenticationHandlerName = string.IsNullOrWhiteSpace(value) ? DefaultAuthenticationHandlerName : value;
+			get => _authenticationScheme;
+			set => _authenticationScheme = string.IsNullOrWhiteSpace(value) ? DefaultAuthenticationScheme : value;
 		}
 
 		private static string _cookieName = DefaultCookieName;

@@ -30,10 +30,10 @@ namespace ISI.Extensions.Repository
 	public interface IRecordManager<TRecord> : IRecordManager
 		where TRecord : class, IRecordManagerRecord, new()
 	{
-		Task<IEnumerable<TRecord>> InsertRecordsAsync(IEnumerable<TRecord> records, System.Threading.CancellationToken cancellationToken = default);
+		IAsyncEnumerable<TRecord> InsertRecordsAsync(IEnumerable<TRecord> records, System.Threading.CancellationToken cancellationToken = default);
 		Task<TRecord> InsertRecordAsync(TRecord record, System.Threading.CancellationToken cancellationToken = default);
 
-		Task<IEnumerable<TRecord>> UpsertRecordsAsync(IEnumerable<TRecord> records, System.Threading.CancellationToken cancellationToken = default);
+		IAsyncEnumerable<TRecord> UpsertRecordsAsync(IEnumerable<TRecord> records, System.Threading.CancellationToken cancellationToken = default);
 		Task<TRecord> UpsertRecordAsync(TRecord record, System.Threading.CancellationToken cancellationToken = default);
 
 		Task<int> UpdateRecordsAsync(IEnumerable<TRecord> records, System.Threading.CancellationToken cancellationToken = default);
@@ -45,7 +45,7 @@ namespace ISI.Extensions.Repository
 	public interface IRecordManagerPrimaryKey<TRecord, TRecordPrimaryKey> : IRecordManager<TRecord>
 		where TRecord : class, IRecordManagerPrimaryKeyRecord<TRecordPrimaryKey>, new()
 	{
-		Task<IEnumerable<TRecord>> GetRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, int skip = 0, int take = -1, System.Threading.CancellationToken cancellationToken = default);
+		IAsyncEnumerable<TRecord> GetRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, int skip = 0, int take = -1, System.Threading.CancellationToken cancellationToken = default);
 		Task<TRecord> GetRecordAsync(TRecordPrimaryKey primaryKeyValue, System.Threading.CancellationToken cancellationToken = default);
 
 		Task<int> UpdateRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, SetRecordColumnCollection<TRecord> setRecordColumns, System.Threading.CancellationToken cancellationToken = default);

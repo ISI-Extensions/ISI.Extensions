@@ -29,33 +29,45 @@ namespace ISI.Extensions.Repository.PostgreSQL
 {
 	public abstract partial class RecordManager<TRecord>
 	{
-		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(IWhereClause whereClause, IOrderByClause orderByClause = null, int skip = 0, int take = -1, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
+		protected virtual async IAsyncEnumerable<TRecord> FindRecordsAsync(IWhereClause whereClause, IOrderByClause orderByClause = null, int skip = 0, int take = -1, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
 			using (var connection = GetSqlConnection())
 			{
-				return await FindRecordsAsync(connection, whereClause, orderByClause, skip, take, commandTimeout, cancellationToken);
+				await foreach (var record in FindRecordsAsync(connection, whereClause, orderByClause, skip, take, commandTimeout, cancellationToken))
+				{
+					yield return record;
+				}
 			}
 		}
 
-		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(string fromClause, IWhereClause whereClause, IOrderByClause orderByClause = null, int skip = 0, int take = -1, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
+		protected virtual async IAsyncEnumerable<TRecord> FindRecordsAsync(string fromClause, IWhereClause whereClause, IOrderByClause orderByClause = null, int skip = 0, int take = -1, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
 			using (var connection = GetSqlConnection())
 			{
-				return await FindRecordsAsync(connection, fromClause, whereClause, orderByClause, skip, take, commandTimeout, cancellationToken);
+				await foreach (var record in FindRecordsAsync(connection, fromClause, whereClause, orderByClause, skip, take, commandTimeout, cancellationToken))
+				{
+					yield return record;
+				}
 			}
 		}
 
-		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(Npgsql.NpgsqlConnection connection, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
+		protected virtual async IAsyncEnumerable<TRecord> FindRecordsAsync(Npgsql.NpgsqlConnection connection, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await FindRecordsAsync(connection, GetFromClause(), whereClause, orderByClause, skip, take, commandTimeout, cancellationToken);
+			await foreach (var record in FindRecordsAsync(connection, GetFromClause(), whereClause, orderByClause, skip, take, commandTimeout, cancellationToken))
+			{
+				yield return record;
+			}
 		}
 
-		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(Npgsql.NpgsqlConnection connection, string fromClause, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
+		protected virtual async IAsyncEnumerable<TRecord> FindRecordsAsync(Npgsql.NpgsqlConnection connection, string fromClause, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await FindRecordsAsync(connection, null, fromClause, whereClause, orderByClause, skip, take, commandTimeout, cancellationToken);
+			await foreach (var record in FindRecordsAsync(connection, null, fromClause, whereClause, orderByClause, skip, take, commandTimeout, cancellationToken))
+			{
+				yield return record;
+			}
 		}
 
-		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(Npgsql.NpgsqlConnection connection, ISelectClause selectClause, string fromClause, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
+		protected virtual async IAsyncEnumerable<TRecord> FindRecordsAsync(Npgsql.NpgsqlConnection connection, ISelectClause selectClause, string fromClause, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
 			var sql = new StringBuilder();
 
@@ -106,36 +118,39 @@ namespace ISI.Extensions.Repository.PostgreSQL
 					sql.AppendFormat("OFFSET {0}\n", skip);
 				}
 
-				var records = await FindRecordsAsync(connection, sql.ToString(), (whereClause as IWhereClauseWithGetParameters)?.GetParameters(), commandTimeout, cancellationToken);
+				await foreach (var record in FindRecordsAsync(connection, sql.ToString(), (whereClause as IWhereClauseWithGetParameters)?.GetParameters(), commandTimeout, cancellationToken))
+				{
+					yield return record;
+				}
 
 				sqlConnectionWhereClause?.Finalize(connection);
-
-				return records;
 			}
-
-			return Array.Empty<TRecord>();
 		}
 
-		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(string sql, IDictionary<string, object> parameters, System.Threading.CancellationToken cancellationToken = default)
+		protected virtual async IAsyncEnumerable<TRecord> FindRecordsAsync(string sql, IDictionary<string, object> parameters, System.Threading.CancellationToken cancellationToken = default)
 		{
 			using (var connection = GetSqlConnection())
 			{
-				return await FindRecordsAsync(connection, sql, parameters, null, cancellationToken);
+				await foreach (var record in FindRecordsAsync(connection, sql, parameters, null, cancellationToken))
+				{
+					yield return record;
+				}
 			}
 		}
 
-		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(string sql, IDictionary<string, object> parameters, int commandTimeout, System.Threading.CancellationToken cancellationToken = default)
+		protected virtual async IAsyncEnumerable<TRecord> FindRecordsAsync(string sql, IDictionary<string, object> parameters, int commandTimeout, System.Threading.CancellationToken cancellationToken = default)
 		{
 			using (var connection = GetSqlConnection())
 			{
-				return await FindRecordsAsync(connection, sql, parameters, commandTimeout, cancellationToken);
+				await foreach (var record in FindRecordsAsync(connection, sql, parameters, commandTimeout, cancellationToken))
+				{
+					yield return record;
+				}
 			}
 		}
 
-		protected virtual async Task<IEnumerable<TRecord>> FindRecordsAsync(Npgsql.NpgsqlConnection connection, string sql, IDictionary<string, object> parameters, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
+		protected virtual async IAsyncEnumerable<TRecord> FindRecordsAsync(Npgsql.NpgsqlConnection connection, string sql, IDictionary<string, object> parameters, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
-			var records = new List<TRecord>();
-
 			await connection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
 
 			using (var command = new Npgsql.NpgsqlCommand(sql, connection))
@@ -152,12 +167,10 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 					while (await dataReader.ReadAsync(cancellationToken))
 					{
-						records.Add(reader(dataReader));
+						yield return reader(dataReader);
 					}
 				}
 			}
-
-			return records;
 		}
 	}
 }

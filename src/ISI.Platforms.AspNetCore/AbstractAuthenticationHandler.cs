@@ -48,9 +48,9 @@ namespace ISI.Platforms.AspNetCore
 			claims ??= await GetUserClaimsAsync(authenticationIdentityUser);
 
 			var securityKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(Configuration.Jwt.EncryptionKey));
-			var credentials = new Microsoft.IdentityModel.Tokens.SigningCredentials(securityKey, Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256);
+			var signingCredentials = new Microsoft.IdentityModel.Tokens.SigningCredentials(securityKey, Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256);
 
-			return new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(Configuration.Jwt.Issuer, Configuration.Jwt.Issuer, claims, expires: DateTime.Now + Configuration.Jwt.ExpirationInterval, signingCredentials: credentials);
+			return new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(Configuration.Jwt.Issuer, Configuration.Jwt.Issuer, claims, expires: DateTime.Now + Configuration.Jwt.ExpirationInterval, signingCredentials: signingCredentials);
 		}
 
 		public async Task<IEnumerable<System.Security.Claims.Claim>> GetUserClaimsAsync(ISI.Extensions.IAuthenticationIdentityUser authenticationIdentityUser)

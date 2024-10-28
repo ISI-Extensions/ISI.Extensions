@@ -24,14 +24,20 @@ namespace ISI.Extensions.Repository.SqlServer
 {
 	public abstract partial class RecordManager<TRecord>
 	{
-		public override async Task<IEnumerable<TRecord>> UpsertRecordsAsync(IEnumerable<TRecord> records, System.Threading.CancellationToken cancellationToken = default)
+		public override async IAsyncEnumerable<TRecord> UpsertRecordsAsync(IEnumerable<TRecord> records, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await PersistConvertedRecordsAsync<TRecord>(records ?? Array.Empty<TRecord>(), PersistenceMethod.Upsert, false, null, cancellationToken: cancellationToken);
+			await foreach (var upsertedRecord in PersistConvertedRecordsAsync<TRecord>(records ?? Array.Empty<TRecord>(), PersistenceMethod.Upsert, false, null, cancellationToken: cancellationToken))
+			{
+				yield return upsertedRecord;
+			}
 		}
 
-		public override async Task<IEnumerable<TRecord>> UpsertRecordsAsync(IEnumerable<TRecord> records, Action<TRecord> updateRecordProperties, System.Threading.CancellationToken cancellationToken = default)
+		public override async IAsyncEnumerable<TRecord> UpsertRecordsAsync(IEnumerable<TRecord> records, Action<TRecord> updateRecordProperties, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await PersistConvertedRecordsAsync<TRecord>(records ?? Array.Empty<TRecord>(), PersistenceMethod.Upsert, false, updateRecordProperties, cancellationToken: cancellationToken);
+			await foreach (var upsertedRecord in PersistConvertedRecordsAsync<TRecord>(records ?? Array.Empty<TRecord>(), PersistenceMethod.Upsert, false, updateRecordProperties, cancellationToken: cancellationToken))
+			{
+				yield return upsertedRecord;
+			}
 		}
 	}
 }

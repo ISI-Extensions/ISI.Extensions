@@ -26,7 +26,10 @@ namespace ISI.Extensions.Repository.RavenDb
 	{
 		public override async Task<int> UpdateRecordAsync(TRecord record, System.Threading.CancellationToken cancellationToken = default)
 		{
-			await UpsertRecordsAsync(new[] { record }, cancellationToken);
+			await foreach (var updatedRecord in UpsertRecordsAsync(new[] { record }, cancellationToken))
+			{
+
+			}
 
 			return 1;
 		}

@@ -25,21 +25,15 @@ namespace ISI.Extensions.Repository.Cosmos
 {
 	public abstract partial class RecordManagerPrimaryKey<TRecord, TRecordPrimaryKey>
 	{
-		public virtual async Task<IEnumerable<TRecord>> GetRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, int skip = 0, int take = -1, System.Threading.CancellationToken cancellationToken = default)
+		public virtual async IAsyncEnumerable<TRecord> GetRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, int skip = 0, int take = -1, System.Threading.CancellationToken cancellationToken = default)
 		{
 			if (primaryKeyValues.NullCheckedAny())
 			{
-				var records = new List<TRecord>();
-
 				foreach (var primaryKeyValue in primaryKeyValues)
 				{
-					records.Add(await GetRecordAsync(primaryKeyValue, cancellationToken));
+					yield return await GetRecordAsync(primaryKeyValue, cancellationToken);
 				}
-
-				return records;
 			}
-
-			return Array.Empty<TRecord>();
 		}
 
 		public virtual async Task<TRecord> GetRecordAsync(TRecordPrimaryKey primaryKeyValue, System.Threading.CancellationToken cancellationToken = default)

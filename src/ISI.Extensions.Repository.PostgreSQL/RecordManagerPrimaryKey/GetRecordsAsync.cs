@@ -26,18 +26,21 @@ namespace ISI.Extensions.Repository.PostgreSQL
 {
 	public abstract partial class RecordManagerPrimaryKey<TRecord, TRecordPrimaryKey>
 	{
-		public virtual async Task<IEnumerable<TRecord>> GetRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, int skip = 0, int take = -1, System.Threading.CancellationToken cancellationToken = default)
+		public virtual async IAsyncEnumerable<TRecord> GetRecordsAsync(IEnumerable<TRecordPrimaryKey> primaryKeyValues, int skip = 0, int take = -1, System.Threading.CancellationToken cancellationToken = default)
 		{
 			var whereClause = GeneratePrimaryKeyWhereClause(primaryKeyValues);
 
-			return await FindRecordsAsync(whereClause, null, skip, take, cancellationToken: cancellationToken);
+			await foreach (var record in FindRecordsAsync(whereClause, null, skip, take, cancellationToken: cancellationToken))
+			{
+				yield return record;
+			}
 		}
 
 		public virtual async Task<TRecord> GetRecordAsync(TRecordPrimaryKey primaryKeyValue, System.Threading.CancellationToken cancellationToken = default)
 		{
-			var records = await GetRecordsAsync(new[] { primaryKeyValue }, cancellationToken: cancellationToken);
+			var record = await GetRecordAsync(primaryKeyValue, cancellationToken: cancellationToken);
 
-			return records.NullCheckedFirstOrDefault();
+			return record;
 		}
 	}
 }

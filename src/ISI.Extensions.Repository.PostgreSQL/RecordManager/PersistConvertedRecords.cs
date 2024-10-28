@@ -29,7 +29,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 {
 	public abstract partial class RecordManager<TRecord>
 	{
-		protected virtual async Task<IEnumerable<TRecord>> PersistConvertedRecordsAsync<TConvertedRecord>(IEnumerable<TRecord> records, PersistenceMethod persistenceMethod, bool hasArchiveTable, Action<TRecord> updateRecordProperties = null, UpdateRecordFilterColumnCollection<TRecord> updateRecordColumns = null, Func<TRecord, TConvertedRecord> recordToConvertedRecordConverter = null, Func<TConvertedRecord, TRecord> convertedRecordToRecordConverter = null, GetRecordArchiveDateTimeUtcDelegate<TRecord> getArchiveDateTimeUtc = null, System.Threading.CancellationToken cancellationToken = default)
+		protected virtual async IAsyncEnumerable<TRecord> PersistConvertedRecordsAsync<TConvertedRecord>(IEnumerable<TRecord> records, PersistenceMethod persistenceMethod, bool hasArchiveTable, Action<TRecord> updateRecordProperties = null, UpdateRecordFilterColumnCollection<TRecord> updateRecordColumns = null, Func<TRecord, TConvertedRecord> recordToConvertedRecordConverter = null, Func<TConvertedRecord, TRecord> convertedRecordToRecordConverter = null, GetRecordArchiveDateTimeUtcDelegate<TRecord> getArchiveDateTimeUtc = null, System.Threading.CancellationToken cancellationToken = default)
 			where TConvertedRecord : class
 		{
 			object GetValue(IRecordPropertyDescription<TConvertedRecord> recordPropertyDescription, TConvertedRecord convertedRecord)
@@ -304,7 +304,10 @@ namespace ISI.Extensions.Repository.PostgreSQL
 				}
 			}
 
-			return persistedConvertedRecords.Select(convertedRecordToRecordConverter);
+			foreach (var record in persistedConvertedRecords.Select(convertedRecordToRecordConverter))
+			{
+				yield return record;
+			}
 		}
 	}
 }

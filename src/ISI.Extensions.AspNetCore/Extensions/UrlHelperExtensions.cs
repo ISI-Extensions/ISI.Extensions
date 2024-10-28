@@ -23,7 +23,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 {
 	public static class UrlHelperExtensions
 	{
-		public static string GenerateRouteUrl(this Microsoft.AspNetCore.Mvc.IUrlHelper urlHelper, string routeName, object routeValues = null, bool makeAbsolute = false, bool makeRootRelative = false)
+		public static string GenerateRouteUrl(this Microsoft.AspNetCore.Mvc.IUrlHelper urlHelper, string routeName, object routeValues = null, bool makeAbsolute = false, bool makeRootRelative = false, string overRideHost = null)
 		{
 			var url = urlHelper.RouteUrl(new()
 			{
@@ -31,21 +31,32 @@ namespace ISI.Extensions.AspNetCore.Extensions
 				Values = new Microsoft.AspNetCore.Routing.RouteValueDictionary(routeValues),
 			});
 
-			if (makeAbsolute || makeRootRelative)
+			if (makeAbsolute || makeRootRelative || !string.IsNullOrWhiteSpace(overRideHost))
 			{
 				var host = urlHelper.ActionContext.HttpContext.Request.Host.Host;
 				var scheme = urlHelper.ActionContext.HttpContext.Request.Scheme;
 				var port = urlHelper.ActionContext.HttpContext.Request.Host.Port;
 
-				if (urlHelper.ActionContext.HttpContext.Request.Headers.TryGetValue("X-Forwarded-Host", out var forwardedHost))
+				if (urlHelper.ActionContext.HttpContext.Request.Headers.TryGetValue("X-Forwarded-Host", out var forwardedHosts))
 				{
-					var hostParts = (forwardedHost.NullCheckedFirstOrDefault() ?? string.Empty).Split(new[] { ':' }, 2);
+					var forwardedHost = forwardedHosts.NullCheckedFirstOrDefault() ?? string.Empty;
 
-					host = hostParts.First();
-
-					if (hostParts.Length == 2)
+					if (Uri.TryCreate(forwardedHost, UriKind.RelativeOrAbsolute, out var uri))
 					{
-						port = hostParts[1].ToIntNullable();
+						scheme = uri.Scheme;
+						host = uri.Host;
+						port = uri.Port;
+					}
+					else
+					{
+						var hostParts = forwardedHost.Split(new[] { ':' }, 2);
+
+						host = hostParts.First();
+
+						if (hostParts.Length == 2)
+						{
+							port = hostParts[1].ToIntNullable();
+						}
 					}
 				}
 
@@ -57,6 +68,27 @@ namespace ISI.Extensions.AspNetCore.Extensions
 				if (urlHelper.ActionContext.HttpContext.Request.Headers.TryGetValue("X-Forwarded-Port", out var forwardedPort))
 				{
 					port = forwardedPort.NullCheckedFirstOrDefault().ToIntNullable();
+				}
+
+				if (!string.IsNullOrWhiteSpace(overRideHost))
+				{
+					if (Uri.TryCreate(overRideHost, UriKind.RelativeOrAbsolute, out var uri))
+					{
+						scheme = uri.Scheme;
+						host = uri.Host;
+						port = uri.Port;
+					}
+					else
+					{
+						var hostParts = overRideHost.Split(new[] { ':' }, 2);
+
+						host = hostParts.First();
+
+						if (hostParts.Length == 2)
+						{
+							port = hostParts[1].ToIntNullable();
+						}
+					}
 				}
 
 				var uriBuilder = new UriBuilder(host)

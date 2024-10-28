@@ -29,9 +29,12 @@ namespace ISI.Extensions.Repository.PostgreSQL
 {
 	public abstract partial class RecordManager<TRecord>
 	{
-		public virtual async Task<IEnumerable<TRecord>> ListRecordsAsync(int skip = 0, int take = -1, System.Threading.CancellationToken cancellationToken = default)
+		public virtual async IAsyncEnumerable<TRecord> ListRecordsAsync(int skip = 0, int take = -1, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await FindRecordsAsync(null, null, skip, take, cancellationToken: cancellationToken);
+			await foreach (var record in FindRecordsAsync(null, null, skip, take, cancellationToken: cancellationToken))
+			{
+				yield return record;
+			}
 		}
 	}
 }

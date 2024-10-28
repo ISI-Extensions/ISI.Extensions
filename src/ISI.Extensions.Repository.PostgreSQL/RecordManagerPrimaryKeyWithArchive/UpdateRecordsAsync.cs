@@ -30,7 +30,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 			var getRecordArchiveDateTimeUtc = GetRecordArchiveDateTimeUtc();
 
-			foreach (var updatedRecord in await PersistConvertedRecordsAsync(records, PersistenceMethod.Update, true, null, updateRecordFilterColumns, record => record, convertedRecord => convertedRecord, getRecordArchiveDateTimeUtc, cancellationToken))
+			await foreach (var updatedRecord in PersistConvertedRecordsAsync(records, PersistenceMethod.Update, true, null, updateRecordFilterColumns, record => record, convertedRecord => convertedRecord, getRecordArchiveDateTimeUtc, cancellationToken))
 			{
 				count++;
 			}

@@ -23,6 +23,6 @@ namespace ISI.Platforms.AspNetCore
 {
 	public interface IAuthenticationSettings
 	{
-		string AuthenticationHandlerName { get; }
+		string AuthenticationScheme { get; }
 	}
 }

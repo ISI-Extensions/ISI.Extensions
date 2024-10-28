@@ -22,10 +22,16 @@ namespace ISI.Extensions.Extensions
 {
 	public static class AsyncEnumerableExtensions
 	{
-		public static IEnumerable<TRecord> ToEnumerable<TRecord>(this IAsyncEnumerable<TRecord> records)
+		public static IEnumerable<TRecord> ToEnumerable<TRecord>(this IAsyncEnumerable<TRecord> records, System.Threading.CancellationToken cancellationToken = default)
 			where TRecord : class, new()
 		{
-			return records.ToEnumerableAsync().GetAwaiter().GetResult();
+			return records.ToEnumerableAsync(cancellationToken).GetAwaiter().GetResult();
+		}
+		
+		public static IEnumerable<TResult> ToEnumerable<TRecord, TResult>(this IAsyncEnumerable<TRecord> records, Func<TRecord, TResult> converter, System.Threading.CancellationToken cancellationToken = default)
+			where TRecord : class, new()
+		{
+			return records.ToEnumerableAsync(converter, cancellationToken).GetAwaiter().GetResult();
 		}
 		
 		public static async Task<IEnumerable<TRecord>> ToEnumerableAsync<TRecord>(this IAsyncEnumerable<TRecord> records, System.Threading.CancellationToken cancellationToken = default)
@@ -36,6 +42,19 @@ namespace ISI.Extensions.Extensions
 			await foreach (var record in records.WithCancellation(cancellationToken).ConfigureAwait(false))
 			{
 				results.Add(record);
+			}
+
+			return results;
+		}
+		
+		public static async Task<IEnumerable<TResult>> ToEnumerableAsync<TRecord, TResult>(this IAsyncEnumerable<TRecord> records, Func<TRecord, TResult> converter, System.Threading.CancellationToken cancellationToken = default)
+			where TRecord : class, new()
+		{
+			var results = new List<TResult>();
+
+			await foreach (var record in records.WithCancellation(cancellationToken).ConfigureAwait(false))
+			{
+				results.Add(converter(record));
 			}
 
 			return results;

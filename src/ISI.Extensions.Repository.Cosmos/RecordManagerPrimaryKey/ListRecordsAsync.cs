@@ -25,7 +25,7 @@ namespace ISI.Extensions.Repository.Cosmos
 {
 	public abstract partial class RecordManagerPrimaryKey<TRecord, TRecordPrimaryKey>
 	{
-		public virtual async Task<IEnumerable<TRecord>> ListRecordsAsync(int skip = 0, int take = -1, System.Threading.CancellationToken cancellationToken = default)
+		public virtual async IAsyncEnumerable<TRecord> ListRecordsAsync(int skip = 0, int take = -1, System.Threading.CancellationToken cancellationToken = default)
 		{
 			var query = GetClient().CreateDocumentQuery<TRecord>(
 					Microsoft.Azure.Documents.Client.UriFactory.CreateDocumentCollectionUri(DatabaseName, TableName),
@@ -37,10 +37,11 @@ namespace ISI.Extensions.Repository.Cosmos
 
 			while (query.HasMoreResults)
 			{
-				records.AddRange(await query.ExecuteNextAsync<TRecord>(cancellationToken));
+				foreach (var record in await query.ExecuteNextAsync<TRecord>(cancellationToken))
+				{
+					yield return record;
+				}
 			}
-
-			return records;
 		}
 	}
 }

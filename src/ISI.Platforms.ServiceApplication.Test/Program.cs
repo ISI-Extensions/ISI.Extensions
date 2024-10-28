@@ -39,7 +39,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 
 			context.AddCookieAndBearerAuthentication(new()
 			{
-				AuthenticationHandlerName = "CookieAndBearerAuthentication",
+				AuthenticationScheme = "CookieAndBearerAuthentication",
 				PolicyName = "CookieAndBearerPolicy",
 			});
 
@@ -50,7 +50,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 
 			context.AddSwaggerConfiguration(useBearer: true);
 
-			context.AddCors(new[] { "*" });
+			//context.AddCors(new[] { "*" });
 
 			context.AddEnterpriseCacheManager();
 

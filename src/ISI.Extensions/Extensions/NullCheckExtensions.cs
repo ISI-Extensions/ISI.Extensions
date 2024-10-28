@@ -110,6 +110,17 @@ namespace ISI.Extensions.Extensions
 			return values.HasKeys();
 		}
 
+		public static bool NullCheckedAny<TValue>(this IAsyncEnumerable<TValue> values, System.Threading.CancellationToken cancellationToken = default)
+			where TValue : class, new()
+		{
+			if (values == null)
+			{
+				return false;
+			}
+
+			return values.ToEnumerable(cancellationToken).Any();
+		}
+
 		public static bool NullCheckedAny<TValue>(this IEnumerable<TValue> values)
 		{
 			if (values == null)
@@ -118,6 +129,17 @@ namespace ISI.Extensions.Extensions
 			}
 
 			return values.Any();
+		}
+
+		public static bool NullCheckedAny<TValue>(this IAsyncEnumerable<TValue> values, Func<TValue, bool> predicate, System.Threading.CancellationToken cancellationToken = default)
+			where TValue : class, new()
+		{
+			if (values == null)
+			{
+				return false;
+			}
+
+			return values.ToEnumerable(cancellationToken).Any(predicate);
 		}
 
 		public static bool NullCheckedAny<TValue>(this IEnumerable<TValue> values, Func<TValue, bool> predicate)
@@ -129,6 +151,18 @@ namespace ISI.Extensions.Extensions
 
 			return values.Any(predicate);
 		}
+
+		public static bool NullCheckedAll<TValue>(this IAsyncEnumerable<TValue> values, Func<TValue, bool> predicate, System.Threading.CancellationToken cancellationToken = default)
+			where TValue : class, new()
+		{
+			if (values == null)
+			{
+				return false;
+			}
+
+			return values.ToEnumerable(cancellationToken).All(predicate);
+		}
+
 
 		public static bool NullCheckedAll<TValue>(this IEnumerable<TValue> values, Func<TValue, bool> predicate)
 		{
@@ -190,6 +224,17 @@ namespace ISI.Extensions.Extensions
 			return values.Cast<TResult>();
 		}
 
+		public static TValue NullCheckedFirstOrDefault<TValue>(this IAsyncEnumerable<TValue> values, System.Threading.CancellationToken cancellationToken = default)
+			where TValue : class, new()
+		{
+			if (values == null)
+			{
+				return default;
+			}
+
+			return values.ToEnumerable(cancellationToken).FirstOrDefault();
+		}
+
 		public static TValue NullCheckedFirstOrDefault<TValue>(this IEnumerable<TValue> values)
 		{
 			if (values == null)
@@ -198,6 +243,17 @@ namespace ISI.Extensions.Extensions
 			}
 
 			return values.FirstOrDefault();
+		}
+
+		public static TValue NullCheckedFirstOrDefault<TValue>(this IAsyncEnumerable<TValue> values, Func<TValue, bool> predicate, System.Threading.CancellationToken cancellationToken = default)
+			where TValue : class, new()
+		{
+			if (values == null)
+			{
+				return default;
+			}
+
+			return values.ToEnumerable(cancellationToken).FirstOrDefault(predicate);
 		}
 
 		public static TValue NullCheckedFirstOrDefault<TValue>(this IEnumerable<TValue> values, Func<TValue, bool> predicate)
@@ -210,6 +266,17 @@ namespace ISI.Extensions.Extensions
 			return values.FirstOrDefault(predicate);
 		}
 
+		public static TValue NullCheckedLastOrDefault<TValue>(this IAsyncEnumerable<TValue> values, System.Threading.CancellationToken cancellationToken = default)
+			where TValue : class, new()
+		{
+			if (values == null)
+			{
+				return default;
+			}
+
+			return values.ToEnumerable(cancellationToken).LastOrDefault();
+		}
+
 		public static TValue NullCheckedLastOrDefault<TValue>(this IEnumerable<TValue> values)
 		{
 			if (values == null)
@@ -220,6 +287,17 @@ namespace ISI.Extensions.Extensions
 			return values.LastOrDefault();
 		}
 
+		public static TValue NullCheckedLastOrDefault<TValue>(this IAsyncEnumerable<TValue> values, Func<TValue, bool> predicate, System.Threading.CancellationToken cancellationToken = default)
+			where TValue : class, new()
+		{
+			if (values == null)
+			{
+				return default;
+			}
+
+			return values.ToEnumerable(cancellationToken).LastOrDefault(predicate);
+		}
+
 		public static TValue NullCheckedLastOrDefault<TValue>(this IEnumerable<TValue> values, Func<TValue, bool> predicate)
 		{
 			if (values == null)
@@ -228,6 +306,25 @@ namespace ISI.Extensions.Extensions
 			}
 
 			return values.LastOrDefault(predicate);
+		}
+
+		public static TValue[] ToNullCheckedArray<TValue>(this IAsyncEnumerable<TValue> values, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.ReturnNull, System.Threading.CancellationToken cancellationToken = default)
+			where TValue : class, new()
+		{
+			if (values == null)
+			{
+				switch (ifNullReturn)
+				{
+					case NullCheckCollectionResult.ReturnNull:
+						return null;
+					case NullCheckCollectionResult.Empty:
+						return [];
+					default:
+						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
+				}
+			}
+
+			return values.ToEnumerable(cancellationToken).ToArray();
 		}
 
 		public static TValue[] ToNullCheckedArray<TValue>(this IEnumerable<TValue> values, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.ReturnNull)
@@ -246,6 +343,25 @@ namespace ISI.Extensions.Extensions
 			}
 
 			return values.ToArray();
+		}
+
+		public static TResult[] ToNullCheckedArray<TValue, TResult>(this IAsyncEnumerable<TValue> values, Func<TValue, TResult> converter, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.ReturnNull, System.Threading.CancellationToken cancellationToken = default)
+			where TValue : class, new()
+		{
+			if (values == null)
+			{
+				switch (ifNullReturn)
+				{
+					case NullCheckCollectionResult.ReturnNull:
+						return null;
+					case NullCheckCollectionResult.Empty:
+						return [];
+					default:
+						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
+				}
+			}
+
+			return values.ToEnumerable(converter, cancellationToken).ToArray();
 		}
 
 		public static TResult[] ToNullCheckedArray<TValue, TResult>(this IEnumerable<TValue> values, Func<TValue, TResult> converter, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.ReturnNull)
@@ -404,9 +520,34 @@ namespace ISI.Extensions.Extensions
 			return values.ToDictionary(keySelector, elementSelector, comparer);
 		}
 
+		public static IDictionary<TKey, TValue> ToNullCheckedDictionary<TValue, TKey>(this IAsyncEnumerable<TValue> values, Func<TValue, TKey> keySelector, NullCheckDictionaryResult ifNullReturn = NullCheckDictionaryResult.ReturnNull, System.Threading.CancellationToken cancellationToken = default)
+			where TValue : class, new()
+		{
+			return values.ToEnumerable(cancellationToken).ToNullCheckedDictionary(keySelector, value => value, ifNullReturn);
+		}
+
 		public static IDictionary<TKey, TValue> ToNullCheckedDictionary<TValue, TKey>(this IEnumerable<TValue> values, Func<TValue, TKey> keySelector, NullCheckDictionaryResult ifNullReturn = NullCheckDictionaryResult.ReturnNull)
 		{
 			return values.ToNullCheckedDictionary(keySelector, value => value, ifNullReturn);
+		}
+
+		public static IDictionary<TKey, TElement> ToNullCheckedDictionary<TValue, TKey, TElement>(this IAsyncEnumerable<TValue> values, Func<TValue, TKey> keySelector, Func<TValue, TElement> elementSelector, NullCheckDictionaryResult ifNullReturn = NullCheckDictionaryResult.ReturnNull, System.Threading.CancellationToken cancellationToken = default)
+			where TValue : class, new()
+		{
+			if (values == null)
+			{
+				switch (ifNullReturn)
+				{
+					case NullCheckDictionaryResult.ReturnNull:
+						return null;
+					case NullCheckDictionaryResult.Empty:
+						return new Dictionary<TKey, TElement>();
+					default:
+						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
+				}
+			}
+
+			return values.ToEnumerable(cancellationToken).ToDictionary(keySelector, elementSelector);
 		}
 
 		public static IDictionary<TKey, TElement> ToNullCheckedDictionary<TValue, TKey, TElement>(this IEnumerable<TValue> values, Func<TValue, TKey> keySelector, Func<TValue, TElement> elementSelector, NullCheckDictionaryResult ifNullReturn = NullCheckDictionaryResult.ReturnNull)

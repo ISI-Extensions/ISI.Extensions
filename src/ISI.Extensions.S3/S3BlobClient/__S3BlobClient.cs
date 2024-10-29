@@ -43,7 +43,7 @@ namespace ISI.Extensions.S3
 			MinioClient = new Minio.MinioClient()
 				.WithEndpoint(endPointUri.Host, endPointUri.Port)
 				.WithCredentials(accessKey, secretKey)
-				.WithSSL(string.Equals(endPointUri.Scheme, "https", StringComparison.InvariantCultureIgnoreCase))
+				.WithSSL(string.Equals(endPointUri.Scheme, Uri.UriSchemeHttps, StringComparison.InvariantCultureIgnoreCase))
 				.Build();
 
 			BucketName = bucketName;

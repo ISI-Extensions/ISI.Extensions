@@ -108,7 +108,7 @@ namespace ISI.Extensions.AspNetCore
 		private static string CdnUrlCacheKey(string url)
 		{
 			//var urlScheme = (url.Contains("://") ? (new UriBuilder(url)).Scheme : System.Web.HttpContext.Current.Request.GetScheme());
-			var urlScheme = (url.Contains("://") ? (new UriBuilder(url)).Scheme : "https");
+			var urlScheme = (url.Contains("://") ? (new UriBuilder(url)).Scheme : Uri.UriSchemeHttps);
 
 			var pathAndQueryStringParts = url.Split(new string[] { "?" }, StringSplitOptions.None);
 

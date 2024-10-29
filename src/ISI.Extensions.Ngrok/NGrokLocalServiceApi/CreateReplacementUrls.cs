@@ -91,7 +91,7 @@ namespace ISI.Extensions.Ngrok
 					{
 						var ngrokRequest = new ISI.Extensions.Ngrok.DataTransferObjects.NGrokClientApi.StartTunnelRequest()
 						{
-							LocalAddress = (string.Equals(localUri.Scheme, "https") ? string.Format("https://localhost:{0}", localUri.Port) : string.Format("{0}", localUri.Port)),
+							LocalAddress = (string.Equals(localUri.Scheme, Uri.UriSchemeHttps) ? string.Format("https://localhost:{0}", localUri.Port) : string.Format("{0}", localUri.Port)),
 						};
 
 						var tunnelConfiguration = Configuration.Tunnels.NullCheckedFirstOrDefault(tc =>
@@ -115,14 +115,14 @@ namespace ISI.Extensions.Ngrok
 						{
 							var externalUri = new UriBuilder(tunnelConfiguration.ExternalUrl);
 
-							if (string.Equals(externalUri.Scheme, "http"))
+							if (string.Equals(externalUri.Scheme, Uri.UriSchemeHttp))
 							{
 								ngrokRequest.TunnelProtocol = TunnelProtocol.Http;
 								ngrokRequest.Subdomain = tunnelConfiguration.Subdomain;
 								ngrokRequest.HostHeader = tunnelConfiguration.HostHeader;
 								ngrokRequest.UseTls = UseTls.HttpOnly;
 							}
-							else if (string.Equals(externalUri.Scheme, "https"))
+							else if (string.Equals(externalUri.Scheme, Uri.UriSchemeHttps))
 							{
 								ngrokRequest.TunnelProtocol = TunnelProtocol.Http;
 								ngrokRequest.Subdomain = tunnelConfiguration.Subdomain;
@@ -157,13 +157,13 @@ namespace ISI.Extensions.Ngrok
 						else if (!string.IsNullOrWhiteSpace(tunnelConfiguration?.Subdomain))
 						{
 							ngrokRequest.TunnelProtocol = TunnelProtocol.Http;
-							if (string.Equals(localUri.Scheme, "http"))
+							if (string.Equals(localUri.Scheme, Uri.UriSchemeHttp))
 							{
 								ngrokRequest.TunnelProtocol = TunnelProtocol.Http;
 								ngrokRequest.UseTls = UseTls.HttpOnly;
 								ngrokRequest.Subdomain = tunnelConfiguration.Subdomain;
 							}
-							else if (string.Equals(localUri.Scheme, "https"))
+							else if (string.Equals(localUri.Scheme, Uri.UriSchemeHttps))
 							{
 								ngrokRequest.TunnelProtocol = TunnelProtocol.Http;
 								ngrokRequest.UseTls = UseTls.HttpsOnly;
@@ -177,13 +177,13 @@ namespace ISI.Extensions.Ngrok
 						else if (!string.IsNullOrWhiteSpace(tunnelConfiguration?.HostHeader))
 						{
 							ngrokRequest.TunnelProtocol = TunnelProtocol.Http;
-							if (string.Equals(localUri.Scheme, "http"))
+							if (string.Equals(localUri.Scheme, Uri.UriSchemeHttp))
 							{
 								ngrokRequest.TunnelProtocol = TunnelProtocol.Http;
 								ngrokRequest.UseTls = UseTls.HttpOnly;
 								ngrokRequest.HostHeader = tunnelConfiguration.HostHeader;
 							}
-							else if (string.Equals(localUri.Scheme, "https"))
+							else if (string.Equals(localUri.Scheme, Uri.UriSchemeHttps))
 							{
 								ngrokRequest.TunnelProtocol = TunnelProtocol.Http;
 								ngrokRequest.UseTls = UseTls.HttpsOnly;
@@ -197,12 +197,12 @@ namespace ISI.Extensions.Ngrok
 						else
 						{
 							ngrokRequest.TunnelProtocol = TunnelProtocol.Http;
-							if (string.Equals(localUri.Scheme, "http"))
+							if (string.Equals(localUri.Scheme, Uri.UriSchemeHttp))
 							{
 								ngrokRequest.TunnelProtocol = TunnelProtocol.Http;
 								ngrokRequest.UseTls = UseTls.HttpOnly;
 							}
-							else if (string.Equals(localUri.Scheme, "https"))
+							else if (string.Equals(localUri.Scheme, Uri.UriSchemeHttps))
 							{
 								ngrokRequest.TunnelProtocol = TunnelProtocol.Http;
 								ngrokRequest.UseTls = UseTls.HttpsOnly;

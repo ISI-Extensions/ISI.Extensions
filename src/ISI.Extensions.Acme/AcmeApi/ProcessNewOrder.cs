@@ -121,7 +121,14 @@ namespace ISI.Extensions.Acme
 					};
 
 					var lookupClient = new DnsClient.LookupClient();
-					var txtRecords =  lookupClient.QueryAsync($"{calculateDnsTokenResponse.DnsRecordName}.{calculateDnsTokenResponse.DomainName}", DnsClient.QueryType.TXT).GetAwaiter().GetResult().Answers.TxtRecords().ToNullCheckedArray();
+					var txtRecords = (DnsClient.Protocol.TxtRecord[])null;
+					try
+					{
+						txtRecords = lookupClient.QueryAsync($"{calculateDnsTokenResponse.DnsRecordName}.{calculateDnsTokenResponse.DomainName}", DnsClient.QueryType.TXT).GetAwaiter().GetResult().Answers.TxtRecords().ToNullCheckedArray();
+					}
+					catch
+					{
+					}
 
 					if (!txtRecords.NullCheckedAny(txtRecord => string.Equals(txtRecord.Text.NullCheckedFirstOrDefault() ?? string.Empty, calculateDnsTokenResponse.DnsToken, StringComparison.InvariantCulture)))
 					{

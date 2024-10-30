@@ -182,9 +182,9 @@ namespace ISI.Extensions.Tests
 				HostContext = context,
 				AuthorizationUrl = createNewOrderResponse.Order.AuthorizationUrls.First(),
 			});
-			
+
 			var challenge = getAuthorizationResponse.Authorization.Challenges.NullCheckedFirstOrDefault(challenge => challenge.ChallengeType == ISI.Extensions.Acme.OrderCertificateIdentifierAuthorizationChallengeType.Dns01);
-			
+
 			var calculateDnsTokenResponse = AcmeApi.CalculateDnsToken(new()
 			{
 				HostContext = context,
@@ -282,6 +282,76 @@ namespace ISI.Extensions.Tests
 			System.IO.File.WriteAllText(CertificateFullName, certificatePem);
 		}
 
+
+		public class ProcessNewOrderDetails
+		{
+			public string DomainName { get; set; }
+			public string Organization { get; set; }
+			public ISI.Extensions.Acme.DataTransferObjects.AcmeApi.SetDnsRecordDelegate SetDnsRecord { get; set; }
+
+			public string CertificateKeyFullName { get; set; }
+			public string CertificateFullName { get; set; }
+		}
+
+		private ProcessNewOrderDetails GetProcessNewOrderDetails(ISI.Extensions.Scm.Settings settings, string domainName, Guid dnsProviderUuid)
+		{
+			var response = new ProcessNewOrderDetails();
+
+			response.DomainName = domainName;
+			response.Organization = domainName.TrimStart("*.");
+
+			if (dnsProviderUuid == ISI.Extensions.GoDaddy.DomainsApi.DnsProviderUuid)
+			{
+				response.SetDnsRecord = (rootDomainName, dnsRecord) =>
+				{
+					DomainsApi.SetDnsRecords(new()
+					{
+						DnsProviderUuid = ISI.Extensions.GoDaddy.DomainsApi.DnsProviderUuid,
+						ApiUser = settings.GetValue("GoDaddy.ApiKey"),
+						ApiKey = settings.GetValue("GoDaddy.ApiSecret"),
+
+						DomainName = rootDomainName,
+						DnsRecords = new[] { dnsRecord },
+					});
+				};
+			}
+			else if (dnsProviderUuid == ISI.Extensions.NameCheap.DomainsApi.DnsProviderUuid)
+			{
+				response.SetDnsRecord = (rootDomainName, dnsRecord) =>
+				{
+					DomainsApi.SetDnsRecords(new()
+					{
+						DnsProviderUuid = ISI.Extensions.NameCheap.DomainsApi.DnsProviderUuid,
+						ApiUser = settings.GetValue("NameCheap.ApiUser"),
+						ApiKey = settings.GetValue("NameCheap.ApiKey"),
+
+						DomainName = rootDomainName,
+						DnsRecords = new[] { dnsRecord },
+					});
+				};
+			}
+			else if (dnsProviderUuid == ManualDomainsApi.DnsProviderUuid)
+			{
+				response.SetDnsRecord = (rootDomainName, dnsRecord) =>
+				{
+					DomainsApi.SetDnsRecords(new()
+					{
+						DnsProviderUuid = ManualDomainsApi.DnsProviderUuid,
+
+						DomainName = rootDomainName,
+						DnsRecords = new[] { dnsRecord },
+					});
+				};
+			}
+
+			response.CertificateKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, $"{domainName.Replace("*.", "_.")}.key");
+			response.CertificateFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, $"{domainName.Replace("*.", "_.")}.pem");
+
+			return response;
+		}
+
+
+
 		[Test]
 		public void ProcessNewOrder_LetsEncrypt_Test()
 		{
@@ -292,7 +362,7 @@ namespace ISI.Extensions.Tests
 			var serializedJsonWebKey = GetAccountSerializedJsonWebKey();
 			var accountKey = GetAccountKey();
 
-			var domainName = "*.muthmanor.com";
+			var processNewOrderDetails = GetProcessNewOrderDetails(settings, "*.ronmuth.com", ISI.Extensions.NameCheap.DomainsApi.DnsProviderUuid);
 
 			var context = AcmeApi.GetHostContext(new()
 			{
@@ -306,38 +376,21 @@ namespace ISI.Extensions.Tests
 			{
 				HostContext = context,
 
-				DomainName = domainName,
+				DomainName = processNewOrderDetails.DomainName,
 
 				OrganizationUnit = null,
 
-				Organization = "MuthManor",
+				Organization = processNewOrderDetails.Organization,
 				Locality = "Glen Cove",
 				State = "New York",
 
 				CountryName = "US",
 
-				SetDnsRecord = (rootDomainName, dnsRecord) =>
-				{
-					DomainsApi.SetDnsRecords(new ()
-					{
-						//DnsProviderUuid = ISI.Extensions.GoDaddy.DomainsApi.DnsProviderUuid,
-						//ApiUser = settings.GetValue("GoDaddy.ApiKey"),
-						//ApiKey = settings.GetValue("GoDaddy.ApiSecret"),
-
-						DnsProviderUuid = ISI.Extensions.NameCheap.DomainsApi.DnsProviderUuid,
-						ApiUser = settings.GetValue("NameCheap.ApiUser"),
-						ApiKey = settings.GetValue("NameCheap.ApiKey"),
-
-						//DnsProviderUuid = ManualDomainsApi.DnsProviderUuid,
-
-						DomainName = rootDomainName,
-						DnsRecords = new[] { dnsRecord },
-					});
-				},
+				SetDnsRecord = processNewOrderDetails.SetDnsRecord,
 			});
 
-			System.IO.File.WriteAllText(CertificateKeyFullName, createNewOrderResponse.PrivateKeyPem);
-			System.IO.File.WriteAllText(CertificateFullName, createNewOrderResponse.CertificatePem);
+			System.IO.File.WriteAllText(processNewOrderDetails.CertificateKeyFullName, createNewOrderResponse.PrivateKeyPem);
+			System.IO.File.WriteAllText(processNewOrderDetails.CertificateFullName, createNewOrderResponse.CertificatePem);
 		}
 
 		[Test]

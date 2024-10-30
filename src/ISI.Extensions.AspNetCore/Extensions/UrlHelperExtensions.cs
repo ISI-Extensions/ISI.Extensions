@@ -41,7 +41,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 				{
 					var forwardedHost = forwardedHosts.NullCheckedFirstOrDefault() ?? string.Empty;
 
-					if (Uri.TryCreate(forwardedHost, UriKind.RelativeOrAbsolute, out var uri))
+					if ((forwardedHost.StartsWith("http://", StringComparison.InvariantCultureIgnoreCase) || forwardedHost.StartsWith("https://", StringComparison.InvariantCultureIgnoreCase)) && Uri.TryCreate(forwardedHost, UriKind.Absolute, out var uri))
 					{
 						if (!string.IsNullOrWhiteSpace(uri.Scheme))
 						{
@@ -81,7 +81,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 
 				if (!string.IsNullOrWhiteSpace(overRideHost))
 				{
-					if (Uri.TryCreate(overRideHost, UriKind.RelativeOrAbsolute, out var uri))
+					if ((overRideHost.StartsWith("http://", StringComparison.InvariantCultureIgnoreCase) || overRideHost.StartsWith("https://", StringComparison.InvariantCultureIgnoreCase)) && Uri.TryCreate(overRideHost, UriKind.Absolute, out var uri))
 					{
 						if (!string.IsNullOrWhiteSpace(uri.Scheme))
 						{

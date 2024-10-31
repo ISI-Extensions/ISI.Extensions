@@ -26,7 +26,7 @@ namespace ISI.Platforms.AspNetCore
 		public class JwtConfiguration
 		{
 			[ISI.Extensions.EnvironmentConfigurationVariableName("JWT_ISSUER")]
-			public string Issuer { get; set; } = System.Reflection.Assembly.GetExecutingAssembly()?.FullName?.Split(new[] { ',' }).First();
+			public string Issuer { get; set; } // = System.Reflection.Assembly.GetExecutingAssembly()?.FullName?.Split(new[] { ',' }).First();
 
 			[ISI.Extensions.EnvironmentConfigurationVariableName("JWT_ENCRYPTION_KEY")]
 			public string EncryptionKey { get; set; }

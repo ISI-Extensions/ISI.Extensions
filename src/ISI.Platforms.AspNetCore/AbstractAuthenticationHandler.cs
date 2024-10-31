@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ISI.Platforms.AspNetCore
 {
@@ -39,6 +40,13 @@ namespace ISI.Platforms.AspNetCore
 		{
 			Configuration = configuration;
 			AuthenticationIdentityApi = authenticationIdentityApi;
+
+			if (string.IsNullOrWhiteSpace(Configuration.Jwt.Issuer))
+			{
+				var platformsConfiguration = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Platforms.Configuration>();
+
+				Configuration.Jwt.Issuer = platformsConfiguration.BaseUrl;
+			}
 		}
 
 		protected abstract string GetAuthenticationHandlerName();

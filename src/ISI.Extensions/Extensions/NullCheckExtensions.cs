@@ -629,7 +629,8 @@ namespace ISI.Extensions.Extensions
 		}
 
 
-		public static IEnumerable<TResult> NullCheckedSelect<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.ReturnNull)
+		public static IEnumerable<TResult> NullCheckedSelect<TSource, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, TResult> converter, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.ReturnNull)
+			where TSource : class, new()
 		{
 			if (source == null)
 			{
@@ -644,7 +645,25 @@ namespace ISI.Extensions.Extensions
 				}
 			}
 
-			return source.Select(selector);
+			return source.ToEnumerable(converter);
+		}
+
+		public static IEnumerable<TResult> NullCheckedSelect<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> converter, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.ReturnNull)
+		{
+			if (source == null)
+			{
+				switch (ifNullReturn)
+				{
+					case NullCheckCollectionResult.ReturnNull:
+						return null;
+					case NullCheckCollectionResult.Empty:
+						return Array.Empty<TResult>();
+					default:
+						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
+				}
+			}
+
+			return source.Select(converter);
 		}
 
 		public static IEnumerable<TResult> NullCheckedSelectMany<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, IEnumerable<TResult>> selector, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.ReturnNull)

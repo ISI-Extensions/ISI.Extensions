@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,7 +45,33 @@ namespace ISI.Platforms.AspNetCore
 			{
 				var platformsConfiguration = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Platforms.Configuration>();
 
-				Configuration.Jwt.Issuer = platformsConfiguration.BaseUrl;
+				if (!string.IsNullOrWhiteSpace(platformsConfiguration.BaseUrl))
+				{
+					var uri = new UriBuilder(platformsConfiguration.BaseUrl);
+					uri.SetPathAndQueryString(string.Empty);
+
+					Configuration.Jwt.Issuer = uri.Uri.ToString().Trim('/');
+				}
+				else
+				{
+					var server = ISI.Extensions.ServiceLocator.Current.GetRequiredService<global::Microsoft.AspNetCore.Hosting.Server.IServer>();
+					var addressFeature = server.Features.Get<global::Microsoft.AspNetCore.Hosting.Server.Features.IServerAddressesFeature>();
+
+					var baseUrl = addressFeature.Addresses.NullCheckedFirstOrDefault(address => address.StartsWith("http", StringComparison.InvariantCultureIgnoreCase));
+
+					if (!string.IsNullOrWhiteSpace(baseUrl))
+					{
+						var uri = new UriBuilder(baseUrl);
+						uri.SetPathAndQueryString(string.Empty);
+
+						Configuration.Jwt.Issuer = uri.Uri.ToString().Trim('/');
+					}
+				}
+			}
+
+			if (string.IsNullOrWhiteSpace(Configuration.Jwt.Issuer))
+			{
+				Configuration.Jwt.Issuer = System.Reflection.Assembly.GetExecutingAssembly()?.FullName?.Split(new[] { ',' }).First();
 			}
 		}
 

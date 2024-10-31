@@ -35,6 +35,9 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void Enum_Test()
 		{
+			var a1 = ISI.Extensions.Enum<MyEnum>.ToArray();
+
+
 			var t1 = MyEnum.No;
 			var t2 = t1.GetUuid();
 

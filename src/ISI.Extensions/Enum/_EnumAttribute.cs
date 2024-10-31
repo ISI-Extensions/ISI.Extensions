@@ -35,6 +35,7 @@ namespace ISI.Extensions
 			: base()
 		{
 			Uuid = uuid;
+			Active = true;
 		}
 		public EnumGuidAttribute(string uuid, string description)
 			: base(description)
@@ -81,7 +82,7 @@ namespace ISI.Extensions
 
 		internal EnumAttribute()
 		{
-
+			Active = true;
 		}
 
 		public EnumAttribute(string description)

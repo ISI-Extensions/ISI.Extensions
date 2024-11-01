@@ -27,50 +27,24 @@ namespace ISI.Extensions.Tailscale
 {
 	public partial class TailscaleApi
 	{
-		public DTOs.CreateAuthKeyResponse CreateAuthKey(DTOs.CreateAuthKeyRequest request)
+		private ISI.Extensions.WebClient.HeaderCollection GetHeaders(DTOs.IRequest request)
 		{
-			var response = new DTOs.CreateAuthKeyResponse();
-			
-			var uri = GetApiUri(request);
-			uri.AddDirectoryToPath("/tailnet/{tailnet}/keys".Replace("{tailnet}", request.Tailnet));
+			var headers = new ISI.Extensions.WebClient.HeaderCollection();
 
-			var restRequest = new SerializableDTOs.CreateAuthKeyRequest()
+			if (!string.IsNullOrWhiteSpace(request.TailscaleApiToken))
 			{
-				Description = request.Description,
-				ExpirySeconds = (int)request.Expiry.TotalSeconds,
-				Capabilities = new()
-				{
-					Devices = new()
-					{
-						Create = new()
-						{
-							Reusable = request.Reusable,
-							Ephemeral = request.Ephemeral,
-							Preauthorized = request.Preauthorized,
-							Tags = request.Tags.ToNullCheckedArray(),
-						}
-					}
-				}
-			};
-
-			try
-			{
-				var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.CreateAuthKeyRequest, SerializableDTOs.CreateAuthKeyResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request), restRequest, false);
-
-				if (restResponse.Error != null)
-				{
-					throw restResponse.Error.Exception;
-				}
-
-				response.AuthKeyId = restResponse?.Response?.AuthKeyId;
-				response.AuthKey = restResponse?.Response?.AuthKey;
+				headers.AddBearerAuthentication(request.TailscaleApiToken);
 			}
-			catch (Exception exception)
+			else if (!string.IsNullOrWhiteSpace(Configuration.TailscaleApiToken))
 			{
-				Logger.LogError(exception, "CreateAuthKey Failed\n{0}", exception.ErrorMessageFormatted());
+				headers.AddBearerAuthentication(Configuration.TailscaleApiToken);
+			}
+			else
+			{
+				throw new Exception("No TailscaleApiToken available");
 			}
 
-			return response;
+			return headers;
 		}
 	}
 }

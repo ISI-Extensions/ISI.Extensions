@@ -27,47 +27,30 @@ namespace ISI.Extensions.Tailscale
 {
 	public partial class TailscaleApi
 	{
-		public DTOs.CreateAuthKeyResponse CreateAuthKey(DTOs.CreateAuthKeyRequest request)
+		public DTOs.UpdateDeviceKey​Response UpdateDeviceKey(DTOs.UpdateDeviceKey​Request request)
 		{
-			var response = new DTOs.CreateAuthKeyResponse();
+			var response = new DTOs.UpdateDeviceKey​Response();
 			
 			var uri = GetApiUri(request);
-			uri.AddDirectoryToPath("/tailnet/{tailnet}/keys".Replace("{tailnet}", request.Tailnet));
+			uri.AddDirectoryToPath("/device/{deviceId}/key".Replace("{deviceId}", request.Tailnet));
 
-			var restRequest = new SerializableDTOs.CreateAuthKeyRequest()
+			var restRequest = new SerializableDTOs.UpdateDeviceKey​Request()
 			{
-				Description = request.Description,
-				ExpirySeconds = (int)request.Expiry.TotalSeconds,
-				Capabilities = new()
-				{
-					Devices = new()
-					{
-						Create = new()
-						{
-							Reusable = request.Reusable,
-							Ephemeral = request.Ephemeral,
-							Preauthorized = request.Preauthorized,
-							Tags = request.Tags.ToNullCheckedArray(),
-						}
-					}
-				}
+				KeyExpiryDisabled = request.KeyExpiryDisabled,
 			};
 
 			try
 			{
-				var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.CreateAuthKeyRequest, SerializableDTOs.CreateAuthKeyResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request), restRequest, false);
+				var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.UpdateDeviceKey​Request, SerializableDTOs.UpdateDeviceKey​Response, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request), restRequest, false);
 
 				if (restResponse.Error != null)
 				{
 					throw restResponse.Error.Exception;
 				}
-
-				response.AuthKeyId = restResponse?.Response?.AuthKeyId;
-				response.AuthKey = restResponse?.Response?.AuthKey;
 			}
 			catch (Exception exception)
 			{
-				Logger.LogError(exception, "CreateAuthKey Failed\n{0}", exception.ErrorMessageFormatted());
+				Logger.LogError(exception, "UpdateDeviceKey​ Failed\n{0}", exception.ErrorMessageFormatted());
 			}
 
 			return response;

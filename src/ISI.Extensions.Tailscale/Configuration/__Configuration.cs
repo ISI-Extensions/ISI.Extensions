@@ -19,58 +19,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Tailscale.DataTransferObjects.TailscaleApi;
-using SerializableDTOs = ISI.Extensions.Tailscale.SerializableModels.TailscaleApi;
-using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Tailscale
 {
-	public partial class TailscaleApi
+	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
+	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
 	{
-		public DTOs.CreateAuthKeyResponse CreateAuthKey(DTOs.CreateAuthKeyRequest request)
-		{
-			var response = new DTOs.CreateAuthKeyResponse();
-			
-			var uri = GetApiUri(request);
-			uri.AddDirectoryToPath("/tailnet/{tailnet}/keys".Replace("{tailnet}", request.Tailnet));
+		public const string ConfigurationSectionName = "ISI.Extensions.Tailscale";
 
-			var restRequest = new SerializableDTOs.CreateAuthKeyRequest()
-			{
-				Description = request.Description,
-				ExpirySeconds = (int)request.Expiry.TotalSeconds,
-				Capabilities = new()
-				{
-					Devices = new()
-					{
-						Create = new()
-						{
-							Reusable = request.Reusable,
-							Ephemeral = request.Ephemeral,
-							Preauthorized = request.Preauthorized,
-							Tags = request.Tags.ToNullCheckedArray(),
-						}
-					}
-				}
-			};
+		[ISI.Extensions.EnvironmentConfigurationVariableName("TAILSCALE_API_URL")]
+		public string TailscaleApiUrl { get; set; } = "https://api.tailscale.com/api/v2";
 
-			try
-			{
-				var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.CreateAuthKeyRequest, SerializableDTOs.CreateAuthKeyResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request), restRequest, false);
-
-				if (restResponse.Error != null)
-				{
-					throw restResponse.Error.Exception;
-				}
-
-				response.AuthKeyId = restResponse?.Response?.AuthKeyId;
-				response.AuthKey = restResponse?.Response?.AuthKey;
-			}
-			catch (Exception exception)
-			{
-				Logger.LogError(exception, "CreateAuthKey Failed\n{0}", exception.ErrorMessageFormatted());
-			}
-
-			return response;
-		}
+		[ISI.Extensions.EnvironmentConfigurationVariableName("TAILSCALE_API_TOKEN")]
+		public string TailscaleApiToken { get; set; }
 	}
 }

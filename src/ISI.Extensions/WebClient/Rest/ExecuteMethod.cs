@@ -292,7 +292,7 @@ namespace ISI.Extensions.WebClient
 				var webResponse = webRequest.GetResponse();
 
 				var statusCode = ((System.Net.HttpWebResponse)webResponse).StatusCode;
-				while ((statusCode == System.Net.HttpStatusCode.Found) || (statusCode == System.Net.HttpStatusCode.TemporaryRedirect))
+				while ((statusCode == System.Net.HttpStatusCode.Found) || (statusCode == System.Net.HttpStatusCode.Moved) || (statusCode == System.Net.HttpStatusCode.TemporaryRedirect))
 				{
 					var location = webResponse.Headers["Location"];
 

@@ -74,7 +74,7 @@ namespace ISI.Extensions.Extensions
 				}
 				else
 				{
-					path = string.Format("{0}{1}{2}", path, (path.EndsWith("/") ? string.Empty : "/"), directory);
+					path = string.Format("{0}{1}{2}", path, (path.EndsWith("/") ? string.Empty : "/"), directory.TrimStart("/"));
 				}
 
 				while (path.StartsWith("/"))

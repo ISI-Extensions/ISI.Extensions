@@ -27,9 +27,7 @@ namespace ISI.Extensions.Tailscale.DataTransferObjects.TailscaleApi
 		public string TailscaleApiUrl { get; set; }
 		public string TailscaleApiToken { get; set; }
 
-		public string Tailnet { get; set; }
-
-		public bool NodeKey { get; set; }
+		public string NodeKey { get; set; }
 
 		public bool KeyExpiryDisabled { get; set; }
 	}

@@ -32,7 +32,7 @@ namespace ISI.Extensions.Tailscale
 			var response = new DTOs.UpdateDeviceKey​Response();
 			
 			var uri = GetApiUri(request);
-			uri.AddDirectoryToPath("/device/{deviceId}/key".Replace("{deviceId}", request.Tailnet));
+			uri.AddDirectoryToPath("/device/{deviceId}/key".Replace("{deviceId}", request.NodeKey));
 
 			var restRequest = new SerializableDTOs.UpdateDeviceKey​Request()
 			{

@@ -36,6 +36,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 			public class RouteNames : IRouteNames
 			{
 				[RouteName] public const string GetPizza = "GetPizza-b181b405-9483-48fb-b4c6-9f70f95de1a1";
+				[RouteName] public const string SendMessage = "SendMessage-05a36163-e1ef-448c-847f-bd148c16b9b1";
 				//${RouteNames}
 			}
 			#pragma warning restore 649

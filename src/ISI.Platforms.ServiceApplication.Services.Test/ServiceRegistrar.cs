@@ -19,21 +19,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Platforms.ServiceApplication.Test.Controllers
+namespace ISI.Platforms.ServiceApplication.Services.Test
 {
-	public partial class ApiController : Controller
+	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
+	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
 	{
-		protected Microsoft.AspNetCore.SignalR.IHubContext<ISI.Platforms.ServiceApplication.Test.Hubs.ChatHub, ISI.Platforms.ServiceApplication.Services.Test.Hubs.IChatHub> ChatHubServer { get; }
-
-		public ApiController(
-			Microsoft.Extensions.Logging.ILogger logger,
-			Microsoft.AspNetCore.SignalR.IHubContext<ISI.Platforms.ServiceApplication.Test.Hubs.ChatHub, ISI.Platforms.ServiceApplication.Services.Test.Hubs.IChatHub> chatHubServer)
-			: base(logger)
+		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
-			ChatHubServer = chatHubServer;
+			services.AddSingleton<IChatHubApi, ChatHubApi>();
 		}
 	}
 }

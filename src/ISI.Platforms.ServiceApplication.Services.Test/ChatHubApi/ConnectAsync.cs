@@ -19,21 +19,36 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
+using DTOs = ISI.Platforms.ServiceApplication.Services.Test.DataTransferObjects.ChatHubApi;
+using SerializableDTOs = ISI.Platforms.ServiceApplication.Services.Test.SerializableModels.ChatHub;
+using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.Logging;
 
-namespace ISI.Platforms.ServiceApplication.Test.Controllers
+namespace ISI.Platforms.ServiceApplication.Services.Test
 {
-	public partial class ApiController : Controller
+	public partial class ChatHubApi
 	{
-		protected Microsoft.AspNetCore.SignalR.IHubContext<ISI.Platforms.ServiceApplication.Test.Hubs.ChatHub, ISI.Platforms.ServiceApplication.Services.Test.Hubs.IChatHub> ChatHubServer { get; }
-
-		public ApiController(
-			Microsoft.Extensions.Logging.ILogger logger,
-			Microsoft.AspNetCore.SignalR.IHubContext<ISI.Platforms.ServiceApplication.Test.Hubs.ChatHub, ISI.Platforms.ServiceApplication.Services.Test.Hubs.IChatHub> chatHubServer)
-			: base(logger)
+		public async Task<DTOs.ConnectResponse> ConnectAsync(DTOs.ConnectRequest request, System.Threading.CancellationToken cancellationToken = default)
 		{
-			ChatHubServer = chatHubServer;
+			var response = new DTOs.ConnectResponse();
+
+			var uri = new UriBuilder("wss://localhost:60331");
+			uri.Path = HubUrlPattern;
+			
+			HubConnection = new Microsoft.AspNetCore.SignalR.Client.HubConnectionBuilder()
+				.WithUrl(uri.Uri)
+				.ConfigureLogging(logging =>
+				{
+					logging.AddConsole();
+				})
+				.WithAutomaticReconnect()
+				.Build();
+
+			HubConnection.On<SerializableDTOs.SendMessageRequest>(nameof(ISI.Platforms.ServiceApplication.Services.Test.Hubs.IChatHub.SendMessageAsync), OnSendMessage);
+
+			await HubConnection.StartAsync(cancellationToken);
+
+			return response;
 		}
 	}
 }

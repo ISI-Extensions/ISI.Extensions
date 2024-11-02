@@ -19,21 +19,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using DTOs = ISI.Platforms.ServiceApplication.Test.Models.Api.SerializableModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ISI.Platforms.ServiceApplication.Test.Controllers
 {
-	public partial class ApiController : Controller
+	public partial class ApiController
 	{
-		protected Microsoft.AspNetCore.SignalR.IHubContext<ISI.Platforms.ServiceApplication.Test.Hubs.ChatHub, ISI.Platforms.ServiceApplication.Services.Test.Hubs.IChatHub> ChatHubServer { get; }
-
-		public ApiController(
-			Microsoft.Extensions.Logging.ILogger logger,
-			Microsoft.AspNetCore.SignalR.IHubContext<ISI.Platforms.ServiceApplication.Test.Hubs.ChatHub, ISI.Platforms.ServiceApplication.Services.Test.Hubs.IChatHub> chatHubServer)
-			: base(logger)
+		[Microsoft.AspNetCore.Mvc.AcceptVerbs(nameof(Microsoft.AspNetCore.Http.HttpMethods.Post))]
+		[Microsoft.AspNetCore.Authorization.AllowAnonymous]
+		[ISI.Extensions.AspNetCore.NamedRoute(Routes.Api.RouteNames.SendMessage, typeof(Routes.Api), "send-message")]
+		[Microsoft.AspNetCore.Mvc.ProducesResponseType(Microsoft.AspNetCore.Http.StatusCodes.Status200OK, Type = typeof(DTOs.SendMessageResponse))]
+		public async Task<Microsoft.AspNetCore.Mvc.IActionResult> SendMessageAsync([Microsoft.AspNetCore.Mvc.FromBody] DTOs.SendMessageRequest request, System.Threading.CancellationToken cancellationToken = default)
 		{
-			ChatHubServer = chatHubServer;
+			var response = new DTOs.SendMessageResponse();
+
+			await ChatHubServer.Clients.Client(request.ConnectionId).SendMessageAsync(new ()
+			{
+				Message = request.Message,
+			});
+
+			return Ok(response);
 		}
 	}
 }

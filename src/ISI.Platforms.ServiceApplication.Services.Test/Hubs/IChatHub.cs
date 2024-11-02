@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -19,21 +19,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
+using DTOs = ISI.Platforms.ServiceApplication.Services.Test.SerializableModels.ChatHub;
 
-namespace ISI.Platforms.ServiceApplication.Test.Controllers
+namespace ISI.Platforms.ServiceApplication.Services.Test.Hubs
 {
-	public partial class ApiController : Controller
+	public interface IChatHub
 	{
-		protected Microsoft.AspNetCore.SignalR.IHubContext<ISI.Platforms.ServiceApplication.Test.Hubs.ChatHub, ISI.Platforms.ServiceApplication.Services.Test.Hubs.IChatHub> ChatHubServer { get; }
-
-		public ApiController(
-			Microsoft.Extensions.Logging.ILogger logger,
-			Microsoft.AspNetCore.SignalR.IHubContext<ISI.Platforms.ServiceApplication.Test.Hubs.ChatHub, ISI.Platforms.ServiceApplication.Services.Test.Hubs.IChatHub> chatHubServer)
-			: base(logger)
-		{
-			ChatHubServer = chatHubServer;
-		}
+		Task SendMessageAsync(DTOs.SendMessageRequest request);
 	}
 }

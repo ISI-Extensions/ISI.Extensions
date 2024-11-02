@@ -19,6 +19,7 @@
 		<ProjectReference Include="..\ISI.Platforms.AspNetCore\ISI.Platforms.AspNetCore.csproj" />
 		<ProjectReference Include="..\ISI.Platforms.Elk\ISI.Platforms.Elk.csproj" />
 		<ProjectReference Include="..\ISI.Platforms.Serilog\ISI.Platforms.Serilog.csproj" />
+		<ProjectReference Include="..\ISI.Platforms.ServiceApplication.Services.Test\ISI.Platforms.ServiceApplication.Services.Test.csproj" />
 		<ProjectReference Include="..\ISI.Platforms.ServiceApplication\ISI.Platforms.ServiceApplication.csproj" />
 		<ProjectReference Include="..\ISI.Platforms\ISI.Platforms.csproj" />
 	</ItemGroup>

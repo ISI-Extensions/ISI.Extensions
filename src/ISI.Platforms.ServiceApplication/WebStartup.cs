@@ -55,6 +55,11 @@ namespace ISI.Platforms.ServiceApplication
 					})
 					;
 
+			if (Startup.Context.AddSignalR)
+			{
+				services.AddSignalR();
+			}
+
 			Startup.Context.WebStartupMvcBuilder?.Invoke(mvcBuilder);
 			Startup.Context.WebStartupConfigureServices?.Invoke(services);
 		}
@@ -95,6 +100,7 @@ namespace ISI.Platforms.ServiceApplication
 			applicationBuilder.UseEndpoints(endpointRouteBuilder =>
 			{
 				endpointRouteBuilder.MapControllers();
+				Startup.Context.WebStartupUseEndpoints?.Invoke(endpointRouteBuilder);
 			});
 		}
 	}

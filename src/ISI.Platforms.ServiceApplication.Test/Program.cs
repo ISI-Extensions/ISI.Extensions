@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using ISI.Platforms.AspNetCore.Extensions;
 using ISI.Platforms.Extensions;
 using ISI.Platforms.ServiceApplication.Extensions;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -43,6 +44,13 @@ namespace ISI.Platforms.ServiceApplication.Test
 				PolicyName = "CookieAndBearerPolicy",
 			});
 
+			context.AddSignalR = true;
+			context.AddWebStartupUseEndpoints(endpointRouteBuilder =>
+			{
+				endpointRouteBuilder.MapHub<ISI.Platforms.ServiceApplication.Test.Hubs.ChatHub>(ISI.Platforms.ServiceApplication.Services.Test.ChatHubApi.HubUrlPattern);
+			});
+
+
 			context.AddWebStartupConfigureServices(services =>
 			{
 				services.AddSingleton<ISI.Extensions.IAuthenticationIdentityApi, AuthenticationIdentityApi>();
@@ -53,6 +61,15 @@ namespace ISI.Platforms.ServiceApplication.Test
 			//context.AddCors(new[] { "*" });
 
 			context.AddEnterpriseCacheManager();
+
+			var chatHubApi = (ISI.Platforms.ServiceApplication.Services.Test.IChatHubApi)null;
+
+			context.AddPostStartup(host =>
+			{
+				chatHubApi = host.Services.GetService<ISI.Platforms.ServiceApplication.Services.Test.IChatHubApi>();
+
+				chatHubApi.ConnectAsync(new()).GetAwaiter().GetResult();
+			});
 
 			return ISI.Platforms.ServiceApplication.Startup.Main(context);
 		}

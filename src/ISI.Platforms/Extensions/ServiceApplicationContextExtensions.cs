@@ -95,6 +95,17 @@ namespace ISI.Platforms.Extensions
 			};
 		}
 
+		public static void AddWebStartupUseEndpoints(this IServiceApplicationContextAddActions context, ServiceApplicationContextWebStartupUseEndpointsDelegate action)
+		{
+			var webStartupUseEndpoints = context.WebStartupUseEndpoints;
+			context.WebStartupUseEndpoints = services =>
+			{
+				webStartupUseEndpoints?.Invoke(services);
+
+				action(services);
+			};
+		}
+
 		public static void AddConfigureApplication(this IServiceApplicationContextAddActions context, ServiceApplicationContextConfigureApplicationDelegate action)
 		{
 			var configureApplication = context.ConfigureApplication;

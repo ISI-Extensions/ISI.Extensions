@@ -19,21 +19,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
+using DTOs = ISI.Platforms.ServiceApplication.Services.Test.DataTransferObjects.ChatHubApi;
 
-namespace ISI.Platforms.ServiceApplication.Test.Controllers
+namespace ISI.Platforms.ServiceApplication.Services.Test
 {
-	public partial class ApiController : Controller
+	public interface IChatHubApi
 	{
-		protected Microsoft.AspNetCore.SignalR.IHubContext<ISI.Platforms.ServiceApplication.Test.Hubs.ChatHub, ISI.Platforms.ServiceApplication.Services.Test.Hubs.IChatHub> ChatHubServer { get; }
-
-		public ApiController(
-			Microsoft.Extensions.Logging.ILogger logger,
-			Microsoft.AspNetCore.SignalR.IHubContext<ISI.Platforms.ServiceApplication.Test.Hubs.ChatHub, ISI.Platforms.ServiceApplication.Services.Test.Hubs.IChatHub> chatHubServer)
-			: base(logger)
-		{
-			ChatHubServer = chatHubServer;
-		}
+		Task<DTOs.ConnectResponse> ConnectAsync(DTOs.ConnectRequest request, System.Threading.CancellationToken cancellationToken = default);
+		Task<DTOs.DisconnectResponse> DisconnectAsync(DTOs.DisconnectRequest request, System.Threading.CancellationToken cancellationToken = default);
 	}
 }

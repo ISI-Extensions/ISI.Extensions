@@ -19,21 +19,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
+using System.Runtime.Serialization;
 
-namespace ISI.Platforms.ServiceApplication.Test.Controllers
+namespace ISI.Platforms.ServiceApplication.Test.Models.Api.SerializableModels
 {
-	public partial class ApiController : Controller
+	[DataContract]
+	public class SendMessageRequest
 	{
-		protected Microsoft.AspNetCore.SignalR.IHubContext<ISI.Platforms.ServiceApplication.Test.Hubs.ChatHub, ISI.Platforms.ServiceApplication.Services.Test.Hubs.IChatHub> ChatHubServer { get; }
+		[DataMember(Name = "connectionId", EmitDefaultValue = false)]
+		public string ConnectionId { get; set; }
 
-		public ApiController(
-			Microsoft.Extensions.Logging.ILogger logger,
-			Microsoft.AspNetCore.SignalR.IHubContext<ISI.Platforms.ServiceApplication.Test.Hubs.ChatHub, ISI.Platforms.ServiceApplication.Services.Test.Hubs.IChatHub> chatHubServer)
-			: base(logger)
-		{
-			ChatHubServer = chatHubServer;
-		}
+		[DataMember(Name = "message", EmitDefaultValue = false)]
+		public string Message { get; set; }
 	}
 }

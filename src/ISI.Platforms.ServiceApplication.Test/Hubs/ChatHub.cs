@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -19,21 +19,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace ISI.Platforms.ServiceApplication.Test.Controllers
+ 
+namespace ISI.Platforms.ServiceApplication.Test.Hubs
 {
-	public partial class ApiController : Controller
+	public partial class ChatHub : Microsoft.AspNetCore.SignalR.Hub<ISI.Platforms.ServiceApplication.Services.Test.Hubs.IChatHub>
 	{
-		protected Microsoft.AspNetCore.SignalR.IHubContext<ISI.Platforms.ServiceApplication.Test.Hubs.ChatHub, ISI.Platforms.ServiceApplication.Services.Test.Hubs.IChatHub> ChatHubServer { get; }
-
-		public ApiController(
-			Microsoft.Extensions.Logging.ILogger logger,
-			Microsoft.AspNetCore.SignalR.IHubContext<ISI.Platforms.ServiceApplication.Test.Hubs.ChatHub, ISI.Platforms.ServiceApplication.Services.Test.Hubs.IChatHub> chatHubServer)
-			: base(logger)
+		public override async Task OnConnectedAsync()
 		{
-			ChatHubServer = chatHubServer;
+			Console.WriteLine($"New Connection: {Context.ConnectionId}");
+
+			await base.OnConnectedAsync();
 		}
 	}
 }

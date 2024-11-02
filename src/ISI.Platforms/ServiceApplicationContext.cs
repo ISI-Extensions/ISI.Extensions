@@ -25,6 +25,7 @@ namespace ISI.Platforms
 	public delegate void ServiceApplicationContextHostBuilderConfigureServicesDelegate(Microsoft.Extensions.Hosting.HostBuilderContext hostContext, Microsoft.Extensions.DependencyInjection.IServiceCollection services);
 	public delegate void ServiceApplicationContextWebStartupMvcBuilderDelegate(Microsoft.Extensions.DependencyInjection.IMvcBuilder mvcBuilder);
 	public delegate void ServiceApplicationContextWebStartupConfigureServicesDelegate(Microsoft.Extensions.DependencyInjection.IServiceCollection services);
+	public delegate void ServiceApplicationContextWebStartupUseEndpointsDelegate(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder endpointRouteBuilder);
 	public delegate void ServiceApplicationContextConfigureApplicationDelegate(Microsoft.AspNetCore.Builder.IApplicationBuilder applicationBuilder, Microsoft.AspNetCore.Hosting.IWebHostEnvironment webHostingEnvironment);
 	public delegate void ServiceApplicationContextPreMessageBusBuildDelegate(Microsoft.Extensions.Hosting.IHost host);
 	public delegate void ServiceApplicationContextPostStartupDelegate(Microsoft.Extensions.Hosting.IHost host);
@@ -42,6 +43,7 @@ namespace ISI.Platforms
 
 		ServiceApplicationContextWebStartupMvcBuilderDelegate WebStartupMvcBuilder { get; set; }
 		ServiceApplicationContextWebStartupConfigureServicesDelegate WebStartupConfigureServices { get; set; }
+		ServiceApplicationContextWebStartupUseEndpointsDelegate WebStartupUseEndpoints { get; set; }
 
 		ServiceApplicationContextConfigureApplicationDelegate ConfigureApplication { get; set; }
 
@@ -79,6 +81,11 @@ namespace ISI.Platforms
 
 		public ServiceApplicationContextWebStartupConfigureServicesDelegate WebStartupConfigureServices { get; private set; }
 		ServiceApplicationContextWebStartupConfigureServicesDelegate IServiceApplicationContextAddActions.WebStartupConfigureServices { get => WebStartupConfigureServices; set => WebStartupConfigureServices = value; }
+
+		public bool AddSignalR { get; set; }
+
+		public ServiceApplicationContextWebStartupUseEndpointsDelegate WebStartupUseEndpoints { get; private set; }
+		ServiceApplicationContextWebStartupUseEndpointsDelegate IServiceApplicationContextAddActions.WebStartupUseEndpoints { get => WebStartupUseEndpoints; set => WebStartupUseEndpoints = value; }
 
 		public ServiceApplicationContextConfigureApplicationDelegate ConfigureApplication { get; private set; }
 		ServiceApplicationContextConfigureApplicationDelegate IServiceApplicationContextAddActions.ConfigureApplication { get => ConfigureApplication; set => ConfigureApplication = value; }

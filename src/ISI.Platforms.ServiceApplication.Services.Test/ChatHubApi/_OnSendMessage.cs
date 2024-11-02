@@ -19,21 +19,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
+using DTOs = ISI.Platforms.ServiceApplication.Services.Test.DataTransferObjects.ChatHubApi;
+using SerializableDTOs = ISI.Platforms.ServiceApplication.Services.Test.SerializableModels.ChatHub;
+using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.Logging;
 
-namespace ISI.Platforms.ServiceApplication.Test.Controllers
+namespace ISI.Platforms.ServiceApplication.Services.Test
 {
-	public partial class ApiController : Controller
+	public partial class ChatHubApi
 	{
-		protected Microsoft.AspNetCore.SignalR.IHubContext<ISI.Platforms.ServiceApplication.Test.Hubs.ChatHub, ISI.Platforms.ServiceApplication.Services.Test.Hubs.IChatHub> ChatHubServer { get; }
-
-		public ApiController(
-			Microsoft.Extensions.Logging.ILogger logger,
-			Microsoft.AspNetCore.SignalR.IHubContext<ISI.Platforms.ServiceApplication.Test.Hubs.ChatHub, ISI.Platforms.ServiceApplication.Services.Test.Hubs.IChatHub> chatHubServer)
-			: base(logger)
+		private void OnSendMessage(SerializableDTOs.SendMessageRequest request)
 		{
-			ChatHubServer = chatHubServer;
+			Console.WriteLine($"New SendMessage: {request.Message}");
 		}
 	}
 }

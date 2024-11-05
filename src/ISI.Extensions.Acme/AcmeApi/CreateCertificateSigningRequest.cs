@@ -32,7 +32,7 @@ namespace ISI.Extensions.Acme
 		{
 			var response = new DTOs.CreateCertificateSigningRequestResponse();
 
-			using (var certificateSigningKey = System.Security.Cryptography.RSA.Create(4096))
+			using (var certificateSigningKey = System.Security.Cryptography.RSA.Create(request.KeySize))
 			{
 				var certificateSigningRequest = new System.Security.Cryptography.X509Certificates.CertificateRequest(
 					request.CertificateSigningRequestParameters.GetSubjectName(),

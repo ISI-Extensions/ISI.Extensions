@@ -28,7 +28,7 @@ namespace ISI.Extensions
 		string FirstName { get; }
 		string LastName { get; }
 		
-		IEnumerable<string> Roles { get; }
+		ICollection<string> Roles { get; }
 		
 		bool IsActive { get; }
 	}

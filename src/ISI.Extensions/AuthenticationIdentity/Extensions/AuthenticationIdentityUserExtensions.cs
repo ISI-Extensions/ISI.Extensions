@@ -24,9 +24,7 @@ namespace ISI.Extensions.AuthenticationIdentity.Extensions
 	{
 		public static bool IsInRoles(this IAuthenticationIdentityUser user, string roles)
 		{
-			var userRoles = new ISI.Extensions.InvariantCultureIgnoreCaseStringHashSet(user?.Roles);
-
-			return roles.Split(new[] { ',' }).Select(role => role.Trim()).Any(role => userRoles.Contains(role));
+			return roles.Split(new[] { ',' }).Select(role => role.Trim()).Any(role => user.Roles.Contains(role));
 		}
 	}
 }

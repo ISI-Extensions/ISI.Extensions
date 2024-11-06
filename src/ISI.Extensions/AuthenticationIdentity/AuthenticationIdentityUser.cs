@@ -30,6 +30,6 @@ namespace ISI.Extensions.AuthenticationIdentity
 
 		public bool IsActive { get; set; }
 
-		IEnumerable<string> IAuthenticationIdentityUser.Roles => Roles;
+		ICollection<string> IAuthenticationIdentityUser.Roles => Roles;
 	}
 }

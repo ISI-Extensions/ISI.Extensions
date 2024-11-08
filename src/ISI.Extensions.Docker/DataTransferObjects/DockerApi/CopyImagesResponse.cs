@@ -20,11 +20,12 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Tailscale.DataTransferObjects.LocalTailscaleApi
+namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
 {
-	public class UpRequest
+	public class CopyImagesResponse
 	{
-		public string AuthKey { get; set; }
-		public bool AcceptRoutes { get; set; }
+		public string Output { get; set; }
+
+		public bool Errored { get; set; }
 	}
 }

@@ -20,11 +20,19 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Tailscale.DataTransferObjects.LocalTailscaleApi
+namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
 {
-	public class UpRequest
+	public class PushImagesRequest
 	{
-		public string AuthKey { get; set; }
-		public bool AcceptRoutes { get; set; }
+		public string Host { get; set; }
+		public string Context { get; set; }
+
+		public string ContainerRegistry { get; set; }
+		public string ContainerRepository { get; set; }
+		public string[] ContainerImageTags { get; set; }
+
+		public bool RemoveImage { get; set; }
+
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

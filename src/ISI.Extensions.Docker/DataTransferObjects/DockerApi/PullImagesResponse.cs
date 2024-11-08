@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
 {
-	public class PushImageResponse
+	public class PullImagesResponse
 	{
 		public string Output { get; set; }
 

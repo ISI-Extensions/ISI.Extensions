@@ -28,6 +28,7 @@ namespace ISI.Extensions.Tailscale
 	{
 		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
+			services.AddSingleton<ITailscaleApi, TailscaleApi>();
 			services.AddSingleton<ILocalTailscaleApi, LocalTailscaleApi>();
 		}
 	}

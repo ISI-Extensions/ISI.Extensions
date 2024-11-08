@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,58 +27,68 @@ namespace ISI.Extensions.Docker
 {
 	public partial class DockerApi
 	{
-		public DTOs.PushImageResponse PushImage(DTOs.PushImageRequest request)
+		public DTOs.PullImagesResponse PullImages(DTOs.PullImagesRequest request)
 		{
 			var logger = new AddToLogLogger(request.AddToLog, Logger);
 
-			var response = new DTOs.PushImageResponse();
-
-			var arguments = new List<string>();
-
-			if (!string.IsNullOrWhiteSpace(request.Host))
+			var response = new DTOs.PullImagesResponse();
+			
+			for (var containerImageTagIndex = 0; containerImageTagIndex < request.ContainerImageTags.Length; containerImageTagIndex++)
 			{
-				arguments.Add($"--host {request.Host}");
-			}
-			else if (!string.IsNullOrWhiteSpace(request.Context))
-			{
-				if (!DockerContexts.ContainsKey(request.Context))
+				var containerImageTag = request.ContainerImageTags[containerImageTagIndex];
+
+				if (string.IsNullOrWhiteSpace(request.ContainerRegistry))
 				{
-					throw new Exception($"Context \"{request.Context}\" not found");
+					if (!string.IsNullOrWhiteSpace(request.ContainerRepository))
+					{
+						containerImageTag = $"{request.ContainerRepository}:{containerImageTag}";
+					}
+				}
+				else
+				{
+					if (string.IsNullOrWhiteSpace(request.ContainerRepository))
+					{
+						containerImageTag = $"{request.ContainerRegistry}/{containerImageTag}";
+					}
+					else
+					{
+						containerImageTag = $"{request.ContainerRegistry}/{request.ContainerRepository}:{containerImageTag}";
+					}					
 				}
 
-				arguments.Add($"--context {request.Context}");
-			}
+				var arguments = new List<string>();
 
-			arguments.Add("push");
-
-			arguments.Add(request.ContainerImageTag);
-
-			var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-			{
-				Logger = logger,
-				ProcessExeFullName = "docker",
-				Arguments = arguments.ToArray(),
-				EnvironmentVariables = AddDockerContextServerApiVersion(null, request.Host, request.Context),
-			});
-
-			response.Output = waitForProcessResponse.Output;
-
-			response.Errored = waitForProcessResponse.Errored;
-
-			if (!waitForProcessResponse.Errored && request.RemoveImage)
-			{
-				var removeImageResponse = RemoveImage(new()
+				if (!string.IsNullOrWhiteSpace(request.Host))
 				{
-					Context = request.Context,
-					ContainerImageTag = request.ContainerImageTag,
-					AddToLog = request.AddToLog,
+					arguments.Add($"--host {request.Host}");
+				}
+				else if (!string.IsNullOrWhiteSpace(request.Context))
+				{
+					if (!DockerContexts.ContainsKey(request.Context))
+					{
+						throw new Exception($"Context \"{request.Context}\" not found");
+					}
+
+					arguments.Add($"--context {request.Context}");
+				}
+
+				arguments.Add("pull");
+
+				arguments.Add(containerImageTag);
+
+				var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				{
+					Logger = logger,
+					ProcessExeFullName = "docker",
+					Arguments = arguments.ToArray(),
+					EnvironmentVariables = AddDockerContextServerApiVersion(null, request.Host, request.Context),
 				});
 
-				response.Output += "\n" + removeImageResponse.Output;
+				response.Output += "\n" + waitForProcessResponse.Output;
 
-				response.Errored |= removeImageResponse.Errored;
+				response.Errored |= waitForProcessResponse.Errored;
 			}
-
+			
 			return response;
 		}
 	}

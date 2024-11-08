@@ -1,4 +1,5 @@
 //dotnet tool install Cake.Tool -g
+//dotnet tool update Cake.Tool -g
 #addin nuget:?package=Cake.FileHelpers
 #tool nuget:?package=7-Zip.CommandLine
 #addin nuget:?package=Cake.7zip

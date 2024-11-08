@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -19,12 +19,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Tailscale.DataTransferObjects.TailscaleApi;
 
-namespace ISI.Extensions.Tailscale.DataTransferObjects.LocalTailscaleApi
+namespace ISI.Extensions.Tailscale
 {
-	public class UpRequest
+	public interface ITailscaleApi
 	{
-		public string AuthKey { get; set; }
-		public bool AcceptRoutes { get; set; }
+		DTOs.CreateAuthKeyResponse CreateAuthKey(DTOs.CreateAuthKeyRequest request);
+		DTOs.UpdateDeviceKey​Response UpdateDeviceKey(DTOs.UpdateDeviceKey​Request request);
 	}
 }

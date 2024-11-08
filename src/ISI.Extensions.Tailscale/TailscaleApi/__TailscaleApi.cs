@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Tailscale
 {
-	public partial class TailscaleApi
+	public partial class TailscaleApi : ITailscaleApi
 	{
 		protected Configuration Configuration { get; }
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }

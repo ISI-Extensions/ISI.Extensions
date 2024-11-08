@@ -119,21 +119,18 @@ namespace ISI.Extensions.Docker
 				{
 					if (!string.IsNullOrWhiteSpace(containerRegistry) && containerImageTags.NullCheckedAny())
 					{
-						foreach (var containerImageTag in request.ContainerImageTags)
+						var pushImageResponse = PushImages(new()
 						{
-							var pushImageResponse = PushImage(new()
-							{
-								Host = request.Host,
-								Context = request.Context,
-								ContainerImageTag = containerImageTag,
-								RemoveImage = true,
-								AddToLog = request.AddToLog,
-							});
+							Host = request.Host,
+							Context = request.Context,
+							ContainerImageTags = request.ContainerImageTags,
+							RemoveImage = true,
+							AddToLog = request.AddToLog,
+						});
 
-							response.Output += "\n" + pushImageResponse.Output;
+						response.Output += "\n" + pushImageResponse.Output;
 
-							response.Errored |= pushImageResponse.Errored;
-						}
+						response.Errored |= pushImageResponse.Errored;
 					}
 				}
 

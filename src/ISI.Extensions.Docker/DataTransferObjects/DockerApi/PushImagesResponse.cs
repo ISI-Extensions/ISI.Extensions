@@ -22,15 +22,10 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
 {
-	public class PushImageRequest
+	public class PushImagesResponse
 	{
-		public string Host { get; set; }
-		public string Context { get; set; }
+		public string Output { get; set; }
 
-		public string ContainerImageTag { get; set; }
-
-		public bool RemoveImage { get; set; }
-
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
+		public bool Errored { get; set; }
 	}
 }

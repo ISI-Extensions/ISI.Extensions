@@ -109,6 +109,8 @@ namespace ISI.Extensions.Nuget
 					"nsoftware.InPtech",
 					"nsoftware.InShip",
 					"nsoftware.IPWorksSSH",
+					"WixToolset.Heat",
+					"WixToolset.UI.wixext",
 				},
 			};
 

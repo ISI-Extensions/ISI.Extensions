@@ -69,8 +69,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 					}
 				});
 
-				var previouslySelectedSolutionFileNames = new HashSet<string>(SolutionApi.GetRefreshSolutionsPreviouslySelectedSolutions(), StringComparer.InvariantCultureIgnoreCase);
-				var solutions = solutionFileNames.Distinct(StringComparer.InvariantCultureIgnoreCase).OrderBy(solutionFullName => solutionFullName, StringComparer.InvariantCultureIgnoreCase).ToDictionary(solutionFileName => solutionFileName, solutionFileName => previouslySelectedSolutionFileNames.Contains(solutionFileName));
+				var solutions = solutionFileNames.Distinct(StringComparer.InvariantCultureIgnoreCase).OrderBy(solutionFullName => solutionFullName, StringComparer.InvariantCultureIgnoreCase).ToDictionary(solutionFileName => solutionFileName, solutionFileName => true);
 
 				var selectAll = !solutions.Values.Any(value => value);
 
@@ -88,15 +87,6 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 			void UpdatePreviouslySelectedSolutions(SolutionsForm form)
 			{
-				var removeSolutionFilterKeys = form.SolutionsContext.Solutions.SelectMany(solution => solution.SolutionFilters.Select(solutionFilter => solutionFilter.SolutionFilterKey));
-				var addSolutionFilterKeys = form.SolutionsContext.Solutions.Where(solution => solution.Selected).SelectMany(solution => solution.SolutionFilters.Where(solutionFilter => solutionFilter.Selected).Select(solutionFilter => solutionFilter.SolutionFilterKey));
-
-				SolutionApi.UpdatePreviouslySelectedSolutionFilterKeys(removeSolutionFilterKeys.Select(solutionFilterKey => solutionFilterKey.Value), addSolutionFilterKeys.Select(solutionFilterKey => solutionFilterKey.Value));
-
-				var removeSolutions = form.SolutionsContext.Solutions.Select(solution => solution.SolutionDetails.SolutionFullName);
-				var addSolutions = form.SolutionsContext.Solutions.Where(solution => solution.Selected).Select(solution => solution.SolutionDetails.SolutionFullName);
-
-				SolutionApi.UpdateRefreshSolutionsPreviouslySelectedSolutions(removeSolutions, addSolutions);
 			};
 
 			void OnCloseForm(SolutionsForm form)

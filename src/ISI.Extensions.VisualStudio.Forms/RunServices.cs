@@ -73,8 +73,6 @@ namespace ISI.Extensions.VisualStudio.Forms
 					}
 				});
 
-				var previouslySelectedProjectKeys = new HashSet<string>(SolutionApi.GetRunServicesPreviouslySelectedProjectKeys(), StringComparer.InvariantCultureIgnoreCase);
-
 				var projectKeys = projectFileNames.Distinct(StringComparer.InvariantCultureIgnoreCase).OrderBy(projectFileName => projectFileName, StringComparer.InvariantCultureIgnoreCase).Select(projectFileName =>
 				{
 					var solutionFullName = SolutionApi.GetClosestSolutionFullName(new()
@@ -84,7 +82,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 					var projectKey = new ProjectKey(solutionFullName, projectFileName);
 
-					projectKey.Selected = previouslySelectedProjectKeys.Contains(projectKey.Value);
+					projectKey.Selected = true;
 
 					return projectKey;
 				});
@@ -106,10 +104,6 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 			void UpdatePreviouslySelectedProjectKeys(SolutionsForm form)
 			{
-				var removeProjectKeys = form.SolutionsContext.Solutions.SelectMany(solution => solution.SolutionProjects.Select(project => project.ProjectKey));
-				var addProjectKeys = form.SolutionsContext.Solutions.Where(solution => solution.Selected).SelectMany(solution => solution.SolutionProjects.Where(projectKey => projectKey.Selected).Select(project => project.ProjectKey));
-
-				SolutionApi.UpdateRunServicesPreviouslySelectedProjectKeys(removeProjectKeys.Select(projectKey => projectKey.Value), addProjectKeys.Select(projectKey => projectKey.Value));
 			};
 
 			void OnCloseForm(SolutionsForm form)

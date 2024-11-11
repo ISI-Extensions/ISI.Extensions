@@ -29,13 +29,5 @@ namespace ISI.Extensions.VisualStudio
 		public int MaxCheckDirectoryDepth { get; set; } = 5;
 
 		public string[] DefaultExcludePathFilters { get; set; }
-
-		public string[] PreviouslySelectedSolutionFilterKeys { get; set; }
-
-		public string[] RefreshSolutionsPreviouslySelectedSolutions { get; set; }
-
-		public string[] RunServicesPreviouslySelectedProjectKeys { get; set; }
-
-		public string[] UpgradeNugetPackagesPreviouslySelectedProjectKeys { get; set; }
 	}
 }

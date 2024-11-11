@@ -444,16 +444,14 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 			if (showSolutionFilterKeys)
 			{
-				var previouslySelectedSolutionFilterKeys = new HashSet<string>(SolutionApi.GetPreviouslySelectedSolutionFilterKeys(), StringComparer.InvariantCultureIgnoreCase);
-
 				var solutionFilters = SolutionDetails.SolutionFilterDetailsSet
 					.NullCheckedOrderBy(solutionFilterDetails => System.IO.Path.GetFileNameWithoutExtension(solutionFilterDetails.SolutionFilterFullName))
-					.ToNullCheckedArray(solutionFilterDetails => new SolutionFilter(this, new(SolutionDetails.SolutionFullName, solutionFilterDetails.SolutionFilterFullName), null, previouslySelectedSolutionFilterKeys.Contains(solutionFilterDetails.SolutionFilterFullName), () => OnChangeSelected?.Invoke()))
+					.ToNullCheckedArray(solutionFilterDetails => new SolutionFilter(this, new(SolutionDetails.SolutionFullName, solutionFilterDetails.SolutionFilterFullName), null, true, () => OnChangeSelected?.Invoke()))
 					.ToList();
 
 				if (solutionFilters.Any())
 				{
-					solutionFilters.Insert(0, new(this, new(SolutionDetails.SolutionFullName, SolutionDetails.SolutionFullName), null, previouslySelectedSolutionFilterKeys.Contains(SolutionDetails.SolutionFullName), () => OnChangeSelected?.Invoke()));
+					solutionFilters.Insert(0, new(this, new(SolutionDetails.SolutionFullName, SolutionDetails.SolutionFullName), null, true, () => OnChangeSelected?.Invoke()));
 				}
 
 				SolutionFilters = solutionFilters.ToArray();

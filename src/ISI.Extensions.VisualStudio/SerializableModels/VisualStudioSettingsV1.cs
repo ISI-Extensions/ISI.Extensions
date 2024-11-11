@@ -36,10 +36,6 @@ namespace ISI.Extensions.VisualStudio.SerializableModels
 				FormLocationAndSizes = source.FormLocationAndSizes.ToNullCheckedArray(VisualStudioSettingsFormLocationAndSizeV1.ToSerializable),
 				MaxCheckDirectoryDepth = source.MaxCheckDirectoryDepth,
 				DefaultExcludePathFilters = source.DefaultExcludePathFilters.ToNullCheckedArray(),
-				PreviouslySelectedSolutionFilterKeys = source.PreviouslySelectedSolutionFilterKeys.ToNullCheckedArray(),
-				RefreshSolutionsPreviouslySelectedSolutions = source.RefreshSolutionsPreviouslySelectedSolutions.ToNullCheckedArray(),
-				RunServicesPreviouslySelectedProjectKeys = source.RunServicesPreviouslySelectedProjectKeys.ToNullCheckedArray(),
-				UpgradeNugetPackagesPreviouslySelectedProjectKeys = source.UpgradeNugetPackagesPreviouslySelectedProjectKeys.ToNullCheckedArray(),
 			};
 		}
 
@@ -50,10 +46,6 @@ namespace ISI.Extensions.VisualStudio.SerializableModels
 				FormLocationAndSizes = FormLocationAndSizes.ToNullCheckedArray(formLocationAndSize => formLocationAndSize.Export()),
 				MaxCheckDirectoryDepth = MaxCheckDirectoryDepth,
 				DefaultExcludePathFilters = DefaultExcludePathFilters.ToNullCheckedArray(),
-				PreviouslySelectedSolutionFilterKeys = PreviouslySelectedSolutionFilterKeys.ToNullCheckedArray(),
-				RefreshSolutionsPreviouslySelectedSolutions = RefreshSolutionsPreviouslySelectedSolutions.ToNullCheckedArray(),
-				RunServicesPreviouslySelectedProjectKeys = RunServicesPreviouslySelectedProjectKeys.ToNullCheckedArray(),
-				UpgradeNugetPackagesPreviouslySelectedProjectKeys = UpgradeNugetPackagesPreviouslySelectedProjectKeys.ToNullCheckedArray(),
 			};
 		}
 
@@ -65,17 +57,5 @@ namespace ISI.Extensions.VisualStudio.SerializableModels
 
 		[DataMember(Name = "defaultExcludePathFilters", EmitDefaultValue = false)]
 		public string[] DefaultExcludePathFilters { get; set; }
-
-		[DataMember(Name = "previouslySelectedSolutionFilterKeys", EmitDefaultValue = false)]
-		public string[] PreviouslySelectedSolutionFilterKeys { get; set; }
-
-		[DataMember(Name = "refreshSolutionsPreviouslySelectedSolutions", EmitDefaultValue = false)]
-		public string[] RefreshSolutionsPreviouslySelectedSolutions { get; set; }
-
-		[DataMember(Name = "runServicesPreviouslySelectedProjectKeys", EmitDefaultValue = false)]
-		public string[] RunServicesPreviouslySelectedProjectKeys { get; set; }
-
-		[DataMember(Name = "upgradeNugetPackagesPreviouslySelectedProjectKeys", EmitDefaultValue = false)]
-		public string[] UpgradeNugetPackagesPreviouslySelectedProjectKeys { get; set; }
 	}
 }

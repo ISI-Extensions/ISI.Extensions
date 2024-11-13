@@ -57,14 +57,14 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 			configurationBuilder.AddClassicConnectionStringsSectionFile($"{connectionStringPath}connectionStrings.config", true);
 			configurationBuilder.AddClassicConnectionStringsSectionFiles(activeEnvironmentConfiguration.ActiveEnvironments, environment => $"{connectionStringPath}connectionStrings.{environment}.config");
 #if !DEBUG
-			configurationBuilder.AddDataPathClassicConnectionStringsSectionFile(System.IO.Path.Combine(Context.RootType.Namespace, "connectionStrings.config"));
+			configurationBuilder.AddDataPathClassicConnectionStringsSectionFile(System.IO.Path.Combine(context.RootType.Namespace, "connectionStrings.config"));
 #endif
 
 			configurationBuilder.SetBasePath(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
 			configurationBuilder.AddJsonFile("appsettings.json", optional: true);
 			configurationBuilder.AddJsonFiles(activeEnvironmentConfiguration.ActiveEnvironments, environment => $"appsettings.{environment}.json");
 #if !DEBUG
-			configurationBuilder.AddDataPathJsonFile(System.IO.Path.Combine(Context.RootType.Namespace, "appsettings.json"));
+			configurationBuilder.AddDataPathJsonFile(System.IO.Path.Combine(context.RootType.Namespace, "appsettings.json"));
 #endif
 
 			configurationBuilder.AddEnvironmentConfiguration(showConfig);

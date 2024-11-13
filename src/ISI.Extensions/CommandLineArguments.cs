@@ -24,39 +24,41 @@ namespace ISI.Extensions
 	{
 		public string Command { get; }
 
-		private readonly IDictionary<string, string> _parameters = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+		private readonly InvariantCultureIgnoreCaseStringDictionary<string> _parameters = new ();
 		private readonly IList<string> _values = new List<string>();
 
-		public CommandLineArguments(string command, IDictionary<string, string> parameters = null, IList<string> values = null)
+		public CommandLineArguments(string command, InvariantCultureIgnoreCaseStringDictionary<string> parameters = null, IList<string> values = null)
 		{
 			Command = command;
-			_parameters = parameters ?? new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+			_parameters = parameters ?? new ();
 			_values = values ?? new List<string>();
 		}
 
 		public CommandLineArguments(string[] args, int originIndex = 0)
 		{
 			var parameterName = string.Empty;
+			var isFirstArg = true;
 
 			while (originIndex < args.Length)
 			{
 				var arg = args[originIndex++];
 
-				if (string.IsNullOrEmpty(Command))
+				if (isFirstArg && string.IsNullOrEmpty(Command) && !arg.StartsWith("-") && !arg.StartsWith("/") && !arg.StartsWith("\\"))
 				{
 					Command = arg;
 				}
 				else
 				{
-					if (arg.StartsWith("-") || arg.StartsWith("/"))
+					if (arg.StartsWith("-") || arg.StartsWith("/") || arg.StartsWith("\\"))
 					{
-						parameterName = arg.TrimStart('-', '/');
+						parameterName = arg.TrimStart('-', '/', '\\');
+						_parameters.Add(parameterName, string.Empty);
 					}
 					else
 					{
 						if (!string.IsNullOrEmpty(parameterName))
 						{
-							_parameters.Add(parameterName, arg);
+							_parameters[parameterName] = arg;
 							parameterName = string.Empty;
 						}
 						else
@@ -65,6 +67,8 @@ namespace ISI.Extensions
 						}
 					}
 				}
+
+				isFirstArg = false;
 			}
 		}
 
@@ -84,6 +88,8 @@ namespace ISI.Extensions
 		{
 			_values.Add(value);
 		}
+
+		public bool HasOption(string optionName) => _parameters.ContainsKey(optionName);
 
 		public bool TryGetParameterValue(string parameterName, out string parameterValue) => _parameters.TryGetValue(parameterName, out parameterValue);
 

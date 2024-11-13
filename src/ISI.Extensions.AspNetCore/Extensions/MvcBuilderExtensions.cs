@@ -24,7 +24,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 {
 	public static class MvcBuilderExtensions
 	{
-		public static Microsoft.Extensions.DependencyInjection.IMvcBuilder AddISIAspNetCore(this Microsoft.Extensions.DependencyInjection.IMvcBuilder builder)
+		public static Microsoft.Extensions.DependencyInjection.IMvcBuilder AddISIExtensionsAspNetCore(this Microsoft.Extensions.DependencyInjection.IMvcBuilder builder)
 		{
 			return builder.AddApplicationPart(typeof(ISI.Extensions.AspNetCore.Extensions.MvcBuilderExtensions).Assembly);
 		}

@@ -18,15 +18,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Platforms
 {
 	public delegate void ServiceApplicationContextWebHostBuilderConfigureServicesDelegate(Microsoft.AspNetCore.Hosting.IWebHostBuilder webHostBuilder, Microsoft.Extensions.DependencyInjection.IServiceCollection services);
-	public delegate void ServiceApplicationContextHostBuilderConfigureServicesDelegate(Microsoft.Extensions.Hosting.HostBuilderContext hostContext, Microsoft.Extensions.DependencyInjection.IServiceCollection services);
+	public delegate void ServiceApplicationContextHostBuilderConfigureServicesDelegate(Microsoft.Extensions.Hosting.IHostApplicationBuilder hostApplicationBuilder);
 	public delegate void ServiceApplicationContextWebStartupMvcBuilderDelegate(Microsoft.Extensions.DependencyInjection.IMvcBuilder mvcBuilder);
 	public delegate void ServiceApplicationContextWebStartupConfigureServicesDelegate(Microsoft.Extensions.DependencyInjection.IServiceCollection services);
 	public delegate void ServiceApplicationContextWebStartupUseEndpointsDelegate(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder endpointRouteBuilder);
-	public delegate void ServiceApplicationContextConfigureApplicationDelegate(Microsoft.AspNetCore.Builder.IApplicationBuilder applicationBuilder, Microsoft.AspNetCore.Hosting.IWebHostEnvironment webHostingEnvironment);
+	public delegate void ServiceApplicationContextConfigureWebApplicationDelegate(Microsoft.AspNetCore.Builder.WebApplication webApplication);
 	public delegate void ServiceApplicationContextPreMessageBusBuildDelegate(Microsoft.Extensions.Hosting.IHost host);
 	public delegate void ServiceApplicationContextPostStartupDelegate(Microsoft.Extensions.Hosting.IHost host);
 
@@ -45,7 +46,7 @@ namespace ISI.Platforms
 		ServiceApplicationContextWebStartupConfigureServicesDelegate WebStartupConfigureServices { get; set; }
 		ServiceApplicationContextWebStartupUseEndpointsDelegate WebStartupUseEndpoints { get; set; }
 
-		ServiceApplicationContextConfigureApplicationDelegate ConfigureApplication { get; set; }
+		ServiceApplicationContextConfigureWebApplicationDelegate ConfigureWebApplication { get; set; }
 
 		ServiceApplicationContextPreMessageBusBuildDelegate PreMessageBusBuild { get; set; }
 
@@ -54,8 +55,12 @@ namespace ISI.Platforms
 
 	public class ServiceApplicationContext : IServiceApplicationContextAddActions
 	{
+		public const string RunningAsServiceOption = "--runningAsService";
+
 		public Type RootType { get; }
 		public System.Reflection.Assembly RootAssembly { get; }
+
+		public Microsoft.Extensions.Hosting.IHost Host { get; set; }
 
 		public Microsoft.Extensions.Configuration.IConfigurationRoot ConfigurationRoot { get; private set; }
 		Microsoft.Extensions.Configuration.IConfigurationRoot IServiceApplicationContextAddActions.ConfigurationRoot { get => ConfigurationRoot; set => ConfigurationRoot = value; }
@@ -65,7 +70,21 @@ namespace ISI.Platforms
 		public string ActiveEnvironment { get; private set; }
 		string IServiceApplicationContextAddActions.ActiveEnvironment { get => ActiveEnvironment; set => ActiveEnvironment = value; }
 
-		public string[] Args { get; set; }
+		private string[] _args = null;
+
+		public string[] Args
+		{
+			get => _args ?? [];
+			set
+			{
+				_args = value;
+				CommandLineArguments = new(value);
+			}
+		}
+
+		public bool RunningAsService => Args.NullCheckedAny(arg => string.Equals(arg, RunningAsServiceOption));
+
+		public ISI.Extensions.CommandLineArguments CommandLineArguments {get; private set; }
 
 		public ISI.Extensions.MessageBus.GetAddMessageBusSubscriptionsDelegate GetAddMessageBusSubscriptions { get; private set; }
 		ISI.Extensions.MessageBus.GetAddMessageBusSubscriptionsDelegate IServiceApplicationContextAddActions.GetAddMessageBusSubscriptions { get => GetAddMessageBusSubscriptions; set => GetAddMessageBusSubscriptions = value; }
@@ -87,8 +106,8 @@ namespace ISI.Platforms
 		public ServiceApplicationContextWebStartupUseEndpointsDelegate WebStartupUseEndpoints { get; private set; }
 		ServiceApplicationContextWebStartupUseEndpointsDelegate IServiceApplicationContextAddActions.WebStartupUseEndpoints { get => WebStartupUseEndpoints; set => WebStartupUseEndpoints = value; }
 
-		public ServiceApplicationContextConfigureApplicationDelegate ConfigureApplication { get; private set; }
-		ServiceApplicationContextConfigureApplicationDelegate IServiceApplicationContextAddActions.ConfigureApplication { get => ConfigureApplication; set => ConfigureApplication = value; }
+		public ServiceApplicationContextConfigureWebApplicationDelegate ConfigureWebApplication { get; private set; }
+		ServiceApplicationContextConfigureWebApplicationDelegate IServiceApplicationContextAddActions.ConfigureWebApplication { get => ConfigureWebApplication; set => ConfigureWebApplication = value; }
 
 		public ServiceApplicationContextPreMessageBusBuildDelegate PreMessageBusBuild { get; private set; }
 		ServiceApplicationContextPreMessageBusBuildDelegate IServiceApplicationContextAddActions.PreMessageBusBuild { get => PreMessageBusBuild; set => PreMessageBusBuild = value; }
@@ -96,6 +115,14 @@ namespace ISI.Platforms
 		public ServiceApplicationContextPostStartupDelegate PostStartup { get; private set; }
 		ServiceApplicationContextPostStartupDelegate IServiceApplicationContextAddActions.PostStartup { get => PostStartup; set => PostStartup = value; }
 
+		public string ServiceName { get; set; }
+		public string ServiceDisplayName { get; set; }
+		public string ServiceUserName { get; set; }
+		public string ServicePassword { get; set; }
+
+		public WindowsStartMode WindowsServiceStartMode { get; set; }
+		public bool ServiceDelayStart { get; set; }
+		
 		public ServiceApplicationContext(Type rootType)
 		{
 			RootType = rootType;

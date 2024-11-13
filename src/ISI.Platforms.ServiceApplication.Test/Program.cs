@@ -29,7 +29,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 {
 	public class Program
 	{
-		public static int Main(string[] args)
+		public static void Main(string[] args)
 		{
 			var context = new ServiceApplicationContext(typeof(Program))
 			{
@@ -45,16 +45,10 @@ namespace ISI.Platforms.ServiceApplication.Test
 			});
 
 			context.AddSignalR = true;
-			context.AddWebStartupUseEndpoints(endpointRouteBuilder =>
-			{
-				endpointRouteBuilder.MapHub<ISI.Platforms.ServiceApplication.Test.Hubs.ChatHub>(ISI.Platforms.ServiceApplication.Services.Test.ChatHubApi.HubUrlPattern);
-			});
+			context.AddWebStartupUseEndpoints(endpointRouteBuilder => { endpointRouteBuilder.MapHub<ISI.Platforms.ServiceApplication.Test.Hubs.ChatHub>(ISI.Platforms.ServiceApplication.Services.Test.ChatHubApi.HubUrlPattern); });
 
 
-			context.AddWebStartupConfigureServices(services =>
-			{
-				services.AddSingleton<ISI.Extensions.IAuthenticationIdentityApi, AuthenticationIdentityApi>();
-			});
+			context.AddWebStartupConfigureServices(services => { services.AddSingleton<ISI.Extensions.IAuthenticationIdentityApi, AuthenticationIdentityApi>(); });
 
 			context.AddSwaggerConfiguration(useBearer: true);
 
@@ -71,7 +65,17 @@ namespace ISI.Platforms.ServiceApplication.Test
 				chatHubApi.ConnectAsync(new()).GetAwaiter().GetResult();
 			});
 
-			return ISI.Platforms.ServiceApplication.Startup.Main(context);
+			context.SetConfiguration();
+
+
+			if (!context.ServiceSetup())
+			{
+				var webApplication = context.CreateWebApplication();
+
+				webApplication.ConfigureWebApplication(context);
+
+				webApplication.Run();
+			}
 		}
 	}
 }

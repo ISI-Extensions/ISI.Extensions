@@ -54,11 +54,11 @@ namespace ISI.Platforms.Extensions
 		public static void AddHostBuilderConfigureServices(this IServiceApplicationContextAddActions context, ServiceApplicationContextHostBuilderConfigureServicesDelegate action)
 		{
 			var hostBuilderConfigureServices = context.HostBuilderConfigureServices;
-			context.HostBuilderConfigureServices = (hostContext, services) =>
+			context.HostBuilderConfigureServices = (hostContext) =>
 			{
-				hostBuilderConfigureServices?.Invoke(hostContext, services);
+				hostBuilderConfigureServices?.Invoke(hostContext);
 
-				action(hostContext, services);
+				action(hostContext);
 			};
 		}
 
@@ -106,14 +106,14 @@ namespace ISI.Platforms.Extensions
 			};
 		}
 
-		public static void AddConfigureApplication(this IServiceApplicationContextAddActions context, ServiceApplicationContextConfigureApplicationDelegate action)
+		public static void AddConfigureWebApplication(this IServiceApplicationContextAddActions context, ServiceApplicationContextConfigureWebApplicationDelegate action)
 		{
-			var configureApplication = context.ConfigureApplication;
-			context.ConfigureApplication = (applicationBuilder, webHostingEnvironment) =>
+			var configureApplication = context.ConfigureWebApplication;
+			context.ConfigureWebApplication = webApplication =>
 			{
-				configureApplication?.Invoke(applicationBuilder, webHostingEnvironment);
+				configureApplication?.Invoke(webApplication);
 
-				action(applicationBuilder, webHostingEnvironment);
+				action(webApplication);
 			};
 		}
 

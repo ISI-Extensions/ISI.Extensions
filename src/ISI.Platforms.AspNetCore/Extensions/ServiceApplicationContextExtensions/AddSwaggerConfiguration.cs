@@ -65,10 +65,10 @@ namespace ISI.Platforms.AspNetCore.Extensions
 				services.AddSwaggerGenNewtonsoftSupport();
 			});
 
-			context.AddConfigureApplication((applicationBuilder, webHostingEnvironment) =>
+			context.AddConfigureWebApplication(webApplication =>
 			{
-				applicationBuilder.UseSwagger();
-				applicationBuilder.UseSwaggerUI(swaggerUIOptions =>
+				webApplication.UseSwagger();
+				webApplication.UseSwaggerUI(swaggerUIOptions =>
 				{
 					swaggerUIOptions.SwaggerEndpoint($"/swagger/v{version}/swagger.json", $"{applicationName} v{version}");
 				});

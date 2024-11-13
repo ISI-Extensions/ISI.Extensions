@@ -18,17 +18,53 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Hosting;
 
-namespace ISI.Platforms
+namespace ISI.Platforms.AspNetCore.Extensions
 {
-	public interface ILoggerConfigurator
+	public static class WebApplicationExtensions
 	{
-		void SetBaseLogger(ServiceApplicationContext context);
-		void CloseAndFlush();
-		void AddLogger(object hostConfigurator);
-		void Error(Exception exception, string message);
-		void AddLogger(Microsoft.Extensions.DependencyInjection.IServiceCollection services, Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot, string activeEnvironment);
-		void Information(string message);
-		void AddRequestLogging(object applicationBuilder);
+		public static void ConfigureWebApplication(this Microsoft.AspNetCore.Builder.WebApplication webApplication, ServiceApplicationContext context)
+		{
+			webApplication.UseDefaultFiles();
+
+			//var rootDirectory = ISI.Extensions.IO.Path.GetRootBinDirectory(Startup.Context.RootAssembly);
+			
+		
+			//if (string.Equals(System.IO.Path.GetFileName(rootDirectory), "bin", StringComparison.InvariantCultureIgnoreCase))
+			//{
+			//	rootDirectory = System.IO.Path.GetDirectoryName(rootDirectory);
+			//}
+			//var wwwroot = System.IO.Path.Combine(rootDirectory, "wwwroot");
+
+			//webApplication.UseStaticFiles(new Microsoft.AspNetCore.Builder.StaticFileOptions()
+			//{
+			//	FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(wwwroot)
+			//});
+
+			webApplication.UseStaticFiles();
+
+			webApplication.UseRouting();
+
+			webApplication.UseAuthentication();
+			webApplication.UseAuthorization();
+
+
+			if (webApplication.Environment.IsDevelopment())
+			{
+				webApplication.UseDeveloperExceptionPage();
+			}
+
+			webApplication.UseEndpoints(endpointRouteBuilder =>
+			{
+				endpointRouteBuilder.MapControllers();
+				context.WebStartupUseEndpoints?.Invoke(endpointRouteBuilder);
+			});
+
+			
+
+			context.ConfigureWebApplication?.Invoke(webApplication);
+		}
 	}
 }

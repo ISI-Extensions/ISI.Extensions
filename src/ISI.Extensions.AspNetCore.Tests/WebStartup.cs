@@ -60,7 +60,7 @@ namespace ISI.Extensions.AspNetCore.Tests
 					options.Conventions.AllowAnonymousToPage("/Index");
 				})
 				.AddMvcOptions(options => { })
-				.AddISIAspNetCore();
+				.AddISIExtensionsAspNetCore();
 				;
 
 

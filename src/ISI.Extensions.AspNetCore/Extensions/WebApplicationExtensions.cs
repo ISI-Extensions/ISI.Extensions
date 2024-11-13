@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,17 +18,41 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
 
-namespace ISI.Platforms
+namespace ISI.Extensions.AspNetCore.Extensions
 {
-	public interface ILoggerConfigurator
+	public static class WebApplicationExtensions
 	{
-		void SetBaseLogger(ServiceApplicationContext context);
-		void CloseAndFlush();
-		void AddLogger(object hostConfigurator);
-		void Error(Exception exception, string message);
-		void AddLogger(Microsoft.Extensions.DependencyInjection.IServiceCollection services, Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot, string activeEnvironment);
-		void Information(string message);
-		void AddRequestLogging(object applicationBuilder);
+		public static Microsoft.AspNetCore.Builder.IApplicationBuilder UseHttpContextMiddleware(this Microsoft.AspNetCore.Builder.WebApplication webApplication)
+		{
+			return webApplication.UseMiddleware<HttpContextMiddleware>();
+		}
+
+		public static Microsoft.AspNetCore.Builder.IApplicationBuilder UseHttpContextExceptionMiddleware(this Microsoft.AspNetCore.Builder.WebApplication webApplication)
+		{
+			return webApplication.UseMiddleware<HttpContextExceptionMiddleware>();
+		}
+
+		public static Microsoft.AspNetCore.Builder.IApplicationBuilder UseCors(this Microsoft.AspNetCore.Builder.WebApplication webApplication)
+		{
+			return webApplication.UseMiddleware<CorsMiddleware>();
+		}
+
+		public static Microsoft.AspNetCore.Builder.IApplicationBuilder UseVirtualFileVolumesFileProvider(this Microsoft.AspNetCore.Builder.WebApplication webApplication)
+		{
+			var virtualFileVolumesFileProvider = new VirtualFileVolumesFileProvider();
+
+			foreach (var virtualFileVolume in virtualFileVolumesFileProvider.VirtualFileVolumes)
+			{
+				webApplication.UseStaticFiles(new StaticFileOptions()
+				{
+					FileProvider = virtualFileVolumesFileProvider,
+					RequestPath = virtualFileVolume.PathPrefix,
+				});
+			}
+
+			return webApplication;
+		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -19,16 +19,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Platforms
+namespace ISI.Platforms.ServiceApplication
 {
-	public interface ILoggerConfigurator
+	public partial class Configuration
 	{
-		void SetBaseLogger(ServiceApplicationContext context);
-		void CloseAndFlush();
-		void AddLogger(object hostConfigurator);
-		void Error(Exception exception, string message);
-		void AddLogger(Microsoft.Extensions.DependencyInjection.IServiceCollection services, Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot, string activeEnvironment);
-		void Information(string message);
-		void AddRequestLogging(object applicationBuilder);
+		public class LogOnAsConfiguration
+		{
+			public string UserName { get; set; }
+			public string Password { get; set; }
+		}
 	}
 }

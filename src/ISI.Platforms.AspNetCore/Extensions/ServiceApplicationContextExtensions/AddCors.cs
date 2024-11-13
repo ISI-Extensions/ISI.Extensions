@@ -74,7 +74,7 @@ namespace ISI.Platforms.AspNetCore.Extensions
 
 			});
 
-			context.AddConfigureApplication((applicationBuilder, webHostingEnvironment) =>
+			context.AddConfigureWebApplication(applicationBuilder =>
 			{
 				applicationBuilder.UseCors();
 			});

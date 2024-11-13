@@ -21,14 +21,10 @@ using System.Threading.Tasks;
 
 namespace ISI.Platforms
 {
-	public interface ILoggerConfigurator
+	public enum WindowsStartMode
 	{
-		void SetBaseLogger(ServiceApplicationContext context);
-		void CloseAndFlush();
-		void AddLogger(object hostConfigurator);
-		void Error(Exception exception, string message);
-		void AddLogger(Microsoft.Extensions.DependencyInjection.IServiceCollection services, Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot, string activeEnvironment);
-		void Information(string message);
-		void AddRequestLogging(object applicationBuilder);
+		Automatic = 2,
+		Manual = 3,
+		Disabled = 4,
 	}
 }

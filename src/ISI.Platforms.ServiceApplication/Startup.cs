@@ -18,125 +18,68 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.AspNetCore.Extensions;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.ConfigurationHelper.Extensions;
-using ISI.Extensions.Topshelf.Extensions;
+using ISI.Extensions.DependencyInjection.Extensions;
+using ISI.Extensions.MessageBus.Extensions;
 using ISI.Platforms.Extensions;
+using ISI.Platforms.ServiceApplication.Extensions;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Topshelf;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Platforms.ServiceApplication
 {
-	public class Startup
-	{
-		internal static ServiceApplicationContext Context { get; set; }
+	//public class Startup
+	//{
+		//internal static ServiceApplicationContext Context { get; set; }
 
-		public static int Main(ServiceApplicationContext context)
+
+
+		/*
+		return (int)Topshelf.HostFactory.Run(hostConfigurator =>
 		{
-			Context = context;
+			var configuration = Context.ConfigurationRoot.GetConfiguration<ISI.Extensions.Topshelf.Configuration>();
 
-			System.AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
+			hostConfigurator.SetDescription(configuration);
+			hostConfigurator.SetDisplayName(configuration);
+			hostConfigurator.SetServiceName(configuration);
 
-			var showConfig = Context.Args.NullCheckedAny(arg => string.Equals(arg, "--showConfig", StringComparison.InvariantCultureIgnoreCase));
-#if DEBUG
-			showConfig = true;
-#endif
+			hostConfigurator.RunAs(configuration);
 
-			var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
+			Context.LoggerConfigurator.AddLogger(hostConfigurator);
 
-			var configurationsPath = string.Format("Configuration{0}", System.IO.Path.DirectorySeparatorChar);
+			hostConfigurator.StartAutomatically();
 
-			var activeEnvironmentConfiguration = configurationBuilder.GetActiveEnvironmentConfiguration($"{configurationsPath}isi.extensions.environmentsConfig.json");
-
-			var connectionStringPath = string.Format("Configuration{0}", System.IO.Path.DirectorySeparatorChar);
-			configurationBuilder.AddClassicConnectionStringsSectionFile($"{connectionStringPath}connectionStrings.config", true);
-			configurationBuilder.AddClassicConnectionStringsSectionFiles(activeEnvironmentConfiguration.ActiveEnvironments, environment => $"{connectionStringPath}connectionStrings.{environment}.config");
-#if !DEBUG
-			configurationBuilder.AddDataPathClassicConnectionStringsSectionFile(System.IO.Path.Combine(Context.RootType.Namespace, "connectionStrings.config"));
-#endif
-
-			configurationBuilder.SetBasePath(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
-			configurationBuilder.AddJsonFile("appsettings.json", optional: true);
-			configurationBuilder.AddJsonFiles(activeEnvironmentConfiguration.ActiveEnvironments, environment => $"appsettings.{environment}.json");
-#if !DEBUG
-			configurationBuilder.AddDataPathJsonFile(System.IO.Path.Combine(Context.RootType.Namespace, "appsettings.json"));
-#endif
-
-			configurationBuilder.AddEnvironmentConfiguration(showConfig);
-
-			Context.SetConfigurationRoot(configurationBuilder.Build().ApplyConfigurationValueReaders());
-			Context.SetActiveEnvironment(activeEnvironmentConfiguration.ActiveEnvironment);
-			Context.LoggerConfigurator?.SetBaseLogger(Context);
-
-			if (showConfig)
+			hostConfigurator.EnableServiceRecovery(recoveryConfig =>
 			{
-				foreach (System.Collections.DictionaryEntry environmentVariable in Environment.GetEnvironmentVariables())
-				{
-					System.Console.WriteLine($"  EV \"{environmentVariable.Key}\" => \"{environmentVariable.Value}\"");
-				}
+				recoveryConfig.RestartService(1); // restart the service after 1 minute
+				recoveryConfig.RestartService(1); // restart the service after 1 minute
+				recoveryConfig.SetResetPeriod(1); // set the reset interval to one day
+			});
 
-				System.Console.WriteLine($"ActiveEnvironment: {activeEnvironmentConfiguration.ActiveEnvironment}");
-				System.Console.WriteLine($"ActiveEnvironments: {string.Join(", ", activeEnvironmentConfiguration.ActiveEnvironments.Select(e => string.Format("\"{0}\"", e)))}");
-
-				foreach (var keyValuePair in Context.ConfigurationRoot.AsEnumerable())
-				{
-					System.Console.WriteLine($"  Config \"{keyValuePair.Key}\" => \"{keyValuePair.Value}\"");
-				}
-			}
-
-			return (int)Topshelf.HostFactory.Run(hostConfigurator =>
+			hostConfigurator.Service<ServiceManager>(configurator =>
 			{
-				var configuration = Context.ConfigurationRoot.GetConfiguration<ISI.Extensions.Topshelf.Configuration>();
-
-				hostConfigurator.SetDescription(configuration);
-				hostConfigurator.SetDisplayName(configuration);
-				hostConfigurator.SetServiceName(configuration);
-
-				hostConfigurator.RunAs(configuration);
-
-				Context.LoggerConfigurator.AddLogger(hostConfigurator);
-
-				hostConfigurator.StartAutomatically();
-
-				hostConfigurator.EnableServiceRecovery(recoveryConfig =>
+				//configurator.ConstructUsing(serviceFactory => serviceProvider.GetService<ServiceManager>());
+				configurator.ConstructUsing(serviceFactory => new ServiceManager());
+				configurator.WhenStarted((service, control) =>
 				{
-					recoveryConfig.RestartService(1); // restart the service after 1 minute
-					recoveryConfig.RestartService(1); // restart the service after 1 minute
-					recoveryConfig.SetResetPeriod(1); // set the reset interval to one day
+					control.RequestAdditionalTime(TimeSpan.FromMinutes(10));
+					service.StartAsync().Wait();
+					return true;
 				});
-
-				hostConfigurator.Service<ServiceManager>(configurator =>
+				configurator.WhenStopped((service, control) =>
 				{
-					//configurator.ConstructUsing(serviceFactory => serviceProvider.GetService<ServiceManager>());
-					configurator.ConstructUsing(serviceFactory => new ServiceManager());
-					configurator.WhenStarted((service, control) =>
-					{
-						control.RequestAdditionalTime(TimeSpan.FromMinutes(10));
-						service.StartAsync().Wait();
-						return true;
-					});
-					configurator.WhenStopped((service, control) =>
-					{
-						service.StopAsync().Wait();
-						Context.LoggerConfigurator.CloseAndFlush();
-						return true;
-					});
+					service.StopAsync().Wait();
+					Context.LoggerConfigurator.CloseAndFlush();
+					return true;
 				});
 			});
-		}
-
-		private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs unhandledExceptionEventArgs)
-		{
-			try
-			{
-				var exception = unhandledExceptionEventArgs.ExceptionObject as Exception ?? new Exception(string.Format("An unhandled exception occurred in this application: {0}", unhandledExceptionEventArgs.ExceptionObject));
-
-				Context.LoggerConfigurator.Error(exception, "Unhandled Exception");
-			}
-			catch
-			{
-				// do not terminate any thread
-			}
-		}
-	}
+		});
+		*/
+	//}
 }

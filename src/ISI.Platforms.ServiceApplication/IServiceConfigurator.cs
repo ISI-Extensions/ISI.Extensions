@@ -18,17 +18,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DTOs = ISI.Platforms.ServiceApplication.DataTransferObjects.ServiceConfigurator;
 
-namespace ISI.Platforms
+namespace ISI.Platforms.ServiceApplication
 {
-	public interface ILoggerConfigurator
+	public interface IServiceConfigurator
 	{
-		void SetBaseLogger(ServiceApplicationContext context);
-		void CloseAndFlush();
-		void AddLogger(object hostConfigurator);
-		void Error(Exception exception, string message);
-		void AddLogger(Microsoft.Extensions.DependencyInjection.IServiceCollection services, Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot, string activeEnvironment);
-		void Information(string message);
-		void AddRequestLogging(object applicationBuilder);
+		DTOs.StartServiceResponse StartService(DTOs.StartServiceRequest request);
+		DTOs.StopServiceResponse StopService(DTOs.StopServiceRequest request);
+		DTOs.InstallServiceResponse InstallService(DTOs.InstallServiceRequest request);
+		DTOs.UnInstallServiceResponse UnInstallService(DTOs.UnInstallServiceRequest request);
 	}
 }

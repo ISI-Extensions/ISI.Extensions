@@ -44,6 +44,17 @@ namespace ISI.Extensions.Nuget
 
 			if (sdkAttribute.StartsWith("Microsoft.NET", StringComparison.InvariantCultureIgnoreCase) || (request.CsProjXml.IndexOf("<PackageReference", StringComparison.InvariantCultureIgnoreCase) >= 0))
 			{
+				foreach (var propertyGroup in csProjXml.GetElementsByLocalName("PropertyGroup"))
+				{
+					foreach (var targetFramework in propertyGroup.GetElementsByLocalName("TargetFramework"))
+					{
+						if (string.Equals(targetFramework.Value, "net8.0", StringComparison.InvariantCultureIgnoreCase))
+						{
+							targetFramework.Value = "net9.0";
+						}
+					}
+				}
+
 				foreach (var itemGroup in csProjXml.GetElementsByLocalName("ItemGroup"))
 				{
 					foreach (var packageReference in itemGroup.GetElementsByLocalName("PackageReference"))

@@ -52,6 +52,10 @@ namespace ISI.Platforms.ServiceApplication
 		{
 			await Task.Delay(5000, cancellationToken);
 
+			Logger.LogInformation("UserInteractive: {0}", Environment.UserInteractive);
+
+
+
 			var server = ServiceProvider.GetRequiredService<global::Microsoft.AspNetCore.Hosting.Server.IServer>();
 			var addressFeature = server.Features.Get<global::Microsoft.AspNetCore.Hosting.Server.Features.IServerAddressesFeature>();
 

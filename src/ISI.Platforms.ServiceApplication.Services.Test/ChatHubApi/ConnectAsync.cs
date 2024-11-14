@@ -32,7 +32,7 @@ namespace ISI.Platforms.ServiceApplication.Services.Test
 		{
 			var response = new DTOs.ConnectResponse();
 
-			var uri = new UriBuilder("wss://localhost:60331");
+			var uri = new UriBuilder("wss://localhost:59331");
 			uri.Path = HubUrlPattern;
 			
 			HubConnection = new Microsoft.AspNetCore.SignalR.Client.HubConnectionBuilder()

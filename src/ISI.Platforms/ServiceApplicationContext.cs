@@ -82,9 +82,9 @@ namespace ISI.Platforms
 			}
 		}
 
-		public bool RunningAsService => Args.NullCheckedAny(arg => string.Equals(arg, RunningAsServiceOption));
+		public bool RunningAsService => !Environment.UserInteractive || Args.NullCheckedAny(arg => string.Equals(arg, RunningAsServiceOption));
 
-		public ISI.Extensions.CommandLineArguments CommandLineArguments {get; private set; }
+		public ISI.Extensions.CommandLineArguments CommandLineArguments { get; private set; }
 
 		public ISI.Extensions.MessageBus.GetAddMessageBusSubscriptionsDelegate GetAddMessageBusSubscriptions { get; private set; }
 		ISI.Extensions.MessageBus.GetAddMessageBusSubscriptionsDelegate IServiceApplicationContextAddActions.GetAddMessageBusSubscriptions { get => GetAddMessageBusSubscriptions; set => GetAddMessageBusSubscriptions = value; }
@@ -122,7 +122,7 @@ namespace ISI.Platforms
 
 		public WindowsStartMode WindowsServiceStartMode { get; set; }
 		public bool ServiceDelayStart { get; set; }
-		
+
 		public ServiceApplicationContext(Type rootType)
 		{
 			RootType = rootType;

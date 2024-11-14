@@ -40,7 +40,7 @@ namespace ISI.Extensions.Nuget
 				var packageId = packageTag.GetAttributeByLocalName("id").Value;
 				var packageVersion = packageTag.GetAttributeByLocalName("version").Value;
 
-				if (request.TryGetNugetPackageKey(packageId, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
+				if (request.TryGetNugetPackageKey(packageId, true, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 				{
 					packageTag.GetAttributeByLocalName("version").Value = nugetPackageKey.Version;
 				}

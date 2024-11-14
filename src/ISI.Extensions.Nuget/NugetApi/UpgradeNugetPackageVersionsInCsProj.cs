@@ -62,7 +62,7 @@ namespace ISI.Extensions.Nuget
 						var packageId = (packageReference.GetAttributeByLocalName("Include") ?? packageReference.GetAttributeByLocalName("Update"))?.Value ?? string.Empty;
 						var packageVersion = (packageReference.GetAttributeByLocalName("Version")?.Value ?? packageReference.GetElementByLocalName("Version")?.Value) ?? string.Empty;
 
-						if (request.TryGetNugetPackageKey(packageId, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
+						if (request.TryGetNugetPackageKey(packageId, false, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 						{
 							var versionAttribute = packageReference.GetAttributeByLocalName("Version");
 							if (versionAttribute != null)
@@ -144,7 +144,7 @@ namespace ISI.Extensions.Nuget
 
 									packageVersion = packageVersion.TrimEnd('.');
 
-									if (request.TryGetNugetPackageKey(packageId, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
+									if (request.TryGetNugetPackageKey(packageId, true, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 									{
 										hintPath = nugetPackageKey.GetTargetFrameworkAssembly(targetFrameworkVersion)?.Assemblies?.GetHintPath(assemblyName);
 
@@ -163,7 +163,7 @@ namespace ISI.Extensions.Nuget
 								{
 									if (!usedPackageReferences.Contains(packageId))
 									{
-										if (request.TryGetNugetPackageKey(packageId, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version))
+										if (request.TryGetNugetPackageKey(packageId, true, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version))
 										{
 											packageVersion = nugetPackageKey.Version;
 										}
@@ -197,7 +197,7 @@ namespace ISI.Extensions.Nuget
 						var packageVersionElement = packageReference.GetElementByLocalName("Version");
 						var packageVersion = packageVersionAttribute?.Value ?? packageVersionElement?.Value ?? string.Empty;
 
-						if (request.TryGetNugetPackageKey(packageId, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
+						if (request.TryGetNugetPackageKey(packageId, true, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 						{
 							if (packageVersionAttribute != null)
 							{
@@ -245,7 +245,7 @@ namespace ISI.Extensions.Nuget
 									}
 								}
 
-								if (request.TryGetNugetPackageKey(packageId, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
+								if (request.TryGetNugetPackageKey(packageId, true, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 								{
 									pathParts[pathPartIndex + 1] = $"{packageId}.{nugetPackageKey.Version}";
 								}

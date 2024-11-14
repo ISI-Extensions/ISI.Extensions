@@ -19,5 +19,5 @@ using System.Text;
 
 namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public delegate bool TryGetNugetPackageKey(string package, out NugetPackageKey nugetPackageKey);
+	public delegate bool TryGetNugetPackageKey(string package, bool isDotNet4, out NugetPackageKey nugetPackageKey);
 }

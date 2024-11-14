@@ -255,9 +255,16 @@ namespace ISI.Extensions.VisualStudio
 								}
 							}
 
-							bool tryGetNugetPackageKey(string package, out ISI.Extensions.Nuget.NugetPackageKey nugetPackageKey)
+							bool tryGetNugetPackageKey(string package, bool isDotNet4, out ISI.Extensions.Nuget.NugetPackageKey nugetPackageKey)
 							{
 								if (solutionIgnorePackageIds.Contains(package))
+								{
+									nugetPackageKey = null;
+
+									return false;
+								}
+
+								if (isDotNet4 && string.Equals(package, "System.Runtime.Serialization.Formatters", StringComparison.InvariantCultureIgnoreCase))
 								{
 									nugetPackageKey = null;
 
@@ -276,7 +283,7 @@ namespace ISI.Extensions.VisualStudio
 
 							Parallel.ForEach(solutionDetails.NugetPackageDependencies, nugetPackageDependency =>
 							{
-								tryGetNugetPackageKey(nugetPackageDependency, out var _);
+								tryGetNugetPackageKey(nugetPackageDependency, false, out var _);
 							});
 
 							solutionLogger.LogInformation("Updating Projects");

@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Platforms
 {
-	public delegate void ServiceApplicationContextWebHostBuilderConfigureServicesDelegate(Microsoft.AspNetCore.Hosting.IWebHostBuilder webHostBuilder, Microsoft.Extensions.DependencyInjection.IServiceCollection services);
+	//public delegate void ServiceApplicationContextWebHostBuilderConfigureServicesDelegate(Microsoft.AspNetCore.Hosting.IWebHostBuilder webHostBuilder, Microsoft.Extensions.DependencyInjection.IServiceCollection services);
 	public delegate void ServiceApplicationContextHostBuilderConfigureServicesDelegate(Microsoft.Extensions.Hosting.IHostApplicationBuilder hostApplicationBuilder);
 	public delegate void ServiceApplicationContextWebStartupMvcBuilderDelegate(Microsoft.Extensions.DependencyInjection.IMvcBuilder mvcBuilder);
 	public delegate void ServiceApplicationContextWebStartupConfigureServicesDelegate(Microsoft.Extensions.DependencyInjection.IServiceCollection services);
@@ -40,7 +40,7 @@ namespace ISI.Platforms
 		ISI.Extensions.MessageBus.GetAddMessageBusSubscriptionsDelegate GetAddMessageBusSubscriptions { get; set; }
 
 		ServiceApplicationContextHostBuilderConfigureServicesDelegate HostBuilderConfigureServices { get; set; }
-		ServiceApplicationContextWebHostBuilderConfigureServicesDelegate WebHostBuilderConfigureServices { get; set; }
+		//ServiceApplicationContextWebHostBuilderConfigureServicesDelegate WebHostBuilderConfigureServices { get; set; }
 
 		ServiceApplicationContextWebStartupMvcBuilderDelegate WebStartupMvcBuilder { get; set; }
 		ServiceApplicationContextWebStartupConfigureServicesDelegate WebStartupConfigureServices { get; set; }
@@ -92,8 +92,8 @@ namespace ISI.Platforms
 		public ServiceApplicationContextHostBuilderConfigureServicesDelegate HostBuilderConfigureServices { get; private set; }
 		ServiceApplicationContextHostBuilderConfigureServicesDelegate IServiceApplicationContextAddActions.HostBuilderConfigureServices { get => HostBuilderConfigureServices; set => HostBuilderConfigureServices = value; }
 
-		public ServiceApplicationContextWebHostBuilderConfigureServicesDelegate WebHostBuilderConfigureServices { get; private set; }
-		ServiceApplicationContextWebHostBuilderConfigureServicesDelegate IServiceApplicationContextAddActions.WebHostBuilderConfigureServices { get => WebHostBuilderConfigureServices; set => WebHostBuilderConfigureServices = value; }
+		//public ServiceApplicationContextWebHostBuilderConfigureServicesDelegate WebHostBuilderConfigureServices { get; private set; }
+		//ServiceApplicationContextWebHostBuilderConfigureServicesDelegate IServiceApplicationContextAddActions.WebHostBuilderConfigureServices { get => WebHostBuilderConfigureServices; set => WebHostBuilderConfigureServices = value; }
 
 		public ServiceApplicationContextWebStartupMvcBuilderDelegate WebStartupMvcBuilder { get; private set; }
 		ServiceApplicationContextWebStartupMvcBuilderDelegate IServiceApplicationContextAddActions.WebStartupMvcBuilder { get => WebStartupMvcBuilder; set => WebStartupMvcBuilder = value; }
@@ -115,8 +115,31 @@ namespace ISI.Platforms
 		public ServiceApplicationContextPostStartupDelegate PostStartup { get; private set; }
 		ServiceApplicationContextPostStartupDelegate IServiceApplicationContextAddActions.PostStartup { get => PostStartup; set => PostStartup = value; }
 
-		public string ServiceName { get; set; }
-		public string ServiceDisplayName { get; set; }
+		public string GetDefaultAssemblyName()
+		{
+			const string windowsServiceSuffix = ".WindowsService";
+			const string serviceApplicationSuffix = ".ServiceApplication";
+
+			var assemblyName = RootAssembly.GetName().Name;
+
+			if (assemblyName.EndsWith(windowsServiceSuffix))
+			{
+				assemblyName = assemblyName.Substring(0, assemblyName.Length - windowsServiceSuffix.Length);
+			}
+			else if (assemblyName.EndsWith(serviceApplicationSuffix))
+			{
+				assemblyName = assemblyName.Substring(0, assemblyName.Length - serviceApplicationSuffix.Length);
+			}
+
+			return assemblyName;
+		}
+
+		private string? _serviceName = null;
+		public string ServiceName { get => _serviceName ??= GetDefaultAssemblyName(); set => _serviceName = value; }
+
+		private string? _serviceDisplayName = null;
+		public string ServiceDisplayName { get => _serviceDisplayName ??= GetDefaultAssemblyName(); set => _serviceDisplayName = value; }
+
 		public string ServiceUserName { get; set; }
 		public string ServicePassword { get; set; }
 

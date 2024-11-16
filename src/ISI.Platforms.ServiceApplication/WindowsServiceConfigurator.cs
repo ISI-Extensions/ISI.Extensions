@@ -28,20 +28,24 @@ namespace ISI.Platforms.ServiceApplication
 		public const string NetworkServiceUserName = "NT AUTHORITY\\NetworkService";
 
 
-		[System.Runtime.InteropServices.DllImport("advapi32.dll")]
-		public static extern IntPtr OpenSCManager(string lpMachineName, string lpSCDB, int scParameter);
-		//[System.Runtime.InteropServices.DllImport("Advapi32.dll")]
-		//public static extern IntPtr CreateService(IntPtr SC_HANDLE, string lpSvcName, string lpDisplayName, int dwDesiredAccess, int dwServiceType, int dwStartType, int dwErrorControl, string lpPathName, string lpLoadOrderGroup, int lpdwTagId, string lpDependencies, string lpServiceStartName, string lpPassword);
+		[System.Runtime.InteropServices.DllImport("advapi32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode, SetLastError = true)]
+		public static extern IntPtr OpenSCManager(string machineName, string databaseName, int access);
+
 		[System.Runtime.InteropServices.DllImport("advapi32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode, SetLastError = true)]
 		public static extern IntPtr CreateService(IntPtr databaseHandle, string serviceName, string displayName, int access, int serviceType, int startType, int errorControl, string binaryPath, string loadOrderGroup, IntPtr pTagId, string dependencies, string servicesStartName, string password);
+
 		[System.Runtime.InteropServices.DllImport("advapi32.dll")]
 		public static extern void CloseServiceHandle(IntPtr SCHANDLE);
+
 		[System.Runtime.InteropServices.DllImport("advapi32.dll")]
 		public static extern int StartService(IntPtr SVHANDLE, int dwNumServiceArgs, string lpServiceArgVectors);
+
 		[System.Runtime.InteropServices.DllImport("advapi32.dll", SetLastError = true)]
 		public static extern IntPtr OpenService(IntPtr SCHANDLE, string lpSvcName, int dwNumServiceArgs);
+
 		[System.Runtime.InteropServices.DllImport("advapi32.dll")]
 		public static extern int DeleteService(IntPtr SVHANDLE);
+
 		[System.Runtime.InteropServices.DllImport("kernel32.dll")]
 		public static extern int GetLastError();
 
@@ -65,9 +69,7 @@ namespace ISI.Platforms.ServiceApplication
 
 
 		static int SC_MANAGER_CREATE_SERVICE = 0x0002;
-		static int SERVICE_WIN32_OWN_PROCESS = 0x00000010;
-		//int SERVICE_DEMAND_START = 0x00000003;
-		static int SERVICE_ERROR_NORMAL = 0x00000001;
+
 		static int STANDARD_RIGHTS_REQUIRED = 0xF0000;
 		static int SERVICE_QUERY_CONFIG = 0x0001;
 		static int SERVICE_CHANGE_CONFIG = 0x0002;
@@ -79,7 +81,25 @@ namespace ISI.Platforms.ServiceApplication
 		static int SERVICE_INTERROGATE = 0x0080;
 		static int SERVICE_USER_DEFINED_CONTROL = 0x0100;
 		static int SERVICE_ALL_ACCESS = (STANDARD_RIGHTS_REQUIRED | SERVICE_QUERY_CONFIG | SERVICE_CHANGE_CONFIG | SERVICE_QUERY_STATUS | SERVICE_ENUMERATE_DEPENDENTS | SERVICE_START | SERVICE_STOP | SERVICE_PAUSE_CONTINUE | SERVICE_INTERROGATE | SERVICE_USER_DEFINED_CONTROL);
+
+		static int SERVICE_ADAPTER = 0x00000004;
+		static int SERVICE_FILE_SYSTEM_DRIVER = 0x00000002;
+		static int SERVICE_KERNEL_DRIVER = 0x00000001;
+		static int SERVICE_RECOGNIZER_DRIVER = 0x00000008;
+		static int SERVICE_WIN32_OWN_PROCESS = 0x00000010;
+		static int SERVICE_WIN32_SHARE_PROCESS = 0x00000020;
+
+		static int SERVICE_ERROR_CRITICAL = 0x00000003;
+		static int SERVICE_ERROR_IGNORE = 0x00000000;
+		static int SERVICE_ERROR_NORMAL = 0x00000001;
+		static int SERVICE_ERROR_SEVERE = 0x00000002;
+
 		static int SERVICE_AUTO_START = 0x00000002;
+		static int SERVICE_BOOT_START = 0x00000000;
+		static int SERVICE_DEMAND_START = 0x00000003;
+		static int SERVICE_DISABLED = 0x00000004;
+		static int SERVICE_SYSTEM_START = 0x00000001;
+
 
 		private System.ServiceProcess.ServiceController GetServiceController(string serviceName)
 		{
@@ -138,15 +158,16 @@ namespace ISI.Platforms.ServiceApplication
 
 			try
 			{
-				scmManagerPtr = OpenSCManager(null, null, SC_MANAGER_CREATE_SERVICE);
-				if (scmManagerPtr.ToInt32() == 0)
+				scmManagerPtr = OpenSCManager(null, null, 983103);
+				if (scmManagerPtr == IntPtr.Zero)
 				{
 					throw new InvalidOperationException("Cannot Open SCManager", new System.ComponentModel.Win32Exception());
 				}
 
-				//var sv_handle = CreateService(sc_handle, request.ServiceName, request.DisplayName, SERVICE_ALL_ACCESS, SERVICE_WIN32_OWN_PROCESS, SERVICE_AUTO_START, SERVICE_ERROR_NORMAL, request.Executable, null, 0, null, null, request.Password);
-				createServicePtr = CreateService(scmManagerPtr, request.ServiceName, request.DisplayName, 983551, 16, (int)request.WindowsStartMode, 1, $"{request.Executable} {ServiceApplicationContext.RunningAsServiceOption}", null, IntPtr.Zero, null, request.UserName, request.Password);
-				if (createServicePtr.ToInt32() == 0)
+				var userName = string.IsNullOrWhiteSpace(request.UserName) ? LocalServiceUserName : request.UserName;
+
+				createServicePtr = CreateService(scmManagerPtr, request.ServiceName, request.DisplayName, SERVICE_ALL_ACCESS, SERVICE_WIN32_OWN_PROCESS, SERVICE_AUTO_START, SERVICE_ERROR_NORMAL, $"\"{request.Executable}\"", null, IntPtr.Zero, string.Empty, userName, request.Password);
+				if (createServicePtr == IntPtr.Zero)
 				{
 					throw new InvalidOperationException("Cannot Create Service", new System.ComponentModel.Win32Exception());
 				}
@@ -178,8 +199,14 @@ namespace ISI.Platforms.ServiceApplication
 			}
 			finally
 			{
-				CloseServiceHandle(createServicePtr);
-				CloseServiceHandle(scmManagerPtr);
+				if (createServicePtr != IntPtr.Zero)
+				{
+					CloseServiceHandle(createServicePtr);
+				}
+				if (scmManagerPtr != IntPtr.Zero)
+				{
+					CloseServiceHandle(scmManagerPtr);
+				}
 			}
 
 			return response;
@@ -200,13 +227,13 @@ namespace ISI.Platforms.ServiceApplication
 			try
 			{
 				scmManagerPtr = OpenSCManager(null, null, SC_MANAGER_CREATE_SERVICE);
-				if (scmManagerPtr.ToInt32() == 0)
+				if (scmManagerPtr == IntPtr.Zero)
 				{
 					throw new InvalidOperationException("Cannot Open SCManager", new System.ComponentModel.Win32Exception());
 				}
 
 				openServicePtr = OpenService(scmManagerPtr, request.ServiceName, 65536);
-				if (openServicePtr.ToInt32() == 0)
+				if (openServicePtr == IntPtr.Zero)
 				{
 					throw new InvalidOperationException("Cannot Open Service", new System.ComponentModel.Win32Exception());
 				}
@@ -219,8 +246,14 @@ namespace ISI.Platforms.ServiceApplication
 			}
 			finally
 			{
-				CloseServiceHandle(openServicePtr);
-				CloseServiceHandle(scmManagerPtr);
+				if (openServicePtr != IntPtr.Zero)
+				{
+					CloseServiceHandle(openServicePtr);
+				}
+				if (scmManagerPtr != IntPtr.Zero)
+				{
+					CloseServiceHandle(scmManagerPtr);
+				}
 			}
 
 			return response;

@@ -31,6 +31,8 @@ namespace ISI.Platforms.ServiceApplication.Test
 	{
 		public static void Main(string[] args)
 		{
+			args = ["uninstall"];
+
 			var context = new ServiceApplicationContext(typeof(Program))
 			{
 				LoggerConfigurator = new ISI.Platforms.Serilog.LoggerConfigurator(),

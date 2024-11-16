@@ -64,24 +64,6 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 			}
 		}
 
-		private static string GetDefaultAssemblyName(ServiceApplicationContext context)
-		{
-			const string windowsServiceSuffix = ".WindowsService";
-			const string serviceApplicationSuffix = ".ServiceApplication";
-
-			var assemblyName = context.RootAssembly.GetName().Name;
-
-			if (assemblyName.EndsWith(windowsServiceSuffix))
-			{
-				assemblyName = assemblyName.Substring(0, assemblyName.Length - windowsServiceSuffix.Length);
-			}
-			else if (assemblyName.EndsWith(serviceApplicationSuffix))
-			{
-				assemblyName = assemblyName.Substring(0, assemblyName.Length - serviceApplicationSuffix.Length);
-			}
-
-			return assemblyName;
-		}
 		
 		public static void SetDisplayName(this ServiceApplicationContext context, Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot)
 		{
@@ -90,7 +72,7 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 
 		public static void SetDisplayName(this ServiceApplicationContext context, ISI.Platforms.ServiceApplication.Configuration configuration = null)
 		{
-			var serviceDisplayName = string.IsNullOrWhiteSpace(configuration?.ServiceDisplayName) ? GetDefaultAssemblyName(context) : configuration.ServiceDisplayName;
+			var serviceDisplayName = configuration.ServiceDisplayName;
 
 			var servicePrefix = configuration?.ServicePrefix;
 			if (!string.IsNullOrEmpty(servicePrefix))
@@ -107,7 +89,7 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 		}
 		public static void SetServiceName(this ServiceApplicationContext context, ISI.Platforms.ServiceApplication.Configuration configuration = null)
 		{
-			var serviceServiceName = string.IsNullOrWhiteSpace(configuration?.ServiceServiceName) ? GetDefaultAssemblyName(context) : configuration.ServiceServiceName;
+			var serviceServiceName = configuration.ServiceServiceName;
 
 			var servicePrefix = configuration?.ServicePrefix;
 			if (!string.IsNullOrEmpty(servicePrefix))

@@ -31,7 +31,7 @@ namespace ISI.Platforms.AspNetCore.Extensions
 	{
 		public static ServiceApplicationContext AddCors(this ServiceApplicationContext context, IEnumerable<string> corsPolicyOrigins = null, bool? allowAnyHeader = null, bool? allowAnyMethod = null, bool? allowCredentials = null)
 		{
-			context.AddWebHostBuilderConfigureServices((webHostBuilder, services) =>
+			context.AddHostBuilderConfigureServices(hostBuilder =>
 			{
 				var configuration = context.ConfigurationRoot.GetConfiguration<ISI.Platforms.AspNetCore.Configuration>();
 
@@ -46,7 +46,7 @@ namespace ISI.Platforms.AspNetCore.Extensions
 					throw new Exception("Cannot add CORS without PolicyOrigins");
 				}
 
-				services.AddCors(options =>
+				hostBuilder.Services.AddCors(options =>
 				{
 					options.AddDefaultPolicy(policy =>
 					{

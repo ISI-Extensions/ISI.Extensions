@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,73 +33,26 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 {
 	public static partial class ContextExtensions
 	{
-		public static Microsoft.AspNetCore.Builder.WebApplication CreateWebApplication(this ServiceApplicationContext context)
+		public static Microsoft.Extensions.Hosting.IHost CreateApplication(this ServiceApplicationContext context)
 		{
-			var webApplicationBuilder = Microsoft.AspNetCore.Builder.WebApplication.CreateBuilder(new Microsoft.AspNetCore.Builder.WebApplicationOptions()
-			{
-				Args = context.Args,
-				//EnvironmentName = source.EnvironmentName,
-				ApplicationName = context.ServiceName,
-				//ContentRootPath = source.ContentRootPath,
-				//WebRootPath = source.WebRootPath,
-			});
+			var applicationBuilder = Host.CreateApplicationBuilder(context.Args);
 
-			webApplicationBuilder.Services.AddSingleton(context);
+			applicationBuilder.Services.AddSingleton(context);
 
 			var configuration = context.ConfigurationRoot.GetConfiguration<ISI.Platforms.Configuration>();
 
-			webApplicationBuilder.Services.AddHostedService<AspNetCoreBackgroundService>();
+			applicationBuilder.Services.AddHostedService<AspNetCoreBackgroundService>();
 
 			if (configuration.UseMessageBus)
 			{
-				webApplicationBuilder.Services.AddHostedService<MessageBusBackgroundService>();
+				applicationBuilder.Services.AddHostedService<MessageBusBackgroundService>();
 			}
 
-			context.LoggerConfigurator?.AddLogger(webApplicationBuilder.Services, context.ConfigurationRoot, context.ActiveEnvironment);
+			context.LoggerConfigurator?.AddLogger(applicationBuilder.Services, context.ConfigurationRoot, context.ActiveEnvironment);
 
-			if (context.RunningAsService)
-			{
-				if (Environment.OSVersion.Platform == PlatformID.Unix)
-				{
-					webApplicationBuilder.Services.AddSystemd();
-				}
-				else
-				{
-					webApplicationBuilder.Services.AddWindowsService(options =>
-					{
-						options.ServiceName = context.ServiceName;
-					});
-				}
-			}
+			context.HostBuilderConfigureServices?.Invoke(applicationBuilder);
 
-			context.HostBuilderConfigureServices?.Invoke(webApplicationBuilder);
-
-
-			//hostBuilder.WebHost.UseSetting(Microsoft.AspNetCore.Hosting.WebHostDefaults.ApplicationKey, Startup.Context.RootAssembly.FullName);
-
-			var mvcBuilder = webApplicationBuilder.Services
-					.AddControllersWithViews()
-					.AddApplicationPart(context.RootAssembly)
-					.AddISIExtensionsAspNetCore()
-					//.AddRazorRuntimeCompilation(options => options.FileProviders.Add(new ISI.Extensions.VirtualFileVolumesFileProvider()))
-					.AddNewtonsoftJson(options =>
-					{
-						options.SerializerSettings.Converters = ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer.JsonConverters();
-						options.SerializerSettings.DateParseHandling = global::Newtonsoft.Json.DateParseHandling.None;
-					})
-				;
-
-			if (context.AddSignalR)
-			{
-				webApplicationBuilder.Services.AddSignalR();
-			}
-
-			context.WebStartupMvcBuilder?.Invoke(mvcBuilder);
-			context.WebStartupConfigureServices?.Invoke(webApplicationBuilder.Services);
-
-			context.LoggerConfigurator.AddRequestLogging(webApplicationBuilder);
-
-			webApplicationBuilder.Services
+			applicationBuilder.Services
 				.AddOptions()
 				.AddSingleton<Microsoft.Extensions.Configuration.IConfiguration>(context.ConfigurationRoot)
 				.AddAllConfigurations(context.ConfigurationRoot)
@@ -115,35 +68,16 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 
 			if (configuration.UseMessageBus)
 			{
-				webApplicationBuilder.Services.AddMessageBus(context.ConfigurationRoot);
+				applicationBuilder.Services.AddMessageBus(context.ConfigurationRoot);
 			}
 
-			webApplicationBuilder.Services
-				.AddSingleton<ISI.Extensions.Security.IPermissionProcessor, ISI.Extensions.Security.DefaultPermissionProcessor>()
+			var application = applicationBuilder.Build();
 
-				.AddSingleton<RoutingHelper>()
+			context.Host = application;
 
-				.ProcessMigrationSteps()
-				;
+			application.Services.SetServiceLocator();
 
-			//context.WebHostBuilderConfigureServices?.Invoke(webApplicationBuilder.WebHost, webApplicationBuilder.Services);
-
-			//webApplicationBuilder.WebHost.UseContentRoot(System.IO.Directory.GetCurrentDirectory());
-
-			webApplicationBuilder.WebHost.UseKestrel((builderContext, kestrelOptions) =>
-			{
-				var kestrelConfiguration = context.ConfigurationRoot.GetKestrelConfigurationSection();
-
-				kestrelOptions.Configure(kestrelConfiguration, reloadOnChange: false);
-			});
-
-			var webApplication = webApplicationBuilder.Build();
-
-			context.Host = webApplication;
-
-			webApplication.Services.SetServiceLocator();
-
-			return webApplication;
+			return application;
 		}
 	}
 }

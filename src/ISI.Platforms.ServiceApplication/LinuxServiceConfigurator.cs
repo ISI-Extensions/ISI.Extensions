@@ -35,7 +35,7 @@ Description={request.ServiceName}
 
 [Service]
 Type=notify
-ExecStart={request.Executable} {ServiceApplicationContext.RunningAsServiceOption}
+ExecStart={request.Executable}
 
 [Install]
 WantedBy=multi-user.target

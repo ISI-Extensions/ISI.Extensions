@@ -93,7 +93,13 @@ namespace ISI.Platforms.ServiceApplication
 
 			while (!cancellationToken.IsCancellationRequested)
 			{
-				await Task.Delay(1000, cancellationToken);
+				try
+				{
+					await Task.Delay(1000, cancellationToken);
+				}
+				catch
+				{
+				}
 			}
 			
 			ISI.Extensions.Threads.ExitAll();

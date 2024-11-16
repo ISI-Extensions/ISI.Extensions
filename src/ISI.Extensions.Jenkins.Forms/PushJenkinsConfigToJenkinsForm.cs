@@ -83,7 +83,7 @@ namespace ISI.Extensions.Jenkins.Forms
 					{
 						UpdateJenkinsServers();
 
-						for (int index = 0; index < cboJenkinsServers.Items.Count; index++)
+						for (var index = 0; index < cboJenkinsServers.Items.Count; index++)
 						{
 							if (((ISI.Extensions.Jenkins.JenkinsServer)cboJenkinsServers.Items[index]).JenkinsServerUuid == form.JenkinsServer.JenkinsServerUuid)
 							{
@@ -213,7 +213,10 @@ namespace ISI.Extensions.Jenkins.Forms
 								 Paths = SelectedItemPaths,
 			         }).JenkinsConfigFileNames.ToNullCheckedArray(NullCheckCollectionResult.Empty))
 			{
-				JenkinsConfigs.Add(new(jenkinsConfigFileName));
+				JenkinsConfigs.Add(new(jenkinsConfigFileName)
+				{
+					Selected = true,
+				});
 			}
 
 			flpJenkinsConfigs.Controls.AddRange(JenkinsConfigs.Select(jenkinsConfig => jenkinsConfig.Panel).ToArray());

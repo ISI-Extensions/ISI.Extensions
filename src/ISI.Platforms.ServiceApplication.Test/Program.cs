@@ -31,7 +31,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 	{
 		public static void Main(string[] args)
 		{
-			args = ["uninstall"];
+			//args = ["uninstall"];
 
 			var context = new ServiceApplicationContext(typeof(Program))
 			{

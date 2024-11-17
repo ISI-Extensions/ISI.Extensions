@@ -48,10 +48,12 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 
 			var configuration = context.ConfigurationRoot.GetConfiguration<ISI.Platforms.Configuration>();
 
+			webApplicationBuilder.Services.AddSingleton<AspNetCoreBackgroundService>();
 			webApplicationBuilder.Services.AddHostedService<AspNetCoreBackgroundService>();
 
 			if (configuration.UseMessageBus)
 			{
+				webApplicationBuilder.Services.AddSingleton<MessageBusBackgroundService>();
 				webApplicationBuilder.Services.AddHostedService<MessageBusBackgroundService>();
 			}
 

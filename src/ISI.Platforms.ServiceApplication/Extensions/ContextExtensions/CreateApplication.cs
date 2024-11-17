@@ -45,6 +45,7 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 
 			if (configuration.UseMessageBus)
 			{
+				applicationBuilder.Services.AddSingleton<MessageBusBackgroundService>();
 				applicationBuilder.Services.AddHostedService<MessageBusBackgroundService>();
 			}
 

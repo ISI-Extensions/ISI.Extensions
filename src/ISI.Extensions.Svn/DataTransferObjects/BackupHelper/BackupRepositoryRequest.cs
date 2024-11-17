@@ -24,6 +24,7 @@ namespace ISI.Extensions.Svn.DataTransferObjects.BackupHelper
 	public class BackupRepositoryRequest
 	{
 		public ISI.Extensions.IStatusTracker StatusTracker { get; set; }
+
 		public DateTime? ExecutedDateTimeUtc { get; set; }
 		public string RepositoryKey { get; set; }
 		public string BackupDirectoryFullName { get; set; }

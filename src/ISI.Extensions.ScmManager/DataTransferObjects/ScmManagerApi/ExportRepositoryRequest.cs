@@ -34,5 +34,7 @@ namespace ISI.Extensions.ScmManager.DataTransferObjects.ScmManagerApi
 		public bool Compress { get; set; }
 		
 		public System.IO.Stream DownloadStream { get; set; }
+
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.ScmManager.DataTransferObjects.ScmManagerApi;
 using SerializableDTOs = ISI.Extensions.ScmManager.SerializableModels;
 
@@ -30,9 +31,16 @@ namespace ISI.Extensions.ScmManager
 		{
 			var response = new DTOs.ExportRepositoryResponse();
 
+			var logger = new AddToLogLogger(request.AddToLog, Logger);
+
 #if DEBUG
 			var xxx = ISI.Extensions.WebClient.Rest.GetEventHandler();
 #endif
+
+			logger.LogInformation($"Namespace: {request.Namespace}");
+			logger.LogInformation($"Name: {request.Name}");
+			logger.LogInformation($"Type: {request.Type}");
+			logger.LogInformation($"Compress: {request.Compress.TrueFalse()}");
 
 			//Start Export
 			{
@@ -62,7 +70,7 @@ namespace ISI.Extensions.ScmManager
 
 				var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableDTOs.ExportRepositoryInfoResponse>(uri.Uri, GetHeaders(request, "*/*"), true, cookieContainer: GetCookieContainer(request));
 
-				if (string.Equals(apiResponse.Status, "FINISHED", StringComparison.InvariantCultureIgnoreCase))
+				if (string.Equals(apiResponse?.Status ?? string.Empty, "FINISHED", StringComparison.InvariantCultureIgnoreCase))
 				{
 					downloadUrl = apiResponse.Links.Download.Href;
 				}

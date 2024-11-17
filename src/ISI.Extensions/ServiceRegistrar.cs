@@ -24,24 +24,12 @@ using Microsoft.Extensions.DependencyInjection;
 namespace ISI.Extensions
 {
 	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
-	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrarWithPriority, ISI.Extensions.DependencyInjection.IServiceRegistrarWithConfigurationRoot
+	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrarWithPriority
 	{
 		public int Priority => 100;
 
 		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
-			throw new NotImplementedException();
-		}
-
-		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services, Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot)
-		{
-			var statusTrackerConfiguration = configurationRoot.GetConfiguration<ISI.Extensions.StatusTrackers.Configuration>();
-
-			if (string.IsNullOrWhiteSpace(statusTrackerConfiguration.StatusTrackerFactoryImplementation) || string.Equals(statusTrackerConfiguration.StatusTrackerFactoryImplementation, nameof(ISI.Extensions.StatusTrackers.FileStatusTrackerFactory), StringComparison.InvariantCultureIgnoreCase))
-			{
-				services.AddSingleton<ISI.Extensions.StatusTrackers.IStatusTrackerFactory, ISI.Extensions.StatusTrackers.FileStatusTrackerFactory>();
-			}
-
 			services.AddSingleton<ISI.Extensions.IApplicationBus, ISI.Extensions.ApplicationBus>();
 			services.AddSingleton<ISI.Extensions.Serialization.ISerialization, ISI.Extensions.Serialization.Serialization>();
 			services.AddSingleton<ISI.Extensions.SecureShell.IHostConfigurationManager, ISI.Extensions.SecureShell.HostConfigurationManager>();

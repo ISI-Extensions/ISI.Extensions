@@ -32,9 +32,9 @@ namespace ISI.Extensions.PostgreSQL
 		{
 			var response = new DTOs.BackupDatabaseResponse();
 
-			var statusTracker = request.StatusTracker ?? new ISI.Extensions.StatusTracker();
+			var logger = new AddToLogLogger(request.AddToLog, Logger);
 
-			statusTracker.AddToLog($"Backing up database {request.Database}");
+			logger.LogInformation($"Backing up database {request.Database}");
 
 			var tempTableName = $"dump-{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}";
 
@@ -60,7 +60,7 @@ namespace ISI.Extensions.PostgreSQL
 					throw new ArgumentOutOfRangeException(nameof(request));
 			}
 
-			Logger.LogInformation($"ConnectionString: {connectionStringBuilder.GetServerName()}");
+			Logger.LogInformation($"ServerName: {connectionStringBuilder.GetServerName()}");
 
 			using (var connection = ISI.Extensions.PostgreSQL.SqlConnection.GetSqlConnection(connectionStringBuilder.ConnectionString))
 			{
@@ -82,7 +82,7 @@ namespace ISI.Extensions.PostgreSQL
 
 			response.FileName = $"{fileName}.sql";
 
-			statusTracker.AddToLog($"Backed up database {request.Database} to \"{response.FileName}\"");
+			logger.LogInformation($"Backed up database {request.Database} to \"{response.FileName}\"");
 
 			return response;
 		}

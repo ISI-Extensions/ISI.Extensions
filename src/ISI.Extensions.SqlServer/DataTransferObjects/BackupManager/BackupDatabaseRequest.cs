@@ -9,18 +9,16 @@ namespace ISI.Extensions.SqlServer.DataTransferObjects.BackupManager
 {
 	public interface IBackupDatabaseRequest
 	{
-		ISI.Extensions.IStatusTracker StatusTracker { get; }
-
 		string Database { get; }
 
 		DateTime? FileNameDateTimeUtc { get; }
 
 		string LocalBackupDirectory { get; }
+
+		ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; }
 	}
 	public class BackupDatabaseRequest : IBackupDatabaseRequest
 	{
-		public ISI.Extensions.IStatusTracker StatusTracker { get; set; }
-
 		public string Host { get; set; }
 		public int? Port { get; set; }
 		public string UserName { get; set; }
@@ -31,11 +29,11 @@ namespace ISI.Extensions.SqlServer.DataTransferObjects.BackupManager
 		public DateTime? FileNameDateTimeUtc { get; set; }
 
 		public string LocalBackupDirectory { get; set; }
+
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 	public class BackupDatabaseUsingConnectionStringRequest : IBackupDatabaseRequest
 	{
-		public ISI.Extensions.IStatusTracker StatusTracker { get; set; }
-
 		public string ConnectionString { get; set; }
 
 		public string Database { get; set; }
@@ -43,5 +41,7 @@ namespace ISI.Extensions.SqlServer.DataTransferObjects.BackupManager
 		public DateTime? FileNameDateTimeUtc { get; set; }
 
 		public string LocalBackupDirectory { get; set; }
+
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

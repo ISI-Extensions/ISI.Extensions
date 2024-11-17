@@ -7,40 +7,22 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.PostgreSQL.DataTransferObjects.BackupManager
 {
-	public interface IBackupDatabaseRequest
+	public interface IListDatabasesRequest
 	{
-		string Database { get; }
-
-		DateTime? FileNameDateTimeUtc { get; }
-
-		string LocalBackupDirectory { get; }
-
 		ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; }
 	}
-	public class BackupDatabaseRequest : IBackupDatabaseRequest
+	public class ListDatabasesRequest : IListDatabasesRequest
 	{
 		public string Host { get; set; }
 		public int? Port { get; set; }
 		public string UserName { get; set; }
 		public string Password { get; set; }
 
-		public string Database { get; set; }
-
-		public DateTime? FileNameDateTimeUtc { get; set; }
-
-		public string LocalBackupDirectory { get; set; }
-
 		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
-	public class BackupDatabaseUsingConnectionStringRequest : IBackupDatabaseRequest
+	public class ListDatabasesUsingConnectionStringRequest : IListDatabasesRequest
 	{
 		public string ConnectionString { get; set; }
-
-		public string Database { get; set; }
-
-		public DateTime? FileNameDateTimeUtc { get; set; }
-
-		public string LocalBackupDirectory { get; set; }
 
 		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}

@@ -19,13 +19,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.SqlServer.DataTransferObjects.BackupManager;
 
-namespace ISI.Extensions.SqlServer
+namespace ISI.Extensions.SqlServer.DataTransferObjects.BackupManager
 {
-	public interface IBackupManager
+	public class ListDatabasesResponse
 	{
-		DTOs.BackupDatabaseResponse BackupDatabase(DTOs.IBackupDatabaseRequest request);
-		DTOs.ListDatabasesResponse ListDatabases(DTOs.IListDatabasesRequest request);
+		public string[] Databases { get; set; }
 	}
 }

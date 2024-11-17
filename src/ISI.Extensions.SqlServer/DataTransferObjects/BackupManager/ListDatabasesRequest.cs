@@ -19,13 +19,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.SqlServer.DataTransferObjects.BackupManager;
 
-namespace ISI.Extensions.SqlServer
+namespace ISI.Extensions.SqlServer.DataTransferObjects.BackupManager
 {
-	public interface IBackupManager
+	public interface IListDatabasesRequest
 	{
-		DTOs.BackupDatabaseResponse BackupDatabase(DTOs.IBackupDatabaseRequest request);
-		DTOs.ListDatabasesResponse ListDatabases(DTOs.IListDatabasesRequest request);
+		ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; }
+	}
+	public class ListDatabasesRequest : IListDatabasesRequest
+	{
+		public string Host { get; set; }
+		public int? Port { get; set; }
+		public string UserName { get; set; }
+		public string Password { get; set; }
+
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
+	}
+	public class ListDatabasesUsingConnectionStringRequest : IListDatabasesRequest
+	{
+		public string ConnectionString { get; set; }
+
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

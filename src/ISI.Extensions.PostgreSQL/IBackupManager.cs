@@ -26,5 +26,6 @@ namespace ISI.Extensions.PostgreSQL
 	public interface IBackupManager
 	{
 		DTOs.BackupDatabaseResponse BackupDatabase(DTOs.IBackupDatabaseRequest request);
+		DTOs.ListDatabasesResponse ListDatabases(DTOs.IListDatabasesRequest request);
 	}
 }

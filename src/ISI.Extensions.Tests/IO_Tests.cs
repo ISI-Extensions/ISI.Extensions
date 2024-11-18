@@ -32,6 +32,18 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void Open_Test()
+		{
+			var sourceStream = ISI.Extensions.FileSystem.OpenRead(@"\\10.105.10.1\backup$\ISI.20241118.181054988.bak.lz");
+		}
+
+		[Test]
+		public void Open2_Test()
+		{
+			var sourceStream = ISI.Extensions.FileSystem.OpenRead(@"E:\ISI.20241118.181054988.bak.lz");
+		}
+
+		[Test]
 		public void Drives_Test()
 		{
 			var mosPsks = new System.Management.ManagementObjectSearcher("SELECT * FROM Win32_LogicalDiskToPartition");

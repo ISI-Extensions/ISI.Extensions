@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +31,7 @@ namespace ISI.Extensions.SqlServer
 		public DTOs.ListDatabasesResponse ListDatabases(DTOs.IListDatabasesRequest request)
 		{
 			var response = new DTOs.ListDatabasesResponse();
-			
+
 			var connectionStringBuilder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder();
 			switch (request)
 			{
@@ -61,17 +61,20 @@ namespace ISI.Extensions.SqlServer
 				connection.Open();
 
 				var sql = new StringBuilder();
-				sql.AppendLine($"SELECT name FROM master.sys.databases");
+				sql.AppendLine($"SELECT name as 'DatabaseName', HAS_PERMS_BY_NAME(name, 'DATABASE', 'BACKUP DATABASE') as 'HasAccess' FROM sys.databases;");
 
 				using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql.ToString(), connection))
 				{
 					using (var reader = command.ExecuteReader())
 					{
 						var databases = new ISI.Extensions.InvariantCultureIgnoreCaseStringHashSet();
-						
+
 						while (reader.Read())
 						{
-							databases.Add(reader.GetString(0));
+							if (reader.GetInt(1) != 0)
+							{
+								databases.Add(reader.GetString(0));
+							}
 						}
 
 						response.Databases = databases.ToArray();

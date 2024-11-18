@@ -59,8 +59,7 @@ namespace ISI.Extensions.PostgreSQL
 				connection.Open();
 
 				var sql = new StringBuilder();
-				sql.AppendLine($"SELECT datname FROM pg_database");
-				sql.AppendLine($"WHERE datistemplate = false;");
+				sql.AppendLine($"SELECT datname FROM pg_database WHERE datistemplate = false AND datname != 'postgres';");
 
 				using (var command = new Npgsql.NpgsqlCommand(sql.ToString(), connection))
 				{

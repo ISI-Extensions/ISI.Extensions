@@ -65,6 +65,10 @@ namespace ISI.Extensions.SmbFileSystem
 
 			if (showServer && !string.IsNullOrEmpty(Server))
 			{
+				if (attributedFullPathBuilder.Length == 0)
+				{
+					attributedFullPathBuilder.AppendFormat("{0}{0}", DirectorySeparator);
+				}
 				attributedFullPathBuilder.AppendFormat("{0}{1}", Server, DirectorySeparator);
 			}
 
@@ -97,7 +101,7 @@ namespace ISI.Extensions.SmbFileSystem
 			return (Directory: string.Empty, PathName: Directory);
 		}
 
-		public virtual string FullPath() => BuildAttributedFullPath(false, false, false, false, true, null, true, null);
+		public virtual string FullPath() => BuildAttributedFullPath(false, false, false, true, true, null, true, null);
 		public virtual string AttributedFullPath() => BuildAttributedFullPath(true, true, true, true, false, null, false, null);
 		public virtual string ObfuscatedAttributedFullPath(bool obfuscateUserName = true, string obfuscatedUserNameValue = null, bool obfuscatePassword = true, string obfuscatedPasswordValue = null) => BuildAttributedFullPath(true, true, true, true, obfuscateUserName, obfuscatedUserNameValue, obfuscatePassword, obfuscatedPasswordValue);
 

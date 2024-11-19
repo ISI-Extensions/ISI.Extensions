@@ -29,6 +29,7 @@ namespace ISI.Extensions
 
 			bool CanParsePath(string attributedFullName);
 
+			string Combine(string attributedFullName, string path2);
 			IFileSystemPathFile GetFileSystemPathFile(string attributedFullName);
 			IFileSystemPathDirectory GetFileSystemPathDirectory(string attributedFullName);
 

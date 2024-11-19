@@ -89,6 +89,19 @@ namespace ISI.Extensions.GoDrive.GoDriveFileSystem
 
 			return fileSystemPath;
 		}
+		
+		public override string Combine(string attributedFullName, string path2)
+		{
+			var parseAttributedFullName = ParseAttributedFullName(attributedFullName);
+
+			var directory = (string.IsNullOrWhiteSpace(parseAttributedFullName.PathName) ? parseAttributedFullName.Directory : $"{parseAttributedFullName.Directory}{DirectorySeparator}{parseAttributedFullName.PathName}");
+
+			var fileSystemPathFile = new TGoDriveFileSystemPathFile();
+
+			fileSystemPathFile.SetValues(parseAttributedFullName.Server, directory, path2);
+
+			return fileSystemPathFile.AttributedFullPath();
+		}
 
 		public override FileSystem.IFileSystemPathFile GetFileSystemPathFile(string attributedFullName)
 		{

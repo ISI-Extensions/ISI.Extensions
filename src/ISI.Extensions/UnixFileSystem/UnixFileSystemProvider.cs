@@ -39,6 +39,19 @@ namespace ISI.Extensions.UnixFileSystem
 			new(@"^(?<type>[\-dbclps])(?<ownerpermissions>[-rwxsStT]{3})(?<grouppermissions>[-rwxsStT]{3})(?<otherpermissions>[-rwxsStT]{3})\s+\d*\s+(?<owner>[\w\-\.]+)\s+(?<group>[\w\-\.]+)\s+(?<size>\d+)\s+(?<datetime>((\w+\s+\d+)|(\d{2,4}[/\-]\d{2}[/\-]\d{2,4}))\s+\d{1,2}:\d{2}(\s*[AP]M)?)\s(?<filename>.+)$", System.Text.RegularExpressions.RegexOptions.IgnoreCase)
 		];
 
+		public override string Combine(string attributedFullName, string path2)
+		{
+			var fileSystemPath = ParseAttributedFullName(attributedFullName);
+
+			var directory = (string.IsNullOrWhiteSpace(fileSystemPath.PathName) ? fileSystemPath.Directory : $"{fileSystemPath.Directory}{DirectorySeparator}{fileSystemPath.PathName}");
+
+			IUnixFileSystemPathDirectory fileSystemPathDirectory = new TUnixFileSystemPathDirectory();
+
+			fileSystemPathDirectory.SetValues(fileSystemPath.Server, fileSystemPath.UserName, fileSystemPath.Password, directory, path2);
+
+			return fileSystemPathDirectory.AttributedFullPath();
+		}
+
 		public FileSystem.IFileSystemPath ParseFileSystemRecord(FileSystem.IFileSystemPathDirectory fileSystemPathDirectory, string fileSystemRecord)
 		{
 			FileSystem.IFileSystemPath fileSystemPath = null;

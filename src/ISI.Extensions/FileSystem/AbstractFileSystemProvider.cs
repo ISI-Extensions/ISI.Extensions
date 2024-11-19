@@ -35,6 +35,8 @@ namespace ISI.Extensions
 
 			public virtual bool CanParsePath(string attributedFullName) => AttributedPathRegex.Match(attributedFullName).Success;
 
+			public abstract string Combine(string attributedFullName, string path2);
+
 			public abstract IFileSystemPathFile GetFileSystemPathFile(string attributedFullName);
 			public abstract IFileSystemPathDirectory GetFileSystemPathDirectory(string attributedFullName);
 

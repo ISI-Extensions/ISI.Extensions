@@ -96,6 +96,20 @@ namespace ISI.Extensions.SmbFileSystem
 			return fileSystemPath;
 		}
 
+
+		public override string Combine(string attributedFullName, string path2)
+		{
+			var fileSystemPath = ParseAttributedFullName(attributedFullName);
+
+			var directory = (string.IsNullOrWhiteSpace(fileSystemPath.PathName) ? fileSystemPath.Directory : $"{fileSystemPath.Directory}{DirectorySeparator}{fileSystemPath.PathName}");
+
+			ISmbFileSystemPathDirectory fileSystemPathDirectory = new SmbFileSystemPathDirectory();
+
+			fileSystemPathDirectory.SetValues(fileSystemPath.Drive, fileSystemPath.Server, fileSystemPath.UserName, fileSystemPath.Password, directory, path2);
+
+			return fileSystemPathDirectory.AttributedFullPath();
+		}
+
 		public override FileSystem.IFileSystemPathFile GetFileSystemPathFile(string attributedFullName)
 		{
 			var parseAttributedFullName = ParseAttributedFullName(attributedFullName);

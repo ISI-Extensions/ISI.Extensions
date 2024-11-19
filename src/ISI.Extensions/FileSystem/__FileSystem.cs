@@ -98,6 +98,7 @@ namespace ISI.Extensions
 			return response;
 		}
 
+		public static string Combine(string attributedFullName, string path2) => GetFileSystemProvider(attributedFullName).Combine(attributedFullName, path2);
 		public static IFileSystemPathFile GetFileSystemPathFile(string attributedFullName) => GetFileSystemProvider(attributedFullName).GetFileSystemPathFile(attributedFullName);
 		public static IFileSystemPathDirectory GetFileSystemPathDirectory(string attributedFullName) => GetFileSystemProvider(attributedFullName).GetFileSystemPathDirectory(attributedFullName);
 

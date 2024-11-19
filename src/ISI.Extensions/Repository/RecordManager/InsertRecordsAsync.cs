@@ -36,7 +36,7 @@ namespace ISI.Extensions.Repository
 		{
 			var insertedRecords = new List<TRecord>();
 
-			await foreach (var insertedRecord in  InsertRecordsAsync(new[] { record }, cancellationToken))
+			await foreach (var insertedRecord in  InsertRecordsAsync([record], cancellationToken))
 			{
 				insertedRecords.Add(insertedRecord);
 			}

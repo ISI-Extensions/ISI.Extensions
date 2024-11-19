@@ -127,11 +127,10 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 			sql.Clear();
 			sql.Append("SELECT COUNT(1) FROM pg_tables WHERE schemaname = @SchemaName AND tablename = @TableName\n");
-			var tableExists = connection.ExecuteScalarAsync<int>(sql.ToString(), new[]
-			{
+			var tableExists = connection.ExecuteScalarAsync<int>(sql.ToString(), [
 				new KeyValuePair<string, object>("SchemaName", Schema),
-				new KeyValuePair<string, object>("TableName", TableName),
-			}).GetAwaiter().GetResult() != 0;
+				new KeyValuePair<string, object>("TableName", TableName)
+			]).GetAwaiter().GetResult() != 0;
 
 			sql.Clear();
 
@@ -216,11 +215,10 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 			sql.Clear();
 			sql.Append("SELECT COUNT(1) FROM pg_tables WHERE schemaname = @SchemaName AND tablename = @TableName\n");
-			var tableExists = connection.ExecuteScalarAsync<int>(sql.ToString(), new[]
-			{
+			var tableExists = connection.ExecuteScalarAsync<int>(sql.ToString(), [
 				new KeyValuePair<string, object>("SchemaName", Schema),
-				new KeyValuePair<string, object>("TableName", string.Format("{0}{1}", TableName, ArchiveTableSuffix)),
-			}).GetAwaiter().GetResult() != 0;
+				new KeyValuePair<string, object>("TableName", string.Format("{0}{1}", TableName, ArchiveTableSuffix))
+			]).GetAwaiter().GetResult() != 0;
 
 			sql.Clear();
 

@@ -116,7 +116,7 @@ namespace ISI.Extensions.Nuget
 
 									packagesPath = packagesPath.TrimStart("\\");
 
-									hintPathPieces = hintPathPieces.First().Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries).Reverse().ToList();
+									hintPathPieces = hintPathPieces.First().Split(['.'], StringSplitOptions.RemoveEmptyEntries).Reverse().ToList();
 
 									var inVersion = true;
 									while (hintPathPieces.Any())
@@ -139,7 +139,7 @@ namespace ISI.Extensions.Nuget
 									packageId = packageId.TrimEnd('.');
 									if (string.IsNullOrWhiteSpace(packageId))
 									{
-										packageId = packageAttribute.Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).First();
+										packageId = packageAttribute.Value.Split([','], StringSplitOptions.RemoveEmptyEntries).First();
 									}
 
 									packageVersion = packageVersion.TrimEnd('.');
@@ -150,7 +150,7 @@ namespace ISI.Extensions.Nuget
 
 										if (!string.IsNullOrWhiteSpace(hintPath))
 										{
-											packageAttribute.Value = packageAttribute.Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).First();
+											packageAttribute.Value = packageAttribute.Value.Split([','], StringSplitOptions.RemoveEmptyEntries).First();
 											hintPathAttribute.Value = string.Format("{0}\\{1}", packagesPath, hintPath);
 										}
 									}

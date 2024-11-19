@@ -31,10 +31,10 @@ namespace ISI.Extensions.Caching.MessageBus
 		{
 			configuration ??= new();
 
-			return new[]
-			{
+			return
+			[
 				EnterpriseCacheManagerApi.GetAddSubscriptions(configuration)
-			};
+			];
 		}
 	}
 }

@@ -57,9 +57,9 @@ namespace ISI.Extensions.Nuget
 			{
 				var nugetPackageKeys = new List<NugetPackageKey>();
 
-				foreach (var line in nugetResponse.Output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+				foreach (var line in nugetResponse.Output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries))
 				{
-					var linePieces = line.Split(new[] { ' ', '|', '\t' }, StringSplitOptions.RemoveEmptyEntries).Select(value => value.Trim()).Where(value => !string.IsNullOrWhiteSpace(value)).ToArray();
+					var linePieces = line.Split([' ', '|', '\t'], StringSplitOptions.RemoveEmptyEntries).Select(value => value.Trim()).Where(value => !string.IsNullOrWhiteSpace(value)).ToArray();
 
 					if (linePieces.Length >= 3)
 					{

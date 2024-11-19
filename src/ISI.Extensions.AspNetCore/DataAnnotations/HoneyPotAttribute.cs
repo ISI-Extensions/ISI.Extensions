@@ -42,10 +42,10 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 		{
 			if (!IsValid(context.Model))
 			{
-				return new[] { new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage) };
+				return [new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage)];
 			}
 
-			return Enumerable.Empty<Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult>();
+			return [];
 		}
 
 		public override bool IsValid(object value)

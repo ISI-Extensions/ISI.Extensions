@@ -27,18 +27,21 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi
 
 		public bool DoNotXmlTransformConfigs { get; set; }
 
-		public List<string> ExcludeFiles { get; set; } = new(new[]
-		{
-			"*.xml",
-			"T4LocalContent",
-			"T4CMS",
-			"*.licenseheader",
-			"*.vshost.exe",
-			"*.vshost.exe.*",
-			"Dockerfile",
-			"*Manifests.lst",
-			"appsettings.Development.json",
-		});
+		public List<string> ExcludeFiles { get; set; } =
+		[
+			..new[]
+			{
+				"*.xml",
+				"T4LocalContent",
+				"T4CMS",
+				"*.licenseheader",
+				"*.vshost.exe",
+				"*.vshost.exe.*",
+				"Dockerfile",
+				"*Manifests.lst",
+				"appsettings.Development.json",
+			}
+		];
 
 		public AfterBuildPackageComponentDelegate AfterBuildPackageComponent { get; set; } = null;
 	}

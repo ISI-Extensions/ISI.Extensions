@@ -25,8 +25,8 @@ namespace ISI.Extensions
 	{
 		public partial class Path
 		{
-			private static IEnumerable<FileNameMask> DefaultFileNameMasks => new FileNameMask[]
-			{
+			private static IEnumerable<FileNameMask> DefaultFileNameMasks =>
+			[
 				new(string.Format("{{{0}", FileNameMask.FilePrefix), FileNameMask.FileNameMaskType.KeyValue, "file", "file retrieval"),
 				new(string.Format("{{{0}", FileNameMask.FirstExistingDirectoryPrefix), FileNameMask.FileNameMaskType.FirstExistingDirectory, "firstExistingDirectory", "First Existing Directory"),
 				new("{YYYYMMDD}", FileNameMask.FileNameMaskType.DateTimeMask, "yyyyMMdd", "Date Stamp: Year Month Day"),
@@ -47,8 +47,8 @@ namespace ISI.Extensions
 				new("{DataRoot}", FileNameMask.FileNameMaskType.StringReplacement, ISI.Extensions.IO.Path.DataRoot, "DataRoot Directory"),
 				new("{MachineName}", FileNameMask.FileNameMaskType.StringReplacement, System.Environment.MachineName.ToLower(), "MachineName"),
 				new("{LocalApplicationData}", FileNameMask.FileNameMaskType.StringReplacement, () => System.Environment.GetEnvironmentVariable("LOCALAPPDATA"), "LocalApplicationData"),
-				new("{ApplicationData}", FileNameMask.FileNameMaskType.StringReplacement, () => System.Environment.GetEnvironmentVariable("APPDATA"), "ApplicationData"),
-			};
+				new("{ApplicationData}", FileNameMask.FileNameMaskType.StringReplacement, () => System.Environment.GetEnvironmentVariable("APPDATA"), "ApplicationData")
+			];
 
 			public static string GetFileNameDeMasked(string fileName, ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper = null)
 			{

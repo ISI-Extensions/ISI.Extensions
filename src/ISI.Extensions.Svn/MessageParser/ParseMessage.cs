@@ -33,7 +33,7 @@ namespace ISI.Extensions.Svn
 			{
 				bool mightBeJiraTicket(string key)
 				{
-					var pieces = key.Split(new[] {'-'}, StringSplitOptions.RemoveEmptyEntries);
+					var pieces = key.Split(['-'], StringSplitOptions.RemoveEmptyEntries);
 
 					if ((pieces.Length == 2) && (pieces[1].ToInt() > 0) && (pieces[0].Length <= 4) && string.Equals(pieces[0], pieces[0].ToUpper(), StringComparison.Ordinal))
 					{
@@ -51,7 +51,7 @@ namespace ISI.Extensions.Svn
 				var parsedMessages = new List<DTOs.ParsedMessage>();
 				parsedMessages.Add(parsedMessage);
 
-				var words = new Queue<string>(message.Replace("(", " (").Replace("#", " #").Split(new[] { ' ', ':', '\n', '\r', '\t' }, StringSplitOptions.RemoveEmptyEntries));
+				var words = new Queue<string>(message.Replace("(", " (").Replace("#", " #").Split([' ', ':', '\n', '\r', '\t'], StringSplitOptions.RemoveEmptyEntries));
 
 				string cleanTicketNumber(string ticketNumber) => ticketNumber.Trim(' ', '#', ',');
 

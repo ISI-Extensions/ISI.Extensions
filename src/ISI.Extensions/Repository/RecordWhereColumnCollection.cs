@@ -76,7 +76,7 @@ namespace ISI.Extensions.Repository
 			{
 				RecordPropertyDescription = RecordDescription.GetRecordDescription<TRecord>().PropertyDescriptionLookup[propertyInfo.Name],
 				StringComparisonOperator = comparisonOperator,
-				Values = new[] { value },
+				Values = [value],
 			});
 		}
 
@@ -90,13 +90,13 @@ namespace ISI.Extensions.Repository
 			{
 				RecordPropertyDescription = RecordDescription.GetRecordDescription<TRecord>().PropertyDescriptionLookup[propertyInfo.Name],
 				StringComparisonOperator = comparisonOperator,
-				Values = new[] { value },
+				Values = [value],
 			});
 		}
 
 		public void Add<TProperty>(Expression<Func<TRecord, TProperty>> property, WhereClauseComparisonOperator comparisonOperator, TProperty value)
 		{
-			Add<TProperty>(property, comparisonOperator, null, null, new[] { value }, false, null, null);
+			Add<TProperty>(property, comparisonOperator, null, null, [value], false, null, null);
 		}
 
 		public void Add<TProperty>(Expression<Func<TRecord, TProperty>> property, WhereClauseEqualityOperator equalityOperator, IEnumerable<TProperty> values)
@@ -122,7 +122,7 @@ namespace ISI.Extensions.Repository
 				{
 					RecordPropertyDescription = RecordDescription.GetRecordDescription<TRecord>().PropertyDescriptionLookup[propertyInfo.Name],
 					StringComparisonOperator = comparisonOperator,
-					Values = new[] { value },
+					Values = [value],
 				});
 			}
 
@@ -134,7 +134,7 @@ namespace ISI.Extensions.Repository
 
 		public void Add<TProperty>(Expression<Func<TRecord, TProperty>> property, WhereClauseEqualityOperator equalityOperator, TProperty value)
 		{
-			Add<TProperty>(property, null, equalityOperator, null, new[] { value }, false, null, null);
+			Add<TProperty>(property, null, equalityOperator, null, [value], false, null, null);
 		}
 
 		//Note: Between operator is totally for code readability
@@ -148,7 +148,7 @@ namespace ISI.Extensions.Repository
 		{
 			if (value.HasValue)
 			{
-				Add<TProperty>(property, null, equalityOperator, null, new[] { value.Value }, false, null, null);
+				Add<TProperty>(property, null, equalityOperator, null, [value.Value], false, null, null);
 			}
 			else
 			{
@@ -161,7 +161,7 @@ namespace ISI.Extensions.Repository
 		{
 			if (value.HasValue)
 			{
-				Add<TProperty>(property, null, equalityOperator, null, new[] { value.Value }, false, null, null);
+				Add<TProperty>(property, null, equalityOperator, null, [value.Value], false, null, null);
 			}
 			else
 			{

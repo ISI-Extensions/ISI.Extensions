@@ -31,7 +31,7 @@ namespace ISI.Extensions
 			var methodInfo = @enum.GetType().GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public)
 				.First(methodInfo => string.Equals(methodInfo.Name, nameof(Enum.IEnum.ParseUuid), StringComparison.InvariantCultureIgnoreCase) && methodInfo.GetParameters()[0].ParameterType == typeof(string));
 
-			return methodInfo?.Invoke(@enum, new object[] { value, Activator.CreateInstance(enumType) });
+			return methodInfo?.Invoke(@enum, [value, Activator.CreateInstance(enumType)]);
 		}
 
 		public static object ParseUuid(Type enumType, Guid value)
@@ -41,7 +41,7 @@ namespace ISI.Extensions
 			var methodInfo = @enum.GetType().GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public)
 				.First(methodInfo => string.Equals(methodInfo.Name, nameof(Enum.IEnum.ParseUuid), StringComparison.InvariantCultureIgnoreCase) && methodInfo.GetParameters()[0].ParameterType == typeof(Guid));
 
-			return methodInfo?.Invoke(@enum, new object[] { value, Activator.CreateInstance(enumType) });
+			return methodInfo?.Invoke(@enum, [value, Activator.CreateInstance(enumType)]);
 		}
 
 		public static object ParseUuid(Type enumType, Guid? value)
@@ -51,7 +51,7 @@ namespace ISI.Extensions
 			var methodInfo = @enum.GetType().GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public)
 				.First(methodInfo => string.Equals(methodInfo.Name, nameof(Enum.IEnum.ParseUuid), StringComparison.InvariantCultureIgnoreCase) && methodInfo.GetParameters()[0].ParameterType == typeof(Guid?));
 
-			return methodInfo?.Invoke(@enum, new object[] { value, Activator.CreateInstance(enumType) });
+			return methodInfo?.Invoke(@enum, [value, Activator.CreateInstance(enumType)]);
 		}
 	}
 }

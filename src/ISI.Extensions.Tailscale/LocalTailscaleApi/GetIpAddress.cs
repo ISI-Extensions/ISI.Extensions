@@ -33,7 +33,7 @@ namespace ISI.Extensions.Tailscale
 			
 			var getIpAddressResponse = ISI.Extensions.Process.WaitForProcessResponse("tailscale", "ip", "-4");
 
-			response.IpAddress = (getIpAddressResponse.Output ?? string.Empty).Split(new[] { '\r', '\n', ' ' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+			response.IpAddress = (getIpAddressResponse.Output ?? string.Empty).Split(['\r', '\n', ' '], StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
 
 			return response;
 		}

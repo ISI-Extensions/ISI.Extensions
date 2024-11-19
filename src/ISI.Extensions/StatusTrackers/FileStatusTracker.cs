@@ -212,8 +212,8 @@ namespace ISI.Extensions.StatusTrackers
 						if (System.IO.File.Exists(fileName))
 						{
 							logEntries = System.IO.File.ReadAllText(fileName)
-								.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-								.Select(l => l.Split(new[] { '\t' }, 2)).
+								.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries)
+								.Select(l => l.Split(['\t'], 2)).
 								Select(logParts => new StatusTrackerLogEntry()
 								{
 									DateTimeStamp = logParts[0].ToDateTime(),
@@ -241,7 +241,7 @@ namespace ISI.Extensions.StatusTrackers
 				}
 			}
 
-			private readonly List<IStatusTrackerLogEntry> _logEntries = new();
+			private readonly List<IStatusTrackerLogEntry> _logEntries = [];
 
 			public void AddToLog(System.Exception exception)
 			{
@@ -270,15 +270,14 @@ namespace ISI.Extensions.StatusTrackers
 
 			public void AddToLog(DateTime dateTimeStamp, LogEntryLevel logEntryLevel, string logEntry)
 			{
-				AddToLog(new IStatusTrackerLogEntry[]
-				{
+				AddToLog([
 					new ISI.Extensions.StatusTrackers.StatusTrackerLogEntry()
 					{
 						DateTimeStamp = dateTimeStamp,
 						LogEntryLevel = logEntryLevel,
 						Description = logEntry.TrimEnd(' ', '\r', '\n'),
 					}
-				});
+				]);
 			}
 
 			public void AddToLog(IEnumerable<IStatusTrackerLogEntry> logEntries)

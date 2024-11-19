@@ -41,7 +41,7 @@ namespace ISI.Extensions.DependencyInjection
 
 				if (injections == null)
 				{
-					injections = new InjectionParameter[] { };
+					injections = [];
 				}
 				else
 				{
@@ -67,7 +67,7 @@ namespace ISI.Extensions.DependencyInjection
 
 						if (injection == null)
 						{
-							parameters.Add(System.Linq.Expressions.Expression.Call(serviceProvider, nameof(IServiceProvider.GetService), new Type[] { parameter.ParameterType }, System.Linq.Expressions.Expression.Constant(null, typeof(string)), System.Linq.Expressions.Expression.Constant(true, typeof(bool)), System.Linq.Expressions.Expression.Constant(null, typeof(Func<ISI.Extensions.DependencyInjection.IRegistrationDeclaration>))));
+							parameters.Add(System.Linq.Expressions.Expression.Call(serviceProvider, nameof(IServiceProvider.GetService), [parameter.ParameterType], System.Linq.Expressions.Expression.Constant(null, typeof(string)), System.Linq.Expressions.Expression.Constant(true, typeof(bool)), System.Linq.Expressions.Expression.Constant(null, typeof(Func<ISI.Extensions.DependencyInjection.IRegistrationDeclaration>))));
 						}
 						else
 						{
@@ -75,11 +75,11 @@ namespace ISI.Extensions.DependencyInjection
 							{
 								if (string.IsNullOrWhiteSpace(injection.ResolverName))
 								{
-									parameters.Add(System.Linq.Expressions.Expression.Call(serviceProvider, nameof(IServiceProvider.GetService), new Type[] { injection.ServiceType ?? parameter.ParameterType }, System.Linq.Expressions.Expression.Constant(null, typeof(string)), System.Linq.Expressions.Expression.Constant(true, typeof(bool)), System.Linq.Expressions.Expression.Constant(null, typeof(Func<ISI.Extensions.DependencyInjection.IRegistrationDeclaration>))));
+									parameters.Add(System.Linq.Expressions.Expression.Call(serviceProvider, nameof(IServiceProvider.GetService), [injection.ServiceType ?? parameter.ParameterType], System.Linq.Expressions.Expression.Constant(null, typeof(string)), System.Linq.Expressions.Expression.Constant(true, typeof(bool)), System.Linq.Expressions.Expression.Constant(null, typeof(Func<ISI.Extensions.DependencyInjection.IRegistrationDeclaration>))));
 								}
 								else
 								{
-									parameters.Add(System.Linq.Expressions.Expression.Call(serviceProvider, nameof(IServiceProvider.GetService), new Type[] { injection.ServiceType ?? parameter.ParameterType }, System.Linq.Expressions.Expression.Constant(injection.ResolverName), System.Linq.Expressions.Expression.Constant(true, typeof(bool)), System.Linq.Expressions.Expression.Constant(null, typeof(Func<ISI.Extensions.DependencyInjection.IRegistrationDeclaration>))));
+									parameters.Add(System.Linq.Expressions.Expression.Call(serviceProvider, nameof(IServiceProvider.GetService), [injection.ServiceType ?? parameter.ParameterType], System.Linq.Expressions.Expression.Constant(injection.ResolverName), System.Linq.Expressions.Expression.Constant(true, typeof(bool)), System.Linq.Expressions.Expression.Constant(null, typeof(Func<ISI.Extensions.DependencyInjection.IRegistrationDeclaration>))));
 								}
 							}
 							else
@@ -139,7 +139,7 @@ namespace ISI.Extensions.DependencyInjection
 
 				expressions.AddRange(BuildUp(serviceProvider, instance, injections));
 
-				var buildUpService = System.Linq.Expressions.Expression.Block(new[] { instance }, expressions);
+				var buildUpService = System.Linq.Expressions.Expression.Block([instance], expressions);
 
 				return System.Linq.Expressions.Expression.Lambda<ISI.Extensions.DependencyInjection.BuildUpService>(buildUpService, new[] { serviceProvider, unTypedInstance }).Compile();
 			}
@@ -159,11 +159,11 @@ namespace ISI.Extensions.DependencyInjection
 				{
 					if (string.IsNullOrWhiteSpace(injection.ResolverName))
 					{
-						expressions.Add(System.Linq.Expressions.Expression.Assign(property, System.Linq.Expressions.Expression.Call(serviceProvider, nameof(IServiceProvider.GetService), new Type[] { injection.ServiceType ?? property.Type }, System.Linq.Expressions.Expression.Constant(null, typeof(string)), System.Linq.Expressions.Expression.Constant(true, typeof(bool)), System.Linq.Expressions.Expression.Constant(null, typeof(Func<ISI.Extensions.DependencyInjection.IRegistrationDeclaration>)))));
+						expressions.Add(System.Linq.Expressions.Expression.Assign(property, System.Linq.Expressions.Expression.Call(serviceProvider, nameof(IServiceProvider.GetService), [injection.ServiceType ?? property.Type], System.Linq.Expressions.Expression.Constant(null, typeof(string)), System.Linq.Expressions.Expression.Constant(true, typeof(bool)), System.Linq.Expressions.Expression.Constant(null, typeof(Func<ISI.Extensions.DependencyInjection.IRegistrationDeclaration>)))));
 					}
 					else
 					{
-						expressions.Add(System.Linq.Expressions.Expression.Assign(property, System.Linq.Expressions.Expression.Call(serviceProvider, nameof(IServiceProvider.GetService), new Type[] { injection.ServiceType ?? property.Type }, System.Linq.Expressions.Expression.Constant(injection.ResolverName), System.Linq.Expressions.Expression.Constant(true, typeof(bool)), System.Linq.Expressions.Expression.Constant(null, typeof(Func<ISI.Extensions.DependencyInjection.IRegistrationDeclaration>)))));
+						expressions.Add(System.Linq.Expressions.Expression.Assign(property, System.Linq.Expressions.Expression.Call(serviceProvider, nameof(IServiceProvider.GetService), [injection.ServiceType ?? property.Type], System.Linq.Expressions.Expression.Constant(injection.ResolverName), System.Linq.Expressions.Expression.Constant(true, typeof(bool)), System.Linq.Expressions.Expression.Constant(null, typeof(Func<ISI.Extensions.DependencyInjection.IRegistrationDeclaration>)))));
 					}
 				}
 				else

@@ -38,7 +38,7 @@ namespace ISI.Extensions
 
 				lines.RemoveAll(string.IsNullOrWhiteSpace);
 
-				foreach (var keyValue in lines.Select(line => line.Split(new[] { ':', '\t' }, 2)))
+				foreach (var keyValue in lines.Select(line => line.Split([':', '\t'], 2)))
 				{
 					var key = keyValue.First().Trim();
 

@@ -42,7 +42,7 @@ namespace ISI.Extensions.VisualStudioCode
 				ISI.Extensions.Process.ExecuteShell(new Process.ExecuteShellRequest()
 				{
 					ProcessExeFullName = "quasar",
-					Arguments = new[] { "dev" },
+					Arguments = ["dev"],
 					WorkingDirectory = sourceDirectory,
 				});
 			}

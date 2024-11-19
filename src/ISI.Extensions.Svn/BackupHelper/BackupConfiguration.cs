@@ -68,10 +68,10 @@ namespace ISI.Extensions.Svn
 				System.IO.File.Copy(permissionsFileName, permissionsBackupFullName);
 
 				response.BackupDirectoryFullName = request.BackupDirectoryFullName;
-				response.BackupFullNames = new[]
-				{
-					permissionsBackupFullName,
-				};
+				response.BackupFullNames =
+				[
+					permissionsBackupFullName
+				];
 			}
 
 			if (request.ModifiedConfigurationOnly && doBackup)

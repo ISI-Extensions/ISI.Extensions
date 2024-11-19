@@ -80,7 +80,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 
 			public StylesheetContentUrl(string url)
 			{
-				var urlPieces = url.Split(new[] { "\t" }, StringSplitOptions.None);
+				var urlPieces = url.Split(["\t"], StringSplitOptions.None);
 
 				if (urlPieces.Length > 1)
 				{

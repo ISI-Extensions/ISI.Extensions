@@ -75,7 +75,7 @@ namespace ISI.Extensions.Ebcdic
 				Tuple<string, long> signedTranlationHelper;
 				if (_signedTranlationHelpers.TryGetValue(lastChar, out signedTranlationHelper))
 				{
-					ascii = ascii.Replace(new(new[] {lastChar}), signedTranlationHelper.Item1);
+					ascii = ascii.Replace(new([lastChar]), signedTranlationHelper.Item1);
 					var result = ascii.ToLongNullable();
 					return (result.HasValue ? result.Value*signedTranlationHelper.Item2 : result);
 

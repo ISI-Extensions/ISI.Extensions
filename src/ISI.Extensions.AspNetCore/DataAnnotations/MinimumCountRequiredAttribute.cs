@@ -77,10 +77,10 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 
 			if (fieldCount < MinimumCountRequired)
 			{
-				return new[] { new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage) };
+				return [new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage)];
 			}
 
-			return Enumerable.Empty<Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult>();
+			return [];
 		}
 	}
 }

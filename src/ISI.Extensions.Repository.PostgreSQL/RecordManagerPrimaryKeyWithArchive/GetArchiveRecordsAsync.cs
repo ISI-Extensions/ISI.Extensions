@@ -41,7 +41,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 		public virtual async IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> GetArchiveRecordsAsync(TRecordPrimaryKey primaryKeyValue, DateTime? minArchiveDateTime, DateTime? maxArchiveDateTime, int skip = 0, int take = -1, System.Threading.CancellationToken cancellationToken = default)
 		{
-			await foreach (var record in GetArchiveRecordsAsync(new[] { primaryKeyValue }, minArchiveDateTime, maxArchiveDateTime, skip, take, cancellationToken))
+			await foreach (var record in GetArchiveRecordsAsync([primaryKeyValue], minArchiveDateTime, maxArchiveDateTime, skip, take, cancellationToken))
 			{
 				yield return record;
 			}

@@ -184,10 +184,10 @@ namespace ISI.Extensions.Tests.Caching
 		{
 			ISI.Extensions.Caching.GenerateCacheKey<Guid> getCacheKey = key => string.Format("CacheKey:{0}", key.Formatted(GuidExtensions.GuidFormat.WithHyphens));
 			ISI.Extensions.Caching.GenerateCacheKey<CacheKeyProxyTestObject> getForeignCacheKey = item => string.Format("ForeignCacheKey:{0}", item.Description);
-			ISI.Extensions.Caching.GenerateCacheKeys<CacheKeyProxyTestObject> getForeignCacheKeys = item => new[]
-			{
+			ISI.Extensions.Caching.GenerateCacheKeys<CacheKeyProxyTestObject> getForeignCacheKeys = item =>
+			[
 				getForeignCacheKey(item)
-			};
+			];
 
 			var testItem = new CacheKeyProxyTestObject()
 			{

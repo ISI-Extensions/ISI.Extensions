@@ -44,10 +44,9 @@ namespace ISI.Extensions.Security.ActiveDirectory
 
 					try
 					{
-						var ldapSearchResults = ldapConnection.Search($"CN=Users,{defaultNamingContext}", Novell.Directory.Ldap.LdapConnection.ScopeOne, "(&(objectCategory=Group))", new[]
-						{
-							UserPropertyKey.NameKey,
-						}, false);
+						var ldapSearchResults = ldapConnection.Search($"CN=Users,{defaultNamingContext}", Novell.Directory.Ldap.LdapConnection.ScopeOne, "(&(objectCategory=Group))", [
+							UserPropertyKey.NameKey
+						], false);
 
 						foreach (var ldapSearchResult in ldapSearchResults)
 						{

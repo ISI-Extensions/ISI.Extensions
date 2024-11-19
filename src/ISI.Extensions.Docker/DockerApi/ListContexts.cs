@@ -44,7 +44,7 @@ namespace ISI.Extensions.Docker
 				Arguments = arguments.ToArray(),
 			}).Output;
 
-			var contentItems = new Queue<string>(content.Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries));
+			var contentItems = new Queue<string>(content.Split(["\r", "\n"], StringSplitOptions.RemoveEmptyEntries));
 
 			var contexts = new List<DockerContext>();
 

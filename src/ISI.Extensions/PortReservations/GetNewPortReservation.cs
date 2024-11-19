@@ -51,7 +51,7 @@ namespace ISI.Extensions
 			}
 			else
 			{
-				portReservations.Add(reservationName, new[] { port });
+				portReservations.Add(reservationName, [port]);
 			}
 
 			SetPortReservations(portReservations, portReservationsFullName);

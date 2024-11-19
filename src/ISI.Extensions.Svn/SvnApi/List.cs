@@ -62,7 +62,7 @@ namespace ISI.Extensions.Svn
 					Arguments = arguments.ToArray(),
 				}).Output;
 
-				response.FileNames = content.Split(new[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+				response.FileNames = content.Split(["\r", "\n"], StringSplitOptions.RemoveEmptyEntries);
 			}
 
 			return response;

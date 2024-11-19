@@ -28,7 +28,7 @@ namespace ISI.Extensions.VisualStudio
 	{
 		private string GetAssemblyVersion(string assemblyVersion, string buildRevision = null)
 		{
-			var assemblyVersionPieces = assemblyVersion.Split(new [] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+			var assemblyVersionPieces = assemblyVersion.Split(['.'], StringSplitOptions.RemoveEmptyEntries);
 			assemblyVersion = string.Format("{0}.{1}.*", assemblyVersionPieces[0], assemblyVersionPieces[1]);
 
 			if (string.IsNullOrWhiteSpace(buildRevision))

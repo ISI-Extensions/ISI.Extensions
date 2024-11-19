@@ -30,7 +30,7 @@ namespace ISI.Extensions
 
 			var methodInfo = @enum.GetType().GetMethod(nameof(Enum.IEnum.GetAbbreviation), System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
 
-			return methodInfo?.Invoke(@enum, new object[] { value }) as string;
+			return methodInfo?.Invoke(@enum, [value]) as string;
 		}
 	}
 }

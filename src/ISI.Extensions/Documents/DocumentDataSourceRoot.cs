@@ -56,7 +56,7 @@ namespace ISI.Extensions.Documents
 		{
 		}
 		public DocumentDataSourceRoot(string modelsTableName, TModel model, IDictionary<Type, DocumentDataCreator> documentDataCreatorsByType = null)
-			: this(modelsTableName, new[] { model }, documentDataCreatorsByType)
+			: this(modelsTableName, [model], documentDataCreatorsByType)
 		{
 		}
 		public DocumentDataSourceRoot(TModel model, IDictionary<Type, DocumentDataCreator> documentDataCreatorsByType = null)
@@ -66,10 +66,10 @@ namespace ISI.Extensions.Documents
 
 		protected override IEnumerable<KeyValuePair<string, Func<object, IDocumentDataSource>>> GetDocumentDataCreatorsByTableName()
 		{
-			return new[]
-			{
-				new KeyValuePair<string, Func<object, IDocumentDataSource>>(ModelsTableName, model => new DocumentDataSource<TModel>(ModelsTableName, Models, DocumentDataCreatorsByType)),
-			};
+			return
+			[
+				new KeyValuePair<string, Func<object, IDocumentDataSource>>(ModelsTableName, model => new DocumentDataSource<TModel>(ModelsTableName, Models, DocumentDataCreatorsByType))
+			];
 		}
 
 		protected override IEnumerable<KeyValuePair<string, Func<object, ISI.Extensions.Documents.IDocumentDataValue>>> GetValueGettersByFieldName()

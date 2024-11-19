@@ -54,7 +54,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 		public ProjectKey(string projectKey)
 		{
-			var pieces = projectKey.Split(new[] { Delimiter }, StringSplitOptions.None).Select(piece => piece.Trim()).ToArray();
+			var pieces = projectKey.Split([Delimiter], StringSplitOptions.None).Select(piece => piece.Trim()).ToArray();
 
 			SolutionFullName = pieces[0].Trim();
 			ProjectFullName = pieces[1].Trim();

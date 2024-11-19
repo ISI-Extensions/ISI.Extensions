@@ -49,7 +49,7 @@ namespace ISI.Extensions.Jira
 			response.Skip = jiraResponse.Skip;
 			response.Take = jiraResponse.Take;
 			response.Total = jiraResponse.Total;
-			response.Worklogs = (jiraResponse.Worklogs.ToNullCheckedArray(x => x?.Export(), NullCheckCollectionResult.ReturnNull) ?? new[] { jiraResponse?.Export() }).Where(workLog => workLog != null).ToArray();
+			response.Worklogs = (jiraResponse.Worklogs.ToNullCheckedArray(x => x?.Export(), NullCheckCollectionResult.ReturnNull) ?? [jiraResponse?.Export()]).Where(workLog => workLog != null).ToArray();
 
 			return response;
 		}

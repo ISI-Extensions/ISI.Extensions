@@ -58,7 +58,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 					}
 					else
 					{
-						var hostParts = forwardedHost.Split(new[] { ':' }, 2);
+						var hostParts = forwardedHost.Split([':'], 2);
 
 						host = hostParts.First();
 
@@ -98,7 +98,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 					}
 					else
 					{
-						var hostParts = overRideHost.Split(new[] { ':' }, 2);
+						var hostParts = overRideHost.Split([':'], 2);
 
 						host = hostParts.First();
 

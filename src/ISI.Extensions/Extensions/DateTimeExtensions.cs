@@ -70,8 +70,7 @@ namespace ISI.Extensions.Extensions
 			WeekDayName = 9
 		}
 
-		private static readonly IDictionary<DateTimeFormat, string> _dateFormats = new System.Collections.Concurrent.ConcurrentDictionary<DateTimeFormat, string>(new[]
-		{
+		private static readonly IDictionary<DateTimeFormat, string> _dateFormats = new System.Collections.Concurrent.ConcurrentDictionary<DateTimeFormat, string>([
 			new KeyValuePair<DateTimeFormat, string>(DateTimeFormat.DateTime, FormatDateTime),
 			new KeyValuePair<DateTimeFormat, string>(DateTimeFormat.DateTimeStandard, FormatDateTimeStandard),
 			new KeyValuePair<DateTimeFormat, string>(DateTimeFormat.DateTimeShort, FormatDateTimeShort),
@@ -89,8 +88,8 @@ namespace ISI.Extensions.Extensions
 			new KeyValuePair<DateTimeFormat, string>(DateTimeFormat.TimeSortable, FormatTimeSortable),
 			new KeyValuePair<DateTimeFormat, string>(DateTimeFormat.TimeSortablePrecise, FormatTimeSortablePrecise),
 			new KeyValuePair<DateTimeFormat, string>(DateTimeFormat.YearMonthDay, FormatYearMonthDay),
-			new KeyValuePair<DateTimeFormat, string>(DateTimeFormat.WeekDayName, FormatWeekDayName),
-		});
+			new KeyValuePair<DateTimeFormat, string>(DateTimeFormat.WeekDayName, FormatWeekDayName)
+		]);
 
 		private static DateTime ToDateTimeUtc(this DateTime dateTime)
 		{

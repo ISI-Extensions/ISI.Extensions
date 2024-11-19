@@ -25,7 +25,7 @@ namespace ISI.Extensions.Repository.Extensions
 	{
 		public static string GetValue(this System.Data.Common.DbConnectionStringBuilder dbConnectionStringBuilder, string key, bool removeWhenFound = false)
 		{
-			return GetValue(dbConnectionStringBuilder, new[] { key }, removeWhenFound);
+			return GetValue(dbConnectionStringBuilder, [key], removeWhenFound);
 		}
 
 		public static string GetValue(this System.Data.Common.DbConnectionStringBuilder dbConnectionStringBuilder, string[] keys, bool removeWhenFound = false)
@@ -49,10 +49,10 @@ namespace ISI.Extensions.Repository.Extensions
 			return null;
 		}
 
-		public static string GetServerName(this System.Data.Common.DbConnectionStringBuilder dbConnectionStringBuilder) => GetValue(dbConnectionStringBuilder, new[] { "Data Source", "Server", "Address", "Addr", "Network Address", "Host" });
+		public static string GetServerName(this System.Data.Common.DbConnectionStringBuilder dbConnectionStringBuilder) => GetValue(dbConnectionStringBuilder, ["Data Source", "Server", "Address", "Addr", "Network Address", "Host"]);
 		public static int? GetServerPort(this System.Data.Common.DbConnectionStringBuilder dbConnectionStringBuilder) => dbConnectionStringBuilder.GetServerName()?.Split(new[] { ':' })?.LastOrDefault()?.ToIntNullable();
-		public static string GetDatabaseName(this System.Data.Common.DbConnectionStringBuilder dbConnectionStringBuilder) => GetValue(dbConnectionStringBuilder, new[] { "Database", "Initial Catalog" });
-		public static string GetUserName(this System.Data.Common.DbConnectionStringBuilder dbConnectionStringBuilder) => GetValue(dbConnectionStringBuilder, new[] { "UID", "User ID", "UserName" });
-		public static string GetPassword(this System.Data.Common.DbConnectionStringBuilder dbConnectionStringBuilder) => GetValue(dbConnectionStringBuilder, new[] { "Password", "Pwd" });
+		public static string GetDatabaseName(this System.Data.Common.DbConnectionStringBuilder dbConnectionStringBuilder) => GetValue(dbConnectionStringBuilder, ["Database", "Initial Catalog"]);
+		public static string GetUserName(this System.Data.Common.DbConnectionStringBuilder dbConnectionStringBuilder) => GetValue(dbConnectionStringBuilder, ["UID", "User ID", "UserName"]);
+		public static string GetPassword(this System.Data.Common.DbConnectionStringBuilder dbConnectionStringBuilder) => GetValue(dbConnectionStringBuilder, ["Password", "Pwd"]);
 	}
 }

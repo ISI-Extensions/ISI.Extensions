@@ -33,13 +33,13 @@ namespace ISI.Extensions.ConfigurationValueReaders
 
 			if (!string.IsNullOrWhiteSpace(Value))
 			{
-				var pieces = value.Split(new[] { ':' }, 2, StringSplitOptions.RemoveEmptyEntries);
+				var pieces = value.Split([':'], 2, StringSplitOptions.RemoveEmptyEntries);
 
 				if (pieces.Length > 1)
 				{
 					Prefix = pieces[0].Trim();
 
-					pieces = pieces[1].Split(new[] { ';' }, 2, StringSplitOptions.RemoveEmptyEntries);
+					pieces = pieces[1].Split([';'], 2, StringSplitOptions.RemoveEmptyEntries);
 
 					Key = pieces[0].Trim();
 					DefaultValue = (pieces.Length > 1 ? pieces[1].Trim() : string.Empty);

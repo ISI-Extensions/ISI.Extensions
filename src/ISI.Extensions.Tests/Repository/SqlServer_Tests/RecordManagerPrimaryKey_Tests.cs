@@ -259,8 +259,7 @@ namespace ISI.Extensions.Tests.Repository
 
 			//recordManager.InsertRecordAsync(contact).GetAwaiter().GetResult();
 
-			var testContact = recordManager.GetRecordsAsync(new[]
-			{
+			var testContact = recordManager.GetRecordsAsync([
 				//new NupkgKey()
 				//{
 				//	Package = "accumailgoldconnections.nettoolkit",
@@ -271,7 +270,7 @@ namespace ISI.Extensions.Tests.Repository
 					Package = "ISI.Extensions.VisualStudio",
 					Version = "10.0.8464.5254",
 				}
-			}).ToEnumerable().NullCheckedFirstOrDefault();
+			]).ToEnumerable().NullCheckedFirstOrDefault();
 
 			Assert.That(string.Equals(testContact.Package, "ISI.Extensions.VisualStudio", StringComparison.Ordinal));
 			Assert.That(string.Equals(testContact.Version, "10.0.8464.5254", StringComparison.Ordinal));
@@ -330,7 +329,7 @@ namespace ISI.Extensions.Tests.Repository
 
 			recordManager.InsertRecordAsync(contact).GetAwaiter().GetResult();
 
-			var testContact = recordManager.FindRecordsByFirstNameAsync(new[] { firstName }).ToEnumerable().NullCheckedFirstOrDefault();
+			var testContact = recordManager.FindRecordsByFirstNameAsync([firstName]).ToEnumerable().NullCheckedFirstOrDefault();
 
 			Assert.That(contact.ContactUuid == testContact.ContactUuid);
 

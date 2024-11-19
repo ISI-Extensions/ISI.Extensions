@@ -219,7 +219,7 @@ namespace ISI.Extensions.Tests
 				JiraApiToken = JiraApiToken,
 				ImpersonatedUser = impersonatedUser, //user must have access to above project
 				Jql = "project=CD AND status IN (Closed,Canceled,Resolved) AND attachments IS NOT EMPTY AND updatedDate < 2020-12-22",
-				Fields = new[] { "attachment" },
+				Fields = ["attachment"],
 				//Take = 1001, //1,000 is the max the API will return
 			});
 
@@ -262,7 +262,7 @@ namespace ISI.Extensions.Tests
 				JiraApiToken = JiraApiToken,
 				ImpersonatedUser = impersonatedUser, //user must have access to above project
 				Jql = "project=CD AND status IN (Closed,Canceled,Resolved) AND attachments IS NOT EMPTY AND updatedDate < 2020-12-22",
-				Fields = new[] { "attachment" },
+				Fields = ["attachment"],
 				//Take = 1001, //1,000 is the max the API will return
 			});
 
@@ -382,7 +382,7 @@ namespace ISI.Extensions.Tests
 
 				if (!string.IsNullOrWhiteSpace(revisionLine))
 				{
-					var revisionLinePieces = revisionLine.Split(new[] { '[', '|', ']' }, StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).ToArray();
+					var revisionLinePieces = revisionLine.Split(['[', '|', ']'], StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).ToArray();
 
 					var revision = revisionLinePieces[1].Trim('r');
 					var revisionUrl = revisionLinePieces[2].Trim();

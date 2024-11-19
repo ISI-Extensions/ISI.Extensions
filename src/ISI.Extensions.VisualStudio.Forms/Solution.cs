@@ -408,7 +408,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			{
 				UpdateStatus = status =>
 				{
-					setStatus((status ?? string.Empty).Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault() ?? string.Empty);
+					setStatus((status ?? string.Empty).Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries).LastOrDefault() ?? string.Empty);
 				};
 			}
 

@@ -120,10 +120,10 @@ namespace ISI.Extensions.Tests
 				Context = "isinydocker01",
 				ComposeDirectory = @"F:\ISI\Internal Projects\ISI.Docker.Recipes\isinydocker01\scmmanager",
 				RemoveVolumes = true,
-				EnvironmentFileFullNames = new []
-				{
+				EnvironmentFileFullNames =
+				[
 					@"S:\ISI.Production.env"
-				},
+				],
 				OnComposeDownStart = tryGetEnvironmentValue =>
 				{
 					if (tryGetEnvironmentValue("MESSAGE_BUS_CONNECTION_STRING", out var value))

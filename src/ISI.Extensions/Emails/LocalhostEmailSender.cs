@@ -42,7 +42,7 @@ namespace ISI.Extensions.Emails
 			return Send(new EmailMailMessage()
 			{
 				From = EmailAddress.Create(from),
-				To = new[] { EmailAddress.Create(to) as IEmailAddress, },
+				To = [EmailAddress.Create(to) as IEmailAddress],
 				Subject = subject,
 				Body = body,
 			});

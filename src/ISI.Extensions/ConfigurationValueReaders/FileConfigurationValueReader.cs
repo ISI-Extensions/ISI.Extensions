@@ -85,9 +85,9 @@ namespace ISI.Extensions.ConfigurationValueReaders
 
 							if (System.IO.File.Exists(fileName))
 							{
-								var valuesByKey = System.IO.File.ReadAllText(fileName).Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries).Select(line =>
+								var valuesByKey = System.IO.File.ReadAllText(fileName).Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries).Select(line =>
 								{
-									var pieces = line.Split(new[] {':', '\t'}, 2, StringSplitOptions.RemoveEmptyEntries);
+									var pieces = line.Split([':', '\t'], 2, StringSplitOptions.RemoveEmptyEntries);
 
 									if (pieces.Length == 1)
 									{

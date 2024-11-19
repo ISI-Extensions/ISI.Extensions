@@ -26,10 +26,10 @@ namespace ISI.Extensions.VisualStudio
 {
 	public partial class CodeGenerationApi
 	{
-		private static readonly System.Text.RegularExpressions.Regex[] _assemblyInfoRegexes = new[]
-		{
-			new System.Text.RegularExpressions.Regex(@"^\s*\[assembly: (?:System\.Reflection\.)?(?<attributeKey>.*) ?\((?<attributeValue>.*)\)", System.Text.RegularExpressions.RegexOptions.Multiline),
-		};
+		private static readonly System.Text.RegularExpressions.Regex[] _assemblyInfoRegexes =
+		[
+			new System.Text.RegularExpressions.Regex(@"^\s*\[assembly: (?:System\.Reflection\.)?(?<attributeKey>.*) ?\((?<attributeValue>.*)\)", System.Text.RegularExpressions.RegexOptions.Multiline)
+		];
 
 		public DTOs.ParseAssemblyInfoFileResponse ParseAssemblyInfoFile(DTOs.ParseAssemblyInfoFileRequest request)
 		{

@@ -62,7 +62,7 @@ namespace ISI.Extensions.Columns
 			Func<object, TProperty> transformValue,
 			Func<TRecord, string> formattedValue,
 			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer = null)
-		: this(columnName, new[] { columnName }, propertyInfo, transformValue, formattedValue, jsonSerializer)
+		: this(columnName, [columnName], propertyInfo, transformValue, formattedValue, jsonSerializer)
 		{
 		}
 
@@ -75,7 +75,7 @@ namespace ISI.Extensions.Columns
 			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer = null)
 		{
 			ColumnName = (string.IsNullOrWhiteSpace(columnName) ? propertyInfo.Name : columnName);
-			ColumnNames = (columnNames ?? new[] { propertyInfo.Name }).ToArray();
+			ColumnNames = (columnNames ?? [propertyInfo.Name]).ToArray();
 			var columnType = typeof(TProperty);
 			var isNullable = (columnType.IsGenericType && (columnType.GetGenericTypeDefinition() == typeof(Nullable<>)));
 

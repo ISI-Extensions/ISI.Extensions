@@ -84,7 +84,7 @@ namespace ISI.Extensions.Ngrok
 			{
 				NGrokLocalServiceApi.StopTunnels(new()
 				{
-					TunnelNames = new[] { tunnel.TunnelName },
+					TunnelNames = [tunnel.TunnelName],
 				});
 
 				Logger.Log(LogLevel.Information, string.Format("NGork tunnel stopped \"{0}\" => \"{1}\"", tunnel.ExternalUrl, tunnel.LocalUrl));

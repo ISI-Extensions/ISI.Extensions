@@ -35,7 +35,7 @@ namespace ISI.Extensions.VisualStudio
 			var contract = new ClassDefinition();
 			var contractProperty = new ClassPropertyDefinition();
 
-			foreach (var line in request.Definition.Replace(",", " \n").Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+			foreach (var line in request.Definition.Replace(",", " \n").Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries))
 			{
 				var match = _contractRegex.Match(line.Trim() + " ");
 
@@ -100,7 +100,7 @@ namespace ISI.Extensions.VisualStudio
 
 			if (!contract.Properties.Any() && string.IsNullOrEmpty(contract.ClassName))
 			{
-				var propertyNames = request.Definition.Split(new[] { ",", "|", "\t", "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).Where(p => !string.IsNullOrEmpty(p)).ToArray();
+				var propertyNames = request.Definition.Split([",", "|", "\t", "\r\n", "\n", "\r"], StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).Where(p => !string.IsNullOrEmpty(p)).ToArray();
 
 				var hasPropertyTypes = false; //propertyNames.All(propertyName => propertyName.IndexOf(" ", StringComparison.Ordinal) > 0);
 
@@ -129,7 +129,7 @@ namespace ISI.Extensions.VisualStudio
 
 						if (hasPropertyTypes)
 						{
-							var parsedField = new Queue<string>(propertyName.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
+							var parsedField = new Queue<string>(propertyName.Split([' '], StringSplitOptions.RemoveEmptyEntries));
 
 							contractProperty.PropertyType = parsedField.Dequeue();
 							contractProperty.PropertyName = ISI.Extensions.StringFormat.PascalCase(string.Join(" ", parsedField));

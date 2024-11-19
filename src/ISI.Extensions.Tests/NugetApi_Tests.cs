@@ -107,7 +107,7 @@ namespace ISI.Extensions.Tests
 
 			nugetApi.NupkgPush(new()
 			{
-				NupkgFullNames = new[] { nupkgFullName },
+				NupkgFullNames = [nupkgFullName],
 				NugetApiKey = settings.Nuget.ApiKey,
 				RepositoryName = settings.Nuget.RepositoryName,
 			});
@@ -166,8 +166,8 @@ namespace ISI.Extensions.Tests
 			nuspec.Title = "ISI.Extensions";
 			nuspec.Description = "ISI.Extensions";
 			nuspec.Copyright = string.Format("Copyright (c) {0}, Integrated Solutions, Inc.", DateTime.Now.Year);
-			nuspec.Authors = new[] { "Integrated Solutions, Inc." };
-			nuspec.Owners = new[] { "Integrated  Solutions, Inc." };
+			nuspec.Authors = ["Integrated Solutions, Inc."];
+			nuspec.Owners = ["Integrated  Solutions, Inc."];
 
 
 			var xxx = nugetApi.BuildNuspec(new()

@@ -33,7 +33,7 @@ namespace ISI.Extensions.GoDrive
 				index = content.IndexOf("value=\"", index);
 				if (index >= 0)
 				{
-					return content.Substring(index).Split(new[] { '\"' }, StringSplitOptions.RemoveEmptyEntries)[1];
+					return content.Substring(index).Split(['\"'], StringSplitOptions.RemoveEmptyEntries)[1];
 				}
 			}
 

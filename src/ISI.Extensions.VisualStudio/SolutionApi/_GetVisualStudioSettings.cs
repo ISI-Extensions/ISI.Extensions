@@ -49,8 +49,8 @@ namespace ISI.Extensions.VisualStudio
 			}
 
 			visualStudioSettings ??= new();
-			visualStudioSettings.DefaultExcludePathFilters ??= new[]
-			{
+			visualStudioSettings.DefaultExcludePathFilters ??=
+			[
 				".vs",
 				".git",
 				".svn",
@@ -79,8 +79,8 @@ namespace ISI.Extensions.VisualStudio
 				"ISI.Telephony",
 				"ISI.Tracing",
 				"ISI.Worker",
-				"ISI.Wrapper",
-			};
+				"ISI.Wrapper"
+			];
 
 			return visualStudioSettings;
 		}

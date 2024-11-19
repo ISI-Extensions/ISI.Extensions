@@ -74,13 +74,13 @@ namespace ISI.Extensions.Scm
 				}
 				else if (value.IndexOf("(") >= 0)
 				{
-					var pieces = string.Format("{0}(((-(-", value).Split(new[] { '(', ')', ' ', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries, p => p.Trim('-'));
+					var pieces = string.Format("{0}(((-(-", value).Split(['(', ')', ' ', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries, p => p.Trim('-'));
 					DateTimeStamp = new(pieces[1]);
 					Version = string.IsNullOrWhiteSpace(pieces[0]) ? null : new Version(pieces[0]);
 				}
 				else
 				{
-					var pieces = string.Format("{0}||||-|-", value).Split(new[] { '|', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries, p => p.Trim('-'));
+					var pieces = string.Format("{0}||||-|-", value).Split(['|', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries, p => p.Trim('-'));
 					DateTimeStamp = new(pieces[0]);
 					Version = string.IsNullOrWhiteSpace(pieces[1]) ? null : new Version(pieces[1]);
 				}

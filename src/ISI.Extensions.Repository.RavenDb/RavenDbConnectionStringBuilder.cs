@@ -33,7 +33,7 @@ namespace ISI.Extensions.Repository.RavenDb
 
 			var connectionStringValues = connectionString
 				.Split(new[] { ';' })
-				.Select(keyValue => keyValue.Split(new[] { '=' }, 2))
+				.Select(keyValue => keyValue.Split(['='], 2))
 				.GroupBy(keyValue => keyValue.First(), StringComparer.InvariantCultureIgnoreCase)
 				.ToDictionary(keyValues => keyValues.Key, keyValues => new HashSet<string>(keyValues.Select(keyValue => keyValue.Last())), StringComparer.InvariantCultureIgnoreCase);
 

@@ -49,8 +49,8 @@ namespace ISI.Extensions.VisualStudioCode
 			}
 
 			visualStudioCodeSettings ??= new();
-			visualStudioCodeSettings.DefaultExcludePathFilters ??= new[]
-			{
+			visualStudioCodeSettings.DefaultExcludePathFilters ??=
+			[
 				".vs",
 				".git",
 				".svn",
@@ -59,8 +59,8 @@ namespace ISI.Extensions.VisualStudioCode
 				"Resources",
 				"packages",
 				"node_modules",
-				"_ReSharper.Caches",
-			};
+				"_ReSharper.Caches"
+			];
 
 			return visualStudioCodeSettings;
 		}

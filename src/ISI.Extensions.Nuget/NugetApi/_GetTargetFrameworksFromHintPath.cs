@@ -31,21 +31,21 @@ namespace ISI.Extensions.Nuget
 	{
 		private NugetPackageKeyTargetFramework[] GetTargetFrameworksFromHintPath(string hintPath)
 		{
-			return new[]
-			{
+			return
+			[
 				new NugetPackageKeyTargetFramework()
 				{
 					TargetFramework = NuGet.Frameworks.NuGetFramework.Parse(hintPath.Split(new[] { '\\', '/' })[2]),
-					Assemblies = new[]
-					{
+					Assemblies =
+					[
 						new NugetPackageKeyTargetFrameworkAssembly()
 						{
 							AssemblyFileName = System.IO.Path.GetFileName(hintPath),
 							HintPath = hintPath,
 						}
-					}
+					]
 				}
-			};
+			];
 		}
 	}
 }

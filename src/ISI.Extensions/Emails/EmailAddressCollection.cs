@@ -78,7 +78,7 @@ namespace ISI.Extensions.Emails
 
 		public static implicit operator EmailAddressCollection(IEmailAddress[] values) => new(values);
 		public static implicit operator EmailAddressCollection(string[] values) => new(values);
-		public static implicit operator EmailAddressCollection(EmailAddress value) => new(new[] { value });
-		public static implicit operator EmailAddressCollection(string value) => new(new[] { EmailAddress.Create(value) });
+		public static implicit operator EmailAddressCollection(EmailAddress value) => new([value]);
+		public static implicit operator EmailAddressCollection(string value) => new([EmailAddress.Create(value)]);
 	}
 }

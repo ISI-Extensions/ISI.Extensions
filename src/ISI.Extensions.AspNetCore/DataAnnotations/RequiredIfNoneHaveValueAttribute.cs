@@ -76,11 +76,11 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 
 				if (string.IsNullOrWhiteSpace(string.Format("{0}", value)))
 				{
-					return new[] { new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage) };
+					return [new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage)];
 				}
 			}
 
-			return Enumerable.Empty<Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult>();
+			return [];
 		}
 	}
 }

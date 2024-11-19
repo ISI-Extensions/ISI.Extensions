@@ -112,11 +112,11 @@ namespace ISI.Extensions.Tests
 			var xxx = projectApi.SetDockerImageDetails(new()
 			{
 				Project = @"F:\ISI\Internal Projects\ISI.SCM.Nuget.ServiceApplication\src\ISI.SCM.Nuget.ServiceApplication\ISI.SCM.Nuget.ServiceApplication.csproj",
-				ContainerImageTags = new []
-				{
+				ContainerImageTags =
+				[
 					dockerTag,
-					"latest",
-				},
+					"latest"
+				],
 			});
 		}
 	}

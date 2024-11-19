@@ -67,7 +67,7 @@ namespace ISI.Extensions.VisualStudio
 						}
 						else if (inPreSolution)
 						{
-							buildConfigurations.Add(new(line.Trim().Split(new[] { '\t', '=' }, StringSplitOptions.RemoveEmptyEntries).Last().Trim()));
+							buildConfigurations.Add(new(line.Trim().Split(['\t', '='], StringSplitOptions.RemoveEmptyEntries).Last().Trim()));
 						}
 						else if (line.IndexOf("GlobalSection(SolutionConfigurationPlatforms) = preSolution", StringComparison.CurrentCultureIgnoreCase) >= 0)
 						{

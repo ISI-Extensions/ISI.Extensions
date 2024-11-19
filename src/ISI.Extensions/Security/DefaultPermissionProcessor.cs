@@ -71,12 +71,12 @@ namespace ISI.Extensions.Security
 
 		public virtual string[] GetDefaultPermissions()
 		{
-			return new[] { ISI.Extensions.Security.Roles.AnonymousUsers };
+			return [ISI.Extensions.Security.Roles.AnonymousUsers];
 		}
 
 		public virtual string[] GetDefaultAuthenticatedPermissions()
 		{
-			return new[] { ISI.Extensions.Security.Roles.AuthenticatedUsers };
+			return [ISI.Extensions.Security.Roles.AuthenticatedUsers];
 		}
 	}
 }

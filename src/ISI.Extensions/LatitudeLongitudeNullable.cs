@@ -44,7 +44,7 @@ namespace ISI.Extensions
 		}
 		public LatitudeLongitudeNullable(string latitudeLongitude)
 		{
-			var parsedLatitudeLongitude = latitudeLongitude.Split(new[] { " ", "," }, StringSplitOptions.RemoveEmptyEntries);
+			var parsedLatitudeLongitude = latitudeLongitude.Split([" ", ","], StringSplitOptions.RemoveEmptyEntries);
 
 			if (parsedLatitudeLongitude.Length == 2)
 			{

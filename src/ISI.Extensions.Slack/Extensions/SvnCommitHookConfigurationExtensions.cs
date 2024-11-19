@@ -28,7 +28,7 @@ namespace ISI.Extensions.Slack.Extensions
 		{
 			var ignoreAuthors = new HashSet<string>(svnCommitHookConfiguration?.IgnoreAuthors ?? [], StringComparer.CurrentCultureIgnoreCase);
 
-			ignoreAuthors.UnionWith((svnCommitHookConfiguration?.IgnoreAuthorsCsv ?? string.Empty).Split(new[] {' ', ','}, StringSplitOptions.RemoveEmptyEntries));
+			ignoreAuthors.UnionWith((svnCommitHookConfiguration?.IgnoreAuthorsCsv ?? string.Empty).Split([' ', ','], StringSplitOptions.RemoveEmptyEntries));
 
 			return ignoreAuthors;
 		}

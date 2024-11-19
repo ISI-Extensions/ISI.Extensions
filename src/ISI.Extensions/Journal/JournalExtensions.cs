@@ -29,7 +29,7 @@ namespace ISI.Extensions.Extensions
 
 			await journal.AddJournalEntriesAsync(new()
 			{
-				JournalEntries = new[] { request.JournalEntry },
+				JournalEntries = [request.JournalEntry],
 			}, cancellationToken);
 
 			return response;
@@ -41,7 +41,7 @@ namespace ISI.Extensions.Extensions
 
 			await journal.AddJournalEntriesAsync(new()
 			{
-				JournalEntries = new[] { journalEntry },
+				JournalEntries = [journalEntry],
 			}, cancellationToken);
 
 			return response;

@@ -64,10 +64,10 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 
 			if (match.Success && (match.Index == 0) && (match.Length == value.Length))
 			{
-				return Enumerable.Empty<Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult>();
+				return [];
 			}
 
-			return new[] { new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage) };
+			return [new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage)];
 		}
 	}
 }

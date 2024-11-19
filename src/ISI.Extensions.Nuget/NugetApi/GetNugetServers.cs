@@ -38,26 +38,26 @@ namespace ISI.Extensions.Nuget
 				Logger = new NullLogger(),
 				WorkingDirectory = request.WorkingDirectory,
 				ProcessExeFullName = GetNugetExeFullName(new()).NugetExeFullName,
-				Arguments = new[]
-				{
-					"sources",
-				}
+				Arguments =
+				[
+					"sources"
+				]
 			});
 
 			if (!sourcesResponse.Errored)
 			{
 				var nugetServers = new List<NugetServer>();
 
-				var lines = sourcesResponse.Output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+				var lines = sourcesResponse.Output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries).ToList();
 
 				while (lines.Any())
 				{
-					var lineParts = lines.First().Split(new[] { '.' }, 2);
+					var lineParts = lines.First().Split(['.'], 2);
 					lines.RemoveAt(0);
 
 					if (lineParts.First().Trim().ToInt() > 0)
 					{
-						var nameParts = lineParts[1].Trim().Split(new[] { '[', ']' }, StringSplitOptions.RemoveEmptyEntries);
+						var nameParts = lineParts[1].Trim().Split(['[', ']'], StringSplitOptions.RemoveEmptyEntries);
 						var nugetServer = new NugetServer()
 						{
 							Name = nameParts.First().Trim(),
@@ -77,7 +77,7 @@ namespace ISI.Extensions.Nuget
 							}
 							else
 							{
-								var nugetServerIndex = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<ISI.Extensions.Nuget.SerializableModels.NugetServerIndexJson>(url, new(), true);
+								var nugetServerIndex = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<ISI.Extensions.Nuget.SerializableModels.NugetServerIndexJson>(url, [], true);
 
 								var v2Resource = nugetServerIndex.Resources.FirstOrDefault(resource => string.Equals(resource.Type, "LegacyGallery", StringComparison.InvariantCultureIgnoreCase));
 

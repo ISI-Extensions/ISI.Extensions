@@ -45,7 +45,7 @@ namespace ISI.Extensions.Nuget
 					Arguments = arguments.ToArray(),
 				});
 
-				Configuration.NugetGlobalPackagesDirectory = nugetResponse.Output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+				Configuration.NugetGlobalPackagesDirectory = nugetResponse.Output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
 			}
 
 			return Configuration.NugetGlobalPackagesDirectory;

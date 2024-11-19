@@ -54,7 +54,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 		public SolutionFilterKey(string solutionFilterKey)
 		{
-			var pieces = solutionFilterKey.Split(new[] { Delimiter }, StringSplitOptions.None).Select(piece => piece.Trim()).ToArray();
+			var pieces = solutionFilterKey.Split([Delimiter], StringSplitOptions.None).Select(piece => piece.Trim()).ToArray();
 
 			SolutionFullName = pieces[0].Trim();
 			SolutionFilterFullName = pieces[1].Trim();

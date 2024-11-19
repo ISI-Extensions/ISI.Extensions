@@ -34,7 +34,7 @@ namespace ISI.Extensions.Serialization
 
 		public TDeserializeAs DeserializeAs<TDeserializeAs>(string serializedValueWithSerializerContractHeader, ISI.Extensions.Serialization.SerializationFormat serializationFormat = ISI.Extensions.Serialization.SerializationFormat.Unknown)
 		{
-			var values = serializedValueWithSerializerContractHeader.Split(new[] { '\r', '\n' }, 2, StringSplitOptions.RemoveEmptyEntries);
+			var values = serializedValueWithSerializerContractHeader.Split(['\r', '\n'], 2, StringSplitOptions.RemoveEmptyEntries);
 
 			var serializerContractUuid = values.First().ToGuidNullable();
 

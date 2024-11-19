@@ -42,7 +42,7 @@ namespace ISI.Extensions.VisualStudioCode
 				ISI.Extensions.Process.ExecuteShell(new Process.ExecuteShellRequest()
 				{
 					ProcessExeFullName = "code",
-					Arguments = new[] { "." },
+					Arguments = ["."],
 					WorkingDirectory = sourceDirectory,
 					ProcessWindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
 					UseShellExecute = true,

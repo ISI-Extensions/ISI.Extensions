@@ -83,7 +83,7 @@ namespace ISI.Extensions.StatusTrackers
 
 			var fileName = GetStatusTrackerFileName(statusTrackerKey, FinishedFileNameExtension);
 
-			var processes = ISI.Extensions.IO.Path.GetLockingProcesses(new[] { fileName });
+			var processes = ISI.Extensions.IO.Path.GetLockingProcesses([fileName]);
 
 			if (processes.Any())
 			{
@@ -93,9 +93,9 @@ namespace ISI.Extensions.StatusTrackers
 				});
 			}
 
-			var content = System.IO.File.ReadAllText(fileName).Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+			var content = System.IO.File.ReadAllText(fileName).Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
 
-			return content.FirstOrDefault().Split(new[] { '\t' }, StringSplitOptions.None)[1].ToBoolean();
+			return content.FirstOrDefault().Split(['\t'], StringSplitOptions.None)[1].ToBoolean();
 		}
 
 		public bool TryStatusTrackerGetKeyValue(string statusTrackerKey, string key, out string value)
@@ -154,8 +154,8 @@ namespace ISI.Extensions.StatusTrackers
 			var caption = ReadFile(GetStatusTrackerFileName(statusTrackerKey, CaptionFileNameExtension));
 			var percent = ReadFile(GetStatusTrackerFileName(statusTrackerKey, PercentFileNameExtension)).ToInt();
 			var logEntries = ReadFile(GetStatusTrackerFileName(statusTrackerKey, LogFileNameExtension))
-				.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-				.Select(l => l.Split(new[] { '\t' }, 2)).
+				.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries)
+				.Select(l => l.Split(['\t'], 2)).
 				Select(logParts => new StatusTrackerLogEntry()
 				{
 					DateTimeStamp = logParts[0].ToDateTime(),

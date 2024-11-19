@@ -62,17 +62,17 @@ namespace ISI.Extensions.TypeLocator.Extensions
 		public static void ExecuteOnAll<TServiceType>(this ITypeLocatorContainer container, Action<TServiceType> action)
 			where TServiceType : ISI.Extensions.TypeLocator.IExecute
 		{
-			ExecuteOnAll<TServiceType>(container, new[] { action });
+			ExecuteOnAll<TServiceType>(container, [action]);
 		}
 		public static void ExecuteOnAll<TServiceType>(this ITypeLocatorContainer container, System.IServiceProvider serviceProvider, Action<TServiceType> action)
 			where TServiceType : ISI.Extensions.TypeLocator.IExecute
 		{
-			ExecuteOnAll<TServiceType>(container, serviceProvider, new[] { action });
+			ExecuteOnAll<TServiceType>(container, serviceProvider, [action]);
 		}
 		public static void ExecuteOnAll<TServiceType>(this ITypeLocatorContainer container, Func<Type, TServiceType> createItem, Action<TServiceType> action)
 			where TServiceType : ISI.Extensions.TypeLocator.IExecute
 		{
-			ExecuteOnAll<TServiceType>(container, createItem, new[] { action });
+			ExecuteOnAll<TServiceType>(container, createItem, [action]);
 		}
 
 		public static void ExecuteOnAll<TServiceType>(this ITypeLocatorContainer container, params Action<TServiceType>[] actions)

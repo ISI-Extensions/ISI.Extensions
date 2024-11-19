@@ -94,7 +94,7 @@ namespace ISI.Extensions
 			}
 		}
 
-		private readonly List<IStatusTrackerLogEntry> _logEntries = new();
+		private readonly List<IStatusTrackerLogEntry> _logEntries = [];
 
 		private readonly object _syncLock = new();
 
@@ -125,15 +125,14 @@ namespace ISI.Extensions
 
 		public void AddToLog(DateTime dateTimeStamp, ISI.Extensions.StatusTrackers.LogEntryLevel logEntryLevel, string logEntry)
 		{
-			AddToLog(new IStatusTrackerLogEntry[]
-			{
+			AddToLog([
 				new ISI.Extensions.StatusTrackers.StatusTrackerLogEntry()
 				{
 					DateTimeStamp = dateTimeStamp,
 					LogEntryLevel = logEntryLevel,
 					Description = logEntry,
 				}
-			});
+			]);
 		}
 
 		public void AddToLog(IEnumerable<IStatusTrackerLogEntry> logEntries)

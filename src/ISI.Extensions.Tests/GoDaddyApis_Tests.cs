@@ -112,7 +112,7 @@ namespace ISI.Extensions.Tests
 					ApiKey = settings.GetValue("GoDaddy.ApiKey"),
 					ApiSecret = settings.GetValue("GoDaddy.ApiSecret"),
 					DomainName = "MuthFamily.com",
-					DnsRecords = new[] { dnsRecord },
+					DnsRecords = [dnsRecord],
 				});
 			}
 		}
@@ -145,7 +145,7 @@ namespace ISI.Extensions.Tests
 					ApiKey = settings.GetValue("GoDaddy.ApiKey"),
 					ApiSecret = settings.GetValue("GoDaddy.ApiSecret"),
 					DomainName = "westriversystems.com",
-					DnsRecords = new[] { dnsRecord },
+					DnsRecords = [dnsRecord],
 				});
 			}
 		}

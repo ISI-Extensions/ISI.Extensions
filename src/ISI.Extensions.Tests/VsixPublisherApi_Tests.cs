@@ -87,12 +87,12 @@ namespace ISI.Extensions.Tests
 
 				ReadMeFullName = @"F:\ISI\Internal Projects\ISI.VisualStudio.Extensions\README.md",
 				PriceCategory = ISI.Extensions.VisualStudio.DataTransferObjects.VsixPublisherApi.GenerateVsixPublishManifestRequestPricingCategory.Free,
-				Categories = new[]
-				{
+				Categories =
+				[
 					"Coding",
 					"Data",
-					"Modeling",
-				},
+					"Modeling"
+				],
 			});
 		}
 	}

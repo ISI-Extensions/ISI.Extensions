@@ -457,10 +457,10 @@ namespace ISI.Extensions.VisualStudio
 								{
 									BuildScriptFullName = buildScriptFullName,
 									Target = solutionDetails.ExecuteBuildScriptTargetAfterUpgradeNugetPackages,
-									Parameters = new[]
-									{
+									Parameters =
+									[
 										(ParameterName: "NugetPackOutputDirectory", ParameterValue: nugetPackOutputDirectory)
-									},
+									],
 									UseShell = false,
 									AddToLog = (logEntryLevel, description) => solutionLogger.LogInformation(description),
 								});

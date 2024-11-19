@@ -29,22 +29,22 @@ namespace ISI.Extensions.Tests
 	[TestFixture]
 	public class Compression_Tests
 	{
-		public readonly string[] SourceFileParentDirectoryUrls = new[]
-		{
+		public readonly string[] SourceFileParentDirectoryUrls =
+		[
 			"godrives://mft.rrc.texas.gov/link/ec380e91-5926-4d63-891a-42877a81d32f", //OrganizationFilesSubDirectory
 			"godrives://mft.rrc.texas.gov/link/caf63b5f-2218-42e5-8e55-9f88673477e7", //GasLedgersFilesSubDirectory
-			"godrives://mft.rrc.texas.gov/link/abdf8b13-cc23-4489-b942-2ecd1171fae1", //OilLedgersFilesSubDirectory
-		};
+			"godrives://mft.rrc.texas.gov/link/abdf8b13-cc23-4489-b942-2ecd1171fae1" //OilLedgersFilesSubDirectory
+		];
 
-		public readonly string[] SourceFileNameRegexes = new[]
-		{
+		public readonly string[] SourceFileNameRegexes =
+		[
 			@"^orf.+\.ebc\.gz?$",
 			@"^olf.+\.ebc\.gz?$",
-			@"^gsf.+\.ebc\.gz?$",
+			@"^gsf.+\.ebc\.gz?$"
 			//@"^orf.+\.ebc(?:\.gz)?$",
 			//@"^olf.+\.ebc(?:\.gz)?$",
 			//@"^gsf.+\.ebc(?:\.gz)?$",
-		};
+		];
 
 		[OneTimeSetUp]
 		public void OneTimeSetup()

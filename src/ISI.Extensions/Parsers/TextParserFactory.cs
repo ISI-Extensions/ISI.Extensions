@@ -55,7 +55,7 @@ namespace ISI.Extensions
 
 		internal static TextDelimiter GetTextDelimiterByFileName(string fileName)
 		{
-			var fileExtension = fileName.Split(new [] {'?'}, StringSplitOptions.RemoveEmptyEntries).First().Split(new [] { '.' }).Last();
+			var fileExtension = fileName.Split(['?'], StringSplitOptions.RemoveEmptyEntries).First().Split(new [] { '.' }).Last();
 
 			if (FileExtensionToTextDelimiter.ContainsKey(fileExtension))
 			{

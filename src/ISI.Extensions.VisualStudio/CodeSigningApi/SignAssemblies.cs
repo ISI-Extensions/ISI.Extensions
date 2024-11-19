@@ -104,7 +104,7 @@ namespace ISI.Extensions.VisualStudio
 						if (request.RunAsync)
 						{
 							logger.LogInformation("Running Async");
-							Parallel.ForEach(tempAssemblyFullNames, assemblyFullName => sign(new[] { assemblyFullName }));
+							Parallel.ForEach(tempAssemblyFullNames, assemblyFullName => sign([assemblyFullName]));
 						}
 						else
 						{

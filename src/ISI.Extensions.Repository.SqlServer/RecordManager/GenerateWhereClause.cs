@@ -120,8 +120,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 					sqlConnectionWhereClause.InitializeActions.Add((sqlServerConfiguration, connection, sqlServerCapabilities) =>
 					{
-						var dataReader = new ISI.Extensions.DataReader.EnumerableDataReader<ISI.Extensions.DataReader.ValueWrapper<object>>(new[]
-						{
+						var dataReader = new ISI.Extensions.DataReader.EnumerableDataReader<ISI.Extensions.DataReader.ValueWrapper<object>>([
 							usedFilterValues.Select(filterValue => new ISI.Extensions.DataReader.ValueWrapper<object>()
 							{
 								Value = filterValue,
@@ -130,7 +129,7 @@ namespace ISI.Extensions.Repository.SqlServer
 							{
 								Value = filterValue,
 							})
-						}, null, null);
+						], null, null);
 
 						connection.EnsureConnectionIsOpenAsync().Wait();
 

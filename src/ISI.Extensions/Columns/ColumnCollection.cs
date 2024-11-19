@@ -47,7 +47,7 @@ namespace ISI.Extensions.Columns
 
 			foreach (var property in properties)
 			{
-				result.Add(Activator.CreateInstance(typeof(ISI.Extensions.Columns.Column<,>).MakeGenericType(typeof(TRecord), property.PropertyInfo.PropertyType), new object[] {property.DataMemberAttribute.Name, property.PropertyInfo, null, null, jsonSerializer}, null) as IColumn<TRecord>);
+				result.Add(Activator.CreateInstance(typeof(ISI.Extensions.Columns.Column<,>).MakeGenericType(typeof(TRecord), property.PropertyInfo.PropertyType), [property.DataMemberAttribute.Name, property.PropertyInfo, null, null, jsonSerializer], null) as IColumn<TRecord>);
 			}
 
 			return result;
@@ -82,12 +82,12 @@ namespace ISI.Extensions.Columns
 
 		public void Add<TProperty>(string columnName, System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property)
 		{
-			base.Add(new Column<TRecord, TProperty>(new[] { columnName }, property, null, null));
+			base.Add(new Column<TRecord, TProperty>([columnName], property, null, null));
 		}
 
 		public void Add<TProperty>(string columnName, System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property, Func<object, TProperty> transformValue)
 		{
-			base.Add(new Column<TRecord, TProperty>(new[] { columnName }, property, transformValue, null));
+			base.Add(new Column<TRecord, TProperty>([columnName], property, transformValue, null));
 		}
 
 

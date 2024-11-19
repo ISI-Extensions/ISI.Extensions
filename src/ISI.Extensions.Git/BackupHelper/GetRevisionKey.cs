@@ -32,7 +32,7 @@ namespace ISI.Extensions.Git
 				var processResponse = ISI.Extensions.Process.WaitForProcessResponse(new Process.ProcessRequest()
 				{
 					ProcessExeFullName = "git",
-					Arguments = new[] { "log", "--max-count=1", "--format=%ai" },
+					Arguments = ["log", "--max-count=1", "--format=%ai"],
 					WorkingDirectory = System.IO.Path.Combine(RepositoriesPath, repositoryKey.Replace("+", "\\")),
 				});
 
@@ -48,7 +48,7 @@ namespace ISI.Extensions.Git
 				gitInfoResponse = gitInfo();
 			}
 
-			return gitInfoResponse.Output.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).First();
+			return gitInfoResponse.Output.Split(['\n', '\r'], StringSplitOptions.RemoveEmptyEntries).First();
 		}
 	}
 }

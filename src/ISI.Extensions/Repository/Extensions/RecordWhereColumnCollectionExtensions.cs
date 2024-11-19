@@ -131,7 +131,7 @@ namespace ISI.Extensions.Repository.Extensions
 				{
 					RecordPropertyDescription = recordDescription,
 					ComparisonOperator = WhereClauseComparisonOperator.GreaterThanOrEqual,
-					Values = new[] { (object)startDateTime.Value },
+					Values = [(object)startDateTime.Value],
 				});
 			}
 			else if (stopDateTime.HasValue)
@@ -140,7 +140,7 @@ namespace ISI.Extensions.Repository.Extensions
 				{
 					RecordPropertyDescription = recordDescription,
 					ComparisonOperator = WhereClauseComparisonOperator.LessThanOrEqual,
-					Values = new[] { (object)stopDateTime.Value },
+					Values = [(object)stopDateTime.Value],
 				});
 			}
 		}
@@ -227,7 +227,7 @@ namespace ISI.Extensions.Repository.Extensions
 		{
 			if (value.HasValue)
 			{
-				recordWhereColumns.Add<TProperty>(property, equalityOperator, new[] { value.Value });
+				recordWhereColumns.Add<TProperty>(property, equalityOperator, [value.Value]);
 			}
 		}
 
@@ -236,7 +236,7 @@ namespace ISI.Extensions.Repository.Extensions
 		{
 			if (value.HasValue)
 			{
-				recordWhereColumns.Add<TProperty>(property, equalityOperator, new[] { value.Value });
+				recordWhereColumns.Add<TProperty>(property, equalityOperator, [value.Value]);
 			}
 		}
 

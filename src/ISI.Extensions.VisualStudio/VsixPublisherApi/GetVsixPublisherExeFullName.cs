@@ -64,7 +64,7 @@ namespace ISI.Extensions.VisualStudio
 					}
 				}
 
-				foreach (var visualStudioPath in processResponse.Output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+				foreach (var visualStudioPath in processResponse.Output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries))
 				{
 					addIfExists(System.IO.Path.Combine(visualStudioPath, "VSSDK", "VisualStudioIntegration", "Tools", "Bin", vsixPublisherExeFileName));
 				}

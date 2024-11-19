@@ -35,7 +35,7 @@ namespace ISI.Extensions.Ngrok.Extensions
 
 		public static DTOs.CreateReplacementUrlsResponse CreateReplacementUrls(this INGrokLocalServiceApi nGrokLocalServiceApi, string localUrl)
 		{
-			return nGrokLocalServiceApi.CreateReplacementUrls(new[] {localUrl});
+			return nGrokLocalServiceApi.CreateReplacementUrls([localUrl]);
 		}
 	}
 }

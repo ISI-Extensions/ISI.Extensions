@@ -60,7 +60,7 @@ namespace ISI.Extensions.Security.ActiveDirectory.Extensions
 
 		public static string GetDefaultNamingContext(this Novell.Directory.Ldap.LdapConnection ldapConnection)
 		{
-			var ldapSearchResults = ldapConnection.Search(string.Empty, Novell.Directory.Ldap.LdapConnection.ScopeBase, "(objectClass=*)", new[] { UserPropertyKey.DefaultNamingContext }, false);
+			var ldapSearchResults = ldapConnection.Search(string.Empty, Novell.Directory.Ldap.LdapConnection.ScopeBase, "(objectClass=*)", [UserPropertyKey.DefaultNamingContext], false);
 
 			return ldapSearchResults.First().GetPropertyValue(UserPropertyKey.DefaultNamingContext);
 		}
@@ -69,7 +69,7 @@ namespace ISI.Extensions.Security.ActiveDirectory.Extensions
 		{
 			var defaultNamingContext = ldapConnection.GetDefaultNamingContext();
 
-			return string.Join(".", defaultNamingContext.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(value => value.Split(new[] { '=' }).Last()));
+			return string.Join(".", defaultNamingContext.Split([','], StringSplitOptions.RemoveEmptyEntries).Select(value => value.Split(new[] { '=' }).Last()));
 		}
 	}
 }

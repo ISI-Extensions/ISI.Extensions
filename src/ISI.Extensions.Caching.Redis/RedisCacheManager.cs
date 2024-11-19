@@ -113,14 +113,14 @@ namespace ISI.Extensions.Caching.Redis
 
 			var results = (StackExchange.Redis.RedisValue[])database.ScriptEvaluate(
 				HmGetScript,
-				new StackExchange.Redis.RedisKey[] { CacheKeyFormatter(cacheKey) },
-				new[] { (StackExchange.Redis.RedisValue)AbsoluteExpirationKey, (StackExchange.Redis.RedisValue)SlidingExpirationKey, (StackExchange.Redis.RedisValue)DataKey });
+				[CacheKeyFormatter(cacheKey)],
+				[(StackExchange.Redis.RedisValue)AbsoluteExpirationKey, (StackExchange.Redis.RedisValue)SlidingExpirationKey, (StackExchange.Redis.RedisValue)DataKey]);
 
 			var serializedValue = results[2];
 
 			if (serializedValue.HasValue)
 			{
-				var serializedParts = ((string)serializedValue).Split(new[] { '\n' }, 2);
+				var serializedParts = ((string)serializedValue).Split(['\n'], 2);
 				var type = Type.GetType(serializedParts[0]);
 
 				if (type.IsPrimitive || (type == typeof(string)))

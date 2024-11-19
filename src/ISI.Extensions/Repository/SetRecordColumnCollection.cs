@@ -43,13 +43,13 @@ namespace ISI.Extensions.Repository
 			Add(new()
 			{
 				RecordPropertyDescription = RecordDescription.GetRecordDescription<TRecord>().PropertyDescriptionLookup[propertyInfo.Name],
-				Values = new[] { value },
+				Values = [value],
 			});
 		}
 
 		public void Add<TProperty>(Expression<Func<TRecord, TProperty>> property, TProperty value)
 		{
-			Add<TProperty>(property, new[] { value });
+			Add<TProperty>(property, [value]);
 		}
 
 		public void Add<TProperty>(Expression<Func<TRecord, TProperty>> property, IEnumerable<TProperty> values)

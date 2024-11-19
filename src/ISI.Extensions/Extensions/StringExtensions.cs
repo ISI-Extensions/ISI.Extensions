@@ -142,7 +142,7 @@ namespace ISI.Extensions.Extensions
 
 		public static string TrimStart(this string value, string startsWith, StringComparison stringComparison)
 		{
-			return value.TrimStart(new[] { startsWith }, stringComparison);
+			return value.TrimStart([startsWith], stringComparison);
 		}
 
 		public static string TrimStart(this string value, string[] startsWithSet, StringComparison stringComparison)
@@ -170,7 +170,7 @@ namespace ISI.Extensions.Extensions
 
 		public static string TrimEnd(this string value, string endsWith, StringComparison stringComparison)
 		{
-			return value.TrimEnd(new[] { endsWith }, stringComparison);
+			return value.TrimEnd([endsWith], stringComparison);
 		}
 
 		public static string TrimEnd(this string value, string[] endsWithSet, StringComparison stringComparison)
@@ -200,7 +200,7 @@ namespace ISI.Extensions.Extensions
 
 		public static string NullCheckedTrim(this string value, char trimChar, NullCheckResult nullCheckResult)
 		{
-			return value.NullCheckedTrim(new[] { trimChar }, NullCheckResult.ReturnDefault);
+			return value.NullCheckedTrim([trimChar], NullCheckResult.ReturnDefault);
 		}
 
 		public static string NullCheckedTrim(this string value, params char[] trimChars)
@@ -228,7 +228,7 @@ namespace ISI.Extensions.Extensions
 
 		public static string NullCheckedTrimStart(this string value, char trimChar, NullCheckResult nullCheckResult)
 		{
-			return value.NullCheckedTrimStart(new[] { trimChar }, NullCheckResult.ReturnDefault);
+			return value.NullCheckedTrimStart([trimChar], NullCheckResult.ReturnDefault);
 		}
 
 		public static string NullCheckedTrimStart(this string value, params char[] trimChars)
@@ -266,7 +266,7 @@ namespace ISI.Extensions.Extensions
 
 		public static string NullCheckedTrimStart(this string value, string startsWith, StringComparison stringComparison)
 		{
-			return value.NullCheckedTrimStart(new[] { startsWith }, stringComparison);
+			return value.NullCheckedTrimStart([startsWith], stringComparison);
 		}
 
 		public static string NullCheckedTrimStart(this string value, string[] startsWiths, StringComparison stringComparison)
@@ -284,7 +284,7 @@ namespace ISI.Extensions.Extensions
 
 		public static string NullCheckedTrimEnd(this string value, char trimChar, NullCheckResult nullCheckResult)
 		{
-			return value.NullCheckedTrimEnd(new[] { trimChar }, NullCheckResult.ReturnDefault);
+			return value.NullCheckedTrimEnd([trimChar], NullCheckResult.ReturnDefault);
 		}
 
 		public static string NullCheckedTrimEnd(this string value, params char[] trimChars)
@@ -322,7 +322,7 @@ namespace ISI.Extensions.Extensions
 
 		public static string NullCheckedTrimEnd(this string value, string endsWith, StringComparison stringComparison)
 		{
-			return value.NullCheckedTrimEnd(new[] { endsWith }, stringComparison);
+			return value.NullCheckedTrimEnd([endsWith], stringComparison);
 		}
 
 		public static string NullCheckedTrimEnd(this string value, string[] endsWiths, StringComparison stringComparison)

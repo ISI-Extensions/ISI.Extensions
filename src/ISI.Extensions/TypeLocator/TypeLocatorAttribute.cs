@@ -25,7 +25,7 @@ namespace ISI.Extensions
 
 		public TypeLocatorAttribute(Type type)
 		{
-			Types = new[] { type };
+			Types = [type];
 		}
 
 		public TypeLocatorAttribute(params Type[] types)

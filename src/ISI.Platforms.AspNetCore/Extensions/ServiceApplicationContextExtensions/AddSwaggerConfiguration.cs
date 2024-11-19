@@ -56,7 +56,7 @@ namespace ISI.Platforms.AspNetCore.Extensions
 										Id = ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer,
 									}
 								},
-								new string[] { }
+								[]
 							}
 						});
 					}

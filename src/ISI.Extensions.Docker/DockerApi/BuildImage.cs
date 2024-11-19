@@ -69,7 +69,7 @@ namespace ISI.Extensions.Docker
 				var containerRegistry = request.ContainerRegistry ?? string.Empty;
 
 				var containerRepository = request.ContainerRepository;
-				var containerImageTags = (request.ContainerImageTags.NullCheckedAny() ? request.ContainerImageTags : new[] { " latest" });
+				var containerImageTags = (request.ContainerImageTags.NullCheckedAny() ? request.ContainerImageTags : [" latest"]);
 
 				if (string.IsNullOrWhiteSpace(containerRegistry))
 				{

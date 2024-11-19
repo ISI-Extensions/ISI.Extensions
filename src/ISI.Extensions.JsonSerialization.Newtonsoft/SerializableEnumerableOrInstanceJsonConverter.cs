@@ -53,7 +53,7 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 			}
 			else
 			{
-				instance.SetValues(new[] { token.ToObject(memberType, serializer) });
+				instance.SetValues([token.ToObject(memberType, serializer)]);
 			}
 
 			return instance;

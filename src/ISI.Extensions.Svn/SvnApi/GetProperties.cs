@@ -65,7 +65,7 @@ namespace ISI.Extensions.Svn
 					Arguments = arguments.ToArray(),
 				}).Output;
 
-				var contentItems = new Queue<string>(content.Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries));
+				var contentItems = new Queue<string>(content.Split(["\r", "\n"], StringSplitOptions.RemoveEmptyEntries));
 
 				var pathPropertyKey = string.Empty;
 				var pathProperties = (IDictionary<string, string>)null;
@@ -77,7 +77,7 @@ namespace ISI.Extensions.Svn
 					if ((contentItem.Length > 0) && (contentItem[0] != ' '))
 					{
 						pathProperties = new Dictionary<string, string>();
-						properties.Add((Path: contentItem.Split(new string[] { "'" }, StringSplitOptions.RemoveEmptyEntries)[1], pathProperties));
+						properties.Add((Path: contentItem.Split(["'"], StringSplitOptions.RemoveEmptyEntries)[1], pathProperties));
 					}
 					else if ((contentItem.Length > 2) && (contentItem.Substring(0, 2) == "  ") && (contentItem[2] != ' '))
 					{

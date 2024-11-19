@@ -112,7 +112,7 @@ namespace ISI.Extensions.Tests
 			{
 				HostContext = context,
 				//AccountName = "localhost",
-				Contacts = new[] { "ron.muth@isi-net.com" },
+				Contacts = ["ron.muth@isi-net.com"],
 				TermsOfServiceAgreed = true,
 			});
 
@@ -134,7 +134,7 @@ namespace ISI.Extensions.Tests
 			{
 				HostContext = context,
 				AccountName = "localhost",
-				Contacts = new[] { "ron.muth@isi-net.com" },
+				Contacts = ["ron.muth@isi-net.com"],
 				TermsOfServiceAgreed = true,
 			});
 
@@ -167,14 +167,14 @@ namespace ISI.Extensions.Tests
 			var createNewOrderResponse = AcmeApi.CreateNewOrder(new()
 			{
 				HostContext = context,
-				CertificateIdentifiers = new[]
-				{
+				CertificateIdentifiers =
+				[
 					new ISI.Extensions.Acme.OrderCertificateIdentifier()
 					{
 						CertificateIdentifierType = ISI.Extensions.Acme.OrderCertificateIdentifierType.Dns,
 						CertificateIdentifierValue = domainName,
 					}
-				},
+				],
 			});
 
 			var getAuthorizationResponse = AcmeApi.GetAuthorization(new()
@@ -218,7 +218,7 @@ namespace ISI.Extensions.Tests
 				ApiUser = settings.GetValue("GoDaddy.ApiKey"),
 				ApiKey = settings.GetValue("GoDaddy.ApiSecret"),
 				DomainName = calculateDnsTokenResponse.DomainName,
-				DnsRecords = new[] { dnsRecord },
+				DnsRecords = [dnsRecord],
 			});
 
 			System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
@@ -311,7 +311,7 @@ namespace ISI.Extensions.Tests
 						ApiKey = settings.GetValue("GoDaddy.ApiSecret"),
 
 						DomainName = rootDomainName,
-						DnsRecords = new[] { dnsRecord },
+						DnsRecords = [dnsRecord],
 					});
 				};
 			}
@@ -326,7 +326,7 @@ namespace ISI.Extensions.Tests
 						ApiKey = settings.GetValue("NameCheap.ApiKey"),
 
 						DomainName = rootDomainName,
-						DnsRecords = new[] { dnsRecord },
+						DnsRecords = [dnsRecord],
 					});
 				};
 			}
@@ -339,7 +339,7 @@ namespace ISI.Extensions.Tests
 						DnsProviderUuid = ManualDomainsApi.DnsProviderUuid,
 
 						DomainName = rootDomainName,
-						DnsRecords = new[] { dnsRecord },
+						DnsRecords = [dnsRecord],
 					});
 				};
 			}
@@ -416,13 +416,13 @@ namespace ISI.Extensions.Tests
 
 				DomainName = domainName,
 
-				PostRenewalActions = new[]
-				{
+				PostRenewalActions =
+				[
 					new ISI.Extensions.Acme.OrderCertificateDomainPostRenewalActionAcmeAgentWebHook()
 					{
 						SetCertificatesUrl = @"https://nginx/upload-certificates",
 					}
-				}
+				]
 			});
 		}
 	}

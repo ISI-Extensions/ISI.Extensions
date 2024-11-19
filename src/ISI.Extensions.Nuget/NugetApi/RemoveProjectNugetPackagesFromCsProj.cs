@@ -65,7 +65,7 @@ namespace ISI.Extensions.Nuget
 				{
 					var packageId = reference.GetAttributeByLocalName("Include")?.Value;
 
-					var keyValues = string.Format("PackageId={0}", packageId).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(item => item.Split(new[] { "=" }, StringSplitOptions.None)).ToDictionary(item => item[0].Trim(), item => (item.Length >= 2 ? item[1].Trim() : string.Empty), StringComparer.CurrentCultureIgnoreCase);
+					var keyValues = string.Format("PackageId={0}", packageId).Split([','], StringSplitOptions.RemoveEmptyEntries).Select(item => item.Split(["="], StringSplitOptions.None)).ToDictionary(item => item[0].Trim(), item => (item.Length >= 2 ? item[1].Trim() : string.Empty), StringComparer.CurrentCultureIgnoreCase);
 					keyValues.TryGetValue("PackageId", out packageId);
 
 					if (nugetPackageNames.Contains(packageId))

@@ -60,7 +60,7 @@ namespace ISI.Extensions.AspNetCore.Swashbuckle
 									Id = ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer,
 								}
 							},
-							new string[]{ }
+							[]
 						}
 					});
 				}

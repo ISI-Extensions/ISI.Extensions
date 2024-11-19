@@ -46,16 +46,15 @@ namespace ISI.Extensions.Security.ActiveDirectory
 					{
 						try
 						{
-							var ldapSearchResults = ldapConnection.Search($"CN=Users,{defaultNamingContext}", Novell.Directory.Ldap.LdapConnection.ScopeOne, $"(&(objectCategory=User)(objectClass=person)({UserPropertyKey.UserNameKey}={userName}))", new[]
-							{
+							var ldapSearchResults = ldapConnection.Search($"CN=Users,{defaultNamingContext}", Novell.Directory.Ldap.LdapConnection.ScopeOne, $"(&(objectCategory=User)(objectClass=person)({UserPropertyKey.UserNameKey}={userName}))", [
 								UserPropertyKey.NameKey,
 								UserPropertyKey.EmailAddressKey,
 								UserPropertyKey.FirstNameKey,
 								UserPropertyKey.LastNameKey,
 								UserPropertyKey.UserNameKey,
 								UserPropertyKey.DistinguishedNameKey,
-								UserPropertyKey.RolesKey,
-							}, false);
+								UserPropertyKey.RolesKey
+							], false);
 
 							foreach (var ldapSearchResult in ldapSearchResults)
 							{

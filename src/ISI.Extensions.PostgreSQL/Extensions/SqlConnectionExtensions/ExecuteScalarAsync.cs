@@ -32,7 +32,7 @@ namespace ISI.Extensions.PostgreSQL.Extensions
 
 		public static async Task<TProperty> ExecuteScalarAsync<TProperty>(this Npgsql.NpgsqlConnection connection, string sql, KeyValuePair<string, object> parameter, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await ExecuteScalarAsync<TProperty>(connection, sql, new[] { parameter }, commandTimeout, cancellationToken);
+			return await ExecuteScalarAsync<TProperty>(connection, sql, [parameter], commandTimeout, cancellationToken);
 		}
 
 		public static async Task<TProperty> ExecuteScalarAsync<TProperty>(this Npgsql.NpgsqlConnection connection, string sql, IEnumerable<KeyValuePair<string, object>> parameters = null, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
@@ -141,7 +141,7 @@ namespace ISI.Extensions.PostgreSQL.Extensions
 
 		public static async Task<object> ExecuteScalarAsync(this Npgsql.NpgsqlConnection connection, string sql, KeyValuePair<string, object> parameter, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await ExecuteScalarAsync(connection, sql, new[] { parameter }, commandTimeout, cancellationToken);
+			return await ExecuteScalarAsync(connection, sql, [parameter], commandTimeout, cancellationToken);
 		}
 
 		public static async Task<object> ExecuteScalarAsync(this Npgsql.NpgsqlConnection connection, string sql, IEnumerable<KeyValuePair<string, object>> parameters = null, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)

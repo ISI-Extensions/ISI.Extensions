@@ -81,7 +81,7 @@ namespace ISI.Extensions
 
 		public void AddParameter(string parameterName, string parameterValue)
 		{
-			AddParameter(parameterName, new[] { parameterValue });
+			AddParameter(parameterName, [parameterValue]);
 		}
 
 		public void AddValue(string value)
@@ -117,7 +117,7 @@ namespace ISI.Extensions
 			return false;
 		}
 
-		public bool TryGetParameterValues(string parameterName, out string[] parameterValues, string delimiter = ";", bool trimValues = true, bool removeEmptyValues = true) => TryGetParameterValues(parameterName, out parameterValues, new[] { delimiter }, trimValues, removeEmptyValues);
+		public bool TryGetParameterValues(string parameterName, out string[] parameterValues, string delimiter = ";", bool trimValues = true, bool removeEmptyValues = true) => TryGetParameterValues(parameterName, out parameterValues, [delimiter], trimValues, removeEmptyValues);
 
 		public string GetParameterValue(string parameterName, string defaultValue = "")
 		{
@@ -139,7 +139,7 @@ namespace ISI.Extensions
 			return defaultValues;
 		}
 
-		public string[] GetParameterValues(string parameterName, string delimiter = ";", bool trimValues = true, bool removeEmptyValues = true, string[] defaultValues = null) => GetParameterValues(parameterName, new[] { delimiter }, trimValues, removeEmptyValues, defaultValues);
+		public string[] GetParameterValues(string parameterName, string delimiter = ";", bool trimValues = true, bool removeEmptyValues = true, string[] defaultValues = null) => GetParameterValues(parameterName, [delimiter], trimValues, removeEmptyValues, defaultValues);
 
 		public string[] Values => _values.ToArray();
 

@@ -130,8 +130,8 @@ namespace ISI.Extensions.Tests
 				Configuration = configuration,
 				AssemblyVersionFiles = assemblyVersions,
 				SubDirectory = "ISI",
-				PackageComponents = new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.IPackageComponent[]
-				{
+				PackageComponents =
+				[
 					//new ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi.PackageComponentConsoleApplication()
 					//{
 					//	ProjectFullName = @"F:\ISI\Clients\ISI\ISI.DocumentBuilder.Portal.WebApplication\src\ISI.Services\ISI.Services.DocumentBuilder.MigrationTool\ISI.Services.DocumentBuilder.MigrationTool.csproj",
@@ -173,8 +173,8 @@ namespace ISI.Extensions.Tests
 							//	Arguments = arguments,
 							//});
 						}
-					},
-				},
+					}
+				],
 				PackageFullName = buildArtifactZipFileName,
 				PackageBuildDateTimeStampVersion = bateTimeStampVersion,
 			});

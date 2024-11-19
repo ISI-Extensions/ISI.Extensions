@@ -48,7 +48,7 @@ namespace ISI.Extensions.Nuget
 			{
 				if (projectLine.IndexOf("<Compile ", StringComparison.InvariantCulture) > 0)
 				{
-					var keyValues = projectLine.Replace("<Compile ", string.Empty).Replace("/>", string.Empty).Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries).Select(item => item.Split(new[] { "=\"", "\"" }, StringSplitOptions.None)).ToDictionary(item => item[0], item => item[1], StringComparer.CurrentCultureIgnoreCase);
+					var keyValues = projectLine.Replace("<Compile ", string.Empty).Replace("/>", string.Empty).Split([' ', '\t'], StringSplitOptions.RemoveEmptyEntries).Select(item => item.Split(["=\"", "\""], StringSplitOptions.None)).ToDictionary(item => item[0], item => item[1], StringComparer.CurrentCultureIgnoreCase);
 
 					if (keyValues.TryGetValue("Include", out var includedFile))
 					{
@@ -67,15 +67,15 @@ namespace ISI.Extensions.Nuget
 					{
 						if (line.IndexOf("assembly: AssemblyCompany", StringComparison.InvariantCultureIgnoreCase) >= 0)
 						{
-							response.Nuspec.Owners = new[] { line.Split(new[] { '\"' }, StringSplitOptions.None)[1] };
+							response.Nuspec.Owners = [line.Split(['\"'], StringSplitOptions.None)[1]];
 						}
 						else if (line.IndexOf("assembly: AssemblyCopyright", StringComparison.InvariantCultureIgnoreCase) >= 0)
 						{
-							response.Nuspec.Copyright = line.Split(new[] { '\"' }, StringSplitOptions.None)[1];
+							response.Nuspec.Copyright = line.Split(['\"'], StringSplitOptions.None)[1];
 						}
 						else if (line.IndexOf("assembly: AssemblyVersion", StringComparison.InvariantCultureIgnoreCase) >= 0)
 						{
-							response.Nuspec.Version = line.Split(new[] { '\"' }, StringSplitOptions.None)[1];
+							response.Nuspec.Version = line.Split(['\"'], StringSplitOptions.None)[1];
 						}
 					}
 				}

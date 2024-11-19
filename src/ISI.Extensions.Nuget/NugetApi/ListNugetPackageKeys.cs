@@ -64,11 +64,11 @@ namespace ISI.Extensions.Nuget
 			{
 				var nugetPackageKeys = new List<NugetPackageKey>();
 
-				var lines = nugetResponse.Output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+				var lines = nugetResponse.Output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
 
 				foreach (var line in lines)
 				{
-					var linePieces = line.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+					var linePieces = line.Split([' ', '\t'], StringSplitOptions.RemoveEmptyEntries);
 
 					if (linePieces.Length == 2)
 					{

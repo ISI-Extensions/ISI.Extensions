@@ -32,7 +32,7 @@ namespace ISI.Extensions.PostgreSQL.Extensions
 
 		public static async Task<int> ExecuteNonQueryAsync(this Npgsql.NpgsqlConnection connection, string sql, KeyValuePair<string, object> parameter, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await ExecuteNonQueryAsync(connection, sql, new[] { parameter }, commandTimeout, cancellationToken);
+			return await ExecuteNonQueryAsync(connection, sql, [parameter], commandTimeout, cancellationToken);
 		}
 
 		public static async Task<int> ExecuteNonQueryAsync(this Npgsql.NpgsqlConnection connection, string sql, IEnumerable<KeyValuePair<string, object>> parameters = null, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)

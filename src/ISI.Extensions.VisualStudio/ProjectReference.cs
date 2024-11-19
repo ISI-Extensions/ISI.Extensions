@@ -35,7 +35,7 @@ namespace ISI.Extensions.VisualStudio
 
 		public static bool TryParseClipboardToken(string clipboardToken, out ProjectReference projectReference)
 		{
-			var clippedItem = clipboardToken.Split(new[] { '|' }, StringSplitOptions.None);
+			var clippedItem = clipboardToken.Split(['|'], StringSplitOptions.None);
 
 			if ((clippedItem.Length >= 2) && string.Equals(clippedItem[0], ClipboardTokenHeader, StringComparison.InvariantCultureIgnoreCase))
 			{

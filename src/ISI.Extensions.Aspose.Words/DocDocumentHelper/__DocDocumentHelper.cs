@@ -30,11 +30,10 @@ namespace ISI.Extensions.Aspose
 				(new ISI.Extensions.Aspose.Words.LicenseApplier()).ApplyLicense();
 			}
 
-			protected HashSet<string> ValidExtensions = new(new[]
-			{
+			protected HashSet<string> ValidExtensions = new([
 				"doc",
 				"docx"
-			}, StringComparer.InvariantCultureIgnoreCase);
+			], StringComparer.InvariantCultureIgnoreCase);
 
 			public bool IsHelperFor(ISI.Extensions.Documents.IDocument document)
 			{

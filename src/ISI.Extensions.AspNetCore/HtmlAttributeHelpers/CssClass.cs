@@ -59,14 +59,14 @@ namespace ISI.Extensions.AspNetCore.Extensions
 
 			htmlAttributes.TryGetValue(ClassAttributeName, out cssClasses);
 
-			return new HashSet<string>(string.Format("{0}", cssClasses).Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries), StringComparer.InvariantCulture);
+			return new HashSet<string>(string.Format("{0}", cssClasses).Split([' '], StringSplitOptions.RemoveEmptyEntries), StringComparer.InvariantCulture);
 		}
 
 		private static void CssClassHelper(AbstractHtmlAttributeCollection htmlAttributes, string cssClass)
 		{
 			var currentCssClasses = GetCssClasses(htmlAttributes);
 
-			currentCssClasses.UnionWith(cssClass.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
+			currentCssClasses.UnionWith(cssClass.Split([' '], StringSplitOptions.RemoveEmptyEntries));
 
 			htmlAttributes[ClassAttributeName] = string.Join(" ", currentCssClasses);
 		}

@@ -123,8 +123,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 					sqlConnectionWhereClause.InitializeActions.Add((sqlServerConfiguration, connection) =>
 					{
-						var dataReader = new ISI.Extensions.DataReader.EnumerableDataReader<ISI.Extensions.DataReader.ValueWrapper<object>>(new[]
-						{
+						var dataReader = new ISI.Extensions.DataReader.EnumerableDataReader<ISI.Extensions.DataReader.ValueWrapper<object>>([
 							usedFilterValues.Select(filterValue => new ISI.Extensions.DataReader.ValueWrapper<object>()
 							{
 								Value = filterValue,
@@ -133,7 +132,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 							{
 								Value = filterValue,
 							})
-						}, null, null);
+						], null, null);
 
 						connection.EnsureConnectionIsOpenAsync().Wait();
 

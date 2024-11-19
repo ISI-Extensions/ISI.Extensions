@@ -35,7 +35,7 @@ namespace ISI.Extensions
 					return path;
 				}
 
-				var commonPath = GetCommonPath(new[] { relativeTo, path });
+				var commonPath = GetCommonPath([relativeTo, path]);
 
 				if (string.IsNullOrWhiteSpace(commonPath))
 				{

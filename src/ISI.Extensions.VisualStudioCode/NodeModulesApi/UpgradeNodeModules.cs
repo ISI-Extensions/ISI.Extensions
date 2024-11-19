@@ -52,7 +52,7 @@ namespace ISI.Extensions.VisualStudioCode
 					var processResponse = ISI.Extensions.Process.WaitForProcessResponse(new Process.ProcessRequest()
 					{
 						ProcessExeFullName = "cmd.exe",
-						Arguments = new[] { "/c", "npm", "update" },
+						Arguments = ["/c", "npm", "update"],
 						WorkingDirectory = solutionSourceDirectory,
 						Logger = logger,
 					});

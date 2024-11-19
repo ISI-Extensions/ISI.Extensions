@@ -116,7 +116,7 @@ namespace ISI.Extensions.Tests
 
 			var users = securityApi.GetUsers(new()
 			{
-				UserNames = new[] { settings.ActiveDirectory.UserName },
+				UserNames = [settings.ActiveDirectory.UserName],
 			}).Users;
 
 			foreach (var user in users)

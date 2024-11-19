@@ -185,7 +185,7 @@ namespace ISI.Extensions.DependencyInjection
 
 										foreach (var parameter in constructor.GetParameters())
 										{
-											parameters.Add(System.Linq.Expressions.Expression.Call(container, "GetService", new Type[] { parameter.ParameterType }, System.Linq.Expressions.Expression.Constant(parameter.ParameterType, typeof(Type))));
+											parameters.Add(System.Linq.Expressions.Expression.Call(container, "GetService", [parameter.ParameterType], System.Linq.Expressions.Expression.Constant(parameter.ParameterType, typeof(Type))));
 										}
 
 										var create = System.Linq.Expressions.Expression.New(constructor, parameters);

@@ -92,7 +92,7 @@ namespace ISI.Extensions.Docker
 
 						if (!string.IsNullOrWhiteSpace(line) && !line.StartsWith("#"))
 						{
-							var lineParts = line.Split(new[] { '=' }, 2);
+							var lineParts = line.Split(['='], 2);
 
 							if (lineParts.Length == 2)
 							{

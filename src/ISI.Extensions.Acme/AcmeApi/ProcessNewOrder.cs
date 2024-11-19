@@ -49,14 +49,14 @@ namespace ISI.Extensions.Acme
 			var createNewOrderResponse = CreateNewOrder(new()
 			{
 				HostContext = request.HostContext,
-				CertificateIdentifiers = new[]
-				{
+				CertificateIdentifiers =
+				[
 					new ISI.Extensions.Acme.OrderCertificateIdentifier()
 					{
 						CertificateIdentifierType = ISI.Extensions.Acme.OrderCertificateIdentifierType.Dns,
 						CertificateIdentifierValue = request.DomainName,
 					}
-				},
+				],
 				PostRenewalActions = request.PostRenewalActions,
 			});
 

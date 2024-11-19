@@ -94,7 +94,7 @@ namespace ISI.Extensions.Documents.DocumentGenerator
 
 		public virtual async Task GenerateDocumentAsync(System.IO.Stream templateStream, TModel model, ISI.Extensions.Documents.IDocumentProperties documentProperties, string printerName, System.IO.Stream documentStream, ISI.Extensions.Documents.FileFormat fileFormat, System.Threading.CancellationToken cancellationToken = default)
 		{
-			await GenerateDocumentAsync(templateStream, new[] { model }, documentProperties, printerName, documentStream, fileFormat, cancellationToken);
+			await GenerateDocumentAsync(templateStream, [model], documentProperties, printerName, documentStream, fileFormat, cancellationToken);
 		}
 
 		public virtual async Task GenerateDocumentAsync(System.IO.Stream templateStream, IEnumerable<TModel> models, ISI.Extensions.Documents.IDocumentProperties documentProperties, string printerName, System.IO.Stream documentStream, ISI.Extensions.Documents.FileFormat fileFormat, System.Threading.CancellationToken cancellationToken = default)

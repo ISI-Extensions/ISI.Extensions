@@ -25,12 +25,12 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeGenerationApi
 	{
 		public string AssemblyInfoFullName { get; set; }
 
-		public IEnumerable<string> Usings { get; set; } = new[]
-		{
+		public IEnumerable<string> Usings { get; set; } =
+		[
 			"System.Reflection",
 			"System.Runtime.CompilerServices",
-			"System.Runtime.InteropServices",
-		};
+			"System.Runtime.InteropServices"
+		];
 
 		public string Title { get; set; }
 		public string Description { get; set; }

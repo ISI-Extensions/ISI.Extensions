@@ -57,7 +57,7 @@ namespace ISI.Extensions.Documents.DocumentGenerator
 		public virtual System.Data.IDataReader GetDataReader<TMergeModel>(TModel model, Func<TModel, TMergeModel> converter)
 			where TMergeModel : class, new()
 		{
-			return GetDataReader<TMergeModel>(new[] { model }, converter);
+			return GetDataReader<TMergeModel>([model], converter);
 		}
 
 		public virtual System.Data.IDataReader GetDataReader(IEnumerable<TModel> models)
@@ -67,7 +67,7 @@ namespace ISI.Extensions.Documents.DocumentGenerator
 
 		public virtual System.Data.IDataReader GetDataReader(TModel model)
 		{
-			return GetDataReader(new[] { model });
+			return GetDataReader([model]);
 		}
 
 		//public virtual void GenerateDocument<TMailMergeModel>(System.IO.Stream templateStream, IEnumerable<TModel> models, Func<TModel, TMailMergeModel> converter, ISI.Extensions.Documents.IDocumentProperties documentProperties, string printerName, System.IO.Stream documentStream, ISI.Extensions.Documents.FileFormat fileFormat)

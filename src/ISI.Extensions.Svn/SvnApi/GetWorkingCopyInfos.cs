@@ -66,7 +66,7 @@ namespace ISI.Extensions.Svn
 					Arguments = arguments.ToArray(),
 				}).Output;
 
-				var contentItems = content.Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+				var contentItems = content.Split(["\r", "\n"], StringSplitOptions.RemoveEmptyEntries);
 
 				var infos = new List<DTOs.WorkingCopyInfo>();
 
@@ -76,7 +76,7 @@ namespace ISI.Extensions.Svn
 				{
 					if (!string.IsNullOrWhiteSpace(contentItem))
 					{
-						var property = contentItem.Split(new string[] { ":" }, 2, StringSplitOptions.RemoveEmptyEntries);
+						var property = contentItem.Split([":"], 2, StringSplitOptions.RemoveEmptyEntries);
 
 						if (property.Length >= 2)
 						{

@@ -109,21 +109,21 @@ namespace ISI.Extensions.Tests
 					ApiUser = settings.GetValue("NameCheap.ApiUser"),
 					ApiKey = settings.GetValue("NameCheap.ApiKey"),
 					DomainName = "whizzia.com",
-					DnsRecords = new[]
-					{
+					DnsRecords =
+					[
 						new ISI.Extensions.Dns.DnsRecord()
 						{
 							Name = "www",
 							Data = "whizzia.com",
 							RecordType = ISI.Extensions.Dns.RecordType.CNAME,
-						},
+						}
 						//new ISI.Extensions.Dns.DnsRecord()
 						//{
 						//	Name = "@",
 						//	Data = "10.165.0.1",
 						//	RecordType = ISI.Extensions.Dns.RecordType.A,
 						//},
-					}
+					]
 				});
 			}
 		}

@@ -58,7 +58,7 @@ namespace ISI.Extensions
 		{
 			if (subpath.StartsWith("~"))
 			{
-				var pieces = subpath.Substring(1).Split(new[] { EmbeddedVolume.DirectorySeparator }, StringSplitOptions.RemoveEmptyEntries).ToList();
+				var pieces = subpath.Substring(1).Split([EmbeddedVolume.DirectorySeparator], StringSplitOptions.RemoveEmptyEntries).ToList();
 
 				var pathPrefix = FormatPathPrefix(pieces.First()); //ISI.Extensions.Configuration.GetUrlRoot(typeToFindResourceAssembly);
 
@@ -83,7 +83,7 @@ namespace ISI.Extensions
 
 		public static string GetEmbeddedResourceName(string fileName, bool isDirectoryName = false)
 		{
-			var pieces = new List<string>(fileName.Split(new string[] { "/", "\\" }, StringSplitOptions.RemoveEmptyEntries));
+			var pieces = new List<string>(fileName.Split(["/", "\\"], StringSplitOptions.RemoveEmptyEntries));
 
 			{
 				var index = pieces.IndexOf("..");

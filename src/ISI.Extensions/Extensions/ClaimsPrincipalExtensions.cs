@@ -22,7 +22,7 @@ namespace ISI.Extensions.Extensions
 {
 	public static class ClaimsPrincipalExtensions
 	{
-		public static bool HasAnyRole(this System.Security.Claims.ClaimsPrincipal claimsPrincipal, string roles) => claimsPrincipal.HasAnyRole((roles ?? string.Empty).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(role => role.Trim()));
+		public static bool HasAnyRole(this System.Security.Claims.ClaimsPrincipal claimsPrincipal, string roles) => claimsPrincipal.HasAnyRole((roles ?? string.Empty).Split([','], StringSplitOptions.RemoveEmptyEntries).Select(role => role.Trim()));
 		public static bool HasAnyRole(this System.Security.Claims.ClaimsPrincipal claimsPrincipal, IEnumerable<string> roles)
 		{
 			if (roles != null)

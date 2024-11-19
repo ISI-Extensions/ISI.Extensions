@@ -140,9 +140,9 @@ namespace ISI.Extensions
 
 						case FileNameMaskType.FirstExistingDirectory:
 							{
-								var key = value.Trim().TrimStart(Key).Split(new[] { '}' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+								var key = value.Trim().TrimStart(Key).Split(['}'], StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
 
-								var directories = key.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries).Select(directory => directory.Trim());
+								var directories = key.Split([',', ';'], StringSplitOptions.RemoveEmptyEntries).Select(directory => directory.Trim());
 
 								var replacementValue = directories.FirstOrDefault(System.IO.Directory.Exists);
 

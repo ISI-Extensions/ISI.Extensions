@@ -36,7 +36,7 @@ namespace ISI.Extensions.Repository
 		{
 			var upsertedRecords = new List<TRecord>();
 
-			await foreach (var upsertedRecord in UpsertRecordsAsync(new[] { record }, null, cancellationToken))
+			await foreach (var upsertedRecord in UpsertRecordsAsync([record], null, cancellationToken))
 			{
 				upsertedRecords.Add(upsertedRecord);
 			}
@@ -61,7 +61,7 @@ namespace ISI.Extensions.Repository
 		{
 			var upsertedRecords = new List<TRecord>();
 
-			await foreach (var upsertedRecord in UpsertRecordsAsync(new[] { record }, updateRecordProperties, cancellationToken))
+			await foreach (var upsertedRecord in UpsertRecordsAsync([record], updateRecordProperties, cancellationToken))
 			{
 				upsertedRecords.Add(upsertedRecord);
 			}

@@ -39,7 +39,7 @@ namespace ISI.Extensions.VisualStudio
 
 		public BuildConfiguration(string buildConfiguration)
 		{
-			var parsedBuildConfiguration = buildConfiguration.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+			var parsedBuildConfiguration = buildConfiguration.Split(['|'], StringSplitOptions.RemoveEmptyEntries);
 
 			Configuration = (parsedBuildConfiguration.Length > 0 ? parsedBuildConfiguration[0] : string.Empty);
 

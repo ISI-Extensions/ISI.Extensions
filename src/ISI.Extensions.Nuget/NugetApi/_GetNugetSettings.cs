@@ -52,8 +52,8 @@ namespace ISI.Extensions.Nuget
 			nugetSettings ??= new();
 			nugetSettings.UpdateNugetPackages ??= new()
 			{
-				NugetSettingsNugetPackageKeys = new[]
-				{
+				NugetSettingsNugetPackageKeys =
+				[
 					new NugetSettingsNugetPackageKey()
 					{
 						PackageId = "StackifyLib",
@@ -68,10 +68,10 @@ namespace ISI.Extensions.Nuget
 					{
 						PackageId = "Microsoft.ClearScript",
 						PackageVersion = "6.0.2",
-					},
-				},
-				IgnorePackageIds = new[]
-				{
+					}
+				],
+				IgnorePackageIds =
+				[
 					"ISI.CMS.T4CMS",
 					"ISI.CMS.T4CMS.MSSQL",
 					"ISI.CMS.T4CMS.FileSystem",
@@ -110,8 +110,8 @@ namespace ISI.Extensions.Nuget
 					"nsoftware.InShip",
 					"nsoftware.IPWorksSSH",
 					"WixToolset.Heat",
-					"WixToolset.UI.wixext",
-				},
+					"WixToolset.UI.wixext"
+				],
 			};
 
 

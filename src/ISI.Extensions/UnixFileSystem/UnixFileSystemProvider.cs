@@ -30,14 +30,14 @@ namespace ISI.Extensions.UnixFileSystem
 		internal static string _directorySeparator => "/";
 		protected override string DirectorySeparator => _directorySeparator;
 
-		private static readonly System.Text.RegularExpressions.Regex[] FileSystemRecordRegexs = new System.Text.RegularExpressions.Regex[]
-		{
+		private static readonly System.Text.RegularExpressions.Regex[] FileSystemRecordRegexs =
+		[
 			//Windows
 			new(@"^(?<datetime>\d{2}-\d{2}-\d{2}\s+\d{2}:\d{2}(A|P)M)(?:\s+)(?<type>(?:\<)(?:\w+)(?:\>))?\s+(?<size>\d*)\s+(?<filename>.+)$", System.Text.RegularExpressions.RegexOptions.IgnoreCase),
 			//Unix
 			new(@"^(?<type>[\-dbclps])(?<ownerpermissions>[-rwxsStT]{3})(?<grouppermissions>[-rwxsStT]{3})(?<otherpermissions>[-rwxsStT]{3})\s+\d*\s+(?<owner>[\w\-\.]+)\s+(?<group>[\w\-\.]+)\s+(?<size>\d+)\s+(?<datetime>\d{2,4}\-\d{2}\-\d{2,4}\s\d{2}\:\d{2}\:\d{2}\.\d{9}\s[-+\s]\d{4})\s+(?<filename>.+)$", System.Text.RegularExpressions.RegexOptions.IgnoreCase),
-			new(@"^(?<type>[\-dbclps])(?<ownerpermissions>[-rwxsStT]{3})(?<grouppermissions>[-rwxsStT]{3})(?<otherpermissions>[-rwxsStT]{3})\s+\d*\s+(?<owner>[\w\-\.]+)\s+(?<group>[\w\-\.]+)\s+(?<size>\d+)\s+(?<datetime>((\w+\s+\d+)|(\d{2,4}[/\-]\d{2}[/\-]\d{2,4}))\s+\d{1,2}:\d{2}(\s*[AP]M)?)\s(?<filename>.+)$", System.Text.RegularExpressions.RegexOptions.IgnoreCase),
-		};
+			new(@"^(?<type>[\-dbclps])(?<ownerpermissions>[-rwxsStT]{3})(?<grouppermissions>[-rwxsStT]{3})(?<otherpermissions>[-rwxsStT]{3})\s+\d*\s+(?<owner>[\w\-\.]+)\s+(?<group>[\w\-\.]+)\s+(?<size>\d+)\s+(?<datetime>((\w+\s+\d+)|(\d{2,4}[/\-]\d{2}[/\-]\d{2,4}))\s+\d{1,2}:\d{2}(\s*[AP]M)?)\s(?<filename>.+)$", System.Text.RegularExpressions.RegexOptions.IgnoreCase)
+		];
 
 		public FileSystem.IFileSystemPath ParseFileSystemRecord(FileSystem.IFileSystemPathDirectory fileSystemPathDirectory, string fileSystemRecord)
 		{
@@ -79,9 +79,9 @@ namespace ISI.Extensions.UnixFileSystem
 						break;
 				}
 
-				var pathName = fileName.Split(new[] { "->" }, StringSplitOptions.None).FirstOrDefault().NullCheckedTrim().NullCheckedTrimEnd(DirectorySeparator);
+				var pathName = fileName.Split(["->"], StringSplitOptions.None).FirstOrDefault().NullCheckedTrim().NullCheckedTrimEnd(DirectorySeparator);
 
-				var linkedTo = fileName.Split(new[] { "->" }, StringSplitOptions.None).LastOrDefault().NullCheckedTrim();
+				var linkedTo = fileName.Split(["->"], StringSplitOptions.None).LastOrDefault().NullCheckedTrim();
 
 				var dateTimeValue = match.Groups["datetime"].Value;
 

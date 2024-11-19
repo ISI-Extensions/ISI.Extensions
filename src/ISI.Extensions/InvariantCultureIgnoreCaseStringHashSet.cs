@@ -92,6 +92,6 @@ namespace ISI.Extensions
 
 		public static implicit operator InvariantCultureIgnoreCaseStringHashSet(HashSet<string> values) => new(values);
 		public static implicit operator InvariantCultureIgnoreCaseStringHashSet(string[] values) => new(values);
-		public static implicit operator InvariantCultureIgnoreCaseStringHashSet(string value) => new(new [] { value });
+		public static implicit operator InvariantCultureIgnoreCaseStringHashSet(string value) => new([value]);
 	}
 }

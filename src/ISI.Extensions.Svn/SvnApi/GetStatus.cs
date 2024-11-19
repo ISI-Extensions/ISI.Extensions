@@ -47,13 +47,13 @@ namespace ISI.Extensions.Svn
 					Arguments = arguments.ToArray(),
 				}).Output;
 
-				var contentItems = content.Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+				var contentItems = content.Split(["\r", "\n"], StringSplitOptions.RemoveEmptyEntries);
 
 				foreach (var contentItem in contentItems)
 				{
 					if (contentItem[9] == ' ')
 					{
-						var itemInfo = contentItem.Substring(7).Trim().Split(new string[] { " " }, 2, StringSplitOptions.RemoveEmptyEntries);
+						var itemInfo = contentItem.Substring(7).Trim().Split([" "], 2, StringSplitOptions.RemoveEmptyEntries);
 
 						var path = (itemInfo.Length > 1 ? itemInfo[1] : contentItem);
 

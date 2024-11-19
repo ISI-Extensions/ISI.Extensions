@@ -60,7 +60,7 @@ namespace ISI.Extensions.GoDrive
 						fileIndex = content.IndexOf("</a>", StringComparison.InvariantCultureIgnoreCase);
 						if (fileIndex >= 0)
 						{
-							var fileParts = content.Substring(0, fileIndex).Split(new[] { '>', '<', '\'', '{', '}', ',' }, StringSplitOptions.RemoveEmptyEntries);
+							var fileParts = content.Substring(0, fileIndex).Split(['>', '<', '\'', '{', '}', ','], StringSplitOptions.RemoveEmptyEntries);
 							content = content.Substring(fileIndex);
 
 							fileNames.Add(new GoDriveFile()
@@ -82,7 +82,7 @@ namespace ISI.Extensions.GoDrive
 						directoryIndex = content.IndexOf("</a>", StringComparison.InvariantCultureIgnoreCase);
 						if (directoryIndex >= 0)
 						{
-							var fileParts = string.Format("fileTable{0}", content.Substring(0, directoryIndex)).Split(new[] { '>', '<', '\'', '{', '}', ',', '&' }, StringSplitOptions.RemoveEmptyEntries);
+							var fileParts = string.Format("fileTable{0}", content.Substring(0, directoryIndex)).Split(['>', '<', '\'', '{', '}', ',', '&'], StringSplitOptions.RemoveEmptyEntries);
 							content = content.Substring(directoryIndex);
 
 							fileNames.Add(new GoDriveDirectory()

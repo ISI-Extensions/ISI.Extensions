@@ -41,7 +41,7 @@ namespace ISI.Extensions.Nuget
 			{
 				Logger = logger, //new NullLogger(),
 				ProcessExeFullName = GetNugetExeFullName(new()).NugetExeFullName,
-				Arguments = new[] { "locals http-cache -clear" },
+				Arguments = ["locals http-cache -clear"],
 			});
 			
 			return response;

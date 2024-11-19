@@ -71,9 +71,9 @@ namespace ISI.Extensions.ConfigurationValueReaders
 
 							if (fileInfo?.Exists ?? false)
 							{
-								var valuesByKey = fileInfo.CreateReadStream().TextReadToEnd().Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Select(line =>
+								var valuesByKey = fileInfo.CreateReadStream().TextReadToEnd().Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries).Select(line =>
 									{
-										var pieces = line.Split(new[] { ':', '\t' }, 2, StringSplitOptions.RemoveEmptyEntries);
+										var pieces = line.Split([':', '\t'], 2, StringSplitOptions.RemoveEmptyEntries);
 
 										if (pieces.Length == 1)
 										{

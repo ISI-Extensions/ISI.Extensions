@@ -105,7 +105,7 @@ namespace ISI.Extensions.Tests
 
 			codeSigningApi.SignVsixes(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.SignVsixesRequest()
 			{
-				VsixFullNames = new[] { @"F:\ISI\Internal Projects\ISI.VisualStudio.Extensions\Publish\ISI.VisualStudio.Extensions.vsix" },
+				VsixFullNames = [@"F:\ISI\Internal Projects\ISI.VisualStudio.Extensions\Publish\ISI.VisualStudio.Extensions.vsix"],
 				CodeSigningCertificateTokenCertificateFileName = settings.CodeSigning.Token.CertificateFileName,
 				CodeSigningCertificateTokenCryptographicProvider = settings.CodeSigning.Token.CryptographicProvider,
 				CodeSigningCertificateTokenContainerName = settings.CodeSigning.Token.ContainerName,

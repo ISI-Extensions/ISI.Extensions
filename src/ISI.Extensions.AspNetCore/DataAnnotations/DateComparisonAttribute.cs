@@ -71,7 +71,7 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 
 				if (!nullableValue.HasValue)
 				{
-					return new[] { new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage) };
+					return [new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage)];
 				}
 
 				var value = nullableValue.Value;
@@ -86,42 +86,42 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 						case ISI.Extensions.ComparisonType.Equal:
 							if (value != valueToCheck)
 							{
-								return new[] { new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage) };
+								return [new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage)];
 							}
 
 							break;
 						case ISI.Extensions.ComparisonType.NotEqual:
 							if (value == valueToCheck)
 							{
-								return new[] { new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage) };
+								return [new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage)];
 							}
 
 							break;
 						case ISI.Extensions.ComparisonType.LessThan:
 							if (value >= valueToCheck)
 							{
-								return new[] { new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage) };
+								return [new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage)];
 							}
 
 							break;
 						case ISI.Extensions.ComparisonType.LessThanOrEqualTo:
 							if (value > valueToCheck)
 							{
-								return new[] { new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage) };
+								return [new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage)];
 							}
 
 							break;
 						case ISI.Extensions.ComparisonType.GreaterThan:
 							if (value <= valueToCheck)
 							{
-								return new[] { new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage) };
+								return [new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage)];
 							}
 
 							break;
 						case ISI.Extensions.ComparisonType.GreaterThanOrEqualTo:
 							if (value < valueToCheck)
 							{
-								return new[] { new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage) };
+								return [new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage)];
 							}
 
 							break;
@@ -132,7 +132,7 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 				}
 			}
 
-			return Enumerable.Empty<Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult>();
+			return [];
 		}
 	}
 }

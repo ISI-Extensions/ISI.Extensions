@@ -133,7 +133,7 @@ namespace ISI.Extensions
 				var onChange = OnChange;
 				OnChange = null;
 
-				var lines = content.Split(new char[] {'\n', '\r'}, StringSplitOptions.RemoveEmptyEntries);
+				var lines = content.Split(['\n', '\r'], StringSplitOptions.RemoveEmptyEntries);
 
 				IniSectionKeyValues currentSection = null;
 
@@ -145,14 +145,14 @@ namespace ISI.Extensions
 					}
 					else if (line.TrimStart().StartsWith("["))
 					{
-						var sectionKey = line.Split(new char[] {'[', ']'}, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+						var sectionKey = line.Split(['[', ']'], StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
 						currentSection = this[sectionKey];
 					}
 					else if(line.Contains("="))
 					{
 						if (currentSection != null)
 						{
-							var keyValue = line.Split(new char[] {'='}, StringSplitOptions.None, s => s.Trim());
+							var keyValue = line.Split(['='], StringSplitOptions.None, s => s.Trim());
 							if (keyValue.Length > 0)
 							{
 								currentSection[keyValue[0]] = (keyValue.Length > 1 ? keyValue[1] : string.Empty);

@@ -51,7 +51,7 @@ namespace ISI.Extensions.MessageBus
 		{
 			if (addSubscriptions != null)
 			{
-				Add(new[] { addSubscriptions });
+				Add([addSubscriptions]);
 			}
 		}
 

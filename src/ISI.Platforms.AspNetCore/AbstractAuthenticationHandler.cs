@@ -145,10 +145,9 @@ namespace ISI.Platforms.AspNetCore
 
 								if (userUuidClaim != null)
 								{
-									var principal = new System.Security.Claims.ClaimsPrincipal(new[]
-									{
-										new System.Security.Claims.ClaimsIdentity(jwtToken.Claims),
-									});
+									var principal = new System.Security.Claims.ClaimsPrincipal([
+										new System.Security.Claims.ClaimsIdentity(jwtToken.Claims)
+									]);
 
 									var ticket = new Microsoft.AspNetCore.Authentication.AuthenticationTicket(principal, Scheme.Name);
 
@@ -169,7 +168,7 @@ namespace ISI.Platforms.AspNetCore
 
 						var getUsersResponse = await AuthenticationIdentityApi.GetUsersAsync(new()
 						{
-							UserUuids = new[] { userUuid.Value },
+							UserUuids = [userUuid.Value],
 						});
 
 						var user = getUsersResponse.Users.NullCheckedFirstOrDefault();
@@ -178,10 +177,9 @@ namespace ISI.Platforms.AspNetCore
 						{
 							var claims = await GetUserClaimsAsync(user);
 
-							var principal = new System.Security.Claims.ClaimsPrincipal(new[]
-							{
-								new System.Security.Claims.ClaimsIdentity(claims),
-							});
+							var principal = new System.Security.Claims.ClaimsPrincipal([
+								new System.Security.Claims.ClaimsIdentity(claims)
+							]);
 
 							var ticket = new Microsoft.AspNetCore.Authentication.AuthenticationTicket(principal, Scheme.Name);
 
@@ -201,10 +199,9 @@ namespace ISI.Platforms.AspNetCore
 					{
 						var jwtToken = jwtSecurityTokenHandler.ReadJwtToken(authenticationCookieValue);
 
-						var principal = new System.Security.Claims.ClaimsPrincipal(new[]
-						{
-							new System.Security.Claims.ClaimsIdentity(jwtToken.Claims, GetAuthenticationHandlerName()),
-						});
+						var principal = new System.Security.Claims.ClaimsPrincipal([
+							new System.Security.Claims.ClaimsIdentity(jwtToken.Claims, GetAuthenticationHandlerName())
+						]);
 
 						var ticket = new Microsoft.AspNetCore.Authentication.AuthenticationTicket(principal, Scheme.Name);
 

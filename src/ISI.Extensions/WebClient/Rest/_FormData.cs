@@ -35,7 +35,7 @@ namespace ISI.Extensions.WebClient
 			public string Value
 			{
 				get => ((Values == null) || (Values.Length != 1) ? null : Values[0]);
-				set => Values = (value == null ? null : new[] { value });
+				set => Values = (value == null ? null : [value]);
 			}
 
 			public string[] Values { get; set; }

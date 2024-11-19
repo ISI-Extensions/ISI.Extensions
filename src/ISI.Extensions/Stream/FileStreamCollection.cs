@@ -54,11 +54,11 @@ namespace ISI.Extensions
 			}
 
 			private List<FileStream> _fileStreams = null;
-			protected List<FileStream> FileStreams => _fileStreams ??= new();
+			protected List<FileStream> FileStreams => _fileStreams ??= [];
 
 			public void Add(string fileName)
 			{
-				AddRange(new[] { fileName });
+				AddRange([fileName]);
 			}
 
 			public void Add(string fileName, bool processArchives)
@@ -68,7 +68,7 @@ namespace ISI.Extensions
 
 			public void Add(string fileName, System.Text.RegularExpressions.Regex fileFilterRegEx, bool processArchives, System.Text.RegularExpressions.Regex archiveFileFilterRegEx)
 			{
-				AddRange(new[] { fileName }, fileFilterRegEx, processArchives, archiveFileFilterRegEx);
+				AddRange([fileName], fileFilterRegEx, processArchives, archiveFileFilterRegEx);
 			}
 
 			public void Add(FileStream fileStream)

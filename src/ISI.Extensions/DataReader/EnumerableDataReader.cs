@@ -35,12 +35,12 @@ namespace ISI.Extensions.DataReader
 		protected ISI.Extensions.DataReader.TransformRecord TransformRecord { get; }
 
 		public EnumerableDataReader(IEnumerable<TRecord> records, ISI.Extensions.DataReader.TransformRecord transformRecord = null)
-			: this(new [] { records }, null, transformRecord)
+			: this([records], null, transformRecord)
 		{
 		}
 
 		public EnumerableDataReader(IEnumerable<TRecord> records, ISI.Extensions.Columns.ColumnCollection<TRecord> columns, ISI.Extensions.DataReader.TransformRecord transformRecord = null)
-			: this(new[] { records }, columns, transformRecord)
+			: this([records], columns, transformRecord)
 		{
 		}
 		

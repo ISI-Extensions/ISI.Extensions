@@ -40,7 +40,7 @@ namespace ISI.Extensions.GoDrive
 
 					subPageIndex = formElement.IndexOf("action=\"", StringComparison.InvariantCultureIgnoreCase);
 
-					var subPageParts = formElement.Substring(subPageIndex).Split(new[] { '\"' }, StringSplitOptions.RemoveEmptyEntries);
+					var subPageParts = formElement.Substring(subPageIndex).Split(['\"'], StringSplitOptions.RemoveEmptyEntries);
 
 					subPageUri.Path = subPageParts[1];
 					subPageUri.Query = string.Empty;

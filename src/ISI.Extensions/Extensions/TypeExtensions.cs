@@ -107,7 +107,7 @@ namespace ISI.Extensions.Extensions
 				var index = typeName.IndexOf(token, StringComparison.InvariantCulture);
 				while (index > 0)
 				{
-					var lastIndex = typeName.IndexOfAny(new[] { ']', ',' }, index + 2);
+					var lastIndex = typeName.IndexOfAny([']', ','], index + 2);
 
 					var tokenValue = typeName.Substring(index, lastIndex - index);
 

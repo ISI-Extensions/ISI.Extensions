@@ -50,7 +50,7 @@ namespace ISI.Extensions.RecordReaders
 			{
 				var recordParser = ISI.Extensions.RecordParserFactory<TRecord>.GetRecordParser(textDelimiter, columns, onReads);
 
-				return new[] { new RecordParserReader<TRecord>(stream, recordParser) };
+				return [new RecordParserReader<TRecord>(stream, recordParser)];
 			}
 
 			if (string.Equals(fileExtension, "xlsx", StringComparison.InvariantCultureIgnoreCase) || string.Equals(fileExtension, "xls", StringComparison.InvariantCultureIgnoreCase))

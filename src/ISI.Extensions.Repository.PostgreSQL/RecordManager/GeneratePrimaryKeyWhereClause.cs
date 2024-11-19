@@ -126,8 +126,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 					{
 						PrimaryKeyTempTableName = string.Format("PrimaryKeys_{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting));
 
-						var dataReader = new ISI.Extensions.DataReader.EnumerableDataReader<ISI.Extensions.DataReader.ValueWrapper<TRecordPrimaryKey>>(new[]
-						{
+						var dataReader = new ISI.Extensions.DataReader.EnumerableDataReader<ISI.Extensions.DataReader.ValueWrapper<TRecordPrimaryKey>>([
 							usedPrimaryKeyValues.Select(primaryKey => new ISI.Extensions.DataReader.ValueWrapper<TRecordPrimaryKey>()
 							{
 								Value = primaryKey
@@ -136,7 +135,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 							{
 								Value = primaryKey
 							})
-						}, null, null);
+						], null, null);
 
 						connection.EnsureConnectionIsOpenAsync().Wait();
 

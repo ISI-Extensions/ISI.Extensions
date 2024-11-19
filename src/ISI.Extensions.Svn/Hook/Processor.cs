@@ -76,7 +76,7 @@ namespace ISI.Extensions.Svn
 					return OnPreUnlock?.Invoke(this, args[1].Trim(), args[2].Trim(), args[3].Trim(), args[4].Trim(), args[5].ToBoolean()) ?? true;
 
 				case "start-commit":
-					return OnStartCommit?.Invoke(this, args[1].Trim(), args[2].Trim(), args[3].Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries, value => value.Trim())) ?? true;
+					return OnStartCommit?.Invoke(this, args[1].Trim(), args[2].Trim(), args[3].Split([','], StringSplitOptions.RemoveEmptyEntries, value => value.Trim())) ?? true;
 			}
 
 			return true;

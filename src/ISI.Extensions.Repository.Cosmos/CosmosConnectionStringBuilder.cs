@@ -32,7 +32,7 @@ namespace ISI.Extensions.Repository.Cosmos
 		{
 			ConnectionString = connectionString;
 
-			var connectionStringValues = connectionString.Split(new[] {';'}).Select(keyValue => keyValue.Split(new[] {'='}, 2)).ToDictionary(keyValue => keyValue.First(), keyValue => keyValue.Last(), StringComparer.InvariantCultureIgnoreCase);
+			var connectionStringValues = connectionString.Split(new[] {';'}).Select(keyValue => keyValue.Split(['='], 2)).ToDictionary(keyValue => keyValue.First(), keyValue => keyValue.Last(), StringComparer.InvariantCultureIgnoreCase);
 
 			AccountEndpoint = (connectionStringValues.TryGetValue(nameof(AccountEndpoint), out var accountEndpoint) ? accountEndpoint : string.Empty);
 			AccountKey = (connectionStringValues.TryGetValue(nameof(AccountKey), out var accountKey) ? accountKey : string.Empty);

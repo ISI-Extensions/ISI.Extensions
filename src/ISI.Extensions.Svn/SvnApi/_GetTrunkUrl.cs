@@ -44,7 +44,7 @@ namespace ISI.Extensions.Svn
 
 			var uri = new UriBuilder(url);
 
-			var pathPieces = uri.Path.Split(new[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+			var pathPieces = uri.Path.Split(['\\', '/'], StringSplitOptions.RemoveEmptyEntries).ToList();
 
 			if (pathPieces.Contains("trunk", StringComparer.InvariantCultureIgnoreCase))
 			{

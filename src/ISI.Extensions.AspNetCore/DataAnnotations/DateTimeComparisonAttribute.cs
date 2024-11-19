@@ -86,7 +86,7 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 
 				if (!dateTimeNullableValue.HasValue)
 				{
-					return new[] { new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage) };
+					return [new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage)];
 				}
 
 				var dateTimeValue = dateTimeNullableValue.Value;
@@ -110,42 +110,42 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 						case ISI.Extensions.ComparisonType.Equal:
 							if (dateTimeValue != valueToCheck)
 							{
-								return new[] { new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage) };
+								return [new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage)];
 							}
 
 							break;
 						case ISI.Extensions.ComparisonType.NotEqual:
 							if (dateTimeValue == valueToCheck)
 							{
-								return new[] { new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage) };
+								return [new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage)];
 							}
 
 							break;
 						case ISI.Extensions.ComparisonType.LessThan:
 							if (dateTimeValue >= valueToCheck)
 							{
-								return new[] { new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage) };
+								return [new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage)];
 							}
 
 							break;
 						case ISI.Extensions.ComparisonType.LessThanOrEqualTo:
 							if (dateTimeValue > valueToCheck)
 							{
-								return new[] { new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage) };
+								return [new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage)];
 							}
 
 							break;
 						case ISI.Extensions.ComparisonType.GreaterThan:
 							if (dateTimeValue <= valueToCheck)
 							{
-								return new[] { new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage) };
+								return [new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage)];
 							}
 
 							break;
 						case ISI.Extensions.ComparisonType.GreaterThanOrEqualTo:
 							if (dateTimeValue < valueToCheck)
 							{
-								return new[] { new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage) };
+								return [new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage)];
 							}
 
 							break;
@@ -155,7 +155,7 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 				}
 			}
 
-			return Enumerable.Empty<Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult>();
+			return [];
 		}
 	}
 }

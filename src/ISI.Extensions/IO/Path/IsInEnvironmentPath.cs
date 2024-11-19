@@ -32,7 +32,7 @@ namespace ISI.Extensions
 			{
 				var processResponse = ISI.Extensions.Process.WaitForProcessResponse("where", exeFileName);
 
-				fullName = processResponse.ExitCode == 0 ? processResponse.Output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).First() : string.Empty;
+				fullName = processResponse.ExitCode == 0 ? processResponse.Output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries).First() : string.Empty;
 
 				return !string.IsNullOrWhiteSpace(fullName);
 			}

@@ -78,13 +78,13 @@ namespace ISI.Extensions.VisualStudio
 				{
 					Logger = logger,
 					ProcessExeFullName = vsixPublisherExeFullName,
-					Arguments = new[]
-					{
+					Arguments =
+					[
 						"publish",
 						$"-payload \"{request.VsixFullName}\"",
 						$"-publishManifest \"{tempVsixPublishManifestFile.FullName}\"",
-						$"-personalAccessToken \"{request.PersonalAccessToken}\"",
-					},
+						$"-personalAccessToken \"{request.PersonalAccessToken}\""
+					],
 				});
 
 				if (publishResponse.Errored)

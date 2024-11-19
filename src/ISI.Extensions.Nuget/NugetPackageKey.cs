@@ -36,7 +36,7 @@ namespace ISI.Extensions.Nuget
 
 		public static bool TryParseClipboardToken(string clipboardToken, out NugetPackageKey nugetPackageKey)
 		{
-			var clippedItem = clipboardToken.Split(new[] { '|' }, StringSplitOptions.None);
+			var clippedItem = clipboardToken.Split(['|'], StringSplitOptions.None);
 
 			if ((clippedItem.Length >= 2) && string.Equals(clippedItem[0], ClipboardTokenHeader, StringComparison.InvariantCultureIgnoreCase))
 			{

@@ -200,7 +200,7 @@ namespace ISI.Extensions
 		{
 			sipAddress ??= string.Empty;
 
-			return Formatted(sipAddress.Split(new[] {":", "@"}, StringSplitOptions.RemoveEmptyEntries)[1], PhoneNumberFormat.e164);
+			return Formatted(sipAddress.Split([":", "@"], StringSplitOptions.RemoveEmptyEntries)[1], PhoneNumberFormat.e164);
 		}
 	}
 }

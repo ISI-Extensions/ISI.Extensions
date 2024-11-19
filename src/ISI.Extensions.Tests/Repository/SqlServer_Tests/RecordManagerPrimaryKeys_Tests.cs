@@ -100,9 +100,9 @@ namespace ISI.Extensions.Tests.Repository
 				ModifyUserKey = "Ron",
 			};
 
-			recordManager.UpdateRecordsAsync(new[] { record }).GetAwaiter().GetResult();
+			recordManager.UpdateRecordsAsync([record]).GetAwaiter().GetResult();
 
-			recordManager.UpdateRecordsAsync(new[] { record }).GetAwaiter().GetResult();
+			recordManager.UpdateRecordsAsync([record]).GetAwaiter().GetResult();
 
 		}
 

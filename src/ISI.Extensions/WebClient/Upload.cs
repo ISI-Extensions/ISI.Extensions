@@ -145,7 +145,7 @@ namespace ISI.Extensions.WebClient
 
 		public static (System.Net.HttpStatusCode HttpStatusCode, string Body) UploadFile(Uri uri, HeaderCollection headers, System.IO.Stream stream, string fileName, string fileFieldName = "uploadFile", System.Collections.Specialized.NameValueCollection formValues = null, string method = null)
 		{
-			return UploadFiles(uri, headers, new[] { (Stream: stream, FileName: fileName, FileFieldName: fileFieldName) }, formValues, method);
+			return UploadFiles(uri, headers, [(Stream: stream, FileName: fileName, FileFieldName: fileFieldName)], formValues, method);
 		}
 
 		public static (System.Net.HttpStatusCode HttpStatusCode, string Body) UploadFiles(string url, HeaderCollection headers, IEnumerable<(System.IO.Stream Stream, string FileName, string FileFieldName)> files, System.Collections.Specialized.NameValueCollection formValues = null, string method = null)

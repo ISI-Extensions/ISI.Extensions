@@ -30,7 +30,7 @@ namespace ISI.Extensions
 
 			var methodInfo = @enum.GetType().GetMethod(nameof(Enum.IEnum.GetUuid), System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
 
-			return methodInfo?.Invoke(@enum, new object[] { value }) as Guid?;
+			return methodInfo?.Invoke(@enum, [value]) as Guid?;
 		}
 	}
 }

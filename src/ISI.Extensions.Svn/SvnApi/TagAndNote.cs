@@ -107,7 +107,7 @@ namespace ISI.Extensions.Svn
 
 									var url = info.Url.Replace(trunkUrl, tagsUrl);
 
-									var existingExternals = property.Value.Split(new string[] { "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
+									var existingExternals = property.Value.Split(["\n", "\r"], StringSplitOptions.RemoveEmptyEntries);
 
 									Logger.LogInformation(string.Format("  TagUrl=\"{0}\"", url));
 									Logger.LogInformation(string.Format("  Path=\"{0}\"", propertySet.Path));
@@ -127,7 +127,7 @@ namespace ISI.Extensions.Svn
 										{
 											if (rgIsSVNUrl.Match(part).Success || part.StartsWith("^", StringComparison.InvariantCultureIgnoreCase))
 											{
-												var pieces = part.Split(new string[] { "@" }, StringSplitOptions.RemoveEmptyEntries);
+												var pieces = part.Split(["@"], StringSplitOptions.RemoveEmptyEntries);
 
 												uri = pieces[0].Trim();
 
@@ -185,8 +185,8 @@ namespace ISI.Extensions.Svn
 											{
 												if (string.Equals(trunkUri.Host, externalTrunkUri.Host, StringComparison.InvariantCultureIgnoreCase))
 												{
-													var trunkUrlPathParts = trunkUri.AbsolutePath.Split(new string[] { "\\", "/" }, StringSplitOptions.RemoveEmptyEntries).ToList();
-													var externalTrunkUrlPathParts = externalTrunkUri.AbsolutePath.Split(new string[] { "\\", "/" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+													var trunkUrlPathParts = trunkUri.AbsolutePath.Split(["\\", "/"], StringSplitOptions.RemoveEmptyEntries).ToList();
+													var externalTrunkUrlPathParts = externalTrunkUri.AbsolutePath.Split(["\\", "/"], StringSplitOptions.RemoveEmptyEntries).ToList();
 
 													Logger.LogInformation(string.Format("      externalTrunkUrl=\"{0}\"", externalTrunkUrl));
 													Logger.LogInformation(string.Format("      externalTagsUrl=\"{0}\"", externalTagsUrl));
@@ -205,7 +205,7 @@ namespace ISI.Extensions.Svn
 
 														if (string.Equals(trunkRepositoryHost, externalRepositoryHost, StringComparison.InvariantCultureIgnoreCase))
 														{
-															var trunkRepositoryHostParts = trunkRepositoryHost.Split(new string[] { "\\", "/" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+															var trunkRepositoryHostParts = trunkRepositoryHost.Split(["\\", "/"], StringSplitOptions.RemoveEmptyEntries).ToList();
 
 															trunkUrlPathParts.RemoveRange(0, trunkRepositoryHostParts.Count() - 1);
 															externalTrunkUrlPathParts.RemoveRange(0, trunkRepositoryHostParts.Count() - 1);

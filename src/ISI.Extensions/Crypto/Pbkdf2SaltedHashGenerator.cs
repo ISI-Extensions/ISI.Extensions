@@ -49,7 +49,7 @@ namespace ISI.Extensions.Crypto
 
 		public string GeneratedHashedValue(string value, string cryptoSalt)
 		{
-			var cryptoSaltParts = cryptoSalt.Split(new[] { ':' }, StringSplitOptions.None);
+			var cryptoSaltParts = cryptoSalt.Split([':'], StringSplitOptions.None);
 
 			var iterations = cryptoSaltParts[0].ToInt();
 
@@ -62,7 +62,7 @@ namespace ISI.Extensions.Crypto
 
 		public bool ValidateValue(string value, string cryptoSalt, string hashedValue)
 		{
-			var cryptoSaltParts = cryptoSalt.Split(new[] { ':' }, StringSplitOptions.None);
+			var cryptoSaltParts = cryptoSalt.Split([':'], StringSplitOptions.None);
 
 			var iterations = cryptoSaltParts[0].ToInt();
 

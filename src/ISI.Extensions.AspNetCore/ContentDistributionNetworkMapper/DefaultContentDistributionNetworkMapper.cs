@@ -110,14 +110,14 @@ namespace ISI.Extensions.AspNetCore
 			//var urlScheme = (url.Contains("://") ? (new UriBuilder(url)).Scheme : System.Web.HttpContext.Current.Request.GetScheme());
 			var urlScheme = (url.Contains("://") ? (new UriBuilder(url)).Scheme : Uri.UriSchemeHttps);
 
-			var pathAndQueryStringParts = url.Split(new string[] { "?" }, StringSplitOptions.None);
+			var pathAndQueryStringParts = url.Split(["?"], StringSplitOptions.None);
 
 			return string.Format("cdn-url:{0}-{1}", urlScheme, pathAndQueryStringParts[0]);
 		}
 
 		private static string OriginalUrlCacheKey(string url)
 		{
-			var pathAndQueryStringParts = url.Split(new string[] { "?" }, StringSplitOptions.None);
+			var pathAndQueryStringParts = url.Split(["?"], StringSplitOptions.None);
 
 			return string.Format("cdn-original-url:{0}", pathAndQueryStringParts[0]);
 		}

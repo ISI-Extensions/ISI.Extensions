@@ -46,7 +46,7 @@ namespace ISI.Extensions.Git
 						WorkingDirectory = System.IO.Path.GetFullPath(request.FullName),
 					});
 
-					response.FullName = (gitResponse.Output ?? string.Empty).Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(line => !string.IsNullOrWhiteSpace(line));
+					response.FullName = (gitResponse.Output ?? string.Empty).Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(line => !string.IsNullOrWhiteSpace(line));
 				}
 
 				if (!string.IsNullOrWhiteSpace(request.FullName))
@@ -66,7 +66,7 @@ namespace ISI.Extensions.Git
 							WorkingDirectory = System.IO.Path.GetFullPath(response.FullName),
 						});
 
-						var url = (gitResponse.Output ?? string.Empty).Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(line => !string.IsNullOrWhiteSpace(line));
+						var url = (gitResponse.Output ?? string.Empty).Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(line => !string.IsNullOrWhiteSpace(line));
 
 						if (!string.IsNullOrWhiteSpace(url))
 						{

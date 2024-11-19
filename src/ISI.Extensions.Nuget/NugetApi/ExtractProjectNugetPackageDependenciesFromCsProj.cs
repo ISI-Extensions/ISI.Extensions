@@ -115,7 +115,7 @@ namespace ISI.Extensions.Nuget
 					var packageVersion = string.Empty;
 					var hintPath = reference.GetElementByLocalName("HintPath")?.Value;
 
-					var keyValues = string.Format("PackageId={0}", packageId).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(item => item.Split(new[] { "=" }, StringSplitOptions.None)).ToDictionary(item => item[0].Trim(), item => (item.Length >= 2 ? item[1].Trim() : string.Empty), StringComparer.CurrentCultureIgnoreCase);
+					var keyValues = string.Format("PackageId={0}", packageId).Split([','], StringSplitOptions.RemoveEmptyEntries).Select(item => item.Split(["="], StringSplitOptions.None)).ToDictionary(item => item[0].Trim(), item => (item.Length >= 2 ? item[1].Trim() : string.Empty), StringComparer.CurrentCultureIgnoreCase);
 					keyValues.TryGetValue("PackageId", out packageId);
 					keyValues.TryGetValue("Version", out packageVersion);
 
@@ -129,7 +129,7 @@ namespace ISI.Extensions.Nuget
 
 						hintPath = string.Join("\\", hintPathPieces);
 
-						hintPathPieces = hintPathPieces.First().Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries).Reverse().ToList();
+						hintPathPieces = hintPathPieces.First().Split(['.'], StringSplitOptions.RemoveEmptyEntries).Reverse().ToList();
 
 						packageId = string.Empty;
 						packageVersion = string.Empty;

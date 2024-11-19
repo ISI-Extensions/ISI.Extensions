@@ -24,7 +24,7 @@ namespace ISI.Extensions.Extensions
 	{
 		public static string TimeZoneShortName(this System.TimeZoneInfo timeZoneInfo, DateTime dateTime)
 		{
-			return TimeZoneName(timeZoneInfo, dateTime).Split(new char[] {' '}, StringSplitOptions.RemoveEmptyEntries).Aggregate(string.Empty, (result, word) => result += word.First());
+			return TimeZoneName(timeZoneInfo, dateTime).Split([' '], StringSplitOptions.RemoveEmptyEntries).Aggregate(string.Empty, (result, word) => result += word.First());
 		}
 	}
 }

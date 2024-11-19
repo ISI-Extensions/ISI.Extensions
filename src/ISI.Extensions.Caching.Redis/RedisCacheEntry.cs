@@ -67,14 +67,13 @@ namespace ISI.Extensions.Caching.Redis
 
 			var database = GetDatabase();
 
-			database.ScriptEvaluate(SetScript, new StackExchange.Redis.RedisKey[] { (string)Key },
-				new StackExchange.Redis.RedisValue[]
-				{
-					AbsoluteExpiration?.Ticks ?? NotPresent,
+			database.ScriptEvaluate(SetScript, [(string)Key],
+			[
+				AbsoluteExpiration?.Ticks ?? NotPresent,
 					SlidingExpiration?.Ticks ?? NotPresent,
 					NotPresent, //GetExpirationInSeconds(creationTime, absoluteExpiration, options) ?? NotPresent,
 					serializedValue
-				});
+			]);
 		}
 	}
 }

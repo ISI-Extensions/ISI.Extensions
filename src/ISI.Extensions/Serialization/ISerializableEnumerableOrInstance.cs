@@ -50,7 +50,7 @@ namespace ISI.Extensions.Serialization
 		}
 		public SerializableEnumerableOrInstance(TType value)
 		{
-			Values = new[] { value };
+			Values = [value];
 		}
 
 

@@ -79,8 +79,8 @@ namespace ISI.Extensions.Tests
 
 			var request = new Request()
 			{
-				Steps = new IRequestStep[]
-				{
+				Steps =
+				[
 					new RequestStepA()
 					{
 						StepName = "A",
@@ -90,8 +90,8 @@ namespace ISI.Extensions.Tests
 					{
 						StepName = "B",
 						InstructionB = "Goto A",
-					}, 
-				}
+					}
+				]
 			};
 
 

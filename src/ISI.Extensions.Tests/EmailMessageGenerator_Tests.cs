@@ -83,7 +83,7 @@ namespace ISI.Extensions.Tests
 				Subject = "Test Message",
 				FirstName = "Test",
 				LastName = "Tester",
-				TestStrings = new[] { "a1", "b2" },
+				TestStrings = ["a1", "b2"],
 			};
 
 			var emailMessage = EmailMessageGenerator.GenerateEmailMessageAsync(emailMessageModel).GetAwaiter().GetResult();

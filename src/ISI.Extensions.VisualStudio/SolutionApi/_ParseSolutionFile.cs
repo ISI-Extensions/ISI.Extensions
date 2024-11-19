@@ -59,7 +59,7 @@ namespace ISI.Extensions.VisualStudio
 
 					if (solutionLine.Trim().StartsWith("<Project", StringComparison.InvariantCultureIgnoreCase))
 					{
-						return solutionLine.Split(new[] { '\"' }, StringSplitOptions.None)[1].Trim(' ', '\"');
+						return solutionLine.Split(['\"'], StringSplitOptions.None)[1].Trim(' ', '\"');
 					}
 
 					return (string)null;

@@ -61,7 +61,7 @@ namespace ISI.Extensions.VisualStudio
 						var sourceSigntoolExeFullName = System.IO.Directory.EnumerateFiles(sdkDirectory, signtoolExeFileName, System.IO.SearchOption.AllDirectories)
 							.Select(fullName =>
 							{
-								var parts = fullName.Split(new[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
+								var parts = fullName.Split(['\\'], StringSplitOptions.RemoveEmptyEntries);
 
 								return (Version: new Version(parts[5]), Processor: parts[6], FileName: parts[7], FullName: fullName);
 							})

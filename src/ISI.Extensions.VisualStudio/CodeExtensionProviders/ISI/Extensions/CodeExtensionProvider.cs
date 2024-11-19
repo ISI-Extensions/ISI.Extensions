@@ -35,18 +35,18 @@ namespace ISI.Extensions.VisualStudio
 
 					public string Namespace => "ISI.Extensions";
 
-					public string[] DefaultUsingStatements => new[]
-					{
+					public string[] DefaultUsingStatements =>
+					[
 						"System",
 						"System.Collections.Generic",
 						"System.Linq",
 						"System.Text",
 						"System.Threading.Tasks",
-						"ISI.Extensions.Extensions",
-					};
+						"ISI.Extensions.Extensions"
+					];
 
-					public CodeGenerationClassInjector[] DefaultClassInjectors => new[]
-					{
+					public CodeGenerationClassInjector[] DefaultClassInjectors =>
+					[
 						new CodeGenerationClassInjector()
 						{
 							Type = "Microsoft.Extensions.Logging.ILogger",
@@ -56,8 +56,8 @@ namespace ISI.Extensions.VisualStudio
 						{
 							Type = "ISI.Extensions.DateTimeStamper.IDateTimeStamper",
 							Name = "DateTimeStamper",
-						},
-					};
+						}
+					];
 				}
 			}
 		}

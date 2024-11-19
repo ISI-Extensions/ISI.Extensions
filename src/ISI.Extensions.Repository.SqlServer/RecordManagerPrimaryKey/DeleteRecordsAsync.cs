@@ -33,7 +33,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 		public virtual async Task<int> DeleteRecordAsync(TRecordPrimaryKey primaryKeyValue, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await DeleteRecordsAsync(new[] { primaryKeyValue }, cancellationToken);
+			return await DeleteRecordsAsync([primaryKeyValue], cancellationToken);
 		}
 	}
 }

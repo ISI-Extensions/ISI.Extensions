@@ -64,7 +64,7 @@ namespace ISI.Extensions.VisualStudio
 			{
 				var relativeDirectory = (string.Equals(sourceDirectory, projectBinDirectory, StringComparison.InvariantCultureIgnoreCase) ? string.Empty : sourceDirectory.Substring(projectBinDirectory.Length));
 
-				var relativeRootDirectory = (string.IsNullOrWhiteSpace(relativeDirectory) ? string.Empty : relativeDirectory.Split(new[] { System.IO.Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries).First());
+				var relativeRootDirectory = (string.IsNullOrWhiteSpace(relativeDirectory) ? string.Empty : relativeDirectory.Split([System.IO.Path.DirectorySeparatorChar], StringSplitOptions.RemoveEmptyEntries).First());
 
 				if (string.IsNullOrWhiteSpace(relativeRootDirectory) || !ShouldExclude(excludeFileDefinitions, relativeRootDirectory))
 				{

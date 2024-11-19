@@ -36,25 +36,25 @@ namespace ISI.Extensions.Repository.SqlServer
 			}
 
 			var dbDataReaderExtensionsType = typeof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions);
-			var getBoolean = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetBoolean), new[] { typeof(System.Data.Common.DbDataReader), typeof(int) });
-			var getBooleanNullable = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetBooleanNullable), new[] { typeof(System.Data.Common.DbDataReader), typeof(int) });
-			var getShort = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetShort), new[] { typeof(System.Data.Common.DbDataReader), typeof(short) });
-			var getShortNullable = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetShortNullable), new[] { typeof(System.Data.Common.DbDataReader), typeof(short) });
-			var getInt = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetInt), new[] { typeof(System.Data.Common.DbDataReader), typeof(int) });
-			var getIntNullable = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetIntNullable), new[] { typeof(System.Data.Common.DbDataReader), typeof(int) });
-			var getLong = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetLong), new[] { typeof(System.Data.Common.DbDataReader), typeof(int) });
-			var getLongNullable = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetLongNullable), new[] { typeof(System.Data.Common.DbDataReader), typeof(int) });
-			var getDouble = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetDouble), new[] { typeof(System.Data.Common.DbDataReader), typeof(int) });
-			var getDoubleNullable = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetDoubleNullable), new[] { typeof(System.Data.Common.DbDataReader), typeof(int) });
-			var getDecimal = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetDecimal), new[] { typeof(System.Data.Common.DbDataReader), typeof(int) });
-			var getDecimalNullable = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetDecimalNullable), new[] { typeof(System.Data.Common.DbDataReader), typeof(int) });
-			var getFloat = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetFloat), new[] { typeof(System.Data.Common.DbDataReader), typeof(int) });
-			var getFloatNullable = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetFloatNullable), new[] { typeof(System.Data.Common.DbDataReader), typeof(int) });
-			var getDateTime = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetDateTime), new[] { typeof(System.Data.Common.DbDataReader), typeof(int) });
-			var getDateTimeNullable = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetDateTimeNullable), new[] { typeof(System.Data.Common.DbDataReader), typeof(int) });
-			var getTimeSpan = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetTimeSpan), new[] { typeof(System.Data.Common.DbDataReader), typeof(int) });
-			var getTimeSpanNullable = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetTimeSpanNullable), new[] { typeof(System.Data.Common.DbDataReader), typeof(int) });
-			var getSerialized = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetSerialized), new[] { typeof(System.Data.Common.DbDataReader), typeof(ISI.Extensions.JsonSerialization.IJsonSerializer), typeof(Type), typeof(int) });
+			var getBoolean = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetBoolean), [typeof(System.Data.Common.DbDataReader), typeof(int)]);
+			var getBooleanNullable = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetBooleanNullable), [typeof(System.Data.Common.DbDataReader), typeof(int)]);
+			var getShort = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetShort), [typeof(System.Data.Common.DbDataReader), typeof(short)]);
+			var getShortNullable = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetShortNullable), [typeof(System.Data.Common.DbDataReader), typeof(short)]);
+			var getInt = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetInt), [typeof(System.Data.Common.DbDataReader), typeof(int)]);
+			var getIntNullable = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetIntNullable), [typeof(System.Data.Common.DbDataReader), typeof(int)]);
+			var getLong = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetLong), [typeof(System.Data.Common.DbDataReader), typeof(int)]);
+			var getLongNullable = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetLongNullable), [typeof(System.Data.Common.DbDataReader), typeof(int)]);
+			var getDouble = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetDouble), [typeof(System.Data.Common.DbDataReader), typeof(int)]);
+			var getDoubleNullable = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetDoubleNullable), [typeof(System.Data.Common.DbDataReader), typeof(int)]);
+			var getDecimal = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetDecimal), [typeof(System.Data.Common.DbDataReader), typeof(int)]);
+			var getDecimalNullable = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetDecimalNullable), [typeof(System.Data.Common.DbDataReader), typeof(int)]);
+			var getFloat = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetFloat), [typeof(System.Data.Common.DbDataReader), typeof(int)]);
+			var getFloatNullable = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetFloatNullable), [typeof(System.Data.Common.DbDataReader), typeof(int)]);
+			var getDateTime = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetDateTime), [typeof(System.Data.Common.DbDataReader), typeof(int)]);
+			var getDateTimeNullable = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetDateTimeNullable), [typeof(System.Data.Common.DbDataReader), typeof(int)]);
+			var getTimeSpan = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetTimeSpan), [typeof(System.Data.Common.DbDataReader), typeof(int)]);
+			var getTimeSpanNullable = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetTimeSpanNullable), [typeof(System.Data.Common.DbDataReader), typeof(int)]);
+			var getSerialized = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetSerialized), [typeof(System.Data.Common.DbDataReader), typeof(ISI.Extensions.JsonSerialization.IJsonSerializer), typeof(Type), typeof(int)]);
 
 			var dataReader = System.Linq.Expressions.Expression.Parameter(typeof(System.Data.Common.DbDataReader), "dataReader");
 			var serializer = System.Linq.Expressions.Expression.Parameter(typeof(ISI.Extensions.JsonSerialization.IJsonSerializer), "serializer");
@@ -119,10 +119,10 @@ namespace ISI.Extensions.Repository.SqlServer
 				}
 				else
 				{
-					assignExpression = System.Linq.Expressions.Expression.Assign(System.Linq.Expressions.Expression.PropertyOrField(record, property.PropertyName), System.Linq.Expressions.Expression.Call(dataReader, nameof(System.Data.Common.DbDataReader.GetFieldValue), new Type[] { property.ValueType }, columnIndex));
+					assignExpression = System.Linq.Expressions.Expression.Assign(System.Linq.Expressions.Expression.PropertyOrField(record, property.PropertyName), System.Linq.Expressions.Expression.Call(dataReader, nameof(System.Data.Common.DbDataReader.GetFieldValue), [property.ValueType], columnIndex));
 				}
 
-				var testExpression = System.Linq.Expressions.Expression.IsFalse(System.Linq.Expressions.Expression.Call(dataReader, nameof(System.Data.Common.DbDataReader.IsDBNull), new Type[] { }, columnIndex));
+				var testExpression = System.Linq.Expressions.Expression.IsFalse(System.Linq.Expressions.Expression.Call(dataReader, nameof(System.Data.Common.DbDataReader.IsDBNull), [], columnIndex));
 
 				expressions.Add(System.Linq.Expressions.Expression.IfThen(testExpression, assignExpression));
 			}

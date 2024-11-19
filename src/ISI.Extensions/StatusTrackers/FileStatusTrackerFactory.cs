@@ -165,7 +165,7 @@ namespace ISI.Extensions.StatusTrackers
 			return new StatusTrackerSnapshot(caption, percent, logEntries);
 		}
 
-		public IStatusTrackerSnapshot[] GetActiveStatusTrackerSnapshots(IEnumerable<string> statusTrackerKeys)
+		public IStatusTrackerSnapshot[] GetStatusTrackerSnapshots(IEnumerable<string> statusTrackerKeys)
 		{
 			var statusTrackers = new List<IStatusTrackerSnapshot>();
 
@@ -182,7 +182,7 @@ namespace ISI.Extensions.StatusTrackers
 			return statusTrackers.ToArray();
 		}
 
-		public IStatusTrackerSnapshot[] GetActiveStatusTrackerSnapshots() => GetActiveStatusTrackerSnapshots(GetActiveStatusTrackerKeys());
+		public IStatusTrackerSnapshot[] GetActiveStatusTrackerSnapshots() => GetStatusTrackerSnapshots(GetActiveStatusTrackerKeys());
 
 		public void DeleteStatusTracker(string statusTrackerKey)
 		{

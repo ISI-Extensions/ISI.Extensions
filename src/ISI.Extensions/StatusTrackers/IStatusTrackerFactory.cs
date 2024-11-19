@@ -24,7 +24,7 @@ namespace ISI.Extensions.StatusTrackers
 		IStatusTracker CreateStatusTracker(string statusTrackerKey);
 		IEnumerable<string> GetActiveStatusTrackerKeys();
 		IStatusTrackerSnapshot GetStatusTrackerSnapshot(string statusTrackerKey);
-		IStatusTrackerSnapshot[] GetActiveStatusTrackerSnapshots(IEnumerable<string> statusTrackerKeys);
+		IStatusTrackerSnapshot[] GetStatusTrackerSnapshots(IEnumerable<string> statusTrackerKeys);
 		IStatusTrackerSnapshot[] GetActiveStatusTrackerSnapshots();
 		bool IsRunning(string statusTrackerKey);
 		bool IsFinished(string statusTrackerKey);

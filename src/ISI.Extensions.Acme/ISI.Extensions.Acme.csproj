@@ -13,6 +13,7 @@
 	<ItemGroup>
 	  <PackageReference Include="DnsClient" Version="1.8.0" />
 	  <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.0" />
+	  <PackageReference Include="System.Formats.Asn1" Version="9.0.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\ISI.Extensions.JsonJwt\ISI.Extensions.JsonJwt.csproj" />

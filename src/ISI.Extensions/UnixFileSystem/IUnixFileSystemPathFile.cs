@@ -22,7 +22,7 @@ namespace ISI.Extensions.UnixFileSystem
 {
 	public interface IUnixFileSystemPathFile : IUnixFileSystemPath, FileSystem.IFileSystemPathFile
 	{
-		void SetValues(string server, string userName, string password, string directory, string pathName, DateTime? modifiedDateTime, long? size);
+		void SetValues(string server, string userName, string password, bool isRoot, string directory, string pathName, DateTime? modifiedDateTime, long? size);
 	}
 }
 

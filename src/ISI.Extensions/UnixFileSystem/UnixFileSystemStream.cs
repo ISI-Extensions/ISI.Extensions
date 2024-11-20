@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,18 +20,22 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.UnixFileSystem
 {
-	public class UnixFileSystemPathSymbolicLinkFile : UnixFileSystemPathFile, IUnixFileSystemPathSymbolicLinkFile
+	public class UnixFileSystemStream : FileSystem.AbstractFileSystemStream
 	{
-		public virtual string LinkedTo { get; protected set; }
+		public override bool WriteNeedsSeekableSource => false;
 
-		public override string ToString() => AttributedFullPath();
-
-		void IUnixFileSystemPathSymbolicLinkFile.SetValues(string server, string userName, string password, string directory, string pathName, string linkedTo, DateTime? modifiedDateTime, long? size)
+		public override void OpenRead(FileSystem.IFileSystemPathFile fileSystemPathFile)
 		{
-			(this as IUnixFileSystemPathFile)?.SetValues(server, userName, password, false, directory, pathName, modifiedDateTime, size);
+			Stream = System.IO.File.OpenRead(fileSystemPathFile.FullPath());
 
-			LinkedTo = linkedTo;
+			FileSystemPathFile = fileSystemPathFile.Clone() as FileSystem.IFileSystemPathFile;
+		}
+
+		public override void OpenWrite(FileSystem.IFileSystemPathFile fileSystemPathFile, bool overWrite = true, long fileSize = 0)
+		{
+			Stream = new System.IO.FileStream(fileSystemPathFile.FullPath(), (overWrite ? System.IO.FileMode.Create : System.IO.FileMode.OpenOrCreate));
+
+			FileSystemPathFile = fileSystemPathFile.Clone() as FileSystem.IFileSystemPathFile;
 		}
 	}
 }
-

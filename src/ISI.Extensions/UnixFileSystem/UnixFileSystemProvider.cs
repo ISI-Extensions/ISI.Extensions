@@ -21,6 +21,108 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.UnixFileSystem
 {
+	[FileSystem.FileSystemProvider]
+	public class UnixFileSystemProvider : UnixFileSystemProvider<UnixFileSystemPathFile, UnixFileSystemPathDirectory, UnixFileSystemPathSymbolicLinkFile, UnixFileSystemPathSymbolicLinkDirectory>
+	{
+		internal static string _schema => string.Empty;
+		protected override string Schema => _schema;
+
+		internal static readonly System.Text.RegularExpressions.Regex _attributedPathRegex = new(@"^(?:unx://((?<user>.+?)(:(?<password>.+))?@)?(?<server>.+?)(/(?<file>.*))?)|(?<file>.*)$", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+		protected override System.Text.RegularExpressions.Regex AttributedPathRegex => _attributedPathRegex;
+
+		public override Type GetFileSystemPathType => typeof(IUnixFileSystemPath);
+
+		public override IEnumerable<FileSystem.IFileSystemPath> GetDirectoryFileSystemPaths(FileSystem.IFileSystemPathDirectory fileSystemPathDirectory, bool doRecursive)
+		{
+			IEnumerable<FileSystem.IFileSystemPath> response = null;
+
+			IEnumerable<FileSystem.IFileSystemPath> getDirectoryFileSystemInfos(FileSystem.IFileSystemPathDirectory fileSystemPathDirectory, bool doRecursive)
+			{
+				var fileSystemPaths = new List<FileSystem.IFileSystemPath>();
+
+				var directory = new System.IO.DirectoryInfo(fileSystemPathDirectory.FullPath());
+
+				if ((directory?.Exists).GetValueOrDefault())
+				{
+					foreach (var directoryInfo in directory.GetDirectories())
+					{
+						var newFileSystemDirectory = GetFileSystemPathDirectory(directoryInfo.FullName);
+
+						fileSystemPaths.Add(newFileSystemDirectory);
+
+						if (doRecursive)
+						{
+							fileSystemPaths.AddRange(getDirectoryFileSystemInfos(newFileSystemDirectory, doRecursive));
+						}
+					}
+
+					foreach (var fileInfo in directory.GetFiles())
+					{
+						fileSystemPaths.Add(GetFileSystemPathFile(fileInfo));
+					}
+				}
+
+				return fileSystemPaths;
+			}
+
+			return getDirectoryFileSystemInfos(fileSystemPathDirectory, doRecursive);
+		}
+
+		public override void CreateDirectory(FileSystem.IFileSystemPathDirectory fileSystemPathDirectory)
+		{
+			var fullPath = fileSystemPathDirectory.FullPath();
+
+			if (!System.IO.Directory.Exists(fullPath))
+			{
+				System.IO.Directory.CreateDirectory(fullPath);
+			}
+		}
+
+		public override void RemoveDirectory(FileSystem.IFileSystemPathDirectory fileSystemPathDirectory, bool doRecursive = true)
+		{
+			var fullPath = fileSystemPathDirectory.FullPath();
+
+			if (System.IO.Directory.Exists(fullPath))
+			{
+				System.IO.Directory.Delete(fullPath, doRecursive);
+			}
+		}
+
+		public override void RemoveFile(FileSystem.IFileSystemPathFile fileSystemPathFile)
+		{
+			var fullPath = fileSystemPathFile.FullPath();
+
+			if (System.IO.File.Exists(fullPath))
+			{
+				System.IO.File.Delete(fullPath);
+			}
+		}
+
+		public override System.IO.Stream OpenRead(FileSystem.IFileSystemPathFile fileSystemPathFile, bool mustBeSeekable = false)
+		{
+			var stream = new UnixFileSystemStream();
+
+			stream.OpenRead(fileSystemPathFile, mustBeSeekable);
+
+			return stream;
+		}
+
+		public override System.IO.Stream OpenWrite(FileSystem.IFileSystemPathFile fileSystemPathFile, bool createDirectories, bool overwrite, long fileSize = 0)
+		{
+			if (createDirectories)
+			{
+				//CreateDirectory(fileSystemPathFile);
+			}
+
+			var stream = new UnixFileSystemStream();
+
+			stream.OpenWrite(fileSystemPathFile, overwrite, fileSize);
+
+			return stream;
+		}
+	}
+
+
 	public abstract class UnixFileSystemProvider<TUnixFileSystemPathFile, TUnixFileSystemPathDirectory, TUnixFileSystemPathSymbolicLinkFile, TUnixFileSystemPathSymbolicLinkDirectory> : FileSystem.AbstractFileSystemProvider
 		where TUnixFileSystemPathFile : IUnixFileSystemPathFile, new()
 		where TUnixFileSystemPathDirectory : IUnixFileSystemPathDirectory, new()
@@ -47,7 +149,7 @@ namespace ISI.Extensions.UnixFileSystem
 
 			IUnixFileSystemPathDirectory fileSystemPathDirectory = new TUnixFileSystemPathDirectory();
 
-			fileSystemPathDirectory.SetValues(fileSystemPath.Server, fileSystemPath.UserName, fileSystemPath.Password, directory, path2);
+			fileSystemPathDirectory.SetValues(fileSystemPath.Server, fileSystemPath.UserName, fileSystemPath.Password, fileSystemPath.IsRoot, directory, path2);
 
 			return fileSystemPathDirectory.AttributedFullPath();
 		}
@@ -116,11 +218,11 @@ namespace ISI.Extensions.UnixFileSystem
 						break;
 
 					case IUnixFileSystemPathDirectory unixFileSystemPathDirectory:
-						unixFileSystemPathDirectory.SetValues(fileSystemPathDirectory.Server, fileSystemPathDirectory.UserName, fileSystemPathDirectory.Password, directory, pathName);
+						unixFileSystemPathDirectory.SetValues(fileSystemPathDirectory.Server, fileSystemPathDirectory.UserName, fileSystemPathDirectory.Password, false, directory, pathName);
 						break;
 
 					case IUnixFileSystemPathFile unixFileSystemPathFile:
-						unixFileSystemPathFile.SetValues(fileSystemPathDirectory.Server, fileSystemPathDirectory.UserName, fileSystemPathDirectory.Password, directory, pathName, modifiedDateTime, size);
+						unixFileSystemPathFile.SetValues(fileSystemPathDirectory.Server, fileSystemPathDirectory.UserName, fileSystemPathDirectory.Password, false, directory, pathName, modifiedDateTime, size);
 						break;
 
 					default:
@@ -131,9 +233,9 @@ namespace ISI.Extensions.UnixFileSystem
 			return fileSystemPath;
 		}
 
-		protected virtual (string Server, string UserName, string Password, string Directory, string PathName) ParseAttributedFullName(string attributedFullName)
+		protected virtual (string Server, string UserName, string Password, bool IsRoot, string Directory, string PathName) ParseAttributedFullName(string attributedFullName)
 		{
-			var fileSystemPath = (Server: string.Empty, UserName: string.Empty, Password: string.Empty, Directory: string.Empty, PathName: string.Empty);
+			var fileSystemPath = (Server: string.Empty, UserName: string.Empty, Password: string.Empty, IsRoot: false, Directory: string.Empty, PathName: string.Empty);
 
 			attributedFullName = attributedFullName.Trim();
 
@@ -161,9 +263,16 @@ namespace ISI.Extensions.UnixFileSystem
 
 				var fullPath = match.Groups["file"].Value.Trim();
 
+				fileSystemPath.IsRoot = fullPath.StartsWith(DirectorySeparator);
+				
 				while (fullPath.StartsWith(DirectorySeparator))
 				{
 					fullPath = fullPath.TrimStart(DirectorySeparator).Trim();
+				}
+
+				if (fullPath.StartsWith("~"))
+				{
+					fileSystemPath.IsRoot = false;
 				}
 
 				while (fullPath.EndsWith(DirectorySeparator))
@@ -192,7 +301,7 @@ namespace ISI.Extensions.UnixFileSystem
 
 			IUnixFileSystemPathFile fileSystemPathFile = new TUnixFileSystemPathFile();
 
-			fileSystemPathFile.SetValues(parseAttributedFullName.Server, parseAttributedFullName.UserName, parseAttributedFullName.Password, parseAttributedFullName.Directory, parseAttributedFullName.PathName, null, null);
+			fileSystemPathFile.SetValues(parseAttributedFullName.Server, parseAttributedFullName.UserName, parseAttributedFullName.Password, parseAttributedFullName.IsRoot, parseAttributedFullName.Directory, parseAttributedFullName.PathName, null, null);
 
 			return fileSystemPathFile;
 		}
@@ -216,7 +325,7 @@ namespace ISI.Extensions.UnixFileSystem
 
 			IUnixFileSystemPathDirectory fileSystemPathDirectory = new TUnixFileSystemPathDirectory();
 
-			fileSystemPathDirectory.SetValues(parseAttributedFullName.Server, parseAttributedFullName.UserName, parseAttributedFullName.Password, parseAttributedFullName.Directory, parseAttributedFullName.PathName);
+			fileSystemPathDirectory.SetValues(parseAttributedFullName.Server, parseAttributedFullName.UserName, parseAttributedFullName.Password, parseAttributedFullName.IsRoot, parseAttributedFullName.Directory, parseAttributedFullName.PathName);
 
 			return fileSystemPathDirectory;
 		}

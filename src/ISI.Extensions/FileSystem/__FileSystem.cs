@@ -33,13 +33,25 @@ namespace ISI.Extensions
 		public static IFileSystemProvider GetFileSystemProvider(string attributedFullName)
 		{
 			IFileSystemProvider response = null;
-			IFileSystemProvider smbFileSystemProvider = null;
+			IFileSystemProvider defaultFileSystemProvider = null;
 
 			foreach (var fileSystemProvider in FileSystemProviders)
 			{
 				if (fileSystemProvider is ISI.Extensions.SmbFileSystem.SmbFileSystemProvider)
 				{
-					smbFileSystemProvider = fileSystemProvider;
+					if (Environment.OSVersion.Platform != PlatformID.Unix)
+					{
+						defaultFileSystemProvider = fileSystemProvider;
+					}
+					//ignore SmbFileSystemProvider when running in Linux
+				}
+				else if (fileSystemProvider is ISI.Extensions.UnixFileSystem.UnixFileSystemProvider)
+				{
+					if (Environment.OSVersion.Platform == PlatformID.Unix)
+					{
+						defaultFileSystemProvider = fileSystemProvider;
+					}
+					//ignore SmbFileSystemProvider when running in Linux
 				}
 				else
 				{
@@ -53,7 +65,7 @@ namespace ISI.Extensions
 				}
 			}
 
-			return response ?? smbFileSystemProvider ?? new ISI.Extensions.SmbFileSystem.SmbFileSystemProvider();
+			return response ?? defaultFileSystemProvider;
 		}
 
 		public static IFileSystemProvider GetFileSystemProvider(IFileSystemPath fileSystemPath)
@@ -68,13 +80,17 @@ namespace ISI.Extensions
 			}
 
 			IFileSystemProvider response = null;
-			IFileSystemProvider smbFileSystemProvider = null;
+			IFileSystemProvider defaultFileSystemProvider = null;
 
 			foreach (var fileSystemProvider in FileSystemProviders)
 			{
-				if (fileSystemProvider is ISI.Extensions.SmbFileSystem.SmbFileSystemProvider)
+				if ((Environment.OSVersion.Platform != PlatformID.Unix) && (fileSystemProvider is ISI.Extensions.SmbFileSystem.SmbFileSystemProvider))
 				{
-					smbFileSystemProvider = fileSystemProvider;
+					defaultFileSystemProvider = fileSystemProvider;
+				}
+				else if ((Environment.OSVersion.Platform == PlatformID.Unix) && (fileSystemProvider is ISI.Extensions.UnixFileSystem.UnixFileSystemProvider))
+				{
+					defaultFileSystemProvider = fileSystemProvider;
 				}
 				else
 				{
@@ -88,7 +104,7 @@ namespace ISI.Extensions
 				}
 			}
 
-			response ??= smbFileSystemProvider ?? new ISI.Extensions.SmbFileSystem.SmbFileSystemProvider();
+			response ??= defaultFileSystemProvider;
 
 			if (!FileSystemProviderByFileSystemPathType.ContainsKey(fileSystemPathType))
 			{

@@ -80,7 +80,7 @@ namespace ISI.Extensions.PostgreSQL
 				}
 			}
 
-			response.FileName = $"{fileName}.sql";
+			response.FileName = $"{fileName}.dump";
 
 			logger.LogInformation($"Backed up database {request.Database} to \"{response.FileName}\"");
 

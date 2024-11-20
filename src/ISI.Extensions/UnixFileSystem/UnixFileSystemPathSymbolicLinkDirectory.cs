@@ -20,7 +20,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.UnixFileSystem
 {
-	public abstract class UnixFileSystemPathSymbolicLinkDirectory : UnixFileSystemPathDirectory, IUnixFileSystemPathSymbolicLinkDirectory
+	public class UnixFileSystemPathSymbolicLinkDirectory : UnixFileSystemPathDirectory, IUnixFileSystemPathSymbolicLinkDirectory
 	{
 		public virtual string LinkedTo { get; protected set; }
 
@@ -28,7 +28,7 @@ namespace ISI.Extensions.UnixFileSystem
 
 		void IUnixFileSystemPathSymbolicLinkDirectory.SetValues(string server, string userName, string password, string directory, string pathName, string linkedTo)
 		{
-			(this as IUnixFileSystemPathDirectory)?.SetValues(server, userName, password, directory, pathName);
+			(this as IUnixFileSystemPathDirectory)?.SetValues(server, userName, password, false, directory, pathName);
 
 			LinkedTo = linkedTo;
 		}

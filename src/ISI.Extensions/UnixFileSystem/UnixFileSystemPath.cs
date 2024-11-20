@@ -22,12 +22,13 @@ namespace ISI.Extensions.UnixFileSystem
 {
 	public abstract class UnixFileSystemPath : IUnixFileSystemPath
 	{
-		public abstract string Schema { get; }
-		public abstract string DirectorySeparator { get; }
+		public virtual string Schema => UnixFileSystemProvider._schema;
+		public virtual string DirectorySeparator => UnixFileSystemProvider._directorySeparator;
 
 		public string Server { get; protected set; } = string.Empty;
 		public string UserName { get; protected set; } = string.Empty;
 		public string Password { get; protected set; } = string.Empty;
+		public bool IsRoot { get; protected set; } = false;
 		public string Directory { get; protected set; } = string.Empty;
 		public string PathName { get; protected set; } = string.Empty;
 
@@ -39,7 +40,7 @@ namespace ISI.Extensions.UnixFileSystem
 			{
 				attributedFullPathBuilder.Append(Schema);
 			}
-
+			
 			if (showUserName && !string.IsNullOrWhiteSpace(UserName))
 			{
 				attributedFullPathBuilder.Append((obfuscateUserName ? obfuscatedUserNameValue : UserName) ?? string.Empty);
@@ -55,6 +56,11 @@ namespace ISI.Extensions.UnixFileSystem
 			if (showServer && !string.IsNullOrEmpty(Server))
 			{
 				attributedFullPathBuilder.AppendFormat("{0}{1}", Server, DirectorySeparator);
+			}
+
+			if (IsRoot)
+			{
+				attributedFullPathBuilder.Append(DirectorySeparator);
 			}
 
 			if (!string.IsNullOrWhiteSpace(Directory))
@@ -92,7 +98,24 @@ namespace ISI.Extensions.UnixFileSystem
 
 		public abstract FileSystem.IFileSystemPath Clone();
 
-		public abstract FileSystem.IFileSystemPathDirectory GetParentFileSystemPathDirectory();
+		public virtual FileSystem.IFileSystemPathDirectory GetParentFileSystemPathDirectory()
+		{
+			var parentPathParts = GetParentPathParts();
+
+			if (string.IsNullOrWhiteSpace(parentPathParts.PathName))
+			{
+				return null;
+			}
+
+			var fileSystemPath = new UnixFileSystemPathDirectory();
+
+			Server = Server;
+			UserName = UserName;
+			Password = Password;
+			Directory = parentPathParts.Directory;
+			PathName = parentPathParts.PathName;
+
+			return fileSystemPath;
+		}
 	}
 }
-

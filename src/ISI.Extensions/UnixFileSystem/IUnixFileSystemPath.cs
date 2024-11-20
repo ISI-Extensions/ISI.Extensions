@@ -24,6 +24,7 @@ namespace ISI.Extensions.UnixFileSystem
 	{
 		string Schema { get; }
 		string DirectorySeparator { get; }
+		bool IsRoot { get; }
 	}
 }
 

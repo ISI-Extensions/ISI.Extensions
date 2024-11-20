@@ -20,20 +20,36 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.UnixFileSystem
 {
-	public abstract class UnixFileSystemPathDirectory : UnixFileSystemPath, IUnixFileSystemPathDirectory
+	public class UnixFileSystemPathDirectory : UnixFileSystemPath, IUnixFileSystemPathDirectory
 	{
 		public override string ToString() => AttributedFullPath();
 
-		void IUnixFileSystemPathDirectory.SetValues(string server, string userName, string password, string directory, string pathName)
+		void IUnixFileSystemPathDirectory.SetValues(string server, string userName, string password, bool isRoot, string directory, string pathName)
 		{
 			Server = server;
 			UserName = userName;
 			Password = password;
+			IsRoot = isRoot;
 			Directory = directory;
 			PathName = pathName;
 		}
 
-		protected virtual FileSystem.IFileSystemPathDirectory GetParentFileSystemPathDirectory<TUnixFileSystemPathDirectory>()
+		public override FileSystem.IFileSystemPath Clone()
+		{
+			return new UnixFileSystemPathDirectory()
+			{
+				Server = Server,
+				UserName = UserName,
+				Password = Password,
+				IsRoot = IsRoot,
+				Directory = Directory,
+				PathName = PathName,
+			};
+		}
+	
+		public override FileSystem.IFileSystemPathDirectory GetParentFileSystemPathDirectory() => GetParentFileSystemPathDirectory<UnixFileSystemPathDirectory>();
+
+		protected FileSystem.IFileSystemPathDirectory GetParentFileSystemPathDirectory<TUnixFileSystemPathDirectory>()
 			where TUnixFileSystemPathDirectory : IUnixFileSystemPathDirectory, new()
 		{
 			if (string.IsNullOrWhiteSpace(Directory) && string.IsNullOrWhiteSpace(PathName))
@@ -45,7 +61,7 @@ namespace ISI.Extensions.UnixFileSystem
 
 			var fileSystemPath = new TUnixFileSystemPathDirectory();
 
-			fileSystemPath.SetValues(Server, UserName, Password, parentPathParts.Directory, parentPathParts.PathName);
+			fileSystemPath.SetValues(Server, UserName, Password, IsRoot, parentPathParts.Directory, parentPathParts.PathName);
 
 			return fileSystemPath;
 		}

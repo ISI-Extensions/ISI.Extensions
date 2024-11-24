@@ -38,8 +38,8 @@ namespace ISI.Extensions.Nuget
 			response.NugetSettings = GetNugetSettings(nugetSettingsFullName);
 
 			var ignorePackageIds = new HashSet<string>(response.NugetSettings.UpdateNugetPackages.IgnorePackageIds ?? [], StringComparer.InvariantCultureIgnoreCase);
-			ignorePackageIds.Add("WixToolset.Heat");
-			ignorePackageIds.Add("WixToolset.UI.wixext");
+			ignorePackageIds.Remove("WixToolset.Heat");
+			ignorePackageIds.Remove("WixToolset.UI.wixext");
 			if (ignorePackageIds.Count != response.NugetSettings.UpdateNugetPackages.IgnorePackageIds.NullCheckedCount())
 			{
 				response.NugetSettings.UpdateNugetPackages.IgnorePackageIds = ignorePackageIds.ToArray();

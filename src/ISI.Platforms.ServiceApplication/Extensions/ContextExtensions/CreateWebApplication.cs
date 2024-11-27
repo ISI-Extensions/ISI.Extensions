@@ -112,7 +112,7 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 				.ProcessServiceRegistrars(context.ConfigurationRoot)
 
 				.AddTransient<Microsoft.Extensions.Logging.ILogger>(serviceProvider => serviceProvider.GetService<Microsoft.Extensions.Logging.ILoggerFactory>().CreateLogger<ServiceApplicationContext>())
-				.AddSingleton<Microsoft.Extensions.FileProviders.IFileProvider>(provider => provider.GetService<Microsoft.Extensions.Options.IOptions<Microsoft.AspNetCore.Builder.StaticFileOptions>>().Value.FileProvider)
+				.AddSingleton<Microsoft.Extensions.FileProviders.IFileProvider>(serviceProvider => serviceProvider.GetService<Microsoft.Extensions.Options.IOptions<Microsoft.AspNetCore.Builder.StaticFileOptions>>().Value.FileProvider)
 				;
 
 			if (configuration.UseMessageBus)

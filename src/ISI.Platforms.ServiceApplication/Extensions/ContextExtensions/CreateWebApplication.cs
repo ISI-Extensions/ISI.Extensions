@@ -35,13 +35,16 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 	{
 		public static Microsoft.AspNetCore.Builder.WebApplication CreateWebApplication(this ServiceApplicationContext context)
 		{
+			var contentRootPath = System.IO.Path.GetDirectoryName(context.RootAssembly.Location);
+			var webRootPath = System.IO.Path.Combine(contentRootPath, "wwwroot");
+
 			var webApplicationBuilder = Microsoft.AspNetCore.Builder.WebApplication.CreateBuilder(new Microsoft.AspNetCore.Builder.WebApplicationOptions()
 			{
 				Args = context.Args,
 				//EnvironmentName = source.EnvironmentName,
 				ApplicationName = context.ServiceName,
-				//ContentRootPath = source.ContentRootPath,
-				//WebRootPath = source.WebRootPath,
+				ContentRootPath = contentRootPath,
+				WebRootPath = webRootPath,
 			});
 
 			webApplicationBuilder.Services.AddSingleton(context);

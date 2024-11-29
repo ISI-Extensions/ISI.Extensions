@@ -35,7 +35,7 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 	{
 		public static Microsoft.AspNetCore.Builder.WebApplication CreateWebApplication(this ServiceApplicationContext context)
 		{
-			var contentRootPath = System.IO.Path.GetDirectoryName(context.RootAssembly.Location);
+			var contentRootPath = System.IO.Directory.GetCurrentDirectory();
 			var webRootPath = System.IO.Path.Combine(contentRootPath, "wwwroot");
 
 			var webApplicationBuilder = Microsoft.AspNetCore.Builder.WebApplication.CreateBuilder(new Microsoft.AspNetCore.Builder.WebApplicationOptions()
@@ -66,10 +66,12 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 			{
 				if (Environment.OSVersion.Platform == PlatformID.Unix)
 				{
+					Console.WriteLine("AddSystemd()");
 					webApplicationBuilder.Services.AddSystemd();
 				}
 				else
 				{
+					Console.WriteLine("AddWindowsService()");
 					webApplicationBuilder.Services.AddWindowsService(options =>
 					{
 						options.ServiceName = context.ServiceName;
@@ -78,10 +80,7 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 			}
 
 			context.HostBuilderConfigureServices?.Invoke(webApplicationBuilder);
-
-
-			//hostBuilder.WebHost.UseSetting(Microsoft.AspNetCore.Hosting.WebHostDefaults.ApplicationKey, Startup.Context.RootAssembly.FullName);
-
+			
 			var mvcBuilder = webApplicationBuilder.Services
 					.AddControllersWithViews()
 					.AddApplicationPart(context.RootAssembly)
@@ -130,10 +129,6 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 
 				.ProcessMigrationSteps()
 				;
-
-			//context.WebHostBuilderConfigureServices?.Invoke(webApplicationBuilder.WebHost, webApplicationBuilder.Services);
-
-			//webApplicationBuilder.WebHost.UseContentRoot(System.IO.Directory.GetCurrentDirectory());
 
 			webApplicationBuilder.WebHost.UseKestrel((builderContext, kestrelOptions) =>
 			{

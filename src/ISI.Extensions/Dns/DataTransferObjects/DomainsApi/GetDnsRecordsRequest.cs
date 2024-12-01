@@ -29,6 +29,6 @@ namespace ISI.Extensions.Dns.DataTransferObjects.DomainsApi
 		public string ApiUser { get; set; }
 		public string ApiKey { get; set; }
 
-		public string DomainName { get; set; }
+		public string Domain { get; set; }
 	}
 }

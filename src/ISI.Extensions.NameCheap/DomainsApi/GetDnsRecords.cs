@@ -30,12 +30,12 @@ namespace ISI.Extensions.NameCheap
 		{
 			var response = new DTOs.GetDnsRecordsResponse();
 
-			var domainNamePieces = request.DomainName.Split(new[] { '.' });
+			var domainPieces = request.Domain.Split(new[] { '.' });
 
 			var uri = request.GetUrl(IpifyApi, Configuration);
 			uri.AddQueryStringParameter("Command", "namecheap.domains.dns.getHosts");
-			uri.AddQueryStringParameter("SLD", domainNamePieces.First());
-			uri.AddQueryStringParameter("TLD", domainNamePieces.Last());
+			uri.AddQueryStringParameter("SLD", domainPieces.First());
+			uri.AddQueryStringParameter("TLD", domainPieces.Last());
 			uri.AddQueryStringParameter("PageSize", 100);
 
 			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteTextGet(uri.Uri, request.GetHeaders(Configuration), true);

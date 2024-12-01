@@ -154,7 +154,7 @@ namespace ISI.Extensions.Tests
 			var serializedJsonWebKey = GetAccountSerializedJsonWebKey();
 			var accountKey = GetAccountKey();
 
-			var domainName = "www.muthmanor.com";
+			var domain = "www.muthmanor.com";
 
 			var context = AcmeApi.GetHostContext(new()
 			{
@@ -172,7 +172,7 @@ namespace ISI.Extensions.Tests
 					new ISI.Extensions.Acme.OrderCertificateIdentifier()
 					{
 						CertificateIdentifierType = ISI.Extensions.Acme.OrderCertificateIdentifierType.Dns,
-						CertificateIdentifierValue = domainName,
+						CertificateIdentifierValue = domain,
 					}
 				],
 			});
@@ -188,7 +188,7 @@ namespace ISI.Extensions.Tests
 			var calculateDnsTokenResponse = AcmeApi.CalculateDnsToken(new()
 			{
 				HostContext = context,
-				DomainName = domainName,
+				Domain = domain,
 				ChallengeToken = challenge.Token,
 			});
 
@@ -217,7 +217,7 @@ namespace ISI.Extensions.Tests
 				DnsProviderUuid = ISI.Extensions.GoDaddy.DomainsApi.DnsProviderUuid,
 				ApiUser = settings.GetValue("GoDaddy.ApiKey"),
 				ApiKey = settings.GetValue("GoDaddy.ApiSecret"),
-				DomainName = calculateDnsTokenResponse.DomainName,
+				Domain = calculateDnsTokenResponse.Domain,
 				DnsRecords = [dnsRecord],
 			});
 
@@ -250,7 +250,7 @@ namespace ISI.Extensions.Tests
 					Locality = "Glen Cove",
 					Organization = "MuthManor",
 					OrganizationUnit = null,
-					CommonName = domainName,
+					CommonName = domain,
 				},
 			});
 
@@ -285,7 +285,7 @@ namespace ISI.Extensions.Tests
 
 		public class ProcessNewOrderDetails
 		{
-			public string DomainName { get; set; }
+			public string Domain { get; set; }
 			public string Organization { get; set; }
 			public ISI.Extensions.Acme.DataTransferObjects.AcmeApi.SetDnsRecordDelegate SetDnsRecord { get; set; }
 
@@ -297,12 +297,12 @@ namespace ISI.Extensions.Tests
 		{
 			var response = new ProcessNewOrderDetails();
 
-			response.DomainName = domainName;
+			response.Domain = domainName;
 			response.Organization = domainName.TrimStart("*.");
 
 			if (dnsProviderUuid == ISI.Extensions.GoDaddy.DomainsApi.DnsProviderUuid)
 			{
-				response.SetDnsRecord = (rootDomainName, dnsRecord) =>
+				response.SetDnsRecord = (rootDomain, dnsRecord) =>
 				{
 					DomainsApi.SetDnsRecords(new()
 					{
@@ -310,14 +310,14 @@ namespace ISI.Extensions.Tests
 						ApiUser = settings.GetValue("GoDaddy.ApiKey"),
 						ApiKey = settings.GetValue("GoDaddy.ApiSecret"),
 
-						DomainName = rootDomainName,
+						Domain = rootDomain,
 						DnsRecords = [dnsRecord],
 					});
 				};
 			}
 			else if (dnsProviderUuid == ISI.Extensions.NameCheap.DomainsApi.DnsProviderUuid)
 			{
-				response.SetDnsRecord = (rootDomainName, dnsRecord) =>
+				response.SetDnsRecord = (rootDomain, dnsRecord) =>
 				{
 					DomainsApi.SetDnsRecords(new()
 					{
@@ -325,20 +325,20 @@ namespace ISI.Extensions.Tests
 						ApiUser = settings.GetValue("NameCheap.ApiUser"),
 						ApiKey = settings.GetValue("NameCheap.ApiKey"),
 
-						DomainName = rootDomainName,
+						Domain = rootDomain,
 						DnsRecords = [dnsRecord],
 					});
 				};
 			}
 			else if (dnsProviderUuid == ManualDomainsApi.DnsProviderUuid)
 			{
-				response.SetDnsRecord = (rootDomainName, dnsRecord) =>
+				response.SetDnsRecord = (rootDomain, dnsRecord) =>
 				{
 					DomainsApi.SetDnsRecords(new()
 					{
 						DnsProviderUuid = ManualDomainsApi.DnsProviderUuid,
 
-						DomainName = rootDomainName,
+						Domain = rootDomain,
 						DnsRecords = [dnsRecord],
 					});
 				};
@@ -348,6 +348,14 @@ namespace ISI.Extensions.Tests
 			response.CertificateFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, $"{domainName.Replace("*.", "_.")}.pem");
 
 			return response;
+		}
+
+
+
+		[Test]
+		public void GetDnsProviders_Test()
+		{
+			var xxx = DomainsApi.GetDnsProviders(new());
 		}
 
 
@@ -376,7 +384,7 @@ namespace ISI.Extensions.Tests
 			{
 				HostContext = context,
 
-				DomainName = processNewOrderDetails.DomainName,
+				Domain = processNewOrderDetails.Domain,
 
 				OrganizationUnit = null,
 
@@ -400,7 +408,7 @@ namespace ISI.Extensions.Tests
 			var serializedJsonWebKey = GetAccountSerializedJsonWebKey();
 			var accountKey = GetAccountKey();
 
-			var domainName = "*.isi-net.com";
+			var domain = "*.isi-net.com";
 
 			var context = AcmeApi.GetHostContext(new()
 			{
@@ -414,7 +422,7 @@ namespace ISI.Extensions.Tests
 			{
 				HostContext = context,
 
-				DomainName = domainName,
+				Domain = domain,
 
 				PostRenewalActions =
 				[
@@ -460,7 +468,7 @@ namespace ISI.Extensions.Tests
 
 			var stringBuilder = new StringBuilder();
 
-			stringBuilder.AppendLine($"Domain Name: {request.DomainName}");
+			stringBuilder.AppendLine($"Domain Name: {request.Domain}");
 			foreach (var dnsRecord in request.DnsRecords)
 			{
 				stringBuilder.AppendLine();

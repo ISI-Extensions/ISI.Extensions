@@ -24,7 +24,7 @@ namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 {
 	public class CalculateDnsTokenResponse
 	{
-		public string DomainName { get; set; }
+		public string Domain { get; set; }
 		public string DnsRecordName { get; set; }
 
 		public string DnsToken { get; set; }

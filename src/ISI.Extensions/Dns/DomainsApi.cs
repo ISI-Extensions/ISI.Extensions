@@ -32,6 +32,7 @@ namespace ISI.Extensions.Dns
 		{
 			ServiceProvider = serviceProvider;
 		}
+
 		private IDictionary<Guid, (IDomainsApi DomainsApi, Guid DnsProviderUuid, string Description)> _domainsApisByDnsProviderUuid = null;
 		protected IDictionary<Guid, (IDomainsApi DomainsApi, Guid DnsProviderUuid, string Description)> DomainsApisByDnsProviderUuid => _domainsApisByDnsProviderUuid ??= GetDomainsApisByDnsProviderUuid();
 

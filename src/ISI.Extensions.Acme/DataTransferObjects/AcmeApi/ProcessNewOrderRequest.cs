@@ -22,13 +22,13 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 {
-	public delegate void SetDnsRecordDelegate(string rootDomainName, ISI.Extensions.Dns.DnsRecord dnsRecord);
+	public delegate void SetDnsRecordDelegate(string rootDomain, ISI.Extensions.Dns.DnsRecord dnsRecord);
 
 	public interface IProcessNewOrderRequest : IRequest
 	{
 		HostContext HostContext { get; }
 
-		string DomainName { get; }
+		string Domain { get; }
 
 		IOrderCertificateDomainPostRenewalAction[] PostRenewalActions { get; }
 	}
@@ -37,7 +37,7 @@ namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 	{
 		public HostContext HostContext { get; set; }
 
-		public string DomainName { get; set; }
+		public string Domain { get; set; }
 
 		public IOrderCertificateDomainPostRenewalAction[] PostRenewalActions { get; set; }
 	}
@@ -49,7 +49,7 @@ namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 		public DateTime? CertificateNotBeforeDateTimeUtc { get; set; }
 		public DateTime? CertificateNotAfterDateTimeUtc { get; set; }
 
-		public string DomainName { get; set; }
+		public string Domain { get; set; }
 
 		public string CountryName { get; set; }
 

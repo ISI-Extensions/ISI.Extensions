@@ -61,7 +61,7 @@ namespace ISI.Extensions.GoDaddy
 				Url = request.Url,
 				ApiKey = request.ApiUser,
 				ApiSecret = request.ApiKey,
-				DomainName = request.DomainName,
+				Domain = request.Domain,
 			}).DnsRecords;
 
 			return response;
@@ -76,7 +76,7 @@ namespace ISI.Extensions.GoDaddy
 				Url = request.Url,
 				ApiKey = request.ApiUser,
 				ApiSecret = request.ApiKey,
-				DomainName = request.DomainName,
+				Domain = request.Domain,
 				DnsRecords = request.DnsRecords,
 			});
 

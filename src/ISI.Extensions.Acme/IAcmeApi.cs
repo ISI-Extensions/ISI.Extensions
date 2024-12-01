@@ -40,5 +40,6 @@ namespace ISI.Extensions.Acme
 		DTOs.GetOrderResponse GetOrder(DTOs.GetOrderRequest request);
 		DTOs.CreateCertificateSigningRequestResponse CreateCertificateSigningRequest(DTOs.CreateCertificateSigningRequestRequest request);
 		DTOs.ProcessNewOrderResponse ProcessNewOrder(DTOs.IProcessNewOrderRequest request);
+		DTOs.CalculateDnsTokenResponse CalculateDnsToken(DTOs.CalculateDnsTokenRequest request);
 	}
 }

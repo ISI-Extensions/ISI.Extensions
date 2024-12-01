@@ -54,7 +54,7 @@ namespace ISI.Extensions.Acme
 					new ISI.Extensions.Acme.OrderCertificateIdentifier()
 					{
 						CertificateIdentifierType = ISI.Extensions.Acme.OrderCertificateIdentifierType.Dns,
-						CertificateIdentifierValue = request.DomainName,
+						CertificateIdentifierValue = request.Domain,
 					}
 				],
 				PostRenewalActions = request.PostRenewalActions,
@@ -75,11 +75,11 @@ namespace ISI.Extensions.Acme
 		{
 			var response = new DTOs.ProcessNewOrderResponse();
 
-			var domainNames = new List<string>();
-			domainNames.Add(request.DomainName);
-			if (request.DomainName.StartsWith("*."))
+			var domains = new List<string>();
+			domains.Add(request.Domain);
+			if (request.Domain.StartsWith("*."))
 			{
-				domainNames.Add(request.DomainName.TrimStart("*."));
+				domains.Add(request.Domain.TrimStart("*."));
 			}
 
 			var createNewOrderResponse = CreateNewOrder(new()
@@ -87,10 +87,10 @@ namespace ISI.Extensions.Acme
 				HostContext = request.HostContext,
 				CertificateNotBeforeDateTimeUtc = request.CertificateNotBeforeDateTimeUtc,
 				CertificateNotAfterDateTimeUtc = request.CertificateNotAfterDateTimeUtc,
-				CertificateIdentifiers = domainNames.ToNullCheckedArray(domainName => new ISI.Extensions.Acme.OrderCertificateIdentifier()
+				CertificateIdentifiers = domains.ToNullCheckedArray(domain => new ISI.Extensions.Acme.OrderCertificateIdentifier()
 				{
 					CertificateIdentifierType = ISI.Extensions.Acme.OrderCertificateIdentifierType.Dns,
-					CertificateIdentifierValue = domainName,
+					CertificateIdentifierValue = domain,
 				}),
 				PostRenewalActions = request.PostRenewalActions,
 			});
@@ -108,7 +108,7 @@ namespace ISI.Extensions.Acme
 					var calculateDnsTokenResponse = CalculateDnsToken(new()
 					{
 						HostContext = request.HostContext,
-						DomainName = getAuthorizationResponse.Authorization.CertificateIdentifier.CertificateIdentifierValue,
+						Domain = getAuthorizationResponse.Authorization.CertificateIdentifier.CertificateIdentifierValue,
 						ChallengeToken = challenge.Token,
 					});
 
@@ -124,7 +124,7 @@ namespace ISI.Extensions.Acme
 					var txtRecords = (DnsClient.Protocol.TxtRecord[])null;
 					try
 					{
-						txtRecords = lookupClient.QueryAsync($"{calculateDnsTokenResponse.DnsRecordName}.{calculateDnsTokenResponse.DomainName}", DnsClient.QueryType.TXT).GetAwaiter().GetResult().Answers.TxtRecords().ToNullCheckedArray();
+						txtRecords = lookupClient.QueryAsync($"{calculateDnsTokenResponse.DnsRecordName}.{calculateDnsTokenResponse.Domain}", DnsClient.QueryType.TXT).GetAwaiter().GetResult().Answers.TxtRecords().ToNullCheckedArray();
 					}
 					catch
 					{
@@ -132,7 +132,7 @@ namespace ISI.Extensions.Acme
 
 					if (!txtRecords.NullCheckedAny(txtRecord => string.Equals(txtRecord.Text.NullCheckedFirstOrDefault() ?? string.Empty, calculateDnsTokenResponse.DnsToken, StringComparison.InvariantCulture)))
 					{
-						request.SetDnsRecord(calculateDnsTokenResponse.DomainName, dnsRecord);
+						request.SetDnsRecord(calculateDnsTokenResponse.Domain, dnsRecord);
 
 						System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
 					}
@@ -164,7 +164,7 @@ namespace ISI.Extensions.Acme
 					Locality = request.Locality,
 					Organization = request.Organization,
 					OrganizationUnit = request.OrganizationUnit,
-					CommonName = request.DomainName,
+					CommonName = request.Domain,
 				},
 			});
 

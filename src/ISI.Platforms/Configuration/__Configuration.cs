@@ -31,6 +31,6 @@ namespace ISI.Platforms
 		public string BaseUrl { get; set; }
 
 		[ISI.Extensions.EnvironmentConfigurationVariableName("LOG_DIRECTORY")]
-		public string LogDirectory { get; set; }
+		public string LogDirectory { get; set; } //= "FileNameDeMasked:{DataRoot}{ApplicationName}\\Logs";
 	}
 }

@@ -88,7 +88,7 @@ namespace ISI.Extensions.Tests
 				{
 					ApiUser = settings.GetValue("NameCheap.ApiUser"),
 					ApiKey = settings.GetValue("NameCheap.ApiKey"),
-					DomainName = "muthmanor.com",
+					Domain = "muthmanor.com",
 				}).DnsRecords;
 
 			}
@@ -108,7 +108,7 @@ namespace ISI.Extensions.Tests
 				{
 					ApiUser = settings.GetValue("NameCheap.ApiUser"),
 					ApiKey = settings.GetValue("NameCheap.ApiKey"),
-					DomainName = "whizzia.com",
+					Domain = "whizzia.com",
 					DnsRecords =
 					[
 						new ISI.Extensions.Dns.DnsRecord()

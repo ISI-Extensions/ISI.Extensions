@@ -142,6 +142,10 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 			context.Host = webApplication;
 
 			webApplication.Services.SetServiceLocator();
+			
+			context.TraceListener = new ISI.Extensions.Logging.LoggerTraceListener(webApplication.Services.GetRequiredService<ILogger>());
+			System.Diagnostics.Trace.Listeners.Add(context.TraceListener);
+			//TraceSources.Instance.InitLoggerTraceListener(context.TraceListener);
 
 			return webApplication;
 		}

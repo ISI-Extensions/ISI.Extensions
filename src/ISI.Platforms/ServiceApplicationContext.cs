@@ -65,6 +65,8 @@ namespace ISI.Platforms
 
 		public ISI.Platforms.ILoggerConfigurator LoggerConfigurator { get; set; }
 
+		public System.Diagnostics.TraceListener TraceListener { get; set; }
+
 		public string ActiveEnvironment { get; private set; }
 		string IServiceApplicationContextAddActions.ActiveEnvironment { get => ActiveEnvironment; set => ActiveEnvironment = value; }
 

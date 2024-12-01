@@ -40,7 +40,7 @@ namespace ISI.Extensions.GoDaddy
 						var uri = new UriBuilder(request.GetUrl(Configuration));
 						uri.SetPathAndQueryString("/v1/domains/{domain}/records".Replace(new Dictionary<string, string>()
 						{
-							{ "{domain}", request.DomainName }
+							{ "{domain}", request.Domain }
 						}, StringComparer.InvariantCultureIgnoreCase));
 						uri.AddDirectoryToPath(dnsRecordsGroupedByType.Key.GetKey());
 						uri.AddDirectoryToPath(dnsRecordsGroupedByName.Key);

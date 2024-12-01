@@ -31,24 +31,24 @@ namespace ISI.Extensions.Acme
 		{
 			var response = new DTOs.CalculateDnsTokenResponse();
 
-			var domainNameQueue = new Queue<string>(request.DomainName.Split('.', StringSplitOptions.RemoveEmptyEntries).Reverse());
+			var domainQueue = new Queue<string>(request.Domain.Split('.', StringSplitOptions.RemoveEmptyEntries).Reverse());
 
-			var domainName = new List<string>();
-			domainName.Insert(0, domainNameQueue.Dequeue());
-			domainName.Insert(0, domainNameQueue.Dequeue());
-			response.DomainName = string.Join(".", domainName);
+			var domain = new List<string>();
+			domain.Insert(0, domainQueue.Dequeue());
+			domain.Insert(0, domainQueue.Dequeue());
+			response.Domain = string.Join(".", domain);
 
-			domainName.Clear();
-			while (domainNameQueue.Any())
+			domain.Clear();
+			while (domainQueue.Any())
 			{
-				var path = domainNameQueue.Dequeue();
+				var path = domainQueue.Dequeue();
 				if (!string.Equals(path, "*", StringComparison.InvariantCultureIgnoreCase))
 				{
-					domainName.Insert(0, path);
+					domain.Insert(0, path);
 				}
 			}
-			domainName.Insert(0, "_acme-challenge");
-			response.DnsRecordName = string.Join(".", domainName);
+			domain.Insert(0, "_acme-challenge");
+			response.DnsRecordName = string.Join(".", domain);
 
 			using (var privateKey = System.Security.Cryptography.ECDsa.Create())
 			{

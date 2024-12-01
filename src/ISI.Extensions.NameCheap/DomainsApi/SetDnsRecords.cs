@@ -37,7 +37,7 @@ namespace ISI.Extensions.NameCheap
 				Url = request.Url,
 				ApiUser = request.ApiUser,
 				ApiKey = request.ApiKey,
-				DomainName = request.DomainName,
+				Domain = request.Domain,
 			});
 
 			var dnsRecords = new List<ISI.Extensions.Dns.DnsRecord>(getDnsRecordsResponse?.DnsRecords ?? []);
@@ -64,7 +64,7 @@ namespace ISI.Extensions.NameCheap
 				}
 			}
 
-			var domainNamePieces = request.DomainName.Split(new[] { '.' });
+			var domainNamePieces = request.Domain.Split(new[] { '.' });
 
 			var uri = request.GetUrl(IpifyApi, Configuration);
 			uri.AddQueryStringParameter("Command", "namecheap.domains.dns.setHosts");

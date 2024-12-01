@@ -45,7 +45,7 @@ namespace ISI.Extensions.NameCheap
 				Url = request.Url,
 				ApiUser = request.ApiUser,
 				ApiKey = request.ApiKey,
-				DomainName = request.DomainName,
+				Domain = request.Domain,
 			}).DnsRecords;
 
 			return response;
@@ -60,7 +60,7 @@ namespace ISI.Extensions.NameCheap
 				Url = request.Url,
 				ApiUser = request.ApiUser,
 				ApiKey = request.ApiKey,
-				DomainName = request.DomainName,
+				Domain = request.Domain,
 				DnsRecords = request.DnsRecords,
 			});
 

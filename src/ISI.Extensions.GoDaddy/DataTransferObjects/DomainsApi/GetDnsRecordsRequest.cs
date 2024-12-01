@@ -28,7 +28,7 @@ namespace ISI.Extensions.GoDaddy.DataTransferObjects.DomainsApi
 		public string ApiKey { get; set; }
 		public string ApiSecret { get; set; }
 
-		public string DomainName { get; set; }
+		public string Domain { get; set; }
 		public ISI.Extensions.Dns.RecordType? RecordType { get; set; }
 		public string Name { get; set; }
 	}

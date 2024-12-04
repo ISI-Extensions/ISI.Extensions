@@ -42,13 +42,17 @@ namespace ISI.Extensions.Acme
 				SerializedJsonWebKey = request.SerializedJsonWebKey,
 				Pem = request.Pem,
 				AccountKey = request.AccountKey,
+				Nonce = request.Nonce,
 			};
 
-			GetNewNonce(new()
+			if (string.IsNullOrWhiteSpace(request.Nonce))
 			{
-				HostContext = response.HostContext,
-			});
-			
+				GetNewNonce(new()
+				{
+					HostContext = response.HostContext,
+				});
+			}
+
 			return response;
 		}
 	}

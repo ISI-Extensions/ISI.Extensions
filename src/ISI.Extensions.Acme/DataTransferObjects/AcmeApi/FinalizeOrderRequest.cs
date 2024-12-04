@@ -26,7 +26,7 @@ namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 	{
 		public HostContext HostContext { get; set; }
 
-		public Order Order { get; set; }
+		public string FinalizeOrderUrl { get; set; }
 		
 		public byte[] CertificateSigningRequest { get; set; }
 	}

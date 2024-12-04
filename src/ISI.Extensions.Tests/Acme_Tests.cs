@@ -257,7 +257,7 @@ namespace ISI.Extensions.Tests
 			var finalizeOrderResponse = AcmeApi.FinalizeOrder(new()
 			{
 				HostContext = context,
-				Order = createNewOrderResponse.Order,
+				FinalizeOrderUrl = createNewOrderResponse.Order.FinalizeOrderUrl,
 				CertificateSigningRequest = createCertificateSigningRequestResponse.CertificateSigningRequest,
 			});
 

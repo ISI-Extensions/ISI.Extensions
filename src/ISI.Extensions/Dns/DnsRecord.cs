@@ -35,5 +35,25 @@ namespace ISI.Extensions.Dns
 		public int Weight { get; set; }
 
 		public override string ToString() => $"{Name} {RecordType} {Data}";
+
+		public bool Matches(DnsRecord dnsRecord)
+		{
+			if (dnsRecord.RecordType != RecordType)
+			{
+				return false;
+			}
+
+			if (!string.Equals(dnsRecord.Name, Name, StringComparison.InvariantCultureIgnoreCase))
+			{
+				return false;
+			}
+
+			if((RecordType == RecordType.TXT) && !string.Equals(dnsRecord.Data, Data, StringComparison.InvariantCulture))
+			{
+				return false;
+			}
+
+			return true;
+		}
 	}
 }

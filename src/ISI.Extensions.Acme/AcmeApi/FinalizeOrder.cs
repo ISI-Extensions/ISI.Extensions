@@ -31,7 +31,7 @@ namespace ISI.Extensions.Acme
 		{
 			var response = new DTOs.FinalizeOrderResponse();
 
-			var uri = new Uri(request.Order.FinalizeOrderUrl);
+			var uri = new Uri(request.FinalizeOrderUrl);
 
 			var acmeRequest = new ISI.Extensions.Acme.SerializableModels.AcmeOrders.FinalizeOrderRequest()
 			{

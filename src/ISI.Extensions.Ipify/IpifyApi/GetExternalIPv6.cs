@@ -25,16 +25,23 @@ namespace ISI.Extensions.Ipify
 {
 	public partial class IpifyApi
 	{
-		public DTOs.GetExternalIPv6Response GetExternalIPv6()
+		private static string _ipV6Address = null;
+
+		public DTOs.GetExternalIPv6Response GetExternalIPv6(bool useCache = true)
 		{
 			var response = new DTOs.GetExternalIPv6Response();
 
-			var uri = new UriBuilder("https://api64.ipify.org");
-			uri.AddQueryStringParameter("format", "json");
+			if (string.IsNullOrWhiteSpace(_ipV6Address) || !useCache)
+			{
+				var uri = new UriBuilder("https://api64.ipify.org");
+				uri.AddQueryStringParameter("format", "json");
 
-			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableModels.GetExternalIPv4Response>(uri.Uri, GetHeaders(), true);
+				var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableModels.GetExternalIPv4Response>(uri.Uri, GetHeaders(), true);
 
-			response.IpAddress = apiResponse.IpAddress;
+				_ipV6Address = apiResponse.IpAddress;
+			}
+
+			response.IpAddress = _ipV6Address;
 
 			return response;
 		}

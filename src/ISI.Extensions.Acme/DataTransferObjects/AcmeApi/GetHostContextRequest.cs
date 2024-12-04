@@ -28,5 +28,6 @@ namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 		public string SerializedJsonWebKey { get; set; }
 		public string Pem { get; set; }
 		public string AccountKey { get; set; }
+		public string Nonce { get; set; }
 	}
 }

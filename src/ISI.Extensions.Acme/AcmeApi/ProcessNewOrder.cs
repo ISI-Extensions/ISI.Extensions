@@ -173,7 +173,7 @@ namespace ISI.Extensions.Acme
 			var finalizeOrderResponse = FinalizeOrder(new()
 			{
 				HostContext = request.HostContext,
-				Order = createNewOrderResponse.Order,
+				FinalizeOrderUrl = createNewOrderResponse.Order.FinalizeOrderUrl,
 				CertificateSigningRequest = createCertificateSigningRequestResponse.CertificateSigningRequest,
 			});
 

@@ -25,16 +25,29 @@ namespace ISI.Extensions.Ipify
 {
 	public partial class IpifyApi
 	{
-		public DTOs.GetExternalIPv4Response GetExternalIPv4()
+		private static string _ipV4Address = null;
+
+		public DTOs.GetExternalIPv4Response GetExternalIPv4(bool useCache = true)
 		{
 			var response = new DTOs.GetExternalIPv4Response();
 
-			var uri = new UriBuilder("https://api.ipify.org");
-			uri.AddQueryStringParameter("format", "json");
+			if (string.IsNullOrWhiteSpace(_ipV4Address) || !useCache)
+			{
+				//var uri = new UriBuilder("https://api.ipify.org");
+				//uri.AddQueryStringParameter("format", "json");
 
-			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableModels.GetExternalIPv4Response>(uri.Uri, GetHeaders(), true);
+				//var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableModels.GetExternalIPv4Response>(uri.Uri, GetHeaders(), true);
 
-			response.IpAddress = apiResponse.IpAddress;
+				//_ipV4Address = apiResponse.IpAddress;
+
+				var uri = new UriBuilder("https://ident.me/");
+
+				var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteTextGet(uri.Uri, GetHeaders(), true);
+
+				_ipV4Address = apiResponse;
+			}
+
+			response.IpAddress = _ipV4Address;
 
 			return response;
 		}

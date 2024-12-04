@@ -44,7 +44,7 @@ namespace ISI.Extensions.NameCheap
 
 			foreach (var dnsRecord in request.DnsRecords)
 			{
-				var existingDnsRecord = dnsRecords.FirstOrDefault(d => ((d.RecordType == dnsRecord.RecordType) && string.Equals(d.Name, dnsRecord.Name, StringComparison.InvariantCultureIgnoreCase) && (d.RecordType != ISI.Extensions.Dns.RecordType.TXT)));
+				var existingDnsRecord = dnsRecords.FirstOrDefault(d => d.Matches(dnsRecord));
 
 				if (existingDnsRecord != null)
 				{

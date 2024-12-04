@@ -33,18 +33,18 @@ namespace ISI.Extensions.Ipify
 
 			if (string.IsNullOrWhiteSpace(_ipV4Address) || !useCache)
 			{
-				//var uri = new UriBuilder("https://api.ipify.org");
-				//uri.AddQueryStringParameter("format", "json");
+				var uri = new UriBuilder("https://api.ipify.org");
+				uri.AddQueryStringParameter("format", "json");
 
-				//var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableModels.GetExternalIPv4Response>(uri.Uri, GetHeaders(), true);
+				var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableModels.GetExternalIPv4Response>(uri.Uri, GetHeaders(), true);
 
-				//_ipV4Address = apiResponse.IpAddress;
+				_ipV4Address = apiResponse.IpAddress;
 
-				var uri = new UriBuilder("https://ident.me/");
+				//var uri = new UriBuilder("https://ident.me/");
 
-				var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteTextGet(uri.Uri, GetHeaders(), true);
+				//var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteTextGet(uri.Uri, GetHeaders(), true);
 
-				_ipV4Address = apiResponse;
+				//_ipV4Address = apiResponse;
 			}
 
 			response.IpAddress = _ipV4Address;

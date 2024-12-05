@@ -23,7 +23,7 @@ using ISI.Extensions.TypeLocator.Extensions;
 
 namespace ISI.Extensions.Dns
 {
-	public class DomainsApi : IDomainsApi
+	public class DomainsApi : ISI.Extensions.Dns.AbstractDomainsApi, IDomainsApi
 	{
 		protected IServiceProvider ServiceProvider { get; }
 

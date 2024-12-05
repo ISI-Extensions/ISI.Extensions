@@ -26,7 +26,7 @@ using SERIALIZABLE = ISI.Extensions.GoDaddy.SerializableModels;
 namespace ISI.Extensions.GoDaddy
 {
 	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "GoDaddy")]
-	public partial class DomainsApi : ISI.Extensions.Dns.IDomainsApi
+	public partial class DomainsApi : ISI.Extensions.Dns.AbstractDomainsApi, ISI.Extensions.Dns.IDomainsApi
 	{
 		internal const string _dnsProviderUuid = "72924eef-4777-4c35-87df-568da79cf8aa";
 		public static Guid DnsProviderUuid { get; } = _dnsProviderUuid.ToGuid();

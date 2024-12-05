@@ -120,17 +120,14 @@ namespace ISI.Extensions.Acme
 						RecordType = ISI.Extensions.Dns.RecordType.TXT,
 					};
 
-					var lookupClient = new DnsClient.LookupClient();
-					var txtRecords = (DnsClient.Protocol.TxtRecord[])null;
-					try
+					var txtRecords = DomainsApi.GetTxtRecords(new()
 					{
-						txtRecords = lookupClient.QueryAsync($"{calculateDnsTokenResponse.DnsRecordName}.{calculateDnsTokenResponse.Domain}", DnsClient.QueryType.TXT).GetAwaiter().GetResult().Answers.TxtRecords().ToNullCheckedArray();
-					}
-					catch
-					{
-					}
+						Domain = calculateDnsTokenResponse.Domain,
+						Name = calculateDnsTokenResponse.DnsRecordName,
+						NameServer = Configuration.NameServer,
+					}).Values;
 
-					if (!txtRecords.NullCheckedAny(txtRecord => string.Equals(txtRecord.Text.NullCheckedFirstOrDefault() ?? string.Empty, calculateDnsTokenResponse.DnsToken, StringComparison.InvariantCulture)))
+					if (!txtRecords.NullCheckedAny(txtRecord => string.Equals(txtRecord, calculateDnsTokenResponse.DnsToken, StringComparison.InvariantCulture)))
 					{
 						request.SetDnsRecord(calculateDnsTokenResponse.Domain, dnsRecord);
 

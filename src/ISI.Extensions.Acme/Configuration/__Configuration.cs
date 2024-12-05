@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,16 +15,18 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
 using System.Text;
-using DTOs = ISI.Extensions.Dns.DataTransferObjects.DomainsApi;
+using System.Threading.Tasks;
 
-namespace ISI.Extensions.Dns
+namespace ISI.Extensions.Acme
 {
-	public interface IDomainsApi
+	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
+	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
 	{
-		DTOs.GetDnsProvidersResponse GetDnsProviders(DTOs.GetDnsProvidersRequest request);
-		DTOs.SetDnsRecordsResponse SetDnsRecords(DTOs.SetDnsRecordsRequest request);
-		DTOs.GetDnsRecordsResponse GetDnsRecords(DTOs.GetDnsRecordsRequest request);
-		DTOs.GetTxtRecordsResponse GetTxtRecords(DTOs.GetTxtRecordsRequest request);
+		public const string ConfigurationSectionName = "ISI.Extensions.Acme";
+
+		public string NameServer { get; set; } = "8.8.8.8";
 	}
 }

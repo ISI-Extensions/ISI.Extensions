@@ -75,6 +75,22 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void GetTxtRecords_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+
+			var domainsApi = ServiceProvider.GetService<ISI.Extensions.NameCheap.DomainsApi>();
+
+			var txtRecords = domainsApi.GetTxtRecords(new()
+			{
+				Domain = "muthmanor.com",
+				Name = "_acme-challenge",
+				NameServer = "8.8.8.8",
+			}).Values;
+		}
+
+		[Test]
 		public void GetDnsRecords_Test()
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");

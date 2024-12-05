@@ -9,7 +9,7 @@ using DTOs = ISI.Extensions.NameCheap.DataTransferObjects.DomainsApi;
 namespace ISI.Extensions.NameCheap
 {
 	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "NameCheap")]
-	public partial class DomainsApi : ISI.Extensions.Dns.IDomainsApi
+	public partial class DomainsApi : ISI.Extensions.Dns.AbstractDomainsApi, ISI.Extensions.Dns.IDomainsApi
 	{
 		internal const string _dnsProviderUuid = "14746b87-ec50-4eb5-ace9-ae685a76a328";
 		public static Guid DnsProviderUuid { get; } = _dnsProviderUuid.ToGuid();

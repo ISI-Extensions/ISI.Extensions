@@ -15,16 +15,59 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using ISI.Extensions.Extensions;
 using DTOs = ISI.Extensions.Dns.DataTransferObjects.DomainsApi;
 
 namespace ISI.Extensions.Dns
 {
-	public interface IDomainsApi
+	public abstract class AbstractDomainsApi
 	{
-		DTOs.GetDnsProvidersResponse GetDnsProviders(DTOs.GetDnsProvidersRequest request);
-		DTOs.SetDnsRecordsResponse SetDnsRecords(DTOs.SetDnsRecordsRequest request);
-		DTOs.GetDnsRecordsResponse GetDnsRecords(DTOs.GetDnsRecordsRequest request);
-		DTOs.GetTxtRecordsResponse GetTxtRecords(DTOs.GetTxtRecordsRequest request);
+		public DTOs.GetTxtRecordsResponse GetTxtRecords(DTOs.GetTxtRecordsRequest request)
+		{
+			var response = new DTOs.GetTxtRecordsResponse();
+
+			var fqdn = $"{request.Name}.{request.Domain}";
+
+			var arguments = new List<string>();
+			arguments.Add("-q=txt");
+			arguments.Add(fqdn);
+			if (!string.IsNullOrWhiteSpace(request.NameServer))
+			{
+				arguments.Add(request.NameServer);
+			}
+
+			var nslookupResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+			{
+				ProcessExeFullName = "nslookup",
+				Arguments = arguments,
+			});
+
+			var values = new List<string>();
+
+			var lines = nslookupResponse.Output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
+
+			for (int lineIndex = 0; lineIndex < lines.Length; lineIndex++)
+			{
+				var line = lines[lineIndex].Trim();
+
+				if (line.StartsWith(fqdn))
+				{
+					if (line.EndsWith("="))
+					{
+						line = $"{line} {lines[++lineIndex]}";
+					}
+
+					var value = line.Split(['"'], StringSplitOptions.RemoveEmptyEntries).Last();
+
+					values.Add(value);
+				}
+			}
+
+			response.Values = values.ToArray();
+
+			return response;
+		}
 	}
 }

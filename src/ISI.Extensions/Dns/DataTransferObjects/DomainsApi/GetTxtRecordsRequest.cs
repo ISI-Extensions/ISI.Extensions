@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,16 +15,18 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using DTOs = ISI.Extensions.Dns.DataTransferObjects.DomainsApi;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Dns
+namespace ISI.Extensions.Dns.DataTransferObjects.DomainsApi
 {
-	public interface IDomainsApi
+	public class GetTxtRecordsRequest
 	{
-		DTOs.GetDnsProvidersResponse GetDnsProviders(DTOs.GetDnsProvidersRequest request);
-		DTOs.SetDnsRecordsResponse SetDnsRecords(DTOs.SetDnsRecordsRequest request);
-		DTOs.GetDnsRecordsResponse GetDnsRecords(DTOs.GetDnsRecordsRequest request);
-		DTOs.GetTxtRecordsResponse GetTxtRecords(DTOs.GetTxtRecordsRequest request);
+		public string Domain { get; set; }
+		public string Name { get; set; }
+
+		public string NameServer { get; set; }
 	}
 }

@@ -30,5 +30,8 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.ProjectApi
 		public string ContainerRegistry { get; set; }
 		public string ContainerRepository { get; set; }
 		public string[] ContainerImageTags { get; set; }
+		public string ContainerFamily { get; set; }
+		public string ContainerBaseImage { get; set; }
+		public string ContainerWorkingDirectory { get; set; }
 	}
 }

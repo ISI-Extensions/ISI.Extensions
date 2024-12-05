@@ -88,6 +88,27 @@ namespace ISI.Extensions.VisualStudio
 
 							isDirty = true;
 						}
+						
+						if (!string.IsNullOrWhiteSpace(request.ContainerFamily))
+						{
+							propertyGroupElement.SetOrAddElementByLocalName("ContainerFamily", request.ContainerFamily);
+
+							isDirty = true;
+						}
+
+						if (!string.IsNullOrWhiteSpace(request.ContainerBaseImage))
+						{
+							propertyGroupElement.SetOrAddElementByLocalName("ContainerBaseImage", request.ContainerBaseImage);
+
+							isDirty = true;
+						}
+
+						if (!string.IsNullOrWhiteSpace(request.ContainerWorkingDirectory))
+						{
+							propertyGroupElement.SetOrAddElementByLocalName("ContainerWorkingDirectory", request.ContainerWorkingDirectory);
+
+							isDirty = true;
+						}
 
 						if (isDirty)
 						{

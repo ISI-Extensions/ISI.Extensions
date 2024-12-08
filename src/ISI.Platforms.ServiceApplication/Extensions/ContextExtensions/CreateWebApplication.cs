@@ -35,17 +35,29 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 	{
 		public static Microsoft.AspNetCore.Builder.WebApplication CreateWebApplication(this ServiceApplicationContext context)
 		{
-			var contentRootPath = System.IO.Directory.GetCurrentDirectory();
-			var webRootPath = System.IO.Path.Combine(contentRootPath, "wwwroot");
-
-			var webApplicationBuilder = Microsoft.AspNetCore.Builder.WebApplication.CreateBuilder(new Microsoft.AspNetCore.Builder.WebApplicationOptions()
+			var webApplicationOptions = new Microsoft.AspNetCore.Builder.WebApplicationOptions()
 			{
 				Args = context.Args,
 				//EnvironmentName = source.EnvironmentName,
 				ApplicationName = context.ServiceName,
-				ContentRootPath = contentRootPath,
-				WebRootPath = webRootPath,
-			});
+			};
+
+			if (Environment.OSVersion.Platform == PlatformID.Unix)
+			{
+				var contentRootPath = System.IO.Directory.GetCurrentDirectory();
+				var webRootPath = System.IO.Path.Combine(contentRootPath, "wwwroot");
+
+				webApplicationOptions = new Microsoft.AspNetCore.Builder.WebApplicationOptions()
+				{
+					Args = context.Args,
+					//EnvironmentName = source.EnvironmentName,
+					ApplicationName = context.ServiceName,
+					ContentRootPath = contentRootPath,
+					WebRootPath = webRootPath,
+				};
+			}
+
+			var webApplicationBuilder = Microsoft.AspNetCore.Builder.WebApplication.CreateBuilder(webApplicationOptions);
 
 			webApplicationBuilder.Services.AddSingleton(context);
 
@@ -80,7 +92,7 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 			}
 
 			context.HostBuilderConfigureServices?.Invoke(webApplicationBuilder);
-			
+
 			var mvcBuilder = webApplicationBuilder.Services
 					.AddControllersWithViews()
 					.AddApplicationPart(context.RootAssembly)
@@ -142,7 +154,7 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 			context.Host = webApplication;
 
 			webApplication.Services.SetServiceLocator();
-			
+
 			context.TraceListener = new ISI.Extensions.Logging.LoggerTraceListener(webApplication.Services.GetRequiredService<ILogger>());
 			System.Diagnostics.Trace.Listeners.Add(context.TraceListener);
 			//TraceSources.Instance.InitLoggerTraceListener(context.TraceListener);

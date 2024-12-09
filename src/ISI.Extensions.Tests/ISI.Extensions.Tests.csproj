@@ -36,6 +36,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\ISI.Extensions.Acme\ISI.Extensions.Acme.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Alpine\ISI.Extensions.Alpine.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Docker\ISI.Extensions.Docker.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.JsonJwt\ISI.Extensions.JsonJwt.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Keycloak\ISI.Extensions.Keycloak.csproj" />

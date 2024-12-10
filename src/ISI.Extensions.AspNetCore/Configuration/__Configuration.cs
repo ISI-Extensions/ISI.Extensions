@@ -32,7 +32,5 @@ namespace ISI.Extensions.AspNetCore
 		public ContentDistributionNetworkConfiguration ContentDistributionNetwork { get; set; } = new();
 		
 		public HttpContextLoggingConfiguration HttpContextLogging { get; set; } = new();
-
-		public TrackingConfiguration Tracking { get; set; } = new();
 	}
 }

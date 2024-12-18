@@ -21,7 +21,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Docker
 {
-	public class TempEnvironmentVariablesFile : IDisposable
+	internal class TempEnvironmentVariablesFile : IDisposable
 	{
 		public string FullName { get; }
 		public string FileName { get; }
@@ -53,9 +53,9 @@ namespace ISI.Extensions.Docker
 		}
 	}
 
-	public class TempEnvironmentVariablesFiles : IDisposable
+	internal class TempEnvironmentVariablesFiles : IDisposable
 	{
-		protected TempEnvironmentVariablesFile[] EnvironmentFiles { get; }
+		internal TempEnvironmentVariablesFile[] EnvironmentFiles { get; }
 
 		private InvariantCultureIgnoreCaseStringDictionary<string> _environmentVariables = null;
 		internal InvariantCultureIgnoreCaseStringDictionary<string> EnvironmentVariables => _environmentVariables ??= GetEnvironmentVariables();

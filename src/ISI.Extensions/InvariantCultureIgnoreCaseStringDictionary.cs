@@ -71,6 +71,18 @@ namespace ISI.Extensions
 		public int Count => _dictionary.Count;
 		public bool IsReadOnly => _dictionary.IsReadOnly;
 
+		public IDictionary<string, TValue> Clone()
+		{
+			var clone = new Dictionary<string, TValue>(StringComparer.InvariantCultureIgnoreCase);
+
+			foreach (var keyValue in _dictionary)
+			{
+				clone.Add(keyValue.Key, keyValue.Value);
+			}
+
+			return clone;
+		}
+
 		public static implicit operator InvariantCultureIgnoreCaseStringDictionary<TValue>(Dictionary<string, TValue> values) => new(values);
 		public static implicit operator InvariantCultureIgnoreCaseStringDictionary<TValue>(KeyValuePair<string, TValue>[] values) => new(values);
 	}

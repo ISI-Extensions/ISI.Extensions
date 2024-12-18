@@ -12,10 +12,11 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ISI.Extensions
@@ -51,7 +52,7 @@ namespace ISI.Extensions
 		public void CopyTo(string[] array) => _hashSet.CopyTo(array);
 		public void CopyTo(string[] array, int arrayIndex) => _hashSet.CopyTo(array, arrayIndex);
 		public void CopyTo(string[] array, int arrayIndex, int count) => _hashSet.CopyTo(array, arrayIndex, count);
-		
+
 		public void ExceptWith(IEnumerable<string> other) => _hashSet.ExceptWith(other);
 
 		public HashSet<string>.Enumerator GetEnumerator() => _hashSet.GetEnumerator();
@@ -62,7 +63,7 @@ namespace ISI.Extensions
 
 		public bool IsProperSubsetOf(IEnumerable<string> other) => _hashSet.IsProperSubsetOf(other);
 
-		public bool IsProperSupersetOf(IEnumerable<string> other)=>_hashSet.IsProperSupersetOf(other);
+		public bool IsProperSupersetOf(IEnumerable<string> other) => _hashSet.IsProperSupersetOf(other);
 
 		public bool IsSubsetOf(IEnumerable<string> other) => _hashSet.IsSubsetOf(other);
 
@@ -78,7 +79,7 @@ namespace ISI.Extensions
 
 		public bool SetEquals(IEnumerable<string> other) => _hashSet.SetEquals(other);
 
-		public void SymmetricExceptWith(IEnumerable<string> other)=>_hashSet.SymmetricExceptWith(other);
+		public void SymmetricExceptWith(IEnumerable<string> other) => _hashSet.SymmetricExceptWith(other);
 
 		void ICollection<string>.Add(string item) => _hashSet.Add(item);
 
@@ -89,6 +90,8 @@ namespace ISI.Extensions
 		public void TrimExcess() => _hashSet.TrimExcess();
 
 		public void UnionWith(IEnumerable<string> other) => _hashSet.UnionWith(other ?? Array.Empty<string>());
+
+		public HashSet<string> Clone() => new HashSet<string>(_hashSet.ToArray(), StringComparer.InvariantCultureIgnoreCase);
 
 		public static implicit operator InvariantCultureIgnoreCaseStringHashSet(HashSet<string> values) => new(values);
 		public static implicit operator InvariantCultureIgnoreCaseStringHashSet(string[] values) => new(values);

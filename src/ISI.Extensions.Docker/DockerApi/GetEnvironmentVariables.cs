@@ -31,8 +31,11 @@ namespace ISI.Extensions.Docker
 		{
 			var response = new DTOs.GetEnvironmentVariablesResponse();
 
-			response.EnvironmentVariables = new TempEnvironmentVariablesFiles(request.ComposeDirectory, request.EnvironmentFileFullNames, request.EnvironmentVariables);
-			
+			using (var tempEnvironmentFiles = new TempEnvironmentVariablesFiles(request.ComposeDirectory, request.EnvironmentFileFullNames, request.EnvironmentVariables))
+			{
+				response.EnvironmentVariables = tempEnvironmentFiles.EnvironmentVariables.Clone();
+			}
+
 			return response;
 		}
 	}

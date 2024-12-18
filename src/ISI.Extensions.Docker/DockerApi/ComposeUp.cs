@@ -36,7 +36,7 @@ namespace ISI.Extensions.Docker
 
 			var arguments = new List<string>();
 
-			using (var tempEnvironmentFiles = new TempEnvironmentFiles(request.ComposeDirectory, request.EnvironmentFileFullNames, request.EnvironmentVariables))
+			using (var tempEnvironmentFiles = new TempEnvironmentVariablesFiles(request.ComposeDirectory, request.EnvironmentFileFullNames, request.EnvironmentVariables))
 			{
 				request.OnComposeUpStart?.Invoke(tempEnvironmentFiles.EnvironmentVariables.TryGetValue);
 

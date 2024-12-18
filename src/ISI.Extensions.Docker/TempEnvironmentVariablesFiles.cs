@@ -21,12 +21,12 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Docker
 {
-	internal class TempEnvironmentFile : IDisposable
+	public class TempEnvironmentVariablesFile : IDisposable
 	{
 		public string FullName { get; }
 		public string FileName { get; }
 
-		public TempEnvironmentFile(string sourceFullName, string composeDirectory)
+		public TempEnvironmentVariablesFile(string sourceFullName, string composeDirectory)
 		{
 			FileName = $"Temp-{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}.env";
 			FullName = System.IO.Path.Combine(composeDirectory, FileName);
@@ -39,7 +39,7 @@ namespace ISI.Extensions.Docker
 			System.IO.File.Copy(sourceFullName, FullName);
 		}
 
-		public TempEnvironmentFile(InvariantCultureIgnoreCaseStringDictionary<string> environmentVariables, string composeDirectory)
+		public TempEnvironmentVariablesFile(InvariantCultureIgnoreCaseStringDictionary<string> environmentVariables, string composeDirectory)
 		{
 			FileName = $"Temp-{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}.env";
 			FullName = System.IO.Path.Combine(composeDirectory, FileName);
@@ -53,20 +53,20 @@ namespace ISI.Extensions.Docker
 		}
 	}
 
-	internal class TempEnvironmentFiles : IDisposable
+	public class TempEnvironmentVariablesFiles : IDisposable
 	{
-		protected TempEnvironmentFile[] EnvironmentFiles { get; }
+		protected TempEnvironmentVariablesFile[] EnvironmentFiles { get; }
 
 		private InvariantCultureIgnoreCaseStringDictionary<string> _environmentVariables = null;
 		internal InvariantCultureIgnoreCaseStringDictionary<string> EnvironmentVariables => _environmentVariables ??= GetEnvironmentVariables();
 
-		public TempEnvironmentFiles(string composeDirectory, IEnumerable<string> sourceFullNames, InvariantCultureIgnoreCaseStringDictionary<string> environmentVariables)
+		public TempEnvironmentVariablesFiles(string composeDirectory, IEnumerable<string> sourceFullNames, InvariantCultureIgnoreCaseStringDictionary<string> environmentVariables)
 		{
-			var environmentFiles = sourceFullNames.ToNullCheckedList(sourceFullName => new TempEnvironmentFile(sourceFullName, composeDirectory), NullCheckCollectionResult.Empty);
+			var environmentFiles = sourceFullNames.ToNullCheckedList(sourceFullName => new TempEnvironmentVariablesFile(sourceFullName, composeDirectory), NullCheckCollectionResult.Empty);
 
 			if (environmentVariables.NullCheckedAny())
 			{
-				environmentFiles.Add(new TempEnvironmentFile(environmentVariables, composeDirectory));
+				environmentFiles.Add(new TempEnvironmentVariablesFile(environmentVariables, composeDirectory));
 			}
 
 			EnvironmentFiles = environmentFiles.ToNullCheckedArray();

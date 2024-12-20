@@ -108,7 +108,7 @@ namespace ISI.Extensions.WebClient
 							{
 								if ((response is System.Net.HttpWebResponse webResponse) && (webResponse.StatusCode != System.Net.HttpStatusCode.OK))
 								{
-									var encoding = Encoding.GetEncoding(webResponse.CharacterSet);
+									var encoding = Encoding.GetEncoding(string.IsNullOrWhiteSpace(webResponse?.CharacterSet) ? Encoding.Default.WebName : webResponse.CharacterSet);
 
 									using (var responseStream = new System.IO.StreamReader(webResponse.GetResponseStream(), encoding))
 									{
@@ -242,7 +242,7 @@ namespace ISI.Extensions.WebClient
 			{
 				if (response is System.Net.HttpWebResponse httpWebResponse)
 				{
-					var encoding = Encoding.GetEncoding(httpWebResponse?.CharacterSet ?? Encoding.Default.WebName);
+					var encoding = Encoding.GetEncoding(string.IsNullOrWhiteSpace(httpWebResponse?.CharacterSet) ? Encoding.Default.WebName : httpWebResponse.CharacterSet);
 
 					using (var responseStream = new System.IO.StreamReader(httpWebResponse.GetResponseStream(), encoding))
 					{
@@ -340,7 +340,7 @@ namespace ISI.Extensions.WebClient
 			{
 				if (response is System.Net.HttpWebResponse httpWebResponse)
 				{
-					var encoding = Encoding.GetEncoding(httpWebResponse.CharacterSet);
+					var encoding = Encoding.GetEncoding(string.IsNullOrWhiteSpace(httpWebResponse?.CharacterSet) ? Encoding.Default.WebName : httpWebResponse.CharacterSet);
 
 					using (var responseStream = new System.IO.StreamReader(httpWebResponse.GetResponseStream(), encoding))
 					{

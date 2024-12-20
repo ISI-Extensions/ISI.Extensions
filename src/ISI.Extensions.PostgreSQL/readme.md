@@ -35,11 +35,19 @@ REVOKE ALL PRIVILEGES ON DATABASE postgres TO masteradmin;
 
 
 
+
+
+
+//here ~~~~~~
 CREATE USER masteradmin WITH ENCRYPTED PASSWORD '9ab831ceb061';
 ALTER USER masteradmin WITH SUPERUSER; 
 ALTER ROLE masteradmin CREATEDB	CREATEROLE;
 
 GRANT ALL PRIVILEGES ON DATABASE postgres TO masteradmin;
+
+
+
+
 
 ALTER USER youruser WITH SUPERUSER; 
 

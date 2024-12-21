@@ -173,5 +173,18 @@ namespace ISI.Extensions.Tests
 				AddToLog = (level, description) => Console.WriteLine(description),
 			});
 		}
+
+		[Test]
+		public void ReloadNginx_Test()
+		{
+			var dockerApi = ServiceProvider.GetService<ISI.Extensions.Docker.DockerApi>();
+
+			var xxx = dockerApi.ReloadNginx(new()
+			{
+				Host = "ssh://isinydocker01.isi-net.com",
+				Container = "isi-nginx-reverse-proxy",
+				AddToLog = (level, description) => Console.WriteLine(description),
+			});
+		}
 	}
 }

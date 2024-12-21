@@ -88,6 +88,7 @@
 		<ProjectReference Include="..\ISI.Extensions.SshNet\ISI.Extensions.SshNet.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Svn\ISI.Extensions.Svn.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Tailscale\ISI.Extensions.Tailscale.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.TrueNAS\ISI.Extensions.TrueNAS.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.VisualStudioCode\ISI.Extensions.VisualStudioCode.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.VisualStudio\ISI.Extensions.VisualStudio.csproj" />
 		<ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />

@@ -25,6 +25,8 @@ namespace ISI.Extensions.WebClient
 	{
 		public string Key { get; set; }
 		public string Value { get; set; }
+
+		public override string ToString() => $"{Key} => {Value}";
 	}
 
 	public delegate void OnHasContent(HeaderCollection headers, string content);

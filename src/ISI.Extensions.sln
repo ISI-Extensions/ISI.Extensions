@@ -172,6 +172,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISI.Platforms.ServiceApplic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.Alpine", "ISI.Extensions.Alpine\ISI.Extensions.Alpine.csproj", "{EB4B5B45-E2A5-4035-B719-DADA3E710405}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.TrueNAS", "ISI.Extensions.TrueNAS\ISI.Extensions.TrueNAS.csproj", "{C13D0890-80AD-44F3-9055-93A17DA2B1AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -836,6 +838,14 @@ Global
 		{EB4B5B45-E2A5-4035-B719-DADA3E710405}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EB4B5B45-E2A5-4035-B719-DADA3E710405}.Release|x64.ActiveCfg = Release|Any CPU
 		{EB4B5B45-E2A5-4035-B719-DADA3E710405}.Release|x64.Build.0 = Release|Any CPU
+		{C13D0890-80AD-44F3-9055-93A17DA2B1AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C13D0890-80AD-44F3-9055-93A17DA2B1AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C13D0890-80AD-44F3-9055-93A17DA2B1AE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C13D0890-80AD-44F3-9055-93A17DA2B1AE}.Debug|x64.Build.0 = Debug|Any CPU
+		{C13D0890-80AD-44F3-9055-93A17DA2B1AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C13D0890-80AD-44F3-9055-93A17DA2B1AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C13D0890-80AD-44F3-9055-93A17DA2B1AE}.Release|x64.ActiveCfg = Release|Any CPU
+		{C13D0890-80AD-44F3-9055-93A17DA2B1AE}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

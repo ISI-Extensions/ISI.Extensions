@@ -129,7 +129,7 @@ namespace ISI.Extensions.SshNet.ScpFileSystem
 				{
 					client.Connect();
 
-					using (var cmd = client.CreateCommand(string.Format("mkdir {0}", EncodeFileName(fileSystemPathDirectory.FullPath()))))
+					using (var cmd = client.CreateCommand(string.Format("mkdir -p {0}", EncodeFileName(fileSystemPathDirectory.FullPath()))))
 					{
 						cmd.Execute();
 					}

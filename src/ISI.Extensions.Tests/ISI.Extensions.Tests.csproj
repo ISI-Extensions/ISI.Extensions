@@ -79,6 +79,7 @@
 		<ProjectReference Include="..\ISI.Extensions.Repository.PostgreSQL\ISI.Extensions.Repository.PostgreSQL.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Repository.RavenDb\ISI.Extensions.Repository.RavenDb.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Repository.SqlServer\ISI.Extensions.Repository.SqlServer.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Pfsense\ISI.Extensions.Pfsense.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Sbom\ISI.Extensions.Sbom.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.ScmManager\ISI.Extensions.ScmManager.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Scm\ISI.Extensions.Scm.csproj" />

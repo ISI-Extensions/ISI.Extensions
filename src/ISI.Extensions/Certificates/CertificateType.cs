@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2024, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,36 +15,21 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using Microsoft.Extensions.Logging;
-using DTOs = ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi;
 
-namespace ISI.Extensions.Jenkins
+namespace ISI.Extensions.Certificates
 {
-	public partial class JenkinsApi
+	public enum CertificateType
 	{
-		public DTOs.GetServiceConfigurationResponse GetServiceConfiguration(DTOs.GetServiceConfigurationRequest request)
-		{
-			var response = new DTOs.GetServiceConfigurationResponse();
-			
-			var uri = new UriBuilder(request.JenkinsUrl);
-			uri.SetPathAndQueryString(UrlPathFormat.GetServiceConfiguration.Replace(new Dictionary<string, string>()
-			{
-			}, StringComparer.InvariantCultureIgnoreCase));
-
-			try
-			{
-				response.ServiceConfigurationYaml = ISI.Extensions.WebClient.Rest.ExecuteTextPost(uri.Uri, GetHeaders(request), true, request.SslProtocols);
-			}
-			catch (Exception exception)
-			{
-				Logger.LogError(exception, "Get GetServiceConfiguration Failed");
-			}
-
-			return response;
-		}
+		[ISI.Extensions.EnumGuid("495aedce-1aac-4fcd-8a38-f813380f17eb", "Csr", "csr")] Csr,
+		[ISI.Extensions.EnumGuid("8a40c916-f5d8-410e-be41-2123a3e386e7", "Key", "key")] Key,
+		[ISI.Extensions.EnumGuid("0f526b75-e068-4947-83ed-7fa3f6a16069", "Key Password", "key-password")] KeyPassword,
+		[ISI.Extensions.EnumGuid("ec4c381a-55f7-48dc-895f-4cd0d402336e", "Crt", "crt")] Crt,
+		[ISI.Extensions.EnumGuid("f8d7ab2e-a3ba-42db-bf16-95b088060154", "Ca Bundle Crt", "ca-bundle-crt")] CaBundleCrt,
+		[ISI.Extensions.EnumGuid("a03c5263-76d1-4b43-bd5b-676faaed27bc", "Bundle Crt", "pem")] BundleCrt,
+		[ISI.Extensions.EnumGuid("615dd5cd-87da-4b3e-8f4a-2b550015d6cb", "Pfx", "pfx")] Pfx,
+		[ISI.Extensions.EnumGuid("a0665289-4ff8-44ea-8ed6-d1a85af31262", "Pfx Password", "pfx-password")] PfxPassword,
+		[ISI.Extensions.EnumGuid("e712a8cd-a7b4-4028-b9b0-cd72a54a2b54", "Jks Keystore", "jks")] JksKeystore,
+		[ISI.Extensions.EnumGuid("9a041f7b-3c2a-4a66-b74c-5a301c8ef3cc", "Jks Keystore Password", "jks-password")] JksKeystorePassword,
 	}
 }

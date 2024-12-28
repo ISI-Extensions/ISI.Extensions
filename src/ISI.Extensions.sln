@@ -176,6 +176,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.TrueNAS", "I
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.PfSense", "ISI.Extensions.PfSense\ISI.Extensions.PfSense.csproj", "{ACB7B3D9-B094-4E06-81ED-0E71511C6BCF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISI.Extensions.Ant", "ISI.Extensions.Ant\ISI.Extensions.Ant.csproj", "{E47A76FC-96B9-462A-91B2-80E2B63496D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -856,6 +858,14 @@ Global
 		{ACB7B3D9-B094-4E06-81ED-0E71511C6BCF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ACB7B3D9-B094-4E06-81ED-0E71511C6BCF}.Release|x64.ActiveCfg = Release|Any CPU
 		{ACB7B3D9-B094-4E06-81ED-0E71511C6BCF}.Release|x64.Build.0 = Release|Any CPU
+		{E47A76FC-96B9-462A-91B2-80E2B63496D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E47A76FC-96B9-462A-91B2-80E2B63496D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E47A76FC-96B9-462A-91B2-80E2B63496D8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E47A76FC-96B9-462A-91B2-80E2B63496D8}.Debug|x64.Build.0 = Debug|Any CPU
+		{E47A76FC-96B9-462A-91B2-80E2B63496D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E47A76FC-96B9-462A-91B2-80E2B63496D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E47A76FC-96B9-462A-91B2-80E2B63496D8}.Release|x64.ActiveCfg = Release|Any CPU
+		{E47A76FC-96B9-462A-91B2-80E2B63496D8}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

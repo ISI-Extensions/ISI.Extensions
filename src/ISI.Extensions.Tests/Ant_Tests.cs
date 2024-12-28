@@ -64,7 +64,7 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
-		public void ExecuteBuildTarget_Test()
+		public void IsBuildScriptFile_Test()
 		{
 			var antApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Ant.AntApi>();
 

@@ -23,6 +23,8 @@ namespace ISI.Extensions.Cake.DataTransferObjects.CakeApi
 {
 	public class GetTargetKeysFromBuildScriptResponse
 	{
+		public string DefaultTarget { get; set; } = "Default";
+
 		public string[] Targets { get; set; }
 	}
 }

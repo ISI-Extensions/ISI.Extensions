@@ -74,5 +74,16 @@ namespace ISI.Extensions.Tests
 				UseShell = true,
 			});
 		}
+
+		[Test]
+		public void IsBuildScriptFile_Test()
+		{
+			var cakeApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Cake.CakeApi>();
+
+			var isBuildScriptFileResponse = cakeApi.IsBuildScriptFile(new()
+			{
+				BuildScriptFullName = @"F:\ISI\Internal Projects\ISI.Extensions\build.cake",
+			});
+		}
 	}
 }

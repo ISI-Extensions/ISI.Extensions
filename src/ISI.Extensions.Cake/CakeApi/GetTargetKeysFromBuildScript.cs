@@ -35,6 +35,12 @@ namespace ISI.Extensions.Cake
 
 			var buildCommands = System.IO.File.ReadAllText(request.BuildScriptFullName);
 
+			var defaultTarget = buildCommands.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(line => line.IndexOf("Argument(\"target\",", StringComparison.InvariantCultureIgnoreCase) >= 0);
+			if (!string.IsNullOrWhiteSpace(defaultTarget))
+			{
+				response.DefaultTarget = defaultTarget.Split(',')[1].Trim(' ', ';', ')', '"');
+			}
+
 			var matches = rgTargets.Matches(buildCommands);
 
 			foreach (System.Text.RegularExpressions.Match match in matches)

@@ -9,8 +9,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Artwork\Cake-16x16.png" />
+	  <None Remove="Artwork\Cake.ico" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Compile Include="..\ISI.Extensions.AssemblyInfo.cs" Link="Properties\ISI.Extensions.AssemblyInfo.cs" />
 		<Compile Include="..\ISI.Extensions.Version.cs" Link="Properties\ISI.Extensions.Version.cs" />
+		<EmbeddedResource Include="Artwork\Cake-16x16.png" />
+		<EmbeddedResource Include="Artwork\Cake.ico" />
 		<None Include="..\ISI.Extensions.licenseheader" Link="ISI.Extensions.licenseheader" />
 	</ItemGroup>
 

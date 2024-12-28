@@ -13,6 +13,7 @@ namespace ISI.Extensions.Ant
 	{
 		public const string BuildScriptTypeUuid = "62773a5f-62ec-40c0-8523-4890f76b1d8f";
 		public const string BuildScriptFileName = "build.ant";
+		public const string AntFileNameExtension = ".ant";
 
 		private static HashSet<string> AntFileNameExtensions = new([".ant", ".xml"], StringComparer.InvariantCultureIgnoreCase);
 

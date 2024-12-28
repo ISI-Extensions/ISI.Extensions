@@ -9,8 +9,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Artwork\Ant-16x16.png" />
+	  <None Remove="Artwork\Ant.ico" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Compile Include="..\ISI.Extensions.AssemblyInfo.cs" Link="Properties\ISI.Extensions.AssemblyInfo.cs" />
 		<Compile Include="..\ISI.Extensions.Version.cs" Link="Properties\ISI.Extensions.Version.cs" />
+		<EmbeddedResource Include="Artwork\Ant-16x16.png" />
+		<EmbeddedResource Include="Artwork\Ant.ico" />
 		<None Include="..\ISI.Extensions.licenseheader" Link="ISI.Extensions.licenseheader" />
 	</ItemGroup>
 
@@ -21,6 +28,25 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="T4LocalContent\T4LocalContent.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	    <LastGenOutput>T4LocalContent.generatedcode.cs</LastGenOutput>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="T4LocalContent\T4LocalContent.generatedcode.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>T4LocalContent.tt</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 </Project>

@@ -18,8 +18,4 @@
 		<ProjectReference Include="..\ISI.Platforms.Elk\ISI.Platforms.Elk.csproj" />
 		<ProjectReference Include="..\ISI.Platforms\ISI.Platforms.csproj" />
 	</ItemGroup>
-	<ItemGroup>
-		<PackageReference Include="Topshelf" Version="4.3.0" />
-		<PackageReference Include="Topshelf.Serilog" Version="4.3.0" />
-	</ItemGroup>
 </Project>

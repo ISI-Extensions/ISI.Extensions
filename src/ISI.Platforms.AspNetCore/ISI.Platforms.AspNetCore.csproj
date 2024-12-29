@@ -17,7 +17,6 @@
 		<ProjectReference Include="..\ISI.Extensions.AspNetCore\ISI.Extensions.AspNetCore.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Caching.MessageBus\ISI.Extensions.Caching.MessageBus.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.JsonSerialization.Newtonsoft\ISI.Extensions.JsonSerialization.Newtonsoft.csproj" />
-		<ProjectReference Include="..\ISI.Extensions.Topshelf\ISI.Extensions.Topshelf.csproj" />
 		<ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />
 		<ProjectReference Include="..\ISI.Platforms\ISI.Platforms.csproj" />
 	</ItemGroup>

@@ -20,7 +20,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using Serilog.Exceptions;
-using Topshelf;
 
 namespace ISI.Platforms.Serilog
 {
@@ -37,7 +36,7 @@ namespace ISI.Platforms.Serilog
 
 		public void AddLogger(object hostConfigurator)
 		{
-			(hostConfigurator as Topshelf.HostConfigurators.HostConfigurator)?.UseSerilog();
+
 		}
 
 		public void AddLogger(Microsoft.Extensions.DependencyInjection.IServiceCollection services, Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot, string activeEnvironment)

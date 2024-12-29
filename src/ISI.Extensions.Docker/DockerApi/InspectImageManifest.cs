@@ -51,23 +51,29 @@ namespace ISI.Extensions.Docker
 				Arguments = arguments.ToArray(),
 			}).Output;
 
-			var imageManifests = Serializer.Deserialize<SERIALIZABLEMODELS.ImageManifest[]>(content);
-
-			if (imageManifests.NullCheckedAny())
+			try
 			{
-				response.ImageManifest = new()
+				var imageManifests = Serializer.Deserialize<ISI.Extensions.Docker.SerializableModels.ImageManifest[]>(content);
+
+				if (imageManifests.NullCheckedAny())
 				{
-					Registry = request.ContainerRegistry,
-					Repository = request.ContainerRepository,
-					ImageTag = request.ContainerImageTag,
-					OsArches = imageManifests.ToNullCheckedArray(imageManifest => new ImageManifestOsArch()
+					response.ImageManifest = new()
 					{
-						OS = imageManifest.Descriptor?.Platform?.OS,
-						Architecture = imageManifest.Descriptor?.Platform?.Architecture,
-						Digest = imageManifest.Descriptor?.Digest,
-					})
-				};
-			} 
+						Registry = request.ContainerRegistry,
+						Repository = request.ContainerRepository,
+						ImageTag = request.ContainerImageTag,
+						OsArches = imageManifests.ToNullCheckedArray(imageManifest => new ImageManifestOsArch()
+						{
+							OS = imageManifest.Descriptor?.Platform?.OS,
+							Architecture = imageManifest.Descriptor?.Platform?.Architecture,
+							Digest = imageManifest.Descriptor?.Digest,
+						})
+					};
+				}
+			}
+			catch
+			{
+			}
 
 			return response;
 		}

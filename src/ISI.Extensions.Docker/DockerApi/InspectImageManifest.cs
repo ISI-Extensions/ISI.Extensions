@@ -53,22 +53,51 @@ namespace ISI.Extensions.Docker
 
 			try
 			{
-				var imageManifests = Serializer.Deserialize<ISI.Extensions.Docker.SerializableModels.ImageManifest[]>(content);
-
-				if (imageManifests.NullCheckedAny())
+				if (!string.IsNullOrWhiteSpace(content))
 				{
-					response.ImageManifest = new()
+					if (content.Trim().StartsWith("["))
 					{
-						Registry = request.ContainerRegistry,
-						Repository = request.ContainerRepository,
-						ImageTag = request.ContainerImageTag,
-						OsArches = imageManifests.ToNullCheckedArray(imageManifest => new ImageManifestOsArch()
+						var imageManifests = Serializer.Deserialize<ISI.Extensions.Docker.SerializableModels.ImageManifest[]>(content);
+
+						if (imageManifests.NullCheckedAny())
 						{
-							OS = imageManifest.Descriptor?.Platform?.OS,
-							Architecture = imageManifest.Descriptor?.Platform?.Architecture,
-							Digest = imageManifest.Descriptor?.Digest,
-						})
-					};
+							response.ImageManifest = new()
+							{
+								Registry = request.ContainerRegistry,
+								Repository = request.ContainerRepository,
+								ImageTag = request.ContainerImageTag,
+								OsArches = imageManifests.ToNullCheckedArray(imageManifest => new ImageManifestOsArch()
+								{
+									OS = imageManifest.Descriptor?.Platform?.OS,
+									Architecture = imageManifest.Descriptor?.Platform?.Architecture,
+									Digest = imageManifest.Descriptor?.Digest,
+								})
+							};
+						}
+					}
+					else
+					{
+						var imageManifest = Serializer.Deserialize<ISI.Extensions.Docker.SerializableModels.ImageManifest>(content);
+
+						if (imageManifest != null)
+						{
+							response.ImageManifest = new()
+							{
+								Registry = request.ContainerRegistry,
+								Repository = request.ContainerRepository,
+								ImageTag = request.ContainerImageTag,
+								OsArches =
+								[
+									new ImageManifestOsArch()
+									{
+										OS = imageManifest.Descriptor?.Platform?.OS,
+										Architecture = imageManifest.Descriptor?.Platform?.Architecture,
+										Digest = imageManifest.Descriptor?.Digest,
+									}
+								],
+							};
+						}
+					}
 				}
 			}
 			catch

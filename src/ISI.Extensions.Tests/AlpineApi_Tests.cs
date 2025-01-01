@@ -57,7 +57,7 @@ namespace ISI.Extensions.Tests
 
 				.AddSingleton<ISI.Extensions.JsonSerialization.IJsonSerializer, ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer>()
 				.AddSingleton<ISI.Extensions.Serialization.ISerialization, ISI.Extensions.Serialization.Serialization>()
-				.AddSingleton<ISI.Extensions.Alpine.IAlpineApi, ISI.Extensions.Alpine.AlpineApi>()
+				.AddSingleton<ISI.Extensions.Alpine.AlpineApi>()
 
 				.AddConfigurationRegistrations(configurationRoot)
 				.ProcessServiceRegistrars(configurationRoot)
@@ -71,7 +71,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void GetPackageVersion_Test()
 		{
-			var alpineApi = ServiceProvider.GetService<ISI.Extensions.Alpine.IAlpineApi>();
+			var alpineApi = ServiceProvider.GetService<ISI.Extensions.Alpine.AlpineApi>();
 
 			using (var eventHandler = ISI.Extensions.WebClient.Rest.GetEventHandler())
 			{

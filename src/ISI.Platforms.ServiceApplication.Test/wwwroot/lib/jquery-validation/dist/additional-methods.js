@@ -1,16 +1,3 @@
-/*
-Copyright (c) 2024, Integrated Solutions, Inc.
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-		* Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-		* Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-		* Neither the name of the Integrated Solutions, Inc. nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
- 
 (function( factory ) {
 	if ( typeof define === "function" && define.amd ) {
 		define( ["jquery", "./jquery.validate"], factory );
@@ -143,7 +130,7 @@ $.validator.addMethod( "bankorgiroaccountNL", function( value, element ) {
  * - Last 3 characters - branch code, optional (shall not start with 'X' except in case of 'XXX' for primary office) (letters and digits)
  */
 $.validator.addMethod( "bic", function( value, element ) {
-    return this.optional( element ) || /^([A-Z]{6}[A-Z2-9][A-NP-Z1-9])(X{3}|[A-WY-Z0-9][A-Z0-9]{2})?$/.test( value.toUpperCase() );
+		return this.optional( element ) || /^([A-Z]{6}[A-Z2-9][A-NP-Z1-9])(X{3}|[A-WY-Z0-9][A-Z0-9]{2})?$/.test( value.toUpperCase() );
 }, "Please specify a valid BIC code" );
 
 /*
@@ -462,16 +449,16 @@ $.validator.addMethod( "creditcardtypes", function( value, element, param ) {
  *  }
  */
 $.validator.addMethod( "currency", function( value, element, param ) {
-    var isParamString = typeof param === "string",
-        symbol = isParamString ? param : param[ 0 ],
-        soft = isParamString ? true : param[ 1 ],
-        regex;
+		var isParamString = typeof param === "string",
+				symbol = isParamString ? param : param[ 0 ],
+				soft = isParamString ? true : param[ 1 ],
+				regex;
 
-    symbol = symbol.replace( /,/g, "" );
-    symbol = soft ? symbol + "]" : symbol + "]?";
-    regex = "^[" + symbol + "([1-9]{1}[0-9]{0,2}(\\,[0-9]{3})*(\\.[0-9]{0,2})?|[1-9]{1}[0-9]{0,}(\\.[0-9]{0,2})?|0(\\.[0-9]{0,2})?|(\\.[0-9]{1,2})?)$";
-    regex = new RegExp( regex );
-    return this.optional( element ) || regex.test( value );
+		symbol = symbol.replace( /,/g, "" );
+		symbol = soft ? symbol + "]" : symbol + "]?";
+		regex = "^[" + symbol + "([1-9]{1}[0-9]{0,2}(\\,[0-9]{3})*(\\.[0-9]{0,2})?|[1-9]{1}[0-9]{0,}(\\.[0-9]{0,2})?|0(\\.[0-9]{0,2})?|(\\.[0-9]{1,2})?)$";
+		regex = new RegExp( regex );
+		return this.optional( element ) || regex.test( value );
 
 }, "Please specify a valid currency" );
 
@@ -712,7 +699,7 @@ $.validator.addMethod( "mobileUK", function( phone_number, element ) {
 }, "Please specify a valid mobile number" );
 
 $.validator.addMethod( "netmask", function( value, element ) {
-    return this.optional( element ) || /^(254|252|248|240|224|192|128)\.0\.0\.0|255\.(254|252|248|240|224|192|128|0)\.0\.0|255\.255\.(254|252|248|240|224|192|128|0)\.0|255\.255\.255\.(254|252|248|240|224|192|128|0)/i.test( value );
+		return this.optional( element ) || /^(254|252|248|240|224|192|128)\.0\.0\.0|255\.(254|252|248|240|224|192|128|0)\.0\.0|255\.255\.(254|252|248|240|224|192|128|0)\.0|255\.255\.255\.(254|252|248|240|224|192|128|0)/i.test( value );
 }, "Please enter a valid netmask." );
 
 /*

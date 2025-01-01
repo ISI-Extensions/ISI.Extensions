@@ -10,7 +10,7 @@ using SerializableDTOs = ISI.Extensions.Tailscale.SerializableModels.LocalTailsc
 
 namespace ISI.Extensions.Tailscale
 {
-	public partial class LocalTailscaleApi : ILocalTailscaleApi
+	public partial class LocalTailscaleApi
 	{
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }

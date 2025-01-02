@@ -53,6 +53,7 @@ namespace ISI.Platforms.ServiceApplication
 			await Task.Delay(5000, cancellationToken);
 
 			Logger.LogInformation("UserInteractive: {0}", Environment.UserInteractive);
+			Logger.LogInformation("RunningAsService: {0}", Context.RunningAsService);
 
 
 

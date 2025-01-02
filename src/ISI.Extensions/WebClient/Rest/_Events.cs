@@ -105,7 +105,7 @@ namespace ISI.Extensions.WebClient
 				ResponseRaw = responseRaw;
 			}
 
-			internal string GetCurlCommand()
+			public string GetCurlCommand()
 			{
 				var cmd = new StringBuilder();
 

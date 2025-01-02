@@ -19,41 +19,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Tailscale.DataTransferObjects.TailscaleApi;
-using SerializableDTOs = ISI.Extensions.Tailscale.SerializableModels.TailscaleApi;
-using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.Tailscale
+namespace ISI.Extensions.Tailscale.DataTransferObjects.TailscaleApi
 {
-	public partial class TailscaleApi
+	public class UpdateDeviceKeyResponse
 	{
-		public DTOs.UpdateDeviceKey​Response UpdateDeviceKey(DTOs.UpdateDeviceKey​Request request)
-		{
-			var response = new DTOs.UpdateDeviceKey​Response();
-			
-			var uri = GetApiUri(request);
-			uri.AddDirectoryToPath("/device/{deviceId}/key".Replace("{deviceId}", request.NodeKey));
-
-			var restRequest = new SerializableDTOs.UpdateDeviceKey​Request()
-			{
-				KeyExpiryDisabled = request.KeyExpiryDisabled,
-			};
-
-			try
-			{
-				var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.UpdateDeviceKey​Request, SerializableDTOs.UpdateDeviceKey​Response, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request), restRequest, false);
-
-				if (restResponse.Error != null)
-				{
-					throw restResponse.Error.Exception;
-				}
-			}
-			catch (Exception exception)
-			{
-				Logger.LogError(exception, "UpdateDeviceKey​ Failed\n{0}", exception.ErrorMessageFormatted());
-			}
-
-			return response;
-		}
 	}
 }

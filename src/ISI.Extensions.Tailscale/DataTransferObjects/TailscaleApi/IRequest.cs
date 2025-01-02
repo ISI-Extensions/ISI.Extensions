@@ -22,6 +22,6 @@ namespace ISI.Extensions.Tailscale.DataTransferObjects.TailscaleApi
 	public interface IRequest
 	{
 		string TailscaleApiUrl { get; }
-		string TailscaleApiToken { get; }
+		string TailScaleApiKey { get; }
 	}
 }

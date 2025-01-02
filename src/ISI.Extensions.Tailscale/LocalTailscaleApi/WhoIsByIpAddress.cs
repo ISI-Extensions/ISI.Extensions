@@ -37,7 +37,7 @@ namespace ISI.Extensions.Tailscale
 
 			response.Node = whoIsResponse.Node.NullCheckedConvert(node => new DTOs.WhoIsResponseNode()
 			{
-				NodeKey = node.ID,
+				ID = node.ID,
 				StableID = node.StableID,
 				Name = node.Name,
 				User = node.User,

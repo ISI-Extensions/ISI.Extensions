@@ -19,26 +19,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.JsonSerialization.Extensions;
-using DTOs = ISI.Extensions.Tailscale.DataTransferObjects.LocalTailscaleApi;
-using SerializableDTOs = ISI.Extensions.Tailscale.SerializableModels.LocalTailscaleApi;
 
-namespace ISI.Extensions.Tailscale
+namespace ISI.Extensions.Tailscale.DataTransferObjects.LocalTailscaleApi
 {
-	public partial class LocalTailscaleApi
+	public class GetNodeKeyResponse
 	{
-		public DTOs.GetNodeKeyResponse GetNodeKey(DTOs.GetNodeKeyRequest request)
-		{
-			var response = new DTOs.GetNodeKeyResponse();
-
-			var ipAddress = GetIpAddress(new()).IpAddress;
-
-			response.NodeKey = WhoIsByIpAddress(new()
-			{
-				IpAddress = ipAddress,
-			}).Node?.NodeKey;
-			
-			return response;
-		}
+		public string NodeID { get; set; }
 	}
 }

@@ -31,13 +31,13 @@ namespace ISI.Extensions.Tailscale
 		{
 			var headers = new ISI.Extensions.WebClient.HeaderCollection();
 
-			if (!string.IsNullOrWhiteSpace(request.TailscaleApiToken))
+			if (!string.IsNullOrWhiteSpace(request.TailScaleApiKey))
 			{
-				headers.AddBearerAuthentication(request.TailscaleApiToken);
+				headers.AddBearerAuthentication(request.TailScaleApiKey);
 			}
-			else if (!string.IsNullOrWhiteSpace(Configuration.TailscaleApiToken))
+			else if (!string.IsNullOrWhiteSpace(Configuration.TailScaleApiKey))
 			{
-				headers.AddBearerAuthentication(Configuration.TailscaleApiToken);
+				headers.AddBearerAuthentication(Configuration.TailScaleApiKey);
 			}
 			else
 			{

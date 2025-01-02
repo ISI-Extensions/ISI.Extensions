@@ -19,6 +19,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -159,6 +160,7 @@ namespace ISI.Platforms.AspNetCore
 
 					var validateApiKeyResponse = await AuthenticationIdentityApi.ValidateApiKeyAsync(new()
 					{
+						Url = $"{Request.GetDisplayUrl()}/{Request.QueryString}",
 						ApiKey = authenticationHeaderValue.TrimStart(ISI.Extensions.WebClient.HeaderCollection.Keys.BearerAuthenticationPrefix).Trim(),
 					});
 

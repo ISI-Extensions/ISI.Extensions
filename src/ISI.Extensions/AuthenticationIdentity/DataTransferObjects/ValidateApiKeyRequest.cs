@@ -24,6 +24,7 @@ namespace ISI.Extensions.AuthenticationIdentity.DataTransferObjects
 {
 	public class ValidateApiKeyRequest
 	{
+		public string Url { get; set; }
 		public string ApiKey { get; set; }
 	}
 }

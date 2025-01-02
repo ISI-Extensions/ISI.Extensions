@@ -19,11 +19,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Tailscale.DataTransferObjects.LocalTailscaleApi
+namespace ISI.Extensions.Tailscale.SerializableModels.TailscaleApi
 {
-	public class GetNodeKeyResponse
+	[DataContract]
+	public class UpdateDeviceKeyRequest
 	{
-		public string NodeKey { get; set; }
+		[DataMember(Name = "keyExpiryDisabled", EmitDefaultValue = false)]
+		public bool KeyExpiryDisabled { get; set; }
 	}
 }

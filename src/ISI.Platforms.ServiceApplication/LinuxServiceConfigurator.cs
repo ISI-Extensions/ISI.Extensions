@@ -45,6 +45,8 @@ WantedBy=multi-user.target
 
 			ISI.Extensions.Process.WaitForProcessResponse("systemctl", "daemon-reload");
 
+			ISI.Extensions.Process.WaitForProcessResponse("systemctl", "enable", $"{request.ServiceName}.service");
+
 			return response;
 		}
 
@@ -58,6 +60,8 @@ WantedBy=multi-user.target
 			});
 
 			System.IO.File.Delete(GetServiceConfigFullName(request.ServiceName));
+
+			ISI.Extensions.Process.WaitForProcessResponse("systemctl", "disable", $"{request.ServiceName}.service");
 
 			ISI.Extensions.Process.WaitForProcessResponse("systemctl", "daemon-reload");
 

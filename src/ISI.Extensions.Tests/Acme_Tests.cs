@@ -423,14 +423,6 @@ namespace ISI.Extensions.Tests
 				HostContext = context,
 
 				Domain = domain,
-
-				PostRenewalActions =
-				[
-					new ISI.Extensions.Acme.OrderCertificateDomainPostRenewalActionAcmeAgentWebHook()
-					{
-						SetCertificatesUrl = @"https://nginx/upload-certificates",
-					}
-				]
 			});
 		}
 	}

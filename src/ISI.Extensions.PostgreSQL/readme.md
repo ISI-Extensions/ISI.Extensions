@@ -82,3 +82,4 @@ docker exec -it postgres bash
 
 pg_restore -U postgres --format=c --dbname=dbxxxxxxxxxxx --create --verbose /var/lib/postgresql/dump/dbxxxxxxxxxxx.dump
 
+

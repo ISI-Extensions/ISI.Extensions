@@ -38,8 +38,5 @@ namespace ISI.Extensions.Acme.SerializableModels.AcmeOrders
 
 		[DataMember(Name = "identifiers", EmitDefaultValue = false)]
 		public OrderCertificateIdentifier[] CertificateIdentifiers { get; set; }
-
-		[DataMember(Name = "postRenewalActions", EmitDefaultValue = false)]
-		public IOrderCertificateDomainPostRenewalAction[] PostRenewalActions { get; set; }
 	}
 }

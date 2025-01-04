@@ -29,8 +29,6 @@ namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 		HostContext HostContext { get; }
 
 		string Domain { get; }
-
-		IOrderCertificateDomainPostRenewalAction[] PostRenewalActions { get; }
 	}
 
 	public class ProcessNewOrderUsingExistingCertificateRequest : IProcessNewOrderRequest
@@ -38,8 +36,6 @@ namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 		public HostContext HostContext { get; set; }
 
 		public string Domain { get; set; }
-
-		public IOrderCertificateDomainPostRenewalAction[] PostRenewalActions { get; set; }
 	}
 
 	public class ProcessNewOrderUsingDnsRequest : IProcessNewOrderRequest
@@ -62,7 +58,5 @@ namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 		public string OrganizationUnit { get; set; }
 
 		public SetDnsRecordDelegate SetDnsRecord { get; set; }
-
-		public IOrderCertificateDomainPostRenewalAction[] PostRenewalActions { get; set; }
 	}
 }

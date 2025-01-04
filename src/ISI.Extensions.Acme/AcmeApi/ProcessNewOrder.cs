@@ -57,7 +57,6 @@ namespace ISI.Extensions.Acme
 						CertificateIdentifierValue = request.Domain,
 					}
 				],
-				PostRenewalActions = request.PostRenewalActions,
 			});
 
 			var getOrderResponse = GetOrder(new()
@@ -92,7 +91,6 @@ namespace ISI.Extensions.Acme
 					CertificateIdentifierType = ISI.Extensions.Acme.OrderCertificateIdentifierType.Dns,
 					CertificateIdentifierValue = domain,
 				}),
-				PostRenewalActions = request.PostRenewalActions,
 			});
 
 			foreach (var authorizationUrl in createNewOrderResponse.Order.AuthorizationUrls)

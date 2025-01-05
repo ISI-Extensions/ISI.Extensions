@@ -25,7 +25,7 @@ namespace ISI.Extensions.Tailscale.DataTransferObjects.TailscaleApi
 	public class CreateAuthKeyRequest : IRequest
 	{
 		public string TailscaleApiUrl { get; set; }
-		public string TailScaleApiKey { get; set; }
+		public string TailscaleApiKey { get; set; }
 
 		public string Tailnet { get; set; }
 

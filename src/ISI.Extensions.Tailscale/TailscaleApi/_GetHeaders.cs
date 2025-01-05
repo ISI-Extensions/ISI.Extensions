@@ -31,9 +31,9 @@ namespace ISI.Extensions.Tailscale
 		{
 			var headers = new ISI.Extensions.WebClient.HeaderCollection();
 
-			if (!string.IsNullOrWhiteSpace(request.TailScaleApiKey))
+			if (!string.IsNullOrWhiteSpace(request.TailscaleApiKey))
 			{
-				headers.AddBearerAuthentication(request.TailScaleApiKey);
+				headers.AddBearerAuthentication(request.TailscaleApiKey);
 			}
 			else if (!string.IsNullOrWhiteSpace(Configuration.TailScaleApiKey))
 			{

@@ -82,7 +82,7 @@ namespace ISI.Extensions.Tests
 
 			var createAuthKeyResponse = TailscaleApi.CreateAuthKey(new()
 			{
-				TailScaleApiKey = settings.GetValue("Tailscale-ronmuth-apikey"),
+				TailscaleApiKey = settings.GetValue("Tailscale-ronmuth-apikey"),
 				Tailnet = settings.GetValue("Tailscale-ronmuth-tailnet"),
 				Description = "test",
 				Ephemeral = false,

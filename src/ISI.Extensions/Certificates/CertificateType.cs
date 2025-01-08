@@ -31,5 +31,6 @@ namespace ISI.Extensions.Certificates
 		[ISI.Extensions.EnumGuid("a0665289-4ff8-44ea-8ed6-d1a85af31262", "Pfx Password", "pfx-password")] PfxPassword,
 		[ISI.Extensions.EnumGuid("e712a8cd-a7b4-4028-b9b0-cd72a54a2b54", "Jks Keystore", "jks")] JksKeystore,
 		[ISI.Extensions.EnumGuid("9a041f7b-3c2a-4a66-b74c-5a301c8ef3cc", "Jks Keystore Password", "jks-password")] JksKeystorePassword,
+		[ISI.Extensions.EnumGuid("e97afbce-844d-4994-9381-7dbb2a565b0e", "Certificate Revocation List", "crl")] CertificateRevocationList,
 	}
 }

@@ -74,16 +74,20 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 
 			context.LoggerConfigurator?.AddLogger(webApplicationBuilder.Services, context.ConfigurationRoot, context.ActiveEnvironment);
 
+			context.LoggerConfigurator?.Information($"System.IO.Directory.GetCurrentDirectory() = {System.IO.Directory.GetCurrentDirectory()}");
+			
 			if (context.RunningAsService)
 			{
+				context.LoggerConfigurator?.Information("Running As Service");
+
 				if (Environment.OSVersion.Platform == PlatformID.Unix)
 				{
-					Console.WriteLine("AddSystemd()");
+					context.LoggerConfigurator?.Information("AddSystemd()");
 					webApplicationBuilder.Services.AddSystemd();
 				}
 				else
 				{
-					Console.WriteLine("AddWindowsService()");
+					context.LoggerConfigurator?.Information("AddWindowsService()");
 					webApplicationBuilder.Services.AddWindowsService(options =>
 					{
 						options.ServiceName = context.ServiceName;

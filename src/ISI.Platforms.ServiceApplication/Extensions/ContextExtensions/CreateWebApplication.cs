@@ -45,6 +45,12 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 			if (Environment.OSVersion.Platform == PlatformID.Unix)
 			{
 				var contentRootPath = System.IO.Directory.GetCurrentDirectory();
+
+				if (context.RunningAsService && (contentRootPath == "/"))
+				{
+					contentRootPath = System.IO.Path.GetDirectoryName(context.RootAssembly.Location);
+				}
+
 				var webRootPath = System.IO.Path.Combine(contentRootPath, "wwwroot");
 
 				webApplicationOptions = new Microsoft.AspNetCore.Builder.WebApplicationOptions()
@@ -74,8 +80,6 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 
 			context.LoggerConfigurator?.AddLogger(webApplicationBuilder.Services, context.ConfigurationRoot, context.ActiveEnvironment);
 
-			context.LoggerConfigurator?.Information($"System.IO.Directory.GetCurrentDirectory() = {System.IO.Directory.GetCurrentDirectory()}");
-			
 			if (context.RunningAsService)
 			{
 				context.LoggerConfigurator?.Information("Running As Service");

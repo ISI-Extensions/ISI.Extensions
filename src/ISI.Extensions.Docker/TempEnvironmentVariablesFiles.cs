@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,28 +23,47 @@ namespace ISI.Extensions.Docker
 {
 	internal class TempEnvironmentVariablesFile : IDisposable
 	{
+		public string Content { get; }
 		public string FullName { get; }
-		public string FileName { get; }
 
-		public TempEnvironmentVariablesFile(string sourceFullName, string composeDirectory)
+		private string _fileName = null;
+		public string FileName
 		{
-			FileName = $"Temp-{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}.env";
-			FullName = System.IO.Path.Combine(composeDirectory, FileName);
-
-			if (!System.IO.File.Exists(sourceFullName))
+			get
 			{
-				throw new System.IO.FileNotFoundException($"File not found: \"{sourceFullName}\"");
+				if (string.IsNullOrWhiteSpace(_fileName))
+				{
+					System.IO.File.WriteAllText(FullName, Content);
+
+					_fileName = System.IO.Path.GetFileName(FullName);
+				}
+
+				return _fileName;
+			}
+		}
+
+		public TempEnvironmentVariablesFile(string content, string composeDirectory)
+		{
+			if (string.IsNullOrWhiteSpace(composeDirectory))
+			{
+				composeDirectory = System.IO.Path.GetTempPath();
 			}
 
-			System.IO.File.Copy(sourceFullName, FullName);
+			FullName = System.IO.Path.Combine(composeDirectory, $"Temp-{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}.env");
+
+			Content = content;
 		}
 
 		public TempEnvironmentVariablesFile(InvariantCultureIgnoreCaseStringDictionary<string> environmentVariables, string composeDirectory)
 		{
-			FileName = $"Temp-{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}.env";
-			FullName = System.IO.Path.Combine(composeDirectory, FileName);
+			if (string.IsNullOrWhiteSpace(composeDirectory))
+			{
+				composeDirectory = System.IO.Path.GetTempPath();
+			}
 
-			System.IO.File.WriteAllLines(FullName, environmentVariables.Select(keyValue => $"{keyValue.Key}={keyValue.Value}"));
+			FullName = System.IO.Path.Combine(composeDirectory, $"Temp-{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}.env");
+
+			Content = string.Join(Environment.NewLine, environmentVariables.Select(keyValue => $"{keyValue.Key}={keyValue.Value}"));
 		}
 
 		public void Dispose()
@@ -60,9 +79,28 @@ namespace ISI.Extensions.Docker
 		private InvariantCultureIgnoreCaseStringDictionary<string> _environmentVariables = null;
 		internal InvariantCultureIgnoreCaseStringDictionary<string> EnvironmentVariables => _environmentVariables ??= GetEnvironmentVariables();
 
-		public TempEnvironmentVariablesFiles(string composeDirectory, IEnumerable<string> sourceFullNames, InvariantCultureIgnoreCaseStringDictionary<string> environmentVariables)
+		public TempEnvironmentVariablesFiles(string composeDirectory, IEnumerable<string> environmentFileFullNames, IEnumerable<string> environmentFileContents, InvariantCultureIgnoreCaseStringDictionary<string> environmentVariables)
 		{
-			var environmentFiles = sourceFullNames.ToNullCheckedList(sourceFullName => new TempEnvironmentVariablesFile(sourceFullName, composeDirectory), NullCheckCollectionResult.Empty);
+			var environmentFiles = environmentFileFullNames.ToNullCheckedList(environmentFileFullName =>
+			{
+				if (!System.IO.File.Exists(environmentFileFullName))
+				{
+					throw new System.IO.FileNotFoundException($"File not found: \"{environmentFileFullName}\"");
+				}
+
+				return new TempEnvironmentVariablesFile(System.IO.File.ReadAllText(environmentFileFullName), composeDirectory);
+			}, NullCheckCollectionResult.Empty);
+
+			if (environmentFileContents.NullCheckedAny())
+			{
+				foreach (var environmentFileContent in environmentFileContents)
+				{
+					if (!string.IsNullOrWhiteSpace(environmentFileContent))
+					{
+						environmentFiles.Add(new TempEnvironmentVariablesFile(environmentFileContent, composeDirectory));
+					}
+				}
+			}
 
 			if (environmentVariables.NullCheckedAny())
 			{
@@ -70,6 +108,37 @@ namespace ISI.Extensions.Docker
 			}
 
 			EnvironmentFiles = environmentFiles.ToNullCheckedArray();
+		}
+
+		protected InvariantCultureIgnoreCaseStringDictionary<string> ParseEnvironmentContent(string content)
+		{
+			var environmentVariables = new InvariantCultureIgnoreCaseStringDictionary<string>();
+
+			var lines = content.Split(['\n', '\r'], StringSplitOptions.RemoveEmptyEntries);
+
+			for (var lineIndex = 0; lineIndex < lines.Length; lineIndex++)
+			{
+				var line = lines[lineIndex].Trim();
+
+				if (!string.IsNullOrWhiteSpace(line) && !line.StartsWith("#"))
+				{
+					var lineParts = line.Split(['='], 2);
+
+					if (lineParts.Length == 2)
+					{
+						if (environmentVariables.ContainsKey(lineParts[0]))
+						{
+							environmentVariables[lineParts[0]] = lineParts[1];
+						}
+						else
+						{
+							environmentVariables.Add(lineParts[0], lineParts[1]);
+						}
+					}
+				}
+			}
+
+			return environmentVariables;
 		}
 
 		public string[] GetFileNames() => EnvironmentFiles.ToNullCheckedArray(environmentFile => environmentFile.FileName);
@@ -84,28 +153,9 @@ namespace ISI.Extensions.Docker
 			{
 				foreach (var environmentFile in EnvironmentFiles)
 				{
-					var lines = System.IO.File.ReadAllLines(environmentFile.FullName);
-
-					for (var lineIndex = 0; lineIndex < lines.Length; lineIndex++)
+					if (!string.IsNullOrWhiteSpace(environmentFile.Content))
 					{
-						var line = lines[lineIndex].Trim();
-
-						if (!string.IsNullOrWhiteSpace(line) && !line.StartsWith("#"))
-						{
-							var lineParts = line.Split(['='], 2);
-
-							if (lineParts.Length == 2)
-							{
-								if (environmentVariables.ContainsKey(lineParts[0]))
-								{
-									environmentVariables[lineParts[0]] = lineParts[1];
-								}
-								else
-								{
-									environmentVariables.Add(lineParts[0], lineParts[1]);
-								}
-							}
-						}
+						environmentVariables.AddRange(ParseEnvironmentContent(environmentFile.Content));
 					}
 				}
 			}

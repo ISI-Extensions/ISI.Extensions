@@ -36,7 +36,7 @@ namespace ISI.Extensions.Docker
 
 			var arguments = new List<string>();
 
-			using (var tempEnvironmentFiles = new TempEnvironmentVariablesFiles(request.AppDirectory, request.EnvironmentFileFullNames, request.EnvironmentVariables))
+			using (var tempEnvironmentFiles = new TempEnvironmentVariablesFiles(request.AppDirectory, request.EnvironmentFileFullNames, request.EnvironmentFileContents, request.EnvironmentVariables))
 			{
 				request.OnBuildStart?.Invoke(tempEnvironmentFiles.EnvironmentVariables.TryGetValue);
 

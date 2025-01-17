@@ -35,6 +35,7 @@ namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
 		public string Context { get; set; }
 
 		public string[] EnvironmentFileFullNames { get; set; }
+		public string[] EnvironmentFileContents { get; set; }
 		public InvariantCultureIgnoreCaseStringDictionary<string> EnvironmentVariables { get; set; }
 
 		public bool RemoveVolumes { get; set; }

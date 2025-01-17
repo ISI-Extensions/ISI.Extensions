@@ -46,6 +46,21 @@ namespace ISI.Extensions
 
 		public void Add(KeyValuePair<string, TValue> item) => _dictionary.Add(item);
 		public void Add(string key, TValue value) => _dictionary.Add(key, value);
+
+		public void AddRange(InvariantCultureIgnoreCaseStringDictionary<TValue> keyValues)
+		{
+			foreach (var keyValue in keyValues)
+			{
+				if (_dictionary.ContainsKey(keyValue.Key))
+				{
+					_dictionary[keyValue.Key] = keyValue.Value;
+				}
+				else
+				{
+					_dictionary.Add(keyValue.Key, keyValue.Value);
+				}
+			}
+		}
 		
 		public bool Contains(KeyValuePair<string, TValue> item) => _dictionary.Contains(item);
 		public bool ContainsKey(string key) => _dictionary.ContainsKey(key);

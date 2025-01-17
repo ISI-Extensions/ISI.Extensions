@@ -42,6 +42,9 @@ namespace ISI.Extensions.Docker
 			}
 		}
 
+		private InvariantCultureIgnoreCaseStringDictionary<string> _environmentVariables = null;
+		public InvariantCultureIgnoreCaseStringDictionary<string> GetEnvironmentVariables() => _environmentVariables ??= ParseEnvironmentContent(Content);
+
 		public TempEnvironmentVariablesFile(string content, string composeDirectory)
 		{
 			if (string.IsNullOrWhiteSpace(composeDirectory))
@@ -66,9 +69,43 @@ namespace ISI.Extensions.Docker
 			Content = string.Join(Environment.NewLine, environmentVariables.Select(keyValue => $"{keyValue.Key}={keyValue.Value}"));
 		}
 
+		protected InvariantCultureIgnoreCaseStringDictionary<string> ParseEnvironmentContent(string content)
+		{
+			var environmentVariables = new InvariantCultureIgnoreCaseStringDictionary<string>();
+
+			var lines = content.Split(['\n', '\r'], StringSplitOptions.RemoveEmptyEntries);
+
+			for (var lineIndex = 0; lineIndex < lines.Length; lineIndex++)
+			{
+				var line = lines[lineIndex].Trim();
+
+				if (!string.IsNullOrWhiteSpace(line) && !line.StartsWith("#"))
+				{
+					var lineParts = line.Split(['='], 2);
+
+					if (lineParts.Length == 2)
+					{
+						if (environmentVariables.ContainsKey(lineParts[0]))
+						{
+							environmentVariables[lineParts[0]] = lineParts[1];
+						}
+						else
+						{
+							environmentVariables.Add(lineParts[0], lineParts[1]);
+						}
+					}
+				}
+			}
+
+			return environmentVariables;
+		}
+
 		public void Dispose()
 		{
-			System.IO.File.Delete(FullName);
+			if (System.IO.File.Exists(FullName))
+			{
+				System.IO.File.Delete(FullName);
+			}
 		}
 	}
 
@@ -110,37 +147,6 @@ namespace ISI.Extensions.Docker
 			EnvironmentFiles = environmentFiles.ToNullCheckedArray();
 		}
 
-		protected InvariantCultureIgnoreCaseStringDictionary<string> ParseEnvironmentContent(string content)
-		{
-			var environmentVariables = new InvariantCultureIgnoreCaseStringDictionary<string>();
-
-			var lines = content.Split(['\n', '\r'], StringSplitOptions.RemoveEmptyEntries);
-
-			for (var lineIndex = 0; lineIndex < lines.Length; lineIndex++)
-			{
-				var line = lines[lineIndex].Trim();
-
-				if (!string.IsNullOrWhiteSpace(line) && !line.StartsWith("#"))
-				{
-					var lineParts = line.Split(['='], 2);
-
-					if (lineParts.Length == 2)
-					{
-						if (environmentVariables.ContainsKey(lineParts[0]))
-						{
-							environmentVariables[lineParts[0]] = lineParts[1];
-						}
-						else
-						{
-							environmentVariables.Add(lineParts[0], lineParts[1]);
-						}
-					}
-				}
-			}
-
-			return environmentVariables;
-		}
-
 		public string[] GetFileNames() => EnvironmentFiles.ToNullCheckedArray(environmentFile => environmentFile.FileName);
 
 		public string[] GetDockerComposeArguments() => GetFileNames().ToNullCheckedArray(environmentFileName => $"--env-file={environmentFileName}");
@@ -155,7 +161,7 @@ namespace ISI.Extensions.Docker
 				{
 					if (!string.IsNullOrWhiteSpace(environmentFile.Content))
 					{
-						environmentVariables.AddRange(ParseEnvironmentContent(environmentFile.Content));
+						environmentVariables.AddRange(environmentFile.GetEnvironmentVariables());
 					}
 				}
 			}

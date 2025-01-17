@@ -61,6 +61,7 @@ namespace ISI.Extensions.Docker
 					arguments.Add($"--project-name {request.ProjectName}");
 				}
 
+				arguments.Add("--ansi never");
 				arguments.Add("--progress plain");
 
 				arguments.AddRange(tempEnvironmentFiles.GetDockerComposeArguments());

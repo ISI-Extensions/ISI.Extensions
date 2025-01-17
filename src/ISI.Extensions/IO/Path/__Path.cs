@@ -48,7 +48,7 @@ namespace ISI.Extensions
 
 				if (string.IsNullOrWhiteSpace(dataRoot) && (Environment.OSVersion.Platform == PlatformID.Unix))
 				{
-					dataRoot =  "/etc";
+					dataRoot =  "/var/lib";
 				}
 
 				if (string.IsNullOrWhiteSpace(dataRoot))

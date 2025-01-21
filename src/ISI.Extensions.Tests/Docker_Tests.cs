@@ -156,7 +156,7 @@ namespace ISI.Extensions.Tests
 			var xxx = dockerApi.ComposePull(new()
 			{
 				Context = "isinydocker01",
-				ComposeDirectory = @"F:\ISI\Internal Projects\ISI.Docker.Recipes\isinydocker01\scmmanager",
+				ComposeDirectory = @"F:\ISI\Internal Projects\ISI.Docker.Recipes\isinydocker01\tailscale",
 				AddToLog = (level, description) => Console.WriteLine(description),
 			});
 		}

@@ -31,38 +31,48 @@ namespace ISI.Extensions.Docker
 		{
 			var response = new DTOs.GetServerApiVersionResponse();
 
-			//var arguments = new List<string>();
+			try
+			{
+				var arguments = new List<string>();
 
-			//if (!string.IsNullOrWhiteSpace(request.Context))
-			//{
-			//	if (!DockerContexts.ContainsKey(request.Context))
-			//	{
-			//		throw new Exception($"Context \"{request.Context}\" not found");
-			//	}
+				if (!string.IsNullOrWhiteSpace(request.Context))
+				{
+					if (!DockerContexts.ContainsKey(request.Context))
+					{
+						throw new Exception($"Context \"{request.Context}\" not found");
+					}
 
-			//	arguments.Add($"--context {request.Context}");
-			//}
+					arguments.Add($"--context {request.Context}");
+				}
 
-			//arguments.Add("version");
-			//arguments.Add("--format json");
+				arguments.Add("version");
+				arguments.Add("--format json");
 
-			//var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-			//{
-			//	Logger = new NullLogger(),
-			//	ProcessExeFullName = "docker",
-			//	Arguments = arguments.ToArray(),
-			//});
+				var waitForProcessResponse = Process.WaitForProcessResponse(new Process.ProcessRequest()
+				{
+					Logger = new NullLogger(),
+					ProcessExeFullName = "docker",
+					Arguments = arguments.ToArray(),
+				});
 
-			//if (waitForProcessResponse.Errored)
-			//{
-			//	throw new Exception($"Context \"{request.Context}\" errored trying to get the Api Version\n{waitForProcessResponse.Output}");
-			//}
+				if (waitForProcessResponse.Errored)
+				{
+					throw new Exception($"Context \"{request.Context}\" errored trying to get the Api Version\n{waitForProcessResponse.Output}");
+				}
 
-			//var source = Serializer.Deserialize<SERIALIZABLEMODELS.DockerVersion>(waitForProcessResponse.Output);
+				var source = Serializer.Deserialize<ISI.Extensions.Docker.SerializableModels.DockerVersion>(waitForProcessResponse.Output);
 
-			//response.ServerApiVersion = source?.Server?.ApiVersion;
-			response.ServerApiVersion = "1.43";
-			
+				response.ServerApiVersion = source?.Server?.ApiVersion ?? "1.43";
+			}
+			catch (Exception exception)
+			{
+				//Console.WriteLine(exception);
+				//throw;
+				response.ServerApiVersion =  "1.43";
+			}
+
+			//response.ServerApiVersion = "1.43";
+
 			return response;
 		}
 	}

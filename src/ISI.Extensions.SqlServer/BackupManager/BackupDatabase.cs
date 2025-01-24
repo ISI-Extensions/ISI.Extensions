@@ -59,7 +59,7 @@ namespace ISI.Extensions.SqlServer
 			}
 
 			connectionStringBuilder.TrustServerCertificate = true;
-
+			
 			Logger.LogInformation($"ServerName: {connectionStringBuilder.GetServerName()}");
 			//Logger.LogInformation($"ServerPort: {connectionStringBuilder.GetServerPort()}");
 			//Logger.LogInformation($"ConnectionString: {connectionStringBuilder.ConnectionString}");
@@ -68,9 +68,11 @@ namespace ISI.Extensions.SqlServer
 			{
 				connection.Open();
 
+				var separator =(request.LocalBackupDirectory.IndexOf("/", StringComparison.CurrentCultureIgnoreCase) >= 0 ? "/" : "\\");
+
 				var sql = new StringBuilder();
 				sql.AppendLine($"BACKUP DATABASE [{request.Database}]");
-				sql.AppendLine($"TO DISK = '{request.LocalBackupDirectory}\\{fileName}.bak';");
+				sql.AppendLine($"TO DISK = '{request.LocalBackupDirectory}{separator}{fileName}.bak';");
 
 				using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql.ToString(), connection))
 				{

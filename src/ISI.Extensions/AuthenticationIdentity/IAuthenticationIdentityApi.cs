@@ -24,6 +24,7 @@ namespace ISI.Extensions
 {
 	public interface IAuthenticationIdentityApi
 	{
+		Task InitializeAsync(System.Threading.CancellationToken cancellationToken = default);
 		Task<DTOs.ListRolesResponse> ListRolesAsync(DTOs.ListRolesRequest request, System.Threading.CancellationToken cancellationToken = default);
 		Task<DTOs.GetUsersResponse> GetUsersAsync(DTOs.GetUsersRequest request, System.Threading.CancellationToken cancellationToken = default);
 		Task<DTOs.ValidateApiKeyResponse> ValidateApiKeyAsync(DTOs.ValidateApiKeyRequest request, System.Threading.CancellationToken cancellationToken = default);

@@ -24,17 +24,22 @@ namespace ISI.Platforms.ServiceApplication.Test
 {
 	public class AuthenticationIdentityApi : ISI.Extensions.IAuthenticationIdentityApi
 	{
-		public Task<DTOs.ListRolesResponse> ListRolesAsync(DTOs.ListRolesRequest request, System.Threading.CancellationToken cancellationToken = default)
+		public async Task InitializeAsync(System.Threading.CancellationToken cancellationToken = default)
 		{
 			throw new NotImplementedException();
 		}
 
-		public Task<DTOs.GetUsersResponse> GetUsersAsync(DTOs.GetUsersRequest request, System.Threading.CancellationToken cancellationToken = default)
+		public async Task<DTOs.ListRolesResponse> ListRolesAsync(DTOs.ListRolesRequest request, System.Threading.CancellationToken cancellationToken = default)
 		{
 			throw new NotImplementedException();
 		}
 
-		public Task<DTOs.ValidateApiKeyResponse> ValidateApiKeyAsync(DTOs.ValidateApiKeyRequest request, System.Threading.CancellationToken cancellationToken = default)
+		public async Task<DTOs.GetUsersResponse> GetUsersAsync(DTOs.GetUsersRequest request, System.Threading.CancellationToken cancellationToken = default)
+		{
+			throw  new NotImplementedException();
+		}
+
+		public async Task<DTOs.ValidateApiKeyResponse> ValidateApiKeyAsync(DTOs.ValidateApiKeyRequest request, System.Threading.CancellationToken cancellationToken = default)
 		{
 			throw new NotImplementedException();
 		}

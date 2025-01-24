@@ -68,6 +68,13 @@ namespace ISI.Platforms.AspNetCore.Extensions
 				{
 					options.AddPolicy(authorizationPolicy.PolicyName, policy => policy.Requirements.Add(authorizationPolicy));
 				});
+
+				context.AddPostStartup(host =>
+				{
+					var authenticationIdentityApi = host.Services.GetService<ISI.Extensions.IAuthenticationIdentityApi>();
+
+					authenticationIdentityApi.InitializeAsync().GetAwaiter().GetResult();
+				});
 			});
 
 			return context;

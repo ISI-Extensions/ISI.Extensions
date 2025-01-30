@@ -19,25 +19,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.Security.ActiveDirectory.Extensions;
-using DTOs = ISI.Extensions.Security.ActiveDirectory.DataTransferObjects.ActiveDirectoryApi;
 
-namespace ISI.Extensions.Security.ActiveDirectory
+namespace ISI.Extensions.Security.Ldap.DataTransferObjects.LdapApi
 {
-	public partial class ActiveDirectoryApi : IActiveDirectoryApi
+	public class GetUsersRequest : ILdapRequestWithBindCredentials
 	{
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
-		protected ISI.Extensions.Security.Ldap.ILdapApi LdapApi { get; }
-
-		public ActiveDirectoryApi(
-			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
-			ISI.Extensions.Security.Ldap.ILdapApi ldapApi)
-		{
-			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
-			LdapApi = ldapApi;
-		}
+		public string LdapHost { get; set; }
+		public int? LdapPort { get; set; }
+		public bool LdapStartTls { get; set; }
+		public bool LdapSecureSocketLayer { get; set; }
+		public string LdapBindUserName { get; set; }
+		public string LdapBindPassword { get; set; }
+		
+		public IEnumerable<string> UserNames { get; set; }
 	}
 }

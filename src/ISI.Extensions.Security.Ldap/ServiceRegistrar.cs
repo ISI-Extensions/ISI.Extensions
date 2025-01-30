@@ -19,25 +19,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.Security.ActiveDirectory.Extensions;
-using DTOs = ISI.Extensions.Security.ActiveDirectory.DataTransferObjects.ActiveDirectoryApi;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.Security.ActiveDirectory
+namespace ISI.Extensions.Security.Ldap
 {
-	public partial class ActiveDirectoryApi : IActiveDirectoryApi
+	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
+	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
 	{
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
-		protected ISI.Extensions.Security.Ldap.ILdapApi LdapApi { get; }
-
-		public ActiveDirectoryApi(
-			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
-			ISI.Extensions.Security.Ldap.ILdapApi ldapApi)
+		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
-			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
-			LdapApi = ldapApi;
+			services.AddSingleton<ILdapApi, LdapApi>();
 		}
 	}
 }

@@ -19,25 +19,46 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.Security.ActiveDirectory.Extensions;
-using DTOs = ISI.Extensions.Security.ActiveDirectory.DataTransferObjects.ActiveDirectoryApi;
+using ISI.Extensions.Security.Ldap.Extensions;
+using DTOs = ISI.Extensions.Security.Ldap.DataTransferObjects.LdapApi;
 
-namespace ISI.Extensions.Security.ActiveDirectory
+namespace ISI.Extensions.Security.Ldap
 {
-	public partial class ActiveDirectoryApi : IActiveDirectoryApi
+	public partial class LdapApi
 	{
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
-		protected ISI.Extensions.Security.Ldap.ILdapApi LdapApi { get; }
-
-		public ActiveDirectoryApi(
-			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
-			ISI.Extensions.Security.Ldap.ILdapApi ldapApi)
+		public DTOs.ListRolesResponse ListRoles(DTOs.ListRolesRequest request)
 		{
-			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
-			LdapApi = ldapApi;
+			var response = new DTOs.ListRolesResponse();
+			
+			var roles = new HashSet<string>();
+
+			using (var ldapConnection = new Novell.Directory.Ldap.LdapConnection())
+			{
+				ldapConnection.Connect(request);
+
+				ldapConnection.Bind(request);
+
+				var defaultNamingContext = ldapConnection.GetDefaultNamingContext();
+
+				try
+				{
+					var ldapSearchResults = ldapConnection.Search($"CN=Users,{defaultNamingContext}", Novell.Directory.Ldap.LdapConnection.ScopeOne, "(&(objectCategory=Group))", [
+						ISI.Extensions.Security.Directory.UserPropertyKey.NameKey
+					], false);
+
+					foreach (var ldapSearchResult in ldapSearchResults)
+					{
+						roles.Add(ldapSearchResult.GetPropertyValue(ISI.Extensions.Security.Directory.GroupPropertyKey.NameKey));
+					}
+				}
+				catch
+				{
+				}
+			}
+
+			response.Roles = roles;
+			
+			return response;
 		}
 	}
 }

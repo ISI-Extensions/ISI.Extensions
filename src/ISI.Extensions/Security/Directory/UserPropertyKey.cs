@@ -19,25 +19,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.Security.ActiveDirectory.Extensions;
-using DTOs = ISI.Extensions.Security.ActiveDirectory.DataTransferObjects.ActiveDirectoryApi;
 
-namespace ISI.Extensions.Security.ActiveDirectory
+namespace ISI.Extensions.Security.Directory
 {
-	public partial class ActiveDirectoryApi : IActiveDirectoryApi
+	public class UserPropertyKey
 	{
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
-		protected ISI.Extensions.Security.Ldap.ILdapApi LdapApi { get; }
-
-		public ActiveDirectoryApi(
-			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
-			ISI.Extensions.Security.Ldap.ILdapApi ldapApi)
-		{
-			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
-			LdapApi = ldapApi;
-		}
+		public const string DefaultNamingContext = "defaultNamingContext";
+		public const string NameKey = "name";
+		public const string EmailAddressKey = "mail";
+		public const string FirstNameKey = "givenname";
+		public const string LastNameKey = "sn";
+		public const string UserNameKey = "sAMAccountName";
+		public const string DistinguishedNameKey = "distinguishedName";
+		public const string RolesKey = "memberof";
 	}
 }

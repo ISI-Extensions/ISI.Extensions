@@ -32,24 +32,15 @@ namespace ISI.Extensions.Security.ActiveDirectory
 
 			if (Environment.OSVersion.Platform == PlatformID.Unix)
 			{
-				try
+				response.Authenticated = LdapApi.AuthenticateUser(new()
 				{
-					using (var ldapConnection = new Novell.Directory.Ldap.LdapConnection())
-					{
-						ldapConnection.Connect(request);
-
-						var fqdn = ldapConnection.GetFQDN();
-
-						var userName = $"{request.UserName.Split(new[] { '\\', '/' }).Last()}@{fqdn}";
-
-						ldapConnection.Bind(userName, request.Password);
-
-						response.Authenticated = true;
-					}
-				}
-				catch
-				{
-				}
+					LdapHost = request.LdapHost,
+					LdapPort = request.LdapPort,
+					LdapStartTls = request.LdapStartTls,
+					LdapSecureSocketLayer = request.LdapSecureSocketLayer,
+					UserName = request.UserName,
+					Password = request.Password,
+				}).Authenticated;
 			}
 			else
 			{

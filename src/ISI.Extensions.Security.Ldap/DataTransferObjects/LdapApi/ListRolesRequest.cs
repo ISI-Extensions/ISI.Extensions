@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2025, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,18 +15,20 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Security.ActiveDirectory
+namespace ISI.Extensions.Security.Ldap.DataTransferObjects.LdapApi
 {
-	public class User
+	public class ListRolesRequest : ILdapRequestWithBindCredentials
 	{
-		public string Name { get; set; }
-		public string EmailAddress { get; set; }
-		public string FirstName { get; set; }
-		public string LastName { get; set; }
-		public string UserName { get; set; }
-		public string DistinguishedName { get; set; }
-		public string[] Roles { get; set; }
+		public string LdapHost { get; set; }
+		public int? LdapPort { get; set; }
+		public bool LdapStartTls { get; set; }
+		public bool LdapSecureSocketLayer { get; set; }
+		public string LdapBindUserName { get; set; }
+		public string LdapBindPassword { get; set; }
 	}
 }

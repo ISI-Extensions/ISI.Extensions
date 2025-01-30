@@ -30,36 +30,22 @@ namespace ISI.Extensions.Security.ActiveDirectory
 		{
 			var response = new DTOs.ListRolesResponse();
 
-			var roles = new HashSet<string>();
-
 			if (Environment.OSVersion.Platform == PlatformID.Unix)
 			{
-				using (var ldapConnection = new Novell.Directory.Ldap.LdapConnection())
+				response.Roles = LdapApi.ListRoles(new()
 				{
-					ldapConnection.Connect(request);
-
-					ldapConnection.Bind(request);
-
-					var defaultNamingContext = ldapConnection.GetDefaultNamingContext();
-
-					try
-					{
-						var ldapSearchResults = ldapConnection.Search($"CN=Users,{defaultNamingContext}", Novell.Directory.Ldap.LdapConnection.ScopeOne, "(&(objectCategory=Group))", [
-							UserPropertyKey.NameKey
-						], false);
-
-						foreach (var ldapSearchResult in ldapSearchResults)
-						{
-							roles.Add(ldapSearchResult.GetPropertyValue(GroupPropertyKey.NameKey));
-						}
-					}
-					catch
-					{
-					}
-				}
+					LdapHost = request.LdapHost,
+					LdapPort = request.LdapPort,
+					LdapStartTls = request.LdapStartTls,
+					LdapSecureSocketLayer = request.LdapSecureSocketLayer,
+					LdapBindUserName = request.LdapBindUserName,
+					LdapBindPassword = request.LdapBindPassword,
+				}).Roles;
 			}
 			else
 			{
+				var roles = new HashSet<string>();
+
 				try
 				{
 					if (string.IsNullOrWhiteSpace(request.DomainName))
@@ -71,20 +57,20 @@ namespace ISI.Extensions.Security.ActiveDirectory
 
 					var directorySearcher = new System.DirectoryServices.DirectorySearcher(directoryEntry);
 					directorySearcher.Filter = "(&(objectCategory=Group))";
-					directorySearcher.PropertiesToLoad.Add(GroupPropertyKey.NameKey);
+					directorySearcher.PropertiesToLoad.Add(ISI.Extensions.Security.Directory.GroupPropertyKey.NameKey);
 					var searchResults = directorySearcher.FindAll();
 
 					foreach (System.DirectoryServices.SearchResult searchResult in searchResults)
 					{
-						roles.Add(searchResult.GetPropertyValue(GroupPropertyKey.NameKey));
+						roles.Add(searchResult.GetPropertyValue(ISI.Extensions.Security.Directory.GroupPropertyKey.NameKey));
 					}
 				}
 				catch
 				{
 				}
-			}
 
-			response.Roles = roles;
+				response.Roles = roles;
+			}
 
 			return response;
 		}

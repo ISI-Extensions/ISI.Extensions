@@ -24,6 +24,6 @@ namespace ISI.Extensions.Security.ActiveDirectory.DataTransferObjects.ActiveDire
 {
 	public class GetUsersResponse
 	{
-		public IEnumerable<User> Users { get; set; }
+		public IEnumerable<ISI.Extensions.Security.Directory.User> Users { get; set; }
 	}
 }

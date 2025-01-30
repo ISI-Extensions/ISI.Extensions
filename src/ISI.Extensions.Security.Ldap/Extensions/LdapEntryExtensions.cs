@@ -19,10 +19,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.Security.ActiveDirectory.Extensions;
-using DTOs = ISI.Extensions.Security.ActiveDirectory.DataTransferObjects.ActiveDirectoryApi;
+using DTOs = ISI.Extensions.Security.Ldap.DataTransferObjects.LdapApi;
 
-namespace ISI.Extensions.Security.ActiveDirectory.Extensions
+namespace ISI.Extensions.Security.Ldap.Extensions
 {
 	internal static class LdapEntryExtensions
 	{

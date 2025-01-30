@@ -19,10 +19,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.Security.ActiveDirectory.Extensions;
-using DTOs = ISI.Extensions.Security.ActiveDirectory.DataTransferObjects.ActiveDirectoryApi;
+using DTOs = ISI.Extensions.Security.Ldap.DataTransferObjects.LdapApi;
 
-namespace ISI.Extensions.Security.ActiveDirectory.Extensions
+namespace ISI.Extensions.Security.Ldap.Extensions
 {
 	internal static class LdapConnectionExtensions
 	{
@@ -60,9 +59,9 @@ namespace ISI.Extensions.Security.ActiveDirectory.Extensions
 
 		public static string GetDefaultNamingContext(this Novell.Directory.Ldap.LdapConnection ldapConnection)
 		{
-			var ldapSearchResults = ldapConnection.Search(string.Empty, Novell.Directory.Ldap.LdapConnection.ScopeBase, "(objectClass=*)", [UserPropertyKey.DefaultNamingContext], false);
+			var ldapSearchResults = ldapConnection.Search(string.Empty, Novell.Directory.Ldap.LdapConnection.ScopeBase, "(objectClass=*)", [ISI.Extensions.Security.Directory.UserPropertyKey.DefaultNamingContext], false);
 
-			return ldapSearchResults.First().GetPropertyValue(UserPropertyKey.DefaultNamingContext);
+			return ldapSearchResults.First().GetPropertyValue(ISI.Extensions.Security.Directory.UserPropertyKey.DefaultNamingContext);
 		}
 
 		public static string GetFQDN(this Novell.Directory.Ldap.LdapConnection ldapConnection)

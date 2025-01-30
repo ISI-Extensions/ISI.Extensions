@@ -19,25 +19,37 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.Security.ActiveDirectory.Extensions;
-using DTOs = ISI.Extensions.Security.ActiveDirectory.DataTransferObjects.ActiveDirectoryApi;
+using ISI.Extensions.Security.Ldap.Extensions;
+using DTOs = ISI.Extensions.Security.Ldap.DataTransferObjects.LdapApi;
 
-namespace ISI.Extensions.Security.ActiveDirectory
+namespace ISI.Extensions.Security.Ldap
 {
-	public partial class ActiveDirectoryApi : IActiveDirectoryApi
+	public partial class LdapApi
 	{
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
-		protected ISI.Extensions.Security.Ldap.ILdapApi LdapApi { get; }
-
-		public ActiveDirectoryApi(
-			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
-			ISI.Extensions.Security.Ldap.ILdapApi ldapApi)
+		public DTOs.AuthenticateUserResponse AuthenticateUser(DTOs.AuthenticateUserRequest request)
 		{
-			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
-			LdapApi = ldapApi;
+			var response = new DTOs.AuthenticateUserResponse();
+			
+			try
+			{
+				using (var ldapConnection = new Novell.Directory.Ldap.LdapConnection())
+				{
+					ldapConnection.Connect(request);
+
+					var fqdn = ldapConnection.GetFQDN();
+
+					var userName = $"{request.UserName.Split(new[] { '\\', '/' }).Last()}@{fqdn}";
+
+					ldapConnection.Bind(userName, request.Password);
+
+					response.Authenticated = true;
+				}
+			}
+			catch
+			{
+			}
+
+			return response;
 		}
 	}
 }

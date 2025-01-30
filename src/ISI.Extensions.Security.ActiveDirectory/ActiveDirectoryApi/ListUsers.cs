@@ -30,51 +30,22 @@ namespace ISI.Extensions.Security.ActiveDirectory
 		{
 			var response = new DTOs.ListUsersResponse();
 
-			var users = new List<ISI.Extensions.Security.ActiveDirectory.User>();
-
 			if (Environment.OSVersion.Platform == PlatformID.Unix)
 			{
-				using (var ldapConnection = new Novell.Directory.Ldap.LdapConnection())
+				response.Users = LdapApi.ListUsers(new()
 				{
-					ldapConnection.Connect(request);
-
-					ldapConnection.Bind(request);
-
-					var defaultNamingContext = ldapConnection.GetDefaultNamingContext();
-
-					try
-					{
-						var ldapSearchResults = ldapConnection.Search($"CN=Users,{defaultNamingContext}", Novell.Directory.Ldap.LdapConnection.ScopeOne, "(&(objectCategory=User)(objectClass=person))", [
-							UserPropertyKey.NameKey,
-							UserPropertyKey.EmailAddressKey,
-							UserPropertyKey.FirstNameKey,
-							UserPropertyKey.LastNameKey,
-							UserPropertyKey.UserNameKey,
-							UserPropertyKey.DistinguishedNameKey,
-							UserPropertyKey.RolesKey
-						], false);
-
-						foreach (var ldapSearchResult in ldapSearchResults)
-						{
-							users.Add(new()
-							{
-								Name = ldapSearchResult.GetPropertyValue(UserPropertyKey.NameKey),
-								EmailAddress = ldapSearchResult.GetPropertyValue(UserPropertyKey.EmailAddressKey),
-								FirstName = ldapSearchResult.GetPropertyValue(UserPropertyKey.FirstNameKey),
-								LastName = ldapSearchResult.GetPropertyValue(UserPropertyKey.LastNameKey),
-								UserName = ldapSearchResult.GetPropertyValue(UserPropertyKey.UserNameKey),
-								DistinguishedName = ldapSearchResult.GetPropertyValue(UserPropertyKey.DistinguishedNameKey),
-								Roles = ldapSearchResult.GetPropertyValues(UserPropertyKey.RolesKey),
-							});
-						}
-					}
-					catch
-					{
-					}
-				}
+					LdapHost = request.LdapHost,
+					LdapPort = request.LdapPort,
+					LdapStartTls = request.LdapStartTls,
+					LdapSecureSocketLayer = request.LdapSecureSocketLayer,
+					LdapBindUserName = request.LdapBindUserName,
+					LdapBindPassword = request.LdapBindPassword,
+				}).Users;
 			}
 			else
 			{
+				var users = new List<ISI.Extensions.Security.Directory.User>();
+
 				try
 				{
 					if (string.IsNullOrWhiteSpace(request.DomainName))
@@ -86,35 +57,35 @@ namespace ISI.Extensions.Security.ActiveDirectory
 
 					var directorySearcher = new System.DirectoryServices.DirectorySearcher(directoryEntry);
 					directorySearcher.Filter = "(&(objectCategory=User)(objectClass=person))";
-					directorySearcher.PropertiesToLoad.Add(UserPropertyKey.NameKey);
-					directorySearcher.PropertiesToLoad.Add(UserPropertyKey.EmailAddressKey);
-					directorySearcher.PropertiesToLoad.Add(UserPropertyKey.FirstNameKey);
-					directorySearcher.PropertiesToLoad.Add(UserPropertyKey.LastNameKey);
-					directorySearcher.PropertiesToLoad.Add(UserPropertyKey.UserNameKey);
-					directorySearcher.PropertiesToLoad.Add(UserPropertyKey.DistinguishedNameKey);
-					directorySearcher.PropertiesToLoad.Add(UserPropertyKey.RolesKey);
+					directorySearcher.PropertiesToLoad.Add(ISI.Extensions.Security.Directory.UserPropertyKey.NameKey);
+					directorySearcher.PropertiesToLoad.Add(ISI.Extensions.Security.Directory.UserPropertyKey.EmailAddressKey);
+					directorySearcher.PropertiesToLoad.Add(ISI.Extensions.Security.Directory.UserPropertyKey.FirstNameKey);
+					directorySearcher.PropertiesToLoad.Add(ISI.Extensions.Security.Directory.UserPropertyKey.LastNameKey);
+					directorySearcher.PropertiesToLoad.Add(ISI.Extensions.Security.Directory.UserPropertyKey.UserNameKey);
+					directorySearcher.PropertiesToLoad.Add(ISI.Extensions.Security.Directory.UserPropertyKey.DistinguishedNameKey);
+					directorySearcher.PropertiesToLoad.Add(ISI.Extensions.Security.Directory.UserPropertyKey.RolesKey);
 					var searchResults = directorySearcher.FindAll();
 
 					foreach (System.DirectoryServices.SearchResult searchResult in searchResults)
 					{
 						users.Add(new()
 						{
-							Name = searchResult.GetPropertyValue(UserPropertyKey.NameKey),
-							EmailAddress = searchResult.GetPropertyValue(UserPropertyKey.EmailAddressKey),
-							FirstName = searchResult.GetPropertyValue(UserPropertyKey.FirstNameKey),
-							LastName = searchResult.GetPropertyValue(UserPropertyKey.LastNameKey),
-							UserName = searchResult.GetPropertyValue(UserPropertyKey.UserNameKey),
-							DistinguishedName = searchResult.GetPropertyValue(UserPropertyKey.DistinguishedNameKey),
-							Roles = searchResult.GetPropertyValues(UserPropertyKey.RolesKey),
+							Name = searchResult.GetPropertyValue(ISI.Extensions.Security.Directory.UserPropertyKey.NameKey),
+							EmailAddress = searchResult.GetPropertyValue(ISI.Extensions.Security.Directory.UserPropertyKey.EmailAddressKey),
+							FirstName = searchResult.GetPropertyValue(ISI.Extensions.Security.Directory.UserPropertyKey.FirstNameKey),
+							LastName = searchResult.GetPropertyValue(ISI.Extensions.Security.Directory.UserPropertyKey.LastNameKey),
+							UserName = searchResult.GetPropertyValue(ISI.Extensions.Security.Directory.UserPropertyKey.UserNameKey),
+							DistinguishedName = searchResult.GetPropertyValue(ISI.Extensions.Security.Directory.UserPropertyKey.DistinguishedNameKey),
+							Roles = searchResult.GetPropertyValues(ISI.Extensions.Security.Directory.UserPropertyKey.RolesKey),
 						});
 					}
 				}
 				catch
 				{
 				}
-			}
 
-			response.Users = users;
+				response.Users = users;
+			}
 
 			return response;
 		}

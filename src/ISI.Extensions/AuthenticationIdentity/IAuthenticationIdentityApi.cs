@@ -30,10 +30,10 @@ namespace ISI.Extensions
 		Task<DTOs.ValidateApiKeyResponse> ValidateApiKeyAsync(DTOs.ValidateApiKeyRequest request, System.Threading.CancellationToken cancellationToken = default);
 	}
 
-	public interface IAuthenticationIdentityApiWithNoUsersFoundAdministrator : IAuthenticationIdentityApi
+	public interface IAuthenticationIdentityApiWithAdministratorUser : IAuthenticationIdentityApi
 	{
-		Guid NoUsersFoundAdministratorUserUuid { get; }
-		string NoUsersFoundAdministratorUserName { get; }
-		string NoUsersFoundAdministratorPassword { get; }
+		Guid AdministratorUserUuid { get; }
+		string AdministratorUserName { get; }
+		string AdministratorPassword { get; }
 	}
 }

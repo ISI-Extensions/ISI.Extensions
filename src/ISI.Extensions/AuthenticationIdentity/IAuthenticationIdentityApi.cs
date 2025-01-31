@@ -29,4 +29,11 @@ namespace ISI.Extensions
 		Task<DTOs.GetUsersResponse> GetUsersAsync(DTOs.GetUsersRequest request, System.Threading.CancellationToken cancellationToken = default);
 		Task<DTOs.ValidateApiKeyResponse> ValidateApiKeyAsync(DTOs.ValidateApiKeyRequest request, System.Threading.CancellationToken cancellationToken = default);
 	}
+
+	public interface IAuthenticationIdentityApiWithNoUsersFoundAdministrator : IAuthenticationIdentityApi
+	{
+		Guid NoUsersFoundAdministratorUserUuid { get; }
+		string NoUsersFoundAdministratorUserName { get; }
+		string NoUsersFoundAdministratorPassword { get; }
+	}
 }

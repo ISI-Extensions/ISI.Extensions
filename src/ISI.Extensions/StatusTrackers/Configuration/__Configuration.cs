@@ -25,15 +25,9 @@ namespace ISI.Extensions.StatusTrackers
 		public const string ConfigurationSectionName = "ISI.Extensions.StatusTrackers";
 
 		[ISI.Extensions.EnvironmentConfigurationVariableName("ISI_STATUS_TRACKER_FACTORY_IMPLEMENTATION")]
-		public StatusTrackerFactoryImplementation StatusTrackerFactoryImplementation { get; set; } = StatusTrackerFactoryImplementation.FileStatusTrackerFactory;
+		public string StatusTrackerFactoryImplementation { get; set; } = nameof(FileStatusTrackerFactory);
 
 		[ISI.Extensions.EnvironmentConfigurationVariableName("ISI_STATUS_TRACKER_FILE_STATUS_TRACKER_DIRECTORY")]
 		public string FileStatusTrackerDirectory { get; set; } = "FileNameDeMasked:{DataRoot}FileStatusTrackerDirectory";
-	}
-
-	public enum StatusTrackerFactoryImplementation
-	{
-		FileStatusTrackerFactory,
-		MemoryStatusTrackerFactory,
 	}
 }

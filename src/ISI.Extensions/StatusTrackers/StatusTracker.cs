@@ -29,6 +29,7 @@ namespace ISI.Extensions
 		public event ISI.Extensions.StatusTrackers.OnStatusChange OnStatusChangeEvents;
 		public event ISI.Extensions.StatusTrackers.OnLogUpdate OnLogUpdateEvents;
 		public event ISI.Extensions.StatusTrackers.OnAddToLog OnAddToLogEvents;
+		public event ISI.Extensions.StatusTrackers.OnFinished OnFinishedEvents;
 
 		public int MaxLogSize { get; set; } = 100000;
 
@@ -161,8 +162,14 @@ namespace ISI.Extensions
 			return _logEntries.ToArray();
 		}
 
+		public void SetOnFinished(ISI.Extensions.StatusTrackers.OnFinished onFinished)
+		{
+			OnFinishedEvents += onFinished;
+		}
+
 		public void Finish(bool successful)
 		{
+			OnFinishedEvents?.Invoke(successful);
 		}
 
 		void IDisposable.Dispose()

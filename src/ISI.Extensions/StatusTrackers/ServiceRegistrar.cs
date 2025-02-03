@@ -36,9 +36,18 @@ namespace ISI.Extensions.StatusTrackers
 		{
 			var configuration = configurationRoot.GetConfiguration<Configuration>();
 
-			if (string.Equals(configuration.StatusTrackerFactoryImplementation, nameof(FileStatusTrackerFactory), StringComparison.InvariantCultureIgnoreCase))
+			switch (configuration.StatusTrackerFactoryImplementation)
 			{
-				services.AddSingleton<IStatusTrackerFactory, FileStatusTrackerFactory>();
+				case StatusTrackerFactoryImplementation.FileStatusTrackerFactory:
+					services.AddSingleton<IStatusTrackerFactory, FileStatusTrackerFactory>();
+					break;
+				
+				case StatusTrackerFactoryImplementation.MemoryStatusTrackerFactory:
+					services.AddSingleton<IStatusTrackerFactory, MemoryStatusTrackerFactory>();
+					break;
+
+				default:
+					throw new ArgumentOutOfRangeException();
 			}
 		}
 	}

@@ -33,6 +33,7 @@ namespace ISI.Extensions.StatusTrackers
 			public event ISI.Extensions.StatusTrackers.OnStatusChange OnStatusChangeEvents;
 			public event ISI.Extensions.StatusTrackers.OnLogUpdate OnLogUpdateEvents;
 			public event ISI.Extensions.StatusTrackers.OnAddToLog OnAddToLogEvents;
+			public event ISI.Extensions.StatusTrackers.OnFinished OnFinishedEvents;
 
 			protected Configuration Configuration { get; }
 			protected Microsoft.Extensions.Logging.ILogger Logger { get; }
@@ -298,6 +299,11 @@ namespace ISI.Extensions.StatusTrackers
 				OnLogUpdateEvents?.Invoke(_logEntries);
 			}
 
+			public void SetOnFinished(ISI.Extensions.StatusTrackers.OnFinished onFinished)
+			{
+				OnFinishedEvents += onFinished;
+			}
+
 			public void Finish(bool successful)
 			{
 				if (!Finished)
@@ -305,6 +311,8 @@ namespace ISI.Extensions.StatusTrackers
 					Finished = true;
 					System.IO.File.WriteAllText(GetStatusTrackerFileName(StatusTrackerKey, FinishedFileNameExtension), string.Format("Success:\t{0}", successful.TrueFalse()));
 				}
+
+				OnFinishedEvents?.Invoke(successful);
 			}
 
 			public IEnumerable<IStatusTrackerLogEntry> GetLogEntries()

@@ -26,6 +26,18 @@ namespace ISI.Extensions.StatusTrackers
 		public int Percent { get; }
 		private readonly IStatusTrackerLogEntry[] _logEntries;
 
+		public StatusTrackerSnapshot()
+		{
+
+		}
+
+		public StatusTrackerSnapshot(IStatusTracker statusTracker)
+		{
+			Caption = statusTracker.Caption;
+			Percent = statusTracker.Percent;
+			_logEntries = statusTracker.GetLogEntries().ToNullCheckedArray(NullCheckCollectionResult.Empty);
+		}
+
 		public StatusTrackerSnapshot(
 			string caption,
 			int percent,
@@ -36,6 +48,6 @@ namespace ISI.Extensions.StatusTrackers
 			_logEntries = logEntries.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 		}
 
-		public IEnumerable<IStatusTrackerLogEntry> GetLogEntries() => _logEntries;
+		public IEnumerable<IStatusTrackerLogEntry> GetLogEntries() => _logEntries ?? [];
 	}
 }

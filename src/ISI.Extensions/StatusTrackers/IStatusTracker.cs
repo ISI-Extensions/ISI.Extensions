@@ -30,6 +30,7 @@ namespace ISI.Extensions.StatusTrackers
 	public delegate void OnLogUpdate(IEnumerable<IStatusTrackerLogEntry> logEntries);
 	public delegate void OnAddToLog(IStatusTrackerLogEntry logEntry);
 	public delegate void AddToLog(LogEntryLevel logEntryLevel, string description);
+	public delegate void OnFinished(bool successful);
 }
 
 namespace ISI.Extensions
@@ -60,6 +61,7 @@ namespace ISI.Extensions
 
 		IDictionary<string, string> KeyValues { get; }
 
+		void SetOnFinished(ISI.Extensions.StatusTrackers.OnFinished onFinished);
 		void Finish(bool successful);
 	}
 

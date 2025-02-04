@@ -24,6 +24,8 @@ namespace ISI.Extensions.MessageBus.Redis
 {
 	public partial class MessageBus  : ISI.Extensions.MessageBus.AbstractMessageBus
 	{
+		protected override TimeSpan DefaultResponseTimeOut => TimeSpan.FromMinutes(1);
+
 		private static StackExchange.Redis.ConnectionMultiplexer _connection = null;
 		protected StackExchange.Redis.ConnectionMultiplexer Connection => _connection ??= StackExchange.Redis.ConnectionMultiplexer.Connect(Configuration.ConnectionString);
 

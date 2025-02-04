@@ -23,6 +23,8 @@ namespace ISI.Extensions.MessageBus
 {
 	public abstract partial class AbstractMessageBus : ISI.Extensions.MessageBus.IMessageBus
 	{
+		protected abstract TimeSpan DefaultResponseTimeOut { get; }
+
 		public const string RequestTimeOutHeaderKey = "X-MessageBus-RequestTimeOut";
 
 		protected ISI.Extensions.MessageBus.Configuration Configuration { get; }

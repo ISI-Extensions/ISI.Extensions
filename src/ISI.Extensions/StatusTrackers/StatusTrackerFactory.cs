@@ -49,7 +49,11 @@ namespace ISI.Extensions.StatusTrackers
 				FinishedStatusTrackers.Remove(expiredStatusTrackerKey);
 			}
 
-			return new TStatusTracker();
+			var statusTracker = new TStatusTracker();
+
+			statusTracker.SetOnFinished(successful => FinishedStatusTrackers[statusTrackerKey] = (Successful: successful, FinishedDateTimeUtc: DateTime.UtcNow));
+
+			return statusTracker;
 		}
 
 		public bool IsRunning(string statusTrackerKey) => (StatusTrackers.ContainsKey(statusTrackerKey) && !FinishedStatusTrackers.ContainsKey(statusTrackerKey));

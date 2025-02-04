@@ -24,6 +24,8 @@ namespace ISI.Extensions.MessageBus.MassTransit
 {
 	public abstract partial class MessageBus : ISI.Extensions.MessageBus.AbstractMessageBus
 	{
+		protected override TimeSpan DefaultResponseTimeOut => TimeSpan.FromMinutes(1);
+
 		protected global::MassTransit.IBusControl BusControl { get; set; }
 
 		private const string CommandChannelName = "CommandChannel";

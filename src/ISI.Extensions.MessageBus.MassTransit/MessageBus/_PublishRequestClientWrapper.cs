@@ -30,7 +30,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 		private IPublishRequestClientWrapper GetPublishRequestClientWrapper(Type requestType, Type responseType, TimeSpan? timeout, TimeSpan? timeToLive = null)
 		{
-			timeout ??= Configuration.DefaultResponseTimeOut;
+			timeout ??= Configuration.DefaultResponseTimeOut ?? DefaultResponseTimeOut;
 			timeToLive ??= Configuration.DefaultResponseTimeToLive;
 
 			var key = string.Format("{0}|{1}|{2}|{3}", requestType.FullName, responseType.FullName, timeout.GetValueOrDefault().Ticks, timeToLive.GetValueOrDefault().Ticks);
@@ -44,7 +44,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 					{
 						var publishRequestClientWrapperType = typeof(PublishRequestClientWrapper<,>).MakeGenericType(requestType, responseType);
 
-						publishRequestClientWrapper = Activator.CreateInstance(publishRequestClientWrapperType, new object[] { timeout.GetValueOrDefault(), timeToLive }) as IPublishRequestClientWrapper;
+						publishRequestClientWrapper = Activator.CreateInstance(publishRequestClientWrapperType, timeout.GetValueOrDefault(), timeToLive) as IPublishRequestClientWrapper;
 
 						_publishRequestClientWrapperCache.Add(key, publishRequestClientWrapper);
 					}
@@ -62,7 +62,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 		private interface IPublishRequestClientWrapper<TResponse> : IPublishRequestClientWrapper
 			where TResponse : class
 		{
-			Task<TResponse> GetResponse(IBus busControl, object request, MessageBusMessageHeaderCollection headers, System.Threading.CancellationToken cancellationToken);
+			Task<TResponse> GetResponse(IBus busControl, object request, IEnumerable<MessageBusMessageHeader> headers, System.Threading.CancellationToken cancellationToken);
 		}
 
 		private class PublishRequestClientWrapper<TRequest, TResponse> : IPublishRequestClientWrapper<TResponse>
@@ -81,7 +81,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 				_timeToLive = timeToLive;
 			}
 
-			public async Task<TResponse> GetResponse(IBus busControl, object request, MessageBusMessageHeaderCollection headers, System.Threading.CancellationToken cancellationToken)
+			public async Task<TResponse> GetResponse(IBus busControl, object request, IEnumerable<MessageBusMessageHeader> headers, System.Threading.CancellationToken cancellationToken)
 			{
 				if (_client == null)
 				{
@@ -100,7 +100,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 						context.Headers.Set(ISI.Extensions.MessageBus.AbstractMessageBus.RequestTimeOutHeaderKey, _timeout.Formatted(TimeSpanExtensions.TimeSpanFormat.Precise));
 						context.Headers.Set(ISI.Extensions.Diagnostics.OperationKeyHeaderKey, operationKey);
 						
-						foreach (var header in headers ?? new MessageBusMessageHeaderCollection())
+						foreach (var header in headers ?? [])
 						{
 							context.Headers.Set(header.Key, header.Value);
 						}
@@ -110,7 +110,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 					if (_timeToLive.HasValue)
 					{
-						((global::MassTransit.RequestHandle)busRequest).TimeToLive = _timeToLive.Value;
+						busRequest.TimeToLive = _timeToLive.Value;
 					}
 
 					var busResponse = await busRequest.GetResponse<TResponse>().ConfigureAwait(false);

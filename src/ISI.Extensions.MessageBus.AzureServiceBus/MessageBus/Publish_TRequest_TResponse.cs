@@ -46,11 +46,11 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 				channelName = GetChannelName<TRequest>();
 			}
 
-			var messageEnvelope = GetMessageEnvelope(request, headers, timeout ?? Configuration.DefaultResponseTimeOut, responseChannelName);
+			var messageEnvelope = GetMessageEnvelope(request, headers, timeout ?? Configuration.DefaultResponseTimeOut ?? DefaultResponseTimeOut, responseChannelName);
 
 			var temporaryQueueDescription = new Microsoft.Azure.ServiceBus.Management.QueueDescription(responseChannelName)
 			{
-				AutoDeleteOnIdle = timeout ?? Configuration.DefaultResponseTimeOut,
+				AutoDeleteOnIdle = timeout ?? Configuration.DefaultResponseTimeOut ?? DefaultResponseTimeOut,
 			};
 
 			try
@@ -64,7 +64,7 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 
 				await requestClient.SendAsync(messageEnvelope);
 
-				var requestResponse = await receiverClient.ReceiveAsync(timeout ?? Configuration.DefaultResponseTimeOut);
+				var requestResponse = await receiverClient.ReceiveAsync(timeout ?? Configuration.DefaultResponseTimeOut ?? DefaultResponseTimeOut);
 
 				if (requestResponse?.Body != null)
 				{

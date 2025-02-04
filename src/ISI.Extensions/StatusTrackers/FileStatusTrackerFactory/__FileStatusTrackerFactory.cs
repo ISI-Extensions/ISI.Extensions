@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +23,7 @@ namespace ISI.Extensions.StatusTrackers
 {
 	public partial class FileStatusTrackerFactory : IStatusTrackerFactory
 	{
+		public const string LockFileNameExtension = ".StatusTracker";
 		public const string RunningFileNameExtension = ".Running.txt";
 		public const string CaptionFileNameExtension = ".Caption.txt";
 		public const string PercentFileNameExtension = ".Percent.txt";
@@ -83,19 +84,18 @@ namespace ISI.Extensions.StatusTrackers
 
 			var fileName = GetStatusTrackerFileName(statusTrackerKey, FinishedFileNameExtension);
 
-			var processes = ISI.Extensions.IO.Path.GetLockingProcesses([fileName]);
+			var lockFullName = GetStatusTrackerFileName(statusTrackerKey, LockFileNameExtension);
 
-			if (processes.Any())
+			var isSuccessful = false;
+
+			ISI.Extensions.Locks.FileLock.Lock(lockFullName, () =>
 			{
-				System.Threading.Tasks.Parallel.ForEach(processes, process =>
-				{
-					process.WaitForExit(60 * 1000);
-				});
-			}
+				var content = System.IO.File.ReadAllText(fileName).Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
 
-			var content = System.IO.File.ReadAllText(fileName).Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
+				isSuccessful = content.FirstOrDefault().Split(['\t'], StringSplitOptions.None)[1].ToBoolean();
+			});
 
-			return content.FirstOrDefault().Split(['\t'], StringSplitOptions.None)[1].ToBoolean();
+			return isSuccessful;
 		}
 
 		public bool TryStatusTrackerGetKeyValue(string statusTrackerKey, string key, out string value)
@@ -104,8 +104,16 @@ namespace ISI.Extensions.StatusTrackers
 
 			if (System.IO.File.Exists(fullName))
 			{
-				value = System.IO.File.ReadAllText(fullName);
+				var lockFullName = GetStatusTrackerFileName(statusTrackerKey, LockFileNameExtension);
 
+				var content = (string)null;
+
+				ISI.Extensions.Locks.FileLock.Lock(lockFullName, () =>
+				{
+					content = System.IO.File.ReadAllText(fullName);
+				});
+
+				value = content;
 				return true;
 			}
 
@@ -151,18 +159,26 @@ namespace ISI.Extensions.StatusTrackers
 				return string.Empty;
 			}
 
-			var caption = ReadFile(GetStatusTrackerFileName(statusTrackerKey, CaptionFileNameExtension));
-			var percent = ReadFile(GetStatusTrackerFileName(statusTrackerKey, PercentFileNameExtension)).ToInt();
-			var logEntries = ReadFile(GetStatusTrackerFileName(statusTrackerKey, LogFileNameExtension))
-				.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries)
-				.Select(l => l.Split(['\t'], 2)).
-				Select(logParts => new StatusTrackerLogEntry()
-				{
-					DateTimeStamp = logParts[0].ToDateTime(),
-					Description = System.Web.HttpUtility.UrlDecode(logParts[1]),
-				});
+			var lockFullName = GetStatusTrackerFileName(statusTrackerKey, LockFileNameExtension);
 
-			return new StatusTrackerSnapshot(caption, percent, logEntries);
+			var statusTrackerSnapshot = (IStatusTrackerSnapshot)null;
+
+			ISI.Extensions.Locks.FileLock.Lock(lockFullName, () =>
+			{
+				var caption = ReadFile(GetStatusTrackerFileName(statusTrackerKey, CaptionFileNameExtension));
+				var percent = ReadFile(GetStatusTrackerFileName(statusTrackerKey, PercentFileNameExtension)).ToInt();
+				var logEntries = ReadFile(GetStatusTrackerFileName(statusTrackerKey, LogFileNameExtension))
+					.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries)
+					.Select(l => l.Split(['\t'], 2)).Select(logParts => new StatusTrackerLogEntry()
+					{
+						DateTimeStamp = logParts[0].ToDateTime(),
+						Description = System.Web.HttpUtility.UrlDecode(logParts[1]),
+					});
+
+				statusTrackerSnapshot = new StatusTrackerSnapshot(caption, percent, logEntries);
+			});
+
+			return statusTrackerSnapshot;
 		}
 
 		public IStatusTrackerSnapshot[] GetStatusTrackerSnapshots(IEnumerable<string> statusTrackerKeys)

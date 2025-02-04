@@ -71,7 +71,7 @@ namespace ISI.Extensions.MessageBus.Redis
 
 			try
 			{
-				await Task.Delay(timeToLive ?? timeToLive ?? Configuration.DefaultResponseTimeToLive ?? Configuration.DefaultResponseTimeOut, responseCancellationTokenSource.Token);
+				await Task.Delay(timeToLive ?? timeToLive ?? Configuration.DefaultResponseTimeToLive ?? Configuration.DefaultResponseTimeOut ?? DefaultResponseTimeOut, responseCancellationTokenSource.Token);
 			}
 			catch (TaskCanceledException)
 			{

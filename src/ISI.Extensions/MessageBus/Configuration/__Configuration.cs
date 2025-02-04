@@ -43,7 +43,7 @@ namespace ISI.Extensions.MessageBus
 
 		public NamedChannelConfiguration[] NamedChannels { get; set; } = null;
 
-		public TimeSpan DefaultResponseTimeOut { get; set; } = TimeSpan.FromMinutes(5); //Min must be 5 min because of AzureServiceBus
+		public TimeSpan? DefaultResponseTimeOut { get; set; } = null;
 
 		public TimeSpan? DefaultResponseTimeToLive { get; set; } = null;
 

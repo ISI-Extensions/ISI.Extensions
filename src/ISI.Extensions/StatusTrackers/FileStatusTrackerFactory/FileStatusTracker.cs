@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,18 +46,12 @@ namespace ISI.Extensions.StatusTrackers
 
 			public int MaxLogSize { get; set; } = 100000;
 
-			protected readonly object SyncLock = new();
-
 			protected System.IO.FileStream RunningFileStream { get; set; }
 
-			protected System.IO.FileStream CaptionFileStream { get; set; }
-			protected System.IO.StreamWriter CaptionStreamWriter { get; set; }
-
-			protected System.IO.FileStream PercentFileStream { get; set; }
-			protected System.IO.StreamWriter PercentStreamWriter { get; set; }
-
-			protected System.IO.FileStream LogFileStream { get; set; }
-			protected System.IO.StreamWriter LogStreamWriter { get; set; }
+			protected string LockFullName { get; set; }
+			protected string CaptionFullName { get; set; }
+			protected string PercentFullName { get; set; }
+			protected string LogFullName { get; set; }
 
 			public bool Finished { get; protected set; }
 
@@ -67,15 +61,18 @@ namespace ISI.Extensions.StatusTrackers
 				get => _caption;
 				set
 				{
-					lock (SyncLock)
+					ISI.Extensions.Locks.FileLock.Lock(LockFullName, () =>
 					{
-						CaptionFileStream.Position = 0;
-						CaptionStreamWriter.Write(value);
-						CaptionStreamWriter.Flush();
+						if (System.IO.File.Exists(CaptionFullName))
+						{
+							System.IO.File.Delete(CaptionFullName);
+						}
+
+						System.IO.File.WriteAllText(CaptionFullName, value);
 
 						_caption = value;
 						OnStatusChangeEvents?.Invoke(Caption, Percent);
-					}
+					});
 				}
 			}
 
@@ -85,7 +82,7 @@ namespace ISI.Extensions.StatusTrackers
 				get => _percent;
 				set
 				{
-					lock (SyncLock)
+					ISI.Extensions.Locks.FileLock.Lock(LockFullName, () =>
 					{
 						if (value < 0)
 						{
@@ -97,19 +94,22 @@ namespace ISI.Extensions.StatusTrackers
 							value = 100;
 						}
 
-						PercentFileStream.Position = 0;
-						PercentStreamWriter.Write(value);
-						PercentStreamWriter.Flush();
+						if (System.IO.File.Exists(PercentFullName))
+						{
+							System.IO.File.Delete(PercentFullName);
+						}
+
+						System.IO.File.WriteAllText(PercentFullName, $"{value}");
 
 						_percent = value;
 						OnStatusChangeEvents?.Invoke(Caption, Percent);
-					}
+					});
 				}
 			}
 
 			public void SetCaptionPercent(string caption, int percent)
 			{
-				lock (SyncLock)
+				ISI.Extensions.Locks.FileLock.Lock(LockFullName, () =>
 				{
 					_caption = caption;
 
@@ -117,14 +117,16 @@ namespace ISI.Extensions.StatusTrackers
 					{
 						percent = 0;
 					}
+
 					if (percent > 100)
 					{
 						percent = 100;
 					}
+
 					_percent = percent;
 
 					OnStatusChangeEvents?.Invoke(Caption, Percent);
-				}
+				});
 			}
 
 			public FileStatusTracker(
@@ -142,103 +144,64 @@ namespace ISI.Extensions.StatusTrackers
 				GetStatusTrackerFileName = getStatusTrackerFileName;
 				GetStatusTrackerKeyValueFileName = getStatusTrackerKeyValueFileName;
 
+				LockFullName = GetStatusTrackerFileName(StatusTrackerKey, LockFileNameExtension);
+
+				var fileName = GetStatusTrackerFileName(StatusTrackerKey, RunningFileNameExtension);
+				try
 				{
-					var fileName = GetStatusTrackerFileName(StatusTrackerKey, RunningFileNameExtension);
-					try
-					{
-						RunningFileStream = new(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.DeleteOnClose);
-						RunningFileStream.WriteByte(255);
-						RunningFileStream.Flush();
-					}
-					catch (Exception exception)
-					{
-						throw new(string.Format("Cannot create file: \"{0}\"", fileName), exception);
-					}
+					RunningFileStream = new(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.DeleteOnClose);
+					RunningFileStream.WriteByte(255);
+					RunningFileStream.Flush();
+				}
+				catch (Exception exception)
+				{
+					throw new(string.Format("Cannot create file: \"{0}\"", fileName), exception);
 				}
 
+				CaptionFullName = GetStatusTrackerFileName(StatusTrackerKey, CaptionFileNameExtension);
+				var caption = string.Empty;
+				if (System.IO.File.Exists(CaptionFullName))
 				{
-					var fileName = GetStatusTrackerFileName(StatusTrackerKey, CaptionFileNameExtension);
-					try
-					{
-						var caption = string.Empty;
-						if (System.IO.File.Exists(fileName))
-						{
-							caption = System.IO.File.ReadAllText(fileName);
-						}
-
-						CaptionFileStream = new(fileName, System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.RandomAccess);
-						CaptionStreamWriter = new(CaptionFileStream);
-
-						if (!string.IsNullOrWhiteSpace(caption))
-						{
-							_caption = caption;
-						}
-					}
-					catch (Exception exception)
-					{
-						throw new(string.Format("Cannot create file: \"{0}\"", fileName), exception);
-					}
+					caption = System.IO.File.ReadAllText(CaptionFullName);
 				}
 
+				if (!string.IsNullOrWhiteSpace(caption))
 				{
-					var fileName = GetStatusTrackerFileName(StatusTrackerKey, PercentFileNameExtension);
-					try
-					{
-						var percent = 0;
-						if (System.IO.File.Exists(fileName))
-						{
-							percent = ((System.IO.File.ReadAllLines(fileName) ?? []).FirstOrDefault() ?? string.Empty).ToInt();
-						}
-
-						PercentFileStream = new(fileName, System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.RandomAccess);
-						PercentStreamWriter = new(PercentFileStream);
-
-						if (percent > 0)
-						{
-							_percent = percent;
-						}
-					}
-					catch (Exception exception)
-					{
-						throw new(string.Format("Cannot create file: \"{0}\"", fileName), exception);
-					}
+					_caption = caption;
 				}
 
+				PercentFullName = GetStatusTrackerFileName(StatusTrackerKey, PercentFileNameExtension);
+				var percent = 0;
+				if (System.IO.File.Exists(PercentFullName))
 				{
-					var fileName = GetStatusTrackerFileName(StatusTrackerKey, LogFileNameExtension);
-					try
-					{
-						var logEntries = (IEnumerable<IStatusTrackerLogEntry>)null;
+					percent = ((System.IO.File.ReadAllLines(PercentFullName) ?? []).FirstOrDefault() ?? string.Empty).ToInt();
+				}
 
-						if (System.IO.File.Exists(fileName))
+				if (percent > 0)
+				{
+					_percent = percent;
+				}
+
+				LogFullName = GetStatusTrackerFileName(StatusTrackerKey, LogFileNameExtension);
+				var logEntries = (IEnumerable<IStatusTrackerLogEntry>)null;
+
+				if (System.IO.File.Exists(LogFullName))
+				{
+					logEntries = System.IO.File.ReadAllText(LogFullName)
+						.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries)
+						.Select(l => l.Split(['\t'], 2)).
+						Select(logParts => new StatusTrackerLogEntry()
 						{
-							logEntries = System.IO.File.ReadAllText(fileName)
-								.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries)
-								.Select(l => l.Split(['\t'], 2)).
-								Select(logParts => new StatusTrackerLogEntry()
-								{
-									DateTimeStamp = logParts[0].ToDateTime(),
-									Description = System.Web.HttpUtility.UrlDecode(logParts[1]),
-								});
-
-						}
-
-						LogFileStream = new(fileName, System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.None);
-						LogFileStream.Position = LogFileStream.Length;
-						LogStreamWriter = new(LogFileStream);
-
-						if (logEntries.NullCheckedAny())
-						{
-							lock (SyncLock)
-							{
-								_logEntries.AddRange(logEntries);
-							}
-						}
-					}
-					catch (Exception exception)
+							DateTimeStamp = logParts[0].ToDateTime(),
+							Description = System.Web.HttpUtility.UrlDecode(logParts[1]),
+						});
+				}
+				if (logEntries.NullCheckedAny())
+				{
+					ISI.Extensions.Locks.FileLock.Lock(LockFullName, () =>
 					{
-						throw new(string.Format("Cannot create file: \"{0}\"", fileName), exception);
-					}
+						_logEntries.AddRange(logEntries);
+					});
 				}
 			}
 
@@ -285,13 +248,12 @@ namespace ISI.Extensions.StatusTrackers
 			{
 				foreach (var logEntry in logEntries)
 				{
-					lock (SyncLock)
+					ISI.Extensions.Locks.FileLock.Lock(LockFullName, () =>
 					{
 						_logEntries.Add(logEntry);
 
-						LogStreamWriter.Write("{0}\t{1}\r\n", logEntry.DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise), System.Web.HttpUtility.UrlEncode(logEntry.Description));
-						LogStreamWriter.Flush();
-					}
+						System.IO.File.AppendAllText(LogFullName, string.Format("{0}\t{1}{2}", logEntry.DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise), System.Web.HttpUtility.UrlEncode(logEntry.Description), Environment.NewLine));
+					});
 
 					OnAddToLogEvents?.Invoke(logEntry);
 				}
@@ -309,7 +271,12 @@ namespace ISI.Extensions.StatusTrackers
 				if (!Finished)
 				{
 					Finished = true;
-					System.IO.File.WriteAllText(GetStatusTrackerFileName(StatusTrackerKey, FinishedFileNameExtension), string.Format("Success:\t{0}", successful.TrueFalse()));
+
+					var fullName = GetStatusTrackerFileName(StatusTrackerKey, FinishedFileNameExtension);
+
+					System.IO.File.WriteAllText($"{fullName}.tmp", string.Format("Success:\t{0}", successful.TrueFalse()));
+
+					System.IO.File.Move($"{fullName}.tmp", fullName);
 				}
 
 				OnFinishedEvents?.Invoke(successful);
@@ -332,41 +299,17 @@ namespace ISI.Extensions.StatusTrackers
 			{
 				Finish(false);
 
-				LogStreamWriter?.Close();
-				LogStreamWriter = null;
-
-				LogFileStream?.Close();
-				LogFileStream = null;
-
-				PercentStreamWriter?.Close();
-				PercentStreamWriter = null;
-
-				PercentFileStream?.Close();
-				PercentFileStream = null;
-
-				CaptionStreamWriter?.Close();
-				CaptionStreamWriter = null;
-
-				CaptionFileStream?.Close();
-				CaptionFileStream = null;
-
 				RunningFileStream?.Close();
 				RunningFileStream = null;
 
+				if (System.IO.File.Exists(CaptionFullName))
 				{
-					var fileName = GetStatusTrackerFileName(StatusTrackerKey, CaptionFileNameExtension);
-					if (System.IO.File.Exists(fileName))
-					{
-						System.IO.File.Delete(fileName);
-					}
+					System.IO.File.Delete(CaptionFullName);
 				}
 
+				if (System.IO.File.Exists(PercentFullName))
 				{
-					var fileName = GetStatusTrackerFileName(StatusTrackerKey, PercentFileNameExtension);
-					if (System.IO.File.Exists(fileName))
-					{
-						System.IO.File.Delete(fileName);
-					}
+					System.IO.File.Delete(PercentFullName);
 				}
 			}
 		}

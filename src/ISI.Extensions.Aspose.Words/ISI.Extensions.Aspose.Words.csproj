@@ -16,7 +16,7 @@
 
 	<ItemGroup>
 		<PackageReference Update="NETStandard.Library" Version="2.0.3" />
-	  <PackageReference Include="Aspose.Words" Version="25.1.0" />
+	  <PackageReference Include="Aspose.Words" Version="25.2.0" />
 	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.1" />
 	</ItemGroup>
 

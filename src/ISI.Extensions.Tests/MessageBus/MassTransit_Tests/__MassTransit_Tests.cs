@@ -50,16 +50,9 @@ namespace ISI.Extensions.Tests.MessageBus
 			var connectionStringPath = string.Format("Configuration{0}", System.IO.Path.DirectorySeparatorChar);
 			configurationBuilder.AddClassicConnectionStringsSectionFile($"{connectionStringPath}connectionStrings.config", true);
 			configurationBuilder.AddClassicConnectionStringsSectionFiles(activeEnvironmentConfiguration.ActiveEnvironments, environment => $"{connectionStringPath}connectionStrings.{environment}.config");
-#if !DEBUG
-			configurationBuilder.AddDataPathClassicConnectionStringsSectionFile(System.IO.Path.Combine(context.RootType.Namespace, "connectionStrings.config"));
-#endif
-
 			configurationBuilder.SetBasePath(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
 			configurationBuilder.AddJsonFile("appsettings.json", optional: true);
 			configurationBuilder.AddJsonFiles(activeEnvironmentConfiguration.ActiveEnvironments, environment => $"appsettings.{environment}.json");
-#if !DEBUG
-			configurationBuilder.AddDataPathJsonFile(System.IO.Path.Combine(context.RootType.Namespace, "appsettings.json"));
-#endif
 			var configuration = configurationBuilder.Build().ApplyConfigurationValueReaders();
 
 			var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection()

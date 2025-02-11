@@ -33,9 +33,15 @@ namespace ISI.Extensions.MessageBus.MassTransit
 			timeout ??= Configuration.DefaultResponseTimeOut ?? DefaultResponseTimeOut;
 			timeToLive ??= Configuration.DefaultResponseTimeToLive;
 
+			if(!Configuration.CachePublishRequestClientWrapper)
+			{
+				var publishRequestClientWrapperType = typeof(PublishRequestClientWrapper<,>).MakeGenericType(requestType, responseType);
+
+				return Activator.CreateInstance(publishRequestClientWrapperType, timeout.GetValueOrDefault(), timeToLive) as IPublishRequestClientWrapper;
+			}
+
 			var key = string.Format("{0}|{1}|{2}|{3}", requestType.FullName, responseType.FullName, timeout.GetValueOrDefault().Ticks, timeToLive.GetValueOrDefault().Ticks);
-
-
+			
 			if (!_publishRequestClientWrapperCache.TryGetValue(key, out var publishRequestClientWrapper))
 			{
 				lock (_publishRequestClientWrapperCacheLock)

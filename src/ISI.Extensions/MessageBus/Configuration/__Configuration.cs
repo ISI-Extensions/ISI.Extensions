@@ -44,7 +44,7 @@ namespace ISI.Extensions.MessageBus
 		public NamedChannelConfiguration[] NamedChannels { get; set; } = null;
 
 		[ISI.Extensions.EnvironmentConfigurationVariableName("MESSAGE_BUS_CACHE_PUBLISH_REQUEST_CLIENT_WRAPPER")]
-		public bool CachePublishRequestClientWrapper { get; set; } = false;
+		public bool CachePublishRequestClientWrapper { get; set; } = true;
 
 		public TimeSpan? DefaultResponseTimeOut { get; set; } = null;
 

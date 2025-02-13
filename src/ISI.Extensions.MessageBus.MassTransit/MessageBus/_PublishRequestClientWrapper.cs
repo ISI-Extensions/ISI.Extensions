@@ -20,6 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using global::MassTransit;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.MessageBus.MassTransit
 {
@@ -50,7 +51,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 					{
 						var publishRequestClientWrapperType = typeof(PublishRequestClientWrapper<,>).MakeGenericType(requestType, responseType);
 
-						publishRequestClientWrapper = Activator.CreateInstance(publishRequestClientWrapperType, timeout.GetValueOrDefault(), timeToLive) as IPublishRequestClientWrapper;
+						publishRequestClientWrapper = Activator.CreateInstance(publishRequestClientWrapperType, Configuration, Logger, timeout.GetValueOrDefault(), timeToLive) as IPublishRequestClientWrapper;
 
 						_publishRequestClientWrapperCache.Add(key, publishRequestClientWrapper);
 					}
@@ -75,14 +76,20 @@ namespace ISI.Extensions.MessageBus.MassTransit
 			where TRequest : class
 			where TResponse : class
 		{
+			protected ISI.Extensions.MessageBus.Configuration Configuration { get; }
+			protected Microsoft.Extensions.Logging.ILogger Logger { get; }
+
 			private readonly object _clientLock = new();
 			private global::MassTransit.IRequestClient<TRequest> _client = null;
 
 			private readonly TimeSpan _timeout;
 			private readonly TimeSpan? _timeToLive;
 
-			public PublishRequestClientWrapper(TimeSpan timeout, TimeSpan? timeToLive)
+			public PublishRequestClientWrapper(ISI.Extensions.MessageBus.Configuration configuration, Microsoft.Extensions.Logging.ILogger logger, TimeSpan timeout, TimeSpan? timeToLive)
 			{
+				Configuration = configuration;
+				Logger = logger;
+
 				_timeout = timeout;
 				_timeToLive = timeToLive;
 			}
@@ -91,14 +98,30 @@ namespace ISI.Extensions.MessageBus.MassTransit
 			{
 				if (_client == null)
 				{
+					if (Configuration.LogPublishRequestClient)
+					{
+						Logger.LogInformation($"Get Lock for ${typeof(TRequest).Name}");
+					}
 					lock (_clientLock)
 					{
+						if (Configuration.LogPublishRequestClient)
+						{
+							Logger.LogInformation($"Get CreateRequestClient for ${typeof(TRequest).Name}");
+						}
 						_client ??= busControl.CreateRequestClient<TRequest>(_timeout);
 					}
 				}
 
+				if (Configuration.LogPublishRequestClient)
+				{
+					Logger.LogInformation($"Get Create for ${typeof(TRequest).Name}");
+				}
 				using (var busRequest = _client.Create(request as TRequest, cancellationToken))
 				{
+					if (Configuration.LogPublishRequestClient)
+					{
+						Logger.LogInformation($"Get UseExecute for ${typeof(TRequest).Name}");
+					}
 					busRequest.UseExecute(context =>
 					{
 						var operationKey = UpdateRequest(context.Message);
@@ -119,9 +142,21 @@ namespace ISI.Extensions.MessageBus.MassTransit
 						busRequest.TimeToLive = _timeToLive.Value;
 					}
 
+					if (Configuration.LogPublishRequestClient)
+					{
+						Logger.LogInformation($"Get GetResponse for ${typeof(TRequest).Name}");
+					}
+
 					var busResponse = await busRequest.GetResponse<TResponse>().ConfigureAwait(false);
 
-					return busResponse.Message;
+					var response = busResponse.Message;
+
+					if (Configuration.LogPublishRequestClient)
+					{
+						Logger.LogInformation($"Get \"Return\" for ${typeof(TRequest).Name}");
+					}
+
+					return response;
 				}
 			}
 		}

@@ -46,6 +46,9 @@ namespace ISI.Extensions.MessageBus
 		[ISI.Extensions.EnvironmentConfigurationVariableName("MESSAGE_BUS_CACHE_PUBLISH_REQUEST_CLIENT_WRAPPER")]
 		public bool CachePublishRequestClientWrapper { get; set; } = true;
 
+		[ISI.Extensions.EnvironmentConfigurationVariableName("MESSAGE_BUS_LOG_PUBLISH_REQUEST_CLIENT")]
+		public bool LogPublishRequestClient { get; set; } = true;
+
 		public TimeSpan? DefaultResponseTimeOut { get; set; } = null;
 
 		public TimeSpan? DefaultResponseTimeToLive { get; set; } = null;

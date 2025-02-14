@@ -26,5 +26,6 @@ namespace ISI.Extensions.Dns
 		DTOs.SetDnsRecordsResponse SetDnsRecords(DTOs.SetDnsRecordsRequest request);
 		DTOs.GetDnsRecordsResponse GetDnsRecords(DTOs.GetDnsRecordsRequest request);
 		DTOs.GetTxtRecordsResponse GetTxtRecords(DTOs.GetTxtRecordsRequest request);
+		DTOs.GetNameServersResponse GetNameServers(DTOs.GetNameServersRequest request);
 	}
 }

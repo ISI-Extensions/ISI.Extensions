@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,14 +28,34 @@ namespace ISI.Extensions.Dns
 		{
 			var response = new DTOs.GetTxtRecordsResponse();
 
-			var fqdn = $"{request.Name}.{request.Domain}";
+			response.Values = GetTxtRecords(request.Domain, request.Name, request.NameServer).ToArray();
+
+			if (!response.Values.NullCheckedAny())
+			{
+				var nameServer = GetNameServers(new()
+				{
+					Domain = request.Domain,
+				}).NameServers.NullCheckedFirstOrDefault();
+
+				if (!string.IsNullOrWhiteSpace(nameServer))
+				{
+					response.Values = GetTxtRecords(request.Domain, request.Name, nameServer).ToArray();
+				}
+			}
+
+			return response;
+		}
+
+		private IEnumerable<string> GetTxtRecords(string domain, string name, string nameServer)
+		{
+			var fqdn = $"{name}.{domain}";
 
 			var arguments = new List<string>();
 			arguments.Add("-q=txt");
 			arguments.Add(fqdn);
-			if (!string.IsNullOrWhiteSpace(request.NameServer))
+			if (!string.IsNullOrWhiteSpace(nameServer))
 			{
-				arguments.Add(request.NameServer);
+				arguments.Add(nameServer);
 			}
 
 			var nslookupResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
@@ -52,20 +72,59 @@ namespace ISI.Extensions.Dns
 			{
 				var line = lines[lineIndex].Trim();
 
-				if (line.StartsWith(fqdn))
+				if (line.StartsWith(fqdn, StringComparison.InvariantCultureIgnoreCase))
 				{
 					if (line.EndsWith("="))
 					{
 						line = $"{line} {lines[++lineIndex]}";
 					}
 
-					var value = line.Split(['"'], StringSplitOptions.RemoveEmptyEntries).Last();
+					var value = line.Split(['"'], StringSplitOptions.RemoveEmptyEntries).Last().Trim();
 
 					values.Add(value);
 				}
 			}
 
-			response.Values = values.ToArray();
+			return values;
+		}
+
+		public DTOs.GetNameServersResponse GetNameServers(DTOs.GetNameServersRequest request)
+		{
+			var response = new DTOs.GetNameServersResponse();
+
+			var arguments = new List<string>();
+			arguments.Add("-type=ns");
+			arguments.Add(request.Domain);
+			arguments.Add(request.NameServer);
+
+			var nslookupResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+			{
+				ProcessExeFullName = "nslookup",
+				Arguments = arguments,
+			});
+
+			var values = new List<string>();
+
+			var lines = nslookupResponse.Output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
+
+			for (int lineIndex = 0; lineIndex < lines.Length; lineIndex++)
+			{
+				var line = lines[lineIndex].Trim();
+
+				if (line.StartsWith(request.Domain, StringComparison.InvariantCultureIgnoreCase))
+				{
+					if (line.EndsWith("="))
+					{
+						line = $"{line} {lines[++lineIndex]}";
+					}
+
+					var value = line.Split(['='], StringSplitOptions.RemoveEmptyEntries).Last().Trim();
+
+					values.Add(value);
+				}
+			}
+
+			response.NameServers = values.ToArray();
 
 			return response;
 		}

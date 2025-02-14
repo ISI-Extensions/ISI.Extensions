@@ -18,41 +18,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.MessageBus
+namespace ISI.Extensions.Dns.DataTransferObjects.DomainsApi
 {
-	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
-	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
+	public class GetNameServersRequest
 	{
-		public const string ConfigurationSectionName = "ISI.Extensions.MessageBus";
+		public string Domain { get; set; }
 
-		public string MessageBusType { get; set; } = null;
-
-		[ISI.Extensions.EnvironmentConfigurationVariableName("MESSAGE_BUS_CONNECTION_STRING")]
-		public string ConnectionString { get; set; } = null;
-
-		public string UserName { get; set; } = string.Empty;
-
-		public string Password { get; set; } = string.Empty;
-
-		public bool PublisherConfirmation { get; set; } = true;
-
-		public string ChannelNameSuffix { get; set; } = string.Empty;
-
-		public ChannelConfiguration DefaultChannel { get; set; } = new();
-
-		public NamedChannelConfiguration[] NamedChannels { get; set; } = null;
-
-		[ISI.Extensions.EnvironmentConfigurationVariableName("MESSAGE_BUS_CACHE_PUBLISH_REQUEST_CLIENT_WRAPPER")]
-		public bool CachePublishRequestClientWrapper { get; set; } = true;
-
-		[ISI.Extensions.EnvironmentConfigurationVariableName("MESSAGE_BUS_LOG_PUBLISH_REQUEST_CLIENT")]
-		public bool LogPublishRequestClient { get; set; } = false;
-
-		public TimeSpan? DefaultResponseTimeOut { get; set; } = null;
-
-		public TimeSpan? DefaultResponseTimeToLive { get; set; } = null;
-
-		public bool TrapHandlerException { get; set; } = false;
+		public string NameServer { get; set; } = "8.8.8.8";
 	}
 }

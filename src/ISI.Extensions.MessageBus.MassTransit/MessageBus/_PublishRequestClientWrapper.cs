@@ -100,13 +100,13 @@ namespace ISI.Extensions.MessageBus.MassTransit
 				{
 					if (Configuration.LogPublishRequestClient)
 					{
-						Logger.LogInformation($"Get Lock for ${typeof(TRequest).Name}");
+						Logger.LogInformation($"PublishRequestClientWrapper-Get Lock for ${typeof(TRequest).Name}");
 					}
 					lock (_clientLock)
 					{
 						if (Configuration.LogPublishRequestClient)
 						{
-							Logger.LogInformation($"Get CreateRequestClient for ${typeof(TRequest).Name}");
+							Logger.LogInformation($"PublishRequestClientWrapper-Get CreateRequestClient for ${typeof(TRequest).Name}");
 						}
 						_client ??= busControl.CreateRequestClient<TRequest>(_timeout);
 					}
@@ -114,13 +114,13 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 				if (Configuration.LogPublishRequestClient)
 				{
-					Logger.LogInformation($"Get Create for ${typeof(TRequest).Name}");
+					Logger.LogInformation($"PublishRequestClientWrapper-Get Create for ${typeof(TRequest).Name}");
 				}
 				using (var busRequest = _client.Create(request as TRequest, cancellationToken))
 				{
 					if (Configuration.LogPublishRequestClient)
 					{
-						Logger.LogInformation($"Get UseExecute for ${typeof(TRequest).Name}");
+						Logger.LogInformation($"PublishRequestClientWrapper-Get UseExecute for ${typeof(TRequest).Name}");
 					}
 					busRequest.UseExecute(context =>
 					{
@@ -144,7 +144,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 					if (Configuration.LogPublishRequestClient)
 					{
-						Logger.LogInformation($"Get GetResponse for ${typeof(TRequest).Name}");
+						Logger.LogInformation($"PublishRequestClientWrapper-Get GetResponse for ${typeof(TRequest).Name}");
 					}
 
 					var busResponse = await busRequest.GetResponse<TResponse>().ConfigureAwait(false);
@@ -153,7 +153,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 					if (Configuration.LogPublishRequestClient)
 					{
-						Logger.LogInformation($"Get \"Return\" for ${typeof(TRequest).Name}");
+						Logger.LogInformation($"PublishRequestClientWrapper-Get \"Return\" for ${typeof(TRequest).Name}");
 					}
 
 					return response;

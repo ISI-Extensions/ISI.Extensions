@@ -30,6 +30,16 @@ namespace ISI.Extensions.TemplateProviders
 
 		public static TTemplateProvider GetTemplateProvider<TTemplateProvider>(object contentGenerator, bool throwExceptionIfNotDefinedOrNotFound)
 		{
+			if (contentGenerator == null)
+			{
+				throw new NullReferenceException($"{nameof(contentGenerator)} must not be null");
+			}
+
+			if (!TemplateProviders.NullCheckedAny())
+			{
+				throw new Exception("No TemplateProviders found");
+			}
+
 			foreach (var templateProvider in TemplateProviders)
 			{
 				if (templateProvider.IsTemplateProviderFor(contentGenerator))

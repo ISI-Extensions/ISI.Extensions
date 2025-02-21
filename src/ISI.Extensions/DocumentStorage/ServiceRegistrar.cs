@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2025, Integrated Solutions, Inc.
 All rights reserved.
@@ -19,27 +19,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.ConfigurationHelper.Extensions;
+using ISI.Extensions.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.DocumentStorage
 {
 	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
-	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrarWithPriority
+	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrarWithConfigurationRoot
 	{
-		public int Priority => 100;
-
 		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
-			services.AddSingleton<ISI.Extensions.IApplicationBus, ISI.Extensions.ApplicationBus>();
-			services.AddSingleton<ISI.Extensions.Serialization.ISerialization, ISI.Extensions.Serialization.Serialization>();
-			services.AddSingleton<ISI.Extensions.SecureShell.IHostConfigurationManager, ISI.Extensions.SecureShell.HostConfigurationManager>();
+			throw new NotImplementedException();
+		}
 
-			services.AddSingleton<ISI.Extensions.Crypto.Pbkdf2SaltedHashGenerator>();
-			services.AddSingleton<ISI.Extensions.Threads.ThreadManager>();
-			services.AddSingleton<ISI.Extensions.Emails.EmailMessageGenerator.IEmailMessageGenerator, ISI.Extensions.Emails.EmailMessageGenerator.EmailMessageGenerator>();
-			services.AddSingleton<ISI.Extensions.Emails.LocalhostEmailSender>();
-			services.AddSingleton<ISI.Extensions.Dns.IDomainsApi, ISI.Extensions.Dns.DomainsApi>();
-			services.AddSingleton<ISI.Extensions.VirtualFileVolumesFileProvider>();
+		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services, Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot)
+		{
+			var configuration = configurationRoot.GetConfiguration<Configuration>();
+
+			if (string.Equals(configuration.DocumentStorageApiImplementation, nameof(NullDeviceDocumentStorage), StringComparison.InvariantCultureIgnoreCase))
+			{
+				services.AddSingleton<IDocumentStorage, NullDeviceDocumentStorage>();
+			}
 		}
 	}
 }

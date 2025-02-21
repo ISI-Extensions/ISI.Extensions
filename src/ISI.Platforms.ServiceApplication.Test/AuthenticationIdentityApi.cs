@@ -26,7 +26,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 	{
 		public async Task InitializeAsync(System.Threading.CancellationToken cancellationToken = default)
 		{
-			throw new NotImplementedException();
+
 		}
 
 		public async Task<DTOs.ListRolesResponse> ListRolesAsync(DTOs.ListRolesRequest request, System.Threading.CancellationToken cancellationToken = default)

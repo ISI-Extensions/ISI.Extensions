@@ -55,7 +55,7 @@ namespace ISI.Extensions.DependencyInjection.Extensions
 				return service;
 			}
 
-			throw new CannotInvokeForThisTypeOfServiceProviderException(serviceProvider);
+			throw new CannotInvokeForThisTypeOfServiceProviderException(serviceType, serviceProvider);
 		}
 
 		public static object GetService(this System.IServiceProvider serviceProvider, string name, Type serviceType)
@@ -71,7 +71,7 @@ namespace ISI.Extensions.DependencyInjection.Extensions
 				return service;
 			}
 
-			throw new CannotInvokeForThisTypeOfServiceProviderException(serviceProvider);
+			throw new CannotInvokeForThisTypeOfServiceProviderException(serviceType, serviceProvider);
 		}
 
 		public static object GetService(this System.IServiceProvider serviceProvider, Type serviceType)
@@ -87,7 +87,7 @@ namespace ISI.Extensions.DependencyInjection.Extensions
 				return service;
 			}
 
-			throw new CannotInvokeForThisTypeOfServiceProviderException(serviceProvider);
+			throw new CannotInvokeForThisTypeOfServiceProviderException(serviceType, serviceProvider);
 		}
 
 		//public static TService GetService<TService>(this System.IServiceProvider serviceProvider)

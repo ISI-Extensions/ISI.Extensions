@@ -134,7 +134,7 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 				.ProcessServiceRegistrars(context.ConfigurationRoot)
 
 				.AddTransient<Microsoft.Extensions.Logging.ILogger>(serviceProvider => serviceProvider.GetService<Microsoft.Extensions.Logging.ILoggerFactory>().CreateLogger<ServiceApplicationContext>())
-				.AddSingleton<Microsoft.Extensions.FileProviders.IFileProvider>(serviceProvider => serviceProvider.GetService<Microsoft.Extensions.Options.IOptions<Microsoft.AspNetCore.Builder.StaticFileOptions>>().Value.FileProvider)
+				.AddFileProviders()
 				;
 
 			if (configuration.UseMessageBus)
@@ -162,6 +162,8 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 			context.Host = webApplication;
 
 			webApplication.Services.SetServiceLocator();
+			
+			ISI.Extensions.StartUp.Start();
 
 			context.TraceListener = new ISI.Extensions.Logging.LoggerTraceListener(webApplication.Services.GetRequiredService<ILogger>());
 			System.Diagnostics.Trace.Listeners.Add(context.TraceListener);

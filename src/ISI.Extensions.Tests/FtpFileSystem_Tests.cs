@@ -40,6 +40,7 @@ namespace ISI.Extensions.Tests
 			var attributedFullPath = $"ftp://{UserName}:{Password}@{Server}/{fullPath}";
 
 			var fileSystemPathFile = ISI.Extensions.FileSystem.GetFileSystemPathFile(attributedFullPath);
+			var obfuscatedAttributedFullPath = ISI.Extensions.FileSystem.GetObfuscatedAttributedFullPath(attributedFullPath);
 
 			Assert.That(fileSystemPathFile is ISI.Extensions.FtpFileSystem.FtpFileSystemPathFile);
 			Assert.That(string.Equals(fileSystemPathFile.Server, Server, StringComparison.Ordinal));

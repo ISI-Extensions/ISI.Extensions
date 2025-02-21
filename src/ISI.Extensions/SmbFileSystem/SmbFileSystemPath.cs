@@ -49,15 +49,17 @@ namespace ISI.Extensions.SmbFileSystem
 			{
 				attributedFullPathBuilder.Append(Drive);
 				attributedFullPathBuilder.Append(DirectorySeparator);
-			};
+			}
 
-			if (showUserName && !string.IsNullOrWhiteSpace(UserName))
+			var userName = (string.IsNullOrWhiteSpace(UserName) ? string.Empty : (obfuscateUserName ? obfuscatedUserNameValue : UserName)) ?? string.Empty;
+			if (showUserName && !string.IsNullOrWhiteSpace(userName))
 			{
-				attributedFullPathBuilder.Append((obfuscateUserName ? obfuscatedUserNameValue : UserName) ?? string.Empty);
+				attributedFullPathBuilder.Append(userName);
 
-				if (showPassword && !string.IsNullOrWhiteSpace(Password))
+				var password = (string.IsNullOrWhiteSpace(Password) ? string.Empty : (obfuscatePassword ? obfuscatedPasswordValue : Password)) ?? string.Empty;
+				if (showPassword && !string.IsNullOrWhiteSpace(password))
 				{
-					attributedFullPathBuilder.AppendFormat(":{0}", (obfuscatePassword ? obfuscatedPasswordValue : Password) ?? string.Empty);
+					attributedFullPathBuilder.AppendFormat(":{0}", password);
 				}
 
 				attributedFullPathBuilder.Append("@");

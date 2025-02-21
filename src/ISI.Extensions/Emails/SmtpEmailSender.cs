@@ -95,5 +95,22 @@ namespace ISI.Extensions.Emails
 
 			return response;
 		}
+
+		public static IEmailSender Create(string host, int port = 25, bool? useSsl = null, string userName = null, string password = null)
+		{
+			var emailSender = new SmtpEmailSender(host, port);
+
+			if (useSsl.GetValueOrDefault() || (port == 465))
+			{
+				emailSender.EnableSsl = true;
+			}
+
+			if (!string.IsNullOrWhiteSpace(userName) && !string.IsNullOrWhiteSpace(password))
+			{
+				emailSender.Credentials = new System.Net.NetworkCredential(userName, password); 
+			}
+
+			return emailSender;
+		}
 	}
 }

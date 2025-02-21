@@ -88,8 +88,8 @@ namespace ISI.Extensions.Tests
 
 			var emailMessage = EmailMessageGenerator.GenerateEmailMessageAsync(emailMessageModel).GetAwaiter().GetResult();
 
-			//using (var emailSender = new ISI.Extensions.Emails.LocalhostEmailSender())
-			using (var emailSender = new ISI.Extensions.Emails.SmtpEmailSender("smtp-relay.isi-net.com"))
+			using (var emailSender = new ISI.Extensions.Emails.LocalhostEmailSender())
+			//using (var emailSender = new ISI.Extensions.Emails.SmtpEmailSender("smtp-relay.isi-net.com"))
 			{
 				emailSender.Send(emailMessage);
 			}
@@ -102,12 +102,12 @@ namespace ISI.Extensions.Tests
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 			settings.OverrideWithEnvironmentVariables();
 
-			//using (var emailSender = new ISI.Extensions.Emails.LocalhostEmailSender())
-			using (var emailSender = new ISI.Extensions.Emails.SmtpEmailSender("smtp-relay.isi-net.com", 587))
+			using (var emailSender = new ISI.Extensions.Emails.LocalhostEmailSender())
+			//using (var emailSender = new ISI.Extensions.Emails.SmtpEmailSender("smtp-relay.isi-net.com", 587))
 			{
-				emailSender.EnableSsl = true;
-				emailSender.UseDefaultCredentials = false;
-				emailSender.Credentials = new System.Net.NetworkCredential(settings.ActiveDirectory.UserName, settings.ActiveDirectory.Password); 
+				//emailSender.EnableSsl = true;
+				//emailSender.UseDefaultCredentials = false;
+				//emailSender.Credentials = new System.Net.NetworkCredential(settings.ActiveDirectory.UserName, settings.ActiveDirectory.Password); 
 
 				emailSender.Send("administrator@isi-net.com", "ron.muth@isi-net.com", "Test Message", "Hello World");
 			}

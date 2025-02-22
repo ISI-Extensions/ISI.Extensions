@@ -49,10 +49,13 @@ namespace ISI.Extensions.StatusTrackers
 			protected System.IO.FileStream RunningFileStream { get; set; }
 
 			protected string LockFullName { get; set; }
+			protected string RunningFullName { get; set; }
 			protected string CaptionFullName { get; set; }
 			protected string PercentFullName { get; set; }
 			protected string LogFullName { get; set; }
+			protected string FinishedFullName { get; set; }
 
+			public bool Successful { get; protected set; }
 			public bool Finished { get; protected set; }
 
 			private string _caption = string.Empty;
@@ -146,16 +149,20 @@ namespace ISI.Extensions.StatusTrackers
 
 				LockFullName = GetStatusTrackerFileName(StatusTrackerKey, LockFileNameExtension);
 
-				var fileName = GetStatusTrackerFileName(StatusTrackerKey, RunningFileNameExtension);
-				try
+				RunningFullName = GetStatusTrackerFileName(StatusTrackerKey, RunningFileNameExtension);
+				FinishedFullName = GetStatusTrackerFileName(StatusTrackerKey, FinishedFileNameExtension);
+				if (!System.IO.File.Exists(RunningFullName) && !System.IO.File.Exists(FinishedFullName))
 				{
-					RunningFileStream = new(fileName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.DeleteOnClose);
-					RunningFileStream.WriteByte(255);
-					RunningFileStream.Flush();
-				}
-				catch (Exception exception)
-				{
-					throw new(string.Format("Cannot create file: \"{0}\"", fileName), exception);
+					try
+					{
+						RunningFileStream = new(RunningFullName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.DeleteOnClose);
+						RunningFileStream.WriteByte(255);
+						RunningFileStream.Flush();
+					}
+					catch (Exception exception)
+					{
+						throw new(string.Format("Cannot create file: \"{0}\"", RunningFullName), exception);
+					}
 				}
 
 				CaptionFullName = GetStatusTrackerFileName(StatusTrackerKey, CaptionFileNameExtension);
@@ -270,13 +277,26 @@ namespace ISI.Extensions.StatusTrackers
 			{
 				if (!Finished)
 				{
+					Successful = successful;
 					Finished = true;
 
-					var fullName = GetStatusTrackerFileName(StatusTrackerKey, FinishedFileNameExtension);
+					System.IO.File.WriteAllText($"{FinishedFullName}.tmp", string.Format("Success:\t{0}", successful.TrueFalse()));
 
-					System.IO.File.WriteAllText($"{fullName}.tmp", string.Format("Success:\t{0}", successful.TrueFalse()));
+					System.IO.File.Move($"{FinishedFullName}.tmp", FinishedFullName);
 
-					System.IO.File.Move($"{fullName}.tmp", fullName);
+
+					RunningFileStream?.Close();
+					RunningFileStream = null;
+
+					if (System.IO.File.Exists(CaptionFullName))
+					{
+						System.IO.File.Delete(CaptionFullName);
+					}
+
+					if (System.IO.File.Exists(PercentFullName))
+					{
+						System.IO.File.Delete(PercentFullName);
+					}
 				}
 
 				OnFinishedEvents?.Invoke(successful);
@@ -297,19 +317,9 @@ namespace ISI.Extensions.StatusTrackers
 
 			public void Dispose()
 			{
-				Finish(false);
-
-				RunningFileStream?.Close();
-				RunningFileStream = null;
-
-				if (System.IO.File.Exists(CaptionFullName))
+				if (RunningFileStream != null)
 				{
-					System.IO.File.Delete(CaptionFullName);
-				}
-
-				if (System.IO.File.Exists(PercentFullName))
-				{
-					System.IO.File.Delete(PercentFullName);
+					Finish(false);
 				}
 			}
 		}

@@ -33,8 +33,10 @@ namespace ISI.Extensions
 
 		public int MaxLogSize { get; set; } = 100000;
 
-		private string _caption = string.Empty;
+		public bool Successful { get; protected set; }
+		public bool Finished { get; protected set; }
 
+		private string _caption = string.Empty;
 		public string Caption
 		{
 			get => _caption;
@@ -49,7 +51,6 @@ namespace ISI.Extensions
 		}
 
 		private int _percent = 0;
-
 		public int Percent
 		{
 			get => _percent;
@@ -169,7 +170,13 @@ namespace ISI.Extensions
 
 		public void Finish(bool successful)
 		{
-			OnFinishedEvents?.Invoke(successful);
+			if (!Finished)
+			{
+				Successful = successful;
+				Finished = true;
+
+				OnFinishedEvents?.Invoke(successful);
+			}
 		}
 
 		void IDisposable.Dispose()

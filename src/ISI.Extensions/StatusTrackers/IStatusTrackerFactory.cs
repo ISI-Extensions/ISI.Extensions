@@ -31,5 +31,6 @@ namespace ISI.Extensions.StatusTrackers
 		bool IsSuccessful(string statusTrackerKey);
 		bool TryStatusTrackerGetKeyValue(string statusTrackerKey, string key, out string value);
 		void DeleteStatusTracker(string statusTrackerKey);
+		bool TryGetStatusTracker(string statusTrackerKey, out IStatusTracker statusTracker);
 	}
 }

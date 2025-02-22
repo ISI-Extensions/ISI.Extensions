@@ -50,6 +50,20 @@ namespace ISI.Extensions.StatusTrackers
 			}
 		}
 
+		public bool TryGetStatusTracker(string statusTrackerKey, out IStatusTracker statusTracker)
+		{
+			var logFullName = GetStatusTrackerFileName(statusTrackerKey, LogFileNameExtension);
+
+			if (System.IO.File.Exists(logFullName))
+			{
+				statusTracker = new FileStatusTracker(statusTrackerKey, Configuration, Logger, DateTimeStamper, GetStatusTrackerFileName, GetStatusTrackerKeyValueFileName);
+				return true;
+			}
+
+			statusTracker = null;
+			return false;
+		}
+
 		public IStatusTracker CreateStatusTracker(string statusTrackerKey)
 		{
 			return new FileStatusTracker(statusTrackerKey, Configuration, Logger, DateTimeStamper, GetStatusTrackerFileName, GetStatusTrackerKeyValueFileName);
@@ -211,5 +225,7 @@ namespace ISI.Extensions.StatusTrackers
 				}
 			}
 		}
+
+
 	}
 }

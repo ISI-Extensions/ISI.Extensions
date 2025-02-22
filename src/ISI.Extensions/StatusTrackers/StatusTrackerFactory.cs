@@ -30,6 +30,18 @@ namespace ISI.Extensions.StatusTrackers
 	{
 		protected readonly Dictionary<string, TStatusTracker> StatusTrackers = new(StringComparer.InvariantCultureIgnoreCase);
 		protected readonly Dictionary<string, (bool Successful, DateTime FinishedDateTimeUtc)> FinishedStatusTrackers = new(StringComparer.InvariantCultureIgnoreCase);
+		
+		public bool TryGetStatusTracker(string statusTrackerKey, out IStatusTracker statusTracker)
+		{
+			if (StatusTrackers.TryGetValue(statusTrackerKey, out var existingStatusTracker))
+			{
+				statusTracker = existingStatusTracker;
+				return true;
+			}
+
+			statusTracker = null;
+			return false;
+		}
 
 		public IStatusTracker CreateStatusTracker(string statusTrackerKey)
 		{

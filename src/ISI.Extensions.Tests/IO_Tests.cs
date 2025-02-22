@@ -174,6 +174,14 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void GetFileNameDeMasked_Env_Test()
+		{
+			var tartFullName = @"E:\Temp\test-34\{env: username}\baby.tab";
+
+			var xxx = ISI.Extensions.IO.Path.GetFileNameDeMasked(tartFullName);
+		}
+
+		[Test]
 		public void GetRelativePath_Test()
 		{
 			{

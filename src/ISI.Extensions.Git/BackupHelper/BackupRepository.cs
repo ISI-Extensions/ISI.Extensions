@@ -71,7 +71,7 @@ namespace ISI.Extensions.Git
 					var dumpFullName = System.IO.Path.Combine(request.BackupDirectoryFullName, string.Format("{0}.zip", request.RepositoryKey));
 
 					request.StatusTracker.AddToLog("    Taking Dump");
-					DumpRepository(new()
+					DumpRepository(new DTOs.DumpRepositoryFileNameRequest()
 					{
 						StatusTracker = request.StatusTracker,
 						ExecutedDateTimeUtc = request.ExecutedDateTimeUtc,

@@ -55,14 +55,21 @@ namespace ISI.Extensions.Tests
 		}
 
 		[DataContract]
-		public class Request
+		public class SingleRequest
+		{
+			[DataMember(Name = "step", EmitDefaultValue = false)]
+			public IRequestStep Step { get; set; }
+		}
+
+		[DataContract]
+		public class CollectionRequest
 		{
 			[DataMember(Name = "steps", EmitDefaultValue = false)]
 			public IRequestStep[] Steps { get; set; }
 		}
 
 		[Test]
-		public void JsonSerialization_Test()
+		public void JsonSerialization_Single_Test()
 		{
 			var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
 			var configuration = configurationBuilder.Build();
@@ -77,7 +84,38 @@ namespace ISI.Extensions.Tests
 
 			var jsonSerializer = new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer();
 
-			var request = new Request()
+			var request = new SingleRequest()
+			{
+				Step = new RequestStepA()
+					{
+						StepName = "A",
+						InstructionA = "Goto B",
+					}
+			};
+
+
+			var serializedRequest = jsonSerializer.Serialize(typeof(SingleRequest), request, true);
+
+			var deserializedRequest = jsonSerializer.Deserialize(typeof(SingleRequest), serializedRequest);
+		}
+
+		[Test]
+		public void JsonSerialization_Collection_Test()
+		{
+			var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
+			var configuration = configurationBuilder.Build();
+
+			var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection()
+				.AddOptions()
+				.AddSingleton<Microsoft.Extensions.Configuration.IConfiguration>(configuration);
+
+			services.AddAllConfigurations(configuration);
+
+			var serviceProvider = services.BuildServiceProvider<ISI.Extensions.DependencyInjection.Iunq.ServiceProviderBuilder>(configuration);
+
+			var jsonSerializer = new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer();
+
+			var request = new CollectionRequest()
 			{
 				Steps =
 				[
@@ -95,9 +133,9 @@ namespace ISI.Extensions.Tests
 			};
 
 
-			var serializedRequest = jsonSerializer.Serialize(typeof(Request), request, true);
+			var serializedRequest = jsonSerializer.Serialize(typeof(CollectionRequest), request, true);
 
-			var deserializedRequest = jsonSerializer.Deserialize(typeof(Request), serializedRequest);
+			var deserializedRequest = jsonSerializer.Deserialize(typeof(CollectionRequest), serializedRequest);
 		}
 	}
 }

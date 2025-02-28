@@ -37,7 +37,7 @@ namespace ISI.Extensions.ScmManager
 			uri.AddQueryStringParameter("page", 0);
 			uri.AddQueryStringParameter("pageSize", 10);
 
-			while ((uri != null) && (repositoryChangeSets.Count < request.Take))
+			while (uri != null)
 			{
 #if DEBUG
 				var xxx = ISI.Extensions.WebClient.Rest.GetEventHandler();

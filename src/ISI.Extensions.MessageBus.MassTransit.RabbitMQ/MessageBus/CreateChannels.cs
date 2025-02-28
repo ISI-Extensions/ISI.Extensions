@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using global::MassTransit;
+using ISI.Extensions.MessageBus.MassTransit.Extensions;
 
 namespace ISI.Extensions.MessageBus.MassTransit.RabbitMQ
 {
@@ -33,6 +34,8 @@ namespace ISI.Extensions.MessageBus.MassTransit.RabbitMQ
 				{
 					jsonSerializerSettings.Converters = ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer.JsonConverters();
 
+					jsonSerializerSettings.BuildContractResolver();
+					
 					return jsonSerializerSettings;
 				});
 
@@ -40,6 +43,8 @@ namespace ISI.Extensions.MessageBus.MassTransit.RabbitMQ
 				configurator.ConfigureNewtonsoftJsonDeserializer(jsonSerializerSettings =>
 				{
 					jsonSerializerSettings.Converters = ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer.JsonConverters();
+
+					jsonSerializerSettings.BuildContractResolver();
 
 					return jsonSerializerSettings;
 				});

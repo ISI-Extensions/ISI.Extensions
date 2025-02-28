@@ -29,15 +29,21 @@ namespace ISI.Extensions.Git
 		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
 
 		protected string RepositoriesPath { get; }
+		protected string UserName { get; }
+		protected string Password { get; }
 
 		public BackupHelper(
 			Microsoft.Extensions.Logging.ILogger logger,
 			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
-			string repositoriesPath)
+			string repositoriesPath,
+			string userName = null,
+			string password = null)
 		{
 			Logger = logger;
 			DateTimeStamper = dateTimeStamper;
 			RepositoriesPath = repositoriesPath;
+			UserName = userName;
+			Password = password;
 		}
 	}
 }

@@ -89,7 +89,6 @@ namespace ISI.Extensions.TemplateProviders
 			{
 				if (contentGenerator is ISI.Extensions.TemplateProviders.IUsesDocumentStorageTemplateProvider templateDocumentUuidProvider)
 				{
-
 					templateDocumentUuid = templateDocumentUuidProvider.TemplateDocumentUuid;
 				}
 			}

@@ -23,5 +23,6 @@ namespace ISI.Extensions.Git.DataTransferObjects.BackupHelper
 {
 	public class DumpRepositoryResponse
 	{
+		public bool Success { get; set; }
 	}
 }

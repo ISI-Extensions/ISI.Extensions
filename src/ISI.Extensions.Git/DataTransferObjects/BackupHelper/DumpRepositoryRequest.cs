@@ -21,7 +21,22 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Git.DataTransferObjects.BackupHelper
 {
-	public class DumpRepositoryRequest
+	public interface IDumpRepositoryRequest
+	{
+		ISI.Extensions.IStatusTracker StatusTracker { get; set; }
+		DateTime? ExecutedDateTimeUtc { get; set; }
+		string RepositoryKey { get; set; }
+	}
+
+	public class DumpRepositoryStreamRequest : IDumpRepositoryRequest
+	{
+		public ISI.Extensions.IStatusTracker StatusTracker { get; set; }
+		public DateTime? ExecutedDateTimeUtc { get; set; }
+		public string RepositoryKey { get; set; }
+		public System.IO.Stream Stream { get; set; }
+	}
+
+	public class DumpRepositoryFileNameRequest : IDumpRepositoryRequest
 	{
 		public ISI.Extensions.IStatusTracker StatusTracker { get; set; }
 		public DateTime? ExecutedDateTimeUtc { get; set; }

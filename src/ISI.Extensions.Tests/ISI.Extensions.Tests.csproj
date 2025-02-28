@@ -38,7 +38,9 @@
 		<ProjectReference Include="..\ISI.Extensions.Acme\ISI.Extensions.Acme.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Alpine\ISI.Extensions.Alpine.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Ant\ISI.Extensions.Ant.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.BitBucket\ISI.Extensions.BitBucket.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Docker\ISI.Extensions.Docker.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.GitHub\ISI.Extensions.GitHub.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.JsonJwt\ISI.Extensions.JsonJwt.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Keycloak\ISI.Extensions.Keycloak.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.NameCheap\ISI.Extensions.NameCheap.csproj" />

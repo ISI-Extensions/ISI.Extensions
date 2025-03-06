@@ -40,7 +40,7 @@ namespace ISI.Extensions.Security.Ldap
 
 					var userName = $"{request.UserName.Split(new[] { '\\', '/' }).Last()}@{fqdn}";
 
-					ldapConnection.Bind(userName, request.Password);
+					ldapConnection.BindAsync(userName, request.Password).GetAwaiter().GetResult();
 
 					response.Authenticated = true;
 				}

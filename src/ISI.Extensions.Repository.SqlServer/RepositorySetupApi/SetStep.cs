@@ -62,7 +62,7 @@ namespace ISI.Extensions.Repository.SqlServer
 							tableExists = string.Format("{0}", command.ExecuteScalarWithExceptionTracingAsync().GetAwaiter().GetResult()).ToBoolean();
 						}
 
-						if (tableExists)
+						if (!tableExists)
 						{
 							sql.Clear();
 							sql.Append("set nocount on\n");

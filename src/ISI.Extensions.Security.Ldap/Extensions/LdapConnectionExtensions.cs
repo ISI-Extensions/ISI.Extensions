@@ -41,12 +41,12 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 			if (request.LdapStartTls)
 			{
 				//Console.WriteLine("ldapConnection.StartTls()");
-				ldapConnection.StartTls();
+				ldapConnection.StartTlsAsync().GetAwaiter().GetResult();
 			}
 
 			//Console.WriteLine($"ldapConnection.Host = {request.LdapHost}");
 			//Console.WriteLine($"ldapConnection.Port = {ldapPort}");
-			ldapConnection.Connect(request.LdapHost, ldapPort.Value);
+			ldapConnection.ConnectAsync(request.LdapHost, ldapPort.Value).GetAwaiter().GetResult();
 		}
 
 		public static void Bind(this Novell.Directory.Ldap.LdapConnection ldapConnection, DTOs.ILdapRequestWithBindCredentials request)
@@ -54,14 +54,20 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 			//Console.WriteLine($"ldapConnection.LdapBindUserName = {request.LdapBindUserName}");
 			//Console.WriteLine($"ldapConnection.LdapBindPassword = {request.LdapBindPassword}");
 
-			ldapConnection.Bind(request.LdapBindUserName, request.LdapBindPassword);
+			ldapConnection.BindAsync(request.LdapBindUserName, request.LdapBindPassword).GetAwaiter().GetResult();
 		}
 
 		public static string GetDefaultNamingContext(this Novell.Directory.Ldap.LdapConnection ldapConnection)
 		{
-			var ldapSearchResults = ldapConnection.Search(string.Empty, Novell.Directory.Ldap.LdapConnection.ScopeBase, "(objectClass=*)", [ISI.Extensions.Security.Directory.UserPropertyKey.DefaultNamingContext], false);
+			var ldapSearchResults = ldapConnection.SearchAsync(string.Empty, Novell.Directory.Ldap.LdapConnection.ScopeBase, "(objectClass=*)", [ISI.Extensions.Security.Directory.UserPropertyKey.DefaultNamingContext], false).GetAwaiter().GetResult().GetAsyncEnumerator();
 
-			return ldapSearchResults.First().GetPropertyValue(ISI.Extensions.Security.Directory.UserPropertyKey.DefaultNamingContext);
+			ldapSearchResults.MoveNextAsync();
+
+			var defaultNamingContext= ldapSearchResults.Current.GetPropertyValue(ISI.Extensions.Security.Directory.UserPropertyKey.DefaultNamingContext);
+
+			ldapSearchResults?.DisposeAsync().GetAwaiter().GetResult();
+
+			return defaultNamingContext;
 		}
 
 		public static string GetFQDN(this Novell.Directory.Ldap.LdapConnection ldapConnection)

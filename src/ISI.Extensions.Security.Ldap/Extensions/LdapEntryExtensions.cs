@@ -29,7 +29,7 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 		{
 			try
 			{
-				var ldapAttribute = ldapEntry.GetAttribute(propertyKey);
+				var ldapAttribute = ldapEntry.Get(propertyKey);
 
 				return ldapAttribute.StringValue;
 			}
@@ -44,7 +44,7 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 		{
 			try
 			{
-				var ldapAttribute = ldapEntry.GetAttribute(propertyKey);
+				var ldapAttribute = ldapEntry.Get(propertyKey);
 
 				if (ldapAttribute.StringValueArray.NullCheckedAny())
 				{

@@ -44,8 +44,10 @@
 		<ProjectReference Include="..\ISI.Extensions.JsonJwt\ISI.Extensions.JsonJwt.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Keycloak\ISI.Extensions.Keycloak.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.NameCheap\ISI.Extensions.NameCheap.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Oracle\ISI.Extensions.Oracle.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.PostgreSQL\ISI.Extensions.PostgreSQL.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Razor\ISI.Extensions.Razor.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.Repository.Oracle\ISI.Extensions.Repository.Oracle.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.S3\ISI.Extensions.S3.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Azure\ISI.Extensions.Azure.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Ascii\ISI.Extensions.Ascii.csproj" />

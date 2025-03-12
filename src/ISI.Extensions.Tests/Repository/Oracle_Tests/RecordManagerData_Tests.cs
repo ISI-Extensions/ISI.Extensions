@@ -26,7 +26,7 @@ namespace ISI.Extensions.Tests.Repository
 	[TestFixture]
 	public partial class Oracle_Tests
 	{
-		public class ContactWithDataRecordManager : ISI.Extensions.Repository.Oracle.RecordManagerPrimaryKeyWithArchive<ContactWithData, int>
+		public class ContactWithDataRecordManager : ISI.Extensions.Repository.Oracle.RecordManagerPrimaryKeyWithArchive<ContactWithData, Guid>
 		{
 			public ContactWithDataRecordManager(
 				Microsoft.Extensions.Configuration.IConfiguration configuration,
@@ -61,7 +61,7 @@ namespace ISI.Extensions.Tests.Repository
 
 			var contactV1 = new ContactWithData()
 			{
-				ContactId = (new Random()).Next(),
+				ContactUuid = Guid.NewGuid(),
 				FirstName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
 				LastName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
 				TimeStamp = DateTime.UtcNow,
@@ -69,7 +69,7 @@ namespace ISI.Extensions.Tests.Repository
 
 			contactV1.ContactData = new ContactDataV1()
 			{
-				ContactId = contactV1.ContactId,
+				ContactUuid = contactV1.ContactUuid,
 				FirstName = contactV1.FirstName,
 				LastName = contactV1.LastName,
 				AddressLine1 = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
@@ -81,51 +81,11 @@ namespace ISI.Extensions.Tests.Repository
 
 			recordManager.InsertRecordAsync(contactV1).GetAwaiter().GetResult();
 
-			var testContact = recordManager.GetRecordAsync(contactV1.ContactId).GetAwaiter().GetResult();
+			var testContact = recordManager.GetRecordAsync(contactV1.ContactUuid).GetAwaiter().GetResult();
 
-			Assert.That(contactV1.ContactId == testContact.ContactId);
+			Assert.That(contactV1.ContactUuid == testContact.ContactUuid);
 
-			var noContacts = recordManager.GetRecordsAsync(Array.Empty<int>()).ToEnumerable();
-
-			Assert.That(noContacts != null);
-
-			Assert.That(!noContacts.Any());
-		}
-
-		[Test]
-		public void ContactWithDataV2_Get()
-		{
-			var recordManager = new ContactWithDataRecordManager(Configuration, Logger, DateTimeStamper, Serializer, ConnectionString);
-
-			var contactV2 = new ContactWithData()
-			{
-				ContactId = (new Random()).Next(),
-				FirstName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
-				LastName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
-				TimeStamp = DateTime.UtcNow,
-			};
-
-			contactV2.ContactData = new ContactDataV2()
-			{
-				ContactId = contactV2.ContactId,
-				FirstName = contactV2.FirstName,
-				LastName = contactV2.LastName,
-				Title = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
-				AddressLine1 = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
-				AddressLine2 = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
-				City = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
-				State = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
-				Zip = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
-				PhoneNumber = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
-			};
-
-			recordManager.InsertRecordAsync(contactV2).GetAwaiter().GetResult();
-
-			var testContact = recordManager.GetRecordAsync(contactV2.ContactId).GetAwaiter().GetResult();
-
-			Assert.That(contactV2.ContactId == testContact.ContactId);
-
-			var noContacts = recordManager.GetRecordsAsync(Array.Empty<int>()).ToEnumerable();
+			var noContacts = recordManager.GetRecordsAsync(Array.Empty<Guid>()).ToEnumerable();
 
 			Assert.That(noContacts != null);
 
@@ -139,7 +99,7 @@ namespace ISI.Extensions.Tests.Repository
 
 			var contact = new ContactWithData()
 			{
-				ContactId = (new Random()).Next(),
+				ContactUuid = Guid.NewGuid(),
 				FirstName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
 				LastName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
 				TimeStamp = DateTime.UtcNow,
@@ -159,7 +119,7 @@ namespace ISI.Extensions.Tests.Repository
 
 			var contact = new ContactWithData()
 			{
-				ContactId = (new Random()).Next(),
+				ContactUuid = Guid.NewGuid(),
 				FirstName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
 				LastName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
 				TimeStamp = DateTime.UtcNow,
@@ -183,7 +143,7 @@ namespace ISI.Extensions.Tests.Repository
 		}
 
 		[Test]
-		public void UpsertRecordsAsync_Test()
+		public void InsertRecordsAsync_Test()
 		{
 			var recordManager = new ContactWithDataRecordManager(Configuration, Logger, DateTimeStamper, Serializer, ConnectionString);
 
@@ -191,30 +151,28 @@ namespace ISI.Extensions.Tests.Repository
 
 			var records = new List<ContactWithData>();
 
-			for (var index = 0; index < 2; index++)
+			for (var index = 0; index < 100; index++)
 			{
-				var contactId = (new Random()).Next();
+				var contactUuid = Guid.NewGuid();
 				var firstName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens);
 				var lastName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens);
 				
 				records.Add(new()
 				{
-					ContactId = contactId,
+					ContactUuid = contactUuid,
 					FirstName = firstName,
 					LastName = lastName,
 					TimeStamp = DateTime.UtcNow,
 					ContactData = new ContactDataV1()
 					{
-						ContactId = contactId,
+						ContactUuid = contactUuid,
 						FirstName = firstName,
 						LastName = lastName,
 					}
 				});
 			}
 
-			var insertedRecords = recordManager.UpsertRecordsAsync(records).ToEnumerable();
-
-
+			var insertedRecords = recordManager.InsertRecordsAsync(records).ToEnumerable();
 		}
 	}
 }

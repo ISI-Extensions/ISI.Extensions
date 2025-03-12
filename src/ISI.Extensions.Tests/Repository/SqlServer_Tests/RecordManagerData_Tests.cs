@@ -213,8 +213,6 @@ namespace ISI.Extensions.Tests.Repository
 			}
 
 			var insertedRecords = recordManager.UpsertRecordsAsync(records).ToEnumerable();
-
-
 		}
 	}
 }

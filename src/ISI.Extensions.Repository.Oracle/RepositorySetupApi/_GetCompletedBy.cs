@@ -41,7 +41,7 @@ namespace ISI.Extensions.Repository.Oracle
 					{
 						connection.Open();
 
-						using (var command = new global::Oracle.ManagedDataAccess.Client.OracleCommand("SELECT current_user;", connection))
+						using (var command = new global::Oracle.ManagedDataAccess.Client.OracleCommand("select user from dual", connection))
 						{
 							var completedBy = string.Format("{0}", command.ExecuteScalar());
 

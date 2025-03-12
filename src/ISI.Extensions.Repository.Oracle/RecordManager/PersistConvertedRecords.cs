@@ -198,8 +198,34 @@ namespace ISI.Extensions.Repository.Oracle
 
 							case PersistenceMethod.Upsert:
 								{
+									throw new System.NotImplementedException();
 									var upsertSql = new StringBuilder();
 									var sqlValues = new Dictionary<string, object>();
+
+									/*
+									 *
+merge into customers_dim cd  
+using customers_stage cs  
+on    ( cd.customer_id = cs.customer_id )  
+when not matched then   
+	insert (   
+		cd.customer_id, cd.full_name, cd.birth_date   
+	) values (   
+		cs.customer_id, cs.full_name, cs.birth_date  
+	)  
+when matched then   
+	update  
+	set cd.full_name = cs.full_name,  
+			cd.update_datetime = systimestamp
+									 */
+
+									upsertSql.AppendFormat("MERGE INTO {0}\n", GetTableName(addAlias: false));
+									upsertSql.Append("USING DUAL\n");
+
+
+
+
+
 
 									upsertSql.AppendFormat("UPSERT INTO {0} ({1})\n", GetTableName(addAlias: false), string.Join(", ", insertPropertyDescriptions.Select(property => FormatColumnName(property.ColumnName))));
 
@@ -213,7 +239,7 @@ namespace ISI.Extensions.Repository.Oracle
 										sqlValues.Add(string.Format("value_{0}", valueIndex++), (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
 									}
 
-									upsertSql.Append(";\n");
+									upsertSql.Append("\n");
 
 									await connection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
 

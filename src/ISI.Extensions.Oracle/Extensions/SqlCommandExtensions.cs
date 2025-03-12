@@ -69,6 +69,16 @@ namespace ISI.Extensions.Oracle.Extensions
 				};
 			}
 
+			if (type == typeof(Guid))
+			{
+				parameterValue = ((Guid)parameterValue).Formatted(GuidExtensions.GuidFormat.WithHyphens);
+			}
+
+			if (type == typeof(Guid?))
+			{
+				parameterValue = ((Guid?)parameterValue).Formatted(GuidExtensions.GuidFormat.WithHyphens);
+			}
+
 			return new global::Oracle.ManagedDataAccess.Client.OracleParameter(parameterName, parameterValue);
 		}
 

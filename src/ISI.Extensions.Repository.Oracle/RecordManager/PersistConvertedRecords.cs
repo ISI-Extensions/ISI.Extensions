@@ -120,12 +120,12 @@ namespace ISI.Extensions.Repository.Oracle
 
 									insertSql.AppendFormat("INSERT INTO {0} ({1})\n", GetTableName(addAlias: false), string.Join(", ", insertPropertyDescriptions.Select(property => FormatColumnName(property.ColumnName))));
 
-									insertSql.Append(string.Format("VALUES({0})", string.Join(", ", insertPropertyIndexes.Select(propertyIndex => string.Format("@value_{0}", propertyIndex)))));
+									insertSql.Append(string.Format("VALUES({0})", string.Join(", ", insertPropertyIndexes.Select(propertyIndex => string.Format(":value_{0}", propertyIndex)))));
 
 									var valueIndex = 1;
 									foreach (var property in insertPropertyDescriptions)
 									{
-										sqlValues.Add(string.Format("@value_{0}", valueIndex++), (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
+										sqlValues.Add(string.Format("value_{0}", valueIndex++), (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
 									}
 
 									if (repositoryAssignedValueColumnDefinitions.Any())
@@ -170,10 +170,10 @@ namespace ISI.Extensions.Repository.Oracle
 									updateSql.AppendFormat("UPDATE {0}\n", GetTableName("updateTable"));
 									updateSql.Append("SET\n");
 									var columnIndex = 1;
-									updateSql.AppendFormat("{0}\n", string.Join(",\n", updatePropertyDescriptions.Select(property => string.Format("    {0} = @value_{1}", FormatColumnName(property.ColumnName), columnIndex++))));
+									updateSql.AppendFormat("{0}\n", string.Join(",\n", updatePropertyDescriptions.Select(property => string.Format("    {0} = :value_{1}", FormatColumnName(property.ColumnName), columnIndex++))));
 									updateSql.Append("WHERE\n");
 									var primaryKeyIndex = 1;
-									updateSql.AppendFormat("      {0};\n", string.Join(" AND\n", primaryKeyPropertyDescriptions.Select(property => string.Format("    {0} = @primaryKey_{1}", FormatColumnName(property.ColumnName), primaryKeyIndex++))));
+									updateSql.AppendFormat("      {0};\n", string.Join(" AND\n", primaryKeyPropertyDescriptions.Select(property => string.Format("    {0} = :primaryKey_{1}", FormatColumnName(property.ColumnName), primaryKeyIndex++))));
 
 									using (var command = new global::Oracle.ManagedDataAccess.Client.OracleCommand(updateSql.ToString(), connection))
 									{
@@ -182,13 +182,13 @@ namespace ISI.Extensions.Repository.Oracle
 										columnIndex = 1;
 										foreach (var property in updatePropertyDescriptions)
 										{
-											command.AddParameter(string.Format("@value_{0}", columnIndex++), (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
+											command.AddParameter(string.Format("value_{0}", columnIndex++), (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
 										}
 
 										primaryKeyIndex = 1;
 										foreach (var property in primaryKeyPropertyDescriptions)
 										{
-											command.AddParameter(string.Format("@primaryKey_{0}", primaryKeyIndex++), (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
+											command.AddParameter(string.Format("primaryKey_{0}", primaryKeyIndex++), (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
 										}
 
 										connection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken).Wait(cancellationToken);
@@ -201,28 +201,18 @@ namespace ISI.Extensions.Repository.Oracle
 									var upsertSql = new StringBuilder();
 									var sqlValues = new Dictionary<string, object>();
 
-									upsertSql.AppendFormat("INSERT INTO {0} ({1})\n", GetTableName(addAlias: false), string.Join(", ", insertPropertyDescriptions.Select(property => FormatColumnName(property.ColumnName))));
+									upsertSql.AppendFormat("UPSERT INTO {0} ({1})\n", GetTableName(addAlias: false), string.Join(", ", insertPropertyDescriptions.Select(property => FormatColumnName(property.ColumnName))));
 
-									upsertSql.Append(string.Format("VALUES({0})", string.Join(", ", insertPropertyIndexes.Select(propertyIndex => string.Format("@value_{0}", propertyIndex)))));
+									upsertSql.Append(string.Format("VALUES({0})", string.Join(", ", insertPropertyIndexes.Select(propertyIndex => string.Format(":value_{0}", propertyIndex)))));
 
 									var valueIndexByColumnName = new Dictionary<string, int>();
 									var valueIndex = 1;
 									foreach (var property in insertPropertyDescriptions)
 									{
 										valueIndexByColumnName.Add(property.ColumnName, valueIndex);
-										sqlValues.Add(string.Format("@value_{0}", valueIndex++), (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
+										sqlValues.Add(string.Format("value_{0}", valueIndex++), (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
 									}
 
-									upsertSql.AppendFormat("ON CONFLICT ({0})\n", string.Join(", ", primaryKeyPropertyDescriptions.Select(property => FormatColumnName(property.ColumnName))));
-
-									upsertSql.Append("DO UPDATE\n");
-									upsertSql.Append("SET\n");
-									upsertSql.AppendFormat("{0}", string.Join(",\n", updatePropertyDescriptions.Select(property => string.Format("    {0} = @value_{1}", FormatColumnName(property.ColumnName), valueIndexByColumnName[property.ColumnName]))));
-									
-									if (repositoryAssignedValueColumnDefinitions.Any())
-									{
-										upsertSql.AppendFormat("\nRETURNING {0}", string.Join(", ", repositoryAssignedValuePropertyDescriptions.Select(property => FormatColumnName(property.ColumnName))));
-									}
 									upsertSql.Append(";\n");
 
 									await connection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
@@ -262,43 +252,40 @@ namespace ISI.Extensions.Repository.Oracle
 
 					if (hasArchiveTable && persistedRecordSets.Any())
 					{
-						var insertSql = new StringBuilder();
-						var sqlValues = new Dictionary<string, object>();
-
-						insertSql.AppendFormat("INSERT INTO {0} ({1}, {2})\n", GetArchiveTableName(addAlias: false), FormatColumnName(ArchiveTableArchiveDateTimeColumnName), string.Join(", ", archivePropertyDescriptions.Select(property => FormatColumnName(property.ColumnName))));
-
-						var sqlSelects = new List<string>();
-						sqlValues.Clear();
-
-						var selectIndex = 1;
 						foreach (var persistedRecordSet in persistedRecordSets)
 						{
-							sqlSelects.Add(string.Format("SELECT {0}", string.Join(", ", archivePropertyIndexes.Select(propertyIndex => string.Format("@value_{0}_{1}", selectIndex, propertyIndex)))));
+							var insertSql = new StringBuilder();
+							var sqlValues = new Dictionary<string, object>();
+
+							insertSql.AppendFormat("INSERT INTO {0} ({1}, {2})\n", GetArchiveTableName(addAlias: false), FormatColumnName(ArchiveTableArchiveDateTimeColumnName), string.Join(", ", archivePropertyDescriptions.Select(property => FormatColumnName(property.ColumnName))));
+
+							var sqlSelects = new List<string>();
+							sqlValues.Clear();
+
+							sqlSelects.Add(string.Format("VALUES ({0})", string.Join(", ", archivePropertyIndexes.Select(propertyIndex => string.Format(":value_{0}", propertyIndex)))));
 
 							var valueIndex = 1;
-							sqlValues.Add(string.Format("@value_{0}_{1}", selectIndex, valueIndex++), getArchiveDateTimeUtc(persistedRecordSet.Record));
+							sqlValues.Add(string.Format("value_{0}", valueIndex++), getArchiveDateTimeUtc(persistedRecordSet.Record));
 							foreach (var property in archivePropertyDescriptions)
 							{
-								sqlValues.Add(string.Format("@value_{0}_{1}", selectIndex, valueIndex++), (property.IsNull(persistedRecordSet.ConvertedRecord) ? DBNull.Value : GetValue(property, persistedRecordSet.ConvertedRecord)));
+								sqlValues.Add(string.Format("value_{0}", valueIndex++), (property.IsNull(persistedRecordSet.ConvertedRecord) ? DBNull.Value : GetValue(property, persistedRecordSet.ConvertedRecord)));
 							}
 
-							selectIndex++;
-						}
+							insertSql.AppendFormat("{0}\n", string.Join(",\n", sqlSelects));
+							insertSql.Append("\n");
 
-						insertSql.AppendFormat("{0}\n", string.Join(" UNION ALL\n", sqlSelects));
-						insertSql.Append(";\n");
+							await connection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
 
-						await connection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
+							using (var command = new global::Oracle.ManagedDataAccess.Client.OracleCommand(insertSql.ToString(), connection))
+							{
+								command.CommandTimeout = OracleConfiguration.ArchiveTableCommandTimeout;
 
-						using (var command = new global::Oracle.ManagedDataAccess.Client.OracleCommand(insertSql.ToString(), connection))
-						{
-							command.CommandTimeout = OracleConfiguration.ArchiveTableCommandTimeout;
+								command.CommandType = System.Data.CommandType.Text;
 
-							command.CommandType = System.Data.CommandType.Text;
+								command.AddParameters(sqlValues);
 
-							command.AddParameters(sqlValues);
-
-							await command.ExecuteNonQueryWithExceptionTracingAsync(cancellationToken: cancellationToken);
+								await command.ExecuteNonQueryWithExceptionTracingAsync(cancellationToken: cancellationToken);
+							}
 						}
 					}
 				}

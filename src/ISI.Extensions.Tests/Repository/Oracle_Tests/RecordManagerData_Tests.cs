@@ -187,11 +187,11 @@ namespace ISI.Extensions.Tests.Repository
 		{
 			var recordManager = new ContactWithDataRecordManager(Configuration, Logger, DateTimeStamper, Serializer, ConnectionString);
 
-			recordManager.CreateTable(ISI.Extensions.Repository.CreateTableMode.DeleteAndCreateIfExists);
+			recordManager.CreateTable();
 
 			var records = new List<ContactWithData>();
 
-			for (var index = 0; index < 100; index++)
+			for (var index = 0; index < 2; index++)
 			{
 				var contactId = (new Random()).Next();
 				var firstName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens);

@@ -52,62 +52,24 @@ namespace ISI.Extensions.Oracle.Extensions
 
 		public static global::Oracle.ManagedDataAccess.Client.OracleParameter GetSqlParameter(string parameterName, object parameterValue)
 		{
-			if (parameterValue == null)
+			var type = parameterValue.GetType();
+
+			var isNullable = (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(Nullable<>)));
+
+			if (isNullable)
 			{
-				parameterValue = DBNull.Value;
-			}
-			else
-			{
-				var type = parameterValue.GetType();
-
-				var isNullable = (type.IsGenericType && (type.GetGenericTypeDefinition() == typeof(Nullable<>)));
-
-				if (isNullable)
-				{
-					type = (new System.ComponentModel.NullableConverter(type)).UnderlyingType;
-				}
-
-				if (SendCommandsToLogger)
-				{
-					Logger.LogInformation("  Parameter Name: \"{0}\" Value: \"{1}\" Type: \"{2}\"", parameterName, parameterValue, type.Name);
-				}
-
-				if (type == typeof(bool))
-				{
-					parameterValue = ((bool)parameterValue ? 1 : 0);
-				}
-
-				if (type == typeof(DateTime))
-				{
-					return new(parameterName, System.Data.SqlDbType.DateTime2)
-					{
-						Value = parameterValue
-					};
-				}
-				
-				if (type == typeof(string))
-				{
-					return new (parameterName, System.Data.SqlDbType.VarChar)
-					{
-						Value = parameterValue
-					};
-				}
-
-				//if (type == typeof(string))
-				//{
-				//	if (SendCommandsToLogger)
-				//	{
-				//		Logger.LogInformation("  used System.Data.SqlDbType.VarChar");
-				//	}
-
-				//	return new(parameterName, System.Data.SqlDbType.VarChar, -1)
-				//	{
-				//		Value = parameterValue
-				//	};
-				//}
+				type = (new System.ComponentModel.NullableConverter(type)).UnderlyingType;
 			}
 
-			return new(parameterName, parameterValue);
+			if (type == typeof(DateTime))
+			{
+				return new global::Oracle.ManagedDataAccess.Client.OracleParameter(parameterName, global::Oracle.ManagedDataAccess.Client.OracleDbType.TimeStamp)
+				{
+					Value = parameterValue
+				};
+			}
+
+			return new global::Oracle.ManagedDataAccess.Client.OracleParameter(parameterName, parameterValue);
 		}
 
 		public static global::Oracle.ManagedDataAccess.Client.OracleParameter GetSqlParameter(this KeyValuePair<string, object> parameter)
@@ -129,6 +91,7 @@ namespace ISI.Extensions.Oracle.Extensions
 		{
 			if (parameters.NullCheckedAny())
 			{
+				command.BindByName = true;
 				foreach (var parameter in parameters)
 				{
 					command.AddParameter(parameter);

@@ -170,7 +170,7 @@ namespace ISI.Extensions.Repository.Oracle
 
 			if (!string.IsNullOrEmpty(primaryKeyName))
 			{
-				sql.AppendFormat("    constraint {0} primary key ({1})\n", primaryKeyName, string.Join(", ", recordDescription.PrimaryKeyPropertyDescriptions.OrderBy(propertyDescription => propertyDescription.PrimaryKeyAttribute.Order).Select(column => string.Format("{0}{1}", FormatColumnName(column.ColumnName), column.PrimaryKeyAttribute.AscendingOrder ? string.Empty : " DESC"))));
+				sql.AppendFormat("    constraint {0} primary key ({1})\n", primaryKeyName, string.Join(", ", recordDescription.PrimaryKeyPropertyDescriptions.OrderBy(propertyDescription => propertyDescription.PrimaryKeyAttribute.Order).Select(column => FormatColumnName(column.ColumnName))));
 			}
 
 			sql.Append("  )\n");
@@ -221,7 +221,7 @@ namespace ISI.Extensions.Repository.Oracle
 
 			var tableName = FormatArchiveTableName(string.Format("{0}{1}", TableName, ArchiveTableSuffix), null, false);
 
-			var primaryKeyName = string.Format("[{0}\"", string.Format("{0}{1}", RecordDescription.GetRecordDescription<TRecord>().TableName, ArchiveTableSuffix));
+			var primaryKeyName = string.Format("\"{0}\"", string.Format("{0}{1}", RecordDescription.GetRecordDescription<TRecord>().TableName, ArchiveTableSuffix));
 
 			if (!recordDescription.PrimaryKeyPropertyDescriptions.NullCheckedAny())
 			{
@@ -235,42 +235,42 @@ namespace ISI.Extensions.Repository.Oracle
 					var firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName = primaryKeyColumnsWithPrimaryKeyAttributes.FirstOrDefault(column => !string.IsNullOrEmpty(column.PrimaryKeyAttribute.Name));
 					if (firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName != null)
 					{
-						primaryKeyName = string.Format("[{0}\"", string.Format("{0}{1}", firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName.PrimaryKeyAttribute.Name, ArchiveTableSuffix));
+						primaryKeyName = string.Format("\"{0}\"", string.Format("{0}{1}", firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName.PrimaryKeyAttribute.Name, ArchiveTableSuffix));
 					}
 				}
 			}
 
+			var addEndIf = false;
 			switch (createTableMode)
 			{
 				case CreateTableMode.DeleteAndCreateIfExists:
-					sql.AppendFormat("if OBJECT_ID('{0}') is not null\n", tableName);
-					sql.Append("begin\n");
-					sql.AppendFormat("  drop table {0}\n", tableName);
-					sql.Append("end\n");
+					sql.AppendFormat("IF (SELECT COUNT(1) FROM dba_tables WHERE table_name = '{0}') > 0 THEN\n", tableName);
+					sql.AppendFormat("  DROP TABLE {0}\n", tableName);
+					sql.Append("END IF\n");
 					break;
 				case CreateTableMode.TruncateIfExists:
-					sql.AppendFormat("if OBJECT_ID('{0}') is not null\n", tableName);
-					sql.Append("begin\n");
-					sql.AppendFormat("  truncate table {0}\n", tableName);
-					sql.Append("end\n");
-					sql.Append("else\n");
+					sql.AppendFormat("IF (SELECT COUNT(1) FROM dba_tables WHERE table_name = '{0}') > 0 THEN\n", tableName);
+					sql.AppendFormat("  TRUNCATE TABLE {0}\n", tableName);
+					sql.Append("ELSE\n");
+					addEndIf = true;
 					break;
 			}
 
-			sql.Append("begin\n");
-			sql.AppendFormat("  create table {0}\n", tableName);
+			sql.AppendFormat("  CREATE TABLE {0}\n", tableName);
 			sql.Append("  (\n");
-			sql.AppendFormat("    {0} datetime2 not null,\n", FormatColumnName(ArchiveTableArchiveDateTimeColumnName));
-			sql.AppendFormat("{0}{1}\n", string.Join(",\n", recordDescription.PropertyDescriptions.OrderBy(propertyDescription => propertyDescription.Order).Select(propertyDescription => string.Format("  {0}", propertyDescription.GetColumnDefinition(FormatColumnName)))), (string.IsNullOrEmpty(primaryKeyName) ? string.Empty : ","));
-
+			sql.AppendFormat("    {0} TIMESTAMP NOT NULL,\n", FormatColumnName(ArchiveTableArchiveDateTimeColumnName));
+			sql.AppendFormat("{0}\n", string.Join(",\n", recordDescription.PropertyDescriptions.OrderBy(propertyDescription => propertyDescription.Order).Select(propertyDescription => string.Format("  {0}", propertyDescription.GetColumnDefinition(FormatColumnName)))));
 			sql.Append("  )\n");
 
 			if (!string.IsNullOrEmpty(primaryKeyName))
 			{
-				sql.AppendFormat("  create clustered index {0} on {1} ({2})\n", primaryKeyName, tableName, string.Join(", ", recordDescription.PrimaryKeyPropertyDescriptions.OrderBy(propertyDescription => propertyDescription.PrimaryKeyAttribute.Order).Select(column => FormatColumnName(column.ColumnName))));
+				//sql.AppendFormat("  CREATE INDEX {0} ON {1} ({2});\n", primaryKeyName, tableName, string.Join(", ", recordDescription.PrimaryKeyPropertyDescriptions.OrderBy(propertyDescription => propertyDescription.PrimaryKeyAttribute.Order).Select(column => FormatColumnName(column.ColumnName))));
 			}
 
-			sql.Append("end\n");
+			if (addEndIf)
+			{
+				sql.Append("END IF\n");
+			}
 
 			ExecuteCreateArchiveTable(connection, sql.ToString());
 		}

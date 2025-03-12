@@ -33,86 +33,68 @@ namespace ISI.Extensions.Repository.Oracle.Extensions
 			switch (dbType)
 			{
 				case System.Data.DbType.Boolean:
-					{
-						return string.Format("  {0} INT {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
-					}
+					return string.Format("  {0} INT {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
 
 				case System.Data.DbType.DateTime2:
-					{
-						return string.Format("  {0} timestamp without time zone {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
-					}
+					return string.Format("  {0} TIMESTAMP {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
 
 				case System.Data.DbType.Decimal:
 				case System.Data.DbType.Double:
+				{
+					if (columnDescription.Precision.HasValue)
 					{
-						if (columnDescription.Precision.HasValue)
+						if (columnDescription.Scale.HasValue)
 						{
-							if (columnDescription.Scale.HasValue)
-							{
-								return string.Format("  {0} numeric({1}, {2}) {3}", formatColumnName(columnDescription.ColumnName), columnDescription.Precision, columnDescription.Scale, NullClause(columnDescription.Nullable));
-							}
-
-							return string.Format("  {0} numeric({1}) {2}", formatColumnName(columnDescription.ColumnName), columnDescription.Precision, NullClause(columnDescription.Nullable));
+							return string.Format("  {0} NUMBER({1}, {2}) {3}", formatColumnName(columnDescription.ColumnName), columnDescription.Precision, columnDescription.Scale, NullClause(columnDescription.Nullable));
 						}
 
-						return string.Format("  {0} numeric {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
+						return string.Format("  {0} NUMBER({1}) {2}", formatColumnName(columnDescription.ColumnName), columnDescription.Precision, NullClause(columnDescription.Nullable));
 					}
+
+					return string.Format("  {0} NUMBER {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
+				}
 
 				case System.Data.DbType.Guid:
+					if ((columnDescription.Default != null) && !columnDescription.Nullable)
 					{
-						var columnDefinition = string.Format("  {0} UUID {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
-
-						if ((columnDescription.Default != null) && !columnDescription.Nullable)
+						if (columnDescription.Default is IdentityAttribute identityAttribute)
 						{
-							if (columnDescription.Default is IdentityAttribute identityAttribute)
-							{
-								columnDefinition = string.Format("{0} default newid()", columnDefinition);
-							}
+							throw new Exception("Identity not supported");
 						}
-
-						return columnDefinition;
 					}
+					return string.Format("  {0} VARCHAR2(36) {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
 
 				case System.Data.DbType.Int32:
+					if ((columnDescription.Default != null) && !columnDescription.Nullable)
 					{
-						var columnDefinition = string.Format("  {0} int {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
-
-						if ((columnDescription.Default != null) && !columnDescription.Nullable)
+						if (columnDescription.Default is IdentityAttribute identityAttribute)
 						{
-							if (columnDescription.Default is IdentityAttribute identityAttribute)
-							{
-								columnDefinition = string.Format("{0} identity({1}, {2})", columnDefinition, identityAttribute.Seed, identityAttribute.Increment);
-							}
+							throw new Exception("Identity not supported");
 						}
-
-						return columnDefinition;
 					}
 
+					return string.Format("  {0} INT {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
+				
 				case System.Data.DbType.Int64:
+					if ((columnDescription.Default != null) && !columnDescription.Nullable)
 					{
-						var columnDefinition = string.Format("  {0} bigint {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
-
-						if ((columnDescription.Default != null) && !columnDescription.Nullable)
+						if (columnDescription.Default is IdentityAttribute identityAttribute)
 						{
-							if (columnDescription.Default is IdentityAttribute identityAttribute)
-							{
-								columnDefinition = string.Format("{0} identity({1}, {2})", columnDefinition, identityAttribute.Seed, identityAttribute.Increment);
-							}
+							throw new Exception("Identity not supported");
 						}
-
-						return columnDefinition;
 					}
+					return string.Format("  {0} LONG {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
 
 				case System.Data.DbType.String:
 				case System.Data.DbType.StringFixedLength:
+				{
+					if (columnDescription.PropertySize > 0)
 					{
-						if (columnDescription.PropertySize > 0)
-						{
-							return string.Format("  {0} varchar({1}) {2}", formatColumnName(columnDescription.ColumnName), columnDescription.PropertySize, NullClause(columnDescription.Nullable));
-						}
-
-						return string.Format("  {0} text {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
+						return string.Format("  {0} VARCHAR2({1}) {2}", formatColumnName(columnDescription.ColumnName), columnDescription.PropertySize, NullClause(columnDescription.Nullable));
 					}
+
+					return string.Format("  {0} NCLOB {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
+				}
 
 				default:
 					throw new ArgumentOutOfRangeException();

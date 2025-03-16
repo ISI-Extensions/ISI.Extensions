@@ -31,6 +31,8 @@ namespace ISI.Extensions.Nuget
 	{
 		public DTOs.RestoreNugetPackagesResponse RestoreNugetPackages(DTOs.IRestoreNugetPackagesRequest request)
 		{
+			var logger = new AddToLogLogger(request.AddToLog, Logger);
+
 			var response = new DTOs.RestoreNugetPackagesResponse();
 
 			var usePackagesDirectory = (request as DTOs.RestoreNugetPackagesRequest)?.UsePackagesDirectory ?? (request as DTOs.RestoreNugetPackagesUsingSolutionDetailsRequest)?.SolutionDetails?.UsePackagesDirectory ?? false;
@@ -88,6 +90,8 @@ namespace ISI.Extensions.Nuget
 					throw new ArgumentOutOfRangeException(nameof(request));
 			}
 
+			logger.LogInformation($"Solution: {solutionFullName}");
+
 			var nugetExeFullName = GetNugetExeFullName(new()).NugetExeFullName;
 
 			response.Success = targets.Any();
@@ -102,7 +106,7 @@ namespace ISI.Extensions.Nuget
 
 					response.Success &= !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 					{
-						Logger = new AddToLogLogger(request.AddToLog, Logger),
+						Logger = logger,
 						ProcessExeFullName = "dotnet",
 						Arguments = arguments,
 					}).Errored;
@@ -126,7 +130,7 @@ namespace ISI.Extensions.Nuget
 
 					response.Success &= !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 					{
-						Logger = new AddToLogLogger(request.AddToLog, Logger),
+						Logger = logger,
 						ProcessExeFullName = nugetExeFullName,
 						Arguments = arguments,
 					}).Errored;

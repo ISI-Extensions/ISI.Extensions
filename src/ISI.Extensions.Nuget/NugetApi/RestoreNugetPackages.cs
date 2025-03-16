@@ -91,7 +91,20 @@ namespace ISI.Extensions.Nuget
 
 			foreach (var target in targets)
 			{
-				if (!target.EndsWith(ISI.Extensions.VisualStudio.Solution.SolutionExtensionX, StringComparison.InvariantCultureIgnoreCase))
+				if (target.EndsWith(ISI.Extensions.VisualStudio.Solution.SolutionExtensionX, StringComparison.InvariantCultureIgnoreCase))
+				{
+					var arguments = new List<string>();
+					arguments.Add("restore");
+					arguments.Add($"\"{System.IO.Path.GetDirectoryName(target)}\"");
+
+					response.Success &= !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+					{
+						Logger = new AddToLogLogger(request.AddToLog, Logger),
+						ProcessExeFullName = "dotnet",
+						Arguments = arguments,
+					}).Errored;
+				}
+				else
 				{
 					var arguments = new List<string>();
 					arguments.Add("restore");

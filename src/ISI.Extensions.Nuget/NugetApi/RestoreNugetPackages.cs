@@ -35,6 +35,7 @@ namespace ISI.Extensions.Nuget
 
 			var usePackagesDirectory = (request as DTOs.RestoreNugetPackagesRequest)?.UsePackagesDirectory ?? (request as DTOs.RestoreNugetPackagesUsingSolutionDetailsRequest)?.SolutionDetails?.UsePackagesDirectory ?? false;
 
+			var solutionFullName = (string)null;
 			var solutionDirectory = (string)null;
 			var targets = new List<string>();
 
@@ -71,12 +72,14 @@ namespace ISI.Extensions.Nuget
 							}
 						}
 
+						solutionFullName = restoreNugetPackagesRequest.Solution;
 						solutionDirectory = System.IO.Path.GetDirectoryName(restoreNugetPackagesRequest.Solution);
 						targets.Add(restoreNugetPackagesRequest.Solution);
 					}
 					break;
 
 				case DTOs.RestoreNugetPackagesUsingSolutionDetailsRequest restoreNugetPackagesUsingSolutionDetailsRequest:
+					solutionFullName = restoreNugetPackagesUsingSolutionDetailsRequest.SolutionDetails.SolutionFullName;
 					solutionDirectory = restoreNugetPackagesUsingSolutionDetailsRequest.SolutionDetails.SolutionDirectory;
 					targets.AddRange(restoreNugetPackagesUsingSolutionDetailsRequest.SolutionDetails.ProjectDetailsSet.Select(projectDetails => projectDetails.ProjectFullName));
 					break;
@@ -91,7 +94,7 @@ namespace ISI.Extensions.Nuget
 
 			foreach (var target in targets)
 			{
-				if (target.EndsWith(ISI.Extensions.VisualStudio.Solution.SolutionExtensionX, StringComparison.InvariantCultureIgnoreCase))
+				if (solutionFullName.EndsWith(ISI.Extensions.VisualStudio.Solution.SolutionExtensionX, StringComparison.InvariantCultureIgnoreCase))
 				{
 					var arguments = new List<string>();
 					arguments.Add("restore");

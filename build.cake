@@ -13,7 +13,7 @@ var settings = GetSettings(settingsFullName);
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
 
-var solutionPath = File("./src/ISI.Extensions.sln");
+var solutionPath = File("./src/ISI.Extensions.slnx");
 var solution = ParseSolution(solutionPath);
 
 var assemblyVersionFile = File("./src/ISI.Extensions.Version.cs");
@@ -61,29 +61,23 @@ Task("NugetPackageRestore")
 	.Does(() =>
 	{
 		Information("Restoring Nuget Packages ...");
-		NuGetRestore(solutionPath);
+		using(GetNugetLock())
+		{
+			RestoreNugetPackages(solutionFile);
+		}
 	});
 
 Task("Build")
 	.IsDependentOn("NugetPackageRestore")
 	.Does(() => 
 	{
-		CreateAssemblyInfo(assemblyVersionFile, new AssemblyInfoSettings()
+		using(SetAssemblyVersionFiles(assemblyVersions))
 		{
-			Version = assemblyVersion,
-		});
-
-		MSBuild(solutionPath, configurator => configurator
-			.SetConfiguration(configuration)
-			.SetVerbosity(Verbosity.Quiet)
-			.SetMSBuildPlatform(MSBuildPlatform.Automatic)
-			.SetPlatformTarget(PlatformTarget.MSIL)
-			.WithTarget("Rebuild"));
-
-		CreateAssemblyInfo(assemblyVersionFile, new AssemblyInfoSettings()
-		{
-			Version = GetAssemblyVersion(assemblyVersion, "*"),
-		});
+			DotNetBuild(solutionFile, new DotNetBuildSettings()
+			{
+				Configuration = configuration,
+			});
+		}
 	});
 
 Task("Sign")

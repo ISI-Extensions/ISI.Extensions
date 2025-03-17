@@ -43,6 +43,22 @@ namespace ISI.Extensions.VisualStudio
 
 			Configuration = (parsedBuildConfiguration.Length > 0 ? parsedBuildConfiguration[0] : string.Empty);
 
+			if (string.Equals(Configuration, "Any CPU", StringComparison.InvariantCultureIgnoreCase))
+			{
+				Configuration = string.Empty;
+				MSBuildPlatform = MSBuildPlatform.Automatic;
+			}
+			else if (string.Equals(Configuration, "x64", StringComparison.InvariantCultureIgnoreCase))
+			{
+				Configuration = string.Empty;
+				MSBuildPlatform = MSBuildPlatform.x64;
+			}
+			else if (string.Equals(Configuration, "x86", StringComparison.InvariantCultureIgnoreCase))
+			{
+				Configuration = string.Empty;
+				MSBuildPlatform = MSBuildPlatform.x86;
+			}
+
 			if (parsedBuildConfiguration.Length > 1)
 			{
 				if (string.Equals(parsedBuildConfiguration[1], "x64", StringComparison.InvariantCultureIgnoreCase))

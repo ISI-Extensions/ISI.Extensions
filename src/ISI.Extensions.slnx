@@ -1,0 +1,140 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Folder Name="/.build/">
+    <File Path="../build.cake" />
+    <File Path="../jenkins/ISI.Extensions.Build.jenkinsConfig" />
+  </Folder>
+  <Project Path="ISI.Extensions.Acme/ISI.Extensions.Acme.csproj" />
+  <Project Path="ISI.Extensions.Alpine/ISI.Extensions.Alpine.csproj" />
+  <Project Path="ISI.Extensions.Ant/ISI.Extensions.Ant.csproj" />
+  <Project Path="ISI.Extensions.Ascii/ISI.Extensions.Ascii.csproj" />
+  <Project Path="ISI.Extensions.AspNetCore.Tests/ISI.Extensions.AspNetCore.Tests.csproj" />
+  <Project Path="ISI.Extensions.AspNetCore/ISI.Extensions.AspNetCore.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="ISI.Extensions.Aspose.Cells/ISI.Extensions.Aspose.Cells.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="ISI.Extensions.Aspose.Pdf/ISI.Extensions.Aspose.Pdf.csproj" />
+  <Project Path="ISI.Extensions.Aspose.Slides/ISI.Extensions.Aspose.Slides.csproj" />
+  <Project Path="ISI.Extensions.Aspose.Words/ISI.Extensions.Aspose.Words.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="ISI.Extensions.Aspose.Zip/ISI.Extensions.Aspose.Zip.csproj" />
+  <Project Path="ISI.Extensions.Aspose/ISI.Extensions.Aspose.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="ISI.Extensions.Asterisk/ISI.Extensions.Asterisk.csproj" />
+  <Project Path="ISI.Extensions.Azure/ISI.Extensions.Azure.csproj" />
+  <Project Path="ISI.Extensions.BitBucket/ISI.Extensions.BitBucket.csproj" />
+  <Project Path="ISI.Extensions.Caching.MessageBus/ISI.Extensions.Caching.MessageBus.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="ISI.Extensions.Caching.Redis/ISI.Extensions.Caching.Redis.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="ISI.Extensions.Cake/ISI.Extensions.Cake.csproj" />
+  <Project Path="ISI.Extensions.DependencyInjection.Iunq/ISI.Extensions.DependencyInjection.Iunq.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="ISI.Extensions.Docker/ISI.Extensions.Docker.csproj" />
+  <Project Path="ISI.Extensions.Ebcdic/ISI.Extensions.Ebcdic.csproj" />
+  <Project Path="ISI.Extensions.Git/ISI.Extensions.Git.csproj" />
+  <Project Path="ISI.Extensions.GitHub/ISI.Extensions.GitHub.csproj" />
+  <Project Path="ISI.Extensions.GoDaddy/ISI.Extensions.GoDaddy.csproj" />
+  <Project Path="ISI.Extensions.GoDrive/ISI.Extensions.GoDrive.csproj" />
+  <Project Path="ISI.Extensions.Ipify/ISI.Extensions.Ipify.csproj" />
+  <Project Path="ISI.Extensions.Jenkins.Forms.Tests/ISI.Extensions.Jenkins.Forms.Tests.csproj" />
+  <Project Path="ISI.Extensions.Jenkins.Forms/ISI.Extensions.Jenkins.Forms.csproj" />
+  <Project Path="ISI.Extensions.Jenkins/ISI.Extensions.Jenkins.csproj" />
+  <Project Path="ISI.Extensions.Jira/ISI.Extensions.Jira.csproj" />
+  <Project Path="ISI.Extensions.JsonJwt/ISI.Extensions.JsonJwt.csproj" />
+  <Project Path="ISI.Extensions.JsonSerialization.Newtonsoft/ISI.Extensions.JsonSerialization.Newtonsoft.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="ISI.Extensions.Keycloak/ISI.Extensions.Keycloak.csproj" />
+  <Project Path="ISI.Extensions.Locks.Redis/ISI.Extensions.Locks.Redis.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="ISI.Extensions.Mandrill/ISI.Extensions.Mandrill.csproj" />
+  <Project Path="ISI.Extensions.MessageBus.AzureServiceBus/ISI.Extensions.MessageBus.AzureServiceBus.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="ISI.Extensions.MessageBus.MassTransit.InMemory/ISI.Extensions.MessageBus.MassTransit.InMemory.csproj" />
+  <Project Path="ISI.Extensions.MessageBus.MassTransit.RabbitMQ/ISI.Extensions.MessageBus.MassTransit.RabbitMQ.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="ISI.Extensions.MessageBus.MassTransit/ISI.Extensions.MessageBus.MassTransit.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="ISI.Extensions.MessageBus.Redis/ISI.Extensions.MessageBus.Redis.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="ISI.Extensions.Monitor/ISI.Extensions.Monitor.csproj" />
+  <Project Path="ISI.Extensions.NameCheap/ISI.Extensions.NameCheap.csproj" />
+  <Project Path="ISI.Extensions.Ngrok/ISI.Extensions.Ngrok.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="ISI.Extensions.Nuget.Forms.Tests/ISI.Extensions.Nuget.Forms.Tests.csproj" />
+  <Project Path="ISI.Extensions.Nuget.Forms/ISI.Extensions.Nuget.Forms.csproj" />
+  <Project Path="ISI.Extensions.Nuget/ISI.Extensions.Nuget.csproj" />
+  <Project Path="ISI.Extensions.OpenCNAM/ISI.Extensions.OpenCNAM.csproj" />
+  <Project Path="ISI.Extensions.Oracle/ISI.Extensions.Oracle.csproj" />
+  <Project Path="ISI.Extensions.PfSense/ISI.Extensions.PfSense.csproj" />
+  <Project Path="ISI.Extensions.PostgreSQL/ISI.Extensions.PostgreSQL.csproj" />
+  <Project Path="ISI.Extensions.Razor/ISI.Extensions.Razor.csproj" />
+  <Project Path="ISI.Extensions.Repository.Cassandra/ISI.Extensions.Repository.Cassandra.csproj" />
+  <Project Path="ISI.Extensions.Repository.Cosmos/ISI.Extensions.Repository.Cosmos.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="ISI.Extensions.Repository.Oracle/ISI.Extensions.Repository.Oracle.csproj" />
+  <Project Path="ISI.Extensions.Repository.PostgreSQL/ISI.Extensions.Repository.PostgreSQL.csproj" />
+  <Project Path="ISI.Extensions.Repository.RavenDb/ISI.Extensions.Repository.RavenDb.csproj" />
+  <Project Path="ISI.Extensions.Repository.SqlServer/ISI.Extensions.Repository.SqlServer.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="ISI.Extensions.S3/ISI.Extensions.S3.csproj" />
+  <Project Path="ISI.Extensions.Sbom/ISI.Extensions.Sbom.csproj" />
+  <Project Path="ISI.Extensions.Scm/ISI.Extensions.Scm.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="ISI.Extensions.ScmManager/ISI.Extensions.ScmManager.csproj" />
+  <Project Path="ISI.Extensions.Security.ActiveDirectory/ISI.Extensions.Security.ActiveDirectory.csproj" />
+  <Project Path="ISI.Extensions.Security.Ldap/ISI.Extensions.Security.Ldap.csproj" />
+  <Project Path="ISI.Extensions.Security/ISI.Extensions.Security.csproj" />
+  <Project Path="ISI.Extensions.Serilog/ISI.Extensions.Serilog.csproj" />
+  <Project Path="ISI.Extensions.SharpCompress/ISI.Extensions.SharpCompress.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="ISI.Extensions.Slack/ISI.Extensions.Slack.csproj" />
+  <Project Path="ISI.Extensions.SqlServer/ISI.Extensions.SqlServer.csproj" />
+  <Project Path="ISI.Extensions.SshNet/ISI.Extensions.SshNet.csproj" />
+  <Project Path="ISI.Extensions.Svn/ISI.Extensions.Svn.csproj" />
+  <Project Path="ISI.Extensions.Tailscale/ISI.Extensions.Tailscale.csproj" />
+  <Project Path="ISI.Extensions.Tests/ISI.Extensions.Tests.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="ISI.Extensions.Topshelf/ISI.Extensions.Topshelf.csproj" />
+  <Project Path="ISI.Extensions.TrueNAS/ISI.Extensions.TrueNAS.csproj" />
+  <Project Path="ISI.Extensions.Twilio/ISI.Extensions.Twilio.csproj" />
+  <Project Path="ISI.Extensions.VisualStudio.Forms.Tests/ISI.Extensions.VisualStudio.Forms.Tests.csproj" />
+  <Project Path="ISI.Extensions.VisualStudio.Forms/ISI.Extensions.VisualStudio.Forms.csproj" />
+  <Project Path="ISI.Extensions.VisualStudio/ISI.Extensions.VisualStudio.csproj" />
+  <Project Path="ISI.Extensions.VisualStudioCode.Forms.Tests/ISI.Extensions.VisualStudioCode.Forms.Tests.csproj" />
+  <Project Path="ISI.Extensions.VisualStudioCode.Forms/ISI.Extensions.VisualStudioCode.Forms.csproj" />
+  <Project Path="ISI.Extensions.VisualStudioCode/ISI.Extensions.VisualStudioCode.csproj" />
+  <Project Path="ISI.Extensions.WinForms/ISI.Extensions.WinForms.csproj" />
+  <Project Path="ISI.Extensions/ISI.Extensions.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="ISI.Platforms.AspNetCore/ISI.Platforms.AspNetCore.csproj" />
+  <Project Path="ISI.Platforms.Elk/ISI.Platforms.Elk.csproj" />
+  <Project Path="ISI.Platforms.Serilog/ISI.Platforms.Serilog.csproj" />
+  <Project Path="ISI.Platforms.ServiceApplication.Services.Test/ISI.Platforms.ServiceApplication.Services.Test.csproj" />
+  <Project Path="ISI.Platforms.ServiceApplication.Test/ISI.Platforms.ServiceApplication.Test.csproj" />
+  <Project Path="ISI.Platforms.ServiceApplication/ISI.Platforms.ServiceApplication.csproj" />
+  <Project Path="ISI.Platforms/ISI.Platforms.csproj" />
+</Solution>

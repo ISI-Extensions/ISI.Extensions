@@ -47,8 +47,8 @@
   <Project Path="ISI.Extensions.GoDaddy/ISI.Extensions.GoDaddy.csproj" />
   <Project Path="ISI.Extensions.GoDrive/ISI.Extensions.GoDrive.csproj" />
   <Project Path="ISI.Extensions.Ipify/ISI.Extensions.Ipify.csproj" />
-  <Project Path="ISI.Extensions.Jenkins.Forms.Tests/ISI.Extensions.Jenkins.Forms.Tests.csproj" />
-  <Project Path="ISI.Extensions.Jenkins.Forms/ISI.Extensions.Jenkins.Forms.csproj" />
+  <Project Path="ISI.Extensions.Jenkins.Forms.Tests/ISI.Extensions.Jenkins.Forms.Tests.csproj" Id="e18addec-07e6-473d-9a2f-aa80792147c2" />
+  <Project Path="ISI.Extensions.Jenkins.Forms/ISI.Extensions.Jenkins.Forms.csproj" Id="701672a4-a4c1-4560-ae06-cd2ae1ad472b" />
   <Project Path="ISI.Extensions.Jenkins/ISI.Extensions.Jenkins.csproj" />
   <Project Path="ISI.Extensions.Jira/ISI.Extensions.Jira.csproj" />
   <Project Path="ISI.Extensions.JsonJwt/ISI.Extensions.JsonJwt.csproj" />
@@ -78,8 +78,8 @@
   <Project Path="ISI.Extensions.Ngrok/ISI.Extensions.Ngrok.csproj">
     <Platform Solution="*|x64" Project="x64" />
   </Project>
-  <Project Path="ISI.Extensions.Nuget.Forms.Tests/ISI.Extensions.Nuget.Forms.Tests.csproj" />
-  <Project Path="ISI.Extensions.Nuget.Forms/ISI.Extensions.Nuget.Forms.csproj" />
+  <Project Path="ISI.Extensions.Nuget.Forms.Tests/ISI.Extensions.Nuget.Forms.Tests.csproj" Id="290a4ffd-9390-4200-b16a-7da8029663a3" />
+  <Project Path="ISI.Extensions.Nuget.Forms/ISI.Extensions.Nuget.Forms.csproj" Id="83507687-a765-42d3-aaa1-42f8d3a5538a" />
   <Project Path="ISI.Extensions.Nuget/ISI.Extensions.Nuget.csproj" />
   <Project Path="ISI.Extensions.OpenCNAM/ISI.Extensions.OpenCNAM.csproj" />
   <Project Path="ISI.Extensions.Oracle/ISI.Extensions.Oracle.csproj" />
@@ -120,13 +120,13 @@
   <Project Path="ISI.Extensions.Topshelf/ISI.Extensions.Topshelf.csproj" />
   <Project Path="ISI.Extensions.TrueNAS/ISI.Extensions.TrueNAS.csproj" />
   <Project Path="ISI.Extensions.Twilio/ISI.Extensions.Twilio.csproj" />
-  <Project Path="ISI.Extensions.VisualStudio.Forms.Tests/ISI.Extensions.VisualStudio.Forms.Tests.csproj" />
-  <Project Path="ISI.Extensions.VisualStudio.Forms/ISI.Extensions.VisualStudio.Forms.csproj" />
+  <Project Path="ISI.Extensions.VisualStudio.Forms.Tests/ISI.Extensions.VisualStudio.Forms.Tests.csproj" Id="7286dcf9-526f-4ea3-b982-86a4b9e94850" />
+  <Project Path="ISI.Extensions.VisualStudio.Forms/ISI.Extensions.VisualStudio.Forms.csproj" Id="adec366d-0af8-4f00-b16a-33121f8d7232" />
   <Project Path="ISI.Extensions.VisualStudio/ISI.Extensions.VisualStudio.csproj" />
-  <Project Path="ISI.Extensions.VisualStudioCode.Forms.Tests/ISI.Extensions.VisualStudioCode.Forms.Tests.csproj" />
-  <Project Path="ISI.Extensions.VisualStudioCode.Forms/ISI.Extensions.VisualStudioCode.Forms.csproj" />
+  <Project Path="ISI.Extensions.VisualStudioCode.Forms.Tests/ISI.Extensions.VisualStudioCode.Forms.Tests.csproj" Id="deaf621e-f656-43df-8274-27ed7364f0f2" />
+  <Project Path="ISI.Extensions.VisualStudioCode.Forms/ISI.Extensions.VisualStudioCode.Forms.csproj" Id="311c3bef-399a-436d-a6b9-07ce8b669a0a" />
   <Project Path="ISI.Extensions.VisualStudioCode/ISI.Extensions.VisualStudioCode.csproj" />
-  <Project Path="ISI.Extensions.WinForms/ISI.Extensions.WinForms.csproj" />
+  <Project Path="ISI.Extensions.WinForms/ISI.Extensions.WinForms.csproj" Id="d2964752-7094-43c6-89f4-f1d4417474c7" />
   <Project Path="ISI.Extensions/ISI.Extensions.csproj">
     <Platform Solution="*|x64" Project="x64" />
   </Project>

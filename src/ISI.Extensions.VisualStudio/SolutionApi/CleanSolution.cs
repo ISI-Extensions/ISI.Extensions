@@ -68,28 +68,14 @@ namespace ISI.Extensions.VisualStudio
 							directoryInfo.Delete(true);
 							maxRetries = -1;
 						}
-						catch (System.IO.IOException exception)
-						{
-							if (maxRetries-- < 0)
-							{
-								Console.WriteLine(exception);
-								throw;
-							}
-							System.Threading.Thread.Sleep(millisecondsDelay);
-						}
-						catch (UnauthorizedAccessException exception)
-						{
-							if (maxRetries-- < 0)
-							{
-								Console.WriteLine(exception);
-								throw;
-							}
-							System.Threading.Thread.Sleep(millisecondsDelay);
-						}
 						catch (Exception exception)
 						{
-							Console.WriteLine(exception);
-							throw;
+							if (maxRetries-- < 0)
+							{
+								Console.WriteLine(exception);
+								throw;
+							}
+							System.Threading.Thread.Sleep(millisecondsDelay);
 						}
 					}
 				}

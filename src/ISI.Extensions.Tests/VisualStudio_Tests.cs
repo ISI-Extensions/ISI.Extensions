@@ -160,7 +160,7 @@ namespace ISI.Extensions.Tests
 			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
 
 			var solutionFullNames = new List<string>();
-			solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.AcmeAgent.WindowsService\");
+			solutionFullNames.Add(@"F:\ISI\Clients\West River Systems\WRS.Diagnostics.Interface.Field.RestApi.ServiceApplication\");
 
 			foreach (var solutionFullName in solutionFullNames)
 			{

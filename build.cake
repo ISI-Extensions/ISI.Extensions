@@ -80,8 +80,6 @@ Task("Build")
 			MSBuild(solutionFile, configurator => configurator
 			.SetConfiguration(configuration)
 			.SetVerbosity(Verbosity.Quiet)
-			//.SetMSBuildPlatform(MSBuildPlatform.Automatic)
-			//.SetPlatformTarget(PlatformTarget.MSIL)
 			.WithTarget("Rebuild"));
 		}
 	});

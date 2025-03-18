@@ -13,16 +13,20 @@ var settings = GetSettings(settingsFullName);
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
 
-var solutionPath = File("./src/ISI.Extensions.slnx");
-var solution = ParseSolution(solutionPath);
-
-var assemblyVersionFile = File("./src/ISI.Extensions.Version.cs");
+var solutionFile = File("./src/ISI.Extensions.slnx");
+var solution = ParseSolution(solutionFile);
+var rootAssemblyVersionKey = "ISI.Extensions";
 
 var buildDateTime = DateTime.UtcNow;
 var buildDateTimeStamp = GetDateTimeStamp(buildDateTime);
 var buildRevision = GetBuildRevision(buildDateTime);
-var assemblyVersion = GetAssemblyVersion(ParseAssemblyInfo(assemblyVersionFile).AssemblyVersion, buildRevision);
-Information("AssemblyVersion: {0}", assemblyVersion);
+
+var assemblyVersions = GetAssemblyVersionFiles(rootAssemblyVersionKey, buildRevision);
+var assemblyVersion = assemblyVersions[rootAssemblyVersionKey].AssemblyVersion;
+
+var buildDateTimeStampVersion = new ISI.Extensions.Scm.DateTimeStampVersion(buildDateTimeStamp, assemblyVersions[rootAssemblyVersionKey].AssemblyVersion);
+
+Information("BuildDateTimeStampVersion: {0}", buildDateTimeStampVersion);
 
 var nugetPackOutputDirectory = Argument("NugetPackOutputDirectory", System.IO.Path.GetFullPath("./Nuget"));
 
@@ -73,10 +77,12 @@ Task("Build")
 	{
 		using(SetAssemblyVersionFiles(assemblyVersions))
 		{
-			DotNetBuild(solutionFile, new DotNetBuildSettings()
-			{
-				Configuration = configuration,
-			});
+			MSBuild(solutionFile, configurator => configurator
+			.SetConfiguration(configuration)
+			.SetVerbosity(Verbosity.Quiet)
+			//.SetMSBuildPlatform(MSBuildPlatform.Automatic)
+			//.SetPlatformTarget(PlatformTarget.MSIL)
+			.WithTarget("Rebuild"));
 		}
 	});
 
@@ -211,10 +217,7 @@ Task("Default")
 		Information("No target provided. Starting default task");
 	});
 
-using(GetNugetLock())
+using(GetSolutionLock())
 {
-	using(GetSolutionLock())
-	{
-		RunTarget(target);
-	}
+	RunTarget(target);
 }

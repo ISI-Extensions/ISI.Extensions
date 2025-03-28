@@ -33,7 +33,13 @@ namespace ISI.Platforms.Elk
 		[ISI.Extensions.EnvironmentConfigurationVariableName("ELK_PASSWORD")]
 		public string Password { get; set; }
 
+		[ISI.Extensions.EnvironmentConfigurationVariableName("ELK_APIKEY_ID")]
+		public string ApiKeyId { get; set; }
+
+		[ISI.Extensions.EnvironmentConfigurationVariableName("ELK_APIKEY")]
+		public string ApiKey { get; set; }
+
 		[ISI.Extensions.EnvironmentConfigurationVariableName("ELK_INDEX_FORMAT")]
-		public string IndexFormat { get; set; } = "custom-index-{0:yyyy.MM}";
+		public string IndexFormat { get; set; } = "serilog-index-{0:yyyy.MM}";
 	}
 }

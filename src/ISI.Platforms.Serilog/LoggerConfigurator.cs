@@ -119,7 +119,20 @@ namespace ISI.Platforms.Serilog
 					AutoRegisterTemplate = true,
 					AutoRegisterTemplateVersion = global::Serilog.Sinks.Elasticsearch.AutoRegisterTemplateVersion.ESv6,
 					IndexFormat = elkConfiguration.IndexFormat,
-					ModifyConnectionSettings = connectionConfiguration => connectionConfiguration.BasicAuthentication(elkConfiguration.UserName, elkConfiguration.Password),
+					ModifyConnectionSettings = connectionConfiguration =>
+					{
+						if(!string.IsNullOrWhiteSpace(elkConfiguration.Password))
+						{
+							connectionConfiguration.BasicAuthentication(elkConfiguration.UserName, elkConfiguration.Password);
+						}
+
+						if(!string.IsNullOrWhiteSpace(elkConfiguration.ApiKey))
+						{
+							connectionConfiguration.ApiKeyAuthentication(elkConfiguration.ApiKeyId, elkConfiguration.ApiKey);
+						}
+
+						return connectionConfiguration;
+					},
 				});
 			}
 

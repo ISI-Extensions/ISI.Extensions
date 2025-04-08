@@ -13,8 +13,8 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Update="NETStandard.Library" Version="2.0.3" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.3" />
-		<PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.7.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.4" />
+		<PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.8.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />

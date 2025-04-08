@@ -11,8 +11,8 @@
 		<None Include="..\ISI.Extensions.licenseheader" Link="ISI.Extensions.licenseheader" />
 	</ItemGroup>
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.3" />
-	  <PackageReference Include="System.Formats.Asn1" Version="9.0.3" />
+	  <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.4" />
+	  <PackageReference Include="System.Formats.Asn1" Version="9.0.4" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\ISI.Extensions.JsonJwt\ISI.Extensions.JsonJwt.csproj" />

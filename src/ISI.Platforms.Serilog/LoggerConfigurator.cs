@@ -117,16 +117,16 @@ namespace ISI.Platforms.Serilog
 				loggerConfiguration.WriteTo.Elasticsearch(new global::Serilog.Sinks.Elasticsearch.ElasticsearchSinkOptions(new Uri(elkConfiguration.NodeUrl))
 				{
 					AutoRegisterTemplate = true,
-					AutoRegisterTemplateVersion = global::Serilog.Sinks.Elasticsearch.AutoRegisterTemplateVersion.ESv6,
+					AutoRegisterTemplateVersion = global::Serilog.Sinks.Elasticsearch.AutoRegisterTemplateVersion.ESv8,
 					IndexFormat = elkConfiguration.IndexFormat,
 					ModifyConnectionSettings = connectionConfiguration =>
 					{
-						if(!string.IsNullOrWhiteSpace(elkConfiguration.Password))
+						if (!string.IsNullOrWhiteSpace(elkConfiguration.Password))
 						{
 							connectionConfiguration.BasicAuthentication(elkConfiguration.UserName, elkConfiguration.Password);
 						}
 
-						if(!string.IsNullOrWhiteSpace(elkConfiguration.ApiKey))
+						if (!string.IsNullOrWhiteSpace(elkConfiguration.ApiKey))
 						{
 							connectionConfiguration.ApiKeyAuthentication(elkConfiguration.ApiKeyId, elkConfiguration.ApiKey);
 						}

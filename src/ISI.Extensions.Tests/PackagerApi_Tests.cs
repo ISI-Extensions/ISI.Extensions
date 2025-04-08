@@ -41,7 +41,6 @@ namespace ISI.Extensions.Tests
 				.AddSingleton<Microsoft.Extensions.Configuration.IConfiguration>(configurationRoot);
 
 			services.AddAllConfigurations(configurationRoot)
-
 				//.AddSingleton<Microsoft.Extensions.Logging.ILoggerFactory, Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory>()
 				.AddSingleton<Microsoft.Extensions.Logging.ILoggerFactory, Microsoft.Extensions.Logging.LoggerFactory>()
 				.AddLogging(builder => builder
@@ -62,6 +61,15 @@ namespace ISI.Extensions.Tests
 			var serviceProvider = services.BuildServiceProvider<ISI.Extensions.DependencyInjection.Iunq.ServiceProviderBuilder>(configurationRoot);
 
 			serviceProvider.SetServiceLocator();
+		}
+
+		[Test]
+		public void jan1st2000_Test()
+		{
+			var jan1st2000 = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+
+			var xxx = jan1st2000.AddDays(8447);
+
 		}
 
 		[Test]

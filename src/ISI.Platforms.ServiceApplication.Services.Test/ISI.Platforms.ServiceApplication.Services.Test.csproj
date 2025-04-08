@@ -11,7 +11,7 @@
     <None Include="..\ISI.Extensions.licenseheader" Link="ISI.Extensions.licenseheader" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />

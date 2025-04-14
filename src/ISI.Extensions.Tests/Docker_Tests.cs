@@ -97,6 +97,18 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void GetContainerStatus_Test()
+		{
+			var dockerApi = ServiceProvider.GetService<ISI.Extensions.Docker.DockerApi>();
+
+			var xxx = dockerApi.GetContainerStatus(new()
+			{
+				Context = "isinydockerelk01",
+				Container = "elk-stack-es01-1",
+			});
+		}
+
+		[Test]
 		public void ListContexts_Test()
 		{
 			var dockerApi = ServiceProvider.GetService<ISI.Extensions.Docker.DockerApi>();

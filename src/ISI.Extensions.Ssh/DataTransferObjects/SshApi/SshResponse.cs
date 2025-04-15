@@ -20,12 +20,11 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
+namespace ISI.Extensions.Ssh.DataTransferObjects.SshApi
 {
-	public class GetContainerStatusResponse
+	public class SshResponse
 	{
-		public string Status { get; set; }
-
+		public string Output { get; set; }
 		public bool Errored { get; set; }
 	}
 }

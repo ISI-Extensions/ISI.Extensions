@@ -19,13 +19,37 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Ssh.DataTransferObjects.SshApi;
 
-namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
+namespace ISI.Extensions.Ssh
 {
-	public class GetContainerStatusResponse
+	public partial class SshApi
 	{
-		public string Status { get; set; }
+		public DTOs.ScpResponse Scp(DTOs.ScpRequest request)
+		{
+			var logger = new AddToLogLogger(request.AddToLog, Logger);
 
-		public bool Errored { get; set; }
+			var response = new DTOs.ScpResponse();
+			
+			if (!string.IsNullOrWhiteSpace(request.Source) && !string.IsNullOrWhiteSpace(request.Target))
+			{
+				var arguments = new List<string>();
+				arguments.Add(request.Source);
+				arguments.Add(request.Target);
+
+				var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				{
+					Logger = logger,
+					ProcessExeFullName = "scp",
+					Arguments = arguments.ToArray(),
+				});
+
+				response.Output = waitForProcessResponse.Output;
+
+				response.Errored = waitForProcessResponse.Errored;
+			}
+
+			return response;
+		}
 	}
 }

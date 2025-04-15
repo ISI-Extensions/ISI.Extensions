@@ -111,6 +111,7 @@
   </Project>
   <Project Path="ISI.Extensions.Slack/ISI.Extensions.Slack.csproj" />
   <Project Path="ISI.Extensions.SqlServer/ISI.Extensions.SqlServer.csproj" />
+  <Project Path="ISI.Extensions.Ssh/ISI.Extensions.Ssh.csproj" Id="c24346e1-7b61-4279-bc76-f5099906ece7" />
   <Project Path="ISI.Extensions.SshNet/ISI.Extensions.SshNet.csproj" />
   <Project Path="ISI.Extensions.Svn/ISI.Extensions.Svn.csproj" />
   <Project Path="ISI.Extensions.Tailscale/ISI.Extensions.Tailscale.csproj" />

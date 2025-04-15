@@ -34,6 +34,10 @@ namespace ISI.Extensions.Ssh
 			if (!string.IsNullOrWhiteSpace(request.Source) && !string.IsNullOrWhiteSpace(request.Target))
 			{
 				var arguments = new List<string>();
+				if (request.Recursive)
+				{
+					arguments.Add("-r");
+				}
 				arguments.Add(request.Source);
 				arguments.Add(request.Target);
 

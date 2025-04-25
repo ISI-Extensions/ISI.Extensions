@@ -21,22 +21,34 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.AspNetCore.Extensions
 {
+	public delegate string ModifyApplicationName(string applicationName);
 	public static partial class HtmlHelpers
 	{
-		public static Microsoft.AspNetCore.Html.IHtmlContent GetApplicationName(this Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper htmlHelper)
+		public static Microsoft.AspNetCore.Html.IHtmlContent GetApplicationName(this Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper htmlHelper, ModifyApplicationName modifyApplicationName = null)
 		{
 			var executingAssembly = System.Reflection.Assembly.GetEntryAssembly();
 
 			var applicationName = executingAssembly.FullName.Split(new[] { ',' }).First();
 
+			if (modifyApplicationName != null)
+			{
+				applicationName = modifyApplicationName(applicationName);
+			}
+
 			return new Microsoft.AspNetCore.Html.HtmlString(applicationName);
 		}
 
-		public static Microsoft.AspNetCore.Html.IHtmlContent GetApplicationDisplayName(this Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper htmlHelper)
+		public delegate string ModifyApplicationDisplayName(string applicationDisplayName);
+		public static Microsoft.AspNetCore.Html.IHtmlContent GetApplicationDisplayName(this Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper htmlHelper, ModifyApplicationDisplayName modifyApplicationDisplayName = null)
 		{
 			var executingAssembly = System.Reflection.Assembly.GetEntryAssembly();
 
 			var applicationDisplayName = executingAssembly.FullName.Split(new[] { ',' }).First().TrimEnd(".ServiceApplication", ".WindowsService");
+
+			if (modifyApplicationDisplayName != null)
+			{
+				applicationDisplayName = modifyApplicationDisplayName(applicationDisplayName);
+			}
 
 			return new Microsoft.AspNetCore.Html.HtmlString(applicationDisplayName);
 		}

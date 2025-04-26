@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2025, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,29 +18,62 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using ISI.Extensions.JsonJwt.Extensions;
+using ISI.Extensions.JsonSerialization.Extensions;
 using DTOs = ISI.Extensions.Acme.DataTransferObjects.AcmeApi;
 
 namespace ISI.Extensions.Acme
 {
-	public interface IAcmeApi
+	public partial class AcmeApi
 	{
-		DTOs.CreateNewAccountResponse CreateNewAccount(DTOs.CreateNewAccountRequest request);
-		DTOs.CreateNewOrderResponse CreateNewOrder(DTOs.CreateNewOrderRequest request);
-		DTOs.GetAccountCredentialsResponse GetAccountCredentials(DTOs.GetAccountCredentialsRequest request);
-		DTOs.SetAccountCredentialsResponse SetAccountCredentials(DTOs.SetAccountCredentialsRequest request);
-		DTOs.GetNewNonceResponse GetNewNonce(DTOs.GetNewNonceRequest request);
-		DTOs.GetDirectoryResponse GetDirectory(DTOs.GetDirectoryRequest request);
-		DTOs.GetHostContextResponse GetHostContext(DTOs.GetHostContextRequest request);
-		DTOs.GetAuthorizationResponse GetAuthorization(DTOs.GetAuthorizationRequest request);
-		DTOs.CreateNewHostContextResponse CreateNewHostContext(DTOs.CreateNewHostContextRequest request);
-		DTOs.GetCertificateResponse GetCertificate(DTOs.GetCertificateRequest request);
-		DTOs.FinalizeOrderResponse FinalizeOrder(DTOs.FinalizeOrderRequest request);
-		DTOs.CompleteChallengeResponse CompleteChallenge(DTOs.CompleteChallengeRequest request);
-		DTOs.GetChallengeResponse GetChallenge(DTOs.GetChallengeRequest request);
-		DTOs.GetOrderResponse GetOrder(DTOs.GetOrderRequest request);
-		DTOs.CreateCertificateSigningRequestResponse CreateCertificateSigningRequest(DTOs.CreateCertificateSigningRequestRequest request);
-		DTOs.ProcessNewOrderResponse ProcessNewOrder(DTOs.IProcessNewOrderRequest request);
-		DTOs.CalculateDnsTokenResponse CalculateDnsToken(DTOs.CalculateDnsTokenRequest request);
-		DTOs.CalculateHttpTokenResponse CalculateHttpToken(DTOs.CalculateHttpTokenRequest request);
+		public DTOs.CalculateHttpTokenResponse CalculateHttpToken(DTOs.CalculateHttpTokenRequest request)
+		{
+			var response = new DTOs.CalculateHttpTokenResponse();
+			
+			var domainQueue = new Queue<string>(request.Domain.Split('.', StringSplitOptions.RemoveEmptyEntries).Reverse());
+
+			var domain = new List<string>();
+			domain.Insert(0, domainQueue.Dequeue());
+			domain.Insert(0, domainQueue.Dequeue());
+
+			domain.Clear();
+			while (domainQueue.Any())
+			{
+				var path = domainQueue.Dequeue();
+				if (!string.Equals(path, "*", StringComparison.InvariantCultureIgnoreCase))
+				{
+					domain.Insert(0, path);
+				}
+			}
+			response.Domain = string.Join(".", domain);
+
+			var uri = new UriBuilder(Uri.UriSchemeHttp, response.Domain)
+			{
+				Path = $".well-known/acme-challenge/{request.ChallengeToken}",
+			};
+
+			response.Url = uri.Uri.ToString();
+
+			using (var privateKey = System.Security.Cryptography.ECDsa.Create())
+			{
+				privateKey.ImportFromPem(request.HostContext.Pem);
+
+				var securityKey = new Microsoft.IdentityModel.Tokens.ECDsaSecurityKey(privateKey);
+
+				using (var sha = System.Security.Cryptography.SHA256.Create())
+				{
+					var jwkHash = securityKey.ComputeJwkThumbprint();
+					var jwkThumb = UrlEncode(jwkHash);
+
+					var keyAuthz = $"{request.ChallengeToken}.{jwkThumb}";
+					var keyAuthzDig = sha.ComputeHash(Encoding.UTF8.GetBytes(keyAuthz));
+
+					response.HttpToken = UrlEncode(keyAuthzDig);
+				}
+			}
+
+			return response;
+		}
 	}
 }

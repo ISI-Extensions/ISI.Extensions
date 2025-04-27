@@ -27,7 +27,7 @@ namespace ISI.Extensions.Repository
 	{
 		protected virtual ISelectClause GenerateSelectClause(string queryAlias = null, IEnumerable<string> excludeColumns = null)
 		{
-			var _excludeColumns = new HashSet<string>(excludeColumns ?? Array.Empty<string>(), StringComparer.InvariantCultureIgnoreCase);
+			var _excludeColumns = new HashSet<string>(excludeColumns ?? [], StringComparer.InvariantCultureIgnoreCase);
 
 			var selectColumns = new RecordSelectColumnCollection<TRecord>(RecordDescription.GetRecordDescription<TRecord>().PropertyDescriptions.Where(propertyDescription => !_excludeColumns.Contains(propertyDescription.ColumnName)));
 

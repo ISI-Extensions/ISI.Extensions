@@ -33,7 +33,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 		public static Microsoft.AspNetCore.Mvc.Rendering.SelectListItem[] ToSelectListItems<TEnum>(this IEnumerable<TEnum> selectedValues, ISI.Extensions.Enum.ValueSource keySource = Enum.ValueSource.Key, ISI.Extensions.Enum.ValueSource valueSource = Enum.ValueSource.Description)
 			where TEnum : System.Enum
 		{
-			var selected = new HashSet<TEnum>(selectedValues ?? Array.Empty<TEnum>());
+			var selected = new HashSet<TEnum>(selectedValues ?? []);
 
 			return ISI.Extensions.Enum<TEnum>.ToArray().ToNullCheckedArray(value => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(value.GetValueSource(valueSource), value.GetValueSource(keySource), selected.Contains(value)));
 		}
@@ -72,7 +72,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 
 		public static Microsoft.AspNetCore.Mvc.Rendering.SelectListItem[] ToSelectListItems(this IEnumerable<string> values, IEnumerable<string> selectedValues, StringComparer stringComparer = null)
 		{
-			var selected = new HashSet<string>(selectedValues ?? Array.Empty<string>(), stringComparer ?? StringComparer.InvariantCultureIgnoreCase);
+			var selected = new HashSet<string>(selectedValues ?? [], stringComparer ?? StringComparer.InvariantCultureIgnoreCase);
 
 			return values.ToNullCheckedArray(value => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(value, value,selected.Contains(value ?? string.Empty)));
 		}

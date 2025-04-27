@@ -36,7 +36,7 @@ namespace ISI.Extensions
 		{
 			if (depth >= maxDepth)
 			{
-				return Array.Empty<string>();
+				return [];
 			}
 
 			if ((ignorePatterns != null) && ignorePatterns.Any())
@@ -80,7 +80,7 @@ namespace ISI.Extensions
 		{
 			if (depth >= maxDepth)
 			{
-				return Array.Empty<string>();
+				return [];
 			}
 
 			var fileNames = new System.Collections.Concurrent.ConcurrentBag<string>();

@@ -50,7 +50,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 			var archivePropertyDescriptions = RecordDescription.GetRecordDescription<TConvertedRecord>().PropertyDescriptions.ToList();
 
-			var repositoryAssignedValuePropertyDescriptions = RecordDescription.GetRecordDescription<TConvertedRecord>().RepositoryAssignedValuePropertyDescriptions ?? Array.Empty<RecordPropertyDescription<TConvertedRecord>>();
+			var repositoryAssignedValuePropertyDescriptions = RecordDescription.GetRecordDescription<TConvertedRecord>().RepositoryAssignedValuePropertyDescriptions ?? [];
 			var insertPropertyIndexes = System.Linq.Enumerable.Range(1, insertPropertyDescriptions.Count - repositoryAssignedValuePropertyDescriptions.Length).ToArray();
 			var archivePropertyIndexes = System.Linq.Enumerable.Range(1, archivePropertyDescriptions.Count + 1).ToArray();
 

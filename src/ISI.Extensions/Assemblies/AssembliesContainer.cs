@@ -58,7 +58,7 @@ namespace ISI.Extensions.Assemblies
 				assemblyFileNames.UnionWith(System.IO.Directory.GetFiles(executingDirectoryName, "*.exe", System.IO.SearchOption.TopDirectoryOnly).Select(fileName => System.IO.Path.Combine(executingDirectoryName, fileName)));
 			}
 
-			var excludeAssemblyNames = new HashSet<string>((excludeAssemblyFileNames.NullCheckedSelect(System.IO.Path.GetFileNameWithoutExtension) ?? Array.Empty<string>()), StringComparer.InvariantCultureIgnoreCase);
+			var excludeAssemblyNames = new HashSet<string>((excludeAssemblyFileNames.NullCheckedSelect(System.IO.Path.GetFileNameWithoutExtension) ?? []), StringComparer.InvariantCultureIgnoreCase);
 			excludeAssemblyNames.Add("Microsoft.IdentityModel.Protocols.OpenIdConnect");
 			excludeAssemblyNames.Add("Microsoft.IdentityModel.Tokens");
 

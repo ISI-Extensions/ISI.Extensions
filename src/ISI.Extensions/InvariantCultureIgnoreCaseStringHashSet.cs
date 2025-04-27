@@ -89,7 +89,7 @@ namespace ISI.Extensions
 
 		public void TrimExcess() => _hashSet.TrimExcess();
 
-		public void UnionWith(IEnumerable<string> other) => _hashSet.UnionWith(other ?? Array.Empty<string>());
+		public void UnionWith(IEnumerable<string> other) => _hashSet.UnionWith(other ?? []);
 
 		public HashSet<string> Clone() => new HashSet<string>(_hashSet.ToArray(), StringComparer.InvariantCultureIgnoreCase);
 

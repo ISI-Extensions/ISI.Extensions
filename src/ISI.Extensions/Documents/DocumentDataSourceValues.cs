@@ -56,7 +56,7 @@ namespace ISI.Extensions.Documents
 
 		protected override IEnumerable<KeyValuePair<string, Func<object, IDocumentDataSource>>> GetDocumentDataCreatorsByTableName()
 		{
-			return Array.Empty<KeyValuePair<string, Func<object, IDocumentDataSource>>>();
+			return [];
 		}
 
 		public override IDocumentDataSource GetChildDataSource(string tableName)
@@ -66,7 +66,7 @@ namespace ISI.Extensions.Documents
 
 		protected override IEnumerable<KeyValuePair<string, Func<object, ISI.Extensions.Documents.IDocumentDataValue>>> GetValueGettersByFieldName()
 		{
-			return Array.Empty<KeyValuePair<string, Func<object, IDocumentDataValue>>>();
+			return [];
 		}
 
 		public override ISI.Extensions.Documents.IDocumentDataValue GetValue(string fieldName)

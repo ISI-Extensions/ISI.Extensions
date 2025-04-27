@@ -46,7 +46,7 @@ namespace ISI.Extensions.Security
 
 		public virtual bool IsAuthorized(IEnumerable<string> userRoles, IEnumerable<string> allowedRoles)
 		{
-			allowedRoles = new HashSet<string>(allowedRoles ?? Array.Empty<string>(), StringComparer.InvariantCultureIgnoreCase);
+			allowedRoles = new HashSet<string>(allowedRoles ?? [], StringComparer.InvariantCultureIgnoreCase);
 
 			if (((HashSet<string>)allowedRoles).Contains(ISI.Extensions.Security.Roles.AnonymousUsers))
 			{

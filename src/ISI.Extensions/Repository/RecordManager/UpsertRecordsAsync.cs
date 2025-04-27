@@ -26,7 +26,7 @@ namespace ISI.Extensions.Repository
 	{
 		public virtual async IAsyncEnumerable<TRecord> UpsertRecordsAsync(IEnumerable<TRecord> records, System.Threading.CancellationToken cancellationToken = default)
 		{
-			foreach (var record in records ?? Array.Empty<TRecord>())
+			foreach (var record in records ?? [])
 			{
 				yield return await UpsertRecordAsync(record, null, cancellationToken);
 			}
@@ -51,7 +51,7 @@ namespace ISI.Extensions.Repository
 
 		public virtual async IAsyncEnumerable<TRecord> UpsertRecordsAsync(IEnumerable<TRecord> records, Action<TRecord> updateRecordProperties, System.Threading.CancellationToken cancellationToken = default)
 		{
-			foreach (var record in records ?? Array.Empty<TRecord>())
+			foreach (var record in records ?? [])
 			{
 				yield return await UpsertRecordAsync(record, updateRecordProperties, cancellationToken);
 			}

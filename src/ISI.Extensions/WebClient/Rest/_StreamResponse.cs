@@ -23,7 +23,7 @@ namespace ISI.Extensions.WebClient
 {
 	public partial class Rest
 	{
-		public class StreamResponse<TStream> : IRestStreamResponse
+		public class StreamResponse<TStream> : IRestStreamResponse, IResponseHeaders, IResponseStatusCode
 			where TStream : System.IO.Stream, new()
 		{
 			public System.Net.HttpStatusCode StatusCode { get; set; }

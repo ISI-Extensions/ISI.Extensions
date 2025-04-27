@@ -41,7 +41,7 @@ namespace ISI.Extensions.VisualStudio
 
 			var response = new DTOs.UpgradeNugetPackagesResponse();
 
-			var ignorePackageIds = new HashSet<string>(request.IgnorePackageIds ?? Array.Empty<string>(), StringComparer.InvariantCultureIgnoreCase);
+			var ignorePackageIds = new HashSet<string>(request.IgnorePackageIds ?? [], StringComparer.InvariantCultureIgnoreCase);
 
 			var nugetPackageKeys = request.NugetPackageKeys ?? new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
 

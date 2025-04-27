@@ -19,16 +19,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
+namespace ISI.Extensions.Acme.SerializableModels.AcmeOrders
 {
-	public class FinalizeOrderResponse
+	[DataContract]
+	public class ForbiddenResponse
 	{
-		public Order Order { get; set; }
+		[DataMember(Name = "type", EmitDefaultValue = false)]
+		public string Type { get; set; }
 
-		public bool OrderNotReady { get; set; }
-		public string OrderNotReadyDetail { get; set; }
+		[DataMember(Name = "detail", EmitDefaultValue = false)]
+		public string Detail { get; set; }
 
-		public OrderError Error { get; set; }
+		[DataMember(Name = "status", EmitDefaultValue = false)]
+		public string Status { get; set; }
 	}
 }

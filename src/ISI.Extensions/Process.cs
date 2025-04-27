@@ -33,7 +33,7 @@ namespace ISI.Extensions
 			public bool UseShellExecute { get; set; } = true;
 			public bool CreateNoWindow { get; set; } = false;
 
-			public override string ToString() => string.Format("\"{0}\" {1}", ProcessExeFullName, string.Join(" ", Arguments ?? Array.Empty<string>()));
+			public override string ToString() => string.Format("\"{0}\" {1}", ProcessExeFullName, string.Join(" ", Arguments ?? []));
 		}
 
 		public static void ExecuteShell(string processExeFullName, params string[] arguments)
@@ -49,7 +49,7 @@ namespace ISI.Extensions
 		{
 			var processStartInfo = new System.Diagnostics.ProcessStartInfo(request.ProcessExeFullName)
 			{
-				Arguments = string.Join(" ", request.Arguments ?? Array.Empty<string>()),
+				Arguments = string.Join(" ", request.Arguments ?? []),
 				WindowStyle = request.ProcessWindowStyle,
 				UseShellExecute = request.UseShellExecute,
 				CreateNoWindow = request.CreateNoWindow,
@@ -102,7 +102,7 @@ namespace ISI.Extensions
 			public IEnumerable<string> Arguments { get; set; }
 			public InvariantCultureIgnoreCaseStringDictionary<string> EnvironmentVariables { get; set; }
 
-			public override string ToString() => string.Format("\"{0}\" {1}", ProcessExeFullName, string.Join(" ", Arguments ?? Array.Empty<string>()));
+			public override string ToString() => string.Format("\"{0}\" {1}", ProcessExeFullName, string.Join(" ", Arguments ?? []));
 		}
 
 		public class ProcessResponse
@@ -153,7 +153,7 @@ namespace ISI.Extensions
 
 			var processStartInfo = new System.Diagnostics.ProcessStartInfo(request.ProcessExeFullName)
 			{
-				Arguments = string.Join(" ", request.Arguments ?? Array.Empty<string>()),
+				Arguments = string.Join(" ", request.Arguments ?? []),
 				WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
 				UseShellExecute = false,
 				CreateNoWindow = true,

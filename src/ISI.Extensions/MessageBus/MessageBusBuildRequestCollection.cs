@@ -29,7 +29,7 @@ namespace ISI.Extensions.MessageBus
 		public static ISI.Extensions.MessageBus.Configuration Configuration { get; set; }
 		public static IDictionary<string, ISI.Extensions.MessageBus.Configuration.ChannelConfiguration> NamedChannelConfigurations { get; set; }
 
-		public MessageBusBuildRequest DefaultChannelMessageBusBuildRequest { get; } = new(null, Array.Empty<Action<IMessageBusConfigurator>>())
+		public MessageBusBuildRequest DefaultChannelMessageBusBuildRequest { get; } = new(null, [])
 		{
 			ChannelPath = Configuration.DefaultChannel.ChannelPath,
 			ConcurrentConsumerLimit = Configuration.DefaultChannel.ConcurrentConsumerLimit,

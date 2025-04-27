@@ -428,7 +428,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			};
 			parentControl.Resize += (resizeSender, resizeArgs) => { Panel.Width = parentControl.Width - 19; };
 
-			projectKeys = (projectKeys ?? Array.Empty<ProjectKey>()).ToArray();
+			projectKeys = (projectKeys ?? []).ToArray();
 			if (projectKeys.Any() && !projectKeys.Any(projectKey => projectKey.Selected))
 			{
 				(projectKeys.FirstOrDefault(projectKey => string.Equals(ProjectApi.GetProjectName(new()

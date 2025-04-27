@@ -45,7 +45,7 @@ namespace ISI.Extensions.Nuget
 
 			var assemblyBindingElement = runtimeSectionElement?.GetElementByLocalName("assemblyBinding");
 
-			var removeAssemblyRedirects = new HashSet<string>(request.RemoveAssemblyRedirects ?? Array.Empty<string>(), StringComparer.InvariantCultureIgnoreCase);
+			var removeAssemblyRedirects = new HashSet<string>(request.RemoveAssemblyRedirects ?? [], StringComparer.InvariantCultureIgnoreCase);
 
 			var upsertAssemblies = request.UpsertAssemblyRedirectsNugetPackageKeys
 				.NullCheckedSelectMany(nugetPackageKey => nugetPackageKey.GetTargetFrameworkAssembly(targetFrameworkVersion)?.Assemblies, NullCheckCollectionResult.Empty)

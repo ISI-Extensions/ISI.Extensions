@@ -23,7 +23,7 @@ namespace ISI.Extensions.WebClient
 {
 	public partial class Rest
 	{
-		public class TextResponse : IRestContentResponse
+		public class TextResponse : IRestContentResponse, IResponseHeaders, IResponseStatusCode
 		{
 			public System.Net.HttpStatusCode StatusCode { get; set; }
 			public string Content { get; set; }

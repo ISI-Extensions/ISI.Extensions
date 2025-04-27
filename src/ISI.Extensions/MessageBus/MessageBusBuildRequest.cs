@@ -27,7 +27,7 @@ namespace ISI.Extensions.MessageBus
 
 		public string ChannelPath { get; set; }
 
-		public List<Action<IMessageBusConfigurator>> AddSubscriptions { get; } = new();
+		public List<Action<IMessageBusConfigurator>> AddSubscriptions { get; } = [];
 
 		public int? ConcurrentConsumerLimit { get; set; } = null;
 		public int RetryLimit { get; set; } = 0;
@@ -66,7 +66,7 @@ namespace ISI.Extensions.MessageBus
 
 		public MessageBusBuildRequest CloneConfiguration()
 		{
-			return new(string.Empty, Array.Empty<Action<IMessageBusConfigurator>>())
+			return new(string.Empty, [])
 			{
 				ConcurrentConsumerLimit = ConcurrentConsumerLimit,
 				RetryLimit = RetryLimit,

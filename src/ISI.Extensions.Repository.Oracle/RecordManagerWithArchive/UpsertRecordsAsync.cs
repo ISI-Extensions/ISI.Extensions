@@ -26,7 +26,7 @@ namespace ISI.Extensions.Repository.Oracle
 	{
 		public override async IAsyncEnumerable<TRecord> UpsertRecordsAsync(IEnumerable<TRecord> records, System.Threading.CancellationToken cancellationToken = default)
 		{
-			await foreach (var upsertedRecord in PersistConvertedRecordsAsync<TRecord>(records ?? Array.Empty<TRecord>(), PersistenceMethod.Upsert, true, null, null, record => record, convertedRecord => convertedRecord, GetRecordArchiveDateTimeUtc(), cancellationToken))
+			await foreach (var upsertedRecord in PersistConvertedRecordsAsync<TRecord>(records ?? [], PersistenceMethod.Upsert, true, null, null, record => record, convertedRecord => convertedRecord, GetRecordArchiveDateTimeUtc(), cancellationToken))
 			{
 				yield return upsertedRecord;
 			}
@@ -34,7 +34,7 @@ namespace ISI.Extensions.Repository.Oracle
 
 		public override async IAsyncEnumerable<TRecord> UpsertRecordsAsync(IEnumerable<TRecord> records, Action<TRecord> updateRecordProperties, System.Threading.CancellationToken cancellationToken = default)
 		{
-			await foreach (var upsertedRecord in PersistConvertedRecordsAsync<TRecord>(records ?? Array.Empty<TRecord>(), PersistenceMethod.Upsert, true, updateRecordProperties, null, record => record, convertedRecord => convertedRecord, GetRecordArchiveDateTimeUtc(), cancellationToken))
+			await foreach (var upsertedRecord in PersistConvertedRecordsAsync<TRecord>(records ?? [], PersistenceMethod.Upsert, true, updateRecordProperties, null, record => record, convertedRecord => convertedRecord, GetRecordArchiveDateTimeUtc(), cancellationToken))
 			{
 				yield return upsertedRecord;
 			}

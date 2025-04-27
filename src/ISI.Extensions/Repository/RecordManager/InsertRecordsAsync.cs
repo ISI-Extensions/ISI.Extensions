@@ -26,7 +26,7 @@ namespace ISI.Extensions.Repository
 	{
 		public virtual async IAsyncEnumerable<TRecord> InsertRecordsAsync(IEnumerable<TRecord> records, System.Threading.CancellationToken cancellationToken = default)
 		{
-			foreach (var record in records ?? Array.Empty<TRecord>())
+			foreach (var record in records ?? [])
 			{
 				yield return await InsertRecordAsync(record, cancellationToken);
 			}

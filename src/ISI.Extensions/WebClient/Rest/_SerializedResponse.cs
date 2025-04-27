@@ -23,7 +23,7 @@ namespace ISI.Extensions.WebClient
 {
 	public partial class Rest
 	{
-		public class SerializedResponse<TResponse> : IRestContentResponse
+		public class SerializedResponse<TResponse> : IRestContentResponse, IResponseHeaders, IResponseStatusCode
 			where TResponse : class
 		{
 			public System.Net.HttpStatusCode StatusCode { get; set; }
@@ -45,7 +45,7 @@ namespace ISI.Extensions.WebClient
 			}
 		}
 
-		public class JsonSerializedResponse<TResponse> : SerializedResponse<TResponse>, IRestContentResponse
+		public class JsonSerializedResponse<TResponse> : SerializedResponse<TResponse>
 			where TResponse : class
 		{
 			public override string Content
@@ -59,7 +59,7 @@ namespace ISI.Extensions.WebClient
 			}
 		}
 
-		public class XmlSerializedResponse<TResponse> : SerializedResponse<TResponse>, IRestContentResponse
+		public class XmlSerializedResponse<TResponse> : SerializedResponse<TResponse>
 			where TResponse : class
 		{
 			public override string Content

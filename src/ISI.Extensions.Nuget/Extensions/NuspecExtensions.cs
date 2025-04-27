@@ -25,7 +25,7 @@ namespace ISI.Extensions.Nuget.Extensions
 		{
 			nuspec.IconName = string.Format("images\\{0}", System.IO.Path.GetFileName(fullName));
 
-			var files = new List<NuspecFile>(nuspec.Files ?? Array.Empty<NuspecFile>());
+			var files = new List<NuspecFile>(nuspec.Files ?? []);
 
 			files.Insert(0, new()
 			{

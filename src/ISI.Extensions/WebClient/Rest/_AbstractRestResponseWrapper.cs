@@ -154,9 +154,7 @@ namespace ISI.Extensions.WebClient
 							{
 								Response = Activator.CreateInstance<TResponse>();
 
-								((IRestStreamResponse)Response).StatusCode = StatusCode;
 								(decompressedStream ?? responseStream).CopyTo(((IRestStreamResponse)Response).Stream);
-								((IRestStreamResponse)Response).ResponseHeaders = new(webResponse?.Headers);
 							}
 							else if (typeof(TResponse).Implements<IRestContentResponse>())
 							{
@@ -165,9 +163,7 @@ namespace ISI.Extensions.WebClient
 								var content = (decompressedStream ?? responseStream).TextReadToEnd();
 								webRequestDetails?.SetResponseRaw(content);
 
-								((IRestContentResponse)Response).StatusCode = StatusCode;
 								((IRestContentResponse)Response).Content = content;
-								((IRestContentResponse)Response).ResponseHeaders = new(webResponse?.Headers);
 
 								if (exception != null)
 								{
@@ -177,6 +173,16 @@ namespace ISI.Extensions.WebClient
 							else
 							{
 								Response = ExtractResponse(responseStream, webRequestDetails);
+							}
+
+							if (Response is IResponseHeaders responseHeaders)
+							{
+								responseHeaders.ResponseHeaders = new(webResponse?.Headers);
+							}
+
+							if (Response is IResponseStatusCode responseStatusCode)
+							{
+								responseStatusCode.StatusCode = StatusCode;
 							}
 						}
 

@@ -37,7 +37,6 @@ namespace ISI.Extensions.Acme
 			domain.Insert(0, domainQueue.Dequeue());
 			domain.Insert(0, domainQueue.Dequeue());
 
-			domain.Clear();
 			while (domainQueue.Any())
 			{
 				var path = domainQueue.Dequeue();

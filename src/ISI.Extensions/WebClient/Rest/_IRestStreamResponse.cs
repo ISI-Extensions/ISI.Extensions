@@ -25,9 +25,7 @@ namespace ISI.Extensions.WebClient
 	{
 		public interface IRestStreamResponse
 		{
-			System.Net.HttpStatusCode StatusCode { get; set; }
 			System.IO.Stream Stream { get; set; }
-			HeaderCollection ResponseHeaders { get; set; }
 		}
 	}
 }

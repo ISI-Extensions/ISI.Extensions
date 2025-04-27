@@ -26,7 +26,7 @@ namespace ISI.Extensions.Repository.SqlServer
 	{
 		public override async IAsyncEnumerable<TRecord> UpsertRecordsAsync(IEnumerable<TRecord> records, System.Threading.CancellationToken cancellationToken = default)
 		{
-			await foreach (var upsertedRecord in PersistConvertedRecordsAsync<TRecord>(records ?? Array.Empty<TRecord>(), PersistenceMethod.Upsert, false, null, cancellationToken: cancellationToken))
+			await foreach (var upsertedRecord in PersistConvertedRecordsAsync<TRecord>(records ?? [], PersistenceMethod.Upsert, false, null, cancellationToken: cancellationToken))
 			{
 				yield return upsertedRecord;
 			}
@@ -34,7 +34,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 		public override async IAsyncEnumerable<TRecord> UpsertRecordsAsync(IEnumerable<TRecord> records, Action<TRecord> updateRecordProperties, System.Threading.CancellationToken cancellationToken = default)
 		{
-			await foreach (var upsertedRecord in PersistConvertedRecordsAsync<TRecord>(records ?? Array.Empty<TRecord>(), PersistenceMethod.Upsert, false, updateRecordProperties, cancellationToken: cancellationToken))
+			await foreach (var upsertedRecord in PersistConvertedRecordsAsync<TRecord>(records ?? [], PersistenceMethod.Upsert, false, updateRecordProperties, cancellationToken: cancellationToken))
 			{
 				yield return upsertedRecord;
 			}

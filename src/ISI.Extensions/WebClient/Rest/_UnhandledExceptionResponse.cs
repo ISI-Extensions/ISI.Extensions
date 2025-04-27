@@ -23,7 +23,7 @@ namespace ISI.Extensions.WebClient
 {
 	public partial class Rest
 	{
-		public class UnhandledExceptionResponse : IRestExceptionResponse, IRestContentResponse
+		public class UnhandledExceptionResponse : IRestExceptionResponse, IRestContentResponse, IResponseHeaders, IResponseStatusCode
 		{
 			public System.Exception Exception { get; set; }
 			public System.Net.HttpStatusCode StatusCode { get; set; }

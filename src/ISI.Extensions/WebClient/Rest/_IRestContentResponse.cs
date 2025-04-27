@@ -25,9 +25,7 @@ namespace ISI.Extensions.WebClient
 	{
 		public interface IRestContentResponse
 		{
-			System.Net.HttpStatusCode StatusCode { get; set; }
 			string Content { get; set; }
-			HeaderCollection ResponseHeaders { get; set; }
 		}
 	}
 }

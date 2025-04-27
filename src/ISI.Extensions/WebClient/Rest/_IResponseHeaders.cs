@@ -18,17 +18,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
+namespace ISI.Extensions.WebClient
 {
-	public class FinalizeOrderResponse
+	public partial class Rest
 	{
-		public Order Order { get; set; }
-
-		public bool OrderNotReady { get; set; }
-		public string OrderNotReadyDetail { get; set; }
-
-		public OrderError Error { get; set; }
+		public interface IResponseHeaders
+		{
+			HeaderCollection ResponseHeaders { get; set; }
+		}
 	}
 }

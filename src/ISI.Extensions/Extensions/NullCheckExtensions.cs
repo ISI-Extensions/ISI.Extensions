@@ -215,7 +215,7 @@ namespace ISI.Extensions.Extensions
 					case NullCheckCollectionResult.ReturnNull:
 						return null;
 					case NullCheckCollectionResult.Empty:
-						return Array.Empty<TResult>();
+						return [];
 					default:
 						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
 				}
@@ -639,7 +639,7 @@ namespace ISI.Extensions.Extensions
 					case NullCheckCollectionResult.ReturnNull:
 						return null;
 					case NullCheckCollectionResult.Empty:
-						return Array.Empty<TResult>();
+						return [];
 					default:
 						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
 				}
@@ -657,7 +657,7 @@ namespace ISI.Extensions.Extensions
 					case NullCheckCollectionResult.ReturnNull:
 						return null;
 					case NullCheckCollectionResult.Empty:
-						return Array.Empty<TResult>();
+						return [];
 					default:
 						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
 				}
@@ -675,7 +675,7 @@ namespace ISI.Extensions.Extensions
 					case NullCheckCollectionResult.ReturnNull:
 						return null;
 					case NullCheckCollectionResult.Empty:
-						return Array.Empty<TResult>();
+						return [];
 					default:
 						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
 				}
@@ -693,7 +693,7 @@ namespace ISI.Extensions.Extensions
 					case NullCheckCollectionResult.ReturnNull:
 						return null;
 					case NullCheckCollectionResult.Empty:
-						return Array.Empty<TValue>();
+						return [];
 					default:
 						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
 				}
@@ -787,7 +787,7 @@ namespace ISI.Extensions.Extensions
 					case NullCheckCollectionResult.ReturnNull:
 						return null;
 					case NullCheckCollectionResult.Empty:
-						return Array.Empty<IGrouping<TKey, TValue>>();
+						return [];
 					default:
 						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
 				}
@@ -805,7 +805,7 @@ namespace ISI.Extensions.Extensions
 					case NullCheckCollectionResult.ReturnNull:
 						return null;
 					case NullCheckCollectionResult.Empty:
-						return Array.Empty<IGrouping<TKey, TValue>>();
+						return [];
 					default:
 						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
 				}

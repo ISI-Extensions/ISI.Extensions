@@ -214,5 +214,41 @@ namespace ISI.Platforms.AspNetCore
 
 			return Microsoft.AspNetCore.Authentication.AuthenticateResult.NoResult();
 		}
+
+		protected override Task HandleChallengeAsync(Microsoft.AspNetCore.Authentication.AuthenticationProperties properties)
+		{
+			var notAuthenticatedUrl = Configuration.NotAuthenticatedUrl;
+
+			if (Configuration.GetNotAuthenticatedUrl != null)
+			{
+				notAuthenticatedUrl = Configuration.GetNotAuthenticatedUrl(Request.HttpContext);
+			}
+
+			if (!string.IsNullOrWhiteSpace(notAuthenticatedUrl))
+			{
+				Context.Response.Redirect(notAuthenticatedUrl);
+				return Task.CompletedTask;
+			}
+
+			return base.HandleChallengeAsync(properties);
+		}
+
+		protected override Task HandleForbiddenAsync(Microsoft.AspNetCore.Authentication.AuthenticationProperties properties)
+		{
+			var notAuthorizedUrl = Configuration.NotAuthorizedUrl;
+
+			if (Configuration.GetNotAuthorizedUrl != null)
+			{
+				notAuthorizedUrl = Configuration.GetNotAuthorizedUrl(Request.HttpContext);
+			}
+
+			if (!string.IsNullOrWhiteSpace(notAuthorizedUrl))
+			{
+				Context.Response.Redirect(notAuthorizedUrl);
+				return Task.CompletedTask;
+			}
+
+			return base.HandleForbiddenAsync(properties);
+		}
 	}
 }

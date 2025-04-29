@@ -987,8 +987,10 @@ namespace ISI.Platforms.ServiceApplication.Test
 			
 				public static readonly string _Layout_cshtml = _root() + "_Layout.cshtml";
 				public static readonly string Index_cshtml = _root() + "Index.cshtml";
+				public static readonly string Login_cshtml = _root() + "Login.cshtml";
 			}
 			public static readonly string Index_cshtml = _root() + "Index.cshtml";
+			public static readonly string Login_cshtml = _root() + "Login.cshtml";
 			public static readonly string _ViewImports_cshtml = _root() + "_ViewImports.cshtml";
 		}
 	}

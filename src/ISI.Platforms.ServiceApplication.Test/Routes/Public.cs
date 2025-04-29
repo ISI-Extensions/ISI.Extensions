@@ -34,6 +34,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 			public class RouteNames : IRouteNames
 			{
 				[RouteName] public const string Index = "Index-74c48f8e-220d-4564-8fdc-83aff1c48d69";
+				[RouteName] public const string Login = "Login-f6b5ca63-51d5-4323-ba3c-b831c653e3a1";
 				//${RouteNames}
 			}
 #pragma warning restore 649

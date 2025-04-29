@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2025, Integrated Solutions, Inc.
 All rights reserved.
@@ -19,27 +19,37 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Platforms.AspNetCore
+namespace ISI.Platforms.ServiceApplication.Test.Controllers
 {
-	public delegate string GetUrlDelegate(Microsoft.AspNetCore.Http.HttpContext httpContext);
-
-	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
-	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
+	public partial class PublicController 
 	{
-		public const string ConfigurationSectionName = "ISI.Platforms.AspNetCore";
-
-		public JwtConfiguration Jwt { get; set; } = new()
+		[Microsoft.AspNetCore.Mvc.AcceptVerbs(nameof(Microsoft.AspNetCore.Http.HttpMethods.Get))]
+		[Microsoft.AspNetCore.Authorization.AllowAnonymous]
+		[ISI.Extensions.AspNetCore.NamedRoute(Routes.Public.RouteNames.Login, typeof(Routes.Public), "login")]
+		[ApiExplorerSettings(IgnoreApi = true)]
+		public virtual async Task<Microsoft.AspNetCore.Mvc.IActionResult> LoginAsync(System.Threading.CancellationToken cancellationToken = default)
 		{
-			EncryptionKey = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
-		};
+			Microsoft.AspNetCore.Mvc.IActionResult result = null;
 
-		public GetUrlDelegate GetNotAuthenticatedUrl { get; set; }
-		public string NotAuthenticatedUrl { get; set; }
+			var viewModel = new ISI.Platforms.ServiceApplication.Test.Models.Public.LoginModel();
 
-		public GetUrlDelegate GetNotAuthorizedUrl { get; set; }
-		public string NotAuthorizedUrl { get; set; }
+			return result ?? View(ISI.Platforms.ServiceApplication.Test.T4Files.Views.Public.Login_cshtml, viewModel);
+		}
 
-		public CorsConfiguration Cors { get; set; } = new();
+		[Microsoft.AspNetCore.Mvc.AcceptVerbs(nameof(Microsoft.AspNetCore.Http.HttpMethods.Post))]
+		[Microsoft.AspNetCore.Authorization.AllowAnonymous]
+		[ISI.Extensions.AspNetCore.NamedRoute(Routes.Public.RouteNames.Login, typeof(Routes.Public), "login")]
+		[ApiExplorerSettings(IgnoreApi = true)]
+		public virtual async Task<Microsoft.AspNetCore.Mvc.IActionResult> LoginSaveAsync(System.Threading.CancellationToken cancellationToken = default)
+		{
+			Microsoft.AspNetCore.Mvc.IActionResult result = null;
+
+			var viewModel = new ISI.Platforms.ServiceApplication.Test.Models.Public.LoginModel();
+
+			return result ?? View(ISI.Platforms.ServiceApplication.Test.T4Files.Views.Public.Login_cshtml, viewModel);
+		}
 	}
 }

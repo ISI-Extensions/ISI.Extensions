@@ -37,7 +37,7 @@ namespace ISI.Extensions.Repository.Oracle
 
 			sql.Clear();
 			sql.Append("SELECT COUNT(1) as TableCount\n");
-			sql.Append("FROM dba_tables\n");
+			sql.Append("FROM user_Tables\n");
 			sql.Append("WHERE table_name = 'DatabaseMigrationStep'\n");
 
 			var tableExists = false;

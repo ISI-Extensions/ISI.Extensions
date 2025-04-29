@@ -18,23 +18,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
 namespace ISI.Platforms.AspNetCore
 {
-	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
-	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
+	public delegate string GetUrlDelegate(Microsoft.AspNetCore.Http.HttpContext httpContext);
+
+	public interface IAuthenticationIdentityApiWithGetUrls : ISI.Extensions.IAuthenticationIdentityApi
 	{
-		public const string ConfigurationSectionName = "ISI.Platforms.AspNetCore";
+		GetUrlDelegate GetNotAuthenticatedUrl { get; set; }
+		string NotAuthenticatedUrl { get; set; }
 
-		public JwtConfiguration Jwt { get; set; } = new()
-		{	
-			EncryptionKey = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
-		};
-
-		public string NotAuthenticatedUrl { get; set; }
-		public string NotAuthorizedUrl { get; set; }
-
-		public CorsConfiguration Cors { get; set; } = new();
+		GetUrlDelegate GetNotAuthorizedUrl { get; set; }
+		string NotAuthorizedUrl { get; set; }
 	}
 }

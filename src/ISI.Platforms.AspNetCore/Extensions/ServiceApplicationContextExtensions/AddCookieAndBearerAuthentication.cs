@@ -74,19 +74,18 @@ namespace ISI.Platforms.AspNetCore.Extensions
 
 				context.AddPostStartup(host =>
 				{
-					if ((request.GetNotAuthenticatedUrl != null) || !string.IsNullOrWhiteSpace(request.NotAuthenticatedUrl) ||
-					    (request.GetNotAuthorizedUrl != null) || !string.IsNullOrWhiteSpace(request.NotAuthorizedUrl))
-					{
-						var configuration = host.Services.GetService<ISI.Platforms.AspNetCore.Configuration>();
-
-						configuration.GetNotAuthenticatedUrl ??= request.GetNotAuthenticatedUrl;
-						configuration.NotAuthenticatedUrl = string.IsNullOrWhiteSpace(configuration.NotAuthenticatedUrl) ? request.NotAuthenticatedUrl : configuration.NotAuthenticatedUrl;
-
-						configuration.GetNotAuthorizedUrl ??= request.GetNotAuthorizedUrl;
-						configuration.NotAuthorizedUrl = string.IsNullOrWhiteSpace(configuration.NotAuthorizedUrl) ? request.NotAuthorizedUrl : configuration.NotAuthorizedUrl;
-					}
-
 					var authenticationIdentityApi = host.Services.GetService<ISI.Extensions.IAuthenticationIdentityApi>();
+
+					if ((authenticationIdentityApi is IAuthenticationIdentityApiWithGetUrls authenticationIdentityApiWithGetUrls) &&
+					    ((request.GetNotAuthenticatedUrl != null) || !string.IsNullOrWhiteSpace(request.NotAuthenticatedUrl) ||
+					    (request.GetNotAuthorizedUrl != null) || !string.IsNullOrWhiteSpace(request.NotAuthorizedUrl)))
+					{
+						authenticationIdentityApiWithGetUrls.GetNotAuthenticatedUrl ??= request.GetNotAuthenticatedUrl;
+						authenticationIdentityApiWithGetUrls.NotAuthenticatedUrl = string.IsNullOrWhiteSpace(authenticationIdentityApiWithGetUrls.NotAuthenticatedUrl) ? request.NotAuthenticatedUrl : authenticationIdentityApiWithGetUrls.NotAuthenticatedUrl;
+
+						authenticationIdentityApiWithGetUrls.GetNotAuthorizedUrl ??= authenticationIdentityApiWithGetUrls.GetNotAuthorizedUrl;
+						authenticationIdentityApiWithGetUrls.NotAuthorizedUrl = string.IsNullOrWhiteSpace(authenticationIdentityApiWithGetUrls.NotAuthorizedUrl) ? request.NotAuthorizedUrl : authenticationIdentityApiWithGetUrls.NotAuthorizedUrl;
+					}
 
 					authenticationIdentityApi.InitializeAsync().GetAwaiter().GetResult();
 				});

@@ -53,7 +53,7 @@ namespace ISI.Platforms.AspNetCore
 		public string ApiKeyHeaderName
 		{
 			get => _apiKeyHeaderName;
-			set => _apiKeyHeaderName =  value;
+			set => _apiKeyHeaderName = value;
 		}
 
 		private static string _authorizationHeaderName = ISI.Extensions.WebClient.HeaderCollection.Keys.Authorization;
@@ -68,7 +68,7 @@ namespace ISI.Platforms.AspNetCore
 		where TCookieAndBearerAuthenticationSettings : ICookieAndBearerAuthenticationSettings, new()
 	{
 		protected ICookieAndBearerAuthenticationSettings CookieAndBearerAuthenticationSettings { get; }
-
+		
 		public CookieAndBearerAuthenticationHandler(
 			ISI.Platforms.AspNetCore.Configuration configuration,
 			Microsoft.Extensions.Options.IOptionsMonitor<Microsoft.AspNetCore.Authentication.AuthenticationSchemeOptions> options,
@@ -88,7 +88,7 @@ namespace ISI.Platforms.AspNetCore
 
 		protected override bool TryGetAuthenticationHeaderValue(out string authenticationHeaderValue)
 		{
-			if(!string.IsNullOrWhiteSpace(CookieAndBearerAuthenticationSettings.ApiKeyHeaderName))
+			if (!string.IsNullOrWhiteSpace(CookieAndBearerAuthenticationSettings.ApiKeyHeaderName))
 			{
 				if (Request.Headers.TryGetValue(CookieAndBearerAuthenticationSettings.ApiKeyHeaderName, out var _authenticationHeaderValue))
 				{
@@ -98,7 +98,7 @@ namespace ISI.Platforms.AspNetCore
 				}
 			}
 
-			if(!string.IsNullOrWhiteSpace(CookieAndBearerAuthenticationSettings.AuthorizationHeaderName))
+			if (!string.IsNullOrWhiteSpace(CookieAndBearerAuthenticationSettings.AuthorizationHeaderName))
 			{
 				if (Request.Headers.TryGetValue(CookieAndBearerAuthenticationSettings.AuthorizationHeaderName, out var _authenticationHeaderValue))
 				{

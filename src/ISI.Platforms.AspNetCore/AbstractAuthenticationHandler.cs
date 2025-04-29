@@ -217,11 +217,24 @@ namespace ISI.Platforms.AspNetCore
 
 		protected override Task HandleChallengeAsync(Microsoft.AspNetCore.Authentication.AuthenticationProperties properties)
 		{
-			var notAuthenticatedUrl = Configuration.NotAuthenticatedUrl;
+			var notAuthenticatedUrl = (string)null;
 
-			if (Configuration.GetNotAuthenticatedUrl != null)
+			if (AuthenticationIdentityApi is IAuthenticationIdentityApiWithGetUrls authenticationIdentityApiWithGetUrls)
 			{
-				notAuthenticatedUrl = Configuration.GetNotAuthenticatedUrl(Request.HttpContext);
+				if (!string.IsNullOrWhiteSpace(authenticationIdentityApiWithGetUrls.NotAuthenticatedUrl))
+				{
+					notAuthenticatedUrl = authenticationIdentityApiWithGetUrls.NotAuthenticatedUrl;
+				}
+
+				if (authenticationIdentityApiWithGetUrls.GetNotAuthenticatedUrl != null)
+				{
+					notAuthenticatedUrl = authenticationIdentityApiWithGetUrls.GetNotAuthenticatedUrl(Request.HttpContext);
+				}
+			}
+
+			if (string.IsNullOrWhiteSpace(notAuthenticatedUrl))
+			{
+				notAuthenticatedUrl = Configuration.NotAuthenticatedUrl;
 			}
 
 			if (!string.IsNullOrWhiteSpace(notAuthenticatedUrl))
@@ -235,11 +248,24 @@ namespace ISI.Platforms.AspNetCore
 
 		protected override Task HandleForbiddenAsync(Microsoft.AspNetCore.Authentication.AuthenticationProperties properties)
 		{
-			var notAuthorizedUrl = Configuration.NotAuthorizedUrl;
+			var notAuthorizedUrl = (string)null;
 
-			if (Configuration.GetNotAuthorizedUrl != null)
+			if (AuthenticationIdentityApi is IAuthenticationIdentityApiWithGetUrls authenticationIdentityApiWithGetUrls)
 			{
-				notAuthorizedUrl = Configuration.GetNotAuthorizedUrl(Request.HttpContext);
+				if (!string.IsNullOrWhiteSpace(authenticationIdentityApiWithGetUrls.NotAuthorizedUrl))
+				{
+					notAuthorizedUrl = authenticationIdentityApiWithGetUrls.NotAuthorizedUrl;
+				}
+
+				if (authenticationIdentityApiWithGetUrls.GetNotAuthorizedUrl != null)
+				{
+					notAuthorizedUrl = authenticationIdentityApiWithGetUrls.GetNotAuthorizedUrl(Request.HttpContext);
+				}
+			}
+
+			if (string.IsNullOrWhiteSpace(notAuthorizedUrl))
+			{
+				notAuthorizedUrl = Configuration.NotAuthorizedUrl;
 			}
 
 			if (!string.IsNullOrWhiteSpace(notAuthorizedUrl))

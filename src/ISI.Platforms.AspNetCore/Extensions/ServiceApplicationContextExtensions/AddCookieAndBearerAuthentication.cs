@@ -38,8 +38,11 @@ namespace ISI.Platforms.AspNetCore.Extensions
 
 			public string ApiKeyHeaderName { get; set; }
 
-			//public Microsoft.AspNetCore.Http.PathString LoginPath { get; set; } = null;
-			//public Microsoft.AspNetCore.Http.PathString LogoutPath { get; set; } = null;
+			public GetUrlDelegate GetNotAuthenticatedUrl { get; set; }
+			public string NotAuthenticatedUrl { get; set; }
+
+			public GetUrlDelegate GetNotAuthorizedUrl { get; set; }
+			public string NotAuthorizedUrl { get; set; }
 		}
 
 
@@ -71,6 +74,18 @@ namespace ISI.Platforms.AspNetCore.Extensions
 
 				context.AddPostStartup(host =>
 				{
+					if ((request.GetNotAuthenticatedUrl != null) || !string.IsNullOrWhiteSpace(request.NotAuthenticatedUrl) ||
+					    (request.GetNotAuthorizedUrl != null) || !string.IsNullOrWhiteSpace(request.NotAuthorizedUrl))
+					{
+						var configuration = host.Services.GetService<ISI.Platforms.AspNetCore.Configuration>();
+
+						configuration.GetNotAuthenticatedUrl ??= request.GetNotAuthenticatedUrl;
+						configuration.NotAuthenticatedUrl = string.IsNullOrWhiteSpace(configuration.NotAuthenticatedUrl) ? request.NotAuthenticatedUrl : configuration.NotAuthenticatedUrl;
+
+						configuration.GetNotAuthorizedUrl ??= request.GetNotAuthorizedUrl;
+						configuration.NotAuthorizedUrl = string.IsNullOrWhiteSpace(configuration.NotAuthorizedUrl) ? request.NotAuthorizedUrl : configuration.NotAuthorizedUrl;
+					}
+
 					var authenticationIdentityApi = host.Services.GetService<ISI.Extensions.IAuthenticationIdentityApi>();
 
 					authenticationIdentityApi.InitializeAsync().GetAwaiter().GetResult();

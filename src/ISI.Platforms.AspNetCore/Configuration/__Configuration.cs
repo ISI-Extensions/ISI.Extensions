@@ -30,7 +30,7 @@ namespace ISI.Platforms.AspNetCore
 		public const string ConfigurationSectionName = "ISI.Platforms.AspNetCore";
 
 		public JwtConfiguration Jwt { get; set; } = new()
-		{
+		{	
 			EncryptionKey = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
 		};
 

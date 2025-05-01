@@ -21,9 +21,14 @@ using System.Threading.Tasks;
 
 namespace ISI.Platforms.AspNetCore
 {
-	public class HasUserUuidAuthorizationPolicy(string policyName = null) : Microsoft.AspNetCore.Authorization.AuthorizationHandler<HasUserUuidAuthorizationPolicy>, Microsoft.AspNetCore.Authorization.IAuthorizationRequirement
+	public interface IAuthorizationRequirement : Microsoft.AspNetCore.Authorization.IAuthorizationRequirement
 	{
-		public string PolicyName { get; } = string.IsNullOrWhiteSpace(policyName) ? nameof(HasUserUuidAuthorizationPolicy) : policyName;
+		string PolicyName { get; }
+	}
+
+	public class HasUserUuidAuthorizationPolicy(string policyName = null) : Microsoft.AspNetCore.Authorization.AuthorizationHandler<HasUserUuidAuthorizationPolicy>, IAuthorizationRequirement
+	{
+		public string PolicyName => string.IsNullOrWhiteSpace(policyName) ? nameof(HasUserUuidAuthorizationPolicy) : policyName;
 
 		protected override Task HandleRequirementAsync(Microsoft.AspNetCore.Authorization.AuthorizationHandlerContext context, HasUserUuidAuthorizationPolicy requirement)
 		{

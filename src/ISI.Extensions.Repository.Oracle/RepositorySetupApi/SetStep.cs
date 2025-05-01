@@ -56,19 +56,19 @@ namespace ISI.Extensions.Repository.Oracle
 							sql.Append("(\n");
 							sql.Append("	\"StepId\" INT NOT NULL CONSTRAINT \"PK_DatabaseMigrationStep\" PRIMARY KEY,\n");
 							sql.Append("	\"CompletedDateTimeUtc\" timestamp NOT NULL,\n");
-							sql.Append("	\"CompletedByKey\" NVARCHAR(255) NULL\n");
-							sql.Append(");\n");
+							sql.Append("	\"CompletedByKey\" VARCHAR2(255) NULL\n");
+							sql.Append(")\n");
 							connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
 						}
 
 						sql.Clear();
 						sql.Append("INSERT INTO \"DatabaseMigrationStep\" (\"StepId\", \"CompletedDateTimeUtc\", \"CompletedByKey\")\n");
-						sql.Append("SELECT @StepId, sysdate, @CompletedByKey;\n");
+						sql.Append("SELECT :StepId, sysdate, :CompletedByKey FROM DUAL\n");
 
 						using (var command = new global::Oracle.ManagedDataAccess.Client.OracleCommand(sql.ToString(), connection))
 						{
-							command.AddParameter("@StepId", stepId);
-							command.AddParameter("@CompletedByKey", (string.IsNullOrWhiteSpace(CompletedBy) ? (object)DBNull.Value : (object)CompletedBy));
+							command.AddParameter("StepId", stepId);
+							command.AddParameter("CompletedByKey", (string.IsNullOrWhiteSpace(CompletedBy) ? (object)DBNull.Value : (object)CompletedBy));
 							command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
 						}
 

@@ -46,11 +46,13 @@ namespace ISI.Platforms.AspNetCore.Extensions
 		}
 
 
-		//public static ServiceApplicationContext AddCookieAndBearerAuthentication(this ServiceApplicationContext context, string authenticationHandlerName = null, string policyName = null, string cookieName = null, string apiKeyHeaderName = null)
 		public static ServiceApplicationContext AddCookieAndBearerAuthentication(this ServiceApplicationContext context, AddCookieAndBearerAuthenticationRequest request = null)
 		{
-			var authorizationPolicy = new HasUserUuidAuthorizationPolicy(request?.PolicyName);
+			return AddCookieAndBearerAuthentication(context, new HasUserUuidAuthorizationPolicy(request?.PolicyName), request);
+		}
 
+		public static ServiceApplicationContext AddCookieAndBearerAuthentication(this ServiceApplicationContext context, IAuthorizationRequirement authorizationRequirement, AddCookieAndBearerAuthenticationRequest request = null)
+		{
 			context.AddWebStartupConfigureServices(services =>
 			{
 				var authenticationHandlerSettings = new CookieAndBearerAuthenticationSettings()
@@ -69,7 +71,7 @@ namespace ISI.Platforms.AspNetCore.Extensions
 
 				services.AddAuthorization(options =>
 				{
-					options.AddPolicy(authorizationPolicy.PolicyName, policy => policy.Requirements.Add(authorizationPolicy));
+					options.AddPolicy(authorizationRequirement.PolicyName, policy => policy.Requirements.Add(authorizationRequirement));
 				});
 
 				context.AddPostStartup(host =>

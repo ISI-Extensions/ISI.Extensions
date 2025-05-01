@@ -41,6 +41,14 @@ namespace ISI.Extensions.Tests.Repository
 		}
 
 		[Test]
+		public void SetStep_Test()
+		{
+			var repositorySetupApi = new ISI.Extensions.Repository.Oracle.RepositorySetupApi(Configuration, Logger, DateTimeStamper, Serializer, ConnectionString);
+
+			repositorySetupApi.SetStep(3);
+		}
+
+		[Test]
 		public void GetRecordDescription()
 		{
 			var recordPropertyDescription = ISI.Extensions.Repository.RecordDescription.GetRecordDescription<ContactWithData>();

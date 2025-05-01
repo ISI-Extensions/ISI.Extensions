@@ -26,11 +26,11 @@ namespace ISI.Platforms.AspNetCore
 		string PolicyName { get; }
 	}
 
-	public class HasUserUuidAuthorizationPolicy(string policyName = null) : Microsoft.AspNetCore.Authorization.AuthorizationHandler<HasUserUuidAuthorizationPolicy>, IAuthorizationRequirement
+	public class HasUserUuidAuthorizationRequirement(string policyName = null) : Microsoft.AspNetCore.Authorization.AuthorizationHandler<HasUserUuidAuthorizationRequirement>, IAuthorizationRequirement
 	{
-		public string PolicyName => string.IsNullOrWhiteSpace(policyName) ? nameof(HasUserUuidAuthorizationPolicy) : policyName;
+		public string PolicyName => string.IsNullOrWhiteSpace(policyName) ? nameof(HasUserUuidAuthorizationRequirement) : policyName;
 
-		protected override Task HandleRequirementAsync(Microsoft.AspNetCore.Authorization.AuthorizationHandlerContext context, HasUserUuidAuthorizationPolicy requirement)
+		protected override Task HandleRequirementAsync(Microsoft.AspNetCore.Authorization.AuthorizationHandlerContext context, HasUserUuidAuthorizationRequirement requirement)
 		{
 			if (!context.User.HasClaim(claim => string.Equals(claim.Type, System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub, StringComparison.Ordinal)))
 			{

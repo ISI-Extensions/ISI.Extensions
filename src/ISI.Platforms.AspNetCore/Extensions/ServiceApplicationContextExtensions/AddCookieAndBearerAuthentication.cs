@@ -48,10 +48,15 @@ namespace ISI.Platforms.AspNetCore.Extensions
 
 		public static ServiceApplicationContext AddCookieAndBearerAuthentication(this ServiceApplicationContext context, AddCookieAndBearerAuthenticationRequest request = null)
 		{
-			return AddCookieAndBearerAuthentication(context, new HasUserUuidAuthorizationPolicy(request?.PolicyName), request);
+			return AddCookieAndBearerAuthentication(context, request?.PolicyName, [new HasUserUuidAuthorizationRequirement(request?.PolicyName)], request);
 		}
 
 		public static ServiceApplicationContext AddCookieAndBearerAuthentication(this ServiceApplicationContext context, IAuthorizationRequirement authorizationRequirement, AddCookieAndBearerAuthenticationRequest request = null)
+		{
+			return AddCookieAndBearerAuthentication(context, authorizationRequirement.PolicyName, [authorizationRequirement], request);
+		}
+
+		public static ServiceApplicationContext AddCookieAndBearerAuthentication(this ServiceApplicationContext context, string policyName, IEnumerable<Microsoft.AspNetCore.Authorization.IAuthorizationRequirement> authorizationRequirements, AddCookieAndBearerAuthenticationRequest request = null)
 		{
 			context.AddWebStartupConfigureServices(services =>
 			{
@@ -71,7 +76,13 @@ namespace ISI.Platforms.AspNetCore.Extensions
 
 				services.AddAuthorization(options =>
 				{
-					options.AddPolicy(authorizationRequirement.PolicyName, policy => policy.Requirements.Add(authorizationRequirement));
+					options.AddPolicy(policyName, policy =>
+					{
+						foreach (var authorizationRequirement in authorizationRequirements ?? [])
+						{
+							policy.Requirements.Add(authorizationRequirement);
+						}
+					});
 				});
 
 				context.AddPostStartup(host =>

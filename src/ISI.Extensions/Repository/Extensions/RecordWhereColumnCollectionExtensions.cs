@@ -24,39 +24,76 @@ namespace ISI.Extensions.Repository.Extensions
 {
 	public static partial class RecordWhereColumnCollectionExtensions
 	{
-		public static void AddIfNotNullOrEmpty<TRecord>(this IRecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, Guid>> property, WhereClauseEqualityOperator comparisonOperator, Guid value)
+		public delegate Guid PreProcessGuidAddIfNotNullOrEmpty(Guid value);
+
+		public static void AddIfNotNullOrEmpty<TRecord>(this IRecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, Guid>> property, WhereClauseEqualityOperator comparisonOperator, Guid value, PreProcessGuidAddIfNotNullOrEmpty preProcessValue = null)
 		{
+			if (preProcessValue != null)
+			{
+				value = preProcessValue(value);
+			}
+
 			if (value != Guid.Empty)
 			{
 				recordWhereColumns.Add(property, comparisonOperator, value);
 			}
 		}
 
-		public static void AddIfNotNullOrEmpty<TRecord>(this IRecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, Guid?>> property, WhereClauseEqualityOperator comparisonOperator, Guid value)
+		public static void AddIfNotNullOrEmpty<TRecord>(this IRecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, Guid?>> property, WhereClauseEqualityOperator comparisonOperator, Guid value, PreProcessGuidAddIfNotNullOrEmpty preProcessValue = null)
 		{
+			if (preProcessValue != null)
+			{
+				value = preProcessValue(value);
+			}
+
 			if (value != Guid.Empty)
 			{
 				recordWhereColumns.Add(property, comparisonOperator, value);
 			}
 		}
 
-		public static void AddIfNotNullOrEmpty<TRecord>(this IRecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, Guid>> property, WhereClauseEqualityOperator comparisonOperator, Guid? value)
+		public delegate Guid? PreProcessNullableGuidAddIfNotNullOrEmpty(Guid? value);
+
+		public static void AddIfNotNullOrEmpty<TRecord>(this IRecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, Guid>> property, WhereClauseEqualityOperator comparisonOperator, Guid? value, PreProcessNullableGuidAddIfNotNullOrEmpty preProcessValue = null)
 		{
+			if (preProcessValue != null)
+			{
+				value = preProcessValue(value);
+			}
+
 			if (!value.IsNullOrEmpty())
 			{
 				recordWhereColumns.Add(property, comparisonOperator, value.Value);
 			}
 		}
 
-		public static void AddIfNotNullOrEmpty<TRecord>(this IRecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, Guid?>> property, WhereClauseEqualityOperator comparisonOperator, Guid? value)
+		public static void AddIfNotNullOrEmpty<TRecord>(this IRecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, Guid?>> property, WhereClauseEqualityOperator comparisonOperator, Guid? value, PreProcessNullableGuidAddIfNotNullOrEmpty preProcessValue = null)
 		{
+			if (preProcessValue != null)
+			{
+				value = preProcessValue(value);
+			}
+
 			if (!value.IsNullOrEmpty())
 			{
 				recordWhereColumns.Add(property, comparisonOperator, value.Value);
 			}
 		}
 
-		public static void AddIfNotNull<TRecord>(this IRecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, Guid>> property, WhereClauseEqualityOperator comparisonOperator, Guid? value)
+		public static void AddIfNotNull<TRecord>(this IRecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, Guid>> property, WhereClauseEqualityOperator comparisonOperator, Guid? value, PreProcessNullableGuidAddIfNotNullOrEmpty preProcessValue = null)
+		{
+			if (preProcessValue != null)
+			{
+				value = preProcessValue(value);
+			}
+
+			if (value.HasValue)
+			{
+				recordWhereColumns.Add(property, comparisonOperator, value.Value);
+			}
+		}
+
+		public static void AddIfNotNull<TRecord>(this IRecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, Guid?>> property, WhereClauseEqualityOperator comparisonOperator, Guid? value, PreProcessNullableGuidAddIfNotNullOrEmpty preProcessValue = null)
 		{
 			if (value.HasValue)
 			{
@@ -64,24 +101,28 @@ namespace ISI.Extensions.Repository.Extensions
 			}
 		}
 
-		public static void AddIfNotNull<TRecord>(this IRecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, Guid?>> property, WhereClauseEqualityOperator comparisonOperator, Guid? value)
+		public delegate DateTime? PreProcessNullableDateTimeAddIfNotNullOrEmpty(DateTime? value);
+
+		public static void AddIfNotNull<TRecord>(this IRecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, DateTime>> property, WhereClauseComparisonOperator comparisonOperator, DateTime? value, PreProcessNullableDateTimeAddIfNotNullOrEmpty preProcessValue = null)
 		{
+			if (preProcessValue != null)
+			{
+				value = preProcessValue(value);
+			}
+
 			if (value.HasValue)
 			{
 				recordWhereColumns.Add(property, comparisonOperator, value.Value);
 			}
 		}
 
-		public static void AddIfNotNull<TRecord>(this IRecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, DateTime>> property, WhereClauseComparisonOperator comparisonOperator, DateTime? value)
+		public static void AddIfNotNull<TRecord>(this IRecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, DateTime?>> property, WhereClauseComparisonOperator comparisonOperator, DateTime? value, PreProcessNullableDateTimeAddIfNotNullOrEmpty preProcessValue = null)
 		{
-			if (value.HasValue)
+			if (preProcessValue != null)
 			{
-				recordWhereColumns.Add(property, comparisonOperator, value.Value);
+				value = preProcessValue(value);
 			}
-		}
 
-		public static void AddIfNotNull<TRecord>(this IRecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, DateTime?>> property, WhereClauseComparisonOperator comparisonOperator, DateTime? value)
-		{
 			if (value.HasValue)
 			{
 				recordWhereColumns.Add(property, comparisonOperator, value.Value);
@@ -161,36 +202,58 @@ namespace ISI.Extensions.Repository.Extensions
 			}
 		}
 
-		public static void AddIfNotNull<TRecord>(this RecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, string>> property, WhereClauseStringComparisonOperator whereClauseStringComparisonOperator, string value)
+		public delegate string PreProcessStringAddIfNotNullOrEmpty(string value);
+
+		public static void AddIfNotNull<TRecord>(this RecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, string>> property, WhereClauseStringComparisonOperator whereClauseStringComparisonOperator, string value, PreProcessStringAddIfNotNullOrEmpty preProcessValue = null)
 		{
+			if (preProcessValue != null)
+			{
+				value = preProcessValue(value);
+			}
+
 			if (value != null)
 			{
 				recordWhereColumns.Add(property, whereClauseStringComparisonOperator, value);
 			}
 		}
 
-		public static void AddIfNotNullOrEmpty<TRecord>(this RecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, string>> property, WhereClauseStringComparisonOperator whereClauseStringComparisonOperator, string value)
+		public static void AddIfNotNullOrEmpty<TRecord>(this RecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, string>> property, WhereClauseStringComparisonOperator whereClauseStringComparisonOperator, string value, PreProcessStringAddIfNotNullOrEmpty preProcessValue = null)
 		{
+			if (preProcessValue != null)
+			{
+				value = preProcessValue(value);
+			}
+
 			if (!string.IsNullOrEmpty(value))
 			{
 				recordWhereColumns.Add(property, whereClauseStringComparisonOperator, value);
 			}
 		}
 
-		public static void AddIfNotNull<TRecord, TProperty, TEntity>(this RecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property, WhereClauseStringComparisonOperator whereClauseStringComparisonOperator, string value)
+		public static void AddIfNotNull<TRecord, TProperty, TEntity>(this RecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property, WhereClauseStringComparisonOperator whereClauseStringComparisonOperator, string value, PreProcessStringAddIfNotNullOrEmpty preProcessValue = null)
 			where TProperty : ISI.Extensions.Converters.IExportTo<TEntity>
 			where TEntity : class
 		{
+			if (preProcessValue != null)
+			{
+				value = preProcessValue(value);
+			}
+
 			if (value != null)
 			{
 				recordWhereColumns.Add<TProperty, TEntity>(property, whereClauseStringComparisonOperator, value);
 			}
 		}
 
-		public static void AddIfNotNullOrEmpty<TRecord, TProperty, TEntity>(this RecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property, WhereClauseStringComparisonOperator whereClauseStringComparisonOperator, string value)
+		public static void AddIfNotNullOrEmpty<TRecord, TProperty, TEntity>(this RecordWhereColumnCollection<TRecord> recordWhereColumns, System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property, WhereClauseStringComparisonOperator whereClauseStringComparisonOperator, string value, PreProcessStringAddIfNotNullOrEmpty preProcessValue = null)
 			where TProperty : ISI.Extensions.Converters.IExportTo<TEntity>
 			where TEntity : class
 		{
+			if (preProcessValue != null)
+			{
+				value = preProcessValue(value);
+			}
+
 			if (!string.IsNullOrEmpty(value))
 			{
 				recordWhereColumns.Add<TProperty, TEntity>(property, whereClauseStringComparisonOperator, value);

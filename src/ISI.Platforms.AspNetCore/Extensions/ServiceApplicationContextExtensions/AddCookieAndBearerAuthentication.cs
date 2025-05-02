@@ -48,12 +48,12 @@ namespace ISI.Platforms.AspNetCore.Extensions
 
 		public static ServiceApplicationContext AddCookieAndBearerAuthentication(this ServiceApplicationContext context, AddCookieAndBearerAuthenticationRequest request = null)
 		{
-			return AddCookieAndBearerAuthentication(context, request?.PolicyName, [new HasUserUuidAuthorizationRequirement(request?.PolicyName)], request);
+			return AddCookieAndBearerAuthentication(context, request.PolicyName, [new HasUserUuidAuthorizationRequirement()], request);
 		}
 
-		public static ServiceApplicationContext AddCookieAndBearerAuthentication(this ServiceApplicationContext context, IAuthorizationRequirement authorizationRequirement, AddCookieAndBearerAuthenticationRequest request = null)
+		public static ServiceApplicationContext AddCookieAndBearerAuthentication(this ServiceApplicationContext context, Microsoft.AspNetCore.Authorization.IAuthorizationRequirement authorizationRequirement, AddCookieAndBearerAuthenticationRequest request = null)
 		{
-			return AddCookieAndBearerAuthentication(context, authorizationRequirement.PolicyName, [authorizationRequirement], request);
+			return AddCookieAndBearerAuthentication(context, request.PolicyName, [authorizationRequirement], request);
 		}
 
 		public static ServiceApplicationContext AddCookieAndBearerAuthentication(this ServiceApplicationContext context, string policyName, IEnumerable<Microsoft.AspNetCore.Authorization.IAuthorizationRequirement> authorizationRequirements, AddCookieAndBearerAuthenticationRequest request = null)

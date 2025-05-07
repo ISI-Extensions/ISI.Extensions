@@ -155,10 +155,7 @@ namespace ISI.Extensions.Repository.Oracle
 				sql.Append("FROM user_Tables\n");
 				sql.Append($"WHERE table_name = '{tableName}'\n");
 
-				using (var command = new global::Oracle.ManagedDataAccess.Client.OracleCommand(sql.ToString(), connection))
-				{
-					tableExists = string.Format("{0}", command.ExecuteScalarWithExceptionTracingAsync().GetAwaiter().GetResult()).ToBoolean();
-				}
+				tableExists = string.Format("{0}", connection.ExecuteScalarAsync(sql.ToString()).GetAwaiter().GetResult()).ToBoolean();
 			}
 
 			if (tableExists)
@@ -251,10 +248,7 @@ namespace ISI.Extensions.Repository.Oracle
 				sql.Append("FROM user_Tables\n");
 				sql.Append($"WHERE table_name = '{tableName}'\n");
 
-				using (var command = new global::Oracle.ManagedDataAccess.Client.OracleCommand(sql.ToString(), connection))
-				{
-					tableExists = string.Format("{0}", command.ExecuteScalarWithExceptionTracingAsync().GetAwaiter().GetResult()).ToBoolean();
-				}
+				tableExists = string.Format("{0}", connection.ExecuteScalarAsync(sql.ToString()).GetAwaiter().GetResult()).ToBoolean();
 			}
 
 			if (tableExists)

@@ -16,7 +16,7 @@
 
 	<ItemGroup>
 		<PackageReference Update="NETStandard.Library" Version="2.0.3" />
-	  <PackageReference Include="Aspose.Slides.NET" Version="25.4.0" />
+	  <PackageReference Include="Aspose.Slides.NET" Version="25.5.0" />
 	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.4" />
 	  <PackageReference Include="System.Drawing.Common" Version="9.0.4" />
 	</ItemGroup>

@@ -21,11 +21,11 @@ using ISI.Extensions.PostgreSQL.Extensions;
 
 namespace ISI.Extensions.PostgreSQL
 {
-	public class SqlConnection
+	public class NpgsqlConnection
 	{
-		public static Npgsql.NpgsqlConnection GetSqlConnection(string connectionString, bool enableMultipleActiveResultSets = false)
+		public static Npgsql.NpgsqlConnection GetNpgsqlConnection(string connectionString, bool enableMultipleActiveResultSets = false)
 		{
-			if (TryGetSqlConnection(connectionString, enableMultipleActiveResultSets, out var connection))
+			if (TryGetNpgsqlConnection(connectionString, enableMultipleActiveResultSets, out var connection))
 			{
 				return connection;
 			}
@@ -33,7 +33,7 @@ namespace ISI.Extensions.PostgreSQL
 			return null;
 		}
 
-		public static bool TryGetSqlConnection(string connectionString, bool enableMultipleActiveResultSets, out Npgsql.NpgsqlConnection connection)
+		public static bool TryGetNpgsqlConnection(string connectionString, bool enableMultipleActiveResultSets, out Npgsql.NpgsqlConnection connection)
 		{
 			try
 			{

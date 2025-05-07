@@ -35,7 +35,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 		{
 			var response = new DTOs.DeleteRepositoryResponse();
 
-			using (var connection = ISI.Extensions.PostgreSQL.SqlConnection.GetSqlConnection(MasterConnectionStringWithMasterDatabase))
+			using (var connection = ISI.Extensions.PostgreSQL.NpgsqlConnection.GetNpgsqlConnection(MasterConnectionStringWithMasterDatabase))
 			{
 				connection.Open();
 

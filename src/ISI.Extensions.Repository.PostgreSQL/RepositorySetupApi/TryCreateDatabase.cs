@@ -33,7 +33,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 	{
 		public bool TryCreateDatabase(string dataFileDirectory = null, string logFileDirectory = null)
 		{
-			using (var connection = ISI.Extensions.PostgreSQL.SqlConnection.GetSqlConnection(MasterConnectionString))
+			using (var connection = ISI.Extensions.PostgreSQL.NpgsqlConnection.GetNpgsqlConnection(MasterConnectionString))
 			{
 				return TryCreateDatabase(connection, dataFileDirectory, logFileDirectory);
 			}

@@ -23,36 +23,22 @@ using ISI.Extensions.Repository.Extensions;
 
 namespace ISI.Extensions.PostgreSQL.Extensions
 {
-	public static partial class SqlConnectionExtensions
+	public static partial class NpgsqlConnectionExtensions
 	{
-		public static async Task EnsureConnectionIsOpenAsync(this Npgsql.NpgsqlConnection connection, System.Threading.CancellationToken cancellationToken = default)
+		public static async Task<Version> GetServerVersionAsync(this Npgsql.NpgsqlConnection connection, System.Threading.CancellationToken cancellationToken = default)
 		{
-			if (connection.State != System.Data.ConnectionState.Open)
-			{
-				try
-				{
-					await connection.OpenAsync(cancellationToken);
-				}
-				catch (Exception exception)
-				{
-					throw new(string.Format("Error opening Connection to \"{0}\"", connection.ConnectionString), exception);
-				}
-			}
-		}
+			await connection.EnsureConnectionIsOpenAsync();
 
-		public static void EnsureConnectionIsOpen(this Npgsql.NpgsqlConnection connection)
-		{
-			if (connection.State != System.Data.ConnectionState.Open)
+			var version = connection.ServerVersion;
+
+			if (Version.TryParse(version, out var serverVersion))
 			{
-				try
-				{
-					connection.Open();
-				}
-				catch (Exception exception)
-				{
-					throw new(string.Format("Error opening Connection to \"{0}\"", connection.ConnectionString), exception);
-				}
+				return serverVersion;
 			}
+
+			var pieces = string.Format("{0}.....", version).Split(['.'], StringSplitOptions.RemoveEmptyEntries).ToNullCheckedArray(value => value.ToInt());
+
+			return new(pieces[0], pieces[1], pieces[2], pieces[3]);
 		}
 	}
 }

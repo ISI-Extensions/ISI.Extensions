@@ -33,7 +33,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 	{
 		public DTOs.ExecuteScriptResponse ExecuteScript(string script, IDictionary<string, object> parameters = null)
 		{
-			using (var connection = ISI.Extensions.PostgreSQL.SqlConnection.GetSqlConnection(ConnectionString))
+			using (var connection = ISI.Extensions.PostgreSQL.NpgsqlConnection.GetNpgsqlConnection(ConnectionString))
 			{
 				connection.Open();
 

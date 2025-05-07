@@ -33,7 +33,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 	{
 		public bool TryCreateSchema(string schema)
 		{
-			using (var connection = ISI.Extensions.PostgreSQL.SqlConnection.GetSqlConnection(MasterConnectionString))
+			using (var connection = ISI.Extensions.PostgreSQL.NpgsqlConnection.GetNpgsqlConnection(MasterConnectionString))
 			{
 				return TryCreateSchema(connection, schema);
 			}

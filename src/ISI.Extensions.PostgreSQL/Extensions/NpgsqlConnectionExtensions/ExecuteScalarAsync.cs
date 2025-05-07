@@ -23,7 +23,7 @@ using ISI.Extensions.Repository.Extensions;
 
 namespace ISI.Extensions.PostgreSQL.Extensions
 {
-	public static partial class SqlConnectionExtensions
+	public static partial class NpgsqlConnectionExtensions
 	{
 		public static async Task<TProperty> ExecuteScalarAsync<TProperty>(this Npgsql.NpgsqlConnection connection, string sql, string parameterName, object parameterValue, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
 		{

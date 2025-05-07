@@ -62,7 +62,7 @@ namespace ISI.Extensions.PostgreSQL
 
 			Logger.LogInformation($"ServerName: {connectionStringBuilder.GetServerName()}");
 
-			using (var connection = ISI.Extensions.PostgreSQL.SqlConnection.GetSqlConnection(connectionStringBuilder.ConnectionString))
+			using (var connection = ISI.Extensions.PostgreSQL.NpgsqlConnection.GetNpgsqlConnection(connectionStringBuilder.ConnectionString))
 			{
 				connection.Open();
 

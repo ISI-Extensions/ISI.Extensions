@@ -23,32 +23,35 @@ using ISI.Extensions.Repository.Extensions;
 
 namespace ISI.Extensions.PostgreSQL.Extensions
 {
-	public static partial class SqlConnectionExtensions
+	public static partial class NpgsqlConnectionExtensions
 	{
-		public static async Task<int> ExecuteNonQueryAsync(this Npgsql.NpgsqlConnection connection, string sql, string parameterName, object parameterValue, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
+		public static async Task EnsureConnectionIsOpenAsync(this Npgsql.NpgsqlConnection connection, System.Threading.CancellationToken cancellationToken = default)
 		{
-			return await ExecuteNonQueryAsync(connection, sql, new KeyValuePair<string, object>(parameterName, parameterValue), commandTimeout, cancellationToken);
-		}
-
-		public static async Task<int> ExecuteNonQueryAsync(this Npgsql.NpgsqlConnection connection, string sql, KeyValuePair<string, object> parameter, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
-		{
-			return await ExecuteNonQueryAsync(connection, sql, [parameter], commandTimeout, cancellationToken);
-		}
-
-		public static async Task<int> ExecuteNonQueryAsync(this Npgsql.NpgsqlConnection connection, string sql, IEnumerable<KeyValuePair<string, object>> parameters = null, int? commandTimeout = null, System.Threading.CancellationToken cancellationToken = default)
-		{
-			await connection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
-
-			using (var command = new Npgsql.NpgsqlCommand(sql, connection))
+			if (connection.State != System.Data.ConnectionState.Open)
 			{
-				if (commandTimeout.HasValue)
+				try
 				{
-					command.CommandTimeout = commandTimeout.Value;
+					await connection.OpenAsync(cancellationToken);
 				}
+				catch (Exception exception)
+				{
+					throw new(string.Format("Error opening Connection to \"{0}\"", connection.ConnectionString), exception);
+				}
+			}
+		}
 
-				command.AddParameters(parameters);
-
-				return await command.ExecuteNonQueryWithExceptionTracingAsync(cancellationToken: cancellationToken);
+		public static void EnsureConnectionIsOpen(this Npgsql.NpgsqlConnection connection)
+		{
+			if (connection.State != System.Data.ConnectionState.Open)
+			{
+				try
+				{
+					connection.Open();
+				}
+				catch (Exception exception)
+				{
+					throw new(string.Format("Error opening Connection to \"{0}\"", connection.ConnectionString), exception);
+				}
 			}
 		}
 	}

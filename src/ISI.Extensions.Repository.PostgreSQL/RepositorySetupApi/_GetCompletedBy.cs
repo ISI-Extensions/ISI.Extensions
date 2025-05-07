@@ -37,7 +37,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 			{
 				try
 				{
-					using (var connection = ISI.Extensions.PostgreSQL.SqlConnection.GetSqlConnection(connectionString))
+					using (var connection = ISI.Extensions.PostgreSQL.NpgsqlConnection.GetNpgsqlConnection(connectionString))
 					{
 						connection.Open();
 

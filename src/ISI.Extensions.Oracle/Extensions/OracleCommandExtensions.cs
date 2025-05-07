@@ -24,7 +24,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Oracle.Extensions
 {
-	public static partial class SqlCommandExtensions
+	public static partial class OracleCommandExtensions
 	{
 		public static bool SendCommandsToLogger { get; set; } = false;
 

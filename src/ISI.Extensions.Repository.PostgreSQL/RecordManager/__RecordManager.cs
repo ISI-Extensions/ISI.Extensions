@@ -68,7 +68,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 			TableName = (string.IsNullOrEmpty(tableName) ? RecordDescription.GetRecordDescription<TRecord>().TableName : tableName);
 			TableAlias = tableAlias;
 
-			GetSqlConnection = getConnection ?? (enableMultipleActiveResultSets => ISI.Extensions.PostgreSQL.SqlConnection.GetSqlConnection(ConnectionString, enableMultipleActiveResultSets));
+			GetSqlConnection = getConnection ?? (enableMultipleActiveResultSets => ISI.Extensions.PostgreSQL.NpgsqlConnection.GetNpgsqlConnection(ConnectionString, enableMultipleActiveResultSets));
 		}
 
 		protected override string DefaultOrderByClause => "ORDER BY CURRENT_TIMESTAMP\n";

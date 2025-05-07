@@ -88,25 +88,25 @@ namespace ISI.Extensions.Repository.Oracle
 				whereClause ??= new WhereClause();
 				if (minArchiveDateTime.HasValue)
 				{
-					(whereClause as IWhereClauseWithParameters)?.Parameters?.Add("@minArchiveDateTime", minArchiveDateTime.Value);
+					(whereClause as IWhereClauseWithParameters)?.Parameters?.Add("minArchiveDateTime", minArchiveDateTime.Value);
 				}
 
 				if (maxArchiveDateTime.HasValue)
 				{
-					(whereClause as IWhereClauseWithParameters)?.Parameters?.Add("@maxArchiveDateTime", maxArchiveDateTime.Value);
+					(whereClause as IWhereClauseWithParameters)?.Parameters?.Add("maxArchiveDateTime", maxArchiveDateTime.Value);
 				}
 
 				if (minArchiveDateTime.HasValue && maxArchiveDateTime.HasValue)
 				{
-					whereSql = string.Format("      {0}.{1} BETWEEN @minArchiveDateTime AND @maxArchiveDateTime{2}{3}", GetArchiveTableNameAlias(TableAlias), FormatColumnName(ArchiveTableArchiveDateTimeColumnName), (string.IsNullOrWhiteSpace(whereSql) ? string.Empty : " AND\n"), whereSql);
+					whereSql = string.Format("      {0}.{1} BETWEEN :minArchiveDateTime AND :maxArchiveDateTime{2}{3}", GetArchiveTableNameAlias(TableAlias), FormatColumnName(ArchiveTableArchiveDateTimeColumnName), (string.IsNullOrWhiteSpace(whereSql) ? string.Empty : " AND\n"), whereSql);
 				}
 				else if (minArchiveDateTime.HasValue)
 				{
-					whereSql = string.Format("      {0}.{1} >= @minArchiveDateTime{2}{3}", GetArchiveTableNameAlias(TableAlias), FormatColumnName(ArchiveTableArchiveDateTimeColumnName), (string.IsNullOrWhiteSpace(whereSql) ? string.Empty : " AND\n"), whereSql);
+					whereSql = string.Format("      {0}.{1} >= :minArchiveDateTime{2}{3}", GetArchiveTableNameAlias(TableAlias), FormatColumnName(ArchiveTableArchiveDateTimeColumnName), (string.IsNullOrWhiteSpace(whereSql) ? string.Empty : " AND\n"), whereSql);
 				}
 				else if (maxArchiveDateTime.HasValue)
 				{
-					whereSql = string.Format("      {0}.{1} <= @maxArchiveDateTime{2}{3}", GetArchiveTableNameAlias(TableAlias), FormatColumnName(ArchiveTableArchiveDateTimeColumnName), (string.IsNullOrWhiteSpace(whereSql) ? string.Empty : " AND\n"), whereSql);
+					whereSql = string.Format("      {0}.{1} <= :maxArchiveDateTime{2}{3}", GetArchiveTableNameAlias(TableAlias), FormatColumnName(ArchiveTableArchiveDateTimeColumnName), (string.IsNullOrWhiteSpace(whereSql) ? string.Empty : " AND\n"), whereSql);
 				}
 
 				sql.AppendFormat("SELECT {0}, {1}.{2}\n",  GetArchiveTableNameAlias(TableAlias), ArchiveTableArchiveDateTimeColumnName, selectClause.GetSql());

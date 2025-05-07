@@ -36,6 +36,8 @@ namespace ISI.Extensions.Repository.Oracle
 			}
 
 			var dbDataReaderExtensionsType = typeof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions);
+			var getGuid = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetGuid), [typeof(System.Data.Common.DbDataReader), typeof(int)]);
+			var getGuidNullable = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetGuidNullable), [typeof(System.Data.Common.DbDataReader), typeof(int)]);
 			var getBoolean = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetBoolean), [typeof(System.Data.Common.DbDataReader), typeof(int)]);
 			var getBooleanNullable = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetBooleanNullable), [typeof(System.Data.Common.DbDataReader), typeof(int)]);
 			var getShort = dbDataReaderExtensionsType.GetMethod(nameof(ISI.Extensions.Repository.Extensions.DataReaderByOrdinalExtensions.GetShort), [typeof(System.Data.Common.DbDataReader), typeof(short)]);
@@ -77,7 +79,11 @@ namespace ISI.Extensions.Repository.Oracle
 
 				System.Linq.Expressions.Expression assignExpression = null;
 
-				if (basePropertyType == typeof(bool))
+				if (basePropertyType == typeof(Guid))
+				{
+					assignExpression = System.Linq.Expressions.Expression.Assign(System.Linq.Expressions.Expression.PropertyOrField(record, property.PropertyName), System.Linq.Expressions.Expression.Call(isNullable ? getGuidNullable : getGuid, dataReader, columnIndex));
+				}
+				else if (basePropertyType == typeof(bool))
 				{
 					assignExpression = System.Linq.Expressions.Expression.Assign(System.Linq.Expressions.Expression.PropertyOrField(record, property.PropertyName), System.Linq.Expressions.Expression.Call(isNullable ? getBooleanNullable : getBoolean, dataReader, columnIndex));
 				}

@@ -89,7 +89,7 @@ namespace ISI.Extensions.Repository.Oracle
 
 					var primaryKeyValuesEnumerator = PrimaryKeyValues.GetEnumerator();
 
-					string GetPrimaryKeyValueName(int primaryKeyValueNameIndex) => string.Format("@primaryKey_{0}", primaryKeyValueNameIndex);
+					string GetPrimaryKeyValueName(int primaryKeyValueNameIndex) => string.Format("primaryKey_{0}", primaryKeyValueNameIndex);
 
 					var primaryKeyValueCount = 0;
 
@@ -104,11 +104,11 @@ namespace ISI.Extensions.Repository.Oracle
 
 					if (primaryKeyValueCount == 1)
 					{
-						var primaryKeyColumnAlias = "@primaryKey";
+						var primaryKeyColumnAlias = "primaryKey";
 
 						Parameters.Add(primaryKeyColumnAlias, parameters.FirstOrDefault().Value);
 
-						Sql = string.Format("      {0} = {1}", _formatColumnName(primaryKeyColumn.ColumnName), primaryKeyColumnAlias);
+						Sql = string.Format("      {0} = :{1}", _formatColumnName(primaryKeyColumn.ColumnName), primaryKeyColumnAlias);
 					}
 					else if (primaryKeyValueCount < primaryKeyMaxCount)
 					{
@@ -117,7 +117,7 @@ namespace ISI.Extensions.Repository.Oracle
 							Parameters.Add(parameter);
 						}
 
-						Sql = string.Format("      {0} in ({1})", _formatColumnName(primaryKeyColumn.ColumnName), string.Join(", ", parameters.Keys));
+						Sql = string.Format("      {0} in ({1})", _formatColumnName(primaryKeyColumn.ColumnName), string.Join(", ", parameters.Keys.Select(parameterKey => $":{parameterKey}")));
 					}
 					else
 					{

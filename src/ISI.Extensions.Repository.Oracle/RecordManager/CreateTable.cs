@@ -182,6 +182,8 @@ namespace ISI.Extensions.Repository.Oracle
 					sql.AppendFormat("    constraint {0} primary key ({1})\n", primaryKeyName, string.Join(", ", recordDescription.PrimaryKeyPropertyDescriptions.OrderBy(propertyDescription => propertyDescription.PrimaryKeyAttribute.Order).Select(column => FormatColumnName(column.ColumnName))));
 				}
 
+				sql.Append("  )\n");
+
 				ExecuteCreateTable(connection, sql.ToString());
 			}
 

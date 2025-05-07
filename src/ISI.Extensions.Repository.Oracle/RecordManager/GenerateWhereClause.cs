@@ -34,6 +34,155 @@ namespace ISI.Extensions.Repository.Oracle
 			return new OracleConnectionWhereClause();
 		}
 
+		protected override IList<string> GenerateWhereClauseFilter(IWhereClause whereClause, RecordWhereColumn<TRecord> filter, ref int filterIndex, string indent, string filterValueNamePrefix = "")
+		{
+			var sqlFilters = new List<string>();
+
+			var columnName = filter.RecordPropertyDescription.ColumnName;
+
+			if (filter.NullOperator.HasValue)
+			{
+				switch (filter.NullOperator.Value)
+				{
+					case WhereClauseNullOperator.IsNull:
+						sqlFilters.Add(string.Format("{0}({1} is null)", indent, FormatColumnName(columnName)));
+						break;
+					case WhereClauseNullOperator.IsNotNull:
+						sqlFilters.Add(string.Format("{0}(Not {1} is null)", indent, FormatColumnName(columnName)));
+						break;
+				}
+			}
+			else if (filter.IsBetween)
+			{
+				if (!(whereClause is IWhereClauseWithParameters whereClauseWithParameters))
+				{
+					throw new("Where clause must implement IWhereClauseWithParameters");
+				}
+
+				var filterLesserBetweenValueName = string.Format("{0}Lesser{1}FilterValue_{2}", filterValueNamePrefix, columnName, filterIndex);
+				whereClauseWithParameters.Parameters.Add(filterLesserBetweenValueName, filter.LesserBetweenValue);
+
+				var filterGreaterBetweenValueName = string.Format("{0}Greater{1}FilterValue_{2}", filterValueNamePrefix, columnName, filterIndex);
+				whereClauseWithParameters.Parameters.Add(filterGreaterBetweenValueName, filter.GreaterBetweenValue);
+
+				sqlFilters.Add(string.Format("{0}({1} between :{2} and :{3})", indent, FormatColumnName(columnName), filterLesserBetweenValueName, filterGreaterBetweenValueName));
+
+				filterIndex++;
+			}
+			else if (filter.StringComparisonOperator.HasValue)
+			{
+				if (!(filter.Values.NullCheckedFirstOrDefault() is string value))
+				{
+					sqlFilters.Add(string.Format("{0}({1} is null)", indent, FormatColumnName(columnName)));
+				}
+				else
+				{
+					if (!(whereClause is IWhereClauseWithParameters whereClauseWithParameters))
+					{
+						throw new("Where clause must implement IWhereClauseWithParameters");
+					}
+
+					value = value.Trim();
+
+					var filterValueName = string.Format("{0}{1}FilterValue_{2}", filterValueNamePrefix, columnName, filterIndex++);
+
+					if (filter.StringComparisonOperator == WhereClauseStringComparisonOperator.Wildcards)
+					{
+						filter.StringComparisonOperator = WhereClauseStringComparisonOperator.Equal;
+
+						var beginsWith = value.EndsWith("*");
+						if (beginsWith)
+						{
+							value = value.TrimEnd('*').Trim();
+						}
+
+						var endsWith = value.StartsWith("*");
+						if (endsWith)
+						{
+							value = value.TrimStart('*').Trim();
+						}
+
+						if (beginsWith && endsWith)
+						{
+							filter.StringComparisonOperator = WhereClauseStringComparisonOperator.Contains;
+						}
+						else if (beginsWith)
+						{
+							filter.StringComparisonOperator = WhereClauseStringComparisonOperator.BeginsWith;
+						}
+						else if (endsWith)
+						{
+							filter.StringComparisonOperator = WhereClauseStringComparisonOperator.EndsWith;
+						}
+					}
+
+					switch (filter.StringComparisonOperator)
+					{
+						case WhereClauseStringComparisonOperator.BeginsWith:
+							whereClauseWithParameters.Parameters.Add(filterValueName, string.Format("{0}%", value));
+							sqlFilters.Add(string.Format("{0}({1} like :{2})", indent, FormatColumnName(columnName), filterValueName));
+							break;
+						case WhereClauseStringComparisonOperator.Equal:
+							whereClauseWithParameters.Parameters.Add(filterValueName, value);
+							sqlFilters.Add(string.Format("{0}({1} = :{2})", indent, FormatColumnName(columnName), filterValueName));
+							break;
+						case WhereClauseStringComparisonOperator.Contains:
+							whereClauseWithParameters.Parameters.Add(filterValueName, string.Format("%{0}%", value));
+							sqlFilters.Add(string.Format("{0}({1} like :{2})", indent, FormatColumnName(columnName), filterValueName));
+							break;
+						case WhereClauseStringComparisonOperator.EndsWith:
+							whereClauseWithParameters.Parameters.Add(filterValueName, string.Format("%{0}", value));
+							sqlFilters.Add(string.Format("{0}({1} like :{2})", indent, FormatColumnName(columnName), filterValueName));
+							break;
+					}
+				}
+			}
+			else if (filter.ComparisonOperator.HasValue)
+			{
+				var value = filter.Values.NullCheckedFirstOrDefault();
+
+				if (value == null)
+				{
+					throw new ArgumentOutOfRangeException();
+				}
+
+				if (!(whereClause is IWhereClauseWithParameters whereClauseWithParameters))
+				{
+					throw new("Where clause must implement IWhereClauseWithParameters");
+				}
+
+				var filterValueName = string.Format("{0}{1}FilterValue_{2}", filterValueNamePrefix, columnName, filterIndex++);
+
+				whereClauseWithParameters.Parameters.Add(filterValueName, value);
+
+				switch (filter.ComparisonOperator)
+				{
+					case WhereClauseComparisonOperator.LessThan:
+						sqlFilters.Add(string.Format("{0}({1} < :{2})", indent, FormatColumnName(columnName), filterValueName));
+						break;
+					case WhereClauseComparisonOperator.LessThanOrEqual:
+						sqlFilters.Add(string.Format("{0}({1} <= :{2})", indent, FormatColumnName(columnName), filterValueName));
+						break;
+					case WhereClauseComparisonOperator.GreaterThanOrEqual:
+						sqlFilters.Add(string.Format("{0}({1} >= :{2})", indent, FormatColumnName(columnName), filterValueName));
+						break;
+					case WhereClauseComparisonOperator.GreaterThan:
+						sqlFilters.Add(string.Format("{0}({1} > :{2})", indent, FormatColumnName(columnName), filterValueName));
+						break;
+				}
+			}
+			else if (filter.EqualityOperator.HasValue)
+			{
+				GenerateWhereClauseFilter_EqualityOperator(whereClause, filter, ref filterIndex, sqlFilters, indent, filterValueNamePrefix);
+			}
+			else
+			{
+				throw new("No Operator specified");
+			}
+
+			return sqlFilters;
+		}
+
 		protected override void GenerateWhereClauseFilter_EqualityOperator(IWhereClause whereClause, RecordWhereColumn<TRecord> filter, ref int filterIndex, List<string> sqlFilters, string indent, string filterValueNamePrefix)
 		{
 			if (filter.Values != null)
@@ -50,7 +199,7 @@ namespace ISI.Extensions.Repository.Oracle
 				{
 					filterValueCount++;
 
-					filterParameters.Add(string.Format("@{0}{1}FilterValue_{2}", filterValueNamePrefix, columnName, filterValueIndex++), filterValuesEnumerator.Current);
+					filterParameters.Add(string.Format("{0}{1}FilterValue_{2}", filterValueNamePrefix, columnName, filterValueIndex++), filterValuesEnumerator.Current);
 				}
 
 				if (filterValueCount == 0)
@@ -75,10 +224,10 @@ namespace ISI.Extensions.Repository.Oracle
 					switch (filter.EqualityOperator)
 					{
 						case WhereClauseEqualityOperator.Equal:
-							sqlFilters.Add(string.Format("{0}({1} = {2})", indent, FormatColumnName(columnName), filterParameters.First().Key));
+							sqlFilters.Add(string.Format("{0}({1} = :{2})", indent, FormatColumnName(columnName), filterParameters.First().Key));
 							break;
 						case WhereClauseEqualityOperator.NotEqual:
-							sqlFilters.Add(string.Format("{0}({1} != {2})", indent, FormatColumnName(columnName), filterParameters.First().Key));
+							sqlFilters.Add(string.Format("{0}({1} != :{2})", indent, FormatColumnName(columnName), filterParameters.First().Key));
 							break;
 					}
 
@@ -99,10 +248,10 @@ namespace ISI.Extensions.Repository.Oracle
 					switch (filter.EqualityOperator)
 					{
 						case WhereClauseEqualityOperator.Equal:
-							sqlFilters.Add(string.Format("{0}({1} IN ({2}))", indent, FormatColumnName(columnName), string.Join(" ,", filterParameters.Keys)));
+							sqlFilters.Add(string.Format("{0}({1} IN ({2}))", indent, FormatColumnName(columnName), string.Join(" ,", filterParameters.Keys.Select(filterParameterKey => $":{filterParameterKey}"))));
 							break;
 						case WhereClauseEqualityOperator.NotEqual:
-							sqlFilters.Add(string.Format("{0}(NOT {1} IN ({2}))", indent, FormatColumnName(columnName), string.Join(" ,", filterParameters.Keys)));
+							sqlFilters.Add(string.Format("{0}(NOT {1} IN ({2}))", indent, FormatColumnName(columnName), string.Join(" ,", filterParameters.Keys.Select(filterParameterKey => $":{filterParameterKey}"))));
 							break;
 					}
 

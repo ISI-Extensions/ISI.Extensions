@@ -97,6 +97,8 @@ namespace ISI.Extensions.Repository.PostgreSQL
 			{
 				var persistedConvertedRecordIndex = 0;
 
+				await connection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
+
 				foreach (var recordBatch in records.NullCheckedChunk(maxBatchSize))
 				{
 					var persistedRecordSets = new List<(TRecord Record, TConvertedRecord ConvertedRecord)>();
@@ -115,12 +117,12 @@ namespace ISI.Extensions.Repository.PostgreSQL
 						{
 							case PersistenceMethod.Insert:
 								{
-									var insertSql = new StringBuilder();
+									var sql = new StringBuilder();
 									var sqlValues = new Dictionary<string, object>();
 
-									insertSql.AppendFormat("INSERT INTO {0} ({1})\n", GetTableName(addAlias: false), string.Join(", ", insertPropertyDescriptions.Select(property => FormatColumnName(property.ColumnName))));
+									sql.AppendFormat("INSERT INTO {0} ({1})\n", GetTableName(addAlias: false), string.Join(", ", insertPropertyDescriptions.Select(property => FormatColumnName(property.ColumnName))));
 
-									insertSql.Append(string.Format("VALUES({0})", string.Join(", ", insertPropertyIndexes.Select(propertyIndex => string.Format("@value_{0}", propertyIndex)))));
+									sql.Append(string.Format("VALUES({0})", string.Join(", ", insertPropertyIndexes.Select(propertyIndex => string.Format("@value_{0}", propertyIndex)))));
 
 									var valueIndex = 1;
 									foreach (var property in insertPropertyDescriptions)
@@ -130,12 +132,10 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 									if (repositoryAssignedValueColumnDefinitions.Any())
 									{
-										insertSql.AppendFormat("RETURNING {0}\n", string.Join(", ", repositoryAssignedValuePropertyDescriptions.Select(property => FormatColumnName(property.ColumnName))));
+										sql.AppendFormat("RETURNING {0}\n", string.Join(", ", repositoryAssignedValuePropertyDescriptions.Select(property => FormatColumnName(property.ColumnName))));
 									}
 
-									await connection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
-
-									using (var command = new Npgsql.NpgsqlCommand(insertSql.ToString(), connection))
+									using (var command = new Npgsql.NpgsqlCommand(sql.ToString(), connection))
 									{
 										command.CommandType = System.Data.CommandType.Text;
 
@@ -165,17 +165,17 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 							case PersistenceMethod.Update:
 								{
-									var updateSql = new StringBuilder();
+									var sql = new StringBuilder();
 
-									updateSql.AppendFormat("UPDATE {0}\n", GetTableName("updateTable"));
-									updateSql.Append("SET\n");
+									sql.AppendFormat("UPDATE {0}\n", GetTableName(addAlias: false));
+									sql.Append("SET\n");
 									var columnIndex = 1;
-									updateSql.AppendFormat("{0}\n", string.Join(",\n", updatePropertyDescriptions.Select(property => string.Format("    {0} = @value_{1}", FormatColumnName(property.ColumnName), columnIndex++))));
-									updateSql.Append("WHERE\n");
+									sql.AppendFormat("{0}\n", string.Join(",\n", updatePropertyDescriptions.Select(property => string.Format("    {0} = @value_{1}", FormatColumnName(property.ColumnName), columnIndex++))));
+									sql.Append("WHERE\n");
 									var primaryKeyIndex = 1;
-									updateSql.AppendFormat("      {0};\n", string.Join(" AND\n", primaryKeyPropertyDescriptions.Select(property => string.Format("    {0} = @primaryKey_{1}", FormatColumnName(property.ColumnName), primaryKeyIndex++))));
+									sql.AppendFormat("      {0};\n", string.Join(" AND\n", primaryKeyPropertyDescriptions.Select(property => string.Format("    {0} = @primaryKey_{1}", FormatColumnName(property.ColumnName), primaryKeyIndex++))));
 
-									using (var command = new Npgsql.NpgsqlCommand(updateSql.ToString(), connection))
+									using (var command = new Npgsql.NpgsqlCommand(sql.ToString(), connection))
 									{
 										command.CommandType = System.Data.CommandType.Text;
 
@@ -191,19 +191,19 @@ namespace ISI.Extensions.Repository.PostgreSQL
 											command.AddParameter(string.Format("@primaryKey_{0}", primaryKeyIndex++), (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
 										}
 
-										connection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken).Wait(cancellationToken);
+										await command.ExecuteNonQueryWithExceptionTracingAsync(cancellationToken: cancellationToken);
 									}
 								}
 								break;
 
 							case PersistenceMethod.Upsert:
 								{
-									var upsertSql = new StringBuilder();
+									var sql = new StringBuilder();
 									var sqlValues = new Dictionary<string, object>();
 
-									upsertSql.AppendFormat("INSERT INTO {0} ({1})\n", GetTableName(addAlias: false), string.Join(", ", insertPropertyDescriptions.Select(property => FormatColumnName(property.ColumnName))));
+									sql.AppendFormat("INSERT INTO {0} ({1})\n", GetTableName(addAlias: false), string.Join(", ", insertPropertyDescriptions.Select(property => FormatColumnName(property.ColumnName))));
 
-									upsertSql.Append(string.Format("VALUES({0})", string.Join(", ", insertPropertyIndexes.Select(propertyIndex => string.Format("@value_{0}", propertyIndex)))));
+									sql.Append(string.Format("VALUES({0})", string.Join(", ", insertPropertyIndexes.Select(propertyIndex => string.Format("@value_{0}", propertyIndex)))));
 
 									var valueIndexByColumnName = new Dictionary<string, int>();
 									var valueIndex = 1;
@@ -213,21 +213,19 @@ namespace ISI.Extensions.Repository.PostgreSQL
 										sqlValues.Add(string.Format("@value_{0}", valueIndex++), (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
 									}
 
-									upsertSql.AppendFormat("ON CONFLICT ({0})\n", string.Join(", ", primaryKeyPropertyDescriptions.Select(property => FormatColumnName(property.ColumnName))));
+									sql.AppendFormat("ON CONFLICT ({0})\n", string.Join(", ", primaryKeyPropertyDescriptions.Select(property => FormatColumnName(property.ColumnName))));
 
-									upsertSql.Append("DO UPDATE\n");
-									upsertSql.Append("SET\n");
-									upsertSql.AppendFormat("{0}", string.Join(",\n", updatePropertyDescriptions.Select(property => string.Format("    {0} = @value_{1}", FormatColumnName(property.ColumnName), valueIndexByColumnName[property.ColumnName]))));
+									sql.Append("DO UPDATE\n");
+									sql.Append("SET\n");
+									sql.AppendFormat("{0}", string.Join(",\n", updatePropertyDescriptions.Select(property => string.Format("    {0} = @value_{1}", FormatColumnName(property.ColumnName), valueIndexByColumnName[property.ColumnName]))));
 									
 									if (repositoryAssignedValueColumnDefinitions.Any())
 									{
-										upsertSql.AppendFormat("\nRETURNING {0}", string.Join(", ", repositoryAssignedValuePropertyDescriptions.Select(property => FormatColumnName(property.ColumnName))));
+										sql.AppendFormat("\nRETURNING {0}", string.Join(", ", repositoryAssignedValuePropertyDescriptions.Select(property => FormatColumnName(property.ColumnName))));
 									}
-									upsertSql.Append(";\n");
+									sql.Append(";\n");
 
-									await connection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
-
-									using (var command = new Npgsql.NpgsqlCommand(upsertSql.ToString(), connection))
+									using (var command = new Npgsql.NpgsqlCommand(sql.ToString(), connection))
 									{
 										command.CommandType = System.Data.CommandType.Text;
 
@@ -262,10 +260,10 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 					if (hasArchiveTable && persistedRecordSets.Any())
 					{
-						var insertSql = new StringBuilder();
+						var sql = new StringBuilder();
 						var sqlValues = new Dictionary<string, object>();
 
-						insertSql.AppendFormat("INSERT INTO {0} ({1}, {2})\n", GetArchiveTableName(addAlias: false), FormatColumnName(ArchiveTableArchiveDateTimeColumnName), string.Join(", ", archivePropertyDescriptions.Select(property => FormatColumnName(property.ColumnName))));
+						sql.AppendFormat("INSERT INTO {0} ({1}, {2})\n", GetArchiveTableName(addAlias: false), FormatColumnName(ArchiveTableArchiveDateTimeColumnName), string.Join(", ", archivePropertyDescriptions.Select(property => FormatColumnName(property.ColumnName))));
 
 						var sqlSelects = new List<string>();
 						sqlValues.Clear();
@@ -285,12 +283,10 @@ namespace ISI.Extensions.Repository.PostgreSQL
 							selectIndex++;
 						}
 
-						insertSql.AppendFormat("{0}\n", string.Join(" UNION ALL\n", sqlSelects));
-						insertSql.Append(";\n");
+						sql.AppendFormat("{0}\n", string.Join(" UNION ALL\n", sqlSelects));
+						sql.Append(";\n");
 
-						await connection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken);
-
-						using (var command = new Npgsql.NpgsqlCommand(insertSql.ToString(), connection))
+						using (var command = new Npgsql.NpgsqlCommand(sql.ToString(), connection))
 						{
 							command.CommandTimeout = PostgreSQLConfiguration.ArchiveTableCommandTimeout;
 

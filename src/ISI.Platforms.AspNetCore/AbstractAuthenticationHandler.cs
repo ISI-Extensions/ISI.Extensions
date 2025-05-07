@@ -88,7 +88,7 @@ namespace ISI.Platforms.AspNetCore
 			return new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(Configuration.Jwt.Issuer, Configuration.Jwt.Issuer, claims, expires: DateTime.Now + Configuration.Jwt.ExpirationInterval, signingCredentials: signingCredentials);
 		}
 
-		public async Task<IEnumerable<System.Security.Claims.Claim>> GetUserClaimsAsync(ISI.Extensions.IAuthenticationIdentityUser authenticationIdentityUser)
+		public virtual async Task<IEnumerable<System.Security.Claims.Claim>> GetUserClaimsAsync(ISI.Extensions.IAuthenticationIdentityUser authenticationIdentityUser)
 		{
 			var listRolesResponse = await AuthenticationIdentityApi.ListRolesAsync(new());
 

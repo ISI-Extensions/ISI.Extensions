@@ -40,8 +40,6 @@ namespace ISI.Extensions.Repository.Oracle
 			sql.Append("FROM user_Tables\n");
 			sql.Append("WHERE table_name = 'DatabaseMigrationStep'\n");
 
-			var tableExists = false;
-
 			using (var command = new global::Oracle.ManagedDataAccess.Client.OracleCommand(sql.ToString(), connection))
 			{
 				return string.Format("{0}", command.ExecuteScalarWithExceptionTracingAsync().GetAwaiter().GetResult()).ToBoolean();

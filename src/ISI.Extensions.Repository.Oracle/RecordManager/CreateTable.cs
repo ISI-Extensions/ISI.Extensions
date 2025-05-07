@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -123,8 +123,6 @@ namespace ISI.Extensions.Repository.Oracle
 
 		public virtual void CreateTable(global::Oracle.ManagedDataAccess.Client.OracleConnection connection, CreateTableMode createTableMode, bool hasArchiveTable)
 		{
-			var sql = new StringBuilder();
-
 			var recordDescription = GetRecordDescription();
 
 			var tableName = FormatTableName(TableName, null, false);
@@ -148,32 +146,47 @@ namespace ISI.Extensions.Repository.Oracle
 				}
 			}
 
-			var addEndIf = false;
-			switch (createTableMode)
+			var tableExists = false;
 			{
-				case CreateTableMode.DeleteAndCreateIfExists:
-					sql.AppendFormat("IF (SELECT COUNT(1) FROM dba_tables WHERE table_name = '{0}') > 0 THEN\n", tableName);
-					sql.AppendFormat("  DROP TABLE {0}\n", tableName);
-					sql.Append("END IF\n");
-					break;
-				case CreateTableMode.TruncateIfExists:
-					sql.AppendFormat("IF (SELECT COUNT(1) FROM dba_tables WHERE table_name = '{0}') > 0 THEN\n", tableName);
-					sql.AppendFormat("  TRUNCATE TABLE {0}\n", tableName);
-					sql.Append("ELSE\n");
-					addEndIf = true;
-					break;
+				var sql = new StringBuilder();
+
+				sql.Clear();
+				sql.Append("SELECT COUNT(1) as TableCount\n");
+				sql.Append("FROM user_Tables\n");
+				sql.Append($"WHERE table_name = '{tableName}'\n");
+
+				using (var command = new global::Oracle.ManagedDataAccess.Client.OracleCommand(sql.ToString(), connection))
+				{
+					tableExists = string.Format("{0}", command.ExecuteScalarWithExceptionTracingAsync().GetAwaiter().GetResult()).ToBoolean();
+				}
 			}
 
-			sql.AppendFormat("CREATE TABLE {0}\n", tableName);
-			sql.Append("  (\n");
-			sql.AppendFormat("{0}{1}\n", string.Join(",\n", recordDescription.PropertyDescriptions.OrderBy(propertyDescription => propertyDescription.Order).Select(propertyDescription => string.Format("  {0}", propertyDescription.GetColumnDefinition(FormatColumnName)))), (string.IsNullOrEmpty(primaryKeyName) ? string.Empty : ","));
-
-			if (!string.IsNullOrEmpty(primaryKeyName))
+			if (tableExists)
 			{
-				sql.AppendFormat("    constraint {0} primary key ({1})\n", primaryKeyName, string.Join(", ", recordDescription.PrimaryKeyPropertyDescriptions.OrderBy(propertyDescription => propertyDescription.PrimaryKeyAttribute.Order).Select(column => FormatColumnName(column.ColumnName))));
+				switch (createTableMode)
+				{
+					case CreateTableMode.DeleteAndCreateIfExists:
+						ExecuteNonQueryAsync(connection, $"DROP TABLE {tableName}").Wait();
+						break;
+					case CreateTableMode.TruncateIfExists:
+						ExecuteNonQueryAsync(connection, $"TRUNCATE TABLE {tableName}").Wait();
+						break;
+				}
 			}
 
-			sql.Append("  )\n");
+			{
+				var sql = new StringBuilder();
+				sql.AppendFormat("CREATE TABLE {0}\n", tableName);
+				sql.Append("  (\n");
+				sql.AppendFormat("{0}{1}\n", string.Join(",\n", recordDescription.PropertyDescriptions.OrderBy(propertyDescription => propertyDescription.Order).Select(propertyDescription => string.Format("  {0}", propertyDescription.GetColumnDefinition(FormatColumnName)))), (string.IsNullOrEmpty(primaryKeyName) ? string.Empty : ","));
+
+				if (!string.IsNullOrEmpty(primaryKeyName))
+				{
+					sql.AppendFormat("    constraint {0} primary key ({1})\n", primaryKeyName, string.Join(", ", recordDescription.PrimaryKeyPropertyDescriptions.OrderBy(propertyDescription => propertyDescription.PrimaryKeyAttribute.Order).Select(column => FormatColumnName(column.ColumnName))));
+				}
+
+				ExecuteCreateTable(connection, sql.ToString());
+			}
 
 			foreach (var recordIndex in recordDescription.Indexes)
 			{
@@ -184,23 +197,14 @@ namespace ISI.Extensions.Repository.Oracle
 					throw new Exception(string.Format("Cannot create index: \"{0}\"\n  {1}\n", recordIndex.Name, string.Join("\n  ", columnIssues)));
 				}
 
-				sql.Append("\n");
-
 				var recordIndexName = recordIndex.Name;
 				if (recordIndexName.Length > 128)
 				{
 					recordIndexName = recordIndexName.Substring(0, 128);
 				}
 
-				sql.AppendFormat("  CREATE{3}{4} INDEX {0} ON {1} ({2})\n", recordIndexName, tableName, string.Join(", ", recordIndex.Columns.Select(column => string.Format("{0}{1}", FormatColumnName(column.RecordPropertyDescription.ColumnName), column.AscendingOrder ? string.Empty : " desc"))), (recordIndex.Unique ? " unique" : string.Empty), (recordIndex.Clustered ? " clustered" : string.Empty));
+				ExecuteCreateTable(connection, string.Format("  CREATE{3}{4} INDEX {0} ON {1} ({2})\n", recordIndexName, tableName, string.Join(", ", recordIndex.Columns.Select(column => string.Format("{0}{1}", FormatColumnName(column.RecordPropertyDescription.ColumnName), column.AscendingOrder ? string.Empty : " desc"))), (recordIndex.Unique ? " unique" : string.Empty), (recordIndex.Clustered ? " clustered" : string.Empty)));
 			}
-
-			if (addEndIf)
-			{
-				sql.Append("END IF\n");
-			}
-
-			ExecuteCreateTable(connection, sql.ToString());
 
 			if (hasArchiveTable)
 			{
@@ -215,8 +219,6 @@ namespace ISI.Extensions.Repository.Oracle
 
 		public virtual void CreateArchiveTable(global::Oracle.ManagedDataAccess.Client.OracleConnection connection, CreateTableMode createTableMode = CreateTableMode.ErrorIfExists)
 		{
-			var sql = new StringBuilder();
-
 			var recordDescription = RecordDescription.GetRecordDescription<TRecord>();
 
 			var tableName = FormatArchiveTableName(string.Format("{0}{1}", TableName, ArchiveTableSuffix), null, false);
@@ -240,39 +242,44 @@ namespace ISI.Extensions.Repository.Oracle
 				}
 			}
 
-			var addEndIf = false;
-			switch (createTableMode)
+			var tableExists = false;
 			{
-				case CreateTableMode.DeleteAndCreateIfExists:
-					sql.AppendFormat("IF (SELECT COUNT(1) FROM dba_tables WHERE table_name = '{0}') > 0 THEN\n", tableName);
-					sql.AppendFormat("  DROP TABLE {0}\n", tableName);
-					sql.Append("END IF\n");
-					break;
-				case CreateTableMode.TruncateIfExists:
-					sql.AppendFormat("IF (SELECT COUNT(1) FROM dba_tables WHERE table_name = '{0}') > 0 THEN\n", tableName);
-					sql.AppendFormat("  TRUNCATE TABLE {0}\n", tableName);
-					sql.Append("ELSE\n");
-					addEndIf = true;
-					break;
+				var sql = new StringBuilder();
+
+				sql.Clear();
+				sql.Append("SELECT COUNT(1) as TableCount\n");
+				sql.Append("FROM user_Tables\n");
+				sql.Append($"WHERE table_name = '{tableName}'\n");
+
+				using (var command = new global::Oracle.ManagedDataAccess.Client.OracleCommand(sql.ToString(), connection))
+				{
+					tableExists = string.Format("{0}", command.ExecuteScalarWithExceptionTracingAsync().GetAwaiter().GetResult()).ToBoolean();
+				}
 			}
 
-			sql.AppendFormat("  CREATE TABLE {0}\n", tableName);
-			sql.Append("  (\n");
-			sql.AppendFormat("    {0} TIMESTAMP NOT NULL,\n", FormatColumnName(ArchiveTableArchiveDateTimeColumnName));
-			sql.AppendFormat("{0}\n", string.Join(",\n", recordDescription.PropertyDescriptions.OrderBy(propertyDescription => propertyDescription.Order).Select(propertyDescription => string.Format("  {0}", propertyDescription.GetColumnDefinition(FormatColumnName)))));
-			sql.Append("  )\n");
-
-			if (!string.IsNullOrEmpty(primaryKeyName))
+			if (tableExists)
 			{
-				//sql.AppendFormat("  CREATE INDEX {0} ON {1} ({2});\n", primaryKeyName, tableName, string.Join(", ", recordDescription.PrimaryKeyPropertyDescriptions.OrderBy(propertyDescription => propertyDescription.PrimaryKeyAttribute.Order).Select(column => FormatColumnName(column.ColumnName))));
+				switch (createTableMode)
+				{
+					case CreateTableMode.DeleteAndCreateIfExists:
+						ExecuteNonQueryAsync(connection, $"DROP TABLE {tableName}").Wait();
+						break;
+					case CreateTableMode.TruncateIfExists:
+						ExecuteNonQueryAsync(connection, $"TRUNCATE TABLE {tableName}").Wait();
+						break;
+				}
 			}
 
-			if (addEndIf)
 			{
-				sql.Append("END IF\n");
-			}
+				var sql = new StringBuilder();
+				sql.AppendFormat("  CREATE TABLE {0}\n", tableName);
+				sql.Append("  (\n");
+				sql.AppendFormat("    {0} TIMESTAMP NOT NULL,\n", FormatColumnName(ArchiveTableArchiveDateTimeColumnName));
+				sql.AppendFormat("{0}\n", string.Join(",\n", recordDescription.PropertyDescriptions.OrderBy(propertyDescription => propertyDescription.Order).Select(propertyDescription => string.Format("  {0}", propertyDescription.GetColumnDefinition(FormatColumnName)))));
+				sql.Append("  )\n");
 
-			ExecuteCreateArchiveTable(connection, sql.ToString());
+				ExecuteCreateArchiveTable(connection, sql.ToString());
+			}
 		}
 
 		protected virtual void ExecuteCreateArchiveTable(global::Oracle.ManagedDataAccess.Client.OracleConnection connection, string sql)

@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2025, Integrated Solutions, Inc.
 All rights reserved.
@@ -13,18 +13,44 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle("ISI.Extensions")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("ISI.Extensions")]
-[assembly: AssemblyCulture("")]
+namespace ISI.Extensions.Aspose.Barcodes.Extensions
+{
+	public static partial class BarcodeExtensions
+	{
+		public static void SetUnit(this global::Aspose.BarCode.Generation.Unit unit, ISI.Extensions.UnitOfMeasure.Distance value)
+		{
+			if (unit == null)
+			{
+				throw new NullReferenceException(nameof(unit));
+			}
 
-[assembly: InternalsVisibleTo("ISI.Extensions.Aspose.Barcodes")]
-[assembly: InternalsVisibleTo("ISI.Extensions.SshNet")]
+			if (value.HasValue)
+			{
+				switch (value.UnitOfMeasure)
+				{
+					case ISI.Extensions.UnitOfMeasure.DistanceUnitOfMeasure.Pixel:
+						unit.Pixels = value.Pixels;
+						break;
+					case ISI.Extensions.UnitOfMeasure.DistanceUnitOfMeasure.Point:
+						unit.Point = value.Points;
+						break;
+					case ISI.Extensions.UnitOfMeasure.DistanceUnitOfMeasure.Inch:
+						unit.Inches = value.Inches;
+						break;
+					case ISI.Extensions.UnitOfMeasure.DistanceUnitOfMeasure.Document:
+						unit.Document = value.Document;
+						break;
+					case ISI.Extensions.UnitOfMeasure.DistanceUnitOfMeasure.Millimeter:
+						unit.Millimeters = value.Millimeters;
+						break;
+					default:
+						throw new ArgumentOutOfRangeException();
+				}
+			}
+		}
+	}
+}

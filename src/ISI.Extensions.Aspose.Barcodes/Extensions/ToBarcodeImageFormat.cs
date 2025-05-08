@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2025, Integrated Solutions, Inc.
 All rights reserved.
@@ -13,18 +13,31 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle("ISI.Extensions")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("ISI.Extensions")]
-[assembly: AssemblyCulture("")]
+namespace ISI.Extensions.Aspose.Barcodes.Extensions
+{
+	public static partial class BarcodeExtensions
+	{
+		public static global::Aspose.BarCode.Generation.BarCodeImageFormat ToBarcodeImageFormat(this ISI.Extensions.Images.ImageFormat imageFormat)
+		{
+			switch (imageFormat)
+			{
+				case ISI.Extensions.Images.ImageFormat.Bmp:
+					return global::Aspose.BarCode.Generation.BarCodeImageFormat.Bmp;
+				case ISI.Extensions.Images.ImageFormat.Jpeg:
+					return global::Aspose.BarCode.Generation.BarCodeImageFormat.Jpeg;
+				case ISI.Extensions.Images.ImageFormat.Png:
+					return global::Aspose.BarCode.Generation.BarCodeImageFormat.Png;
+				case ISI.Extensions.Images.ImageFormat.Gif:
+					return global::Aspose.BarCode.Generation.BarCodeImageFormat.Png;
+				case ISI.Extensions.Images.ImageFormat.Tiff:
+					return global::Aspose.BarCode.Generation.BarCodeImageFormat.Tiff;
+			}
 
-[assembly: InternalsVisibleTo("ISI.Extensions.Aspose.Barcodes")]
-[assembly: InternalsVisibleTo("ISI.Extensions.SshNet")]
+			throw new ArgumentOutOfRangeException(nameof(imageFormat), imageFormat, null);
+		}
+	}
+}

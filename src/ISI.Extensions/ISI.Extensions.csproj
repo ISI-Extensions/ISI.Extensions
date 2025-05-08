@@ -46,6 +46,7 @@
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.4" />
 		<PackageReference Include="Microsoft.Extensions.Primitives" Version="9.0.4" />
 		<PackageReference Include="System.Composition" Version="9.0.4" />
+		<PackageReference Include="System.Drawing.Common" Version="9.0.4" />
 		<PackageReference Include="System.Text.Json" Version="9.0.4" />
 	</ItemGroup>
 

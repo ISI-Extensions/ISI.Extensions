@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2025, Integrated Solutions, Inc.
 All rights reserved.
@@ -13,18 +13,41 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle("ISI.Extensions")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("ISI.Extensions")]
-[assembly: AssemblyCulture("")]
+namespace ISI.Extensions.Aspose.Barcodes.Extensions
+{
+	public static partial class BarcodeExtensions
+	{
+		public static void SetFont(this global::Aspose.BarCode.Generation.FontUnit fontUnit, System.Drawing.Font font)
+		{
+			fontUnit.FamilyName = font.FontFamily.Name;
+			fontUnit.Style = font.Style.ToFontStyle();
 
-[assembly: InternalsVisibleTo("ISI.Extensions.Aspose.Barcodes")]
-[assembly: InternalsVisibleTo("ISI.Extensions.SshNet")]
+			switch (font.Unit)
+			{
+				case System.Drawing.GraphicsUnit.Display:
+					break;
+				case System.Drawing.GraphicsUnit.Pixel:
+					fontUnit.Size.Pixels = font.Size;
+					break;
+				case System.Drawing.GraphicsUnit.Point:
+					fontUnit.Size.Point = font.Size;
+					break;
+				case System.Drawing.GraphicsUnit.Inch:
+					fontUnit.Size.Inches = font.Size;
+					break;
+				case System.Drawing.GraphicsUnit.Document:
+					fontUnit.Size.Document = font.Size;
+					break;
+				case System.Drawing.GraphicsUnit.Millimeter:
+					fontUnit.Size.Millimeters = font.Size;
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+		}
+	}
+}

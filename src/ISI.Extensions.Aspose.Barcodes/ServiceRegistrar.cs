@@ -13,18 +13,22 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle("ISI.Extensions")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("ISI.Extensions")]
-[assembly: AssemblyCulture("")]
-
-[assembly: InternalsVisibleTo("ISI.Extensions.Aspose.Barcodes")]
-[assembly: InternalsVisibleTo("ISI.Extensions.SshNet")]
+namespace ISI.Extensions.Aspose.Barcodes
+{
+	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
+	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
+	{
+		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
+		{
+			services.AddSingleton<ISI.Extensions.Barcodes.IBarcodeGenerator, BarcodeGenerator>();
+		}
+	}
+}

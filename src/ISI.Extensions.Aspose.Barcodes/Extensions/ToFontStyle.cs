@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2025, Integrated Solutions, Inc.
 All rights reserved.
@@ -13,18 +13,31 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle("ISI.Extensions")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("ISI.Extensions")]
-[assembly: AssemblyCulture("")]
-
-[assembly: InternalsVisibleTo("ISI.Extensions.Aspose.Barcodes")]
-[assembly: InternalsVisibleTo("ISI.Extensions.SshNet")]
+namespace ISI.Extensions.Aspose.Barcodes.Extensions
+{
+	public static partial class BarcodeExtensions
+	{
+		public static global::Aspose.Drawing.FontStyle ToFontStyle(this System.Drawing.FontStyle fontStyle)
+		{
+			switch (fontStyle)
+			{
+				case System.Drawing.FontStyle.Regular:
+					return global::Aspose.Drawing.FontStyle.Regular;
+				case System.Drawing.FontStyle.Bold:
+					return global::Aspose.Drawing.FontStyle.Bold;
+				case System.Drawing.FontStyle.Italic:
+					return global::Aspose.Drawing.FontStyle.Italic;
+				case System.Drawing.FontStyle.Underline:
+					return global::Aspose.Drawing.FontStyle.Underline;
+				case System.Drawing.FontStyle.Strikeout:
+					return global::Aspose.Drawing.FontStyle.Strikeout;
+				default:
+					throw new ArgumentOutOfRangeException(nameof(fontStyle), fontStyle, null);
+			}
+		}
+	}
+}

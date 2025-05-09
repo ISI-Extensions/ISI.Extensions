@@ -36,6 +36,7 @@ namespace ISI.Extensions
 
 			services.AddSingleton<ISI.Extensions.Crypto.Pbkdf2SaltedHashGenerator>();
 			services.AddSingleton<ISI.Extensions.Threads.ThreadManager>();
+			services.AddSingleton<ISI.Extensions.Documents.DocumentGenerator.IDocumentGenerator, ISI.Extensions.Documents.DocumentGenerator.DocumentGenerator>();
 			services.AddSingleton<ISI.Extensions.Emails.EmailMessageGenerator.IEmailMessageGenerator, ISI.Extensions.Emails.EmailMessageGenerator.EmailMessageGenerator>();
 			services.AddSingleton<ISI.Extensions.Emails.LocalhostEmailSender>();
 			services.AddSingleton<ISI.Extensions.Dns.IDomainsApi, ISI.Extensions.Dns.DomainsApi>();

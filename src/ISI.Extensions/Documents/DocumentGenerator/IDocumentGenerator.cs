@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Documents.DocumentGenerator
 {
-	public interface IGenerator
+	public interface IDocumentGenerator
 	{
 		Task GenerateDocumentAsync<TModel>(TModel model, ISI.Extensions.Documents.IDocumentProperties documentProperties = null, string printerName = null, System.IO.Stream documentStream = null, ISI.Extensions.Documents.FileFormat fileFormat = ISI.Extensions.Documents.FileFormat.Default, System.Threading.CancellationToken cancellationToken = default)
 			where TModel : class, IModel;

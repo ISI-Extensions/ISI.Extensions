@@ -24,11 +24,11 @@ using ISI.Extensions.DependencyInjection.Extensions;
 
 namespace ISI.Extensions.Documents.DocumentGenerator
 {
-	public class Generator : IGenerator
+	public class DocumentGenerator : IDocumentGenerator
 	{
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 
-		public Generator(
+		public DocumentGenerator(
 			Microsoft.Extensions.Logging.ILogger logger)
 		{
 			Logger = logger;

@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2025, Integrated Solutions, Inc.
 All rights reserved.
@@ -12,24 +12,27 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ISI.Extensions.Sbom
 {
-	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
-	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
+	public enum ComponentType
 	{
-		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
-		{
-			services.AddSingleton< DependencyTrackApi>();
-			services.AddSingleton<SbomApi>();
-		}
+		[ISI.Extensions.Enum("Application")] Application,
+		[ISI.Extensions.Enum("Container")] Container,
+		[ISI.Extensions.Enum("Data")] Data,
+		[ISI.Extensions.Enum("Device")] Device,
+		[ISI.Extensions.Enum("Device Driver", ["Device_Driver"])] DeviceDriver,
+		[ISI.Extensions.Enum("File")] File,
+		[ISI.Extensions.Enum("Firmware")] Firmware,
+		[ISI.Extensions.Enum("Framework")] Framework,
+		[ISI.Extensions.Enum("Library")] Library,
+		[ISI.Extensions.Enum("Machine Learning Model", ["Machine_Learning_Model"])] MachineLearningModel,
+		[ISI.Extensions.Enum("None", ["Null"])] None,
+		[ISI.Extensions.Enum("Operating System", ["Operating_System"])] OperatingSystem,
+		[ISI.Extensions.Enum("Platform")] Platform,
 	}
 }

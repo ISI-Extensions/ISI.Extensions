@@ -184,7 +184,51 @@ namespace ISI.Extensions.Sbom
 			if (request.SetComponentType != null)
 			{
 				arguments.Add("--set-type");
-				arguments.Add($"\"{request.SetComponentType.GetDescription().RemoveTitleCase().Replace(" ", "_")}\"");
+
+				switch (request.SetComponentType)
+				{
+					case ComponentType.Application:
+						arguments.Add("Application");
+						break;
+					case ComponentType.Container:
+						arguments.Add("Container");
+						break;
+					case ComponentType.Data:
+						arguments.Add("Data");
+						break;
+					case ComponentType.Device:
+						arguments.Add("Device");
+						break;
+					case ComponentType.DeviceDriver:
+						arguments.Add("Device_Driver");
+						break;
+					case ComponentType.File:
+						arguments.Add("File");
+						break;
+					case ComponentType.Firmware:
+						arguments.Add("Firmware");
+						break;
+					case ComponentType.Framework:
+						arguments.Add("Framework");
+						break;
+					case ComponentType.Library:
+						arguments.Add("Library");
+						break;
+					case ComponentType.MachineLearningModel:
+						arguments.Add("Machine_Learning_Model");
+						break;
+					case ComponentType.None:
+						arguments.Add("Null");
+						break;
+					case ComponentType.OperatingSystem:
+						arguments.Add("Operating_System");
+						break;
+					case ComponentType.Platform:
+						arguments.Add("Platform");
+						break;
+					default:
+						throw new ArgumentOutOfRangeException();
+				}
 			}
 
 			if (!string.IsNullOrWhiteSpace(request.SetNugetPurl))

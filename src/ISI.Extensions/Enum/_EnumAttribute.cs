@@ -90,6 +90,12 @@ namespace ISI.Extensions
 			Description = description;
 			Active = true;
 		}
+		public EnumAttribute(string description, string[] aliases)
+		{
+			Description = description;
+			Aliases = aliases;
+			Active = true;
+		}
 		public EnumAttribute(string description, bool active)
 		{
 			Description = description;

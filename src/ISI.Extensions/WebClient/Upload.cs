@@ -156,7 +156,7 @@ namespace ISI.Extensions.WebClient
 		public static (System.Net.HttpStatusCode HttpStatusCode, string Body) UploadFiles(Uri uri, HeaderCollection headers, IEnumerable<(System.IO.Stream Stream, string FileName, string FileFieldName)> files, System.Collections.Specialized.NameValueCollection formValues = null, string method = null)
 		{
 			var boundary = string.Format("---------------------------{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.Base36));
-			var boundarybytes = System.Text.Encoding.UTF8.GetBytes(string.Format("{0}--{1}{0}", Environment.NewLine, boundary));
+			var boundaryBytes = System.Text.Encoding.UTF8.GetBytes(string.Format("{0}--{1}{0}", Environment.NewLine, boundary));
 
 			var webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(uri);
 
@@ -181,7 +181,7 @@ namespace ISI.Extensions.WebClient
 					var itemBytes = System.Text.Encoding.UTF8.GetBytes(itemString);
 
 					requestLen += itemBytes.Length;
-					requestLen += boundarybytes.Length;
+					requestLen += boundaryBytes.Length;
 
 					formItems.Add(itemBytes);
 				}
@@ -199,7 +199,7 @@ namespace ISI.Extensions.WebClient
 				var fileHeader = getFileHeader(file);
 				var fileHeaderBytes = System.Text.Encoding.UTF8.GetBytes(fileHeader);
 
-				requestLen += boundarybytes.Length + fileHeaderBytes.Length + file.Stream.Length;
+				requestLen += boundaryBytes.Length + fileHeaderBytes.Length + file.Stream.Length;
 			}
 
 
@@ -216,13 +216,13 @@ namespace ISI.Extensions.WebClient
 			{
 				foreach (var item in formItems)
 				{
-					requestStream.Write(boundarybytes, 0, boundarybytes.Length);
+					requestStream.Write(boundaryBytes, 0, boundaryBytes.Length);
 					requestStream.Write(item, 0, item.Length);
 				}
 
 				foreach (var file in files)
 				{
-					requestStream.Write(boundarybytes, 0, boundarybytes.Length);
+					requestStream.Write(boundaryBytes, 0, boundaryBytes.Length);
 
 					var fileHeader = getFileHeader(file);
 					var fileHeaderBytes = System.Text.Encoding.UTF8.GetBytes(fileHeader);
@@ -273,7 +273,7 @@ namespace ISI.Extensions.WebClient
 			stream.Rewind();
 
 			var boundary = string.Format("---------------------------{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.Base36));
-			var boundarybytes = System.Text.Encoding.UTF8.GetBytes(string.Format("\r\n--{0}\r\n", boundary));
+			var boundaryBytes = System.Text.Encoding.UTF8.GetBytes(string.Format("\r\n--{0}\r\n", boundary));
 
 			var formItems = new List<byte[]>();
 			long requestLen = 0;
@@ -286,7 +286,7 @@ namespace ISI.Extensions.WebClient
 					var itemBytes = System.Text.Encoding.UTF8.GetBytes(itemString);
 
 					requestLen += itemBytes.Length;
-					requestLen += boundarybytes.Length;
+					requestLen += boundaryBytes.Length;
 
 					formItems.Add(itemBytes);
 				}
@@ -297,7 +297,7 @@ namespace ISI.Extensions.WebClient
 			var fileHeaderBytes = System.Text.Encoding.UTF8.GetBytes(fileHeader);
 			var fileTrailer = System.Text.Encoding.UTF8.GetBytes(string.Format("\r\n--{0}--\r\n", boundary));
 
-			requestLen += boundarybytes.Length + fileHeaderBytes.Length + fileTrailer.Length + stream.Length;
+			requestLen += boundaryBytes.Length + fileHeaderBytes.Length + fileTrailer.Length + stream.Length;
 
 			var webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(uri);
 
@@ -321,11 +321,11 @@ namespace ISI.Extensions.WebClient
 			{
 				foreach (var item in formItems)
 				{
-					requestStream.Write(boundarybytes, 0, boundarybytes.Length);
+					requestStream.Write(boundaryBytes, 0, boundaryBytes.Length);
 					requestStream.Write(item, 0, item.Length);
 				}
 
-				requestStream.Write(boundarybytes, 0, boundarybytes.Length);
+				requestStream.Write(boundaryBytes, 0, boundaryBytes.Length);
 				requestStream.Write(fileHeaderBytes, 0, fileHeaderBytes.Length);
 
 				var chunkSize = 1427; // any larger will cause an SSL request to fail
@@ -356,6 +356,99 @@ namespace ISI.Extensions.WebClient
 				}
 
 				return null;
+			}
+		}
+
+		public static Rest.IRestResponseWrapper UploadFile(Rest.RestResponseTypeCollection restResponseTypes, string url, HeaderCollection headers, System.IO.Stream stream, string fileName, string fileFieldName = "uploadFile", System.Collections.Specialized.NameValueCollection formValues = null)
+		{
+			return UploadFile(restResponseTypes, new Uri(url), headers, stream, fileName, fileFieldName, formValues);
+		}
+
+		public static Rest.IRestResponseWrapper UploadFile(Rest.RestResponseTypeCollection restResponseTypes, Uri uri, HeaderCollection headers, System.IO.Stream stream, string fileName, string fileFieldName = "uploadFile", System.Collections.Specialized.NameValueCollection formValues = null)
+		{
+			var webRequestDetails = new Rest.WebRequestDetails();
+
+			webRequestDetails.Clear();
+
+			webRequestDetails.SetHttpMethod(System.Net.WebRequestMethods.Http.Post);
+			webRequestDetails.SetUri(uri);
+
+			stream.Rewind();
+
+			var boundary = string.Format("---------------------------{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.Base36));
+			var boundaryBytes = System.Text.Encoding.UTF8.GetBytes(string.Format("\r\n--{0}\r\n", boundary));
+
+			var formItems = new List<byte[]>();
+			long requestLen = 0;
+
+			if (formValues != null)
+			{
+				foreach (var key in formValues.AllKeys)
+				{
+					var itemString = string.Format("Content-Disposition: form-data; name=\"{0}\"\r\n\r\n{1}", key, formValues[key]);
+					var itemBytes = System.Text.Encoding.UTF8.GetBytes(itemString);
+
+					requestLen += itemBytes.Length;
+					requestLen += boundaryBytes.Length;
+
+					formItems.Add(itemBytes);
+				}
+			}
+
+
+			var fileHeader = string.Format("Content-Disposition: form-data; name=\"{0}\"; filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n", fileFieldName, fileName, ISI.Extensions.MimeType.GetMimeType(fileName));
+			var fileHeaderBytes = System.Text.Encoding.UTF8.GetBytes(fileHeader);
+			var fileTrailer = System.Text.Encoding.UTF8.GetBytes(string.Format("\r\n--{0}--\r\n", boundary));
+
+			if (stream != null)
+			{
+				requestLen += boundaryBytes.Length + fileHeaderBytes.Length + fileTrailer.Length + stream.Length;
+			}
+
+			var webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(uri);
+
+			headers?.ApplyToWebRequest(webRequest);
+			webRequestDetails.SetHeaders(webRequest.Headers);
+
+			if (webRequest.Headers["Content-Type"] != null)
+			{
+				webRequest.Headers.Remove("Content-Type");
+			}
+
+			webRequest.ContentType = "multipart/form-data; boundary=" + boundary;
+
+			webRequest.Method = System.Net.WebRequestMethods.Http.Post;
+			webRequest.ContentLength = requestLen;
+
+			//webRequest.Expect = string.Empty;
+			//webRequest.Timeout = 1000 * 5;
+			//webRequest.ReadWriteTimeout = 1000 * 5;
+
+			using (var requestStream = webRequest.GetRequestStream())
+			{
+				foreach (var item in formItems)
+				{
+					requestStream.Write(boundaryBytes, 0, boundaryBytes.Length);
+					requestStream.Write(item, 0, item.Length);
+				}
+
+				if (stream != null)
+				{
+					requestStream.Write(boundaryBytes, 0, boundaryBytes.Length);
+					requestStream.Write(fileHeaderBytes, 0, fileHeaderBytes.Length);
+
+					var chunkSize = 1427; // any larger will cause an SSL request to fail
+					stream.CopyTo(requestStream, chunkSize: chunkSize);
+
+					requestStream.Write(fileTrailer, 0, fileTrailer.Length);
+				}
+
+				requestStream.Flush();
+			}
+
+			using (var webResponse = webRequest.GetResponse())
+			{
+				return restResponseTypes.GetRestResponse(typeof(Rest.JsonRestResponseWrapper<>), webResponse, webRequestDetails, false);
 			}
 		}
 	}

@@ -19,10 +19,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Sbom.DataTransferObjects.DependencyTrackApi;
+using SerializableDTOs = ISI.Extensions.Sbom.SerializableModels.DependencyTrackApi;
 
-namespace ISI.Extensions.Sbom.DataTransferObjects.SbomApi
+namespace ISI.Extensions.Sbom
 {
-	public class GenerateNupkgSBomResponse
+	public partial class DependencyTrackApi
 	{
+		private const string ApiKeyHeaderKey = "X-Api-Key";
+
+		private ISI.Extensions.WebClient.HeaderCollection GetHeaders(DTOs.IRequest request)
+		{
+			var headers = new ISI.Extensions.WebClient.HeaderCollection();
+
+			if (!string.IsNullOrWhiteSpace(request.DependencyTrackApiKey))
+			{
+				headers.Add(ApiKeyHeaderKey, request.DependencyTrackApiKey);
+			}
+			else if (!string.IsNullOrWhiteSpace(Configuration.DependencyTrack?.DependencyTrackApiKey))
+			{
+				headers.Add(ApiKeyHeaderKey, Configuration.DependencyTrack?.DependencyTrackApiKey);
+			}
+
+			return headers;
+		}
 	}
 }

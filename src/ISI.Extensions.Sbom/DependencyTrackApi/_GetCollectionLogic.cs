@@ -19,49 +19,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Sbom.DataTransferObjects.SbomApi;
+using DTOs = ISI.Extensions.Sbom.DataTransferObjects.DependencyTrackApi;
+using SerializableDTOs = ISI.Extensions.Sbom.SerializableModels.DependencyTrackApi;
 
 namespace ISI.Extensions.Sbom
 {
-	public partial class SbomApi
+	public partial class DependencyTrackApi
 	{
-		public DTOs.GeneratePackageSBomResponse GeneratePackageSBom(DTOs.GeneratePackageSBomRequest request)
+		private string GetCollectionLogic(CollectionLogic collectionLogic)
 		{
-			var response = new DTOs.GeneratePackageSBomResponse();
-
-			var sBomToolExeFullName = GetSBomToolExeFullName(new()).SBomToolExeFullName;
-
-			ISI.Extensions.Locks.FileLock.Lock(sBomToolExeFullName, () =>
+			switch (collectionLogic)
 			{
-				var arguments = new List<string>();
-
-				arguments.Add("/c");
-				arguments.Add(sBomToolExeFullName);
-				arguments.Add("generate");
-				arguments.Add($"-b \"{System.IO.Path.Combine(request.PackageComponentDirectory, request.PackageName)}\"");
-				arguments.Add($"-bc \"{request.PackageSourceDirectory}\"");
-				arguments.Add($"-pn \"{request.PackageName}\"");
-				arguments.Add($"-pv \"{request.PackageVersion}\"");
-				arguments.Add($"-ps \"{request.PackageAuthor}\"");
-				arguments.Add($"-nsb \"{request.PackageNamespace}\"");
-
-				var process = new System.Diagnostics.Process();
-				process.StartInfo.UseShellExecute = false;
-				process.StartInfo.FileName = "cmd.exe";
-				process.StartInfo.Arguments = string.Join(" ", arguments);
-				process.StartInfo.RedirectStandardOutput = true;
-				process.StartInfo.RedirectStandardError = true;
-				process.Start();
-				process.WaitForExit();
-
-				var output = $"{process.StandardOutput.ReadToEnd()}\n{process.StandardError.ReadToEnd()}";
-
-				System.IO.Directory.CreateDirectory(System.IO.Path.Combine(request.PackageComponentDirectory, request.PackageName, "_manifest"));
-
-				System.IO.File.WriteAllText(System.IO.Path.Combine(request.PackageComponentDirectory, request.PackageName, "_manifest", "tool-output.txt"), output);
-			});
-
-			return response;
+				case CollectionLogic.None: return "NONE";
+				case CollectionLogic.AggregateDirectChildren: return "AGGREGATE_DIRECT_CHILDREN";
+				case CollectionLogic.AggregateDirectChildrenWithTag: return "AGGREGATE_DIRECT_CHILDREN_WITH_TAG";
+				case CollectionLogic.AggregateDirectChildrenMarkedAsLatest: return "AGGREGATE_LATEST_VERSION_CHILDREN";
+				default:
+					throw new ArgumentOutOfRangeException(nameof(collectionLogic), collectionLogic, null);
+			}
 		}
 	}
 }

@@ -61,6 +61,9 @@ namespace ISI.Extensions.Scm
 			public const string NugetNuSpecAuthor = nameof(NugetNuSpecAuthor);
 			public const string NugetNuSpecOwner = nameof(NugetNuSpecOwner);
 
+			public const string DependencyTrackApiUrl = nameof(DependencyTrackApiUrl);
+			public const string DependencyTrackApiKey = nameof(DependencyTrackApiKey);
+
 			public const string BuildArtifactsApiUrl = nameof(BuildArtifactsApiUrl);
 			public const string BuildArtifactsApiKey = nameof(BuildArtifactsApiKey);
 			public const string BuildArtifactsUserName = nameof(BuildArtifactsUserName);
@@ -127,6 +130,9 @@ namespace ISI.Extensions.Scm
 
 		private SettingsNuget _nuget = null;
 		public SettingsNuget Nuget => _nuget ??= new(this);
+
+		private SettingsDependencyTrack _dependencyTrack = null;
+		public SettingsDependencyTrack DependencyTrack => _dependencyTrack ??= new(this);
 
 		private SettingsBuildArtifacts _buildArtifacts = null;
 		public SettingsBuildArtifacts BuildArtifacts => _buildArtifacts ??= new(this);

@@ -19,17 +19,36 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.Extensions.DependencyInjection;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Sbom
+namespace ISI.Extensions.Sbom.SerializableModels.DependencyTrackApi
 {
-	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
-	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
+	[DataContract]
+	public class UploadCycloneDxResponse
 	{
-		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
-		{
-			services.AddSingleton< DependencyTrackApi>();
-			services.AddSingleton<SbomApi>();
-		}
+		[DataMember(Name = "token", EmitDefaultValue = false)]
+		public string Token { get; set; }
+	}
+
+	[DataContract]
+	public class UploadCycloneDxResponseError
+	{
+		[DataMember(Name = "type", EmitDefaultValue = false)]
+		public string Type { get; set; }
+
+		[DataMember(Name = "status", EmitDefaultValue = false)]
+		public int Status { get; set; }
+
+		[DataMember(Name = "title", EmitDefaultValue = false)]
+		public string Title { get; set; }
+
+		[DataMember(Name = "detail", EmitDefaultValue = false)]
+		public string Detail { get; set; }
+
+		[DataMember(Name = "instance", EmitDefaultValue = false)]
+		public string Instance { get; set; }
+
+		[DataMember(Name = "errors", EmitDefaultValue = false)]
+		public string[] Errors { get; set; }
 	}
 }

@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2025, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,14 +15,16 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Sbom.DataTransferObjects.SbomApi
+namespace ISI.Extensions.Sbom
 {
-	public class GeneratePackageSBomResponse
+	public partial class Configuration
 	{
+		public class DependencyTrackConfiguration
+		{
+			public string DependencyTrackApiUrl { get; set; }
+			public string DependencyTrackApiKey { get; set; }
+		}
 	}
 }

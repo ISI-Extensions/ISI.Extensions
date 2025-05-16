@@ -25,9 +25,9 @@ namespace ISI.Extensions.Sbom
 {
 	public partial class SbomApi
 	{
-		public DTOs.GenerateNupkgSBomResponse GenerateNupkgSBom(DTOs.GenerateNupkgSBomRequest request)
+		public DTOs.GenerateNupkgSPDXResponse GenerateNupkgSPDX(DTOs.GenerateNupkgSPDXRequest request)
 		{
-			var response = new DTOs.GenerateNupkgSBomResponse();
+			var response = new DTOs.GenerateNupkgSPDXResponse();
 			
 			var sBomToolExeFullName = GetSBomToolExeFullName(new()).SBomToolExeFullName;
 

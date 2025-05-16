@@ -19,17 +19,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.Extensions.DependencyInjection;
+using DTOs = ISI.Extensions.Sbom.DataTransferObjects.DependencyTrackApi;
+using SerializableDTOs = ISI.Extensions.Sbom.SerializableModels.DependencyTrackApi;
 
 namespace ISI.Extensions.Sbom
 {
-	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
-	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
+	public partial class DependencyTrackApi
 	{
-		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
+		private UriBuilder GetApiUri(DTOs.IRequest request)
 		{
-			services.AddSingleton< DependencyTrackApi>();
-			services.AddSingleton<SbomApi>();
+			if (!string.IsNullOrWhiteSpace(request.DependencyTrackApiUrl))
+			{
+				return new UriBuilder(request.DependencyTrackApiUrl);
+			}
+
+			if (!string.IsNullOrWhiteSpace(Configuration.DependencyTrack?.DependencyTrackApiUrl))
+			{
+				return new UriBuilder(Configuration.DependencyTrack?.DependencyTrackApiUrl);
+			}
+
+			throw new Exception("No DependencyTrackApiUrl available");
 		}
 	}
 }

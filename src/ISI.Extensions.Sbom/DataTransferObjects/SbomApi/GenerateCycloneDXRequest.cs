@@ -61,7 +61,7 @@ namespace ISI.Extensions.Sbom.DataTransferObjects.SbomApi
 		public bool IncludeProjectPeferences { get; set; }
 		public string SetName { get; set; }
 		public Version? SetVersion { get; set; }
-		public GenerateCycloneDxRequestCycloneComponentType? SetComponentType { get; set; }
+		public ComponentType? SetComponentType { get; set; }
 		public string SetNugetPurl { get; set; }
 
 
@@ -107,22 +107,5 @@ namespace ISI.Extensions.Sbom.DataTransferObjects.SbomApi
 	{
 		public string Package { get; set; }
 		public string Version { get; set; }
-	}
-
-	public enum GenerateCycloneDxRequestCycloneComponentType
-	{
-		Application,
-		Container,
-		Data,
-		Device,
-		DeviceDriver,
-		File,
-		Firmware,
-		Framework,
-		Library,
-		MachineLearningModel,
-		Null,
-		OperatingSystem,
-		Platform,
 	}
 }

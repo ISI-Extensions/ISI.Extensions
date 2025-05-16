@@ -19,17 +19,33 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.Extensions.DependencyInjection;
+using DTOs = ISI.Extensions.Sbom.DataTransferObjects.DependencyTrackApi;
+using SerializableDTOs = ISI.Extensions.Sbom.SerializableModels.DependencyTrackApi;
 
 namespace ISI.Extensions.Sbom
 {
-	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
-	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
+	public partial class DependencyTrackApi
 	{
-		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
+		private string GetClassifier(ComponentType componentType)
 		{
-			services.AddSingleton< DependencyTrackApi>();
-			services.AddSingleton<SbomApi>();
+			switch (componentType)
+			{
+				case ComponentType.Application: return "APPLICATION";
+				case ComponentType.Container: return "CONTAINER";
+				case ComponentType.Data: return "DATA";
+				case ComponentType.Device: return "DEVICE";
+				case ComponentType.DeviceDriver: return "DEVICE_DRIVER";
+				case ComponentType.File: return "FILE";
+				case ComponentType.Firmware: return "FIRMWARE";
+				case ComponentType.Framework: return "FRAMEWORK";
+				case ComponentType.Library: return "LIBRARY";
+				case ComponentType.MachineLearningModel: return "MACHINE_LEARNING_MODEL";
+				case ComponentType.None: return "NONE";
+				case ComponentType.OperatingSystem: return "OPERATING_SYSTEM";
+				case ComponentType.Platform: return "PLATFORM";
+				default:
+					throw new ArgumentOutOfRangeException(nameof(componentType), componentType, null);
+			}
 		}
 	}
 }

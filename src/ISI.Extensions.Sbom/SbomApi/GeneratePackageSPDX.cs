@@ -19,17 +19,49 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.Extensions.DependencyInjection;
+using DTOs = ISI.Extensions.Sbom.DataTransferObjects.SbomApi;
 
 namespace ISI.Extensions.Sbom
 {
-	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
-	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
+	public partial class SbomApi
 	{
-		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
+		public DTOs.GeneratePackageSPDXResponse GeneratePackageSPDX(DTOs.GeneratePackageSPDXRequest request)
 		{
-			services.AddSingleton< DependencyTrackApi>();
-			services.AddSingleton<SbomApi>();
+			var response = new DTOs.GeneratePackageSPDXResponse();
+
+			var sBomToolExeFullName = GetSBomToolExeFullName(new()).SBomToolExeFullName;
+
+			ISI.Extensions.Locks.FileLock.Lock(sBomToolExeFullName, () =>
+			{
+				var arguments = new List<string>();
+
+				arguments.Add("/c");
+				arguments.Add(sBomToolExeFullName);
+				arguments.Add("generate");
+				arguments.Add($"-b \"{System.IO.Path.Combine(request.PackageComponentDirectory, request.PackageName)}\"");
+				arguments.Add($"-bc \"{request.PackageSourceDirectory}\"");
+				arguments.Add($"-pn \"{request.PackageName}\"");
+				arguments.Add($"-pv \"{request.PackageVersion}\"");
+				arguments.Add($"-ps \"{request.PackageAuthor}\"");
+				arguments.Add($"-nsb \"{request.PackageNamespace}\"");
+
+				var process = new System.Diagnostics.Process();
+				process.StartInfo.UseShellExecute = false;
+				process.StartInfo.FileName = "cmd.exe";
+				process.StartInfo.Arguments = string.Join(" ", arguments);
+				process.StartInfo.RedirectStandardOutput = true;
+				process.StartInfo.RedirectStandardError = true;
+				process.Start();
+				process.WaitForExit();
+
+				var output = $"{process.StandardOutput.ReadToEnd()}\n{process.StandardError.ReadToEnd()}";
+
+				System.IO.Directory.CreateDirectory(System.IO.Path.Combine(request.PackageComponentDirectory, request.PackageName, "_manifest"));
+
+				System.IO.File.WriteAllText(System.IO.Path.Combine(request.PackageComponentDirectory, request.PackageName, "_manifest", "tool-output.txt"), output);
+			});
+
+			return response;
 		}
 	}
 }

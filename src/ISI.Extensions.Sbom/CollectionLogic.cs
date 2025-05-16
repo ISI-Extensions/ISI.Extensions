@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2025, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,21 +15,15 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ISI.Extensions.Sbom
 {
-	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
-	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
+	public enum CollectionLogic
 	{
-		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
-		{
-			services.AddSingleton< DependencyTrackApi>();
-			services.AddSingleton<SbomApi>();
-		}
+		[ISI.Extensions.Enum("None")] None,
+		[ISI.Extensions.Enum("Aggregate direct children", ["AGGREGATE_DIRECT_CHILDREN"])] AggregateDirectChildren,
+		[ISI.Extensions.Enum("Aggregate direct children with tag", ["AGGREGATE_DIRECT_CHILDREN_WITH_TAG"])] AggregateDirectChildrenWithTag,
+		[ISI.Extensions.Enum("Aggregate direct children marked as latest", ["AGGREGATE_LATEST_VERSION_CHILDREN"])] AggregateDirectChildrenMarkedAsLatest,
 	}
 }

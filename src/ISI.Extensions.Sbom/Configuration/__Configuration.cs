@@ -28,5 +28,7 @@ namespace ISI.Extensions.Sbom
 		public const string ConfigurationSectionName = "ISI.Extensions.Sbom";
 
 		public string SBomToolExeFullName { get; set; } = @"FileNameDeMasked:{LocalApplicationData}\ISI.Extensions\sbom-tool-win-x64.exe";
+
+		public DependencyTrackConfiguration DependencyTrack { get; set; } = new();
 	}
 }

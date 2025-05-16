@@ -19,18 +19,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Sbom.DataTransferObjects.DependencyTrackApi;
+using SerializableDTOs = ISI.Extensions.Sbom.SerializableModels.DependencyTrackApi;
 
-namespace ISI.Extensions.Sbom.DataTransferObjects.SbomApi
+namespace ISI.Extensions.Sbom
 {
-	public class GenerateNupkgSBomRequest
+	public partial class DependencyTrackApi
 	{
-		public string ProjectFullName { get; set; }
+		protected Configuration Configuration { get; }
+		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
+		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
 
-		public string Configuration { get; set; }
-
-		public string NupkgName { get; set; }
-		public string NupkgVersion { get; set; }
-		public string NupkgAuthor { get; set; }
-		public Uri NupkgNamespace { get; set; }
+		public DependencyTrackApi(
+			Configuration configuration,
+			Microsoft.Extensions.Logging.ILogger logger,
+			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
+		{
+			Configuration = configuration;
+			Logger = logger;
+			DateTimeStamper = dateTimeStamper;
+		}
 	}
 }

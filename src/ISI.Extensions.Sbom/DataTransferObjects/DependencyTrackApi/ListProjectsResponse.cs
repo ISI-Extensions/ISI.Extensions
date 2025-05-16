@@ -19,17 +19,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.Sbom
+namespace ISI.Extensions.Sbom.DataTransferObjects.DependencyTrackApi
 {
-	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
-	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
+	public class ListProjectsResponse
 	{
-		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
-		{
-			services.AddSingleton< DependencyTrackApi>();
-			services.AddSingleton<SbomApi>();
-		}
+		public IEnumerable<DependencyTrackProject> Projects { get; set; }
+		public bool Unauthorized { get; set; }
 	}
 }

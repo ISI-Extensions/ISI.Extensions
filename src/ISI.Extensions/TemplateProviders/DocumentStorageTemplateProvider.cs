@@ -67,7 +67,7 @@ namespace ISI.Extensions.TemplateProviders
 		{
 			var templateDocumentUuid = templateCacheKey.ToGuid();
 
-			var document = await DocumentStorage.GetDocumentAsync(templateDocumentUuid);
+			var document = await DocumentStorage.GetDocumentAsync(templateDocumentUuid, cancellationToken: cancellationToken);
 
 			if (document == null)
 			{

@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,31 +68,46 @@ namespace ISI.Extensions.Aspose
 
 			public void Save(System.IO.Stream documentStream, string fileNameExtension)
 			{
-				fileNameExtension = System.IO.Path.GetExtension(fileNameExtension);
+				if (documentStream != null)
+				{
+					fileNameExtension = System.IO.Path.GetExtension(fileNameExtension);
 
-				var fileFormat = ISI.Extensions.Extensions.SpreadSheetExtensions.ToFileFormat(fileNameExtension);
+					var fileFormat = ISI.Extensions.Extensions.SpreadSheetExtensions.ToFileFormat(fileNameExtension);
 
-				_workbook.Save(documentStream, fileFormat);
+					_workbook.Save(documentStream, fileFormat);
+				}
 			}
 
 			public void Save(System.IO.Stream documentStream, ISI.Extensions.SpreadSheets.FileFormat fileFormat)
 			{
-				_workbook.Save(documentStream, fileFormat);
+				if (documentStream != null)
+				{
+					_workbook.Save(documentStream, fileFormat);
+				}
 			}
 
 			public void Save(System.IO.Stream documentStream, ISI.Extensions.Documents.FileFormat fileFormat)
 			{
-				_workbook.Save(documentStream, fileFormat);
+				if (documentStream != null)
+				{
+					_workbook.Save(documentStream, fileFormat);
+				}
 			}
 
 			public void Print(string printerName)
 			{
-				_workbook.Print(printerName);
+				if (!string.IsNullOrWhiteSpace(printerName))
+				{
+					_workbook.Print(printerName);
+				}
 			}
 
 			public void Print(System.Drawing.Printing.PrinterSettings printerSettings, string printerName)
 			{
-				_workbook.Print(printerSettings, printerName);
+				if (!string.IsNullOrWhiteSpace(printerName))
+				{
+					_workbook.Print(printerSettings, printerName);
+				}
 			}
 
 			public void ProcessDataSources()

@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -34,9 +34,17 @@ namespace ISI.Extensions.AspNetCore
 		private static string _rootUrl = null;
 		protected string RootUrl => _rootUrl ??= "~/";
 
+		private static string _cacheBusterKey = null;
+		protected string CacheBusterKey => _cacheBusterKey ??= GetCacheBusterKey();
+
 		public ContentUrl(string url, bool isOriginalUrl = false)
 		{
 			Url = url;
+
+			if (Url.EndsWith($"?{CacheBusterKey}", StringComparison.InvariantCulture) || Url.EndsWith($"&{CacheBusterKey}", StringComparison.InvariantCulture))
+			{
+				Url = Url.Substring(0, url.Length - (CacheBusterKey.Length + 1));
+			}
 
 			//url = url.Split(new[] { '?' }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
 
@@ -85,27 +93,40 @@ namespace ISI.Extensions.AspNetCore
 
 			//	return url;
 
-			if (Url.StartsWith(RootUrl))
+			var url = Url;
+
+			if (url.StartsWith(RootUrl))
 			{
-				return string.Format("/{0}", Url.Substring(RootUrl.Length));
+				url = string.Format("/{0}", url.Substring(RootUrl.Length));
 			}
 
-			return Url;
+			if (!string.IsNullOrWhiteSpace(CacheBusterKey))
+			{
+				url = $"{url}{(url.IndexOf("?") > 0 ? "&" : "?")}{CacheBusterKey}";
+			}
+
+			return url;
 		}
 
 		public string GetCacheBusterKey()
 		{
-			//if (!string.IsNullOrEmpty(VirtualPath))
-			//{
-			//	if (System.Web.Hosting.HostingEnvironment.VirtualPathProvider.FileExists(VirtualPath))
-			//	{
-			//		var virtualFile = System.Web.Hosting.HostingEnvironment.VirtualPathProvider.GetFile(VirtualPath) as ISI.Extensions.AspNetCore.WebVirtualPathProvider.WebVirtualFile;
+			if (!string.IsNullOrEmpty(VirtualPath))
+			{
+				//if (System.Web.Hosting.HostingEnvironment.VirtualPathProvider.FileExists(VirtualPath))
+				//{
+				//	var virtualFile = System.Web.Hosting.HostingEnvironment.VirtualPathProvider.GetFile(VirtualPath) as ISI.Extensions.AspNetCore.WebVirtualPathProvider.WebVirtualFile;
 
-			//		return virtualFile?.GetVersionKey();
-			//	}
-			//}
+				//	return virtualFile?.GetVersionKey();
+				//}
+			}
+			else
+			{
+				var executingAssembly = System.Reflection.Assembly.GetEntryAssembly();
 
-			return null;
+				return ISI.Extensions.SystemInformation.GetAssemblyVersion(executingAssembly);
+			}
+
+			return string.Empty;
 		}
 
 		public override string ToString()

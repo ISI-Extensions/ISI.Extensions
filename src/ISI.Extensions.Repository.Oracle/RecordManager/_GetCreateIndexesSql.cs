@@ -39,12 +39,12 @@ namespace ISI.Extensions.Repository.Oracle
 				columnIssues.AddRange(recordIndex.Columns.Where(column => (column.RecordPropertyDescription.ValueType.GetDbType() == System.Data.DbType.String) && (column.RecordPropertyDescription.PropertySize <= 0)).Select(column => string.Format("Column \"{0}\" is of type varchar(max) which cannot be used in an index", column.RecordPropertyDescription.ColumnName)));
 				if (columnIssues.Any())
 				{
-					throw new(string.Format("Cannot create index: \"{0}\"\n  {1}\n", recordIndex.Name, string.Join("\n  ", columnIssues)));
+					throw new(string.Format("Cannot create index: \"{0}\"\n  {1}\n", recordIndex.CalculatedName, string.Join("\n  ", columnIssues)));
 				}
 
 				sql.Append("\n");
 
-				var recordIndexName = recordIndex.Name;
+				var recordIndexName = recordIndex.CalculatedName;
 				var uniqueIndexNameSuffix = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.Base36);
 				if (recordIndexName.Length > (128 - uniqueIndexNameSuffix.Length))
 				{

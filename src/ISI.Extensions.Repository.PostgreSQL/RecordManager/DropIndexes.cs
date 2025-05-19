@@ -37,7 +37,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 			foreach (var recordIndex in recordDescription.Indexes)
 			{
-				var recordIndexName = recordIndex.Name;
+				var recordIndexName = recordIndex.CalculatedName;
 				if (recordIndexName.Length > 128)
 				{
 					recordIndexName = recordIndexName.Substring(0, 128);

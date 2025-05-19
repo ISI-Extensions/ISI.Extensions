@@ -189,7 +189,7 @@ namespace ISI.Extensions.Repository.Oracle
 
 			foreach (var recordIndex in recordDescription.Indexes)
 			{
-				var recordIndexName = $"idx{tableName}{(recordIndex.Clustered ? "Clust" : string.Empty)}{(recordIndex.Unique ? "Unq" : string.Empty)}{string.Join(string.Empty, recordIndex.Columns.Select(column => column.RecordPropertyDescription.ColumnName))}";
+				var recordIndexName = $"idx{TableName}{(recordIndex.Clustered ? "Clust" : string.Empty)}{(recordIndex.Unique ? "Unq" : string.Empty)}{string.Join(string.Empty, recordIndex.Columns.Select(column => column.RecordPropertyDescription.ColumnName))}";
 
 				if (recordIndexName.Length > 128)
 				{

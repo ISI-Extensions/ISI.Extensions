@@ -37,11 +37,11 @@ namespace ISI.Extensions.Repository.Oracle
 
 		protected ISI.Extensions.Repository.Oracle.Configuration OracleConfiguration { get; }
 
-		protected string ConnectionString { get; }
-		protected string Schema { get; }
-		protected string TableNamePrefix { get; }
-		protected string TableName { get; }
-		protected string TableAlias { get; }
+		protected virtual string ConnectionString { get; }
+		protected virtual string Schema { get; }
+		protected virtual string TableNamePrefix { get; }
+		protected virtual string TableName { get; }
+		protected virtual string TableAlias { get; }
 
 		protected GetOracleConnectionDelegate GetOracleConnection { get; }
 

@@ -26,12 +26,12 @@ namespace ISI.Extensions.Repository.RavenDb
 	public abstract partial class RecordManagerPrimaryKey<TRecord, TRecordPrimaryKey> : RecordManager<TRecord>, IRecordManagerPrimaryKey<TRecord, TRecordPrimaryKey>
 		where TRecord : class, IRecordManagerPrimaryKeyRecord<TRecordPrimaryKey>, new()
 	{
-		public string ConnectionString { get; }
+		public virtual string ConnectionString { get; }
 		public HashSet<string> Urls { get; }
-		public string DatabaseName { get; }
-		protected string Schema { get; }
-		protected string TableNamePrefix { get; }
-		protected string TableName { get; }
+		public virtual string DatabaseName { get; }
+		protected virtual string Schema { get; }
+		protected virtual string TableNamePrefix { get; }
+		protected virtual string TableName { get; }
 
 		private static Raven.Client.Documents.IDocumentStore _store = null;
 		public Raven.Client.Documents.IDocumentStore Store => _store ??= CreateStore();

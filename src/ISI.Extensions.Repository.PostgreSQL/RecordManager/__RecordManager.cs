@@ -37,11 +37,11 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 		protected ISI.Extensions.Repository.PostgreSQL.Configuration PostgreSQLConfiguration { get; }
 
-		protected string ConnectionString { get; }
-		protected string Schema { get; }
-		protected string TableNamePrefix { get; }
-		protected string TableName { get; }
-		protected string TableAlias { get; }
+		protected virtual string ConnectionString { get; }
+		protected virtual string Schema { get; }
+		protected virtual string TableNamePrefix { get; }
+		protected virtual string TableName { get; }
+		protected virtual string TableAlias { get; }
 
 		protected GetSqlConnectionDelegate GetSqlConnection { get; }
 

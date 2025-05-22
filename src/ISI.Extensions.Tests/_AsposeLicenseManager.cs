@@ -30,7 +30,7 @@ namespace ISI.Extensions.Tests
 		{
 			if (System.IO.File.Exists(AsposeLicenseFileName))
 			{
-				return System.IO.File.Open(AsposeLicenseFileName, System.IO.FileMode.Open, System.IO.FileAccess.Read);
+				return System.IO.File.Open(AsposeLicenseFileName, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.Read);
 			}
 
 			return null;

@@ -23,7 +23,6 @@ namespace ISI.Extensions.Security.ActiveDirectory.DataTransferObjects.ActiveDire
 	{
 		string LdapHost { get; }
 		int? LdapPort { get; }
-		bool LdapStartTls { get; }
 		bool LdapSecureSocketLayer { get; }
 	}
 

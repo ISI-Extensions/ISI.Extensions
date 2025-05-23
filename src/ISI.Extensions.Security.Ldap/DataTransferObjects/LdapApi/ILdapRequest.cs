@@ -23,7 +23,6 @@ namespace ISI.Extensions.Security.Ldap.DataTransferObjects.LdapApi
 	{
 		string LdapHost { get; }
 		int? LdapPort { get; }
-		bool LdapStartTls { get; }
 		bool LdapSecureSocketLayer { get; }
 	}
 

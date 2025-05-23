@@ -36,7 +36,6 @@ namespace ISI.Extensions.Security.ActiveDirectory
 				{
 					LdapHost = request.LdapHost,
 					LdapPort = request.LdapPort,
-					LdapStartTls = request.LdapStartTls,
 					LdapSecureSocketLayer = request.LdapSecureSocketLayer,
 					UserName = request.UserName,
 					Password = request.Password,

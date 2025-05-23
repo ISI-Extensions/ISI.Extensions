@@ -26,7 +26,6 @@ namespace ISI.Extensions.Security.ActiveDirectory.DataTransferObjects.ActiveDire
 	{
 		public string LdapHost { get; set; }
 		public int? LdapPort { get; set; }
-		public bool LdapStartTls { get; set; }
 		public bool LdapSecureSocketLayer { get; set; }
 
 		public string DomainName { get; set; }

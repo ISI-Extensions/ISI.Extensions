@@ -20,6 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.Security.Ldap.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Security.Ldap.DataTransferObjects.LdapApi;
 
 namespace ISI.Extensions.Security.Ldap
@@ -55,8 +56,9 @@ namespace ISI.Extensions.Security.Ldap
 							users.Add(entry.GetUser());
 						}
 					}
-					catch
+					catch(Exception exception)
 					{
+						Logger.LogError(exception, "GetUsers");
 					}
 				}
 			}

@@ -59,7 +59,7 @@ namespace ISI.Extensions.Security.Ldap
 				}
 				catch(Exception exception)
 				{
-					Logger.LogError(exception, "ListRoles");
+					Logger.LogError(exception, $"ListRoles\nHost:{request.LdapHost}\nPort:{request.LdapPort}");
 				}
 			}
 

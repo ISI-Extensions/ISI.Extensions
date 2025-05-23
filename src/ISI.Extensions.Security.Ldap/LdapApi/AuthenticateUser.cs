@@ -46,7 +46,7 @@ namespace ISI.Extensions.Security.Ldap
 			}
 			catch(Exception exception)
 			{
-				Logger.LogError(exception, "AuthenticateUser");
+				Logger.LogError(exception, $"AuthenticateUser\nHost:{request.LdapHost}\nPort:{request.LdapPort}");
 			}
 
 			return response;

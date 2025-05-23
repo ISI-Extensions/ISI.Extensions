@@ -56,7 +56,7 @@ namespace ISI.Extensions.Security.Ldap
 				}
 				catch(Exception exception)
 				{
-					Logger.LogError(exception, "ListUsers");
+					Logger.LogError(exception, $"ListUsers\nHost:{request.LdapHost}\nPort:{request.LdapPort}");
 				}
 			}
 

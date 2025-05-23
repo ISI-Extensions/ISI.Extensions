@@ -32,15 +32,13 @@ namespace ISI.Extensions.Security.Ldap
 			
 			try
 			{
-				using (var ldapConnection = new Novell.Directory.Ldap.LdapConnection())
+				using (var ldapConnection = request.GetLdapConnection())
 				{
-					ldapConnection.Connect(request);
-
 					var fqdn = ldapConnection.GetFQDN();
 
 					var userName = $"{request.UserName.Split(new[] { '\\', '/' }).Last()}@{fqdn}";
 
-					ldapConnection.BindAsync(userName, request.Password).GetAwaiter().GetResult();
+					ldapConnection.Bind(new System.Net.NetworkCredential(userName, request.Password));
 
 					response.Authenticated = true;
 				}

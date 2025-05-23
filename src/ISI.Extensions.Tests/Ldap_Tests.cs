@@ -76,21 +76,25 @@ namespace ISI.Extensions.Tests
 
 			Console.WriteLine(ldapApi.AuthenticateUser(new()
 			{
-				LdapHost = "isinyns03.isi-net.com",
+				//LdapSecureSocketLayer = true,
+				LdapHost = settings.GetValue("LdapHost"),
+				LdapPort = settings.GetValue("LdapPort").ToIntNullable(),
 				UserName = $"{settings.ActiveDirectory.Domain}\\{settings.ActiveDirectory.UserName}",
 				Password = settings.ActiveDirectory.Password,
 			}).Authenticated.TrueFalse());
 
 			Console.WriteLine(ldapApi.AuthenticateUser(new()
 			{
-				LdapHost = "isinyns03.isi-net.com",
+				LdapHost = settings.GetValue("LdapHost"),
+				LdapPort = settings.GetValue("LdapPort").ToIntNullable(),
 				UserName = string.Format("{0}-{1}", settings.ActiveDirectory.UserName, Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)),
 				Password = settings.ActiveDirectory.Password,
 			}).Authenticated.TrueFalse());
 
 			Console.WriteLine(ldapApi.AuthenticateUser(new()
 			{
-				LdapHost = "isinyns03.isi-net.com",
+				LdapHost = settings.GetValue("LdapHost"),
+				LdapPort = settings.GetValue("LdapPort").ToIntNullable(),
 				UserName = $"{settings.ActiveDirectory.Domain}\\{settings.ActiveDirectory.UserName}",
 				Password = string.Format("{0}-{1}", settings.ActiveDirectory.Password, Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)),
 			}).Authenticated.TrueFalse());
@@ -107,7 +111,10 @@ namespace ISI.Extensions.Tests
 
 			var users = ldapApi.GetUsers(new()
 			{
-				LdapHost = "isinyns03.isi-net.com",
+				LdapHost = settings.GetValue("LdapHost"),
+				LdapPort = settings.GetValue("LdapPort").ToIntNullable(),
+				LdapBindUserName = settings.GetValue("LdapBindUserName"),
+				LdapBindPassword = settings.GetValue("LdapBindPassword"),
 				UserNames = [settings.ActiveDirectory.UserName],
 			}).Users;
 
@@ -141,7 +148,10 @@ namespace ISI.Extensions.Tests
 
 			var users = ldapApi.ListUsers(new()
 			{
-				LdapHost = "isinyns03.isi-net.com",
+				LdapHost = settings.GetValue("LdapHost"),
+				LdapPort = settings.GetValue("LdapPort").ToIntNullable(),
+				LdapBindUserName = settings.GetValue("LdapBindUserName"),
+				LdapBindPassword = settings.GetValue("LdapBindPassword"),
 			}).Users;
 
 			foreach (var user in users)
@@ -168,9 +178,10 @@ namespace ISI.Extensions.Tests
 
 			var roles = ldapApi.ListRoles(new()
 			{
-				LdapHost = "isinyns03.isi-net.com",
-				LdapBindUserName = $"{settings.ActiveDirectory.Domain}\\{settings.ActiveDirectory.UserName}",
-				LdapBindPassword = settings.ActiveDirectory.Password,
+				LdapHost = settings.GetValue("LdapHost"),
+				LdapPort = settings.GetValue("LdapPort").ToIntNullable(),
+				LdapBindUserName = settings.GetValue("LdapBindUserName"),
+				LdapBindPassword = settings.GetValue("LdapBindPassword"),
 			}).Roles;
 
 			foreach (var role in roles)

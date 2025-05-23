@@ -30,32 +30,30 @@ namespace ISI.Extensions.Security.Ldap
 		{
 			var response = new DTOs.ListRolesResponse();
 
-			var roles = new HashSet<string>();
+			var roles = new ISI.Extensions.InvariantCultureIgnoreCaseStringHashSet();
 
-			using (var ldapConnection = new Novell.Directory.Ldap.LdapConnection())
+			using (var ldapConnection = request.GetLdapConnection())
 			{
-				ldapConnection.Connect(request);
-
-				ldapConnection.Bind(request);
-
 				var defaultNamingContext = ldapConnection.GetDefaultNamingContext();
 
 				try
 				{
-					var ldapSearchResults = ldapConnection.SearchAsync($"CN=Users,{defaultNamingContext}", Novell.Directory.Ldap.LdapConnection.ScopeOne, "(&(objectCategory=Group))", [
-						ISI.Extensions.Security.Directory.UserPropertyKey.NameKey
-					], false).GetAwaiter().GetResult().GetAsyncEnumerator();
+					var ldapSearchResponse = ldapConnection.SendRequest(new System.DirectoryServices.Protocols.SearchRequest($"CN=Users,{defaultNamingContext}", "(&(objectCategory=Group))", System.DirectoryServices.Protocols.SearchScope.OneLevel, [
+						ISI.Extensions.Security.Directory.UserPropertyKey.NameKey,
+					])) as System.DirectoryServices.Protocols.SearchResponse;
 
-					try
+					foreach (System.DirectoryServices.Protocols.SearchResultEntry searchResultEntry in ldapSearchResponse.Entries)
 					{
-						while (ldapSearchResults.MoveNextAsync().GetAwaiter().GetResult())
+						foreach (var value in searchResultEntry.Attributes.Values)
 						{
-							roles.Add(ldapSearchResults.Current.GetPropertyValue(ISI.Extensions.Security.Directory.GroupPropertyKey.NameKey));
+							if (value is System.DirectoryServices.Protocols.DirectoryAttribute directoryAttribute)
+							{
+								if (string.Equals(directoryAttribute.Name, ISI.Extensions.Security.Directory.UserPropertyKey.NameKey, StringComparison.CurrentCultureIgnoreCase))
+								{
+									roles.UnionWith(directoryAttribute.GetValues(typeof(string)) as string[] ?? []);
+								}
+							}
 						}
-					}
-					finally
-					{
-						ldapSearchResults?.DisposeAsync().GetAwaiter().GetResult();
 					}
 				}
 				catch

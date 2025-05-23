@@ -25,52 +25,33 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 {
 	internal static class LdapConnectionExtensions
 	{
-		public static void Connect(this Novell.Directory.Ldap.LdapConnection ldapConnection, DTOs.ILdapRequest request)
+		public static string GetDefaultNamingContext(this System.DirectoryServices.Protocols.LdapConnection ldapConnection)
 		{
-			var ldapPort = request.LdapPort;
+			var ldapSearchResponse = ldapConnection.SendRequest(new System.DirectoryServices.Protocols.SearchRequest(string.Empty, "(objectClass=*)", System.DirectoryServices.Protocols.SearchScope.Base, [ISI.Extensions.Security.Directory.UserPropertyKey.DefaultNamingContext])) as System.DirectoryServices.Protocols.SearchResponse;
 
-			if (request.LdapSecureSocketLayer)
+			foreach (System.DirectoryServices.Protocols.SearchResultEntry entry in ldapSearchResponse.Entries)
 			{
-				//Console.WriteLine("ldapConnection.SecureSocketLayer = true");
-				ldapConnection.SecureSocketLayer = true;
-				ldapPort ??= 689;
+				foreach (var value in entry.Attributes.Values)
+				{
+					if (value is System.DirectoryServices.Protocols.DirectoryAttribute directoryAttribute)
+					{
+						if (string.Equals(directoryAttribute.Name, ISI.Extensions.Security.Directory.UserPropertyKey.DefaultNamingContext, StringComparison.CurrentCultureIgnoreCase))
+						{
+							var defaultNamingContext = (directoryAttribute.GetValues(typeof(string)) as string[]).NullCheckedFirstOrDefault();
+
+							if (!string.IsNullOrWhiteSpace(defaultNamingContext))
+							{
+								return defaultNamingContext;
+							}
+						}
+					}
+				}
 			}
 
-			ldapPort ??= 389;
-
-			if (request.LdapStartTls)
-			{
-				//Console.WriteLine("ldapConnection.StartTls()");
-				ldapConnection.StartTlsAsync().GetAwaiter().GetResult();
-			}
-
-			//Console.WriteLine($"ldapConnection.Host = {request.LdapHost}");
-			//Console.WriteLine($"ldapConnection.Port = {ldapPort}");
-			ldapConnection.ConnectAsync(request.LdapHost, ldapPort.Value).GetAwaiter().GetResult();
+			return null;
 		}
 
-		public static void Bind(this Novell.Directory.Ldap.LdapConnection ldapConnection, DTOs.ILdapRequestWithBindCredentials request)
-		{
-			//Console.WriteLine($"ldapConnection.LdapBindUserName = {request.LdapBindUserName}");
-			//Console.WriteLine($"ldapConnection.LdapBindPassword = {request.LdapBindPassword}");
-
-			ldapConnection.BindAsync(request.LdapBindUserName, request.LdapBindPassword).GetAwaiter().GetResult();
-		}
-
-		public static string GetDefaultNamingContext(this Novell.Directory.Ldap.LdapConnection ldapConnection)
-		{
-			var ldapSearchResults = ldapConnection.SearchAsync(string.Empty, Novell.Directory.Ldap.LdapConnection.ScopeBase, "(objectClass=*)", [ISI.Extensions.Security.Directory.UserPropertyKey.DefaultNamingContext], false).GetAwaiter().GetResult().GetAsyncEnumerator();
-
-			ldapSearchResults.MoveNextAsync();
-
-			var defaultNamingContext= ldapSearchResults.Current.GetPropertyValue(ISI.Extensions.Security.Directory.UserPropertyKey.DefaultNamingContext);
-
-			ldapSearchResults?.DisposeAsync().GetAwaiter().GetResult();
-
-			return defaultNamingContext;
-		}
-
-		public static string GetFQDN(this Novell.Directory.Ldap.LdapConnection ldapConnection)
+		public static string GetFQDN(this System.DirectoryServices.Protocols.LdapConnection ldapConnection)
 		{
 			var defaultNamingContext = ldapConnection.GetDefaultNamingContext();
 

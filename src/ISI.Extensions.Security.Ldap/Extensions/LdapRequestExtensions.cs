@@ -23,51 +23,47 @@ using DTOs = ISI.Extensions.Security.Ldap.DataTransferObjects.LdapApi;
 
 namespace ISI.Extensions.Security.Ldap.Extensions
 {
-	internal static class LdapEntryExtensions
+	internal static class LdapRequestExtensions
 	{
-		internal static string GetPropertyValue(this Novell.Directory.Ldap.LdapEntry ldapEntry, string propertyKey)
+		public static System.DirectoryServices.Protocols.LdapConnection GetLdapConnection(this DTOs.ILdapRequest request)
 		{
-			try
-			{
-				var ldapAttribute = ldapEntry.Get(propertyKey);
+			var ldapPort = request.LdapPort;
 
-				return ldapAttribute.StringValue;
-			}
-			catch
+			if (request.LdapSecureSocketLayer)
 			{
+				ldapPort ??= 636;
 			}
 
-			return string.Empty;
-		}
+			ldapPort ??= 389;
 
-		internal static string[] GetPropertyValues(this Novell.Directory.Ldap.LdapEntry ldapEntry, string propertyKey)
-		{
-			try
+			if (request is DTOs.ILdapRequestWithBindCredentials ldapRequestWithBindCredentials)
 			{
-				var ldapAttribute = ldapEntry.Get(propertyKey);
-
-				if (ldapAttribute.StringValueArray.NullCheckedAny())
+				var ldapConnection = new System.DirectoryServices.Protocols.LdapConnection(new System.DirectoryServices.Protocols.LdapDirectoryIdentifier(request.LdapHost, ldapPort.GetValueOrDefault()))
 				{
-					var values = new HashSet<string>();
+					AuthType = System.DirectoryServices.Protocols.AuthType.Basic,
+					Credential = new(ldapRequestWithBindCredentials.LdapBindUserName, ldapRequestWithBindCredentials.LdapBindPassword),
+				};
 
-					foreach (var property in ldapAttribute.StringValueArray)
-					{
-						var propertyValues = string.Format("{0}", property).Split(['=', ','], StringSplitOptions.RemoveEmptyEntries);
+				ldapConnection.Bind();
 
-						if (propertyValues.Length >= 2)
-						{
-							values.Add(propertyValues[1]);
-						}
-					}
-
-					return values.ToArray();
-				}
+				return ldapConnection;
 			}
-			catch
+			else
+			{
+				var ldapConnection = new System.DirectoryServices.Protocols.LdapConnection(new System.DirectoryServices.Protocols.LdapDirectoryIdentifier(request.LdapHost, ldapPort.GetValueOrDefault()))
+				{
+					AuthType = System.DirectoryServices.Protocols.AuthType.Basic,
+				};
+
+				return ldapConnection;
+			}
+
+
+
+			if (request.LdapStartTls)
 			{
 			}
 
-			return [];
 		}
 	}
 }

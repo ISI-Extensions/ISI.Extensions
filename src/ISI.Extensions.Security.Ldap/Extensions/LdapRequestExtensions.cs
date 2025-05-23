@@ -44,15 +44,25 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 					Credential = new(ldapRequestWithBindCredentials.LdapBindUserName, ldapRequestWithBindCredentials.LdapBindPassword),
 				};
 
+				ldapConnection.SessionOptions.ProtocolVersion = 3;
+				ldapConnection.SessionOptions.ReferralChasing = System.DirectoryServices.Protocols.ReferralChasingOptions.None;
+				
 				ldapConnection.Bind();
 
 				return ldapConnection;
 			}
-
-			return new System.DirectoryServices.Protocols.LdapConnection(new System.DirectoryServices.Protocols.LdapDirectoryIdentifier(request.LdapHost, ldapPort.GetValueOrDefault()))
+			else
 			{
-				AuthType = System.DirectoryServices.Protocols.AuthType.Basic,
-			};
+				var ldapConnection =  new System.DirectoryServices.Protocols.LdapConnection(new System.DirectoryServices.Protocols.LdapDirectoryIdentifier(request.LdapHost, ldapPort.GetValueOrDefault()))
+				{
+					AuthType = System.DirectoryServices.Protocols.AuthType.Basic,
+				};
+
+				ldapConnection.SessionOptions.ProtocolVersion = 3;
+				ldapConnection.SessionOptions.ReferralChasing = System.DirectoryServices.Protocols.ReferralChasingOptions.None;
+
+				return ldapConnection;
+			}
 		}
 	}
 }

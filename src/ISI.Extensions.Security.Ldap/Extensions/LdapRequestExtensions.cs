@@ -27,14 +27,17 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 	{
 		public static System.DirectoryServices.Protocols.LdapConnection GetLdapConnection(this DTOs.ILdapRequest request)
 		{
+			const int defaultLdapPort = 389;
+			const int defaultLdapsPort = 636;
+
 			var ldapPort = request.LdapPort;
 
-			if (request.LdapSecureSocketLayer)
+			if (request.LdapSecureSocketLayer ?? false)
 			{
-				ldapPort ??= 636;
+				ldapPort ??= defaultLdapsPort;
 			}
 
-			ldapPort ??= 389;
+			ldapPort ??= defaultLdapPort;
 
 			if (request is DTOs.ILdapRequestWithBindCredentials ldapRequestWithBindCredentials)
 			{
@@ -46,6 +49,7 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 
 				ldapConnection.SessionOptions.ProtocolVersion = 3;
 				ldapConnection.SessionOptions.ReferralChasing = System.DirectoryServices.Protocols.ReferralChasingOptions.None;
+				ldapConnection.SessionOptions.SecureSocketLayer = request.LdapSecureSocketLayer ?? (ldapPort == defaultLdapsPort);
 				
 				ldapConnection.Bind();
 
@@ -60,6 +64,7 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 
 				ldapConnection.SessionOptions.ProtocolVersion = 3;
 				ldapConnection.SessionOptions.ReferralChasing = System.DirectoryServices.Protocols.ReferralChasingOptions.None;
+				ldapConnection.SessionOptions.SecureSocketLayer = request.LdapSecureSocketLayer ?? (ldapPort == defaultLdapsPort);
 
 				return ldapConnection;
 			}

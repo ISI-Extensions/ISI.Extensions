@@ -26,7 +26,7 @@ namespace ISI.Extensions.Security.Ldap.DataTransferObjects.LdapApi
 	{
 		public string LdapHost { get; set; }
 		public int? LdapPort { get; set; }
-		public bool LdapSecureSocketLayer { get; set; }
+		public bool? LdapSecureSocketLayer { get; set; }
 		public string LdapBindUserName { get; set; }
 		public string LdapBindPassword { get; set; }
 	}

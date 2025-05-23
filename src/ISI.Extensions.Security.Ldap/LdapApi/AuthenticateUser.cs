@@ -35,6 +35,11 @@ namespace ISI.Extensions.Security.Ldap
 			{
 				using (var ldapConnection = request.GetLdapConnection())
 				{
+					var ldapDirectoryIdentifier = ldapConnection.Directory as System.DirectoryServices.Protocols.LdapDirectoryIdentifier;
+
+					Logger.LogInformation($"AuthenticateUser\nServers:{string.Join(",", ldapDirectoryIdentifier?.Servers ?? [])}\nPort:{ldapDirectoryIdentifier.PortNumber}\nConnectionless:{ldapDirectoryIdentifier.Connectionless.TrueFalse()}\nFullyQualifiedDnsHostName:{ldapDirectoryIdentifier.FullyQualifiedDnsHostName.TrueFalse()}");
+
+
 					var fqdn = ldapConnection.GetFQDN();
 
 					var userName = $"{request.UserName.Split(new[] { '\\', '/' }).Last()}@{fqdn}";

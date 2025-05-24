@@ -47,7 +47,7 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 				{
 					var ldapConnection = new System.DirectoryServices.Protocols.LdapConnection(new System.DirectoryServices.Protocols.LdapDirectoryIdentifier(ldapServers, ldapPort.GetValueOrDefault(), true, false))
 					{
-						AuthType = System.DirectoryServices.Protocols.AuthType.Basic,
+						AuthType = System.DirectoryServices.Protocols.AuthType.Negotiate,
 						Credential = new(ldapRequestWithBindCredentials.LdapBindUserName, ldapRequestWithBindCredentials.LdapBindPassword),
 					};
 
@@ -63,7 +63,7 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 				{
 					var ldapConnection = new System.DirectoryServices.Protocols.LdapConnection(new System.DirectoryServices.Protocols.LdapDirectoryIdentifier(ldapServers, ldapPort.GetValueOrDefault(), true, false))
 					{
-						AuthType = System.DirectoryServices.Protocols.AuthType.Basic,
+						AuthType = System.DirectoryServices.Protocols.AuthType.Negotiate,
 					};
 
 					ldapConnection.SessionOptions.ProtocolVersion = 3;

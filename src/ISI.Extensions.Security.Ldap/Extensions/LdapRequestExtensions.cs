@@ -49,12 +49,13 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 			};
 
 			ldapConnection.Connect(uri.Uri.ToString());
+			ldapConnection.SetOption(LdapForNet.Native.Native.LdapOption.LDAP_OPT_SASL_METHOD, "DIGEST-MD5");
 
 			if ((request.LdapSecureSocketLayer ?? false) || (ldapPort == defaultLdapsPort))
 			{
 				ldapConnection.TrustAllCertificates();
 			}
-			
+
 			if (request is DTOs.ILdapRequestWithBindCredentials ldapRequestWithBindCredentials)
 			{
 				ldapConnection.Bind(LdapForNet.Native.Native.LdapAuthType.Negotiate, new LdapForNet.LdapCredential()

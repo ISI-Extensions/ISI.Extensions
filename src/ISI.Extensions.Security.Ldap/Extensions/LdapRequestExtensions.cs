@@ -39,34 +39,71 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 
 			ldapPort ??= defaultLdapPort;
 
-			if (request is DTOs.ILdapRequestWithBindCredentials ldapRequestWithBindCredentials)
+			if (request.LdapHost.IndexOf(',') >= 0)
 			{
-				var ldapConnection = new System.DirectoryServices.Protocols.LdapConnection(new System.DirectoryServices.Protocols.LdapDirectoryIdentifier(request.LdapHost, ldapPort.GetValueOrDefault()))
+				var ldapServers = request.LdapHost.Split([',']).Select(ldapHost => ldapHost.Trim()).Where(ldapHost => !string.IsNullOrWhiteSpace(ldapHost)).ToArray();
+
+				if (request is DTOs.ILdapRequestWithBindCredentials ldapRequestWithBindCredentials)
 				{
-					AuthType = System.DirectoryServices.Protocols.AuthType.Basic,
-					Credential = new(ldapRequestWithBindCredentials.LdapBindUserName, ldapRequestWithBindCredentials.LdapBindPassword),
-				};
+					var ldapConnection = new System.DirectoryServices.Protocols.LdapConnection(new System.DirectoryServices.Protocols.LdapDirectoryIdentifier(ldapServers, ldapPort.GetValueOrDefault(), true, false))
+					{
+						AuthType = System.DirectoryServices.Protocols.AuthType.Basic,
+						Credential = new(ldapRequestWithBindCredentials.LdapBindUserName, ldapRequestWithBindCredentials.LdapBindPassword),
+					};
 
-				ldapConnection.SessionOptions.ProtocolVersion = 3;
-				ldapConnection.SessionOptions.ReferralChasing = System.DirectoryServices.Protocols.ReferralChasingOptions.None;
-				ldapConnection.SessionOptions.SecureSocketLayer = request.LdapSecureSocketLayer ?? (ldapPort == defaultLdapsPort);
-				
-				ldapConnection.Bind();
+					ldapConnection.SessionOptions.ProtocolVersion = 3;
+					ldapConnection.SessionOptions.ReferralChasing = System.DirectoryServices.Protocols.ReferralChasingOptions.None;
+					ldapConnection.SessionOptions.SecureSocketLayer = request.LdapSecureSocketLayer ?? (ldapPort == defaultLdapsPort);
 
-				return ldapConnection;
+					ldapConnection.Bind();
+
+					return ldapConnection;
+				}
+				else
+				{
+					var ldapConnection = new System.DirectoryServices.Protocols.LdapConnection(new System.DirectoryServices.Protocols.LdapDirectoryIdentifier(ldapServers, ldapPort.GetValueOrDefault(), true, false))
+					{
+						AuthType = System.DirectoryServices.Protocols.AuthType.Basic,
+					};
+
+					ldapConnection.SessionOptions.ProtocolVersion = 3;
+					ldapConnection.SessionOptions.ReferralChasing = System.DirectoryServices.Protocols.ReferralChasingOptions.None;
+					ldapConnection.SessionOptions.SecureSocketLayer = request.LdapSecureSocketLayer ?? (ldapPort == defaultLdapsPort);
+
+					return ldapConnection;
+				}
 			}
 			else
 			{
-				var ldapConnection =  new System.DirectoryServices.Protocols.LdapConnection(new System.DirectoryServices.Protocols.LdapDirectoryIdentifier(request.LdapHost, ldapPort.GetValueOrDefault()))
+				if (request is DTOs.ILdapRequestWithBindCredentials ldapRequestWithBindCredentials)
 				{
-					AuthType = System.DirectoryServices.Protocols.AuthType.Basic,
-				};
+					var ldapConnection = new System.DirectoryServices.Protocols.LdapConnection(new System.DirectoryServices.Protocols.LdapDirectoryIdentifier(request.LdapHost, ldapPort.GetValueOrDefault()))
+					{
+						AuthType = System.DirectoryServices.Protocols.AuthType.Basic,
+						Credential = new(ldapRequestWithBindCredentials.LdapBindUserName, ldapRequestWithBindCredentials.LdapBindPassword),
+					};
 
-				ldapConnection.SessionOptions.ProtocolVersion = 3;
-				ldapConnection.SessionOptions.ReferralChasing = System.DirectoryServices.Protocols.ReferralChasingOptions.None;
-				ldapConnection.SessionOptions.SecureSocketLayer = request.LdapSecureSocketLayer ?? (ldapPort == defaultLdapsPort);
+					ldapConnection.SessionOptions.ProtocolVersion = 3;
+					ldapConnection.SessionOptions.ReferralChasing = System.DirectoryServices.Protocols.ReferralChasingOptions.None;
+					ldapConnection.SessionOptions.SecureSocketLayer = request.LdapSecureSocketLayer ?? (ldapPort == defaultLdapsPort);
 
-				return ldapConnection;
+					ldapConnection.Bind();
+
+					return ldapConnection;
+				}
+				else
+				{
+					var ldapConnection = new System.DirectoryServices.Protocols.LdapConnection(new System.DirectoryServices.Protocols.LdapDirectoryIdentifier(request.LdapHost, ldapPort.GetValueOrDefault()))
+					{
+						AuthType = System.DirectoryServices.Protocols.AuthType.Basic,
+					};
+
+					ldapConnection.SessionOptions.ProtocolVersion = 3;
+					ldapConnection.SessionOptions.ReferralChasing = System.DirectoryServices.Protocols.ReferralChasingOptions.None;
+					ldapConnection.SessionOptions.SecureSocketLayer = request.LdapSecureSocketLayer ?? (ldapPort == defaultLdapsPort);
+
+					return ldapConnection;
+				}
 			}
 		}
 	}

@@ -19,39 +19,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.Security.Ldap.Extensions;
 using DTOs = ISI.Extensions.Security.Ldap.DataTransferObjects.LdapApi;
 
 namespace ISI.Extensions.Security.Ldap.Extensions
 {
 	internal static class LdapConnectionExtensions
 	{
-		public static string GetDefaultNamingContext(this System.DirectoryServices.Protocols.LdapConnection ldapConnection)
+		public static string GetDefaultNamingContext(this LdapForNet.LdapConnection ldapConnection)
 		{
-			var ldapSearchResponse = ldapConnection.SendRequest(new System.DirectoryServices.Protocols.SearchRequest(string.Empty, "(objectClass=*)", System.DirectoryServices.Protocols.SearchScope.Base, [ISI.Extensions.Security.Directory.UserPropertyKey.DefaultNamingContext])) as System.DirectoryServices.Protocols.SearchResponse;
+			var ldapSearchResponse = ldapConnection.SendRequest(new LdapForNet.SearchRequest(string.Empty, "(objectClass=*)", LdapForNet.Native.Native.LdapSearchScope.LDAP_SCOPE_BASE, [ISI.Extensions.Security.Directory.UserPropertyKey.DefaultNamingContext])) as LdapForNet.SearchResponse;
 
-			foreach (System.DirectoryServices.Protocols.SearchResultEntry entry in ldapSearchResponse.Entries)
+			foreach (var entry in ldapSearchResponse.Entries)
 			{
-				foreach (var value in entry.Attributes.Values)
-				{
-					if (value is System.DirectoryServices.Protocols.DirectoryAttribute directoryAttribute)
-					{
-						if (string.Equals(directoryAttribute.Name, ISI.Extensions.Security.Directory.UserPropertyKey.DefaultNamingContext, StringComparison.CurrentCultureIgnoreCase))
-						{
-							var defaultNamingContext = (directoryAttribute.GetValues(typeof(string)) as string[]).NullCheckedFirstOrDefault();
+				var directoryAttribute = entry.GetAttribute(ISI.Extensions.Security.Directory.UserPropertyKey.DefaultNamingContext);
 
-							if (!string.IsNullOrWhiteSpace(defaultNamingContext))
-							{
-								return defaultNamingContext;
-							}
-						}
-					}
-				}
+				return directoryAttribute.GetValue<string>();
 			}
 
 			return null;
 		}
 
-		public static string GetFQDN(this System.DirectoryServices.Protocols.LdapConnection ldapConnection)
+		public static string GetFQDN(this LdapForNet.LdapConnection ldapConnection)
 		{
 			var defaultNamingContext = ldapConnection.GetDefaultNamingContext();
 

@@ -41,7 +41,7 @@ namespace ISI.Extensions.Security.Ldap
 				{
 					try
 					{
-						var ldapSearchResponse = ldapConnection.SendRequest(new System.DirectoryServices.Protocols.SearchRequest($"CN=Users,{defaultNamingContext}", $"(&(objectCategory=User)(objectClass=person)({ISI.Extensions.Security.Directory.UserPropertyKey.UserNameKey}={userName}))", System.DirectoryServices.Protocols.SearchScope.OneLevel, [
+						var ldapSearchResponse = ldapConnection.SendRequest(new LdapForNet.SearchRequest($"CN=Users,{defaultNamingContext}", $"(&(objectCategory=User)(objectClass=person)({ISI.Extensions.Security.Directory.UserPropertyKey.UserNameKey}={userName}))", LdapForNet.Native.Native.LdapSearchScope.LDAP_SCOPE_ONELEVEL, [
 							ISI.Extensions.Security.Directory.UserPropertyKey.NameKey,
 							ISI.Extensions.Security.Directory.UserPropertyKey.EmailAddressKey,
 							ISI.Extensions.Security.Directory.UserPropertyKey.FirstNameKey,
@@ -49,14 +49,14 @@ namespace ISI.Extensions.Security.Ldap
 							ISI.Extensions.Security.Directory.UserPropertyKey.UserNameKey,
 							ISI.Extensions.Security.Directory.UserPropertyKey.DistinguishedNameKey,
 							ISI.Extensions.Security.Directory.UserPropertyKey.RolesKey
-						])) as System.DirectoryServices.Protocols.SearchResponse;
+						])) as LdapForNet.SearchResponse;
 
-						foreach (System.DirectoryServices.Protocols.SearchResultEntry entry in ldapSearchResponse.Entries)
+						foreach (var directoryEntry in ldapSearchResponse.Entries)
 						{
-							users.Add(entry.GetUser());
+							users.Add(directoryEntry.GetUser());
 						}
 					}
-					catch(Exception exception)
+					catch (Exception exception)
 					{
 						Logger.LogError(exception, $"GetUsers\nHost:{request.LdapHost}\nPort:{request.LdapPort}");
 					}

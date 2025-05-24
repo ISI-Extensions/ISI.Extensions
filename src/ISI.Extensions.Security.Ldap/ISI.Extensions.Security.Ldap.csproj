@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
@@ -16,8 +16,8 @@
 
 	<ItemGroup>
 		<PackageReference Update="NETStandard.Library" Version="2.0.3" />
+		<PackageReference Include="LdapForNet" Version="2.7.15" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.5" />
-		<PackageReference Include="System.DirectoryServices.Protocols" Version="9.0.5" />
 	</ItemGroup>
 
 	<ItemGroup>

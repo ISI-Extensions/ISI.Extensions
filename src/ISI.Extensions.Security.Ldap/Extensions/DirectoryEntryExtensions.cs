@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2025, Integrated Solutions, Inc.
 All rights reserved.
@@ -12,51 +12,43 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.Security.Ldap.Extensions;
-using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Security.Ldap.DataTransferObjects.LdapApi;
 
-namespace ISI.Extensions.Security.Ldap
+namespace ISI.Extensions.Security.Ldap.Extensions
 {
-	public partial class LdapApi
+	internal static class DirectoryEntryExtensions
 	{
-		public DTOs.ListRolesResponse ListRoles(DTOs.ListRolesRequest request)
+		internal static ISI.Extensions.Security.Directory.User GetUser(this LdapForNet.DirectoryEntry directoryEntry)
 		{
-			var response = new DTOs.ListRolesResponse();
-
 			var roles = new ISI.Extensions.InvariantCultureIgnoreCaseStringHashSet();
 
-			using (var ldapConnection = request.GetLdapConnection())
+			foreach (var role in directoryEntry.GetAttribute(ISI.Extensions.Security.Directory.UserPropertyKey.RolesKey)?.GetValues<string>()?.ToArray() ?? [])
 			{
-				var defaultNamingContext = ldapConnection.GetDefaultNamingContext();
+				var propertyValues = string.Format("{0}", role).Split(['=', ','], StringSplitOptions.RemoveEmptyEntries);
 
-				try
+				if (propertyValues.Length >= 2)
 				{
-					var ldapSearchResponse = ldapConnection.SendRequest(new LdapForNet.SearchRequest($"CN=Users,{defaultNamingContext}", "(&(objectCategory=Group))", LdapForNet.Native.Native.LdapSearchScope.LDAP_SCOPE_ONELEVEL, [
-						ISI.Extensions.Security.Directory.UserPropertyKey.NameKey,
-					])) as LdapForNet.SearchResponse;
-
-					foreach (var directoryEntry in ldapSearchResponse.Entries)
-					{
-						roles.Add(directoryEntry.GetAttribute(ISI.Extensions.Security.Directory.UserPropertyKey.NameKey)?.GetValue<string>());
-					}
-				}
-				catch (Exception exception)
-				{
-					Logger.LogError(exception, $"ListRoles\nHost:{request.LdapHost}\nPort:{request.LdapPort}");
+					roles.Add(propertyValues[1]);
 				}
 			}
-
-			response.Roles = roles;
-
-			return response;
+			
+			return new ISI.Extensions.Security.Directory.User()
+			{
+				Name = directoryEntry.GetAttribute(ISI.Extensions.Security.Directory.UserPropertyKey.NameKey)?.GetValue<string>(),
+				EmailAddress = directoryEntry.GetAttribute(ISI.Extensions.Security.Directory.UserPropertyKey.EmailAddressKey)?.GetValue<string>(),
+				FirstName = directoryEntry.GetAttribute(ISI.Extensions.Security.Directory.UserPropertyKey.FirstNameKey)?.GetValue<string>(),
+				LastName = directoryEntry.GetAttribute(ISI.Extensions.Security.Directory.UserPropertyKey.LastNameKey)?.GetValue<string>(),
+				UserName = directoryEntry.GetAttribute(ISI.Extensions.Security.Directory.UserPropertyKey.UserNameKey)?.GetValue<string>(),
+				DistinguishedName = directoryEntry.GetAttribute(ISI.Extensions.Security.Directory.UserPropertyKey.DistinguishedNameKey)?.GetValue<string>(),
+				Roles = roles.ToArray(),
+			};
 		}
 	}
 }

@@ -62,6 +62,7 @@ namespace ISI.Extensions.Dns
 			{
 				ProcessExeFullName = "nslookup",
 				Arguments = arguments,
+				Logger = new NullLogger(),
 			});
 
 			var values = new List<string>();
@@ -101,6 +102,7 @@ namespace ISI.Extensions.Dns
 			{
 				ProcessExeFullName = "nslookup",
 				Arguments = arguments,
+				Logger = new NullLogger(),
 			});
 
 			var values = new List<string>();

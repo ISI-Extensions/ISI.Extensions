@@ -12,13 +12,16 @@ namespace ISI.Extensions.Security.Ldap
 	{
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
+		protected Microsoft.Extensions.Caching.Memory.IMemoryCache MemoryCache { get; }
 
 		public LdapApi(
 			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
+			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
+			Microsoft.Extensions.Caching.Memory.IMemoryCache memoryCache)
 		{
 			Logger = logger;
 			DateTimeStamper = dateTimeStamper;
+			MemoryCache = memoryCache;
 		}
 	}
 }

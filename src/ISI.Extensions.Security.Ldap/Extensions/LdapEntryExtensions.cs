@@ -23,32 +23,51 @@ using DTOs = ISI.Extensions.Security.Ldap.DataTransferObjects.LdapApi;
 
 namespace ISI.Extensions.Security.Ldap.Extensions
 {
-	internal static class DirectoryEntryExtensions
+	internal static class LdapEntryExtensions
 	{
-		internal static ISI.Extensions.Security.Directory.User GetUser(this LdapForNet.DirectoryEntry directoryEntry)
+		internal static string GetPropertyValue(this Novell.Directory.Ldap.LdapEntry ldapEntry, string propertyKey)
 		{
-			var roles = new ISI.Extensions.InvariantCultureIgnoreCaseStringHashSet();
-
-			foreach (var role in directoryEntry.GetAttribute(ISI.Extensions.Security.Directory.UserPropertyKey.RolesKey)?.GetValues<string>()?.ToArray() ?? [])
+			try
 			{
-				var propertyValues = string.Format("{0}", role).Split(['=', ','], StringSplitOptions.RemoveEmptyEntries);
+				var ldapAttribute = ldapEntry.Get(propertyKey);
 
-				if (propertyValues.Length >= 2)
+				return ldapAttribute.StringValue;
+			}
+			catch
+			{
+			}
+
+			return string.Empty;
+		}
+
+		internal static string[] GetPropertyValues(this Novell.Directory.Ldap.LdapEntry ldapEntry, string propertyKey)
+		{
+			try
+			{
+				var ldapAttribute = ldapEntry.Get(propertyKey);
+
+				if (ldapAttribute.StringValueArray.NullCheckedAny())
 				{
-					roles.Add(propertyValues[1]);
+					var values = new HashSet<string>();
+
+					foreach (var property in ldapAttribute.StringValueArray)
+					{
+						var propertyValues = string.Format("{0}", property).Split(['=', ','], StringSplitOptions.RemoveEmptyEntries);
+
+						if (propertyValues.Length >= 2)
+						{
+							values.Add(propertyValues[1]);
+						}
+					}
+
+					return values.ToArray();
 				}
 			}
-			
-			return new ISI.Extensions.Security.Directory.User()
+			catch
 			{
-				Name = directoryEntry.GetAttribute(ISI.Extensions.Security.Directory.UserPropertyKey.NameKey)?.GetValue<string>(),
-				EmailAddress = directoryEntry.GetAttribute(ISI.Extensions.Security.Directory.UserPropertyKey.EmailAddressKey)?.GetValue<string>(),
-				FirstName = directoryEntry.GetAttribute(ISI.Extensions.Security.Directory.UserPropertyKey.FirstNameKey)?.GetValue<string>(),
-				LastName = directoryEntry.GetAttribute(ISI.Extensions.Security.Directory.UserPropertyKey.LastNameKey)?.GetValue<string>(),
-				UserName = directoryEntry.GetAttribute(ISI.Extensions.Security.Directory.UserPropertyKey.UserNameKey)?.GetValue<string>(),
-				DistinguishedName = directoryEntry.GetAttribute(ISI.Extensions.Security.Directory.UserPropertyKey.DistinguishedNameKey)?.GetValue<string>(),
-				Roles = roles.ToArray(),
-			};
+			}
+
+			return [];
 		}
 	}
 }

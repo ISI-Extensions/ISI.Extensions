@@ -20,7 +20,6 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.Security.Ldap.Extensions;
-using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Security.Ldap.DataTransferObjects.LdapApi;
 
 namespace ISI.Extensions.Security.Ldap
@@ -33,13 +32,15 @@ namespace ISI.Extensions.Security.Ldap
 
 			var users = new List<ISI.Extensions.Security.Directory.User>();
 
-			using (var ldapConnection = request.GetLdapConnection())
+			using (var ldapConnection = request.GetLdapConnection(MemoryCache))
 			{
+				ldapConnection.Bind(request);
+
 				var defaultNamingContext = ldapConnection.GetDefaultNamingContext();
 
 				try
 				{
-					var ldapSearchResponse = ldapConnection.SendRequest(new LdapForNet.SearchRequest($"CN=Users,{defaultNamingContext}", "(&(objectCategory=User)(objectClass=person))", LdapForNet.Native.Native.LdapSearchScope.LDAP_SCOPE_ONELEVEL, [
+					var ldapSearchResults = ldapConnection.SearchAsync($"CN=Users,{defaultNamingContext}", Novell.Directory.Ldap.LdapConnection.ScopeOne, "(&(objectCategory=User)(objectClass=person))", [
 						ISI.Extensions.Security.Directory.UserPropertyKey.NameKey,
 						ISI.Extensions.Security.Directory.UserPropertyKey.EmailAddressKey,
 						ISI.Extensions.Security.Directory.UserPropertyKey.FirstNameKey,
@@ -47,16 +48,31 @@ namespace ISI.Extensions.Security.Ldap
 						ISI.Extensions.Security.Directory.UserPropertyKey.UserNameKey,
 						ISI.Extensions.Security.Directory.UserPropertyKey.DistinguishedNameKey,
 						ISI.Extensions.Security.Directory.UserPropertyKey.RolesKey
-					])) as LdapForNet.SearchResponse;
+					], false).GetAwaiter().GetResult().GetAsyncEnumerator();
 
-					foreach (var directoryEntry in ldapSearchResponse.Entries)
+					try
 					{
-						users.Add(directoryEntry.GetUser());
+						while (ldapSearchResults.MoveNextAsync().GetAwaiter().GetResult())
+						{
+							users.Add(new()
+							{
+								Name = ldapSearchResults.Current.GetPropertyValue(ISI.Extensions.Security.Directory.UserPropertyKey.NameKey),
+								EmailAddress = ldapSearchResults.Current.GetPropertyValue(ISI.Extensions.Security.Directory.UserPropertyKey.EmailAddressKey),
+								FirstName = ldapSearchResults.Current.GetPropertyValue(ISI.Extensions.Security.Directory.UserPropertyKey.FirstNameKey),
+								LastName = ldapSearchResults.Current.GetPropertyValue(ISI.Extensions.Security.Directory.UserPropertyKey.LastNameKey),
+								UserName = ldapSearchResults.Current.GetPropertyValue(ISI.Extensions.Security.Directory.UserPropertyKey.UserNameKey),
+								DistinguishedName = ldapSearchResults.Current.GetPropertyValue(ISI.Extensions.Security.Directory.UserPropertyKey.DistinguishedNameKey),
+								Roles = ldapSearchResults.Current.GetPropertyValues(ISI.Extensions.Security.Directory.UserPropertyKey.RolesKey),
+							});
+						}
+					}
+					finally
+					{
+						ldapSearchResults?.DisposeAsync().GetAwaiter().GetResult();
 					}
 				}
-				catch (Exception exception)
+				catch
 				{
-					Logger.LogError(exception, $"ListUsers\nHost:{request.LdapHost}\nPort:{request.LdapPort}");
 				}
 			}
 

@@ -68,7 +68,7 @@ namespace ISI.Extensions.Dns
 
 			var lines = nslookupResponse.Output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
 
-			for (int lineIndex = 0; lineIndex < lines.Length; lineIndex++)
+			for (var lineIndex = 0; lineIndex < lines.Length; lineIndex++)
 			{
 				var line = lines[lineIndex].Trim();
 

@@ -19,53 +19,135 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Caching.Memory;
 using DTOs = ISI.Extensions.Security.Ldap.DataTransferObjects.LdapApi;
 
 namespace ISI.Extensions.Security.Ldap.Extensions
 {
 	internal static class LdapRequestExtensions
 	{
-		public static LdapForNet.LdapConnection GetLdapConnection(this DTOs.ILdapRequest request)
+		private static Random _random = null;
+		private static Random Random => _random ??= new Random();
+
+		public static Novell.Directory.Ldap.LdapConnection GetLdapConnection(this DTOs.ILdapRequest request, Microsoft.Extensions.Caching.Memory.IMemoryCache memoryCache)
 		{
 			const int defaultLdapPort = 389;
 			const int defaultLdapsPort = 636;
 
-			var ldapConnection = new LdapForNet.LdapConnection();
-
+			var ldapHost = request.LdapHost;
 			var ldapPort = request.LdapPort;
+			var ldapSecureSocketLayer = request.LdapSecureSocketLayer;
 
-			if (request.LdapSecureSocketLayer ?? false)
+			if (Uri.TryCreate(ldapHost, UriKind.Absolute, out var ldapUri))
+			{
+				ldapHost = ldapUri.Host;
+
+				switch (ldapUri.Scheme.ToLower())
+				{
+					case "ldap":
+						ldapPort ??= defaultLdapPort;
+						break;
+
+					case "ldaps":
+						ldapPort ??= defaultLdapsPort;
+						ldapSecureSocketLayer = true;
+						break;
+				}
+			}
+
+			var ldapServers = GetLdapServers(ldapHost, memoryCache);
+
+			if (ldapServers.NullCheckedAny())
+			{
+				ldapHost = ldapServers[Random.Next(ldapServers.Length)];
+			}
+
+			if (ldapSecureSocketLayer ?? false)
 			{
 				ldapPort ??= defaultLdapsPort;
 			}
 
 			ldapPort ??= defaultLdapPort;
 
-			var uri = new UriBuilder()
-			{
-				Scheme = (((request.LdapSecureSocketLayer ?? false) || (ldapPort == defaultLdapsPort)) ? LdapForNet.Native.Native.LdapSchema.LDAPS.GetKey() : LdapForNet.Native.Native.LdapSchema.LDAP.GetKey()),
-				Host = request.LdapHost,
-				Port = ldapPort.GetValueOrDefault(),
-			};
+			ldapSecureSocketLayer ??= (ldapPort == defaultLdapsPort);
 
-			ldapConnection.Connect(uri.Uri.ToString());
-			ldapConnection.SetOption(LdapForNet.Native.Native.LdapOption.LDAP_OPT_SASL_METHOD, "DIGEST-MD5");
+			var ldapConnectionOptions = new Novell.Directory.Ldap.LdapConnectionOptions();
 
-			if ((request.LdapSecureSocketLayer ?? false) || (ldapPort == defaultLdapsPort))
+			if (ldapSecureSocketLayer ?? false)
 			{
-				ldapConnection.TrustAllCertificates();
-			}
-
-			if (request is DTOs.ILdapRequestWithBindCredentials ldapRequestWithBindCredentials)
-			{
-				ldapConnection.Bind(LdapForNet.Native.Native.LdapAuthType.Negotiate, new LdapForNet.LdapCredential()
+				if (request.ByPassRemoteCertificateValidation)
 				{
-					UserName = ldapRequestWithBindCredentials.LdapBindUserName,
-					Password = ldapRequestWithBindCredentials.LdapBindPassword,
-				});
+					ldapConnectionOptions.ConfigureRemoteCertificateValidationCallback((sender, certificate, chain, errors) => true);
+				}
 			}
+
+			var ldapConnection = new Novell.Directory.Ldap.LdapConnection(ldapConnectionOptions);
+
+			if (ldapSecureSocketLayer ?? false)
+			{
+				//Console.WriteLine("ldapConnection.SecureSocketLayer = true");
+				ldapConnection.SecureSocketLayer = true;
+			}
+
+			if (request.LdapStartTls ?? false)
+			{
+				//Console.WriteLine("ldapConnection.StartTls()");
+				ldapConnection.StartTlsAsync().GetAwaiter().GetResult();
+			}
+
+			//Console.WriteLine($"ldapConnection.Host = {ldapHost}");
+			//Console.WriteLine($"ldapConnection.Port = {ldapPort}");
+			ldapConnection.ConnectAsync(ldapHost, ldapPort.Value).GetAwaiter().GetResult();
 
 			return ldapConnection;
+		}
+
+		private static string[] GetLdapServers(string ldapHost, Microsoft.Extensions.Caching.Memory.IMemoryCache memoryCache)
+		{
+			var cacheKey = $"GetLdapServers-{ldapHost}-b04658fd-11e3-4782-b053-9109c9bdd51f";
+
+			if (memoryCache.TryGetValue(cacheKey, out var cachedLdapServers))
+			{
+				if (cachedLdapServers is string[] value)
+				{
+					return value;
+				}
+			}
+
+			var arguments = new List<string>();
+			arguments.Add("-query=srv");
+			arguments.Add($"_ldap._tcp.{ldapHost}");
+
+			var nslookupResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+			{
+				ProcessExeFullName = "nslookup",
+				Arguments = arguments,
+				Logger = new NullLogger(),
+			});
+
+			var values = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+
+			var lines = nslookupResponse.Output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
+
+			for (var lineIndex = 0; lineIndex < lines.Length; lineIndex++)
+			{
+				var lineParts = lines[lineIndex].Trim().Split([' ', '\t', '='], StringSplitOptions.RemoveEmptyEntries);
+
+				if ((lineParts.Length > 3) && string.Equals(lineParts[1], "internet", StringComparison.InvariantCultureIgnoreCase) && string.Equals(lineParts[2], "address", StringComparison.InvariantCultureIgnoreCase))
+				{
+					values.Add(lineParts[0]);
+				}
+			}
+
+			var ldapServers = values.ToArray();
+
+			using (var cacheEntry = memoryCache.CreateEntry(cacheKey))
+			{
+				cacheEntry.SetAbsoluteExpiration(DateTimeOffset.UtcNow + TimeSpan.FromHours(1));
+				cacheEntry.SetValue(ldapServers);
+			}
+			
+			return ldapServers;
 		}
 	}
 }

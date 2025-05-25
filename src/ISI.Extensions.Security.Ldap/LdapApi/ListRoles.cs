@@ -20,7 +20,6 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.Security.Ldap.Extensions;
-using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Security.Ldap.DataTransferObjects.LdapApi;
 
 namespace ISI.Extensions.Security.Ldap
@@ -31,26 +30,34 @@ namespace ISI.Extensions.Security.Ldap
 		{
 			var response = new DTOs.ListRolesResponse();
 
-			var roles = new ISI.Extensions.InvariantCultureIgnoreCaseStringHashSet();
+			var roles = new HashSet<string>();
 
-			using (var ldapConnection = request.GetLdapConnection())
+			using (var ldapConnection = request.GetLdapConnection(MemoryCache))
 			{
+				ldapConnection.Bind(request);
+
 				var defaultNamingContext = ldapConnection.GetDefaultNamingContext();
 
 				try
 				{
-					var ldapSearchResponse = ldapConnection.SendRequest(new LdapForNet.SearchRequest($"CN=Users,{defaultNamingContext}", "(&(objectCategory=Group))", LdapForNet.Native.Native.LdapSearchScope.LDAP_SCOPE_ONELEVEL, [
-						ISI.Extensions.Security.Directory.UserPropertyKey.NameKey,
-					])) as LdapForNet.SearchResponse;
+					var ldapSearchResults = ldapConnection.SearchAsync($"CN=Users,{defaultNamingContext}", Novell.Directory.Ldap.LdapConnection.ScopeOne, "(&(objectCategory=Group))", [
+						ISI.Extensions.Security.Directory.UserPropertyKey.NameKey
+					], false).GetAwaiter().GetResult().GetAsyncEnumerator();
 
-					foreach (var directoryEntry in ldapSearchResponse.Entries)
+					try
 					{
-						roles.Add(directoryEntry.GetAttribute(ISI.Extensions.Security.Directory.UserPropertyKey.NameKey)?.GetValue<string>());
+						while (ldapSearchResults.MoveNextAsync().GetAwaiter().GetResult())
+						{
+							roles.Add(ldapSearchResults.Current.GetPropertyValue(ISI.Extensions.Security.Directory.GroupPropertyKey.NameKey));
+						}
+					}
+					finally
+					{
+						ldapSearchResults?.DisposeAsync().GetAwaiter().GetResult();
 					}
 				}
-				catch (Exception exception)
+				catch
 				{
-					Logger.LogError(exception, $"ListRoles\nHost:{request.LdapHost}\nPort:{request.LdapPort}");
 				}
 			}
 

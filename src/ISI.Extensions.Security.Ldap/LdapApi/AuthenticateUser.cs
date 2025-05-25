@@ -39,12 +39,9 @@ namespace ISI.Extensions.Security.Ldap
 			{
 				using (var ldapConnection = request.GetLdapConnection(MemoryCache))
 				{
-					if (ldapConnection is LdapConnection debugInformationLdapConnection)
-					{
-						ldapSchema = debugInformationLdapConnection.LdapSchema;
-						ldapHost = debugInformationLdapConnection.LdapHost;
-						ldapPort = debugInformationLdapConnection.LdapPort;
-					}
+					ldapSchema = ldapConnection.LdapSchema;
+					ldapHost = ldapConnection.LdapHost;
+					ldapPort = ldapConnection.LdapPort;
 
 					var fqdn = ldapConnection.GetFQDN();
 

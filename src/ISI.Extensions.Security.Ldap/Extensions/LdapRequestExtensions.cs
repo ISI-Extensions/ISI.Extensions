@@ -45,7 +45,7 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 		private static Random _random = null;
 		private static Random Random => _random ??= new Random();
 
-		public static Novell.Directory.Ldap.LdapConnection GetLdapConnection(this DTOs.ILdapRequest request, Microsoft.Extensions.Caching.Memory.IMemoryCache memoryCache)
+		public static LdapConnection GetLdapConnection(this DTOs.ILdapRequest request, Microsoft.Extensions.Caching.Memory.IMemoryCache memoryCache)
 		{
 			const int defaultLdapPort = 389;
 			const int defaultLdapsPort = 636;

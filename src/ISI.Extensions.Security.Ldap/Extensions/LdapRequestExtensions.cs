@@ -143,7 +143,7 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 			{
 				ProcessExeFullName = "nslookup",
 				Arguments = arguments,
-				Logger = new NullLogger(),
+				//Logger = new NullLogger(),
 			});
 
 			var values = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);

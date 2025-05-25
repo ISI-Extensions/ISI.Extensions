@@ -31,10 +31,21 @@ namespace ISI.Extensions.Security.Ldap
 		{
 			var response = new DTOs.AuthenticateUserResponse();
 
+			var ldapSchema = string.Empty;
+			var ldapHost = request.LdapHost;
+			var ldapPort = request.LdapPort;
+
 			try
 			{
 				using (var ldapConnection = request.GetLdapConnection(MemoryCache))
 				{
+					if (ldapConnection is LdapConnection debugInformationLdapConnection)
+					{
+						ldapSchema = debugInformationLdapConnection.LdapSchema;
+						ldapHost = debugInformationLdapConnection.LdapHost;
+						ldapPort = debugInformationLdapConnection.LdapPort;
+					}
+
 					var fqdn = ldapConnection.GetFQDN();
 
 					var userName = $"{request.UserName.Split(new[] { '\\', '/' }).Last()}@{fqdn}";
@@ -46,9 +57,9 @@ namespace ISI.Extensions.Security.Ldap
 			}
 			catch (Exception exception)
 			{
-//#if DEBUG
-				Logger.LogError(exception, $"AuthenticateUser\nHost:{request.LdapHost}\nPort:{request.LdapPort}\nMessage:{exception.Message}");
-//#endif
+				//#if DEBUG
+				Logger.LogError(exception, $"AuthenticateUser\nSchema:{ldapSchema}\nHost:{ldapHost}\nPort:{ldapPort}\nMessage:{exception.Message}");
+				//#endif
 			}
 
 			return response;

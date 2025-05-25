@@ -22,6 +22,22 @@ using ISI.Extensions.Extensions;
 using Microsoft.Extensions.Caching.Memory;
 using DTOs = ISI.Extensions.Security.Ldap.DataTransferObjects.LdapApi;
 
+namespace ISI.Extensions.Security.Ldap
+{
+	internal class LdapConnection : Novell.Directory.Ldap.LdapConnection
+	{
+		public string LdapSchema { get; set; }
+		public string LdapHost { get; set; }
+		public int LdapPort { get; set; }
+
+		public LdapConnection(Novell.Directory.Ldap.LdapConnectionOptions ldapConnectionOptions)
+			: base(ldapConnectionOptions)
+		{
+
+		}
+	}
+}
+
 namespace ISI.Extensions.Security.Ldap.Extensions
 {
 	internal static class LdapRequestExtensions
@@ -81,7 +97,12 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 				}
 			}
 
-			var ldapConnection = new Novell.Directory.Ldap.LdapConnection(ldapConnectionOptions);
+			var ldapConnection = new LdapConnection(ldapConnectionOptions)
+			{
+				LdapSchema = ((ldapSecureSocketLayer ?? false) ? "LDAPS" : "LDAP"),
+				LdapHost = ldapHost,
+				LdapPort = ldapPort.GetValueOrDefault(),
+			};
 
 			if (ldapSecureSocketLayer ?? false)
 			{
@@ -146,7 +167,7 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 				cacheEntry.SetAbsoluteExpiration(DateTimeOffset.UtcNow + TimeSpan.FromHours(1));
 				cacheEntry.SetValue(ldapServers);
 			}
-			
+
 			return ldapServers;
 		}
 	}

@@ -37,10 +37,7 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 				{
 					var name = dataAnnotationsValidationRule.GetType().Name;
 
-					if (!ValidationRules.ContainsKey(name))
-					{
-						ValidationRules.Add(name, dataAnnotationsValidationRule);
-					}
+					ValidationRules.TryAdd(name, dataAnnotationsValidationRule);
 				}
 			}
 			catch (TypeInitializationException exception)

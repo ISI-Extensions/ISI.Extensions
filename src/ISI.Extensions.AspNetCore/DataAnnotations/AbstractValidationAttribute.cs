@@ -49,10 +49,7 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 
 		protected virtual void MergeAttribute(IDictionary<string, string> attributes, string key, string value)
 		{
-			if (!attributes.ContainsKey(key))
-			{
-				attributes.Add(key, value);
-			}
+			attributes.TryAdd(key, value);
 		}
 
 		protected virtual string GetErrorMessage(Microsoft.AspNetCore.Mvc.ModelBinding.ModelMetadata modelMetadata)

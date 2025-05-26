@@ -26,6 +26,7 @@ namespace ISI.Extensions.AspNetCore.Tests.Models.Public
 {
 	public class IndexModel : BaseModel
 	{
-
+		[ISI.Extensions.AspNetCore.DataAnnotations.CustomJavaScriptFunctionAttribute("RonFunction")]
+		public string Pizza { get; set; }
 	}
 }

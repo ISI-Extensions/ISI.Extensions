@@ -61,13 +61,39 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 				switch (ldapUri.Scheme.ToLower())
 				{
 					case "ldap":
-						ldapPort ??= defaultLdapPort;
+						ldapPort ??= (ldapUri.Port > 0 ? ldapPort : defaultLdapPort);
 						break;
 
 					case "ldaps":
-						ldapPort ??= defaultLdapsPort;
+						ldapPort ??= (ldapUri.Port > 0 ? ldapPort : defaultLdapsPort);
 						ldapSecureSocketLayer = true;
 						break;
+				}
+			}
+			else if (ldapHost.Trim().StartsWith("ldap:", StringComparison.InvariantCultureIgnoreCase) || ldapHost.Trim().StartsWith("ldaps:", StringComparison.InvariantCultureIgnoreCase))
+			{
+				var ldapUrlPieces = ldapHost.Trim().Split([':', '\\', '/']);
+
+				if (ldapUrlPieces.Length > 1)
+				{
+					ldapHost = ldapUrlPieces[1];
+
+					if (ldapUrlPieces.Length >= 3)
+					{
+						ldapPort ??= ldapUrlPieces[2].ToIntNullable();
+					}
+
+					switch (ldapUrlPieces[0].ToLower())
+					{
+						case "ldap":
+							ldapPort ??= (ldapUri.Port > 0 ? ldapPort : defaultLdapPort);
+							break;
+
+						case "ldaps":
+							ldapPort ??= (ldapUri.Port > 0 ? ldapPort : defaultLdapsPort);
+							ldapSecureSocketLayer = true;
+							break;
+					}
 				}
 			}
 
@@ -143,20 +169,24 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 			{
 				ProcessExeFullName = "nslookup",
 				Arguments = arguments,
-				//Logger = new NullLogger(),
+				Logger = new NullLogger(),
 			});
 
 			var values = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
 
 			var lines = nslookupResponse.Output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
 
-			for (var lineIndex = 0; lineIndex < lines.Length; lineIndex++)
+			foreach (var line in lines)
 			{
-				var lineParts = lines[lineIndex].Trim().Split([' ', '\t', '='], StringSplitOptions.RemoveEmptyEntries);
+				var lineParts = line.Trim().Split([' ', '\t', '='], StringSplitOptions.RemoveEmptyEntries);
 
 				if ((lineParts.Length > 3) && string.Equals(lineParts[1], "internet", StringComparison.InvariantCultureIgnoreCase) && string.Equals(lineParts[2], "address", StringComparison.InvariantCultureIgnoreCase))
 				{
 					values.Add(lineParts[0]);
+				}
+				if ((lineParts.Length > 5) && string.Equals(lineParts[1], "service", StringComparison.InvariantCultureIgnoreCase))
+				{
+					values.Add(lineParts[5]);
 				}
 			}
 

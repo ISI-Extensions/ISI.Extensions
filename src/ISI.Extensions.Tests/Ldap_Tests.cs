@@ -74,6 +74,8 @@ namespace ISI.Extensions.Tests
 
 			var ldapApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Security.Ldap.ILdapApi>();
 
+			//var xxx = System.Net.Dns.GetHostEntry("_ldap._tcp.isi-net.com");
+
 			Console.WriteLine(ldapApi.AuthenticateUser(new()
 			{
 				LdapHost = "ldaps://isi-net.com", // settings.GetValue("LdapHost"),

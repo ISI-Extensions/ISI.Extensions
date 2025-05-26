@@ -15,6 +15,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ISI.Extensions.Caching
@@ -55,10 +56,20 @@ namespace ISI.Extensions.Caching
 
 		public static string GetCacheKeyFormat<T>(string extra = null)
 		{
-			return GetCacheKeyFormat(typeof(T), extra);
+			return GetCacheKeyFormat(typeof(T), 1, extra);
+		}
+
+		public static string GetCacheKeyFormat<T>(int numberOfArguments, string extra = null)
+		{
+			return GetCacheKeyFormat(typeof(T), numberOfArguments, null);
 		}
 
 		public static string GetCacheKeyFormat(Type type, string extra = null)
+		{
+			return GetCacheKeyFormat(type, 1, extra);
+		}
+
+		public static string GetCacheKeyFormat(Type type, int numberOfArguments, string extra = null)
 		{
 			if (string.IsNullOrWhiteSpace(extra))
 			{
@@ -74,14 +85,14 @@ namespace ISI.Extensions.Caching
 						return cacheKeyFormat;
 					}
 
-					cacheKeyFormat = string.Format("{{0}}:{0}", type.FullName);
+					cacheKeyFormat = $"{string.Join(":", System.Linq.Enumerable.Range(0, numberOfArguments).Select(index => $"{{{index}}}"))}:{type.FullName}";
 					_cacheKeyFormats.Add(type, cacheKeyFormat);
 				}
 
 				return cacheKeyFormat;
 			}
 
-			return string.Format("{0}:{1}", GetCacheKeyFormat(type), extra);
+			return string.Format("{0}:{1}", GetCacheKeyFormat(type, numberOfArguments, null), extra);
 		}
 	}
 }

@@ -161,6 +161,21 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 				}
 			}
 
+			var values = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+
+
+			var lookup = new DnsClient.LookupClient();
+			var result = lookup.QueryAsync($"_ldap._tcp.{ldapHost}", DnsClient.QueryType.SRV).GetAwaiter().GetResult();
+
+			foreach (var dnsResourceRecord in result.AllRecords)
+			{
+				if (dnsResourceRecord is DnsClient.Protocol.ARecord aRecord)
+				{
+					values.Add(aRecord.DomainName.Value.Trim([' ', '.']));
+				}
+			}
+
+/*
 			var arguments = new List<string>();
 			arguments.Add("-query=srv");
 			arguments.Add($"_ldap._tcp.{ldapHost}");
@@ -171,8 +186,6 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 				Arguments = arguments,
 				Logger = new NullLogger(),
 			});
-
-			var values = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
 
 			var lines = nslookupResponse.Output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
 
@@ -189,6 +202,7 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 					values.Add(lineParts[5]);
 				}
 			}
+*/
 
 			var ldapServers = values.ToArray();
 

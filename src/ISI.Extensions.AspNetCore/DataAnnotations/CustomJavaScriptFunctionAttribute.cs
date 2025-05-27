@@ -27,11 +27,15 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 		internal const string ValidationJavaScriptFunctionName = "javaScriptfunctionname";
 		
 		internal string JavaScriptFunctionName { get; }
-	
 
-		public CustomJavaScriptFunctionAttribute(string javaScriptFunctionToCheck)
+		private readonly string _customErrorMessage = null;
+		protected override string ErrorMessage => _customErrorMessage ?? base.ErrorMessage;
+
+
+		public CustomJavaScriptFunctionAttribute(string javaScriptFunctionToCheck, string errorMessage = null)
 		{
 			JavaScriptFunctionName = javaScriptFunctionToCheck;
+			_customErrorMessage = errorMessage;
 		}
 
 		public override void AddValidation(Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ClientModelValidationContext context)

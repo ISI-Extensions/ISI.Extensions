@@ -71,12 +71,11 @@ namespace ISI.Extensions.Documents
 
 		private void CalculateImageSize()
 		{
-			throw new NotImplementedException();
-			//using (var imageWrapper = System.Drawing.Image.FromStream(new System.IO.MemoryStream(Image)))
-			//{
-			//	ImageWidthInPixels = imageWrapper.Width;
-			//	ImageHeightInPixels = imageWrapper.Height;
-			//}
+			using (var imageWrapper = System.Drawing.Image.FromStream(new System.IO.MemoryStream(Image)))
+			{
+				ImageWidthInPixels = imageWrapper.Width;
+				ImageHeightInPixels = imageWrapper.Height;
+			}
 		}
 	}
 }

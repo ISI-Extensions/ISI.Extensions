@@ -26,8 +26,7 @@ namespace ISI.Extensions.Aspose.Extensions
 		{
 			if (!string.IsNullOrWhiteSpace(printerName))
 			{
-				throw new NotImplementedException();
-				//document.Print(printerName);
+				Words.XpsPrintHelper.Print(document, printerName);
 			}
 		}
 	}

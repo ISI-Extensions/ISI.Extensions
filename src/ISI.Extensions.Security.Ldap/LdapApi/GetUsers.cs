@@ -20,6 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.Security.Ldap.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Security.Ldap.DataTransferObjects.LdapApi;
 
 namespace ISI.Extensions.Security.Ldap
@@ -32,8 +33,16 @@ namespace ISI.Extensions.Security.Ldap
 
 			var users = new List<ISI.Extensions.Security.Directory.User>();
 
+			var ldapSchema = string.Empty;
+			var ldapHost = request.LdapHost;
+			var ldapPort = request.LdapPort;
+
 			using (var ldapConnection = request.GetLdapConnection(MemoryCache))
 			{
+				ldapSchema = ldapConnection.LdapSchema;
+				ldapHost = ldapConnection.LdapHost;
+				ldapPort = ldapConnection.LdapPort;
+
 				ldapConnection.Bind(request);
 
 				var defaultNamingContext = ldapConnection.GetDefaultNamingContext();
@@ -73,8 +82,11 @@ namespace ISI.Extensions.Security.Ldap
 							ldapSearchResults?.DisposeAsync().GetAwaiter().GetResult();
 						}
 					}
-					catch
+					catch (Exception exception)
 					{
+						//#if DEBUG
+						Logger.LogError(exception, $"AuthenticateUser\nSchema:{ldapSchema}\nHost:{ldapHost}\nPort:{ldapPort}\nMessage:{exception.Message}");
+						//#endif
 					}
 				}
 			}

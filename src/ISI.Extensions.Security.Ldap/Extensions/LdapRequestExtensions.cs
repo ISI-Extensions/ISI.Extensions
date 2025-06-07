@@ -54,6 +54,11 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 			var ldapPort = request.LdapPort;
 			var ldapSecureSocketLayer = request.LdapSecureSocketLayer;
 
+			if (string.IsNullOrWhiteSpace(ldapHost))
+			{
+				throw new Exception("ldapHost is empty");
+			}
+
 			if (Uri.TryCreate(ldapHost, UriKind.Absolute, out var ldapUri))
 			{
 				ldapHost = ldapUri.Host;

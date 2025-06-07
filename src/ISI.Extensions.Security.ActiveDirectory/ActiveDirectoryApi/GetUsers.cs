@@ -20,6 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.Security.ActiveDirectory.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Security.ActiveDirectory.DataTransferObjects.ActiveDirectoryApi;
 
 namespace ISI.Extensions.Security.ActiveDirectory
@@ -32,6 +33,11 @@ namespace ISI.Extensions.Security.ActiveDirectory
 
 			if (Environment.OSVersion.Platform == PlatformID.Unix)
 			{
+				if (LdapApi == null)
+				{
+					throw new Exception("LdapApi == null");
+				}
+
 				response.Users = LdapApi.GetUsers(new()
 				{
 					LdapHost = request.LdapHost,
@@ -41,6 +47,7 @@ namespace ISI.Extensions.Security.ActiveDirectory
 					ByPassRemoteCertificateValidation = request.ByPassRemoteCertificateValidation,
 					LdapBindUserName = request.LdapBindUserName,
 					LdapBindPassword = request.LdapBindPassword,
+					UserNames = request.UserNames,
 				}).Users;
 			}
 			else

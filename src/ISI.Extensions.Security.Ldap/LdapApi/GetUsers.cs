@@ -29,6 +29,16 @@ namespace ISI.Extensions.Security.Ldap
 	{
 		public DTOs.GetUsersResponse GetUsers(DTOs.GetUsersRequest request)
 		{
+			if (request == null)
+			{
+				throw new Exception("request == null");
+			}
+
+			if (MemoryCache == null)
+			{
+				throw new Exception("MemoryCache == null");
+			}
+
 			var response = new DTOs.GetUsersResponse();
 
 			var users = new List<ISI.Extensions.Security.Directory.User>();
@@ -39,6 +49,11 @@ namespace ISI.Extensions.Security.Ldap
 
 			using (var ldapConnection = request.GetLdapConnection(MemoryCache))
 			{
+				if (ldapConnection == null)
+				{
+					throw new Exception("ldapConnection == null");
+				}
+
 				ldapSchema = ldapConnection.LdapSchema;
 				ldapHost = ldapConnection.LdapHost;
 				ldapPort = ldapConnection.LdapPort;
@@ -47,7 +62,7 @@ namespace ISI.Extensions.Security.Ldap
 
 				var defaultNamingContext = ldapConnection.GetDefaultNamingContext();
 
-				foreach (var userName in request.UserNames)
+				foreach (var userName in request.UserNames ?? [])
 				{
 					try
 					{

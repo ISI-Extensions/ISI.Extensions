@@ -37,11 +37,17 @@ namespace ISI.Extensions.SpreadSheets
 
 	public interface IWorksheetPageSetup
 	{
+		int FirstPageNumber { get; set; }
+
 		double TopMarginInch { get; set; }
 		double RightMarginInch { get; set; }
 		double BottomMarginInch { get; set; }
 		double LeftMarginInch { get; set; }
 
+		void SetFitToPages(int wide, int tall);
+		int FitToPagesTall { get; set; }
+		int FitToPagesWide { get; set; }
+		
 		string PrintArea { get; set; }
 		ISI.Extensions.Documents.PageOrientation PageOrientation { get; set; }
 

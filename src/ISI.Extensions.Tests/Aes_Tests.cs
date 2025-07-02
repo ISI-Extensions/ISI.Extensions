@@ -15,45 +15,27 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using NUnit.Framework;
 
-namespace ISI.Extensions.Crypto
+namespace ISI.Extensions.Tests
 {
-	public partial class Rijndael
+	[TestFixture]
+	public class Aes_Tests
 	{
-		public partial class String
+		[Test]
+		public void String_Test()
 		{
-			public static bool TryDecrypt(string key, string salt, string encryptedValue, out string decryptedValue)
+			var value = "197704ed-0be0-4b7f-b14a-fe4aadf79dfa8fc0812f-c2b8-424c-b522-6f199f5ff84782f67a9d-d164-4ffc-bfd4-39e25a2a21a141003626-a476-43d1-8093-c4b49bd788ba45ba74a9-a9c0-4ff6-9fb3-e37b0d19f44f";
+
+			var encryptResponse = ISI.Extensions.Crypto.Aes.String.Encrypt(value);
+
+			if (ISI.Extensions.Crypto.Aes.String.TryDecrypt(encryptResponse.Key, encryptResponse.EncryptedValue, out var decryptedValue))
 			{
-				try
-				{
-					var cipherBytes = Convert.FromBase64String(encryptedValue);
-					var rgbSalt = Convert.FromBase64String(salt); //"Ivan Medvedev"
-					var pdb = new System.Security.Cryptography.PasswordDeriveBytes(key, rgbSalt);
-
-					using (var memoryStream = new System.IO.MemoryStream())
-					{
-						using (var algorithm = System.Security.Cryptography.Rijndael.Create())
-						{
-							algorithm.Key = pdb.GetBytes(32);
-							algorithm.IV = pdb.GetBytes(16);
-						
-							using (var cryptoStream = new System.Security.Cryptography.CryptoStream(memoryStream, algorithm.CreateDecryptor(), System.Security.Cryptography.CryptoStreamMode.Write))
-							{
-								cryptoStream.Write(cipherBytes, 0, cipherBytes.Length);
-							}
-
-							decryptedValue = System.Text.Encoding.Unicode.GetString(memoryStream.ToArray());
-						}
-					}
-
-					return true;
-				}
-				catch
-				{
-					decryptedValue = null;
-					return false;
-				}
+				Assert.That(string.Equals(value, decryptedValue, StringComparison.Ordinal));
 			}
 		}
 	}

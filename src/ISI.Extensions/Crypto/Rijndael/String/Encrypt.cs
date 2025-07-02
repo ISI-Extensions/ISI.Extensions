@@ -23,12 +23,11 @@ namespace ISI.Extensions.Crypto
 	{
 		public partial class String
 		{
-			public static string Encrypt(string cryptoKey, string unEncryptedValue)
+			public static string Encrypt(string key, string salt, string unEncryptedValue)
 			{
-				string result = null;
-
 				var clearBytes = System.Text.Encoding.Unicode.GetBytes(unEncryptedValue);
-				var pdb = new System.Security.Cryptography.PasswordDeriveBytes(cryptoKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+				var rgbSalt = Convert.FromBase64String(salt); //"Ivan Medvedev"
+				var pdb = new System.Security.Cryptography.PasswordDeriveBytes(key, rgbSalt);
 
 				using (var ms = new System.IO.MemoryStream())
 				{
@@ -40,10 +39,8 @@ namespace ISI.Extensions.Crypto
 						cryptoStream.Write(clearBytes, 0, clearBytes.Length);
 					}
 
-					result = Convert.ToBase64String(ms.ToArray());
+					return Convert.ToBase64String(ms.ToArray());
 				}
-
-				return result;
 			}
 		}
 	}

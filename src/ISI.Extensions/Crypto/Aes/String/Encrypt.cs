@@ -12,47 +12,56 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Crypto
 {
-	public partial class Rijndael
+	public partial class Aes
 	{
 		public partial class String
 		{
-			public static bool TryDecrypt(string key, string salt, string encryptedValue, out string decryptedValue)
+			public static (byte[] Key, byte[] EncryptedValue) Encrypt(string unEncryptedValue, IEnumerable<byte> key = null)
 			{
-				try
+				using (var memoryStream = new System.IO.MemoryStream())
 				{
-					var cipherBytes = Convert.FromBase64String(encryptedValue);
-					var rgbSalt = Convert.FromBase64String(salt); //"Ivan Medvedev"
-					var pdb = new System.Security.Cryptography.PasswordDeriveBytes(key, rgbSalt);
-
-					using (var memoryStream = new System.IO.MemoryStream())
+					using (var aes = System.Security.Cryptography.Aes.Create())
 					{
-						using (var algorithm = System.Security.Cryptography.Rijndael.Create())
+						if (key.NullCheckedAny())
 						{
-							algorithm.Key = pdb.GetBytes(32);
-							algorithm.IV = pdb.GetBytes(16);
-						
-							using (var cryptoStream = new System.Security.Cryptography.CryptoStream(memoryStream, algorithm.CreateDecryptor(), System.Security.Cryptography.CryptoStreamMode.Write))
-							{
-								cryptoStream.Write(cipherBytes, 0, cipherBytes.Length);
-							}
+							aes.Key = key.ToArray();
+						}
+						else
+						{
+							aes.GenerateKey();
+							key = aes.Key;
+						}
 
-							decryptedValue = System.Text.Encoding.Unicode.GetString(memoryStream.ToArray());
+						var iv = aes.IV;
+						memoryStream.Write(iv, 0, iv.Length);
+
+						using (var cryptoStream = new System.Security.Cryptography.CryptoStream(memoryStream, aes.CreateEncryptor(), System.Security.Cryptography.CryptoStreamMode.Write))
+						{
+							using (var encryptWriter = new System.IO.StreamWriter(cryptoStream))
+							{
+								encryptWriter.Write(unEncryptedValue);
+
+								encryptWriter.Flush();
+
+								cryptoStream.FlushFinalBlock();
+
+								memoryStream.Flush();
+
+								memoryStream.Rewind();
+
+								return (Key: key.ToArray(), EncryptedValue: memoryStream.ToArray());
+							}
 						}
 					}
-
-					return true;
-				}
-				catch
-				{
-					decryptedValue = null;
-					return false;
 				}
 			}
 		}

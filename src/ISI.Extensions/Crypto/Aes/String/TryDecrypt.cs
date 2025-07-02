@@ -15,35 +15,42 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ISI.Extensions.Crypto
 {
-	public partial class Rijndael
+	public partial class Aes
 	{
 		public partial class String
 		{
-			public static bool TryDecrypt(string key, string salt, string encryptedValue, out string decryptedValue)
+			public static bool TryDecrypt(IEnumerable<byte> key, IEnumerable<byte> encryptedValue, out string decryptedValue)
 			{
 				try
 				{
-					var cipherBytes = Convert.FromBase64String(encryptedValue);
-					var rgbSalt = Convert.FromBase64String(salt); //"Ivan Medvedev"
-					var pdb = new System.Security.Cryptography.PasswordDeriveBytes(key, rgbSalt);
-
-					using (var memoryStream = new System.IO.MemoryStream())
+					using (var memoryStream = new System.IO.MemoryStream(encryptedValue.ToArray()))
 					{
-						using (var algorithm = System.Security.Cryptography.Rijndael.Create())
+						using (var aes = System.Security.Cryptography.Aes.Create())
 						{
-							algorithm.Key = pdb.GetBytes(32);
-							algorithm.IV = pdb.GetBytes(16);
-						
-							using (var cryptoStream = new System.Security.Cryptography.CryptoStream(memoryStream, algorithm.CreateDecryptor(), System.Security.Cryptography.CryptoStreamMode.Write))
+							var iv = new byte[aes.IV.Length];
+							var numBytesToRead = aes.IV.Length;
+							var numBytesRead = 0;
+							while (numBytesToRead > 0)
 							{
-								cryptoStream.Write(cipherBytes, 0, cipherBytes.Length);
+								var n = memoryStream.Read(iv, numBytesRead, numBytesToRead);
+								if (n == 0) break;
+
+								numBytesRead += n;
+								numBytesToRead -= n;
 							}
 
-							decryptedValue = System.Text.Encoding.Unicode.GetString(memoryStream.ToArray());
+							using (var cryptoStream = new System.Security.Cryptography.CryptoStream(memoryStream, aes.CreateDecryptor(key.ToArray(), iv), System.Security.Cryptography.CryptoStreamMode.Read))
+							{
+								using (var decryptReader = new System.IO.StreamReader(cryptoStream))
+								{
+									decryptedValue = decryptReader.ReadToEnd();
+								}
+							}
 						}
 					}
 

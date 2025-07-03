@@ -46,9 +46,16 @@ namespace ISI.Extensions.VisualStudio
 						Console.WriteLine($"Could not clear readOnly on {directoryInfo.Name}");
 					}
 
-					foreach (var childDirectoryInfo in directoryInfo.GetDirectories())
+					try
 					{
-						deleteDirectory(childDirectoryInfo);
+						foreach (var childDirectoryInfo in directoryInfo.GetDirectories())
+						{
+							deleteDirectory(childDirectoryInfo);
+						}
+					}
+					catch (Exception exception)
+					{
+						Console.WriteLine($"Could not GetDirectories on {directoryInfo.Name}");
 					}
 
 					foreach (var fileInfo in directoryInfo.GetFiles())

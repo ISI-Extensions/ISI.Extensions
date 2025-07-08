@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -132,10 +132,6 @@ namespace ISI.Extensions.Repository.Oracle
 
 						var primaryKeyValues = usedPrimaryKeyValues.ToArray();
 
-						var primaryKeyValuesParameter = new global::Oracle.ManagedDataAccess.Client.OracleParameter();
-						primaryKeyValuesParameter.OracleDbType = typeof(TRecordPrimaryKey).GetOracleDbType();
-						primaryKeyValuesParameter.Value = primaryKeyValues;
-
 						connection.EnsureConnectionIsOpenAsync().Wait();
 
 						var sourcePrimaryKeyTempTableName = string.Format("Source{0}", PrimaryKeyTempTableName);
@@ -143,30 +139,60 @@ namespace ISI.Extensions.Repository.Oracle
 						using (var command = connection.CreateCommand())
 						{
 							command.CommandText = @$"
-CREATE TEMPORARY TABLE {sourcePrimaryKeyTempTableName}
+CREATE GLOBAL TEMPORARY TABLE {sourcePrimaryKeyTempTableName}
 (
 	{primaryKeyColumn.GetColumnDefinition(_formatColumnName)}
-)";
+) ON COMMIT PRESERVE ROWS";
 
 							command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
 						}
 
+						//foreach (var recordPrimaryKey in primaryKeyValues)
+						//{
+						//	using (var command = connection.CreateCommand())
+						//	{
+						//		command.CommandText = @$"INSERT INTO {sourcePrimaryKeyTempTableName} ({_formatColumnName(primaryKeyColumn.ColumnName)}) VALUES (:pk)";
+						//		command.BindByName = true;
+
+						//		var primaryKeyValuesParameter = new global::Oracle.ManagedDataAccess.Client.OracleParameter("pk",  typeof(TRecordPrimaryKey).GetOracleDbType());
+						//		primaryKeyValuesParameter.Value = recordPrimaryKey;
+
+						//		//command.ArrayBindCount = primaryKeyValues.Length;
+						//		command.Parameters.Add(primaryKeyValuesParameter);
+
+						//		//Console.WriteLine($"primaryKeyValues.Length: {primaryKeyValues.Length}");
+
+						//		command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
+						//	}
+						//}
+
 						using (var command = connection.CreateCommand())
 						{
-							command.CommandText = @$"INSERT INTO {sourcePrimaryKeyTempTableName} ({primaryKeyColumn.GetColumnDefinition(_formatColumnName)}) VALUES (:1)";
+							command.CommandText = @$"INSERT INTO {sourcePrimaryKeyTempTableName} ({_formatColumnName(primaryKeyColumn.ColumnName)}) VALUES (:pk)";
+							command.BindByName = true;
+
+							var primaryKeyValuesParameter = new global::Oracle.ManagedDataAccess.Client.OracleParameter("pk", typeof(TRecordPrimaryKey).GetOracleDbType(), System.Data.ParameterDirection.Input);
+							primaryKeyValuesParameter.Value = primaryKeyValues;
+
 							command.ArrayBindCount = primaryKeyValues.Length;
 							command.Parameters.Add(primaryKeyValuesParameter);
 
+							foreach (var primaryKeyValue in primaryKeyValues)
+							{
+								Console.WriteLine($"primaryKeyValue: {primaryKeyValue}");
+							}
+							Console.WriteLine($"primaryKeyValues.Length: {primaryKeyValues.Length}");
+
 							command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
 						}
 
 						using (var command = connection.CreateCommand())
 						{
 							command.CommandText = @$"
-CREATE TEMPORARY TABLE {PrimaryKeyTempTableName}
+CREATE GLOBAL TEMPORARY TABLE {PrimaryKeyTempTableName}
 (
 	{primaryKeyColumn.GetColumnDefinition(_formatColumnName)}
-)";
+) ON COMMIT PRESERVE ROWS";
 
 							command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
 						}
@@ -174,14 +200,14 @@ CREATE TEMPORARY TABLE {PrimaryKeyTempTableName}
 						using (var command = connection.CreateCommand())
 						{
 							command.CommandText = @$"
-INSERT INTO {PrimaryKeyTempTableName} ({primaryKeyColumn.GetColumnDefinition(_formatColumnName)})
-SELECT DISTINCT {primaryKeyColumn.GetColumnDefinition(_formatColumnName)}
+INSERT INTO {PrimaryKeyTempTableName} ({_formatColumnName(primaryKeyColumn.ColumnName)})
+SELECT DISTINCT {_formatColumnName(primaryKeyColumn.ColumnName)}
 FROM {sourcePrimaryKeyTempTableName}";
 
 							command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
 						}
 
-						JoinClauseFormat = string.Format("    join #{0} {0} with (NoLock) On ({0}.{1} = {{0}}.{1})\n", PrimaryKeyTempTableName, _formatColumnName(primaryKeyColumn.ColumnName));
+						JoinClauseFormat = string.Format("    JOIN {0} {0} ON ({0}.{1} = {{0}}.{1})\n", PrimaryKeyTempTableName, _formatColumnName(primaryKeyColumn.ColumnName));
 					}
 
 					HasValue = (primaryKeyValueCount > 0);

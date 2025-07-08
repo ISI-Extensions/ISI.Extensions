@@ -19,13 +19,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.6" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.6" />
+		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.7" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.7" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.6" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.1" />
-		<PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="9.0.1" />
-		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.6" />
+	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.7" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.3" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="9.0.3" />
+		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.7" />
 		<PackageReference Update="NETStandard.Library" Version="2.0.3" />
 	</ItemGroup>
 

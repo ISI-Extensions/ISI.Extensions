@@ -71,9 +71,9 @@ namespace ISI.Extensions.Repository.Oracle
 		{
 			var sql = new StringBuilder();
 
-			var sqlConnectionWhereClause = whereClause as IOracleConnectionWhereClause;
+			var oracleConnectionWhereClause = whereClause as IOracleConnectionWhereClause;
 
-			sqlConnectionWhereClause?.Initialize(OracleConfiguration, connection);
+			oracleConnectionWhereClause?.Initialize(OracleConfiguration, connection);
 
 			if ((whereClause != null) && !whereClause.IsFilter && !whereClause.HasFilter)
 			{
@@ -88,9 +88,9 @@ namespace ISI.Extensions.Repository.Oracle
 				sql.AppendFormat("SELECT {0}\n", selectClause.GetSql());
 				sql.AppendFormat("{0}\n", fromClause);
 
-				if (sqlConnectionWhereClause != null)
+				if (oracleConnectionWhereClause != null)
 				{
-					sql.Append(sqlConnectionWhereClause.GetJoinCause(GetTableNameAlias(TableAlias)));
+					sql.Append(oracleConnectionWhereClause.GetJoinCause(GetTableNameAlias(TableAlias)));
 				}
 
 				if (!string.IsNullOrWhiteSpace(whereSql))
@@ -123,7 +123,7 @@ namespace ISI.Extensions.Repository.Oracle
 					yield return record;
 				}
 
-				sqlConnectionWhereClause?.Finalize(connection);
+				oracleConnectionWhereClause?.Finalize(connection);
 			}
 		}
 

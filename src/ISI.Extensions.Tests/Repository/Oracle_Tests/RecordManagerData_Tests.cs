@@ -159,7 +159,7 @@ namespace ISI.Extensions.Tests.Repository
 
 			var records = new List<ContactWithData>();
 
-			for (var index = 0; index < 100; index++)
+			for (var index = 0; index < 200; index++)
 			{
 				var contactUuid = Guid.NewGuid();
 				var firstName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens);
@@ -181,6 +181,8 @@ namespace ISI.Extensions.Tests.Repository
 			}
 
 			var insertedRecords = recordManager.InsertRecordsAsync(records).ToEnumerable();
+
+			var retrievedRecords = recordManager.GetRecordsAsync(records.Select(record => record.ContactUuid)).ToNullCheckedArray();
 		}
 	}
 }

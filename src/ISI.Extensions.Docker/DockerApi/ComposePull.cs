@@ -54,7 +54,10 @@ namespace ISI.Extensions.Docker
 					arguments.Add($"--context {request.Context}");
 				}
 
-				arguments.Add("compose");
+				if (!UseDockerDashCompose)
+				{
+					arguments.Add("compose");
+				}
 				
 				if (!string.IsNullOrWhiteSpace(request.ProjectName))
 				{
@@ -73,7 +76,7 @@ namespace ISI.Extensions.Docker
 				var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
 					Logger = logger,
-					ProcessExeFullName = "docker",
+					ProcessExeFullName = (UseDockerDashCompose ? "docker-compose" : "docker"),
 					Arguments = arguments.ToArray(),
 					WorkingDirectory = request.ComposeDirectory,
 					EnvironmentVariables = AddDockerContextServerApiVersion(null, request.Host, request.Context),

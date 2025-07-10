@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +34,7 @@ namespace ISI.Extensions
 		private static readonly Dictionary<Guid, TEnum> _UuidLookup = null;
 
 		private static Dictionary<TEnum, System.Runtime.Serialization.EnumMemberAttribute> _EnumMemberLookUp = null;
-		
+
 		private static bool _IsNullable = false;
 
 		static Enum()
@@ -60,7 +60,7 @@ namespace ISI.Extensions
 				{
 					type = (new System.ComponentModel.NullableConverter(type)).UnderlyingType;
 				}
-				
+
 				if (!type.IsEnum)
 				{
 					throw new(string.Format("Cannot create Enum<T> when T is not a Enum, T is \"{0}\"", type.AssemblyQualifiedName));
@@ -72,16 +72,20 @@ namespace ISI.Extensions
 				foreach (TEnum value in System.Enum.GetValues(type))
 				{
 					var enumInformation = new EnumInformation(index++, value);
-					var enumAttributes = (EnumAttribute[])(type.GetField(value.ToString()).GetCustomAttributes(typeof(EnumAttribute), false));
-					
-					if (enumAttributes.Length > 0)
-					{
-						var enumAttribute = enumAttributes.First();
+					var enumAttribute = (type.GetField(value.ToString()).GetCustomAttributes(typeof(EnumAttribute), false) as EnumAttribute[]).NullCheckedFirstOrDefault();
+					var descriptionAttribute = (type.GetField(value.ToString()).GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false) as System.ComponentModel.DescriptionAttribute[]).NullCheckedFirstOrDefault();
 
+					if (enumAttribute != null)
+					{
 						if (!string.IsNullOrWhiteSpace(enumAttribute.Description))
 						{
 							enumInformation.DefaultDescription = enumAttribute.Description;
 							enumInformation.WithSpaces = enumAttribute.Description;
+						}
+						else if (!string.IsNullOrWhiteSpace(descriptionAttribute?.Description))
+						{
+							enumInformation.DefaultDescription = descriptionAttribute.Description;
+							enumInformation.WithSpaces = descriptionAttribute.Description;
 						}
 
 						if (!string.IsNullOrWhiteSpace(enumAttribute.Abbreviation))
@@ -97,6 +101,17 @@ namespace ISI.Extensions
 						{
 							enumInformation.Uuid = uuid;
 						}
+					}
+					else if (descriptionAttribute != null)
+					{
+						if (!string.IsNullOrWhiteSpace(descriptionAttribute.Description))
+						{
+							enumInformation.DefaultDescription = descriptionAttribute.Description;
+							enumInformation.WithSpaces = descriptionAttribute.Description;
+						}
+
+						enumInformation.Active = true;
+						enumInformation.Order = enumInformation.Order;
 					}
 
 					_EnumInformations.Add(enumInformation);

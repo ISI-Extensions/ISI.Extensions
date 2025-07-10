@@ -28,7 +28,8 @@ namespace ISI.Extensions.Tests
 	{
 		public enum MyEnum
 		{
-			[ISI.Extensions.EnumGuid("8cc7bc04-c312-4aa7-842f-ef1fe374cdee")] Yes,
+			[ISI.Extensions.EnumGuid("8cc7bc04-c312-4aa7-842f-ef1fe374cdee"), System.ComponentModel.Description("pizza")] Yes,
+			[ISI.Extensions.EnumGuid("25de8fd6-ce3a-406c-9707-f4685b76f8c6", "wahopo"), System.ComponentModel.Description("pizza")] Blah,
 			[ISI.Extensions.EnumGuid("acaa9be7-b2d1-4ff5-b654-0102cfa74891")] No,
 		}
 
@@ -36,12 +37,10 @@ namespace ISI.Extensions.Tests
 		public void Enum_Test()
 		{
 			var a1 = ISI.Extensions.Enum<MyEnum>.ToArray();
-
-
+			
 			var t1 = MyEnum.No;
 			var t2 = t1.GetUuid();
-
-
+			
 			var t4 = (System.Enum)t1;
 
 			var t5 = t4.GetUuid();
@@ -50,12 +49,15 @@ namespace ISI.Extensions.Tests
 			var xxxy = ISI.Extensions.Enum<MyEnum?>.ParseUuid((Guid?)null);
 
 			ISI.Extensions.Enum.TryParseUuid(typeof(MyEnum?), (Guid?)null, out var parsedValueNull);
-			ISI.Extensions.Enum.TryParseUuid(typeof(MyEnum?), "acaa9be7-b2d1-4ff5-b654-0102cfa74891", out var parsedValueS);
+			ISI.Extensions.Enum.TryParseUuid(typeof(MyEnum?), "acaa9be7-b2d1-4ff5-b654-0102cfa74891", out var parsedValueString);
 			ISI.Extensions.Enum.TryParseUuid(typeof(MyEnum?), Guid.Parse("acaa9be7-b2d1-4ff5-b654-0102cfa74891"), out var parsedValue);
 
 			var x1 = ISI.Extensions.Enum.ParseUuid(typeof(MyEnum?), (Guid?)null);
 			var x2 = ISI.Extensions.Enum.ParseUuid(typeof(MyEnum?), "acaa9be7-b2d1-4ff5-b654-0102cfa74891");
 			var x3 = ISI.Extensions.Enum.ParseUuid(typeof(MyEnum?), Guid.Parse("acaa9be7-b2d1-4ff5-b654-0102cfa74891"));
+
+			var d1 = MyEnum.Yes.GetDescription();
+			var d2 = MyEnum.Blah.GetDescription();
 		}
 	}
 }

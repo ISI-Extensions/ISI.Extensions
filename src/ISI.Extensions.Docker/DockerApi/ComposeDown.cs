@@ -76,7 +76,7 @@ namespace ISI.Extensions.Docker
 					arguments.Add("-v");
 				}
 
-				logger.LogInformation($"docker {string.Join(" ", arguments)}");
+				logger.LogInformation($"{(UseDockerDashCompose ? "docker-compose" : "docker")} {string.Join(" ", arguments)}");
 
 				var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{

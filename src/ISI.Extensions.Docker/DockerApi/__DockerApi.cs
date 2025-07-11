@@ -56,9 +56,7 @@ namespace ISI.Extensions.Docker
 					Arguments = ["compose", "--help"],
 				});
 
-				var output = $"{waitForProcessResponse.Output}\n{waitForProcessResponse.Errored}" ;
-
-				useDockerDashCompose = (output.IndexOf("'docker compose COMMAND --help'", StringComparison.InvariantCultureIgnoreCase) >= 0);
+				useDockerDashCompose = !(waitForProcessResponse.Output.IndexOf("'docker compose COMMAND --help'", StringComparison.InvariantCultureIgnoreCase) >= 0);
 			}
 
 			return useDockerDashCompose.GetValueOrDefault();

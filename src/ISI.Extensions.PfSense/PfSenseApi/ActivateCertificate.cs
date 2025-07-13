@@ -36,6 +36,16 @@ namespace ISI.Extensions.PfSense
 			var keyCertificateFileName = "key.pem";
 			var bundleCertificateFileName = "fullchain.pem";
 
+			var logEntries = new List<DTOs.LogEntry>();
+			void addLog(string description)
+			{
+				logEntries.Add(new DTOs.LogEntry()
+				{
+					DateTimeStampUtc = DateTimeStamper.CurrentDateTimeUtc(),
+					Description = description,
+				});
+			}
+
 			using (var client = new Renci.SshNet.SshClient(connectionInfo))
 			{
 				client.Connect();
@@ -90,6 +100,8 @@ namespace ISI.Extensions.PfSense
 				using (var cmd = client.CreateCommand(command.ToString()))
 				{
 					var result = cmd.Execute();
+
+					addLog($"Push Cert: {result}");
 				}
 
 				using (var cmd = client.CreateCommand($"rm -r {directoryName}"))
@@ -97,6 +109,8 @@ namespace ISI.Extensions.PfSense
 					var result = cmd.Execute();
 				}
 			}
+			
+			response.LogEntries = logEntries.ToArray();
 
 			return response;
 		}

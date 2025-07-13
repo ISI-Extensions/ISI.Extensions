@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +20,6 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using DTOs = ISI.Extensions.TrueNAS.DataTransferObjects.TrueNASApi;
-using Rest = ISI.Extensions.WebClient.Rest;
 using SerializableDTOs = ISI.Extensions.TrueNAS.SerializableModels;
 
 namespace ISI.Extensions.TrueNAS
@@ -38,13 +37,21 @@ namespace ISI.Extensions.TrueNAS
 			//	var apiResponse = Rest.ExecuteTextGet(uri.Uri, GetHeaders(request), false, serverCertificateValidationCallback: (sender, certificate, chain, errors) => true);
 			//}
 
+			var logEntries = new List<DTOs.LogEntry>();
+			void addLog(string description)
+			{
+				logEntries.Add(new DTOs.LogEntry()
+				{
+					DateTimeStampUtc = DateTimeStamper.CurrentDateTimeUtc(),
+					Description = description,
+				});
+			}
+
 			var getVersionResponse = GetVersion(new()
 			{
 				TrueNASApiUrl = request.TrueNASApiUrl,
 				TrueNASApiKey = request.TrueNASApiKey,
 			});
-
-			var version = new Version(getVersionResponse.Version.Split('-').First());
 
 			var activeCertificateId = (int?)null;
 			var activeCertificateName = (string)null;
@@ -71,6 +78,8 @@ namespace ISI.Extensions.TrueNAS
 				};
 
 				var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.SetCertificateRequest, ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, GetHeaders(request), apiRequest, true, serverCertificateValidationCallback: (sender, certificate, chain, errors) => true);
+
+				addLog($"Push Cert: {apiResponse}");
 			}
 
 			int getNewCertificateIndex()
@@ -114,6 +123,8 @@ namespace ISI.Extensions.TrueNAS
 				};
 
 				var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPut<SerializableDTOs.ActivateCertificateRequest, ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, GetHeaders(request), apiRequest, true, serverCertificateValidationCallback: (sender, certificate, chain, errors) => true);
+
+				addLog($"Activate Cert: {apiResponse}");
 			}
 
 			//https://raw.githubusercontent.com/acmesh-official/acme.sh/f981c782bb38015f4778913e9c3db26b57dde4e8/deploy/truenas.sh
@@ -177,7 +188,11 @@ namespace ISI.Extensions.TrueNAS
 				uri.SetPathAndQueryString("api/v2.0/system/general/ui_restart");
 
 				var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteTextGet(uri.Uri, GetHeaders(request), true, serverCertificateValidationCallback: (sender, certificate, chain, errors) => true);
+
+				addLog($"Delete Cert: {apiResponse}");
 			}
+
+			response.LogEntries = logEntries.ToArray();
 
 			return response;
 		}

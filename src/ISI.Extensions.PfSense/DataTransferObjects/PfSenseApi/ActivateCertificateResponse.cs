@@ -24,5 +24,8 @@ namespace ISI.Extensions.PfSense.DataTransferObjects.PfSenseApi
 {
 	public class ActivateCertificateResponse
 	{
+		public bool Errored { get; set; }
+
+		public LogEntry[] LogEntries { get; set; }
 	}
 }

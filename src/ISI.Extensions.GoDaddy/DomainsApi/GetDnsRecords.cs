@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.GoDaddy.Extensions;
 using DTOs = ISI.Extensions.GoDaddy.DataTransferObjects.DomainsApi;
-using SERIALIZABLE = ISI.Extensions.GoDaddy.SerializableModels;
+using SerializableDTOs = ISI.Extensions.GoDaddy.SerializableModels;
 
 namespace ISI.Extensions.GoDaddy
 {
@@ -52,24 +52,24 @@ namespace ISI.Extensions.GoDaddy
 
 			var goDaddyResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet(new()
 			{
-				{ System.Net.HttpStatusCode.OK, typeof(SERIALIZABLE.DomainsApi.DnsRecord[]) },
-				{ System.Net.HttpStatusCode.BadRequest, typeof(SERIALIZABLE.Error) },
-				{ System.Net.HttpStatusCode.Unauthorized, typeof(SERIALIZABLE.Error) },
-				{ System.Net.HttpStatusCode.Forbidden, typeof(SERIALIZABLE.Error) },
-				{ System.Net.HttpStatusCode.NotFound, typeof(SERIALIZABLE.Error) },
-				{ 422, typeof(SERIALIZABLE.Error) }, //System.Net.HttpStatusCode.UnprocessableEntity
-				{ 429, typeof(SERIALIZABLE.Error) }, //System.Net.HttpStatusCode.TooManyRequests
-				{ System.Net.HttpStatusCode.InternalServerError, typeof(SERIALIZABLE.Error) },
-				{ System.Net.HttpStatusCode.GatewayTimeout, typeof(SERIALIZABLE.Error) },
+				{ System.Net.HttpStatusCode.OK, typeof(SerializableModels.DomainsApi.DnsRecord[]) },
+				{ System.Net.HttpStatusCode.BadRequest, typeof(SerializableModels.Error) },
+				{ System.Net.HttpStatusCode.Unauthorized, typeof(SerializableModels.Error) },
+				{ System.Net.HttpStatusCode.Forbidden, typeof(SerializableModels.Error) },
+				{ System.Net.HttpStatusCode.NotFound, typeof(SerializableModels.Error) },
+				{ 422, typeof(SerializableModels.Error) }, //System.Net.HttpStatusCode.UnprocessableEntity
+				{ 429, typeof(SerializableModels.Error) }, //System.Net.HttpStatusCode.TooManyRequests
+				{ System.Net.HttpStatusCode.InternalServerError, typeof(SerializableModels.Error) },
+				{ System.Net.HttpStatusCode.GatewayTimeout, typeof(SerializableModels.Error) },
 			}, uri.Uri, request.GetHeaders(Configuration), true);
 
 			switch (goDaddyResponse.Response)
 			{
-				case SERIALIZABLE.DomainsApi.DnsRecord[] dnsRecords:
+				case SerializableModels.DomainsApi.DnsRecord[] dnsRecords:
 					response.DnsRecords = dnsRecords.ToNullCheckedArray(dnsRecord => dnsRecord.Export());
 					break;
 
-				case SERIALIZABLE.Error error:
+				case SerializableModels.Error error:
 					response.Error = error.NullCheckedConvert(@error => @error.Export());
 					break;
 			}

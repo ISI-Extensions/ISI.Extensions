@@ -41,6 +41,7 @@
   <Project Path="ISI.Extensions.DependencyInjection.Iunq/ISI.Extensions.DependencyInjection.Iunq.csproj">
     <Platform Solution="*|x64" Project="x64" />
   </Project>
+  <Project Path="ISI.Extensions.DeSEC/ISI.Extensions.DeSEC.csproj" Id="b8cf1570-adab-4e62-8af8-bd7ee6d4efde" />
   <Project Path="ISI.Extensions.Docker/ISI.Extensions.Docker.csproj" />
   <Project Path="ISI.Extensions.Ebcdic/ISI.Extensions.Ebcdic.csproj" />
   <Project Path="ISI.Extensions.Git/ISI.Extensions.Git.csproj" />

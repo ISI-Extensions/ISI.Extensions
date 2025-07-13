@@ -28,7 +28,7 @@ using Microsoft.Extensions.Configuration;
 namespace ISI.Extensions.Tests
 {
 	[TestFixture]
-	public class GoDaddyApis_Tests
+	public class DeSECApis_Tests
 	{
 		protected IServiceProvider ServiceProvider { get; set; }
 
@@ -57,8 +57,7 @@ namespace ISI.Extensions.Tests
 
 				.AddSingleton<ISI.Extensions.JsonSerialization.IJsonSerializer, ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer>()
 				.AddSingleton<ISI.Extensions.Serialization.ISerialization, ISI.Extensions.Serialization.Serialization>()
-				.AddSingleton<ISI.Extensions.Ipify.IpifyApi>()
-				.AddSingleton<ISI.Extensions.GoDaddy.DomainsApi>()
+				.AddSingleton<ISI.Extensions.DeSEC.DomainsApi>()
 
 				.AddConfigurationRegistrations(configurationRoot)
 				.ProcessServiceRegistrars(configurationRoot)
@@ -75,77 +74,76 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
-		public void DDNS_Test()
+		public void GetTxtRecords_Test()
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 
-			var ipifyApi = ServiceProvider.GetService<ISI.Extensions.Ipify.IpifyApi>();
-			var domainsApi = ServiceProvider.GetService<ISI.Extensions.GoDaddy.DomainsApi>();
+			var domainsApi = ServiceProvider.GetService<ISI.Extensions.DeSEC.DomainsApi>();
+
+			var txtRecords = domainsApi.GetTxtRecords(new()
+			{
+				Domain = "whizzia.info",
+				Name = "_acme-challenge",
+				NameServer = "8.8.8.8",
+			}).Values;
+		}
+
+		[Test]
+		public void GetDnsRecords_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+
+			var domainsApi = ServiceProvider.GetService<ISI.Extensions.DeSEC.DomainsApi>();
 
 			using (var eventHandler = ISI.Extensions.WebClient.Rest.GetEventHandler())
 			{
-				var externalIpAddress = ipifyApi.GetExternalIPv4().IpAddress;
-
 				var dnsRecords = domainsApi.GetDnsRecords(new()
 				{
-					ApiKey = settings.GetValue("GoDaddy.ApiKey"),
-					ApiSecret = settings.GetValue("GoDaddy.ApiSecret"),
-					Domain = "MuthFamily.com",
+					ApiKey = settings.GetValue("DeSEC.ApiKey"),
+					Domain = "whizzia.info",
 				}).DnsRecords;
-
-				var dnsRecord = new ISI.Extensions.Dns.DnsRecord()
-				{
-					Data = externalIpAddress,
-					Name = "@",
-					//Port = source.Port,
-					//Priority = source.Priority,
-					//Protocol = source.Protocol,
-					//Service = source.Service,
-					//Ttl = 3600,
-					RecordType = ISI.Extensions.Dns.RecordType.AddressRecord,
-					//Weight = source.Weight,
-				};
-
-				var xxx = domainsApi.SetDnsRecords(new()
-				{
-					ApiKey = settings.GetValue("GoDaddy.ApiKey"),
-					ApiSecret = settings.GetValue("GoDaddy.ApiSecret"),
-					Domain = "MuthFamily.com",
-					DnsRecords = [dnsRecord],
-				});
 			}
 		}
 
 		[Test]
-		public void SSL_Verify_Test()
+		public void SetDnsRecords_Test()
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 
-			var domainsApi = ServiceProvider.GetService<ISI.Extensions.GoDaddy.DomainsApi>();
+			var domainsApi = ServiceProvider.GetService<ISI.Extensions.DeSEC.DomainsApi>();
 
 			using (var eventHandler = ISI.Extensions.WebClient.Rest.GetEventHandler())
 			{
-				var dnsRecord = new ISI.Extensions.Dns.DnsRecord()
+				domainsApi.SetDnsRecords(new()
 				{
-					Data = "xxxxxxxxxxxxxxxxxxxxxxx",
-					Name = "xxxxxxxxxxxxxxxxxxxxxxxxx",
-					//Port = source.Port,
-					//Priority = source.Priority,
-					//Protocol = source.Protocol,
-					//Service = source.Service,
-					//Ttl = 3600,
-					RecordType = ISI.Extensions.Dns.RecordType.CanonicalNameRecord,
-					//Weight = source.Weight,
-				};
-
-				var xxx = domainsApi.SetDnsRecords(new()
-				{
-					ApiKey = settings.GetValue("GoDaddy.ApiKey"),
-					ApiSecret = settings.GetValue("GoDaddy.ApiSecret"),
-					Domain = "westriversystems.com",
-					DnsRecords = [dnsRecord],
+					ApiKey = settings.GetValue("DeSEC.ApiKey"),
+					Domain = "whizzia.info",
+					DnsRecords =
+					[
+						new ISI.Extensions.Dns.DnsRecord()
+						{
+							Name = "_acme-challenge",
+							Data = "Ronr7-ooXsI_wUXhYUNdQYbwMQfMe9x6tXfhL5VAOXrnLU",
+							RecordType = ISI.Extensions.Dns.RecordType.TextRecord,
+							Ttl = TimeSpan.FromMinutes(10),
+						},
+						new ISI.Extensions.Dns.DnsRecord()
+						{
+							Name = "_acme-challenge",
+							Data = "MuthUF1bGUUhPPlcTYM1v9yz87gu4NnsrqQbFWMno1m5ZV4",
+							RecordType = ISI.Extensions.Dns.RecordType.TextRecord,
+							Ttl = TimeSpan.FromMinutes(10),
+						},
+						//new ISI.Extensions.Dns.DnsRecord()
+						//{
+						//	Name = "@",
+						//	Data = "10.165.0.1",
+						//	RecordType = ISI.Extensions.Dns.RecordType.A,
+						//},
+					]
 				});
 			}
 		}

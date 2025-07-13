@@ -115,7 +115,7 @@ namespace ISI.Extensions.Acme
 						Data = calculateDnsTokenResponse.DnsToken,
 						Name = calculateDnsTokenResponse.DnsRecordName,
 						Ttl = TimeSpan.FromMinutes(10),
-						RecordType = ISI.Extensions.Dns.RecordType.TXT,
+						RecordType = ISI.Extensions.Dns.RecordType.TextRecord,
 					};
 
 					var txtRecords = DomainsApi.GetTxtRecords(new()

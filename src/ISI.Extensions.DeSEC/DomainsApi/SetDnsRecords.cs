@@ -12,18 +12,18 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.GoDaddy.Extensions;
-using DTOs = ISI.Extensions.GoDaddy.DataTransferObjects.DomainsApi;
-using SerializableDTOs = ISI.Extensions.GoDaddy.SerializableModels;
+using ISI.Extensions.DeSEC.Extensions;
+using DTOs = ISI.Extensions.DeSEC.DataTransferObjects.DomainsApi;
+using SerializableDTOs = ISI.Extensions.DeSEC.SerializableModels.DomainsApi;
 
-namespace ISI.Extensions.GoDaddy
+namespace ISI.Extensions.DeSEC
 {
 	public partial class DomainsApi
 	{
@@ -35,37 +35,43 @@ namespace ISI.Extensions.GoDaddy
 			{
 				foreach (var dnsRecordsGroupedByName in dnsRecordsGroupedByType.GroupBy(dnsRecord => dnsRecord.Name))
 				{
-					if (response.Error == null)
+					var uri = new UriBuilder(request.GetUrl(Configuration));
+					uri.AddDirectoryToPath($"api/v1/domains/{request.Domain}/rrsets/{dnsRecordsGroupedByName.Key}/{dnsRecordsGroupedByType.Key.GetAbbreviation()}/");
+
+					var existingDnsRecord = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableDTOs.DnsRecord>(uri.Uri, request.GetHeaders(Configuration), false);
+					
+					var dnsRecord = new SerializableDTOs.DnsRecord()
 					{
-						var uri = new UriBuilder(request.GetUrl(Configuration));
-						uri.SetPathAndQueryString("/v1/domains/{domain}/records".Replace(new Dictionary<string, string>()
-						{
-							{ "{domain}", request.Domain }
-						}, StringComparer.InvariantCultureIgnoreCase));
-						uri.AddDirectoryToPath(dnsRecordsGroupedByType.Key.GetKey());
-						uri.AddDirectoryToPath(dnsRecordsGroupedByName.Key);
+						SubName = dnsRecordsGroupedByName.Key,
+						Ttl = (long)dnsRecordsGroupedByName.First().Ttl.TotalSeconds,
+						RecordType = dnsRecordsGroupedByType.Key.GetAbbreviation(),
+					};
 
-						var dnsRecords = dnsRecordsGroupedByName.ToNullCheckedArray(SerializableModels.DomainsApi.DnsRecord.ToSerializable);
+					if (dnsRecord.Ttl < 3600)
+					{
+						dnsRecord.Ttl = 3600;
+					}
 
-						var goDaddyResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPut(new()
-						{
-							{ System.Net.HttpStatusCode.OK, typeof(SerializableModels.DomainsApi.DnsRecord[]) },
-							{ System.Net.HttpStatusCode.BadRequest, typeof(SerializableModels.Error) },
-							{ System.Net.HttpStatusCode.Unauthorized, typeof(SerializableModels.Error) },
-							{ System.Net.HttpStatusCode.Forbidden, typeof(SerializableModels.Error) },
-							{ System.Net.HttpStatusCode.NotFound, typeof(SerializableModels.Error) },
-							{ 422, typeof(SerializableModels.Error) }, //System.Net.HttpStatusCode.UnprocessableEntity
-							{ 429, typeof(SerializableModels.Error) }, //System.Net.HttpStatusCode.TooManyRequests
-							{ System.Net.HttpStatusCode.InternalServerError, typeof(SerializableModels.Error) },
-							{ System.Net.HttpStatusCode.GatewayTimeout, typeof(SerializableModels.Error) },
-						}, uri.Uri, request.GetHeaders(Configuration), dnsRecords, true);
+					switch (dnsRecordsGroupedByType.Key)
+					{
+						case ISI.Extensions.Dns.RecordType.TextRecord:
+							dnsRecord.Records = dnsRecordsGroupedByName.ToNullCheckedArray(record => $"\"{record.Data}\"");
+							break;
 
-						switch (goDaddyResponse.Response)
-						{
-							case SerializableModels.Error error:
-								response.Error = error.NullCheckedConvert(@error => @error.Export());
-								break;
-						}
+						default:
+							dnsRecord.Records = dnsRecordsGroupedByName.ToNullCheckedArray(record => record.Data);
+							break;
+					}
+
+					if (existingDnsRecord != null)
+					{
+						var existingDnsRecordsX = ISI.Extensions.WebClient.Rest.ExecuteJsonPut<SerializableDTOs.DnsRecord, ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, request.GetHeaders(Configuration), dnsRecord, true);
+					}
+					else
+					{
+						uri = new UriBuilder(request.GetUrl(Configuration));
+						uri.AddDirectoryToPath($"api/v1/domains/{request.Domain}/rrsets/");
+						var existingDnsRecordsX = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.DnsRecord, ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, request.GetHeaders(Configuration), dnsRecord, true);
 					}
 				}
 			}

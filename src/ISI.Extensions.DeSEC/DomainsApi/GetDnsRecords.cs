@@ -19,10 +19,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.NameCheap.Extensions;
-using DTOs = ISI.Extensions.NameCheap.DataTransferObjects.DomainsApi;
+using ISI.Extensions.DeSEC.Extensions;
+using DTOs = ISI.Extensions.DeSEC.DataTransferObjects.DomainsApi;
+using SerializableDTOs = ISI.Extensions.DeSEC.SerializableModels.DomainsApi;
 
-namespace ISI.Extensions.NameCheap
+namespace ISI.Extensions.DeSEC
 {
 	public partial class DomainsApi
 	{
@@ -30,42 +31,12 @@ namespace ISI.Extensions.NameCheap
 		{
 			var response = new DTOs.GetDnsRecordsResponse();
 
-			var domainPieces = request.Domain.Split(new[] { '.' });
+			var uri = new UriBuilder( request.GetUrl(Configuration));
+			uri.AddDirectoryToPath($"api/v1/domains/{request.Domain}/rrsets/");
 
-			var uri = request.GetUrl(IpifyApi, Configuration);
-			uri.AddQueryStringParameter("Command", "namecheap.domains.dns.getHosts");
-			uri.AddQueryStringParameter("SLD", domainPieces.First());
-			uri.AddQueryStringParameter("TLD", domainPieces.Last());
-			uri.AddQueryStringParameter("PageSize", 100);
+			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableDTOs.DnsRecord[]>(uri.Uri, request.GetHeaders(Configuration), true);
 
-			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteTextGet(uri.Uri, request.GetHeaders(Configuration), true);
-
-			var apiResponseXml = System.Xml.Linq.XElement.Parse(apiResponse);
-			var commandResponseXml = apiResponseXml.GetElementByLocalName("CommandResponse");
-			var domainDNSGetHostsResultXml = commandResponseXml.GetElementByLocalName("DomainDNSGetHostsResult");
-			var hostXmls = domainDNSGetHostsResultXml.GetElementsByLocalName("host");
-
-			response.EmailType = domainDNSGetHostsResultXml?.GetAttributeByLocalName("EmailType").Value;
-
-			var dnsRecords = new List<ISI.Extensions.Dns.DnsRecord>();
-
-			foreach (var hostXml in hostXmls)
-			{
-				var dnsType = ISI.Extensions.Enum<ISI.Extensions.Dns.RecordType>.Parse(hostXml.GetAttributeByLocalName("Type").Value);
-
-				dnsRecords.Add(new()
-				{
-					Name = hostXml.GetAttributeByLocalName("Name").Value,
-					Data = hostXml.GetAttributeByLocalName("Address").Value,
-					Priority = hostXml.GetAttributeByLocalName("MXPref").Value.ToInt(),
-					Protocol = hostXml.GetAttributeByLocalName("AssociatedAppTitle").Value,
-					Service = hostXml.GetAttributeByLocalName("FriendlyName").Value,
-					Ttl = TimeSpan.FromSeconds(hostXml.GetAttributeByLocalName("TTL").Value.ToLong()),
-					RecordType = dnsType,
-				});
-			}
-
-			response.DnsRecords = dnsRecords.ToArray();
+			response.DnsRecords = apiResponse.ToNullCheckedArray(dnsRecord => dnsRecord.Export());
 
 			return response;
 		}

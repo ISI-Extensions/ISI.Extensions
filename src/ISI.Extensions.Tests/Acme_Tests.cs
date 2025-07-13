@@ -208,7 +208,7 @@ namespace ISI.Extensions.Tests
 				//Protocol = source.Protocol,
 				//Service = source.Service,
 				Ttl = TimeSpan.FromMinutes(10),
-				RecordType = ISI.Extensions.Dns.RecordType.TXT,
+				RecordType = ISI.Extensions.Dns.RecordType.TextRecord,
 				//Weight = source.Weight,
 			};
 

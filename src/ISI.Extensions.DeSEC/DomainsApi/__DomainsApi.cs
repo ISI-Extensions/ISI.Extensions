@@ -19,20 +19,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.GoDaddy.Extensions;
-using DTOs = ISI.Extensions.GoDaddy.DataTransferObjects.DomainsApi;
-using SerializableDTOs = ISI.Extensions.GoDaddy.SerializableModels;
+using DTOs = ISI.Extensions.DeSEC.DataTransferObjects.DomainsApi;
+using SerializableDTOs = ISI.Extensions.DeSEC.SerializableModels.DomainsApi;
 
-namespace ISI.Extensions.GoDaddy
+namespace ISI.Extensions.DeSEC
 {
-	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "GoDaddy")]
+	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "deSEC")]
 	public partial class DomainsApi : ISI.Extensions.Dns.AbstractDomainsApi, ISI.Extensions.Dns.IDomainsApi
 	{
-		internal const string _dnsProviderUuid = "72924eef-4777-4c35-87df-568da79cf8aa";
+		internal const string _dnsProviderUuid = "367c3118-ff70-4203-993a-704e786d2c02";
 		public static Guid DnsProviderUuid { get; } = _dnsProviderUuid.ToGuid();
 
 		protected Configuration Configuration { get; }
-
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
 
@@ -42,7 +40,6 @@ namespace ISI.Extensions.GoDaddy
 			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
 		{
 			Configuration = configuration;
-
 			Logger = logger;
 			DateTimeStamper = dateTimeStamper;
 		}
@@ -59,8 +56,7 @@ namespace ISI.Extensions.GoDaddy
 			response.DnsRecords = GetDnsRecords(new DTOs.GetDnsRecordsRequest()
 			{
 				Url = request.Url,
-				ApiKey = request.ApiUser,
-				ApiSecret = request.ApiKey,
+				ApiKey = request.ApiKey,
 				Domain = request.Domain,
 			}).DnsRecords;
 
@@ -74,8 +70,7 @@ namespace ISI.Extensions.GoDaddy
 			SetDnsRecords(new DTOs.SetDnsRecordsRequest()
 			{
 				Url = request.Url,
-				ApiKey = request.ApiUser,
-				ApiSecret = request.ApiKey,
+				ApiKey = request.ApiKey,
 				Domain = request.Domain,
 				DnsRecords = request.DnsRecords,
 			});

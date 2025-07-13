@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2025, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,45 +15,28 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.DeSEC.DataTransferObjects;
 
-namespace ISI.Extensions.Dns
+namespace ISI.Extensions.DeSEC.Extensions
 {
-	public class DnsRecord
+	public static class AbstractRequestExtensions
 	{
-		public string Name { get; set; }
-		public RecordType RecordType { get; set; }
-		public string Data { get; set; }
-		public int Port { get; set; }
-		public int Priority { get; set; } = 10;
-		public string Protocol { get; set; }
-		public string Service { get; set; }
-		public TimeSpan Ttl { get; set; } = TimeSpan.FromHours(1);
-		public int Weight { get; set; }
-
-		public override string ToString() => $"{(string.IsNullOrWhiteSpace(Name) ? "@" : Name)} {RecordType.GetAbbreviation()} {Data}";
-
-		public bool Matches(DnsRecord dnsRecord)
+		public static ISI.Extensions.WebClient.HeaderCollection GetHeaders(this DTOs.IRequest request, Configuration configuration)
 		{
-			if (dnsRecord.RecordType != RecordType)
-			{
-				return false;
-			}
+			var headers = new ISI.Extensions.WebClient.HeaderCollection();
 
-			if (!string.Equals(dnsRecord.Name, Name, StringComparison.InvariantCultureIgnoreCase))
-			{
-				return false;
-			}
+			var apiKey = (string.IsNullOrWhiteSpace(request.ApiKey) ? configuration.ApiKey : request.ApiKey);
 
-			if((RecordType == RecordType.TextRecord) && !string.Equals(dnsRecord.Data, Data, StringComparison.InvariantCulture))
-			{
-				return false;
-			}
+			headers.AddAuthorizationToken($"Token {apiKey}");
 
-			return true;
+			return headers;
+		}
+
+		public static string GetUrl(this DTOs.IRequest request, Configuration configuration)
+		{
+			return (string.IsNullOrWhiteSpace(request.Url) ? configuration.Url : request.Url);
 		}
 	}
 }

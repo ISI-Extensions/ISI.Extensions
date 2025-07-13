@@ -106,7 +106,6 @@ namespace ISI.Extensions.Tests
 					ApiKey = settings.GetValue("NameCheap.ApiKey"),
 					Domain = "muthmanor.com",
 				}).DnsRecords;
-
 			}
 		}
 
@@ -131,14 +130,14 @@ namespace ISI.Extensions.Tests
 						{
 							Name = "_acme-challenge",
 							Data = "r7-ooXsI_wUXhYUNdQYbwMQfMe9x6tXfhL5VAOXrnLU",
-							RecordType = ISI.Extensions.Dns.RecordType.TXT,
+							RecordType = ISI.Extensions.Dns.RecordType.TextRecord,
 							Ttl = TimeSpan.FromMinutes(10),
 						},
 						new ISI.Extensions.Dns.DnsRecord()
 						{
 							Name = "_acme-challenge",
 							Data = "UF1bGUUhPPlcTYM1v9yz87gu4NnsrqQbFWMno1m5ZV4",
-							RecordType = ISI.Extensions.Dns.RecordType.TXT,
+							RecordType = ISI.Extensions.Dns.RecordType.TextRecord,
 							Ttl = TimeSpan.FromMinutes(10),
 						},
 						//new ISI.Extensions.Dns.DnsRecord()

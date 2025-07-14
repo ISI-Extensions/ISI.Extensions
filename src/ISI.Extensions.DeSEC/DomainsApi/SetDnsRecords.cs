@@ -55,7 +55,9 @@ namespace ISI.Extensions.DeSEC
 					switch (dnsRecordsGroupedByType.Key)
 					{
 						case ISI.Extensions.Dns.RecordType.TextRecord:
-							dnsRecord.Records = dnsRecordsGroupedByName.ToNullCheckedArray(record => $"\"{record.Data}\"");
+							var records = new HashSet<string>((existingDnsRecord?.Records).ToNullCheckedArray(record => record.Trim(' ', '"'), NullCheckCollectionResult.Empty));
+							records.UnionWith(dnsRecordsGroupedByName.ToNullCheckedArray(record => record.Data));
+							dnsRecord.Records = records.ToNullCheckedArray(record => $"\"{record}\"");
 							break;
 
 						default:

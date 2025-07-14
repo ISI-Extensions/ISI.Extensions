@@ -67,13 +67,14 @@ namespace ISI.Extensions.DeSEC
 
 					if (existingDnsRecord != null)
 					{
-						var existingDnsRecordsX = ISI.Extensions.WebClient.Rest.ExecuteJsonPut<SerializableDTOs.DnsRecord, ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, request.GetHeaders(Configuration), dnsRecord, true);
+						var newDnsRecord = ISI.Extensions.WebClient.Rest.ExecuteJsonPut<SerializableDTOs.DnsRecord, SerializableDTOs.DnsRecord>(uri.Uri, request.GetHeaders(Configuration), dnsRecord, true);
 					}
 					else
 					{
 						uri = new UriBuilder(request.GetUrl(Configuration));
 						uri.AddDirectoryToPath($"api/v1/domains/{request.Domain}/rrsets/");
-						var existingDnsRecordsX = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.DnsRecord, ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, request.GetHeaders(Configuration), dnsRecord, true);
+
+						var newDnsRecord = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.DnsRecord, SerializableDTOs.DnsRecord>(uri.Uri, request.GetHeaders(Configuration), dnsRecord, true);
 					}
 				}
 			}

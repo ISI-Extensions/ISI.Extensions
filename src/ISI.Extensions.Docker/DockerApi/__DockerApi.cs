@@ -54,6 +54,7 @@ namespace ISI.Extensions.Docker
 				{
 					ProcessExeFullName = "docker",
 					Arguments = ["compose", "--help"],
+					Logger = new NullLogger(),
 				});
 
 				useDockerDashCompose = !(waitForProcessResponse.Output.IndexOf("'docker compose COMMAND --help'", StringComparison.InvariantCultureIgnoreCase) >= 0);

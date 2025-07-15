@@ -21,7 +21,6 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.NameCheap.Extensions;
 using DTOs = ISI.Extensions.NameCheap.DataTransferObjects.DomainsApi;
-using Rest = ISI.Extensions.WebClient.Rest;
 using SerializableDTOs = ISI.Extensions.NameCheap.SerializableModels;
 
 namespace ISI.Extensions.NameCheap

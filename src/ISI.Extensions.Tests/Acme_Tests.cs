@@ -71,11 +71,11 @@ namespace ISI.Extensions.Tests
 		public void OneTimeSetUp()
 		{
 			var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
-			var configuration = configurationBuilder.Build();
+			var configurationRoot = configurationBuilder.Build();
 
 			var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection()
 					.AddOptions()
-					.AddSingleton<Microsoft.Extensions.Configuration.IConfiguration>(configuration)
+					.AddSingleton<Microsoft.Extensions.Configuration.IConfiguration>(configurationRoot)
 
 					.AddSingleton<Microsoft.Extensions.Logging.ILogger>(_ => new ISI.Extensions.ConsoleLogger())
 
@@ -85,19 +85,22 @@ namespace ISI.Extensions.Tests
 					.AddSingleton<ISI.Extensions.Serialization.ISerialization, ISI.Extensions.Serialization.Serialization>()
 
 					.AddSingleton<ISI.Extensions.Acme.AcmeApi>()
+
+					.AddConfigurationRegistrations(configurationRoot)
+					.ProcessServiceRegistrars(configurationRoot)
 				;
 
-			services.AddAllConfigurations(configuration);
+			services.AddAllConfigurations(configurationRoot);
 
-			ServiceProvider = services.BuildServiceProvider<ISI.Extensions.DependencyInjection.Iunq.ServiceProviderBuilder>(configuration);
+			ServiceProvider = services.BuildServiceProvider<ISI.Extensions.DependencyInjection.Iunq.ServiceProviderBuilder>(configurationRoot);
 
 			ServiceProvider.SetServiceLocator();
 
 			Logger = ServiceProvider.GetService<Microsoft.Extensions.Logging.ILogger>();
 			DateTimeStamper = ServiceProvider.GetService<ISI.Extensions.DateTimeStamper.IDateTimeStamper>();
 			JsonSerializer = ServiceProvider.GetService<ISI.Extensions.JsonSerialization.IJsonSerializer>();
-			AcmeApi = ServiceProvider.GetService<ISI.Extensions.Acme.AcmeApi>();
 			DomainsApi = ServiceProvider.GetService<ISI.Extensions.Dns.DomainsApi>();
+			AcmeApi = ServiceProvider.GetService<ISI.Extensions.Acme.AcmeApi>();
 		}
 
 		[Test]
@@ -154,7 +157,8 @@ namespace ISI.Extensions.Tests
 			var serializedJsonWebKey = GetAccountSerializedJsonWebKey();
 			var accountKey = GetAccountKey();
 
-			var domain = "www.muthmanor.com";
+			//var domain = "www.muthmanor.com";
+			var domain = "*.whizzia.info";
 
 			var context = AcmeApi.GetHostContext(new()
 			{
@@ -300,7 +304,21 @@ namespace ISI.Extensions.Tests
 			response.Domain = domainName;
 			response.Organization = domainName.TrimStart("*.");
 
-			if (dnsProviderUuid == ISI.Extensions.GoDaddy.DomainsApi.DnsProviderUuid)
+			if (dnsProviderUuid == ISI.Extensions.DeSEC.DomainsApi.DnsProviderUuid)
+			{
+				response.SetDnsRecord = (rootDomain, dnsRecord) =>
+				{
+					DomainsApi.SetDnsRecords(new()
+					{
+						DnsProviderUuid = ISI.Extensions.DeSEC.DomainsApi.DnsProviderUuid,
+						ApiKey = settings.GetValue("DeSEC.ApiKey"),
+
+						Domain = rootDomain,
+						DnsRecords = [dnsRecord],
+					});
+				};
+			}
+			else if (dnsProviderUuid == ISI.Extensions.GoDaddy.DomainsApi.DnsProviderUuid)
 			{
 				response.SetDnsRecord = (rootDomain, dnsRecord) =>
 				{
@@ -370,7 +388,8 @@ namespace ISI.Extensions.Tests
 			var serializedJsonWebKey = GetAccountSerializedJsonWebKey();
 			var accountKey = GetAccountKey();
 
-			var processNewOrderDetails = GetProcessNewOrderDetails(settings, "*.ronmuth.com", ISI.Extensions.NameCheap.DomainsApi.DnsProviderUuid);
+			//var processNewOrderDetails = GetProcessNewOrderDetails(settings, "*.muthmanor.com", ISI.Extensions.NameCheap.DomainsApi.DnsProviderUuid);
+			var processNewOrderDetails = GetProcessNewOrderDetails(settings, "*.whizzia.info", ISI.Extensions.DeSEC.DomainsApi.DnsProviderUuid);
 
 			var context = AcmeApi.GetHostContext(new()
 			{

@@ -93,6 +93,8 @@ namespace ISI.Extensions.Acme
 				}),
 			});
 
+			var challengeUrls = new HashSet<string>(StringComparer.InvariantCulture);
+
 			foreach (var authorizationUrl in createNewOrderResponse.Order.AuthorizationUrls)
 			{
 				var getAuthorizationResponse = GetAuthorization(new()
@@ -101,7 +103,7 @@ namespace ISI.Extensions.Acme
 					AuthorizationUrl = authorizationUrl,
 				});
 
-				foreach (var challenge in getAuthorizationResponse.Authorization.Challenges.NullCheckedWhere(challenge => challenge.ChallengeType == ISI.Extensions.Acme.OrderCertificateIdentifierAuthorizationChallengeType.Dns01))
+				foreach (var challenge in getAuthorizationResponse.Authorization.Challenges.NullCheckedWhere(challenge => (challenge.ChallengeType == ISI.Extensions.Acme.OrderCertificateIdentifierAuthorizationChallengeType.Dns01) && !challengeUrls.Contains(challenge.ChallengeUrl)))
 				{
 					var calculateDnsTokenResponse = CalculateDnsToken(new()
 					{
@@ -145,6 +147,8 @@ namespace ISI.Extensions.Acme
 						HostContext = request.HostContext,
 						ChallengeUrl = challenge.ChallengeUrl,
 					});
+
+					challengeUrls.Add(challenge.ChallengeUrl);
 				}
 			}
 

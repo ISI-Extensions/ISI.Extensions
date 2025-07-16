@@ -33,6 +33,17 @@ namespace ISI.Extensions.Cloudflare
 		{
 			var response = new DTOs.SetCustomSslConfigurationResponse();
 			
+			var logEntries = new List<DTOs.LogEntry>();
+			void addLog(string description)
+			{
+				logEntries.Add(new DTOs.LogEntry()
+				{
+					DateTimeStampUtc = DateTimeStamper.CurrentDateTimeUtc(),
+					Description = description,
+				});
+			}
+			var logger = new AddToLogLogger((level, description) => addLog(description), Logger);
+
 			EnsureZoneId(request);
 
 			var restRequest = new SerializableDTOs.SetCustomSslConfigurationRequest()
@@ -41,6 +52,7 @@ namespace ISI.Extensions.Cloudflare
 				PrivateKey = request.KeyCertificate,
 			};
 
+			logger.LogInformation("ListCustomSslCertificates");
 			var listCustomSslCertificatesResponse = ListCustomSslCertificates(new()
 			{
 				Url = request.Url,
@@ -53,6 +65,8 @@ namespace ISI.Extensions.Cloudflare
 
 			if (sslCertificate == null)
 			{
+				logger.LogInformation("Add CustomSslCertificates");
+
 				var uri = GetUrl(request);
 				uri.AddDirectoryToPath("zones/{zoneId}/custom_certificates".Replace("{zoneId}", request.ZoneId));
 
@@ -66,14 +80,19 @@ namespace ISI.Extensions.Cloudflare
 					}
 
 					response.SslCertificate = (restResponse?.Response?.SslCertificate)?.Export();
+
+					logger.LogInformation("Added CustomSslCertificates");
 				}
 				catch (Exception exception)
 				{
-					Logger.LogError(exception, "SetCustomSslConfiguration (Post) Failed\n{0}", exception.ErrorMessageFormatted());
+					logger.LogError(exception, "SetCustomSslConfiguration (Post) Failed\n{0}", exception.ErrorMessageFormatted());
+					response.Errored = true;
 				}
 			}
 			else
 			{
+				logger.LogInformation("Update CustomSslCertificates");
+				
 				var uri = GetUrl(request);
 				uri.AddDirectoryToPath("zones/{zoneId}/custom_certificates/{sslCertificateId}".Replace("{zoneId}", request.ZoneId).Replace("{sslCertificateId}", sslCertificate.SslCertificateId));
 
@@ -87,13 +106,18 @@ namespace ISI.Extensions.Cloudflare
 					}
 
 					response.SslCertificate = (restResponse?.Response?.SslCertificate)?.Export();
+
+					logger.LogInformation("Updated CustomSslCertificates");
 				}
 				catch (Exception exception)
 				{
-					Logger.LogError(exception, "SetCustomSslConfiguration (Patch) Failed\n{0}", exception.ErrorMessageFormatted());
+					logger.LogError(exception, "SetCustomSslConfiguration (Patch) Failed\n{0}", exception.ErrorMessageFormatted());
+					response.Errored = true;
 				}
 			}
-			
+						
+			response.LogEntries = logEntries.ToArray();
+
 			return response;
 		}
 	}

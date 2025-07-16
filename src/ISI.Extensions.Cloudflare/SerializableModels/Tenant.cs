@@ -19,11 +19,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.DeSEC.DataTransferObjects.DomainsApi
+namespace ISI.Extensions.Cloudflare.SerializableModels
 {
-	public class GetDnsRecordsResponse
+	[DataContract]
+	public class Tenant
 	{
-		public ISI.Extensions.Dns.DnsRecord[] DnsRecords { get; set; }
+		[DataMember(Name = "id", EmitDefaultValue = false)]
+		public string TenantId { get; set; }
+
+		[DataMember(Name = "name", EmitDefaultValue = false)]
+		public string Name { get; set; }
+	}
+
+	[DataContract]
+	public class TenantUnit
+	{
+		[DataMember(Name = "id", EmitDefaultValue = false)]
+		public string TenantUnitId { get; set; }
 	}
 }

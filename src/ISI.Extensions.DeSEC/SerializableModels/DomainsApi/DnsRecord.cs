@@ -37,7 +37,7 @@ namespace ISI.Extensions.DeSEC.SerializableModels.DomainsApi
 				//Protocol = dnsRecord.Protocol,
 				//Service = dnsRecord.Service,
 				Ttl = (long)dnsRecord.Ttl.TotalSeconds,
-				RecordType = dnsRecord.RecordType.GetKey(),
+				RecordType = dnsRecord.RecordType.GetAbbreviation(),
 				//Weight = dnsRecord.Weight,
 			};
 		}
@@ -53,7 +53,7 @@ namespace ISI.Extensions.DeSEC.SerializableModels.DomainsApi
 				//Protocol = Protocol,
 				//Service = Service,
 				Ttl = TimeSpan.FromSeconds(Ttl),
-				RecordType = ISI.Extensions.Enum<ISI.Extensions.Dns.RecordType>.Parse(RecordType),
+				RecordType = ISI.Extensions.Enum<ISI.Extensions.Dns.RecordType>.ParseAbbreviation(RecordType),
 				//Weight = Weight,
 			};
 		}

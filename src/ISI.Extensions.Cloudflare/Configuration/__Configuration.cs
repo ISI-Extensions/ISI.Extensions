@@ -15,15 +15,19 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.DeSEC.DataTransferObjects.DomainsApi
+namespace ISI.Extensions.Cloudflare
 {
-	public class GetDnsRecordsResponse
+	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
+	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
 	{
-		public ISI.Extensions.Dns.DnsRecord[] DnsRecords { get; set; }
+		public const string ConfigurationSectionName = "ISI.Extensions.Cloudflare";
+
+		public string Url { get; set; } = "https://api.cloudflare.com";
+		public string ApiToken { get; set; }
 	}
 }

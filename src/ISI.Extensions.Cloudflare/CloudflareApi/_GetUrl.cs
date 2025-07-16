@@ -19,11 +19,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Cloudflare.DataTransferObjects.CloudflareApi;
+using SerializableDTOs = ISI.Extensions.Cloudflare.SerializableModels;
+using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.DeSEC.DataTransferObjects.DomainsApi
+namespace ISI.Extensions.Cloudflare
 {
-	public class GetDnsRecordsResponse
+	public partial class CloudflareApi
 	{
-		public ISI.Extensions.Dns.DnsRecord[] DnsRecords { get; set; }
+		public const string RootUrlPath = "client/v4/";
+
+		private UriBuilder GetUrl(DTOs.IRequest request)
+		{
+			var uri = (UriBuilder)null;
+
+			if (request.Url != null)
+			{
+				uri = new(request.Url);
+			}
+			else if (!string.IsNullOrWhiteSpace(Configuration.Url))
+			{
+				uri = new(Configuration.Url);
+			}
+
+			uri.SetPathAndQueryString(RootUrlPath);
+
+			return uri;
+		}
 	}
 }

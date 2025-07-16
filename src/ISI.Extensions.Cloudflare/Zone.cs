@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2025, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,15 +15,25 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.DeSEC.DataTransferObjects.DomainsApi
+namespace ISI.Extensions.Cloudflare
 {
-	public class GetDnsRecordsResponse
+	public class Zone
 	{
-		public ISI.Extensions.Dns.DnsRecord[] DnsRecords { get; set; }
+		public string ZoneId { get; set; }
+		public string AccountId { get; set; }
+		public string Name { get; set; }
+		public string OwnerId { get; set; }
+		public string PlanId { get; set; }
+		public string CNameSuffix { get; set; }
+		public bool Paused { get; set; }
+		public string[] Permissions { get; set; }
+		public string TenantId { get; set; }
+		public string TenantUnitId { get; set; }
+		public string Type { get; set; }
+		public string[] VanityNameServers { get; set; }
+
+		public override string ToString() => $"{Name} {ZoneId}";
 	}
 }

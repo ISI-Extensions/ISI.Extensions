@@ -19,11 +19,41 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.DeSEC.DataTransferObjects.DomainsApi
+namespace ISI.Extensions.Cloudflare.SerializableModels
 {
-	public class GetDnsRecordsResponse
+	[DataContract]
+	public class ZonePlan
 	{
-		public ISI.Extensions.Dns.DnsRecord[] DnsRecords { get; set; }
+		[DataMember(Name = "id", EmitDefaultValue = false)]
+		public string ZonePlanId { get; set; }
+
+		[DataMember(Name = "can_subscribe", EmitDefaultValue = false)]
+		public bool CanSubscribe { get; set; }
+
+		[DataMember(Name = "currency", EmitDefaultValue = false)]
+		public string Currency { get; set; }
+
+		[DataMember(Name = "externally_managed", EmitDefaultValue = false)]
+		public bool ExternallyManaged { get; set; }
+
+		[DataMember(Name = "frequency", EmitDefaultValue = false)]
+		public string Frequency { get; set; }
+
+		[DataMember(Name = "is_subscribed", EmitDefaultValue = false)]
+		public bool IsSubscribed { get; set; }
+
+		[DataMember(Name = "legacy_discount", EmitDefaultValue = false)]
+		public bool LegacyDiscount { get; set; }
+
+		[DataMember(Name = "legacy_id", EmitDefaultValue = false)]
+		public string LegacyId { get; set; }
+
+		[DataMember(Name = "name", EmitDefaultValue = false)]
+		public string Name { get; set; }
+
+		[DataMember(Name = "price", EmitDefaultValue = false)]
+		public float Price { get; set; }
 	}
 }

@@ -19,11 +19,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Cloudflare.DataTransferObjects.CloudflareApi;
+using SerializableDTOs = ISI.Extensions.Cloudflare.SerializableModels;
+using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.DeSEC.DataTransferObjects.DomainsApi
+namespace ISI.Extensions.Cloudflare
 {
-	public class GetDnsRecordsResponse
+	public partial class CloudflareApi
 	{
-		public ISI.Extensions.Dns.DnsRecord[] DnsRecords { get; set; }
+		protected Configuration Configuration { get; }
+
+		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
+		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
+
+		public CloudflareApi(
+			Configuration configuration,
+			Microsoft.Extensions.Logging.ILogger logger,
+			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
+		{
+			Configuration = configuration;
+
+			Logger = logger;
+			DateTimeStamper = dateTimeStamper;
+		}
 	}
 }

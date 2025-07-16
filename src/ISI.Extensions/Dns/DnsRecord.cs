@@ -27,12 +27,14 @@ namespace ISI.Extensions.Dns
 		public string Name { get; set; }
 		public RecordType RecordType { get; set; }
 		public string Data { get; set; }
-		public int Port { get; set; }
+		public int? Port { get; set; }
 		public int Priority { get; set; } = 10;
 		public string Protocol { get; set; }
 		public string Service { get; set; }
 		public TimeSpan Ttl { get; set; } = TimeSpan.FromHours(1);
-		public int Weight { get; set; }
+		public int? Weight { get; set; }
+		public bool Proxied { get; set; }
+		public string Comment { get; set; }
 
 		public override string ToString() => $"{(string.IsNullOrWhiteSpace(Name) ? "@" : Name)} {RecordType.GetAbbreviation()} {Data}";
 

@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2025, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,15 +15,55 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.DeSEC.DataTransferObjects.DomainsApi
+namespace ISI.Extensions.Cloudflare
 {
-	public class GetDnsRecordsResponse
+	public class SslCertificate
 	{
-		public ISI.Extensions.Dns.DnsRecord[] DnsRecords { get; set; }
+		public string SslCertificateId { get; set; }
+
+		public SslCertificateBundleMethod BundleMethod { get; set; }
+
+		public string[] Hosts { get; set; }
+
+		public int Priority { get; set; }
+
+		public string ZoneId { get; set; }
+
+		public SslCertificateType Type { get; set; }
+
+		public SslCertificateStatus Status { get; set; }
+		
+		public DateTime? ExpiresDateTimeUtc { get; set; }
+
+		public DateTime? UploadedDateTimeUtc { get; set; }
+
+		public DateTime? ModifiedDateTimeUtc { get; set; }
+
+		public override string ToString() => $"{string.Join(";", Hosts ?? [])} {SslCertificateId}";
+	}
+
+	public enum SslCertificateBundleMethod
+	{
+		UnKnown,
+		[ISI.Extensions.Enum("Ubiquitous", "ubiquitous")] Ubiquitous,
+	}
+
+	public enum SslCertificateType
+	{
+		UnKnown,
+		[ISI.Extensions.Enum("Legacy", "legacy_custom")] Legacy,
+		[ISI.Extensions.Enum("Sni", "sni_custom")] Sni,
+	}
+
+	public enum SslCertificateStatus
+	{
+		UnKnown,
+		[ISI.Extensions.Enum("Initializing", "initializing")] Initializing,
+		[ISI.Extensions.Enum("Pending", "pending")] Pending,
+		[ISI.Extensions.Enum("Active", "active")] Active,
+		[ISI.Extensions.Enum("Expired", "expired")] Expired,
+		[ISI.Extensions.Enum("Deleted", "deleted")] Deleted,
 	}
 }

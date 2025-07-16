@@ -19,11 +19,46 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Cloudflare.DataTransferObjects.CloudflareApi;
+using SerializableDTOs = ISI.Extensions.Cloudflare.SerializableModels;
+using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.DeSEC.DataTransferObjects.DomainsApi
+namespace ISI.Extensions.Cloudflare
 {
-	public class GetDnsRecordsResponse
+	public partial class CloudflareApi
 	{
-		public ISI.Extensions.Dns.DnsRecord[] DnsRecords { get; set; }
+		private readonly IDictionary<string, string> _zoneIdsByZoneName = new System.Collections.Concurrent.ConcurrentDictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+
+		private void EnsureZoneId(DTOs.IRequestWithZone request)
+		{
+			if (string.IsNullOrWhiteSpace(request.ZoneId))
+			{
+				if (_zoneIdsByZoneName.TryGetValue(request.ZoneName, out var zoneId))
+				{
+					request.ZoneId = zoneId;
+				}
+				else
+				{
+					var listZonesResponse = ListZones(new()
+					{
+						Url = request.Url,
+						ApiToken = request.ApiToken,
+					});
+
+					var zone = listZonesResponse.Zones.NullCheckedFirstOrDefault(zone => string.Equals(zone.Name, request.ZoneName, StringComparison.InvariantCultureIgnoreCase));
+
+					if (zone != null)
+					{
+						request.ZoneId = zone.ZoneId;
+						
+						_zoneIdsByZoneName.Add(request.ZoneId, request.ZoneName);
+					}
+					else
+					{
+						throw new Exception($"Zone {request.ZoneName} not found");
+					}
+				}
+			}
+		}
 	}
 }

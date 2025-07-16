@@ -38,6 +38,7 @@
     <Platform Solution="*|x64" Project="x64" />
   </Project>
   <Project Path="ISI.Extensions.Cake/ISI.Extensions.Cake.csproj" />
+  <Project Path="ISI.Extensions.Cloudflare/ISI.Extensions.Cloudflare.csproj" Id="f9bfd7fd-c782-4c30-93e9-f88965918bd0" />
   <Project Path="ISI.Extensions.DependencyInjection.Iunq/ISI.Extensions.DependencyInjection.Iunq.csproj">
     <Platform Solution="*|x64" Project="x64" />
   </Project>

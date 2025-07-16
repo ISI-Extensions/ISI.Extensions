@@ -12,18 +12,35 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Cloudflare.DataTransferObjects.CloudflareApi;
+using SerializableDTOs = ISI.Extensions.Cloudflare.SerializableModels;
+using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.DeSEC.DataTransferObjects.DomainsApi
+namespace ISI.Extensions.Cloudflare
 {
-	public class GetDnsRecordsResponse
+	public partial class CloudflareApi
 	{
-		public ISI.Extensions.Dns.DnsRecord[] DnsRecords { get; set; }
+		private ISI.Extensions.WebClient.HeaderCollection GetHeaders(DTOs.IRequest request)
+		{
+			var headers = new ISI.Extensions.WebClient.HeaderCollection();
+
+			if (!string.IsNullOrWhiteSpace(request.ApiToken))
+			{
+				headers.AddBearerAuthentication(request.ApiToken);
+			}
+			else if (!string.IsNullOrWhiteSpace(Configuration?.ApiToken))
+			{
+				headers.AddBearerAuthentication(Configuration.ApiToken);
+			}
+
+			return headers;
+		}
 	}
 }

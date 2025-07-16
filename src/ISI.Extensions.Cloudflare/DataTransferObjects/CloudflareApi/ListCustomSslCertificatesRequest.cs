@@ -20,10 +20,14 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.DeSEC.DataTransferObjects.DomainsApi
+namespace ISI.Extensions.Cloudflare.DataTransferObjects.CloudflareApi
 {
-	public class GetDnsRecordsResponse
+	public class ListCustomSslCertificatesRequest : IRequestWithZone
 	{
-		public ISI.Extensions.Dns.DnsRecord[] DnsRecords { get; set; }
+		public string Url { get; set; }
+		public string ApiToken { get; set; }
+
+		public string ZoneId { get; set; }
+		public string ZoneName { get; set; }
 	}
 }

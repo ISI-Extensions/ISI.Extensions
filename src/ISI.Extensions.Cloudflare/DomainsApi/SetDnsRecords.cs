@@ -19,11 +19,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Cloudflare.DataTransferObjects.DomainsApi;
 
-namespace ISI.Extensions.DeSEC.DataTransferObjects.DomainsApi
+namespace ISI.Extensions.Cloudflare
 {
-	public class GetDnsRecordsResponse
+	public partial class DomainsApi
 	{
-		public ISI.Extensions.Dns.DnsRecord[] DnsRecords { get; set; }
+		public DTOs.SetDnsRecordsResponse SetDnsRecords(DTOs.SetDnsRecordsRequest request)
+		{
+			var response = new DTOs.SetDnsRecordsResponse();
+			
+			var apiResponse = CloudflareApi.SetDnsRecords(new()
+			{
+				Url = request.Url,
+				ApiToken = request.ApiToken,
+				ZoneName = request.Domain,
+				DnsRecords = request.DnsRecords,
+			});
+
+			return response;
+		}
 	}
 }

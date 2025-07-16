@@ -37,7 +37,7 @@ namespace ISI.Extensions.GoDaddy.SerializableModels.DomainsApi
 				Protocol = dnsRecord.Protocol,
 				Service = dnsRecord.Service,
 				Ttl = (long)dnsRecord.Ttl.TotalSeconds,
-				RecordType = dnsRecord.RecordType.GetKey(),
+				RecordType = dnsRecord.RecordType.GetAbbreviation(),
 				Weight = dnsRecord.Weight,
 			};
 		}
@@ -53,7 +53,7 @@ namespace ISI.Extensions.GoDaddy.SerializableModels.DomainsApi
 				Protocol = Protocol,
 				Service = Service,
 				Ttl = TimeSpan.FromSeconds(Ttl),
-				RecordType = ISI.Extensions.Enum<ISI.Extensions.Dns.RecordType>.Parse(RecordType),
+				RecordType = ISI.Extensions.Enum<ISI.Extensions.Dns.RecordType>.ParseAbbreviation(RecordType),
 				Weight = Weight,
 			};
 		}
@@ -65,7 +65,7 @@ namespace ISI.Extensions.GoDaddy.SerializableModels.DomainsApi
 		public string Name { get; set; }
 
 		[DataMember(Name = "port", EmitDefaultValue = false)]
-		public int Port { get; set; }
+		public int? Port { get; set; }
 
 		[DataMember(Name = "priority", EmitDefaultValue = false)]
 		public int Priority { get; set; }
@@ -83,6 +83,6 @@ namespace ISI.Extensions.GoDaddy.SerializableModels.DomainsApi
 		public string RecordType { get; set; }
 
 		[DataMember(Name = "weight", EmitDefaultValue = false)]
-		public int Weight { get; set; }
+		public int? Weight { get; set; }
 	}
 }

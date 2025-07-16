@@ -19,11 +19,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.DeSEC.DataTransferObjects.DomainsApi
+namespace ISI.Extensions.Cloudflare.SerializableModels
 {
-	public class GetDnsRecordsResponse
+	[DataContract]
+	public class ResponsePagination
 	{
-		public ISI.Extensions.Dns.DnsRecord[] DnsRecords { get; set; }
+		[DataMember(Name = "page", EmitDefaultValue = false)]
+		public int Page { get; set; }
+
+		[DataMember(Name = "per_page", EmitDefaultValue = false)]
+		public int PerPage { get; set; }
+
+		[DataMember(Name = "total_pages", EmitDefaultValue = false)]
+		public int TotalPages { get; set; }
+
+		[DataMember(Name = "count", EmitDefaultValue = false)]
+		public int Count { get; set; }
+
+		[DataMember(Name = "total_count", EmitDefaultValue = false)]
+		public int TotalCount { get; set; }
 	}
 }

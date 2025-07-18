@@ -43,14 +43,18 @@ namespace ISI.Extensions.Repository
 
 		}
 
-		public void Add<TProperty>(Expression<Func<TRecord, TProperty>> property)
+		public IRecordPropertyDescription<TRecord> Add<TProperty>(Expression<Func<TRecord, TProperty>> property)
 		{
 			var propertyInfo = ISI.Extensions.Reflection.GetPropertyInfo(property);
 
+			var recordPropertyDescription = RecordDescription.GetRecordDescription<TRecord>().PropertyDescriptionLookup[propertyInfo.Name];
+			
 			Add(new()
 			{
-				RecordPropertyDescription = RecordDescription.GetRecordDescription<TRecord>().PropertyDescriptionLookup[propertyInfo.Name],
+				RecordPropertyDescription = recordPropertyDescription,
 			});
+
+			return recordPropertyDescription;
 		}
 	}
 }

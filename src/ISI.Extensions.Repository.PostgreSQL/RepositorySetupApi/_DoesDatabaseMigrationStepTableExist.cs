@@ -41,8 +41,6 @@ namespace ISI.Extensions.Repository.PostgreSQL
 			sql.Append("WHERE schemaname = 'public' AND\n");
 			sql.Append("			tablename = 'DatabaseMigrationStep'\n");
 
-			var tableExists = false;
-
 			using (var command = new Npgsql.NpgsqlCommand(sql.ToString(), connection))
 			{
 				return string.Format("{0}", command.ExecuteScalarWithExceptionTracingAsync().GetAwaiter().GetResult()).ToBoolean();

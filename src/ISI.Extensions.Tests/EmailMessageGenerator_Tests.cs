@@ -88,8 +88,8 @@ namespace ISI.Extensions.Tests
 
 			var emailMessage = EmailMessageGenerator.GenerateEmailMessageAsync(emailMessageModel).GetAwaiter().GetResult();
 
-			using (var emailSender = new ISI.Extensions.Emails.LocalhostEmailSender())
-			//using (var emailSender = new ISI.Extensions.Emails.SmtpEmailSender("smtp-relay.isi-net.com"))
+			//using (var emailSender = new ISI.Extensions.Emails.LocalhostEmailSender())
+			using (var emailSender = new ISI.Extensions.Emails.SmtpEmailSender("smtp-relay.isi-net.com", 25))
 			{
 				emailSender.Send(emailMessage);
 			}
@@ -102,8 +102,8 @@ namespace ISI.Extensions.Tests
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 			settings.OverrideWithEnvironmentVariables();
 
-			using (var emailSender = new ISI.Extensions.Emails.LocalhostEmailSender())
-			//using (var emailSender = new ISI.Extensions.Emails.SmtpEmailSender("smtp-relay.isi-net.com", 587))
+			//using (var emailSender = new ISI.Extensions.Emails.LocalhostEmailSender())
+			using (var emailSender = new ISI.Extensions.Emails.SmtpEmailSender("smtp-relay.isi-net.com", 25))
 			{
 				//emailSender.EnableSsl = true;
 				//emailSender.UseDefaultCredentials = false;

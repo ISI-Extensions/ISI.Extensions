@@ -40,7 +40,7 @@ namespace ISI.Extensions.Aspose
 				}
 
 				// Use Aspose.Words to convert the document to XPS and store in a memory stream.
-				using (var stream = new System.IO.MemoryStream())
+				using (var stream = new Stream.TempFileStream())
 				{
 					document.Save(stream, global::Aspose.Words.SaveFormat.Xps);
 					

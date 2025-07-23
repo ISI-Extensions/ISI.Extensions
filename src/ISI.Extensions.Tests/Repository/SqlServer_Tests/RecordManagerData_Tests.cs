@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +38,61 @@ namespace ISI.Extensions.Tests.Repository
 			{
 
 			}
+
+			public async IAsyncEnumerable<ContactWithData> FindRecordsAsync(IEnumerable<(string FirstName, string LastName)> names, int skip = 0, int take = -1, System.Threading.CancellationToken cancellationToken = default)
+			{
+				var filters = new ISI.Extensions.Repository.RecordWhereColumnCollection<ContactWithData>(ISI.Extensions.Repository.WhereClauseOperator.Or);
+
+				if (names.NullCheckedAny())
+				{
+					foreach (var name in names)
+					{
+						var nameFilters = new ISI.Extensions.Repository.RecordWhereColumnCollection<ContactWithData>();
+						nameFilters.Add(record => record.FirstName, ISI.Extensions.Repository.WhereClauseEqualityOperator.Equal, name.FirstName.Trim());
+						nameFilters.Add(record => record.LastName, ISI.Extensions.Repository.WhereClauseEqualityOperator.Equal, name.LastName.Trim());
+						filters.Add(nameFilters);
+					}
+				}
+
+				if (filters.Any())
+				{
+					var whereClause = GenerateWhereClause(filters);
+
+					await foreach (var record in FindRecordsAsync(whereClause, skip: skip, take: take, cancellationToken: cancellationToken))
+					{
+						yield return record;
+					}
+				}
+			}
+
+			public async IAsyncEnumerable<ContactWithData> FindRecords2Async(IEnumerable<(string FirstName, string LastName)> names, DateTime timestamp, int skip = 0, int take = -1, System.Threading.CancellationToken cancellationToken = default)
+			{
+				var filters = new ISI.Extensions.Repository.RecordWhereColumnCollection<ContactWithData>();
+				filters.Add(record => record.TimeStamp, ISI.Extensions.Repository.WhereClauseEqualityOperator.Equal, timestamp);
+
+				if (names.NullCheckedAny())
+				{
+					var namesfilters = new ISI.Extensions.Repository.RecordWhereColumnCollection<ContactWithData>(ISI.Extensions.Repository.WhereClauseOperator.Or);
+					foreach (var name in names)
+					{
+						var nameFilters = new ISI.Extensions.Repository.RecordWhereColumnCollection<ContactWithData>();
+						nameFilters.Add(record => record.FirstName, ISI.Extensions.Repository.WhereClauseEqualityOperator.Equal, name.FirstName.Trim());
+						nameFilters.Add(record => record.LastName, ISI.Extensions.Repository.WhereClauseEqualityOperator.Equal, name.LastName.Trim());
+						namesfilters.Add(nameFilters);
+					}
+					filters.Add(namesfilters);
+				}
+
+				if (filters.Any())
+				{
+					var whereClause = GenerateWhereClause(filters);
+
+					await foreach (var record in FindRecordsAsync(whereClause, skip: skip, take: take, cancellationToken: cancellationToken))
+					{
+						yield return record;
+					}
+				}
+			}
 		}
 
 		[Test]
@@ -52,6 +107,83 @@ namespace ISI.Extensions.Tests.Repository
 			var recordManager = new ContactWithDataRecordManager(Configuration, Logger, DateTimeStamper, Serializer, ConnectionString);
 
 			recordManager.CreateTable();
+		}
+
+		[Test]
+		public void Contacts_Get()
+		{
+			var recordManager = new ContactWithDataRecordManager(Configuration, Logger, DateTimeStamper, Serializer, ConnectionString);
+
+			var contacts = new List<ContactWithData>();
+
+			for (int i = 0; i < 2000; i++)
+			{
+				var contactV1 = new ContactWithData()
+				{
+					ContactUuid = Guid.NewGuid(),
+					FirstName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
+					LastName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
+					TimeStamp = DateTime.UtcNow,
+				};
+
+				contactV1.ContactData = new ContactDataV1()
+				{
+					ContactUuid = contactV1.ContactUuid,
+					FirstName = contactV1.FirstName,
+					LastName = contactV1.LastName,
+					AddressLine1 = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
+					AddressLine2 = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
+					City = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
+					State = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
+					Zip = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
+				};
+
+				contacts.Add(contactV1);
+			}
+
+			var records = recordManager.InsertRecordsAsync(contacts).ToNullCheckedArray();
+
+			var foundRecords = recordManager.FindRecordsAsync(contacts.Select(contact => (FirstName: contact.FirstName, LastName: contact.LastName))).ToNullCheckedArray();
+		}
+
+		[Test]
+		public void Contacts_2_Get()
+		{
+			var recordManager = new ContactWithDataRecordManager(Configuration, Logger, DateTimeStamper, Serializer, ConnectionString);
+
+			var timeStamp = DateTime.UtcNow;
+
+
+			var contacts = new List<ContactWithData>();
+
+			for (int i = 0; i < 2000; i++)
+			{
+				var contactV1 = new ContactWithData()
+				{
+					ContactUuid = Guid.NewGuid(),
+					FirstName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
+					LastName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
+					TimeStamp = timeStamp,
+				};
+
+				contactV1.ContactData = new ContactDataV1()
+				{
+					ContactUuid = contactV1.ContactUuid,
+					FirstName = contactV1.FirstName,
+					LastName = contactV1.LastName,
+					AddressLine1 = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
+					AddressLine2 = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
+					City = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
+					State = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
+					Zip = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens),
+				};
+
+				contacts.Add(contactV1);
+			}
+
+			var records = recordManager.InsertRecordsAsync(contacts).ToNullCheckedArray();
+
+			var foundRecords = recordManager.FindRecords2Async(contacts.Select(contact => (FirstName: contact.FirstName, LastName: contact.LastName)), timeStamp).ToNullCheckedArray();
 		}
 
 		[Test]
@@ -196,7 +328,7 @@ namespace ISI.Extensions.Tests.Repository
 				var contactUuid = Guid.NewGuid();
 				var firstName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens);
 				var lastName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens);
-				
+
 				records.Add(new()
 				{
 					ContactUuid = contactUuid,

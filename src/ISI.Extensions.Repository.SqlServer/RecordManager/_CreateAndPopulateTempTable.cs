@@ -42,7 +42,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 			sql.Clear();
 
-			sql.AppendFormat("create table {0}\n", tempTableName);
+			sql.AppendFormat("CREATE TABLE {0}\n", tempTableName);
 			sql.Append("(\n");
 			sql.AppendFormat("  {0} primary key\n", columnDescription.GetColumnDefinition(FormatColumnName));
 			sql.Append(")\n");

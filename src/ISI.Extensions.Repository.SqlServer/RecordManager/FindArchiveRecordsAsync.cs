@@ -50,7 +50,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 		protected virtual async IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> FindArchiveRecordsAsync(Microsoft.Data.SqlClient.SqlConnection connection, DateTime? minArchiveDateTime, DateTime? maxArchiveDateTime, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take, System.Threading.CancellationToken cancellationToken = default)
 		{
-			await foreach (var record in FindArchiveRecordsAsync(connection, string.Format("from {0} with (NoLock)", GetArchiveTableName(TableAlias)), minArchiveDateTime, maxArchiveDateTime, whereClause, orderByClause, skip, take, cancellationToken))
+			await foreach (var record in FindArchiveRecordsAsync(connection, string.Format("FROM {0} WITH (NOLOCK)", GetArchiveTableName(TableAlias)), minArchiveDateTime, maxArchiveDateTime, whereClause, orderByClause, skip, take, cancellationToken))
 			{
 				yield return record;
 			}
@@ -97,22 +97,22 @@ namespace ISI.Extensions.Repository.SqlServer
 
 				if (minArchiveDateTime.HasValue && maxArchiveDateTime.HasValue)
 				{
-					whereSql = string.Format("      {0}.{1} between @minArchiveDateTime and @maxArchiveDateTime{2}{3}", GetArchiveTableNameAlias(TableAlias), FormatColumnName(ArchiveTableArchiveDateTimeColumnName), (string.IsNullOrWhiteSpace(whereSql) ? string.Empty : " and\n"), whereSql);
+					whereSql = string.Format("      {0}.{1} BETWEEN @minArchiveDateTime AND @maxArchiveDateTime{2}{3}", GetArchiveTableNameAlias(TableAlias), FormatColumnName(ArchiveTableArchiveDateTimeColumnName), (string.IsNullOrWhiteSpace(whereSql) ? string.Empty : " AND\n"), whereSql);
 				}
 				else if (minArchiveDateTime.HasValue)
 				{
-					whereSql = string.Format("      {0}.{1} >= @minArchiveDateTime{2}{3}", GetArchiveTableNameAlias(TableAlias), FormatColumnName(ArchiveTableArchiveDateTimeColumnName), (string.IsNullOrWhiteSpace(whereSql) ? string.Empty : " and\n"), whereSql);
+					whereSql = string.Format("      {0}.{1} >= @minArchiveDateTime{2}{3}", GetArchiveTableNameAlias(TableAlias), FormatColumnName(ArchiveTableArchiveDateTimeColumnName), (string.IsNullOrWhiteSpace(whereSql) ? string.Empty : " AND\n"), whereSql);
 				}
 				else if (maxArchiveDateTime.HasValue)
 				{
-					whereSql = string.Format("      {0}.{1} <= @maxArchiveDateTime{2}{3}", GetArchiveTableNameAlias(TableAlias), FormatColumnName(ArchiveTableArchiveDateTimeColumnName), (string.IsNullOrWhiteSpace(whereSql) ? string.Empty : " and\n"), whereSql);
+					whereSql = string.Format("      {0}.{1} <= @maxArchiveDateTime{2}{3}", GetArchiveTableNameAlias(TableAlias), FormatColumnName(ArchiveTableArchiveDateTimeColumnName), (string.IsNullOrWhiteSpace(whereSql) ? string.Empty : " AND\n"), whereSql);
 				}
 
 				if (sqlServerCapabilities.SupportsNativePaging)
 				{
 					// https://www.mssqltips.com/sqlservertip/2696/comparing-performance-for-different-sql-server-paging-methods/
 					// don't use top at all - use offset / fetch next for consistency, even if offset is 0
-					sql.AppendFormat("select {0}.{1}, {2}\n", GetArchiveTableNameAlias(TableAlias), ArchiveTableArchiveDateTimeColumnName, selectClause.GetSql());
+					sql.AppendFormat("SELECT {0}.{1}, {2}\n", GetArchiveTableNameAlias(TableAlias), ArchiveTableArchiveDateTimeColumnName, selectClause.GetSql());
 					sql.AppendFormat("{0}\n", fromClause);
 
 					if (sqlConnectionWhereClause != null)
@@ -122,7 +122,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 					if (!string.IsNullOrWhiteSpace(whereSql))
 					{
-						sql.Append("where\n");
+						sql.Append("WHERE\n");
 						sql.Append(whereSql);
 					}
 
@@ -138,10 +138,10 @@ namespace ISI.Extensions.Repository.SqlServer
 
 					if (skip > 0 || take >= 0)
 					{
-						sql.AppendFormat("offset ({0}) rows\n", skip);
+						sql.AppendFormat("OFFSET ({0}) ROWS\n", skip);
 						if (take > 0)
 						{
-							sql.AppendFormat("fetch next ({0}) rows only\n", take);
+							sql.AppendFormat("FETCH NEXT ({0}) ROWS ONLY\n", take);
 						}
 					}
 				}
@@ -150,11 +150,11 @@ namespace ISI.Extensions.Repository.SqlServer
 					// pre 2012, no offset - use top if necessary
 					if (take > 0)
 					{
-						sql.AppendFormat("select top ({0}) {1}.{2}, {3}\n", take, GetArchiveTableNameAlias(TableAlias), ArchiveTableArchiveDateTimeColumnName, selectClause.GetSql());
+						sql.AppendFormat("SELECT top ({0}) {1}.{2}, {3}\n", take, GetArchiveTableNameAlias(TableAlias), ArchiveTableArchiveDateTimeColumnName, selectClause.GetSql());
 					}
 					else
 					{
-						sql.AppendFormat("select {0}.{1}, {2}\n", GetArchiveTableNameAlias(TableAlias), ArchiveTableArchiveDateTimeColumnName, selectClause.GetSql());
+						sql.AppendFormat("SELECT {0}.{1}, {2}\n", GetArchiveTableNameAlias(TableAlias), ArchiveTableArchiveDateTimeColumnName, selectClause.GetSql());
 					}
 
 					sql.AppendFormat("{0}\n", fromClause);
@@ -166,7 +166,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 					if (!string.IsNullOrWhiteSpace(whereSql))
 					{
-						sql.Append("where\n");
+						sql.Append("WHERE\n");
 						sql.Append(whereSql);
 					}
 
@@ -187,9 +187,9 @@ namespace ISI.Extensions.Repository.SqlServer
 					var rowNumberName = FormatColumnName(string.Format("RowNumber{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)));
 					var pagingQueryName = FormatColumnName(string.Format("PagingQuery{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)));
 
-					sql.AppendFormat("select {0}.{1}, {2}\n", GetArchiveTableNameAlias(TableAlias), ArchiveTableArchiveDateTimeColumnName, selectClause.GetSql(pagingQueryName));
-					sql.AppendFormat("from (select {0},\n", selectClause.GetSql());
-					sql.AppendFormat("      ROW_NUMBER() OVER ({0}) as {1} from {2} with (nolock)\n", orderByClauseSql, rowNumberName, GetTableName());
+					sql.AppendFormat("SELECT {0}.{1}, {2}\n", GetArchiveTableNameAlias(TableAlias), ArchiveTableArchiveDateTimeColumnName, selectClause.GetSql(pagingQueryName));
+					sql.AppendFormat("FROM (SELECT {0},\n", selectClause.GetSql());
+					sql.AppendFormat("      ROW_NUMBER() OVER ({0}) AS {1} FROM {2} WITH (nolock)\n", orderByClauseSql, rowNumberName, GetTableName());
 					if (sqlConnectionWhereClause != null)
 					{
 						sql.Append(sqlConnectionWhereClause.GetJoinCause(GetArchiveTableNameAlias(TableAlias)));
@@ -198,14 +198,14 @@ namespace ISI.Extensions.Repository.SqlServer
 
 					if (!string.IsNullOrWhiteSpace(whereSql))
 					{
-						sql.Append("where\n");
+						sql.Append("WHERE\n");
 						sql.Append(whereSql);
 					}
 
 					sql.AppendLine();
 					sql.AppendFormat(") {0}\n", pagingQueryName);
-					sql.Append("where\n");
-					sql.AppendFormat("       {0} > {1} and\n", rowNumberName, skip);
+					sql.Append("WHERE\n");
+					sql.AppendFormat("       {0} > {1} AND\n", rowNumberName, skip);
 					sql.AppendFormat("       {0} <= {1}\n", rowNumberName, skip + take);
 
 					if (!string.IsNullOrWhiteSpace(orderByClauseSql))

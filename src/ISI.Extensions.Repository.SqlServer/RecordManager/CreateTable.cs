@@ -161,7 +161,7 @@ namespace ISI.Extensions.Repository.SqlServer
 				case CreateTableMode.DeleteAndCreateIfExists:
 					sql.AppendFormat("if OBJECT_ID('{0}') is not null\n", tableName);
 					sql.Append("begin\n");
-					sql.AppendFormat("  drop table {0}\n", tableName);
+					sql.AppendFormat("  DROP TABLE {0}\n", tableName);
 					sql.Append("end\n");
 					break;
 				case CreateTableMode.TruncateIfExists:
@@ -174,7 +174,7 @@ namespace ISI.Extensions.Repository.SqlServer
 			}
 
 			sql.Append("begin\n");
-			sql.AppendFormat("  create table {0}\n", tableName);
+			sql.AppendFormat("  CREATE TABLE {0}\n", tableName);
 			sql.Append("  (\n");
 			sql.AppendFormat("{0}{1}\n", string.Join(",\n", recordDescription.PropertyDescriptions.OrderBy(propertyDescription => propertyDescription.Order).Select(propertyDescription => string.Format("  {0}", propertyDescription.GetColumnDefinition(FormatColumnName)))), (string.IsNullOrWhiteSpace(primaryKeyName) ? string.Empty : ","));
 

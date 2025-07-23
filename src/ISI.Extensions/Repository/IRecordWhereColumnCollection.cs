@@ -21,9 +21,10 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Repository
 {
-	public interface IRecordWhereColumnCollection<TRecord>
+	public interface IRecordWhereColumnCollection<TRecord> : IList<IRecordWhereColumn<TRecord>>, IRecordWhereColumn<TRecord>
 	{
 		WhereClauseOperator WhereClauseOperator { get; set; }
+
 		void Add<TProperty>(System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property, WhereClauseNullOperator nullOperator);
 		void Add(System.Linq.Expressions.Expression<Func<TRecord, bool>> property);
 		void Add(IRecordWhereColumn<TRecord> column);
@@ -45,5 +46,11 @@ namespace ISI.Extensions.Repository
 
 		void Add<TProperty>(System.Linq.Expressions.Expression<Func<TRecord, TProperty?>> property, WhereClauseEqualityOperator equalityOperator, TProperty? value)
 			where TProperty : struct;
+
+		public void Add<TProperty, TEntity>(System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property, WhereClauseStringComparisonOperator comparisonOperator, string value)
+			where TProperty : ISI.Extensions.Converters.IExportTo<TEntity>
+			where TEntity : class;
+
+		int GetColumnNamesHashCode();
 	}
 }

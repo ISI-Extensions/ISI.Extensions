@@ -147,25 +147,6 @@ CREATE GLOBAL TEMPORARY TABLE {sourcePrimaryKeyTempTableName}
 							command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
 						}
 
-						//foreach (var recordPrimaryKey in primaryKeyValues)
-						//{
-						//	using (var command = connection.CreateCommand())
-						//	{
-						//		command.CommandText = @$"INSERT INTO {sourcePrimaryKeyTempTableName} ({_formatColumnName(primaryKeyColumn.ColumnName)}) VALUES (:pk)";
-						//		command.BindByName = true;
-
-						//		var primaryKeyValuesParameter = new global::Oracle.ManagedDataAccess.Client.OracleParameter("pk",  typeof(TRecordPrimaryKey).GetOracleDbType());
-						//		primaryKeyValuesParameter.Value = recordPrimaryKey;
-
-						//		//command.ArrayBindCount = primaryKeyValues.Length;
-						//		command.Parameters.Add(primaryKeyValuesParameter);
-
-						//		//Console.WriteLine($"primaryKeyValues.Length: {primaryKeyValues.Length}");
-
-						//		command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
-						//	}
-						//}
-
 						using (var command = connection.CreateCommand())
 						{
 							command.CommandText = @$"INSERT INTO {sourcePrimaryKeyTempTableName} ({_formatColumnName(primaryKeyColumn.ColumnName)}) VALUES (:pk)";
@@ -176,12 +157,6 @@ CREATE GLOBAL TEMPORARY TABLE {sourcePrimaryKeyTempTableName}
 
 							command.ArrayBindCount = primaryKeyValues.Length;
 							command.Parameters.Add(primaryKeyValuesParameter);
-
-							foreach (var primaryKeyValue in primaryKeyValues)
-							{
-								Console.WriteLine($"primaryKeyValue: {primaryKeyValue}");
-							}
-							Console.WriteLine($"primaryKeyValues.Length: {primaryKeyValues.Length}");
 
 							command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
 						}

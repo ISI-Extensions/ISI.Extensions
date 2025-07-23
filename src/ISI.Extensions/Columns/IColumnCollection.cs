@@ -15,32 +15,26 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Tests.Repository
+namespace ISI.Extensions.Columns
 {
-	[ISI.Extensions.Repository.Record(Schema = "Contacts", TableName = "ContactWithData")]
-	public class ContactWithData : ISI.Extensions.Repository.IRecordManagerPrimaryKeyRecord<Guid>, ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime
+	public interface IColumnCollection
 	{
-		[ISI.Extensions.Repository.PrimaryKey]
-		[ISI.Extensions.Repository.RecordProperty(ColumnName = "ContactUuid")]
-		public Guid ContactUuid { get; set; }
+	}
 
-		[ISI.Extensions.Repository.RecordProperty(ColumnName = "FirstName", PropertySize = 255)]
-		public string FirstName { get; set; }
-
-		[ISI.Extensions.Repository.RecordProperty(ColumnName = "LastName", PropertySize = 255)]
-		public string LastName { get; set; }
-
-		[ISI.Extensions.Repository.RecordProperty(ColumnName = "TimeStamp")]
-		public DateTime TimeStamp { get; set; }
-
-		[ISI.Extensions.Repository.RecordProperty(ColumnName = "ContactData")]
-		public IContactData ContactData { get; set; }
-		
-		Guid ISI.Extensions.Repository.IRecordManagerPrimaryKeyRecord<Guid>.PrimaryKey => ContactUuid;
-
-		[ISI.Extensions.Repository.IgnoreRecordProperty]
-		DateTime ISI.Extensions.Repository.IRecordManagerRecordWithArchiveDateTime.ArchiveDateTimeUtc => TimeStamp;
+	public interface IColumnCollection<TRecord> : IColumnCollection, IList<IColumn<TRecord>>
+		where TRecord : class, new()
+	{
+		void Add<TProperty>(System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property);
+		void Add<TProperty>(System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property, Func<object, TProperty> transformValue);
+		void Add<TProperty>(System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property, Func<TRecord, string> formattedValue);
+		void Add<TProperty>(string columnName, System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property);
+		void Add<TProperty>(string columnName, System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property, Func<object, TProperty> transformValue);
+		void Add<TProperty>(IEnumerable<string> columnNames, System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property);
+		void Add<TProperty>(IEnumerable<string> columnNames, System.Linq.Expressions.Expression<Func<TRecord, TProperty>> property, Func<object, TProperty> transformValue);
 	}
 }

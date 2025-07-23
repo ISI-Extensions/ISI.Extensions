@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Parsers
 {
-	public delegate void OnRead<TRecord>(object context, string source, IDictionary<string, int> columnLookup, ISI.Extensions.Columns.ColumnCollection<TRecord> columns, ref int[] columnIndexes, ref object[] values)
+	public delegate void OnRead<TRecord>(object context, string source, IDictionary<string, int> columnLookup, ISI.Extensions.Columns.IColumnCollection<TRecord> columns, ref int[] columnIndexes, ref object[] values)
 		where TRecord : class, new();
 
 	public interface IRecordParser<TRecord>

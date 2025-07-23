@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,17 +39,17 @@ namespace ISI.Extensions.DataReader
 		{
 		}
 
-		public EnumerableDataReader(IEnumerable<TRecord> records, ISI.Extensions.Columns.ColumnCollection<TRecord> columns, ISI.Extensions.DataReader.TransformRecord transformRecord = null)
-			: this([records], columns, transformRecord)
+		public EnumerableDataReader(IEnumerable<TRecord> records, ISI.Extensions.Columns.IColumnCollection<TRecord> columns, ISI.Extensions.DataReader.TransformRecord transformRecord = null)
+			: this([records], columns ?? (records as ISI.Extensions.Columns.IGetColumns<TRecord>)?.GetColumns(), transformRecord)
 		{
 		}
-		
+
 		public EnumerableDataReader(IEnumerable<IEnumerable<TRecord>> recordSets, ISI.Extensions.DataReader.TransformRecord transformRecord = null)
 			: this(recordSets, null, transformRecord)
 		{
 		}
 
-		public EnumerableDataReader(IEnumerable<IEnumerable<TRecord>> recordSets, ISI.Extensions.Columns.ColumnCollection<TRecord> columns, ISI.Extensions.DataReader.TransformRecord transformRecord = null)
+		public EnumerableDataReader(IEnumerable<IEnumerable<TRecord>> recordSets, ISI.Extensions.Columns.IColumnCollection<TRecord> columns, ISI.Extensions.DataReader.TransformRecord transformRecord = null)
 		{
 			RecordSets = recordSets;
 			Columns = (columns.NullCheckedAny() ? columns : ISI.Extensions.Columns.ColumnCollection<TRecord>.GetDefault()).ToArray();
@@ -70,7 +70,8 @@ namespace ISI.Extensions.DataReader
 				}
 			}
 
-			FieldCount = -1;
+			//FieldCount = -1;
+			FieldCount = (Columns.Length > 0 ? Columns.Length : -1);
 
 			TransformRecord = transformRecord;
 
@@ -156,7 +157,7 @@ namespace ISI.Extensions.DataReader
 						}
 
 						TransformRecord?.Invoke(Depth, Columns, Source, ref Values);
-						
+
 						FieldCount = Values.NullCheckedCount();
 
 						if (Values != null)

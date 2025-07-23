@@ -23,7 +23,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Repository
 {
-	public class RecordWhereColumnCollection<TRecord> : List<IRecordWhereColumn<TRecord>>, IRecordWhereColumn<TRecord>, IRecordWhereColumnCollection<TRecord>
+	public class RecordWhereColumnCollection<TRecord> : List<IRecordWhereColumn<TRecord>>, IRecordWhereColumnCollection<TRecord>
 	{
 		public WhereClauseOperator WhereClauseOperator { get; set; }
 
@@ -204,5 +204,7 @@ namespace ISI.Extensions.Repository
 				GreaterBetweenValue = greaterBetweenValue,
 			});
 		}
+
+		public int GetColumnNamesHashCode() => string.Join(";", this.Select(column => (column as RecordWhereColumn<TRecord>)?.RecordPropertyDescription?.ColumnName ?? string.Empty)).GetHashCode();
 	}
 }

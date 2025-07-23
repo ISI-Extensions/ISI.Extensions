@@ -40,7 +40,7 @@ namespace ISI.Extensions.SpreadSheets
 			protected IEnumerable<ISI.Extensions.SpreadSheets.IWorksheetCellsRow> Rows { get; }
 			protected System.Collections.IEnumerator RowEnumerator { get; set; }
 
-			protected ISI.Extensions.Columns.ColumnCollection<TRecord> Columns { get; }
+			protected ISI.Extensions.Columns.IColumnCollection<TRecord> Columns { get; }
 			protected IDictionary<string, int> ColumnLookUp { get; }
 			private int[] _columnIndexes;
 			protected int[] ColumnIndexes => _columnIndexes;

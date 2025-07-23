@@ -110,7 +110,7 @@ namespace ISI.Extensions.Columns
 			FormattedValue = formattedValue ?? (record => string.Format("{0}", GetValue(record)));
 		}
 
-		Func<object, bool> IColumn.IsNull { get; }
+		Func<object, bool> IColumn.IsNull => record => IsNull(record as TRecord);
 
 		object IColumn.GetValue(object record) => GetValue(record as TRecord);
 

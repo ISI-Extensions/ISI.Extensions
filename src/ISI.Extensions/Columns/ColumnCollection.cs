@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Columns
 {
-	public class ColumnCollection<TRecord> : List<IColumn<TRecord>>
+	public class ColumnCollection<TRecord> : List<IColumn<TRecord>>, IColumnCollection<TRecord>
 		where TRecord : class, new()
 	{
 		private static ISI.Extensions.DataContract.DataMemberPropertyInfo[] properties = null;
@@ -41,7 +41,7 @@ namespace ISI.Extensions.Columns
 			}
 		}
 
-		public static ColumnCollection<TRecord> GetDefault(ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer = null)
+		public static IColumnCollection<TRecord> GetDefault(ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer = null)
 		{
 			var result = new ColumnCollection<TRecord>();
 

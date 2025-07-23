@@ -32,7 +32,7 @@ namespace ISI.Extensions.Parsers
 		private string LastUnparsedHeader { get; set; } = null;
 		private string LastUnparsedSource { get; set; } = null;
 
-		protected ISI.Extensions.Columns.ColumnCollection<TRecord> Columns { get; }
+		protected ISI.Extensions.Columns.IColumnCollection<TRecord> Columns { get; }
 		protected IDictionary<string, int> ColumnLookUp { get; }
 		private int[] _columnIndexes;
 		protected int[] ColumnIndexes => _columnIndexes;

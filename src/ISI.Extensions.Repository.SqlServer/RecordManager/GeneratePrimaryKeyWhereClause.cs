@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -117,7 +117,7 @@ namespace ISI.Extensions.Repository.SqlServer
 							Parameters.Add(parameter);
 						}
 
-						Sql = string.Format("      {0} in ({1})", _formatColumnName(primaryKeyColumn.ColumnName), string.Join(", ", parameters.Keys));
+						Sql = string.Format("      {0} IN ({1})", _formatColumnName(primaryKeyColumn.ColumnName), string.Join(", ", parameters.Keys));
 					}
 					else
 					{
@@ -140,12 +140,12 @@ namespace ISI.Extensions.Repository.SqlServer
 						{
 							var sourcePrimaryKeyTempTableName = string.Format("Source{0}", PrimaryKeyTempTableName);
 
-							using (var command = new Microsoft.Data.SqlClient.SqlCommand(string.Format(@"
-create table #{0}
+							using (var command = new Microsoft.Data.SqlClient.SqlCommand(@$"
+CREATE TABLE #{sourcePrimaryKeyTempTableName}
 (
-	{1}
+	{primaryKeyColumn.GetColumnDefinition(_formatColumnName)}
 )
-", sourcePrimaryKeyTempTableName, primaryKeyColumn.GetColumnDefinition(_formatColumnName)), connection))
+", connection))
 							{
 								command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
 							}
@@ -155,26 +155,26 @@ create table #{0}
 							target.BatchSize = 1000;
 							target.WriteToServer(dataReader);
 
-							using (var command = new Microsoft.Data.SqlClient.SqlCommand(string.Format(@"
-create table #{0}
+							using (var command = new Microsoft.Data.SqlClient.SqlCommand(@$"
+CREATE TABLE #{PrimaryKeyTempTableName}
 (
-	{1} primary key
+	{primaryKeyColumn.GetColumnDefinition(_formatColumnName)} PRIMARY KEY
 )
-", PrimaryKeyTempTableName, primaryKeyColumn.GetColumnDefinition(_formatColumnName)), connection))
+", connection))
 							{
 								command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
 							}
 
-							using (var command = new Microsoft.Data.SqlClient.SqlCommand(string.Format(@"
-insert into #{1} ({0})
-select distinct {0}
-from #{2}", _formatColumnName(primaryKeyColumn.ColumnName), PrimaryKeyTempTableName, sourcePrimaryKeyTempTableName), connection))
+							using (var command = new Microsoft.Data.SqlClient.SqlCommand(@$"
+INSERT INTO #{PrimaryKeyTempTableName} ({_formatColumnName(primaryKeyColumn.ColumnName)})
+SELECT DISTINCT {_formatColumnName(primaryKeyColumn.ColumnName)}
+FROM #{sourcePrimaryKeyTempTableName}", connection))
 							{
 								command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
 							}
 						}
 
-						JoinClauseFormat = string.Format("    join #{0} {0} with (NoLock) On ({0}.{1} = {{0}}.{1})\n", PrimaryKeyTempTableName, _formatColumnName(primaryKeyColumn.ColumnName));
+						JoinClauseFormat = string.Format("    JOIN #{0} {0} WITH (NOLOCK) ON ({0}.{1} = {{0}}.{1})\n", PrimaryKeyTempTableName, _formatColumnName(primaryKeyColumn.ColumnName));
 					}
 
 					HasValue = (primaryKeyValueCount > 0);

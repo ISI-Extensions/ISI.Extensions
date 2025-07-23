@@ -18,7 +18,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.ConfigurationHelper.Extensions;
+using ISI.Extensions.DependencyInjection.Extensions;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 
 namespace ISI.Extensions.Tests.Repository
@@ -40,8 +44,39 @@ namespace ISI.Extensions.Tests.Repository
 		[OneTimeSetUp]
 		public void OneTimeSetup()
 		{
+			ISI.Extensions.StartUp.Start();
+
 			var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
-			Configuration = configurationBuilder.Build();
+			var configurationRoot = configurationBuilder.Build().ApplyConfigurationValueReaders();
+
+			var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection()
+				.AddOptions()
+				.AddSingleton<Microsoft.Extensions.Configuration.IConfiguration>(configurationRoot);
+
+			services.AddAllConfigurations(configurationRoot)
+
+				//.AddSingleton<Microsoft.Extensions.Logging.ILoggerFactory, Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory>()
+				.AddSingleton<Microsoft.Extensions.Logging.ILoggerFactory, Microsoft.Extensions.Logging.LoggerFactory>()
+				.AddLogging(builder => builder
+						.AddConsole()
+					//.AddFilter(level => level >= Microsoft.Extensions.Logging.LogLevel.Information)
+				)
+				.AddSingleton<Microsoft.Extensions.Logging.ILogger>(_ => new ISI.Extensions.TextWriterLogger(TestContext.Progress))
+
+				.AddSingleton<ISI.Extensions.DateTimeStamper.IDateTimeStamper, ISI.Extensions.DateTimeStamper.LocalMachineDateTimeStamper>()
+
+				.AddSingleton<ISI.Extensions.JsonSerialization.IJsonSerializer, ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer>()
+				.AddSingleton<ISI.Extensions.Serialization.ISerialization, ISI.Extensions.Serialization.Serialization>()
+
+				.AddConfigurationRegistrations(configurationRoot)
+				.ProcessServiceRegistrars(configurationRoot)
+				;
+
+			var serviceProvider = services.BuildServiceProvider<ISI.Extensions.DependencyInjection.Iunq.ServiceProviderBuilder>(configurationRoot);
+
+			serviceProvider.SetServiceLocator();
+
+			Configuration = configurationRoot;
 
 			SqlServerConfiguration = new();
 

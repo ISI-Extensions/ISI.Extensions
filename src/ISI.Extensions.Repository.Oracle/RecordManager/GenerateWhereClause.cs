@@ -120,7 +120,7 @@ namespace ISI.Extensions.Repository.Oracle
 					{
 						case WhereClauseStringComparisonOperator.BeginsWith:
 							whereClauseWithParameters.Parameters.Add(filterValueName, string.Format("{0}%", value));
-							sqlFilters.Add(string.Format("{0}({1} like :{2})", indent, FormatColumnName(columnName), filterValueName));
+							sqlFilters.Add(string.Format("{0}({1} LIKE :{2})", indent, FormatColumnName(columnName), filterValueName));
 							break;
 						case WhereClauseStringComparisonOperator.Equal:
 							whereClauseWithParameters.Parameters.Add(filterValueName, value);
@@ -128,11 +128,11 @@ namespace ISI.Extensions.Repository.Oracle
 							break;
 						case WhereClauseStringComparisonOperator.Contains:
 							whereClauseWithParameters.Parameters.Add(filterValueName, string.Format("%{0}%", value));
-							sqlFilters.Add(string.Format("{0}({1} like :{2})", indent, FormatColumnName(columnName), filterValueName));
+							sqlFilters.Add(string.Format("{0}({1} LIKE :{2})", indent, FormatColumnName(columnName), filterValueName));
 							break;
 						case WhereClauseStringComparisonOperator.EndsWith:
 							whereClauseWithParameters.Parameters.Add(filterValueName, string.Format("%{0}", value));
-							sqlFilters.Add(string.Format("{0}({1} like :{2})", indent, FormatColumnName(columnName), filterValueName));
+							sqlFilters.Add(string.Format("{0}({1} LIKE :{2})", indent, FormatColumnName(columnName), filterValueName));
 							break;
 					}
 				}
@@ -285,10 +285,10 @@ namespace ISI.Extensions.Repository.Oracle
 						using (var command = connection.CreateCommand())
 						{
 							command.CommandText = @$"
-CREATE TEMPORARY TABLE {filterValueTempTableName}
+CREATE GLOBAL TEMPORARY TABLE {filterValueTempTableName}
 (
 	{filter.RecordPropertyDescription.GetColumnDefinition(FormatColumnName)}
-)";
+) ON COMMIT PRESERVE ROWS";
 
 							command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
 						}

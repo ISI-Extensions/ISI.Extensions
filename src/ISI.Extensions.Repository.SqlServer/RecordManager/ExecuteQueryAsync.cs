@@ -42,7 +42,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 				var whereSql = (whereClause as IWhereClauseWithGetSql)?.GetSql();
 
-				sql.AppendFormat("select {0}\n", selectClause.GetSql());
+				sql.AppendFormat("SELECT {0}\n", selectClause.GetSql());
 				sql.AppendFormat("{0}\n", GetFromClause());
 
 				if (sqlConnectionWhereClause != null)
@@ -52,7 +52,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 				if (!string.IsNullOrWhiteSpace(whereSql))
 				{
-					sql.Append("where\n");
+					sql.Append("WHERE\n");
 					sql.Append(whereSql);
 				}
 				if (!string.IsNullOrWhiteSpace(orderByClause?.GetSql()))

@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +29,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 {
 	public abstract partial class RecordManager<TRecord>
 	{
-		protected class PrimaryKeyWhereClause<TRecordPrimaryKey> : WhereClause, ISqlConnectionWhereClause, IWhereClause, IWhereClauseWithSql, IWhereClauseWithGetSql, IWhereClauseWithParameters, IWhereClauseWithGetParameters
+		protected class PrimaryKeyWhereClause<TRecordPrimaryKey> : WhereClause, INpgsqlConnectionWhereClause, IWhereClause, IWhereClauseWithSql, IWhereClauseWithGetSql, IWhereClauseWithParameters, IWhereClauseWithGetParameters
 		{
 			protected IEnumerable<TRecordPrimaryKey> PrimaryKeyValues { get; }
 			private readonly Func<string, string> _formatColumnName;
@@ -69,7 +69,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 				base.Reset();
 			}
 
-			public void Initialize(ISI.Extensions.Repository.PostgreSQL.Configuration sqlServerConfiguration, Npgsql.NpgsqlConnection connection)
+			public void Initialize(ISI.Extensions.Repository.PostgreSQL.Configuration postgresqlConfiguration, Npgsql.NpgsqlConnection connection)
 			{
 				var primaryKeyColumns = RecordDescription.GetRecordDescription<TRecord>().PrimaryKeyPropertyDescriptions;
 
@@ -80,7 +80,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 					throw new("No primary key defined");
 				}
 
-				var primaryKeyMaxCount = sqlServerConfiguration.PrimaryKeyMaxCount;
+				var primaryKeyMaxCount = postgresqlConfiguration.PrimaryKeyMaxCount;
 
 				if (primaryKeyColumns.Length == 1)
 				{
@@ -111,7 +111,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 						Parameters.Add(primaryKeyColumnAlias, parameters.FirstOrDefault().Value);
 
-						Sql = string.Format("      {0} = {1}", _formatColumnName(primaryKeyColumn.ColumnName), primaryKeyColumnAlias);
+						Sql = $"      {_formatColumnName(primaryKeyColumn.ColumnName)} = {primaryKeyColumnAlias}";
 					}
 					else if (primaryKeyValueCount < primaryKeyMaxCount)
 					{
@@ -120,7 +120,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 							Parameters.Add(parameter);
 						}
 
-						Sql = string.Format("      {0} in ({1})", _formatColumnName(primaryKeyColumn.ColumnName), string.Join(", ", parameters.Keys));
+						Sql = $"      {_formatColumnName(primaryKeyColumn.ColumnName)} in ({string.Join(", ", parameters.Keys)})";
 					}
 					else
 					{
@@ -141,12 +141,12 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 						var sourcePrimaryKeyTempTableName = string.Format("Source{0}", PrimaryKeyTempTableName);
 
-						using (var command = new Npgsql.NpgsqlCommand(string.Format(@"
-CREATE TEMP TABLE {0}
+						using (var command = new Npgsql.NpgsqlCommand(@$"
+CREATE TEMP TABLE {sourcePrimaryKeyTempTableName}
 (
-	{1}
+	{primaryKeyColumn.GetColumnDefinition(_formatColumnName)}
 )
-", sourcePrimaryKeyTempTableName, primaryKeyColumn.GetColumnDefinition(_formatColumnName)), connection))
+", connection))
 						{
 							command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
 						}
@@ -166,25 +166,25 @@ CREATE TEMP TABLE {0}
 							binaryImporter.Complete();
 						}
 
-						using (var command = new Npgsql.NpgsqlCommand(string.Format(@"
-CREATE TEMP TABLE {0}
+						using (var command = new Npgsql.NpgsqlCommand(@$"
+CREATE TEMP TABLE {PrimaryKeyTempTableName}
 (
-	{1} primary key
+	{primaryKeyColumn.GetColumnDefinition(_formatColumnName)} PRIMARY KEY
 )
-", PrimaryKeyTempTableName, primaryKeyColumn.GetColumnDefinition(_formatColumnName)), connection))
+", connection))
 						{
 							command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
 						}
 
-						using (var command = new Npgsql.NpgsqlCommand(string.Format(@"
-INSERT INTO {1} ({0})
-SELECT DISTINCT {0}
-FROM {2}", _formatColumnName(primaryKeyColumn.ColumnName), PrimaryKeyTempTableName, sourcePrimaryKeyTempTableName), connection))
+						using (var command = new Npgsql.NpgsqlCommand(@$"
+INSERT INTO {PrimaryKeyTempTableName} ({_formatColumnName(primaryKeyColumn.ColumnName)})
+SELECT DISTINCT {_formatColumnName(primaryKeyColumn.ColumnName)}
+FROM {sourcePrimaryKeyTempTableName}", connection))
 						{
 							command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
 						}
 
-						JoinClauseFormat = string.Format("    JOIN {0} {0} ON ({0}.{1} = {{0}}.{1})\n", PrimaryKeyTempTableName, _formatColumnName(primaryKeyColumn.ColumnName));
+						JoinClauseFormat = $"    JOIN {PrimaryKeyTempTableName} {PrimaryKeyTempTableName} ON ({PrimaryKeyTempTableName}.{_formatColumnName(primaryKeyColumn.ColumnName)} = {{0}}.{_formatColumnName(primaryKeyColumn.ColumnName)})\n";
 					}
 
 					HasValue = (primaryKeyValueCount > 0);

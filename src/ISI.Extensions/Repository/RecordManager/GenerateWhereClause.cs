@@ -64,7 +64,7 @@ namespace ISI.Extensions.Repository
 				}
 			}
 
-			var @operator = filters.WhereClauseOperator == WhereClauseOperator.And ? " and\n" : " or\n";
+			var @operator = filters.WhereClauseOperator == WhereClauseOperator.And ? " AND\n" : " OR\n";
 
 			return string.Format("{0}({1})\n", indent, string.Join(@operator, sqlFilters).Trim());
 		}
@@ -80,10 +80,10 @@ namespace ISI.Extensions.Repository
 				switch (filter.NullOperator.Value)
 				{
 					case WhereClauseNullOperator.IsNull:
-						sqlFilters.Add(string.Format("{0}({1} is null)", indent, FormatColumnName(columnName)));
+						sqlFilters.Add(string.Format("{0}({1} IS NULL)", indent, FormatColumnName(columnName)));
 						break;
 					case WhereClauseNullOperator.IsNotNull:
-						sqlFilters.Add(string.Format("{0}(Not {1} is null)", indent, FormatColumnName(columnName)));
+						sqlFilters.Add(string.Format("{0}(NOT {1} IS NULL)", indent, FormatColumnName(columnName)));
 						break;
 				}
 			}
@@ -100,7 +100,7 @@ namespace ISI.Extensions.Repository
 				var filterGreaterBetweenValueName = string.Format("@{0}Greater{1}FilterValue_{2}", filterValueNamePrefix, columnName, filterIndex);
 				whereClauseWithParameters.Parameters.Add(filterGreaterBetweenValueName, filter.GreaterBetweenValue);
 
-				sqlFilters.Add(string.Format("{0}({1} between {2} and {3})", indent, FormatColumnName(columnName), filterLesserBetweenValueName, filterGreaterBetweenValueName));
+				sqlFilters.Add(string.Format("{0}({1} BETWEEN {2} AND {3})", indent, FormatColumnName(columnName), filterLesserBetweenValueName, filterGreaterBetweenValueName));
 
 				filterIndex++;
 			}
@@ -108,7 +108,7 @@ namespace ISI.Extensions.Repository
 			{
 				if (!(filter.Values.NullCheckedFirstOrDefault() is string value))
 				{
-					sqlFilters.Add(string.Format("{0}({1} is null)", indent, FormatColumnName(columnName)));
+					sqlFilters.Add(string.Format("{0}({1} IS NULL)", indent, FormatColumnName(columnName)));
 				}
 				else
 				{
@@ -155,7 +155,7 @@ namespace ISI.Extensions.Repository
 					{
 						case WhereClauseStringComparisonOperator.BeginsWith:
 							whereClauseWithParameters.Parameters.Add(filterValueName, string.Format("{0}%", value));
-							sqlFilters.Add(string.Format("{0}({1} like {2})", indent, FormatColumnName(columnName), filterValueName));
+							sqlFilters.Add(string.Format("{0}({1} LIKE {2})", indent, FormatColumnName(columnName), filterValueName));
 							break;
 						case WhereClauseStringComparisonOperator.Equal:
 							whereClauseWithParameters.Parameters.Add(filterValueName, value);
@@ -163,11 +163,11 @@ namespace ISI.Extensions.Repository
 							break;
 						case WhereClauseStringComparisonOperator.Contains:
 							whereClauseWithParameters.Parameters.Add(filterValueName, string.Format("%{0}%", value));
-							sqlFilters.Add(string.Format("{0}({1} like {2})", indent, FormatColumnName(columnName), filterValueName));
+							sqlFilters.Add(string.Format("{0}({1} LIKE {2})", indent, FormatColumnName(columnName), filterValueName));
 							break;
 						case WhereClauseStringComparisonOperator.EndsWith:
 							whereClauseWithParameters.Parameters.Add(filterValueName, string.Format("%{0}", value));
-							sqlFilters.Add(string.Format("{0}({1} like {2})", indent, FormatColumnName(columnName), filterValueName));
+							sqlFilters.Add(string.Format("{0}({1} LIKE {2})", indent, FormatColumnName(columnName), filterValueName));
 							break;
 					}
 				}
@@ -218,6 +218,82 @@ namespace ISI.Extensions.Repository
 			return sqlFilters;
 		}
 
+		public class JoinTableValues : IEnumerable<RecordWhereColumnCollection<TRecord>>, ISI.Extensions.Columns.IGetColumns<RecordWhereColumnCollection<TRecord>>
+		{
+			public class Column : ISI.Extensions.Columns.IColumn<RecordWhereColumnCollection<TRecord>>
+			{
+				public Type PropertyType { get; }
+				public string ColumnName { get; }
+				public string[] ColumnNames { get; }
+				public Func<RecordWhereColumnCollection<TRecord>, object> GetValue { get; }
+				public Func<RecordWhereColumnCollection<TRecord>, bool> IsNull { get; }
+				public Func<RecordWhereColumnCollection<TRecord>, string> FormattedValue { get; }
+
+				public Column(RecordWhereColumn<TRecord> recordWhereColumn)
+				{
+					PropertyType = recordWhereColumn.RecordPropertyDescription.ValueType;
+					ColumnName = recordWhereColumn.RecordPropertyDescription.ColumnName;
+					ColumnNames = [ColumnName];
+
+					GetValue = record => ((record.FirstOrDefault(column => string.Equals((column as RecordWhereColumn<TRecord>)?.RecordPropertyDescription?.ColumnName ?? string.Empty, ColumnName, StringComparison.CurrentCulture)) as RecordWhereColumn<TRecord>)?.Values).NullCheckedFirstOrDefault();
+
+					var isNullable = (PropertyType.IsGenericType && (PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>)));
+
+					IsNull = record =>
+					{
+						if (isNullable)
+						{
+							return (GetValue(record) == null);
+						}
+
+						return false;
+					};
+
+					FormattedValue = record => ($"{GetValue(record)}");
+				}
+
+				Func<object, bool> ISI.Extensions.Columns.IColumn.IsNull => record => IsNull(record as RecordWhereColumnCollection<TRecord>);
+
+				object ISI.Extensions.Columns.IColumn.GetValue(object record) => GetValue(record as RecordWhereColumnCollection<TRecord>);
+
+				object ISI.Extensions.Columns.IColumn<RecordWhereColumnCollection<TRecord>>.GetValue(RecordWhereColumnCollection<TRecord> record) => GetValue(record);
+
+				void ISI.Extensions.Columns.IColumn<RecordWhereColumnCollection<TRecord>>.SetValue(RecordWhereColumnCollection<TRecord> record, object value)
+				{
+				}
+
+				object ISI.Extensions.Columns.IColumn<RecordWhereColumnCollection<TRecord>>.TransformValue(object value) => value;
+
+				string ISI.Extensions.Columns.IColumn<RecordWhereColumnCollection<TRecord>>.FormattedValue(RecordWhereColumnCollection<TRecord> record) => FormattedValue(record);
+			}
+
+			private readonly RecordWhereColumnCollection<TRecord>[] _recordWhereColumnFilters;
+			private readonly ISI.Extensions.Columns.ColumnCollection<RecordWhereColumnCollection<TRecord>> _columns;
+
+			public JoinTableValues()
+			{
+
+			}
+
+			public JoinTableValues(RecordWhereColumnCollection<TRecord> recordWhereColumnFilters)
+			{
+				_recordWhereColumnFilters = recordWhereColumnFilters.ToNullCheckedArray(recordWhereColumnFilter => recordWhereColumnFilter as RecordWhereColumnCollection<TRecord>);
+				_columns = new ISI.Extensions.Columns.ColumnCollection<RecordWhereColumnCollection<TRecord>>((_recordWhereColumnFilters.First() as RecordWhereColumnCollection<TRecord>).Select(recordWhereColumnFilter => new Column(recordWhereColumnFilter as RecordWhereColumn<TRecord>)));
+			}
+
+			public ISI.Extensions.Columns.IColumnCollection<RecordWhereColumnCollection<TRecord>> GetColumns() => _columns;
+
+			public IEnumerator<RecordWhereColumnCollection<TRecord>> GetEnumerator()
+			{
+				return _recordWhereColumnFilters.ToList().GetEnumerator();
+			}
+
+			System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+			{
+				return _recordWhereColumnFilters.ToList().GetEnumerator();
+			}
+		}
+
 		protected virtual void GenerateWhereClauseFilter_EqualityOperator(IWhereClause whereClause, RecordWhereColumn<TRecord> filter, ref int filterIndex, List<string> sqlFilters, string indent, string filterValueNamePrefix)
 		{
 			if (filter.Values.NullCheckedAny())
@@ -248,10 +324,10 @@ namespace ISI.Extensions.Repository
 					switch (filter.EqualityOperator)
 					{
 						case WhereClauseEqualityOperator.Equal:
-							sqlFilters.Add(string.Format("{0}({1} is null)", indent, FormatColumnName(columnName)));
+							sqlFilters.Add(string.Format("{0}({1} IS NULL)", indent, FormatColumnName(columnName)));
 							break;
 						case WhereClauseEqualityOperator.NotEqual:
-							sqlFilters.Add(string.Format("{0}(not {1} is null)", indent, FormatColumnName(columnName)));
+							sqlFilters.Add(string.Format("{0}(NOT {1} IS NULL)", indent, FormatColumnName(columnName)));
 							break;
 					}
 				}
@@ -272,10 +348,10 @@ namespace ISI.Extensions.Repository
 					switch (filter.EqualityOperator)
 					{
 						case WhereClauseEqualityOperator.Equal:
-							sqlFilters.Add(string.Format("{0}({1} in ({2}))", indent, FormatColumnName(columnName), string.Join(" ,", filterValueNames)));
+							sqlFilters.Add(string.Format("{0}({1} IN ({2}))", indent, FormatColumnName(columnName), string.Join(" ,", filterValueNames)));
 							break;
 						case WhereClauseEqualityOperator.NotEqual:
-							sqlFilters.Add(string.Format("{0}(not {1} in ({2}))", indent, FormatColumnName(columnName), string.Join(" ,", filterValueNames)));
+							sqlFilters.Add(string.Format("{0}(NOT {1} IN ({2}))", indent, FormatColumnName(columnName), string.Join(" ,", filterValueNames)));
 							break;
 					}
 				}

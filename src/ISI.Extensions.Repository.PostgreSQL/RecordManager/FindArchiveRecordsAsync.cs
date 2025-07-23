@@ -71,7 +71,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 		{
 			var sql = new StringBuilder();
 
-			var sqlConnectionWhereClause = whereClause as ISqlConnectionWhereClause;
+			var sqlConnectionWhereClause = whereClause as INpgsqlConnectionWhereClause;
 
 			sqlConnectionWhereClause?.Initialize(PostgreSQLConfiguration, connection);
 

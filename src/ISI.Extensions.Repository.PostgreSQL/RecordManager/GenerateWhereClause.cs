@@ -31,7 +31,57 @@ namespace ISI.Extensions.Repository.PostgreSQL
 	{
 		protected override IWhereClause NewWhereClause()
 		{
-			return new SqlConnectionWhereClause();
+			return new NpgsqlConnectionWhereClause();
+		}
+
+		protected override string GenerateTopLevelWhereClauseFilters(IWhereClause whereClause, IRecordWhereColumnCollection<TRecord> filters, ref int filterIndex, string indent, string filterValueNamePrefix = "")
+		{
+			var sqlFilters = new List<string>();
+
+			if ((filters.WhereClauseOperator == WhereClauseOperator.Or) && (filters.Count > 10) && filters.All(subFilter => (subFilter as IRecordWhereColumnCollection<TRecord>)?.WhereClauseOperator == WhereClauseOperator.And))
+			{
+				var columnNamesHashCode = (filters.First() as IRecordWhereColumnCollection<TRecord>).GetColumnNamesHashCode();
+
+				if (filters.All(subFilter => (subFilter as IRecordWhereColumnCollection<TRecord>).GetColumnNamesHashCode() == columnNamesHashCode))
+				{
+					GenerateJoinTableFilter(whereClause, filters as RecordWhereColumnCollection<TRecord>, ref filterIndex, sqlFilters, string.Format("{0}  ", indent), filterValueNamePrefix);
+
+					return string.Empty;
+				}
+			}
+
+			foreach (var filter in filters)
+			{
+				if (filter is RecordWhereColumn<TRecord> recordWhereColumnFilter)
+				{
+					sqlFilters.AddRange(GenerateWhereClauseFilter(whereClause, recordWhereColumnFilter, ref filterIndex, indent, filterValueNamePrefix));
+				}
+				else if (filter is IRecordWhereColumnCollection<TRecord> recordWhereColumnFilters)
+				{
+					var usedTempTable = false;
+
+					if ((filters.WhereClauseOperator == WhereClauseOperator.And) && (recordWhereColumnFilters.WhereClauseOperator == WhereClauseOperator.Or) && (recordWhereColumnFilters.Count > 10) && recordWhereColumnFilters.All(subFilter => (subFilter as IRecordWhereColumnCollection<TRecord>)?.WhereClauseOperator == WhereClauseOperator.And))
+					{
+						var columnNamesHashCode = (recordWhereColumnFilters.First() as IRecordWhereColumnCollection<TRecord>).GetColumnNamesHashCode();
+
+						if (recordWhereColumnFilters.All(subFilter => (subFilter as IRecordWhereColumnCollection<TRecord>).GetColumnNamesHashCode() == columnNamesHashCode))
+						{
+							GenerateJoinTableFilter(whereClause, recordWhereColumnFilters as RecordWhereColumnCollection<TRecord>, ref filterIndex, sqlFilters, string.Format("{0}  ", indent), filterValueNamePrefix);
+
+							usedTempTable = true;
+						}
+					}
+
+					if (!usedTempTable)
+					{
+						sqlFilters.Add(GenerateWhereClauseFilters(whereClause, recordWhereColumnFilters, ref filterIndex, string.Format("{0}  ", indent), filterValueNamePrefix));
+					}
+				}
+			}
+
+			var @operator = filters.WhereClauseOperator == WhereClauseOperator.And ? " AND\n" : " OR\n";
+
+			return string.Format("{0}({1})\n", indent, string.Join(@operator, sqlFilters).Trim());
 		}
 
 		protected override void GenerateWhereClauseFilter_EqualityOperator(IWhereClause whereClause, RecordWhereColumn<TRecord> filter, ref int filterIndex, List<string> sqlFilters, string indent, string filterValueNamePrefix)
@@ -119,9 +169,9 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 					var usedFilterValues = filterParameters.Values;
 
-					var sqlConnectionWhereClause = whereClause as SqlConnectionWhereClause;
+					var npgsqlConnectionWhereClause = whereClause as NpgsqlConnectionWhereClause;
 
-					sqlConnectionWhereClause.InitializeActions.Add((sqlServerConfiguration, connection) =>
+					npgsqlConnectionWhereClause.InitializeActions.Add((postgresqlConfiguration, connection) =>
 					{
 						var dataReader = new ISI.Extensions.DataReader.EnumerableDataReader<ISI.Extensions.DataReader.ValueWrapper<object>>([
 							usedFilterValues.Select(filterValue => new ISI.Extensions.DataReader.ValueWrapper<object>()
@@ -173,7 +223,7 @@ CREATE TEMP TABLE {0}
 							break;
 					}
 
-					sqlConnectionWhereClause.FinalizeActions.Add((connection) =>
+					npgsqlConnectionWhereClause.FinalizeActions.Add((connection) =>
 					{
 						var dropTempTableSql = string.Format("DROP TABLE {0}", filterValueTempTableName);
 
@@ -184,6 +234,54 @@ CREATE TEMP TABLE {0}
 					});
 				}
 			}
+		}
+
+		
+		protected virtual void GenerateJoinTableFilter(IWhereClause whereClause, RecordWhereColumnCollection<TRecord> filter, ref int filterIndex, List<string> sqlFilters, string indent, string filterValueNamePrefix)
+		{
+			var tempTableName = string.Format("TempTable_{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting));
+
+			var propertyDescriptions = (filter.First() as RecordWhereColumnCollection<TRecord>).ToNullCheckedArray(recordWhereColumnFilter => (recordWhereColumnFilter as RecordWhereColumn<TRecord>).RecordPropertyDescription);
+
+			var npgsqlConnectionWhereClause = whereClause as NpgsqlConnectionWhereClause;
+
+			npgsqlConnectionWhereClause.InitializeActions.Add((postgresqlConfiguration, connection) =>
+			{
+				connection.EnsureConnectionIsOpenAsync().Wait();
+
+				using (var command = connection.CreateCommand())
+				{
+					command.CommandText = @$"
+CREATE TEMP TABLE {tempTableName}
+(
+{string.Join(",\n", propertyDescriptions.Select(propertyDescription => $"  {propertyDescription.GetColumnDefinition(FormatColumnName)}"))}
+)";
+
+					command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
+				}
+
+				var joinTableValues = new JoinTableValues(filter);
+
+				using (var dataReader = new ISI.Extensions.DataReader.EnumerableDataReader<RecordWhereColumnCollection<TRecord>>(joinTableValues, null, null))
+				{
+					using (var binaryImporter = connection.BeginBinaryImport($"COPY {tempTableName} FROM STDIN (FORMAT BINARY)"))
+					{
+						while (dataReader.Read())
+						{
+							binaryImporter.StartRow();
+
+							for (var columnIndex = 0; columnIndex < dataReader.FieldCount; columnIndex++)
+							{
+								binaryImporter.Write(dataReader.GetValue(columnIndex));
+							}
+						}
+
+						binaryImporter.Complete();
+					}
+				}
+			});
+
+			npgsqlConnectionWhereClause.JoinCauseBuilders.Add(alias => $"    JOIN {tempTableName} ON ({string.Join(" AND\n         ", propertyDescriptions.Select(propertyDescription => $"{tempTableName}.{FormatColumnName(propertyDescription.ColumnName)} = {alias}.{FormatColumnName(propertyDescription.ColumnName)}"))})\n");
 		}
 	}
 }

@@ -23,10 +23,10 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Repository.PostgreSQL
 {
-	public interface ISqlConnectionWhereClause : IWhereClause, IWhereClauseWithSql, IWhereClauseWithGetSql, IWhereClauseWithParameters, IWhereClauseWithGetParameters
+	public interface INpgsqlConnectionWhereClause : IWhereClause, IWhereClauseWithSql, IWhereClauseWithGetSql, IWhereClauseWithParameters, IWhereClauseWithGetParameters
 	{
 		string GetJoinCause(string tableNameAlias);
-		void Initialize(ISI.Extensions.Repository.PostgreSQL.Configuration sqlServerConfiguration, Npgsql.NpgsqlConnection connection);
+		void Initialize(ISI.Extensions.Repository.PostgreSQL.Configuration postgresqlConfiguration, Npgsql.NpgsqlConnection connection);
 		void Finalize(Npgsql.NpgsqlConnection connection);
 	}
 }

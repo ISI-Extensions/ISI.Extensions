@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +34,56 @@ namespace ISI.Extensions.Repository.Oracle
 			return new OracleConnectionWhereClause();
 		}
 
+		protected override string GenerateTopLevelWhereClauseFilters(IWhereClause whereClause, IRecordWhereColumnCollection<TRecord> filters, ref int filterIndex, string indent, string filterValueNamePrefix = "")
+		{
+			var sqlFilters = new List<string>();
+
+			if ((filters.WhereClauseOperator == WhereClauseOperator.Or) && (filters.Count > 10) && filters.All(subFilter => (subFilter as IRecordWhereColumnCollection<TRecord>)?.WhereClauseOperator == WhereClauseOperator.And))
+			{
+				var columnNamesHashCode = (filters.First() as IRecordWhereColumnCollection<TRecord>).GetColumnNamesHashCode();
+
+				if (filters.All(subFilter => (subFilter as IRecordWhereColumnCollection<TRecord>).GetColumnNamesHashCode() == columnNamesHashCode))
+				{
+					GenerateJoinTableFilter(whereClause, filters as RecordWhereColumnCollection<TRecord>, ref filterIndex, sqlFilters, string.Format("{0}  ", indent), filterValueNamePrefix);
+
+					return string.Empty;
+				}
+			}
+
+			foreach (var filter in filters)
+			{
+				if (filter is RecordWhereColumn<TRecord> recordWhereColumnFilter)
+				{
+					sqlFilters.AddRange(GenerateWhereClauseFilter(whereClause, recordWhereColumnFilter, ref filterIndex, indent, filterValueNamePrefix));
+				}
+				else if (filter is IRecordWhereColumnCollection<TRecord> recordWhereColumnFilters)
+				{
+					var usedTempTable = false;
+
+					if ((filters.WhereClauseOperator == WhereClauseOperator.And) && (recordWhereColumnFilters.WhereClauseOperator == WhereClauseOperator.Or) && (recordWhereColumnFilters.Count > 10) && recordWhereColumnFilters.All(subFilter => (subFilter as IRecordWhereColumnCollection<TRecord>)?.WhereClauseOperator == WhereClauseOperator.And))
+					{
+						var columnNamesHashCode = (recordWhereColumnFilters.First() as IRecordWhereColumnCollection<TRecord>).GetColumnNamesHashCode();
+
+						if (recordWhereColumnFilters.All(subFilter => (subFilter as IRecordWhereColumnCollection<TRecord>).GetColumnNamesHashCode() == columnNamesHashCode))
+						{
+							GenerateJoinTableFilter(whereClause, recordWhereColumnFilters as RecordWhereColumnCollection<TRecord>, ref filterIndex, sqlFilters, string.Format("{0}  ", indent), filterValueNamePrefix);
+
+							usedTempTable = true;
+						}
+					}
+
+					if (!usedTempTable)
+					{
+						sqlFilters.Add(GenerateWhereClauseFilters(whereClause, recordWhereColumnFilters, ref filterIndex, string.Format("{0}  ", indent), filterValueNamePrefix));
+					}
+				}
+			}
+
+			var @operator = filters.WhereClauseOperator == WhereClauseOperator.And ? " AND\n" : " OR\n";
+
+			return string.Format("{0}({1})\n", indent, string.Join(@operator, sqlFilters).Trim());
+		}
+
 		protected override IList<string> GenerateWhereClauseFilter(IWhereClause whereClause, RecordWhereColumn<TRecord> filter, ref int filterIndex, string indent, string filterValueNamePrefix = "")
 		{
 			var sqlFilters = new List<string>();
@@ -45,10 +95,10 @@ namespace ISI.Extensions.Repository.Oracle
 				switch (filter.NullOperator.Value)
 				{
 					case WhereClauseNullOperator.IsNull:
-						sqlFilters.Add(string.Format("{0}({1} is null)", indent, FormatColumnName(columnName)));
+						sqlFilters.Add(string.Format("{0}({1} IS NULL)", indent, FormatColumnName(columnName)));
 						break;
 					case WhereClauseNullOperator.IsNotNull:
-						sqlFilters.Add(string.Format("{0}(Not {1} is null)", indent, FormatColumnName(columnName)));
+						sqlFilters.Add(string.Format("{0}(NOT {1} IS NULL)", indent, FormatColumnName(columnName)));
 						break;
 				}
 			}
@@ -65,7 +115,7 @@ namespace ISI.Extensions.Repository.Oracle
 				var filterGreaterBetweenValueName = string.Format("{0}Greater{1}FilterValue_{2}", filterValueNamePrefix, columnName, filterIndex);
 				whereClauseWithParameters.Parameters.Add(filterGreaterBetweenValueName, filter.GreaterBetweenValue);
 
-				sqlFilters.Add(string.Format("{0}({1} between :{2} and :{3})", indent, FormatColumnName(columnName), filterLesserBetweenValueName, filterGreaterBetweenValueName));
+				sqlFilters.Add(string.Format("{0}({1} BETWEEN :{2} AND :{3})", indent, FormatColumnName(columnName), filterLesserBetweenValueName, filterGreaterBetweenValueName));
 
 				filterIndex++;
 			}
@@ -73,7 +123,7 @@ namespace ISI.Extensions.Repository.Oracle
 			{
 				if (!(filter.Values.NullCheckedFirstOrDefault() is string value))
 				{
-					sqlFilters.Add(string.Format("{0}({1} is null)", indent, FormatColumnName(columnName)));
+					sqlFilters.Add(string.Format("{0}({1} IS NULL)", indent, FormatColumnName(columnName)));
 				}
 				else
 				{
@@ -182,6 +232,72 @@ namespace ISI.Extensions.Repository.Oracle
 
 			return sqlFilters;
 		}
+		
+		protected virtual void GenerateJoinTableFilter(IWhereClause whereClause, RecordWhereColumnCollection<TRecord> filter, ref int filterIndex, List<string> sqlFilters, string indent, string filterValueNamePrefix)
+		{
+			var tempTableName = string.Format("TempTable_{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting));
+
+			var propertyDescriptions = (filter.First() as RecordWhereColumnCollection<TRecord>).ToNullCheckedArray(recordWhereColumnFilter => (recordWhereColumnFilter as RecordWhereColumn<TRecord>).RecordPropertyDescription);
+
+			var oracleConnectionWhereClause = whereClause as OracleConnectionWhereClause;
+
+			oracleConnectionWhereClause.InitializeActions.Add((oracleConfiguration, oracleConnection) =>
+			{
+				oracleConnection.EnsureConnectionIsOpenAsync().Wait();
+
+				using (var command = oracleConnection.CreateCommand())
+				{
+					command.CommandText = @$"
+CREATE GLOBAL TEMPORARY TABLE {tempTableName}
+(
+{string.Join(",\n", propertyDescriptions.Select(propertyDescription => $"  {propertyDescription.GetColumnDefinition(FormatColumnName)}"))}
+) ON COMMIT PRESERVE ROWS";
+
+					command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
+				}
+
+				var joinTableValues = new JoinTableValues(filter);
+
+				using (var dataReader = new ISI.Extensions.DataReader.EnumerableDataReader<RecordWhereColumnCollection<TRecord>>(joinTableValues, null, null))
+				{
+					var columnsLength = propertyDescriptions.Length;
+					var records = new List<object>[columnsLength];
+					for (var columnIndex = 0; columnIndex < columnsLength; columnIndex++)
+					{
+						records[columnIndex] = new List<object>();
+					}
+
+					while (dataReader.Read())
+					{
+						for (var columnIndex = 0; columnIndex < columnsLength; columnIndex++)
+						{
+							records[columnIndex].Add(dataReader.GetValue(columnIndex));
+						}
+					}
+
+					using (var command = oracleConnection.CreateCommand())
+					{
+						command.CommandText = @$"INSERT INTO {tempTableName} ({string.Join(", ", propertyDescriptions.Select(propertyDescription => FormatColumnName(propertyDescription.ColumnName)))}) VALUES ({string.Join(", ", joinTableValues.GetColumns().Select(column => $":{column.ColumnName}"))})";
+						command.BindByName = true;
+
+						command.ArrayBindCount = records[0].Count;
+
+						for (var columnIndex = 0; columnIndex < columnsLength; columnIndex++)
+						{
+							var column = joinTableValues.GetColumns()[columnIndex];
+
+							var parameter = new global::Oracle.ManagedDataAccess.Client.OracleParameter(column.ColumnName, column.PropertyType.GetOracleDbType(), System.Data.ParameterDirection.Input);
+							parameter.Value = records[columnIndex].ToArray();
+							command.Parameters.Add(parameter);
+						}
+
+						command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
+					}
+				}
+			});
+
+			oracleConnectionWhereClause.JoinCauseBuilders.Add(alias => $"    JOIN {tempTableName} ON ({string.Join(" AND\n         ", propertyDescriptions.Select(propertyDescription => $"{tempTableName}.{FormatColumnName(propertyDescription.ColumnName)} = {alias}.{FormatColumnName(propertyDescription.ColumnName)}"))})\n");
+		}
 
 		protected override void GenerateWhereClauseFilter_EqualityOperator(IWhereClause whereClause, RecordWhereColumn<TRecord> filter, ref int filterIndex, List<string> sqlFilters, string indent, string filterValueNamePrefix)
 		{
@@ -276,7 +392,7 @@ namespace ISI.Extensions.Repository.Oracle
 
 					var sqlConnectionWhereClause = whereClause as OracleConnectionWhereClause;
 
-					sqlConnectionWhereClause.InitializeActions.Add((sqlServerConfiguration, connection) =>
+					sqlConnectionWhereClause.InitializeActions.Add((oracleConfiguration, connection) =>
 					{
 						var filterValuesParameter = new global::Oracle.ManagedDataAccess.Client.OracleParameter();
 						filterValuesParameter.OracleDbType = filterValues.First().GetType().GetOracleDbType();

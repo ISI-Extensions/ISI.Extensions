@@ -28,10 +28,10 @@ namespace ISI.Extensions.Tests.Repository
 			[ISI.Extensions.Repository.RecordProperty(ColumnName = "ContactUuid")]
 			public Guid ContactUuid { get; set; }
 
-			[ISI.Extensions.Repository.RecordProperty(ColumnName = "FirstName")]
+			[ISI.Extensions.Repository.RecordProperty(ColumnName = "FirstName", PropertySize = 255)]
 			public string FirstName { get; set; }
 
-			[ISI.Extensions.Repository.RecordProperty(ColumnName = "LastName")]
+			[ISI.Extensions.Repository.RecordProperty(ColumnName = "LastName", PropertySize = 255)]
 			public string LastName { get; set; }
 
 			[ISI.Extensions.Repository.RecordProperty(ColumnName = "TimeStamp")]

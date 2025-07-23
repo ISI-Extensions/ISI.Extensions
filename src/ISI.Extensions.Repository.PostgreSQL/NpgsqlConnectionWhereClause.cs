@@ -22,11 +22,11 @@ using Npgsql;
 
 namespace ISI.Extensions.Repository.PostgreSQL
 {
-	public delegate void InitializeDelegate(ISI.Extensions.Repository.PostgreSQL.Configuration sqlServerConfiguration, Npgsql.NpgsqlConnection connection);
+	public delegate void InitializeDelegate(ISI.Extensions.Repository.PostgreSQL.Configuration postgresqlConfiguration, Npgsql.NpgsqlConnection connection);
 	public delegate void FinalizeDelegate(Npgsql.NpgsqlConnection connection);
 	public delegate string GetJoinCauseDelegate(string tableNameAlias);
 
-	public class SqlConnectionWhereClause : WhereClause, ISqlConnectionWhereClause, IWhereClause, IWhereClauseWithSql, IWhereClauseWithGetSql, IWhereClauseWithParameters, IWhereClauseWithGetParameters
+	public class NpgsqlConnectionWhereClause : WhereClause, INpgsqlConnectionWhereClause, IWhereClause, IWhereClauseWithSql, IWhereClauseWithGetSql, IWhereClauseWithParameters, IWhereClauseWithGetParameters
 	{
 		public List<InitializeDelegate> InitializeActions { get; } = new();
 		public List<FinalizeDelegate> FinalizeActions { get; } = new();
@@ -37,11 +37,11 @@ namespace ISI.Extensions.Repository.PostgreSQL
 			return string.Join("\n", JoinCauseBuilders.Select(joinCauseBuilder => joinCauseBuilder(tableNameAlias)));
 		}
 
-		public void Initialize(ISI.Extensions.Repository.PostgreSQL.Configuration sqlServerConfiguration, Npgsql.NpgsqlConnection connection)
+		public void Initialize(ISI.Extensions.Repository.PostgreSQL.Configuration postgresqlConfiguration, Npgsql.NpgsqlConnection connection)
 		{
 			foreach (var initialize in InitializeActions)
 			{
-				initialize(sqlServerConfiguration, connection);
+				initialize(postgresqlConfiguration, connection);
 			}
 		}
 

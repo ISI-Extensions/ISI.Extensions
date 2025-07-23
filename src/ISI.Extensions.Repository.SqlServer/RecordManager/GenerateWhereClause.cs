@@ -77,86 +77,9 @@ namespace ISI.Extensions.Repository.SqlServer
 				}
 			}
 
-			var @operator = filters.WhereClauseOperator == WhereClauseOperator.And ? " and\n" : " or\n";
+			var @operator = filters.WhereClauseOperator == WhereClauseOperator.And ? " AND\n" : " OR\n";
 
 			return string.Format("{0}({1})\n", indent, string.Join(@operator, sqlFilters).Trim());
-		}
-
-		public class JoinTableValues : IEnumerable<RecordWhereColumnCollection<TRecord>>, ISI.Extensions.Columns.IGetColumns<RecordWhereColumnCollection<TRecord>>
-		{
-			public class Column : ISI.Extensions.Columns.IColumn<RecordWhereColumnCollection<TRecord>>
-			{
-				public Type PropertyType { get; }
-				public string ColumnName { get; }
-				public string[] ColumnNames { get; }
-				public Func<RecordWhereColumnCollection<TRecord>, object> GetValue { get; }
-				public Func<RecordWhereColumnCollection<TRecord>, bool> IsNull { get; }
-				public Func<RecordWhereColumnCollection<TRecord>, string> FormattedValue { get; }
-
-				public Column(RecordWhereColumn<TRecord> recordWhereColumn)
-				{
-					PropertyType = recordWhereColumn.RecordPropertyDescription.ValueType;
-					ColumnName = recordWhereColumn.RecordPropertyDescription.ColumnName;
-					ColumnNames = [ColumnName];
-
-					GetValue = record => ((record.FirstOrDefault(column => string.Equals((column as RecordWhereColumn<TRecord>)?.RecordPropertyDescription?.ColumnName ?? string.Empty, ColumnName, StringComparison.CurrentCulture)) as RecordWhereColumn<TRecord>)?.Values).NullCheckedFirstOrDefault();
-
-					var isNullable = (PropertyType.IsGenericType && (PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>)));
-
-					IsNull = record =>
-					{
-						if (isNullable)
-						{
-							return (GetValue(record) == null);
-						}
-
-						return false;
-					};
-
-					FormattedValue = record => ($"{GetValue(record)}");
-				}
-
-				Func<object, bool> ISI.Extensions.Columns.IColumn.IsNull => record => IsNull(record as RecordWhereColumnCollection<TRecord>);
-
-				object ISI.Extensions.Columns.IColumn.GetValue(object record) => GetValue(record as RecordWhereColumnCollection<TRecord>);
-
-				object ISI.Extensions.Columns.IColumn<RecordWhereColumnCollection<TRecord>>.GetValue(RecordWhereColumnCollection<TRecord> record) => GetValue(record);
-
-				void ISI.Extensions.Columns.IColumn<RecordWhereColumnCollection<TRecord>>.SetValue(RecordWhereColumnCollection<TRecord> record, object value)
-				{
-				}
-
-				object ISI.Extensions.Columns.IColumn<RecordWhereColumnCollection<TRecord>>.TransformValue(object value) => value;
-
-				string ISI.Extensions.Columns.IColumn<RecordWhereColumnCollection<TRecord>>.FormattedValue(RecordWhereColumnCollection<TRecord> record) => FormattedValue(record);
-			}
-
-			private readonly RecordWhereColumnCollection<TRecord>[] _recordWhereColumnFilters;
-
-			public JoinTableValues()
-			{
-
-			}
-
-			public JoinTableValues(RecordWhereColumnCollection<TRecord> recordWhereColumnFilters)
-			{
-				_recordWhereColumnFilters = recordWhereColumnFilters.ToNullCheckedArray(recordWhereColumnFilter => recordWhereColumnFilter as RecordWhereColumnCollection<TRecord>);
-			}
-
-			public ISI.Extensions.Columns.IColumnCollection<RecordWhereColumnCollection<TRecord>> GetColumns()
-			{
-				return new ISI.Extensions.Columns.ColumnCollection<RecordWhereColumnCollection<TRecord>>((_recordWhereColumnFilters.First() as RecordWhereColumnCollection<TRecord>).Select(recordWhereColumnFilter => new Column(recordWhereColumnFilter as RecordWhereColumn<TRecord>)));
-			}
-
-			public IEnumerator<RecordWhereColumnCollection<TRecord>> GetEnumerator()
-			{
-				return _recordWhereColumnFilters.ToList().GetEnumerator();
-			}
-
-			System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-			{
-				return _recordWhereColumnFilters.ToList().GetEnumerator();
-			}
 		}
 
 		protected virtual void GenerateJoinTableFilter(IWhereClause whereClause, RecordWhereColumnCollection<TRecord> filter, ref int filterIndex, List<string> sqlFilters, string indent, string filterValueNamePrefix)

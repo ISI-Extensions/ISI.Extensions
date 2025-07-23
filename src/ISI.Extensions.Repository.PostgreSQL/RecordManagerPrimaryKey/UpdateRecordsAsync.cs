@@ -42,7 +42,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 			{
 				var updateWhereClause = GeneratePrimaryKeyWhereClause(primaryKeyValues);
 
-				var sqlConnectionUpdateWhereClause = updateWhereClause as ISqlConnectionWhereClause;
+				var sqlConnectionUpdateWhereClause = updateWhereClause as INpgsqlConnectionWhereClause;
 
 				sqlConnectionUpdateWhereClause?.Initialize(PostgreSQLConfiguration, updateConnection);
 
@@ -91,7 +91,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 					var archiveWhereClause = GeneratePrimaryKeyWhereClause(primaryKeyValues);
 
-					var sqlConnectionArchiveWhereClause = archiveWhereClause as ISqlConnectionWhereClause;
+					var sqlConnectionArchiveWhereClause = archiveWhereClause as INpgsqlConnectionWhereClause;
 
 					sqlConnectionArchiveWhereClause?.Initialize(PostgreSQLConfiguration, archiveConnection);
 

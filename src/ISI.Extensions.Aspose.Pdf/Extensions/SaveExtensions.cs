@@ -27,7 +27,7 @@ namespace ISI.Extensions.Aspose.Extensions
 		{
 			if (documentStream != null)
 			{
-				var format = fileFormat.ToSaveFormat();
+				var format = fileFormat.ToPdfSaveFormat();
 
 				if (format == global::Aspose.Pdf.SaveFormat.Pdf)
 				{
@@ -72,7 +72,7 @@ namespace ISI.Extensions.Aspose.Extensions
 				}
 				else
 				{
-					document.Save(documentStream, fileFormat.ToSaveFormat());
+					document.Save(documentStream, fileFormat.ToPdfSaveFormat());
 				}
 			}
 		}

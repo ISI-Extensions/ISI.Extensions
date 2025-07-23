@@ -46,7 +46,7 @@ namespace ISI.Extensions.Aspose.Extensions
 				}
 				else
 				{
-					document.Save(documentStream, documentFormat.ToSaveFormat());				
+					document.Save(documentStream, documentFormat.ToWordsSaveFormat());				
 				}
 			}
 		}

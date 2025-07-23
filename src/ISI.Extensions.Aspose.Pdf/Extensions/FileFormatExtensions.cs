@@ -22,7 +22,7 @@ namespace ISI.Extensions.Aspose.Extensions
 {
 	public static partial class FileFormatExtensions
 	{
-		public static global::Aspose.Pdf.SaveFormat ToSaveFormat(this ISI.Extensions.Documents.FileFormat fileFormat)
+		public static global::Aspose.Pdf.SaveFormat ToPdfSaveFormat(this ISI.Extensions.Documents.FileFormat fileFormat)
 		{
 			switch (fileFormat)
 			{

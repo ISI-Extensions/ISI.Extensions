@@ -45,7 +45,7 @@ namespace ISI.Extensions.Aspose.InternalTryNotToUseExtensions
 			}
 		}
 
-		public static global::Aspose.Words.SaveFormat ToSaveFormat(this ISI.Extensions.Documents.FileFormat fileFormat)
+		public static global::Aspose.Words.SaveFormat ToWordsSaveFormat(this ISI.Extensions.Documents.FileFormat fileFormat)
 		{
 			switch (fileFormat)
 			{

@@ -34,10 +34,9 @@ namespace ISI.Extensions
 			{
 				foreach (var customAttribute in customAttributes)
 				{
-					if (customAttribute is System.Reflection.AssemblyInformationalVersionAttribute)
+					if (customAttribute is System.Reflection.AssemblyInformationalVersionAttribute assemblyInformationalVersionAttribute)
 					{
-						var attribute = (System.Reflection.AssemblyInformationalVersionAttribute)customAttribute;
-						result = attribute.InformationalVersion;
+						result = assemblyInformationalVersionAttribute.InformationalVersion;
 					}
 				}
 			}
@@ -48,10 +47,9 @@ namespace ISI.Extensions
 			{
 				foreach (var customAttribute in customAttributes)
 				{
-					if (customAttribute is System.Reflection.AssemblyFileVersionAttribute)
+					if (customAttribute is System.Reflection.AssemblyFileVersionAttribute assemblyFileVersionAttribute)
 					{
-						var attribute = (System.Reflection.AssemblyFileVersionAttribute)customAttribute;
-						result = attribute.Version;
+						result = assemblyFileVersionAttribute.Version;
 					}
 				}
 			}
@@ -62,10 +60,9 @@ namespace ISI.Extensions
 			{
 				foreach (var customAttribute in customAttributes)
 				{
-					if (customAttribute is System.Reflection.AssemblyVersionAttribute)
+					if (customAttribute is System.Reflection.AssemblyVersionAttribute assemblyVersionAttribute)
 					{
-						var attribute = (System.Reflection.AssemblyVersionAttribute)customAttribute;
-						result = attribute.Version;
+						result = assemblyVersionAttribute.Version;
 					}
 				}
 			}

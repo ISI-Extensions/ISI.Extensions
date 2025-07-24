@@ -279,7 +279,7 @@ namespace ISI.Extensions.Parsers
 						else
 						{
 							endOfLine = true;
-							while (!delimitedTextParserContext.EndOfStream && (delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset] == '\r') || (delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset] == '\n'))
+							while (!delimitedTextParserContext.EndOfStream && ((delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset] == '\r') || (delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset] == '\n')))
 							{
 								addToSourceValue(delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset]);
 								delimitedTextParserContext.IncrementBufferOffset(stream);

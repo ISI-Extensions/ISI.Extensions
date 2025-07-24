@@ -186,11 +186,11 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 						connection.EnsureConnectionIsOpenAsync().Wait();
 
-						var createTempTableSql = string.Format(@"
-CREATE TEMP TABLE {0}
+						var createTempTableSql = @$"
+CREATE TEMP TABLE {filterValueTempTableName}
 (
-	{1}
-)", filterValueTempTableName, filter.RecordPropertyDescription.GetColumnDefinition(FormatColumnName));
+	{filter.RecordPropertyDescription.GetColumnDefinition(FormatColumnName)}
+)";
 
 						using (var command = new Npgsql.NpgsqlCommand(createTempTableSql, connection))
 						{

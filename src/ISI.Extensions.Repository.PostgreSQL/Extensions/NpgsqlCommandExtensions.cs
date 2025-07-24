@@ -25,7 +25,7 @@ using ISI.Extensions.PostgreSQL.Extensions;
 
 namespace ISI.Extensions.Repository.PostgreSQL.Extensions
 {
-	public static partial class SqlCommandExtensions
+	public static partial class NpgsqlCommandExtensions
 	{
 		public static void AddParameters(this Npgsql.NpgsqlCommand command, IWhereClause whereClause)
 		{

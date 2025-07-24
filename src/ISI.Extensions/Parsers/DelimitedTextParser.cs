@@ -28,6 +28,7 @@ namespace ISI.Extensions.Parsers
 		{
 			public int BufferSize { get; private set; }
 			public char[] Buffer { get; }
+			public int BufferReadCount { get; private set; }
 			public int BufferOffset { get; set; }
 
 			public bool Primed { get; private set; } = false;
@@ -47,11 +48,11 @@ namespace ISI.Extensions.Parsers
 				if (stream.EndOfStream)
 				{
 					EndOfStream = true;
-					BufferSize = 1;
+					BufferReadCount = 1;
 				}
 				else
 				{
-					BufferSize = stream.ReadBlock(Buffer, 0, BufferSize);
+					BufferReadCount = stream.ReadBlock(Buffer, 0, BufferSize);
 				}
 
 				BufferOffset = 0;
@@ -62,7 +63,7 @@ namespace ISI.Extensions.Parsers
 			public void IncrementBufferOffset(System.IO.StreamReader stream)
 			{
 				BufferOffset++;
-				if (BufferOffset >= BufferSize)
+				if (BufferOffset >= BufferReadCount)
 				{
 					ReadBlock(stream);
 				}
@@ -278,7 +279,7 @@ namespace ISI.Extensions.Parsers
 						else
 						{
 							endOfLine = true;
-							while ((delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset] == '\r') || (delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset] == '\n'))
+							while (!delimitedTextParserContext.EndOfStream && (delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset] == '\r') || (delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset] == '\n'))
 							{
 								addToSourceValue(delimitedTextParserContext.Buffer[delimitedTextParserContext.BufferOffset]);
 								delimitedTextParserContext.IncrementBufferOffset(stream);

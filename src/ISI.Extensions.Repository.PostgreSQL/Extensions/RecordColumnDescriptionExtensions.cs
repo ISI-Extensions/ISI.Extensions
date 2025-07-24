@@ -34,7 +34,7 @@ namespace ISI.Extensions.Repository.PostgreSQL.Extensions
 			{
 				case System.Data.DbType.Boolean:
 					{
-						return string.Format("  {0} INT {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
+						return string.Format("  {0} int {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
 					}
 
 				case System.Data.DbType.DateTime2:

@@ -48,7 +48,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 				if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(password))
 				{
 					sql.Clear();
-					sql.AppendFormat("SELECT COUNT(1) FROM pg_roles WHERE rolname = '{0}'\n", userName.PostgreSQLFormatName());
+					sql.AppendFormat("SELECT COUNT(1) FROM pg_roles WHERE rolname = '{0}'\n", userName);
 					var userExists = connection.ExecuteScalarAsync<int>(sql.ToString()).GetAwaiter().GetResult() != 0;
 
 					if (userExists)

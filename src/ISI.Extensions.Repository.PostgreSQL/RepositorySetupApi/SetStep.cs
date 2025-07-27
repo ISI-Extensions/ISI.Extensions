@@ -26,6 +26,7 @@ using ISI.Extensions.Repository.PostgreSQL.Extensions;
 using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
 using SqlServerDTOs = ISI.Extensions.Repository.PostgreSQL.DataTransferObjects.RepositorySetupApi;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Repository.PostgreSQL
 {
@@ -41,6 +42,8 @@ namespace ISI.Extensions.Repository.PostgreSQL
 			{
 				if (!success)
 				{
+					//Logger.LogInformation($"SetStep using ConnectionString => {connectionString}");
+
 					if (ISI.Extensions.PostgreSQL.NpgsqlConnection.TryGetNpgsqlConnection(connectionString, false, out var connection))
 					{
 						connection.Open();

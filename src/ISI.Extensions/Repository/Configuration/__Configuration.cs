@@ -17,40 +17,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ISI.Extensions.Extensions;
-using ISI.Extensions.TypeLocator.Extensions;
+using System.Threading.Tasks;
 
-namespace ISI.Extensions.Aspose.Barcodes
+namespace ISI.Extensions.Repository
 {
-	[ISI.Extensions.LicenseManager.LicenseApplier]
-	public class LicenseApplier : ISI.Extensions.LicenseManager.ILicenseApplier
+	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
+	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
 	{
-		private static bool _IsLicensed = false;
+		public const string ConfigurationSectionName = "ISI.Extensions.Repository";
 
-		public void ApplyLicense()
-		{
-			if (!_IsLicensed)
-			{
-				var localContainer = ISI.Extensions.TypeLocator.Container.LocalContainer;
-
-				var licenseManagers = localContainer.GetImplementations<ISI.Extensions.Aspose.ICellsLicense>().Cast<ISI.Extensions.LicenseManager.ILicenseStream>();
-
-				if (!licenseManagers.Any())
-				{
-					licenseManagers = localContainer.GetImplementations<ISI.Extensions.Aspose.ITotalLicense>().Cast<ISI.Extensions.LicenseManager.ILicenseStream>();
-				}
-
-				if (licenseManagers.Any())
-				{
-					var licenseManager = licenseManagers.First();
-
-					(new global::Aspose.BarCode.License()).SetLicense(licenseManager.GetLicenseStream());
-
-					_IsLicensed = true;
-				}
-			}
-		}
-
-		public bool IsLicensed => _IsLicensed;
+		[ISI.Extensions.EnvironmentConfigurationVariableName("CONNECTION_STRING_MASTER")]
+		public string MasterConnectionString { get; set; } = "Master";
 	}
 }

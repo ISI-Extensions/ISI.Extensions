@@ -14,7 +14,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.7" />
-		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.7" />
 		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.13.0" />
 		<PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.13.0" />

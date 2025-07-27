@@ -54,6 +54,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 				if (!string.IsNullOrWhiteSpace(userName))
 				{
 					TryAddUserToDatabase(connection, userName);
+					TryAddUserToSchema(connection, userName, "public");
 				}
 
 				if (!string.IsNullOrWhiteSpace(userRole))
@@ -63,6 +64,8 @@ namespace ISI.Extensions.Repository.PostgreSQL
 					{
 						TryAddUserToUserRole(connection, userRole, userName);
 					}
+
+					TryAddUserRoleToSchema(connection, userRole, "public");
 				}
 
 				if (!string.IsNullOrWhiteSpace(schema))

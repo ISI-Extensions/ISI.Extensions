@@ -20,6 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using System.Diagnostics;
+using ISI.Extensions.ConfigurationHelper.Extensions;
 using ISI.Extensions.Repository.Extensions;
 using ISI.Extensions.Repository.SqlServer.Extensions;
 using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
@@ -32,11 +33,21 @@ namespace ISI.Extensions.Repository.SqlServer
 	{
 		private string GetMasterConnectionString()
 		{
-			var connectionString = Configuration.GetConnectionString("master");
+			var connectionString = (Configuration as IConfigurationRoot)?.GetConfiguration<ISI.Extensions.Repository.Configuration>()?.MasterConnectionString;
 
 			if (string.IsNullOrWhiteSpace(connectionString))
 			{
-				return "master";
+				connectionString = Configuration.GetConnectionString("master");
+			}
+
+			if (string.IsNullOrWhiteSpace(connectionString))
+			{
+				connectionString = "master";
+			}
+
+			if (connectionString.Split(';', StringSplitOptions.RemoveEmptyEntries).Length > 1)
+			{
+				return connectionString;
 			}
 
 			var masterConnectionStringBuilder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(connectionString);

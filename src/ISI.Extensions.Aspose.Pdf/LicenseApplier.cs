@@ -29,7 +29,7 @@ namespace ISI.Wrappers.Aspose
 		{
 			private static bool _IsLicensed = false;
 
-			static LicenseApplier()
+			public void ApplyLicense()
 			{
 				if (!_IsLicensed)
 				{
@@ -42,24 +42,14 @@ namespace ISI.Wrappers.Aspose
 						licenseManagers = localContainer.GetImplementations<ISI.Extensions.Aspose.ITotalLicense>().Cast<ISI.Extensions.LicenseManager.ILicenseStream>();
 					}
 
-					if (!licenseManagers.Any())
+					if (licenseManagers.Any())
 					{
-						throw new("Aspose License not found");
+						var licenseManager = licenseManagers.First();
+
+						(new global::Aspose.Pdf.License()).SetLicense(licenseManager.GetLicenseStream());
+
+						_IsLicensed = true;
 					}
-
-					var licenseManager = licenseManagers.First();
-
-					(new global::Aspose.Pdf.License()).SetLicense(licenseManager.GetLicenseStream());
-
-					_IsLicensed = true;
-				}
-			}
-
-			public void ApplyLicense()
-			{
-				if (!_IsLicensed)
-				{
-					throw new("Did not get licensed");
 				}
 			}
 

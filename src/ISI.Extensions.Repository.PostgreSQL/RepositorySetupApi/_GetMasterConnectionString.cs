@@ -47,7 +47,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 				connectionString = "master";
 			}
 
-			if (connectionString.Split(';', StringSplitOptions.RemoveEmptyEntries).Length > 1)
+			if (connectionString.Split(';', StringSplitOptions.RemoveEmptyEntries).Length <= 1)
 			{
 				return connectionString;
 			}
@@ -100,7 +100,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 				connectionString = "master";
 			}
 
-			if (connectionString.Split(';', StringSplitOptions.RemoveEmptyEntries).Length > 1)
+			if (connectionString.Split(';', StringSplitOptions.RemoveEmptyEntries).Length <= 1)
 			{
 				return connectionString;
 			}

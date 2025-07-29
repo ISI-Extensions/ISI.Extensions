@@ -12,53 +12,58 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Aspose.Extensions;
 using ISI.Extensions.Extensions;
-using System.Diagnostics;
-using ISI.Extensions.ConfigurationHelper.Extensions;
-using ISI.Extensions.Repository.Extensions;
-using ISI.Extensions.Repository.SqlServer.Extensions;
-using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
-using SqlServerDTOs = ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi;
-using Microsoft.Extensions.Configuration;
+using Rotation = Aspose.Pdf.Rotation;
+using SaveFormat = Aspose.Pdf.SaveFormat;
 
-namespace ISI.Extensions.Repository.SqlServer
+namespace ISI.Extensions.Aspose
 {
-	public partial class RepositorySetupApi
+	public partial class Pdf
 	{
-		private string GetMasterConnectionString()
+		public partial class PdfDocumentHelper
 		{
-			var connectionString = (Configuration as IConfigurationRoot)?.GetConfiguration<ISI.Extensions.Repository.Configuration>()?.MasterConnectionString;
-
-			if (string.IsNullOrWhiteSpace(connectionString))
+			public ISI.Extensions.Documents.IDocument RotateDocument(ISI.Extensions.Documents.IDocument document, ISI.Extensions.Documents.Pdf.Rotate rotate, string fileName)
 			{
-				connectionString = Configuration.GetConnectionString("master");
+				return RotateDocument(document, rotate, fileName, (Func<System.IO.Stream>)null);
 			}
 
-			if (string.IsNullOrWhiteSpace(connectionString))
+			public ISI.Extensions.Documents.IDocument RotateDocument(ISI.Extensions.Documents.IDocument document, ISI.Extensions.Documents.Pdf.Rotate rotate, string fileName, System.IO.Stream outputStream)
 			{
-				connectionString = "master";
+				return RotateDocument(document, rotate, fileName, () => outputStream ??= new ISI.Extensions.Stream.TempFileStream());
 			}
 
-			if (connectionString.Split(';', StringSplitOptions.RemoveEmptyEntries).Length <= 1)
+			public ISI.Extensions.Documents.IDocument RotateDocument(ISI.Extensions.Documents.IDocument document, ISI.Extensions.Documents.Pdf.Rotate rotate, string fileName, Func<System.IO.Stream> getOutputStream)
 			{
-				return connectionString;
-			}
+				var rotation = rotate.ToRotation();
 
-			var masterConnectionStringBuilder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(connectionString);
-			var connectionStringBuilder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(ConnectionString);
+				var outputStream = getOutputStream?.Invoke() ?? new ISI.Extensions.Stream.TempFileStream();
 
-			if (!string.Equals(masterConnectionStringBuilder.DataSource, connectionStringBuilder.DataSource, StringComparison.InvariantCultureIgnoreCase))
-			{
-				masterConnectionStringBuilder.DataSource = connectionStringBuilder.DataSource;
+				using (var pdfDocument = new global::Aspose.Pdf.Document(document.Stream))
+				{
+					if (rotation != Rotation.None)
+					{
+						foreach (var page in pdfDocument.Pages)
+						{
+							page.Rotate = rotation;
+						}
+					}
+
+					pdfDocument.Save(outputStream, SaveFormat.Pdf);
+				}
+
+				return new ISI.Extensions.Documents.Document()
+				{
+					FileName = fileName,
+					Stream = outputStream
+				};
 			}
-			
-			return masterConnectionStringBuilder.ConnectionString;
 		}
 	}
 }

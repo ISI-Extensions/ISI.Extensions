@@ -46,6 +46,21 @@ namespace ISI.Extensions.Documents.Pdf
 			throw new NotImplementedException();
 		}
 
+		public IDocument RotateDocument(IDocument document, Rotate rotate, string fileName)
+		{
+			throw new NotImplementedException();
+		}
+
+		public IDocument RotateDocument(IDocument document, Rotate rotate, string fileName, System.IO.Stream outputStream)
+		{
+			throw new NotImplementedException();
+		}
+
+		public IDocument RotateDocument(IDocument document, Rotate rotate, string fileName, Func<System.IO.Stream> getOutputStream)
+		{
+			throw new NotImplementedException();
+		}
+
 		void IPdfDocumentHelper.GenerateDocument(System.IO.Stream templateStream, IDataReader dataReader, IDocumentProperties documentProperties, string printerName, System.IO.Stream documentStream, FileFormat fileFormat)
 		{
 			throw new NotImplementedException();

@@ -18,47 +18,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using System.Diagnostics;
-using ISI.Extensions.ConfigurationHelper.Extensions;
-using ISI.Extensions.Repository.Extensions;
-using ISI.Extensions.Repository.SqlServer.Extensions;
-using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
-using SqlServerDTOs = ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.Repository.SqlServer
+namespace ISI.Extensions.Aspose.Extensions
 {
-	public partial class RepositorySetupApi
+	public static class RotationExtensions
 	{
-		private string GetMasterConnectionString()
+		public static global::Aspose.Pdf.Rotation ToRotation(this ISI.Extensions.Documents.Pdf.Rotate rotate)
 		{
-			var connectionString = (Configuration as IConfigurationRoot)?.GetConfiguration<ISI.Extensions.Repository.Configuration>()?.MasterConnectionString;
-
-			if (string.IsNullOrWhiteSpace(connectionString))
+			switch (rotate)
 			{
-				connectionString = Configuration.GetConnectionString("master");
-			}
+				case ISI.Extensions.Documents.Pdf.Rotate.Rotate90:
+					return global::Aspose.Pdf.Rotation.on90;
 
-			if (string.IsNullOrWhiteSpace(connectionString))
-			{
-				connectionString = "master";
-			}
+				case ISI.Extensions.Documents.Pdf.Rotate.Rotate180:
+					return global::Aspose.Pdf.Rotation.on180;
 
-			if (connectionString.Split(';', StringSplitOptions.RemoveEmptyEntries).Length <= 1)
-			{
-				return connectionString;
+				case ISI.Extensions.Documents.Pdf.Rotate.Rotate270:
+					return global::Aspose.Pdf.Rotation.on270;
+				
+				default:
+					throw new ArgumentOutOfRangeException(nameof(rotate), rotate, null);
 			}
-
-			var masterConnectionStringBuilder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(connectionString);
-			var connectionStringBuilder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(ConnectionString);
-
-			if (!string.Equals(masterConnectionStringBuilder.DataSource, connectionStringBuilder.DataSource, StringComparison.InvariantCultureIgnoreCase))
-			{
-				masterConnectionStringBuilder.DataSource = connectionStringBuilder.DataSource;
-			}
-			
-			return masterConnectionStringBuilder.ConnectionString;
 		}
 	}
 }

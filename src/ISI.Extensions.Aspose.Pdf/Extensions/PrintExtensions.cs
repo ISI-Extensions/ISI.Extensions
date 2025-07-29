@@ -54,7 +54,7 @@ namespace ISI.Extensions.Aspose.Extensions
 			{
 				var printerSettings = new global::Aspose.Pdf.Printing.PrinterSettings()
 				{
-					PrinterName = printerName
+					PrinterName = printerName,
 				};
 
 				pdfViewer.PrintDocumentWithSettings(printerSettings);

@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2025, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,47 +18,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using System.Diagnostics;
-using ISI.Extensions.ConfigurationHelper.Extensions;
-using ISI.Extensions.Repository.Extensions;
-using ISI.Extensions.Repository.SqlServer.Extensions;
-using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
-using SqlServerDTOs = ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi;
-using Microsoft.Extensions.Configuration;
 
-namespace ISI.Extensions.Repository.SqlServer
+namespace ISI.Extensions.AspNetCore
 {
-	public partial class RepositorySetupApi
+	public abstract partial class Controller
 	{
-		private string GetMasterConnectionString()
+		[Microsoft.AspNetCore.Mvc.NonAction]
+		public virtual ISI.Extensions.AspNetCore.InlineFileStreamResult InlineFile(System.IO.Stream fileStream, string contentType, string fileDownloadName)
 		{
-			var connectionString = (Configuration as IConfigurationRoot)?.GetConfiguration<ISI.Extensions.Repository.Configuration>()?.MasterConnectionString;
-
-			if (string.IsNullOrWhiteSpace(connectionString))
+			return new ISI.Extensions.AspNetCore.InlineFileStreamResult(fileStream, contentType)
 			{
-				connectionString = Configuration.GetConnectionString("master");
-			}
-
-			if (string.IsNullOrWhiteSpace(connectionString))
-			{
-				connectionString = "master";
-			}
-
-			if (connectionString.Split(';', StringSplitOptions.RemoveEmptyEntries).Length <= 1)
-			{
-				return connectionString;
-			}
-
-			var masterConnectionStringBuilder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(connectionString);
-			var connectionStringBuilder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(ConnectionString);
-
-			if (!string.Equals(masterConnectionStringBuilder.DataSource, connectionStringBuilder.DataSource, StringComparison.InvariantCultureIgnoreCase))
-			{
-				masterConnectionStringBuilder.DataSource = connectionStringBuilder.DataSource;
-			}
-			
-			return masterConnectionStringBuilder.ConnectionString;
+				FileDownloadName = fileDownloadName,
+			};
 		}
 	}
 }

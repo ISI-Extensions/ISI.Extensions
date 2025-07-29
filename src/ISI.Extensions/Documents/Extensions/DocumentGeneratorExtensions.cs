@@ -12,53 +12,43 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using System.Diagnostics;
-using ISI.Extensions.ConfigurationHelper.Extensions;
-using ISI.Extensions.Repository.Extensions;
-using ISI.Extensions.Repository.SqlServer.Extensions;
-using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
-using SqlServerDTOs = ISI.Extensions.Repository.SqlServer.DataTransferObjects.RepositorySetupApi;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.Repository.SqlServer
+namespace ISI.Extensions.Documents.Extensions
 {
-	public partial class RepositorySetupApi
+	public static class DocumentGeneratorExtensions
 	{
-		private string GetMasterConnectionString()
+		public static async Task GenerateDocumentAndPrintAsync<TModel>(this ISI.Extensions.Documents.DocumentGenerator.IDocumentGenerator documentGenerator, TModel documentModel, string printerName, ISI.Extensions.Documents.IDocumentProperties documentProperties = null, ISI.Extensions.Documents.Pdf.Rotate rotate = ISI.Extensions.Documents.Pdf.Rotate.None, System.Threading.CancellationToken cancellationToken = default)
+			where TModel : class, ISI.Extensions.Documents.DocumentGenerator.IModel
 		{
-			var connectionString = (Configuration as IConfigurationRoot)?.GetConfiguration<ISI.Extensions.Repository.Configuration>()?.MasterConnectionString;
-
-			if (string.IsNullOrWhiteSpace(connectionString))
+			using (var documentStream = new ISI.Extensions.Stream.TempFileStream())
 			{
-				connectionString = Configuration.GetConnectionString("master");
-			}
+				await documentGenerator.GenerateDocumentAsync(documentModel, documentProperties, null, documentStream, ISI.Extensions.Documents.FileFormat.Pdf, cancellationToken: cancellationToken).ContinueWith(task =>
+				{
+					documentStream.Rewind();
 
-			if (string.IsNullOrWhiteSpace(connectionString))
-			{
-				connectionString = "master";
-			}
+					var pdfDocumentHelper = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Documents.Pdf.IPdfDocumentHelper>();
 
-			if (connectionString.Split(';', StringSplitOptions.RemoveEmptyEntries).Length <= 1)
-			{
-				return connectionString;
-			}
+					using (var rotatedDocumentStream = new ISI.Extensions.Stream.TempFileStream())
+					{
+						var document = pdfDocumentHelper.RotateDocument(new ISI.Extensions.Documents.Document()
+						{
+							Stream = documentStream,
+						}, rotate, null, rotatedDocumentStream);
 
-			var masterConnectionStringBuilder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(connectionString);
-			var connectionStringBuilder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(ConnectionString);
+						document.Stream.Rewind();
 
-			if (!string.Equals(masterConnectionStringBuilder.DataSource, connectionStringBuilder.DataSource, StringComparison.InvariantCultureIgnoreCase))
-			{
-				masterConnectionStringBuilder.DataSource = connectionStringBuilder.DataSource;
+						pdfDocumentHelper.Print(document, printerName);
+					}
+				}, cancellationToken);
 			}
-			
-			return masterConnectionStringBuilder.ConnectionString;
 		}
 	}
 }

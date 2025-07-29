@@ -47,7 +47,7 @@ namespace ISI.Extensions.Repository.Oracle
 				connectionString = "master";
 			}
 
-			if (connectionString.Split(';', StringSplitOptions.RemoveEmptyEntries).Length > 1)
+			if (connectionString.Split(';', StringSplitOptions.RemoveEmptyEntries).Length <= 1)
 			{
 				return connectionString;
 			}
@@ -89,11 +89,21 @@ namespace ISI.Extensions.Repository.Oracle
 
 		private string GetMasterConnectionString()
 		{
-			var connectionString = Configuration.GetConnectionString("master");
+			var connectionString = (Configuration as IConfigurationRoot)?.GetConfiguration<ISI.Extensions.Repository.Configuration>()?.MasterConnectionString;
 
 			if (string.IsNullOrWhiteSpace(connectionString))
 			{
-				return "master";
+				connectionString = Configuration.GetConnectionString("master");
+			}
+
+			if (string.IsNullOrWhiteSpace(connectionString))
+			{
+				connectionString = "master";
+			}
+
+			if (connectionString.Split(';', StringSplitOptions.RemoveEmptyEntries).Length <= 1)
+			{
+				return connectionString;
 			}
 
 			try

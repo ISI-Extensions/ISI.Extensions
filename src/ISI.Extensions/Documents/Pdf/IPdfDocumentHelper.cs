@@ -31,5 +31,8 @@ namespace ISI.Extensions.Documents.Pdf
 		void GenerateDocument(System.IO.Stream templateStream, System.Data.IDataReader dataReader, ISI.Extensions.Documents.IDocumentProperties documentProperties, string printerName, System.IO.Stream documentStream, ISI.Extensions.Documents.FileFormat fileFormat);
 		void ConvertImageToPdf(System.IO.Stream imageStream, System.IO.Stream pdfStream);
 		System.IO.Stream ConvertColorSpaceToGreyScale(ISI.Extensions.Documents.IDocument document, Func<System.IO.Stream> getOutputStream = null);
+		ISI.Extensions.Documents.IDocument RotateDocument(ISI.Extensions.Documents.IDocument document, ISI.Extensions.Documents.Pdf.Rotate rotate, string fileName);
+		ISI.Extensions.Documents.IDocument RotateDocument(ISI.Extensions.Documents.IDocument document, ISI.Extensions.Documents.Pdf.Rotate rotate, string fileName, System.IO.Stream outputStream);
+		ISI.Extensions.Documents.IDocument RotateDocument(ISI.Extensions.Documents.IDocument document, ISI.Extensions.Documents.Pdf.Rotate rotate, string fileName, Func<System.IO.Stream> getOutputStream);
 	}
 }

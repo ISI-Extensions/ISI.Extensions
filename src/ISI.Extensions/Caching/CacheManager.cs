@@ -25,14 +25,14 @@ namespace ISI.Extensions.Caching
 	{
 		protected Microsoft.Extensions.Caching.Memory.IMemoryCache MemoryCache { get; }
 
-		private object _innerMemoryCache = null;
-		private object InnerMemoryCache => _innerMemoryCache ??= MemoryCache.GetType().GetProperty("EntriesCollection", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.GetProperty | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public)?.GetValue(MemoryCache);
+		//private object _innerMemoryCache = null;
+		//private object InnerMemoryCache => _innerMemoryCache ??= MemoryCache.GetType().GetProperty("EntriesCollection", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.GetProperty | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public)?.GetValue(MemoryCache);
 
-		private System.Reflection.MethodInfo _innerMemoryCacheClearMethodInfo = null;
-		private System.Reflection.MethodInfo InnerMemoryCacheClearMethodInfo => _innerMemoryCacheClearMethodInfo ??= InnerMemoryCache.GetType().GetMethod("Clear", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+		//private System.Reflection.MethodInfo _innerMemoryCacheClearMethodInfo = null;
+		//private System.Reflection.MethodInfo InnerMemoryCacheClearMethodInfo => _innerMemoryCacheClearMethodInfo ??= InnerMemoryCache.GetType().GetMethod("Clear", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
 
-		private System.Reflection.MethodInfo _innerMemoryCacheKeysMethodInfo = null;
-		private System.Reflection.MethodInfo InnerMemoryCacheKeysMethodInfo => _innerMemoryCacheKeysMethodInfo ??= InnerMemoryCache.GetType().GetMethod("Keys", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+		//private System.Reflection.MethodInfo _innerMemoryCacheKeysMethodInfo = null;
+		//private System.Reflection.MethodInfo InnerMemoryCacheKeysMethodInfo => _innerMemoryCacheKeysMethodInfo ??= InnerMemoryCache.GetType().GetMethod("Keys", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
 
 		public CacheManager(
 			ISI.Extensions.Caching.Configuration configuration,
@@ -65,18 +65,24 @@ namespace ISI.Extensions.Caching
 		{
 			InvokeOnClearCache(null);
 
-			InnerMemoryCacheClearMethodInfo?.Invoke(InnerMemoryCache, null);
+			if (MemoryCache is Microsoft.Extensions.Caching.Memory.MemoryCache memoryCache)
+			{
+				memoryCache.Clear();
+			}
 		}
 
 		public override void RemoveByCacheKeyPrefix(string cacheKeyPrefix)
 		{
-			var cacheKeys = InnerMemoryCacheKeysMethodInfo?.Invoke(InnerMemoryCache, null) as ICollection<object>;
-
-			foreach (var cacheKey in cacheKeys.NullCheckedSelect(key => GetRawCacheKey(string.Format("{0}", key))))
+			if (MemoryCache is Microsoft.Extensions.Caching.Memory.MemoryCache memoryCache)
 			{
-				if (cacheKey.StartsWith(cacheKeyPrefix))
+				var cacheKeys = memoryCache.Keys;
+
+				foreach (var cacheKey in cacheKeys.NullCheckedSelect(key => GetRawCacheKey(string.Format("{0}", key))))
 				{
-					Remove(cacheKey);
+					if (cacheKey.StartsWith(cacheKeyPrefix))
+					{
+						Remove(cacheKey);
+					}
 				}
 			}
 		}

@@ -15,6 +15,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -60,6 +61,11 @@ namespace ISI.Extensions.Documents.Doc
 		}
 
 		public void GenerateDocument(System.IO.Stream templateStream, ISI.Extensions.Documents.IDocumentDataSource documentDataSource, ISI.Extensions.Documents.IDocumentProperties documentProperties, Action<ISI.Extensions.Documents.IDocumentEditor> afterGeneration, string printerName, System.IO.Stream documentStream, FileFormat fileFormat)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Print(IDocument document, PageSettings pageSettings, PrinterSettings printerSettings)
 		{
 			throw new NotImplementedException();
 		}

@@ -40,5 +40,19 @@ namespace ISI.Extensions.Aspose.Extensions
 				//Words.XpsPrintHelper.Print(document, printerName);
 			}
 		}
+
+		public static void Print(global::Aspose.Words.Document document, System.Drawing.Printing.PageSettings pageSettings, System.Drawing.Printing.PrinterSettings printerSettings)
+		{
+			using (var stream = new ISI.Extensions.Stream.TempFileStream())
+			{
+				document.Save(stream, global::Aspose.Words.SaveFormat.Pdf);
+
+				stream.Rewind();
+
+				var pdfDocument = new global::Aspose.Pdf.Document(stream);
+
+				ISI.Extensions.Aspose.Extensions.PrintExtensions.Print(pdfDocument, pageSettings, printerSettings);
+			}
+		}
 	}
 }

@@ -27,9 +27,16 @@ namespace ISI.Extensions.Aspose
 		{
 			public void Print(ISI.Extensions.Documents.IDocument document, string printerName)
 			{
-				var docDocument = new global::Aspose.Pdf.Document(document.Stream);
+				var pdfDocument = new global::Aspose.Pdf.Document(document.Stream);
 
-				ISI.Extensions.Aspose.Extensions.PrintExtensions.Print(docDocument, printerName);
+				ISI.Extensions.Aspose.Extensions.PrintExtensions.Print(pdfDocument, printerName);
+			}
+
+			public void Print(ISI.Extensions.Documents.IDocument document, System.Drawing.Printing.PageSettings pageSettings, System.Drawing.Printing.PrinterSettings printerSettings)
+			{
+				var pdfDocument = new global::Aspose.Pdf.Document(document.Stream);
+
+				ISI.Extensions.Aspose.Extensions.PrintExtensions.Print(pdfDocument, pageSettings, printerSettings);
 			}
 		}
 	}

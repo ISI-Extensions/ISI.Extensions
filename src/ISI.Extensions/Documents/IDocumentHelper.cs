@@ -25,5 +25,6 @@ namespace ISI.Extensions.Documents
 	{
 		bool IsHelperFor(ISI.Extensions.Documents.IDocument document);
 		void Print(ISI.Extensions.Documents.IDocument document, string printerName);
+		void Print(ISI.Extensions.Documents.IDocument document, System.Drawing.Printing.PageSettings pageSettings, System.Drawing.Printing.PrinterSettings printerSettings);
 	}
 }

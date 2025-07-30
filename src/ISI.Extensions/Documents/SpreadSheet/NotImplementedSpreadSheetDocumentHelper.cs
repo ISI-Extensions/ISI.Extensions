@@ -16,6 +16,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -32,6 +33,11 @@ namespace ISI.Extensions.Documents.SpreadSheet
 		}
 
 		public void Print(IDocument document, string printerName)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Print(IDocument document, PageSettings pageSettings, PrinterSettings printerSettings)
 		{
 			throw new NotImplementedException();
 		}

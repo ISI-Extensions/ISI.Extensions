@@ -31,6 +31,13 @@ namespace ISI.Extensions.Aspose
 
 				ISI.Extensions.Aspose.Extensions.WordsExtensions.Print(docDocument, printerName);
 			}
+			
+			public void Print(ISI.Extensions.Documents.IDocument document, System.Drawing.Printing.PageSettings pageSettings, System.Drawing.Printing.PrinterSettings printerSettings)
+			{
+				var docDocument = new global::Aspose.Words.Document(document.Stream);
+
+				ISI.Extensions.Aspose.Extensions.WordsExtensions.Print(docDocument, pageSettings, printerSettings);
+			}
 		}
 	}
 }

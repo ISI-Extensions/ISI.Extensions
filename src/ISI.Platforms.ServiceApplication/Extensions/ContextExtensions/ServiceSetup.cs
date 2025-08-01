@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,7 +64,7 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 			}
 		}
 
-		
+
 		public static void SetDisplayName(this ServiceApplicationContext context, Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot)
 		{
 			context.SetDisplayName(configurationRoot.GetConfiguration<ISI.Platforms.ServiceApplication.Configuration>());
@@ -102,20 +102,22 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 
 
 
-		public static bool ServiceSetup(this ServiceApplicationContext context)
+		public static bool ServiceSetup(this ServiceApplicationContext context,
+			Action beforeInstallService = null, Action afterInstallService = null,
+			Action beforeUninstallService = null, Action afterUninstallService = null)
 		{
 			var args = new ISI.Extensions.InvariantCultureIgnoreCaseStringHashSet(context.Args);
 
 			if (args.Contains(InstallService))
 			{
-				ServiceSetup_InstallService(context);
+				ServiceSetup_InstallService(context, beforeInstallService, afterInstallService);
 
 				return true;
 			}
 
 			if (args.Contains(UninstallService))
 			{
-				ServiceSetup_UninstallService(context);
+				ServiceSetup_UninstallService(context, beforeUninstallService, afterUninstallService);
 
 				return true;
 			}
@@ -139,9 +141,11 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 
 		private static IServiceConfigurator GetServiceConfigurator() => ((Environment.OSVersion.Platform == PlatformID.Unix) ? new LinuxServiceConfigurator() : new WindowsServiceConfigurator());
 
-		private static void ServiceSetup_InstallService(ServiceApplicationContext context)
+		private static void ServiceSetup_InstallService(ServiceApplicationContext context, Action beforeInstallService, Action afterInstallService)
 		{
 			var serviceConfigurator = GetServiceConfigurator();
+
+			beforeInstallService?.Invoke();
 
 			var executable = context.RootAssembly.Location;
 			if (executable.EndsWith(".dll", StringComparison.InvariantCultureIgnoreCase))
@@ -163,16 +167,22 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 				WindowsStartMode = context.WindowsServiceStartMode,
 				DelayStart = context.ServiceDelayStart,
 			});
+
+			afterInstallService?.Invoke();
 		}
 
-		private static void ServiceSetup_UninstallService(ServiceApplicationContext context)
+		private static void ServiceSetup_UninstallService(ServiceApplicationContext context, Action beforeUninstallService, Action afterUninstallService)
 		{
 			var serviceConfigurator = GetServiceConfigurator();
+
+			beforeUninstallService?.Invoke();
 
 			serviceConfigurator.UnInstallService(new()
 			{
 				ServiceName = context.ServiceName,
 			});
+
+			afterUninstallService.Invoke();
 		}
 
 		private static void ServiceSetup_StartService(ServiceApplicationContext context)

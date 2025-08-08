@@ -72,7 +72,7 @@ namespace ISI.Extensions
 				}
 			}
 
-			private List<System.IO.Stream> _streams;
+			private readonly List<System.IO.Stream> _streams;
 
 			public int StreamIndex { get; private set; }
 

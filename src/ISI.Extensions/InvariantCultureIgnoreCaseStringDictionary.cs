@@ -77,8 +77,8 @@ namespace ISI.Extensions
 			set => _dictionary[key] = value;
 		}
 
-		public ICollection<string> Keys { get; }
-		public ICollection<TValue> Values { get; }
+		public ICollection<string> Keys => _dictionary.Keys;
+		public ICollection<TValue> Values => _dictionary.Values;
 
 		public IEnumerator<KeyValuePair<string, TValue>> GetEnumerator() => _dictionary.GetEnumerator();
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

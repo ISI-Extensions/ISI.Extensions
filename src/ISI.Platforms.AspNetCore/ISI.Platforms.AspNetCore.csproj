@@ -21,13 +21,13 @@
 		<ProjectReference Include="..\ISI.Platforms\ISI.Platforms.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="9.0.7" />
-		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.7" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.7" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.7" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.7" />
-		<PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="9.0.7" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.7" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="9.0.8" />
+		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.8" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.8" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.8" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.8" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="9.0.8" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.8" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.13.0" />
 	</ItemGroup>
 </Project>

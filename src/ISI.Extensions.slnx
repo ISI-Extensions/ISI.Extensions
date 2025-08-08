@@ -39,6 +39,7 @@
   </Project>
   <Project Path="ISI.Extensions.Cake/ISI.Extensions.Cake.csproj" />
   <Project Path="ISI.Extensions.Cloudflare/ISI.Extensions.Cloudflare.csproj" Id="f9bfd7fd-c782-4c30-93e9-f88965918bd0" />
+  <Project Path="ISI.Extensions.Debian/ISI.Extensions.Debian.csproj" Id="e097380f-89cd-4c69-a51b-46306d69041f" />
   <Project Path="ISI.Extensions.DependencyInjection.Iunq/ISI.Extensions.DependencyInjection.Iunq.csproj">
     <Platform Solution="*|x64" Project="x64" />
   </Project>
@@ -59,6 +60,7 @@
     <Platform Solution="*|x64" Project="x64" />
   </Project>
   <Project Path="ISI.Extensions.Keycloak/ISI.Extensions.Keycloak.csproj" />
+  <Project Path="ISI.Extensions.Linux/ISI.Extensions.Linux.csproj" Id="f628a8fe-d204-4d01-82f2-9a316796cdba" />
   <Project Path="ISI.Extensions.Locks.Redis/ISI.Extensions.Locks.Redis.csproj">
     <Platform Solution="*|x64" Project="x64" />
   </Project>

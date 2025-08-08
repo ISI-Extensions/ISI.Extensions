@@ -41,7 +41,7 @@ namespace ISI.Extensions.Repository
 				return new SelectClause(selectColumns.Select(selectColumn => FormatColumnName(selectColumn.RecordPropertyDescription.ColumnName)));
 			}
 
-			return new SelectClause(selectColumns.Select(selectColumn => string.Format("{0}.{1}", queryAlias, FormatColumnName(selectColumn.RecordPropertyDescription.ColumnName))));
+			return new SelectClause(selectColumns.Select(selectColumn => $"{queryAlias}.{FormatColumnName(selectColumn.RecordPropertyDescription.ColumnName)}"));
 		}
 	}
 }

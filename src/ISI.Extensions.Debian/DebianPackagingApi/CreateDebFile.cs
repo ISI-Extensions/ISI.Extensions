@@ -41,14 +41,16 @@ namespace ISI.Extensions.Debian
 			var dataEntries = new Dictionary<string, ISI.Extensions.Linux.ArchiveEntry>(StringComparer.InvariantCulture);
 			void addDataFile(DataFile dataFile)
 			{
+				dataFile.TargetPath = $"/{dataFile.TargetPath.Replace("\\", "/").TrimStart('/', '\\')}";
+
 				var dataFileDirectory = System.IO.Path.GetDirectoryName(dataFile.TargetPath);
 				if (!dataEntryDirectories.Contains(dataFileDirectory))
 				{
-					var dataFileDirectoryQueue = new Queue<string>(dataFileDirectory.Split(['/']));
+					var dataFileDirectoryQueue = new Queue<string>(dataFileDirectory.Split(['/', '\\']));
 					dataFileDirectory = string.Empty;
 					while (dataFileDirectoryQueue.Any())
 					{
-						dataFileDirectory = $"{dataFileDirectory}/{dataFileDirectoryQueue.Dequeue()}/".TrimStart('/');
+						dataFileDirectory = $"/{dataFileDirectory}/{dataFileDirectoryQueue.Dequeue()}/".Replace("//", "/");
 						if (!dataEntryDirectories.Contains(dataFileDirectory))
 						{
 							dataEntries[dataFileDirectory] = new DataDirectory(dataFileDirectory);
@@ -76,7 +78,7 @@ namespace ISI.Extensions.Debian
 									modifiedDateTime = (new System.IO.FileInfo(createDebFileRequestDataFile.SourceFullName)).LastWriteTimeUtc;
 								}
 
-								addDataFile(new DataFile(createDebFileRequestDataFileFile.TargetPath.TrimStart('/'), createDebFileRequestDataFileFile.IsExecutable, createDebFileRequestDataFileFile.DoNotRemove, modifiedDateTime, () =>
+								addDataFile(new DataFile(createDebFileRequestDataFileFile.TargetPath.TrimStart('/', '\\'), createDebFileRequestDataFileFile.IsExecutable, createDebFileRequestDataFileFile.DoNotRemove, modifiedDateTime, () =>
 								{
 									var dataStream = new System.IO.MemoryStream();
 
@@ -92,13 +94,13 @@ namespace ISI.Extensions.Debian
 						}
 						else if (requestDataFile is DTOs.CreateDebFileRequestEntryStream createDebFileRequestDataStream)
 						{
-							addDataFile(new DataFile(createDebFileRequestDataFileFile.TargetPath.TrimStart('/'), createDebFileRequestDataFileFile.IsExecutable, createDebFileRequestDataFileFile.DoNotRemove, DateTimeOffset.UtcNow, () => createDebFileRequestDataStream.SourceStream));
+							addDataFile(new DataFile(createDebFileRequestDataFileFile.TargetPath.TrimStart('/', '\\'), createDebFileRequestDataFileFile.IsExecutable, createDebFileRequestDataFileFile.DoNotRemove, DateTimeOffset.UtcNow, () => createDebFileRequestDataStream.SourceStream));
 						}
 						else if (requestDataFile is DTOs.CreateDebFileRequestEntryFile createDebFileRequestDataFile)
 						{
 							var fileInfo = new System.IO.FileInfo(createDebFileRequestDataFile.SourceFullName);
 
-							addDataFile(new DataFile(createDebFileRequestDataFileFile.TargetPath.TrimStart('/'), createDebFileRequestDataFileFile.IsExecutable, createDebFileRequestDataFileFile.DoNotRemove, fileInfo.LastWriteTimeUtc, () => System.IO.File.OpenRead(createDebFileRequestDataFile.SourceFullName)));
+							addDataFile(new DataFile(createDebFileRequestDataFileFile.TargetPath.TrimStart('/', '\\'), createDebFileRequestDataFileFile.IsExecutable, createDebFileRequestDataFileFile.DoNotRemove, fileInfo.LastWriteTimeUtc, () => System.IO.File.OpenRead(createDebFileRequestDataFile.SourceFullName)));
 						}
 						else
 						{
@@ -124,7 +126,7 @@ namespace ISI.Extensions.Debian
 
 							var sourceFileNames = System.IO.Directory.GetFiles(sourceDirectory, "*", (allDirectories ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly));
 
-							var targetPathDirectory = $"{createDebFileRequestDataFileWildCard.TargetPathDirectory.Trim('/')}/";
+							var targetPathDirectory = $"{createDebFileRequestDataFileWildCard.TargetPathDirectory.Trim('/', '\\')}/";
 
 							foreach (var sourceFileName in sourceFileNames)
 							{
@@ -143,18 +145,12 @@ namespace ISI.Extensions.Debian
 						throw new ArgumentOutOfRangeException(nameof(requestDataFile));
 				}
 			}
-
-			request.DebControl.InstalledSize ??= installedSize;
-
-			using (var debSpecVersionStream = new System.IO.MemoryStream())
+			
+			using (var dataStream = new ISI.Extensions.Stream.TempFileStream())
 			{
-				debSpecVersionStream.TextWrite(request.DebSpecVersion.ToString());
-				debSpecVersionStream.Flush();
-				debSpecVersionStream.Rewind();
-
-				using (var dataStream = new ISI.Extensions.Stream.TempFileStream())
+				using (var gzStreamWriter = new System.IO.Compression.GZipStream(dataStream, System.IO.Compression.CompressionMode.Compress, true))
 				{
-					using (var tarSteamWriter = new ISI.Extensions.Linux.TarStreamWriter(dataStream))
+					using (var tarSteamWriter = new ISI.Extensions.Linux.TarStreamWriter(gzStreamWriter))
 					{
 						foreach (var dataEntry in dataEntries.Values)
 						{
@@ -171,8 +167,17 @@ namespace ISI.Extensions.Debian
 							}
 						}
 					}
-					dataStream.Flush();
-					dataStream.Rewind();
+				}
+				dataStream.Flush();
+				dataStream.Rewind();
+
+				request.DebControl.InstalledSize ??= installedSize;
+
+				using (var debSpecVersionStream = new System.IO.MemoryStream())
+				{
+					debSpecVersionStream.TextWrite(request.DebSpecVersion.ToString());
+					debSpecVersionStream.Flush();
+					debSpecVersionStream.Rewind();
 
 					using (var md5sumsStream = new System.IO.MemoryStream())
 					{
@@ -188,7 +193,7 @@ namespace ISI.Extensions.Debian
 								{
 									using (var debSpecStream = new System.IO.MemoryStream())
 									{
-										debSpecStream.TextWrite(request.DebSpecVersion.ToString());
+										debSpecStream.TextWrite(SerializeDebControl(request.DebControl));
 										debSpecStream.Flush();
 										debSpecStream.Rewind();
 
@@ -286,47 +291,67 @@ namespace ISI.Extensions.Debian
 							controlStream.Flush();
 							controlStream.Rewind();
 
-							var debStream = (System.IO.Stream)null;
-
-							if (request is DTOs.CreateDebFileRequestWithDebFullName createDebFileRequestWithDebFullName)
+							using (var debStream = new Stream.TempFileStream())
 							{
-								debStream = System.IO.File.OpenWrite(createDebFileRequestWithDebFullName.DebFullName);
-							}
-							else if (request is DTOs.CreateDebFileRequestWithDebStream createDebFileRequestWithDebStream)
-							{
-								debStream = createDebFileRequestWithDebStream.DebStream;
-							}
+								using (var archiverStreamWriter = new ISI.Extensions.Linux.ArchiverStreamWriter(debStream, true))
+								{
+									archiverStreamWriter.WriteEntry("debian-binary", ISI.Extensions.IO.LinuxFileMode.File |
+									                                                 ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite |
+									                                                 ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite |
+									                                                 ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite, debSpecVersionStream);
+									archiverStreamWriter.WriteEntry("control.tar.gz", ISI.Extensions.IO.LinuxFileMode.File |
+									                                                  ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite |
+									                                                  ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite |
+									                                                  ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite, controlStream);
+									archiverStreamWriter.WriteEntry("data.tar.gz", ISI.Extensions.IO.LinuxFileMode.File |
+									                                               ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite |
+									                                               ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite |
+									                                               ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite, dataStream);
+								}
 
-							using (var archiverStreamWriter = new ISI.Extensions.Linux.ArchiverStreamWriter(debStream))
-							{
-								archiverStreamWriter.WriteEntry("debian-binary", ISI.Extensions.IO.LinuxFileMode.File |
-																																 ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite |
-																																 ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite |
-																																 ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite, debSpecVersionStream);
-								archiverStreamWriter.WriteEntry("control.tar.gz", ISI.Extensions.IO.LinuxFileMode.File |
-																																 ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite |
-																																 ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite |
-																																 ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite, controlStream);
-								archiverStreamWriter.WriteEntry("data.tar.gz", ISI.Extensions.IO.LinuxFileMode.File |
-																																 ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite |
-																																 ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite |
-																																 ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite, dataStream);
-							}
+								debStream.Flush();
+								debStream.Rewind();
 
-							debStream.Flush();
-							debStream.Rewind();
+								using (var md5 = System.Security.Cryptography.MD5.Create())
+								{
+									debStream.Rewind();
+									response.Md5Hash = BitConverter.ToString(md5.ComputeHash(debStream)).Replace("-", "").ToLowerInvariant();
+								}
 
-							if (request is DTOs.CreateDebFileRequestWithDebFullName)
-							{
-								debStream.Dispose();
-								debStream = null;
+								using (var sha1 = System.Security.Cryptography.SHA1.Create())
+								{
+									debStream.Rewind();
+									response.SHA1Hash = BitConverter.ToString(sha1.ComputeHash(debStream)).Replace("-", "").ToLowerInvariant();
+								}
+
+								using (var sha256 = System.Security.Cryptography.SHA256.Create())
+								{
+									debStream.Rewind();
+									response.SHA256Hash = BitConverter.ToString(sha256.ComputeHash(debStream)).Replace("-", "").ToLowerInvariant();
+								}
+
+								debStream.Rewind();
+
+								if (request is DTOs.CreateDebFileRequestWithDebFullName createDebFileRequestWithDebFullName)
+								{
+									System.IO.File.Delete(createDebFileRequestWithDebFullName.DebFullName);
+
+									using (var stream = System.IO.File.OpenWrite(createDebFileRequestWithDebFullName.DebFullName))
+									{
+										debStream.CopyTo(stream);
+										stream.Flush();
+									}
+								}
+								else if (request is DTOs.CreateDebFileRequestWithDebStream createDebFileRequestWithDebStream)
+								{
+									debStream.CopyTo(createDebFileRequestWithDebStream.DebStream);
+									createDebFileRequestWithDebStream.DebStream.Flush();
+								}
 							}
 						}
 					}
 				}
 			}
-
-
 
 			return response;
 		}

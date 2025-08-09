@@ -122,7 +122,7 @@ namespace ISI.Extensions.Linux
 			}
 		}
 
-		public TarType TypeFlag
+		public TarType TarType
 		{
 			get => (TarType)typeflag;
 			set => typeflag = (byte)value;

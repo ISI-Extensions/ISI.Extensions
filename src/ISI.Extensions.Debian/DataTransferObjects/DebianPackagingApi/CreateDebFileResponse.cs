@@ -24,5 +24,8 @@ namespace ISI.Extensions.Debian.DataTransferObjects.DebianPackagingApi
 {
 	public class CreateDebFileResponse
 	{
+		public string Md5Hash { get; set; }
+		public string SHA1Hash { get; set; }
+		public string SHA256Hash { get; set; }
 	}
 }

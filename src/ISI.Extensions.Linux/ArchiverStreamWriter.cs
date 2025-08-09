@@ -23,16 +23,14 @@ namespace ISI.Extensions.Linux
 	public class ArchiverStreamWriter : IDisposable
 	{
 		private readonly System.IO.Stream _stream;
+		private readonly bool _leaveOpen;
 
-		public ArchiverStreamWriter(System.IO.Stream stream)
+		public ArchiverStreamWriter(System.IO.Stream stream, bool leaveOpen = false)
 		{
 			_stream = stream;
+			_leaveOpen = leaveOpen;
 
-			using (var streamWriter = new System.IO.StreamWriter(_stream, Encoding.UTF8, -1, true))
-			{
-				streamWriter.Write(ArchiverHeader.ArchiverMagic);
-				streamWriter.Flush();
-			}
+			stream.TextWrite(Encoding.ASCII, ArchiverHeader.ArchiverMagic);
 		}
 
 		public void WriteEntry(string fileName, ISI.Extensions.IO.LinuxFileMode linuxFileMode, System.IO.Stream data)
@@ -65,7 +63,10 @@ namespace ISI.Extensions.Linux
 
 		public void Dispose()
 		{
-			_stream?.Dispose();
+			if (!_leaveOpen)
+			{
+				_stream?.Dispose();
+			}
 		}
 	}
 }

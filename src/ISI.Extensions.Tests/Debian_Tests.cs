@@ -67,13 +67,54 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void CreateDebFile_Test()
+		{
+			var debianPackagingApi = ServiceProvider.GetService<ISI.Extensions.Debian.DebianPackagingApi>();
+
+			var createDebFileResponse = debianPackagingApi.CreateDebFile(new ISI.Extensions.Debian.DataTransferObjects.DebianPackagingApi.CreateDebFileRequestWithDebFullName()
+			{
+				DebControl = new()
+				{
+					Package = "isi-certificate-agent",
+					Version = new Version("4.0.9345.5557"),
+					Architecture = "amd64",
+					//Depends = source.Depends.ToNullCheckedArray(),
+					//PreDepends = source.PreDepends.ToNullCheckedArray(),
+					//Recommends = source.Recommends.ToNullCheckedArray(),
+					//Suggests = source.Suggests.ToNullCheckedArray(),
+					//Enhances = source.Enhances.ToNullCheckedArray(),
+					//Breaks = source.Breaks.ToNullCheckedArray(),
+					//Conflicts = source.Conflicts.ToNullCheckedArray(),
+					//InstalledSize = source.InstalledSize,
+					Maintainer = "Ron Muth <ron.muth@isi-net.com>",
+					Homepage = "https://www.isi-net.com",
+					Description = "ISI.CertificateAgent.LinuxService",
+				},
+				DataEntries = [
+					new ISI.Extensions.Debian.DataTransferObjects.DebianPackagingApi.CreateDebFileRequestEntryFileWildCard()
+					{
+						SourceDirectory = @"F:\ISI\Internal Projects\ISI.CertificateAgent.LinuxService\Publish\ISI.CertificateAgent.LinuxService.20250802.030515\amd64",
+						TargetPathDirectory = "/opt/ISI.CertificateAgent.LinuxService",
+					},
+					new ISI.Extensions.Debian.DataTransferObjects.DebianPackagingApi.CreateDebFileRequestEntryFile()
+					{
+						SourceFullName = @"F:\ISI\Internal Projects\ISI.CertificateAgent.LinuxService\Publish\ISI.CertificateAgent.LinuxService.20250802.030515\amd64\ISI.CertificateAgent.LinuxService",
+						IsExecutable = true,
+						TargetPath = "/opt/ISI.CertificateAgent.LinuxService/ISI.CertificateAgent.LinuxService",
+					},
+					],
+				DebFullName = @"F:\ISI\Internal Projects\ISI.CertificateAgent.LinuxService\Publish\ISI.CertificateAgent.LinuxService.20250802.030515.amd64.deb",
+			});
+		}
+
+		[Test]
 		public void ParseDebFile_Test()
 		{
 			var debianPackagingApi = ServiceProvider.GetService<ISI.Extensions.Debian.DebianPackagingApi>();
 
 			var parseDebFileResponse = debianPackagingApi.ParseDebFile(new ISI.Extensions.Debian.DataTransferObjects.DebianPackagingApi.ParseDebFileRequestWithDebFullName()
 			{
-				DebFullName = @"F:\ISI\Internal Projects\ISI.CertificateAgent.LinuxService\Publish\ISI.CertificateAgent.LinuxService.20250802.030515\deb\isi-certificate-agent_4.0.9345.5557_amd64.deb",
+				DebFullName = @"F:\ISI\Internal Projects\ISI.CertificateAgent.LinuxService\Publish\ISI.CertificateAgent.LinuxService.20250802.030515.amd64.deb",
 			});
 		}
 	}

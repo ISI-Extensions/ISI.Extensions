@@ -59,7 +59,7 @@ namespace ISI.Extensions.Linux
 			// TODO: Validate Checksum
 			FileStream = new ISI.Extensions.Stream.PocketStream(Stream, Stream.Position, _entryHeader.FileSize, leaveParentOpen: true);
 
-			if (_entryHeader.TypeFlag == TarType.LongName)
+			if (_entryHeader.TarType == TarType.LongName)
 			{
 				using (var stream = Open())
 				{
@@ -70,7 +70,7 @@ namespace ISI.Extensions.Linux
 				}
 			}
 
-			if (_entryHeader.TypeFlag == TarType.LongLink)
+			if (_entryHeader.TarType == TarType.LongLink)
 			{
 				using (var stream = Open())
 				{

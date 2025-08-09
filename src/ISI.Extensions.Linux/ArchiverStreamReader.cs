@@ -38,7 +38,7 @@ namespace ISI.Extensions.Linux
 				var buffer = new byte[ArchiverHeader.ArchiverMagic.Length];
 
 				Stream.Read(buffer, 0, buffer.Length);
-				
+
 				var header = Encoding.ASCII.GetString(buffer);
 
 				if (!string.Equals(header, ArchiverHeader.ArchiverMagic, StringComparison.Ordinal))
@@ -56,23 +56,23 @@ namespace ISI.Extensions.Linux
 
 			Align(2);
 
-			if (Stream.Position == Stream.Length)
+			if (Stream.Position < Stream.Length)
 			{
-				return false;
+				_archiverHeader = Stream.ReadStruct<ArchiverHeader>();
+				FileHeader = _archiverHeader;
+				FileName = _archiverHeader.FileName;
+
+				if (_archiverHeader.EndChar != "`\n")
+				{
+					throw new System.IO.InvalidDataException("The magic for the file entry is invalid");
+				}
+				
+				FileStream = new ISI.Extensions.Stream.PocketStream(Stream, Stream.Position, _archiverHeader.FileSize, leaveParentOpen: true);
+
+				return true;
 			}
 
-			_archiverHeader = Stream.ReadStruct<ArchiverHeader>();
-			FileHeader = _archiverHeader;
-			FileName = _archiverHeader.FileName;
-
-			if (_archiverHeader.EndChar != "`\n")
-			{
-				throw new System.IO.InvalidDataException("The magic for the file entry is invalid");
-			}
-
-			FileStream = new ISI.Extensions.Stream.PocketStream(Stream, Stream.Position, _archiverHeader.FileSize, leaveParentOpen: true);
-
-			return true;
+			return false;
 		}
 	}
 }

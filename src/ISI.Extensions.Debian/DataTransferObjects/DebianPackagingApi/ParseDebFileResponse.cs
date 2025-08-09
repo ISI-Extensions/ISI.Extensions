@@ -37,6 +37,10 @@ namespace ISI.Extensions.Debian.DataTransferObjects.DebianPackagingApi
 		public InvariantCultureIgnoreCaseStringDictionary<ParseDebFileResponseFile> ExtraFiles { get; set; }
 
 		public string[] DataFiles { get; set; }
+		
+		public string Md5Hash { get; set; }
+		public string SHA1Hash { get; set; }
+		public string SHA256Hash { get; set; }
 	}
 
 	public class ParseDebFileResponseFile

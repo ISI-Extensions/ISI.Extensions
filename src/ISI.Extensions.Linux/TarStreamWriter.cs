@@ -57,10 +57,13 @@ namespace ISI.Extensions.Linux
 			stream.CopyTo(_stream);
 
 			Align(stream.Length);
-			
-			_stream.Rewind();
 
-			var md5Hash= BitConverter.ToString(_md5.ComputeHash(_stream)).Replace("-", "").ToLowerInvariant();
+			if (stream.CanRead)
+			{
+				stream.Rewind();
+			}
+
+			var md5Hash = (stream.CanRead ? BitConverter.ToString(_md5.ComputeHash(stream)).Replace("-", "").ToLowerInvariant() : string.Empty);
 
 			return (FileName: header.FileName, FileLength: stream.Length, Md5Hash: md5Hash);
 		}
@@ -139,7 +142,7 @@ namespace ISI.Extensions.Linux
 					UserName = entry.Owner,
 					LinkName = isLink ? entry.LinkTo : string.Empty,
 					Prefix = string.Empty,
-					TypeFlag = tarType,
+					TarType = tarType,
 					Version = null,
 					LastModified = entry.ModifiedDateTime,
 					Magic = TarHeader.UsTarMagic,

@@ -138,7 +138,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 			var tableName = FormatTableName(TableName, null, false);
 
-			var primaryKeyName = string.Format("pk_{0}", TableName);
+			var primaryKeyName = $"\"pk_{TableName}\"";
 
 			if (!recordDescription.PrimaryKeyPropertyDescriptions.NullCheckedAny())
 			{
@@ -152,7 +152,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 					var firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName = primaryKeyColumnsWithPrimaryKeyAttributes.FirstOrDefault(column => !string.IsNullOrEmpty(column.PrimaryKeyAttribute.Name));
 					if (firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName != null)
 					{
-						primaryKeyName = string.Format("{0}", FormatColumnName(firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName.PrimaryKeyAttribute.Name));
+						primaryKeyName = FormatColumnName(firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName.PrimaryKeyAttribute.Name);
 					}
 				}
 			}
@@ -226,7 +226,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 			var tableName = FormatArchiveTableName(string.Format("{0}{1}", TableName, ArchiveTableSuffix), null, false);
 
-			var primaryKeyName = string.Format("{0}{1}Index", RecordDescription.GetRecordDescription<TRecord>().TableName, ArchiveTableSuffix).PostgreSQLFormatName();
+			var primaryKeyName = $"\"{RecordDescription.GetRecordDescription<TRecord>().TableName}{ArchiveTableSuffix}Index\"";
 
 			if (!recordDescription.PrimaryKeyPropertyDescriptions.NullCheckedAny())
 			{
@@ -240,7 +240,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 					var firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName = primaryKeyColumnsWithPrimaryKeyAttributes.FirstOrDefault(column => !string.IsNullOrEmpty(column.PrimaryKeyAttribute.Name));
 					if (firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName != null)
 					{
-						primaryKeyName = string.Format("[{0}]", string.Format("{0}{1}", firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName.PrimaryKeyAttribute.Name, ArchiveTableSuffix));
+						primaryKeyName = $"\"{firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName.PrimaryKeyAttribute.Name}{ArchiveTableSuffix}\"";
 					}
 				}
 			}

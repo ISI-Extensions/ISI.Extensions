@@ -90,14 +90,18 @@ namespace ISI.Extensions.Repository.PostgreSQL
 			{
 				connectionString = Configuration.GetConnectionString("master");
 			}
-			else
-			{
-				//Logger.LogInformation($"Got MasterConnectionString => {connectionString}");
-			}
 
 			if (string.IsNullOrWhiteSpace(connectionString))
 			{
 				connectionString = "master";
+			}
+
+			if (connectionString.Split(';', StringSplitOptions.RemoveEmptyEntries).Length <= 1)
+			{
+				if ((Configuration as IConfigurationRoot)?.TryGetConnectionString(connectionString, out var masterConnectionString) ?? false)
+				{
+					connectionString = masterConnectionString;
+				}
 			}
 
 			if (connectionString.Split(';', StringSplitOptions.RemoveEmptyEntries).Length <= 1)

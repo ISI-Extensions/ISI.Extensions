@@ -312,26 +312,6 @@ namespace ISI.Extensions.Debian
 								debStream.Flush();
 								debStream.Rewind();
 
-								using (var md5 = System.Security.Cryptography.MD5.Create())
-								{
-									debStream.Rewind();
-									response.Md5Hash = BitConverter.ToString(md5.ComputeHash(debStream)).Replace("-", "").ToLowerInvariant();
-								}
-
-								using (var sha1 = System.Security.Cryptography.SHA1.Create())
-								{
-									debStream.Rewind();
-									response.SHA1Hash = BitConverter.ToString(sha1.ComputeHash(debStream)).Replace("-", "").ToLowerInvariant();
-								}
-
-								using (var sha256 = System.Security.Cryptography.SHA256.Create())
-								{
-									debStream.Rewind();
-									response.SHA256Hash = BitConverter.ToString(sha256.ComputeHash(debStream)).Replace("-", "").ToLowerInvariant();
-								}
-
-								debStream.Rewind();
-
 								if (request is DTOs.CreateDebFileRequestWithDebFullName createDebFileRequestWithDebFullName)
 								{
 									System.IO.File.Delete(createDebFileRequestWithDebFullName.DebFullName);

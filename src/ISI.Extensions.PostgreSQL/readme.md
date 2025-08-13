@@ -81,5 +81,6 @@ on target docker host
 docker exec -it postgres bash
 
 pg_restore -U postgres --format=c --dbname=dbxxxxxxxxxxx --create --verbose /var/lib/postgresql/dump/dbxxxxxxxxxxx.dump
+pg_restore -U postgres --format=c --dbname="ISI.SCM.BuildArtifacts" --create --verbose /var/lib/postgresql/dump/ISI.SCM.BuildArtifacts.20250812.032058383.dump
 
 

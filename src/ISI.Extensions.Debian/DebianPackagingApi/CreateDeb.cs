@@ -25,9 +25,9 @@ namespace ISI.Extensions.Debian
 {
 	public partial class DebianPackagingApi
 	{
-		public DTOs.CreateDebFileResponse CreateDebFile(DTOs.ICreateDebFileRequest request)
+		public DTOs.CreateDebResponse CreateDeb(DTOs.ICreateDebRequest request)
 		{
-			var response = new DTOs.CreateDebFileResponse();
+			var response = new DTOs.CreateDebResponse();
 
 			var md5sums = new StringBuilder();
 			var installedSize = (long)0;
@@ -61,24 +61,24 @@ namespace ISI.Extensions.Debian
 				dataEntries[dataFile.TargetPath] = dataFile;
 			}
 
-			foreach (var requestDataFile in request.DataEntries ?? [])
+			foreach (var requestDataEntry in request.DataEntries ?? [])
 			{
-				switch (requestDataFile)
+				switch (requestDataEntry)
 				{
-					case DTOs.ICreateDebFileRequestDataEntryFile createDebFileRequestDataFileFile:
-						if (createDebFileRequestDataFileFile.IsAscii)
+					case DTOs.ICreateDebRequestDataEntryFile createDebRequestDataEntryFile:
+						if (createDebRequestDataEntryFile.IsAscii)
 						{
-							using (var stream = (requestDataFile as DTOs.CreateDebFileRequestEntryStream)?.SourceStream ?? System.IO.File.OpenRead((requestDataFile as DTOs.CreateDebFileRequestEntryFile).SourceFullName))
+							using (var stream = (requestDataEntry as DTOs.CreateDebRequestEntryStream)?.SourceStream ?? System.IO.File.OpenRead((requestDataEntry as DTOs.CreateDebRequestEntryFile).SourceFullName))
 							{
 								var content = stream.TextReadToEnd().Replace("\r\n", "\n").Replace("\r", "\n");
 
 								var modifiedDateTime = DateTimeOffset.UtcNow;
-								if (requestDataFile is DTOs.CreateDebFileRequestEntryFile createDebFileRequestDataFile)
+								if (requestDataEntry is DTOs.CreateDebRequestEntryFile createDebFileRequestDataFile)
 								{
 									modifiedDateTime = (new System.IO.FileInfo(createDebFileRequestDataFile.SourceFullName)).LastWriteTimeUtc;
 								}
 
-								addDataFile(new DataFile(createDebFileRequestDataFileFile.TargetPath.TrimStart('/', '\\'), createDebFileRequestDataFileFile.IsExecutable, createDebFileRequestDataFileFile.DoNotRemove, modifiedDateTime, () =>
+								addDataFile(new DataFile(createDebRequestDataEntryFile.TargetPath.TrimStart('/', '\\'), createDebRequestDataEntryFile.IsExecutable, createDebRequestDataEntryFile.DoNotRemove, modifiedDateTime, () =>
 								{
 									var dataStream = new System.IO.MemoryStream();
 
@@ -92,25 +92,25 @@ namespace ISI.Extensions.Debian
 								}));
 							}
 						}
-						else if (requestDataFile is DTOs.CreateDebFileRequestEntryStream createDebFileRequestDataStream)
+						else if (requestDataEntry is DTOs.CreateDebRequestEntryStream createDebRequestDataStream)
 						{
-							addDataFile(new DataFile(createDebFileRequestDataFileFile.TargetPath.TrimStart('/', '\\'), createDebFileRequestDataFileFile.IsExecutable, createDebFileRequestDataFileFile.DoNotRemove, DateTimeOffset.UtcNow, () => createDebFileRequestDataStream.SourceStream));
+							addDataFile(new DataFile(createDebRequestDataEntryFile.TargetPath.TrimStart('/', '\\'), createDebRequestDataEntryFile.IsExecutable, createDebRequestDataEntryFile.DoNotRemove, DateTimeOffset.UtcNow, () => createDebRequestDataStream.SourceStream));
 						}
-						else if (requestDataFile is DTOs.CreateDebFileRequestEntryFile createDebFileRequestDataFile)
+						else if (requestDataEntry is DTOs.CreateDebRequestEntryFile createDebRequestDataFile)
 						{
-							var fileInfo = new System.IO.FileInfo(createDebFileRequestDataFile.SourceFullName);
+							var fileInfo = new System.IO.FileInfo(createDebRequestDataFile.SourceFullName);
 
-							addDataFile(new DataFile(createDebFileRequestDataFileFile.TargetPath.TrimStart('/', '\\'), createDebFileRequestDataFileFile.IsExecutable, createDebFileRequestDataFileFile.DoNotRemove, fileInfo.LastWriteTimeUtc, () => System.IO.File.OpenRead(createDebFileRequestDataFile.SourceFullName)));
+							addDataFile(new DataFile(createDebRequestDataEntryFile.TargetPath.TrimStart('/', '\\'), createDebRequestDataEntryFile.IsExecutable, createDebRequestDataEntryFile.DoNotRemove, fileInfo.LastWriteTimeUtc, () => System.IO.File.OpenRead(createDebRequestDataFile.SourceFullName)));
 						}
 						else
 						{
-							throw new ArgumentOutOfRangeException(nameof(requestDataFile));
+							throw new ArgumentOutOfRangeException(nameof(requestDataEntry));
 						}
 						break;
 
-					case DTOs.CreateDebFileRequestEntryFileWildCard createDebFileRequestDataFileWildCard:
+					case DTOs.CreateDebRequestEntryFileWildCard createDebRequestDataFileWildCard:
 						{
-							var sourceDirectory = createDebFileRequestDataFileWildCard.SourceDirectory;
+							var sourceDirectory = createDebRequestDataFileWildCard.SourceDirectory;
 
 							var allDirectories = true;
 							var wildcard = System.IO.Path.GetFileName(sourceDirectory);
@@ -126,7 +126,7 @@ namespace ISI.Extensions.Debian
 
 							var sourceFileNames = System.IO.Directory.GetFiles(sourceDirectory, "*", (allDirectories ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly));
 
-							var targetPathDirectory = $"{createDebFileRequestDataFileWildCard.TargetPathDirectory.Trim('/', '\\')}/";
+							var targetPathDirectory = $"{createDebRequestDataFileWildCard.TargetPathDirectory.Trim('/', '\\')}/";
 
 							foreach (var sourceFileName in sourceFileNames)
 							{
@@ -142,7 +142,7 @@ namespace ISI.Extensions.Debian
 						break;
 
 					default:
-						throw new ArgumentOutOfRangeException(nameof(requestDataFile));
+						throw new ArgumentOutOfRangeException(nameof(requestDataEntry));
 				}
 			}
 			
@@ -312,20 +312,20 @@ namespace ISI.Extensions.Debian
 								debStream.Flush();
 								debStream.Rewind();
 
-								if (request is DTOs.CreateDebFileRequestWithDebFullName createDebFileRequestWithDebFullName)
+								if (request is DTOs.CreateDebRequestWithDebFullName createDebRequestWithDebFullName)
 								{
-									System.IO.File.Delete(createDebFileRequestWithDebFullName.DebFullName);
+									System.IO.File.Delete(createDebRequestWithDebFullName.DebFullName);
 
-									using (var stream = System.IO.File.OpenWrite(createDebFileRequestWithDebFullName.DebFullName))
+									using (var stream = System.IO.File.OpenWrite(createDebRequestWithDebFullName.DebFullName))
 									{
 										debStream.CopyTo(stream);
 										stream.Flush();
 									}
 								}
-								else if (request is DTOs.CreateDebFileRequestWithDebStream createDebFileRequestWithDebStream)
+								else if (request is DTOs.CreateDebRequestWithDebStream createDebRequestWithDebStream)
 								{
-									debStream.CopyTo(createDebFileRequestWithDebStream.DebStream);
-									createDebFileRequestWithDebStream.DebStream.Flush();
+									debStream.CopyTo(createDebRequestWithDebStream.DebStream);
+									createDebRequestWithDebStream.DebStream.Flush();
 								}
 							}
 						}

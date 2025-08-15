@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Debian.DataTransferObjects.DebianPackagingApi
 {
-	public class CreateDebFileResponse
+	public class CreateDebResponse
 	{
 
 	}

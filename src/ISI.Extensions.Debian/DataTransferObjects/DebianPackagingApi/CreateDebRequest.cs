@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,29 +22,81 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Debian.DataTransferObjects.DebianPackagingApi
 {
-	public class ParseDebFileResponse
+	public interface ICreateDebRequest
 	{
-		public Version DebSpecVersion { get; set; }
+		Version DebSpecVersion { get; }
+		DebControl DebControl { get; }
+
+		string PreInstallScript { get; }
+		string PostInstallScript { get; }
+		string PreRemovalScript { get; }
+		string PostRemovalScript { get; }
+
+		IEnumerable<ICreateDebRequestDataEntry> DataEntries { get; }
+	}
+
+	public class CreateDebRequestWithDebFullName : AbstractCreateDebRequest, ICreateDebRequest
+	{
+		public string DebFullName { get; set; }
+	}
+
+	public class CreateDebRequestWithDebStream : AbstractCreateDebRequest, ICreateDebRequest
+	{
+		public System.IO.Stream DebStream { get; set; }
+	}
+
+	public abstract class AbstractCreateDebRequest
+	{
+		public Version DebSpecVersion { get; set; } = new("2.0");
 		public DebControl DebControl { get; set; }
 
-		public InvariantCultureIgnoreCaseStringDictionary<string> Md5Sums { get; set; }
-		
 		public string PreInstallScript { get; set; }
 		public string PostInstallScript { get; set; }
 		public string PreRemovalScript { get; set; }
 		public string PostRemovalScript { get; set; }
 
-		public InvariantCultureIgnoreCaseStringDictionary<ParseDebFileResponseFile> ExtraFiles { get; set; }
-
-		public string[] DataFiles { get; set; }
+		public IEnumerable<ICreateDebRequestDataEntry> DataEntries { get; set; }
 	}
 
-	public class ParseDebFileResponseFile
+	public interface ICreateDebRequestDataEntry
 	{
-		public string FileName { get; set; }
 
-		public ISI.Extensions.IO.LinuxFileMode LinuxFileMode  { get; set; }
-		
-		public string Content { get; set; }
+	}
+
+	public interface ICreateDebRequestDataEntryFile : ICreateDebRequestDataEntry
+	{
+		bool IsAscii { get; }
+		bool IsExecutable { get; }
+		bool DoNotRemove { get; }
+		string TargetPath { get; }
+	}
+
+	public class CreateDebRequestEntryFile : ICreateDebRequestDataEntryFile
+	{
+		public string SourceFullName { get; set; }
+
+		public bool IsAscii { get; set; }
+		public bool IsExecutable { get; set; }
+		public bool DoNotRemove { get; set; }
+
+		public string TargetPath { get; set; }
+	}
+
+	public class CreateDebRequestEntryStream : ICreateDebRequestDataEntryFile
+	{
+		public System.IO.Stream SourceStream { get; set; }
+
+		public bool IsAscii { get; set; }
+		public bool IsExecutable { get; set; }
+		public bool DoNotRemove { get; set; }
+
+		public string TargetPath { get; set; }
+	}
+
+	public class CreateDebRequestEntryFileWildCard : ICreateDebRequestDataEntry
+	{
+		public string SourceDirectory { get; set; }
+
+		public string TargetPathDirectory { get; set; }
 	}
 }

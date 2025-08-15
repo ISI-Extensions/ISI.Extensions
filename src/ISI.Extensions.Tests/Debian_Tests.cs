@@ -71,7 +71,7 @@ namespace ISI.Extensions.Tests
 		{
 			var debianPackagingApi = ServiceProvider.GetService<ISI.Extensions.Debian.DebianPackagingApi>();
 
-			var createDebFileResponse = debianPackagingApi.CreateDebFile(new ISI.Extensions.Debian.DataTransferObjects.DebianPackagingApi.CreateDebFileRequestWithDebFullName()
+			var createDebResponse = debianPackagingApi.CreateDeb(new ISI.Extensions.Debian.DataTransferObjects.DebianPackagingApi.CreateDebRequestWithDebFullName()
 			{
 				DebControl = new()
 				{
@@ -91,12 +91,12 @@ namespace ISI.Extensions.Tests
 					Description = "ISI.CertificateAgent.LinuxService",
 				},
 				DataEntries = [
-					new ISI.Extensions.Debian.DataTransferObjects.DebianPackagingApi.CreateDebFileRequestEntryFileWildCard()
+					new ISI.Extensions.Debian.DataTransferObjects.DebianPackagingApi.CreateDebRequestEntryFileWildCard()
 					{
 						SourceDirectory = @"F:\ISI\Internal Projects\ISI.CertificateAgent.LinuxService\Publish\ISI.CertificateAgent.LinuxService.20250802.030515\amd64",
 						TargetPathDirectory = "/opt/ISI.CertificateAgent.LinuxService",
 					},
-					new ISI.Extensions.Debian.DataTransferObjects.DebianPackagingApi.CreateDebFileRequestEntryFile()
+					new ISI.Extensions.Debian.DataTransferObjects.DebianPackagingApi.CreateDebRequestEntryFile()
 					{
 						SourceFullName = @"F:\ISI\Internal Projects\ISI.CertificateAgent.LinuxService\Publish\ISI.CertificateAgent.LinuxService.20250802.030515\amd64\ISI.CertificateAgent.LinuxService",
 						IsExecutable = true,
@@ -112,7 +112,7 @@ namespace ISI.Extensions.Tests
 		{
 			var debianPackagingApi = ServiceProvider.GetService<ISI.Extensions.Debian.DebianPackagingApi>();
 
-			var parseDebFileResponse = debianPackagingApi.ParseDebFile(new ISI.Extensions.Debian.DataTransferObjects.DebianPackagingApi.ParseDebFileRequestWithDebFullName()
+			var parseDebResponse = debianPackagingApi.ParseDeb(new ISI.Extensions.Debian.DataTransferObjects.DebianPackagingApi.ParseDebRequestWithDebFullName()
 			{
 				DebFullName = @"F:\ISI\Internal Projects\ISI.CertificateAgent.LinuxService\Publish\ISI.CertificateAgent.LinuxService.20250802.030515.amd64.deb",
 			});

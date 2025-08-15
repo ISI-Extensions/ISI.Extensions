@@ -26,11 +26,11 @@ namespace ISI.Extensions.Debian
 {
 	public partial class DebianPackagingApi
 	{
-		public DTOs.ParseDebFileResponse ParseDebFile(DTOs.IParseDebFileRequest request)
+		public DTOs.ParseDebResponse ParseDeb(DTOs.IParseDebRequest request)
 		{
-			var response = new DTOs.ParseDebFileResponse();
+			var response = new DTOs.ParseDebResponse();
 
-			var debStream = (request as DTOs.ParseDebFileRequestWithDebStream)?.DebStream ?? System.IO.File.OpenRead((request as DTOs.ParseDebFileRequestWithDebFullName).DebFullName);
+			var debStream = (request as DTOs.ParseDebRequestWithDebStream)?.DebStream ?? System.IO.File.OpenRead((request as DTOs.ParseDebRequestWithDebFullName).DebFullName);
 
 			using (var archiverStreamReader = new ISI.Extensions.Linux.ArchiverStreamReader(debStream, true))
 			{
@@ -192,7 +192,7 @@ namespace ISI.Extensions.Debian
 				}
 			}
 
-			if (request is DTOs.ParseDebFileRequestWithDebFullName)
+			if (request is DTOs.ParseDebRequestWithDebFullName)
 			{
 				debStream.Dispose();
 				debStream = null;

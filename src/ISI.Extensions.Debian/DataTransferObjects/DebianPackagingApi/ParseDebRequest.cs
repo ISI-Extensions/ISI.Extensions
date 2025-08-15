@@ -22,17 +22,17 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Debian.DataTransferObjects.DebianPackagingApi
 {
-	public interface IParseDebFileRequest
+	public interface IParseDebRequest
 	{
 
 	}
 
-	public class ParseDebFileRequestWithDebFullName : IParseDebFileRequest
+	public class ParseDebRequestWithDebFullName : IParseDebRequest
 	{
 		public string DebFullName { get; set; }
 	}
 
-	public class ParseDebFileRequestWithDebStream : IParseDebFileRequest
+	public class ParseDebRequestWithDebStream : IParseDebRequest
 	{
 		public System.IO.Stream DebStream { get; set; }
 	}

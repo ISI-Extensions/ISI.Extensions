@@ -114,8 +114,6 @@ namespace ISI.Extensions.Debian
 										}
 										else
 										{
-											response.ExtraFiles ??= new();
-
 											using (var contentStream = tarStreamReader.Open())
 											{
 												var file = new DTOs.ParseDebFileResponseFile()
@@ -125,7 +123,11 @@ namespace ISI.Extensions.Debian
 													Content = contentStream.ReadAsStringToEnd(),
 												};
 
-												response.ExtraFiles[fileName] = file;
+												if (!string.IsNullOrWhiteSpace(file.FileName))
+												{
+													response.ExtraFiles ??= new();
+													response.ExtraFiles[fileName] = file;
+												}
 											}
 										}
 									}

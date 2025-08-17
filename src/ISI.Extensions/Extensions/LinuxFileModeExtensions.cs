@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2025, Integrated Solutions, Inc.
 All rights reserved.
@@ -12,24 +12,40 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Linux
+namespace ISI.Extensions.Extensions
 {
-	public class ArchiveEntry
+	public static class LinuxFileModeExtensions
 	{
-		public string TargetPath { get; set; }
-		public string Owner { get; set; }
-		public string Group { get; set; }
-		public ISI.Extensions.IO.LinuxFileMode LinuxFileMode { get; set; }
-		public DateTimeOffset ModifiedDateTime { get; set; }
-		public string LinkTo { get; set; }
-		public bool DoNotRemove { get; set; }
+		public static string Formatted(this ISI.Extensions.IO.LinuxFileMode linuxFileMode)
+		{
+			var response = new StringBuilder();
 
-		public override string ToString() => $"{LinuxFileMode.Formatted()} {Owner} {Group} {ModifiedDateTime} {TargetPath}{(string.IsNullOrWhiteSpace(LinkTo) ? string.Empty : $" -> {LinkTo}")}";
+			char hasLinuxFileMode(ISI.Extensions.IO.LinuxFileMode fileMode, char trueValue, char falseValue = '-')
+			{
+				return ((linuxFileMode & fileMode) == fileMode ? trueValue : falseValue);
+			}
+
+			response.Append(hasLinuxFileMode(ISI.Extensions.IO.LinuxFileMode.Directory, 'd', hasLinuxFileMode(ISI.Extensions.IO.LinuxFileMode.SymbolicLink, 'l')));
+
+			response.Append(hasLinuxFileMode(ISI.Extensions.IO.LinuxFileMode.UserCanRead, 'r'));
+			response.Append(hasLinuxFileMode(ISI.Extensions.IO.LinuxFileMode.UserCanWrite, 'w'));
+			response.Append(hasLinuxFileMode(ISI.Extensions.IO.LinuxFileMode.UserCanExecute, 'x'));
+
+			response.Append(hasLinuxFileMode(ISI.Extensions.IO.LinuxFileMode.GroupCanRead, 'r'));
+			response.Append(hasLinuxFileMode(ISI.Extensions.IO.LinuxFileMode.GroupCanWrite, 'w'));
+			response.Append(hasLinuxFileMode(ISI.Extensions.IO.LinuxFileMode.GroupCanExecute, 'x'));
+
+			response.Append(hasLinuxFileMode(ISI.Extensions.IO.LinuxFileMode.OthersCanRead, 'r'));
+			response.Append(hasLinuxFileMode(ISI.Extensions.IO.LinuxFileMode.OthersCanWrite, 'w'));
+			response.Append(hasLinuxFileMode(ISI.Extensions.IO.LinuxFileMode.OthersCanExecute, 'x'));
+
+			return response.ToString();
+		}
 	}
 }

@@ -46,7 +46,7 @@ namespace ISI.Extensions.Debian
 				var dataFileDirectory = System.IO.Path.GetDirectoryName(dataFile.TargetPath);
 				if (!dataEntryDirectories.Contains(dataFileDirectory))
 				{
-					var dataFileDirectoryQueue = new Queue<string>(dataFileDirectory.Split(['/', '\\']));
+					var dataFileDirectoryQueue = new Queue<string>(dataFileDirectory.Split(['/', '\\'], StringSplitOptions.RemoveEmptyEntries));
 					dataFileDirectory = string.Empty;
 					while (dataFileDirectoryQueue.Any())
 					{
@@ -200,16 +200,28 @@ namespace ISI.Extensions.Debian
 										tarSteamWriter.WriteEntry(new ISI.Extensions.Linux.ArchiveEntry()
 										{
 											TargetPath = "/",
+											LinuxFileMode = ISI.Extensions.IO.LinuxFileMode.Directory |
+											                ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite |
+											                ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite |
+											                ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite,
 										}, null);
 
 										tarSteamWriter.WriteEntry(new ISI.Extensions.Linux.ArchiveEntry()
 										{
 											TargetPath = "/control",
+											LinuxFileMode = ISI.Extensions.IO.LinuxFileMode.File |
+											                ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite |
+											                ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite |
+											                ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite,
 										}, () => debSpecStream, true);
 
 										tarSteamWriter.WriteEntry(new ISI.Extensions.Linux.ArchiveEntry()
 										{
 											TargetPath = "/md5sums",
+											LinuxFileMode = ISI.Extensions.IO.LinuxFileMode.File |
+											                ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite |
+											                ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite |
+											                ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite,
 										}, () => md5sumsStream, true);
 
 										if (!string.IsNullOrWhiteSpace(request.PreInstallScript))
@@ -217,9 +229,10 @@ namespace ISI.Extensions.Debian
 											tarSteamWriter.WriteEntry(new ISI.Extensions.Linux.ArchiveEntry()
 											{
 												TargetPath = "/preinst",
-												LinuxFileMode = ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite | ISI.Extensions.IO.LinuxFileMode.UserCanExecute |
-																				ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite | ISI.Extensions.IO.LinuxFileMode.GroupCanExecute |
-																				ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite | ISI.Extensions.IO.LinuxFileMode.OthersCanExecute,
+												LinuxFileMode = ISI.Extensions.IO.LinuxFileMode.File |
+												                ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite | ISI.Extensions.IO.LinuxFileMode.UserCanExecute |
+												                ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite | ISI.Extensions.IO.LinuxFileMode.GroupCanExecute |
+												                ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite | ISI.Extensions.IO.LinuxFileMode.OthersCanExecute,
 											}, () =>
 											{
 												var stream = new System.IO.MemoryStream();
@@ -235,9 +248,10 @@ namespace ISI.Extensions.Debian
 											tarSteamWriter.WriteEntry(new ISI.Extensions.Linux.ArchiveEntry()
 											{
 												TargetPath = "/postinst",
-												LinuxFileMode = ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite | ISI.Extensions.IO.LinuxFileMode.UserCanExecute |
-																				ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite | ISI.Extensions.IO.LinuxFileMode.GroupCanExecute |
-																				ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite | ISI.Extensions.IO.LinuxFileMode.OthersCanExecute,
+												LinuxFileMode = ISI.Extensions.IO.LinuxFileMode.File |
+												                ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite | ISI.Extensions.IO.LinuxFileMode.UserCanExecute |
+												                ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite | ISI.Extensions.IO.LinuxFileMode.GroupCanExecute |
+												                ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite | ISI.Extensions.IO.LinuxFileMode.OthersCanExecute,
 											}, () =>
 											{
 												var stream = new System.IO.MemoryStream();
@@ -253,9 +267,10 @@ namespace ISI.Extensions.Debian
 											tarSteamWriter.WriteEntry(new ISI.Extensions.Linux.ArchiveEntry()
 											{
 												TargetPath = "/prerm",
-												LinuxFileMode = ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite | ISI.Extensions.IO.LinuxFileMode.UserCanExecute |
-																				ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite | ISI.Extensions.IO.LinuxFileMode.GroupCanExecute |
-																				ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite | ISI.Extensions.IO.LinuxFileMode.OthersCanExecute,
+												LinuxFileMode = ISI.Extensions.IO.LinuxFileMode.File |
+												                ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite | ISI.Extensions.IO.LinuxFileMode.UserCanExecute |
+												                ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite | ISI.Extensions.IO.LinuxFileMode.GroupCanExecute |
+												                ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite | ISI.Extensions.IO.LinuxFileMode.OthersCanExecute,
 											}, () =>
 											{
 												var stream = new System.IO.MemoryStream();

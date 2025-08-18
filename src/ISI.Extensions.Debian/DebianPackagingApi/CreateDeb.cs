@@ -236,7 +236,7 @@ namespace ISI.Extensions.Debian
 											}, () =>
 											{
 												var stream = new System.IO.MemoryStream();
-												stream.TextWrite(request.PreInstallScript);
+												stream.TextWrite(request.PreInstallScript.Replace("\r\n", "\n"));
 												stream.Flush();
 												stream.Rewind();
 												return stream;
@@ -255,7 +255,7 @@ namespace ISI.Extensions.Debian
 											}, () =>
 											{
 												var stream = new System.IO.MemoryStream();
-												stream.TextWrite(request.PostInstallScript);
+												stream.TextWrite(request.PostInstallScript.Replace("\r\n", "\n"));
 												stream.Flush();
 												stream.Rewind();
 												return stream;
@@ -274,7 +274,7 @@ namespace ISI.Extensions.Debian
 											}, () =>
 											{
 												var stream = new System.IO.MemoryStream();
-												stream.TextWrite(request.PreRemovalScript);
+												stream.TextWrite(request.PreRemovalScript.Replace("\r\n", "\n"));
 												stream.Flush();
 												stream.Rewind();
 												return stream;
@@ -292,7 +292,7 @@ namespace ISI.Extensions.Debian
 											}, () =>
 											{
 												var stream = new System.IO.MemoryStream();
-												stream.TextWrite(request.PostRemovalScript);
+												stream.TextWrite(request.PostRemovalScript.Replace("\r\n", "\n"));
 												stream.Flush();
 												stream.Rewind();
 												return stream;

@@ -24,16 +24,20 @@ namespace ISI.Extensions.Debian.DataTransferObjects.DebianPackagingApi
 {
 	public interface IParseDebRequest
 	{
-
+		bool ParseDataFiles { get; }
 	}
 
 	public class ParseDebRequestWithDebFullName : IParseDebRequest
 	{
 		public string DebFullName { get; set; }
+
+		public bool ParseDataFiles { get; set; } = true;
 	}
 
 	public class ParseDebRequestWithDebStream : IParseDebRequest
 	{
 		public System.IO.Stream DebStream { get; set; }
+
+		public bool ParseDataFiles { get; set; } = true;
 	}
 }

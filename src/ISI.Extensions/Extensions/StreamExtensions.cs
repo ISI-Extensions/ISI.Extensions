@@ -40,6 +40,19 @@ namespace ISI.Extensions.Extensions
 			}
 		}
 
+		public static void SkipToEnd(this System.IO.Stream stream)
+		{
+			if (stream != null)
+			{
+				var buffer = new byte[60 * 1024];
+
+				while (stream.Read(buffer, 0, buffer.Length) > 0)
+				{
+					// Keep reading until we're at the end of the stream.
+				}
+			}
+		}
+
 		public static byte[] ReadBytes(this System.IO.Stream sourceStream)
 		{
 			byte[] result = null;

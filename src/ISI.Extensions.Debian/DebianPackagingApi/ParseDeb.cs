@@ -141,26 +141,33 @@ namespace ISI.Extensions.Debian
 
 						if (string.Equals(fileName, "data.tar.gz", StringComparison.InvariantCultureIgnoreCase))
 						{
-							var dataFiles = new ISI.Extensions.InvariantCultureIgnoreCaseStringHashSet();
-
 							using (var archiveStream = archiverStreamReader.Open())
 							{
-								using (var gzipStreamReader = new ISI.Extensions.Linux.GZipStreamReader(archiveStream, true))
+								if (request.ParseDataFiles)
 								{
-									using (var tarStreamReader = new ISI.Extensions.Linux.TarStreamReader(gzipStreamReader, true))
-									{
-										while (tarStreamReader.Read())
-										{
-											dataFiles.Add(tarStreamReader.FileName.TrimStart("./"));
+									var dataFiles = new ISI.Extensions.InvariantCultureIgnoreCaseStringHashSet();
 
-											tarStreamReader.SkipToEnd();
+									using (var gzipStreamReader = new ISI.Extensions.Linux.GZipStreamReader(archiveStream, true))
+									{
+										using (var tarStreamReader = new ISI.Extensions.Linux.TarStreamReader(gzipStreamReader, true))
+										{
+											while (tarStreamReader.Read())
+											{
+												dataFiles.Add(tarStreamReader.FileName.TrimStart("./"));
+
+												tarStreamReader.SkipToEnd();
+											}
 										}
 									}
-								}
 
-								if (dataFiles.Any())
+									if (dataFiles.Any())
+									{
+										response.DataFiles = dataFiles.ToArray();
+									}
+								}
+								else
 								{
-									response.DataFiles = dataFiles.ToArray();
+									archiveStream.SkipToEnd();
 								}
 							}
 						}
@@ -170,20 +177,27 @@ namespace ISI.Extensions.Debian
 
 							using (var archiveStream = archiverStreamReader.Open())
 							{
-								using (var tarStreamReader = new ISI.Extensions.Linux.TarStreamReader(archiveStream, true))
+								if (request.ParseDataFiles)
 								{
-									while (tarStreamReader.Read())
+									using (var tarStreamReader = new ISI.Extensions.Linux.TarStreamReader(archiveStream, true))
 									{
-										dataFiles.Add(tarStreamReader.FileName.TrimStart("./"));
+										while (tarStreamReader.Read())
+										{
+											dataFiles.Add(tarStreamReader.FileName.TrimStart("./"));
 
-										tarStreamReader.SkipToEnd();
+											tarStreamReader.SkipToEnd();
+										}
+									}
+
+									if (dataFiles.Any())
+									{
+										response.DataFiles = dataFiles.ToArray();
 									}
 								}
-							}
-
-							if (dataFiles.Any())
-							{
-								response.DataFiles = dataFiles.ToArray();
+								else
+								{
+									archiveStream.SkipToEnd();
+								}
 							}
 						}
 						else

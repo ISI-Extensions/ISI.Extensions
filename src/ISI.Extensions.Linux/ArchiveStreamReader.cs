@@ -16,6 +16,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Linux
 {
@@ -70,16 +71,8 @@ namespace ISI.Extensions.Linux
 		}
 
 		public abstract bool Read();
-		
-		public void SkipToEnd()
-		{
-			var buffer = new byte[60 * 1024];
 
-			while (FileStream.Read(buffer, 0, buffer.Length) > 0)
-			{
-				// Keep reading until we're at the end of the stream.
-			}
-		}
+		public void SkipToEnd() => FileStream.SkipToEnd();
 		
 		protected void CheckIfDisposed()
 		{

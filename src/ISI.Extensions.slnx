@@ -90,6 +90,7 @@
   <Project Path="ISI.Extensions.Oracle/ISI.Extensions.Oracle.csproj" />
   <Project Path="ISI.Extensions.PfSense/ISI.Extensions.PfSense.csproj" />
   <Project Path="ISI.Extensions.PostgreSQL/ISI.Extensions.PostgreSQL.csproj" />
+  <Project Path="ISI.Extensions.Proxmox/ISI.Extensions.Proxmox.csproj" Id="bcdd12f4-2787-42ed-b67b-f2be454c4860" />
   <Project Path="ISI.Extensions.RavenDb/ISI.Extensions.RavenDb.csproj" Id="addf683e-e2ab-4f06-994c-266b67c61b58" />
   <Project Path="ISI.Extensions.Razor/ISI.Extensions.Razor.csproj" />
   <Project Path="ISI.Extensions.Repository.Cassandra/ISI.Extensions.Repository.Cassandra.csproj" />

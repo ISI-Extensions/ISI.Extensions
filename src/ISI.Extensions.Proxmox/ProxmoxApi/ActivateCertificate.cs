@@ -19,11 +19,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.PfSense.DataTransferObjects.PfSenseApi;
+using DTOs = ISI.Extensions.Proxmox.DataTransferObjects.ProxmoxApi;
 
-namespace ISI.Extensions.PfSense
+namespace ISI.Extensions.Proxmox
 {
-	public partial class PfSenseApi
+	public partial class ProxmoxApi
 	{
 		public DTOs.ActivateCertificateResponse ActivateCertificate(DTOs.ActivateCertificateRequest request)
 		{
@@ -31,10 +31,9 @@ namespace ISI.Extensions.PfSense
 
 			var connectionInfo = GetConnectionInfo(request);
 
-			var directoryName = "/home/certificate-installer";
-			var scriptFileName = "pfsense-import-certificate.php";
-			var keyCertificateFileName = "key.pem";
-			var bundleCertificateFileName = "fullchain.pem";
+			var directoryName = "/etc/pve/local";
+			var keyCertificateFileName = "pveproxy-ssl.key";
+			var bundleCertificateFileName = "pveproxy-ssl.pem";
 
 			var logEntries = new List<DTOs.LogEntry>();
 			void addLog(string description)
@@ -50,31 +49,9 @@ namespace ISI.Extensions.PfSense
 			{
 				client.Connect();
 
-				using (var cmd = client.CreateCommand("8"))
-				{
-					var result = cmd.Execute();
-				}
-
-				using (var cmd = client.CreateCommand($"rm -r {directoryName}"))
-				{
-					var result = cmd.Execute();
-				}
-
-				using (var cmd = client.CreateCommand($"mkdir -p {directoryName}"))
-				{
-					var result = cmd.Execute();
-				}
-
 				using (var scpClient = new Renci.SshNet.ScpClient(connectionInfo))
 				{
 					scpClient.Connect();
-
-					using (var stream = ISI.Extensions.PfSense.T4Resources.Content.Getpfsense_import_certificate_phpStream())
-					{
-						stream.Rewind();
-						scpClient.Upload(stream, $"{directoryName}/{scriptFileName}");
-						addLog($"uploaded: {directoryName}/{scriptFileName}");
-					}
 
 					using (var stream = new System.IO.MemoryStream(request.BundleCertificate))
 					{
@@ -93,23 +70,11 @@ namespace ISI.Extensions.PfSense
 					scpClient.Disconnect();
 				}
 
-				var command = new StringBuilder();
-				command.Append("php");
-				command.Append($" {directoryName}/{scriptFileName}");
-				command.Append($" {directoryName}/{bundleCertificateFileName}");
-				command.Append($" {directoryName}/{keyCertificateFileName}");
-				command.Append($" {request.CertificateName}");
-
-				using (var cmd = client.CreateCommand(command.ToString()))
+				using (var cmd = client.CreateCommand("pveproxy restart"))
 				{
 					var result = cmd.Execute();
 
-					addLog($"Push Cert: {result}");
-				}
-
-				using (var cmd = client.CreateCommand($"rm -r {directoryName}"))
-				{
-					var result = cmd.Execute();
+					addLog($"pveproxy restart: {result}");
 				}
 			}
 			

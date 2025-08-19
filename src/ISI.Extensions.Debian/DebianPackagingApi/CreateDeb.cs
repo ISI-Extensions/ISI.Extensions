@@ -53,7 +53,7 @@ namespace ISI.Extensions.Debian
 						dataFileDirectory = $"/{dataFileDirectory}/{dataFileDirectoryQueue.Dequeue()}/".Replace("//", "/");
 						if (!dataEntryDirectories.Contains(dataFileDirectory))
 						{
-							dataEntries[dataFileDirectory] = new DataDirectory(dataFileDirectory);
+							dataEntries[dataFileDirectory] = new DataDirectory(request, dataFileDirectory);
 						}
 					}
 				}
@@ -78,7 +78,7 @@ namespace ISI.Extensions.Debian
 									modifiedDateTime = (new System.IO.FileInfo(createDebFileRequestDataFile.SourceFullName)).LastWriteTimeUtc;
 								}
 
-								addDataFile(new DataFile(createDebRequestDataEntryFile.TargetPath.TrimStart('/', '\\'), createDebRequestDataEntryFile.IsExecutable, createDebRequestDataEntryFile.DoNotRemove, modifiedDateTime, () =>
+								addDataFile(new DataFile(request, createDebRequestDataEntryFile.TargetPath.TrimStart('/', '\\'), createDebRequestDataEntryFile.IsExecutable, createDebRequestDataEntryFile.DoNotRemove, modifiedDateTime, () =>
 								{
 									var dataStream = new System.IO.MemoryStream();
 
@@ -94,13 +94,13 @@ namespace ISI.Extensions.Debian
 						}
 						else if (requestDataEntry is DTOs.CreateDebRequestEntryStream createDebRequestDataStream)
 						{
-							addDataFile(new DataFile(createDebRequestDataEntryFile.TargetPath.TrimStart('/', '\\'), createDebRequestDataEntryFile.IsExecutable, createDebRequestDataEntryFile.DoNotRemove, DateTimeOffset.UtcNow, () => createDebRequestDataStream.SourceStream));
+							addDataFile(new DataFile(request, createDebRequestDataEntryFile.TargetPath.TrimStart('/', '\\'), createDebRequestDataEntryFile.IsExecutable, createDebRequestDataEntryFile.DoNotRemove, DateTimeOffset.UtcNow, () => createDebRequestDataStream.SourceStream));
 						}
 						else if (requestDataEntry is DTOs.CreateDebRequestEntryFile createDebRequestDataFile)
 						{
 							var fileInfo = new System.IO.FileInfo(createDebRequestDataFile.SourceFullName);
 
-							addDataFile(new DataFile(createDebRequestDataEntryFile.TargetPath.TrimStart('/', '\\'), createDebRequestDataEntryFile.IsExecutable, createDebRequestDataEntryFile.DoNotRemove, fileInfo.LastWriteTimeUtc, () => System.IO.File.OpenRead(createDebRequestDataFile.SourceFullName)));
+							addDataFile(new DataFile(request, createDebRequestDataEntryFile.TargetPath.TrimStart('/', '\\'), createDebRequestDataEntryFile.IsExecutable, createDebRequestDataEntryFile.DoNotRemove, fileInfo.LastWriteTimeUtc, () => System.IO.File.OpenRead(createDebRequestDataFile.SourceFullName)));
 						}
 						else
 						{
@@ -136,7 +136,7 @@ namespace ISI.Extensions.Debian
 
 								var fileInfo = new System.IO.FileInfo(sourceFileName);
 
-								addDataFile(new DataFile($"{targetPathDirectory}{relativePath}", false, false, fileInfo.LastWriteTimeUtc, () => System.IO.File.OpenRead(dataFullName)));
+								addDataFile(new DataFile(request, $"{targetPathDirectory}{relativePath}", false, false, fileInfo.LastWriteTimeUtc, () => System.IO.File.OpenRead(dataFullName)));
 							}
 						}
 						break;
@@ -145,7 +145,7 @@ namespace ISI.Extensions.Debian
 						throw new ArgumentOutOfRangeException(nameof(requestDataEntry));
 				}
 			}
-			
+
 			using (var dataStream = new ISI.Extensions.Stream.TempFileStream())
 			{
 				using (var gzStreamWriter = new System.IO.Compression.GZipStream(dataStream, System.IO.Compression.CompressionMode.Compress, true))
@@ -171,17 +171,17 @@ namespace ISI.Extensions.Debian
 				dataStream.Flush();
 				dataStream.Rewind();
 
-				request.DebControl.InstalledSize ??= installedSize;
+				request.DebControl.InstalledSize ??= ((long)Math.Ceiling((decimal)installedSize / 1024));
 
 				using (var debSpecVersionStream = new System.IO.MemoryStream())
 				{
-					debSpecVersionStream.TextWrite(request.DebSpecVersion.ToString().Replace("\r\n", "\n"));
+					debSpecVersionStream.TextWrite($"{request.DebSpecVersion}\n", Encoding.UTF8);
 					debSpecVersionStream.Flush();
 					debSpecVersionStream.Rewind();
 
 					using (var md5sumsStream = new System.IO.MemoryStream())
 					{
-						md5sumsStream.TextWrite(md5sums.ToString().Replace("\r\n", "\n"));
+						md5sumsStream.TextWrite(md5sums.ToString().Replace("\r\n", "\n"), Encoding.UTF8);
 						md5sumsStream.Flush();
 						md5sumsStream.Rewind();
 
@@ -193,7 +193,7 @@ namespace ISI.Extensions.Debian
 								{
 									using (var debSpecStream = new System.IO.MemoryStream())
 									{
-										debSpecStream.TextWrite(SerializeDebControl(request.DebControl).Replace("\r\n", "\n"));
+										debSpecStream.TextWrite(SerializeDebControl(request.DebControl).Replace("\r\n", "\n"), Encoding.UTF8);
 										debSpecStream.Flush();
 										debSpecStream.Rewind();
 
@@ -201,27 +201,27 @@ namespace ISI.Extensions.Debian
 										{
 											TargetPath = "/",
 											LinuxFileMode = ISI.Extensions.IO.LinuxFileMode.Directory |
-											                ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite |
-											                ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite |
-											                ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite,
+																			ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite |
+																			ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite |
+																			ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite,
 										}, null);
 
 										tarSteamWriter.WriteEntry(new ISI.Extensions.Linux.ArchiveEntry()
 										{
 											TargetPath = "/control",
 											LinuxFileMode = ISI.Extensions.IO.LinuxFileMode.File |
-											                ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite |
-											                ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite |
-											                ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite,
+																			ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite |
+																			ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite |
+																			ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite,
 										}, () => debSpecStream, true);
 
 										tarSteamWriter.WriteEntry(new ISI.Extensions.Linux.ArchiveEntry()
 										{
 											TargetPath = "/md5sums",
 											LinuxFileMode = ISI.Extensions.IO.LinuxFileMode.File |
-											                ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite |
-											                ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite |
-											                ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite,
+																			ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite |
+																			ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite |
+																			ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite,
 										}, () => md5sumsStream, true);
 
 										if (!string.IsNullOrWhiteSpace(request.PreInstallScript))
@@ -230,13 +230,13 @@ namespace ISI.Extensions.Debian
 											{
 												TargetPath = "/preinst",
 												LinuxFileMode = ISI.Extensions.IO.LinuxFileMode.File |
-												                ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite | ISI.Extensions.IO.LinuxFileMode.UserCanExecute |
-												                ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite | ISI.Extensions.IO.LinuxFileMode.GroupCanExecute |
-												                ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite | ISI.Extensions.IO.LinuxFileMode.OthersCanExecute,
+																				ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite | ISI.Extensions.IO.LinuxFileMode.UserCanExecute |
+																				ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite | ISI.Extensions.IO.LinuxFileMode.GroupCanExecute |
+																				ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite | ISI.Extensions.IO.LinuxFileMode.OthersCanExecute,
 											}, () =>
 											{
 												var stream = new System.IO.MemoryStream();
-												stream.TextWrite(request.PreInstallScript.Replace("\r\n", "\n"));
+												stream.TextWrite(request.PreInstallScript.Replace("\r\n", "\n"), Encoding.UTF8);
 												stream.Flush();
 												stream.Rewind();
 												return stream;
@@ -249,13 +249,13 @@ namespace ISI.Extensions.Debian
 											{
 												TargetPath = "/postinst",
 												LinuxFileMode = ISI.Extensions.IO.LinuxFileMode.File |
-												                ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite | ISI.Extensions.IO.LinuxFileMode.UserCanExecute |
-												                ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite | ISI.Extensions.IO.LinuxFileMode.GroupCanExecute |
-												                ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite | ISI.Extensions.IO.LinuxFileMode.OthersCanExecute,
+																				ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite | ISI.Extensions.IO.LinuxFileMode.UserCanExecute |
+																				ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite | ISI.Extensions.IO.LinuxFileMode.GroupCanExecute |
+																				ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite | ISI.Extensions.IO.LinuxFileMode.OthersCanExecute,
 											}, () =>
 											{
 												var stream = new System.IO.MemoryStream();
-												stream.TextWrite(request.PostInstallScript.Replace("\r\n", "\n"));
+												stream.TextWrite(request.PostInstallScript.Replace("\r\n", "\n"), Encoding.UTF8);
 												stream.Flush();
 												stream.Rewind();
 												return stream;
@@ -268,13 +268,13 @@ namespace ISI.Extensions.Debian
 											{
 												TargetPath = "/prerm",
 												LinuxFileMode = ISI.Extensions.IO.LinuxFileMode.File |
-												                ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite | ISI.Extensions.IO.LinuxFileMode.UserCanExecute |
-												                ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite | ISI.Extensions.IO.LinuxFileMode.GroupCanExecute |
-												                ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite | ISI.Extensions.IO.LinuxFileMode.OthersCanExecute,
+																				ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite | ISI.Extensions.IO.LinuxFileMode.UserCanExecute |
+																				ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite | ISI.Extensions.IO.LinuxFileMode.GroupCanExecute |
+																				ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite | ISI.Extensions.IO.LinuxFileMode.OthersCanExecute,
 											}, () =>
 											{
 												var stream = new System.IO.MemoryStream();
-												stream.TextWrite(request.PreRemovalScript.Replace("\r\n", "\n"));
+												stream.TextWrite(request.PreRemovalScript.Replace("\r\n", "\n"), Encoding.UTF8);
 												stream.Flush();
 												stream.Rewind();
 												return stream;
@@ -292,7 +292,7 @@ namespace ISI.Extensions.Debian
 											}, () =>
 											{
 												var stream = new System.IO.MemoryStream();
-												stream.TextWrite(request.PostRemovalScript.Replace("\r\n", "\n"));
+												stream.TextWrite(request.PostRemovalScript.Replace("\r\n", "\n"), Encoding.UTF8);
 												stream.Flush();
 												stream.Rewind();
 												return stream;
@@ -311,17 +311,17 @@ namespace ISI.Extensions.Debian
 								using (var archiverStreamWriter = new ISI.Extensions.Linux.ArchiverStreamWriter(debStream, true))
 								{
 									archiverStreamWriter.WriteEntry("debian-binary", ISI.Extensions.IO.LinuxFileMode.File |
-									                                                 ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite |
-									                                                 ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite |
-									                                                 ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite, debSpecVersionStream);
+																																	 ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite |
+																																	 ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite |
+																																	 ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite, debSpecVersionStream);
 									archiverStreamWriter.WriteEntry("control.tar.gz", ISI.Extensions.IO.LinuxFileMode.File |
-									                                                  ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite |
-									                                                  ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite |
-									                                                  ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite, controlStream);
+																																		ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite |
+																																		ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite |
+																																		ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite, controlStream);
 									archiverStreamWriter.WriteEntry("data.tar.gz", ISI.Extensions.IO.LinuxFileMode.File |
-									                                               ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite |
-									                                               ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite |
-									                                               ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite, dataStream);
+																																 ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite |
+																																 ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite |
+																																 ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite, dataStream);
 								}
 
 								debStream.Flush();
@@ -357,11 +357,11 @@ namespace ISI.Extensions.Debian
 		{
 			private readonly GetStreamDelegate _getStream;
 
-			public DataFile(string targetPath, bool isExecutable, bool doNotRemove, DateTimeOffset modifiedDateTime, GetStreamDelegate getStream)
+			public DataFile(DTOs.ICreateDebRequest request, string targetPath, bool isExecutable, bool doNotRemove, DateTimeOffset modifiedDateTime, GetStreamDelegate getStream)
 			{
 				TargetPath = targetPath;
-				Owner = "root";
-				Group = "root";
+				Owner = request.DefaultOwner;
+				Group = request.DefaultGroup;
 				LinuxFileMode = ISI.Extensions.IO.LinuxFileMode.File | (isExecutable ? ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite | ISI.Extensions.IO.LinuxFileMode.UserCanExecute |
 																																							 ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite | ISI.Extensions.IO.LinuxFileMode.GroupCanExecute |
 																																							 ISI.Extensions.IO.LinuxFileMode.OthersCanRead | ISI.Extensions.IO.LinuxFileMode.OthersCanWrite | ISI.Extensions.IO.LinuxFileMode.OthersCanExecute :
@@ -378,11 +378,11 @@ namespace ISI.Extensions.Debian
 
 		public class DataDirectory : ISI.Extensions.Linux.ArchiveEntry
 		{
-			public DataDirectory(string targetPath)
+			public DataDirectory(DTOs.ICreateDebRequest request, string targetPath)
 			{
 				TargetPath = targetPath;
-				Owner = "root";
-				Group = "root";
+				Owner = request.DefaultOwner;
+				Group = request.DefaultGroup;
 				LinuxFileMode = ISI.Extensions.IO.LinuxFileMode.Directory |
 												ISI.Extensions.IO.LinuxFileMode.UserCanRead | ISI.Extensions.IO.LinuxFileMode.UserCanWrite |
 												ISI.Extensions.IO.LinuxFileMode.GroupCanRead | ISI.Extensions.IO.LinuxFileMode.GroupCanWrite |

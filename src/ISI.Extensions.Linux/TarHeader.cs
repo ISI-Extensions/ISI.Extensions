@@ -26,52 +26,54 @@ namespace ISI.Extensions.Linux
 
 		private static readonly string Empty8 = new string('\0', 8);
 
-		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 100)]
+		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 100)] //0
 		private byte[] name;
 
-		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 8)]
+		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 8)] //100
 		private byte[] mode;
 
-		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 8)]
+		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 8)] //108
 		private byte[] uid;
 
-		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 8)]
+		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 8)] //116
 		private byte[] gid;
 
-		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 12)]
+		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 12)] //124
 		private byte[] size;
 
-		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 12)]
+		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 12)] //136
 		private byte[] mtime;
 
-		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 8)]
+		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 8)] //148
 		private byte[] chksum;
 
-		private byte typeflag;
+		private byte typeflag;  //156
 
-		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 100)]
+		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 100)] //157
 		private byte[] linkname;
 
-		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 6)]
+		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 6)]  //257
 		private byte[] magic;
 
-		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 2)]
+		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 2)]  //263
 		private byte[] version;
 
-		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 32)]
+		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 32)]  //265
 		private byte[] uname;
 
-		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 32)]
+		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 32)]  //297
 		private byte[] gname;
 
-		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 8)]
+		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 8)]  //329
 		private byte[] devmajor;
 
-		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 8)]
+		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 8)]  //337
 		private byte[] devminor;
 
-		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 155)]
+		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValArray, ArraySubType = System.Runtime.InteropServices.UnmanagedType.U1, SizeConst = 155)]  //345
 		private byte[] prefix;
+
+		//500
 
 		public string FileName
 		{

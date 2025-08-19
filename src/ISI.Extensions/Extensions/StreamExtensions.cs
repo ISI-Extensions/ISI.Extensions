@@ -333,28 +333,28 @@ namespace ISI.Extensions.Extensions
 		{
 			foreach (var field in typeof(T).GetTypeInfo().DeclaredFields)
 			{
-				var type = field.FieldType;
+				var fieldType = field.FieldType;
 
-				if (type.GetTypeInfo().IsEnum)
+				if (fieldType.GetTypeInfo().IsEnum)
 				{
-					type = System.Enum.GetUnderlyingType(type);
+					fieldType = System.Enum.GetUnderlyingType(fieldType);
 				}
 
-				var length = 0;
-				if (type == typeof(short) || type == typeof(ushort))
+				var fieldLength = 0;
+				if ((fieldType == typeof(short)) || (fieldType == typeof(ushort)))
 				{
-					length = 2;
+					fieldLength = 2;
 				}
-				else if (type == typeof(int) || type == typeof(uint))
+				else if (fieldType == typeof(int) || fieldType == typeof(uint))
 				{
-					length = 4;
+					fieldLength = 4;
 				}
 
-				if (length > 0)
+				if (fieldLength > 0)
 				{
 					var offset = System.Runtime.InteropServices.Marshal.OffsetOf<T>(field.Name).ToInt32();
 
-					Array.Reverse(data, offset, length);
+					Array.Reverse(data, offset, fieldLength);
 				}
 			}
 		}

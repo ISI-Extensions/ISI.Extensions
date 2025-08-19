@@ -32,6 +32,9 @@ namespace ISI.Extensions.Debian.DataTransferObjects.DebianPackagingApi
 		string PreRemovalScript { get; }
 		string PostRemovalScript { get; }
 
+		string DefaultOwner { get; }
+		string DefaultGroup { get; }
+
 		IEnumerable<ICreateDebRequestDataEntry> DataEntries { get; }
 	}
 
@@ -54,6 +57,9 @@ namespace ISI.Extensions.Debian.DataTransferObjects.DebianPackagingApi
 		public string PostInstallScript { get; set; }
 		public string PreRemovalScript { get; set; }
 		public string PostRemovalScript { get; set; }
+
+		public string DefaultOwner { get; set; } = "root";
+		public string DefaultGroup { get; set; } = "root";
 
 		public IEnumerable<ICreateDebRequestDataEntry> DataEntries { get; set; }
 	}

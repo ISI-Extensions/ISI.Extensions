@@ -13,7 +13,6 @@ namespace ISI.Extensions.Proxmox.DataTransferObjects.ProxmoxApi
 		public string ProxmoxUserName { get; set; }
 		public string ProxmoxPassword { get; set; }
 
-		public string CertificateName { get; set; }
 		public byte[] KeyCertificate { get; set; }
 		public byte[] BundleCertificate { get; set; }
 	}

@@ -26,9 +26,37 @@ namespace ISI.Platforms.ServiceApplication
 	{
 		private string GetServiceConfigFullName(string serviceName) => $"/etc/systemd/system/{serviceName}.service";
 
+		public DTOs.StartServiceResponse StartService(DTOs.StartServiceRequest request)
+		{
+			var response = new DTOs.StartServiceResponse();
+
+			System.Console.WriteLine("Starting Service");
+
+			ISI.Extensions.Process.WaitForProcessResponse("systemctl", "start", $"{request.ServiceName}.service");
+
+			System.Console.WriteLine("Started Service");
+
+			return response;
+		}
+
+		public DTOs.StopServiceResponse StopService(DTOs.StopServiceRequest request)
+		{
+			var response = new DTOs.StopServiceResponse();
+
+			System.Console.WriteLine("Stoping Service");
+
+			ISI.Extensions.Process.WaitForProcessResponse("systemctl", "stop", $"{request.ServiceName}.service");
+
+			System.Console.WriteLine("Stopped Service");
+
+			return response;
+		}
+
 		public DTOs.InstallServiceResponse InstallService(DTOs.InstallServiceRequest request)
 		{
 			var response = new DTOs.InstallServiceResponse();
+
+			System.Console.WriteLine($"ServiceName => {request.ServiceName}");
 
 			var serviceConfig = @$"[Unit]
 Description={request.ServiceName}
@@ -41,12 +69,18 @@ ExecStart={request.Executable} {ServiceApplicationContext.RunningAsServiceOption
 WantedBy=multi-user.target
 ";
 
+			System.Console.WriteLine("Install Service");
+			
+			System.Console.WriteLine($"Create => {GetServiceConfigFullName(request.ServiceName)}");
+
 			System.IO.File.WriteAllText(GetServiceConfigFullName(request.ServiceName), serviceConfig);
 
 			ISI.Extensions.Process.WaitForProcessResponse("systemctl", "daemon-reload");
 
 			ISI.Extensions.Process.WaitForProcessResponse("systemctl", "enable", $"{request.ServiceName}.service");
 
+			System.Console.WriteLine("Installed Service");
+			
 			return response;
 		}
 
@@ -54,34 +88,28 @@ WantedBy=multi-user.target
 		{
 			var response = new DTOs.UnInstallServiceResponse();
 			
+			System.Console.WriteLine($"ServiceName => {request.ServiceName}");
+
 			StopService(new()
 			{
 				ServiceName = request.ServiceName,
 			});
+			
+			System.Console.WriteLine("Uninstall Service");
+			
+			System.Console.WriteLine($"Delete => {GetServiceConfigFullName(request.ServiceName)}");
 
 			System.IO.File.Delete(GetServiceConfigFullName(request.ServiceName));
+			
+			System.Console.WriteLine("disable Service");
 
 			ISI.Extensions.Process.WaitForProcessResponse("systemctl", "disable", $"{request.ServiceName}.service");
+			
+			System.Console.WriteLine("daemon-reload");
 
 			ISI.Extensions.Process.WaitForProcessResponse("systemctl", "daemon-reload");
-
-			return response;
-		}
-
-		public DTOs.StartServiceResponse StartService(DTOs.StartServiceRequest request)
-		{
-			var response = new DTOs.StartServiceResponse();
-
-			ISI.Extensions.Process.WaitForProcessResponse("systemctl", "start", $"{request.ServiceName}.service");
-
-			return response;
-		}
-
-		public DTOs.StopServiceResponse StopService(DTOs.StopServiceRequest request)
-		{
-			var response = new DTOs.StopServiceResponse();
-
-			ISI.Extensions.Process.WaitForProcessResponse("systemctl", "stop", $"{request.ServiceName}.service");
+			
+			System.Console.WriteLine("Uninstalled Service");
 
 			return response;
 		}

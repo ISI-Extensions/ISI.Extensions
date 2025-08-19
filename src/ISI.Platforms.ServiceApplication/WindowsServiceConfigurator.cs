@@ -117,12 +117,23 @@ namespace ISI.Platforms.ServiceApplication
 			{
 				if (service.Status is System.ServiceProcess.ServiceControllerStatus.Stopped or System.ServiceProcess.ServiceControllerStatus.Paused)
 				{
+					System.Console.WriteLine("Starting Service");
+
 					service.Start();
 					service.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Running, request.WaitForDuration);
 				}
 
 				service = GetServiceController(request.ServiceName);
 				response.Success = (service.Status == System.ServiceProcess.ServiceControllerStatus.Running);
+
+				if (response.Success)
+				{
+					System.Console.WriteLine("Started Service");
+				}
+			}
+			else
+			{
+				System.Console.WriteLine("Service Not found while trying to start");
 			}
 
 			return response;
@@ -138,12 +149,23 @@ namespace ISI.Platforms.ServiceApplication
 			{
 				if (service.Status == System.ServiceProcess.ServiceControllerStatus.Running)
 				{
+					System.Console.WriteLine("Stoping Service");
+
 					service.Stop();
 					service.WaitForStatus(System.ServiceProcess.ServiceControllerStatus.Stopped, request.WaitForDuration);
 				}
 
 				service = GetServiceController(request.ServiceName);
 				response.Success = (service.Status == System.ServiceProcess.ServiceControllerStatus.Stopped);
+
+				if (response.Success)
+				{
+					System.Console.WriteLine("Stopped Service");
+				}
+			}
+			else
+			{
+				System.Console.WriteLine("Service Not found while trying to stop");
 			}
 
 			return response;
@@ -153,6 +175,10 @@ namespace ISI.Platforms.ServiceApplication
 		{
 			var response = new DTOs.InstallServiceResponse();
 
+			System.Console.WriteLine($"ServiceName => {request.ServiceName}");
+
+			System.Console.WriteLine("Install Service");
+			
 			var scmManagerPtr = IntPtr.Zero;
 			var createServicePtr = IntPtr.Zero;
 
@@ -192,6 +218,8 @@ namespace ISI.Platforms.ServiceApplication
 						throw new System.ComponentModel.Win32Exception();
 					}
 				}
+
+				System.Console.WriteLine("Installed Service");
 			}
 			catch (Exception exception)
 			{
@@ -216,11 +244,15 @@ namespace ISI.Platforms.ServiceApplication
 		{
 			var response = new DTOs.UnInstallServiceResponse();
 
+			System.Console.WriteLine($"ServiceName => {request.ServiceName}");
+
 			StopService(new()
 			{
 				ServiceName = request.ServiceName,
 			});
 
+			System.Console.WriteLine("Uninstall Service");
+			
 			var scmManagerPtr = IntPtr.Zero;
 			var openServicePtr = IntPtr.Zero;
 
@@ -239,6 +271,8 @@ namespace ISI.Platforms.ServiceApplication
 				}
 
 				DeleteService(openServicePtr);
+
+				System.Console.WriteLine("Uninstalled Service");
 			}
 			catch (Exception exception)
 			{

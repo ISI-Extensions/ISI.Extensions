@@ -182,7 +182,7 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 				ServiceName = context.ServiceName,
 			});
 
-			afterUninstallService.Invoke();
+			afterUninstallService?.Invoke();
 		}
 
 		private static void ServiceSetup_StartService(ServiceApplicationContext context)

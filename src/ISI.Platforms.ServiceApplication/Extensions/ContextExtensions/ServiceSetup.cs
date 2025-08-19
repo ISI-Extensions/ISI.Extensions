@@ -28,6 +28,7 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 {
 	public static partial class ContextExtensions
 	{
+		public const string InstallAndStartService = "install-and-Start";
 		public const string InstallService = "install";
 		public const string UninstallService = "uninstall";
 		public const string StartService = "start";
@@ -107,6 +108,15 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 			Action beforeUninstallService = null, Action afterUninstallService = null)
 		{
 			var args = new ISI.Extensions.InvariantCultureIgnoreCaseStringHashSet(context.Args);
+
+			if (args.Contains(InstallAndStartService))
+			{
+				ServiceSetup_InstallService(context, beforeInstallService, afterInstallService);
+
+				ServiceSetup_StartService(context);
+
+				return true;
+			}
 
 			if (args.Contains(InstallService))
 			{

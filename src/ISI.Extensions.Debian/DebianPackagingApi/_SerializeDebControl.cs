@@ -38,7 +38,7 @@ namespace ISI.Extensions.Debian
 
 			content.AppendLine($"Version: {debControl.Version}");
 
-			content.AppendLine($"Architecture: {debControl.Architecture}");
+			content.AppendLine($"Architecture: {debControl.Architecture.TrimStart("binary-", StringComparison.InvariantCultureIgnoreCase)}");
 
 			if (debControl.Depends.NullCheckedAny())
 			{

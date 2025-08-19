@@ -120,8 +120,8 @@ namespace ISI.Extensions.Tests
 
 			var parseDebResponse = debianPackagingApi.ParseDeb(new ISI.Extensions.Debian.DataTransferObjects.DebianPackagingApi.ParseDebRequestWithDebFullName()
 			{
-				DebFullName = @"F:\ISI\Internal Projects\ISI.CertificateAgent.LinuxService\Publish\ISI.CertificateAgent.LinuxService_4.0.9361.1210_arm64.deb",
-				ParseDataFiles = false,
+				DebFullName = @"C:\Users\ron.muth\Downloads\ISI.CertificateAgent.LinuxService_4.0.9362.7184_amd64.deb",
+				//ParseDataFiles = false,
 			});
 		}
 	}

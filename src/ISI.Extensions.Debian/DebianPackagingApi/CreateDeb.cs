@@ -175,13 +175,13 @@ namespace ISI.Extensions.Debian
 
 				using (var debSpecVersionStream = new System.IO.MemoryStream())
 				{
-					debSpecVersionStream.TextWrite(request.DebSpecVersion.ToString());
+					debSpecVersionStream.TextWrite(request.DebSpecVersion.ToString().Replace("\r\n", "\n"));
 					debSpecVersionStream.Flush();
 					debSpecVersionStream.Rewind();
 
 					using (var md5sumsStream = new System.IO.MemoryStream())
 					{
-						md5sumsStream.TextWrite(md5sums.ToString());
+						md5sumsStream.TextWrite(md5sums.ToString().Replace("\r\n", "\n"));
 						md5sumsStream.Flush();
 						md5sumsStream.Rewind();
 
@@ -193,7 +193,7 @@ namespace ISI.Extensions.Debian
 								{
 									using (var debSpecStream = new System.IO.MemoryStream())
 									{
-										debSpecStream.TextWrite(SerializeDebControl(request.DebControl));
+										debSpecStream.TextWrite(SerializeDebControl(request.DebControl).Replace("\r\n", "\n"));
 										debSpecStream.Flush();
 										debSpecStream.Rewind();
 

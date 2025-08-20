@@ -21,24 +21,44 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.AspNetCore
 {
-	public abstract partial class Controller
+	public class InlineFileContentResult : Microsoft.AspNetCore.Mvc.FileContentResult
 	{
-		[Microsoft.AspNetCore.Mvc.NonAction]
-		public virtual ISI.Extensions.AspNetCore.InlineFileStreamResult InlineFile(System.IO.Stream fileStream, string contentType, string fileDownloadName)
+		public InlineFileContentResult(byte[] fileContents, string contentType) 
+			: base(fileContents, contentType)
 		{
-			return new ISI.Extensions.AspNetCore.InlineFileStreamResult(fileStream, contentType)
-			{
-				FileDownloadName = fileDownloadName,
-			};
 		}
 
-		[Microsoft.AspNetCore.Mvc.NonAction]
-		public virtual ISI.Extensions.AspNetCore.InlineFileContentResult InlineFile(byte[] fileContents, string contentType, string fileDownloadName)
+		public InlineFileContentResult(byte[] fileContents, Microsoft.Net.Http.Headers.MediaTypeHeaderValue contentType) 
+			: base(fileContents, contentType)
 		{
-			return new ISI.Extensions.AspNetCore.InlineFileContentResult(fileContents, contentType)
+		}
+
+		public override void ExecuteResult(Microsoft.AspNetCore.Mvc.ActionContext context)
+		{
+			if (!string.IsNullOrWhiteSpace(FileDownloadName))
 			{
-				FileDownloadName = fileDownloadName,
-			};
+				var contentDisposition = new Microsoft.Net.Http.Headers.ContentDispositionHeaderValue("inline");
+				contentDisposition.SetHttpFileName(FileDownloadName);
+				context.HttpContext.Response.Headers.ContentDisposition = contentDisposition.ToString();
+
+				FileDownloadName = null;
+			}
+
+			base.ExecuteResult(context);
+		}
+
+		public override async Task ExecuteResultAsync(Microsoft.AspNetCore.Mvc.ActionContext context)
+		{
+			if (!string.IsNullOrWhiteSpace(FileDownloadName))
+			{
+				var contentDisposition = new Microsoft.Net.Http.Headers.ContentDispositionHeaderValue("inline");
+				contentDisposition.SetHttpFileName(FileDownloadName);
+				context.HttpContext.Response.Headers.ContentDisposition = contentDisposition.ToString();
+
+				FileDownloadName = null;
+			}
+
+			await base.ExecuteResultAsync(context);
 		}
 	}
 }

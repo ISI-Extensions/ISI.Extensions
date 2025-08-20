@@ -28,7 +28,7 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 {
 	public static partial class ContextExtensions
 	{
-		public const string InstallAndStartService = "install-and-Start";
+		public const string InstallAndStartService = "install-and-start";
 		public const string InstallService = "install";
 		public const string UninstallService = "uninstall";
 		public const string StartService = "start";

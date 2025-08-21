@@ -138,7 +138,7 @@ namespace ISI.Extensions
 			}
 
 			{
-				var fileExtension = System.IO.Path.GetExtension(fileName);
+				var fileExtension = System.IO.Path.GetExtension(fileName).Trim('.');
 
 				if (KnownMimeTypes.TryGetValue(fileExtension, out var mimeType))
 				{

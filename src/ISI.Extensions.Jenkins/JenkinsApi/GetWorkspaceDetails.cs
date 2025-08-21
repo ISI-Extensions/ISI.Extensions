@@ -77,7 +77,7 @@ namespace ISI.Extensions.Jenkins
 								response.SourceControlUrl = hudsonScmSubversionSCMModuleLocationElement.GetElementByLocalName("remote")?.Value ?? string.Empty;
 								if (!string.IsNullOrWhiteSpace(response.SourceControlUrl))
 								{
-									response.SourceControlTypeUuid = ISI.Extensions.Git.GitApi.SourceControlTypeUuid.ToGuid();
+									response.SourceControlTypeUuid = ISI.Extensions.Svn.SvnApi.SourceControlTypeUuid.ToGuid();
 								}
 							}
 						}

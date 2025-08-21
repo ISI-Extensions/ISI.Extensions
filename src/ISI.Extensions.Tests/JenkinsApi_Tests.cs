@@ -107,7 +107,7 @@ namespace ISI.Extensions.Tests
 
 			var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.Jenkins.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
 
-			var jobId = "Backup.JenkinsConfigs";
+			var jobId = "ISI.FrameWork.Build";
 
 			var xxx = jenkinsApi.GetWorkspaceDetails(new()
 			{

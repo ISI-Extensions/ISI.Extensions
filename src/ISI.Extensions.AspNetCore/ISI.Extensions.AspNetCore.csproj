@@ -23,8 +23,8 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.8" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.8" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.3" />
-		<PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="9.0.3" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.4" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="9.0.4" />
 		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.8" />
 		<PackageReference Update="NETStandard.Library" Version="2.0.3" />
 	</ItemGroup>

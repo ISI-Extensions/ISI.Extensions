@@ -31,7 +31,7 @@ namespace ISI.Extensions.MessageBus
 
 		public MessageBusBuildRequest DefaultChannelMessageBusBuildRequest { get; } = new(null, [])
 		{
-			ChannelPath = Configuration.DefaultChannel.ChannelPath,
+			ChannelPath = Configuration.DefaultChannel.ChannelPath.Replace("-{MachineName}", $"-{Environment.MachineName}"),
 			ConcurrentConsumerLimit = Configuration.DefaultChannel.ConcurrentConsumerLimit,
 			RetryLimit = Configuration.DefaultChannel.RetryLimit,
 			RetryInterval = Configuration.DefaultChannel.RetryInterval,
@@ -149,7 +149,7 @@ namespace ISI.Extensions.MessageBus
 						{
 							Add(new MessageBusBuildRequest(namedChannelConfigurationMessageBusBuildRequest.ChannelName, namedChannelConfigurationMessageBusBuildRequest.AddSubscriptions)
 							{
-								ChannelPath = namedChannelConfiguration.ChannelPath,
+								ChannelPath = namedChannelConfiguration.ChannelPath.Replace("-{MachineName}", $"-{Environment.MachineName}"),
 								ConcurrentConsumerLimit = namedChannelConfiguration.ConcurrentConsumerLimit,
 								RetryLimit = namedChannelConfiguration.RetryLimit,
 								RetryInterval = namedChannelConfiguration.RetryInterval,
@@ -171,7 +171,7 @@ namespace ISI.Extensions.MessageBus
 						{
 							Add(new MessageBusBuildRequest(namedChannelConfigurationChannelPathSuffixMessageBusBuildRequest.ChannelName, namedChannelConfigurationChannelPathSuffixMessageBusBuildRequest.AddSubscriptions)
 							{
-								ChannelPath = string.Format("{0}{1}{2}", namedChannelConfiguration.ChannelPath, (namedChannelConfigurationChannelPathSuffixMessageBusBuildRequest.ChannelPathSuffix.StartsWith("-") ? string.Empty : "-"), namedChannelConfigurationChannelPathSuffixMessageBusBuildRequest.ChannelPathSuffix),
+								ChannelPath = string.Format("{0}{1}{2}", namedChannelConfiguration.ChannelPath.Replace("-{MachineName}", $"-{Environment.MachineName}"), (namedChannelConfigurationChannelPathSuffixMessageBusBuildRequest.ChannelPathSuffix.StartsWith("-") ? string.Empty : "-"), namedChannelConfigurationChannelPathSuffixMessageBusBuildRequest.ChannelPathSuffix),
 								ConcurrentConsumerLimit = namedChannelConfiguration.ConcurrentConsumerLimit,
 								RetryLimit = namedChannelConfiguration.RetryLimit,
 								RetryInterval = namedChannelConfiguration.RetryInterval,
@@ -206,7 +206,7 @@ namespace ISI.Extensions.MessageBus
 					{
 						Add(new MessageBusBuildRequest(channelPathSuffixMessageBusBuildRequest.ChannelName, channelPathSuffixMessageBusBuildRequest.AddSubscriptions)
 						{
-							ChannelPath = string.Format("{0}{1}{2}", Configuration.DefaultChannel.ChannelPath, (channelPathSuffixMessageBusBuildRequest.ChannelPathSuffix.StartsWith("-") ? string.Empty : "-"), channelPathSuffixMessageBusBuildRequest.ChannelPathSuffix),
+							ChannelPath = string.Format("{0}{1}{2}", Configuration.DefaultChannel.ChannelPath.Replace("-{MachineName}", $"-{Environment.MachineName}"), (channelPathSuffixMessageBusBuildRequest.ChannelPathSuffix.StartsWith("-") ? string.Empty : "-"), channelPathSuffixMessageBusBuildRequest.ChannelPathSuffix),
 							ConcurrentConsumerLimit = channelPathSuffixMessageBusBuildRequest.ConcurrentConsumerLimit ?? Configuration.DefaultChannel.ConcurrentConsumerLimit,
 							RetryLimit = channelPathSuffixMessageBusBuildRequest.RetryLimit ?? Configuration.DefaultChannel.RetryLimit,
 							RetryInterval = channelPathSuffixMessageBusBuildRequest.RetryInterval ?? Configuration.DefaultChannel.RetryInterval,

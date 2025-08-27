@@ -43,16 +43,10 @@ namespace ISI.Extensions.DependencyInjection
 				case RegistrationDeclarationByCreateService registrationDeclarationByCreateService:
 					lock (Lock)
 					{
-						if (Creators.ContainsKey(serviceType))
-						{
-							Creators.Remove(serviceType);
-						}
+						Creators.Remove(serviceType);
 						Creators.Add(serviceType, provider => registrationDeclarationByCreateService.CreateService(provider));
 
-						if (LifeTimes.ContainsKey(serviceType))
-						{
-							LifeTimes.Remove(serviceType);
-						}
+						LifeTimes.Remove(serviceType);
 						LifeTimes.Add(serviceType, registrationDeclarationByCreateService.ServiceLifetime);
 					}
 					break;
@@ -60,18 +54,12 @@ namespace ISI.Extensions.DependencyInjection
 				case RegistrationDeclarationByInstance registrationDeclarationByInstance:
 					lock (Lock)
 					{
-						if (KnownTypes.ContainsKey(serviceType))
-						{
-							KnownTypes.Remove(serviceType);
-						}
+						KnownTypes.Remove(serviceType);
 						KnownTypes.Add(serviceType, registrationDeclarationByInstance.Instance.GetType());
 
 						Singletons.Add(serviceType, registrationDeclarationByInstance.Instance);
 
-						if (LifeTimes.ContainsKey(serviceType))
-						{
-							LifeTimes.Remove(serviceType);
-						}
+						LifeTimes.Remove(serviceType);
 						LifeTimes.Add(serviceType, ServiceLifetime.Singleton);
 					}
 					break;
@@ -79,16 +67,10 @@ namespace ISI.Extensions.DependencyInjection
 				case RegistrationDeclarationByMapToType registrationDeclarationByMapToType:
 					lock (Lock)
 					{
-						if (KnownTypes.ContainsKey(serviceType))
-						{
-							KnownTypes.Remove(serviceType);
-						}
+						KnownTypes.Remove(serviceType);
 						KnownTypes.Add(serviceType, registrationDeclarationByMapToType.MapToType);
 
-						if (LifeTimes.ContainsKey(serviceType))
-						{
-							LifeTimes.Remove(serviceType);
-						}
+						LifeTimes.Remove(serviceType);
 						LifeTimes.Add(serviceType, registrationDeclarationByMapToType.ServiceLifetime);
 					}
 					break;

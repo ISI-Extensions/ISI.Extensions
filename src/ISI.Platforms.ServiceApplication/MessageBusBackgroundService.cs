@@ -44,9 +44,13 @@ namespace ISI.Platforms.ServiceApplication
 
 		public async Task StartAsync(Microsoft.Extensions.Hosting.IHost host, System.Threading.CancellationToken cancellationToken)
 		{
+			Logger.LogInformation("Starting MessageBusBackgroundService");
+
 			Context.PreMessageBusBuild?.Invoke(host);
 
 			_messageBus = host.Services.GetRequiredService<ISI.Extensions.MessageBus.IMessageBus>();
+
+			Logger.LogInformation($"  MessageBusType => {_messageBus.GetType().Name}");
 
 			_messageBus.Build(host.Services, new ISI.Extensions.MessageBus.MessageBusBuildRequestCollection()
 			{

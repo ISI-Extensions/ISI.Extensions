@@ -35,7 +35,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 				{
 					var uriBuilder = new UriBuilder(Configuration.ConnectionString)
 					{
-						Path = Configuration.DefaultChannel.ChannelPath,
+						Path = Configuration.DefaultChannel.ChannelPath.Replace("-{MachineName}", $"-{Environment.MachineName}"),
 					};
 	
 					DefaultChannelUri = uriBuilder.Uri;
@@ -53,7 +53,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 			{
 				var uriBuilder = new UriBuilder(Configuration.ConnectionString)
 				{
-					Path = string.Format("{0}-{1}", Configuration.DefaultChannel.ChannelPath, CommandChannelName),
+					Path = string.Format("{0}-{1}", Configuration.DefaultChannel.ChannelPath.Replace("-{MachineName}", $"-{Environment.MachineName}"), CommandChannelName),
 				};
 
 				ChannelUriLookup.Add(CommandChannelName, uriBuilder.Uri);

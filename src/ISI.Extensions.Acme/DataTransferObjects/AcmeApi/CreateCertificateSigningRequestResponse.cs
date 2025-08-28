@@ -24,8 +24,10 @@ namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 {
 	public class CreateCertificateSigningRequestResponse
 	{
-		public string PrivateKeyPem { get; set; }
-
 		public byte[] CertificateSigningRequest { get; set; }
+
+		public string CreateSigningRequestPem { get; set; }
+		
+		public string PrivateKeyPem { get; set; }
 	}
 }

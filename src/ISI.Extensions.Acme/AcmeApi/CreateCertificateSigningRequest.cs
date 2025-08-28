@@ -48,6 +48,8 @@ namespace ISI.Extensions.Acme
 				}
 
 				response.CertificateSigningRequest = certificateSigningRequest.CreateSigningRequest();
+				
+				response.CreateSigningRequestPem = certificateSigningRequest.CreateSigningRequestPem();
 
 				response.PrivateKeyPem = certificateSigningKey.ExportRSAPrivateKeyPem();
 			}

@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2025, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,11 +18,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DTOs = ISI.Extensions.AuthenticationIdentity.DataTransferObjects;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Platforms.ServiceApplication.Test
+namespace ISI.Extensions.AuthenticationIdentity.DataTransferObjects
 {
-	public class AuthenticationIdentityApi : ISI.Platforms.AspNetCore.AbstractAuthenticationIdentityApi
+	public class ValidateUserNamePasswordResponse
 	{
+		public Guid? UserUuid { get; set; }
 	}
 }

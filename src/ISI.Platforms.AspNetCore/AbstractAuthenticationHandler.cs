@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -155,37 +155,65 @@ namespace ISI.Platforms.AspNetCore
 									return Microsoft.AspNetCore.Authentication.AuthenticateResult.Success(ticket);
 								}
 							}
-						}
-					}
 
-					var validateApiKeyResponse = await AuthenticationIdentityApi.ValidateApiKeyAsync(new()
-					{
-						Url = $"{Request.GetDisplayUrl()}/{Request.QueryString}",
-						ApiKey = authenticationHeaderValue.TrimStart(ISI.Extensions.WebClient.HeaderCollection.Keys.BearerAuthenticationPrefix).Trim(),
-					});
+							var userUuid = (Guid?)null;
 
-					if (validateApiKeyResponse.UserUuid.HasValue)
-					{
-						var userUuid = validateApiKeyResponse.UserUuid;
+							if (!userUuid.HasValue && string.Equals(parsedValue.Scheme, ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer, StringComparison.InvariantCultureIgnoreCase))
+							{
+								var validateApiKeyResponse = await AuthenticationIdentityApi.ValidateApiKeyAsync(new()
+								{
+									Url = $"{Request.GetDisplayUrl()}/{Request.QueryString}",
+									ApiKey = parsedValue.Parameter.Trim(),
+								});
 
-						var getUsersResponse = await AuthenticationIdentityApi.GetUsersAsync(new()
-						{
-							UserUuids = [userUuid.Value],
-						});
+								userUuid = validateApiKeyResponse?.UserUuid;
+							}
 
-						var user = getUsersResponse.Users.NullCheckedFirstOrDefault();
+							if (!userUuid.HasValue && string.Equals(parsedValue.Scheme, ISI.Extensions.WebClient.HeaderCollection.Keys.Basic, StringComparison.InvariantCultureIgnoreCase))
+							{
+								try
+								{
+									var base64DecodedCredentials = Convert.FromBase64String(parsedValue.Parameter.Trim());
 
-						if ((user?.IsActive).GetValueOrDefault())
-						{
-							var claims = await GetUserClaimsAsync(user);
+									var decodedCredentials = (new System.Text.UTF8Encoding(false, true)).GetString(base64DecodedCredentials);
 
-							var principal = new System.Security.Claims.ClaimsPrincipal([
-								new System.Security.Claims.ClaimsIdentity(claims)
-							]);
+									var credentials = decodedCredentials.Split(':');
 
-							var ticket = new Microsoft.AspNetCore.Authentication.AuthenticationTicket(principal, Scheme.Name);
+									var validateUserNamePasswordResponse = await AuthenticationIdentityApi.ValidateUserNamePasswordAsync(new()
+									{
+										UserName = credentials[0],
+										Password = credentials[1],
+									});
 
-							return Microsoft.AspNetCore.Authentication.AuthenticateResult.Success(ticket);
+									userUuid = validateUserNamePasswordResponse?.UserUuid;
+								}
+								catch
+								{
+								}
+							}
+
+							if (userUuid.HasValue)
+							{
+								var getUsersResponse = await AuthenticationIdentityApi.GetUsersAsync(new()
+								{
+									UserUuids = [userUuid.Value],
+								});
+
+								var user = getUsersResponse.Users.NullCheckedFirstOrDefault();
+
+								if ((user?.IsActive).GetValueOrDefault())
+								{
+									var claims = await GetUserClaimsAsync(user);
+
+									var principal = new System.Security.Claims.ClaimsPrincipal([
+										new System.Security.Claims.ClaimsIdentity(claims)
+									]);
+
+									var ticket = new Microsoft.AspNetCore.Authentication.AuthenticationTicket(principal, Scheme.Name);
+
+									return Microsoft.AspNetCore.Authentication.AuthenticateResult.Success(ticket);
+								}
+							}
 						}
 					}
 				}

@@ -24,15 +24,15 @@
 		<ProjectReference Include="..\ISI.Platforms\ISI.Platforms.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="9.0.8" />
-		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.8" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.8" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.8" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.8" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.8" />
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.8" />
-		<PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="9.0.8" />
-		<PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="9.0.8" />
-		<PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.8" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="9.0.9" />
+		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.9" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.9" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.9" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.9" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.9" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="9.0.9" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="9.0.9" />
+		<PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.9" />
 	</ItemGroup>
 </Project>

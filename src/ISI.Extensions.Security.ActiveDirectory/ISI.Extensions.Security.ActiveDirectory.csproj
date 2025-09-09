@@ -16,8 +16,8 @@
 
 	<ItemGroup>
 		<PackageReference Update="NETStandard.Library" Version="2.0.3" />
-	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.8" />
-	  <PackageReference Include="System.DirectoryServices" Version="9.0.8" />
+	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.9" />
+	  <PackageReference Include="System.DirectoryServices" Version="9.0.9" />
 	</ItemGroup>
 
 	<ItemGroup>

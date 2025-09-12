@@ -45,7 +45,7 @@ namespace ISI.Extensions.ScmManager
 
 				var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableDTOs.ListRepositoryChangeSetsResponse>(uri.Uri, GetHeaders(request, "application/vnd.scmm-changesetCollection+json;v=2"), true, cookieContainer: GetCookieContainer(request));
 
-				repositoryChangeSets.AddRange(apiResponse.Embedded.Changesets.ToNullCheckedArray(repositoryChangeSet => new RepositoryChangeSet()
+				repositoryChangeSets.AddRange((apiResponse?.Embedded?.Changesets).ToNullCheckedArray(repositoryChangeSet => new RepositoryChangeSet()
 				{
 					Id = repositoryChangeSet.Id,
 					Author = repositoryChangeSet.Author.NullCheckedConvert(author => new Person()

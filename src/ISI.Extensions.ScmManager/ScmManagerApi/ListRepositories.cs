@@ -47,7 +47,7 @@ namespace ISI.Extensions.ScmManager
 
 				var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableDTOs.ListRepositoriesResponse>(uri.Uri, GetHeaders(request, "application/vnd.scmm-repositoryCollection+json;v=2"), true,  cookieContainer: GetCookieContainer(request));
 
-				repositories.AddRange((apiResponse.Embedded?.Repositories).ToNullCheckedArray(repository => new Repository()
+				repositories.AddRange((apiResponse?.Embedded?.Repositories).ToNullCheckedArray(repository => new Repository()
 				{
 					Namespace = repository.Namespace,
 					Name = repository.Name,

@@ -18,17 +18,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Runtime.Serialization;
+using ISI.Extensions.Extensions;
+using ISI.Extensions.AspNetCore.Extensions;
+using ISI.Extensions.JsonSerialization.Extensions;
+using DTOs = ISI.Extensions.Monitor.AspNetCore.Models.MonitorApiV5.SerializableModels;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.Monitor.SerializableModels
+namespace ISI.Extensions.Monitor.AspNetCore.Controllers
 {
-	[DataContract]
-	public class MonitorTestSerializableResponseStartupParameterValue
+	public partial class MonitorApiV5Controller 
 	{
-		[DataMember(Name = "name")]
-		public string Name { get; set; }
-
-		[DataMember(Name = "value")]
-		public string Value { get; set; }
+		public DTOs.RunMonitorTestException Convert(Exception source)
+		{
+			return source.NullCheckedConvert(value => new DTOs.RunMonitorTestException
+			{
+				ExceptionType = source.GetType().FullName,
+				Message = source.Message,
+				Exception = source.ErrorMessageFormatted(includeInnerExceptions: false),
+				StackTrace = source.StackTrace,
+				ExtraTrackingInformation = (source as ISI.Extensions.Tracing.IExtraTrackingInformationException)?.GetExtraTrackingInformation().ToNullCheckedArray(item => new DTOs.RunMonitorTestExceptionExtraTrackingInformation()
+				{
+					Key = item.Key,
+					Value = item.Value
+				}),
+				InnerException = Convert(source.InnerException)
+			});
+		}
 	}
 }

@@ -18,23 +18,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Runtime.Serialization;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.Monitor.SerializableModels
+namespace ISI.Extensions.Monitor
 {
-	[CollectionDataContract(Name = "monitorTestSerializableResponseStartupParameterValueCollection", ItemName = "parameterValue", Namespace = "")]
-	public class MonitorTestSerializableResponseStartupParameterValueCollection : System.Collections.ObjectModel.Collection<MonitorTestSerializableResponseStartupParameterValue>
+	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
+	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
 	{
-		public MonitorTestSerializableResponseStartupParameterValueCollection()
+		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
-
-		}
-
-		public MonitorTestSerializableResponseStartupParameterValueCollection(IEnumerable<MonitorTestSerializableResponseStartupParameterValue> monitorTestParameters)
-			: base(monitorTestParameters.ToNullCheckedList())
-		{
-
+			services.AddSingleton<IMonitorApi, MonitorApi>();
 		}
 	}
 }

@@ -12,23 +12,36 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Runtime.Serialization;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Monitor.DataTransferObjects.MonitorApi;
 
-namespace ISI.Extensions.Monitor.SerializableModels
+namespace ISI.Extensions.Monitor
 {
-	[DataContract]
-	public class MonitorTestSerializableResponseStartupParameterValue
+	public partial class MonitorApi
 	{
-		[DataMember(Name = "name")]
-		public string Name { get; set; }
+		private static IMonitorTest[] _monitorTests = null;
+		protected IMonitorTest[] MonitorTests => _monitorTests ??= GetMonitorTests();
 
-		[DataMember(Name = "value")]
-		public string Value { get; set; }
+		private IMonitorTest[] GetMonitorTests()
+		{
+			var monitorTestTypes = ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementationTypes(typeof(IMonitorTest));
+
+			return monitorTestTypes.ToNullCheckedArray(monitorTestType => ServiceProvider.GetService(monitorTestType) as IMonitorTest, NullCheckCollectionResult.Empty);
+		}
+
+		public DTOs.ListMonitorTestsResponse ListMonitorTests(DTOs.ListMonitorTestsRequest request)
+		{
+			var response = new DTOs.ListMonitorTestsResponse();
+
+			response.MonitorTests = MonitorTests;
+
+			return response;
+		}
 	}
 }

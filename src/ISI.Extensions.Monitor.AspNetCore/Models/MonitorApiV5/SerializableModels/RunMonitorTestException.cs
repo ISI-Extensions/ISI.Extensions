@@ -18,17 +18,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Monitor.SerializableModels
+namespace ISI.Extensions.Monitor.AspNetCore.Models.MonitorApiV5.SerializableModels
 {
 	[DataContract]
-	public class MonitorTestSerializableResponseStartupParameterValue
+	public class RunMonitorTestException
 	{
-		[DataMember(Name = "name")]
-		public string Name { get; set; }
+		[DataMember(Name = "exceptionType", EmitDefaultValue = false)]
+		public string ExceptionType { get; set; }
 
-		[DataMember(Name = "value")]
-		public string Value { get; set; }
+		[DataMember(Name = "message", EmitDefaultValue = false)]
+		public string Message { get; set; }
+
+		[DataMember(Name = "exception", EmitDefaultValue = false)]
+		public string Exception { get; set; }
+
+		[DataMember(Name = "stackTrace", EmitDefaultValue = false)]
+		public string StackTrace { get; set; }
+
+		[DataMember(Name = "extraTrackingInformation", EmitDefaultValue = false)]
+		public RunMonitorTestExceptionExtraTrackingInformation[] ExtraTrackingInformation { get; set; }
+
+		[DataMember(Name = "innerException", EmitDefaultValue = false)]
+		public RunMonitorTestException InnerException { get; set; }
 	}
 }

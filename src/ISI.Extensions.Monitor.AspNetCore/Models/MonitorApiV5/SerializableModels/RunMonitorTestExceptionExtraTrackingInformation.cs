@@ -18,17 +18,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Monitor.SerializableModels
+namespace ISI.Extensions.Monitor.AspNetCore.Models.MonitorApiV5.SerializableModels
 {
 	[DataContract]
-	public class MonitorTestSerializableResponseStartupParameterValue
+	public class RunMonitorTestExceptionExtraTrackingInformation
 	{
-		[DataMember(Name = "name")]
-		public string Name { get; set; }
+		[DataMember(Name = "key", EmitDefaultValue = false)]
+		public string Key { get; set; }
 
-		[DataMember(Name = "value")]
+		[DataMember(Name = "value", EmitDefaultValue = false)]
 		public string Value { get; set; }
 	}
 }

@@ -19,13 +19,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.Monitor
 {
 	public abstract class MonitorTestResponse : IMonitorTestResponse
 	{
 		public IMonitorTestResponseStartupParameterValue[] StartupParameterValues { get; set; }
 		public bool Passed { get; set; }
 
-		public abstract Monitor.SerializableModels.IMonitorTestSerializableResponse GetSerializableResponse();
+		public abstract ISI.Extensions.Monitor.SerializableModels.IMonitorTestSerializableResponse GetSerializableResponse();
 	}
 }

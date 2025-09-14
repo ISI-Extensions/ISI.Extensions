@@ -19,27 +19,39 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.AspNetCore.Extensions;
+using ISI.Extensions.JsonSerialization.Extensions;
+using DTOs = ISI.Extensions.Monitor.AspNetCore.Models.MonitorApiV5.SerializableModels;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.Extensions
+namespace ISI.Extensions.Monitor.AspNetCore.Controllers
 {
-	public static class MonitorTestResponseExtensions
+	public partial class MonitorApiV5Controller 
 	{
-		public static TSerializableResponse CreateSerializableResponse<TSerializableResponse>(this ISI.Extensions.Monitor.IMonitorTestResponse monitorTestResponse, Action<TSerializableResponse> initialize = null)
-			where TSerializableResponse : Monitor.SerializableModels.IMonitorTestSerializableResponse, new()
+		[Microsoft.AspNetCore.Mvc.AcceptVerbs(nameof(Microsoft.AspNetCore.Http.HttpMethods.Get))]
+		[Microsoft.AspNetCore.Authorization.AllowAnonymous]
+		[ISI.Extensions.AspNetCore.NamedRoute(Routes.MonitorApiV5.RouteNames.GetAvailableMonitorTests, typeof(Routes.MonitorApiV5), "get-available-monitor-tests")]
+		[Microsoft.AspNetCore.Mvc.ProducesResponseType(Microsoft.AspNetCore.Http.StatusCodes.Status200OK, Type = typeof(DTOs.GetAvailableMonitorTestsResponse))]
+		public async Task<Microsoft.AspNetCore.Mvc.IActionResult> GetAvailableMonitorTestsAsync(System.Threading.CancellationToken cancellationToken = default)
 		{
-			var response = new TSerializableResponse()
+			var response = new DTOs.GetAvailableMonitorTestsResponse();
+
+			var monitorTests = MonitorApi.ListMonitorTests(new ()).MonitorTests;
+
+			response.AvailableMonitorTests = monitorTests.ToNullCheckedArray(monitorTest => new Models.MonitorApiV5.SerializableModels.AvailableMonitorTest()
 			{
-				Passed = monitorTestResponse.Passed,
-				StartupParameterValues = monitorTestResponse.StartupParameterValues.ToNullCheckedArray(parameter => new ISI.Extensions.Monitor.SerializableModels.MonitorTestSerializableResponseStartupParameterValue()
+				Name = monitorTest.Name,
+				Url = Url.GenerateRouteUrl(Routes.MonitorApiV5.RouteNames.RunMonitorTest, new { name = monitorTest.Name }),
+				Parameters = monitorTest.GetParameterInformations().ToNullCheckedArray(parameter => new Models.MonitorApiV5.SerializableModels.AvailableMonitorTestParameter()
 				{
 					Name = parameter.Name,
-					Value = parameter.Value
+					Type = parameter.Type.Name,
+					DefaultValue = parameter.DefaultValue
 				})
-			};
+			});
 
-			initialize?.Invoke(response);
-
-			return response;
+			return Ok(response);
+		}
 	}
-}
 }

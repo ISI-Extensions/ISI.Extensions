@@ -18,17 +18,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Runtime.Serialization;
+using ISI.Extensions.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using ISI.Extensions.AspNetCore;
+using ISI.Extensions.AspNetCore.Extensions;
 
-namespace ISI.Extensions.Monitor.SerializableModels
+namespace ISI.Extensions.Monitor.AspNetCore
 {
-	[DataContract]
-	public class MonitorTestSerializableResponseStartupParameterValue
+	public partial class Routes
 	{
-		[DataMember(Name = "name")]
-		public string Name { get; set; }
+		public partial class MonitorApiV5 : IHasUrlRoute
+		{
+			string IHasUrlRoute.UrlRoot => UrlRoot;
+			
+			#pragma warning disable 649
+			public class RouteNames : IRouteNames
+			{
+				[RouteName] public const string RunMonitorTest = "RunMonitorTest-86174efc-3d16-4f76-a435-8f4c9cc16edf";
+				[RouteName] public const string GetAvailableMonitorTests = "GetAvailableMonitorTests-9a437887-fbfa-454b-b375-9f548ba1d98b";
+				//${RouteNames}
+			}
+			#pragma warning restore 649
 
-		[DataMember(Name = "value")]
-		public string Value { get; set; }
+			internal static readonly string UrlRoot = Routes.UrlRoot + "monitor-api-v5/";
+		}
 	}
 }

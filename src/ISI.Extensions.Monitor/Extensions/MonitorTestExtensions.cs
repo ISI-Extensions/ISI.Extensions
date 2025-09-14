@@ -24,23 +24,24 @@ namespace ISI.Extensions.Extensions
 {
 	public static class MonitorTestExtensions
 	{
-		public static TResponse CreateResponse<TResponse>(this ISI.Extensions.IMonitorTest monitorTest)
-			where TResponse : ISI.Extensions.IMonitorTestResponse, new()
+		public static TResponse CreateResponse<TResponse>(this ISI.Extensions.Monitor.IMonitorTest monitorTest)
+			where TResponse : ISI.Extensions.Monitor.IMonitorTestResponse, new()
 		{
-			var response = new TResponse();
-
-			response.StartupParameterValues = monitorTest.GetModelProperties().ToNullCheckedArray(property =>
+			var response = new TResponse()
 			{
-				var value = property.GetValue(monitorTest.Model);
-
-				var parameter = new ISI.Extensions.MonitorTestResponseStartupParameterValue()
+				StartupParameterValues = monitorTest.GetModelProperties().ToNullCheckedArray(property =>
 				{
-					Name = property.Name,
-					Value = (value == null ? null : (property.PropertyType.IsArray ? string.Join(",", ((IEnumerable<object>)value).Select(v => string.Format("{0}", v))) : string.Format("{0}", value)))
-				};
+					var value = property.GetValue(monitorTest.Model);
 
-				return parameter as ISI.Extensions.IMonitorTestResponseStartupParameterValue;
-			});
+					var parameter = new ISI.Extensions.Monitor.MonitorTestResponseStartupParameterValue()
+					{
+						Name = property.Name,
+						Value = (value == null ? null : (property.PropertyType.IsArray ? string.Join(",", ((IEnumerable<object>)value).Select(v => string.Format("{0}", v))) : string.Format("{0}", value)))
+					};
+
+					return parameter as ISI.Extensions.Monitor.IMonitorTestResponseStartupParameterValue;
+				})
+			};
 
 			return response;
 		}
@@ -52,7 +53,7 @@ namespace ISI.Extensions.Extensions
 			public string DefaultValue { get; set; }
 		}
 
-		public static MonitorTestParameterInformation[] GetParameterInformations(this ISI.Extensions.IMonitorTest monitorTest)
+		public static MonitorTestParameterInformation[] GetParameterInformations(this ISI.Extensions.Monitor.IMonitorTest monitorTest)
 		{
 			var model = Activator.CreateInstance(monitorTest.ModelType);
 
@@ -69,6 +70,22 @@ namespace ISI.Extensions.Extensions
 
 				return parameter;
 			});
+		}
+
+		public delegate bool ConstructMonitorTestModelTryGetParameterValueDelegate(string key, out string value);
+		public static object ConstructMonitorTestModel(this ISI.Extensions.Monitor.IMonitorTest monitorTest, ConstructMonitorTestModelTryGetParameterValueDelegate tryGetParameterValue)
+		{
+			var model = Activator.CreateInstance(monitorTest.ModelType);
+
+			foreach (var monitorTestModelProperty in monitorTest.GetModelProperties())
+			{
+				if (tryGetParameterValue(monitorTestModelProperty.Name, out var value))
+				{
+					monitorTestModelProperty.SetValueFromString(model, value);
+				}
+			}
+
+			return model;
 		}
 	}
 }

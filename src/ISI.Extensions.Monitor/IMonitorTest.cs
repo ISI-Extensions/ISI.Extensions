@@ -19,7 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.Monitor
 {
 	public interface IMonitorTest
 	{

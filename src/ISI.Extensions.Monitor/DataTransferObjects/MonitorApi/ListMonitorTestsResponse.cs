@@ -18,17 +18,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Runtime.Serialization;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Monitor.SerializableModels
+namespace ISI.Extensions.Monitor.DataTransferObjects.MonitorApi
 {
-	[DataContract]
-	public class MonitorTestSerializableResponseStartupParameterValue
+	public class ListMonitorTestsResponse
 	{
-		[DataMember(Name = "name")]
-		public string Name { get; set; }
-
-		[DataMember(Name = "value")]
-		public string Value { get; set; }
+		public IEnumerable<IMonitorTest> MonitorTests { get; set; }
 	}
 }

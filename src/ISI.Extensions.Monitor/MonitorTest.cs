@@ -20,9 +20,9 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.Monitor
 {
-	public abstract class MonitorTest<TModel> : ISI.Extensions.IMonitorTest
+	public abstract class MonitorTest<TModel> : ISI.Extensions.Monitor.IMonitorTest
 		where TModel : class
 	{
 		protected static System.Reflection.PropertyInfo[] _modelProperties = null;

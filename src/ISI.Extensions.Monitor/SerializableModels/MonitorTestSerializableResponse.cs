@@ -22,11 +22,11 @@ using System.Runtime.Serialization;
 
 namespace ISI.Extensions.Monitor.SerializableModels
 {
-	[DataContract(Name = "runMonitorTestResponse", Namespace = "")]
+	[DataContract]
 	public class MonitorTestSerializableResponse : IMonitorTestSerializableResponse
 	{
 		[DataMember(Name = "startupParameterValues", Order = 1)]
-		public MonitorTestSerializableResponseStartupParameterValueCollection StartupParameterValues { get; set; }
+		public MonitorTestSerializableResponseStartupParameterValue[] StartupParameterValues { get; set; }
 
 		[DataMember(Name = "passed", Order = int.MaxValue - 1)]
 		public bool Passed { get; set; }

@@ -18,13 +18,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.Monitor
 {
 	[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
 	public class MonitorTestAttribute : ISI.Extensions.TypeLocatorAttribute
 	{
 		public MonitorTestAttribute()
-			: base(typeof(ISI.Extensions.IMonitorTest))
+			: base(typeof(ISI.Extensions.Monitor.IMonitorTest))
 		{
 
 		}

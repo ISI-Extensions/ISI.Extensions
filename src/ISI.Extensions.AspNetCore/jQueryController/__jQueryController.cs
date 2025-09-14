@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.AspNetCore
 {
-	public partial class jQueryController : Microsoft.AspNetCore.Mvc.Controller
+	public partial class jQueryController : ISI.Extensions.AspNetCore.Controller
 	{
 		public class Routes
 		{
@@ -33,12 +33,11 @@ namespace ISI.Extensions.AspNetCore
 			public const string jQueryNamespace = "/JavaScripts/jquery.namespace.js";
 		}
 
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-
 		public jQueryController(
 			Microsoft.Extensions.Logging.ILogger logger)
+			: base(logger)
 		{
-			Logger = logger;
+
 		}
 	}
 }

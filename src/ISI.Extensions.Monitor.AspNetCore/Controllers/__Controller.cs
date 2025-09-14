@@ -18,17 +18,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Runtime.Serialization;
+using ISI.Extensions.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.Monitor.SerializableModels
+namespace ISI.Extensions.Monitor.AspNetCore.Controllers
 {
-	[DataContract]
-	public class MonitorTestSerializableResponseStartupParameterValue
+	public abstract partial class Controller : ISI.Extensions.AspNetCore.Controller
 	{
-		[DataMember(Name = "name")]
-		public string Name { get; set; }
+		protected Controller(
+			Microsoft.Extensions.Logging.ILogger logger)
+			: base(logger)
+		{
 
-		[DataMember(Name = "value")]
-		public string Value { get; set; }
+		}
 	}
 }

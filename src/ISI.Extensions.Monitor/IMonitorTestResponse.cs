@@ -19,11 +19,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.Monitor
 {
 	public interface IMonitorTestResponse
 	{
-		ISI.Extensions.IMonitorTestResponseStartupParameterValue[] StartupParameterValues { get; set; }
+		ISI.Extensions.Monitor.IMonitorTestResponseStartupParameterValue[] StartupParameterValues { get; set; }
 		bool Passed { get; }
 
 		Monitor.SerializableModels.IMonitorTestSerializableResponse GetSerializableResponse();

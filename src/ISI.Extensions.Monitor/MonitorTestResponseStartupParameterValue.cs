@@ -19,9 +19,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.Monitor
 {
-	public class MonitorTestResponseStartupParameterValue : ISI.Extensions.IMonitorTestResponseStartupParameterValue
+	public class MonitorTestResponseStartupParameterValue : ISI.Extensions.Monitor.IMonitorTestResponseStartupParameterValue
 	{
 		public string Name { get; set; }
 		public string Value { get; set; }

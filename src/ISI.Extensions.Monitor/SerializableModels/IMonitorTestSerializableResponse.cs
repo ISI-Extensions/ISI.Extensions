@@ -23,7 +23,7 @@ namespace ISI.Extensions.Monitor.SerializableModels
 {
 	public interface IMonitorTestSerializableResponse
 	{
-		MonitorTestSerializableResponseStartupParameterValueCollection StartupParameterValues { get; set; }
+		MonitorTestSerializableResponseStartupParameterValue[] StartupParameterValues { get; set; }
 		bool Passed { get; set; }
 	}
 }

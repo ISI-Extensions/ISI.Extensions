@@ -31,7 +31,7 @@ namespace ISI.Extensions.NameCheap.SerializableModels
 	}
 
 	[DataContract]
-	public class SetDnsRecordsRequestAuthDetails
+	public class SetDnsRecordsRequestAuthDetails : IRequestAuthDetails
 	{
 		[DataMember(Name = "ParentUserType", EmitDefaultValue = false)]
 		public string ParentUserType { get; set; }
@@ -81,6 +81,9 @@ namespace ISI.Extensions.NameCheap.SerializableModels
 
 		[DataMember(Name = "TLD", EmitDefaultValue = false)]
 		public string TLD { get; set; }
+
+		[DataMember(Name = "EmailType", EmitDefaultValue = false)]
+		public string EmailType { get; set; }
 	}
 
 	[DataContract]

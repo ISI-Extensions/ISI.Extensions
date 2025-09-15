@@ -65,7 +65,8 @@ namespace ISI.Extensions.NameCheap
 
 			var domainNamePieces = request.Domain.Split(new[] { '.' });
 
-			var uri = request.GetUrl(IpifyApi, Configuration);
+			var uri = request.GetUrl(Configuration);
+			uri.SetUserNameClientIp(request, IpifyApi, Configuration);
 			uri.AddQueryStringParameter("Command", "namecheap.domains.dns.setHosts");
 			uri.AddQueryStringParameter("SLD", domainNamePieces.First());
 			uri.AddQueryStringParameter("TLD", domainNamePieces.Last());

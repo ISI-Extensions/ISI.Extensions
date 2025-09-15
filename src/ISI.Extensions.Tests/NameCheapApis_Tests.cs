@@ -123,20 +123,20 @@ namespace ISI.Extensions.Tests
 				{
 					ApiUser = settings.GetValue("NameCheap.ApiUser"),
 					ApiKey = settings.GetValue("NameCheap.ApiKey"),
-					Domain = "ronmuth.com",
+					Domain = "muthmanor.com",
 					DnsRecords =
 					[
 						new ISI.Extensions.Dns.DnsRecord()
 						{
 							Name = "_acme-challenge",
-							Data = "r7-ooXsI_wUXhYUNdQYbwMQfMe9x6tXfhL5VAOXrnLU",
+							Data = "syNbKycoWcK4rrO_VcN2VWVsurWpSS3z6Ftl6pTYpBg",
 							RecordType = ISI.Extensions.Dns.RecordType.TextRecord,
 							Ttl = TimeSpan.FromMinutes(10),
 						},
 						new ISI.Extensions.Dns.DnsRecord()
 						{
 							Name = "_acme-challenge",
-							Data = "UF1bGUUhPPlcTYM1v9yz87gu4NnsrqQbFWMno1m5ZV4",
+							Data = "Jbw0sk_5m0g39QbqtFEcXpKP_wH-sSOwMLAz8_0tsn8",
 							RecordType = ISI.Extensions.Dns.RecordType.TextRecord,
 							Ttl = TimeSpan.FromMinutes(10),
 						},

@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -93,7 +93,7 @@ namespace ISI.Extensions.NameCheap
 				var dnsRecord = dnsRecords[dnsRecordIndex - 1];
 
 				addDnsRecordKeyValue(dnsRecordIndex, "HostName", dnsRecord.Name);
-				addDnsRecordKeyValue(dnsRecordIndex, "RecordType", dnsRecord.RecordType.GetDescription());
+				addDnsRecordKeyValue(dnsRecordIndex, "RecordType", dnsRecord.RecordType.GetAbbreviation());
 				addDnsRecordKeyValue(dnsRecordIndex, "Address", dnsRecord.Data);
 				addDnsRecordKeyValue(dnsRecordIndex, "MXPref", $"{dnsRecord.Priority}");
 				addDnsRecordKeyValue(dnsRecordIndex, "AssociatedAppTitle", dnsRecord.Protocol);
@@ -102,6 +102,34 @@ namespace ISI.Extensions.NameCheap
 			}
 
 			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteTextGet(uri.Uri, request.GetHeaders(Configuration), true);
+
+			//var apiRequest = new SerializableDTOs.SetDnsRecordsRequest()
+			//{
+			//	AuthDetails = new()
+			//	{
+			//		ParentUserType = string.Empty,
+			//		ParentUserId = 0,
+			//		UserId = string.Empty,
+			//		EndUserIp = string.Empty,
+			//		AdminUserName = string.Empty,
+			//		DisableSecurityNotification = true,
+			//		AllowWhenDomainLocked = true,
+			//		ProceedWhenDomainLockedFlag = true,
+			//		DefaultChargeForUserName = string.Empty,
+			//		Roles = ["User"],
+			//	},
+			//	DnsRecords = new()
+			//	{
+			//		DnsRecordKeyValues = dnsRecordKeyValues.ToArray(),
+			//		SLD = domainNamePieces.First(),
+			//		TLD = domainNamePieces.Last(),
+			//		EmailType = getDnsRecordsResponse?.EmailType,
+			//	},
+			//};
+
+			//apiRequest.AuthDetails.SetUserNameClientIp(request, IpifyApi, Configuration);
+
+			//var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.SetDnsRecordsRequest, ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, request.GetHeaders(Configuration), apiRequest, true);
 
 			return response;
 		}

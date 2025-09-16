@@ -23,76 +23,84 @@ namespace ISI.Extensions.NameCheap.SerializableModels
 	[DataContract]
 	public class SetDnsRecordsRequest
 	{
-		[DataMember(Name = "authDetails", EmitDefaultValue = false)]
+		[DataMember(Name = "authDetails")]
 		public SetDnsRecordsRequestAuthDetails AuthDetails { get; set; }
 
-		[DataMember(Name = "request", EmitDefaultValue = false)]
+		[DataMember(Name = "request")]
 		public SetDnsRecordsRequestDnsRecords DnsRecords { get; set; }
 	}
 
 	[DataContract]
 	public class SetDnsRecordsRequestAuthDetails : IRequestAuthDetails
 	{
-		[DataMember(Name = "ParentUserType", EmitDefaultValue = false)]
+		[DataMember(Name = "ParentUserType")]
 		public string ParentUserType { get; set; }
 
-		[DataMember(Name = "ParentUserId", EmitDefaultValue = false)]
+		[DataMember(Name = "ParentUserId")]
 		public int ParentUserId { get; set; }
 
-		[DataMember(Name = "UserId", EmitDefaultValue = false)]
+		[DataMember(Name = "UserId")]
 		public string UserId { get; set; }
 
-		[DataMember(Name = "UserName", EmitDefaultValue = false)]
+		[DataMember(Name = "UserName")]
 		public string UserName { get; set; }
 
-		[DataMember(Name = "ClientIp", EmitDefaultValue = false)]
+		[DataMember(Name = "ClientIp")]
 		public string ClientIp { get; set; }
 
-		[DataMember(Name = "EndUserIp", EmitDefaultValue = false)]
+		[DataMember(Name = "EndUserIp")]
 		public string EndUserIp { get; set; }
 
-		[DataMember(Name = "AdminUserName", EmitDefaultValue = false)]
+		[DataMember(Name = "AdminUserName")]
 		public string AdminUserName { get; set; }
 
-		[DataMember(Name = "DisableSecurityNotification", EmitDefaultValue = false)]
+		[DataMember(Name = "DisableSecurityNotification")]
 		public bool DisableSecurityNotification { get; set; }
 
-		[DataMember(Name = "AllowWhenDomainLocked", EmitDefaultValue = false)]
+		[DataMember(Name = "AllowWhenDomainLocked")]
 		public bool AllowWhenDomainLocked { get; set; }
 
-		[DataMember(Name = "ProceedWhenDomainLockedFlag", EmitDefaultValue = false)]
+		[DataMember(Name = "ProceedWhenDomainLockedFlag")]
 		public bool ProceedWhenDomainLockedFlag { get; set; }
 
-		[DataMember(Name = "DefaultChargeForUserName", EmitDefaultValue = false)]
+		[DataMember(Name = "DefaultChargeForUserName")]
 		public string DefaultChargeForUserName { get; set; }
 
-		[DataMember(Name = "Roles", EmitDefaultValue = false)]
+		[DataMember(Name = "Roles")]
 		public string[] Roles { get; set; }
 	}
 
 	[DataContract]
 	public class SetDnsRecordsRequestDnsRecords
 	{
-		[DataMember(Name = "RequestValues", EmitDefaultValue = false)]
+		[DataMember(Name = "RequestValues")]
 		public SetDnsRecordsRequestDnsRecordKeyValue[] DnsRecordKeyValues { get; set; }
 
-		[DataMember(Name = "SLD", EmitDefaultValue = false)]
+		[DataMember(Name = "SLD")]
 		public string SLD { get; set; }
 
-		[DataMember(Name = "TLD", EmitDefaultValue = false)]
+		[DataMember(Name = "TLD")]
 		public string TLD { get; set; }
 
-		[DataMember(Name = "EmailType", EmitDefaultValue = false)]
+		[DataMember(Name = "EmailType")]
 		public string EmailType { get; set; }
+
+		[DataMember(Name = "Flag", EmitDefaultValue = false)]
+		public string Flag { get; set; }
+
+		[DataMember(Name = "Tag", EmitDefaultValue = false)]
+		public string Tag { get; set; }
 	}
 
 	[DataContract]
 	public class SetDnsRecordsRequestDnsRecordKeyValue
 	{
-		[DataMember(Name = "Key", EmitDefaultValue = false)]
+		[DataMember(Name = "Key")]
 		public string Key { get; set; }
 
-		[DataMember(Name = "Value", EmitDefaultValue = false)]
+		[DataMember(Name = "Value")]
 		public string Value { get; set; }
+
+		public override string ToString() => $"{Key} => {Value}";
 	}
 }

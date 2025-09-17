@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Text;
 using ISI.Extensions.Extensions;
 using DTOs = ISI.Extensions.NameCheap.DataTransferObjects;
-using SerializableDTOs = ISI.Extensions.NameCheap.SerializableModels;
 
 namespace ISI.Extensions.NameCheap.Extensions
 {
@@ -46,24 +45,14 @@ namespace ISI.Extensions.NameCheap.Extensions
 			return uri;
 		}
 
-		public static void SetUserNameClientIp(this UriBuilder uri, DTOs.IRequest request, ISI.Extensions.Ipify.IpifyApi ipifyApi, Configuration configuration)
+		public static void SetUserNameClientIp(this ISI.Extensions.WebClient.Rest.FormDataCollection formData, DTOs.IRequest request, ISI.Extensions.Ipify.IpifyApi ipifyApi, Configuration configuration)
 		{
 			var apiUser = (string.IsNullOrWhiteSpace(request.ApiUser) ? configuration.ApiUser : request.ApiUser);
 
 			var clientIp = _clientIp ??= ipifyApi.GetExternalIPv4().IpAddress;
 
-			uri.AddQueryStringParameter("UserName", apiUser);
-			uri.AddQueryStringParameter("ClientIp", clientIp);
-		}
-
-		public static void SetUserNameClientIp(this SerializableDTOs.IRequestAuthDetails requestAuthDetails, DTOs.IRequest request, ISI.Extensions.Ipify.IpifyApi ipifyApi, Configuration configuration)
-		{
-			var apiUser = (string.IsNullOrWhiteSpace(request.ApiUser) ? configuration.ApiUser : request.ApiUser);
-
-			var clientIp = _clientIp ??= ipifyApi.GetExternalIPv4().IpAddress;
-
-			requestAuthDetails.UserName = apiUser;
-			requestAuthDetails.ClientIp = clientIp;
+			formData.Add("UserName", apiUser);
+			formData.Add("ClientIp", clientIp);
 		}
 	}
 }

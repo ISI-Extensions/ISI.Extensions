@@ -30,18 +30,20 @@ namespace ISI.Extensions.NameCheap
 		{
 			var response = new DTOs.GetDnsRecordsResponse();
 
-			var domainPieces = request.Domain.Split(new[] { '.' });
+			var domainNamePieces = request.Domain.Split(new[] { '.' });
 
 			var uri = request.GetUrl(Configuration);
-			uri.SetUserNameClientIp(request, IpifyApi, Configuration);
-			uri.AddQueryStringParameter("Command", "namecheap.domains.dns.getHosts");
-			uri.AddQueryStringParameter("SLD", domainPieces.First());
-			uri.AddQueryStringParameter("TLD", domainPieces.Last());
-			uri.AddQueryStringParameter("PageSize", 100);
 
-			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteTextGet(uri.Uri, request.GetHeaders(Configuration), true);
+			var formData = new ISI.Extensions.WebClient.Rest.FormDataCollection();
+			formData.SetUserNameClientIp(request, IpifyApi, Configuration);
+			formData.Add("Command", "namecheap.domains.dns.getHosts");
+			formData.Add("SLD", domainNamePieces.First());
+			formData.Add("TLD", domainNamePieces.Last());
+			formData.Add("PageSize", 100);
 
-			var apiResponseXml = System.Xml.Linq.XElement.Parse(apiResponse);
+			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteFormRequestPost<ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, request.GetHeaders(Configuration), formData, true);
+			
+			var apiResponseXml = System.Xml.Linq.XElement.Parse(apiResponse.Content);
 			var commandResponseXml = apiResponseXml.GetElementByLocalName("CommandResponse");
 			var domainDNSGetHostsResultXml = commandResponseXml.GetElementByLocalName("DomainDNSGetHostsResult");
 			var hostXmls = domainDNSGetHostsResultXml.GetElementsByLocalName("host");

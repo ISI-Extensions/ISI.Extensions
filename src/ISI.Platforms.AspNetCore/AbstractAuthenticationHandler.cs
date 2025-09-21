@@ -78,9 +78,9 @@ namespace ISI.Platforms.AspNetCore
 
 		protected abstract string GetAuthenticationHandlerName();
 
-		public async Task<System.IdentityModel.Tokens.Jwt.JwtSecurityToken> GetJwtSecurityTokenAsync(ISI.Extensions.IAuthenticationIdentityUser authenticationIdentityUser, IEnumerable<System.Security.Claims.Claim> claims = null)
+		public async Task<System.IdentityModel.Tokens.Jwt.JwtSecurityToken> GetJwtSecurityTokenAsync(ISI.Extensions.IAuthenticationIdentityUser authenticationIdentityUser, string userAuthenticationKey = null, IEnumerable<System.Security.Claims.Claim> claims = null)
 		{
-			claims ??= await GetUserClaimsAsync(authenticationIdentityUser);
+			claims ??= await GetUserClaimsAsync(authenticationIdentityUser, userAuthenticationKey);
 
 			var securityKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(Configuration.Jwt.EncryptionKey));
 			var signingCredentials = new Microsoft.IdentityModel.Tokens.SigningCredentials(securityKey, Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256);
@@ -88,7 +88,7 @@ namespace ISI.Platforms.AspNetCore
 			return new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(Configuration.Jwt.Issuer, Configuration.Jwt.Issuer, claims, expires: DateTime.Now + Configuration.Jwt.ExpirationInterval, signingCredentials: signingCredentials);
 		}
 
-		public virtual async Task<IEnumerable<System.Security.Claims.Claim>> GetUserClaimsAsync(ISI.Extensions.IAuthenticationIdentityUser authenticationIdentityUser)
+		public virtual async Task<IEnumerable<System.Security.Claims.Claim>> GetUserClaimsAsync(ISI.Extensions.IAuthenticationIdentityUser authenticationIdentityUser, string userAuthenticationKey = null)
 		{
 			var listRolesResponse = await AuthenticationIdentityApi.ListRolesAsync(new());
 
@@ -98,6 +98,10 @@ namespace ISI.Platforms.AspNetCore
 			claims.Add(new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Name, $"{authenticationIdentityUser.FirstName} {authenticationIdentityUser.LastName}".Trim()));
 			claims.Add(new System.Security.Claims.Claim(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub, authenticationIdentityUser.UserUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)));
 			claims.Add(new System.Security.Claims.Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Jti, Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)));
+			if (!string.IsNullOrWhiteSpace(userAuthenticationKey))
+			{
+				claims.Add(new System.Security.Claims.Claim(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.UniqueName, userAuthenticationKey));
+			}
 
 			claims.AddRange(listRolesResponse.Roles
 				.Where(role => roles.Contains(role.Role))
@@ -127,6 +131,7 @@ namespace ISI.Platforms.AspNetCore
 								var jwtToken = jwtSecurityTokenHandler.ReadJwtToken(parsedValue.Parameter);
 
 								var userUuidClaim = jwtToken.Claims.NullCheckedFirstOrDefault(claim => string.Equals(claim.Type, System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub, StringComparison.InvariantCultureIgnoreCase));
+								var userAuthenticationKeyClaim = jwtToken.Claims.NullCheckedFirstOrDefault(claim => string.Equals(claim.Type, System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.UniqueName, StringComparison.InvariantCultureIgnoreCase));
 
 								if (userUuidClaim == null)
 								{
@@ -138,7 +143,7 @@ namespace ISI.Platforms.AspNetCore
 
 										claims.Add(new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Actor, userUuidClaim.Value));
 
-										jwtToken = await GetJwtSecurityTokenAsync(null, claims);
+										jwtToken = await GetJwtSecurityTokenAsync(null, userAuthenticationKeyClaim?.Value, claims);
 
 										userUuidClaim = jwtToken.Claims.NullCheckedFirstOrDefault(claim => string.Equals(claim.Type, System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub, StringComparison.InvariantCultureIgnoreCase));
 									}

@@ -23,8 +23,8 @@ namespace ISI.Platforms.AspNetCore
 {
 	public interface IAuthenticationHandler
 	{
-		Task<System.IdentityModel.Tokens.Jwt.JwtSecurityToken> GetJwtSecurityTokenAsync(ISI.Extensions.IAuthenticationIdentityUser authenticationIdentityUser, IEnumerable<System.Security.Claims.Claim> claims = null);
-		Task<IEnumerable<System.Security.Claims.Claim>> GetUserClaimsAsync(ISI.Extensions.IAuthenticationIdentityUser authenticationIdentityUser);
+		Task<System.IdentityModel.Tokens.Jwt.JwtSecurityToken> GetJwtSecurityTokenAsync(ISI.Extensions.IAuthenticationIdentityUser authenticationIdentityUser, string userAuthenticationKey = null, IEnumerable<System.Security.Claims.Claim> claims = null);
+		Task<IEnumerable<System.Security.Claims.Claim>> GetUserClaimsAsync(ISI.Extensions.IAuthenticationIdentityUser authenticationIdentityUser, string userAuthenticationKey = null);
 	}
 
 	public interface ICookieAuthenticationHandler : IAuthenticationHandler

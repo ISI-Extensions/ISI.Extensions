@@ -104,7 +104,7 @@ namespace ISI.Extensions.Tests
 				{
 					ApiUser = settings.GetValue("NameCheap.ApiUser"),
 					ApiKey = settings.GetValue("NameCheap.ApiKey"),
-					Domain = "muthmanor.com",
+					Domain = "isi.services",
 				}).DnsRecords;
 			}
 		}

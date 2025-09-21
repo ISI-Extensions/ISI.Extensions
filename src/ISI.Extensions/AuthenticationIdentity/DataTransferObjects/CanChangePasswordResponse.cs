@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2025, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,24 +18,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DTOs = ISI.Extensions.AuthenticationIdentity.DataTransferObjects;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.AuthenticationIdentity.DataTransferObjects
 {
-	public interface IAuthenticationIdentityApi
+	public class CanChangePasswordResponse
 	{
-		Task InitializeAsync(System.Threading.CancellationToken cancellationToken = default);
-		Task<DTOs.ListRolesResponse> ListRolesAsync(DTOs.ListRolesRequest request, System.Threading.CancellationToken cancellationToken = default);
-		Task<DTOs.GetUsersResponse> GetUsersAsync(DTOs.GetUsersRequest request, System.Threading.CancellationToken cancellationToken = default);
-		Task<DTOs.ValidateUserNamePasswordResponse> ValidateUserNamePasswordAsync(DTOs.ValidateUserNamePasswordRequest request, System.Threading.CancellationToken cancellationToken = default);
-		Task<DTOs.CanChangePasswordResponse> CanChangePasswordAsync(DTOs.CanChangePasswordRequest request, System.Threading.CancellationToken cancellationToken = default);
-		Task<DTOs.ValidateApiKeyResponse> ValidateApiKeyAsync(DTOs.ValidateApiKeyRequest request, System.Threading.CancellationToken cancellationToken = default);
-	}
-
-	public interface IAuthenticationIdentityApiWithAdministratorUser : IAuthenticationIdentityApi
-	{
-		Guid AdministratorUserUuid { get; }
-		string AdministratorUserName { get; }
-		string AdministratorPassword { get; }
+		public bool CanChangePassword { get; set; }
 	}
 }

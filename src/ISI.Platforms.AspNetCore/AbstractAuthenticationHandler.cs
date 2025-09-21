@@ -100,7 +100,17 @@ namespace ISI.Platforms.AspNetCore
 			claims.Add(new System.Security.Claims.Claim(Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames.Jti, Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)));
 			if (!string.IsNullOrWhiteSpace(userAuthenticationKey))
 			{
+				var canChangePasswordResponse = await AuthenticationIdentityApi.CanChangePasswordAsync(new()
+				{
+					UserAuthenticationKey = userAuthenticationKey,
+				});
+
 				claims.Add(new System.Security.Claims.Claim(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.UniqueName, userAuthenticationKey));
+
+				if (canChangePasswordResponse.CanChangePassword)
+				{
+					claims.Add(new System.Security.Claims.Claim(nameof(ISI.Extensions.AuthenticationIdentity.DataTransferObjects.CanChangePasswordResponse.CanChangePassword), true.TrueFalse()));
+				}
 			}
 
 			claims.AddRange(listRolesResponse.Roles

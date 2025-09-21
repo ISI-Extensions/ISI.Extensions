@@ -54,5 +54,10 @@ namespace ISI.Platforms.AspNetCore
 		{
 			return new DTOs.ValidateUserNamePasswordResponse();
 		}
+
+		public virtual async Task<DTOs.CanChangePasswordResponse> CanChangePasswordAsync(DTOs.CanChangePasswordRequest request, System.Threading.CancellationToken cancellationToken = default)
+		{
+			return new DTOs.CanChangePasswordResponse();
+		}
 	}
 }

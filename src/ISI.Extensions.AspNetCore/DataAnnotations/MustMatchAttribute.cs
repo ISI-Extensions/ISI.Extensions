@@ -53,8 +53,8 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 
 			MergeAttribute(context.Attributes, "data-val", "true");
 			MergeAttribute(context.Attributes, $"data-val-{ValidationRuleName}", GetErrorMessage(context.ModelMetadata));
-			MergeAttribute(context.Attributes, $"data-val-{ValidationParameterAllowEmptyStrings}", AllowEmptyStrings.TrueFalse(false, BooleanExtensions.TextCase.Lower));
-			MergeAttribute(context.Attributes, $"data-val-{ValidationParameterIdsToCheckName}", string.Join(",", PropertiesToCheck));
+			MergeAttribute(context.Attributes, $"data-val-{ValidationRuleName}-{ValidationParameterAllowEmptyStrings}", AllowEmptyStrings.TrueFalse(false, BooleanExtensions.TextCase.Lower));
+			MergeAttribute(context.Attributes, $"data-val-{ValidationRuleName}-{ValidationParameterIdsToCheckName}", string.Join(",", PropertiesToCheck));
 		}
 
 		public override IEnumerable<Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult> Validate(Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationContext context)

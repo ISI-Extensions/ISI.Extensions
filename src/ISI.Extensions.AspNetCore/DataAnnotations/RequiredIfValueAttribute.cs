@@ -47,8 +47,8 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 
 			MergeAttribute(context.Attributes, "data-val", "true");
 			MergeAttribute(context.Attributes, $"data-val-{ValidationRuleName}", GetErrorMessage(context.ModelMetadata));
-			MergeAttribute(context.Attributes, $"data-val-{ValidationFieldIdToCheckName}", FieldToCheck);
-			MergeAttribute(context.Attributes, $"data-val-{ValidationFieldValueName}", FieldValue);
+			MergeAttribute(context.Attributes, $"data-val-{ValidationRuleName}-{ValidationFieldIdToCheckName}", FieldToCheck);
+			MergeAttribute(context.Attributes, $"data-val-{ValidationRuleName}-{ValidationFieldValueName}", FieldValue);
 		}
 
 		public override IEnumerable<Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult> Validate(Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationContext context)

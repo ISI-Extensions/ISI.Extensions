@@ -53,8 +53,8 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 
 			MergeAttribute(context.Attributes, "data-val", "true");
 			MergeAttribute(context.Attributes, $"data-val-{ValidationRuleName}", GetErrorMessage(context.ModelMetadata));
-			MergeAttribute(context.Attributes, $"data-val-{ValidationMinimumCountRequiredName}", string.Format("{0}", MinimumCountRequired));
-			MergeAttribute(context.Attributes, $"data-val-{ValidationFieldIdsToCheckName}", string.Join(",", FieldsToCheck));
+			MergeAttribute(context.Attributes, $"data-val-{ValidationRuleName}-{ValidationMinimumCountRequiredName}", string.Format("{0}", MinimumCountRequired));
+			MergeAttribute(context.Attributes, $"data-val-{ValidationRuleName}-{ValidationFieldIdsToCheckName}", string.Join(",", FieldsToCheck));
 		}
 
 		public override IEnumerable<Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult> Validate(Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationContext context)

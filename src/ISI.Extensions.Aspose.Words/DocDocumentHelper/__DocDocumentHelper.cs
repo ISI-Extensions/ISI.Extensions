@@ -25,6 +25,12 @@ namespace ISI.Extensions.Aspose
 	{
 		public partial class DocDocumentHelper : ISI.Extensions.Documents.Doc.IDocDocumentHelper
 		{
+			protected global::Aspose.Words.IWarningCallback WarningCallback { get; }
+
+			public DocDocumentHelper(global::Aspose.Words.IWarningCallback warningCallback)
+			{
+				WarningCallback = warningCallback;
+			}
 			static DocDocumentHelper()
 			{
 				(new ISI.Extensions.Aspose.Words.LicenseApplier()).ApplyLicense();

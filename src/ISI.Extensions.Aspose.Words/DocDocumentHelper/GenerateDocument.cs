@@ -28,66 +28,72 @@ namespace ISI.Extensions.Aspose
 		{
 			public virtual void GenerateDocument(System.IO.Stream templateStream, System.Data.IDataReader dataReader, ISI.Extensions.Documents.IDocumentProperties documentProperties, Action<ISI.Extensions.Documents.IDocumentEditor> beforeGeneration, Action<ISI.Extensions.Documents.IDocumentEditor> afterGeneration, string printerName, System.IO.Stream documentStream, ISI.Extensions.Documents.FileFormat fileFormat)
 			{
-				var document = new global::Aspose.Words.Document(templateStream);
+				var templateDocument = new global::Aspose.Words.Document(templateStream);
 
-				BeforeGeneration(document, beforeGeneration);
+				templateDocument.WarningCallback = WarningCallback;
 
-				document.FirstSection.PageSetup.PageStartingNumber = 1;
-				document.FirstSection.PageSetup.RestartPageNumbering = true;
+				BeforeGeneration(templateDocument, beforeGeneration);
 
-				document.MailMerge.FieldMergingCallback = new ISI.Extensions.Aspose.Words.MailMergeFieldHandler();
+				templateDocument.FirstSection.PageSetup.PageStartingNumber = 1;
+				templateDocument.FirstSection.PageSetup.RestartPageNumbering = true;
 
-				document.MailMerge.CleanupOptions |= global::Aspose.Words.MailMerging.MailMergeCleanupOptions.RemoveUnusedFields;
+				templateDocument.MailMerge.FieldMergingCallback = new ISI.Extensions.Aspose.Words.MailMergeFieldHandler();
 
-				document.MailMerge.Execute(dataReader);
+				templateDocument.MailMerge.CleanupOptions |= global::Aspose.Words.MailMerging.MailMergeCleanupOptions.RemoveUnusedFields;
 
-				document.UpdateFields();
+				templateDocument.MailMerge.Execute(dataReader);
 
-				AfterGeneration(document, documentProperties, afterGeneration, printerName, documentStream, fileFormat);
+				templateDocument.UpdateFields();
+
+				AfterGeneration(templateDocument, documentProperties, afterGeneration, printerName, documentStream, fileFormat);
 			}
 
 			public virtual void GenerateDocument(System.IO.Stream templateStream, ISI.Extensions.Documents.IDocumentDataSourceRoot documentDataSourceRoot, ISI.Extensions.Documents.IDocumentProperties documentProperties, Action<ISI.Extensions.Documents.IDocumentEditor> beforeGeneration, Action<ISI.Extensions.Documents.IDocumentEditor> afterGeneration, string printerName, System.IO.Stream documentStream, ISI.Extensions.Documents.FileFormat fileFormat)
 			{
-				var document = new global::Aspose.Words.Document(templateStream);
+				var templateDocument = new global::Aspose.Words.Document(templateStream);
+				
+				templateDocument.WarningCallback = WarningCallback;
 
-				BeforeGeneration(document, beforeGeneration);
+				BeforeGeneration(templateDocument, beforeGeneration);
 
-				document.FirstSection.PageSetup.PageStartingNumber = 1;
-				document.FirstSection.PageSetup.RestartPageNumbering = true;
+				templateDocument.FirstSection.PageSetup.PageStartingNumber = 1;
+				templateDocument.FirstSection.PageSetup.RestartPageNumbering = true;
 
-				document.MailMerge.FieldMergingCallback = new ISI.Extensions.Aspose.Words.MailMergeFieldHandler();
+				templateDocument.MailMerge.FieldMergingCallback = new ISI.Extensions.Aspose.Words.MailMergeFieldHandler();
 
-				document.MailMerge.UseNonMergeFields = true;
+				templateDocument.MailMerge.UseNonMergeFields = true;
 
-				document.MailMerge.CleanupOptions |= global::Aspose.Words.MailMerging.MailMergeCleanupOptions.RemoveUnusedFields;
+				templateDocument.MailMerge.CleanupOptions |= global::Aspose.Words.MailMerging.MailMergeCleanupOptions.RemoveUnusedFields;
 
-				document.MailMerge.ExecuteWithRegions(new MailMergeDataSourceRoot(documentDataSourceRoot));
+				templateDocument.MailMerge.ExecuteWithRegions(new MailMergeDataSourceRoot(documentDataSourceRoot));
 
-				document.UpdateFields();
+				templateDocument.UpdateFields();
 
-				AfterGeneration(document, documentProperties, afterGeneration, printerName, documentStream, fileFormat);
+				AfterGeneration(templateDocument, documentProperties, afterGeneration, printerName, documentStream, fileFormat);
 			}
 
 			public virtual void GenerateDocument(System.IO.Stream templateStream, ISI.Extensions.Documents.IDocumentDataSource documentDataSource, ISI.Extensions.Documents.IDocumentProperties documentProperties, Action<ISI.Extensions.Documents.IDocumentEditor> beforeGeneration, Action<ISI.Extensions.Documents.IDocumentEditor> afterGeneration, string printerName, System.IO.Stream documentStream, ISI.Extensions.Documents.FileFormat fileFormat)
 			{
-				var document = new global::Aspose.Words.Document(templateStream);
+				var templateDocument = new global::Aspose.Words.Document(templateStream);
+								
+				templateDocument.WarningCallback = WarningCallback;
 
-				BeforeGeneration(document, beforeGeneration);
+				BeforeGeneration(templateDocument, beforeGeneration);
 
-				document.FirstSection.PageSetup.PageStartingNumber = 1;
-				document.FirstSection.PageSetup.RestartPageNumbering = true;
+				templateDocument.FirstSection.PageSetup.PageStartingNumber = 1;
+				templateDocument.FirstSection.PageSetup.RestartPageNumbering = true;
 
-				document.MailMerge.FieldMergingCallback = new ISI.Extensions.Aspose.Words.MailMergeFieldHandler();
+				templateDocument.MailMerge.FieldMergingCallback = new ISI.Extensions.Aspose.Words.MailMergeFieldHandler();
 
-				document.MailMerge.UseNonMergeFields = true;
+				templateDocument.MailMerge.UseNonMergeFields = true;
 
-				document.MailMerge.CleanupOptions |= global::Aspose.Words.MailMerging.MailMergeCleanupOptions.RemoveUnusedFields;
+				templateDocument.MailMerge.CleanupOptions |= global::Aspose.Words.MailMerging.MailMergeCleanupOptions.RemoveUnusedFields;
 
-				document.MailMerge.Execute(new DocumentDataSource(documentDataSource));
+				templateDocument.MailMerge.Execute(new DocumentDataSource(documentDataSource));
 
-				document.UpdateFields();
+				templateDocument.UpdateFields();
 
-				AfterGeneration(document, documentProperties, afterGeneration, printerName, documentStream, fileFormat);
+				AfterGeneration(templateDocument, documentProperties, afterGeneration, printerName, documentStream, fileFormat);
 			}
 
 			private void BeforeGeneration(global::Aspose.Words.Document document, Action<ISI.Extensions.Documents.IDocumentEditor> beforeGeneration)

@@ -32,30 +32,21 @@ namespace ISI.Extensions.AspNetCore
 		[GeneratedCode("T4LocalContent", "1.0"), DebuggerNonUserCode]
 		public static partial class JavaScripts
 		{
-			public static string _root()
-			{
-				return T4Links._root();
-			}
-		
-			private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
-			public static global::ISI.Extensions.AspNetCore.IContentUrl _Directory => _directory ??= GetContentUrl(T4Links._root() + "JavaScripts", true);
-			
 			private static global::ISI.Extensions.AspNetCore.IContentUrl _jQueryNamespace_js = null;
 			public static global::ISI.Extensions.AspNetCore.IContentUrl jQueryNamespace_js => _jQueryNamespace_js ??= GetContentUrl(ISI.Extensions.AspNetCore.jQueryController.Urls.jQueryNamespace, true);
 		
 			[GeneratedCode("T4LocalContent", "1.0"), DebuggerNonUserCode]
 			public static partial class DataAnnotations
 			{
-				public static string _root()
-				{
-					return string.Format("{0}css/", T4Links.JavaScripts._root());
-				}
-			
-				private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
-				public static global::ISI.Extensions.AspNetCore.IContentUrl _Directory => _directory ??= GetContentUrl(T4Links.JavaScripts._root() + "data-annotations", true);
-			
 				private static global::ISI.Extensions.AspNetCore.IContentUrl _DataAnnotationValidationRules_js = null;
 				public static global::ISI.Extensions.AspNetCore.IContentUrl DataAnnotationValidationRules_js => _DataAnnotationValidationRules_js ??= GetContentUrl(ISI.Extensions.AspNetCore.DataAnnotationsController.Urls.DataAnnotationValidationRules, true);
+			}
+		
+			[GeneratedCode("T4LocalContent", "1.0"), DebuggerNonUserCode]
+			public static partial class TimeZones
+			{
+				private static global::ISI.Extensions.AspNetCore.IContentUrl _TimeZonesJavascript_js = null;
+				public static global::ISI.Extensions.AspNetCore.IContentUrl TimeZonesJavascript_js => _TimeZonesJavascript_js ??= GetContentUrl(ISI.Extensions.AspNetCore.TimeZonesController.Urls.TimeZonesJavascript_js, true);
 			}
 		}
 	}

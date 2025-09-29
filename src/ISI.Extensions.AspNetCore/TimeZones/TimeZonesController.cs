@@ -404,8 +404,8 @@ THE SOFTWARE.
 
 			content.AppendLine();
 			content.AppendLine("jQuery(document).ready(function () {");
-			content.AppendLine($"\tdocument.cookie = \"@(ISI.Libraries.Web.Mvc.Extensions.TimeZoneHelpers.TimeOffsetCookieName)=\" + (-(new Date()).getTimezoneOffset() / 60) + \"; expires={expires}; path=/\";");
-			content.AppendLine($"\tdocument.cookie = \"@(ISI.Libraries.Web.Mvc.Extensions.TimeZoneHelpers.TimeZoneCookieName)=\" + jstz.determine().name() + \"; expires={expires}; path=/\";");
+			content.AppendLine($"\tdocument.cookie = \"{ISI.Extensions.AspNetCore.Extensions.TimeZoneHelpers.TimeOffsetCookieName}=\" + (-(new Date()).getTimezoneOffset() / 60) + \"; expires={expires}; path=/\";");
+			content.AppendLine($"\tdocument.cookie = \"{ISI.Extensions.AspNetCore.Extensions.TimeZoneHelpers.TimeZoneCookieName}=\" + jstz.determine().name() + \"; expires={expires}; path=/\";");
 			content.AppendLine("});");
 
 			return Content(content.ToString(), ISI.Extensions.WebClient.Rest.ContentTypeJavascriptHeaderValue);

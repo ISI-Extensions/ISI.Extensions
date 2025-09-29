@@ -25,6 +25,13 @@ namespace ISI.Extensions.Aspose
 	{
 		public class DocumentDataMerge : ISI.Extensions.Documents.IDocumentDataMerge
 		{
+			protected global::Aspose.Words.IWarningCallback WarningCallback { get; }
+
+			public DocumentDataMerge(global::Aspose.Words.IWarningCallback warningCallback)
+			{
+				WarningCallback = warningCallback;
+			}
+
 			static DocumentDataMerge()
 			{
 				(new ISI.Extensions.Aspose.Words.LicenseApplier()).ApplyLicense();
@@ -62,6 +69,8 @@ namespace ISI.Extensions.Aspose
 
 			public void Execute(global::Aspose.Words.Document templateDocument, System.Data.IDataReader dataReader, ISI.Extensions.Documents.IDocumentProperties documentProperties, string printerName, System.IO.Stream documentStream, ISI.Extensions.Documents.FileFormat fileFormat)
 			{
+				templateDocument.WarningCallback = WarningCallback;
+
 				templateDocument.MailMerge.FieldMergingCallback = new MailMergeFieldHandler();
 
 				templateDocument.MailMerge.Execute(dataReader);
@@ -71,16 +80,12 @@ namespace ISI.Extensions.Aspose
 				ISI.Extensions.Aspose.Extensions.WordsExtensions.Print(templateDocument, printerName);
 				ISI.Extensions.Aspose.Extensions.WordsExtensions.Save(templateDocument, documentStream, fileFormat);
 			}
-
-
-
-
-
-
-
+			
 			public void ExecuteWithRegions(string templateFileName, ISI.Extensions.Documents.IDocumentDataSourceRoot documentDataSourceRoot, ISI.Extensions.Documents.IDocumentProperties documentProperties, string printerName, System.IO.Stream documentStream, ISI.Extensions.Documents.FileFormat fileFormat)
 			{
 				var templateDocument = new global::Aspose.Words.Document(templateFileName);
+
+				templateDocument.WarningCallback = WarningCallback;
 
 				ExecuteWithRegions(templateDocument, documentDataSourceRoot, documentProperties, printerName, documentStream, fileFormat);
 			}
@@ -89,11 +94,15 @@ namespace ISI.Extensions.Aspose
 			{
 				var templateDocument = new global::Aspose.Words.Document(templateStream);
 
+				templateDocument.WarningCallback = WarningCallback;
+
 				ExecuteWithRegions(templateDocument, documentDataSourceRoot, documentProperties, printerName, documentStream, fileFormat);
 			}
 
 			public void ExecuteWithRegions(global::Aspose.Words.Document templateDocument, ISI.Extensions.Documents.IDocumentDataSourceRoot documentDataSourceRoot, ISI.Extensions.Documents.IDocumentProperties documentProperties, string printerName, System.IO.Stream documentStream, ISI.Extensions.Documents.FileFormat fileFormat)
 			{
+				templateDocument.WarningCallback = WarningCallback;
+
 				templateDocument.MailMerge.FieldMergingCallback = new MailMergeFieldHandler();
 
 				templateDocument.MailMerge.ExecuteWithRegions(new MailMergeDataSourceRoot(documentDataSourceRoot));

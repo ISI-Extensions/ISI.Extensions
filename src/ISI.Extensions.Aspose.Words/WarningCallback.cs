@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2025, Integrated Solutions, Inc.
 All rights reserved.
@@ -12,28 +12,31 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Aspose
 {
 	public partial class Words
 	{
-		[ISI.Extensions.DependencyInjection.ServiceRegistrar]
-		public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrarWithPriority
+		public class WarningCallback : global::Aspose.Words.IWarningCallback
 		{
-			public int Priority => 1;
+			protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 
-			public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
+			public WarningCallback(
+				Microsoft.Extensions.Logging.ILogger logger)
 			{
-				services.AddSingleton<global::Aspose.Words.IWarningCallback, ISI.Extensions.Aspose.Words.WarningCallback>();
-				services.AddSingleton<ISI.Extensions.Documents.IDocumentDataMerge, ISI.Extensions.Aspose.Words.DocumentDataMerge>();
-				services.AddSingleton<ISI.Extensions.Documents.Doc.IDocDocumentHelper, ISI.Extensions.Aspose.Words.DocDocumentHelper>();
+				Logger = logger;
+			}
+
+			public void Warning(global::Aspose.Words.WarningInfo warningInfo)
+			{
+				Logger.LogInformation($"Aspose Words, WarningType: {warningInfo.WarningType}, \"{warningInfo.Description}\" from: \"{warningInfo.Source}\"");
 			}
 		}
 	}

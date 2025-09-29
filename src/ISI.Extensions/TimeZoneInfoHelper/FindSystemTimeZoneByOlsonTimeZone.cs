@@ -24,14 +24,12 @@ namespace ISI.Extensions.Extensions
 	{
 		public static System.TimeZoneInfo FindSystemTimeZoneByOlsonTimeZone(string olsonTimeZone)
 		{
-			System.TimeZoneInfo result = null;
-
-			if (_olsonTimeZones.ContainsKey(olsonTimeZone))
+			if (_olsonTimeZones.TryGetValue(olsonTimeZone, out var timeZone))
 			{
-				result = System.TimeZoneInfo.FindSystemTimeZoneById(_olsonTimeZones[olsonTimeZone]);
+				return System.TimeZoneInfo.FindSystemTimeZoneById(timeZone);
 			}
 
-			return result;
+			return null;
 		}
 	}
 }

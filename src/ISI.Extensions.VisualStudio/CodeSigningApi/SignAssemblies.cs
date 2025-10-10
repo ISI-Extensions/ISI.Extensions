@@ -81,7 +81,7 @@ namespace ISI.Extensions.VisualStudio
 						{
 							var arguments = GetSignAssemblyCommandArguments(request);
 
-							arguments.AddRange(fileNames.Select(fileName => string.Format("\"{0}\"", fileName)));
+							arguments.AddRange(fileNames.Select(fileName => $"\"{fileName}\""));
 
 							var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 							{
@@ -97,7 +97,7 @@ namespace ISI.Extensions.VisualStudio
 									Logger.LogError(waitForProcessResponse.Output);
 								}
 
-								logger.LogInformation(string.Format("Signed assembly \"{0}\"", System.IO.Path.GetFileName(fileNames.First())));
+								logger.LogInformation($"Signed assembly \"{System.IO.Path.GetFileName(fileNames.First())}\"");
 							}
 						}
 

@@ -49,32 +49,32 @@ namespace ISI.Extensions.VisualStudio
 				if (request.TimeStampDigestAlgorithm == DTOs.CodeSigningDigestAlgorithm.Sha256)
 				{
 					arguments.Add("/td SHA256");
-					arguments.Add(string.Format("/tr \"{0}\"", request.TimeStampUri));
+					arguments.Add($"/tr \"{request.TimeStampUri}\"");
 				}
 				else
 				{
-					arguments.Add(string.Format("/t \"{0}\"", request.TimeStampUri));
+					arguments.Add($"/t \"{request.TimeStampUri}\"");
 				}
 			}
 
 			if (!string.IsNullOrWhiteSpace(request.CertificateFileName))
 			{
-				arguments.Add(string.Format("/f \"{0}\"", request.CertificateFileName));
+				arguments.Add($"/f \"{request.CertificateFileName}\"");
 
 				if (!string.IsNullOrWhiteSpace(request.CertificatePassword))
 				{
-					arguments.Add(string.Format("/p \"{0}\"", request.CertificatePassword));
+					arguments.Add($"/p \"{request.CertificatePassword}\"");
 				}
 			}
 
 			if (!string.IsNullOrWhiteSpace(request.CertificateFingerprint))
 			{
-				arguments.Add(string.Format("/sha1 \"{0}\"", request.CertificateFingerprint));
+				arguments.Add($"/sha1 \"{request.CertificateFingerprint}\"");
 			}
 
 			if (!string.IsNullOrWhiteSpace(request.CertificateSubjectName))
 			{
-				arguments.Add(string.Format("/n \"{0}\"", request.CertificateSubjectName));
+				arguments.Add($"/n \"{request.CertificateSubjectName}\"");
 			}
 
 			if (request.OverwriteAnyExistingSignature)

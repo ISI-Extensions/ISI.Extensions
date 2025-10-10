@@ -104,11 +104,11 @@ namespace ISI.Extensions.VisualStudio
 								if (request.TimeStampDigestAlgorithm == DTOs.CodeSigningDigestAlgorithm.Sha256)
 								{
 									arguments.Add("/td SHA256");
-									arguments.Add(string.Format("/tr \"{0}\"", request.TimeStampUri));
+									arguments.Add($"/tr \"{request.TimeStampUri}\"");
 								}
 								else
 								{
-									arguments.Add(string.Format("/t \"{0}\"", request.TimeStampUri));
+									arguments.Add($"/t \"{request.TimeStampUri}\"");
 								}
 							}
 
@@ -118,7 +118,7 @@ namespace ISI.Extensions.VisualStudio
 
 								if (certificateFileName.EndsWith(".cer", StringComparison.InvariantCultureIgnoreCase))
 								{
-									certificateFileName = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(certificateFileName), string.Format("{0}.pfx", System.IO.Path.GetFileNameWithoutExtension(certificateFileName)));
+									certificateFileName = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(certificateFileName), $"{System.IO.Path.GetFileNameWithoutExtension(certificateFileName)}.pfx");
 
 									if (!System.IO.File.Exists(certificateFileName))
 									{
@@ -126,17 +126,17 @@ namespace ISI.Extensions.VisualStudio
 									}
 								}
 
-								arguments.Add(string.Format("/f \"{0}\"", certificateFileName));
+								arguments.Add($"/f \"{certificateFileName}\"");
 
 								if (!string.IsNullOrWhiteSpace(request.CertificatePassword))
 								{
-									arguments.Add(string.Format("/p \"{0}\"", request.CertificatePassword));
+									arguments.Add($"/p \"{request.CertificatePassword}\"");
 								}
 							}
 
 							if (!string.IsNullOrWhiteSpace(request.CertificateFingerprint))
 							{
-								arguments.Add(string.Format("/sha1 \"{0}\"", request.CertificateFingerprint));
+								arguments.Add($"/sha1 \"{request.CertificateFingerprint}\"");
 							}
 
 							//if (!string.IsNullOrWhiteSpace(request.CertificateSubjectName))
@@ -163,7 +163,7 @@ namespace ISI.Extensions.VisualStudio
 									throw new ArgumentOutOfRangeException();
 							}
 
-							arguments.AddRange(fileNames.Select(fileName => string.Format("\"{0}\"", fileName)));
+							arguments.AddRange(fileNames.Select(fileName => $"\"{fileName}\""));
 
 							var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 							{
@@ -179,7 +179,7 @@ namespace ISI.Extensions.VisualStudio
 									Logger.LogError(waitForProcessResponse.Output);
 								}
 
-								logger.LogInformation(string.Format("Signed vsix \"{0}\"", System.IO.Path.GetFileName(fileNames.First())));
+								logger.LogInformation($"Signed vsix \"{System.IO.Path.GetFileName(fileNames.First())}\"");
 							}
 						}
 

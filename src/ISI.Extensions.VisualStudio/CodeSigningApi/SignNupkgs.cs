@@ -74,49 +74,49 @@ namespace ISI.Extensions.VisualStudio
 
 							if (string.IsNullOrWhiteSpace(fileName))
 							{
-								arguments.Add(string.Format("\"{0}\\*\"", tempDirectory.FullName));
+								arguments.Add($"\"{tempDirectory.FullName}\\*\"");
 							}
 							else
 							{
-								arguments.Add(string.Format("\"{0}\"", fileName));
+								arguments.Add($"\"{fileName}\"");
 							}
 
-							arguments.Add(string.Format(" -Timestamper \"{0}\"", request.TimeStampUri));
-							arguments.Add(string.Format(" -TimestampHashAlgorithm \"{0}\"", request.TimeStampDigestAlgorithm.GetAbbreviation()));
+							arguments.Add($" -Timestamper \"{request.TimeStampUri}\"");
+							arguments.Add($" -TimestampHashAlgorithm \"{request.TimeStampDigestAlgorithm.GetAbbreviation()}\"");
 
 							if (!string.IsNullOrWhiteSpace(request.OutputDirectory))
 							{
-								arguments.Add(string.Format(" -OutputDirectory \"{0}\"", request.OutputDirectory));
+								arguments.Add($" -OutputDirectory \"{request.OutputDirectory}\"");
 							}
 
 							if (string.IsNullOrWhiteSpace(request.CertificateFileName))
 							{
-								arguments.Add(string.Format(" -CertificateStoreName \"{0}\"", request.CertificateStoreName));
-								arguments.Add(string.Format(" -CertificateStoreLocation \"{0}\"", request.CertificateStoreLocation));
+								arguments.Add($" -CertificateStoreName \"{request.CertificateStoreName}\"");
+								arguments.Add($" -CertificateStoreLocation \"{request.CertificateStoreLocation}\"");
 								if (!string.IsNullOrWhiteSpace(request.CertificateSubjectName))
 								{
-									arguments.Add(string.Format(" -CertificateSubjectName \"{0}\"", request.CertificateSubjectName));
+									arguments.Add($" -CertificateSubjectName \"{request.CertificateSubjectName}\"");
 								}
 
 								if (!string.IsNullOrWhiteSpace(request.CertificateFingerprint))
 								{
-									arguments.Add(string.Format(" -CertificateFingerprint \"{0}\"", request.CertificateFingerprint));
+									arguments.Add($" -CertificateFingerprint \"{request.CertificateFingerprint}\"");
 								}
 							}
 							else
 							{
-								arguments.Add(string.Format(" -CertificatePath \"{0}\"", request.CertificateFileName));
-								arguments.Add(string.Format(" -CertificatePassword \"{0}\"", request.CertificatePassword));
+								arguments.Add($" -CertificatePath \"{request.CertificateFileName}\"");
+								arguments.Add($" -CertificatePassword \"{request.CertificatePassword}\"");
 							}
 
-							arguments.Add(string.Format(" -HashAlgorithm \"{0}\"", request.DigestAlgorithm.GetAbbreviation()));
+							arguments.Add($" -HashAlgorithm \"{request.DigestAlgorithm.GetAbbreviation()}\"");
 
 							if (request.OverwriteAnyExistingSignature)
 							{
 								arguments.Append(" -Overwrite");
 							}
 
-							arguments.Add(string.Format(" -Verbosity \"{0}\"", request.Verbosity));
+							arguments.Add($" -Verbosity \"{request.Verbosity}\"");
 
 							var processRequest = new ISI.Extensions.Process.ProcessRequest()
 							{
@@ -140,7 +140,7 @@ namespace ISI.Extensions.VisualStudio
 									Logger.LogError(waitForProcessResponse.Output);
 								}
 
-								logger.LogInformation(string.Format("Signed nuget package \"{0}\"", System.IO.Path.GetFileName(fileName)));
+								logger.LogInformation($"Signed nuget package \"{System.IO.Path.GetFileName(fileName)}\"");
 							}
 						}
 

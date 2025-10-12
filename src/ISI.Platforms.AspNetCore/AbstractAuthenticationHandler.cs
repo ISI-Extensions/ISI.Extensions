@@ -18,9 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ISI.Platforms.AspNetCore
@@ -120,12 +118,20 @@ namespace ISI.Platforms.AspNetCore
 			return claims;
 		}
 
+		protected abstract bool TryGetApiKeyHeaderValue(out string apiKeyHeaderValue);
+
 		protected abstract bool TryGetAuthenticationHeaderValue(out string authenticationHeaderValue);
 
 		protected abstract bool TryGetAuthenticationCookieValue(out string authenticationCookieValue);
 
 		protected override async Task<Microsoft.AspNetCore.Authentication.AuthenticateResult> HandleAuthenticateAsync()
 		{
+			var canReadToken = false;
+			var token = (string)null;
+			var scheme = (string)null;
+
+			var jwtSecurityTokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+
 			if (TryGetAuthenticationHeaderValue(out var authenticationHeaderValue))
 			{
 				if (!string.IsNullOrWhiteSpace(authenticationHeaderValue))
@@ -134,103 +140,113 @@ namespace ISI.Platforms.AspNetCore
 					{
 						if (!string.IsNullOrWhiteSpace(parsedValue.Parameter))
 						{
-							var jwtSecurityTokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
-
 							if (jwtSecurityTokenHandler.CanReadToken(parsedValue.Parameter))
 							{
-								var jwtToken = jwtSecurityTokenHandler.ReadJwtToken(parsedValue.Parameter);
-
-								var userUuidClaim = jwtToken.Claims.NullCheckedFirstOrDefault(claim => string.Equals(claim.Type, System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub, StringComparison.InvariantCultureIgnoreCase));
-								var userAuthenticationKeyClaim = jwtToken.Claims.NullCheckedFirstOrDefault(claim => string.Equals(claim.Type, System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.UniqueName, StringComparison.InvariantCultureIgnoreCase));
-
-								if (userUuidClaim == null)
-								{
-									userUuidClaim = jwtToken.Claims.NullCheckedFirstOrDefault(claim => string.Equals(claim.Type, System.Security.Claims.ClaimTypes.Actor, StringComparison.InvariantCultureIgnoreCase));
-
-									if (userUuidClaim != null)
-									{
-										var claims = jwtToken.Claims.ToList();
-
-										claims.Add(new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Actor, userUuidClaim.Value));
-
-										jwtToken = await GetJwtSecurityTokenAsync(null, userAuthenticationKeyClaim?.Value, claims);
-
-										userUuidClaim = jwtToken.Claims.NullCheckedFirstOrDefault(claim => string.Equals(claim.Type, System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub, StringComparison.InvariantCultureIgnoreCase));
-									}
-								}
-
-								if (userUuidClaim != null)
-								{
-									var principal = new System.Security.Claims.ClaimsPrincipal([
-										new System.Security.Claims.ClaimsIdentity(jwtToken.Claims)
-									]);
-
-									var ticket = new Microsoft.AspNetCore.Authentication.AuthenticationTicket(principal, Scheme.Name);
-
-									return Microsoft.AspNetCore.Authentication.AuthenticateResult.Success(ticket);
-								}
-							}
-
-							var userUuid = (Guid?)null;
-
-							if (!userUuid.HasValue && string.Equals(parsedValue.Scheme, ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer, StringComparison.InvariantCultureIgnoreCase))
-							{
-								var validateApiKeyResponse = await AuthenticationIdentityApi.ValidateApiKeyAsync(new()
-								{
-									Url = $"{Request.GetDisplayUrl()}/{Request.QueryString}",
-									ApiKey = parsedValue.Parameter.Trim(),
-								});
-
-								userUuid = validateApiKeyResponse?.UserUuid;
-							}
-
-							if (!userUuid.HasValue && string.Equals(parsedValue.Scheme, ISI.Extensions.WebClient.HeaderCollection.Keys.Basic, StringComparison.InvariantCultureIgnoreCase))
-							{
-								try
-								{
-									var base64DecodedCredentials = Convert.FromBase64String(parsedValue.Parameter.Trim());
-
-									var decodedCredentials = (new System.Text.UTF8Encoding(false, true)).GetString(base64DecodedCredentials);
-
-									var credentials = decodedCredentials.Split(':');
-
-									var validateUserNamePasswordResponse = await AuthenticationIdentityApi.ValidateUserNamePasswordAsync(new()
-									{
-										UserName = credentials[0],
-										Password = credentials[1],
-									});
-
-									userUuid = validateUserNamePasswordResponse?.UserUuid;
-								}
-								catch
-								{
-								}
-							}
-
-							if (userUuid.HasValue)
-							{
-								var getUsersResponse = await AuthenticationIdentityApi.GetUsersAsync(new()
-								{
-									UserUuids = [userUuid.Value],
-								});
-
-								var user = getUsersResponse.Users.NullCheckedFirstOrDefault();
-
-								if ((user?.IsActive).GetValueOrDefault())
-								{
-									var claims = await GetUserClaimsAsync(user);
-
-									var principal = new System.Security.Claims.ClaimsPrincipal([
-										new System.Security.Claims.ClaimsIdentity(claims)
-									]);
-
-									var ticket = new Microsoft.AspNetCore.Authentication.AuthenticationTicket(principal, Scheme.Name);
-
-									return Microsoft.AspNetCore.Authentication.AuthenticateResult.Success(ticket);
-								}
+								canReadToken = true;
+								scheme = parsedValue.Scheme;
+								token = parsedValue.Parameter;
 							}
 						}
 					}
+				}
+			}
+			else if (TryGetApiKeyHeaderValue(out var apiKeyHeaderValue))
+			{
+				scheme = ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer;
+				token = apiKeyHeaderValue;
+			}
+
+			if (canReadToken)
+			{
+				var jwtToken = jwtSecurityTokenHandler.ReadJwtToken(token);
+
+				var userUuidClaim = jwtToken.Claims.NullCheckedFirstOrDefault(claim => string.Equals(claim.Type, System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub, StringComparison.InvariantCultureIgnoreCase));
+				var userAuthenticationKeyClaim = jwtToken.Claims.NullCheckedFirstOrDefault(claim => string.Equals(claim.Type, System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.UniqueName, StringComparison.InvariantCultureIgnoreCase));
+
+				if (userUuidClaim == null)
+				{
+					userUuidClaim = jwtToken.Claims.NullCheckedFirstOrDefault(claim => string.Equals(claim.Type, System.Security.Claims.ClaimTypes.Actor, StringComparison.InvariantCultureIgnoreCase));
+
+					if (userUuidClaim != null)
+					{
+						var claims = jwtToken.Claims.ToList();
+
+						claims.Add(new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Actor, userUuidClaim.Value));
+
+						jwtToken = await GetJwtSecurityTokenAsync(null, userAuthenticationKeyClaim?.Value, claims);
+
+						userUuidClaim = jwtToken.Claims.NullCheckedFirstOrDefault(claim => string.Equals(claim.Type, System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub, StringComparison.InvariantCultureIgnoreCase));
+					}
+				}
+
+				if (userUuidClaim != null)
+				{
+					var principal = new System.Security.Claims.ClaimsPrincipal([
+						new System.Security.Claims.ClaimsIdentity(jwtToken.Claims)
+					]);
+
+					var ticket = new Microsoft.AspNetCore.Authentication.AuthenticationTicket(principal, Scheme.Name);
+
+					return Microsoft.AspNetCore.Authentication.AuthenticateResult.Success(ticket);
+				}
+			}
+
+			var userUuid = (Guid?)null;
+
+			if (!userUuid.HasValue && string.Equals(scheme, ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer, StringComparison.InvariantCultureIgnoreCase))
+			{
+				var validateApiKeyResponse = await AuthenticationIdentityApi.ValidateApiKeyAsync(new()
+				{
+					Url = $"{Request.GetDisplayUrl()}/{Request.QueryString}",
+					ApiKey = token.Trim(),
+				});
+
+				userUuid = validateApiKeyResponse?.UserUuid;
+			}
+
+			if (!userUuid.HasValue && string.Equals(scheme, ISI.Extensions.WebClient.HeaderCollection.Keys.Basic, StringComparison.InvariantCultureIgnoreCase))
+			{
+				try
+				{
+					var base64DecodedCredentials = Convert.FromBase64String(token.Trim());
+
+					var decodedCredentials = (new System.Text.UTF8Encoding(false, true)).GetString(base64DecodedCredentials);
+
+					var credentials = decodedCredentials.Split(':');
+
+					var validateUserNamePasswordResponse = await AuthenticationIdentityApi.ValidateUserNamePasswordAsync(new()
+					{
+						UserName = credentials[0],
+						Password = credentials[1],
+					});
+
+					userUuid = validateUserNamePasswordResponse?.UserUuid;
+				}
+				catch
+				{
+				}
+			}
+
+			if (userUuid.HasValue)
+			{
+				var getUsersResponse = await AuthenticationIdentityApi.GetUsersAsync(new()
+				{
+					UserUuids = [userUuid.Value],
+				});
+
+				var user = getUsersResponse.Users.NullCheckedFirstOrDefault();
+
+				if ((user?.IsActive).GetValueOrDefault())
+				{
+					var claims = await GetUserClaimsAsync(user);
+
+					var principal = new System.Security.Claims.ClaimsPrincipal([
+						new System.Security.Claims.ClaimsIdentity(claims)
+					]);
+
+					var ticket = new Microsoft.AspNetCore.Authentication.AuthenticationTicket(principal, Scheme.Name);
+
+					return Microsoft.AspNetCore.Authentication.AuthenticateResult.Success(ticket);
 				}
 			}
 
@@ -238,8 +254,6 @@ namespace ISI.Platforms.AspNetCore
 			{
 				if (!string.IsNullOrWhiteSpace(authenticationCookieValue))
 				{
-					var jwtSecurityTokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
-
 					if (jwtSecurityTokenHandler.CanReadToken(authenticationCookieValue))
 					{
 						var jwtToken = jwtSecurityTokenHandler.ReadJwtToken(authenticationCookieValue);

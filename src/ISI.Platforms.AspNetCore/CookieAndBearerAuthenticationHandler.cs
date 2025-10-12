@@ -86,18 +86,25 @@ namespace ISI.Platforms.AspNetCore
 
 		protected override string GetAuthenticationHandlerName() => CookieAndBearerAuthenticationSettings.CookieName;
 
-		protected override bool TryGetAuthenticationHeaderValue(out string authenticationHeaderValue)
+		protected override bool TryGetApiKeyHeaderValue(out string apiKeyHeaderValue)
 		{
 			if (!string.IsNullOrWhiteSpace(CookieAndBearerAuthenticationSettings.ApiKeyHeaderName))
 			{
-				if (Request.Headers.TryGetValue(CookieAndBearerAuthenticationSettings.ApiKeyHeaderName, out var _authenticationHeaderValue))
+				if (Request.Headers.TryGetValue(CookieAndBearerAuthenticationSettings.ApiKeyHeaderName, out var _apiKeyHeaderValue))
 				{
-					authenticationHeaderValue = _authenticationHeaderValue.NullCheckedFirstOrDefault();
+					apiKeyHeaderValue = _apiKeyHeaderValue.NullCheckedFirstOrDefault();
 
 					return true;
 				}
 			}
 
+			apiKeyHeaderValue = null;
+
+			return false;
+		}
+
+		protected override bool TryGetAuthenticationHeaderValue(out string authenticationHeaderValue)
+		{
 			if (!string.IsNullOrWhiteSpace(CookieAndBearerAuthenticationSettings.AuthorizationHeaderName))
 			{
 				if (Request.Headers.TryGetValue(CookieAndBearerAuthenticationSettings.AuthorizationHeaderName, out var _authenticationHeaderValue))

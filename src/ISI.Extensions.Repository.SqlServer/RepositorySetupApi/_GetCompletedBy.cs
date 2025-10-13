@@ -42,7 +42,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 						using (var command = new Microsoft.Data.SqlClient.SqlCommand("select ORIGINAL_LOGIN()", connection))
 						{
-							var completedBy = string.Format("{0}", command.ExecuteScalar());
+							var completedBy = $"{command.ExecuteScalar()}";
 
 							if (!string.IsNullOrWhiteSpace(completedBy))
 							{

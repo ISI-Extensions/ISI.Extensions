@@ -181,7 +181,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 			{
 				sql.AppendFormat("CREATE TABLE {0}\n", tableName);
 				sql.Append("  (\n");
-				sql.AppendFormat("{0}{1}\n", string.Join(",\n", recordDescription.PropertyDescriptions.OrderBy(propertyDescription => propertyDescription.Order).Select(propertyDescription => string.Format("  {0}", propertyDescription.GetColumnDefinition(FormatColumnName)))), (string.IsNullOrWhiteSpace(primaryKeyName) ? string.Empty : ","));
+				sql.AppendFormat("{0}{1}\n", string.Join(",\n", recordDescription.PropertyDescriptions.OrderBy(propertyDescription => propertyDescription.Order).Select(propertyDescription => $"  {propertyDescription.GetColumnDefinition(FormatColumnName)}")), (string.IsNullOrWhiteSpace(primaryKeyName) ? string.Empty : ","));
 
 				if (!string.IsNullOrWhiteSpace(primaryKeyName))
 				{
@@ -217,14 +217,14 @@ namespace ISI.Extensions.Repository.PostgreSQL
 			sql.Append("SELECT COUNT(1) FROM pg_tables WHERE schemaname = @SchemaName AND tablename = @TableName\n");
 			var tableExists = connection.ExecuteScalarAsync<int>(sql.ToString(), [
 				new KeyValuePair<string, object>("SchemaName", Schema),
-				new KeyValuePair<string, object>("TableName", string.Format("{0}{1}", TableName, ArchiveTableSuffix))
+				new KeyValuePair<string, object>("TableName", $"{TableName}{ArchiveTableSuffix}")
 			]).GetAwaiter().GetResult() != 0;
 
 			sql.Clear();
 
 			var recordDescription = RecordDescription.GetRecordDescription<TRecord>();
 
-			var tableName = FormatArchiveTableName(string.Format("{0}{1}", TableName, ArchiveTableSuffix), null, false);
+			var tableName = FormatArchiveTableName($"{TableName}{ArchiveTableSuffix}", null, false);
 
 			var primaryKeyName = $"\"{RecordDescription.GetRecordDescription<TRecord>().TableName}{ArchiveTableSuffix}Index\"";
 
@@ -264,7 +264,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 				sql.AppendFormat("CREATE TABLE {0}\n", tableName);
 				sql.Append("  (\n");
 				sql.AppendFormat("    {0} timestamp without time zone not null,\n", FormatColumnName(ArchiveTableArchiveDateTimeColumnName));
-				sql.AppendFormat("{0}\n", string.Join(",\n", recordDescription.PropertyDescriptions.OrderBy(propertyDescription => propertyDescription.Order).Select(propertyDescription => string.Format("  {0}", propertyDescription.GetColumnDefinition(FormatColumnName)))));
+				sql.AppendFormat("{0}\n", string.Join(",\n", recordDescription.PropertyDescriptions.OrderBy(propertyDescription => propertyDescription.Order).Select(propertyDescription => $"  {propertyDescription.GetColumnDefinition(FormatColumnName)}")));
 				sql.Append("  );\n");
 
 				if (!string.IsNullOrWhiteSpace(primaryKeyName))

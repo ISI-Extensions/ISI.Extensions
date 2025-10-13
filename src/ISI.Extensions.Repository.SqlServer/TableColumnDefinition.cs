@@ -89,19 +89,19 @@ namespace ISI.Extensions.Repository.SqlServer
 									{
 										case "decimal":
 										case "numeric":
-											columnDefinition.ColumnType = string.Format("{0}({1}, {2})", columnDefinition.ColumnType, precision, scale);
+											columnDefinition.ColumnType = $"{columnDefinition.ColumnType}({precision}, {scale})";
 											break;
 
 										case "char":
 										case "varchar":
 										case "varbinary":
-											columnDefinition.ColumnType = string.Format("{0}({1})", columnDefinition.ColumnType, (columnDefinition.Length <= 0 ? "max" : string.Format("{0}", columnDefinition.Length)));
+											columnDefinition.ColumnType = $"{columnDefinition.ColumnType}({(columnDefinition.Length <= 0 ? "max" : $"{columnDefinition.Length}")})";
 											break;
 
 										case "nchar":
 										case "nvarchar":
 											columnDefinition.Length /= 2;
-											columnDefinition.ColumnType = string.Format("{0}({1})", columnDefinition.ColumnType, (columnDefinition.Length <= 0 ? "max" : string.Format("{0}", columnDefinition.Length)));
+											columnDefinition.ColumnType = $"{columnDefinition.ColumnType}({(columnDefinition.Length <= 0 ? "max" : $"{columnDefinition.Length}")})";
 											break;
 									}
 

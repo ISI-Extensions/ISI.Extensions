@@ -43,7 +43,7 @@ namespace ISI.Extensions.Repository.Oracle
 
 						using (var command = new global::Oracle.ManagedDataAccess.Client.OracleCommand("select user from dual", connection))
 						{
-							var completedBy = string.Format("{0}", command.ExecuteScalar());
+							var completedBy = $"{command.ExecuteScalar()}";
 
 							if (!string.IsNullOrWhiteSpace(completedBy))
 							{

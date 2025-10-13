@@ -31,7 +31,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 	{
 		protected override string FormatColumnName(string columnName)
 		{
-			return string.Format("\"{0}\"", columnName.Trim('\"'));
+			return $"\"{columnName.Trim('\"')}\"";
 		}
 	}
 }

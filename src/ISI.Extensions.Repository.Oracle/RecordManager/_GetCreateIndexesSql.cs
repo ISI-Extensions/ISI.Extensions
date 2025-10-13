@@ -36,10 +36,10 @@ namespace ISI.Extensions.Repository.Oracle
 			foreach (var recordIndex in recordDescription.Indexes)
 			{
 				var columnIssues = new List<string>();
-				columnIssues.AddRange(recordIndex.Columns.Where(column => (column.RecordPropertyDescription.ValueType.GetDbType() == System.Data.DbType.String) && (column.RecordPropertyDescription.PropertySize <= 0)).Select(column => string.Format("Column \"{0}\" is of type varchar(max) which cannot be used in an index", column.RecordPropertyDescription.ColumnName)));
+				columnIssues.AddRange(recordIndex.Columns.Where(column => (column.RecordPropertyDescription.ValueType.GetDbType() == System.Data.DbType.String) && (column.RecordPropertyDescription.PropertySize <= 0)).Select(column => $"Column \"{column.RecordPropertyDescription.ColumnName}\" is of type varchar(max) which cannot be used in an index"));
 				if (columnIssues.Any())
 				{
-					throw new(string.Format("Cannot create index: \"{0}\"\n  {1}\n", recordIndex.CalculatedName, string.Join("\n  ", columnIssues)));
+					throw new($"Cannot create index: \"{recordIndex.CalculatedName}\"\n  {string.Join("\n  ", columnIssues)}\n");
 				}
 
 				sql.Append("\n");
@@ -52,7 +52,7 @@ namespace ISI.Extensions.Repository.Oracle
 				}
 				recordIndexName = $"{recordIndexName}{uniqueIndexNameSuffix}";
 
-				sql.AppendFormat("  CREATE{3} INDEX \"{0}\" ON {1} ({2}){4};\n", recordIndexName, tableName, string.Join(", ", recordIndex.Columns.Select(column => string.Format("{0}{1}", FormatColumnName(column.RecordPropertyDescription.ColumnName), column.AscendingOrder ? string.Empty : " DESC"))), (recordIndex.Unique ? " UNIQUE" : string.Empty), (recordIndex.Clustered ? " CLUSTER" : string.Empty));
+				sql.AppendFormat("  CREATE{3} INDEX \"{0}\" ON {1} ({2}){4};\n", recordIndexName, tableName, string.Join(", ", recordIndex.Columns.Select(column => $"{FormatColumnName(column.RecordPropertyDescription.ColumnName)}{(column.AscendingOrder ? string.Empty : " DESC")}")), (recordIndex.Unique ? " UNIQUE" : string.Empty), (recordIndex.Clustered ? " CLUSTER" : string.Empty));
 			}
 
 			return sql.ToString();

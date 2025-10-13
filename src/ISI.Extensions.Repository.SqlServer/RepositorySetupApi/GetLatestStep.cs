@@ -69,7 +69,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 							using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql.ToString(), connection))
 							{
-								response.StepId = string.Format("{0}", command.ExecuteScalarWithExceptionTracingAsync().GetAwaiter().GetResult()).ToInt();
+								response.StepId = $"{command.ExecuteScalarWithExceptionTracingAsync().GetAwaiter().GetResult()}".ToInt();
 								success = true;
 							}
 

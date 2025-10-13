@@ -122,12 +122,12 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 									sql.AppendFormat("INSERT INTO {0} ({1})\n", GetTableName(addAlias: false), string.Join(", ", insertPropertyDescriptions.Select(property => FormatColumnName(property.ColumnName))));
 
-									sql.Append(string.Format("VALUES({0})", string.Join(", ", insertPropertyIndexes.Select(propertyIndex => string.Format("@value_{0}", propertyIndex)))));
+									sql.Append($"VALUES({string.Join(", ", insertPropertyIndexes.Select(propertyIndex => $"@value_{propertyIndex}"))})");
 
 									var valueIndex = 1;
 									foreach (var property in insertPropertyDescriptions)
 									{
-										sqlValues.Add(string.Format("@value_{0}", valueIndex++), (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
+										sqlValues.Add($"@value_{valueIndex++}", (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
 									}
 
 									if (repositoryAssignedValueColumnDefinitions.Any())
@@ -170,10 +170,10 @@ namespace ISI.Extensions.Repository.PostgreSQL
 									sql.AppendFormat("UPDATE {0}\n", GetTableName(addAlias: false));
 									sql.Append("SET\n");
 									var columnIndex = 1;
-									sql.AppendFormat("{0}\n", string.Join(",\n", updatePropertyDescriptions.Select(property => string.Format("    {0} = @value_{1}", FormatColumnName(property.ColumnName), columnIndex++))));
+									sql.AppendFormat("{0}\n", string.Join(",\n", updatePropertyDescriptions.Select(property => $"    {FormatColumnName(property.ColumnName)} = @value_{columnIndex++}")));
 									sql.Append("WHERE\n");
 									var primaryKeyIndex = 1;
-									sql.AppendFormat("      {0};\n", string.Join(" AND\n", primaryKeyPropertyDescriptions.Select(property => string.Format("    {0} = @primaryKey_{1}", FormatColumnName(property.ColumnName), primaryKeyIndex++))));
+									sql.AppendFormat("      {0};\n", string.Join(" AND\n", primaryKeyPropertyDescriptions.Select(property => $"    {FormatColumnName(property.ColumnName)} = @primaryKey_{primaryKeyIndex++}")));
 
 									using (var command = new Npgsql.NpgsqlCommand(sql.ToString(), connection))
 									{
@@ -182,13 +182,13 @@ namespace ISI.Extensions.Repository.PostgreSQL
 										columnIndex = 1;
 										foreach (var property in updatePropertyDescriptions)
 										{
-											command.AddParameter(string.Format("@value_{0}", columnIndex++), (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
+											command.AddParameter($"@value_{columnIndex++}", (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
 										}
 
 										primaryKeyIndex = 1;
 										foreach (var property in primaryKeyPropertyDescriptions)
 										{
-											command.AddParameter(string.Format("@primaryKey_{0}", primaryKeyIndex++), (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
+											command.AddParameter($"@primaryKey_{primaryKeyIndex++}", (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
 										}
 
 										await command.ExecuteNonQueryWithExceptionTracingAsync(cancellationToken: cancellationToken);
@@ -203,21 +203,21 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 									sql.AppendFormat("INSERT INTO {0} ({1})\n", GetTableName(addAlias: false), string.Join(", ", insertPropertyDescriptions.Select(property => FormatColumnName(property.ColumnName))));
 
-									sql.Append(string.Format("VALUES({0})", string.Join(", ", insertPropertyIndexes.Select(propertyIndex => string.Format("@value_{0}", propertyIndex)))));
+									sql.Append($"VALUES({string.Join(", ", insertPropertyIndexes.Select(propertyIndex => $"@value_{propertyIndex}"))})");
 
 									var valueIndexByColumnName = new Dictionary<string, int>();
 									var valueIndex = 1;
 									foreach (var property in insertPropertyDescriptions)
 									{
 										valueIndexByColumnName.Add(property.ColumnName, valueIndex);
-										sqlValues.Add(string.Format("@value_{0}", valueIndex++), (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
+										sqlValues.Add($"@value_{valueIndex++}", (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
 									}
 
 									sql.AppendFormat("ON CONFLICT ({0})\n", string.Join(", ", primaryKeyPropertyDescriptions.Select(property => FormatColumnName(property.ColumnName))));
 
 									sql.Append("DO UPDATE\n");
 									sql.Append("SET\n");
-									sql.AppendFormat("{0}", string.Join(",\n", updatePropertyDescriptions.Select(property => string.Format("    {0} = @value_{1}", FormatColumnName(property.ColumnName), valueIndexByColumnName[property.ColumnName]))));
+									sql.AppendFormat("{0}", string.Join(",\n", updatePropertyDescriptions.Select(property => $"    {FormatColumnName(property.ColumnName)} = @value_{valueIndexByColumnName[property.ColumnName]}")));
 									
 									if (repositoryAssignedValueColumnDefinitions.Any())
 									{
@@ -271,13 +271,13 @@ namespace ISI.Extensions.Repository.PostgreSQL
 						var selectIndex = 1;
 						foreach (var persistedRecordSet in persistedRecordSets)
 						{
-							sqlSelects.Add(string.Format("SELECT {0}", string.Join(", ", archivePropertyIndexes.Select(propertyIndex => string.Format("@value_{0}_{1}", selectIndex, propertyIndex)))));
+							sqlSelects.Add($"SELECT {string.Join(", ", archivePropertyIndexes.Select(propertyIndex => $"@value_{selectIndex}_{propertyIndex}"))}");
 
 							var valueIndex = 1;
-							sqlValues.Add(string.Format("@value_{0}_{1}", selectIndex, valueIndex++), getArchiveDateTimeUtc(persistedRecordSet.Record));
+							sqlValues.Add($"@value_{selectIndex}_{valueIndex++}", getArchiveDateTimeUtc(persistedRecordSet.Record));
 							foreach (var property in archivePropertyDescriptions)
 							{
-								sqlValues.Add(string.Format("@value_{0}_{1}", selectIndex, valueIndex++), (property.IsNull(persistedRecordSet.ConvertedRecord) ? DBNull.Value : GetValue(property, persistedRecordSet.ConvertedRecord)));
+								sqlValues.Add($"@value_{selectIndex}_{valueIndex++}", (property.IsNull(persistedRecordSet.ConvertedRecord) ? DBNull.Value : GetValue(property, persistedRecordSet.ConvertedRecord)));
 							}
 
 							selectIndex++;

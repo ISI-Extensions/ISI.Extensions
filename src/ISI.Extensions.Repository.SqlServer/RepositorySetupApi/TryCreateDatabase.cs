@@ -93,8 +93,8 @@ select @defaultDataDirectory as DefaultDataDirectory, @defaultLogDirectory as De
 
 				sql.Clear();
 				sql.AppendFormat("CREATE DATABASE [{0}]\n", DatabaseName);
-				sql.AppendFormat("  ON PRIMARY (NAME = N'{0}.Data', FILENAME = N'{1}')\n", DatabaseName, System.IO.Path.Combine(dataFileDirectory, string.Format("{0}.mdf", DatabaseName)));
-				sql.AppendFormat("  LOG ON (NAME = N'{0}.Log', FILENAME = N'{1}');\n", DatabaseName, System.IO.Path.Combine(logFileDirectory, string.Format("{0}.ldf", DatabaseName)));
+				sql.AppendFormat("  ON PRIMARY (NAME = N'{0}.Data', FILENAME = N'{1}')\n", DatabaseName, System.IO.Path.Combine(dataFileDirectory, $"{DatabaseName}.mdf"));
+				sql.AppendFormat("  LOG ON (NAME = N'{0}.Log', FILENAME = N'{1}');\n", DatabaseName, System.IO.Path.Combine(logFileDirectory, $"{DatabaseName}.ldf"));
 
 				connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
 

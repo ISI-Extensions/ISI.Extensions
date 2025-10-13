@@ -43,7 +43,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 						using (var command = new Npgsql.NpgsqlCommand("SELECT current_user;", connection))
 						{
-							var completedBy = string.Format("{0}", command.ExecuteScalar());
+							var completedBy = $"{command.ExecuteScalar()}";
 
 							if (!string.IsNullOrWhiteSpace(completedBy))
 							{

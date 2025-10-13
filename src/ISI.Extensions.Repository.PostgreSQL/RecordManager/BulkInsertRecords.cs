@@ -114,13 +114,13 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 						if (++rowIndex % batchSize == 0)
 						{
-							batchLogger?.Invoke(string.Format("{0} records inserted", rowIndex));
+							batchLogger?.Invoke($"{rowIndex} records inserted");
 						}
 					}
 
 					binaryImporter.Complete();
 
-					batchLogger?.Invoke(string.Format("{0} records inserted", rowIndex));
+					batchLogger?.Invoke($"{rowIndex} records inserted");
 				}
 			}
 
@@ -165,13 +165,13 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 						if (++rowIndex % batchSize == 0)
 						{
-							batchLogger?.Invoke(string.Format("{0} records inserted into archive", rowIndex));
+							batchLogger?.Invoke($"{rowIndex} records inserted into archive");
 						}
 					}
 
 					binaryImporter.Complete();
 
-					batchLogger?.Invoke(string.Format("{0} records inserted into archive", rowIndex));
+					batchLogger?.Invoke($"{rowIndex} records inserted into archive");
 				}
 			}
 		}

@@ -33,10 +33,10 @@ namespace ISI.Extensions.Repository.SqlServer
 			foreach (var recordIndex in recordDescription.Indexes)
 			{
 				var columnIssues = new List<string>();
-				columnIssues.AddRange(recordIndex.Columns.Where(column => (column.RecordPropertyDescription.ValueType.GetDbType() == System.Data.DbType.String) && (column.RecordPropertyDescription.PropertySize <= 0)).Select(column => string.Format("Column \"{0}\" is of type varchar(max) which cannot be used in an index", column.RecordPropertyDescription.ColumnName)));
+				columnIssues.AddRange(recordIndex.Columns.Where(column => (column.RecordPropertyDescription.ValueType.GetDbType() == System.Data.DbType.String) && (column.RecordPropertyDescription.PropertySize <= 0)).Select(column => $"Column \"{column.RecordPropertyDescription.ColumnName}\" is of type varchar(max) which cannot be used in an index"));
 				if (columnIssues.Any())
 				{
-					throw new(string.Format("Cannot create index: \"{0}\"\n  {1}\n", recordIndex.CalculatedName, string.Join("\n  ", columnIssues)));
+					throw new($"Cannot create index: \"{recordIndex.CalculatedName}\"\n  {string.Join("\n  ", columnIssues)}\n");
 				}
 
 				sql.Append("\n");
@@ -47,7 +47,7 @@ namespace ISI.Extensions.Repository.SqlServer
 					recordIndexName = recordIndexName.Substring(0, 128);
 				}
 
-				sql.AppendFormat("  create{3}{4} index {0} on {1} ({2})\n", recordIndexName, tableName, string.Join(", ", recordIndex.Columns.Select(column => string.Format("{0}{1}", FormatColumnName(column.RecordPropertyDescription.ColumnName), column.AscendingOrder ? string.Empty : " desc"))), (recordIndex.Unique ? " unique" : string.Empty), (recordIndex.Clustered ? " clustered" : string.Empty));
+				sql.AppendFormat("  create{3}{4} index {0} on {1} ({2})\n", recordIndexName, tableName, string.Join(", ", recordIndex.Columns.Select(column => $"{FormatColumnName(column.RecordPropertyDescription.ColumnName)}{(column.AscendingOrder ? string.Empty : " desc")}")), (recordIndex.Unique ? " unique" : string.Empty), (recordIndex.Clustered ? " clustered" : string.Empty));
 			}
 
 			return sql.ToString();

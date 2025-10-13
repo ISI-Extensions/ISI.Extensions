@@ -55,7 +55,7 @@ namespace ISI.Extensions.Repository.SqlServer
 						var drive = pieces[0];
 						var relativeName = pieces[1];
 
-						return string.Format("\\\\{0}\\{1}${2}", databaseServer, drive, relativeName);
+						return $"\\\\{databaseServer}\\{drive}${relativeName}";
 					};
 				}
 			}
@@ -68,13 +68,13 @@ namespace ISI.Extensions.Repository.SqlServer
 					connection.Open();
 
 					{
-						var sql = string.Format(@"
+						var sql = $@"
 select MasterFiles.type_desc, MasterFiles.name, MasterFiles.physical_name
 from sys.master_files MasterFiles with (NoLock)
 		inner join sys.databases Databases with (NoLock) on (Databases.database_id = MasterFiles.database_id)
-where Databases.name = '{0}'
+where Databases.name = '{databaseName}'
 order by MasterFiles.type, MasterFiles.file_id
-", databaseName);
+";
 
 						using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql, connection))
 						{
@@ -89,7 +89,7 @@ order by MasterFiles.type, MasterFiles.file_id
 					}
 
 					{
-						var sql = string.Format(@"EXEC master.dbo.sp_detach_db @dbname = N'{0}'", databaseName);
+						var sql = $@"EXEC master.dbo.sp_detach_db @dbname = N'{databaseName}'";
 
 						using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql, connection))
 						{
@@ -106,7 +106,7 @@ order by MasterFiles.type, MasterFiles.file_id
 						{
 							var sourceFileName = fileNameConverter(databaseFileName);
 
-							databaseFileName = string.Format("{0}\\{1}{2}", System.IO.Path.GetDirectoryName(databaseFileName), System.IO.Path.GetFileNameWithoutExtension(databaseFileName).Replace(databaseName, newRepositoryName), System.IO.Path.GetExtension(databaseFileName));
+							databaseFileName = $"{System.IO.Path.GetDirectoryName(databaseFileName)}\\{System.IO.Path.GetFileNameWithoutExtension(databaseFileName).Replace(databaseName, newRepositoryName)}{System.IO.Path.GetExtension(databaseFileName)}";
 
 							var targetFileName = fileNameConverter(databaseFileName);
 
@@ -117,7 +117,7 @@ order by MasterFiles.type, MasterFiles.file_id
 					}
 
 					{
-						var sql = string.Format(@"CREATE DATABASE [{0}] ON {1} FOR ATTACH", newRepositoryName, string.Join(", ", databaseFileNames.Select(databaseFileName => string.Format(@"( FILENAME = N'{0}' )", databaseFileName))));
+						var sql = $@"CREATE DATABASE [{newRepositoryName}] ON {string.Join(", ", databaseFileNames.Select(databaseFileName => $@"( FILENAME = N'{databaseFileName}' )"))} FOR ATTACH";
 
 						using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql, connection))
 						{

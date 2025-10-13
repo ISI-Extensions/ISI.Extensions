@@ -60,14 +60,14 @@ namespace ISI.Extensions.Repository.PostgreSQL
 			
 			alias = FormatTableNameAlias(string.IsNullOrWhiteSpace(alias) ? TableName : alias);
 
-			tableName = (string.IsNullOrWhiteSpace(TableNamePrefix) ? tableName : string.Format("{0}{1}", TableNamePrefix, tableName));
+			tableName = (string.IsNullOrWhiteSpace(TableNamePrefix) ? tableName : $"{TableNamePrefix}{tableName}");
 
 			if (string.IsNullOrWhiteSpace(Schema))
 			{
-				return string.Format("{0}{1}", tableName.PostgreSQLFormatName(), (addAlias ? string.Format(" {0}", alias) : string.Empty));
+				return $"{tableName.PostgreSQLFormatName()}{(addAlias ? $" {alias}" : string.Empty)}";
 			}
 
-			return string.Format("{0}{1}", string.Format("{0}.{1}", Schema.PostgreSQLFormatName(), tableName.PostgreSQLFormatName()), (addAlias ? string.Format(" {0}", alias) : string.Empty));
+			return $"{$"{Schema.PostgreSQLFormatName()}.{tableName.PostgreSQLFormatName()}"}{(addAlias ? $" {alias}" : string.Empty)}";
 		}
 
 
@@ -84,7 +84,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 			alias = (string.IsNullOrWhiteSpace(alias) ? TableName : alias);
 
-			return FormatArchiveTableNameAlias(string.Format("{0}{1}", alias, ArchiveTableSuffix));
+			return FormatArchiveTableNameAlias($"{alias}{ArchiveTableSuffix}");
 		}
 
 		protected virtual string FormatArchiveTableNameAlias(string alias)
@@ -94,7 +94,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 		protected virtual string GetArchiveTableName(string alias = null, bool addAlias = true)
 		{
-			return FormatArchiveTableName(string.Format("{0}{1}", TableName, ArchiveTableSuffix), alias, addAlias);
+			return FormatArchiveTableName($"{TableName}{ArchiveTableSuffix}", alias, addAlias);
 		}
 
 		protected virtual string FormatArchiveTableName(string tableName, string alias = null, bool addAlias = true)
@@ -106,14 +106,14 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 			alias = FormatArchiveTableNameAlias(string.IsNullOrWhiteSpace(alias) ? tableName : alias);
 
-			tableName = (string.IsNullOrWhiteSpace(TableNamePrefix) ? tableName : string.Format("{0}{1}", TableNamePrefix, tableName));
+			tableName = (string.IsNullOrWhiteSpace(TableNamePrefix) ? tableName : $"{TableNamePrefix}{tableName}");
 
 			if (string.IsNullOrWhiteSpace(Schema))
 			{
-				return string.Format("{0}{1}", tableName.PostgreSQLFormatName(), (addAlias ? string.Format(" {0}", alias) : string.Empty));
+				return $"{tableName.PostgreSQLFormatName()}{(addAlias ? $" {alias}" : string.Empty)}";
 			}
 
-			return string.Format("{0}{1}", string.Format("{0}.{1}", Schema.PostgreSQLFormatName(), tableName.PostgreSQLFormatName()), (addAlias ? string.Format(" {0}", alias) : string.Empty));
+			return $"{$"{Schema.PostgreSQLFormatName()}.{tableName.PostgreSQLFormatName()}"}{(addAlias ? $" {alias}" : string.Empty)}";
 		}
 	}
 }

@@ -43,7 +43,7 @@ namespace ISI.Extensions.Repository.Oracle
 					recordIndexName = recordIndexName.Substring(0, 128);
 				}
 
-				var sql = string.Format("DROP INDEX {0} ON {1}", recordIndexName, tableName);
+				var sql = $"DROP INDEX {recordIndexName} ON {tableName}";
 
 				ExecuteNonQueryAsync(connection, sql).Wait();
 			}

@@ -89,7 +89,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 					var primaryKeyValuesEnumerator = PrimaryKeyValues.GetEnumerator();
 
-					string GetPrimaryKeyValueName(int primaryKeyValueNameIndex) => string.Format("@primaryKey_{0}", primaryKeyValueNameIndex);
+					string GetPrimaryKeyValueName(int primaryKeyValueNameIndex) => $"@primaryKey_{primaryKeyValueNameIndex}";
 
 					var primaryKeyValueCount = 0;
 
@@ -108,7 +108,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 						Parameters.Add(primaryKeyColumnAlias, parameters.FirstOrDefault().Value);
 
-						Sql = string.Format("      {0} = {1}", _formatColumnName(primaryKeyColumn.ColumnName), primaryKeyColumnAlias);
+						Sql = $"      {_formatColumnName(primaryKeyColumn.ColumnName)} = {primaryKeyColumnAlias}";
 					}
 					else if (primaryKeyValueCount < primaryKeyMaxCount)
 					{
@@ -117,11 +117,11 @@ namespace ISI.Extensions.Repository.SqlServer
 							Parameters.Add(parameter);
 						}
 
-						Sql = string.Format("      {0} IN ({1})", _formatColumnName(primaryKeyColumn.ColumnName), string.Join(", ", parameters.Keys));
+						Sql = $"      {_formatColumnName(primaryKeyColumn.ColumnName)} IN ({string.Join(", ", parameters.Keys)})";
 					}
 					else
 					{
-						PrimaryKeyTempTableName = string.Format("PrimaryKeys_{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting));
+						PrimaryKeyTempTableName = $"PrimaryKeys_{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}";
 
 						var dataReader = new ISI.Extensions.DataReader.EnumerableDataReader<ISI.Extensions.DataReader.ValueWrapper<TRecordPrimaryKey>>([
 							usedPrimaryKeyValues.Select(primaryKey => new ISI.Extensions.DataReader.ValueWrapper<TRecordPrimaryKey>()
@@ -138,7 +138,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 						using (var target = new Microsoft.Data.SqlClient.SqlBulkCopy(connection, Microsoft.Data.SqlClient.SqlBulkCopyOptions.Default, null))
 						{
-							var sourcePrimaryKeyTempTableName = string.Format("Source{0}", PrimaryKeyTempTableName);
+							var sourcePrimaryKeyTempTableName = $"Source{PrimaryKeyTempTableName}";
 
 							using (var command = new Microsoft.Data.SqlClient.SqlCommand(@$"
 CREATE TABLE #{sourcePrimaryKeyTempTableName}
@@ -150,7 +150,7 @@ CREATE TABLE #{sourcePrimaryKeyTempTableName}
 								command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
 							}
 
-							target.DestinationTableName = string.Format("#{0}", sourcePrimaryKeyTempTableName);
+							target.DestinationTableName = $"#{sourcePrimaryKeyTempTableName}";
 							target.BulkCopyTimeout = 0; // 60 * 60;
 							target.BatchSize = 1000;
 							target.WriteToServer(dataReader);
@@ -199,7 +199,7 @@ FROM #{sourcePrimaryKeyTempTableName}", connection))
 				{
 					if (!Initialized)
 					{
-						throw new(string.Format("\"{0}\" Method must be called before checking \"HasFilter\"", nameof(Initialize)));
+						throw new($"\"{nameof(Initialize)}\" Method must be called before checking \"HasFilter\"");
 					}
 
 					return HasValue;

@@ -127,7 +127,7 @@ namespace ISI.Extensions.Repository.Oracle
 
 			var tableName = FormatTableName(TableName, null, false);
 
-			var primaryKeyName = string.Format("\"pk_{0}\"", TableName);
+			var primaryKeyName = $"\"pk_{TableName}\"";
 
 			if (!recordDescription.PrimaryKeyPropertyDescriptions.NullCheckedAny())
 			{
@@ -141,7 +141,7 @@ namespace ISI.Extensions.Repository.Oracle
 					var firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName = primaryKeyColumnsWithPrimaryKeyAttributes.FirstOrDefault(column => !string.IsNullOrEmpty(column.PrimaryKeyAttribute.Name));
 					if (firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName != null)
 					{
-						primaryKeyName = string.Format("{0}", FormatColumnName(firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName.PrimaryKeyAttribute.Name));
+						primaryKeyName = $"{FormatColumnName(firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName.PrimaryKeyAttribute.Name)}";
 					}
 				}
 			}
@@ -155,7 +155,7 @@ namespace ISI.Extensions.Repository.Oracle
 				sql.Append("FROM user_Tables\n");
 				sql.Append($"WHERE table_name = '{tableName}'\n");
 
-				tableExists = string.Format("{0}", connection.ExecuteScalarAsync(sql.ToString()).GetAwaiter().GetResult()).ToBoolean();
+				tableExists = $"{connection.ExecuteScalarAsync(sql.ToString()).GetAwaiter().GetResult()}".ToBoolean();
 			}
 
 			if (tableExists)
@@ -175,7 +175,7 @@ namespace ISI.Extensions.Repository.Oracle
 				var sql = new StringBuilder();
 				sql.AppendFormat("CREATE TABLE {0}\n", tableName);
 				sql.Append("  (\n");
-				sql.AppendFormat("{0}{1}\n", string.Join(",\n", recordDescription.PropertyDescriptions.OrderBy(propertyDescription => propertyDescription.Order).Select(propertyDescription => string.Format("  {0}", propertyDescription.GetColumnDefinition(FormatColumnName)))), (string.IsNullOrEmpty(primaryKeyName) ? string.Empty : ","));
+				sql.AppendFormat("{0}{1}\n", string.Join(",\n", recordDescription.PropertyDescriptions.OrderBy(propertyDescription => propertyDescription.Order).Select(propertyDescription => $"  {propertyDescription.GetColumnDefinition(FormatColumnName)}")), (string.IsNullOrEmpty(primaryKeyName) ? string.Empty : ","));
 
 				if (!string.IsNullOrEmpty(primaryKeyName))
 				{
@@ -197,13 +197,13 @@ namespace ISI.Extensions.Repository.Oracle
 				}
 
 				var columnIssues = new List<string>();
-				columnIssues.AddRange(recordIndex.Columns.Where(column => (column.RecordPropertyDescription.ValueType.GetDbType() == System.Data.DbType.String) && (column.RecordPropertyDescription.PropertySize <= 0)).Select(column => string.Format("Column \"{0}\" is of type varchar(max) which cannot be used in an index", column.RecordPropertyDescription.ColumnName)));
+				columnIssues.AddRange(recordIndex.Columns.Where(column => (column.RecordPropertyDescription.ValueType.GetDbType() == System.Data.DbType.String) && (column.RecordPropertyDescription.PropertySize <= 0)).Select(column => $"Column \"{column.RecordPropertyDescription.ColumnName}\" is of type varchar(max) which cannot be used in an index"));
 				if (columnIssues.Any())
 				{
-					throw new Exception(string.Format("Cannot create index: \"{0}\"\n  {1}\n", recordIndexName, string.Join("\n  ", columnIssues)));
+					throw new Exception($"Cannot create index: \"{recordIndexName}\"\n  {string.Join("\n  ", columnIssues)}\n");
 				}
 
-				ExecuteCreateTable(connection, string.Format("  CREATE{3}{4} INDEX {0} ON {1} ({2})\n", recordIndexName, tableName, string.Join(", ", recordIndex.Columns.Select(column => string.Format("{0}{1}", FormatColumnName(column.RecordPropertyDescription.ColumnName), column.AscendingOrder ? string.Empty : " desc"))), (recordIndex.Unique ? " unique" : string.Empty), (recordIndex.Clustered ? " clustered" : string.Empty)));
+				ExecuteCreateTable(connection, string.Format("  CREATE{3}{4} INDEX {0} ON {1} ({2})\n", recordIndexName, tableName, string.Join(", ", recordIndex.Columns.Select(column => $"{FormatColumnName(column.RecordPropertyDescription.ColumnName)}{(column.AscendingOrder ? string.Empty : " desc")}")), (recordIndex.Unique ? " unique" : string.Empty), (recordIndex.Clustered ? " clustered" : string.Empty)));
 			}
 
 			if (hasArchiveTable)
@@ -221,9 +221,9 @@ namespace ISI.Extensions.Repository.Oracle
 		{
 			var recordDescription = RecordDescription.GetRecordDescription<TRecord>();
 
-			var tableName = FormatArchiveTableName(string.Format("{0}{1}", TableName, ArchiveTableSuffix), null, false);
+			var tableName = FormatArchiveTableName($"{TableName}{ArchiveTableSuffix}", null, false);
 
-			var primaryKeyName = string.Format("\"{0}\"", string.Format("{0}{1}", RecordDescription.GetRecordDescription<TRecord>().TableName, ArchiveTableSuffix));
+			var primaryKeyName = $"\"{$"{RecordDescription.GetRecordDescription<TRecord>().TableName}{ArchiveTableSuffix}"}\"";
 
 			if (!recordDescription.PrimaryKeyPropertyDescriptions.NullCheckedAny())
 			{
@@ -237,7 +237,7 @@ namespace ISI.Extensions.Repository.Oracle
 					var firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName = primaryKeyColumnsWithPrimaryKeyAttributes.FirstOrDefault(column => !string.IsNullOrEmpty(column.PrimaryKeyAttribute.Name));
 					if (firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName != null)
 					{
-						primaryKeyName = string.Format("\"{0}\"", string.Format("{0}{1}", firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName.PrimaryKeyAttribute.Name, ArchiveTableSuffix));
+						primaryKeyName = $"\"{$"{firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName.PrimaryKeyAttribute.Name}{ArchiveTableSuffix}"}\"";
 					}
 				}
 			}
@@ -251,7 +251,7 @@ namespace ISI.Extensions.Repository.Oracle
 				sql.Append("FROM user_Tables\n");
 				sql.Append($"WHERE table_name = '{tableName}'\n");
 
-				tableExists = string.Format("{0}", connection.ExecuteScalarAsync(sql.ToString()).GetAwaiter().GetResult()).ToBoolean();
+				tableExists = $"{connection.ExecuteScalarAsync(sql.ToString()).GetAwaiter().GetResult()}".ToBoolean();
 			}
 
 			if (tableExists)
@@ -272,7 +272,7 @@ namespace ISI.Extensions.Repository.Oracle
 				sql.AppendFormat("  CREATE TABLE {0}\n", tableName);
 				sql.Append("  (\n");
 				sql.AppendFormat("    {0} TIMESTAMP NOT NULL,\n", FormatColumnName(ArchiveTableArchiveDateTimeColumnName));
-				sql.AppendFormat("{0}\n", string.Join(",\n", recordDescription.PropertyDescriptions.OrderBy(propertyDescription => propertyDescription.Order).Select(propertyDescription => string.Format("  {0}", propertyDescription.GetColumnDefinition(FormatColumnName)))));
+				sql.AppendFormat("{0}\n", string.Join(",\n", recordDescription.PropertyDescriptions.OrderBy(propertyDescription => propertyDescription.Order).Select(propertyDescription => $"  {propertyDescription.GetColumnDefinition(FormatColumnName)}")));
 				sql.Append("  )\n");
 
 				ExecuteCreateArchiveTable(connection, sql.ToString());

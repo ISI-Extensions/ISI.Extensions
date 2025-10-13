@@ -31,7 +31,7 @@ namespace ISI.Extensions.Repository.Oracle
 	{
 		protected virtual string GetFromClause()
 		{
-			return string.Format("FROM {0}", GetTableName());
+			return $"FROM {GetTableName()}";
 		}
 	}
 }

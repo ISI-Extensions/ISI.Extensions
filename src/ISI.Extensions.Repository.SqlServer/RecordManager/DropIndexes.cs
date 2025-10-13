@@ -39,7 +39,7 @@ namespace ISI.Extensions.Repository.SqlServer
 					recordIndexName = recordIndexName.Substring(0, 128);
 				}
 
-				var sql = string.Format("drop index {0} on {1}", recordIndexName, tableName);
+				var sql = $"drop index {recordIndexName} on {tableName}";
 
 				ExecuteNonQueryAsync(connection, sql).Wait();
 			}

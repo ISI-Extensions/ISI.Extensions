@@ -112,7 +112,7 @@ namespace ISI.Extensions.Repository.SqlServer
 						insertSql.Append("declare @RepositoryAssignedValues table\n");
 						insertSql.Append("(\n");
 						insertSql.Append("  InsertedRecordIndex int not null identity(0, 1),\n");
-						insertSql.AppendFormat("{0}\n", string.Join(",\n", repositoryAssignedValueColumnDefinitions.Select(repositoryAssignedValueColumnDefinition => string.Format("  {0} {1} not null", FormatColumnName(repositoryAssignedValueColumnDefinition.ColumnName), repositoryAssignedValueColumnDefinition.ColumnType))));
+						insertSql.AppendFormat("{0}\n", string.Join(",\n", repositoryAssignedValueColumnDefinitions.Select(repositoryAssignedValueColumnDefinition => $"  {FormatColumnName(repositoryAssignedValueColumnDefinition.ColumnName)} {repositoryAssignedValueColumnDefinition.ColumnType} not null")));
 						insertSql.Append(")\n");
 						insertSql.Append("\n");
 					}
@@ -121,7 +121,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 					if (repositoryAssignedValueColumnDefinitions.Any())
 					{
-						insertSql.AppendFormat("output {0}\n", string.Join(", ", repositoryAssignedValuePropertyDescriptions.Select(property => string.Format("INSERTED.{0}", FormatColumnName(property.ColumnName)))));
+						insertSql.AppendFormat("output {0}\n", string.Join(", ", repositoryAssignedValuePropertyDescriptions.Select(property => $"INSERTED.{FormatColumnName(property.ColumnName)}")));
 						insertSql.AppendFormat("into @RepositoryAssignedValues ({0})\n", string.Join(", ", repositoryAssignedValuePropertyDescriptions.Select(property => FormatColumnName(property.ColumnName))));
 					}
 
@@ -152,11 +152,11 @@ namespace ISI.Extensions.Repository.SqlServer
 							updateSql.Append("update updateTable\n");
 							updateSql.Append("set\n");
 							var columnIndex = 1;
-							updateSql.AppendFormat("{0}\n", string.Join(",\n", updatePropertyDescriptions.Select(property => string.Format("    {0} = @value{1}", FormatColumnName(property.ColumnName), columnIndex++))));
+							updateSql.AppendFormat("{0}\n", string.Join(",\n", updatePropertyDescriptions.Select(property => $"    {FormatColumnName(property.ColumnName)} = @value{columnIndex++}")));
 							updateSql.AppendFormat("from {0}\n", GetTableName("updateTable"));
 							updateSql.Append("where\n");
 							var primaryKeyIndex = 1;
-							updateSql.AppendFormat("      {0}\n", string.Join(" and\n", primaryKeyPropertyDescriptions.Select(property => string.Format("    {0} = @primaryKey{1}", FormatColumnName(property.ColumnName), primaryKeyIndex++))));
+							updateSql.AppendFormat("      {0}\n", string.Join(" and\n", primaryKeyPropertyDescriptions.Select(property => $"    {FormatColumnName(property.ColumnName)} = @primaryKey{primaryKeyIndex++}")));
 							updateSql.Append("select @@RowCount");
 
 							using (var command = new Microsoft.Data.SqlClient.SqlCommand(updateSql.ToString(), updateConnection))
@@ -166,20 +166,20 @@ namespace ISI.Extensions.Repository.SqlServer
 								columnIndex = 1;
 								foreach (var property in updatePropertyDescriptions)
 								{
-									command.AddParameter(string.Format("@value{0}", columnIndex++), (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
+									command.AddParameter($"@value{columnIndex++}", (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
 								}
 
 								primaryKeyIndex = 1;
 								foreach (var property in primaryKeyPropertyDescriptions)
 								{
-									command.AddParameter(string.Format("@primaryKey{0}", primaryKeyIndex++), (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
+									command.AddParameter($"@primaryKey{primaryKeyIndex++}", (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
 								}
 
 								if ((persistenceMethod == PersistenceMethod.Upsert) || (persistenceMethod == PersistenceMethod.Update))
 								{
 									updateConnection.EnsureConnectionIsOpenAsync(cancellationToken: cancellationToken).Wait(cancellationToken);
 
-									var updated = (string.Format("{0}", await command.ExecuteScalarWithExceptionTracingAsync(cancellationToken: cancellationToken))).ToBoolean();
+									var updated = ($"{await command.ExecuteScalarWithExceptionTracingAsync(cancellationToken: cancellationToken)}").ToBoolean();
 
 									if (persistenceMethod == PersistenceMethod.Upsert)
 									{
@@ -195,12 +195,12 @@ namespace ISI.Extensions.Repository.SqlServer
 
 							hasInserts = true;
 
-							sqlSelects.Add(string.Format("select {0}", string.Join(", ", insertPropertyIndexes.Select(propertyIndex => string.Format("@value_{0}_{1}", persistedConvertedRecordIndex, propertyIndex)))));
+							sqlSelects.Add($"select {string.Join(", ", insertPropertyIndexes.Select(propertyIndex => $"@value_{persistedConvertedRecordIndex}_{propertyIndex}"))}");
 
 							var valueIndex = 1;
 							foreach (var property in insertPropertyDescriptions)
 							{
-								sqlValues.Add(string.Format("@value_{0}_{1}", persistedConvertedRecordIndex, valueIndex++), (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
+								sqlValues.Add($"@value_{persistedConvertedRecordIndex}_{valueIndex++}", (property.IsNull(convertedRecord) ? DBNull.Value : GetValue(property, convertedRecord)));
 							}
 						}
 					}
@@ -212,7 +212,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 						if (repositoryAssignedValueColumnDefinitions.Any())
 						{
-							insertSql.AppendFormat("select InsertedRecordIndex, {0}\n", string.Join(", ", repositoryAssignedValuePropertyDescriptions.Select(property => string.Format("[{0}]", property.ColumnName))));
+							insertSql.AppendFormat("select InsertedRecordIndex, {0}\n", string.Join(", ", repositoryAssignedValuePropertyDescriptions.Select(property => $"[{property.ColumnName}]")));
 							insertSql.Append("from @RepositoryAssignedValues\n");
 						}
 
@@ -258,13 +258,13 @@ namespace ISI.Extensions.Repository.SqlServer
 						var selectIndex = 1;
 						foreach (var persistedRecordSet in persistedRecordSets)
 						{
-							sqlSelects.Add(string.Format("select {0}", string.Join(", ", archivePropertyIndexes.Select(propertyIndex => string.Format("@value_{0}_{1}", selectIndex, propertyIndex)))));
+							sqlSelects.Add($"select {string.Join(", ", archivePropertyIndexes.Select(propertyIndex => $"@value_{selectIndex}_{propertyIndex}"))}");
 
 							var valueIndex = 1;
-							sqlValues.Add(string.Format("@value_{0}_{1}", selectIndex, valueIndex++), getArchiveDateTimeUtc(persistedRecordSet.Record));
+							sqlValues.Add($"@value_{selectIndex}_{valueIndex++}", getArchiveDateTimeUtc(persistedRecordSet.Record));
 							foreach (var property in archivePropertyDescriptions)
 							{
-								sqlValues.Add(string.Format("@value_{0}_{1}", selectIndex, valueIndex++), (property.IsNull(persistedRecordSet.ConvertedRecord) ? DBNull.Value : GetValue(property, persistedRecordSet.ConvertedRecord)));
+								sqlValues.Add($"@value_{selectIndex}_{valueIndex++}", (property.IsNull(persistedRecordSet.ConvertedRecord) ? DBNull.Value : GetValue(property, persistedRecordSet.ConvertedRecord)));
 							}
 
 							selectIndex++;

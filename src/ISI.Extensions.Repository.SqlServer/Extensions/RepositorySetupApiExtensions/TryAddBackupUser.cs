@@ -34,8 +34,8 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 				var sqls = new[]
 				{
 					string.Format("create user [{0}] for login [{0}]", backupUserName),
-					string.Format("alter user [{0}] with default_schema=dbo", backupUserName),
-					string.Format("alter role [db_backupoperator] add member [{0}]", backupUserName),
+					$"alter user [{backupUserName}] with default_schema=dbo",
+					$"alter role [db_backupoperator] add member [{backupUserName}]",
 				};
 
 				foreach (var sql in sqls)

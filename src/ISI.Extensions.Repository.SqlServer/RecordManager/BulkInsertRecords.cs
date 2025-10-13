@@ -104,12 +104,12 @@ namespace ISI.Extensions.Repository.SqlServer
 					target.NotifyAfter = batchSize;
 					if (batchLogger != null)
 					{
-						target.SqlRowsCopied += (sender, args) => batchLogger(string.Format("{0} records inserted", args.RowsCopied));
+						target.SqlRowsCopied += (sender, args) => batchLogger($"{args.RowsCopied} records inserted");
 					}
 
 					target.WriteToServer(dataReader);
 
-					batchLogger?.Invoke(string.Format("{0} records inserted", target.RowsCopied));
+					batchLogger?.Invoke($"{target.RowsCopied} records inserted");
 				}
 			}
 
@@ -146,7 +146,7 @@ namespace ISI.Extensions.Repository.SqlServer
 					target.NotifyAfter = batchSize;
 					if (batchLogger != null)
 					{
-						target.SqlRowsCopied += (sender, args) => batchLogger(string.Format("{0} records inserted into archive", args.RowsCopied));
+						target.SqlRowsCopied += (sender, args) => batchLogger($"{args.RowsCopied} records inserted into archive");
 					}
 
 					try
@@ -170,11 +170,11 @@ namespace ISI.Extensions.Repository.SqlServer
 							var columnName = metadata.GetType().GetField("column", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(metadata);
 							var columnLength = metadata.GetType().GetField("length", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(metadata);
 
-							throw new Exception(string.Format("Column: \"{0}\" contains data with a length greater than: {1}", columnName, columnLength), sqlException);
+							throw new Exception($"Column: \"{columnName}\" contains data with a length greater than: {columnLength}", sqlException);
 						}
 					}
 
-					batchLogger?.Invoke(string.Format("{0} records inserted into archive", target.RowsCopied));
+					batchLogger?.Invoke($"{target.RowsCopied} records inserted into archive");
 				}
 			}
 		}

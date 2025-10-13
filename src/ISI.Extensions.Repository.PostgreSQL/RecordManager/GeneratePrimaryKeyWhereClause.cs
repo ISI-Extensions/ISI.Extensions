@@ -92,7 +92,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 					var primaryKeyValuesEnumerator = PrimaryKeyValues.GetEnumerator();
 
-					string GetPrimaryKeyValueName(int primaryKeyValueNameIndex) => string.Format("@primaryKey_{0}", primaryKeyValueNameIndex);
+					string GetPrimaryKeyValueName(int primaryKeyValueNameIndex) => $"@primaryKey_{primaryKeyValueNameIndex}";
 
 					var primaryKeyValueCount = 0;
 
@@ -124,7 +124,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 					}
 					else
 					{
-						PrimaryKeyTempTableName = string.Format("PrimaryKeys_{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting));
+						PrimaryKeyTempTableName = $"PrimaryKeys_{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}";
 
 						var dataReader = new ISI.Extensions.DataReader.EnumerableDataReader<ISI.Extensions.DataReader.ValueWrapper<TRecordPrimaryKey>>([
 							usedPrimaryKeyValues.Select(primaryKey => new ISI.Extensions.DataReader.ValueWrapper<TRecordPrimaryKey>()
@@ -139,7 +139,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 						connection.EnsureConnectionIsOpenAsync().Wait();
 
-						var sourcePrimaryKeyTempTableName = string.Format("Source{0}", PrimaryKeyTempTableName);
+						var sourcePrimaryKeyTempTableName = $"Source{PrimaryKeyTempTableName}";
 
 						using (var command = new Npgsql.NpgsqlCommand(@$"
 CREATE TEMP TABLE {sourcePrimaryKeyTempTableName}
@@ -209,7 +209,7 @@ FROM {sourcePrimaryKeyTempTableName}", connection))
 				{
 					if (!Initialized)
 					{
-						throw new(string.Format("\"{0}\" Method must be called before checking \"HasFilter\"", nameof(Initialize)));
+						throw new($"\"{nameof(Initialize)}\" Method must be called before checking \"HasFilter\"");
 					}
 
 					return HasValue;

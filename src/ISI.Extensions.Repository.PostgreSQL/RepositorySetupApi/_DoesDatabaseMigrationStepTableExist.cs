@@ -43,7 +43,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 			using (var command = new Npgsql.NpgsqlCommand(sql.ToString(), connection))
 			{
-				return string.Format("{0}", command.ExecuteScalarWithExceptionTracingAsync().GetAwaiter().GetResult()).ToBoolean();
+				return $"{command.ExecuteScalarWithExceptionTracingAsync().GetAwaiter().GetResult()}".ToBoolean();
 			}
 		}
 	}

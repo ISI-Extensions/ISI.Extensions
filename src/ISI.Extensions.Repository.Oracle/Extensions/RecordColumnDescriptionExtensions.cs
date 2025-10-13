@@ -33,10 +33,10 @@ namespace ISI.Extensions.Repository.Oracle.Extensions
 			switch (dbType)
 			{
 				case System.Data.DbType.Boolean:
-					return string.Format("  {0} INT {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
+					return $"  {formatColumnName(columnDescription.ColumnName)} INT {NullClause(columnDescription.Nullable)}";
 
 				case System.Data.DbType.DateTime2:
-					return string.Format("  {0} TIMESTAMP {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
+					return $"  {formatColumnName(columnDescription.ColumnName)} TIMESTAMP {NullClause(columnDescription.Nullable)}";
 
 				case System.Data.DbType.Decimal:
 				case System.Data.DbType.Double:
@@ -45,13 +45,13 @@ namespace ISI.Extensions.Repository.Oracle.Extensions
 					{
 						if (columnDescription.Scale.HasValue)
 						{
-							return string.Format("  {0} NUMBER({1}, {2}) {3}", formatColumnName(columnDescription.ColumnName), columnDescription.Precision, columnDescription.Scale, NullClause(columnDescription.Nullable));
+							return $"  {formatColumnName(columnDescription.ColumnName)} NUMBER({columnDescription.Precision}, {columnDescription.Scale}) {NullClause(columnDescription.Nullable)}";
 						}
 
-						return string.Format("  {0} NUMBER({1}) {2}", formatColumnName(columnDescription.ColumnName), columnDescription.Precision, NullClause(columnDescription.Nullable));
+						return $"  {formatColumnName(columnDescription.ColumnName)} NUMBER({columnDescription.Precision}) {NullClause(columnDescription.Nullable)}";
 					}
 
-					return string.Format("  {0} NUMBER {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
+					return $"  {formatColumnName(columnDescription.ColumnName)} NUMBER {NullClause(columnDescription.Nullable)}";
 				}
 
 				case System.Data.DbType.Guid:
@@ -62,7 +62,7 @@ namespace ISI.Extensions.Repository.Oracle.Extensions
 							throw new Exception("Identity not supported");
 						}
 					}
-					return string.Format("  {0} VARCHAR2(36) {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
+					return $"  {formatColumnName(columnDescription.ColumnName)} VARCHAR2(36) {NullClause(columnDescription.Nullable)}";
 
 				case System.Data.DbType.Int32:
 					if ((columnDescription.Default != null) && !columnDescription.Nullable)
@@ -73,7 +73,7 @@ namespace ISI.Extensions.Repository.Oracle.Extensions
 						}
 					}
 
-					return string.Format("  {0} INT {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
+					return $"  {formatColumnName(columnDescription.ColumnName)} INT {NullClause(columnDescription.Nullable)}";
 				
 				case System.Data.DbType.Int64:
 					if ((columnDescription.Default != null) && !columnDescription.Nullable)
@@ -83,17 +83,17 @@ namespace ISI.Extensions.Repository.Oracle.Extensions
 							throw new Exception("Identity not supported");
 						}
 					}
-					return string.Format("  {0} LONG {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
+					return $"  {formatColumnName(columnDescription.ColumnName)} LONG {NullClause(columnDescription.Nullable)}";
 
 				case System.Data.DbType.String:
 				case System.Data.DbType.StringFixedLength:
 				{
 					if (columnDescription.PropertySize > 0)
 					{
-						return string.Format("  {0} VARCHAR2({1}) {2}", formatColumnName(columnDescription.ColumnName), columnDescription.PropertySize, NullClause(columnDescription.Nullable));
+						return $"  {formatColumnName(columnDescription.ColumnName)} VARCHAR2({columnDescription.PropertySize}) {NullClause(columnDescription.Nullable)}";
 					}
 
-					return string.Format("  {0} NCLOB {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
+					return $"  {formatColumnName(columnDescription.ColumnName)} NCLOB {NullClause(columnDescription.Nullable)}";
 				}
 
 				default:

@@ -34,12 +34,12 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 			{
 				case System.Data.DbType.Boolean:
 					{
-						return string.Format("  {0} int {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
+						return $"  {formatColumnName(columnDescription.ColumnName)} int {NullClause(columnDescription.Nullable)}";
 					}
 
 				case System.Data.DbType.DateTime2:
 					{
-						return string.Format("  {0} datetime2 {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
+						return $"  {formatColumnName(columnDescription.ColumnName)} datetime2 {NullClause(columnDescription.Nullable)}";
 					}
 
 				case System.Data.DbType.Decimal:
@@ -49,24 +49,24 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 						{
 							if (columnDescription.Scale.HasValue)
 							{
-								return string.Format("  {0} numeric({1}, {2}) {3}", formatColumnName(columnDescription.ColumnName), columnDescription.Precision, columnDescription.Scale, NullClause(columnDescription.Nullable));
+								return $"  {formatColumnName(columnDescription.ColumnName)} numeric({columnDescription.Precision}, {columnDescription.Scale}) {NullClause(columnDescription.Nullable)}";
 							}
 
-							return string.Format("  {0} numeric({1}) {2}", formatColumnName(columnDescription.ColumnName), columnDescription.Precision, NullClause(columnDescription.Nullable));
+							return $"  {formatColumnName(columnDescription.ColumnName)} numeric({columnDescription.Precision}) {NullClause(columnDescription.Nullable)}";
 						}
 
-						return string.Format("  {0} numeric {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
+						return $"  {formatColumnName(columnDescription.ColumnName)} numeric {NullClause(columnDescription.Nullable)}";
 					}
 
 				case System.Data.DbType.Guid:
 					{
-						var columnDefinition = string.Format("  {0} uniqueidentifier {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
+						var columnDefinition = $"  {formatColumnName(columnDescription.ColumnName)} uniqueidentifier {NullClause(columnDescription.Nullable)}";
 
 						if ((columnDescription.Default != null) && !columnDescription.Nullable)
 						{
 							if (columnDescription.Default is IdentityAttribute identityAttribute)
 							{
-								columnDefinition = string.Format("{0} default newid()", columnDefinition);
+								columnDefinition = $"{columnDefinition} default newid()";
 							}
 						}
 
@@ -75,13 +75,13 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 
 				case System.Data.DbType.Int32:
 					{
-						var columnDefinition = string.Format("  {0} int {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
+						var columnDefinition = $"  {formatColumnName(columnDescription.ColumnName)} int {NullClause(columnDescription.Nullable)}";
 
 						if ((columnDescription.Default != null) && !columnDescription.Nullable)
 						{
 							if (columnDescription.Default is IdentityAttribute identityAttribute)
 							{
-								columnDefinition = string.Format("{0} identity({1}, {2})", columnDefinition, identityAttribute.Seed, identityAttribute.Increment);
+								columnDefinition = $"{columnDefinition} identity({identityAttribute.Seed}, {identityAttribute.Increment})";
 							}
 						}
 
@@ -90,13 +90,13 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 
 				case System.Data.DbType.Int64:
 					{
-						var columnDefinition = string.Format("  {0} bigint {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
+						var columnDefinition = $"  {formatColumnName(columnDescription.ColumnName)} bigint {NullClause(columnDescription.Nullable)}";
 
 						if ((columnDescription.Default != null) && !columnDescription.Nullable)
 						{
 							if (columnDescription.Default is IdentityAttribute identityAttribute)
 							{
-								columnDefinition = string.Format("{0} identity({1}, {2})", columnDefinition, identityAttribute.Seed, identityAttribute.Increment);
+								columnDefinition = $"{columnDefinition} identity({identityAttribute.Seed}, {identityAttribute.Increment})";
 							}
 						}
 
@@ -108,10 +108,10 @@ namespace ISI.Extensions.Repository.SqlServer.Extensions
 					{
 						if (columnDescription.PropertySize > 0)
 						{
-							return string.Format("  {0} varchar({1}) {2}", formatColumnName(columnDescription.ColumnName), columnDescription.PropertySize, NullClause(columnDescription.Nullable));
+							return $"  {formatColumnName(columnDescription.ColumnName)} varchar({columnDescription.PropertySize}) {NullClause(columnDescription.Nullable)}";
 						}
 
-						return string.Format("  {0} varchar(max) {1}", formatColumnName(columnDescription.ColumnName), NullClause(columnDescription.Nullable));
+						return $"  {formatColumnName(columnDescription.ColumnName)} varchar(max) {NullClause(columnDescription.Nullable)}";
 					}
 
 				default:

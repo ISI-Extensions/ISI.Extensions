@@ -53,7 +53,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 		protected virtual async IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> FindArchiveRecordsAsync(Npgsql.NpgsqlConnection connection, DateTime? minArchiveDateTime, DateTime? maxArchiveDateTime, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take, System.Threading.CancellationToken cancellationToken = default)
 		{
-			await foreach (var record in FindArchiveRecordsAsync(connection, string.Format("FROM {0}", GetArchiveTableName(TableAlias)), minArchiveDateTime, maxArchiveDateTime, whereClause, orderByClause, skip, take, cancellationToken))
+			await foreach (var record in FindArchiveRecordsAsync(connection, $"FROM {GetArchiveTableName(TableAlias)}", minArchiveDateTime, maxArchiveDateTime, whereClause, orderByClause, skip, take, cancellationToken))
 			{
 				yield return record;
 			}
@@ -98,15 +98,15 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 				if (minArchiveDateTime.HasValue && maxArchiveDateTime.HasValue)
 				{
-					whereSql = string.Format("      {0}.{1} BETWEEN @minArchiveDateTime AND @maxArchiveDateTime{2}{3}", GetArchiveTableNameAlias(TableAlias), FormatColumnName(ArchiveTableArchiveDateTimeColumnName), (string.IsNullOrWhiteSpace(whereSql) ? string.Empty : " AND\n"), whereSql);
+					whereSql = $"      {GetArchiveTableNameAlias(TableAlias)}.{FormatColumnName(ArchiveTableArchiveDateTimeColumnName)} BETWEEN @minArchiveDateTime AND @maxArchiveDateTime{(string.IsNullOrWhiteSpace(whereSql) ? string.Empty : " AND\n")}{whereSql}";
 				}
 				else if (minArchiveDateTime.HasValue)
 				{
-					whereSql = string.Format("      {0}.{1} >= @minArchiveDateTime{2}{3}", GetArchiveTableNameAlias(TableAlias), FormatColumnName(ArchiveTableArchiveDateTimeColumnName), (string.IsNullOrWhiteSpace(whereSql) ? string.Empty : " AND\n"), whereSql);
+					whereSql = $"      {GetArchiveTableNameAlias(TableAlias)}.{FormatColumnName(ArchiveTableArchiveDateTimeColumnName)} >= @minArchiveDateTime{(string.IsNullOrWhiteSpace(whereSql) ? string.Empty : " AND\n")}{whereSql}";
 				}
 				else if (maxArchiveDateTime.HasValue)
 				{
-					whereSql = string.Format("      {0}.{1} <= @maxArchiveDateTime{2}{3}", GetArchiveTableNameAlias(TableAlias), FormatColumnName(ArchiveTableArchiveDateTimeColumnName), (string.IsNullOrWhiteSpace(whereSql) ? string.Empty : " AND\n"), whereSql);
+					whereSql = $"      {GetArchiveTableNameAlias(TableAlias)}.{FormatColumnName(ArchiveTableArchiveDateTimeColumnName)} <= @maxArchiveDateTime{(string.IsNullOrWhiteSpace(whereSql) ? string.Empty : " AND\n")}{whereSql}";
 				}
 
 				sql.AppendFormat("SELECT {0}, {1}.{2}\n",  GetArchiveTableNameAlias(TableAlias), ArchiveTableArchiveDateTimeColumnName, selectClause.GetSql());

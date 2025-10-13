@@ -126,7 +126,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 			var tableName = FormatTableName(TableName, null, false);
 
-			var primaryKeyName = string.Format("[pk_{0}]", TableName);
+			var primaryKeyName = $"[pk_{TableName}]";
 
 			if (!recordDescription.PrimaryKeyPropertyDescriptions.NullCheckedAny())
 			{
@@ -140,7 +140,7 @@ namespace ISI.Extensions.Repository.SqlServer
 					var firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName = primaryKeyColumnsWithPrimaryKeyAttributes.FirstOrDefault(column => !string.IsNullOrEmpty(column.PrimaryKeyAttribute.Name));
 					if (firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName != null)
 					{
-						primaryKeyName = string.Format("{0}", FormatColumnName(firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName.PrimaryKeyAttribute.Name));
+						primaryKeyName = $"{FormatColumnName(firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName.PrimaryKeyAttribute.Name)}";
 					}
 				}
 			}
@@ -152,7 +152,7 @@ namespace ISI.Extensions.Repository.SqlServer
 					{"@SchemaName", Schema}
 				}).GetAwaiter().GetResult() < 1)
 				{
-					ExecuteNonQueryAsync(connection, string.Format("CREATE SCHEMA [{0}]", Schema)).Wait();
+					ExecuteNonQueryAsync(connection, $"CREATE SCHEMA [{Schema}]").Wait();
 				}
 			}
 
@@ -176,11 +176,11 @@ namespace ISI.Extensions.Repository.SqlServer
 			sql.Append("begin\n");
 			sql.AppendFormat("  CREATE TABLE {0}\n", tableName);
 			sql.Append("  (\n");
-			sql.AppendFormat("{0}{1}\n", string.Join(",\n", recordDescription.PropertyDescriptions.OrderBy(propertyDescription => propertyDescription.Order).Select(propertyDescription => string.Format("  {0}", propertyDescription.GetColumnDefinition(FormatColumnName)))), (string.IsNullOrWhiteSpace(primaryKeyName) ? string.Empty : ","));
+			sql.AppendFormat("{0}{1}\n", string.Join(",\n", recordDescription.PropertyDescriptions.OrderBy(propertyDescription => propertyDescription.Order).Select(propertyDescription => $"  {propertyDescription.GetColumnDefinition(FormatColumnName)}")), (string.IsNullOrWhiteSpace(primaryKeyName) ? string.Empty : ","));
 
 			if (!string.IsNullOrWhiteSpace(primaryKeyName))
 			{
-				sql.AppendFormat("    constraint {0} primary key ({1})\n", primaryKeyName, string.Join(", ", recordDescription.PrimaryKeyPropertyDescriptions.OrderBy(propertyDescription => propertyDescription.PrimaryKeyAttribute.Order).Select(column => string.Format("{0}{1}", FormatColumnName(column.ColumnName), column.PrimaryKeyAttribute.AscendingOrder ? string.Empty : " desc"))));
+				sql.AppendFormat("    constraint {0} primary key ({1})\n", primaryKeyName, string.Join(", ", recordDescription.PrimaryKeyPropertyDescriptions.OrderBy(propertyDescription => propertyDescription.PrimaryKeyAttribute.Order).Select(column => $"{FormatColumnName(column.ColumnName)}{(column.PrimaryKeyAttribute.AscendingOrder ? string.Empty : " desc")}")));
 			}
 
 			sql.Append("  )\n");
@@ -211,9 +211,9 @@ namespace ISI.Extensions.Repository.SqlServer
 
 			var recordDescription = RecordDescription.GetRecordDescription<TRecord>();
 
-			var tableName = FormatArchiveTableName(string.Format("{0}{1}", TableName, ArchiveTableSuffix), null, false);
+			var tableName = FormatArchiveTableName($"{TableName}{ArchiveTableSuffix}", null, false);
 
-			var primaryKeyName = string.Format("[{0}]", string.Format("{0}{1}", RecordDescription.GetRecordDescription<TRecord>().TableName, ArchiveTableSuffix));
+			var primaryKeyName = $"[{$"{RecordDescription.GetRecordDescription<TRecord>().TableName}{ArchiveTableSuffix}"}]";
 
 			if (!recordDescription.PrimaryKeyPropertyDescriptions.NullCheckedAny())
 			{
@@ -227,7 +227,7 @@ namespace ISI.Extensions.Repository.SqlServer
 					var firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName = primaryKeyColumnsWithPrimaryKeyAttributes.FirstOrDefault(column => !string.IsNullOrEmpty(column.PrimaryKeyAttribute.Name));
 					if (firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName != null)
 					{
-						primaryKeyName = string.Format("[{0}]", string.Format("{0}{1}", firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName.PrimaryKeyAttribute.Name, ArchiveTableSuffix));
+						primaryKeyName = $"[{$"{firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName.PrimaryKeyAttribute.Name}{ArchiveTableSuffix}"}]";
 					}
 				}
 			}
@@ -253,7 +253,7 @@ namespace ISI.Extensions.Repository.SqlServer
 			sql.AppendFormat("  create table {0}\n", tableName);
 			sql.Append("  (\n");
 			sql.AppendFormat("    {0} datetime2 not null,\n", FormatColumnName(ArchiveTableArchiveDateTimeColumnName));
-			sql.AppendFormat("{0}\n", string.Join(",\n", recordDescription.PropertyDescriptions.OrderBy(propertyDescription => propertyDescription.Order).Select(propertyDescription => string.Format("  {0}", propertyDescription.GetColumnDefinition(FormatColumnName)))));
+			sql.AppendFormat("{0}\n", string.Join(",\n", recordDescription.PropertyDescriptions.OrderBy(propertyDescription => propertyDescription.Order).Select(propertyDescription => $"  {propertyDescription.GetColumnDefinition(FormatColumnName)}")));
 			sql.Append("  )\n");
 
 			if (!string.IsNullOrWhiteSpace(primaryKeyName))

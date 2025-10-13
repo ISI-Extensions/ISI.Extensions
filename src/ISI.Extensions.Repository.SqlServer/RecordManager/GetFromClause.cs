@@ -26,7 +26,7 @@ namespace ISI.Extensions.Repository.SqlServer
 	{
 		protected virtual string GetFromClause()
 		{
-			return string.Format("from {0} with (NoLock)", GetTableName());
+			return $"from {GetTableName()} with (NoLock)";
 		}
 	}
 }

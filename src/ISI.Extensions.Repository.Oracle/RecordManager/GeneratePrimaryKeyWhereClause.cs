@@ -89,7 +89,7 @@ namespace ISI.Extensions.Repository.Oracle
 
 					var primaryKeyValuesEnumerator = PrimaryKeyValues.GetEnumerator();
 
-					string GetPrimaryKeyValueName(int primaryKeyValueNameIndex) => string.Format("primaryKey_{0}", primaryKeyValueNameIndex);
+					string GetPrimaryKeyValueName(int primaryKeyValueNameIndex) => $"primaryKey_{primaryKeyValueNameIndex}";
 
 					var primaryKeyValueCount = 0;
 
@@ -108,7 +108,7 @@ namespace ISI.Extensions.Repository.Oracle
 
 						Parameters.Add(primaryKeyColumnAlias, parameters.FirstOrDefault().Value);
 
-						Sql = string.Format("      {0} = :{1}", _formatColumnName(primaryKeyColumn.ColumnName), primaryKeyColumnAlias);
+						Sql = $"      {_formatColumnName(primaryKeyColumn.ColumnName)} = :{primaryKeyColumnAlias}";
 					}
 					else if (primaryKeyValueCount < primaryKeyMaxCount)
 					{
@@ -117,7 +117,7 @@ namespace ISI.Extensions.Repository.Oracle
 							Parameters.Add(parameter);
 						}
 
-						Sql = string.Format("      {0} in ({1})", _formatColumnName(primaryKeyColumn.ColumnName), string.Join(", ", parameters.Keys.Select(parameterKey => $":{parameterKey}")));
+						Sql = $"      {_formatColumnName(primaryKeyColumn.ColumnName)} in ({string.Join(", ", parameters.Keys.Select(parameterKey => $":{parameterKey}"))})";
 					}
 					else
 					{
@@ -128,13 +128,13 @@ namespace ISI.Extensions.Repository.Oracle
 							usedPrimaryKeyValues.Add(primaryKeyValuesEnumerator.Current);
 						}
 
-						PrimaryKeyTempTableName = string.Format("PrimaryKeys_{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting));
+						PrimaryKeyTempTableName = $"PrimaryKeys_{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}";
 
 						var primaryKeyValues = usedPrimaryKeyValues.ToArray();
 
 						connection.EnsureConnectionIsOpenAsync().Wait();
 
-						var sourcePrimaryKeyTempTableName = string.Format("Source{0}", PrimaryKeyTempTableName);
+						var sourcePrimaryKeyTempTableName = $"Source{PrimaryKeyTempTableName}";
 
 						using (var command = connection.CreateCommand())
 						{
@@ -207,7 +207,7 @@ FROM {sourcePrimaryKeyTempTableName}";
 				{
 					if (!Initialized)
 					{
-						throw new(string.Format("\"{0}\" Method must be called before checking \"HasFilter\"", nameof(Initialize)));
+						throw new($"\"{nameof(Initialize)}\" Method must be called before checking \"HasFilter\"");
 					}
 
 					return HasValue;

@@ -53,7 +53,7 @@ namespace ISI.Extensions.Repository.SqlServer
 				updateSql.Append("update updateTable\n");
 				updateSql.Append("set\n");
 				var columnIndex = 1;
-				updateSql.AppendFormat("{0}\n", string.Join(",\n", setRecordColumns.Select(setRecordColumn => string.Format("    {0} = @value{1}", FormatColumnName(setRecordColumn.RecordPropertyDescription.ColumnName), columnIndex++))));
+				updateSql.AppendFormat("{0}\n", string.Join(",\n", setRecordColumns.Select(setRecordColumn => $"    {FormatColumnName(setRecordColumn.RecordPropertyDescription.ColumnName)} = @value{columnIndex++}")));
 				updateSql.AppendFormat("from {0}\n", GetTableName("updateTable"));
 				if (sqlConnectionUpdateWhereClause != null)
 				{
@@ -77,7 +77,7 @@ namespace ISI.Extensions.Repository.SqlServer
 					columnIndex = 1;
 					foreach (var setRecordColumn in setRecordColumns)
 					{
-						command.AddParameter(string.Format("@value{0}", columnIndex++), (setRecordColumn.Values == null ? DBNull.Value : setRecordColumn.Values.FirstOrDefault()));
+						command.AddParameter($"@value{columnIndex++}", (setRecordColumn.Values == null ? DBNull.Value : setRecordColumn.Values.FirstOrDefault()));
 					}
 
 					command.AddParameters(updateWhereClause);
@@ -100,7 +100,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 					var archiveSql = new StringBuilder();
 
-					archiveSql.AppendFormat("insert into {0} ({1}, {2})\n", GetArchiveTableName(addAlias: false), FormatColumnName(ArchiveTableArchiveDateTimeColumnName), string.Join(", ", archivePropertyDescriptions.Select(property => string.Format("archiveTable.{0}", FormatColumnName(property.ColumnName)))));
+					archiveSql.AppendFormat("insert into {0} ({1}, {2})\n", GetArchiveTableName(addAlias: false), FormatColumnName(ArchiveTableArchiveDateTimeColumnName), string.Join(", ", archivePropertyDescriptions.Select(property => $"archiveTable.{FormatColumnName(property.ColumnName)}")));
 					archiveSql.AppendFormat("select @ArchiveDateTime, {0}\n", string.Join(", ", archivePropertyDescriptions.Select(property => FormatColumnName(property.ColumnName))));
 					archiveSql.AppendFormat("from {0}\n", GetTableName("archiveTable"));
 					if (sqlConnectionArchiveWhereClause != null)

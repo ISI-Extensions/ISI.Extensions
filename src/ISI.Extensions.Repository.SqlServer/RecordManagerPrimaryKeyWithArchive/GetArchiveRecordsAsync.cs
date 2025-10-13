@@ -31,7 +31,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 			var primaryKeyColumns = RecordDescription.GetRecordDescription<TRecord>().PrimaryKeyPropertyDescriptions;
 
-			var orderByClause = new ISI.Extensions.Repository.OrderByClause(string.Format("order by {0}, {1}", string.Join(", ", primaryKeyColumns.Select(pkc => FormatColumnName(pkc.ColumnName))), FormatColumnName(ArchiveTableArchiveDateTimeColumnName)));
+			var orderByClause = new ISI.Extensions.Repository.OrderByClause($"order by {string.Join(", ", primaryKeyColumns.Select(pkc => FormatColumnName(pkc.ColumnName)))}, {FormatColumnName(ArchiveTableArchiveDateTimeColumnName)}");
 
 			await foreach (var record in FindArchiveRecordsAsync(minArchiveDateTime, maxArchiveDateTime, whereClause, orderByClause, skip, take, cancellationToken))
 			{

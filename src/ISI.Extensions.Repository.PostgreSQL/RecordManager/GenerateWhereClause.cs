@@ -44,7 +44,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 				if (filters.All(subFilter => (subFilter as IRecordWhereColumnCollection<TRecord>).GetColumnNamesHashCode() == columnNamesHashCode))
 				{
-					GenerateJoinTableFilter(whereClause, filters as RecordWhereColumnCollection<TRecord>, ref filterIndex, sqlFilters, string.Format("{0}  ", indent), filterValueNamePrefix);
+					GenerateJoinTableFilter(whereClause, filters as RecordWhereColumnCollection<TRecord>, ref filterIndex, sqlFilters, $"{indent}  ", filterValueNamePrefix);
 
 					return string.Empty;
 				}
@@ -66,7 +66,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 						if (recordWhereColumnFilters.All(subFilter => (subFilter as IRecordWhereColumnCollection<TRecord>).GetColumnNamesHashCode() == columnNamesHashCode))
 						{
-							GenerateJoinTableFilter(whereClause, recordWhereColumnFilters as RecordWhereColumnCollection<TRecord>, ref filterIndex, sqlFilters, string.Format("{0}  ", indent), filterValueNamePrefix);
+							GenerateJoinTableFilter(whereClause, recordWhereColumnFilters as RecordWhereColumnCollection<TRecord>, ref filterIndex, sqlFilters, $"{indent}  ", filterValueNamePrefix);
 
 							usedTempTable = true;
 						}
@@ -74,14 +74,14 @@ namespace ISI.Extensions.Repository.PostgreSQL
 
 					if (!usedTempTable)
 					{
-						sqlFilters.Add(GenerateWhereClauseFilters(whereClause, recordWhereColumnFilters, ref filterIndex, string.Format("{0}  ", indent), filterValueNamePrefix));
+						sqlFilters.Add(GenerateWhereClauseFilters(whereClause, recordWhereColumnFilters, ref filterIndex, $"{indent}  ", filterValueNamePrefix));
 					}
 				}
 			}
 
 			var @operator = filters.WhereClauseOperator == WhereClauseOperator.And ? " AND\n" : " OR\n";
 
-			return string.Format("{0}({1})\n", indent, string.Join(@operator, sqlFilters).Trim());
+			return $"{indent}({string.Join(@operator, sqlFilters).Trim()})\n";
 		}
 
 		protected override void GenerateWhereClauseFilter_EqualityOperator(IWhereClause whereClause, RecordWhereColumn<TRecord> filter, ref int filterIndex, List<string> sqlFilters, string indent, string filterValueNamePrefix)
@@ -100,7 +100,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 				{
 					filterValueCount++;
 
-					filterParameters.Add(string.Format("@{0}{1}FilterValue_{2}", filterValueNamePrefix, columnName, filterValueIndex++), filterValuesEnumerator.Current);
+					filterParameters.Add($"@{filterValueNamePrefix}{columnName}FilterValue_{filterValueIndex++}", filterValuesEnumerator.Current);
 				}
 
 				if (filterValueCount == 0)
@@ -108,10 +108,10 @@ namespace ISI.Extensions.Repository.PostgreSQL
 					switch (filter.EqualityOperator)
 					{
 						case WhereClauseEqualityOperator.Equal:
-							sqlFilters.Add(string.Format("{0}({1} IS NULL)", indent, FormatColumnName(columnName)));
+							sqlFilters.Add($"{indent}({FormatColumnName(columnName)} IS NULL)");
 							break;
 						case WhereClauseEqualityOperator.NotEqual:
-							sqlFilters.Add(string.Format("{0}(NOT {1} IS NULL)", indent, FormatColumnName(columnName)));
+							sqlFilters.Add($"{indent}(NOT {FormatColumnName(columnName)} IS NULL)");
 							break;
 					}
 				}
@@ -125,10 +125,10 @@ namespace ISI.Extensions.Repository.PostgreSQL
 					switch (filter.EqualityOperator)
 					{
 						case WhereClauseEqualityOperator.Equal:
-							sqlFilters.Add(string.Format("{0}({1} = {2})", indent, FormatColumnName(columnName), filterParameters.First().Key));
+							sqlFilters.Add($"{indent}({FormatColumnName(columnName)} = {filterParameters.First().Key})");
 							break;
 						case WhereClauseEqualityOperator.NotEqual:
-							sqlFilters.Add(string.Format("{0}({1} != {2})", indent, FormatColumnName(columnName), filterParameters.First().Key));
+							sqlFilters.Add($"{indent}({FormatColumnName(columnName)} != {filterParameters.First().Key})");
 							break;
 					}
 
@@ -149,10 +149,10 @@ namespace ISI.Extensions.Repository.PostgreSQL
 					switch (filter.EqualityOperator)
 					{
 						case WhereClauseEqualityOperator.Equal:
-							sqlFilters.Add(string.Format("{0}({1} IN ({2}))", indent, FormatColumnName(columnName), string.Join(" ,", filterParameters.Keys)));
+							sqlFilters.Add($"{indent}({FormatColumnName(columnName)} IN ({string.Join(" ,", filterParameters.Keys)}))");
 							break;
 						case WhereClauseEqualityOperator.NotEqual:
-							sqlFilters.Add(string.Format("{0}(NOT {1} IN ({2}))", indent, FormatColumnName(columnName), string.Join(" ,", filterParameters.Keys)));
+							sqlFilters.Add($"{indent}(NOT {FormatColumnName(columnName)} IN ({string.Join(" ,", filterParameters.Keys)}))");
 							break;
 					}
 
@@ -165,7 +165,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 				}
 				else
 				{
-					var filterValueTempTableName = string.Format("FilterValues_{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting));
+					var filterValueTempTableName = $"FilterValues_{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}";
 
 					var usedFilterValues = filterParameters.Values;
 
@@ -225,7 +225,7 @@ CREATE TEMP TABLE {filterValueTempTableName}
 
 					npgsqlConnectionWhereClause.FinalizeActions.Add((connection) =>
 					{
-						var dropTempTableSql = string.Format("DROP TABLE {0}", filterValueTempTableName);
+						var dropTempTableSql = $"DROP TABLE {filterValueTempTableName}";
 
 						using (var command = new Npgsql.NpgsqlCommand(dropTempTableSql, connection))
 						{
@@ -239,7 +239,7 @@ CREATE TEMP TABLE {filterValueTempTableName}
 		
 		protected virtual void GenerateJoinTableFilter(IWhereClause whereClause, RecordWhereColumnCollection<TRecord> filter, ref int filterIndex, List<string> sqlFilters, string indent, string filterValueNamePrefix)
 		{
-			var tempTableName = string.Format("TempTable_{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting));
+			var tempTableName = $"TempTable_{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}";
 
 			var propertyDescriptions = (filter.First() as RecordWhereColumnCollection<TRecord>).ToNullCheckedArray(recordWhereColumnFilter => (recordWhereColumnFilter as RecordWhereColumn<TRecord>).RecordPropertyDescription);
 

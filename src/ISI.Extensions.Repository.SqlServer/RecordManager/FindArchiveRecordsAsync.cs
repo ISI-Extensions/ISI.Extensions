@@ -50,7 +50,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 		protected virtual async IAsyncEnumerable<ISI.Extensions.Repository.ArchiveRecord<TRecord>> FindArchiveRecordsAsync(Microsoft.Data.SqlClient.SqlConnection connection, DateTime? minArchiveDateTime, DateTime? maxArchiveDateTime, IWhereClause whereClause, IOrderByClause orderByClause, int skip, int take, System.Threading.CancellationToken cancellationToken = default)
 		{
-			await foreach (var record in FindArchiveRecordsAsync(connection, string.Format("FROM {0} WITH (NOLOCK)", GetArchiveTableName(TableAlias)), minArchiveDateTime, maxArchiveDateTime, whereClause, orderByClause, skip, take, cancellationToken))
+			await foreach (var record in FindArchiveRecordsAsync(connection, $"FROM {GetArchiveTableName(TableAlias)} WITH (NOLOCK)", minArchiveDateTime, maxArchiveDateTime, whereClause, orderByClause, skip, take, cancellationToken))
 			{
 				yield return record;
 			}
@@ -97,15 +97,15 @@ namespace ISI.Extensions.Repository.SqlServer
 
 				if (minArchiveDateTime.HasValue && maxArchiveDateTime.HasValue)
 				{
-					whereSql = string.Format("      {0}.{1} BETWEEN @minArchiveDateTime AND @maxArchiveDateTime{2}{3}", GetArchiveTableNameAlias(TableAlias), FormatColumnName(ArchiveTableArchiveDateTimeColumnName), (string.IsNullOrWhiteSpace(whereSql) ? string.Empty : " AND\n"), whereSql);
+					whereSql = $"      {GetArchiveTableNameAlias(TableAlias)}.{FormatColumnName(ArchiveTableArchiveDateTimeColumnName)} BETWEEN @minArchiveDateTime AND @maxArchiveDateTime{(string.IsNullOrWhiteSpace(whereSql) ? string.Empty : " AND\n")}{whereSql}";
 				}
 				else if (minArchiveDateTime.HasValue)
 				{
-					whereSql = string.Format("      {0}.{1} >= @minArchiveDateTime{2}{3}", GetArchiveTableNameAlias(TableAlias), FormatColumnName(ArchiveTableArchiveDateTimeColumnName), (string.IsNullOrWhiteSpace(whereSql) ? string.Empty : " AND\n"), whereSql);
+					whereSql = $"      {GetArchiveTableNameAlias(TableAlias)}.{FormatColumnName(ArchiveTableArchiveDateTimeColumnName)} >= @minArchiveDateTime{(string.IsNullOrWhiteSpace(whereSql) ? string.Empty : " AND\n")}{whereSql}";
 				}
 				else if (maxArchiveDateTime.HasValue)
 				{
-					whereSql = string.Format("      {0}.{1} <= @maxArchiveDateTime{2}{3}", GetArchiveTableNameAlias(TableAlias), FormatColumnName(ArchiveTableArchiveDateTimeColumnName), (string.IsNullOrWhiteSpace(whereSql) ? string.Empty : " AND\n"), whereSql);
+					whereSql = $"      {GetArchiveTableNameAlias(TableAlias)}.{FormatColumnName(ArchiveTableArchiveDateTimeColumnName)} <= @maxArchiveDateTime{(string.IsNullOrWhiteSpace(whereSql) ? string.Empty : " AND\n")}{whereSql}";
 				}
 
 				if (sqlServerCapabilities.SupportsNativePaging)
@@ -184,8 +184,8 @@ namespace ISI.Extensions.Repository.SqlServer
 				{
 					// pre 2012, with offset. derived table approach
 					var orderByClauseSql = orderByClause?.GetSql();
-					var rowNumberName = FormatColumnName(string.Format("RowNumber{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)));
-					var pagingQueryName = FormatColumnName(string.Format("PagingQuery{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)));
+					var rowNumberName = FormatColumnName($"RowNumber{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}");
+					var pagingQueryName = FormatColumnName($"PagingQuery{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}");
 
 					sql.AppendFormat("SELECT {0}.{1}, {2}\n", GetArchiveTableNameAlias(TableAlias), ArchiveTableArchiveDateTimeColumnName, selectClause.GetSql(pagingQueryName));
 					sql.AppendFormat("FROM (SELECT {0},\n", selectClause.GetSql());

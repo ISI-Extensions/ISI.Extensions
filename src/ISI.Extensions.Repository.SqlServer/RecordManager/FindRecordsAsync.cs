@@ -159,8 +159,8 @@ namespace ISI.Extensions.Repository.SqlServer
 				{
 					// pre 2012, with offset. derived table approach
 					var orderByClauseSql = orderByClause?.GetSql();
-					var rowNumberName = FormatColumnName(string.Format("RowNumber{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)));
-					var pagingQueryName = FormatColumnName(string.Format("PagingQuery{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)));
+					var rowNumberName = FormatColumnName($"RowNumber{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}");
+					var pagingQueryName = FormatColumnName($"PagingQuery{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}");
 
 					sql.AppendFormat("SELECT {0}\n", selectClause.GetSql(pagingQueryName));
 					sql.AppendFormat("FROM (SELECT {0},\n", selectClause.GetSql());

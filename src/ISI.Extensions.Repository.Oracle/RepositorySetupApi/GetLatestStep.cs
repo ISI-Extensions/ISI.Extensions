@@ -58,7 +58,7 @@ namespace ISI.Extensions.Repository.Oracle
 
 								using (var command = new global::Oracle.ManagedDataAccess.Client.OracleCommand(sql.ToString(), connection))
 								{
-									response.StepId = string.Format("{0}", command.ExecuteScalarWithExceptionTracingAsync().GetAwaiter().GetResult()).ToInt();
+									response.StepId = $"{command.ExecuteScalarWithExceptionTracingAsync().GetAwaiter().GetResult()}".ToInt();
 									success = true;
 								}
 							}

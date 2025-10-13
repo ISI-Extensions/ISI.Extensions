@@ -48,14 +48,14 @@ namespace ISI.Extensions.Repository.Oracle
 		{
 			alias = FormatTableNameAlias(tableName, alias);
 
-			tableName = (string.IsNullOrWhiteSpace(TableNamePrefix) ? tableName : string.Format("{0}{1}", TableNamePrefix, tableName));
+			tableName = (string.IsNullOrWhiteSpace(TableNamePrefix) ? tableName : $"{TableNamePrefix}{tableName}");
 
 			if (string.IsNullOrWhiteSpace(Schema))
 			{
-				return string.Format("{0}{1}", string.Format("\"{0}\"", tableName), (addAlias ? string.Format(" {0}", alias) : string.Empty));
+				return $"{$"\"{tableName}\""}{(addAlias ? $" {alias}" : string.Empty)}";
 			}
 
-			return string.Format("{0}{1}", string.Format("\"{0}\".\"{1}\"", Schema, tableName), (addAlias ? string.Format(" {0}", alias) : string.Empty));
+			return $"{$"\"{Schema}\".\"{tableName}\""}{(addAlias ? $" {alias}" : string.Empty)}";
 		}
 
 
@@ -65,7 +65,7 @@ namespace ISI.Extensions.Repository.Oracle
 
 		protected virtual string GetArchiveTableNameAlias(string alias = null)
 		{
-			return FormatArchiveTableNameAlias(string.Format("{0}{1}", TableName, ArchiveTableSuffix), alias);
+			return FormatArchiveTableNameAlias($"{TableName}{ArchiveTableSuffix}", alias);
 		}
 
 		protected virtual string FormatArchiveTableNameAlias(string tableName, string alias = null)
@@ -75,21 +75,21 @@ namespace ISI.Extensions.Repository.Oracle
 
 		protected virtual string GetArchiveTableName(string alias = null, bool addAlias = true)
 		{
-			return FormatArchiveTableName(string.Format("{0}{1}", TableName, ArchiveTableSuffix), alias, addAlias);
+			return FormatArchiveTableName($"{TableName}{ArchiveTableSuffix}", alias, addAlias);
 		}
 
 		protected virtual string FormatArchiveTableName(string tableName, string alias = null, bool addAlias = true)
 		{
 			alias = FormatArchiveTableNameAlias(tableName, alias);
 
-			tableName = (string.IsNullOrWhiteSpace(TableNamePrefix) ? tableName : string.Format("{0}{1}", TableNamePrefix, tableName));
+			tableName = (string.IsNullOrWhiteSpace(TableNamePrefix) ? tableName : $"{TableNamePrefix}{tableName}");
 
 			if (string.IsNullOrWhiteSpace(Schema))
 			{
-				return string.Format("{0}{1}", string.Format("\"{0}\"", tableName), (addAlias ? string.Format(" {0}", alias) : string.Empty));
+				return $"{$"\"{tableName}\""}{(addAlias ? $" {alias}" : string.Empty)}";
 			}
 
-			return string.Format("{0}{1}", string.Format("\"{0}\".\"{1}\"", Schema, tableName), (addAlias ? string.Format(" {0}", alias) : string.Empty));
+			return $"{$"\"{Schema}\".\"{tableName}\""}{(addAlias ? $" {alias}" : string.Empty)}";
 		}
 	}
 }

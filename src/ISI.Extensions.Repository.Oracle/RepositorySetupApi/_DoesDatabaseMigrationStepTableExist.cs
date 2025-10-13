@@ -40,7 +40,7 @@ namespace ISI.Extensions.Repository.Oracle
 			sql.Append("FROM user_Tables\n");
 			sql.Append("WHERE table_name = 'DatabaseMigrationStep'\n");
 
-			return string.Format("{0}", connection.ExecuteScalarAsync(sql.ToString()).GetAwaiter().GetResult()).ToBoolean();
+			return $"{connection.ExecuteScalarAsync(sql.ToString()).GetAwaiter().GetResult()}".ToBoolean();
 		}
 	}
 }

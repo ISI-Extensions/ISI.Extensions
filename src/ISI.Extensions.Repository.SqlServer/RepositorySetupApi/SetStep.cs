@@ -59,7 +59,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 						using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql.ToString(), connection))
 						{
-							tableExists = string.Format("{0}", command.ExecuteScalarWithExceptionTracingAsync().GetAwaiter().GetResult()).ToBoolean();
+							tableExists = $"{command.ExecuteScalarWithExceptionTracingAsync().GetAwaiter().GetResult()}".ToBoolean();
 						}
 
 						if (!tableExists)

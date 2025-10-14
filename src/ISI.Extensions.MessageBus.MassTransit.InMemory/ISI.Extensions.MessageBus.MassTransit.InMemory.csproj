@@ -15,7 +15,7 @@
 	<ItemGroup>
 		<PackageReference Update="NETStandard.Library" Version="2.0.3" />
 		<PackageReference Include="MassTransit.Newtonsoft" Version="8.5.4" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.9" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.10" />
 	</ItemGroup>
 	
 	<ItemGroup>

@@ -35,6 +35,6 @@ namespace ISI.Extensions.SpreadSheets
 		Medium,
 		SlantedDashDot,
 		Thick,
-		Thin
+		Thin,
 	}
 }

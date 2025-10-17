@@ -18,6 +18,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Aspose.Extensions;
+using ISI.Extensions.Aspose.InternalTryNotToUseExtensions;
 
 namespace ISI.Extensions.Aspose
 {
@@ -41,6 +43,33 @@ namespace ISI.Extensions.Aspose
 			}
 
 			public ISI.Extensions.SpreadSheets.IWorksheetCell this[int row, int column] => new WorksheetCell(new(new(_worksheets, _range.Worksheet), _range.Worksheet.Cells), _range[row, column]);
+
+			public void SetStyle(ISI.Extensions.SpreadSheets.ICellStyle style)
+			{
+				_range.SetStyle(style.GetAsposeStyle());
+			}
+			public void SetStyle(string styleName)
+			{
+				if (!string.IsNullOrWhiteSpace(styleName))
+				{
+					var style = _worksheets._workbook.GetNamedStyle(styleName);
+
+					if (style != null)
+					{
+						_range.SetStyle(style.GetAsposeStyle());
+					}
+				}
+			}
+
+			public void SetOutlineBorder(ISI.Extensions.SpreadSheets.Border border, ISI.Extensions.SpreadSheets.CellBorder cellBorder = ISI.Extensions.SpreadSheets.CellBorder.Thin)
+			{
+				SetOutlineBorder(border, cellBorder, System.Drawing.Color.Black);
+			}
+
+			public void SetOutlineBorder(ISI.Extensions.SpreadSheets.Border border, ISI.Extensions.SpreadSheets.CellBorder cellBorder, System.Drawing.Color color)
+			{
+				_range.SetOutlineBorder(border.ToBorder(), cellBorder.ToCellBorder(), color);
+			}
 		}
 	}
 }

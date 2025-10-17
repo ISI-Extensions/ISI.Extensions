@@ -25,5 +25,9 @@ namespace ISI.Extensions.SpreadSheets
 	{
 		string Name { get; set; }
 		ISI.Extensions.SpreadSheets.IWorksheetCell this[int row, int column] { get; }
+		void SetStyle(ISI.Extensions.SpreadSheets.ICellStyle style);
+		void SetStyle(string styleName);
+		void SetOutlineBorder(Border border, CellBorder cellBorder = CellBorder.Thin);
+		void SetOutlineBorder(Border border, CellBorder cellBorder, System.Drawing.Color color);
 	}
 }

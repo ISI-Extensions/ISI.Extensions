@@ -49,12 +49,12 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 
 		public override void WriteJson(global::Newtonsoft.Json.JsonWriter writer, object value, global::Newtonsoft.Json.JsonSerializer serializer)
 		{
-			var jsonObject = new global::Newtonsoft.Json.Linq.JObject();
-
 			var objectType = value?.GetType();
 
 			if (objectType != null)
 			{
+				var jsonObject = new global::Newtonsoft.Json.Linq.JObject();
+
 				if (ImplementationTypeToSerializerContractUuid.TryGetValue(objectType, out var serializerContractUuid))
 				{
 					jsonObject.AddFirst(new global::Newtonsoft.Json.Linq.JProperty(ISI.Extensions.Serialization.SerializerContractUuidAttribute.SerializerContractUuidKey, serializerContractUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)));
@@ -76,9 +76,9 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 						}
 					}
 				}
-			}
 
-			jsonObject.WriteTo(writer);
+				jsonObject.WriteTo(writer);
+			}
 		}
 
 		public override object ReadJson(global::Newtonsoft.Json.JsonReader reader, Type objectType, object existingValue, global::Newtonsoft.Json.JsonSerializer serializer)

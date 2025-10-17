@@ -24,7 +24,7 @@ namespace ISI.Extensions.SpreadSheets
 	{
 		public static string RowKey(int row)
 		{
-			return string.Format("{0}", row + 1);
+			return $"{row + 1}";
 		}
 
 		/// <summary>
@@ -65,15 +65,49 @@ namespace ISI.Extensions.SpreadSheets
 		/// </summary>
 		public static string Coordinate(int row, int column, bool absolute = false)
 		{
-			return string.Format("{2}{0}{2}{1}", ColumnKey(column), RowKey(row), (absolute ? "$" : string.Empty));
+			var referenceType = (absolute ? "$" : string.Empty);
+
+			return $"{referenceType}{ColumnKey(column)}{referenceType}{RowKey(row)}";
 		}
 
 		/// <summary>
-		/// row = 0, column = 0 => A1
+		/// sheetName = "sheet1", row = 0, column = 0 => sheet1!A1
+		/// </summary>
+		public static string Coordinate(string sheetName, int row, int column, bool absolute = false)
+		{
+			return $"{sheetName}!{Coordinate(row, column, absolute)}";
+		}
+
+		/// <summary>
+		/// sheetName = "sheet1", row = 0, column = 0 => sheet1!A1
+		/// </summary>
+		public static string Coordinate(IWorksheet worksheet, int row, int column, bool absolute = false)
+		{
+			return Coordinate(worksheet.Name, row, column, absolute);
+		}
+
+		/// <summary>
+		/// startRow = 0, startColumn = 0, stopRow = 0, stopColumn = 2 => A1:A2
 		/// </summary>
 		public static string CoordinateRange(int startRow, int startColumn, int stopRow, int stopColumn, bool absolute = false)
 		{
-			return string.Format("{0}:{1}", Coordinate(startRow, startColumn, absolute), Coordinate(stopRow, stopColumn, absolute));
+			return $"{Coordinate(startRow, startColumn, absolute)}:{Coordinate(stopRow, stopColumn, absolute)}";
+		}
+
+		/// <summary>
+		/// sheetName = "sheet1", startRow = 0, startColumn = 0, stopRow = 0, stopColumn = 2 => sheet1!A1:A2
+		/// </summary>
+		public static string CoordinateRange(string sheetName, int startRow, int startColumn, int stopRow, int stopColumn, bool absolute = false)
+		{
+			return $"{sheetName}!{CoordinateRange(startRow, startColumn, stopRow, stopColumn, absolute)}";
+		}
+
+		/// <summary>
+		/// sheetName = "sheet1", startRow = 0, startColumn = 0, stopRow = 0, stopColumn = 2 => sheet1!A1:A2
+		/// </summary>
+		public static string CoordinateRange(IWorksheet worksheet, int startRow, int startColumn, int stopRow, int stopColumn, bool absolute = false)
+		{
+			return CoordinateRange(worksheet.Name, startRow, startColumn, stopRow, stopColumn, absolute);
 		}
 	}
 }

@@ -68,7 +68,7 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 		{
 			var valueType = value.GetType();
 
-			var key = string.Format("{0}|{1}", rootObjectType.AssemblyQualifiedName, valueType.AssemblyQualifiedName);
+			var key = $"{rootObjectType.AssemblyQualifiedName}|{valueType.AssemblyQualifiedName}";
 
 			return _typeContractResolvers.GetOrAdd(key, _ => new(rootObjectType));
 		}

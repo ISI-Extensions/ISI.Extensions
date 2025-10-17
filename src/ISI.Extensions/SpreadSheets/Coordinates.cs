@@ -75,7 +75,7 @@ namespace ISI.Extensions.SpreadSheets
 		/// </summary>
 		public static string Coordinate(string sheetName, int row, int column, bool absolute = false)
 		{
-			return $"{sheetName}!{Coordinate(row, column, absolute)}";
+			return $"'{sheetName}'!{Coordinate(row, column, absolute)}";
 		}
 
 		/// <summary>
@@ -99,7 +99,7 @@ namespace ISI.Extensions.SpreadSheets
 		/// </summary>
 		public static string CoordinateRange(string sheetName, int startRow, int startColumn, int stopRow, int stopColumn, bool absolute = false)
 		{
-			return $"{sheetName}!{CoordinateRange(startRow, startColumn, stopRow, stopColumn, absolute)}";
+			return $"'{sheetName}'!{CoordinateRange(startRow, startColumn, stopRow, stopColumn, absolute)}";
 		}
 
 		/// <summary>

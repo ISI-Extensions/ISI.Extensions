@@ -51,25 +51,28 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 		{
 			var jsonObject = new global::Newtonsoft.Json.Linq.JObject();
 
-			var objectType = value.GetType();
+			var objectType = value?.GetType();
 
-			if (ImplementationTypeToSerializerContractUuid.TryGetValue(objectType, out var serializerContractUuid))
+			if (objectType != null)
 			{
-				jsonObject.AddFirst(new global::Newtonsoft.Json.Linq.JProperty(ISI.Extensions.Serialization.SerializerContractUuidAttribute.SerializerContractUuidKey, serializerContractUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)));
-			}
-
-			foreach (var propertyInfo in objectType.GetProperties())
-			{
-				if (propertyInfo.CanRead)
+				if (ImplementationTypeToSerializerContractUuid.TryGetValue(objectType, out var serializerContractUuid))
 				{
-					if (!propertyInfo.IgnorePropertyInfo())
-					{
-						var dataMemberAttribute = propertyInfo.GetCustomAttributes(true).OfType<System.Runtime.Serialization.DataMemberAttribute>().FirstOrDefault();
+					jsonObject.AddFirst(new global::Newtonsoft.Json.Linq.JProperty(ISI.Extensions.Serialization.SerializerContractUuidAttribute.SerializerContractUuidKey, serializerContractUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)));
+				}
 
-						var objectPropertyValue = propertyInfo.GetValue(value, null);
-						if (objectPropertyValue != null)
+				foreach (var propertyInfo in objectType.GetProperties())
+				{
+					if (propertyInfo.CanRead)
+					{
+						if (!propertyInfo.IgnorePropertyInfo())
 						{
-							jsonObject.Add(dataMemberAttribute?.Name ?? propertyInfo.Name, global::Newtonsoft.Json.Linq.JToken.FromObject(objectPropertyValue, serializer));
+							var dataMemberAttribute = propertyInfo.GetCustomAttributes(true).OfType<System.Runtime.Serialization.DataMemberAttribute>().FirstOrDefault();
+
+							var objectPropertyValue = propertyInfo.GetValue(value, null);
+							if (objectPropertyValue != null)
+							{
+								jsonObject.Add(dataMemberAttribute?.Name ?? propertyInfo.Name, global::Newtonsoft.Json.Linq.JToken.FromObject(objectPropertyValue, serializer));
+							}
 						}
 					}
 				}
@@ -159,7 +162,7 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 
 								if (!serializerContractUuidToImplementationType.TryAdd(serializerContractUuidAttribute.SerializerContractUuid, exportedType))
 								{
-									throw new(string.Format("Multiple SerializerContractUuid found \"{0}\"", serializerContractUuidAttribute.SerializerContractUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)));
+									throw new($"Multiple SerializerContractUuid found \"{serializerContractUuidAttribute.SerializerContractUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)}\"");
 								}
 							}
 						}

@@ -51,25 +51,28 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 		{
 			var jsonObject = new global::Newtonsoft.Json.Linq.JObject();
 
-			var objectType = value.GetType();
+			var objectType = value?.GetType();
 
-			if (ImplementationTypeToSerializerSlackObjectType.TryGetValue(objectType, out var serializerObjectType))
+			if (objectType != null)
 			{
-				jsonObject.AddFirst(new global::Newtonsoft.Json.Linq.JProperty(ISI.Extensions.Serialization.SerializerObjectTypeAttribute.SerializerTypeKey, serializerObjectType));
-			}
-
-			foreach (var propertyInfo in objectType.GetProperties())
-			{
-				if (propertyInfo.CanRead)
+				if (ImplementationTypeToSerializerSlackObjectType.TryGetValue(objectType, out var serializerObjectType))
 				{
-					if (!propertyInfo.IgnorePropertyInfo())
-					{
-						var dataMemberAttribute = propertyInfo.GetCustomAttributes(true).OfType<System.Runtime.Serialization.DataMemberAttribute>().FirstOrDefault();
+					jsonObject.AddFirst(new global::Newtonsoft.Json.Linq.JProperty(ISI.Extensions.Serialization.SerializerObjectTypeAttribute.SerializerTypeKey, serializerObjectType));
+				}
 
-						var objectPropertyValue = propertyInfo.GetValue(value, null);
-						if (objectPropertyValue != null)
+				foreach (var propertyInfo in objectType.GetProperties())
+				{
+					if (propertyInfo.CanRead)
+					{
+						if (!propertyInfo.IgnorePropertyInfo())
 						{
-							jsonObject.Add(dataMemberAttribute?.Name ?? propertyInfo.Name, global::Newtonsoft.Json.Linq.JToken.FromObject(objectPropertyValue, serializer));
+							var dataMemberAttribute = propertyInfo.GetCustomAttributes(true).OfType<System.Runtime.Serialization.DataMemberAttribute>().FirstOrDefault();
+
+							var objectPropertyValue = propertyInfo.GetValue(value, null);
+							if (objectPropertyValue != null)
+							{
+								jsonObject.Add(dataMemberAttribute?.Name ?? propertyInfo.Name, global::Newtonsoft.Json.Linq.JToken.FromObject(objectPropertyValue, serializer));
+							}
 						}
 					}
 				}
@@ -154,7 +157,7 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 
 								if (!serializerObjectTypeToImplementationType.TryAdd(serializerObjectTypeAttribute.ObjectTypeName, exportedType))
 								{
-									throw new(string.Format("Multiple SerializerObjectTypeName found \"{0}\"", serializerObjectTypeAttribute.ObjectTypeName));
+									throw new($"Multiple SerializerObjectTypeName found \"{serializerObjectTypeAttribute.ObjectTypeName}\"");
 								}
 							}
 						}

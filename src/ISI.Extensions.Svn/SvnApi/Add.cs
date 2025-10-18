@@ -44,7 +44,7 @@ namespace ISI.Extensions.Svn
 						var arguments = new List<string>();
 
 						arguments.Add("/command:add");
-						arguments.Add(string.Format("/pathfile :\"{0}\"", tempFile.FullName));
+						arguments.Add($"/pathfile :\"{tempFile.FullName}\"");
 						arguments.Add("/closeonend:0");
 
 						ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
@@ -59,7 +59,7 @@ namespace ISI.Extensions.Svn
 						var arguments = new List<string>();
 
 						arguments.Add("add");
-						arguments.Add(string.Format("--targets \"{0}\"", tempFile.FullName));
+						arguments.Add($"--targets \"{tempFile.FullName}\"");
 						arguments.Add("--parents");
 
 						ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()

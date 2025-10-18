@@ -74,7 +74,7 @@ namespace ISI.Extensions.Repository.Extensions
 			{
 				if (throwExceptionIfTypeConversionNotFound)
 				{
-					throw new ArgumentOutOfRangeException(nameof(type), string.Format("Unsupported type: {0}", type.FullName));
+					throw new ArgumentOutOfRangeException(nameof(type), $"Unsupported type: {type.FullName}");
 				}
 
 				result = System.Data.DbType.Object;

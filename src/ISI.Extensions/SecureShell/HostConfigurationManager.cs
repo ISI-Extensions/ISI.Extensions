@@ -32,7 +32,7 @@ namespace ISI.Extensions.SecureShell
 			HostConfigurationLookUp = configuration.Hosts.ToNullCheckedDictionary(host => GetHostKey(host.HostName, host.Port, host.UserName), host => host, NullCheckDictionaryResult.Empty);
 		}
 
-		private string GetHostKey(string hostName, int? port, string userName) => string.Format("{0}|{1}|{2}", hostName, port, userName);
+		private string GetHostKey(string hostName, int? port, string userName) => $"{hostName}|{port}|{userName}";
 
 		public HostConfiguration GetHostConfiguration(string hostName, int? port = null, string userName = null)
 		{

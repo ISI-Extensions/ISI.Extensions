@@ -79,7 +79,7 @@ namespace ISI.Extensions.Extensions
 
 		public static string ToFileName(this ISI.Extensions.SpreadSheets.FileFormat fileFormat, string fileName)
 		{
-			return string.Format("{0}.{1}", fileName, fileFormat.ToFileNameExtension());
+			return $"{fileName}.{fileFormat.ToFileNameExtension()}";
 		}
 
 		public static string ToFileNameExtension(this ISI.Extensions.SpreadSheets.FileFormat fileFormat)

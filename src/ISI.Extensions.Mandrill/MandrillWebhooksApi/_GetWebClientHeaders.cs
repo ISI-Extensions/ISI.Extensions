@@ -36,7 +36,7 @@ namespace ISI.Extensions.Mandrill
 				{
 					var assembly = this.GetType().Assembly;
 
-					_userAgent = string.Format("{0}/{1}", assembly.GetName().Name, ISI.Extensions.SystemInformation.GetAssemblyVersion(assembly));
+					_userAgent = $"{assembly.GetName().Name}/{ISI.Extensions.SystemInformation.GetAssemblyVersion(assembly)}";
 				}
 
 				return _userAgent;

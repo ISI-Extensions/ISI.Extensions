@@ -69,14 +69,14 @@ namespace ISI.Extensions.Tests.Caching
 		[Test]
 		public void GetOrCreate_keys_getCacheKey_getItem_getDefaultValue_getCacheEntryExpirationPolicy_forceRefreshCache_Test()
 		{
-			ISI.Extensions.Caching.GenerateCacheKey<string> getCacheKey = key => string.Format("CacheKey:{0}", key);
-			ISI.Extensions.Caching.GetItem<string, string> getItem = key => string.Format("Item:{0}", key);
-			ISI.Extensions.Caching.GetItem<string, string> getDefaultValue = key => string.Format("Default-Item:{0}", key);
+			ISI.Extensions.Caching.GenerateCacheKey<string> getCacheKey = key => $"CacheKey:{key}";
+			ISI.Extensions.Caching.GetItem<string, string> getItem = key => $"Item:{key}";
+			ISI.Extensions.Caching.GetItem<string, string> getDefaultValue = key => $"Default-Item:{key}";
 
 			var cachedKeys = new HashSet<string>();
 			for (int i = 20; i < 40; i++)
 			{
-				var key = string.Format("{0}", i);
+				var key = $"{i}";
 
 				CacheManager.Add(getCacheKey(key), getItem(key));
 
@@ -86,7 +86,7 @@ namespace ISI.Extensions.Tests.Caching
 			var keys = new HashSet<string>();
 			for (int i = 0; i < 60; i++)
 			{
-				var key = string.Format("{0}", i);
+				var key = $"{i}";
 
 				keys.Add(key);
 			}
@@ -100,7 +100,7 @@ namespace ISI.Extensions.Tests.Caching
 
 				if (int.TryParse(key, out var value) && (value <= 50))
 				{
-					return string.Format("Got-Item:{0}", key);
+					return $"Got-Item:{key}";
 				}
 
 				return null;
@@ -121,14 +121,14 @@ namespace ISI.Extensions.Tests.Caching
 		[Test]
 		public void GetOrCreate_keys_getCacheKey_getItems_getDefaultValues_getCacheEntryExpirationPolicy_forceRefreshCache_Test()
 		{
-			ISI.Extensions.Caching.GenerateCacheKey<string> getCacheKey = key => string.Format("CacheKey:{0}", key);
-			ISI.Extensions.Caching.GetItem<string, string> getItem = key => string.Format("Item:{0}", key);
-			ISI.Extensions.Caching.GetItem<string, string> getDefaultValue = key => string.Format("Default-Item:{0}", key);
+			ISI.Extensions.Caching.GenerateCacheKey<string> getCacheKey = key => $"CacheKey:{key}";
+			ISI.Extensions.Caching.GetItem<string, string> getItem = key => $"Item:{key}";
+			ISI.Extensions.Caching.GetItem<string, string> getDefaultValue = key => $"Default-Item:{key}";
 
 			var cachedKeys = new HashSet<string>();
 			for (int i = 20; i < 40; i++)
 			{
-				var key = string.Format("{0}", i);
+				var key = $"{i}";
 
 				CacheManager.Add(getCacheKey(key), getItem(key));
 
@@ -138,7 +138,7 @@ namespace ISI.Extensions.Tests.Caching
 			var keys = new HashSet<string>();
 			for (int i = 0; i < 60; i++)
 			{
-				var key = string.Format("{0}", i);
+				var key = $"{i}";
 
 				keys.Add(key);
 			}
@@ -152,7 +152,7 @@ namespace ISI.Extensions.Tests.Caching
 
 				if (int.TryParse(key, out var value) && (value <= 50))
 				{
-					return string.Format("Got-Item:{0}", key);
+					return $"Got-Item:{key}";
 				}
 
 				return null;
@@ -172,7 +172,7 @@ namespace ISI.Extensions.Tests.Caching
 		[Test]
 		public void Cache_Tagged_Objects_Tests()
 		{
-			Func<Guid, string> getCacheKey = key => string.Format("CacheKey:{0:D}", key);
+			Func<Guid, string> getCacheKey = key => $"CacheKey:{key:D}";
 
 			var testObjects = new List<HasCacheKeyWithAbsoluteTimeExpirationTestObject>();
 			for (int i = 0; i < 20; i++)
@@ -182,7 +182,7 @@ namespace ISI.Extensions.Tests.Caching
 				testObjects.Add(new()
 				{
 					TestObjectUuid = testObjectUuid,
-					Description = string.Format("Description for {0:D}", testObjectUuid),
+					Description = $"Description for {testObjectUuid:D}",
 					CacheKey = getCacheKey(testObjectUuid),
 					CacheAbsoluteDateTimeExpirationUtc = DateTime.UtcNow.AddMinutes(5),
 				});
@@ -217,8 +217,8 @@ namespace ISI.Extensions.Tests.Caching
 		[Test]
 		public void CacheKeyProxies_Test()
 		{
-			ISI.Extensions.Caching.GenerateCacheKey<Guid> getCacheKey = key => string.Format("CacheKey:{0}", key.Formatted(GuidExtensions.GuidFormat.WithHyphens));
-			ISI.Extensions.Caching.GenerateCacheKey<CacheKeyProxyTestObject> getForeignCacheKey = item => string.Format("ForeignCacheKey:{0}", item.Description);
+			ISI.Extensions.Caching.GenerateCacheKey<Guid> getCacheKey = key => $"CacheKey:{key.Formatted(GuidExtensions.GuidFormat.WithHyphens)}";
+			ISI.Extensions.Caching.GenerateCacheKey<CacheKeyProxyTestObject> getForeignCacheKey = item => $"ForeignCacheKey:{item.Description}";
 			ISI.Extensions.Caching.GenerateCacheKeys<CacheKeyProxyTestObject> getForeignCacheKeys = item =>
 			[
 				getForeignCacheKey(item)

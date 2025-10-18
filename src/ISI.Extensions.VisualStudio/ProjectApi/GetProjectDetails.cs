@@ -53,12 +53,12 @@ namespace ISI.Extensions.VisualStudio
 					}
 					else
 					{
-						throw new(string.Format("Cannot determine which project to update \"{0}\"", request.Project));
+						throw new($"Cannot determine which project to update \"{request.Project}\"");
 					}
 				}
 				else
 				{
-					throw new(string.Format("Cannot find a project to update \"{0}\"", request.Project));
+					throw new($"Cannot find a project to update \"{request.Project}\"");
 				}
 			}
 

@@ -24,12 +24,12 @@ namespace ISI.Extensions.DependencyInjection
 	public class ServiceTypeNotRecognizedException : Exception
 	{
 		public ServiceTypeNotRecognizedException(Type type)
-			: base(string.Format("Type not recognized: {0}", type.FullName))
+			: base($"Type not recognized: {type.FullName}")
 		{
 		}
 
 		public ServiceTypeNotRecognizedException(Type type, System.Exception innerException)
-			: base(string.Format("Type not recognized: {0}", type.FullName), innerException)
+			: base($"Type not recognized: {type.FullName}", innerException)
 		{
 		}
 	}

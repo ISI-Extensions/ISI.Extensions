@@ -37,10 +37,10 @@ namespace ISI.Extensions.Svn
 					var arguments = new List<string>();
 
 					arguments.Add("/command:commit");
-					arguments.Add(string.Format("/path:\"{0}\"", request.FullName));
+					arguments.Add($"/path:\"{request.FullName}\"");
 					if (!string.IsNullOrWhiteSpace(request.LogMessage))
 					{
-						arguments.Add(string.Format("/logmsg:\"{0}\"", request.LogMessage));
+						arguments.Add($"/logmsg:\"{request.LogMessage}\"");
 					}
 
 					arguments.Add("/closeonend:0");
@@ -57,8 +57,8 @@ namespace ISI.Extensions.Svn
 					var arguments = new List<string>();
 
 					arguments.Add("commit");
-					arguments.Add(string.Format("\"{0}\"", request.FullName));
-					arguments.Add(string.Format("-m \"{0}\"", request.LogMessage));
+					arguments.Add($"\"{request.FullName}\"");
+					arguments.Add($"-m \"{request.LogMessage}\"");
 					arguments.Add("--include-externals");
 					AddCredentials(arguments, request);
 

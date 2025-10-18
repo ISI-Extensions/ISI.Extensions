@@ -159,7 +159,7 @@ namespace ISI.Extensions.MessageBus
 						}
 						else
 						{
-							throw new(string.Format("Named Channel Configuration: \"{0}\" not found", namedChannelConfigurationMessageBusBuildRequest.ChannelConfigurationName));
+							throw new($"Named Channel Configuration: \"{namedChannelConfigurationMessageBusBuildRequest.ChannelConfigurationName}\" not found");
 						}
 
 						break;
@@ -171,7 +171,7 @@ namespace ISI.Extensions.MessageBus
 						{
 							Add(new MessageBusBuildRequest(namedChannelConfigurationChannelPathSuffixMessageBusBuildRequest.ChannelName, namedChannelConfigurationChannelPathSuffixMessageBusBuildRequest.AddSubscriptions)
 							{
-								ChannelPath = string.Format("{0}{1}{2}", namedChannelConfiguration.ChannelPath.Replace("-{MachineName}", $"-{Environment.MachineName}"), (namedChannelConfigurationChannelPathSuffixMessageBusBuildRequest.ChannelPathSuffix.StartsWith("-") ? string.Empty : "-"), namedChannelConfigurationChannelPathSuffixMessageBusBuildRequest.ChannelPathSuffix),
+								ChannelPath = $"{namedChannelConfiguration.ChannelPath.Replace("-{MachineName}", $"-{Environment.MachineName}")}{(namedChannelConfigurationChannelPathSuffixMessageBusBuildRequest.ChannelPathSuffix.StartsWith("-") ? string.Empty : "-")}{namedChannelConfigurationChannelPathSuffixMessageBusBuildRequest.ChannelPathSuffix}",
 								ConcurrentConsumerLimit = namedChannelConfiguration.ConcurrentConsumerLimit,
 								RetryLimit = namedChannelConfiguration.RetryLimit,
 								RetryInterval = namedChannelConfiguration.RetryInterval,
@@ -181,7 +181,7 @@ namespace ISI.Extensions.MessageBus
 						}
 						else
 						{
-							throw new(string.Format("Named Channel Configuration: \"{0}\" not found", namedChannelConfigurationChannelPathSuffixMessageBusBuildRequest.ChannelConfigurationName));
+							throw new($"Named Channel Configuration: \"{namedChannelConfigurationChannelPathSuffixMessageBusBuildRequest.ChannelConfigurationName}\" not found");
 						}
 
 						break;
@@ -206,7 +206,7 @@ namespace ISI.Extensions.MessageBus
 					{
 						Add(new MessageBusBuildRequest(channelPathSuffixMessageBusBuildRequest.ChannelName, channelPathSuffixMessageBusBuildRequest.AddSubscriptions)
 						{
-							ChannelPath = string.Format("{0}{1}{2}", Configuration.DefaultChannel.ChannelPath.Replace("-{MachineName}", $"-{Environment.MachineName}"), (channelPathSuffixMessageBusBuildRequest.ChannelPathSuffix.StartsWith("-") ? string.Empty : "-"), channelPathSuffixMessageBusBuildRequest.ChannelPathSuffix),
+							ChannelPath = $"{Configuration.DefaultChannel.ChannelPath.Replace("-{MachineName}", $"-{Environment.MachineName}")}{(channelPathSuffixMessageBusBuildRequest.ChannelPathSuffix.StartsWith("-") ? string.Empty : "-")}{channelPathSuffixMessageBusBuildRequest.ChannelPathSuffix}",
 							ConcurrentConsumerLimit = channelPathSuffixMessageBusBuildRequest.ConcurrentConsumerLimit ?? Configuration.DefaultChannel.ConcurrentConsumerLimit,
 							RetryLimit = channelPathSuffixMessageBusBuildRequest.RetryLimit ?? Configuration.DefaultChannel.RetryLimit,
 							RetryInterval = channelPathSuffixMessageBusBuildRequest.RetryInterval ?? Configuration.DefaultChannel.RetryInterval,
@@ -227,7 +227,7 @@ namespace ISI.Extensions.MessageBus
 			{
 				if (!existingMessageBusStartUpRequest.IsSameDefinition(messageBusBuildRequest))
 				{
-					throw new(string.Format("Duplicate definitions for ChannelPath: \"{0}\"", messageBusBuildRequest.ChannelPath));
+					throw new($"Duplicate definitions for ChannelPath: \"{messageBusBuildRequest.ChannelPath}\"");
 				}
 
 				existingMessageBusStartUpRequest.MergeIn(messageBusBuildRequest);

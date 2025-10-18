@@ -91,7 +91,7 @@ namespace ISI.Extensions.MessageBus
 
 		public MessageBusMessageHeader AddBasicAuthentication(string userName, string password)
 		{
-			var authenticationToken = string.Format("{0}{1}", Keys.Basic, Convert.ToBase64String(Encoding.Default.GetBytes(string.Format("{0}:{1}", userName, password))));
+			var authenticationToken = $"{Keys.Basic}{Convert.ToBase64String(Encoding.Default.GetBytes($"{userName}:{password}"))}";
 
 			var header = new MessageBusMessageHeader()
 			{
@@ -106,7 +106,7 @@ namespace ISI.Extensions.MessageBus
 
 		public MessageBusMessageHeader AddBearerAuthentication(string token)
 		{
-			var authenticationToken = string.Format("{0}{1}", Keys.Bearer, token);
+			var authenticationToken = $"{Keys.Bearer}{token}";
 
 			var header = new MessageBusMessageHeader()
 			{

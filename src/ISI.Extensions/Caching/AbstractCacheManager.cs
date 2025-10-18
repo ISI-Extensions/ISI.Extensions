@@ -40,7 +40,7 @@ namespace ISI.Extensions.Caching
 		{
 			if (HasCacheKeyPrefix)
 			{
-				return string.Format("{0}{1}", CacheKeyPrefix, rawCacheKey);
+				return $"{CacheKeyPrefix}{rawCacheKey}";
 			}
 
 			return rawCacheKey;

@@ -93,7 +93,7 @@ namespace ISI.Extensions.VisualStudio
 						targetFileName = System.IO.Path.GetFileNameWithoutExtension(targetFileName);
 						var targetFileNameConfiguration = System.IO.Path.GetExtension(targetFileName);
 						targetFileName = System.IO.Path.GetFileNameWithoutExtension(targetFileName);
-						targetFileName = string.Format("{0}{1}{2}", targetFileName, targetFileNameSuffix, targetFileNameConfiguration);
+						targetFileName = $"{targetFileName}{targetFileNameSuffix}{targetFileNameConfiguration}";
 						targetFileName = System.IO.Path.Combine(targetDirectory, targetFileName);
 					}
 
@@ -117,7 +117,7 @@ namespace ISI.Extensions.VisualStudio
 
 					if (success)
 					{
-						using (var stream = new System.IO.FileStream(string.Format("{0}{1}", targetFileName, (string.IsNullOrWhiteSpace(request.TransformedFileSuffix) ? string.Empty : request.TransformedFileSuffix)), System.IO.FileMode.OpenOrCreate))
+						using (var stream = new System.IO.FileStream($"{targetFileName}{(string.IsNullOrWhiteSpace(request.TransformedFileSuffix) ? string.Empty : request.TransformedFileSuffix)}", System.IO.FileMode.OpenOrCreate))
 						{
 							xmlTransformableDocument.Save(stream);
 						}

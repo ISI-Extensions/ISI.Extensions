@@ -33,7 +33,7 @@ namespace ISI.Extensions.Repository.Extensions
 				return defaultValue;
 			}
 
-			return ISI.Extensions.Enum<TEnum>.Parse(string.Format("{0}", dbDataReader.GetValue(ordinal)), defaultValue);
+			return ISI.Extensions.Enum<TEnum>.Parse($"{dbDataReader.GetValue(ordinal)}", defaultValue);
 		}
 
 		public static string GetString(this System.Data.Common.DbDataReader dbDataReader, string name)

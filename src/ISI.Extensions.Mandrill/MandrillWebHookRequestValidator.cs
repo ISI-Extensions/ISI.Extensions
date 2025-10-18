@@ -52,7 +52,7 @@ namespace ISI.Extensions.Mandrill
 					}
 				}
 
-				throw new Exception(string.Format("Webhook key for \"{0}\" not found", url));
+				throw new Exception($"Webhook key for \"{url}\" not found");
 			}
 
 			return false;

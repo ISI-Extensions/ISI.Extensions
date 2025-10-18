@@ -24,7 +24,7 @@ namespace ISI.Extensions.DependencyInjection
 	public class CannotBuildUpInstanceException : Exception
 	{
 		public CannotBuildUpInstanceException(Type type, System.Exception innerException)
-			: base(string.Format("Cannot build up instance of: {0}", type.FullName), innerException)
+			: base($"Cannot build up instance of: {type.FullName}", innerException)
 		{
 		}
 	}

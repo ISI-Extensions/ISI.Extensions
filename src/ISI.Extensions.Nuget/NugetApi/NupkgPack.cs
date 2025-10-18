@@ -33,7 +33,7 @@ namespace ISI.Extensions.Nuget
 		{
 			var response = new DTOs.NupkgPackResponse();
 			
-			Logger.LogInformation(string.Format("Packing \"{0}\"", System.IO.Path.GetFileName(request.NuspecFullName)));
+			Logger.LogInformation($"Packing \"{System.IO.Path.GetFileName(request.NuspecFullName)}\"");
 			//Logger.LogInformation(string.Format("  WorkingDirectory = \"{0}\"", request.WorkingDirectory));
 			//Logger.LogInformation(string.Format("  OutputDirectory = \"{0}\"", request.OutputDirectory));
 
@@ -51,7 +51,7 @@ namespace ISI.Extensions.Nuget
 
 			if (string.IsNullOrWhiteSpace(request.CsProjFullName))
 			{
-				request.CsProjFullName = string.Format("{0}.csproj", request.NuspecFullName.TrimEnd(".nuspec"));
+				request.CsProjFullName = $"{request.NuspecFullName.TrimEnd(".nuspec")}.csproj";
 			}
 
 			var useLegacyNuget = (System.Environment.GetEnvironmentVariable("NUGET_ENABLE_LEGACY_CSPROJ_PACK") ?? string.Empty).ToBoolean();
@@ -72,8 +72,8 @@ namespace ISI.Extensions.Nuget
 			{
 				var arguments = new List<string>();
 				arguments.Add("pack");
-				arguments.Add(string.Format("\"{0}\"", request.NuspecFullName));
-				arguments.Add(string.Format("-OutputDirectory \"{0}\"", request.OutputDirectory));
+				arguments.Add($"\"{request.NuspecFullName}\"");
+				arguments.Add($"-OutputDirectory \"{request.OutputDirectory}\"");
 
 				if (request.IncludeSymbols)
 				{
@@ -82,7 +82,7 @@ namespace ISI.Extensions.Nuget
 
 				if (request.IncludeSource)
 				{
-					arguments.Add(string.Format("--include-source \"{0}\"", request.WorkingDirectory));
+					arguments.Add($"--include-source \"{request.WorkingDirectory}\"");
 				}
 
 				ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
@@ -107,12 +107,12 @@ namespace ISI.Extensions.Nuget
 				//dotnet pack  .\sample.csproj  -p:NuspecFile=.\nuget\check.nuspec  -p:NuspecBasePath=.\temp /p:Outputpath=package /p:PackageVersion=2.0.0-Dev
 				var arguments = new List<string>();
 				arguments.Add("pack");
-				arguments.Add(string.Format("\"{0}\"", request.CsProjFullName));
+				arguments.Add($"\"{request.CsProjFullName}\"");
 				//arguments.Add("--verbosity Diagnostic");
 				arguments.Add("--configuration Release");
 				arguments.Add("--no-build");
-				arguments.Add(string.Format("-p:NuspecFile=\"{0}\"", request.NuspecFullName));
-				arguments.Add(string.Format("-p:Outputpath=\"{0}\"", request.OutputDirectory));
+				arguments.Add($"-p:NuspecFile=\"{request.NuspecFullName}\"");
+				arguments.Add($"-p:Outputpath=\"{request.OutputDirectory}\"");
 
 				if (request.IncludeSymbols)
 				{
@@ -121,7 +121,7 @@ namespace ISI.Extensions.Nuget
 
 				if (request.IncludeSource)
 				{
-					arguments.Add(string.Format("--include-source \"{0}\"", request.WorkingDirectory));
+					arguments.Add($"--include-source \"{request.WorkingDirectory}\"");
 				}
 
 				ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
@@ -140,7 +140,7 @@ namespace ISI.Extensions.Nuget
 
 			if (System.IO.File.Exists(nupkgFullName))
 			{
-				Logger.LogInformation(string.Format("Packed \"{0}\"", System.IO.Path.GetFileName(request.NuspecFullName)));
+				Logger.LogInformation($"Packed \"{System.IO.Path.GetFileName(request.NuspecFullName)}\"");
 			}
 
 			return response;

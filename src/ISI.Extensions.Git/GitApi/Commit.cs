@@ -46,7 +46,7 @@ namespace ISI.Extensions.Git
 					{
 						arguments.Clear();
 						arguments.Add("add");
-						arguments.Add(string.Format("\"{0}\"", fullName));
+						arguments.Add($"\"{fullName}\"");
 
 						response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 						{
@@ -63,7 +63,7 @@ namespace ISI.Extensions.Git
 					arguments.Clear();
 					arguments.Add("commit");
 					arguments.Add("-m");
-					arguments.Add(string.Format("\"{0}\"", request.LogMessage));
+					arguments.Add($"\"{request.LogMessage}\"");
 
 					response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 					{

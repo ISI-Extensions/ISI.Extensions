@@ -229,7 +229,7 @@ namespace ISI.Extensions.JsonJwt.Extensions
 		{
 			if (jwtSecurityToken.Header.TryGetValue("jwk", out var jwk))
 			{
-				serializedJsonWebKey = string.Format("{0}", jwk);
+				serializedJsonWebKey = $"{jwk}";
 
 				return true;
 			}

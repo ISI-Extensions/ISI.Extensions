@@ -110,7 +110,7 @@ namespace ISI.Extensions.Nuget
 									var packagesPath = string.Empty;
 									while (string.Equals(hintPathPieces.First(), "..", StringComparison.InvariantCultureIgnoreCase) || string.Equals(hintPathPieces.First(), "packages", StringComparison.InvariantCultureIgnoreCase))
 									{
-										packagesPath = string.Format("{0}\\{1}", packagesPath, hintPathPieces.First());
+										packagesPath = $"{packagesPath}\\{hintPathPieces.First()}";
 										hintPathPieces.RemoveAt(0);
 									}
 
@@ -126,13 +126,13 @@ namespace ISI.Extensions.Nuget
 
 										if (inVersion && pathPiece.ToIntNullable().HasValue)
 										{
-											packageVersion = string.Format("{0}.{1}", pathPiece, packageVersion);
+											packageVersion = $"{pathPiece}.{packageVersion}";
 										}
 										else
 										{
 											inVersion = false;
 
-											packageId = string.Format("{0}.{1}", pathPiece, packageId);
+											packageId = $"{pathPiece}.{packageId}";
 										}
 									}
 
@@ -151,7 +151,7 @@ namespace ISI.Extensions.Nuget
 										if (!string.IsNullOrWhiteSpace(hintPath))
 										{
 											packageAttribute.Value = packageAttribute.Value.Split([','], StringSplitOptions.RemoveEmptyEntries).First();
-											hintPathAttribute.Value = string.Format("{0}\\{1}", packagesPath, hintPath);
+											hintPathAttribute.Value = $"{packagesPath}\\{hintPath}";
 										}
 									}
 								}
@@ -372,7 +372,7 @@ namespace ISI.Extensions.Nuget
 
 			if (!sdkAttribute.StartsWith("Microsoft.NET", StringComparison.InvariantCultureIgnoreCase))
 			{
-				response.CsProjXml = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n{0}", response.CsProjXml);
+				response.CsProjXml = $"<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n{response.CsProjXml}";
 			}
 
 			return response;

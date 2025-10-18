@@ -30,13 +30,13 @@ namespace ISI.Extensions.Repository
 
 			if (orderBy.NullCheckedAny())
 			{
-				orderByClause.Sql = string.Format("order by {0}\n", string.Join(", ", orderBy.Select(column => string.Format("{0}{1}", FormatColumnName(column.RecordPropertyDescription.ColumnName), column.AscendingOrder ? string.Empty : " desc"))));
+				orderByClause.Sql = $"order by {string.Join(", ", orderBy.Select(column => $"{FormatColumnName(column.RecordPropertyDescription.ColumnName)}{(column.AscendingOrder ? string.Empty : " desc")}"))}\n";
 			}
 			else
 			{
 				if (RecordDescription.GetRecordDescription<TRecord>().PrimaryKeyPropertyDescriptions.Any())
 				{
-					orderByClause.Sql = string.Format("order by {0}\n", string.Join(", ", RecordDescription.GetRecordDescription<TRecord>().PrimaryKeyPropertyDescriptions.Select(column => string.Format("{0}{1}", FormatColumnName(column.ColumnName), column.PrimaryKeyAttribute.AscendingOrder ? string.Empty : " desc"))));
+					orderByClause.Sql = $"order by {string.Join(", ", RecordDescription.GetRecordDescription<TRecord>().PrimaryKeyPropertyDescriptions.Select(column => $"{FormatColumnName(column.ColumnName)}{(column.PrimaryKeyAttribute.AscendingOrder ? string.Empty : " desc")}"))}\n";
 				}
 				else
 				{

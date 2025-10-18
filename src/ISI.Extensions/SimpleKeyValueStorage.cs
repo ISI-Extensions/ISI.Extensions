@@ -50,7 +50,7 @@ namespace ISI.Extensions
 
 					if (values.ContainsKey(key))
 					{
-						throw new(string.Format("key: \"{0}\" already exists with value of \"{1}\" cannot add value \"{2}\"", key, values[key], value));
+						throw new($"key: \"{key}\" already exists with value of \"{values[key]}\" cannot add value \"{value}\"");
 					}
 
 					values.Add(key, value);
@@ -86,7 +86,7 @@ namespace ISI.Extensions
 				System.IO.File.Delete(FullName);
 			}
 
-			System.IO.File.WriteAllText(FullName, string.Join("\n", Values.Select(keyValue => string.Format("{0}\t{1}", keyValue.Key, keyValue.Value))));
+			System.IO.File.WriteAllText(FullName, string.Join("\n", Values.Select(keyValue => $"{keyValue.Key}\t{keyValue.Value}")));
 		}
 	}
 }

@@ -26,7 +26,7 @@ namespace ISI.Extensions.Scm.Extensions
 		{
 			var environmentVariables = System.Environment.GetEnvironmentVariables();
 
-			foreach (var key in ISI.Extensions.Scm.Settings.Key.Keys.Select(key => string.Format("{0}{1}", prefix, key)))
+			foreach (var key in ISI.Extensions.Scm.Settings.Key.Keys.Select(key => $"{prefix}{key}"))
 			{
 				if (environmentVariables.Contains(key))
 				{

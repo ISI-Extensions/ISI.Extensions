@@ -37,8 +37,8 @@ namespace ISI.Extensions.Svn
 					var arguments = new List<string>();
 
 					arguments.Add(propertyName);
-					arguments.Add(string.Format("-r {0}", request.Revision));
-					arguments.Add(string.Format("\"{0}\"", request.RepositoryPath));
+					arguments.Add($"-r {request.Revision}");
+					arguments.Add($"\"{request.RepositoryPath}\"");
 
 					return ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 					{

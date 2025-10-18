@@ -34,7 +34,7 @@ namespace ISI.Extensions
 			public static string FileOpen(string fileName, FileOpenAction action)
 			{
 				//ShellExecute(this.handle, Action.ToString().ToLower(), FileName, string.Empty, Application.StartupPath, (int)enShellExecuteWindowStates.ShowNormal);
-				return Process.WaitForProcessResponse("rundll32.exe", null, string.Format("shell32.dll ,ShellExec_RunDLL \"{0}\" {1}", fileName, action.ToString().ToLower())).Output;
+				return Process.WaitForProcessResponse("rundll32.exe", null, $"shell32.dll ,ShellExec_RunDLL \"{fileName}\" {action.ToString().ToLower()}").Output;
 			}
 		}
 	}

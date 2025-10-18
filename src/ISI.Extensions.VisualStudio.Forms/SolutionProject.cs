@@ -272,7 +272,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 									var processResponse = ISI.Extensions.Process.WaitForProcessResponse(exeFileName, null, "noWaitAtFinish -noWaitAtFinish");
 
 									ExecuteProjectResponse.ExitCode = processResponse.ExitCode;
-									ExecuteProjectResponse.Output = string.Format("{0}\n{1}", exeFileName, processResponse.Output);
+									ExecuteProjectResponse.Output = $"{exeFileName}\n{processResponse.Output}";
 
 									StatusLabel?.Invoke((System.Windows.Forms.MethodInvoker)delegate
 									{
@@ -383,7 +383,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 							else
 							{
 								ExecuteProjectResponse.ExitCode = 1;
-								ExecuteProjectResponse.Output = string.Format("could not find \"{0}\"", exeFileName);
+								ExecuteProjectResponse.Output = $"could not find \"{exeFileName}\"";
 								ViewRunLogButton?.Invoke((System.Windows.Forms.MethodInvoker)delegate { ViewRunLogButton.Visible = true; });
 							}
 						}

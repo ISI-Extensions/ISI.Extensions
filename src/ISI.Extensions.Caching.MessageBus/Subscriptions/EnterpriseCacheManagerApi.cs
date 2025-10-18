@@ -38,7 +38,7 @@ namespace ISI.Extensions.Caching.MessageBus
 
 				if (string.IsNullOrWhiteSpace(response.ChannelPathSuffix))
 				{
-					response.ChannelPathSuffix = string.Format("EnterpriseCacheManager-{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.Base36));
+					response.ChannelPathSuffix = $"EnterpriseCacheManager-{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.Base36)}";
 				}
 
 				response.AddSubscriptions.Add(messageBusQueueConfigurator =>

@@ -83,11 +83,11 @@ namespace ISI.Extensions.VisualStudio
 						break;
 				}
 
-				formattedText.AppendFormat("\t{1}{2}class {3}{0}", Environment.NewLine, (string.IsNullOrEmpty(request.ClassDefinition.AccessModifier) ? string.Empty : string.Format("{0} ", request.ClassDefinition.AccessModifier)), (string.IsNullOrEmpty(request.ClassDefinition.Accessor) ? string.Empty : string.Format("{0} ", request.ClassDefinition.Accessor)), request.ClassDefinition.ClassName);
+				formattedText.AppendFormat("\t{1}{2}class {3}{0}", Environment.NewLine, (string.IsNullOrEmpty(request.ClassDefinition.AccessModifier) ? string.Empty : $"{request.ClassDefinition.AccessModifier} "), (string.IsNullOrEmpty(request.ClassDefinition.Accessor) ? string.Empty : $"{request.ClassDefinition.Accessor} "), request.ClassDefinition.ClassName);
 				formattedText.AppendFormat("\t{{{0}", Environment.NewLine);
 			}
 
-			formattedText.AppendFormat("{1}{0}", Environment.NewLine, string.Join(string.Format("{0}{1}", Environment.NewLine, ((request.IncludeDataContractAttributes == IncludePropertyAttribute.No) && (request.IncludeRepositoryAttributes == IncludePropertyAttribute.No) && (request.IncludeDocumentDataAttributes == IncludePropertyAttribute.No) && !request.IncludeSpreadSheetsAttributes ? string.Empty : Environment.NewLine)), request.ClassDefinition.Properties.Select(property =>
+			formattedText.AppendFormat("{1}{0}", Environment.NewLine, string.Join($"{Environment.NewLine}{((request.IncludeDataContractAttributes == IncludePropertyAttribute.No) && (request.IncludeRepositoryAttributes == IncludePropertyAttribute.No) && (request.IncludeDocumentDataAttributes == IncludePropertyAttribute.No) && !request.IncludeSpreadSheetsAttributes ? string.Empty : Environment.NewLine)}", request.ClassDefinition.Properties.Select(property =>
 			{
 				var propertyFormattedText = new StringBuilder();
 
@@ -117,11 +117,11 @@ namespace ISI.Extensions.VisualStudio
 							switch (codeExtensionProvider)
 							{
 								case CodeExtensionProviders.ISI.Extensions.CodeExtensionProvider isiExtensionsCodeExtensionProvider:
-									propertyFormattedText.AppendFormat("\t\t{1}{2}string __{4} {{ get => {4}.Formatted(DateTimeExtensions.DateTimeFormat.{5}); set => {4} = value.{6}(); }}{0}", Environment.NewLine, (string.IsNullOrEmpty(property.AccessModifier) ? string.Empty : string.Format("{0} ", property.AccessModifier)), (string.IsNullOrEmpty(property.Accessor) ? string.Empty : string.Format("{0} ", property.Accessor)), property.PropertyType, FormatString(StringCaseFormat.No, property.PropertyName), setFormatFunctionName, setConversionFunctionName);
+									propertyFormattedText.AppendFormat("\t\t{1}{2}string __{4} {{ get => {4}.Formatted(DateTimeExtensions.DateTimeFormat.{5}); set => {4} = value.{6}(); }}{0}", Environment.NewLine, (string.IsNullOrEmpty(property.AccessModifier) ? string.Empty : $"{property.AccessModifier} "), (string.IsNullOrEmpty(property.Accessor) ? string.Empty : $"{property.Accessor} "), property.PropertyType, FormatString(StringCaseFormat.No, property.PropertyName), setFormatFunctionName, setConversionFunctionName);
 									break;
 
 								case CodeExtensionProviders.ISI.Libraries.CodeExtensionProvider isiLibrariesCodeExtensionProvider:
-									propertyFormattedText.AppendFormat("\t\t{1}{2}string __{4} {{ get => {4}.Formatted(Formatters.DateTimeFormat.{5}); set => {4} = value.{6}(DateTimeKind.{7}); }}{0}", Environment.NewLine, (string.IsNullOrEmpty(property.AccessModifier) ? string.Empty : string.Format("{0} ", property.AccessModifier)), (string.IsNullOrEmpty(property.Accessor) ? string.Empty : string.Format("{0} ", property.Accessor)), property.PropertyType, FormatString(StringCaseFormat.No, property.PropertyName), setFormatFunctionName, setConversionFunctionName, setConversionFunctionType);
+									propertyFormattedText.AppendFormat("\t\t{1}{2}string __{4} {{ get => {4}.Formatted(Formatters.DateTimeFormat.{5}); set => {4} = value.{6}(DateTimeKind.{7}); }}{0}", Environment.NewLine, (string.IsNullOrEmpty(property.AccessModifier) ? string.Empty : $"{property.AccessModifier} "), (string.IsNullOrEmpty(property.Accessor) ? string.Empty : $"{property.Accessor} "), property.PropertyType, FormatString(StringCaseFormat.No, property.PropertyName), setFormatFunctionName, setConversionFunctionName, setConversionFunctionType);
 									break;
 
 								default:
@@ -163,7 +163,7 @@ namespace ISI.Extensions.VisualStudio
 					propertyFormattedText.AppendFormat("\t\t[{1}.SpreadSheets.Column({2}, HeaderCaption = \"{3}\")]{0}", Environment.NewLine, extensionsNamespace, columnOffset++, ISI.Extensions.StringFormat.SplitCase(property.PropertyName));
 				}
 
-				propertyFormattedText.AppendFormat("\t\t{1}{2}{3} {4} {{ get; set; }}", Environment.NewLine, (string.IsNullOrEmpty(property.AccessModifier) ? string.Empty : string.Format("{0} ", property.AccessModifier)), (string.IsNullOrEmpty(property.Accessor) ? string.Empty : string.Format("{0} ", property.Accessor)), property.PropertyType, FormatString(request.FormatPropertyName, property.PropertyName));
+				propertyFormattedText.AppendFormat("\t\t{1}{2}{3} {4} {{ get; set; }}", Environment.NewLine, (string.IsNullOrEmpty(property.AccessModifier) ? string.Empty : $"{property.AccessModifier} "), (string.IsNullOrEmpty(property.Accessor) ? string.Empty : $"{property.Accessor} "), property.PropertyType, FormatString(request.FormatPropertyName, property.PropertyName));
 
 				if (!string.IsNullOrWhiteSpace(property.DefaultValue))
 				{

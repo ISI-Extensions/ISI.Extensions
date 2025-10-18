@@ -56,7 +56,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 				{
 					if ((ignoreProperties == null) || !ignoreProperties.Contains(errorInfo.FieldName))
 					{
-						modelState.AddModelError(string.Format("{0}.{1}", memberExpression.Member.Name, errorInfo.FieldName), errorInfo.ErrorMessage);
+						modelState.AddModelError($"{memberExpression.Member.Name}.{errorInfo.FieldName}", errorInfo.ErrorMessage);
 					}
 				}
 			}

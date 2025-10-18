@@ -27,7 +27,7 @@ namespace ISI.Extensions.Aspose.InternalTryNotToUseExtensions
 		{
 			if (!(worksheetCellsRange is ISI.Extensions.Aspose.Cells.WorksheetCellsRange asposeWorksheetCellsRange))
 			{
-				throw new(string.Format("{0} is not of type {1}", nameof(worksheetCellsRange), typeof(ISI.Extensions.Aspose.Cells.WorksheetCellsRange).FullName));
+				throw new($"{nameof(worksheetCellsRange)} is not of type {typeof(ISI.Extensions.Aspose.Cells.WorksheetCellsRange).FullName}");
 			}
 
 			return asposeWorksheetCellsRange._range;

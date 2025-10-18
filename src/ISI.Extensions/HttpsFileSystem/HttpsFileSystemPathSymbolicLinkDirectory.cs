@@ -25,7 +25,7 @@ namespace ISI.Extensions.HttpsFileSystem
 		public override string Schema => HttpsFileSystemProvider._schema;
 		public override string DirectorySeparator => HttpsFileSystemProvider._directorySeparator;
 
-		public override string ToString() => string.Format("Https Directory Symbolic Link {0}", base.ToString());
+		public override string ToString() => $"Https Directory Symbolic Link {base.ToString()}";
 
 		public override FileSystem.IFileSystemPath Clone()
 		{

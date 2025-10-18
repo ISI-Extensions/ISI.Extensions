@@ -78,7 +78,7 @@ namespace ISI.Extensions.DataReader
 		{
 			if ((columnIndex < 0) || (columnIndex >= FieldCount))
 			{
-				throw new System.IndexOutOfRangeException(string.Format("trying to access Column {0}", columnIndex));
+				throw new System.IndexOutOfRangeException($"trying to access Column {columnIndex}");
 			}
 		}
 
@@ -586,7 +586,7 @@ namespace ISI.Extensions.DataReader
 				}
 			}
 
-			return string.Format("{0}", Values[columnIndex]);
+			return $"{Values[columnIndex]}";
 		}
 
 		public virtual void Dispose()

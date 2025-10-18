@@ -25,12 +25,12 @@ namespace ISI.Extensions
 		{
 			if (!(getProperty.Body is System.Linq.Expressions.MemberExpression member))
 			{
-				throw new ArgumentException(string.Format("Expression '{0}' refers to a method, not a property.", getProperty.ToString()));
+				throw new ArgumentException($"Expression '{getProperty.ToString()}' refers to a method, not a property.");
 			}
 
 			if (!(member.Member is System.Reflection.PropertyInfo propertyInfo))
 			{
-				throw new ArgumentException(string.Format("Expression '{0}' refers to a field, not a property.", getProperty.ToString()));
+				throw new ArgumentException($"Expression '{getProperty.ToString()}' refers to a field, not a property.");
 			}
 
 			return propertyInfo;
@@ -63,10 +63,10 @@ namespace ISI.Extensions
 
 			if (returnRandomNameIfNotFound)
 			{
-				return string.Format("{0:D}", Guid.NewGuid());
+				return $"{Guid.NewGuid():D}";
 			}
 
-			throw new ArgumentException(string.Format("Expression '{0}' cannot become a name.", expression.Body.ToString()));
+			throw new ArgumentException($"Expression '{expression.Body.ToString()}' cannot become a name.");
 		}
 	}
 }

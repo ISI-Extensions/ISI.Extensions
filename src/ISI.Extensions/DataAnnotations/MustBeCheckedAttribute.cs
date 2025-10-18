@@ -31,7 +31,7 @@ namespace ISI.Extensions.DataAnnotations
 		
 		public override bool IsValid(object value)
 		{
-			return string.Format("{0}", value).ToBoolean();
+			return $"{value}".ToBoolean();
 		}
 	}
 }

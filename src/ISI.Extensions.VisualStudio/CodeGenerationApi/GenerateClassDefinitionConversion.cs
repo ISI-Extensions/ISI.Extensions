@@ -32,8 +32,8 @@ namespace ISI.Extensions.VisualStudio
 
 			var formattedText = new System.Text.StringBuilder();
 
-			var sourceEntityName = (string.IsNullOrWhiteSpace(request.SourceEntityName.NullCheckedTrimEnd('.')) ? string.Empty : string.Format("{0}.", request.SourceEntityName.TrimEnd('.')));
-			var targetEntityName = (string.IsNullOrWhiteSpace(request.TargetEntityName.NullCheckedTrimEnd('.')) ? string.Empty : string.Format("{0}.", request.TargetEntityName.TrimEnd('.')));
+			var sourceEntityName = (string.IsNullOrWhiteSpace(request.SourceEntityName.NullCheckedTrimEnd('.')) ? string.Empty : $"{request.SourceEntityName.TrimEnd('.')}.");
+			var targetEntityName = (string.IsNullOrWhiteSpace(request.TargetEntityName.NullCheckedTrimEnd('.')) ? string.Empty : $"{request.TargetEntityName.TrimEnd('.')}.");
 
 
 			foreach (var property in request.ClassDefinition.Properties)

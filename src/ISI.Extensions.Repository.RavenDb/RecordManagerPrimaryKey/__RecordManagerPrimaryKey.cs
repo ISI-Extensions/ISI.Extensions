@@ -89,10 +89,10 @@ namespace ISI.Extensions.Repository.RavenDb
 		{
 			if (typeof(TRecordPrimaryKey) == typeof(Guid))
 			{
-				return string.Format("{0}/{1:D}", GetTableName(), primaryKeyValue);
+				return $"{GetTableName()}/{primaryKeyValue:D}";
 			}
 
-			return string.Format("{0}/{1}", GetTableName(), primaryKeyValue);
+			return $"{GetTableName()}/{primaryKeyValue}";
 		}
 
 		protected virtual TRecord ToRecord(object source)

@@ -45,9 +45,9 @@ namespace ISI.Extensions.Twilio
 			formData.ConditionalAdd(!string.IsNullOrEmpty(request.StatusCallbackUrl), nameof(SerializableModelsDTOs.CreateMessageOptions.StatusCallback), () => request.StatusCallbackUrl);
 			formData.ConditionalAdd(!string.IsNullOrEmpty(request.ApplicationKey), nameof(SerializableModelsDTOs.CreateMessageOptions.ApplicationSid), () => request.ApplicationKey);
 
-			formData.ConditionalAdd(request.MaxPrice.HasValue, nameof(SerializableModelsDTOs.CreateMessageOptions.MaxPrice), () => string.Format("{0}", request.MaxPrice));
+			formData.ConditionalAdd(request.MaxPrice.HasValue, nameof(SerializableModelsDTOs.CreateMessageOptions.MaxPrice), () => $"{request.MaxPrice}");
 			formData.ConditionalAdd(request.ProvideFeedback, nameof(SerializableModelsDTOs.CreateMessageOptions.ProvideFeedback), () => "true");
-			formData.ConditionalAdd(request.ValidityPeriodInSeconds.HasValue, nameof(SerializableModelsDTOs.CreateMessageOptions.ValidityPeriod), () => string.Format("{0}", request.ValidityPeriodInSeconds));
+			formData.ConditionalAdd(request.ValidityPeriodInSeconds.HasValue, nameof(SerializableModelsDTOs.CreateMessageOptions.ValidityPeriod), () => $"{request.ValidityPeriodInSeconds}");
 			formData.ConditionalAdd(request.ForceDelivery, nameof(SerializableModelsDTOs.CreateMessageOptions.ForceDelivery), () => "true");
 			formData.ConditionalAdd(!string.IsNullOrEmpty(request.ProviderKey), nameof(SerializableModelsDTOs.CreateMessageOptions.PathAccountSid), () => request.ProviderKey);
 			formData.ConditionalAdd(request.SmartEncoded, nameof(SerializableModelsDTOs.CreateMessageOptions.SmartEncoded), () => "true");

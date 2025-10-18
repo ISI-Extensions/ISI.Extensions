@@ -32,7 +32,7 @@ namespace ISI.Extensions.Security.ActiveDirectory.Extensions
 			{
 				if (searchResult.Properties[propertyKey].Count > 0)
 				{
-					return string.Format("{0}", searchResult.Properties[propertyKey][0]);
+					return $"{searchResult.Properties[propertyKey][0]}";
 				}
 			}
 			catch
@@ -52,7 +52,7 @@ namespace ISI.Extensions.Security.ActiveDirectory.Extensions
 
 					foreach (var property in searchResult.Properties[propertyKey])
 					{
-						var propertyValues = string.Format("{0}", property).Split(['=', ','], StringSplitOptions.RemoveEmptyEntries);
+						var propertyValues = $"{property}".Split(['=', ','], StringSplitOptions.RemoveEmptyEntries);
 
 						if (propertyValues.Length >= 2)
 						{

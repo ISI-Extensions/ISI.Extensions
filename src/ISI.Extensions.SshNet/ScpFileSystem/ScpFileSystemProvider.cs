@@ -36,12 +36,12 @@ namespace ISI.Extensions.SshNet.ScpFileSystem
 		{
 			if (fileName.StartsWith("~/.."))
 			{
-				return string.Format("/home{0}", fileName.Substring(4));
+				return $"/home{fileName.Substring(4)}";
 			}
 
 			if (fileName.StartsWith("/~"))
 			{
-				return string.Format("${{HOME}}{0}", fileName.Substring(2));
+				return $"${{HOME}}{fileName.Substring(2)}";
 			}
 
 			if (fileName.StartsWith("/"))
@@ -79,7 +79,7 @@ namespace ISI.Extensions.SshNet.ScpFileSystem
 						var fileSystemInfos = new List<FileSystem.IFileSystemPath>();
 						var fileSystemInfoDirectories = new List<FileSystem.IFileSystemPathDirectory>();
 
-						using (var cmd = client.CreateCommand(string.Format("ls -lkF --full-time {0}\n", directorySystemPathInfo.FullPath().TrimStart(DirectorySeparator))))
+						using (var cmd = client.CreateCommand($"ls -lkF --full-time {directorySystemPathInfo.FullPath().TrimStart(DirectorySeparator)}\n"))
 						{
 							cmd.Execute();
 
@@ -129,7 +129,7 @@ namespace ISI.Extensions.SshNet.ScpFileSystem
 				{
 					client.Connect();
 
-					using (var cmd = client.CreateCommand(string.Format("mkdir -p {0}", EncodeFileName(fileSystemPathDirectory.FullPath()))))
+					using (var cmd = client.CreateCommand($"mkdir -p {EncodeFileName(fileSystemPathDirectory.FullPath())}"))
 					{
 						cmd.Execute();
 					}
@@ -147,7 +147,7 @@ namespace ISI.Extensions.SshNet.ScpFileSystem
 				{
 					client.Connect();
 
-					using (var cmd = client.CreateCommand(string.Format("{0} {1}", (doRecursive ? "rm -r" : "rmdir"), EncodeFileName(fileSystemPathDirectory.FullPath()))))
+					using (var cmd = client.CreateCommand($"{(doRecursive ? "rm -r" : "rmdir")} {EncodeFileName(fileSystemPathDirectory.FullPath())}"))
 					{
 						cmd.Execute();
 					}
@@ -167,7 +167,7 @@ namespace ISI.Extensions.SshNet.ScpFileSystem
 					{
 						client.Connect();
 
-						using (var cmd = client.CreateCommand(string.Format("rm {0}", EncodeFileName(fileSystemPathFile.FullPath()))))
+						using (var cmd = client.CreateCommand($"rm {EncodeFileName(fileSystemPathFile.FullPath())}"))
 						{
 							cmd.Execute();
 						}

@@ -36,7 +36,7 @@ namespace ISI.Extensions.VisualStudio
 
 		public override string ToString()
 		{
-			return string.Format("{1}{2}{3} {4} {{ get; set; }}", Environment.NewLine, (string.IsNullOrEmpty(AccessModifier) ? string.Empty : string.Format("{0} ", AccessModifier)), (string.IsNullOrEmpty(Accessor) ? string.Empty : string.Format("{0} ", Accessor)), PropertyType, PropertyName);
+			return string.Format("{1}{2}{3} {4} {{ get; set; }}", Environment.NewLine, (string.IsNullOrEmpty(AccessModifier) ? string.Empty : $"{AccessModifier} "), (string.IsNullOrEmpty(Accessor) ? string.Empty : $"{Accessor} "), PropertyType, PropertyName);
 		}
 	}
 }

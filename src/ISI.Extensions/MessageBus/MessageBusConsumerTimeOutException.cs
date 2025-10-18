@@ -39,6 +39,6 @@ namespace ISI.Extensions.MessageBus
 		{
 		}
 
-		private static string GetMessage(TimeSpan timeOut) => string.Format("Request timeout after {0}", timeOut.Formatted(TimeSpanExtensions.TimeSpanFormat.Default));
+		private static string GetMessage(TimeSpan timeOut) => $"Request timeout after {timeOut.Formatted(TimeSpanExtensions.TimeSpanFormat.Default)}";
 	}
 }

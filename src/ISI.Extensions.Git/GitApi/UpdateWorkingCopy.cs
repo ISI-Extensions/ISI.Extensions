@@ -36,7 +36,7 @@ namespace ISI.Extensions.Git
 					var arguments = new List<string>();
 
 					arguments.Add("/command:pull");
-					arguments.Add(string.Format("/path:\"{0}\"", request.FullName));
+					arguments.Add($"/path:\"{request.FullName}\"");
 
 					arguments.Add("/autostart");
 

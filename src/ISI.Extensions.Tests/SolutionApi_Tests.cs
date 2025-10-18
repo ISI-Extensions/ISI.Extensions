@@ -209,7 +209,7 @@ namespace ISI.Extensions.Tests
 						IncludeExternals = true,
 					}).Success)
 					{
-						var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
+						var exception = new Exception($"Error updating \"{solutionDetails.RootSourceDirectory}\"");
 						logger.LogError(exception.Message);
 						throw exception;
 					}
@@ -310,14 +310,14 @@ namespace ISI.Extensions.Tests
 
 					foreach (var version in nugetPackage.Value.OrderBy(v => v, StringComparer.InvariantCultureIgnoreCase))
 					{
-						var sourceFullName = System.IO.Path.Combine(nugetDirectory, string.Format("{0}.{1}.nupkg", nugetPackage.Key, version));
+						var sourceFullName = System.IO.Path.Combine(nugetDirectory, $"{nugetPackage.Key}.{version}.nupkg");
 
 						if (!System.IO.File.Exists(sourceFullName))
 						{
-							sourceFullName = System.IO.Path.Combine(legacyNugetDirectory, string.Format("{0}.{1}.nupkg", nugetPackage.Key, version));
+							sourceFullName = System.IO.Path.Combine(legacyNugetDirectory, $"{nugetPackage.Key}.{version}.nupkg");
 						}
 
-						var targetFullName = System.IO.Path.Combine(tempDirectory.FullName, string.Format("{0}.{1}.nupkg", nugetPackage.Key, version));
+						var targetFullName = System.IO.Path.Combine(tempDirectory.FullName, $"{nugetPackage.Key}.{version}.nupkg");
 
 						Console.WriteLine(version);
 
@@ -411,7 +411,7 @@ namespace ISI.Extensions.Tests
 						IncludeExternals = true,
 					}).Success)
 					{
-						var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
+						var exception = new Exception($"Error updating \"{solutionDetails.RootSourceDirectory}\"");
 						logger.LogError(exception.Message);
 						throw exception;
 					}
@@ -496,7 +496,7 @@ namespace ISI.Extensions.Tests
 							AddToLog = (logEntryLevel, description) => commitLog.AppendLine(description),
 						}).Success)
 						{
-							var exception = new Exception(string.Format("Error committing \"{0}\"", solutionDetails.RootSourceDirectory));
+							var exception = new Exception($"Error committing \"{solutionDetails.RootSourceDirectory}\"");
 							logger.LogError(exception.Message);
 							throw exception;
 						}
@@ -558,7 +558,7 @@ namespace ISI.Extensions.Tests
 						IncludeExternals = true,
 					}).Success)
 					{
-						var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
+						var exception = new Exception($"Error updating \"{solutionDetails.RootSourceDirectory}\"");
 						logger.LogError(exception.Message);
 						throw exception;
 					}
@@ -599,7 +599,7 @@ namespace ISI.Extensions.Tests
 							AddToLog = (logEntryLevel, log) => commitLog.AppendLine(log),
 						}).Success)
 						{
-							var exception = new Exception(string.Format("Error commiting \"{0}\"", solutionDetails.RootSourceDirectory));
+							var exception = new Exception($"Error commiting \"{solutionDetails.RootSourceDirectory}\"");
 							logger.LogError(exception.Message);
 							throw exception;
 						}
@@ -642,7 +642,7 @@ namespace ISI.Extensions.Tests
 						IncludeExternals = true,
 					}).Success)
 					{
-						var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
+						var exception = new Exception($"Error updating \"{solutionDetails.RootSourceDirectory}\"");
 						logger.LogError(exception.Message);
 						//throw exception;
 					}
@@ -680,7 +680,7 @@ namespace ISI.Extensions.Tests
 							AddToLog = (logEntryLevel, description) => commitLog.AppendLine(description),
 						}).Success)
 						{
-							var exception = new Exception(string.Format("Error commiting \"{0}\"", solutionDetails.RootSourceDirectory));
+							var exception = new Exception($"Error commiting \"{solutionDetails.RootSourceDirectory}\"");
 							logger.LogError(exception.Message);
 							throw exception;
 						}
@@ -736,7 +736,7 @@ namespace ISI.Extensions.Tests
 						IncludeExternals = true,
 					}).Success)
 					{
-						var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
+						var exception = new Exception($"Error updating \"{solutionDetails.RootSourceDirectory}\"");
 						logger.LogError(exception.Message);
 						throw exception;
 					}
@@ -766,7 +766,7 @@ namespace ISI.Extensions.Tests
 						{
 							if (commitLog.ToString().IndexOf("Your branch is up to date with 'origin/main'.", StringComparison.InvariantCultureIgnoreCase) < 0)
 							{
-								var exception = new Exception(string.Format("Error commiting \"{0}\"", solutionDetails.RootSourceDirectory));
+								var exception = new Exception($"Error commiting \"{solutionDetails.RootSourceDirectory}\"");
 								logger.LogError(exception.Message);
 								throw exception;
 							}

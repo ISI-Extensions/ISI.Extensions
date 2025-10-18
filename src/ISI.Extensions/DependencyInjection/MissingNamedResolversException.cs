@@ -24,7 +24,7 @@ namespace ISI.Extensions.DependencyInjection
 	public class MissingNamedResolversException : Exception
 	{
 		public MissingNamedResolversException(string name)
-			: base(string.Format("Missing resolvers named: {0}", name))
+			: base($"Missing resolvers named: {name}")
 		{
 		}
 	}

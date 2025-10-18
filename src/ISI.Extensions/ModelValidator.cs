@@ -37,7 +37,7 @@ namespace ISI.Extensions
 							var index = 0;
 							foreach (var item in enumerable)
 							{
-								result.AddRange(ValidateModel(item, string.Format("{0}{1}[{2}].", prefix, propertyInfo.Name, index)));
+								result.AddRange(ValidateModel(item, $"{prefix}{propertyInfo.Name}[{index}]."));
 								index++;
 							}
 						}
@@ -47,7 +47,7 @@ namespace ISI.Extensions
 
 							if (propertyValue != null)
 							{
-								result.AddRange(ValidateModel(propertyValue, string.Format("{0}{1}.", prefix, propertyInfo.Name)));
+								result.AddRange(ValidateModel(propertyValue, $"{prefix}{propertyInfo.Name}."));
 							}
 						}
 					}
@@ -57,7 +57,7 @@ namespace ISI.Extensions
 			result.AddRange(from propertyInfo in System.ComponentModel.TypeDescriptor.GetProperties(model).Cast<System.ComponentModel.PropertyDescriptor>()
 				from attribute in propertyInfo.Attributes.OfType<System.ComponentModel.DataAnnotations.ValidationAttribute>()
 				where !attribute.IsValid(propertyInfo.GetValue(model))
-				select (FieldName: string.Format("{0}{1}", prefix, propertyInfo.Name), ErrorMessage: attribute.FormatErrorMessage(string.Empty)));
+				select (FieldName: $"{prefix}{propertyInfo.Name}", ErrorMessage: attribute.FormatErrorMessage(string.Empty)));
 
 			return result.ToArray();
 		}

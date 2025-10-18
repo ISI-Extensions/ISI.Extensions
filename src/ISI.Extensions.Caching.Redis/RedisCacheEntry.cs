@@ -63,7 +63,7 @@ namespace ISI.Extensions.Caching.Redis
 		{
 			var type = Value.GetType();
 
-			var serializedValue = string.Format("{0}\n{1}", type.AssemblyQualifiedNameWithoutVersion(), (type.IsPrimitive || (type == typeof(string)) ? string.Format("{0}", Value) : JsonSerializer.Serialize(type, Value)));
+			var serializedValue = $"{type.AssemblyQualifiedNameWithoutVersion()}\n{(type.IsPrimitive || (type == typeof(string)) ? $"{Value}" : JsonSerializer.Serialize(type, Value))}";
 
 			var database = GetDatabase();
 

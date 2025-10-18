@@ -58,7 +58,7 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 
 		public override IEnumerable<Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult> Validate(Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationContext context)
 		{
-			var value = string.Format("{0}", context.Model);
+			var value = $"{context.Model}";
 
 			var match = (new System.Text.RegularExpressions.Regex(ServerSidePattern)).Match(value);
 

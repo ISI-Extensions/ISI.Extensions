@@ -40,7 +40,7 @@ namespace ISI.Extensions
 			return properties
 				.Where(property => property.PropertyInfo.CanRead)
 				.OrderBy(property => property.Order)
-				.Select(property => string.Format("{0}", property.PropertyInfo.GetValue(record, null)))
+				.Select(property => $"{property.PropertyInfo.GetValue(record, null)}")
 				.ToArray();
 		}
 	}

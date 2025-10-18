@@ -42,7 +42,7 @@ namespace ISI.Extensions.Cake
 		{
 			public static string _root()
 			{
-				return string.Format("{0}Artwork/", T4Files._root());
+				return $"{T4Files._root()}Artwork/";
 			}
 		
 			public static readonly string Cake_ico = _root() + "Cake.ico";
@@ -77,7 +77,7 @@ namespace ISI.Extensions.Cake
 		{
 			public static string _root()
 			{
-				return string.Format("{0}Artwork/", T4Embedded._root());
+				return $"{T4Embedded._root()}Artwork/";
 			}
 		
 			public static readonly string Cake_ico = _root() + "Cake.ico";
@@ -111,7 +111,7 @@ namespace ISI.Extensions.Cake
 		{
 			public static string _root()
 			{
-				return string.Format("{0}Artwork.", T4Resources._root());
+				return $"{T4Resources._root()}Artwork.";
 			}
 		
 			public static readonly string Cake_ico = _root() + "Cake.ico";

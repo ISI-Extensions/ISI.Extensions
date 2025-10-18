@@ -95,7 +95,7 @@ namespace ISI.Extensions.Tests
 						IncludeExternals = true,
 					}).Success)
 					{
-						var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
+						var exception = new Exception($"Error updating \"{solutionDetails.RootSourceDirectory}\"");
 						logger.LogError(exception.Message);
 						throw exception;
 					}
@@ -128,7 +128,7 @@ namespace ISI.Extensions.Tests
 							AddToLog = (logEntryLevel, description) => commitLog.AppendLine(description),
 						}).Success)
 						{
-							var exception = new Exception(string.Format("Error committing \"{0}\"", solutionDetails.RootSourceDirectory));
+							var exception = new Exception($"Error committing \"{solutionDetails.RootSourceDirectory}\"");
 							logger.LogError(exception.Message);
 							throw exception;
 						}

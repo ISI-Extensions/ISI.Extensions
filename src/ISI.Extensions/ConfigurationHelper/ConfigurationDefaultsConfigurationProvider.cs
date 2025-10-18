@@ -38,7 +38,7 @@ namespace ISI.Extensions.ConfigurationHelper
 
 					if (configurationType.GetCustomAttribute(typeof(ISI.Extensions.ConfigurationHelper.ConfigurationAttribute)) is ConfigurationAttribute configurationAttribute)
 					{
-						AddData(config, string.Format("{0}:", configurationAttribute.ConfigurationSectionName));
+						AddData(config, $"{configurationAttribute.ConfigurationSectionName}:");
 					}
 				}
 
@@ -64,13 +64,13 @@ namespace ISI.Extensions.ConfigurationHelper
 						{
 							for (var valueIndex = 0; valueIndex < values.Length; valueIndex++)
 							{
-								Data.Add(string.Format("{0}{1}[{2}]", prefix, property.Name, valueIndex), string.Format("{0}", values[valueIndex]));
+								Data.Add($"{prefix}{property.Name}[{valueIndex}]", $"{values[valueIndex]}");
 							}
 						}
 					}
 					else if (property.PropertyType == typeof(string))
 					{
-						Data.Add(string.Format("{0}{1}", prefix, property.Name), string.Format("{0}", propertyValue));
+						Data.Add($"{prefix}{property.Name}", $"{propertyValue}");
 					}
 					else if (property.PropertyType.IsClass)
 					{
@@ -81,18 +81,18 @@ namespace ISI.Extensions.ConfigurationHelper
 								var index = 0;
 								foreach (var item in enumerable)
 								{
-									AddData(propertyValue, string.Format("{0}{1}[{2}]:", prefix, property.Name, index++));
+									AddData(propertyValue, $"{prefix}{property.Name}[{index++}]:");
 								}
 							}
 							else
 							{
-								AddData(propertyValue, string.Format("{0}{1}:", prefix, property.Name));
+								AddData(propertyValue, $"{prefix}{property.Name}:");
 							}
 						}
 					}
 					else
 					{
-						Data.Add(string.Format("{0}{1}", prefix, property.Name), string.Format("{0}", propertyValue));
+						Data.Add($"{prefix}{property.Name}", $"{propertyValue}");
 					}
 				}
 			}

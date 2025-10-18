@@ -34,7 +34,7 @@ namespace ISI.Extensions.WebClient
 				System.Net.HttpStatusCode statusCode,
 				WebRequestDetails webRequestDetails,
 				Exception innerException)
-				: base(string.Format("Rest Exception, status code: {0}", statusCode), innerException)
+				: base($"Rest Exception, status code: {statusCode}", innerException)
 			{
 				StatusCode = statusCode;
 				CurlCommand = webRequestDetails.GetCurlCommand();

@@ -41,7 +41,7 @@ namespace ISI.Extensions.Svn
 					var arguments = new List<string>();
 
 					arguments.Add("delete");
-					arguments.Add(string.Format("\"{0}\"", fullName));
+					arguments.Add($"\"{fullName}\"");
 
 					ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 					{

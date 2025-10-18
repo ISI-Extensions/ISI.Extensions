@@ -27,7 +27,7 @@ namespace ISI.Extensions.Aspose.InternalTryNotToUseExtensions
 		{
 			if (!(themeColor is ISI.Extensions.Aspose.Cells.ThemeColor asposeThemeColor))
 			{
-				throw new(string.Format("{0} is not of type {1}", nameof(themeColor), typeof(ISI.Extensions.Aspose.Cells.ThemeColor).FullName));
+				throw new($"{nameof(themeColor)} is not of type {typeof(ISI.Extensions.Aspose.Cells.ThemeColor).FullName}");
 			}
 
 			return asposeThemeColor._themeColor;

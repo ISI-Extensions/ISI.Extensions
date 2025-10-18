@@ -54,7 +54,7 @@ namespace ISI.Extensions.VisualStudio
 				ISI.Extensions.DirectoryIcon.SetDirectoryIcon(packageComponentDirectory, packageComponent.IconFileName);
 			}
 
-			var projectBinDirectory = string.Format("{0}{1}", GetBinDirectory(packageComponent.ProjectFullName, configuration, buildPlatform, platformTarget).TrimEnd(System.IO.Path.DirectorySeparatorChar), System.IO.Path.DirectorySeparatorChar);
+			var projectBinDirectory = $"{GetBinDirectory(packageComponent.ProjectFullName, configuration, buildPlatform, platformTarget).TrimEnd(System.IO.Path.DirectorySeparatorChar)}{System.IO.Path.DirectorySeparatorChar}";
 
 			var excludeFileDefinitions = GetExcludeFileDefinitions(packageComponent.ExcludeFiles);
 
@@ -168,7 +168,7 @@ namespace ISI.Extensions.VisualStudio
 
 				foreach (var appConfigFullName in System.IO.Directory.GetFiles(packageComponentDirectory, "app.config*", System.IO.SearchOption.TopDirectoryOnly))
 				{
-					var projectConfigFullName = System.IO.Path.Combine(packageComponentDirectory, string.Format("{0}.exe{1}", projectName, System.IO.Path.GetFileName(appConfigFullName).Substring(3)));
+					var projectConfigFullName = System.IO.Path.Combine(packageComponentDirectory, $"{projectName}.exe{System.IO.Path.GetFileName(appConfigFullName).Substring(3)}");
 
 					if (System.IO.File.Exists(projectConfigFullName))
 					{
@@ -184,10 +184,10 @@ namespace ISI.Extensions.VisualStudio
 				}
 
 				{
-					var appConfigFullName = System.IO.Path.Combine(packageComponentDirectory, string.Format("{0}.exe.config", projectName));
+					var appConfigFullName = System.IO.Path.Combine(packageComponentDirectory, $"{projectName}.exe.config");
 					if (System.IO.File.Exists(appConfigFullName))
 					{
-						System.IO.File.Move(appConfigFullName, string.Format("{0}.sample", appConfigFullName));
+						System.IO.File.Move(appConfigFullName, $"{appConfigFullName}.sample");
 					}
 				}
 			}

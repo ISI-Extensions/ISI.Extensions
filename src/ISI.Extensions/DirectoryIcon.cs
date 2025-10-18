@@ -33,10 +33,10 @@ namespace ISI.Extensions
 			using (var streamWriter = new System.IO.StreamWriter(desktopIniFullName, false, Encoding.Unicode))
 			{
 				streamWriter.WriteLine("[.ShellClassInfo]");
-				streamWriter.WriteLine(string.Format("IconFile={0}", iconFileName));
-				streamWriter.WriteLine(string.Format("IconIndex={0}", iconIndex));
+				streamWriter.WriteLine($"IconFile={iconFileName}");
+				streamWriter.WriteLine($"IconIndex={iconIndex}");
 				streamWriter.WriteLine("ConfirmFileOp=0");
-				streamWriter.WriteLine(string.Format("IconResource={0},{1}", iconFileName, iconIndex));
+				streamWriter.WriteLine($"IconResource={iconFileName},{iconIndex}");
 
 				streamWriter.Flush();
 				streamWriter.Close();

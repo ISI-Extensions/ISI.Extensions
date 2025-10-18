@@ -63,7 +63,7 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 
 		public override IEnumerable<Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult> Validate(Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationContext context)
 		{
-			var model = string.Format("{0}", context.Model);
+			var model = $"{context.Model}";
 
 			if (!AllowEmptyStrings || !string.IsNullOrWhiteSpace(model))
 			{
@@ -79,7 +79,7 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 				var fieldToCheck = context.ModelMetadata.ContainerType.GetProperty(FieldToCheck);
 				if (fieldToCheck != null)
 				{
-					var valueToCheck = string.Format("{0}", fieldToCheck.GetValue(context.Container, null)).ToDateTime();
+					var valueToCheck = $"{fieldToCheck.GetValue(context.Container, null)}".ToDateTime();
 
 					switch (ComparisonType)
 					{

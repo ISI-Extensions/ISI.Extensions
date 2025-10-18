@@ -42,7 +42,7 @@ namespace ISI.Extensions.Jenkins
 				}
 				else if (System.IO.Directory.Exists(path))
 				{
-					jenkinsConfigFileNames.UnionWith(System.IO.Directory.EnumerateFiles(path, string.Format("*{0}", JenkinsConfigFileNameExtension), System.IO.SearchOption.AllDirectories));
+					jenkinsConfigFileNames.UnionWith(System.IO.Directory.EnumerateFiles(path, $"*{JenkinsConfigFileNameExtension}", System.IO.SearchOption.AllDirectories));
 				}
 			}
 

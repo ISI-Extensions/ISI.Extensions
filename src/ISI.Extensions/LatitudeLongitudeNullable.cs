@@ -76,7 +76,7 @@ namespace ISI.Extensions
 		
 		public override string ToString()
 		{
-			return string.Format("Latitude: {0} Longitude: {1}", Latitude, Longitude);
+			return $"Latitude: {Latitude} Longitude: {Longitude}";
 		}
 	}
 }

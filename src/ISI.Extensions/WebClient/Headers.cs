@@ -112,7 +112,7 @@ namespace ISI.Extensions.WebClient
 
 		public Header AddBasicAuthentication(string userName, string password)
 		{
-			var authenticationToken = string.Format("{0}{1}", Keys.BasicAuthenticationPrefix, Convert.ToBase64String(Encoding.Default.GetBytes(string.Format("{0}:{1}", userName, password))));
+			var authenticationToken = $"{Keys.BasicAuthenticationPrefix}{Convert.ToBase64String(Encoding.Default.GetBytes($"{userName}:{password}"))}";
 
 			var header = new Header()
 			{
@@ -127,7 +127,7 @@ namespace ISI.Extensions.WebClient
 
 		public Header AddBearerAuthentication(string token)
 		{
-			var authenticationToken = string.Format("{0}{1}", Keys.BearerAuthenticationPrefix, token);
+			var authenticationToken = $"{Keys.BearerAuthenticationPrefix}{token}";
 
 			var header = new Header()
 			{

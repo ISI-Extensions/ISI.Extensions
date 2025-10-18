@@ -54,7 +54,7 @@ namespace ISI.Extensions.Locks
 				{
 					if (failInterval.HasValue && (DateTime.UtcNow > now + failInterval.Value))
 					{
-						throw new ISI.Extensions.Locks.LockException(string.Format("Failed to get lock on \"{0}\"", FileName), exception);
+						throw new ISI.Extensions.Locks.LockException($"Failed to get lock on \"{FileName}\"", exception);
 					}
 
 					onWaitingForLock?.Invoke();
@@ -81,7 +81,7 @@ namespace ISI.Extensions.Locks
 
 		protected string GetLockFileName(string fileName)
 		{
-			return string.Format("{0}.lock", fileName);
+			return $"{fileName}.lock";
 		}
 
 		public void Dispose()

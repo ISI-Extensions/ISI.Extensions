@@ -99,7 +99,7 @@ namespace ISI.Extensions.ContentGenerator
 
 			if (!ContentGenerators.ContainsKey(modelType))
 			{
-				throw new GeneratorNotFoundException(string.Format("Cannot find Content Generator for \"{0}\"\nRegistered Content Generators:\n{1}", modelType.FullName, string.Join("\n", ContentGenerators.Select(contentGenerator => contentGenerator.Key.FullName))));
+				throw new GeneratorNotFoundException($"Cannot find Content Generator for \"{modelType.FullName}\"\nRegistered Content Generators:\n{string.Join("\n", ContentGenerators.Select(contentGenerator => contentGenerator.Key.FullName))}");
 			}
 
 			return ContentGenerators[modelType];
@@ -116,7 +116,7 @@ namespace ISI.Extensions.ContentGenerator
 				ServiceLifetime = Microsoft.Extensions.DependencyInjection.ServiceLifetime.Singleton,
 			}) is IContentGenerator<TModel> contentGenerator))
 			{
-				throw new GeneratorCannotBeCreatedException(string.Format("Cannot not create instance of \"{0}\"", contentGeneratorType.FullName));
+				throw new GeneratorCannotBeCreatedException($"Cannot not create instance of \"{contentGeneratorType.FullName}\"");
 			}
 
 			return contentGenerator;

@@ -27,7 +27,7 @@ namespace ISI.Extensions.Aspose.InternalTryNotToUseExtensions
 		{
 			if (!(cellStyle is ISI.Extensions.Aspose.Cells.CellStyle asposeStyle))
 			{
-				throw new(string.Format("{0} is not of type {1}", nameof(cellStyle), typeof(ISI.Extensions.Aspose.Cells.CellStyle).FullName));
+				throw new($"{nameof(cellStyle)} is not of type {typeof(ISI.Extensions.Aspose.Cells.CellStyle).FullName}");
 			}
 
 			return asposeStyle._cellStyle;

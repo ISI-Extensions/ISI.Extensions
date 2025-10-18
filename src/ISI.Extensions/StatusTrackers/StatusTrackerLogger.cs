@@ -56,7 +56,7 @@ namespace ISI.Extensions.StatusTrackers
 					return formatterState.ToString();
 				};
 
-				StatusTracker?.AddToLog(logLevel.ToLogEntryLevel(), string.Format("{0}{1}", formatter(state, exception), Environment.NewLine));
+				StatusTracker?.AddToLog(logLevel.ToLogEntryLevel(), $"{formatter(state, exception)}{Environment.NewLine}");
 			}
 		}
 

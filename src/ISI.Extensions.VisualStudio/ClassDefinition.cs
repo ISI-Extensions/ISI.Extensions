@@ -32,7 +32,7 @@ namespace ISI.Extensions.VisualStudio
 
 		public override string ToString()
 		{
-			return string.Format("\t{1}{2}class {3}{0}", Environment.NewLine, (string.IsNullOrEmpty(AccessModifier) ? string.Empty : string.Format("{0} ", AccessModifier)), (string.IsNullOrEmpty(Accessor) ? string.Empty : string.Format("{0} ", Accessor)), ClassName);
+			return string.Format("\t{1}{2}class {3}{0}", Environment.NewLine, (string.IsNullOrEmpty(AccessModifier) ? string.Empty : $"{AccessModifier} "), (string.IsNullOrEmpty(Accessor) ? string.Empty : $"{Accessor} "), ClassName);
 		}
 	}
 }

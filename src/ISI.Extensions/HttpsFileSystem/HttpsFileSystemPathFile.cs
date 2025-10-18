@@ -25,7 +25,7 @@ namespace ISI.Extensions.HttpsFileSystem
 		public override string Schema => HttpsFileSystemProvider._schema;
 		public override string DirectorySeparator => HttpsFileSystemProvider._directorySeparator;
 
-		public override string ToString() => string.Format("Https File {0}", base.ToString());
+		public override string ToString() => $"Https File {base.ToString()}";
 
 		public override FileSystem.IFileSystemPath Clone()
 		{

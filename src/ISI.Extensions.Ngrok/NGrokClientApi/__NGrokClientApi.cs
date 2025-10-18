@@ -47,14 +47,14 @@ namespace ISI.Extensions.Ngrok
 		{
 			var headers = new ISI.Extensions.WebClient.HeaderCollection();
 
-			headers.Add("user-agent", string.Format("ISI.Extensions.Ngrok/{0}", Version));
+			headers.Add("user-agent", $"ISI.Extensions.Ngrok/{Version}");
 
 			return headers;
 		}
 
 		protected string GetUrl(string path)
 		{
-			return string.Format("{0}/{1}", BaseUrl, path);
+			return $"{BaseUrl}/{path}";
 		}
 	}
 }

@@ -56,7 +56,7 @@ namespace ISI.Extensions
 					dataRoot = System.IO.Path.Combine(PathRoot, "Data");
 				}
 
-				return string.Format("{0}{1}", dataRoot.TrimEnd(System.IO.Path.DirectorySeparatorChar), System.IO.Path.DirectorySeparatorChar);
+				return $"{dataRoot.TrimEnd(System.IO.Path.DirectorySeparatorChar)}{System.IO.Path.DirectorySeparatorChar}";
 			}
 		}
 	}

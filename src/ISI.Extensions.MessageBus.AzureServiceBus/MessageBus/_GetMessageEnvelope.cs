@@ -26,7 +26,7 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 	{
 		protected virtual Microsoft.Azure.ServiceBus.Message GetMessageEnvelope<TRequest>(TRequest request, MessageBusMessageHeaderCollection headers, TimeSpan timeout, string responseChannelName = null)
 		{
-			var operationKey = (System.Diagnostics.Trace.CorrelationManager.LogicalOperationStack.Count > 0 ? System.Diagnostics.Trace.CorrelationManager.LogicalOperationStack.Peek().ToString() : string.Format("{0:D}", Guid.NewGuid()));
+			var operationKey = (System.Diagnostics.Trace.CorrelationManager.LogicalOperationStack.Count > 0 ? System.Diagnostics.Trace.CorrelationManager.LogicalOperationStack.Peek().ToString() : $"{Guid.NewGuid():D}");
 
 			var requestType = typeof(TRequest);
 

@@ -138,8 +138,8 @@ namespace ISI.Extensions.AspNetCore.Extensions
 
 				public bool Equals(ISI.Extensions.AspNetCore.IContentUrl x, ISI.Extensions.AspNetCore.IContentUrl y)
 				{
-					var xKey = string.Format("{0}\t{1}", (x is StylesheetContentUrl ? ((StylesheetContentUrl)x).Media : "-"), x.VirtualPath);
-					var yKey = string.Format("{0}\t{1}", (y is StylesheetContentUrl ? ((StylesheetContentUrl)y).Media : "-"), y.VirtualPath);
+					var xKey = $"{(x is StylesheetContentUrl ? ((StylesheetContentUrl)x).Media : "-")}\t{x.VirtualPath}";
+					var yKey = $"{(y is StylesheetContentUrl ? ((StylesheetContentUrl)y).Media : "-")}\t{y.VirtualPath}";
 
 					return string.Equals(xKey, yKey, StringComparison.InvariantCultureIgnoreCase);
 				}
@@ -176,7 +176,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 
 			public string Key()
 			{
-				return string.Join("+", this.Select(contentUrl => string.Format("{0}{1}{2}", contentUrl.VirtualPath, (contentUrl.VirtualPath.IndexOf("?") > 0 ? "&" : "?"), contentUrl.GetCacheBusterKey()))).ToLower();
+				return string.Join("+", this.Select(contentUrl => $"{contentUrl.VirtualPath}{(contentUrl.VirtualPath.IndexOf("?") > 0 ? "&" : "?")}{contentUrl.GetCacheBusterKey()}")).ToLower();
 			}
 		}
 

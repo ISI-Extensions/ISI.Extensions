@@ -67,7 +67,7 @@ namespace ISI.Extensions.Topshelf.Extensions
 			var servicePrefix = configuration?.ServicePrefix;
 			if (!string.IsNullOrEmpty(servicePrefix))
 			{
-				serviceDescription = string.Format("{0}{1}", servicePrefix, serviceDescription);
+				serviceDescription = $"{servicePrefix}{serviceDescription}";
 			}
 
 			hostConfigurator.SetDescription(serviceDescription);
@@ -98,7 +98,7 @@ namespace ISI.Extensions.Topshelf.Extensions
 			var servicePrefix = configuration?.ServicePrefix;
 			if (!string.IsNullOrEmpty(servicePrefix))
 			{
-				serviceDisplayName = string.Format("{0}{1}", servicePrefix, serviceDisplayName);
+				serviceDisplayName = $"{servicePrefix}{serviceDisplayName}";
 			}
 
 			hostConfigurator.SetDisplayName(serviceDisplayName);
@@ -129,7 +129,7 @@ namespace ISI.Extensions.Topshelf.Extensions
 			var servicePrefix = configuration?.ServicePrefix;
 			if (!string.IsNullOrEmpty(servicePrefix))
 			{
-				serviceServiceName = string.Format("{0}{1}", servicePrefix, serviceServiceName);
+				serviceServiceName = $"{servicePrefix}{serviceServiceName}";
 			}
 
 			hostConfigurator.SetServiceName(serviceServiceName);

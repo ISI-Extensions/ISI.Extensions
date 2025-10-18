@@ -51,18 +51,18 @@ namespace ISI.Extensions.MessageBus.MassTransit
 					return System.Diagnostics.Trace.CorrelationManager.LogicalOperationStack.Peek().ToString();
 				}
 
-				return string.Format("{0:D}", Guid.NewGuid());
+				return $"{Guid.NewGuid():D}";
 			}
 		}
 
 		protected virtual void BeginRequest()
 		{
-			System.Diagnostics.Trace.TraceInformation(string.Format("BeginRequest RequestType: \"{0}\", OperationKey: \"{1}\"", RequestTypeAssemblyQualifiedNameWithoutVersion, OperationKey));
+			System.Diagnostics.Trace.TraceInformation($"BeginRequest RequestType: \"{RequestTypeAssemblyQualifiedNameWithoutVersion}\", OperationKey: \"{OperationKey}\"");
 		}
 
 		protected virtual void EndRequest()
 		{
-			System.Diagnostics.Trace.TraceInformation(string.Format("EndRequest RequestType: \"{0}\", OperationKey: \"{1}\"", RequestTypeAssemblyQualifiedNameWithoutVersion, OperationKey));
+			System.Diagnostics.Trace.TraceInformation($"EndRequest RequestType: \"{RequestTypeAssemblyQualifiedNameWithoutVersion}\", OperationKey: \"{OperationKey}\"");
 		}
 
 		protected virtual void SetTrackingKeys(global::MassTransit.ConsumeContext<TRequest> context)
@@ -71,7 +71,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 			if (context.Headers.TryGetHeader(ISI.Extensions.Diagnostics.OperationKeyHeaderKey, out var operationKeyValue))
 			{
-				operationKey = string.Format("{0}", operationKeyValue);
+				operationKey = $"{operationKeyValue}";
 			}
 
 			if (context.Message is ISI.Extensions.IHasOperationKey hasOperationKey)
@@ -81,7 +81,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 			if (string.IsNullOrWhiteSpace(operationKey))
 			{
-				operationKey = string.Format("{0:D}", Guid.NewGuid());
+				operationKey = $"{Guid.NewGuid():D}";
 			}
 
 			System.Diagnostics.Trace.CorrelationManager.StartLogicalOperation(operationKey);

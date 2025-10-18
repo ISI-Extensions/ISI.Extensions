@@ -24,7 +24,7 @@ namespace ISI.Extensions.DependencyInjection
 	public class CannotCreateInstanceException : Exception
 	{
 		public CannotCreateInstanceException(Type type, System.Exception innerException)
-			: base(string.Format("Cannot create instance of: {0}", type.FullName), innerException)
+			: base($"Cannot create instance of: {type.FullName}", innerException)
 		{
 		}
 	}

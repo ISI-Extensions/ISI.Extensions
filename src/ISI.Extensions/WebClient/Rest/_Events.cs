@@ -113,14 +113,14 @@ namespace ISI.Extensions.WebClient
 
 				if (!string.Equals(HttpMethod, System.Net.WebRequestMethods.Http.Get, StringComparison.InvariantCultureIgnoreCase))
 				{
-					cmd.Append(string.Format("-X {0} ", HttpMethod.ToUpper()));
+					cmd.Append($"-X {HttpMethod.ToUpper()} ");
 				}
 
 				if (Headers != null)
 				{
 					foreach (var headerKey in Headers.AllKeys)
 					{
-						cmd.AppendLine(string.Format("-H \"{0}: {1}\" \\", headerKey, Headers[headerKey]));
+						cmd.AppendLine($"-H \"{headerKey}: {Headers[headerKey]}\" \\");
 					}
 				}
 
@@ -130,17 +130,17 @@ namespace ISI.Extensions.WebClient
 					{
 						if (keyValueFormData.Values.Length == 0)
 						{
-							cmd.AppendLine(string.Format("-d {0} \\", keyValueFormData.Key));
+							cmd.AppendLine($"-d {keyValueFormData.Key} \\");
 						}
 						else if (keyValueFormData.Values.Length == 1)
 						{
-							cmd.AppendLine(string.Format("-d {0}={1} \\", keyValueFormData.Key, keyValueFormData.Value));
+							cmd.AppendLine($"-d {keyValueFormData.Key}={keyValueFormData.Value} \\");
 						}
 						else if (keyValueFormData.Values.Length > 1)
 						{
 							foreach (var value in keyValueFormData.Values)
 							{
-								cmd.AppendLine(string.Format("-d {0}[]={1} \\", keyValueFormData.Key, value));
+								cmd.AppendLine($"-d {keyValueFormData.Key}[]={value} \\");
 							}
 						}
 					}
@@ -148,10 +148,10 @@ namespace ISI.Extensions.WebClient
 
 				if (!string.IsNullOrWhiteSpace(BodyRaw))
 				{
-					cmd.AppendLine(string.Format("-d \"{0}\" \\", BodyRaw));
+					cmd.AppendLine($"-d \"{BodyRaw}\" \\");
 				}
 
-				cmd.AppendLine(string.Format("{0} \\", Uri.ToString()));
+				cmd.AppendLine($"{Uri.ToString()} \\");
 
 				return cmd.ToString().TrimEnd(' ', '\\', '\r', '\n');
 			}

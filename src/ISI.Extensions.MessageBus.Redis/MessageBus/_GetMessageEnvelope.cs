@@ -28,7 +28,7 @@ namespace ISI.Extensions.MessageBus.Redis
 		{
 			headers ??= new MessageBusMessageHeaderCollection();
 
-			headers.OperationKey = (System.Diagnostics.Trace.CorrelationManager.LogicalOperationStack.Count > 0 ? System.Diagnostics.Trace.CorrelationManager.LogicalOperationStack.Peek().ToString() : string.Format("{0:D}", Guid.NewGuid()));
+			headers.OperationKey = (System.Diagnostics.Trace.CorrelationManager.LogicalOperationStack.Count > 0 ? System.Diagnostics.Trace.CorrelationManager.LogicalOperationStack.Peek().ToString() : $"{Guid.NewGuid():D}");
 
 			var requestType = typeof(TRequest);
 

@@ -89,7 +89,7 @@ namespace ISI.Extensions.ConfigurationValueReaders
 								{
 									if (valueByKey.ContainsKey(keyValuePair.Key))
 									{
-										throw new(string.Format("key: \"{0}\" already exists with value of \"{1}\" cannot add value \"{2}\"", keyValuePair.Key, valueByKey[keyValuePair.Key], keyValuePair.Value));
+										throw new($"key: \"{keyValuePair.Key}\" already exists with value of \"{valueByKey[keyValuePair.Key]}\" cannot add value \"{keyValuePair.Value}\"");
 									}
 
 									valueByKey.Add(keyValuePair);

@@ -98,11 +98,11 @@ namespace ISI.Extensions.SpreadSheets
 
 			foreach (var row in this)
 			{
-				rowKeyOffsets.Add(string.Format("{{{0}}}", row.RowOffset), row.RowOffset);
+				rowKeyOffsets.Add($"{{{row.RowOffset}}}", row.RowOffset);
 
 				if (!string.IsNullOrWhiteSpace(row.RowOptions.RowName))
 				{
-					var rowName = string.Format("{{{0}}}", row.RowOptions.RowName);
+					var rowName = $"{{{row.RowOptions.RowName}}}";
 
 					if (!rowKeyOffsets.ContainsKey(rowName))
 					{
@@ -118,7 +118,7 @@ namespace ISI.Extensions.SpreadSheets
 		{
 			foreach (var rowKeyOffset in rowKeyOffsets)
 			{
-				var columnKey = string.Format("{0}", startColumn + rowKeyOffset.Value);
+				var columnKey = $"{startColumn + rowKeyOffset.Value}";
 
 				formula = formula.Replace(rowKeyOffset.Key, columnKey);
 			}
@@ -141,7 +141,7 @@ namespace ISI.Extensions.SpreadSheets
 				}
 				else if (string.Equals(definintion, "row", StringComparison.InvariantCultureIgnoreCase))
 				{
-					var rowKey = string.Format("{0}", currentRow + 1 + offset * (string.Equals(sign, "-", StringComparison.CurrentCultureIgnoreCase) ? -1 : 1));
+					var rowKey = $"{currentRow + 1 + offset * (string.Equals(sign, "-", StringComparison.CurrentCultureIgnoreCase) ? -1 : 1)}";
 
 					formula = formula.Replace(key, rowKey);
 				}

@@ -77,7 +77,7 @@ namespace ISI.Extensions.Caching
 			{
 				var cacheKeys = memoryCache.Keys;
 
-				foreach (var cacheKey in cacheKeys.NullCheckedSelect(key => GetRawCacheKey(string.Format("{0}", key))))
+				foreach (var cacheKey in cacheKeys.NullCheckedSelect(key => GetRawCacheKey($"{key}")))
 				{
 					if (cacheKey.StartsWith(cacheKeyPrefix))
 					{

@@ -33,7 +33,7 @@ namespace ISI.Extensions.VisualStudio
 			var jan1st2000 = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 			request.UtcDateTime ??= DateTime.UtcNow;
 
-			response.BuildRevision = string.Format("{0}.{1}", Math.Floor((request.UtcDateTime.Value.Date - jan1st2000).TotalDays), Math.Floor(((request.UtcDateTime.Value - request.UtcDateTime.Value.Date).TotalSeconds) / 2));
+			response.BuildRevision = $"{Math.Floor((request.UtcDateTime.Value.Date - jan1st2000).TotalDays)}.{Math.Floor(((request.UtcDateTime.Value - request.UtcDateTime.Value.Date).TotalSeconds) / 2)}";
 
 			return response;
 		}

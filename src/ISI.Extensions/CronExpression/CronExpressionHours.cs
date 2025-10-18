@@ -37,7 +37,7 @@ namespace ISI.Extensions
 
 			public CronExpressionHours(string source)
 			{
-				Action throwError = () => throw new(string.Format("Hours: Cannot parse \"{0}\"", source));
+				Action throwError = () => throw new($"Hours: Cannot parse \"{source}\"");
 
 				var parser = new ISI.Extensions.Parsers.DelimitedTextParser(',');
 
@@ -138,13 +138,13 @@ namespace ISI.Extensions
 								hourEndRangeIndex++;
 							}
 
-							ranges.Add(string.Format("{0}-{1}", hourIndex, (hourEndRangeIndex >= maxHour ? maxHour - 1 : hourEndRangeIndex)));
+							ranges.Add($"{hourIndex}-{(hourEndRangeIndex >= maxHour ? maxHour - 1 : hourEndRangeIndex)}");
 
 							hourIndex = hourEndRangeIndex - 1;
 						}
 						else
 						{
-							ranges.Add(string.Format("{0}", hourIndex));
+							ranges.Add($"{hourIndex}");
 						}
 					}
 

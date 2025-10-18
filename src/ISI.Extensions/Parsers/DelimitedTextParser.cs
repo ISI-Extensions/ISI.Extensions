@@ -171,7 +171,7 @@ namespace ISI.Extensions.Parsers
 				void addToSourceValue(char sourcePiece)
 				{
 #if DEBUG
-					debugSource = string.Format("{0}{1}", debugSource, sourcePiece);
+					debugSource = $"{debugSource}{sourcePiece}";
 #endif
 
 					sourceBuffer[sourceBufferOffset] = sourcePiece;
@@ -180,7 +180,7 @@ namespace ISI.Extensions.Parsers
 
 					if (sourceBufferOffset >= sourceBufferSize)
 					{
-						sourceValue = string.Format("{0}{1}", sourceValue, new string(sourceBuffer, 0, sourceBufferOffset));
+						sourceValue = $"{sourceValue}{new string(sourceBuffer, 0, sourceBufferOffset)}";
 						sourceBufferOffset = 0;
 					}
 				}
@@ -189,7 +189,7 @@ namespace ISI.Extensions.Parsers
 				{
 					if (sourceBufferOffset > 0)
 					{
-						return string.Format("{0}{1}", sourceValue, new string(sourceBuffer, 0, sourceBufferOffset));
+						return $"{sourceValue}{new string(sourceBuffer, 0, sourceBufferOffset)}";
 					}
 
 					return sourceValue;
@@ -216,7 +216,7 @@ namespace ISI.Extensions.Parsers
 
 					if (fieldBufferOffset >= fieldBufferSize)
 					{
-						fieldValue = string.Format("{0}{1}", fieldValue, new string(fieldBuffer, 0, fieldBufferOffset));
+						fieldValue = $"{fieldValue}{new string(fieldBuffer, 0, fieldBufferOffset)}";
 						fieldBufferOffset = 0;
 					}
 				}
@@ -225,7 +225,7 @@ namespace ISI.Extensions.Parsers
 				{
 					if (fieldBufferOffset > 0)
 					{
-						fieldValue = string.Format("{0}{1}", fieldValue, new string(fieldBuffer, 0, fieldBufferOffset));
+						fieldValue = $"{fieldValue}{new string(fieldBuffer, 0, fieldBufferOffset)}";
 					}
 
 					if (MaxValueSize.HasValue && (fieldValue.Length >= MaxValueSize))
@@ -328,9 +328,9 @@ namespace ISI.Extensions.Parsers
 
 		public string GetUnparsed(IEnumerable<string> recordValues)
 		{
-			return string.Join(string.Format("{0}", Delimiter), recordValues.Select(recordValue =>
+			return string.Join($"{Delimiter}", recordValues.Select(recordValue =>
 			{
-				var value = string.Format("{0}", recordValue);
+				var value = $"{recordValue}";
 
 				value = value.Replace($"{TextQualifier}", $"{TextQualifier}{TextQualifier}");
 

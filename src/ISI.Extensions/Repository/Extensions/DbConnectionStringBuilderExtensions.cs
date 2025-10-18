@@ -41,7 +41,7 @@ namespace ISI.Extensions.Repository.Extensions
 							dbConnectionStringBuilder.Remove(key);
 						}
 
-						return string.Format("{0}", value);
+						return $"{value}";
 					}
 				}
 			}

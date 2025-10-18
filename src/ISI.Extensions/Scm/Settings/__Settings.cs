@@ -195,6 +195,6 @@ namespace ISI.Extensions.Scm
 			Values.Add(new(key, value));
 		}
 
-		public override string ToString() => string.Join("\r\n", Values.Select(keyValue => string.Format("{0} => {1}", keyValue.Key, keyValue.Value)));
+		public override string ToString() => string.Join("\r\n", Values.Select(keyValue => $"{keyValue.Key} => {keyValue.Value}"));
 	}
 }

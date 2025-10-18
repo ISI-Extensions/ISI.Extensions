@@ -33,7 +33,7 @@ namespace ISI.Extensions
 			public bool UseShellExecute { get; set; } = true;
 			public bool CreateNoWindow { get; set; } = false;
 
-			public override string ToString() => string.Format("\"{0}\" {1}", ProcessExeFullName, string.Join(" ", Arguments ?? []));
+			public override string ToString() => $"\"{ProcessExeFullName}\" {string.Join(" ", Arguments ?? [])}";
 		}
 
 		public static void ExecuteShell(string processExeFullName, params string[] arguments)
@@ -102,7 +102,7 @@ namespace ISI.Extensions
 			public IEnumerable<string> Arguments { get; set; }
 			public InvariantCultureIgnoreCaseStringDictionary<string> EnvironmentVariables { get; set; }
 
-			public override string ToString() => string.Format("\"{0}\" {1}", ProcessExeFullName, string.Join(" ", Arguments ?? []));
+			public override string ToString() => $"\"{ProcessExeFullName}\" {string.Join(" ", Arguments ?? [])}";
 		}
 
 		public class ProcessResponse

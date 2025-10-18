@@ -38,7 +38,7 @@ namespace ISI.Extensions
 					directoryName = System.IO.Path.GetTempPath();
 				}
 
-				directoryName = System.IO.Path.Combine(directoryName, string.Format("tmp{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.Base36).ToUpper()));
+				directoryName = System.IO.Path.Combine(directoryName, $"tmp{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.Base36).ToUpper()}");
 
 				System.IO.Directory.CreateDirectory(directoryName);
 

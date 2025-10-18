@@ -73,7 +73,7 @@ namespace ISI.Extensions.Nuget
 						{
 							if (url.IndexOf("/api/v2", StringComparison.InvariantCultureIgnoreCase) > 0)
 							{
-								nugetServer.DownloadNugetUrl = string.Format("{0}/package/", url.TrimEnd("/"));
+								nugetServer.DownloadNugetUrl = $"{url.TrimEnd("/")}/package/";
 							}
 							else
 							{
@@ -83,7 +83,7 @@ namespace ISI.Extensions.Nuget
 
 								if (v2Resource != null)
 								{
-									nugetServer.DownloadNugetUrl = string.Format("{0}/package/", v2Resource.Url.TrimEnd("/"));
+									nugetServer.DownloadNugetUrl = $"{v2Resource.Url.TrimEnd("/")}/package/";
 								}
 							}
 						}

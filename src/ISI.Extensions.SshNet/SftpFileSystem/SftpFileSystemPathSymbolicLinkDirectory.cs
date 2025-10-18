@@ -25,7 +25,7 @@ namespace ISI.Extensions.SshNet.SftpFileSystem
 		public override string Schema => SftpFileSystemProvider._schema;
 		public override string DirectorySeparator => SftpFileSystemProvider._directorySeparator;
 
-		public override string ToString() => string.Format("Sftp Directory Symbolic Link {0}", base.ToString());
+		public override string ToString() => $"Sftp Directory Symbolic Link {base.ToString()}";
 
 		public override FileSystem.IFileSystemPath Clone()
 		{

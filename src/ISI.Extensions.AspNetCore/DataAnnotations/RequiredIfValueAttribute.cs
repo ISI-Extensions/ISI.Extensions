@@ -53,14 +53,14 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 
 		public override IEnumerable<Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult> Validate(Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationContext context)
 		{
-			var value = string.Format("{0}", context.Model);
+			var value = $"{context.Model}";
 
 			var fieldToCheck = context.ModelMetadata.ContainerType.GetProperty(FieldToCheck);
 			if (fieldToCheck != null)
 			{
-				var isRequired = string.Equals(string.Format("{0}", fieldToCheck.GetValue(context.Container, null)), FieldValue);
+				var isRequired = string.Equals($"{fieldToCheck.GetValue(context.Container, null)}", FieldValue);
 
-				if (isRequired && string.IsNullOrWhiteSpace(string.Format("{0}", value)))
+				if (isRequired && string.IsNullOrWhiteSpace($"{value}"))
 				{
 					return [new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage)];
 				}

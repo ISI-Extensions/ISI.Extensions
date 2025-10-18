@@ -28,7 +28,7 @@ namespace ISI.Extensions.Extensions
 		/// </summary>
 		public static string Coordinate(this ISI.Extensions.SpreadSheets.IWorksheet worksheet, int row, int column, bool absolute = false)
 		{
-			return string.Format("[{0}]!{1}", worksheet.Name, ISI.Extensions.SpreadSheets.Coordinates.Coordinate(row, column, absolute));
+			return $"[{worksheet.Name}]!{ISI.Extensions.SpreadSheets.Coordinates.Coordinate(row, column, absolute)}";
 		}
 
 		/// <summary>
@@ -36,7 +36,7 @@ namespace ISI.Extensions.Extensions
 		/// </summary>
 		public static string CoordinateRange(this ISI.Extensions.SpreadSheets.IWorksheet worksheet, int startRow, int startColumn, int stopRow, int stopColumn, bool absolute = false)
 		{
-			return string.Format("[{0}]!{1}", worksheet.Name, ISI.Extensions.SpreadSheets.Coordinates.CoordinateRange(startRow, startColumn, stopRow, stopColumn, absolute));
+			return $"[{worksheet.Name}]!{ISI.Extensions.SpreadSheets.Coordinates.CoordinateRange(startRow, startColumn, stopRow, stopColumn, absolute)}";
 		}
 	}
 }

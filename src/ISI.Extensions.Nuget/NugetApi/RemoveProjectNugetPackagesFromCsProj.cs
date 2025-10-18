@@ -65,7 +65,7 @@ namespace ISI.Extensions.Nuget
 				{
 					var packageId = reference.GetAttributeByLocalName("Include")?.Value;
 
-					var keyValues = string.Format("PackageId={0}", packageId).Split([','], StringSplitOptions.RemoveEmptyEntries).Select(item => item.Split(["="], StringSplitOptions.None)).ToDictionary(item => item[0].Trim(), item => (item.Length >= 2 ? item[1].Trim() : string.Empty), StringComparer.CurrentCultureIgnoreCase);
+					var keyValues = $"PackageId={packageId}".Split([','], StringSplitOptions.RemoveEmptyEntries).Select(item => item.Split(["="], StringSplitOptions.None)).ToDictionary(item => item[0].Trim(), item => (item.Length >= 2 ? item[1].Trim() : string.Empty), StringComparer.CurrentCultureIgnoreCase);
 					keyValues.TryGetValue("PackageId", out packageId);
 
 					if (nugetPackageNames.Contains(packageId))
@@ -82,7 +82,7 @@ namespace ISI.Extensions.Nuget
 
 				if (!sdkAttribute.StartsWith("Microsoft.NET", StringComparison.InvariantCultureIgnoreCase))
 				{
-					csProj = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n{0}", csProj);
+					csProj = $"<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n{csProj}";
 				}
 				
 				System.IO.File.WriteAllText(request.CsProjFullName, csProj);

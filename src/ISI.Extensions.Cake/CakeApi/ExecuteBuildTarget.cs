@@ -36,17 +36,17 @@ namespace ISI.Extensions.Cake
 
 			if (!string.IsNullOrWhiteSpace(request.Target))
 			{
-				arguments.Add(string.Format("--Target={0}", request.Target));
+				arguments.Add($"--Target={request.Target}");
 			}
 			if (request.Parameters.NullCheckedAny())
 			{
 				foreach (var requestParameter in request.Parameters)
 				{
-					arguments.Add(string.Format("--{0}=\"{1}\"", requestParameter.ParameterName, requestParameter.ParameterValue));
+					arguments.Add($"--{requestParameter.ParameterName}=\"{requestParameter.ParameterValue}\"");
 				}
 			}
 
-			logger.LogInformation(string.Format("dotnet-cake {0}", string.Join(" ", arguments)));
+			logger.LogInformation($"dotnet-cake {string.Join(" ", arguments)}");
 
 			if (request.UseShell)
 			{

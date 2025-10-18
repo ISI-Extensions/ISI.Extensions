@@ -37,7 +37,7 @@ namespace ISI.Extensions.Scm
 			DateTimeUtc = dateTimeUtc;
 		}
 
-		public override string ToString() => string.Format("{0:yyyyMMdd.HHmmss}", DateTimeUtc);
+		public override string ToString() => $"{DateTimeUtc:yyyyMMdd.HHmmss}";
 
 		public static bool operator ==(DateTimeStamp x, DateTimeStamp y) => (x?.DateTimeUtc == y?.DateTimeUtc);
 		public static bool operator !=(DateTimeStamp x, DateTimeStamp y) => !(x == y);

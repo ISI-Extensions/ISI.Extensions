@@ -34,7 +34,7 @@ namespace ISI.Extensions.Jira
 			uri.SetPathAndQueryString(UrlPathFormat.DeleteIssueWorklog.Replace(new Dictionary<string, string>()
 			{
 				{"{issueIdOrKey}", request.IssueIdOrKey.ToString()},
-				{"{worklogId}", string.Format("{0}", request.WorklogId)},
+				{"{worklogId}", $"{request.WorklogId}" },
 			}, StringComparer.InvariantCultureIgnoreCase));
 
 			var headers = GetHeaders(request);

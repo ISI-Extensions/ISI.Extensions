@@ -49,7 +49,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			SolutionFullName = solutionFullName.Trim();
 			ProjectFullName = projectFullName.Trim();
 
-			Value = string.Format("{0}{1}{2}", SolutionFullName, Delimiter, ProjectFullName);
+			Value = $"{SolutionFullName}{Delimiter}{ProjectFullName}";
 		}
 
 		public ProjectKey(string projectKey)
@@ -59,7 +59,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			SolutionFullName = pieces[0].Trim();
 			ProjectFullName = pieces[1].Trim();
 
-			Value = string.Format("{0}{1}{2}", SolutionFullName, Delimiter, ProjectFullName);
+			Value = $"{SolutionFullName}{Delimiter}{ProjectFullName}";
 		}
 
 		public override string ToString()

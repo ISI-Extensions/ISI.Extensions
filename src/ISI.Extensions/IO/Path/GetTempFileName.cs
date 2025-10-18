@@ -38,7 +38,7 @@ namespace ISI.Extensions
 					return System.IO.Path.GetTempFileName();
 				}
 
-				var fileName = string.Format("tmp{0}.tmp", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.Base36).ToUpper());
+				var fileName = $"tmp{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.Base36).ToUpper()}.tmp";
 
 				return System.IO.Path.Combine(directoryName, fileName);
 			}

@@ -27,7 +27,7 @@ namespace ISI.Extensions.Aspose.InternalTryNotToUseExtensions
 		{
 			if (!(hyperlink is ISI.Extensions.Aspose.Cells.Hyperlink asposeHyperlink))
 			{
-				throw new(string.Format("{0} is not of type {1}", nameof(hyperlink), typeof(ISI.Extensions.Aspose.Cells.Hyperlink).FullName));
+				throw new($"{nameof(hyperlink)} is not of type {typeof(ISI.Extensions.Aspose.Cells.Hyperlink).FullName}");
 			}
 
 			return asposeHyperlink._hyperlink;

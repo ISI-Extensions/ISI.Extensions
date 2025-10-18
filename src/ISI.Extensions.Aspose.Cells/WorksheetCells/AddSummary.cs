@@ -68,7 +68,7 @@ namespace ISI.Extensions.Aspose
 				var replacements = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
 				foreach (var rowDefinition in rowDefinitions)
 				{
-					var key = string.Format("[Row-{0}]", rowDefinition.RowOptions.RowName);
+					var key = $"[Row-{rowDefinition.RowOptions.RowName}]";
 					if (!replacements.ContainsKey(key))
 					{
 						replacements.Add(key, ISI.Extensions.SpreadSheets.Coordinates.RowKey(startRow + rowDefinition.RowOffset));

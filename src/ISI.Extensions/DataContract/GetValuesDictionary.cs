@@ -41,7 +41,7 @@ namespace ISI.Extensions
 				}
 				else
 				{
-					stringValues.Add(keyValue.Key, string.Format("{0}", keyValue.Value));
+					stringValues.Add(keyValue.Key, $"{keyValue.Value}");
 				}
 			}
 

@@ -26,7 +26,7 @@ namespace ISI.Extensions
 	{
 		public static string PascalCase(string propertyName)
 		{
-			propertyName = System.Text.RegularExpressions.Regex.Replace(propertyName, @"(?<begin>(\w*?))(?<end>[A-Z]+)", string.Format(@"${{begin}}{0}${{end}}", " ")).Trim();
+			propertyName = System.Text.RegularExpressions.Regex.Replace(propertyName, @"(?<begin>(\w*?))(?<end>[A-Z]+)", $@"${{begin}}{" "}${{end}}").Trim();
 
 			propertyName = System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(propertyName).Replace(" ", string.Empty).Replace(".", string.Empty); //.Replace("_", string.Empty);
 

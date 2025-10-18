@@ -61,7 +61,7 @@ namespace ISI.Extensions.ConfigurationHelper
 						{
 							foreach (var connection in connectionStrings.Connections)
 							{
-								_data.Add(string.Format("ConnectionStrings:{0}", connection.Name), connection.ConnectionString);
+								_data.Add($"ConnectionStrings:{connection.Name}", connection.ConnectionString);
 							}
 						}
 					}

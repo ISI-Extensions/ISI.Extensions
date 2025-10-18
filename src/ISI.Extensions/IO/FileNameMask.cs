@@ -129,7 +129,7 @@ namespace ISI.Extensions
 											{
 												var replacementValue = System.IO.File.ReadAllText(fileName);
 
-												value = value.Replace(string.Format("{{{0}{1}}}", FilePrefix, key), replacementValue);
+												value = value.Replace($"{{{FilePrefix}{key}}}", replacementValue);
 											}
 										}
 									}
@@ -146,7 +146,7 @@ namespace ISI.Extensions
 
 								var replacementValue = directories.FirstOrDefault(System.IO.Directory.Exists);
 
-								value = value.Replace(string.Format("{{{0}{1}}}", FirstExistingDirectoryPrefix, key), replacementValue, StringComparer.InvariantCultureIgnoreCase);
+								value = value.Replace($"{{{FirstExistingDirectoryPrefix}{key}}}", replacementValue, StringComparer.InvariantCultureIgnoreCase);
 							}
 							break;
 					}

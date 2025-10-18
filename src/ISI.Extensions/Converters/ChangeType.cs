@@ -29,7 +29,7 @@ namespace ISI.Extensions.Extensions
 				{
 					if (ISI.Extensions.Enum.IsEnum<TValue>())
 					{
-						return ISI.Extensions.Enum<TValue>.Parse(string.Format("{0}", value).Trim());
+						return ISI.Extensions.Enum<TValue>.Parse($"{value}".Trim());
 					}
 
 					return (TValue) ChangeType(typeof (TValue), value);

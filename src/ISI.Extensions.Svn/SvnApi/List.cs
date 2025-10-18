@@ -35,7 +35,7 @@ namespace ISI.Extensions.Svn
 				var arguments = new List<string>();
 
 				arguments.Add("list");
-				arguments.Add(string.Format("\"{0}\"", request.SourceUrl));
+				arguments.Add($"\"{request.SourceUrl}\"");
 
 				switch (request.Depth)
 				{

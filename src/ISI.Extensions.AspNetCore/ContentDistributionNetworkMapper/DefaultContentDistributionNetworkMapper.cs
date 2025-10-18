@@ -112,14 +112,14 @@ namespace ISI.Extensions.AspNetCore
 
 			var pathAndQueryStringParts = url.Split(["?"], StringSplitOptions.None);
 
-			return string.Format("cdn-url:{0}-{1}", urlScheme, pathAndQueryStringParts[0]);
+			return $"cdn-url:{urlScheme}-{pathAndQueryStringParts[0]}";
 		}
 
 		private static string OriginalUrlCacheKey(string url)
 		{
 			var pathAndQueryStringParts = url.Split(["?"], StringSplitOptions.None);
 
-			return string.Format("cdn-original-url:{0}", pathAndQueryStringParts[0]);
+			return $"cdn-original-url:{pathAndQueryStringParts[0]}";
 		}
 
 		public string GetCdnUrl(string url)

@@ -52,7 +52,7 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 
 					foreach (var property in ldapAttribute.StringValueArray)
 					{
-						var propertyValues = string.Format("{0}", property).Split(['=', ','], StringSplitOptions.RemoveEmptyEntries);
+						var propertyValues = $"{property}".Split(['=', ','], StringSplitOptions.RemoveEmptyEntries);
 
 						if (propertyValues.Length >= 2)
 						{

@@ -25,7 +25,7 @@ namespace ISI.Extensions.FtpsFileSystem
 		public override string Schema => FtpsFileSystemProvider._schema;
 		public override string DirectorySeparator => FtpsFileSystemProvider._directorySeparator;
 
-		public override string ToString() => string.Format("Ftps Directory {0}", base.ToString());
+		public override string ToString() => $"Ftps Directory {base.ToString()}";
 
 		public override FileSystem.IFileSystemPath Clone()
 		{

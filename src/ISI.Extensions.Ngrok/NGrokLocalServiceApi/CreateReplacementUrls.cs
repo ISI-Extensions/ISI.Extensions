@@ -84,14 +84,14 @@ namespace ISI.Extensions.Ngrok
 						}
 						else
 						{
-							throw new(string.Format("Existing Tunnel for port: {0} isn't of the correct scheme", localUri.Port));
+							throw new($"Existing Tunnel for port: {localUri.Port} isn't of the correct scheme");
 						}
 					}
 					else
 					{
 						var ngrokRequest = new ISI.Extensions.Ngrok.DataTransferObjects.NGrokClientApi.StartTunnelRequest()
 						{
-							LocalAddress = (string.Equals(localUri.Scheme, Uri.UriSchemeHttps) ? string.Format("https://localhost:{0}", localUri.Port) : string.Format("{0}", localUri.Port)),
+							LocalAddress = (string.Equals(localUri.Scheme, Uri.UriSchemeHttps) ? $"https://localhost:{localUri.Port}" : $"{localUri.Port}"),
 						};
 
 						var tunnelConfiguration = Configuration.Tunnels.NullCheckedFirstOrDefault(tc =>
@@ -145,13 +145,13 @@ namespace ISI.Extensions.Ngrok
 								else
 								{
 									ngrokRequest.TunnelProtocol = TunnelProtocol.Tcp;
-									ngrokRequest.RemoteAddress = string.Format("{0}:{1}", externalUri.Host, externalUri.Port);
+									ngrokRequest.RemoteAddress = $"{externalUri.Host}:{externalUri.Port}";
 									ngrokRequest.Inspect = false;
 								}
 							}
 							else
 							{
-								throw new ArgumentOutOfRangeException(string.Format("Unknown ExternalUrl Scheme: \"{0}\"", externalUri.Scheme));
+								throw new ArgumentOutOfRangeException($"Unknown ExternalUrl Scheme: \"{externalUri.Scheme}\"");
 							}
 						}
 						else if (!string.IsNullOrWhiteSpace(tunnelConfiguration?.Subdomain))
@@ -171,7 +171,7 @@ namespace ISI.Extensions.Ngrok
 							}
 							else
 							{
-								throw new ArgumentOutOfRangeException(string.Format("Unknown LocalUrl Scheme: \"{0}\"", localUri.Scheme));
+								throw new ArgumentOutOfRangeException($"Unknown LocalUrl Scheme: \"{localUri.Scheme}\"");
 							}
 						}
 						else if (!string.IsNullOrWhiteSpace(tunnelConfiguration?.HostHeader))
@@ -191,7 +191,7 @@ namespace ISI.Extensions.Ngrok
 							}
 							else
 							{
-								throw new ArgumentOutOfRangeException(string.Format("Unknown LocalUrl Scheme: \"{0}\"", localUri.Scheme));
+								throw new ArgumentOutOfRangeException($"Unknown LocalUrl Scheme: \"{localUri.Scheme}\"");
 							}
 						}
 						else
@@ -209,7 +209,7 @@ namespace ISI.Extensions.Ngrok
 							}
 							else
 							{
-								throw new ArgumentOutOfRangeException(string.Format("Unknown LocalUrl Scheme: \"{0}\"", localUri.Scheme));
+								throw new ArgumentOutOfRangeException($"Unknown LocalUrl Scheme: \"{localUri.Scheme}\"");
 							}
 						}
 

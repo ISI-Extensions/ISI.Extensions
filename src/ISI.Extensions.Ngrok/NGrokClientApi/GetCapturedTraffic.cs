@@ -28,7 +28,7 @@ namespace ISI.Extensions.Ngrok
 		public DTOs.GetCapturedTrafficResponse GetCapturedTraffic(DTOs.GetCapturedTrafficRequest request)
 		{
 			var uri = new UriBuilder(GetUrl("api/requests/http"));
-			uri.AddQueryStringParameter("limit", string.Format("{0}", request.Limit));
+			uri.AddQueryStringParameter("limit", $"{request.Limit}");
 			if (!string.IsNullOrEmpty(request.TunnelName))
 			{
 				uri.AddQueryStringParameter("tunnel_name", request.TunnelName);

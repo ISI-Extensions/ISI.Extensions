@@ -25,7 +25,7 @@ namespace ISI.Extensions.SmbFileSystem
 		public DateTime? ModifiedDateTime { get; set; }
 		public long? Size { get; set; }
 		
-		public override string ToString() => string.Format("Smb File {0}", base.ToString());
+		public override string ToString() => $"Smb File {base.ToString()}";
 
 		void ISmbFileSystemPathFile.SetValues(string drive, string server, string userName, string password, string directory, string pathName, DateTime? modifiedDateTime, long? size)
 		{

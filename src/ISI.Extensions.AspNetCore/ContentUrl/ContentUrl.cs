@@ -97,7 +97,7 @@ namespace ISI.Extensions.AspNetCore
 
 			if (url.StartsWith(RootUrl))
 			{
-				url = string.Format("/{0}", url.Substring(RootUrl.Length));
+				url = $"/{url.Substring(RootUrl.Length)}";
 			}
 
 			if (!string.IsNullOrWhiteSpace(CacheBusterKey))

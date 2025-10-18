@@ -98,11 +98,11 @@ namespace ISI.Extensions.Nuget
 					arguments.Add("-DependencyVersion ignore");
 					if (!string.IsNullOrWhiteSpace(request.Version))
 					{
-						arguments.Add(string.Format("-Version {0}", request.Version));
+						arguments.Add($"-Version {request.Version}");
 					}
 					if (!string.IsNullOrWhiteSpace(request.Source))
 					{
-						arguments.Add(string.Format("-Source \"{0}\"", request.Source));
+						arguments.Add($"-Source \"{request.Source}\"");
 					}
 					if (request.NugetConfigFullNames.NullCheckedAny())
 					{
@@ -148,7 +148,7 @@ namespace ISI.Extensions.Nuget
 							{
 								var nugetPackageDependencies = new HashSet<NugetPackageDependency>();
 
-								var nuspecFullName = System.IO.Path.Combine(packageFullName, string.Format("{0}.nuspec", System.IO.Path.GetFileNameWithoutExtension(nupkgFullName)));
+								var nuspecFullName = System.IO.Path.Combine(packageFullName, $"{System.IO.Path.GetFileNameWithoutExtension(nupkgFullName)}.nuspec");
 
 								using (var zipSteam = System.IO.File.OpenRead(nupkgFullName))
 								{
@@ -221,7 +221,7 @@ namespace ISI.Extensions.Nuget
 										{
 											AssemblyName = assemblyName.FullName.Split(new[] { ',' }).First().Trim(),
 											AssemblyFileName = System.IO.Path.GetFileName(assemblyFileName),
-											HintPath = string.Format("{0}\\{1}", System.IO.Path.GetFileName(packageFullName), assemblyFileName.Replace("/", "\\")),
+											HintPath = $"{System.IO.Path.GetFileName(packageFullName)}\\{assemblyFileName.Replace("/", "\\")}",
 											AssemblyVersion = assemblyName.Version.ToString(),
 											PublicKeyToken = string.Concat(assemblyName.GetPublicKeyToken().Select(b => b.ToString("X2"))).ToLower(),
 										};

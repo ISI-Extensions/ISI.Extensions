@@ -36,7 +36,7 @@ namespace ISI.Extensions.Svn
 					var arguments = new List<string>();
 
 					arguments.Add("/command:update");
-					arguments.Add(string.Format("/path:\"{0}\"", request.FullName));
+					arguments.Add($"/path:\"{request.FullName}\"");
 					if (request.IncludeExternals)
 					{
 						arguments.Add("/includeexternals");
@@ -56,7 +56,7 @@ namespace ISI.Extensions.Svn
 					var arguments = new List<string>();
 
 					arguments.Add("update");
-					arguments.Add(string.Format("\"{0}\"", request.FullName));
+					arguments.Add($"\"{request.FullName}\"");
 					if (!request.IncludeExternals)
 					{
 						arguments.Add("--ignore-externals");

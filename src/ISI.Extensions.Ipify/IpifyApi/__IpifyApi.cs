@@ -41,7 +41,7 @@ namespace ISI.Extensions.Ipify
 		{
 			var headers = new ISI.Extensions.WebClient.HeaderCollection();
 
-			headers.Add("user-agent", string.Format("ISI.Extensions.Ipify/{0}", Version));
+			headers.Add("user-agent", $"ISI.Extensions.Ipify/{Version}");
 
 			return headers;
 		}

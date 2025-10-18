@@ -92,7 +92,7 @@ namespace ISI.Extensions.Caching
 				return cacheKeyFormat;
 			}
 
-			return string.Format("{0}:{1}", GetCacheKeyFormat(type, numberOfArguments, null), extra);
+			return $"{GetCacheKeyFormat(type, numberOfArguments, null)}:{extra}";
 		}
 	}
 }

@@ -57,7 +57,7 @@ namespace ISI.Extensions.Git
 
 				if (doBackup)
 				{
-					request.StatusTracker.AddToLog(string.Format("  Backing up Git: {0}", request.RepositoryKey));
+					request.StatusTracker.AddToLog($"  Backing up Git: {request.RepositoryKey}");
 
 					if (string.IsNullOrWhiteSpace(request.BackupDirectoryFullName))
 					{
@@ -68,7 +68,7 @@ namespace ISI.Extensions.Git
 
 					System.IO.Directory.CreateDirectory(request.BackupDirectoryFullName);
 
-					var dumpFullName = System.IO.Path.Combine(request.BackupDirectoryFullName, string.Format("{0}.zip", request.RepositoryKey));
+					var dumpFullName = System.IO.Path.Combine(request.BackupDirectoryFullName, $"{request.RepositoryKey}.zip");
 
 					request.StatusTracker.AddToLog("    Taking Dump");
 					DumpRepository(new DTOs.DumpRepositoryFileNameRequest()

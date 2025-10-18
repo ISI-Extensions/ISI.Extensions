@@ -31,14 +31,14 @@ namespace ISI.Extensions.Tests
 
 			var jan1st2000 = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 
-			var buildRevision = string.Format("{0}.{1}", Math.Floor((buildDateTimeStamp.Date - jan1st2000).TotalDays), Math.Floor(((buildDateTimeStamp - buildDateTimeStamp.Date).TotalSeconds) / 2));
+			var buildRevision = $"{Math.Floor((buildDateTimeStamp.Date - jan1st2000).TotalDays)}.{Math.Floor(((buildDateTimeStamp - buildDateTimeStamp.Date).TotalSeconds) / 2)}";
 
 			var svnApi = new ISI.Extensions.Svn.SvnApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
 
 			svnApi.TagAndNote(new()
 			{
 				WorkingCopyDirectory = @"F:\ISI\Internal Projects\ISI.WebApplication",
-				TagName = string.Format("4.1.{0} ({1:yyyyMMdd.HHmmss})", buildRevision, buildDateTimeStamp),
+				TagName = $"4.1.{buildRevision} ({buildDateTimeStamp:yyyyMMdd.HHmmss})",
 				DateTimeStamp = buildDateTimeStamp,
 				TryGetExternalTagName = (string externalPath, out string externalTagName) =>
 				{
@@ -51,11 +51,11 @@ namespace ISI.Extensions.Tests
 					switch (externalPathPieces.Last())
 					{
 						case "ISI.Extensions":
-							externalTagName = string.Format("1.1.{0} ({1:yyyyMMdd.HHmmss})", buildRevision, buildDateTimeStamp);
+							externalTagName = $"1.1.{buildRevision} ({buildDateTimeStamp:yyyyMMdd.HHmmss})";
 							return true;
 
 						case "ISI.CMS":
-							externalTagName = string.Format("1.2.{0} ({1:yyyyMMdd.HHmmss})", buildRevision, buildDateTimeStamp);
+							externalTagName = $"1.2.{buildRevision} ({buildDateTimeStamp:yyyyMMdd.HHmmss})";
 							return true;
 
 					}

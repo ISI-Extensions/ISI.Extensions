@@ -59,7 +59,7 @@ namespace ISI.Extensions.Nuget
 					targetFrameworkVersion = "v4.8";
 				}
 
-				targetFrameworkVersion = string.Format("net{0}", ISI.Extensions.StringFormat.StringNumericOnly(targetFrameworkVersion).Replace(".", string.Empty));
+				targetFrameworkVersion = $"net{ISI.Extensions.StringFormat.StringNumericOnly(targetFrameworkVersion).Replace(".", string.Empty)}";
 
 				return targetFrameworkVersion;
 			}
@@ -95,7 +95,7 @@ namespace ISI.Extensions.Nuget
 					targetFrameworkVersion = "v4.8";
 				}
 
-				targetFrameworkVersion = string.Format("net{0}", ISI.Extensions.StringFormat.StringNumericOnly(targetFrameworkVersion).Replace(".", string.Empty));
+				targetFrameworkVersion = $"net{ISI.Extensions.StringFormat.StringNumericOnly(targetFrameworkVersion).Replace(".", string.Empty)}";
 
 				return NuGet.Frameworks.NuGetFramework.Parse(targetFrameworkVersion);
 			}

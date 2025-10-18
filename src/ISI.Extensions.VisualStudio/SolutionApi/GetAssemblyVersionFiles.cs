@@ -57,7 +57,7 @@ namespace ISI.Extensions.VisualStudio
 
 			if (!string.IsNullOrWhiteSpace(request.RootAssemblyVersionKey))
 			{
-				var assemblyVersionFile = System.IO.Path.Combine(solutionDetails.SolutionDirectory, string.Format("{0}.Version.cs", request.RootAssemblyVersionKey));
+				var assemblyVersionFile = System.IO.Path.Combine(solutionDetails.SolutionDirectory, $"{request.RootAssemblyVersionKey}.Version.cs");
 
 				if (System.IO.File.Exists(assemblyVersionFile))
 				{
@@ -72,7 +72,7 @@ namespace ISI.Extensions.VisualStudio
 
 				if (!response.AssemblyVersionFiles.ContainsKey(assemblyGroupName))
 				{
-					var assemblyVersionFile = System.IO.Path.Combine(assemblyGroupDirectory, string.Format("{0}.Version.cs", assemblyGroupName));
+					var assemblyVersionFile = System.IO.Path.Combine(assemblyGroupDirectory, $"{assemblyGroupName}.Version.cs");
 					if (System.IO.File.Exists(assemblyVersionFile))
 					{
 						addVersionFile(assemblyGroupName, assemblyVersionFile);

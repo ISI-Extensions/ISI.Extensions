@@ -27,7 +27,7 @@ namespace ISI.Extensions.Twilio
 	{
 		protected string GetUrl(string path)
 		{
-			return string.Format("{0}/{1}", "https://api.twilio.com/2010-04-01", path);
+			return $"{"https://api.twilio.com/2010-04-01"}/{path}";
 		}
 	}
 }

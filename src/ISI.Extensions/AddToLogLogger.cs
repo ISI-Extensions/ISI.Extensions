@@ -56,7 +56,7 @@ namespace ISI.Extensions
 					return formatterState.ToString();
 				};
 
-				AddToLog?.Invoke(logLevel.ToLogEntryLevel(), string.Format("{0}{1}", formatter(state, exception), Environment.NewLine));
+				AddToLog?.Invoke(logLevel.ToLogEntryLevel(), $"{formatter(state, exception)}{Environment.NewLine}");
 			}
 		}
 

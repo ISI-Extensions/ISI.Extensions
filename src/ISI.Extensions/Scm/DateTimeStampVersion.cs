@@ -64,7 +64,7 @@ namespace ISI.Extensions.Scm
 
 		public string Value
 		{
-			get => string.Format("{0}|{1}", DateTimeStamp, Version ?? new Version());
+			get => $"{DateTimeStamp}|{Version ?? new Version()}";
 			set
 			{
 				if (string.IsNullOrWhiteSpace(value))
@@ -74,13 +74,13 @@ namespace ISI.Extensions.Scm
 				}
 				else if (value.IndexOf("(") >= 0)
 				{
-					var pieces = string.Format("{0}(((-(-", value).Split(['(', ')', ' ', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries, p => p.Trim('-'));
+					var pieces = $"{value}(((-(-".Split(['(', ')', ' ', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries, p => p.Trim('-'));
 					DateTimeStamp = new(pieces[1]);
 					Version = string.IsNullOrWhiteSpace(pieces[0]) ? null : new Version(pieces[0]);
 				}
 				else
 				{
-					var pieces = string.Format("{0}||||-|-", value).Split(['|', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries, p => p.Trim('-'));
+					var pieces = $"{value}||||-|-".Split(['|', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries, p => p.Trim('-'));
 					DateTimeStamp = new(pieces[0]);
 					Version = string.IsNullOrWhiteSpace(pieces[1]) ? null : new Version(pieces[1]);
 				}
@@ -91,7 +91,7 @@ namespace ISI.Extensions.Scm
 
 		public override string ToString() => Value;
 		//public override string ToString() => string.Format("{0} ({1})", Version, DateTimeStamp);
-		public string Formatted() => string.Format("{0} ({1})", Version, DateTimeStamp);
+		public string Formatted() => $"{Version} ({DateTimeStamp})";
 		
 		public static bool operator ==(DateTimeStampVersion x, DateTimeStampVersion y) => string.Equals(x?.ToString() ?? string.Empty, y?.ToString() ?? string.Empty, StringComparison.InvariantCultureIgnoreCase);
 		public static bool operator !=(DateTimeStampVersion x, DateTimeStampVersion y) => !(x == y);

@@ -78,7 +78,7 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 			var servicePrefix = configuration?.ServicePrefix;
 			if (!string.IsNullOrEmpty(servicePrefix))
 			{
-				serviceDisplayName = string.Format("{0}{1}", servicePrefix, serviceDisplayName);
+				serviceDisplayName = $"{servicePrefix}{serviceDisplayName}";
 			}
 
 			context.ServiceDisplayName = serviceDisplayName;
@@ -95,7 +95,7 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 			var servicePrefix = configuration?.ServicePrefix;
 			if (!string.IsNullOrEmpty(servicePrefix))
 			{
-				serviceServiceName = string.Format("{0}{1}", servicePrefix, serviceServiceName);
+				serviceServiceName = $"{servicePrefix}{serviceServiceName}";
 			}
 
 			context.ServiceName = serviceServiceName;

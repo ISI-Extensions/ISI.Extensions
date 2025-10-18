@@ -101,7 +101,7 @@ namespace ISI.Extensions
 			{
 				for (var index = 0; index <= lastPieceIndex; index++)
 				{
-					pieces[index] = ("0123456789".Contains(pieces[index].Substring(0, 1)) ? string.Format("_{0}", pieces[index]) : pieces[index]);
+					pieces[index] = ("0123456789".Contains(pieces[index].Substring(0, 1)) ? $"_{pieces[index]}" : pieces[index]);
 					if (!isDirectoryName && (index < lastPieceIndex))
 					{
 						pieces[index] = pieces[index].Replace("-", "_");

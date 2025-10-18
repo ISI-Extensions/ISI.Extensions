@@ -101,7 +101,7 @@ namespace ISI.Extensions.Tests
 				UtcDateTime = utcDateTime,
 			}).BuildRevision;
 
-			var buildDateTimeStamp = string.Format("{0:yyyyMMdd.HHmmss}", utcDateTime);
+			var buildDateTimeStamp = $"{utcDateTime:yyyyMMdd.HHmmss}";
 
 			var solutionFullName = @"F:\ISI\Internal Projects\ISI.WebApplication\src\ISI.WebApplication.sln";
 			var rootProjectFullName = @"F:\ISI\Internal Projects\ISI.WebApplication\src\ISI.WebApplication\ISI.WebApplication.csproj";

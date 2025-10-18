@@ -24,7 +24,7 @@ namespace ISI.Extensions.SmbFileSystem
 	{
 		public virtual string LinkedTo { get; internal set; }
 
-		public override string ToString() => string.Format("Smb File Symbolic Link {0}", base.ToString());
+		public override string ToString() => $"Smb File Symbolic Link {base.ToString()}";
 
 		void ISmbFileSystemPathSymbolicLinkFile.SetValues(string drive, string server, string userName, string password, string directory, string pathName, string linkedTo, DateTime? modifiedDateTime, long? size)
 		{

@@ -44,7 +44,7 @@ namespace ISI.Extensions.Repository
 
 			if (!string.IsNullOrWhiteSpace(queryAlias))
 			{
-				return string.Join(", ", ColumnNames.Select(columnName => string.Format("{0}.{1}", queryAlias, columnName)));
+				return string.Join(", ", ColumnNames.Select(columnName => $"{queryAlias}.{columnName}"));
 			}
 
 			return string.Join(", ", ColumnNames);

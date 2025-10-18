@@ -64,7 +64,7 @@ namespace ISI.Extensions.FtpFileSystem
 		{
 			if (EnableSsl && !server.Contains(":"))
 			{
-				server = string.Format("{0}:990", server);
+				server = $"{server}:990";
 			}
 
 			return server;
@@ -79,7 +79,7 @@ namespace ISI.Extensions.FtpFileSystem
 				var fileSystemInfos = new List<FileSystem.IFileSystemPath>();
 				var fileSystemInfoDirectories = new List<FileSystem.IFileSystemPathDirectory>();
 
-				var ftpRequest = (System.Net.FtpWebRequest)System.Net.WebRequest.Create(string.Format(@"{0}{1}//{2}", Schema, server, EncodeFileName(directorySystemPathInfo.FullPath())));
+				var ftpRequest = (System.Net.FtpWebRequest)System.Net.WebRequest.Create($@"{Schema}{server}//{EncodeFileName(directorySystemPathInfo.FullPath())}");
 				if (EnableSsl)
 				{
 					System.Net.ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
@@ -155,7 +155,7 @@ namespace ISI.Extensions.FtpFileSystem
 
 						if (!DirectoryExists(fileSystemPathDirectory))
 						{
-							var request = (System.Net.FtpWebRequest)System.Net.WebRequest.Create(string.Format(@"{0}{1}//{2}", Schema, server, EncodeFileName(fileSystemPathDirectory.FullPath())));
+							var request = (System.Net.FtpWebRequest)System.Net.WebRequest.Create($@"{Schema}{server}//{EncodeFileName(fileSystemPathDirectory.FullPath())}");
 							request.Method = System.Net.WebRequestMethods.Ftp.MakeDirectory;
 							request.EnableSsl = EnableSsl;
 							request.Credentials = new System.Net.NetworkCredential(userName, password);
@@ -191,7 +191,7 @@ namespace ISI.Extensions.FtpFileSystem
 
 		protected virtual void RemoveFile(string server, string userName, string password, string pathName)
 		{
-			var request = (System.Net.FtpWebRequest)System.Net.WebRequest.Create(string.Format(@"{0}{1}//{2}", Schema, server, EncodeFileName(pathName)));
+			var request = (System.Net.FtpWebRequest)System.Net.WebRequest.Create($@"{Schema}{server}//{EncodeFileName(pathName)}");
 			request.Method = System.Net.WebRequestMethods.Ftp.DeleteFile;
 			request.EnableSsl = EnableSsl;
 			request.Credentials = new System.Net.NetworkCredential(userName, password);
@@ -207,7 +207,7 @@ namespace ISI.Extensions.FtpFileSystem
 
 		protected virtual void RemoveDirectory(string server, string userName, string password, string pathName)
 		{
-			var request = (System.Net.FtpWebRequest)System.Net.WebRequest.Create(string.Format(@"{0}{1}//{2}", Schema, server, EncodeFileName(pathName)));
+			var request = (System.Net.FtpWebRequest)System.Net.WebRequest.Create($@"{Schema}{server}//{EncodeFileName(pathName)}");
 			request.Method = System.Net.WebRequestMethods.Ftp.RemoveDirectory;
 			request.EnableSsl = EnableSsl;
 			request.Credentials = new System.Net.NetworkCredential(userName, password);

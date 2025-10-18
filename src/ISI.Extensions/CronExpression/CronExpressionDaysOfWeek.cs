@@ -37,7 +37,7 @@ namespace ISI.Extensions
 
 			public CronExpressionDaysOfWeek(string source)
 			{
-				Action throwError = () => throw new(string.Format("DaysOfWeek: Cannot parse \"{0}\"", source));
+				Action throwError = () => throw new($"DaysOfWeek: Cannot parse \"{source}\"");
 
 				var parser = new ISI.Extensions.Parsers.DelimitedTextParser(',');
 
@@ -148,13 +148,13 @@ namespace ISI.Extensions
 								dayOfWeekEndRangeIndex++;
 							}
 
-							ranges.Add(string.Format("{0}-{1}", dayOfWeekIndex, (dayOfWeekEndRangeIndex >= maxDayOfWeek ? maxDayOfWeek - 1 : dayOfWeekEndRangeIndex)));
+							ranges.Add($"{dayOfWeekIndex}-{(dayOfWeekEndRangeIndex >= maxDayOfWeek ? maxDayOfWeek - 1 : dayOfWeekEndRangeIndex)}");
 
 							dayOfWeekIndex = dayOfWeekEndRangeIndex - 1;
 						}
 						else
 						{
-							ranges.Add(string.Format("{0}", dayOfWeekIndex));
+							ranges.Add($"{dayOfWeekIndex}");
 						}
 					}
 

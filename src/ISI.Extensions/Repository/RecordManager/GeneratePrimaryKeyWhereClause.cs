@@ -41,7 +41,7 @@ namespace ISI.Extensions.Repository
 					}
 					else if (primaryKeyColumns.Length == 1)
 					{
-						var primaryKeyColumnName = string.Format("{0}", formatColumnName(primaryKeyColumns.First().ColumnName));
+						var primaryKeyColumnName = $"{formatColumnName(primaryKeyColumns.First().ColumnName)}";
 
 						if (!primaryKeyValues.Any())
 						{
@@ -55,19 +55,19 @@ namespace ISI.Extensions.Repository
 
 							Parameters.Add(primaryKeyColumnAlias, primaryKeyValue);
 
-							Sql = string.Format("      {0} = {1}", formatColumnName(primaryKeyColumnName), primaryKeyColumnAlias);
+							Sql = $"      {formatColumnName(primaryKeyColumnName)} = {primaryKeyColumnAlias}";
 						}
 						else
 						{
 							var primaryKeyValueIndex = 1;
 							foreach (var primaryKeyValue in primaryKeyValues)
 							{
-								var primaryKeyColumnAlias = string.Format("@primaryKey_{0}", primaryKeyValueIndex++);
+								var primaryKeyColumnAlias = $"@primaryKey_{primaryKeyValueIndex++}";
 
 								Parameters.Add(primaryKeyColumnAlias, primaryKeyValue);
 							}
 
-							Sql = string.Format("      {0} in ({1})", formatColumnName(primaryKeyColumnName), string.Join(", ", Parameters.Keys));
+							Sql = $"      {formatColumnName(primaryKeyColumnName)} in ({string.Join(", ", Parameters.Keys)})";
 						}
 					}
 					else
@@ -85,10 +85,10 @@ namespace ISI.Extensions.Repository
 
 							foreach (var primaryKeyColumn in primaryKeyColumns)
 							{
-								Parameters.Add(string.Format("@primaryKey_{0}", formatColumnName(primaryKeyColumn.ColumnName)), primaryKeyValue);
+								Parameters.Add($"@primaryKey_{formatColumnName(primaryKeyColumn.ColumnName)}", primaryKeyValue);
 							}
 
-							Sql = string.Format("      ({0})", string.Join(" and ", primaryKeyColumns.Select(primaryKeyColumn => string.Format("{0} = {1}", primaryKeyColumn.ColumnName, string.Format("@primaryKey_{0}", primaryKeyColumn.ColumnName)))));
+							Sql = $"      ({string.Join(" and ", primaryKeyColumns.Select(primaryKeyColumn => $"{primaryKeyColumn.ColumnName} = {$"@primaryKey_{primaryKeyColumn.ColumnName}"}"))})";
 						}
 						else
 						{
@@ -98,14 +98,14 @@ namespace ISI.Extensions.Repository
 							{
 								foreach (var primaryKeyColumn in primaryKeyColumns)
 								{
-									Parameters.Add(string.Format("@primaryKey_{0}_{1}", primaryKeyValueIndex, primaryKeyColumn.ColumnName), primaryKeyValue);
+									Parameters.Add($"@primaryKey_{primaryKeyValueIndex}_{primaryKeyColumn.ColumnName}", primaryKeyValue);
 								}
 
-								sql.Add(string.Format("      ({0})", string.Join(" and ", primaryKeyColumns.Select(primaryKeyColumn => string.Format("{0} = {1}", primaryKeyColumn.ColumnName, string.Format("@primaryKey_{0}_{1}", primaryKeyValueIndex, primaryKeyColumn.ColumnName))))));
+								sql.Add($"      ({string.Join(" and ", primaryKeyColumns.Select(primaryKeyColumn => $"{primaryKeyColumn.ColumnName} = {$"@primaryKey_{primaryKeyValueIndex}_{primaryKeyColumn.ColumnName}"}"))})");
 								primaryKeyValueIndex++;
 							}
 
-							Sql = string.Format("      ({0})", string.Join("\n or", sql));
+							Sql = $"      ({string.Join("\n or", sql)})";
 						}
 					}
 				}

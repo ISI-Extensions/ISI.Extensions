@@ -47,10 +47,10 @@ namespace ISI.Extensions.Svn
 						arguments.Add("/command:commit");
 						if (!string.IsNullOrWhiteSpace(request.LogMessage))
 						{
-							arguments.Add(string.Format("/logmsg:\"{0}\"", request.LogMessage));
+							arguments.Add($"/logmsg:\"{request.LogMessage}\"");
 						}
 
-						arguments.Add(string.Format("/pathfile :\"{0}\"", tempFile.FullName));
+						arguments.Add($"/pathfile :\"{tempFile.FullName}\"");
 						arguments.Add("/closeonend:0");
 
 						response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
@@ -67,10 +67,10 @@ namespace ISI.Extensions.Svn
 						arguments.Add("commit");
 						if (!string.IsNullOrWhiteSpace(request.LogMessage))
 						{
-							arguments.Add(string.Format("-m \"{0}\"", request.LogMessage));
+							arguments.Add($"-m \"{request.LogMessage}\"");
 						}
 
-						arguments.Add(string.Format("--targets \"{0}\"", tempFile.FullName));
+						arguments.Add($"--targets \"{tempFile.FullName}\"");
 						AddCredentials(arguments, request);
 
 						response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()

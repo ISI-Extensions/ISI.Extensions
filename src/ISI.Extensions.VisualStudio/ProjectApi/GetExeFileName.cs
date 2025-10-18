@@ -57,7 +57,7 @@ namespace ISI.Extensions.VisualStudio
 			{
 				response.ExeFileName = System.IO.Path.Combine(response.ExeFileName, "bin", request.BuildConfiguration.ToString().Split(new[] { '|' }).First(), targetFramework);
 			}
-			response.ExeFileName = System.IO.Path.Combine(response.ExeFileName, string.Format("{0}.{1}", assemblyName, outputType));
+			response.ExeFileName = System.IO.Path.Combine(response.ExeFileName, $"{assemblyName}.{outputType}");
 
 			return response;
 		}

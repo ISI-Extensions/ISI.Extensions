@@ -36,7 +36,7 @@ namespace ISI.Extensions.DataAnnotations
 		{
 			var isValid = true;
 
-			var value = string.Format("{0}", model);
+			var value = $"{model}";
 
 			if (!AllowEmptyStrings && string.IsNullOrWhiteSpace(value))
 			{

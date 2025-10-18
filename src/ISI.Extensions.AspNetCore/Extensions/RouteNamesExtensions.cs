@@ -42,7 +42,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 
 					if (string.IsNullOrEmpty(routeName))
 					{
-						routeName = string.Format("{0}-{1}-{{{2}}}", routeNamesTypeName, property.Name, Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens));
+						routeName = $"{routeNamesTypeName}-{property.Name}-{{{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)}}}";
 						property.SetValue(routeNames, routeName);
 					}
 				}

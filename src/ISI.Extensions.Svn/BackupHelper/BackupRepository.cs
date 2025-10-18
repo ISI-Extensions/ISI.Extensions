@@ -59,7 +59,7 @@ namespace ISI.Extensions.Svn
 
 				if (doBackup)
 				{
-					request.StatusTracker.AddToLog(string.Format("  Backing up Svn: {0}", request.RepositoryKey));
+					request.StatusTracker.AddToLog($"  Backing up Svn: {request.RepositoryKey}");
 
 					if (string.IsNullOrWhiteSpace(request.BackupDirectoryFullName))
 					{
@@ -70,7 +70,7 @@ namespace ISI.Extensions.Svn
 
 					System.IO.Directory.CreateDirectory(request.BackupDirectoryFullName);
 
-					var dumpFullName = System.IO.Path.Combine(request.BackupDirectoryFullName, string.Format("{0}.svndump", request.RepositoryKey));
+					var dumpFullName = System.IO.Path.Combine(request.BackupDirectoryFullName, $"{request.RepositoryKey}.svndump");
 
 					{
 						var dumpDirectory = System.IO.Path.GetDirectoryName(dumpFullName);

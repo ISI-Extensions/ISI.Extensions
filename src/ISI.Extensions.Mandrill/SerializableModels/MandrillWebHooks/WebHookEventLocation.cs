@@ -44,12 +44,12 @@ namespace ISI.Extensions.Mandrill.SerializableModels.MandrillWebHooks
 		public string Timezone { get; set; }
 
 		[DataMember(Name = "latitude", EmitDefaultValue = false)]
-		public string __Latitude { get => string.Format("{0}", Latitude); set => Latitude = value.ToDoubleNullable(); }
+		public string __Latitude { get => $"{Latitude}"; set => Latitude = value.ToDoubleNullable(); }
 		[IgnoreDataMember]
 		public double? Latitude { get; set; }
 
 		[DataMember(Name = "longitude", EmitDefaultValue = false)]
-		public string __Longitude { get => string.Format("{0}", Longitude); set => Longitude = value.ToDoubleNullable(); }
+		public string __Longitude { get => $"{Longitude}"; set => Longitude = value.ToDoubleNullable(); }
 		[IgnoreDataMember]
 		public double? Longitude { get; set; }
 	}

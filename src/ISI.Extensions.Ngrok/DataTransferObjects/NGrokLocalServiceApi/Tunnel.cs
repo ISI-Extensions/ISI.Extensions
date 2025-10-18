@@ -30,7 +30,7 @@ namespace ISI.Extensions.Ngrok.DataTransferObjects.NGrokLocalServiceApi
 
 		public override string ToString()
 		{
-			return string.Format("{0} -> {1}", LocalUrl, ExternalUrl);
+			return $"{LocalUrl} -> {ExternalUrl}";
 		}
 	}
 }

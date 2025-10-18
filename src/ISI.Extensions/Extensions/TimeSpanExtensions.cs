@@ -40,54 +40,54 @@ namespace ISI.Extensions.Extensions
 				switch (format)
 				{
 					case TimeSpanFormat.Default:
-						result = string.Format("{0}.{1:00}:{2:00}:{3:00}", value.Days, value.Hours, value.Minutes, value.Seconds);
+						result = $"{value.Days}.{value.Hours:00}:{value.Minutes:00}:{value.Seconds:00}";
 						break;
 					case TimeSpanFormat.Short:
 						if (value.Days > 0)
 						{
 							if (value.Milliseconds > 0)
 							{
-								result = string.Format("{0}.{1:00}:{2:00}:{3:00}.{4:000}", value.Days, value.Hours, value.Minutes, value.Seconds, value.Milliseconds);
+								result = $"{value.Days}.{value.Hours:00}:{value.Minutes:00}:{value.Seconds:00}.{value.Milliseconds:000}";
 							}
 							else if (value.Seconds > 0)
 							{
-								result = string.Format("{0}.{1:00}:{2:00}:{3:00}", value.Days, value.Hours, value.Minutes, value.Seconds);
+								result = $"{value.Days}.{value.Hours:00}:{value.Minutes:00}:{value.Seconds:00}";
 							}
 							else if (value.Minutes > 0)
 							{
-								result = string.Format("{0}.{1:00}:{2:00}", value.Days, value.Hours, value.Minutes);
+								result = $"{value.Days}.{value.Hours:00}:{value.Minutes:00}";
 							}
 							else if (value.Hours > 0)
 							{
-								result = string.Format("{0}.{1:00}", value.Days, value.Hours);
+								result = $"{value.Days}.{value.Hours:00}";
 							}
 							else
 							{
-								result = string.Format("{0}", value.Days);
+								result = $"{value.Days}";
 							}
 						}
 						else
 						{
 							if (value.Milliseconds > 0)
 							{
-								result = string.Format("{0:00}:{1:00}:{2:00}.{3:000}", value.Hours, value.Minutes, value.Seconds, value.Milliseconds);
+								result = $"{value.Hours:00}:{value.Minutes:00}:{value.Seconds:00}.{value.Milliseconds:000}";
 							}
 							else if (value.Seconds > 0)
 							{
-								result = string.Format("{0:00}:{1:00}:{2:00}", value.Hours, value.Minutes, value.Seconds);
+								result = $"{value.Hours:00}:{value.Minutes:00}:{value.Seconds:00}";
 							}
 							else if (value.Minutes > 0)
 							{
-								result = string.Format("{0:00}:{1:00}", value.Hours, value.Minutes);
+								result = $"{value.Hours:00}:{value.Minutes:00}";
 							}
 							else
 							{
-								result = string.Format("{0:00}", value.Hours);
+								result = $"{value.Hours:00}";
 							}
 						}
 						break;
 					case TimeSpanFormat.Precise:
-						result = string.Format("{0}.{1:00}:{2:00}:{3:00}.{4:000}", value.Days, value.Hours, value.Minutes, value.Seconds, value.Milliseconds);
+						result = $"{value.Days}.{value.Hours:00}:{value.Minutes:00}:{value.Seconds:00}.{value.Milliseconds:000}";
 						break;
 				}
 			}

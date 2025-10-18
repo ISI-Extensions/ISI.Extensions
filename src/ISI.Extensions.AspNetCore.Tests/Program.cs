@@ -38,7 +38,7 @@ namespace ISI.Extensions.AspNetCore.Tests
 		{
 			var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
 
-			var configurationsPath = string.Format("Configuration{0}", System.IO.Path.DirectorySeparatorChar);
+			var configurationsPath = $"Configuration{System.IO.Path.DirectorySeparatorChar}";
 
 			var activeEnvironmentConfiguration = configurationBuilder.GetActiveEnvironmentConfiguration($"{configurationsPath}isi.extensions.environmentsConfig.json");
 
@@ -59,7 +59,7 @@ namespace ISI.Extensions.AspNetCore.Tests
 
 #if DEBUG
 			Serilog.Log.Information($"ActiveEnvironment: {activeEnvironmentConfiguration.ActiveEnvironment}");
-			Serilog.Log.Information($"ActiveEnvironments: {string.Join(", ", activeEnvironmentConfiguration.ActiveEnvironments.Select(e => string.Format("\"{0}\"", e)))}");
+			Serilog.Log.Information($"ActiveEnvironments: {string.Join(", ", activeEnvironmentConfiguration.ActiveEnvironments.Select(e => $"\"{e}\""))}");
 
 			foreach (System.Collections.DictionaryEntry environmentVariable in Environment.GetEnvironmentVariables())
 			{

@@ -107,7 +107,7 @@ namespace ISI.Extensions.Columns
 
 			TransformValue = transformValue;
 
-			FormattedValue = formattedValue ?? (record => string.Format("{0}", GetValue(record)));
+			FormattedValue = formattedValue ?? (record => $"{GetValue(record)}");
 		}
 
 		Func<object, bool> IColumn.IsNull => record => IsNull(record as TRecord);
@@ -177,12 +177,12 @@ namespace ISI.Extensions.Columns
 					{
 						foreach (var item in enumerable)
 						{
-							values.Add(string.Format("{0}", item));
+							values.Add($"{item}");
 						}
 					}
 					else
 					{
-						values.Add(string.Format("{0}", value));
+						values.Add($"{value}");
 					}
 
 					return (TTransformValueProperty)(object)(values.ToArray());
@@ -190,75 +190,75 @@ namespace ISI.Extensions.Columns
 			}
 			else if (type == typeof(string))
 			{
-				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue : (TTransformValueProperty)(object)string.Format("{0}", value));
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue : (TTransformValueProperty)(object)$"{value}");
 			}
 			else if (type == typeof(Guid))
 			{
-				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToGuid() : (value is Guid @guid ? (TTransformValueProperty)(object)@guid : (TTransformValueProperty)(object)string.Format("{0}", value).ToGuid()));
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToGuid() : (value is Guid @guid ? (TTransformValueProperty)(object)@guid : (TTransformValueProperty)(object)$"{value}".ToGuid()));
 			}
 			else if (type == typeof(Guid?))
 			{
-				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToGuidNullable() : (value is Guid? ? (TTransformValueProperty)(object)(Guid?)value : (TTransformValueProperty)(object)string.Format("{0}", value).ToGuidNullable()));
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToGuidNullable() : (value is Guid? ? (TTransformValueProperty)(object)(Guid?)value : (TTransformValueProperty)(object)$"{value}".ToGuidNullable()));
 			}
 			else if (type == typeof(int))
 			{
-				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToInt() : (value is int @int ? (TTransformValueProperty)(object)@int : (TTransformValueProperty)(object)string.Format("{0}", value).ToInt()));
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToInt() : (value is int @int ? (TTransformValueProperty)(object)@int : (TTransformValueProperty)(object)$"{value}".ToInt()));
 			}
 			else if (type == typeof(int?))
 			{
-				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToIntNullable() : (value is int? ? (TTransformValueProperty)(object)(int?)value : (TTransformValueProperty)(object)string.Format("{0}", value).ToIntNullable()));
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToIntNullable() : (value is int? ? (TTransformValueProperty)(object)(int?)value : (TTransformValueProperty)(object)$"{value}".ToIntNullable()));
 			}
 			else if (type == typeof(long))
 			{
-				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToLong() : (value is long @long ? (TTransformValueProperty)(object)@long : (TTransformValueProperty)(object)string.Format("{0}", value).ToLong()));
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToLong() : (value is long @long ? (TTransformValueProperty)(object)@long : (TTransformValueProperty)(object)$"{value}".ToLong()));
 			}
 			else if (type == typeof(long?))
 			{
-				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToLongNullable() : (value is long? ? (TTransformValueProperty)(object)(long?)value : (TTransformValueProperty)(object)string.Format("{0}", value).ToLongNullable()));
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToLongNullable() : (value is long? ? (TTransformValueProperty)(object)(long?)value : (TTransformValueProperty)(object)$"{value}".ToLongNullable()));
 			}
 			else if (type == typeof(double))
 			{
-				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToDouble() : (value is double @double ? (TTransformValueProperty)(object)@double : (TTransformValueProperty)(object)string.Format("{0}", value).ToDouble()));
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToDouble() : (value is double @double ? (TTransformValueProperty)(object)@double : (TTransformValueProperty)(object)$"{value}".ToDouble()));
 			}
 			else if (type == typeof(double?))
 			{
-				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToDoubleNullable() : (value is double? ? (TTransformValueProperty)(object)(double?)value : (TTransformValueProperty)(object)string.Format("{0}", value).ToDoubleNullable()));
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToDoubleNullable() : (value is double? ? (TTransformValueProperty)(object)(double?)value : (TTransformValueProperty)(object)$"{value}".ToDoubleNullable()));
 			}
 			else if (type == typeof(decimal))
 			{
-				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToDecimal() : (value is decimal @decimal ? (TTransformValueProperty)(object)@decimal : (TTransformValueProperty)(object)string.Format("{0}", value).ToDecimal()));
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToDecimal() : (value is decimal @decimal ? (TTransformValueProperty)(object)@decimal : (TTransformValueProperty)(object)$"{value}".ToDecimal()));
 			}
 			else if (type == typeof(decimal?))
 			{
-				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToDecimalNullable() : (value is decimal? ? (TTransformValueProperty)(object)(decimal?)value : (TTransformValueProperty)(object)string.Format("{0}", value).ToDecimalNullable()));
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToDecimalNullable() : (value is decimal? ? (TTransformValueProperty)(object)(decimal?)value : (TTransformValueProperty)(object)$"{value}".ToDecimalNullable()));
 			}
 			else if (type == typeof(bool))
 			{
-				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToBoolean() : (value is bool @bool ? (TTransformValueProperty)(object)@bool : (TTransformValueProperty)(object)string.Format("{0}", value).ToBoolean()));
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToBoolean() : (value is bool @bool ? (TTransformValueProperty)(object)@bool : (TTransformValueProperty)(object)$"{value}".ToBoolean()));
 			}
 			else if (type == typeof(bool?))
 			{
-				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToBooleanNullable() : (value is bool? ? (TTransformValueProperty)(object)(bool?)value : (TTransformValueProperty)(object)string.Format("{0}", value).ToBooleanNullable()));
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToBooleanNullable() : (value is bool? ? (TTransformValueProperty)(object)(bool?)value : (TTransformValueProperty)(object)$"{value}".ToBooleanNullable()));
 			}
 			else if (type == typeof(DateTime))
 			{
-				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToDateTime() : (value is DateTime @DateTime ? (TTransformValueProperty)(object)@DateTime : (TTransformValueProperty)(object)string.Format("{0}", value).ToDateTime()));
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToDateTime() : (value is DateTime @DateTime ? (TTransformValueProperty)(object)@DateTime : (TTransformValueProperty)(object)$"{value}".ToDateTime()));
 			}
 			else if (type == typeof(DateTime?))
 			{
-				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToDateTimeNullable() : (value is DateTime? ? (TTransformValueProperty)(object)(DateTime?)value : (TTransformValueProperty)(object)string.Format("{0}", value).ToDateTimeNullable()));
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToDateTimeNullable() : (value is DateTime? ? (TTransformValueProperty)(object)(DateTime?)value : (TTransformValueProperty)(object)$"{value}".ToDateTimeNullable()));
 			}
 			else if (type == typeof(TimeSpan))
 			{
-				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToTimeSpan() : (value is TimeSpan @TimeSpan ? (TTransformValueProperty)(object)@TimeSpan : (TTransformValueProperty)(object)string.Format("{0}", value).ToTimeSpan()));
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToTimeSpan() : (value is TimeSpan @TimeSpan ? (TTransformValueProperty)(object)@TimeSpan : (TTransformValueProperty)(object)$"{value}".ToTimeSpan()));
 			}
 			else if (type == typeof(TimeSpan?))
 			{
-				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToTimeSpanNullable() : (value is TimeSpan? ? (TTransformValueProperty)(object)(TimeSpan?)value : (TTransformValueProperty)(object)string.Format("{0}", value).ToTimeSpanNullable()));
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)stringValue.ToTimeSpanNullable() : (value is TimeSpan? ? (TTransformValueProperty)(object)(TimeSpan?)value : (TTransformValueProperty)(object)$"{value}".ToTimeSpanNullable()));
 			}
 			else if (ISI.Extensions.Enum.IsEnum(type))
 			{
-				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)(ISI.Extensions.Enum.Parse(type, stringValue)) : (TTransformValueProperty)(object)(ISI.Extensions.Enum.Parse(type, string.Format("{0}", value))));
+				transformValue = value => (value is string stringValue ? (TTransformValueProperty)(object)(ISI.Extensions.Enum.Parse(type, stringValue)) : (TTransformValueProperty)(object)(ISI.Extensions.Enum.Parse(type, $"{value}")));
 			}
 			else if (type.IsClass && (jsonSerializer != null) && IsElementTypeDeserializable(jsonSerializer, type))
 			{

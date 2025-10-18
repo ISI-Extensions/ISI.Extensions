@@ -41,7 +41,7 @@ namespace ISI.Extensions.Mandrill.SerializableModels.MandrillMessagesApi
 		[DataMember(Name = "send_at", EmitDefaultValue = false, Order = 5)]
 		public string __ScheduledSendDateTimeUtc
 		{
-			get => (ScheduledSendDateTimeUtc.HasValue ? string.Format("{0:yyyy-MM-dd HH:mm:ss}", ScheduledSendDateTimeUtc) : string.Empty);
+			get => (ScheduledSendDateTimeUtc.HasValue ? $"{ScheduledSendDateTimeUtc:yyyy-MM-dd HH:mm:ss}" : string.Empty);
 			set
 			{
 				ScheduledSendDateTimeUtc = value.ToDateTimeNullable();

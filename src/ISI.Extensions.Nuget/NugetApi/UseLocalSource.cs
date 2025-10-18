@@ -89,7 +89,7 @@ namespace ISI.Extensions.Nuget
 
 				if (!sdkAttribute.StartsWith("Microsoft.NET", StringComparison.InvariantCultureIgnoreCase))
 				{
-					csProj = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n{0}", csProj);
+					csProj = $"<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n{csProj}";
 				}
 
 				System.IO.File.WriteAllText(request.ProjectFullName, csProj);

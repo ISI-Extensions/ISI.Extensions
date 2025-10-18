@@ -47,7 +47,7 @@ namespace ISI.Extensions.Jira
 						httpRequestMessage.Headers.TryAddWithoutValidation(HeaderKeys.ImpersonatedUser, request.ImpersonatedUser);
 					}
 
-					var base64authorization = Convert.ToBase64String(Encoding.ASCII.GetBytes(string.Format("{0}:{1}", request.JiraApiUserName, request.JiraApiToken)));
+					var base64authorization = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{request.JiraApiUserName}:{request.JiraApiToken}"));
 					httpRequestMessage.Headers.TryAddWithoutValidation(ISI.Extensions.WebClient.HeaderCollection.Keys.Authorization, $"Basic {base64authorization}");
 
 					var multipartContent = new System.Net.Http.MultipartFormDataContent();
@@ -55,7 +55,7 @@ namespace ISI.Extensions.Jira
 					var streamContent = new System.Net.Http.StreamContent(request.FileStream);
 					streamContent.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data");
 					streamContent.Headers.ContentDisposition.Name = "\"file\"";
-					streamContent.Headers.ContentDisposition.FileName = string.Format("\"{0}\"", System.IO.Path.GetFileName(request.FileName));
+					streamContent.Headers.ContentDisposition.FileName = $"\"{System.IO.Path.GetFileName(request.FileName)}\"";
 					streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
 
 					multipartContent.Add(streamContent);

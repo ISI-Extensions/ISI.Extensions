@@ -59,7 +59,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 
 			htmlAttributes.TryGetValue(ClassAttributeName, out cssClasses);
 
-			return new HashSet<string>(string.Format("{0}", cssClasses).Split([' '], StringSplitOptions.RemoveEmptyEntries), StringComparer.InvariantCulture);
+			return new HashSet<string>($"{cssClasses}".Split([' '], StringSplitOptions.RemoveEmptyEntries), StringComparer.InvariantCulture);
 		}
 
 		private static void CssClassHelper(AbstractHtmlAttributeCollection htmlAttributes, string cssClass)

@@ -51,7 +51,7 @@ namespace ISI.Extensions.Security.ActiveDirectory
 				{
 					if (string.IsNullOrWhiteSpace(request.DomainName))
 					{
-						request.DomainName = string.Format("LDAP://{0}", GetCurrentDomainName(new()).DomainName);
+						request.DomainName = $"LDAP://{GetCurrentDomainName(new()).DomainName}";
 					}
 
 					var directoryEntry = new System.DirectoryServices.DirectoryEntry(request.DomainName);

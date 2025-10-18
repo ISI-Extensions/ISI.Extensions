@@ -37,7 +37,7 @@ namespace ISI.Extensions
 
 			public CronExpressionDaysOfMonth(string source)
 			{
-				Action throwError = () => throw new(string.Format("DaysOfMonth: Cannot parse \"{0}\"", source));
+				Action throwError = () => throw new($"DaysOfMonth: Cannot parse \"{source}\"");
 
 				var parser = new ISI.Extensions.Parsers.DelimitedTextParser(',');
 
@@ -138,13 +138,13 @@ namespace ISI.Extensions
 								dayOfMonthEndRangeIndex++;
 							}
 
-							ranges.Add(string.Format("{0}-{1}", dayOfMonthIndex, (dayOfMonthEndRangeIndex >= maxDayOfMonth ? maxDayOfMonth - 1 : dayOfMonthEndRangeIndex)));
+							ranges.Add($"{dayOfMonthIndex}-{(dayOfMonthEndRangeIndex >= maxDayOfMonth ? maxDayOfMonth - 1 : dayOfMonthEndRangeIndex)}");
 
 							dayOfMonthIndex = dayOfMonthEndRangeIndex - 1;
 						}
 						else
 						{
-							ranges.Add(string.Format("{0}", dayOfMonthIndex));
+							ranges.Add($"{dayOfMonthIndex}");
 						}
 					}
 

@@ -66,7 +66,7 @@ namespace ISI.Extensions.Aspose
 							{
 								var pdfDocument = new ISI.Extensions.Documents.Document()
 								{
-									FileName = System.IO.Path.Combine(System.IO.Path.GetFullPath(document.FileName), string.Format("{0}.pdf", System.IO.Path.GetFileNameWithoutExtension(document.FileName))),
+									FileName = System.IO.Path.Combine(System.IO.Path.GetFullPath(document.FileName), $"{System.IO.Path.GetFileNameWithoutExtension(document.FileName)}.pdf"),
 									Stream = new ISI.Extensions.Stream.TempFileStream(),
 								};
 

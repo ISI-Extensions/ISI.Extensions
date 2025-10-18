@@ -46,13 +46,13 @@ namespace ISI.Extensions.Repository
 			var index = 0;
 			foreach (var value in values)
 			{
-				parameters.Add(string.Format("@{0}{1}", valueName, index++), value);
+				parameters.Add($"@{valueName}{index++}", value);
 			}
 		}
 
 		protected virtual string IncludeParameters<TValue>(string valueName, IEnumerable<TValue> values)
 		{
-			return string.Join(", ", Enumerable.Range(0, values.Count()).Select(index => string.Format("@{0}{1}", valueName, index)));
+			return string.Join(", ", Enumerable.Range(0, values.Count()).Select(index => $"@{valueName}{index}"));
 		}
 
 		protected virtual string DefaultOrderByClause => string.Empty;

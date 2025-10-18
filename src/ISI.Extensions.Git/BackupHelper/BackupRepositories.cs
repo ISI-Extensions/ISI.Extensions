@@ -39,7 +39,7 @@ namespace ISI.Extensions.Git
 			{
 				foreach (var repositoryDirectoryFullName in System.IO.Directory.EnumerateDirectories(repositoryOwnerDirectoryFullName))
 				{
-					repositoryKeys.Add(string.Format("{0}+{1}", repositoryOwnerDirectoryFullName, System.IO.Path.GetFileName(repositoryDirectoryFullName)));
+					repositoryKeys.Add($"{repositoryOwnerDirectoryFullName}+{System.IO.Path.GetFileName(repositoryDirectoryFullName)}");
 				}
 			}
 
@@ -59,7 +59,7 @@ namespace ISI.Extensions.Git
 			var index = 0;
 			foreach (var repositoryKey in repositoryKeys)
 			{
-				request.StatusTracker.SetCaptionPercent(string.Format("Backing up {0}", repositoryKey), 5, 90, index++, repositoryKeys.Count);
+				request.StatusTracker.SetCaptionPercent($"Backing up {repositoryKey}", 5, 90, index++, repositoryKeys.Count);
 
 				var backupRepositoryResponse = BackupRepository(new()
 				{
@@ -74,11 +74,11 @@ namespace ISI.Extensions.Git
 				{
 					backups.Add((RepositoryKey: repositoryKey, BackupFullName: backupRepositoryResponse.BackupFullName));
 
-					request.StatusTracker.AddToLog(string.Format("Backed up Git: {0} to \"{1}\"", repositoryKey, backupRepositoryResponse.BackupFullName));
+					request.StatusTracker.AddToLog($"Backed up Git: {repositoryKey} to \"{backupRepositoryResponse.BackupFullName}\"");
 				}
 				else
 				{
-					request.StatusTracker.AddToLog(string.Format("DID NOT Backup Git: {0}", repositoryKey));
+					request.StatusTracker.AddToLog($"DID NOT Backup Git: {repositoryKey}");
 				}
 			}
 

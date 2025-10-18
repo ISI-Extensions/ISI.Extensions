@@ -100,7 +100,7 @@ namespace ISI.Extensions.Extensions
 
 			var tokenValues = new System.Collections.Specialized.NameValueCollection();
 
-			typeName = string.Format("[{0}]", typeName.Trim('[', ']'));
+			typeName = $"[{typeName.Trim('[', ']')}]";
 
 			foreach (var token in new[] { versionToken, cultureToken, publicKeyToken })
 			{

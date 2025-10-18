@@ -33,7 +33,7 @@ namespace ISI.Extensions.Jira
 			var uri = GetJiraApiUri(request);
 			uri.SetPathAndQueryString(UrlPathFormat.DeleteAttachment.Replace(new Dictionary<string, string>()
 			{
-				{"{id}", string.Format("{0}", request.AttachmentId)},
+				{"{id}", $"{request.AttachmentId}" },
 			}, StringComparer.InvariantCultureIgnoreCase));
 
 			var headers = GetHeaders(request);

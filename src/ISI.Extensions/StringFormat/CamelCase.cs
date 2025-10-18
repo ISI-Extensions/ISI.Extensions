@@ -28,7 +28,7 @@ namespace ISI.Extensions
 		{
 			propertyName = PascalCase(propertyName);
 
-			return string.Format("{0}{1}", propertyName.Substring(0, 1).ToLower(), propertyName.Substring(1));
+			return $"{propertyName.Substring(0, 1).ToLower()}{propertyName.Substring(1)}";
 		}
 	}
 }

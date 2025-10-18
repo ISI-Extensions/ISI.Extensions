@@ -34,8 +34,8 @@ namespace ISI.Extensions.Svn
 				var arguments = new List<string>();
 
 				arguments.Add("export");
-				arguments.Add(string.Format("\"{0}\"", request.Source.TrimEnd(System.IO.Path.DirectorySeparatorChar)));
-				arguments.Add(string.Format("\"{0}\"", request.Target.TrimEnd(System.IO.Path.DirectorySeparatorChar)));
+				arguments.Add($"\"{request.Source.TrimEnd(System.IO.Path.DirectorySeparatorChar)}\"");
+				arguments.Add($"\"{request.Target.TrimEnd(System.IO.Path.DirectorySeparatorChar)}\"");
 				AddCredentials(arguments, request);
 
 				ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()

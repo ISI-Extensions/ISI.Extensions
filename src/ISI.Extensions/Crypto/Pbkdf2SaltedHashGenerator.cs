@@ -42,7 +42,7 @@ namespace ISI.Extensions.Crypto
 
 				randomNumberGenerator.GetBytes(salt);
 
-				return string.Format("{0}:{1}", Configuration.Pbkdf2SaltedHashGenerator.Interations, Convert.ToBase64String(salt));
+				return $"{Configuration.Pbkdf2SaltedHashGenerator.Interations}:{Convert.ToBase64String(salt)}";
 			}
 		}
 

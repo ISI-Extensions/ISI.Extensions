@@ -24,6 +24,6 @@ namespace ISI.Extensions.Jira
 		public string Caption { get; set; }
 		public Uri Uri { get; set; }
 
-		public string Formatted() => string.Format("[{0}|{1}]", Caption, Uri.ToString());
+		public string Formatted() => $"[{Caption}|{Uri.ToString()}]";
 	}
 }

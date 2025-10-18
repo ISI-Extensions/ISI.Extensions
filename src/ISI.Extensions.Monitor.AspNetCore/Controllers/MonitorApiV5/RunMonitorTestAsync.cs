@@ -46,7 +46,7 @@ namespace ISI.Extensions.Monitor.AspNetCore.Controllers
 				var response = new DTOs.RunMonitorTestNotFoundResponse()
 				{
 					Passed = false,
-					Note = string.Format("Monitor Test: \"{0}\" not found", name)
+					Note = $"Monitor Test: \"{name}\" not found"
 				};
 
 				return NotFound(response);
@@ -83,7 +83,7 @@ namespace ISI.Extensions.Monitor.AspNetCore.Controllers
 						var parameter = new ISI.Extensions.Monitor.SerializableModels.MonitorTestSerializableResponseStartupParameterValue()
 						{
 							Name = property.Name,
-							Value = (value == null ? null : (property.PropertyType.IsArray ? string.Join(",", ((IEnumerable<object>)value).Select(v => string.Format("{0}", v))) : string.Format("{0}", value)))
+							Value = (value == null ? null : (property.PropertyType.IsArray ? string.Join(",", ((IEnumerable<object>)value).Select(v => $"{v}")) : $"{value}"))
 						};
 
 						return parameter;

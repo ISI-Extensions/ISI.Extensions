@@ -28,7 +28,7 @@ namespace ISI.Extensions.GoDrive.GoDriveFileSystem
 		public DateTime? ModifiedDateTime { get; set; }
 		public long? Size { get; set; }
 
-		public override string ToString() => string.Format("GoDrive File {0}", base.ToString());
+		public override string ToString() => $"GoDrive File {base.ToString()}";
 
 		public override FileSystem.IFileSystemPath Clone()
 		{

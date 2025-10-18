@@ -51,7 +51,7 @@ namespace ISI.Extensions.Emails.Extensions
 
 			foreach (var parameterKey in emailMailMessageContentType.Parameters.Keys)
 			{
-				var key = string.Format("{0}", parameterKey);
+				var key = $"{parameterKey}";
 
 				contentType.Parameters.Add(key, emailMailMessageContentType.Parameters[key]);
 			}

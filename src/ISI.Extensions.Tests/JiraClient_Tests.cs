@@ -318,7 +318,7 @@ namespace ISI.Extensions.Tests
 				IssueIdOrKey = "CD-76",
 			});
 
-			var groupedWorklogs = getIssueWorklogsResponse.Worklogs.GroupBy(worklog => string.Format("{0}-{1}", worklog.Started.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise), worklog.TimeSpent));
+			var groupedWorklogs = getIssueWorklogsResponse.Worklogs.GroupBy(worklog => $"{worklog.Started.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise)}-{worklog.TimeSpent}");
 
 			//foreach (var groupedWorklog in groupedWorklogs.Where(worklogs => worklogs.Count() > 1))
 			//{

@@ -31,9 +31,9 @@ namespace ISI.Extensions.Scm
 			var response = new DTOs.UploadFileResponse();
 
 			Logger.LogInformation("UploadFile");
-			Logger.LogInformation(string.Format("  FileStoreUrl: {0}", request.FileStoreUrl));
-			Logger.LogInformation(string.Format("  FileName: {0}", request.FileName));
-			Logger.LogInformation(string.Format("  FileStoreUuid: {0}", request.FileStoreUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)));
+			Logger.LogInformation($"  FileStoreUrl: {request.FileStoreUrl}");
+			Logger.LogInformation($"  FileName: {request.FileName}");
+			Logger.LogInformation($"  FileStoreUuid: {request.FileStoreUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)}");
 
 			using (var stream = new ISI.Extensions.Stream.TempFileStream())
 			{

@@ -62,7 +62,7 @@ namespace ISI.Extensions.VisualStudioCode
 					}
 					else
 					{
-						var message = string.Format("Cannot determine which solution to get details for \"{0}\"", request.Solution);
+						var message = $"Cannot determine which solution to get details for \"{request.Solution}\"";
 
 						logger.LogError(message);
 
@@ -71,7 +71,7 @@ namespace ISI.Extensions.VisualStudioCode
 				}
 				else
 				{
-					var message = string.Format("Cannot find a solution to get details for \"{0}\"", request.Solution);
+					var message = $"Cannot find a solution to get details for \"{request.Solution}\"";
 
 					logger.LogError(message);
 

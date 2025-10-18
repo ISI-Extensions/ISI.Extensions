@@ -53,7 +53,7 @@ namespace ISI.Extensions.Caching.Redis
 		{
 			if (HasCacheKeyPrefix)
 			{
-				return string.Format("{0}{1}", CacheKeyPrefix, rawCacheKey);
+				return $"{CacheKeyPrefix}{rawCacheKey}";
 			}
 
 			return rawCacheKey;
@@ -224,7 +224,7 @@ namespace ISI.Extensions.Caching.Redis
 
 			var cacheKeys = server.Keys();
 
-			foreach (var cacheKey in cacheKeys.NullCheckedSelect(key => GetRawCacheKey(string.Format("{0}", key))))
+			foreach (var cacheKey in cacheKeys.NullCheckedSelect(key => GetRawCacheKey($"{key}")))
 			{
 				if (cacheKey.StartsWith(cacheKeyPrefix))
 				{

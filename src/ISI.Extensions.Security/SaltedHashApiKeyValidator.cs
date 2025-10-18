@@ -55,7 +55,7 @@ namespace ISI.Extensions.Security
 
 			if (SaltedHashGeneratorsBySaltedHashGeneratorTypeUuid.TryGetValue(apiKey.SaltedHashGeneratorTypeUuid, out var saltedHashGenerator))
 			{
-				apiKeyToValidate = string.Format("{0}:{1}-{2}-{3}", apiKey.ApiKeyUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens), Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens), Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens), Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens));
+				apiKeyToValidate = $"{apiKey.ApiKeyUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)}:{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)}-{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)}-{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)}";
 
 				apiKey.ApiKeySalt = saltedHashGenerator.GenerateNewCryptoSalt();
 

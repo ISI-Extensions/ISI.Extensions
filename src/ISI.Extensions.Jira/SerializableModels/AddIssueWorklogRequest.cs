@@ -27,7 +27,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 	public class AddIssueWorklogRequest
 	{
 		[DataMember(Name = "started", EmitDefaultValue = false)]
-		public string __StartedDateTime { get => string.Format("{0:yyyy-MM-ddTHH:mm:ss.fffzz}00", (StartedDateTime.Kind == DateTimeKind.Local ? StartedDateTime : StartedDateTime.ToLocalTime())); set => StartedDateTime = value.ToDateTime(); }
+		public string __StartedDateTime { get => $"{(StartedDateTime.Kind == DateTimeKind.Local ? StartedDateTime : StartedDateTime.ToLocalTime()):yyyy-MM-ddTHH:mm:ss.fffzz}00"; set => StartedDateTime = value.ToDateTime(); }
 		[IgnoreDataMember]
 		public DateTime StartedDateTime { get; set; }
 

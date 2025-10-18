@@ -229,7 +229,7 @@ namespace ISI.Extensions.Extensions
 
 			var datetime = System.TimeZoneInfo.ConvertTimeFromUtc(new(utcDateTime.Ticks, DateTimeKind.Utc), timeZoneInfo);
 
-			return string.Format("{0}{1}", Formatted(datetime, format), (showTimeZone ? string.Format(" {0}", timeZoneInfo.TimeZoneShortName(datetime)) : string.Empty));
+			return $"{Formatted(datetime, format)}{(showTimeZone ? $" {timeZoneInfo.TimeZoneShortName(datetime)}" : string.Empty)}";
 		}
 
 		public static string Formatted(this DateTime? utcDateTime, DateTimeFormat format, System.TimeZoneInfo timeZoneInfo, bool showTimeZone = true)
@@ -245,7 +245,7 @@ namespace ISI.Extensions.Extensions
 
 			var datetime = System.TimeZoneInfo.ConvertTimeFromUtc(new(utcDateTime.Ticks, DateTimeKind.Utc), timeZoneInfo);
 
-			return string.Format("{0}{1}", Formatted(datetime, format), (showTimeZone ? string.Format(" {0}", timeZoneInfo.TimeZoneShortName(datetime)) : string.Empty));
+			return $"{Formatted(datetime, format)}{(showTimeZone ? $" {timeZoneInfo.TimeZoneShortName(datetime)}" : string.Empty)}";
 		}
 
 		public static string Formatted(this DateTime? value, DateTimeFormat format)

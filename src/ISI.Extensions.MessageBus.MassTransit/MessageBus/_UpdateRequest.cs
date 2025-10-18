@@ -26,7 +26,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 	{
 		private static string UpdateRequest(object request)
 		{
-			var operationKey = (System.Diagnostics.Trace.CorrelationManager.LogicalOperationStack.Count > 0 ? System.Diagnostics.Trace.CorrelationManager.LogicalOperationStack.Peek().ToString() : string.Format("{0:D}", Guid.NewGuid()));
+			var operationKey = (System.Diagnostics.Trace.CorrelationManager.LogicalOperationStack.Count > 0 ? System.Diagnostics.Trace.CorrelationManager.LogicalOperationStack.Peek().ToString() : $"{Guid.NewGuid():D}");
 							
 			if ((request is ISI.Extensions.MessageBus.ICorrelatedBy<Guid> requestCorrelatedByGuid) && (requestCorrelatedByGuid.CorrelationId == Guid.Empty))
 			{

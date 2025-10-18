@@ -31,7 +31,7 @@ namespace ISI.Extensions
 
 		private static string CreateMessage(Guid documentUuid)
 		{
-			return string.Format("Error Getting Content for: \"{0}\"", documentUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
+			return $"Error Getting Content for: \"{documentUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)}\"";
 		}
 	}
 }

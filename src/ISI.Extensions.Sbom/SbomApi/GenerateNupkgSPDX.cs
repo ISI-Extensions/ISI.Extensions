@@ -108,7 +108,7 @@ namespace ISI.Extensions.Sbom
 					targetFrameworkVersion = "v4.8";
 				}
 
-				targetFrameworkVersion = string.Format("net{0}", ISI.Extensions.StringFormat.StringNumericOnly(targetFrameworkVersion).Replace(".", string.Empty));
+				targetFrameworkVersion = $"net{ISI.Extensions.StringFormat.StringNumericOnly(targetFrameworkVersion).Replace(".", string.Empty)}";
 
 				return targetFrameworkVersion;
 			}

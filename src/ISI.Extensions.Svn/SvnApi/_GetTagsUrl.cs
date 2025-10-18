@@ -56,7 +56,7 @@ namespace ISI.Extensions.Svn
 			}
 
 			pathPieces.Add("tags");
-			pathPieces.Add(string.Format("{0}{1}", dateTimeStamp.ToString(dateTimeMask), tagName));
+			pathPieces.Add($"{dateTimeStamp.ToString(dateTimeMask)}{tagName}");
 
 			uri.Path = string.Join("/", pathPieces);
 

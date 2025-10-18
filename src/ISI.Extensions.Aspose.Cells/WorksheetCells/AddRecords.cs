@@ -78,7 +78,7 @@ namespace ISI.Extensions.Aspose
 				var replacements = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
 				foreach (var columnDefinition in columnDefinitions)
 				{
-					var key = string.Format("[Column-{0}]", columnDefinition.ColumnOptions.ColumnName);
+					var key = $"[Column-{columnDefinition.ColumnOptions.ColumnName}]";
 					if (!replacements.ContainsKey(key))
 					{
 						replacements.Add(key, ISI.Extensions.SpreadSheets.Coordinates.ColumnKey(startColumn + columnDefinition.ColumnOffset));

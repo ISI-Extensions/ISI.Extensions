@@ -105,7 +105,7 @@ namespace ISI.Extensions.VisualStudio
 					{
 						if (string.IsNullOrWhiteSpace(response.MSBuildExeFullName))
 						{
-							response.MSBuildExeFullName = msBuildExeFullNames.FirstOrDefault(msBuildFullName => msBuildFullName.IndexOf(string.Format(@"\{0}\", vsVersion), StringComparison.InvariantCultureIgnoreCase) > 0);
+							response.MSBuildExeFullName = msBuildExeFullNames.FirstOrDefault(msBuildFullName => msBuildFullName.IndexOf($@"\{vsVersion}\", StringComparison.InvariantCultureIgnoreCase) > 0);
 						}
 					}
 					break;
@@ -116,7 +116,7 @@ namespace ISI.Extensions.VisualStudio
 					{
 						if (string.IsNullOrWhiteSpace(response.MSBuildExeFullName))
 						{
-							response.MSBuildExeFullName = msBuildExeFullNames.FirstOrDefault(msBuildFullName => msBuildFullName.IndexOf(string.Format(@"\{0}\", vsVersion), StringComparison.InvariantCultureIgnoreCase) > 0);
+							response.MSBuildExeFullName = msBuildExeFullNames.FirstOrDefault(msBuildFullName => msBuildFullName.IndexOf($@"\{vsVersion}\", StringComparison.InvariantCultureIgnoreCase) > 0);
 						}
 					}
 					break;

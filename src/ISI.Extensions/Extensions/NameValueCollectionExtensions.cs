@@ -24,7 +24,7 @@ namespace ISI.Extensions.Extensions
 	{
 		public static string Formatted(this System.Collections.Specialized.NameValueCollection nameValues, string indent = "")
 		{
-			return string.Join("\n", nameValues.AllKeys.Select(key => string.Format("{0}:\t{1}\n", key, nameValues[key])));
+			return string.Join("\n", nameValues.AllKeys.Select(key => $"{key}:\t{nameValues[key]}\n"));
 		}
 
 		public static bool TryGetValue(this System.Collections.Specialized.NameValueCollection nameValues, string headerName, out string[] values)

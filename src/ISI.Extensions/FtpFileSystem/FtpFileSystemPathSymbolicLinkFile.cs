@@ -25,7 +25,7 @@ namespace ISI.Extensions.FtpFileSystem
 		public override string Schema => FtpFileSystemProvider._schema;
 		public override string DirectorySeparator => FtpFileSystemProvider._directorySeparator;
 
-		public override string ToString() => string.Format("Ftp File Symbolic Link {0}", base.ToString());
+		public override string ToString() => $"Ftp File Symbolic Link {base.ToString()}";
 
 		public override FileSystem.IFileSystemPath Clone()
 		{

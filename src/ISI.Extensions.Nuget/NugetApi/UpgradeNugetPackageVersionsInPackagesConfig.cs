@@ -46,7 +46,7 @@ namespace ISI.Extensions.Nuget
 				}
 			}
 
-			response.PackagesConfigXml = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n{0}", packagesConfigXml.ToString());
+			response.PackagesConfigXml = $"<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n{packagesConfigXml.ToString()}";
 
 			return response;
 		}

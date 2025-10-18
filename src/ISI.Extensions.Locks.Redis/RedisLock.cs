@@ -34,7 +34,7 @@ namespace ISI.Extensions.Locks.Redis
 		{
 			Database = database;
 			Key = key;
-			Token = string.Format("{0}-{1}", Environment.MachineName, Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens));
+			Token = $"{Environment.MachineName}-{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)}";
 		}
 
 		void IDisposable.Dispose()

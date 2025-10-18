@@ -42,7 +42,7 @@ namespace ISI.Extensions.PfSense
 		{
 			public static string _root()
 			{
-				return string.Format("{0}Content/", T4Embedded._root());
+				return $"{T4Embedded._root()}Content/";
 			}
 		
 			public static readonly string pfsense_import_certificate_php = _root() + "pfsense-import-certificate.php";
@@ -71,7 +71,7 @@ namespace ISI.Extensions.PfSense
 		{
 			public static string _root()
 			{
-				return string.Format("{0}Content.", T4Resources._root());
+				return $"{T4Resources._root()}Content.";
 			}
 		
 			public static readonly string pfsense_import_certificate_php = _root() + "pfsense-import-certificate.php";

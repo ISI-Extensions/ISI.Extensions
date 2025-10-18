@@ -122,7 +122,7 @@ namespace ISI.Extensions.DataAnnotations
 		{
 			var isValid = true;
 
-			var value = string.Format("{0}", model).ToDateTimeNullable();
+			var value = $"{model}".ToDateTimeNullable();
 
 			if (!AllowEmptyStrings && !value.HasValue)
 			{

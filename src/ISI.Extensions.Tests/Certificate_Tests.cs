@@ -35,7 +35,7 @@ namespace ISI.Extensions.Tests
 		{
 			var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
 
-			var configurationsPath = string.Format("Configuration{0}", System.IO.Path.DirectorySeparatorChar);
+			var configurationsPath = $"Configuration{System.IO.Path.DirectorySeparatorChar}";
 
 			var activeEnvironment = configurationBuilder.GetActiveEnvironmentConfiguration($"{configurationsPath}isi.extensions.environmentsConfig.json");
 

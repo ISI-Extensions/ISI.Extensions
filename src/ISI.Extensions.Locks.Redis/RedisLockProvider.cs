@@ -51,7 +51,7 @@ namespace ISI.Extensions.Locks.Redis
 
 				if (DateTime.UtcNow > now + lockRetryTimeout)
 				{
-					throw new LockException(string.Format("Failed to get lock on \"{0}\"", key));
+					throw new LockException($"Failed to get lock on \"{key}\"");
 				}
 
 				autoResetEvent.WaitOne(lockRetryInterval);

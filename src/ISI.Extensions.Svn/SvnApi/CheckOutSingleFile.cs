@@ -55,8 +55,8 @@ svn up <file_you_want>
 				var arguments = new List<string>();
 
 				arguments.Add("checkout");
-				arguments.Add(string.Format("\"{0}\"", sourceUrl));
-				arguments.Add(string.Format("\"{0}\"", targetFullName));
+				arguments.Add($"\"{sourceUrl}\"");
+				arguments.Add($"\"{targetFullName}\"");
 				arguments.Add("--depth empty");
 				AddCredentials(arguments, request);
 
@@ -72,7 +72,7 @@ svn up <file_you_want>
 					arguments.Clear();
 
 					arguments.Add("update");
-					arguments.Add(string.Format("\"{0}\"", fileName));
+					arguments.Add($"\"{fileName}\"");
 					AddCredentials(arguments, request);
 
 					response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()

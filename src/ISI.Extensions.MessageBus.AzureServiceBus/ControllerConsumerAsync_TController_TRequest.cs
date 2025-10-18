@@ -70,7 +70,7 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 
 				if (_onError == null)
 				{
-					var message = string.Format("{0}\nSerializedRequest:\n{1}", exception.Message, serializedRequest);
+					var message = $"{exception.Message}\nSerializedRequest:\n{serializedRequest}";
 
 					exception = new ISI.Extensions.MessageBus.MessageBusException(message, exception);
 

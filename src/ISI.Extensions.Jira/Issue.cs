@@ -33,6 +33,6 @@ namespace ISI.Extensions.Jira
 		public Changelog Changelog { get; set; }
 		public string FieldsToInclude { get; set; }
 
-		public override string ToString() => string.Format("{0} {1} => {2}", IssueKey, Fields?.Summary, Fields?.Status?.Name);
+		public override string ToString() => $"{IssueKey} {Fields?.Summary} => {Fields?.Status?.Name}";
 	}
 }

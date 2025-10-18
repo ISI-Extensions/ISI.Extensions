@@ -148,8 +148,8 @@ namespace ISI.Extensions
 			var arguments = new List<string>();
 
 			arguments.Add(Command);
-			arguments.Add(string.Join(" ", _parameters.Select(parameter => string.Format("\"-{0}\" \"{1}\"", parameter.Key, parameter.Value))));
-			arguments.Add(string.Join(" ", _values.Select(value => string.Format("\"{0}\"", value))));
+			arguments.Add(string.Join(" ", _parameters.Select(parameter => $"\"-{parameter.Key}\" \"{parameter.Value}\"")));
+			arguments.Add(string.Join(" ", _values.Select(value => $"\"{value}\"")));
 
 			var result = string.Join(" ", arguments);
 

@@ -39,10 +39,10 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 			{
 				if (type.GetCustomAttribute(typeof(ChannelNameAttribute)) is ChannelNameAttribute attribute)
 				{
-					return string.Format("{0}{1}", attribute.ChannelName, Configuration.ChannelNameSuffix);
+					return $"{attribute.ChannelName}{Configuration.ChannelNameSuffix}";
 				}
 
-				return string.Format("{0}{1}", messageType.FullName, Configuration.ChannelNameSuffix);
+				return $"{messageType.FullName}{Configuration.ChannelNameSuffix}";
 			});
 		}
 	}

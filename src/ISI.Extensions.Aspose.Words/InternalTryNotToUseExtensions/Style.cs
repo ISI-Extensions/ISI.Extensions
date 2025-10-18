@@ -27,7 +27,7 @@ namespace ISI.Extensions.Aspose.InternalTryNotToUseExtensions
 		{
 			if (!(documentStyle is ISI.Extensions.Aspose.Words.DocumentStyle asposeStyle))
 			{
-				throw new(string.Format("{0} is not of type {1}", nameof(documentStyle), typeof(ISI.Extensions.Aspose.Words.DocumentStyle).FullName));
+				throw new($"{nameof(documentStyle)} is not of type {typeof(ISI.Extensions.Aspose.Words.DocumentStyle).FullName}");
 			}
 
 			return asposeStyle._style;

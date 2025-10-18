@@ -59,7 +59,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 		public bool Released { get; set; }
 
 		[DataMember(Name = "releasedate", EmitDefaultValue = false)]
-		public string __ReleaseDate { get => (ReleaseDate.HasValue ? string.Format("{0:yyyy-MM-ddTHH:mm:ss.fffzz}00", (ReleaseDate?.Kind == DateTimeKind.Local ? ReleaseDate : ReleaseDate?.ToLocalTime())) : string.Empty); set => ReleaseDate = value.ToDateTimeNullable(); }
+		public string __ReleaseDate { get => (ReleaseDate.HasValue ? $"{(ReleaseDate?.Kind == DateTimeKind.Local ? ReleaseDate : ReleaseDate?.ToLocalTime()):yyyy-MM-ddTHH:mm:ss.fffzz}00" : string.Empty); set => ReleaseDate = value.ToDateTimeNullable(); }
 		[IgnoreDataMember]
 		public DateTime? ReleaseDate { get; set; }
 	}

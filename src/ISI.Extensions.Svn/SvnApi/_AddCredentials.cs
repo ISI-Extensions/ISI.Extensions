@@ -30,11 +30,11 @@ namespace ISI.Extensions.Svn
 		{
 			if (!string.IsNullOrWhiteSpace(credentials.UserName))
 			{
-				arguments.Add(string.Format("--username \"{0}\"", credentials.UserName));
+				arguments.Add($"--username \"{credentials.UserName}\"");
 			}
 			if (!string.IsNullOrWhiteSpace(credentials.Password))
 			{
-				arguments.Add(string.Format("--password \"{0}\"", credentials.Password));
+				arguments.Add($"--password \"{credentials.Password}\"");
 			}
 		}
 	}

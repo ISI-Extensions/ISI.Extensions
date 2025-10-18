@@ -35,7 +35,7 @@ namespace ISI.Extensions.PostgreSQL.Extensions
 				}
 				catch (Exception exception)
 				{
-					throw new(string.Format("Error opening Connection to \"{0}\"", connection.ConnectionString), exception);
+					throw new($"Error opening Connection to \"{connection.ConnectionString}\"", exception);
 				}
 			}
 		}
@@ -50,7 +50,7 @@ namespace ISI.Extensions.PostgreSQL.Extensions
 				}
 				catch (Exception exception)
 				{
-					throw new(string.Format("Error opening Connection to \"{0}\"", connection.ConnectionString), exception);
+					throw new($"Error opening Connection to \"{connection.ConnectionString}\"", exception);
 				}
 			}
 		}

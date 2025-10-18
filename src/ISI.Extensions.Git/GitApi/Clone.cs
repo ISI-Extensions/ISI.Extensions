@@ -35,8 +35,8 @@ namespace ISI.Extensions.Git
 				var arguments = new List<string>();
 
 				arguments.Add("clone");
-				arguments.Add(string.Format("\"{0}\"", request.SourceUrl));
-				arguments.Add(string.Format("\"{0}\"", request.TargetFullName));
+				arguments.Add($"\"{request.SourceUrl}\"");
+				arguments.Add($"\"{request.TargetFullName}\"");
 
 				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{

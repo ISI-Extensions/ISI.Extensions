@@ -24,12 +24,12 @@ namespace ISI.Extensions.DependencyInjection
 	public class CannotInvokeForThisTypeOfServiceProviderException : Exception
 	{
 		public CannotInvokeForThisTypeOfServiceProviderException(System.IServiceProvider serviceProvider)
-			: base(string.Format("Cannot Invoke For This Type Of Service Provider: {0}", serviceProvider.GetType().FullName))
+			: base($"Cannot Invoke For This Type Of Service Provider: {serviceProvider.GetType().FullName}")
 		{
 		}
 
 		public CannotInvokeForThisTypeOfServiceProviderException(Type serviceType, System.IServiceProvider serviceProvider)
-			: base(string.Format("Cannot Invoke For This Type Of Service Provider: {0}, trying to get instance of {1}", serviceProvider.GetType().FullName, serviceType.FullName))
+			: base($"Cannot Invoke For This Type Of Service Provider: {serviceProvider.GetType().FullName}, trying to get instance of {serviceType.FullName}")
 		{
 		}
 	}

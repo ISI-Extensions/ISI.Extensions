@@ -75,7 +75,7 @@ namespace ISI.Extensions
 
 			public void WriteLine(string message)
 			{
-				Write(string.Format("{0}\n", message));
+				Write($"{message}\n");
 			}
 
 			public override string ToString()

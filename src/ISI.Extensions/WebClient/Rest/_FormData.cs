@@ -152,7 +152,7 @@ namespace ISI.Extensions.WebClient
 				var formData = new FormData()
 				{
 					Key = key,
-					Value = string.Format("{0}", value),
+					Value = $"{value}",
 				};
 
 				this.Add(formData);
@@ -165,7 +165,7 @@ namespace ISI.Extensions.WebClient
 				var formData = new FormData()
 				{
 					Key = key,
-					Value = string.Format("{0}", value),
+					Value = $"{value}",
 				};
 
 				this.Add(formData);
@@ -183,17 +183,17 @@ namespace ISI.Extensions.WebClient
 					{
 						if (keyValueFormData.Values.Length == 0)
 						{
-							keyValues.Add(string.Format("{0}=", (keyValueFormData.UrlEncode ? System.Web.HttpUtility.UrlEncode(keyValueFormData.Key) : keyValueFormData.Key)));
+							keyValues.Add($"{(keyValueFormData.UrlEncode ? System.Web.HttpUtility.UrlEncode(keyValueFormData.Key) : keyValueFormData.Key)}=");
 						}
 						else if (keyValueFormData.Values.Length == 1)
 						{
-							keyValues.Add(string.Format("{0}={1}", (keyValueFormData.UrlEncode ? System.Web.HttpUtility.UrlEncode(keyValueFormData.Key) : keyValueFormData.Key), (keyValueFormData.UrlEncode ? System.Web.HttpUtility.UrlEncode(keyValueFormData.Value) : keyValueFormData.Value)));
+							keyValues.Add($"{(keyValueFormData.UrlEncode ? System.Web.HttpUtility.UrlEncode(keyValueFormData.Key) : keyValueFormData.Key)}={(keyValueFormData.UrlEncode ? System.Web.HttpUtility.UrlEncode(keyValueFormData.Value) : keyValueFormData.Value)}");
 						}
 						else if (keyValueFormData.Values.Length > 1)
 						{
 							foreach (var value in keyValueFormData.Values)
 							{
-								keyValues.Add(string.Format("{0}[]={1}", (keyValueFormData.UrlEncode ? System.Web.HttpUtility.UrlEncode(keyValueFormData.Key) : keyValueFormData.Key), (keyValueFormData.UrlEncode ? System.Web.HttpUtility.UrlEncode(value) : keyValueFormData.Value)));
+								keyValues.Add($"{(keyValueFormData.UrlEncode ? System.Web.HttpUtility.UrlEncode(keyValueFormData.Key) : keyValueFormData.Key)}[]={(keyValueFormData.UrlEncode ? System.Web.HttpUtility.UrlEncode(value) : keyValueFormData.Value)}");
 							}
 						}
 					}
@@ -214,7 +214,7 @@ namespace ISI.Extensions.WebClient
 				}
 				else
 				{
-					var boundary = string.Format("---------------------------{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.Base36));
+					var boundary = $"---------------------------{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.Base36)}";
 
 					//if (webRequest.Headers["Content-Type"] != null)
 					//{
@@ -292,11 +292,11 @@ namespace ISI.Extensions.WebClient
 
 			foreach (var propertyInfo in propertyInfos.OrderBy(p => p.DataMemberAttribute.Order).ThenBy(p => p.DataMemberAttribute.Name))
 			{
-				var key = (string.IsNullOrEmpty(prefix) ? propertyInfo.PropertyName : string.Format("{0}[{1}]", prefix, propertyInfo.PropertyName));
+				var key = (string.IsNullOrEmpty(prefix) ? propertyInfo.PropertyName : $"{prefix}[{propertyInfo.PropertyName}]");
 
 				if ((propertyInfo.PropertyInfo.PropertyType == typeof(string)) || (propertyInfo.PropertyInfo.PropertyType == typeof(string)))
 				{
-					var propertyValue = string.Format("{0}", propertyInfo.PropertyInfo.GetValue(value));
+					var propertyValue = $"{propertyInfo.PropertyInfo.GetValue(value)}";
 					var addValue = true;
 
 					if (!propertyInfo.DataMemberAttribute.EmitDefaultValue)
@@ -307,7 +307,7 @@ namespace ISI.Extensions.WebClient
 
 					if (addValue)
 					{
-						result.Add(key, string.Format("{0}", propertyValue));
+						result.Add(key, $"{propertyValue}");
 					}
 				}
 				else if (propertyInfo.PropertyInfo.PropertyType == typeof(bool))
@@ -359,7 +359,7 @@ namespace ISI.Extensions.WebClient
 
 					if (addValue)
 					{
-						result.Add(key, string.Format("{0}", propertyValue));
+						result.Add(key, $"{propertyValue}");
 					}
 				}
 				else if (!propertyInfo.PropertyInfo.PropertyType.IsInterface && !propertyInfo.PropertyInfo.PropertyType.IsClass)
@@ -381,7 +381,7 @@ namespace ISI.Extensions.WebClient
 
 					if (addValue)
 					{
-						result.Add(key, string.Format("{0}", propertyValue));
+						result.Add(key, $"{propertyValue}");
 					}
 				}
 				else

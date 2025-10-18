@@ -63,7 +63,7 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 				{
 					var valueToCheck = fieldToCheck.GetValue(context.Container, null);
 
-					if (!string.IsNullOrWhiteSpace(string.Format("{0}", valueToCheck)))
+					if (!string.IsNullOrWhiteSpace($"{valueToCheck}"))
 					{
 						hasValue = true;
 					}
@@ -72,9 +72,9 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 
 			if (!hasValue)
 			{
-				var value = string.Format("{0}", context.Model);
+				var value = $"{context.Model}";
 
-				if (string.IsNullOrWhiteSpace(string.Format("{0}", value)))
+				if (string.IsNullOrWhiteSpace($"{value}"))
 				{
 					return [new Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult(context.ModelMetadata.PropertyName, ErrorMessage)];
 				}

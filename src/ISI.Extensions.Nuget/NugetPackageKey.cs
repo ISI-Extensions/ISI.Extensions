@@ -32,7 +32,7 @@ namespace ISI.Extensions.Nuget
 
 		public override string ToString() => $"{Package} {Version}";
 
-		public string GetClipboardToken() => string.Format("{0}|{1}|{2}", ClipboardTokenHeader, Package, Version);
+		public string GetClipboardToken() => $"{ClipboardTokenHeader}|{Package}|{Version}";
 
 		public static bool TryParseClipboardToken(string clipboardToken, out NugetPackageKey nugetPackageKey)
 		{

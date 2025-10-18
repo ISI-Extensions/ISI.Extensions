@@ -32,7 +32,7 @@ namespace ISI.Extensions.Security.ActiveDirectory
 			
 			var directoryEntry = new System.DirectoryServices.DirectoryEntry("LDAP://RootDSE");
 
-			response.DomainName = string.Format("{0}", directoryEntry.Properties["defaultNamingContext"][0]);
+			response.DomainName = $"{directoryEntry.Properties["defaultNamingContext"][0]}";
 
 			return response;
 		}

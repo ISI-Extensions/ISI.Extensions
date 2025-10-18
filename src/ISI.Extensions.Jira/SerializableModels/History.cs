@@ -45,7 +45,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 		public User Author { get; set; }
 
 		[DataMember(Name = "created", EmitDefaultValue = false)]
-		public string __Created { get =>string.Format("{0:yyyy-MM-ddTHH:mm:ss.fffzz}00", (Created.Kind == DateTimeKind.Local ? Created : Created.ToLocalTime())); set => Created = value.ToDateTime(); }
+		public string __Created { get => $"{(Created.Kind == DateTimeKind.Local ? Created : Created.ToLocalTime()):yyyy-MM-ddTHH:mm:ss.fffzz}00"; set => Created = value.ToDateTime(); }
 		[IgnoreDataMember]
 		public DateTime Created { get; set; }
 

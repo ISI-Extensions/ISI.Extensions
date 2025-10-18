@@ -25,7 +25,7 @@ namespace ISI.Extensions.GoDrive.GoDrivesFileSystem
 		public override string Schema => GoDrivesFileSystemProvider._schema;
 		public override string DirectorySeparator => GoDrivesFileSystemProvider._directorySeparator;
 
-		public override string ToString() => string.Format("GoDrives Directory {0}", base.ToString());
+		public override string ToString() => $"GoDrives Directory {base.ToString()}";
 
 		public override FileSystem.IFileSystemPath Clone()
 		{

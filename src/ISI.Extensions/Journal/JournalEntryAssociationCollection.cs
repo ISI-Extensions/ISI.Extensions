@@ -36,7 +36,7 @@ namespace ISI.Extensions.Journal
 
 			public int GetHashCode(IJournalEntryAssociation journalEntryAssociation)
 			{
-				return string.Format("{0}|{1}", journalEntryAssociation.AssociationTypeUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens), journalEntryAssociation.AssociationKey.ToLower()).GetHashCode();
+				return $"{journalEntryAssociation.AssociationTypeUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)}|{journalEntryAssociation.AssociationKey.ToLower()}".GetHashCode();
 			}
 		}
 
@@ -80,7 +80,7 @@ namespace ISI.Extensions.Journal
 			Add(new JournalEntryAssociation()
 			{
 				AssociationTypeUuid = associationTypeUuid,
-				AssociationKey = string.Format("{0}", associationId)
+				AssociationKey = $"{associationId}"
 			});
 		}
 

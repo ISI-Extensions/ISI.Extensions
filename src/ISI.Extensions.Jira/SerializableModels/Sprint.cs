@@ -54,17 +54,17 @@ namespace ISI.Extensions.Jira.SerializableModels
 		public string Url { get; set; }
 
 		[DataMember(Name = "startDate", EmitDefaultValue = false)]
-		public string __StartDate { get => (StartDate.HasValue ? string.Format("{0:yyyy-MM-ddTHH:mm:ss.fffzz}00", (StartDate.Value.Kind == DateTimeKind.Local ? StartDate : StartDate.Value.ToLocalTime())) : string.Empty); set => StartDate = value.ToDateTimeNullable(); }
+		public string __StartDate { get => (StartDate.HasValue ? $"{(StartDate.Value.Kind == DateTimeKind.Local ? StartDate : StartDate.Value.ToLocalTime()):yyyy-MM-ddTHH:mm:ss.fffzz}00" : string.Empty); set => StartDate = value.ToDateTimeNullable(); }
 		[IgnoreDataMember]
 		public DateTime? StartDate { get; set; }
 
 		[DataMember(Name = "endDate", EmitDefaultValue = false)]
-		public string __EndDate { get => (EndDate.HasValue ? string.Format("{0:yyyy-MM-ddTHH:mm:ss.fffzz}00", (EndDate.Value.Kind == DateTimeKind.Local ? EndDate : EndDate.Value.ToLocalTime())) : string.Empty); set => EndDate = value.ToDateTimeNullable(); }
+		public string __EndDate { get => (EndDate.HasValue ? $"{(EndDate.Value.Kind == DateTimeKind.Local ? EndDate : EndDate.Value.ToLocalTime()):yyyy-MM-ddTHH:mm:ss.fffzz}00" : string.Empty); set => EndDate = value.ToDateTimeNullable(); }
 		[IgnoreDataMember]
 		public DateTime? EndDate { get; set; }
 
 		[DataMember(Name = "completeDate", EmitDefaultValue = false)]
-		public string __CompleteDate { get => (CompleteDate.HasValue ? string.Format("{0:yyyy-MM-ddTHH:mm:ss.fffzz}00", (CompleteDate.Value.Kind == DateTimeKind.Local ? CompleteDate : CompleteDate.Value.ToLocalTime())) : string.Empty); set => CompleteDate = value.ToDateTimeNullable(); }
+		public string __CompleteDate { get => (CompleteDate.HasValue ? $"{(CompleteDate.Value.Kind == DateTimeKind.Local ? CompleteDate : CompleteDate.Value.ToLocalTime()):yyyy-MM-ddTHH:mm:ss.fffzz}00" : string.Empty); set => CompleteDate = value.ToDateTimeNullable(); }
 		[IgnoreDataMember]
 		public DateTime? CompleteDate { get; set; }
 

@@ -61,7 +61,7 @@ namespace ISI.Extensions.Documents
 
 		public static string Formatted(Guid? documentUuid, long? documentVersion)
 		{
-			return (documentUuid.HasValue ? (documentVersion.HasValue ? string.Format("{0:D}.{1}", documentUuid, documentVersion) : string.Format("{0:D}", documentUuid)) : string.Empty);
+			return (documentUuid.HasValue ? (documentVersion.HasValue ? $"{documentUuid:D}.{documentVersion}" : $"{documentUuid:D}") : string.Empty);
 		}
 	}
 }

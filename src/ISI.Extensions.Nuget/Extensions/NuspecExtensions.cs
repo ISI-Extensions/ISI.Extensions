@@ -23,7 +23,7 @@ namespace ISI.Extensions.Nuget.Extensions
 	{
 		public static void AddIconFile(this Nuspec nuspec, string fullName)
 		{
-			nuspec.IconName = string.Format("images\\{0}", System.IO.Path.GetFileName(fullName));
+			nuspec.IconName = $"images\\{System.IO.Path.GetFileName(fullName)}";
 
 			var files = new List<NuspecFile>(nuspec.Files ?? []);
 

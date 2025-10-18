@@ -103,14 +103,14 @@ namespace ISI.Extensions.Emails.EmailMessageGenerator
 
 			if (!ContentGenerators.ContainsKey(modelType))
 			{
-				throw new EmailMessageGeneratorNotFoundException(string.Format("Cannot find Content Generator for \"{0}\"\nRegistered Content Generators:\n{1}", modelType.FullName, string.Join("\n", ContentGenerators.Select(cg => cg.Key.AssemblyQualifiedNameWithoutVersion()))));
+				throw new EmailMessageGeneratorNotFoundException($"Cannot find Content Generator for \"{modelType.FullName}\"\nRegistered Content Generators:\n{string.Join("\n", ContentGenerators.Select(cg => cg.Key.AssemblyQualifiedNameWithoutVersion()))}");
 			}
 
 			var contentGeneratorType = ContentGenerators[modelType];
 
 			if (contentGeneratorType == null)
 			{
-				throw new EmailMessageGeneratorNotFoundException(string.Format("Cannot find Content Generator for \"{0}\"\nRegistered Content Generators:\n{1}", modelType.FullName, string.Join("\n", ContentGenerators.Select(cg => cg.Key.AssemblyQualifiedNameWithoutVersion()))));
+				throw new EmailMessageGeneratorNotFoundException($"Cannot find Content Generator for \"{modelType.FullName}\"\nRegistered Content Generators:\n{string.Join("\n", ContentGenerators.Select(cg => cg.Key.AssemblyQualifiedNameWithoutVersion()))}");
 			}
 
 			if (!(ISI.Extensions.ServiceLocator.Current?.GetService(contentGeneratorType, () => new ISI.Extensions.DependencyInjection.RegistrationDeclarationByMapToType()
@@ -119,7 +119,7 @@ namespace ISI.Extensions.Emails.EmailMessageGenerator
 				ServiceLifetime = Microsoft.Extensions.DependencyInjection.ServiceLifetime.Singleton,
 			}) is IEmailMessageContentGenerator<TModel> contentGenerator))
 			{
-				throw new EmailMessageGeneratorCannotBeCreatedException(string.Format("Cannot not create instance of \"{0}\" (111)", contentGeneratorType.FullName));
+				throw new EmailMessageGeneratorCannotBeCreatedException($"Cannot not create instance of \"{contentGeneratorType.FullName}\" (111)");
 			}
 
 			return contentGenerator;

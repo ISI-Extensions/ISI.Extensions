@@ -36,7 +36,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 			ServiceLifetime = Microsoft.Extensions.DependencyInjection.ServiceLifetime.Singleton,
 		}); 
 
-		public static readonly string StyleSheetCollectionKey = string.Format("StyleSheetCollection-{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens));
+		public static readonly string StyleSheetCollectionKey = $"StyleSheetCollection-{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)}";
 
 		#region EncryptCookie
 		private static bool? _encryptCookie = null;

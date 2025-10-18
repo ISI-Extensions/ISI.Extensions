@@ -42,7 +42,7 @@ namespace ISI.Extensions.Jenkins
 		{
 			public static string _root()
 			{
-				return string.Format("{0}Artwork/", T4Files._root());
+				return $"{T4Files._root()}Artwork/";
 			}
 		
 			public static readonly string Jenkins_ico = _root() + "Jenkins.ico";
@@ -86,7 +86,7 @@ namespace ISI.Extensions.Jenkins
 		{
 			public static string _root()
 			{
-				return string.Format("{0}Artwork.", T4Resources._root());
+				return $"{T4Resources._root()}Artwork.";
 			}
 		
 			public static readonly string Jenkins_ico = _root() + "Jenkins.ico";

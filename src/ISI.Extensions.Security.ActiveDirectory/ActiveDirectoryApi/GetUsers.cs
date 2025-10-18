@@ -56,7 +56,7 @@ namespace ISI.Extensions.Security.ActiveDirectory
 
 				if (string.IsNullOrWhiteSpace(request.DomainName))
 				{
-					request.DomainName = string.Format("LDAP://{0}", GetCurrentDomainName(new()).DomainName);
+					request.DomainName = $"LDAP://{GetCurrentDomainName(new()).DomainName}";
 				}
 
 				foreach (var userName in request.UserNames)
@@ -66,7 +66,7 @@ namespace ISI.Extensions.Security.ActiveDirectory
 						var directoryEntry = new System.DirectoryServices.DirectoryEntry(request.DomainName);
 
 						var directorySearcher = new System.DirectoryServices.DirectorySearcher(directoryEntry);
-						directorySearcher.Filter = string.Format("(&(objectCategory=User)(objectClass=person)({0}={1}))", ISI.Extensions.Security.Directory.UserPropertyKey.UserNameKey, userName);
+						directorySearcher.Filter = $"(&(objectCategory=User)(objectClass=person)({ISI.Extensions.Security.Directory.UserPropertyKey.UserNameKey}={userName}))";
 						directorySearcher.PropertiesToLoad.Add(ISI.Extensions.Security.Directory.UserPropertyKey.NameKey);
 						directorySearcher.PropertiesToLoad.Add(ISI.Extensions.Security.Directory.UserPropertyKey.EmailAddressKey);
 						directorySearcher.PropertiesToLoad.Add(ISI.Extensions.Security.Directory.UserPropertyKey.FirstNameKey);

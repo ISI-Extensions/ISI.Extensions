@@ -294,7 +294,7 @@ namespace ISI.Extensions.Jenkins.Forms
 
 				cboJenkinsConfig = new()
 				{
-					Name = string.Format("cboJenkinsConfig_{0}", this.GetHashCode()),
+					Name = $"cboJenkinsConfig_{this.GetHashCode()}",
 					Width = 20,
 					Height = 17,
 					Margin = new(1, 1, 1, 1)

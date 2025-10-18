@@ -54,7 +54,7 @@ namespace ISI.Extensions.GoDrive
 
 			if (!string.IsNullOrWhiteSpace(directory))
 			{
-				directory = string.Format("{0}/", directory.TrimEnd('/'));
+				directory = $"{directory.TrimEnd('/')}/";
 			}
 
 			var @continue = true;

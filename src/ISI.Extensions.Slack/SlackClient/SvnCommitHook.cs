@@ -44,7 +44,7 @@ namespace ISI.Extensions.Slack
 
 				if (request is DTOs.SvnCommitHookRequest svnCommitHookRequest)
 				{
-					message = string.Format("{0}\r\n{1}", svnCommitHookRequest.Log, string.Join("\r\n", svnCommitHookRequest.Directories ?? []));
+					message = $"{svnCommitHookRequest.Log}\r\n{string.Join("\r\n", svnCommitHookRequest.Directories ?? [])}";
 				}
 
 				var payloadRequest = new SerializableModels.SvnCommitHookPayload()
@@ -59,7 +59,7 @@ namespace ISI.Extensions.Slack
 				{
 					var revisionUri = new UriBuilder(revisionUrl.Replace(new Dictionary<string, string>()
 					{
-						{"{revision}", string.Format("{0}", request.Revision)}
+						{"{revision}", $"{request.Revision}" }
 					}));
 
 					payloadRequest.Url = revisionUri.Uri.ToString();

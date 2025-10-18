@@ -43,11 +43,11 @@ namespace ISI.Extensions.Tests.MessageBus
 		public void OneTimeSetUp()
 		{
 			var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
-			var configurationsPath = string.Format("Configuration{0}", System.IO.Path.DirectorySeparatorChar);
+			var configurationsPath = $"Configuration{System.IO.Path.DirectorySeparatorChar}";
 
 			var activeEnvironmentConfiguration = configurationBuilder.GetActiveEnvironmentConfiguration($"{configurationsPath}isi.extensions.environmentsConfig.json");
 
-			var connectionStringPath = string.Format("Configuration{0}", System.IO.Path.DirectorySeparatorChar);
+			var connectionStringPath = $"Configuration{System.IO.Path.DirectorySeparatorChar}";
 			configurationBuilder.AddClassicConnectionStringsSectionFile($"{connectionStringPath}connectionStrings.config", true);
 			configurationBuilder.AddClassicConnectionStringsSectionFiles(activeEnvironmentConfiguration.ActiveEnvironments, environment => $"{connectionStringPath}connectionStrings.{environment}.config");
 			configurationBuilder.SetBasePath(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));

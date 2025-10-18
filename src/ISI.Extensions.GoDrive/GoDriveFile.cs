@@ -29,7 +29,7 @@ namespace ISI.Extensions.GoDrive
 
 		public string FullName
 		{
-			get => string.Format("{0}/{1}/{2}", DirectoryUrl, FileKey, FileName);
+			get => $"{DirectoryUrl}/{FileKey}/{FileName}";
 			set
 			{
 				var pieces = new Stack<string>(value.Split(new []{ '/' }));

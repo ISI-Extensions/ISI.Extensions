@@ -40,13 +40,13 @@ namespace ISI.Extensions.DependencyInjection.Extensions
 				var serviceType = Type.GetType(registration.ServiceType);
 				if (serviceType == null)
 				{
-					throw new(string.Format("type cannot be resolved: \"{0}\"", registration.ServiceType));
+					throw new($"type cannot be resolved: \"{registration.ServiceType}\"");
 				}
 
 				var mapToType = (string.IsNullOrWhiteSpace(registration.MapToType) ? (Type)null : Type.GetType(registration.MapToType));
 				if (!string.IsNullOrWhiteSpace(registration.MapToType) && (mapToType == null))
 				{
-					throw new(string.Format("mapTo cannot be resolved: \"{0}\"", registration.MapToType));
+					throw new($"mapTo cannot be resolved: \"{registration.MapToType}\"");
 				}
 
 				ISI.Extensions.DependencyInjection.CreateService createService = null;

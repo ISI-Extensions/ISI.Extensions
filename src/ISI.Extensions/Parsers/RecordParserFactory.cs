@@ -39,7 +39,7 @@ namespace ISI.Extensions
 
 					for (var valueIndex = 0; valueIndex < values.Length; valueIndex++)
 					{
-						var value = (values[valueIndex] is string ? (string)values[valueIndex] : string.Format("{0}", values[valueIndex])).Trim();
+						var value = (values[valueIndex] is string ? (string)values[valueIndex] : $"{values[valueIndex]}").Trim();
 
 						if (columnLookup.TryGetValue(value, out var columnIndex))
 						{
@@ -58,7 +58,7 @@ namespace ISI.Extensions
 		{
 			return (object context, string source, IDictionary<string, int> columnLookup, ISI.Extensions.Columns.IColumnCollection<TRecord> columns, ref int[] columnIndexes, ref object[] values) =>
 			{
-				var headerColumnValue = (values[0] is string ? (string)values[0] : string.Format("{0}", values[0]));
+				var headerColumnValue = (values[0] is string ? (string)values[0] : $"{values[0]}");
 
 				if (headerColumnValue.StartsWith(headerPrefix))
 				{
@@ -73,7 +73,7 @@ namespace ISI.Extensions
 
 					for (var valueIndex = 0; valueIndex < values.Length; valueIndex++)
 					{
-						var value = (values[valueIndex] is string ? (string)values[valueIndex] : string.Format("{0}", values[valueIndex]));
+						var value = (values[valueIndex] is string ? (string)values[valueIndex] : $"{values[valueIndex]}");
 
 						if (columnLookup.TryGetValue(value, out var columnIndex))
 						{

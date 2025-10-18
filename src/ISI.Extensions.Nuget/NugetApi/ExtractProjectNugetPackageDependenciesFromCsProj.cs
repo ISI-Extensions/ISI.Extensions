@@ -62,7 +62,7 @@ namespace ISI.Extensions.Nuget
 						{
 							if (!request.DoNotCheckForDifferentVersions && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 							{
-								throw new(string.Format("Multiple versions of {0} found in {1}", packageId, request.CsProjFullName));
+								throw new($"Multiple versions of {packageId} found in {request.CsProjFullName}");
 							}
 						}
 						else
@@ -93,7 +93,7 @@ namespace ISI.Extensions.Nuget
 							{
 								if (!string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 								{
-									throw new(string.Format("Multiple versions of {0} found in {1}", packageId, request.CsProjFullName));
+									throw new($"Multiple versions of {packageId} found in {request.CsProjFullName}");
 								}
 							}
 							else
@@ -115,7 +115,7 @@ namespace ISI.Extensions.Nuget
 					var packageVersion = string.Empty;
 					var hintPath = reference.GetElementByLocalName("HintPath")?.Value;
 
-					var keyValues = string.Format("PackageId={0}", packageId).Split([','], StringSplitOptions.RemoveEmptyEntries).Select(item => item.Split(["="], StringSplitOptions.None)).ToDictionary(item => item[0].Trim(), item => (item.Length >= 2 ? item[1].Trim() : string.Empty), StringComparer.CurrentCultureIgnoreCase);
+					var keyValues = $"PackageId={packageId}".Split([','], StringSplitOptions.RemoveEmptyEntries).Select(item => item.Split(["="], StringSplitOptions.None)).ToDictionary(item => item[0].Trim(), item => (item.Length >= 2 ? item[1].Trim() : string.Empty), StringComparer.CurrentCultureIgnoreCase);
 					keyValues.TryGetValue("PackageId", out packageId);
 					keyValues.TryGetValue("Version", out packageVersion);
 
@@ -142,13 +142,13 @@ namespace ISI.Extensions.Nuget
 
 							if (inVersion && pathPiece.ToIntNullable().HasValue)
 							{
-								packageVersion = string.Format("{0}.{1}", pathPiece, packageVersion);
+								packageVersion = $"{pathPiece}.{packageVersion}";
 							}
 							else
 							{
 								inVersion = false;
 
-								packageId = string.Format("{0}.{1}", pathPiece, packageId);
+								packageId = $"{pathPiece}.{packageId}";
 							}
 						}
 
@@ -162,7 +162,7 @@ namespace ISI.Extensions.Nuget
 						{
 							if (!string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 							{
-								throw new(string.Format("Multiple versions of {0} found in {1}", packageId, request.CsProjFullName));
+								throw new($"Multiple versions of {packageId} found in {request.CsProjFullName}");
 							}
 						}
 						else

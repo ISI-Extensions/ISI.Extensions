@@ -32,7 +32,7 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 			{
 				try
 				{
-					var exception = unhandledExceptionEventArgs.ExceptionObject as Exception ?? new Exception(string.Format("An unhandled exception occurred in this application: {0}", unhandledExceptionEventArgs.ExceptionObject));
+					var exception = unhandledExceptionEventArgs.ExceptionObject as Exception ?? new Exception($"An unhandled exception occurred in this application: {unhandledExceptionEventArgs.ExceptionObject}");
 
 					context.LoggerConfigurator.Error(exception, "Unhandled Exception");
 				}
@@ -49,11 +49,11 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 
 			var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
 
-			var configurationsPath = string.Format("Configuration{0}", System.IO.Path.DirectorySeparatorChar);
+			var configurationsPath = $"Configuration{System.IO.Path.DirectorySeparatorChar}";
 
 			var activeEnvironmentConfiguration = configurationBuilder.GetActiveEnvironmentConfiguration($"{configurationsPath}isi.extensions.environmentsConfig.json");
 
-			var connectionStringPath = string.Format("Configuration{0}", System.IO.Path.DirectorySeparatorChar);
+			var connectionStringPath = $"Configuration{System.IO.Path.DirectorySeparatorChar}";
 			configurationBuilder.AddClassicConnectionStringsSectionFile($"{connectionStringPath}connectionStrings.config", true);
 			configurationBuilder.AddClassicConnectionStringsSectionFiles(activeEnvironmentConfiguration.ActiveEnvironments, environment => $"{connectionStringPath}connectionStrings.{environment}.config");
 //#if !DEBUG
@@ -81,7 +81,7 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 				}
 
 				System.Console.WriteLine($"ActiveEnvironment: {activeEnvironmentConfiguration.ActiveEnvironment}");
-				System.Console.WriteLine($"ActiveEnvironments: {string.Join(", ", activeEnvironmentConfiguration.ActiveEnvironments.Select(e => string.Format("\"{0}\"", e)))}");
+				System.Console.WriteLine($"ActiveEnvironments: {string.Join(", ", activeEnvironmentConfiguration.ActiveEnvironments.Select(e => $"\"{e}\""))}");
 
 				foreach (var keyValuePair in context.ConfigurationRoot.AsEnumerable())
 				{

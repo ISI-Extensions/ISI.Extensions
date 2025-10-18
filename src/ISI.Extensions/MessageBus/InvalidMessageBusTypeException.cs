@@ -24,7 +24,7 @@ namespace ISI.Extensions.MessageBus
 	public class InvalidMessageBusTypeException : Exception
 	{
 		public InvalidMessageBusTypeException(string messageBusType)
-			: base(string.Format("\"{0}\" not recognized", messageBusType))
+			: base($"\"{messageBusType}\" not recognized")
 		{
 		}
 	}

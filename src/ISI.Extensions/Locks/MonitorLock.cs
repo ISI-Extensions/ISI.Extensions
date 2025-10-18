@@ -21,7 +21,7 @@ namespace ISI.Extensions.Locks
 {
 	public class MonitorLock : ILock
 	{
-		private static readonly string KeyLockSuffix = string.Format("{0:D}", Guid.NewGuid());
+		private static readonly string KeyLockSuffix = $"{Guid.NewGuid():D}";
 
 		public string Key { get; }
 		public TimeSpan LockTimeout { get; }
@@ -32,7 +32,7 @@ namespace ISI.Extensions.Locks
 			string key,
 			TimeSpan lockTimeout)
 		{
-			Key = string.Format("KeyLock:{0}-{1}", key, KeyLockSuffix);
+			Key = $"KeyLock:{key}-{KeyLockSuffix}";
 			LockTimeout = lockTimeout;
 			_cancellationTokenSource = null;
 		}

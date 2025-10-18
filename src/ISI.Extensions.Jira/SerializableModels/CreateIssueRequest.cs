@@ -67,7 +67,7 @@ namespace ISI.Extensions.Jira.SerializableModels
 		public string Description { get; set; }
 
 		[DataMember(Name = "duedate", EmitDefaultValue = false)]
-		public string __DueDate { get => (DueDate.HasValue ? string.Format("{0:yyyy-MM-ddTHH:mm:ss.fffzz}00", (DueDate?.Kind == DateTimeKind.Local ? DueDate : DueDate?.ToLocalTime())) : string.Empty); set => DueDate = value.ToDateTimeNullable(); }
+		public string __DueDate { get => (DueDate.HasValue ? $"{(DueDate?.Kind == DateTimeKind.Local ? DueDate : DueDate?.ToLocalTime()):yyyy-MM-ddTHH:mm:ss.fffzz}00" : string.Empty); set => DueDate = value.ToDateTimeNullable(); }
 		[IgnoreDataMember]
 		public DateTime? DueDate { get; set; }
 

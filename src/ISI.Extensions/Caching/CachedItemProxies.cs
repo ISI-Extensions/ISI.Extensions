@@ -22,7 +22,7 @@ namespace ISI.Extensions.Caching
 {
 	public class CachedItemProxies
 	{
-		public static string GetCachedItemProxiesCacheKey(string cacheKey) => string.Format("{0}-ProxyCacheKey", cacheKey);
+		public static string GetCachedItemProxiesCacheKey(string cacheKey) => $"{cacheKey}-ProxyCacheKey";
 
 		public string[] ProxyCacheKeys { get; set; }
 	}

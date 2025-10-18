@@ -26,7 +26,7 @@ namespace ISI.Extensions.Emails.Extensions
 			var caption = emailAddress?.Caption?.Trim();
 			var address = (emailAddress?.Address ?? string.Empty).Trim();
 
-			return string.IsNullOrEmpty(caption) ? address : string.Format("{0}<{1}>", caption, address);
+			return string.IsNullOrEmpty(caption) ? address : $"{caption}<{address}>";
 		}
 
 		public static System.Net.Mail.MailAddress ToMailAddress(this IEmailAddress emailAddress)

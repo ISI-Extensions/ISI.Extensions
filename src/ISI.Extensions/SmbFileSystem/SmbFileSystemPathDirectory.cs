@@ -22,7 +22,7 @@ namespace ISI.Extensions.SmbFileSystem
 {
 	public class SmbFileSystemPathDirectory : SmbFileSystemPath, ISmbFileSystemPathDirectory
 	{
-		public override string ToString() => string.Format("Smb Directory {0}", base.ToString());
+		public override string ToString() => $"Smb Directory {base.ToString()}";
 
 		void ISmbFileSystemPathDirectory.SetValues(string drive, string server, string userName, string password, string directory, string pathName)
 		{

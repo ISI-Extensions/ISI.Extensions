@@ -74,7 +74,7 @@ namespace ISI.Extensions.Ngrok
 
 			foreach (var tunnel in _tunnels)
 			{
-				Logger.Log(LogLevel.Information, string.Format("NGork tunnel created \"{0}\" => \"{1}\"", tunnel.ExternalUrl, tunnel.LocalUrl));
+				Logger.Log(LogLevel.Information, $"NGork tunnel created \"{tunnel.ExternalUrl}\" => \"{tunnel.LocalUrl}\"");
 			}
 		}
 
@@ -87,7 +87,7 @@ namespace ISI.Extensions.Ngrok
 					TunnelNames = [tunnel.TunnelName],
 				});
 
-				Logger.Log(LogLevel.Information, string.Format("NGork tunnel stopped \"{0}\" => \"{1}\"", tunnel.ExternalUrl, tunnel.LocalUrl));
+				Logger.Log(LogLevel.Information, $"NGork tunnel stopped \"{tunnel.ExternalUrl}\" => \"{tunnel.LocalUrl}\"");
 
 				tunnel.NewTunnel = false;
 			}

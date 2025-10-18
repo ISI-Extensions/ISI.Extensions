@@ -62,12 +62,12 @@ namespace ISI.Extensions.VisualStudio
 				}
 				else
 				{
-					throw new(string.Format("StoreLocation: \"{0}\" not recognized", certificateStoreLocation));
+					throw new($"StoreLocation: \"{certificateStoreLocation}\" not recognized");
 				}
 			}
 			else
 			{
-				throw new(string.Format("StoreName: \"{0}\" not recognized", certificateStoreName));
+				throw new($"StoreName: \"{certificateStoreName}\" not recognized");
 			}
 
 			throw new("Certificate not found");

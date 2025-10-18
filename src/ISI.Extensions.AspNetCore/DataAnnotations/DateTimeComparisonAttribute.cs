@@ -69,7 +69,7 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 
 		public override IEnumerable<Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult> Validate(Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationContext context)
 		{
-			var model = string.Format("{0}", context.Model);
+			var model = $"{context.Model}";
 
 			if (!AllowEmptyStrings || !string.IsNullOrWhiteSpace(model))
 			{
@@ -77,9 +77,9 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 				var timeFieldToInclude = context.ModelMetadata.ContainerType.GetProperty(TimeFieldToInclude);
 				if (timeFieldToInclude != null)
 				{
-					var timeFieldToIncludeValue = string.Format("{0}", timeFieldToInclude.GetValue(context.Container, null));
+					var timeFieldToIncludeValue = $"{timeFieldToInclude.GetValue(context.Container, null)}";
 
-					dateTimeValueToParse = string.Format("{0} {1}", dateTimeValueToParse, timeFieldToIncludeValue);
+					dateTimeValueToParse = $"{dateTimeValueToParse} {timeFieldToIncludeValue}";
 				}
 
 				var dateTimeNullableValue = dateTimeValueToParse.ToDateTimeNullable();
@@ -94,13 +94,13 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 				var dateFieldToCheck = context.ModelMetadata.ContainerType.GetProperty(DateFieldToCheck);
 				if (dateFieldToCheck != null)
 				{
-					dateTimeValueToParse = string.Format("{0}", dateFieldToCheck.GetValue(context.Container, null));
+					dateTimeValueToParse = $"{dateFieldToCheck.GetValue(context.Container, null)}";
 					var timeFieldToCheck = context.ModelMetadata.ContainerType.GetProperty(TimeFieldToCheck);
 					if (timeFieldToInclude != null)
 					{
-						var timeFieldToIncludeValue = string.Format("{0}", timeFieldToInclude.GetValue(context.Container, null));
+						var timeFieldToIncludeValue = $"{timeFieldToInclude.GetValue(context.Container, null)}";
 
-						dateTimeValueToParse = string.Format("{0} {1}", dateTimeValueToParse, timeFieldToIncludeValue);
+						dateTimeValueToParse = $"{dateTimeValueToParse} {timeFieldToIncludeValue}";
 					}
 
 					var valueToCheck = dateTimeValueToParse.ToDateTime();

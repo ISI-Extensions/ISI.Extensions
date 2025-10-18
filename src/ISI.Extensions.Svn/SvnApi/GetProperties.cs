@@ -54,7 +54,7 @@ namespace ISI.Extensions.Svn
 						break;
 				}
 
-				arguments.Add(string.Format("\"{0}\"", request.Source.TrimEnd(System.IO.Path.DirectorySeparatorChar)));
+				arguments.Add($"\"{request.Source.TrimEnd(System.IO.Path.DirectorySeparatorChar)}\"");
 
 				AddCredentials(arguments, request);
 
@@ -91,7 +91,7 @@ namespace ISI.Extensions.Svn
 					{
 						if (!string.IsNullOrWhiteSpace(pathPropertyKey) && (pathProperties != null))
 						{
-							pathProperties[pathPropertyKey] += string.Format("{0}\n", contentItem.Trim());
+							pathProperties[pathPropertyKey] += $"{contentItem.Trim()}\n";
 						}
 					}
 				}

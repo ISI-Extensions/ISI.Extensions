@@ -112,7 +112,7 @@ namespace ISI.Extensions.WebClient
 
 									using (var responseStream = new System.IO.StreamReader(webResponse.GetResponseStream(), encoding))
 									{
-										throw new(string.Format("{0}: {1}\n{2}", webResponse.StatusCode, webResponse.StatusDescription, responseStream.ReadToEnd()));
+										throw new($"{webResponse.StatusCode}: {webResponse.StatusDescription}\n{responseStream.ReadToEnd()}");
 									}
 								}
 							}
@@ -155,7 +155,7 @@ namespace ISI.Extensions.WebClient
 
 		public static (System.Net.HttpStatusCode HttpStatusCode, string Body) UploadFiles(Uri uri, HeaderCollection headers, IEnumerable<(System.IO.Stream Stream, string FileName, string FileFieldName)> files, System.Collections.Specialized.NameValueCollection formValues = null, string method = null)
 		{
-			var boundary = string.Format("---------------------------{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.Base36));
+			var boundary = $"---------------------------{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.Base36)}";
 			var boundaryBytes = System.Text.Encoding.UTF8.GetBytes(string.Format("{0}--{1}{0}", Environment.NewLine, boundary));
 
 			var webRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(uri);
@@ -250,7 +250,7 @@ namespace ISI.Extensions.WebClient
 
 						if ((httpWebResponse.StatusCode != System.Net.HttpStatusCode.OK) && (httpWebResponse.StatusCode != System.Net.HttpStatusCode.Created))
 						{
-							throw new(string.Format("{0}: {1}\n{2}", httpWebResponse.StatusCode, httpWebResponse.StatusDescription, body));
+							throw new($"{httpWebResponse.StatusCode}: {httpWebResponse.StatusDescription}\n{body}");
 						}
 
 						return (HttpStatusCode: httpWebResponse.StatusCode, Body: body);
@@ -272,8 +272,8 @@ namespace ISI.Extensions.WebClient
 		{
 			stream.Rewind();
 
-			var boundary = string.Format("---------------------------{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.Base36));
-			var boundaryBytes = System.Text.Encoding.UTF8.GetBytes(string.Format("\r\n--{0}\r\n", boundary));
+			var boundary = $"---------------------------{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.Base36)}";
+			var boundaryBytes = System.Text.Encoding.UTF8.GetBytes($"\r\n--{boundary}\r\n");
 
 			var formItems = new List<byte[]>();
 			long requestLen = 0;
@@ -282,7 +282,7 @@ namespace ISI.Extensions.WebClient
 			{
 				foreach (var key in formValues.AllKeys)
 				{
-					var itemString = string.Format("Content-Disposition: form-data; name=\"{0}\"\r\n\r\n{1}", key, formValues[key]);
+					var itemString = $"Content-Disposition: form-data; name=\"{key}\"\r\n\r\n{formValues[key]}";
 					var itemBytes = System.Text.Encoding.UTF8.GetBytes(itemString);
 
 					requestLen += itemBytes.Length;
@@ -293,9 +293,9 @@ namespace ISI.Extensions.WebClient
 			}
 
 
-			var fileHeader = string.Format("Content-Disposition: form-data; name=\"{0}\"; filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n", fileFieldName, fileName, ISI.Extensions.MimeType.GetMimeType(fileName));
+			var fileHeader = $"Content-Disposition: form-data; name=\"{fileFieldName}\"; filename=\"{fileName}\"\r\nContent-Type: {ISI.Extensions.MimeType.GetMimeType(fileName)}\r\n\r\n";
 			var fileHeaderBytes = System.Text.Encoding.UTF8.GetBytes(fileHeader);
-			var fileTrailer = System.Text.Encoding.UTF8.GetBytes(string.Format("\r\n--{0}--\r\n", boundary));
+			var fileTrailer = System.Text.Encoding.UTF8.GetBytes($"\r\n--{boundary}--\r\n");
 
 			requestLen += boundaryBytes.Length + fileHeaderBytes.Length + fileTrailer.Length + stream.Length;
 
@@ -348,7 +348,7 @@ namespace ISI.Extensions.WebClient
 
 						if (httpWebResponse.StatusCode != System.Net.HttpStatusCode.OK)
 						{
-							throw new(string.Format("{0}: {1}\n{2}", httpWebResponse.StatusCode, httpWebResponse.StatusDescription, body));
+							throw new($"{httpWebResponse.StatusCode}: {httpWebResponse.StatusDescription}\n{body}");
 						}
 
 						return Serialization.Deserialize<TResponse>(body, ISI.Extensions.Serialization.SerializationFormat.Json);
@@ -375,8 +375,8 @@ namespace ISI.Extensions.WebClient
 
 			stream.Rewind();
 
-			var boundary = string.Format("---------------------------{0}", Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.Base36));
-			var boundaryBytes = System.Text.Encoding.UTF8.GetBytes(string.Format("\r\n--{0}\r\n", boundary));
+			var boundary = $"---------------------------{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.Base36)}";
+			var boundaryBytes = System.Text.Encoding.UTF8.GetBytes($"\r\n--{boundary}\r\n");
 
 			var formItems = new List<byte[]>();
 			long requestLen = 0;
@@ -385,7 +385,7 @@ namespace ISI.Extensions.WebClient
 			{
 				foreach (var key in formValues.AllKeys)
 				{
-					var itemString = string.Format("Content-Disposition: form-data; name=\"{0}\"\r\n\r\n{1}", key, formValues[key]);
+					var itemString = $"Content-Disposition: form-data; name=\"{key}\"\r\n\r\n{formValues[key]}";
 					var itemBytes = System.Text.Encoding.UTF8.GetBytes(itemString);
 
 					requestLen += itemBytes.Length;
@@ -396,9 +396,9 @@ namespace ISI.Extensions.WebClient
 			}
 
 
-			var fileHeader = string.Format("Content-Disposition: form-data; name=\"{0}\"; filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n", fileFieldName, fileName, ISI.Extensions.MimeType.GetMimeType(fileName));
+			var fileHeader = $"Content-Disposition: form-data; name=\"{fileFieldName}\"; filename=\"{fileName}\"\r\nContent-Type: {ISI.Extensions.MimeType.GetMimeType(fileName)}\r\n\r\n";
 			var fileHeaderBytes = System.Text.Encoding.UTF8.GetBytes(fileHeader);
-			var fileTrailer = System.Text.Encoding.UTF8.GetBytes(string.Format("\r\n--{0}--\r\n", boundary));
+			var fileTrailer = System.Text.Encoding.UTF8.GetBytes($"\r\n--{boundary}--\r\n");
 
 			if (stream != null)
 			{

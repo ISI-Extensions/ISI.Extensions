@@ -41,7 +41,7 @@ namespace ISI.Extensions
 		{
 			public static string _root()
 			{
-				return string.Format("{0}Artwork.", T4Resources._root());
+				return $"{T4Resources._root()}Artwork.";
 			}
 		
 			public static readonly string Lantern_ico = _root() + "Lantern.ico";

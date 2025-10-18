@@ -70,7 +70,7 @@ namespace ISI.Extensions
 				}
 				else
 				{
-					throw new(string.Format("Type: \"{0}\" is not a DataContract", type.AssemblyQualifiedNameWithoutVersion()));
+					throw new($"Type: \"{type.AssemblyQualifiedNameWithoutVersion()}\" is not a DataContract");
 				}
 			}
 

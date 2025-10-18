@@ -47,7 +47,7 @@ namespace ISI.Extensions
 				while (!string.Equals(relativeTo, commonPath, StringComparison.InvariantCultureIgnoreCase))
 				{
 					relativeTo = System.IO.Path.GetDirectoryName(relativeTo);
-					path = string.Format("..{0}{1}", System.IO.Path.DirectorySeparatorChar, path);
+					path = $"..{System.IO.Path.DirectorySeparatorChar}{path}";
 				}
 
 				return path;

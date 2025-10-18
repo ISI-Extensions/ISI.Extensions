@@ -33,13 +33,13 @@ namespace ISI.Extensions.Jira
 			var boardId = GetBoardId(request, null, request.BoardIdOrName);
 			if (!boardId.HasValue)
 			{
-				throw new Exception(string.Format("Cannot find BoardName: \"{0}\"", request.BoardIdOrName));
+				throw new Exception($"Cannot find BoardName: \"{request.BoardIdOrName}\"");
 			}
 
 			var uri = GetJiraApiUri(request);
 			uri.SetPathAndQueryString(UrlPathFormat.ListSprints.Replace(new Dictionary<string, string>()
 			{
-				{ "{boardId}", string.Format("{0}", boardId) }
+				{ "{boardId}", $"{boardId}" }
 			}, StringComparer.InvariantCultureIgnoreCase));
 			if (request.Skip > 0)
 			{

@@ -27,7 +27,7 @@ namespace ISI.Extensions.Aspose.InternalTryNotToUseExtensions
 		{
 			if (!(font is ISI.Extensions.Aspose.Cells.Font asposeFont))
 			{
-				throw new(string.Format("{0} is not of type {1}", nameof(font), typeof(ISI.Extensions.Aspose.Cells.Font).FullName));
+				throw new($"{nameof(font)} is not of type {typeof(ISI.Extensions.Aspose.Cells.Font).FullName}");
 			}
 
 			return asposeFont._font;

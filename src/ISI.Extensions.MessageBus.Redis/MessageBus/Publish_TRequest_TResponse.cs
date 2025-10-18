@@ -39,7 +39,7 @@ namespace ISI.Extensions.MessageBus.Redis
 
 			var responseType = typeof(TResponse);
 
-			var responseChannelName = string.Format("{0}-{1}", responseType.FullName, Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting));
+			var responseChannelName = $"{responseType.FullName}-{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}";
 
 			var messageEnvelope = GetMessageEnvelope(request, headers, timeout, responseChannelName);
 

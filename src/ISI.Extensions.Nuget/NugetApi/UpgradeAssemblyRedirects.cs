@@ -59,7 +59,7 @@ namespace ISI.Extensions.Nuget
 				{
 					while (!string.IsNullOrWhiteSpace(assemblyName))
 					{
-						if (removeAssemblyRedirects.Contains(string.Format("{0}*", assemblyName)))
+						if (removeAssemblyRedirects.Contains($"{assemblyName}*"))
 						{
 							return true;
 						}
@@ -97,7 +97,7 @@ namespace ISI.Extensions.Nuget
 
 								if (!string.IsNullOrWhiteSpace(assembly?.AssemblyVersion) && !string.Equals(assembly.AssemblyVersion, newVersion))
 								{
-									bindingRedirect.Attribute("oldVersion").Value = string.Format("0.0.0.0-{0}", assembly.AssemblyVersion);
+									bindingRedirect.Attribute("oldVersion").Value = $"0.0.0.0-{assembly.AssemblyVersion}";
 									bindingRedirect.Attribute("newVersion").Value = assembly.AssemblyVersion;
 								}
 							}
@@ -116,7 +116,7 @@ namespace ISI.Extensions.Nuget
 					dependentAssemblyElement.Add(assemblyIdentityElement);
 
 					var bindingRedirectElement = new System.Xml.Linq.XElement("bindingRedirect");
-					bindingRedirectElement.Add(new System.Xml.Linq.XAttribute("oldVersion", string.Format("0.0.0.0-{0}", upsertAssembly.AssemblyVersion)));
+					bindingRedirectElement.Add(new System.Xml.Linq.XAttribute("oldVersion", $"0.0.0.0-{upsertAssembly.AssemblyVersion}"));
 					bindingRedirectElement.Add(new System.Xml.Linq.XAttribute("newVersion", upsertAssembly.AssemblyVersion));
 					dependentAssemblyElement.Add(bindingRedirectElement);
 
@@ -124,7 +124,7 @@ namespace ISI.Extensions.Nuget
 				}
 			}
 
-			response.AppConfigXml = string.Format("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n{0}", projectXml).Replace(" xmlns=\"\"", string.Empty);
+			response.AppConfigXml = $"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n{projectXml}".Replace(" xmlns=\"\"", string.Empty);
 
 			return response;
 		}

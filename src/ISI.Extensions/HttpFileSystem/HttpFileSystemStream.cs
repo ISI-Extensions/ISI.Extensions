@@ -45,7 +45,7 @@ namespace ISI.Extensions.HttpFileSystem
 		{
 			var server = fileSystemPathFile.Server;
 
-			_request = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(string.Format(@"{0}{1}//{2}", Schema, server, fileSystemPathFile.FullPath()));
+			_request = (System.Net.HttpWebRequest)System.Net.WebRequest.Create($@"{Schema}{server}//{fileSystemPathFile.FullPath()}");
 			_request.Method = System.Net.WebRequestMethods.Http.Get;
 			if (!string.IsNullOrEmpty(fileSystemPathFile.UserName) || !string.IsNullOrEmpty(fileSystemPathFile.Password))
 			{

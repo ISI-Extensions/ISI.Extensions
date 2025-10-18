@@ -86,7 +86,7 @@ namespace ISI.Extensions.Nuget
 
 				foreach (var source in sources)
 				{
-					arguments.Add(string.Format("-Source \"{0}\"", source));
+					arguments.Add($"-Source \"{source}\"");
 				}
 			}
 

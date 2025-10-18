@@ -36,13 +36,13 @@ namespace ISI.Extensions.Jira
 			var projectId = GetProjectId(request, request.ProjectIdOrKey);
 			if (!projectId.HasValue)
 			{
-				throw new Exception(string.Format("Cannot find ProjectKey: \"{0}\"", request.ProjectIdOrKey));
+				throw new Exception($"Cannot find ProjectKey: \"{request.ProjectIdOrKey}\"");
 			}
 
 			var issueTypeId = GetIssueTypeId(request, request.IssueTypeIdOrName);
 			if (!issueTypeId.HasValue)
 			{
-				throw new Exception(string.Format("Cannot find IssueTypeKey: \"{0}\"", request.IssueTypeIdOrName));
+				throw new Exception($"Cannot find IssueTypeKey: \"{request.IssueTypeIdOrName}\"");
 			}
 
 			var reporter = request.Reporter;

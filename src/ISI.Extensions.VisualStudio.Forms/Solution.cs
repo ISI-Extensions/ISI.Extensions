@@ -495,7 +495,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 				Panel.Height += SolutionProjects.Sum(solutionProject => solutionProject.Panel.Height);
 
-				foreach (var solutionProject in SolutionProjects.OrderBy(solutionProject => string.Format("{0} => {1}", (string.Equals(Caption, solutionProject.Caption, StringComparison.InvariantCultureIgnoreCase) ? "A" : "B"), solutionProject.Caption), StringComparer.InvariantCultureIgnoreCase))
+				foreach (var solutionProject in SolutionProjects.OrderBy(solutionProject => $"{(string.Equals(Caption, solutionProject.Caption, StringComparison.InvariantCultureIgnoreCase) ? "A" : "B")} => {solutionProject.Caption}", StringComparer.InvariantCultureIgnoreCase))
 				{
 					solutionProject.Panel.Top = top;
 					solutionProject.Panel.Left = 0;
@@ -510,7 +510,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 				Panel.Height += SolutionFilters.Sum(solutionFilter => solutionFilter.Panel.Height);
 
-				foreach (var solutionFilter in SolutionFilters.OrderBy(solutionFilter => string.Format("{0} => {1}", (string.Equals(Caption, solutionFilter.Caption, StringComparison.InvariantCultureIgnoreCase) ? "A" : "B"), solutionFilter.Caption), StringComparer.InvariantCultureIgnoreCase))
+				foreach (var solutionFilter in SolutionFilters.OrderBy(solutionFilter => $"{(string.Equals(Caption, solutionFilter.Caption, StringComparison.InvariantCultureIgnoreCase) ? "A" : "B")} => {solutionFilter.Caption}", StringComparer.InvariantCultureIgnoreCase))
 				{
 					solutionFilter.Panel.Top = top;
 					solutionFilter.Panel.Left = 0;

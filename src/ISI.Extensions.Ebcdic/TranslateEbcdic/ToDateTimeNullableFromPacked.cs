@@ -26,7 +26,7 @@ namespace ISI.Extensions.Ebcdic
 	{
 		public static DateTime? ToDateTimeNullableFromPacked(byte[] packedEbcdic)
 		{
-			return string.Format("{0}", ToDecimalNullableFromPacked(packedEbcdic, 0)).ToDateTimeNullable();
+			return $"{ToDecimalNullableFromPacked(packedEbcdic, 0)}".ToDateTimeNullable();
 		}
 	}
 }

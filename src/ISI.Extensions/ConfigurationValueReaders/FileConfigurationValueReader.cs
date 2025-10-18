@@ -32,7 +32,7 @@ namespace ISI.Extensions.ConfigurationValueReaders
 
 		private string CheckForRedirectFileName(string fileName)
 		{
-			var redirectFileName = string.Format("{0}.redirect", fileName);
+			var redirectFileName = $"{fileName}.redirect";
 
 			if (System.IO.File.Exists(redirectFileName))
 			{
@@ -103,7 +103,7 @@ namespace ISI.Extensions.ConfigurationValueReaders
 								{
 									if (valueByKey.TryGetValue(keyValuePair.Key, out var value))
 									{
-										throw new(string.Format("key: \"{0}\" already exists with value of \"{1}\" cannot add value \"{2}\"", keyValuePair.Key, value, keyValuePair.Value));
+										throw new($"key: \"{keyValuePair.Key}\" already exists with value of \"{value}\" cannot add value \"{keyValuePair.Value}\"");
 									}
 
 									valueByKey.Add(keyValuePair);

@@ -134,7 +134,7 @@ namespace ISI.Extensions.VisualStudio
 						//msBuildRequest.Options.NoImplicitTarget = true;
 						//msBuildRequest.Options.Restore = true;
 						msBuildRequest.Options.Properties.Add("DeployOnBuild", "true");
-						msBuildRequest.Options.Properties.Add("PublishProfile", string.Format("\"{0}\"", publishProfileFullName));
+						msBuildRequest.Options.Properties.Add("PublishProfile", $"\"{publishProfileFullName}\"");
 						//msBuildRequest.Options.Targets.Add("restore");
 						//msBuildRequest.Options.Targets.Add("build");
 
@@ -146,16 +146,16 @@ namespace ISI.Extensions.VisualStudio
 							tempBuildDirectory.DeleteDirectory = false;
 							tempPublishDirectory.DeleteDirectory = false;
 
-							logger.LogInformation(string.Format("buildDirectory = \"{0}\"", buildDirectory));
+							logger.LogInformation($"buildDirectory = \"{buildDirectory}\"");
 							foreach (var fileName in System.IO.Directory.GetFiles(buildDirectory, "*", System.IO.SearchOption.AllDirectories))
 							{
-								logger.LogInformation(string.Format("  {0}", fileName));
+								logger.LogInformation($"  {fileName}");
 							}
 
-							logger.LogInformation(string.Format("publishDirectory = \"{0}\"", publishDirectory));
+							logger.LogInformation($"publishDirectory = \"{publishDirectory}\"");
 							foreach (var fileName in System.IO.Directory.GetFiles(publishDirectory, "*", System.IO.SearchOption.AllDirectories))
 							{
-								logger.LogInformation(string.Format("  {0}", fileName));
+								logger.LogInformation($"  {fileName}");
 							}
 						}
 
@@ -216,7 +216,7 @@ namespace ISI.Extensions.VisualStudio
 					var webConfigFullName = System.IO.Path.Combine(packageComponentDirectory, "web.config");
 					if (System.IO.File.Exists(webConfigFullName))
 					{
-						System.IO.File.Move(webConfigFullName, string.Format("{0}.sample", webConfigFullName));
+						System.IO.File.Move(webConfigFullName, $"{webConfigFullName}.sample");
 					}
 				}
 			}

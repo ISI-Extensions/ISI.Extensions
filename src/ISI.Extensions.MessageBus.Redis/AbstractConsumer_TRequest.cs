@@ -63,7 +63,7 @@ namespace ISI.Extensions.MessageBus.Redis
 					return System.Diagnostics.Trace.CorrelationManager.LogicalOperationStack.Peek().ToString();
 				}
 
-				return string.Format("{0:D}", Guid.NewGuid());
+				return $"{Guid.NewGuid():D}";
 			}
 		}
 
@@ -77,12 +77,12 @@ namespace ISI.Extensions.MessageBus.Redis
 
 		protected virtual void BeginRequest()
 		{
-			System.Diagnostics.Trace.TraceInformation(string.Format("BeginRequest RequestType: \"{0}\", OperationKey: \"{1}\"", RequestTypeAssemblyQualifiedNameWithoutVersion, OperationKey));
+			System.Diagnostics.Trace.TraceInformation($"BeginRequest RequestType: \"{RequestTypeAssemblyQualifiedNameWithoutVersion}\", OperationKey: \"{OperationKey}\"");
 		}
 
 		protected virtual void EndRequest()
 		{
-			System.Diagnostics.Trace.TraceInformation(string.Format("EndRequest RequestType: \"{0}\", OperationKey: \"{1}\"", RequestTypeAssemblyQualifiedNameWithoutVersion, OperationKey));
+			System.Diagnostics.Trace.TraceInformation($"EndRequest RequestType: \"{RequestTypeAssemblyQualifiedNameWithoutVersion}\", OperationKey: \"{OperationKey}\"");
 		}
 
 		protected virtual void SetTrackingKeys(IRequestContext requestContext)
@@ -96,10 +96,10 @@ namespace ISI.Extensions.MessageBus.Redis
 
 			if (string.IsNullOrWhiteSpace(operationKey))
 			{
-				operationKey = string.Format("{0:D}", Guid.NewGuid());
+				operationKey = $"{Guid.NewGuid():D}";
 			}
 
-			operationKey = string.Format("{0}:{1}", operationKey, Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens));
+			operationKey = $"{operationKey}:{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)}";
 
 			System.Diagnostics.Trace.CorrelationManager.StartLogicalOperation(operationKey);
 

@@ -42,7 +42,7 @@ namespace ISI.Extensions.Tests
 		{
 			public static string _root()
 			{
-				return string.Format("{0}EmailMessageTemplates/", T4Files._root());
+				return $"{T4Files._root()}EmailMessageTemplates/";
 			}
 		
 			[GeneratedCode("T4LocalContent", "1.0"), DebuggerNonUserCode]
@@ -50,7 +50,7 @@ namespace ISI.Extensions.Tests
 			{
 				public static string _root()
 				{
-					return string.Format("{0}TestEmail/", T4Files.EmailMessageTemplates._root());
+					return $"{T4Files.EmailMessageTemplates._root()}TestEmail/";
 				}
 			
 				public static readonly string _MhtmlLayout_cshtml = _root() + "_MhtmlLayout.cshtml";
@@ -65,7 +65,7 @@ namespace ISI.Extensions.Tests
 		{
 			public static string _root()
 			{
-				return string.Format("{0}EmbeddedFileProvider/", T4Files._root());
+				return $"{T4Files._root()}EmbeddedFileProvider/";
 			}
 		
 			[GeneratedCode("T4LocalContent", "1.0"), DebuggerNonUserCode]
@@ -73,7 +73,7 @@ namespace ISI.Extensions.Tests
 			{
 				public static string _root()
 				{
-					return string.Format("{0}Documents/", T4Files.EmbeddedFileProvider._root());
+					return $"{T4Files.EmbeddedFileProvider._root()}Documents/";
 				}
 			
 				public static readonly string TextFile1_txt = _root() + "TextFile1.txt";
@@ -100,7 +100,7 @@ namespace ISI.Extensions.Tests
 		{
 			public static string _root()
 			{
-				return string.Format("{0}EmailMessageTemplates/", T4Embedded._root());
+				return $"{T4Embedded._root()}EmailMessageTemplates/";
 			}
 		
 			[GeneratedCode("T4LocalContent", "1.0"), DebuggerNonUserCode]
@@ -108,7 +108,7 @@ namespace ISI.Extensions.Tests
 			{
 				public static string _root()
 				{
-					return string.Format("{0}TestEmail/", T4Embedded.EmailMessageTemplates._root());
+					return $"{T4Embedded.EmailMessageTemplates._root()}TestEmail/";
 				}
 			
 				public static readonly string _MhtmlLayout_cshtml = _root() + "_MhtmlLayout.cshtml";
@@ -123,7 +123,7 @@ namespace ISI.Extensions.Tests
 		{
 			public static string _root()
 			{
-				return string.Format("{0}EmbeddedFileProvider/", T4Embedded._root());
+				return $"{T4Embedded._root()}EmbeddedFileProvider/";
 			}
 		
 			[GeneratedCode("T4LocalContent", "1.0"), DebuggerNonUserCode]
@@ -131,7 +131,7 @@ namespace ISI.Extensions.Tests
 			{
 				public static string _root()
 				{
-					return string.Format("{0}Documents/", T4Embedded.EmbeddedFileProvider._root());
+					return $"{T4Embedded.EmbeddedFileProvider._root()}Documents/";
 				}
 			
 				public static readonly string TextFile1_txt = _root() + "TextFile1.txt";

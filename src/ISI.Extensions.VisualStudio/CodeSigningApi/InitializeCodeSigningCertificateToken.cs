@@ -52,10 +52,10 @@ namespace ISI.Extensions.VisualStudio
 						arguments.Add("/as");
 						arguments.Add("/force");
 						arguments.Add("/fd SHA256");
-						arguments.Add(string.Format("/f \"{0}\"", request.CodeSigningCertificateTokenCertificateFileName));
-						arguments.Add(string.Format("/csp \"{0}\"", request.CodeSigningCertificateTokenCryptographicProvider));
+						arguments.Add($"/f \"{request.CodeSigningCertificateTokenCertificateFileName}\"");
+						arguments.Add($"/csp \"{request.CodeSigningCertificateTokenCryptographicProvider}\"");
 						arguments.Add(string.Format("/k \"[{{{{{1}}}}}]={0}\"", request.CodeSigningCertificateTokenContainerName, request.CodeSigningCertificateTokenPassword));
-						arguments.Add(string.Format("\"{0}\"", dllToSignFullName));
+						arguments.Add($"\"{dllToSignFullName}\"");
 
 						ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 						{

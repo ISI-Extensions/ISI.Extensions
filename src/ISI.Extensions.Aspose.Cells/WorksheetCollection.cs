@@ -74,7 +74,7 @@ namespace ISI.Extensions.Aspose
 
 					var sheetIndex = sheetNames.Count + 1;
 
-					while (sheetNames.Contains((sheetName = string.Format("sheet{0}", sheetIndex))))
+					while (sheetNames.Contains((sheetName = $"sheet{sheetIndex}")))
 					{
 						sheetIndex++;
 					}

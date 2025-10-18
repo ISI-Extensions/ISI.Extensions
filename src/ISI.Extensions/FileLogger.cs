@@ -46,7 +46,7 @@ namespace ISI.Extensions
 				return formatterState.ToString();
 			};
 
-			System.IO.File.AppendAllText(FullName, string.Format("{0}{1}", formatter(state, exception), Environment.NewLine));
+			System.IO.File.AppendAllText(FullName, $"{formatter(state, exception)}{Environment.NewLine}");
 		}
 
 		public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel)

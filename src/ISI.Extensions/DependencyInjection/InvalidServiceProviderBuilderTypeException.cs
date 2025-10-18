@@ -24,7 +24,7 @@ namespace ISI.Extensions.DependencyInjection
 	public class InvalidServiceProviderBuilderTypeException : Exception
 	{
 		public InvalidServiceProviderBuilderTypeException(string serviceProviderBuilderType)
-			: base(string.Format("\"{0}\" not recognized", serviceProviderBuilderType))
+			: base($"\"{serviceProviderBuilderType}\" not recognized")
 		{
 		}
 	}

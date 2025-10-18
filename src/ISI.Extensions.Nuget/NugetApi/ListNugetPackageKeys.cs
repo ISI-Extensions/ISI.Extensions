@@ -44,7 +44,7 @@ namespace ISI.Extensions.Nuget
 
 			if (!string.IsNullOrWhiteSpace(request.Source))
 			{
-				arguments.Add(string.Format("-Source \"{0}\"", request.Source));
+				arguments.Add($"-Source \"{request.Source}\"");
 			}
 			if (request.NugetConfigFullNames.NullCheckedAny())
 			{

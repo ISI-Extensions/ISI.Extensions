@@ -60,14 +60,14 @@ namespace ISI.Extensions.ConfigurationHelper
 							System.Console.WriteLine($"  EV-SECTION ConfigurationSectionName => \"{configurationAttribute.ConfigurationSectionName}\"");
 						}
 
-						AddData(environmentVariables, configurationType, string.Format("{0}:", configurationAttribute.ConfigurationSectionName));
+						AddData(environmentVariables, configurationType, $"{configurationAttribute.ConfigurationSectionName}:");
 					}
 				}
 
 				const string connectionStringPrefix = "CONNECTION_STRING_";
 				foreach (var keyValue in environmentVariables.Where(keyValue => keyValue.Key.StartsWith(connectionStringPrefix, StringComparison.InvariantCultureIgnoreCase)))
 				{
-					Data.Add(string.Format("ConnectionStrings:{0}", keyValue.Key.Substring(connectionStringPrefix.Length)), keyValue.Value);
+					Data.Add($"ConnectionStrings:{keyValue.Key.Substring(connectionStringPrefix.Length)}", keyValue.Value);
 				}
 
 				foreach (var knownEnvironmentMap in _knownEnvironmentMaps)
@@ -133,7 +133,7 @@ namespace ISI.Extensions.ConfigurationHelper
 							{
 								for (var valueIndex = 0; valueIndex < values.Length; valueIndex++)
 								{
-									Data.Add(string.Format("{0}{1}:{2}", prefix, property.Name, valueIndex), string.Format("{0}", values[valueIndex]));
+									Data.Add($"{prefix}{property.Name}:{valueIndex}", $"{values[valueIndex]}");
 								}
 							}
 						}
@@ -144,10 +144,10 @@ namespace ISI.Extensions.ConfigurationHelper
 						{
 							if (_showConfig)
 							{
-								System.Console.WriteLine($"      {string.Format("{0}{1}", prefix, property.Name)} => \"{value}\"");
+								System.Console.WriteLine($"      {$"{prefix}{property.Name}"} => \"{value}\"");
 							}
 
-							Data.Add(string.Format("{0}{1}", prefix, property.Name), string.Format("{0}", value));
+							Data.Add($"{prefix}{property.Name}", $"{value}");
 						}
 					}
 					else if (property.PropertyType.IsClass)
@@ -178,14 +178,14 @@ namespace ISI.Extensions.ConfigurationHelper
 						}
 						else
 						{
-							AddData(environmentVariables, property.PropertyType, string.Format("{0}{1}:", prefix, property.Name));
+							AddData(environmentVariables, property.PropertyType, $"{prefix}{property.Name}:");
 						}
 					}
 					else if (environmentConfigurationAttribute != null)
 					{
 						if (environmentVariables.TryGetValue(environmentConfigurationAttribute.EnvironmentVariableName, out var value))
 						{
-							Data.Add(string.Format("{0}{1}", prefix, property.Name), string.Format("{0}", value));
+							Data.Add($"{prefix}{property.Name}", $"{value}");
 						}
 					}
 				}

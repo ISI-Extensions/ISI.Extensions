@@ -34,7 +34,7 @@ namespace ISI.Extensions
 
 			if (match.Success)
 			{
-				result = string.Format("{0}{1}{2}", match.Groups["AreaCode"], match.Groups["Exchange"], match.Groups["Extension"]);
+				result = $"{match.Groups["AreaCode"]}{match.Groups["Exchange"]}{match.Groups["Extension"]}";
 			}
 
 			return result;
@@ -138,13 +138,13 @@ namespace ISI.Extensions
 							result += rawPhoneNumber.Substring(0, 3);
 							break;
 						case PhoneNumberFormat.Default:
-							result += string.Format("({0}) ", rawPhoneNumber.Substring(0, 3));
+							result += $"({rawPhoneNumber.Substring(0, 3)}) ";
 							break;
 						case PhoneNumberFormat.Dashes:
-							result += string.Format("{0}-", rawPhoneNumber.Substring(0, 3));
+							result += $"{rawPhoneNumber.Substring(0, 3)}-";
 							break;
 						case PhoneNumberFormat.Periods:
-							result += string.Format("{0}.", rawPhoneNumber.Substring(0, 3));
+							result += $"{rawPhoneNumber.Substring(0, 3)}.";
 							break;
 						case PhoneNumberFormat.e164:
 							result += rawPhoneNumber.Substring(0, 3);
@@ -161,16 +161,16 @@ namespace ISI.Extensions
 					switch (phoneNumberFormat)
 					{
 						case PhoneNumberFormat.None:
-							result += string.Format("{0}{1}", rawPhoneNumber.Substring(0, 3), rawPhoneNumber.Substring(3, 4));
+							result += $"{rawPhoneNumber.Substring(0, 3)}{rawPhoneNumber.Substring(3, 4)}";
 							break;
 						case PhoneNumberFormat.Default:
-							result += string.Format("{0}-{1}", rawPhoneNumber.Substring(0, 3), rawPhoneNumber.Substring(3, 4));
+							result += $"{rawPhoneNumber.Substring(0, 3)}-{rawPhoneNumber.Substring(3, 4)}";
 							break;
 						case PhoneNumberFormat.Dashes:
-							result += string.Format("{0}-{1}", rawPhoneNumber.Substring(0, 3), rawPhoneNumber.Substring(3, 4));
+							result += $"{rawPhoneNumber.Substring(0, 3)}-{rawPhoneNumber.Substring(3, 4)}";
 							break;
 						case PhoneNumberFormat.Periods:
-							result += string.Format("{0}.{1}", rawPhoneNumber.Substring(0, 3), rawPhoneNumber.Substring(3, 4));
+							result += $"{rawPhoneNumber.Substring(0, 3)}.{rawPhoneNumber.Substring(3, 4)}";
 							break;
 						case PhoneNumberFormat.e164:
 							result += rawPhoneNumber.Substring(0, 7);
@@ -183,7 +183,7 @@ namespace ISI.Extensions
 				#region Extension
 				if ((phoneNumberFormat != PhoneNumberFormat.e164) && (rawPhoneNumber.Length > 0))
 				{
-					result += string.Format(" x{0}", rawPhoneNumber);
+					result += $" x{rawPhoneNumber}";
 				}
 				#endregion
 			}

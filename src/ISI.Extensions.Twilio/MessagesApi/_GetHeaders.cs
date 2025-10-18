@@ -31,7 +31,7 @@ namespace ISI.Extensions.Twilio
 		{
 			var headers = new ISI.Extensions.WebClient.HeaderCollection();
 
-			headers.UserAgent = string.Format("ISI.Extensions.Twilio/{0}", Version);
+			headers.UserAgent = $"ISI.Extensions.Twilio/{Version}";
 			headers.AddBasicAuthentication(request.AuthorizationKey, request.AuthorizationToken);
 
 			return headers;

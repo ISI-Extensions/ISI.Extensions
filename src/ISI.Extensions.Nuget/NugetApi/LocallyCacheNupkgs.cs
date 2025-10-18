@@ -45,12 +45,12 @@ namespace ISI.Extensions.Nuget
 			{
 				foreach (var nupkgFullName in request.NupkgFullNames)
 				{
-					logger.LogInformation(string.Format("Locally Caching \"{0}\"", System.IO.Path.GetFileName(nupkgFullName)));
+					logger.LogInformation($"Locally Caching \"{System.IO.Path.GetFileName(nupkgFullName)}\"");
 
 					var arguments = new List<string>();
 					arguments.Add("add");
-					arguments.Add(string.Format("\"{0}\"", nupkgFullName));
-					arguments.Add(string.Format("-Source \"{0}\"", tempDirectory.FullName));
+					arguments.Add($"\"{nupkgFullName}\"");
+					arguments.Add($"-Source \"{tempDirectory.FullName}\"");
 
 					var nugetResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 					{

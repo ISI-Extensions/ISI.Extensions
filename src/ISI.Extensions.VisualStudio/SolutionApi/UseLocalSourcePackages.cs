@@ -40,7 +40,7 @@ namespace ISI.Extensions.VisualStudio
 
 			if (string.IsNullOrWhiteSpace(solutionFullName))
 			{
-				throw new Exception(string.Format("Solution not found for \"{0}\"", request.SolutionItem));
+				throw new Exception($"Solution not found for \"{request.SolutionItem}\"");
 			}
 
 			var projectDetailsSet = new List<ProjectDetails>();

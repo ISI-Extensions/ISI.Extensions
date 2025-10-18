@@ -37,7 +37,7 @@ namespace ISI.Extensions
 
 			public CronExpressionMinutes(string source)
 			{
-				Action throwError = () => throw new(string.Format("Minutes: Cannot parse \"{0}\"", source));
+				Action throwError = () => throw new($"Minutes: Cannot parse \"{source}\"");
 
 				var parser = new ISI.Extensions.Parsers.DelimitedTextParser(',');
 
@@ -126,13 +126,13 @@ namespace ISI.Extensions
 								minuteEndRangeIndex++;
 							}
 
-							ranges.Add(string.Format("{0}-{1}", minuteIndex, (minuteEndRangeIndex >= maxMinute ? maxMinute - 1 : minuteEndRangeIndex)));
+							ranges.Add($"{minuteIndex}-{(minuteEndRangeIndex >= maxMinute ? maxMinute - 1 : minuteEndRangeIndex)}");
 
 							minuteIndex = minuteEndRangeIndex - 1;
 						}
 						else
 						{
-							ranges.Add(string.Format("{0}", minuteIndex));
+							ranges.Add($"{minuteIndex}");
 						}
 					}
 

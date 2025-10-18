@@ -43,7 +43,7 @@ namespace ISI.Extensions.Repository
 				{
 					if (migrationSteps.TryGetValue(migrationStepNumber, out var duplicateMigrationStepType))
 					{
-						throw new(string.Format("Both Steps: \"{0}\" and \"{1}\" have the same StepNumber: {2}", duplicateMigrationStepType.Name, migrationStepType.Name, migrationStepNumber));
+						throw new($"Both Steps: \"{duplicateMigrationStepType.Name}\" and \"{migrationStepType.Name}\" have the same StepNumber: {migrationStepNumber}");
 					}
 
 					migrationSteps.Add(migrationStepNumber, migrationStepType);

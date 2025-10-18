@@ -161,7 +161,7 @@ namespace ISI.Extensions.StatusTrackers
 					}
 					catch (Exception exception)
 					{
-						throw new(string.Format("Cannot create file: \"{0}\"", RunningFullName), exception);
+						throw new($"Cannot create file: \"{RunningFullName}\"", exception);
 					}
 				}
 
@@ -259,7 +259,7 @@ namespace ISI.Extensions.StatusTrackers
 					{
 						_logEntries.Add(logEntry);
 
-						System.IO.File.AppendAllText(LogFullName, string.Format("{0}\t{1}{2}", logEntry.DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise), System.Web.HttpUtility.UrlEncode(logEntry.Description), Environment.NewLine));
+						System.IO.File.AppendAllText(LogFullName, $"{logEntry.DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise)}\t{System.Web.HttpUtility.UrlEncode(logEntry.Description)}{Environment.NewLine}");
 					});
 
 					OnAddToLogEvents?.Invoke(logEntry);
@@ -280,7 +280,7 @@ namespace ISI.Extensions.StatusTrackers
 					Successful = successful;
 					Finished = true;
 
-					System.IO.File.WriteAllText($"{FinishedFullName}.tmp", string.Format("Success:\t{0}", successful.TrueFalse()));
+					System.IO.File.WriteAllText($"{FinishedFullName}.tmp", $"Success:\t{successful.TrueFalse()}");
 
 					System.IO.File.Move($"{FinishedFullName}.tmp", FinishedFullName);
 

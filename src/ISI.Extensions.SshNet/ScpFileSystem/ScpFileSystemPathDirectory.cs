@@ -25,7 +25,7 @@ namespace ISI.Extensions.SshNet.ScpFileSystem
 		public override string Schema => ScpFileSystemProvider._schema;
 		public override string DirectorySeparator => ScpFileSystemProvider._directorySeparator;
 
-		public override string ToString() => string.Format("Scp Directory {0}", base.ToString());
+		public override string ToString() => $"Scp Directory {base.ToString()}";
 
 		public override FileSystem.IFileSystemPath Clone()
 		{

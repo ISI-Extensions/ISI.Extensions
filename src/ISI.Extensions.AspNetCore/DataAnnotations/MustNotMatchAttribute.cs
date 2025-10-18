@@ -60,7 +60,7 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 
 		public override IEnumerable<Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationResult> Validate(Microsoft.AspNetCore.Mvc.ModelBinding.Validation.ModelValidationContext context)
 		{
-			var value = string.Format("{0}", context.Model);
+			var value = $"{context.Model}";
 
 			foreach (var propertyName in PropertiesToCheck)
 			{

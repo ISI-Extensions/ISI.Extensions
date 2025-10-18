@@ -165,7 +165,7 @@ namespace ISI.Extensions.Tests
 			//nuspec.ProjectUri = new Uri(@"https://github.com/ISI-Extensions/ISI.Extensions");
 			nuspec.Title = "ISI.Extensions";
 			nuspec.Description = "ISI.Extensions";
-			nuspec.Copyright = string.Format("Copyright (c) {0}, Integrated Solutions, Inc.", DateTime.Now.Year);
+			nuspec.Copyright = $"Copyright (c) {DateTime.Now.Year}, Integrated Solutions, Inc.";
 			nuspec.Authors = ["Integrated Solutions, Inc."];
 			nuspec.Owners = ["Integrated  Solutions, Inc."];
 
@@ -366,7 +366,7 @@ namespace ISI.Extensions.Tests
 						IncludeExternals = true,
 					}).Success)
 					{
-						var exception = new Exception(string.Format("Error updating \"{0}\"", solutionDetails.RootSourceDirectory));
+						var exception = new Exception($"Error updating \"{solutionDetails.RootSourceDirectory}\"");
 						logger.LogError(exception.Message);
 						throw exception;
 					}
@@ -388,7 +388,7 @@ namespace ISI.Extensions.Tests
 							AddToLog = (logEntryLevel, description) => commitLog.AppendLine(description),
 						}).Success)
 						{
-							var exception = new Exception(string.Format("Error committing \"{0}\"", solutionDetails.RootSourceDirectory));
+							var exception = new Exception($"Error committing \"{solutionDetails.RootSourceDirectory}\"");
 							logger.LogError(exception.Message);
 							throw exception;
 						}

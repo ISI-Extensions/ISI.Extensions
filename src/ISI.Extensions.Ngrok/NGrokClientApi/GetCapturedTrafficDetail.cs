@@ -27,7 +27,7 @@ namespace ISI.Extensions.Ngrok
 	{
 		public DTOs.GetCapturedTrafficDetailResponse GetCapturedTrafficDetail(DTOs.GetCapturedTrafficDetailRequest request)
 		{
-			var serviceResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableModels.ClientApi.GetCapturedTrafficDetailResponse>(GetUrl(string.Format("api/requests/http/{0}", request.TrafficKey)), GetHeaders(), true);
+			var serviceResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableModels.ClientApi.GetCapturedTrafficDetailResponse>(GetUrl($"api/requests/http/{request.TrafficKey}"), GetHeaders(), true);
 
 			return serviceResponse.NullCheckedConvert(r => r.Export());
 		}

@@ -41,7 +41,7 @@ namespace ISI.Extensions.VisualStudio
 
 			foreach (var @using in request.Usings.ToNullCheckedArray(NullCheckCollectionResult.Empty))
 			{
-				content.Add(string.Format("using {0};", @using));
+				content.Add($"using {@using};");
 			}
 			content.Add(string.Empty);
 
@@ -49,7 +49,7 @@ namespace ISI.Extensions.VisualStudio
 			{
 				if (!string.IsNullOrWhiteSpace(attributeValue))
 				{
-					content.Add(string.Format("[assembly: Assembly{0}(\"{1}\")]", attributeName, attributeValue));
+					content.Add($"[assembly: Assembly{attributeName}(\"{attributeValue}\")]");
 				}
 			}
 

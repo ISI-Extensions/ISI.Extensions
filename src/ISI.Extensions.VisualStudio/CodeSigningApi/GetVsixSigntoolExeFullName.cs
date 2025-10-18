@@ -56,7 +56,7 @@ namespace ISI.Extensions.VisualStudio
 							var process = new System.Diagnostics.Process();
 							process.StartInfo.UseShellExecute = false;
 							process.StartInfo.FileName = NugetApi.GetNugetExeFullName(new()).NugetExeFullName;
-							process.StartInfo.Arguments = string.Format("install Microsoft.VSSDK.Vsixsigntool -ExcludeVersion -OutputDirectory \"{0}\"", tempDirectory.FullName);
+							process.StartInfo.Arguments = $"install Microsoft.VSSDK.Vsixsigntool -ExcludeVersion -OutputDirectory \"{tempDirectory.FullName}\"";
 							process.Start();
 							process.WaitForExit();
 

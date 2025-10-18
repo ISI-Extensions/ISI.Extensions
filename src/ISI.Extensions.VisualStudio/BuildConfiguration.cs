@@ -76,6 +76,6 @@ namespace ISI.Extensions.VisualStudio
 			}
 		}
 
-		public override string ToString() => string.Format("{0}|{1}", Configuration, MSBuildPlatform.GetDescription());
+		public override string ToString() => $"{Configuration}|{MSBuildPlatform.GetDescription()}";
 	}
 }

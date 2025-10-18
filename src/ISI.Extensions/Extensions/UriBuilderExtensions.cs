@@ -74,7 +74,7 @@ namespace ISI.Extensions.Extensions
 				}
 				else
 				{
-					path = string.Format("{0}{1}{2}", path, (path.EndsWith("/") ? string.Empty : "/"), directory.TrimStart("/"));
+					path = $"{path}{(path.EndsWith("/") ? string.Empty : "/")}{directory.TrimStart("/")}";
 				}
 
 				while (path.StartsWith("/"))
@@ -117,12 +117,12 @@ namespace ISI.Extensions.Extensions
 
 		public static UriBuilder AddQueryStringParameter(this UriBuilder uriBuilder, string name, long value)
 		{
-			return uriBuilder.AddQueryStringParameter(name, string.Format("{0}", value));
+			return uriBuilder.AddQueryStringParameter(name, $"{value}");
 		}
 
 		public static UriBuilder AddQueryStringParameter(this UriBuilder uriBuilder, string name, int value)
 		{
-			return uriBuilder.AddQueryStringParameter(name, string.Format("{0}", value));
+			return uriBuilder.AddQueryStringParameter(name, $"{value}");
 		}
 
 		public static UriBuilder AddQueryStringParameter(this UriBuilder uriBuilder, string name, bool value)
@@ -177,7 +177,7 @@ namespace ISI.Extensions.Extensions
 			{
 				var values = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
 
-				var queryStringParameters = values.AllKeys.Select(key => string.Format("{0}={1}", System.Web.HttpUtility.UrlEncode(key), System.Web.HttpUtility.UrlEncode(values[key]))).ToList();
+				var queryStringParameters = values.AllKeys.Select(key => $"{System.Web.HttpUtility.UrlEncode(key)}={System.Web.HttpUtility.UrlEncode(values[key])}").ToList();
 
 				var keyValues = ISI.Extensions.DataContract.GetValuesDictionary(typeof(TRequest), request);
 
@@ -191,19 +191,19 @@ namespace ISI.Extensions.Extensions
 
 						foreach (var value in ((IEnumerable<object>) keyValue.Value))
 						{
-							var parameterValue = (ISI.Extensions.Enum.IsEnum(valueType) ? ISI.Extensions.Enum.GetAbbreviation(valueType, value) : string.Format("{0}", value));
+							var parameterValue = (ISI.Extensions.Enum.IsEnum(valueType) ? ISI.Extensions.Enum.GetAbbreviation(valueType, value) : $"{value}");
 							if (!removeEmptyValues || !string.IsNullOrWhiteSpace(parameterValue))
 							{
-								queryStringParameters.Add(string.Format("{0}={1}", System.Web.HttpUtility.UrlEncode(keyValue.Key), System.Web.HttpUtility.UrlEncode(parameterValue)));
+								queryStringParameters.Add($"{System.Web.HttpUtility.UrlEncode(keyValue.Key)}={System.Web.HttpUtility.UrlEncode(parameterValue)}");
 							}
 						}
 					}
 					else
 					{
-						var parameterValue = (ISI.Extensions.Enum.IsEnum(valueType) ? ISI.Extensions.Enum.GetAbbreviation(valueType, keyValue.Value) : string.Format("{0}", keyValue.Value));
+						var parameterValue = (ISI.Extensions.Enum.IsEnum(valueType) ? ISI.Extensions.Enum.GetAbbreviation(valueType, keyValue.Value) : $"{keyValue.Value}");
 						if (!removeEmptyValues || !string.IsNullOrWhiteSpace(parameterValue))
 						{
-							queryStringParameters.Add(string.Format("{0}={1}", System.Web.HttpUtility.UrlEncode(keyValue.Key), System.Web.HttpUtility.UrlEncode(parameterValue)));
+							queryStringParameters.Add($"{System.Web.HttpUtility.UrlEncode(keyValue.Key)}={System.Web.HttpUtility.UrlEncode(parameterValue)}");
 						}
 					}
 				}
@@ -222,7 +222,7 @@ namespace ISI.Extensions.Extensions
 			{
 				if (!removeEmptyValues || !string.IsNullOrWhiteSpace(nameValuePair.Value))
 				{
-					queryStringParameters.Add(string.Format("{0}={1}", System.Web.HttpUtility.UrlEncode(nameValuePair.Key), System.Web.HttpUtility.UrlEncode(nameValuePair.Value)));
+					queryStringParameters.Add($"{System.Web.HttpUtility.UrlEncode(nameValuePair.Key)}={System.Web.HttpUtility.UrlEncode(nameValuePair.Value)}");
 				}
 			}
 
@@ -239,7 +239,7 @@ namespace ISI.Extensions.Extensions
 
 				if (!removeEmptyValues || !string.IsNullOrWhiteSpace(value))
 				{
-					queryStringParameters.Add(string.Format("{0}={1}", System.Web.HttpUtility.UrlEncode(key), System.Web.HttpUtility.UrlEncode(value)));
+					queryStringParameters.Add($"{System.Web.HttpUtility.UrlEncode(key)}={System.Web.HttpUtility.UrlEncode(value)}");
 				}
 			}
 

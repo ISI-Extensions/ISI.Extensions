@@ -33,17 +33,17 @@ namespace ISI.Extensions.Oracle.Extensions
 
 		public static string GetFormattedCommand(this global::Oracle.ManagedDataAccess.Client.OracleCommand command)
 		{
-			var message = string.Format("CmdText: {0}", command.CommandText);
+			var message = $"CmdText: {command.CommandText}";
 
 			var parameters = new List<string>();
 			foreach (global::Oracle.ManagedDataAccess.Client.OracleParameter commandParameter in command.Parameters)
 			{
-				parameters.Add(string.Format("{0}: {1}", commandParameter.ParameterName, commandParameter.Value));
+				parameters.Add($"{commandParameter.ParameterName}: {commandParameter.Value}");
 			}
 
 			if (parameters.Any())
 			{
-				message = string.Format("{0}\nParameters:\n{1}", message, string.Join("\n", parameters));
+				message = $"{message}\nParameters:\n{string.Join("\n", parameters)}";
 			}
 
 			return message;
@@ -122,7 +122,7 @@ namespace ISI.Extensions.Oracle.Extensions
 			}
 			catch (Exception exception)
 			{
-				var message = string.Format("Error: {0}\n{1}", exception.Message, command.GetFormattedCommand());
+				var message = $"Error: {exception.Message}\n{command.GetFormattedCommand()}";
 
 				Logger?.LogError(exception, message);
 
@@ -145,7 +145,7 @@ namespace ISI.Extensions.Oracle.Extensions
 			}
 			catch (Exception exception)
 			{
-				var message = string.Format("Error: {0}\n{1}", exception.Message, command.GetFormattedCommand());
+				var message = $"Error: {exception.Message}\n{command.GetFormattedCommand()}";
 
 				Logger?.LogError(exception, message);
 
@@ -168,7 +168,7 @@ namespace ISI.Extensions.Oracle.Extensions
 			}
 			catch (Exception exception)
 			{
-				var message = string.Format("Error: {0}\n{1}", exception.Message, command.GetFormattedCommand());
+				var message = $"Error: {exception.Message}\n{command.GetFormattedCommand()}";
 
 				Logger?.LogError(exception, message);
 

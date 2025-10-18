@@ -49,10 +49,10 @@ namespace ISI.Extensions.FtpFileSystem
 
 			if (EnableSsl && !server.Contains(":"))
 			{
-				server = string.Format("{0}:990", server);
+				server = $"{server}:990";
 			}
 
-			_request = (System.Net.FtpWebRequest)System.Net.WebRequest.Create(string.Format(@"{0}{1}//{2}", Schema, server, fileSystemPathFile.FullPath()));
+			_request = (System.Net.FtpWebRequest)System.Net.WebRequest.Create($@"{Schema}{server}//{fileSystemPathFile.FullPath()}");
 			_request.Method = System.Net.WebRequestMethods.Ftp.DownloadFile;
 			_request.UsePassive = true;
 			_request.UseBinary = true;
@@ -71,7 +71,7 @@ namespace ISI.Extensions.FtpFileSystem
 
 			if (EnableSsl && !server.Contains(":"))
 			{
-				server = string.Format("{0}:990", server);
+				server = $"{server}:990";
 			}
 
 			if (overWrite)
@@ -88,7 +88,7 @@ namespace ISI.Extensions.FtpFileSystem
 				}
 			}
 
-			_request = (System.Net.FtpWebRequest)System.Net.WebRequest.Create(string.Format(@"{0}{1}//{2}", Schema, server, fileSystemPathFile.FullPath()));
+			_request = (System.Net.FtpWebRequest)System.Net.WebRequest.Create($@"{Schema}{server}//{fileSystemPathFile.FullPath()}");
 			_request.Method = System.Net.WebRequestMethods.Ftp.UploadFile;
 			_request.UsePassive = true;
 			_request.UseBinary = true;

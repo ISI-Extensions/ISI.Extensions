@@ -63,7 +63,7 @@ namespace ISI.Extensions
 
 				if (!type.IsEnum)
 				{
-					throw new(string.Format("Cannot create Enum<T> when T is not a Enum, T is \"{0}\"", type.AssemblyQualifiedName));
+					throw new($"Cannot create Enum<T> when T is not a Enum, T is \"{type.AssemblyQualifiedName}\"");
 				}
 
 				var knownAliases = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);

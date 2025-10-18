@@ -94,14 +94,14 @@ namespace ISI.Extensions.Tests
 
 			Console.WriteLine(securityApi.AuthenticateUser(new()
 			{
-				UserName = string.Format("{0}-{1}", settings.ActiveDirectory.UserName, Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)),
+				UserName = $"{settings.ActiveDirectory.UserName}-{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)}",
 				Password = settings.ActiveDirectory.Password,
 			}).Authenticated.TrueFalse());
 
 			Console.WriteLine(securityApi.AuthenticateUser(new()
 			{
 				UserName = $"{settings.ActiveDirectory.Domain}\\{settings.ActiveDirectory.UserName}",
-				Password = string.Format("{0}-{1}", settings.ActiveDirectory.Password, Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)),
+				Password = $"{settings.ActiveDirectory.Password}-{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)}",
 			}).Authenticated.TrueFalse());
 		}
 

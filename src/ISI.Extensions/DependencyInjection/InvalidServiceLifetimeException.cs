@@ -24,12 +24,12 @@ namespace ISI.Extensions.DependencyInjection
 	public class InvalidServiceLifetimeException : Exception
 	{
 		public InvalidServiceLifetimeException(Microsoft.Extensions.DependencyInjection.ServiceLifetime serviceLifetime)
-			: base(string.Format("ServiceLifetime cannot be: {0}", serviceLifetime))
+			: base($"ServiceLifetime cannot be: {serviceLifetime}")
 		{
 		}
 
 		public InvalidServiceLifetimeException(Microsoft.Extensions.DependencyInjection.ServiceLifetime serviceLifetime, System.Exception innerException)
-			: base(string.Format("ServiceLifetime cannot be: {0}", serviceLifetime), innerException)
+			: base($"ServiceLifetime cannot be: {serviceLifetime}", innerException)
 		{
 		}
 	}

@@ -36,7 +36,7 @@ namespace ISI.Extensions.SqlServer.Extensions
 				return serverVersion;
 			}
 
-			var pieces = string.Format("{0}.....", version).Split(['.'], StringSplitOptions.RemoveEmptyEntries).ToNullCheckedArray(value => value.ToInt());
+			var pieces = $"{version}.....".Split(['.'], StringSplitOptions.RemoveEmptyEntries).ToNullCheckedArray(value => value.ToInt());
 
 			return new(pieces[0], pieces[1], pieces[2], pieces[3]);
 		}

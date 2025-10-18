@@ -101,7 +101,7 @@ namespace ISI.Extensions.ConfigurationHelper.Extensions
 				}
 				else
 				{
-					configurationSectionName = string.Format("{0}.{1}", configurationType.Namespace, configurationType.Name);
+					configurationSectionName = $"{configurationType.Namespace}.{configurationType.Name}";
 				}
 			}
 

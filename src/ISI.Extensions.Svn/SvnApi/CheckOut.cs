@@ -37,8 +37,8 @@ namespace ISI.Extensions.Svn
 					var arguments = new List<string>();
 
 					arguments.Add("/command:checkout");
-					arguments.Add(string.Format("/url:\"{0}\"", request.SourceUrl));
-					arguments.Add(string.Format("/path:\"{0}\"", request.TargetFullName));
+					arguments.Add($"/url:\"{request.SourceUrl}\"");
+					arguments.Add($"/path:\"{request.TargetFullName}\"");
 					arguments.Add("/closeonend:0");
 
 					response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
@@ -53,8 +53,8 @@ namespace ISI.Extensions.Svn
 					var arguments = new List<string>();
 
 					arguments.Add("checkout");
-					arguments.Add(string.Format("\"{0}\"", request.SourceUrl));
-					arguments.Add(string.Format("\"{0}\"", request.TargetFullName));
+					arguments.Add($"\"{request.SourceUrl}\"");
+					arguments.Add($"\"{request.TargetFullName}\"");
 					arguments.Add("--include-externals");
 					AddCredentials(arguments, request);
 

@@ -76,7 +76,7 @@ namespace ISI.Extensions.Emails
 
 			if (matchEmailAddress.Success)
 			{
-				Address = string.Format("{0}@{1}", matchEmailAddress.Groups["EmailName"], matchEmailAddress.Groups["EmailDomain"]).Trim();
+				Address = $"{matchEmailAddress.Groups["EmailName"]}@{matchEmailAddress.Groups["EmailDomain"]}".Trim();
 
 				if (matchEmailAddress.Groups.TryGetValue("EmailCaption", out var emailCaptionGroup))
 				{
@@ -144,7 +144,7 @@ namespace ISI.Extensions.Emails
 
 			if (matchEmailAddress.Success)
 			{
-				var address = string.Format("{0}@{1}", matchEmailAddress.Groups["EmailName"], matchEmailAddress.Groups["EmailDomain"]).Trim();
+				var address = $"{matchEmailAddress.Groups["EmailName"]}@{matchEmailAddress.Groups["EmailDomain"]}".Trim();
 
 				if (matchEmailAddress.Groups.TryGetValue("EmailCaption", out var emailCaptionGroup))
 				{
@@ -206,7 +206,7 @@ namespace ISI.Extensions.Emails
 
 			if (matchEmailAddress.Success)
 			{
-				result = string.Format("{0}@{1}", matchEmailAddress.Groups["EmailName"], matchEmailAddress.Groups["EmailDomain"]);
+				result = $"{matchEmailAddress.Groups["EmailName"]}@{matchEmailAddress.Groups["EmailDomain"]}";
 			}
 
 			return result;

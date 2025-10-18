@@ -33,20 +33,20 @@ namespace ISI.Extensions.Jira
 			var boardId = GetBoardId(request, null, request.BoardIdOrName);
 			if (!boardId.HasValue)
 			{
-				throw new Exception(string.Format("Cannot find BoardName: \"{0}\"", request.BoardIdOrName));
+				throw new Exception($"Cannot find BoardName: \"{request.BoardIdOrName}\"");
 			}
 
 			var sprintId = GetSprintId(request, boardId, request.SprintIdOrName);
 			if (!sprintId.HasValue)
 			{
-				throw new Exception(string.Format("Cannot find SprintName: \"{0}\"", request.SprintIdOrName));
+				throw new Exception($"Cannot find SprintName: \"{request.SprintIdOrName}\"");
 			}
 
 			var uri = GetJiraApiUri(request);
 			uri.SetPathAndQueryString(UrlPathFormat.FindSprintIssues.Replace(new Dictionary<string, string>()
 			{
-				{ "{boardId}", string.Format("{0}", boardId) },
-				{ "{sprintId}", string.Format("{0}", sprintId) },
+				{ "{boardId}", $"{boardId}" },
+				{ "{sprintId}", $"{sprintId}" },
 			}, StringComparer.InvariantCultureIgnoreCase));
 			if (request.Skip > 0)
 			{

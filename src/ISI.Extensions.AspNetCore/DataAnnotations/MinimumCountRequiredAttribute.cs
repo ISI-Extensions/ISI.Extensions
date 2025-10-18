@@ -53,7 +53,7 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 
 			MergeAttribute(context.Attributes, "data-val", "true");
 			MergeAttribute(context.Attributes, $"data-val-{ValidationRuleName}", GetErrorMessage(context.ModelMetadata));
-			MergeAttribute(context.Attributes, $"data-val-{ValidationRuleName}-{ValidationMinimumCountRequiredName}", string.Format("{0}", MinimumCountRequired));
+			MergeAttribute(context.Attributes, $"data-val-{ValidationRuleName}-{ValidationMinimumCountRequiredName}", $"{MinimumCountRequired}");
 			MergeAttribute(context.Attributes, $"data-val-{ValidationRuleName}-{ValidationFieldIdsToCheckName}", string.Join(",", FieldsToCheck));
 		}
 
@@ -68,7 +68,7 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 				{
 					var valueToCheck = fieldToCheck.GetValue(context.Container, null);
 
-					if (!string.IsNullOrWhiteSpace(string.Format("{0}", valueToCheck)))
+					if (!string.IsNullOrWhiteSpace($"{valueToCheck}"))
 					{
 						fieldCount++;
 					}

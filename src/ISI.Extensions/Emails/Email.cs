@@ -70,7 +70,7 @@ namespace ISI.Extensions.Emails
 			{
 				if (toEncode.Any())
 				{
-					quotedPrintable.AppendFormat("=?utf-8?Q?={0}?=", string.Join("=", toEncode.Select(v => string.Format("{0:X2}", v))));
+					quotedPrintable.AppendFormat("=?utf-8?Q?={0}?=", string.Join("=", toEncode.Select(v => $"{v:X2}")));
 					toEncode.Clear();
 				}
 			}

@@ -426,7 +426,7 @@ namespace ISI.Extensions.Extensions
 
 		public static string RemoveTitleCase(this string value, string separator = " ", string deliminator = null)
 		{
-			var response = System.Text.RegularExpressions.Regex.Replace(value, @"(?<begin>(\w*?))(?<end>[A-Z]+)", string.Format(@"${{begin}}{0}${{end}}", separator)).Trim();
+			var response = System.Text.RegularExpressions.Regex.Replace(value, @"(?<begin>(\w*?))(?<end>[A-Z]+)", $@"${{begin}}{separator}${{end}}").Trim();
 
 			if (!string.IsNullOrEmpty(deliminator))
 			{
@@ -471,14 +471,14 @@ namespace ISI.Extensions.Extensions
 				switch (justify)
 				{
 					case TextJustifyAlignment.Center:
-						result.Insert(0, string.Format("{0}", fill), (length - result.Length) / 2);
+						result.Insert(0, $"{fill}", (length - result.Length) / 2);
 						if (result.Length < length) result.Append(fill, length - result.Length);
 						break;
 					case TextJustifyAlignment.Left:
 						result.Append(fill, length - result.Length);
 						break;
 					case TextJustifyAlignment.Right:
-						result.Insert(0, string.Format("{0}", fill), length - result.Length);
+						result.Insert(0, $"{fill}", length - result.Length);
 						break;
 				}
 			}

@@ -108,7 +108,7 @@ namespace ISI.Extensions.DataAnnotations
 		
 		public override bool IsValid(object model)
 		{
-			var value = string.Format("{0}", model);
+			var value = $"{model}";
 
 			if (AllowEmptyStrings && string.IsNullOrWhiteSpace(value))
 			{

@@ -57,13 +57,13 @@ namespace ISI.Extensions.Svn
 
 					if (!string.IsNullOrEmpty(trunkUrl))
 					{
-						Logger.LogInformation(string.Format("  trunkUrl=\"{0}\"", trunkUrl));
+						Logger.LogInformation($"  trunkUrl=\"{trunkUrl}\"");
 
 						var tagsUrl = GetTagsUrl(trunkUrl, request.TagName, request.DateTimeStamp, request.DateTimeMask);
 
 						if (!string.IsNullOrEmpty(tagsUrl))
 						{
-							Logger.LogInformation(string.Format("  tagsUrl=\"{0}\"", tagsUrl));
+							Logger.LogInformation($"  tagsUrl=\"{tagsUrl}\"");
 
 							Logger.LogInformation("  trunk svn tag start");
 
@@ -73,15 +73,15 @@ namespace ISI.Extensions.Svn
 								Password = request.Password,
 								SourceUrl = trunkUrl,
 								TargetUrl = tagsUrl,
-								LogMessage = string.Format("Version: {0}\nDateTimeStamp: {1}", request.TagName, request.DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise)),
+								LogMessage = $"Version: {request.TagName}\nDateTimeStamp: {request.DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise)}",
 								CreateParents = true,
 							});
 
 							Logger.LogInformation("  trunk svn tag done");
 
-							Logger.LogInformation(string.Format("  TagsUrl=\"{0}\"", tagsUrl));
-							Logger.LogInformation(string.Format("  Version=\"{0}\"", request.TagName));
-							Logger.LogInformation(string.Format("  DateTimeStamp=\"{0}\"", request.DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise)));
+							Logger.LogInformation($"  TagsUrl=\"{tagsUrl}\"");
+							Logger.LogInformation($"  Version=\"{request.TagName}\"");
+							Logger.LogInformation($"  DateTimeStamp=\"{request.DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise)}\"");
 
 							var propertySets = GetProperties(new()
 							{
@@ -109,9 +109,9 @@ namespace ISI.Extensions.Svn
 
 									var existingExternals = property.Value.Split(["\n", "\r"], StringSplitOptions.RemoveEmptyEntries);
 
-									Logger.LogInformation(string.Format("  TagUrl=\"{0}\"", url));
-									Logger.LogInformation(string.Format("  Path=\"{0}\"", propertySet.Path));
-									Logger.LogInformation(string.Format("  Was:\n{0}", string.Join("\r\n", existingExternals)));
+									Logger.LogInformation($"  TagUrl=\"{url}\"");
+									Logger.LogInformation($"  Path=\"{propertySet.Path}\"");
+									Logger.LogInformation($"  Was:\n{string.Join("\r\n", existingExternals)}");
 
 									for (var existingExternalIndex = 0; existingExternalIndex < existingExternals.Length; existingExternalIndex++)
 									{
@@ -148,7 +148,7 @@ namespace ISI.Extensions.Svn
 
 										revision ??= infos.FirstOrDefault(info => string.Equals(info.Path.TrimEnd('\\', '/'), System.IO.Path.Combine(propertySet.Path, directory).TrimEnd('\\', '/'), StringComparison.CurrentCultureIgnoreCase))?.Revision;
 
-										Logger.LogInformation(string.Format("      testing=\"{0}\"", uri.ToLower()));
+										Logger.LogInformation($"      testing=\"{uri.ToLower()}\"");
 
 										if (request.TryGetExternalTagName(uri, out var externalTagName))
 										{
@@ -166,7 +166,7 @@ namespace ISI.Extensions.Svn
 												Password = request.Password,
 												SourceUrl = externalTrunkUrl,
 												TargetUrl = externalTagsUrl,
-												LogMessage = string.Format("Version: {0}\nDateTimeStamp: {1}", externalTagName, request.DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise)),
+												LogMessage = $"Version: {externalTagName}\nDateTimeStamp: {request.DateTimeStamp.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise)}",
 												CreateParents = true,
 											});
 
@@ -174,7 +174,7 @@ namespace ISI.Extensions.Svn
 
 											if (externalTrunkUri.ToString().Length > externalTrunkUrl.Length)
 											{
-												externalTagsUrl = string.Format("{0}{1}", externalTagsUrl, externalTrunkUri.ToString().Substring(externalTrunkUrl.Length));
+												externalTagsUrl = $"{externalTagsUrl}{externalTrunkUri.ToString().Substring(externalTrunkUrl.Length)}";
 											}
 
 											externalTrunkUri = new(externalTagsUrl);
@@ -188,20 +188,20 @@ namespace ISI.Extensions.Svn
 													var trunkUrlPathParts = trunkUri.AbsolutePath.Split(["\\", "/"], StringSplitOptions.RemoveEmptyEntries).ToList();
 													var externalTrunkUrlPathParts = externalTrunkUri.AbsolutePath.Split(["\\", "/"], StringSplitOptions.RemoveEmptyEntries).ToList();
 
-													Logger.LogInformation(string.Format("      externalTrunkUrl=\"{0}\"", externalTrunkUrl));
-													Logger.LogInformation(string.Format("      externalTagsUrl=\"{0}\"", externalTagsUrl));
+													Logger.LogInformation($"      externalTrunkUrl=\"{externalTrunkUrl}\"");
+													Logger.LogInformation($"      externalTagsUrl=\"{externalTagsUrl}\"");
 
 													if (string.Equals(trunkUri.Scheme, "file", StringComparison.InvariantCultureIgnoreCase))
 													{
 														var trunkRepositoryRoot = System.IO.Path.GetDirectoryName(GetRepositoryRoot(externalTrunkUrl));
-														Logger.LogInformation(string.Format("      trunkRepositoryRoot=\"{0}\"", trunkRepositoryRoot));
+														Logger.LogInformation($"      trunkRepositoryRoot=\"{trunkRepositoryRoot}\"");
 														var externalRepositoryRoot = System.IO.Path.GetDirectoryName(GetRepositoryRoot(externalTagsUrl));
-														Logger.LogInformation(string.Format("      externalRepositoryRoot=\"{0}\"", externalRepositoryRoot));
+														Logger.LogInformation($"      externalRepositoryRoot=\"{externalRepositoryRoot}\"");
 
 														var trunkRepositoryHost = System.IO.Path.GetDirectoryName(trunkRepositoryRoot);
-														Logger.LogInformation(string.Format("      trunkRepositoryHost=\"{0}\"", trunkRepositoryHost));
+														Logger.LogInformation($"      trunkRepositoryHost=\"{trunkRepositoryHost}\"");
 														var externalRepositoryHost = System.IO.Path.GetDirectoryName(externalRepositoryRoot);
-														Logger.LogInformation(string.Format("      externalRepositoryHost=\"{0}\"", externalRepositoryHost));
+														Logger.LogInformation($"      externalRepositoryHost=\"{externalRepositoryHost}\"");
 
 														if (string.Equals(trunkRepositoryHost, externalRepositoryHost, StringComparison.InvariantCultureIgnoreCase))
 														{
@@ -227,17 +227,17 @@ namespace ISI.Extensions.Svn
 
 											#endregion
 
-											existingExternals[existingExternalIndex] = string.Format("{0} {1}", externalTagsUrl, directory);
+											existingExternals[existingExternalIndex] = $"{externalTagsUrl} {directory}";
 										}
 										else
 										{
-											existingExternals[existingExternalIndex] = string.Format("{0}@{1} {2}", uri, revision, directory);
+											existingExternals[existingExternalIndex] = $"{uri}@{revision} {directory}";
 										}
 									}
 
 									var externals = string.Join("\r\n", existingExternals);
 
-									Logger.LogInformation(string.Format("  Will Be:\n{0}", externals));
+									Logger.LogInformation($"  Will Be:\n{externals}");
 
 									setPropertyRequests.Add(new()
 									{

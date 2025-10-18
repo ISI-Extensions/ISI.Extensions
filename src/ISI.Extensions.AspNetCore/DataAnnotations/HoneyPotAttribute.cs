@@ -50,7 +50,7 @@ namespace ISI.Extensions.AspNetCore.DataAnnotations
 
 		public override bool IsValid(object value)
 		{
-			return string.IsNullOrWhiteSpace(string.Format("{0}", value));
+			return string.IsNullOrWhiteSpace($"{value}");
 		}
 	}
 }

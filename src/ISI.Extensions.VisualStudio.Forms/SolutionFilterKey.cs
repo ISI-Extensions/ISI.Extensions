@@ -49,7 +49,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			SolutionFullName = solutionFullName.Trim();
 			SolutionFilterFullName = solutionFilterFullName.Trim();
 
-			Value = string.Format("{0}{1}{2}", SolutionFullName, Delimiter, SolutionFilterFullName);
+			Value = $"{SolutionFullName}{Delimiter}{SolutionFilterFullName}";
 		}
 
 		public SolutionFilterKey(string solutionFilterKey)
@@ -59,7 +59,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			SolutionFullName = pieces[0].Trim();
 			SolutionFilterFullName = pieces[1].Trim();
 
-			Value = string.Format("{0}{1}{2}", SolutionFullName, Delimiter, SolutionFilterFullName);
+			Value = $"{SolutionFullName}{Delimiter}{SolutionFilterFullName}";
 		}
 
 		public override string ToString()

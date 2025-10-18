@@ -27,7 +27,7 @@ namespace ISI.Extensions.Aspose.InternalTryNotToUseExtensions
 		{
 			if (!(protection is ISI.Extensions.Aspose.Cells.Protection asposeProtection))
 			{
-				throw new(string.Format("{0} is not of type {1}", nameof(protection), typeof(ISI.Extensions.Aspose.Cells.Protection).FullName));
+				throw new($"{nameof(protection)} is not of type {typeof(ISI.Extensions.Aspose.Cells.Protection).FullName}");
 			}
 
 			return asposeProtection._protection;

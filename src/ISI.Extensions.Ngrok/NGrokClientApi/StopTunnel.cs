@@ -29,7 +29,7 @@ namespace ISI.Extensions.Ngrok
 		{
 			var response = new DTOs.StopTunnelResponse();
 
-			var serviceResponse = ISI.Extensions.WebClient.Rest.ExecuteDelete(GetUrl(string.Format("api/tunnels/{0}", request.TunnelName)), GetHeaders(), false);
+			var serviceResponse = ISI.Extensions.WebClient.Rest.ExecuteDelete(GetUrl($"api/tunnels/{request.TunnelName}"), GetHeaders(), false);
 
 			response.Success =(serviceResponse == System.Net.HttpStatusCode.NoContent);
 

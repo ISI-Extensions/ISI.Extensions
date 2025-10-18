@@ -66,14 +66,14 @@ namespace ISI.Extensions.Serialization
 			var defaultSerializerType = (!string.IsNullOrWhiteSpace(Configuration.DefaultSerializerType) ? Type.GetType(Configuration.DefaultSerializerType) : Type.GetType("ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer, ISI.Extensions.JsonSerialization.Newtonsoft") ?? typeof(ISI.Extensions.JsonSerialization.JsonSerializer));
 			if (defaultSerializerType == null)
 			{
-				throw new(string.Format("Cannot find defaultSerializerType for \"{0}\"", Configuration.DefaultSerializerType));
+				throw new($"Cannot find defaultSerializerType for \"{Configuration.DefaultSerializerType}\"");
 			}
 			DefaultSerializer = ServiceProvider.GetService(defaultSerializerType) as ISI.Extensions.Serialization.ISerializer;
 
 			var defaultDataContractSerializerType = (!string.IsNullOrWhiteSpace(Configuration.DefaultDataContractSerializerType) ? Type.GetType(Configuration.DefaultDataContractSerializerType) : Type.GetType("ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer, ISI.Extensions.JsonSerialization.Newtonsoft") ?? typeof(ISI.Extensions.JsonSerialization.JsonDataContractSerializer));
 			if (defaultDataContractSerializerType == null)
 			{
-				throw new(string.Format("Cannot find defaultDataContractSerializerType for \"{0}\"", Configuration.DefaultDataContractSerializerType));
+				throw new($"Cannot find defaultDataContractSerializerType for \"{Configuration.DefaultDataContractSerializerType}\"");
 			}
 			DefaultDataContractSerializer = ServiceProvider.GetService(defaultDataContractSerializerType) as ISI.Extensions.Serialization.ISerializer;
 
@@ -129,7 +129,7 @@ namespace ISI.Extensions.Serialization
 						SerializerContractUuidLookupBySerializerContractType.TryAdd(exportedType, serializerContractUuidAttribute.SerializerContractUuid);
 						if (!SerializerContractTypeLookupBySerializerContractUuid.TryAdd(serializerContractUuidAttribute.SerializerContractUuid, exportedType))
 						{
-							throw new(string.Format("Multiple SerializerContractUuid found \"{0}\"", serializerContractUuidAttribute.SerializerContractUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)));
+							throw new($"Multiple SerializerContractUuid found \"{serializerContractUuidAttribute.SerializerContractUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)}\"");
 						}
 					}
 				}

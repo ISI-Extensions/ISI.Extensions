@@ -34,7 +34,7 @@ namespace ISI.Extensions.Serialization
 
 			if (serializerContractType == null)
 			{
-				throw new(string.Format("SerializerContractUuid: {0} not recognized", serializerContractUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)));
+				throw new($"SerializerContractUuid: {serializerContractUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)} not recognized");
 			}
 
 			return null;

@@ -36,7 +36,7 @@ namespace ISI.Extensions.Extensions
 					var parameter = new ISI.Extensions.Monitor.MonitorTestResponseStartupParameterValue()
 					{
 						Name = property.Name,
-						Value = (value == null ? null : (property.PropertyType.IsArray ? string.Join(",", ((IEnumerable<object>)value).Select(v => string.Format("{0}", v))) : string.Format("{0}", value)))
+						Value = (value == null ? null : (property.PropertyType.IsArray ? string.Join(",", ((IEnumerable<object>)value).Select(v => $"{v}")) : $"{value}"))
 					};
 
 					return parameter as ISI.Extensions.Monitor.IMonitorTestResponseStartupParameterValue;
@@ -65,7 +65,7 @@ namespace ISI.Extensions.Extensions
 				{
 					Name = property.Name,
 					Type = property.PropertyType,
-					DefaultValue = (defaultValue == null ? null : (property.PropertyType.IsArray ? string.Join(",", ((IEnumerable<object>) defaultValue).Select(v => string.Format("{0}", v))) : string.Format("{0}", defaultValue)))
+					DefaultValue = (defaultValue == null ? null : (property.PropertyType.IsArray ? string.Join(",", ((IEnumerable<object>) defaultValue).Select(v => $"{v}")) : $"{defaultValue}"))
 				};
 
 				return parameter;

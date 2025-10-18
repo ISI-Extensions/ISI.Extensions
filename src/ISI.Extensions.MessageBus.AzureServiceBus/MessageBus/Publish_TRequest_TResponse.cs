@@ -39,7 +39,7 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 
 			var responseType = typeof(TResponse);
 
-			var responseChannelName = string.Format("{0}-{1}", responseType.FullName, Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting));
+			var responseChannelName = $"{responseType.FullName}-{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}";
 
 			if (string.IsNullOrWhiteSpace(channelName))
 			{

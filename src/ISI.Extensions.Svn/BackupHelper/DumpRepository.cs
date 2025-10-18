@@ -42,7 +42,7 @@ namespace ISI.Extensions.Svn
 					dumpFullName = dumpRepositoryFileNameRequest.DumpFullName;
 				}
 
-				System.IO.File.WriteAllText(batchFullName, string.Format("svnadmin -q dump \"{0}\" > \"{1}\"", System.IO.Path.Combine(RepositoriesPath, request.RepositoryKey), dumpFullName));
+				System.IO.File.WriteAllText(batchFullName, $"svnadmin -q dump \"{System.IO.Path.Combine(RepositoriesPath, request.RepositoryKey)}\" > \"{dumpFullName}\"");
 
 				var executeResponse = ISI.Extensions.Process.WaitForProcessResponse(batchFullName);
 

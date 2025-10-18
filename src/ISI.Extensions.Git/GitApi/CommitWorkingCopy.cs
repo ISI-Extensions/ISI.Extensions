@@ -37,7 +37,7 @@ namespace ISI.Extensions.Git
 				arguments.Add("commit");
 				arguments.Add("-all");
 				arguments.Add("-m");
-				arguments.Add(string.Format("\"{0}\"", request.LogMessage));
+				arguments.Add($"\"{request.LogMessage}\"");
 
 				response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{

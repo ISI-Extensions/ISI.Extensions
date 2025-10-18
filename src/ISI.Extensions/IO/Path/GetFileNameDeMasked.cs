@@ -27,8 +27,8 @@ namespace ISI.Extensions
 		{
 			private static IEnumerable<FileNameMask> DefaultFileNameMasks =>
 			[
-				new(string.Format("{{{0}", FileNameMask.FilePrefix), FileNameMask.FileNameMaskType.KeyValue, "file", "file retrieval"),
-				new(string.Format("{{{0}", FileNameMask.FirstExistingDirectoryPrefix), FileNameMask.FileNameMaskType.FirstExistingDirectory, "firstExistingDirectory", "First Existing Directory"),
+				new($"{{{FileNameMask.FilePrefix}", FileNameMask.FileNameMaskType.KeyValue, "file", "file retrieval"),
+				new($"{{{FileNameMask.FirstExistingDirectoryPrefix}", FileNameMask.FileNameMaskType.FirstExistingDirectory, "firstExistingDirectory", "First Existing Directory"),
 				new("{YYYYMMDD}", FileNameMask.FileNameMaskType.DateTimeMask, "yyyyMMdd", "Date Stamp: Year Month Day"),
 				new("{YYYYMMDD.HHmmssfff}", FileNameMask.FileNameMaskType.DateTimeMask, "yyyyMMdd.HHmmssfff", "Date Time Stamp: Year Month Day.24Hour minute second millisecond"),
 				new("{Now}", FileNameMask.FileNameMaskType.DateTimeMask, "yyyyMMdd.HHmmssfff", "Date Time Stamp: Year Month Day.24Hour minute second millisecond"),

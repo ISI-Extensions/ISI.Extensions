@@ -38,7 +38,7 @@ namespace ISI.Extensions.VisualStudio
 			{
 				arguments.Add("build");
 
-				arguments.Add(string.Format("\"{0}\"", request.FullName));
+				arguments.Add($"\"{request.FullName}\"");
 
 				if (request.Options.NoLogo.GetValueOrDefault())
 				{
@@ -48,14 +48,14 @@ namespace ISI.Extensions.VisualStudio
 				// Set the verbosity.
 				if (request.Options.Verbosity.HasValue)
 				{
-					arguments.Add(string.Format("--verbosity {0}", request.Options.Verbosity.GetKey().ToLower()));
+					arguments.Add($"--verbosity {request.Options.Verbosity.GetKey().ToLower()}");
 				}
 
 				// Got a specific configuration in mind?
 				if (!string.IsNullOrWhiteSpace(request.Options.Configuration))
 				{
 					// Add the configuration as a property.
-					arguments.Add(string.Format("--configuration \"{0}\"", request.Options.Configuration));
+					arguments.Add($"--configuration \"{request.Options.Configuration}\"");
 				}
 
 
@@ -65,7 +65,7 @@ namespace ISI.Extensions.VisualStudio
 				{
 					foreach (var propertyKey in request.Options.Properties.AllKeys)
 					{
-						arguments.Add(string.Format("--property:{0}={1}", propertyKey, string.Join(",", request.Options.Properties.GetValues(propertyKey))));
+						arguments.Add($"--property:{propertyKey}={string.Join(",", request.Options.Properties.GetValues(propertyKey))}");
 					}
 				}
 
@@ -82,7 +82,7 @@ namespace ISI.Extensions.VisualStudio
 					Arguments = arguments,
 				};
 
-				logger.Log(LogLevel.Information, string.Format("\"{0}\" {1}", processRequest.ProcessExeFullName, string.Join(" ", processRequest.Arguments)));
+				logger.Log(LogLevel.Information, $"\"{processRequest.ProcessExeFullName}\" {string.Join(" ", processRequest.Arguments)}");
 
 				var processResponse = ISI.Extensions.Process.WaitForProcessResponse(processRequest);
 
@@ -93,11 +93,11 @@ namespace ISI.Extensions.VisualStudio
 			}
 			else
 			{
-				arguments.Add(string.Format("\"{0}\"", request.FullName));
+				arguments.Add($"\"{request.FullName}\"");
 
 				if (request.Options.MaxCpuCount.HasValue)
 				{
-					arguments.Add(request.Options.MaxCpuCount > 0 ? string.Format("/m:{0}", request.Options.MaxCpuCount) : "/m");
+					arguments.Add(request.Options.MaxCpuCount > 0 ? $"/m:{request.Options.MaxCpuCount}" : "/m");
 				}
 
 				if (request.Options.DetailedSummary.GetValueOrDefault())
@@ -118,19 +118,19 @@ namespace ISI.Extensions.VisualStudio
 				// Set the verbosity.
 				if (request.Options.Verbosity.HasValue)
 				{
-					arguments.Add(string.Format("/v:{0}", request.Options.Verbosity.GetKey().ToLower()));
+					arguments.Add($"/v:{request.Options.Verbosity.GetKey().ToLower()}");
 				}
 
 				if (request.Options.NodeReuse.HasValue)
 				{
-					arguments.Add(string.Format("/nr:{0}", request.Options.NodeReuse.TrueFalse(textCase: BooleanExtensions.TextCase.Lower)));
+					arguments.Add($"/nr:{request.Options.NodeReuse.TrueFalse(textCase: BooleanExtensions.TextCase.Lower)}");
 				}
 
 				// Got a specific configuration in mind?
 				if (!string.IsNullOrWhiteSpace(request.Options.Configuration))
 				{
 					// Add the configuration as a property.
-					arguments.Add(string.Format("/p:Configuration=\"{0}\"", request.Options.Configuration));
+					arguments.Add($"/p:Configuration=\"{request.Options.Configuration}\"");
 				}
 
 
@@ -138,19 +138,19 @@ namespace ISI.Extensions.VisualStudio
 				// Set include symbols?
 				if (request.Options.IncludeSymbols.HasValue)
 				{
-					arguments.Add(string.Format("/p:IncludeSymbols={0}", request.Options.IncludeSymbols.TrueFalse(textCase: BooleanExtensions.TextCase.Lower)));
+					arguments.Add($"/p:IncludeSymbols={request.Options.IncludeSymbols.TrueFalse(textCase: BooleanExtensions.TextCase.Lower)}");
 				}
 
 				// Set symbol package format?
 				if (!string.IsNullOrWhiteSpace(request.Options.SymbolPackageFormat))
 				{
-					arguments.Add(string.Format("/p:SymbolPackageFormat={0}", request.Options.SymbolPackageFormat));
+					arguments.Add($"/p:SymbolPackageFormat={request.Options.SymbolPackageFormat}");
 				}
 
 				// Set Continuous Integration Build?
 				if (request.Options.ContinuousIntegrationBuild.HasValue)
 				{
-					arguments.Add(string.Format("/p:ContinuousIntegrationBuild={0}", request.Options.ContinuousIntegrationBuild.TrueFalse(textCase: BooleanExtensions.TextCase.Lower)));
+					arguments.Add($"/p:ContinuousIntegrationBuild={request.Options.ContinuousIntegrationBuild.TrueFalse(textCase: BooleanExtensions.TextCase.Lower)}");
 				}
 
 				// Got any properties?
@@ -158,7 +158,7 @@ namespace ISI.Extensions.VisualStudio
 				{
 					foreach (var propertyKey in request.Options.Properties.AllKeys)
 					{
-						arguments.Add(string.Format("/p:{0}={1}", propertyKey, string.Join(",", request.Options.Properties.GetValues(propertyKey))));
+						arguments.Add($"/p:{propertyKey}={string.Join(",", request.Options.Properties.GetValues(propertyKey))}");
 					}
 				}
 
@@ -190,7 +190,7 @@ namespace ISI.Extensions.VisualStudio
 				// Set restore locked mode?
 				if (request.Options.RestoreLockedMode.HasValue)
 				{
-					arguments.Add(string.Format("/p:RestoreLockedMode={0}", request.Options.RestoreLockedMode.Value.TrueFalse(textCase: BooleanExtensions.TextCase.Lower)));
+					arguments.Add($"/p:RestoreLockedMode={request.Options.RestoreLockedMode.Value.TrueFalse(textCase: BooleanExtensions.TextCase.Lower)}");
 				}
 
 
@@ -207,7 +207,7 @@ namespace ISI.Extensions.VisualStudio
 					Arguments = arguments,
 				};
 
-				logger.Log(LogLevel.Information, string.Format("\"{0}\" {1}", processRequest.ProcessExeFullName, string.Join(" ", processRequest.Arguments)));
+				logger.Log(LogLevel.Information, $"\"{processRequest.ProcessExeFullName}\" {string.Join(" ", processRequest.Arguments)}");
 
 				var processResponse = ISI.Extensions.Process.WaitForProcessResponse(processRequest);
 

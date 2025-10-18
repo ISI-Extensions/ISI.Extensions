@@ -182,7 +182,7 @@ namespace ISI.Extensions.Jenkins.Forms
 
 							if (!directoryJobIds.TryGetValue(jenkinsConfig.JobId, out var jenkinsConfigFileName))
 							{
-								jenkinsConfigFileName = System.IO.Path.Combine(directory, string.Format("{0}{1}", jenkinsConfig.JobId, JenkinsApi.JenkinsConfigFileNameExtension));
+								jenkinsConfigFileName = System.IO.Path.Combine(directory, $"{jenkinsConfig.JobId}{JenkinsApi.JenkinsConfigFileNameExtension}");
 							}
 
 							System.IO.File.WriteAllText(jenkinsConfigFileName, content);
@@ -316,7 +316,7 @@ namespace ISI.Extensions.Jenkins.Forms
 
 				cboJenkinsConfig = new()
 				{
-					Name = string.Format("cboJenkinsConfig_{0}", this.GetHashCode()),
+					Name = $"cboJenkinsConfig_{this.GetHashCode()}",
 					Width = 20,
 					Height = 17,
 					Margin = new(1, 1, 1, 1)

@@ -41,7 +41,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 				return Activator.CreateInstance(publishRequestClientWrapperType, timeout.GetValueOrDefault(), timeToLive) as IPublishRequestClientWrapper;
 			}
 
-			var key = string.Format("{0}|{1}|{2}|{3}", requestType.FullName, responseType.FullName, timeout.GetValueOrDefault().Ticks, timeToLive.GetValueOrDefault().Ticks);
+			var key = $"{requestType.FullName}|{responseType.FullName}|{timeout.GetValueOrDefault().Ticks}|{timeToLive.GetValueOrDefault().Ticks}";
 			
 			if (!_publishRequestClientWrapperCache.TryGetValue(key, out var publishRequestClientWrapper))
 			{

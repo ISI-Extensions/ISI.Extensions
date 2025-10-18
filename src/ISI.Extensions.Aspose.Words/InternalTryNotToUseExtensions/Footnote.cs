@@ -27,7 +27,7 @@ namespace ISI.Extensions.Aspose.InternalTryNotToUseExtensions
 		{
 			if (!(documentFootnote is ISI.Extensions.Aspose.Words.DocumentFootnote asposeFootnote))
 			{
-				throw new(string.Format("{0} is not of type {1}", nameof(documentFootnote), typeof(ISI.Extensions.Aspose.Words.DocumentFootnote).FullName));
+				throw new($"{nameof(documentFootnote)} is not of type {typeof(ISI.Extensions.Aspose.Words.DocumentFootnote).FullName}");
 			}
 
 			return asposeFootnote._footnote;

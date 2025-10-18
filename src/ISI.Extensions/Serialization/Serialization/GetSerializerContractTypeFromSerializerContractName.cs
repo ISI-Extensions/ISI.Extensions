@@ -46,7 +46,7 @@ namespace ISI.Extensions.Serialization
 					}
 				}
 
-				throw new(string.Format("SerializerContractName: {0} not recognized", serializerContractName));
+				throw new($"SerializerContractName: {serializerContractName} not recognized");
 			}
 
 			SerializerContractTypeLookupBySerializerContractName.TryAdd(serializerContractName, serializerContractType);

@@ -37,7 +37,7 @@ namespace ISI.Extensions
 
 			public CronExpressionMonths(string source)
 			{
-				Action throwError = () => throw new(string.Format("Months: Cannot parse \"{0}\"", source));
+				Action throwError = () => throw new($"Months: Cannot parse \"{source}\"");
 
 				var parser = new ISI.Extensions.Parsers.DelimitedTextParser(',');
 
@@ -136,13 +136,13 @@ namespace ISI.Extensions
 								MonthEndRangeIndex++;
 							}
 
-							ranges.Add(string.Format("{0}-{1}", MonthIndex, (MonthEndRangeIndex >= maxMonth ? maxMonth - 1 : MonthEndRangeIndex)));
+							ranges.Add($"{MonthIndex}-{(MonthEndRangeIndex >= maxMonth ? maxMonth - 1 : MonthEndRangeIndex)}");
 
 							MonthIndex = MonthEndRangeIndex - 1;
 						}
 						else
 						{
-							ranges.Add(string.Format("{0}", MonthIndex));
+							ranges.Add($"{MonthIndex}");
 						}
 					}
 

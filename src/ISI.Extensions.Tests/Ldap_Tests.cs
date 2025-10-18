@@ -84,7 +84,7 @@ namespace ISI.Extensions.Tests
 			Console.WriteLine(ldapApi.AuthenticateUser(new()
 			{
 				LdapHost = settings.GetValue("LdapUrl"),
-				UserName = string.Format("{0}-{1}", settings.ActiveDirectory.UserName, Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)),
+				UserName = $"{settings.ActiveDirectory.UserName}-{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)}",
 				Password = settings.ActiveDirectory.Password,
 			}).Authenticated.TrueFalse());
 
@@ -92,7 +92,7 @@ namespace ISI.Extensions.Tests
 			{
 				LdapHost = settings.GetValue("LdapUrl"),
 				UserName = $"{settings.ActiveDirectory.Domain}\\{settings.ActiveDirectory.UserName}",
-				Password = string.Format("{0}-{1}", settings.ActiveDirectory.Password, Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)),
+				Password = $"{settings.ActiveDirectory.Password}-{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)}",
 			}).Authenticated.TrueFalse());
 		}
 

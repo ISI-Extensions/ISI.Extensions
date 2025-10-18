@@ -41,7 +41,7 @@ namespace ISI.Extensions.Ant
 			{
 				foreach (var requestParameter in request.Parameters)
 				{
-					arguments.Add(string.Format("-D{0}={1}", requestParameter.ParameterName, requestParameter.ParameterValue));
+					arguments.Add($"-D{requestParameter.ParameterName}={requestParameter.ParameterValue}");
 				}
 			}
 
@@ -50,7 +50,7 @@ namespace ISI.Extensions.Ant
 				arguments.Add(request.Target);
 			}
 
-			logger.LogInformation(string.Format("ant {0}", string.Join(" ", arguments)));
+			logger.LogInformation($"ant {string.Join(" ", arguments)}");
 
 			if (request.UseShell)
 			{

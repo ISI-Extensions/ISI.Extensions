@@ -26,7 +26,7 @@ namespace ISI.Extensions.Nuget.Forms
 		public NugetPackageKey NugetPackageKey { get; }
 
 		private string _caption = null;
-		public virtual string Caption => _caption ??= string.Format("{0} -version {1}", NugetPackageKey.Package, NugetPackageKey.Version);
+		public virtual string Caption => _caption ??= $"{NugetPackageKey.Package} -version {NugetPackageKey.Version}";
 
 		public bool Selected
 		{

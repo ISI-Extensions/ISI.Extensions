@@ -57,12 +57,12 @@ namespace ISI.Extensions.VisualStudio
 					}
 					else
 					{
-						throw new(string.Format("Cannot determine which solution to update \"{0}\"", request.Solution));
+						throw new($"Cannot determine which solution to update \"{request.Solution}\"");
 					}
 				}
 				else
 				{
-					throw new(string.Format("Cannot find a solution to update \"{0}\"", request.Solution));
+					throw new($"Cannot find a solution to update \"{request.Solution}\"");
 				}
 			}
 
@@ -141,7 +141,7 @@ namespace ISI.Extensions.VisualStudio
 
 				if (request.PackageBuildDateTimeStampVersion.HasValue)
 				{
-					System.IO.File.WriteAllText(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(request.PackageFullName), string.Format("{0}.Current.DateTimeStamp.Version.txt", request.PackageName)), request.PackageBuildDateTimeStampVersion.Value);
+					System.IO.File.WriteAllText(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(request.PackageFullName), $"{request.PackageName}.Current.DateTimeStamp.Version.txt"), request.PackageBuildDateTimeStampVersion.Value);
 				}
 			}
 

@@ -120,7 +120,7 @@ namespace ISI.Extensions.Extensions
 
 		public static string ToFileName(this ISI.Extensions.Documents.FileFormat fileFormat, string fileName)
 		{
-			return string.Format("{0}.{1}", fileName, fileFormat.ToFileNameExtension());
+			return $"{fileName}.{fileFormat.ToFileNameExtension()}";
 		}
 	}
 }

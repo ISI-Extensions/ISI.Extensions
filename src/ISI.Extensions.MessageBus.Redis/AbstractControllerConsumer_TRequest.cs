@@ -40,12 +40,12 @@ namespace ISI.Extensions.MessageBus.Redis
 
 		protected override void BeginRequest()
 		{
-			System.Diagnostics.Trace.TraceInformation(string.Format("BeginRequest ServiceType: \"{0}\", RequestType: \"{1}\", OperationKey: \"{2}\"", ControllerTypeAssemblyQualifiedNameWithoutVersion, RequestTypeAssemblyQualifiedNameWithoutVersion, OperationKey));
+			System.Diagnostics.Trace.TraceInformation($"BeginRequest ServiceType: \"{ControllerTypeAssemblyQualifiedNameWithoutVersion}\", RequestType: \"{RequestTypeAssemblyQualifiedNameWithoutVersion}\", OperationKey: \"{OperationKey}\"");
 		}
 
 		protected override void EndRequest()
 		{
-			System.Diagnostics.Trace.TraceInformation(string.Format("EndRequest ServiceType: \"{0}\", RequestType: \"{1}\", OperationKey: \"{2}\"", ControllerTypeAssemblyQualifiedNameWithoutVersion, RequestTypeAssemblyQualifiedNameWithoutVersion, OperationKey));
+			System.Diagnostics.Trace.TraceInformation($"EndRequest ServiceType: \"{ControllerTypeAssemblyQualifiedNameWithoutVersion}\", RequestType: \"{RequestTypeAssemblyQualifiedNameWithoutVersion}\", OperationKey: \"{OperationKey}\"");
 		}
 	}
 }

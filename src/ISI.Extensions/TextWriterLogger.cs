@@ -29,7 +29,7 @@ namespace ISI.Extensions
 			TextWriter = textWriter;
 		}
 
-		public void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel, Microsoft.Extensions.Logging.EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+		public void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel, Microsoft.Extensions.Logging.EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter = null)
 		{
 			formatter ??= (formatterState, formatterException) =>
 			{

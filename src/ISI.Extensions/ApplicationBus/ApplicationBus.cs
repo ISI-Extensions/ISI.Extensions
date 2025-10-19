@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using static ISI.Extensions.WebClient.Rest;
 
 namespace ISI.Extensions
 {

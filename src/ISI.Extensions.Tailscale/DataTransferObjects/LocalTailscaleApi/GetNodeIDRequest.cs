@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Tailscale.DataTransferObjects.LocalTailscaleApi
 {
-	public class GetNodeKeyRequest
+	public class GetNodeIdRequest
 	{
 	}
 }

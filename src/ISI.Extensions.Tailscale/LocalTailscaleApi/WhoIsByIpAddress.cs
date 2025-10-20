@@ -37,8 +37,8 @@ namespace ISI.Extensions.Tailscale
 
 			response.Node = whoIsResponse.Node.NullCheckedConvert(node => new DTOs.WhoIsResponseNode()
 			{
-				ID = node.ID,
-				StableID = node.StableID,
+				NodeId = node.NodeId,
+				StableId = node.StableId,
 				Name = node.Name,
 				User = node.User,
 				Key = node.Key,
@@ -67,7 +67,7 @@ namespace ISI.Extensions.Tailscale
 
 			response.UserProfile = whoIsResponse.UserProfile.NullCheckedConvert(userProfile => new DTOs.WhoIsResponseUserProfile()
 			{
-				ID = userProfile.ID,
+				UserId = userProfile.UserId,
 				LoginName = userProfile.LoginName,
 				DisplayName = userProfile.DisplayName,
 				ProfilePictureUrl = userProfile.ProfilePictureUrl,

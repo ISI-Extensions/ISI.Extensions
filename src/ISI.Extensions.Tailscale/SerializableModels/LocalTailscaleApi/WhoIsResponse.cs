@@ -35,10 +35,10 @@ namespace ISI.Extensions.Tailscale.SerializableModels.LocalTailscaleApi
 	public class WhoIsResponseNode
 	{
 		[DataMember(Name = "ID", EmitDefaultValue = false)]
-		public string ID { get; set; }
+		public string NodeId { get; set; }
 
 		[DataMember(Name = "StableID", EmitDefaultValue = false)]
-		public string StableID { get; set; }
+		public string StableId { get; set; }
 
 		[DataMember(Name = "Name", EmitDefaultValue = false)]
 		public string Name { get; set; }
@@ -117,7 +117,7 @@ namespace ISI.Extensions.Tailscale.SerializableModels.LocalTailscaleApi
 	public class WhoIsResponseUserProfile
 	{
 		[DataMember(Name = "ID", EmitDefaultValue = false)]
-		public string ID { get; set; }
+		public string UserId { get; set; }
 
 		[DataMember(Name = "LoginName", EmitDefaultValue = false)]
 		public string LoginName { get; set; }

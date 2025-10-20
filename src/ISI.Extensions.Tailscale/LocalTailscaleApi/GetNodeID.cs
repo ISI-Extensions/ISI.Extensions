@@ -27,16 +27,16 @@ namespace ISI.Extensions.Tailscale
 {
 	public partial class LocalTailscaleApi
 	{
-		public DTOs.GetNodeKeyResponse GetNodeID(DTOs.GetNodeKeyRequest request)
+		public DTOs.GetNodeIdResponse GetNodeId(DTOs.GetNodeIdRequest request)
 		{
-			var response = new DTOs.GetNodeKeyResponse();
+			var response = new DTOs.GetNodeIdResponse();
 
 			var ipAddress = GetIpAddress(new()).IpAddress;
 
-			response.NodeID = WhoIsByIpAddress(new()
+			response.NodeId = WhoIsByIpAddress(new()
 			{
 				IpAddress = ipAddress,
-			}).Node?.StableID;
+			}).Node?.StableId;
 			
 			return response;
 		}

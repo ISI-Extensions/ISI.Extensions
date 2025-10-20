@@ -223,7 +223,7 @@ namespace ISI.Extensions.Repository.Oracle
 
 			var tableName = FormatArchiveTableName($"{TableName}{ArchiveTableSuffix}", null, false);
 
-			var primaryKeyName = $"\"{$"{RecordDescription.GetRecordDescription<TRecord>().TableName}{ArchiveTableSuffix}"}\"";
+			var primaryKeyName = $"\"{RecordDescription.GetRecordDescription<TRecord>().TableName}{ArchiveTableSuffix}\"";
 
 			if (!recordDescription.PrimaryKeyPropertyDescriptions.NullCheckedAny())
 			{
@@ -237,7 +237,7 @@ namespace ISI.Extensions.Repository.Oracle
 					var firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName = primaryKeyColumnsWithPrimaryKeyAttributes.FirstOrDefault(column => !string.IsNullOrEmpty(column.PrimaryKeyAttribute.Name));
 					if (firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName != null)
 					{
-						primaryKeyName = $"\"{$"{firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName.PrimaryKeyAttribute.Name}{ArchiveTableSuffix}"}\"";
+						primaryKeyName = $"\"{firstPrimaryKeyColumnWithPrimaryKeyAttributeAndPrimaryKeyName.PrimaryKeyAttribute.Name}{ArchiveTableSuffix}\"";
 					}
 				}
 			}

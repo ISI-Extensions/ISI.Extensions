@@ -30,8 +30,8 @@ namespace ISI.Extensions.Tailscale.DataTransferObjects.LocalTailscaleApi
 
 	public class WhoIsResponseNode
 	{
-		public string ID { get; set; }
-		public string StableID { get; set; }
+		public string NodeId { get; set; }
+		public string StableId { get; set; }
 		public string Name { get; set; }
 		public long User { get; set; }
 		public string Key { get; set; }
@@ -64,7 +64,7 @@ namespace ISI.Extensions.Tailscale.DataTransferObjects.LocalTailscaleApi
 
 	public class WhoIsResponseUserProfile
 	{
-		public string ID { get; set; }
+		public string UserId { get; set; }
 		public string LoginName { get; set; }
 		public string DisplayName { get; set; }
 		public string ProfilePictureUrl { get; set; }

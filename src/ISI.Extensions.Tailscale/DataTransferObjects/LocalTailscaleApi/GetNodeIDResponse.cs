@@ -22,8 +22,8 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Tailscale.DataTransferObjects.LocalTailscaleApi
 {
-	public class GetNodeKeyResponse
+	public class GetNodeIdResponse
 	{
-		public string NodeID { get; set; }
+		public string NodeId { get; set; }
 	}
 }

@@ -27,7 +27,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="SSH.NET" Version="2025.0.0" />
+		<PackageReference Include="SSH.NET" Version="2025.1.0" />
 		<PackageReference Include="System.Formats.Asn1" Version="9.0.10" />
 		<PackageReference Include="System.IO.Compression" Version="4.3.0" />
 		<PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />

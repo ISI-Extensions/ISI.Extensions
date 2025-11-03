@@ -100,14 +100,7 @@ namespace ISI.Extensions.VisualStudio
 						{
 							var possibleSolutionFullName = ISI.Extensions.VisualStudio.Solution.FindSolutionFullNames(solutionFullName, System.IO.SearchOption.TopDirectoryOnly).NullCheckedFirstOrDefault();
 
-							if (string.IsNullOrWhiteSpace(possibleSolutionFullName))
-							{
-								solutionFullName = System.IO.Path.GetDirectoryName(solutionFullName);
-							}
-							else
-							{
-								solutionFullName = possibleSolutionFullName;
-							}
+							solutionFullName = string.IsNullOrWhiteSpace(possibleSolutionFullName) ? System.IO.Path.GetDirectoryName(solutionFullName) : possibleSolutionFullName;
 						}
 					}
 

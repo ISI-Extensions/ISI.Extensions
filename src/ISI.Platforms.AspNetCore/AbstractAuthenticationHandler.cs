@@ -227,6 +227,31 @@ namespace ISI.Platforms.AspNetCore
 				}
 			}
 
+			if (!userUuid.HasValue &&  (authenticationHeaderValue ?? string.Empty).StartsWith(ISI.Extensions.WebClient.HeaderCollection.Keys.Basic, StringComparison.InvariantCultureIgnoreCase))
+			{
+				try
+				{
+					var userNameAndPassword = authenticationHeaderValue.Substring(ISI.Extensions.WebClient.HeaderCollection.Keys.Basic.Length);
+
+					var base64DecodedCredentials = Convert.FromBase64String(userNameAndPassword.Trim());
+
+					var decodedCredentials = (new System.Text.UTF8Encoding(false, true)).GetString(base64DecodedCredentials);
+
+					var credentials = decodedCredentials.Split(':');
+
+					var validateUserNamePasswordResponse = await AuthenticationIdentityApi.ValidateUserNamePasswordAsync(new()
+					{
+						UserName = credentials[0],
+						Password = credentials[1],
+					});
+
+					userUuid = validateUserNamePasswordResponse?.UserUuid;
+				}
+				catch
+				{
+				}
+			}
+
 			if (userUuid.HasValue)
 			{
 				var getUsersResponse = await AuthenticationIdentityApi.GetUsersAsync(new()

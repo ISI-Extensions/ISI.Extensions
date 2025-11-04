@@ -1,0 +1,18 @@
+@using ISI.Extensions.AspNetCore.Extensions
+@model ISI.Platforms.ServiceApplication.Test.Models.Public.AuthorizationTestModel
+
+@{
+	Model.SetTitle("Authorization Test");
+	Layout = ISI.Platforms.ServiceApplication.Test.T4Files.Views.Public._Layout_cshtml;
+}
+
+@section StyleSheetIncludes {
+	@Html.AddStyleSheet(ISI.Platforms.ServiceApplication.Test.T4Links.wwwroot.StyleSheets.Public.AuthorizationTest_css)
+}
+
+@section JavaScriptIncludes {
+	@Html.AddJavaScript(ISI.Platforms.ServiceApplication.Test.T4Links.wwwroot.JavaScripts.Public.AuthorizationTest_js)
+}
+
+@section JavaScriptContent {
+}

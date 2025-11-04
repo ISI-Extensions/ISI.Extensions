@@ -29,6 +29,9 @@ namespace ISI.Platforms.ServiceApplication.Test
 {
 	public class Program
 	{
+		public const string AuthorizationPolicyName = "ServiceApplication-Policy";
+		public const string AuthorizationCookieName = "ServiceApplication-Authentication";
+
 		public static void Main(string[] args)
 		{
 			//args = ["uninstall"];
@@ -42,8 +45,8 @@ namespace ISI.Platforms.ServiceApplication.Test
 
 			context.AddCookieAndBearerAuthentication(new()
 			{
-				AuthenticationScheme = "CookieAndBearerAuthentication",
-				PolicyName = "CookieAndBearerPolicy",
+				PolicyName = AuthorizationPolicyName,
+				CookieName = AuthorizationCookieName,
 			});
 
 			context.AddSignalR = true;

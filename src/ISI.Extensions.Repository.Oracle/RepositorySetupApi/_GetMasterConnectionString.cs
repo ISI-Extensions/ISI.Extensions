@@ -49,6 +49,14 @@ namespace ISI.Extensions.Repository.Oracle
 
 			if (connectionString.Split(';', StringSplitOptions.RemoveEmptyEntries).Length <= 1)
 			{
+				if ((Configuration as IConfigurationRoot)?.TryGetConnectionString(connectionString, out var masterConnectionString) ?? false)
+				{
+					connectionString = masterConnectionString;
+				}
+			}
+
+			if (connectionString.Split(';', StringSplitOptions.RemoveEmptyEntries).Length <= 1)
+			{
 				return connectionString;
 			}
 

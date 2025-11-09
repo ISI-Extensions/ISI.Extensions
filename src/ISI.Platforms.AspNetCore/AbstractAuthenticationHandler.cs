@@ -227,11 +227,11 @@ namespace ISI.Platforms.AspNetCore
 				}
 			}
 
-			if (!userUuid.HasValue &&  (authenticationHeaderValue ?? string.Empty).StartsWith(ISI.Extensions.WebClient.HeaderCollection.Keys.Basic, StringComparison.InvariantCultureIgnoreCase))
+			if (!userUuid.HasValue && (authenticationHeaderValue ?? string.Empty).StartsWith(ISI.Extensions.WebClient.HeaderCollection.Keys.BasicAuthenticationPrefix, StringComparison.InvariantCultureIgnoreCase))
 			{
 				try
 				{
-					var userNameAndPassword = authenticationHeaderValue.Substring(ISI.Extensions.WebClient.HeaderCollection.Keys.Basic.Length);
+					var userNameAndPassword = authenticationHeaderValue.Substring(ISI.Extensions.WebClient.HeaderCollection.Keys.BasicAuthenticationPrefix.Length);
 
 					var base64DecodedCredentials = Convert.FromBase64String(userNameAndPassword.Trim());
 
@@ -250,6 +250,19 @@ namespace ISI.Platforms.AspNetCore
 				catch
 				{
 				}
+			}
+
+			if (!userUuid.HasValue &&  (authenticationHeaderValue ?? string.Empty).StartsWith(ISI.Extensions.WebClient.HeaderCollection.Keys.BearerAuthenticationPrefix, StringComparison.InvariantCultureIgnoreCase))
+			{
+				var apiKey = authenticationHeaderValue.Substring(ISI.Extensions.WebClient.HeaderCollection.Keys.BearerAuthenticationPrefix.Length);
+
+				var validateApiKeyResponse = await AuthenticationIdentityApi.ValidateApiKeyAsync(new()
+				{
+					Url = $"{Request.GetDisplayUrl()}/{Request.QueryString}",
+					ApiKey = apiKey.Trim(),
+				});
+
+				userUuid = validateApiKeyResponse?.UserUuid;
 			}
 
 			if (userUuid.HasValue)

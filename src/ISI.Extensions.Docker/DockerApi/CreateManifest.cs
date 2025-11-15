@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,38 +33,17 @@ namespace ISI.Extensions.Docker
 			var logger = new AddToLogLogger(request.AddToLog, Logger);
 
 			var response = new DTOs.CreateManifestResponse();
-			
+
 			var arguments = new List<string>();
 
 			arguments.Add("manifest");
 			arguments.Add("create");
 
-			var containerRegistry = request.ContainerRegistry ?? string.Empty;
+			arguments.Add(GetContainerImageReference(request.ContainerRegistry, request.ContainerRepository, request.ContainerTargetImageTag));
 
-			var containerRepository = request.ContainerRepository;
-
-			if (string.IsNullOrWhiteSpace(containerRegistry))
+			foreach (var containerSourceImageTag in request.ContainerSourceImageTags)
 			{
-				arguments.Add($"{containerRepository}:{request.ContainerTargetImageTag}");
-			}
-			else
-			{
-				arguments.Add( $"{containerRegistry}/{containerRepository}:{request.ContainerTargetImageTag}");
-			}
-
-			if (string.IsNullOrWhiteSpace(containerRegistry))
-			{
-				for (var index = 0; index < request.ContainerSourceImageTags.Length; index++)
-				{
-					arguments.Add($"{containerRepository}:{request.ContainerSourceImageTags[index]}");
-				}
-			}
-			else
-			{
-				for (var index = 0; index < request.ContainerSourceImageTags.Length; index++)
-				{
-					arguments.Add( $"{containerRegistry}/{containerRepository}:{request.ContainerSourceImageTags[index]}");
-				}
+				arguments.Add(GetContainerImageReference(request.ContainerRegistry, request.ContainerRepository, containerSourceImageTag));
 			}
 
 			logger.LogInformation($"docker {string.Join(" ", arguments)}");
@@ -79,7 +58,7 @@ namespace ISI.Extensions.Docker
 			response.Output = waitForProcessResponse.Output;
 
 			response.Errored = waitForProcessResponse.Errored;
-			
+
 			return response;
 		}
 	}

@@ -33,29 +33,8 @@ namespace ISI.Extensions.Docker
 
 			var response = new DTOs.PullImagesResponse();
 			
-			for (var containerImageTagIndex = 0; containerImageTagIndex < request.ContainerImageTags.Length; containerImageTagIndex++)
+			foreach (var containerImageTag in request.ContainerImageTags)
 			{
-				var containerImageTag = request.ContainerImageTags[containerImageTagIndex];
-
-				if (string.IsNullOrWhiteSpace(request.ContainerRegistry))
-				{
-					if (!string.IsNullOrWhiteSpace(request.ContainerRepository))
-					{
-						containerImageTag = $"{request.ContainerRepository}:{containerImageTag}";
-					}
-				}
-				else
-				{
-					if (string.IsNullOrWhiteSpace(request.ContainerRepository))
-					{
-						containerImageTag = $"{request.ContainerRegistry}/{containerImageTag}";
-					}
-					else
-					{
-						containerImageTag = $"{request.ContainerRegistry}/{request.ContainerRepository}:{containerImageTag}";
-					}					
-				}
-
 				var arguments = new List<string>();
 
 				if (!string.IsNullOrWhiteSpace(request.Host))
@@ -74,7 +53,7 @@ namespace ISI.Extensions.Docker
 
 				arguments.Add("pull");
 
-				arguments.Add(containerImageTag);
+				arguments.Add(GetContainerImageReference(request.ContainerRegistry, request.ContainerRepository, containerImageTag));
 
 				var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{

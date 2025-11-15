@@ -39,18 +39,7 @@ namespace ISI.Extensions.Docker
 			arguments.Add("manifest");
 			arguments.Add("push");
 
-			var containerRegistry = request.ContainerRegistry ?? string.Empty;
-
-			var containerRepository = request.ContainerRepository;
-
-			if (string.IsNullOrWhiteSpace(containerRegistry))
-			{
-				arguments.Add($"{containerRepository}:{request.ContainerImageTag}");
-			}
-			else
-			{
-				arguments.Add( $"{containerRegistry}/{containerRepository}:{request.ContainerImageTag}");
-			}
+			arguments.Add(GetContainerImageReference(request.ContainerRegistry, request.ContainerRepository, request.ContainerImageTag));
 
 			logger.LogInformation($"docker {string.Join(" ", arguments)}");
 

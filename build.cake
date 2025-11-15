@@ -4,7 +4,7 @@
 #tool nuget:?package=7-Zip.CommandLine
 #addin nuget:?package=Cake.7zip
 #addin nuget:?package=ISI.Cake.AddIn&loaddependencies=true
-#addin nuget:?package=Cake.Git
+//#addin nuget:?package=Cake.Git
 
 //mklink /D Secrets S:\
 var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
@@ -29,20 +29,6 @@ var buildDateTimeStampVersion = new ISI.Extensions.Scm.DateTimeStampVersion(buil
 Information("BuildDateTimeStampVersion: {0}", buildDateTimeStampVersion);
 
 var nugetPackOutputDirectory = Argument("NugetPackOutputDirectory", System.IO.Path.GetFullPath("./Nuget"));
-
-Task("GetVersion")
-	.Does(() =>
-	{
-		var lastCommit = GitLogTip("../");
-
-		Information(@$"
-Last commit:   {lastCommit.Sha}
-Short message: {lastCommit.MessageShort}
-Author:        {lastCommit.Author.Name}
-Authored:      {lastCommit.Author.When:yyyy-MM-dd HH:mm:ss}
-Committer:     {lastCommit.Committer.Name}
-Committed:     {lastCommit.Committer.When:yyyy-MM-dd HH:mm:ss}");	
-	});
 
 Task("Clean")
 	.Does(() =>
@@ -77,7 +63,16 @@ Task("Build")
 	{
 		using(SetAssemblyVersionFiles(assemblyVersions))
 		{
-			ISI.Extensions.Process.WaitForProcessResponse("C:/Program Files/Microsoft Visual Studio/18/Professional/MSBuild/Current/Bin/amd64/MSBuild.exe", "/v:quiet", "/p:Configuration=Release", "/target:Rebuild", "C:/ISI/Internal Projects/ISI.Extensions/src/ISI.Extensions.slnx");
+			ISI.Extensions.Process.WaitForProcessResponse("C:/Program Files/Microsoft Visual Studio/18/Professional/MSBuild/Current/Bin/amd64/MSBuild.exe", "/v:quiet", "/p:Configuration=Release", "/target:Rebuild", solutionFile.Path.FullPath);
+			//var msBuildSettings = new DotNetMSBuildSettings();
+			//msBuildSettings.WithTarget("Rebuild");
+
+			//DotNetBuild(solutionFile, new DotNetBuildSettings()
+			//{
+			//	Configuration = configuration,
+			//	Verbosity = DotNetVerbosity.Quiet,
+			//	MSBuildSettings = msBuildSettings,
+			//});
 			//MSBuild(solutionFile, configurator => configurator
 			//.SetConfiguration(configuration)
 			//.SetVerbosity(Verbosity.Quiet)

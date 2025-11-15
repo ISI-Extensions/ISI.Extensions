@@ -1,19 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
 	<PropertyGroup>
 		<TargetFramework>net10.0</TargetFramework>
 		<Deterministic>false</Deterministic>
 		<LangVersion>latest</LangVersion>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	</PropertyGroup>
+	
 	<ItemGroup>
 		<Compile Include="..\ISI.Extensions.AssemblyInfo.cs" Link="Properties\ISI.Extensions.AssemblyInfo.cs" />
 		<Compile Include="..\ISI.Extensions.Version.cs" Link="Properties\ISI.Extensions.Version.cs" />
 		<None Include="..\ISI.Extensions.licenseheader" Link="ISI.Extensions.licenseheader" />
 	</ItemGroup>
+	
 	<ItemGroup>
 	  <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.0" />
 	  <PackageReference Include="System.Formats.Asn1" Version="10.0.0" />
 	</ItemGroup>
+	
 	<ItemGroup>
 		<ProjectReference Include="..\ISI.Extensions.JsonJwt\ISI.Extensions.JsonJwt.csproj" />
 		<ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />

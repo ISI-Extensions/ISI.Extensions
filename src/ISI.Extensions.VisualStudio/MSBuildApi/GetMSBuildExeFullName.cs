@@ -36,7 +36,7 @@ namespace ISI.Extensions.VisualStudio
 			}
 			if (request.MsBuildVersion == MSBuildVersion.Latest)
 			{
-				request.MsBuildVersion = MSBuildVersion.MSBuild17;
+				request.MsBuildVersion = MSBuildVersion.MSBuild18;
 			}
 
 			if (request.MsBuildPlatform == MSBuildPlatform.Automatic)
@@ -112,6 +112,17 @@ namespace ISI.Extensions.VisualStudio
 
 				case MSBuildVersion.MSBuild17:
 					msBuildExeFullNames.RemoveWhere(msBuildFullName => msBuildFullName.IndexOf(@"\2022\", StringComparison.InvariantCultureIgnoreCase) < 0);
+					foreach (var vsVersion in vsVersions)
+					{
+						if (string.IsNullOrWhiteSpace(response.MSBuildExeFullName))
+						{
+							response.MSBuildExeFullName = msBuildExeFullNames.FirstOrDefault(msBuildFullName => msBuildFullName.IndexOf($@"\{vsVersion}\", StringComparison.InvariantCultureIgnoreCase) > 0);
+						}
+					}
+					break;
+
+				case MSBuildVersion.MSBuild18:
+					msBuildExeFullNames.RemoveWhere(msBuildFullName => msBuildFullName.IndexOf(@"\18\", StringComparison.InvariantCultureIgnoreCase) < 0);
 					foreach (var vsVersion in vsVersions)
 					{
 						if (string.IsNullOrWhiteSpace(response.MSBuildExeFullName))

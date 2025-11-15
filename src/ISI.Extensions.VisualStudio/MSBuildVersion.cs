@@ -25,5 +25,6 @@ namespace ISI.Extensions.VisualStudio
 		Automatic,
 		MSBuild16,
 		MSBuild17,
+		MSBuild18,
 	}
 }

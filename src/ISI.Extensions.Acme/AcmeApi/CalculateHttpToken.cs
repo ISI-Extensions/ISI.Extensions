@@ -30,8 +30,10 @@ namespace ISI.Extensions.Acme
 		public DTOs.CalculateHttpTokenResponse CalculateHttpToken(DTOs.CalculateHttpTokenRequest request)
 		{
 			var response = new DTOs.CalculateHttpTokenResponse();
-			
-			var domainQueue = new Queue<string>(request.Domain.Split('.', StringSplitOptions.RemoveEmptyEntries).Reverse());
+
+			var domainPieces = request.Domain.Split('.', StringSplitOptions.RemoveEmptyEntries);
+			domainPieces.Reverse();
+			var domainQueue = new Queue<string>(domainPieces);
 
 			var domain = new List<string>();
 			domain.Insert(0, domainQueue.Dequeue());

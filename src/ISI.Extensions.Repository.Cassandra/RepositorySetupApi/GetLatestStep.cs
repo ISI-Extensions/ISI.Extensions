@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2025, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,16 +15,26 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.VisualStudio
+namespace ISI.Extensions.Repository.Cassandra
 {
-	public enum MSBuildVersion
+	public partial class RepositorySetupApi
 	{
-		Latest,
-		Automatic,
-		MSBuild16,
-		MSBuild17,
-		MSBuild18,
+		public DTOs.GetLatestStepResponse GetLatestStep()
+		{
+			var response = new DTOs.GetLatestStepResponse()
+			{
+				StepId = 0,
+			};
+
+
+			return response;
+		}
 	}
 }

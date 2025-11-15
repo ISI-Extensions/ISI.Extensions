@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,42 +40,31 @@ namespace ISI.Platforms.AspNetCore.Extensions
 			context.AddWebStartupConfigureServices(services =>
 			{
 				services.AddSwaggerGen(swaggerGenOptions =>
-				{
-					swaggerGenOptions.CustomOperationIds(apiDescription => apiDescription.TryGetMethodInfo(out var methodInfo) ? methodInfo.Name.TrimEnd("Async") : null);
-
-					swaggerGenOptions.SwaggerDoc($"v{version}", new Microsoft.OpenApi.Models.OpenApiInfo()
 					{
-						Title = applicationName,
-						Version = $"v{version}",
-					});
+						swaggerGenOptions.CustomOperationIds(apiDescription => apiDescription.TryGetMethodInfo(out var methodInfo) ? methodInfo.Name.TrimEnd("Async") : null);
 
-					if (useBearer)
-					{
-						swaggerGenOptions.AddSecurityDefinition(ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer, new Microsoft.OpenApi.Models.OpenApiSecurityScheme()
+						swaggerGenOptions.SwaggerDoc($"v{version}", new Microsoft.OpenApi.OpenApiInfo()
 						{
-							Name = ISI.Extensions.WebClient.HeaderCollection.Keys.Authorization,
-							Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
-							Scheme = ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer,
-							In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-							Description = "Bearer Authorization header using the Bearer scheme.",
+							Title = applicationName,
+							Version = $"v{version}",
 						});
 
-						swaggerGenOptions.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement()
+						if (useBearer)
 						{
+							swaggerGenOptions.AddSecurityDefinition(ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer, new Microsoft.OpenApi.OpenApiSecurityScheme()
 							{
-								new Microsoft.OpenApi.Models.OpenApiSecurityScheme()
-								{
-									Reference = new Microsoft.OpenApi.Models.OpenApiReference()
-									{
-										Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
-										Id = ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer,
-									}
-								},
-								[]
-							}
+								Name = ISI.Extensions.WebClient.HeaderCollection.Keys.Authorization,
+								Type = Microsoft.OpenApi.SecuritySchemeType.Http,
+								Scheme = ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer,
+								In = Microsoft.OpenApi.ParameterLocation.Header,
+								Description = "Bearer Authorization header using the Bearer scheme.",
+							});
+							swaggerGenOptions.AddSecurityRequirement(document => new Microsoft.OpenApi.OpenApiSecurityRequirement()
+						{
+							{ new Microsoft.OpenApi.OpenApiSecuritySchemeReference(ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer, document), new List<string>() },
 						});
-					}
-				});
+						}
+					});
 
 				services.AddSwaggerGenNewtonsoftSupport();
 			});
@@ -84,9 +73,9 @@ namespace ISI.Platforms.AspNetCore.Extensions
 			{
 				webApplication.UseSwagger();
 				webApplication.UseSwaggerUI(swaggerUIOptions =>
-				{
-					swaggerUIOptions.SwaggerEndpoint($"/swagger/v{version}/swagger.json", $"{applicationName} v{version}");
-				});
+					{
+						swaggerUIOptions.SwaggerEndpoint($"/swagger/v{version}/swagger.json", $"{applicationName} v{version}");
+					});
 			});
 
 			return context;

@@ -28,7 +28,8 @@ namespace ISI.Extensions
 			var total = 0;
 			var index = 0;
 
-			var creditCardInReverse = creditCardNumber.ToCharArray().Reverse();
+			var creditCardInReverse = creditCardNumber.ToCharArray();
+			creditCardInReverse.Reverse();
 
 			foreach(var @char in creditCardInReverse)
 			{

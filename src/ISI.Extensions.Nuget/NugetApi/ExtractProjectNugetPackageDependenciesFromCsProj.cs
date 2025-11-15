@@ -129,7 +129,8 @@ namespace ISI.Extensions.Nuget
 
 						hintPath = string.Join("\\", hintPathPieces);
 
-						hintPathPieces = hintPathPieces.First().Split(['.'], StringSplitOptions.RemoveEmptyEntries).Reverse().ToList();
+						hintPathPieces = hintPathPieces.First().Split(['.'], StringSplitOptions.RemoveEmptyEntries).ToList();
+						hintPathPieces.Reverse();
 
 						packageId = string.Empty;
 						packageVersion = string.Empty;

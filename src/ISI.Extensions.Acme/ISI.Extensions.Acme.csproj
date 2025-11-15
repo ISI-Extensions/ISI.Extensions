@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<Deterministic>false</Deterministic>
 		<LangVersion>latest</LangVersion>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -11,8 +11,8 @@
 		<None Include="..\ISI.Extensions.licenseheader" Link="ISI.Extensions.licenseheader" />
 	</ItemGroup>
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.10" />
-	  <PackageReference Include="System.Formats.Asn1" Version="9.0.10" />
+	  <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.0" />
+	  <PackageReference Include="System.Formats.Asn1" Version="10.0.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\ISI.Extensions.JsonJwt\ISI.Extensions.JsonJwt.csproj" />

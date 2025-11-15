@@ -116,7 +116,8 @@ namespace ISI.Extensions.Nuget
 
 									packagesPath = packagesPath.TrimStart("\\");
 
-									hintPathPieces = hintPathPieces.First().Split(['.'], StringSplitOptions.RemoveEmptyEntries).Reverse().ToList();
+									hintPathPieces = hintPathPieces.First().Split(['.'], StringSplitOptions.RemoveEmptyEntries).ToList();
+									hintPathPieces.Reverse();
 
 									var inVersion = true;
 									while (hintPathPieces.Any())

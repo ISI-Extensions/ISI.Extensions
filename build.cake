@@ -77,10 +77,11 @@ Task("Build")
 	{
 		using(SetAssemblyVersionFiles(assemblyVersions))
 		{
-			MSBuild(solutionFile, configurator => configurator
-			.SetConfiguration(configuration)
-			.SetVerbosity(Verbosity.Quiet)
-			.WithTarget("Rebuild"));
+			ISI.Extensions.Process.WaitForProcessResponse("C:/Program Files/Microsoft Visual Studio/18/Professional/MSBuild/Current/Bin/amd64/MSBuild.exe", "/v:quiet", "/p:Configuration=Release", "/target:Rebuild", "C:/ISI/Internal Projects/ISI.Extensions/src/ISI.Extensions.slnx");
+			//MSBuild(solutionFile, configurator => configurator
+			//.SetConfiguration(configuration)
+			//.SetVerbosity(Verbosity.Quiet)
+			//.WithTarget("Rebuild"));
 		}
 	});
 

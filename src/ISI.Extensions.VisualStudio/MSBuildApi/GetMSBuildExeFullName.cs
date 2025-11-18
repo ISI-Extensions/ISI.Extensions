@@ -12,15 +12,15 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.MSBuildApi;
 using Microsoft.Extensions.Logging;
+using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.MSBuildApi;
 
 namespace ISI.Extensions.VisualStudio
 {
@@ -34,10 +34,10 @@ namespace ISI.Extensions.VisualStudio
 			{
 				request.MsBuildVersion = MSBuildVersion.Latest;
 			}
-			if (request.MsBuildVersion == MSBuildVersion.Latest)
-			{
-				request.MsBuildVersion = MSBuildVersion.MSBuild18;
-			}
+			//if (request.MsBuildVersion == MSBuildVersion.Latest)
+			//{
+			//	request.MsBuildVersion = MSBuildVersion.MSBuild18;
+			//}
 
 			if (request.MsBuildPlatform == MSBuildPlatform.Automatic)
 			{
@@ -128,6 +128,24 @@ namespace ISI.Extensions.VisualStudio
 						if (string.IsNullOrWhiteSpace(response.MSBuildExeFullName))
 						{
 							response.MSBuildExeFullName = msBuildExeFullNames.FirstOrDefault(msBuildFullName => msBuildFullName.IndexOf($@"\{vsVersion}\", StringComparison.InvariantCultureIgnoreCase) > 0);
+						}
+					}
+					break;
+
+				case MSBuildVersion.Latest:
+					foreach (var buildVersionPath in new[] { @"\18\", @"\2022\", @"\2019\" })
+					{
+						if (string.IsNullOrWhiteSpace(response.MSBuildExeFullName))
+						{
+							var possibleMSBuildExeFullNames = msBuildExeFullNames.Where(msBuildFullName => msBuildFullName.IndexOf(buildVersionPath, StringComparison.InvariantCultureIgnoreCase) > 0);
+
+							foreach (var vsVersion in vsVersions)
+							{
+								if (string.IsNullOrWhiteSpace(response.MSBuildExeFullName))
+								{
+									response.MSBuildExeFullName = possibleMSBuildExeFullNames.FirstOrDefault(msBuildFullName => msBuildFullName.IndexOf($@"\{vsVersion}\", StringComparison.InvariantCultureIgnoreCase) > 0);
+								}
+							}
 						}
 					}
 					break;

@@ -70,22 +70,6 @@ Task("Build")
 				UseMSBuild = true,
 				Verbosity = ISI.Extensions.VisualStudio.MSBuildVerbosity.Quiet,
 			});
-
-			//ISI.Extensions.Process.WaitForProcessResponse("C:/Program Files/Microsoft Visual Studio/18/Professional/MSBuild/Current/Bin/amd64/MSBuild.exe", "/v:quiet", "/p:Configuration=Release", "/target:Rebuild", solutionFile.Path.FullPath);
-
-			//var msBuildSettings = new DotNetMSBuildSettings();
-			//msBuildSettings.WithTarget("Rebuild");
-
-			//DotNetBuild(solutionFile, new DotNetBuildSettings()
-			//{
-			//	Configuration = configuration,
-			//	Verbosity = DotNetVerbosity.Quiet,
-			//	MSBuildSettings = msBuildSettings,
-			//});
-			//MSBuild(solutionFile, configurator => configurator
-			//.SetConfiguration(configuration)
-			//.SetVerbosity(Verbosity.Quiet)
-			//.WithTarget("Rebuild"));
 		}
 	});
 

@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ISI.Extensions.Extensions;
+using Microsoft.VisualStudio.SolutionPersistence.Serializer.SlnV12;
 
 namespace ISI.Extensions.Tests
 {
@@ -240,6 +241,227 @@ namespace ISI.Extensions.Tests
 				.Replace("\n", string.Empty);
 
 			return !string.Equals(getCompressed(original), getCompressed(newVersion), StringComparison.InvariantCultureIgnoreCase);
+		}
+
+		[Test]
+		public void MoveToSlnx_Test()
+		{
+			var sourceControlClientApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.SourceControlClientApi>();
+			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
+
+			var solutionFullNames = new List<string>();
+			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"F:\ISI\Clients\West River Systems\WRS.SolutionFullNames.txt"));
+
+			var solutionFullNamesByRootSourceDirectory = new Dictionary<string, HashSet<string>>(StringComparer.InvariantCultureIgnoreCase);
+
+			foreach (var solutionFullName in solutionFullNames)
+			{
+				var rootSourceDirectory = sourceControlClientApi.GetRootDirectory(new()
+				{
+					FullName = System.IO.Path.GetDirectoryName(solutionFullName),
+				}).FullName;
+
+				if (!solutionFullNamesByRootSourceDirectory.TryGetValue(rootSourceDirectory, out var fullNames))
+				{
+					fullNames = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+					solutionFullNamesByRootSourceDirectory.Add(rootSourceDirectory, fullNames);
+				}
+
+				fullNames.Add(solutionFullName);
+			}
+
+			foreach (var solutionGroup in solutionFullNamesByRootSourceDirectory)
+			{
+				if (!sourceControlClientApi.UpdateWorkingCopy(new()
+				    {
+					    FullName = solutionGroup.Key,
+					    IncludeExternals = true,
+				    }).Success)
+				{
+					var exception = new Exception($"Error updating \"{solutionGroup.Key}\"");
+					throw exception;
+				}
+
+				var dirtyFileNames = new HashSet<string>();
+
+				foreach (var solutionFullName in solutionGroup.Value)
+				{
+					var solutionDetails = solutionApi.GetSolutionDetails(new()
+					{
+						Solution = solutionFullName,
+					}).SolutionDetails;
+
+					var slnxFullName = $"{solutionDetails.SolutionFullName}x";
+
+					using (var slnStream = System.IO.File.OpenRead(solutionDetails.SolutionFullName))
+					{
+						using (var slnxStream = System.IO.File.OpenWrite(slnxFullName))
+						{
+							var solutionModel = Microsoft.VisualStudio.SolutionPersistence.Serializer.SolutionSerializers.SlnFileV12.OpenAsync(slnStream, System.Threading.CancellationToken.None).GetAwaiter().GetResult();
+							
+							Microsoft.VisualStudio.SolutionPersistence.Serializer.SolutionSerializers.SlnXml.SaveAsync(slnxStream, solutionModel, System.Threading.CancellationToken.None).GetAwaiter().GetResult();
+						}
+					}
+
+					System.IO.File.Delete(solutionDetails.SolutionFullName);
+
+					dirtyFileNames.Add(solutionDetails.SolutionFullName);
+					dirtyFileNames.Add(slnxFullName);
+
+					foreach (var buildCakeFullName in System.IO.Directory.EnumerateFiles(solutionGroup.Key, "build.cake", System.IO.SearchOption.AllDirectories))
+					{
+						var content = System.IO.File.ReadAllText(buildCakeFullName);
+
+						var solutionFileName = $"/{System.IO.Path.GetFileName(solutionFullName)}\"";
+
+						if (content.IndexOf(solutionFileName, StringComparison.InvariantCultureIgnoreCase) > 0)
+						{
+							content = content.Replace(solutionFileName, $"/{System.IO.Path.GetFileName(solutionFullName)}x\"", StringComparison.InvariantCultureIgnoreCase);
+
+							System.IO.File.WriteAllText(buildCakeFullName, content);
+
+							dirtyFileNames.Add(buildCakeFullName);
+						}
+					}
+
+					try
+					{
+						var resharperCacheFullName = System.IO.Path.Combine(solutionDetails.SolutionDirectory, "..", ".vs");
+						if (System.IO.Directory.Exists(resharperCacheFullName))
+						{
+							var directoryInfo = new System.IO.DirectoryInfo(resharperCacheFullName)
+							{
+								Attributes = System.IO.FileAttributes.Normal
+							};
+
+							foreach (var fileSystemInfo in directoryInfo.GetFileSystemInfos("*", System.IO.SearchOption.AllDirectories))
+							{
+								fileSystemInfo.Attributes = System.IO.FileAttributes.Normal;
+							}
+
+							System.IO.Directory.Delete(resharperCacheFullName, true);
+						}
+					}
+					catch (Exception exception)
+					{
+					}
+
+					try
+					{
+						var resharperCacheFullName = System.IO.Path.Combine(solutionDetails.SolutionDirectory, "..", "_ReSharper.Caches");
+						if (System.IO.Directory.Exists(resharperCacheFullName))
+						{
+							var directoryInfo = new System.IO.DirectoryInfo(resharperCacheFullName)
+							{
+								Attributes = System.IO.FileAttributes.Normal
+							};
+
+							foreach (var fileSystemInfo in directoryInfo.GetFileSystemInfos("*", System.IO.SearchOption.AllDirectories))
+							{
+								fileSystemInfo.Attributes = System.IO.FileAttributes.Normal;
+							}
+
+							System.IO.Directory.Delete(resharperCacheFullName, true);
+						}
+					}
+					catch (Exception exception)
+					{
+					}
+				}
+
+				if (dirtyFileNames.Any())
+				{
+					if (!sourceControlClientApi.Commit(new()
+					    {
+						    FullNames = dirtyFileNames,
+						    LogMessage = "move to slnx",
+					    }).Success)
+					{
+						var exception = new Exception($"Error committing \"{solutionGroup.Key}\"");
+						throw exception;
+					}
+				}
+			}
+		}
+
+		[Test]
+		public void MoveToNet10_Test()
+		{
+			var sourceControlClientApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.SourceControlClientApi>();
+			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
+
+			var solutionFullNames = new List<string>();
+			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"F:\ISI\Clients\West River Systems\WRS.SolutionFullNames.txt"));
+
+			var solutionFullNamesByRootSourceDirectory = new Dictionary<string, HashSet<string>>(StringComparer.InvariantCultureIgnoreCase);
+
+			foreach (var solutionFullName in solutionFullNames)
+			{
+				var rootSourceDirectory = sourceControlClientApi.GetRootDirectory(new()
+				{
+					FullName = System.IO.Path.GetDirectoryName(solutionFullName),
+				}).FullName;
+
+				if (!solutionFullNamesByRootSourceDirectory.TryGetValue(rootSourceDirectory, out var fullNames))
+				{
+					fullNames = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+					solutionFullNamesByRootSourceDirectory.Add(rootSourceDirectory, fullNames);
+				}
+
+				fullNames.Add(solutionFullName);
+			}
+
+			foreach (var solutionGroup in solutionFullNamesByRootSourceDirectory)
+			{
+				if (!sourceControlClientApi.UpdateWorkingCopy(new()
+				    {
+					    FullName = solutionGroup.Key,
+					    IncludeExternals = true,
+				    }).Success)
+				{
+					var exception = new Exception($"Error updating \"{solutionGroup.Key}\"");
+					throw exception;
+				}
+
+				var dirtyFileNames = new HashSet<string>();
+
+				foreach (var solutionFullName in solutionGroup.Value)
+				{
+					var solutionDetails = solutionApi.GetSolutionDetails(new()
+					{
+						Solution = solutionFullName,
+					}).SolutionDetails;
+
+					foreach (var projectDetails in solutionDetails.ProjectDetailsSet)
+					{
+						var content = System.IO.File.ReadAllText(projectDetails.ProjectFullName);
+
+						var net9 = "<TargetFramework>net9.0</TargetFramework>";
+
+						if (content.IndexOf(net9, StringComparison.InvariantCultureIgnoreCase) > 0)
+						{
+							content = content.Replace(net9, "<TargetFramework>net10.0</TargetFramework>", StringComparison.InvariantCultureIgnoreCase);
+
+							System.IO.File.WriteAllText(projectDetails.ProjectFullName, content);
+
+							dirtyFileNames.Add(projectDetails.ProjectFullName);
+						}
+					}
+				}
+
+				if (dirtyFileNames.Any())
+				{
+					if (!sourceControlClientApi.Commit(new()
+					    {
+						    FullNames = dirtyFileNames,
+						    LogMessage = "move to .net 10",
+					    }).Success)
+					{
+						var exception = new Exception($"Error committing \"{solutionGroup.Key}\"");
+						throw exception;
+					}
+				}
+			}
 		}
 
 		[Test]

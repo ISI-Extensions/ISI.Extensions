@@ -40,31 +40,31 @@ namespace ISI.Platforms.AspNetCore.Extensions
 			context.AddWebStartupConfigureServices(services =>
 			{
 				services.AddSwaggerGen(swaggerGenOptions =>
+				{
+					swaggerGenOptions.CustomOperationIds(apiDescription => apiDescription.TryGetMethodInfo(out var methodInfo) ? methodInfo.Name.TrimEnd("Async") : null);
+
+					swaggerGenOptions.SwaggerDoc($"v{version}", new Microsoft.OpenApi.OpenApiInfo()
 					{
-						swaggerGenOptions.CustomOperationIds(apiDescription => apiDescription.TryGetMethodInfo(out var methodInfo) ? methodInfo.Name.TrimEnd("Async") : null);
+						Title = applicationName,
+						Version = $"v{version}",
+					});
 
-						swaggerGenOptions.SwaggerDoc($"v{version}", new Microsoft.OpenApi.OpenApiInfo()
+					if (useBearer)
+					{
+						swaggerGenOptions.AddSecurityDefinition(ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer, new Microsoft.OpenApi.OpenApiSecurityScheme()
 						{
-							Title = applicationName,
-							Version = $"v{version}",
+							Name = ISI.Extensions.WebClient.HeaderCollection.Keys.Authorization,
+							Type = Microsoft.OpenApi.SecuritySchemeType.Http,
+							Scheme = ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer,
+							In = Microsoft.OpenApi.ParameterLocation.Header,
+							Description = "Bearer Authorization header using the Bearer scheme.",
 						});
-
-						if (useBearer)
-						{
-							swaggerGenOptions.AddSecurityDefinition(ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer, new Microsoft.OpenApi.OpenApiSecurityScheme()
-							{
-								Name = ISI.Extensions.WebClient.HeaderCollection.Keys.Authorization,
-								Type = Microsoft.OpenApi.SecuritySchemeType.Http,
-								Scheme = ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer,
-								In = Microsoft.OpenApi.ParameterLocation.Header,
-								Description = "Bearer Authorization header using the Bearer scheme.",
-							});
-							swaggerGenOptions.AddSecurityRequirement(document => new Microsoft.OpenApi.OpenApiSecurityRequirement()
+						swaggerGenOptions.AddSecurityRequirement(document => new Microsoft.OpenApi.OpenApiSecurityRequirement()
 						{
 							{ new Microsoft.OpenApi.OpenApiSecuritySchemeReference(ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer, document), new List<string>() },
 						});
-						}
-					});
+					}
+				});
 
 				services.AddSwaggerGenNewtonsoftSupport();
 			});
@@ -73,9 +73,9 @@ namespace ISI.Platforms.AspNetCore.Extensions
 			{
 				webApplication.UseSwagger();
 				webApplication.UseSwaggerUI(swaggerUIOptions =>
-					{
-						swaggerUIOptions.SwaggerEndpoint($"/swagger/v{version}/swagger.json", $"{applicationName} v{version}");
-					});
+						{
+							swaggerUIOptions.SwaggerEndpoint($"/swagger/v{version}/swagger.json", $"{applicationName} v{version}");
+						});
 			});
 
 			return context;

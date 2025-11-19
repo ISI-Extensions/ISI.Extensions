@@ -45,7 +45,14 @@ namespace ISI.Extensions.Git
 					if (response.Success)
 					{
 						arguments.Clear();
-						arguments.Add("add");
+						if (System.IO.File.Exists(fullName))
+						{
+							arguments.Add("add");
+						}
+						else
+						{
+							arguments.Add("rm");
+						}
 						arguments.Add($"\"{fullName}\"");
 
 						response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()

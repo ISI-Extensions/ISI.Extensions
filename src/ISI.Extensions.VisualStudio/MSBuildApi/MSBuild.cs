@@ -48,7 +48,7 @@ namespace ISI.Extensions.VisualStudio
 				// Set the verbosity.
 				if (request.Options.Verbosity.HasValue)
 				{
-					arguments.Add($"--verbosity {request.Options.Verbosity.GetKey().ToLower()}");
+					arguments.Add($"--verbosity {request.Options.Verbosity.GetAbbreviation().ToLower()}");
 				}
 
 				// Got a specific configuration in mind?

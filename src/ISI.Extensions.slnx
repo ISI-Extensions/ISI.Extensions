@@ -75,6 +75,7 @@
   <Project Path="ISI.Extensions.MessageBus.MassTransit/ISI.Extensions.MessageBus.MassTransit.csproj">
     <Platform Solution="*|x64" Project="x64" />
   </Project>
+  <Project Path="ISI.Extensions.MessageBus.RabbitMQ/ISI.Extensions.MessageBus.RabbitMQ.csproj" Id="527bedaf-cf16-4e1b-b779-47a2c9ddc9fd" />
   <Project Path="ISI.Extensions.MessageBus.Redis/ISI.Extensions.MessageBus.Redis.csproj">
     <Platform Solution="*|x64" Project="x64" />
   </Project>

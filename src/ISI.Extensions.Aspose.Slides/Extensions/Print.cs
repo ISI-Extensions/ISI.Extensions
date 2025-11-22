@@ -16,6 +16,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Aspose.Extensions
 {
@@ -23,20 +24,32 @@ namespace ISI.Extensions.Aspose.Extensions
 	{
 		public static void Print(this global::Aspose.Slides.Presentation presentation, string printerName)
 		{
-			Print(presentation, null, printerName);
-		}
-
-		public static void Print(this global::Aspose.Slides.Presentation presentation, System.Drawing.Printing.PrinterSettings printerSettings, string printerName)
-		{
 			if (!string.IsNullOrWhiteSpace(printerName))
 			{
-				printerSettings ??= new();
-				if (!string.IsNullOrEmpty(printerName))
+				using (var stream = new ISI.Extensions.Stream.TempFileStream())
 				{
-					printerSettings.PrinterName = printerName;
-				}
+					presentation.Save(stream, global::Aspose.Slides.Export.SaveFormat.Pdf);
 
-				presentation.Print(printerSettings, presentation.DocumentProperties.Title);
+					stream.Rewind();
+
+					var pdfDocument = new global::Aspose.Pdf.Document(stream);
+
+					pdfDocument.Print(printerName);
+				}
+			}
+		}
+
+		public static void Print(this global::Aspose.Slides.Presentation presentation, System.Drawing.Printing.PageSettings pageSettings, System.Drawing.Printing.PrinterSettings printerSettings)
+		{
+			using (var stream = new ISI.Extensions.Stream.TempFileStream())
+			{
+				presentation.Save(stream, global::Aspose.Slides.Export.SaveFormat.Pdf);
+
+				stream.Rewind();
+
+				var pdfDocument = new global::Aspose.Pdf.Document(stream);
+
+				ISI.Extensions.Aspose.Extensions.PrintExtensions.Print(pdfDocument, pageSettings, printerSettings);
 			}
 		}
 	}

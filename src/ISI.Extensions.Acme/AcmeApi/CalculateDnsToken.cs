@@ -31,8 +31,7 @@ namespace ISI.Extensions.Acme
 		{
 			var response = new DTOs.CalculateDnsTokenResponse();
 
-			var domainPieces = request.Domain.Split('.', StringSplitOptions.RemoveEmptyEntries);
-			domainPieces.Reverse();
+			var domainPieces = request.Domain.Split('.', StringSplitOptions.RemoveEmptyEntries).AsEnumerable().Reverse();
 			var domainQueue = new Queue<string>(domainPieces);
 
 			var domain = new List<string>();

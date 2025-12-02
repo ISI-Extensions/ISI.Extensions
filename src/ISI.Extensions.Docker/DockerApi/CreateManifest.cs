@@ -43,7 +43,7 @@ namespace ISI.Extensions.Docker
 
 			foreach (var containerSourceImageTag in request.ContainerSourceImageTags)
 			{
-				arguments.Add(GetContainerImageReference(request.ContainerRegistry, request.ContainerRepository, containerSourceImageTag));
+				arguments.Add($"--amend {GetContainerImageReference(request.ContainerRegistry, request.ContainerRepository, containerSourceImageTag)}");
 			}
 
 			logger.LogInformation($"docker {string.Join(" ", arguments)}");

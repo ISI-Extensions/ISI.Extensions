@@ -30,7 +30,7 @@ namespace ISI.Extensions.VisualStudio
 		{
 			var projectDirectoryFullName = System.IO.Path.GetDirectoryName(projectFullName);
 
-			foreach (var framework in new[] { "net9.0", "net8.0", "net7.0", "net6.0", "net5.0" })
+			foreach (var framework in new[] { "net10.0", "net9.0", "net8.0", "net7.0", "net6.0", "net5.0" })
 			{
 				var binDirectory = System.IO.Path.Combine(projectDirectoryFullName, "bin", configuration, framework);
 

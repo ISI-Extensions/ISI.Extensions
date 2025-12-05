@@ -101,7 +101,9 @@ namespace ISI.Extensions.XenOrchestra
 								var oldBundleCertificateFullName = $"{bundleCertificateFullName}-{nowUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeSortable)}";
 								shellStream.SendCommandToShellStream($"mv {bundleCertificateFullName} {oldBundleCertificateFullName}");
 								addLog($"renamed old bundleCertificate to: {oldBundleCertificateFullName}");
-								shellStream.SendCommandToShellStream($"cat > {bundleCertificateFullName} <<EOF\n{stream.TextReadToEnd()}\nEOF\n");
+								var command = $"cat > {bundleCertificateFullName} <<EOF\n{stream.TextReadToEnd()}\nEOF\n";
+								addLog(command);
+								shellStream.SendCommandToShellStream(command);
 								addLog($"uploaded: {bundleCertificateFullName}");
 							}
 
@@ -111,11 +113,14 @@ namespace ISI.Extensions.XenOrchestra
 								var oldKeyCertificateFullName = $"{keyCertificateFullName}-{nowUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeSortable)}";
 								shellStream.SendCommandToShellStream($"mv {keyCertificateFullName} {oldKeyCertificateFullName}");
 								addLog($"renamed old keyCertificate to: {oldKeyCertificateFullName}");
-								shellStream.SendCommandToShellStream($"cat > {keyCertificateFullName} <<EOF\n{stream.TextReadToEnd()}\nEOF\n");
+								var command = $"cat > {keyCertificateFullName} <<EOF\n{stream.TextReadToEnd()}\nEOF\n";
+								addLog(command);
+								shellStream.SendCommandToShellStream(command);
 								addLog($"uploaded: {keyCertificateFullName}");
 							}
 
-							addLog($"restart xoa: {shellStream.SendCommandToShellStream("systemctl restart xo-server")}");
+							shellStream.SendCommandToShellStream("systemctl restart xo-server");
+							addLog("restarted xoa");
 						}
 					}
 

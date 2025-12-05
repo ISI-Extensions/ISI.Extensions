@@ -15,47 +15,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using ISI.Extensions.Extensions;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.SshNet
+namespace ISI.Extensions.XenOrchestra.DataTransferObjects.XenOrchestraApi
 {
-	public class ConnectionManager
+	public class LogEntry
 	{
-		private static ISI.Extensions.SecureShell.IHostConfigurationManager _hostConfigurationManager = null;
-		private static ISI.Extensions.SecureShell.IHostConfigurationManager HostConfigurationManager => _hostConfigurationManager ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.SecureShell.IHostConfigurationManager>();
+		public DateTime DateTimeStampUtc { get; set; }
 
-		public static Renci.SshNet.ConnectionInfo GetConnectionInfo(string server, string userName, string password)
-		{
-			var port = 22;
-
-			var pieces = server.Split(':');
-
-			server = pieces.First();
-
-			if (pieces.Length > 1)
-			{
-				port = pieces[1].ToInt();
-			}
-
-			var hostConfiguration = HostConfigurationManager.GetHostConfiguration(server, port, userName);
-
-			if (!string.IsNullOrEmpty(hostConfiguration?.PrivateKey))
-			{
-				using (var privateKeyStream = new System.IO.MemoryStream(System.Text.Encoding.Default.GetBytes(hostConfiguration?.PrivateKey)))
-				{
-					if (string.IsNullOrEmpty(password))
-					{
-						return new(server, port, userName, new Renci.SshNet.PrivateKeyAuthenticationMethod(userName, new Renci.SshNet.PrivateKeyFile(privateKeyStream)));
-					}
-
-					return new(server, port, userName, new Renci.SshNet.PrivateKeyAuthenticationMethod(userName, new Renci.SshNet.PrivateKeyFile(privateKeyStream, password)));
-				}
-			}
-
-			return new(server, port, userName, new Renci.SshNet.PasswordAuthenticationMethod(userName, password));
-		}
+		public string Description { get; set; }
 	}
 }

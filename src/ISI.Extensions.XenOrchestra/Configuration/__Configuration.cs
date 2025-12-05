@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2025, Integrated Solutions, Inc.
 All rights reserved.
@@ -17,45 +17,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.SshNet
+namespace ISI.Extensions.XenOrchestra
 {
-	public class ConnectionManager
+	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
+	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
 	{
-		private static ISI.Extensions.SecureShell.IHostConfigurationManager _hostConfigurationManager = null;
-		private static ISI.Extensions.SecureShell.IHostConfigurationManager HostConfigurationManager => _hostConfigurationManager ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.SecureShell.IHostConfigurationManager>();
+		public const string ConfigurationSectionName = "ISI.Extensions.XenOrchestra";
 
-		public static Renci.SshNet.ConnectionInfo GetConnectionInfo(string server, string userName, string password)
-		{
-			var port = 22;
+		[ISI.Extensions.EnvironmentConfigurationVariableName("XENORCHESTRA_SERVER")]
+		public string XenOrchestraServer { get; set; }
 
-			var pieces = server.Split(':');
+		[ISI.Extensions.EnvironmentConfigurationVariableName("XENORCHESTRA_USERNAME")]
+		public string XenOrchestraUserName { get; set; }
 
-			server = pieces.First();
-
-			if (pieces.Length > 1)
-			{
-				port = pieces[1].ToInt();
-			}
-
-			var hostConfiguration = HostConfigurationManager.GetHostConfiguration(server, port, userName);
-
-			if (!string.IsNullOrEmpty(hostConfiguration?.PrivateKey))
-			{
-				using (var privateKeyStream = new System.IO.MemoryStream(System.Text.Encoding.Default.GetBytes(hostConfiguration?.PrivateKey)))
-				{
-					if (string.IsNullOrEmpty(password))
-					{
-						return new(server, port, userName, new Renci.SshNet.PrivateKeyAuthenticationMethod(userName, new Renci.SshNet.PrivateKeyFile(privateKeyStream)));
-					}
-
-					return new(server, port, userName, new Renci.SshNet.PrivateKeyAuthenticationMethod(userName, new Renci.SshNet.PrivateKeyFile(privateKeyStream, password)));
-				}
-			}
-
-			return new(server, port, userName, new Renci.SshNet.PasswordAuthenticationMethod(userName, password));
-		}
+		[ISI.Extensions.EnvironmentConfigurationVariableName("XENORCHESTRA_PASSWORD")]
+		public string XenOrchestraPassword { get; set; }
 	}
 }

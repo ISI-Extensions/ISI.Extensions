@@ -12,50 +12,67 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ISI.Extensions.Extensions;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.SshNet
+//Sourced from https://github.com/sshnet/SSH.NET/issues/136
+namespace ISI.Extensions.SshNet.Extensions
 {
-	public class ConnectionManager
-	{
-		private static ISI.Extensions.SecureShell.IHostConfigurationManager _hostConfigurationManager = null;
-		private static ISI.Extensions.SecureShell.IHostConfigurationManager HostConfigurationManager => _hostConfigurationManager ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.SecureShell.IHostConfigurationManager>();
+  public static class ShellStreamExtensions
+  {
+	  private const string endOfLine = "efba80ab-e75f-4533-8919-4d6d3aedf13c";
 
-		public static Renci.SshNet.ConnectionInfo GetConnectionInfo(string server, string userName, string password)
-		{
-			var port = 22;
+	  public static void WriteToShellStream(this Renci.SshNet.ShellStream shellStream, string command)
+	  {
+		  shellStream.WriteLine($"{command}; echo {endOfLine}");
 
-			var pieces = server.Split(':');
+		  while (shellStream.Length == 0)
+		  {
+			  System.Threading.Thread.Sleep(500);
+		  }
+	  }
 
-			server = pieces.First();
+	  public static string ReadFromShellStream(this Renci.SshNet.ShellStream shellStream)
+	  {
+		  var result = new StringBuilder();
 
-			if (pieces.Length > 1)
-			{
-				port = pieces[1].ToInt();
-			}
+		  var line = string.Empty;
 
-			var hostConfiguration = HostConfigurationManager.GetHostConfiguration(server, port, userName);
+		  while (!line.EndsWith(endOfLine))
+		  {
+			  line = shellStream.ReadLine();
 
-			if (!string.IsNullOrEmpty(hostConfiguration?.PrivateKey))
-			{
-				using (var privateKeyStream = new System.IO.MemoryStream(System.Text.Encoding.Default.GetBytes(hostConfiguration?.PrivateKey)))
-				{
-					if (string.IsNullOrEmpty(password))
-					{
-						return new(server, port, userName, new Renci.SshNet.PrivateKeyAuthenticationMethod(userName, new Renci.SshNet.PrivateKeyFile(privateKeyStream)));
-					}
+				result.AppendLine(line);
+		  }
 
-					return new(server, port, userName, new Renci.SshNet.PrivateKeyAuthenticationMethod(userName, new Renci.SshNet.PrivateKeyFile(privateKeyStream, password)));
-				}
-			}
+		  return result.ToString();
+	  }
 
-			return new(server, port, userName, new Renci.SshNet.PasswordAuthenticationMethod(userName, password));
-		}
+	  public static string SendCommandToShellStream(this Renci.SshNet.ShellStream shellStream, string command)
+	  {
+			shellStream.WriteToShellStream(command);
+
+			return shellStream.ReadFromShellStream();
+	  }
+
+	  public static void Sudo(this Renci.SshNet.ShellStream shellStream, string password)
+	  {
+		  var prompt = shellStream.Expect(new System.Text.RegularExpressions.Regex(@"[$]"));
+
+		  shellStream.WriteLine("sudo su");
+
+		  prompt = shellStream.Expect(new System.Text.RegularExpressions.Regex(@"([$#:])"));
+		  
+		  if (prompt.Contains(":"))
+		  {
+			  shellStream.WriteLine(password);
+
+			  prompt = shellStream.Expect(new System.Text.RegularExpressions.Regex(@"[$#>]"));
+		  }
+	  }
 	}
 }

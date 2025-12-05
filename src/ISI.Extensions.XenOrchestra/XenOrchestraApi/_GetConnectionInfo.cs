@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2025, Integrated Solutions, Inc.
 All rights reserved.
@@ -17,45 +17,40 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.Extensions.DependencyInjection;
+using DTOs = ISI.Extensions.XenOrchestra.DataTransferObjects.XenOrchestraApi;
 
-namespace ISI.Extensions.SshNet
+namespace ISI.Extensions.XenOrchestra
 {
-	public class ConnectionManager
+	public partial class XenOrchestraApi
 	{
-		private static ISI.Extensions.SecureShell.IHostConfigurationManager _hostConfigurationManager = null;
-		private static ISI.Extensions.SecureShell.IHostConfigurationManager HostConfigurationManager => _hostConfigurationManager ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.SecureShell.IHostConfigurationManager>();
-
-		public static Renci.SshNet.ConnectionInfo GetConnectionInfo(string server, string userName, string password)
+		private (Renci.SshNet.ConnectionInfo ConnectionInfo, string Password) GetConnectionInfo(DTOs.IRequest request)
 		{
-			var port = 22;
+			var server = (string)null;
+			var userName = (string)null;
+			var password = (string)null;
 
-			var pieces = server.Split(':');
-
-			server = pieces.First();
-
-			if (pieces.Length > 1)
+			if (!string.IsNullOrWhiteSpace(request.XenOrchestraServer))
 			{
-				port = pieces[1].ToInt();
+				server = request.XenOrchestraServer;
+				userName = request.XenOrchestraUserName;
+				password = request.XenOrchestraPassword;
 			}
 
-			var hostConfiguration = HostConfigurationManager.GetHostConfiguration(server, port, userName);
-
-			if (!string.IsNullOrEmpty(hostConfiguration?.PrivateKey))
+			if (!string.IsNullOrWhiteSpace(Configuration.XenOrchestraServer))
 			{
-				using (var privateKeyStream = new System.IO.MemoryStream(System.Text.Encoding.Default.GetBytes(hostConfiguration?.PrivateKey)))
-				{
-					if (string.IsNullOrEmpty(password))
-					{
-						return new(server, port, userName, new Renci.SshNet.PrivateKeyAuthenticationMethod(userName, new Renci.SshNet.PrivateKeyFile(privateKeyStream)));
-					}
-
-					return new(server, port, userName, new Renci.SshNet.PrivateKeyAuthenticationMethod(userName, new Renci.SshNet.PrivateKeyFile(privateKeyStream, password)));
-				}
+				server = Configuration.XenOrchestraServer;
+				userName = Configuration.XenOrchestraUserName;
+				password = Configuration.XenOrchestraPassword;
 			}
 
-			return new(server, port, userName, new Renci.SshNet.PasswordAuthenticationMethod(userName, password));
+			if (!string.IsNullOrWhiteSpace(server))
+			{
+				return (ConnectionInfo: ISI.Extensions.SshNet.ConnectionManager.GetConnectionInfo(server, userName, password), Password: password);
+			}
+
+			throw new Exception("No Server available");
 		}
 	}
 }

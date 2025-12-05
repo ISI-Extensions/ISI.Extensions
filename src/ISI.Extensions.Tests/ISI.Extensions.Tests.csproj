@@ -102,6 +102,7 @@
 		<ProjectReference Include="..\ISI.Extensions.TrueNAS\ISI.Extensions.TrueNAS.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.VisualStudioCode\ISI.Extensions.VisualStudioCode.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.VisualStudio\ISI.Extensions.VisualStudio.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.XenOrchestra\ISI.Extensions.XenOrchestra.csproj" />
 		<ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />
 	</ItemGroup>
 	<ItemGroup>

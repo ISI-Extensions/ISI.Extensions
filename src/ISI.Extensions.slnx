@@ -137,6 +137,7 @@
   <Project Path="ISI.Extensions.VisualStudioCode.Forms/ISI.Extensions.VisualStudioCode.Forms.csproj" Id="311c3bef-399a-436d-a6b9-07ce8b669a0a" />
   <Project Path="ISI.Extensions.VisualStudioCode/ISI.Extensions.VisualStudioCode.csproj" />
   <Project Path="ISI.Extensions.WinForms/ISI.Extensions.WinForms.csproj" Id="d2964752-7094-43c6-89f4-f1d4417474c7" />
+  <Project Path="ISI.Extensions.XenOrchestra/ISI.Extensions.XenOrchestra.csproj" Id="a1afd35a-fa0c-4bcf-a98f-af7184326b17" />
   <Project Path="ISI.Extensions/ISI.Extensions.csproj">
     <Platform Solution="*|x64" Project="x64" />
   </Project>

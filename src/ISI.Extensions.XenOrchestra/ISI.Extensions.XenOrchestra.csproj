@@ -1,30 +1,23 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net10.0</TargetFramework>
+		<TargetFramework>netstandard2.0</TargetFramework>
 		<LangVersion>latest</LangVersion>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<Deterministic>false</Deterministic>
 		<Platforms>AnyCPU;x64</Platforms>
 	</PropertyGroup>
-
 	<ItemGroup>
 		<Compile Include="..\ISI.Extensions.AssemblyInfo.cs" Link="Properties\ISI.Extensions.AssemblyInfo.cs" />
 		<Compile Include="..\ISI.Extensions.Version.cs" Link="Properties\ISI.Extensions.Version.cs" />
 		<None Include="..\ISI.Extensions.licenseheader" Link="ISI.Extensions.licenseheader" />
 	</ItemGroup>
-
 	<ItemGroup>
 		<PackageReference Update="NETStandard.Library" Version="2.0.3" />
-	  <PackageReference Include="Aspose.Slides.NET" Version="25.12.0" />
-	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
-	  <PackageReference Include="System.Drawing.Common" Version="10.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
+		<PackageReference Include="SSH.NET" Version="2025.1.0" />
 	</ItemGroup>
-
 	<ItemGroup>
+		<ProjectReference Include="..\ISI.Extensions.SshNet\ISI.Extensions.SshNet.csproj" />
 		<ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />
-		<ProjectReference Include="..\ISI.Extensions.Aspose\ISI.Extensions.Aspose.csproj" />
-		<ProjectReference Include="..\ISI.Extensions.Aspose.Pdf\ISI.Extensions.Aspose.Pdf.csproj" />
 	</ItemGroup>
-
 </Project>

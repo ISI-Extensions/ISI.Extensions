@@ -29,6 +29,7 @@
     <Platform Solution="*|x64" Project="x64" />
   </Project>
   <Project Path="ISI.Extensions.Asterisk/ISI.Extensions.Asterisk.csproj" />
+  <Project Path="ISI.Extensions.AWS/ISI.Extensions.AWS.csproj" Id="e5f0c8fe-e434-4114-b0ea-ecccbfd31ba0" />
   <Project Path="ISI.Extensions.Azure/ISI.Extensions.Azure.csproj" />
   <Project Path="ISI.Extensions.BitBucket/ISI.Extensions.BitBucket.csproj" />
   <Project Path="ISI.Extensions.Caching.MessageBus/ISI.Extensions.Caching.MessageBus.csproj">

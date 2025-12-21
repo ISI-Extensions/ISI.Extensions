@@ -20,42 +20,15 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Dns
+namespace ISI.Extensions.AWS.DataTransferObjects.DomainsApi
 {
-	public class DnsRecord
+	public class SetDnsRecordsRequest : IRequest
 	{
-		public string Name { get; set; }
-		public RecordType RecordType { get; set; }
-		public string Data { get; set; }
-		public int? Port { get; set; }
-		public int Priority { get; set; } = 10;
-		public string Protocol { get; set; }
-		public string Service { get; set; }
-		public TimeSpan Ttl { get; set; } = TimeSpan.FromHours(1);
-		public long? Weight { get; set; }
-		public bool Proxied { get; set; }
-		public string Comment { get; set; }
+		public string AmazonAccessKey { get; set; }
+		public string AmazonSecretKey { get; set; }
 
-		public override string ToString() => $"{(string.IsNullOrWhiteSpace(Name) ? "@" : Name)} {RecordType.GetAbbreviation()} {Data}";
+		public string Domain { get; set; }
 
-		public bool Matches(DnsRecord dnsRecord)
-		{
-			if (dnsRecord.RecordType != RecordType)
-			{
-				return false;
-			}
-
-			if (!string.Equals(dnsRecord.Name, Name, StringComparison.InvariantCultureIgnoreCase))
-			{
-				return false;
-			}
-
-			if((RecordType == RecordType.TextRecord) && !string.Equals(dnsRecord.Data, Data, StringComparison.InvariantCulture))
-			{
-				return false;
-			}
-
-			return true;
-		}
+		public ISI.Extensions.Dns.DnsRecord[] DnsRecords { get; set; }
 	}
 }

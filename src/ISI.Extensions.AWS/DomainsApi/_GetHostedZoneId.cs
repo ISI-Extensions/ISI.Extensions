@@ -12,50 +12,27 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.AWS.Extensions;
+using DTOs = ISI.Extensions.AWS.DataTransferObjects.DomainsApi;
 
-namespace ISI.Extensions.Dns
+namespace ISI.Extensions.AWS
 {
-	public class DnsRecord
+	public partial class DomainsApi
 	{
-		public string Name { get; set; }
-		public RecordType RecordType { get; set; }
-		public string Data { get; set; }
-		public int? Port { get; set; }
-		public int Priority { get; set; } = 10;
-		public string Protocol { get; set; }
-		public string Service { get; set; }
-		public TimeSpan Ttl { get; set; } = TimeSpan.FromHours(1);
-		public long? Weight { get; set; }
-		public bool Proxied { get; set; }
-		public string Comment { get; set; }
-
-		public override string ToString() => $"{(string.IsNullOrWhiteSpace(Name) ? "@" : Name)} {RecordType.GetAbbreviation()} {Data}";
-
-		public bool Matches(DnsRecord dnsRecord)
+		private string GetHostedZoneId(Amazon.Route53.AmazonRoute53Client amazonRoute53Client, string domain)
 		{
-			if (dnsRecord.RecordType != RecordType)
-			{
-				return false;
-			}
+			var hostedZones = amazonRoute53Client.ListHostedZonesAsync().GetAwaiter().GetResult().HostedZones;
 
-			if (!string.Equals(dnsRecord.Name, Name, StringComparison.InvariantCultureIgnoreCase))
-			{
-				return false;
-			}
+			var hostedZone = hostedZones.NullCheckedFirstOrDefault(hostedZone => string.Equals(hostedZone.Name.Trim('.'), domain, StringComparison.InvariantCultureIgnoreCase));
 
-			if((RecordType == RecordType.TextRecord) && !string.Equals(dnsRecord.Data, Data, StringComparison.InvariantCulture))
-			{
-				return false;
-			}
-
-			return true;
+			return hostedZone?.Id;
 		}
 	}
 }

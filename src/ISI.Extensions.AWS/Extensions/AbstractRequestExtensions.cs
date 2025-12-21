@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2025, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,47 +15,22 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.AWS.DataTransferObjects;
 
-namespace ISI.Extensions.Dns
+namespace ISI.Extensions.AWS.Extensions
 {
-	public class DnsRecord
+	public static class AbstractRequestExtensions
 	{
-		public string Name { get; set; }
-		public RecordType RecordType { get; set; }
-		public string Data { get; set; }
-		public int? Port { get; set; }
-		public int Priority { get; set; } = 10;
-		public string Protocol { get; set; }
-		public string Service { get; set; }
-		public TimeSpan Ttl { get; set; } = TimeSpan.FromHours(1);
-		public long? Weight { get; set; }
-		public bool Proxied { get; set; }
-		public string Comment { get; set; }
-
-		public override string ToString() => $"{(string.IsNullOrWhiteSpace(Name) ? "@" : Name)} {RecordType.GetAbbreviation()} {Data}";
-
-		public bool Matches(DnsRecord dnsRecord)
+		public static Amazon.Route53.AmazonRoute53Client GetAmazonRoute53Client(this DTOs.IRequest request, Configuration configuration)
 		{
-			if (dnsRecord.RecordType != RecordType)
+			if (string.IsNullOrWhiteSpace(request.AmazonAccessKey) && string.IsNullOrWhiteSpace(request.AmazonSecretKey))
 			{
-				return false;
+				return new Amazon.Route53.AmazonRoute53Client(new Amazon.Runtime.BasicAWSCredentials(configuration.AmazonAccessKey, configuration.AmazonSecretKey));
 			}
 
-			if (!string.Equals(dnsRecord.Name, Name, StringComparison.InvariantCultureIgnoreCase))
-			{
-				return false;
-			}
-
-			if((RecordType == RecordType.TextRecord) && !string.Equals(dnsRecord.Data, Data, StringComparison.InvariantCulture))
-			{
-				return false;
-			}
-
-			return true;
+			return new Amazon.Route53.AmazonRoute53Client(new Amazon.Runtime.BasicAWSCredentials(request.AmazonAccessKey, request.AmazonSecretKey));
 		}
 	}
 }

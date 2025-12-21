@@ -19,43 +19,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.Dns
+namespace ISI.Extensions.AWS
 {
-	public class DnsRecord
+	[ISI.Extensions.DependencyInjection.ServiceRegistrar]
+	public class ServiceRegistrar : ISI.Extensions.DependencyInjection.IServiceRegistrar
 	{
-		public string Name { get; set; }
-		public RecordType RecordType { get; set; }
-		public string Data { get; set; }
-		public int? Port { get; set; }
-		public int Priority { get; set; } = 10;
-		public string Protocol { get; set; }
-		public string Service { get; set; }
-		public TimeSpan Ttl { get; set; } = TimeSpan.FromHours(1);
-		public long? Weight { get; set; }
-		public bool Proxied { get; set; }
-		public string Comment { get; set; }
-
-		public override string ToString() => $"{(string.IsNullOrWhiteSpace(Name) ? "@" : Name)} {RecordType.GetAbbreviation()} {Data}";
-
-		public bool Matches(DnsRecord dnsRecord)
+		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
-			if (dnsRecord.RecordType != RecordType)
-			{
-				return false;
-			}
-
-			if (!string.Equals(dnsRecord.Name, Name, StringComparison.InvariantCultureIgnoreCase))
-			{
-				return false;
-			}
-
-			if((RecordType == RecordType.TextRecord) && !string.Equals(dnsRecord.Data, Data, StringComparison.InvariantCulture))
-			{
-				return false;
-			}
-
-			return true;
+			services.AddSingleton<DomainsApi>();
 		}
 	}
 }

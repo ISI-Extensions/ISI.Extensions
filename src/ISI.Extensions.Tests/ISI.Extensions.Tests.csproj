@@ -40,6 +40,7 @@
 		<ProjectReference Include="..\ISI.Extensions.Acme\ISI.Extensions.Acme.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Alpine\ISI.Extensions.Alpine.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Ant\ISI.Extensions.Ant.csproj" />
+		<ProjectReference Include="..\ISI.Extensions.AWS\ISI.Extensions.AWS.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.BitBucket\ISI.Extensions.BitBucket.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Cloudflare\ISI.Extensions.Cloudflare.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.Debian\ISI.Extensions.Debian.csproj" />

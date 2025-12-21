@@ -83,6 +83,6 @@ namespace ISI.Extensions.GoDaddy.SerializableModels.DomainsApi
 		public string RecordType { get; set; }
 
 		[DataMember(Name = "weight", EmitDefaultValue = false)]
-		public int? Weight { get; set; }
+		public long? Weight { get; set; }
 	}
 }

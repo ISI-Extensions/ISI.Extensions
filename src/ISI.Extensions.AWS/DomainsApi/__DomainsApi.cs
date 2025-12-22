@@ -54,7 +54,7 @@ namespace ISI.Extensions.AWS
 
 			response.DnsRecords = GetDnsRecords(new DTOs.GetDnsRecordsRequest()
 			{
-				AmazonAccessKey = request.Url,
+				AmazonAccessKey = request.ApiUser,
 				AmazonSecretKey = request.ApiKey,
 				Domain = request.Domain,
 			}).DnsRecords;
@@ -68,7 +68,7 @@ namespace ISI.Extensions.AWS
 
 			SetDnsRecords(new DTOs.SetDnsRecordsRequest()
 			{
-				AmazonAccessKey = request.Url,
+				AmazonAccessKey = request.ApiUser,
 				AmazonSecretKey = request.ApiKey,
 				Domain = request.Domain,
 				DnsRecords = request.DnsRecords,

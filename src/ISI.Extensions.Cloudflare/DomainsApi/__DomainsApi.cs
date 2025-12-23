@@ -8,7 +8,7 @@ using DTOs = ISI.Extensions.Cloudflare.DataTransferObjects.DomainsApi;
 
 namespace ISI.Extensions.Cloudflare
 {
-	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "Cloudflare")]
+	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "Cloudflare", false, null, false, null, true, "ApiKey")]
 	public partial class DomainsApi : ISI.Extensions.Dns.AbstractDomainsApi, ISI.Extensions.Dns.IDomainsApi
 	{
 		internal const string _dnsProviderUuid = "d7cdff03-b762-4d5d-b0fc-fac6bc623fa8";

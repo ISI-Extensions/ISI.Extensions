@@ -446,7 +446,7 @@ namespace ISI.Extensions.Tests
 		}
 	}
 
-	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "ManualDomainsApi")]
+	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "ManualDomainsApi", false, null, false, null, false, null)]
 	public class ManualDomainsApi : ISI.Extensions.Dns.AbstractDomainsApi, ISI.Extensions.Dns.IDomainsApi
 	{
 		internal const string _dnsProviderUuid = "d83036c2-5fc3-48d7-9d14-945be141107e";

@@ -105,7 +105,7 @@ namespace ISI.Extensions.Cloudflare.SerializableModels
 		public string[] Tags { get; set; }
 
 		[DataMember(Name = "id", EmitDefaultValue = false)]
-		public string DnsRecordId { get; set; }
+		public string DnsRecordKey { get; set; }
 
 		[DataMember(Name = "proxiable", EmitDefaultValue = false)]
 		public bool Proxiable { get; set; }

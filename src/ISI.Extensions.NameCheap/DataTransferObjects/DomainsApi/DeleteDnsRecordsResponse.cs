@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2025, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,18 +15,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using DTOs = ISI.Extensions.Dns.DataTransferObjects.DomainsApi;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Dns
+namespace ISI.Extensions.NameCheap.DataTransferObjects.DomainsApi
 {
-	public interface IDomainsApi
+	public class DeleteDnsRecordsResponse
 	{
-		DTOs.GetDnsProvidersResponse GetDnsProviders(DTOs.GetDnsProvidersRequest request);
-		DTOs.DeleteDnsRecordsResponse DeleteDnsRecords(DTOs.DeleteDnsRecordsRequest request);
-		DTOs.SetDnsRecordsResponse SetDnsRecords(DTOs.SetDnsRecordsRequest request);
-		DTOs.GetDnsRecordsResponse GetDnsRecords(DTOs.GetDnsRecordsRequest request);
-		DTOs.GetTxtRecordsResponse GetTxtRecords(DTOs.GetTxtRecordsRequest request);
-		DTOs.GetNameServersResponse GetNameServers(DTOs.GetNameServersRequest request);
 	}
 }

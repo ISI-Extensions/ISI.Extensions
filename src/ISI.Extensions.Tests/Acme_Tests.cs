@@ -473,6 +473,11 @@ namespace ISI.Extensions.Tests
 			throw new NotImplementedException();
 		}
 
+		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.DeleteDnsRecordsResponse ISI.Extensions.Dns.IDomainsApi.DeleteDnsRecords(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.DeleteDnsRecordsRequest request)
+		{
+			throw new NotImplementedException();
+		}
+
 		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.SetDnsRecordsResponse ISI.Extensions.Dns.IDomainsApi.SetDnsRecords(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.SetDnsRecordsRequest request)
 		{
 			var response = new ISI.Extensions.Dns.DataTransferObjects.DomainsApi.SetDnsRecordsResponse();

@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +31,17 @@ namespace ISI.Extensions.GoDaddy
 		{
 			var response = new DTOs.SetDnsRecordsResponse();
 
+			var getDnsRecordsResponse = GetDnsRecords(new()
+			{
+				Url = request.Url,
+				ApiKey = request.ApiKey,
+				ApiSecret = request.ApiSecret,
+				Domain = request.Domain,
+			});
+
+			var existingDnsRecords = new List<ISI.Extensions.Dns.DnsRecord>(getDnsRecordsResponse?.DnsRecords ?? []);
+
+
 			foreach (var dnsRecordsGroupedByType in request.DnsRecords.GroupBy(dnsRecord => dnsRecord.RecordType))
 			{
 				foreach (var dnsRecordsGroupedByName in dnsRecordsGroupedByType.GroupBy(dnsRecord => dnsRecord.Name))
@@ -45,7 +56,26 @@ namespace ISI.Extensions.GoDaddy
 						uri.AddDirectoryToPath(dnsRecordsGroupedByType.Key.GetKey());
 						uri.AddDirectoryToPath(dnsRecordsGroupedByName.Key);
 
-						var dnsRecords = dnsRecordsGroupedByName.ToNullCheckedArray(SerializableModels.DomainsApi.DnsRecord.ToSerializable);
+						var dnsRecords = new List<ISI.Extensions.Dns.DnsRecord>();
+
+						if (dnsRecordsGroupedByType.Key == ISI.Extensions.Dns.RecordType.TextRecord)
+						{
+							dnsRecords.AddRange(dnsRecordsGroupedByName);
+
+							foreach (var existingDnsRecord in existingDnsRecords.Where(existingDnsRecord => (existingDnsRecord.RecordType == dnsRecordsGroupedByType.Key) && string.Equals(existingDnsRecord.Name, dnsRecordsGroupedByName.Key, StringComparison.InvariantCultureIgnoreCase)))
+							{
+								if (!dnsRecords.Any(dnsRecord => string.Equals(dnsRecord.Data, existingDnsRecord.Data, StringComparison.InvariantCulture)))
+								{
+									dnsRecords.Add(existingDnsRecord);
+								}
+							}
+						}
+						else
+						{
+							dnsRecords.AddRange(dnsRecordsGroupedByName);
+						}
+
+						var serializableDnsRecords = dnsRecords.ToNullCheckedArray(SerializableModels.DomainsApi.DnsRecord.ToSerializable);
 
 						var goDaddyResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPut(new()
 						{
@@ -58,7 +88,7 @@ namespace ISI.Extensions.GoDaddy
 							{ 429, typeof(SerializableModels.Error) }, //System.Net.HttpStatusCode.TooManyRequests
 							{ System.Net.HttpStatusCode.InternalServerError, typeof(SerializableModels.Error) },
 							{ System.Net.HttpStatusCode.GatewayTimeout, typeof(SerializableModels.Error) },
-						}, uri.Uri, request.GetHeaders(Configuration), dnsRecords, true);
+						}, uri.Uri, request.GetHeaders(Configuration), serializableDnsRecords, true);
 
 						switch (goDaddyResponse.Response)
 						{

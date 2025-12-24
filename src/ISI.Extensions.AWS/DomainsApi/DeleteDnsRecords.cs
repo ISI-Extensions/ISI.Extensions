@@ -26,9 +26,9 @@ namespace ISI.Extensions.AWS
 {
 	public partial class DomainsApi
 	{
-		public DTOs.SetDnsRecordsResponse SetDnsRecords(DTOs.SetDnsRecordsRequest request)
+		public DTOs.DeleteDnsRecordsResponse DeleteDnsRecords(DTOs.DeleteDnsRecordsRequest request)
 		{
-			var response = new DTOs.SetDnsRecordsResponse();
+			var response = new DTOs.DeleteDnsRecordsResponse();
 
 			var amazonRoute53Client = request.GetAmazonRoute53Client(Configuration);
 
@@ -36,6 +36,15 @@ namespace ISI.Extensions.AWS
 
 			if (!string.IsNullOrWhiteSpace(hostedZoneId))
 			{
+				var getDnsRecordsResponse = GetDnsRecords(new()
+				{
+					AmazonAccessKey = request.AmazonAccessKey,
+					AmazonSecretKey = request.AmazonSecretKey,
+					Domain = request.Domain,
+				});
+
+				var existingDnsRecords = new List<ISI.Extensions.Dns.DnsRecord>(getDnsRecordsResponse?.DnsRecords ?? []);
+
 				var changes = new List<Amazon.Route53.Model.Change>();
 
 				foreach (var dnsRecordsGroupedByRecordType in request.DnsRecords.GroupBy(dnsRecord => dnsRecord.RecordType))
@@ -45,33 +54,56 @@ namespace ISI.Extensions.AWS
 						var name = $"{dnsRecordsGroupedByName.Key}.{request.Domain}".ToLower();
 						var rrType = dnsRecordsGroupedByRecordType.Key.GetRRType();
 
-						var resourceRecords = new List<Amazon.Route53.Model.ResourceRecord>();
 
 						switch (dnsRecordsGroupedByRecordType.Key)
 						{
-							case ISI.Extensions.Dns.RecordType.MailExchangeRecord:
-								resourceRecords.AddRange(dnsRecordsGroupedByName.NullCheckedSelect(dnsRecord => new Amazon.Route53.Model.ResourceRecord($"{dnsRecord.Priority} {dnsRecord.Data}")));
-								break;
-
 							case ISI.Extensions.Dns.RecordType.TextRecord:
-								resourceRecords.AddRange(dnsRecordsGroupedByName.NullCheckedSelect(dnsRecord => new Amazon.Route53.Model.ResourceRecord($"\"{dnsRecord.Data.Trim('\"')}\"")));
-								break;
+								{
+									var dnsRecords = new List<ISI.Extensions.Dns.DnsRecord>();
+
+									dnsRecords.AddRange(existingDnsRecords.Where(existingDnsRecord => (existingDnsRecord.RecordType == dnsRecordsGroupedByRecordType.Key) && string.Equals(existingDnsRecord.Name, dnsRecordsGroupedByName.Key, StringComparison.InvariantCultureIgnoreCase)));
+
+									foreach (var dnsRecord in request.DnsRecords)
+									{
+										dnsRecords.RemoveAll(d => d.Matches(dnsRecord));
+									}
+
+									if (dnsRecords.Any())
+									{
+										var resourceRecords = new List<Amazon.Route53.Model.ResourceRecord>(dnsRecords.NullCheckedSelect(dnsRecord => new Amazon.Route53.Model.ResourceRecord($"\"{dnsRecord.Data.Trim('\"')}\"")));
+
+										changes.Add(new Amazon.Route53.Model.Change()
+										{
+											Action = Amazon.Route53.ChangeAction.UPSERT,
+											ResourceRecordSet = new Amazon.Route53.Model.ResourceRecordSet(name, rrType)
+											{
+												ResourceRecords = resourceRecords,
+												TTL = (long)dnsRecordsGroupedByName.First().Ttl.TotalSeconds,
+												Weight = dnsRecordsGroupedByName.First().Weight,
+											},
+										});
+									}
+									else
+									{
+										changes.Add(new Amazon.Route53.Model.Change()
+										{
+											Action = Amazon.Route53.ChangeAction.DELETE,
+											ResourceRecordSet = new Amazon.Route53.Model.ResourceRecordSet(name, rrType),
+										});
+									}
+
+									break;
+								}
 
 							default:
-								resourceRecords.AddRange(dnsRecordsGroupedByName.NullCheckedSelect(dnsRecord => new Amazon.Route53.Model.ResourceRecord(dnsRecord.Data)));
+								changes.Add(new Amazon.Route53.Model.Change()
+								{
+									Action = Amazon.Route53.ChangeAction.DELETE,
+									ResourceRecordSet = new Amazon.Route53.Model.ResourceRecordSet(name, rrType),
+								});
 								break;
 						}
 
-						changes.Add(new Amazon.Route53.Model.Change()
-						{
-							Action = Amazon.Route53.ChangeAction.UPSERT,
-							ResourceRecordSet = new Amazon.Route53.Model.ResourceRecordSet(name, rrType)
-							{
-								ResourceRecords = resourceRecords,
-								TTL = (long)dnsRecordsGroupedByName.First().Ttl.TotalSeconds,
-								Weight = dnsRecordsGroupedByName.First().Weight,
-							},
-						});
 					}
 				}
 

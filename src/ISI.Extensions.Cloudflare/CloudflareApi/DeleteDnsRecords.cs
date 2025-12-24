@@ -29,15 +29,15 @@ namespace ISI.Extensions.Cloudflare
 	{
 		//Accepted Permissions (at least one required)
 		//DNS Write
-		public DTOs.SetDnsRecordsResponse SetDnsRecords(DTOs.SetDnsRecordsRequest request)
+		public DTOs.DeleteDnsRecordsResponse DeleteDnsRecords(DTOs.DeleteDnsRecordsRequest request)
 		{
-			var response = new DTOs.SetDnsRecordsResponse();
+			var response = new DTOs.DeleteDnsRecordsResponse();
 
 			EnsureZoneId(request);
 
 			var existingDnsRecords = (SerializableDTOs.DnsRecord[])null;
 
-			var dnsRecords = new List<ISI.Extensions.Dns.DnsRecord>();
+			var ids = new List<string>();
 
 			try
 			{
@@ -77,58 +77,30 @@ namespace ISI.Extensions.Cloudflare
 					(ISI.Extensions.Enum<ISI.Extensions.Dns.RecordType>.ParseAbbreviation(existingDnsRecord.RecordType) == dnsRecord.RecordType) &&
 					((dnsRecord.RecordType != ISI.Extensions.Dns.RecordType.TextRecord) || string.Equals(existingDnsRecord.Content, $"\"{dnsRecord.Data}\"", StringComparison.InvariantCulture)));
 
-				if (restRequest == null)
+				if (restRequest != null)
 				{
-					restRequest = ISI.Extensions.Cloudflare.SerializableModels.DnsRecord.ToSerializable(dnsRecord, request.ZoneName);
-
-					try
-					{
-						var uri = GetUrl(request);
-						uri.AddDirectoryToPath("zones/{zoneId}/dns_records".Replace("{zoneId}", request.ZoneId));
-
-						var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.DnsRecord, SerializableDTOs.SetDnsRecordsResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request), restRequest, false);
-
-						if (restResponse.Error != null)
-						{
-							throw restResponse.Error.Exception;
-						}
-
-						dnsRecords.Add(restResponse?.Response?.DnsRecord?.Export());
-					}
-					catch (Exception exception)
-					{
-						Logger.LogError(exception, "SetDnsRecords (Post) Failed\n{0}", exception.ErrorMessageFormatted());
-					}
-				}
-				else
-				{
-					restRequest.Content = (dnsRecord.RecordType == ISI.Extensions.Dns.RecordType.TextRecord ? $"\"{dnsRecord.Data}\"" : dnsRecord.Data);
-					restRequest.Ttl = (int)dnsRecord.Ttl.TotalSeconds;
-					restRequest.Proxied = dnsRecord.Proxied;
-					restRequest.Comment = dnsRecord.Comment;
-
 					try
 					{
 						var uri = GetUrl(request);
 						uri.AddDirectoryToPath("zones/{zoneId}/dns_records/{dnsRecordId}".Replace("{zoneId}", request.ZoneId).Replace("{dnsRecordId}", restRequest.DnsRecordKey));
 
-						var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPatch<SerializableDTOs.DnsRecord, SerializableDTOs.SetDnsRecordsResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request), restRequest, false);
+						var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonDelete<SerializableDTOs.DnsRecord, SerializableDTOs.DeleteDnsRecordsResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request), null, false);
 
 						if (restResponse.Error != null)
 						{
 							throw restResponse.Error.Exception;
 						}
 
-						dnsRecords.Add(restResponse?.Response?.DnsRecord?.Export());
+						ids.Add(restResponse?.Response?.Result?.Id ?? null);
 					}
 					catch (Exception exception)
 					{
-						Logger.LogError(exception, "SetDnsRecords (Patch) Failed\n{0}", exception.ErrorMessageFormatted());
+						Logger.LogError(exception, "DeleteDnsRecords (Delete) Failed\n{0}", exception.ErrorMessageFormatted());
 					}
 				}
 			}
 
-			response.DnsRecords = dnsRecords.ToArray();
+			response.Ids = ids.ToArray();
 
 			return response;
 		}

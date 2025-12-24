@@ -25,7 +25,7 @@ using SerializableDTOs = ISI.Extensions.GoDaddy.SerializableModels;
 
 namespace ISI.Extensions.GoDaddy
 {
-	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "GoDaddy", false, null, true, "ApiUser", true, "ApiKey")]
+	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "GoDaddy", false, null, true, "ApiKey", true, "ApiSecret")]
 	public partial class DomainsApi : ISI.Extensions.Dns.AbstractDomainsApi, ISI.Extensions.Dns.IDomainsApi
 	{
 		internal const string _dnsProviderUuid = "72924eef-4777-4c35-87df-568da79cf8aa";
@@ -72,6 +72,22 @@ namespace ISI.Extensions.GoDaddy
 			var response = new ISI.Extensions.Dns.DataTransferObjects.DomainsApi.SetDnsRecordsResponse();
 
 			SetDnsRecords(new DTOs.SetDnsRecordsRequest()
+			{
+				Url = request.Url,
+				ApiKey = request.ApiUser,
+				ApiSecret = request.ApiKey,
+				Domain = request.Domain,
+				DnsRecords = request.DnsRecords,
+			});
+
+			return response;
+		}
+
+		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.DeleteDnsRecordsResponse ISI.Extensions.Dns.IDomainsApi.DeleteDnsRecords(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.DeleteDnsRecordsRequest request)
+		{
+			var response = new ISI.Extensions.Dns.DataTransferObjects.DomainsApi.DeleteDnsRecordsResponse();
+
+			DeleteDnsRecords(new DTOs.DeleteDnsRecordsRequest()
 			{
 				Url = request.Url,
 				ApiKey = request.ApiUser,

@@ -76,5 +76,20 @@ namespace ISI.Extensions.AWS
 
 			return response;
 		}
+
+		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.DeleteDnsRecordsResponse ISI.Extensions.Dns.IDomainsApi.DeleteDnsRecords(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.DeleteDnsRecordsRequest request)
+		{
+			var response = new ISI.Extensions.Dns.DataTransferObjects.DomainsApi.DeleteDnsRecordsResponse();
+
+			DeleteDnsRecords(new DTOs.DeleteDnsRecordsRequest()
+			{
+				AmazonAccessKey = request.ApiUser,
+				AmazonSecretKey = request.ApiKey,
+				Domain = request.Domain,
+				DnsRecords = request.DnsRecords,
+			});
+
+			return response;
+		}
 	}
 }

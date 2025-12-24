@@ -73,6 +73,16 @@ namespace ISI.Extensions.Dns
 			return new DTOs.GetDnsRecordsResponse();
 		}
 
+		DTOs.DeleteDnsRecordsResponse ISI.Extensions.Dns.IDomainsApi.DeleteDnsRecords(DTOs.DeleteDnsRecordsRequest request)
+		{
+			if (DomainsApisByDnsProviderUuid.TryGetValue(request.DnsProviderUuid, out var domainsApi))
+			{
+				return domainsApi.DomainsApi.DeleteDnsRecords(request);
+			}
+
+			return new DTOs.DeleteDnsRecordsResponse();
+		}
+
 		DTOs.SetDnsRecordsResponse ISI.Extensions.Dns.IDomainsApi.SetDnsRecords(DTOs.SetDnsRecordsRequest request)
 		{
 			if (DomainsApisByDnsProviderUuid.TryGetValue(request.DnsProviderUuid, out var domainsApi))

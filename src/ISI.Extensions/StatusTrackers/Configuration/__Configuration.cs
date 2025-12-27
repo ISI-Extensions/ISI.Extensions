@@ -28,6 +28,6 @@ namespace ISI.Extensions.StatusTrackers
 		public string StatusTrackerFactoryImplementation { get; set; } = nameof(FileStatusTrackerFactory);
 
 		[ISI.Extensions.EnvironmentConfigurationVariableName("ISI_STATUS_TRACKER_FILE_STATUS_TRACKER_DIRECTORY")]
-		public string FileStatusTrackerDirectory { get; set; } = "FileNameDeMasked:{DataRoot}FileStatusTrackerDirectory";
+		public string FileStatusTrackerDirectory { get; set; } = "FileNameDeMasked:{DataRoot}FileStatusTracker";
 	}
 }

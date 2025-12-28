@@ -46,7 +46,7 @@ namespace ISI.Extensions.NameCheap
 			IpifyApi = ipifyApi;
 		}
 
-		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsProvidersResponse ISI.Extensions.Dns.IDomainsApi.GetDnsProviders(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsProvidersRequest request)
+		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsProviderProfilesResponse ISI.Extensions.Dns.IDomainsApi.GetDnsProviderProfiles(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsProvidersRequest request)
 		{
 			throw new NotImplementedException();
 		}

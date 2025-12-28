@@ -13,14 +13,14 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Dns.DataTransferObjects.DomainsApi;
 using ISI.Extensions.TypeLocator.Extensions;
+using DTOs = ISI.Extensions.Dns.DataTransferObjects.DomainsApi;
 
 namespace ISI.Extensions.Dns
 {
@@ -34,19 +34,29 @@ namespace ISI.Extensions.Dns
 			ServiceProvider = serviceProvider;
 		}
 
-		private IDictionary<Guid, (IDomainsApi DomainsApi, Guid DnsProviderUuid, string Description)> _domainsApisByDnsProviderUuid = null;
-		protected IDictionary<Guid, (IDomainsApi DomainsApi, Guid DnsProviderUuid, string Description)> DomainsApisByDnsProviderUuid => _domainsApisByDnsProviderUuid ??= GetDomainsApisByDnsProviderUuid();
+		private IDictionary<Guid, (IDomainsApi DomainsApi, DnsProviderProfile DnsProviderProfile)> _domainsApisByDnsProviderUuid = null;
+		protected IDictionary<Guid, (IDomainsApi DomainsApi, DnsProviderProfile DnsProviderProfile)> DomainsApisByDnsProviderUuid => _domainsApisByDnsProviderUuid ??= GetDomainsApisByDnsProviderUuid();
 
-		private IDictionary<Guid, (IDomainsApi DomainsApi, Guid DnsProviderUuid, string Description)> GetDomainsApisByDnsProviderUuid()
+		private IDictionary<Guid, (IDomainsApi DomainsApi, DnsProviderProfile DnsProviderProfile)> GetDomainsApisByDnsProviderUuid()
 		{
-			var domainsApisByDnsProviderUuid = new Dictionary<Guid, (IDomainsApi DomainsApi, Guid DnsProviderUuid, string Description)>();
+			var domainsApisByDnsProviderUuid = new Dictionary<Guid, (IDomainsApi DomainsApi, DnsProviderProfile DnsProviderProfile)>();
 
 			foreach (var domainsApi in ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementations<IDomainsApi>(ServiceProvider))
 			{
 				var domainsApiAttribute = ((ISI.Extensions.DomainsApiAttribute[])(domainsApi.GetType().GetCustomAttributes(typeof(ISI.Extensions.DomainsApiAttribute), false))).FirstOrDefault();
 				if (domainsApiAttribute != null)
 				{
-					domainsApisByDnsProviderUuid.Add(domainsApiAttribute.DnsProviderUuid, (DomainsApi: domainsApi, DnsProviderUuid: domainsApiAttribute.DnsProviderUuid, Description: domainsApiAttribute.Description));
+					domainsApisByDnsProviderUuid.Add(domainsApiAttribute.DnsProviderUuid, (DomainsApi: domainsApi, DnsProviderProfile: new DnsProviderProfile()
+					{
+						DnsProviderUuid = domainsApiAttribute.DnsProviderUuid,
+						Description = domainsApiAttribute.Description,
+						UseUrl = domainsApiAttribute.UseUrl,
+						UrlDescription = domainsApiAttribute.UrlDescription,
+						UseApiUser = domainsApiAttribute.UseApiUser,
+						ApiUserDescription = domainsApiAttribute.ApiUserDescription,
+						UseApiKey = domainsApiAttribute.UseApiKey,
+						ApiKeyDescription = domainsApiAttribute.ApiKeyDescription,
+					}));
 				}
 			}
 
@@ -54,11 +64,11 @@ namespace ISI.Extensions.Dns
 		}
 
 
-		DTOs.GetDnsProvidersResponse ISI.Extensions.Dns.IDomainsApi.GetDnsProviders(DTOs.GetDnsProvidersRequest request)
+		DTOs.GetDnsProviderProfilesResponse ISI.Extensions.Dns.IDomainsApi.GetDnsProviderProfiles(DTOs.GetDnsProvidersRequest request)
 		{
-			var response = new DTOs.GetDnsProvidersResponse();
+			var response = new DTOs.GetDnsProviderProfilesResponse();
 
-			response.DnsProviders = DomainsApisByDnsProviderUuid.Values.ToNullCheckedArray(dnsProvider => (DnsProviderUuid: dnsProvider.DnsProviderUuid, Description: dnsProvider.Description));
+			response.DnsProviderProfiles = DomainsApisByDnsProviderUuid.Values.ToNullCheckedArray(dnsProvider => dnsProvider.DnsProviderProfile);
 
 			return response;
 		}

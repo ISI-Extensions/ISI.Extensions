@@ -373,7 +373,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void GetDnsProviders_Test()
 		{
-			var xxx = DomainsApi.GetDnsProviders(new());
+			var xxx = DomainsApi.GetDnsProviderProfiles(new());
 		}
 
 
@@ -463,7 +463,7 @@ namespace ISI.Extensions.Tests
 			DateTimeStamper = dateTimeStamper;
 		}
 
-		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsProvidersResponse ISI.Extensions.Dns.IDomainsApi.GetDnsProviders(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsProvidersRequest request)
+		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsProviderProfilesResponse ISI.Extensions.Dns.IDomainsApi.GetDnsProviderProfiles(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsProvidersRequest request)
 		{
 			throw new NotImplementedException();
 		}

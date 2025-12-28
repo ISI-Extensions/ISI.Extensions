@@ -22,8 +22,8 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Dns.DataTransferObjects.DomainsApi
 {
-	public class GetDnsProvidersResponse
+	public class GetDnsProviderProfilesResponse
 	{
-		public (Guid DnsProviderUuid, string Description)[] DnsProviders { get; set; }
+		public DnsProviderProfile[] DnsProviderProfiles { get; set; }
 	}
 }

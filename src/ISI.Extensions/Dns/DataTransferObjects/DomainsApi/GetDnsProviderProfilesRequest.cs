@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Dns.DataTransferObjects.DomainsApi
 {
-	public class GetDnsProvidersRequest
+	public class GetDnsProviderProfilesRequest
 	{
 	}
 }

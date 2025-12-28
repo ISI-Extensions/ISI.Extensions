@@ -64,7 +64,7 @@ namespace ISI.Extensions.Dns
 		}
 
 
-		DTOs.GetDnsProviderProfilesResponse ISI.Extensions.Dns.IDomainsApi.GetDnsProviderProfiles(DTOs.GetDnsProvidersRequest request)
+		DTOs.GetDnsProviderProfilesResponse ISI.Extensions.Dns.IDomainsApi.GetDnsProviderProfiles(DTOs.GetDnsProviderProfilesRequest request)
 		{
 			var response = new DTOs.GetDnsProviderProfilesResponse();
 

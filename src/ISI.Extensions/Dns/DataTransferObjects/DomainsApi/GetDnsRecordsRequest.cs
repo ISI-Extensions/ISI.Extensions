@@ -25,7 +25,7 @@ namespace ISI.Extensions.Dns.DataTransferObjects.DomainsApi
 	{
 		public Guid DnsProviderUuid { get; set; }
 
-		public string Url { get; set; }
+		public string ApiUrl { get; set; }
 		public string ApiUser { get; set; }
 		public string ApiKey { get; set; }
 

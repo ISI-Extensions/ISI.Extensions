@@ -26,21 +26,21 @@ namespace ISI.Extensions
 		public Guid DnsProviderUuid { get; }
 		public string Description { get; }
 
-		public bool UseUrl { get; }
-		public string UrlDescription { get; }
+		public bool UseApiUrl { get; }
+		public string ApiUrlDescription { get; }
 		public bool UseApiUser { get; }
 		public string ApiUserDescription { get; }
 		public bool UseApiKey { get; }
 		public string ApiKeyDescription { get; }
 
 
-		public DomainsApiAttribute(string dnsProviderUuid, string description, bool useUrl, string urlDescription, bool useApiUser, string apiUserDescription, bool useApiKey, string apiKeyDescription)
+		public DomainsApiAttribute(string dnsProviderUuid, string description, bool useApiUrl, string apiUrlDescription, bool useApiUser, string apiUserDescription, bool useApiKey, string apiKeyDescription)
 			: base(typeof(ISI.Extensions.Dns.IDomainsApi))
 		{
 			DnsProviderUuid = dnsProviderUuid.ToGuid();
 			Description = description;
-			UseUrl = useUrl;
-			UrlDescription = urlDescription;
+			UseApiUrl = useApiUrl;
+			ApiUrlDescription = apiUrlDescription;
 			UseApiUser = useApiUser;
 			ApiUserDescription = apiUserDescription;
 			UseApiKey = useApiKey;

@@ -50,8 +50,8 @@ namespace ISI.Extensions.Dns
 					{
 						DnsProviderUuid = domainsApiAttribute.DnsProviderUuid,
 						Description = domainsApiAttribute.Description,
-						UseUrl = domainsApiAttribute.UseUrl,
-						UrlDescription = domainsApiAttribute.UrlDescription,
+						UseApiUrl = domainsApiAttribute.UseApiUrl,
+						ApiUrlDescription = domainsApiAttribute.ApiUrlDescription,
 						UseApiUser = domainsApiAttribute.UseApiUser,
 						ApiUserDescription = domainsApiAttribute.ApiUserDescription,
 						UseApiKey = domainsApiAttribute.UseApiKey,

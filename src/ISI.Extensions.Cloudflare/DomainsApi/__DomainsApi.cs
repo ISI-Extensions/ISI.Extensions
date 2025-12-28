@@ -41,7 +41,7 @@ namespace ISI.Extensions.Cloudflare
 
 			response.DnsRecords = GetDnsRecords(new DTOs.GetDnsRecordsRequest()
 			{
-				Url = request.Url,
+				Url = request.ApiUrl,
 				ApiToken = request.ApiKey,
 				Domain = request.Domain,
 			}).DnsRecords;
@@ -55,7 +55,7 @@ namespace ISI.Extensions.Cloudflare
 
 			SetDnsRecords(new DTOs.SetDnsRecordsRequest()
 			{
-				Url = request.Url,
+				Url = request.ApiUrl,
 				ApiToken = request.ApiKey,
 				Domain = request.Domain,
 				DnsRecords = request.DnsRecords,
@@ -70,7 +70,7 @@ namespace ISI.Extensions.Cloudflare
 
 			DeleteDnsRecords(new DTOs.DeleteDnsRecordsRequest()
 			{
-				Url = request.Url,
+				Url = request.ApiUrl,
 				ApiToken = request.ApiKey,
 				Domain = request.Domain,
 				DnsRecords = request.DnsRecords,

@@ -55,7 +55,7 @@ namespace ISI.Extensions.DeSEC
 
 			response.DnsRecords = GetDnsRecords(new DTOs.GetDnsRecordsRequest()
 			{
-				Url = request.Url,
+				Url = request.ApiUrl,
 				ApiKey = request.ApiKey,
 				Domain = request.Domain,
 			}).DnsRecords;
@@ -69,7 +69,7 @@ namespace ISI.Extensions.DeSEC
 
 			SetDnsRecords(new DTOs.SetDnsRecordsRequest()
 			{
-				Url = request.Url,
+				Url = request.ApiUrl,
 				ApiKey = request.ApiKey,
 				Domain = request.Domain,
 				DnsRecords = request.DnsRecords,
@@ -84,7 +84,7 @@ namespace ISI.Extensions.DeSEC
 
 			DeleteDnsRecords(new DTOs.DeleteDnsRecordsRequest()
 			{
-				Url = request.Url,
+				Url = request.ApiUrl,
 				ApiKey = request.ApiKey,
 				Domain = request.Domain,
 				DnsRecords = request.DnsRecords,

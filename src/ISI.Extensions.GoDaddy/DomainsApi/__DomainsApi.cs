@@ -58,7 +58,7 @@ namespace ISI.Extensions.GoDaddy
 
 			response.DnsRecords = GetDnsRecords(new DTOs.GetDnsRecordsRequest()
 			{
-				Url = request.Url,
+				Url = request.ApiUrl,
 				ApiKey = request.ApiUser,
 				ApiSecret = request.ApiKey,
 				Domain = request.Domain,
@@ -73,7 +73,7 @@ namespace ISI.Extensions.GoDaddy
 
 			SetDnsRecords(new DTOs.SetDnsRecordsRequest()
 			{
-				Url = request.Url,
+				Url = request.ApiUrl,
 				ApiKey = request.ApiUser,
 				ApiSecret = request.ApiKey,
 				Domain = request.Domain,
@@ -89,7 +89,7 @@ namespace ISI.Extensions.GoDaddy
 
 			DeleteDnsRecords(new DTOs.DeleteDnsRecordsRequest()
 			{
-				Url = request.Url,
+				Url = request.ApiUrl,
 				ApiKey = request.ApiUser,
 				ApiSecret = request.ApiKey,
 				Domain = request.Domain,

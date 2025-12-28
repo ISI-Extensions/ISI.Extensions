@@ -27,8 +27,8 @@ namespace ISI.Extensions.Dns
 	  public Guid DnsProviderUuid { get; set; }
 	  public string Description { get; set; }
 
-	  public bool UseUrl { get; set; }
-	  public string UrlDescription { get; set; }
+	  public bool UseApiUrl { get; set; }
+	  public string ApiUrlDescription { get; set; }
 	  public bool UseApiUser { get; set; }
 	  public string ApiUserDescription { get; set; }
 	  public bool UseApiKey { get; set; }

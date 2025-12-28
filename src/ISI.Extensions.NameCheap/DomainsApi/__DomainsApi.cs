@@ -57,7 +57,7 @@ namespace ISI.Extensions.NameCheap
 
 			response.DnsRecords = GetDnsRecords(new DTOs.GetDnsRecordsRequest()
 			{
-				Url = request.Url,
+				Url = request.ApiUrl,
 				ApiUser = request.ApiUser,
 				ApiKey = request.ApiKey,
 				Domain = request.Domain,
@@ -72,7 +72,7 @@ namespace ISI.Extensions.NameCheap
 
 			SetDnsRecords(new DTOs.SetDnsRecordsRequest()
 			{
-				Url = request.Url,
+				Url = request.ApiUrl,
 				ApiUser = request.ApiUser,
 				ApiKey = request.ApiKey,
 				Domain = request.Domain,
@@ -88,7 +88,7 @@ namespace ISI.Extensions.NameCheap
 
 			DeleteDnsRecords(new DTOs.DeleteDnsRecordsRequest()
 			{
-				Url = request.Url,
+				Url = request.ApiUrl,
 				ApiUser = request.ApiUser,
 				ApiKey = request.ApiKey,
 				Domain = request.Domain,

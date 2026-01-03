@@ -58,7 +58,12 @@ namespace ISI.Extensions.Docker
 				{
 					arguments.Add("compose");
 				}
-				
+
+				if (!string.IsNullOrWhiteSpace(request.ComposeFile))
+				{
+					arguments.Add($"--file {request.ComposeFile}");
+				}
+
 				if (!string.IsNullOrWhiteSpace(request.ProjectName))
 				{
 					arguments.Add($"--project-name {request.ProjectName}");

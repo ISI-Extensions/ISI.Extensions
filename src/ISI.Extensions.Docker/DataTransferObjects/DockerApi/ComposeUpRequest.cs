@@ -27,8 +27,9 @@ namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
 
 	public class ComposeUpRequest
 	{
-		public string ComposeDirectory{ get; set; }
-		
+		public string ComposeDirectory { get; set; }
+		public string ComposeFile { get; set; }
+
 		public string ProjectName { get; set; }
 
 		public string Host { get; set; }

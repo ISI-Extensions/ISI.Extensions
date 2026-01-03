@@ -1,6 +1,6 @@
 ﻿#region Copyright & License
 /*
-Copyright (c) 2025, Integrated Solutions, Inc.
+Copyright (c) 2026, Integrated Solutions, Inc.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -352,7 +352,7 @@ namespace ISI.Extensions.Tests
 			var replacements = new Dictionary<string, string>();
 			//replacements.Add("language=\"C#v3.5\"", "language=\"C#\"");
 			//replacements.Add(" Constants.", " EnvDTE.Constants.");
-			replacements.Add("Copyright (c) 2022, Integrated Solutions", "Copyright (c) 2025, Integrated Solutions");
+			replacements.Add("Copyright (c) 2022, Integrated Solutions", "Copyright (c) 2026, Integrated Solutions");
 
 			var findContents = new List<string>();
 

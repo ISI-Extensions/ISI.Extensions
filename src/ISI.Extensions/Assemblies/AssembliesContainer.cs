@@ -62,7 +62,7 @@ namespace ISI.Extensions.Assemblies
 			excludeAssemblyNames.Add("Microsoft.IdentityModel.Protocols.OpenIdConnect");
 			excludeAssemblyNames.Add("Microsoft.IdentityModel.Tokens");
 
-			var assemblies = new List<Assembly>();
+			var assemblies = new Dictionary<string, Assembly>(StringComparer.CurrentCultureIgnoreCase);
 
 			var types = new List<Type>();
 
@@ -72,14 +72,18 @@ namespace ISI.Extensions.Assemblies
 				{
 					var assemblyFileName = assembly.Location;
 
-					if (assemblyFileNames.Contains(assemblyFileName))
+					if (!assemblies.ContainsKey(assemblyFileName))
 					{
-						assemblyFileNames.Remove(assemblyFileName);
+
+						if (assemblyFileNames.Contains(assemblyFileName))
+						{
+							assemblyFileNames.Remove(assemblyFileName);
+						}
+
+						types.AddRange(assembly.GetTypes());
+
+						assemblies.Add(assemblyFileName, assembly);
 					}
-
-					types.AddRange(assembly.GetTypes());
-
-					assemblies.Add(assembly);
 				}
 				catch
 				{
@@ -93,13 +97,17 @@ namespace ISI.Extensions.Assemblies
 			{
 				try
 				{
-					var assemblyName = AssemblyName.GetAssemblyName(assemblyFileName);
+					if (!assemblies.ContainsKey(assemblyFileName))
+					{
 
-					var assembly = System.AppDomain.CurrentDomain.Load(assemblyName);
+						var assemblyName = AssemblyName.GetAssemblyName(assemblyFileName);
 
-					notLoadedAssemblies.Add(assembly);
+						var assembly = System.AppDomain.CurrentDomain.Load(assemblyName);
 
-					assemblies.Add(assembly);
+						notLoadedAssemblies.Add(assembly);
+
+						assemblies.Add(assemblyFileName, assembly);
+					}
 				}
 				catch
 				{
@@ -118,7 +126,7 @@ namespace ISI.Extensions.Assemblies
 				}
 			}
 
-			Assemblies = assemblies.ToArray();
+			Assemblies = assemblies.Values.ToArray();
 
 			Types = types.ToArray();
 

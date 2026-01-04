@@ -13,16 +13,16 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using ISI.Extensions.ConfigurationHelper.Extensions;
 using ISI.Extensions.DependencyInjection.Extensions;
 using ISI.Extensions.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace ISI.Extensions.Tests
 {
@@ -353,6 +353,9 @@ namespace ISI.Extensions.Tests
 			//replacements.Add("language=\"C#v3.5\"", "language=\"C#\"");
 			//replacements.Add(" Constants.", " EnvDTE.Constants.");
 			replacements.Add("Copyright (c) 2022, Integrated Solutions", "Copyright (c) 2026, Integrated Solutions");
+			replacements.Add("Copyright (c) 2023, Integrated Solutions", "Copyright (c) 2026, Integrated Solutions");
+			replacements.Add("Copyright (c) 2024, Integrated Solutions", "Copyright (c) 2026, Integrated Solutions");
+			replacements.Add("Copyright (c) 2025, Integrated Solutions", "Copyright (c) 2026, Integrated Solutions");
 
 			var findContents = new List<string>();
 
@@ -376,7 +379,10 @@ namespace ISI.Extensions.Tests
 				Solution = solution,
 			}).SolutionDetails, NullCheckCollectionResult.Empty).Where(solutionDetail => solutionDetail != null).ToArray();
 
-			foreach (var solutionDetails in solutionDetailsSet.OrderBy(solutionDetails => solutionDetails.UpgradeNugetPackagesPriority).ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
+			foreach (var solutionDetails in solutionDetailsSet
+						 .Where(solutionDetails => !string.IsNullOrWhiteSpace(solutionDetails.RootSourceDirectory))
+						 .OrderBy(solutionDetails => solutionDetails.UpgradeNugetPackagesPriority)
+						 .ThenBy(solutionDetails => solutionDetails.SolutionName, StringComparer.InvariantCultureIgnoreCase))
 			{
 				using (solutionApi.GetSolutionLock(new()
 				{

@@ -26,6 +26,7 @@ namespace ISI.Extensions.SpreadSheets
 		void Clear();
 		void Remove(string name);
 		void RemoveAt(int sheetIndex);
+		string GetCleanSheetName(string sheetName);
 		ISI.Extensions.SpreadSheets.IWorksheet Add(string name = null);
 		ISI.Extensions.SpreadSheets.IWorksheetCellsRange[] GetNamedRanges();
 		ISI.Extensions.SpreadSheets.IWorksheetCellsRange GetRangeByName(string rangeName);

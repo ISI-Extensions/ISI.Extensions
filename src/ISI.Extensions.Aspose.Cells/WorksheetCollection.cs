@@ -66,8 +66,36 @@ namespace ISI.Extensions.Aspose
 				_worksheets.Clear();
 			}
 
+			public string GetCleanSheetName(string sheetName)
+			{
+				sheetName = (sheetName ?? string.Empty)
+					.Trim()
+					.Replace("\\", string.Empty)
+					.Replace("/", string.Empty)
+					.Replace("?", string.Empty)
+					.Replace("*", string.Empty)
+					.Replace("[", string.Empty)
+					.Replace("]", string.Empty)
+					.Trim([' ', '\'']);
+
+				if (string.Equals(sheetName, "History", StringComparison.InvariantCultureIgnoreCase))
+				{
+					sheetName = string.Empty;
+				}
+
+				if (sheetName.Length > Worksheet.MaxSheetNameLength)
+				{
+					sheetName = sheetName.Substring(0, Worksheet.MaxSheetNameLength);
+				}
+
+				return sheetName;
+			}
+
+
 			public ISI.Extensions.SpreadSheets.IWorksheet Add(string sheetName = null)
 			{
+				sheetName = GetCleanSheetName(sheetName);
+
 				if (string.IsNullOrWhiteSpace(sheetName))
 				{
 					var sheetNames = new HashSet<string>(_worksheets.Select(w => w.Name));
@@ -80,7 +108,7 @@ namespace ISI.Extensions.Aspose
 					}
 				}
 
-				var worksheet = _worksheets.Add(sheetName.Length > Worksheet.MaxSheetNameLength ? sheetName.Substring(0, Worksheet.MaxSheetNameLength) : sheetName);
+				var worksheet = _worksheets.Add(sheetName);
 
 				return new Worksheet(this, worksheet);
 			}

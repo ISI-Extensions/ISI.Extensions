@@ -27,8 +27,6 @@ namespace ISI.Extensions.Aspose
 	{
 		public partial class Worksheet : ISI.Extensions.SpreadSheets.IWorksheet
 		{
-			public const int MaxSheetNameLength = 31;
-
 			internal readonly ISI.Extensions.Aspose.Cells.WorksheetCollection _worksheets = null;
 			internal readonly global::Aspose.Cells.Worksheet _worksheet = null;
 
@@ -41,7 +39,7 @@ namespace ISI.Extensions.Aspose
 			public string Name
 			{
 				get => _worksheet.Name;
-				set => _worksheet.Name = (value.Length > MaxSheetNameLength ? value.Substring(0, MaxSheetNameLength) : value);
+				set => _worksheet.Name = (value.Length > WorksheetCollection.MaxSheetNameLength ? value.Substring(0, WorksheetCollection.MaxSheetNameLength) : value);
 			}
 
 			public int Index => _worksheet.Index;

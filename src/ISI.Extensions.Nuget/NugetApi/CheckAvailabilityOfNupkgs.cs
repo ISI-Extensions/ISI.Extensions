@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 using ISI.Extensions.JsonSerialization.Extensions;
 using ISI.Extensions.Nuget.Extensions;
 using DTOs = ISI.Extensions.Nuget.DataTransferObjects.NugetApi;
-using SerializableDTOs = ISI.Extensions.Nuget.SerializableModels;
+using SerializableDTOs = ISI.Extensions.Nuget.SerializableModels.Nuget;
 using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Nuget

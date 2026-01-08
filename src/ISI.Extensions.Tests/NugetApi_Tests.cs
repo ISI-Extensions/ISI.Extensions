@@ -141,15 +141,9 @@ namespace ISI.Extensions.Tests
 
 			var nuspec = nugetApi.GenerateNuspecFromProject(new()
 			{
-				ProjectFullName = @"F:\ISI\ISI.FrameWork\src\ISI.CMS\ISI.CMS\ISI.CMS.csproj",
+				ProjectFullName = @"F:\ISI\Internal Projects\ISI.Extensions\src\ISI.Extensions.MessageBus.MassTransit\ISI.Extensions.MessageBus.MassTransit.csproj",
 				TryGetPackageVersion = (string package, out string version) =>
 					 {
-						 if (package.StartsWith("ISI.Extensions", StringComparison.InvariantCultureIgnoreCase))
-						 {
-							 version = "10.0.*";
-							 return true;
-						 }
-
 						 if (package.StartsWith("ISI.Extensions", StringComparison.InvariantCultureIgnoreCase))
 						 {
 							 version = "10.0.*";

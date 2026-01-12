@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2026, Integrated Solutions, Inc.
 All rights reserved.
@@ -13,19 +13,35 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 #endregion
  
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using ISI.Extensions.Extensions;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle("ISI.Extensions")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("ISI.Extensions")]
-[assembly: AssemblyCulture("")]
+namespace ISI.Extensions.S3.S3FileSystem
+{
+	public class S3FileSystemPathSymbolicLinkDirectory : UnixFileSystem.UnixFileSystemPathSymbolicLinkDirectory, IS3FileSystemPath
+	{
+		public override string Schema => S3FileSystemProvider._schema;
+		public override string DirectorySeparator => S3FileSystemProvider._directorySeparator;
 
-[assembly: InternalsVisibleTo("ISI.Extensions.Aspose.Barcodes")]
-[assembly: InternalsVisibleTo("ISI.Extensions.SshNet")]
-[assembly: InternalsVisibleTo("ISI.Extensions.S3")]
+		public override string ToString() => $"S3 Directory Symbolic Link {base.ToString()}";
+
+		public override FileSystem.IFileSystemPath Clone()
+		{
+			return new S3FileSystemPathSymbolicLinkDirectory()
+			{
+				Server = Server,
+				UserName = UserName,
+				Password = Password,
+				Directory = Directory,
+				PathName = PathName,
+				LinkedTo = LinkedTo,
+			};
+		}
+
+		public override FileSystem.IFileSystemPathDirectory GetParentFileSystemPathDirectory() => GetParentFileSystemPathDirectory<S3FileSystemPathDirectory>();
+	}
+}
+

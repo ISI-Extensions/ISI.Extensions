@@ -75,7 +75,7 @@ namespace ISI.Extensions.Tests
 			{
 				DebControl = new()
 				{
-					Package = "isi-certificate-agent",
+					Package = "isi-hid-agent",
 					Version = new Version("4.0.9360.26738"),
 					Architecture = "amd64",
 					//Depends = source.Depends.ToNullCheckedArray(),
@@ -88,28 +88,28 @@ namespace ISI.Extensions.Tests
 					//InstalledSize = source.InstalledSize,
 					Maintainer = "Ron Muth <ron.muth@isi-net.com>",
 					Homepage = "https://www.isi-net.com",
-					Description = "ISI.CertificateAgent.LinuxService",
+					Description = "ISI.HIDAgent.LinuxService",
 				},
 				//PreInstallScript
-				PostInstallScript = @"/opt/ISI.CertificateAgent.LinuxService/ISI.CertificateAgent.LinuxService install
-/opt/ISI.CertificateAgent.LinuxService/ISI.CertificateAgent.LinuxService start",
-				PreRemovalScript = @"/opt/ISI.CertificateAgent.LinuxService/ISI.CertificateAgent.LinuxService stop
-/opt/ISI.CertificateAgent.LinuxService/ISI.CertificateAgent.LinuxService uninstall",
+				PostInstallScript = @"/opt/ISI.HIDAgent.LinuxService/ISI.HIDAgent.LinuxService install
+/opt/ISI.HIDAgent.LinuxService/ISI.HIDAgent.LinuxService start",
+				PreRemovalScript = @"/opt/ISI.HIDAgent.LinuxService/ISI.HIDAgent.LinuxService stop
+/opt/ISI.HIDAgent.LinuxService/ISI.HIDAgent.LinuxService uninstall",
 				//PostRemovalScript
 				DataEntries = [
 					new ISI.Extensions.Debian.DataTransferObjects.DebianPackagingApi.CreateDebRequestEntryFileWildCard()
 					{
-						SourceDirectory = @"F:\ISI\Internal Projects\ISI.CertificateAgent.LinuxService\Publish\ISI.CertificateAgent.LinuxService.20250817.145117\arm64",
-						TargetPathDirectory = "/opt/ISI.CertificateAgent.LinuxService",
+						SourceDirectory = @"C:\Users\ron.muth\AppData\Local\Temp\tmp12K1S4LLS45ML0SIDEXJROYD1G\ISI.HIDAgent.LinuxService\amd64",
+						TargetPathDirectory = "/opt/ISI.HIDAgent.LinuxService",
 					},
 					new ISI.Extensions.Debian.DataTransferObjects.DebianPackagingApi.CreateDebRequestEntryFile()
 					{
-						SourceFullName = @"F:\ISI\Internal Projects\ISI.CertificateAgent.LinuxService\Publish\ISI.CertificateAgent.LinuxService.20250817.145117\arm64\ISI.CertificateAgent.LinuxService",
+						SourceFullName = @"C:\Users\ron.muth\AppData\Local\Temp\tmp12K1S4LLS45ML0SIDEXJROYD1G\ISI.HIDAgent.LinuxService\amd64\ISI.HIDAgent.LinuxService",
 						IsExecutable = true,
-						TargetPath = "/opt/ISI.CertificateAgent.LinuxService/ISI.CertificateAgent.LinuxService",
+						TargetPath = "/opt/ISI.HIDAgent.LinuxService/ISI.HIDAgent.LinuxService",
 					},
 					],
-				DebFullName = @"F:\ISI\Internal Projects\ISI.CertificateAgent.LinuxService\Publish\ISI.CertificateAgent.LinuxService_4.0.9360.26738_arm64.deb",
+				DebFullName = @"F:\ISI\Internal Projects\ISI.HIDAgent.LinuxService\Publish\ISI.HIDAgent.LinuxService_4.0.9360.26738_arm64.deb",
 			});
 		}
 

@@ -28,8 +28,11 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void CommandLineArguments_Test()
 		{
-			var commandLineArguments = new CommandLineArguments(["SetOptions", "--CertificateAgentApiKey", "6a0fc9c7-75ae-4b8e-9aec-234d11236b28908d2757-e40d-4639-a4d6-aa69c203ed91"]);
+			var commandLineArguments = new CommandLineArguments(["AddWebHookHidDeviceListener", "--InitiatedWebHookHeader", "Auth=XXXX", "--Permanent"]);
 
+			var authenticationHeader = commandLineArguments.GetParameterValue("InitiatedWebHookHeader");
+
+			var permanent = commandLineArguments.HasOption("Permanent");
 		}
 	}
 }

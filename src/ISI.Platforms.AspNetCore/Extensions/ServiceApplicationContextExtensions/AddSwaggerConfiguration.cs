@@ -73,9 +73,9 @@ namespace ISI.Platforms.AspNetCore.Extensions
 			{
 				webApplication.UseSwagger();
 				webApplication.UseSwaggerUI(swaggerUIOptions =>
-						{
-							swaggerUIOptions.SwaggerEndpoint($"/swagger/v{version}/swagger.json", $"{applicationName} v{version}");
-						});
+				{
+					swaggerUIOptions.SwaggerEndpoint($"/swagger/v{version}/swagger.json", $"{applicationName} v{version}");
+				});
 			});
 
 			return context;

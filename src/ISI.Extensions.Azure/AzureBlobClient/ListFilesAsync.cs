@@ -31,11 +31,14 @@ namespace ISI.Extensions.Azure
 			
 			var fileNames = new List<string>();
 
-			foreach (var blob in Container.GetBlobs(prefix: request.Prefix.Trim('*')))
+			foreach (var blob in Container.GetBlobs(new global::Azure.Storage.Blobs.Models.GetBlobsOptions()
+			         {
+				         Prefix = request.Prefix.Trim('*'),
+			         }))
 			{
 				fileNames.Add(blob.Name);
 			}
-			
+
 			response.FileNames = fileNames.ToArray();
 
 			return response;

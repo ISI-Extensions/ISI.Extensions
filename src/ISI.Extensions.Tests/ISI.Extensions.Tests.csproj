@@ -112,6 +112,11 @@
 	<ItemGroup>
 		<None Remove="appsettings.json" />
 		<None Remove="appsettings.ronmuth.json" />
+		<None Remove="C:\Users\ron.muth\.nuget\packages\nunit3testadapter\6.1.0\build\net8.0\Microsoft.Extensions.DependencyModel.dll" />
+		<None Remove="C:\Users\ron.muth\.nuget\packages\nunit3testadapter\6.1.0\build\net8.0\nunit.engine.api.dll" />
+		<None Remove="C:\Users\ron.muth\.nuget\packages\nunit3testadapter\6.1.0\build\net8.0\nunit.engine.core.dll" />
+		<None Remove="C:\Users\ron.muth\.nuget\packages\nunit3testadapter\6.1.0\build\net8.0\nunit.engine.dll" />
+		<None Remove="C:\Users\ron.muth\.nuget\packages\nunit3testadapter\6.1.0\build\net8.0\NUnit3.TestAdapter.pdb" />
 		<None Remove="EmailMessageTemplates\TestEmail\Mhtml.cshtml" />
 		<None Remove="EmailMessageTemplates\TestEmail\MhtmlInclude.cshtml" />
 		<None Remove="EmailMessageTemplates\TestEmail\PlainText.cshtml" />
@@ -146,5 +151,8 @@
 			<Generator>TextTemplatingFileGenerator</Generator>
 			<LastGenOutput>T4LocalContent.generatedcode.cs</LastGenOutput>
 		</None>
+	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="C:\Users\ron.muth\.nuget\packages\nunit3testadapter\6.1.0\build\net8.0\NUnit3.TestAdapter.dll" />
 	</ItemGroup>
 </Project>

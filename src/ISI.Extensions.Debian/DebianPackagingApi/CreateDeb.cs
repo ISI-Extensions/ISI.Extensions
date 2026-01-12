@@ -329,6 +329,8 @@ namespace ISI.Extensions.Debian
 
 								if (request is DTOs.CreateDebRequestWithDebFullName createDebRequestWithDebFullName)
 								{
+									System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(createDebRequestWithDebFullName.DebFullName));
+
 									System.IO.File.Delete(createDebRequestWithDebFullName.DebFullName);
 
 									using (var stream = System.IO.File.OpenWrite(createDebRequestWithDebFullName.DebFullName))

@@ -26,5 +26,7 @@ namespace ISI.Extensions.BitBucket
 	public interface IBitBucketManagerApi
 	{
 		DTOs.ListRepositoriesResponse ListRepositories(DTOs.ListRepositoriesRequest request);
+		DTOs.GetRepositoryLastCommitHashResponse GetRepositoryLastCommitHash(DTOs.GetRepositoryLastCommitHashRequest request);
+		DTOs.ExportRepositoryResponse ExportRepository(DTOs.ExportRepositoryRequest request);
 	}
 }

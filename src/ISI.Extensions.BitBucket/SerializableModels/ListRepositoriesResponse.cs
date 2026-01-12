@@ -70,7 +70,7 @@ namespace ISI.Extensions.BitBucket.SerializableModels
 		public ListRepositoriesResponseRepositoryOwner Owner { get; set; }
 
 		[DataMember(Name = "name", EmitDefaultValue = false)]
-		public string Name { get; set; }
+		public string RepositoryKey { get; set; }
 
 		[DataMember(Name = "description", EmitDefaultValue = false)]
 		public string Description { get; set; }

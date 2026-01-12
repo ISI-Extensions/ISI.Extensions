@@ -39,8 +39,6 @@ namespace ISI.Extensions.BitBucket
 				uri.AddDirectoryToPath(request.Workspace);
 			}
 
-			uri.UserName = "ron.muth@isi-net.com";
-
 			while (uri != null)
 			{
 #if DEBUG
@@ -52,9 +50,8 @@ namespace ISI.Extensions.BitBucket
 				repositories.AddRange(apiResponse.Repositories.ToNullCheckedArray(repository => new Repository()
 				{
 					Namespace = request.Workspace,
-					Name = repository.Name,
+					RepositoryKey = repository.RepositoryKey,
 					Description = repository.Description,
-					//Contact = repository.Contact,
 					CreationDate = repository.CreationDate,
 					Type = repository.Type,
 					LastModified = repository.LastModified,

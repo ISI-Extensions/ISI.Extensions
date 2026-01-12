@@ -68,7 +68,8 @@ namespace ISI.Extensions.Tests
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = new ISI.Extensions.SimpleKeyValueStorage(settingsFullName);
 
-			BitBucketApiToken = settings.GetValue("Atlassian-ISI.Extensions-Token");
+			//BitBucketApiToken = settings.GetValue("Atlassian-ISI.Extensions-Token");
+			BitBucketApiToken = settings.GetValue("BitBucket-Access-Token-Read-Repos");
 		}
 
 		[Test]
@@ -80,6 +81,32 @@ namespace ISI.Extensions.Tests
 			{
 				BitBucketApiToken = BitBucketApiToken,
 				Workspace = "westriversystems",
+			});
+		}
+
+		[Test]
+		public void GetRepositoryLastCommitHash_Tests()
+		{
+			var bitBucketManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.BitBucket.IBitBucketManagerApi>();
+
+			var apiResponse = bitBucketManagerApi.GetRepositoryLastCommitHash(new()
+			{
+				BitBucketApiToken = BitBucketApiToken,
+				Workspace = "westriversystems",
+				RepositoryKey = "wrs.field.kioskinterfacenode.assetoperator.service",
+			});
+		}
+
+		[Test]
+		public void ExportRepository_Tests()
+		{
+			var bitBucketManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.BitBucket.IBitBucketManagerApi>();
+
+			var apiResponse = bitBucketManagerApi.ExportRepository(new()
+			{
+				BitBucketApiToken = BitBucketApiToken,
+				Workspace = "westriversystems",
+				RepositoryKey = "wrs.field.kioskinterfacenode.assetoperator.service",
 			});
 		}
 

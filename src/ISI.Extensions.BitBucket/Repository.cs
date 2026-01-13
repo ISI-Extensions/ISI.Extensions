@@ -21,7 +21,7 @@ namespace ISI.Extensions.BitBucket
 {
 	public class Repository
 	{
-		public string Namespace { get; set; }
+		public string Workspace { get; set; }
 		public string RepositoryKey { get; set; }
 
 		public string Description { get; set; }
@@ -35,6 +35,6 @@ namespace ISI.Extensions.BitBucket
 
 		public DateTime? LastModified { get; set; }
 
-		public override string ToString() => $"{Namespace}\\{RepositoryKey} [{Type}]";
+		public override string ToString() => $"{Workspace}\\{RepositoryKey} [{Type}]";
 	}
 }

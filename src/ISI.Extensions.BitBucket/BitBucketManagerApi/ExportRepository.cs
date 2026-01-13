@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.BitBucket.DataTransferObjects.BitBucketManagerApi;
 using SerializableDTOs = ISI.Extensions.BitBucket.SerializableModels;
 
@@ -19,7 +20,11 @@ namespace ISI.Extensions.BitBucket
 
 			using (var tempDirectory = new ISI.Extensions.IO.Path.TempDirectory())
 			{
+				//tempDirectory.DeleteDirectory = false;
+
 				var repositoryDirectory = System.IO.Path.Combine(tempDirectory.FullName, request.RepositoryKey);
+
+				Logger.LogInformation($"repositoryDirectory: {repositoryDirectory}");
 
 				var createRepositoryResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
@@ -50,19 +55,22 @@ namespace ISI.Extensions.BitBucket
 
 					var pullRepositoryResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 					{
+						Logger = logger,
 						ProcessExeFullName = "git",
 						Arguments = arguments.ToArray(),
 					});
 
 					if (pullRepositoryResponse.ExitCode == 0)
 					{
-						var bundleFullName = $"\"{System.IO.Path.Combine(tempDirectory.FullName, $"{request.RepositoryKey}.bundle")}\"";
+						var bundleFullName = System.IO.Path.Combine(tempDirectory.FullName, $"{request.RepositoryKey}.bundle");
+
+						Logger.LogInformation($"bundleFullName: {bundleFullName}");
 
 						var bundleRepositoryResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 						{
 							Logger = logger,
 							ProcessExeFullName = "git",
-							Arguments = ["-C", repositoryDirectory, "bundle", "create", bundleFullName, "--all"],
+							Arguments = ["-C", repositoryDirectory, "bundle", "create", $"\"{bundleFullName}\"", "--all"],
 						});
 
 						if (bundleRepositoryResponse.ExitCode == 0)

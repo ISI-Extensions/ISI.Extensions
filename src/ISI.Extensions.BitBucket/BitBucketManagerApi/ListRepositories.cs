@@ -49,7 +49,7 @@ namespace ISI.Extensions.BitBucket
 
 				repositories.AddRange(apiResponse.Repositories.ToNullCheckedArray(repository => new Repository()
 				{
-					Namespace = request.Workspace,
+					Workspace = request.Workspace,
 					RepositoryKey = repository.RepositoryKey,
 					Description = repository.Description,
 					CreationDate = repository.CreationDate,

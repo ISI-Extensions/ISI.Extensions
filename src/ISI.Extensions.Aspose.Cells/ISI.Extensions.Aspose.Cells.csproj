@@ -16,7 +16,7 @@
 
 	<ItemGroup>
 		<PackageReference Update="NETStandard.Library" Version="2.0.3" />
-	  <PackageReference Include="Aspose.Cells" Version="25.12.0" />
+	  <PackageReference Include="Aspose.Cells" Version="26.1.0" />
 		<PackageReference Include="SkiaSharp" Version="3.119.1" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="3.119.1" />
 	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.1" />

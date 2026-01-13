@@ -80,7 +80,7 @@ namespace ISI.Extensions.Tests
 			var apiResponse = bitBucketManagerApi.ListRepositories(new()
 			{
 				BitBucketApiToken = BitBucketApiToken,
-				Workspace = "westriversystems",
+				Workspace = "dfdsfdfgb",
 			});
 		}
 
@@ -92,8 +92,8 @@ namespace ISI.Extensions.Tests
 			var apiResponse = bitBucketManagerApi.GetRepositoryLastCommitHash(new()
 			{
 				BitBucketApiToken = BitBucketApiToken,
-				Workspace = "westriversystems",
-				RepositoryKey = "wrs.field.kioskinterfacenode.assetoperator.service",
+				Workspace = "dfdsfdfgb",
+				RepositoryKey = "dfdsfdfgb.service",
 			});
 		}
 
@@ -105,42 +105,9 @@ namespace ISI.Extensions.Tests
 			var apiResponse = bitBucketManagerApi.ExportRepository(new()
 			{
 				BitBucketApiToken = BitBucketApiToken,
-				Workspace = "westriversystems",
-				RepositoryKey = "wrs.field.kioskinterfacenode.assetoperator.service",
+				Workspace = "dfdsfdfgb",
+				RepositoryKey = "dfdsfdfgb.service",
 			});
 		}
-
-		//[Test]
-		//public void ListRepositoryChangeSets_Tests()
-		//{
-		//	var bitBucketManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.BitBucket.IBitBucketManagerApi>();
-
-		//	var apiResponse = bitBucketManagerApi.ListRepositoryChangeSets(new()
-		//	{
-		//		BitBucketManagerApiToken = BitBucketManagerApiToken,
-		//		Namespace = "ISI",
-		//		Name = "ISI.SqlServerBackupAgent.ServiceApplication",
-		//	});
-		//}
-
-		//[Test]
-		//public void ExportRepository_Tests()
-		//{
-		//	var bitBucketManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.ScmManager.IBitBucketManagerApi>();
-
-		//	var backupFullName = @"E:\ISI\ISI.SqlServerBackupAgent.ServiceApplication.20240420.205134049.bak";
-
-		//	using (var backupFileStream = System.IO.File.Create(backupFullName))
-		//	{
-		//		var apiResponse = bitBucketManagerApi.ExportRepository(new()
-		//		{
-		//			BitBucketManagerApiToken = BitBucketManagerApiToken,
-		//			Namespace = "ISI",
-		//			Name = "ISI.SqlServerBackupAgent.ServiceApplication",
-		//			Type = "git",
-		//			DownloadStream = backupFileStream,
-		//		});
-		//	}
-		//}
 	}
 }

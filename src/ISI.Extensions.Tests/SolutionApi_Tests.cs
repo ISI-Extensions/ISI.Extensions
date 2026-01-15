@@ -352,10 +352,17 @@ namespace ISI.Extensions.Tests
 			var replacements = new Dictionary<string, string>();
 			//replacements.Add("language=\"C#v3.5\"", "language=\"C#\"");
 			//replacements.Add(" Constants.", " EnvDTE.Constants.");
-			replacements.Add("Copyright (c) 2022, Integrated Solutions", "Copyright (c) 2026, Integrated Solutions");
-			replacements.Add("Copyright (c) 2023, Integrated Solutions", "Copyright (c) 2026, Integrated Solutions");
-			replacements.Add("Copyright (c) 2024, Integrated Solutions", "Copyright (c) 2026, Integrated Solutions");
-			replacements.Add("Copyright (c) 2025, Integrated Solutions", "Copyright (c) 2026, Integrated Solutions");
+
+			//replacements.Add("Copyright (c) 2025, Integrated Solutions", "Copyright (c) 2026, Integrated Solutions");
+
+			var year = DateTime.Now.Year;
+			for (var priorYear = year - 9; priorYear < year; priorYear++)
+			{
+				replacements.Add($"Copyright (c) {priorYear}, Integrated Solutions", $"Copyright (c) {year}, Integrated Solutions");
+			}
+
+			const string prograFindMarker = "#pragma warning disable 1591";
+			const string prograFilterOutMarker = "#pragma warning disable CS8981";
 
 			var findContents = new List<string>();
 
@@ -457,6 +464,11 @@ namespace ISI.Extensions.Tests
 								updatedContent = updatedContent.Replace(replacement.Key, replacement.Value, StringComparison.InvariantCultureIgnoreCase);
 							}
 
+							if ((updatedContent.IndexOf(prograFindMarker, StringComparison.InvariantCultureIgnoreCase) >= 0) && (updatedContent.IndexOf(prograFilterOutMarker, StringComparison.InvariantCultureIgnoreCase) < 0))
+							{
+								updatedContent = updatedContent.Replace(prograFindMarker, $"{prograFindMarker}\r\n{prograFilterOutMarker}", StringComparison.InvariantCultureIgnoreCase);
+							}
+
 							//if (updatedContent.IndexOf("System.Diagnostics.EventTypeFilter", StringComparison.InvariantCultureIgnoreCase) >= 0)
 							//{
 							//	var lines = updatedContent.Split(new[] { '\r', '\n' });
@@ -503,6 +515,7 @@ namespace ISI.Extensions.Tests
 						{
 							FullNames = dirtyFileNames,
 							LogMessage = "update copyright year",
+							//LogMessage = "pragma warning disable CS8981",
 							AddToLog = (logEntryLevel, description) => commitLog.AppendLine(description),
 						}).Success)
 						{

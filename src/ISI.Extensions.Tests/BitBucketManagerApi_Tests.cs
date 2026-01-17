@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +31,8 @@ namespace ISI.Extensions.Tests
 	public class BitBucketManagerApi_Tests
 	{
 		public string BitBucketApiToken { get; set; }
+		public string BitBucketReposWorkspace { get; set; }
+		public string BitBucketReposDirectory { get; set; }
 
 		[OneTimeSetUp]
 		public void OneTimeSetup()
@@ -70,6 +72,85 @@ namespace ISI.Extensions.Tests
 
 			//BitBucketApiToken = settings.GetValue("Atlassian-ISI.Extensions-Token");
 			BitBucketApiToken = settings.GetValue("BitBucket-Access-Token-Read-Repos");
+			BitBucketReposWorkspace = settings.GetValue("BitBucket-Repos-Workspace");
+			BitBucketReposDirectory = settings.GetValue("BitBucket-Repos-Directory");
+		}
+
+		[Test]
+		public void CheckOutMissingRepositories_Tests()
+		{
+			var gitApi = new ISI.Extensions.Git.GitApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+			var bitBucketManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.BitBucket.IBitBucketManagerApi>();
+
+			var repos = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
+
+			foreach (var repoDirectory in System.IO.Directory.EnumerateDirectories(BitBucketReposDirectory))
+			{
+				var getRootDirectoryResponse = gitApi.GetRootDirectory(new()
+				{
+					FullName = repoDirectory,
+				});
+
+				if (!string.IsNullOrWhiteSpace(getRootDirectoryResponse?.SourceControlUrl))
+				{
+					var sourceControlUri = new UriBuilder(getRootDirectoryResponse.SourceControlUrl);
+
+					if (sourceControlUri.Host.StartsWith("bitbucket.org"))
+					{
+						if (!sourceControlUri.Path.EndsWith(".git", StringComparison.InvariantCultureIgnoreCase))
+						{
+							sourceControlUri.Path = $"{sourceControlUri.Path}.git";
+						}
+
+						sourceControlUri.UserName = null;
+
+						repos.Add(sourceControlUri.Uri.ToString(), repoDirectory);
+					}
+				}
+			}
+
+			var apiResponse = bitBucketManagerApi.ListRepositories(new()
+			{
+				BitBucketApiToken = BitBucketApiToken,
+				Workspace = BitBucketReposWorkspace,
+			});
+
+			foreach (var repository in apiResponse.Repositories)
+			{
+				var sourceControlUri = new UriBuilder(Uri.UriSchemeHttps, "bitbucket.org");
+				sourceControlUri.AddDirectoryToPath(repository.Workspace);
+				sourceControlUri.AddDirectoryToPath($"{repository.RepositoryKey}.git");
+
+				var sourceControlUrl = sourceControlUri.Uri.ToString();
+
+				if (!repos.ContainsKey(sourceControlUrl))
+				{
+					var repositoryKey = repository.RepositoryKey;
+
+					if (repositoryKey.EndsWith(".Service", StringComparison.InvariantCultureIgnoreCase))
+					{
+						repositoryKey = $"{repositoryKey}Application";
+					}
+					else if (repositoryKey.EndsWith(".RestApi", StringComparison.InvariantCultureIgnoreCase))
+					{
+						repositoryKey = $"{repositoryKey}.ServiceApplication";
+					}
+					else if (repositoryKey.EndsWith(".RealTimeApi", StringComparison.InvariantCultureIgnoreCase))
+					{
+						repositoryKey = $"{repositoryKey}.ServiceApplication";
+					}
+
+					var repoDirectory = System.IO.Path.Combine(BitBucketReposDirectory, repositoryKey);
+
+					gitApi.Clone(new()
+					{
+						SourceUrl = sourceControlUrl,
+						TargetFullName = repoDirectory,
+					});
+
+					repos.Add(sourceControlUrl, repoDirectory);
+				}
+			}
 		}
 
 		[Test]

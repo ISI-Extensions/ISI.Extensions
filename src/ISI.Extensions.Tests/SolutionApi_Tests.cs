@@ -45,7 +45,7 @@ namespace ISI.Extensions.Tests
 				.AddSingleton<Microsoft.Extensions.Logging.ILoggerFactory, Microsoft.Extensions.Logging.LoggerFactory>()
 				.AddLogging(builder => builder
 						.AddConsole()
-				//.AddFilter(level => level >= Microsoft.Extensions.Logging.LogLevel.Information)
+					//.AddFilter(level => level >= Microsoft.Extensions.Logging.LogLevel.Information)
 				)
 				.AddSingleton<Microsoft.Extensions.Logging.ILogger>(_ => new ISI.Extensions.TextWriterLogger(TestContext.Progress))
 
@@ -349,6 +349,13 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void Replacements_Test()
 		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = new ISI.Extensions.SimpleKeyValueStorage(settingsFullName);
+
+			var logger = ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();
+			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
+			var sourceControlClientApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.SourceControlClientApi>();
+
 			var replacements = new Dictionary<string, string>();
 			//replacements.Add("language=\"C#v3.5\"", "language=\"C#\"");
 			//replacements.Add(" Constants.", " EnvDTE.Constants.");
@@ -368,16 +375,47 @@ namespace ISI.Extensions.Tests
 
 			var ignoreFindContents = new List<string>();
 
-			var logger = ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();
-			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
-			var sourceControlClientApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.SourceControlClientApi>();
-
 			var solutionFullNames = new List<string>();
 			//solutionFullNames.Add(@"F:\ISI\ISI.FrameWork");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Telephony.WindowsService");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Desktop");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.WebApplication");
 			solutionFullNames.AddRange(System.IO.File.ReadAllLines(@"S:\ISI.SolutionFullNames.txt"));
+
+			if(false)
+			{
+				var bitBucketReposDirectory = settings.GetValue("BitBucket-Repos-Directory");
+
+				var repos = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
+
+				foreach (var repoDirectory in System.IO.Directory.EnumerateDirectories(bitBucketReposDirectory))
+				{
+					var getRootDirectoryResponse = sourceControlClientApi.GetRootDirectory(new()
+					{
+						FullName = repoDirectory,
+					});
+
+					if (!string.IsNullOrWhiteSpace(getRootDirectoryResponse?.SourceControlUrl))
+					{
+						var sourceControlUri = new UriBuilder(getRootDirectoryResponse.SourceControlUrl);
+
+						if (sourceControlUri.Host.StartsWith("bitbucket.org"))
+						{
+							if (!sourceControlUri.Path.EndsWith(".git", StringComparison.InvariantCultureIgnoreCase))
+							{
+								sourceControlUri.Path = $"{sourceControlUri.Path}.git";
+							}
+
+							sourceControlUri.UserName = null;
+
+							repos.Add(sourceControlUri.Uri.ToString(), repoDirectory);
+						}
+					}
+				}
+
+				solutionFullNames.AddRange(repos.Values);
+			}
+
 
 			solutionFullNames.RemoveAll(solutionFullName => !System.IO.Directory.Exists(solutionFullName));
 
@@ -464,7 +502,7 @@ namespace ISI.Extensions.Tests
 								updatedContent = updatedContent.Replace(replacement.Key, replacement.Value, StringComparison.InvariantCultureIgnoreCase);
 							}
 
-							if ((updatedContent.IndexOf(prograFindMarker, StringComparison.InvariantCultureIgnoreCase) >= 0) && (updatedContent.IndexOf(prograFilterOutMarker, StringComparison.InvariantCultureIgnoreCase) < 0))
+							if ((updatedContent.IndexOf(prograFindMarker, StringComparison.InvariantCultureIgnoreCase) >= 0) && (updatedContent.IndexOf(prograFilterOutMarker, StringComparison.InvariantCultureIgnoreCase) < 0) && (updatedContent.IndexOf("NSwag", StringComparison.InvariantCultureIgnoreCase) < 0))
 							{
 								updatedContent = updatedContent.Replace(prograFindMarker, $"{prograFindMarker}\r\n{prograFilterOutMarker}", StringComparison.InvariantCultureIgnoreCase);
 							}

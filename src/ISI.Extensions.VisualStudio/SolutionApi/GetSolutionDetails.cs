@@ -35,6 +35,7 @@ namespace ISI.Extensions.VisualStudio
 			var solutionFullName = GetSolutionFullName(new()
 			{
 				Solution = request.Solution,
+				ThrowErrorIfNoSolutionFound = false,
 				AddToLog = request.AddToLog,
 			}).SolutionFullName;
 

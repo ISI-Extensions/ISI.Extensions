@@ -49,7 +49,7 @@ namespace ISI.Extensions.Git
 					response.FullName = (gitResponse.Output ?? string.Empty).Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(line => !string.IsNullOrWhiteSpace(line));
 				}
 
-				if (!string.IsNullOrWhiteSpace(request.FullName))
+				if (!string.IsNullOrWhiteSpace(response.FullName) && !response.FullName.StartsWith("fatal:", StringComparison.InvariantCultureIgnoreCase)) 
 				{
 					try
 					{
@@ -78,6 +78,10 @@ namespace ISI.Extensions.Git
 					catch (Exception exception)
 					{
 					}
+				}
+				else
+				{
+					response.FullName = null;
 				}
 			}
 

@@ -31,5 +31,6 @@ namespace ISI.Extensions.ScmManager
 		DTOs.DeleteRepositoryResponse DeleteRepository(DTOs.DeleteRepositoryRequest request);
 		DTOs.CreateRepositoryResponse CreateRepository(DTOs.CreateRepositoryRequest request);
 		DTOs.SetRepositoryRoleResponse SetRepositoryRole(DTOs.SetRepositoryRoleRequest request);
+		DTOs.GetAccessTokenResponse GetAccessToken(DTOs.GetAccessTokenRequest request);
 	}
 }

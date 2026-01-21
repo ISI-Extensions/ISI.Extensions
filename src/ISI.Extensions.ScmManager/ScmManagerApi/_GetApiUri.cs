@@ -26,7 +26,7 @@ namespace ISI.Extensions.ScmManager
 {
 	public partial class ScmManagerApi
 	{
-		private UriBuilder GetApiUri(DTOs.IRequest request)
+		private UriBuilder GetApiUri(DTOs.IRequestWithScmManagerApiUrl request)
 		{
 			var uri = new UriBuilder(request.ScmManagerApiUrl);
 

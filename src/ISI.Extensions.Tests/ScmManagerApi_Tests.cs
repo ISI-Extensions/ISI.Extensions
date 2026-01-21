@@ -122,6 +122,28 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void GetAccessToken_Tests()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+
+			var scmManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.ScmManager.IScmManagerApi>();
+
+			var getAccessTokenResponse = scmManagerApi.GetAccessToken(new()
+			{
+				ScmManagerApiUrl = ScmManagerApiUrl,
+				Username = settings.ActiveDirectory.UserName,
+				Password = settings.ActiveDirectory.Password,
+			});
+
+			var listRepositoriesResponse = scmManagerApi.ListRepositories(new()
+			{
+				ScmManagerApiUrl = ScmManagerApiUrl,
+				ScmManagerApiToken = getAccessTokenResponse.ScmManagerApiToken,
+			});
+		}
+
+		[Test]
 		public void CreateRepository_Tests()
 		{
 			var scmManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.ScmManager.IScmManagerApi>();

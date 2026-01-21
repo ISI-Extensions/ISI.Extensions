@@ -28,5 +28,8 @@ namespace ISI.Extensions.ScmManager
 		DTOs.ListRepositoriesResponse ListRepositories(DTOs.ListRepositoriesRequest request);
 		DTOs.ListRepositoryChangeSetsResponse ListRepositoryChangeSets(DTOs.ListRepositoryChangeSetsRequest request);
 		DTOs.ExportRepositoryResponse ExportRepository(DTOs.ExportRepositoryRequest request);
+		DTOs.DeleteRepositoryResponse DeleteRepository(DTOs.DeleteRepositoryRequest request);
+		DTOs.CreateRepositoryResponse CreateRepository(DTOs.CreateRepositoryRequest request);
+		DTOs.SetRepositoryRoleResponse SetRepositoryRole(DTOs.SetRepositoryRoleRequest request);
 	}
 }

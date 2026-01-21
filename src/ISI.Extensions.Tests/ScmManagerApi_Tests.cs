@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,7 +70,8 @@ namespace ISI.Extensions.Tests
 			var settings = new ISI.Extensions.SimpleKeyValueStorage(settingsFullName);
 
 			ScmManagerApiUrl = settings.GetValue("SCMMANAGER-URL");
-			ScmManagerApiToken = settings.GetValue("SCMMANAGER.BackupAgent.ApiKey");
+			//ScmManagerApiToken = settings.GetValue("SCMMANAGER.BackupAgent.ApiKey");
+			ScmManagerApiToken = settings.GetValue("SCMMANAGER.OWNER.ApiKey");
 		}
 
 		[Test]
@@ -118,6 +119,42 @@ namespace ISI.Extensions.Tests
 					DownloadStream = backupFileStream,
 				});
 			}
+		}
+
+		[Test]
+		public void CreateRepository_Tests()
+		{
+			var scmManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.ScmManager.IScmManagerApi>();
+
+			var repoName = "TextRepo";
+
+			var createRepositoryResponse = scmManagerApi.CreateRepository(new()
+			{
+				ScmManagerApiUrl = ScmManagerApiUrl,
+				ScmManagerApiToken = ScmManagerApiToken,
+				Namespace = "ISI",
+				Name = repoName,
+				Type = "git",
+			});
+
+			var setRepositoryRoleResponse = scmManagerApi.SetRepositoryRole(new()
+			{
+				ScmManagerApiUrl = ScmManagerApiUrl,
+				ScmManagerApiToken = ScmManagerApiToken,
+				Namespace = "ISI",
+				Name = repoName,
+				GrantTo = "ISI-Developers",
+				GrantToIsGroup = true,
+				Role = "WRITE",
+			});
+
+			var deleteRepositoryResponse = scmManagerApi.DeleteRepository(new()
+			{
+				ScmManagerApiUrl = ScmManagerApiUrl,
+				ScmManagerApiToken = ScmManagerApiToken,
+				Namespace = "ISI",
+				Name = repoName,
+			});
 		}
 	}
 }

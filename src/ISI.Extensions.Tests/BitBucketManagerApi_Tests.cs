@@ -123,7 +123,14 @@ namespace ISI.Extensions.Tests
 
 				var sourceControlUrl = sourceControlUri.Uri.ToString();
 
-				if (!repos.ContainsKey(sourceControlUrl))
+				if (repos.TryGetValue(sourceControlUrl, out var repoDirectory))
+				{
+					gitApi.UpdateWorkingCopy(new()
+					{
+						FullName = sourceControlUrl,
+					});
+				}
+				else
 				{
 					var repositoryKey = repository.RepositoryKey;
 
@@ -140,7 +147,7 @@ namespace ISI.Extensions.Tests
 						repositoryKey = $"{repositoryKey}.ServiceApplication";
 					}
 
-					var repoDirectory = System.IO.Path.Combine(BitBucketReposDirectory, repositoryKey);
+					repoDirectory = System.IO.Path.Combine(BitBucketReposDirectory, repositoryKey);
 
 					gitApi.Clone(new()
 					{

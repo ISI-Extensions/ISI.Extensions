@@ -51,7 +51,7 @@ namespace ISI.Extensions.Nuget
 				.NullCheckedSelectMany(nugetPackageKey => nugetPackageKey.GetTargetFrameworkAssembly(targetFrameworkVersion)?.Assemblies, NullCheckCollectionResult.Empty)
 				.ToDictionary(assembly => assembly.AssemblyName, assembly => assembly, StringComparer.InvariantCultureIgnoreCase);
 
-			bool doCheckWildcardRemoveAssemblyRedirect = removeAssemblyRedirects.Any(removeAssemblyRedirect => removeAssemblyRedirect.EndsWith("*", StringComparison.InvariantCultureIgnoreCase));
+			var doCheckWildcardRemoveAssemblyRedirect = removeAssemblyRedirects.Any(removeAssemblyRedirect => removeAssemblyRedirect.EndsWith("*", StringComparison.InvariantCultureIgnoreCase));
 
 			bool isRemoveAssemblyRedirectsWildcardMatch(string assemblyName)
 			{

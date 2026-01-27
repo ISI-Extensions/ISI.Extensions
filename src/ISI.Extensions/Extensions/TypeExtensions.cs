@@ -50,7 +50,7 @@ namespace ISI.Extensions.Extensions
 
 		public static bool ImplementsGeneric(this Type objectType, Type interfaceType)
 		{
-			return objectType.ImplementsGeneric(interfaceType, out Type matchedType);
+			return objectType.ImplementsGeneric(interfaceType, out var matchedType);
 		}
 
 		public static bool ImplementsGeneric(this Type objectType, Type interfaceType, out Type matchedType)

@@ -74,7 +74,7 @@ namespace ISI.Extensions.Tests.Caching
 			ISI.Extensions.Caching.GetItem<string, string> getDefaultValue = key => $"Default-Item:{key}";
 
 			var cachedKeys = new HashSet<string>();
-			for (int i = 20; i < 40; i++)
+			for (var i = 20; i < 40; i++)
 			{
 				var key = $"{i}";
 
@@ -84,7 +84,7 @@ namespace ISI.Extensions.Tests.Caching
 			}
 
 			var keys = new HashSet<string>();
-			for (int i = 0; i < 60; i++)
+			for (var i = 0; i < 60; i++)
 			{
 				var key = $"{i}";
 
@@ -126,7 +126,7 @@ namespace ISI.Extensions.Tests.Caching
 			ISI.Extensions.Caching.GetItem<string, string> getDefaultValue = key => $"Default-Item:{key}";
 
 			var cachedKeys = new HashSet<string>();
-			for (int i = 20; i < 40; i++)
+			for (var i = 20; i < 40; i++)
 			{
 				var key = $"{i}";
 
@@ -136,7 +136,7 @@ namespace ISI.Extensions.Tests.Caching
 			}
 
 			var keys = new HashSet<string>();
-			for (int i = 0; i < 60; i++)
+			for (var i = 0; i < 60; i++)
 			{
 				var key = $"{i}";
 
@@ -175,7 +175,7 @@ namespace ISI.Extensions.Tests.Caching
 			Func<Guid, string> getCacheKey = key => $"CacheKey:{key:D}";
 
 			var testObjects = new List<HasCacheKeyWithAbsoluteTimeExpirationTestObject>();
-			for (int i = 0; i < 20; i++)
+			for (var i = 0; i < 20; i++)
 			{
 				var testObjectUuid = Guid.NewGuid();
 

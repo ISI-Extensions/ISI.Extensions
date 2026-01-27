@@ -78,7 +78,7 @@ namespace ISI.Extensions.Monitor.AspNetCore.Controllers
 				{
 					response.StartupParameterValues = monitorTest.GetModelProperties().ToNullCheckedArray(property =>
 					{
-						object value = property.GetValue(monitorTest.Model);
+						var value = property.GetValue(monitorTest.Model);
 
 						var parameter = new ISI.Extensions.Monitor.SerializableModels.MonitorTestSerializableResponseStartupParameterValue()
 						{

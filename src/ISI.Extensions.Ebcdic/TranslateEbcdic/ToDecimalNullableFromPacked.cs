@@ -51,7 +51,7 @@ namespace ISI.Extensions.Ebcdic
 					throw new("Format missing sign");
 			}
 
-			for (int byteIndex = packedEbcdic.Length * 2 - 1; byteIndex > 0; byteIndex--)
+			for (var byteIndex = packedEbcdic.Length * 2 - 1; byteIndex > 0; byteIndex--)
 			{
 				// multiply by 10
 				var intermediate = lo * 10;

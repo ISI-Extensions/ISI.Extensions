@@ -124,7 +124,7 @@ namespace ISI.Extensions.Tests.Repository
 
 			var contacts = new List<ContactWithData>();
 
-			for (int i = 0; i < 2000; i++)
+			for (var i = 0; i < 2000; i++)
 			{
 				var contactV1 = new ContactWithData()
 				{
@@ -164,7 +164,7 @@ namespace ISI.Extensions.Tests.Repository
 
 			var contacts = new List<ContactWithData>();
 
-			for (int i = 0; i < 2000; i++)
+			for (var i = 0; i < 2000; i++)
 			{
 				var contactV1 = new ContactWithData()
 				{

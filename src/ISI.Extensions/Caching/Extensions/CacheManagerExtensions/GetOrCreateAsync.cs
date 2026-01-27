@@ -134,7 +134,7 @@ namespace ISI.Extensions.Caching.Extensions
 				return await getDefaultValueAsync();
 			}
 
-			TItem value = await getItemAsync();
+			var value = await getItemAsync();
 
 			Add(cacheManager, cacheKey, value, getCacheEntryExpirationPolicy);
 

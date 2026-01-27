@@ -42,7 +42,7 @@ namespace ISI.Extensions.Aspose.Extensions
 				// Get the count of images over specific page
 				Console.WriteLine("Total Images = {0} over page number {1}", imagePlacementAbsorber.ImagePlacements.Count, documentPage.Number);
 
-				int image_counter = 1;
+				var image_counter = 1;
 				foreach (var imagePlacement in imagePlacementAbsorber.ImagePlacements)
 				{
 					var colorType = imagePlacement.Image.GetColorType();

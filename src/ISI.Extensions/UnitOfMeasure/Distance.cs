@@ -91,7 +91,7 @@ namespace ISI.Extensions.UnitOfMeasure
 				return Value;
 			}
 
-			float inches = Value;
+			var inches = Value;
 
 			switch (UnitOfMeasure)
 			{

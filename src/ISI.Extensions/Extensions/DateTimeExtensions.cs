@@ -254,7 +254,7 @@ namespace ISI.Extensions.Extensions
 		}
 		public static string Formatted(this DateTime value, DateTimeFormat format)
 		{
-			if ((value != DateTime.MinValue) && _dateFormats.TryGetValue(format, out string formatString))
+			if ((value != DateTime.MinValue) && _dateFormats.TryGetValue(format, out var formatString))
 			{
 				return value.ToString(formatString);
 			}
@@ -268,7 +268,7 @@ namespace ISI.Extensions.Extensions
 		}
 		public static string Formatted(this DateTimeOffset value, DateTimeFormat format)
 		{
-			if ((value != DateTime.MinValue) && _dateFormats.TryGetValue(format, out string formatString))
+			if ((value != DateTime.MinValue) && _dateFormats.TryGetValue(format, out var formatString))
 			{
 				return value.ToString(formatString);
 			}

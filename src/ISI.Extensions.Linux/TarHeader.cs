@@ -147,7 +147,7 @@ namespace ISI.Extensions.Linux
 			get
 			{
 				var v = GetString(version, 2);
-				if (uint.TryParse(v, out uint rv))
+				if (uint.TryParse(v, out var rv))
 				{
 					return rv;
 				}

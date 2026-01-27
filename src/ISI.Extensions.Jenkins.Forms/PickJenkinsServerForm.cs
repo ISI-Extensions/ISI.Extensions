@@ -64,7 +64,7 @@ namespace ISI.Extensions.Jenkins.Forms
 				{
 					var selectedIndex = cboJenkinsServers.SelectedIndex;
 
-					for (int index = 0; index < cboJenkinsServers.Items.Count; index++)
+					for (var index = 0; index < cboJenkinsServers.Items.Count; index++)
 					{
 						if (((ISI.Extensions.Jenkins.JenkinsServer)cboJenkinsServers.Items[index]).JenkinsServerUuid == _jenkinsServer.JenkinsServerUuid)
 						{

@@ -40,7 +40,7 @@ namespace ISI.Extensions.Caching
 			{
 				var itemsWithCacheKey = request.ItemsWithCacheKey.ToList();
 
-				for (int index = 0; index < itemsWithCacheKey.Count; index++)
+				for (var index = 0; index < itemsWithCacheKey.Count; index++)
 				{
 					if (itemsWithCacheKey[index] is ISI.Extensions.Caching.IHasCacheKeyCollection cacheKeys)
 					{

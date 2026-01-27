@@ -48,7 +48,7 @@ ActionID: 1
 
 				var log = new StringBuilder();
 
-				int bytesRead = 0;
+				var bytesRead = 0;
 				do
 				{
 					var buffer = new byte[1024];

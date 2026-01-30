@@ -62,6 +62,11 @@ namespace ISI.Extensions.Documents.Pdf
 			throw new NotImplementedException();
 		}
 
+		public PdfFieldInfo[] GetFieldInfos(IDocument document)
+		{
+			throw new NotImplementedException();
+		}
+
 		void IPdfDocumentHelper.GenerateDocument(System.IO.Stream templateStream, IDataReader dataReader, IDocumentProperties documentProperties, string printerName, System.IO.Stream documentStream, FileFormat fileFormat)
 		{
 			throw new NotImplementedException();

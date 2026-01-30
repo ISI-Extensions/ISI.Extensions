@@ -32,6 +32,11 @@ namespace ISI.Extensions.Aspose
 
 				templateStream = new ISI.Extensions.Stream.TempFileStream(templateStream);
 
+				var fieldNames = new HashSet<string>(GetFieldInfos(new ISI.Extensions.Documents.Document()
+				{
+					Stream = templateStream,
+				}).Select(fieldInfo => fieldInfo.FieldName), StringComparer.InvariantCultureIgnoreCase);
+				
 				var obfuscateFieldNames = ((documentProperties as ISI.Extensions.Documents.IPdfDocumentProperties)?.ObfuscateFieldNames) ?? false;
 
 				while (dataReader.Read())
@@ -40,23 +45,62 @@ namespace ISI.Extensions.Aspose
 
 					templateStream.Rewind();
 
-					var document = new global::Aspose.Pdf.Facades.Form(templateStream);
+					var form = new global::Aspose.Pdf.Facades.Form(templateStream);
 
 					for (var i = 0; i < dataReader.FieldCount; i++)
 					{
 						var fieldName = dataReader.GetName(i);
 
+						if (fieldNames.Contains(fieldName))
+						{
+							switch (form.GetFieldType(fieldName))
+							{
+								case global::Aspose.Pdf.Facades.FieldType.Text:
+									form.FillField(fieldName, $"{dataReader.GetValue(i)}");
+									break;
+								case global::Aspose.Pdf.Facades.FieldType.ComboBox:
+									break;
+								case global::Aspose.Pdf.Facades.FieldType.ListBox:
+									break;
+								case global::Aspose.Pdf.Facades.FieldType.Radio:
+									form.FillField(fieldName, !string.IsNullOrWhiteSpace($"{dataReader.GetValue(i)}"));
+									break;
+								case global::Aspose.Pdf.Facades.FieldType.CheckBox:
+									form.FillField(fieldName, !string.IsNullOrWhiteSpace($"{dataReader.GetValue(i)}"));
+									break;
+								case global::Aspose.Pdf.Facades.FieldType.PushButton:
+									break;
+								case global::Aspose.Pdf.Facades.FieldType.MultiLineText:
+									form.FillField(fieldName, $"{dataReader.GetValue(i)}");
+									break;
+								case global::Aspose.Pdf.Facades.FieldType.Barcode:
+									break;
+								case global::Aspose.Pdf.Facades.FieldType.InvalidNameOrType:
+									break;
+								case global::Aspose.Pdf.Facades.FieldType.Signature:
+									break;
+								case global::Aspose.Pdf.Facades.FieldType.Image:
+									break;
+								case global::Aspose.Pdf.Facades.FieldType.Numeric:
+									break;
+								case global::Aspose.Pdf.Facades.FieldType.DateTime:
+									break;
+								default:
+									throw new ArgumentOutOfRangeException();
+							}
+						}
+
 						if (obfuscateFieldNames)
 						{
 							fieldName = Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting);
-							document.RenameField(dataReader.GetName(i), fieldName);
+							form.RenameField(dataReader.GetName(i), fieldName);
 						}
 
-						document.FillField(fieldName, dataReader.GetValue(i).ToString());
+						//document.FillField(fieldName, dataReader.GetValue(i).ToString());
 					}
 
-					document.FlattenAllFields();
-					document.Save(outputStream);
+					form.FlattenAllFields();
+					form.Save(outputStream);
 
 					outputStream.Rewind();
 

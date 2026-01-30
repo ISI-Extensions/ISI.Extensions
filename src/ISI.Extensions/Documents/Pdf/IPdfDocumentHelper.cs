@@ -34,5 +34,6 @@ namespace ISI.Extensions.Documents.Pdf
 		ISI.Extensions.Documents.IDocument RotateDocument(ISI.Extensions.Documents.IDocument document, ISI.Extensions.Documents.Pdf.Rotate rotate, string fileName);
 		ISI.Extensions.Documents.IDocument RotateDocument(ISI.Extensions.Documents.IDocument document, ISI.Extensions.Documents.Pdf.Rotate rotate, string fileName, System.IO.Stream outputStream);
 		ISI.Extensions.Documents.IDocument RotateDocument(ISI.Extensions.Documents.IDocument document, ISI.Extensions.Documents.Pdf.Rotate rotate, string fileName, Func<System.IO.Stream> getOutputStream);
+		ISI.Extensions.Documents.Pdf.PdfFieldInfo[] GetFieldInfos(ISI.Extensions.Documents.IDocument document);
 	}
 }

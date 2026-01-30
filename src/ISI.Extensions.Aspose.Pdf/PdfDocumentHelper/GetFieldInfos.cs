@@ -26,14 +26,7 @@ namespace ISI.Extensions.Aspose
 	{
 		public partial class PdfDocumentHelper
 		{
-			public class PdfFieldInfo
-			{
-				public string FieldName { get; set; }
-				public ISI.Extensions.Documents.Pdf.FieldType FieldType { get; set; }
-				public string Contents { get; set; }
-			}
-
-			public PdfFieldInfo[] GetFieldInfos(ISI.Extensions.Documents.IDocument document)
+			public ISI.Extensions.Documents.Pdf.PdfFieldInfo[] GetFieldInfos(ISI.Extensions.Documents.IDocument document)
 			{
 				document.Stream.Rewind();
 
@@ -43,11 +36,11 @@ namespace ISI.Extensions.Aspose
 
 				var form = new global::Aspose.Pdf.Facades.Form(document.Stream);
 
-				var pdfFieldInfos = new List<PdfFieldInfo>();
+				var pdfFieldInfos = new List<ISI.Extensions.Documents.Pdf.PdfFieldInfo>();
 
 				foreach (var field in docDocument.Form.Fields)
 				{
-					var pdfFieldInfo = new PdfFieldInfo()
+					var pdfFieldInfo = new ISI.Extensions.Documents.Pdf.PdfFieldInfo()
 					{
 						FieldName = field.Name,
 						Contents = field.Contents,

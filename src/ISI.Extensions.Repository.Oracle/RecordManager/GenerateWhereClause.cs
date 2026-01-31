@@ -380,7 +380,7 @@ CREATE GLOBAL TEMPORARY TABLE {tempTableName}
 				}
 				else
 				{
-					var filterValueTempTableName = $"FilterValues_{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}";
+					var filterValueTempTableName = $"FILTER_VALUES_{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}";
 
 					var usedFilterValues = filterParameters.Values.ToList();
 					while (filterValuesEnumerator.MoveNext())
@@ -392,13 +392,15 @@ CREATE GLOBAL TEMPORARY TABLE {tempTableName}
 
 					var sqlConnectionWhereClause = whereClause as OracleConnectionWhereClause;
 
-					sqlConnectionWhereClause.InitializeActions.Add((oracleConfiguration, connection) =>
+					sqlConnectionWhereClause.InitializeActions.Add((oracleConfiguration, oracleConnection) =>
 					{
 						var filterValuesParameter = new global::Oracle.ManagedDataAccess.Client.OracleParameter();
 						filterValuesParameter.OracleDbType = filterValues.First().GetType().GetOracleDbType();
 						filterValuesParameter.Value = filterValues;
 
-						using (var command = connection.CreateCommand())
+						oracleConnection.EnsureConnectionIsOpenAsync().Wait();
+
+						using (var command = oracleConnection.CreateCommand())
 						{
 							command.CommandText = @$"
 CREATE GLOBAL TEMPORARY TABLE {filterValueTempTableName}
@@ -409,7 +411,7 @@ CREATE GLOBAL TEMPORARY TABLE {filterValueTempTableName}
 							command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
 						}
 
-						using (var command = connection.CreateCommand())
+						using (var command = oracleConnection.CreateCommand())
 						{
 							command.CommandText = @$"INSERT INTO {filterValueTempTableName} ({filter.RecordPropertyDescription.GetColumnDefinition(FormatColumnName)}) VALUES (:1)";
 							command.ArrayBindCount = filterValues.Length;

@@ -165,7 +165,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 				}
 				else
 				{
-					var filterValueTempTableName = $"FilterValues_{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}";
+					var filterValueTempTableName = $"FILTER_VALUES_{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}";
 
 					var usedFilterValues = filterParameters.Values;
 

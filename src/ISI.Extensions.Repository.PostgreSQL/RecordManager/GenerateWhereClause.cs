@@ -239,7 +239,7 @@ CREATE TEMP TABLE {filterValueTempTableName}
 		
 		protected virtual void GenerateJoinTableFilter(IWhereClause whereClause, RecordWhereColumnCollection<TRecord> filter, ref int filterIndex, List<string> sqlFilters, string indent, string filterValueNamePrefix)
 		{
-			var tempTableName = $"TempTable_{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}";
+			var tempTableName = $"TEMP_TABLE_{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.NoFormatting)}";
 
 			var propertyDescriptions = (filter.First() as RecordWhereColumnCollection<TRecord>).ToNullCheckedArray(recordWhereColumnFilter => (recordWhereColumnFilter as RecordWhereColumn<TRecord>).RecordPropertyDescription);
 

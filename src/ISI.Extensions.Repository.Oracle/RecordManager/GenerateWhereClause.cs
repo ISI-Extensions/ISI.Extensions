@@ -388,16 +388,12 @@ CREATE GLOBAL TEMPORARY TABLE {tempTableName}
 						usedFilterValues.Add(filterValuesEnumerator.Current);
 					}
 
-					var filterValues = usedFilterValues.ToArray();
+					var filterValueType = usedFilterValues.First().GetType();
 
 					var sqlConnectionWhereClause = whereClause as OracleConnectionWhereClause;
 
 					sqlConnectionWhereClause.InitializeActions.Add((oracleConfiguration, oracleConnection) =>
 					{
-						var filterValuesParameter = new global::Oracle.ManagedDataAccess.Client.OracleParameter();
-						filterValuesParameter.OracleDbType = filterValues.First().GetType().GetOracleDbType();
-						filterValuesParameter.Value = filterValues;
-
 						oracleConnection.EnsureConnectionIsOpenAsync().Wait();
 
 						using (var command = oracleConnection.CreateCommand())
@@ -411,11 +407,21 @@ CREATE GLOBAL TEMPORARY TABLE {filterValueTempTableName}
 							command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
 						}
 
+						foreach (var usedFilterValue in usedFilterValues)
+						{
+							System.Console.WriteLine($"usedFilterValue: {usedFilterValue}");
+						}
+
 						using (var command = oracleConnection.CreateCommand())
 						{
-							command.CommandText = @$"INSERT INTO {filterValueTempTableName} ({filter.RecordPropertyDescription.GetColumnDefinition(FormatColumnName)}) VALUES (:1)";
-							command.ArrayBindCount = filterValues.Length;
-							command.Parameters.Add(filterValuesParameter);
+							command.CommandText = @$"INSERT INTO {filterValueTempTableName} ({filter.RecordPropertyDescription.GetColumnDefinition(FormatColumnName)}) VALUES (:fv)";
+							command.BindByName = true;
+
+							command.ArrayBindCount = usedFilterValues.Count;
+
+							var parameter = new global::Oracle.ManagedDataAccess.Client.OracleParameter("fv", filterValueType.GetOracleDbType(), System.Data.ParameterDirection.Input);
+							parameter.Value = usedFilterValues.ToArray();
+							command.Parameters.Add(parameter);
 
 							command.ExecuteNonQueryWithExceptionTracingAsync().Wait();
 						}

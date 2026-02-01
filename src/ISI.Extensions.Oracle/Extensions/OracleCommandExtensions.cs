@@ -38,7 +38,14 @@ namespace ISI.Extensions.Oracle.Extensions
 			var parameters = new List<string>();
 			foreach (global::Oracle.ManagedDataAccess.Client.OracleParameter commandParameter in command.Parameters)
 			{
-				parameters.Add($"{commandParameter.ParameterName}: {commandParameter.Value}");
+				if (commandParameter.Value is System.Collections.IEnumerable enumerable)
+				{
+					parameters.Add($"{commandParameter.ParameterName} ({commandParameter.OracleDbType}): {string.Join(", ", enumerable)}");
+				}
+				else
+				{
+					parameters.Add($"{commandParameter.ParameterName} ({commandParameter.OracleDbType}): {commandParameter.Value}");
+				}
 			}
 
 			if (parameters.Any())

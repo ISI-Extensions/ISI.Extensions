@@ -30,6 +30,7 @@ namespace ISI.Extensions.SshNet.ScpFileSystem
 
 		private Renci.SshNet.ScpClient _client = null;
 
+		private bool _overWrite = false;
 		private bool _isUpload = false;
 
 		public ScpFileSystemStream(Func<string, string> encodeFileName, Func<FileSystem.IFileSystemPathFile, Renci.SshNet.SshClient> getSshClient, Func<FileSystem.IFileSystemPathFile, Renci.SshNet.ScpClient> getTransferClient)
@@ -55,23 +56,10 @@ namespace ISI.Extensions.SshNet.ScpFileSystem
 
 		public override void OpenWrite(FileSystem.IFileSystemPathFile fileSystemPathFile, bool overWrite = true, long fileSize = 0)
 		{
-			if (overWrite)
-			{
-				try
-				{
-					var fileSystemProvider = new ScpFileSystemProvider();
-
-					fileSystemProvider.RemoveFile(fileSystemPathFile);
-				}
-				catch
-				{
-
-				}
-			}
+			_isUpload = true;
+			_overWrite = overWrite;
 
 			Stream = new ISI.Extensions.Stream.TempFileStream();
-
-			_isUpload = true;
 
 			FileSystemPathFile = fileSystemPathFile.Clone() as FileSystem.IFileSystemPathFile;
 		}
@@ -82,6 +70,20 @@ namespace ISI.Extensions.SshNet.ScpFileSystem
 			{
 				if (_isUpload)
 				{
+					if (_overWrite)
+					{
+						try
+						{
+							var fileSystemProvider = new ScpFileSystemProvider();
+
+							fileSystemProvider.RemoveFile(FileSystemPathFile);
+						}
+						catch
+						{
+
+						}
+					}
+
 					using (var client = GetTransferClient(FileSystemPathFile))
 					{
 						client.Connect();

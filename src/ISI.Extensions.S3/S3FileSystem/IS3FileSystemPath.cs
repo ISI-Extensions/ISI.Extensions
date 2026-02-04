@@ -20,9 +20,12 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.S3.S3FileSystem
 {
-	public interface IS3FileSystemPath : UnixFileSystem.IUnixFileSystemPath
+	public interface IS3FileSystemPath : FileSystem.IFileSystemPath
 	{
-
+		string EndpointUrl { get; }
+		string AccessKey { get; }
+		string SecretKey { get; }
+		string BucketName { get; }
+		string DirectorySeparator { get; }
 	}
 }
-

@@ -15,34 +15,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.S3.S3FileSystem
 {
-	public class S3FileSystemPathSymbolicLinkFile : UnixFileSystem.UnixFileSystemPathSymbolicLinkFile, IS3FileSystemPath
+	public interface IS3FileSystemPathDirectory : IS3FileSystemPath, FileSystem.IFileSystemPathDirectory
 	{
-		public override string Schema => S3FileSystemProvider._schema;
-		public override string DirectorySeparator => S3FileSystemProvider._directorySeparator;
-
-		public override string ToString() => $"S3 File Symbolic Link {base.ToString()}";
-
-		public override FileSystem.IFileSystemPath Clone()
-		{
-			return new S3FileSystemPathSymbolicLinkFile()
-			{
-				Server = Server,
-				UserName = UserName,
-				Password = Password,
-				Directory = Directory,
-				PathName = PathName,
-				ModifiedDateTime = ModifiedDateTime,
-				Size = Size,
-				LinkedTo = LinkedTo,
-			};
-		}
-
-		public override FileSystem.IFileSystemPathDirectory GetParentFileSystemPathDirectory() => GetParentFileSystemPathDirectory<S3FileSystemPathDirectory>();
+		void SetValues(string endpointurl, string accessKey, string secretkey, string bucketName, string directory, string pathName);
 	}
 }
+

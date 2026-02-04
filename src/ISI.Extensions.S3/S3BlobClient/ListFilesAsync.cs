@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,8 +20,8 @@ using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.S3.DataTransferObjects.S3BlobClient;
 using Minio;
+using DTOs = ISI.Extensions.S3.DataTransferObjects.S3BlobClient;
 
 namespace ISI.Extensions.S3
 {
@@ -35,18 +35,30 @@ namespace ISI.Extensions.S3
 			{
 				var listObjectArgs = new Minio.DataModel.Args.ListObjectsArgs()
 					.WithBucket(BucketName)
-					.WithPrefix(request.Prefix);
+					.WithPrefix(request.Prefix)
+					.WithRecursive(request.DoRecursive);
 
-				var listObjectResponse = MinioClient.ListObjectsEnumAsync(listObjectArgs, cancellationToken);
-
-				var fileNames = new HashSet<string>(StringComparer.InvariantCulture);
+				var blobInfos = new List<BlobInfo>();
 
 				await foreach (var item in MinioClient.ListObjectsEnumAsync(listObjectArgs, cancellationToken).ConfigureAwait(false))
 				{
-					fileNames.Add(item.Key);
+					blobInfos.Add(new()
+					{
+						FullName = item.Key,
+						LastModified = item.LastModified,
+						ETag = item.ETag,
+						Size = item.Size,
+						IsDirectory = item.IsDir,
+						VersionId = item.VersionId,
+						ContentType = item.ContentType,
+						Expires = item.Expires,
+						UserMetadata = item.UserMetadata.ToNullCheckedDictionary(keyValue => keyValue.Key, keyValue => keyValue.Value, NullCheckDictionaryResult.Empty),
+						IsLatest = item.IsLatest,
+						LastModifiedDateTime = item.LastModifiedDateTime,
+					});
 				}
 
-				response.FileNames = fileNames.ToArray();
+				response.BlobInfos = blobInfos.ToArray();
 			}
 			catch
 			{

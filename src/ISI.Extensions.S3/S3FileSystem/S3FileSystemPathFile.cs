@@ -21,10 +21,13 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.S3.S3FileSystem
 {
-	public class S3FileSystemPathFile : UnixFileSystem.UnixFileSystemPathFile, IS3FileSystemPath
+	public class S3FileSystemPathFile : S3FileSystemPath, IS3FileSystemPathFile
 	{
 		public override string Schema => S3FileSystemProvider._schema;
 		public override string DirectorySeparator => S3FileSystemProvider._directorySeparator;
+
+		public DateTime? ModifiedDateTime { get; protected set; }
+		public long? Size { get; protected set; }
 
 		public override string ToString() => $"S3 File {base.ToString()}";
 
@@ -32,17 +35,39 @@ namespace ISI.Extensions.S3.S3FileSystem
 		{
 			return new S3FileSystemPathFile()
 			{
-				Server = Server,
-				UserName = UserName,
-				Password = Password,
+				EndpointUrl = EndpointUrl,
+				AccessKey = AccessKey,
+				SecretKey = SecretKey,
+				BucketName = BucketName,
 				Directory = Directory,
 				PathName = PathName,
-				ModifiedDateTime = ModifiedDateTime,
-				Size = Size,
 			};
 		}
 
-		public override FileSystem.IFileSystemPathDirectory GetParentFileSystemPathDirectory() => GetParentFileSystemPathDirectory<S3FileSystemPathDirectory>();
+		public override FileSystem.IFileSystemPathDirectory GetParentFileSystemPathDirectory()
+		{
+			var fileSystemPathDirectory = new S3FileSystemPathDirectory();
+
+			var lastDirectorySeparatorIndex = Directory.LastIndexOf(DirectorySeparator, StringComparison.InvariantCultureIgnoreCase);
+			var directory = (lastDirectorySeparatorIndex > 0 ? Directory.Substring(0, lastDirectorySeparatorIndex) : string.Empty);
+			var pathName = (lastDirectorySeparatorIndex > 0 ? Directory.Substring(lastDirectorySeparatorIndex + DirectorySeparator.Length) : Directory);
+
+			fileSystemPathDirectory.SetValues(EndpointUrl, AccessKey, SecretKey, BucketName, directory, pathName);
+
+			return fileSystemPathDirectory;
+		}
+
+		public void SetValues(string endpointurl, string accessKey, string secretkey, string bucketName, string directory, string pathName, DateTime? modifiedDateTime, long? size)
+		{
+			EndpointUrl = endpointurl;
+			AccessKey = accessKey;
+			SecretKey = secretkey;
+			BucketName = bucketName;
+			Directory = directory;
+			PathName = pathName;
+			ModifiedDateTime = modifiedDateTime;
+			Size = size;
+		}
 	}
 }
 

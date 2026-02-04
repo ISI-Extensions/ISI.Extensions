@@ -25,5 +25,6 @@ namespace ISI.Extensions.S3.DataTransferObjects.S3BlobClient
 	public class ListFilesRequest
 	{
 		public string Prefix { get; set; }
+		public bool DoRecursive { get; set; }
 	}
 }

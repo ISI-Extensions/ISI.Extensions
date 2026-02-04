@@ -24,6 +24,6 @@ namespace ISI.Extensions.S3.DataTransferObjects.S3BlobClient
 {
 	public class ListFilesResponse
 	{
-		public string[] FileNames { get; set; }
+		public BlobInfo[] BlobInfos { get; set; }
 	}
 }

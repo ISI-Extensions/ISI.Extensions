@@ -12,13 +12,14 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using SharpCompress.Writers;
 using DTOs = ISI.Extensions.Git.DataTransferObjects.BackupHelper;
 
 namespace ISI.Extensions.Git
@@ -116,31 +117,70 @@ namespace ISI.Extensions.Git
 
 					if (pullRepositoryResponse.ExitCode == 0)
 					{
-						var bundleFullName = $"\"{System.IO.Path.Combine(tempDirectory.FullName, $"{request.RepositoryKey}.bundle")}\"";
-
-						if (request is DTOs.DumpRepositoryFileNameRequest dumpRepositoryFileNameRequest)
+						switch (request.ExportFormat)
 						{
-							bundleFullName = dumpRepositoryFileNameRequest.DumpFullName;
-						}
-
-						var bundleRepositoryResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-						{
-							Logger = logger,
-							ProcessExeFullName = "git",
-							Arguments = ["-C", repositoryDirectory, "bundle", "create", bundleFullName, "--all"],
-						});
-
-						if (bundleRepositoryResponse.ExitCode == 0)
-						{
-							if (request is DTOs.DumpRepositoryStreamRequest dumpRepositoryStreamRequest)
-							{
-								using (var dumpStream = System.IO.File.OpenRead(bundleFullName))
+							case ExportFormat.Bundle:
 								{
-									dumpStream.CopyTo(dumpRepositoryStreamRequest.Stream);
-								}
-							}
+									var bundleFullName = $"\"{System.IO.Path.Combine(tempDirectory.FullName, $"{request.RepositoryKey}.bundle")}\"";
 
-							response.Success = true;
+									if (request is DTOs.DumpRepositoryFileNameRequest dumpRepositoryFileNameRequest)
+									{
+										bundleFullName = dumpRepositoryFileNameRequest.DumpFullName;
+									}
+
+									var bundleRepositoryResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+									{
+										Logger = logger,
+										ProcessExeFullName = "git",
+										Arguments = ["-C", repositoryDirectory, "bundle", "create", bundleFullName, "--all"],
+									});
+
+									if (bundleRepositoryResponse.ExitCode == 0)
+									{
+										if (request is DTOs.DumpRepositoryStreamRequest dumpRepositoryStreamRequest)
+										{
+											using (var dumpStream = System.IO.File.OpenRead(bundleFullName))
+											{
+												dumpStream.CopyTo(dumpRepositoryStreamRequest.Stream);
+											}
+										}
+
+										response.Success = true;
+									}
+								}
+								break;
+
+							case ExportFormat.TarGz:
+								{
+									var tarGzFullName = $"\"{System.IO.Path.Combine(tempDirectory.FullName, $"{request.RepositoryKey}.tar.gz")}\"";
+
+									if (request is DTOs.DumpRepositoryFileNameRequest dumpRepositoryFileNameRequest)
+									{
+										tarGzFullName = dumpRepositoryFileNameRequest.DumpFullName;
+									}
+
+									using (var compressedFileStream = System.IO.File.Create(tarGzFullName))
+									{
+										using (var writer = SharpCompress.Writers.WriterFactory.Open(compressedFileStream, SharpCompress.Common.ArchiveType.Tar, new SharpCompress.Writers.WriterOptions(SharpCompress.Common.CompressionType.GZip)))
+										{
+											writer.WriteAll(repositoryDirectory, "*", System.IO.SearchOption.AllDirectories);
+										}
+									}
+
+									if (request is DTOs.DumpRepositoryStreamRequest dumpRepositoryStreamRequest)
+									{
+										using (var dumpStream = System.IO.File.OpenRead(tarGzFullName))
+										{
+											dumpStream.CopyTo(dumpRepositoryStreamRequest.Stream);
+										}
+									}
+
+									response.Success = true;
+								}
+								break;
+
+							default:
+								throw new ArgumentOutOfRangeException();
 						}
 					}
 				}

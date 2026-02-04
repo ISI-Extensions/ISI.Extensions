@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2026, Integrated Solutions, Inc.
 All rights reserved.
@@ -12,43 +12,19 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Git.DataTransferObjects.BackupHelper
+namespace ISI.Extensions.Git
 {
-	public interface IDumpRepositoryRequest
-	{
-		ISI.Extensions.IStatusTracker StatusTracker { get; set; }
-		DateTime? ExecutedDateTimeUtc { get; set; }
-		string RepositoryKey { get; set; }
-
-		ISI.Extensions.Git.ExportFormat ExportFormat { get; set; }
-	}
-
-	public class DumpRepositoryStreamRequest : IDumpRepositoryRequest
-	{
-		public ISI.Extensions.IStatusTracker StatusTracker { get; set; }
-		public DateTime? ExecutedDateTimeUtc { get; set; }
-		public string RepositoryKey { get; set; }
-
-		public ISI.Extensions.Git.ExportFormat ExportFormat { get; set; } = ISI.Extensions.Git.ExportFormat.Bundle;
-
-		public System.IO.Stream Stream { get; set; }
-	}
-
-	public class DumpRepositoryFileNameRequest : IDumpRepositoryRequest
-	{
-		public ISI.Extensions.IStatusTracker StatusTracker { get; set; }
-		public DateTime? ExecutedDateTimeUtc { get; set; }
-		public string RepositoryKey { get; set; }
-
-		public ISI.Extensions.Git.ExportFormat ExportFormat { get; set; } = ISI.Extensions.Git.ExportFormat.Bundle;
-
-		public string DumpFullName { get; set; }
-	}
+  public enum ExportFormat
+  {
+	  [ISI.Extensions.EnumGuid("8906fe78-25ba-4550-bb98-826753b7f7cc", "Bundle", "bundle")] Bundle = 0,
+	  [ISI.Extensions.EnumGuid("166672f1-3a27-4d2a-8019-a2819f1fc507", "TarGz", "tar.gz")] TarGz = 1,
+  }
 }

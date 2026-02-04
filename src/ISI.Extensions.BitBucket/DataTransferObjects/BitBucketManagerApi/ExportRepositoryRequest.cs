@@ -28,6 +28,8 @@ namespace ISI.Extensions.BitBucket.DataTransferObjects.BitBucketManagerApi
 		public string Workspace { get; set; }
 		public string RepositoryKey { get; set; }
 
+		public ISI.Extensions.Git.ExportFormat ExportFormat { get; set; } = ISI.Extensions.Git.ExportFormat.Bundle;
+
 		public System.IO.Stream DownloadStream { get; set; }
 
 		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }

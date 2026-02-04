@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.BackupAgent
+namespace ISI.Extensions.Backup
 {
 	public partial class BackupAgent
 	{

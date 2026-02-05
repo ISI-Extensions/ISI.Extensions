@@ -42,7 +42,7 @@ namespace ISI.Extensions.Aspose
 				{
 					var pdfFieldInfo = new ISI.Extensions.Documents.Pdf.PdfFieldInfo()
 					{
-						FieldName = field.Name,
+						FieldName = field.FullName,
 						Contents = field.Contents,
 					};
 

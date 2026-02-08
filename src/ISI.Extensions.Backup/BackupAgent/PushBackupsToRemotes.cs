@@ -24,49 +24,63 @@ namespace ISI.Extensions.Backup
 				{
 					if (string.Equals(backupsExtension, ".gz", StringComparison.InvariantCultureIgnoreCase))
 					{
-						var compressedFullName = $"{exportFullName}.gz";
-
-						logger.LogInformation($"Compressing backup to {compressedFullName}");
-
-						using (var uncompressedFileStream = System.IO.File.OpenRead(exportFullName))
+						if (exportFullName.EndsWith(".gz", StringComparison.InvariantCultureIgnoreCase))
 						{
-							using (var compressedFileStream = System.IO.File.Create(compressedFullName))
+							compressedBackups.Add(backupsExtension, exportFullName);
+						}
+						else
+						{
+							var compressedFullName = $"{exportFullName}.gz";
+
+							logger.LogInformation($"Compressing backup to {compressedFullName}");
+
+							using (var uncompressedFileStream = System.IO.File.OpenRead(exportFullName))
 							{
-								using (var compressionStream = new System.IO.Compression.GZipStream(compressedFileStream, System.IO.Compression.CompressionMode.Compress))
+								using (var compressedFileStream = System.IO.File.Create(compressedFullName))
 								{
-									uncompressedFileStream.CopyTo(compressionStream);
+									using (var compressionStream = new System.IO.Compression.GZipStream(compressedFileStream, System.IO.Compression.CompressionMode.Compress))
+									{
+										uncompressedFileStream.CopyTo(compressionStream);
+									}
 								}
 							}
-						}
 
-						compressedBackups.Add(backupsExtension, compressedFullName);
+							compressedBackups.Add(backupsExtension, compressedFullName);
+						}
 					}
 					else if (string.Equals(backupsExtension, ".lz", StringComparison.InvariantCultureIgnoreCase))
 					{
-						var compressedFullName = $"{exportFullName}.lz";
-
-						logger.LogInformation($"Compressing backup to {compressedFullName}");
-
-						using (var uncompressedFileStream = System.IO.File.OpenRead(exportFullName))
+						if (exportFullName.EndsWith(".lz", StringComparison.InvariantCultureIgnoreCase))
 						{
-							using (var compressedFileStream = System.IO.File.Create(compressedFullName))
-							{
-								var tarWriterOptions = new SharpCompress.Writers.Tar.TarWriterOptions(SharpCompress.Common.CompressionType.LZip, true)
-								{
-									ArchiveEncoding = new()
-									{
-										Default = Encoding.UTF8,
-									},
-								};
+							compressedBackups.Add(backupsExtension, exportFullName);
+						}
+						else
+						{
+							var compressedFullName = $"{exportFullName}.lz";
 
-								using (var tarWriter = new SharpCompress.Writers.Tar.TarWriter(compressedFileStream, tarWriterOptions))
+							logger.LogInformation($"Compressing backup to {compressedFullName}");
+
+							using (var uncompressedFileStream = System.IO.File.OpenRead(exportFullName))
+							{
+								using (var compressedFileStream = System.IO.File.Create(compressedFullName))
 								{
-									tarWriter.Write(System.IO.Path.GetFileName(exportFullName), uncompressedFileStream, null);
+									var tarWriterOptions = new SharpCompress.Writers.Tar.TarWriterOptions(SharpCompress.Common.CompressionType.LZip, true)
+									{
+										ArchiveEncoding = new()
+										{
+											Default = Encoding.UTF8,
+										},
+									};
+
+									using (var tarWriter = new SharpCompress.Writers.Tar.TarWriter(compressedFileStream, tarWriterOptions))
+									{
+										tarWriter.Write(System.IO.Path.GetFileName(exportFullName), uncompressedFileStream, null);
+									}
 								}
 							}
-						}
 
-						compressedBackups.Add(backupsExtension, compressedFullName);
+							compressedBackups.Add(backupsExtension, compressedFullName);
+						}
 					}
 				}
 

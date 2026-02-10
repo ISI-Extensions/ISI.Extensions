@@ -17,7 +17,7 @@
 	<ItemGroup>
 		<PackageReference Update="NETStandard.Library" Version="2.0.3" />
 		<PackageReference Include="AWSSDK.Route53" Version="4.0.8.9" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>

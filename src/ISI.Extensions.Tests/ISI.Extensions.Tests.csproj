@@ -107,9 +107,6 @@
 		<ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-	</ItemGroup>
-	<ItemGroup>
 		<None Remove="appsettings.json" />
 		<None Remove="appsettings.ronmuth.json" />
 		<None Remove="C:\Users\ron.muth\.nuget\packages\nunit3testadapter\6.1.0\build\net8.0\Microsoft.Extensions.DependencyModel.dll" />

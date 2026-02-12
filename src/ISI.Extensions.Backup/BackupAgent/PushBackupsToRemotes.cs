@@ -66,7 +66,7 @@ namespace ISI.Extensions.Backup
 								{
 									var tarWriterOptions = new SharpCompress.Writers.Tar.TarWriterOptions(SharpCompress.Common.CompressionType.LZip, true)
 									{
-										ArchiveEncoding = new()
+										ArchiveEncoding = new SharpCompress.Common.ArchiveEncoding()
 										{
 											Default = Encoding.UTF8,
 										},

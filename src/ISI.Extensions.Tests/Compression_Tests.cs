@@ -123,48 +123,5 @@ namespace ISI.Extensions.Tests
 				fileStreams.Add(sourceFileUrl, stream, true, null);
 			}
 		}
-
-		[Test]
-		public void lz_Test()
-		{
-			var uncompressedFullName = @"E:\ISI\ISI.Identity.20240420.205134049.bak";
-
-			var compressedFullName = $"{uncompressedFullName}.tar.lz";
-
-			using (var compressedFileStream = System.IO.File.Create(compressedFullName))
-			{
-				using (var writer = global::SharpCompress.Writers.WriterFactory.Open(compressedFileStream, global::SharpCompress.Common.ArchiveType.Tar, global::SharpCompress.Common.CompressionType.LZip))
-				{
-					using (var uncompressedFileStream = System.IO.File.OpenRead(uncompressedFullName))
-					{
-						writer.Write(System.IO.Path.GetFileName(uncompressedFullName), uncompressedFileStream, null);
-					}
-				}
-			}
-
-			var extractDirectoryFullName = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(uncompressedFullName), System.IO.Path.GetFileNameWithoutExtension(uncompressedFullName));
-			System.IO.Directory.CreateDirectory(extractDirectoryFullName);
-			using (var compressedFileStream = System.IO.File.OpenRead(compressedFullName))
-			{
-				using (var reader = global::SharpCompress.Readers.ReaderFactory.Open(compressedFileStream))
-				{
-					while (reader.MoveToNextEntry())
-					{
-						if (!reader.Entry.IsDirectory)
-						{
-							using (var entryStream = reader.OpenEntryStream())
-							{
-								var extractFullName = System.IO.Path.Combine(extractDirectoryFullName, System.IO.Path.GetFileName(reader.Entry.Key));
-
-								using (var extractFileStream = System.IO.File.Create(extractFullName))
-								{
-									entryStream.CopyTo(extractFileStream);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
 	}
 }

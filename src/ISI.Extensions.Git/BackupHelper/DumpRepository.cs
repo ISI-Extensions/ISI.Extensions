@@ -161,7 +161,7 @@ namespace ISI.Extensions.Git
 
 									using (var compressedFileStream = System.IO.File.Create(tarGzFullName))
 									{
-										using (var writer = SharpCompress.Writers.WriterFactory.Open(compressedFileStream, SharpCompress.Common.ArchiveType.Tar, new SharpCompress.Writers.WriterOptions(SharpCompress.Common.CompressionType.GZip)))
+										using (var writer = SharpCompress.Writers.WriterFactory.OpenWriter(compressedFileStream, SharpCompress.Common.ArchiveType.Tar, new SharpCompress.Writers.WriterOptions(SharpCompress.Common.CompressionType.GZip)))
 										{
 											writer.WriteAll(repositoryDirectory, "*", System.IO.SearchOption.AllDirectories);
 										}

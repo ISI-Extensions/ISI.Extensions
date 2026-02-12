@@ -49,7 +49,7 @@ namespace ISI.Extensions.SharpCompress
 			if (archiveFileFilter(archiveFileName))
 			{
 				archiveStream.Rewind();
-				using (var reader = global::SharpCompress.Readers.ReaderFactory.Open(archiveStream))
+				using (var reader = global::SharpCompress.Readers.ReaderFactory.OpenReader(archiveStream))
 				{
 					while (reader.MoveToNextEntry())
 					{

@@ -48,7 +48,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 				applicationBuilder.UseStaticFiles(new StaticFileOptions()
 				{
 					FileProvider = virtualFileVolumesFileProvider,
-					RequestPath = virtualFileVolume.PathPrefix,
+					RequestPath = $"/{virtualFileVolume.PathPrefix}",
 				});
 			}
 

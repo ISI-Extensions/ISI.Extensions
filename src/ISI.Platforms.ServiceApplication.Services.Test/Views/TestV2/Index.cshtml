@@ -1,0 +1,21 @@
+@using ISI.Extensions.AspNetCore.Extensions
+@model ISI.Platforms.ServiceApplication.Services.Test.Models.TestV2.IndexModel
+
+@{
+	Model.SetTitle("Test V2");
+	Layout = ISI.Platforms.ServiceApplication.Services.Test.T4Files.Views.TestV2._Layout_cshtml;
+}
+
+@section StyleSheetIncludes {
+	@Html.AddStyleSheet(ISI.Platforms.ServiceApplication.Services.Test.T4Links.wwwroot.StyleSheets.TestV2.Index_css)
+}
+
+@section JavaScriptIncludes {
+	@Html.AddJavaScript(ISI.Platforms.ServiceApplication.Services.Test.T4Links.wwwroot.JavaScripts.TestV2.Index_js)
+}
+
+@section JavaScriptContent {
+}
+
+
+<h3>Hello V2 Embedded Test</h3>

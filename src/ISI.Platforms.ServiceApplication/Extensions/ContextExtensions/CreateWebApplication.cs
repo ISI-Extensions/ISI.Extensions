@@ -105,7 +105,10 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 					.AddControllersWithViews()
 					.AddApplicationPart(context.RootAssembly)
 					.AddISIExtensionsAspNetCore()
-					//.AddRazorRuntimeCompilation(options => options.FileProviders.Add(new ISI.Extensions.VirtualFileVolumesFileProvider()))
+					.AddRazorRuntimeCompilation(options =>
+					{
+						options.FileProviders.Add(new ISI.Extensions.VirtualFileVolumesFileProvider());
+					})
 					.AddNewtonsoftJson(options =>
 					{
 						options.SerializerSettings.Converters = ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer.JsonConverters();

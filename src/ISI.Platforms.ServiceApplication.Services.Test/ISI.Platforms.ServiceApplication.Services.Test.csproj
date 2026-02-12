@@ -1,19 +1,55 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+	  <TargetFramework>net10.0</TargetFramework>
     <Deterministic>false</Deterministic>
     <LangVersion>latest</LangVersion>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-  <ItemGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+	<ItemGroup>
     <Compile Include="..\ISI.Extensions.AssemblyInfo.cs" Link="Properties\ISI.Extensions.AssemblyInfo.cs" />
     <Compile Include="..\ISI.Extensions.Version.cs" Link="Properties\ISI.Extensions.Version.cs" />
     <None Include="..\ISI.Extensions.licenseheader" Link="ISI.Extensions.licenseheader" />
   </ItemGroup>
-  <ItemGroup>
+
+	<ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.3" />
   </ItemGroup>
-  <ItemGroup>
+  
+	<ItemGroup>
+    <ProjectReference Include="..\ISI.Extensions.AspNetCore\ISI.Extensions.AspNetCore.csproj" />
     <ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />
   </ItemGroup>
+
+	<ItemGroup>
+		<None Remove="wwwroot\**\*.*" />
+		<None Remove="Views\**\*.*" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="wwwroot\**\*.*" />
+		<EmbeddedResource Include="Views\**\*.*" />
+	</ItemGroup>
+  
+	<ItemGroup>
+	  <None Update="T4LocalContent\T4LocalContent.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	    <LastGenOutput>T4LocalContent.generatedcode.cs</LastGenOutput>
+	  </None>
+	</ItemGroup>
+  
+	<ItemGroup>
+	  <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+	</ItemGroup>
+  
+	<ItemGroup>
+	  <Compile Update="T4LocalContent\T4LocalContent.generatedcode.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>T4LocalContent.tt</DependentUpon>
+	  </Compile>
+	</ItemGroup>
 </Project>

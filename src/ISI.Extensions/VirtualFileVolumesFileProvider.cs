@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +32,7 @@ namespace ISI.Extensions
 
 			var embeddedVolumeNamespace = resourceAssembly.FullName.Split(new[] { ',' }).First();
 
-			var pathPrefix = FormatPathPrefix(embeddedVolumeNamespace); //ISI.Extensions.Configuration.GetUrlRoot(typeToFindResourceAssembly);
+			var pathPrefix = FormatPathPrefix(embeddedVolumeNamespace);
 
 			if (!_virtualFileVolumes.ContainsKey(pathPrefix))
 			{
@@ -51,17 +51,17 @@ namespace ISI.Extensions
 
 		protected static string FormatPathPrefix(string embeddedVolumeNamespace)
 		{
-			return string.Format("~{0}{1}{0}", EmbeddedVolume.DirectorySeparator, embeddedVolumeNamespace);
+			return string.Format("{0}{1}{0}", EmbeddedVolume.DirectorySeparator, embeddedVolumeNamespace);
 		}
 
 		protected static (string PathPrefix, string ResourcePath) ParseSubpath(string subpath)
 		{
-			if (subpath.StartsWith("~"))
+			var pieces = subpath.Substring(1).Split([EmbeddedVolume.DirectorySeparator], StringSplitOptions.RemoveEmptyEntries).ToList();
+
+			var pathPrefix = FormatPathPrefix(pieces.First()); //ISI.Extensions.Configuration.GetUrlRoot(typeToFindResourceAssembly);
+
+			if (_virtualFileVolumes.ContainsKey(pathPrefix))
 			{
-				var pieces = subpath.Substring(1).Split([EmbeddedVolume.DirectorySeparator], StringSplitOptions.RemoveEmptyEntries).ToList();
-
-				var pathPrefix = FormatPathPrefix(pieces.First()); //ISI.Extensions.Configuration.GetUrlRoot(typeToFindResourceAssembly);
-
 				pieces.RemoveAt(0);
 
 				var path = string.Join(EmbeddedVolume.DirectorySeparator, pieces);
@@ -73,13 +73,6 @@ namespace ISI.Extensions
 
 			return (PathPrefix: string.Empty, ResourcePath: string.Empty);
 		}
-		
-
-
-
-
-
-
 
 		public static string GetEmbeddedResourceName(string fileName, bool isDirectoryName = false)
 		{
@@ -113,22 +106,7 @@ namespace ISI.Extensions
 
 			return fileName.ToLower();
 		}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		
 		public Microsoft.Extensions.FileProviders.IFileInfo GetFileInfo(string subpath)
 		{
 			var parsedSubpath = ParseSubpath(subpath);

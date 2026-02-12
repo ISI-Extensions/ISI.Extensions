@@ -1,0 +1,22 @@
+@using ISI.Extensions.AspNetCore.Extensions
+@model ISI.Platforms.ServiceApplication.Services.Test.Models.TestV2.BaseModel
+
+@{
+	Layout = ISI.Platforms.ServiceApplication.Services.Test.T4Files.Views._Shared._Layout_cshtml;
+}
+
+@section StyleSheetIncludes {
+	@Html.AddStyleSheet(ISI.Platforms.ServiceApplication.Services.Test.T4Links.wwwroot.StyleSheets.TestV2._Layout_css)
+	@await RenderSectionAsync("StyleSheetIncludes", false)
+}
+
+@RenderBody()
+
+@section JavaScriptIncludes {
+	@Html.AddJavaScript(ISI.Platforms.ServiceApplication.Services.Test.T4Links.wwwroot.JavaScripts.TestV2._Layout_js)
+	@await RenderSectionAsync("JavaScriptIncludes", false)
+}
+
+@section JavaScriptContent {
+	@await RenderSectionAsync("JavaScriptContent", false)
+}

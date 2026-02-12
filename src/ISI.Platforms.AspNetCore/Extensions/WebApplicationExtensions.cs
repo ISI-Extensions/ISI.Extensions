@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 
@@ -44,6 +45,7 @@ namespace ISI.Platforms.AspNetCore.Extensions
 			//});
 
 			webApplication.UseStaticFiles();
+			//webApplication.UseVirtualFileVolumesFileProvider();
 
 			webApplication.UseRouting();
 

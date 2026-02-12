@@ -24,7 +24,7 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 {
 	public static class ServiceCollectionExtensions
 	{
-		public static void AddFileProviders(this Microsoft.Extensions.DependencyInjection.IServiceCollection services)
+		public static Microsoft.Extensions.DependencyInjection.IServiceCollection AddFileProviders(this Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
 			services.AddSingleton<Microsoft.Extensions.FileProviders.IFileProvider>(serviceProvider =>
 			{
@@ -37,6 +37,8 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 				
 				return new Microsoft.Extensions.FileProviders.CompositeFileProvider(serviceProvider.GetService<ISI.Extensions.VirtualFileVolumesFileProvider>(), fileProvider);
 			});
+
+			return services;
 		}
 	}
 }

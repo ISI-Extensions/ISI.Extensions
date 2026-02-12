@@ -1,0 +1,14 @@
+@using ISI.Extensions.AspNetCore.Extensions
+@model ISI.Platforms.ServiceApplication.Services.Test.Models.BaseModel
+
+
+
+	@Html.AddStyleSheet(ISI.Platforms.ServiceApplication.Services.Test.T4Links.wwwroot.StyleSheets._Shared._Layout_css)
+	@await RenderSectionAsync("StyleSheetIncludes", false)
+
+@RenderBody()
+
+	@Html.AddJavaScript(ISI.Platforms.ServiceApplication.Services.Test.T4Links.wwwroot.JavaScripts._Shared._Layout_js)
+	@await RenderSectionAsync("JavaScriptIncludes", false)
+
+	@await RenderSectionAsync("JavaScriptContent", false)

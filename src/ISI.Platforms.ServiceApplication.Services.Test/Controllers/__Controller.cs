@@ -16,43 +16,19 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+using ISI.Extensions.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.AspNetCore.Extensions
+namespace ISI.Platforms.ServiceApplication.Services.Test
 {
-	public static class WebApplicationExtensions
+	public abstract partial class Controller : ISI.Extensions.AspNetCore.Controller
 	{
-		public static Microsoft.AspNetCore.Builder.IApplicationBuilder UseHttpContextMiddleware(this Microsoft.AspNetCore.Builder.WebApplication webApplication)
+		protected Controller(
+			Microsoft.Extensions.Logging.ILogger logger)
+		: base(logger)
 		{
-			return webApplication.UseMiddleware<HttpContextMiddleware>();
-		}
-
-		public static Microsoft.AspNetCore.Builder.IApplicationBuilder UseHttpContextExceptionMiddleware(this Microsoft.AspNetCore.Builder.WebApplication webApplication)
-		{
-			return webApplication.UseMiddleware<HttpContextExceptionMiddleware>();
-		}
-
-		public static Microsoft.AspNetCore.Builder.IApplicationBuilder UseCors(this Microsoft.AspNetCore.Builder.WebApplication webApplication)
-		{
-			return webApplication.UseMiddleware<CorsMiddleware>();
-		}
-
-		public static Microsoft.AspNetCore.Builder.IApplicationBuilder UseVirtualFileVolumesFileProvider(this Microsoft.AspNetCore.Builder.WebApplication webApplication)
-		{
-			var virtualFileVolumesFileProvider = new VirtualFileVolumesFileProvider();
-
-			foreach (var virtualFileVolume in virtualFileVolumesFileProvider.VirtualFileVolumes)
-			{
-				webApplication.UseStaticFiles(new StaticFileOptions()
-				{
-					FileProvider = virtualFileVolumesFileProvider,
-					RequestPath = $"/{virtualFileVolume.PathPrefix}",
-				});
-			}
-
-			return webApplication;
 		}
 	}
 }

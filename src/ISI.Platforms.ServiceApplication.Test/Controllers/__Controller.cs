@@ -23,14 +23,12 @@ using Microsoft.Extensions.Logging;
 
 namespace ISI.Platforms.ServiceApplication.Test.Controllers
 {
-	public abstract partial class Controller : Microsoft.AspNetCore.Mvc.Controller
+	public abstract partial class Controller : ISI.Extensions.AspNetCore.Controller
 	{
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-
 		protected Controller(
 			Microsoft.Extensions.Logging.ILogger logger)
+		: base(logger)
 		{
-			Logger = logger;
 		}
 
 		protected Guid? GetUserUuid() => User?.Claims?.NullCheckedFirstOrDefault(claim => string.Equals(claim.Type, System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub, StringComparison.InvariantCultureIgnoreCase))?.Value?.ToGuidNullable();

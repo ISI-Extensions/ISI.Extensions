@@ -64,13 +64,13 @@ namespace ISI.Extensions.Backup
 							{
 								using (var compressedFileStream = System.IO.File.Create(compressedFullName))
 								{
-									var tarWriterOptions = new SharpCompress.Writers.Tar.TarWriterOptions(SharpCompress.Common.CompressionType.LZip, true)
-									{
-										ArchiveEncoding = new SharpCompress.Common.ArchiveEncoding()
-										{
-											Default = Encoding.UTF8,
-										},
-									};
+									var tarWriterOptions = new SharpCompress.Writers.Tar.TarWriterOptions(SharpCompress.Common.CompressionType.LZip, true);
+									//{
+									//	ArchiveEncoding = new SharpCompress.Common.ArchiveEncoding()
+									//	{
+									//		Default = Encoding.UTF8,
+									//	},
+									//};
 
 									using (var tarWriter = new SharpCompress.Writers.Tar.TarWriter(compressedFileStream, tarWriterOptions))
 									{

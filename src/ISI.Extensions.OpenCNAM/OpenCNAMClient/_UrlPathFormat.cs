@@ -27,7 +27,7 @@ namespace ISI.Extensions.OpenCNAM
 	{
 		private class UrlPathFormat
 		{
-			public static readonly string GetPhoneNumberInfo = "/v3/phone/{phoneNumber}";
+			public static readonly string GetPhoneNumberInfo = "/v3/phone/{phoneNumber}?account_sid={accountSid}&auth_token={authToken}&format=pbx&service_level=plus";
 		}
 	}
 }

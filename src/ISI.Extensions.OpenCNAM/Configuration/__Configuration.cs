@@ -27,7 +27,7 @@ namespace ISI.Extensions.OpenCNAM
 	{
 		public const string ConfigurationSectionName = "ISI.Extensions.OpenCNAM";
 
-		public string Url { get; set; }
+		public string Url { get; set; } = @"https://api.opencnam.com";
 		public string AccountSID { get; set; }
 		public string AuthToken { get; set; }
 	}

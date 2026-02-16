@@ -39,11 +39,9 @@ namespace ISI.Extensions.OpenCNAM
 			DateTimeStamper = dateTimeStamper;
 		}
 
-		public ISI.Extensions.WebClient.HeaderCollection GetHeaders()
+		public ISI.Extensions.WebClient.HeaderCollection GetHeaders(DTOs.IRequest request)
 		{
 			var headers = new ISI.Extensions.WebClient.HeaderCollection();
-
-			headers.AddBasicAuthentication(Configuration.AccountSID, Configuration.AuthToken);
 
 			return headers;
 		}

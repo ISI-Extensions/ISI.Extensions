@@ -21,8 +21,11 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.OpenCNAM.DataTransferObjects
 {
-	public class GetPhoneNumberInfoRequest
+	public class GetPhoneNumberInfoRequest : IRequest
 	{
+		public string AccountSID { get; set; }
+		public string AuthToken { get; set; }
+
 		public string PhoneNumber { get; set; }
 	}
 }

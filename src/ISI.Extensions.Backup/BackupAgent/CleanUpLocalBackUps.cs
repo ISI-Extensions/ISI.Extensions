@@ -14,7 +14,7 @@ namespace ISI.Extensions.Backup
 		{
 			foreach (var backupFileNamesFullName in System.IO.Directory.GetFiles(backupRepositoryDirectory, $"{backupFileNamesPrefix}.*.{backupFileNamesSuffix}"))
 			{
-				var backupFileNamesDateTime = System.IO.Path.GetFileName(backupFileNamesFullName).TrimStart($"{backupFileNamesPrefix}.").TrimEnd(backupFileNamesSuffix).ToDateTimeUtcNullable();
+				var backupFileNamesDateTime = System.IO.Path.GetFileName(backupFileNamesFullName).TrimStart(backupFileNamesPrefix).TrimEnd(backupFileNamesSuffix).Trim('.').ToDateTimeUtcNullable();
 
 				if (backupFileNamesDateTime.HasValue && (backupFileNamesDateTime <= fileNameDateTimeUtc - backupDirectoryRetention))
 				{

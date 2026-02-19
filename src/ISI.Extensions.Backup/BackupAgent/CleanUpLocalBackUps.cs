@@ -10,28 +10,39 @@ namespace ISI.Extensions.Backup
 {
 	public partial class BackupAgent
 	{
-		public void CleanUpLocalBackUps(Microsoft.Extensions.Logging.ILogger logger, string backupRepositoryDirectory, string backupFileNamesPrefix, string backupFileNamesSuffix, DateTime fileNameDateTimeUtc, TimeSpan backupDirectoryRetention)
+		public void CleanUpLocalBackUps(Microsoft.Extensions.Logging.ILogger logger, string backupRepositoryDirectory, string backupFileNamesPrefix, string backupFileNamesSuffix, DateTime fileNameDateTimeUtc, int? backupDirectoryRetentionInDays)
 		{
-			foreach (var backupFileNamesFullName in System.IO.Directory.GetFiles(backupRepositoryDirectory, $"{backupFileNamesPrefix}.*.{backupFileNamesSuffix}"))
+			if (backupDirectoryRetentionInDays.HasValue)
 			{
-				var backupFileNamesDateTime = System.IO.Path.GetFileName(backupFileNamesFullName).TrimStart(backupFileNamesPrefix).TrimEnd(backupFileNamesSuffix).Trim('.').ToDateTimeUtcNullable();
+				CleanUpLocalBackUps(logger, backupRepositoryDirectory, backupFileNamesPrefix, backupFileNamesSuffix, fileNameDateTimeUtc, TimeSpan.FromDays(backupDirectoryRetentionInDays.Value));
+			}
+		}
 
-				if (backupFileNamesDateTime.HasValue && (backupFileNamesDateTime <= fileNameDateTimeUtc - backupDirectoryRetention))
+		public void CleanUpLocalBackUps(Microsoft.Extensions.Logging.ILogger logger, string backupRepositoryDirectory, string backupFileNamesPrefix, string backupFileNamesSuffix, DateTime fileNameDateTimeUtc, TimeSpan? backupDirectoryRetention)
+		{
+			if (backupDirectoryRetention.HasValue)
+			{
+				foreach (var backupFileNamesFullName in System.IO.Directory.GetFiles(backupRepositoryDirectory, $"{backupFileNamesPrefix}.*.{backupFileNamesSuffix}"))
 				{
-					var backupFileNames = System.IO.File.ReadAllLines(backupFileNamesFullName);
+					var backupFileNamesDateTime = System.IO.Path.GetFileName(backupFileNamesFullName).TrimStart(backupFileNamesPrefix).TrimEnd(backupFileNamesSuffix).Trim('.').ToDateTimeUtcNullable();
 
-					foreach (var backupFileName in backupFileNames)
+					if (backupFileNamesDateTime.HasValue && (backupFileNamesDateTime <= fileNameDateTimeUtc - backupDirectoryRetention))
 					{
-						var backupFullName = System.IO.Path.Combine(backupRepositoryDirectory, backupFileName);
+						var backupFileNames = System.IO.File.ReadAllLines(backupFileNamesFullName);
 
-						if (System.IO.File.Exists(backupFullName))
+						foreach (var backupFileName in backupFileNames)
 						{
-							System.IO.File.Delete(backupFullName);
-							logger.LogInformation($"Deleted backup {backupFullName}");
-						}
-					}
+							var backupFullName = System.IO.Path.Combine(backupRepositoryDirectory, backupFileName);
 
-					System.IO.File.Delete(backupFileNamesFullName);
+							if (System.IO.File.Exists(backupFullName))
+							{
+								System.IO.File.Delete(backupFullName);
+								logger.LogInformation($"Deleted backup {backupFullName}");
+							}
+						}
+
+						System.IO.File.Delete(backupFileNamesFullName);
+					}
 				}
 			}
 		}

@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions
 {
@@ -36,7 +37,9 @@ namespace ISI.Extensions
 
 			if (!_virtualFileVolumes.ContainsKey(pathPrefix))
 			{
-				_virtualFileVolumes.Add(pathPrefix, new EmbeddedVolume(resourceAssembly, embeddedVolumeNamespace));
+				var embeddedVolumeAssemblyNameLength = embeddedVolumeNamespace.Length + 1;
+
+				_virtualFileVolumes.Add(pathPrefix, new EmbeddedVolume(resourceAssembly, embeddedVolumeNamespace, resourceName => resourceName.Substring(embeddedVolumeAssemblyNameLength).TrimStart("wwwroot.", StringComparison.InvariantCultureIgnoreCase)));
 			}
 		}
 

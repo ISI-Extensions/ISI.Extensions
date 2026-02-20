@@ -45,7 +45,7 @@ namespace ISI.Platforms.AspNetCore.Extensions
 			//});
 
 			webApplication.UseStaticFiles();
-			//webApplication.UseVirtualFileVolumesFileProvider();
+			webApplication.UseVirtualFileVolumesFileProvider();
 
 			webApplication.UseRouting();
 

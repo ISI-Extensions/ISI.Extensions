@@ -12,47 +12,45 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Primitives;
+using ISI.Extensions;
 
 namespace ISI.Extensions
 {
-	public delegate string GenerateEmbeddedVolumeFileKeyDelegate(string resourceName);
-
-	public class EmbeddedVolume : IVirtualFileVolume
+	public class VirtualFileVolumeFileProvider : Microsoft.Extensions.FileProviders.IFileProvider
 	{
-		public const string DirectorySeparator = "/";
+		public IVirtualFileVolume VirtualFileVolume { get; }
 
-		public string PathPrefix { get; }
-
-		protected IDictionary<string, EmbeddedVolumeFileInfo> EmbeddedVolumeFileInfos { get; } = new System.Collections.Concurrent.ConcurrentDictionary<string, EmbeddedVolumeFileInfo>(StringComparer.InvariantCultureIgnoreCase);
-
-		public EmbeddedVolume(System.Reflection.Assembly resourceAssembly, string embeddedVolumeNamespace, GenerateEmbeddedVolumeFileKeyDelegate generateEmbeddedVolumeFileKey = null)
+		public VirtualFileVolumeFileProvider(
+			IVirtualFileVolume virtualFileVolume)
 		{
-			PathPrefix = embeddedVolumeNamespace;
-
-			var embeddedVolumeAssemblyNameLength = PathPrefix.Length + 1;
-
-			generateEmbeddedVolumeFileKey ??= resourceName => resourceName.Substring(embeddedVolumeAssemblyNameLength);
-
-			var resourceNames = resourceAssembly.GetManifestResourceNames().OrderBy(resource => resource.ToLower());
-			foreach (var resourceName in resourceNames)
-			{
-				EmbeddedVolumeFileInfos.Add(generateEmbeddedVolumeFileKey(resourceName), new(resourceAssembly, resourceName, null));
-			}
+			VirtualFileVolume = virtualFileVolume;
 		}
 
-		public IVirtualFileVolumeFileInfo GetFileInfo(string resourceName)
+		IDirectoryContents IFileProvider.GetDirectoryContents(string subpath)
 		{
-			if (EmbeddedVolumeFileInfos.TryGetValue(resourceName, out var fileInfo))
-			{
-				return fileInfo;
-			}
-
 			return null;
+		}
+
+		protected virtual string GetEmbeddedResourceName(string subpath)
+		{
+			return VirtualFileVolumesFileProvider.GetEmbeddedResourceName(subpath.Substring(1));
+		}
+
+		IFileInfo IFileProvider.GetFileInfo(string subpath)
+		{
+			return VirtualFileVolume.GetFileInfo(GetEmbeddedResourceName(subpath));
+		}
+
+		IChangeToken IFileProvider.Watch(string filter)
+		{
+			return Microsoft.Extensions.FileProviders.NullChangeToken.Singleton;
 		}
 	}
 }

@@ -27,7 +27,7 @@ namespace ISI.Extensions.StatusTrackers
 		public delegate string GetStatusTrackerFileNameDelegate(string statusTrackerKey, string fileNameExtension);
 		public delegate string GetStatusTrackerKeyValueFileNameDelegate(string statusTrackerKey, string key);
 
-		public class FileStatusTracker : IStatusTracker
+		public class FileStatusTracker : IStatusTrackerWithStatusTrackerKey
 		{
 			public string StatusTrackerKey { get; }
 			public event ISI.Extensions.StatusTrackers.OnStatusChange OnStatusChangeEvents;

@@ -68,6 +68,11 @@ namespace ISI.Extensions
 		void Finish(bool successful);
 	}
 
+	public interface IStatusTrackerWithStatusTrackerKey : IStatusTracker
+	{
+		string StatusTrackerKey { get; }
+	}
+
 	public interface IStatusTrackerLogEntry
 	{
 		DateTime DateTimeStamp { get; }

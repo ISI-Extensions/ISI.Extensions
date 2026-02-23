@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.XmlSerialization
 {
@@ -32,22 +33,92 @@ namespace ISI.Extensions.XmlSerialization
 
 		public object Deserialize(Type type, string serializedValue)
 		{
-			throw new NotImplementedException();
+			using (var stream = new System.IO.MemoryStream(Encoding.UTF8.GetBytes(serializedValue)))
+			{
+				return Deserialize(type, stream);
+			}
 		}
 
 		public object Deserialize(Type type, System.IO.Stream stream)
 		{
-			throw new NotImplementedException();
+			var xmlReaderSettings = new System.Xml.XmlReaderSettings();
+			xmlReaderSettings.IgnoreComments = true;
+			xmlReaderSettings.IgnoreWhitespace = true;
+
+			using (System.IO.TextReader textReader = new System.IO.StreamReader(stream))
+			{
+				using (var xmlTextReader = new System.Xml.XmlTextReader(textReader))
+				{
+					var xmlSerializer = new System.Xml.Serialization.XmlSerializer(type);
+					return xmlSerializer.Deserialize(xmlTextReader);
+				}
+			}
 		}
 
 		public string Serialize(Type type, object value, bool friendlyFormatted = false)
 		{
-			throw new NotImplementedException();
+			using (var memoryStream = new System.IO.MemoryStream())
+			{
+				Serialize(type, value, memoryStream, friendlyFormatted);
+
+				memoryStream.Rewind();
+
+				using (var stream = new System.IO.StreamReader(memoryStream))
+				{
+					return stream.ReadToEnd();
+				}
+			}
 		}
 
 		public void Serialize(Type type, object value, System.IO.Stream toStream, bool friendlyFormatted = false)
 		{
-			throw new NotImplementedException();
+			if (type.IsInterface) type = value.GetType();
+
+			var xmlSerializer = new System.Xml.Serialization.XmlSerializer(type);
+
+			bool showDeclaration = true;
+			var encoding = System.Text.Encoding.UTF8;
+
+			//if (showDeclaration)
+			//{
+			//	xmlSerializer.Serialize(outputStream, value);
+			//	outputStream.Flush();
+			//}
+			//else
+			//{
+			var xmlSerializerNamespaces = new System.Xml.Serialization.XmlSerializerNamespaces();
+			xmlSerializerNamespaces.Add(string.Empty, string.Empty);
+
+			xmlSerializer.Serialize(new XmlTextWriterFormatting(showDeclaration, (friendlyFormatted ? System.Xml.Formatting.Indented : System.Xml.Formatting.None), toStream, encoding), value, xmlSerializerNamespaces);
+
+			toStream.Flush();
+		}
+
+		public class XmlTextWriterFormatting : System.Xml.XmlTextWriter
+		{
+			public bool ShowDeclaration { get; private set; }
+
+			public XmlTextWriterFormatting(bool showDeclaration, System.Xml.Formatting formatting, System.IO.TextWriter textWriter) :
+				base(textWriter)
+			{
+				ShowDeclaration = showDeclaration;
+				Formatting = formatting;
+			}
+
+			public XmlTextWriterFormatting(bool showDeclaration, System.Xml.Formatting formatting, System.IO.Stream stream, Encoding encoding) :
+				base(stream, encoding)
+			{
+				ShowDeclaration = showDeclaration;
+				Formatting = formatting;
+			}
+
+			public override void WriteStartDocument()
+			{
+				if (ShowDeclaration)
+				{
+					base.WriteStartDocument();
+				}
+			}
 		}
 	}
 }

@@ -79,7 +79,8 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void CheckOutMissingRepositories_Tests()
 		{
-			var gitApi = new ISI.Extensions.Git.GitApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress));
+			var jsonSerializer = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.JsonSerialization.IJsonSerializer>();
+			var gitApi = new ISI.Extensions.Git.GitApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress), jsonSerializer);
 			var bitBucketManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.BitBucket.IBitBucketManagerApi>();
 
 			var repos = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);

@@ -23,7 +23,7 @@ using ISI.Extensions.Extensions;
 namespace ISI.Extensions.XmlSerialization
 {
 	[ISI.Extensions.TypeLocator(typeof(Serialization.ISerializer))]
-	public class XmlDataContractSerializer : Serialization.ISerializer
+	public class XmlDataContractSerializer : ISI.Extensions.XmlSerialization.IXmlSerializer, Serialization.ISerializer
 	{
 		public Serialization.SerializationFormat SerializationFormat => Serialization.SerializationFormat.Xml;
 
@@ -46,6 +46,7 @@ namespace ISI.Extensions.XmlSerialization
 				using (var xmlTextReader = new System.Xml.XmlTextReader(textReader))
 				{
 					var dataContractSerializer = new System.Runtime.Serialization.DataContractSerializer(type);
+
 					return dataContractSerializer.ReadObject(xmlTextReader);
 				}
 			}

@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 using DTOs = ISI.Extensions.Git.DataTransferObjects.GitApi;
 using SourceControlClientApiDTOs = ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi;
 
@@ -30,16 +31,19 @@ namespace ISI.Extensions.Git
 		public const string SourceControlTypeUuid = "2d545e80-bc15-4127-b8cd-cc0d12f8b0b8";
 
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
+		protected ISI.Extensions.JsonSerialization.IJsonSerializer JsonSerializer { get; }
 
 		public GitApi()
-			: this(null)
+			: this(null, null)
 		{
 		}
 
 		public GitApi(
-			Microsoft.Extensions.Logging.ILogger logger)
+			Microsoft.Extensions.Logging.ILogger logger,
+			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer)
 		{
 			Logger = logger ?? new ConsoleLogger();
+			JsonSerializer = jsonSerializer ?? ISI.Extensions.ServiceLocator.Current?.GetService<ISI.Extensions.JsonSerialization.IJsonSerializer>();
 		}
 
 		protected static bool? _gitIsInstalled { get; set; } = null;
@@ -204,6 +208,20 @@ namespace ISI.Extensions.Git
 			});
 
 			response.Success = apiResponse.Success;
+
+			return response;
+		}
+
+		SourceControlClientApiDTOs.GetWorkingCopyCommitInformationResponse ISI.Extensions.Scm.ISourceControlClientApi.GetWorkingCopyCommitInformation(SourceControlClientApiDTOs.GetWorkingCopyCommitInformationRequest request)
+		{
+			var response = new SourceControlClientApiDTOs.GetWorkingCopyCommitInformationResponse();
+
+			var apiResponse = GetWorkingCopyCommitInformation(new()
+			{
+				FullName = request.FullName,
+			});
+
+			response.WorkingCopyCommitInformation = apiResponse.WorkingCopyCommitInformation;
 
 			return response;
 		}

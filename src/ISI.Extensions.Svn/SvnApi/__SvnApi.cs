@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 using DTOs = ISI.Extensions.Svn.DataTransferObjects.SvnApi;
 using SourceControlClientApiDTOs = ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi;
 
@@ -30,16 +31,19 @@ namespace ISI.Extensions.Svn
 		public const string SourceControlTypeUuid = "6f5ddcfd-8678-441a-977e-a4f58415de5f";
 
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
+		protected ISI.Extensions.Serialization.ISerialization Serializer { get; }
 
 		public SvnApi()
-			: this(null)
+			: this(null, null)
 		{
 		}
 
 		public SvnApi(
-			Microsoft.Extensions.Logging.ILogger logger)
+			Microsoft.Extensions.Logging.ILogger logger,
+			ISI.Extensions.Serialization.ISerialization serializer)
 		{
 			Logger = logger ?? new ConsoleLogger();
+			Serializer = serializer ?? ISI.Extensions.ServiceLocator.Current?.GetService<ISI.Extensions.Serialization.ISerialization>();
 		}
 
 		protected static bool? _svnIsInstalled { get; set; } = null;
@@ -211,6 +215,20 @@ namespace ISI.Extensions.Svn
 			});
 
 			response.Success = apiResponse.Success;
+
+			return response;
+		}
+
+		SourceControlClientApiDTOs.GetWorkingCopyCommitInformationResponse ISI.Extensions.Scm.ISourceControlClientApi.GetWorkingCopyCommitInformation(SourceControlClientApiDTOs.GetWorkingCopyCommitInformationRequest request)
+		{
+			var response = new SourceControlClientApiDTOs.GetWorkingCopyCommitInformationResponse();
+
+			var apiResponse = GetWorkingCopyCommitInformation(new()
+			{
+				FullName = request.FullName,
+			});
+
+			response.WorkingCopyCommitInformation = apiResponse.WorkingCopyCommitInformation;
 
 			return response;
 		}

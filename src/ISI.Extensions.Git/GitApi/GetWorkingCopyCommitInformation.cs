@@ -33,27 +33,56 @@ namespace ISI.Extensions.Git
 
 			if (GitIsInstalled)
 			{
-				var arguments = new List<string>();
+				var rootFullName = (string)null;
 
-				arguments.Add("log");
-				arguments.Add("-1");
-				arguments.Add("--pretty=\"{'commit': '%H', 'author': '%an', 'email': '%ae', 'date': '%ai', 'message': '%s'}\"");
-				arguments.Add("--");
-				arguments.Add($"\"{request.FullName}\"");
-
-				var workingDirectory = System.IO.Directory.Exists(request.FullName) ? request.FullName : System.IO.Path.GetDirectoryName(request.FullName);
-
-				var gitResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
-					Logger = new NullLogger(),
-					ProcessExeFullName = "git",
-					Arguments = arguments.ToArray(),
-					WorkingDirectory = workingDirectory,
-				});
+					var arguments = new List<string>();
 
-				var serializableWorkingCopyCommitInformation = JsonSerializer.Deserialize<SerializableModels.WorkingCopyCommitInformation>(gitResponse.Output);
+					arguments.Add("rev-parse");
+					arguments.Add("--show-toplevel");
 
-				response.WorkingCopyCommitInformation = serializableWorkingCopyCommitInformation?.Export();
+					var gitResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+					{
+						Logger = new NullLogger(),
+						ProcessExeFullName = "git",
+						Arguments = arguments.ToArray(),
+						WorkingDirectory = System.IO.Path.GetFullPath(request.FullName),
+					});
+
+					rootFullName = (gitResponse.Output ?? string.Empty).Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(line => !string.IsNullOrWhiteSpace(line));
+				}
+				
+				{
+					var arguments = new List<string>();
+
+					arguments.Add("log");
+					arguments.Add("-1");
+					arguments.Add("--pretty=\"{'commit': '%H', 'author': '%an', 'email': '%ae', 'date': '%ai', 'message': '%s'}\"");
+					arguments.Add("--");
+					arguments.Add($"\"{request.FullName}\"");
+
+					var workingDirectory = System.IO.Directory.Exists(request.FullName) ? request.FullName : System.IO.Path.GetDirectoryName(request.FullName);
+
+					var gitResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+					{
+						Logger = new NullLogger(),
+						ProcessExeFullName = "git",
+						Arguments = arguments.ToArray(),
+						WorkingDirectory = workingDirectory,
+					});
+
+					var serializableWorkingCopyCommitInformation = JsonSerializer.Deserialize<SerializableModels.WorkingCopyCommitInformation>(gitResponse.Output);
+
+					response.WorkingCopyCommitInformation = new()
+					{
+						Path = ISI.Extensions.IO.Path.GetRelativePath(rootFullName, request.FullName),
+						CommitKey = serializableWorkingCopyCommitInformation?.CommitKey,
+						Author = serializableWorkingCopyCommitInformation?.Author,
+						AuthorEmail = serializableWorkingCopyCommitInformation?.AuthorEmail,
+						CommitDateTimeUtc = (serializableWorkingCopyCommitInformation?.CommitDateTimeUtc).ToDateTimeUtc(),
+						Message = serializableWorkingCopyCommitInformation?.Message,
+					};
+				}
 			}
 
 			return response;

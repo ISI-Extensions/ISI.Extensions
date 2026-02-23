@@ -12,18 +12,6 @@ namespace ISI.Extensions.Git.SerializableModels
 	[DataContract]
 	public class WorkingCopyCommitInformation
 	{
-		public LOCALENTITIES.WorkingCopyCommitInformation Export()
-		{
-			return new LOCALENTITIES.WorkingCopyCommitInformation()
-			{
-				CommitKey = CommitKey,
-				Author = Author,
-				AuthorEmail = AuthorEmail,
-				CommitDateTimeUtc = CommitDateTimeUtc.ToDateTimeUtcNullable(),
-				Message = Message,
-			};
-		}
-
 		[DataMember(Name = "commit", EmitDefaultValue = false)]
 		public string CommitKey { get; set; }
 

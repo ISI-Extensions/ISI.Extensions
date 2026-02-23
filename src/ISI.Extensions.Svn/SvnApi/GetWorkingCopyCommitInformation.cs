@@ -36,6 +36,7 @@ namespace ISI.Extensions.Svn
 				var workingDirectory = System.IO.Directory.Exists(request.FullName) ? request.FullName : System.IO.Path.GetDirectoryName(request.FullName);
 
 				var revision = (string)null;
+				var info = (SerializableModels.SvnCli.Info)null;
 
 				{
 					var arguments = new List<string>();
@@ -53,7 +54,7 @@ namespace ISI.Extensions.Svn
 						WorkingDirectory = workingDirectory,
 					});
 
-					var info = Serializer.Deserialize(typeof(SerializableModels.SvnCli.Info), svnResponse.Output) as SerializableModels.SvnCli.Info;
+					info = Serializer.Deserialize(typeof(SerializableModels.SvnCli.Info), svnResponse.Output) as SerializableModels.SvnCli.Info;
 
 					revision = info.Entries.NullCheckedFirstOrDefault()?.Commit?.Revision ?? string.Empty;
 				}
@@ -79,6 +80,7 @@ namespace ISI.Extensions.Svn
 
 					response.WorkingCopyCommitInformation = new()
 					{
+						Path = info.Entries.NullCheckedFirstOrDefault()?.RelativeUrl,
 						CommitKey = revision,
 						Author = log.LogEntry.Author,
 						//AuthorEmail = source.AuthorEmail,

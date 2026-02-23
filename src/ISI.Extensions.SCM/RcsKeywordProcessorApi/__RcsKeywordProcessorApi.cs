@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2026, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,18 +15,28 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.RcsKeywordProcessorApi;
 
 namespace ISI.Extensions.Scm
 {
-	public class WorkingCopyCommitInformation
+	public partial class RcsKeywordProcessorApi : IRcsKeywordProcessorApi
 	{
-		public string Path { get; set; }
-		public string CommitKey { get; set; }
-		public string Author { get; set; }
-		public string AuthorEmail { get; set; }
-		public DateTime? CommitDateTimeUtc { get; set; }
-		public string Message { get; set; }
+		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
+		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
+		protected ISI.Extensions.Scm.ISourceControlClientApi SourceControlClientApi { get; }
+
+		public RcsKeywordProcessorApi(
+			Microsoft.Extensions.Logging.ILogger logger,
+			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
+			ISI.Extensions.Scm.ISourceControlClientApi sourceControlClientApi)
+		{
+			Logger = logger;
+			DateTimeStamper = dateTimeStamper;
+			SourceControlClientApi = sourceControlClientApi;
+		}
 	}
 }

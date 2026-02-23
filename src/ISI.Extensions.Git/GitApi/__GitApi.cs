@@ -39,6 +39,13 @@ namespace ISI.Extensions.Git
 		}
 
 		public GitApi(
+			Microsoft.Extensions.Logging.ILogger logger)
+			: this(logger, (ISI.Extensions.JsonSerialization.IJsonSerializer)null)
+		{
+
+		}
+
+		public GitApi(
 			Microsoft.Extensions.Logging.ILogger logger,
 			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer)
 		{

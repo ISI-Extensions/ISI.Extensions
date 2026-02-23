@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2026, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,18 +15,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Scm
+namespace ISI.Extensions.Scm.DataTransferObjects.RcsKeywordProcessorApi
 {
-	public class WorkingCopyCommitInformation
+	public class RevertRcsKeywordsRequest
 	{
-		public string Path { get; set; }
-		public string CommitKey { get; set; }
-		public string Author { get; set; }
-		public string AuthorEmail { get; set; }
-		public DateTime? CommitDateTimeUtc { get; set; }
-		public string Message { get; set; }
+		public ReplaceRcsKeywordsFile[] ModifiedFiles { get; set; }
+
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

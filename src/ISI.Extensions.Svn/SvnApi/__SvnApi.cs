@@ -39,6 +39,12 @@ namespace ISI.Extensions.Svn
 		}
 
 		public SvnApi(
+			Microsoft.Extensions.Logging.ILogger logger)
+			: this(logger, (ISI.Extensions.Serialization.ISerialization)null)
+		{
+		}
+
+		public SvnApi(
 			Microsoft.Extensions.Logging.ILogger logger,
 			ISI.Extensions.Serialization.ISerialization serializer)
 		{

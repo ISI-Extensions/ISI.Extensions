@@ -41,6 +41,12 @@ namespace ISI.Extensions.Aspose
 				set => _pageSetup.FirstPageNumber = value;
 			}
 
+			public ISI.Extensions.Documents.PaperSize PaperSize
+			{
+				get => _pageSetup.PaperSize.ToPaperSize();
+				set => _pageSetup.PaperSize = value.ToPaperSizeType();
+			}
+
 			public double TopMarginInch
 			{
 				get => _pageSetup.TopMarginInch;

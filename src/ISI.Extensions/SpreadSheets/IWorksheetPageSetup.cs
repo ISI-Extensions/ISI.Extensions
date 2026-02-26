@@ -39,6 +39,8 @@ namespace ISI.Extensions.SpreadSheets
 	{
 		int FirstPageNumber { get; set; }
 
+		ISI.Extensions.Documents.PaperSize PaperSize { get; set; }
+
 		double TopMarginInch { get; set; }
 		double RightMarginInch { get; set; }
 		double BottomMarginInch { get; set; }

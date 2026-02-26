@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OperatorType = Aspose.Cells.OperatorType;
 
 namespace ISI.Extensions.Aspose.Extensions
 {
@@ -64,31 +63,31 @@ namespace ISI.Extensions.Aspose.Extensions
 		{
 			switch (operatorType)
 			{
-				case OperatorType.Between:
+				case global::Aspose.Cells.OperatorType.Between:
 					return ISI.Extensions.SpreadSheets.OperatorType.Between;
 
-				case OperatorType.Equal:
+				case global::Aspose.Cells.OperatorType.Equal:
 					return ISI.Extensions.SpreadSheets.OperatorType.Equal;
 
-				case OperatorType.GreaterThan:
+				case global::Aspose.Cells.OperatorType.GreaterThan:
 					return ISI.Extensions.SpreadSheets.OperatorType.GreaterOrEqual;
 
-				case OperatorType.GreaterOrEqual:
+				case global::Aspose.Cells.OperatorType.GreaterOrEqual:
 					return ISI.Extensions.SpreadSheets.OperatorType.GreaterOrEqual;
 
-				case OperatorType.LessThan:
+				case global::Aspose.Cells.OperatorType.LessThan:
 					return ISI.Extensions.SpreadSheets.OperatorType.LessThan;
 
-				case OperatorType.LessOrEqual:
+				case global::Aspose.Cells.OperatorType.LessOrEqual:
 					return ISI.Extensions.SpreadSheets.OperatorType.LessOrEqual;
 
-				case OperatorType.None:
+				case global::Aspose.Cells.OperatorType.None:
 					return ISI.Extensions.SpreadSheets.OperatorType.None;
 
-				case OperatorType.NotBetween:
+				case global::Aspose.Cells.OperatorType.NotBetween:
 					return ISI.Extensions.SpreadSheets.OperatorType.NotBetween;
 
-				case OperatorType.NotEqual:
+				case global::Aspose.Cells.OperatorType.NotEqual:
 					return ISI.Extensions.SpreadSheets.OperatorType.NotEqual;
 
 				default:

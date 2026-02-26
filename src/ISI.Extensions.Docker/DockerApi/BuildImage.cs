@@ -81,14 +81,7 @@ namespace ISI.Extensions.Docker
 					arguments.Add($"--tag {containerImageTag}");
 				}
 
-				if (string.IsNullOrWhiteSpace(request.DockerFileFullName))
-				{
-					arguments.Add(".");
-				}
-				else
-				{
-					arguments.Add($"\"{request.DockerFileFullName}\"");
-				}
+				arguments.Add(string.IsNullOrWhiteSpace(request.DockerFileFullName) ? "." : $"\"{request.DockerFileFullName}\"");
 
 				logger.LogInformation($"docker {string.Join(" ", arguments)}");
 

@@ -57,9 +57,11 @@ namespace ISI.Extensions.VisualStudio
 						arguments.Add(string.Format("/k \"[{{{{{1}}}}}]={0}\"", request.CodeSigningCertificateTokenContainerName, request.CodeSigningCertificateTokenPassword));
 						arguments.Add($"\"{dllToSignFullName}\"");
 
+						var signtoolExeFullName = GetSigntoolExeFullName(new()).SigntoolExeFullName;
+
 						ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 						{
-							ProcessExeFullName = "signtool.exe",
+							ProcessExeFullName = signtoolExeFullName,
 							Arguments = arguments,
 							Logger = new NullLogger(),
 						});

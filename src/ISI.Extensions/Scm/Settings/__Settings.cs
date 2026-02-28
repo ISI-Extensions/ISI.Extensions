@@ -34,16 +34,17 @@ namespace ISI.Extensions.Scm
 			public const string CodeSigningDoCodeSigning = nameof(CodeSigningDoCodeSigning);
 			public const string CodeSigningTimeStampUrl = nameof(CodeSigningTimeStampUrl);
 			public const string CodeSigningTimeStampDigestAlgorithm = nameof(CodeSigningTimeStampDigestAlgorithm);
+			public const string CodeSigningCertificateType = nameof(CodeSigningCertificateType);
 			public const string CodeSigningCertificateFingerprint = nameof(CodeSigningCertificateFingerprint);
 			public const string CodeSigningCertificateFileName = nameof(CodeSigningCertificateFileName);
 			public const string CodeSigningCertificatePassword = nameof(CodeSigningCertificatePassword);
+			public const string CodeSigningCertificateTokenCertificateType = nameof(CodeSigningCertificateTokenCertificateType);
 			public const string CodeSigningCertificateTokenCertificateFileName = nameof(CodeSigningCertificateTokenCertificateFileName);
 			public const string CodeSigningCertificateTokenCryptographicProvider = nameof(CodeSigningCertificateTokenCryptographicProvider);
 			public const string CodeSigningCertificateTokenContainerName = nameof(CodeSigningCertificateTokenContainerName);
 			public const string CodeSigningCertificateTokenPassword = nameof(CodeSigningCertificateTokenPassword);
 			public const string CodeSigningCertificateTokenRevocationPassword = nameof(CodeSigningCertificateTokenRevocationPassword);
 			public const string CodeSigningDigestAlgorithm = nameof(CodeSigningDigestAlgorithm);
-			public const string CodeSigningRunAsync = nameof(CodeSigningRunAsync);
 			public const string CodeSigningRemoteCodeSigningServiceApiUrl = nameof(CodeSigningRemoteCodeSigningServiceApiUrl);
 			public const string CodeSigningRemoteCodeSigningServiceApiKey = nameof(CodeSigningRemoteCodeSigningServiceApiKey);
 

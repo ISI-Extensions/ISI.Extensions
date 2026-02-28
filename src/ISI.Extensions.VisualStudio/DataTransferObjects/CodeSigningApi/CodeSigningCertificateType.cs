@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2026, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,31 +15,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi
 {
-	public interface IInitializeCodeSigningCertificateTokenRequest
+	public enum CodeSigningCertificateType
 	{
-		CodeSigningCertificateType CodeSigningCertificateTokenCertificateType { get; }
-		string CodeSigningCertificateTokenCertificateFileName { get; }
-		string CodeSigningCertificateTokenCryptographicProvider { get; }
-		string CodeSigningCertificateTokenContainerName { get; }
-		string CodeSigningCertificateTokenPassword { get; }
-
-		ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; }
-	}
-
-	public class InitializeCodeSigningCertificateTokenRequest : IInitializeCodeSigningCertificateTokenRequest
-	{
-		public CodeSigningCertificateType CodeSigningCertificateTokenCertificateType { get; set; } = CodeSigningCertificateType.File;
-		public string CodeSigningCertificateTokenCertificateFileName { get; set; }
-		public string CodeSigningCertificateTokenCryptographicProvider { get; set; }
-		public string CodeSigningCertificateTokenContainerName { get; set; }
-		public string CodeSigningCertificateTokenPassword { get; set; }
-
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
+		File,
+		JSignEToken,
 	}
 }

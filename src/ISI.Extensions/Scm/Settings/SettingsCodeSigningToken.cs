@@ -31,6 +31,12 @@ namespace ISI.Extensions.Scm
 				Settings = settings;
 			}
 
+			public string CertificateType
+			{
+				get => Settings.GetValue(Settings.Key.CodeSigningCertificateTokenCertificateType);
+				set => Settings.SetValue(Settings.Key.CodeSigningCertificateTokenCertificateType, value);
+			}
+
 			public string CertificateFileName
 			{
 				get => Settings.GetValue(Settings.Key.CodeSigningCertificateTokenCertificateFileName);

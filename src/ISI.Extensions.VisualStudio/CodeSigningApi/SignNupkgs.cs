@@ -12,14 +12,14 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
-using ISI.Extensions.Extensions;
-using Microsoft.Extensions.Logging;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi;
 
 namespace ISI.Extensions.VisualStudio
@@ -61,7 +61,7 @@ namespace ISI.Extensions.VisualStudio
 					var nugetPackageFullNames = System.IO.Directory.GetFiles(tempDirectory.FullName);
 					if (nugetPackageFullNames.Any())
 					{
-						void sign(string fileName = null)
+						bool sign(string fileName = null)
 						{
 							//if (!string.IsNullOrWhiteSpace(fileName))
 							//{
@@ -138,20 +138,28 @@ namespace ISI.Extensions.VisualStudio
 								if (waitForProcessResponse.Errored)
 								{
 									Logger.LogError(waitForProcessResponse.Output);
+
+									return false;
 								}
 
 								logger.LogInformation($"Signed nuget package \"{System.IO.Path.GetFileName(fileName)}\"");
 							}
+
+							return true;
 						}
 
-						if (request.RunAsync)
+						var signedFilesSuccessfully = false;
+
+						switch (request.CertificateType)
 						{
-							logger.LogInformation("Running Async");
-							Parallel.ForEach(nugetPackageFullNames, nugetPackageFullName => sign(nugetPackageFullName));
-						}
-						else
-						{
-							sign();
+							case DTOs.CodeSigningCertificateType.File:
+								signedFilesSuccessfully = sign();
+								break;
+							case DTOs.CodeSigningCertificateType.JSignEToken:
+								signedFilesSuccessfully = jSignEToken(logger, request, [System.IO.Path.Combine(tempDirectory.FullName, "*.nupkg")]);
+								break;
+							default:
+								throw new ArgumentOutOfRangeException();
 						}
 
 						switch (request)

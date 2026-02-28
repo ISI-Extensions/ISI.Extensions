@@ -49,6 +49,12 @@ namespace ISI.Extensions.Scm
 				set => Settings.SetValue(Settings.Key.CodeSigningTimeStampDigestAlgorithm, value);
 			}
 
+			public string CertificateType
+			{
+				get => Settings.GetValue(Settings.Key.CodeSigningCertificateType);
+				set => Settings.SetValue(Settings.Key.CodeSigningCertificateType, value);
+			}
+
 			public string CertificateFingerprint
 			{
 				get => Settings.GetValue(Settings.Key.CodeSigningCertificateFingerprint);
@@ -74,12 +80,6 @@ namespace ISI.Extensions.Scm
 			{
 				get => Settings.GetValue(Settings.Key.CodeSigningDigestAlgorithm);
 				set => Settings.SetValue(Settings.Key.CodeSigningDigestAlgorithm, value);
-			}
-
-			public bool RunAsync
-			{
-				get => Settings.GetValue(Settings.Key.CodeSigningRunAsync).ToBoolean();
-				set => Settings.SetValue(Settings.Key.CodeSigningRunAsync, value.TrueFalse());
 			}
 
 			public string RemoteCodeSigningServiceApiUrl

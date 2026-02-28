@@ -12,14 +12,14 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
-using ISI.Extensions.Extensions;
-using Microsoft.Extensions.Logging;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi;
 
 namespace ISI.Extensions.VisualStudio
@@ -221,20 +221,7 @@ namespace ISI.Extensions.VisualStudio
 						//	logger.LogInformation(string.Format("Signed vsix package \"{0}\"", System.IO.Path.GetFileName(fileName)));
 						//}
 
-						if (request.RunAsync)
-						{
-							logger.LogInformation("Running Async");
-							sign(vsixFullNames.ToArray());
-							//Parallel.ForEach(vsixFullNames, vsixFullName => sign(vsixFullName));
-						}
-						else
-						{
-							sign(vsixFullNames.ToArray());
-							//foreach (var vsixFullName in vsixFullNames)
-							//{
-							//	sign(vsixFullName);
-							//}
-						}
+						sign(vsixFullNames.ToArray());
 
 						if (!string.IsNullOrWhiteSpace(request.OutputDirectory) && System.IO.Directory.Exists(request.OutputDirectory))
 						{
@@ -253,7 +240,7 @@ namespace ISI.Extensions.VisualStudio
 					}
 				}
 			}
-			
+
 			return response;
 		}
 	}

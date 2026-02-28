@@ -74,7 +74,7 @@ namespace ISI.Extensions.Tests
 			var logger = new ISI.Extensions.TextWriterLogger(TestContext.Progress);
 			var codeSigningApi = new ISI.Extensions.VisualStudio.CodeSigningApi(logger, new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.Nuget.Configuration(), logger, new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer()));
 
-			var fileNames = System.IO.Directory.GetFiles(@"F:\ISI\Internal Projects\ISI.Extensions\Nuget");
+			var fileNames = System.IO.Directory.GetFiles(@"C:\Users\ron.muth\AppData\Local\Temp\tmp16AABIDPV0GOV1VP37ZVJSD85U");
 
 			codeSigningApi.SignAssemblies(new ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.SignAssembliesRequest()
 			{
@@ -85,11 +85,11 @@ namespace ISI.Extensions.Tests
 				CodeSigningCertificateTokenPassword = settings.CodeSigning.Token.Password,
 				TimeStampUri = new(settings.CodeSigning.TimeStampUrl),
 				TimeStampDigestAlgorithm = ISI.Extensions.Enum<ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.CodeSigningDigestAlgorithm>.Parse(settings.CodeSigning.TimeStampDigestAlgorithm),
+				CertificateType = ISI.Extensions.Enum<ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.CodeSigningCertificateType>.Parse(settings.CodeSigning.CertificateType),
 				CertificateFileName = settings.CodeSigning.CertificateFileName,
 				CertificatePassword = settings.CodeSigning.CertificatePassword,
 				CertificateFingerprint = settings.CodeSigning.CertificateFingerprint,
 				DigestAlgorithm = ISI.Extensions.Enum<ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.CodeSigningDigestAlgorithm>.Parse(settings.CodeSigning.DigestAlgorithm),
-				RunAsync = settings.CodeSigning.RunAsync,
 			});
 		}
 
@@ -112,6 +112,7 @@ namespace ISI.Extensions.Tests
 				CodeSigningCertificateTokenPassword = settings.CodeSigning.Token.Password,
 				TimeStampUri = new(settings.CodeSigning.TimeStampUrl),
 				TimeStampDigestAlgorithm = ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.CodeSigningDigestAlgorithm.Sha256,
+				CertificateType = ISI.Extensions.Enum<ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi.CodeSigningCertificateType>.Parse(settings.CodeSigning.CertificateType),
 				CertificateFileName = settings.CodeSigning.CertificateFileName,
 				CertificatePassword = settings.CodeSigning.CertificatePassword,
 				CertificateFingerprint = settings.CodeSigning.CertificateFingerprint,

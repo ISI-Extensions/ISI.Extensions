@@ -12,14 +12,14 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
-using ISI.Extensions.Extensions;
-using Microsoft.Extensions.Logging;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.VisualStudio.DataTransferObjects.CodeSigningApi;
 
 namespace ISI.Extensions.VisualStudio
@@ -58,26 +58,23 @@ namespace ISI.Extensions.VisualStudio
 					{
 						var tempAssemblyFullNames = assemblyFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
-						if (!string.IsNullOrWhiteSpace(request.OutputDirectory) && System.IO.Directory.Exists(request.OutputDirectory))
+						for (var fileIndex = 0; fileIndex < tempAssemblyFullNames.Length; fileIndex++)
 						{
-							for (var fileIndex = 0; fileIndex < tempAssemblyFullNames.Length; fileIndex++)
+							var tempAssemblyFullName = System.IO.Path.Combine(tempDirectory.FullName, System.IO.Path.GetFileName(tempAssemblyFullNames[fileIndex]));
+
+							if (System.IO.File.Exists(tempAssemblyFullName))
 							{
-								var tempAssemblyFullName = System.IO.Path.Combine(tempDirectory.FullName, System.IO.Path.GetFileName(tempAssemblyFullNames[fileIndex]));
-
-								if (System.IO.File.Exists(tempAssemblyFullName))
-								{
-									System.IO.File.Delete(tempAssemblyFullName);
-								}
-
-								System.IO.File.Copy(tempAssemblyFullNames[fileIndex], tempAssemblyFullName);
-
-								tempAssemblyFullNames[fileIndex] = tempAssemblyFullName;
+								System.IO.File.Delete(tempAssemblyFullName);
 							}
+
+							System.IO.File.Copy(tempAssemblyFullNames[fileIndex], tempAssemblyFullName);
+
+							tempAssemblyFullNames[fileIndex] = tempAssemblyFullName;
 						}
 
 						var signtoolExeFullName = GetSigntoolExeFullName(new()).SigntoolExeFullName;
 
-						void sign(string[] fileNames)
+						bool sign(string[] fileNames)
 						{
 							var arguments = GetSignAssemblyCommandArguments(request);
 
@@ -90,25 +87,36 @@ namespace ISI.Extensions.VisualStudio
 								Logger = (fileNames.NullCheckedCount() == 1 ? null : logger),
 							});
 
-							if (fileNames.NullCheckedCount() == 1)
+							if (waitForProcessResponse.Errored)
 							{
-								if (waitForProcessResponse.Errored)
-								{
-									Logger.LogError(waitForProcessResponse.Output);
-								}
-
-								logger.LogInformation($"Signed assembly \"{System.IO.Path.GetFileName(fileNames.First())}\"");
+								Logger.LogError(waitForProcessResponse.Output);
+								return false;
 							}
+
+							logger.LogInformation($"Signed assembly \"{System.IO.Path.GetFileName(fileNames.First())}\"");
+							return true;
 						}
 
-						if (request.RunAsync)
+						var signedFilesSuccessfully = true;
+
+						switch (request.CertificateType)
 						{
-							logger.LogInformation("Running Async");
-							Parallel.ForEach(tempAssemblyFullNames, assemblyFullName => sign([assemblyFullName]));
-						}
-						else
-						{
-							sign(tempAssemblyFullNames);
+							case DTOs.CodeSigningCertificateType.File:
+								signedFilesSuccessfully = sign(tempAssemblyFullNames);
+								break;
+
+							case DTOs.CodeSigningCertificateType.JSignEToken:
+								foreach (var extension in new[] { "*.exe", "*.dll", "*.msi", "*.cab", "*.cat", "*.appx", "*.msix", "*.navx", "*.efi" })
+								{
+									if (signedFilesSuccessfully && System.IO.Directory.EnumerateFiles(tempDirectory.FullName, extension).Any())
+									{
+										signedFilesSuccessfully = jSignEToken(logger, request, [System.IO.Path.Combine(tempDirectory.FullName, extension)]);
+									}
+								}
+								break;
+
+							default:
+								throw new ArgumentOutOfRangeException();
 						}
 
 						if (!string.IsNullOrWhiteSpace(request.OutputDirectory) && System.IO.Directory.Exists(request.OutputDirectory))
@@ -123,6 +131,20 @@ namespace ISI.Extensions.VisualStudio
 								}
 
 								System.IO.File.Copy(assemblyFullName, newAssemblyFullName);
+							}
+						}
+						else
+						{
+							foreach (var assemblyFullName in assemblyFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty))
+							{
+								var signedAssemblyFullName = System.IO.Path.Combine(tempDirectory.FullName, System.IO.Path.GetFileName(assemblyFullName));
+
+								if (System.IO.File.Exists(assemblyFullName))
+								{
+									System.IO.File.Delete(assemblyFullName);
+								}
+
+								System.IO.File.Copy(signedAssemblyFullName, assemblyFullName);
 							}
 						}
 					}

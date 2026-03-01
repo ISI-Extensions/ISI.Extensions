@@ -43,7 +43,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 		{
 			public static string _root()
 			{
-				return string.Format("{0}wwwroot/", T4Files._root());
+				return $"{T4Files._root()}wwwroot/";
 			}
 		
 			[GeneratedCode("T4LocalContent", "1.0"), DebuggerNonUserCode]
@@ -51,7 +51,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 			{
 				public static string _root()
 				{
-					return string.Format("{0}JavaScripts/", T4Files.wwwroot._root());
+					return $"{T4Files.wwwroot._root()}JavaScripts/";
 				}
 			
 				[GeneratedCode("T4LocalContent", "1.0"), DebuggerNonUserCode]
@@ -59,7 +59,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 				{
 					public static string _root()
 					{
-						return string.Format("{0}_Shared/", T4Files.wwwroot.JavaScripts._root());
+						return $"{T4Files.wwwroot.JavaScripts._root()}_Shared/";
 					}
 				
 					public static readonly string _Layout_js = _root() + "_Layout.js";
@@ -70,7 +70,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 				{
 					public static string _root()
 					{
-						return string.Format("{0}Public/", T4Files.wwwroot.JavaScripts._root());
+						return $"{T4Files.wwwroot.JavaScripts._root()}Public/";
 					}
 				
 					public static readonly string _Layout_js = _root() + "_Layout.js";
@@ -87,7 +87,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 			{
 				public static string _root()
 				{
-					return string.Format("{0}lib/", T4Files.wwwroot._root());
+					return $"{T4Files.wwwroot._root()}lib/";
 				}
 			
 				[GeneratedCode("T4LocalContent", "1.0"), DebuggerNonUserCode]
@@ -95,7 +95,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 				{
 					public static string _root()
 					{
-						return string.Format("{0}bootstrap/", T4Files.wwwroot.lib._root());
+						return $"{T4Files.wwwroot.lib._root()}bootstrap/";
 					}
 				
 					[GeneratedCode("T4LocalContent", "1.0"), DebuggerNonUserCode]
@@ -103,7 +103,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 					{
 						public static string _root()
 						{
-							return string.Format("{0}dist/", T4Files.wwwroot.lib.bootstrap._root());
+							return $"{T4Files.wwwroot.lib.bootstrap._root()}dist/";
 						}
 					
 						[GeneratedCode("T4LocalContent", "1.0"), DebuggerNonUserCode]
@@ -111,7 +111,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}css/", T4Files.wwwroot.lib.bootstrap.dist._root());
+								return $"{T4Files.wwwroot.lib.bootstrap.dist._root()}css/";
 							}
 						
 							public static readonly string bootstrap_css = _root() + "bootstrap.css";
@@ -140,7 +140,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}js/", T4Files.wwwroot.lib.bootstrap.dist._root());
+								return $"{T4Files.wwwroot.lib.bootstrap.dist._root()}js/";
 							}
 						
 							public static readonly string bootstrap_js = _root() + "bootstrap.js";
@@ -162,7 +162,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 				{
 					public static string _root()
 					{
-						return string.Format("{0}bootstrap-multiselect/", T4Files.wwwroot.lib._root());
+						return $"{T4Files.wwwroot.lib._root()}bootstrap-multiselect/";
 					}
 				
 					public static readonly string BsMultiSelect_min_css = _root() + "BsMultiSelect.min.css";
@@ -175,7 +175,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 				{
 					public static string _root()
 					{
-						return string.Format("{0}bootstrap-table-master/", T4Files.wwwroot.lib._root());
+						return $"{T4Files.wwwroot.lib._root()}bootstrap-table-master/";
 					}
 				
 					[GeneratedCode("T4LocalContent", "1.0"), DebuggerNonUserCode]
@@ -183,7 +183,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 					{
 						public static string _root()
 						{
-							return string.Format("{0}extensions/", T4Files.wwwroot.lib.bootstrap_table_master._root());
+							return $"{T4Files.wwwroot.lib.bootstrap_table_master._root()}extensions/";
 						}
 					
 						[GeneratedCode("T4LocalContent", "1.0"), DebuggerNonUserCode]
@@ -191,7 +191,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}addrbar/", T4Files.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.extensions._root()}addrbar/";
 							}
 						
 							public static readonly string bootstrap_table_addrbar_js = _root() + "bootstrap-table-addrbar.js";
@@ -203,7 +203,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}auto-refresh/", T4Files.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.extensions._root()}auto-refresh/";
 							}
 						
 							public static readonly string bootstrap_table_auto_refresh_js = _root() + "bootstrap-table-auto-refresh.js";
@@ -215,7 +215,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}cookie/", T4Files.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.extensions._root()}cookie/";
 							}
 						
 							public static readonly string bootstrap_table_cookie_js = _root() + "bootstrap-table-cookie.js";
@@ -227,7 +227,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}copy-rows/", T4Files.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.extensions._root()}copy-rows/";
 							}
 						
 							public static readonly string bootstrap_table_copy_rows_js = _root() + "bootstrap-table-copy-rows.js";
@@ -239,7 +239,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}custom-view/", T4Files.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.extensions._root()}custom-view/";
 							}
 						
 							public static readonly string bootstrap_table_custom_view_js = _root() + "bootstrap-table-custom-view.js";
@@ -251,7 +251,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}defer-url/", T4Files.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.extensions._root()}defer-url/";
 							}
 						
 							public static readonly string bootstrap_table_defer_url_js = _root() + "bootstrap-table-defer-url.js";
@@ -263,7 +263,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}editable/", T4Files.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.extensions._root()}editable/";
 							}
 						
 							public static readonly string bootstrap_table_editable_js = _root() + "bootstrap-table-editable.js";
@@ -275,7 +275,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}export/", T4Files.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.extensions._root()}export/";
 							}
 						
 							public static readonly string bootstrap_table_export_js = _root() + "bootstrap-table-export.js";
@@ -287,7 +287,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}filter-control/", T4Files.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.extensions._root()}filter-control/";
 							}
 						
 							public static readonly string bootstrap_table_filter_control_css = _root() + "bootstrap-table-filter-control.css";
@@ -305,7 +305,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}fixed-columns/", T4Files.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.extensions._root()}fixed-columns/";
 							}
 						
 							public static readonly string bootstrap_table_fixed_columns_css = _root() + "bootstrap-table-fixed-columns.css";
@@ -320,7 +320,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}group-by-v2/", T4Files.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.extensions._root()}group-by-v2/";
 							}
 						
 							public static readonly string bootstrap_table_group_by_css = _root() + "bootstrap-table-group-by.css";
@@ -335,7 +335,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}i18n-enhance/", T4Files.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.extensions._root()}i18n-enhance/";
 							}
 						
 							public static readonly string bootstrap_table_i18n_enhance_js = _root() + "bootstrap-table-i18n-enhance.js";
@@ -347,7 +347,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}key-events/", T4Files.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.extensions._root()}key-events/";
 							}
 						
 							public static readonly string bootstrap_table_key_events_js = _root() + "bootstrap-table-key-events.js";
@@ -359,7 +359,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}mobile/", T4Files.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.extensions._root()}mobile/";
 							}
 						
 							public static readonly string bootstrap_table_mobile_js = _root() + "bootstrap-table-mobile.js";
@@ -371,7 +371,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}multiple-sort/", T4Files.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.extensions._root()}multiple-sort/";
 							}
 						
 							public static readonly string bootstrap_table_multiple_sort_js = _root() + "bootstrap-table-multiple-sort.js";
@@ -383,7 +383,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}page-jump-to/", T4Files.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.extensions._root()}page-jump-to/";
 							}
 						
 							public static readonly string bootstrap_table_page_jump_to_css = _root() + "bootstrap-table-page-jump-to.css";
@@ -398,7 +398,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}pipeline/", T4Files.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.extensions._root()}pipeline/";
 							}
 						
 							public static readonly string bootstrap_table_pipeline_js = _root() + "bootstrap-table-pipeline.js";
@@ -410,7 +410,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}print/", T4Files.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.extensions._root()}print/";
 							}
 						
 							public static readonly string bootstrap_table_print_js = _root() + "bootstrap-table-print.js";
@@ -422,7 +422,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}reorder-columns/", T4Files.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.extensions._root()}reorder-columns/";
 							}
 						
 							public static readonly string bootstrap_table_reorder_columns_js = _root() + "bootstrap-table-reorder-columns.js";
@@ -434,7 +434,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}reorder-rows/", T4Files.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.extensions._root()}reorder-rows/";
 							}
 						
 							public static readonly string bootstrap_table_reorder_rows_css = _root() + "bootstrap-table-reorder-rows.css";
@@ -449,7 +449,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}resizable/", T4Files.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.extensions._root()}resizable/";
 							}
 						
 							public static readonly string bootstrap_table_resizable_js = _root() + "bootstrap-table-resizable.js";
@@ -461,7 +461,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}sticky-header/", T4Files.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.extensions._root()}sticky-header/";
 							}
 						
 							public static readonly string bootstrap_table_sticky_header_css = _root() + "bootstrap-table-sticky-header.css";
@@ -476,7 +476,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}toolbar/", T4Files.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.extensions._root()}toolbar/";
 							}
 						
 							public static readonly string bootstrap_table_toolbar_js = _root() + "bootstrap-table-toolbar.js";
@@ -488,7 +488,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}treegrid/", T4Files.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.extensions._root()}treegrid/";
 							}
 						
 							public static readonly string bootstrap_table_treegrid_js = _root() + "bootstrap-table-treegrid.js";
@@ -525,7 +525,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 					{
 						public static string _root()
 						{
-							return string.Format("{0}locale/", T4Files.wwwroot.lib.bootstrap_table_master._root());
+							return $"{T4Files.wwwroot.lib.bootstrap_table_master._root()}locale/";
 						}
 					
 						public static readonly string bootstrap_table_af_ZA_js = _root() + "bootstrap-table-af-ZA.js";
@@ -699,7 +699,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 					{
 						public static string _root()
 						{
-							return string.Format("{0}themes/", T4Files.wwwroot.lib.bootstrap_table_master._root());
+							return $"{T4Files.wwwroot.lib.bootstrap_table_master._root()}themes/";
 						}
 					
 						[GeneratedCode("T4LocalContent", "1.0"), DebuggerNonUserCode]
@@ -707,7 +707,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}bootstrap-table/", T4Files.wwwroot.lib.bootstrap_table_master.themes._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.themes._root()}bootstrap-table/";
 							}
 						
 							[GeneratedCode("T4LocalContent", "1.0"), DebuggerNonUserCode]
@@ -715,7 +715,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 							{
 								public static string _root()
 								{
-									return string.Format("{0}fonts/", T4Files.wwwroot.lib.bootstrap_table_master.themes.bootstrap_table._root());
+									return $"{T4Files.wwwroot.lib.bootstrap_table_master.themes.bootstrap_table._root()}fonts/";
 								}
 							
 								public static readonly string bootstrap_table_eot = _root() + "bootstrap-table.eot";
@@ -740,7 +740,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}bulma/", T4Files.wwwroot.lib.bootstrap_table_master.themes._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.themes._root()}bulma/";
 							}
 						
 							public static readonly string bootstrap_table_bulma_css = _root() + "bootstrap-table-bulma.css";
@@ -755,7 +755,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}foundation/", T4Files.wwwroot.lib.bootstrap_table_master.themes._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.themes._root()}foundation/";
 							}
 						
 							public static readonly string bootstrap_table_foundation_css = _root() + "bootstrap-table-foundation.css";
@@ -770,7 +770,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}materialize/", T4Files.wwwroot.lib.bootstrap_table_master.themes._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.themes._root()}materialize/";
 							}
 						
 							public static readonly string bootstrap_table_materialize_css = _root() + "bootstrap-table-materialize.css";
@@ -785,7 +785,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}semantic/", T4Files.wwwroot.lib.bootstrap_table_master.themes._root());
+								return $"{T4Files.wwwroot.lib.bootstrap_table_master.themes._root()}semantic/";
 							}
 						
 							public static readonly string bootstrap_table_semantic_css = _root() + "bootstrap-table-semantic.css";
@@ -823,7 +823,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 				{
 					public static string _root()
 					{
-						return string.Format("{0}fonts/", T4Files.wwwroot.lib._root());
+						return $"{T4Files.wwwroot.lib._root()}fonts/";
 					}
 				
 					[GeneratedCode("T4LocalContent", "1.0"), DebuggerNonUserCode]
@@ -831,7 +831,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 					{
 						public static string _root()
 						{
-							return string.Format("{0}FiraSans/", T4Files.wwwroot.lib.fonts._root());
+							return $"{T4Files.wwwroot.lib.fonts._root()}FiraSans/";
 						}
 					
 						public static readonly string FiraSans_Bold_eot = _root() + "FiraSans-Bold.eot";
@@ -874,7 +874,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 				{
 					public static string _root()
 					{
-						return string.Format("{0}jquery/", T4Files.wwwroot.lib._root());
+						return $"{T4Files.wwwroot.lib._root()}jquery/";
 					}
 				
 					[GeneratedCode("T4LocalContent", "1.0"), DebuggerNonUserCode]
@@ -882,7 +882,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 					{
 						public static string _root()
 						{
-							return string.Format("{0}dist/", T4Files.wwwroot.lib.jquery._root());
+							return $"{T4Files.wwwroot.lib.jquery._root()}dist/";
 						}
 					
 						public static readonly string jquery_js = _root() + "jquery.js";
@@ -897,7 +897,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 				{
 					public static string _root()
 					{
-						return string.Format("{0}jquery-validation/", T4Files.wwwroot.lib._root());
+						return $"{T4Files.wwwroot.lib._root()}jquery-validation/";
 					}
 				
 					[GeneratedCode("T4LocalContent", "1.0"), DebuggerNonUserCode]
@@ -905,7 +905,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 					{
 						public static string _root()
 						{
-							return string.Format("{0}dist/", T4Files.wwwroot.lib.jquery_validation._root());
+							return $"{T4Files.wwwroot.lib.jquery_validation._root()}dist/";
 						}
 					
 						public static readonly string additional_methods_js = _root() + "additional-methods.js";
@@ -923,7 +923,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 				{
 					public static string _root()
 					{
-						return string.Format("{0}jquery-validation-unobtrusive/", T4Files.wwwroot.lib._root());
+						return $"{T4Files.wwwroot.lib._root()}jquery-validation-unobtrusive/";
 					}
 				
 					public static readonly string jquery_validate_unobtrusive_js = _root() + "jquery.validate.unobtrusive.js";
@@ -946,7 +946,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 			{
 				public static string _root()
 				{
-					return string.Format("{0}StyleSheets/", T4Files.wwwroot._root());
+					return $"{T4Files.wwwroot._root()}StyleSheets/";
 				}
 			
 				[GeneratedCode("T4LocalContent", "1.0"), DebuggerNonUserCode]
@@ -954,7 +954,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 				{
 					public static string _root()
 					{
-						return string.Format("{0}_Shared/", T4Files.wwwroot.StyleSheets._root());
+						return $"{T4Files.wwwroot.StyleSheets._root()}_Shared/";
 					}
 				
 					public static readonly string _Layout_css = _root() + "_Layout.css";
@@ -967,7 +967,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 				{
 					public static string _root()
 					{
-						return string.Format("{0}Public/", T4Files.wwwroot.StyleSheets._root());
+						return $"{T4Files.wwwroot.StyleSheets._root()}Public/";
 					}
 				
 					public static readonly string _Layout_css = _root() + "_Layout.css";
@@ -984,7 +984,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 		{
 			public static string _root()
 			{
-				return string.Format("{0}Views/", T4Files._root());
+				return $"{T4Files._root()}Views/";
 			}
 		
 			[GeneratedCode("T4LocalContent", "1.0"), DebuggerNonUserCode]
@@ -992,7 +992,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 			{
 				public static string _root()
 				{
-					return string.Format("{0}_Shared/", T4Files.Views._root());
+					return $"{T4Files.Views._root()}_Shared/";
 				}
 			
 				public static readonly string _Layout_cshtml = _root() + "_Layout.cshtml";
@@ -1003,7 +1003,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 			{
 				public static string _root()
 				{
-					return string.Format("{0}Public/", T4Files.Views._root());
+					return $"{T4Files.Views._root()}Public/";
 				}
 			
 				public static readonly string _Layout_cshtml = _root() + "_Layout.cshtml";
@@ -1064,7 +1064,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 			{
 				public static string _root()
 				{
-					return string.Format("{0}JavaScripts/", T4Links.wwwroot._root());
+					return $"{T4Links.wwwroot._root()}JavaScripts/";
 				}
 			
 				private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1075,7 +1075,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 				{
 					public static string _root()
 					{
-						return string.Format("{0}_Shared/", T4Links.wwwroot.JavaScripts._root());
+						return $"{T4Links.wwwroot.JavaScripts._root()}_Shared/";
 					}
 				
 					private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1089,7 +1089,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 				{
 					public static string _root()
 					{
-						return string.Format("{0}Public/", T4Links.wwwroot.JavaScripts._root());
+						return $"{T4Links.wwwroot.JavaScripts._root()}Public/";
 					}
 				
 					private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1108,7 +1108,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 			{
 				public static string _root()
 				{
-					return string.Format("{0}lib/", T4Links.wwwroot._root());
+					return $"{T4Links.wwwroot._root()}lib/";
 				}
 			
 				private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1119,7 +1119,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 				{
 					public static string _root()
 					{
-						return string.Format("{0}bootstrap/", T4Links.wwwroot.lib._root());
+						return $"{T4Links.wwwroot.lib._root()}bootstrap/";
 					}
 				
 					private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1130,7 +1130,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 					{
 						public static string _root()
 						{
-							return string.Format("{0}dist/", T4Links.wwwroot.lib.bootstrap._root());
+							return $"{T4Links.wwwroot.lib.bootstrap._root()}dist/";
 						}
 					
 						private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1141,7 +1141,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}css/", T4Links.wwwroot.lib.bootstrap.dist._root());
+								return $"{T4Links.wwwroot.lib.bootstrap.dist._root()}css/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1185,7 +1185,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}js/", T4Links.wwwroot.lib.bootstrap.dist._root());
+								return $"{T4Links.wwwroot.lib.bootstrap.dist._root()}js/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1211,7 +1211,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 				{
 					public static string _root()
 					{
-						return string.Format("{0}bootstrap-multiselect/", T4Links.wwwroot.lib._root());
+						return $"{T4Links.wwwroot.lib._root()}bootstrap-multiselect/";
 					}
 				
 					private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1227,7 +1227,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 				{
 					public static string _root()
 					{
-						return string.Format("{0}bootstrap-table-master/", T4Links.wwwroot.lib._root());
+						return $"{T4Links.wwwroot.lib._root()}bootstrap-table-master/";
 					}
 				
 					private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1238,7 +1238,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 					{
 						public static string _root()
 						{
-							return string.Format("{0}extensions/", T4Links.wwwroot.lib.bootstrap_table_master._root());
+							return $"{T4Links.wwwroot.lib.bootstrap_table_master._root()}extensions/";
 						}
 					
 						private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1249,7 +1249,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}addrbar/", T4Links.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.extensions._root()}addrbar/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1265,7 +1265,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}auto-refresh/", T4Links.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.extensions._root()}auto-refresh/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1281,7 +1281,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}cookie/", T4Links.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.extensions._root()}cookie/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1297,7 +1297,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}copy-rows/", T4Links.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.extensions._root()}copy-rows/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1313,7 +1313,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}custom-view/", T4Links.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.extensions._root()}custom-view/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1329,7 +1329,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}defer-url/", T4Links.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.extensions._root()}defer-url/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1345,7 +1345,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}editable/", T4Links.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.extensions._root()}editable/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1361,7 +1361,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}export/", T4Links.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.extensions._root()}export/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1377,7 +1377,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}filter-control/", T4Links.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.extensions._root()}filter-control/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1401,7 +1401,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}fixed-columns/", T4Links.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.extensions._root()}fixed-columns/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1421,7 +1421,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}group-by-v2/", T4Links.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.extensions._root()}group-by-v2/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1441,7 +1441,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}i18n-enhance/", T4Links.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.extensions._root()}i18n-enhance/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1457,7 +1457,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}key-events/", T4Links.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.extensions._root()}key-events/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1473,7 +1473,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}mobile/", T4Links.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.extensions._root()}mobile/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1489,7 +1489,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}multiple-sort/", T4Links.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.extensions._root()}multiple-sort/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1505,7 +1505,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}page-jump-to/", T4Links.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.extensions._root()}page-jump-to/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1525,7 +1525,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}pipeline/", T4Links.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.extensions._root()}pipeline/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1541,7 +1541,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}print/", T4Links.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.extensions._root()}print/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1557,7 +1557,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}reorder-columns/", T4Links.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.extensions._root()}reorder-columns/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1573,7 +1573,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}reorder-rows/", T4Links.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.extensions._root()}reorder-rows/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1593,7 +1593,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}resizable/", T4Links.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.extensions._root()}resizable/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1609,7 +1609,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}sticky-header/", T4Links.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.extensions._root()}sticky-header/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1629,7 +1629,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}toolbar/", T4Links.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.extensions._root()}toolbar/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1645,7 +1645,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}treegrid/", T4Links.wwwroot.lib.bootstrap_table_master.extensions._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.extensions._root()}treegrid/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1662,7 +1662,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 					{
 						public static string _root()
 						{
-							return string.Format("{0}locale/", T4Links.wwwroot.lib.bootstrap_table_master._root());
+							return $"{T4Links.wwwroot.lib.bootstrap_table_master._root()}locale/";
 						}
 					
 						private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1894,7 +1894,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 					{
 						public static string _root()
 						{
-							return string.Format("{0}themes/", T4Links.wwwroot.lib.bootstrap_table_master._root());
+							return $"{T4Links.wwwroot.lib.bootstrap_table_master._root()}themes/";
 						}
 					
 						private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1905,7 +1905,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}bootstrap-table/", T4Links.wwwroot.lib.bootstrap_table_master.themes._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.themes._root()}bootstrap-table/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1916,7 +1916,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 							{
 								public static string _root()
 								{
-									return string.Format("{0}fonts/", T4Links.wwwroot.lib.bootstrap_table_master.themes.bootstrap_table._root());
+									return $"{T4Links.wwwroot.lib.bootstrap_table_master.themes.bootstrap_table._root()}fonts/";
 								}
 							
 								private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1945,7 +1945,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}bulma/", T4Links.wwwroot.lib.bootstrap_table_master.themes._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.themes._root()}bulma/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1965,7 +1965,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}foundation/", T4Links.wwwroot.lib.bootstrap_table_master.themes._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.themes._root()}foundation/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -1985,7 +1985,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}materialize/", T4Links.wwwroot.lib.bootstrap_table_master.themes._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.themes._root()}materialize/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -2005,7 +2005,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 						{
 							public static string _root()
 							{
-								return string.Format("{0}semantic/", T4Links.wwwroot.lib.bootstrap_table_master.themes._root());
+								return $"{T4Links.wwwroot.lib.bootstrap_table_master.themes._root()}semantic/";
 							}
 						
 							private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -2045,7 +2045,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 				{
 					public static string _root()
 					{
-						return string.Format("{0}fonts/", T4Links.wwwroot.lib._root());
+						return $"{T4Links.wwwroot.lib._root()}fonts/";
 					}
 				
 					private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -2056,7 +2056,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 					{
 						public static string _root()
 						{
-							return string.Format("{0}FiraSans/", T4Links.wwwroot.lib.fonts._root());
+							return $"{T4Links.wwwroot.lib.fonts._root()}FiraSans/";
 						}
 					
 						private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -2101,7 +2101,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 				{
 					public static string _root()
 					{
-						return string.Format("{0}jquery/", T4Links.wwwroot.lib._root());
+						return $"{T4Links.wwwroot.lib._root()}jquery/";
 					}
 				
 					private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -2112,7 +2112,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 					{
 						public static string _root()
 						{
-							return string.Format("{0}dist/", T4Links.wwwroot.lib.jquery._root());
+							return $"{T4Links.wwwroot.lib.jquery._root()}dist/";
 						}
 					
 						private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -2131,7 +2131,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 				{
 					public static string _root()
 					{
-						return string.Format("{0}jquery-validation/", T4Links.wwwroot.lib._root());
+						return $"{T4Links.wwwroot.lib._root()}jquery-validation/";
 					}
 				
 					private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -2142,7 +2142,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 					{
 						public static string _root()
 						{
-							return string.Format("{0}dist/", T4Links.wwwroot.lib.jquery_validation._root());
+							return $"{T4Links.wwwroot.lib.jquery_validation._root()}dist/";
 						}
 					
 						private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -2165,7 +2165,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 				{
 					public static string _root()
 					{
-						return string.Format("{0}jquery-validation-unobtrusive/", T4Links.wwwroot.lib._root());
+						return $"{T4Links.wwwroot.lib._root()}jquery-validation-unobtrusive/";
 					}
 				
 					private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -2186,7 +2186,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 			{
 				public static string _root()
 				{
-					return string.Format("{0}StyleSheets/", T4Links.wwwroot._root());
+					return $"{T4Links.wwwroot._root()}StyleSheets/";
 				}
 			
 				private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -2197,7 +2197,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 				{
 					public static string _root()
 					{
-						return string.Format("{0}_Shared/", T4Links.wwwroot.StyleSheets._root());
+						return $"{T4Links.wwwroot.StyleSheets._root()}_Shared/";
 					}
 				
 					private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;
@@ -2213,7 +2213,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 				{
 					public static string _root()
 					{
-						return string.Format("{0}Public/", T4Links.wwwroot.StyleSheets._root());
+						return $"{T4Links.wwwroot.StyleSheets._root()}Public/";
 					}
 				
 					private static global::ISI.Extensions.AspNetCore.IContentUrl _directory = null;

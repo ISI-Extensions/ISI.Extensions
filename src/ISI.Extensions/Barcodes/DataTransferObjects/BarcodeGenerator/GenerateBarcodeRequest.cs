@@ -47,8 +47,8 @@ namespace ISI.Extensions.Barcodes.DataTransferObjects.BarcodeGenerator
 		public ISI.Extensions.Barcodes.BorderDashStyle BorderDashStyle { get; set; }
 		public ISI.Extensions.Barcodes.CaptionLocation CaptionLocation { get; set; }
 
-		public System.IO.Stream imageStream { get; set; }
+		public System.IO.Stream ImageStream { get; set; }
 
-		public ISI.Extensions.Images.ImageFormat imageFormat { get; set; } = ISI.Extensions.Images.ImageFormat.Bmp;
+		public ISI.Extensions.Images.ImageFormat ImageFormat { get; set; } = ISI.Extensions.Images.ImageFormat.Bmp;
 	}
 }

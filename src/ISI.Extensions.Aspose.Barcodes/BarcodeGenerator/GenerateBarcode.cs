@@ -46,7 +46,7 @@ namespace ISI.Extensions.Aspose.Barcodes
 
 							generator.Parameters.Barcode.CodeTextParameters.Location = global::Aspose.BarCode.Generation.CodeLocation.None;
 
-							generator.Save(generateBarcodeUsingSymbologyRequest.imageStream, generateBarcodeUsingSymbologyRequest.imageFormat.ToBarcodeImageFormat());
+							generator.Save(generateBarcodeUsingSymbologyRequest.ImageStream, generateBarcodeUsingSymbologyRequest.ImageFormat.ToBarcodeImageFormat());
 						}
 					}
 					else
@@ -100,7 +100,7 @@ namespace ISI.Extensions.Aspose.Barcodes
 								generator.Parameters.Border.DashStyle = generateBarcodeUsingSymbologyRequest.BorderDashStyle.ToBorderDashStyle();
 							}
 
-							generator.Save(generateBarcodeUsingSymbologyRequest.imageStream, generateBarcodeUsingSymbologyRequest.imageFormat.ToBarcodeImageFormat());
+							generator.Save(generateBarcodeUsingSymbologyRequest.ImageStream, generateBarcodeUsingSymbologyRequest.ImageFormat.ToBarcodeImageFormat());
 						}
 					}
 					break;

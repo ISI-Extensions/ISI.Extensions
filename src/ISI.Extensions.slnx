@@ -8,6 +8,7 @@
     <File Path="../jenkins/ISI.Extensions.Build.jenkinsConfig" />
   </Folder>
   <Project Path="ISI.Extensions.Acme/ISI.Extensions.Acme.csproj" />
+  <Project Path="ISI.Extensions.Address/ISI.Extensions.Address.csproj" Id="7553eba1-76d1-40d5-9205-61f23241f5ff" />
   <Project Path="ISI.Extensions.Alpine/ISI.Extensions.Alpine.csproj" />
   <Project Path="ISI.Extensions.Ant/ISI.Extensions.Ant.csproj" />
   <Project Path="ISI.Extensions.Ascii/ISI.Extensions.Ascii.csproj" />

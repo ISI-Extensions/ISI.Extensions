@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2026, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,12 +18,52 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DTOs = ISI.Extensions.Barcodes.DataTransferObjects.BarcodeGenerator;
+using ISI.Extensions.Extensions;
+using System.IO;
+using System.Runtime.Serialization;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.Barcodes
+namespace ISI.Extensions.Documents
 {
-	public interface IBarcodeGenerator
+	[AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
+	public class DocumentDataPropertyBagFunctionAttribute : ISI.Extensions.TypeLocatorAttribute
 	{
-		DTOs.GenerateBarcodeResponse GenerateBarcode(DTOs.IGenerateBarcodeRequest request);
+		public DocumentDataPropertyBagFunctionAttribute()
+			: base(typeof(ISI.Extensions.Documents.IDocumentDataPropertyBagFunction))
+		{
+		}
+	}
+
+	[AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+	public class DocumentDataPropertyBagFunctionTemplateMergeKeyAttribute : Attribute
+	{
+	}
+
+	[AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+	public class DocumentDataPropertyBagFunctionSourceTemplateDataKeyAttribute : Attribute
+	{
+		public string Description { get; }
+
+		public DocumentDataPropertyBagFunctionSourceTemplateDataKeyAttribute(string description)
+		{
+			Description = description;
+		}
+
+		public DocumentDataPropertyBagFunctionSourceTemplateDataKeyAttribute()
+			: this("Source Template Data Key")
+		{
+
+		}
+	}
+
+	[AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+	public class DocumentDataPropertyBagFunctionStaticValueAttribute : Attribute
+	{
+		public string Description { get; }
+
+		public DocumentDataPropertyBagFunctionStaticValueAttribute(string description)
+		{
+			Description = description;
+		}
 	}
 }

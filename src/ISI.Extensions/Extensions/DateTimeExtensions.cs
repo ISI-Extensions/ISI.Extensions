@@ -70,7 +70,7 @@ namespace ISI.Extensions.Extensions
 			WeekDayName = 9
 		}
 
-		private static readonly IDictionary<DateTimeFormat, string> _dateFormats = new System.Collections.Concurrent.ConcurrentDictionary<DateTimeFormat, string>([
+		internal static readonly IDictionary<DateTimeFormat, string> _dateFormats = new System.Collections.Concurrent.ConcurrentDictionary<DateTimeFormat, string>([
 			new KeyValuePair<DateTimeFormat, string>(DateTimeFormat.DateTime, FormatDateTime),
 			new KeyValuePair<DateTimeFormat, string>(DateTimeFormat.DateTimeStandard, FormatDateTimeStandard),
 			new KeyValuePair<DateTimeFormat, string>(DateTimeFormat.DateTimeShort, FormatDateTimeShort),

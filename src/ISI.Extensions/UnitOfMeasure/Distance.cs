@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.UnitOfMeasure
 {
@@ -42,6 +43,40 @@ namespace ISI.Extensions.UnitOfMeasure
 		{
 			SetValue(unitOfMeasure, value);
 		}
+
+		public Distance(string stringValue)
+		{
+			UnitOfMeasure = DistanceUnitOfMeasure.Millimeter;
+			Value = 0;
+			HasValue = false;
+
+			if (!string.IsNullOrWhiteSpace(stringValue))
+			{
+				if (stringValue.IndexOf(':') > 0)
+				{
+					var values = stringValue.Split(':');
+					if (values.Length == 2)
+					{
+						SetValue(ISI.Extensions.Enum<DistanceUnitOfMeasure>.ParseUuid(values[0]), values[1].ToFloat());
+					}
+				}
+				else
+				{
+					var values = stringValue.Split(' ');
+					if (values.Length == 2)
+					{
+						SetValue(ISI.Extensions.Enum<DistanceUnitOfMeasure>.ParseUuid(values[1]), values[0].ToFloat());
+					}
+				}
+			}
+		}
+
+		public string GetStringValue()
+		{
+			return HasValue ? $"{UnitOfMeasure.GetUuid()}:{Value}" : null;
+		}
+
+		public override string ToString() => (HasValue ? $"{Value} {UnitOfMeasure.GetAbbreviation()}" : string.Empty);
 
 		public int Pixels
 		{
@@ -124,5 +159,7 @@ namespace ISI.Extensions.UnitOfMeasure
 					throw new ArgumentOutOfRangeException(nameof(unitOfMeasure), unitOfMeasure, null);
 			}
 		}
+
+		public static implicit operator Distance(string distance) => (string.IsNullOrWhiteSpace(distance) ? null : new(distance));
 	}
 }

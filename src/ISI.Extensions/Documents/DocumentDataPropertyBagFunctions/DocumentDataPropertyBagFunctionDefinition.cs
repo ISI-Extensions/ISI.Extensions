@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2026, Integrated Solutions, Inc.
 All rights reserved.
@@ -18,12 +18,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DTOs = ISI.Extensions.Barcodes.DataTransferObjects.BarcodeGenerator;
+using ISI.Extensions.Extensions;
+using System.IO;
+using System.Runtime.Serialization;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace ISI.Extensions.Barcodes
+namespace ISI.Extensions.Documents
 {
-	public interface IBarcodeGenerator
+	public class DocumentDataPropertyBagFunctionDefinition : IDocumentDataPropertyBagFunctionDefinition
 	{
-		DTOs.GenerateBarcodeResponse GenerateBarcode(DTOs.IGenerateBarcodeRequest request);
+		protected ISI.Extensions.Documents.IDocumentDataPropertyBagFunctionSerializableDefinition PropertyBagFunctionSerializableDefinition { get; }
+
+		public DocumentDataPropertyBagFunctionDefinition(ISI.Extensions.Documents.IDocumentDataPropertyBagFunctionSerializableDefinition propertyBagFunctionSerializableDefinition)
+		{
+			PropertyBagFunctionSerializableDefinition = propertyBagFunctionSerializableDefinition;
+		}
+
+		public ISI.Extensions.Documents.IDocumentDataPropertyBagFunctionSerializableDefinition ToSerializable() => PropertyBagFunctionSerializableDefinition;
+
+		public IDocumentDataPropertyBagFunction CreateDocumentDataPropertyBagFunction() => PropertyBagFunctionSerializableDefinition?.CreateDocumentDataPropertyBagFunction();
 	}
 }

@@ -36,7 +36,7 @@ namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
 
 		public string Platform { get; set; }
 
-		public bool UseDockBuildKit { get; set; }
+		public bool UseDockerBuildKit { get; set; }
 
 		public string[] EnvironmentFileFullNames { get; set; }
 		public string[] EnvironmentFileContents { get; set; }

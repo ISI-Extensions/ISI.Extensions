@@ -38,10 +38,10 @@ namespace ISI.Extensions.Docker
 
 			if (!string.IsNullOrWhiteSpace(request.OutputDirectory))
 			{
-				request.UseDockBuildKit = true;
+				request.UseDockerBuildKit = true;
 			}
 
-			if (request.UseDockBuildKit)
+			if (request.UseDockerBuildKit)
 			{
 				request.EnvironmentVariables ??= new();
 				request.EnvironmentVariables.Remove("DOCKER_BUILDKIT");
@@ -107,7 +107,7 @@ namespace ISI.Extensions.Docker
 
 				arguments.Add(string.IsNullOrWhiteSpace(request.DockerFileFullName) ? "." : $"\"{request.DockerFileFullName}\"");
 
-				if (request.UseDockBuildKit && string.IsNullOrWhiteSpace(request.OutputDirectory))
+				if (request.UseDockerBuildKit && string.IsNullOrWhiteSpace(request.OutputDirectory))
 				{
 					arguments.Add(".");
 				}

@@ -34,11 +34,15 @@ namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
 		public string Host { get; set; }
 		public string Context { get; set; }
 
+		public bool UseDockBuildKit { get; set; }
+
 		public string[] EnvironmentFileFullNames { get; set; }
 		public string[] EnvironmentFileContents { get; set; }
 		public InvariantCultureIgnoreCaseStringDictionary<string> EnvironmentVariables { get; set; }
 
 		public InvariantCultureIgnoreCaseStringDictionary<string> BuildArguments { get; set; }
+
+		public string OutputDirectory { get; set; }
 
 		public string ContainerRegistry { get; set; }
 		public string ContainerRepository { get; set; }

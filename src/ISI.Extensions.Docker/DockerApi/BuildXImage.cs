@@ -36,6 +36,18 @@ namespace ISI.Extensions.Docker
 
 			var arguments = new List<string>();
 
+			if (!string.IsNullOrWhiteSpace(request.OutputDirectory))
+			{
+				request.UseDockBuildKit = true;
+			}
+
+			if (request.UseDockBuildKit)
+			{
+				request.EnvironmentVariables ??= new();
+				request.EnvironmentVariables.Remove("DOCKER_BUILDKIT");
+				request.EnvironmentVariables.Add("DOCKER_BUILDKIT", "1");
+			}
+
 			using (var tempEnvironmentFiles = new TempEnvironmentVariablesFiles(request.AppDirectory, request.EnvironmentFileFullNames, request.EnvironmentFileContents, request.EnvironmentVariables))
 			{
 				request.OnBuildStart?.Invoke(tempEnvironmentFiles.EnvironmentVariables.TryGetValue);
@@ -55,7 +67,13 @@ namespace ISI.Extensions.Docker
 				}
 
 				arguments.Add("buildx");
+				
 				arguments.Add("build");
+
+				if (!string.IsNullOrWhiteSpace(request.OutputDirectory))
+				{
+					arguments.Add($"-o \"{request.OutputDirectory}\"");
+				}
 
 				if (!string.IsNullOrWhiteSpace(request.Platform))
 				{
@@ -87,13 +105,11 @@ namespace ISI.Extensions.Docker
 					arguments.Add($"--tag {containerImageTag}");
 				}
 
-				if (string.IsNullOrWhiteSpace(request.DockerFileFullName))
+				arguments.Add(string.IsNullOrWhiteSpace(request.DockerFileFullName) ? "." : $"\"{request.DockerFileFullName}\"");
+
+				if (request.UseDockBuildKit && string.IsNullOrWhiteSpace(request.OutputDirectory))
 				{
 					arguments.Add(".");
-				}
-				else
-				{
-					arguments.Add($"\"{request.DockerFileFullName}\"");
 				}
 
 				logger.LogInformation($"docker {string.Join(" ", arguments)}");

@@ -11,7 +11,7 @@ namespace ISI.Extensions.VisualStudio
 {
 	public partial class CodeSigningApi
 	{
-		private bool jSignEToken(Microsoft.Extensions.Logging.ILogger logger, DTOs.ISignRequest request, IEnumerable<string> fileNames)
+		private bool jSignEToken(Microsoft.Extensions.Logging.ILogger logger, DTOs.ISignRequest request, string[] fileNames)
 		{
 			var arguments = new List<string>();
 
@@ -40,14 +40,30 @@ namespace ISI.Extensions.VisualStudio
 				arguments.Add($"--tsaurl \"{request.TimeStampUri}\"");
 			}
 
-			arguments.AddRange(fileNames.Select(fileName => $"\"{fileName}\""));
+			var workingDirectories = new HashSet<string>(fileNames.Select(System.IO.Path.GetDirectoryName), StringComparer.CurrentCultureIgnoreCase);
 
-			var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+			if (workingDirectories.Count == 1)
+			{
+				arguments.AddRange(fileNames.Select(fileName => $"\"{System.IO.Path.GetFileName(fileName)}\""));
+			}
+			else
+			{
+				arguments.AddRange(fileNames.Select(fileName => $"\"{fileName}\""));
+			}
+
+			var processRequest = new ISI.Extensions.Process.ProcessRequest()
 			{
 				ProcessExeFullName = "jsign",
 				Arguments = arguments,
 				Logger = (fileNames.NullCheckedCount() == 1 ? null : logger),
-			});
+			};
+
+			if (workingDirectories.Count == 1)
+			{
+				processRequest.WorkingDirectory = workingDirectories.First();
+			}
+
+			var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(processRequest);
 
 			if (waitForProcessResponse.Errored)
 			{

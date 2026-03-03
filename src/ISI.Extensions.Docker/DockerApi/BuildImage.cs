@@ -41,12 +41,12 @@ namespace ISI.Extensions.Docker
 				request.UseDockerBuildKit = true;
 			}
 
-			if (request.UseDockerBuildKit)
-			{
-				request.EnvironmentVariables ??= new();
-				request.EnvironmentVariables.Remove("DOCKER_BUILDKIT");
-				request.EnvironmentVariables.Add("DOCKER_BUILDKIT", "1");
-			}
+			//if (request.UseDockerBuildKit)
+			//{
+			//	request.EnvironmentVariables ??= new();
+			//	request.EnvironmentVariables.Remove("DOCKER_BUILDKIT");
+			//	request.EnvironmentVariables.Add("DOCKER_BUILDKIT", "1");
+			//}
 
 			using (var tempEnvironmentFiles = new TempEnvironmentVariablesFiles(request.AppDirectory, request.EnvironmentFileFullNames, request.EnvironmentFileContents, request.EnvironmentVariables))
 			{
@@ -100,21 +100,28 @@ namespace ISI.Extensions.Docker
 
 				arguments.Add(string.IsNullOrWhiteSpace(request.DockerFileFullName) ? "." : $"\"{request.DockerFileFullName}\"");
 
-				if (request.UseDockerBuildKit && string.IsNullOrWhiteSpace(request.OutputDirectory))
-				{
-					arguments.Add(".");
-				}
+				//if (request.UseDockerBuildKit && string.IsNullOrWhiteSpace(request.OutputDirectory))
+				//{
+				//	arguments.Add(".");
+				//}
 
 				logger.LogInformation($"docker {string.Join(" ", arguments)}");
 
-				var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				var processRequest = new ISI.Extensions.Process.ProcessRequest()
 				{
 					Logger = logger,
 					ProcessExeFullName = "docker",
 					Arguments = arguments.ToArray(),
 					WorkingDirectory = request.AppDirectory,
 					EnvironmentVariables = AddDockerContextServerApiVersion(null, request.Host, request.Context),
-				});
+				};
+
+				if (request.UseDockerBuildKit)
+				{
+					processRequest.EnvironmentVariables.Add("DOCKER_BUILDKIT", "1");
+				}
+
+				var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(processRequest);
 
 				response.Output = waitForProcessResponse.Output;
 

@@ -46,11 +46,6 @@ namespace ISI.Extensions.Docker
 						WorkingDirectory = request.AppDirectory,
 						EnvironmentVariables = AddDockerContextServerApiVersion(null, request),
 					});
-
-					if (waitForProcessResponse.Errored)
-					{
-						throw new Exception(waitForProcessResponse.Output);
-					}
 				}
 
 				foreach (var copyFile in request.CopyFiles)

@@ -52,19 +52,7 @@ namespace ISI.Extensions.Docker
 			{
 				request.OnBuildStart?.Invoke(tempEnvironmentFiles.EnvironmentVariables.TryGetValue);
 
-				if (!string.IsNullOrWhiteSpace(request.Host))
-				{
-					arguments.Add($"--host {request.Host}");
-				}
-				else if (!string.IsNullOrWhiteSpace(request.Context))
-				{
-					if (!DockerContexts.ContainsKey(request.Context))
-					{
-						throw new Exception($"Context \"{request.Context}\" not found");
-					}
-
-					arguments.Add($"--context {request.Context}");
-				}
+				arguments.AddRange(GetHostContext(request));
 
 				arguments.Add("buildx");
 
@@ -120,7 +108,7 @@ namespace ISI.Extensions.Docker
 					ProcessExeFullName = "docker",
 					Arguments = arguments.ToArray(),
 					WorkingDirectory = request.AppDirectory,
-					EnvironmentVariables = AddDockerContextServerApiVersion(null, request.Host, request.Context),
+					EnvironmentVariables = AddDockerContextServerApiVersion(null, request),
 				};
 
 				if (request.UseDockerBuildKit)

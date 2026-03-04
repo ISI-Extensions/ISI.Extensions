@@ -61,20 +61,20 @@ namespace ISI.Extensions.Docker
 			return null;
 		}
 
-		protected InvariantCultureIgnoreCaseStringDictionary<string> AddDockerContextServerApiVersion(InvariantCultureIgnoreCaseStringDictionary<string> environmentVariables, string host, string context)
+		protected InvariantCultureIgnoreCaseStringDictionary<string> AddDockerContextServerApiVersion(InvariantCultureIgnoreCaseStringDictionary<string> environmentVariables, DTOs.IRequestHostContext request)
 		{
 			environmentVariables ??= new();
 
 			var serverApiVersion = string.Empty;
 
-			if (string.IsNullOrWhiteSpace(serverApiVersion) && !string.IsNullOrWhiteSpace(host))
+			if (string.IsNullOrWhiteSpace(serverApiVersion) && !string.IsNullOrWhiteSpace(request.Host))
 			{
-				serverApiVersion = GetDockerHostServerApiVersion(host);
+				serverApiVersion = GetDockerHostServerApiVersion(request.Host);
 			}
 
-			if (string.IsNullOrWhiteSpace(serverApiVersion) && !string.IsNullOrWhiteSpace(context))
+			if (string.IsNullOrWhiteSpace(serverApiVersion) && !string.IsNullOrWhiteSpace(request.Context))
 			{
-				serverApiVersion = GetDockerContextServerApiVersion(context);
+				serverApiVersion = GetDockerContextServerApiVersion(request.Context);
 			}
 
 			if (!string.IsNullOrWhiteSpace(serverApiVersion))
@@ -83,6 +83,27 @@ namespace ISI.Extensions.Docker
 			}
 
 			return environmentVariables;
+		}
+
+		protected string[] GetHostContext(DTOs.IRequestHostContext request)
+		{
+			var arguments = new List<string>();
+
+			if (!string.IsNullOrWhiteSpace(request.Host))
+			{
+				arguments.Add($"--host {request.Host}");
+			}
+			else if (!string.IsNullOrWhiteSpace(request.Context))
+			{
+				if (!DockerContexts.ContainsKey(request.Context))
+				{
+					throw new Exception($"Context \"{request.Context}\" not found");
+				}
+
+				arguments.Add($"--context {request.Context}");
+			}
+
+			return arguments.ToArray();
 		}
 	}
 }

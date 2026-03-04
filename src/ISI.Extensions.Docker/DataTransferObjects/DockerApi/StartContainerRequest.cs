@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
 {
-	public class StartContainerRequest
+	public class StartContainerRequest : IRequestHostContext
 	{
 		public string Host { get; set; }
 		public string Context { get; set; }

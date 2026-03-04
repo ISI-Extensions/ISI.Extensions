@@ -40,19 +40,7 @@ namespace ISI.Extensions.Docker
 			{
 				request.OnComposeUpStart?.Invoke(tempEnvironmentFiles.EnvironmentVariables.TryGetValue);
 
-				if (!string.IsNullOrWhiteSpace(request.Host))
-				{
-					arguments.Add($"--host {request.Host}");
-				}
-				else if (!string.IsNullOrWhiteSpace(request.Context))
-				{
-					if (!DockerContexts.ContainsKey(request.Context))
-					{
-						throw new Exception($"Context \"{request.Context}\" not found");
-					}
-
-					arguments.Add($"--context {request.Context}");
-				}
+				arguments.AddRange(GetHostContext(request));
 
 				if (!UseDockerDashCompose)
 				{
@@ -86,7 +74,7 @@ namespace ISI.Extensions.Docker
 					ProcessExeFullName = (UseDockerDashCompose ? "docker-compose" : "docker"),
 					Arguments = arguments.ToArray(),
 					WorkingDirectory = request.ComposeDirectory,
-					EnvironmentVariables = AddDockerContextServerApiVersion(null, request.Host, request.Context),
+					EnvironmentVariables = AddDockerContextServerApiVersion(null, request),
 				});
 
 				response.Output = waitForProcessResponse.Output;

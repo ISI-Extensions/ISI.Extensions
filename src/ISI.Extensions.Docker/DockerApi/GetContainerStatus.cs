@@ -36,19 +36,7 @@ namespace ISI.Extensions.Docker
 
 			var arguments = new List<string>();
 
-			if (!string.IsNullOrWhiteSpace(request.Host))
-			{
-				arguments.Add($"--host {request.Host}");
-			}
-			else if (!string.IsNullOrWhiteSpace(request.Context))
-			{
-				if (!DockerContexts.ContainsKey(request.Context))
-				{
-					throw new Exception($"Context \"{request.Context}\" not found");
-				}
-
-				arguments.Add($"--context {request.Context}");
-			}
+			arguments.AddRange(GetHostContext(request));
 
 			arguments.Add("inspect");
 			arguments.Add("--format=\"{{json .State.Health.Status}}\"");
@@ -62,7 +50,7 @@ namespace ISI.Extensions.Docker
 				Logger = logger,
 				ProcessExeFullName = "docker",
 				Arguments = arguments.ToArray(),
-				EnvironmentVariables = AddDockerContextServerApiVersion(null, request.Host, request.Context),
+				EnvironmentVariables = AddDockerContextServerApiVersion(null, request),
 			});
 
 			response.Status = waitForProcessResponse.Output.Trim('\"', ' ', '\r', '\n');

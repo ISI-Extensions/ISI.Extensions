@@ -108,7 +108,7 @@ Task("Sign")
 					foreach(var file in files)
 					{
 						var tempFile = File(tempDirectory.FullName + "/" + file.GetFilename());
-
+						
 						DeleteFile(file);
 
 						CopyFile(tempFile, file);

@@ -38,7 +38,7 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.4" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.4" />
 		<PackageReference Include="Microsoft.Extensions.FileProviders.Abstractions" Version="10.0.4" />
-		<PackageReference Include="Microsoft.Extensions.FileProviders.Composite" Version="10.0.3" />
+		<PackageReference Include="Microsoft.Extensions.FileProviders.Composite" Version="10.0.4" />
 		<PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.4" />
 		<PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="10.0.4" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.4" />

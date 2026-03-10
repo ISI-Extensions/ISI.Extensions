@@ -68,7 +68,7 @@ namespace ISI.Extensions.NameCheap
 
 			var formData = new ISI.Extensions.WebClient.Rest.FormDataCollection();
 			formData.SetUserNameClientIp(request, IpifyApi, Configuration);
-			formData.Add("Command", "namecheap.domains.dns.getHosts");
+			formData.Add("Command", "namecheap.domains.dns.setHosts");
 			formData.Add("SLD", domainNamePieces.First());
 			formData.Add("TLD", domainNamePieces.Last());
 			formData.Add("EmailType", getDnsRecordsResponse.EmailType);
@@ -77,7 +77,7 @@ namespace ISI.Extensions.NameCheap
 			{
 				if (!string.IsNullOrWhiteSpace(value))
 				{
-					uri.AddQueryStringParameter($"{key}{dnsRecordIndex}", value);
+					formData.Add($"{key}{dnsRecordIndex}", value);
 				}
 			}
 

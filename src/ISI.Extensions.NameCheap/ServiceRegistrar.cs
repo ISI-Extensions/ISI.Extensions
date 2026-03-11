@@ -28,6 +28,7 @@ namespace ISI.Extensions.NameCheap
 	{
 		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
+			services.AddSingleton<SslApi>();
 			services.AddSingleton<DomainsApi>();
 		}
 	}

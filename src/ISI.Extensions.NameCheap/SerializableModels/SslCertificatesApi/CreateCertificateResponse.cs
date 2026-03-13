@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.NameCheap.SerializableModels.Ssl
+namespace ISI.Extensions.NameCheap.SerializableModels.SslCertificatesApi
 {
 	[System.Serializable]
 	[System.ComponentModel.DesignerCategory("code")]
@@ -27,7 +27,7 @@ namespace ISI.Extensions.NameCheap.SerializableModels.Ssl
 		public string RequestedCommand { get; set; }
 
 		[System.Xml.Serialization.XmlElement("CommandResponse")]
-		public ApiResponseCommandResponse CommandResponse { get; set; }
+		public CreateCertificateResponseCommandResponse CommandResponse { get; set; }
 
 		[System.Xml.Serialization.XmlElement("Server")]
 		public string Server { get; set; }
@@ -42,10 +42,10 @@ namespace ISI.Extensions.NameCheap.SerializableModels.Ssl
 	[System.Serializable]
 	[System.ComponentModel.DesignerCategory("code")]
 	[System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "http://api.namecheap.com/xml.response")]
-	public class ApiResponseCommandResponse
+	public class CreateCertificateResponseCommandResponse
 	{
 		[System.Xml.Serialization.XmlElement("SSLCreateResult")]
-		public ApiResponseCommandResponseSslCreateResult SslCreateResult { get; set; }
+		public CreateCertificateResponseCommandResponseSslCreateResult SslCreateResult { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute("Type")]
 		public string Type { get; set; }
@@ -54,10 +54,10 @@ namespace ISI.Extensions.NameCheap.SerializableModels.Ssl
 	[System.Serializable]
 	[System.ComponentModel.DesignerCategory("code")]
 	[System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "http://api.namecheap.com/xml.response")]
-	public class ApiResponseCommandResponseSslCreateResult
+	public class CreateCertificateResponseCommandResponseSslCreateResult
 	{
 		[System.Xml.Serialization.XmlElement("SSLCertificate")]
-		public ApiResponseCommandResponseSSLCreateResultSSLCertificate SslCertificate { get; set; }
+		public CreateCertificateResponseCommandResponseSSLCreateResultSSLCertificate SslCertificate { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute("IsSuccess")]
 		public bool IsSuccess { get; set; }
@@ -75,7 +75,7 @@ namespace ISI.Extensions.NameCheap.SerializableModels.Ssl
 	[System.Serializable]
 	[System.ComponentModel.DesignerCategory("code")]
 	[System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "http://api.namecheap.com/xml.response")]
-	public class ApiResponseCommandResponseSSLCreateResultSSLCertificate
+	public class CreateCertificateResponseCommandResponseSSLCreateResultSSLCertificate
 	{
 		[System.Xml.Serialization.XmlAttribute("CertificateID")]
 		public string CertificateId { get; set; }

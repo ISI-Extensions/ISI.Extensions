@@ -45,6 +45,16 @@ namespace ISI.Extensions.NameCheap.Extensions
 			return uri;
 		}
 
+		public static void SetUserNameClientIp(this UriBuilder uri, DTOs.IRequest request, ISI.Extensions.Ipify.IpifyApi ipifyApi, Configuration configuration)
+		{
+			var apiUser = (string.IsNullOrWhiteSpace(request.ApiUser) ? configuration.ApiUser : request.ApiUser);
+
+			var clientIp = _clientIp ??= ipifyApi.GetExternalIPv4().IpAddress;
+
+			uri.AddQueryStringParameter("UserName", apiUser);
+			uri.AddQueryStringParameter("ClientIp", clientIp);
+		}
+
 		public static void SetUserNameClientIp(this ISI.Extensions.WebClient.Rest.FormDataCollection formData, DTOs.IRequest request, ISI.Extensions.Ipify.IpifyApi ipifyApi, Configuration configuration)
 		{
 			var apiUser = (string.IsNullOrWhiteSpace(request.ApiUser) ? configuration.ApiUser : request.ApiUser);

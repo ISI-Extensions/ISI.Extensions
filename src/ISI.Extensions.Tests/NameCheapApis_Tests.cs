@@ -151,5 +151,23 @@ namespace ISI.Extensions.Tests
 				});
 			}
 		}
+
+		[Test]
+		public void ListCertificates_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+
+			var sslCertificatesApi = ServiceProvider.GetService<ISI.Extensions.NameCheap.SslCertificatesApi>();
+
+			using (var eventHandler = ISI.Extensions.WebClient.Rest.GetEventHandler())
+			{
+				var apiResponse = sslCertificatesApi.ListCertificates(new()
+				{
+					ApiUser = settings.GetValue("NameCheap.ApiUser"),
+					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+				});
+			}
+		}
 	}
 }

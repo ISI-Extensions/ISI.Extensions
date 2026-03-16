@@ -30,29 +30,14 @@ namespace ISI.Platforms.AspNetCore.Extensions
 		{
 			webApplication.UseDefaultFiles();
 
-			//var rootDirectory = ISI.Extensions.IO.Path.GetRootBinDirectory(Startup.Context.RootAssembly);
-			
-		
-			//if (string.Equals(System.IO.Path.GetFileName(rootDirectory), "bin", StringComparison.InvariantCultureIgnoreCase))
-			//{
-			//	rootDirectory = System.IO.Path.GetDirectoryName(rootDirectory);
-			//}
-			//var wwwroot = System.IO.Path.Combine(rootDirectory, "wwwroot");
-
-			//webApplication.UseStaticFiles(new Microsoft.AspNetCore.Builder.StaticFileOptions()
-			//{
-			//	FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(wwwroot)
-			//});
-
 			webApplication.UseStaticFiles();
-			webApplication.UseVirtualFileVolumesFileProvider();
+			webApplication.UseVirtualFileVolumesStaticFiles();
 
 			webApplication.UseRouting();
 
 			webApplication.UseAuthentication();
 			webApplication.UseAuthorization();
-
-
+			
 			if (webApplication.Environment.IsDevelopment())
 			{
 				webApplication.UseDeveloperExceptionPage();
@@ -63,9 +48,7 @@ namespace ISI.Platforms.AspNetCore.Extensions
 				endpointRouteBuilder.MapControllers();
 				context.WebStartupUseEndpoints?.Invoke(endpointRouteBuilder);
 			});
-
 			
-
 			context.ConfigureWebApplication?.Invoke(webApplication);
 		}
 	}

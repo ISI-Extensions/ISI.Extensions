@@ -39,11 +39,13 @@ namespace ISI.Extensions.AspNetCore.Extensions
 			return webApplication.UseMiddleware<CorsMiddleware>();
 		}
 
-		public static Microsoft.AspNetCore.Builder.IApplicationBuilder UseVirtualFileVolumesFileProvider(this Microsoft.AspNetCore.Builder.WebApplication webApplication)
+		public static Microsoft.AspNetCore.Builder.IApplicationBuilder UseVirtualFileVolumesStaticFiles(this Microsoft.AspNetCore.Builder.WebApplication webApplication)
 		{
 			var virtualFileVolumesFileProvider = new VirtualFileVolumesFileProvider();
 
-			foreach (var virtualFileVolume in virtualFileVolumesFileProvider.VirtualFileVolumes)
+			foreach (var virtualFileVolume in virtualFileVolumesFileProvider.VirtualFileVolumes
+				         .OrderByDescending(virtualFileVolume => virtualFileVolume.PathPrefix.Length)
+				         .ThenBy(virtualFileVolume => virtualFileVolume.PathPrefix, StringComparer.InvariantCultureIgnoreCase))
 			{
 				webApplication.UseStaticFiles(new StaticFileOptions()
 				{

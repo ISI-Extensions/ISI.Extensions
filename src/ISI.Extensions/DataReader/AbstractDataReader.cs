@@ -198,7 +198,7 @@ namespace ISI.Extensions.DataReader
 				return byte.Parse(GetString(columnIndex));
 			}
 
-			return default;
+			return 0;
 		}
 
 		public virtual long GetBytes(int columnIndex, long fieldOffset, byte[] buffer, int bufferOffset, int length)
@@ -384,7 +384,7 @@ namespace ISI.Extensions.DataReader
 				return GetString(columnIndex).ToGuid();
 			}
 
-			return default;
+			return Guid.Empty;
 		}
 
 		public virtual Guid? GetGuidNullable(int columnIndex)
@@ -431,7 +431,7 @@ namespace ISI.Extensions.DataReader
 				return short.Parse(GetString(columnIndex));
 			}
 
-			return default;
+			return 0;
 		}
 
 		public virtual int GetInt(int columnIndex)

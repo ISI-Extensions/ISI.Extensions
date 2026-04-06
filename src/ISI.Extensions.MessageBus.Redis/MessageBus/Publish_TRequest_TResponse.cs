@@ -49,7 +49,7 @@ namespace ISI.Extensions.MessageBus.Redis
 
 			var responseCancellationTokenSource = new System.Threading.CancellationTokenSource();
 
-			cancellationToken.Register(() => responseCancellationTokenSource.Cancel());
+			cancellationToken.Register(responseCancellationTokenSource.Cancel);
 
 			var publisher = Connection.GetSubscriber();
 

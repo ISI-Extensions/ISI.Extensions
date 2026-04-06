@@ -19,32 +19,33 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace ISI.Extensions.AspNetCore.Extensions
 {
-	public static class WebHostExtensions
+	public static class HostExtensions
 	{
-		public static void RunWithShutdownForAppOfflineHtm(this Microsoft.AspNetCore.Hosting.IWebHost host)
+		public static void RunWithShutdownForAppOfflineHtm(this Microsoft.Extensions.Hosting.IHost host)
 		{
-			host.RunWithShutdownForAppOfflineHtm(default(System.Threading.CancellationToken), TimeSpan.FromMilliseconds(int.MaxValue));
+			host.RunWithShutdownForAppOfflineHtm(System.Threading.CancellationToken.None, TimeSpan.FromMilliseconds(int.MaxValue));
 		}
 
-		public static void RunWithShutdownForAppOfflineHtm(this Microsoft.AspNetCore.Hosting.IWebHost host, System.Threading.CancellationToken cancellationToken)
+		public static void RunWithShutdownForAppOfflineHtm(this Microsoft.Extensions.Hosting.IHost host, System.Threading.CancellationToken cancellationToken)
 		{
 			host.RunWithShutdownForAppOfflineHtm(cancellationToken, TimeSpan.FromMilliseconds(int.MaxValue));
 		}
 
-		public static void RunWithShutdownForAppOfflineHtm(this Microsoft.AspNetCore.Hosting.IWebHost host, TimeSpan timeout)
+		public static void RunWithShutdownForAppOfflineHtm(this Microsoft.Extensions.Hosting.IHost host, TimeSpan timeout)
 		{
-			host.RunWithShutdownForAppOfflineHtm(default(System.Threading.CancellationToken), (timeout.TotalMilliseconds > int.MaxValue ? TimeSpan.FromMilliseconds(int.MaxValue) : timeout));
+			host.RunWithShutdownForAppOfflineHtm(System.Threading.CancellationToken.None, (timeout.TotalMilliseconds > int.MaxValue ? TimeSpan.FromMilliseconds(int.MaxValue) : timeout));
 		}
 
-		public static void RunWithShutdownForAppOfflineHtm(this Microsoft.AspNetCore.Hosting.IWebHost host, System.Threading.CancellationToken cancellationToken, TimeSpan timeout)
+		public static void RunWithShutdownForAppOfflineHtm(this Microsoft.Extensions.Hosting.IHost host, System.Threading.CancellationToken cancellationToken, TimeSpan timeout)
 		{
 			var webHostCancellationTokenSource = new System.Threading.CancellationTokenSource(timeout);
 			var webHostCancellationToken = webHostCancellationTokenSource.Token;
 
-			cancellationToken.Register(() => webHostCancellationTokenSource.Cancel());
+			cancellationToken.Register(webHostCancellationTokenSource.Cancel);
 
 			var currentDirectory = System.IO.Directory.GetCurrentDirectory();
 

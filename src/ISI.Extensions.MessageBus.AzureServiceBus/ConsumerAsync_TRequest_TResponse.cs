@@ -63,7 +63,7 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 
 				var responseMessage = GetMessageEnvelope(requestMessage, response);
 
-				var queueClient = new Microsoft.Azure.ServiceBus.QueueClient(_connectionString, requestMessage.ReplyTo, default, default);
+				var queueClient = new Microsoft.Azure.ServiceBus.QueueClient(_connectionString, requestMessage.ReplyTo, default, null);
 
 				await queueClient.SendAsync(responseMessage);
 

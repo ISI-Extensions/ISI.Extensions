@@ -248,7 +248,7 @@ namespace ISI.Extensions
 					return createPropertyBagParameter(propertyBagParameterAttribute, propertyInfo, isMultiValue, isNullable, baseType, getValues, setValues);
 				}
 
-				return default;
+				return null;
 			}).Where(parameter => parameter != null).ToArray();
 		}
 	}

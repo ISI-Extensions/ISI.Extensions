@@ -229,7 +229,7 @@ namespace ISI.Extensions.Extensions
 		{
 			if (values == null)
 			{
-				return default;
+				return null;
 			}
 
 			return values.ToEnumerable(cancellationToken).FirstOrDefault();
@@ -250,7 +250,7 @@ namespace ISI.Extensions.Extensions
 		{
 			if (values == null)
 			{
-				return default;
+				return null;
 			}
 
 			return values.ToEnumerable(cancellationToken).FirstOrDefault(predicate);
@@ -271,7 +271,7 @@ namespace ISI.Extensions.Extensions
 		{
 			if (values == null)
 			{
-				return default;
+				return null;
 			}
 
 			return values.ToEnumerable(cancellationToken).LastOrDefault();
@@ -292,7 +292,7 @@ namespace ISI.Extensions.Extensions
 		{
 			if (values == null)
 			{
-				return default;
+				return null;
 			}
 
 			return values.ToEnumerable(cancellationToken).LastOrDefault(predicate);
@@ -469,7 +469,7 @@ namespace ISI.Extensions.Extensions
 					case NullCheckCollectionResult.ReturnNull:
 						return null;
 					case NullCheckCollectionResult.Empty:
-						return default;
+						return null;
 					default:
 						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
 				}
@@ -488,7 +488,7 @@ namespace ISI.Extensions.Extensions
 					case NullCheckCollectionResult.ReturnNull:
 						return null;
 					case NullCheckCollectionResult.Empty:
-						return default;
+						return null;
 					default:
 						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
 				}

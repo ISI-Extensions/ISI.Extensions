@@ -71,7 +71,7 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 
 			CreateQueue(requestChannelName);
 
-			var queueClient = new Microsoft.Azure.ServiceBus.QueueClient(_connectionString, requestChannelName, Microsoft.Azure.ServiceBus.ReceiveMode.PeekLock, default);
+			var queueClient = new Microsoft.Azure.ServiceBus.QueueClient(_connectionString, requestChannelName, Microsoft.Azure.ServiceBus.ReceiveMode.PeekLock, null);
 
 			queueClient.RegisterMessageHandler(
 				async (message, token) =>
@@ -99,7 +99,7 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 
 			CreateQueue(requestChannelName);
 
-			var queueClient = new Microsoft.Azure.ServiceBus.QueueClient(_connectionString, requestChannelName, Microsoft.Azure.ServiceBus.ReceiveMode.PeekLock, default);
+			var queueClient = new Microsoft.Azure.ServiceBus.QueueClient(_connectionString, requestChannelName, Microsoft.Azure.ServiceBus.ReceiveMode.PeekLock, null);
 
 			queueClient.RegisterMessageHandler(
 				async (message, token) =>
@@ -129,7 +129,7 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 
 			CreateQueue(requestChannelName);
 
-			var queueClient = new Microsoft.Azure.ServiceBus.QueueClient(_connectionString, requestChannelName, Microsoft.Azure.ServiceBus.ReceiveMode.PeekLock, default);
+			var queueClient = new Microsoft.Azure.ServiceBus.QueueClient(_connectionString, requestChannelName, Microsoft.Azure.ServiceBus.ReceiveMode.PeekLock, null);
 
 			queueClient.RegisterMessageHandler(
 				async (message, token) =>
@@ -157,7 +157,7 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 
 			CreateQueue(requestChannelName);
 
-			var queueClient = new Microsoft.Azure.ServiceBus.QueueClient(_connectionString, requestChannelName, Microsoft.Azure.ServiceBus.ReceiveMode.PeekLock, default);
+			var queueClient = new Microsoft.Azure.ServiceBus.QueueClient(_connectionString, requestChannelName, Microsoft.Azure.ServiceBus.ReceiveMode.PeekLock, null);
 
 			queueClient.RegisterMessageHandler(
 				async (message, token) =>
@@ -190,7 +190,7 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 
 			CreateQueue(requestChannelName);
 
-			var queueClient = new Microsoft.Azure.ServiceBus.QueueClient(_connectionString, requestChannelName, Microsoft.Azure.ServiceBus.ReceiveMode.PeekLock, default);
+			var queueClient = new Microsoft.Azure.ServiceBus.QueueClient(_connectionString, requestChannelName, Microsoft.Azure.ServiceBus.ReceiveMode.PeekLock, null);
 
 			queueClient.RegisterMessageHandler(
 				async (message, token) =>
@@ -217,7 +217,7 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 
 			CreateQueue(requestChannelName);
 
-			var queueClient = new Microsoft.Azure.ServiceBus.QueueClient(_connectionString, requestChannelName, Microsoft.Azure.ServiceBus.ReceiveMode.PeekLock, default);
+			var queueClient = new Microsoft.Azure.ServiceBus.QueueClient(_connectionString, requestChannelName, Microsoft.Azure.ServiceBus.ReceiveMode.PeekLock, null);
 
 			queueClient.RegisterMessageHandler(
 				async (message, token) =>

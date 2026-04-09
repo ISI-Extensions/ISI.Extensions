@@ -145,7 +145,5 @@ namespace ISI.Extensions.MessageBus.Redis
 				handler.Consume(redisChannel, redisValue).Wait();
 			});
 		}
-
-
 	}
 }

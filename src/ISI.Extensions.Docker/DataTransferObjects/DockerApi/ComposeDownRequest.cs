@@ -25,7 +25,7 @@ namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
 	public delegate void OnComposeDownStartDelegate(TryGetEnvironmentValueDelegate tryGetEnvironmentValue);
 	public delegate void OnComposeDownFinishDelegate(TryGetEnvironmentValueDelegate tryGetEnvironmentValue, bool errored);
 
-	public class ComposeDownRequest : IRequestHostContext
+	public class ComposeDownRequest : IRequestConnection
 	{
 		public string ComposeDirectory { get; set; }
 		public string ComposeFile { get; set; }

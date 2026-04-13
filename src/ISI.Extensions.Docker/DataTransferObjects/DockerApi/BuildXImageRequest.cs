@@ -25,7 +25,7 @@ namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
 	public delegate void OnBuildXStartDelegate(TryGetEnvironmentValueDelegate tryGetEnvironmentValue);
 	public delegate void OnBuildXFinishDelegate(TryGetEnvironmentValueDelegate tryGetEnvironmentValue, bool errored);
 
-	public class BuildXImageRequest : IRequestHostContext
+	public class BuildXImageRequest : IRequestConnection
 	{
 		public string AppDirectory { get; set; }
 

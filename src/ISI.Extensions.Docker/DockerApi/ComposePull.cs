@@ -40,7 +40,7 @@ namespace ISI.Extensions.Docker
 			{
 				request.OnComposePullStart?.Invoke(tempEnvironmentFiles.EnvironmentVariables.TryGetValue);
 
-				arguments.AddRange(GetHostContext(request));
+				arguments.AddRange(AddConnection(request));
 
 				if (!UseDockerDashCompose)
 				{

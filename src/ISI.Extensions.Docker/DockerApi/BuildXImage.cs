@@ -52,7 +52,7 @@ namespace ISI.Extensions.Docker
 			{
 				request.OnBuildStart?.Invoke(tempEnvironmentFiles.EnvironmentVariables.TryGetValue);
 
-				arguments.AddRange(GetHostContext(request));
+				arguments.AddRange(AddConnection(request));
 
 				arguments.Add("buildx");
 

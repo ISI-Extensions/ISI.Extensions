@@ -63,6 +63,7 @@
     <Platform Solution="*|x64" Project="x64" />
   </Project>
   <Project Path="ISI.Extensions.Keycloak/ISI.Extensions.Keycloak.csproj" />
+  <Project Path="ISI.Extensions.Kubernetes/ISI.Extensions.Kubernetes.csproj" Id="1cbcce54-4ce5-4015-a800-70fc9b965140" />
   <Project Path="ISI.Extensions.Linux/ISI.Extensions.Linux.csproj" Id="f628a8fe-d204-4d01-82f2-9a316796cdba" />
   <Project Path="ISI.Extensions.Locks.Redis/ISI.Extensions.Locks.Redis.csproj">
     <Platform Solution="*|x64" Project="x64" />

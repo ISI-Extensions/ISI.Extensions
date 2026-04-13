@@ -37,7 +37,7 @@ namespace ISI.Extensions.Docker
 			{
 				var arguments = new List<string>();
 
-				arguments.AddRange(GetHostContext(request));
+				arguments.AddRange(AddConnection(request));
 
 				arguments.Add("push");
 

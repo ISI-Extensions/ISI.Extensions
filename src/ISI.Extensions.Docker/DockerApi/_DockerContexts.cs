@@ -61,7 +61,7 @@ namespace ISI.Extensions.Docker
 			return null;
 		}
 
-		protected InvariantCultureIgnoreCaseStringDictionary<string> AddDockerContextServerApiVersion(InvariantCultureIgnoreCaseStringDictionary<string> environmentVariables, DTOs.IRequestHostContext request)
+		protected InvariantCultureIgnoreCaseStringDictionary<string> AddDockerContextServerApiVersion(InvariantCultureIgnoreCaseStringDictionary<string> environmentVariables, DTOs.IRequestConnection request)
 		{
 			environmentVariables ??= new();
 
@@ -85,7 +85,7 @@ namespace ISI.Extensions.Docker
 			return environmentVariables;
 		}
 
-		protected string[] GetHostContext(DTOs.IRequestHostContext request)
+		protected string[] AddConnection(DTOs.IRequestConnection request)
 		{
 			var arguments = new List<string>();
 

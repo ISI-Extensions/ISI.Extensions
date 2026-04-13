@@ -7,7 +7,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
 {
-	public class CopyFromImageRequest : IRequestHostContext
+	public class CopyFromImageRequest : IRequestConnection
 	{
 		public string AppDirectory { get; set; }
 

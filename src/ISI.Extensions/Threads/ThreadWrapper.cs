@@ -40,10 +40,10 @@ namespace ISI.Extensions
 				OnAppExit += Finish;
 			}
 
-			public virtual void Execute()
+			public virtual void Execute(System.Threading.CancellationTokenSource cancellationTokenSource = null)
 			{
 				_thread = new(Start);
-				_cancellationTokenSource = new();
+				_cancellationTokenSource = cancellationTokenSource ?? new();
 
 				IsActive = true;
 

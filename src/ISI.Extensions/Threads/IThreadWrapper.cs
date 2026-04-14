@@ -26,7 +26,7 @@ namespace ISI.Extensions
 		public interface IThreadWrapper
 		{
 			bool IsActive { get; }
-			void Execute();
+			void Execute(System.Threading.CancellationTokenSource cancellationTokenSource = null);
 			void Finish();
 			void Abort();
 		}

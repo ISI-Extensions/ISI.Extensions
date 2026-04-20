@@ -136,6 +136,26 @@ namespace ISI.Extensions.ConfigurationHelper
 									Data.Add($"{prefix}{property.Name}:{valueIndex}", $"{values[valueIndex]}");
 								}
 							}
+							else
+							{
+								environmentVariablePrefix = $"{environmentConfigurationAttribute.EnvironmentVariableName}-";
+
+								values = environmentVariables
+									.Where(value => value.Key.StartsWith(environmentVariablePrefix))
+									.Select(value => new KeyValuePair<int?, string>(value.Key.Substring(environmentVariablePrefix.Length, value.Key.Length - environmentVariablePrefix.Length).ToIntNullable(), value.Value))
+									.Where(value => value.Key.HasValue)
+									.ToNullCheckedArray(value => new KeyValuePair<int, string>(value.Key.Value, value.Value))
+									.OrderBy(value => value.Key)
+									.ToNullCheckedArray(value => value.Value);
+
+								if (values.NullCheckedAny())
+								{
+									for (var valueIndex = 0; valueIndex < values.Length; valueIndex++)
+									{
+										Data.Add($"{prefix}{property.Name}:{valueIndex}", $"{values[valueIndex]}");
+									}
+								}
+							}
 						}
 					}
 					else if ((property.PropertyType == typeof(string)) || (property.PropertyType == typeof(int)) || (property.PropertyType == typeof(bool)) ||  (property.PropertyType == typeof(TimeSpan)) || property.PropertyType.IsEnum)
@@ -144,7 +164,7 @@ namespace ISI.Extensions.ConfigurationHelper
 						{
 							if (_showConfig)
 							{
-								System.Console.WriteLine($"      {$"{prefix}{property.Name}"} => \"{value}\"");
+								System.Console.WriteLine($"      {prefix}{property.Name} => \"{value}\"");
 							}
 
 							Data.Add($"{prefix}{property.Name}", $"{value}");

@@ -21,10 +21,11 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using DTOs = ISI.Extensions.BitBucket.DataTransferObjects.BitBucketManagerApi;
 using SerializableDTOs = ISI.Extensions.BitBucket.SerializableModels;
+using SourceControlRepositoryApiDTOs = ISI.Extensions.Scm.DataTransferObjects.SourceControlRepositoryApi;
 
 namespace ISI.Extensions.BitBucket
 {
-	public partial class BitBucketManagerApi : IBitBucketManagerApi
+	public partial class BitBucketManagerApi
 	{
 		protected Configuration Configuration { get; }
 
@@ -39,6 +40,166 @@ namespace ISI.Extensions.BitBucket
 			Configuration = configuration;
 			Logger = logger;
 			DateTimeStamper = dateTimeStamper;
+		}
+	}
+
+	[SourceControlRepositoryApi]
+	public class GitBitBucketManagerApi : BitBucketManagerApi, ISI.Extensions.Scm.ISourceControlRepositoryApi
+	{
+		public const string SourceControlRepositoryTypeUuid = "49ebec63-389d-4fea-9167-2e3a5873d82c";
+		public const string Description = "BitBucket (Git)";
+		public const string RepositoryType = "git";
+
+		public GitBitBucketManagerApi(
+			Configuration configuration,
+			Microsoft.Extensions.Logging.ILogger logger,
+			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
+		: base(configuration, logger, dateTimeStamper)
+		{
+		}
+
+		Guid ISI.Extensions.Scm.ISourceControlRepositoryApi.SourceControlRepositoryTypeUuid => SourceControlRepositoryTypeUuid.ToGuid();
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.Description => Description;
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryType => RepositoryType;
+
+		SourceControlRepositoryApiDTOs.CreateRepositoryResponse ISI.Extensions.Scm.ISourceControlRepositoryApi.CreateRepository(SourceControlRepositoryApiDTOs.CreateRepositoryRequest request)
+		{
+			var response = new SourceControlRepositoryApiDTOs.CreateRepositoryResponse();
+
+			var apiResponse = CreateRepository(new()
+			{
+				BitBucketApiToken = request.ApiToken,
+				Workspace = request.RepositoryNamespace,
+				Name = request.RepositoryKey,
+				Scm = "git",
+				IsPrivate = true,
+				ProjectKey = "NET",
+			});
+
+			response.Url = apiResponse.Url;
+
+			return response;
+		}
+
+		SourceControlRepositoryApiDTOs.ListRepositoriesResponse ISI.Extensions.Scm.ISourceControlRepositoryApi.ListRepositories(SourceControlRepositoryApiDTOs.ListRepositoriesRequest request)
+		{
+			var response = new SourceControlRepositoryApiDTOs.ListRepositoriesResponse();
+
+			var apiResponse = ListRepositories(new()
+			{
+				BitBucketApiToken = request.ApiToken,
+			});
+
+			response.Repositories = apiResponse.Repositories
+				.NullCheckedWhere(repository => string.IsNullOrWhiteSpace(request.RepositoryNamespace) || string.Equals(request.RepositoryNamespace, repository.Workspace, StringComparison.InvariantCultureIgnoreCase))
+				.ToNullCheckedArray(repository => new ISI.Extensions.Scm.Repository()
+				{
+					RepositoryNamespace = repository.Workspace,
+					RepositoryKey = repository.Name,
+					Description = repository.Description,
+					Contact = repository.Contact,
+					CreationDate = repository.CreationDate,
+					Type = repository.Type,
+					LastModified = repository.LastModified,
+				});
+
+			return response;
+		}
+
+		SourceControlRepositoryApiDTOs.DeleteRepositoryResponse ISI.Extensions.Scm.ISourceControlRepositoryApi.DeleteRepository(SourceControlRepositoryApiDTOs.DeleteRepositoryRequest request)
+		{
+			var response = new SourceControlRepositoryApiDTOs.DeleteRepositoryResponse();
+
+			var apiResponse = DeleteRepository(new()
+			{
+				BitBucketApiToken = request.ApiToken,
+				Workspace = request.RepositoryNamespace,
+				Name = request.RepositoryKey,
+			});
+
+			response.Success = apiResponse.Success;
+
+			return response;
+		}
+	}
+
+	[SourceControlRepositoryApi]
+	public class SvnBitBucketManagerApi : BitBucketManagerApi, ISI.Extensions.Scm.ISourceControlRepositoryApi
+	{
+		public const string SourceControlRepositoryTypeUuid = "5c8bbe81-770f-4e07-8065-7d2b53d08e88";
+		public const string Description = "BitBucket (Svn)";
+		public const string RepositoryType = "svn";
+
+		public SvnBitBucketManagerApi(
+			Configuration configuration,
+			Microsoft.Extensions.Logging.ILogger logger,
+			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
+		: base(configuration, logger, dateTimeStamper)
+		{
+		}
+
+		Guid ISI.Extensions.Scm.ISourceControlRepositoryApi.SourceControlRepositoryTypeUuid => SourceControlRepositoryTypeUuid.ToGuid();
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.Description => Description;
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryType => RepositoryType;
+
+		SourceControlRepositoryApiDTOs.CreateRepositoryResponse ISI.Extensions.Scm.ISourceControlRepositoryApi.CreateRepository(SourceControlRepositoryApiDTOs.CreateRepositoryRequest request)
+		{
+			var response = new SourceControlRepositoryApiDTOs.CreateRepositoryResponse();
+
+			var apiResponse = CreateRepository(new()
+			{
+				BitBucketApiToken = request.ApiToken,
+				Workspace = request.RepositoryNamespace,
+				Name = request.RepositoryKey,
+				Scm = "git",
+				IsPrivate = true,
+				ProjectKey = "NET",
+			});
+
+			response.Url = apiResponse.Url;
+
+			return response;
+		}
+
+		SourceControlRepositoryApiDTOs.ListRepositoriesResponse ISI.Extensions.Scm.ISourceControlRepositoryApi.ListRepositories(SourceControlRepositoryApiDTOs.ListRepositoriesRequest request)
+		{
+			var response = new SourceControlRepositoryApiDTOs.ListRepositoriesResponse();
+
+			var apiResponse = ListRepositories(new()
+			{
+				BitBucketApiToken = request.ApiToken,
+			});
+
+			response.Repositories = apiResponse.Repositories
+				.NullCheckedWhere(repository => string.IsNullOrWhiteSpace(request.RepositoryNamespace) || string.Equals(request.RepositoryNamespace, repository.Workspace, StringComparison.InvariantCultureIgnoreCase))
+				.ToNullCheckedArray(repository => new ISI.Extensions.Scm.Repository()
+				{
+					RepositoryNamespace = repository.Workspace,
+					RepositoryKey = repository.Name,
+					Description = repository.Description,
+					Contact = repository.Contact,
+					CreationDate = repository.CreationDate,
+					Type = repository.Type,
+					LastModified = repository.LastModified,
+				});
+
+			return response;
+		}
+
+		SourceControlRepositoryApiDTOs.DeleteRepositoryResponse ISI.Extensions.Scm.ISourceControlRepositoryApi.DeleteRepository(SourceControlRepositoryApiDTOs.DeleteRepositoryRequest request)
+		{
+			var response = new SourceControlRepositoryApiDTOs.DeleteRepositoryResponse();
+
+			var apiResponse = DeleteRepository(new()
+			{
+				BitBucketApiToken = request.ApiToken,
+				Workspace = request.RepositoryNamespace,
+				Name = request.RepositoryKey,
+			});
+
+			response.Success = apiResponse.Success;
+
+			return response;
 		}
 	}
 }

@@ -31,6 +31,6 @@ namespace ISI.Extensions.ScmManager.DataTransferObjects.ScmManagerApi
 		public string Name { get; set; }
 		public string Type { get; set; } = "git";
 
-		public bool Initialize { get; set; }
+		public bool Initialize { get; set; } = true;
 	}
 }

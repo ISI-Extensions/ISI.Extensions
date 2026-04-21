@@ -27,6 +27,7 @@ namespace ISI.Extensions.BitBucket
 	{
 		public const string ConfigurationSectionName = "ISI.Extensions.BitBucket";
 
+		public string BitBucketUrl { get; set; } = @"https://bitbucket.org";
 		public string BitBucketApiUrl { get; set; } = @"https://api.bitbucket.org/2.0";
 	}
 }

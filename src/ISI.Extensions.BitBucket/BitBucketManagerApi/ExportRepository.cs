@@ -38,7 +38,7 @@ namespace ISI.Extensions.BitBucket
 			{
 				//tempDirectory.DeleteDirectory = false;
 
-				var repositoryDirectory = System.IO.Path.Combine(tempDirectory.FullName, request.RepositoryKey);
+				var repositoryDirectory = System.IO.Path.Combine(tempDirectory.FullName, request.Name);
 
 				Logger.LogInformation($"repositoryDirectory: {repositoryDirectory}");
 
@@ -53,7 +53,7 @@ namespace ISI.Extensions.BitBucket
 				{
 					var remoteUri = new UriBuilder("https://bitbucket.org");
 					remoteUri.AddDirectoryToPath(request.Workspace);
-					remoteUri.AddDirectoryToPath(request.RepositoryKey);
+					remoteUri.AddDirectoryToPath(request.Name);
 
 					remoteUri.UserName = "x-token-auth";
 					remoteUri.Password = request.BitBucketApiToken;
@@ -81,7 +81,7 @@ namespace ISI.Extensions.BitBucket
 						switch (request.ExportFormat)
 						{
 							case ISI.Extensions.Git.ExportFormat.Bundle:
-								var bundleFullName = System.IO.Path.Combine(tempDirectory.FullName, $"{request.RepositoryKey}.bundle");
+								var bundleFullName = System.IO.Path.Combine(tempDirectory.FullName, $"{request.Name}.bundle");
 
 								Logger.LogInformation($"bundleFullName: {bundleFullName}");
 
@@ -102,7 +102,7 @@ namespace ISI.Extensions.BitBucket
 								break;
 
 							case ISI.Extensions.Git.ExportFormat.TarGz:
-								var tarGzFullName = System.IO.Path.Combine(tempDirectory.FullName, $"{request.RepositoryKey}.tar.gz");
+								var tarGzFullName = System.IO.Path.Combine(tempDirectory.FullName, $"{request.Name}.tar.gz");
 
 								Logger.LogInformation($"tarGzFullName: {tarGzFullName}");
 

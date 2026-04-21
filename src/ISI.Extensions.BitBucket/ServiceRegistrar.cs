@@ -28,7 +28,9 @@ namespace ISI.Extensions.BitBucket
 	{
 		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
-			services.AddSingleton<IBitBucketManagerApi, BitBucketManagerApi>();
+			services.AddSingleton<BitBucketManagerApi>();
+			services.AddSingleton<GitBitBucketManagerApi>();
+			services.AddSingleton<SvnBitBucketManagerApi>();
 		}
 	}
 }

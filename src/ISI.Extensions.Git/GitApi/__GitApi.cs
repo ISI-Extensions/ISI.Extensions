@@ -29,6 +29,8 @@ namespace ISI.Extensions.Git
 	public partial class GitApi : ISI.Extensions.Scm.ISourceControlClientApi
 	{
 		public const string SourceControlTypeUuid = "2d545e80-bc15-4127-b8cd-cc0d12f8b0b8";
+		public const string Description = "Git";
+		public const string RepositoryType = "git";
 
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 		protected ISI.Extensions.JsonSerialization.IJsonSerializer JsonSerializer { get; }
@@ -61,6 +63,8 @@ namespace ISI.Extensions.Git
 
 		private const string SccDirectoryName = ".git";
 		Guid ISI.Extensions.Scm.ISourceControlClientApi.SourceControlTypeUuid => SourceControlTypeUuid.ToGuid();
+		string ISI.Extensions.Scm.ISourceControlClientApi.Description => Description;
+		string ISI.Extensions.Scm.ISourceControlClientApi.RepositoryType => RepositoryType;
 		bool ISI.Extensions.Scm.ISourceControlClientApi.IsSccDirectory(string directoryName) => string.Equals(System.IO.Path.GetFileName(directoryName), SccDirectoryName, StringComparison.InvariantCultureIgnoreCase);
 		bool ISI.Extensions.Scm.ISourceControlClientApi.UsesScc(string path)
 		{

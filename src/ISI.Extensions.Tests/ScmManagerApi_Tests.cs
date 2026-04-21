@@ -77,7 +77,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void ListRepositories_Tests()
 		{
-			var scmManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.ScmManager.IScmManagerApi>();
+			var scmManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.ScmManager.ScmManagerApi>();
 
 			var apiResponse = scmManagerApi.ListRepositories(new()
 			{
@@ -89,7 +89,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void ListRepositoryChangeSets_Tests()
 		{
-			var scmManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.ScmManager.IScmManagerApi>();
+			var scmManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.ScmManager.ScmManagerApi>();
 
 			var apiResponse = scmManagerApi.ListRepositoryChangeSets(new()
 			{
@@ -103,7 +103,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void ExportRepository_Tests()
 		{
-			var scmManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.ScmManager.IScmManagerApi>();
+			var scmManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.ScmManager.ScmManagerApi>();
 
 			var backupFullName = @"E:\ISI\ISI.SqlServerBackupAgent.ServiceApplication.20240420.205134049.bak";
 
@@ -127,7 +127,7 @@ namespace ISI.Extensions.Tests
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 
-			var scmManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.ScmManager.IScmManagerApi>();
+			var scmManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.ScmManager.ScmManagerApi>();
 
 			var getAccessTokenResponse = scmManagerApi.GetAccessToken(new()
 			{
@@ -146,7 +146,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void CreateRepository_Tests()
 		{
-			var scmManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.ScmManager.IScmManagerApi>();
+			var scmManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.ScmManager.ScmManagerApi>();
 
 			var repoName = "TextRepo";
 

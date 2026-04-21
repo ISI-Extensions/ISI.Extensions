@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2026, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,18 +15,18 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.BitBucket.DataTransferObjects.BitBucketManagerApi;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.SourceControlRepositoryApi;
 
-namespace ISI.Extensions.BitBucket
+namespace ISI.Extensions.Scm
 {
-	public interface IBitBucketManagerApi
+	public interface ISourceControlRepositoryApi
 	{
+		Guid SourceControlRepositoryTypeUuid { get; }
+		string Description { get; }
+		string RepositoryType { get; }
+		DTOs.CreateRepositoryResponse CreateRepository(DTOs.CreateRepositoryRequest request);
 		DTOs.ListRepositoriesResponse ListRepositories(DTOs.ListRepositoriesRequest request);
-		DTOs.GetRepositoryLastCommitHashResponse GetRepositoryLastCommitHash(DTOs.GetRepositoryLastCommitHashRequest request);
-		DTOs.ExportRepositoryResponse ExportRepository(DTOs.ExportRepositoryRequest request);
+		DTOs.DeleteRepositoryResponse DeleteRepository(DTOs.DeleteRepositoryRequest request);
 	}
 }

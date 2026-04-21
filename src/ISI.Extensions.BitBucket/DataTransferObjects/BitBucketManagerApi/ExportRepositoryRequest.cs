@@ -25,8 +25,9 @@ namespace ISI.Extensions.BitBucket.DataTransferObjects.BitBucketManagerApi
 	public class ExportRepositoryRequest : IRequest
 	{
 		public string BitBucketApiToken { get; set; }
+
 		public string Workspace { get; set; }
-		public string RepositoryKey { get; set; }
+		public string Name { get; set; }
 
 		public ISI.Extensions.Git.ExportFormat ExportFormat { get; set; } = ISI.Extensions.Git.ExportFormat.Bundle;
 

@@ -110,6 +110,20 @@ namespace ISI.Extensions.WebClient
 
 
 
+
+
+		public static IRestResponseWrapper ExecuteDelete(RestResponseTypeCollection restResponseTypes, string url, HeaderCollection headers, bool throwUnhandledException, System.Security.Authentication.SslProtocols? overRideSecurityProtocolTypes = null, System.Net.Security.RemoteCertificateValidationCallback serverCertificateValidationCallback = null, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates = null, System.Net.CookieContainer cookieContainer = null)
+		{
+			return ExecuteJsonMethod<NoRequest>(restResponseTypes, DeleteHttpMethod, url, headers, null, throwUnhandledException, overRideSecurityProtocolTypes, serverCertificateValidationCallback, clientCertificates, cookieContainer);
+		}
+
+		public static IRestResponseWrapper ExecuteDelete(RestResponseTypeCollection restResponseTypes, Uri uri, HeaderCollection headers, bool throwUnhandledException, System.Security.Authentication.SslProtocols? overRideSecurityProtocolTypes = null, System.Net.Security.RemoteCertificateValidationCallback serverCertificateValidationCallback = null, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates = null, System.Net.CookieContainer cookieContainer = null)
+		{
+			return ExecuteJsonMethod<NoRequest>(restResponseTypes, DeleteHttpMethod, uri, headers, null, throwUnhandledException, overRideSecurityProtocolTypes, serverCertificateValidationCallback, clientCertificates, cookieContainer);
+		}
+
+
+
 		public static System.Net.HttpStatusCode? ExecuteJsonDelete(string url, HeaderCollection headers, bool throwUnhandledException, System.Security.Authentication.SslProtocols? overRideSecurityProtocolTypes = null, System.Net.Security.RemoteCertificateValidationCallback serverCertificateValidationCallback = null, System.Security.Cryptography.X509Certificates.X509CertificateCollection clientCertificates = null, System.Net.CookieContainer cookieContainer = null)
 		{
 			return ExecuteJsonMethod<NoRequest>(DeleteHttpMethod, url, headers, null, throwUnhandledException, overRideSecurityProtocolTypes, serverCertificateValidationCallback, clientCertificates, cookieContainer);

@@ -25,7 +25,8 @@ namespace ISI.Extensions.BitBucket.DataTransferObjects.BitBucketManagerApi
 	public class GetRepositoryLastCommitHashRequest : IRequest
 	{
 		public string BitBucketApiToken { get; set; }
+
 		public string Workspace { get; set; }
-		public string RepositoryKey { get; set; }
+		public string Name { get; set; }
 	}
 }

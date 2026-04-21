@@ -34,5 +34,7 @@ namespace ISI.Extensions.Scm
 		}
 
 		public Guid SourceControlTypeUuid => throw new NotImplementedException();
+		public string Description => throw new NotImplementedException();
+		public string RepositoryType => throw new NotImplementedException();
 	}
 }

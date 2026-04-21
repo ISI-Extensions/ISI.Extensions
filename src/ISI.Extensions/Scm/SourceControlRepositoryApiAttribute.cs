@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2026, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,22 +15,18 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.ScmManager.DataTransferObjects.ScmManagerApi;
 
-namespace ISI.Extensions.ScmManager
+namespace ISI.Extensions
 {
-	public interface IScmManagerApi
+	[AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
+	public class SourceControlRepositoryApiAttribute : ISI.Extensions.TypeLocatorAttribute
 	{
-		DTOs.ListRepositoriesResponse ListRepositories(DTOs.ListRepositoriesRequest request);
-		DTOs.ListRepositoryChangeSetsResponse ListRepositoryChangeSets(DTOs.ListRepositoryChangeSetsRequest request);
-		DTOs.ExportRepositoryResponse ExportRepository(DTOs.ExportRepositoryRequest request);
-		DTOs.DeleteRepositoryResponse DeleteRepository(DTOs.DeleteRepositoryRequest request);
-		DTOs.CreateRepositoryResponse CreateRepository(DTOs.CreateRepositoryRequest request);
-		DTOs.SetRepositoryRoleResponse SetRepositoryRole(DTOs.SetRepositoryRoleRequest request);
-		DTOs.GetAccessTokenResponse GetAccessToken(DTOs.GetAccessTokenRequest request);
+		public SourceControlRepositoryApiAttribute()
+			: base(typeof(ISI.Extensions.Scm.ISourceControlRepositoryApi))
+		{
+
+		}
 	}
 }

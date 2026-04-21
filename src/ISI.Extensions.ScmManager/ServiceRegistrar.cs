@@ -28,7 +28,9 @@ namespace ISI.Extensions.ScmManager
 	{
 		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
-			services.AddSingleton<IScmManagerApi, ScmManagerApi>();
+			services.AddSingleton<ScmManagerApi>();
+			services.AddSingleton<GitScmManagerApi>();
+			services.AddSingleton<SvnScmManagerApi>();
 		}
 	}
 }

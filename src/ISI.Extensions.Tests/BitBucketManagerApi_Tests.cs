@@ -81,7 +81,7 @@ namespace ISI.Extensions.Tests
 		{
 			var jsonSerializer = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.JsonSerialization.IJsonSerializer>();
 			var gitApi = new ISI.Extensions.Git.GitApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress), jsonSerializer);
-			var bitBucketManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.BitBucket.IBitBucketManagerApi>();
+			var bitBucketManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.BitBucket.BitBucketManagerApi>();
 
 			var repos = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
 
@@ -120,7 +120,7 @@ namespace ISI.Extensions.Tests
 			{
 				var sourceControlUri = new UriBuilder(Uri.UriSchemeHttps, "bitbucket.org");
 				sourceControlUri.AddDirectoryToPath(repository.Workspace);
-				sourceControlUri.AddDirectoryToPath($"{repository.RepositoryKey}.git");
+				sourceControlUri.AddDirectoryToPath($"{repository.Name}.git");
 
 				var sourceControlUrl = sourceControlUri.Uri.ToString();
 
@@ -133,7 +133,7 @@ namespace ISI.Extensions.Tests
 				}
 				else
 				{
-					var repositoryKey = repository.RepositoryKey;
+					var repositoryKey = repository.Name;
 
 					if (repositoryKey.EndsWith(".Service", StringComparison.InvariantCultureIgnoreCase))
 					{
@@ -164,7 +164,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void ListRepositories_Tests()
 		{
-			var bitBucketManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.BitBucket.IBitBucketManagerApi>();
+			var bitBucketManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.BitBucket.BitBucketManagerApi>();
 
 			var apiResponse = bitBucketManagerApi.ListRepositories(new()
 			{
@@ -176,26 +176,26 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void GetRepositoryLastCommitHash_Tests()
 		{
-			var bitBucketManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.BitBucket.IBitBucketManagerApi>();
+			var bitBucketManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.BitBucket.BitBucketManagerApi>();
 
 			var apiResponse = bitBucketManagerApi.GetRepositoryLastCommitHash(new()
 			{
 				BitBucketApiToken = BitBucketApiToken,
 				Workspace = "dfdsfdfgb",
-				RepositoryKey = "dfdsfdfgb.service",
+				Name = "dfdsfdfgb.service",
 			});
 		}
 
 		[Test]
 		public void ExportRepository_Tests()
 		{
-			var bitBucketManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.BitBucket.IBitBucketManagerApi>();
+			var bitBucketManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.BitBucket.BitBucketManagerApi>();
 
 			var apiResponse = bitBucketManagerApi.ExportRepository(new()
 			{
 				BitBucketApiToken = BitBucketApiToken,
 				Workspace = "dfdsfdfgb",
-				RepositoryKey = "dfdsfdfgb.service",
+				Name = "dfdsfdfgb.service",
 			});
 		}
 	}

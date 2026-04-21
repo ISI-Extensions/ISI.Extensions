@@ -27,6 +27,8 @@ namespace ISI.Extensions.Scm
 	{
 		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
+			services.AddSingleton<ISI.Extensions.Scm.SourceControlRepositoryApi>();
+			services.AddSingleton<ISI.Extensions.Scm.ISourceControlRepositoryApi, ISI.Extensions.Scm.SourceControlRepositoryApi>();
 			services.AddSingleton<ISI.Extensions.Scm.IRcsKeywordProcessorApi, RcsKeywordProcessorApi>();
 			services.AddSingleton<ISI.Extensions.Scm.BuildScriptApi>();
 			services.AddSingleton<ISI.Extensions.Scm.IBuildScriptApi, BuildScriptApi>();

@@ -21,10 +21,11 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using DTOs = ISI.Extensions.ScmManager.DataTransferObjects.ScmManagerApi;
 using SerializableDTOs = ISI.Extensions.ScmManager.SerializableModels;
+using SourceControlRepositoryApiDTOs = ISI.Extensions.Scm.DataTransferObjects.SourceControlRepositoryApi;
 
 namespace ISI.Extensions.ScmManager
 {
-	public partial class ScmManagerApi : IScmManagerApi
+	public partial class ScmManagerApi
 	{
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
@@ -35,6 +36,168 @@ namespace ISI.Extensions.ScmManager
 		{
 			Logger = logger;
 			DateTimeStamper = dateTimeStamper;
+		}
+	}
+
+	[SourceControlRepositoryApi]
+	public class GitScmManagerApi : ScmManagerApi, ISI.Extensions.Scm.ISourceControlRepositoryApi
+	{
+		public const string SourceControlRepositoryTypeUuid = "d5d64897-2016-4eee-bd05-fab204733ea4";
+		public const string Description = "ScmManager (Git)";
+		public const string RepositoryType = "git";
+
+		public GitScmManagerApi(
+			Microsoft.Extensions.Logging.ILogger logger,
+			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
+		:base (logger, dateTimeStamper)
+		{
+		}
+
+		Guid ISI.Extensions.Scm.ISourceControlRepositoryApi.SourceControlRepositoryTypeUuid => SourceControlRepositoryTypeUuid.ToGuid();
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.Description => Description;
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryType => Description;
+
+		SourceControlRepositoryApiDTOs.CreateRepositoryResponse ISI.Extensions.Scm.ISourceControlRepositoryApi.CreateRepository(SourceControlRepositoryApiDTOs.CreateRepositoryRequest request)
+		{
+			var response = new SourceControlRepositoryApiDTOs.CreateRepositoryResponse();
+
+			var apiResponse = CreateRepository(new()
+			{
+				ScmManagerApiUrl = request.ApiUrl,
+				ScmManagerApiToken = request.ApiToken,
+				Namespace = request.RepositoryNamespace,
+				Name = request.RepositoryKey,
+				Type = "git",
+				Initialize = true,
+			});
+
+			response.Url = apiResponse.Url;
+
+			return response;
+		}
+
+		SourceControlRepositoryApiDTOs.ListRepositoriesResponse ISI.Extensions.Scm.ISourceControlRepositoryApi.ListRepositories(SourceControlRepositoryApiDTOs.ListRepositoriesRequest request)
+		{
+			var response = new SourceControlRepositoryApiDTOs.ListRepositoriesResponse();
+
+			var apiResponse = ListRepositories(new()
+			{
+				ScmManagerApiUrl = request.ApiUrl,
+				ScmManagerApiToken = request.ApiToken,
+			});
+
+			response.Repositories = apiResponse.Repositories
+				.NullCheckedWhere(repository => string.IsNullOrWhiteSpace(request.RepositoryNamespace) || string.Equals(request.RepositoryNamespace, repository.Namespace, StringComparison.InvariantCultureIgnoreCase))
+				.ToNullCheckedArray(repository => new ISI.Extensions.Scm.Repository()
+				{
+					RepositoryNamespace = repository.Namespace,
+					RepositoryKey = repository.Name,
+					Description = repository.Description,
+					Contact = repository.Contact,
+					CreationDate = repository.CreationDate,
+					Type = repository.Type,
+					LastModified = repository.LastModified,
+				});
+			
+			return response;
+		}
+
+		SourceControlRepositoryApiDTOs.DeleteRepositoryResponse ISI.Extensions.Scm.ISourceControlRepositoryApi.DeleteRepository(SourceControlRepositoryApiDTOs.DeleteRepositoryRequest request)
+		{
+			var response = new SourceControlRepositoryApiDTOs.DeleteRepositoryResponse();
+
+			var apiResponse = DeleteRepository(new()
+			{
+				ScmManagerApiUrl = request.ApiUrl,
+				ScmManagerApiToken = request.ApiToken,
+				Namespace = request.RepositoryNamespace,
+				Name = request.RepositoryKey,
+			});
+
+			response.Success = apiResponse.Success;
+			
+			return response;
+		}
+	}
+
+	[SourceControlRepositoryApi]
+	public class SvnScmManagerApi : ScmManagerApi, ISI.Extensions.Scm.ISourceControlRepositoryApi
+	{
+		public const string SourceControlRepositoryTypeUuid = "5f5cd390-3508-421b-bf38-5175cb2418fb";
+		public const string Description = "ScmManager (Svn)";
+		public const string RepositoryType = "svn";
+
+		public SvnScmManagerApi(
+			Microsoft.Extensions.Logging.ILogger logger,
+			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
+		:base (logger, dateTimeStamper)
+		{
+		}
+
+		Guid ISI.Extensions.Scm.ISourceControlRepositoryApi.SourceControlRepositoryTypeUuid => SourceControlRepositoryTypeUuid.ToGuid();
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.Description => Description;
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryType => RepositoryType;
+
+		SourceControlRepositoryApiDTOs.CreateRepositoryResponse ISI.Extensions.Scm.ISourceControlRepositoryApi.CreateRepository(SourceControlRepositoryApiDTOs.CreateRepositoryRequest request)
+		{
+			var response = new SourceControlRepositoryApiDTOs.CreateRepositoryResponse();
+
+			var apiResponse = CreateRepository(new()
+			{
+				ScmManagerApiUrl = request.ApiUrl,
+				ScmManagerApiToken = request.ApiToken,
+				Namespace = request.RepositoryNamespace,
+				Name = request.RepositoryKey,
+				Type = "svn",
+				Initialize = true,
+			});
+
+			response.Url = apiResponse.Url;
+
+			return response;
+		}
+
+		SourceControlRepositoryApiDTOs.ListRepositoriesResponse ISI.Extensions.Scm.ISourceControlRepositoryApi.ListRepositories(SourceControlRepositoryApiDTOs.ListRepositoriesRequest request)
+		{
+			var response = new SourceControlRepositoryApiDTOs.ListRepositoriesResponse();
+
+			var apiResponse = ListRepositories(new()
+			{
+				ScmManagerApiUrl = request.ApiUrl,
+				ScmManagerApiToken = request.ApiToken,
+			});
+
+			response.Repositories = apiResponse.Repositories
+				.NullCheckedWhere(repository => string.IsNullOrWhiteSpace(request.RepositoryNamespace) || string.Equals(request.RepositoryNamespace, repository.Namespace, StringComparison.InvariantCultureIgnoreCase))
+				.ToNullCheckedArray(repository => new ISI.Extensions.Scm.Repository()
+				{
+					RepositoryNamespace = repository.Namespace,
+					RepositoryKey = repository.Name,
+					Description = repository.Description,
+					Contact = repository.Contact,
+					CreationDate = repository.CreationDate,
+					Type = repository.Type,
+					LastModified = repository.LastModified,
+				});
+			
+			return response;
+		}
+
+		SourceControlRepositoryApiDTOs.DeleteRepositoryResponse ISI.Extensions.Scm.ISourceControlRepositoryApi.DeleteRepository(SourceControlRepositoryApiDTOs.DeleteRepositoryRequest request)
+		{
+			var response = new SourceControlRepositoryApiDTOs.DeleteRepositoryResponse();
+
+			var apiResponse = DeleteRepository(new()
+			{
+				ScmManagerApiUrl = request.ApiUrl,
+				ScmManagerApiToken = request.ApiToken,
+				Namespace = request.RepositoryNamespace,
+				Name = request.RepositoryKey,
+			});
+
+			response.Success = apiResponse.Success;
+			
+			return response;
 		}
 	}
 }

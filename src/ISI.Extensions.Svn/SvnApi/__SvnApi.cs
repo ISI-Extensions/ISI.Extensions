@@ -29,6 +29,8 @@ namespace ISI.Extensions.Svn
 	public partial class SvnApi : ISI.Extensions.Scm.ISourceControlClientApi
 	{
 		public const string SourceControlTypeUuid = "6f5ddcfd-8678-441a-977e-a4f58415de5f";
+		public const string Description = "Svn";
+		public const string RepositoryType = "svn";
 
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 		protected ISI.Extensions.Serialization.ISerialization Serializer { get; }
@@ -60,6 +62,8 @@ namespace ISI.Extensions.Svn
 
 		private const string SccDirectoryName = ".svn";
 		Guid ISI.Extensions.Scm.ISourceControlClientApi.SourceControlTypeUuid => SourceControlTypeUuid.ToGuid();
+		string ISI.Extensions.Scm.ISourceControlClientApi.Description => Description;
+		string ISI.Extensions.Scm.ISourceControlClientApi.RepositoryType => RepositoryType;
 		bool ISI.Extensions.Scm.ISourceControlClientApi.IsSccDirectory(string directoryName) => string.Equals(System.IO.Path.GetFileName(directoryName), SccDirectoryName, StringComparison.InvariantCultureIgnoreCase);
 		bool ISI.Extensions.Scm.ISourceControlClientApi.UsesScc(string path)
 		{

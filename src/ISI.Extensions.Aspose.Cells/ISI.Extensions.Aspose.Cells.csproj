@@ -19,8 +19,8 @@
 	  <PackageReference Include="Aspose.Cells" Version="26.4.0" />
 		<PackageReference Include="SkiaSharp" Version="3.119.2" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="3.119.2" />
-	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.6" />
-	  <PackageReference Include="System.Formats.Asn1" Version="10.0.6" />
+	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.7" />
+	  <PackageReference Include="System.Formats.Asn1" Version="10.0.7" />
 	</ItemGroup>
 
 	<ItemGroup>

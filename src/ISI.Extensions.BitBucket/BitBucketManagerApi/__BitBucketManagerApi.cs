@@ -72,7 +72,7 @@ namespace ISI.Extensions.BitBucket
 				Workspace = request.RepositoryNamespace,
 				Name = request.RepositoryKey,
 				Scm = "git",
-				IsPrivate = true,
+				IsPrivate = request.IsPrivate,
 				ProjectKey = "NET",
 			});
 
@@ -152,7 +152,7 @@ namespace ISI.Extensions.BitBucket
 				Workspace = request.RepositoryNamespace,
 				Name = request.RepositoryKey,
 				Scm = "git",
-				IsPrivate = true,
+				IsPrivate = request.IsPrivate,
 				ProjectKey = "NET",
 			});
 

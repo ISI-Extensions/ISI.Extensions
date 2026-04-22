@@ -14,5 +14,6 @@ namespace ISI.Extensions.Scm.DataTransferObjects.SourceControlRepositoryApi
 
 		public string RepositoryNamespace { get; set; }
 		public string RepositoryKey { get; set; }
+		public bool IsPrivate { get; set; } = true;
 	}
 }

@@ -21,11 +21,17 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using DTOs = ISI.Extensions.GitHub.DataTransferObjects.GitHubManagerApi;
 using SerializableDTOs = ISI.Extensions.GitHub.SerializableModels;
+using SourceControlRepositoryApiDTOs = ISI.Extensions.Scm.DataTransferObjects.SourceControlRepositoryApi;
 
 namespace ISI.Extensions.GitHub
 {
-	public partial class GitHubManagerApi : IGitHubManagerApi
+	[SourceControlRepositoryApi]
+	public partial class GitHubManagerApi : ISI.Extensions.Scm.ISourceControlRepositoryApi
 	{
+		public const string SourceControlRepositoryTypeUuid = "4cc13786-1627-4875-917a-f6421814d4ed";
+		public const string Description = "GitHub";
+		public const string RepositoryType = "git";
+
 		protected Configuration Configuration { get; }
 
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
@@ -39,6 +45,68 @@ namespace ISI.Extensions.GitHub
 			Configuration = configuration;
 			Logger = logger;
 			DateTimeStamper = dateTimeStamper;
+		}
+
+		Guid ISI.Extensions.Scm.ISourceControlRepositoryApi.SourceControlRepositoryTypeUuid => SourceControlRepositoryTypeUuid.ToGuid();
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.Description => Description;
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryType => RepositoryType;
+
+		SourceControlRepositoryApiDTOs.CreateRepositoryResponse ISI.Extensions.Scm.ISourceControlRepositoryApi.CreateRepository(SourceControlRepositoryApiDTOs.CreateRepositoryRequest request)
+		{
+			var response = new SourceControlRepositoryApiDTOs.CreateRepositoryResponse();
+
+			var apiResponse = CreateRepository(new()
+			{
+				GitHubApiToken = request.ApiToken,
+				Organization = request.RepositoryNamespace,
+				Name = request.RepositoryKey,
+				IsPrivate = request.IsPrivate,
+			});
+
+			response.Url = apiResponse.Url;
+
+			return response;
+		}
+
+		SourceControlRepositoryApiDTOs.ListRepositoriesResponse ISI.Extensions.Scm.ISourceControlRepositoryApi.ListRepositories(SourceControlRepositoryApiDTOs.ListRepositoriesRequest request)
+		{
+			var response = new SourceControlRepositoryApiDTOs.ListRepositoriesResponse();
+
+			var apiResponse = ListRepositories(new()
+			{
+				GitHubApiToken = request.ApiToken,
+				Organization = request.RepositoryNamespace,
+			});
+
+			response.Repositories = apiResponse.Repositories
+				.ToNullCheckedArray(repository => new ISI.Extensions.Scm.Repository()
+				{
+					RepositoryNamespace = repository.Organization,
+					RepositoryKey = repository.Name,
+					Description = repository.Description,
+					Contact = repository.Contact,
+					CreationDate = repository.CreationDate,
+					Type = repository.Type,
+					LastModified = repository.LastModified,
+				});
+
+			return response;
+		}
+
+		SourceControlRepositoryApiDTOs.DeleteRepositoryResponse ISI.Extensions.Scm.ISourceControlRepositoryApi.DeleteRepository(SourceControlRepositoryApiDTOs.DeleteRepositoryRequest request)
+		{
+			var response = new SourceControlRepositoryApiDTOs.DeleteRepositoryResponse();
+
+			var apiResponse = DeleteRepository(new()
+			{
+				GitHubApiToken = request.ApiToken,
+				Organization = request.RepositoryNamespace,
+				Name = request.RepositoryKey,
+			});
+
+			response.Success = apiResponse.Success;
+
+			return response;
 		}
 	}
 }

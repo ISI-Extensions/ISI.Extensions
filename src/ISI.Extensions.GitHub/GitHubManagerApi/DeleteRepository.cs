@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,11 +20,28 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using DTOs = ISI.Extensions.GitHub.DataTransferObjects.GitHubManagerApi;
+using SerializableDTOs = ISI.Extensions.GitHub.SerializableModels;
 
 namespace ISI.Extensions.GitHub
 {
-	public interface IGitHubManagerApi
+	public partial class GitHubManagerApi
 	{
-		DTOs.ListRepositoriesResponse ListRepositories(DTOs.ListRepositoriesRequest request);
+		public DTOs.DeleteRepositoryResponse DeleteRepository(DTOs.DeleteRepositoryRequest request)
+		{
+			var response = new DTOs.DeleteRepositoryResponse();
+
+			var uri = GetApiUri(request);
+			uri.SetPathAndQueryString("/orgs/{org}/repos".Replace("{org}", request.Organization));
+
+#if DEBUG
+			var xxx = ISI.Extensions.WebClient.Rest.GetEventHandler();
+#endif
+
+			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteDelete(uri.Uri, GetHeaders(request, "application/vnd.github+json", apiVersion: "2026-03-10"), true);
+
+			response.Success = (apiResponse == System.Net.HttpStatusCode.NoContent);
+
+			return response;
+		}
 	}
 }

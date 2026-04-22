@@ -28,7 +28,7 @@ namespace ISI.Extensions.GitHub
 	{
 		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
-			services.AddSingleton<IGitHubManagerApi, GitHubManagerApi>();
+			services.AddSingleton<GitHubManagerApi>();
 		}
 	}
 }

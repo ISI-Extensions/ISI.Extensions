@@ -26,51 +26,31 @@ namespace ISI.Extensions.GitHub
 {
 	public partial class GitHubManagerApi
 	{
-		public DTOs.ListRepositoriesResponse ListRepositories(DTOs.ListRepositoriesRequest request)
+		public DTOs.CreateRepositoryResponse CreateRepository(DTOs.CreateRepositoryRequest request)
 		{
-			var response = new DTOs.ListRepositoriesResponse();
-
-			var repositories = new List<Repository>();
+			var response = new DTOs.CreateRepositoryResponse();
 
 			var uri = GetApiUri(request);
 			uri.SetPathAndQueryString("/orgs/{org}/repos".Replace("{org}", request.Organization));
 
-			while (uri != null)
+			var apiRequest = new SerializableDTOs.CreateRepositoryRequest()
 			{
+				Name = request.Name,
+				Description = request.Description,
+				HomepageUrl = request.HomepageUrl,
+				IsPrivate = request.IsPrivate,
+				HasIssues = request.HasIssues,
+				HasProjects = request.HasProjects,
+				HasWiki = request.HasWiki,
+			};
+
 #if DEBUG
-				var xxx = ISI.Extensions.WebClient.Rest.GetEventHandler();
+			var xxx = ISI.Extensions.WebClient.Rest.GetEventHandler();
 #endif
 
-				var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<ISI.Extensions.WebClient.Rest.SerializedResponse<SerializableDTOs.ListRepositoriesResponseRepository[]>>(uri.Uri, GetHeaders(request, "application/vnd.github+json", apiVersion: "2022-11-28"), true);
+			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.CreateRepositoryRequest, SerializableDTOs.CreateRepositoryResponse>(uri.Uri, GetHeaders(request, "application/vnd.github+json", apiVersion: "2026-03-10"), apiRequest, true);
 
-				repositories.AddRange(apiResponse.Response.ToNullCheckedArray(repository => new Repository()
-				{
-					Organization = request.Organization,
-					Name = repository.Name,
-					Description = repository.Description,
-					Contact = repository.Owner?.Login,
-					CreationDate = repository.CreatedAt,
-					Type = "git",
-					//Archived = repository.Archived,
-					//Exporting = repository.Exporting,
-					LastModified = repository.UpdatedAt,
-				}));
-
-				uri = null;
-				if (apiResponse.ResponseHeaders.TryGetValue("link", out var linkHeaderValue))
-				{
-					var links = linkHeaderValue.Split(',');
-
-					var nextLink = links.NullCheckedFirstOrDefault(link => link.IndexOf("rel=\"next\"", StringComparison.InvariantCultureIgnoreCase) >= 0);
-
-					if (!string.IsNullOrWhiteSpace(nextLink))
-					{
-						uri = new UriBuilder(nextLink.Split(';').First().Trim(' ', '<', '>'));
-					}
-				}
-			}
-
-			response.Repositories = repositories.ToArray();
+			response.Url = apiResponse.CloneUrl;
 
 			return response;
 		}

@@ -55,7 +55,7 @@ namespace ISI.Extensions.ScmManager
 
 		Guid ISI.Extensions.Scm.ISourceControlRepositoryApi.SourceControlRepositoryTypeUuid => SourceControlRepositoryTypeUuid.ToGuid();
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.Description => Description;
-		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryType => Description;
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryType => RepositoryType;
 
 		SourceControlRepositoryApiDTOs.CreateRepositoryResponse ISI.Extensions.Scm.ISourceControlRepositoryApi.CreateRepository(SourceControlRepositoryApiDTOs.CreateRepositoryRequest request)
 		{

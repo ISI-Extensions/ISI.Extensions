@@ -21,7 +21,7 @@ namespace ISI.Extensions.GitHub
 {
 	public class Repository
 	{
-		public string Namespace { get; set; }
+		public string Organization { get; set; }
 		public string Name { get; set; }
 
 		public string Description { get; set; }
@@ -35,6 +35,6 @@ namespace ISI.Extensions.GitHub
 
 		public DateTime? LastModified { get; set; }
 
-		public override string ToString() => $"{Namespace}\\{Name} [{Type}]";
+		public override string ToString() => $"{Organization}\\{Name} [{Type}]";
 	}
 }

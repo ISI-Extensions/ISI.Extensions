@@ -74,7 +74,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void ListRepositories_Tests()
 		{
-			var gitHubManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.GitHub.IGitHubManagerApi>();
+			var gitHubManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.GitHub.GitHubManagerApi>();
 
 			var apiResponse = gitHubManagerApi.ListRepositories(new()
 			{

@@ -50,6 +50,12 @@ namespace ISI.Extensions.GitHub
 		Guid ISI.Extensions.Scm.ISourceControlRepositoryApi.SourceControlRepositoryTypeUuid => SourceControlRepositoryTypeUuid.ToGuid();
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.Description => Description;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryType => RepositoryType;
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiUrl => false;
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiUrlDescription => "ApiUrl";
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiToken => true;
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiTokenDescription => "ApiToken";
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseRepositoryNamespace => true;
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryNamespaceDescription => "Organization";
 
 		SourceControlRepositoryApiDTOs.CreateRepositoryResponse ISI.Extensions.Scm.ISourceControlRepositoryApi.CreateRepository(SourceControlRepositoryApiDTOs.CreateRepositoryRequest request)
 		{

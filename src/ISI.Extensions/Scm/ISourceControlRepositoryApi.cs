@@ -25,6 +25,13 @@ namespace ISI.Extensions.Scm
 		Guid SourceControlRepositoryTypeUuid { get; }
 		string Description { get; }
 		string RepositoryType { get; }
+		bool UseApiUrl { get; }
+		string ApiUrlDescription { get; }
+		bool UseApiToken { get; }
+		string ApiTokenDescription { get; }
+		bool UseRepositoryNamespace { get; }
+		string RepositoryNamespaceDescription { get; }
+
 		DTOs.CreateRepositoryResponse CreateRepository(DTOs.CreateRepositoryRequest request);
 		DTOs.ListRepositoriesResponse ListRepositories(DTOs.ListRepositoriesRequest request);
 		DTOs.DeleteRepositoryResponse DeleteRepository(DTOs.DeleteRepositoryRequest request);

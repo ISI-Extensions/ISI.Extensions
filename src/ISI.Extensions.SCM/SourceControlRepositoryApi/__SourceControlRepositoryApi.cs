@@ -21,5 +21,11 @@ namespace ISI.Extensions.Scm
 		public Guid SourceControlRepositoryTypeUuid => throw new NotImplementedException();
 		public string Description => throw new NotImplementedException();
 		public string RepositoryType => throw new NotImplementedException();
+		public bool UseApiUrl => throw new NotImplementedException();
+		public string ApiUrlDescription => throw new NotImplementedException();
+		public bool UseApiToken => throw new NotImplementedException();
+		public string ApiTokenDescription => throw new NotImplementedException();
+		public bool UseRepositoryNamespace => throw new NotImplementedException();
+		public string RepositoryNamespaceDescription => throw new NotImplementedException();
 	}
 }

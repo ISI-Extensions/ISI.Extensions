@@ -37,9 +37,9 @@ namespace ISI.Extensions.BitBucket
 			Microsoft.Extensions.Logging.ILogger logger,
 			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
 		{
-			Configuration = configuration;
-			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
+			Configuration = configuration ?? new();
+			Logger = logger ?? new ConsoleLogger();
+			DateTimeStamper = dateTimeStamper ?? new ISI.Extensions.DateTimeStamper.LocalMachineDateTimeStamper();
 		}
 	}
 
@@ -55,6 +55,12 @@ namespace ISI.Extensions.BitBucket
 			Microsoft.Extensions.Logging.ILogger logger,
 			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
 		: base(configuration, logger, dateTimeStamper)
+		{
+		}
+
+		public GitBitBucketManagerApi(
+			Microsoft.Extensions.Logging.ILogger logger)
+		: this(null, logger, null)
 		{
 		}
 
@@ -141,6 +147,12 @@ namespace ISI.Extensions.BitBucket
 			Microsoft.Extensions.Logging.ILogger logger,
 			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
 		: base(configuration, logger, dateTimeStamper)
+		{
+		}
+
+		public SvnBitBucketManagerApi(
+			Microsoft.Extensions.Logging.ILogger logger)
+		: this(null, logger, null)
 		{
 		}
 

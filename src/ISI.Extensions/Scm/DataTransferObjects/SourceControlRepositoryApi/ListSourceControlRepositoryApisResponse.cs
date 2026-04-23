@@ -9,6 +9,13 @@ namespace ISI.Extensions.Scm.DataTransferObjects.SourceControlRepositoryApi
 {
 	public class ListSourceControlRepositoryApisResponse
 	{
-		public IEnumerable<(Guid SourceControlRepositoryTypeUuid, string Description, string RepositoryType)> SourceControlRepositoryApis { get; set; }
+		public IEnumerable<ListSourceControlRepositoryApisResponseSourceControlRepositoryApi> SourceControlRepositoryApis { get; set; }
+	}
+
+	public class ListSourceControlRepositoryApisResponseSourceControlRepositoryApi
+	{
+		public Guid SourceControlRepositoryTypeUuid { get; set; }
+		public string Description { get; set; }
+		public string RepositoryType { get; set; }
 	}
 }

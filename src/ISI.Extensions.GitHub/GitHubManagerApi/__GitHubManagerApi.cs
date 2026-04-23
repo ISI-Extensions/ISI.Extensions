@@ -42,9 +42,15 @@ namespace ISI.Extensions.GitHub
 			Microsoft.Extensions.Logging.ILogger logger,
 			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
 		{
-			Configuration = configuration;
-			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
+			Configuration = configuration ?? new();
+			Logger = logger ?? new ConsoleLogger();
+			DateTimeStamper = dateTimeStamper ?? new ISI.Extensions.DateTimeStamper.LocalMachineDateTimeStamper();
+		}
+
+		public GitHubManagerApi(
+			Microsoft.Extensions.Logging.ILogger logger)
+			: this (null, logger, null)
+		{
 		}
 
 		Guid ISI.Extensions.Scm.ISourceControlRepositoryApi.SourceControlRepositoryTypeUuid => SourceControlRepositoryTypeUuid.ToGuid();

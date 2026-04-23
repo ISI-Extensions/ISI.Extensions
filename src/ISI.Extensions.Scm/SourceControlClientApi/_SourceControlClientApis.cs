@@ -33,7 +33,7 @@ namespace ISI.Extensions.Scm
 		{
 			var sourceControlClientApiTypes = ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementationTypes(typeof(ISourceControlClientApi));
 
-			return sourceControlClientApiTypes.ToNullCheckedArray(sourceControlClientApiType => Activator.CreateInstance(sourceControlClientApiType, new object[] {Logger}) as ISourceControlClientApi, NullCheckCollectionResult.Empty);
+			return sourceControlClientApiTypes.ToNullCheckedArray(sourceControlClientApiType => Activator.CreateInstance(sourceControlClientApiType, new object[] { Logger }) as ISourceControlClientApi, NullCheckCollectionResult.Empty);
 		}
 
 		private ISourceControlClientApi GetSourceControlClientApi(string fullName)

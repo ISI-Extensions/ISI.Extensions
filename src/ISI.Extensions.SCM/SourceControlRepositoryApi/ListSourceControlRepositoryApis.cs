@@ -18,7 +18,13 @@ namespace ISI.Extensions.Scm
 			{
 				SourceControlRepositoryTypeUuid = sourceControlRepositoryApi.SourceControlRepositoryTypeUuid,
 				Description = sourceControlRepositoryApi.Description,
-				RepositoryType = sourceControlRepositoryApi.RepositoryType
+				RepositoryType = sourceControlRepositoryApi.RepositoryType,
+				UseApiUrl = sourceControlRepositoryApi.UseApiUrl,
+				ApiUrlDescription = sourceControlRepositoryApi.ApiUrlDescription,
+				UseApiToken = sourceControlRepositoryApi.UseApiToken,
+				ApiTokenDescription = sourceControlRepositoryApi.ApiTokenDescription,
+				UseRepositoryNamespace = sourceControlRepositoryApi.UseRepositoryNamespace,
+				RepositoryNamespaceDescription = sourceControlRepositoryApi.RepositoryNamespaceDescription,
 			});
 
 			return response;

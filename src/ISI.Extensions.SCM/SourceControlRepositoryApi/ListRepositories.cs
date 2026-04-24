@@ -13,8 +13,9 @@ namespace ISI.Extensions.Scm
 		public DTOs.ListRepositoriesResponse ListRepositories(DTOs.ListRepositoriesRequest request)
 		{
 			var response = new DTOs.ListRepositoriesResponse();
-			
-			
+
+			response.Repositories = GetSourceControlRepositoryApi(request.SourceControlRepositoryTypeUuid)?.ListRepositories(request)?.Repositories;
+
 			return response;
 		}
 	}

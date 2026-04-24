@@ -7,9 +7,8 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.SourceControlRepositoryApi
 {
-	public interface IRequest
+	public class ListSourceControlRepositoryApisResponse
 	{
-		string ApiUrl { get; }
-		string ApiToken { get; }
+		public IEnumerable<ISourceControlRepositoryApi> SourceControlRepositoryApis { get; set; }
 	}
 }

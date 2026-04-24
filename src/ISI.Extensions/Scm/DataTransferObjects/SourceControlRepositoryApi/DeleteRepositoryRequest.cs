@@ -7,8 +7,9 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.SourceControlRepositoryApi
 {
-	public class DeleteRepositoryRequest : IRequest
+	public class DeleteRepositoryRequest
 	{
+		public Guid SourceControlRepositoryTypeUuid { get; set; }
 		public string ApiUrl { get; set; }
 		public string ApiToken { get; set; }
 

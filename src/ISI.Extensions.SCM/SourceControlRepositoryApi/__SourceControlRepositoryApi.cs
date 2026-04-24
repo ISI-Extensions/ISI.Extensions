@@ -8,7 +8,7 @@ using DTOs = ISI.Extensions.Scm.DataTransferObjects.SourceControlRepositoryApi;
 
 namespace ISI.Extensions.Scm
 {
-	public partial class SourceControlRepositoryApi : ISourceControlRepositoryApi
+	public partial class SourceControlRepositoryApi : ISI.Extensions.Scm.ISourceControlRepositoryApi
 	{
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 
@@ -18,14 +18,14 @@ namespace ISI.Extensions.Scm
 			Logger = logger ?? new ConsoleLogger();
 		}
 
-		public Guid SourceControlRepositoryTypeUuid => throw new NotImplementedException();
-		public string Description => throw new NotImplementedException();
-		public string RepositoryType => throw new NotImplementedException();
-		public bool UseApiUrl => throw new NotImplementedException();
-		public string ApiUrlDescription => throw new NotImplementedException();
-		public bool UseApiToken => throw new NotImplementedException();
-		public string ApiTokenDescription => throw new NotImplementedException();
-		public bool UseRepositoryNamespace => throw new NotImplementedException();
-		public string RepositoryNamespaceDescription => throw new NotImplementedException();
+		Guid ISI.Extensions.Scm.ISourceControlRepositoryApi.SourceControlRepositoryTypeUuid => throw new NotImplementedException();
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.Description => throw new NotImplementedException();
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryType => throw new NotImplementedException();
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiUrl => throw new NotImplementedException();
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiUrlDescription => throw new NotImplementedException();
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiToken => throw new NotImplementedException();
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiTokenDescription => throw new NotImplementedException();
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseRepositoryNamespace => throw new NotImplementedException();
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryNamespaceDescription => throw new NotImplementedException();
 	}
 }

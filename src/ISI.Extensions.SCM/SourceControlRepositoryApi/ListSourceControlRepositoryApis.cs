@@ -14,18 +14,7 @@ namespace ISI.Extensions.Scm
 		{
 			var response = new DTOs.ListSourceControlRepositoryApisResponse();
 
-			response.SourceControlRepositoryApis = SourceControlRepositoryApis.ToNullCheckedArray(sourceControlRepositoryApi => new DTOs.ListSourceControlRepositoryApisResponseSourceControlRepositoryApi()
-			{
-				SourceControlRepositoryTypeUuid = sourceControlRepositoryApi.SourceControlRepositoryTypeUuid,
-				Description = sourceControlRepositoryApi.Description,
-				RepositoryType = sourceControlRepositoryApi.RepositoryType,
-				UseApiUrl = sourceControlRepositoryApi.UseApiUrl,
-				ApiUrlDescription = sourceControlRepositoryApi.ApiUrlDescription,
-				UseApiToken = sourceControlRepositoryApi.UseApiToken,
-				ApiTokenDescription = sourceControlRepositoryApi.ApiTokenDescription,
-				UseRepositoryNamespace = sourceControlRepositoryApi.UseRepositoryNamespace,
-				RepositoryNamespaceDescription = sourceControlRepositoryApi.RepositoryNamespaceDescription,
-			});
+			response.SourceControlRepositoryApis = SourceControlRepositoryApis.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 			return response;
 		}

@@ -13,8 +13,9 @@ namespace ISI.Extensions.Scm
 		public DTOs.DeleteRepositoryResponse DeleteRepository(DTOs.DeleteRepositoryRequest request)
 		{
 			var response = new DTOs.DeleteRepositoryResponse();
-			
-			
+
+			response.Success = GetSourceControlRepositoryApi(request.SourceControlRepositoryTypeUuid)?.DeleteRepository(request)?.Success ?? false;
+
 			return response;
 		}
 	}

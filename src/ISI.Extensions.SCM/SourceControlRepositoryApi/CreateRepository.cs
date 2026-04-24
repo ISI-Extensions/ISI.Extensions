@@ -13,8 +13,9 @@ namespace ISI.Extensions.Scm
 		public DTOs.CreateRepositoryResponse CreateRepository(DTOs.CreateRepositoryRequest request)
 		{
 			var response = new DTOs.CreateRepositoryResponse();
-			
-			
+
+			response.Url = GetSourceControlRepositoryApi(request.SourceControlRepositoryTypeUuid)?.CreateRepository(request)?.Url;
+
 			return response;
 		}
 	}

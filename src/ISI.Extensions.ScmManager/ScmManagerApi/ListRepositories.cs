@@ -52,7 +52,7 @@ namespace ISI.Extensions.ScmManager
 					Namespace = repository.Namespace,
 					Name = repository.Name,
 					Description = repository.Description,
-					SourceUrl = repository?.Links?.Protocol?.NullCheckedFirstOrDefault(url => string.Equals(url.Name, Uri.UriSchemeHttp, StringComparison.InvariantCultureIgnoreCase))?.Href,
+					SourceUrl = repository?.Links?.Protocol?.NullCheckedFirstOrDefault(url => string.Equals(url.Name, Uri.UriSchemeHttp, StringComparison.InvariantCultureIgnoreCase) || string.Equals(url.Name, Uri.UriSchemeHttps, StringComparison.InvariantCultureIgnoreCase))?.Href,
 					Contact = repository.Contact,
 					CreationDate = repository.CreationDate,
 					Type = repository.Type,

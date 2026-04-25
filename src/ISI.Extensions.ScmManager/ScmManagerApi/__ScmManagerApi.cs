@@ -79,7 +79,7 @@ namespace ISI.Extensions.ScmManager
 				ScmManagerApiToken = request.ApiToken,
 				Namespace = request.RepositoryNamespace,
 				Name = request.RepositoryKey,
-				Type = "git",
+				Type = RepositoryType,
 				Initialize = true,
 			});
 
@@ -99,7 +99,7 @@ namespace ISI.Extensions.ScmManager
 			});
 
 			response.Repositories = apiResponse.Repositories
-				.NullCheckedWhere(repository => string.IsNullOrWhiteSpace(request.RepositoryNamespace) || string.Equals(request.RepositoryNamespace, repository.Namespace, StringComparison.InvariantCultureIgnoreCase))
+				.NullCheckedWhere(repository => string.Equals(repository.Type, RepositoryType, StringComparison.InvariantCultureIgnoreCase) && (string.IsNullOrWhiteSpace(request.RepositoryNamespace) || string.Equals(request.RepositoryNamespace, repository.Namespace, StringComparison.InvariantCultureIgnoreCase)))
 				.ToNullCheckedArray(repository => new ISI.Extensions.Scm.Repository()
 				{
 					RepositoryNamespace = repository.Namespace,
@@ -173,7 +173,7 @@ namespace ISI.Extensions.ScmManager
 				ScmManagerApiToken = request.ApiToken,
 				Namespace = request.RepositoryNamespace,
 				Name = request.RepositoryKey,
-				Type = "svn",
+				Type = RepositoryType,
 				Initialize = true,
 			});
 
@@ -193,7 +193,7 @@ namespace ISI.Extensions.ScmManager
 			});
 
 			response.Repositories = apiResponse.Repositories
-				.NullCheckedWhere(repository => string.IsNullOrWhiteSpace(request.RepositoryNamespace) || string.Equals(request.RepositoryNamespace, repository.Namespace, StringComparison.InvariantCultureIgnoreCase))
+				.NullCheckedWhere(repository => string.Equals(repository.Type, RepositoryType, StringComparison.InvariantCultureIgnoreCase) && (string.IsNullOrWhiteSpace(request.RepositoryNamespace) || string.Equals(request.RepositoryNamespace, repository.Namespace, StringComparison.InvariantCultureIgnoreCase)))
 				.ToNullCheckedArray(repository => new ISI.Extensions.Scm.Repository()
 				{
 					RepositoryNamespace = repository.Namespace,

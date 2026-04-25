@@ -83,7 +83,7 @@ namespace ISI.Extensions.BitBucket
 				BitBucketApiToken = request.ApiToken,
 				Workspace = request.RepositoryNamespace,
 				Name = request.RepositoryKey,
-				Scm = "git",
+				Scm = RepositoryType,
 				IsPrivate = request.IsPrivate,
 				ProjectKey = "NET",
 			});
@@ -103,7 +103,7 @@ namespace ISI.Extensions.BitBucket
 			});
 
 			response.Repositories = apiResponse.Repositories
-				.NullCheckedWhere(repository => string.IsNullOrWhiteSpace(request.RepositoryNamespace) || string.Equals(request.RepositoryNamespace, repository.Workspace, StringComparison.InvariantCultureIgnoreCase))
+				.NullCheckedWhere(repository => string.Equals(repository.Type, RepositoryType, StringComparison.InvariantCultureIgnoreCase) && (string.IsNullOrWhiteSpace(request.RepositoryNamespace) || string.Equals(request.RepositoryNamespace, repository.Workspace, StringComparison.InvariantCultureIgnoreCase)))
 				.ToNullCheckedArray(repository => new ISI.Extensions.Scm.Repository()
 				{
 					RepositoryNamespace = repository.Workspace,
@@ -176,7 +176,7 @@ namespace ISI.Extensions.BitBucket
 				BitBucketApiToken = request.ApiToken,
 				Workspace = request.RepositoryNamespace,
 				Name = request.RepositoryKey,
-				Scm = "git",
+				Scm = RepositoryType,
 				IsPrivate = request.IsPrivate,
 				ProjectKey = "NET",
 			});
@@ -196,7 +196,7 @@ namespace ISI.Extensions.BitBucket
 			});
 
 			response.Repositories = apiResponse.Repositories
-				.NullCheckedWhere(repository => string.IsNullOrWhiteSpace(request.RepositoryNamespace) || string.Equals(request.RepositoryNamespace, repository.Workspace, StringComparison.InvariantCultureIgnoreCase))
+				.NullCheckedWhere(repository => string.Equals(repository.Type, RepositoryType, StringComparison.InvariantCultureIgnoreCase) && (string.IsNullOrWhiteSpace(request.RepositoryNamespace) || string.Equals(request.RepositoryNamespace, repository.Workspace, StringComparison.InvariantCultureIgnoreCase)))
 				.ToNullCheckedArray(repository => new ISI.Extensions.Scm.Repository()
 				{
 					RepositoryNamespace = repository.Workspace,

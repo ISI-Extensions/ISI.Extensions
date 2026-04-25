@@ -47,14 +47,31 @@ namespace ISI.Extensions.BitBucket
 
 				var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableDTOs.ListRepositoriesResponse>(uri.Uri, GetHeaders(request), true);
 
-				repositories.AddRange(apiResponse.Repositories.ToNullCheckedArray(repository => new Repository()
+				repositories.AddRange(apiResponse.Repositories.ToNullCheckedArray(repository =>
 				{
-					Workspace = request.Workspace,
-					Name = repository.RepositoryKey,
-					Description = repository.Description,
-					CreationDate = repository.CreationDate,
-					Type = repository.Type,
-					LastModified = repository.LastModified,
+					var sourceUrl = repository?.Links?.Clone?.NullCheckedFirstOrDefault(url => string.Equals(url.Name, Uri.UriSchemeHttps, StringComparison.InvariantCultureIgnoreCase))?.Href;
+
+					if (!string.IsNullOrWhiteSpace(sourceUrl))
+					{
+						var sourceUri = new UriBuilder(sourceUrl)
+						{
+							UserName = null,
+							Password = null
+						};
+
+						sourceUrl = sourceUri.Uri.ToString();
+					}
+
+					return new Repository()
+					{
+						Workspace = request.Workspace,
+						Name = repository.RepositoryKey,
+						Description = repository.Description,
+						SourceUrl = sourceUrl,
+						CreationDate = repository.CreationDate,
+						Type = repository.Type,
+						LastModified = repository.LastModified,
+					};
 				}));
 
 				uri = string.IsNullOrWhiteSpace(apiResponse?.Next) ? null : new UriBuilder(apiResponse.Next);

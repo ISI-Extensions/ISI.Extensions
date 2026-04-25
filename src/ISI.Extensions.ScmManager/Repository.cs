@@ -26,6 +26,8 @@ namespace ISI.Extensions.ScmManager
 
 		public string Description { get; set; }
 
+		public string SourceUrl { get; set; }
+
 		public string Contact { get; set; }
 		public DateTime CreationDate { get; set; }
 		

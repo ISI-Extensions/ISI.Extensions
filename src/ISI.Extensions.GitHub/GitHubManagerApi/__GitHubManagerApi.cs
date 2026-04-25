@@ -96,6 +96,7 @@ namespace ISI.Extensions.GitHub
 					RepositoryNamespace = repository.Organization,
 					RepositoryKey = repository.Name,
 					Description = repository.Description,
+					SourceUrl = repository.SourceUrl,
 					Contact = repository.Contact,
 					CreationDate = repository.CreationDate,
 					Type = repository.Type,

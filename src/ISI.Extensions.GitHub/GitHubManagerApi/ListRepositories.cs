@@ -48,6 +48,7 @@ namespace ISI.Extensions.GitHub
 					Organization = request.Organization,
 					Name = repository.Name,
 					Description = repository.Description,
+					SourceUrl = repository.CloneUrl,
 					Contact = repository.Owner?.Login,
 					CreationDate = repository.CreatedAt,
 					Type = "git",

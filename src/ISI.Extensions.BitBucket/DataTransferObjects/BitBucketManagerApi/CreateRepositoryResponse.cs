@@ -9,6 +9,6 @@ namespace ISI.Extensions.BitBucket.DataTransferObjects.BitBucketManagerApi
 {
 	public class CreateRepositoryResponse
 	{
-		public string Url { get; set; }
+		public string SourceUrl { get; set; }
 	}
 }

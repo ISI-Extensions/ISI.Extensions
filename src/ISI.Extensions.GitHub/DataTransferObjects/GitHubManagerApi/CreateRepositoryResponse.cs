@@ -9,6 +9,6 @@ namespace ISI.Extensions.GitHub.DataTransferObjects.GitHubManagerApi
 {
 	public class CreateRepositoryResponse
 	{
-		public string Url { get; set; }
+		public string SourceUrl { get; set; }
 	}
 }

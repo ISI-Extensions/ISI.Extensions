@@ -85,7 +85,7 @@ namespace ISI.Extensions.ScmManager
 				Initialize = true,
 			});
 
-			response.Url = apiResponse.Url;
+			response.SourceUrl = apiResponse.SourceUrl;
 
 			return response;
 		}
@@ -181,7 +181,7 @@ namespace ISI.Extensions.ScmManager
 				Initialize = true,
 			});
 
-			response.Url = apiResponse.Url;
+			response.SourceUrl = apiResponse.SourceUrl;
 
 			return response;
 		}

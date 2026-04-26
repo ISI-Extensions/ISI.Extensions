@@ -77,7 +77,7 @@ namespace ISI.Extensions.GitHub
 				IsPrivate = request.IsPrivate,
 			});
 
-			response.Url = apiResponse.Url;
+			response.SourceUrl = apiResponse.SourceUrl;
 
 			return response;
 		}

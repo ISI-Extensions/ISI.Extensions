@@ -46,7 +46,7 @@ namespace ISI.Extensions.BitBucket
 					Password = null
 				};
 
-				response.Url = uri.Uri.ToString();
+				response.SourceUrl = uri.Uri.ToString();
 			}
 
 			return response;

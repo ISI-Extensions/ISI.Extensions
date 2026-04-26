@@ -24,6 +24,6 @@ namespace ISI.Extensions.ScmManager.DataTransferObjects.ScmManagerApi
 {
 	public class CreateRepositoryResponse
 	{
-		public string Url { get; set; }
+		public string SourceUrl { get; set; }
 	}
 }	

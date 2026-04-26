@@ -59,7 +59,9 @@ namespace ISI.Extensions.ScmManager
 
 			if ((apiResponse.StatusCode == System.Net.HttpStatusCode.Created) && (apiResponse.Response is ISI.Extensions.WebClient.Rest.TextResponse textResponse) && textResponse.ResponseHeaders.TryGetValue("Location", out var repoUrl))
 			{
-				response.Url = repoUrl;
+				var getRepositoryResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableDTOs.Repository>(repoUrl, GetHeaders(request, "application/vnd.scmm-repository+json;v=2"), true, cookieContainer: GetCookieContainer(request));
+
+				response.SourceUrl = getRepositoryResponse?.Links?.Protocol?.NullCheckedFirstOrDefault(url => string.Equals(url.Name, Uri.UriSchemeHttp, StringComparison.InvariantCultureIgnoreCase) || string.Equals(url.Name, Uri.UriSchemeHttps, StringComparison.InvariantCultureIgnoreCase))?.Href;
 			}
 
 			return response;

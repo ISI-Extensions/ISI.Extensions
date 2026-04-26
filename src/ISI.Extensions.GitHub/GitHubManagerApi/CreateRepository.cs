@@ -50,7 +50,7 @@ namespace ISI.Extensions.GitHub
 
 			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.CreateRepositoryRequest, SerializableDTOs.CreateRepositoryResponse>(uri.Uri, GetHeaders(request, "application/vnd.github+json", apiVersion: "2026-03-10"), apiRequest, true);
 
-			response.Url = apiResponse.CloneUrl;
+			response.SourceUrl = apiResponse.CloneUrl;
 
 			return response;
 		}

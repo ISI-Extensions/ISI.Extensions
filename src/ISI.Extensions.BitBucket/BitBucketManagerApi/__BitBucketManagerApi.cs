@@ -90,7 +90,7 @@ namespace ISI.Extensions.BitBucket
 				ProjectKey = "NET",
 			});
 
-			response.Url = apiResponse.Url;
+			response.SourceUrl = apiResponse.SourceUrl;
 
 			return response;
 		}
@@ -185,7 +185,7 @@ namespace ISI.Extensions.BitBucket
 				ProjectKey = "NET",
 			});
 
-			response.Url = apiResponse.Url;
+			response.SourceUrl = apiResponse.SourceUrl;
 
 			return response;
 		}

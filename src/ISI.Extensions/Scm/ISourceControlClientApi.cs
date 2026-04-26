@@ -22,7 +22,7 @@ namespace ISI.Extensions.Scm
 {
 	public interface ISourceControlClientApi
 	{
-		Guid SourceControlTypeUuid { get; }
+		Guid SourceControlClientTypeUuid { get; }
 		string Description { get; }
 		string RepositoryType { get; }
 		bool IsSccDirectory(string directoryName);

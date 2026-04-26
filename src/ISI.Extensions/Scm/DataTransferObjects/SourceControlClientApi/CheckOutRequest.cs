@@ -23,7 +23,7 @@ namespace ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi
 {
 	public class CheckOutRequest
 	{
-		public Guid SourceControlTypeUuid { get; set; }
+		public Guid SourceControlClientTypeUuid { get; set; }
 		public string SourceUrl { get; set; }
 		public string TargetFullName { get; set; }
 

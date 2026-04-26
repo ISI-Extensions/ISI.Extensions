@@ -23,7 +23,7 @@ namespace ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi
 {
 	public class GetRootDirectoryResponse
 	{
-		public Guid SourceControlTypeUuid { get; set; }
+		public Guid SourceControlClientTypeUuid { get; set; }
 		public string FullName { get; set; }
 		public string SolutionUrl { get; set; }
 		public string SourceControlUrl { get; set; }

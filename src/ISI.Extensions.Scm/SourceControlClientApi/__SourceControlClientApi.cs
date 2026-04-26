@@ -33,8 +33,8 @@ namespace ISI.Extensions.Scm
 			Logger = logger ?? new ConsoleLogger();
 		}
 
-		public Guid SourceControlTypeUuid => throw new NotImplementedException();
-		public string Description => throw new NotImplementedException();
-		public string RepositoryType => throw new NotImplementedException();
+		Guid ISI.Extensions.Scm.ISourceControlClientApi.SourceControlClientTypeUuid => throw new NotImplementedException();
+		string ISI.Extensions.Scm.ISourceControlClientApi.Description => throw new NotImplementedException();
+		string ISI.Extensions.Scm.ISourceControlClientApi.RepositoryType => throw new NotImplementedException();
 	}
 }

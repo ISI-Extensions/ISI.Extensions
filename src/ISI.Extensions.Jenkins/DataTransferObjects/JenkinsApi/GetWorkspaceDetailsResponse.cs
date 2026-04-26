@@ -27,7 +27,7 @@ namespace ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi
 
 		public string WorkspaceDirectory { get; set; }
 
-		public Guid? SourceControlTypeUuid { get; set; }
+		public Guid? SourceControlClientTypeUuid { get; set; }
 		public string SourceControlUrl { get; set; }
 	}
 }

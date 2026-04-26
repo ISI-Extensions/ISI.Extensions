@@ -29,7 +29,7 @@ namespace ISI.Extensions.Scm
 		{
 			var response = new DTOs.CheckOutResponse();
 			
-			response.Success = GetSourceControlClientApi(request.SourceControlTypeUuid)?.CheckOut(request)?.Success ?? false;
+			response.Success = GetSourceControlClientApi(request.SourceControlClientTypeUuid)?.CheckOut(request)?.Success ?? false;
 
 			return response;
 		}

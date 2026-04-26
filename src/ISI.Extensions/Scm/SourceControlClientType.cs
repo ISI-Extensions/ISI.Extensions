@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2026, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,17 +15,14 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi;
 
-namespace ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi
+namespace ISI.Extensions.Scm
 {
-	public class ListRequest
+	public class SourceControlClientType
 	{
-		public Guid SourceControlClientTypeUuid { get; set; }
-		public string SourceUrl { get; set; }
-
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
+		public const string GitSourceControlClientTypeUuid = "2d545e80-bc15-4127-b8cd-cc0d12f8b0b8";
+		public const string SvnSourceControlClientTypeUuid = "6f5ddcfd-8678-441a-977e-a4f58415de5f";
 	}
 }

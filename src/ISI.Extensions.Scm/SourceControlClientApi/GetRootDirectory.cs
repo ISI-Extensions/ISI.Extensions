@@ -31,7 +31,7 @@ namespace ISI.Extensions.Scm
 
 			var sourceControlClientApi = GetSourceControlClientApi(request.FullName);
 
-			response.SourceControlTypeUuid = sourceControlClientApi?.SourceControlTypeUuid ?? Guid.Empty;
+			response.SourceControlClientTypeUuid = sourceControlClientApi?.SourceControlClientTypeUuid ?? Guid.Empty;
 
 			var rootDirectory = sourceControlClientApi?.GetRootDirectory(request);
 

@@ -29,7 +29,7 @@ namespace ISI.Extensions.Scm
 		{
 			var response = new DTOs.ListResponse();
 			
-			response.FileNames = GetSourceControlClientApi(request.SourceControlTypeUuid)?.List(request)?.FileNames;
+			response.FileNames = GetSourceControlClientApi(request.SourceControlClientTypeUuid)?.List(request)?.FileNames;
 
 			return response;
 		}

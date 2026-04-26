@@ -14,10 +14,10 @@ namespace ISI.Extensions.Scm
 		{
 			var response = new DTOs.GetSourceControlClientApisResponse();
 
-			var sourceControlTypeUuids = new HashSet<Guid>(request.SourceControlTypeUuids ?? []);
+			var sourceControlClientTypeUuids = new HashSet<Guid>(request.SourceControlClientTypeUuids ?? []);
 
 			response.SourceControlClientApis = SourceControlClientApis
-				.NullCheckedWhere(sourceControlClientApi => sourceControlTypeUuids.Contains(sourceControlClientApi.SourceControlTypeUuid))
+				.NullCheckedWhere(sourceControlClientApi => sourceControlClientTypeUuids.Contains(sourceControlClientApi.SourceControlClientTypeUuid))
 				.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 			return response;

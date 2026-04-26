@@ -20,11 +20,11 @@ namespace ISI.Extensions.Scm
 			return sourceControlRepositoryApiTypes.ToNullCheckedArray(sourceControlRepositoryApiType => Activator.CreateInstance(sourceControlRepositoryApiType, new object[] { Logger }) as ISourceControlRepositoryApi, NullCheckCollectionResult.Empty);
 		}
 
-		private ISourceControlRepositoryApi GetSourceControlRepositoryApi(Guid sourceControlTypeUuid)
+		private ISourceControlRepositoryApi GetSourceControlRepositoryApi(Guid sourceControlRepositoryTypeUuid)
 		{
 			foreach (var sourceControlRepositoryApi in SourceControlRepositoryApis)
 			{
-				if (sourceControlRepositoryApi.SourceControlRepositoryTypeUuid == sourceControlTypeUuid)
+				if (sourceControlRepositoryApi.SourceControlRepositoryTypeUuid == sourceControlRepositoryTypeUuid)
 				{
 					return sourceControlRepositoryApi;
 				}

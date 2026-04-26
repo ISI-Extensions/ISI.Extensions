@@ -74,6 +74,8 @@ namespace ISI.Extensions.BitBucket
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseRepositoryNamespace => true;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryNamespaceDescription => "Workspace";
 
+		Guid ISI.Extensions.Scm.ISourceControlRepositoryApi.UseSourceControlClientTypeUuid => ISI.Extensions.Scm.SourceControlClientType.GitSourceControlClientTypeUuid.ToGuid();
+
 		SourceControlRepositoryApiDTOs.CreateRepositoryResponse ISI.Extensions.Scm.ISourceControlRepositoryApi.CreateRepository(SourceControlRepositoryApiDTOs.CreateRepositoryRequest request)
 		{
 			var response = new SourceControlRepositoryApiDTOs.CreateRepositoryResponse();
@@ -166,6 +168,8 @@ namespace ISI.Extensions.BitBucket
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiTokenDescription => "ApiToken";
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseRepositoryNamespace => true;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryNamespaceDescription => "Workspace";
+
+		Guid ISI.Extensions.Scm.ISourceControlRepositoryApi.UseSourceControlClientTypeUuid => ISI.Extensions.Scm.SourceControlClientType.SvnSourceControlClientTypeUuid.ToGuid();
 
 		SourceControlRepositoryApiDTOs.CreateRepositoryResponse ISI.Extensions.Scm.ISourceControlRepositoryApi.CreateRepository(SourceControlRepositoryApiDTOs.CreateRepositoryRequest request)
 		{

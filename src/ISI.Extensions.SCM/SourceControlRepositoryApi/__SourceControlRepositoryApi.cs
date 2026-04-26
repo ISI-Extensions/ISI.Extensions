@@ -27,5 +27,7 @@ namespace ISI.Extensions.Scm
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiTokenDescription => throw new NotImplementedException();
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseRepositoryNamespace => throw new NotImplementedException();
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryNamespaceDescription => throw new NotImplementedException();
+
+		Guid ISI.Extensions.Scm.ISourceControlRepositoryApi.UseSourceControlClientTypeUuid => throw new NotImplementedException();
 	}
 }

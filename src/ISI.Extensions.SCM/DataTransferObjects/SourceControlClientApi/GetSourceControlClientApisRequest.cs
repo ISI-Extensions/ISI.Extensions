@@ -9,6 +9,6 @@ namespace ISI.Extensions.Scm.DataTransferObjects.SourceControlClientApi
 {
 	public class GetSourceControlClientApisRequest
 	{
-		public IEnumerable<Guid> SourceControlTypeUuids { get; set; }
+		public IEnumerable<Guid> SourceControlClientTypeUuids { get; set; }
 	}
 }

@@ -32,6 +32,8 @@ namespace ISI.Extensions.Scm
 		bool UseRepositoryNamespace { get; }
 		string RepositoryNamespaceDescription { get; }
 
+		Guid UseSourceControlClientTypeUuid { get; }
+
 		DTOs.CreateRepositoryResponse CreateRepository(DTOs.CreateRepositoryRequest request);
 		DTOs.ListRepositoriesResponse ListRepositories(DTOs.ListRepositoriesRequest request);
 		DTOs.DeleteRepositoryResponse DeleteRepository(DTOs.DeleteRepositoryRequest request);

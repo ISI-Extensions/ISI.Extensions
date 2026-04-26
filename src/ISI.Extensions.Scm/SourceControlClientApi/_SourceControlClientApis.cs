@@ -49,11 +49,11 @@ namespace ISI.Extensions.Scm
 			return null;
 		}
 
-		private ISourceControlClientApi GetSourceControlClientApi(Guid sourceControlTypeUuid)
+		private ISourceControlClientApi GetSourceControlClientApi(Guid sourceControlClientTypeUuid)
 		{
 			foreach (var sourceControlClientApi in SourceControlClientApis)
 			{
-				if (sourceControlClientApi.SourceControlTypeUuid == sourceControlTypeUuid)
+				if (sourceControlClientApi.SourceControlClientTypeUuid == sourceControlClientTypeUuid)
 				{
 					return sourceControlClientApi;
 				}

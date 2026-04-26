@@ -63,6 +63,8 @@ namespace ISI.Extensions.GitHub
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseRepositoryNamespace => true;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryNamespaceDescription => "Organization";
 
+		Guid ISI.Extensions.Scm.ISourceControlRepositoryApi.UseSourceControlClientTypeUuid => ISI.Extensions.Scm.SourceControlClientType.GitSourceControlClientTypeUuid.ToGuid();
+
 		SourceControlRepositoryApiDTOs.CreateRepositoryResponse ISI.Extensions.Scm.ISourceControlRepositoryApi.CreateRepository(SourceControlRepositoryApiDTOs.CreateRepositoryRequest request)
 		{
 			var response = new SourceControlRepositoryApiDTOs.CreateRepositoryResponse();

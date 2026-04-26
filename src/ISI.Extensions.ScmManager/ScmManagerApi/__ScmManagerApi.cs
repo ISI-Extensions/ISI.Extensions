@@ -69,6 +69,8 @@ namespace ISI.Extensions.ScmManager
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseRepositoryNamespace => true;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryNamespaceDescription => "Namespace";
 
+		Guid ISI.Extensions.Scm.ISourceControlRepositoryApi.UseSourceControlClientTypeUuid => ISI.Extensions.Scm.SourceControlClientType.GitSourceControlClientTypeUuid.ToGuid();
+
 		SourceControlRepositoryApiDTOs.CreateRepositoryResponse ISI.Extensions.Scm.ISourceControlRepositoryApi.CreateRepository(SourceControlRepositoryApiDTOs.CreateRepositoryRequest request)
 		{
 			var response = new SourceControlRepositoryApiDTOs.CreateRepositoryResponse();
@@ -162,6 +164,8 @@ namespace ISI.Extensions.ScmManager
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiTokenDescription => "ApiToken";
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseRepositoryNamespace => true;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryNamespaceDescription => "Namespace";
+
+		Guid ISI.Extensions.Scm.ISourceControlRepositoryApi.UseSourceControlClientTypeUuid => ISI.Extensions.Scm.SourceControlClientType.SvnSourceControlClientTypeUuid.ToGuid();
 
 		SourceControlRepositoryApiDTOs.CreateRepositoryResponse ISI.Extensions.Scm.ISourceControlRepositoryApi.CreateRepository(SourceControlRepositoryApiDTOs.CreateRepositoryRequest request)
 		{

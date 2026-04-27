@@ -30,21 +30,74 @@ namespace ISI.Extensions.VisualStudio
 		{
 			var response = new DTOs.GetSignAssemblyCommandResponse();
 
-			var signtoolExeFullName = GetSigntoolExeFullName(new()
+			InitializeCodeSigningCertificateToken(request);
+
+			switch (request.CertificateType)
 			{
-				UseShortPathName = request.UseShortPathName,
-			}).SigntoolExeFullName;
+				case DTOs.CodeSigningCertificateType.File:
+				{
+					var signtoolExeFullName = GetSigntoolExeFullName(new()
+					{
+						UseShortPathName = request.UseShortPathName,
+					}).SigntoolExeFullName;
 
-			//if (request.UseShortPathName)
-			//{
-			//	signtoolExeFullName = ISI.Extensions.IO.Path.GetShortPathName(signtoolExeFullName);
-			//}
+					//if (request.UseShortPathName)
+					//{
+					//	signtoolExeFullName = ISI.Extensions.IO.Path.GetShortPathName(signtoolExeFullName);
+					//}
 
-			var arguments = GetSignAssemblyCommandArguments(request);
+					var arguments = GetSignAssemblyCommandArguments(request);
 
-			arguments.Insert(0, $"\"{signtoolExeFullName}\"");
+					arguments.Insert(0, $"\"{signtoolExeFullName}\"");
 
-			response.Command = string.Join(" ", arguments);
+					response.Command = string.Join(" ", arguments);
+
+					break;
+				}
+
+				case DTOs.CodeSigningCertificateType.JSignEToken:
+				{
+					var arguments = new List<string>();
+
+					arguments.Add("--storetype ETOKEN");
+
+					if (!string.IsNullOrWhiteSpace(request.CertificatePassword))
+					{
+						arguments.Add($"--storepass \"{request.CertificatePassword}\"");
+					}
+
+					if (request.DigestAlgorithm == DTOs.CodeSigningDigestAlgorithm.Sha256)
+					{
+						arguments.Add("--alg SHA-256");
+					}
+					else if (request.DigestAlgorithm == DTOs.CodeSigningDigestAlgorithm.Sha384)
+					{
+						arguments.Add("--alg SHA-384");
+					}
+					else if (request.DigestAlgorithm == DTOs.CodeSigningDigestAlgorithm.Sha512)
+					{
+						arguments.Add("--alg SHA-512");
+					}
+
+					if (request.TimeStampUri != null)
+					{
+						arguments.Add($"--tsaurl \"{request.TimeStampUri}\"");
+					}
+
+					arguments.Insert(0, "jsign");
+
+					response.Command = string.Join(" ", arguments);
+
+					break;
+				}
+
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+
+
+
+
 
 			return response;
 		}

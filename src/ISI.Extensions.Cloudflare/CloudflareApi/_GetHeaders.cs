@@ -33,11 +33,19 @@ namespace ISI.Extensions.Cloudflare
 
 			if (!string.IsNullOrWhiteSpace(request.ApiToken))
 			{
-				headers.AddBearerAuthentication(request.ApiToken);
+				var apiToken = request.ApiToken;
+
+				apiToken = (apiToken.StartsWith("%") && apiToken.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(apiToken.Trim('%')) : apiToken);
+
+				headers.AddBearerAuthentication(apiToken);
 			}
 			else if (!string.IsNullOrWhiteSpace(Configuration?.ApiToken))
 			{
-				headers.AddBearerAuthentication(Configuration.ApiToken);
+				var apiToken = Configuration.ApiToken;
+
+				apiToken = (apiToken.StartsWith("%") && apiToken.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(apiToken.Trim('%')) : apiToken);
+
+				headers.AddBearerAuthentication(apiToken);
 			}
 
 			return headers;

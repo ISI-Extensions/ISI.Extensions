@@ -58,11 +58,15 @@ namespace ISI.Extensions.Scm
 						throw new ArgumentOutOfRangeException(nameof(request));
 				}
 
+				var password = request.Password;
+
+				password = (password.StartsWith("%") && password.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(password.Trim('%')) : password);
+
 				var uri = new UriBuilder(request.FileStoreUrl);
 
 				var formValues = new System.Collections.Specialized.NameValueCollection();
 				formValues.Add("userName", request.UserName);
-				formValues.Add("password", request.Password);
+				formValues.Add("password", password);
 				formValues.Add("fileStoreUuid", request.FileStoreUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens));
 				formValues.Add("version", request.Version);
 

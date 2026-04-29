@@ -48,10 +48,7 @@ namespace ISI.Extensions.Ngrok
 						var localUri = new UriBuilder(existingTunnel.Configuration.LocalUrl);
 						var externalUri = new UriBuilder(existingTunnel.ExternalUrl);
 
-						if (!existingTunnelLookupByPort.ContainsKey(localUri.Port))
-						{
-							existingTunnelLookupByPort.Add(localUri.Port, existingTunnel);
-						}
+						existingTunnelLookupByPort.TryAdd(localUri.Port, existingTunnel);
 
 						if (!existingTunnelLookupByExternalUrl.ContainsKey(externalUri.Uri.ToString()))
 						{

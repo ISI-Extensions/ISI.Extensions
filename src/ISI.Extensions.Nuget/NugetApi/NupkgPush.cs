@@ -91,7 +91,9 @@ namespace ISI.Extensions.Nuget
 
 					using (var client = new System.Net.WebClient())
 					{
-						client.Headers.Add(NuGetHeaderName, request.NugetApiKey);
+						var nugetApiKey = (request.NugetApiKey.StartsWith("%") && request.NugetApiKey.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(request.NugetApiKey.Trim('%')) : request.NugetApiKey);
+						
+						client.Headers.Add(NuGetHeaderName, nugetApiKey);
 						client.UploadFile(packagePublishUrl, System.Net.WebRequestMethods.Http.Put, nupkgFullName);
 					}
 

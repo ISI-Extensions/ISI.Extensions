@@ -49,7 +49,11 @@ namespace ISI.Extensions.GitHub
 
 			if (!string.IsNullOrWhiteSpace(request.GitHubApiToken))
 			{
-				headers.AddBearerAuthentication(request.GitHubApiToken);
+				var gitHubApiToken = request.GitHubApiToken;
+
+				gitHubApiToken = (gitHubApiToken.StartsWith("%") && gitHubApiToken.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(gitHubApiToken.Trim('%')) : gitHubApiToken);
+
+				headers.AddBearerAuthentication(gitHubApiToken);
 			}
 
 			return headers;

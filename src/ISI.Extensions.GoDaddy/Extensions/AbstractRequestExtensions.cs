@@ -29,6 +29,8 @@ namespace ISI.Extensions.GoDaddy.Extensions
 			var apiKey = (string.IsNullOrWhiteSpace(request.ApiKey) ? configuration.ApiKey : request.ApiKey);
 			var apiSecret = (string.IsNullOrWhiteSpace(request.ApiSecret) ? configuration.ApiSecret : request.ApiSecret);
 
+			apiSecret = (apiSecret.StartsWith("%") && apiSecret.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(apiSecret.Trim('%')) : apiSecret);
+
 			var authenticationToken = $"sso-key {apiKey}:{apiSecret}";
 
 			headers.AddAuthorizationToken(authenticationToken);

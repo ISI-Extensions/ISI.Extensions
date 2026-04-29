@@ -27,10 +27,20 @@ namespace ISI.Extensions.AWS.Extensions
 		{
 			if (string.IsNullOrWhiteSpace(request.AmazonAccessKey) && string.IsNullOrWhiteSpace(request.AmazonSecretKey))
 			{
-				return new Amazon.Route53.AmazonRoute53Client(new Amazon.Runtime.BasicAWSCredentials(configuration.AmazonAccessKey, configuration.AmazonSecretKey));
+				var amazonSecretKey = configuration.AmazonSecretKey;
+
+				amazonSecretKey = (amazonSecretKey.StartsWith("%") && amazonSecretKey.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(amazonSecretKey.Trim('%')) : amazonSecretKey);
+
+				return new Amazon.Route53.AmazonRoute53Client(new Amazon.Runtime.BasicAWSCredentials(configuration.AmazonAccessKey, amazonSecretKey));
 			}
 
-			return new Amazon.Route53.AmazonRoute53Client(new Amazon.Runtime.BasicAWSCredentials(request.AmazonAccessKey, request.AmazonSecretKey));
+			{
+				var amazonSecretKey = request.AmazonSecretKey;
+
+				amazonSecretKey = (amazonSecretKey.StartsWith("%") && amazonSecretKey.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(amazonSecretKey.Trim('%')) : amazonSecretKey);
+
+				return new Amazon.Route53.AmazonRoute53Client(new Amazon.Runtime.BasicAWSCredentials(request.AmazonAccessKey, amazonSecretKey));
+			}
 		}
 	}
 }

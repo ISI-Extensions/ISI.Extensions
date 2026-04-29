@@ -45,6 +45,8 @@ namespace ISI.Extensions.XenOrchestra
 				password = Configuration.XenOrchestraPassword;
 			}
 
+			password = (password.StartsWith("%") && password.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(password.Trim('%')) : password);
+
 			if (!string.IsNullOrWhiteSpace(server))
 			{
 				return (ConnectionInfo: ISI.Extensions.SshNet.ConnectionManager.GetConnectionInfo(server, userName, password), Password: password);

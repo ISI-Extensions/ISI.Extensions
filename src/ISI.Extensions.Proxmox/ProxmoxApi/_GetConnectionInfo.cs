@@ -45,6 +45,8 @@ namespace ISI.Extensions.Proxmox
 				password = Configuration.ProxmoxPassword;
 			}
 
+			password = (password.StartsWith("%") && password.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(password.Trim('%')) : password);
+
 			if (!string.IsNullOrWhiteSpace(server))
 			{
 				return ISI.Extensions.SshNet.ConnectionManager.GetConnectionInfo(server, userName, password);

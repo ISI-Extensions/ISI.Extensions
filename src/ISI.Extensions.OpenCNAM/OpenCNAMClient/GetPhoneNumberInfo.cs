@@ -32,6 +32,8 @@ namespace ISI.Extensions.OpenCNAM
 			var accountSid = (string.IsNullOrWhiteSpace(request.AccountSID) ? Configuration.AccountSID : request.AccountSID);
 			var authToken = (string.IsNullOrWhiteSpace(request.AuthToken) ? Configuration.AuthToken : request.AuthToken);
 
+			authToken = (authToken.StartsWith("%") && authToken.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(authToken.Trim('%')) : authToken);
+
 			var uri = new UriBuilder(Configuration.Url);
 			uri.SetPathAndQueryString(UrlPathFormat.GetPhoneNumberInfo.Replace(new Dictionary<string, string>()
 			{

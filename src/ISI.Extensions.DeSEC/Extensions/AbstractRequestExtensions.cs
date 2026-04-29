@@ -29,6 +29,8 @@ namespace ISI.Extensions.DeSEC.Extensions
 
 			var apiKey = (string.IsNullOrWhiteSpace(request.ApiKey) ? configuration.ApiKey : request.ApiKey);
 
+			apiKey = (apiKey.StartsWith("%") && apiKey.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(apiKey.Trim('%')) : apiKey);
+
 			headers.AddAuthorizationToken($"Token {apiKey}");
 
 			return headers;

@@ -33,6 +33,7 @@ namespace ISI.Extensions.Asterisk
 			var asteriskServerPort = request.AsteriskServerPort ?? Configuration.ServerPort;
 			var asteriskUserName = string.IsNullOrWhiteSpace(request.AsteriskUserName) ? Configuration.UserName : request.AsteriskUserName;
 			var asteriskPassword = string.IsNullOrWhiteSpace(request.AsteriskServerIpAddress) ? Configuration.Password : request.AsteriskPassword;
+			asteriskPassword = (asteriskPassword.StartsWith("%") && asteriskPassword.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(asteriskPassword.Trim('%')) : asteriskPassword);
 
 			using (var clientSocket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp))
 			{

@@ -44,11 +44,19 @@ namespace ISI.Extensions.Jira
 
 			if (!string.IsNullOrWhiteSpace(request.JiraApiUserName) && !string.IsNullOrWhiteSpace(request.JiraApiToken))
 			{
-				headers.AddBasicAuthentication(request.JiraApiUserName, request.JiraApiToken);
+				var jiraApiToken = request.JiraApiToken;
+
+				jiraApiToken = (jiraApiToken.StartsWith("%") && jiraApiToken.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(jiraApiToken.Trim('%')) : jiraApiToken);
+
+				headers.AddBasicAuthentication(request.JiraApiUserName, jiraApiToken);
 			}
 			else
 			{
-				headers.AddBasicAuthentication(Configuration.JiraApiUserName, Configuration.JiraApiToken);
+				var jiraApiToken = Configuration.JiraApiToken;
+
+				jiraApiToken = (jiraApiToken.StartsWith("%") && jiraApiToken.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(jiraApiToken.Trim('%')) : jiraApiToken);
+
+				headers.AddBasicAuthentication(Configuration.JiraApiUserName, jiraApiToken);
 			}
 
 			if (!string.IsNullOrWhiteSpace((request as DTOs.IRequestHasImpersonatedUser)?.ImpersonatedUser) && !string.Equals(request.JiraApiUserName, (request as DTOs.IRequestHasImpersonatedUser).ImpersonatedUser, StringComparison.InvariantCulture))

@@ -32,7 +32,11 @@ namespace ISI.Extensions.BitBucket
 
 			if (!string.IsNullOrWhiteSpace(request.BitBucketApiToken))
 			{
-				headers.AddBearerAuthentication(request.BitBucketApiToken);
+				var bitBucketApiToken = request.BitBucketApiToken;
+
+				bitBucketApiToken = (bitBucketApiToken.StartsWith("%") && bitBucketApiToken.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(bitBucketApiToken.Trim('%')) : bitBucketApiToken);
+
+				headers.AddBearerAuthentication(bitBucketApiToken);
 			}
 
 			return headers;

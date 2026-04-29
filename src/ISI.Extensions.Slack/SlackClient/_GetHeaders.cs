@@ -30,7 +30,11 @@ namespace ISI.Extensions.Slack
 
 			if ((request is DTOs.IHasBearerToken hasBearerToken) && !string.IsNullOrWhiteSpace(hasBearerToken.BearerToken))
 			{
-				headers.AddBearerAuthentication(hasBearerToken.BearerToken);
+				var bearerToken = hasBearerToken.BearerToken;
+
+				bearerToken = (bearerToken.StartsWith("%") && bearerToken.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(bearerToken.Trim('%')) : bearerToken);
+
+				headers.AddBearerAuthentication(bearerToken);
 			}
 
 			return headers;

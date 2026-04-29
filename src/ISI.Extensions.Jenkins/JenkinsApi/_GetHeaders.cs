@@ -29,7 +29,11 @@ namespace ISI.Extensions.Jenkins
 		{
 			var headers = new ISI.Extensions.WebClient.HeaderCollection();
 
-			headers.AddBasicAuthentication(request.UserName, request.ApiToken);
+			var apiToken = request.ApiToken;
+
+			apiToken = (apiToken.StartsWith("%") && apiToken.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(apiToken.Trim('%')) : apiToken);
+
+			headers.AddBasicAuthentication(request.UserName, apiToken);
 
 			//http://USER:TOKEN@localhost:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)
 

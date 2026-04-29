@@ -49,6 +49,8 @@ namespace ISI.Extensions.S3
 				port = uri.Port;
 			}
 
+			secretKey = (secretKey.StartsWith("%") && secretKey.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(secretKey.Trim('%')) : secretKey);
+
 			MinioClient = new Minio.MinioClient()
 				.WithEndpoint(host, port)
 				.WithCredentials(accessKey, secretKey)

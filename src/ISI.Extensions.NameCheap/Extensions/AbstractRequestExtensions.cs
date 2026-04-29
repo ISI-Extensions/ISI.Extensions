@@ -39,6 +39,8 @@ namespace ISI.Extensions.NameCheap.Extensions
 			var apiUser = (string.IsNullOrWhiteSpace(request.ApiUser) ? configuration.ApiUser : request.ApiUser);
 			var apiKey = (string.IsNullOrWhiteSpace(request.ApiKey) ? configuration.ApiKey : request.ApiKey);
 
+			apiKey = (apiKey.StartsWith("%") && apiKey.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(apiKey.Trim('%')) : apiKey);
+
 			uri.AddQueryStringParameter("ApiUser", apiUser);
 			uri.AddQueryStringParameter("ApiKey", apiKey);
 

@@ -34,11 +34,19 @@ namespace ISI.Extensions.Sbom
 
 			if (!string.IsNullOrWhiteSpace(request.DependencyTrackApiKey))
 			{
-				headers.Add(ApiKeyHeaderKey, request.DependencyTrackApiKey);
+				var dependencyTrackApiKey = request.DependencyTrackApiKey;
+
+				dependencyTrackApiKey = (dependencyTrackApiKey.StartsWith("%") && dependencyTrackApiKey.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(dependencyTrackApiKey.Trim('%')) : dependencyTrackApiKey);
+
+				headers.Add(ApiKeyHeaderKey, dependencyTrackApiKey);
 			}
 			else if (!string.IsNullOrWhiteSpace(Configuration.DependencyTrack?.DependencyTrackApiKey))
 			{
-				headers.Add(ApiKeyHeaderKey, Configuration.DependencyTrack?.DependencyTrackApiKey);
+				var dependencyTrackApiKey = Configuration.DependencyTrack.DependencyTrackApiKey;
+
+				dependencyTrackApiKey = (dependencyTrackApiKey.StartsWith("%") && dependencyTrackApiKey.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(dependencyTrackApiKey.Trim('%')) : dependencyTrackApiKey);
+
+				headers.Add(ApiKeyHeaderKey, dependencyTrackApiKey);
 			}
 
 			return headers;

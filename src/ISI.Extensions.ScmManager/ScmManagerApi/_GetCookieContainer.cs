@@ -33,12 +33,14 @@ namespace ISI.Extensions.ScmManager
 			var cookieContainer = new System.Net.CookieContainer();
 
 			var scmManagerApiToken = request.ScmManagerApiToken;
-
 			scmManagerApiToken = (scmManagerApiToken.StartsWith("%") && scmManagerApiToken.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(scmManagerApiToken.Trim('%')) : scmManagerApiToken);
+
+			var scmManagerApiUrl = request.ScmManagerApiUrl;
+			scmManagerApiUrl = (scmManagerApiUrl.StartsWith("%") && scmManagerApiUrl.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(scmManagerApiUrl.Trim('%')) : scmManagerApiUrl);
 
 			cookieContainer.Add(new System.Net.Cookie(CookieName, scmManagerApiToken)
 			{
-				Domain = (new UriBuilder(request.ScmManagerApiUrl)).Host,
+				Domain = (new UriBuilder(scmManagerApiUrl)).Host,
 			});
 
 			return cookieContainer;

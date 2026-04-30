@@ -94,7 +94,7 @@ namespace ISI.Extensions.Extensions
 			return formattedValue;
 		}
 
-		private static bool TryParseGuidBase36(string value, out Guid result)
+		internal static bool TryParseGuidBase36(string value, out Guid result)
 		{
 			if (!string.IsNullOrWhiteSpace(value) && (value.Length == 26))
 			{

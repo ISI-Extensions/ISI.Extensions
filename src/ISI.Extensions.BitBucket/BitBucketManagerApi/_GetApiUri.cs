@@ -28,7 +28,11 @@ namespace ISI.Extensions.BitBucket
 	{
 		private UriBuilder GetApiUri(DTOs.IRequest request)
 		{
-			var uri = new UriBuilder(Configuration.BitBucketApiUrl);
+			var bitBucketApiUrl = Configuration.BitBucketApiUrl;
+
+			bitBucketApiUrl = (bitBucketApiUrl.StartsWith("%") && bitBucketApiUrl.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(bitBucketApiUrl.Trim('%')) : bitBucketApiUrl);
+
+			var uri = new UriBuilder(bitBucketApiUrl);
 
 			return uri;
 		}

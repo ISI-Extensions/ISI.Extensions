@@ -28,7 +28,11 @@ namespace ISI.Extensions.ScmManager
 	{
 		private UriBuilder GetApiUri(DTOs.IRequestWithScmManagerApiUrl request)
 		{
-			var uri = new UriBuilder(request.ScmManagerApiUrl);
+			var scmManagerApiUrl = request.ScmManagerApiUrl;
+
+			scmManagerApiUrl = (scmManagerApiUrl.StartsWith("%") && scmManagerApiUrl.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(scmManagerApiUrl.Trim('%')) : scmManagerApiUrl);
+
+			var uri = new UriBuilder(scmManagerApiUrl);
 
 			return uri;
 		}

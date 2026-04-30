@@ -28,7 +28,11 @@ namespace ISI.Extensions.GitHub
 	{
 		private UriBuilder GetApiUri(DTOs.IRequest request)
 		{
-			var uri = new UriBuilder(Configuration.GitHubApiUrl);
+			var gitHubApiUrl = Configuration.GitHubApiUrl;
+
+			gitHubApiUrl = (gitHubApiUrl.StartsWith("%") && gitHubApiUrl.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(gitHubApiUrl.Trim('%')) : gitHubApiUrl);
+
+			var uri = new UriBuilder(gitHubApiUrl);
 
 			return uri;
 		}

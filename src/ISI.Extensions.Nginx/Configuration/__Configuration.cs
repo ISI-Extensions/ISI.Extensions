@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2026, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,39 +15,18 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Jenkins
+namespace ISI.Extensions.Nginx
 {
-	public class Job
+	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
+	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
 	{
-		public JobAction[] Actions { get; set; }
-		public bool IsConcurrentBuild { get; set; }
-		public JobProperty[] Properties { get; set; }
-		public bool KeepDependencies { get; set; }
-		public HealthReport[] HealthReports { get; set; }
-		public string Name { get; set; }
-		public string Url { get; set; }
-		public string DisplayName { get; set; }
-		public Build FirstBuild { get; set; }
-		public string Description { get; set; }
-		public bool Buildable { get; set; }
-		public Build[] Builds { get; set; }
-		public bool IsInQueue { get; set; }
-		public string Color { get; set; }
-		public Build LastBuild { get; set; }
-		public Build LastCompletedBuild { get; set; }
-		public Build LastFailedBuild { get; set; }
-		public Build LastStableBuild { get; set; }
-		public Build LastSuccessfulBuild { get; set; }
-		public Build LastUnstableBuild { get; set; }
-		public Build LastUnsuccessfulBuild { get; set; }
-		public int NextBuildNumber { get; set; }
+		public const string ConfigurationSectionName = "ISI.Extensions.Nginx";
 
-		public override string ToString() => (string.IsNullOrWhiteSpace(Description) ? Name : Description);
-
-		public string BuildRestUrl => this.Url + "build";
-
-		public string RestJsonUrl => this.Url + "api/json";
+		public string NginxSettingsFullName { get; set; } = @"FileNameDeMasked:{ApplicationData}\ISI.Extensions\nginx.settings.json";
 	}
 }

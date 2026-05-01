@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.JsonSerialization.Extensions;
 using DTOs = ISI.Extensions.Nginx.DataTransferObjects.NginxApi;
+using SerializableDTOs = ISI.Extensions.Nginx.SerializableModels;
 
 namespace ISI.Extensions.Nginx
 {
@@ -22,23 +24,32 @@ namespace ISI.Extensions.Nginx
 
 			var servers = new List<ParsedNginxConfigServer>();
 
-			var serverRegex = new System.Text.RegularExpressions.Regex(@"(?:\s*)(?<server>server)(?:\s*)(?:\{?)(?:\s*)");
-			var listenRegex = new System.Text.RegularExpressions.Regex(@"(?:\s*listen\s*(?<port>\d+)(?:\s*(?<scheme>[a-zA-Z]+))?)");
+			var serverRegex = new System.Text.RegularExpressions.Regex(@"(?:\s*)(?<server>server)(?:\s+)(?:\{?)(?:\s*)");
+			var listenRegex = new System.Text.RegularExpressions.Regex(@"(?:\s*listen\s+(?<port>\d+)(?:\s*(?<scheme>[a-zA-Z]+))?)");
 			var serverNameRegex = new System.Text.RegularExpressions.Regex(@"(?:\s*)(?<server_name>server_name)(?:\s+)(?<host>[a-zA-Z0-9\-\.]+)(?:\s*)");
 			var locationRegex = new System.Text.RegularExpressions.Regex(@"(?:\s*)(?<location>location)(?:\s+)(?<directory>[^ ]+)(?:\s*)");
 			var proxyPassRegex = new System.Text.RegularExpressions.Regex(@"(?:\s*)(?<proxy_pass>proxy_pass)(?:\s+)(?<url>[^ ;]+)(?:\s*)");
+			var nginxManagerAgentNginxInstanceUuidRegex = new System.Text.RegularExpressions.Regex(@"(?:\s*)(?<Key>#NginxManagerAgentNginxInstanceUuid\:)(?:\s+)(?<NginxManagerAgentNginxInstanceUuid>[^ ;\r\n]+)(?:\s*)");
+			var dnsAccountUuidRegex = new System.Text.RegularExpressions.Regex(@"(?:\s*)(?<Key>#DnsAccountUuid\:)(?:\s+)(?<DnsAccountUuid>[^ ;\r\n]+)(?:\s*)");
 
 			{
 				var server = (ParsedNginxConfigServer)null;
 				foreach (var line in request.Content.Replace("\r\n", "\n").Split('\n'))
 				{
-					if (serverRegex.Match(line).Success)
+					if (serverRegex.Match(line).Success && !serverNameRegex.Match(line).Success)
 					{
 						server = new ParsedNginxConfigServer();
 						servers.Add(server);
 					}
 
-					server?.Content += $"\n{line}";
+					var nginxManagerAgentNginxInstanceUuidMatch = nginxManagerAgentNginxInstanceUuidRegex.Match(line);
+
+					if (nginxManagerAgentNginxInstanceUuidMatch.Success)
+					{
+						response.ParsedNginxConfig.NginxManagerAgentNginxInstanceUuid = (nginxManagerAgentNginxInstanceUuidMatch.Groups["NginxManagerAgentNginxInstanceUuid"]?.Value ?? string.Empty).ToGuid();
+					}
+
+					server?.Content = $"{server.Content}\n{line}";
 				}
 
 				response.ParsedNginxConfig.Servers = servers.ToArray();
@@ -77,6 +88,13 @@ namespace ISI.Extensions.Nginx
 						{
 							server.Host = serverNameMatch.Groups["host"]?.Value ?? string.Empty;
 						}
+
+						var dnsAccountUuidMatch = dnsAccountUuidRegex.Match(line);
+
+						if (dnsAccountUuidMatch.Success)
+						{
+							server.DnsAccountUuid = (dnsAccountUuidMatch.Groups["DnsAccountUuid"]?.Value ?? string.Empty).ToGuid();
+						}
 					}
 
 					var locationMatch = locationRegex.Match(line);
@@ -98,7 +116,7 @@ namespace ISI.Extensions.Nginx
 							location.ProxyPassUrl = proxyPassMatch.Groups["url"]?.Value ?? string.Empty;
 						}
 
-						location?.Content += $"\n{line}";
+						location?.Content = $"{location.Content}\n{line}";
 					}
 				}
 

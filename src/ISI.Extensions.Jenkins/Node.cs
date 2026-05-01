@@ -34,5 +34,7 @@ namespace ISI.Extensions.Jenkins
 		public bool UseCrumbs { get; set; }
 		public View[] Views { get; set; }
 		public AssignedLabel[] AssignedLabels { get; set; }
+
+		public override string ToString() => (string.IsNullOrWhiteSpace(Description) ? NodeDescription : NodeName);
 	}
 }

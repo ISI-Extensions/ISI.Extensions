@@ -64,6 +64,25 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void JobStatuses_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName);
+
+			var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.Jenkins.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
+
+			var node = jenkinsApi.GetNode(new()
+			{
+				JenkinsUrl = settings.Jenkins.JenkinsUrl,
+				UserName = settings.Jenkins.UserName,
+				ApiToken = settings.Jenkins.ApiToken,
+				Tree = "jobs[name,description,displayName,url,color,lastBuild[number,url],lastSuccessfulBuild[number,url]]",
+			}).Node;
+
+
+		}
+
+		[Test]
 		public void QuietDown_Test()
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");

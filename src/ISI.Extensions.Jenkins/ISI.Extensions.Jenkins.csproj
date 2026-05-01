@@ -16,6 +16,7 @@
 
 	<ItemGroup>
 		<PackageReference Update="NETStandard.Library" Version="2.0.3" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.7" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -33,7 +34,6 @@
 		<EmbeddedResource Include="Artwork\jenkinsConfig-16x16.png" />
 		<EmbeddedResource Include="Artwork\jenkinsConfig-32x32.png" />
 		<EmbeddedResource Include="Artwork\JenkinsOverlay.ico" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.7" />
 		<None Update="T4LocalContent\T4LocalContent.tt">
 			<Generator>TextTemplatingFileGenerator</Generator>
 			<LastGenOutput>T4LocalContent.generatedcode.cs</LastGenOutput>

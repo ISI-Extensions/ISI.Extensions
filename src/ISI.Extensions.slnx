@@ -86,6 +86,7 @@
   <Project Path="ISI.Extensions.Monitor.AspNetCore/ISI.Extensions.Monitor.AspNetCore.csproj" Id="46385fd5-7ac7-47e8-99ca-364e280f3f3c" />
   <Project Path="ISI.Extensions.Monitor/ISI.Extensions.Monitor.csproj" />
   <Project Path="ISI.Extensions.NameCheap/ISI.Extensions.NameCheap.csproj" />
+  <Project Path="ISI.Extensions.Nginx/ISI.Extensions.Nginx.csproj" Id="75056fed-9792-4de8-98ec-6ec2ac2ab91b" />
   <Project Path="ISI.Extensions.Ngrok/ISI.Extensions.Ngrok.csproj">
     <Platform Solution="*|x64" Project="x64" />
   </Project>

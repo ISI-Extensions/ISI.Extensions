@@ -14,5 +14,7 @@ namespace ISI.Extensions.Nginx
 		public string NginxManagerApiKey { get; set; }
 
 		public string[] Directories { get; set; }
+
+		public string DisplayDescription => (string.IsNullOrWhiteSpace(Description) ? NginxManagerApiUrl : Description);
 	}
 }

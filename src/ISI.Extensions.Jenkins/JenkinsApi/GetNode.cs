@@ -30,7 +30,7 @@ namespace ISI.Extensions.Jenkins
 		{
 			var response = new DTOs.GetNodeResponse();
 			
-			var uri = new UriBuilder(request.JenkinsUrl);
+			var uri = GetJenkinsUrl(request);
 			uri.Path = UrlPathFormat.GetNodeJson;
 
 			if (!string.IsNullOrWhiteSpace(request.Tree))

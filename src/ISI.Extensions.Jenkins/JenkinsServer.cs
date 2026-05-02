@@ -23,7 +23,9 @@ namespace ISI.Extensions.Jenkins
 	public class JenkinsServer
 	{
 		public Guid JenkinsServerUuid { get; set; }
+
 		public string Description { get; set; }
+		
 		public string JenkinsUrl { get; set; }
 		public string UserName { get; set; }
 		public string ApiToken { get; set; }
@@ -32,7 +34,7 @@ namespace ISI.Extensions.Jenkins
 
 		public string DisplayDescription => (string.IsNullOrWhiteSpace(Description) ? JenkinsUrl : Description);
 
-		public JenkinsServer GetDecodedJenkinsServer()
+		public JenkinsServer GetDecodedJenkinsServerX()
 		{
 			string getValue(string value)
 			{

@@ -27,7 +27,7 @@ namespace ISI.Extensions.Jenkins
 	{
 		private ISI.Extensions.WebClient.Header GetCSRFTokenHeader(DTOs.AbstractRequest request)
 		{
-			var uri = new UriBuilder(request.JenkinsUrl);
+			var uri = GetJenkinsUrl(request);
 			uri.SetPathAndQueryString(UrlPathFormat.GetCSRF);
 
 			var headers = GetHeaders(request);

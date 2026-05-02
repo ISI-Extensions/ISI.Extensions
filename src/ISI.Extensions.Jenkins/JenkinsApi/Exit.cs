@@ -30,7 +30,7 @@ namespace ISI.Extensions.Jenkins
 		{
 			var response = new DTOs.ExitResponse();
 
-			var uri = new UriBuilder(request.JenkinsUrl);
+			var uri = GetJenkinsUrl(request);
 			uri.SetPathAndQueryString(request.WaitForJobsToFinish ? UrlPathFormat.SafeExit : UrlPathFormat.Exit);
 
 			try

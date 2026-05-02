@@ -30,7 +30,7 @@ namespace ISI.Extensions.Jenkins
 		{
 			var response = new DTOs.CancelQuietDownResponse();
 			
-			var uri = new UriBuilder(request.JenkinsUrl);
+			var uri = GetJenkinsUrl(request);
 			uri.SetPathAndQueryString(UrlPathFormat.CancelQuietDown);
 
 			try

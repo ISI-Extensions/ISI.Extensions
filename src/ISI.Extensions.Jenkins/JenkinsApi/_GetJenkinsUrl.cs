@@ -19,43 +19,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi;
 
 namespace ISI.Extensions.Jenkins
 {
 	public partial class JenkinsApi
 	{
-		public DTOs.EnableJobResponse EnableJob(DTOs.EnableJobRequest request)
+		private UriBuilder GetJenkinsUrl(DTOs.AbstractRequest request)
 		{
-			var response = new DTOs.EnableJobResponse();
-			
-			var uri = GetJenkinsUrl(request);
-			uri.SetPathAndQueryString(UrlPathFormat.EnableJob.Replace(new Dictionary<string, string>()
-			{
-				{"{jobId}", request.JobId}
-			}, StringComparer.InvariantCultureIgnoreCase));
+			var headers = new ISI.Extensions.WebClient.HeaderCollection();
 
-			var headers = GetHeaders(request);
+			var jenkinsUrl = request.JenkinsUrl;
 
-			var csrfHeader = GetCSRFTokenHeader(request);
-			if (csrfHeader != null)
-			{
-				headers.Add(csrfHeader);
-			}
+			jenkinsUrl = (jenkinsUrl.StartsWith("%") && jenkinsUrl.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(jenkinsUrl.Trim('%')) : jenkinsUrl);
 
-			headers.Add("Content-Type", "text/xml");
+			var uri = new UriBuilder(jenkinsUrl);
 
-			try
-			{
-				ISI.Extensions.WebClient.Rest.ExecutePost(uri.Uri, headers, true, request.SslProtocols);
-			}
-			catch (Exception exception)
-			{
-				Logger.LogError(exception, "Quiet Down Failed");
-			}
-			
-			return response;
+			return uri;
 		}
 	}
 }

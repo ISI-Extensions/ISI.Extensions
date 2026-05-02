@@ -30,7 +30,7 @@ namespace ISI.Extensions.Jenkins
 		{
 			var response = new DTOs.GetJobStatusXmlResponse();
 			
-			var uri = new UriBuilder(request.JenkinsUrl);
+			var uri = GetJenkinsUrl(request);
 			uri.SetPathAndQueryString(UrlPathFormat.GetJobStatusXml.Replace(new Dictionary<string, string>()
 			{
 				{"{jobId}", request.JobId}

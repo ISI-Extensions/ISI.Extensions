@@ -45,7 +45,7 @@ namespace ISI.Extensions.Jenkins
 				jobExists = jobIds.Any(jobId => string.Equals(jobId, request.JobId, StringComparison.InvariantCultureIgnoreCase));
 			}
 
-			var uri = new UriBuilder(request.JenkinsUrl);
+			var uri = GetJenkinsUrl(request);
 
 			if (jobExists)
 			{

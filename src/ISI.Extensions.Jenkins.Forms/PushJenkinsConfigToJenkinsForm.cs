@@ -115,7 +115,7 @@ namespace ISI.Extensions.Jenkins.Forms
 				{
 					Cursor = System.Windows.Forms.Cursors.AppStarting;
 
-					var jenkinsServer = ((ISI.Extensions.Jenkins.JenkinsServer)cboJenkinsServers.Items[selectedIndex]).GetDecodedJenkinsServer();
+					var jenkinsServer = (ISI.Extensions.Jenkins.JenkinsServer)cboJenkinsServers.Items[selectedIndex];
 
 					btnCancel.Enabled = false;
 					btnPush.Enabled = false;

@@ -77,7 +77,7 @@ namespace ISI.Extensions.Jenkins.Forms
 				{
 					Cursor = System.Windows.Forms.Cursors.AppStarting;
 
-					var jenkinsServer = ((ISI.Extensions.Jenkins.JenkinsServer)cboJenkinsServers.Items[selectedIndex]).GetDecodedJenkinsServer();
+					var jenkinsServer = (ISI.Extensions.Jenkins.JenkinsServer)cboJenkinsServers.Items[selectedIndex];
 
 					var jobIds = JenkinsApi.GetJobIds(new()
 					{
@@ -151,7 +151,7 @@ namespace ISI.Extensions.Jenkins.Forms
 
 					var directory = ISI.Extensions.IO.Path.GetCommonPath(SelectedItemPaths);
 
-					var jenkinsServer = ((ISI.Extensions.Jenkins.JenkinsServer)cboJenkinsServers.Items[selectedIndex]).GetDecodedJenkinsServer();
+					var jenkinsServer = (ISI.Extensions.Jenkins.JenkinsServer)cboJenkinsServers.Items[selectedIndex];
 
 					btnCancel.Enabled = false;
 					btnPull.Enabled = false;

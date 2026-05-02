@@ -86,7 +86,7 @@ namespace ISI.Extensions.Jenkins.Forms
 
 			ISI.Extensions.WinForms.ThemeHelper.SyncTheme(this);
 
-			JenkinsApi.ApplyFormSize(nameof(PickJenkinsServerForm), this);
+			JenkinsApi.ApplyFormSize(this);
 
 			btnOK.Visible = false;
 			btnCancel.Visible = false;

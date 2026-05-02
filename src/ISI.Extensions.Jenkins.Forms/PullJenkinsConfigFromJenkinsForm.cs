@@ -46,7 +46,7 @@ namespace ISI.Extensions.Jenkins.Forms
 
 			ISI.Extensions.WinForms.ThemeHelper.SyncTheme(this);
 
-			JenkinsApi.ApplyFormSize(nameof(PullJenkinsConfigFromJenkinsForm), this);
+			JenkinsApi.ApplyFormSize(this);
 
 			flpJenkinsConfigs.Visible = false;
 			btnDone.Visible = false;

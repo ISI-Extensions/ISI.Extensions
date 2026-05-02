@@ -31,15 +31,9 @@ namespace ISI.Extensions.Nuget.Forms.Extensions
 
 		public static void ApplyFormSize(this NugetApi nugetApi, System.Windows.Forms.Form form)
 		{
-			ApplyFormSize(nugetApi, form.GetType().Name, form);
-		}
-
-
-		public static void ApplyFormSize(this NugetApi nugetApi, string formName, System.Windows.Forms.Form form)
-		{
 			var formLocationAndSizes = nugetApi.GetNugetSettings(new()).NugetSettings.FormLocationAndSizes ?? [];
 
-			var formSizeAndLocation = formLocationAndSizes.GetFormLocationAndSize(formName);
+			var formSizeAndLocation = formLocationAndSizes.GetFormLocationAndSize(form.GetType().Name);
 
 			if (formSizeAndLocation != null)
 			{

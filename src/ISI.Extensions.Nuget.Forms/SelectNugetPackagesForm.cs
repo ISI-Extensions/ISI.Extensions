@@ -43,7 +43,7 @@ namespace ISI.Extensions.Nuget.Forms
 
 			ISI.Extensions.WinForms.ThemeHelper.SyncTheme(this);
 
-			NugetApi.ApplyFormSize(nameof(SelectNugetPackagesForm), this);
+			NugetApi.ApplyFormSize(this);
 
 			CloseButton.Visible = false;
 			OkButton.Visible = false;

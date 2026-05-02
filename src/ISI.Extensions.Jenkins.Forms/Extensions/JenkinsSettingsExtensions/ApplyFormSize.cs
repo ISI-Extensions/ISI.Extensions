@@ -31,15 +31,9 @@ namespace ISI.Extensions.Jenkins.Forms.Extensions
 
 		public static void ApplyFormSize(this JenkinsApi jenkinsApi, System.Windows.Forms.Form form)
 		{
-			ApplyFormSize(jenkinsApi, form.GetType().Name, form);
-		}
-
-
-		public static void ApplyFormSize(this JenkinsApi jenkinsApi, string formName, System.Windows.Forms.Form form)
-		{
 			var formLocationAndSizes = jenkinsApi.GetJenkinsSettings(new()).JenkinsSettings.FormLocationAndSizes ?? [];
 
-			var formSizeAndLocation = formLocationAndSizes.GetFormLocationAndSize(formName);
+			var formSizeAndLocation = formLocationAndSizes.GetFormLocationAndSize(form.GetType().Name);
 
 			if (formSizeAndLocation != null)
 			{

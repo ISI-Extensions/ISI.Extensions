@@ -29,12 +29,11 @@ namespace ISI.Extensions.Nginx
 			var serverNameRegex = new System.Text.RegularExpressions.Regex(@"(?:\s*)(?<server_name>server_name)(?:\s+)(?<host>[a-zA-Z0-9\-\.]+)(?:\s*)");
 			var locationRegex = new System.Text.RegularExpressions.Regex(@"(?:\s*)(?:location)(?:\s+)(?<directory>[^ ]+)(?:\s*)");
 			var proxyPassRegex = new System.Text.RegularExpressions.Regex(@"(?:\s*)(?:proxy_pass)(?:\s+)(?<url>[^ ;]+)(?:\s*)");
-			var nginxManagerAgentNginxInstanceUuidsRegex = new System.Text.RegularExpressions.Regex(@"(?:\s*)(?:#NginxManagerAgentNginxInstanceUuid)(?:s?)(?:\:)(?:\s+)(?<nginxManagerAgentNginxInstanceUuids>[a-zA-Z0-9\-, ]+)(?:\s*)");
+			var nginxManagerAgentNginxInstanceUuidRegex = new System.Text.RegularExpressions.Regex(@"(?:\s*)(?:#NginxManagerAgentNginxInstanceUuid\:)(?:\s+)(?<nginxManagerAgentNginxInstanceUuid>[a-zA-Z0-9\-]+)(?:\s*)");
 			var dnsAccountUuidsRegex = new System.Text.RegularExpressions.Regex(@"(?:\s*)(?:#DnsAccountUuid)(?:s?)(?:\:)(?:\s+)(?<dnsAccountUuids>[a-zA-Z0-9\-, -[=\>]]+)(?:\s+)(?<recordType>[a-zA-Z]+)(?:\s+)(?:=\>)(?:\s+)(?<data>[a-zA-Z0-9\-\.]+)(?:\s*)");
 
 			{
 				var server = (ParsedNginxConfigServer)null;
-				var nginxManagerAgentNginxInstanceUuids = new HashSet<Guid>();
 				foreach (var line in request.Content.Replace("\r\n", "\n").Split('\n'))
 				{
 					if (serverRegex.Match(line).Success && !serverNameRegex.Match(line).Success)
@@ -43,20 +42,16 @@ namespace ISI.Extensions.Nginx
 						servers.Add(server);
 					}
 
-					var nginxManagerAgentNginxInstanceUuidsMatch = nginxManagerAgentNginxInstanceUuidsRegex.Match(line);
+					var nginxManagerAgentNginxInstanceUuidMatch = nginxManagerAgentNginxInstanceUuidRegex.Match(line);
 
-					if (nginxManagerAgentNginxInstanceUuidsMatch.Success)
+					if (nginxManagerAgentNginxInstanceUuidMatch.Success)
 					{
-						foreach (var nginxManagerAgentNginxInstanceUuid in (nginxManagerAgentNginxInstanceUuidsMatch.Groups["nginxManagerAgentNginxInstanceUuids"]?.Value ?? string.Empty).Split(',').Select(nginxManagerAgentNginxInstanceUuid => nginxManagerAgentNginxInstanceUuid.ToGuidNullable()).Where(nginxManagerAgentNginxInstanceUuid => nginxManagerAgentNginxInstanceUuid.HasValue))
-						{
-							nginxManagerAgentNginxInstanceUuids.Add(nginxManagerAgentNginxInstanceUuid.Value);
-						}
+						response.ParsedNginxConfig.NginxManagerAgentNginxInstanceUuid = (nginxManagerAgentNginxInstanceUuidMatch.Groups["nginxManagerAgentNginxInstanceUuid"]?.Value ?? string.Empty).ToGuid();
 					}
 
 					server?.Content = $"{server.Content}\n{line}";
 				}
 
-				response.ParsedNginxConfig.NginxManagerAgentNginxInstanceUuids = nginxManagerAgentNginxInstanceUuids.ToArray();
 				response.ParsedNginxConfig.Servers = servers.ToArray();
 			}
 

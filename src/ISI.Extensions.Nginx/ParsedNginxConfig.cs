@@ -9,7 +9,7 @@ namespace ISI.Extensions.Nginx
 		public string FileName { get; set; }
 		public string Content { get; set; }
 
-		public Guid[] NginxManagerAgentNginxInstanceUuids { get; set; }
+		public Guid NginxManagerAgentNginxInstanceUuid { get; set; }
 
 		public ParsedNginxConfigServer[] Servers { get; set; }
 	}

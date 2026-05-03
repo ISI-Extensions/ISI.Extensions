@@ -16,7 +16,9 @@ namespace ISI.Extensions.Nginx
 
 	public class ParsedNginxConfigServer
 	{
-		public ParsedNginxConfigServerDnsAccount[] DnsAccounts { get; set; }
+		public Guid DnsAccountUuid { get; set; }
+		public ISI.Extensions.Dns.RecordType? DnsRecordType { get; set; }
+		public string DnsRecordData { get; set; }
 
 		public string Host { get; set; }
 		public int Port { get; set; }
@@ -25,13 +27,6 @@ namespace ISI.Extensions.Nginx
 		public ParsedNginxConfigServerLocation[] Locations { get; set; }
 
 		public string Content { get; set; }
-	}
-
-	public class ParsedNginxConfigServerDnsAccount
-	{
-		public Guid[] DnsAccountUuids { get; set; }
-		public ISI.Extensions.Dns.RecordType? DnsRecordType { get; set; }
-		public string DnsRecordData { get; set; }
 	}
 
 	public class ParsedNginxConfigServerLocation

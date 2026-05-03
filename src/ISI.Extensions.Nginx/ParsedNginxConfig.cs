@@ -9,16 +9,14 @@ namespace ISI.Extensions.Nginx
 		public string FileName { get; set; }
 		public string Content { get; set; }
 
-		public ISI.Extensions.ReferenceKey NginxManagerAgentNginxInstanceReferenceKey { get; set; }
+		public Guid[] NginxManagerAgentNginxInstanceUuids { get; set; }
 
 		public ParsedNginxConfigServer[] Servers { get; set; }
 	}
 
 	public class ParsedNginxConfigServer
 	{
-		public ISI.Extensions.ReferenceKey DnsAccountReferenceKey { get; set; }
-		public ISI.Extensions.Dns.RecordType? DnsRecordType { get; set; }
-		public string DnsRecordData { get; set; }
+		public ParsedNginxConfigServerDnsAccount[] DnsAccounts { get; set; }
 
 		public string Host { get; set; }
 		public int Port { get; set; }
@@ -27,6 +25,13 @@ namespace ISI.Extensions.Nginx
 		public ParsedNginxConfigServerLocation[] Locations { get; set; }
 
 		public string Content { get; set; }
+	}
+
+	public class ParsedNginxConfigServerDnsAccount
+	{
+		public Guid[] DnsAccountUuids { get; set; }
+		public ISI.Extensions.Dns.RecordType? DnsRecordType { get; set; }
+		public string DnsRecordData { get; set; }
 	}
 
 	public class ParsedNginxConfigServerLocation

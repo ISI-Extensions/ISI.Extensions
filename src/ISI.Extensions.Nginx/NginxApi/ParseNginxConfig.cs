@@ -27,13 +27,14 @@ namespace ISI.Extensions.Nginx
 			var serverRegex = new System.Text.RegularExpressions.Regex(@"(?:\s*)(?<server>server)(?:\s+)(?:\{?)(?:\s*)");
 			var listenRegex = new System.Text.RegularExpressions.Regex(@"(?:\s*listen\s+(?<port>\d+)(?:\s*(?<scheme>[a-zA-Z]+))?)");
 			var serverNameRegex = new System.Text.RegularExpressions.Regex(@"(?:\s*)(?<server_name>server_name)(?:\s+)(?<host>[a-zA-Z0-9\-\.]+)(?:\s*)");
-			var locationRegex = new System.Text.RegularExpressions.Regex(@"(?:\s*)(?<location>location)(?:\s+)(?<directory>[^ ]+)(?:\s*)");
-			var proxyPassRegex = new System.Text.RegularExpressions.Regex(@"(?:\s*)(?<proxy_pass>proxy_pass)(?:\s+)(?<url>[^ ;]+)(?:\s*)");
-			var nginxManagerAgentNginxInstanceKeyRegex = new System.Text.RegularExpressions.Regex(@"(?:\s*)(?<Key>#NginxManagerAgentNginxInstanceKey\:)(?:\s+)(?<nginxManagerAgentNginxInstanceKey>[^ ;\r\n]+)(?:\s*)");
-			var dnsAccountKeyRegex = new System.Text.RegularExpressions.Regex(@"(?:\s*)(?<Key>#DnsAccountKey\:)(?:\s+)(?<dnsAccountKey>[^ ;\r\n]+)(?:\s+)(?<recordType>[a-zA-Z]+)(?:\s+)(?:=\>)(?:\s+)(?<data>[a-zA-Z0-9\-\.]+)(?:\s*)");
+			var locationRegex = new System.Text.RegularExpressions.Regex(@"(?:\s*)(?:location)(?:\s+)(?<directory>[^ ]+)(?:\s*)");
+			var proxyPassRegex = new System.Text.RegularExpressions.Regex(@"(?:\s*)(?:proxy_pass)(?:\s+)(?<url>[^ ;]+)(?:\s*)");
+			var nginxManagerAgentNginxInstanceUuidsRegex = new System.Text.RegularExpressions.Regex(@"(?:\s*)(?:#NginxManagerAgentNginxInstanceUuid)(?:s?)(?:\:)(?:\s+)(?<nginxManagerAgentNginxInstanceUuids>[a-zA-Z0-9\-, ]+)(?:\s*)");
+			var dnsAccountUuidsRegex = new System.Text.RegularExpressions.Regex(@"(?:\s*)(?:#DnsAccountUuid)(?:s?)(?:\:)(?:\s+)(?<dnsAccountUuids>[a-zA-Z0-9\-, -[=\>]]+)(?:\s+)(?<recordType>[a-zA-Z]+)(?:\s+)(?:=\>)(?:\s+)(?<data>[a-zA-Z0-9\-\.]+)(?:\s*)");
 
 			{
 				var server = (ParsedNginxConfigServer)null;
+				var nginxManagerAgentNginxInstanceUuids = new HashSet<Guid>();
 				foreach (var line in request.Content.Replace("\r\n", "\n").Split('\n'))
 				{
 					if (serverRegex.Match(line).Success && !serverNameRegex.Match(line).Success)
@@ -42,16 +43,20 @@ namespace ISI.Extensions.Nginx
 						servers.Add(server);
 					}
 
-					var nginxManagerAgentNginxInstanceKeyMatch = nginxManagerAgentNginxInstanceKeyRegex.Match(line);
+					var nginxManagerAgentNginxInstanceUuidsMatch = nginxManagerAgentNginxInstanceUuidsRegex.Match(line);
 
-					if (nginxManagerAgentNginxInstanceKeyMatch.Success)
+					if (nginxManagerAgentNginxInstanceUuidsMatch.Success)
 					{
-						response.ParsedNginxConfig.NginxManagerAgentNginxInstanceReferenceKey = nginxManagerAgentNginxInstanceKeyMatch.Groups["nginxManagerAgentNginxInstanceKey"]?.Value ?? string.Empty;
+						foreach (var nginxManagerAgentNginxInstanceUuid in (nginxManagerAgentNginxInstanceUuidsMatch.Groups["nginxManagerAgentNginxInstanceUuids"]?.Value ?? string.Empty).Split(',').Select(nginxManagerAgentNginxInstanceUuid => nginxManagerAgentNginxInstanceUuid.ToGuidNullable()).Where(nginxManagerAgentNginxInstanceUuid => nginxManagerAgentNginxInstanceUuid.HasValue))
+						{
+							nginxManagerAgentNginxInstanceUuids.Add(nginxManagerAgentNginxInstanceUuid.Value);
+						}
 					}
 
 					server?.Content = $"{server.Content}\n{line}";
 				}
 
+				response.ParsedNginxConfig.NginxManagerAgentNginxInstanceUuids = nginxManagerAgentNginxInstanceUuids.ToArray();
 				response.ParsedNginxConfig.Servers = servers.ToArray();
 			}
 
@@ -63,6 +68,7 @@ namespace ISI.Extensions.Nginx
 
 				var location = (ParsedNginxConfigServerLocation)null;
 				var scheme = (string)null;
+				var dnsAccounts = new List<ParsedNginxConfigServerDnsAccount>();
 				foreach (var line in server.Content.Split('\n'))
 				{
 					if (location == null)
@@ -89,13 +95,22 @@ namespace ISI.Extensions.Nginx
 							server.Host = serverNameMatch.Groups["host"]?.Value ?? string.Empty;
 						}
 
-						var dnsAccountKeyMatch = dnsAccountKeyRegex.Match(line);
+						var dnsAccountUuidsMatch = dnsAccountUuidsRegex.Match(line);
 
-						if (dnsAccountKeyMatch.Success)
+						if (dnsAccountUuidsMatch.Success)
 						{
-							server.DnsAccountReferenceKey = dnsAccountKeyMatch.Groups["dnsAccountKey"]?.Value ?? string.Empty;
-							server.DnsRecordType = ISI.Extensions.Enum<ISI.Extensions.Dns.RecordType?>.Parse(dnsAccountKeyMatch.Groups["recordType"]?.Value ?? string.Empty);
-							server.DnsRecordData = dnsAccountKeyMatch.Groups["data"]?.Value ?? string.Empty;
+							var dnsAccountUuids = new HashSet<Guid>();
+							foreach (var dnsAccountUuid in (dnsAccountUuidsMatch.Groups["dnsAccountUuids"]?.Value ?? string.Empty).Split(',').Select(dnsAccountUuid => dnsAccountUuid.ToGuidNullable()).Where(dnsAccountUuid => dnsAccountUuid.HasValue))
+							{
+								dnsAccountUuids.Add(dnsAccountUuid.Value);
+							}
+
+							dnsAccounts.Add(new ()
+							{
+								DnsAccountUuids = dnsAccountUuids.ToArray(),
+								DnsRecordType = ISI.Extensions.Enum<ISI.Extensions.Dns.RecordType?>.Parse(dnsAccountUuidsMatch.Groups["recordType"]?.Value ?? string.Empty),
+								DnsRecordData = dnsAccountUuidsMatch.Groups["data"]?.Value ?? string.Empty,
+							});
 						}
 					}
 
@@ -127,6 +142,7 @@ namespace ISI.Extensions.Nginx
 					serverLocation.Content = serverLocation.Content.Trim([' ', '\n']);
 				}
 
+				server.DnsAccounts = dnsAccounts.ToArray();
 				server.Locations = locations.ToArray();
 			}
 

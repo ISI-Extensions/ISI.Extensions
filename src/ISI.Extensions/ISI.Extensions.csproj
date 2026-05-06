@@ -19,15 +19,6 @@
 	  <None Remove="Artwork\Lantern.png" />
 	  <EmbeddedResource Include="Artwork\Lantern.ico" />
 	  <EmbeddedResource Include="Artwork\Lantern.png" />
-		<None Update="T4LocalContent\T4LocalContent.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>T4LocalContent.generatedcode.cs</LastGenOutput>
-		</None>
-		<Compile Update="T4LocalContent\T4LocalContent.generatedcode.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>T4LocalContent.tt</DependentUpon>
-		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -52,5 +43,24 @@
 
 	<ItemGroup>
 	  <Folder Include="Windows\Forms\Extensions\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="T4LocalContent\T4LocalContent.generatedcode.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>T4LocalContent.tt</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="T4LocalContent\T4LocalContent.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	    <LastGenOutput>T4LocalContent.generatedcode.cs</LastGenOutput>
+	  </None>
 	</ItemGroup>
 </Project>

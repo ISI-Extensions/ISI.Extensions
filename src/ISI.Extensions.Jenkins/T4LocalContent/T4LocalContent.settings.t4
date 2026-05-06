@@ -1,6 +1,6 @@
 <#+
 		readonly string Namespace = "ISI.Extensions.Jenkins";
-
+		
 		readonly bool IsWebRoot = false;
 		readonly bool BuildT4Files = true;
 		readonly string FilesSubClassName = "T4Files";
@@ -32,7 +32,8 @@
 
 		static readonly List<string> RootFileNames = new List<string>()
 				{
-						"favicon.ico"
+						"favicon.ico",
+						"favicon.png"
 				};
 
 		static readonly Dictionary<System.Text.RegularExpressions.Regex, string> LocalContentFileNameReplacements = new Dictionary<System.Text.RegularExpressions.Regex, string>()
@@ -43,12 +44,16 @@
 						{ new System.Text.RegularExpressions.Regex(@"^(jquery-migrate-(?:\d+)\.(?:\d+)(?:\.(?:\d+))?\.min\.js)$"), "jquery-migrate.min.js"},
 						{ new System.Text.RegularExpressions.Regex(@"^(jquery-ui-(?:\d+)\.(?:\d+)(?:\.(?:\d+))?\.js)$"), "jquery-ui.js"},
 						{ new System.Text.RegularExpressions.Regex(@"^(jquery-ui-(?:\d+)\.(?:\d+)(?:\.(?:\d+))?\.min\.js)$"), "jquery-ui.min.js"},
+						{ new System.Text.RegularExpressions.Regex(@"^(jquery.signalR-(?:\d+)\.(?:\d+)(?:\.(?:\d+))?\.js)$"), "jquery.signalR.js"},
+						{ new System.Text.RegularExpressions.Regex(@"^(jquery.signalR-(?:\d+)\.(?:\d+)(?:\.(?:\d+))?\.min\.js)$"), "jquery.signalR.min.js"},
 						{ new System.Text.RegularExpressions.Regex(@"^(jquery.maskedinput-(?:\d+)\.(?:\d+)(?:\.(?:\d+))?\.js)$"), "jquery.maskedinput.js"},
 						{ new System.Text.RegularExpressions.Regex(@"^(jquery.maskedinput-(?:\d+)\.(?:\d+)(?:\.(?:\d+))?\.min\.js)$"), "jquery.maskedinput.min.js"},
 						{ new System.Text.RegularExpressions.Regex(@"^(knockout-(?:\d+)\.(?:\d+)(?:\.(?:\d+))?\.js)$"), "knockout.js"},
 						{ new System.Text.RegularExpressions.Regex(@"^(knockout-(?:\d+)\.(?:\d+)(?:\.(?:\d+))?\.min\.js)$"), "knockout.min.js"},
 						{ new System.Text.RegularExpressions.Regex(@"^(modernizr-(?:\d+)\.(?:\d+)(?:\.(?:\d+))?\.js)$"), "modernizr.js"},
 						{ new System.Text.RegularExpressions.Regex(@"^(modernizr-(?:\d+)\.(?:\d+)(?:\.(?:\d+))?\.min\.js)$"), "modernizr.min.js"},
+						{ new System.Text.RegularExpressions.Regex(@"^(jquery.signalR-(?:\d+)\.(?:\d+)(?:\.(?:\d+))?\.js)$"), "jquery.signalR.js"},
+						{ new System.Text.RegularExpressions.Regex(@"^(jquery.signalR-(?:\d+)\.(?:\d+)(?:\.(?:\d+))?\.min\.js)$"), "jquery.signalR.min.js"},
 						{ new System.Text.RegularExpressions.Regex(@"^(jquery-ui-(?:\d+)\.(?:\d+)(?:\.(?:\d+))?\.custom.css)$"), "jquery-ui.custom.css"}
 				};
 #>

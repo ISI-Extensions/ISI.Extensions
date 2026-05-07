@@ -83,6 +83,8 @@ namespace ISI.Extensions.Docker
 						Mode = port.Mode,
 						RawValue = port.RawValue,
 						IsYaml = port.IsYaml,
+						StartIndex = port.StartIndex,
+						EndIndex = port.EndIndex,
 					}),
 					Expose = service.Expose.ToNullCheckedArray(),
 					Volumes = service.Volumes.ToNullCheckedArray(),

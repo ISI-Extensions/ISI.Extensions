@@ -198,5 +198,16 @@ namespace ISI.Extensions.Tests
 				AddToLog = (level, description) => Console.WriteLine(description),
 			});
 		}
+
+		[Test]
+		public void DeserializeComposeFile_Test()
+		{
+			var dockerApi = ServiceProvider.GetService<ISI.Extensions.Docker.DockerApi>();
+
+			var xxx = dockerApi.DeserializeComposeFile(new ISI.Extensions.Docker.DataTransferObjects.DockerApi.DeserializeComposeFileRequest()
+			{
+				ComposeFileFullName = @"F:\ISI\Internal Projects\ISI.NginxManager.ServiceApplication\compose.yaml",
+			});
+		}
 	}
 }

@@ -27,6 +27,8 @@ namespace ISI.Extensions.VisualStudio.Forms.Extensions
 		{
 			switch (taskActionStatus)
 			{
+				case TaskActionStatus.Default:
+					return System.Drawing.SystemColors.WindowText;
 				case TaskActionStatus.Running:
 					return System.Drawing.Color.Yellow;
 				case TaskActionStatus.Success:

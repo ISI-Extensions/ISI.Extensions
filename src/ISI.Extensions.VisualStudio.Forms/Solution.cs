@@ -686,6 +686,8 @@ namespace ISI.Extensions.VisualStudio.Forms
 			RestoreNugetPackagesResponse = new();
 			BuildSolutionResponse = new();
 			StopWatchResponse = new();
+
+			SetStatus(TaskActionStatus.Default, string.Empty);
 		}
 
 		public virtual TaskActions[] GetTasks(bool resetResponses, bool cleanSolution, bool updateSolution, bool restoreNugetPackages, bool buildSolution, bool executeProjects, bool showProjectExecutionInTaskbar)

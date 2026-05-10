@@ -48,11 +48,17 @@ namespace ISI.Extensions.Nuget
 			{
 				if (projectLine.IndexOf("<Compile ", StringComparison.InvariantCulture) > 0)
 				{
-					var keyValues = projectLine.Replace("<Compile ", string.Empty).Replace("/>", string.Empty).Split([' ', '\t'], StringSplitOptions.RemoveEmptyEntries).Select(item => item.Split(["=\"", "\""], StringSplitOptions.None)).ToDictionary(item => item[0], item => item[1], StringComparer.CurrentCultureIgnoreCase);
-
-					if (keyValues.TryGetValue("Include", out var includedFile))
+					try
 					{
-						fullNames.Add(System.IO.Path.Combine(projectDirectory, includedFile));
+						var keyValues = projectLine.Replace("<Compile ", string.Empty).Replace("/>", string.Empty).Split([' ', '\t'], StringSplitOptions.RemoveEmptyEntries).Select(item => item.Split(["=\"", "\""], StringSplitOptions.None)).ToDictionary(item => item[0], item => item[1], StringComparer.CurrentCultureIgnoreCase);
+
+						if (keyValues.TryGetValue("Include", out var includedFile))
+						{
+							fullNames.Add(System.IO.Path.Combine(projectDirectory, includedFile));
+						}
+					}
+					catch
+					{
 					}
 				}
 			}

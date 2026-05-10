@@ -33,97 +33,97 @@ namespace ISI.Extensions.Nuget
 		{
 			var response = new DTOs.BuildNuspecResponse();
 
-			var package = new SerializableDTOs.Nuspec()
+			var package = new SerializableDTOs.package()
 			{
-				Metadata = new(),
+				metadata = new(),
 			};
 
-			package.Metadata.Package = request.Nuspec.Package;
-			package.Metadata.Version = request.Nuspec.Version;
+			package.metadata.id = request.Nuspec.Package;
+			package.metadata.version = request.Nuspec.Version;
 
 			if (!string.IsNullOrWhiteSpace(request.Nuspec.IconName))
 			{
-				package.Metadata.Icon = request.Nuspec.IconName;
+				package.metadata.icon = request.Nuspec.IconName;
 			}
 			else if (request.Nuspec.IconUri != null)
 			{
 				//package.metadata.icon = request.Nuspec.IconUri.ToString();
-				package.Metadata.IconUrl = request.Nuspec.IconUri.ToString();
+				package.metadata.iconUrl = request.Nuspec.IconUri.ToString();
 			}
 
 			if (request.Nuspec.ProjectUri != null)
 			{
-				package.Metadata.ProjectUrl = request.Nuspec.ProjectUri.ToString();
+				package.metadata.projectUrl = request.Nuspec.ProjectUri.ToString();
 			}
 
-			package.Metadata.Title = request.Nuspec.Title;
-			package.Metadata.Description = request.Nuspec.Description;
-			package.Metadata.Summary = request.Nuspec.Summary;
+			package.metadata.title = request.Nuspec.Title;
+			package.metadata.description = request.Nuspec.Description;
+			package.metadata.summary = request.Nuspec.Summary;
 
-			package.Metadata.Authors = string.Join(", ", request.Nuspec.Authors.ToNullCheckedArray(NullCheckCollectionResult.Empty));
-			package.Metadata.Owners = string.Join(", ", request.Nuspec.Owners.ToNullCheckedArray(NullCheckCollectionResult.Empty));
-			package.Metadata.Copyright = request.Nuspec.Copyright;
+			package.metadata.authors = string.Join(", ", request.Nuspec.Authors.ToNullCheckedArray(NullCheckCollectionResult.Empty));
+			package.metadata.owners = string.Join(", ", request.Nuspec.Owners.ToNullCheckedArray(NullCheckCollectionResult.Empty));
+			package.metadata.copyright = request.Nuspec.Copyright;
 
 			if (request.Nuspec.LicenseUri != null)
 			{
-				package.Metadata.LicenseUrl = request.Nuspec.LicenseUri.ToString();
+				package.metadata.licenseUrl = request.Nuspec.LicenseUri.ToString();
 			}
-			package.Metadata.License = request.Nuspec.License.NullCheckedConvert(license => new SerializableDTOs.NuspecPackageMetadataLicense()
+			package.metadata.license = request.Nuspec.License.NullCheckedConvert(license => new SerializableDTOs.packageMetadataLicense()
 			{
-				Type = license.LicenseType,
-				Version = license.Version,
+				type = license.LicenseType,
+				version = license.Version,
 				Value = license.Value,
 			});
 
 			if (request.Nuspec.RequireLicenseAcceptance.HasValue)
 			{
-				package.Metadata.RequireLicenseAcceptance = request.Nuspec.RequireLicenseAcceptance.Value;
-				//package.Metadata.requireLicenseAcceptanceSpecified = true;
+				package.metadata.requireLicenseAcceptance = request.Nuspec.RequireLicenseAcceptance.Value;
+				package.metadata.requireLicenseAcceptanceSpecified = true;
 			}
-			package.Metadata.ReleaseNotes = request.Nuspec.ReleaseNotes;
-			package.Metadata.Readme = request.Nuspec.Readme;
+			package.metadata.releaseNotes = request.Nuspec.ReleaseNotes;
+			package.metadata.readme = request.Nuspec.Readme;
 
-			package.Metadata.Tags = string.Join(" ", request.Nuspec.Tags.ToNullCheckedArray(NullCheckCollectionResult.Empty));
+			package.metadata.tags = string.Join(" ", request.Nuspec.Tags.ToNullCheckedArray(NullCheckCollectionResult.Empty));
 
-			package.Metadata.Repository = request.Nuspec.Repository.NullCheckedConvert(repository => new SerializableDTOs.NuspecPackageMetadataRepository()
+			package.metadata.repository = request.Nuspec.Repository.NullCheckedConvert(repository => new SerializableDTOs.packageMetadataRepository()
 			{
-				Type = repository.RepositoryType,
-				Url = repository.RepositoryUri.ToString(),
-				Branch = repository.Branch,
-				Commit = repository.Commit,
+				type = repository.RepositoryType,
+				url = repository.RepositoryUri.ToString(),
+				branch = repository.Branch,
+				commit = repository.Commit,
 			});
 
-			package.Metadata.PackageTypes = request.Nuspec.PackageTypes.ToNullCheckedArray(packageType => new SerializableDTOs.NuspecPackageMetadataType()
+			package.metadata.packageTypes = request.Nuspec.PackageTypes.ToNullCheckedArray(packageType => new SerializableDTOs.packageMetadataPackageType()
 			{
-				Name = packageType.Name,
-				Version = packageType.Version,
+				name = packageType.Name,
+				version = packageType.Version,
 			}, NullCheckCollectionResult.ReturnNull);
 
-			package.Metadata.Dependencies = request.Nuspec.Dependencies.NullCheckedConvert(dependencies => new SerializableDTOs.NuspecPackageMetadataDependencies()
+			package.metadata.dependencies = request.Nuspec.Dependencies.NullCheckedConvert(dependencies => new SerializableDTOs.packageMetadataDependencies()
 			{
 				Items = dependencies.ToNullCheckedArray(dependency =>
 				{
 					switch (dependency)
 					{
 						case NuspecDependency nuspecDependency:
-							return new SerializableDTOs.NuspecPackageMetadataDependency()
+							return new SerializableDTOs.dependency()
 							{
-								Package = nuspecDependency.Package,
-								Version = nuspecDependency.Version,
-								Include = (nuspecDependency.Include.HasValue ? nuspecDependency.Include.TrueFalse() : null),
-								Exclude = (nuspecDependency.Exclude.HasValue ? nuspecDependency.Exclude.TrueFalse() : null),
+								id = nuspecDependency.Package,
+								version = nuspecDependency.Version,
+								include = (nuspecDependency.Include.HasValue ? nuspecDependency.Include.TrueFalse() : null),
+								exclude = (nuspecDependency.Exclude.HasValue ? nuspecDependency.Exclude.TrueFalse() : null),
 							} as object;
 
 						case NuspecDependencyGroup nuspecDependencyGroup:
-							return new SerializableDTOs.NuspecPackageMetadataDependencyGroup()
+							return new SerializableDTOs.dependencyGroup()
 							{
-								TargetFramework = nuspecDependencyGroup.TargetFramework,
-								Dependencies = nuspecDependencyGroup.Dependencies.ToNullCheckedArray(d => new SerializableDTOs.NuspecPackageMetadataDependency()
+								targetFramework = nuspecDependencyGroup.TargetFramework,
+								dependency = nuspecDependencyGroup.Dependencies.ToNullCheckedArray(d => new SerializableDTOs.dependency()
 								{
-									Package = d.Package,
-									Version = d.Version,
-									Include = (d.Include.HasValue ? d.Include.TrueFalse() : null),
-									Exclude = (d.Exclude.HasValue ? d.Exclude.TrueFalse() : null),
+									id = d.Package,
+									version = d.Version,
+									include = (d.Include.HasValue ? d.Include.TrueFalse() : null),
+									exclude = (d.Exclude.HasValue ? d.Exclude.TrueFalse() : null),
 								})
 							} as object;
 
@@ -133,16 +133,16 @@ namespace ISI.Extensions.Nuget
 				}, NullCheckCollectionResult.ReturnNull)
 			});
 
-			package.Files = request.Nuspec.Files.ToNullCheckedArray(file => new SerializableDTOs.NuspecPackageFile()
+			package.files = request.Nuspec.Files.ToNullCheckedArray(file => new SerializableDTOs.packageFile()
 			{
-				Src = file.SourcePattern,
-				Target = (string.IsNullOrWhiteSpace(file.Target) ? null : file.Target),
-				Exclude = (string.IsNullOrWhiteSpace(file.ExcludePattern) ? null : file.ExcludePattern),
+				src = file.SourcePattern,
+				target = (string.IsNullOrWhiteSpace(file.Target) ? null : file.Target),
+				exclude = (string.IsNullOrWhiteSpace(file.ExcludePattern) ? null : file.ExcludePattern),
 			}, NullCheckCollectionResult.ReturnNull);
 
 			using (var stream = new System.IO.MemoryStream())
 			{
-				var xmlSerializer = new System.Xml.Serialization.XmlSerializer(typeof(SerializableDTOs.Nuspec));
+				var xmlSerializer = new System.Xml.Serialization.XmlSerializer(typeof(SerializableDTOs.package));
 
 				var xmlSerializerNamespaces = new System.Xml.Serialization.XmlSerializerNamespaces();
 				xmlSerializerNamespaces.Add(string.Empty, string.Empty);

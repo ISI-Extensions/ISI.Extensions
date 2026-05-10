@@ -100,11 +100,11 @@ namespace ISI.Platforms.Extensions
 		public static void AddWebStartupUseEndpoints(this IServiceApplicationContextAddActions context, ServiceApplicationContextWebStartupUseEndpointsDelegate action)
 		{
 			var webStartupUseEndpoints = context.WebStartupUseEndpoints;
-			context.WebStartupUseEndpoints = services =>
+			context.WebStartupUseEndpoints = endpointRouteBuilder =>
 			{
-				webStartupUseEndpoints?.Invoke(services);
+				webStartupUseEndpoints?.Invoke(endpointRouteBuilder);
 
-				action(services);
+				action(endpointRouteBuilder);
 			};
 		}
 

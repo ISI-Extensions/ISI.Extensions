@@ -37,13 +37,25 @@ namespace ISI.Extensions.AspNetCore
 
 		public NamedRouteAttribute(string name, Type urlRootProviderType, string template) 
 		{
+			if (urlRootProviderType == null)
+			{
+				throw new NullReferenceException($"{nameof(urlRootProviderType)} is null");
+			}
+
 			if (!UrlRoots.TryGetValue(urlRootProviderType, out var urlRoot))
 			{
-				var instance = Activator.CreateInstance(urlRootProviderType) as IHasUrlRoute;
+				var instance = Activator.CreateInstance(urlRootProviderType);
 
-				urlRoot = instance.UrlRoot;
+				if(instance is IHasUrlRoute hasUrlRoute)
+				{
+					urlRoot = hasUrlRoute.UrlRoot;
 
-				UrlRoots.TryAdd(urlRootProviderType, urlRoot);
+					UrlRoots.TryAdd(urlRootProviderType, urlRoot);
+				}
+				else
+				{
+					throw new Exception($"{urlRootProviderType.FullName} is does not implement IHasUrlRoute");
+				}
 			}
 
 			Name = name;

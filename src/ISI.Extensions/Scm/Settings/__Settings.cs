@@ -62,6 +62,17 @@ namespace ISI.Extensions.Scm
 			public const string NugetNuSpecAuthor = nameof(NugetNuSpecAuthor);
 			public const string NugetNuSpecOwner = nameof(NugetNuSpecOwner);
 
+			public const string ChocolatelyApiUrl = nameof(ChocolatelyApiUrl);
+			public const string ChocolatelyRepositoryName = nameof(ChocolatelyRepositoryName);
+			public const string ChocolatelyRepositoryUrl = nameof(ChocolatelyRepositoryUrl);
+			public const string ChocolatelyApiKey = nameof(ChocolatelyApiKey);
+			public const string ChocolatelyUserName = nameof(ChocolatelyUserName);
+			public const string ChocolatelyPassword = nameof(ChocolatelyPassword);
+			public const string ChocolatelyNuSpecIconUrl = nameof(ChocolatelyNuSpecIconUrl);
+			public const string ChocolatelyNuSpecCopyright = nameof(ChocolatelyNuSpecCopyright);
+			public const string ChocolatelyNuSpecAuthor = nameof(ChocolatelyNuSpecAuthor);
+			public const string ChocolatelyNuSpecOwner = nameof(ChocolatelyNuSpecOwner);
+
 			public const string DependencyTrackApiUrl = nameof(DependencyTrackApiUrl);
 			public const string DependencyTrackApiKey = nameof(DependencyTrackApiKey);
 
@@ -131,6 +142,9 @@ namespace ISI.Extensions.Scm
 
 		private SettingsNuget _nuget = null;
 		public SettingsNuget Nuget => _nuget ??= new(this);
+
+		private SettingsChocolately _chocolately = null;
+		public SettingsChocolately Chocolately => _chocolately ??= new(this);
 
 		private SettingsDependencyTrack _dependencyTrack = null;
 		public SettingsDependencyTrack DependencyTrack => _dependencyTrack ??= new(this);

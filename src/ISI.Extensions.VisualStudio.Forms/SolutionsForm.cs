@@ -248,6 +248,9 @@ namespace ISI.Extensions.VisualStudio.Forms
 									foreach (var solution in solutionsBySolutionFullName.Values)
 									{
 										solution.ResetResponses();
+										solution.SetButtonVisibility(solution.RefreshButton, false);
+										solution.SetButtonVisibility(solution.OpenButton, false);
+										solution.SetButtonVisibility(solution.ViewBuildLogButton, false);
 									}
 
 									SolutionApi.UpgradeNugetPackages(new()

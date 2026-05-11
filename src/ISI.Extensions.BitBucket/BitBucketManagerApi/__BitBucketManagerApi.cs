@@ -102,6 +102,7 @@ namespace ISI.Extensions.BitBucket
 			var apiResponse = ListRepositories(new()
 			{
 				BitBucketApiToken = request.ApiToken,
+				Workspace = request.RepositoryNamespace,
 			});
 
 			response.Repositories = apiResponse.Repositories
@@ -197,6 +198,7 @@ namespace ISI.Extensions.BitBucket
 			var apiResponse = ListRepositories(new()
 			{
 				BitBucketApiToken = request.ApiToken,
+				Workspace = request.RepositoryNamespace,
 			});
 
 			response.Repositories = apiResponse.Repositories

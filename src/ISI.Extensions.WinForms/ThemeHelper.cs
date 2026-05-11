@@ -27,22 +27,25 @@ namespace ISI.Extensions.WinForms
 
 		public const string IsHighlighted = nameof(IsHighlighted);
 
+		public static System.Drawing.Color GetForeColor() => (IsDarkTheme ? System.Drawing.Color.White : System.Drawing.SystemColors.WindowText);
+
+
 		public static (System.Drawing.Color BackColor, System.Drawing.Color ForeColor) GetColors(System.Windows.Forms.Control control)
 		{
 			switch (control)
 			{
 				case System.Windows.Forms.Button button:
-					return (BackColor: (IsDarkTheme ? System.Drawing.Color.FromArgb(25, 25, 25) : System.Drawing.SystemColors.Window), ForeColor: (IsDarkTheme ? System.Drawing.Color.White : System.Drawing.SystemColors.WindowText));
+					return (BackColor: (IsDarkTheme ? System.Drawing.Color.FromArgb(25, 25, 25) : System.Drawing.SystemColors.Window), ForeColor: GetForeColor());
 
 				case System.Windows.Forms.Panel panel:
 					if(string.Equals(panel.Tag as string ?? string.Empty, IsHighlighted))
 					{
-						return (BackColor: (IsDarkTheme ? System.Drawing.Color.LightSlateGray : System.Drawing.Color.LightSkyBlue), ForeColor: (IsDarkTheme ? System.Drawing.Color.White : System.Drawing.SystemColors.WindowText));
+						return (BackColor: (IsDarkTheme ? System.Drawing.Color.LightSlateGray : System.Drawing.Color.LightSkyBlue), ForeColor: GetForeColor());
 					}
 					break;
 			}
 
-			return (BackColor: (IsDarkTheme ? System.Drawing.Color.FromArgb(25, 25, 25) : System.Drawing.SystemColors.Window), ForeColor: (IsDarkTheme ? System.Drawing.Color.White : System.Drawing.SystemColors.WindowText));
+			return (BackColor: (IsDarkTheme ? System.Drawing.Color.FromArgb(25, 25, 25) : System.Drawing.SystemColors.Window), ForeColor: GetForeColor());
 		}
 
 		public static void SyncTheme(System.Windows.Forms.Form form)

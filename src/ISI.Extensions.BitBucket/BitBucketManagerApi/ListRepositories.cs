@@ -34,9 +34,9 @@ namespace ISI.Extensions.BitBucket
 
 			var uri = GetApiUri(request);
 			uri.AddDirectoryToPath("repositories");
-			if (!string.IsNullOrWhiteSpace(request.Workspace))
+			if (!string.IsNullOrWhiteSpace(GetWorkspace(request)))
 			{
-				uri.AddDirectoryToPath(request.Workspace);
+				uri.AddDirectoryToPath(GetWorkspace(request));
 			}
 
 			while (uri != null)
@@ -64,7 +64,7 @@ namespace ISI.Extensions.BitBucket
 
 					return new Repository()
 					{
-						Workspace = request.Workspace,
+						Workspace = GetWorkspace(request),
 						Name = repository.RepositoryKey,
 						Description = repository.Description,
 						SourceUrl = sourceUrl,

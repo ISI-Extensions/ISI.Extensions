@@ -22,5 +22,6 @@ namespace ISI.Extensions.BitBucket.DataTransferObjects.BitBucketManagerApi
 	public interface IRequest
 	{
 		string BitBucketApiToken { get; }
+		string Workspace { get; }
 	}
 }

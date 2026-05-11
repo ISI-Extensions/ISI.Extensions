@@ -10,8 +10,8 @@ namespace ISI.Extensions.BitBucket.DataTransferObjects.BitBucketManagerApi
 	public class DeleteRepositoryRequest : IRequest
 	{
 		public string BitBucketApiToken { get; set; }
-
 		public string Workspace { get; set; }
+
 		public string Name { get; set; }
 	}
 }

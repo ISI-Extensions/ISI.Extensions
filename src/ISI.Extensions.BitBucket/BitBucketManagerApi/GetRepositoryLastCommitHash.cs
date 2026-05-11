@@ -31,7 +31,7 @@ namespace ISI.Extensions.BitBucket
 			var response = new DTOs.GetRepositoryLastCommitHashResponse();
 
 			var remoteUri = new UriBuilder("https://bitbucket.org");
-			remoteUri.AddDirectoryToPath(request.Workspace);
+			remoteUri.AddDirectoryToPath(GetWorkspace(request));
 			remoteUri.AddDirectoryToPath(request.Name);
 
 			remoteUri.UserName = "x-token-auth";

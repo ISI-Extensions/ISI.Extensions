@@ -19,20 +19,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.BitBucket.DataTransferObjects.BitBucketManagerApi;
+using SerializableDTOs = ISI.Extensions.BitBucket.SerializableModels;
 
-namespace ISI.Extensions.BitBucket.DataTransferObjects.BitBucketManagerApi
+namespace ISI.Extensions.BitBucket
 {
-	public class ExportRepositoryRequest : IRequest
+	public partial class BitBucketManagerApi
 	{
-		public string BitBucketApiToken { get; set; }
-		public string Workspace { get; set; }
+		private string GetWorkspace(DTOs.IRequest request)
+		{
+			if (!string.IsNullOrWhiteSpace(request.Workspace))
+			{
+				var workspace = request.Workspace;
 
-		public string Name { get; set; }
+				workspace = (workspace.StartsWith("%") && workspace.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(workspace.Trim('%')) : workspace);
 
-		public ISI.Extensions.Git.ExportFormat ExportFormat { get; set; } = ISI.Extensions.Git.ExportFormat.Bundle;
+				return workspace;
+			}
 
-		public System.IO.Stream DownloadStream { get; set; }
-
-		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
+			return null;
+		}
 	}
 }

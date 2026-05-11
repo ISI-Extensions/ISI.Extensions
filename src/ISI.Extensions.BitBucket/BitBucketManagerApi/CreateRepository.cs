@@ -17,7 +17,7 @@ namespace ISI.Extensions.BitBucket
 
 			var uri = GetApiUri(request);
 			uri.AddDirectoryToPath("repositories");
-			uri.AddDirectoryToPath(request.Workspace);
+			uri.AddDirectoryToPath(GetWorkspace(request));
 			uri.AddDirectoryToPath(request.Name);
 
 			var apiRequest = new SerializableDTOs.CreateRepositoryRequest()

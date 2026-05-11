@@ -10,7 +10,6 @@ namespace ISI.Extensions.BitBucket.DataTransferObjects.BitBucketManagerApi
 	public class CreateRepositoryRequest : IRequest
 	{
 		public string BitBucketApiToken { get; set; }
-
 		public string Workspace { get; set; }
 
 		public string Scm { get; set; } = "git";

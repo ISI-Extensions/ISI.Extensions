@@ -169,7 +169,7 @@ namespace ISI.Extensions.Tests
 			var apiResponse = bitBucketManagerApi.ListRepositories(new()
 			{
 				BitBucketApiToken = BitBucketApiToken,
-				Workspace = "dfdsfdfgb",
+				Workspace = BitBucketReposWorkspace,
 			});
 		}
 

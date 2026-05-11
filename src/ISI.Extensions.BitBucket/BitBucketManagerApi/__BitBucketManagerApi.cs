@@ -105,8 +105,12 @@ namespace ISI.Extensions.BitBucket
 				Workspace = request.RepositoryNamespace,
 			});
 
+			var workspace = request.RepositoryNamespace;
+
+			workspace = (workspace.StartsWith("%") && workspace.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(workspace.Trim('%')) : workspace);
+			
 			response.Repositories = apiResponse.Repositories
-				.NullCheckedWhere(repository => string.Equals(repository.Type, RepositoryType, StringComparison.InvariantCultureIgnoreCase) && (string.IsNullOrWhiteSpace(request.RepositoryNamespace) || string.Equals(request.RepositoryNamespace, repository.Workspace, StringComparison.InvariantCultureIgnoreCase)))
+				.NullCheckedWhere(repository => string.Equals(repository.Type, RepositoryType, StringComparison.InvariantCultureIgnoreCase) && (string.IsNullOrWhiteSpace(workspace) || string.Equals(workspace, repository.Workspace, StringComparison.InvariantCultureIgnoreCase)))
 				.ToNullCheckedArray(repository => new ISI.Extensions.Scm.Repository()
 				{
 					RepositoryNamespace = repository.Workspace,
@@ -201,8 +205,12 @@ namespace ISI.Extensions.BitBucket
 				Workspace = request.RepositoryNamespace,
 			});
 
+			var workspace = request.RepositoryNamespace;
+
+			workspace = (workspace.StartsWith("%") && workspace.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(workspace.Trim('%')) : workspace);
+
 			response.Repositories = apiResponse.Repositories
-				.NullCheckedWhere(repository => string.Equals(repository.Type, RepositoryType, StringComparison.InvariantCultureIgnoreCase) && (string.IsNullOrWhiteSpace(request.RepositoryNamespace) || string.Equals(request.RepositoryNamespace, repository.Workspace, StringComparison.InvariantCultureIgnoreCase)))
+				.NullCheckedWhere(repository => string.Equals(repository.Type, RepositoryType, StringComparison.InvariantCultureIgnoreCase) && (string.IsNullOrWhiteSpace(workspace) || string.Equals(workspace, repository.Workspace, StringComparison.InvariantCultureIgnoreCase)))
 				.ToNullCheckedArray(repository => new ISI.Extensions.Scm.Repository()
 				{
 					RepositoryNamespace = repository.Workspace,

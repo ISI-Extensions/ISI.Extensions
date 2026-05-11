@@ -100,8 +100,12 @@ namespace ISI.Extensions.ScmManager
 				ScmManagerApiToken = request.ApiToken,
 			});
 
+			var @namespace = request.RepositoryNamespace;
+
+			@namespace = (@namespace.StartsWith("%") && @namespace.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(@namespace.Trim('%')) : @namespace);
+
 			response.Repositories = apiResponse.Repositories
-				.NullCheckedWhere(repository => string.Equals(repository.Type, RepositoryType, StringComparison.InvariantCultureIgnoreCase) && (string.IsNullOrWhiteSpace(request.RepositoryNamespace) || string.Equals(request.RepositoryNamespace, repository.Namespace, StringComparison.InvariantCultureIgnoreCase)))
+				.NullCheckedWhere(repository => string.Equals(repository.Type, RepositoryType, StringComparison.InvariantCultureIgnoreCase) && (string.IsNullOrWhiteSpace(@namespace) || string.Equals(@namespace, repository.Namespace, StringComparison.InvariantCultureIgnoreCase)))
 				.ToNullCheckedArray(repository => new ISI.Extensions.Scm.Repository()
 				{
 					RepositoryNamespace = repository.Namespace,
@@ -196,8 +200,12 @@ namespace ISI.Extensions.ScmManager
 				ScmManagerApiToken = request.ApiToken,
 			});
 
+			var @namespace = request.RepositoryNamespace;
+
+			@namespace = (@namespace.StartsWith("%") && @namespace.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(@namespace.Trim('%')) : @namespace);
+
 			response.Repositories = apiResponse.Repositories
-				.NullCheckedWhere(repository => string.Equals(repository.Type, RepositoryType, StringComparison.InvariantCultureIgnoreCase) && (string.IsNullOrWhiteSpace(request.RepositoryNamespace) || string.Equals(request.RepositoryNamespace, repository.Namespace, StringComparison.InvariantCultureIgnoreCase)))
+				.NullCheckedWhere(repository => string.Equals(repository.Type, RepositoryType, StringComparison.InvariantCultureIgnoreCase) && (string.IsNullOrWhiteSpace(@namespace) || string.Equals(@namespace, repository.Namespace, StringComparison.InvariantCultureIgnoreCase)))
 				.ToNullCheckedArray(repository => new ISI.Extensions.Scm.Repository()
 				{
 					RepositoryNamespace = repository.Namespace,

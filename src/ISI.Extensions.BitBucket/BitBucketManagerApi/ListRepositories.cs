@@ -69,7 +69,7 @@ namespace ISI.Extensions.BitBucket
 						Description = repository.Description,
 						SourceUrl = sourceUrl,
 						CreationDate = repository.CreationDate,
-						Type = repository.Type,
+						Type = repository.Scm,
 						LastModified = repository.LastModified,
 					};
 				}));

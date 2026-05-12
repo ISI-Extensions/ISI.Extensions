@@ -43,19 +43,19 @@ namespace ISI.Extensions.ScmManager.SerializableModels
 	public class ListRepositoryChangeSetsResponseLinks
 	{
 		[DataMember(Name = "self", EmitDefaultValue = false)]
-		public Link Self { get; set; }
+		public LinkTemplated Self { get; set; }
 
 		[DataMember(Name = "first", EmitDefaultValue = false)]
-		public Link First { get; set; }
+		public LinkTemplated First { get; set; }
 
 		[DataMember(Name = "next", EmitDefaultValue = false)]
-		public Link Next { get; set; }
+		public LinkTemplated Next { get; set; }
 
 		[DataMember(Name = "last", EmitDefaultValue = false)]
-		public Link Last { get; set; }
+		public LinkTemplated Last { get; set; }
 
 		[DataMember(Name = "create", EmitDefaultValue = false)]
-		public Link Create { get; set; }
+		public LinkTemplated Create { get; set; }
 	}
 
 	[DataContract]
@@ -75,7 +75,7 @@ namespace ISI.Extensions.ScmManager.SerializableModels
 		public string Name { get; set; }
 
 		[DataMember(Name = "_links", EmitDefaultValue = false)]
-		public Link Links { get; set; }
+		public LinkTemplated Links { get; set; }
 	}
 
 	[DataContract]
@@ -109,25 +109,25 @@ namespace ISI.Extensions.ScmManager.SerializableModels
 	public class ChangeSetLinks
 	{
 		[DataMember(Name = "self", EmitDefaultValue = false)]
-		public Link Self { get; set; }
+		public LinkTemplated Self { get; set; }
 
 		[DataMember(Name = "diff", EmitDefaultValue = false)]
-		public Link Diff { get; set; }
+		public LinkTemplated Diff { get; set; }
 
 		[DataMember(Name = "sources", EmitDefaultValue = false)]
-		public Link Sources { get; set; }
+		public LinkTemplated Sources { get; set; }
 
 		[DataMember(Name = "modifications", EmitDefaultValue = false)]
-		public Link Modifications { get; set; }
+		public LinkTemplated Modifications { get; set; }
 
 		[DataMember(Name = "tag", EmitDefaultValue = false)]
-		public Link Tag { get; set; }
+		public LinkTemplated Tag { get; set; }
 
 		[DataMember(Name = "containedInTags", EmitDefaultValue = false)]
-		public Link ContainedInTags { get; set; }
+		public LinkTemplated ContainedInTags { get; set; }
 
 		[DataMember(Name = "diffParsed", EmitDefaultValue = false)]
-		public Link DiffParsed { get; set; }
+		public LinkTemplated DiffParsed { get; set; }
 	}
 
 	[DataContract]
@@ -151,10 +151,10 @@ namespace ISI.Extensions.ScmManager.SerializableModels
 	public class ParentLinks
 	{
 		[DataMember(Name = "self", EmitDefaultValue = false)]
-		public Link Self { get; set; }
+		public LinkTemplated Self { get; set; }
 
 		[DataMember(Name = "diff", EmitDefaultValue = false)]
-		public Link Diff { get; set; }
+		public LinkTemplated Diff { get; set; }
 	}
 
 	[DataContract]

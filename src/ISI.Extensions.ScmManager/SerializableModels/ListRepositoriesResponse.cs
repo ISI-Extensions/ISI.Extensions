@@ -43,19 +43,19 @@ namespace ISI.Extensions.ScmManager.SerializableModels
 	public class ListRepositoriesResponseLinks
 	{
 		[DataMember(Name = "self", EmitDefaultValue = false)]
-		public Link Self { get; set; }
+		public LinkTemplated Self { get; set; }
 
 		[DataMember(Name = "first", EmitDefaultValue = false)]
-		public Link First { get; set; }
+		public LinkTemplated First { get; set; }
 
 		[DataMember(Name = "next", EmitDefaultValue = false)]
-		public Link Next { get; set; }
+		public LinkTemplated Next { get; set; }
 
 		[DataMember(Name = "last", EmitDefaultValue = false)]
-		public Link Last { get; set; }
+		public LinkTemplated Last { get; set; }
 
 		[DataMember(Name = "create", EmitDefaultValue = false)]
-		public Link Create { get; set; }
+		public LinkTemplated Create { get; set; }
 	}
 
 	[DataContract]

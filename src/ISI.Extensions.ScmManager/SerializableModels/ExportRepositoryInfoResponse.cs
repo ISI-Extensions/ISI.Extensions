@@ -54,9 +54,9 @@ namespace ISI.Extensions.ScmManager.SerializableModels
 	public class ExportRepositoryInfoResponseLinks
 	{
 		[DataMember(Name = "self", EmitDefaultValue = false)]
-		public Link Self { get; set; }
+		public LinkTemplated Self { get; set; }
 
 		[DataMember(Name = "download", EmitDefaultValue = false)]
-		public Link Download { get; set; }
+		public LinkTemplated Download { get; set; }
 	}
 }

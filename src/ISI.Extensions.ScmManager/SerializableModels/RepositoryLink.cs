@@ -24,12 +24,12 @@ using System.Runtime.Serialization;
 namespace ISI.Extensions.ScmManager.SerializableModels
 {
 	[DataContract]
-	public class Link
+	public class RepositoryLink
 	{
 		[DataMember(Name = "href", EmitDefaultValue = false)]
 		public string Href { get; set; }
 
-		[DataMember(Name = "templated", EmitDefaultValue = false)]
-		public bool Templated { get; set; }
+		[DataMember(Name = "name", EmitDefaultValue = false)]
+		public string Name { get; set; }
 	}
 }

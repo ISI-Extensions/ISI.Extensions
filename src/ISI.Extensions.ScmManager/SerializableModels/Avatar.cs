@@ -37,6 +37,6 @@ namespace ISI.Extensions.ScmManager.SerializableModels
 	public class AvatarLinks
 	{
 		[DataMember(Name = "avatar", EmitDefaultValue = false)]
-		public Link Avatar { get; set; }
+		public LinkTemplated Avatar { get; set; }
 	}
 }

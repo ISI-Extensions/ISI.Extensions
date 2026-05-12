@@ -32,6 +32,7 @@ namespace ISI.Extensions.Scm
 		public DateTime CreationDate { get; set; }
 
 		public string Type { get; set; }
+		public bool IsPrivate { get; set; }
 
 		public DateTime? LastModified { get; set; }
 

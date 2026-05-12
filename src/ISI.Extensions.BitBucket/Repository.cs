@@ -32,6 +32,7 @@ namespace ISI.Extensions.BitBucket
 		public DateTime CreationDate { get; set; }
 		
 		public string Type { get; set; }
+		public bool IsPrivate { get; set; }
 		public bool Archived { get; set; }
 		public bool Exporting { get; set; }
 

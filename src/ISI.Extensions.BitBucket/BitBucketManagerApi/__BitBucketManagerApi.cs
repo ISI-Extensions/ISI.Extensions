@@ -120,6 +120,7 @@ namespace ISI.Extensions.BitBucket
 					Contact = repository.Contact,
 					CreationDate = repository.CreationDate,
 					Type = repository.Type,
+					IsPrivate = repository.IsPrivate,
 					LastModified = repository.LastModified,
 				});
 
@@ -220,6 +221,7 @@ namespace ISI.Extensions.BitBucket
 					Contact = repository.Contact,
 					CreationDate = repository.CreationDate,
 					Type = repository.Type,
+					IsPrivate = repository.IsPrivate,
 					LastModified = repository.LastModified,
 				});
 

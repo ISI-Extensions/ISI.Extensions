@@ -74,118 +74,118 @@ namespace ISI.Extensions.ScmManager.SerializableModels
 	public class RepositoryLinks
 	{
 		[DataMember(Name = "self", EmitDefaultValue = false)]
-		public Link Self { get; set; }
+		public LinkTemplated Self { get; set; }
 
 		[DataMember(Name = "reindex", EmitDefaultValue = false)]
-		public Link Reindex { get; set; }
+		public LinkTemplated Reindex { get; set; }
 
 		[DataMember(Name = "delete", EmitDefaultValue = false)]
-		public Link Delete { get; set; }
+		public LinkTemplated Delete { get; set; }
 
 		[DataMember(Name = "update", EmitDefaultValue = false)]
-		public Link Update { get; set; }
+		public LinkTemplated Update { get; set; }
 
 		[DataMember(Name = "archive", EmitDefaultValue = false)]
-		public Link Archive { get; set; }
+		public LinkTemplated Archive { get; set; }
 
 		[DataMember(Name = "renameWithNamespace", EmitDefaultValue = false)]
-		public Link RenameWithNamespace { get; set; }
+		public LinkTemplated RenameWithNamespace { get; set; }
 
 		[DataMember(Name = "permissions", EmitDefaultValue = false)]
-		public Link Permissions { get; set; }
+		public LinkTemplated Permissions { get; set; }
 
 		[DataMember(Name = "protocol", EmitDefaultValue = false)]
 		public RepositoryLinksProtocol[] Protocol { get; set; }
 
 		[DataMember(Name = "export", EmitDefaultValue = false)]
-		public Link Export { get; set; }
+		public LinkTemplated Export { get; set; }
 
 		[DataMember(Name = "fullExport", EmitDefaultValue = false)]
-		public Link FullExport { get; set; }
+		public LinkTemplated FullExport { get; set; }
 
 		[DataMember(Name = "exportInfo", EmitDefaultValue = false)]
-		public Link ExportInfo { get; set; }
+		public LinkTemplated ExportInfo { get; set; }
 
 		[DataMember(Name = "changesets", EmitDefaultValue = false)]
-		public Link Changesets { get; set; }
+		public LinkTemplated Changesets { get; set; }
 
 		[DataMember(Name = "sources", EmitDefaultValue = false)]
-		public Link Sources { get; set; }
+		public LinkTemplated Sources { get; set; }
 
 		[DataMember(Name = "content", EmitDefaultValue = false)]
-		public Link Content { get; set; }
+		public LinkTemplated Content { get; set; }
 
 		[DataMember(Name = "paths", EmitDefaultValue = false)]
-		public Link Paths { get; set; }
+		public LinkTemplated Paths { get; set; }
 
 		[DataMember(Name = "runHealthCheck", EmitDefaultValue = false)]
-		public Link RunHealthCheck { get; set; }
+		public LinkTemplated RunHealthCheck { get; set; }
 
 		[DataMember(Name = "searchableTypes", EmitDefaultValue = false)]
-		public Link SearchableTypes { get; set; }
+		public LinkTemplated SearchableTypes { get; set; }
 
 		[DataMember(Name = "search", EmitDefaultValue = false)]
-		public RepositoryLinksSearch[] Search { get; set; }
+		public RepositoryLink[] Search { get; set; }
 
 		[DataMember(Name = "updateAvatar", EmitDefaultValue = false)]
-		public RepositoryLinksUpdateAvatar[] UpdateAvatar { get; set; }
+		public RepositoryLink[] UpdateAvatar { get; set; }
 
 		[DataMember(Name = "template", EmitDefaultValue = false)]
-		public Link Template { get; set; }
+		public LinkTemplated Template { get; set; }
 
 		[DataMember(Name = "favorize", EmitDefaultValue = false)]
-		public Link Favorize { get; set; }
+		public LinkTemplated Favorize { get; set; }
 
 		[DataMember(Name = "pathWpConfig", EmitDefaultValue = false)]
-		public Link PathWpConfig { get; set; }
+		public LinkTemplated PathWpConfig { get; set; }
 
 		[DataMember(Name = "tags", EmitDefaultValue = false)]
-		public Link Tags { get; set; }
+		public LinkTemplated Tags { get; set; }
 
 		[DataMember(Name = "branches", EmitDefaultValue = false)]
-		public Link Branches { get; set; }
+		public LinkTemplated Branches { get; set; }
 
 		[DataMember(Name = "branchDetailsCollection", EmitDefaultValue = false)]
-		public Link BranchDetailsCollection { get; set; }
+		public LinkTemplated BranchDetailsCollection { get; set; }
 
 		[DataMember(Name = "incomingChangesets", EmitDefaultValue = false)]
-		public Link IncomingChangesets { get; set; }
+		public LinkTemplated IncomingChangesets { get; set; }
 
 		[DataMember(Name = "incomingDiff", EmitDefaultValue = false)]
-		public Link IncomingDiff { get; set; }
+		public LinkTemplated IncomingDiff { get; set; }
 
 		[DataMember(Name = "incomingDiffParsed", EmitDefaultValue = false)]
-		public Link IncomingDiffParsed { get; set; }
+		public LinkTemplated IncomingDiffParsed { get; set; }
 
 		[DataMember(Name = "branchWpConfig", EmitDefaultValue = false)]
-		public Link BranchWpConfig { get; set; }
+		public LinkTemplated BranchWpConfig { get; set; }
 
 		[DataMember(Name = "defaultBranch", EmitDefaultValue = false)]
-		public Link DefaultBranch { get; set; }
+		public LinkTemplated DefaultBranch { get; set; }
 
 		[DataMember(Name = "pathWpConfigWithBranches", EmitDefaultValue = false)]
-		public Link PathWpConfigWithBranches { get; set; }
+		public LinkTemplated PathWpConfigWithBranches { get; set; }
 
 		[DataMember(Name = "readme", EmitDefaultValue = false)]
-		public Link Readme { get; set; }
+		public LinkTemplated Readme { get; set; }
 
 		[DataMember(Name = "pullRequest", EmitDefaultValue = false)]
-		public Link PullRequest { get; set; }
+		public LinkTemplated PullRequest { get; set; }
 
 		[DataMember(Name = "pullRequestCheck", EmitDefaultValue = false)]
-		public Link PullRequestCheck { get; set; }
+		public LinkTemplated PullRequestCheck { get; set; }
 
 		[DataMember(Name = "pullRequestConfig", EmitDefaultValue = false)]
-		public Link PullRequestConfig { get; set; }
+		public LinkTemplated PullRequestConfig { get; set; }
 
 		[DataMember(Name = "pullRequestTemplate", EmitDefaultValue = false)]
-		public Link PullRequestTemplate { get; set; }
+		public LinkTemplated PullRequestTemplate { get; set; }
 
 		[DataMember(Name = "workflowConfig", EmitDefaultValue = false)]
-		public Link WorkflowConfig { get; set; }
+		public LinkTemplated WorkflowConfig { get; set; }
 
 		[DataMember(Name = "configuration", EmitDefaultValue = false)]
-		public Link Configuration { get; set; }
+		public LinkTemplated Configuration { get; set; }
 	}
 
 	[DataContract]
@@ -201,25 +201,6 @@ namespace ISI.Extensions.ScmManager.SerializableModels
 		public string Profile { get; set; }
 	}
 
-	[DataContract]
-	public class RepositoryLinksSearch
-	{
-		[DataMember(Name = "href", EmitDefaultValue = false)]
-		public string Href { get; set; }
-
-		[DataMember(Name = "name", EmitDefaultValue = false)]
-		public string Name { get; set; }
-	}
-
-	[DataContract]
-	public class RepositoryLinksUpdateAvatar
-	{
-		[DataMember(Name = "href", EmitDefaultValue = false)]
-		public string Href { get; set; }
-
-		[DataMember(Name = "name", EmitDefaultValue = false)]
-		public string Name { get; set; }
-	}
 
 	[DataContract]
 	public class RepositoryEmbedded

@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2026, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,31 +15,21 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.ScmManager
+namespace ISI.Extensions.ScmManager.SerializableModels
 {
-	public class Repository
+	[DataContract]
+	public class LinkTemplated
 	{
-		public string Namespace { get; set; }
-		public string Name { get; set; }
+		[DataMember(Name = "href", EmitDefaultValue = false)]
+		public string Href { get; set; }
 
-		public string Description { get; set; }
-
-		public string SourceUrl { get; set; }
-
-		public string Contact { get; set; }
-		public DateTime CreationDate { get; set; }
-		
-		public string Type { get; set; }
-		public bool Archived { get; set; }
-		public bool Exporting { get; set; }
-		public bool HealthCheckRunning { get; set; }
-
-		public string AvatarUrl { get; set; }
-
-		public DateTime? LastModified { get; set; }
-
-		public override string ToString() => $"{Namespace}\\{Name} [{Type}]";
+		[DataMember(Name = "templated", EmitDefaultValue = false)]
+		public bool Templated { get; set; }
 	}
 }

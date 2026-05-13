@@ -58,6 +58,8 @@ namespace ISI.Extensions.GitHub
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryType => RepositoryType;
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiUrl => true;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiUrlDescription => "ApiUrl";
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiUserName => false;
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiUserNameDescription => "UserName";
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiToken => true;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiTokenDescription => "ApiToken";
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseReadApiUserName => false;

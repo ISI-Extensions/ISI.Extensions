@@ -34,6 +34,11 @@ namespace ISI.Extensions.BitBucket
 
 			var uri = new UriBuilder(bitBucketApiUrl);
 
+			if (!string.IsNullOrWhiteSpace(request.UserName))
+			{
+				uri.UserName = request.UserName;
+			}
+
 			return uri;
 		}
 	}

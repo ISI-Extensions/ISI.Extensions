@@ -11,6 +11,7 @@ namespace ISI.Extensions.Scm.DataTransferObjects.SourceControlRepositoryApi
 	{
 		public Guid SourceControlRepositoryTypeUuid { get; set; }
 		public string ApiUrl { get; set; }
+		public string ApiUserName { get; set; }
 		public string ApiToken { get; set; }
 
 		public string RepositoryNamespace { get; set; }

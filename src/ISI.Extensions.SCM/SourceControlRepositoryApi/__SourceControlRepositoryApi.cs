@@ -23,6 +23,8 @@ namespace ISI.Extensions.Scm
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryType => throw new NotImplementedException();
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiUrl => throw new NotImplementedException();
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiUrlDescription => throw new NotImplementedException();
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiUserName => throw new NotImplementedException();
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiUserNameDescription => throw new NotImplementedException();
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiToken => throw new NotImplementedException();
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiTokenDescription => throw new NotImplementedException();
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseReadApiUserName => throw new NotImplementedException();

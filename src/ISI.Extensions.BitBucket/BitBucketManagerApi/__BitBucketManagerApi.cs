@@ -69,6 +69,8 @@ namespace ISI.Extensions.BitBucket
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryType => RepositoryType;
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiUrl => false;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiUrlDescription => "ApiUrl";
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiUserName => true;
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiUserNameDescription => "UserName";
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiToken => false;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiTokenDescription => "ApiToken";
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseReadApiToken => true;
@@ -90,6 +92,7 @@ namespace ISI.Extensions.BitBucket
 
 			var apiResponse = CreateRepository(new()
 			{
+				UserName = request.ApiUserName,
 				BitBucketApiToken = request.ApiToken,
 				Workspace = request.RepositoryNamespace,
 				Name = request.RepositoryKey,
@@ -109,6 +112,7 @@ namespace ISI.Extensions.BitBucket
 
 			var apiResponse = ListRepositories(new()
 			{
+				UserName = request.ApiUserName,
 				BitBucketApiToken = request.ApiToken,
 				Workspace = request.RepositoryNamespace,
 			});
@@ -141,6 +145,7 @@ namespace ISI.Extensions.BitBucket
 
 			var apiResponse = DeleteRepository(new()
 			{
+				UserName = request.ApiUserName,
 				BitBucketApiToken = request.ApiToken,
 				Workspace = request.RepositoryNamespace,
 				Name = request.RepositoryKey,
@@ -178,6 +183,8 @@ namespace ISI.Extensions.BitBucket
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryType => RepositoryType;
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiUrl => false;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiUrlDescription => "ApiUrl";
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiUserName => true;
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiUserNameDescription => "UserName";
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiToken => false;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiTokenDescription => "ApiToken";
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseReadApiToken => true;
@@ -199,6 +206,7 @@ namespace ISI.Extensions.BitBucket
 
 			var apiResponse = CreateRepository(new()
 			{
+				UserName = request.ApiUserName,
 				BitBucketApiToken = request.ApiToken,
 				Workspace = request.RepositoryNamespace,
 				Name = request.RepositoryKey,
@@ -218,6 +226,7 @@ namespace ISI.Extensions.BitBucket
 
 			var apiResponse = ListRepositories(new()
 			{
+				UserName = request.ApiUserName,
 				BitBucketApiToken = request.ApiToken,
 				Workspace = request.RepositoryNamespace,
 			});
@@ -250,6 +259,7 @@ namespace ISI.Extensions.BitBucket
 
 			var apiResponse = DeleteRepository(new()
 			{
+				UserName = request.ApiUserName,
 				BitBucketApiToken = request.ApiToken,
 				Workspace = request.RepositoryNamespace,
 				Name = request.RepositoryKey,

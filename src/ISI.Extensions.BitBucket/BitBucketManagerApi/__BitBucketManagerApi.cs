@@ -69,8 +69,12 @@ namespace ISI.Extensions.BitBucket
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryType => RepositoryType;
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiUrl => false;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiUrlDescription => "ApiUrl";
-		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiToken => true;
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiToken => false;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiTokenDescription => "ApiToken";
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseReadApiToken => true;
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ReadApiTokenDescription => "Read ApiToken";
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseWriteApiToken => true;
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.WriteApiTokenDescription => "Write ApiToken";
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseRepositoryNamespace => true;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryNamespaceDescription => "Workspace";
 
@@ -170,8 +174,12 @@ namespace ISI.Extensions.BitBucket
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryType => RepositoryType;
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiUrl => false;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiUrlDescription => "ApiUrl";
-		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiToken => true;
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiToken => false;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiTokenDescription => "ApiToken";
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseReadApiToken => true;
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ReadApiTokenDescription => "Read ApiToken";
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseWriteApiToken => true;
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.WriteApiTokenDescription => "Write ApiToken";
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseRepositoryNamespace => true;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryNamespaceDescription => "Workspace";
 

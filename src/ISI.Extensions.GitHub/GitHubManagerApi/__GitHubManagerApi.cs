@@ -60,6 +60,10 @@ namespace ISI.Extensions.GitHub
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiUrlDescription => "ApiUrl";
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiToken => true;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiTokenDescription => "ApiToken";
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseReadApiToken => false;
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ReadApiTokenDescription => "Read ApiToken";
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseWriteApiToken => false;
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.WriteApiTokenDescription => "Write ApiToken";
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseRepositoryNamespace => true;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryNamespaceDescription => "Organization";
 

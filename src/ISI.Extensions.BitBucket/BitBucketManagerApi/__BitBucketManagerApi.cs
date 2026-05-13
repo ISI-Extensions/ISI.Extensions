@@ -72,7 +72,11 @@ namespace ISI.Extensions.BitBucket
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiToken => false;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiTokenDescription => "ApiToken";
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseReadApiToken => true;
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ReadApiUserNameDescription => "Read UserName";
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseReadApiUserName => true;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ReadApiTokenDescription => "Read ApiToken";
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseWriteApiUserName => true;
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.WriteApiUserNameDescription => "Write UserName";
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseWriteApiToken => true;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.WriteApiTokenDescription => "Write ApiToken";
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseRepositoryNamespace => true;
@@ -177,7 +181,11 @@ namespace ISI.Extensions.BitBucket
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiToken => false;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiTokenDescription => "ApiToken";
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseReadApiToken => true;
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ReadApiUserNameDescription => "Read UserName";
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseReadApiUserName => true;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ReadApiTokenDescription => "Read ApiToken";
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseWriteApiUserName => true;
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.WriteApiUserNameDescription => "Write UserName";
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseWriteApiToken => true;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.WriteApiTokenDescription => "Write ApiToken";
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseRepositoryNamespace => true;

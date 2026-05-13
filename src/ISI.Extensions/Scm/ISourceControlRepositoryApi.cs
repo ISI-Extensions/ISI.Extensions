@@ -27,10 +27,16 @@ namespace ISI.Extensions.Scm
 		string RepositoryType { get; }
 		bool UseApiUrl { get; }
 		string ApiUrlDescription { get; }
+		bool UseApiUserName { get; }
+		string ApiUserNameDescription { get; }
 		bool UseApiToken { get; }
 		string ApiTokenDescription { get; }
+		bool UseReadApiUserName { get; }
+		string ReadApiUserNameDescription { get; }
 		bool UseReadApiToken { get; }
 		string ReadApiTokenDescription { get; }
+		bool UseWriteApiUserName { get; }
+		string WriteApiUserNameDescription { get; }
 		bool UseWriteApiToken { get; }
 		string WriteApiTokenDescription { get; }
 		bool UseRepositoryNamespace { get; }

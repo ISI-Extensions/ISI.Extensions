@@ -66,8 +66,12 @@ namespace ISI.Extensions.ScmManager
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiUrlDescription => "ApiUrl";
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiToken => true;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiTokenDescription => "ApiToken";
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseReadApiUserName => false;
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ReadApiUserNameDescription => "Read UserName";
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseReadApiToken => false;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ReadApiTokenDescription => "Read ApiToken";
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseWriteApiUserName => false;
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.WriteApiUserNameDescription => "Write UserName";
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseWriteApiToken => false;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.WriteApiTokenDescription => "Write ApiToken";
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseRepositoryNamespace => true;
@@ -170,8 +174,12 @@ namespace ISI.Extensions.ScmManager
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiUrlDescription => "ApiUrl";
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiToken => true;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiTokenDescription => "ApiToken";
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseReadApiUserName => false;
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ReadApiUserNameDescription => "Read UserName";
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseReadApiToken => false;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ReadApiTokenDescription => "Read ApiToken";
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseWriteApiUserName => false;
+		string ISI.Extensions.Scm.ISourceControlRepositoryApi.WriteApiUserNameDescription => "Write UserName";
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseWriteApiToken => false;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.WriteApiTokenDescription => "Write ApiToken";
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseRepositoryNamespace => true;

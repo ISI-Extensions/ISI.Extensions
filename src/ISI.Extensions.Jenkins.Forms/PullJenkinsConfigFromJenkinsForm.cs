@@ -170,6 +170,8 @@ namespace ISI.Extensions.Jenkins.Forms
 					{
 						jenkinsConfig.SetStatus(TaskActionStatus.Running, "Pulling");
 
+						Application.DoEvents();
+
 						try
 						{
 							var content = JenkinsApi.GetJobConfigXml(new()
@@ -195,6 +197,8 @@ namespace ISI.Extensions.Jenkins.Forms
 
 							jenkinsConfig.SetStatus(TaskActionStatus.Errored, "Failed");
 						}
+
+						Application.DoEvents();
 					}
 
 					btnCancel.Visible = false;

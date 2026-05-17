@@ -67,7 +67,7 @@ namespace ISI.Extensions.Jenkins.Forms.Tests
 
 			var selectedItemPaths = new[]
 			{
-				@"F:\ISI\Internal Projects\ISI.Scheduler.ServiceApplication\jenkins",
+				@"F:\ISI\Clients\West River Systems\ISI.DnsManager.ServiceApplication.Deploy\jenkins",
 			};
 
 			System.Windows.Forms.Application.EnableVisualStyles();

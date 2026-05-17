@@ -29,18 +29,7 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.PackagerApi
 
 		public List<string> ExcludeFiles { get; set; } =
 		[
-			..new[]
-			{
-				"*.xml",
-				"T4LocalContent",
-				"T4CMS",
-				"*.licenseheader",
-				"*.vshost.exe",
-				"*.vshost.exe.*",
-				"Dockerfile",
-				"*Manifests.lst",
-				"appsettings.Development.json",
-			}
+			"*.xml", "T4LocalContent", "T4CMS", "*.licenseheader", "*.vshost.exe", "*.vshost.exe.*", "Dockerfile", "*Manifests.lst", "appsettings.Development.json"
 		];
 
 		public AfterBuildPackageComponentDelegate AfterBuildPackageComponent { get; set; } = null;

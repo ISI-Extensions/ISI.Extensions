@@ -131,6 +131,8 @@ namespace ISI.Extensions.Jenkins.Forms
 					{
 						jenkinsConfig.SetStatus(TaskActionStatus.Running, "Pushing");
 
+						Application.DoEvents();
+
 						try
 						{
 							var content = System.IO.File.ReadAllText(jenkinsConfig.JenkinsConfigFullName);
@@ -152,6 +154,8 @@ namespace ISI.Extensions.Jenkins.Forms
 
 							jenkinsConfig.SetStatus(TaskActionStatus.Errored, "Failed");
 						}
+
+						Application.DoEvents();
 					}
 
 					btnCancel.Visible = false;

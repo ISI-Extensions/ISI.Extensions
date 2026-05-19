@@ -26,21 +26,11 @@ namespace ISI.Extensions.VisualStudio
 {
 	public partial class PackagerApi
 	{
-		private string GetBinDirectory(string projectFullName, string configuration, MSBuildPlatform platform, BuildPlatformTarget platformTarget)
+		public static string GetBinDirectory(string projectFullName, string configuration, MSBuildPlatform platform, BuildPlatformTarget platformTarget)
 		{
 			var projectDirectoryFullName = System.IO.Path.GetDirectoryName(projectFullName);
 
 			var frameworks = new[] { "net11.0", "net10.0", "net9.0", "net8.0", "net7.0", "net6.0", "net5.0" };
-
-			foreach (var framework in frameworks)
-			{
-				var binDirectory = System.IO.Path.Combine(projectDirectoryFullName, "bin", configuration, framework);
-
-				if (System.IO.Directory.Exists(binDirectory))
-				{
-					return binDirectory;
-				}
-			}
 
 			switch (platformTarget)
 			{
@@ -91,6 +81,15 @@ namespace ISI.Extensions.VisualStudio
 					break;
 			}
 
+			foreach (var framework in frameworks)
+			{
+				var binDirectory = System.IO.Path.Combine(projectDirectoryFullName, "bin", configuration, framework);
+
+				if (System.IO.Directory.Exists(binDirectory))
+				{
+					return binDirectory;
+				}
+			}
 
 			return System.IO.Path.Combine(projectDirectoryFullName, "bin", configuration);
 		}

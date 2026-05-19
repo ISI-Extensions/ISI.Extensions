@@ -69,6 +69,14 @@ namespace ISI.Extensions.Tests
 			var jan1st2000 = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 
 			var xxx = jan1st2000.AddDays(8447);
+		}
+
+		[Test]
+		public void GetBinDirectory_Test()
+		{
+			var projectFullName = @"F:\ISI\Internal Projects\ISI.WindowsDnsServiceAgent.WindowsService\src\ISI.WindowsDnsServiceAgent.WindowsService\ISI.WindowsDnsServiceAgent.WindowsService.csproj";
+
+			var xxx = ISI.Extensions.VisualStudio.PackagerApi.GetBinDirectory(projectFullName, "Release", ISI.Extensions.VisualStudio.MSBuildPlatform.x64, ISI.Extensions.VisualStudio.BuildPlatformTarget.x64);
 
 		}
 

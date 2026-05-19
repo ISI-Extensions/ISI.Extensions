@@ -30,7 +30,9 @@ namespace ISI.Extensions.VisualStudio
 		{
 			var projectDirectoryFullName = System.IO.Path.GetDirectoryName(projectFullName);
 
-			foreach (var framework in new[] { "net10.0", "net9.0", "net8.0", "net7.0", "net6.0", "net5.0" })
+			var frameworks = new[] { "net11.0", "net10.0", "net9.0", "net8.0", "net7.0", "net6.0", "net5.0" };
+
+			foreach (var framework in frameworks)
 			{
 				var binDirectory = System.IO.Path.Combine(projectDirectoryFullName, "bin", configuration, framework);
 
@@ -44,22 +46,46 @@ namespace ISI.Extensions.VisualStudio
 			{
 				case BuildPlatformTarget.x86:
 					{
-						var binDirectory = System.IO.Path.Combine(projectDirectoryFullName, "bin", "x86", configuration);
-
-						if (System.IO.Directory.Exists(binDirectory))
+						foreach (var framework in frameworks)
 						{
-							return binDirectory;
+							var binDirectory = System.IO.Path.Combine(projectDirectoryFullName, "bin", "x86", configuration, framework);
+
+							if (System.IO.Directory.Exists(binDirectory))
+							{
+								return binDirectory;
+							}
+						}
+
+						{
+							var binDirectory = System.IO.Path.Combine(projectDirectoryFullName, "bin", "x86", configuration);
+
+							if (System.IO.Directory.Exists(binDirectory))
+							{
+								return binDirectory;
+							}
 						}
 					}
 					break;
 
 				case BuildPlatformTarget.x64:
 					{
-						var binDirectory = System.IO.Path.Combine(projectDirectoryFullName, "bin", "x64", configuration);
-
-						if (System.IO.Directory.Exists(binDirectory))
+						foreach (var framework in frameworks)
 						{
-							return binDirectory;
+							var binDirectory = System.IO.Path.Combine(projectDirectoryFullName, "bin", "x64", configuration, framework);
+
+							if (System.IO.Directory.Exists(binDirectory))
+							{
+								return binDirectory;
+							}
+						}
+
+						{
+							var binDirectory = System.IO.Path.Combine(projectDirectoryFullName, "bin", "x64", configuration);
+
+							if (System.IO.Directory.Exists(binDirectory))
+							{
+								return binDirectory;
+							}
 						}
 					}
 					break;

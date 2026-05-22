@@ -22,13 +22,13 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Nginx.Extensions
 {
-	public static class NginxSettingsExtensions
+	public static class NginxApiExtensions
 	{
-		private static IDictionary<string, NginxManagerServer> GetNginxManagerServersByDirectory(NginxApi nginxApi)
+		private static IDictionary<string, ISI.Extensions.Nginx.NginxManagerServer> GetNginxManagerServersByDirectory(NginxApi nginxApi)
 		{
 			var nginxManagerServers = (nginxApi.GetNginxSettings(new())?.NginxSettings?.NginxManagerServers ?? []);
 
-			var nginxManagerServersByDirectory = new Dictionary<string, NginxManagerServer>(StringComparer.InvariantCultureIgnoreCase);
+			var nginxManagerServersByDirectory = new Dictionary<string, ISI.Extensions.Nginx.NginxManagerServer>(StringComparer.InvariantCultureIgnoreCase);
 
 			foreach (var nginxManagerServer in nginxManagerServers)
 			{

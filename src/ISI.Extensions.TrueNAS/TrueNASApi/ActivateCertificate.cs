@@ -47,149 +47,137 @@ namespace ISI.Extensions.TrueNAS
 				});
 			}
 
-			var getVersionResponse = GetVersion(new()
+			try
 			{
-				TrueNASApiUrl = request.TrueNASApiUrl,
-				TrueNASApiKey = request.TrueNASApiKey,
-			});
-
-			var activeCertificateId = (int?)null;
-			var activeCertificateName = (string)null;
-			{
-				var uri = GetApiUri(request);
-				uri.SetPathAndQueryString("api/v2.0/system/general");
-
-				var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableDTOs.GetGeneralInformationResponse>(uri.Uri, GetHeaders(request), true, serverCertificateValidationCallback: (sender, certificate, chain, errors) => true);
-
-				activeCertificateId = apiResponse?.UiCertificate?.Id;
-				activeCertificateName = apiResponse?.UiCertificate?.Name;
-			}
-
-			//Push new Certificate
-			{
-				var uri = GetApiUri(request);
-				uri.SetPathAndQueryString("api/v2.0/certificate");
-
-				var apiRequest = new SerializableDTOs.SetCertificateRequest()
+				var getVersionResponse = GetVersion(new()
 				{
-					CertificateName = request.CertificateName,
-					KeyCertificate = request.KeyCertificate,
-					BundleCertificate = request.BundleCertificate,
-				};
+					TrueNASApiUrl = request.TrueNASApiUrl,
+					TrueNASApiKey = request.TrueNASApiKey,
+				});
 
-				var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.SetCertificateRequest, ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, GetHeaders(request), apiRequest, true, serverCertificateValidationCallback: (sender, certificate, chain, errors) => true);
-
-				addLog($"Push Cert: {apiResponse}");
-			}
-
-			int getNewCertificateIndex()
-			{
-				var uri = GetApiUri(request);
-				uri.SetPathAndQueryString("api/v2.0/system/general/ui_certificate_choices");
-
-				var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteTextGet(uri.Uri, GetHeaders(request), true, serverCertificateValidationCallback: (sender, certificate, chain, errors) => true);
-
-				foreach (var line in apiResponse.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries))
+				var activeCertificateId = (int?)null;
+				var activeCertificateName = (string)null;
 				{
-					var certificatePieces = line.Split([':'], 2);
+					var uri = GetApiUri(request);
+					uri.SetPathAndQueryString("api/v2.0/system/general");
 
-					if (certificatePieces.Length == 2)
+					var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<ISI.Extensions.TrueNAS.SerializableModels.GetGeneralInformationResponse>(uri.Uri, GetHeaders(request), true, serverCertificateValidationCallback: (sender, certificate, chain, errors) => true);
+
+					activeCertificateId = apiResponse?.UiCertificate?.Id;
+					activeCertificateName = apiResponse?.UiCertificate?.Name;
+				}
+
+				//Push new Certificate
+				{
+					var uri = GetApiUri(request);
+					uri.SetPathAndQueryString("api/v2.0/certificate");
+
+					var apiRequest = new ISI.Extensions.TrueNAS.SerializableModels.SetCertificateRequest()
 					{
-						var certificateIndex = certificatePieces[0].Trim(' ', '"').ToInt();
-						if (certificateIndex > 0)
-						{
-							var certificateName = certificatePieces[1].Trim(' ', ',').Trim('"').Trim();
+						CertificateName = request.CertificateName,
+						KeyCertificate = request.KeyCertificate,
+						BundleCertificate = request.BundleCertificate,
+					};
 
-							if (!string.IsNullOrWhiteSpace(certificateName) && string.Equals(certificateName, request.CertificateName, StringComparison.InvariantCultureIgnoreCase))
+					var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<ISI.Extensions.TrueNAS.SerializableModels.SetCertificateRequest, ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, GetHeaders(request), apiRequest, true, serverCertificateValidationCallback: (sender, certificate, chain, errors) => true);
+
+					addLog($"Push Cert: {apiResponse}");
+				}
+
+				int getNewCertificateIndex()
+				{
+					var uri = GetApiUri(request);
+					uri.SetPathAndQueryString("api/v2.0/system/general/ui_certificate_choices");
+
+					var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteTextGet(uri.Uri, GetHeaders(request), true, serverCertificateValidationCallback: (sender, certificate, chain, errors) => true);
+
+					foreach (var line in apiResponse.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries))
+					{
+						var certificatePieces = line.Split([':'], 2);
+
+						if (certificatePieces.Length == 2)
+						{
+							var certificateIndex = certificatePieces[0].Trim(' ', '"').ToInt();
+							if (certificateIndex > 0)
 							{
-								return certificateIndex;
+								var certificateName = certificatePieces[1].Trim(' ', ',').Trim('"').Trim();
+
+								if (!string.IsNullOrWhiteSpace(certificateName) && string.Equals(certificateName, request.CertificateName, StringComparison.InvariantCultureIgnoreCase))
+								{
+									return certificateIndex;
+								}
 							}
 						}
 					}
+
+					throw new Exception("New certificate not found");
+				}
+				var newCertificateIndex = getNewCertificateIndex();
+
+				//Set new UI Certificate
+				{
+					var uri = GetApiUri(request);
+					uri.SetPathAndQueryString("api/v2.0/system/general");
+
+					var apiRequest = new ISI.Extensions.TrueNAS.SerializableModels.ActivateCertificateRequest()
+					{
+						CertificateIndex = newCertificateIndex,
+					};
+
+					var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPut<ISI.Extensions.TrueNAS.SerializableModels.ActivateCertificateRequest, ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, GetHeaders(request), apiRequest, true, serverCertificateValidationCallback: (sender, certificate, chain, errors) => true);
+
+					addLog($"Activate Cert: {apiResponse}");
 				}
 
-				throw new Exception("New certificate not found");
-			}
-			var newCertificateIndex = getNewCertificateIndex();
+				//https://raw.githubusercontent.com/acmesh-official/acme.sh/f981c782bb38015f4778913e9c3db26b57dde4e8/deploy/truenas.sh
 
-			//Set new UI Certificate
-			{
-				var uri = GetApiUri(request);
-				uri.SetPathAndQueryString("api/v2.0/system/general");
+				//if ((getVersionResponse.Product == TrueNASProduct.Core) && (version >= new Version("13")))
+				//{
+				//	{
+				//		var uri = GetApiUri(request);
+				//		uri.SetPathAndQueryString("api/v2.0/s3");
 
-				var apiRequest = new SerializableDTOs.ActivateCertificateRequest()
+				//		var apiResponse = Rest.ExecuteTextGet(uri.Uri, GetHeaders(request), false, serverCertificateValidationCallback: (sender, certificate, chain, errors) => true);
+				//	}
+
+				//}
+
+				//if ((getVersionResponse.Product == TrueNASProduct.Scale) && (version >= new Version("24.10")))
+				//{
+				//	{
+				//		var uri = GetApiUri(request);
+				//		uri.SetPathAndQueryString("api/v2.0/chart/release");
+
+				//		var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableDTOs.GetChartReleaseResponse[]>(uri.Uri, GetHeaders(request), true, serverCertificateValidationCallback: (sender, certificate, chain, errors) => true);
+				//	}
+
+				//}
+				
+
+
+				if (activeCertificateId.HasValue && request.RemovePriorCertificate)
 				{
-					CertificateIndex = newCertificateIndex,
-				};
+					var uri = GetApiUri(request);
+					uri.SetPathAndQueryString($"api/v2.0/certificate/id/{activeCertificateId}");
 
-				var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPut<SerializableDTOs.ActivateCertificateRequest, ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, GetHeaders(request), apiRequest, true, serverCertificateValidationCallback: (sender, certificate, chain, errors) => true);
+					var apiRequest = new ISI.Extensions.TrueNAS.SerializableModels.DeleteCertificateRequest();
 
-				addLog($"Activate Cert: {apiResponse}");
+					var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonDelete<ISI.Extensions.TrueNAS.SerializableModels.DeleteCertificateRequest, ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, GetHeaders(request), apiRequest, true, serverCertificateValidationCallback: (sender, certificate, chain, errors) => true);
+				}
+
+				{
+					var uri = GetApiUri(request);
+					uri.SetPathAndQueryString("api/v2.0/system/general/ui_restart");
+
+					var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteTextGet(uri.Uri, GetHeaders(request), true, serverCertificateValidationCallback: (sender, certificate, chain, errors) => true);
+
+					addLog($"Delete Cert: {apiResponse}");
+				}
 			}
-
-			//https://raw.githubusercontent.com/acmesh-official/acme.sh/f981c782bb38015f4778913e9c3db26b57dde4e8/deploy/truenas.sh
-
-			//if ((getVersionResponse.Product == TrueNASProduct.Core) && (version >= new Version("13")))
-			//{
-			//	{
-			//		var uri = GetApiUri(request);
-			//		uri.SetPathAndQueryString("api/v2.0/s3");
-
-			//		var apiResponse = Rest.ExecuteTextGet(uri.Uri, GetHeaders(request), false, serverCertificateValidationCallback: (sender, certificate, chain, errors) => true);
-			//	}
-
-			//}
-
-			//if ((getVersionResponse.Product == TrueNASProduct.Scale) && (version >= new Version("24.10")))
-			//{
-			//	{
-			//		var uri = GetApiUri(request);
-			//		uri.SetPathAndQueryString("api/v2.0/chart/release");
-
-			//		var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableDTOs.GetChartReleaseResponse[]>(uri.Uri, GetHeaders(request), true, serverCertificateValidationCallback: (sender, certificate, chain, errors) => true);
-			//	}
-
-			//}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-			if (activeCertificateId.HasValue && request.RemovePriorCertificate)
+			catch (Exception exception)
 			{
-				//var xxx = ISI.Extensions.WebClient.Rest.GetEventHandler();
-
-				var uri = GetApiUri(request);
-				uri.SetPathAndQueryString($"api/v2.0/certificate/id/{activeCertificateId}");
-
-				var apiRequest = new SerializableDTOs.DeleteCertificateRequest();
-
-				var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonDelete<SerializableDTOs.DeleteCertificateRequest, ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, GetHeaders(request), apiRequest, true, serverCertificateValidationCallback: (sender, certificate, chain, errors) => true);
-			}
-
-			{
-				var uri = GetApiUri(request);
-				uri.SetPathAndQueryString("api/v2.0/system/general/ui_restart");
-
-				var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteTextGet(uri.Uri, GetHeaders(request), true, serverCertificateValidationCallback: (sender, certificate, chain, errors) => true);
-
-				addLog($"Delete Cert: {apiResponse}");
+				addLog($"Exception: {exception.ErrorMessageFormatted()}");
+				response.Errored = true;
 			}
 
 			response.LogEntries = logEntries.ToArray();

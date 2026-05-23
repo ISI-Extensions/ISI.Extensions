@@ -111,6 +111,10 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 
 			if (args.Contains(InstallAndStartService))
 			{
+				context.SetDisplayName(context.ConfigurationRoot);
+				context.SetServiceName(context.ConfigurationRoot);
+				context.RunAs(context.ConfigurationRoot);
+
 				ServiceSetup_InstallService(context, beforeInstallService, afterInstallService);
 
 				ServiceSetup_StartService(context);
@@ -120,6 +124,10 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 
 			if (args.Contains(InstallService))
 			{
+				context.SetDisplayName(context.ConfigurationRoot);
+				context.SetServiceName(context.ConfigurationRoot);
+				context.RunAs(context.ConfigurationRoot);
+
 				ServiceSetup_InstallService(context, beforeInstallService, afterInstallService);
 
 				return true;

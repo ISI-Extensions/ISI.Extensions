@@ -73,7 +73,7 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 
 		public static void SetDisplayName(this ServiceApplicationContext context, ISI.Platforms.ServiceApplication.Configuration configuration = null)
 		{
-			var serviceDisplayName = configuration.ServiceDisplayName;
+			var serviceDisplayName = string.IsNullOrWhiteSpace(configuration.ServiceDisplayName) ? context.ServiceDisplayName : configuration.ServiceDisplayName;
 
 			var servicePrefix = configuration?.ServicePrefix;
 			if (!string.IsNullOrEmpty(servicePrefix))
@@ -90,7 +90,7 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 		}
 		public static void SetServiceName(this ServiceApplicationContext context, ISI.Platforms.ServiceApplication.Configuration configuration = null)
 		{
-			var serviceServiceName = configuration.ServiceServiceName;
+			var serviceServiceName = string.IsNullOrWhiteSpace(configuration.ServiceServiceName) ? context.ServiceName : configuration.ServiceServiceName;
 
 			var servicePrefix = configuration?.ServicePrefix;
 			if (!string.IsNullOrEmpty(servicePrefix))

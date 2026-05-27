@@ -192,6 +192,10 @@ namespace ISI.Platforms.ServiceApplication
 
 				var userName = string.IsNullOrWhiteSpace(request.UserName) ? LocalServiceUserName : request.UserName;
 
+				System.Console.WriteLine($"ServiceName: {request.ServiceName}");
+				System.Console.WriteLine($"DisplayName: {request.DisplayName}");
+				System.Console.WriteLine($"UserName: {userName}");
+
 				createServicePtr = CreateService(scmManagerPtr, request.ServiceName, request.DisplayName, SERVICE_ALL_ACCESS, SERVICE_WIN32_OWN_PROCESS, SERVICE_AUTO_START, SERVICE_ERROR_NORMAL, $"\"{request.Executable}\"", null, IntPtr.Zero, string.Empty, userName, request.Password);
 				if (createServicePtr == IntPtr.Zero)
 				{

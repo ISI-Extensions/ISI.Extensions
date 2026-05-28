@@ -29,9 +29,6 @@ namespace ISI.Extensions.Repository.RavenDb
 		public virtual string ConnectionString { get; }
 		public HashSet<string> Urls { get; }
 		public virtual string DatabaseName { get; }
-		protected virtual string Schema { get; }
-		protected virtual string TableNamePrefix { get; }
-		protected virtual string TableName { get; }
 
 		private static Raven.Client.Documents.IDocumentStore _store = null;
 		public Raven.Client.Documents.IDocumentStore Store => _store ??= CreateStore();
@@ -45,7 +42,7 @@ namespace ISI.Extensions.Repository.RavenDb
 			string schema = null,
 			string tableNamePrefix = null,
 			string tableName = null)
-			: base(configuration, logger, dateTimeStamper, serializer)
+			: base(configuration, logger, dateTimeStamper, serializer, schema, tableNamePrefix, tableName, null)
 		{
 			ConnectionString = Configuration.GetConnectionString(connectionString) ?? connectionString;
 
@@ -53,10 +50,6 @@ namespace ISI.Extensions.Repository.RavenDb
 
 			Urls = connectionStringBuilder.Urls;
 			DatabaseName = connectionStringBuilder.DatabaseName;
-
-			Schema = (string.IsNullOrEmpty(schema) ? RecordDescription.GetRecordDescription<TRecord>().Schema : schema);
-			TableNamePrefix = tableNamePrefix;
-			TableName = (string.IsNullOrEmpty(tableName) ? RecordDescription.GetRecordDescription<TRecord>().TableName : tableName);
 		}
 		
 		private string _tableName = null;

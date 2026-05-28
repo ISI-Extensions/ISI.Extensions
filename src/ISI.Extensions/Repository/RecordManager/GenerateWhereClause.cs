@@ -73,6 +73,8 @@ namespace ISI.Extensions.Repository
 		{
 			var sqlFilters = new List<string>();
 
+			var tableAlias = GetTableNameAlias(TableAlias);
+
 			var columnName = filter.RecordPropertyDescription.ColumnName;
 
 			if (filter.NullOperator.HasValue)
@@ -80,10 +82,10 @@ namespace ISI.Extensions.Repository
 				switch (filter.NullOperator.Value)
 				{
 					case WhereClauseNullOperator.IsNull:
-						sqlFilters.Add($"{indent}({FormatColumnName(columnName)} IS NULL)");
+						sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} IS NULL)");
 						break;
 					case WhereClauseNullOperator.IsNotNull:
-						sqlFilters.Add($"{indent}(NOT {FormatColumnName(columnName)} IS NULL)");
+						sqlFilters.Add($"{indent}(NOT {tableAlias}.{FormatColumnName(columnName)} IS NULL)");
 						break;
 				}
 			}
@@ -108,7 +110,7 @@ namespace ISI.Extensions.Repository
 			{
 				if (!(filter.Values.NullCheckedFirstOrDefault() is string value))
 				{
-					sqlFilters.Add($"{indent}({FormatColumnName(columnName)} IS NULL)");
+					sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} IS NULL)");
 				}
 				else
 				{
@@ -155,19 +157,19 @@ namespace ISI.Extensions.Repository
 					{
 						case WhereClauseStringComparisonOperator.BeginsWith:
 							whereClauseWithParameters.Parameters.Add(filterValueName, $"{value}%");
-							sqlFilters.Add($"{indent}({FormatColumnName(columnName)} LIKE {filterValueName})");
+							sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} LIKE {filterValueName})");
 							break;
 						case WhereClauseStringComparisonOperator.Equal:
 							whereClauseWithParameters.Parameters.Add(filterValueName, value);
-							sqlFilters.Add($"{indent}({FormatColumnName(columnName)} = {filterValueName})");
+							sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} = {filterValueName})");
 							break;
 						case WhereClauseStringComparisonOperator.Contains:
 							whereClauseWithParameters.Parameters.Add(filterValueName, $"%{value}%");
-							sqlFilters.Add($"{indent}({FormatColumnName(columnName)} LIKE {filterValueName})");
+							sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} LIKE {filterValueName})");
 							break;
 						case WhereClauseStringComparisonOperator.EndsWith:
 							whereClauseWithParameters.Parameters.Add(filterValueName, $"%{value}");
-							sqlFilters.Add($"{indent}({FormatColumnName(columnName)} LIKE {filterValueName})");
+							sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} LIKE {filterValueName})");
 							break;
 					}
 				}
@@ -193,16 +195,16 @@ namespace ISI.Extensions.Repository
 				switch (filter.ComparisonOperator)
 				{
 					case WhereClauseComparisonOperator.LessThan:
-						sqlFilters.Add($"{indent}({FormatColumnName(columnName)} < {filterValueName})");
+						sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} < {filterValueName})");
 						break;
 					case WhereClauseComparisonOperator.LessThanOrEqual:
-						sqlFilters.Add($"{indent}({FormatColumnName(columnName)} <= {filterValueName})");
+						sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} <= {filterValueName})");
 						break;
 					case WhereClauseComparisonOperator.GreaterThanOrEqual:
-						sqlFilters.Add($"{indent}({FormatColumnName(columnName)} >= {filterValueName})");
+						sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} >= {filterValueName})");
 						break;
 					case WhereClauseComparisonOperator.GreaterThan:
-						sqlFilters.Add($"{indent}({FormatColumnName(columnName)} > {filterValueName})");
+						sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} > {filterValueName})");
 						break;
 				}
 			}
@@ -298,6 +300,7 @@ namespace ISI.Extensions.Repository
 		{
 			if (filter.Values.NullCheckedAny())
 			{
+				var tableAlias = GetTableNameAlias(TableAlias);
 				var columnName = filter.RecordPropertyDescription.ColumnName;
 
 				var filterValueNames = new List<string>();
@@ -324,10 +327,10 @@ namespace ISI.Extensions.Repository
 					switch (filter.EqualityOperator)
 					{
 						case WhereClauseEqualityOperator.Equal:
-							sqlFilters.Add($"{indent}({FormatColumnName(columnName)} IS NULL)");
+							sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} IS NULL)");
 							break;
 						case WhereClauseEqualityOperator.NotEqual:
-							sqlFilters.Add($"{indent}(NOT {FormatColumnName(columnName)} IS NULL)");
+							sqlFilters.Add($"{indent}(NOT {tableAlias}.{FormatColumnName(columnName)} IS NULL)");
 							break;
 					}
 				}
@@ -336,10 +339,10 @@ namespace ISI.Extensions.Repository
 					switch (filter.EqualityOperator)
 					{
 						case WhereClauseEqualityOperator.Equal:
-							sqlFilters.Add($"{indent}({FormatColumnName(columnName)} = {filterValueNames.First()})");
+							sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} = {filterValueNames.First()})");
 							break;
 						case WhereClauseEqualityOperator.NotEqual:
-							sqlFilters.Add($"{indent}({FormatColumnName(columnName)} != {filterValueNames.First()})");
+							sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} != {filterValueNames.First()})");
 							break;
 					}
 				}
@@ -348,10 +351,10 @@ namespace ISI.Extensions.Repository
 					switch (filter.EqualityOperator)
 					{
 						case WhereClauseEqualityOperator.Equal:
-							sqlFilters.Add($"{indent}({FormatColumnName(columnName)} IN ({string.Join(" ,", filterValueNames)}))");
+							sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} IN ({string.Join(" ,", filterValueNames)}))");
 							break;
 						case WhereClauseEqualityOperator.NotEqual:
-							sqlFilters.Add($"{indent}(NOT {FormatColumnName(columnName)} IN ({string.Join(" ,", filterValueNames)}))");
+							sqlFilters.Add($"{indent}(NOT {tableAlias}.{FormatColumnName(columnName)} IN ({string.Join(" ,", filterValueNames)}))");
 							break;
 					}
 				}

@@ -29,16 +29,33 @@ namespace ISI.Extensions.Repository
 		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
 		protected ISI.Extensions.JsonSerialization.IJsonSerializer Serializer { get; }
 
+		protected virtual string ArchiveTableSuffix => "Archive";
+		protected virtual string ArchiveTableArchiveDateTimeColumnName => "ArchiveDateTimeUtc";
+
+		protected virtual string Schema { get; }
+		protected virtual string TableNamePrefix { get; }
+		protected virtual string TableName { get; }
+		protected virtual string TableAlias { get; }
+
 		protected RecordManager(
 			Microsoft.Extensions.Configuration.IConfiguration configuration,
 			Microsoft.Extensions.Logging.ILogger logger,
 			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
-			ISI.Extensions.JsonSerialization.IJsonSerializer serializer)
+			ISI.Extensions.JsonSerialization.IJsonSerializer serializer,
+			string schema = null,
+			string tableNamePrefix = null,
+			string tableName = null,
+			string tableAlias = null)
 		{
 			Configuration = configuration;
 			Logger = logger;
 			DateTimeStamper = dateTimeStamper;
 			Serializer = serializer;
+
+			Schema = (string.IsNullOrEmpty(schema) ? RecordDescription.GetRecordDescription<TRecord>().Schema : schema);
+			TableNamePrefix = tableNamePrefix;
+			TableName = (string.IsNullOrEmpty(tableName) ? RecordDescription.GetRecordDescription<TRecord>().TableName : tableName);
+			TableAlias = tableAlias;
 		}
 
 		protected virtual void AddParameters<TValue>(IDictionary<string, object> parameters, string valueName, TValue[] values)

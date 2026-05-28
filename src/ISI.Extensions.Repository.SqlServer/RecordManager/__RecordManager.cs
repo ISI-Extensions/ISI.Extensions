@@ -27,16 +27,9 @@ namespace ISI.Extensions.Repository.SqlServer
 	public abstract partial class RecordManager<TRecord> : ISI.Extensions.Repository.RecordManager<TRecord>
 		where TRecord : class, IRecordManagerRecord, new()
 	{
-		protected virtual string ArchiveTableSuffix => "Archive";
-		protected virtual string ArchiveTableArchiveDateTimeColumnName => "ArchiveDateTimeUtc";
-
 		protected ISI.Extensions.Repository.SqlServer.Configuration SqlServerConfiguration { get; }
 
 		protected virtual string ConnectionString { get; }
-		protected virtual string Schema { get; }
-		protected virtual string TableNamePrefix { get; }
-		protected virtual string TableName { get; }
-		protected virtual string TableAlias { get; }
 
 		protected GetSqlConnectionDelegate GetSqlConnection { get; }
 
@@ -51,17 +44,12 @@ namespace ISI.Extensions.Repository.SqlServer
 			string tableName = null,
 			string tableAlias = null,
 			GetSqlConnectionDelegate getConnection = null)
-			: base(configuration, logger, dateTimeStamper, serializer)
+			: base(configuration, logger, dateTimeStamper, serializer, schema, tableNamePrefix, tableName, tableAlias)
 		{
 			SqlServerConfiguration = new ISI.Extensions.Repository.SqlServer.Configuration();
 			configuration.GetSection(ISI.Extensions.Repository.SqlServer.Configuration.ConfigurationSectionName).Bind(SqlServerConfiguration);
 
 			ConnectionString = Configuration.GetConnectionString(connectionString) ?? connectionString;
-
-			Schema = (string.IsNullOrEmpty(schema) ? RecordDescription.GetRecordDescription<TRecord>().Schema : schema);
-			TableNamePrefix = tableNamePrefix;
-			TableName = (string.IsNullOrEmpty(tableName) ? RecordDescription.GetRecordDescription<TRecord>().TableName : tableName);
-			TableAlias = tableAlias;
 
 			GetSqlConnection = getConnection ?? (enableMultipleActiveResultSets => ISI.Extensions.SqlServer.SqlConnection.GetSqlConnection(ConnectionString, enableMultipleActiveResultSets));
 		}

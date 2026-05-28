@@ -32,16 +32,9 @@ namespace ISI.Extensions.Repository.PostgreSQL
 	public abstract partial class RecordManager<TRecord> : ISI.Extensions.Repository.RecordManager<TRecord>
 		where TRecord : class, IRecordManagerRecord, new()
 	{
-		protected virtual string ArchiveTableSuffix => "Archive";
-		protected virtual string ArchiveTableArchiveDateTimeColumnName => "ArchiveDateTimeUtc";
-
 		protected ISI.Extensions.Repository.PostgreSQL.Configuration PostgreSQLConfiguration { get; }
 
 		protected virtual string ConnectionString { get; }
-		protected virtual string Schema { get; }
-		protected virtual string TableNamePrefix { get; }
-		protected virtual string TableName { get; }
-		protected virtual string TableAlias { get; }
 
 		protected GetSqlConnectionDelegate GetSqlConnection { get; }
 
@@ -56,17 +49,12 @@ namespace ISI.Extensions.Repository.PostgreSQL
 			string tableName = null,
 			string tableAlias = null,
 			GetSqlConnectionDelegate getConnection = null)
-			: base(configuration, logger, dateTimeStamper, serializer)
+			: base(configuration, logger, dateTimeStamper, serializer, schema, tableNamePrefix, tableName, tableAlias)
 		{
 			PostgreSQLConfiguration = new ISI.Extensions.Repository.PostgreSQL.Configuration();
 			configuration.GetSection(ISI.Extensions.Repository.PostgreSQL.Configuration.ConfigurationSectionName).Bind(PostgreSQLConfiguration);
 
 			ConnectionString = Configuration.GetConnectionString(connectionString) ?? connectionString;
-
-			Schema = (string.IsNullOrEmpty(schema) ? RecordDescription.GetRecordDescription<TRecord>().Schema : schema);
-			TableNamePrefix = tableNamePrefix;
-			TableName = (string.IsNullOrEmpty(tableName) ? RecordDescription.GetRecordDescription<TRecord>().TableName : tableName);
-			TableAlias = tableAlias;
 
 			GetSqlConnection = getConnection ?? (enableMultipleActiveResultSets => ISI.Extensions.PostgreSQL.NpgsqlConnection.GetNpgsqlConnection(ConnectionString, enableMultipleActiveResultSets));
 		}

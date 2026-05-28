@@ -88,6 +88,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 		{
 			if (filter.Values != null)
 			{
+				var tableAlias = GetTableNameAlias(TableAlias);
 				var columnName = filter.RecordPropertyDescription.ColumnName;
 
 				var filterValueMaxCount = PostgreSQLConfiguration.FilterValueMaxCount;
@@ -108,10 +109,10 @@ namespace ISI.Extensions.Repository.PostgreSQL
 					switch (filter.EqualityOperator)
 					{
 						case WhereClauseEqualityOperator.Equal:
-							sqlFilters.Add($"{indent}({FormatColumnName(columnName)} IS NULL)");
+							sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} IS NULL)");
 							break;
 						case WhereClauseEqualityOperator.NotEqual:
-							sqlFilters.Add($"{indent}(NOT {FormatColumnName(columnName)} IS NULL)");
+							sqlFilters.Add($"{indent}(NOT {tableAlias}.{FormatColumnName(columnName)} IS NULL)");
 							break;
 					}
 				}
@@ -125,10 +126,10 @@ namespace ISI.Extensions.Repository.PostgreSQL
 					switch (filter.EqualityOperator)
 					{
 						case WhereClauseEqualityOperator.Equal:
-							sqlFilters.Add($"{indent}({FormatColumnName(columnName)} = {filterParameters.First().Key})");
+							sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} = {filterParameters.First().Key})");
 							break;
 						case WhereClauseEqualityOperator.NotEqual:
-							sqlFilters.Add($"{indent}({FormatColumnName(columnName)} != {filterParameters.First().Key})");
+							sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} != {filterParameters.First().Key})");
 							break;
 					}
 
@@ -149,10 +150,10 @@ namespace ISI.Extensions.Repository.PostgreSQL
 					switch (filter.EqualityOperator)
 					{
 						case WhereClauseEqualityOperator.Equal:
-							sqlFilters.Add($"{indent}({FormatColumnName(columnName)} IN ({string.Join(" ,", filterParameters.Keys)}))");
+							sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} IN ({string.Join(" ,", filterParameters.Keys)}))");
 							break;
 						case WhereClauseEqualityOperator.NotEqual:
-							sqlFilters.Add($"{indent}(NOT {FormatColumnName(columnName)} IN ({string.Join(" ,", filterParameters.Keys)}))");
+							sqlFilters.Add($"{indent}(NOT {tableAlias}.{FormatColumnName(columnName)} IN ({string.Join(" ,", filterParameters.Keys)}))");
 							break;
 					}
 
@@ -216,10 +217,10 @@ CREATE TEMP TABLE {filterValueTempTableName}
 					switch (filter.EqualityOperator)
 					{
 						case WhereClauseEqualityOperator.Equal:
-							sqlFilters.Add(string.Format("{0}({1} IN (SELECT {1} FROM {2}))", indent, FormatColumnName(columnName), filterValueTempTableName));
+							sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} IN (SELECT {FormatColumnName(columnName)} FROM {filterValueTempTableName}))");
 							break;
 						case WhereClauseEqualityOperator.NotEqual:
-							sqlFilters.Add(string.Format("{0}(NOT {1} IN (SELECT {1} FROM {2}))", indent, FormatColumnName(columnName), filterValueTempTableName));
+							sqlFilters.Add($"{indent}(NOT {tableAlias}.{FormatColumnName(columnName)} IN (SELECT {FormatColumnName(columnName)} FROM {filterValueTempTableName}))");
 							break;
 					}
 

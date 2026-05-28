@@ -88,6 +88,8 @@ namespace ISI.Extensions.Repository.Oracle
 		{
 			var sqlFilters = new List<string>();
 
+			var tableAlias = GetTableNameAlias(TableAlias);
+
 			var columnName = filter.RecordPropertyDescription.ColumnName;
 
 			if (filter.NullOperator.HasValue)
@@ -95,10 +97,10 @@ namespace ISI.Extensions.Repository.Oracle
 				switch (filter.NullOperator.Value)
 				{
 					case WhereClauseNullOperator.IsNull:
-						sqlFilters.Add($"{indent}({FormatColumnName(columnName)} IS NULL)");
+						sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} IS NULL)");
 						break;
 					case WhereClauseNullOperator.IsNotNull:
-						sqlFilters.Add($"{indent}(NOT {FormatColumnName(columnName)} IS NULL)");
+						sqlFilters.Add($"{indent}(NOT {tableAlias}.{FormatColumnName(columnName)} IS NULL)");
 						break;
 				}
 			}
@@ -115,7 +117,7 @@ namespace ISI.Extensions.Repository.Oracle
 				var filterGreaterBetweenValueName = $"{filterValueNamePrefix}Greater{columnName}FilterValue_{filterIndex}";
 				whereClauseWithParameters.Parameters.Add(filterGreaterBetweenValueName, filter.GreaterBetweenValue);
 
-				sqlFilters.Add($"{indent}({FormatColumnName(columnName)} BETWEEN :{filterLesserBetweenValueName} AND :{filterGreaterBetweenValueName})");
+				sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} BETWEEN :{filterLesserBetweenValueName} AND :{filterGreaterBetweenValueName})");
 
 				filterIndex++;
 			}
@@ -123,7 +125,7 @@ namespace ISI.Extensions.Repository.Oracle
 			{
 				if (!(filter.Values.NullCheckedFirstOrDefault() is string value))
 				{
-					sqlFilters.Add($"{indent}({FormatColumnName(columnName)} IS NULL)");
+					sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} IS NULL)");
 				}
 				else
 				{
@@ -166,23 +168,25 @@ namespace ISI.Extensions.Repository.Oracle
 						}
 					}
 
+					var stringComparisonOperatorCollate = string.IsNullOrWhiteSpace(OracleConfiguration.UseStringComparisonOperatorCollate) ? string.Empty : $" COLLATE {OracleConfiguration.UseStringComparisonOperatorCollate}";
+
 					switch (filter.StringComparisonOperator)
 					{
 						case WhereClauseStringComparisonOperator.BeginsWith:
 							whereClauseWithParameters.Parameters.Add(filterValueName, $"{value}%");
-							sqlFilters.Add($"{indent}({FormatColumnName(columnName)} LIKE :{filterValueName})");
+							sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)}{stringComparisonOperatorCollate} LIKE :{filterValueName})");
 							break;
 						case WhereClauseStringComparisonOperator.Equal:
 							whereClauseWithParameters.Parameters.Add(filterValueName, value);
-							sqlFilters.Add($"{indent}({FormatColumnName(columnName)} = :{filterValueName})");
+							sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)}{stringComparisonOperatorCollate} = :{filterValueName})");
 							break;
 						case WhereClauseStringComparisonOperator.Contains:
 							whereClauseWithParameters.Parameters.Add(filterValueName, $"%{value}%");
-							sqlFilters.Add($"{indent}({FormatColumnName(columnName)} LIKE :{filterValueName})");
+							sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)}{stringComparisonOperatorCollate} LIKE :{filterValueName})");
 							break;
 						case WhereClauseStringComparisonOperator.EndsWith:
 							whereClauseWithParameters.Parameters.Add(filterValueName, $"%{value}");
-							sqlFilters.Add($"{indent}({FormatColumnName(columnName)} LIKE :{filterValueName})");
+							sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)}{stringComparisonOperatorCollate} LIKE :{filterValueName})");
 							break;
 					}
 				}
@@ -208,16 +212,16 @@ namespace ISI.Extensions.Repository.Oracle
 				switch (filter.ComparisonOperator)
 				{
 					case WhereClauseComparisonOperator.LessThan:
-						sqlFilters.Add($"{indent}({FormatColumnName(columnName)} < :{filterValueName})");
+						sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} < :{filterValueName})");
 						break;
 					case WhereClauseComparisonOperator.LessThanOrEqual:
-						sqlFilters.Add($"{indent}({FormatColumnName(columnName)} <= :{filterValueName})");
+						sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} <= :{filterValueName})");
 						break;
 					case WhereClauseComparisonOperator.GreaterThanOrEqual:
-						sqlFilters.Add($"{indent}({FormatColumnName(columnName)} >= :{filterValueName})");
+						sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} >= :{filterValueName})");
 						break;
 					case WhereClauseComparisonOperator.GreaterThan:
-						sqlFilters.Add($"{indent}({FormatColumnName(columnName)} > :{filterValueName})");
+						sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} > :{filterValueName})");
 						break;
 				}
 			}
@@ -303,7 +307,9 @@ CREATE GLOBAL TEMPORARY TABLE {tempTableName}
 		{
 			if (filter.Values != null)
 			{
+				var tableAlias = GetTableNameAlias(TableAlias);
 				var columnName = filter.RecordPropertyDescription.ColumnName;
+				var stringComparisonOperatorCollate = (string.IsNullOrWhiteSpace(OracleConfiguration.UseStringComparisonOperatorCollate) || (filter.RecordPropertyDescription.ValueType != typeof(string))) ? string.Empty : $" COLLATE {OracleConfiguration.UseStringComparisonOperatorCollate}";
 
 				var filterValueMaxCount = OracleConfiguration.FilterValueMaxCount;
 				var filterValueCount = 0;
@@ -323,10 +329,10 @@ CREATE GLOBAL TEMPORARY TABLE {tempTableName}
 					switch (filter.EqualityOperator)
 					{
 						case WhereClauseEqualityOperator.Equal:
-							sqlFilters.Add($"{indent}({FormatColumnName(columnName)} IS NULL)");
+							sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} IS NULL)");
 							break;
 						case WhereClauseEqualityOperator.NotEqual:
-							sqlFilters.Add($"{indent}(NOT {FormatColumnName(columnName)} IS NULL)");
+							sqlFilters.Add($"{indent}(NOT {tableAlias}.{FormatColumnName(columnName)} IS NULL)");
 							break;
 					}
 				}
@@ -340,10 +346,10 @@ CREATE GLOBAL TEMPORARY TABLE {tempTableName}
 					switch (filter.EqualityOperator)
 					{
 						case WhereClauseEqualityOperator.Equal:
-							sqlFilters.Add($"{indent}({FormatColumnName(columnName)} = :{filterParameters.First().Key})");
+							sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)}{stringComparisonOperatorCollate} = :{filterParameters.First().Key})");
 							break;
 						case WhereClauseEqualityOperator.NotEqual:
-							sqlFilters.Add($"{indent}({FormatColumnName(columnName)} != :{filterParameters.First().Key})");
+							sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)}{stringComparisonOperatorCollate}  != :{filterParameters.First().Key})");
 							break;
 					}
 
@@ -364,10 +370,10 @@ CREATE GLOBAL TEMPORARY TABLE {tempTableName}
 					switch (filter.EqualityOperator)
 					{
 						case WhereClauseEqualityOperator.Equal:
-							sqlFilters.Add($"{indent}({FormatColumnName(columnName)} IN ({string.Join(" ,", filterParameters.Keys.Select(filterParameterKey => $":{filterParameterKey}"))}))");
+							sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} IN ({string.Join(" ,", filterParameters.Keys.Select(filterParameterKey => $":{filterParameterKey}"))}))");
 							break;
 						case WhereClauseEqualityOperator.NotEqual:
-							sqlFilters.Add($"{indent}(NOT {FormatColumnName(columnName)} IN ({string.Join(" ,", filterParameters.Keys.Select(filterParameterKey => $":{filterParameterKey}"))}))");
+							sqlFilters.Add($"{indent}(NOT {tableAlias}.{FormatColumnName(columnName)} IN ({string.Join(" ,", filterParameters.Keys.Select(filterParameterKey => $":{filterParameterKey}"))}))");
 							break;
 					}
 
@@ -430,10 +436,10 @@ CREATE GLOBAL TEMPORARY TABLE {filterValueTempTableName}
 					switch (filter.EqualityOperator)
 					{
 						case WhereClauseEqualityOperator.Equal:
-							sqlFilters.Add(string.Format("{0}({1} IN (SELECT {1} FROM {2}))", indent, FormatColumnName(columnName), filterValueTempTableName));
+							sqlFilters.Add($"{indent}({tableAlias}.{FormatColumnName(columnName)} IN (SELECT {FormatColumnName(columnName)} FROM {filterValueTempTableName}))");
 							break;
 						case WhereClauseEqualityOperator.NotEqual:
-							sqlFilters.Add(string.Format("{0}(NOT {1} IN (SELECT {1} FROM {2}))", indent, FormatColumnName(columnName), filterValueTempTableName));
+							sqlFilters.Add($"{indent}(NOT {tableAlias}.{FormatColumnName(columnName)} IN (SELECT {FormatColumnName(columnName)} FROM {filterValueTempTableName}))");
 							break;
 					}
 

@@ -29,5 +29,7 @@ namespace ISI.Extensions.Repository.Oracle
 		public int PrimaryKeyMaxCount { get; set; } = 1000;
 		public int FilterValueMaxCount { get; set; } = 50;
 		public int ArchiveTableCommandTimeout { get; set; } = 180;
+
+		public string UseStringComparisonOperatorCollate { get; set; } = "binary_ci";
 	}
 }

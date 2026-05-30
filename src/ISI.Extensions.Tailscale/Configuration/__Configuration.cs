@@ -31,6 +31,6 @@ namespace ISI.Extensions.Tailscale
 		public string TailscaleApiUrl { get; set; } = "https://api.tailscale.com/api/v2";
 
 		[ISI.Extensions.EnvironmentConfigurationVariableName("TAILSCALE_APIKEY")]
-		public string TailScaleApiKey { get; set; }
+		public string TailscaleApiKey { get; set; }
 	}
 }

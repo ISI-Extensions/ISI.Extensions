@@ -31,17 +31,22 @@ namespace ISI.Extensions.Tailscale
 		{
 			var headers = new ISI.Extensions.WebClient.HeaderCollection();
 
-			if (!string.IsNullOrWhiteSpace(request.TailscaleApiKey))
+			var tailscaleApiKey = request.TailscaleApiKey;
+
+			if (string.IsNullOrWhiteSpace(tailscaleApiKey))
 			{
-				headers.AddBearerAuthentication(request.TailscaleApiKey);
+				tailscaleApiKey = Configuration.TailscaleApiKey ?? string.Empty;
 			}
-			else if (!string.IsNullOrWhiteSpace(Configuration.TailScaleApiKey))
+
+			tailscaleApiKey = (tailscaleApiKey.StartsWith("%") && tailscaleApiKey.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(tailscaleApiKey.Trim('%')) : tailscaleApiKey);
+
+			if (!string.IsNullOrWhiteSpace(tailscaleApiKey))
 			{
-				headers.AddBearerAuthentication(Configuration.TailScaleApiKey);
+				headers.AddBearerAuthentication(tailscaleApiKey);
 			}
 			else
 			{
-				throw new Exception("No TailscaleApiToken available");
+				throw new Exception("No TailscaleApiKey available");
 			}
 
 			return headers;

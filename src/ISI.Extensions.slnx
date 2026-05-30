@@ -53,6 +53,7 @@
   <Project Path="ISI.Extensions.GitHub/ISI.Extensions.GitHub.csproj" />
   <Project Path="ISI.Extensions.GoDaddy/ISI.Extensions.GoDaddy.csproj" />
   <Project Path="ISI.Extensions.GoDrive/ISI.Extensions.GoDrive.csproj" />
+  <Project Path="ISI.Extensions.Headscale/ISI.Extensions.Headscale.csproj" Id="e3a2de81-55d5-4bd3-a92b-185ce0ebc177" />
   <Project Path="ISI.Extensions.Ipify/ISI.Extensions.Ipify.csproj" />
   <Project Path="ISI.Extensions.Jenkins.Forms.Tests/ISI.Extensions.Jenkins.Forms.Tests.csproj" Id="e18addec-07e6-473d-9a2f-aa80792147c2" />
   <Project Path="ISI.Extensions.Jenkins.Forms/ISI.Extensions.Jenkins.Forms.csproj" Id="701672a4-a4c1-4560-ae06-cd2ae1ad472b" />

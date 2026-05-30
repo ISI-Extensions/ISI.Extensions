@@ -29,14 +29,18 @@ namespace ISI.Extensions.Tailscale
 	{
 		private UriBuilder GetApiUri(DTOs.IRequest request)
 		{
-			if (!string.IsNullOrWhiteSpace(request.TailscaleApiUrl))
+			var tailscaleApiUrl = request.TailscaleApiUrl;
+
+			if (string.IsNullOrWhiteSpace(tailscaleApiUrl))
 			{
-				return new UriBuilder(request.TailscaleApiUrl);
+				tailscaleApiUrl = Configuration.TailscaleApiUrl ?? string.Empty;
 			}
 
-			if (!string.IsNullOrWhiteSpace(Configuration.TailscaleApiUrl))
+			tailscaleApiUrl = (tailscaleApiUrl.StartsWith("%") && tailscaleApiUrl.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(tailscaleApiUrl.Trim('%')) : tailscaleApiUrl);
+
+			if (!string.IsNullOrWhiteSpace(tailscaleApiUrl))
 			{
-				return new UriBuilder(Configuration.TailscaleApiUrl);
+				return new UriBuilder(tailscaleApiUrl);
 			}
 
 			throw new Exception("No TailscaleApiUrl available");

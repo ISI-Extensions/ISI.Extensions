@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2026, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,30 +15,16 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Headscale.DataTransferObjects.HeadscaleApi;
-using SerializableDTOs = ISI.Extensions.Headscale.SerializableModels.HeadscaleApi;
-using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Headscale
 {
-	public partial class HeadscaleApi
+	public class ApiKey
 	{
-		protected Configuration Configuration { get; }
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
-
-		public HeadscaleApi(
-			Configuration configuration,
-			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
-		{
-			Configuration = configuration;
-			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
-		}
+		public long ApiKeyId { get; set; }
+		public string Prefix { get; set; }
+		public DateTime? ExpirationDateTimeUtc { get; set; }
+		public DateTime CreatedDateTimeUtc { get; set; }
+		public DateTime? LastSeenDateTimeUtc { get; set; }
 	}
 }

@@ -27,18 +27,23 @@ namespace ISI.Extensions.Headscale
 {
 	public partial class HeadscaleApi
 	{
-		protected Configuration Configuration { get; }
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
-
-		public HeadscaleApi(
-			Configuration configuration,
-			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
+		public DTOs.DeleteUserResponse DeleteUser(DTOs.DeleteUserRequest request)
 		{
-			Configuration = configuration;
-			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
+			var response = new DTOs.DeleteUserResponse();
+
+			var uri = GetApiUri(request);
+			uri.AddDirectoryToPath("/api/v1/user/{userId}".Replace("{userId}", $"{request.UserId}"));
+
+			try
+			{
+				var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonDelete<SerializableDTOs.DeleteUserResponse>(uri.Uri, GetHeaders(request), true);
+			}
+			catch (Exception exception)
+			{
+				Logger.LogError(exception, "DeleteUser Failed\n{0}", exception.ErrorMessageFormatted());
+			}
+
+			return response;
 		}
 	}
 }

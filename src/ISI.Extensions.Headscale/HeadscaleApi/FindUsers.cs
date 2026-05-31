@@ -27,18 +27,42 @@ namespace ISI.Extensions.Headscale
 {
 	public partial class HeadscaleApi
 	{
-		protected Configuration Configuration { get; }
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
-
-		public HeadscaleApi(
-			Configuration configuration,
-			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
+		public DTOs.FindUsersResponse FindUsers(DTOs.FindUsersRequest request)
 		{
-			Configuration = configuration;
-			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
+			var response = new DTOs.FindUsersResponse();
+
+			var uri = GetApiUri(request);
+			uri.AddDirectoryToPath("/api/v1/user");
+			if (request.UserId.HasValue)
+			{
+				uri.AddQueryStringParameter("id", $"{request.UserId}");
+			}
+			if (!string.IsNullOrWhiteSpace(request.Name))
+			{
+				uri.AddQueryStringParameter("name", request.Name);
+			}
+			if (!string.IsNullOrWhiteSpace(request.Email))
+			{
+				uri.AddQueryStringParameter("email", request.Email);
+			}
+
+			try
+			{
+				var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableDTOs.FindUsersResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request), true);
+
+				if (restResponse.Error != null)
+				{
+					throw restResponse.Error.Exception;
+				}
+
+				response.Users = restResponse.Response.Users.ToNullCheckedArray(Convert);
+			}
+			catch (Exception exception)
+			{
+				Logger.LogError(exception, "FindUsers Failed\n{0}", exception.ErrorMessageFormatted());
+			}
+
+			return response;
 		}
 	}
 }

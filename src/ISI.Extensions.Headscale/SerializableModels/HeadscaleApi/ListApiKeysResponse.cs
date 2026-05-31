@@ -16,29 +16,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Headscale.DataTransferObjects.HeadscaleApi;
-using SerializableDTOs = ISI.Extensions.Headscale.SerializableModels.HeadscaleApi;
-using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.Headscale
+namespace ISI.Extensions.Headscale.SerializableModels.HeadscaleApi
 {
-	public partial class HeadscaleApi
+	[DataContract]
+	public class ListApiKeysResponse
 	{
-		protected Configuration Configuration { get; }
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
-
-		public HeadscaleApi(
-			Configuration configuration,
-			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
-		{
-			Configuration = configuration;
-			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
-		}
+		[DataMember(Name = "apiKeys", EmitDefaultValue = false)]
+		public ApiKey[] ApiKeys { get; set; }
 	}
 }

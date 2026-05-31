@@ -27,18 +27,19 @@ namespace ISI.Extensions.Headscale
 {
 	public partial class HeadscaleApi
 	{
-		protected Configuration Configuration { get; }
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
-
-		public HeadscaleApi(
-			Configuration configuration,
-			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
+		private User Convert(SerializableDTOs.User user)
 		{
-			Configuration = configuration;
-			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
+			return user.NullCheckedConvert(source => new User()
+			{
+				UserId = source.UserId,
+				Name = source.Name,
+				DisplayName = source.DisplayName,
+				Email = source.Email,
+				ProviderId = source.ProviderId,
+				Provider = source.Provider,
+				ProfilePicUrl = source.ProfilePicUrl,
+				CreatedDateTimeUtc = source.CreatedDateTimeUtc,
+			});
 		}
 	}
 }

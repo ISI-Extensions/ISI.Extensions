@@ -19,26 +19,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Headscale.DataTransferObjects.HeadscaleApi;
-using SerializableDTOs = ISI.Extensions.Headscale.SerializableModels.HeadscaleApi;
-using Microsoft.Extensions.Logging;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Headscale
+namespace ISI.Extensions.Headscale.SerializableModels.HeadscaleApi
 {
-	public partial class HeadscaleApi
+	[DataContract]
+	public class CreateApiKeyResponse
 	{
-		protected Configuration Configuration { get; }
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
-
-		public HeadscaleApi(
-			Configuration configuration,
-			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
-		{
-			Configuration = configuration;
-			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
-		}
+		[DataMember(Name = "apiKey", EmitDefaultValue = false)]
+		public string ApiKey { get; set; }
 	}
 }

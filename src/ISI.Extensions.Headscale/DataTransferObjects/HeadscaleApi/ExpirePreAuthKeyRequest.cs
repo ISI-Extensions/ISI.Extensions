@@ -19,26 +19,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Headscale.DataTransferObjects.HeadscaleApi;
-using SerializableDTOs = ISI.Extensions.Headscale.SerializableModels.HeadscaleApi;
-using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.Headscale
+namespace ISI.Extensions.Headscale.DataTransferObjects.HeadscaleApi
 {
-	public partial class HeadscaleApi
+	public class ExpirePreAuthKeyRequest : IRequest
 	{
-		protected Configuration Configuration { get; }
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
+		public string HeadscaleApiUrl { get; set; }
+		public string HeadscaleApiKey { get; set; }
 
-		public HeadscaleApi(
-			Configuration configuration,
-			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
-		{
-			Configuration = configuration;
-			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
-		}
+		public long PreAuthKeyId { get; set; }
 	}
 }

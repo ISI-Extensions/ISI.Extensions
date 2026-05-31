@@ -27,18 +27,36 @@ namespace ISI.Extensions.Headscale
 {
 	public partial class HeadscaleApi
 	{
-		protected Configuration Configuration { get; }
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
-
-		public HeadscaleApi(
-			Configuration configuration,
-			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
+		public DTOs.SetNodeExpirationResponse SetNodeExpiration(DTOs.SetNodeExpirationRequest request)
 		{
-			Configuration = configuration;
-			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
+			var response = new DTOs.SetNodeExpirationResponse();
+
+			var uri = GetApiUri(request);
+			uri.AddDirectoryToPath("/api/v1/node/{nodeId}/expire".Replace("{nodeId}", $"{request.NodeId}"));
+			if (request.ExpirationDateTimeUtc.HasValue)
+			{
+				uri.AddQueryStringParameter("expiry", request.ExpirationDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise));
+			}
+
+			var restRequest = new SerializableDTOs.SetNodeExpirationRequest();
+
+			try
+			{
+				var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.SetNodeExpirationRequest, SerializableDTOs.SetNodeExpirationResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request), restRequest, true);
+
+				response.Node = restResponse.Response.Node.NullCheckedConvert(Convert);
+
+				if (restResponse.Error != null)
+				{
+					throw restResponse.Error.Exception;
+				}
+			}
+			catch (Exception exception)
+			{
+				Logger.LogError(exception, "SetNodeExpiration Failed\n{0}", exception.ErrorMessageFormatted());
+			}
+
+			return response;
 		}
 	}
 }

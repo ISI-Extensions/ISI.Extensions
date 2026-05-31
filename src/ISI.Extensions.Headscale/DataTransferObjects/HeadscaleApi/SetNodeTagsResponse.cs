@@ -22,9 +22,8 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Headscale.DataTransferObjects.HeadscaleApi
 {
-	public class CreateAuthKeyRequest : IRequest
+	public class SetNodeTagsResponse
 	{
-		public string HeadscaleApiUrl { get; set; }
-		public string HeadscaleApiKey { get; set; }
+		public Node Node { get; set; }
 	}
 }

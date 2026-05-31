@@ -27,18 +27,32 @@ namespace ISI.Extensions.Headscale
 {
 	public partial class HeadscaleApi
 	{
-		protected Configuration Configuration { get; }
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
-
-		public HeadscaleApi(
-			Configuration configuration,
-			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
+		public DTOs.RenameNodeResponse RenameNode(DTOs.RenameNodeRequest request)
 		{
-			Configuration = configuration;
-			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
+			var response = new DTOs.RenameNodeResponse();
+
+			var uri = GetApiUri(request);
+			uri.AddDirectoryToPath("/api/v1/node/{nodeId}/rename/{newName}".Replace("{nodeId}", $"{request.NodeId}").Replace("{newName}", request.NewName));
+
+			var restRequest = new SerializableDTOs.RenameNodeRequest();
+
+			try
+			{
+				var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.RenameNodeRequest, SerializableDTOs.RenameNodeResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request), restRequest, true);
+
+				response.Node = restResponse.Response.Node.NullCheckedConvert(Convert);
+
+				if (restResponse.Error != null)
+				{
+					throw restResponse.Error.Exception;
+				}
+			}
+			catch (Exception exception)
+			{
+				Logger.LogError(exception, "RenameNode Failed\n{0}", exception.ErrorMessageFormatted());
+			}
+
+			return response;
 		}
 	}
 }

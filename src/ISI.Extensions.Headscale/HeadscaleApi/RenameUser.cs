@@ -27,18 +27,32 @@ namespace ISI.Extensions.Headscale
 {
 	public partial class HeadscaleApi
 	{
-		protected Configuration Configuration { get; }
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
-
-		public HeadscaleApi(
-			Configuration configuration,
-			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
+		public DTOs.RenameUserResponse RenameUser(DTOs.RenameUserRequest request)
 		{
-			Configuration = configuration;
-			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
+			var response = new DTOs.RenameUserResponse();
+
+			var uri = GetApiUri(request);
+			uri.AddDirectoryToPath("/api/v1/user/{userId}/rename/{newName}".Replace("{userId}", $"{request.UserId}").Replace("{newName}", request.NewName));
+
+			var restRequest = new SerializableDTOs.RenameUserRequest();
+
+			try
+			{
+				var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.RenameUserRequest, SerializableDTOs.RenameUserResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request), restRequest, true);
+
+				response.User = restResponse.Response.User.NullCheckedConvert(Convert);
+
+				if (restResponse.Error != null)
+				{
+					throw restResponse.Error.Exception;
+				}
+			}
+			catch (Exception exception)
+			{
+				Logger.LogError(exception, "RenameUser Failed\n{0}", exception.ErrorMessageFormatted());
+			}
+
+			return response;
 		}
 	}
 }

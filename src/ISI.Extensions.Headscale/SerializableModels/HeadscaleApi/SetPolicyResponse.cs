@@ -19,26 +19,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Headscale.DataTransferObjects.HeadscaleApi;
-using SerializableDTOs = ISI.Extensions.Headscale.SerializableModels.HeadscaleApi;
-using Microsoft.Extensions.Logging;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.Headscale
+namespace ISI.Extensions.Headscale.SerializableModels.HeadscaleApi
 {
-	public partial class HeadscaleApi
+	[DataContract]
+	public class SetPolicyResponse
 	{
-		protected Configuration Configuration { get; }
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
+		[DataMember(Name = "policy", EmitDefaultValue = false)]
+		public string Policy { get; set; }
 
-		public HeadscaleApi(
-			Configuration configuration,
-			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
-		{
-			Configuration = configuration;
-			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
-		}
+		[DataMember(Name = "updatedAt", EmitDefaultValue = false)]
+		public string __ModifiedDateTimeUtc { get => ModifiedDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => ModifiedDateTimeUtc = value.ToDateTimeUtcNullable(); }
+		[IgnoreDataMember]
+		public DateTime? ModifiedDateTimeUtc { get; set; }
 	}
 }

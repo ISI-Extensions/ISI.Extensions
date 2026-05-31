@@ -16,29 +16,40 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Headscale.DataTransferObjects.HeadscaleApi;
-using SerializableDTOs = ISI.Extensions.Headscale.SerializableModels.HeadscaleApi;
-using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.Headscale
+namespace ISI.Extensions.Headscale.SerializableModels.HeadscaleApi
 {
-	public partial class HeadscaleApi
+	[DataContract]
+	public class User
 	{
-		protected Configuration Configuration { get; }
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
+		[DataMember(Name = "id", EmitDefaultValue = false)]
+		public long UserId { get; set; }
 
-		public HeadscaleApi(
-			Configuration configuration,
-			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
-		{
-			Configuration = configuration;
-			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
-		}
+		[DataMember(Name = "name", EmitDefaultValue = false)]
+		public string Name { get; set; }
+
+		[DataMember(Name = "displayName", EmitDefaultValue = false)]
+		public string DisplayName { get; set; }
+
+		[DataMember(Name = "email", EmitDefaultValue = false)]
+		public string Email { get; set; }
+
+		[DataMember(Name = "providerId", EmitDefaultValue = false)]
+		public long? ProviderId { get; set; }
+
+		[DataMember(Name = "provider", EmitDefaultValue = false)]
+		public string Provider { get; set; }
+
+		[DataMember(Name = "profilePicUrl", EmitDefaultValue = false)]
+		public string ProfilePicUrl { get; set; }
+
+		[DataMember(Name = "createdAt", EmitDefaultValue = false)]
+		public string __CreatedDateTimeUtc { get => CreatedDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise); set => CreatedDateTimeUtc = value.ToDateTimeUtc(); }
+		[IgnoreDataMember]
+		public DateTime CreatedDateTimeUtc { get; set; }
 	}
 }

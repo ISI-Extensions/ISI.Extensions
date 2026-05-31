@@ -19,18 +19,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Headscale.DataTransferObjects.HeadscaleApi;
 
-namespace ISI.Extensions.Headscale
+namespace ISI.Extensions.Headscale.DataTransferObjects.HeadscaleApi
 {
-	public partial class HeadscaleApi
+	public class GetNodeRequest : IRequest
 	{
-		public DTOs.CreateAuthKeyResponse CreateAuthKey(DTOs.CreateAuthKeyRequest request)
-		{
-			var response = new DTOs.CreateAuthKeyResponse();
-			
-			
-			return response;
-		}
+		public string HeadscaleApiUrl { get; set; }
+		public string HeadscaleApiKey { get; set; }
+
+		public long NodeId { get; set; }
 	}
 }

@@ -16,29 +16,45 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Headscale.DataTransferObjects.HeadscaleApi;
-using SerializableDTOs = ISI.Extensions.Headscale.SerializableModels.HeadscaleApi;
-using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.Headscale
+namespace ISI.Extensions.Headscale.SerializableModels.HeadscaleApi
 {
-	public partial class HeadscaleApi
+	[DataContract]
+	public class PreAuthKey
 	{
-		protected Configuration Configuration { get; }
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
+		[DataMember(Name = "id", EmitDefaultValue = false)]
+		public long PreAuthKeyId { get; set; }
 
-		public HeadscaleApi(
-			Configuration configuration,
-			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
-		{
-			Configuration = configuration;
-			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
-		}
+		[DataMember(Name = "key", EmitDefaultValue = false)]
+		public string Key { get; set; }
+
+		[DataMember(Name = "user", EmitDefaultValue = false)]
+		public User User { get; set; }
+
+		[DataMember(Name = "reusable", EmitDefaultValue = false)]
+		public bool Reusable { get; set; }
+
+		[DataMember(Name = "ephemeral", EmitDefaultValue = false)]
+		public bool Ephemeral { get; set; }
+
+		[DataMember(Name = "used", EmitDefaultValue = false)]
+		public bool Used { get; set; }
+
+		[DataMember(Name = "aclTags", EmitDefaultValue = false)]
+		public string[] AclTags { get; set; }
+
+		[DataMember(Name = "expiration", EmitDefaultValue = false)]
+		public string __ExpirationDateTimeUtc { get => ExpirationDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise); set => ExpirationDateTimeUtc = value.ToDateTimeUtcNullable(); }
+		[IgnoreDataMember]
+		public DateTime? ExpirationDateTimeUtc { get; set; }
+
+		[DataMember(Name = "createdAt", EmitDefaultValue = false)]
+		public string __CreatedDateTimeUtc { get => CreatedDateTimeUtc.Formatted(DateTimeExtensions.DateTimeFormat.DateTimePrecise); set => CreatedDateTimeUtc = value.ToDateTimeUtc(); }
+		[IgnoreDataMember]
+		public DateTime CreatedDateTimeUtc { get; set; }
 	}
 }

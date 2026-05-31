@@ -19,10 +19,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.Headscale.DataTransferObjects.HeadscaleApi;
+using SerializableDTOs = ISI.Extensions.Headscale.SerializableModels.HeadscaleApi;
+using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.Headscale.DataTransferObjects.HeadscaleApi
+namespace ISI.Extensions.Headscale
 {
-	public class CreateAuthKeyResponse
+	public partial class HeadscaleApi
 	{
+		public DTOs.DeleteNodeResponse DeleteNode(DTOs.DeleteNodeRequest request)
+		{
+			var response = new DTOs.DeleteNodeResponse();
+
+			var uri = GetApiUri(request);
+			uri.AddDirectoryToPath("/api/v1/node/{nodeId}".Replace("{nodeId}", $"{request.NodeId}"));
+
+			try
+			{
+				var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonDelete<SerializableDTOs.DeleteNodeResponse>(uri.Uri, GetHeaders(request), true);
+			}
+			catch (Exception exception)
+			{
+				Logger.LogError(exception, "DeleteNode Failed\n{0}", exception.ErrorMessageFormatted());
+			}
+
+			return response;
+		}
 	}
 }

@@ -20,6 +20,8 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using DTOs = ISI.Extensions.Headscale.DataTransferObjects.HeadscaleApi;
+using SerializableDTOs = ISI.Extensions.Headscale.SerializableModels.HeadscaleApi;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Headscale
 {

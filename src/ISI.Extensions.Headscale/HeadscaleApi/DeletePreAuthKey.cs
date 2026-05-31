@@ -27,18 +27,23 @@ namespace ISI.Extensions.Headscale
 {
 	public partial class HeadscaleApi
 	{
-		protected Configuration Configuration { get; }
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
-
-		public HeadscaleApi(
-			Configuration configuration,
-			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
+		public DTOs.DeletePreAuthKeyResponse DeletePreAuthKey(DTOs.DeletePreAuthKeyRequest request)
 		{
-			Configuration = configuration;
-			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
+			var response = new DTOs.DeletePreAuthKeyResponse();
+
+			var uri = GetApiUri(request);
+			uri.AddDirectoryToPath("/api/v1/preauthkey/{preAuthKeyId}".Replace("{preAuthKeyId}", $"{request.PreAuthKeyId}"));
+
+			try
+			{
+				var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonDelete<SerializableDTOs.DeletePreAuthKeyResponse>(uri.Uri, GetHeaders(request), true);
+			}
+			catch (Exception exception)
+			{
+				Logger.LogError(exception, "DeletePreAuthKey Failed\n{0}", exception.ErrorMessageFormatted());
+			}
+
+			return response;
 		}
 	}
 }

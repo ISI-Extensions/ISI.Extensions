@@ -27,18 +27,39 @@ namespace ISI.Extensions.Headscale
 {
 	public partial class HeadscaleApi
 	{
-		protected Configuration Configuration { get; }
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
-
-		public HeadscaleApi(
-			Configuration configuration,
-			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
+		public DTOs.CreatePreAuthKeyResponse CreatePreAuthKey(DTOs.CreatePreAuthKeyRequest request)
 		{
-			Configuration = configuration;
-			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
+			var response = new DTOs.CreatePreAuthKeyResponse();
+
+			var uri = GetApiUri(request);
+			uri.AddDirectoryToPath("/api/v1/preauthkey");
+
+			var restRequest = new SerializableDTOs.CreatePreAuthKeyRequest()
+			{
+				User = request.User,
+				Reusable = request.Reusable,
+				Ephemeral = request.Ephemeral,
+				ExpirationDateTimeUtc = request.ExpirationDateTimeUtc,
+				AclTags = request.AclTags.ToNullCheckedArray(),
+			};
+
+			try
+			{
+				var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.CreatePreAuthKeyRequest, SerializableDTOs.CreatePreAuthKeyResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request), restRequest, true);
+
+				if (restResponse.Error != null)
+				{
+					throw restResponse.Error.Exception;
+				}
+
+				response.PreAuthKey = restResponse.Response.PreAuthKey.NullCheckedConvert(Convert);
+			}
+			catch (Exception exception)
+			{
+				Logger.LogError(exception, "CreatePreAuthKey Failed\n{0}", exception.ErrorMessageFormatted());
+			}
+
+			return response;
 		}
 	}
 }

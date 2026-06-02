@@ -22,7 +22,7 @@ namespace ISI.Extensions.StatusTrackers
 	public interface IStatusTrackerFactory
 	{
 		IStatusTracker CreateStatusTracker(string statusTrackerKey);
-		IStatusTracker CreateStatusTracker(string statusTrackerKey, Guid jobUuid, string description, string logUrl);
+		IStatusTracker CreateStatusTracker(string statusTrackerKey, string jobKey, string description, string logUrl);
 		IEnumerable<string> GetActiveStatusTrackerKeys();
 		IStatusTrackerSnapshot GetStatusTrackerSnapshot(string statusTrackerKey);
 		IStatusTrackerSnapshot[] GetStatusTrackerSnapshots(IEnumerable<string> statusTrackerKeys);

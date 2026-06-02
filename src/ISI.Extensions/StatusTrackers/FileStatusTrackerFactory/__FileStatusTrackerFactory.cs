@@ -50,6 +50,57 @@ namespace ISI.Extensions.StatusTrackers
 			}
 		}
 
+		public string GetStatusTrackerStorageDirectoryName(string statusTrackerKey)
+		{
+			var subDirectories = statusTrackerKey.SplitIntoChunks(2, 5, true).ToList();
+			subDirectories.Insert(0, Configuration.FileStatusTrackerDirectory);
+
+			var directoryName = System.IO.Path.Combine(subDirectories.ToArray());
+
+			System.IO.Directory.CreateDirectory(directoryName);
+
+			return directoryName;
+		}
+
+		public string GetStatusTrackerFileName(string statusTrackerKey, string fileNameExtension)
+		{
+			var directory = GetStatusTrackerStorageDirectoryName(statusTrackerKey);
+
+			return System.IO.Path.Combine(directory, $"{statusTrackerKey}{fileNameExtension}");
+		}
+
+		public void MigrateStatusTrackers()
+		{
+			var fullFileNames = System.IO.Directory.GetFiles(Configuration.FileStatusTrackerDirectory, "*.txt", System.IO.SearchOption.TopDirectoryOnly);
+
+			var fileExtensions =
+				new []
+				{
+					LockFileNameExtension,
+					RunningFileNameExtension,
+					CaptionFileNameExtension,
+					PercentFileNameExtension,
+					LogFileNameExtension,
+					KeyValueFileNameExtension,
+					FinishedFileNameExtension,
+				};
+
+			foreach (var fullFileName in fullFileNames)
+			{
+				var fileName = System.IO.Path.GetFileName(fullFileName);
+				
+				var statusTrackerKey = fullFileName;
+				foreach (var fileExtension in fileExtensions)
+				{
+					statusTrackerKey = statusTrackerKey.TrimEnd(fileExtension, StringComparison.InvariantCultureIgnoreCase);
+				}
+
+				var statusTrackerStorageDirectoryName = GetStatusTrackerStorageDirectoryName(statusTrackerKey);
+				
+				System.IO.File.Move(fullFileName, System.IO.Path.Combine(statusTrackerStorageDirectoryName, fileName));
+			}
+		}
+
 		public bool TryGetStatusTracker(string statusTrackerKey, out IStatusTracker statusTracker)
 		{
 			var logFullName = GetStatusTrackerFileName(statusTrackerKey, LogFileNameExtension);
@@ -67,11 +118,6 @@ namespace ISI.Extensions.StatusTrackers
 		public IStatusTracker CreateStatusTracker(string statusTrackerKey)
 		{
 			return new FileStatusTracker(statusTrackerKey, Configuration, Logger, DateTimeStamper, GetStatusTrackerFileName, GetStatusTrackerKeyValueFileName);
-		}
-
-		public string GetStatusTrackerFileName(string statusTrackerKey, string fileNameExtension)
-		{
-			return System.IO.Path.Combine(Configuration.FileStatusTrackerDirectory, $"{statusTrackerKey}{fileNameExtension}");
 		}
 
 		public string GetStatusTrackerKeyValueFileName(string statusTrackerKey, string key)

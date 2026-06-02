@@ -97,7 +97,28 @@ namespace ISI.Extensions.Tests
 				var listCustomSslCertificatesResponse = cloudflareApi.ListCustomSslCertificates(new()
 				{
 					ApiToken = settings.GetValue("CloudFlare.ApiKey"),
-					ZoneName = "ronmuth.com"
+					ZoneName = "ronmuth.name"
+				});
+			}
+		}
+
+		[Test]
+		public void SetCustomSslConfiguration_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+
+			var cloudflareApi = ServiceProvider.GetService<ISI.Extensions.Cloudflare.CloudflareApi>();
+
+			using (var eventHandler = ISI.Extensions.WebClient.Rest.GetEventHandler())
+			{
+				var setCustomSslConfigurationResponse = cloudflareApi.SetCustomSslConfiguration(new()
+				{
+					ApiToken = settings.GetValue("CloudFlare.ApiKey"),
+					ZoneName = "ronmuth.name",
+					Domain = "*.ronmuth.name",
+					BundleCertificate = @"XXXXXXXXXXXXXXXX",
+					KeyCertificate = @"XXXXXXXXXXXXXXXXX",
 				});
 			}
 		}

@@ -52,7 +52,7 @@ namespace ISI.Extensions.StatusTrackers
 
 		public string GetStatusTrackerStorageDirectoryName(string statusTrackerKey)
 		{
-			var subDirectories = statusTrackerKey.SplitIntoChunks(2, 5, true).ToList();
+			var subDirectories = statusTrackerKey.SplitIntoChunks(2, 5, false).ToList();
 			subDirectories.Insert(0, Configuration.FileStatusTrackerDirectory);
 
 			var directoryName = System.IO.Path.Combine(subDirectories.ToArray());

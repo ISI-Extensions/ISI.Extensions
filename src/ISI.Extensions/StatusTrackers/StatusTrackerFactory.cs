@@ -43,6 +43,7 @@ namespace ISI.Extensions.StatusTrackers
 			return false;
 		}
 
+		public virtual IStatusTracker CreateStatusTracker(string statusTrackerKey, Guid jobUuid, string description, string logUrl) => CreateStatusTracker(statusTrackerKey);
 		public IStatusTracker CreateStatusTracker(string statusTrackerKey)
 		{
 			var expiredStatusTrackerKeys = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);

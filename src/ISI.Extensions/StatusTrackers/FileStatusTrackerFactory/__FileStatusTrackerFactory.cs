@@ -115,7 +115,7 @@ namespace ISI.Extensions.StatusTrackers
 			return false;
 		}
 
-		public virtual IStatusTracker CreateStatusTracker(string statusTrackerKey, string jobKey, string description, string logUrl) => CreateStatusTracker(statusTrackerKey);
+		public virtual IStatusTracker CreateStatusTracker(string statusTrackerKey, string jobKey, string description, string lastExecutionUrl) => CreateStatusTracker(statusTrackerKey);
 		public IStatusTracker CreateStatusTracker(string statusTrackerKey)
 		{
 			return new FileStatusTracker(statusTrackerKey, Configuration, Logger, DateTimeStamper, GetStatusTrackerFileName, GetStatusTrackerKeyValueFileName);

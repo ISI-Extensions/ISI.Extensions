@@ -43,8 +43,8 @@ namespace ISI.Extensions.StatusTrackers
 			return false;
 		}
 
-		public virtual IStatusTracker CreateStatusTracker(string statusTrackerKey, string jobKey, string description, string lastExecutionUrl) => CreateStatusTracker(statusTrackerKey);
-		public IStatusTracker CreateStatusTracker(string statusTrackerKey)
+		public virtual IStatusTracker CreateStatusTracker(string statusTrackerKey, string jobKey, string description, string lastExecutionUrl, bool leaveRunning = false) => CreateStatusTracker(statusTrackerKey, leaveRunning);
+		public IStatusTracker CreateStatusTracker(string statusTrackerKey, bool leaveRunning = false)
 		{
 			var expiredStatusTrackerKeys = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
 

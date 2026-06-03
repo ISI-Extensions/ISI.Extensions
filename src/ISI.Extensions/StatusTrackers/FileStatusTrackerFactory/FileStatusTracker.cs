@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,6 +57,8 @@ namespace ISI.Extensions.StatusTrackers
 
 			public bool Successful { get; protected set; }
 			public bool Finished { get; protected set; }
+
+			protected bool LeaveRunning { get; }
 
 			private string _caption = string.Empty;
 			public string Caption
@@ -138,7 +140,8 @@ namespace ISI.Extensions.StatusTrackers
 				Microsoft.Extensions.Logging.ILogger logger,
 				ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
 				GetStatusTrackerFileNameDelegate getStatusTrackerFileName,
-				GetStatusTrackerKeyValueFileNameDelegate getStatusTrackerKeyValueFileName)
+				GetStatusTrackerKeyValueFileNameDelegate getStatusTrackerKeyValueFileName,
+				bool leaveRunning = false)
 			{
 				StatusTrackerKey = statusTrackerKey;
 				Configuration = configuration;
@@ -151,17 +154,43 @@ namespace ISI.Extensions.StatusTrackers
 
 				RunningFullName = GetStatusTrackerFileName(StatusTrackerKey, RunningFileNameExtension);
 				FinishedFullName = GetStatusTrackerFileName(StatusTrackerKey, FinishedFileNameExtension);
-				if (!System.IO.File.Exists(RunningFullName) && !System.IO.File.Exists(FinishedFullName))
+				if (leaveRunning)
 				{
-					try
+					LeaveRunning = System.IO.File.Exists(FinishedFullName);
+
+					if (!System.IO.File.Exists(RunningFullName) && !LeaveRunning)
 					{
-						RunningFileStream = new(RunningFullName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.DeleteOnClose);
-						RunningFileStream.WriteByte(255);
-						RunningFileStream.Flush();
+						try
+						{
+							using (var runningFileStream = new System.IO.FileStream(RunningFullName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, System.IO.FileOptions.None))
+							{
+								runningFileStream.WriteByte(255);
+								runningFileStream.Flush();
+							}
+						}
+						catch (Exception exception)
+						{
+							throw new($"Cannot create file: \"{RunningFullName}\"", exception);
+						}
 					}
-					catch (Exception exception)
+
+				}
+				else
+				{
+					LeaveRunning = System.IO.File.Exists(RunningFullName);
+					
+					if (!LeaveRunning && !System.IO.File.Exists(FinishedFullName))
 					{
-						throw new($"Cannot create file: \"{RunningFullName}\"", exception);
+						try
+						{
+							RunningFileStream = new(RunningFullName, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, DefaultBufferSize, (leaveRunning ? System.IO.FileOptions.None : System.IO.FileOptions.DeleteOnClose));
+							RunningFileStream.WriteByte(255);
+							RunningFileStream.Flush();
+						}
+						catch (Exception exception)
+						{
+							throw new($"Cannot create file: \"{RunningFullName}\"", exception);
+						}
 					}
 				}
 
@@ -284,9 +313,13 @@ namespace ISI.Extensions.StatusTrackers
 
 					System.IO.File.Move($"{FinishedFullName}.tmp", FinishedFullName);
 
-
 					RunningFileStream?.Close();
 					RunningFileStream = null;
+
+					if (LeaveRunning && System.IO.File.Exists(RunningFullName))
+					{
+						System.IO.File.Delete(RunningFullName);
+					}
 
 					if (System.IO.File.Exists(CaptionFullName))
 					{

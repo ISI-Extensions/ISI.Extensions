@@ -21,8 +21,8 @@ namespace ISI.Extensions.StatusTrackers
 {
 	public interface IStatusTrackerFactory
 	{
-		IStatusTracker CreateStatusTracker(string statusTrackerKey);
-		IStatusTracker CreateStatusTracker(string statusTrackerKey, string jobKey, string description, string lastExecutionUrl);
+		IStatusTracker CreateStatusTracker(string statusTrackerKey, bool leaveRunning = false);
+		IStatusTracker CreateStatusTracker(string statusTrackerKey, string jobKey, string description, string lastExecutionUrl, bool leaveRunning = false);
 		IEnumerable<string> GetActiveStatusTrackerKeys();
 		IStatusTrackerSnapshot GetStatusTrackerSnapshot(string statusTrackerKey);
 		IStatusTrackerSnapshot[] GetStatusTrackerSnapshots(IEnumerable<string> statusTrackerKeys);

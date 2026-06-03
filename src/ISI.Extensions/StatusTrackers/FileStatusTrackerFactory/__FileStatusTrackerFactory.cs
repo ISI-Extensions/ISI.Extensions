@@ -165,6 +165,16 @@ namespace ISI.Extensions.StatusTrackers
 			return false;
 		}
 
+		public IStatusTracker TryGetOrAddStatusTracker(string statusTrackerKey, bool leaveRunning = false)
+		{
+			if (TryGetStatusTracker(statusTrackerKey, out var statusTracker))
+			{
+				return statusTracker;
+			}
+
+			return CreateStatusTracker(statusTrackerKey, leaveRunning);
+		}
+
 		public virtual IStatusTracker CreateStatusTracker(string statusTrackerKey, string jobKey, string description, string lastExecutionUrl, bool leaveRunning = false) => CreateStatusTracker(statusTrackerKey, leaveRunning);
 		public IStatusTracker CreateStatusTracker(string statusTrackerKey, bool leaveRunning = false)
 		{

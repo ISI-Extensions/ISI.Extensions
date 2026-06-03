@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.StatusTrackers
 {
@@ -71,7 +72,7 @@ namespace ISI.Extensions.StatusTrackers
 
 		public void MigrateStatusTrackers()
 		{
-			var fullFileNames = System.IO.Directory.GetFiles(Configuration.FileStatusTrackerDirectory, "*.txt", System.IO.SearchOption.TopDirectoryOnly);
+			var fullNames = System.IO.Directory.GetFiles(Configuration.FileStatusTrackerDirectory, "*.txt", System.IO.SearchOption.TopDirectoryOnly);
 
 			var fileExtensions =
 				new []
@@ -85,19 +86,23 @@ namespace ISI.Extensions.StatusTrackers
 					FinishedFileNameExtension,
 				};
 
-			foreach (var fullFileName in fullFileNames)
+			foreach (var fullName in fullNames)
 			{
-				var fileName = System.IO.Path.GetFileName(fullFileName);
+				var fileName = System.IO.Path.GetFileName(fullName);
 				
-				var statusTrackerKey = fullFileName;
+				var statusTrackerKey = fileName;
 				foreach (var fileExtension in fileExtensions)
 				{
 					statusTrackerKey = statusTrackerKey.TrimEnd(fileExtension, StringComparison.InvariantCultureIgnoreCase);
 				}
 
+				Logger.LogInformation($"Migrate statusTrackerKey: {statusTrackerKey} File: {fileName}");
+
 				var statusTrackerStorageDirectoryName = GetStatusTrackerStorageDirectoryName(statusTrackerKey);
-				
-				System.IO.File.Move(fullFileName, System.IO.Path.Combine(statusTrackerStorageDirectoryName, fileName));
+
+				Logger.LogInformation($"               Directory: {statusTrackerStorageDirectoryName}");
+
+				System.IO.File.Move(fullName, System.IO.Path.Combine(statusTrackerStorageDirectoryName, fileName));
 			}
 		}
 

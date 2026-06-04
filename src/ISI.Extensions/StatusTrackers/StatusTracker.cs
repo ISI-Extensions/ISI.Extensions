@@ -174,7 +174,7 @@ namespace ISI.Extensions
 			{
 				Successful = successful;
 				Finished = true;
-
+				
 				OnFinishedEvents?.Invoke(successful);
 			}
 		}

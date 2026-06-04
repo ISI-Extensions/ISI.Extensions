@@ -313,13 +313,13 @@ namespace ISI.Extensions.StatusTrackers
 
 					System.IO.File.Move($"{FinishedFullName}.tmp", FinishedFullName);
 
-					RunningFileStream?.Close();
-					RunningFileStream = null;
-
-					if (LeaveRunning && System.IO.File.Exists(RunningFullName))
+					if ((RunningFileStream == null) && System.IO.File.Exists(RunningFullName))
 					{
 						System.IO.File.Delete(RunningFullName);
 					}
+
+					RunningFileStream?.Close();
+					RunningFileStream = null;
 
 					if (System.IO.File.Exists(CaptionFullName))
 					{

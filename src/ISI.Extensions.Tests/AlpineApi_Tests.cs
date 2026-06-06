@@ -73,10 +73,19 @@ namespace ISI.Extensions.Tests
 		{
 			var alpineApi = ServiceProvider.GetService<ISI.Extensions.Alpine.AlpineApi>();
 
-			var apiResponse = alpineApi.GetPackageDetails(new()
 			{
-				Package = "openjdk8",
-			});
+				var apiResponse = alpineApi.GetPackageDetails(new()
+				{
+					Package = "openjdk8",
+				});
+			}
+
+			{
+				var apiResponse = alpineApi.GetPackageDetails(new()
+				{
+					Package = "openssl",
+				});
+			}
 		}
 	}
 }

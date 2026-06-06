@@ -43,7 +43,7 @@ namespace ISI.Extensions.Alpine
 			}
 
 
-			if (!PackageDetailsByBranchArchitecturePackage.ContainsKey(getBranchArchitectureKey(request.Branch, request.Architecture)))
+			if (!RepositoryDetailsByBranchArchitecture.ContainsKey(getBranchArchitectureKey(request.Branch, request.Architecture)))
 			{
 				var repositories = new List<RepositoryDetails>();
 				

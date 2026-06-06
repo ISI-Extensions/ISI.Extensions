@@ -36,6 +36,16 @@ namespace ISI.Extensions
 			{
 				var dataRoot = System.Environment.GetEnvironmentVariable("AppDataRoot");
 
+				if (System.Diagnostics.Debugger.IsAttached)
+				{
+					var debuggerDataRoot = System.Environment.GetEnvironmentVariable("DebuggerDataRoot");
+
+					if (!string.IsNullOrWhiteSpace(debuggerDataRoot))
+					{
+						dataRoot = debuggerDataRoot;
+					}
+				}
+
 				if (string.IsNullOrWhiteSpace(dataRoot))
 				{
 					var localAppData = System.Environment.GetEnvironmentVariable("LocalAppData");

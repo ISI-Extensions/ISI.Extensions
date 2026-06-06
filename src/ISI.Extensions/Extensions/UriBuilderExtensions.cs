@@ -68,14 +68,7 @@ namespace ISI.Extensions.Extensions
 			{
 				var path = (uriBuilder.Path ?? string.Empty).Trim();
 
-				if (string.IsNullOrWhiteSpace(path))
-				{
-					path = directory;
-				}
-				else
-				{
-					path = $"{path}{(path.EndsWith("/") ? string.Empty : "/")}{directory.TrimStart("/")}";
-				}
+				path = string.IsNullOrWhiteSpace(path) ? directory : $"{path}{(path.EndsWith("/") ? string.Empty : "/")}{directory.TrimStart("/")}";
 
 				while (path.StartsWith("/"))
 				{
@@ -87,6 +80,8 @@ namespace ISI.Extensions.Extensions
 
 			return uriBuilder;
 		}
+
+		public static UriBuilder AddFileToPath(this UriBuilder uriBuilder, string file) => AddDirectoryToPath(uriBuilder, file);
 
 		public static bool ContainsQueryStringParameter(this UriBuilder uriBuilder, string name)
 		{

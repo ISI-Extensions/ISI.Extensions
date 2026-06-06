@@ -22,8 +22,8 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Alpine.DataTransferObjects.AlpineApi
 {
-	public class GetPackageVersionResponse
+	public class GetPackageDetailsResponse
 	{
-		public string Version { get; set; }
+		public PackageDetails PackageDetails { get; set; }
 	}
 }

@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2026, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,18 +15,24 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Alpine.DataTransferObjects.AlpineApi
+namespace ISI.Extensions.Alpine
 {
-	public class GetPackageVersionRequest
+	public class PackageDetails
 	{
-		public string Branch { get; set; } = "edge";
-		public string Repository { get; set; }
-		public string Architecture { get; set; } = "x86_64";
 		public string Package { get; set; }
+		public string Version { get; set; }
+		public string Description { get; set; }
+		public string Branch { get; set; }
+		public string Repository { get; set; }
+		public string Architecture { get; set; }
+		public string License { get; set; }
+		public string Origin { get; set; }
+		public string Url { get; set; }
+		public string Email { get; set; }
+		public long? FileSize { get; set; }
+
+		public override string ToString() => $"{Branch}/{Architecture}/{Package}";
 	}
 }

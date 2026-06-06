@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,37 +25,47 @@ namespace ISI.Extensions.Alpine
 {
 	public partial class AlpineApi
 	{
-		public DTOs.GetPackageVersionResponse GetPackageVersion(DTOs.GetPackageVersionRequest request)
+		private static Dictionary<string, RepositoryDetails[]> RepositoryDetailsByBranchArchitecture = new();
+		private static Dictionary<string, PackageDetails> PackageDetailsByBranchArchitecturePackage = new();
+		
+		public DTOs.GetPackageDetailsResponse GetPackageDetails(DTOs.GetPackageDetailsRequest request)
 		{
-			var response = new DTOs.GetPackageVersionResponse();
+			var response = new DTOs.GetPackageDetailsResponse();
 
-			var uri = new UriBuilder(Configuration.Url);
-			uri.AddDirectoryToPath(request.Branch);
-			uri.AddDirectoryToPath(request.Repository);
-			uri.AddDirectoryToPath(request.Architecture);
-
-			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteGet<ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, null, true);
-
-			var lines = apiResponse.Content.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
-
-			for (var lineIndex = 0; ((lineIndex < lines.Length) && string.IsNullOrWhiteSpace(response.Version)); lineIndex++)
+			string getBranchArchitectureKey(string branch, string architecture)
 			{
-				var linePieces = lines[lineIndex].Split(['"']);
+				return $"{branch}/{architecture}";
+			}
 
-				if (linePieces.Length >= 2)
+			string getBranchArchitecturePackageKey(string branch, string architecture, string package)
+			{
+				return $"{branch}/{architecture}/{package}";
+			}
+
+
+			if (!PackageDetailsByBranchArchitecturePackage.ContainsKey(getBranchArchitectureKey(request.Branch, request.Architecture)))
+			{
+				var repositories = new List<RepositoryDetails>();
+				
+				foreach (var repository in new [] { "main", "community" })
 				{
-					var package = linePieces[1];
+					repositories.Add(DownloadAndParseRepositoryDetails(request.Branch, repository, request.Architecture));
+				}
 
-					if (package.StartsWith($"{request.Package}-", StringComparison.InvariantCultureIgnoreCase) && package.EndsWith(".apk", StringComparison.InvariantCultureIgnoreCase))
+				foreach (var repository in repositories)
+				{
+					foreach (var package in repository.Packages)
 					{
-						var version = package.TrimStart($"{request.Package}-", StringComparison.InvariantCultureIgnoreCase).TrimEnd(".apk", StringComparison.InvariantCultureIgnoreCase);
-
-						if ((version.First() >= '0') && (version.First() <= '9'))
-						{
-							response.Version = version;
-						}
+						PackageDetailsByBranchArchitecturePackage[getBranchArchitecturePackageKey(package.Branch, package.Architecture, package.Package)] = package;
 					}
 				}
+				
+				RepositoryDetailsByBranchArchitecture.Add(getBranchArchitectureKey(request.Branch, request.Architecture), repositories.ToArray());
+			}
+
+			if (PackageDetailsByBranchArchitecturePackage.TryGetValue(getBranchArchitecturePackageKey(request.Branch, request.Architecture, request.Package), out var packageDetails))
+			{
+				response.PackageDetails = packageDetails;
 			}
 
 			return response;

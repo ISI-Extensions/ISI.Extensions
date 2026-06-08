@@ -350,7 +350,7 @@ namespace ISI.Extensions.StatusTrackers
 
 			public void Dispose()
 			{
-				if (RunningFileStream != null)
+				if (!LeaveRunning && (RunningFileStream != null))
 				{
 					Finish(false);
 				}

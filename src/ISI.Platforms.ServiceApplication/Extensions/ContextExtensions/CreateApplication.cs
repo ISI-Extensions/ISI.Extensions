@@ -53,19 +53,7 @@ namespace ISI.Platforms.ServiceApplication.Extensions
 
 			context.HostBuilderConfigureServices?.Invoke(applicationBuilder);
 
-			applicationBuilder.Services
-				.AddOptions()
-				.AddSingleton<Microsoft.Extensions.Configuration.IConfiguration>(context.ConfigurationRoot)
-				.AddAllConfigurations(context.ConfigurationRoot)
-				.AddConfiguration<Microsoft.Extensions.Hosting.ConsoleLifetimeOptions>(context.ConfigurationRoot)
-				.AddConfiguration<Microsoft.Extensions.Hosting.HostOptions>(context.ConfigurationRoot)
-
-				.AddConfigurationRegistrations(context.ConfigurationRoot)
-				.ProcessServiceRegistrars(context.ConfigurationRoot)
-
-				.AddTransient<Microsoft.Extensions.Logging.ILogger>(serviceProvider => serviceProvider.GetService<Microsoft.Extensions.Logging.ILoggerFactory>().CreateLogger<ServiceApplicationContext>())
-				.AddFileProviders()
-				;
+			context.AddServices(applicationBuilder.Services);
 
 			if (configuration.UseMessageBus)
 			{

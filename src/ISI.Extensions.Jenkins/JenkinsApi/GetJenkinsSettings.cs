@@ -29,9 +29,9 @@ namespace ISI.Extensions.Jenkins
 		{
 			var response = new DTOs.GetJenkinsSettingsResponse();
 			
-			var nugetSettingsFullName = GetJenkinsSettingsFullName();
+			var jenkinsSettingsFullName = GetJenkinsSettingsFullName(request.JenkinsSettingsFullName);
 
-			response.JenkinsSettings = GetJenkinsSettings(nugetSettingsFullName);
+			response.JenkinsSettings = GetJenkinsSettings(jenkinsSettingsFullName);
 
 			return response;
 		}

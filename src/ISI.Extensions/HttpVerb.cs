@@ -23,12 +23,14 @@ namespace ISI.Extensions
 {
 	public enum HttpVerb
 	{
-		Delete,
+		[ISI.Extensions.Enum("Connect", "CONNECT")] Connect,
+		[ISI.Extensions.Enum("Delete", "DELETE")] Delete,
 		[ISI.Extensions.Enum("Get", "GET")] Get,
-		Head,
-		Options,
-		Patch,
+		[ISI.Extensions.Enum("Head", "HEAD")] Head,
+		[ISI.Extensions.Enum("Options", "OPTIONS")] Options,
+		[ISI.Extensions.Enum("Patch", "PATCH")] Patch,
 		[ISI.Extensions.Enum("Post", "POST")] Post,
-		Put,
+		[ISI.Extensions.Enum("Put", "Put")] Put,
+		[ISI.Extensions.Enum("Trace", "TRACE")] Trace,
 	}
 }

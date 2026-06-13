@@ -29,7 +29,7 @@ namespace ISI.Extensions.Jenkins
 		{
 			var response = new DTOs.SetJenkinsSettingsResponse();
 			
-			var jenkinsSettingsFullName = GetJenkinsSettingsFullName();
+			var jenkinsSettingsFullName = GetJenkinsSettingsFullName(request.JenkinsSettingsFullName);
 
 			if (!string.IsNullOrWhiteSpace(jenkinsSettingsFullName))
 			{

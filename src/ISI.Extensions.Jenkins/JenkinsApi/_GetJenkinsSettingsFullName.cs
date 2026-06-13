@@ -29,9 +29,12 @@ namespace ISI.Extensions.Jenkins
 {
 	public partial class JenkinsApi
 	{
-		private string GetJenkinsSettingsFullName()
+		private string GetJenkinsSettingsFullName(string jenkinsSettingsFullName)
 		{
-			var jenkinsSettingsFullName = Configuration.JenkinsSettingsFullName;
+			if(string.IsNullOrWhiteSpace(jenkinsSettingsFullName))
+			{
+				jenkinsSettingsFullName = Configuration.JenkinsSettingsFullName;
+			}
 
 			if (!string.IsNullOrWhiteSpace(jenkinsSettingsFullName) && jenkinsSettingsFullName.StartsWith(ISI.Extensions.ConfigurationValueReaders.FileNameDeMaskedConfigurationValueReader.PrefixWithColon, StringComparison.InvariantCultureIgnoreCase))
 			{

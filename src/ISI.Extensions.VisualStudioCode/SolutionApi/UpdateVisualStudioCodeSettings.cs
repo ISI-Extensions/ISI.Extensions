@@ -36,11 +36,11 @@ namespace ISI.Extensions.VisualStudioCode
 			{
 				using (new ISI.Extensions.Locks.FileLock(visualStudioCodeSettingsFullName))
 				{
-					var nugetSettings = GetVisualStudioCodeSettings(visualStudioCodeSettingsFullName);
+					var visualStudioCodeSettings = GetVisualStudioCodeSettings(visualStudioCodeSettingsFullName);
 
-					if (request.UpdateSettings(nugetSettings))
+					if (request.UpdateSettings(visualStudioCodeSettings))
 					{
-						SetVisualStudioCodeSettings(visualStudioCodeSettingsFullName, nugetSettings);
+						SetVisualStudioCodeSettings(visualStudioCodeSettingsFullName, visualStudioCodeSettings);
 					}
 				}
 			}

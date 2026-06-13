@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2026, Integrated Solutions, Inc.
 All rights reserved.
@@ -12,16 +12,25 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace ISI.Extensions.MessageBus.NamedPipes
+namespace ISI.Extensions
 {
-	public enum MessageDirection
+	public class HttpHeader
 	{
-		[ISI.Extensions.EnumGuid("0ff219de-99dc-4536-8cad-dac320c52c52")] Request,
-		[ISI.Extensions.EnumGuid("fe968529-9a35-4052-be90-53071589726a")] Response,
+		public const string OriginalHost = "X-Original-Host";
+
+		public const string ForwardedScheme = "X-Forwarded-Proto";
+		public const string ForwardedHost = "X-Forwarded-Host";
+		public const string ForwardedPort = "X-Forwarded-Port";
+		public const string ForwardedRequest = "X-Forwarded-Request";
+		public const string ForwardedHostIpAddress = "X-Forwarded-For";
+
+		public const string RequestedWith = "X-Requested-With";
 	}
 }

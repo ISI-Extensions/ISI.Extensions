@@ -26,6 +26,8 @@ namespace ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi
 
 	public class UpdateJenkinsSettingsRequest
 	{
+		public string JenkinsSettingsFullName { get; set; }
+		
 		public UpdateJenkinsSettingsDelegate UpdateSettings { get; set; }
 	}
 }

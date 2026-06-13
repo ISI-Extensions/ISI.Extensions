@@ -24,5 +24,6 @@ namespace ISI.Extensions.Jenkins.DataTransferObjects.JenkinsApi
 {
 	public class GetJenkinsSettingsRequest
 	{
+		public string JenkinsSettingsFullName { get; set; }
 	}
 }

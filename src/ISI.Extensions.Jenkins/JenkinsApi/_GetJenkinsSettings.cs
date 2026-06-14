@@ -51,7 +51,6 @@ namespace ISI.Extensions.Jenkins
 
 			jenkinsSettings ??= new();
 
-
 			return jenkinsSettings;
 		}
 	}

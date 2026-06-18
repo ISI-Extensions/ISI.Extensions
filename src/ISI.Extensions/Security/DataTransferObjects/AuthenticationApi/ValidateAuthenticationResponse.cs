@@ -23,8 +23,7 @@ namespace ISI.Extensions.Security.DataTransferObjects.AuthenticationApi
 {
 	public class ValidateAuthenticationResponse
 	{
-		public Guid UserAuthenticationUuid { get; set; }
-		public Guid UserUuid { get; set; }
-		public bool Success { get; set; }
+		public Guid? UserAuthenticationUuid { get; set; }
+		public Guid? UserUuid { get; set; }
 	}
 }

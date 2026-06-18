@@ -27,27 +27,27 @@ namespace ISI.Extensions.Security
 	{
 		Task<DTOs.ListUserAuthenticationTypesResponse> ListUserAuthenticationTypesAsync(DTOs.ListUserAuthenticationTypesRequest request, System.Threading.CancellationToken cancellationToken = default);
 		Task<DTOs.CreateUserAuthenticationResponse> CreateUserAuthenticationAsync(DTOs.CreateUserAuthenticationRequest request, System.Threading.CancellationToken cancellationToken = default);
-		Task<DTOs.SetUserAuthenticationResponse> SetUserAuthenticationAsync(DTOs.SetUserAuthenticationRequest request, System.Threading.CancellationToken cancellationToken = default);
+		//Task<DTOs.SetUserAuthenticationResponse> SetUserAuthenticationAsync(DTOs.SetUserAuthenticationRequest request, System.Threading.CancellationToken cancellationToken = default);
 		Task<DTOs.ReactivateUserAuthenticationResponse> ReactivateUserAuthenticationAsync(DTOs.ReactivateUserAuthenticationRequest request, System.Threading.CancellationToken cancellationToken = default);
-		Task<DTOs.AddUserAuthenticationResponse> AddUserAuthenticationAsync(DTOs.AddUserAuthenticationRequest request, System.Threading.CancellationToken cancellationToken = default);
+		//Task<DTOs.AddUserAuthenticationResponse> AddUserAuthenticationAsync(DTOs.AddUserAuthenticationRequest request, System.Threading.CancellationToken cancellationToken = default);
 		Task<DTOs.DeactivateUserAuthenticationResponse> DeactivateUserAuthenticationAsync(DTOs.DeactivateUserAuthenticationRequest request, System.Threading.CancellationToken cancellationToken = default);
-		Task<DTOs.FindUserAuthenticationsByUserUuidsResponse> FindUserAuthenticationsByUserUuidsAsync(DTOs.FindUserAuthenticationsByUserUuidsRequest request, System.Threading.CancellationToken cancellationToken = default);
-		Task<DTOs.FindUserAuthenticationsByUserAuthenticationUuidsResponse> FindUserAuthenticationsByUserAuthenticationUuidsAsync(DTOs.FindUserAuthenticationsByUserAuthenticationUuidsRequest request, System.Threading.CancellationToken cancellationToken = default);
+		//Task<DTOs.FindUserAuthenticationsByUserUuidsResponse> FindUserAuthenticationsByUserUuidsAsync(DTOs.FindUserAuthenticationsByUserUuidsRequest request, System.Threading.CancellationToken cancellationToken = default);
+		//Task<DTOs.FindUserAuthenticationsByUserAuthenticationUuidsResponse> FindUserAuthenticationsByUserAuthenticationUuidsAsync(DTOs.FindUserAuthenticationsByUserAuthenticationUuidsRequest request, System.Threading.CancellationToken cancellationToken = default);
 		Task<DTOs.FindUserAuthenticationsByUserAuthenticationRecoveryUuidsResponse> FindUserAuthenticationsByUserAuthenticationRecoveryUuidsAsync(DTOs.FindUserAuthenticationsByUserAuthenticationRecoveryUuidsRequest request, System.Threading.CancellationToken cancellationToken = default);
 		Task<DTOs.SetUserAuthenticationPasswordResponse> SetUserAuthenticationPasswordByUserAuthenticationRecoveryUuidAsync(DTOs.SetUserAuthenticationPasswordByUserAuthenticationRecoveryUuidRequest request, System.Threading.CancellationToken cancellationToken = default);
 		Task<DTOs.SetUserAuthenticationPasswordResponse> SetUserAuthenticationPasswordByUserAuthenticationUuidAsync(DTOs.SetUserAuthenticationPasswordByUserAuthenticationUuidRequest request, System.Threading.CancellationToken cancellationToken = default);
 		Task<DTOs.SetUserAuthenticationPasswordResponse> SetUserAuthenticationPasswordByUserAuthenticationTypeUuidUserUuidAsync(DTOs.SetUserAuthenticationPasswordByUserAuthenticationTypeUuidUserUuidRequest request, System.Threading.CancellationToken cancellationToken = default);
 		Task<DTOs.ForgotMyPasswordResponse> ForgotMyPasswordAsync(DTOs.ForgotMyPasswordRequest request, System.Threading.CancellationToken cancellationToken = default);
 		Task<DTOs.ValidateAuthenticationResponse> ValidateAuthenticationAsync(DTOs.ValidateAuthenticationRequest request, System.Threading.CancellationToken cancellationToken = default);
-		Task<DTOs.FindUserAuthenticationsByUserNamesResponse> FindUserAuthenticationsByUserNamesAsync(DTOs.FindUserAuthenticationsByUserNamesRequest request, System.Threading.CancellationToken cancellationToken = default);
+		//Task<DTOs.FindUserAuthenticationsByUserNamesResponse> FindUserAuthenticationsByUserNamesAsync(DTOs.FindUserAuthenticationsByUserNamesRequest request, System.Threading.CancellationToken cancellationToken = default);
 		Task<DTOs.CreateUserAuthenticationRecoveryResponse> CreateUserAuthenticationRecoveryAsync(DTOs.CreateUserAuthenticationRecoveryRequest request, System.Threading.CancellationToken cancellationToken = default);
+		Task<DTOs.FindUserAuthenticationsResponse> FindUserAuthenticationsAsync(DTOs.FindUserAuthenticationsRequest request, System.Threading.CancellationToken cancellationToken = default);
+		Task<DTOs.AuthenticateUserNamePasswordResponse> AuthenticateUserNamePasswordAsync(DTOs.AuthenticateUserNamePasswordRequest request, System.Threading.CancellationToken cancellationToken = default);
+		Task<DTOs.ValidateApiKeyResponse> ValidateApiKeyAsync(DTOs.ValidateApiKeyRequest request, System.Threading.CancellationToken cancellationToken = default);
 	}
 
 	public interface IAuthenticationApiWithUser : IAuthenticationApi
 	{
-		Task<DTOs.FindUserAuthenticationsResponse> FindUserAuthenticationsAsync(DTOs.FindUserAuthenticationsRequest request, System.Threading.CancellationToken cancellationToken = default);
-		Task<DTOs.AuthenticateUserNamePasswordResponse> AuthenticateUserNamePasswordAsync(DTOs.AuthenticateUserNamePasswordRequest request, System.Threading.CancellationToken cancellationToken = default);
-		Task<DTOs.ValidateApiKeyResponse> ValidateApiKeyAsync(DTOs.ValidateApiKeyRequest request, System.Threading.CancellationToken cancellationToken = default);
 		Task<DTOs.SetUsersResponse> SetUsersAsync(DTOs.SetUsersRequest request, System.Threading.CancellationToken cancellationToken = default);
 		Task<DTOs.CreateNewUserResponse> CreateNewUserAsync(DTOs.CreateNewUserRequest request, System.Threading.CancellationToken cancellationToken = default);
 		Task<DTOs.CreateUserFromActiveDirectoryResponse> CreateUserFromActiveDirectoryAsync(DTOs.CreateUserFromActiveDirectoryRequest request, System.Threading.CancellationToken cancellationToken = default);

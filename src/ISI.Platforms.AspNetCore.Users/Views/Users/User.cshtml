@@ -1,0 +1,224 @@
+@*
+Copyright (c) 2026, Integrated Solutions, Inc.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+		* Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+		* Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+		* Neither the name of the Integrated Solutions, Inc. nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*@
+ 
+
+@model ISI.Platforms.AspNetCore.Users.Models.Users.UserModel
+
+@{
+	Model.SetTitle("User");
+	Layout = ISI.Platforms.AspNetCore.Users.T4Files.Views.Users._Layout_cshtml;
+}
+
+@section StyleSheetIncludes {
+	@Html.AddStyleSheet(ISI.Platforms.AspNetCore.Users.T4Links.wwwroot.StyleSheets.Users.User_css)
+}
+
+@section JavaScriptIncludes {
+	@Html.AddJavaScript(ISI.Platforms.AspNetCore.Users.T4Links.wwwroot.JavaScripts.Users.User_js)
+}
+
+@section JavaScriptContent {
+}
+
+<div class="py-5 text-center">
+	<h2>Edit User</h2>
+</div>
+
+<div class="container">
+	<form method="post" class="needs-validation" novalidate asp-route="@ISI.Platforms.AspNetCore.Users.Routes.Users.RouteNames.User">
+		@Html.HiddenFor(model => model.EditedUser.UserUuid)
+		<div class="row">
+			<div class="col">
+				@Html.LabelFor(model => model.EditedUser.FirstName, "First Name:", new { @class = "form-label" })
+				@Html.TextBoxFor(model => model.EditedUser.FirstName, new { @class = "form-control", disabled = "disabled" })
+			</div>
+
+			<div class="w-100"><br /></div>
+
+			<div class="col">
+				@Html.LabelFor(model => model.EditedUser.LastName, "Last Name:", new { @class = "form-label" })
+				@Html.TextBoxFor(model => model.EditedUser.LastName, new { @class = "form-control", disabled = "disabled" })
+			</div>
+
+			<div class="w-100"><br /></div>
+
+			<div class="col">
+				@Html.LabelFor(model => model.EditedUser.EmailAddress, "Email Address:", new { @class="form-label"})
+				@Html.TextBoxFor(model => model.EditedUser.EmailAddress, new { @class = "form-control", disabled = "disabled" })
+			</div>
+
+			<div class="w-100"><br /></div>
+
+			<div class="col">
+				@Html.CheckBoxFor(model => model.EditedUser.IsActive)
+				&nbsp;
+				@Html.LabelFor(model => model.EditedUser.IsActive, "Is Active", new { @class = "form-label" })
+			</div>
+
+			<div class="w-100"><br /></div>
+		</div>
+
+		<h4 class="mb-3">Roles</h4>
+
+		<div class="row">
+			@for (var roleIndex = 0; roleIndex < Model.EditedUser.Roles.Length; roleIndex++)
+			{
+				@Html.HiddenFor(model => model.EditedUser.Roles[roleIndex].Role)
+
+				<div class="col">
+					@Html.CheckBoxFor(model => model.EditedUser.Roles[roleIndex].HasRole)
+					&nbsp;
+					@Html.LabelFor(model => model.EditedUser.Roles[roleIndex].HasRole, Model.UserRoleLookup[Model.EditedUser.Roles[roleIndex].Role], new { @class = "form-label" })
+				</div>
+
+				<div class="col">
+					@if (Model.EditedUser.Roles[roleIndex].InheritedRole)
+					{
+						<text>
+							Inherited
+						</text>
+					}
+				</div>
+
+				<div class="w-100"><br /></div>
+			}
+
+			<button class="btn btn-primary" type="submit">Save</button>
+		</div>
+	</form>
+
+  <hr class="w-100" />
+
+  <h4 class="mb-3">ApiKeys</h4>
+
+  <div class="row">
+    @foreach (var apiKey in Model.ApiKeys)
+    {
+      <div class="col">
+        @if (apiKey.IsActive)
+        {
+          <form method="post" asp-route="@ISI.Platforms.AspNetCore.Users.Routes.Users.RouteNames.DeactivateApiKey" asp-all-route-data="@(new Dictionary<string, string>
+                                                                                                                          {
+                                                                                                                            { "apiKeyUuid", apiKey.ApiKeyUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens) }
+                                                                                                                          })">
+            <button type="submit" class="btn btn-primary">Deactivate</button>
+          </form>
+        }
+        else
+        {
+          <form method="post" asp-route="@ISI.Platforms.AspNetCore.Users.Routes.Users.RouteNames.ReactivateApiKey" asp-all-route-data="@(new Dictionary<string, string>
+                                                                                                                          {
+                                                                                                                            { "apiKeyUuid", apiKey.ApiKeyUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens) }
+                                                                                                                          })">
+            <button type="submit" class="btn btn-primary">Reactivate</button>
+          </form>
+        }
+      </div>
+
+      <div class="col">
+        @if (apiKey.IsActive)
+        {
+          <form method="get" asp-route="@ISI.Platforms.AspNetCore.Users.Routes.Users.RouteNames.RegenerateApiKeyWithApiKeyUuid" asp-all-route-data="@(new Dictionary<string, string>
+                                                                                                                          {
+                                                                                                                            { "apiKeyUuid", apiKey.ApiKeyUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens) }
+                                                                                                                          })">
+            <button type="submit" class="btn btn-primary">Regenerate</button>
+          </form>
+        }
+      </div>
+
+      <div class="col">@apiKey.Description</div>
+
+      <div class="w-100"><br /></div>
+    }
+
+    <form method="get" asp-route="@ISI.Platforms.AspNetCore.Users.Routes.Users.RouteNames.AddApiKeyWithUserUuid" asp-all-route-data="@(new Dictionary<string, string>
+                                                                                                                        {
+                                                                                                                          { "userUuid", Model.EditedUser.UserUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens) }
+                                                                                                                        })">
+      <div class="col">
+        <button type="submit" class="btn btn-primary">Add ApiKey</button>
+      </div>
+    </form>
+  </div>
+
+  <hr class="w-100" />
+
+  <h4 class="mb-3">User Authentications</h4>
+
+	<div class="row">
+		@foreach (var userAuthentication in Model.UserAuthentications)
+		{
+			if (!userAuthentication.UserAuthenticationTypeUuid.HasValue || !Model.UserAuthenticationTypeLookup.TryGetValue(userAuthentication.UserAuthenticationTypeUuid.Value, out var userAuthenticationDescription))
+			{
+				userAuthenticationDescription = "<unknown>";
+			}
+			<div class="col">
+				@if (userAuthentication.IsActive)
+				{
+					<form method="post" asp-route="@ISI.Platforms.AspNetCore.Users.Routes.Users.RouteNames.DeactivateUserAuthentication" asp-all-route-data="@(new Dictionary<string, string>
+							                                                                                                           {
+								                                                                                                           { "userUuid", Model.EditedUser.UserUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens) },
+								                                                                                                           { "userAuthenticationKey", userAuthentication.UserAuthenticationKey }
+							                                                                                                           })">
+						<button type="submit" class="btn btn-primary">Deactivate</button>
+					</form>
+				}
+				else
+				{
+					<form method="post" asp-route="@ISI.Platforms.AspNetCore.Users.Routes.Users.RouteNames.ReactivateUserAuthentication" asp-all-route-data="@(new Dictionary<string, string>
+							                                                                                                           {
+								                                                                                                           { "userUuid", Model.EditedUser.UserUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens) },
+								                                                                                                           { "userAuthenticationKey", userAuthentication.UserAuthenticationKey }
+							                                                                                                           })">
+						<button type="submit" class="btn btn-primary">Reactivate</button>
+					</form>
+				}
+			</div>
+			<div class="col">@userAuthentication.UserAuthenticationKey</div>
+			<div class="col">@userAuthenticationDescription</div>
+
+			<div class="w-100"><br /></div>
+		}
+
+		<div class="col">
+			<form method="get" asp-route="@ISI.Platforms.AspNetCore.Users.Routes.Users.RouteNames.AddActiveDirectoryUserAuthenticationWithUserUuid" asp-all-route-data="@(new Dictionary<string, string>
+					                                                                                                          {
+						                                                                                                          { "userUuid", Model.EditedUser.UserUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens) }
+					                                                                                                          })">
+				<button type="submit" class="btn btn-primary">Add Active Directory User Authentication</button>
+			</form>
+		</div>
+
+		<div class="w-100"><br /></div>
+
+		<div class="col">
+			<form method="get" asp-route="@ISI.Platforms.AspNetCore.Users.Routes.Users.RouteNames.AddUserNamePasswordUserAuthenticationWithUserUuid" asp-all-route-data="@(new Dictionary<string, string>
+					                                                                                                          {
+						                                                                                                          { "userUuid", Model.EditedUser.UserUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens) }
+					                                                                                                          })">
+				<button type="submit" class="btn btn-primary">Add UserName Password User Authentication</button>
+			</form>
+		</div>
+	</div>
+
+	<hr class="w-100" />
+
+	<div class="row">
+		<form method="get" asp-route="@ISI.Platforms.AspNetCore.Users.Routes.Users.RouteNames.Index">
+			<div class="col">
+				<button type="submit" class="btn btn-primary">Cancel</button>
+			</div>
+		</form>
+	</div>
+</div>

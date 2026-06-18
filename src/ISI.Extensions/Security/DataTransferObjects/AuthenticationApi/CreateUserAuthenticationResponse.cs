@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2026, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,15 +15,17 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Security
+namespace ISI.Extensions.Security.DataTransferObjects.AuthenticationApi
 {
-	public interface IApiKey
+	public class CreateUserAuthenticationResponse
 	{
-		Guid ApiKeyUuid { get; set; }
-		Guid SaltedHashGeneratorTypeUuid { get; set; }
-		string ApiKeySalt { get; set; }
-		string HashedApiKey { get; set; }
+		public bool UserAuthenticationKeyInUse { get; set; }
+		public bool UserAuthenticationKeyNotFound { get; set; }
+		public Guid? UserUuid { get; set; }
 	}
 }

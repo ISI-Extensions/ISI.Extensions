@@ -1,0 +1,67 @@
+@*
+Copyright (c) 2026, Integrated Solutions, Inc.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+		* Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+		* Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+		* Neither the name of the Integrated Solutions, Inc. nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*@
+ 
+
+@using ISI.Extensions.AspNetCore.Extensions
+@model ISI.Platforms.AspNetCore.Users.Models.Users.AddActiveDirectoryUserAuthenticationModel
+
+@{
+	Model.SetTitle("Add Active Directory User Authentication");
+	Layout = ISI.Platforms.AspNetCore.Users.T4Files.Views.Users._Layout_cshtml;
+}
+
+@section StyleSheetIncludes {
+	@Html.AddStyleSheet(ISI.Platforms.AspNetCore.Users.T4Links.wwwroot.StyleSheets.Users.AddActiveDirectoryUserAuthentication_css)
+}
+
+@section JavaScriptIncludes {
+	@Html.AddJavaScript(ISI.Platforms.AspNetCore.Users.T4Links.wwwroot.JavaScripts.Users.AddActiveDirectoryUserAuthentication_js)
+}
+
+@section JavaScriptContent {
+}
+
+<div class="py-5 text-center">
+	<h2>Add Active Directory User Authentication</h2>
+</div>
+
+<div class="container">
+	<form method="post" class="needs-validation" novalidate asp-route="@ISI.Platforms.AspNetCore.Users.Routes.Users.RouteNames.AddActiveDirectoryUserAuthentication">
+		@Html.HiddenFor(model => model.EditedActiveDirectoryUserAuthentication.UserUuid)
+		<div class="row">
+			<div class="col">
+				@Html.LabelFor(model => model.EditedActiveDirectoryUserAuthentication.UserAuthenticationKey, "User Name:", new { @class = "form-label" })
+				@Html.TextBoxFor(model => model.EditedActiveDirectoryUserAuthentication.UserAuthenticationKey, new { @class = "form-control" })
+			</div>
+
+			<div class="w-100"><br /></div>
+
+			<div class="col">
+				<button class="btn btn-primary" type="submit">Save</button>
+			</div>
+		</div>
+	</form>
+
+	<hr class="w-100"/>
+
+	<div class="row">
+		<form method="get" asp-route="@ISI.Platforms.AspNetCore.Users.Routes.Users.RouteNames.UserWithUserUuid" asp-all-route-data="@(new Dictionary<string, string>
+		                                                                                             {
+			                                                                                             { "userUuid", Model.EditedActiveDirectoryUserAuthentication.UserUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens) }
+		                                                                                             })">
+			<div class="col">
+				<button type="submit" class="btn btn-primary">Cancel</button>
+			</div>
+		</form>
+	</div>
+</div>

@@ -23,6 +23,11 @@ namespace ISI.Extensions.AspNetCore
 	{
 		Microsoft.AspNetCore.Html.IHtmlContent Title { get; set; }
 	}
+	
+	public interface IHasSiteLayout_cshtmlModel
+	{
+		string SiteLayout_cshtml { get; set; }
+	}
 }
 
 namespace ISI.Extensions.AspNetCore.Extensions
@@ -81,6 +86,15 @@ namespace ISI.Extensions.AspNetCore.Extensions
 			else
 			{
 				htmlHelper.ViewBag.Title = new Microsoft.AspNetCore.Html.HtmlString(title);
+			}
+		}
+
+
+		public static void SetSiteLayout_cshtml(this ISI.Extensions.AspNetCore.IHasSiteLayout_cshtmlModel model, string siteLayout_cshtml)
+		{
+			if (model != null)
+			{
+				model.SiteLayout_cshtml = siteLayout_cshtml;
 			}
 		}
 	}

@@ -33,6 +33,11 @@ namespace ISI.Extensions.Security
 		DateTime ModifyDateTimeUtc { get; set; }
 	}
 
+	public interface IUserAuthenticationHasUserAuthenticationType : IUserAuthentication
+	{
+		Guid? UserAuthenticationTypeUuid { get; set; }
+	}
+
 	public interface IUserAuthenticationHasUserAuthenticationRecovery : IUserAuthentication
 	{
 		Guid? UserAuthenticationRecoveryUuid { get; set; }

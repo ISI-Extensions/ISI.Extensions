@@ -16,6 +16,7 @@
 		<None Include="..\ISI.Extensions.licenseheader" Link="ISI.Extensions.licenseheader" />
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\ISI.Extensions.Security\ISI.Extensions.Security.csproj" />
 		<ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />
 	</ItemGroup>
 </Project>

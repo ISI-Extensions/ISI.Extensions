@@ -24,11 +24,12 @@ namespace ISI.Extensions.Security
 {
 	public interface IAuthorizationApi
 	{
-		DTOs.SetUserApplicationRolesResponse SetUserApplicationRoles(DTOs.SetUserApplicationRolesRequest request);
-		DTOs.SetUserApplicationRoleResponse SetUserApplicationRole(DTOs.SetUserApplicationRoleRequest request);
-		DTOs.FindUserUuidsByApplicationRolesResponse FindUserUuidsByApplicationRoles(DTOs.FindUserUuidsByApplicationRolesRequest request);
-		DTOs.GetUserApplicationRolesResponse GetUserApplicationRoles(DTOs.GetUserApplicationRolesRequest request);
-		DTOs.FindUserApplicationRolesByUserAuthenticationUuidsResponse FindUserApplicationRolesByUserAuthenticationUuids(DTOs.FindUserApplicationRolesByUserAuthenticationUuidsRequest request);
-		DTOs.GetApplicationRolesResponse GetApplicationRoles(DTOs.GetApplicationRolesRequest request);
+		Task<DTOs.ListRolesResponse> ListRolesAsync(DTOs.ListRolesRequest request, System.Threading.CancellationToken cancellationToken = default);
+		Task<DTOs.SetUserApplicationRolesResponse> SetUserApplicationRolesAsync(DTOs.SetUserApplicationRolesRequest request, System.Threading.CancellationToken cancellationToken = default);
+		Task<DTOs.SetUserApplicationRoleResponse> SetUserApplicationRoleAsync(DTOs.SetUserApplicationRoleRequest request, System.Threading.CancellationToken cancellationToken = default);
+		Task<DTOs.FindUserUuidsByApplicationRolesResponse> FindUserUuidsByApplicationRolesAsync(DTOs.FindUserUuidsByApplicationRolesRequest request, System.Threading.CancellationToken cancellationToken = default);
+		Task<DTOs.GetUserApplicationRolesResponse> GetUserApplicationRolesAsync(DTOs.GetUserApplicationRolesRequest request, System.Threading.CancellationToken cancellationToken = default);
+		Task<DTOs.FindUserApplicationRolesByUserAuthenticationUuidsResponse> FindUserApplicationRolesByUserAuthenticationUuidsAsync(DTOs.FindUserApplicationRolesByUserAuthenticationUuidsRequest request, System.Threading.CancellationToken cancellationToken = default);
+		Task<DTOs.GetApplicationRolesResponse> GetApplicationRolesAsync(DTOs.GetApplicationRolesRequest request, System.Threading.CancellationToken cancellationToken = default);
 	}
 }

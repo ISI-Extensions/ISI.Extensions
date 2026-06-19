@@ -34,6 +34,15 @@ namespace ISI.Platforms.AspNetCore.Users.Models
 		protected static bool _useApiKeys { get; set; }
 		public bool UseApiKeys { get => _useApiKeys; set => _useApiKeys = value; }
 
+		protected static bool _firstNameIsEditable { get; set; }
+		public bool FirstNameIsEditable { get => _firstNameIsEditable; set => _firstNameIsEditable = value; }
+
+		protected static bool _lastNameIsEditable { get; set; }
+		public bool LastNameIsEditable { get => _lastNameIsEditable; set => _lastNameIsEditable = value; }
+
+		protected static bool _emailAddressIsEditable { get; set; }
+		public bool EmailAddressIsEditable { get => _emailAddressIsEditable; set => _emailAddressIsEditable = value; }
+
 		public TimeSpan BaseUtcOffset { get; set; }
 	}
 	
@@ -42,5 +51,9 @@ namespace ISI.Platforms.AspNetCore.Users.Models
 		public static string SiteLayout_cshtml { get => _siteLayout_cshtml; set => _siteLayout_cshtml = value; }
 		
 		public static bool UseApiKeys { get => _useApiKeys; set => _useApiKeys = value; }
+		
+		public static bool FirstNameIsEditable { get => _firstNameIsEditable; set => _firstNameIsEditable = value; }
+		public static bool LastNameIsEditable { get => _lastNameIsEditable; set => _lastNameIsEditable = value; }
+		public static bool EmailAddressIsEditable { get => _emailAddressIsEditable; set => _emailAddressIsEditable = value; }
 	}
 }

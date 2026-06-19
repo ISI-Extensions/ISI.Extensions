@@ -103,9 +103,24 @@ namespace ISI.Extensions.AspNetCore.Extensions
 
 			if (!string.IsNullOrWhiteSpace(key))
 			{
-				if (modelState.ContainsKey(key))
+				modelState.Remove(key);
+			}
+		}
+
+		public static void ClearError<TModel, TValue>(this Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState, TModel model, System.Linq.Expressions.Expression<Func<TModel, TValue>> expression)
+		{
+			if (expression == null)
+			{
+				throw new ArgumentNullException(nameof(expression));
+			}
+
+			var key = ModelExpressionProvider.GetExpressionText(expression);
+
+			if (!string.IsNullOrWhiteSpace(key))
+			{
+				if (modelState.TryGetValue(key, out var modelStateEntry))
 				{
-					modelState.Remove(key);
+					modelStateEntry.Errors.Clear();
 				}
 			}
 		}

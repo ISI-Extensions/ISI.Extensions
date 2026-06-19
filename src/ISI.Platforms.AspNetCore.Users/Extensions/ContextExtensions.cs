@@ -36,6 +36,10 @@ namespace ISI.Platforms.AspNetCore.Users.Extensions
 			public Type AuthorizationApiType { get; set; }
 
 			public bool UseApiKeys { get; set; } = true;
+
+			public bool FirstNameIsEditable { get; set; } = true;
+			public bool LastNameIsEditable { get; set; } = true;
+			public bool EmailAddressIsEditable { get; set; } = true;
 		}
 		
 		public static IServiceApplicationContextAddActions AddUsers(this IServiceApplicationContextAddActions context, AddUsersRequest request)
@@ -43,7 +47,12 @@ namespace ISI.Platforms.AspNetCore.Users.Extensions
 			if(!string.IsNullOrWhiteSpace(request.SiteLayout_cshtml))
 			{
 				ISI.Platforms.AspNetCore.Users.Models.SiteModel.SiteLayout_cshtml = request.SiteLayout_cshtml;
+				
 				ISI.Platforms.AspNetCore.Users.Models.SiteModel.UseApiKeys = request.UseApiKeys;
+
+				ISI.Platforms.AspNetCore.Users.Models.SiteModel.FirstNameIsEditable = request.FirstNameIsEditable;
+				ISI.Platforms.AspNetCore.Users.Models.SiteModel.LastNameIsEditable = request.LastNameIsEditable;
+				ISI.Platforms.AspNetCore.Users.Models.SiteModel.EmailAddressIsEditable = request.EmailAddressIsEditable;
 			}
 
 			if (!string.IsNullOrWhiteSpace(request.Policy))
@@ -95,7 +104,6 @@ namespace ISI.Platforms.AspNetCore.Users.Extensions
 						;
 				});
 			}
-
 
 			return context;
 		}

@@ -40,6 +40,5 @@ namespace ISI.Platforms.AspNetCore.Users.Models.Users.EditModels
 	{
 		public string Role { get; set; }
 		public bool HasRole { get; set; }
-		public bool InheritedRole { get; set; }
 	}
 }

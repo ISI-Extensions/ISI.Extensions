@@ -40,21 +40,42 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		<div class="row">
 			<div class="col">
 				@Html.LabelFor(model => model.EditedUser.FirstName, "First Name:", new { @class = "form-label" })
-				@Html.TextBoxFor(model => model.EditedUser.FirstName, new { @class = "form-control", disabled = "disabled" })
+        @if (Model.FirstNameIsEditable)
+				{
+					@Html.TextBoxFor(model => model.EditedUser.FirstName, new { @class = "form-control" })
+				}
+        else
+				{
+					@Html.TextBoxFor(model => model.EditedUser.FirstName, new { @class = "form-control", disabled = "disabled" })
+				}
 			</div>
 
 			<div class="w-100"><br /></div>
 
 			<div class="col">
 				@Html.LabelFor(model => model.EditedUser.LastName, "Last Name:", new { @class = "form-label" })
-				@Html.TextBoxFor(model => model.EditedUser.LastName, new { @class = "form-control", disabled = "disabled" })
+				@if (Model.LastNameIsEditable)
+				{
+					@Html.TextBoxFor(model => model.EditedUser.LastName, new { @class = "form-control" })
+				}
+				else
+				{
+					@Html.TextBoxFor(model => model.EditedUser.LastName, new { @class = "form-control", disabled = "disabled" })
+				}
 			</div>
 
 			<div class="w-100"><br /></div>
 
 			<div class="col">
 				@Html.LabelFor(model => model.EditedUser.EmailAddress, "Email Address:", new { @class="form-label"})
-				@Html.TextBoxFor(model => model.EditedUser.EmailAddress, new { @class = "form-control", disabled = "disabled" })
+				@if (Model.EmailAddressIsEditable)
+				{
+					@Html.TextBoxFor(model => model.EditedUser.EmailAddress, new { @class = "form-control" })
+				}
+				else
+				{
+					@Html.TextBoxFor(model => model.EditedUser.EmailAddress, new { @class = "form-control", disabled = "disabled" })
+				}
 			</div>
 
 			<div class="w-100"><br /></div>
@@ -81,15 +102,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 					@Html.LabelFor(model => model.EditedUser.Roles[roleIndex].HasRole, Model.UserRoleLookup[Model.EditedUser.Roles[roleIndex].Role], new { @class = "form-label" })
 				</div>
 
-				<div class="col">
-					@if (Model.EditedUser.Roles[roleIndex].InheritedRole)
-					{
-						<text>
-							Inherited
-						</text>
-					}
-				</div>
-
 				<div class="w-100"><br /></div>
 			}
 
@@ -104,7 +116,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 		<h4 class="mb-3">ApiKeys</h4>
 
 		<div class="row">
-			@foreach (var apiKey in Model.ApiKeys ?? [])
+			@foreach (var apiKey in Model.ApiKeys.ToNullCheckedArray(NullCheckCollectionResult.Empty))
 			{
 				<div class="col">
 					@if (apiKey.IsActive)
@@ -159,7 +171,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
   <h4 class="mb-3">User Authentications</h4>
 
 	<div class="row">
-		@foreach (var userAuthentication in Model.UserAuthentications)
+		@foreach (var userAuthentication in Model.UserAuthentications.ToNullCheckedArray(NullCheckCollectionResult.Empty))
 		{
 			if (!userAuthentication.UserAuthenticationTypeUuid.HasValue || !Model.UserAuthenticationTypeLookup.TryGetValue(userAuthentication.UserAuthenticationTypeUuid.Value, out var userAuthenticationDescription))
 			{

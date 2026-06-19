@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.AspNetCore.Extensions;
 using ISI.Extensions.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +27,17 @@ namespace ISI.Platforms.AspNetCore.Users.Controllers
 {
 	public partial class UsersController
 	{
+		private async Task BuildUserModelAsync(Models.Users.UserModel viewModel, ISI.Extensions.Security.IUser user, System.Threading.CancellationToken cancellationToken = default)
+		{
+			var listRolesResponse = await AuthorizationApi.ListRolesAsync(  new(), cancellationToken);
+
+			viewModel.UserRoleLookup = listRolesResponse.Roles.ToNullCheckedDictionary(role => role.Role, role => role.Description, NullCheckDictionaryResult.Empty);
+
+			viewModel.UserAuthenticationTypeLookup = (await AuthenticationApi.ListUserAuthenticationTypesAsync(new(), cancellationToken)).UserAuthenticationTypes.ToNullCheckedDictionary(userAuthenticationType => userAuthenticationType.UserAuthenticationTypeUuid, userAuthenticationType => userAuthenticationType.Description, NullCheckDictionaryResult.Empty);
+
+			viewModel.UserAuthentications = (await AuthenticationApi.FindUserAuthenticationsAsync(new() { UserUuids = [user.UserUuid] }, cancellationToken)).UserAuthentications.ToNullCheckedArray(NullCheckCollectionResult.Empty);
+		}
+
 		[Microsoft.AspNetCore.Mvc.AcceptVerbs(nameof(Microsoft.AspNetCore.Http.HttpMethods.Get))]
 		[UsersAuthorize]
 		[ISI.Extensions.AspNetCore.NamedRoute(Routes.Users.RouteNames.UserWithUserUuid, typeof(Routes.Users), "user/{userUuid}")]
@@ -48,8 +60,8 @@ namespace ISI.Platforms.AspNetCore.Users.Controllers
 				return NotFound();
 			}
 
-			var listRolesResponse = await AuthorizationApi.ListRolesAsync(new(), cancellationToken);
-
+			await BuildUserModelAsync(viewModel, user, cancellationToken);
+			
 			if (viewModel.UseApiKeys)
 			{
 				var findApiKeysResponse = await AuthenticationApi.FindApiKeysByUserUuidAsync(new()
@@ -66,18 +78,13 @@ namespace ISI.Platforms.AspNetCore.Users.Controllers
 				FirstName = user?.FirstName,
 				LastName = user?.LastName,
 				EmailAddress = user?.EmailAddress,
-				Roles = listRolesResponse.Roles.ToNullCheckedArray(userRole => new Models.Users.EditModels.UserRoleEditModel()
+				Roles = viewModel.UserRoleLookup.Keys.ToNullCheckedArray(role => new Models.Users.EditModels.UserRoleEditModel()
 				{
-					Role = userRole.Role,
-					HasRole = user.Roles.Contains(userRole.Role),
-					InheritedRole = user?.Roles?.Contains(userRole.Role) ?? false,
+					Role = role,
+					HasRole = user.Roles.Contains(role),
 				}),
 				IsActive = user.IsActive,
 			};
-
-			viewModel.UserAuthenticationTypeLookup = (await AuthenticationApi.ListUserAuthenticationTypesAsync(new(), cancellationToken)).UserAuthenticationTypes.ToNullCheckedDictionary(userAuthenticationType => userAuthenticationType.UserAuthenticationTypeUuid, userAuthenticationType => userAuthenticationType.Description, NullCheckDictionaryResult.Empty);
-
-			viewModel.UserAuthentications = (await AuthenticationApi.FindUserAuthenticationsAsync(new() { UserUuids = [user.UserUuid] }, cancellationToken)).UserAuthentications.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 			return result ?? View(T4Files.Views.Users.User_cshtml, viewModel);
 		}
@@ -107,25 +114,63 @@ namespace ISI.Platforms.AspNetCore.Users.Controllers
 				return NotFound();
 			}
 
-			user.Roles = editedUser.Roles.NullCheckedWhere(role => role.HasRole, NullCheckCollectionResult.Empty).ToNullCheckedArray(role => role.Role);
-
-			user.IsActive = editedUser.IsActive;
-
-			var setUsersResponse = await AuthenticationApi.SetUsersAsync(new()
+			if (!viewModel.FirstNameIsEditable)
 			{
-				Users = [user],
-				RequestedByUserKey = GetUserUuid().GetValueOrDefault().Formatted(GuidExtensions.GuidFormat.WithHyphens),
-			}, cancellationToken);
-
-
-			user = setUsersResponse.Users.NullCheckedFirstOrDefault();
-
-			if (user?.UserUuid != Guid.Empty)
-			{
-				result = RedirectToRoute(Routes.Users.RouteNames.Index);
+				ModelState.ClearError(viewModel, model => model.EditedUser.FirstName);
 			}
 
-			return result ?? await UserAsync(editedUser.UserUuid, cancellationToken);
+			if (!viewModel.LastNameIsEditable)
+			{
+				ModelState.ClearError(viewModel, model => model.EditedUser.LastName);
+			}
+
+			if (!viewModel.EmailAddressIsEditable)
+			{
+				ModelState.ClearError(viewModel, model => model.EditedUser.EmailAddress);
+			}
+
+			if (ModelState.IsValid)
+			{
+				if(viewModel.FirstNameIsEditable)
+				{
+					user.FirstName = editedUser.FirstName;
+				}
+
+				if (viewModel.LastNameIsEditable)
+				{
+					user.LastName = editedUser.LastName;
+				}
+
+				if (viewModel.EmailAddressIsEditable)
+				{
+					user.EmailAddress = editedUser.EmailAddress;
+				}
+
+				user.Roles = editedUser.Roles.NullCheckedWhere(role => role.HasRole, NullCheckCollectionResult.Empty).ToNullCheckedArray(role => role.Role);
+				user.IsActive = editedUser.IsActive;
+
+				var setUsersResponse = await AuthenticationApi.SetUsersAsync(new()
+				{
+					Users = [user],
+					RequestedByUserKey = GetUserUuid().GetValueOrDefault().Formatted(GuidExtensions.GuidFormat.WithHyphens),
+				}, cancellationToken);
+
+				user = setUsersResponse.Users.NullCheckedFirstOrDefault();
+
+				if (user?.UserUuid != Guid.Empty)
+				{
+					result = RedirectToRoute(Routes.Users.RouteNames.Index);
+				}
+			}
+
+			if (result == null)
+			{
+				await BuildUserModelAsync(viewModel, user, cancellationToken);
+
+				result = View(T4Files.Views.Users.User_cshtml, viewModel);
+			}
+
+			return result;
 		}
 	}
 }

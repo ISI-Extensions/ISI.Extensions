@@ -50,10 +50,15 @@ namespace ISI.Platforms.AspNetCore.Users.Controllers
 
 			var listRolesResponse = await AuthorizationApi.ListRolesAsync(new(), cancellationToken);
 
-			var findApiKeysResponse = await AuthenticationApi.FindApiKeysByUserUuidAsync(new()
+			if (viewModel.UseApiKeys)
 			{
-				UserUuids = [userUuid],
-			}, cancellationToken);
+				var findApiKeysResponse = await AuthenticationApi.FindApiKeysByUserUuidAsync(new()
+				{
+					UserUuids = [userUuid],
+				}, cancellationToken);
+
+				viewModel.ApiKeys = findApiKeysResponse.ApiKeys.ToNullCheckedArray(NullCheckCollectionResult.Empty);
+			}
 
 			viewModel.EditedUser = new Models.Users.EditModels.UserEditModel()
 			{
@@ -73,8 +78,6 @@ namespace ISI.Platforms.AspNetCore.Users.Controllers
 			viewModel.UserAuthenticationTypeLookup = (await AuthenticationApi.ListUserAuthenticationTypesAsync(new(), cancellationToken)).UserAuthenticationTypes.ToNullCheckedDictionary(userAuthenticationType => userAuthenticationType.UserAuthenticationTypeUuid, userAuthenticationType => userAuthenticationType.Description, NullCheckDictionaryResult.Empty);
 
 			viewModel.UserAuthentications = (await AuthenticationApi.FindUserAuthenticationsAsync(new() { UserUuids = [user.UserUuid] }, cancellationToken)).UserAuthentications.ToNullCheckedArray(NullCheckCollectionResult.Empty);
-
-			viewModel.ApiKeys = findApiKeysResponse.ApiKeys.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 			return result ?? View(T4Files.Views.Users.User_cshtml, viewModel);
 		}

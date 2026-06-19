@@ -96,63 +96,65 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 			<button class="btn btn-primary" type="submit">Save</button>
 		</div>
 	</form>
+	
+  @if (Model.UseApiKeys)
+	{
+		<hr class="w-100"/>
 
-  <hr class="w-100" />
+		<h4 class="mb-3">ApiKeys</h4>
 
-  <h4 class="mb-3">ApiKeys</h4>
+		<div class="row">
+			@foreach (var apiKey in Model.ApiKeys ?? [])
+			{
+				<div class="col">
+					@if (apiKey.IsActive)
+					{
+						<form method="post" asp-route="@ISI.Platforms.AspNetCore.Users.Routes.Users.RouteNames.DeactivateApiKey" asp-all-route-data="@(new Dictionary<string, string>
+						                                                                                                                             {
+							                                                                                                                             { "apiKeyUuid", apiKey.ApiKeyUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens) }
+						                                                                                                                             })">
+							<button type="submit" class="btn btn-primary">Deactivate</button>
+						</form>
+					}
+					else
+					{
+						<form method="post" asp-route="@ISI.Platforms.AspNetCore.Users.Routes.Users.RouteNames.ReactivateApiKey" asp-all-route-data="@(new Dictionary<string, string>
+						                                                                                                                             {
+							                                                                                                                             { "apiKeyUuid", apiKey.ApiKeyUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens) }
+						                                                                                                                             })">
+							<button type="submit" class="btn btn-primary">Reactivate</button>
+						</form>
+					}
+				</div>
 
-  <div class="row">
-    @foreach (var apiKey in Model.ApiKeys)
-    {
-      <div class="col">
-        @if (apiKey.IsActive)
-        {
-          <form method="post" asp-route="@ISI.Platforms.AspNetCore.Users.Routes.Users.RouteNames.DeactivateApiKey" asp-all-route-data="@(new Dictionary<string, string>
-                                                                                                                          {
-                                                                                                                            { "apiKeyUuid", apiKey.ApiKeyUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens) }
-                                                                                                                          })">
-            <button type="submit" class="btn btn-primary">Deactivate</button>
-          </form>
-        }
-        else
-        {
-          <form method="post" asp-route="@ISI.Platforms.AspNetCore.Users.Routes.Users.RouteNames.ReactivateApiKey" asp-all-route-data="@(new Dictionary<string, string>
-                                                                                                                          {
-                                                                                                                            { "apiKeyUuid", apiKey.ApiKeyUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens) }
-                                                                                                                          })">
-            <button type="submit" class="btn btn-primary">Reactivate</button>
-          </form>
-        }
-      </div>
+				<div class="col">
+					@if (apiKey.IsActive)
+					{
+						<form method="get" asp-route="@ISI.Platforms.AspNetCore.Users.Routes.Users.RouteNames.RegenerateApiKeyWithApiKeyUuid" asp-all-route-data="@(new Dictionary<string, string>
+						                                                                                                                                          {
+							                                                                                                                                          { "apiKeyUuid", apiKey.ApiKeyUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens) }
+						                                                                                                                                          })">
+							<button type="submit" class="btn btn-primary">Regenerate</button>
+						</form>
+					}
+				</div>
 
-      <div class="col">
-        @if (apiKey.IsActive)
-        {
-          <form method="get" asp-route="@ISI.Platforms.AspNetCore.Users.Routes.Users.RouteNames.RegenerateApiKeyWithApiKeyUuid" asp-all-route-data="@(new Dictionary<string, string>
-                                                                                                                          {
-                                                                                                                            { "apiKeyUuid", apiKey.ApiKeyUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens) }
-                                                                                                                          })">
-            <button type="submit" class="btn btn-primary">Regenerate</button>
-          </form>
-        }
-      </div>
+				<div class="col">@apiKey.Description</div>
 
-      <div class="col">@apiKey.Description</div>
+				<div class="w-100"><br/></div>
+			}
 
-      <div class="w-100"><br /></div>
-    }
-
-    <form method="get" asp-route="@ISI.Platforms.AspNetCore.Users.Routes.Users.RouteNames.AddApiKeyWithUserUuid" asp-all-route-data="@(new Dictionary<string, string>
-                                                                                                                        {
-                                                                                                                          { "userUuid", Model.EditedUser.UserUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens) }
-                                                                                                                        })">
-      <div class="col">
-        <button type="submit" class="btn btn-primary">Add ApiKey</button>
-      </div>
-    </form>
-  </div>
-
-  <hr class="w-100" />
+			<form method="get" asp-route="@ISI.Platforms.AspNetCore.Users.Routes.Users.RouteNames.AddApiKeyWithUserUuid" asp-all-route-data="@(new Dictionary<string, string>
+			                                                                                                                                 {
+				                                                                                                                                 { "userUuid", Model.EditedUser.UserUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens) }
+			                                                                                                                                 })">
+				<div class="col">
+					<button type="submit" class="btn btn-primary">Add ApiKey</button>
+				</div>
+			</form>
+		</div>
+	}
+	<hr class="w-100" />
 
   <h4 class="mb-3">User Authentications</h4>
 

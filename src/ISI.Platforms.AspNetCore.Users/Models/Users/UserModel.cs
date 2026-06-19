@@ -30,7 +30,7 @@ namespace ISI.Platforms.AspNetCore.Users.Models.Users
 		public EditModels.UserEditModel EditedUser { get; set; }
 
 		public IDictionary<Guid, string> UserAuthenticationTypeLookup { get; set; }
-		public ISI.Extensions.Security.IUserAuthentication[] UserAuthentications { get; set; }
-		public ISI.Extensions.Security.IApiKey[] ApiKeys { get; set; }
+		public ISI.Extensions.Security.IUserAuthenticationHasUserAuthenticationType[] UserAuthentications { get; set; }
+		public ISI.Extensions.Security.IFullApiKey[] ApiKeys { get; set; }
 	}
 }

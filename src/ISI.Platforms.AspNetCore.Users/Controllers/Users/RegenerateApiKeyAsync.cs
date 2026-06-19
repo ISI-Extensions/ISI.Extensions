@@ -28,7 +28,7 @@ namespace ISI.Platforms.AspNetCore.Users.Controllers
 	{
 		[Microsoft.AspNetCore.Mvc.AcceptVerbs(nameof(Microsoft.AspNetCore.Http.HttpMethods.Get))]
 		[UsersAuthorize]
-		[ISI.Extensions.AspNetCore.NamedRoute(Routes.Users.RouteNames.RegenerateApiKeyWithApiKeyUuid, typeof(Routes.Users), "regenerate-api-key/{twilioProcessorApiKeyUuid}")]
+		[ISI.Extensions.AspNetCore.NamedRoute(Routes.Users.RouteNames.RegenerateApiKeyWithApiKeyUuid, typeof(Routes.Users), "regenerate-api-key/{apiKeyUuid}")]
 		[ApiExplorerSettings(IgnoreApi = true)]
 		public virtual async Task<Microsoft.AspNetCore.Mvc.IActionResult> RegenerateApiKeyAsync(Guid apiKeyUuid, System.Threading.CancellationToken cancellationToken = default)
 		{

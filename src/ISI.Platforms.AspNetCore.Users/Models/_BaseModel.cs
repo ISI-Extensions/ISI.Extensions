@@ -31,11 +31,16 @@ namespace ISI.Platforms.AspNetCore.Users.Models
 		protected static string _siteLayout_cshtml { get; set; }
 		public string SiteLayout_cshtml { get => _siteLayout_cshtml; set => _siteLayout_cshtml = value; }
 
+		protected static bool _useApiKeys { get; set; }
+		public bool UseApiKeys { get => _useApiKeys; set => _useApiKeys = value; }
+
 		public TimeSpan BaseUtcOffset { get; set; }
 	}
 	
 	public class SiteModel : BaseModel
 	{
 		public static string SiteLayout_cshtml { get => _siteLayout_cshtml; set => _siteLayout_cshtml = value; }
+		
+		public static bool UseApiKeys { get => _useApiKeys; set => _useApiKeys = value; }
 	}
 }

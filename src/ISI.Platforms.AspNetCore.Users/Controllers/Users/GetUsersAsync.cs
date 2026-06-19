@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.AspNetCore.Extensions;
 using ISI.Extensions.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -67,6 +68,7 @@ namespace ISI.Platforms.AspNetCore.Users.Controllers
 					})
 					.Where(roleDescription => !string.IsNullOrWhiteSpace(roleDescription))
 					.OrderBy(roleDescription => roleDescription, StringComparer.InvariantCultureIgnoreCase)),
+				OpenUserUrl = Url.GenerateRouteUrl(Routes.Users.RouteNames.UserWithUserUuid, new { userUuid = user.UserUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens) }, true),
 			});
 
 			return Ok(response);

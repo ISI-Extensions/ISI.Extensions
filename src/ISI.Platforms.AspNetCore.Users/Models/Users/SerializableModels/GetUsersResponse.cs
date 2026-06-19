@@ -50,5 +50,8 @@ namespace ISI.Platforms.AspNetCore.Users.Models.Users.SerializableModels
 
 		[DataMember(Name = "roles")]
 		public string Roles { get; set; }
+
+		[DataMember(Name = "openUserUrl")]
+		public string OpenUserUrl { get; set; }
 	}
 }

@@ -24,6 +24,6 @@ namespace ISI.Extensions.Security.DataTransferObjects.AuthenticationApi
 {
 	public class FindUserAuthenticationsResponse
 	{
-		public IEnumerable<IUserAuthentication> UserAuthentications { get; set; }
+		public IEnumerable<IUserAuthenticationHasUserAuthenticationType> UserAuthentications { get; set; }
 	}
 }

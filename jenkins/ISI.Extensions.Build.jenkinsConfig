@@ -1,14 +1,15 @@
-<?xml version="1.1" encoding="UTF-8"?><project>
-	<actions/>
-	<description/>
-	<displayName>ISI.Extensions.Build</displayName>
-	<keepDependencies>false</keepDependencies>
-	<properties>
-		<hudson.security.AuthorizationMatrixProperty>
-			<inheritanceStrategy class="org.jenkinsci.plugins.matrixauth.inheritance.InheritParentStrategy"/>
-		</hudson.security.AuthorizationMatrixProperty>
-	</properties>
-  <scm class="hudson.plugins.git.GitSCM" plugin="git@5.7.0">
+<?xml version="1.1" encoding="UTF-8"?>
+<project>
+  <actions/>
+  <description></description>
+  <displayName>ISI.Extensions.Build</displayName>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.security.AuthorizationMatrixProperty>
+      <inheritanceStrategy class="org.jenkinsci.plugins.matrixauth.inheritance.InheritParentStrategy"/>
+    </hudson.security.AuthorizationMatrixProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@5.10.1">
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
@@ -25,19 +26,19 @@
     <submoduleCfg class="empty-list"/>
     <extensions/>
   </scm>
-	<canRoam>true</canRoam>
-	<disabled>false</disabled>
-	<blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
-	<blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-	<triggers/>
-	<concurrentBuild>false</concurrentBuild>
-	<customWorkspace>F:\${JOB_NAME}</customWorkspace>
-	<builders>
-		<hudson.tasks.BatchFile>
-			<command>dotnet cake --Target=Default</command>
-			<configuredLocalRules/>
-		</hudson.tasks.BatchFile>
-	</builders>
-	<publishers/>
-	<buildWrappers/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <customWorkspace>F:\${JOB_NAME}</customWorkspace>
+  <builders>
+    <hudson.tasks.BatchFile>
+      <command>dotnet cake --Target=Default</command>
+      <configuredLocalRules/>
+    </hudson.tasks.BatchFile>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
 </project>

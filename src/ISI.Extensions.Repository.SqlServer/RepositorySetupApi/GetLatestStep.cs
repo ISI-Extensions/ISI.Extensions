@@ -50,16 +50,16 @@ namespace ISI.Extensions.Repository.SqlServer
 							var sql = new StringBuilder();
 
 							sql.Append("set nocount on\n");
-							sql.AppendFormat("if db_id('{0}') is null\n", DatabaseName);
+							sql.Append($"if db_id('{DatabaseName}') is null\n");
 							sql.Append("begin\n");
 							sql.Append("	select 0 as StepId\n");
 							sql.Append("end\n");
 							sql.Append("else\n");
 							sql.Append("begin\n");
-							sql.AppendFormat("  if (exists (select 1 from [{0}].INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = 'dbo' and TABLE_NAME = 'DatabaseMigrationStep'))\n", DatabaseName);
+							sql.Append($"  if (exists (select 1 from [{DatabaseName}].INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = 'dbo' and TABLE_NAME = '{DatabaseMigrationStepTableName}'))\n");
 							sql.Append("  begin\n");
 							sql.Append("		select max(StepId) as StepId\n");
-							sql.AppendFormat("		from [{0}].dbo.DatabaseMigrationStep\n", DatabaseName);
+							sql.Append($"		from [{DatabaseName}].dbo.{DatabaseMigrationStepTableName}\n");
 							sql.Append("  end\n");
 							sql.Append("  else\n");
 							sql.Append("  begin\n");

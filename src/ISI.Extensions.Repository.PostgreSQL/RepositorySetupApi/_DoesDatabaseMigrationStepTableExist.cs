@@ -39,7 +39,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 			sql.Append("SELECT COUNT(1) as TableCount\n");
 			sql.Append("FROM pg_tables\n");
 			sql.Append("WHERE schemaname = 'public' AND\n");
-			sql.Append("			tablename = 'DatabaseMigrationStep'\n");
+			sql.Append($"			tablename = '{DatabaseMigrationStepTableName}'\n");
 
 			using (var command = new Npgsql.NpgsqlCommand(sql.ToString(), connection))
 			{

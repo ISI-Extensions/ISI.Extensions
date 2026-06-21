@@ -49,11 +49,11 @@ namespace ISI.Extensions.Repository.SqlServer
 
 						sql.Clear();
 						sql.Append("set nocount on\n");
-						sql.AppendFormat("use [{0}];\n", DatabaseName);
+						sql.Append($"use [{DatabaseName}];\n");
 						sql.Append("select count(*) as TableCount\n");
-						sql.AppendFormat("from [{0}].INFORMATION_SCHEMA.TABLES\n", DatabaseName);
+						sql.Append($"from [{DatabaseName}].INFORMATION_SCHEMA.TABLES\n");
 						sql.Append("where TABLE_SCHEMA = 'dbo' and\n");
-						sql.Append("			TABLE_NAME = 'DatabaseMigrationStep'\n");
+						sql.Append($"			TABLE_NAME = '{DatabaseMigrationStepTableName}'\n");
 
 						var tableExists = false;
 
@@ -66,21 +66,21 @@ namespace ISI.Extensions.Repository.SqlServer
 						{
 							sql.Clear();
 							sql.Append("set nocount on\n");
-							sql.AppendFormat("use [{0}];\n", DatabaseName);
-							sql.Append("CREATE TABLE dbo.DatabaseMigrationStep\n");
+							sql.Append($"use [{DatabaseName}];\n");
+							sql.Append($"CREATE TABLE dbo.{DatabaseMigrationStepTableName}\n");
 							sql.Append("(\n");
 							sql.Append("	StepId int not null,\n");
 							sql.Append("	CompletedDateTimeUtc datetime not null,\n");
 							sql.Append("	CompletedByKey varchar(255) null,\n");
-							sql.Append("	CONSTRAINT PK_DatabaseMigrationStep PRIMARY KEY CLUSTERED (StepId)\n");
+							sql.Append($"	CONSTRAINT {DatabaseMigrationStepTableName} PRIMARY KEY CLUSTERED (StepId)\n");
 							sql.Append(");\n");
 							connection.ExecuteNonQueryAsync(sql.ToString()).Wait();
 						}
 
 						sql.Clear();
 						sql.Append("set nocount on\n");
-						sql.AppendFormat("use [{0}];\n", DatabaseName);
-						sql.Append("insert into dbo.DatabaseMigrationStep (StepId, CompletedDateTimeUtc, CompletedByKey)\n");
+						sql.Append($"use [{DatabaseName}];\n");
+						sql.Append($"insert into dbo.{DatabaseMigrationStepTableName} (StepId, CompletedDateTimeUtc, CompletedByKey)\n");
 						sql.Append("select @StepId, getutcdate(), @CompletedByKey;\n");
 
 						using (var command = new Microsoft.Data.SqlClient.SqlCommand(sql.ToString(), connection))

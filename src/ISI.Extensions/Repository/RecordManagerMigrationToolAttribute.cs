@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2026, Integrated Solutions, Inc.
 All rights reserved.
@@ -19,65 +19,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using System.Diagnostics;
-using ISI.Extensions.PostgreSQL.Extensions;
-using ISI.Extensions.Repository.Extensions;
-using ISI.Extensions.Repository.PostgreSQL.Extensions;
-using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
-using SqlServerDTOs = ISI.Extensions.Repository.PostgreSQL.DataTransferObjects.RepositorySetupApi;
-using Microsoft.Extensions.Configuration;
+using DTOs = ISI.Extensions.Repository.DataTransferObjects.RecordManagerMigrationTool;
 
-namespace ISI.Extensions.Repository.PostgreSQL
+namespace ISI.Extensions.Repository
 {
-	public partial class RepositorySetupApi
+	[AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
+	public class RecordManagerMigrationToolAttribute : ISI.Extensions.TypeLocatorAttribute
 	{
-		public DTOs.GetLatestStepResponse GetLatestStep()
+		public RecordManagerMigrationToolAttribute()
+			: base(typeof(IRecordManagerMigrationTool))
 		{
-			var response = new DTOs.GetLatestStepResponse();
 
-			var success = false;
-
-			foreach (var connectionString in new[] { MasterConnectionString, ConnectionString })
-			{
-				if (!success)
-				{
-					try
-					{
-						if (ISI.Extensions.PostgreSQL.NpgsqlConnection.TryGetNpgsqlConnection(connectionString, false, out var connection))
-						{
-							connection.Open();
-
-							var tableExists = DoesDatabaseMigrationStepTableExist(connection);
-
-							if (tableExists)
-							{
-								var sql = new StringBuilder();
-
-								sql.Append("SELECT MAX(\"StepId\") as \"StepId\"\n");
-								sql.Append($"FROM \"{DatabaseMigrationStepTableName}\"\n");
-
-								using (var command = new Npgsql.NpgsqlCommand(sql.ToString(), connection))
-								{
-									response.StepId = $"{command.ExecuteScalarWithExceptionTracingAsync().GetAwaiter().GetResult()}".ToInt();
-									success = true;
-								}
-							}
-							else
-							{
-								response.StepId = 0;
-							}
-
-							connection.Dispose();
-						}
-					}
-					catch (Exception exception)
-					{
-
-					}
-				}
-			}
-
-			return response;
 		}
 	}
 }

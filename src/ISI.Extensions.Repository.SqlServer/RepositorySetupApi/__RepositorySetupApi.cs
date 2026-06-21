@@ -45,6 +45,8 @@ namespace ISI.Extensions.Repository.SqlServer
 		private string _completedBy = null;
 		public string CompletedBy => _completedBy ??= GetCompletedBy();
 
+		public string DatabaseMigrationStepTableName { get; }
+
 		public RepositorySetupApi(
 			Microsoft.Extensions.Configuration.IConfiguration configuration,
 			Microsoft.Extensions.Logging.ILogger logger,
@@ -53,7 +55,8 @@ namespace ISI.Extensions.Repository.SqlServer
 			string connectionString,
 			string databaseName = null,
 			string completedBy = null,
-			string masterConnectionString = null)
+			string masterConnectionString = null,
+			string databaseMigrationStepTableName = "DatabaseMigrationStep")
 		{
 			Configuration = configuration;
 			Logger = logger;
@@ -72,6 +75,8 @@ namespace ISI.Extensions.Repository.SqlServer
 			}
 
 			_masterConnectionString = masterConnectionString;
+
+			DatabaseMigrationStepTableName = databaseMigrationStepTableName;
 		}
 	}
 }

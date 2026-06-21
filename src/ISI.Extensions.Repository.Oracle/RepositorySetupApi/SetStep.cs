@@ -52,9 +52,9 @@ namespace ISI.Extensions.Repository.Oracle
 						if (!tableExists)
 						{
 							sql.Clear();
-							sql.Append("CREATE TABLE \"DatabaseMigrationStep\"\n");
+							sql.Append($"CREATE TABLE \"{DatabaseMigrationStepTableName}\"\n");
 							sql.Append("(\n");
-							sql.Append("	\"StepId\" INT NOT NULL CONSTRAINT \"PK_DatabaseMigrationStep\" PRIMARY KEY,\n");
+							sql.Append($"	\"StepId\" INT NOT NULL CONSTRAINT \"PK_{DatabaseMigrationStepTableName}\" PRIMARY KEY,\n");
 							sql.Append("	\"CompletedDateTimeUtc\" timestamp NOT NULL,\n");
 							sql.Append("	\"CompletedByKey\" VARCHAR2(255) NULL\n");
 							sql.Append(")\n");
@@ -62,7 +62,7 @@ namespace ISI.Extensions.Repository.Oracle
 						}
 
 						sql.Clear();
-						sql.Append("INSERT INTO \"DatabaseMigrationStep\" (\"StepId\", \"CompletedDateTimeUtc\", \"CompletedByKey\")\n");
+						sql.Append($"INSERT INTO \"{DatabaseMigrationStepTableName}\" (\"StepId\", \"CompletedDateTimeUtc\", \"CompletedByKey\")\n");
 						sql.Append("SELECT :StepId, sysdate, :CompletedByKey FROM DUAL\n");
 
 						using (var command = new global::Oracle.ManagedDataAccess.Client.OracleCommand(sql.ToString(), connection))

@@ -25,8 +25,6 @@ namespace ISI.Extensions.Repository.Cosmos
 {
 	public partial class RepositorySetupApi : ISI.Extensions.Repository.IRepositorySetupApiWithConfigurationLoggerDateTimeStamper
 	{
-		public const string DatabaseMigrationStepTableName = "DatabaseMigrationStep";
-
 		public Microsoft.Extensions.Logging.ILogger Logger { get; }
 		public ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
 
@@ -38,13 +36,16 @@ namespace ISI.Extensions.Repository.Cosmos
 		public string AccountKey { get; }
 		public string CompletedBy { get; }
 
+		public string DatabaseMigrationStepTableName { get; }
+
 		public RepositorySetupApi(
 			Microsoft.Extensions.Configuration.IConfiguration configuration,
 			Microsoft.Extensions.Logging.ILogger logger,
 			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
 			string connectionString,
 			string databaseName = null,
-			string completedBy = null)
+			string completedBy = null,
+			string databaseMigrationStepTableName = "DatabaseMigrationStep")
 		{
 			Configuration = configuration;
 			Logger = logger;
@@ -59,6 +60,8 @@ namespace ISI.Extensions.Repository.Cosmos
 
 			DatabaseName = (string.IsNullOrWhiteSpace(databaseName) ? connectionStringBuilder.DatabaseName : databaseName);
 			CompletedBy = completedBy;
+
+			DatabaseMigrationStepTableName = databaseMigrationStepTableName;
 		}
 
 		public DTOs.DeleteRepositoryResponse DeleteRepository()

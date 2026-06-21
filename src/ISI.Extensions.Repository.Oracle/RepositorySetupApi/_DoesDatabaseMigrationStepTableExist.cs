@@ -38,7 +38,7 @@ namespace ISI.Extensions.Repository.Oracle
 			sql.Clear();
 			sql.Append("SELECT COUNT(1) as TableCount\n");
 			sql.Append("FROM user_Tables\n");
-			sql.Append("WHERE table_name = 'DatabaseMigrationStep'\n");
+			sql.Append($"WHERE table_name = '{DatabaseMigrationStepTableName}'\n");
 
 			return $"{connection.ExecuteScalarAsync(sql.ToString()).GetAwaiter().GetResult()}".ToBoolean();
 		}

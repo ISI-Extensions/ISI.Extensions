@@ -55,9 +55,9 @@ namespace ISI.Extensions.Repository.PostgreSQL
 						if (!tableExists)
 						{
 							sql.Clear();
-							sql.Append("CREATE TABLE \"DatabaseMigrationStep\"\n");
+							sql.Append($"CREATE TABLE \"{DatabaseMigrationStepTableName}\"\n");
 							sql.Append("(\n");
-							sql.Append("	\"StepId\" int not null CONSTRAINT PK_DatabaseMigrationStep PRIMARY KEY,\n");
+							sql.Append($"	\"StepId\" int not null CONSTRAINT PK_{DatabaseMigrationStepTableName} PRIMARY KEY,\n");
 							sql.Append("	\"CompletedDateTimeUtc\" timestamp without time zone not null,\n");
 							sql.Append("	\"CompletedByKey\" varchar(255) null\n");
 							sql.Append(");\n");
@@ -65,7 +65,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 						}
 
 						sql.Clear();
-						sql.Append("INSERT INTO \"DatabaseMigrationStep\" (\"StepId\", \"CompletedDateTimeUtc\", \"CompletedByKey\")\n");
+						sql.Append($"INSERT INTO \"{DatabaseMigrationStepTableName}\" (\"StepId\", \"CompletedDateTimeUtc\", \"CompletedByKey\")\n");
 						sql.Append("SELECT @StepId, (current_timestamp at time zone 'UTC'), @CompletedByKey;\n");
 
 						using (var command = new Npgsql.NpgsqlCommand(sql.ToString(), connection))

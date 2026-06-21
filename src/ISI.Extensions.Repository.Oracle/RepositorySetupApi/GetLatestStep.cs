@@ -54,7 +54,7 @@ namespace ISI.Extensions.Repository.Oracle
 								var sql = new StringBuilder();
 
 								sql.Append("SELECT MAX(\"StepId\") as \"StepId\"\n");
-								sql.Append("FROM \"DatabaseMigrationStep\"\n");
+								sql.Append($"FROM \"{DatabaseMigrationStepTableName}\"\n");
 
 								using (var command = new global::Oracle.ManagedDataAccess.Client.OracleCommand(sql.ToString(), connection))
 								{

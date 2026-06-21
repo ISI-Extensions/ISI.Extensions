@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2026, Integrated Solutions, Inc.
 All rights reserved.
@@ -12,72 +12,19 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using System.Diagnostics;
-using ISI.Extensions.PostgreSQL.Extensions;
-using ISI.Extensions.Repository.Extensions;
-using ISI.Extensions.Repository.PostgreSQL.Extensions;
-using DTOs = ISI.Extensions.Repository.DataTransferObjects.RepositorySetupApi;
-using SqlServerDTOs = ISI.Extensions.Repository.PostgreSQL.DataTransferObjects.RepositorySetupApi;
-using Microsoft.Extensions.Configuration;
+using DTOs = ISI.Extensions.Repository.DataTransferObjects.RecordManagerMigrationTool;
 
-namespace ISI.Extensions.Repository.PostgreSQL
+namespace ISI.Extensions.Repository
 {
-	public partial class RepositorySetupApi
+	public interface IRecordManagerMigrationTool
 	{
-		public DTOs.GetLatestStepResponse GetLatestStep()
-		{
-			var response = new DTOs.GetLatestStepResponse();
-
-			var success = false;
-
-			foreach (var connectionString in new[] { MasterConnectionString, ConnectionString })
-			{
-				if (!success)
-				{
-					try
-					{
-						if (ISI.Extensions.PostgreSQL.NpgsqlConnection.TryGetNpgsqlConnection(connectionString, false, out var connection))
-						{
-							connection.Open();
-
-							var tableExists = DoesDatabaseMigrationStepTableExist(connection);
-
-							if (tableExists)
-							{
-								var sql = new StringBuilder();
-
-								sql.Append("SELECT MAX(\"StepId\") as \"StepId\"\n");
-								sql.Append($"FROM \"{DatabaseMigrationStepTableName}\"\n");
-
-								using (var command = new Npgsql.NpgsqlCommand(sql.ToString(), connection))
-								{
-									response.StepId = $"{command.ExecuteScalarWithExceptionTracingAsync().GetAwaiter().GetResult()}".ToInt();
-									success = true;
-								}
-							}
-							else
-							{
-								response.StepId = 0;
-							}
-
-							connection.Dispose();
-						}
-					}
-					catch (Exception exception)
-					{
-
-					}
-				}
-			}
-
-			return response;
-		}
+		DTOs.RunMigrationStepsResponse RunMigrationSteps(DTOs.RunMigrationStepsRequest request);
 	}
 }

@@ -35,7 +35,7 @@ namespace ISI.Extensions.Security
 
 	public interface IUserAuthenticationHasUserAuthenticationType : IUserAuthentication
 	{
-		Guid? UserAuthenticationTypeUuid { get; set; }
+		Guid? UserAuthenticationTypeUuid { get; }
 	}
 
 	public interface IUserAuthenticationHasUserAuthenticationRecovery : IUserAuthentication

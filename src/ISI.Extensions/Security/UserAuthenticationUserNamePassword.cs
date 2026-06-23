@@ -21,14 +21,15 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Security
 {
-	public class UserAuthenticationUserNamePassword : UserAuthenticationPassword, IUserAuthentication
+	public class UserAuthenticationUserNamePassword : UserAuthenticationPassword, IUserAuthenticationHasUserAuthenticationType, IUserAuthenticationHasUserAuthenticationRecovery, IUserAuthenticationHasBadPasswordCounter
 	{
+		public static Guid UserAuthenticationTypeUuid => Guid.Parse("7be457a4-0ce9-4a70-887a-a7d39df34fb8");
+
 		public string UserAuthenticationKey { get; set; }
 
 		public Guid UserUuid { get; set; }
 		
 		public Guid UserAuthenticationUuid { get; set; }
-		public Guid UserAuthenticationTypeUuid { get; set; }
 		
 		public Guid? UserAuthenticationRecoveryUuid { get; set; }
 		public DateTime? UserAuthenticationRecoveryIssuedDateTimeUtc { get; set; }
@@ -42,5 +43,7 @@ namespace ISI.Extensions.Security
 
 		public UserKey ModifyUserKey { get; set; }
 		public DateTime ModifyDateTimeUtc { get; set; }
+
+		Guid? IUserAuthenticationHasUserAuthenticationType.UserAuthenticationTypeUuid => UserAuthenticationTypeUuid;
 	}
 }

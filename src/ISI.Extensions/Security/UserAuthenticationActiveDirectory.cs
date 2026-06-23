@@ -17,10 +17,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ISI.Extensions.Security.ActiveDirectory
+namespace ISI.Extensions.Security
 {
-	public class UserAuthenticationActiveDirectory : IUserAuthentication
+	public class UserAuthenticationActiveDirectory : IUserAuthenticationHasUserAuthenticationType
 	{
+		public static Guid UserAuthenticationTypeUuid => Guid.Parse("7be457a4-0ce9-4a70-887a-a7d39df34fb8");
+
 		public string UserAuthenticationKey { get; set; }
 
 		public Guid UserUuid { get; set; }
@@ -31,5 +33,7 @@ namespace ISI.Extensions.Security.ActiveDirectory
 		public DateTime CreateDateTimeUtc { get; set; }
 		public UserKey ModifyUserKey { get; set; }
 		public DateTime ModifyDateTimeUtc { get; set; }
+
+		Guid? IUserAuthenticationHasUserAuthenticationType.UserAuthenticationTypeUuid => UserAuthenticationTypeUuid;
 	}
 }

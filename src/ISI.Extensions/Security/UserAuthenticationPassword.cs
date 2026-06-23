@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Security
 {
-	public class UserAuthenticationPassword
+	public abstract class UserAuthenticationPassword
 	{
 		public Guid SaltedHashGeneratorTypeUuid { get; set; }
 		public string PasswordSalt { get; set; }

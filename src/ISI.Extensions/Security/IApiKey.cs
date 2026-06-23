@@ -29,9 +29,12 @@ namespace ISI.Extensions.Security
 
 	public interface IFullApiKey : IApiKey
 	{
+		Guid UserUuid { get; set; }
+		
 		string Description { get; set; }
-		Guid UserUuid { get; }
+		
 		DateTime? ExpirationDateTimeUtc { get; set; }
+
 		bool IsActive { get; set; }
 
 		DateTime CreateDateTimeUtc { get; set; }

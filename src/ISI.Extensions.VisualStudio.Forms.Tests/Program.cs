@@ -68,6 +68,7 @@ namespace ISI.Extensions.VisualStudio.Forms.Tests
 			var selectedItemPaths = new[]
 			{
 				@"F:\ISI\Internal Projects\ISI.BackOffice.ServiceApplication\",
+				@"F:\ISI\Internal Projects\ISI.SolutionTemplate.ServiceApplication\",
 			};
 
 			System.Windows.Forms.Application.EnableVisualStyles();
@@ -75,7 +76,7 @@ namespace ISI.Extensions.VisualStudio.Forms.Tests
 
 			System.Windows.Forms.Application.EnableVisualStyles();
 
-			var form = ISI.Extensions.VisualStudio.Forms.RefreshSolutions.CreateForm(selectedItemPaths, true);
+			var form = ISI.Extensions.VisualStudio.Forms.UpgradeNugetPackagesInSolutions.CreateForm(selectedItemPaths, true);
 
 			System.Windows.Forms.Application.Run(form);
 		}

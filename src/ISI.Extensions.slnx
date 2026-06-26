@@ -151,7 +151,6 @@
   <Project Path="ISI.Extensions/ISI.Extensions.csproj">
     <Platform Solution="*|x64" Project="x64" />
   </Project>
-  <Project Path="ISI.Platforms.AspNetCore.Users/ISI.Platforms.AspNetCore.Users.csproj" Id="3f5cd9aa-8057-4b78-b6d3-e3a2348ee750" />
   <Project Path="ISI.Platforms.AspNetCore/ISI.Platforms.AspNetCore.csproj" />
   <Project Path="ISI.Platforms.Elk/ISI.Platforms.Elk.csproj" />
   <Project Path="ISI.Platforms.Serilog/ISI.Platforms.Serilog.csproj" />

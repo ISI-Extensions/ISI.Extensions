@@ -22,6 +22,7 @@ namespace ISI.Extensions.Security
 	public interface IApiKey
 	{
 		Guid ApiKeyUuid { get; set; }
+		
 		Guid SaltedHashGeneratorTypeUuid { get; set; }
 		string ApiKeySalt { get; set; }
 		string HashedApiKey { get; set; }
@@ -29,6 +30,8 @@ namespace ISI.Extensions.Security
 
 	public interface IFullApiKey : IApiKey
 	{
+		Guid ApplicationUuid { get; }
+
 		Guid UserUuid { get; set; }
 		
 		string Description { get; set; }

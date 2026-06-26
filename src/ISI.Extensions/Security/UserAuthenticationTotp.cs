@@ -19,17 +19,40 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.Repository.DataTransferObjects.RecordManagerMigrationTool;
 
-namespace ISI.Extensions.Repository
+namespace ISI.Extensions.Security
 {
-	public interface IRecordManagerMigrationTool
+	public class UserAuthenticationTotp : ISI.Extensions.Security.IUserAuthenticationHasUserAuthenticationType
 	{
-		DTOs.RunMigrationStepsResponse RunMigrationSteps(DTOs.RunMigrationStepsRequest request);
-	}
-	
-	public interface IRecordManagersMigrationTool
-	{
-		DTOs.RunMigrationStepsResponse RunMigrationSteps(DTOs.RunMigrationStepsRequest request);
+		public static Guid UserAuthenticationTypeUuid => Guid.Parse("c146d20e-3966-422e-84bc-ba05152a6cf1");
+
+		public const string UserAuthenticationKeyPrefix = "TOTP-c061fb79-20c3-409b-ad1d-0a1dcd59924a\\";
+
+		public string UserAuthenticationKey
+		{
+			get => GetUserAuthenticationKey(AccountName);
+			set => AccountName = value.TrimStart(UserAuthenticationKeyPrefix, StringComparison.InvariantCultureIgnoreCase);
+		}
+
+		public Guid UserUuid { get; set; }
+
+		public string AccountName { get; set; }
+
+		public string Secret { get; set; }
+
+		public string KeyUrl { get; set; }
+
+		public string Algorithm { get; set; }
+
+		public bool IsActive { get; set; }
+
+		public DateTime CreateDateTimeUtc { get; set; }
+		public ISI.Extensions.UserKey CreateUserKey { get; set; }
+		public DateTime ModifyDateTimeUtc { get; set; }
+		public ISI.Extensions.UserKey ModifyUserKey { get; set; }
+
+		public static string GetUserAuthenticationKey(string accountName) => $"{UserAuthenticationKeyPrefix}{accountName}";
+
+		Guid? ISI.Extensions.Security.IUserAuthenticationHasUserAuthenticationType.UserAuthenticationTypeUuid => UserAuthenticationTypeUuid;
 	}
 }

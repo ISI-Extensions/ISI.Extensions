@@ -22,6 +22,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ISI.Extensions.Extensions;
 using ISI.Extensions.VisualStudio.Forms.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -72,11 +73,15 @@ namespace ISI.Extensions.VisualStudio.Forms
 		protected internal bool ShowProjectExecutionInTaskbar { get; set; } = true;
 		protected internal bool ExitOnClose { get; set; }
 
+		public ISI.Extensions.WinForms.LogFormLogger LogFormLogger { get; protected set; } = null;
+
 		public SolutionsForm(ExecuteActionsInSolutionsDelegate executeActionsInSolutions, UpdatePreviouslySelectedSolutionsDelegate updatePreviouslySelectedSolutions, OnCloseFormDelegate onCloseForm)
 		{
 			InitializeComponent();
 
 			ISI.Extensions.WinForms.ThemeHelper.SyncTheme(this);
+
+			LogFormLogger = new ISI.Extensions.WinForms.LogFormLogger(form => SolutionApi.ApplyFormSize(form), form => SolutionApi.RecordFormSize(form));
 
 			SolutionsPanel.ControlAdded += (sender, args) => ISI.Extensions.WinForms.ThemeHelper.SyncTheme(args.Control);
 
@@ -121,6 +126,8 @@ namespace ISI.Extensions.VisualStudio.Forms
 					StartButton.Visible = true;
 					CloseButton.Enabled = true;
 					CloseButton.Visible = true;
+					
+					LogFormLogger?.LogForm?.ShowDoneButton();
 				}
 			};
 
@@ -196,6 +203,8 @@ namespace ISI.Extensions.VisualStudio.Forms
 				Cancelled = true;
 				CancellationTokenSource?.Cancel();
 				StopButton.Visible = false;
+				
+				LogFormLogger?.LogForm?.ShowDoneButton();
 			};
 
 			StartButton.Click += (_, __) =>
@@ -263,6 +272,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 										UpsertAssemblyRedirectsNugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary(),
 										AddToLog = (logEntryLevel, description) =>
 										{
+											LogFormLogger.Log(logEntryLevel.ToLogLevel(), description);
 										},
 										PreAction = (solutionFullName) =>
 										{
@@ -313,6 +323,8 @@ namespace ISI.Extensions.VisualStudio.Forms
 							}
 						}
 
+						LogFormLogger?.LogForm?.HideDoneButton();
+						
 						StopButton.Visible = true;
 						CloseButton.Enabled = false;
 
@@ -324,6 +336,9 @@ namespace ISI.Extensions.VisualStudio.Forms
 			CloseButton.Click += (_, __) =>
 			{
 				onCloseForm(this);
+
+				LogFormLogger?.Dispose();
+				LogFormLogger = null;
 
 				if (this.Modal)
 				{

@@ -42,5 +42,19 @@ namespace ISI.Extensions.Extensions
 					throw new ArgumentOutOfRangeException(nameof(logLevel), logLevel, null);
 			}
 		}
+		public static Microsoft.Extensions.Logging.LogLevel ToLogLevel(this ISI.Extensions.StatusTrackers.LogEntryLevel logEntryLevel)
+		{
+			switch (logEntryLevel)
+			{
+				case ISI.Extensions.StatusTrackers.LogEntryLevel.Information:
+					return Microsoft.Extensions.Logging.LogLevel.Information;
+				case ISI.Extensions.StatusTrackers.LogEntryLevel.Warning:
+					return Microsoft.Extensions.Logging.LogLevel.Warning;
+				case ISI.Extensions.StatusTrackers.LogEntryLevel.Error:
+					return Microsoft.Extensions.Logging.LogLevel.Error;
+				default:
+					throw new ArgumentOutOfRangeException(nameof(logEntryLevel), logEntryLevel, null);
+			}
+		}
 	}
 }

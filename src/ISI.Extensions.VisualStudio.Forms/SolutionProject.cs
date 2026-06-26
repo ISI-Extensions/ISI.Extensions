@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -200,7 +200,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			ViewRunLogButton.Click += (_, __) =>
 			{
 				var viewLogForm = new ViewLogForm(ExecuteProjectResponse.Output);
-				ExecuteProjectResponse.OnChange += (isAppend, output) => viewLogForm.OnChange(isAppend, output);
+				ExecuteProjectResponse.OnChange += viewLogForm.OnChange;
 				viewLogForm.ShowDialog();
 			};
 			Panel.Controls.Add(ViewRunLogButton);
@@ -264,10 +264,10 @@ namespace ISI.Extensions.VisualStudio.Forms
 								if (WaitForExecuteProjectResponse)
 								{
 									StatusLabel?.Invoke((System.Windows.Forms.MethodInvoker)delegate
-								 {
-									 StatusLabel.ForeColor = System.Drawing.Color.Green;
-									 StatusLabel.Text = "running ...";
-								 });
+									{
+										StatusLabel.ForeColor = System.Drawing.Color.Green;
+										StatusLabel.Text = "running ...";
+									});
 
 									var processResponse = ISI.Extensions.Process.WaitForProcessResponse(exeFileName, null, "noWaitAtFinish -noWaitAtFinish");
 
@@ -351,10 +351,10 @@ namespace ISI.Extensions.VisualStudio.Forms
 									}
 
 									StatusLabel?.Invoke((System.Windows.Forms.MethodInvoker)delegate
-								 {
-									 StatusLabel.ForeColor = System.Drawing.Color.Green;
-									 StatusLabel.Text = "running ...";
-								 });
+									{
+										StatusLabel.ForeColor = System.Drawing.Color.Green;
+										StatusLabel.Text = "running ...";
+									});
 
 									ExecuteProjectInstance.Exited += (sender, args) =>
 									{
@@ -363,10 +363,10 @@ namespace ISI.Extensions.VisualStudio.Forms
 										StopButton?.Invoke((System.Windows.Forms.MethodInvoker)delegate { StopButton.Visible = false; });
 
 										StatusLabel?.Invoke((System.Windows.Forms.MethodInvoker)delegate
-									 {
-										 StatusLabel.ForeColor = System.Windows.Forms.Control.DefaultForeColor;
-										 StatusLabel.Text = "exited ...";
-									 });
+										{
+											StatusLabel.ForeColor = System.Windows.Forms.Control.DefaultForeColor;
+											StatusLabel.Text = "exited ...";
+										});
 
 										Solution.Selected = true;
 

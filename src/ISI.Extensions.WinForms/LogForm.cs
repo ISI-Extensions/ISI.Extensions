@@ -37,6 +37,8 @@ namespace ISI.Extensions.WinForms
 		protected RecordFormSizeDelegate RecordFormSize { get; }
 		protected OnShowDialogDelegate OnShowDialog { get; }
 
+		public bool ShowDoneButtonOnStartUp { get; set; } = true;
+
 		public LogForm(ApplyFormSizeDelegate applyFormSize, RecordFormSizeDelegate recordFormSize, OnShowDialogDelegate onShowDialog)
 		{
 			ApplyFormSize = applyFormSize;
@@ -62,8 +64,6 @@ namespace ISI.Extensions.WinForms
 
 			btnDone.Click += (clickSender, clickEventArgs) =>
 			{
-				RecordFormSize?.Invoke(this);
-
 				if (this.Modal)
 				{
 					this.DialogResult = System.Windows.Forms.DialogResult.OK;
@@ -74,7 +74,27 @@ namespace ISI.Extensions.WinForms
 				}
 			};
 
+			btnCopyToClipboard.Click += (clickSender, clickEventArgs) =>
+			{
+				var stringBuilder = new StringBuilder();
+
+				foreach (var logPanel in LogPanels)
+				{
+					stringBuilder.AppendLine(logPanel.Description);
+				}
+
+				Clipboard.Clear();
+				Clipboard.SetText(stringBuilder.ToString());
+			};
+
 			this.Shown += OnShown;
+			
+			this.FormClosed += OnFormClosed;
+		}
+
+		private void OnFormClosed(object sender, FormClosedEventArgs e)
+		{
+			RecordFormSize?.Invoke(this);
 		}
 
 		private void OnShown(object sender, EventArgs eventArgs)
@@ -89,7 +109,23 @@ namespace ISI.Extensions.WinForms
 
 			Cursor = System.Windows.Forms.Cursors.Arrow;
 
-			btnDone.Visible = true;
+			btnDone.Visible = ShowDoneButtonOnStartUp;
+		}
+
+		public void HideDoneButton()
+		{
+			this.btnDone.Invoke((System.Windows.Forms.MethodInvoker)delegate
+			{
+				btnDone.Visible = false;
+			});
+		}
+
+		public void ShowDoneButton()
+		{
+			this.btnDone.Invoke((System.Windows.Forms.MethodInvoker)delegate
+			{
+				btnDone.Visible = true;
+			});
 		}
 
 		public void AddToLog(ISI.Extensions.StatusTrackers.LogEntryLevel logEntryLevel, string description)
@@ -123,6 +159,8 @@ namespace ISI.Extensions.WinForms
 
 			private FlowLayoutPanel flpLog { get; }
 			private Label lblDescription { get; }
+
+			public string Description => lblDescription.Text;
 
 			public LogPanel(string description)
 			{

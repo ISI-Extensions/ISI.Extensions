@@ -25,7 +25,7 @@ namespace ISI.Extensions.Security
 	{
 		public Guid ApplicationUuid { get; set; }
 		
-		public ApplicationRole[] Roles { get; set; }
+		public IApplicationRole[] Roles { get; set; }
 
 		private string _cacheKey;
 		string ISI.Extensions.Caching.IHasCacheKey.CacheKey => _cacheKey;

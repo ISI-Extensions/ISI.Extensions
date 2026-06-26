@@ -47,6 +47,7 @@ namespace ISI.Extensions.WinForms
 			this.flpLogs = new System.Windows.Forms.FlowLayoutPanel();
 			this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
 			this.btnDone = new System.Windows.Forms.Button();
+			this.btnCopyToClipboard = new System.Windows.Forms.Button();
 			this.tplForm.SuspendLayout();
 			this.flpLogs.SuspendLayout();
 			this.flpButtons.SuspendLayout();
@@ -85,6 +86,7 @@ namespace ISI.Extensions.WinForms
 			// flpButtons
 			// 
 			this.flpButtons.Controls.Add(this.btnDone);
+			this.flpButtons.Controls.Add(this.btnCopyToClipboard);
 			this.flpButtons.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
 			this.flpButtons.Location = new System.Drawing.Point(3, 243);
@@ -93,7 +95,7 @@ namespace ISI.Extensions.WinForms
 			this.flpButtons.TabIndex = 0;
 			this.flpButtons.WrapContents = false;
 			// 
-			// btnCancel
+			// btnDone
 			// 
 			this.btnDone.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.btnDone.Location = new System.Drawing.Point(415, 3);
@@ -102,6 +104,15 @@ namespace ISI.Extensions.WinForms
 			this.btnDone.TabIndex = 3;
 			this.btnDone.Text = "Done";
 			this.btnDone.UseVisualStyleBackColor = true;
+			// 
+			// btnCopyToClipboard
+			// 
+			this.btnCopyToClipboard.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.btnCopyToClipboard.Name = "btnCopyToClipboard";
+			this.btnCopyToClipboard.Size = new System.Drawing.Size(120, 25);
+			this.btnCopyToClipboard.TabIndex = 3;
+			this.btnCopyToClipboard.Text = "Copy To Clipboard";
+			this.btnCopyToClipboard.UseVisualStyleBackColor = true;
 			// 
 			// LogForm
 			// 
@@ -130,5 +141,6 @@ namespace ISI.Extensions.WinForms
 
 		private System.Windows.Forms.FlowLayoutPanel flpButtons;
 		private System.Windows.Forms.Button btnDone;
+		private System.Windows.Forms.Button btnCopyToClipboard;
 	}
 }

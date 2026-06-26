@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Security
 {
-	public class UserAuthenticationUserNamePassword : UserAuthenticationPassword, IUserAuthenticationHasUserAuthenticationType, IUserAuthenticationHasUserAuthenticationRecovery, IUserAuthenticationHasBadPasswordCounter
+	public class UserAuthenticationUserNamePassword :  IUserAuthenticationHasUserAuthenticationType, IUserAuthenticationHasUserAuthenticationRecovery, IUserAuthenticationHasBadPasswordCounter, IUserAuthenticationPassword
 	{
 		public static Guid UserAuthenticationTypeUuid => Guid.Parse("7be457a4-0ce9-4a70-887a-a7d39df34fb8");
 
@@ -37,10 +37,16 @@ namespace ISI.Extensions.Security
 		public int BadPasswordCount { get; set; }
 		public DateTime? LastBadPasswordDateTimeUtc { get; set; }
 
-		public UserAuthenticationPassword[] PasswordHistory { get; set; }
+		public Guid SaltedHashGeneratorTypeUuid { get; set; }
+		public string PasswordSalt { get; set; }
+		public string HashedPassword { get; set; }
+
+		public IUserAuthenticationPassword[] PasswordHistory { get; set; }
 
 		public bool IsActive { get; set; }
 
+		public UserKey CreateUserKey { get; set; }
+		public DateTime CreateDateTimeUtc { get; set; }
 		public UserKey ModifyUserKey { get; set; }
 		public DateTime ModifyDateTimeUtc { get; set; }
 

@@ -89,13 +89,23 @@ namespace ISI.Extensions.Nuget
 
 			if (!string.IsNullOrWhiteSpace(_nugetExeFullName) && System.IO.File.Exists(_nugetExeFullName))
 			{
-				var versionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(_nugetExeFullName);
-				var productVersion = new System.Version(versionInfo.ProductVersion);
-				var minProductionVersion = new System.Version("5.8.1");
+				var processResponse = ISI.Extensions.Process.WaitForProcessResponse(_nugetExeFullName, new[] { "help" });
 
-				if (productVersion < minProductionVersion)
+				var versionLine = processResponse.Output.Split(['\n', '\r']).NullCheckedFirstOrDefault(line => line.StartsWith("NuGet Version:", StringComparison.InvariantCultureIgnoreCase));
+
+				if (!string.IsNullOrWhiteSpace(versionLine))
 				{
-					var processResponse = ISI.Extensions.Process.WaitForProcessResponse(_nugetExeFullName, new[] { "update", "-self" });
+					var versionMatch = System.Text.RegularExpressions.Regex.Match(versionLine, @"NuGet Version: (?<version>.*)");
+					if (versionMatch.Success)
+					{
+						var productVersion = new System.Version(versionMatch.Groups["version"].Value);
+						var minProductionVersion = new System.Version("5.8.1");
+
+						if (productVersion < minProductionVersion)
+						{
+							processResponse = ISI.Extensions.Process.WaitForProcessResponse(_nugetExeFullName, new[] { "update", "-self" });
+						}
+					}
 				}
 			}
 

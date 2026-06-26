@@ -51,6 +51,8 @@ namespace ISI.Extensions.Nuget
 				if (ISI.Extensions.IO.Path.IsInEnvironmentPath("choco.exe", out var chocoExeFullName))
 				{
 					var processResponse = ISI.Extensions.Process.WaitForProcessResponse(chocoExeFullName, new[] { "install", "nuget.commandline", "-y" });
+
+					processResponse = ISI.Extensions.Process.WaitForProcessResponse("refreshenv");
 				}
 			}
 

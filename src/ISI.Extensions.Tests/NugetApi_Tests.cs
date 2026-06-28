@@ -12,18 +12,18 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
-using ISI.Extensions.ConfigurationHelper.Extensions;
-using ISI.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using NUnit.Framework;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ISI.Extensions.ConfigurationHelper.Extensions;
+using ISI.Extensions.DependencyInjection.Extensions;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.SolutionPersistence.Serializer.SlnV12;
+using NUnit.Framework;
 
 namespace ISI.Extensions.Tests
 {
@@ -62,6 +62,17 @@ namespace ISI.Extensions.Tests
 			var serviceProvider = services.BuildServiceProvider<ISI.Extensions.DependencyInjection.Iunq.ServiceProviderBuilder>(configurationRoot);
 
 			serviceProvider.SetServiceLocator();
+		}
+
+		[Test]
+		public void GetNugetExeFullName_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+
+			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.Nuget.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
+
+			var response = nugetApi.GetNugetExeFullName(new());
 		}
 
 		[Test]
@@ -268,10 +279,10 @@ namespace ISI.Extensions.Tests
 			foreach (var solutionGroup in solutionFullNamesByRootSourceDirectory)
 			{
 				if (!sourceControlClientApi.UpdateWorkingCopy(new()
-				    {
-					    FullName = solutionGroup.Key,
-					    IncludeExternals = true,
-				    }).Success)
+				{
+					FullName = solutionGroup.Key,
+					IncludeExternals = true,
+				}).Success)
 				{
 					var exception = new Exception($"Error updating \"{solutionGroup.Key}\"");
 					throw exception;
@@ -293,7 +304,7 @@ namespace ISI.Extensions.Tests
 						using (var slnxStream = System.IO.File.OpenWrite(slnxFullName))
 						{
 							var solutionModel = Microsoft.VisualStudio.SolutionPersistence.Serializer.SolutionSerializers.SlnFileV12.OpenAsync(slnStream, System.Threading.CancellationToken.None).GetAwaiter().GetResult();
-							
+
 							Microsoft.VisualStudio.SolutionPersistence.Serializer.SolutionSerializers.SlnXml.SaveAsync(slnxStream, solutionModel, System.Threading.CancellationToken.None).GetAwaiter().GetResult();
 						}
 					}
@@ -367,10 +378,10 @@ namespace ISI.Extensions.Tests
 				if (dirtyFileNames.Any())
 				{
 					if (!sourceControlClientApi.Commit(new()
-					    {
-						    FullNames = dirtyFileNames,
-						    LogMessage = "move to slnx",
-					    }).Success)
+					{
+						FullNames = dirtyFileNames,
+						LogMessage = "move to slnx",
+					}).Success)
 					{
 						var exception = new Exception($"Error committing \"{solutionGroup.Key}\"");
 						throw exception;
@@ -409,10 +420,10 @@ namespace ISI.Extensions.Tests
 			foreach (var solutionGroup in solutionFullNamesByRootSourceDirectory)
 			{
 				if (!sourceControlClientApi.UpdateWorkingCopy(new()
-				    {
-					    FullName = solutionGroup.Key,
-					    IncludeExternals = true,
-				    }).Success)
+				{
+					FullName = solutionGroup.Key,
+					IncludeExternals = true,
+				}).Success)
 				{
 					var exception = new Exception($"Error updating \"{solutionGroup.Key}\"");
 					throw exception;
@@ -447,10 +458,10 @@ namespace ISI.Extensions.Tests
 				if (dirtyFileNames.Any())
 				{
 					if (!sourceControlClientApi.Commit(new()
-					    {
-						    FullNames = dirtyFileNames,
-						    LogMessage = "move to .net 10",
-					    }).Success)
+					{
+						FullNames = dirtyFileNames,
+						LogMessage = "move to .net 10",
+					}).Success)
 					{
 						var exception = new Exception($"Error committing \"{solutionGroup.Key}\"");
 						throw exception;
@@ -466,7 +477,7 @@ namespace ISI.Extensions.Tests
 			var nugetApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Nuget.NugetApi>();
 
 			var nugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
-			foreach (var nugetSettingsNugetPackageKey in nugetApi.GetNugetSettings(new ())?.NugetSettings?.UpdateNugetPackages?.NugetSettingsNugetPackageKeys ?? [])
+			foreach (var nugetSettingsNugetPackageKey in nugetApi.GetNugetSettings(new())?.NugetSettings?.UpdateNugetPackages?.NugetSettingsNugetPackageKeys ?? [])
 			{
 				nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new()
 				{
@@ -519,7 +530,7 @@ namespace ISI.Extensions.Tests
 				NugetPackageKeys = nugetPackageKeys,
 				UpsertAssemblyRedirectsNugetPackageKeys = upsertAssemblyRedirectsNugetPackageKeys,
 				RemoveAssemblyRedirects = removeAssemblyRedirects,
-				IgnorePackageIds = nugetApi.GetNugetSettings(new ())?.NugetSettings?.UpdateNugetPackages?.IgnorePackageIds,
+				IgnorePackageIds = nugetApi.GetNugetSettings(new())?.NugetSettings?.UpdateNugetPackages?.IgnorePackageIds,
 				//IgnorePackageIds = new[]
 				//{
 				//	"ISI.CMS.T4CMS",

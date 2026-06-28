@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2026, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,47 +15,25 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using ISI.Extensions.JsonSerialization.Extensions;
-using ISI.Extensions.Nuget.Extensions;
-using DTOs = ISI.Extensions.Nuget.DataTransferObjects.NugetApi;
-using SerializableDTOs = ISI.Extensions.Nuget.SerializableModels.Nuget;
-using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.Nuget
+namespace ISI.Extensions.Security.Extensions
 {
-	public partial class NugetApi
+	public static class ApiKeysExtensions
 	{
-		public DTOs.GetNugetApiKeyResponse GetNugetApiKey(DTOs.GetNugetApiKeyRequest request)
+		public static bool IsActive(this ISI.Extensions.Security.IFullApiKey apiKey, Func<DateTime> getCurrentDateTimeUtc)
 		{
-			var response = new DTOs.GetNugetApiKeyResponse();
-			
-			var uri = new UriBuilder(request.NugetApiUrl);
-			uri.SetPathAndQueryString("api/v4/authenticate-user-name-password");
-
-			var restRequest = new SerializableDTOs.AuthenticateUserNamePasswordRequest()
+			if ((apiKey != null) && apiKey.IsActive)
 			{
-				UserName = request.UserName,
-				Password = request.Password,
-			};
+				if (apiKey.ExpirationDateTimeUtc.HasValue && (apiKey.ExpirationDateTimeUtc < getCurrentDateTimeUtc()))
+				{
+					return false;
+				}
 
-#if DEBUG
-			var xxx = ISI.Extensions.WebClient.Rest.GetEventHandler();
-#endif
-
-			var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.AuthenticateUserNamePasswordRequest, SerializableDTOs.AuthenticateUserNamePasswordResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, [], restRequest, false);
-
-			response.NugetApiKey = restResponse?.Response?.NugetApiKey;
-
-			if (restResponse?.Error?.Exception != null)
-			{
-				Logger.LogError(restResponse.Error.Exception, "Error");
+				return true;
 			}
 
-			return response;
+			return false;
 		}
 	}
 }

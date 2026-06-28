@@ -21,7 +21,7 @@ namespace ISI.Extensions.Security
 {
 	public class UserAuthenticationActiveDirectory : IUserAuthenticationHasUserAuthenticationType
 	{
-		public static Guid UserAuthenticationTypeUuid => Guid.Parse("7be457a4-0ce9-4a70-887a-a7d39df34fb8");
+		public static Guid UserAuthenticationTypeUuid => Guid.Parse("34c7d505-c7ab-47c3-a2ff-aeabbbb9246c");
 
 		public string UserAuthenticationKey { get; set; }
 

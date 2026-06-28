@@ -35,78 +35,93 @@ namespace ISI.Extensions.Nuget
 		{
 			var response = new DTOs.GetNugetExeFullNameResponse();
 
-			const string nugetExeFileName = "nuget.exe";
-			const string NUGET_URL = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe";
-
-			if (string.IsNullOrWhiteSpace(_nugetExeFullName))
+			if (string.IsNullOrWhiteSpace(_nugetExeFullName) || !System.IO.File.Exists(_nugetExeFullName))
 			{
-				if (ISI.Extensions.IO.Path.IsInEnvironmentPath(nugetExeFileName, out var nugetExeFullName))
+				const string nugetExeFileName = "nuget.exe";
+				const string NUGET_URL = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe";
+
+				var nugetExeFullName = _nugetExeFullName;
+
+				if (string.IsNullOrWhiteSpace(nugetExeFullName))
 				{
-					_nugetExeFullName = nugetExeFullName;
+					ISI.Extensions.IO.Path.IsInEnvironmentPath(nugetExeFileName, out nugetExeFullName);
 				}
-			}
 
-			if (string.IsNullOrWhiteSpace(_nugetExeFullName))
-			{
-				if (ISI.Extensions.IO.Path.IsInEnvironmentPath("choco.exe", out var chocoExeFullName))
+				if (string.IsNullOrWhiteSpace(nugetExeFullName))
 				{
-					var processResponse = ISI.Extensions.Process.WaitForProcessResponse(chocoExeFullName, new[] { "install", "nuget.commandline", "-y" });
-
-					processResponse = ISI.Extensions.Process.WaitForProcessResponse("refreshenv");
-				}
-			}
-
-			if (string.IsNullOrWhiteSpace(_nugetExeFullName))
-			{
-				if (ISI.Extensions.IO.Path.IsInEnvironmentPath(nugetExeFileName, out var nugetExeFullName))
-				{
-					_nugetExeFullName = nugetExeFullName;
-				}
-			}
-
-			if (string.IsNullOrWhiteSpace(_nugetExeFullName))
-			{
-				//var uriCodeBase = new UriBuilder(GetType().Assembly.CodeBase);
-
-				//var directory = System.IO.Path.GetDirectoryName(Uri.UnescapeDataString(uriCodeBase.Path));
-
-				var directory = ISI.Extensions.IO.Path.GetTempDirectoryName();
-
-				var nugetExeFullName = System.IO.Path.Combine(directory, nugetExeFileName);
-
-				if (!System.IO.File.Exists(nugetExeFullName))
-				{
-					using (var webClient = new System.Net.WebClient())
+					if (ISI.Extensions.IO.Path.IsInEnvironmentPath("choco.exe", out var chocoExeFullName))
 					{
-						webClient.DownloadFile(NUGET_URL, directory);
+						var processResponse = ISI.Extensions.Process.WaitForProcessResponse(chocoExeFullName, new[] { "install", "nuget.commandline", "-y" });
+
+						processResponse = ISI.Extensions.Process.WaitForProcessResponse("refreshenv");
+					}
+				}
+
+				if (string.IsNullOrWhiteSpace(nugetExeFullName))
+				{
+					ISI.Extensions.IO.Path.IsInEnvironmentPath(nugetExeFileName, out nugetExeFullName);
+				}
+
+				if (string.IsNullOrWhiteSpace(nugetExeFullName))
+				{
+					//var uriCodeBase = new UriBuilder(GetType().Assembly.CodeBase);
+
+					//var directory = System.IO.Path.GetDirectoryName(Uri.UnescapeDataString(uriCodeBase.Path));
+
+					var directory = ISI.Extensions.IO.Path.GetTempDirectoryName();
+
+					var downloadedNugetExeFullName = System.IO.Path.Combine(directory, nugetExeFileName);
+
+					if (!System.IO.File.Exists(downloadedNugetExeFullName))
+					{
+						using (var webClient = new System.Net.WebClient())
+						{
+							webClient.DownloadFile(NUGET_URL, directory);
+						}
+
+						ISI.Extensions.IO.FileZone.RemoveZone(downloadedNugetExeFullName);
 					}
 
-					ISI.Extensions.IO.FileZone.RemoveZone(nugetExeFullName);
-
-					_nugetExeFullName = nugetExeFullName;
-				}
-			}
-
-			if (!string.IsNullOrWhiteSpace(_nugetExeFullName) && System.IO.File.Exists(_nugetExeFullName))
-			{
-				var processResponse = ISI.Extensions.Process.WaitForProcessResponse(_nugetExeFullName, new[] { "help" });
-
-				var versionLine = processResponse.Output.Split(['\n', '\r']).NullCheckedFirstOrDefault(line => line.StartsWith("NuGet Version:", StringComparison.InvariantCultureIgnoreCase));
-
-				if (!string.IsNullOrWhiteSpace(versionLine))
-				{
-					var versionMatch = System.Text.RegularExpressions.Regex.Match(versionLine, @"NuGet Version: (?<version>.*)");
-					if (versionMatch.Success)
+					if (!System.IO.File.Exists(downloadedNugetExeFullName))
 					{
-						var productVersion = new System.Version(versionMatch.Groups["version"].Value);
-						var minProductionVersion = new System.Version("5.8.1");
+						nugetExeFullName = downloadedNugetExeFullName;
+					}
+				}
 
-						if (productVersion < minProductionVersion)
+				if (!string.IsNullOrWhiteSpace(nugetExeFullName) && System.IO.File.Exists(nugetExeFullName))
+				{
+					try
+					{
+						var processResponse = Process.WaitForProcessResponse(new Process.ProcessRequest()
 						{
-							processResponse = ISI.Extensions.Process.WaitForProcessResponse(_nugetExeFullName, new[] { "update", "-self" });
+							ProcessExeFullName = nugetExeFullName,
+							Arguments = ["help"],
+							Logger = new NullLogger(),
+						});
+
+						var versionLine = processResponse.Output.Split(['\n', '\r']).NullCheckedFirstOrDefault(line => line.StartsWith("NuGet Version:", StringComparison.InvariantCultureIgnoreCase));
+
+						if (!string.IsNullOrWhiteSpace(versionLine))
+						{
+							var versionMatch = System.Text.RegularExpressions.Regex.Match(versionLine, @"NuGet Version: (?<version>.*)");
+							if (versionMatch.Success)
+							{
+								var productVersion = new Version(versionMatch.Groups["version"].Value);
+								var minProductionVersion = new Version("5.8.1");
+
+								if (productVersion < minProductionVersion)
+								{
+									processResponse = Process.WaitForProcessResponse(nugetExeFullName, new[] { "update", "-self" });
+								}
+							}
 						}
 					}
+					catch
+					{
+					}
 				}
+
+				_nugetExeFullName = nugetExeFullName;
 			}
 
 			response.NugetExeFullName = _nugetExeFullName;

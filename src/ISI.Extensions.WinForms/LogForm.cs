@@ -31,6 +31,7 @@ namespace ISI.Extensions.WinForms
 
 	public partial class LogForm : Form
 	{
+		protected List<string> Logs { get; }
 		protected List<LogPanel> LogPanels { get; }
 
 		protected ApplyFormSizeDelegate ApplyFormSize { get; }
@@ -60,23 +61,29 @@ namespace ISI.Extensions.WinForms
 			MinimizeBox = false;
 			ShowIcon = true;
 
+			Logs = new();
 			LogPanels = new();
 
 			btnDone.Click += (clickSender, clickEventArgs) =>
 			{
-				if (this.Modal)
+				if (Modal)
 				{
-					this.DialogResult = System.Windows.Forms.DialogResult.OK;
+					DialogResult = System.Windows.Forms.DialogResult.OK;
 				}
 				else
 				{
-					this.Close();
+					Close();
 				}
 			};
 
 			btnCopyToClipboard.Click += (clickSender, clickEventArgs) =>
 			{
 				var stringBuilder = new StringBuilder();
+
+				foreach (var log in Logs)
+				{
+					stringBuilder.AppendLine(log);
+				}
 
 				foreach (var logPanel in LogPanels)
 				{
@@ -87,14 +94,19 @@ namespace ISI.Extensions.WinForms
 				Clipboard.SetText(stringBuilder.ToString());
 			};
 
-			this.Shown += OnShown;
+			Shown += OnShown;
 			
-			this.FormClosed += OnFormClosed;
+			FormClosed += OnFormClosed;
 		}
 
 		private void OnFormClosed(object sender, FormClosedEventArgs e)
 		{
 			RecordFormSize?.Invoke(this);
+
+			foreach (var logPanel in LogPanels)
+			{
+				logPanel.Dispose();
+			}
 		}
 
 		private void OnShown(object sender, EventArgs eventArgs)
@@ -114,7 +126,7 @@ namespace ISI.Extensions.WinForms
 
 		public void HideDoneButton()
 		{
-			this.btnDone.Invoke((System.Windows.Forms.MethodInvoker)delegate
+			btnDone.Invoke((System.Windows.Forms.MethodInvoker)delegate
 			{
 				btnDone.Visible = false;
 			});
@@ -122,7 +134,7 @@ namespace ISI.Extensions.WinForms
 
 		public void ShowDoneButton()
 		{
-			this.btnDone.Invoke((System.Windows.Forms.MethodInvoker)delegate
+			btnDone.Invoke((System.Windows.Forms.MethodInvoker)delegate
 			{
 				btnDone.Visible = true;
 			});
@@ -130,7 +142,7 @@ namespace ISI.Extensions.WinForms
 
 		public void AddToLog(ISI.Extensions.StatusTrackers.LogEntryLevel logEntryLevel, string description)
 		{
-			this.flpLogs.Invoke((System.Windows.Forms.MethodInvoker)delegate
+			flpLogs.Invoke((System.Windows.Forms.MethodInvoker)delegate
 			{
 				foreach (var log in description.Replace("\r\n", "\n").Split('\n'))
 				{
@@ -138,22 +150,35 @@ namespace ISI.Extensions.WinForms
 					{
 						var logPanel = new LogPanel(log);
 
-						this.flpLogs.Controls.Add(logPanel.Panel);
-						//this.flpLogs.Controls.SetChildIndex(logPanel.Panel, this.flpLogs.Controls.Count - 2);
-						this.flpLogs.ScrollControlIntoView(logPanel.Panel);
+						flpLogs.Controls.Add(logPanel.Panel);
+
+						while (LogPanels.Count > 500)
+						{
+							var oldLogPanel = LogPanels.First();
+							
+							Logs.Add(oldLogPanel.Description);
+
+							flpLogs.Controls.Remove(oldLogPanel.Panel);
+							
+							LogPanels.RemoveAt(0);
+
+							oldLogPanel.Dispose();
+						}
+
+						flpLogs.ScrollControlIntoView(logPanel.Panel);
 
 						LogPanels.Add(logPanel);
 					}
 				}
 
-				if (LogPanels.Count % 10 == 0)
+				if ((LogPanels.Count + Logs.Count) % 10 == 0)
 				{
 					Application.DoEvents();
 				}
 			});
 		}
-
-		public class LogPanel
+		
+		public class LogPanel : IDisposable
 		{
 			public Control Panel => flpLog;
 
@@ -184,6 +209,12 @@ namespace ISI.Extensions.WinForms
 				flpLog.Controls.Add(lblDescription);
 
 				ISI.Extensions.WinForms.ThemeHelper.SyncTheme(flpLog);
+			}
+
+			public void Dispose()
+			{
+				flpLog?.Dispose();
+				lblDescription?.Dispose();
 			}
 		}
 	}

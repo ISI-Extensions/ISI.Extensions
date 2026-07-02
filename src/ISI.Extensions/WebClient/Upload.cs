@@ -314,7 +314,10 @@ namespace ISI.Extensions.WebClient
 			webRequest.ContentLength = requestLen;
 
 			//webRequest.Expect = string.Empty;
-			//webRequest.Timeout = 1000 * 5;
+			if(requestLen > 1024 * 300)
+			{
+				webRequest.Timeout = 1000000 * 5;
+			}
 			//webRequest.ReadWriteTimeout = 1000 * 5;
 
 			using (var requestStream = webRequest.GetRequestStream())
@@ -419,10 +422,6 @@ namespace ISI.Extensions.WebClient
 
 			webRequest.Method = System.Net.WebRequestMethods.Http.Post;
 			webRequest.ContentLength = requestLen;
-
-			//webRequest.Expect = string.Empty;
-			//webRequest.Timeout = 1000 * 5;
-			//webRequest.ReadWriteTimeout = 1000 * 5;
 
 			using (var requestStream = webRequest.GetRequestStream())
 			{

@@ -38,4 +38,10 @@ namespace ISI.Extensions.Security
 		DateTime ModifyDateTimeUtc { get; set; }
 		ISI.Extensions.UserKey ModifyUserKey { get; set; }
 	}
+	
+	public interface IUserHasDomainRoles : IUser
+	{
+		ICollection<string> Roles { get; set; }
+		ICollection<string> DomainRoles { get; set; }
+	}
 }

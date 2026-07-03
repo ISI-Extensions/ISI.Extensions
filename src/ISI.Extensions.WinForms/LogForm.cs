@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -95,7 +95,7 @@ namespace ISI.Extensions.WinForms
 			};
 
 			Shown += OnShown;
-			
+
 			FormClosed += OnFormClosed;
 		}
 
@@ -105,6 +105,7 @@ namespace ISI.Extensions.WinForms
 
 			foreach (var logPanel in LogPanels)
 			{
+				flpLogs.Controls.Remove(logPanel.Panel);
 				logPanel.Dispose();
 			}
 		}
@@ -144,32 +145,49 @@ namespace ISI.Extensions.WinForms
 		{
 			flpLogs.Invoke((System.Windows.Forms.MethodInvoker)delegate
 			{
+				flpLogs.SuspendLayout();
+
 				foreach (var log in description.Replace("\r\n", "\n").Split('\n'))
 				{
 					if (!string.IsNullOrWhiteSpace(log))
 					{
-						var logPanel = new LogPanel(log);
-
-						flpLogs.Controls.Add(logPanel.Panel);
-
-						while (LogPanels.Count > 500)
+						if (LogPanels.Count > 500)
 						{
-							var oldLogPanel = LogPanels.First();
-							
-							Logs.Add(oldLogPanel.Description);
+							var logPanel = LogPanels.First();
 
-							flpLogs.Controls.Remove(oldLogPanel.Panel);
-							
-							LogPanels.RemoveAt(0);
+							if (!logPanel.IsBigLogMessage)
+							{
+								Logs.Add(logPanel.Description);
+								logPanel.SetBigLogMessage("Clipped older messages");
+							}
 
-							oldLogPanel.Dispose();
+							logPanel = LogPanels[1];
+
+							Logs.Add(logPanel.Description);
+
+							LogPanels.RemoveAt(1);
+							flpLogs.Controls.Remove(logPanel.Panel);
+
+							logPanel.Description = log;
+
+							LogPanels.Add(logPanel);
+							flpLogs.Controls.Add(logPanel.Panel);
 						}
+						else
+						{
+							var logPanel = new LogPanel(log);
 
-						flpLogs.ScrollControlIntoView(logPanel.Panel);
+							flpLogs.Controls.Add(logPanel.Panel);
 
-						LogPanels.Add(logPanel);
+							flpLogs.ScrollControlIntoView(logPanel.Panel);
+
+							LogPanels.Add(logPanel);
+						}
 					}
 				}
+
+				flpLogs.ResumeLayout(false);
+				flpLogs.PerformLayout();
 
 				if ((LogPanels.Count + Logs.Count) % 10 == 0)
 				{
@@ -177,7 +195,7 @@ namespace ISI.Extensions.WinForms
 				}
 			});
 		}
-		
+
 		public class LogPanel : IDisposable
 		{
 			public Control Panel => flpLog;
@@ -185,7 +203,13 @@ namespace ISI.Extensions.WinForms
 			private FlowLayoutPanel flpLog { get; }
 			private Label lblDescription { get; }
 
-			public string Description => lblDescription.Text;
+			public string Description
+			{
+				get => lblDescription.Text;
+				set => lblDescription.Text = value;
+			}
+
+			public bool IsBigLogMessage { get; private set; } = false;
 
 			public LogPanel(string description)
 			{
@@ -209,6 +233,13 @@ namespace ISI.Extensions.WinForms
 				flpLog.Controls.Add(lblDescription);
 
 				ISI.Extensions.WinForms.ThemeHelper.SyncTheme(flpLog);
+			}
+
+			public void SetBigLogMessage(string message)
+			{
+				IsBigLogMessage = true;
+				lblDescription.Text = message;
+				lblDescription.ForeColor = Color.Red;
 			}
 
 			public void Dispose()

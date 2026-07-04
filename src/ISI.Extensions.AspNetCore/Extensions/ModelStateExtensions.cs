@@ -121,6 +121,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 				if (modelState.TryGetValue(key, out var modelStateEntry))
 				{
 					modelStateEntry.Errors.Clear();
+					modelStateEntry.ValidationState = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid;
 				}
 			}
 		}

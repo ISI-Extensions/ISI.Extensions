@@ -412,14 +412,39 @@ namespace ISI.Extensions.VisualStudio.Forms
 				};
 			}
 
-			var getActiveBuildConfigurationResponse = SolutionApi.GetActiveBuildConfiguration(new()
 			{
-				Solution = solutionFullName,
-			});
+				var errors = new List<string>();
 
-			SolutionDetails = getActiveBuildConfigurationResponse.SolutionDetails;
-			ActiveBuildConfiguration = getActiveBuildConfigurationResponse.ActiveBuildConfiguration;
+				var getActiveBuildConfigurationResponse = SolutionApi.GetActiveBuildConfiguration(new()
+				{
+					Solution = solutionFullName,
+					AddToLog = (level, description) =>
+					{
+						if (level == ISI.Extensions.StatusTrackers.LogEntryLevel.Error)
+						{
+							errors.Add(description);
+						}
+					}
+				});
 
+				if (errors.Any())
+				{
+					using (var logForm = new ISI.Extensions.WinForms.LogForm(null, null, addToLog =>
+					       {
+						       foreach (var error in errors)
+						       {
+							       addToLog(ISI.Extensions.StatusTrackers.LogEntryLevel.Error, error);
+						       }
+					       }))
+					{
+						logForm.ShowDialog();
+					}
+				}
+
+				SolutionDetails = getActiveBuildConfigurationResponse.SolutionDetails;
+				ActiveBuildConfiguration = getActiveBuildConfigurationResponse.ActiveBuildConfiguration;
+			}
+			
 			Panel = new System.Windows.Forms.Panel()
 			{
 				Width = parentControl.Width - 19,

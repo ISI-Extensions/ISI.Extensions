@@ -19,12 +19,22 @@ using System.Text;
 
 namespace ISI.Extensions.AspNetCore
 {
-	public interface IHasTitleModel
+	public interface IModel
+	{
+		
+	}
+	
+	public interface IHasTitleModel : IModel
 	{
 		Microsoft.AspNetCore.Html.IHtmlContent Title { get; set; }
 	}
 	
-	public interface IHasSiteLayout_cshtmlModel
+	public interface IModelHasBaseUtcOffset : IModel
+	{
+		TimeSpan BaseUtcOffset { get; set; }
+	}
+	
+	public interface IModelHasSiteLayout_cshtml : IModel
 	{
 		string SiteLayout_cshtml { get; set; }
 	}
@@ -88,13 +98,20 @@ namespace ISI.Extensions.AspNetCore.Extensions
 				htmlHelper.ViewBag.Title = new Microsoft.AspNetCore.Html.HtmlString(title);
 			}
 		}
-
-
-		public static void SetSiteLayout_cshtml(this ISI.Extensions.AspNetCore.IHasSiteLayout_cshtmlModel model, string siteLayout_cshtml)
+		
+		public static void SetSiteLayout_cshtml(this ISI.Extensions.AspNetCore.IModel model, string siteLayout_cshtml)
 		{
-			if (model != null)
+			if(model is IModelHasSiteLayout_cshtml hasSiteLayoutCshtml)
 			{
-				model.SiteLayout_cshtml = siteLayout_cshtml;
+				hasSiteLayoutCshtml.SiteLayout_cshtml = siteLayout_cshtml;
+			}
+		}
+		
+		public static void SetBaseUtcOffset(this ISI.Extensions.AspNetCore.IModel model, TimeSpan baseUtcOffset)
+		{
+			if(model is IModelHasBaseUtcOffset hasBaseUtcOffset)
+			{
+				hasBaseUtcOffset.BaseUtcOffset = baseUtcOffset;
 			}
 		}
 	}

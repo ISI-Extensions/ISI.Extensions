@@ -25,5 +25,7 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 	public class GetSolutionPreferencesRequest
 	{
 		public string SolutionDirectory { get; set; }
+
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

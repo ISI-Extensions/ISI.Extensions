@@ -44,4 +44,14 @@ namespace ISI.Extensions.Security
 		ICollection<string> Roles { get; set; }
 		ICollection<string> DomainRoles { get; set; }
 	}
+	
+	public interface IUserHasIsExternalUser : IUser
+	{
+		bool IsExternalUser { get; set; }
+	}
+	
+	public interface IUserHasActiveDirectoryUserName : IUser
+	{
+		string ActiveDirectoryUserName { get; set; }
+	}
 }

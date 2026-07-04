@@ -34,6 +34,7 @@ namespace ISI.Extensions.VisualStudio
 			response.SolutionDetails = GetSolutionDetails(new()
 			{
 				Solution = request.Solution,
+				AddToLog = request.AddToLog,
 			}).SolutionDetails;
 
 			if (response.SolutionDetails != null)

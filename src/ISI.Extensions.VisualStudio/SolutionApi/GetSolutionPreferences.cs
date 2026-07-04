@@ -33,6 +33,8 @@ namespace ISI.Extensions.VisualStudio
 
 		public DTOs.GetSolutionPreferencesResponse GetSolutionPreferences(DTOs.GetSolutionPreferencesRequest request)
 		{
+			var logger = new AddToLogLogger(request.AddToLog, Logger);
+
 			var response = new DTOs.GetSolutionPreferencesResponse();
 
 			var solutionPreferencesFullName = System.IO.Path.Combine(request.SolutionDirectory, SolutionPreferencesFileName);
@@ -45,7 +47,16 @@ namespace ISI.Extensions.VisualStudio
 			{
 				using (var stream = System.IO.File.OpenRead(solutionPreferencesFullName))
 				{
-					response.SolutionPreferences = JsonSerializer.Deserialize<SerializableDTOs.ISolutionPreferences>(stream)?.Export();
+					try
+					{
+						response.SolutionPreferences = JsonSerializer.Deserialize<ISI.Extensions.VisualStudio.SerializableModels.ISolutionPreferences>(stream)?.Export();
+					}
+					catch (Exception exception)
+					{
+						exception = new System.IO.FileLoadException("GetSolutionPreferences Error", solutionPreferencesFullName, exception);
+						
+						logger.LogError(exception, exception.Message);
+					}
 				}
 			}
 

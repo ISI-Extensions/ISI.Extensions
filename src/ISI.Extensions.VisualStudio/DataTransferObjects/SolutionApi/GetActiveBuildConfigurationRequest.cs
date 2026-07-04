@@ -25,5 +25,7 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 	public class GetActiveBuildConfigurationRequest
 	{
 		public string Solution { get; set; }
+
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

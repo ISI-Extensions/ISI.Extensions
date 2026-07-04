@@ -56,6 +56,7 @@ namespace ISI.Extensions.VisualStudio
 				var solutionPreferences = GetSolutionPreferences(new()
 				{
 					SolutionDirectory = response.SolutionDetails.SolutionDirectory,
+					AddToLog = request.AddToLog,
 				}).SolutionPreferences;
 
 				if (solutionPreferences != null)

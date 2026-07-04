@@ -59,6 +59,14 @@ namespace ISI.Extensions.AspNetCore.Extensions
 			return Microsoft.AspNetCore.Html.HtmlString.Empty;
 		}
 
+		public static void SetTitle(this ISI.Extensions.AspNetCore.IHasTitleModel model, Microsoft.AspNetCore.Html.IHtmlContent title)
+		{
+			if (model != null)
+			{
+				model.Title = title;
+			}
+		}
+
 		public static void SetTitle(this ISI.Extensions.AspNetCore.IHasTitleModel model, Microsoft.AspNetCore.Html.HtmlString title)
 		{
 			if (model != null)

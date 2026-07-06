@@ -53,9 +53,26 @@ namespace ISI.Extensions.VisualStudio
 					}
 					catch (Exception exception)
 					{
-						exception = new System.IO.FileLoadException("GetSolutionPreferences Error", solutionPreferencesFullName, exception);
+						//exception = new System.IO.FileLoadException("GetSolutionPreferences Error", solutionPreferencesFullName, exception);
 						
-						logger.LogError(exception, exception.Message);
+						logger.LogError(exception.ErrorMessageFormatted());
+						logger.LogError($"solutionPreferencesFullName: {solutionPreferencesFullName}");
+
+						logger.LogError($"JsonConvert AssemblyQualifiedName: {typeof(global::Newtonsoft.Json.JsonConvert).AssemblyQualifiedName}");
+
+						foreach (var jsonConverter in ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer.JsonConverters())
+						{
+							logger.LogError($"jsonConverterType: {jsonConverter.GetType().FullName}");
+
+							if (jsonConverter is ISI.Extensions.JsonSerialization.Newtonsoft.SerializerContractUuidJsonConverter serializerContractUuidJsonConverter)
+							{
+								foreach (var interfaceTypesWithDefaultImplementationType in serializerContractUuidJsonConverter.InterfaceTypesWithDefaultImplementationType.Where(interfaceTypesWithDefaultImplementationType => interfaceTypesWithDefaultImplementationType.Value != null))
+								{
+									logger.LogError($"  {interfaceTypesWithDefaultImplementationType.Key.FullName} {interfaceTypesWithDefaultImplementationType.Value.FullName}");
+
+								}
+							}
+						}
 					}
 				}
 			}

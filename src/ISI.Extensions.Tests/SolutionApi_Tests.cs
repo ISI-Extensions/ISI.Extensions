@@ -116,13 +116,24 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void GetSolutionPreferences_Test()
+		{
+			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
+
+			var readSolutionPreferences = solutionApi.GetSolutionPreferences(new()
+			{
+				SolutionDirectory = @"F:\ISI\Internal Projects\ISI.Extensions\src",
+			}).SolutionPreferences;
+		}
+
+		[Test]
 		public void GetActiveBuildConfiguration_Test()
 		{
 			var solutionApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.SolutionApi>();
 
 			var xxx = solutionApi.GetActiveBuildConfiguration(new()
 			{
-				Solution = @"F:\ISI\Internal Projects\ISI.Identity.ServiceApplication\src",
+				Solution = @"F:\ISI\Clients\West River Systems\WRS.Administration.Interface.RestApi.ServiceApplication",
 			});
 		}
 

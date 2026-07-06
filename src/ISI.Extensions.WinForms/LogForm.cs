@@ -103,9 +103,11 @@ namespace ISI.Extensions.WinForms
 		{
 			RecordFormSize?.Invoke(this);
 
+			flpLogs.Controls.Clear();
+
 			foreach (var logPanel in LogPanels)
 			{
-				flpLogs.Controls.Remove(logPanel.Panel);
+				//flpLogs.Controls.Remove(logPanel.Panel);
 				logPanel.Dispose();
 			}
 		}
@@ -147,13 +149,15 @@ namespace ISI.Extensions.WinForms
 			{
 				flpLogs.SuspendLayout();
 
+				var logPanel = (LogPanel)null;
+
 				foreach (var log in description.Replace("\r\n", "\n").Split('\n'))
 				{
 					if (!string.IsNullOrWhiteSpace(log))
 					{
 						if (LogPanels.Count > 500)
 						{
-							var logPanel = LogPanels.First();
+							logPanel = LogPanels.First();
 
 							if (!logPanel.IsBigLogMessage)
 							{
@@ -175,11 +179,9 @@ namespace ISI.Extensions.WinForms
 						}
 						else
 						{
-							var logPanel = new LogPanel(log);
+							logPanel = new LogPanel(log);
 
 							flpLogs.Controls.Add(logPanel.Panel);
-
-							flpLogs.ScrollControlIntoView(logPanel.Panel);
 
 							LogPanels.Add(logPanel);
 						}
@@ -188,6 +190,11 @@ namespace ISI.Extensions.WinForms
 
 				flpLogs.ResumeLayout(false);
 				flpLogs.PerformLayout();
+
+				if(logPanel != null)
+				{
+					flpLogs.ScrollControlIntoView(logPanel.Panel);
+				}
 
 				if ((LogPanels.Count + Logs.Count) % 10 == 0)
 				{

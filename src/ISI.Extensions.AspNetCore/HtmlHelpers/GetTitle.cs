@@ -29,6 +29,13 @@ namespace ISI.Extensions.AspNetCore
 		Microsoft.AspNetCore.Html.IHtmlContent Title { get; set; }
 	}
 	
+	public interface IHasModifyApplicationModel : IModel
+	{
+		SystemInformation.ModifyApplicationShortNameDelegate ModifyApplicationShortName { get; }
+		SystemInformation.ModifyApplicationNameDelegate ModifyApplicationName { get; }
+		SystemInformation.ModifyApplicationDisplayNameDelegate ModifyApplicationDisplayName { get; }
+	}
+
 	public interface IModelHasBaseUtcOffset : IModel
 	{
 		TimeSpan BaseUtcOffset { get; set; }

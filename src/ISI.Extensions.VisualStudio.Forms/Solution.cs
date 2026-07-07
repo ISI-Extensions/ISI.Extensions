@@ -28,6 +28,8 @@ namespace ISI.Extensions.VisualStudio.Forms
 {
 	public class Solution
 	{
+		public delegate void SetStatusDelegate(ISI.Extensions.StatusTrackers.LogEntryLevel logEntryLevel, string description);
+
 		private static ISI.Extensions.Scm.ISourceControlClientApi _sourceControlClientApi = null;
 		protected ISI.Extensions.Scm.ISourceControlClientApi SourceControlClientApi => _sourceControlClientApi ??= ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.ISourceControlClientApi>();
 
@@ -195,9 +197,9 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 						AddToLog = (logEntryLevel, description) =>
 						{
-							UpdateStatus(description);
+							UpdateStatus(logEntryLevel, description);
 							CleanSolutionResponse.AppendLine(description);
-							Logger.LogInformation(description);
+							Logger.Log(logEntryLevel.ToLogLevel(), description);
 						},
 					}).Success);
 
@@ -251,9 +253,9 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 							AddToLog = (logEntryLevel, description) =>
 							{
-								UpdateStatus(description);
+								UpdateStatus(logEntryLevel, description);
 								UpdateSolutionResponse.AppendLine(description);
-								Logger.LogInformation(description);
+								Logger.Log(logEntryLevel.ToLogLevel(), description);
 							},
 						}).Success ? 0 : 1;
 					}
@@ -303,8 +305,8 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 						AddToLog = (logEntryLevel, description) =>
 						{
-							UpdateStatus(description);
-							Logger.LogInformation(description);
+							UpdateStatus(logEntryLevel, description);
+							Logger.Log(logEntryLevel.ToLogLevel(), description);
 							RestoreNugetPackagesResponse.AppendLine(description);
 						},
 					}).Success ? 0 : 1;
@@ -354,8 +356,8 @@ namespace ISI.Extensions.VisualStudio.Forms
 
 						AddToLog = (logEntryLevel, description) =>
 						{
-							UpdateStatus(description);
-							Logger.LogInformation(description);
+							UpdateStatus(logEntryLevel, description);
+							Logger.Log(logEntryLevel.ToLogLevel(), description);
 							BuildSolutionResponse.AppendLine(description);
 						},
 					};
@@ -394,21 +396,21 @@ namespace ISI.Extensions.VisualStudio.Forms
 		protected System.Windows.Forms.Control SolutionPanel { get; private set; }
 		public System.Windows.Forms.Control Panel { get; }
 		public Microsoft.Extensions.Logging.ILogger Logger { get; }
-		public Action<string> UpdateStatus { get; }
+		public SetStatusDelegate UpdateStatus { get; }
 
-		public Solution(string solutionFullName, System.Windows.Forms.Control parentControl, bool highlighted, bool selected, Action<Solution> start, IEnumerable<ProjectKey> projectKeys, bool showSolutionFilterKeys, bool waitForExecuteProjectResponse, Action onChangeSelected, Action<string> setStatus, Microsoft.Extensions.Logging.ILogger logger)
+		public Solution(string solutionFullName, System.Windows.Forms.Control parentControl, bool highlighted, bool selected, Action<Solution> start, IEnumerable<ProjectKey> projectKeys, bool showSolutionFilterKeys, bool waitForExecuteProjectResponse, Action onChangeSelected, SetStatusDelegate setStatus, Microsoft.Extensions.Logging.ILogger logger)
 		{
 			Logger = logger ?? new ISI.Extensions.ConsoleLogger();
 
 			if (setStatus == null)
 			{
-				UpdateStatus = status => { };
+				UpdateStatus = (logEntryLevel, description) => { };
 			}
 			else
 			{
-				UpdateStatus = status =>
+				UpdateStatus = (logEntryLevel, description) =>
 				{
-					setStatus((status ?? string.Empty).Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries).LastOrDefault() ?? string.Empty);
+					setStatus(logEntryLevel, (description ?? string.Empty).Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries).LastOrDefault() ?? string.Empty);
 				};
 			}
 

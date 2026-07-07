@@ -24,7 +24,7 @@ namespace ISI.Extensions.VisualStudio.DataTransferObjects.SolutionApi
 	public delegate IDisposable GetBuildServiceSolutionLockDelegate(string solutionFullName, ISI.Extensions.StatusTrackers.AddToLog addToLog);
 
 	public delegate void UpgradeNugetPackagesPreActionDelegate(string solutionFullName);
-	public delegate void UpgradeNugetPackagesSetStatusDelegate(string solutionFullName, string description);
+	public delegate void UpgradeNugetPackagesSetStatusDelegate(string solutionFullName, ISI.Extensions.StatusTrackers.LogEntryLevel logEntryLevel, string description);
 	public delegate void UpgradeNugetPackagesPostActionDelegate(string solutionFullName);
 	public delegate void UpgradeNugetPackagesBuildScriptErrorDelegate(string solutionFullName);
 

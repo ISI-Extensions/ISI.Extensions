@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -73,15 +73,14 @@ namespace ISI.Extensions.VisualStudio.Forms
 		protected internal bool ShowProjectExecutionInTaskbar { get; set; } = true;
 		protected internal bool ExitOnClose { get; set; }
 
-		public ISI.Extensions.WinForms.LogFormLogger LogFormLogger { get; protected set; } = null;
+		private ISI.Extensions.WinForms.LogFormLogger _logFormLogger { get; set; } = null;
+		public ISI.Extensions.WinForms.LogFormLogger LogFormLogger => _logFormLogger ??= new ISI.Extensions.WinForms.LogFormLogger(form => SolutionApi.ApplyFormSize(form), form => SolutionApi.RecordFormSize(form), () => _logFormLogger = null);
 
 		public SolutionsForm(ExecuteActionsInSolutionsDelegate executeActionsInSolutions, UpdatePreviouslySelectedSolutionsDelegate updatePreviouslySelectedSolutions, OnCloseFormDelegate onCloseForm)
 		{
 			InitializeComponent();
 
 			ISI.Extensions.WinForms.ThemeHelper.SyncTheme(this);
-
-			LogFormLogger = new ISI.Extensions.WinForms.LogFormLogger(form => SolutionApi.ApplyFormSize(form), form => SolutionApi.RecordFormSize(form));
 
 			SolutionsPanel.ControlAdded += (sender, args) => ISI.Extensions.WinForms.ThemeHelper.SyncTheme(args.Control);
 
@@ -126,7 +125,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 					StartButton.Visible = true;
 					CloseButton.Enabled = true;
 					CloseButton.Visible = true;
-					
+
 					LogFormLogger?.LogForm?.ShowDoneButton();
 				}
 			};
@@ -203,7 +202,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 				Cancelled = true;
 				CancellationTokenSource?.Cancel();
 				StopButton.Visible = false;
-				
+
 				LogFormLogger?.LogForm?.ShowDoneButton();
 			};
 
@@ -239,7 +238,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 							IsFirstRefresh = false;
 						}
 
-						SetStatus(string.Empty);
+						SetStatus(ISI.Extensions.StatusTrackers.LogEntryLevel.Information, string.Empty);
 
 						var resetResponses = true;
 
@@ -281,12 +280,12 @@ namespace ISI.Extensions.VisualStudio.Forms
 												solution.UpgradeNugetPackagesPreAction();
 											}
 										},
-										SetStatus = (solutionFullName, description) =>
+										SetStatus = (solutionFullName, logEntryLevel, description) =>
 										{
 											if (solutionsBySolutionFullName.TryGetValue(solutionFullName, out var solution))
 											{
-												solution.UpdateStatus?.Invoke(description);
-												solution.Logger.LogInformation(description);
+												solution.UpdateStatus?.Invoke(logEntryLevel, description);
+												solution.Logger.Log(logEntryLevel.ToLogLevel(), description);
 												solution.UpgradeNugetPackagesResponse.AppendLine(description);
 											}
 										},
@@ -324,7 +323,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 						}
 
 						LogFormLogger?.LogForm?.HideDoneButton();
-						
+
 						StopButton.Visible = true;
 						CloseButton.Enabled = false;
 
@@ -337,8 +336,8 @@ namespace ISI.Extensions.VisualStudio.Forms
 			{
 				onCloseForm(this);
 
-				LogFormLogger?.Dispose();
-				LogFormLogger = null;
+				_logFormLogger?.Dispose();
+				_logFormLogger = null;
 
 				if (this.Modal)
 				{
@@ -361,11 +360,26 @@ namespace ISI.Extensions.VisualStudio.Forms
 			};
 		}
 
-		public void SetStatus(string status)
+		public void SetStatus(ISI.Extensions.StatusTrackers.LogEntryLevel  logEntryLevel, string description)
 		{
 			lblStatus.Invoke((System.Windows.Forms.MethodInvoker)delegate
 			{
-				lblStatus.Text = status;
+				lblStatus.Text = description;
+
+				switch (logEntryLevel)
+				{
+					case ISI.Extensions.StatusTrackers.LogEntryLevel.Information:
+						lblStatus.ForeColor = ISI.Extensions.WinForms.ThemeHelper.GetForeColor();
+						break;
+					
+					case ISI.Extensions.StatusTrackers.LogEntryLevel.Warning:
+						lblStatus.ForeColor = Color.Yellow;
+						break;
+					
+					case ISI.Extensions.StatusTrackers.LogEntryLevel.Error:
+						lblStatus.ForeColor = Color.Red;
+						break;
+				}
 			});
 		}
 	}

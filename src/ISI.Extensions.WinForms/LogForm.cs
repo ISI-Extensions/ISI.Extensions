@@ -37,14 +37,16 @@ namespace ISI.Extensions.WinForms
 		protected ApplyFormSizeDelegate ApplyFormSize { get; }
 		protected RecordFormSizeDelegate RecordFormSize { get; }
 		protected OnShowDialogDelegate OnShowDialog { get; }
+		protected Action OnClose { get; }
 
 		public bool ShowDoneButtonOnStartUp { get; set; } = true;
 
-		public LogForm(ApplyFormSizeDelegate applyFormSize, RecordFormSizeDelegate recordFormSize, OnShowDialogDelegate onShowDialog)
+		public LogForm(ApplyFormSizeDelegate applyFormSize, RecordFormSizeDelegate recordFormSize, OnShowDialogDelegate onShowDialog, Action onClose)
 		{
 			ApplyFormSize = applyFormSize;
 			RecordFormSize = recordFormSize;
 			OnShowDialog = onShowDialog;
+			OnClose = onClose;
 
 			InitializeComponent();
 
@@ -110,6 +112,8 @@ namespace ISI.Extensions.WinForms
 				//flpLogs.Controls.Remove(logPanel.Panel);
 				logPanel.Dispose();
 			}
+
+			OnClose?.Invoke();
 		}
 
 		private void OnShown(object sender, EventArgs eventArgs)
@@ -179,7 +183,7 @@ namespace ISI.Extensions.WinForms
 						}
 						else
 						{
-							logPanel = new LogPanel(log);
+							logPanel = new LogPanel(logEntryLevel, log);
 
 							flpLogs.Controls.Add(logPanel.Panel);
 
@@ -218,7 +222,7 @@ namespace ISI.Extensions.WinForms
 
 			public bool IsBigLogMessage { get; private set; } = false;
 
-			public LogPanel(string description)
+			public LogPanel(ISI.Extensions.StatusTrackers.LogEntryLevel logEntryLevel, string description)
 			{
 				flpLog = new()
 				{
@@ -237,6 +241,16 @@ namespace ISI.Extensions.WinForms
 					Size = new(380, 17),
 					Text = description,
 				};
+				switch (logEntryLevel)
+				{
+					case ISI.Extensions.StatusTrackers.LogEntryLevel.Warning:
+						lblDescription.ForeColor = Color.Yellow;
+						break;
+					
+					case ISI.Extensions.StatusTrackers.LogEntryLevel.Error:
+						lblDescription.ForeColor = Color.Red;
+						break;
+				}
 				flpLog.Controls.Add(lblDescription);
 
 				ISI.Extensions.WinForms.ThemeHelper.SyncTheme(flpLog);

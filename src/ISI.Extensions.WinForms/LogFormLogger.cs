@@ -30,12 +30,12 @@ namespace ISI.Extensions.WinForms
 
 		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; protected set; }
 
-		public LogFormLogger(ApplyFormSizeDelegate applyFormSize, RecordFormSizeDelegate recordFormSize)
+		public LogFormLogger(ApplyFormSizeDelegate applyFormSize, RecordFormSizeDelegate recordFormSize, Action onClose)
 		{
 			LogForm = new LogForm(applyFormSize, recordFormSize, addToLog =>
 			{
 				AddToLog = addToLog;
-			})
+			}, onClose)
 			{
 				ShowDoneButtonOnStartUp = false,
 			};

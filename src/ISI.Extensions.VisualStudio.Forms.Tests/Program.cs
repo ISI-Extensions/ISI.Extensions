@@ -67,8 +67,7 @@ namespace ISI.Extensions.VisualStudio.Forms.Tests
 
 			var selectedItemPaths = new[]
 			{
-				@"F:\ISI\Internal Projects\ISI.BackOffice.ServiceApplication\",
-				@"F:\ISI\Internal Projects\ISI.SolutionTemplate.ServiceApplication\",
+				@"F:\ISI\Internal Projects\",
 			};
 
 			System.Windows.Forms.Application.EnableVisualStyles();

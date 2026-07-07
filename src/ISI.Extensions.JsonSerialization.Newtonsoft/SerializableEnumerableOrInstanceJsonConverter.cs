@@ -60,7 +60,6 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 		}
 	}
 
-
 	[GetJsonConverter]
 	public class GetSerializableEnumerableOrInstanceJsonConverter : IGetJsonConverter
 	{

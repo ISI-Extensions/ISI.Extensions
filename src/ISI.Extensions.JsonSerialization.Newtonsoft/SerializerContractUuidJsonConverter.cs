@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,9 +27,9 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 	public class SerializerContractUuidJsonConverter : global::Newtonsoft.Json.JsonConverter, IJsonConverterWithGetSerializableInterfaceTypes
 	{
 		public Type[] SerializableInterfaceTypes { get; }
-		public System.Collections.Concurrent.ConcurrentDictionary<Type, Type> InterfaceTypesWithDefaultImplementationType { get; }
-		public System.Collections.Concurrent.ConcurrentDictionary<Guid, Type> SerializerContractUuidToImplementationType { get; }
-		public System.Collections.Concurrent.ConcurrentDictionary<Type, Guid> ImplementationTypeToSerializerContractUuid { get; }
+		public IDictionary<Type, Type> InterfaceTypesWithDefaultImplementationType { get; }
+		public IDictionary<Guid, Type> SerializerContractUuidToImplementationType { get; }
+		public IDictionary<Type, Guid> ImplementationTypeToSerializerContractUuid { get; }
 
 		public override bool CanWrite => true;
 		public override bool CanRead => true;
@@ -40,9 +40,9 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 			IDictionary<Guid, Type> serializerContractUuidToImplementationType)
 		{
 			SerializableInterfaceTypes = serializableInterfaceTypes.ToNullCheckedArray(NullCheckCollectionResult.Empty);
-			InterfaceTypesWithDefaultImplementationType = new(interfaceTypesWithDefaultImplementationType);
-			SerializerContractUuidToImplementationType = new(serializerContractUuidToImplementationType);
-			ImplementationTypeToSerializerContractUuid = new(serializerContractUuidToImplementationType.ToDictionary(keyValue => keyValue.Value, keyValue => keyValue.Key));
+			InterfaceTypesWithDefaultImplementationType = new Dictionary<Type, Type>(interfaceTypesWithDefaultImplementationType);
+			SerializerContractUuidToImplementationType = new Dictionary<Guid, Type>(serializerContractUuidToImplementationType);
+			ImplementationTypeToSerializerContractUuid = new Dictionary<Type, Guid>(serializerContractUuidToImplementationType.ToDictionary(keyValue => keyValue.Value, keyValue => keyValue.Key));
 		}
 
 		public override bool CanConvert(Type objectType) => (InterfaceTypesWithDefaultImplementationType.ContainsKey(objectType) || ImplementationTypeToSerializerContractUuid.ContainsKey(objectType));
@@ -97,7 +97,7 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 			{
 				implementationType = defaultImplementationType;
 			}
-			
+
 			if (implementationType == null)
 			{
 				throw new Exception($"implementationType not found for serializerContractUuid: {serializerContractUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)}");
@@ -143,8 +143,8 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 					if (_jsonConverter == null)
 					{
 						var serializableInterfaceTypes = new HashSet<Type>();
-						var interfaceTypesWithDefaultImplementationType = new System.Collections.Concurrent.ConcurrentDictionary<Type, Type>();
-						var serializerContractUuidToImplementationType = new System.Collections.Concurrent.ConcurrentDictionary<Guid, Type>();
+						var interfaceTypesWithDefaultImplementationType = new Dictionary<Type, Type>();
+						var serializerContractUuidToImplementationType = new Dictionary<Guid, Type>();
 
 						foreach (var exportedType in ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementationTypes<ISI.Extensions.Serialization.ISerializerContractUuid>())
 						{
@@ -157,13 +157,18 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 
 									var serializerDefaultImplementationTypeAttribute = ((ISI.Extensions.Serialization.SerializerDefaultImplementationTypeAttribute[])(interfaceType.GetCustomAttributes(typeof(ISI.Extensions.Serialization.SerializerDefaultImplementationTypeAttribute), false))).FirstOrDefault();
 
-									interfaceTypesWithDefaultImplementationType.TryAdd(interfaceType, serializerDefaultImplementationTypeAttribute?.DefaultImplementationType);
+									if (!interfaceTypesWithDefaultImplementationType.ContainsKey(interfaceType))
+									{
+										interfaceTypesWithDefaultImplementationType.Add(interfaceType, serializerDefaultImplementationTypeAttribute?.DefaultImplementationType);
+									}
 								}
 
-								if (!serializerContractUuidToImplementationType.TryAdd(serializerContractUuidAttribute.SerializerContractUuid, exportedType))
+								if (serializerContractUuidToImplementationType.ContainsKey(serializerContractUuidAttribute.SerializerContractUuid))
 								{
 									throw new($"Multiple SerializerContractUuid found \"{serializerContractUuidAttribute.SerializerContractUuid.Formatted(GuidExtensions.GuidFormat.WithHyphens)}\"");
 								}
+
+								serializerContractUuidToImplementationType.Add(serializerContractUuidAttribute.SerializerContractUuid, exportedType);
 							}
 						}
 

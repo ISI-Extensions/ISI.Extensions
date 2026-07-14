@@ -23,6 +23,6 @@ namespace ISI.Extensions.Scm
 	public interface IRcsKeywordProcessorApi
 	{
 		DTOs.ReplaceRcsKeywordsResponse ReplaceRcsKeywords(DTOs.ReplaceRcsKeywordsRequest request);
-		DTOs.RevertRcsKeywordsResponse RevertRcsKeywords(DTOs.RevertRcsKeywordsRequest request);
+		ISI.Extensions.Scm.DataTransferObjects.RcsKeywordProcessorApi.RevertRcsKeywordsResponse RevertRcsKeywords(ISI.Extensions.Scm.DataTransferObjects.RcsKeywordProcessorApi.IRevertRcsKeywordsRequest request);
 	}
 }

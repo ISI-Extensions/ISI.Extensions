@@ -19,23 +19,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.JsonSerialization.Extensions;
 using DTOs = ISI.Extensions.Scm.DataTransferObjects.RcsKeywordProcessorApi;
+using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.RcsKeywords;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Scm
 {
 	public partial class RcsKeywordProcessorApi : IRcsKeywordProcessorApi
 	{
+		protected Configuration Configuration { get; }
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
 		protected ISI.Extensions.Scm.ISourceControlClientApi SourceControlClientApi { get; }
+		protected ISI.Extensions.JsonSerialization.IJsonSerializer JsonSerializer { get; }
 
 		public RcsKeywordProcessorApi(
+			Configuration configuration,
 			Microsoft.Extensions.Logging.ILogger logger,
 			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
+			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer,
 			ISI.Extensions.Scm.ISourceControlClientApi sourceControlClientApi)
 		{
+			Configuration = configuration;
 			Logger = logger;
 			DateTimeStamper = dateTimeStamper;
+			JsonSerializer = jsonSerializer;
 			SourceControlClientApi = sourceControlClientApi;
 		}
 	}

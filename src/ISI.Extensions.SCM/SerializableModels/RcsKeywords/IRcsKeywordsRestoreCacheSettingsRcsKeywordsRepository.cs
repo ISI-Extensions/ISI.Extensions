@@ -19,17 +19,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
+using LOCALENTITIES = ISI.Extensions.Scm;
 
-namespace ISI.Extensions.Scm
+namespace ISI.Extensions.Scm.SerializableModels.RcsKeywords
 {
-	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
-	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
+	public interface IRcsKeywordsRestoreCacheSettingsRcsKeywordsRepository : ISI.Extensions.Converters.IExportTo<LOCALENTITIES.RcsKeywordsRestoreCacheSettingsRcsKeywordsRepository>
 	{
-		public const string ConfigurationSectionName = "ISI.Extensions.Scm";
-		
-		public string SettingsFullName { get; set; }
-		
-		public string RcsKeywordsCacheSettingsFullName { get; set; } = @"FileNameDeMasked:{ApplicationData}\ISI.Extensions\rcs-keywords-cache.json";
-		public string RcsKeywordsCacheDirectory { get; set; } = @"FileNameDeMasked:{ApplicationData}\ISI.Extensions\RcsKeywordsCache";
 	}
 }

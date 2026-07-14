@@ -16,20 +16,41 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using LOCALENTITIES = ISI.Extensions.Scm;
 
-namespace ISI.Extensions.Scm
+namespace ISI.Extensions.Scm.SerializableModels.RcsKeywords
 {
-	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
-	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
+	[DataContract]
+	[ISI.Extensions.Serialization.PreferredSerializerJsonDataContract]
+	[ISI.Extensions.Serialization.SerializerContractUuid("7da0d19a-86a1-42dd-8cdf-0adc5f4c8843")]
+	public class RcsKeywordsRestoreCacheSettingsRcsKeywordsFileV1 : IRcsKeywordsRestoreCacheSettingsRcsKeywordsFile
 	{
-		public const string ConfigurationSectionName = "ISI.Extensions.Scm";
-		
-		public string SettingsFullName { get; set; }
-		
-		public string RcsKeywordsCacheSettingsFullName { get; set; } = @"FileNameDeMasked:{ApplicationData}\ISI.Extensions\rcs-keywords-cache.json";
-		public string RcsKeywordsCacheDirectory { get; set; } = @"FileNameDeMasked:{ApplicationData}\ISI.Extensions\RcsKeywordsCache";
+		public static IRcsKeywordsRestoreCacheSettingsRcsKeywordsFile ToSerializable(LOCALENTITIES.RcsKeywordsRestoreCacheSettingsRcsKeywordsFile source)
+		{
+			return new RcsKeywordsRestoreCacheSettingsRcsKeywordsFileV1()
+			{
+				SourceFullName = source.SourceFullName,
+				ContentFullName = source.ContentFullName,
+			};
+		}
+
+		public LOCALENTITIES.RcsKeywordsRestoreCacheSettingsRcsKeywordsFile Export()
+		{
+			return new LOCALENTITIES.RcsKeywordsRestoreCacheSettingsRcsKeywordsFile()
+			{
+				SourceFullName = SourceFullName,
+				ContentFullName = ContentFullName,
+			};
+		}
+
+		[ISI.Extensions.Repository.RecordProperty(ColumnName = "sourceFullName")]
+		public string SourceFullName { get; set; }
+
+		[ISI.Extensions.Repository.RecordProperty(ColumnName = "contentFullName")]
+		public string ContentFullName { get; set; }
 	}
 }

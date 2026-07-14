@@ -76,7 +76,7 @@ namespace ISI.Extensions.Tests
 				IncludeChildDirectories = true,
 			});
 			
-			rcsKeywordProcessorApi.RevertRcsKeywords(new()
+			rcsKeywordProcessorApi.RevertRcsKeywords(new ISI.Extensions.Scm.DataTransferObjects.RcsKeywordProcessorApi.RevertRcsKeywordsRequest()
 			{
 				ModifiedFiles = xxx.ModifiedFiles,
 			});

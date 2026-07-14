@@ -19,26 +19,67 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.Extensions.Logging;
+using ISI.Extensions.JsonSerialization.Extensions;
 using DTOs = ISI.Extensions.Scm.DataTransferObjects.RcsKeywordProcessorApi;
+using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.RcsKeywords;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Scm
 {
 	public partial class RcsKeywordProcessorApi
 	{
-		public DTOs.RevertRcsKeywordsResponse RevertRcsKeywords(DTOs.RevertRcsKeywordsRequest request)
+		public DTOs.RevertRcsKeywordsResponse RevertRcsKeywords(DTOs.IRevertRcsKeywordsRequest request)
 		{
 			var logger = new AddToLogLogger(request.AddToLog, Logger);
 
 			var response = new DTOs.RevertRcsKeywordsResponse();
 
-			foreach (var modifiedFile in request.ModifiedFiles ?? [])
+			switch (request)
 			{
-				logger.LogInformation($"Processing {System.IO.Path.GetFileName(modifiedFile.FullName)}");
+				case DTOs.RevertRcsKeywordsFromCacheRequest revertRcsKeywordsFromCacheRequest:
+				{
+					var rcsKeywordsCacheSettings = GetRcsKeywordsCacheSettings(null) ?? new();
 
-				System.IO.File.Delete(modifiedFile.FullName);
-				System.IO.File.WriteAllText(modifiedFile.FullName, modifiedFile.OriginalContent);
+					var rcsKeywordsRepositories = rcsKeywordsCacheSettings?.RcsKeywordsRepositories?.ToNullCheckedDictionary(rcsKeywordsRepository => rcsKeywordsRepository.SourceDirectory, _ => _, StringComparer.InvariantCultureIgnoreCase, NullCheckDictionaryResult.Empty);
+
+					if (rcsKeywordsRepositories.TryGetValue(revertRcsKeywordsFromCacheRequest.SourceDirectory, out var rcsKeywordsRepository))
+					{
+						foreach (var rcsKeywordsFile in rcsKeywordsRepository.RcsKeywordsFiles ?? [])
+						{
+							logger.LogInformation($"Processing {System.IO.Path.GetFileName(rcsKeywordsFile.SourceFullName)}");
+
+							var content = System.IO.File.ReadAllText(rcsKeywordsFile.ContentFullName);
+
+							System.IO.File.Delete(rcsKeywordsFile.SourceFullName);
+							
+							System.IO.File.WriteAllText(rcsKeywordsFile.SourceFullName, content);
+							
+							System.IO.File.Delete(rcsKeywordsFile.ContentFullName);
+						}
+
+						rcsKeywordsRepositories.Remove(revertRcsKeywordsFromCacheRequest.SourceDirectory);
+					}
+
+					rcsKeywordsCacheSettings.RcsKeywordsRepositories = rcsKeywordsRepositories.Values.ToArray();
+
+					SetRcsKeywordsCacheSettings(null, rcsKeywordsCacheSettings);
+				}
+					break;
+				
+				case DTOs.RevertRcsKeywordsRequest revertRcsKeywordsRequest:
+					foreach (var modifiedFile in revertRcsKeywordsRequest.ModifiedFiles ?? [])
+					{
+						logger.LogInformation($"Processing {System.IO.Path.GetFileName(modifiedFile.FullName)}");
+
+						System.IO.File.Delete(modifiedFile.FullName);
+						System.IO.File.WriteAllText(modifiedFile.FullName, modifiedFile.OriginalContent);
+					}
+					break;
+				
+				default:
+					throw new ArgumentOutOfRangeException(nameof(request));
 			}
+
 
 			return response;
 		}

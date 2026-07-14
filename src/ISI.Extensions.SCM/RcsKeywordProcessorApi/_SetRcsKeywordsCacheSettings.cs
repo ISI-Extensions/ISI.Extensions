@@ -19,17 +19,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.JsonSerialization.Extensions;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.RcsKeywordProcessorApi;
+using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.RcsKeywords;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Scm
 {
-	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
-	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
+	public partial class RcsKeywordProcessorApi
 	{
-		public const string ConfigurationSectionName = "ISI.Extensions.Scm";
-		
-		public string SettingsFullName { get; set; }
-		
-		public string RcsKeywordsCacheSettingsFullName { get; set; } = @"FileNameDeMasked:{ApplicationData}\ISI.Extensions\rcs-keywords-cache.json";
-		public string RcsKeywordsCacheDirectory { get; set; } = @"FileNameDeMasked:{ApplicationData}\ISI.Extensions\RcsKeywordsCache";
+		private void SetRcsKeywordsCacheSettings(string rcsKeywordsCacheSettingsFullName, RcsKeywordsRestoreCacheSettings rcsKeywordsCacheSettings)
+		{
+			if (System.IO.File.Exists(rcsKeywordsCacheSettingsFullName))
+			{
+				System.IO.File.Delete(rcsKeywordsCacheSettingsFullName);
+			}
+
+			using (var stream = System.IO.File.OpenWrite(rcsKeywordsCacheSettingsFullName))
+			{
+				JsonSerializer.Serialize(SerializableDTOs.RcsKeywordsRestoreCacheSettingsV1.ToSerializable(rcsKeywordsCacheSettings), stream, true);
+			}
+		}
 	}
 }

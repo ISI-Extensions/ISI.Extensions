@@ -12,15 +12,17 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using Microsoft.Extensions.Logging;
+using ISI.Extensions.JsonSerialization.Extensions;
 using DTOs = ISI.Extensions.Scm.DataTransferObjects.RcsKeywordProcessorApi;
+using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.RcsKeywords;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Scm
 {
@@ -34,6 +36,8 @@ namespace ISI.Extensions.Scm
 			var logger = new AddToLogLogger(request.AddToLog, Logger);
 
 			var response = new DTOs.ReplaceRcsKeywordsResponse();
+
+			request.SourceDirectory = request.SourceDirectory.TrimEnd('\\', '/');
 
 			var keywords = new Dictionary<string, UpdateContentDelegate>();
 			keywords.Add("$Author$", (content, getWorkingCopyCommitInformation) =>
@@ -81,7 +85,9 @@ namespace ISI.Extensions.Scm
 
 			var modifiedFiles = new List<DTOs.ReplaceRcsKeywordsFile>();
 
-			var fullNames = System.IO.Directory.GetFiles(request.SourceDirectory, request.FileNameExtension, (request.IncludeChildDirectories ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly));
+			var searchPattern = $"*.{request.FileNameExtension.TrimStart(['.', '*'])}";
+
+			var fullNames = System.IO.Directory.GetFiles(request.SourceDirectory, searchPattern, (request.IncludeChildDirectories ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly));
 
 			foreach (var fullName in fullNames)
 			{
@@ -128,7 +134,51 @@ namespace ISI.Extensions.Scm
 			}
 
 			response.ModifiedFiles = modifiedFiles.ToArray();
-			
+
+			if (request.CacheRcsKeywords)
+			{
+				var rcsKeywordsFiles = new List<RcsKeywordsRestoreCacheSettingsRcsKeywordsFile>();
+
+				var rcsKeywordsCacheDirectory = GetRcsKeywordsCacheDirectory(null);
+
+				foreach (var modifiedFile in modifiedFiles)
+				{
+					var contentFullName = System.IO.Path.Combine(rcsKeywordsCacheDirectory, $"m{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)}.txt");
+					
+					System.IO.File.WriteAllText(contentFullName, modifiedFile.OriginalContent);
+
+					rcsKeywordsFiles.Add(new ()
+					{
+						SourceFullName = modifiedFile.FullName,
+						ContentFullName = contentFullName,
+					});
+				}
+
+				var rcsKeywordsCacheSettings = GetRcsKeywordsCacheSettings(null) ?? new();
+
+				var rcsKeywordsRepositories = rcsKeywordsCacheSettings?.RcsKeywordsRepositories?.ToNullCheckedDictionary(rcsKeywordsRepository => rcsKeywordsRepository.SourceDirectory, _ => _, StringComparer.InvariantCultureIgnoreCase, NullCheckDictionaryResult.Empty);
+
+				if (rcsKeywordsRepositories.TryGetValue(request.SourceDirectory, out var rcsKeywordsRepository))
+				{
+					foreach (var rcsKeywordsFile in rcsKeywordsRepository.RcsKeywordsFiles ?? [])	
+					{
+						System.IO.File.Delete(rcsKeywordsFile.ContentFullName);
+					}
+
+					rcsKeywordsRepositories.Remove(request.SourceDirectory);
+				}
+
+				rcsKeywordsRepositories.Add(request.SourceDirectory, new ()
+				{
+					SourceDirectory = request.SourceDirectory,
+					RcsKeywordsFiles = rcsKeywordsFiles.ToArray(),
+				});
+
+				rcsKeywordsCacheSettings.RcsKeywordsRepositories = rcsKeywordsRepositories.Values.ToArray();
+				
+				SetRcsKeywordsCacheSettings(null, rcsKeywordsCacheSettings);
+			}
+
 			return response;
 		}
 	}

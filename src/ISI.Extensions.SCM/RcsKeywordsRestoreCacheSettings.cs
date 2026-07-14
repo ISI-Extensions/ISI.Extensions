@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2026, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,21 +15,24 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Scm
 {
-	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
-	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
+	public class RcsKeywordsRestoreCacheSettings
 	{
-		public const string ConfigurationSectionName = "ISI.Extensions.Scm";
-		
-		public string SettingsFullName { get; set; }
-		
-		public string RcsKeywordsCacheSettingsFullName { get; set; } = @"FileNameDeMasked:{ApplicationData}\ISI.Extensions\rcs-keywords-cache.json";
-		public string RcsKeywordsCacheDirectory { get; set; } = @"FileNameDeMasked:{ApplicationData}\ISI.Extensions\RcsKeywordsCache";
+		public RcsKeywordsRestoreCacheSettingsRcsKeywordsRepository[] RcsKeywordsRepositories { get; set; }
+	}
+	
+	public class RcsKeywordsRestoreCacheSettingsRcsKeywordsRepository
+	{
+		public string SourceDirectory { get; set; }
+		public RcsKeywordsRestoreCacheSettingsRcsKeywordsFile[] RcsKeywordsFiles { get; set; }
+	}
+	
+	public class RcsKeywordsRestoreCacheSettingsRcsKeywordsFile
+	{
+		public string SourceFullName { get; set; }
+		public string ContentFullName { get; set; }
 	}
 }

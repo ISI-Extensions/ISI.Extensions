@@ -22,9 +22,21 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Scm.DataTransferObjects.RcsKeywordProcessorApi
 {
-	public class RevertRcsKeywordsRequest
+	public interface IRevertRcsKeywordsRequest
+	{
+		ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; }
+	}
+	
+	public class RevertRcsKeywordsRequest : IRevertRcsKeywordsRequest
 	{
 		public ReplaceRcsKeywordsFile[] ModifiedFiles { get; set; }
+
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
+	}
+	
+	public class RevertRcsKeywordsFromCacheRequest : IRevertRcsKeywordsRequest
+	{
+		public string SourceDirectory { get; set; }
 
 		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}

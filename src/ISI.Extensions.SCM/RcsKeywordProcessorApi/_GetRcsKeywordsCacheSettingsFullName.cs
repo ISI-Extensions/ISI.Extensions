@@ -19,17 +19,33 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.JsonSerialization.Extensions;
+using DTOs = ISI.Extensions.Scm.DataTransferObjects.RcsKeywordProcessorApi;
+using SerializableDTOs = ISI.Extensions.Scm.SerializableModels.RcsKeywords;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Scm
 {
-	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
-	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
+	public partial class RcsKeywordProcessorApi
 	{
-		public const string ConfigurationSectionName = "ISI.Extensions.Scm";
-		
-		public string SettingsFullName { get; set; }
-		
-		public string RcsKeywordsCacheSettingsFullName { get; set; } = @"FileNameDeMasked:{ApplicationData}\ISI.Extensions\rcs-keywords-cache.json";
-		public string RcsKeywordsCacheDirectory { get; set; } = @"FileNameDeMasked:{ApplicationData}\ISI.Extensions\RcsKeywordsCache";
+		private string GetRcsKeywordsCacheSettingsFullName(string rcsKeywordsCacheSettingsFullName)
+		{
+			if (string.IsNullOrWhiteSpace(rcsKeywordsCacheSettingsFullName))
+			{
+				rcsKeywordsCacheSettingsFullName = Configuration.RcsKeywordsCacheSettingsFullName;
+			}
+
+			if (!string.IsNullOrWhiteSpace(rcsKeywordsCacheSettingsFullName) && rcsKeywordsCacheSettingsFullName.StartsWith(ISI.Extensions.ConfigurationValueReaders.FileNameDeMaskedConfigurationValueReader.PrefixWithColon, StringComparison.InvariantCultureIgnoreCase))
+			{
+				rcsKeywordsCacheSettingsFullName = ISI.Extensions.IO.Path.GetFileNameDeMasked(rcsKeywordsCacheSettingsFullName.TrimStart(ISI.Extensions.ConfigurationValueReaders.FileNameDeMaskedConfigurationValueReader.PrefixWithColon));
+			}
+
+			if (!string.IsNullOrWhiteSpace(rcsKeywordsCacheSettingsFullName))
+			{
+				System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(rcsKeywordsCacheSettingsFullName));
+			}
+
+			return rcsKeywordsCacheSettingsFullName;
+		}
 	}
 }

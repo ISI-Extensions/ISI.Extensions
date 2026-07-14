@@ -30,6 +30,8 @@ namespace ISI.Extensions.Scm.DataTransferObjects.RcsKeywordProcessorApi
 
 		public ISI.Extensions.Scm.DateTimeStampVersion DateTimeStampVersion { get; set; }
 
+		public bool CacheRcsKeywords { get; set; } = false;
+		
 		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

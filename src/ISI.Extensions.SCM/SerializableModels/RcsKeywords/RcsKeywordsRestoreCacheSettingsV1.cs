@@ -12,24 +12,40 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using LOCALENTITIES = ISI.Extensions.Scm;
 
-namespace ISI.Extensions.Scm
+namespace ISI.Extensions.Scm.SerializableModels.RcsKeywords
 {
-	[ISI.Extensions.ConfigurationHelper.Configuration(ConfigurationSectionName)]
-	public partial class Configuration : ISI.Extensions.ConfigurationHelper.IConfiguration
+	[DataContract]
+	[ISI.Extensions.Serialization.PreferredSerializerJsonDataContract]
+	[ISI.Extensions.Serialization.SerializerContractUuid("3b3e1ef2-8d8c-49d7-bfd4-f98bfdeb078d")]
+	public class RcsKeywordsRestoreCacheSettingsV1 : IRcsKeywordsRestoreCacheSettings
 	{
-		public const string ConfigurationSectionName = "ISI.Extensions.Scm";
-		
-		public string SettingsFullName { get; set; }
-		
-		public string RcsKeywordsCacheSettingsFullName { get; set; } = @"FileNameDeMasked:{ApplicationData}\ISI.Extensions\rcs-keywords-cache.json";
-		public string RcsKeywordsCacheDirectory { get; set; } = @"FileNameDeMasked:{ApplicationData}\ISI.Extensions\RcsKeywordsCache";
+		public static IRcsKeywordsRestoreCacheSettings ToSerializable(LOCALENTITIES.RcsKeywordsRestoreCacheSettings source)
+		{
+			return new RcsKeywordsRestoreCacheSettingsV1()
+			{
+				RcsKeywordsRepositories = source.RcsKeywordsRepositories.ToNullCheckedArray(RcsKeywordsRestoreCacheSettingsRcsKeywordsRepositoryV1.ToSerializable),
+			};
+		}
+
+		public LOCALENTITIES.RcsKeywordsRestoreCacheSettings Export()
+		{
+			return new LOCALENTITIES.RcsKeywordsRestoreCacheSettings()
+			{
+				RcsKeywordsRepositories = RcsKeywordsRepositories.ToNullCheckedArray(rcsKeywordsRepository => rcsKeywordsRepository.Export()),
+			};
+		}
+
+		[ISI.Extensions.Repository.RecordProperty(ColumnName = "rcsKeywordsRepositories")]
+		public IRcsKeywordsRestoreCacheSettingsRcsKeywordsRepository[] RcsKeywordsRepositories { get; set; }
 	}
 }

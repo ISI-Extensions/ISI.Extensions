@@ -38,6 +38,25 @@ namespace ISI.Extensions
 					System.IO.File.Copy(fullName, fullName.Replace(sourceDirectory, targetDirectory), true);
 				}
 			}
+			
+			public static void RobocopyDirectory(string sourceDirectory, string targetDirectory)
+			{
+				var arguments = new List<string>();
+				 arguments.Add($"\"{sourceDirectory}\"");
+				 arguments.Add($"\"{targetDirectory}\"");
+				 arguments.Add("/E");
+				 arguments.Add("/MT:16");
+				 arguments.Add("/R:0");
+				 arguments.Add("/W:0");
+
+				var RobocopyDirectoryResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				{
+					ProcessExeFullName = "robocopy",
+					Arguments = arguments,
+					Logger = new NullLogger(),
+				});
+
+			}
 		}
 	}
 }

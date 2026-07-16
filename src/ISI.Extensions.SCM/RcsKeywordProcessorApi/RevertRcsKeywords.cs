@@ -44,18 +44,18 @@ namespace ISI.Extensions.Scm
 
 					if (rcsKeywordsRepositories.TryGetValue(revertRcsKeywordsFromCacheRequest.SourceDirectory, out var rcsKeywordsRepository))
 					{
-						foreach (var rcsKeywordsFile in rcsKeywordsRepository.RcsKeywordsFiles ?? [])
+						Parallel.ForEach(rcsKeywordsRepository.RcsKeywordsFiles ?? [], rcsKeywordsFile =>
 						{
-							logger.LogInformation($"Processing {System.IO.Path.GetFileName(rcsKeywordsFile.SourceFullName)}");
+							logger.LogInformation($"Reverting {System.IO.Path.GetFileName(rcsKeywordsFile.SourceFullName)}");
 
 							var content = System.IO.File.ReadAllText(rcsKeywordsFile.ContentFullName);
 
 							System.IO.File.Delete(rcsKeywordsFile.SourceFullName);
-							
+
 							System.IO.File.WriteAllText(rcsKeywordsFile.SourceFullName, content);
-							
+
 							System.IO.File.Delete(rcsKeywordsFile.ContentFullName);
-						}
+						});
 
 						rcsKeywordsRepositories.Remove(revertRcsKeywordsFromCacheRequest.SourceDirectory);
 					}
@@ -67,13 +67,13 @@ namespace ISI.Extensions.Scm
 					break;
 				
 				case DTOs.RevertRcsKeywordsRequest revertRcsKeywordsRequest:
-					foreach (var modifiedFile in revertRcsKeywordsRequest.ModifiedFiles ?? [])
+					Parallel.ForEach(revertRcsKeywordsRequest.ModifiedFiles ?? [], modifiedFile =>
 					{
-						logger.LogInformation($"Processing {System.IO.Path.GetFileName(modifiedFile.FullName)}");
+						logger.LogInformation($"Reverting {System.IO.Path.GetFileName(modifiedFile.FullName)}");
 
 						System.IO.File.Delete(modifiedFile.FullName);
 						System.IO.File.WriteAllText(modifiedFile.FullName, modifiedFile.OriginalContent);
-					}
+					});
 					break;
 				
 				default:

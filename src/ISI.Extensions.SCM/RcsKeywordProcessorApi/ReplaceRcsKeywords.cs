@@ -83,13 +83,13 @@ namespace ISI.Extensions.Scm
 			keywords.Add("$Version$", (content, getWorkingCopyCommitInformation) => content.Replace("$Version$", $"$Version: {request.DateTimeStampVersion?.Version} Exp $"));
 
 
-			var modifiedFiles = new List<DTOs.ReplaceRcsKeywordsFile>();
+			var modifiedFiles = new System.Collections.Concurrent.ConcurrentBag<DTOs.ReplaceRcsKeywordsFile>();
 
 			var searchPattern = $"*.{request.FileNameExtension.TrimStart(['.', '*'])}";
 
 			var fullNames = System.IO.Directory.GetFiles(request.SourceDirectory, searchPattern, (request.IncludeChildDirectories ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly));
 
-			foreach (var fullName in fullNames)
+			Parallel.ForEach(fullNames, fullName =>
 			{
 				var isDirty = false;
 				var content = System.IO.File.ReadAllText(fullName);
@@ -101,6 +101,7 @@ namespace ISI.Extensions.Scm
 				};
 
 				var workingCopyCommitInformation = (ISI.Extensions.Scm.WorkingCopyCommitInformation)null;
+
 				ISI.Extensions.Scm.WorkingCopyCommitInformation getWorkingCopyCommitInformation()
 				{
 					workingCopyCommitInformation ??= SourceControlClientApi.GetWorkingCopyCommitInformation(new()
@@ -131,7 +132,7 @@ namespace ISI.Extensions.Scm
 					System.IO.File.Delete(modifiedFile.FullName);
 					System.IO.File.WriteAllText(modifiedFile.FullName, content);
 				}
-			}
+			});
 
 			response.ModifiedFiles = modifiedFiles.ToArray();
 

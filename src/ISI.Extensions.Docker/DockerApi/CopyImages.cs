@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,21 +33,7 @@ namespace ISI.Extensions.Docker
 
 			var response = new DTOs.CopyImagesResponse();
 
-			var pullImagesResponse = PullImages(new()
-			{
-				Host = request.Host,
-				Context = request.Context,
-				ContainerRegistry = request.FromContainerRegistry,
-				ContainerRepository = request.ContainerRepository,
-				ContainerImageTags = request.ContainerImageTags.ToNullCheckedArray(),
-				AddToLog = request.AddToLog,
-			});
-
-			response.Output += "\n" + pullImagesResponse.Output;
-
-			response.Errored |= pullImagesResponse.Errored;
-
-			if (!response.Errored)
+			if (request.UseBuildX)
 			{
 				foreach (var containerImageTag in request.ContainerImageTags)
 				{
@@ -58,10 +44,11 @@ namespace ISI.Extensions.Docker
 
 					arguments.AddRange(AddConnection(request));
 
-					arguments.Add("tag");
-
-					arguments.Add(fromContainerImageTag);
-					arguments.Add(toContainerImageTag);
+					arguments.Add("buildx");
+					arguments.Add("imagetools");
+					arguments.Add("create");
+					arguments.Add($"--tag \"{toContainerImageTag}\"");
+					arguments.Add($"\"{fromContainerImageTag}\"");
 
 					var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 					{
@@ -75,23 +62,71 @@ namespace ISI.Extensions.Docker
 
 					response.Errored |= waitForProcessResponse.Errored;
 				}
-			}
 
-			if (!response.Errored)
+				//docker buildx imagetools create --tag "new-registry/app:some_tag" "old-registry/app:some_tag"
+			}
+			else
 			{
-				var pushImagesResponse = PushImages(new()
+				var pullImagesResponse = PullImages(new()
 				{
 					Host = request.Host,
 					Context = request.Context,
-					ContainerRegistry = request.ToContainerRegistry,
+					ContainerRegistry = request.FromContainerRegistry,
 					ContainerRepository = request.ContainerRepository,
 					ContainerImageTags = request.ContainerImageTags.ToNullCheckedArray(),
 					AddToLog = request.AddToLog,
 				});
 
-				response.Output += "\n" + pushImagesResponse.Output;
+				response.Output += "\n" + pullImagesResponse.Output;
 
-				response.Errored |= pushImagesResponse.Errored;
+				response.Errored |= pullImagesResponse.Errored;
+
+				if (!response.Errored)
+				{
+					foreach (var containerImageTag in request.ContainerImageTags)
+					{
+						var fromContainerImageTag = GetContainerImageReference(request.FromContainerRegistry, request.ContainerRepository, containerImageTag);
+						var toContainerImageTag = GetContainerImageReference(request.ToContainerRegistry, request.ContainerRepository, containerImageTag);
+
+						var arguments = new List<string>();
+
+						arguments.AddRange(AddConnection(request));
+
+						arguments.Add("tag");
+
+						arguments.Add(fromContainerImageTag);
+						arguments.Add(toContainerImageTag);
+
+						var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+						{
+							Logger = logger,
+							ProcessExeFullName = "docker",
+							Arguments = arguments.ToArray(),
+							EnvironmentVariables = AddDockerContextServerApiVersion(null, request),
+						});
+
+						response.Output += "\n" + waitForProcessResponse.Output;
+
+						response.Errored |= waitForProcessResponse.Errored;
+					}
+				}
+
+				if (!response.Errored)
+				{
+					var pushImagesResponse = PushImages(new()
+					{
+						Host = request.Host,
+						Context = request.Context,
+						ContainerRegistry = request.ToContainerRegistry,
+						ContainerRepository = request.ContainerRepository,
+						ContainerImageTags = request.ContainerImageTags.ToNullCheckedArray(),
+						AddToLog = request.AddToLog,
+					});
+
+					response.Output += "\n" + pushImagesResponse.Output;
+
+					response.Errored |= pushImagesResponse.Errored;
+				}
 			}
 
 			return response;

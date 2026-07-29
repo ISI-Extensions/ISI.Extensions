@@ -32,6 +32,8 @@ namespace ISI.Extensions.Docker.DataTransferObjects.DockerApi
 		public string ContainerRepository { get; set; }
 		public string[] ContainerImageTags { get; set; }
 
+		public bool UseBuildX { get; set; }
+
 		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

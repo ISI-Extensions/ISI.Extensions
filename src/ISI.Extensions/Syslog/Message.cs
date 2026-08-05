@@ -16,14 +16,32 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Syslog
 {
 	public class Message
 	{
+		public static System.Text.RegularExpressions.Regex Rfc3164Regex = new("^<(?<pri>\\d{1,3})>(?<timestamp>[A-Z][a-z]{2}\\s+\\d{1,2}\\s+\\d{2}:\\d{2}:\\d{2})\\s(?<hostname>\\S+)\\s(?<appname>[^\\[:]+)(?:\\[(?<procid>\\d+)\\])?:\\s(?<message>.*)$\n");
+		public static System.Text.RegularExpressions.Regex Rfc5424Regex = new("^<(?<pri>\\d{1,3})>(?<version>\\d{1,2})\\s(?<timestamp>-|\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2}))\\s(?<hostname>-|\\S+)\\s(?<appname>-|\\S+)\\s(?<procid>-|\\S+)\\s(?<msgid>-|\\S+)\\s(?<structureddata>-|(?:\\[.+?\\])+)(?:\\s(?<message>.*))?$\n");
+
 		public Facility Facility { get; set; }
 
 		public LogLevel LogLevel { get; set; }
+
+		public int? Version { get; set; }
+
+		public DateTime? DateTime { get; set; }
+
+		public string HostName { get; set; }
+
+		public string AppName { get; set; }
+
+		public int? ProcessId { get; set; }
+
+		public string MessageId { get; set; }
+
+		public string StructuredData { get; set; }
 
 		public string Text { get; set; }
 
@@ -35,6 +53,55 @@ namespace ISI.Extensions.Syslog
 				Facility = (Facility)(value >> 3);
 				LogLevel = (LogLevel)(value & 0x7);
 			}
+		}
+
+		public static bool TryParseRfc3146(string value, out Message message)
+		{
+			var parsed = Rfc3164Regex.Match(value ?? string.Empty);
+
+			if (parsed.Success)
+			{
+				message = new()
+				{
+					Priority = parsed.Groups["pri"].Value.ToInt(),
+					DateTime = parsed.Groups["timestamp"].Value.ToDateTimeNullable(),
+					HostName = parsed.Groups["hostname"].Value,
+					AppName = parsed.Groups["appname"].Value,
+					ProcessId = parsed.Groups["procid"].Value.ToIntNullable(),
+					Text = parsed.Groups["message"].Value,
+				};
+
+				return true;
+			}
+
+			message = null;
+			return false;
+		}
+
+		public static bool TryParseRfc5425(string value, out Message message)
+		{
+			var parsed = Rfc5424Regex.Match(value ?? string.Empty);
+
+			if (parsed.Success)
+			{
+				message = new()
+				{
+					Priority = parsed.Groups["pri"].Value.ToInt(),
+					Version = parsed.Groups["version"].Value.ToIntNullable(),
+					DateTime = parsed.Groups["timestamp"].Value.ToDateTimeNullable(),
+					HostName = parsed.Groups["hostname"].Value,
+					AppName = parsed.Groups["appname"].Value,
+					ProcessId = parsed.Groups["procid"].Value.ToIntNullable(),
+					MessageId = parsed.Groups["msgid"].Value,
+					StructuredData = (parsed.Groups["structureddata"].Value ?? string.Empty).TrimStart('[').TrimEnd(']'),
+					Text = parsed.Groups["message"].Value,
+				};
+
+				return true;
+			}
+
+			message = null;
+			return false;
 		}
 	}
 }

@@ -30,39 +30,15 @@ namespace ISI.Extensions.Tests
 	[TestFixture]
 	public class Syslog_Tests
 	{
-		[OneTimeSetUp]
-		public void OneTimeSetup()
+		[Test]
+		public void ParseRfc5425_Test()
 		{
-			var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
-			var configurationRoot = configurationBuilder.Build().ApplyConfigurationValueReaders();
+			var value = "<165>1 2026-01-23T14:32:01.123Z my-server appname 1234 ID47 [structuredData@123 tag=\"test\"] User logged in\n";
 
-			var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection()
-				.AddOptions()
-				.AddSingleton<Microsoft.Extensions.Configuration.IConfiguration>(configurationRoot);
+			if (ISI.Extensions.Syslog.Message.TryParseRfc5425(value, out var message))
+			{
 
-			services.AddAllConfigurations(configurationRoot)
-
-				//.AddSingleton<Microsoft.Extensions.Logging.ILoggerFactory, Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory>()
-				.AddSingleton<Microsoft.Extensions.Logging.ILoggerFactory, Microsoft.Extensions.Logging.LoggerFactory>()
-				.AddLogging(builder => builder
-						.AddConsole()
-				//.AddFilter(level => level >= Microsoft.Extensions.Logging.LogLevel.Information)
-				)
-				.AddSingleton<Microsoft.Extensions.Logging.ILogger>(_ => new ISI.Extensions.TextWriterLogger(TestContext.Progress))
-
-				.AddSingleton<ISI.Extensions.DateTimeStamper.IDateTimeStamper, ISI.Extensions.DateTimeStamper.LocalMachineDateTimeStamper>()
-
-				.AddSingleton<ISI.Extensions.JsonSerialization.IJsonSerializer, ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer>()
-				.AddSingleton<ISI.Extensions.Serialization.ISerialization, ISI.Extensions.Serialization.Serialization>()
-				.AddSingleton<ISI.Extensions.Security.Ldap.ILdapApi, ISI.Extensions.Security.Ldap.LdapApi>()
-
-				.AddConfigurationRegistrations(configurationRoot)
-				.ProcessServiceRegistrars(configurationRoot)
-				;
-
-			var serviceProvider = services.BuildServiceProvider<ISI.Extensions.DependencyInjection.Iunq.ServiceProviderBuilder>(configurationRoot);
-
-			serviceProvider.SetServiceLocator();
+			}
 		}
 
 		[Test]

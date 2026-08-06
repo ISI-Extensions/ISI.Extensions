@@ -34,6 +34,8 @@ namespace ISI.Extensions.Tests
 		public void ApplyConfigurationValueReaders_Test()
 		{
 			System.Environment.SetEnvironmentVariable("ENV_STRING_ARRAY:1", "RonWasHere");
+			System.Environment.SetEnvironmentVariable("SYSLOG_RFC5424:1:ISI_LOGGER_AGENT_RUN_RFC5424", "false");
+			System.Environment.SetEnvironmentVariable("SYSLOG_RFC5424:1:ISI_LOGGER_AGENT_RFC5424_PORTS:0", "404");
 
 			var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
 

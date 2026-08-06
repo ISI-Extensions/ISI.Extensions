@@ -36,5 +36,19 @@ namespace ISI.Extensions.Tests
 
 		[ISI.Extensions.EnvironmentConfigurationVariableName("ENV_STRING_ARRAY")]
 		public string[] EnvStringArray { get; set; } //= new[] { "Ron", "Muth" };
+
+		[ISI.Extensions.EnvironmentConfigurationVariableName("SYSLOG_RFC5424")]
+		public SyslogRfc5425Configuration[] SyslogRfc5425 { get; set; }
+	}
+
+	public class SyslogRfc5425Configuration
+	{
+		[ISI.Extensions.EnvironmentConfigurationVariableName("ISI_LOGGER_AGENT_RUN_RFC5424")]
+		public bool RunService { get; set; } = true;
+
+		[ISI.Extensions.EnvironmentConfigurationVariableName("ISI_LOGGER_AGENT_RFC5424_PORTS")]
+		public int[] Ports { get; set; }
+
+		public TimeSpan ProcessQueueInterval { get; set; } = TimeSpan.FromSeconds(1);
 	}
 }

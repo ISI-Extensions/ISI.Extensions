@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,7 +60,7 @@ namespace ISI.Extensions.ConfigurationHelper
 							System.Console.WriteLine($"  EV-SECTION ConfigurationSectionName => \"{configurationAttribute.ConfigurationSectionName}\"");
 						}
 
-						AddData(environmentVariables, configurationType, $"{configurationAttribute.ConfigurationSectionName}:");
+						AddData(environmentVariables, configurationType, string.Empty, $"{configurationAttribute.ConfigurationSectionName}:");
 					}
 				}
 
@@ -90,7 +90,57 @@ namespace ISI.Extensions.ConfigurationHelper
 			}
 		}
 
-		private void AddData(IDictionary<string, string> environmentVariables, Type configurationType, string prefix)
+		private bool TryAddData(IDictionary<string, string> environmentVariables, PropertyInfo property, string prefix, string environmentVariablePrefix, string deliminator)
+		{
+			if ((property.PropertyType != typeof(string[])) && property.PropertyType.Implements(typeof(System.Collections.IEnumerable)) && property.PropertyType.GetElementType().IsClass)
+			{
+				environmentVariablePrefix = $"{environmentVariablePrefix}{deliminator}";
+
+				var keys = new HashSet<int>(environmentVariables
+					.Where(value => value.Key.StartsWith(environmentVariablePrefix))
+					.Select(value => value.Key.Substring(environmentVariablePrefix.Length))
+					.Where(key => key.IndexOf(deliminator) > 0)
+					.Select(key => key.Split([deliminator], StringSplitOptions.None).First().ToIntNullable())
+					.Where(key => key.HasValue)
+					.Select(key => key.Value));
+
+				if (keys.NullCheckedAny())
+				{
+					foreach (var key in keys)
+					{
+						AddData(environmentVariables, property.PropertyType.GetElementType(), $"{environmentVariablePrefix}{key}{deliminator}", $"{prefix}{property.Name}:{key}:");
+					}
+
+					return true;
+				}
+
+				return false;
+			}
+
+			environmentVariablePrefix = $"{environmentVariablePrefix}{deliminator}";
+
+			var values = environmentVariables
+				.Where(value => value.Key.StartsWith(environmentVariablePrefix))
+				.Select(value => new KeyValuePair<int?, string>(value.Key.Substring(environmentVariablePrefix.Length, value.Key.Length - environmentVariablePrefix.Length).ToIntNullable(), value.Value))
+				.Where(value => value.Key.HasValue)
+				.ToNullCheckedArray(value => new KeyValuePair<int, string>(value.Key.Value, value.Value))
+				.OrderBy(value => value.Key)
+				.ToNullCheckedArray(value => value.Value);
+
+			if (values.NullCheckedAny())
+			{
+				for (var valueIndex = 0; valueIndex < values.Length; valueIndex++)
+				{
+					Data.Add($"{prefix}{property.Name}:{valueIndex}", $"{values[valueIndex]}");
+				}
+
+				return true;
+			}
+
+			return false;
+		}
+
+		private void AddData(IDictionary<string, string> environmentVariables, Type configurationType, string environmentVariableNamePrefix, string prefix)
 		{
 			var properties = configurationType.GetProperties();
 
@@ -105,105 +155,61 @@ namespace ISI.Extensions.ConfigurationHelper
 				{
 					var environmentConfigurationAttribute = property.GetCustomAttribute<EnvironmentConfigurationVariableNameAttribute>();
 
-					if (environmentConfigurationAttribute != null)
-					{
-						var environmentVariablePrefix = $"{prefix}{environmentConfigurationAttribute.EnvironmentVariableName}[";
+					//if (environmentConfigurationAttribute != null)
+					//{
+					//	var environmentVariablePrefix = $"{prefix}{environmentConfigurationAttribute.EnvironmentVariableName}[";
 
-						if (_showConfig)
-						{
-							System.Console.WriteLine($"    environmentVariablePrefix => \"{environmentVariablePrefix}\"");
-						}
-					}
+					//	if (_showConfig)
+					//	{
+					//		System.Console.WriteLine($"    environmentVariablePrefix => \"{environmentVariablePrefix}\"");
+					//	}
+					//}
 
-					if (property.PropertyType == typeof(string[]))
+					if ((property.PropertyType != typeof(string)) && (property.PropertyType.IsArray || property.PropertyType.Implements(typeof(System.Collections.IEnumerable))) && ((property.PropertyType == typeof(string[])) || (property.PropertyType == typeof(int[])) || (property.PropertyType == typeof(bool[])) || (property.PropertyType == typeof(TimeSpan[])) || property.PropertyType.GetElementType().IsEnum))
 					{
 						if (environmentConfigurationAttribute != null)
 						{
-							var environmentVariablePrefix = $"{environmentConfigurationAttribute.EnvironmentVariableName}:";
-
-							var values = environmentVariables
-								.Where(value => value.Key.StartsWith(environmentVariablePrefix))
-								.Select(value => new KeyValuePair<int?, string>(value.Key.Substring(environmentVariablePrefix.Length, value.Key.Length - environmentVariablePrefix.Length).ToIntNullable(), value.Value))
-								.Where(value => value.Key.HasValue)
-								.ToNullCheckedArray(value => new KeyValuePair<int, string>(value.Key.Value, value.Value))
-								.OrderBy(value => value.Key)
-								.ToNullCheckedArray(value => value.Value);
-
-							if (values.NullCheckedAny())
+							if (!TryAddData(environmentVariables, property, prefix, $"{environmentVariableNamePrefix}{environmentConfigurationAttribute?.EnvironmentVariableName}", ":"))
 							{
-								for (var valueIndex = 0; valueIndex < values.Length; valueIndex++)
-								{
-									Data.Add($"{prefix}{property.Name}:{valueIndex}", $"{values[valueIndex]}");
-								}
-							}
-							else
-							{
-								environmentVariablePrefix = $"{environmentConfigurationAttribute.EnvironmentVariableName}-";
-
-								values = environmentVariables
-									.Where(value => value.Key.StartsWith(environmentVariablePrefix))
-									.Select(value => new KeyValuePair<int?, string>(value.Key.Substring(environmentVariablePrefix.Length, value.Key.Length - environmentVariablePrefix.Length).ToIntNullable(), value.Value))
-									.Where(value => value.Key.HasValue)
-									.ToNullCheckedArray(value => new KeyValuePair<int, string>(value.Key.Value, value.Value))
-									.OrderBy(value => value.Key)
-									.ToNullCheckedArray(value => value.Value);
-
-								if (values.NullCheckedAny())
-								{
-									for (var valueIndex = 0; valueIndex < values.Length; valueIndex++)
-									{
-										Data.Add($"{prefix}{property.Name}:{valueIndex}", $"{values[valueIndex]}");
-									}
-								}
+								TryAddData(environmentVariables, property, prefix, $"{environmentVariableNamePrefix}{environmentConfigurationAttribute?.EnvironmentVariableName}", "-");
 							}
 						}
 					}
-					else if ((property.PropertyType == typeof(string)) || (property.PropertyType == typeof(int)) || (property.PropertyType == typeof(bool)) ||  (property.PropertyType == typeof(TimeSpan)) || property.PropertyType.IsEnum)
+					else if ((property.PropertyType == typeof(string)) || (property.PropertyType == typeof(int)) || (property.PropertyType == typeof(bool)) || (property.PropertyType == typeof(TimeSpan)) || property.PropertyType.IsEnum)
 					{
-						if ((environmentConfigurationAttribute != null) && environmentVariables.TryGetValue(environmentConfigurationAttribute.EnvironmentVariableName, out var value))
+						if (environmentConfigurationAttribute != null)
 						{
-							if (_showConfig)
+							if (environmentVariables.TryGetValue($"{environmentVariableNamePrefix}{environmentConfigurationAttribute?.EnvironmentVariableName}", out var value))
 							{
-								System.Console.WriteLine($"      {prefix}{property.Name} => \"{value}\"");
-							}
+								if (_showConfig)
+								{
+									System.Console.WriteLine($"      {prefix}{property.Name} => \"{value}\"");
+								}
 
-							Data.Add($"{prefix}{property.Name}", $"{value}");
+								Data.Add($"{prefix}{property.Name}", $"{value}");
+							}
 						}
 					}
 					else if (property.PropertyType.IsClass)
 					{
 						if (property.PropertyType.Implements(typeof(System.Collections.IEnumerable)))
 						{
-							//var environmentVariablePrefix = $"{prefix}{environmentConfigurationAttribute.EnvironmentVariableName}[";
-
-							//var values = environmentVariables
-							//	.Where(value => value.Key.StartsWith(environmentVariablePrefix))
-							//	.Select(value => new KeyValuePair<int?, string>(value.Key.Substring(environmentVariablePrefix.Length, value.Key.Length - environmentVariablePrefix.Length - 1).ToIntNullable(), value.Value))
-							//	.Where(value => value.Key.HasValue)
-							//	.ToNullCheckedArray(value => new KeyValuePair<int, string>(value.Key.Value, value.Value))
-							//	.OrderBy(value => value.Key)
-							//	.ToNullCheckedArray(value => value.Value);
-
-							//if (values.NullCheckedAny())
-							//{
-
-
-
-
-							//var index = 0;
-							//foreach (var item in enumerable)
-							//{
-							//	AddData(environmentVariables, propertyValue, string.Format("{0}{1}[{2}]:", prefix, property.Name, index++));
-							//}
+							if (environmentConfigurationAttribute != null)
+							{
+								if (!TryAddData(environmentVariables, property, prefix, $"{environmentVariableNamePrefix}{environmentConfigurationAttribute?.EnvironmentVariableName}", ":"))
+								{
+									TryAddData(environmentVariables, property, prefix, $"{environmentVariableNamePrefix}{environmentConfigurationAttribute?.EnvironmentVariableName}", "-");
+								}
+							}
 						}
 						else
 						{
-							AddData(environmentVariables, property.PropertyType, $"{prefix}{property.Name}:");
+							AddData(environmentVariables, property.PropertyType, $"{environmentVariableNamePrefix}{environmentConfigurationAttribute?.EnvironmentVariableName}", $"{prefix}{property.Name}:");
 						}
 					}
 					else if (environmentConfigurationAttribute != null)
 					{
-						if (environmentVariables.TryGetValue(environmentConfigurationAttribute.EnvironmentVariableName, out var value))
+						if (environmentVariables.TryGetValue($"{environmentVariableNamePrefix}{environmentConfigurationAttribute.EnvironmentVariableName}", out var value))
 						{
 							Data.Add($"{prefix}{property.Name}", $"{value}");
 						}

@@ -22,8 +22,8 @@ namespace ISI.Extensions.Syslog
 {
 	public class Message
 	{
-		public static System.Text.RegularExpressions.Regex Rfc3164Regex = new("^<(?<pri>\\d{1,3})>(?<timestamp>[A-Z][a-z]{2}\\s+\\d{1,2}\\s+\\d{2}:\\d{2}:\\d{2})\\s(?<hostname>\\S+)\\s(?<appname>[^\\[:]+)(?:\\[(?<procid>\\d+)\\])?:\\s(?<message>.*)$\n");
-		public static System.Text.RegularExpressions.Regex Rfc5424Regex = new("^<(?<pri>\\d{1,3})>(?<version>\\d{1,2})\\s(?<timestamp>-|\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2}))\\s(?<hostname>-|\\S+)\\s(?<appname>-|\\S+)\\s(?<procid>-|\\S+)\\s(?<msgid>-|\\S+)\\s(?<structureddata>-|(?:\\[.+?\\])+)(?:\\s(?<message>.*))?$\n");
+		public static System.Text.RegularExpressions.Regex Rfc3164Regex = new(@"^<(?<pri>\d{1,3})>(?<timestamp>[A-Z][a-z]{2}\s+\d{1,2}\s+\d{2}:\d{2}:\d{2})\s(?<hostname>\S+)\s(?<appname>[^\[:]+)(?:\[(?<procid>\d+)\])?:\s(?<message>.*)$");
+		public static System.Text.RegularExpressions.Regex Rfc5424Regex = new(@"^<(?<pri>\d{1,3})>(?<version>\d{1,2})\s(?<timestamp>-|\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2}))\s(?<hostname>-|\S+)\s(?<appname>-|\S+)\s(?<procid>-|\S+)\s(?<msgid>-|\S+)\s(?<structureddata>-|(?:\[.+?\])+)(?:\s(?<message>.*))?$");
 
 		public Facility Facility { get; set; }
 

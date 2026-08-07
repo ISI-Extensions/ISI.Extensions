@@ -33,7 +33,8 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void ParseRfc5425_Test()
 		{
-			var value = "<165>1 2026-01-23T14:32:01.123Z my-server appname 1234 ID47 [structuredData@123 tag=\"test\"] User logged in\n";
+			//var value = "<165>1 2026-01-23T14:32:01.123Z my-server appname 1234 ID47 [structuredData@123 tag=\"test\"] User logged in\n";
+			var value = "<46>1 2026-08-07T07:41:48.265949-04:00 isinypfSense01.isi-net.com syslogd - - - restart";
 
 			if (ISI.Extensions.Syslog.Message.TryParseRfc5425(value, out var message))
 			{

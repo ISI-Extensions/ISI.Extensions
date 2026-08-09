@@ -37,38 +37,64 @@ namespace ISI.Extensions.Acme
 			var xxx = ISI.Extensions.WebClient.Rest.GetEventHandler();
 #endif
 
-			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<ISI.Extensions.WebClient.Rest.SerializedResponse<ISI.Extensions.Acme.SerializableModels.AcmeOrders.GetChallengeResponse>>(uri, GetHeaders(request), true);
-
-			if (acmeResponse.ResponseHeaders.TryGetValue(HeaderKey.ReplayNonce, out var nonce))
+			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet(new ISI.Extensions.WebClient.Rest.RestResponseTypeCollection()
 			{
-				request.HostContext.Nonce = nonce;
-			}
+				{ System.Net.HttpStatusCode.OK, typeof(ISI.Extensions.WebClient.Rest.SerializedResponse<ISI.Extensions.Acme.SerializableModels.AcmeOrders.GetChallengeResponse>) },
+				{ System.Net.HttpStatusCode.Unauthorized, typeof(ISI.Extensions.WebClient.Rest.TextResponse) },
+				{ System.Net.HttpStatusCode.Forbidden, typeof(ISI.Extensions.WebClient.Rest.TextResponse) },
+				{ System.Net.HttpStatusCode.NotFound, typeof(ISI.Extensions.WebClient.Rest.TextResponse) },
+			}, uri, GetHeaders(request), true);
 
-			response.Challenge = acmeResponse.Response.NullCheckedConvert(source => new AuthorizationChallenge()
+			if (acmeResponse.Response is ISI.Extensions.WebClient.Rest.SerializedResponse<ISI.Extensions.Acme.SerializableModels.AcmeOrders.GetChallengeResponse> getChallengeResponse)
 			{
-				ChallengeType = source.ChallengeType,
-				ChallengeStatus = source.ChallengeStatus,
-				ChallengeUrl = source.ChallengeUrl,
-				Token = source.Token,
-				ValidatedDateTimeUtc = source.ValidatedDateTimeUtc,
-			});
-
-			response.Error = acmeResponse.Response?.Error.NullCheckedConvert(source => new OrderError()
-			{
-				ErrorType = source.ErrorType,
-				Detail = source.Detail,
-				Status = source.Status,
-				SubProblems = source.SubProblems.ToNullCheckedArray(subProblem => new OrderErrorSubProblem()
+				if (getChallengeResponse.ResponseHeaders.TryGetValue(HeaderKey.ReplayNonce, out var nonce))
 				{
-					ErrorType = subProblem.ErrorType,
-					Detail = subProblem.Detail,
-					Identifier = subProblem.Identifier.NullCheckedConvert(identifier => new OrderCertificateIdentifier()
+					request.HostContext.Nonce = nonce;
+				}
+
+				response.Challenge = getChallengeResponse.Response.NullCheckedConvert(source => new AuthorizationChallenge()
+				{
+					ChallengeType = source.ChallengeType,
+					ChallengeStatus = source.ChallengeStatus,
+					ChallengeUrl = source.ChallengeUrl,
+					Token = source.Token,
+					ValidatedDateTimeUtc = source.ValidatedDateTimeUtc,
+				});
+
+				response.Error = getChallengeResponse.Response?.Error.NullCheckedConvert(source => new OrderError()
+				{
+					ErrorType = source.ErrorType,
+					Detail = source.Detail,
+					Status = source.Status,
+					SubProblems = source.SubProblems.ToNullCheckedArray(subProblem => new OrderErrorSubProblem()
 					{
-						CertificateIdentifierType = identifier.CertificateIdentifierType,
-						CertificateIdentifierValue = identifier.CertificateIdentifierValue,
+						ErrorType = subProblem.ErrorType,
+						Detail = subProblem.Detail,
+						Identifier = subProblem.Identifier.NullCheckedConvert(identifier => new OrderCertificateIdentifier()
+						{
+							CertificateIdentifierType = identifier.CertificateIdentifierType,
+							CertificateIdentifierValue = identifier.CertificateIdentifierValue,
+						}),
 					}),
-				}),
-			});
+				});
+			}
+			else if (acmeResponse.Response is ISI.Extensions.WebClient.Rest.TextResponse textResponse)
+			{
+				if (textResponse.ResponseHeaders.TryGetValue(HeaderKey.ReplayNonce, out var nonce))
+				{
+					request.HostContext.Nonce = nonce;
+				}
+
+				switch (textResponse.StatusCode)
+				{
+					case System.Net.HttpStatusCode.NotFound:
+						response.NotFound = true;
+						break;
+
+					default:
+						throw new Exception($"GetChallenge, StatusCode: {acmeResponse.StatusCode.GetDescription()}\n{textResponse.Content}");
+				}
+			}
 
 			return response;
 		}

@@ -25,5 +25,7 @@ namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 	public class CompleteChallengeResponse
 	{
 		public AuthorizationChallenge AuthorizationChallenge { get; set; }
+
+		public bool NotFound { get; set; }
 	}
 }

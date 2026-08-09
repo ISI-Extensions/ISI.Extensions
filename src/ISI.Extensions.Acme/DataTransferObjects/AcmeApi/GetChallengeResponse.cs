@@ -27,5 +27,7 @@ namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 		public AuthorizationChallenge Challenge { get; set; }
 		
 		public OrderError Error { get; set; }
+		
+		public bool NotFound { get; set; }
 	}
 }

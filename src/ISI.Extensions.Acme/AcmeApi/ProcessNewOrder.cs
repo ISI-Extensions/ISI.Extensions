@@ -140,13 +140,16 @@ namespace ISI.Extensions.Acme
 						ChallengeUrl = challenge.ChallengeUrl,
 					});
 
-					System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
-
-					var getChallengeResponse = GetChallenge(new()
+					if (!completeChallengeResponse.NotFound)
 					{
-						HostContext = request.HostContext,
-						ChallengeUrl = challenge.ChallengeUrl,
-					});
+						System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
+
+						var getChallengeResponse = GetChallenge(new()
+						{
+							HostContext = request.HostContext,
+							ChallengeUrl = challenge.ChallengeUrl,
+						});
+					}
 
 					challengeUrls.Add(challenge.ChallengeUrl);
 				}

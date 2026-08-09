@@ -45,21 +45,47 @@ namespace ISI.Extensions.Acme
 			var xxx = ISI.Extensions.WebClient.Rest.GetEventHandler();
 #endif
 
-			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<ISI.Extensions.JsonJwt.SerializableEntities.SignedJwt, ISI.Extensions.WebClient.Rest.SerializedResponse<ISI.Extensions.Acme.SerializableModels.AcmeOrders.CompleteChallengeResponse>>(uri, GetHeaders(request), signedJwt, true);
-
-			if (acmeResponse.ResponseHeaders.TryGetValue(HeaderKey.ReplayNonce, out var nonce))
+			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost(new ISI.Extensions.WebClient.Rest.RestResponseTypeCollection()
 			{
-				request.HostContext.Nonce = nonce;
+				{ System.Net.HttpStatusCode.OK, typeof(ISI.Extensions.WebClient.Rest.SerializedResponse<ISI.Extensions.Acme.SerializableModels.AcmeOrders.CompleteChallengeResponse>) },
+				{ System.Net.HttpStatusCode.Unauthorized, typeof(ISI.Extensions.WebClient.Rest.TextResponse) },
+				{ System.Net.HttpStatusCode.Forbidden, typeof(ISI.Extensions.WebClient.Rest.TextResponse) },
+				{ System.Net.HttpStatusCode.NotFound, typeof(ISI.Extensions.WebClient.Rest.TextResponse) },
+			}, uri, GetHeaders(request), signedJwt, true);
+
+			if (acmeResponse.Response is ISI.Extensions.WebClient.Rest.SerializedResponse<ISI.Extensions.Acme.SerializableModels.AcmeOrders.CompleteChallengeResponse> completeChallengeResponse)
+			{
+				if (completeChallengeResponse.ResponseHeaders.TryGetValue(HeaderKey.ReplayNonce, out var nonce))
+				{
+					request.HostContext.Nonce = nonce;
+				}
+
+				response.AuthorizationChallenge = completeChallengeResponse.Response.NullCheckedConvert(source => new AuthorizationChallenge()
+				{
+					ChallengeType = source.ChallengeType,
+					ChallengeStatus = source.ChallengeStatus,
+					ChallengeUrl = source.ChallengeUrl,
+					Token = source.Token,
+					ValidatedDateTimeUtc = source.ValidatedDateTimeUtc,
+				});
 			}
-
-			response.AuthorizationChallenge = acmeResponse.Response.NullCheckedConvert(source => new AuthorizationChallenge()
+			else if (acmeResponse.Response is ISI.Extensions.WebClient.Rest.TextResponse textResponse)
 			{
-				ChallengeType = source.ChallengeType,
-				ChallengeStatus = source.ChallengeStatus,
-				ChallengeUrl = source.ChallengeUrl,
-				Token = source.Token,
-				ValidatedDateTimeUtc = source.ValidatedDateTimeUtc,
-			});
+				if (textResponse.ResponseHeaders.TryGetValue(HeaderKey.ReplayNonce, out var nonce))
+				{
+					request.HostContext.Nonce = nonce;
+				}
+
+				switch (textResponse.StatusCode)
+				{
+					case System.Net.HttpStatusCode.NotFound:
+						response.NotFound = true;
+						break;
+
+					default:
+						throw new Exception($"CompleteChallenge, StatusCode: {acmeResponse.StatusCode.GetDescription()}\n{textResponse.Content}");
+				}
+			}
 
 			return response;
 		}

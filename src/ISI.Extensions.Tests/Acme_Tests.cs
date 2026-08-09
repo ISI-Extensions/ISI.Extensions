@@ -12,39 +12,39 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using NUnit.Framework;
-using System.Runtime.Serialization;
 using ISI.Extensions.ConfigurationHelper.Extensions;
 using ISI.Extensions.DependencyInjection.Extensions;
+using ISI.Extensions.Extensions;
 using ISI.Extensions.JsonJwt.Extensions;
 using ISI.Extensions.JsonSerialization.Extensions;
 using Microsoft.Extensions.DependencyInjection;
+using NUnit.Framework;
 
 namespace ISI.Extensions.Tests
 {
 	[TestFixture]
 	public class Acme_Tests
 	{
-		protected readonly Uri HostDirectoryUri = new Uri(@"https://acme-v02.api.letsencrypt.org/directory");
-		protected readonly string AccountPemFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-account.pem");
-		protected readonly string AccountSerializedJsonWebKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-account.SerializedJsonWebKey");
-		protected readonly string AccountKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-account.key");
-		protected readonly string CertificateKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-account.certificate.key");
-		protected readonly string CertificateFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-account.certificate.crt");
+		//protected readonly Uri HostDirectoryUri = new Uri(@"https://acme-v02.api.letsencrypt.org/directory");
+		//protected readonly string AccountPemFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-account.pem");
+		//protected readonly string AccountSerializedJsonWebKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-account.SerializedJsonWebKey");
+		//protected readonly string AccountKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-account.key");
+		//protected readonly string CertificateKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-account.certificate.key");
+		//protected readonly string CertificateFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-account.certificate.crt");
 
-		//protected readonly Uri HostDirectoryUri = new Uri(@"https://acme-staging-v02.api.letsencrypt.org/directory");
-		//protected readonly string AccountPemFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.pem");
-		//protected readonly string AccountSerializedJsonWebKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.SerializedJsonWebKey");
-		//protected readonly string AccountKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.key");
-		//protected readonly string CertificateKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.certificate.key");
-		//protected readonly string CertificateFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.certificate.crt");
+		protected readonly Uri HostDirectoryUri = new Uri(@"https://acme-staging-v02.api.letsencrypt.org/directory");
+		protected readonly string AccountPemFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.pem");
+		protected readonly string AccountSerializedJsonWebKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.SerializedJsonWebKey");
+		protected readonly string AccountKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.key");
+		protected readonly string CertificateKeyFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.certificate.key");
+		protected readonly string CertificateFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "letsencrypt-staging-account.certificate.crt");
 
 		//protected readonly Uri HostDirectoryUri = new Uri(@"https://localhost:15633/directory");
 		//protected readonly string AccountPemFullName = System.IO.Path.Combine(ISI.Extensions.IO.Path.DataRoot, "Account.pem");
@@ -153,6 +153,12 @@ namespace ISI.Extensions.Tests
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 
+			var dnsProviderUuid = ISI.Extensions.GoDaddy.DomainsApi.DnsProviderUuid;
+			var dnsProviderApiUser = settings.GetValue("GoDaddy.ApiKey");
+			var dnsProviderApiKey = settings.GetValue("GoDaddy.ApiSecret");
+
+
+
 			var pem = GetAccountPem();
 			var serializedJsonWebKey = GetAccountSerializedJsonWebKey();
 			var accountKey = GetAccountKey();
@@ -187,61 +193,79 @@ namespace ISI.Extensions.Tests
 				AuthorizationUrl = createNewOrderResponse.Order.AuthorizationUrls.First(),
 			});
 
-			var challenge = getAuthorizationResponse.Authorization.Challenges.NullCheckedFirstOrDefault(challenge => challenge.ChallengeType == ISI.Extensions.Acme.OrderCertificateIdentifierAuthorizationChallengeType.Dns01);
+			var dnsChallenges = getAuthorizationResponse.Authorization.Challenges
+				.NullCheckedWhere(challenge => challenge.ChallengeType == ISI.Extensions.Acme.OrderCertificateIdentifierAuthorizationChallengeType.Dns01, NullCheckCollectionResult.Empty)
+				.ToNullCheckedArray(challenge =>
+				{
+					var calculateDnsTokenResponse = AcmeApi.CalculateDnsToken(new()
+					{
+						HostContext = context,
+						Domain = domain,
+						ChallengeToken = challenge.Token,
+					});
 
-			var calculateDnsTokenResponse = AcmeApi.CalculateDnsToken(new()
+					var dnsRecord = new ISI.Extensions.Dns.DnsRecord()
+					{
+						Data = calculateDnsTokenResponse.DnsToken,
+						Name = calculateDnsTokenResponse.DnsRecordName,
+						//Port = source.Port,
+						//Priority = source.Priority,
+						//Protocol = source.Protocol,
+						//Service = source.Service,
+						Ttl = TimeSpan.FromMinutes(10),
+						RecordType = ISI.Extensions.Dns.RecordType.TextRecord,
+						//Weight = source.Weight,
+					};
+
+					return (Challenge: challenge, DnsToken: calculateDnsTokenResponse, DnsRecord: dnsRecord);
+				});
+
+
+			foreach (var challengeGroupedByDnsRecordName in dnsChallenges.GroupBy(challenge => challenge.DnsRecord.Name, StringComparer.InvariantCultureIgnoreCase))
 			{
-				HostContext = context,
-				Domain = domain,
-				ChallengeToken = challenge.Token,
-			});
+				var existingDnsTokens = new HashSet<string>(DomainsApi.GetTxtRecords(new()
+				{
+					Domain = domain.TrimStart('*', '.'),
+					Name = challengeGroupedByDnsRecordName.Key,
+					//NameServer = Configuration.NameServerIpAddress,
+				}).Values ?? [], StringComparer.InvariantCulture);
 
-			//var dnsRecords = DomainsApi.GetDnsRecords(new()
-			//{
-			//	ApiKey = settings.GetValue("GoDaddy.ApiKey"),
-			//	ApiSecret = settings.GetValue("GoDaddy.ApiSecret"),
-			//	DomainName = domainName,
-			//}).DnsRecords;
+				var missingDnsChallenges = challengeGroupedByDnsRecordName.Where(challenge => !existingDnsTokens.Contains(challenge.DnsToken.DnsToken)).ToArray();
 
-			var dnsRecord = new ISI.Extensions.Dns.DnsRecord()
+				if (missingDnsChallenges.Any())
+				{
+					var dnsRecords = missingDnsChallenges.ToNullCheckedArray(missingDnsChallenge => missingDnsChallenge.DnsRecord);
+
+					var setDnsRecordsResponse = DomainsApi.SetDnsRecords(new()
+					{
+						DnsProviderUuid = dnsProviderUuid,
+						ApiUser = dnsProviderApiKey,
+						ApiKey = dnsProviderApiKey,
+						Domain = domain.TrimStart('*', '.'),
+						DnsRecords = dnsRecords,
+					});
+
+					System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
+				}
+			}
+
+			foreach (var dnsChallenge in dnsChallenges)
 			{
-				Data = calculateDnsTokenResponse.DnsToken,
-				Name = calculateDnsTokenResponse.DnsRecordName,
-				//Port = source.Port,
-				//Priority = source.Priority,
-				//Protocol = source.Protocol,
-				//Service = source.Service,
-				Ttl = TimeSpan.FromMinutes(10),
-				RecordType = ISI.Extensions.Dns.RecordType.TextRecord,
-				//Weight = source.Weight,
-			};
+				var completeChallengeResponse = AcmeApi.CompleteChallenge(new()
+				{
+					HostContext = context,
+					ChallengeUrl = dnsChallenge.Challenge.ChallengeUrl,
+				});
 
-			var setDnsRecordsResponse = DomainsApi.SetDnsRecords(new()
-			{
-				DnsProviderUuid = ISI.Extensions.GoDaddy.DomainsApi.DnsProviderUuid,
-				ApiUser = settings.GetValue("GoDaddy.ApiKey"),
-				ApiKey = settings.GetValue("GoDaddy.ApiSecret"),
-				Domain = calculateDnsTokenResponse.Domain,
-				DnsRecords = [dnsRecord],
-			});
-
-			System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
-
-			var completeChallengeResponse = AcmeApi.CompleteChallenge(new()
-			{
-				HostContext = context,
-				ChallengeUrl = challenge.ChallengeUrl,
-			});
-
-			System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
+				System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
 
 
-			var getChallengeResponse = AcmeApi.GetChallenge(new()
-			{
-				HostContext = context,
-				ChallengeUrl = challenge.ChallengeUrl,
-			});
-
+				var getChallengeResponse = AcmeApi.GetChallenge(new()
+				{
+					HostContext = context,
+					ChallengeUrl = dnsChallenge.Challenge.ChallengeUrl,
+				});
+			}
 
 			System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
 
@@ -348,13 +372,13 @@ namespace ISI.Extensions.Tests
 					});
 				};
 			}
-			else if (dnsProviderUuid == ManualDomainsApi.DnsProviderUuid)
+			else if (dnsProviderUuid == ISI.Extensions.Dns.ManualDomainsApi.DnsProviderUuid)
 			{
 				response.SetDnsRecord = (rootDomain, dnsRecord) =>
 				{
 					DomainsApi.SetDnsRecords(new()
 					{
-						DnsProviderUuid = ManualDomainsApi.DnsProviderUuid,
+						DnsProviderUuid = ISI.Extensions.Dns.ManualDomainsApi.DnsProviderUuid,
 
 						Domain = rootDomain,
 						DnsRecords = [dnsRecord],
@@ -388,8 +412,8 @@ namespace ISI.Extensions.Tests
 			var serializedJsonWebKey = GetAccountSerializedJsonWebKey();
 			var accountKey = GetAccountKey();
 
-			//var processNewOrderDetails = GetProcessNewOrderDetails(settings, "*.muthmanor.com", ISI.Extensions.NameCheap.DomainsApi.DnsProviderUuid);
-			var processNewOrderDetails = GetProcessNewOrderDetails(settings, "*.whizzia.info", ISI.Extensions.DeSEC.DomainsApi.DnsProviderUuid);
+			var processNewOrderDetails = GetProcessNewOrderDetails(settings, "*.muthmanor.com", ISI.Extensions.NameCheap.DomainsApi.DnsProviderUuid);
+			//var processNewOrderDetails = GetProcessNewOrderDetails(settings, "*.whizzia.info", ISI.Extensions.DeSEC.DomainsApi.DnsProviderUuid);
 
 			var context = AcmeApi.GetHostContext(new()
 			{
@@ -446,6 +470,7 @@ namespace ISI.Extensions.Tests
 		}
 	}
 
+	/*
 	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "ManualDomainsApi", false, null, false, null, false, null)]
 	public class ManualDomainsApi : ISI.Extensions.Dns.AbstractDomainsApi, ISI.Extensions.Dns.IDomainsApi
 	{
@@ -498,4 +523,5 @@ namespace ISI.Extensions.Tests
 			return response;
 		}
 	}
+	*/
 }

@@ -34,7 +34,7 @@ namespace ISI.Extensions.Aspose.Extensions
 				CaseSensitive = findOptions.IsCaseSensitive,
 				ConvertNumericData = findOptions.ConvertNumericData,
 				SearchNext = (findOptions.SearchOrder == ISI.Extensions.SpreadSheets.SearchOrder.Forward),
-				SeachOrderByRows = (findOptions.SearchDirection == ISI.Extensions.SpreadSheets.SearchDirection.Rows),
+				SearchOrderByRows = (findOptions.SearchDirection == ISI.Extensions.SpreadSheets.SearchDirection.Rows),
 				Style = findOptions.Style.NullCheckedConvert(style => ((ISI.Extensions.Aspose.Cells.CellStyle)style)._cellStyle),
 			};
 

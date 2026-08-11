@@ -81,12 +81,17 @@ namespace ISI.Extensions.Tests
 
 			var domainsApi = ServiceProvider.GetService<ISI.Extensions.DeSEC.DomainsApi>();
 
-			var txtRecords = domainsApi.GetTxtRecords(new()
+			var txtRecords = new HashSet<string>( domainsApi.GetTxtRecords(new()
 			{
-				Domain = "whizzia.info",
+				Domain = "isi.services",
 				Name = "_acme-challenge",
 				NameServer = "8.8.8.8",
-			}).Values;
+			}).Values ?? [], StringComparer.InvariantCulture);
+
+			if (txtRecords.Contains("KmguyAVzUG5nhjzcJNbUDWGBfHIOAhbfNnF6o45QL6E"))
+			{
+
+			}
 		}
 
 		[Test]

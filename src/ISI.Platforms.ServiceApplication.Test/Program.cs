@@ -51,8 +51,7 @@ namespace ISI.Platforms.ServiceApplication.Test
 
 			context.AddSignalR = true;
 			context.AddWebStartupUseEndpoints(endpointRouteBuilder => { endpointRouteBuilder.MapHub<ISI.Platforms.ServiceApplication.Test.Hubs.ChatHub>(ISI.Platforms.ServiceApplication.Services.Test.ChatHubApi.HubUrlPattern); });
-
-
+			
 			context.AddWebStartupConfigureServices(services => { services.AddSingleton<ISI.Extensions.IAuthenticationIdentityApi, AuthenticationIdentityApi>(); });
 
 			context.AddSwaggerConfiguration(useBearer: true);
@@ -71,7 +70,6 @@ namespace ISI.Platforms.ServiceApplication.Test
 			});
 
 			context.SetConfiguration();
-
 
 			if (!context.ServiceSetup())
 			{

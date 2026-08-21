@@ -231,10 +231,10 @@ namespace ISI.Extensions.VisualStudio
 
 						try
 						{
-							var nugetConfigFullNames = NugetApi.GetNugetConfigFullNames(new()
+							var nugetConfigFullName = NugetApi.GetNugetConfigFullName(new()
 							{
 								WorkingCopyDirectory = solutionDetails.SolutionDirectory,
-							}).NugetConfigFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty);
+							}).NugetConfigFullName;
 
 							var solutionIgnorePackageIds = new HashSet<string>(solutionDetails.DoNotUpgradePackages ?? [], StringComparer.InvariantCultureIgnoreCase);
 							solutionIgnorePackageIds.UnionWith(ignorePackageIds);
@@ -244,7 +244,7 @@ namespace ISI.Extensions.VisualStudio
 								var getLatestPackageVersionResponse = NugetApi.GetNugetPackageKey(new()
 								{
 									Package = package,
-									NugetConfigFullNames = nugetConfigFullNames,
+									NugetConfigFullNames = [nugetConfigFullName],
 								});
 
 								if (getLatestPackageVersionResponse.NugetPackageKey != null)
@@ -474,7 +474,7 @@ namespace ISI.Extensions.VisualStudio
 
 								if (System.IO.Directory.Exists(nugetPackOutputDirectory))
 								{
-									var updatedNugetPackageKeys = NugetApi.ListNugetPackageKeys(new()
+									var updatedNugetPackageKeys = NugetApi.SearchNugetPackageKeys(new()
 									{
 										Source = nugetPackOutputDirectory,
 									}).NugetPackageKeys;

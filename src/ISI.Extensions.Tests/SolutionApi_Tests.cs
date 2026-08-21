@@ -293,7 +293,7 @@ namespace ISI.Extensions.Tests
 
 			var existingNugetPackages = new Dictionary<string, HashSet<string>>(StringComparer.InvariantCultureIgnoreCase);
 
-			var existingNugetPackageKeys = nugetApi.ListNugetPackageKeys(new()
+			var existingNugetPackageKeys = nugetApi.SearchNugetPackageKeys(new()
 			{
 				Source = settings.Nuget.RepositoryName
 			}).NugetPackageKeys.NullCheckedWhere(nugetPackagKey => nugetPackagKey.Package.StartsWith("ISI.", StringComparison.InvariantCultureIgnoreCase), NullCheckCollectionResult.Empty);

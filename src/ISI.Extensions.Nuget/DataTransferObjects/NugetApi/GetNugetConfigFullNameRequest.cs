@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public class GetNugetConfigFullNamesRequest
+	public class GetNugetConfigFullNameRequest
 	{
 		public string WorkingCopyDirectory { get; set; }
 	}

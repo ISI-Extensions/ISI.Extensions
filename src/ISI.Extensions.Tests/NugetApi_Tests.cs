@@ -188,7 +188,7 @@ namespace ISI.Extensions.Tests
 		{
 			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.Nuget.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
 
-			var nugetPackageKeys = nugetApi.ListNugetPackageKeys(new()
+			var nugetPackageKeys = nugetApi.SearchNugetPackageKeys(new()
 			{
 				Source = @"F:\ISI\Internal Projects\ISI.Extensions\Nuget",
 			}).NugetPackageKeys;

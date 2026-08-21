@@ -50,14 +50,7 @@ namespace ISI.Extensions.Nuget
 
 			if (string.IsNullOrWhiteSpace(request.Version))
 			{
-				var foundNugetPackageKey = ListNugetPackageKeys(new()
-				                           {
-					                           Search = request.Package,
-					                           ExactMatchOnly = true,
-					                           Source = request.Source,
-					                           NugetConfigFullNames = request.NugetConfigFullNames,
-				                           }).NugetPackageKeys.NullCheckedFirstOrDefault() ??
-				                           SearchNugetPackageKeys(new()
+				var foundNugetPackageKey = SearchNugetPackageKeys(new()
 				                           {
 					                           Search = request.Package,
 					                           ExactMatchOnly = true,

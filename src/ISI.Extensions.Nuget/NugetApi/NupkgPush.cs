@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +21,9 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.JsonSerialization.Extensions;
 using ISI.Extensions.Nuget.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Nuget.DataTransferObjects.NugetApi;
 using SerializableDTOs = ISI.Extensions.Nuget.SerializableModels.Nuget;
-using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Nuget
 {
@@ -43,26 +43,23 @@ namespace ISI.Extensions.Nuget
 
 				var workingDirectory = string.IsNullOrWhiteSpace(request.WorkingDirectory) ? System.IO.Path.GetDirectoryName(request.NupkgFullNames.FirstOrDefault()) : request.WorkingDirectory;
 
-				if(!Uri.TryCreate(serviceLocatorDirectoryUrl, UriKind.Absolute, out var serviceLocatorDirectoryUri))
+				if (!Uri.TryCreate(serviceLocatorDirectoryUrl, UriKind.Absolute, out var serviceLocatorDirectoryUri))
 				{
-					var nugetConfigFullNames = GetNugetConfigFullNames(new()
+					var nugetConfigFullName = GetNugetConfigFullName(new()
 					{
 						WorkingCopyDirectory = workingDirectory,
-					}).NugetConfigFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty);
+					}).NugetConfigFullName;
 
-					foreach (var nugetConfigFullName in nugetConfigFullNames)
+					if (serviceLocatorDirectoryUri == null)
 					{
-						if (serviceLocatorDirectoryUri == null)
+						var packageSources = GetPackageSourcesFromNugetConfig(new()
 						{
-							var packageSources = GetPackageSourcesFromNugetConfig(new()
-							{
-								NugetConfigFullName = nugetConfigFullName,
-							}).PackageSources.ToNullCheckedDictionary(packageSource => packageSource.Key, packageSource => packageSource.Url, StringComparer.InvariantCultureIgnoreCase, NullCheckDictionaryResult.Empty);
+							NugetConfigFullName = nugetConfigFullName,
+						}).PackageSources.ToNullCheckedDictionary(packageSource => packageSource.Key, packageSource => packageSource.Url, StringComparer.InvariantCultureIgnoreCase, NullCheckDictionaryResult.Empty);
 
-							if (packageSources.TryGetValue(serviceLocatorDirectoryUrl, out var packageSourceUrl))
-							{
-								Uri.TryCreate(packageSourceUrl, UriKind.Absolute, out serviceLocatorDirectoryUri);
-							}
+						if (packageSources.TryGetValue(serviceLocatorDirectoryUrl, out var packageSourceUrl))
+						{
+							Uri.TryCreate(packageSourceUrl, UriKind.Absolute, out serviceLocatorDirectoryUri);
 						}
 					}
 				}
@@ -92,7 +89,7 @@ namespace ISI.Extensions.Nuget
 					using (var client = new System.Net.WebClient())
 					{
 						var nugetApiKey = (request.NugetApiKey.StartsWith("%") && request.NugetApiKey.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(request.NugetApiKey.Trim('%')) : request.NugetApiKey);
-						
+
 						client.Headers.Add(NuGetHeaderName, nugetApiKey);
 						client.UploadFile(packagePublishUrl, System.Net.WebRequestMethods.Http.Put, nupkgFullName);
 					}
@@ -122,18 +119,15 @@ namespace ISI.Extensions.Nuget
 
 					if (!string.IsNullOrWhiteSpace(workingDirectory))
 					{
-						var nugetConfigFullNames = GetNugetConfigFullNames(new()
+						var nugetConfigFullName = GetNugetConfigFullName(new()
 						{
 							WorkingCopyDirectory = workingDirectory,
-						}).NugetConfigFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty);
+						}).NugetConfigFullName;
 
-						foreach (var nugetConfigFullName in nugetConfigFullNames)
+						if (System.IO.File.Exists(nugetConfigFullName))
 						{
-							if (System.IO.File.Exists(nugetConfigFullName))
-							{
-								arguments.Add("-ConfigFile");
-								arguments.Add($"\"{nugetConfigFullName}\"");
-							}
+							arguments.Add("-ConfigFile");
+							arguments.Add($"\"{nugetConfigFullName}\"");
 						}
 					}
 

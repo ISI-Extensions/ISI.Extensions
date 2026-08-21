@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,48 +21,44 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.JsonSerialization.Extensions;
 using ISI.Extensions.Nuget.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Nuget.DataTransferObjects.NugetApi;
 using SerializableDTOs = ISI.Extensions.Nuget.SerializableModels.Nuget;
-using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Nuget
 {
 	public partial class NugetApi
 	{
-		public DTOs.GetNugetConfigFullNamesResponse GetNugetConfigFullNames(DTOs.GetNugetConfigFullNamesRequest request)
+		public DTOs.GetNugetConfigFullNameResponse GetNugetConfigFullName(DTOs.GetNugetConfigFullNameRequest request)
 		{
-			var response = new DTOs.GetNugetConfigFullNamesResponse();
+			var response = new DTOs.GetNugetConfigFullNameResponse();
 
-			var nugetConfigFullNames = new List<string>();
-
-			if(!string.IsNullOrWhiteSpace(request.WorkingCopyDirectory))
+			if (!string.IsNullOrWhiteSpace(request.WorkingCopyDirectory))
 			{
 				var nugetConfigFullName = System.IO.Path.Combine(request.WorkingCopyDirectory, "NuGet.config");
 				if (System.IO.File.Exists(nugetConfigFullName))
 				{
-					nugetConfigFullNames.Add(nugetConfigFullName);
+					response.NugetConfigFullName = nugetConfigFullName;
 				}
 				else
 				{
 					nugetConfigFullName = System.IO.Path.Combine(request.WorkingCopyDirectory, "src", "NuGet.config");
 					if (System.IO.File.Exists(nugetConfigFullName))
 					{
-						nugetConfigFullNames.Add(nugetConfigFullName);
+						response.NugetConfigFullName = nugetConfigFullName;
 					}
 				}
 			}
 
-			if(!nugetConfigFullNames.Any())
+			if (string.IsNullOrWhiteSpace(response.NugetConfigFullName))
 			{
 				var nugetConfigFullName = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "NuGet", "NuGet.config");
 				if (System.IO.File.Exists(nugetConfigFullName))
 				{
-					nugetConfigFullNames.Add(nugetConfigFullName);
+					response.NugetConfigFullName = nugetConfigFullName;
 				}
 			}
 
-			response.NugetConfigFullNames = nugetConfigFullNames.ToArray();
-			
 			return response;
 		}
 	}

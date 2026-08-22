@@ -67,20 +67,28 @@ namespace ISI.Extensions.BitBucket
 		Guid ISI.Extensions.Scm.ISourceControlRepositoryApi.SourceControlRepositoryTypeUuid => SourceControlRepositoryTypeUuid.ToGuid();
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.Description => Description;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryType => RepositoryType;
+		
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiUrl => false;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiUrlDescription => "ApiUrl";
-		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiUserName => true;
+		
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiUserName => false;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiUserNameDescription => "UserName";
+
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseApiToken => false;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ApiTokenDescription => "ApiToken";
-		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseReadApiToken => true;
+		
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseReadApiUserName => false;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ReadApiUserNameDescription => "Read UserName";
-		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseReadApiUserName => true;
+
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseReadApiToken => true;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.ReadApiTokenDescription => "Read ApiToken";
-		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseWriteApiUserName => true;
+		
+		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseWriteApiUserName => false;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.WriteApiUserNameDescription => "Write UserName";
+		
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseWriteApiToken => true;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.WriteApiTokenDescription => "Write ApiToken";
+
 		bool ISI.Extensions.Scm.ISourceControlRepositoryApi.UseRepositoryNamespace => true;
 		string ISI.Extensions.Scm.ISourceControlRepositoryApi.RepositoryNamespaceDescription => "Workspace";
 

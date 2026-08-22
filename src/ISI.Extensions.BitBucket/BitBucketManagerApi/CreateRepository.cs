@@ -43,6 +43,7 @@ namespace ISI.Extensions.BitBucket
 				{
 					Key = request.ProjectKey,
 				},
+				Description = request.Name,
 			};
 
 #if DEBUG

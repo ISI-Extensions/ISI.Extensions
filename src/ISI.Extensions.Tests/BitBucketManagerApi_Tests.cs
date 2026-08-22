@@ -30,7 +30,8 @@ namespace ISI.Extensions.Tests
 	[TestFixture]
 	public class BitBucketManagerApi_Tests
 	{
-		public string BitBucketApiToken { get; set; }
+		public string BitBucketReadApiToken { get; set; }
+		public string BitBucketWriteApiToken { get; set; }
 		public string BitBucketReposWorkspace { get; set; }
 		public string BitBucketReposDirectory { get; set; }
 
@@ -71,7 +72,8 @@ namespace ISI.Extensions.Tests
 			var settings = new ISI.Extensions.SimpleKeyValueStorage(settingsFullName);
 
 			//BitBucketApiToken = settings.GetValue("Atlassian-ISI.Extensions-Token");
-			BitBucketApiToken = settings.GetValue("BitBucket-Access-Token-Read-Repos");
+			BitBucketReadApiToken = settings.GetValue("BitBucket-Access-Token-Read-Repos");
+			BitBucketWriteApiToken = settings.GetValue("BitBucket-Access-Token-Write-Repos");
 			BitBucketReposWorkspace = settings.GetValue("BitBucket-Repos-Workspace");
 			BitBucketReposDirectory = settings.GetValue("BitBucket-Repos-Directory");
 		}
@@ -112,7 +114,7 @@ namespace ISI.Extensions.Tests
 
 			var apiResponse = bitBucketManagerApi.ListRepositories(new()
 			{
-				BitBucketApiToken = BitBucketApiToken,
+				BitBucketApiToken = BitBucketReadApiToken,
 				Workspace = BitBucketReposWorkspace,
 			});
 
@@ -168,7 +170,7 @@ namespace ISI.Extensions.Tests
 
 			var apiResponse = bitBucketManagerApi.ListRepositories(new()
 			{
-				BitBucketApiToken = BitBucketApiToken,
+				BitBucketApiToken = BitBucketReadApiToken,
 				Workspace = BitBucketReposWorkspace,
 			});
 		}
@@ -180,7 +182,7 @@ namespace ISI.Extensions.Tests
 
 			var apiResponse = bitBucketManagerApi.GetRepositoryLastCommitHash(new()
 			{
-				BitBucketApiToken = BitBucketApiToken,
+				BitBucketApiToken = BitBucketReadApiToken,
 				Workspace = "dfdsfdfgb",
 				Name = "dfdsfdfgb.service",
 			});
@@ -193,8 +195,21 @@ namespace ISI.Extensions.Tests
 
 			var apiResponse = bitBucketManagerApi.ExportRepository(new()
 			{
-				BitBucketApiToken = BitBucketApiToken,
+				BitBucketApiToken = BitBucketReadApiToken,
 				Workspace = "dfdsfdfgb",
+				Name = "dfdsfdfgb.service",
+			});
+		}
+
+		[Test]
+		public void CreateRepository_Tests()
+		{
+			var bitBucketManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.BitBucket.BitBucketManagerApi>();
+
+			var apiResponse = bitBucketManagerApi.CreateRepository(new()
+			{
+				BitBucketApiToken = BitBucketWriteApiToken,
+				Workspace = BitBucketReposWorkspace,
 				Name = "dfdsfdfgb.service",
 			});
 		}

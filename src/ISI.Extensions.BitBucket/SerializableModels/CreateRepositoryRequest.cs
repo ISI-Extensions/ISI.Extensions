@@ -29,12 +29,15 @@ namespace ISI.Extensions.BitBucket.SerializableModels
 		[DataMember(Name = "scm", EmitDefaultValue = false)]
 		public string Scm { get; set; }
 
-		[DataMember(Name = "is_Private", EmitDefaultValue = false)]
+		[DataMember(Name = "is_private", EmitDefaultValue = false)]
 		public bool IsPrivate { get; set; }
 
 		[DataMember(Name = "project", EmitDefaultValue = false)]
 		public CreateRepositoryRequestProject Project { get; set; }
-		}
+
+		[DataMember(Name = "description", EmitDefaultValue = false)]
+		public string Description { get; set; }
+	}
 
 	[DataContract]
 		public class CreateRepositoryRequestProject

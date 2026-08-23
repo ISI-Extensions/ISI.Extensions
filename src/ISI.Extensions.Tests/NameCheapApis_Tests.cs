@@ -169,5 +169,33 @@ namespace ISI.Extensions.Tests
 				});
 			}
 		}
+
+		[Test]
+		public void GetCertificate_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+
+			var sslCertificatesApi = ServiceProvider.GetService<ISI.Extensions.NameCheap.SslCertificatesApi>();
+
+			using (var eventHandler = ISI.Extensions.WebClient.Rest.GetEventHandler())
+			{
+				var listCertificatesResponse = sslCertificatesApi.ListCertificates(new()
+				{
+					ApiUser = settings.GetValue("NameCheap.ApiUser"),
+					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+				});
+
+				var certificate = listCertificatesResponse.Certificates.NullCheckedFirstOrDefault(certificate => string.Equals(certificate.HostName, "*.isi-net.com", StringComparison.InvariantCultureIgnoreCase));
+
+				var getCertificateResponse = sslCertificatesApi.GetCertificate(new()
+				{
+					ApiUser = settings.GetValue("NameCheap.ApiUser"),
+					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+					VendorCertificateKey = certificate.VendorCertificateKey,
+				});
+
+			}
+		}
 	}
 }

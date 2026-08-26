@@ -271,7 +271,7 @@ namespace ISI.Extensions.Tests
 
 			var createCertificateSigningRequestResponse = AcmeApi.CreateCertificateSigningRequest(new()
 			{
-				CertificateSigningRequestParameters = new ISI.Extensions.Acme.CertificateSigningRequestParameters()
+				CertificateSigningRequestParameters = new ISI.Extensions.Certificates.CertificateSigningRequestParameters()
 				{
 					CountryName = "US",
 					State = "New York",

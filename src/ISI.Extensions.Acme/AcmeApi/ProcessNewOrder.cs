@@ -159,7 +159,7 @@ namespace ISI.Extensions.Acme
 
 			var createCertificateSigningRequestResponse = CreateCertificateSigningRequest(new()
 			{
-				CertificateSigningRequestParameters = new ISI.Extensions.Acme.CertificateSigningRequestParameters()
+				CertificateSigningRequestParameters = new ISI.Extensions.Certificates.CertificateSigningRequestParameters()
 				{
 					CountryName = request.CountryName,
 					State = request.State,

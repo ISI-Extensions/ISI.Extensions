@@ -26,6 +26,6 @@ namespace ISI.Extensions.Acme.DataTransferObjects.AcmeApi
 	{
 		public int KeySize { get; set; } = 4096;
 
-		public ISI.Extensions.Acme.CertificateSigningRequestParameters CertificateSigningRequestParameters { get; set; }
+		public ISI.Extensions.Certificates.CertificateSigningRequestParameters CertificateSigningRequestParameters { get; set; }
 	}
 }

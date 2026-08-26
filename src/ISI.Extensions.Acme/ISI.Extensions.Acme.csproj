@@ -19,6 +19,7 @@
 	</ItemGroup>
 	
 	<ItemGroup>
+		<ProjectReference Include="..\ISI.Extensions.Certificates\ISI.Extensions.Certificates.csproj" />
 		<ProjectReference Include="..\ISI.Extensions.JsonJwt\ISI.Extensions.JsonJwt.csproj" />
 		<ProjectReference Include="..\ISI.Extensions\ISI.Extensions.csproj" />
 	</ItemGroup>

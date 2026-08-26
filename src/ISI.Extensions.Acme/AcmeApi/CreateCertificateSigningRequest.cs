@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Acme.Extensions;
+using ISI.Extensions.Certificates.Extensions;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.JsonJwt.Extensions;
 using ISI.Extensions.JsonSerialization.Extensions;

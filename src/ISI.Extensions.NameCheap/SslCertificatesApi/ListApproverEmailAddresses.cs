@@ -19,13 +19,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.NameCheap.Extensions;
+using DTOs = ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi;
 
-namespace ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi
+namespace ISI.Extensions.NameCheap
 {
-	public class CreateCertificateRequest : IRequest
+	public partial class SslCertificatesApi
 	{
-		public string Url { get; set; }
-		public string ApiUser { get; set; }
-		public string ApiKey { get; set; }
+		public DTOs.ListApproverEmailAddressesResponse ListApproverEmailAddresses(DTOs.ListApproverEmailAddressesRequest request)
+		{
+			var response = new DTOs.ListApproverEmailAddressesResponse();
+
+			var uri = request.GetUrl(Configuration);
+			uri.SetUserNameClientIp(request, IpifyApi, Configuration);
+			uri.AddQueryStringParameter("Command", "namecheap.ssl.getApproverEmailList");
+			uri.AddQueryStringParameter("domainname", request.DomainName);
+			uri.AddQueryStringParameter("CertificateType", request.CertificateType.GetAbbreviation());
+
+			var serviceResponse = ISI.Extensions.WebClient.Rest.ExecuteXmlGet<SerializableModels.SslCertificatesApi.ListApproverEmailAddressesResponse>(uri.Uri, null, true);
+
+			response.DomainEmailAddresses = (serviceResponse.CommandResponse?.GetApproverEmailListResult?.DomainEmailAddresses)?.ToNullCheckedArray(NullCheckCollectionResult.Empty);
+			response.GenericEmailAddresses = (serviceResponse.CommandResponse?.GetApproverEmailListResult?.GenericEmailAddresses)?.ToNullCheckedArray(NullCheckCollectionResult.Empty);
+
+			return response;
+		}
 	}
 }

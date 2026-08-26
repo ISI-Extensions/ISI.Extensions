@@ -41,6 +41,7 @@
     <Platform Solution="*|x64" Project="x64" />
   </Project>
   <Project Path="ISI.Extensions.Cake/ISI.Extensions.Cake.csproj" />
+  <Project Path="ISI.Extensions.Certificates/ISI.Extensions.Certificates.csproj" Id="4055c22d-3bcc-4e93-8718-384804cfdb60" />
   <Project Path="ISI.Extensions.Cloudflare/ISI.Extensions.Cloudflare.csproj" Id="f9bfd7fd-c782-4c30-93e9-f88965918bd0" />
   <Project Path="ISI.Extensions.Debian/ISI.Extensions.Debian.csproj" Id="e097380f-89cd-4c69-a51b-46306d69041f" />
   <Project Path="ISI.Extensions.DependencyInjection.Iunq/ISI.Extensions.DependencyInjection.Iunq.csproj">

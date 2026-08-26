@@ -153,6 +153,37 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void ListApproverEmailAddresses_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "WRS.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+
+			var sslCertificatesApi = ServiceProvider.GetService<ISI.Extensions.NameCheap.SslCertificatesApi>();
+
+			using (var eventHandler = ISI.Extensions.WebClient.Rest.GetEventHandler())
+			{
+				var listCertificatesResponse = sslCertificatesApi.ListCertificates(new()
+				{
+					//Url = "https://api.sandbox.namecheap.com",
+					//ApiUser = settings.GetValue("NameCheap.Sandbox.ApiUser"),
+					//ApiKey = settings.GetValue("NameCheap.Sandbox.ApiKey"),
+					ApiUser = settings.GetValue("NameCheap.ApiUser"),
+					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+				});
+
+				var certificate = listCertificatesResponse.Certificates.NullCheckedFirstOrDefault(certificate => certificate.Status == ISI.Extensions.NameCheap.NameCheapSslCertificateStatus.Active);
+
+				var apiResponse = sslCertificatesApi.ListApproverEmailAddresses(new()
+				{
+					ApiUser = settings.GetValue("NameCheap.ApiUser"),
+					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+					DomainName = certificate.HostName, //  "westriversystems.com",
+					CertificateType = certificate.CertificateType,
+				});
+			}
+		}
+
+		[Test]
 		public void ListCertificates_Test()
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "WRS.keyValue");
@@ -189,7 +220,7 @@ namespace ISI.Extensions.Tests
 					ApiKey = settings.GetValue("NameCheap.ApiKey"),
 				});
 
-				var certificate = listCertificatesResponse.Certificates.NullCheckedFirstOrDefault(certificate => certificate.Status == ISI.Extensions.NameCheap.NameCheapSslCertificateStatus.Purchased);
+				var certificate = listCertificatesResponse.Certificates.NullCheckedFirstOrDefault(certificate => certificate.Status == ISI.Extensions.NameCheap.NameCheapSslCertificateStatus.Active);
 				//var certificate = listCertificatesResponse.Certificates.NullCheckedFirstOrDefault();
 
 				var getCertificateResponse = sslCertificatesApi.GetCertificate(new()
@@ -201,6 +232,10 @@ namespace ISI.Extensions.Tests
 					ApiKey = settings.GetValue("NameCheap.ApiKey"),
 					VendorCertificateKey = certificate.VendorCertificateKey,
 				});
+
+				var csr = getCertificateResponse.Certificates.NullCheckedFirstOrDefault(c => c.CertificateType == ISI.Extensions.Certificates.CertificateType.CertificateSigningRequest);
+
+				var parsedCsr = ISI.Extensions.Certificates.CertificateSigningRequestParameters.Parse(csr.Certificate);
 
 			}
 		}

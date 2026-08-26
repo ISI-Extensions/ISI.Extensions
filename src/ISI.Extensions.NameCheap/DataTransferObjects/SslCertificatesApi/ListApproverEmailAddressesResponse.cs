@@ -22,10 +22,9 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi
 {
-	public class CreateCertificateRequest : IRequest
+	public class ListApproverEmailAddressesResponse
 	{
-		public string Url { get; set; }
-		public string ApiUser { get; set; }
-		public string ApiKey { get; set; }
+		public string[] DomainEmailAddresses { get; set; }
+		public string[] GenericEmailAddresses { get; set; }
 	}
 }

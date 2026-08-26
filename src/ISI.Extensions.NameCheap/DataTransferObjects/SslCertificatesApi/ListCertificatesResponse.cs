@@ -19,29 +19,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.NameCheap.Extensions;
-using DTOs = ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi;
 
-namespace ISI.Extensions.NameCheap
+namespace ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi
 {
-	//https://www.namecheap.com/support/api/methods/ssl/
-	public partial class SslCertificatesApi
+	public class ListCertificatesResponse
 	{
-		protected Configuration Configuration { get; }
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
-		protected ISI.Extensions.Ipify.IpifyApi IpifyApi { get; }
+		public IEnumerable<ListCertificatesResponseCertificate> Certificates { get; set; }
+	}
 
-		public SslCertificatesApi(
-			Configuration configuration,
-			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
-			ISI.Extensions.Ipify.IpifyApi ipifyApi)
-		{
-			Configuration = configuration;
-			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
-			IpifyApi = ipifyApi;
-		}
+	public class ListCertificatesResponseCertificate
+	{
+		public string VendorCertificateKey { get; set; }
+		public string HostName { get; set; }
+		public NameCheapSslCertificateType CertificateType { get; set; }
+		public DateTime? PurchaseDate { get; set; }
+		public DateTime? ExpireDate { get; set; }
+		public DateTime? ActivationExpireDate { get; set; }
+		public bool IsExpired { get; set; }
+		public int Years { get; set; }
+		public NameCheapSslCertificateStatus Status { get; set; }
 	}
 }

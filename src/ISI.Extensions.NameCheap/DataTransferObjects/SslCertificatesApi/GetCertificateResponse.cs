@@ -20,7 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.NameCheap.DataTransferObjects.SslApi
+namespace ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi
 {
 	public class GetCertificateResponse
 	{

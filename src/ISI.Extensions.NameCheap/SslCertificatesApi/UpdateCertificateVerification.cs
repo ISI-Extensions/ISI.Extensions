@@ -21,59 +21,45 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.NameCheap.Extensions;
 using DTOs = ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi;
-using SerializableModels = ISI.Extensions.NameCheap.SerializableModels.SslCertificatesApi;
 
 namespace ISI.Extensions.NameCheap
 {
 	public partial class SslCertificatesApi
 	{
-		public DTOs.ListCertificatesResponse ListCertificates(DTOs.ListCertificatesRequest request)
+		public DTOs.UpdateCertificateVerificationResponse UpdateCertificateVerification(DTOs.UpdateCertificateVerificationRequest request)
 		{
-			var response = new DTOs.ListCertificatesResponse();
+			var response = new DTOs.UpdateCertificateVerificationResponse();
 
-			var page = 1;
+			var uri = request.GetUrl(Configuration);
 
-			var certificates = new List<DTOs.ListCertificatesResponseCertificate>();
+			var formData = new ISI.Extensions.WebClient.Rest.FormDataCollection();
+			formData.SetUserNameClientIp(request, IpifyApi, Configuration);
+			formData.Add("Command", "namecheap.ssl.editdcvmethod");
+			formData.Add("CertificateID", request.VendorCertificateKey);
+			formData.Add("DCVMethod", "CNAME_CSR_HASH");
 
-			while (page > 0)
+			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteFormRequestXmlPost<SerializableModels.SslCertificatesApi.UpdateCertificateVerificationResponse>(uri.Uri, request.GetHeaders(Configuration), formData, true);
+
+			response.EditValidationKey = apiResponse.CommandResponse?.SSLEditDCVMethodResult?.EditValidationKey;
+			response.Success = apiResponse.CommandResponse?.SSLEditDCVMethodResult?.Success ?? false;
+
+			if (apiResponse.CommandResponse?.SSLEditDCVMethodResult?.HttpDCValidation?.ValueAvailable ?? false)
 			{
-				var uri = request.GetUrl(Configuration);
-				uri.SetUserNameClientIp(request, IpifyApi, Configuration);
-				uri.AddQueryStringParameter("Command", "namecheap.ssl.getList");
-				uri.AddQueryStringParameter("Page", page);
-				uri.AddQueryStringParameter("ListType", request.ListType.GetAbbreviation());
-				if (!string.IsNullOrWhiteSpace(request.SearchTerm))
+				response.HttpValidation = apiResponse.CommandResponse?.SSLEditDCVMethodResult?.HttpDCValidation?.NullCheckedConvert(httpDCValidation => new DTOs.UpdateCertificateVerificationResponseHttpValidation()
 				{
-					uri.AddQueryStringParameter("SearchTerm", request.SearchTerm);
-				}
-
-				var serviceResponse = ISI.Extensions.WebClient.Rest.ExecuteXmlGet<SerializableModels.SslCertificatesApi.ListCertificatesResponse>(uri.Uri, null, true);
-
-				certificates.AddRange(serviceResponse?.CommandResponse?.Certificates?.ToNullCheckedArray(certificate => new DTOs.ListCertificatesResponseCertificate()
-				{
-					VendorCertificateKey = certificate.VendorCertificateKey,
-					HostName = certificate.HostName,
-					CertificateType = ISI.Extensions.Enum<NameCheapSslCertificateType>.ParseAbbreviation(certificate.CertificateType),
-					PurchaseDate = certificate.PurchaseDate.ToDateTimeNullable(),
-					ExpireDate = certificate.ExpireDate.ToDateTimeNullable(),
-					ActivationExpireDate = certificate.ActivationExpireDate.ToDateTimeNullable(),
-					IsExpired = certificate.IsExpired,
-					Status = ISI.Extensions.Enum<NameCheapSslCertificateStatus>.ParseAbbreviation(certificate.Status),
-					Years = certificate.Years,
-				}) ?? []);
-
-
-				if (certificates.Count < (serviceResponse?.CommandResponse?.Paging?.TotalItems ?? 0))
-				{
-					page++;
-				}
-				else
-				{
-					page = 0;
-				}
+					FileName = httpDCValidation.FileName,
+					FileContent = httpDCValidation.FileContent,
+				});
 			}
 
-			response.Certificates = certificates.ToArray();
+			if (apiResponse.CommandResponse?.SSLEditDCVMethodResult?.DNSDCValidation?.ValueAvailable ?? false)
+			{
+				response.DNSValidation = apiResponse.CommandResponse?.SSLEditDCVMethodResult?.DNSDCValidation?.NullCheckedConvert(dnsDCValidation => new DTOs.UpdateCertificateVerificationResponseDNSValidation()
+				{
+					HostName = dnsDCValidation.HostName,
+					Target = dnsDCValidation.Target,
+				});
+			}
 
 			return response;
 		}

@@ -20,14 +20,27 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.NameCheap.DataTransferObjects.SslApi
+namespace ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi
 {
-	public class GetCertificateRequest : IRequest
+	public class ActivateCertificateResponse
 	{
-		public string Url { get; set; }
-		public string ApiUser { get; set; }
-		public string ApiKey { get; set; }
+		public string ActivationKey { get; set; }
+		public bool Success { get; set; }
+		public ActivateCertificateResponseHttpValidation HttpValidation { get; set; }
+		public ActivateCertificateResponseDNSValidation DNSValidation { get; set; }
+	}
 
-		public string VendorCertificateKey { get; set; }
+	public class ActivateCertificateResponseHttpValidation
+	{
+		public string Domain { get; set; }
+		public string FileName { get; set; }
+		public string FileContent { get; set; }
+	}
+
+	public class ActivateCertificateResponseDNSValidation
+	{
+		public string Domain { get; set; }
+		public string HostName { get; set; }
+		public string Target { get; set; }
 	}
 }

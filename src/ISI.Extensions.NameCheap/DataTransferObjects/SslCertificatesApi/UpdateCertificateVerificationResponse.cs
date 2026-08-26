@@ -19,29 +19,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.NameCheap.Extensions;
-using DTOs = ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi;
 
-namespace ISI.Extensions.NameCheap
+namespace ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi
 {
-	//https://www.namecheap.com/support/api/methods/ssl/
-	public partial class SslCertificatesApi
+	public class UpdateCertificateVerificationResponse
 	{
-		protected Configuration Configuration { get; }
-		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
-		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
-		protected ISI.Extensions.Ipify.IpifyApi IpifyApi { get; }
+		public string EditValidationKey { get; set; }
+		public bool Success { get; set; }
+		public UpdateCertificateVerificationResponseHttpValidation HttpValidation { get; set; }
+		public UpdateCertificateVerificationResponseDNSValidation DNSValidation { get; set; }
+	}
 
-		public SslCertificatesApi(
-			Configuration configuration,
-			Microsoft.Extensions.Logging.ILogger logger,
-			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
-			ISI.Extensions.Ipify.IpifyApi ipifyApi)
-		{
-			Configuration = configuration;
-			Logger = logger;
-			DateTimeStamper = dateTimeStamper;
-			IpifyApi = ipifyApi;
-		}
+	public class UpdateCertificateVerificationResponseHttpValidation
+	{
+		public string FileName { get; set; }
+		public string FileContent { get; set; }
+	}
+
+	public class UpdateCertificateVerificationResponseDNSValidation
+	{
+		public string HostName { get; set; }
+		public string Target { get; set; }
 	}
 }

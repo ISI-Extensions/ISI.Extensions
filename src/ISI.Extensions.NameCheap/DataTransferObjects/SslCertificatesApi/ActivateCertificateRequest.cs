@@ -20,22 +20,16 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.NameCheap.DataTransferObjects.SslApi
+namespace ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi
 {
-	public class ListCertificatesResponse
+	public class ActivateCertificateRequest : IRequest
 	{
-		public IEnumerable<ListCertificatesResponseCertificate> Certificates { get; set; }
-	}
+		public string Url { get; set; }
+		public string ApiUser { get; set; }
+		public string ApiKey { get; set; }
 
-	public class ListCertificatesResponseCertificate
-	{
 		public string VendorCertificateKey { get; set; }
-		public string HostName { get; set; }
-		public NameCheapSslCertificateType CertificateType { get; set; }
-		public DateTime? PurchaseDate { get; set; }
-		public DateTime? ExpireDate { get; set; }
-		public DateTime? ActivationExpireDate { get; set; }
-		public bool IsExpired { get; set; }
-		public string Status { get; set; }
+		public string Csr { get; set; }
+		public string AdminEmailAddress { get; set; }
 	}
 }

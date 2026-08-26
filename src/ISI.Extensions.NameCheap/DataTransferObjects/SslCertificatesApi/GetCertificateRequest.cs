@@ -20,13 +20,14 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.NameCheap.DataTransferObjects.SslApi
+namespace ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi
 {
-	public class CreateCertificateRequest : IRequest
+	public class GetCertificateRequest : IRequest
 	{
 		public string Url { get; set; }
 		public string ApiUser { get; set; }
 		public string ApiKey { get; set; }
 
+		public string VendorCertificateKey { get; set; }
 	}
 }

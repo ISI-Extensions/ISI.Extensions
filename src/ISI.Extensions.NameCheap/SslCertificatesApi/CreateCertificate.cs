@@ -20,7 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.NameCheap.Extensions;
-using DTOs = ISI.Extensions.NameCheap.DataTransferObjects.SslApi;
+using DTOs = ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi;
 
 namespace ISI.Extensions.NameCheap
 {

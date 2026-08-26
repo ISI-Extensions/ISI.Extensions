@@ -20,7 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.NameCheap.Extensions;
-using DTOs = ISI.Extensions.NameCheap.DataTransferObjects.SslApi;
+using DTOs = ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi;
 
 namespace ISI.Extensions.NameCheap
 {
@@ -45,7 +45,7 @@ namespace ISI.Extensions.NameCheap
 			{
 				if (!string.IsNullOrWhiteSpace(serviceResponse.CommandResponse.SSLGetInfoResult.CertificateDetails.CSR))
 				{
-					certificates.Add((CertificateType: ISI.Extensions.Certificates.CertificateType.Csr, Certificate: serviceResponse.CommandResponse.SSLGetInfoResult.CertificateDetails.CSR));
+					certificates.Add((CertificateType: ISI.Extensions.Certificates.CertificateType.CertificateSigningRequest, Certificate: serviceResponse.CommandResponse.SSLGetInfoResult.CertificateDetails.CSR));
 				}
 
 				if (!string.IsNullOrWhiteSpace(serviceResponse.CommandResponse.SSLGetInfoResult.CertificateDetails.Certificates?.Certificate))

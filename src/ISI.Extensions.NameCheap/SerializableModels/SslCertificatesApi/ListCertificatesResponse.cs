@@ -99,5 +99,8 @@ namespace ISI.Extensions.NameCheap.SerializableModels.SslCertificatesApi
 
 		[System.Xml.Serialization.XmlAttribute("Status")]
 		public string Status { get; set; }
+
+		[System.Xml.Serialization.XmlAttribute("Years")]
+		public int Years { get; set; }
 	}
 }

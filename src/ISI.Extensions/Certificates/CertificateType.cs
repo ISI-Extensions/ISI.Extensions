@@ -21,7 +21,7 @@ namespace ISI.Extensions.Certificates
 {
 	public enum CertificateType
 	{
-		[ISI.Extensions.EnumGuid("495aedce-1aac-4fcd-8a38-f813380f17eb", "Csr", "csr")] Csr,
+		[ISI.Extensions.EnumGuid("495aedce-1aac-4fcd-8a38-f813380f17eb", "Certificate Signing Request", "csr")] CertificateSigningRequest,
 		[ISI.Extensions.EnumGuid("8a40c916-f5d8-410e-be41-2123a3e386e7", "Key", "key")] Key,
 		[ISI.Extensions.EnumGuid("0f526b75-e068-4947-83ed-7fa3f6a16069", "Key Password", "key-password")] KeyPassword,
 		[ISI.Extensions.EnumGuid("ec4c381a-55f7-48dc-895f-4cd0d402336e", "Crt", "crt")] Crt,

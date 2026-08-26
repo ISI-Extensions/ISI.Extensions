@@ -12,18 +12,18 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
-using ISI.Extensions.ConfigurationHelper.Extensions;
-using ISI.Extensions.DependencyInjection.Extensions;
-using ISI.Extensions.Extensions;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using NUnit.Framework;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ISI.Extensions.ConfigurationHelper.Extensions;
+using ISI.Extensions.DependencyInjection.Extensions;
+using ISI.Extensions.Extensions;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using NUnit.Framework;
 
 namespace ISI.Extensions.Tests
 {
@@ -155,7 +155,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void ListCertificates_Test()
 		{
-			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "WRS.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 
 			var sslCertificatesApi = ServiceProvider.GetService<ISI.Extensions.NameCheap.SslCertificatesApi>();
@@ -173,7 +173,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void GetCertificate_Test()
 		{
-			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "WRS.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 
 			var sslCertificatesApi = ServiceProvider.GetService<ISI.Extensions.NameCheap.SslCertificatesApi>();
@@ -182,14 +182,123 @@ namespace ISI.Extensions.Tests
 			{
 				var listCertificatesResponse = sslCertificatesApi.ListCertificates(new()
 				{
+					//Url = "https://api.sandbox.namecheap.com",
+					//ApiUser = settings.GetValue("NameCheap.Sandbox.ApiUser"),
+					//ApiKey = settings.GetValue("NameCheap.Sandbox.ApiKey"),
 					ApiUser = settings.GetValue("NameCheap.ApiUser"),
 					ApiKey = settings.GetValue("NameCheap.ApiKey"),
 				});
 
-				var certificate = listCertificatesResponse.Certificates.NullCheckedFirstOrDefault(certificate => string.Equals(certificate.HostName, "*.isi-net.com", StringComparison.InvariantCultureIgnoreCase));
+				var certificate = listCertificatesResponse.Certificates.NullCheckedFirstOrDefault(certificate => certificate.Status == ISI.Extensions.NameCheap.NameCheapSslCertificateStatus.Purchased);
+				//var certificate = listCertificatesResponse.Certificates.NullCheckedFirstOrDefault();
 
 				var getCertificateResponse = sslCertificatesApi.GetCertificate(new()
 				{
+					//Url = "https://api.sandbox.namecheap.com",
+					//ApiUser = settings.GetValue("NameCheap.Sandbox.ApiUser"),
+					//ApiKey = settings.GetValue("NameCheap.Sandbox.ApiKey"),
+					ApiUser = settings.GetValue("NameCheap.ApiUser"),
+					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+					VendorCertificateKey = certificate.VendorCertificateKey,
+				});
+
+			}
+		}
+
+		[Test]
+		public void ReissueCertificate_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "WRS.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+
+			var sslCertificatesApi = ServiceProvider.GetService<ISI.Extensions.NameCheap.SslCertificatesApi>();
+
+			using (var eventHandler = ISI.Extensions.WebClient.Rest.GetEventHandler())
+			{
+				var listCertificatesResponse = sslCertificatesApi.ListCertificates(new()
+				{
+					//Url = "https://api.sandbox.namecheap.com",
+					//ApiUser = settings.GetValue("NameCheap.Sandbox.ApiUser"),
+					//ApiKey = settings.GetValue("NameCheap.Sandbox.ApiKey"),
+					ApiUser = settings.GetValue("NameCheap.ApiUser"),
+					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+				});
+
+				var certificate = listCertificatesResponse.Certificates.NullCheckedFirstOrDefault();
+
+				var getCertificateResponse = sslCertificatesApi.GetCertificate(new()
+				{
+					//Url = "https://api.sandbox.namecheap.com",
+					//ApiUser = settings.GetValue("NameCheap.Sandbox.ApiUser"),
+					//ApiKey = settings.GetValue("NameCheap.Sandbox.ApiKey"),
+					ApiUser = settings.GetValue("NameCheap.ApiUser"),
+					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+					VendorCertificateKey = certificate.VendorCertificateKey,
+				});
+
+				var reissueCertificateResponse = sslCertificatesApi.ReissueCertificate(new()
+				{
+					//Url = "https://api.sandbox.namecheap.com",
+					//ApiUser = settings.GetValue("NameCheap.Sandbox.ApiUser"),
+					//ApiKey = settings.GetValue("NameCheap.Sandbox.ApiKey"),
+					ApiUser = settings.GetValue("NameCheap.ApiUser"),
+					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+					VendorCertificateKey = certificate.VendorCertificateKey,
+					Csr = getCertificateResponse.Certificates.FirstOrDefault(c => c.CertificateType == ISI.Extensions.Certificates.CertificateType.CertificateSigningRequest).Certificate,
+				});
+
+				listCertificatesResponse = sslCertificatesApi.ListCertificates(new()
+				{
+					//Url = "https://api.sandbox.namecheap.com",
+					//ApiUser = settings.GetValue("NameCheap.Sandbox.ApiUser"),
+					//ApiKey = settings.GetValue("NameCheap.Sandbox.ApiKey"),
+					ApiUser = settings.GetValue("NameCheap.ApiUser"),
+					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+				});
+
+				certificate = listCertificatesResponse.Certificates.NullCheckedFirstOrDefault(cert =>  (cert.Status == ISI.Extensions.NameCheap.NameCheapSslCertificateStatus.Purchased) &&  string.Equals(cert.HostName, certificate.HostName, StringComparison.InvariantCultureIgnoreCase));
+
+				var activateCertificateResponse = sslCertificatesApi.ActivateCertificate(new()
+				{
+					//Url = "https://api.sandbox.namecheap.com",
+					//ApiUser = settings.GetValue("NameCheap.Sandbox.ApiUser"),
+					//ApiKey = settings.GetValue("NameCheap.Sandbox.ApiKey"),
+					ApiUser = settings.GetValue("NameCheap.ApiUser"),
+					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+					VendorCertificateKey = certificate.VendorCertificateKey,
+					Csr = getCertificateResponse.Certificates.FirstOrDefault(c => c.CertificateType == ISI.Extensions.Certificates.CertificateType.CertificateSigningRequest).Certificate,
+					AdminEmailAddress = "admin@westriversystems.com",
+				});
+
+
+				listCertificatesResponse = sslCertificatesApi.ListCertificates(new()
+				{
+					//Url = "https://api.sandbox.namecheap.com",
+					//ApiUser = settings.GetValue("NameCheap.Sandbox.ApiUser"),
+					//ApiKey = settings.GetValue("NameCheap.Sandbox.ApiKey"),
+					ApiUser = settings.GetValue("NameCheap.ApiUser"),
+					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+				});
+
+				certificate = listCertificatesResponse.Certificates.NullCheckedFirstOrDefault(cert =>  (cert.Status == ISI.Extensions.NameCheap.NameCheapSslCertificateStatus.Purchased) &&  string.Equals(cert.HostName, certificate.HostName, StringComparison.InvariantCultureIgnoreCase));
+
+				var updateCertificateVerificationResponse = sslCertificatesApi.UpdateCertificateVerification(new()
+				{
+					//Url = "https://api.sandbox.namecheap.com",
+					//ApiUser = settings.GetValue("NameCheap.Sandbox.ApiUser"),
+					//ApiKey = settings.GetValue("NameCheap.Sandbox.ApiKey"),
+					ApiUser = settings.GetValue("NameCheap.ApiUser"),
+					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+					VendorCertificateKey = certificate.VendorCertificateKey,
+				});
+
+
+
+				getCertificateResponse = sslCertificatesApi.GetCertificate(new()
+				{
+					//Url = "https://api.sandbox.namecheap.com",
+					//ApiUser = settings.GetValue("NameCheap.Sandbox.ApiUser"),
+					//ApiKey = settings.GetValue("NameCheap.Sandbox.ApiKey"),
 					ApiUser = settings.GetValue("NameCheap.ApiUser"),
 					ApiKey = settings.GetValue("NameCheap.ApiKey"),
 					VendorCertificateKey = certificate.VendorCertificateKey,

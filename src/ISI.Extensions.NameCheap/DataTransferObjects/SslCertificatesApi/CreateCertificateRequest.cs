@@ -27,5 +27,9 @@ namespace ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi
 		public string Url { get; set; }
 		public string ApiUser { get; set; }
 		public string ApiKey { get; set; }
+
+		public int Years { get; set; } = 1;
+		public NameCheapSslCertificateType CertificateType { get; set; }
+		public int? SansToAdd { get; set; }
 	}
 }

@@ -36,10 +36,10 @@ namespace ISI.Extensions.NameCheap
 			uri.AddQueryStringParameter("domainname", request.DomainName);
 			uri.AddQueryStringParameter("CertificateType", request.CertificateType.GetAbbreviation());
 
-			var serviceResponse = ISI.Extensions.WebClient.Rest.ExecuteXmlGet<SerializableModels.SslCertificatesApi.ListApproverEmailAddressesResponse>(uri.Uri, null, true);
+			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteXmlGet<SerializableModels.SslCertificatesApi.ListApproverEmailAddressesResponse>(uri.Uri, null, true);
 
-			response.DomainEmailAddresses = (serviceResponse.CommandResponse?.GetApproverEmailListResult?.DomainEmailAddresses)?.ToNullCheckedArray(NullCheckCollectionResult.Empty);
-			response.GenericEmailAddresses = (serviceResponse.CommandResponse?.GetApproverEmailListResult?.GenericEmailAddresses)?.ToNullCheckedArray(NullCheckCollectionResult.Empty);
+			response.DomainEmailAddresses = (apiResponse.CommandResponse?.GetApproverEmailListResult?.DomainEmailAddresses)?.ToNullCheckedArray(NullCheckCollectionResult.Empty);
+			response.GenericEmailAddresses = (apiResponse.CommandResponse?.GetApproverEmailListResult?.GenericEmailAddresses)?.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 			return response;
 		}

@@ -47,9 +47,9 @@ namespace ISI.Extensions.NameCheap
 					uri.AddQueryStringParameter("SearchTerm", request.SearchTerm);
 				}
 
-				var serviceResponse = ISI.Extensions.WebClient.Rest.ExecuteXmlGet<SerializableModels.SslCertificatesApi.ListCertificatesResponse>(uri.Uri, null, true);
+				var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteXmlGet<SerializableModels.SslCertificatesApi.ListCertificatesResponse>(uri.Uri, null, true);
 
-				certificates.AddRange(serviceResponse?.CommandResponse?.Certificates?.ToNullCheckedArray(certificate => new DTOs.ListCertificatesResponseCertificate()
+				certificates.AddRange(apiResponse?.CommandResponse?.Certificates?.ToNullCheckedArray(certificate => new DTOs.ListCertificatesResponseCertificate()
 				{
 					VendorCertificateKey = certificate.VendorCertificateKey,
 					HostName = certificate.HostName,
@@ -63,7 +63,7 @@ namespace ISI.Extensions.NameCheap
 				}) ?? []);
 
 
-				if (certificates.Count < (serviceResponse?.CommandResponse?.Paging?.TotalItems ?? 0))
+				if (certificates.Count < (apiResponse?.CommandResponse?.Paging?.TotalItems ?? 0))
 				{
 					page++;
 				}

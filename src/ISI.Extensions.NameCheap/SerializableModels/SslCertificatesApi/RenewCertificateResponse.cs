@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,11 +23,12 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.NameCheap.SerializableModels.SslCertificatesApi
 {
+	[ISI.Extensions.Serialization.PreferredSerializerXml]
 	[System.Serializable]
 	[System.ComponentModel.DesignerCategory("code")]
 	[System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "http://api.namecheap.com/xml.response")]
-	[System.Xml.Serialization.XmlRoot(Namespace = "http://api.namecheap.com/xml.response", IsNullable = false)]
-	public class CreateCertificateResponse
+	[System.Xml.Serialization.XmlRoot(ElementName = "ApiResponse", Namespace = "http://api.namecheap.com/xml.response", IsNullable = false)]
+	public class RenewCertificateResponse
 	{
 		[System.Xml.Serialization.XmlAttribute("Status")]
 		public string Status { get; set; }
@@ -42,7 +43,7 @@ namespace ISI.Extensions.NameCheap.SerializableModels.SslCertificatesApi
 		public string RequestedCommand { get; set; }
 
 		[System.Xml.Serialization.XmlElement("CommandResponse")]
-		public CreateCertificateResponseCommandResponse CommandResponse { get; set; }
+		public RenewCertificateResponseCommandResponse CommandResponse { get; set; }
 
 		[System.Xml.Serialization.XmlElement("Server")]
 		public string Server { get; set; }
@@ -57,10 +58,10 @@ namespace ISI.Extensions.NameCheap.SerializableModels.SslCertificatesApi
 	[System.Serializable]
 	[System.ComponentModel.DesignerCategory("code")]
 	[System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "http://api.namecheap.com/xml.response")]
-	public class CreateCertificateResponseCommandResponse
+	public class RenewCertificateResponseCommandResponse
 	{
-		[System.Xml.Serialization.XmlElement("SSLCreateResult")]
-		public CreateCertificateResponseCommandResponseSslCreateResult SslCreateResult { get; set; }
+		[System.Xml.Serialization.XmlElement("SSLRenewResult")]
+		public RenewCertificateResponseCommandResponseSSLRenewResult SSLRenewResult { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute("Type")]
 		public string Type { get; set; }
@@ -69,34 +70,10 @@ namespace ISI.Extensions.NameCheap.SerializableModels.SslCertificatesApi
 	[System.Serializable]
 	[System.ComponentModel.DesignerCategory("code")]
 	[System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "http://api.namecheap.com/xml.response")]
-	public class CreateCertificateResponseCommandResponseSslCreateResult
-	{
-		[System.Xml.Serialization.XmlElement("SSLCertificate")]
-		public CreateCertificateResponseCommandResponseSSLCreateResultSSLCertificate SslCertificate { get; set; }
-
-		[System.Xml.Serialization.XmlAttribute("IsSuccess")]
-		public bool Success { get; set; }
-
-		[System.Xml.Serialization.XmlAttribute("OrderId")]
-		public string OrderId { get; set; }
-
-		[System.Xml.Serialization.XmlAttribute("TransactionId")]
-		public string TransactionId { get; set; }
-
-		[System.Xml.Serialization.XmlAttribute("ChargedAmount")]
-		public decimal ChargedAmount { get; set; }
-	}
-
-	[System.Serializable]
-	[System.ComponentModel.DesignerCategory("code")]
-	[System.Xml.Serialization.XmlType(AnonymousType = true, Namespace = "http://api.namecheap.com/xml.response")]
-	public class CreateCertificateResponseCommandResponseSSLCreateResultSSLCertificate
+	public class RenewCertificateResponseCommandResponseSSLRenewResult
 	{
 		[System.Xml.Serialization.XmlAttribute("CertificateID")]
 		public string VendorCertificateKey { get; set; }
-
-		[System.Xml.Serialization.XmlAttribute("Created")]
-		public string Created { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute("SSLType")]
 		public string CertificateType { get; set; }
@@ -104,7 +81,14 @@ namespace ISI.Extensions.NameCheap.SerializableModels.SslCertificatesApi
 		[System.Xml.Serialization.XmlAttribute("Years")]
 		public int Years { get; set; }
 
-		[System.Xml.Serialization.XmlAttribute("Status")]
-		public string Status { get; set; }
+		[System.Xml.Serialization.XmlAttribute("OrderId")]
+		public int OrderId { get; set; }
+
+		[System.Xml.Serialization.XmlAttribute("TransactionId")]
+		public int TransactionId { get; set; }
+
+		[System.Xml.Serialization.XmlAttribute("ChargedAmount")]
+		public decimal ChargedAmount { get; set; }
 	}
 }
+

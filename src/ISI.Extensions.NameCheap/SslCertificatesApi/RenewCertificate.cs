@@ -26,29 +26,29 @@ namespace ISI.Extensions.NameCheap
 {
 	public partial class SslCertificatesApi
 	{
-		public DTOs.CreateCertificateResponse CreateCertificate(DTOs.CreateCertificateRequest request)
+		public DTOs.RenewCertificateResponse RenewCertificate(DTOs.RenewCertificateRequest request)
 		{
-			var response = new DTOs.CreateCertificateResponse();
+			var response = new DTOs.RenewCertificateResponse();
 
 			request.CertificateType = UpdateCertificateType(request.CertificateType);
 
 			var uri = request.GetUrl(Configuration);
-			uri.SetUserNameClientIp(request, IpifyApi, Configuration);
-			uri.AddQueryStringParameter("Command", "namecheap.ssl.create");
-			uri.AddQueryStringParameter("Years", request.Years);
-			uri.AddQueryStringParameter("Type", request.CertificateType.GetAbbreviation());
-			if (request.SansToAdd.HasValue)
-			{
-				uri.AddQueryStringParameter("SANStoADD", request.SansToAdd.Value);
-			}
+			
+			var formData = new ISI.Extensions.WebClient.Rest.FormDataCollection();
+			formData.SetUserNameClientIp(request, IpifyApi, Configuration);
+			formData.Add("Command", "namecheap.ssl.renew");
+			formData.Add("CertificateID", request.VendorCertificateKey);
+			formData.Add("Years", request.Years);
+			formData.Add("SSLType", request.CertificateType.GetAbbreviation());
 
-			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteXmlGet<SerializableModels.SslCertificatesApi.CreateCertificateResponse>(uri.Uri, null, true);
+			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteFormRequestXmlPost<SerializableModels.SslCertificatesApi.RenewCertificateResponse>(uri.Uri, request.GetHeaders(Configuration), formData, true);
 
-			response.Success = apiResponse.CommandResponse?.SslCreateResult?.Success ?? false;
-			response.VendorCertificateKey = apiResponse.CommandResponse?.SslCreateResult?.SslCertificate?.VendorCertificateKey;
-			response.CertificateType = ISI.Extensions.Enum<NameCheapSslCertificateType?>.ParseAbbreviation(apiResponse.CommandResponse?.SslCreateResult?.SslCertificate?.CertificateType);
-			response.Years = apiResponse.CommandResponse?.SslCreateResult?.SslCertificate?.Years ?? 0;
-			response.CertificateStatus = ISI.Extensions.Enum<NameCheapSslCertificateStatus?>.ParseAbbreviation(apiResponse.CommandResponse?.SslCreateResult?.SslCertificate?.Status);
+			response.VendorCertificateKey = apiResponse.CommandResponse?.SSLRenewResult?.VendorCertificateKey;
+			response.CertificateType = ISI.Extensions.Enum<NameCheapSslCertificateType?>.ParseAbbreviation(apiResponse.CommandResponse?.SSLRenewResult?.CertificateType);
+			response.Years = apiResponse.CommandResponse?.SSLRenewResult?.Years ?? 0;
+			response.OrderId = apiResponse.CommandResponse?.SSLRenewResult?.OrderId;
+			response.TransactionId = apiResponse.CommandResponse?.SSLRenewResult?.TransactionId;
+			response.ChargedAmount = apiResponse.CommandResponse?.SSLRenewResult?.ChargedAmount;
 
 			return response;
 		}

@@ -19,38 +19,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.NameCheap.Extensions;
-using DTOs = ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi;
 
-namespace ISI.Extensions.NameCheap
+namespace ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi
 {
-	public partial class SslCertificatesApi
+	public class RenewCertificateRequest : IRequest
 	{
-		public DTOs.CreateCertificateResponse CreateCertificate(DTOs.CreateCertificateRequest request)
-		{
-			var response = new DTOs.CreateCertificateResponse();
+		public string Url { get; set; }
+		public string ApiUser { get; set; }
+		public string ApiKey { get; set; }
 
-			request.CertificateType = UpdateCertificateType(request.CertificateType);
-
-			var uri = request.GetUrl(Configuration);
-			uri.SetUserNameClientIp(request, IpifyApi, Configuration);
-			uri.AddQueryStringParameter("Command", "namecheap.ssl.create");
-			uri.AddQueryStringParameter("Years", request.Years);
-			uri.AddQueryStringParameter("Type", request.CertificateType.GetAbbreviation());
-			if (request.SansToAdd.HasValue)
-			{
-				uri.AddQueryStringParameter("SANStoADD", request.SansToAdd.Value);
-			}
-
-			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteXmlGet<SerializableModels.SslCertificatesApi.CreateCertificateResponse>(uri.Uri, null, true);
-
-			response.Success = apiResponse.CommandResponse?.SslCreateResult?.Success ?? false;
-			response.VendorCertificateKey = apiResponse.CommandResponse?.SslCreateResult?.SslCertificate?.VendorCertificateKey;
-			response.CertificateType = ISI.Extensions.Enum<NameCheapSslCertificateType?>.ParseAbbreviation(apiResponse.CommandResponse?.SslCreateResult?.SslCertificate?.CertificateType);
-			response.Years = apiResponse.CommandResponse?.SslCreateResult?.SslCertificate?.Years ?? 0;
-			response.CertificateStatus = ISI.Extensions.Enum<NameCheapSslCertificateStatus?>.ParseAbbreviation(apiResponse.CommandResponse?.SslCreateResult?.SslCertificate?.Status);
-
-			return response;
-		}
+		public string VendorCertificateKey { get; set; }
+		public int Years { get; set; }
+		public NameCheapSslCertificateType CertificateType { get; set; }
 	}
 }

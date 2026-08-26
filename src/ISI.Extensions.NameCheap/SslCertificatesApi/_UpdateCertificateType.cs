@@ -26,31 +26,42 @@ namespace ISI.Extensions.NameCheap
 {
 	public partial class SslCertificatesApi
 	{
-		public DTOs.CreateCertificateResponse CreateCertificate(DTOs.CreateCertificateRequest request)
+		private NameCheapSslCertificateType UpdateCertificateType(NameCheapSslCertificateType certificateType)
 		{
-			var response = new DTOs.CreateCertificateResponse();
-
-			request.CertificateType = UpdateCertificateType(request.CertificateType);
-
-			var uri = request.GetUrl(Configuration);
-			uri.SetUserNameClientIp(request, IpifyApi, Configuration);
-			uri.AddQueryStringParameter("Command", "namecheap.ssl.create");
-			uri.AddQueryStringParameter("Years", request.Years);
-			uri.AddQueryStringParameter("Type", request.CertificateType.GetAbbreviation());
-			if (request.SansToAdd.HasValue)
+			switch (certificateType)
 			{
-				uri.AddQueryStringParameter("SANStoADD", request.SansToAdd.Value);
+				case NameCheapSslCertificateType.PositiveSSL:
+				case NameCheapSslCertificateType.EssentialSSL:
+					return NameCheapSslCertificateType.StandardSSL_SSLcom;
+
+				case NameCheapSslCertificateType.InstantSSL:
+				case NameCheapSslCertificateType.InstantSSLPro:
+				case NameCheapSslCertificateType.PremiumSSL:
+					return NameCheapSslCertificateType.HighAssuranceSSL_SSLcom;
+
+				case NameCheapSslCertificateType.EV_SSL:
+					return NameCheapSslCertificateType.EV_SSL_SSLcom;
+
+				case NameCheapSslCertificateType.PositiveSSLWildcard:
+				case NameCheapSslCertificateType.EssentialSSLWildcard:
+					return NameCheapSslCertificateType.StandardWildcardSSL_SSLcom;
+
+				case NameCheapSslCertificateType.PremiumSSLWildcard:
+					return NameCheapSslCertificateType.OV_WildcardSSL_SSLcom;
+
+				case NameCheapSslCertificateType.PositiveSSLMultiDomain:
+					return NameCheapSslCertificateType.SANCertificateSSL_SSLcom;
+
+				case NameCheapSslCertificateType.MultiDomainSSL:
+				case NameCheapSslCertificateType.UnifiedCommunications:
+					return NameCheapSslCertificateType.OV_MultiDomainSSL_SSLcom;
+
+				case NameCheapSslCertificateType.EV_MultiDomainSSL:
+					return NameCheapSslCertificateType.EV_MultiDomainSSL_SSLcom;
+
 			}
 
-			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteXmlGet<SerializableModels.SslCertificatesApi.CreateCertificateResponse>(uri.Uri, null, true);
-
-			response.Success = apiResponse.CommandResponse?.SslCreateResult?.Success ?? false;
-			response.VendorCertificateKey = apiResponse.CommandResponse?.SslCreateResult?.SslCertificate?.VendorCertificateKey;
-			response.CertificateType = ISI.Extensions.Enum<NameCheapSslCertificateType?>.ParseAbbreviation(apiResponse.CommandResponse?.SslCreateResult?.SslCertificate?.CertificateType);
-			response.Years = apiResponse.CommandResponse?.SslCreateResult?.SslCertificate?.Years ?? 0;
-			response.CertificateStatus = ISI.Extensions.Enum<NameCheapSslCertificateStatus?>.ParseAbbreviation(apiResponse.CommandResponse?.SslCreateResult?.SslCertificate?.Status);
-
-			return response;
+			return certificateType;
 		}
 	}
 }

@@ -24,5 +24,10 @@ namespace ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi
 {
 	public class CreateCertificateResponse
 	{
+		public bool Success { get; set; }
+		public string VendorCertificateKey { get; set; }
+		public NameCheapSslCertificateType? CertificateType { get; set; }
+		public int Years { get; set; }
+		public NameCheapSslCertificateStatus? CertificateStatus { get; set; }
 	}
 }

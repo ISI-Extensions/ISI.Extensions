@@ -37,23 +37,23 @@ namespace ISI.Extensions.NameCheap
 			uri.AddQueryStringParameter("returncertificate", "true");
 			uri.AddQueryStringParameter("returntype", "individual");
 			
-			var serviceResponse = ISI.Extensions.WebClient.Rest.ExecuteXmlGet<SerializableModels.SslCertificatesApi.GetCertificateResponse>(uri.Uri, null, true);
+			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteXmlGet<SerializableModels.SslCertificatesApi.GetCertificateResponse>(uri.Uri, null, true);
 
 			var certificates = new List<(ISI.Extensions.Certificates.CertificateType CertificateType, string Certificate)>();
 
-			if (serviceResponse?.CommandResponse?.SSLGetInfoResult?.CertificateDetails != null)
+			if (apiResponse?.CommandResponse?.SSLGetInfoResult?.CertificateDetails != null)
 			{
-				if (!string.IsNullOrWhiteSpace(serviceResponse.CommandResponse.SSLGetInfoResult.CertificateDetails.CSR))
+				if (!string.IsNullOrWhiteSpace(apiResponse.CommandResponse.SSLGetInfoResult.CertificateDetails.CSR))
 				{
-					certificates.Add((CertificateType: ISI.Extensions.Certificates.CertificateType.CertificateSigningRequest, Certificate: serviceResponse.CommandResponse.SSLGetInfoResult.CertificateDetails.CSR));
+					certificates.Add((CertificateType: ISI.Extensions.Certificates.CertificateType.CertificateSigningRequest, Certificate: apiResponse.CommandResponse.SSLGetInfoResult.CertificateDetails.CSR));
 				}
 
-				if (!string.IsNullOrWhiteSpace(serviceResponse.CommandResponse.SSLGetInfoResult.CertificateDetails.Certificates?.Certificate))
+				if (!string.IsNullOrWhiteSpace(apiResponse.CommandResponse.SSLGetInfoResult.CertificateDetails.Certificates?.Certificate))
 				{
-					certificates.Add((CertificateType: ISI.Extensions.Certificates.CertificateType.Crt, Certificate: serviceResponse.CommandResponse.SSLGetInfoResult.CertificateDetails.Certificates.Certificate));
+					certificates.Add((CertificateType: ISI.Extensions.Certificates.CertificateType.Crt, Certificate: apiResponse.CommandResponse.SSLGetInfoResult.CertificateDetails.Certificates.Certificate));
 				}
 
-				var caCertificate = string.Join("\n", (serviceResponse.CommandResponse.SSLGetInfoResult.CertificateDetails?.Certificates?.CaCertificates ?? []).Select(certificate => certificate.Certificate));
+				var caCertificate = string.Join("\n", (apiResponse.CommandResponse.SSLGetInfoResult.CertificateDetails?.Certificates?.CaCertificates ?? []).Select(certificate => certificate.Certificate));
 
 				if (!string.IsNullOrWhiteSpace(caCertificate))
 				{

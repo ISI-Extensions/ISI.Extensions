@@ -30,7 +30,7 @@ namespace ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi
 	public class ListCertificatesResponseCertificate
 	{
 		public string VendorCertificateKey { get; set; }
-		public string HostName { get; set; }
+		public string CommonName { get; set; }
 		public NameCheapSslCertificateType CertificateType { get; set; }
 		public DateTime? PurchaseDate { get; set; }
 		public DateTime? ExpireDate { get; set; }

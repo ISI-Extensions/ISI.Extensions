@@ -155,7 +155,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void ListApproverEmailAddresses_Test()
 		{
-			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "WRS.keyValue");
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 
 			var sslCertificatesApi = ServiceProvider.GetService<ISI.Extensions.NameCheap.SslCertificatesApi>();
@@ -177,7 +177,7 @@ namespace ISI.Extensions.Tests
 				{
 					ApiUser = settings.GetValue("NameCheap.ApiUser"),
 					ApiKey = settings.GetValue("NameCheap.ApiKey"),
-					DomainName = certificate.HostName, //  "westriversystems.com",
+					DomainName = certificate.CommonName,
 					CertificateType = certificate.CertificateType,
 				});
 			}
@@ -186,7 +186,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void ListCertificates_Test()
 		{
-			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "WRS.keyValue");
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 
 			var sslCertificatesApi = ServiceProvider.GetService<ISI.Extensions.NameCheap.SslCertificatesApi>();
@@ -204,7 +204,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void GetCertificate_Test()
 		{
-			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "WRS.keyValue");
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 
 			var sslCertificatesApi = ServiceProvider.GetService<ISI.Extensions.NameCheap.SslCertificatesApi>();
@@ -243,7 +243,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void ReissueCertificate_Test()
 		{
-			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "WRS.keyValue");
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 
 			var sslCertificatesApi = ServiceProvider.GetService<ISI.Extensions.NameCheap.SslCertificatesApi>();
@@ -291,7 +291,16 @@ namespace ISI.Extensions.Tests
 					ApiKey = settings.GetValue("NameCheap.ApiKey"),
 				});
 
-				certificate = listCertificatesResponse.Certificates.NullCheckedFirstOrDefault(cert =>  (cert.Status == ISI.Extensions.NameCheap.NameCheapSslCertificateStatus.Purchased) &&  string.Equals(cert.HostName, certificate.HostName, StringComparison.InvariantCultureIgnoreCase));
+				certificate = listCertificatesResponse.Certificates.NullCheckedFirstOrDefault(cert =>  (cert.Status == ISI.Extensions.NameCheap.NameCheapSslCertificateStatus.Purchased) &&  string.Equals(cert.CommonName, certificate.CommonName, StringComparison.InvariantCultureIgnoreCase));
+
+				var listApproverEmailAddressesResponse = sslCertificatesApi.ListApproverEmailAddresses(new()
+				{
+					ApiUser = settings.GetValue("NameCheap.ApiUser"),
+					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+					DomainName = certificate.CommonName,
+					CertificateType = certificate.CertificateType,
+				});
+
 
 				var activateCertificateResponse = sslCertificatesApi.ActivateCertificate(new()
 				{
@@ -302,7 +311,7 @@ namespace ISI.Extensions.Tests
 					ApiKey = settings.GetValue("NameCheap.ApiKey"),
 					VendorCertificateKey = certificate.VendorCertificateKey,
 					Csr = getCertificateResponse.Certificates.FirstOrDefault(c => c.CertificateType == ISI.Extensions.Certificates.CertificateType.CertificateSigningRequest).Certificate,
-					AdminEmailAddress = "admin@westriversystems.com",
+					AdminEmailAddress = listApproverEmailAddressesResponse.GenericEmailAddresses.NullCheckedFirstOrDefault(),
 				});
 
 
@@ -315,7 +324,7 @@ namespace ISI.Extensions.Tests
 					ApiKey = settings.GetValue("NameCheap.ApiKey"),
 				});
 
-				certificate = listCertificatesResponse.Certificates.NullCheckedFirstOrDefault(cert =>  (cert.Status == ISI.Extensions.NameCheap.NameCheapSslCertificateStatus.Purchased) &&  string.Equals(cert.HostName, certificate.HostName, StringComparison.InvariantCultureIgnoreCase));
+				certificate = listCertificatesResponse.Certificates.NullCheckedFirstOrDefault(cert =>  (cert.Status == ISI.Extensions.NameCheap.NameCheapSslCertificateStatus.Purchased) &&  string.Equals(cert.CommonName, certificate.CommonName, StringComparison.InvariantCultureIgnoreCase));
 
 				var updateCertificateVerificationResponse = sslCertificatesApi.UpdateCertificateVerification(new()
 				{

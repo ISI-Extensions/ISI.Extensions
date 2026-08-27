@@ -80,7 +80,7 @@ namespace ISI.Extensions.NameCheap.SerializableModels.SslCertificatesApi
 		public string VendorCertificateKey { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute("HostName")]
-		public string HostName { get; set; }
+		public string CommonName { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute("SSLType")]
 		public string CertificateType { get; set; }

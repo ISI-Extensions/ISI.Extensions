@@ -52,7 +52,7 @@ namespace ISI.Extensions.NameCheap
 				certificates.AddRange(apiResponse?.CommandResponse?.Certificates?.ToNullCheckedArray(certificate => new DTOs.ListCertificatesResponseCertificate()
 				{
 					VendorCertificateKey = certificate.VendorCertificateKey,
-					HostName = certificate.HostName,
+					CommonName = certificate.CommonName,
 					CertificateType = ISI.Extensions.Enum<NameCheapSslCertificateType>.ParseAbbreviation(certificate.CertificateType),
 					PurchaseDate = certificate.PurchaseDate.ToDateTimeNullable(),
 					ExpireDate = certificate.ExpireDate.ToDateTimeNullable(),

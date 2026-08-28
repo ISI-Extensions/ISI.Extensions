@@ -36,7 +36,7 @@ namespace ISI.Extensions.NameCheap
 			formData.SetUserNameClientIp(request, IpifyApi, Configuration);
 			formData.Add("Command", "namecheap.ssl.reissue");
 			formData.Add("CertificateID", request.VendorCertificateKey);
-			formData.Add("csr", request.Csr);
+			formData.Add("csr", request.CreateSigningRequestPem);
 			formData.Add("DNSDCValidation", "true");
 
 			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteFormRequestXmlPost<SerializableModels.SslCertificatesApi.ReissueCertificateResponse>(uri.Uri, request.GetHeaders(Configuration), formData, true);

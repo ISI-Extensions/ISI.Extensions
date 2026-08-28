@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Certificates.Extensions;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.JsonJwt.Extensions;
 using ISI.Extensions.JsonSerialization.Extensions;
@@ -157,26 +158,25 @@ namespace ISI.Extensions.Acme
 
 			System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
 
-			var createCertificateSigningRequestResponse = CreateCertificateSigningRequest(new()
+			var certificateSigningRequestParameters = new ISI.Extensions.Certificates.CertificateSigningRequestParameters()
 			{
-				CertificateSigningRequestParameters = new ISI.Extensions.Certificates.CertificateSigningRequestParameters()
-				{
-					CountryName = request.CountryName,
-					State = request.State,
-					Locality = request.Locality,
-					Organization = request.Organization,
-					OrganizationUnit = request.OrganizationUnit,
-					CommonName = request.Domain,
-				},
-			});
+				CountryName = request.CountryName,
+				State = request.State,
+				Locality = request.Locality,
+				Organization = request.Organization,
+				OrganizationUnit = request.OrganizationUnit,
+				CommonName = request.Domain,
+			};
 
-			response.PrivateKeyPem = createCertificateSigningRequestResponse.PrivateKeyPem;
+			var processCertificateSigningRequestResponse = certificateSigningRequestParameters.ProcessCertificateSigningRequest();
+
+			response.PrivateKeyPem = processCertificateSigningRequestResponse.PrivateKeyPem;
 
 			var finalizeOrderResponse = FinalizeOrder(new()
 			{
 				HostContext = request.HostContext,
 				FinalizeOrderUrl = createNewOrderResponse.Order.FinalizeOrderUrl,
-				CertificateSigningRequest = createCertificateSigningRequestResponse.CertificateSigningRequest,
+				CertificateSigningRequest = processCertificateSigningRequestResponse.CertificateSigningRequest,
 			});
 
 			System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));

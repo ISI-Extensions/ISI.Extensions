@@ -29,6 +29,6 @@ namespace ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi
 		public string ApiKey { get; set; }
 
 		public string VendorCertificateKey { get; set; }
-		public string Csr { get; set; }
+		public string CreateSigningRequestPem { get; set; }
 	}
 }

@@ -36,7 +36,7 @@ namespace ISI.Extensions.NameCheap
 			formData.SetUserNameClientIp(request, IpifyApi, Configuration);
 			formData.Add("Command", "namecheap.ssl.activate");
 			formData.Add("CertificateID", request.VendorCertificateKey);
-			formData.Add("csr", request.Csr);
+			formData.Add("csr", request.CreateSigningRequestPem);
 			formData.Add("AdminEmailAddress", request.AdminEmailAddress);
 			formData.Add("DNSDCValidation", "true");
 

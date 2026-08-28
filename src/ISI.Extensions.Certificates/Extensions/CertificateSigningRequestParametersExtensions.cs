@@ -52,9 +52,18 @@ namespace ISI.Extensions.Certificates.Extensions
 			return string.Join(", ", parameters.Select(parameter => $"{parameter.Key}={parameter.Value}"));
 		}
 
-		public static (CertificateType CertificateType, string Certificate)[] ProcessCertificateSigningRequest(this CertificateSigningRequestParameters certificateSigningRequestParameters)
+		public class ProcessCertificateSigningRequestResponse
 		{
-			var certificates = new List<(CertificateType CertificateType, string Certificate)>();
+			public byte[] CertificateSigningRequest { get; set; }
+
+			public string CreateSigningRequestPem { get; set; }
+
+			public string PrivateKeyPem { get; set; }
+		}
+
+		public static ProcessCertificateSigningRequestResponse ProcessCertificateSigningRequest(this CertificateSigningRequestParameters certificateSigningRequestParameters)
+		{
+			var response = new ProcessCertificateSigningRequestResponse();
 
 			using (var certificateSigningKey = System.Security.Cryptography.RSA.Create(certificateSigningRequestParameters.KeySize))
 			{
@@ -82,11 +91,14 @@ namespace ISI.Extensions.Certificates.Extensions
 
 				certificateSigningRequest.CertificateExtensions.Add(subjectAlternativeNameBuilder.Build());
 
-				certificates.Add((CertificateType: ISI.Extensions.Certificates.CertificateType.CertificateSigningRequest, Certificate: certificateSigningRequest.CreateSigningRequestPem()));
-				certificates.Add((CertificateType: ISI.Extensions.Certificates.CertificateType.Key, Certificate: certificateSigningKey.ExportRSAPrivateKeyPem()));
+				response.CertificateSigningRequest = certificateSigningRequest.CreateSigningRequest();
+
+				response.CreateSigningRequestPem = certificateSigningRequest.CreateSigningRequestPem();
+
+				response.PrivateKeyPem = certificateSigningKey.ExportRSAPrivateKeyPem();
 			}
 
-			return certificates.ToArray();
+			return response;
 		}
 	}
 }

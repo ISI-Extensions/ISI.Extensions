@@ -279,7 +279,7 @@ namespace ISI.Extensions.Tests
 					ApiUser = settings.GetValue("NameCheap.ApiUser"),
 					ApiKey = settings.GetValue("NameCheap.ApiKey"),
 					VendorCertificateKey = certificate.VendorCertificateKey,
-					Csr = getCertificateResponse.Certificates.FirstOrDefault(c => c.CertificateType == ISI.Extensions.Certificates.CertificateType.CertificateSigningRequest).Certificate,
+					CreateSigningRequestPem = getCertificateResponse.Certificates.FirstOrDefault(c => c.CertificateType == ISI.Extensions.Certificates.CertificateType.CertificateSigningRequest).Certificate,
 				});
 
 				listCertificatesResponse = sslCertificatesApi.ListCertificates(new()
@@ -310,7 +310,7 @@ namespace ISI.Extensions.Tests
 					ApiUser = settings.GetValue("NameCheap.ApiUser"),
 					ApiKey = settings.GetValue("NameCheap.ApiKey"),
 					VendorCertificateKey = certificate.VendorCertificateKey,
-					Csr = getCertificateResponse.Certificates.FirstOrDefault(c => c.CertificateType == ISI.Extensions.Certificates.CertificateType.CertificateSigningRequest).Certificate,
+					CreateSigningRequestPem = getCertificateResponse.Certificates.FirstOrDefault(c => c.CertificateType == ISI.Extensions.Certificates.CertificateType.CertificateSigningRequest).Certificate,
 					AdminEmailAddress = listApproverEmailAddressesResponse.GenericEmailAddresses.NullCheckedFirstOrDefault(),
 				});
 

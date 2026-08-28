@@ -19,6 +19,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Certificates.Extensions;
 using ISI.Extensions.ConfigurationHelper.Extensions;
 using ISI.Extensions.DependencyInjection.Extensions;
 using ISI.Extensions.Extensions;
@@ -269,24 +270,22 @@ namespace ISI.Extensions.Tests
 
 			System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
 
-			var createCertificateSigningRequestResponse = AcmeApi.CreateCertificateSigningRequest(new()
+			var certificateSigningRequestParameters = new ISI.Extensions.Certificates.CertificateSigningRequestParameters()
 			{
-				CertificateSigningRequestParameters = new ISI.Extensions.Certificates.CertificateSigningRequestParameters()
-				{
-					CountryName = "US",
-					State = "New York",
-					Locality = "Glen Cove",
-					Organization = "MuthManor",
-					OrganizationUnit = null,
-					CommonName = domain,
-				},
-			});
+				CountryName = "US",
+				State = "New York",
+				Locality = "Glen Cove",
+				Organization = "MuthManor",
+				OrganizationUnit = null,
+				CommonName = domain,
+			};
+			var processCertificateSigningRequestResponse = certificateSigningRequestParameters.ProcessCertificateSigningRequest();
 
 			var finalizeOrderResponse = AcmeApi.FinalizeOrder(new()
 			{
 				HostContext = context,
 				FinalizeOrderUrl = createNewOrderResponse.Order.FinalizeOrderUrl,
-				CertificateSigningRequest = createCertificateSigningRequestResponse.CertificateSigningRequest,
+				CertificateSigningRequest = processCertificateSigningRequestResponse.CertificateSigningRequest,
 			});
 
 			System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
@@ -306,7 +305,7 @@ namespace ISI.Extensions.Tests
 
 			var certificatePem = getCertificateResponse.CertificatePem;
 
-			System.IO.File.WriteAllText(CertificateKeyFullName, createCertificateSigningRequestResponse.PrivateKeyPem);
+			System.IO.File.WriteAllText(CertificateKeyFullName, processCertificateSigningRequestResponse.PrivateKeyPem);
 			System.IO.File.WriteAllText(CertificateFullName, certificatePem);
 		}
 

@@ -31,6 +31,9 @@ namespace ISI.Extensions.Tests
 	public class NameCheapApis_Tests
 	{
 		protected IServiceProvider ServiceProvider { get; set; }
+		protected string ServiceUrl { get; set; }
+		protected string ApiUser { get; set; }
+		protected string ApiKey { get; set; }
 
 		[OneTimeSetUp]
 		public void OneTimeSetup()
@@ -68,6 +71,17 @@ namespace ISI.Extensions.Tests
 
 			ServiceProvider.SetServiceLocator();
 
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "isi.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+
+			ServiceUrl = "https://api.sandbox.namecheap.com";
+			ApiUser = settings.GetValue("NameCheap.Sandbox.ApiUser");
+			ApiKey = settings.GetValue("NameCheap.Sandbox.ApiKey");
+
+			ServiceUrl = "https://api.namecheap.com";
+			ApiUser = settings.GetValue("NameCheap.ApiUser");
+			ApiKey = settings.GetValue("NameCheap.ApiKey");
+
 			foreach (var keyValuePair in configurationRoot.AsEnumerable())
 			{
 				TestContext.Progress.WriteLine($"  Config \"{keyValuePair.Key}\" => \"{keyValuePair.Value}\"");
@@ -75,35 +89,16 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
-		public void GetTxtRecords_Test()
-		{
-			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
-			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
-
-			var domainsApi = ServiceProvider.GetService<ISI.Extensions.NameCheap.DomainsApi>();
-
-			var txtRecords = domainsApi.GetTxtRecords(new()
-			{
-				Domain = "muthmanor.com",
-				Name = "_acme-challenge",
-				NameServer = "8.8.8.8",
-			}).Values;
-		}
-
-		[Test]
 		public void GetDnsRecords_Test()
 		{
-			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
-			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
-
 			var domainsApi = ServiceProvider.GetService<ISI.Extensions.NameCheap.DomainsApi>();
 
 			using (var eventHandler = ISI.Extensions.WebClient.Rest.GetEventHandler())
 			{
 				var dnsRecords = domainsApi.GetDnsRecords(new()
 				{
-					ApiUser = settings.GetValue("NameCheap.ApiUser"),
-					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+					ApiUser = ApiUser,
+					ApiKey = ApiKey,
 					Domain = "isi-net.com",
 					//Domain = "isi.services",
 				}).DnsRecords;
@@ -113,17 +108,14 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void SetDnsRecords_Test()
 		{
-			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
-			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
-
 			var domainsApi = ServiceProvider.GetService<ISI.Extensions.NameCheap.DomainsApi>();
 
 			using (var eventHandler = ISI.Extensions.WebClient.Rest.GetEventHandler())
 			{
 				domainsApi.SetDnsRecords(new()
 				{
-					ApiUser = settings.GetValue("NameCheap.ApiUser"),
-					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+					ApiUser = ApiUser,
+					ApiKey = ApiKey,
 					Domain = "muthmanor.com",
 					DnsRecords =
 					[
@@ -155,28 +147,24 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void ListApproverEmailAddresses_Test()
 		{
-			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
-			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
-
 			var sslCertificatesApi = ServiceProvider.GetService<ISI.Extensions.NameCheap.SslCertificatesApi>();
 
 			using (var eventHandler = ISI.Extensions.WebClient.Rest.GetEventHandler())
 			{
 				var listCertificatesResponse = sslCertificatesApi.ListCertificates(new()
 				{
-					//Url = "https://api.sandbox.namecheap.com",
-					//ApiUser = settings.GetValue("NameCheap.Sandbox.ApiUser"),
-					//ApiKey = settings.GetValue("NameCheap.Sandbox.ApiKey"),
-					ApiUser = settings.GetValue("NameCheap.ApiUser"),
-					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+					Url = ServiceUrl,
+					ApiUser = ApiUser,
+					ApiKey = ApiKey,
 				});
 
 				var certificate = listCertificatesResponse.Certificates.NullCheckedFirstOrDefault(certificate => certificate.Status == ISI.Extensions.NameCheap.NameCheapSslCertificateStatus.Active);
 
 				var apiResponse = sslCertificatesApi.ListApproverEmailAddresses(new()
 				{
-					ApiUser = settings.GetValue("NameCheap.ApiUser"),
-					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+					Url = ServiceUrl,
+					ApiUser = ApiUser,
+					ApiKey = ApiKey,
 					DomainName = certificate.CommonName,
 					CertificateType = certificate.CertificateType,
 				});
@@ -186,17 +174,15 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void ListCertificates_Test()
 		{
-			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
-			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
-
 			var sslCertificatesApi = ServiceProvider.GetService<ISI.Extensions.NameCheap.SslCertificatesApi>();
 
 			using (var eventHandler = ISI.Extensions.WebClient.Rest.GetEventHandler())
 			{
 				var apiResponse = sslCertificatesApi.ListCertificates(new()
 				{
-					ApiUser = settings.GetValue("NameCheap.ApiUser"),
-					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+					Url = ServiceUrl,
+					ApiUser = ApiUser,
+					ApiKey = ApiKey,
 				});
 			}
 		}
@@ -204,20 +190,15 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void GetCertificate_Test()
 		{
-			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
-			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
-
 			var sslCertificatesApi = ServiceProvider.GetService<ISI.Extensions.NameCheap.SslCertificatesApi>();
 
 			using (var eventHandler = ISI.Extensions.WebClient.Rest.GetEventHandler())
 			{
 				var listCertificatesResponse = sslCertificatesApi.ListCertificates(new()
 				{
-					//Url = "https://api.sandbox.namecheap.com",
-					//ApiUser = settings.GetValue("NameCheap.Sandbox.ApiUser"),
-					//ApiKey = settings.GetValue("NameCheap.Sandbox.ApiKey"),
-					ApiUser = settings.GetValue("NameCheap.ApiUser"),
-					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+					Url = ServiceUrl,
+					ApiUser = ApiUser,
+					ApiKey = ApiKey,
 				});
 
 				var certificate = listCertificatesResponse.Certificates.NullCheckedFirstOrDefault(certificate => certificate.Status == ISI.Extensions.NameCheap.NameCheapSslCertificateStatus.Active);
@@ -225,126 +206,100 @@ namespace ISI.Extensions.Tests
 
 				var getCertificateResponse = sslCertificatesApi.GetCertificate(new()
 				{
-					//Url = "https://api.sandbox.namecheap.com",
-					//ApiUser = settings.GetValue("NameCheap.Sandbox.ApiUser"),
-					//ApiKey = settings.GetValue("NameCheap.Sandbox.ApiKey"),
-					ApiUser = settings.GetValue("NameCheap.ApiUser"),
-					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+					Url = ServiceUrl,
+					ApiUser = ApiUser,
+					ApiKey = ApiKey,
 					VendorCertificateKey = certificate.VendorCertificateKey,
 				});
 
 				var csr = getCertificateResponse.Certificates.NullCheckedFirstOrDefault(c => c.CertificateType == ISI.Extensions.Certificates.CertificateType.CertificateSigningRequest);
 
 				var parsedCsr = ISI.Extensions.Certificates.CertificateSigningRequestParameters.Parse(csr.Certificate);
-
 			}
 		}
 
 		[Test]
 		public void ReissueCertificate_Test()
 		{
-			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
-			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
-
 			var sslCertificatesApi = ServiceProvider.GetService<ISI.Extensions.NameCheap.SslCertificatesApi>();
 
 			using (var eventHandler = ISI.Extensions.WebClient.Rest.GetEventHandler())
 			{
 				var listCertificatesResponse = sslCertificatesApi.ListCertificates(new()
 				{
-					//Url = "https://api.sandbox.namecheap.com",
-					//ApiUser = settings.GetValue("NameCheap.Sandbox.ApiUser"),
-					//ApiKey = settings.GetValue("NameCheap.Sandbox.ApiKey"),
-					ApiUser = settings.GetValue("NameCheap.ApiUser"),
-					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+					Url = ServiceUrl,
+					ApiUser = ApiUser,
+					ApiKey = ApiKey,
 				});
 
 				var certificate = listCertificatesResponse.Certificates.NullCheckedFirstOrDefault();
 
 				var getCertificateResponse = sslCertificatesApi.GetCertificate(new()
 				{
-					//Url = "https://api.sandbox.namecheap.com",
-					//ApiUser = settings.GetValue("NameCheap.Sandbox.ApiUser"),
-					//ApiKey = settings.GetValue("NameCheap.Sandbox.ApiKey"),
-					ApiUser = settings.GetValue("NameCheap.ApiUser"),
-					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+					Url = ServiceUrl,
+					ApiUser = ApiUser,
+					ApiKey = ApiKey,
 					VendorCertificateKey = certificate.VendorCertificateKey,
 				});
 
 				var reissueCertificateResponse = sslCertificatesApi.ReissueCertificate(new()
 				{
-					//Url = "https://api.sandbox.namecheap.com",
-					//ApiUser = settings.GetValue("NameCheap.Sandbox.ApiUser"),
-					//ApiKey = settings.GetValue("NameCheap.Sandbox.ApiKey"),
-					ApiUser = settings.GetValue("NameCheap.ApiUser"),
-					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+					Url = ServiceUrl,
+					ApiUser = ApiUser,
+					ApiKey = ApiKey,
 					VendorCertificateKey = certificate.VendorCertificateKey,
 					CreateSigningRequestPem = getCertificateResponse.Certificates.FirstOrDefault(c => c.CertificateType == ISI.Extensions.Certificates.CertificateType.CertificateSigningRequest).Certificate,
 				});
 
 				listCertificatesResponse = sslCertificatesApi.ListCertificates(new()
 				{
-					//Url = "https://api.sandbox.namecheap.com",
-					//ApiUser = settings.GetValue("NameCheap.Sandbox.ApiUser"),
-					//ApiKey = settings.GetValue("NameCheap.Sandbox.ApiKey"),
-					ApiUser = settings.GetValue("NameCheap.ApiUser"),
-					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+					Url = ServiceUrl,
+					ApiUser = ApiUser,
+					ApiKey = ApiKey,
 				});
 
-				certificate = listCertificatesResponse.Certificates.NullCheckedFirstOrDefault(cert =>  (cert.Status == ISI.Extensions.NameCheap.NameCheapSslCertificateStatus.Purchased) &&  string.Equals(cert.CommonName, certificate.CommonName, StringComparison.InvariantCultureIgnoreCase));
+				certificate = listCertificatesResponse.Certificates.NullCheckedFirstOrDefault(cert => (cert.Status == ISI.Extensions.NameCheap.NameCheapSslCertificateStatus.Purchased) && string.Equals(cert.CommonName, certificate.CommonName, StringComparison.InvariantCultureIgnoreCase));
 
 				var listApproverEmailAddressesResponse = sslCertificatesApi.ListApproverEmailAddresses(new()
 				{
-					ApiUser = settings.GetValue("NameCheap.ApiUser"),
-					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+					ApiUser = ApiUser,
+					ApiKey = ApiKey,
 					DomainName = certificate.CommonName,
 					CertificateType = certificate.CertificateType,
 				});
-
-
+				
 				var activateCertificateResponse = sslCertificatesApi.ActivateCertificate(new()
 				{
-					//Url = "https://api.sandbox.namecheap.com",
-					//ApiUser = settings.GetValue("NameCheap.Sandbox.ApiUser"),
-					//ApiKey = settings.GetValue("NameCheap.Sandbox.ApiKey"),
-					ApiUser = settings.GetValue("NameCheap.ApiUser"),
-					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+					Url = ServiceUrl,
+					ApiUser = ApiUser,
+					ApiKey = ApiKey,
 					VendorCertificateKey = certificate.VendorCertificateKey,
 					CreateSigningRequestPem = getCertificateResponse.Certificates.FirstOrDefault(c => c.CertificateType == ISI.Extensions.Certificates.CertificateType.CertificateSigningRequest).Certificate,
 					AdminEmailAddress = listApproverEmailAddressesResponse.GenericEmailAddresses.NullCheckedFirstOrDefault(),
 				});
-
-
+				
 				listCertificatesResponse = sslCertificatesApi.ListCertificates(new()
 				{
-					//Url = "https://api.sandbox.namecheap.com",
-					//ApiUser = settings.GetValue("NameCheap.Sandbox.ApiUser"),
-					//ApiKey = settings.GetValue("NameCheap.Sandbox.ApiKey"),
-					ApiUser = settings.GetValue("NameCheap.ApiUser"),
-					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+					Url = ServiceUrl,
+					ApiUser = ApiUser,
+					ApiKey = ApiKey,
 				});
 
-				certificate = listCertificatesResponse.Certificates.NullCheckedFirstOrDefault(cert =>  (cert.Status == ISI.Extensions.NameCheap.NameCheapSslCertificateStatus.Purchased) &&  string.Equals(cert.CommonName, certificate.CommonName, StringComparison.InvariantCultureIgnoreCase));
+				certificate = listCertificatesResponse.Certificates.NullCheckedFirstOrDefault(cert => (cert.Status == ISI.Extensions.NameCheap.NameCheapSslCertificateStatus.Purchased) && string.Equals(cert.CommonName, certificate.CommonName, StringComparison.InvariantCultureIgnoreCase));
 
 				var updateCertificateVerificationResponse = sslCertificatesApi.UpdateCertificateVerification(new()
 				{
-					//Url = "https://api.sandbox.namecheap.com",
-					//ApiUser = settings.GetValue("NameCheap.Sandbox.ApiUser"),
-					//ApiKey = settings.GetValue("NameCheap.Sandbox.ApiKey"),
-					ApiUser = settings.GetValue("NameCheap.ApiUser"),
-					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+					Url = ServiceUrl,
+					ApiUser = ApiUser,
+					ApiKey = ApiKey,
 					VendorCertificateKey = certificate.VendorCertificateKey,
 				});
-
-
-
+				
 				getCertificateResponse = sslCertificatesApi.GetCertificate(new()
 				{
-					//Url = "https://api.sandbox.namecheap.com",
-					//ApiUser = settings.GetValue("NameCheap.Sandbox.ApiUser"),
-					//ApiKey = settings.GetValue("NameCheap.Sandbox.ApiKey"),
-					ApiUser = settings.GetValue("NameCheap.ApiUser"),
-					ApiKey = settings.GetValue("NameCheap.ApiKey"),
+					Url = ServiceUrl,
+					ApiUser = ApiUser,
+					ApiKey = ApiKey,
 					VendorCertificateKey = certificate.VendorCertificateKey,
 				});
 

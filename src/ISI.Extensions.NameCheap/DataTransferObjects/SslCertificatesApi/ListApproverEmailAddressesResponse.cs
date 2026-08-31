@@ -26,5 +26,11 @@ namespace ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi
 	{
 		public string[] DomainEmailAddresses { get; set; }
 		public string[] GenericEmailAddresses { get; set; }
+
+		public int? WarningCode { get; set; }
+		public string WarningDescription { get; set; }
+
+		public int? ErrorCode { get; set; }
+		public string ErrorDescription { get; set; }
 	}
 }

@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.NameCheap.Extensions;
 using DTOs = ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi;
+using SerializableModels = ISI.Extensions.NameCheap.SerializableModels.SslCertificatesApi;
 
 namespace ISI.Extensions.NameCheap
 {
@@ -40,6 +41,12 @@ namespace ISI.Extensions.NameCheap
 
 			response.DomainEmailAddresses = (apiResponse.CommandResponse?.GetApproverEmailListResult?.DomainEmailAddresses)?.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 			response.GenericEmailAddresses = (apiResponse.CommandResponse?.GetApproverEmailListResult?.GenericEmailAddresses)?.ToNullCheckedArray(NullCheckCollectionResult.Empty);
+
+			response.WarningCode = apiResponse.Warnings?.Warning?.WarningCode;
+			response.WarningDescription = apiResponse.Warnings?.Warning?.WarningDescription;
+
+			response.ErrorCode = apiResponse.Errors?.Error?.ErrorCode;
+			response.ErrorDescription = apiResponse.Errors?.Error?.ErrorDescription;
 
 			return response;
 		}

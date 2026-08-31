@@ -19,50 +19,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.NameCheap.Extensions;
-using DTOs = ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi;
-using SerializableModels = ISI.Extensions.NameCheap.SerializableModels.SslCertificatesApi;
 
-namespace ISI.Extensions.NameCheap
+namespace ISI.Extensions.NameCheap.DataTransferObjects.UserApi
 {
-	public partial class SslCertificatesApi
+	public class GetBalancesRequest : IRequest
 	{
-		private NameCheapSslCertificateType UpdateCertificateType(NameCheapSslCertificateType certificateType)
-		{
-			switch (certificateType)
-			{
-				case NameCheapSslCertificateType.PositiveSSL:
-				case NameCheapSslCertificateType.EssentialSSL:
-					return NameCheapSslCertificateType.StandardSSL_SSLcom;
-
-				case NameCheapSslCertificateType.InstantSSL:
-				case NameCheapSslCertificateType.InstantSSLPro:
-				case NameCheapSslCertificateType.PremiumSSL:
-					return NameCheapSslCertificateType.HighAssuranceSSL_SSLcom;
-
-				case NameCheapSslCertificateType.EV_SSL:
-					return NameCheapSslCertificateType.EV_SSL_SSLcom;
-
-				case NameCheapSslCertificateType.PositiveSSLWildcard:
-				case NameCheapSslCertificateType.EssentialSSLWildcard:
-					return NameCheapSslCertificateType.StandardWildcardSSL_SSLcom;
-
-				case NameCheapSslCertificateType.PremiumSSLWildcard:
-					return NameCheapSslCertificateType.OV_WildcardSSL_SSLcom;
-
-				case NameCheapSslCertificateType.PositiveSSLMultiDomain:
-					return NameCheapSslCertificateType.SANCertificateSSL_SSLcom;
-
-				case NameCheapSslCertificateType.MultiDomainSSL:
-				case NameCheapSslCertificateType.UnifiedCommunications:
-					return NameCheapSslCertificateType.OV_MultiDomainSSL_SSLcom;
-
-				case NameCheapSslCertificateType.EV_MultiDomainSSL:
-					return NameCheapSslCertificateType.EV_MultiDomainSSL_SSLcom;
-
-			}
-
-			return certificateType;
-		}
+		public string Url { get; set; }
+		public string ApiUser { get; set; }
+		public string ApiKey { get; set; }
 	}
 }

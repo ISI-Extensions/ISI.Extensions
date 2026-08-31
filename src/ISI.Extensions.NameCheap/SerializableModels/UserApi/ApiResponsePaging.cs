@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2026, Integrated Solutions, Inc.
 All rights reserved.
@@ -16,24 +16,25 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi
+namespace ISI.Extensions.NameCheap.SerializableModels.UserApi
 {
-	public class CreateCertificateResponse
+	[System.Serializable]
+	[System.ComponentModel.DesignerCategory("code")]
+	[System.Xml.Serialization.XmlType(AnonymousType = true)]
+	public class ApiResponsePaging
 	{
-		public bool Success { get; set; }
-		public string VendorCertificateKey { get; set; }
-		public NameCheapSslCertificateType? CertificateType { get; set; }
-		public int Years { get; set; }
-		public NameCheapSslCertificateStatus? CertificateStatus { get; set; }
+		[System.Xml.Serialization.XmlElement("TotalItems")]
+		public int TotalItems { get; set; }
 
-		public int? WarningCode { get; set; }
-		public string WarningDescription { get; set; }
+		[System.Xml.Serialization.XmlElement("CurrentPage")]
+		public int CurrentPage { get; set; }
 
-		public int? ErrorCode { get; set; }
-		public string ErrorDescription { get; set; }
+		[System.Xml.Serialization.XmlElement("PageSize")]
+		public int PageSize { get; set; }
 	}
 }

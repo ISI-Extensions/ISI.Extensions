@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.NameCheap.Extensions;
 using DTOs = ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi;
+using SerializableModels = ISI.Extensions.NameCheap.SerializableModels.SslCertificatesApi;
 
 namespace ISI.Extensions.NameCheap
 {

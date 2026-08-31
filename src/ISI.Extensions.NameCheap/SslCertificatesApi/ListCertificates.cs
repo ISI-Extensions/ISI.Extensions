@@ -62,12 +62,22 @@ namespace ISI.Extensions.NameCheap
 					Years = certificate.Years,
 				}) ?? []);
 
-
 				if (certificates.Count < (apiResponse?.CommandResponse?.Paging?.TotalItems ?? 0))
 				{
 					page++;
 				}
 				else
+				{
+					page = 0;
+				}
+
+				response.WarningCode = apiResponse.Warnings?.Warning?.WarningCode;
+				response.WarningDescription = apiResponse.Warnings?.Warning?.WarningDescription;
+
+				response.ErrorCode = apiResponse.Errors?.Error?.ErrorCode;
+				response.ErrorDescription = apiResponse.Errors?.Error?.ErrorDescription;
+
+				if (response.ErrorCode > 0)
 				{
 					page = 0;
 				}

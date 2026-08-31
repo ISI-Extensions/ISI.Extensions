@@ -89,6 +89,21 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void GetBalances_Test()
+		{
+			var userApi = ServiceProvider.GetService<ISI.Extensions.NameCheap.UserApi>();
+
+			using (var eventHandler = ISI.Extensions.WebClient.Rest.GetEventHandler())
+			{
+				var getBalancesResponse = userApi.GetBalances(new()
+				{
+					ApiUser = ApiUser,
+					ApiKey = ApiKey,
+				});
+			}
+		}
+
+		[Test]
 		public void GetDnsRecords_Test()
 		{
 			var domainsApi = ServiceProvider.GetService<ISI.Extensions.NameCheap.DomainsApi>();

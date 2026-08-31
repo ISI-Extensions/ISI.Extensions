@@ -38,9 +38,9 @@ namespace ISI.Extensions.NameCheap.SerializableModels.SslCertificatesApi
 	public class ApiResponseErrorsError
 	{
 		[System.Xml.Serialization.XmlAttribute("Number")]
-		public byte Number { get; set; }
+		public int ErrorCode { get; set; }
 
 		[System.Xml.Serialization.XmlText]
-		public string Value { get; set; }
+		public string ErrorDescription { get; set; }
 	}
 }

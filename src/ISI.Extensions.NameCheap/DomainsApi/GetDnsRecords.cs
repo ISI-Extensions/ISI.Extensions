@@ -41,34 +41,51 @@ namespace ISI.Extensions.NameCheap
 			formData.Add("TLD", domainNamePieces.Last());
 			formData.Add("PageSize", 100);
 
-			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteFormRequestPost<ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, request.GetHeaders(Configuration), formData, true);
-			
-			var apiResponseXml = System.Xml.Linq.XElement.Parse(apiResponse.Content);
-			var commandResponseXml = apiResponseXml.GetElementByLocalName("CommandResponse");
-			var domainDNSGetHostsResultXml = commandResponseXml.GetElementByLocalName("DomainDNSGetHostsResult");
-			var hostXmls = domainDNSGetHostsResultXml.GetElementsByLocalName("host");
+			//var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteFormRequestPost<ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, request.GetHeaders(Configuration), formData, true);
 
-			response.EmailType = domainDNSGetHostsResultXml?.GetAttributeByLocalName("EmailType").Value;
+			//var apiResponseXml = System.Xml.Linq.XElement.Parse(apiResponse.Content);
+			//var commandResponseXml = apiResponseXml.GetElementByLocalName("CommandResponse");
+			//var domainDNSGetHostsResultXml = commandResponseXml.GetElementByLocalName("DomainDNSGetHostsResult");
+			//var hostXmls = domainDNSGetHostsResultXml.GetElementsByLocalName("host");
 
-			var dnsRecords = new List<ISI.Extensions.Dns.DnsRecord>();
+			//response.EmailType = domainDNSGetHostsResultXml?.GetAttributeByLocalName("EmailType").Value;
 
-			foreach (var hostXml in hostXmls)
+			//var dnsRecords = new List<ISI.Extensions.Dns.DnsRecord>();
+
+			//foreach (var hostXml in hostXmls)
+			//{
+			//	var dnsType = ISI.Extensions.Enum<ISI.Extensions.Dns.RecordType>.Parse(hostXml.GetAttributeByLocalName("Type").Value);
+
+			//	dnsRecords.Add(new()
+			//	{
+			//		Name = hostXml.GetAttributeByLocalName("Name").Value,
+			//		Data = hostXml.GetAttributeByLocalName("Address").Value,
+			//		Priority = hostXml.GetAttributeByLocalName("MXPref").Value.ToInt(),
+			//		Protocol = hostXml.GetAttributeByLocalName("AssociatedAppTitle").Value,
+			//		Service = hostXml.GetAttributeByLocalName("FriendlyName").Value,
+			//		Ttl = TimeSpan.FromSeconds(hostXml.GetAttributeByLocalName("TTL").Value.ToLong()),
+			//		RecordType = dnsType,
+			//	});
+			//}
+
+			//response.DnsRecords = dnsRecords.ToArray();
+
+
+			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteFormRequestXmlPost<SerializableModels.DomainsApi.GetDnsRecordsResponse>(uri.Uri, request.GetHeaders(Configuration), formData, true);
+
+
+			response.EmailType = apiResponse.CommandResponse?.DomainDNSGetHostsResult?.EmailType;
+
+			response.DnsRecords = (apiResponse.CommandResponse?.DomainDNSGetHostsResult?.Hosts).ToNullCheckedArray(host => new ISI.Extensions.Dns.DnsRecord()
 			{
-				var dnsType = ISI.Extensions.Enum<ISI.Extensions.Dns.RecordType>.Parse(hostXml.GetAttributeByLocalName("Type").Value);
-
-				dnsRecords.Add(new()
-				{
-					Name = hostXml.GetAttributeByLocalName("Name").Value,
-					Data = hostXml.GetAttributeByLocalName("Address").Value,
-					Priority = hostXml.GetAttributeByLocalName("MXPref").Value.ToInt(),
-					Protocol = hostXml.GetAttributeByLocalName("AssociatedAppTitle").Value,
-					Service = hostXml.GetAttributeByLocalName("FriendlyName").Value,
-					Ttl = TimeSpan.FromSeconds(hostXml.GetAttributeByLocalName("TTL").Value.ToLong()),
-					RecordType = dnsType,
-				});
-			}
-
-			response.DnsRecords = dnsRecords.ToArray();
+				Name = host.Name,
+				Data = host.Address,
+				Priority = host.MXPref,
+				Protocol = host.AssociatedAppTitle,
+				Service = host.FriendlyName,
+				Ttl = TimeSpan.FromSeconds(host.TTL),
+				RecordType = ISI.Extensions.Enum<ISI.Extensions.Dns.RecordType>.Parse(host.Type)
+			});
 
 			return response;
 		}

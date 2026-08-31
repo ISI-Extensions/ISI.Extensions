@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,49 +20,28 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.NameCheap.Extensions;
-using DTOs = ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi;
-using SerializableModels = ISI.Extensions.NameCheap.SerializableModels.SslCertificatesApi;
+using DTOs = ISI.Extensions.NameCheap.DataTransferObjects.UserApi;
+using SerializableModels = ISI.Extensions.NameCheap.SerializableModels.UserApi;
 
 namespace ISI.Extensions.NameCheap
 {
-	public partial class SslCertificatesApi
+	public partial class UserApi
 	{
-		private NameCheapSslCertificateType UpdateCertificateType(NameCheapSslCertificateType certificateType)
+		protected Configuration Configuration { get; }
+		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
+		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
+		protected ISI.Extensions.Ipify.IpifyApi IpifyApi { get; }
+
+		public UserApi(
+			Configuration configuration,
+			Microsoft.Extensions.Logging.ILogger logger,
+			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper,
+			ISI.Extensions.Ipify.IpifyApi ipifyApi)
 		{
-			switch (certificateType)
-			{
-				case NameCheapSslCertificateType.PositiveSSL:
-				case NameCheapSslCertificateType.EssentialSSL:
-					return NameCheapSslCertificateType.StandardSSL_SSLcom;
-
-				case NameCheapSslCertificateType.InstantSSL:
-				case NameCheapSslCertificateType.InstantSSLPro:
-				case NameCheapSslCertificateType.PremiumSSL:
-					return NameCheapSslCertificateType.HighAssuranceSSL_SSLcom;
-
-				case NameCheapSslCertificateType.EV_SSL:
-					return NameCheapSslCertificateType.EV_SSL_SSLcom;
-
-				case NameCheapSslCertificateType.PositiveSSLWildcard:
-				case NameCheapSslCertificateType.EssentialSSLWildcard:
-					return NameCheapSslCertificateType.StandardWildcardSSL_SSLcom;
-
-				case NameCheapSslCertificateType.PremiumSSLWildcard:
-					return NameCheapSslCertificateType.OV_WildcardSSL_SSLcom;
-
-				case NameCheapSslCertificateType.PositiveSSLMultiDomain:
-					return NameCheapSslCertificateType.SANCertificateSSL_SSLcom;
-
-				case NameCheapSslCertificateType.MultiDomainSSL:
-				case NameCheapSslCertificateType.UnifiedCommunications:
-					return NameCheapSslCertificateType.OV_MultiDomainSSL_SSLcom;
-
-				case NameCheapSslCertificateType.EV_MultiDomainSSL:
-					return NameCheapSslCertificateType.EV_MultiDomainSSL_SSLcom;
-
-			}
-
-			return certificateType;
+			Configuration = configuration;
+			Logger = logger;
+			DateTimeStamper = dateTimeStamper;
+			IpifyApi = ipifyApi;
 		}
 	}
 }

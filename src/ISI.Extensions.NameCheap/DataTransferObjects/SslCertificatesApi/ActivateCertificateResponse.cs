@@ -28,6 +28,12 @@ namespace ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi
 		public bool Success { get; set; }
 		public ActivateCertificateResponseHttpValidation HttpValidation { get; set; }
 		public ActivateCertificateResponseDNSValidation DNSValidation { get; set; }
+
+		public int? WarningCode { get; set; }
+		public string WarningDescription { get; set; }
+
+		public int? ErrorCode { get; set; }
+		public string ErrorDescription { get; set; }
 	}
 
 	public class ActivateCertificateResponseHttpValidation

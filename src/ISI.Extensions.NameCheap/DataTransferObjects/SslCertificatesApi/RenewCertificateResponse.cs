@@ -30,5 +30,11 @@ namespace ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi
 		public int? OrderId { get; set; }
 		public int? TransactionId { get; set; }
 		public decimal? ChargedAmount { get; set; }
+
+		public int? WarningCode { get; set; }
+		public string WarningDescription { get; set; }
+
+		public int? ErrorCode { get; set; }
+		public string ErrorDescription { get; set; }
 	}
 }

@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.NameCheap.Extensions;
 using DTOs = ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi;
+using SerializableModels = ISI.Extensions.NameCheap.SerializableModels.SslCertificatesApi;
 
 namespace ISI.Extensions.NameCheap
 {
@@ -62,6 +63,12 @@ namespace ISI.Extensions.NameCheap
 			}
 
 			response.Certificates = certificates.ToArray();
+
+			response.WarningCode = apiResponse.Warnings?.Warning?.WarningCode;
+			response.WarningDescription = apiResponse.Warnings?.Warning?.WarningDescription;
+
+			response.ErrorCode = apiResponse.Errors?.Error?.ErrorCode;
+			response.ErrorDescription = apiResponse.Errors?.Error?.ErrorDescription;
 
 			return response;
 		}

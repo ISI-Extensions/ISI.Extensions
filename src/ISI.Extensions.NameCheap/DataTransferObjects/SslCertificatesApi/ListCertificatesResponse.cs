@@ -25,6 +25,12 @@ namespace ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi
 	public class ListCertificatesResponse
 	{
 		public IEnumerable<ListCertificatesResponseCertificate> Certificates { get; set; }
+
+		public int? WarningCode { get; set; }
+		public string WarningDescription { get; set; }
+
+		public int? ErrorCode { get; set; }
+		public string ErrorDescription { get; set; }
 	}
 
 	public class ListCertificatesResponseCertificate

@@ -30,6 +30,7 @@ namespace ISI.Extensions.NameCheap
 		{
 			services.AddSingleton<SslCertificatesApi>();
 			services.AddSingleton<DomainsApi>();
+			services.AddSingleton<UserApi>();
 		}
 	}
 }

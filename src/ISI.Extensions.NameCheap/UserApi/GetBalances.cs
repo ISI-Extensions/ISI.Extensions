@@ -20,49 +20,37 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.NameCheap.Extensions;
-using DTOs = ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi;
-using SerializableModels = ISI.Extensions.NameCheap.SerializableModels.SslCertificatesApi;
+using DTOs = ISI.Extensions.NameCheap.DataTransferObjects.UserApi;
+using SerializableModels = ISI.Extensions.NameCheap.SerializableModels.UserApi;
 
 namespace ISI.Extensions.NameCheap
 {
-	public partial class SslCertificatesApi
+	public partial class UserApi
 	{
-		private NameCheapSslCertificateType UpdateCertificateType(NameCheapSslCertificateType certificateType)
+		public DTOs.GetBalancesResponse GetBalances(DTOs.GetBalancesRequest request)
 		{
-			switch (certificateType)
-			{
-				case NameCheapSslCertificateType.PositiveSSL:
-				case NameCheapSslCertificateType.EssentialSSL:
-					return NameCheapSslCertificateType.StandardSSL_SSLcom;
+			var response = new DTOs.GetBalancesResponse();
 
-				case NameCheapSslCertificateType.InstantSSL:
-				case NameCheapSslCertificateType.InstantSSLPro:
-				case NameCheapSslCertificateType.PremiumSSL:
-					return NameCheapSslCertificateType.HighAssuranceSSL_SSLcom;
+			var uri = request.GetUrl(Configuration);
+			uri.SetUserNameClientIp(request, IpifyApi, Configuration);
+			uri.AddQueryStringParameter("Command", "namecheap.users.getBalances");
 
-				case NameCheapSslCertificateType.EV_SSL:
-					return NameCheapSslCertificateType.EV_SSL_SSLcom;
+			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteXmlGet<SerializableModels.UserApi.GetBalancesResponse>(uri.Uri, null, true);
 
-				case NameCheapSslCertificateType.PositiveSSLWildcard:
-				case NameCheapSslCertificateType.EssentialSSLWildcard:
-					return NameCheapSslCertificateType.StandardWildcardSSL_SSLcom;
+			response.Currency = apiResponse.CommandResponse?.UserGetBalancesResult?.Currency ?? string.Empty;
+			response.AvailableBalance = apiResponse.CommandResponse?.UserGetBalancesResult?.AvailableBalance ?? 0;
+			response.AccountBalance = apiResponse.CommandResponse?.UserGetBalancesResult?.AccountBalance ?? 0;
+			response.EarnedAmount = apiResponse.CommandResponse?.UserGetBalancesResult?.EarnedAmount ?? 0;
+			response.WithdrawableAmount = apiResponse.CommandResponse?.UserGetBalancesResult?.WithdrawableAmount ?? 0;
+			response.FundsRequiredForAutoRenew = apiResponse.CommandResponse?.UserGetBalancesResult?.FundsRequiredForAutoRenew ?? 0;
 
-				case NameCheapSslCertificateType.PremiumSSLWildcard:
-					return NameCheapSslCertificateType.OV_WildcardSSL_SSLcom;
+			response.WarningCode = apiResponse.Warnings?.Warning?.WarningCode;
+			response.WarningDescription = apiResponse.Warnings?.Warning?.WarningDescription;
 
-				case NameCheapSslCertificateType.PositiveSSLMultiDomain:
-					return NameCheapSslCertificateType.SANCertificateSSL_SSLcom;
+			response.ErrorCode = apiResponse.Errors?.Error?.ErrorCode;
+			response.ErrorDescription = apiResponse.Errors?.Error?.ErrorDescription;
 
-				case NameCheapSslCertificateType.MultiDomainSSL:
-				case NameCheapSslCertificateType.UnifiedCommunications:
-					return NameCheapSslCertificateType.OV_MultiDomainSSL_SSLcom;
-
-				case NameCheapSslCertificateType.EV_MultiDomainSSL:
-					return NameCheapSslCertificateType.EV_MultiDomainSSL_SSLcom;
-
-			}
-
-			return certificateType;
+			return response;
 		}
 	}
 }

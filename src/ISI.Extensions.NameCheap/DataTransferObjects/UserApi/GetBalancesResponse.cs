@@ -19,50 +19,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using ISI.Extensions.NameCheap.Extensions;
-using DTOs = ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi;
-using SerializableModels = ISI.Extensions.NameCheap.SerializableModels.SslCertificatesApi;
 
-namespace ISI.Extensions.NameCheap
+namespace ISI.Extensions.NameCheap.DataTransferObjects.UserApi
 {
-	public partial class SslCertificatesApi
+	public class GetBalancesResponse
 	{
-		private NameCheapSslCertificateType UpdateCertificateType(NameCheapSslCertificateType certificateType)
-		{
-			switch (certificateType)
-			{
-				case NameCheapSslCertificateType.PositiveSSL:
-				case NameCheapSslCertificateType.EssentialSSL:
-					return NameCheapSslCertificateType.StandardSSL_SSLcom;
+		public string Currency { get; set; }
+		public decimal AvailableBalance { get; set; }
+		public decimal AccountBalance { get; set; }
+		public decimal EarnedAmount { get; set; }
+		public decimal WithdrawableAmount { get; set; }
+		public decimal FundsRequiredForAutoRenew { get; set; }
 
-				case NameCheapSslCertificateType.InstantSSL:
-				case NameCheapSslCertificateType.InstantSSLPro:
-				case NameCheapSslCertificateType.PremiumSSL:
-					return NameCheapSslCertificateType.HighAssuranceSSL_SSLcom;
+		public int? WarningCode { get; set; }
+		public string WarningDescription { get; set; }
 
-				case NameCheapSslCertificateType.EV_SSL:
-					return NameCheapSslCertificateType.EV_SSL_SSLcom;
-
-				case NameCheapSslCertificateType.PositiveSSLWildcard:
-				case NameCheapSslCertificateType.EssentialSSLWildcard:
-					return NameCheapSslCertificateType.StandardWildcardSSL_SSLcom;
-
-				case NameCheapSslCertificateType.PremiumSSLWildcard:
-					return NameCheapSslCertificateType.OV_WildcardSSL_SSLcom;
-
-				case NameCheapSslCertificateType.PositiveSSLMultiDomain:
-					return NameCheapSslCertificateType.SANCertificateSSL_SSLcom;
-
-				case NameCheapSslCertificateType.MultiDomainSSL:
-				case NameCheapSslCertificateType.UnifiedCommunications:
-					return NameCheapSslCertificateType.OV_MultiDomainSSL_SSLcom;
-
-				case NameCheapSslCertificateType.EV_MultiDomainSSL:
-					return NameCheapSslCertificateType.EV_MultiDomainSSL_SSLcom;
-
-			}
-
-			return certificateType;
-		}
+		public int? ErrorCode { get; set; }
+		public string ErrorDescription { get; set; }
 	}
 }

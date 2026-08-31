@@ -38,9 +38,9 @@ namespace ISI.Extensions.NameCheap.SerializableModels.SslCertificatesApi
 	public class ApiResponseWarningsWarning
 	{
 		[System.Xml.Serialization.XmlAttribute("Number")]
-		public byte Number { get; set; }
+		public int WarningCode { get; set; }
 
 		[System.Xml.Serialization.XmlText]
-		public string Value { get; set; }
+		public string WarningDescription { get; set; }
 	}
 }

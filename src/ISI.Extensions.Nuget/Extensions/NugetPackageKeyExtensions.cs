@@ -46,7 +46,7 @@ namespace ISI.Extensions.Nuget.Extensions
 				}
 			}
 
-			return nugetPackageKey.TargetFrameworks.FirstOrDefault(framework => framework.TargetFramework == null);
+			return nugetPackageKey.TargetFrameworks.NullCheckedFirstOrDefault(framework => framework.TargetFramework == null);
 		}
 
 		public static string GetHintPath(this IEnumerable<NugetPackageKeyTargetFrameworkAssembly> nugetPackageKeyTargetFrameworkAssemblies, string assemblyName)

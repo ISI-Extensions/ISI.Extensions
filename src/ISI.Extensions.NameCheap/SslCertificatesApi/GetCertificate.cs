@@ -32,6 +32,7 @@ namespace ISI.Extensions.NameCheap
 			var response = new DTOs.GetCertificateResponse();
 
 			var uri = request.GetUrl(Configuration);
+			uri.Path = "xml.response";
 			uri.SetUserNameClientIp(request, IpifyApi, Configuration);
 			uri.AddQueryStringParameter("Command", "namecheap.ssl.getinfo");
 			uri.AddQueryStringParameter("certificateID", request.VendorCertificateKey);

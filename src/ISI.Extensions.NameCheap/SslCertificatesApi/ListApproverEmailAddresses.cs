@@ -32,6 +32,7 @@ namespace ISI.Extensions.NameCheap
 			var response = new DTOs.ListApproverEmailAddressesResponse();
 
 			var uri = request.GetUrl(Configuration);
+			uri.Path = "xml.response";
 			uri.SetUserNameClientIp(request, IpifyApi, Configuration);
 			uri.AddQueryStringParameter("Command", "namecheap.ssl.getApproverEmailList");
 			uri.AddQueryStringParameter("domainname", request.DomainName);

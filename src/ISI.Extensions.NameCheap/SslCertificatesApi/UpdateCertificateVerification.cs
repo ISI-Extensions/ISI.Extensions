@@ -32,6 +32,7 @@ namespace ISI.Extensions.NameCheap
 			var response = new DTOs.UpdateCertificateVerificationResponse();
 
 			var uri = request.GetUrl(Configuration);
+			uri.Path = "xml.response";
 
 			var formData = new ISI.Extensions.WebClient.Rest.FormDataCollection();
 			formData.SetUserNameClientIp(request, IpifyApi, Configuration);

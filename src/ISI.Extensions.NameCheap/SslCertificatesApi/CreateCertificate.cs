@@ -34,6 +34,7 @@ namespace ISI.Extensions.NameCheap
 			request.CertificateType = UpdateCertificateType(request.CertificateType);
 
 			var uri = request.GetUrl(Configuration);
+			uri.Path = "xml.response";
 			uri.SetUserNameClientIp(request, IpifyApi, Configuration);
 			uri.AddQueryStringParameter("Command", "namecheap.ssl.create");
 			uri.AddQueryStringParameter("Years", request.Years);

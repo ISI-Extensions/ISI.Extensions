@@ -48,6 +48,7 @@ namespace ISI.Extensions.NameCheap
 			var domainNamePieces = request.Domain.Split(new[] { '.' });
 
 			var uri = request.GetUrl(Configuration);
+			uri.Path = "xml.response";
 
 			var formData = new ISI.Extensions.WebClient.Rest.FormDataCollection();
 			formData.SetUserNameClientIp(request, IpifyApi, Configuration);

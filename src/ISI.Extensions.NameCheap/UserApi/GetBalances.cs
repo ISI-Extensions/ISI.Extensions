@@ -32,6 +32,7 @@ namespace ISI.Extensions.NameCheap
 			var response = new DTOs.GetBalancesResponse();
 
 			var uri = request.GetUrl(Configuration);
+			uri.Path = "xml.response";
 			uri.SetUserNameClientIp(request, IpifyApi, Configuration);
 			uri.AddQueryStringParameter("Command", "namecheap.users.getBalances");
 

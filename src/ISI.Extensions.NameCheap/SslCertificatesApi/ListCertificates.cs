@@ -38,6 +38,7 @@ namespace ISI.Extensions.NameCheap
 			while (page > 0)
 			{
 				var uri = request.GetUrl(Configuration);
+				uri.Path = "xml.response";
 				uri.SetUserNameClientIp(request, IpifyApi, Configuration);
 				uri.AddQueryStringParameter("Command", "namecheap.ssl.getList");
 				uri.AddQueryStringParameter("Page", page);

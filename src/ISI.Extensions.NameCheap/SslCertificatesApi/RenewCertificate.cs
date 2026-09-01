@@ -34,7 +34,8 @@ namespace ISI.Extensions.NameCheap
 			request.CertificateType = UpdateCertificateType(request.CertificateType);
 
 			var uri = request.GetUrl(Configuration);
-			
+			uri.Path = "xml.response";
+
 			var formData = new ISI.Extensions.WebClient.Rest.FormDataCollection();
 			formData.SetUserNameClientIp(request, IpifyApi, Configuration);
 			formData.Add("Command", "namecheap.ssl.renew");

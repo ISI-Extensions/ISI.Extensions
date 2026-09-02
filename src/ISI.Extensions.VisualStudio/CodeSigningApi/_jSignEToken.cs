@@ -87,7 +87,7 @@ namespace ISI.Extensions.VisualStudio
 				return false;
 			}
 
-			logger.LogInformation($"Signed files: {string.Join(", ", fileNames.Select(System.IO.Path.GetFileName))}");
+			//logger.LogInformation($"Signed files: {string.Join(", ", fileNames.Select(System.IO.Path.GetFileName))}");
 
 			return true;
 		}

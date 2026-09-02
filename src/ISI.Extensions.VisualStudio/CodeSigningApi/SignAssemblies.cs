@@ -69,8 +69,6 @@ namespace ISI.Extensions.VisualStudio
 							System.IO.File.Copy(assemblyFullNames[fileIndex], signedAssemblyFullName);
 
 							signedAssemblyFullNames[fileIndex] = signedAssemblyFullName;
-
-							logger.LogInformation($"{assemblyFullNames[fileIndex]} => {signedAssemblyFullNames[fileIndex]}");
 						}
 
 						var signtoolExeFullName = GetSigntoolExeFullName(new()).SigntoolExeFullName;

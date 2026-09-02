@@ -56,7 +56,9 @@ namespace ISI.Extensions.Nuget
 					                           ExactMatchOnly = true,
 					                           Source = request.Source,
 					                           NugetConfigFullNames = request.NugetConfigFullNames,
-				                           }).NugetPackageKeys.NullCheckedFirstOrDefault();
+				                           }).NugetPackageKeys
+				                           .NullCheckedOrderByDescending(nugetPackageKey => global::NuGet.Versioning.NuGetVersion.Parse(nugetPackageKey.Version), new NuGet.Versioning.VersionComparer())
+				                           .NullCheckedFirstOrDefault();
 
 				if (foundNugetPackageKey != null)
 				{

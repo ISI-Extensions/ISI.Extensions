@@ -52,22 +52,7 @@ namespace ISI.Extensions.Acme
 
 			var jsonWebToken = CreateToken(securityTokenDescriptor);
 
-#if DEBUG
-			var jwtSecurityTokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
-
-			if (jwtSecurityTokenHandler.CanReadToken(jsonWebToken))
-			{
-				var jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(jsonWebToken);
-
-				var YYY = jwtSecurityToken.DeserializePayload<ISI.Extensions.Acme.SerializableModels.AcmeOrders.CreateNewOrderRequest>(JsonSerializer);
-			}
-#endif
-			
 			var signedJwt = new ISI.Extensions.JsonJwt.SerializableEntities.SignedJwt(jsonWebToken);
-
-#if DEBUG
-			var xxx = ISI.Extensions.WebClient.Rest.GetEventHandler();
-#endif
 
 			var acmeResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<ISI.Extensions.JsonJwt.SerializableEntities.SignedJwt, ISI.Extensions.WebClient.Rest.SerializedResponse<ISI.Extensions.Acme.SerializableModels.AcmeOrders.CreateNewOrderResponse>>(uri, GetHeaders(request), signedJwt, true);
 

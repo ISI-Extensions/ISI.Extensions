@@ -74,11 +74,11 @@ namespace ISI.Extensions.Tests
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "isi.keyValue");
 			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
 
-			ServiceUrl = "https://api.sandbox.namecheap.com/xml.response";
+			ServiceUrl = "https://api.sandbox.namecheap.com";
 			ApiUser = settings.GetValue("NameCheap.Sandbox.ApiUser");
 			ApiKey = settings.GetValue("NameCheap.Sandbox.ApiKey");
 
-			ServiceUrl = "https://api.namecheap.com/xml.response";
+			ServiceUrl = "https://api.namecheap.com";
 			ApiUser = settings.GetValue("NameCheap.ApiUser");
 			ApiKey = settings.GetValue("NameCheap.ApiKey");
 

@@ -28,6 +28,7 @@ namespace ISI.Extensions.NameCheap
 		[ISI.Extensions.EnumGuid("726d5b50-d639-4f03-ab5c-0aa4e616a2a9", "New Purchase", "newpurchase")] NewPurchase,
 		[ISI.Extensions.EnumGuid("8637d1df-5132-4af6-91f7-b3b9d8884703", "New Renewal", "newrenewal")] NewRenewal,
 		[ISI.Extensions.EnumGuid("6e17b441-39f5-4e8b-a22a-e45cbfacf1b7", "Cancelled", "cancelled")] Cancelled,
+		[ISI.Extensions.EnumGuid("5da4fb83-9d16-4194-a6c6-4d1e2799dd3b", "Expired", "expired")] Expired,
 		//[ISI.Extensions.EnumGuid("xxxxxxxxxxxxxxxxxxxxxxxxxx", "xxxxxxxxxxxxxxxxxxxxxxxxxx", "xxxxxxxxxxxxxxxxxxxxxxxxxx")] xxxxxxxxxxxxxxxxxxxxxxxxxx,
 		//[ISI.Extensions.EnumGuid("xxxxxxxxxxxxxxxxxxxxxxxxxx", "xxxxxxxxxxxxxxxxxxxxxxxxxx", "xxxxxxxxxxxxxxxxxxxxxxxxxx")] xxxxxxxxxxxxxxxxxxxxxxxxxx,
 		//[ISI.Extensions.EnumGuid("xxxxxxxxxxxxxxxxxxxxxxxxxx", "xxxxxxxxxxxxxxxxxxxxxxxxxx", "xxxxxxxxxxxxxxxxxxxxxxxxxx")] xxxxxxxxxxxxxxxxxxxxxxxxxx,

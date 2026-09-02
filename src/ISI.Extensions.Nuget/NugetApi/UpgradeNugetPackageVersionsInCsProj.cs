@@ -82,7 +82,7 @@ namespace ISI.Extensions.Nuget
 
 			if (!sdkAttribute.StartsWith("Microsoft.NET", StringComparison.InvariantCultureIgnoreCase))
 			{
-				var targetFrameworkVersion = GetTargetNugetFrameworkVersionFromCsProjXml(csProjXml);
+				var targetFrameworkVersion = GetTargetNugetFrameworkVersionsFromCsProjXml(csProjXml);
 
 				foreach (var itemGroup in csProjXml.GetElementsByLocalName("ItemGroup"))
 				{
@@ -146,7 +146,7 @@ namespace ISI.Extensions.Nuget
 
 									if (request.TryGetNugetPackageKey(packageId, true, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 									{
-										hintPath = nugetPackageKey.GetTargetFrameworkAssembly(targetFrameworkVersion)?.Assemblies?.GetHintPath(assemblyName);
+										hintPath = nugetPackageKey.GetTargetFrameworkAssembly(targetFrameworkVersion.First())?.Assemblies?.GetHintPath(assemblyName);
 
 										if (!string.IsNullOrWhiteSpace(hintPath))
 										{

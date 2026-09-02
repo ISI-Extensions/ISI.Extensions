@@ -29,12 +29,22 @@ namespace ISI.Extensions.Nuget
 {
 	public partial class NugetApi
 	{
-		public string GetTargetFrameworkVersionFromCsProjXml(System.Xml.Linq.XElement csProjXml)
+		public string[] GetTargetFrameworkVersionsFromCsProjXml(System.Xml.Linq.XElement csProjXml)
 		{
 			var sdkAttribute = csProjXml.GetAttributeByLocalName("Sdk")?.Value ?? string.Empty;
 
 			if (sdkAttribute.StartsWith("Microsoft.NET"))
 			{
+				var targetFrameworkVersions = csProjXml
+					.GetElementByLocalName("PropertyGroup")?
+					.GetElementByLocalName("TargetFrameworks")?
+					.Value;
+
+				if (!string.IsNullOrWhiteSpace(targetFrameworkVersions))
+				{
+					return targetFrameworkVersions.Split(';').Select(targetFrameworkVersion => targetFrameworkVersion.Trim()).ToArray();
+				}
+
 				var targetFrameworkVersion = csProjXml
 					.GetElementByLocalName("PropertyGroup")?
 					.GetElementByLocalName("TargetFramework")?
@@ -42,10 +52,10 @@ namespace ISI.Extensions.Nuget
 
 				if (string.IsNullOrWhiteSpace(targetFrameworkVersion))
 				{
-					targetFrameworkVersion = "net5.0";
+					targetFrameworkVersion = "net10.0";
 				}
 
-				return targetFrameworkVersion;
+				return [targetFrameworkVersion];
 			}
 			else
 			{
@@ -61,16 +71,26 @@ namespace ISI.Extensions.Nuget
 
 				targetFrameworkVersion = $"net{ISI.Extensions.StringFormat.StringNumericOnly(targetFrameworkVersion).Replace(".", string.Empty)}";
 
-				return targetFrameworkVersion;
+				return [targetFrameworkVersion];
 			}
 		}
 
-		public NuGet.Frameworks.NuGetFramework GetTargetNugetFrameworkVersionFromCsProjXml(System.Xml.Linq.XElement csProjXml)
+		public NuGet.Frameworks.NuGetFramework[] GetTargetNugetFrameworkVersionsFromCsProjXml(System.Xml.Linq.XElement csProjXml)
 		{
 			var sdkAttribute = csProjXml.GetAttributeByLocalName("Sdk")?.Value ?? string.Empty;
 
 			if (sdkAttribute.StartsWith("Microsoft.NET"))
 			{
+				var targetFrameworkVersions = csProjXml
+					.GetElementByLocalName("PropertyGroup")?
+					.GetElementByLocalName("TargetFrameworks")?
+					.Value;
+
+				if (!string.IsNullOrWhiteSpace(targetFrameworkVersions))
+				{
+					return targetFrameworkVersions.Split(';').Select(targetFrameworkVersion => NuGet.Frameworks.NuGetFramework.Parse(targetFrameworkVersion.Trim())).ToArray();
+				}
+
 				var targetFrameworkVersion = csProjXml
 					.GetElementByLocalName("PropertyGroup")?
 					.GetElementByLocalName("TargetFramework")?
@@ -78,10 +98,10 @@ namespace ISI.Extensions.Nuget
 
 				if (string.IsNullOrWhiteSpace(targetFrameworkVersion))
 				{
-					targetFrameworkVersion = "net5.0";
+					targetFrameworkVersion = "net10.0";
 				}
 
-				return NuGet.Frameworks.NuGetFramework.Parse(targetFrameworkVersion);
+				return [NuGet.Frameworks.NuGetFramework.Parse(targetFrameworkVersion)];
 			}
 			else
 			{
@@ -97,7 +117,7 @@ namespace ISI.Extensions.Nuget
 
 				targetFrameworkVersion = $"net{ISI.Extensions.StringFormat.StringNumericOnly(targetFrameworkVersion).Replace(".", string.Empty)}";
 
-				return NuGet.Frameworks.NuGetFramework.Parse(targetFrameworkVersion);
+				return [NuGet.Frameworks.NuGetFramework.Parse(targetFrameworkVersion)];
 			}
 		}
 	}

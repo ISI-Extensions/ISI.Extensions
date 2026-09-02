@@ -103,44 +103,47 @@ namespace ISI.Extensions.Nuget
 			var csProjXml = System.Xml.Linq.XElement.Parse(string.Join("\n", projectLines));
 			var isNet4WebProject = projectLines.Any(projectLine => projectLine.IndexOf("Microsoft.WebApplication.targets", StringComparison.InvariantCultureIgnoreCase) >= 0);
 
-			var targetFramework = GetTargetFrameworkVersionFromCsProjXml(csProjXml);
+			var targetFrameworkVersions = GetTargetFrameworkVersionsFromCsProjXml(csProjXml);
 
 			var projectName = System.IO.Path.GetFileNameWithoutExtension(request.ProjectFullName);
 
 			var possibleFiles = new Dictionary<string, string>();
 
-			if (targetFramework.StartsWith("net4", StringComparison.InvariantCultureIgnoreCase))
+			foreach (var targetFrameworkVersion in targetFrameworkVersions)
 			{
-				possibleFiles.Add($"bin\\{request.Configuration}\\{projectName}.dll", "lib/net48");
-				if (isNet4WebProject)
+				if (targetFrameworkVersion.StartsWith("net4", StringComparison.InvariantCultureIgnoreCase))
 				{
-					possibleFiles.Add($"bin\\{projectName}.dll", "lib/net48");
-				}
-			}
-			else
-			{
-				possibleFiles.Add($"bin\\{request.Configuration}\\{targetFramework}\\{projectName}.dll", $"lib/{targetFramework}");
-			}
-
-			if (request.IncludePdb)
-			{
-				if (targetFramework.StartsWith("net4", StringComparison.InvariantCultureIgnoreCase))
-				{
-					possibleFiles.Add($"bin\\{request.Configuration}\\{projectName}.pdb", "lib/net48");
+					possibleFiles.Add($"bin\\{request.Configuration}\\{projectName}.dll", "lib/net48");
 					if (isNet4WebProject)
 					{
-						possibleFiles.Add($"bin\\{projectName}.pdb", "lib/net48");
+						possibleFiles.Add($"bin\\{projectName}.dll", "lib/net48");
 					}
 				}
 				else
 				{
-					possibleFiles.Add($"bin\\{request.Configuration}\\{targetFramework}\\{projectName}.pdb", $"lib/{targetFramework}");
+					possibleFiles.Add($"bin\\{request.Configuration}\\{targetFrameworkVersion}\\{projectName}.dll", $"lib/{targetFrameworkVersion}");
+				}
+
+				if (request.IncludePdb)
+				{
+					if (targetFrameworkVersion.StartsWith("net4", StringComparison.InvariantCultureIgnoreCase))
+					{
+						possibleFiles.Add($"bin\\{request.Configuration}\\{projectName}.pdb", "lib/net48");
+						if (isNet4WebProject)
+						{
+							possibleFiles.Add($"bin\\{projectName}.pdb", "lib/net48");
+						}
+					}
+					else
+					{
+						possibleFiles.Add($"bin\\{request.Configuration}\\{targetFrameworkVersion}\\{projectName}.pdb", $"lib/{targetFrameworkVersion}");
+					}
 				}
 			}
 
 			if (request.IncludeSBom)
 			{
-				foreach (var manifestRelativeDirectory in new[] { $"bin\\{request.Configuration}\\_manifest", $"bin\\_manifest", $"bin\\{request.Configuration}\\{targetFramework}\\_manifest" })
+				foreach (var manifestRelativeDirectory in new[] { $"bin\\{request.Configuration}\\_manifest", $"bin\\_manifest", $"bin\\{request.Configuration}\\{targetFrameworkVersions}\\_manifest" })
 				{
 					var manifestDirectory = System.IO.Path.Combine(projectDirectory, manifestRelativeDirectory);
 

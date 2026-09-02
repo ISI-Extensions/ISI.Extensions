@@ -60,7 +60,7 @@ namespace ISI.Extensions.Nuget
 			{
 				var csProjXml = System.Xml.Linq.XElement.Parse(System.IO.File.ReadAllText(request.CsProjFullName));
 
-				var targetFramework = GetTargetFrameworkVersionFromCsProjXml(csProjXml);
+				var targetFramework = GetTargetFrameworkVersionsFromCsProjXml(csProjXml).First();
 
 				if (targetFramework.StartsWith("net4", StringComparison.InvariantCultureIgnoreCase))
 				{

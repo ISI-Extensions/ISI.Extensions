@@ -96,7 +96,7 @@ namespace ISI.Extensions.Nuget
 					}
 				}
 
-				response.NugetServers = nugetServers.ToArray();
+				response.NugetServers = [.. nugetServers];
 			}
 
 			return response;

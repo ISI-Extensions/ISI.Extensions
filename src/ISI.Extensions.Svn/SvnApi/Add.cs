@@ -51,7 +51,7 @@ namespace ISI.Extensions.Svn
 						{
 							Logger = new NullLogger(),
 							ProcessExeFullName = "TortoiseProc",
-							Arguments = arguments.ToArray(),
+							Arguments = [.. arguments],
 						});
 					}
 					else
@@ -66,7 +66,7 @@ namespace ISI.Extensions.Svn
 						{
 							Logger = new NullLogger(),
 							ProcessExeFullName = "svn",
-							Arguments = arguments.ToArray(),
+							Arguments = [.. arguments],
 						});
 					}
 				}

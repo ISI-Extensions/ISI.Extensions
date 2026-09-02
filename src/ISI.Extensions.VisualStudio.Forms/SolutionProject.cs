@@ -391,7 +391,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 				});
 			}
 
-			return tasks.ToArray();
+			return [.. tasks];
 		}
 
 		public void StopService()

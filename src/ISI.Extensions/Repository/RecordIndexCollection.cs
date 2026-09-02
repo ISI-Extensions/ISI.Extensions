@@ -33,7 +33,7 @@ namespace ISI.Extensions.Repository
 			Add(new RecordIndex<TRecord>()
 			{
 				Name = name,
-				Columns = indexDefinition.ToArray(),
+				Columns = [.. indexDefinition],
 				Unique = unique,
 				Clustered = clustered,
 			});

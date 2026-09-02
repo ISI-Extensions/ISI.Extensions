@@ -60,7 +60,7 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 						}
 					}
 
-					return values.ToArray();
+					return [.. values];
 				}
 			}
 			catch

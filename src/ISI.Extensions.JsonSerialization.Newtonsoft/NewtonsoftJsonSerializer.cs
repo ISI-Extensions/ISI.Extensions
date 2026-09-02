@@ -40,7 +40,7 @@ namespace ISI.Extensions.JsonSerialization.Newtonsoft
 							jsonConverters.Add(getJsonConverter.GetJsonConverter());
 						}
 
-						_jsonConverters = jsonConverters.ToArray();
+						_jsonConverters = [.. jsonConverters];
 					}
 				}
 			}

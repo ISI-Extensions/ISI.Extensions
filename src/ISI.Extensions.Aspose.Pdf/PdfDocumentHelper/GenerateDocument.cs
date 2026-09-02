@@ -121,7 +121,7 @@ namespace ISI.Extensions.Aspose
 					{
 						var pdfEditor = new global::Aspose.Pdf.Facades.PdfFileEditor();
 
-						pdfEditor.Concatenate(documentStreams.ToArray(), outputStream);
+						pdfEditor.Concatenate([.. documentStreams], outputStream);
 
 						var document = new global::Aspose.Pdf.Document(outputStream);
 

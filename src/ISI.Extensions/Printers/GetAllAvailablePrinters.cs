@@ -37,7 +37,7 @@ namespace ISI.Extensions
 					result.Insert(0, Download);
 				}
 
-				return result.ToArray();
+				return [.. result];
 			}
 			catch
 			{

@@ -56,7 +56,7 @@ namespace ISI.Extensions.Parsers
 					}
 				}
 			}
-			_columnIndexes = System.Linq.Enumerable.Range(0, Columns.Count - 1).ToArray();
+			_columnIndexes = [.. System.Linq.Enumerable.Range(0, Columns.Count - 1)];
 
 			OnReads = onReads.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 		}

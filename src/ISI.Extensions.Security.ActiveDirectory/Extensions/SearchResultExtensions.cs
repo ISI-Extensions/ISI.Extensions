@@ -60,7 +60,7 @@ namespace ISI.Extensions.Security.ActiveDirectory.Extensions
 						}
 					}
 
-					return values.ToArray();
+					return [.. values];
 				}
 			}
 			catch

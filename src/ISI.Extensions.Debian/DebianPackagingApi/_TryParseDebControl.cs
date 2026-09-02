@@ -105,7 +105,7 @@ namespace ISI.Extensions.Debian
 				{
 					debControl ??= new DebControl();
 
-					debControl.Depends = values.Split([',','\n','\r']).Select(value => value.Trim()).Where(value => !string.IsNullOrWhiteSpace(value)).ToArray();
+					debControl.Depends = [.. values.Split([',', '\n', '\r']).Select(value => value.Trim()).Where(value => !string.IsNullOrWhiteSpace(value))];
 				}
 			}
 
@@ -114,7 +114,7 @@ namespace ISI.Extensions.Debian
 				{
 					debControl ??= new DebControl();
 
-					debControl.PreDepends = values.Split([',','\n','\r']).Select(value => value.Trim()).Where(value => !string.IsNullOrWhiteSpace(value)).ToArray();
+					debControl.PreDepends = [.. values.Split([',', '\n', '\r']).Select(value => value.Trim()).Where(value => !string.IsNullOrWhiteSpace(value))];
 				}
 			}
 
@@ -123,7 +123,7 @@ namespace ISI.Extensions.Debian
 				{
 					debControl ??= new DebControl();
 
-					debControl.Recommends = values.Split([',','\n','\r']).Select(value => value.Trim()).Where(value => !string.IsNullOrWhiteSpace(value)).ToArray();
+					debControl.Recommends = [.. values.Split([',', '\n', '\r']).Select(value => value.Trim()).Where(value => !string.IsNullOrWhiteSpace(value))];
 				}
 			}
 
@@ -132,7 +132,7 @@ namespace ISI.Extensions.Debian
 				{
 					debControl ??= new DebControl();
 
-					debControl.Suggests = values.Split([',','\n','\r']).Select(value => value.Trim()).Where(value => !string.IsNullOrWhiteSpace(value)).ToArray();
+					debControl.Suggests = [.. values.Split([',', '\n', '\r']).Select(value => value.Trim()).Where(value => !string.IsNullOrWhiteSpace(value))];
 				}
 			}
 
@@ -141,7 +141,7 @@ namespace ISI.Extensions.Debian
 				{
 					debControl ??= new DebControl();
 
-					debControl.Enhances = values.Split([',','\n','\r']).Select(value => value.Trim()).Where(value => !string.IsNullOrWhiteSpace(value)).ToArray();
+					debControl.Enhances = [.. values.Split([',', '\n', '\r']).Select(value => value.Trim()).Where(value => !string.IsNullOrWhiteSpace(value))];
 				}
 			}
 
@@ -150,7 +150,7 @@ namespace ISI.Extensions.Debian
 				{
 					debControl ??= new DebControl();
 
-					debControl.Breaks  = values.Split([',','\n','\r']).Select(value => value.Trim()).Where(value => !string.IsNullOrWhiteSpace(value)).ToArray();
+					debControl.Breaks  = [.. values.Split([',', '\n', '\r']).Select(value => value.Trim()).Where(value => !string.IsNullOrWhiteSpace(value))];
 				}
 			}
 
@@ -159,7 +159,7 @@ namespace ISI.Extensions.Debian
 				{
 					debControl ??= new DebControl();
 
-					debControl.Conflicts = values.Split([',','\n','\r']).Select(value => value.Trim()).Where(value => !string.IsNullOrWhiteSpace(value)).ToArray();
+					debControl.Conflicts = [.. values.Split([',', '\n', '\r']).Select(value => value.Trim()).Where(value => !string.IsNullOrWhiteSpace(value))];
 				}
 			}
 

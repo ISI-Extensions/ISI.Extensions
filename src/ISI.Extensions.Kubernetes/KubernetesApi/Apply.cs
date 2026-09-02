@@ -46,7 +46,7 @@ namespace ISI.Extensions.Kubernetes
 			{
 				Logger = logger,
 				ProcessExeFullName = "kubectl",
-				Arguments = arguments.ToArray(),
+				Arguments = [.. arguments],
 			});
 
 			response.Output = waitForProcessResponse.Output;

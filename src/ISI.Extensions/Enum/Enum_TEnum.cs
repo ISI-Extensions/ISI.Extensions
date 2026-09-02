@@ -43,7 +43,7 @@ namespace ISI.Extensions
 			{
 				var type = typeof(TEnum);
 
-				_EnumInformations = new();
+				_EnumInformations = [];
 				_EnumInformationLookUp = new();
 				_ValueLookup = new(StringComparer.InvariantCultureIgnoreCase);
 				_IndexLookup = new();

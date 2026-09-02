@@ -324,7 +324,7 @@ namespace ISI.Extensions.Extensions
 				}
 			}
 
-			return values.ToEnumerable(cancellationToken).ToArray();
+			return [.. values.ToEnumerable(cancellationToken)];
 		}
 
 		public static TValue[] ToNullCheckedArray<TValue>(this IEnumerable<TValue> values, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.ReturnNull)
@@ -342,7 +342,7 @@ namespace ISI.Extensions.Extensions
 				}
 			}
 
-			return values.ToArray();
+			return [.. values];
 		}
 
 		public static TResult[] ToNullCheckedArray<TValue, TResult>(this IAsyncEnumerable<TValue> values, Func<TValue, TResult> converter, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.ReturnNull, System.Threading.CancellationToken cancellationToken = default)
@@ -361,7 +361,7 @@ namespace ISI.Extensions.Extensions
 				}
 			}
 
-			return values.ToEnumerable(converter, cancellationToken).ToArray();
+			return [.. values.ToEnumerable(converter, cancellationToken)];
 		}
 
 		public static TResult[] ToNullCheckedArray<TValue, TResult>(this IEnumerable<TValue> values, Func<TValue, TResult> converter, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.ReturnNull)
@@ -379,7 +379,7 @@ namespace ISI.Extensions.Extensions
 				}
 			}
 
-			return values.Select(converter).ToArray();
+			return [.. values.Select(converter)];
 		}
 
 		public static TValue[] ToNullCheckedDistinctArray<TValue>(this IEnumerable<TValue> values, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.ReturnNull)
@@ -402,7 +402,7 @@ namespace ISI.Extensions.Extensions
 				}
 			}
 
-			return values.ToList();
+			return [.. values];
 		}
 
 		public static IList<TResult> ToNullCheckedList<TValue, TResult>(this IEnumerable<TValue> values, Func<TValue, TResult> converter, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.ReturnNull)
@@ -420,7 +420,7 @@ namespace ISI.Extensions.Extensions
 				}
 			}
 
-			return values.Select(converter).ToList();
+			return [.. values.Select(converter)];
 		}
 
 		public static HashSet<TValue> ToNullCheckedHashSet<TValue>(this IEnumerable<TValue> values, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.ReturnNull)
@@ -583,7 +583,7 @@ namespace ISI.Extensions.Extensions
 				}
 			}
 
-			return values.Select(value => new KeyValuePair<TKey, TElement>(keySelector(value), elementSelector(value))).ToArray();
+			return [.. values.Select(value => new KeyValuePair<TKey, TElement>(keySelector(value), elementSelector(value)))];
 		}
 
 		public static bool NullCheckedTryGetValue<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, out TValue value)

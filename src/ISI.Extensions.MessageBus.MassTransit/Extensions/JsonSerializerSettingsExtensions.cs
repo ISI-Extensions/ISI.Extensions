@@ -40,7 +40,7 @@ namespace ISI.Extensions.MessageBus.MassTransit.Extensions
 							converters.AddRange(existingConverters);
 						}
 						
-						jsonSerializerSettings.ContractResolver= new global::MassTransit.Serialization.JsonConverters.JsonContractResolver(converters.ToArray());
+						jsonSerializerSettings.ContractResolver= new global::MassTransit.Serialization.JsonConverters.JsonContractResolver([.. converters]);
 						break;
 					}
 

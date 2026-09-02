@@ -50,7 +50,7 @@ namespace ISI.Extensions.Jenkins
 				JenkinsUrl = getValue(JenkinsUrl),
 				UserName = getValue(UserName),
 				ApiToken = getValue(ApiToken),
-				Directories = (Directories ?? []).Select(getValue).ToArray(),
+				Directories = [.. (Directories ?? []).Select(getValue)],
 			};
 		}
 	}

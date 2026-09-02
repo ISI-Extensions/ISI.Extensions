@@ -71,8 +71,8 @@ namespace ISI.Extensions.Nginx
 					server?.Content = $"{server.Content}\n{line}";
 				}
 
-				response.ParsedNginxConfig.NginxManagerAgentNginxInstanceUuids = nginxManagerAgentNginxInstanceUuids.ToArray();
-				response.ParsedNginxConfig.Servers = servers.ToArray();
+				response.ParsedNginxConfig.NginxManagerAgentNginxInstanceUuids = [.. nginxManagerAgentNginxInstanceUuids];
+				response.ParsedNginxConfig.Servers = [.. servers];
 			}
 
 			foreach (var server in servers)
@@ -151,8 +151,8 @@ namespace ISI.Extensions.Nginx
 					serverLocation.Content = serverLocation.Content.Trim([' ', '\n']);
 				}
 
-				server.DnsAccounts = dnsAccounts.ToArray();
-				server.Locations = locations.ToArray();
+				server.DnsAccounts = [.. dnsAccounts];
+				server.Locations = [.. locations];
 			}
 
 			return response;

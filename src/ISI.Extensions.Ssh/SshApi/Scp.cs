@@ -45,7 +45,7 @@ namespace ISI.Extensions.Ssh
 				{
 					Logger = logger,
 					ProcessExeFullName = "scp",
-					Arguments = arguments.ToArray(),
+					Arguments = [.. arguments],
 				});
 
 				response.Output = waitForProcessResponse.Output;

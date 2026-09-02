@@ -100,7 +100,7 @@ namespace ISI.Extensions.Aspose
 					pdfFieldInfos.Add(pdfFieldInfo);
 				}
 
-				return pdfFieldInfos.ToArray();
+				return [.. pdfFieldInfos];
 			}
 		}
 	}

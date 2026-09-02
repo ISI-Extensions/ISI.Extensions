@@ -48,7 +48,7 @@ namespace ISI.Extensions.Nuget
 				}
 			}
 
-			response.PackageSources = packageSources.ToArray();
+			response.PackageSources = [.. packageSources];
 
 			return response;
 		}

@@ -121,12 +121,12 @@ namespace ISI.Extensions.AspNetCore.Extensions
 				_urls.Clear();
 
 				_urls.Add(false, new());
-				_urls[false].Add(false, new());
-				_urls[false].Add(true, new());
+				_urls[false].Add(false, []);
+				_urls[false].Add(true, []);
 
 				_urls.Add(true, new());
-				_urls[true].Add(false, new());
-				_urls[true].Add(true, new());
+				_urls[true].Add(false, []);
+				_urls[true].Add(true, []);
 			}
 		}
 		public static JavaScriptDictionary GetJavaScriptUrls(this Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper htmlHelper)

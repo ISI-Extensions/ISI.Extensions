@@ -200,7 +200,7 @@ namespace ISI.Extensions.S3.S3FileSystem
 				}
 			}
 
-			return Array.Empty<FileSystem.IFileSystemPath>();
+			return [];
 		}
 
 		public override void CreateDirectory(FileSystem.IFileSystemPathDirectory fileSystemPathDirectory)

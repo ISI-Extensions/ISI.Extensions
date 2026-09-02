@@ -77,7 +77,7 @@ namespace ISI.Extensions.SqlServer
 							}
 						}
 
-						response.Databases = databases.ToArray();
+						response.Databases = [.. databases];
 					}
 				}
 			}

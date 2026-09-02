@@ -54,7 +54,7 @@ namespace ISI.Extensions.Jenkins.Forms
 			MinimizeBox = false;
 			ShowIcon = true;
 
-			JenkinsServerPanels = new();
+			JenkinsServerPanels = [];
 
 
 			btnCancel.Click += (clickSender, clickEventArgs) =>

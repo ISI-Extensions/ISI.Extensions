@@ -36,7 +36,7 @@ namespace ISI.Extensions.Ebcdic
 
 			public RecordDefinition(ColumnInfoCollection<TRecord> columns, IsRecordTypeDelegate isRecordType)
 			{
-				Columns = columns.ToArray();
+				Columns = [.. columns];
 				RecordSize = columns.RecordSize;
 				IsRecordType = isRecordType ?? (bytes => true) ;
 			}

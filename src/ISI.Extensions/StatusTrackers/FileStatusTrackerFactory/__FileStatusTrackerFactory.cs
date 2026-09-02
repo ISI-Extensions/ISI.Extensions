@@ -61,7 +61,7 @@ namespace ISI.Extensions.StatusTrackers
 			var subDirectories = statusTrackerKey.SplitIntoChunks(2, 5, false).ToList();
 			subDirectories.Insert(0, Configuration.FileStatusTrackerDirectory);
 
-			var directoryName = System.IO.Path.Combine(subDirectories.ToArray());
+			var directoryName = System.IO.Path.Combine([.. subDirectories]);
 
 			System.IO.Directory.CreateDirectory(directoryName);
 
@@ -316,7 +316,7 @@ namespace ISI.Extensions.StatusTrackers
 				}
 			}
 
-			return statusTrackers.ToArray();
+			return [.. statusTrackers];
 		}
 
 		public IStatusTrackerSnapshot[] GetActiveStatusTrackerSnapshots() => GetStatusTrackerSnapshots(GetActiveStatusTrackerKeys());

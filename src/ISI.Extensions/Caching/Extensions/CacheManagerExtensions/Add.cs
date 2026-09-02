@@ -51,7 +51,7 @@ namespace ISI.Extensions.Caching.Extensions
 
 					Add(cacheManager, CachedItemProxies.GetCachedItemProxiesCacheKey(cacheKey), new CachedItemProxies()
 					{
-						ProxyCacheKeys = proxyCacheKeys.ToArray(),
+						ProxyCacheKeys = [.. proxyCacheKeys],
 					}, getCacheEntryExpirationPolicy);
 				}
 			}
@@ -81,7 +81,7 @@ namespace ISI.Extensions.Caching.Extensions
 
 				Add(cacheManager, CachedItemProxies.GetCachedItemProxiesCacheKey(cacheKey), new CachedItemProxies()
 				{
-					ProxyCacheKeys = proxyCacheKeys.ToArray(),
+					ProxyCacheKeys = [.. proxyCacheKeys],
 				}, getCacheEntryExpirationPolicy);
 			}
 		}

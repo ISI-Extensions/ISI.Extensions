@@ -73,19 +73,22 @@ namespace ISI.Extensions.Mandrill
 					EmailAddressCaption = emailAddress.Caption,
 				}));
 
-				restRequest.Message.To = emailAddresses.ToArray();
+				restRequest.Message.To = [.. emailAddresses];
 
 				restRequest.Message.Important = (request.Email.EmailMailMessage.Priority == ISI.Extensions.Emails.EmailMessagePriority.High);
 
 				var attachments = request.Email.EmailMailMessage.Attachments;
 				if (attachments.Any())
 				{
-					restRequest.Message.Attachments = attachments.Select(attachment => new SerializableDTOs.SendEmailRequestMessageAttachment()
-					{
-						MimeType = attachment.ContentType.Name,
-						FileName = attachment.Name,
-						Content = Convert.ToBase64String(attachment.Content)
-					}).ToArray();
+					restRequest.Message.Attachments =
+					[
+						.. attachments.Select(attachment => new SerializableDTOs.SendEmailRequestMessageAttachment()
+						{
+							MimeType = attachment.ContentType.Name,
+							FileName = attachment.Name,
+							Content = Convert.ToBase64String(attachment.Content)
+						})
+					];
 				}
 
 				if (request.Email.EmailMailMessage.AlternateViews.TryGetAlternateView(ISI.Extensions.Emails.EmailMailMessageAlternateView.MthmlMediaType, out var mhtmlAlternateView))
@@ -169,7 +172,7 @@ namespace ISI.Extensions.Mandrill
 							emailSenderResponseRecipients.Add(emailSenderResponseRecipient);
 						}
 
-						response.RecipientResponses = emailSenderResponseRecipients.ToArray();
+						response.RecipientResponses = [.. emailSenderResponseRecipients];
 					}
 				}
 				catch (Exception exception)

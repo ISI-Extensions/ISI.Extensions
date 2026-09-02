@@ -143,7 +143,7 @@ namespace ISI.Extensions.Repository.SqlServer
 				}
 			}
 
-			return result.ToArray();
+			return [.. result];
 		}
 	}
 }

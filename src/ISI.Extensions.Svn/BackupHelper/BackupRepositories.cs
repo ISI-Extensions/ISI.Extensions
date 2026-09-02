@@ -79,7 +79,7 @@ namespace ISI.Extensions.Svn
 				}
 			}
 
-			response.Backups = backups.ToArray();
+			response.Backups = [.. backups];
 
 			return response;
 		}

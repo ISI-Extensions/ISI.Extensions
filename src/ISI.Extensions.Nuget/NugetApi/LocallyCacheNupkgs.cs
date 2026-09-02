@@ -56,7 +56,7 @@ namespace ISI.Extensions.Nuget
 					{
 						Logger = logger, //new NullLogger(),
 						ProcessExeFullName = GetNugetExeFullName(new()).NugetExeFullName,
-						Arguments = arguments.ToArray(),
+						Arguments = [.. arguments],
 					});
 
 					var responsePieces = nugetResponse.Output.Split(' ');
@@ -88,7 +88,7 @@ namespace ISI.Extensions.Nuget
 				}
 			}
 
-			response.CachedNugetPackageKeys = cachedNugetPackageKeys.ToArray();
+			response.CachedNugetPackageKeys = [.. cachedNugetPackageKeys];
 
 
 			return response;

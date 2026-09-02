@@ -103,7 +103,7 @@ namespace ISI.Extensions.Nuget
 
 								if (!string.IsNullOrWhiteSpace(hintPath))
 								{
-									var hintPathPieces = hintPath.Split(new[] { '\\' }).ToList();
+									var hintPathPieces = hintPath.Split(['\\']).ToList();
 
 									var assemblyName = hintPathPieces.Last();
 
@@ -116,7 +116,7 @@ namespace ISI.Extensions.Nuget
 
 									packagesPath = packagesPath.TrimStart("\\");
 
-									hintPathPieces = hintPathPieces.First().Split(['.'], StringSplitOptions.RemoveEmptyEntries).AsEnumerable().Reverse().ToList();
+									hintPathPieces = [.. hintPathPieces.First().Split(['.'], StringSplitOptions.RemoveEmptyEntries).AsEnumerable().Reverse()];
 
 									var inVersion = true;
 									while (hintPathPieces.Any())

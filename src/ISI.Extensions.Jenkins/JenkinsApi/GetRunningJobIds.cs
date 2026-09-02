@@ -48,7 +48,7 @@ namespace ISI.Extensions.Jenkins
 				}
 			}
 
-			response.JobIds = jobIds.ToArray();
+			response.JobIds = [.. jobIds];
 
 			return response;
 		}

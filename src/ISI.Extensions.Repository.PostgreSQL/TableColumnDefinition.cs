@@ -75,7 +75,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 				}
 			}
 
-			return result.ToArray();
+			return [.. result];
 		}
 	}
 }

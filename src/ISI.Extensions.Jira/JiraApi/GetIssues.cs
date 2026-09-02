@@ -49,7 +49,7 @@ namespace ISI.Extensions.Jira
 				issues.Add(jiraResponse?.Export());
 			}
 
-			response.Issues = issues.ToArray();
+			response.Issues = [.. issues];
 
 			return response;
 		}

@@ -28,10 +28,10 @@ namespace ISI.Extensions
 		{
 			if (activeOnly)
 			{
-				return _EnumInformations.Where(e => e.Active).Select(e => e.Value).ToArray();
+				return [.. _EnumInformations.Where(e => e.Active).Select(e => e.Value)];
 			}
 
-			return _EnumInformations.Select(e => e.Value).ToArray();
+			return [.. _EnumInformations.Select(e => e.Value)];
 		}
 	}
 }

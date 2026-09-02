@@ -43,7 +43,7 @@ namespace ISI.Extensions.Git
 				{
 					Logger = new AddToLogLogger(request.AddToLog, Logger),
 					ProcessExeFullName = "git",
-					Arguments = arguments.ToArray(),
+					Arguments = [.. arguments],
 					WorkingDirectory = request.FullName,
 				}).Errored;
 
@@ -56,7 +56,7 @@ namespace ISI.Extensions.Git
 					{
 						Logger = new AddToLogLogger(request.AddToLog, Logger),
 						ProcessExeFullName = "git",
-						Arguments = arguments.ToArray(),
+						Arguments = [.. arguments],
 						WorkingDirectory = request.FullName,
 					}).Errored;
 				}

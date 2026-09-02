@@ -80,7 +80,7 @@ namespace ISI.Extensions.VisualStudio
 				}
 			}
 
-			return excludeFileDefinitions.ToArray();
+			return [.. excludeFileDefinitions];
 		}
 
 		private bool ShouldExclude(IEnumerable<ExcludeFileDefinition> excludeFileDefinitions, string fileName)

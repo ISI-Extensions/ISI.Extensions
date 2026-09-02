@@ -26,7 +26,7 @@ namespace ISI.Extensions.MessageBus.Redis
 	{
 		protected virtual MessageEnvelope GetMessageEnvelope<TRequest>(TRequest request, MessageBusMessageHeaderCollection headers, TimeSpan? timeout = null, string responseChannelName = null)
 		{
-			headers ??= new MessageBusMessageHeaderCollection();
+			headers ??= [];
 
 			headers.OperationKey = (System.Diagnostics.Trace.CorrelationManager.LogicalOperationStack.Count > 0 ? System.Diagnostics.Trace.CorrelationManager.LogicalOperationStack.Peek().ToString() : $"{Guid.NewGuid():D}");
 

@@ -221,7 +221,7 @@ namespace ISI.Extensions.Svn
 														externalTrunkUrlPathParts[0] = "^/../" + externalTrunkUrlPathParts[0];
 													}
 
-													externalTagsUrl = string.Join("/", externalTrunkUrlPathParts.ToArray());
+													externalTagsUrl = string.Join("/", [.. externalTrunkUrlPathParts]);
 												}
 											}
 

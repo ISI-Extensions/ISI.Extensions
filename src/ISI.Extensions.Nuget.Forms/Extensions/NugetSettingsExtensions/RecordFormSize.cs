@@ -39,13 +39,13 @@ namespace ISI.Extensions.Nuget.Forms.Extensions
 
 			if ((previousFormLocationAndSize == null) || !(previousFormLocationAndSize.Equals(formLocationAndSize)))
 			{
-				formLocationAndSizes = formLocationAndSizes.ToNullCheckedList(NullCheckCollectionResult.Empty).ToList();
+				formLocationAndSizes = [.. formLocationAndSizes.ToNullCheckedList(NullCheckCollectionResult.Empty)];
 
 				((List<NugetSettingsFormLocationAndSize>) formLocationAndSizes).RemoveAll(_ => string.Equals(_.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
 
 				((List<NugetSettingsFormLocationAndSize>) formLocationAndSizes).Add(formLocationAndSize);
 
-				return formLocationAndSizes.ToArray();
+				return [.. formLocationAndSizes];
 			}
 
 			return null;

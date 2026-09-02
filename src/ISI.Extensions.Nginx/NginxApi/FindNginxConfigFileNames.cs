@@ -48,7 +48,7 @@ namespace ISI.Extensions.Nginx
 				}
 			}
 
-			response.NginxConfigFileNames = nginxConfigFileNames.ToArray();
+			response.NginxConfigFileNames = [.. nginxConfigFileNames];
 
 			return response;
 		}

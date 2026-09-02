@@ -126,7 +126,7 @@ namespace ISI.Extensions.Alpine
 									}
 								}
 
-								repositoryDetails.Packages = packages.ToArray();
+								repositoryDetails.Packages = [.. packages];
 							}
 							else
 							{

@@ -109,7 +109,7 @@ namespace ISI.Extensions.Nuget
 					}
 				}
 
-				return nugetPackageKeys.ToArray();
+				return [.. nugetPackageKeys];
 			}
 
 

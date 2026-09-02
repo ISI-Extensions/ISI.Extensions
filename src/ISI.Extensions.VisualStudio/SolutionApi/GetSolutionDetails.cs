@@ -100,7 +100,7 @@ namespace ISI.Extensions.VisualStudio
 						});
 					}
 
-					response.SolutionDetails.SolutionFilterDetailsSet = solutionFilterDetailsSet.ToArray();
+					response.SolutionDetails.SolutionFilterDetailsSet = [.. solutionFilterDetailsSet];
 				}
 			}
 

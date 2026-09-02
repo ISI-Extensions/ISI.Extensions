@@ -35,7 +35,7 @@ namespace ISI.Extensions.Ebcdic
 			public EbcdicRecordReaderEnumerator(System.IO.Stream sourceStream, IEnumerable<RecordDefinitionCollection<TIRecord>.IRecordDefinition> recordDefinitions, Func<TIRecord, bool> filter)
 			{
 				SourceStream = sourceStream;
-				RecordDefinitions = recordDefinitions.ToArray();
+				RecordDefinitions = [.. recordDefinitions];
 				RecordSize = RecordDefinitions.FirstOrDefault().RecordSize;
 				Filter = filter;
 

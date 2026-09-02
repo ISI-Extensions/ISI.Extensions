@@ -37,7 +37,7 @@ namespace ISI.Extensions
 
 		private static string[][] GetStringTable(DataMemberPropertyInfo[] properties, System.Collections.IEnumerable records)
 		{
-			return (from object record in records select GetStringRow(properties, record)).ToArray();
+			return [.. from object record in records select GetStringRow(properties, record)];
 		}
 	}
 }

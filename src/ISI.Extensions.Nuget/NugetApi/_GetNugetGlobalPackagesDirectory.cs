@@ -42,7 +42,7 @@ namespace ISI.Extensions.Nuget
 				{
 					Logger = new NullLogger(),
 					ProcessExeFullName = GetNugetExeFullName(new()).NugetExeFullName,
-					Arguments = arguments.ToArray(),
+					Arguments = [.. arguments],
 				});
 
 				Configuration.NugetGlobalPackagesDirectory = nugetResponse.Output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();

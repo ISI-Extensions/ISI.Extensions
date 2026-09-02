@@ -108,7 +108,7 @@ namespace ISI.Extensions.Nuget
 					{
 						Logger = new NullLogger(),
 						ProcessExeFullName = GetNugetExeFullName(new()).NugetExeFullName,
-						Arguments = arguments.ToArray(),
+						Arguments = [.. arguments],
 						WorkingDirectory = tempDirectory.FullName,
 					});
 
@@ -184,7 +184,7 @@ namespace ISI.Extensions.Nuget
 									}
 								}
 
-								response.NugetPackageKey.Dependencies = nugetPackageDependencies.ToArray();
+								response.NugetPackageKey.Dependencies = [.. nugetPackageDependencies];
 							}
 
 
@@ -214,7 +214,7 @@ namespace ISI.Extensions.Nuget
 
 										var nugetPackageKeyTargetFrameworkAssembly = new NugetPackageKeyTargetFrameworkAssembly()
 										{
-											AssemblyName = assemblyName.FullName.Split(new[] { ',' }).First().Trim(),
+											AssemblyName = assemblyName.FullName.Split([',']).First().Trim(),
 											AssemblyFileName = System.IO.Path.GetFileName(assemblyFileName),
 											HintPath = $"{System.IO.Path.GetFileName(packageFullName)}\\{assemblyFileName.Replace("/", "\\")}",
 											AssemblyVersion = assemblyName.Version.ToString(),
@@ -223,7 +223,7 @@ namespace ISI.Extensions.Nuget
 
 										nugetPackageKeyTargetFrameworkAssemblies.Add(nugetPackageKeyTargetFrameworkAssembly);
 
-										nugetPackageKeyTargetFramework.Assemblies = nugetPackageKeyTargetFrameworkAssemblies.ToArray();
+										nugetPackageKeyTargetFramework.Assemblies = [.. nugetPackageKeyTargetFrameworkAssemblies];
 
 										nugetPackageKeyTargetFrameworks.Add(nugetPackageKeyTargetFramework);
 									}
@@ -235,7 +235,7 @@ namespace ISI.Extensions.Nuget
 								}
 							}
 
-							response.NugetPackageKey.TargetFrameworks = nugetPackageKeyTargetFrameworks.ToArray();
+							response.NugetPackageKey.TargetFrameworks = [.. nugetPackageKeyTargetFrameworks];
 						}
 					}
 				}

@@ -60,7 +60,7 @@ namespace ISI.Extensions.Scm
 						rcsKeywordsRepositories.Remove(revertRcsKeywordsFromCacheRequest.SourceDirectory);
 					}
 
-					rcsKeywordsCacheSettings.RcsKeywordsRepositories = rcsKeywordsRepositories.Values.ToArray();
+					rcsKeywordsCacheSettings.RcsKeywordsRepositories = [.. rcsKeywordsRepositories.Values];
 
 					SetRcsKeywordsCacheSettings(null, rcsKeywordsCacheSettings);
 				}

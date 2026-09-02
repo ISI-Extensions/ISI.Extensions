@@ -180,7 +180,7 @@ namespace ISI.Extensions.TrueNAS
 				response.Errored = true;
 			}
 
-			response.LogEntries = logEntries.ToArray();
+			response.LogEntries = [.. logEntries];
 
 			return response;
 		}

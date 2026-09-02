@@ -32,7 +32,7 @@ namespace ISI.Extensions.Repository
 		}
 		public SelectClause(IEnumerable<string> columnNames)
 		{
-			ColumnNames = columnNames.ToArray();
+			ColumnNames = [.. columnNames];
 		}
 
 		string ISelectClause.GetSql(string queryAlias)

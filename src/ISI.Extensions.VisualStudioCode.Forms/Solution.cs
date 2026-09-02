@@ -591,7 +591,7 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 				},
 			});
 
-			return tasks.ToArray();
+			return [.. tasks];
 		}
 	}
 }

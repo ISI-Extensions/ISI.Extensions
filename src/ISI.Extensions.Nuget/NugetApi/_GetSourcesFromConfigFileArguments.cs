@@ -98,7 +98,7 @@ namespace ISI.Extensions.Nuget
 								}
 							}
 
-							sources = _sources.Values.ToArray();
+							sources = [.. _sources.Values];
 							SourcesByConfigFile.Add(nugetConfigFullName, sources);
 						}
 					}

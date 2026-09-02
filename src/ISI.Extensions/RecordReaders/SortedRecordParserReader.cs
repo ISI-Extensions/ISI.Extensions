@@ -226,7 +226,7 @@ namespace ISI.Extensions.RecordReaders
 
 				if ((BucketStreams == null) || (SortedQueue == null))
 				{
-					BucketStreams = new();
+					BucketStreams = [];
 
 					#region Create buckets
 					{
@@ -303,7 +303,7 @@ namespace ISI.Extensions.RecordReaders
 					}
 					#endregion
 
-					SortedQueue = new();
+					SortedQueue = [];
 
 					#region Seed Sorted Queue
 					{

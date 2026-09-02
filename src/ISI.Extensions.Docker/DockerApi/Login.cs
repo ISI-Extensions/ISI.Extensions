@@ -58,7 +58,7 @@ namespace ISI.Extensions.Docker
 			{
 				Logger = logger,
 				ProcessExeFullName = "docker",
-				Arguments = arguments.ToArray(),
+				Arguments = [.. arguments],
 			});
 
 			response.Output = waitForProcessResponse.Output;

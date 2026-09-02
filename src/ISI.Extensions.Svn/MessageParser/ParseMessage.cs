@@ -63,10 +63,10 @@ namespace ISI.Extensions.Svn
 					{
 						if (parsedMessage.Action.HasValue)
 						{
-							parsedMessage.TracTicketNumbers = tracTicketNumbers.ToArray();
+							parsedMessage.TracTicketNumbers = [.. tracTicketNumbers];
 							tracTicketNumbers.Clear();
 
-							parsedMessage.JiraIssueIdOrKeys = jiraIssueIdOrKeys.ToArray();
+							parsedMessage.JiraIssueIdOrKeys = [.. jiraIssueIdOrKeys];
 							jiraIssueIdOrKeys.Clear();
 
 							parsedMessage = new();
@@ -93,10 +93,10 @@ namespace ISI.Extensions.Svn
 					}
 				}
 
-				parsedMessage.TracTicketNumbers = tracTicketNumbers.ToArray();
-				parsedMessage.JiraIssueIdOrKeys = jiraIssueIdOrKeys.ToArray();
+				parsedMessage.TracTicketNumbers = [.. tracTicketNumbers];
+				parsedMessage.JiraIssueIdOrKeys = [.. jiraIssueIdOrKeys];
 
-				response.ParsedMessages = parsedMessages.ToArray();
+				response.ParsedMessages = [.. parsedMessages];
 			}
 
 			return response;

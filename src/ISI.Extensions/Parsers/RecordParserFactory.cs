@@ -35,7 +35,7 @@ namespace ISI.Extensions
 						recordHeader.Header = source;
 					}
 
-					columnIndexes = System.Linq.Enumerable.Range(0, values.Length).Select(columnIndex => -1).ToArray();
+					columnIndexes = [.. System.Linq.Enumerable.Range(0, values.Length).Select(columnIndex => -1)];
 
 					for (var valueIndex = 0; valueIndex < values.Length; valueIndex++)
 					{
@@ -69,7 +69,7 @@ namespace ISI.Extensions
 
 					values[0] = headerColumnValue.Substring(headerPrefix.Length);
 
-					columnIndexes = System.Linq.Enumerable.Range(0, values.Length).Select(columnIndex => -1).ToArray();
+					columnIndexes = [.. System.Linq.Enumerable.Range(0, values.Length).Select(columnIndex => -1)];
 
 					for (var valueIndex = 0; valueIndex < values.Length; valueIndex++)
 					{

@@ -38,7 +38,7 @@ namespace ISI.Extensions.TypeLocator.Extensions
 		{
 			var types = container.GetImplementationTypes(serviceType);
 
-			return types.Select(createItem).ToArray();
+			return [.. types.Select(createItem)];
 		}
 
 
@@ -54,7 +54,7 @@ namespace ISI.Extensions.TypeLocator.Extensions
 		{
 			var types = container.GetImplementationTypes(typeof(TServiceType));
 
-			return types.Select(createItem).ToArray();
+			return [.. types.Select(createItem)];
 		}
 
 

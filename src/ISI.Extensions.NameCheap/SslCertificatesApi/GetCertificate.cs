@@ -63,7 +63,7 @@ namespace ISI.Extensions.NameCheap
 				}
 			}
 
-			response.Certificates = certificates.ToArray();
+			response.Certificates = [.. certificates];
 
 			response.WarningCode = apiResponse.Warnings?.Warning?.WarningCode;
 			response.WarningDescription = apiResponse.Warnings?.Warning?.WarningDescription;

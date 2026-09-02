@@ -95,7 +95,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 				}
 
 				//form.SolutionsPanel.Controls.AddRange(context.Solutions.OrderBy(solution => solution.Caption, StringComparer.InvariantCultureIgnoreCase).Select(solution => solution.Panel).ToArray());
-				form.SolutionsPanel.Controls.AddRange(context.Solutions.Select(solution => solution.Panel).ToArray());
+				form.SolutionsPanel.Controls.AddRange([.. context.Solutions.Select(solution => solution.Panel)]);
 
 				OnChangedSelection();
 

@@ -232,7 +232,7 @@ namespace ISI.Extensions.Ngrok
 					}
 				}
 
-				response.Tunnels = tunnels.ToArray();
+				response.Tunnels = [.. tunnels];
 			}
 
 			return response;

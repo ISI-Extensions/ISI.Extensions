@@ -33,11 +33,11 @@ namespace ISI.Extensions.Columns
 
 			if (type.IsDefined(typeof(System.Runtime.Serialization.DataContractAttribute), false))
 			{
-				properties = ISI.Extensions.DataContract.GetDataMemberPropertyInfos(type).OrderBy(property => property.Order).ToArray();
+				properties = [.. ISI.Extensions.DataContract.GetDataMemberPropertyInfos(type).OrderBy(property => property.Order)];
 			}
 			else
 			{
-				properties = type.GetProperties().Where(propertyInfo => propertyInfo.CanRead).Select(property => new ISI.Extensions.DataContract.DataMemberPropertyInfo(new() { Name = property.Name }, property, false)).OrderBy(property => property.Order).ToArray();
+				properties = [.. type.GetProperties().Where(propertyInfo => propertyInfo.CanRead).Select(property => new ISI.Extensions.DataContract.DataMemberPropertyInfo(new() { Name = property.Name }, property, false)).OrderBy(property => property.Order)];
 			}
 		}
 

@@ -34,7 +34,7 @@ namespace ISI.Extensions.Ascii
 
 			public RecordDefinition(ColumnInfoCollection<TRecord> columns, IsRecordTypeDelegate isRecordType)
 			{
-				Columns = columns.ToArray();
+				Columns = [.. columns];
 				IsRecordType = isRecordType ?? (bytes => true);
 			}
 

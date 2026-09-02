@@ -39,7 +39,7 @@ namespace ISI.Extensions.Azure
 				fileNames.Add(blob.Name);
 			}
 
-			response.FileNames = fileNames.ToArray();
+			response.FileNames = [.. fileNames];
 
 			return response;
 		}

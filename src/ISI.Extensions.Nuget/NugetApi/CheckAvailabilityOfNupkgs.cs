@@ -75,7 +75,7 @@ namespace ISI.Extensions.Nuget
 				nupkgAvailabilities.Add((NugetPackageKey: nugetPackageKey, Available: available));
 			}
 
-			response.NupkgAvailabilities = nupkgAvailabilities.ToArray();
+			response.NupkgAvailabilities = [.. nupkgAvailabilities];
 
 			return response;
 		}

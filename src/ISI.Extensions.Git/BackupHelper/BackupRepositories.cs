@@ -82,7 +82,7 @@ namespace ISI.Extensions.Git
 				}
 			}
 
-			response.Backups = backups.ToArray();
+			response.Backups = [.. backups];
 
 			return response;
 		}

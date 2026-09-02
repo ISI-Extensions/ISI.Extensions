@@ -65,7 +65,7 @@ namespace ISI.Extensions.ScmManager
 				uri = string.IsNullOrWhiteSpace(apiResponse?.Links.Next?.Href) ? null : new UriBuilder(apiResponse.Links.Next.Href);
 			}
 
-			response.Repositories = repositories.ToArray();
+			response.Repositories = [.. repositories];
 
 			return response;
 		}

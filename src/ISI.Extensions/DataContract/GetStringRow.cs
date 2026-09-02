@@ -37,11 +37,13 @@ namespace ISI.Extensions
 
 		private static string[] GetStringRow(DataMemberPropertyInfo[] properties, object record)
 		{
-			return properties
-				.Where(property => property.PropertyInfo.CanRead)
-				.OrderBy(property => property.Order)
-				.Select(property => $"{property.PropertyInfo.GetValue(record, null)}")
-				.ToArray();
+			return
+			[
+				.. properties
+					.Where(property => property.PropertyInfo.CanRead)
+					.OrderBy(property => property.Order)
+					.Select(property => $"{property.PropertyInfo.GetValue(record, null)}")
+			];
 		}
 	}
 }

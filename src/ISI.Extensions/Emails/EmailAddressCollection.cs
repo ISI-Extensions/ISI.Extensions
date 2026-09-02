@@ -76,9 +76,9 @@ namespace ISI.Extensions.Emails
 		public int Count => _emailAddresses.Count;
 		public bool IsReadOnly => false;
 
-		public static implicit operator EmailAddressCollection(IEmailAddress[] values) => new(values);
+		public static implicit operator EmailAddressCollection(IEmailAddress[] values) => [.. values];
 		public static implicit operator EmailAddressCollection(string[] values) => new(values);
-		public static implicit operator EmailAddressCollection(EmailAddress value) => new([value]);
-		public static implicit operator EmailAddressCollection(string value) => new([EmailAddress.Create(value)]);
+		public static implicit operator EmailAddressCollection(EmailAddress value) => [value];
+		public static implicit operator EmailAddressCollection(string value) => [EmailAddress.Create(value)];
 	}
 }

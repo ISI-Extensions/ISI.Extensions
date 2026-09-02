@@ -24,7 +24,7 @@ namespace ISI.Extensions.Extensions
 	{
 		public static T[] Split<T>(this string value, char[] separator, StringSplitOptions options = StringSplitOptions.None, Func<string, T> conversion = null)
 		{
-			return Split<T>(value, separator.Select(s => s.ToString()).ToArray(), 0, options, conversion);
+			return Split<T>(value, [.. separator.Select(s => s.ToString())], 0, options, conversion);
 		}
 
 		public static T[] Split<T>(this string value, string[] separator, StringSplitOptions options = StringSplitOptions.None, Func<string, T> conversion = null)
@@ -34,7 +34,7 @@ namespace ISI.Extensions.Extensions
 
 		public static T[] Split<T>(this string value, char[] separator, int count = 0, StringSplitOptions options = StringSplitOptions.None, Func<string, T> conversion = null)
 		{
-			return Split<T>(value, separator.Select(s => s.ToString()).ToArray(), count, options, conversion);
+			return Split<T>(value, [.. separator.Select(s => s.ToString())], count, options, conversion);
 		}
 
 		public static T[] Split<T>(this string value, string[] separator, int count = 0, StringSplitOptions options = StringSplitOptions.None, Func<string, T> conversion = null)
@@ -63,7 +63,7 @@ namespace ISI.Extensions.Extensions
 				}
 			}
 
-			return result.ToArray();
+			return [.. result];
 		}
 	}
 }

@@ -41,7 +41,7 @@ namespace ISI.Extensions.Ssh
 				{
 					Logger = logger,
 					ProcessExeFullName = "ssh",
-					Arguments = arguments.ToArray(),
+					Arguments = [.. arguments],
 				});
 
 				response.Output = waitForProcessResponse.Output;

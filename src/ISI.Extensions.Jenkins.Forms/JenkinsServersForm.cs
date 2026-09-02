@@ -52,7 +52,7 @@ namespace ISI.Extensions.Jenkins.Forms
 			MinimizeBox = false;
 			ShowIcon = true;
 
-			JenkinsServerPanels = new();
+			JenkinsServerPanels = [];
 
 			btnOK.Click += (clickSender, clickEventArgs) =>
 			{

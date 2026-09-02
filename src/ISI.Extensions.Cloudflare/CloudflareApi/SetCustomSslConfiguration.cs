@@ -116,7 +116,7 @@ namespace ISI.Extensions.Cloudflare
 				}
 			}
 						
-			response.LogEntries = logEntries.ToArray();
+			response.LogEntries = [.. logEntries];
 
 			return response;
 		}

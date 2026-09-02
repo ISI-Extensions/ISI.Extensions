@@ -48,7 +48,7 @@ namespace ISI.Extensions.Docker
 			{
 				Logger = new NullLogger(),
 				ProcessExeFullName = "docker",
-				Arguments = arguments.ToArray(),
+				Arguments = [.. arguments],
 			}).Output;
 
 			try

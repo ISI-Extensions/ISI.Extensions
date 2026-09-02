@@ -113,7 +113,7 @@ namespace ISI.Extensions.PfSense
 				}
 			}
 			
-			response.LogEntries = logEntries.ToArray();
+			response.LogEntries = [.. logEntries];
 
 			return response;
 		}

@@ -148,7 +148,7 @@ namespace ISI.Extensions
 					RmEndSession(handle);
 				}
 
-				return processes.ToArray();
+				return [.. processes];
 			}
 		}
 	}

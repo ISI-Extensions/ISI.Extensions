@@ -31,15 +31,15 @@ namespace ISI.Extensions.Extensions
 
 			if (resortFirst)
 			{
-				x = x.ToList();
+				x = [.. x];
 				((List<string>)x).Sort(stringComparer);
 
-				y = y.ToList();
+				y = [.. y];
 				((List<string>)y).Sort(stringComparer);
 			}
 
-			x = x.ToArray();
-			y = y.ToArray();
+			x = [.. x];
+			y = [.. y];
 
 			var indexCount = x.Count();
 			for (var index = 0; index < indexCount; index++)

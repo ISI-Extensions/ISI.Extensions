@@ -105,7 +105,7 @@ namespace ISI.Extensions.Xcp
 				}
 			}
 
-			response.LogEntries = logEntries.ToArray();
+			response.LogEntries = [.. logEntries];
 
 			return response;
 		}

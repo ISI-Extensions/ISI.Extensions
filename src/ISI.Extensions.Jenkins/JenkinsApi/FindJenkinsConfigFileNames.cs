@@ -46,7 +46,7 @@ namespace ISI.Extensions.Jenkins
 				}
 			}
 
-			response.JenkinsConfigFileNames = jenkinsConfigFileNames.ToArray();
+			response.JenkinsConfigFileNames = [.. jenkinsConfigFileNames];
 
 			return response;
 		}

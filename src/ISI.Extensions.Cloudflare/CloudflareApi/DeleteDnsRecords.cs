@@ -100,7 +100,7 @@ namespace ISI.Extensions.Cloudflare
 				}
 			}
 
-			response.Ids = ids.ToArray();
+			response.Ids = [.. ids];
 
 			return response;
 		}

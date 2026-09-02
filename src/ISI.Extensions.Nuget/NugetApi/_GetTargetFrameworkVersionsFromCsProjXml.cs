@@ -42,7 +42,7 @@ namespace ISI.Extensions.Nuget
 
 				if (!string.IsNullOrWhiteSpace(targetFrameworkVersions))
 				{
-					return targetFrameworkVersions.Split(';').Select(targetFrameworkVersion => targetFrameworkVersion.Trim()).ToArray();
+					return [.. targetFrameworkVersions.Split(';').Select(targetFrameworkVersion => targetFrameworkVersion.Trim())];
 				}
 
 				var targetFrameworkVersion = csProjXml
@@ -88,7 +88,7 @@ namespace ISI.Extensions.Nuget
 
 				if (!string.IsNullOrWhiteSpace(targetFrameworkVersions))
 				{
-					return targetFrameworkVersions.Split(';').Select(targetFrameworkVersion => NuGet.Frameworks.NuGetFramework.Parse(targetFrameworkVersion.Trim())).ToArray();
+					return [.. targetFrameworkVersions.Split(';').Select(targetFrameworkVersion => NuGet.Frameworks.NuGetFramework.Parse(targetFrameworkVersion.Trim()))];
 				}
 
 				var targetFrameworkVersion = csProjXml

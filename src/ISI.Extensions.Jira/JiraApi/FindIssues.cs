@@ -74,9 +74,9 @@ namespace ISI.Extensions.Jira
 				}
 			}
 
-			response.Issues = issues.ToArray();
-			response.Expand = expand.ToArray();
-			response.WarningMessages = warningMessages.ToArray();
+			response.Issues = [.. issues];
+			response.Expand = [.. expand];
+			response.WarningMessages = [.. warningMessages];
 
 			return response;
 		}

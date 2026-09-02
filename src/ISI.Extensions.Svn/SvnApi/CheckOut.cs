@@ -45,7 +45,7 @@ namespace ISI.Extensions.Svn
 					{
 						Logger = new AddToLogLogger(request.AddToLog, Logger),
 						ProcessExeFullName = "TortoiseProc",
-						Arguments = arguments.ToArray(),
+						Arguments = [.. arguments],
 					}).Errored;
 				}
 				else
@@ -62,7 +62,7 @@ namespace ISI.Extensions.Svn
 					{
 						Logger = new AddToLogLogger(request.AddToLog, Logger),
 						ProcessExeFullName = "svn",
-						Arguments = arguments.ToArray(),
+						Arguments = [.. arguments],
 					}).Errored;
 				}
 			}

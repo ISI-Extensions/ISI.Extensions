@@ -48,9 +48,9 @@ namespace ISI.Extensions.Repository
 			HasLocalClusteringIndex = hasLocalClusteringIndex;
 
 			PropertyDescriptionLookup = properties.ToDictionary(property => property.PropertyInfo.Name, property => property);
-			PropertyDescriptions = properties.OrderBy(p => p.Order).ToArray();
-			PrimaryKeyPropertyDescriptions = properties.Where(p => p.PrimaryKeyAttribute != null).OrderBy(p => p.PrimaryKeyAttribute.Order).ToArray();
-			RepositoryAssignedValuePropertyDescriptions = properties.Where(p => p.RepositoryAssignedValueAttribute != null).OrderBy(p => p.Order).ToArray();
+			PropertyDescriptions = [.. properties.OrderBy(p => p.Order)];
+			PrimaryKeyPropertyDescriptions = [.. properties.Where(p => p.PrimaryKeyAttribute != null).OrderBy(p => p.PrimaryKeyAttribute.Order)];
+			RepositoryAssignedValuePropertyDescriptions = [.. properties.Where(p => p.RepositoryAssignedValueAttribute != null).OrderBy(p => p.Order)];
 
 			_indexes = indexes;
 		}

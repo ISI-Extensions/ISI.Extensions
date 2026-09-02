@@ -53,7 +53,7 @@ namespace ISI.Extensions.WebClient
 
 				ignoreServerCertificateValidationForSubjectsContaining.Add(subject);
 
-				RestConfiguration.IgnoreServerCertificateValidationForSubjectsContaining = ignoreServerCertificateValidationForSubjectsContaining.ToArray();
+				RestConfiguration.IgnoreServerCertificateValidationForSubjectsContaining = [.. ignoreServerCertificateValidationForSubjectsContaining];
 			}
 		}
 

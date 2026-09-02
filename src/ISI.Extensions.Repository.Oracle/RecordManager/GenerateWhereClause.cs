@@ -268,7 +268,7 @@ CREATE GLOBAL TEMPORARY TABLE {tempTableName}
 					var records = new List<object>[columnsLength];
 					for (var columnIndex = 0; columnIndex < columnsLength; columnIndex++)
 					{
-						records[columnIndex] = new List<object>();
+						records[columnIndex] = [];
 					}
 
 					while (dataReader.Read())

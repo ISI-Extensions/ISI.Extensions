@@ -61,7 +61,7 @@ namespace ISI.Platforms.AspNetCore.Extensions
 						});
 						swaggerGenOptions.AddSecurityRequirement(document => new Microsoft.OpenApi.OpenApiSecurityRequirement()
 						{
-							{ new Microsoft.OpenApi.OpenApiSecuritySchemeReference(ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer, document), new List<string>() },
+							{ new Microsoft.OpenApi.OpenApiSecuritySchemeReference(ISI.Extensions.WebClient.HeaderCollection.Keys.Bearer, document), [] },
 						});
 					}
 				});

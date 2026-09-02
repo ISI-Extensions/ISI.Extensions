@@ -72,7 +72,7 @@ namespace ISI.Extensions.PostgreSQL
 							databases.Add(reader.GetString(0));
 						}
 
-						response.Databases = databases.ToArray();
+						response.Databases = [.. databases];
 					}
 				}
 			}

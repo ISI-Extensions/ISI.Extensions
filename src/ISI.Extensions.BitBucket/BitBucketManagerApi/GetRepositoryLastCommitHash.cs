@@ -46,7 +46,7 @@ namespace ISI.Extensions.BitBucket
 			var processResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{
 				ProcessExeFullName = "git",
-				Arguments = arguments.ToArray(),
+				Arguments = [.. arguments],
 			});
 
 			var answers = processResponse.Output.Trim([' ', '\r', '\n']).Split([' ', '\t'], StringSplitOptions.RemoveEmptyEntries);

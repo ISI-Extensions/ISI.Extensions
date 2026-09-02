@@ -23,6 +23,6 @@ namespace ISI.Extensions.MessageBus
 {
 	public class DefaultMessageBusBuildRequest : IMessageBusBuildRequest
 	{
-		public List<Action<IMessageBusConfigurator>> AddSubscriptions { get; } = new();
+		public List<Action<IMessageBusConfigurator>> AddSubscriptions { get; } = [];
 	}
 }

@@ -431,7 +431,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			};
 			parentControl.Resize += (resizeSender, resizeArgs) => { Panel.Width = parentControl.Width - 19; };
 
-			projectKeys = (projectKeys ?? []).ToArray();
+			projectKeys = [.. projectKeys ?? []];
 			if (projectKeys.Any() && !projectKeys.Any(projectKey => projectKey.Selected))
 			{
 				(projectKeys.FirstOrDefault(projectKey => string.Equals(ProjectApi.GetProjectName(new()
@@ -440,10 +440,13 @@ namespace ISI.Extensions.VisualStudio.Forms
 				}).ProjectName, Caption, StringComparison.InvariantCultureIgnoreCase)) ?? projectKeys.First()).Selected = true;
 			}
 
-			SolutionProjects = projectKeys.OrderBy(projectKey => ProjectApi.GetProjectName(new()
-			{
-				Project = projectKey.ProjectFullName,
-			}).ProjectName, StringComparer.InvariantCultureIgnoreCase).Select(projectKey => new SolutionProject(this, projectKey, start, waitForExecuteProjectResponse, projectKey.Selected, () => OnChangeSelected?.Invoke())).ToArray();
+			SolutionProjects =
+			[
+				.. projectKeys.OrderBy(projectKey => ProjectApi.GetProjectName(new()
+				{
+					Project = projectKey.ProjectFullName,
+				}).ProjectName, StringComparer.InvariantCultureIgnoreCase).Select(projectKey => new SolutionProject(this, projectKey, start, waitForExecuteProjectResponse, projectKey.Selected, () => OnChangeSelected?.Invoke()))
+			];
 
 			if (showSolutionFilterKeys)
 			{
@@ -457,7 +460,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 					solutionFilters.Insert(0, new(this, new(SolutionDetails.SolutionFullName, SolutionDetails.SolutionFullName), null, true, () => OnChangeSelected?.Invoke()));
 				}
 
-				SolutionFilters = solutionFilters.ToArray();
+				SolutionFilters = [.. solutionFilters];
 			}
 
 			SolutionFilters ??= [];
@@ -755,7 +758,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 				}
 			}
 
-			return tasks.ToArray();
+			return [.. tasks];
 		}
 	}
 }

@@ -93,7 +93,7 @@ namespace ISI.Extensions.Jenkins.Forms
 				}
 			};
 
-			DirectoryPanels = new();
+			DirectoryPanels = [];
 
 			Shown += OnShown;
 		}
@@ -127,7 +127,7 @@ namespace ISI.Extensions.Jenkins.Forms
 				JenkinsServer.Description = txtDescription.Text;
 				JenkinsServer.UserName = txtUserName.Text;
 				JenkinsServer.ApiToken = txtApiToken.Text;
-				JenkinsServer.Directories = DirectoryPanels.Where(directoryPanel => !directoryPanel.Delete).Select(directoryPanel => directoryPanel.Directory).ToArray();
+				JenkinsServer.Directories = [.. DirectoryPanels.Where(directoryPanel => !directoryPanel.Delete).Select(directoryPanel => directoryPanel.Directory)];
 				
 				JenkinsApi.SetJenkinsServerSettings(new()
 				{

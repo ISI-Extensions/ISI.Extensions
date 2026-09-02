@@ -36,7 +36,7 @@ namespace ISI.Extensions.Ascii
 			{
 				SourceStream = sourceStream;
 				SourceStreamReader = new(SourceStream);
-				RecordDefinitions = recordDefinitions.ToArray();
+				RecordDefinitions = [.. recordDefinitions];
 				Filter = filter;
 
 				//if (RecordDefinitions.Any(recordDefinition => recordDefinition.RecordSize != RecordSize))

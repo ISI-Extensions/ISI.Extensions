@@ -24,7 +24,7 @@ namespace ISI.Extensions.Journal
 {
 	public class JournalEntryTypeCollection : IJournalEntryTypeCollection
 	{
-		private readonly HashSet<Guid> _journalEntryTypes = new();
+		private readonly HashSet<Guid> _journalEntryTypes = [];
 
 		public JournalEntryTypeCollection()
 		{

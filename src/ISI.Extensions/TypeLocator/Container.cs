@@ -65,7 +65,7 @@ namespace ISI.Extensions.TypeLocator
 						{
 							if (!ImplementationTypesLookup.TryGetValue(attributeType, out var implementationTypes))
 							{
-								implementationTypes = new();
+								implementationTypes = [];
 								ImplementationTypesLookup.Add(attributeType, implementationTypes);
 							}
 
@@ -86,7 +86,7 @@ namespace ISI.Extensions.TypeLocator
 		{
 			if (ImplementationTypesLookup.TryGetValue(type, out var implementationTypes))
 			{
-				return implementationTypes.ToArray();
+				return [.. implementationTypes];
 			}
 
 			return Type.EmptyTypes;

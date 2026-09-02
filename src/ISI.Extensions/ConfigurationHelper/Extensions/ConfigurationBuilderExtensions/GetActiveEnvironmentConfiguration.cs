@@ -148,7 +148,7 @@ namespace ISI.Extensions.ConfigurationHelper.Extensions
 			var activeEnvironmentConfiguration = new ActiveEnvironmentConfiguration()
 			{
 				ActiveEnvironment = environment,
-				ActiveEnvironments = environments.ToArray(),
+				ActiveEnvironments = [.. environments],
 			};
 
 			configurationBuilder.Add(new ActiveEnvironmentConfigurationSource(activeEnvironmentConfiguration));

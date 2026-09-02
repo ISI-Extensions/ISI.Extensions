@@ -46,7 +46,7 @@ namespace ISI.Extensions.Tailscale
 				arguments.Add(request.AuthKey);
 			}
 			
-			ISI.Extensions.Process.WaitForProcessResponse("tailscale", arguments.ToArray());
+			ISI.Extensions.Process.WaitForProcessResponse("tailscale", [.. arguments]);
 
 			return response;
 		}

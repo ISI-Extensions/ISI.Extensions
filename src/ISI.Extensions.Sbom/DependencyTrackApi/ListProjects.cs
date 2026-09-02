@@ -95,7 +95,7 @@ namespace ISI.Extensions.Sbom
 				}
 			}
 
-			response.Projects = projects.ToArray();
+			response.Projects = [.. projects];
 
 			return response;
 		}

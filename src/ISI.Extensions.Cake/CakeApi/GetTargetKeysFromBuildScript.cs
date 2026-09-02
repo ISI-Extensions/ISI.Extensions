@@ -51,7 +51,7 @@ namespace ISI.Extensions.Cake
 				}
 			}
 
-			response.Targets = targets.ToArray();
+			response.Targets = [.. targets];
 
 			return response;
 		}

@@ -31,7 +31,7 @@ namespace ISI.Extensions.JsonSerialization
 
 		public string ContentType => ISI.Extensions.MimeTypes.Json;
 
-		public HashSet<Type> GetSerializableInterfaceTypes() => new();
+		public HashSet<Type> GetSerializableInterfaceTypes() => [];
 
 		public object Deserialize(Type type, string serializedValue)
 		{

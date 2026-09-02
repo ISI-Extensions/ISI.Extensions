@@ -80,7 +80,7 @@ namespace ISI.Extensions.Aspose
 					}
 				}
 
-				return outputStreams.ToArray();
+				return [.. outputStreams];
 			}
 		}
 	}

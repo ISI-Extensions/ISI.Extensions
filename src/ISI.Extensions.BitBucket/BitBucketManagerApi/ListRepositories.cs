@@ -78,7 +78,7 @@ namespace ISI.Extensions.BitBucket
 				uri = string.IsNullOrWhiteSpace(apiResponse?.Next) ? null : new UriBuilder(apiResponse.Next);
 			}
 
-			response.Repositories = repositories.ToArray();
+			response.Repositories = [.. repositories];
 
 			return response;
 		}

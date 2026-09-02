@@ -128,7 +128,7 @@ namespace ISI.Extensions.XenOrchestra
 				}
 			}
 
-			response.LogEntries = logEntries.ToArray();
+			response.LogEntries = [.. logEntries];
 
 			return response;
 		}

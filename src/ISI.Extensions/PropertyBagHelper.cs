@@ -43,213 +43,216 @@ namespace ISI.Extensions
 		{
 			var propertyInfos = propertyBagSourceType.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.GetProperty);
 
-			return propertyInfos.ToNullCheckedArray(propertyInfo =>
-			{
-				var propertyBagParameterAttribute = propertyInfo.GetCustomAttributes().OfType<TPropertyBagParameterAttribute>().FirstOrDefault();
-				if (propertyBagParameterAttribute != null)
+			return
+			[
+				.. propertyInfos.ToNullCheckedArray(propertyInfo =>
 				{
-					var isMultiValue = false;
-					var isNullable = false;
-					var baseType = typeof(object);
-					GetPropertyBagParameterDelegate<TPropertyBag> getValues = null;
-					SetPropertyBagParameterDelegate<TPropertyBag> setValues = null;
+					var propertyBagParameterAttribute = propertyInfo.GetCustomAttributes().OfType<TPropertyBagParameterAttribute>().FirstOrDefault();
+					if (propertyBagParameterAttribute != null)
+					{
+						var isMultiValue = false;
+						var isNullable = false;
+						var baseType = typeof(object);
+						GetPropertyBagParameterDelegate<TPropertyBag> getValues = null;
+						SetPropertyBagParameterDelegate<TPropertyBag> setValues = null;
 
-					if (propertyInfo.PropertyType == typeof(bool))
-					{
-						baseType = typeof(bool);
-						getValues = propertyBag => [((bool)propertyInfo.GetValue(propertyBag)).TrueFalse()];
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToBoolean());
-					}
-					else if (propertyInfo.PropertyType == typeof(bool?))
-					{
-						isNullable = true;
-						baseType = typeof(bool);
-						getValues = propertyBag => [((bool?)propertyInfo.GetValue(propertyBag)).TrueFalse()];
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToBooleanNullable());
-					}
-					else if (propertyInfo.PropertyType == typeof(string[]))
-					{
-						isMultiValue = true;
-						baseType = typeof(string);
-						getValues = propertyBag => propertyInfo.GetValue(propertyBag) as string[];
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, values);
-					}
-					else if (propertyInfo.PropertyType == typeof(string))
-					{
-						isNullable = true;
-						baseType = typeof(string);
-						getValues = propertyBag => [propertyInfo.GetValue(propertyBag) as string ?? string.Empty];
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, values.NullCheckedFirstOrDefault() ?? string.Empty);
-					}
-					else if (propertyInfo.PropertyType == typeof(Guid))
-					{
-						baseType = typeof(Guid);
-						getValues = propertyBag => [((Guid)propertyInfo.GetValue(propertyBag)).Formatted(GuidExtensions.GuidFormat.WithHyphens)];
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToGuid());
-					}
-					else if (propertyInfo.PropertyType == typeof(Guid?))
-					{
-						isNullable = true;
-						baseType = typeof(Guid);
-						getValues = propertyBag => [((Guid?)propertyInfo.GetValue(propertyBag)).Formatted(GuidExtensions.GuidFormat.WithHyphens)];
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToGuidNullable());
-					}
-					else if (propertyInfo.PropertyType == typeof(Guid[]))
-					{
-						isMultiValue = true;
-						baseType = typeof(Guid);
-						getValues = propertyBag => ((Guid[])propertyInfo.GetValue(propertyBag)).ToNullCheckedArray(value => value.Formatted(GuidExtensions.GuidFormat.WithHyphens));
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, values.ToNullCheckedArray(value => value.ToGuid()));
-					}
-					else if (propertyInfo.PropertyType == typeof(int))
-					{
-						baseType = typeof(int);
-						getValues = propertyBag => [$"{((int)propertyInfo.GetValue(propertyBag))}"];
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToInt());
-					}
-					else if (propertyInfo.PropertyType == typeof(int?))
-					{
-						isNullable = true;
-						baseType = typeof(int);
-						getValues = propertyBag => [$"{((int?)propertyInfo.GetValue(propertyBag))}"];
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToIntNullable());
-					}
-					else if (propertyInfo.PropertyType == typeof(int[]))
-					{
-						isMultiValue = true;
-						baseType = typeof(int);
-						getValues = propertyBag => ((int[])propertyInfo.GetValue(propertyBag)).ToNullCheckedArray(value => $"{value}");
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, values.ToNullCheckedArray(value => value.ToInt()));
-					}
-					else if (propertyInfo.PropertyType == typeof(long))
-					{
-						baseType = typeof(long);
-						getValues = propertyBag => [$"{((long)propertyInfo.GetValue(propertyBag))}"];
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToLong());
-					}
-					else if (propertyInfo.PropertyType == typeof(long?))
-					{
-						baseType = typeof(long);
-						isNullable = true;
-						getValues = propertyBag => [$"{((long?)propertyInfo.GetValue(propertyBag))}"];
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToLongNullable());
-					}
-					else if (propertyInfo.PropertyType == typeof(long[]))
-					{
-						baseType = typeof(long);
-						isMultiValue = true;
-						getValues = propertyBag => ((long[])propertyInfo.GetValue(propertyBag)).ToNullCheckedArray(value => $"{value}");
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, values.ToNullCheckedArray(value => value.ToLong()));
-					}
-					else if (propertyInfo.PropertyType == typeof(double))
-					{
-						baseType = typeof(double);
-						getValues = propertyBag => [$"{((double)propertyInfo.GetValue(propertyBag))}"];
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToDouble());
-					}
-					else if (propertyInfo.PropertyType == typeof(double?))
-					{
-						baseType = typeof(double);
-						isNullable = true;
-						getValues = propertyBag => [$"{((double?)propertyInfo.GetValue(propertyBag))}"];
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToDoubleNullable());
-					}
-					else if (propertyInfo.PropertyType == typeof(double[]))
-					{
-						baseType = typeof(double);
-						getValues = propertyBag => ((double[])propertyInfo.GetValue(propertyBag)).ToNullCheckedArray(value => $"{value}");
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, values.ToNullCheckedArray(value => value.ToDouble()));
-					}
-					else if (propertyInfo.PropertyType == typeof(decimal))
-					{
-						baseType = typeof(decimal);
-						getValues = propertyBag => [$"{((decimal)propertyInfo.GetValue(propertyBag))}"];
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToDecimal());
-					}
-					else if (propertyInfo.PropertyType == typeof(decimal?))
-					{
-						baseType = typeof(decimal);
-						isNullable = true;
-						getValues = propertyBag => [$"{((decimal?)propertyInfo.GetValue(propertyBag))}"];
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToDecimalNullable());
-					}
-					else if (propertyInfo.PropertyType == typeof(decimal[]))
-					{
-						baseType = typeof(decimal);
-						isMultiValue = true;
-						getValues = propertyBag => ((decimal[])propertyInfo.GetValue(propertyBag)).ToNullCheckedArray(value => $"{value}");
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, values.ToNullCheckedArray(value => value.ToDecimal()));
-					}
-					else if (propertyInfo.PropertyType == typeof(float))
-					{
-						baseType = typeof(float);
-						getValues = propertyBag => [$"{((float)propertyInfo.GetValue(propertyBag))}"];
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToFloat());
-					}
-					else if (propertyInfo.PropertyType == typeof(float?))
-					{
-						baseType = typeof(float);
-						isNullable = true;
-						getValues = propertyBag => [$"{((float?)propertyInfo.GetValue(propertyBag))}"];
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToFloatNullable());
-					}
-					else if (propertyInfo.PropertyType == typeof(float[]))
-					{
-						baseType = typeof(float);
-						isMultiValue = true;
-						getValues = propertyBag => ((float[])propertyInfo.GetValue(propertyBag)).ToNullCheckedArray(value => $"{value}");
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, values.ToNullCheckedArray(value => value.ToFloat()));
-					}
-					else if (propertyInfo.PropertyType == typeof(DateTime))
-					{
-						baseType = typeof(DateTime);
-						getValues = propertyBag => [((DateTime)propertyInfo.GetValue(propertyBag)).Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise)];
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToDateTimeUtc());
-					}
-					else if (propertyInfo.PropertyType == typeof(DateTime?))
-					{
-						baseType = typeof(DateTime);
-						isNullable = true;
-						getValues = propertyBag => [((DateTime?)propertyInfo.GetValue(propertyBag)).Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise)];
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToDateTimeUtcNullable());
-					}
-					else if (propertyInfo.PropertyType == typeof(DateTime[]))
-					{
-						baseType = typeof(DateTime);
-						isMultiValue = true;
-						getValues = propertyBag => ((DateTime[])propertyInfo.GetValue(propertyBag)).ToNullCheckedArray(value => value.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise));
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, values.ToNullCheckedArray(value => value.ToDateTimeUtc()));
-					}
-					else if (propertyInfo.PropertyType == typeof(TimeSpan))
-					{
-						baseType = typeof(TimeSpan);
-						getValues = propertyBag => [((TimeSpan)propertyInfo.GetValue(propertyBag)).Formatted(TimeSpanExtensions.TimeSpanFormat.Precise)];
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToTimeSpan());
-					}
-					else if (propertyInfo.PropertyType == typeof(TimeSpan?))
-					{
-						baseType = typeof(TimeSpan);
-						isNullable = true;
-						getValues = propertyBag => [((TimeSpan?)propertyInfo.GetValue(propertyBag)).Formatted(TimeSpanExtensions.TimeSpanFormat.Precise)];
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToTimeSpanNullable());
-					}
-					else if (propertyInfo.PropertyType == typeof(TimeSpan[]))
-					{
-						baseType = typeof(TimeSpan);
-						isMultiValue = true;
-						getValues = propertyBag => ((TimeSpan[])propertyInfo.GetValue(propertyBag)).ToNullCheckedArray(value => value.Formatted(TimeSpanExtensions.TimeSpanFormat.Precise));
-						setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, values.ToNullCheckedArray(value => value.ToTimeSpan()));
-					}
-					else
-					{
-						throw new Exception($"Cannot have a parameter of type \"{propertyInfo.PropertyType.Name}\"");
+						if (propertyInfo.PropertyType == typeof(bool))
+						{
+							baseType = typeof(bool);
+							getValues = propertyBag => [((bool)propertyInfo.GetValue(propertyBag)).TrueFalse()];
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToBoolean());
+						}
+						else if (propertyInfo.PropertyType == typeof(bool?))
+						{
+							isNullable = true;
+							baseType = typeof(bool);
+							getValues = propertyBag => [((bool?)propertyInfo.GetValue(propertyBag)).TrueFalse()];
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToBooleanNullable());
+						}
+						else if (propertyInfo.PropertyType == typeof(string[]))
+						{
+							isMultiValue = true;
+							baseType = typeof(string);
+							getValues = propertyBag => propertyInfo.GetValue(propertyBag) as string[];
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, values);
+						}
+						else if (propertyInfo.PropertyType == typeof(string))
+						{
+							isNullable = true;
+							baseType = typeof(string);
+							getValues = propertyBag => [propertyInfo.GetValue(propertyBag) as string ?? string.Empty];
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, values.NullCheckedFirstOrDefault() ?? string.Empty);
+						}
+						else if (propertyInfo.PropertyType == typeof(Guid))
+						{
+							baseType = typeof(Guid);
+							getValues = propertyBag => [((Guid)propertyInfo.GetValue(propertyBag)).Formatted(GuidExtensions.GuidFormat.WithHyphens)];
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToGuid());
+						}
+						else if (propertyInfo.PropertyType == typeof(Guid?))
+						{
+							isNullable = true;
+							baseType = typeof(Guid);
+							getValues = propertyBag => [((Guid?)propertyInfo.GetValue(propertyBag)).Formatted(GuidExtensions.GuidFormat.WithHyphens)];
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToGuidNullable());
+						}
+						else if (propertyInfo.PropertyType == typeof(Guid[]))
+						{
+							isMultiValue = true;
+							baseType = typeof(Guid);
+							getValues = propertyBag => ((Guid[])propertyInfo.GetValue(propertyBag)).ToNullCheckedArray(value => value.Formatted(GuidExtensions.GuidFormat.WithHyphens));
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, values.ToNullCheckedArray(value => value.ToGuid()));
+						}
+						else if (propertyInfo.PropertyType == typeof(int))
+						{
+							baseType = typeof(int);
+							getValues = propertyBag => [$"{((int)propertyInfo.GetValue(propertyBag))}"];
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToInt());
+						}
+						else if (propertyInfo.PropertyType == typeof(int?))
+						{
+							isNullable = true;
+							baseType = typeof(int);
+							getValues = propertyBag => [$"{((int?)propertyInfo.GetValue(propertyBag))}"];
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToIntNullable());
+						}
+						else if (propertyInfo.PropertyType == typeof(int[]))
+						{
+							isMultiValue = true;
+							baseType = typeof(int);
+							getValues = propertyBag => ((int[])propertyInfo.GetValue(propertyBag)).ToNullCheckedArray(value => $"{value}");
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, values.ToNullCheckedArray(value => value.ToInt()));
+						}
+						else if (propertyInfo.PropertyType == typeof(long))
+						{
+							baseType = typeof(long);
+							getValues = propertyBag => [$"{((long)propertyInfo.GetValue(propertyBag))}"];
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToLong());
+						}
+						else if (propertyInfo.PropertyType == typeof(long?))
+						{
+							baseType = typeof(long);
+							isNullable = true;
+							getValues = propertyBag => [$"{((long?)propertyInfo.GetValue(propertyBag))}"];
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToLongNullable());
+						}
+						else if (propertyInfo.PropertyType == typeof(long[]))
+						{
+							baseType = typeof(long);
+							isMultiValue = true;
+							getValues = propertyBag => ((long[])propertyInfo.GetValue(propertyBag)).ToNullCheckedArray(value => $"{value}");
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, values.ToNullCheckedArray(value => value.ToLong()));
+						}
+						else if (propertyInfo.PropertyType == typeof(double))
+						{
+							baseType = typeof(double);
+							getValues = propertyBag => [$"{((double)propertyInfo.GetValue(propertyBag))}"];
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToDouble());
+						}
+						else if (propertyInfo.PropertyType == typeof(double?))
+						{
+							baseType = typeof(double);
+							isNullable = true;
+							getValues = propertyBag => [$"{((double?)propertyInfo.GetValue(propertyBag))}"];
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToDoubleNullable());
+						}
+						else if (propertyInfo.PropertyType == typeof(double[]))
+						{
+							baseType = typeof(double);
+							getValues = propertyBag => ((double[])propertyInfo.GetValue(propertyBag)).ToNullCheckedArray(value => $"{value}");
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, values.ToNullCheckedArray(value => value.ToDouble()));
+						}
+						else if (propertyInfo.PropertyType == typeof(decimal))
+						{
+							baseType = typeof(decimal);
+							getValues = propertyBag => [$"{((decimal)propertyInfo.GetValue(propertyBag))}"];
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToDecimal());
+						}
+						else if (propertyInfo.PropertyType == typeof(decimal?))
+						{
+							baseType = typeof(decimal);
+							isNullable = true;
+							getValues = propertyBag => [$"{((decimal?)propertyInfo.GetValue(propertyBag))}"];
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToDecimalNullable());
+						}
+						else if (propertyInfo.PropertyType == typeof(decimal[]))
+						{
+							baseType = typeof(decimal);
+							isMultiValue = true;
+							getValues = propertyBag => ((decimal[])propertyInfo.GetValue(propertyBag)).ToNullCheckedArray(value => $"{value}");
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, values.ToNullCheckedArray(value => value.ToDecimal()));
+						}
+						else if (propertyInfo.PropertyType == typeof(float))
+						{
+							baseType = typeof(float);
+							getValues = propertyBag => [$"{((float)propertyInfo.GetValue(propertyBag))}"];
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToFloat());
+						}
+						else if (propertyInfo.PropertyType == typeof(float?))
+						{
+							baseType = typeof(float);
+							isNullable = true;
+							getValues = propertyBag => [$"{((float?)propertyInfo.GetValue(propertyBag))}"];
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToFloatNullable());
+						}
+						else if (propertyInfo.PropertyType == typeof(float[]))
+						{
+							baseType = typeof(float);
+							isMultiValue = true;
+							getValues = propertyBag => ((float[])propertyInfo.GetValue(propertyBag)).ToNullCheckedArray(value => $"{value}");
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, values.ToNullCheckedArray(value => value.ToFloat()));
+						}
+						else if (propertyInfo.PropertyType == typeof(DateTime))
+						{
+							baseType = typeof(DateTime);
+							getValues = propertyBag => [((DateTime)propertyInfo.GetValue(propertyBag)).Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise)];
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToDateTimeUtc());
+						}
+						else if (propertyInfo.PropertyType == typeof(DateTime?))
+						{
+							baseType = typeof(DateTime);
+							isNullable = true;
+							getValues = propertyBag => [((DateTime?)propertyInfo.GetValue(propertyBag)).Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise)];
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToDateTimeUtcNullable());
+						}
+						else if (propertyInfo.PropertyType == typeof(DateTime[]))
+						{
+							baseType = typeof(DateTime);
+							isMultiValue = true;
+							getValues = propertyBag => ((DateTime[])propertyInfo.GetValue(propertyBag)).ToNullCheckedArray(value => value.Formatted(DateTimeExtensions.DateTimeFormat.DateTimeUniversalPrecise));
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, values.ToNullCheckedArray(value => value.ToDateTimeUtc()));
+						}
+						else if (propertyInfo.PropertyType == typeof(TimeSpan))
+						{
+							baseType = typeof(TimeSpan);
+							getValues = propertyBag => [((TimeSpan)propertyInfo.GetValue(propertyBag)).Formatted(TimeSpanExtensions.TimeSpanFormat.Precise)];
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToTimeSpan());
+						}
+						else if (propertyInfo.PropertyType == typeof(TimeSpan?))
+						{
+							baseType = typeof(TimeSpan);
+							isNullable = true;
+							getValues = propertyBag => [((TimeSpan?)propertyInfo.GetValue(propertyBag)).Formatted(TimeSpanExtensions.TimeSpanFormat.Precise)];
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, (values.NullCheckedFirstOrDefault() ?? string.Empty).ToTimeSpanNullable());
+						}
+						else if (propertyInfo.PropertyType == typeof(TimeSpan[]))
+						{
+							baseType = typeof(TimeSpan);
+							isMultiValue = true;
+							getValues = propertyBag => ((TimeSpan[])propertyInfo.GetValue(propertyBag)).ToNullCheckedArray(value => value.Formatted(TimeSpanExtensions.TimeSpanFormat.Precise));
+							setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, values.ToNullCheckedArray(value => value.ToTimeSpan()));
+						}
+						else
+						{
+							throw new Exception($"Cannot have a parameter of type \"{propertyInfo.PropertyType.Name}\"");
+						}
+
+						return createPropertyBagParameter(propertyBagParameterAttribute, propertyInfo, isMultiValue, isNullable, baseType, getValues, setValues);
 					}
 
-					return createPropertyBagParameter(propertyBagParameterAttribute, propertyInfo, isMultiValue, isNullable, baseType, getValues, setValues);
-				}
-
-				return null;
-			}).Where(parameter => parameter != null).ToArray();
+					return null;
+				}).Where(parameter => parameter != null)
+			];
 		}
 	}
 }

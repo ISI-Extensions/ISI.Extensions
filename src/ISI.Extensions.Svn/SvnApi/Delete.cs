@@ -47,7 +47,7 @@ namespace ISI.Extensions.Svn
 					{
 						Logger = new NullLogger(),
 						ProcessExeFullName = "svn",
-						Arguments = arguments.ToArray(),
+						Arguments = [.. arguments],
 					});
 				}
 			}

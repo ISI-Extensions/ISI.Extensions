@@ -59,7 +59,7 @@ namespace ISI.Extensions
 				where !attribute.IsValid(propertyInfo.GetValue(model))
 				select (FieldName: $"{prefix}{propertyInfo.Name}", ErrorMessage: attribute.FormatErrorMessage(string.Empty)));
 
-			return result.ToArray();
+			return [.. result];
 		}
 	}
 }

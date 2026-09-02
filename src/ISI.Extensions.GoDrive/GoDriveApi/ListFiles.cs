@@ -31,7 +31,7 @@ namespace ISI.Extensions.GoDrive
 
 			var cookieContainer = new System.Net.CookieContainer();
 
-			var downloadFileResponse = ISI.Extensions.WebClient.Rest.ExecuteGet<ISI.Extensions.WebClient.Rest.StreamResponse>(FormatUrl(request.DirectoryUrl), new(), true, cookieContainer: cookieContainer);
+			var downloadFileResponse = ISI.Extensions.WebClient.Rest.ExecuteGet<ISI.Extensions.WebClient.Rest.StreamResponse>(FormatUrl(request.DirectoryUrl), [], true, cookieContainer: cookieContainer);
 
 			downloadFileResponse.Stream.Rewind();
 
@@ -39,7 +39,7 @@ namespace ISI.Extensions.GoDrive
 
 			var viewState = GetViewState(content);
 
-			response.FileNames = ListFiles(string.Empty, request.DirectoryUrl, cookieContainer, viewState, content, 0, request.Recursive).ToArray();
+			response.FileNames = [.. ListFiles(string.Empty, request.DirectoryUrl, cookieContainer, viewState, content, 0, request.Recursive)];
 
 			return response;
 		}

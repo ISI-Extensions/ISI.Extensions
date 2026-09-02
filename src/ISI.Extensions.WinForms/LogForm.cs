@@ -63,8 +63,8 @@ namespace ISI.Extensions.WinForms
 			MinimizeBox = false;
 			ShowIcon = true;
 
-			Logs = new();
-			LogPanels = new();
+			Logs = [];
+			LogPanels = [];
 
 			btnDone.Click += (clickSender, clickEventArgs) =>
 			{

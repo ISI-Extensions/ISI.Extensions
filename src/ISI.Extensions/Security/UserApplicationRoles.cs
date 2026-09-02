@@ -31,7 +31,7 @@ namespace ISI.Extensions.Security
 		private HashSet<string> _roles = null;
 		public HashSet<string> Roles
 		{
-			get => _roles ??= new HashSet<string>();
+			get => _roles ??= [];
 			set => _roles = value;
 		}
 

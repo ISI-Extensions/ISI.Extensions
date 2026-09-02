@@ -59,9 +59,9 @@ namespace ISI.Extensions.Jenkins.Forms
 			MinimizeBox = false;
 			ShowIcon = true;
 
-			SelectedItemPaths = selectedItemPaths.ToArray();
+			SelectedItemPaths = [.. selectedItemPaths];
 
-			JenkinsConfigs = new();
+			JenkinsConfigs = [];
 
 			cboJenkinsServers.SelectedValueChanged += (sender, args) =>
 			{
@@ -99,7 +99,7 @@ namespace ISI.Extensions.Jenkins.Forms
 						});
 					}
 
-					flpJenkinsConfigs.Controls.AddRange(JenkinsConfigs.Select(jenkinsConfig => jenkinsConfig.Panel).ToArray());
+					flpJenkinsConfigs.Controls.AddRange([.. JenkinsConfigs.Select(jenkinsConfig => jenkinsConfig.Panel)]);
 
 					Cursor = System.Windows.Forms.Cursors.Arrow;
 				}

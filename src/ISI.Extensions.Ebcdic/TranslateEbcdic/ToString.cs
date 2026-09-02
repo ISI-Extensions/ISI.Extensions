@@ -30,7 +30,7 @@ namespace ISI.Extensions.Ebcdic
 				return null;
 			}
 
-			return new(ToBytes(ebcdic).Select(Convert.ToChar).ToArray());
+			return new([.. ToBytes(ebcdic).Select(Convert.ToChar)]);
 		}
 	}
 }

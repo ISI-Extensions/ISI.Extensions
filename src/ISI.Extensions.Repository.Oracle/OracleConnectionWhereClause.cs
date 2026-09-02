@@ -27,9 +27,9 @@ namespace ISI.Extensions.Repository.Oracle
 
 	public class OracleConnectionWhereClause : WhereClause, IOracleConnectionWhereClause, IWhereClause, IWhereClauseWithSql, IWhereClauseWithGetSql, IWhereClauseWithParameters, IWhereClauseWithGetParameters
 	{
-		public List<InitializeDelegate> InitializeActions { get; } = new();
-		public List<FinalizeDelegate> FinalizeActions { get; } = new();
-		public List<GetJoinCauseDelegate> JoinCauseBuilders { get; } = new();
+		public List<InitializeDelegate> InitializeActions { get; } = [];
+		public List<FinalizeDelegate> FinalizeActions { get; } = [];
+		public List<GetJoinCauseDelegate> JoinCauseBuilders { get; } = [];
 
 		public string GetJoinCause(string tableNameAlias)
 		{

@@ -135,7 +135,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 				result.AddRange(item.Value.Errors.Select(error => new KeyValuePair<string, string>(item.Key, error.ErrorMessage)));
 			}
 
-			return result.ToArray();
+			return [.. result];
 		}
 	}
 }

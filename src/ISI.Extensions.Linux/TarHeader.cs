@@ -155,7 +155,7 @@ namespace ISI.Extensions.Linux
 				return null;
 			}
 
-			set => version = value == null ? " \0"u8.ToArray() : GetUIntTo8(value, 2);
+			set => version = value == null ? [.. " \0"u8] : GetUIntTo8(value, 2);
 		}
 
 		public string UserName

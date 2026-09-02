@@ -52,7 +52,7 @@ namespace ISI.Extensions.DataReader
 		public EnumerableDataReader(IEnumerable<IEnumerable<TRecord>> recordSets, ISI.Extensions.Columns.IColumnCollection<TRecord> columns, ISI.Extensions.DataReader.TransformRecord transformRecord = null)
 		{
 			RecordSets = recordSets;
-			Columns = (columns.NullCheckedAny() ? columns : ISI.Extensions.Columns.ColumnCollection<TRecord>.GetDefault()).ToArray();
+			Columns = [.. columns.NullCheckedAny() ? columns : ISI.Extensions.Columns.ColumnCollection<TRecord>.GetDefault()];
 
 			{
 				ColumnLookUp = new Dictionary<string, int>(StringComparer.InvariantCultureIgnoreCase);

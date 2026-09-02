@@ -84,7 +84,7 @@ namespace ISI.Extensions.NameCheap
 				}
 			}
 
-			response.Certificates = certificates.ToArray();
+			response.Certificates = [.. certificates];
 
 			return response;
 		}

@@ -48,7 +48,7 @@ namespace ISI.Extensions.VisualStudio
 				}
 			}
 
-			response.ProjectDetailsSet = projectDetailsSet.ToArray();
+			response.ProjectDetailsSet = [.. projectDetailsSet];
 			
 			return response;
 		}

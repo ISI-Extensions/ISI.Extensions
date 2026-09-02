@@ -84,13 +84,13 @@ namespace ISI.Extensions
 
 			public ConcatenatedReadOnlyStream()
 			{
-				_streams = new();
+				_streams = [];
 				Reset();
 			}
 
 			public ConcatenatedReadOnlyStream(IEnumerable<System.IO.Stream> streams)
 			{
-				_streams = streams.ToList();
+				_streams = [.. streams];
 				Reset();
 			}
 

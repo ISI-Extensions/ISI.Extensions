@@ -121,7 +121,7 @@ namespace ISI.Extensions.Nuget
 
 					if (!string.IsNullOrWhiteSpace(hintPath))
 					{
-						var hintPathPieces = hintPath.Split(new[] { '\\' }).ToList();
+						var hintPathPieces = hintPath.Split(['\\']).ToList();
 						while (string.Equals(hintPathPieces.First(), "..", StringComparison.InvariantCultureIgnoreCase) || string.Equals(hintPathPieces.First(), "packages", StringComparison.InvariantCultureIgnoreCase))
 						{
 							hintPathPieces.RemoveAt(0);
@@ -129,7 +129,7 @@ namespace ISI.Extensions.Nuget
 
 						hintPath = string.Join("\\", hintPathPieces);
 
-						hintPathPieces = hintPathPieces.First().Split(['.'], StringSplitOptions.RemoveEmptyEntries).AsEnumerable().Reverse().ToList();
+						hintPathPieces = [.. hintPathPieces.First().Split(['.'], StringSplitOptions.RemoveEmptyEntries).AsEnumerable().Reverse()];
 
 						packageId = string.Empty;
 						packageVersion = string.Empty;
@@ -190,7 +190,7 @@ namespace ISI.Extensions.Nuget
 				}
 			}
 
-			response.NugetPackageKeys = nugetPackageKeys.ToArray();
+			response.NugetPackageKeys = [.. nugetPackageKeys];
 
 			return response;
 		}

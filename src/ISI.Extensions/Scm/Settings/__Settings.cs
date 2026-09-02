@@ -108,11 +108,13 @@ namespace ISI.Extensions.Scm
 			internal static IEnumerable<string> Keys => _keys ??= GetKeys();
 			private static IEnumerable<string> GetKeys()
 			{
-				return typeof(Key)
-					.GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.FlattenHierarchy)
-					.Where(fieldInfo => fieldInfo.IsLiteral && !fieldInfo.IsInitOnly && (fieldInfo.FieldType == typeof(string)))
-					.Select(fieldInfo => (string)fieldInfo.GetRawConstantValue())
-					.ToArray();
+				return
+				[
+					.. typeof(Key)
+						.GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.FlattenHierarchy)
+						.Where(fieldInfo => fieldInfo.IsLiteral && !fieldInfo.IsInitOnly && (fieldInfo.FieldType == typeof(string)))
+						.Select(fieldInfo => (string)fieldInfo.GetRawConstantValue())
+				];
 			}
 		}
 

@@ -41,7 +41,7 @@ namespace ISI.Extensions.Caching.Extensions
 				}
 			}
 
-			return cacheKeys.ToArray();
+			return [.. cacheKeys];
 		}
 	}
 }

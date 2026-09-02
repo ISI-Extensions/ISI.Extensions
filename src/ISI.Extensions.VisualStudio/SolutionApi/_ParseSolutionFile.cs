@@ -40,39 +40,43 @@ namespace ISI.Extensions.VisualStudio
 
 		private string[] ProjectFileNamesFromSolutionContentLines(IEnumerable<string> solutionLines)
 		{
-			return solutionLines
-				.Select(solutionLine =>
-				{
-					if (solutionLine.Trim().StartsWith("Project(", StringComparison.InvariantCultureIgnoreCase))
+			return
+			[
+				.. solutionLines
+					.Select(solutionLine =>
 					{
-						var pieces = solutionLine.Split(new[] { '=' }).ToList();
+						if (solutionLine.Trim().StartsWith("Project(", StringComparison.InvariantCultureIgnoreCase))
+						{
+							var pieces = solutionLine.Split(new[] { '=' }).ToList();
 
-						pieces = pieces[1].Split(new[] { '"' }).Select(piece => piece.Trim()).ToList();
+							pieces = [.. pieces[1].Split(new[] { '"' }).Select(piece => piece.Trim())];
 
-						pieces.RemoveAll(piece => string.Equals(piece, ","));
-						pieces.RemoveAll(string.IsNullOrWhiteSpace);
+							pieces.RemoveAll(piece => string.Equals(piece, ","));
+							pieces.RemoveAll(string.IsNullOrWhiteSpace);
 
-						return pieces[1];
+							return pieces[1];
 
-						//return solutionLine.Split(new[] { ',' }, StringSplitOptions.None)[1].Trim(' ', '\"');
-					}
+							//return solutionLine.Split(new[] { ',' }, StringSplitOptions.None)[1].Trim(' ', '\"');
+						}
 
-					if (solutionLine.Trim().StartsWith("<Project", StringComparison.InvariantCultureIgnoreCase))
-					{
-						return solutionLine.Split(['\"'], StringSplitOptions.None)[1].Trim(' ', '\"');
-					}
+						if (solutionLine.Trim().StartsWith("<Project", StringComparison.InvariantCultureIgnoreCase))
+						{
+							return solutionLine.Split(['\"'], StringSplitOptions.None)[1].Trim(' ', '\"');
+						}
 
-					return (string)null;
-				})
-				.Where(projectFileName => !string.IsNullOrWhiteSpace(projectFileName) && string.Equals(System.IO.Path.GetExtension(projectFileName), ".csproj", StringComparison.InvariantCultureIgnoreCase))
-				.ToArray();
+						return (string)null;
+					})
+					.Where(projectFileName => !string.IsNullOrWhiteSpace(projectFileName) && string.Equals(System.IO.Path.GetExtension(projectFileName), ".csproj", StringComparison.InvariantCultureIgnoreCase))
+			];
 		}
 
 		private string[] ProjectFileNamesFromSolutionContentLines(IEnumerable<string> solutionLines, string solutionSourceDirectory)
 		{
-			return ProjectFileNamesFromSolutionContentLines(solutionLines)
-				.Select(projectFileName => System.IO.Path.Combine(solutionSourceDirectory, projectFileName))
-				.ToArray();
+			return
+			[
+				.. ProjectFileNamesFromSolutionContentLines(solutionLines)
+					.Select(projectFileName => System.IO.Path.Combine(solutionSourceDirectory, projectFileName))
+			];
 		}
 	}
 }

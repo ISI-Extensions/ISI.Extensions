@@ -58,7 +58,7 @@ namespace ISI.Extensions.S3
 					});
 				}
 
-				response.BlobInfos = blobInfos.ToArray();
+				response.BlobInfos = [.. blobInfos];
 			}
 			catch
 			{

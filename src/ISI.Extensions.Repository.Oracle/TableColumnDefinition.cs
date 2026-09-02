@@ -75,7 +75,7 @@ namespace ISI.Extensions.Repository.Oracle
 				}
 			}
 
-			return result.ToArray();
+			return [.. result];
 		}
 	}
 }

@@ -156,7 +156,7 @@ namespace ISI.Extensions.Emails
 
 				attachments.AddRange(model.Attachments);
 
-				emailMailMessage.Attachments = attachments.ToArray();
+				emailMailMessage.Attachments = [.. attachments];
 			}
 
 			//must be in this order re: http://stackoverflow.com/questions/5188605/gmail-displays-plain-text-email-instead-html
@@ -184,7 +184,7 @@ namespace ISI.Extensions.Emails
 				}
 			}
 
-			emailMailMessage.AlternateViews = alternateViews.ToArray();
+			emailMailMessage.AlternateViews = [.. alternateViews];
 
 			return emailMailMessage;
 		}

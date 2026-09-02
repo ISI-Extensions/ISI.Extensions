@@ -101,12 +101,12 @@ namespace ISI.Extensions
 
 				if (trimValues)
 				{
-					parameterValues = parameterValues.Select(v => v.Trim()).ToArray();
+					parameterValues = [.. parameterValues.Select(v => v.Trim())];
 				}
 
 				if (removeEmptyValues)
 				{
-					parameterValues = parameterValues.Where(v => !string.IsNullOrEmpty(v)).ToArray();
+					parameterValues = [.. parameterValues.Where(v => !string.IsNullOrEmpty(v))];
 				}
 
 				return true;
@@ -141,7 +141,7 @@ namespace ISI.Extensions
 
 		public string[] GetParameterValues(string parameterName, string delimiter = ";", bool trimValues = true, bool removeEmptyValues = true, string[] defaultValues = null) => GetParameterValues(parameterName, [delimiter], trimValues, removeEmptyValues, defaultValues);
 
-		public string[] Values => _values.ToArray();
+		public string[] Values => [.. _values];
 
 		public string ToArguments()
 		{

@@ -28,7 +28,7 @@ namespace ISI.Extensions.Crypto
 			{
 				try
 				{
-					using (var memoryStream = new System.IO.MemoryStream(encryptedValue.ToArray()))
+					using (var memoryStream = new System.IO.MemoryStream([.. encryptedValue]))
 					{
 						using (var aes = System.Security.Cryptography.Aes.Create())
 						{
@@ -44,7 +44,7 @@ namespace ISI.Extensions.Crypto
 								numBytesToRead -= n;
 							}
 
-							using (var cryptoStream = new System.Security.Cryptography.CryptoStream(memoryStream, aes.CreateDecryptor(key.ToArray(), iv), System.Security.Cryptography.CryptoStreamMode.Read))
+							using (var cryptoStream = new System.Security.Cryptography.CryptoStream(memoryStream, aes.CreateDecryptor([.. key], iv), System.Security.Cryptography.CryptoStreamMode.Read))
 							{
 								using (var decryptReader = new System.IO.StreamReader(cryptoStream))
 								{

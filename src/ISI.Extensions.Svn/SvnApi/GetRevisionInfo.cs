@@ -43,7 +43,7 @@ namespace ISI.Extensions.Svn
 					return ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 					{
 						ProcessExeFullName = "svnlook",
-						Arguments = arguments.ToArray(),
+						Arguments = [.. arguments],
 					}).Output;
 				}
 
@@ -92,7 +92,7 @@ namespace ISI.Extensions.Svn
 					Author = getProperty("author").Trim('\n', '\r', ' '),
 					Log = getProperty("log").Trim('\n', '\r', ' '),
 					DirectoriesChanged = getProperty("dirs-changed").Trim('\n', '\r', ' ').Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries),
-					PathsChanged = pathsChanged.ToArray(),
+					PathsChanged = [.. pathsChanged],
 				};
 			}
 

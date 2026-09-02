@@ -33,7 +33,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 				context.Headers.Set(ISI.Extensions.Diagnostics.OperationKeyHeaderKey, operationKey);
 
-				foreach (var header in headers ?? new MessageBusMessageHeaderCollection())
+				foreach (var header in headers ?? [])
 				{
 					context.Headers.Set(header.Key, header.Value);
 				}

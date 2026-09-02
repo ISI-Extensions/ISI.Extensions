@@ -126,9 +126,9 @@ namespace ISI.Extensions.Assemblies
 				}
 			}
 
-			Assemblies = assemblies.Values.ToArray();
+			Assemblies = [.. assemblies.Values];
 
-			Types = types.ToArray();
+			Types = [.. types];
 
 			return this;
 		}

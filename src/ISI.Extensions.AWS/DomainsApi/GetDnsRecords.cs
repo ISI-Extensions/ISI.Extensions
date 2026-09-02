@@ -97,7 +97,7 @@ namespace ISI.Extensions.AWS
 					}
 				}
 
-				response.DnsRecords = dnsRecords.ToArray();
+				response.DnsRecords = [.. dnsRecords];
 			}
 
 			return response;

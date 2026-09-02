@@ -41,7 +41,7 @@ namespace ISI.Extensions.Nginx
 
 					nginxManagerServers.Add(request.NginxManagerServer);
 
-					nginxSettings.NginxManagerServers = nginxManagerServers.ToArray();
+					nginxSettings.NginxManagerServers = [.. nginxManagerServers];
 
 					return true;
 				},

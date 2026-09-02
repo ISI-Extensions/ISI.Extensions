@@ -60,7 +60,7 @@ namespace ISI.Extensions.Alpine
 					}
 				}
 				
-				RepositoryDetailsByBranchArchitecture.Add(getBranchArchitectureKey(request.Branch, request.Architecture), repositories.ToArray());
+				RepositoryDetailsByBranchArchitecture.Add(getBranchArchitectureKey(request.Branch, request.Architecture), [.. repositories]);
 			}
 
 			if (PackageDetailsByBranchArchitecturePackage.TryGetValue(getBranchArchitecturePackageKey(request.Branch, request.Architecture, request.Package), out var packageDetails))

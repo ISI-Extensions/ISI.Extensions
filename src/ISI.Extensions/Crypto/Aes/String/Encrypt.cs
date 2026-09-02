@@ -33,7 +33,7 @@ namespace ISI.Extensions.Crypto
 					{
 						if (key.NullCheckedAny())
 						{
-							aes.Key = key.ToArray();
+							aes.Key = [.. key];
 						}
 						else
 						{
@@ -58,7 +58,7 @@ namespace ISI.Extensions.Crypto
 
 								memoryStream.Rewind();
 
-								return (Key: key.ToArray(), EncryptedValue: memoryStream.ToArray());
+								return (Key: [.. key], EncryptedValue: memoryStream.ToArray());
 							}
 						}
 					}

@@ -49,7 +49,7 @@ namespace ISI.Extensions.Ant
 			{
 			}
 
-			response.Targets = targets.ToArray();
+			response.Targets = [.. targets];
 
 			return response;
 		}

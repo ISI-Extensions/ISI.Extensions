@@ -170,7 +170,7 @@ namespace ISI.Extensions.Caching.Extensions
 
 						Add(cacheManager, CachedItemProxies.GetCachedItemProxiesCacheKey(cacheKey), new CachedItemProxies()
 						{
-							ProxyCacheKeys = proxyCacheKeys.ToArray(),
+							ProxyCacheKeys = [.. proxyCacheKeys],
 						}, () => cacheManager.GetDefaultCacheEntryExpirationPolicy(item));
 					}
 				}

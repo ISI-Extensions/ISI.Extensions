@@ -42,7 +42,7 @@ namespace ISI.Extensions.Jenkins
 
 				var nodes = System.Xml.Linq.XDocument.Parse(xml);
 
-				response.JobIds = nodes.XPathSelectElements(@"/hudson/job/name").Select(node => node.Value).ToArray();
+				response.JobIds = [.. nodes.XPathSelectElements(@"/hudson/job/name").Select(node => node.Value)];
 			}
 			catch (Exception exception)
 			{

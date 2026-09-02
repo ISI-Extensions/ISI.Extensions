@@ -339,10 +339,10 @@ namespace ISI.Extensions.StatusTrackers
 			{
 				if (_logEntries.Count > MaxLogSize)
 				{
-					return _logEntries.Skip(_logEntries.Count - MaxLogSize).ToArray();
+					return [.. _logEntries.Skip(_logEntries.Count - MaxLogSize)];
 				}
 
-				return _logEntries.ToArray();
+				return [.. _logEntries];
 			}
 
 			private IDictionary<string, string> _keyValues = null;

@@ -72,7 +72,7 @@ namespace ISI.Extensions.Docker
 				{
 					Logger = logger,
 					ProcessExeFullName = (UseDockerDashCompose ? "docker-compose" : "docker"),
-					Arguments = arguments.ToArray(),
+					Arguments = [.. arguments],
 					WorkingDirectory = request.ComposeDirectory,
 					EnvironmentVariables = AddDockerContextServerApiVersion(null, request),
 				});

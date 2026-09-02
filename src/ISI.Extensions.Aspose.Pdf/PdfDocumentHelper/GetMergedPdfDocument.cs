@@ -92,7 +92,7 @@ namespace ISI.Extensions.Aspose
 					}
 				}
 
-				pdfEditor.Concatenate(documentsToMerge.Select(document => document.Stream).ToArray(), outputStream);
+				pdfEditor.Concatenate([.. documentsToMerge.Select(document => document.Stream)], outputStream);
 
 				return new ISI.Extensions.Documents.Document()
 				{

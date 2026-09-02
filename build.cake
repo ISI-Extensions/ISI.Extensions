@@ -79,41 +79,25 @@ Task("Sign")
 	{
 		if (settings.CodeSigning.DoCodeSigning && configuration.Equals("Release"))
 		{
-			var files = GetFiles("./**/bin/" + configuration + "/**/ISI.*.dll");
+			var assemblyPaths = new FilePathCollection();
 
-			if(files.Any())
+			foreach(var project in solutionDetails.ProjectDetailsSet.Where(project => project.ProjectFullName.EndsWith(".csproj") && 
+															!project.ProjectName.EndsWith(".Test") && 
+															!project.ProjectName.EndsWith(".Tests") && 
+															!project.ProjectName.EndsWith(".T4LocalContent")).OrderBy(project => project.ProjectName, StringComparer.InvariantCultureIgnoreCase))
 			{
-				using(var tempDirectory = GetNewTempDirectory())
+				Information(project.ProjectName);
+
+				assemblyPaths.Add(GetFiles(project.ProjectDirectory + "/bin/" + configuration + "/**/" + project.ProjectName + ".dll"));
+			}
+
+			if(assemblyPaths.Any())
+			{
+				SignAssemblies(new ISI.Cake.Addin.CodeSigning.SignAssembliesUsingSettingsRequest()
 				{
-					foreach(var file in files)
-					{
-						var tempFile = File(tempDirectory.FullName + "/" + file.GetFilename());
-
-						if(System.IO.File.Exists(tempFile.Path.FullPath))
-						{
-							DeleteFile(tempFile);
-						}
-
-						CopyFile(file, tempFile);
-					}
-
-					var tempFiles = GetFiles(tempDirectory.FullName + "/ISI.*.dll");
-
-					SignAssemblies(new ISI.Cake.Addin.CodeSigning.SignAssembliesUsingSettingsRequest()
-					{
-						AssemblyPaths = tempFiles,
-						Settings = settings,
-					});
-
-					foreach(var file in files)
-					{
-						var tempFile = File(tempDirectory.FullName + "/" + file.GetFilename());
-						
-						DeleteFile(file);
-
-						CopyFile(tempFile, file);
-					}
-				}
+					AssemblyPaths = assemblyPaths,
+					Settings = settings,
+				});
 			}
 		}
 	});

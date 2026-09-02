@@ -36,16 +36,16 @@ namespace ISI.Extensions.VisualStudio
 
 				var logger = new AddToLogLogger(request.AddToLog, Logger);
 
-				var assemblyFullNames = new List<string>();
+				var assemblyFullNames = Array.Empty<string>();
 
 				switch (request)
 				{
 					case DTOs.SignAssembliesInDirectoryRequest signAssembliesInDirectoryRequest:
-						assemblyFullNames.AddRange(System.IO.Directory.GetFiles(signAssembliesInDirectoryRequest.AssembliesDirectory));
+						assemblyFullNames = System.IO.Directory.GetFiles(signAssembliesInDirectoryRequest.AssembliesDirectory);
 						break;
 
 					case DTOs.SignAssembliesRequest signAssembliesRequest:
-						assemblyFullNames.AddRange(signAssembliesRequest.AssemblyFullNames);
+						assemblyFullNames = signAssembliesRequest.AssemblyFullNames ?? [];
 						break;
 
 					default:
@@ -56,20 +56,21 @@ namespace ISI.Extensions.VisualStudio
 				{
 					using (var tempDirectory = new ISI.Extensions.IO.Path.TempDirectory())
 					{
-						var tempAssemblyFullNames = assemblyFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty);
+						var signedAssemblyFullNames = new string[assemblyFullNames.Length];
 
-						for (var fileIndex = 0; fileIndex < tempAssemblyFullNames.Length; fileIndex++)
+						for (var fileIndex = 0; fileIndex < signedAssemblyFullNames.Length; fileIndex++)
 						{
-							var tempAssemblyFullName = System.IO.Path.Combine(tempDirectory.FullName, System.IO.Path.GetFileName(tempAssemblyFullNames[fileIndex]));
+							var signedAssemblyDirectory = System.IO.Path.Combine(tempDirectory.FullName, Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.Base36));
 
-							if (System.IO.File.Exists(tempAssemblyFullName))
-							{
-								System.IO.File.Delete(tempAssemblyFullName);
-							}
+							System.IO.Directory.CreateDirectory(signedAssemblyDirectory);
 
-							System.IO.File.Copy(tempAssemblyFullNames[fileIndex], tempAssemblyFullName);
+							var signedAssemblyFullName = System.IO.Path.Combine(signedAssemblyDirectory, System.IO.Path.GetFileName(assemblyFullNames[fileIndex]));
 
-							tempAssemblyFullNames[fileIndex] = tempAssemblyFullName;
+							System.IO.File.Copy(assemblyFullNames[fileIndex], signedAssemblyFullName);
+
+							signedAssemblyFullNames[fileIndex] = signedAssemblyFullName;
+
+							logger.LogInformation($"{assemblyFullNames[fileIndex]} => {signedAssemblyFullNames[fileIndex]}");
 						}
 
 						var signtoolExeFullName = GetSigntoolExeFullName(new()).SigntoolExeFullName;
@@ -93,7 +94,6 @@ namespace ISI.Extensions.VisualStudio
 								return false;
 							}
 
-							logger.LogInformation($"Signed assembly \"{System.IO.Path.GetFileName(fileNames.First())}\"");
 							return true;
 						}
 
@@ -102,15 +102,20 @@ namespace ISI.Extensions.VisualStudio
 						switch (request.CertificateType)
 						{
 							case DTOs.CodeSigningCertificateType.File:
-								signedFilesSuccessfully = sign(tempAssemblyFullNames);
+								signedFilesSuccessfully = sign(signedAssemblyFullNames);
 								break;
 
 							case DTOs.CodeSigningCertificateType.JSignEToken:
 								foreach (var extension in new[] { "*.exe", "*.dll", "*.msi", "*.cab", "*.cat", "*.appx", "*.msix", "*.navx", "*.efi" })
 								{
-									if (signedFilesSuccessfully && System.IO.Directory.EnumerateFiles(tempDirectory.FullName, extension).Any())
+									var filesToSign = System.IO.Directory.EnumerateFiles(tempDirectory.FullName, extension, System.IO.SearchOption.AllDirectories).ToArray();
+
+									if (signedFilesSuccessfully && filesToSign.Any())
 									{
-										signedFilesSuccessfully = jSignEToken(logger, request, [System.IO.Path.Combine(tempDirectory.FullName, extension)]);
+										foreach (var chunkedFilesToSign in filesToSign.Chunker(10))
+										{
+											signedFilesSuccessfully = jSignEToken(logger, request, chunkedFilesToSign.ToArray());
+										}
 									}
 								}
 								break;
@@ -121,30 +126,30 @@ namespace ISI.Extensions.VisualStudio
 
 						if (!string.IsNullOrWhiteSpace(request.OutputDirectory) && System.IO.Directory.Exists(request.OutputDirectory))
 						{
-							foreach (var assemblyFullName in tempAssemblyFullNames)
+							for (var fileIndex = 0; fileIndex < assemblyFullNames.Length; fileIndex++)
 							{
-								var newAssemblyFullName = System.IO.Path.Combine(request.OutputDirectory, System.IO.Path.GetFileName(assemblyFullName));
+								var signedAssemblyFullName = System.IO.Path.Combine(request.OutputDirectory, System.IO.Path.GetFileName(signedAssemblyFullNames[fileIndex]));
 
-								if (System.IO.File.Exists(newAssemblyFullName))
+								if (System.IO.File.Exists(signedAssemblyFullName))
 								{
-									System.IO.File.Delete(newAssemblyFullName);
+									System.IO.File.Delete(signedAssemblyFullName);
 								}
 
-								System.IO.File.Copy(assemblyFullName, newAssemblyFullName);
+								System.IO.File.Copy(signedAssemblyFullNames[fileIndex], signedAssemblyFullName);
 							}
 						}
 						else
 						{
-							foreach (var assemblyFullName in assemblyFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty))
+							for (var fileIndex = 0; fileIndex < assemblyFullNames.Length; fileIndex++)
 							{
-								var signedAssemblyFullName = System.IO.Path.Combine(tempDirectory.FullName, System.IO.Path.GetFileName(assemblyFullName));
+								var signedAssemblyFullName = assemblyFullNames[fileIndex];
 
-								if (System.IO.File.Exists(assemblyFullName))
+								if (System.IO.File.Exists(signedAssemblyFullName))
 								{
-									System.IO.File.Delete(assemblyFullName);
+									System.IO.File.Delete(signedAssemblyFullName);
 								}
 
-								System.IO.File.Copy(signedAssemblyFullName, assemblyFullName);
+								System.IO.File.Copy(signedAssemblyFullNames[fileIndex], signedAssemblyFullName);
 							}
 						}
 					}

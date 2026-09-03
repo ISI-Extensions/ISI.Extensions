@@ -26,11 +26,6 @@ using NuGet.Protocol;
 using DTOs = ISI.Extensions.Nuget.DataTransferObjects.NugetApi;
 using SerializableDTOs = ISI.Extensions.Nuget.SerializableModels.Nuget;
 
-
-//using NuGet.Protocol;
-//using ;
-//using NuGet.Common;
-
 namespace ISI.Extensions.Nuget
 {
 	public partial class NugetApi

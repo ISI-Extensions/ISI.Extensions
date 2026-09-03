@@ -512,9 +512,10 @@ namespace ISI.Extensions.Tests
 			//removeAssemblyRedirects.Add("Microsoft.Identity*");
 
 			var solutionFullNames = new List<string>();
+			solutionFullNames.Add(@"E:\ISI\ISI.Extensions");
 			//solutionFullNames.Add(@"F:\ISI\ISI.FrameWork");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Telephony.WindowsService");
-			solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.NginxManagerAgent.ServiceApplication");
+			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.NginxManagerAgent.ServiceApplication");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Cake.Addin");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.SCM.Jenkins.WindowsService");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.SCM.RemoteCodeSigning.WindowsService");
@@ -523,10 +524,10 @@ namespace ISI.Extensions.Tests
 			solutionApi.UpgradeNugetPackages(new()
 			{
 				SolutionFullNames = solutionFullNames,
-				//UpdateWorkingCopyFromSourceControl = false,
-				//CommitWorkingCopyToSourceControl = false,
-				UpdateWorkingCopyFromSourceControl = true,
-				CommitWorkingCopyToSourceControl = true,
+				UpdateWorkingCopyFromSourceControl = false,
+				CommitWorkingCopyToSourceControl = false,
+				//UpdateWorkingCopyFromSourceControl = true,
+				//CommitWorkingCopyToSourceControl = true,
 				NugetPackageKeys = nugetPackageKeys,
 				UpsertAssemblyRedirectsNugetPackageKeys = upsertAssemblyRedirectsNugetPackageKeys,
 				RemoveAssemblyRedirects = removeAssemblyRedirects,

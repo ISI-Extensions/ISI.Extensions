@@ -255,8 +255,40 @@ namespace ISI.Extensions.VisualStudio
 								}
 							}
 
-							bool tryGetNugetPackageKey(string package, bool isDotNet4, out ISI.Extensions.Nuget.NugetPackageKey nugetPackageKey)
+							bool tryGetNugetPackageKey(string package, string packageVersion, bool isDotNet4, out ISI.Extensions.Nuget.NugetPackageKey nugetPackageKey)
 							{
+								if (packageVersion.NullCheckedStartsWith("[") && packageVersion.NullCheckedEndsWith(")"))
+								{
+									var packageVersions = packageVersion.TrimStart("[").TrimEnd(")").Split(',');
+
+									var minPackageVersion = global::NuGet.Versioning.NuGetVersion.Parse(packageVersions[0]);
+									var maxPackageVersion = global::NuGet.Versioning.NuGetVersion.Parse(packageVersions[1]);
+
+									var versionComparer = new NuGet.Versioning.VersionComparer();
+
+									var foundNugetPackageKeys = NugetApi.SearchNugetPackageKeys(new()
+									{
+										Search = package,
+										ExactMatchOnly = true,
+										NugetConfigFullNames = [nugetConfigFullName],
+									}).NugetPackageKeys
+											.ToNullCheckedArray(nugetPackageKey => (NuGetVersion: global::NuGet.Versioning.NuGetVersion.Parse(nugetPackageKey.Version), NugetPackageKey: nugetPackageKey));
+
+									foundNugetPackageKeys = foundNugetPackageKeys
+											.NullCheckedWhere(nugetPackageKey => (versionComparer.Compare(minPackageVersion, nugetPackageKey.NuGetVersion) <= 0) && (versionComparer.Compare(maxPackageVersion, nugetPackageKey.NuGetVersion) > 0))
+											.NullCheckedOrderByDescending(nugetPackageKey => nugetPackageKey.NuGetVersion, versionComparer)
+											.ToNullCheckedArray(NullCheckCollectionResult.Empty);
+
+									if (foundNugetPackageKeys.Any())
+									{
+										nugetPackageKey = foundNugetPackageKeys.First().NugetPackageKey;
+
+										nugetPackageKey.Version = $"[{nugetPackageKey.Version},{packageVersions[1]})";
+
+										return true;
+									}
+								}
+
 								if (solutionIgnorePackageIds.Contains(package))
 								{
 									nugetPackageKey = null;
@@ -283,7 +315,7 @@ namespace ISI.Extensions.VisualStudio
 
 							Parallel.ForEach(solutionDetails.NugetPackageDependencies, nugetPackageDependency =>
 							{
-								tryGetNugetPackageKey(nugetPackageDependency, false, out var _);
+								tryGetNugetPackageKey(nugetPackageDependency, null, false, out var _);
 							});
 
 							solutionLogger.LogInformation("Updating Projects");
@@ -296,33 +328,25 @@ namespace ISI.Extensions.VisualStudio
 
 								if (System.IO.File.Exists(packagesConfigFullName))
 								{
-									if (request.ConvertToPackageReferences)
+									var packagesConfig = System.IO.File.ReadAllText(packagesConfigFullName);
+
+									try
 									{
-										System.IO.File.Delete(packagesConfigFullName);
-										dirtyFileNames.Add(packagesConfigFullName);
+										var newPackagesConfig = NugetApi.UpgradeNugetPackageVersionsInPackagesConfig(new()
+										{
+											PackagesConfigXml = packagesConfig,
+											TryGetNugetPackageKey = tryGetNugetPackageKey,
+										}).PackagesConfigXml;
+
+										if (HasChanges(packagesConfig, newPackagesConfig))
+										{
+											System.IO.File.WriteAllText(packagesConfigFullName, newPackagesConfig);
+											dirtyFileNames.Add(packagesConfigFullName);
+										}
 									}
-									else
+									catch (Exception exception)
 									{
-										var packagesConfig = System.IO.File.ReadAllText(packagesConfigFullName);
-
-										try
-										{
-											var newPackagesConfig = NugetApi.UpgradeNugetPackageVersionsInPackagesConfig(new()
-											{
-												PackagesConfigXml = packagesConfig,
-												TryGetNugetPackageKey = tryGetNugetPackageKey,
-											}).PackagesConfigXml;
-
-											if (HasChanges(packagesConfig, newPackagesConfig))
-											{
-												System.IO.File.WriteAllText(packagesConfigFullName, newPackagesConfig);
-												dirtyFileNames.Add(packagesConfigFullName);
-											}
-										}
-										catch (Exception exception)
-										{
-											throw new($"File: {packagesConfigFullName}", exception);
-										}
+										throw new($"File: {packagesConfigFullName}", exception);
 									}
 								}
 
@@ -334,7 +358,6 @@ namespace ISI.Extensions.VisualStudio
 									{
 										CsProjXml = csProj,
 										TryGetNugetPackageKey = tryGetNugetPackageKey,
-										ConvertToPackageReferences = request.ConvertToPackageReferences,
 									}).CsProjXml;
 
 									if (HasChanges(csProj, newCsProj))

@@ -52,6 +52,10 @@ namespace ISI.Extensions.Nuget
 						{
 							targetFramework.Value = "net9.0";
 						}
+						if (string.Equals(targetFramework.Value, "net9.0", StringComparison.InvariantCultureIgnoreCase))
+						{
+							targetFramework.Value = "net10.0";
+						}
 					}
 				}
 
@@ -62,7 +66,7 @@ namespace ISI.Extensions.Nuget
 						var packageId = (packageReference.GetAttributeByLocalName("Include") ?? packageReference.GetAttributeByLocalName("Update"))?.Value ?? string.Empty;
 						var packageVersion = (packageReference.GetAttributeByLocalName("Version")?.Value ?? packageReference.GetElementByLocalName("Version")?.Value) ?? string.Empty;
 
-						if (request.TryGetNugetPackageKey(packageId, false, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
+						if (request.TryGetNugetPackageKey(packageId, packageVersion, false, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 						{
 							var versionAttribute = packageReference.GetAttributeByLocalName("Version");
 							if (versionAttribute != null)
@@ -144,7 +148,7 @@ namespace ISI.Extensions.Nuget
 
 									packageVersion = packageVersion.TrimEnd('.');
 
-									if (request.TryGetNugetPackageKey(packageId, true, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
+									if (request.TryGetNugetPackageKey(packageId, packageVersion, true, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 									{
 										hintPath = nugetPackageKey.GetTargetFrameworkAssembly(targetFrameworkVersion.First())?.Assemblies?.GetHintPath(assemblyName);
 
@@ -154,35 +158,6 @@ namespace ISI.Extensions.Nuget
 											hintPathAttribute.Value = $"{packagesPath}\\{hintPath}";
 										}
 									}
-								}
-							}
-
-							if (request.ConvertToPackageReferences)
-							{
-								if (!string.IsNullOrWhiteSpace(packageId))
-								{
-									if (!usedPackageReferences.Contains(packageId))
-									{
-										if (request.TryGetNugetPackageKey(packageId, true, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version))
-										{
-											packageVersion = nugetPackageKey.Version;
-										}
-
-										var packageReferenceElement = new System.Xml.Linq.XElement("PackageReference");
-
-										var includeAttribute = new System.Xml.Linq.XAttribute("Include", packageId);
-										packageReferenceElement.Add(includeAttribute);
-
-										var versionElement = new System.Xml.Linq.XElement("Version");
-										versionElement.Value = packageVersion;
-										packageReferenceElement.Add(versionElement);
-
-										reference.AddBeforeSelf(packageReferenceElement);
-
-										usedPackageReferences.Add(packageId);
-									}
-
-									reference.Remove();
 								}
 							}
 						}
@@ -197,7 +172,7 @@ namespace ISI.Extensions.Nuget
 						var packageVersionElement = packageReference.GetElementByLocalName("Version");
 						var packageVersion = packageVersionAttribute?.Value ?? packageVersionElement?.Value ?? string.Empty;
 
-						if (request.TryGetNugetPackageKey(packageId, true, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
+						if (request.TryGetNugetPackageKey(packageId, packageVersion, true, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 						{
 							if (packageVersionAttribute != null)
 							{
@@ -245,7 +220,7 @@ namespace ISI.Extensions.Nuget
 									}
 								}
 
-								if (request.TryGetNugetPackageKey(packageId, true, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
+								if (request.TryGetNugetPackageKey(packageId, packageVersion, true, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 								{
 									pathParts[pathPartIndex + 1] = $"{packageId}.{nugetPackageKey.Version}";
 								}
@@ -296,69 +271,6 @@ namespace ISI.Extensions.Nuget
 								}
 							}
 						}
-					}
-				}
-			}
-
-			if (request.ConvertToPackageReferences)
-			{
-				var removeTargets = new[]
-				{
-					"NETStandard.Library.targets",
-					"Microsoft.ApplicationInsights.DependencyCollector.targets",
-					"Microsoft.Bcl.Build.targets",
-					"Microsoft.Net.Compilers",
-					"NUnit.props",
-				};
-
-				foreach (var importElement in csProjXml.GetElementsByLocalName("Import"))
-				{
-					var project = importElement.GetAttributeByLocalName("Project")?.Value ?? string.Empty;
-
-					foreach (var removeTarget in removeTargets)
-					{
-						if (project.IndexOf(removeTarget, StringComparison.InvariantCultureIgnoreCase) >= 0)
-						{
-							importElement.Remove();
-						}
-					}
-				}
-
-				foreach (var targetElement in csProjXml.GetElementsByLocalName("Target"))
-				{
-					var errors = targetElement.GetElementsByLocalName("Error");
-
-					foreach (var error in errors)
-					{
-						var condition = error.GetAttributeByLocalName("Condition")?.Value ?? string.Empty;
-
-						foreach (var removeTarget in removeTargets)
-						{
-							if (condition.IndexOf(removeTarget, StringComparison.InvariantCultureIgnoreCase) >= 0)
-							{
-								error.Remove();
-							}
-						}
-					}
-				}
-
-				foreach (var itemGroup in csProjXml.GetElementsByLocalName("ItemGroup"))
-				{
-					var references = itemGroup.GetElementsByLocalName("None");
-
-					foreach (var reference in references)
-					{
-						var include = reference.GetAttributeByLocalName("Include")?.Value ?? string.Empty;
-
-						if (string.Equals(include, "packages.config", StringComparison.InvariantCultureIgnoreCase))
-						{
-							reference.Remove();
-						}
-					}
-
-					if (!itemGroup.Elements().Any())
-					{
-						itemGroup.Remove();
 					}
 				}
 			}

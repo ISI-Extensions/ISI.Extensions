@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions
 {
@@ -101,12 +102,12 @@ namespace ISI.Extensions
 
 				if (trimValues)
 				{
-					parameterValues = [.. parameterValues.Select(v => v.Trim())];
+					parameterValues = parameterValues.Select(v => v.Trim()).ToNullCheckedArray(NullCheckCollectionResult.Empty);
 				}
 
 				if (removeEmptyValues)
 				{
-					parameterValues = [.. parameterValues.Where(v => !string.IsNullOrEmpty(v))];
+					parameterValues = parameterValues.Where(v => !string.IsNullOrEmpty(v)).ToNullCheckedArray(NullCheckCollectionResult.Empty);
 				}
 
 				return true;
@@ -141,7 +142,7 @@ namespace ISI.Extensions
 
 		public string[] GetParameterValues(string parameterName, string delimiter = ";", bool trimValues = true, bool removeEmptyValues = true, string[] defaultValues = null) => GetParameterValues(parameterName, [delimiter], trimValues, removeEmptyValues, defaultValues);
 
-		public string[] Values => [.. _values];
+		public string[] Values => _values.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 		public string ToArguments()
 		{

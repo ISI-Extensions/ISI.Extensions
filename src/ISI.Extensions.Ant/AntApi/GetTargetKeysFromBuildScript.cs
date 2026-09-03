@@ -49,7 +49,7 @@ namespace ISI.Extensions.Ant
 			{
 			}
 
-			response.Targets = [.. targets];
+			response.Targets = targets.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 			return response;
 		}

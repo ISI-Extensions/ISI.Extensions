@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Repository
 {
@@ -33,7 +34,7 @@ namespace ISI.Extensions.Repository
 			Add(new RecordIndex<TRecord>()
 			{
 				Name = name,
-				Columns = [.. indexDefinition],
+				Columns = indexDefinition.ToNullCheckedArray(NullCheckCollectionResult.Empty),
 				Unique = unique,
 				Clustered = clustered,
 			});

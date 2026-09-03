@@ -95,7 +95,7 @@ namespace ISI.Extensions.Sbom
 				}
 			}
 
-			response.Projects = [.. projects];
+			response.Projects = projects.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 			return response;
 		}

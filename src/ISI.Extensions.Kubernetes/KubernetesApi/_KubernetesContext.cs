@@ -42,7 +42,7 @@ namespace ISI.Extensions.Kubernetes
 				arguments.Add($"--kubeconfig={request.KubeConfig}");
 			}
 
-			return [.. arguments];
+			return arguments.ToArray();
 		}
 	}
 }

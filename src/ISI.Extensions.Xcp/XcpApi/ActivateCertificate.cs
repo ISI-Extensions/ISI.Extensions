@@ -105,7 +105,7 @@ namespace ISI.Extensions.Xcp
 				}
 			}
 
-			response.LogEntries = [.. logEntries];
+			response.LogEntries = logEntries.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 			return response;
 		}

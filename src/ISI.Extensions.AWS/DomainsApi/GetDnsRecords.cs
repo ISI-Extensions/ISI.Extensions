@@ -97,7 +97,7 @@ namespace ISI.Extensions.AWS
 					}
 				}
 
-				response.DnsRecords = [.. dnsRecords];
+				response.DnsRecords = dnsRecords.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 			}
 
 			return response;

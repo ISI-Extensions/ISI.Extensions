@@ -42,7 +42,7 @@ namespace ISI.Extensions.Nuget
 			ignorePackageIds.Remove("WixToolset.UI.wixext");
 			if (ignorePackageIds.Count != response.NugetSettings.UpdateNugetPackages.IgnorePackageIds.NullCheckedCount())
 			{
-				response.NugetSettings.UpdateNugetPackages.IgnorePackageIds = [.. ignorePackageIds];
+				response.NugetSettings.UpdateNugetPackages.IgnorePackageIds = ignorePackageIds.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 				SetNugetSettings(new()
 				{
 

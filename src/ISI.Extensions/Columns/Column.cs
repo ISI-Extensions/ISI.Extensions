@@ -75,7 +75,7 @@ namespace ISI.Extensions.Columns
 			ISI.Extensions.JsonSerialization.IJsonSerializer jsonSerializer = null)
 		{
 			ColumnName = (string.IsNullOrWhiteSpace(columnName) ? propertyInfo.Name : columnName);
-			ColumnNames = [.. columnNames ?? [propertyInfo.Name]];
+			ColumnNames = (columnNames ?? [propertyInfo.Name]).ToNullCheckedArray(NullCheckCollectionResult.Empty);
 			var columnType = typeof(TProperty);
 			var isNullable = (columnType.IsGenericType && (columnType.GetGenericTypeDefinition() == typeof(Nullable<>)));
 

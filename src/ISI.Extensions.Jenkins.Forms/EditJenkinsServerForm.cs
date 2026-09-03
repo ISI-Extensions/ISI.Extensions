@@ -22,6 +22,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ISI.Extensions.Extensions;
 using ISI.Extensions.Jenkins.Extensions;
 using ISI.Extensions.Jenkins.Forms.Extensions;
 using Microsoft.Extensions.DependencyInjection;
@@ -127,7 +128,7 @@ namespace ISI.Extensions.Jenkins.Forms
 				JenkinsServer.Description = txtDescription.Text;
 				JenkinsServer.UserName = txtUserName.Text;
 				JenkinsServer.ApiToken = txtApiToken.Text;
-				JenkinsServer.Directories = [.. DirectoryPanels.Where(directoryPanel => !directoryPanel.Delete).Select(directoryPanel => directoryPanel.Directory)];
+				JenkinsServer.Directories = DirectoryPanels.Where(directoryPanel => !directoryPanel.Delete).Select(directoryPanel => directoryPanel.Directory).ToNullCheckedArray(NullCheckCollectionResult.Empty);
 				
 				JenkinsApi.SetJenkinsServerSettings(new()
 				{

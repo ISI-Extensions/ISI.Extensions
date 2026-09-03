@@ -92,11 +92,11 @@ namespace ISI.Extensions.JsonJwt.Extensions
 
 				if (valueType.IsDefined(typeof(System.Runtime.Serialization.DataContractAttribute), false))
 				{
-					properties = [.. ISI.Extensions.DataContract.GetDataMemberPropertyInfos(valueType).OrderBy(property => property.Order)];
+					properties = ISI.Extensions.DataContract.GetDataMemberPropertyInfos(valueType).OrderBy(property => property.Order).ToNullCheckedArray(NullCheckCollectionResult.Empty);
 				}
 				else
 				{
-					properties = [.. valueType.GetProperties().Where(propertyInfo => propertyInfo.CanRead).Select(property => new ISI.Extensions.DataContract.DataMemberPropertyInfo(new() { Name = property.Name }, property, false)).OrderBy(property => property.Order)];
+					properties = valueType.GetProperties().Where(propertyInfo => propertyInfo.CanRead).Select(property => new ISI.Extensions.DataContract.DataMemberPropertyInfo(new() { Name = property.Name }, property, false)).OrderBy(property => property.Order).ToNullCheckedArray(NullCheckCollectionResult.Empty);
 				}
 
 				var payloadDictionary = new Dictionary<string, object>();

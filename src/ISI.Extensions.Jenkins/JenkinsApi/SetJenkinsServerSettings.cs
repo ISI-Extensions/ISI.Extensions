@@ -47,7 +47,7 @@ namespace ISI.Extensions.Jenkins
 						Directories = request.JenkinsServer.Directories.ToNullCheckedArray(),
 					});
 
-					jenkinsSettings.JenkinsServers = [.. jenkinsServers];
+					jenkinsSettings.JenkinsServers = jenkinsServers.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 					return true;
 				},

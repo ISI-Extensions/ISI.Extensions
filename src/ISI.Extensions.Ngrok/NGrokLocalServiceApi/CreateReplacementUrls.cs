@@ -232,7 +232,7 @@ namespace ISI.Extensions.Ngrok
 					}
 				}
 
-				response.Tunnels = [.. tunnels];
+				response.Tunnels = tunnels.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 			}
 
 			return response;

@@ -60,7 +60,7 @@ namespace ISI.Extensions.ScmManager
 				uri = string.IsNullOrWhiteSpace(apiResponse?.Links.Next?.Href) ? null : new UriBuilder(apiResponse.Links.Next.Href);
 			}
 
-			response.RepositoryChangeSets = [.. repositoryChangeSets];
+			response.RepositoryChangeSets = repositoryChangeSets.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 			return response;
 		}

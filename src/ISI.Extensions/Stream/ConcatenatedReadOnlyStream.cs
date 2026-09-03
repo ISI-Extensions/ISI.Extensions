@@ -90,7 +90,7 @@ namespace ISI.Extensions
 
 			public ConcatenatedReadOnlyStream(IEnumerable<System.IO.Stream> streams)
 			{
-				_streams = [.. streams];
+				_streams = new List<System.IO.Stream>(streams ?? []);
 				Reset();
 			}
 

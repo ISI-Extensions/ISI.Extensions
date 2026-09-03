@@ -52,7 +52,7 @@ namespace ISI.Extensions.Docker
 				{
 					Logger = new NullLogger(),
 					ProcessExeFullName = "docker",
-					Arguments = [.. arguments],
+					Arguments = arguments.ToArray(),
 				});
 
 				if (waitForProcessResponse.Errored)

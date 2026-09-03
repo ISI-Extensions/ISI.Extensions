@@ -95,7 +95,7 @@ namespace ISI.Extensions.Jenkins.Extensions
 		{
 			var jenkinsServers = (jenkinsApi.GetJenkinsSettings(new())?.JenkinsSettings?.JenkinsServers ?? []);
 
-			return [.. jenkinsServers.Select(Convert).OrderBy(jenkinsServer => jenkinsServer.DisplayDescription, StringComparer.InvariantCultureIgnoreCase)];
+			return jenkinsServers.Select(Convert).OrderBy(jenkinsServer => jenkinsServer.DisplayDescription, StringComparer.InvariantCultureIgnoreCase).ToNullCheckedArray(NullCheckCollectionResult.Empty);
 		}
 
 		public static ISI.Extensions.Jenkins.JenkinsServer GetJenkinsServer(this JenkinsApi jenkinsApi, Guid jenkinsServerUuid)

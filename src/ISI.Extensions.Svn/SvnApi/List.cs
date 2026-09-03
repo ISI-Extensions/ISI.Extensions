@@ -59,7 +59,7 @@ namespace ISI.Extensions.Svn
 				{
 					Logger = new NullLogger(),
 					ProcessExeFullName = "svn",
-					Arguments = [.. arguments],
+					Arguments = arguments.ToArray(),
 				}).Output;
 
 				response.FileNames = content.Split(["\r", "\n"], StringSplitOptions.RemoveEmptyEntries);

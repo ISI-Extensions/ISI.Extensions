@@ -84,7 +84,7 @@ namespace ISI.Extensions.NameCheap
 				}
 			}
 
-			response.Certificates = [.. certificates];
+			response.Certificates = certificates.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 			return response;
 		}

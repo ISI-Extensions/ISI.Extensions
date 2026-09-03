@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Extensions.DependencyInjection;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.TypeLocator.Extensions
 {
@@ -38,7 +38,7 @@ namespace ISI.Extensions.TypeLocator.Extensions
 		{
 			var types = container.GetImplementationTypes(serviceType);
 
-			return [.. types.Select(createItem)];
+			return types.Select(createItem).ToNullCheckedArray(NullCheckCollectionResult.Empty);
 		}
 
 
@@ -54,7 +54,7 @@ namespace ISI.Extensions.TypeLocator.Extensions
 		{
 			var types = container.GetImplementationTypes(typeof(TServiceType));
 
-			return [.. types.Select(createItem)];
+			return types.Select(createItem).ToNullCheckedArray(NullCheckCollectionResult.Empty);
 		}
 
 

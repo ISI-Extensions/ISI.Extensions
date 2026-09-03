@@ -162,7 +162,7 @@ namespace ISI.Extensions.Debian
 
 									if (dataFiles.Any())
 									{
-										response.DataFiles = [.. dataFiles];
+										response.DataFiles = dataFiles.ToArray();
 									}
 								}
 								else
@@ -191,7 +191,7 @@ namespace ISI.Extensions.Debian
 
 									if (dataFiles.Any())
 									{
-										response.DataFiles = [.. dataFiles];
+										response.DataFiles = dataFiles.ToArray();
 									}
 								}
 								else

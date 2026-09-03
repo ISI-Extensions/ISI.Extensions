@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 using ISI.Extensions.VisualStudio.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -95,7 +96,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 				}
 
 				//form.SolutionsPanel.Controls.AddRange(context.Solutions.OrderBy(solution => solution.Caption, StringComparer.InvariantCultureIgnoreCase).Select(solution => solution.Panel).ToArray());
-				form.SolutionsPanel.Controls.AddRange([.. context.Solutions.Select(solution => solution.Panel)]);
+				form.SolutionsPanel.Controls.AddRange(context.Solutions.Select(solution => solution.Panel).ToNullCheckedArray(NullCheckCollectionResult.Empty));
 
 				OnChangedSelection();
 

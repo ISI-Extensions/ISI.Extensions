@@ -66,7 +66,7 @@ namespace ISI.Extensions.DependencyInjection.Extensions
 						});
 					}
 
-					createService = ExpressionBuilder.Create(mapToType ?? serviceType, [.. injections]);
+					createService = ExpressionBuilder.Create(mapToType ?? serviceType, injections.ToNullCheckedArray(NullCheckCollectionResult.Empty));
 				}
 
 				ISI.Extensions.DependencyInjection.BuildUpService buildUpService = null;

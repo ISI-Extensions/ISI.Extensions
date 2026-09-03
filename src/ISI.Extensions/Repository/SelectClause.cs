@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Repository
 {
@@ -32,7 +33,7 @@ namespace ISI.Extensions.Repository
 		}
 		public SelectClause(IEnumerable<string> columnNames)
 		{
-			ColumnNames = [.. columnNames];
+			ColumnNames = columnNames.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 		}
 
 		string ISelectClause.GetSql(string queryAlias)

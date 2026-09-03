@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Jenkins
 {
@@ -50,7 +51,7 @@ namespace ISI.Extensions.Jenkins
 				JenkinsUrl = getValue(JenkinsUrl),
 				UserName = getValue(UserName),
 				ApiToken = getValue(ApiToken),
-				Directories = [.. (Directories ?? []).Select(getValue)],
+				Directories = (Directories ?? []).Select(getValue).ToNullCheckedArray(NullCheckCollectionResult.Empty),
 			};
 		}
 	}

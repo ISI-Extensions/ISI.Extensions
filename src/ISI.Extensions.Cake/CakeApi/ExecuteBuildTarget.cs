@@ -61,7 +61,7 @@ namespace ISI.Extensions.Cake
 				ISI.Extensions.Process.ExecuteShell(new ISI.Extensions.Process.ExecuteShellRequest()
 				{
 					ProcessExeFullName = "cmd",
-					Arguments = [.. arguments],
+					Arguments = arguments.ToArray(),
 					WorkingDirectory = System.IO.Path.GetDirectoryName(request.BuildScriptFullName),
 				});
 			}
@@ -71,7 +71,7 @@ namespace ISI.Extensions.Cake
 				{
 					Logger = logger,
 					ProcessExeFullName = "dotnet-cake",
-					Arguments = [.. arguments],
+					Arguments = arguments.ToArray(),
 					WorkingDirectory = System.IO.Path.GetDirectoryName(request.BuildScriptFullName),
 				});
 

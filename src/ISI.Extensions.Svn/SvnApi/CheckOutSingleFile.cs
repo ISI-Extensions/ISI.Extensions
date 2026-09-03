@@ -64,7 +64,7 @@ svn up <file_you_want>
 				{
 					Logger = new AddToLogLogger(request.AddToLog, Logger),
 					ProcessExeFullName = "svn",
-					Arguments = [.. arguments],
+					Arguments = arguments.ToArray(),
 				}).Errored;
 
 				if (response.Success)
@@ -79,7 +79,7 @@ svn up <file_you_want>
 					{
 						Logger = new AddToLogLogger(request.AddToLog, Logger),
 						ProcessExeFullName = "svn",
-						Arguments = [.. arguments],
+						Arguments = arguments.ToArray(),
 						WorkingDirectory = targetFullName,
 					}).Errored;
 				}

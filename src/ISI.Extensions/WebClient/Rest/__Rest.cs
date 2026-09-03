@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ISI.Extensions.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ISI.Extensions.WebClient
@@ -53,7 +54,7 @@ namespace ISI.Extensions.WebClient
 
 				ignoreServerCertificateValidationForSubjectsContaining.Add(subject);
 
-				RestConfiguration.IgnoreServerCertificateValidationForSubjectsContaining = [.. ignoreServerCertificateValidationForSubjectsContaining];
+				RestConfiguration.IgnoreServerCertificateValidationForSubjectsContaining = ignoreServerCertificateValidationForSubjectsContaining.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 			}
 		}
 

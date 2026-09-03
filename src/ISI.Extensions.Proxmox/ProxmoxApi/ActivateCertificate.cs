@@ -78,7 +78,7 @@ namespace ISI.Extensions.Proxmox
 				}
 			}
 			
-			response.LogEntries = [.. logEntries];
+			response.LogEntries = logEntries.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 			return response;
 		}

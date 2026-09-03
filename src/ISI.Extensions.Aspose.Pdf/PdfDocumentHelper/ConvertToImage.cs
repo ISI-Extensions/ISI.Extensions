@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Aspose
 {
@@ -80,7 +81,7 @@ namespace ISI.Extensions.Aspose
 					}
 				}
 
-				return [.. outputStreams];
+				return outputStreams.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 			}
 		}
 	}

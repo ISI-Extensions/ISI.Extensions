@@ -241,7 +241,7 @@ namespace ISI.Extensions.Sbom
 			{
 				Logger = logger,
 				ProcessExeFullName = "dotnet-CycloneDX",
-				Arguments = [.. arguments],
+				Arguments = arguments.ToArray(),
 			});
 
 			response.Output = waitForProcessResponse.Output;

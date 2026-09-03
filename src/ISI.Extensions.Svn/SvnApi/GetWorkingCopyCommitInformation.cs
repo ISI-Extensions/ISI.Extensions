@@ -50,7 +50,7 @@ namespace ISI.Extensions.Svn
 					{
 						Logger = new NullLogger(),
 						ProcessExeFullName = "svn",
-						Arguments = [.. arguments],
+						Arguments = arguments.ToArray(),
 						WorkingDirectory = workingDirectory,
 					});
 
@@ -72,7 +72,7 @@ namespace ISI.Extensions.Svn
 					{
 						Logger = new NullLogger(),
 						ProcessExeFullName = "svn",
-						Arguments = [.. arguments],
+						Arguments = arguments.ToArray(),
 						WorkingDirectory = workingDirectory,
 					});
 

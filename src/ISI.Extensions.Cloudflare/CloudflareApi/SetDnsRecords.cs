@@ -128,7 +128,7 @@ namespace ISI.Extensions.Cloudflare
 				}
 			}
 
-			response.DnsRecords = [.. dnsRecords];
+			response.DnsRecords = dnsRecords.ToArray();
 
 			return response;
 		}

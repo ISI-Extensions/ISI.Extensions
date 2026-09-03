@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ISI.Extensions.VisualStudio.Forms
@@ -391,7 +392,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 				});
 			}
 
-			return [.. tasks];
+			return tasks.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 		}
 
 		public void StopService()

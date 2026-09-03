@@ -48,7 +48,7 @@ namespace ISI.Extensions.Nuget
 				}
 			}
 
-			response.PackageSources = [.. packageSources];
+			response.PackageSources = packageSources.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 			return response;
 		}

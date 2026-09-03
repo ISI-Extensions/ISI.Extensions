@@ -143,7 +143,7 @@ namespace ISI.Extensions.Repository.SqlServer
 				}
 			}
 
-			return [.. result];
+			return result.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 		}
 	}
 }

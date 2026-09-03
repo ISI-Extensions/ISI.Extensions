@@ -50,7 +50,7 @@ namespace ISI.Platforms.AspNetCore.Extensions
 				{
 					options.AddDefaultPolicy(policy =>
 					{
-						policy.WithOrigins([.. corsPolicyOrigins]);
+						policy.WithOrigins(corsPolicyOrigins.ToNullCheckedArray(NullCheckCollectionResult.Empty));
 						if (allowAnyHeader ?? configuration?.Cors?.AllowAnyHeader ?? true)
 						{
 							policy.AllowAnyHeader();

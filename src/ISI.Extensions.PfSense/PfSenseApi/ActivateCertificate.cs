@@ -113,7 +113,7 @@ namespace ISI.Extensions.PfSense
 				}
 			}
 			
-			response.LogEntries = [.. logEntries];
+			response.LogEntries = logEntries.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 			return response;
 		}

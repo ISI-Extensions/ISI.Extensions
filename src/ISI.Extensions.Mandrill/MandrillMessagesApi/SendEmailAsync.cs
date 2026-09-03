@@ -73,7 +73,7 @@ namespace ISI.Extensions.Mandrill
 					EmailAddressCaption = emailAddress.Caption,
 				}));
 
-				restRequest.Message.To = [.. emailAddresses];
+				restRequest.Message.To = emailAddresses.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 				restRequest.Message.Important = (request.Email.EmailMailMessage.Priority == ISI.Extensions.Emails.EmailMessagePriority.High);
 
@@ -172,7 +172,7 @@ namespace ISI.Extensions.Mandrill
 							emailSenderResponseRecipients.Add(emailSenderResponseRecipient);
 						}
 
-						response.RecipientResponses = [.. emailSenderResponseRecipients];
+						response.RecipientResponses = emailSenderResponseRecipients.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 					}
 				}
 				catch (Exception exception)

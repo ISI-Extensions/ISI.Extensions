@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Caching.Extensions
 {
@@ -170,7 +171,7 @@ namespace ISI.Extensions.Caching.Extensions
 
 						Add(cacheManager, CachedItemProxies.GetCachedItemProxiesCacheKey(cacheKey), new CachedItemProxies()
 						{
-							ProxyCacheKeys = [.. proxyCacheKeys],
+							ProxyCacheKeys = proxyCacheKeys.ToNullCheckedArray(NullCheckCollectionResult.Empty),
 						}, () => cacheManager.GetDefaultCacheEntryExpirationPolicy(item));
 					}
 				}

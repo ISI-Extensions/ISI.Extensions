@@ -70,7 +70,7 @@ namespace ISI.Extensions.VisualStudioCode.Extensions
 
 					if (!settings.RefreshSolutionsPreviouslySelectedSolutions.Equals(solutions, StringComparer.InvariantCultureIgnoreCase, true))
 					{
-						settings.RefreshSolutionsPreviouslySelectedSolutions = [.. solutions];
+						settings.RefreshSolutionsPreviouslySelectedSolutions = solutions.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 						return true;
 					}
@@ -107,7 +107,7 @@ namespace ISI.Extensions.VisualStudioCode.Extensions
 
 					if (!settings.UpgradeNodeModulesPreviouslySelectedProjectKeys.Equals(projectKeys, StringComparer.InvariantCultureIgnoreCase, true))
 					{
-						settings.UpgradeNodeModulesPreviouslySelectedProjectKeys = [.. projectKeys];
+						settings.UpgradeNodeModulesPreviouslySelectedProjectKeys = projectKeys.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 						return true;
 					}

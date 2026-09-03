@@ -73,7 +73,7 @@ namespace ISI.Extensions.BitBucket
 					{
 						Logger = logger,
 						ProcessExeFullName = "git",
-						Arguments = [.. arguments],
+						Arguments = arguments.ToNullCheckedArray(NullCheckCollectionResult.Empty),
 					});
 
 					if (pullRepositoryResponse.ExitCode == 0)

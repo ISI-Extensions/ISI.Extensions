@@ -124,7 +124,7 @@ namespace ISI.Extensions.Documents
 				sourceTemplateDataKeys.Add(PostalCodeSourceTemplateDataKey);
 			}
 
-			return [.. sourceTemplateDataKeys];
+			return sourceTemplateDataKeys.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 		}
 
 		private string GetValue(IDictionary<string, object> values, string key)

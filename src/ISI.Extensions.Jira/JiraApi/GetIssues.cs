@@ -49,7 +49,7 @@ namespace ISI.Extensions.Jira
 				issues.Add(jiraResponse?.Export());
 			}
 
-			response.Issues = [.. issues];
+			response.Issues = issues.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 			return response;
 		}

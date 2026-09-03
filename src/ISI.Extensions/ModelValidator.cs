@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions
 {
@@ -59,7 +60,7 @@ namespace ISI.Extensions
 				where !attribute.IsValid(propertyInfo.GetValue(model))
 				select (FieldName: $"{prefix}{propertyInfo.Name}", ErrorMessage: attribute.FormatErrorMessage(string.Empty)));
 
-			return [.. result];
+			return result.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 		}
 	}
 }

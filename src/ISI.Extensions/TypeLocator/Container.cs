@@ -86,7 +86,7 @@ namespace ISI.Extensions.TypeLocator
 		{
 			if (ImplementationTypesLookup.TryGetValue(type, out var implementationTypes))
 			{
-				return [.. implementationTypes];
+				return implementationTypes.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 			}
 
 			return Type.EmptyTypes;

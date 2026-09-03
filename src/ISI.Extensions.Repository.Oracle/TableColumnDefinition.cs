@@ -75,7 +75,7 @@ namespace ISI.Extensions.Repository.Oracle
 				}
 			}
 
-			return [.. result];
+			return result.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 		}
 	}
 }

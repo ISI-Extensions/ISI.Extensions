@@ -60,7 +60,7 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 						}
 					}
 
-					return [.. values];
+					return values.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 				}
 			}
 			catch

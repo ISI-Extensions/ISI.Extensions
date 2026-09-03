@@ -75,7 +75,7 @@ namespace ISI.Extensions.Repository.PostgreSQL
 				}
 			}
 
-			return [.. result];
+			return result.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 		}
 	}
 }

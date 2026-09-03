@@ -60,7 +60,7 @@ namespace ISI.Extensions.Security.ActiveDirectory.Extensions
 						}
 					}
 
-					return [.. values];
+					return values.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 				}
 			}
 			catch

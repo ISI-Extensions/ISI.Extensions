@@ -34,7 +34,7 @@ namespace ISI.Extensions.Ascii
 
 			public RecordDefinition(ColumnInfoCollection<TRecord> columns, IsRecordTypeDelegate isRecordType)
 			{
-				Columns = [.. columns];
+				Columns = columns.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 				IsRecordType = isRecordType ?? (bytes => true);
 			}
 

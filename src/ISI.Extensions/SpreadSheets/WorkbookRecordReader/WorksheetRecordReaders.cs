@@ -64,7 +64,7 @@ namespace ISI.Extensions.SpreadSheets
 						}
 					}
 				}
-				_columnIndexes = [.. Enumerable.Range(0, Columns.Count - 1)];
+				_columnIndexes = Enumerable.Range(0, Columns.Count - 1).ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 				OnReads = onReads.ToNullCheckedArray(ISI.Extensions.Extensions.NullCheckCollectionResult.Empty);
 

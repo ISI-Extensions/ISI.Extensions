@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions
 {
@@ -35,7 +36,7 @@ namespace ISI.Extensions
 						recordHeader.Header = source;
 					}
 
-					columnIndexes = [.. System.Linq.Enumerable.Range(0, values.Length).Select(columnIndex => -1)];
+					columnIndexes = System.Linq.Enumerable.Range(0, values.Length).Select(columnIndex => -1).ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 					for (var valueIndex = 0; valueIndex < values.Length; valueIndex++)
 					{
@@ -69,7 +70,7 @@ namespace ISI.Extensions
 
 					values[0] = headerColumnValue.Substring(headerPrefix.Length);
 
-					columnIndexes = [.. System.Linq.Enumerable.Range(0, values.Length).Select(columnIndex => -1)];
+					columnIndexes = System.Linq.Enumerable.Range(0, values.Length).Select(columnIndex => -1).ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 					for (var valueIndex = 0; valueIndex < values.Length; valueIndex++)
 					{

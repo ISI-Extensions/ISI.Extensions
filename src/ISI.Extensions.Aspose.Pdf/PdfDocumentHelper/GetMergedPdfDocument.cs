@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Aspose
 {
@@ -92,7 +93,7 @@ namespace ISI.Extensions.Aspose
 					}
 				}
 
-				pdfEditor.Concatenate([.. documentsToMerge.Select(document => document.Stream)], outputStream);
+				pdfEditor.Concatenate(documentsToMerge.ToNullCheckedArray(document => document.Stream, NullCheckCollectionResult.Empty), outputStream);
 
 				return new ISI.Extensions.Documents.Document()
 				{

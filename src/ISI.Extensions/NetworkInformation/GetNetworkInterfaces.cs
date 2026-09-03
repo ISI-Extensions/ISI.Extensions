@@ -51,7 +51,7 @@ namespace ISI.Extensions
 				});
 			}
 
-			return [.. response];
+			return response.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 		}
 	}
 }

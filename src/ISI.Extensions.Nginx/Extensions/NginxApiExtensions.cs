@@ -59,7 +59,7 @@ namespace ISI.Extensions.Nginx.Extensions
 		{
 			var nginxManagerServers = (nginxApi.GetNginxSettings(new())?.NginxSettings?.NginxManagerServers ?? []);
 
-			return [.. nginxManagerServers.OrderBy(nginxManagerServer => nginxManagerServer.Description, StringComparer.InvariantCultureIgnoreCase)];
+			return nginxManagerServers.OrderBy(nginxManagerServer => nginxManagerServer.Description, StringComparer.InvariantCultureIgnoreCase).ToNullCheckedArray(NullCheckCollectionResult.Empty);
 		}
 
 		public static ISI.Extensions.Nginx.NginxManagerServer GetNginxManagerServer(this NginxApi nginxApi, Guid nginxManagerServerUuid)

@@ -75,7 +75,7 @@ namespace ISI.Extensions.Repository.SqlServer
 						attributes.Add(recordPropertyDescription.RepositoryAssignedValueAttribute);
 					}
 
-					return [.. attributes];
+					return attributes.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 				}
 
 				if (recordDescription.PrimaryKeyPropertyDescriptions.NullCheckedAny())
@@ -93,7 +93,7 @@ namespace ISI.Extensions.Repository.SqlServer
 
 					recordDescriptionIndexes.Insert(0, new()
 					{
-						Columns = [.. recordIndexColumns],
+						Columns = recordIndexColumns.ToNullCheckedArray(NullCheckCollectionResult.Empty),
 						Name = "PrimaryKeyIndex",
 						Unique = true,
 					});
@@ -112,7 +112,7 @@ namespace ISI.Extensions.Repository.SqlServer
 				var localClusteringIndexIdPropertyDescription = RecordDescription.GetRecordDescription<HasLocalClusteringIndexRecord>().PropertyDescriptions.FirstOrDefault() as IRecordPropertyDescription;
 				recordDescriptionPropertyDescriptions.Insert(0, new RecordPropertyDescription<TRecord>(localClusteringIndexIdPropertyDescription.PropertyInfo, GetAttributes(localClusteringIndexIdPropertyDescription), localClusteringIndexIdPropertyDescription.CanBeSerialized));
 
-				recordDescription = new RecordDescription<TRecord>(recordDescription.Schema, recordDescription.TableName, recordDescription.HasLocalClusteringIndex, [.. recordDescriptionPropertyDescriptions], [.. recordDescriptionIndexes]);
+				recordDescription = new RecordDescription<TRecord>(recordDescription.Schema, recordDescription.TableName, recordDescription.HasLocalClusteringIndex, recordDescriptionPropertyDescriptions.ToNullCheckedArray(NullCheckCollectionResult.Empty), recordDescriptionIndexes.ToNullCheckedArray(NullCheckCollectionResult.Empty));
 			}
 
 			return recordDescription;

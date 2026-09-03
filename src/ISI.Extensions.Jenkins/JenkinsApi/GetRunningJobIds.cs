@@ -48,7 +48,7 @@ namespace ISI.Extensions.Jenkins
 				}
 			}
 
-			response.JobIds = [.. jobIds];
+			response.JobIds = jobIds.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 			return response;
 		}

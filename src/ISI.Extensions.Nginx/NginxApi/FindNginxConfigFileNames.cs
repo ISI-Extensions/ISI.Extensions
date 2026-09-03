@@ -48,7 +48,7 @@ namespace ISI.Extensions.Nginx
 				}
 			}
 
-			response.NginxConfigFileNames = [.. nginxConfigFileNames];
+			response.NginxConfigFileNames = nginxConfigFileNames.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 			return response;
 		}

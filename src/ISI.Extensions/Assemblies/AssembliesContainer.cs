@@ -126,9 +126,9 @@ namespace ISI.Extensions.Assemblies
 				}
 			}
 
-			Assemblies = [.. assemblies.Values];
+			Assemblies = assemblies.Values.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
-			Types = [.. types];
+			Types = types.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 			return this;
 		}

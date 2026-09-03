@@ -104,7 +104,7 @@ namespace ISI.Extensions.Nuget
 					}
 				}
 
-				return [.. nugetPackageKeys];
+				return nugetPackageKeys.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 			}
 
 

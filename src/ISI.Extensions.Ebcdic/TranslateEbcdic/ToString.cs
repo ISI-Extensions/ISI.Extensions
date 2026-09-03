@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Ebcdic
 {
@@ -30,7 +31,7 @@ namespace ISI.Extensions.Ebcdic
 				return null;
 			}
 
-			return new([.. ToBytes(ebcdic).Select(Convert.ToChar)]);
+			return new(ToBytes(ebcdic).Select(Convert.ToChar).ToNullCheckedArray(NullCheckCollectionResult.Empty));
 		}
 	}
 }

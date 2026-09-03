@@ -128,7 +128,7 @@ namespace ISI.Extensions.XenOrchestra
 				}
 			}
 
-			response.LogEntries = [.. logEntries];
+			response.LogEntries = logEntries.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 			return response;
 		}

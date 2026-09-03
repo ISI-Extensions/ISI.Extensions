@@ -77,7 +77,7 @@ namespace ISI.Extensions.SqlServer
 							}
 						}
 
-						response.Databases = [.. databases];
+						response.Databases = databases.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 					}
 				}
 			}

@@ -29,7 +29,7 @@ namespace ISI.Extensions.Caching
 		public HashSet<string> CacheKeyScopes
 		{
 			get => _cacheKeyScopes ??= [];
-			set => _cacheKeyScopes = [..value ?? []];
+			set => _cacheKeyScopes = value ?? [];
 		}
 
 		public bool ClearAll { get; set; } = false;
@@ -38,7 +38,7 @@ namespace ISI.Extensions.Caching
 		public HashSet<string> CacheKeys
 		{
 			get => _cacheKeys ??= [];
-			set => _cacheKeys = [..value ?? []];
+			set => _cacheKeys = value ?? [];
 		}
 
 		private HashSet<ClearCacheRequestCacheKeyWithCacheKeyInstanceUuid> _cacheKeysWithCacheKeyInstanceUuid = null;
@@ -52,7 +52,7 @@ namespace ISI.Extensions.Caching
 		public HashSet<string> CacheKeyPrefixes
 		{
 			get => _cacheKeyPrefixes ??= [];
-			set => _cacheKeyPrefixes = [..value ?? []];
+			set => _cacheKeyPrefixes = value ?? [];
 		}
 
 		public ClearCacheRequest()

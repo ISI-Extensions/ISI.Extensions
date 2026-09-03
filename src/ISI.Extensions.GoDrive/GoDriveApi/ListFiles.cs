@@ -39,7 +39,7 @@ namespace ISI.Extensions.GoDrive
 
 			var viewState = GetViewState(content);
 
-			response.FileNames = [.. ListFiles(string.Empty, request.DirectoryUrl, cookieContainer, viewState, content, 0, request.Recursive)];
+			response.FileNames = ListFiles(string.Empty, request.DirectoryUrl, cookieContainer, viewState, content, 0, request.Recursive).ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 			return response;
 		}

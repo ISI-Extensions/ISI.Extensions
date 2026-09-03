@@ -46,7 +46,7 @@ namespace ISI.Extensions.Jenkins
 				}
 			}
 
-			response.JenkinsConfigFileNames = [.. jenkinsConfigFileNames];
+			response.JenkinsConfigFileNames = jenkinsConfigFileNames.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 			return response;
 		}

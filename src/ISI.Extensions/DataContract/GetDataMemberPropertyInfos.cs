@@ -66,7 +66,7 @@ namespace ISI.Extensions
 						property.Order = index++;
 					}
 
-					_dataContractPropertyInfos.Add(type, [.. properties.OrderBy(p => p.Order)]);
+					_dataContractPropertyInfos.Add(type, properties.NullCheckedOrderBy(p => p.Order).ToNullCheckedArray(NullCheckCollectionResult.Empty));
 				}
 				else
 				{

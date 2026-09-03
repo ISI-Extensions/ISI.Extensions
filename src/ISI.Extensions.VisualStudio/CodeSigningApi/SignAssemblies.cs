@@ -112,7 +112,7 @@ namespace ISI.Extensions.VisualStudio
 									{
 										foreach (var chunkedFilesToSign in filesToSign.Chunker(10))
 										{
-											signedFilesSuccessfully = jSignEToken(logger, request, [.. chunkedFilesToSign]);
+											signedFilesSuccessfully = jSignEToken(logger, request, chunkedFilesToSign.ToNullCheckedArray(NullCheckCollectionResult.Empty));
 										}
 									}
 								}

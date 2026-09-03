@@ -71,7 +71,7 @@ namespace ISI.Extensions.GitHub
 				}
 			}
 
-			response.Repositories = [.. repositories];
+			response.Repositories = repositories.ToArray();
 
 			return response;
 		}

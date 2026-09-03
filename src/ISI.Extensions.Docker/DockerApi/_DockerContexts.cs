@@ -103,7 +103,7 @@ namespace ISI.Extensions.Docker
 				arguments.Add($"--context {request.Context}");
 			}
 
-			return [.. arguments];
+			return arguments.ToArray();
 		}
 	}
 }

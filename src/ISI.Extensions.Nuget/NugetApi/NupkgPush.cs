@@ -138,7 +138,7 @@ namespace ISI.Extensions.Nuget
 						Logger = logger, //new NullLogger(),
 						WorkingDirectory = workingDirectory,
 						ProcessExeFullName = GetNugetExeFullName(new()).NugetExeFullName,
-						Arguments = [.. arguments],
+						Arguments = arguments.ToArray(),
 					});
 
 					if (nugetResponse.Errored)

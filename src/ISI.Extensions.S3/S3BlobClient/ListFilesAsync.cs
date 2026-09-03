@@ -58,7 +58,7 @@ namespace ISI.Extensions.S3
 					});
 				}
 
-				response.BlobInfos = [.. blobInfos];
+				response.BlobInfos = blobInfos.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 			}
 			catch
 			{

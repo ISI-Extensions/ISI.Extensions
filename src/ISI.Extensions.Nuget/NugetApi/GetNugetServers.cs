@@ -96,7 +96,7 @@ namespace ISI.Extensions.Nuget
 					}
 				}
 
-				response.NugetServers = [.. nugetServers];
+				response.NugetServers = nugetServers.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 			}
 
 			return response;

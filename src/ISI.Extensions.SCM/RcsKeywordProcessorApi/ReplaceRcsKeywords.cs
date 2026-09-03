@@ -134,7 +134,7 @@ namespace ISI.Extensions.Scm
 				}
 			});
 
-			response.ModifiedFiles = [.. modifiedFiles];
+			response.ModifiedFiles = modifiedFiles.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 			if (request.CacheRcsKeywords)
 			{
@@ -172,10 +172,10 @@ namespace ISI.Extensions.Scm
 				rcsKeywordsRepositories.Add(request.SourceDirectory, new ()
 				{
 					SourceDirectory = request.SourceDirectory,
-					RcsKeywordsFiles = [.. rcsKeywordsFiles],
+					RcsKeywordsFiles = rcsKeywordsFiles.ToNullCheckedArray(NullCheckCollectionResult.Empty),
 				});
 
-				rcsKeywordsCacheSettings.RcsKeywordsRepositories = [.. rcsKeywordsRepositories.Values];
+				rcsKeywordsCacheSettings.RcsKeywordsRepositories = rcsKeywordsRepositories.Values.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 				
 				SetRcsKeywordsCacheSettings(null, rcsKeywordsCacheSettings);
 			}

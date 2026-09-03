@@ -77,7 +77,7 @@ namespace ISI.Extensions.Repository
 				}
 			}
 
-			return new RecordDescription<TRecord>(schema, tableName, hasLocalClusteringIndex, [.. properties.Cast<IRecordPropertyDescription<TRecord>>()]);
+			return new RecordDescription<TRecord>(schema, tableName, hasLocalClusteringIndex, properties.Cast<IRecordPropertyDescription<TRecord>>().ToNullCheckedArray(NullCheckCollectionResult.Empty));
 		}
 	}
 }

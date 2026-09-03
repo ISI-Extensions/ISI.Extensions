@@ -48,7 +48,7 @@ namespace ISI.Extensions.VisualStudio
 				}
 			}
 
-			response.ProjectDetailsSet = [.. projectDetailsSet];
+			response.ProjectDetailsSet = projectDetailsSet.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 			
 			return response;
 		}

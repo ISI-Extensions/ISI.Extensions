@@ -221,7 +221,7 @@ namespace ISI.Extensions.VisualStudio
 						//	logger.LogInformation(string.Format("Signed vsix package \"{0}\"", System.IO.Path.GetFileName(fileName)));
 						//}
 
-						sign([.. vsixFullNames]);
+						sign(vsixFullNames.ToNullCheckedArray(NullCheckCollectionResult.Empty));
 
 						if (!string.IsNullOrWhiteSpace(request.OutputDirectory) && System.IO.Directory.Exists(request.OutputDirectory))
 						{

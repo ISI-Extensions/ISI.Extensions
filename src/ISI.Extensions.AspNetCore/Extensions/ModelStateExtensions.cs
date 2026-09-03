@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ISI.Extensions.AspNetCore.Extensions
@@ -135,7 +136,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 				result.AddRange(item.Value.Errors.Select(error => new KeyValuePair<string, string>(item.Key, error.ErrorMessage)));
 			}
 
-			return [.. result];
+			return result.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 		}
 	}
 }

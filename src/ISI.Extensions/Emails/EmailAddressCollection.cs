@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ISI.Extensions.Emails.Extensions;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Emails
 {
@@ -76,7 +77,7 @@ namespace ISI.Extensions.Emails
 		public int Count => _emailAddresses.Count;
 		public bool IsReadOnly => false;
 
-		public static implicit operator EmailAddressCollection(IEmailAddress[] values) => [.. values];
+		public static implicit operator EmailAddressCollection(IEmailAddress[] values) => values.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 		public static implicit operator EmailAddressCollection(string[] values) => new(values);
 		public static implicit operator EmailAddressCollection(EmailAddress value) => [value];
 		public static implicit operator EmailAddressCollection(string value) => [EmailAddress.Create(value)];

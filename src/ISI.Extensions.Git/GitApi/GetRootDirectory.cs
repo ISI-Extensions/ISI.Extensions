@@ -42,7 +42,7 @@ namespace ISI.Extensions.Git
 					{
 						Logger = new NullLogger(),
 						ProcessExeFullName = "git",
-						Arguments = [.. arguments],
+						Arguments = arguments.ToArray(),
 						WorkingDirectory = System.IO.Path.GetFullPath(request.FullName),
 					});
 
@@ -62,7 +62,7 @@ namespace ISI.Extensions.Git
 						{
 							Logger = new NullLogger(),
 							ProcessExeFullName = "git",
-							Arguments = [.. arguments],
+							Arguments = arguments.ToArray(),
 							WorkingDirectory = System.IO.Path.GetFullPath(response.FullName),
 						});
 

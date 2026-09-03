@@ -41,7 +41,7 @@ namespace ISI.Extensions.Docker
 			{
 				Logger = new NullLogger(),
 				ProcessExeFullName = "docker",
-				Arguments = [.. arguments],
+				Arguments = arguments.ToArray(),
 			}).Output;
 
 			var contentItems = new Queue<string>(content.Split(["\r", "\n"], StringSplitOptions.RemoveEmptyEntries));
@@ -62,7 +62,7 @@ namespace ISI.Extensions.Docker
 				});
 			}
 
-			response.Contexts = [.. contexts];
+			response.Contexts = contexts.ToArray();
 			
 			return response;
 		}

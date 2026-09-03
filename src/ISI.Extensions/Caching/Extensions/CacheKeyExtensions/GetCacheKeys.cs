@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace ISI.Extensions.Caching.Extensions
@@ -41,7 +42,7 @@ namespace ISI.Extensions.Caching.Extensions
 				}
 			}
 
-			return [.. cacheKeys];
+			return cacheKeys.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 		}
 	}
 }

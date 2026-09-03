@@ -97,7 +97,7 @@ namespace ISI.Extensions.Repository.RavenDb
 		{
 			return new Raven.Client.Documents.DocumentStore()
 			{
-				Urls = [.. Urls],
+				Urls = Urls.ToNullCheckedArray(NullCheckCollectionResult.Empty),
 
 				Conventions =
 				{

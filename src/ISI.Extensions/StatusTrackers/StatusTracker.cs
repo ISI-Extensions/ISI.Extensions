@@ -160,7 +160,7 @@ namespace ISI.Extensions
 
 		public IEnumerable<IStatusTrackerLogEntry> GetLogEntries()
 		{
-			return [.. _logEntries];
+			return _logEntries.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 		}
 
 		public void SetOnFinished(ISI.Extensions.StatusTrackers.OnFinished onFinished)

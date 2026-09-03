@@ -80,7 +80,7 @@ namespace ISI.Extensions.VisualStudioCode.Forms
 					context.Solutions.Add(new(solution.Key, form.SolutionsPanel, (context.Solutions.Count % 2 == 1), selectAll || solution.Value, start,  OnChangedSelection, form.SetStatus, null));
 				}
 
-				form.SolutionsPanel.Controls.AddRange([.. context.Solutions.Select(solution => solution.Panel)]);
+				form.SolutionsPanel.Controls.AddRange(context.Solutions.Select(solution => solution.Panel).ToNullCheckedArray(NullCheckCollectionResult.Empty));
 
 				OnChangedSelection();
 

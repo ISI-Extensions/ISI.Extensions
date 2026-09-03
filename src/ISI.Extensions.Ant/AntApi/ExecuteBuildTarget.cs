@@ -65,7 +65,7 @@ namespace ISI.Extensions.Ant
 				ISI.Extensions.Process.ExecuteShell(new ISI.Extensions.Process.ExecuteShellRequest()
 				{
 					ProcessExeFullName = "cmd",
-					Arguments = [.. arguments],
+					Arguments = arguments.ToNullCheckedArray(NullCheckCollectionResult.Empty),
 					WorkingDirectory = System.IO.Path.GetDirectoryName(request.BuildScriptFullName),
 				});
 			}
@@ -75,7 +75,7 @@ namespace ISI.Extensions.Ant
 				{
 					Logger = logger,
 					ProcessExeFullName = "ant",
-					Arguments = [.. arguments],
+					Arguments = arguments.ToNullCheckedArray(NullCheckCollectionResult.Empty),
 					WorkingDirectory = System.IO.Path.GetDirectoryName(request.BuildScriptFullName),
 				});
 

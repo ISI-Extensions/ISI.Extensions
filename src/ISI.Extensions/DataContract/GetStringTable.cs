@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions
 {
@@ -37,7 +38,7 @@ namespace ISI.Extensions
 
 		private static string[][] GetStringTable(DataMemberPropertyInfo[] properties, System.Collections.IEnumerable records)
 		{
-			return [.. from object record in records select GetStringRow(properties, record)];
+			return (from object record in records select GetStringRow(properties, record)).ToNullCheckedArray(NullCheckCollectionResult.Empty);
 		}
 	}
 }

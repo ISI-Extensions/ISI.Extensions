@@ -39,13 +39,13 @@ namespace ISI.Extensions.Jenkins.Forms.Extensions
 
 			if ((previousFormLocationAndSize == null) || !(previousFormLocationAndSize.Equals(formLocationAndSize)))
 			{
-				formLocationAndSizes = [.. formLocationAndSizes.ToNullCheckedList(NullCheckCollectionResult.Empty)];
+				formLocationAndSizes = formLocationAndSizes.ToNullCheckedList(NullCheckCollectionResult.Empty);
 
 				((List<JenkinsSettingsFormLocationAndSize>) formLocationAndSizes).RemoveAll(_ => string.Equals(_.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
 
 				((List<JenkinsSettingsFormLocationAndSize>) formLocationAndSizes).Add(formLocationAndSize);
 
-				return [.. formLocationAndSizes];
+				return formLocationAndSizes.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 			}
 
 			return null;

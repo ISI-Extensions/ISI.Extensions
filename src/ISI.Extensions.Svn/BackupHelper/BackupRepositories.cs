@@ -79,7 +79,7 @@ namespace ISI.Extensions.Svn
 				}
 			}
 
-			response.Backups = [.. backups];
+			response.Backups = backups.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 			return response;
 		}

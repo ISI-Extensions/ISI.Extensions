@@ -108,7 +108,7 @@ namespace ISI.Extensions.Nuget
 					{
 						Logger = new NullLogger(),
 						ProcessExeFullName = GetNugetExeFullName(new()).NugetExeFullName,
-						Arguments = [.. arguments],
+						Arguments = arguments.ToArray(),
 						WorkingDirectory = tempDirectory.FullName,
 					});
 
@@ -184,7 +184,7 @@ namespace ISI.Extensions.Nuget
 									}
 								}
 
-								response.NugetPackageKey.Dependencies = [.. nugetPackageDependencies];
+								response.NugetPackageKey.Dependencies = nugetPackageDependencies.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 							}
 
 
@@ -223,7 +223,7 @@ namespace ISI.Extensions.Nuget
 
 										nugetPackageKeyTargetFrameworkAssemblies.Add(nugetPackageKeyTargetFrameworkAssembly);
 
-										nugetPackageKeyTargetFramework.Assemblies = [.. nugetPackageKeyTargetFrameworkAssemblies];
+										nugetPackageKeyTargetFramework.Assemblies = nugetPackageKeyTargetFrameworkAssemblies.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 										nugetPackageKeyTargetFrameworks.Add(nugetPackageKeyTargetFramework);
 									}
@@ -235,7 +235,7 @@ namespace ISI.Extensions.Nuget
 								}
 							}
 
-							response.NugetPackageKey.TargetFrameworks = [.. nugetPackageKeyTargetFrameworks];
+							response.NugetPackageKey.TargetFrameworks = nugetPackageKeyTargetFrameworks.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 						}
 					}
 				}

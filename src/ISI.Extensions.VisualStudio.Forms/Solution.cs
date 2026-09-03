@@ -431,7 +431,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 			};
 			parentControl.Resize += (resizeSender, resizeArgs) => { Panel.Width = parentControl.Width - 19; };
 
-			projectKeys = [.. projectKeys ?? []];
+			projectKeys = projectKeys.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 			if (projectKeys.Any() && !projectKeys.Any(projectKey => projectKey.Selected))
 			{
 				(projectKeys.FirstOrDefault(projectKey => string.Equals(ProjectApi.GetProjectName(new()
@@ -460,7 +460,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 					solutionFilters.Insert(0, new(this, new(SolutionDetails.SolutionFullName, SolutionDetails.SolutionFullName), null, true, () => OnChangeSelected?.Invoke()));
 				}
 
-				SolutionFilters = [.. solutionFilters];
+				SolutionFilters = solutionFilters.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 			}
 
 			SolutionFilters ??= [];
@@ -758,7 +758,7 @@ namespace ISI.Extensions.VisualStudio.Forms
 				}
 			}
 
-			return [.. tasks];
+			return tasks.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 		}
 	}
 }

@@ -139,7 +139,7 @@ namespace ISI.Extensions.StatusTrackers
 				}
 			}
 
-			return [.. statusTrackers];
+			return statusTrackers.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 		}
 
 		public IStatusTrackerSnapshot[] GetActiveStatusTrackerSnapshots() => GetStatusTrackerSnapshots(GetActiveStatusTrackerKeys());

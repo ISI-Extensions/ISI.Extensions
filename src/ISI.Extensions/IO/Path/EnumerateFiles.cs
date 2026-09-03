@@ -70,7 +70,7 @@ namespace ISI.Extensions
 					}
 				}
 
-				return EnumerateFiles(path, searchPattern, [.. filters], depth + 1, maxDepth, stopIfFound);
+				return EnumerateFiles(path, searchPattern,  filters.ToArray(), depth + 1, maxDepth, stopIfFound);
 			}
 
 			return EnumerateFiles(path, searchPattern, Array.Empty<Func<string, bool>>(), depth + 1, maxDepth, stopIfFound);

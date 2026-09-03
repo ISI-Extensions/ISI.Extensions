@@ -138,7 +138,7 @@ namespace ISI.Extensions.WebClient
 				var formData = new FormData()
 				{
 					Key = key,
-					Values = [.. values],
+					Values = values.ToNullCheckedArray(NullCheckCollectionResult.Empty),
 					UrlEncode = urlEncode,
 				};
 

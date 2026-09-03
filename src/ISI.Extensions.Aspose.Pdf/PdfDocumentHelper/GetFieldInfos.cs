@@ -100,7 +100,7 @@ namespace ISI.Extensions.Aspose
 					pdfFieldInfos.Add(pdfFieldInfo);
 				}
 
-				return [.. pdfFieldInfos];
+				return pdfFieldInfos.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 			}
 		}
 	}

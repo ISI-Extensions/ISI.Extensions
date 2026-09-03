@@ -28,7 +28,7 @@ namespace ISI.Extensions.Dns
 		{
 			var response = new DTOs.GetTxtRecordsResponse();
 
-			response.Values = [.. GetTxtRecords(request.Domain, request.Name, request.NameServer)];
+			response.Values = GetTxtRecords(request.Domain, request.Name, request.NameServer).ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 			if (!response.Values.NullCheckedAny())
 			{
@@ -39,7 +39,7 @@ namespace ISI.Extensions.Dns
 
 				if (!string.IsNullOrWhiteSpace(nameServer))
 				{
-					response.Values = [.. GetTxtRecords(request.Domain, request.Name, nameServer)];
+					response.Values = GetTxtRecords(request.Domain, request.Name, nameServer).ToNullCheckedArray(NullCheckCollectionResult.Empty);
 				}
 			}
 
@@ -126,7 +126,7 @@ namespace ISI.Extensions.Dns
 				}
 			}
 
-			response.NameServers = [.. values];
+			response.NameServers = values.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 			return response;
 		}

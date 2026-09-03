@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions
 {
@@ -37,7 +38,7 @@ namespace ISI.Extensions
 					result.Insert(0, Download);
 				}
 
-				return [.. result];
+				return result.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 			}
 			catch
 			{

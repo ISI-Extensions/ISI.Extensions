@@ -41,7 +41,7 @@ namespace ISI.Extensions
 		}
 
 		public void Clear() => _dictionary.Clear();
-		
+
 		public bool Remove(KeyValuePair<string, TValue> item) => _dictionary.Remove(item);
 
 		public void Add(KeyValuePair<string, TValue> item) => _dictionary.Add(item);
@@ -61,14 +61,14 @@ namespace ISI.Extensions
 				}
 			}
 		}
-		
+
 		public bool Contains(KeyValuePair<string, TValue> item) => _dictionary.Contains(item);
 		public bool ContainsKey(string key) => _dictionary.ContainsKey(key);
-		
+
 		public void CopyTo(KeyValuePair<string, TValue>[] array, int arrayIndex) => _dictionary.CopyTo(array, arrayIndex);
 
 		public bool Remove(string key) => _dictionary.Remove(key);
-		
+
 		public bool TryGetValue(string key, out TValue value) => _dictionary.TryGetValue(key, out value);
 
 		public TValue this[string key]

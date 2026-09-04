@@ -91,10 +91,10 @@ namespace ISI.Extensions
 
 		public void UnionWith(IEnumerable<string> other) => _hashSet.UnionWith(other ?? []);
 
-		public HashSet<string> Clone() => new HashSet<string>(_hashSet ?? [], StringComparer.InvariantCultureIgnoreCase);
+		public HashSet<string> Clone() => new HashSet<string>(_hashSet.ToArray(), StringComparer.InvariantCultureIgnoreCase);
 
-		public static implicit operator InvariantCultureIgnoreCaseStringHashSet(HashSet<string> values) => values ?? [];
-		public static implicit operator InvariantCultureIgnoreCaseStringHashSet(string[] values) => values ?? [];
-		public static implicit operator InvariantCultureIgnoreCaseStringHashSet(string value) => [value];
+		public static implicit operator InvariantCultureIgnoreCaseStringHashSet(HashSet<string> values) => new(values);
+		public static implicit operator InvariantCultureIgnoreCaseStringHashSet(string[] values) => new(values);
+		public static implicit operator InvariantCultureIgnoreCaseStringHashSet(string value) => new([value]);
 	}
 }

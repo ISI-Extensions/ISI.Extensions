@@ -236,6 +236,8 @@ namespace ISI.Extensions.VisualStudio
 								WorkingCopyDirectory = solutionDetails.SolutionDirectory,
 							}).NugetConfigFullName;
 
+							solutionLogger.LogInformation($"using nuget.Config: {nugetConfigFullName}");
+
 							var solutionIgnorePackageIds = new HashSet<string>(solutionDetails.DoNotUpgradePackages ?? [], StringComparer.InvariantCultureIgnoreCase);
 							solutionIgnorePackageIds.UnionWith(ignorePackageIds);
 

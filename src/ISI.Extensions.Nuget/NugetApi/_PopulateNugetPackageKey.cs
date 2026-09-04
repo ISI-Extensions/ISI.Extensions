@@ -36,11 +36,6 @@ namespace ISI.Extensions.Nuget
 
 			var usedCachedNugetPackageKey = false;
 
-			if (string.Equals(nugetPackageKey.Package, "Aspose.BarCode", StringComparison.InvariantCultureIgnoreCase))
-			{
-				var x = 0;
-			}
-
 			var nugetPackageKeyCacheDirectory = GetNugetPackageKeyCacheDirectory();
 
 			string getCachedNugetPackageKeyDirectory(string package)

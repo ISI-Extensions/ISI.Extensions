@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2026, Integrated Solutions, Inc.
 All rights reserved.
@@ -19,56 +19,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.JsonSerialization.Extensions;
+using ISI.Extensions.Nuget.Extensions;
+using DTOs = ISI.Extensions.Nuget.DataTransferObjects.NugetApi;
+using SerializableDTOs = ISI.Extensions.Nuget.SerializableModels.Nuget;
+using Microsoft.Extensions.Logging;
 
-namespace ISI.Extensions.Nuget.Forms.Extensions
+namespace ISI.Extensions.Nuget
 {
-	public static partial class NugetSettingsExtensions
+	public partial class NugetApi
 	{
-		private static NugetSettingsFormLocationAndSize[] RecordFormSize(IEnumerable<NugetSettingsFormLocationAndSize> formLocationAndSizes, string formName, System.Windows.Forms.Form form)
+		public DTOs.PopulateNugetPackageKeyResponse PopulateNugetPackageKey(DTOs.PopulateNugetPackageKeyRequest request)
 		{
-			var formLocationAndSize = new NugetSettingsFormLocationAndSize()
-			{
-				FormName = formName,
-				Left = form.Left,
-				Top = form.Top,
-				Width = form.Width,
-				Height = form.Height,
-			};
+			var response = new DTOs.PopulateNugetPackageKeyResponse();
 
-			var previousFormLocationAndSize = formLocationAndSizes.GetFormLocationAndSize(formName);
-
-			if ((previousFormLocationAndSize == null) || !(previousFormLocationAndSize.Equals(formLocationAndSize)))
-			{
-				formLocationAndSizes = new List<NugetSettingsFormLocationAndSize>(formLocationAndSizes ?? []);
-
-				((List<NugetSettingsFormLocationAndSize>) formLocationAndSizes).RemoveAll(_ => string.Equals(_.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
-
-				((List<NugetSettingsFormLocationAndSize>) formLocationAndSizes).Add(formLocationAndSize);
-
-				return formLocationAndSizes.ToNullCheckedArray(NullCheckCollectionResult.Empty);
-			}
-
-			return null;
-		}
-
-		public static void RecordFormSize(this NugetApi nugetApi, System.Windows.Forms.Form form)
-		{
-			nugetApi.UpdateNugetSettings(new()
-			{
-				UpdateSettings = nugetSettings =>
-				{
-					var formLocationAndSizes = RecordFormSize(nugetSettings.FormLocationAndSizes, form.GetType().Name, form);
-
-					if (formLocationAndSizes == null)
-					{
-						return false;
-					}
-
-					nugetSettings.FormLocationAndSizes = formLocationAndSizes;
-
-					return true;
-				}
-			});
+			TryPopulateNugetPackageKey(request.NugetPackageKey, request.Source, request.NugetConfigFullNames);
+			
+			return response;
 		}
 	}
 }

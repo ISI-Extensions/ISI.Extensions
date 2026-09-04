@@ -382,6 +382,18 @@ namespace ISI.Extensions.VisualStudio
 
 									try
 									{
+										foreach (var nugetPackageKey in request.UpsertAssemblyRedirectsNugetPackageKeys ?? [])
+										{
+											if (!nugetPackageKey.TargetFrameworks.NullCheckedAny())
+											{
+												NugetApi.PopulateNugetPackageKey(new()
+												{
+													NugetPackageKey = nugetPackageKey,
+													NugetConfigFullNames = [nugetConfigFullName],
+												});
+											}
+										}
+
 										var newAppConfigXml = NugetApi.UpgradeAssemblyRedirects(new()
 										{
 											CsProjXml = csProj,

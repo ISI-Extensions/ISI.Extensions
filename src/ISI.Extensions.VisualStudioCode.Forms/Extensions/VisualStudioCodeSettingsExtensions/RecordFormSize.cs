@@ -39,7 +39,7 @@ namespace ISI.Extensions.VisualStudioCode.Forms.Extensions
 
 			if ((previousFormLocationAndSize == null) || !(previousFormLocationAndSize.Equals(formLocationAndSize)))
 			{
-				formLocationAndSizes = formLocationAndSizes.ToNullCheckedList(NullCheckCollectionResult.Empty);
+				formLocationAndSizes = new List<VisualStudioCodeSettingsFormLocationAndSize>(formLocationAndSizes ?? []);
 
 				((List<VisualStudioCodeSettingsFormLocationAndSize>) formLocationAndSizes).RemoveAll(_ => string.Equals(_.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
 

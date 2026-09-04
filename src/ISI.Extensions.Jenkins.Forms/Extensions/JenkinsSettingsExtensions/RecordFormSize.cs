@@ -39,7 +39,7 @@ namespace ISI.Extensions.Jenkins.Forms.Extensions
 
 			if ((previousFormLocationAndSize == null) || !(previousFormLocationAndSize.Equals(formLocationAndSize)))
 			{
-				formLocationAndSizes = formLocationAndSizes.ToNullCheckedList(NullCheckCollectionResult.Empty);
+				formLocationAndSizes = new List<JenkinsSettingsFormLocationAndSize>(formLocationAndSizes ?? []);
 
 				((List<JenkinsSettingsFormLocationAndSize>) formLocationAndSizes).RemoveAll(_ => string.Equals(_.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
 

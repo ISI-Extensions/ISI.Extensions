@@ -1,4 +1,4 @@
-﻿#region Copyright & License
+#region Copyright & License
 /*
 Copyright (c) 2026, Integrated Solutions, Inc.
 All rights reserved.
@@ -20,55 +20,13 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Nuget.Forms.Extensions
+namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public static partial class NugetSettingsExtensions
+	public class PopulateNugetPackageKeyRequest
 	{
-		private static NugetSettingsFormLocationAndSize[] RecordFormSize(IEnumerable<NugetSettingsFormLocationAndSize> formLocationAndSizes, string formName, System.Windows.Forms.Form form)
-		{
-			var formLocationAndSize = new NugetSettingsFormLocationAndSize()
-			{
-				FormName = formName,
-				Left = form.Left,
-				Top = form.Top,
-				Width = form.Width,
-				Height = form.Height,
-			};
+		public NugetPackageKey NugetPackageKey { get; set; }
 
-			var previousFormLocationAndSize = formLocationAndSizes.GetFormLocationAndSize(formName);
-
-			if ((previousFormLocationAndSize == null) || !(previousFormLocationAndSize.Equals(formLocationAndSize)))
-			{
-				formLocationAndSizes = new List<NugetSettingsFormLocationAndSize>(formLocationAndSizes ?? []);
-
-				((List<NugetSettingsFormLocationAndSize>) formLocationAndSizes).RemoveAll(_ => string.Equals(_.FormName, formName, StringComparison.InvariantCultureIgnoreCase));
-
-				((List<NugetSettingsFormLocationAndSize>) formLocationAndSizes).Add(formLocationAndSize);
-
-				return formLocationAndSizes.ToNullCheckedArray(NullCheckCollectionResult.Empty);
-			}
-
-			return null;
-		}
-
-		public static void RecordFormSize(this NugetApi nugetApi, System.Windows.Forms.Form form)
-		{
-			nugetApi.UpdateNugetSettings(new()
-			{
-				UpdateSettings = nugetSettings =>
-				{
-					var formLocationAndSizes = RecordFormSize(nugetSettings.FormLocationAndSizes, form.GetType().Name, form);
-
-					if (formLocationAndSizes == null)
-					{
-						return false;
-					}
-
-					nugetSettings.FormLocationAndSizes = formLocationAndSizes;
-
-					return true;
-				}
-			});
-		}
+		public string Source { get; set; }
+		public IEnumerable<string> NugetConfigFullNames { get; set; }
 	}
 }

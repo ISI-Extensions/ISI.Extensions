@@ -86,8 +86,6 @@ Task("Sign")
 															!project.ProjectName.EndsWith(".Tests") && 
 															!project.ProjectName.EndsWith(".T4LocalContent")).OrderBy(project => project.ProjectName, StringComparer.InvariantCultureIgnoreCase))
 			{
-				Information(project.ProjectName);
-
 				assemblyPaths.Add(GetFiles(project.ProjectDirectory + "/bin/" + configuration + "/**/" + project.ProjectName + ".dll"));
 			}
 

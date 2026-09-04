@@ -63,7 +63,19 @@ namespace ISI.Extensions.VisualStudio
 			}
 			else
 			{
-				arguments.AddRange(fileNames.Select(fileName => $"\"{fileName}\""));
+				var workingDirectory = ISI.Extensions.IO.Path.GetCommonPath(fileNames);
+
+				if (string.IsNullOrWhiteSpace(workingDirectory))
+				{
+					arguments.AddRange(fileNames.Select(fileName => $"\"{fileName}\""));
+				}
+				else
+				{
+					arguments.AddRange(fileNames.Select(fileName => $"\"{ISI.Extensions.IO.Path.GetRelativePath(workingDirectory, fileName)}\""));
+
+					workingDirectories.Clear();
+					workingDirectories.Add(workingDirectory);
+				}
 			}
 
 			var processRequest = new ISI.Extensions.Process.ProcessRequest()

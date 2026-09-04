@@ -40,8 +40,6 @@ namespace ISI.Extensions.Nuget
 			var replacements = new Dictionary<string, string>();
 			replacements.Add(" xmlns=\"\"", string.Empty);
 
-			var usedPackageReferences = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
-
 			if (sdkAttribute.StartsWith("Microsoft.NET", StringComparison.InvariantCultureIgnoreCase) || (request.CsProjXml.IndexOf("<PackageReference", StringComparison.InvariantCultureIgnoreCase) >= 0))
 			{
 				foreach (var propertyGroup in csProjXml.GetElementsByLocalName("PropertyGroup"))
@@ -96,9 +94,6 @@ namespace ISI.Extensions.Nuget
 
 						if (packageAttribute != null)
 						{
-							var packageId = string.Empty;
-							var packageVersion = string.Empty;
-
 							var hintPathAttribute = reference.GetElementByLocalName("HintPath");
 
 							if (hintPathAttribute != null)
@@ -107,55 +102,21 @@ namespace ISI.Extensions.Nuget
 
 								if (!string.IsNullOrWhiteSpace(hintPath))
 								{
-									var hintPathPieces = hintPath.Split(['\\']).ToList();
+									var parsedHintPath = ParseHintPath(hintPath);
 
-									var assemblyName = hintPathPieces.Last();
-
-									var packagesPath = string.Empty;
-									while (string.Equals(hintPathPieces.First(), "..", StringComparison.InvariantCultureIgnoreCase) || string.Equals(hintPathPieces.First(), "packages", StringComparison.InvariantCultureIgnoreCase))
+									if (request.TryGetNugetPackageKey(parsedHintPath.PackageId, parsedHintPath.Version, true, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(parsedHintPath.Version, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 									{
-										packagesPath = $"{packagesPath}\\{hintPathPieces.First()}";
-										hintPathPieces.RemoveAt(0);
-									}
-
-									packagesPath = packagesPath.TrimStart("\\");
-
-									hintPathPieces = new List<string>(hintPathPieces.First().Split(['.'], StringSplitOptions.RemoveEmptyEntries).AsEnumerable().Reverse());
-
-									var inVersion = true;
-									while (hintPathPieces.Any())
-									{
-										var pathPiece = hintPathPieces.First();
-										hintPathPieces.RemoveAt(0);
-
-										if (inVersion && pathPiece.ToIntNullable().HasValue)
+										if (!nugetPackageKey.TargetFrameworks.NullCheckedAny())
 										{
-											packageVersion = $"{pathPiece}.{packageVersion}";
+											TryPopulateNugetPackageKey(nugetPackageKey, request.Source, request.NugetConfigFullNames);
 										}
-										else
-										{
-											inVersion = false;
 
-											packageId = $"{pathPiece}.{packageId}";
-										}
-									}
-
-									packageId = packageId.TrimEnd('.');
-									if (string.IsNullOrWhiteSpace(packageId))
-									{
-										packageId = packageAttribute.Value.Split([','], StringSplitOptions.RemoveEmptyEntries).First();
-									}
-
-									packageVersion = packageVersion.TrimEnd('.');
-
-									if (request.TryGetNugetPackageKey(packageId, packageVersion, true, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
-									{
-										hintPath = nugetPackageKey.GetTargetFrameworkAssembly(targetFrameworkVersion.First())?.Assemblies?.GetHintPath(assemblyName);
+										hintPath = nugetPackageKey.GetTargetFrameworkAssembly(targetFrameworkVersion.First())?.Assemblies?.GetHintPath(parsedHintPath.AssemblyName);
 
 										if (!string.IsNullOrWhiteSpace(hintPath))
 										{
 											packageAttribute.Value = packageAttribute.Value.Split([','], StringSplitOptions.RemoveEmptyEntries).First();
-											hintPathAttribute.Value = $"{packagesPath}\\{hintPath}";
+											hintPathAttribute.Value = $"{parsedHintPath.PackagesPath}\\{hintPath}";
 										}
 									}
 								}
@@ -174,6 +135,11 @@ namespace ISI.Extensions.Nuget
 
 						if (request.TryGetNugetPackageKey(packageId, packageVersion, true, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 						{
+							if (!nugetPackageKey.TargetFrameworks.NullCheckedAny())
+							{
+								TryPopulateNugetPackageKey(nugetPackageKey, request.Source, request.NugetConfigFullNames);
+							}
+
 							if (packageVersionAttribute != null)
 							{
 								packageVersionAttribute.Value = nugetPackageKey.Version;
@@ -222,6 +188,11 @@ namespace ISI.Extensions.Nuget
 
 								if (request.TryGetNugetPackageKey(packageId, packageVersion, true, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 								{
+									if (!nugetPackageKey.TargetFrameworks.NullCheckedAny())
+									{
+										TryPopulateNugetPackageKey(nugetPackageKey, request.Source, request.NugetConfigFullNames);
+									}
+
 									pathParts[pathPartIndex + 1] = $"{packageId}.{nugetPackageKey.Version}";
 								}
 							}

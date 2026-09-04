@@ -12,29 +12,34 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using System.IO.Compression;
 using ISI.Extensions.JsonSerialization.Extensions;
 using ISI.Extensions.Nuget.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Nuget.DataTransferObjects.NugetApi;
 using SerializableDTOs = ISI.Extensions.Nuget.SerializableModels.Nuget;
-using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Nuget
 {
 	public partial class NugetApi
 	{
-		public DTOs.GetNugetPackageKeyResponse GetNugetPackageKey(DTOs.GetNugetPackageKeyRequest request)
+		private bool TryPopulateNugetPackageKey(NugetPackageKey nugetPackageKey, string source, IEnumerable<string> nugetConfigFullNames)
 		{
-			var response = new DTOs.GetNugetPackageKeyResponse();
+			var populatedNugetPackageKey = false;
 
 			var usedCachedNugetPackageKey = false;
+
+			if (string.Equals(nugetPackageKey.Package, "Aspose.BarCode", StringComparison.InvariantCultureIgnoreCase))
+			{
+				var x = 0;
+			}
 
 			var nugetPackageKeyCacheDirectory = GetNugetPackageKeyCacheDirectory();
 
@@ -48,60 +53,39 @@ namespace ISI.Extensions.Nuget
 				return System.IO.Path.Combine(getCachedNugetPackageKeyDirectory(package), $"{package}_{version}.json");
 			}
 
-			if (string.IsNullOrWhiteSpace(request.Version))
+			var cachedNugetPackageKeyFullName = getCachedNugetPackageKeyFullName(nugetPackageKey.Package, nugetPackageKey.Version);
+
+			if (System.IO.File.Exists(cachedNugetPackageKeyFullName))
 			{
-				var foundNugetPackageKey = SearchNugetPackageKeys(new()
-				                           {
-					                           Search = request.Package,
-					                           ExactMatchOnly = true,
-					                           Source = request.Source,
-					                           NugetConfigFullNames = request.NugetConfigFullNames,
-				                           }).NugetPackageKeys
-				                           .NullCheckedOrderByDescending(nugetPackageKey => global::NuGet.Versioning.NuGetVersion.Parse(nugetPackageKey.Version), new NuGet.Versioning.VersionComparer())
-				                           .NullCheckedFirstOrDefault();
-
-				if (foundNugetPackageKey != null)
+				using (var stream = System.IO.File.OpenRead(cachedNugetPackageKeyFullName))
 				{
-					response.NugetPackageKey = foundNugetPackageKey;
+					var cachedNugetPackageKey = JsonSerializer.Deserialize<SerializableDTOs.INugetPackageKey>(stream)?.Export();
 
-					return response;
+					nugetPackageKey.Dependencies = cachedNugetPackageKey.Dependencies.ToNullCheckedArray();
+					nugetPackageKey.TargetFrameworks = cachedNugetPackageKey.TargetFrameworks.ToNullCheckedArray();
+
+					usedCachedNugetPackageKey = true;
+					populatedNugetPackageKey = true;
 				}
 			}
 
-			if (!string.IsNullOrWhiteSpace(request.Version))
-			{
-				var cachedNugetPackageKeyFullName = getCachedNugetPackageKeyFullName(request.Package, request.Version);
-
-				if (System.IO.File.Exists(cachedNugetPackageKeyFullName))
-				{
-					using (var stream = System.IO.File.OpenRead(cachedNugetPackageKeyFullName))
-					{
-						response.NugetPackageKey = JsonSerializer.Deserialize<SerializableDTOs.INugetPackageKey>(stream)?.Export();
-						usedCachedNugetPackageKey = true;
-					}
-				}
-			}
-
-			if (response.NugetPackageKey == null)
+			if (!usedCachedNugetPackageKey)
 			{
 				using (var tempDirectory = new ISI.Extensions.IO.Path.TempDirectory())
 				{
 					var arguments = new List<string>();
 
 					arguments.Add("install");
-					arguments.Add(request.Package);
+					arguments.Add(nugetPackageKey.Package);
 					arguments.Add("-DependencyVersion ignore");
-					if (!string.IsNullOrWhiteSpace(request.Version))
+					arguments.Add($"-Version {nugetPackageKey.Version}");
+					if (!string.IsNullOrWhiteSpace(source))
 					{
-						arguments.Add($"-Version {request.Version}");
+						arguments.Add($"-Source \"{source}\"");
 					}
-					if (!string.IsNullOrWhiteSpace(request.Source))
+					if (nugetConfigFullNames.NullCheckedAny())
 					{
-						arguments.Add($"-Source \"{request.Source}\"");
-					}
-					if (request.NugetConfigFullNames.NullCheckedAny())
-					{
-						arguments.AddRange(GetSourcesFromConfigFileArguments(request.NugetConfigFullNames));
+						arguments.AddRange(GetSourcesFromConfigFileArguments(nugetConfigFullNames));
 					}
 
 					var nugetResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
@@ -116,64 +100,32 @@ namespace ISI.Extensions.Nuget
 					{
 						var packageFullName = System.IO.Directory.GetDirectories(tempDirectory.FullName).First();
 
-						var package = request.Package;
-						var version = System.IO.Path.GetFileName(packageFullName).Substring(request.Package.Length + 1);
-
-						var cachedNugetPackageKeyFullName = getCachedNugetPackageKeyFullName(package, version);
-
-						if (System.IO.File.Exists(cachedNugetPackageKeyFullName))
+						var nupkgFullName = System.IO.Directory.GetFiles(packageFullName, "*.nupkg").NullCheckedFirstOrDefault();
+						if (!string.IsNullOrWhiteSpace(nupkgFullName))
 						{
-							using (var stream = System.IO.File.OpenRead(cachedNugetPackageKeyFullName))
+							var nugetPackageDependencies = new HashSet<NugetPackageDependency>();
+
+							var nuspecFullName = System.IO.Path.Combine(packageFullName, $"{System.IO.Path.GetFileNameWithoutExtension(nupkgFullName)}.nuspec");
+
+							using (var zipSteam = System.IO.File.OpenRead(nupkgFullName))
 							{
-								response.NugetPackageKey = JsonSerializer.Deserialize<SerializableDTOs.INugetPackageKey>(stream)?.Export();
-								usedCachedNugetPackageKey = true;
-							}
-						}
-
-						if (response.NugetPackageKey == null)
-						{
-							response.NugetPackageKey = new()
-							{
-								Package = package,
-								Version = version,
-							};
-
-							var nupkgFullName = System.IO.Directory.GetFiles(packageFullName, "*.nupkg").NullCheckedFirstOrDefault();
-							if (!string.IsNullOrWhiteSpace(nupkgFullName))
-							{
-								var nugetPackageDependencies = new HashSet<NugetPackageDependency>();
-
-								var nuspecFullName = System.IO.Path.Combine(packageFullName, $"{System.IO.Path.GetFileNameWithoutExtension(nupkgFullName)}.nuspec");
-
-								using (var zipSteam = System.IO.File.OpenRead(nupkgFullName))
+								using (var zipArchive = new System.IO.Compression.ZipArchive(zipSteam, System.IO.Compression.ZipArchiveMode.Read))
 								{
-									using (var zipArchive = new System.IO.Compression.ZipArchive(zipSteam, System.IO.Compression.ZipArchiveMode.Read))
-									{
-										var archiveEntry = zipArchive.Entries.FirstOrDefault(file => file.Name.EndsWith(".nuspec", StringComparison.InvariantCultureIgnoreCase));
+									var archiveEntry = zipArchive.Entries.FirstOrDefault(file => file.Name.EndsWith(".nuspec", StringComparison.InvariantCultureIgnoreCase));
 
-										archiveEntry?.ExtractToFile(nuspecFullName);
-									}
+									archiveEntry?.ExtractToFile(nuspecFullName);
 								}
+							}
 
-								var nuspecXml = System.Xml.Linq.XElement.Parse(System.IO.File.ReadAllText(nuspecFullName));
+							var nuspecXml = System.Xml.Linq.XElement.Parse(System.IO.File.ReadAllText(nuspecFullName));
 
-								foreach (var metadata in nuspecXml.GetElementsByLocalName("metadata"))
+							foreach (var metadata in nuspecXml.GetElementsByLocalName("metadata"))
+							{
+								foreach (var dependencies in metadata.GetElementsByLocalName("dependencies"))
 								{
-									foreach (var dependencies in metadata.GetElementsByLocalName("dependencies"))
+									foreach (var dependencyGroup in dependencies.GetElementsByLocalName("group"))
 									{
-										foreach (var dependencyGroup in dependencies.GetElementsByLocalName("group"))
-										{
-											foreach (var dependency in dependencyGroup.GetElementsByLocalName("dependency"))
-											{
-												nugetPackageDependencies.Add(new()
-												{
-													Package = dependency.GetAttributeByLocalName("id")?.Value ?? string.Empty,
-													Version = dependency.GetAttributeByLocalName("version")?.Value ?? string.Empty,
-												});
-											}
-										}
-
-										foreach (var dependency in dependencies.GetElementsByLocalName("dependency"))
+										foreach (var dependency in dependencyGroup.GetElementsByLocalName("dependency"))
 										{
 											nugetPackageDependencies.Add(new()
 											{
@@ -182,11 +134,19 @@ namespace ISI.Extensions.Nuget
 											});
 										}
 									}
-								}
 
-								response.NugetPackageKey.Dependencies = nugetPackageDependencies.ToNullCheckedArray(NullCheckCollectionResult.Empty);
+									foreach (var dependency in dependencies.GetElementsByLocalName("dependency"))
+									{
+										nugetPackageDependencies.Add(new()
+										{
+											Package = dependency.GetAttributeByLocalName("id")?.Value ?? string.Empty,
+											Version = dependency.GetAttributeByLocalName("version")?.Value ?? string.Empty,
+										});
+									}
+								}
 							}
 
+							nugetPackageKey.Dependencies = nugetPackageDependencies.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 
 							var assemblyFullNames = System.IO.Directory.GetFiles(packageFullName, "*.dll", System.IO.SearchOption.AllDirectories)
 								.OrderBy(assemblyFullName => assemblyFullName, StringComparer.InvariantCultureIgnoreCase)
@@ -235,25 +195,26 @@ namespace ISI.Extensions.Nuget
 								}
 							}
 
-							response.NugetPackageKey.TargetFrameworks = nugetPackageKeyTargetFrameworks.ToNullCheckedArray(NullCheckCollectionResult.Empty);
+							nugetPackageKey.TargetFrameworks = nugetPackageKeyTargetFrameworks.ToNullCheckedArray(NullCheckCollectionResult.Empty);
 						}
+
+						populatedNugetPackageKey = true;
 					}
 				}
 
-				if ((response.NugetPackageKey != null) && !usedCachedNugetPackageKey && !string.IsNullOrWhiteSpace(nugetPackageKeyCacheDirectory))
+				if (populatedNugetPackageKey && !usedCachedNugetPackageKey && !string.IsNullOrWhiteSpace(nugetPackageKeyCacheDirectory))
 				{
-					System.IO.Directory.CreateDirectory(getCachedNugetPackageKeyDirectory(response.NugetPackageKey.Package));
-
-					var cachedNugetPackageKeyFullName = getCachedNugetPackageKeyFullName(response.NugetPackageKey.Package, response.NugetPackageKey.Version);
+					System.IO.Directory.CreateDirectory(nugetPackageKeyCacheDirectory);
+					System.IO.Directory.CreateDirectory(getCachedNugetPackageKeyDirectory(nugetPackageKey.Package));
 
 					using (var stream = System.IO.File.OpenWrite(cachedNugetPackageKeyFullName))
 					{
-						JsonSerializer.Serialize(SerializableDTOs.NugetPackageKeyV1.ToSerializable(response.NugetPackageKey), stream, true);
+						JsonSerializer.Serialize(SerializableDTOs.NugetPackageKeyV1.ToSerializable(nugetPackageKey), stream, true);
 					}
 				}
 			}
 
-			return response;
+			return populatedNugetPackageKey;
 		}
 	}
 }

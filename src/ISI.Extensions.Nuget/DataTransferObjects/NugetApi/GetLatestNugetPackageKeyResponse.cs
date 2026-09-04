@@ -21,11 +21,8 @@ using System.Threading.Tasks;
 
 namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 {
-	public class GetNugetPackageKeyRequest
+	public class GetLatestNugetPackageKeyResponse
 	{
-		public string Package { get; set; }
-		public string Version { get; set; }
-		public string Source { get; set; }
-		public IEnumerable<string> NugetConfigFullNames { get; set; }
+		public NugetPackageKey NugetPackageKey { get; set; }
 	}
 }

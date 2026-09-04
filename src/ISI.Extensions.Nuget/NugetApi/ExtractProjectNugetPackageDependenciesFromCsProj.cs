@@ -121,55 +121,19 @@ namespace ISI.Extensions.Nuget
 
 					if (!string.IsNullOrWhiteSpace(hintPath))
 					{
-						var hintPathPieces = hintPath.Split(['\\']).ToList();
-						while (string.Equals(hintPathPieces.First(), "..", StringComparison.InvariantCultureIgnoreCase) || string.Equals(hintPathPieces.First(), "packages", StringComparison.InvariantCultureIgnoreCase))
-						{
-							hintPathPieces.RemoveAt(0);
-						}
+						var parsedHintPath = ParseHintPath(hintPath);
 
-						hintPath = string.Join("\\", hintPathPieces);
-
-						hintPathPieces = new List<string>(hintPathPieces.First().Split(['.'], StringSplitOptions.RemoveEmptyEntries).AsEnumerable().Reverse());
-
-						packageId = string.Empty;
-						packageVersion = string.Empty;
-
-						var inVersion = true;
-						while (hintPathPieces.Any())
-						{
-							var pathPiece = hintPathPieces.First();
-							hintPathPieces.RemoveAt(0);
-
-							if (inVersion && pathPiece.ToIntNullable().HasValue)
-							{
-								packageVersion = $"{pathPiece}.{packageVersion}";
-							}
-							else
-							{
-								inVersion = false;
-
-								packageId = $"{pathPiece}.{packageId}";
-							}
-						}
-
-						packageId = packageId.TrimEnd('.');
-						packageVersion = packageVersion.TrimEnd('.');
+						packageId = parsedHintPath.PackageId;
+						packageVersion = parsedHintPath.Version;
 					}
 
 					if (!string.IsNullOrWhiteSpace(packageVersion) && !string.IsNullOrWhiteSpace(hintPath))
 					{
-						if (nugetPackageKeys.TryGetValue(packageId, out var nugetPackageKey))
-						{
-							if (!string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
-							{
-								throw new($"Multiple versions of {packageId} found in {request.CsProjFullName}");
-							}
-						}
-						else
+						if (!nugetPackageKeys.ContainsKey(packageId))
 						{
 							try
 							{
-								nugetPackageKey = new()
+								var nugetPackageKey = new NugetPackageKey()
 								{
 									Package = packageId,
 									Version = packageVersion,

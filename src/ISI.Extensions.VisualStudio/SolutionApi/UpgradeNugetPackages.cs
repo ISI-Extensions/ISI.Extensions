@@ -241,7 +241,7 @@ namespace ISI.Extensions.VisualStudio
 
 							void addNugetPackageKey(string package)
 							{
-								var getLatestPackageVersionResponse = NugetApi.GetNugetPackageKey(new()
+								var getLatestPackageVersionResponse = NugetApi.GetLatestNugetPackageKey(new()
 								{
 									Package = package,
 									NugetConfigFullNames = [nugetConfigFullName],
@@ -261,27 +261,17 @@ namespace ISI.Extensions.VisualStudio
 								{
 									var packageVersions = packageVersion.TrimStart("[").TrimEnd(")").Split(',');
 
-									var minPackageVersion = global::NuGet.Versioning.NuGetVersion.Parse(packageVersions[0]);
-									var maxPackageVersion = global::NuGet.Versioning.NuGetVersion.Parse(packageVersions[1]);
-
-									var versionComparer = new NuGet.Versioning.VersionComparer();
-
-									var foundNugetPackageKeys = NugetApi.SearchNugetPackageKeys(new()
+									var getLatestNugetPackageKeyResponse = NugetApi.GetLatestNugetPackageKey(new()
 									{
-										Search = package,
-										ExactMatchOnly = true,
+										Package = package,
 										NugetConfigFullNames = [nugetConfigFullName],
-									}).NugetPackageKeys
-											.ToNullCheckedArray(nugetPackageKey => (NuGetVersion: global::NuGet.Versioning.NuGetVersion.Parse(nugetPackageKey.Version), NugetPackageKey: nugetPackageKey));
+										MinIncludingVersion = packageVersions[0],
+										MaxExcludingVersion = packageVersions[1],
+									});
 
-									foundNugetPackageKeys = foundNugetPackageKeys
-											.NullCheckedWhere(nugetPackageKey => (versionComparer.Compare(minPackageVersion, nugetPackageKey.NuGetVersion) <= 0) && (versionComparer.Compare(maxPackageVersion, nugetPackageKey.NuGetVersion) > 0))
-											.NullCheckedOrderByDescending(nugetPackageKey => nugetPackageKey.NuGetVersion, versionComparer)
-											.ToNullCheckedArray(NullCheckCollectionResult.Empty);
-
-									if (foundNugetPackageKeys.Any())
+									if (getLatestNugetPackageKeyResponse.NugetPackageKey != null)
 									{
-										nugetPackageKey = foundNugetPackageKeys.First().NugetPackageKey;
+										nugetPackageKey = getLatestNugetPackageKeyResponse.NugetPackageKey;
 
 										nugetPackageKey.Version = $"[{nugetPackageKey.Version},{packageVersions[1]})";
 
@@ -336,6 +326,7 @@ namespace ISI.Extensions.VisualStudio
 										{
 											PackagesConfigXml = packagesConfig,
 											TryGetNugetPackageKey = tryGetNugetPackageKey,
+											NugetConfigFullNames = [nugetConfigFullName],
 										}).PackagesConfigXml;
 
 										if (HasChanges(packagesConfig, newPackagesConfig))
@@ -358,6 +349,7 @@ namespace ISI.Extensions.VisualStudio
 									{
 										CsProjXml = csProj,
 										TryGetNugetPackageKey = tryGetNugetPackageKey,
+										NugetConfigFullNames = [nugetConfigFullName],
 									}).CsProjXml;
 
 									if (HasChanges(csProj, newCsProj))

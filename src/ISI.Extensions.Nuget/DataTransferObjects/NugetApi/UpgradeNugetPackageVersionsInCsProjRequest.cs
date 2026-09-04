@@ -25,5 +25,7 @@ namespace ISI.Extensions.Nuget.DataTransferObjects.NugetApi
 	{
 		public string CsProjXml { get; set; }
 		public TryGetNugetPackageKey TryGetNugetPackageKey { get; set; }
+		public string Source { get; set; }
+		public IEnumerable<string> NugetConfigFullNames { get; set; }
 	}
 }

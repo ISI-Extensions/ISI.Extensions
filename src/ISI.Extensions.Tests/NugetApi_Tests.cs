@@ -200,38 +200,33 @@ namespace ISI.Extensions.Tests
 		{
 			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.Nuget.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
 
-			var packageVersion4 = nugetApi.GetNugetPackageKey(new()
+			var packageVersion4 = nugetApi.GetLatestNugetPackageKey(new()
 			{
 				Package = "ISI.Extensions",
 			}).NugetPackageKey.Version;
 
-			var packageVersion8 = nugetApi.GetNugetPackageKey(new()
+			var packageVersion8 = nugetApi.GetLatestNugetPackageKey(new()
 			{
 				Package = "DataTech.AccuMail-64",
 			}).NugetPackageKey;
 
-			var packageVersion5 = nugetApi.GetNugetPackageKey(new()
+			var packageVersion5 = nugetApi.GetLatestNugetPackageKey(new()
 			{
 				Package = "Microsoft.Graph.Core",
 			}).NugetPackageKey;
 
-			var packageVersion7 = nugetApi.GetNugetPackageKey(new()
-			{
-				Package = packageVersion5.Package,
-				Version = packageVersion5.Version,
-			}).NugetPackageKey;
 
-			var packageVersion = nugetApi.GetNugetPackageKey(new()
+			var packageVersion = nugetApi.GetLatestNugetPackageKey(new()
 			{
 				Package = "ISI.Extensions",
 			}).NugetPackageKey.Version;
 
-			//var packageVersion2 = nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			//var packageVersion2 = nugetApi.GetLatestNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
 			//{
 			//	PackageId = "Microsoft.CSharp",
 			//}).NugetPackageKey.Version;
 
-			var packageVersion3 = nugetApi.GetNugetPackageKey(new()
+			var packageVersion3 = nugetApi.GetLatestNugetPackageKey(new()
 			{
 				Package = "Aspose.Cells",
 			}).NugetPackageKey;
@@ -479,23 +474,19 @@ namespace ISI.Extensions.Tests
 			var nugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
 			foreach (var nugetSettingsNugetPackageKey in nugetApi.GetNugetSettings(new())?.NugetSettings?.UpdateNugetPackages?.NugetSettingsNugetPackageKeys ?? [])
 			{
-				nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new()
-				{
-					Package = nugetSettingsNugetPackageKey.PackageId,
-					Version = nugetSettingsNugetPackageKey.PackageVersion,
-				}).NugetPackageKey);
+				nugetPackageKeys.TryAdd(nugetSettingsNugetPackageKey.PackageId, nugetSettingsNugetPackageKey.PackageVersion);
 			}
-			//nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new()
+			//nugetPackageKeys.TryAdd(nugetApi.GetLatestNugetPackageKey(new()
 			//{
 			//	PackageId = "StackifyLib",
 			//	PackageVersion = "2.2.6",
 			//}).NugetPackageKey);
-			//nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new()
+			//nugetPackageKeys.TryAdd(nugetApi.GetLatestNugetPackageKey(new()
 			//{
 			//	PackageId = "Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv",
 			//	PackageVersion = "2.2.0",
 			//}).NugetPackageKey);
-			//nugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new()
+			//nugetPackageKeys.TryAdd(nugetApi.GetLatestNugetPackageKey(new()
 			//{
 			//	PackageId = "Microsoft.ClearScript",
 			//	PackageVersion = "6.0.2",
@@ -503,7 +494,7 @@ namespace ISI.Extensions.Tests
 
 
 			var upsertAssemblyRedirectsNugetPackageKeys = new ISI.Extensions.Nuget.NugetPackageKeyDictionary();
-			//upsertAssemblyRedirectsNugetPackageKeys.TryAdd(nugetApi.GetNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
+			//upsertAssemblyRedirectsNugetPackageKeys.TryAdd(nugetApi.GetLatestNugetPackageKey(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.GetNugetPackageKeyRequest()
 			//{
 			//	PackageId = "System.Memory",
 			//}).NugetPackageKey);
@@ -512,8 +503,10 @@ namespace ISI.Extensions.Tests
 			//removeAssemblyRedirects.Add("Microsoft.Identity*");
 
 			var solutionFullNames = new List<string>();
-			solutionFullNames.Add(@"E:\ISI\ISI.Extensions");
+			//solutionFullNames.Add(@"E:\ISI\ISI.Extensions");
 			//solutionFullNames.Add(@"F:\ISI\ISI.FrameWork");
+			solutionFullNames.Add(@"E:\ISI\ISI.WebApplication");
+			//solutionFullNames.Add(@"E:\ISI\ISI.Services");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Telephony.WindowsService");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.NginxManagerAgent.ServiceApplication");
 			//solutionFullNames.Add(@"F:\ISI\Internal Projects\ISI.Cake.Addin");

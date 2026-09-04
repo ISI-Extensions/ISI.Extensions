@@ -29,30 +29,45 @@ namespace ISI.Extensions.Nuget
 {
 	public partial class NugetApi
 	{
-		public DTOs.GetNugetSettingsResponse GetNugetSettings(DTOs.GetNugetSettingsRequest request)
+		private (string PackageId, string Version, string AssemblyName, string PackagesPath) ParseHintPath(string hintPath)
 		{
-			var response = new DTOs.GetNugetSettingsResponse();
+			var hintPathPieces = hintPath.Split(['\\']).ToList();
 
-			var nugetSettingsFullName = GetNugetSettingsFullName();
+			var assemblyName = hintPathPieces.Last();
 
-			response.NugetSettings = GetNugetSettings(nugetSettingsFullName);
-
-			var ignorePackageIds = new HashSet<string>(response.NugetSettings?.UpdateNugetPackages?.IgnorePackageIds ?? [], StringComparer.InvariantCultureIgnoreCase);
-			ignorePackageIds.Remove("WixToolset.Heat");
-			ignorePackageIds.Remove("WixToolset.UI.wixext");
-			if (ignorePackageIds.Count != (response.NugetSettings?.UpdateNugetPackages?.IgnorePackageIds).NullCheckedCount())
+			var packagesPath = string.Empty;
+			while (string.Equals(hintPathPieces.First(), "..", StringComparison.InvariantCultureIgnoreCase) || string.Equals(hintPathPieces.First(), "packages", StringComparison.InvariantCultureIgnoreCase))
 			{
-				response.NugetSettings ??= new();
-				response.NugetSettings.UpdateNugetPackages ??= new();
-				response.NugetSettings.UpdateNugetPackages.IgnorePackageIds = ignorePackageIds.ToNullCheckedArray(NullCheckCollectionResult.Empty);
-				SetNugetSettings(new()
-				{
-
-					NugetSettings = response.NugetSettings,
-				});
+				packagesPath = $"{packagesPath}\\{hintPathPieces.First()}";
+				hintPathPieces.RemoveAt(0);
 			}
 
-			return response;
+			packagesPath = packagesPath.TrimStart("\\");
+
+			hintPathPieces = new List<string>(hintPathPieces.First().Split(['.'], StringSplitOptions.RemoveEmptyEntries).AsEnumerable().Reverse());
+
+			var packageId = string.Empty;
+			var packageVersion = string.Empty;
+
+			var inVersion = true;
+			while (hintPathPieces.Any())
+			{
+				var pathPiece = hintPathPieces.First();
+				hintPathPieces.RemoveAt(0);
+
+				if (inVersion && pathPiece.ToIntNullable().HasValue)
+				{
+					packageVersion = $"{pathPiece}.{packageVersion}";
+				}
+				else
+				{
+					inVersion = false;
+
+					packageId = $"{pathPiece}.{packageId}";
+				}
+			}
+
+			return (PackageId: packageId.TrimEnd('.'), Version: packageVersion.TrimEnd('.'), AssemblyName: assemblyName, PackagesPath: packagesPath);
 		}
 	}
 }

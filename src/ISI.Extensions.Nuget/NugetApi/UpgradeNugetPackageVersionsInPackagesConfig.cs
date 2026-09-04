@@ -42,6 +42,11 @@ namespace ISI.Extensions.Nuget
 
 				if (request.TryGetNugetPackageKey(packageId, packageVersion, true, out var nugetPackageKey) && !string.IsNullOrWhiteSpace(nugetPackageKey.Version) && !string.Equals(packageVersion, nugetPackageKey.Version, StringComparison.InvariantCultureIgnoreCase))
 				{
+					if (!nugetPackageKey.TargetFrameworks.NullCheckedAny())
+					{
+						TryPopulateNugetPackageKey(nugetPackageKey, request.Source, request.NugetConfigFullNames);
+					}
+
 					packageTag.GetAttributeByLocalName("version").Value = nugetPackageKey.Version;
 				}
 			}

@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi
 {
-	public class ReissueCertificateResponse
+	public class ReissueCertificateResponse : ICertificateValidation
 	{
 		public string ReissueKey { get; set; }
 		public bool Success { get; set; }
@@ -34,16 +34,19 @@ namespace ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi
 
 		public int? ErrorCode { get; set; }
 		public string ErrorDescription { get; set; }
+
+		ICertificateHttpValidation ICertificateValidation.HttpValidation => HttpValidation;
+		ICertificateDNSValidation ICertificateValidation.DNSValidation => DNSValidation;
 	}
 
-	public class ReissueCertificateResponseHttpValidation
+	public class ReissueCertificateResponseHttpValidation : ICertificateHttpValidation
 	{
 		public string Domain { get; set; }
 		public string FileName { get; set; }
 		public string FileContent { get; set; }
 	}
 
-	public class ReissueCertificateResponseDNSValidation
+	public class ReissueCertificateResponseDNSValidation : ICertificateDNSValidation
 	{
 		public string Domain { get; set; }
 		public string HostName { get; set; }

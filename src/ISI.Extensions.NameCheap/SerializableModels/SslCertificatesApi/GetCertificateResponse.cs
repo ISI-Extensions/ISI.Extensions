@@ -100,16 +100,16 @@ namespace ISI.Extensions.NameCheap.SerializableModels.SslCertificatesApi
 		public string ActivationExpireDate { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute("OrderId")]
-		public int OrderId { get; set; }
+		public string OrderId { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute("ReplacedBy")]
-		public int ReplacedBy { get; set; }
+		public string ReplacedByVendorCertificateKey { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute("validationType")]
 		public string ValidationType { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute("SANSCount")]
-		public byte SANSCount { get; set; }
+		public int SANSCount { get; set; }
 	}
 
 	[System.Serializable]

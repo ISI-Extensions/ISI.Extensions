@@ -85,7 +85,7 @@ namespace ISI.Extensions.Tests
 
 			nugetApi.RestoreNugetPackages(new ISI.Extensions.Nuget.DataTransferObjects.NugetApi.RestoreNugetPackagesRequest()
 			{
-				Solution = @"F:\ISI\Internal Projects\ISI.Cake.Addin",
+				Solution = @"F:\ISI\Internal Projects\ISI.WebApplication",
 			});
 		}
 

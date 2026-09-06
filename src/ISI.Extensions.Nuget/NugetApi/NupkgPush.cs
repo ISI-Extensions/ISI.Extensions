@@ -45,21 +45,23 @@ namespace ISI.Extensions.Nuget
 
 				if (!Uri.TryCreate(serviceLocatorDirectoryUrl, UriKind.Absolute, out var serviceLocatorDirectoryUri))
 				{
-					var nugetConfigFullName = GetNugetConfigFullName(new()
+					using (var getNugetConfigFullNameResponse = GetNugetConfigFullName(new()
+					       {
+						       WorkingCopyDirectory = workingDirectory,
+					       }))
 					{
-						WorkingCopyDirectory = workingDirectory,
-					}).NugetConfigFullName;
 
-					if (serviceLocatorDirectoryUri == null)
-					{
-						var packageSources = GetPackageSourcesFromNugetConfig(new()
+						if (serviceLocatorDirectoryUri == null)
 						{
-							NugetConfigFullName = nugetConfigFullName,
-						}).PackageSources.ToNullCheckedDictionary(packageSource => packageSource.Key, packageSource => packageSource.Url, StringComparer.InvariantCultureIgnoreCase, NullCheckDictionaryResult.Empty);
+							var packageSources = GetPackageSourcesFromNugetConfig(new()
+							{
+								NugetConfigFullName = getNugetConfigFullNameResponse.NugetConfigFullName,
+							}).PackageSources.ToNullCheckedDictionary(packageSource => packageSource.Key, packageSource => packageSource.Url, StringComparer.InvariantCultureIgnoreCase, NullCheckDictionaryResult.Empty);
 
-						if (packageSources.TryGetValue(serviceLocatorDirectoryUrl, out var packageSourceUrl))
-						{
-							Uri.TryCreate(packageSourceUrl, UriKind.Absolute, out serviceLocatorDirectoryUri);
+							if (packageSources.TryGetValue(serviceLocatorDirectoryUrl, out var packageSourceUrl))
+							{
+								Uri.TryCreate(packageSourceUrl, UriKind.Absolute, out serviceLocatorDirectoryUri);
+							}
 						}
 					}
 				}
@@ -119,15 +121,16 @@ namespace ISI.Extensions.Nuget
 
 					if (!string.IsNullOrWhiteSpace(workingDirectory))
 					{
-						var nugetConfigFullName = GetNugetConfigFullName(new()
+						using (var getNugetConfigFullNameResponse = GetNugetConfigFullName(new()
+						       {
+							       WorkingCopyDirectory = workingDirectory,
+						       }))
 						{
-							WorkingCopyDirectory = workingDirectory,
-						}).NugetConfigFullName;
-
-						if (System.IO.File.Exists(nugetConfigFullName))
-						{
-							arguments.Add("-ConfigFile");
-							arguments.Add($"\"{nugetConfigFullName}\"");
+							if (System.IO.File.Exists(getNugetConfigFullNameResponse.NugetConfigFullName))
+							{
+								arguments.Add("-ConfigFile");
+								arguments.Add($"\"{getNugetConfigFullNameResponse.NugetConfigFullName}\"");
+							}
 						}
 					}
 

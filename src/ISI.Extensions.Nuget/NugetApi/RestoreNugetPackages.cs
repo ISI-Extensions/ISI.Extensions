@@ -96,44 +96,63 @@ namespace ISI.Extensions.Nuget
 
 			response.Success = targets.Any();
 
-			foreach (var target in targets)
+			using (var getNugetConfigFullNameResponse = GetNugetConfigFullName(new()
+			       {
+				       WorkingCopyDirectory = solutionDirectory,
+			       }))
 			{
-				if (solutionFullName.EndsWith(ISI.Extensions.VisualStudio.Solution.SolutionExtensionX, StringComparison.InvariantCultureIgnoreCase))
+				foreach (var target in targets)
 				{
-					var arguments = new List<string>();
-					arguments.Add("restore");
-					arguments.Add($"\"{System.IO.Path.GetDirectoryName(target)}\"");
+					if (solutionFullName.EndsWith(ISI.Extensions.VisualStudio.Solution.SolutionExtensionX, StringComparison.InvariantCultureIgnoreCase))
+					{
+						var arguments = new List<string>();
+						arguments.Add("restore");
 
-					response.Success &= !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-					{
-						Logger = logger,
-						ProcessExeFullName = "dotnet",
-						Arguments = arguments,
-					}).Errored;
-				}
-				else
-				{
-					var arguments = new List<string>();
-					arguments.Add("restore");
-					arguments.Add($"\"{target}\"");
-					if (usePackagesDirectory)
-					{
-						arguments.Add($"-PackagesDirectory \"{System.IO.Path.Combine(solutionDirectory, "packages")}\"");
+						if (System.IO.File.Exists(getNugetConfigFullNameResponse.NugetConfigFullName))
+						{
+							arguments.Add("--configfile");
+							arguments.Add($"\"{getNugetConfigFullNameResponse.NugetConfigFullName}\"");
+						}
+
+						arguments.Add($"\"{System.IO.Path.GetDirectoryName(target)}\"");
+
+						response.Success &= !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+						{
+							Logger = logger,
+							ProcessExeFullName = "dotnet",
+							Arguments = arguments,
+						}).Errored;
 					}
-
-					//arguments.Add("-NoHttpCache");
-					arguments.Add("-NonInteractive");
-					if (!string.IsNullOrWhiteSpace(request.MSBuildExe) && System.IO.File.Exists(request.MSBuildExe))
+					else
 					{
-						arguments.Add($"-MSBuildPath \"{System.IO.Path.GetDirectoryName(request.MSBuildExe)}\"");
+						var arguments = new List<string>();
+						arguments.Add("restore");
+						arguments.Add($"\"{target}\"");
+						if (usePackagesDirectory)
+						{
+							arguments.Add($"-PackagesDirectory \"{System.IO.Path.Combine(solutionDirectory, "packages")}\"");
+						}
+
+						//arguments.Add("-NoHttpCache");
+						arguments.Add("-NonInteractive");
+						if (!string.IsNullOrWhiteSpace(request.MSBuildExe) && System.IO.File.Exists(request.MSBuildExe))
+						{
+							arguments.Add($"-MSBuildPath \"{System.IO.Path.GetDirectoryName(request.MSBuildExe)}\"");
+						}
+
+						if (System.IO.File.Exists(getNugetConfigFullNameResponse.NugetConfigFullName))
+						{
+							arguments.Add("-ConfigFile");
+							arguments.Add($"\"{getNugetConfigFullNameResponse.NugetConfigFullName}\"");
+						}
+
+						response.Success &= !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+						{
+							Logger = logger,
+							ProcessExeFullName = nugetExeFullName,
+							Arguments = arguments,
+						}).Errored;
 					}
-
-					response.Success &= !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
-					{
-						Logger = logger,
-						ProcessExeFullName = nugetExeFullName,
-						Arguments = arguments,
-					}).Errored;
 				}
 			}
 

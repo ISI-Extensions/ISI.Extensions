@@ -58,6 +58,60 @@ namespace ISI.Extensions.Nuget
 					response.NugetConfigFullName = nugetConfigFullName;
 				}
 			}
+			else
+			{
+				var packageSourceCredentials = (IEnumerable<System.Xml.Linq.XElement>)null;
+
+				var nugetConfigFullName = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "NuGet", "NuGet.config");
+				if (System.IO.File.Exists(nugetConfigFullName))
+				{
+					var nugetConfigXml = System.Xml.Linq.XElement.Parse(System.IO.File.ReadAllText(nugetConfigFullName));
+
+					packageSourceCredentials = nugetConfigXml.GetElementsByLocalName("packageSourceCredentials");
+				}
+
+				if (packageSourceCredentials.NullCheckedAny())
+				{
+					var packageSourceCredentialKeys = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+
+					foreach (var packageSourceCredential in packageSourceCredentials)
+					{
+						foreach (var childElement in packageSourceCredential.Elements())
+						{
+							packageSourceCredentialKeys.Add(childElement.Name.LocalName);
+						}
+					}
+
+					var nugetConfigXml = System.Xml.Linq.XElement.Parse(System.IO.File.ReadAllText(response.NugetConfigFullName));
+
+					var packageSourceKeys = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+
+					foreach (var packageSources in nugetConfigXml.GetElementsByLocalName("packageSources"))
+					{
+						foreach (var packageSource in packageSources.GetElementsByLocalName("add"))
+						{
+							var packageSourceKey = packageSource.GetAttributeByLocalName("key")?.Value ?? string.Empty;
+
+							if (!string.IsNullOrWhiteSpace(packageSourceKey))
+							{
+								packageSourceKeys.Add(packageSourceKey);
+							}
+						}
+					}
+
+					if (packageSourceKeys.Any(packageSourceCredentialKeys.Contains))
+					{
+						var packageSources = nugetConfigXml.GetElementByLocalName("packageSources");
+						packageSources.AddAfterSelf(packageSourceCredentials);
+
+						response.TempDirectory = new();
+
+						response.NugetConfigFullName = System.IO.Path.Combine(response.TempDirectory.FullName, "nuget.config");
+
+						System.IO.File.WriteAllText(response.NugetConfigFullName, nugetConfigXml.ToString());
+					}
+				}
+			}
 
 			return response;
 		}

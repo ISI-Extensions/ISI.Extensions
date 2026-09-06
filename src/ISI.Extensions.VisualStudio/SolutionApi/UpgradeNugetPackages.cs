@@ -231,187 +231,185 @@ namespace ISI.Extensions.VisualStudio
 
 						try
 						{
-							var nugetConfigFullName = NugetApi.GetNugetConfigFullName(new()
+							using (var getNugetConfigFullNameResponse = NugetApi.GetNugetConfigFullName(new()
 							{
 								WorkingCopyDirectory = solutionDetails.SolutionDirectory,
-							}).NugetConfigFullName;
-
-							solutionLogger.LogInformation($"using nuget.Config: {nugetConfigFullName}");
-
-							var solutionIgnorePackageIds = new HashSet<string>(solutionDetails.DoNotUpgradePackages ?? [], StringComparer.InvariantCultureIgnoreCase);
-							solutionIgnorePackageIds.UnionWith(ignorePackageIds);
-
-							void addNugetPackageKey(string package)
+							}))
 							{
-								var getLatestPackageVersionResponse = NugetApi.GetLatestNugetPackageKey(new()
+								solutionLogger.LogInformation($"using nuget.Config: {getNugetConfigFullNameResponse.NugetConfigFullName}");
+
+								var solutionIgnorePackageIds = new HashSet<string>(solutionDetails.DoNotUpgradePackages ?? [], StringComparer.InvariantCultureIgnoreCase);
+								solutionIgnorePackageIds.UnionWith(ignorePackageIds);
+
+								void addNugetPackageKey(string package)
 								{
-									Package = package,
-									NugetConfigFullNames = [nugetConfigFullName],
-								});
-
-								if (getLatestPackageVersionResponse.NugetPackageKey != null)
-								{
-									solutionLogger.LogInformation($"  Added {getLatestPackageVersionResponse.NugetPackageKey.Package} {getLatestPackageVersionResponse.NugetPackageKey.Version}");
-
-									nugetPackageKeys.TryAdd(getLatestPackageVersionResponse.NugetPackageKey);
-								}
-							}
-
-							bool tryGetNugetPackageKey(string package, string packageVersion, bool isDotNet4, out ISI.Extensions.Nuget.NugetPackageKey nugetPackageKey)
-							{
-								if (packageVersion.NullCheckedStartsWith("[") && packageVersion.NullCheckedEndsWith(")"))
-								{
-									var packageVersions = packageVersion.TrimStart("[").TrimEnd(")").Split(',');
-
-									var getLatestNugetPackageKeyResponse = NugetApi.GetLatestNugetPackageKey(new()
+									var getLatestPackageVersionResponse = NugetApi.GetLatestNugetPackageKey(new()
 									{
 										Package = package,
-										NugetConfigFullNames = [nugetConfigFullName],
-										MinIncludingVersion = packageVersions[0],
-										MaxExcludingVersion = packageVersions[1],
+										NugetConfigFullNames = [getNugetConfigFullNameResponse.NugetConfigFullName],
 									});
 
-									if (getLatestNugetPackageKeyResponse.NugetPackageKey != null)
+									if (getLatestPackageVersionResponse.NugetPackageKey != null)
 									{
-										nugetPackageKey = getLatestNugetPackageKeyResponse.NugetPackageKey;
+										solutionLogger.LogInformation($"  Added {getLatestPackageVersionResponse.NugetPackageKey.Package} {getLatestPackageVersionResponse.NugetPackageKey.Version}");
 
-										nugetPackageKey.Version = $"[{nugetPackageKey.Version},{packageVersions[1]})";
+										nugetPackageKeys.TryAdd(getLatestPackageVersionResponse.NugetPackageKey);
+									}
+								}
 
+								bool tryGetNugetPackageKey(string package, string packageVersion, bool isDotNet4, out ISI.Extensions.Nuget.NugetPackageKey nugetPackageKey)
+								{
+									if (packageVersion.NullCheckedStartsWith("[") && packageVersion.NullCheckedEndsWith(")"))
+									{
+										var packageVersions = packageVersion.TrimStart("[").TrimEnd(")").Split(',');
+
+										var getLatestNugetPackageKeyResponse = NugetApi.GetLatestNugetPackageKey(new()
+										{
+											Package = package,
+											NugetConfigFullNames = [getNugetConfigFullNameResponse.NugetConfigFullName],
+											MinIncludingVersion = packageVersions[0],
+											MaxExcludingVersion = packageVersions[1],
+										});
+
+										if (getLatestNugetPackageKeyResponse.NugetPackageKey != null)
+										{
+											nugetPackageKey = getLatestNugetPackageKeyResponse.NugetPackageKey;
+
+											nugetPackageKey.Version = $"[{nugetPackageKey.Version},{packageVersions[1]})";
+
+											return true;
+										}
+									}
+
+									if (solutionIgnorePackageIds.Contains(package))
+									{
+										nugetPackageKey = null;
+
+										return false;
+									}
+
+									if (isDotNet4 && string.Equals(package, "System.Runtime.Serialization.Formatters", StringComparison.InvariantCultureIgnoreCase))
+									{
+										nugetPackageKey = null;
+
+										return false;
+									}
+
+									if (nugetPackageKeys.TryGetValue(package, out nugetPackageKey))
+									{
 										return true;
 									}
+
+									addNugetPackageKey(package);
+
+									return nugetPackageKeys.TryGetValue(package, out nugetPackageKey);
 								}
 
-								if (solutionIgnorePackageIds.Contains(package))
+								Parallel.ForEach(solutionDetails.NugetPackageDependencies, nugetPackageDependency => { tryGetNugetPackageKey(nugetPackageDependency, null, false, out var _); });
+
+								solutionLogger.LogInformation("Updating Projects");
+
+								foreach (var projectDetails in solutionDetails.ProjectDetailsSet.OrderBy(projectDetails => projectDetails.ProjectFullName, StringComparer.InvariantCultureIgnoreCase))
 								{
-									nugetPackageKey = null;
+									solutionLogger.LogInformation($"  {projectDetails.ProjectName}");
 
-									return false;
-								}
+									var packagesConfigFullName = System.IO.Path.Combine(projectDetails.ProjectDirectory, "packages.config");
 
-								if (isDotNet4 && string.Equals(package, "System.Runtime.Serialization.Formatters", StringComparison.InvariantCultureIgnoreCase))
-								{
-									nugetPackageKey = null;
-
-									return false;
-								}
-
-								if (nugetPackageKeys.TryGetValue(package, out nugetPackageKey))
-								{
-									return true;
-								}
-
-								addNugetPackageKey(package);
-
-								return nugetPackageKeys.TryGetValue(package, out nugetPackageKey);
-							}
-
-							Parallel.ForEach(solutionDetails.NugetPackageDependencies, nugetPackageDependency =>
-							{
-								tryGetNugetPackageKey(nugetPackageDependency, null, false, out var _);
-							});
-
-							solutionLogger.LogInformation("Updating Projects");
-
-							foreach (var projectDetails in solutionDetails.ProjectDetailsSet.OrderBy(projectDetails => projectDetails.ProjectFullName, StringComparer.InvariantCultureIgnoreCase))
-							{
-								solutionLogger.LogInformation($"  {projectDetails.ProjectName}");
-
-								var packagesConfigFullName = System.IO.Path.Combine(projectDetails.ProjectDirectory, "packages.config");
-
-								if (System.IO.File.Exists(packagesConfigFullName))
-								{
-									var packagesConfig = System.IO.File.ReadAllText(packagesConfigFullName);
-
-									try
+									if (System.IO.File.Exists(packagesConfigFullName))
 									{
-										var newPackagesConfig = NugetApi.UpgradeNugetPackageVersionsInPackagesConfig(new()
+										var packagesConfig = System.IO.File.ReadAllText(packagesConfigFullName);
+
+										try
 										{
-											PackagesConfigXml = packagesConfig,
-											TryGetNugetPackageKey = tryGetNugetPackageKey,
-											NugetConfigFullNames = [nugetConfigFullName],
-										}).PackagesConfigXml;
-
-										if (HasChanges(packagesConfig, newPackagesConfig))
-										{
-											System.IO.File.WriteAllText(packagesConfigFullName, newPackagesConfig);
-											dirtyFileNames.Add(packagesConfigFullName);
-										}
-									}
-									catch (Exception exception)
-									{
-										throw new($"File: {packagesConfigFullName}", exception);
-									}
-								}
-
-								var csProj = System.IO.File.ReadAllText(projectDetails.ProjectFullName);
-
-								try
-								{
-									var newCsProj = NugetApi.UpgradeNugetPackageVersionsInCsProj(new()
-									{
-										CsProjXml = csProj,
-										TryGetNugetPackageKey = tryGetNugetPackageKey,
-										NugetConfigFullNames = [nugetConfigFullName],
-									}).CsProjXml;
-
-									if (HasChanges(csProj, newCsProj))
-									{
-										System.IO.File.WriteAllText(projectDetails.ProjectFullName, newCsProj);
-										dirtyFileNames.Add(projectDetails.ProjectFullName);
-									}
-								}
-								catch (Exception exception)
-								{
-									throw new($"File: {projectDetails.ProjectFullName}", exception);
-								}
-
-								var appConfigFileName = System.IO.Path.Combine(projectDetails.ProjectDirectory, "web.config");
-								if (!System.IO.File.Exists(appConfigFileName))
-								{
-									appConfigFileName = System.IO.Path.Combine(projectDetails.ProjectDirectory, "app.config");
-
-									if (!System.IO.File.Exists(appConfigFileName))
-									{
-										appConfigFileName = null;
-									}
-								}
-
-								if (System.IO.File.Exists(appConfigFileName))
-								{
-									var appConfigXml = System.IO.File.ReadAllText(appConfigFileName);
-
-									try
-									{
-										foreach (var nugetPackageKey in request.UpsertAssemblyRedirectsNugetPackageKeys ?? [])
-										{
-											if (!nugetPackageKey.TargetFrameworks.NullCheckedAny())
+											var newPackagesConfig = NugetApi.UpgradeNugetPackageVersionsInPackagesConfig(new()
 											{
-												NugetApi.PopulateNugetPackageKey(new()
-												{
-													NugetPackageKey = nugetPackageKey,
-													NugetConfigFullNames = [nugetConfigFullName],
-												});
+												PackagesConfigXml = packagesConfig,
+												TryGetNugetPackageKey = tryGetNugetPackageKey,
+												NugetConfigFullNames = [getNugetConfigFullNameResponse.NugetConfigFullName],
+											}).PackagesConfigXml;
+
+											if (HasChanges(packagesConfig, newPackagesConfig))
+											{
+												System.IO.File.WriteAllText(packagesConfigFullName, newPackagesConfig);
+												dirtyFileNames.Add(packagesConfigFullName);
 											}
 										}
+										catch (Exception exception)
+										{
+											throw new($"File: {packagesConfigFullName}", exception);
+										}
+									}
 
-										var newAppConfigXml = NugetApi.UpgradeAssemblyRedirects(new()
+									var csProj = System.IO.File.ReadAllText(projectDetails.ProjectFullName);
+
+									try
+									{
+										var newCsProj = NugetApi.UpgradeNugetPackageVersionsInCsProj(new()
 										{
 											CsProjXml = csProj,
-											AppConfigXml = appConfigXml,
-											NugetPackageKeys = nugetPackageKeys.Where(nugetPackageKey => !solutionIgnorePackageIds.Contains(nugetPackageKey.Package)),
-											UpsertAssemblyRedirectsNugetPackageKeys = request.UpsertAssemblyRedirectsNugetPackageKeys,
-											RemoveAssemblyRedirects = request.RemoveAssemblyRedirects,
-										}).AppConfigXml;
+											TryGetNugetPackageKey = tryGetNugetPackageKey,
+											NugetConfigFullNames = [getNugetConfigFullNameResponse.NugetConfigFullName],
+										}).CsProjXml;
 
-										if (HasChanges(appConfigXml, newAppConfigXml))
+										if (HasChanges(csProj, newCsProj))
 										{
-											System.IO.File.WriteAllText(appConfigFileName, newAppConfigXml);
-											dirtyFileNames.Add(appConfigFileName);
+											System.IO.File.WriteAllText(projectDetails.ProjectFullName, newCsProj);
+											dirtyFileNames.Add(projectDetails.ProjectFullName);
 										}
 									}
 									catch (Exception exception)
 									{
-										throw new($"File: {appConfigFileName}", exception);
+										throw new($"File: {projectDetails.ProjectFullName}", exception);
+									}
+
+									var appConfigFileName = System.IO.Path.Combine(projectDetails.ProjectDirectory, "web.config");
+									if (!System.IO.File.Exists(appConfigFileName))
+									{
+										appConfigFileName = System.IO.Path.Combine(projectDetails.ProjectDirectory, "app.config");
+
+										if (!System.IO.File.Exists(appConfigFileName))
+										{
+											appConfigFileName = null;
+										}
+									}
+
+									if (System.IO.File.Exists(appConfigFileName))
+									{
+										var appConfigXml = System.IO.File.ReadAllText(appConfigFileName);
+
+										try
+										{
+											foreach (var nugetPackageKey in request.UpsertAssemblyRedirectsNugetPackageKeys ?? [])
+											{
+												if (!nugetPackageKey.TargetFrameworks.NullCheckedAny())
+												{
+													NugetApi.PopulateNugetPackageKey(new()
+													{
+														NugetPackageKey = nugetPackageKey,
+														NugetConfigFullNames = [getNugetConfigFullNameResponse.NugetConfigFullName],
+													});
+												}
+											}
+
+											var newAppConfigXml = NugetApi.UpgradeAssemblyRedirects(new()
+											{
+												CsProjXml = csProj,
+												AppConfigXml = appConfigXml,
+												NugetPackageKeys = nugetPackageKeys.Where(nugetPackageKey => !solutionIgnorePackageIds.Contains(nugetPackageKey.Package)),
+												UpsertAssemblyRedirectsNugetPackageKeys = request.UpsertAssemblyRedirectsNugetPackageKeys,
+												RemoveAssemblyRedirects = request.RemoveAssemblyRedirects,
+											}).AppConfigXml;
+
+											if (HasChanges(appConfigXml, newAppConfigXml))
+											{
+												System.IO.File.WriteAllText(appConfigFileName, newAppConfigXml);
+												dirtyFileNames.Add(appConfigFileName);
+											}
+										}
+										catch (Exception exception)
+										{
+											throw new($"File: {appConfigFileName}", exception);
+										}
 									}
 								}
 							}

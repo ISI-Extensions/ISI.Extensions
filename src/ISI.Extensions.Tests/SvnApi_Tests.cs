@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,7 +46,7 @@ namespace ISI.Extensions.Tests
 				.AddSingleton<Microsoft.Extensions.Logging.ILoggerFactory, Microsoft.Extensions.Logging.LoggerFactory>()
 				.AddLogging(builder => builder
 						.AddConsole()
-					//.AddFilter(level => level >= Microsoft.Extensions.Logging.LogLevel.Information)
+				//.AddFilter(level => level >= Microsoft.Extensions.Logging.LogLevel.Information)
 				)
 				.AddSingleton<Microsoft.Extensions.Logging.ILogger>(_ => new ISI.Extensions.TextWriterLogger(TestContext.Progress))
 
@@ -119,6 +119,24 @@ namespace ISI.Extensions.Tests
 				var sourceUrl = @"https://svn.isi-net.com/ISI/ISI.FrameWork/trunk/src/jenkins/ISI.FrameWork.Build.jenkinsConfig";
 
 				svnApi.CheckOutSingleFile(new()
+				{
+					SourceUrl = sourceUrl,
+					TargetFullName = tempDirectory.FullName,
+				});
+			}
+		}
+
+		[Test]
+		public void CheckOut_Test()
+		{
+			using (var tempDirectory = new ISI.Extensions.IO.Path.TempDirectory())
+			{
+				var serializer = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Serialization.ISerialization>();
+				var svnApi = new ISI.Extensions.Svn.SvnApi(new ISI.Extensions.TextWriterLogger(TestContext.Progress), serializer);
+
+				var sourceUrl = @"https://scm.isi-net.com/repo/ISI/main/ISI.WebApplication/trunk";
+
+				var checkOutResponse = svnApi.CheckOut(new()
 				{
 					SourceUrl = sourceUrl,
 					TargetFullName = tempDirectory.FullName,

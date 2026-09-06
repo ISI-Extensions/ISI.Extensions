@@ -55,7 +55,6 @@ namespace ISI.Extensions.Svn
 					arguments.Add("checkout");
 					arguments.Add($"\"{request.SourceUrl}\"");
 					arguments.Add($"\"{request.TargetFullName}\"");
-					arguments.Add("--include-externals");
 					AddCredentials(arguments, request);
 
 					response.Success = !ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()

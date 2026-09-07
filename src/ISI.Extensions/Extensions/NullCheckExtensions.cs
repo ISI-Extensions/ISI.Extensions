@@ -1,6 +1,6 @@
 #region Copyright & License
 /*
-Copyright (c) 2026, Integrated Solutions, Inc.
+Copyright (c) 2025, Integrated Solutions, Inc.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -215,7 +215,7 @@ namespace ISI.Extensions.Extensions
 					case NullCheckCollectionResult.ReturnNull:
 						return null;
 					case NullCheckCollectionResult.Empty:
-						return [];
+						return Array.Empty<TResult>();
 					default:
 						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
 				}
@@ -229,7 +229,7 @@ namespace ISI.Extensions.Extensions
 		{
 			if (values == null)
 			{
-				return null;
+				return default;
 			}
 
 			return values.ToEnumerable(cancellationToken).FirstOrDefault();
@@ -250,7 +250,7 @@ namespace ISI.Extensions.Extensions
 		{
 			if (values == null)
 			{
-				return null;
+				return default;
 			}
 
 			return values.ToEnumerable(cancellationToken).FirstOrDefault(predicate);
@@ -271,7 +271,7 @@ namespace ISI.Extensions.Extensions
 		{
 			if (values == null)
 			{
-				return null;
+				return default;
 			}
 
 			return values.ToEnumerable(cancellationToken).LastOrDefault();
@@ -292,7 +292,7 @@ namespace ISI.Extensions.Extensions
 		{
 			if (values == null)
 			{
-				return null;
+				return default;
 			}
 
 			return values.ToEnumerable(cancellationToken).LastOrDefault(predicate);
@@ -402,7 +402,7 @@ namespace ISI.Extensions.Extensions
 				}
 			}
 
-			return values.ToArray();
+			return values.ToList();
 		}
 
 		public static IList<TResult> ToNullCheckedList<TValue, TResult>(this IEnumerable<TValue> values, Func<TValue, TResult> converter, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.ReturnNull)
@@ -420,7 +420,7 @@ namespace ISI.Extensions.Extensions
 				}
 			}
 
-			return values.Select(converter).ToArray();
+			return values.Select(converter).ToList();
 		}
 
 		public static HashSet<TValue> ToNullCheckedHashSet<TValue>(this IEnumerable<TValue> values, NullCheckCollectionResult ifNullReturn = NullCheckCollectionResult.ReturnNull)
@@ -469,7 +469,7 @@ namespace ISI.Extensions.Extensions
 					case NullCheckCollectionResult.ReturnNull:
 						return null;
 					case NullCheckCollectionResult.Empty:
-						return null;
+						return default;
 					default:
 						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
 				}
@@ -488,7 +488,7 @@ namespace ISI.Extensions.Extensions
 					case NullCheckCollectionResult.ReturnNull:
 						return null;
 					case NullCheckCollectionResult.Empty:
-						return null;
+						return default;
 					default:
 						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
 				}
@@ -639,7 +639,7 @@ namespace ISI.Extensions.Extensions
 					case NullCheckCollectionResult.ReturnNull:
 						return null;
 					case NullCheckCollectionResult.Empty:
-						return [];
+						return Array.Empty<TResult>();
 					default:
 						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
 				}
@@ -657,7 +657,7 @@ namespace ISI.Extensions.Extensions
 					case NullCheckCollectionResult.ReturnNull:
 						return null;
 					case NullCheckCollectionResult.Empty:
-						return [];
+						return Array.Empty<TResult>();
 					default:
 						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
 				}
@@ -675,7 +675,7 @@ namespace ISI.Extensions.Extensions
 					case NullCheckCollectionResult.ReturnNull:
 						return null;
 					case NullCheckCollectionResult.Empty:
-						return [];
+						return Array.Empty<TResult>();
 					default:
 						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
 				}
@@ -693,7 +693,7 @@ namespace ISI.Extensions.Extensions
 					case NullCheckCollectionResult.ReturnNull:
 						return null;
 					case NullCheckCollectionResult.Empty:
-						return [];
+						return Array.Empty<TValue>();
 					default:
 						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
 				}
@@ -787,7 +787,7 @@ namespace ISI.Extensions.Extensions
 					case NullCheckCollectionResult.ReturnNull:
 						return null;
 					case NullCheckCollectionResult.Empty:
-						return [];
+						return Array.Empty<IGrouping<TKey, TValue>>();
 					default:
 						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
 				}
@@ -805,7 +805,7 @@ namespace ISI.Extensions.Extensions
 					case NullCheckCollectionResult.ReturnNull:
 						return null;
 					case NullCheckCollectionResult.Empty:
-						return [];
+						return Array.Empty<IGrouping<TKey, TValue>>();
 					default:
 						throw new ArgumentOutOfRangeException(nameof(ifNullReturn), ifNullReturn, null);
 				}

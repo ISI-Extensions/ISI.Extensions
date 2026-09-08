@@ -41,14 +41,6 @@ namespace ISI.Extensions.VisualStudioCode
 
 				if (!string.IsNullOrWhiteSpace(solutionSourceDirectory) && System.IO.Directory.Exists(solutionSourceDirectory))
 				{
-					//var processResponse = ISI.Extensions.Process.WaitForProcessResponse(new Process.ProcessRequest()
-					//{
-					//	ProcessExeFullName = "ncu.cmd",
-					//	Arguments = new [] { "--upgrade" },
-					//	WorkingDirectory = solutionSourceDirectory,
-					//	Logger = logger,
-					//});
-
 					var processResponse = ISI.Extensions.Process.WaitForProcessResponse(new Process.ProcessRequest()
 					{
 						ProcessExeFullName = "cmd.exe",

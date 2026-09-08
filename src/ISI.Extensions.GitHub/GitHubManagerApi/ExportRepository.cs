@@ -37,7 +37,9 @@ namespace ISI.Extensions.GitHub
 
 			using (var tempDirectory = new ISI.Extensions.IO.Path.TempDirectory())
 			{
-				var repositoryDirectory = System.IO.Path.Combine(tempDirectory.FullName, request.Name);
+				var name = request.SourceUrl.Split(['/', '\\']).Last().TrimEnd(".git", StringComparison.InvariantCultureIgnoreCase);
+
+				var repositoryDirectory = System.IO.Path.Combine(tempDirectory.FullName, name);
 
 				Logger.LogInformation($"repositoryDirectory: {repositoryDirectory}");
 
@@ -50,9 +52,7 @@ namespace ISI.Extensions.GitHub
 
 				if (createRepositoryResponse.ExitCode == 0)
 				{
-					var remoteUri = new UriBuilder("https://github.com");
-					remoteUri.AddDirectoryToPath(request.Organization);
-					remoteUri.AddDirectoryToPath(request.Name);
+					var remoteUri = new UriBuilder(request.SourceUrl);
 
 					remoteUri.UserName = "x-token-auth";
 					remoteUri.Password = GetGitHubApiToken(request);
@@ -80,7 +80,7 @@ namespace ISI.Extensions.GitHub
 						switch (request.ExportFormat)
 						{
 							case ISI.Extensions.Git.ExportFormat.Bundle:
-								var bundleFullName = System.IO.Path.Combine(tempDirectory.FullName, $"{request.Name}.bundle");
+								var bundleFullName = System.IO.Path.Combine(tempDirectory.FullName, $"{name}.bundle");
 
 								Logger.LogInformation($"bundleFullName: {bundleFullName}");
 
@@ -101,7 +101,7 @@ namespace ISI.Extensions.GitHub
 								break;
 
 							case ISI.Extensions.Git.ExportFormat.TarGz:
-								var tarGzFullName = System.IO.Path.Combine(tempDirectory.FullName, $"{request.Name}.tar.gz");
+								var tarGzFullName = System.IO.Path.Combine(tempDirectory.FullName, $"{name}.tar.gz");
 
 								Logger.LogInformation($"tarGzFullName: {tarGzFullName}");
 

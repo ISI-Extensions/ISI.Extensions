@@ -26,9 +26,7 @@ namespace ISI.Extensions.GitHub.DataTransferObjects.GitHubManagerApi
 	{
 		public string GitHubApiToken { get; set; }
 
-		public string Organization { get; set; }
-
-		public string Name { get; set; }
+		public string SourceUrl { get; set; }
 
 		public ISI.Extensions.Git.ExportFormat ExportFormat { get; set; } = ISI.Extensions.Git.ExportFormat.Bundle;
 

@@ -88,15 +88,14 @@ namespace ISI.Extensions.Tests
 		{
 			var gitHubManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.GitHub.GitHubManagerApi>();
 
-			var backupFullName = @"E:\ISI\ISI-Extensions.20260907.bak";
+			var backupFullName = @"E:\ISI\ISI-Extensions.20260908.bak";
 
 			using (var backupFileStream = System.IO.File.Create(backupFullName))
 			{
 				var apiResponse = gitHubManagerApi.ExportRepository(new()
 				{
 					GitHubApiToken = GitHubApiToken,
-					Organization = "ISI-Extensions",
-					Name = "ISI.Extensions.git",
+					SourceUrl = @"https://github.com/ISI-Extensions/ISI.Extensions.git",
 					DownloadStream = backupFileStream,
 				});
 			}

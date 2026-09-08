@@ -21,12 +21,13 @@ using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using Microsoft.Extensions.Logging;
 using SharpCompress.Writers;
-using DTOs = ISI.Extensions.BitBucket.DataTransferObjects.BitBucketManagerApi;
-using SerializableDTOs = ISI.Extensions.BitBucket.SerializableModels;
+using DTOs = ISI.Extensions.GitHub.DataTransferObjects.GitHubManagerApi;
+using SerializableDTOs = ISI.Extensions.GitHub.SerializableModels;
+using SourceControlRepositoryApiDTOs = ISI.Extensions.Scm.DataTransferObjects.SourceControlRepositoryApi;
 
-namespace ISI.Extensions.BitBucket
+namespace ISI.Extensions.GitHub
 {
-	public partial class BitBucketManagerApi
+	public partial class GitHubManagerApi
 	{
 		public DTOs.ExportRepositoryResponse ExportRepository(DTOs.ExportRepositoryRequest request)
 		{
@@ -49,12 +50,12 @@ namespace ISI.Extensions.BitBucket
 
 				if (createRepositoryResponse.ExitCode == 0)
 				{
-					var remoteUri = new UriBuilder("https://bitbucket.org");
-					remoteUri.AddDirectoryToPath(GetWorkspace(request));
+					var remoteUri = new UriBuilder("https://github.com");
+					remoteUri.AddDirectoryToPath(request.Organization);
 					remoteUri.AddDirectoryToPath(request.Name);
 
 					remoteUri.UserName = "x-token-auth";
-					remoteUri.Password = request.BitBucketApiToken;
+					remoteUri.Password = GetGitHubApiToken(request);
 
 					var arguments = new List<string>();
 

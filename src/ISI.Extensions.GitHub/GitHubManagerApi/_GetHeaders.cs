@@ -26,6 +26,15 @@ namespace ISI.Extensions.GitHub
 {
 	public partial class GitHubManagerApi
 	{
+		private string GetGitHubApiToken(DTOs.IRequest request)
+		{
+			var gitHubApiToken = request.GitHubApiToken;
+
+			gitHubApiToken = (gitHubApiToken.StartsWith("%") && gitHubApiToken.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(gitHubApiToken.Trim('%')) : gitHubApiToken);
+
+			return gitHubApiToken;
+		}
+
 		private ISI.Extensions.WebClient.HeaderCollection GetHeaders(DTOs.IRequest request, string accept = null, string contentType = null, string apiVersion = null)
 		{
 			var headers = new ISI.Extensions.WebClient.HeaderCollection();
@@ -47,12 +56,10 @@ namespace ISI.Extensions.GitHub
 
 			headers.UserAgent = this.GetType().Namespace;
 
-			if (!string.IsNullOrWhiteSpace(request.GitHubApiToken))
+			var gitHubApiToken = GetGitHubApiToken(request);
+
+			if (!string.IsNullOrWhiteSpace(gitHubApiToken))
 			{
-				var gitHubApiToken = request.GitHubApiToken;
-
-				gitHubApiToken = (gitHubApiToken.StartsWith("%") && gitHubApiToken.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(gitHubApiToken.Trim('%')) : gitHubApiToken);
-
 				headers.AddBearerAuthentication(gitHubApiToken);
 			}
 

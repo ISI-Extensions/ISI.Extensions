@@ -12,26 +12,40 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.GitHub.DataTransferObjects.GitHubManagerApi;
-using SerializableDTOs = ISI.Extensions.GitHub.SerializableModels;
 
-namespace ISI.Extensions.GitHub
+namespace ISI.Extensions.GitHub.SerializableModels
 {
-	public partial class GitHubManagerApi
+	[DataContract]
+	public class RepositoryBranch
 	{
-		public DTOs.ListRepositoryChangeSetsResponse ListRepositoryChangeSets(DTOs.ListRepositoryChangeSetsRequest request)
-		{
-			var response = new DTOs.ListRepositoryChangeSetsResponse();
-			
-			
-			return response;
-		}
+		[DataMember(Name = "name", EmitDefaultValue = false)]
+		public string Name { get; set; }
+
+		[DataMember(Name = "commit", EmitDefaultValue = false)]
+		public RepositoryBranchCommit Commit { get; set; }
+
+		[DataMember(Name = "_Protected", EmitDefaultValue = false)]
+		public bool Protected { get; set; }
+
+		[DataMember(Name = "protection_Url", EmitDefaultValue = false)]
+		public string ProtectionUrl { get; set; }
+	}
+
+	[DataContract]
+	public class RepositoryBranchCommit
+	{
+		[DataMember(Name = "sha", EmitDefaultValue = false)]
+		public string Sha { get; set; }
+
+		[DataMember(Name = "url", EmitDefaultValue = false)]
+		public string CommitUrl { get; set; }
 	}
 }

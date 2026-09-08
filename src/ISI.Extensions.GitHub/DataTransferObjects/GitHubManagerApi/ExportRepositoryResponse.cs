@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.GitHub.DataTransferObjects.GitHubManagerApi
 {
-	public class ListRepositoryChangeSetsResponse
+	public class ExportRepositoryResponse
 	{
 	}
 }

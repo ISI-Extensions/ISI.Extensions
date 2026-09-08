@@ -22,7 +22,18 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.GitHub.DataTransferObjects.GitHubManagerApi
 {
-	public class ListRepositoryChangeSetsRequest
+	public class ExportRepositoryRequest : IRequest
 	{
+		public string GitHubApiToken { get; set; }
+
+		public string Organization { get; set; }
+
+		public string Name { get; set; }
+
+		public ISI.Extensions.Git.ExportFormat ExportFormat { get; set; } = ISI.Extensions.Git.ExportFormat.Bundle;
+
+		public System.IO.Stream DownloadStream { get; set; }
+
+		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}
 }

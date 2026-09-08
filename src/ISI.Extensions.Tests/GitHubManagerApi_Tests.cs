@@ -83,37 +83,23 @@ namespace ISI.Extensions.Tests
 			});
 		}
 
-		//[Test]
-		//public void ListRepositoryChangeSets_Tests()
-		//{
-		//	var gitHubManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.GitHub.IGitHubManagerApi>();
+		[Test]
+		public void ExportRepository_Tests()
+		{
+			var gitHubManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.GitHub.GitHubManagerApi>();
 
-		//	var apiResponse = gitHubManagerApi.ListRepositoryChangeSets(new()
-		//	{
-		//		GitHubManagerApiToken = GitHubManagerApiToken,
-		//		Namespace = "ISI",
-		//		Name = "ISI.SqlServerBackupAgent.ServiceApplication",
-		//	});
-		//}
+			var backupFullName = @"E:\ISI\ISI-Extensions.20260907.bak";
 
-		//[Test]
-		//public void ExportRepository_Tests()
-		//{
-		//	var gitHubManagerApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.ScmManager.IGitHubManagerApi>();
-
-		//	var backupFullName = @"E:\ISI\ISI.SqlServerBackupAgent.ServiceApplication.20240420.205134049.bak";
-
-		//	using (var backupFileStream = System.IO.File.Create(backupFullName))
-		//	{
-		//		var apiResponse = gitHubManagerApi.ExportRepository(new()
-		//		{
-		//			GitHubManagerApiToken = GitHubManagerApiToken,
-		//			Namespace = "ISI",
-		//			Name = "ISI.SqlServerBackupAgent.ServiceApplication",
-		//			Type = "git",
-		//			DownloadStream = backupFileStream,
-		//		});
-		//	}
-		//}
+			using (var backupFileStream = System.IO.File.Create(backupFullName))
+			{
+				var apiResponse = gitHubManagerApi.ExportRepository(new()
+				{
+					GitHubApiToken = GitHubApiToken,
+					Organization = "ISI-Extensions",
+					Name = "ISI.Extensions.git",
+					DownloadStream = backupFileStream,
+				});
+			}
+		}
 	}
 }

@@ -40,17 +40,19 @@ namespace ISI.Extensions
 			var parameterName = string.Empty;
 			var isFirstArg = true;
 
+			var parameterHeader = (Environment.OSVersion.Platform != PlatformID.Unix) ? "\\" : "/";
+
 			while (originIndex < args.Length)
 			{
 				var arg = args[originIndex++];
 
-				if (isFirstArg && string.IsNullOrEmpty(Command) && !arg.StartsWith("-") && !arg.StartsWith("/") && !arg.StartsWith("\\"))
+				if (isFirstArg && string.IsNullOrEmpty(Command) && !arg.StartsWith("-") && !arg.StartsWith(parameterHeader))
 				{
 					Command = arg;
 				}
 				else
 				{
-					if (arg.StartsWith("-") || arg.StartsWith("/") || arg.StartsWith("\\"))
+					if (arg.StartsWith("-") || arg.StartsWith(parameterHeader))
 					{
 						parameterName = arg.TrimStart('-', '/', '\\');
 						_parameters.Add(parameterName, string.Empty);

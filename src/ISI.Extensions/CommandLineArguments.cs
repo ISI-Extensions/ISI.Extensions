@@ -40,7 +40,7 @@ namespace ISI.Extensions
 			var parameterName = string.Empty;
 			var isFirstArg = true;
 
-			var parameterHeader = (Environment.OSVersion.Platform != PlatformID.Unix) ? "\\" : "/";
+			var parameterHeader = (Environment.OSVersion.Platform == PlatformID.Unix) ? "\\" : "/";
 
 			while (originIndex < args.Length)
 			{

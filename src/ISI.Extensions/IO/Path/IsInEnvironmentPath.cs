@@ -30,22 +30,22 @@ namespace ISI.Extensions
 
 			public static bool IsInEnvironmentPath(string exeFileName, out string fullName)
 			{
-				if (Environment.OSVersion.Platform == PlatformID.Unix)
-				{
-					var processResponse = ISI.Extensions.Process.WaitForProcessResponse("command", ["-v", exeFileName]);
+				//if (Environment.OSVersion.Platform == PlatformID.Unix)
+				//{
+				//	var processResponse = ISI.Extensions.Process.WaitForProcessResponse("/bin/bash", ["-c", $"\"command -v {exeFileName}\""]);
 
-					fullName = processResponse.ExitCode == 0 ? processResponse.Output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries).First() : string.Empty;
+				//	fullName = processResponse.ExitCode == 0 ? processResponse.Output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() : string.Empty;
 
-					return !string.IsNullOrWhiteSpace(fullName);
-				}
-				else
-				{
+				//	return !string.IsNullOrWhiteSpace(fullName);
+				//}
+				//else
+				//{
 					var processResponse = ISI.Extensions.Process.WaitForProcessResponse("where", exeFileName);
 
-					fullName = processResponse.ExitCode == 0 ? processResponse.Output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries).First() : string.Empty;
+					fullName = processResponse.ExitCode == 0 ? processResponse.Output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() : string.Empty;
 
 					return !string.IsNullOrWhiteSpace(fullName);
-				}
+				//}
 			}
 		}
 	}

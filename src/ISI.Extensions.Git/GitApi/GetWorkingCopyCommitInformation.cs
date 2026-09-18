@@ -71,7 +71,19 @@ namespace ISI.Extensions.Git
 						WorkingDirectory = workingDirectory,
 					});
 
-					var serializableWorkingCopyCommitInformation = JsonSerializer.Deserialize<SerializableModels.WorkingCopyCommitInformation>(gitResponse.Output);
+					var serializedWorkingCopyCommitInformation = gitResponse.Output;
+
+					if (serializedWorkingCopyCommitInformation.StartsWith("{{"))
+					{
+						serializedWorkingCopyCommitInformation = serializedWorkingCopyCommitInformation.Substring(1);
+
+						if (serializedWorkingCopyCommitInformation.EndsWith("}}"))
+						{
+							serializedWorkingCopyCommitInformation = serializedWorkingCopyCommitInformation.Substring(0, serializedWorkingCopyCommitInformation.Length - 1);
+						}
+					}
+
+					var serializableWorkingCopyCommitInformation = JsonSerializer.Deserialize<SerializableModels.WorkingCopyCommitInformation>(serializedWorkingCopyCommitInformation);
 
 					response.WorkingCopyCommitInformation = new()
 					{

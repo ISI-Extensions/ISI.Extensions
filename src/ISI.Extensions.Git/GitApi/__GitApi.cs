@@ -55,10 +55,26 @@ namespace ISI.Extensions.Git
 		}
 
 		protected static bool? _gitIsInstalled { get; set; } = null;
-		protected bool GitIsInstalled => _gitIsInstalled ??= ISI.Extensions.IO.Path.IsInEnvironmentPath("git");
+		protected bool GitIsInstalled => _gitIsInstalled ??= IsGitInstalled(); //ISI.Extensions.IO.Path.IsInEnvironmentPath("git");
 
 		protected static bool? _tortoiseGitProcIsInstalled { get; set; } = null;
 		protected bool TortoiseGitProcIsInstalled => _tortoiseGitProcIsInstalled ??= ISI.Extensions.IO.Path.IsInEnvironmentPath("TortoiseGitProc");
+
+
+		protected static bool IsGitInstalled()
+		{
+			var processResponse = ISI.Extensions.Process.WaitForProcessResponse(new Process.ProcessRequest()
+			{
+				ProcessExeFullName ="git" ,
+				Logger = new NullLogger(),
+			});
+
+			var firstLine = processResponse.Output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(line => !string.IsNullOrWhiteSpace(line));
+
+			return (firstLine.IndexOf("usage:", StringComparison.InvariantCultureIgnoreCase) >= 0);
+		}
+
+
 
 		private const string SccDirectoryName = ".git";
 		Guid ISI.Extensions.Scm.ISourceControlClientApi.SourceControlClientTypeUuid => ISI.Extensions.Scm.SourceControlClientType.GitSourceControlClientTypeUuid.ToGuid();

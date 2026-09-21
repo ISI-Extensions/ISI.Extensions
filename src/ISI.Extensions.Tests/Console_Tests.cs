@@ -12,64 +12,37 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using NUnit.Framework;
 
-namespace ISI.Extensions
+namespace ISI.Extensions.Tests
 {
-	public class Console
+	[TestFixture]
+	public class Console_Tests
 	{
-		public static string ReadPassword()
+		[Test]
+		public void ReadPassword_Test()
 		{
-			if (TryReadPassword(out var password))
-			{
-				return password;
-			}
-
-			return null;
+			var password = ISI.Extensions.Console.ReadPassword();
 		}
 
-		public static bool TryReadPassword(out string password)
+		[Test]
+		public void PasswordStack_Test()
 		{
 			var passwordStack = new List<char>();
 
-			while (true)
-			{
-				var consoleKeyInfo = System.Console.ReadKey(true);
+			passwordStack.Add('C');
+			passwordStack.Add('A');
+			passwordStack.Add('T');
 
-				if (consoleKeyInfo.Key == ConsoleKey.Enter)
-				{
-					password = new string(passwordStack.ToArray());
-					System.Console.WriteLine();
+			var password = new string(passwordStack.ToArray());
 
-					return true;
-				}
-
-				if (consoleKeyInfo.Key == ConsoleKey.Backspace)
-				{
-					if(passwordStack.Any())
-					{
-						passwordStack.RemoveAt(passwordStack.Capacity - 1);
-
-						System.Console.Write("\b \b");
-					}
-				}
-				else if (!char.IsControl(consoleKeyInfo.KeyChar))
-				{
-					passwordStack.Add(consoleKeyInfo.KeyChar);
-					System.Console.Write("*");
-				}
-				else if ((consoleKeyInfo.Modifiers == ConsoleModifiers.Control) && (consoleKeyInfo.Key == ConsoleKey.C))
-				{
-					password = null;
-					System.Console.WriteLine();
-
-					return false;
-				}
-			}
 		}
 	}
 }

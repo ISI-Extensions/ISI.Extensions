@@ -43,7 +43,7 @@ namespace ISI.Extensions.VisualStudio
 				}
 				catch (Exception exception)
 				{
-					//Console.WriteLine(exception);
+					//System.Console.WriteLine(exception);
 					//throw;
 				}
 			}

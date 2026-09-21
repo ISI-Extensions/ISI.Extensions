@@ -56,7 +56,7 @@ namespace ISI.Extensions.VisualStudioCode
 						}
 						catch (Exception exception)
 						{
-							Console.WriteLine($"Could not clear readOnly on {fileInfo.FullName}");
+							System.Console.WriteLine($"Could not clear readOnly on {fileInfo.FullName}");
 						}
 					}
 
@@ -74,7 +74,7 @@ namespace ISI.Extensions.VisualStudioCode
 						{
 							if (maxRetries-- < 0)
 							{
-								Console.WriteLine(exception);
+								System.Console.WriteLine(exception);
 								throw;
 							}
 							System.Threading.Thread.Sleep(millisecondsDelay);
@@ -83,14 +83,14 @@ namespace ISI.Extensions.VisualStudioCode
 						{
 							if (maxRetries-- < 0)
 							{
-								Console.WriteLine(exception);
+								System.Console.WriteLine(exception);
 								throw;
 							}
 							System.Threading.Thread.Sleep(millisecondsDelay);
 						}
 						catch (Exception exception)
 						{
-							Console.WriteLine(exception);
+							System.Console.WriteLine(exception);
 							throw;
 						}
 					}

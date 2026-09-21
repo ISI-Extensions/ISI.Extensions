@@ -228,7 +228,7 @@ namespace ISI.Extensions.WebClient
 							return true;
 						}
 
-						Console.WriteLine(certificate.Subject);
+						System.Console.WriteLine(certificate.Subject);
 					}
 
 					return false;

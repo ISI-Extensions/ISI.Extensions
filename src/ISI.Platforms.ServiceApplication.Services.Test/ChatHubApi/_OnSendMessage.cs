@@ -30,7 +30,7 @@ namespace ISI.Platforms.ServiceApplication.Services.Test
 	{
 		private void OnSendMessage(SerializableDTOs.SendMessageRequest request)
 		{
-			Console.WriteLine($"New SendMessage: {request.Message}");
+			System.Console.WriteLine($"New SendMessage: {request.Message}");
 		}
 	}
 }

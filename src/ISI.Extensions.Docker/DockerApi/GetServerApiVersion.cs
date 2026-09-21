@@ -66,7 +66,7 @@ namespace ISI.Extensions.Docker
 			}
 			catch (Exception exception)
 			{
-				//Console.WriteLine(exception);
+				//System.Console.WriteLine(exception);
 				//throw;
 				response.ServerApiVersion =  "1.43";
 			}

@@ -184,8 +184,8 @@ namespace ISI.Extensions.Nuget
 									}
 									catch (Exception exception)
 									{
-										Console.WriteLine(System.IO.Path.Combine(packageFullName, assemblyFileName));
-										Console.WriteLine(exception);
+										System.Console.WriteLine(System.IO.Path.Combine(packageFullName, assemblyFileName));
+										System.Console.WriteLine(exception);
 									}
 								}
 							}

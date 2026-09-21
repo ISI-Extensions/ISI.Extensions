@@ -39,7 +39,7 @@ namespace ISI.Extensions.VisualStudio
 
 			void addVersionFile(string assemblyGroupName, string assemblyInfoFullName)
 			{
-				//Console.WriteLine("addVersionFile(\"{0}\", \"{1}\")", assemblyGroupName, assemblyInfoFullName);
+				//System.Console.WriteLine("addVersionFile(\"{0}\", \"{1}\")", assemblyGroupName, assemblyInfoFullName);
 
 				var assemblyVersion = GetAssemblyVersion(CodeGenerationApi.ParseAssemblyInfoFile(new()
 				{

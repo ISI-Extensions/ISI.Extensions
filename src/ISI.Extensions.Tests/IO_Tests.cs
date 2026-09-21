@@ -135,10 +135,10 @@ namespace ISI.Extensions.Tests
 			{
 				foreach (var moDiskProperty in moDisk.Properties)
 				{
-					Console.WriteLine($"  {moDiskProperty.Name} => {moDiskProperty.Value}");
+					System.Console.WriteLine($"  {moDiskProperty.Name} => {moDiskProperty.Value}");
 				}
 
-				Console.WriteLine();
+				System.Console.WriteLine();
 			}
 
 			var mosDisks = new System.Management.ManagementObjectSearcher("SELECT * FROM Win32_DiskDrive");
@@ -149,19 +149,19 @@ namespace ISI.Extensions.Tests
 			{
 				if (string.Equals(moDisk["DeviceID"], @"\\.\PHYSICALDRIVE10"))
 				{
-					Console.WriteLine(moDisk["Model"]);
+					System.Console.WriteLine(moDisk["Model"]);
 					foreach (var moDiskProperty in moDisk.Properties)
 					{
-						Console.WriteLine($"  {moDiskProperty.Name} => {moDiskProperty.Value}");
+						System.Console.WriteLine($"  {moDiskProperty.Name} => {moDiskProperty.Value}");
 					}
 
-					Console.WriteLine();
+					System.Console.WriteLine();
 				}
 			}
 
 			foreach (var drive in System.IO.DriveInfo.GetDrives().Where(drive => drive.IsReady))
 			{
-				Console.WriteLine(drive.VolumeLabel);
+				System.Console.WriteLine(drive.VolumeLabel);
 			}
 
 			var searcher = new System.Management.ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM Win32_DiskPartition");
@@ -174,12 +174,12 @@ namespace ISI.Extensions.Tests
 
 
 
-					Console.WriteLine("-----------------------------------");
-					Console.WriteLine("Win32_DiskPartition instance");
+					System.Console.WriteLine("-----------------------------------");
+					System.Console.WriteLine("Win32_DiskPartition instance");
 
 					foreach (var queryObjProperty in queryObj.Properties)
 					{
-						Console.WriteLine($"  {queryObjProperty.Name} => {queryObjProperty.Value}");
+						System.Console.WriteLine($"  {queryObjProperty.Name} => {queryObjProperty.Value}");
 					}
 				}
 			}
@@ -218,45 +218,45 @@ namespace ISI.Extensions.Tests
 				var relativeTo = @"F:\ISI\ISI.FrameWork\src\ISI.Extensions\ISI.Extensions.UnitTests";
 				var path = @"F:\ISI\ISI.FrameWork\src\ISI.Extensions\ISI.Extensions.UnitTests\EmbeddedFiles\Views\Test.cshtml";
 
-				Console.WriteLine(System.IO.Path.GetRelativePath(relativeTo, path));
+				System.Console.WriteLine(System.IO.Path.GetRelativePath(relativeTo, path));
 
-				Console.WriteLine(ISI.Extensions.IO.Path.GetRelativePath(relativeTo, path));
+				System.Console.WriteLine(ISI.Extensions.IO.Path.GetRelativePath(relativeTo, path));
 			}
 
 			{
 				var relativeTo = @"F:\ISI\ISI.FrameWork\src\ISI.Extensions\ISI.Extensions.UnitTests\Pizza";
 				var path = @"F:\ISI\ISI.FrameWork\src\ISI.Extensions\ISI.Extensions.UnitTests\EmbeddedFiles\Views\Test.cshtml";
 
-				Console.WriteLine(System.IO.Path.GetRelativePath(relativeTo, path));
+				System.Console.WriteLine(System.IO.Path.GetRelativePath(relativeTo, path));
 
-				Console.WriteLine(ISI.Extensions.IO.Path.GetRelativePath(relativeTo, path));
+				System.Console.WriteLine(ISI.Extensions.IO.Path.GetRelativePath(relativeTo, path));
 			}
 
 			{
 				var relativeTo = @"E:\ISI\ISI.FrameWork\src\ISI.Extensions\ISI.Extensions.UnitTests\Pizza";
 				var path = @"F:\ISI\ISI.FrameWork\src\ISI.Extensions\ISI.Extensions.UnitTests\EmbeddedFiles\Views\Test.cshtml";
 
-				Console.WriteLine(System.IO.Path.GetRelativePath(relativeTo, path));
+				System.Console.WriteLine(System.IO.Path.GetRelativePath(relativeTo, path));
 
-				Console.WriteLine(ISI.Extensions.IO.Path.GetRelativePath(relativeTo, path));
+				System.Console.WriteLine(ISI.Extensions.IO.Path.GetRelativePath(relativeTo, path));
 			}
 
 			{
 				var relativeTo = @"\\Server\E$\ISI\ISI.FrameWork\src\ISI.Extensions\ISI.Extensions.UnitTests\Pizza";
 				var path = @"\\Server\E$\ISI\ISI.FrameWork\src\ISI.Extensions\ISI.Extensions.UnitTests\EmbeddedFiles\Views\Test.cshtml";
 
-				Console.WriteLine(System.IO.Path.GetRelativePath(relativeTo, path));
+				System.Console.WriteLine(System.IO.Path.GetRelativePath(relativeTo, path));
 
-				Console.WriteLine(ISI.Extensions.IO.Path.GetRelativePath(relativeTo, path));
+				System.Console.WriteLine(ISI.Extensions.IO.Path.GetRelativePath(relativeTo, path));
 			}
 
 			{
 				var relativeTo = @"\\Server\E$\ISI\ISI.FrameWork\src\ISI.Extensions\ISI.Extensions.UnitTests\Pizza";
 				var path = @"\\Server1\E$\ISI\ISI.FrameWork\src\ISI.Extensions\ISI.Extensions.UnitTests\EmbeddedFiles\Views\Test.cshtml";
 
-				Console.WriteLine(System.IO.Path.GetRelativePath(relativeTo, path));
+				System.Console.WriteLine(System.IO.Path.GetRelativePath(relativeTo, path));
 
-				Console.WriteLine(ISI.Extensions.IO.Path.GetRelativePath(relativeTo, path));
+				System.Console.WriteLine(ISI.Extensions.IO.Path.GetRelativePath(relativeTo, path));
 			}
 		}
 

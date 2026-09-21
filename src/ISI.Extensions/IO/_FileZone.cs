@@ -193,7 +193,7 @@ namespace ISI.Extensions
 
 					if (zone is URLZONE.LOCAL_MACHINE or URLZONE.INVALID)
 					{
-						Console.WriteLine($"Nothing to remove on '{filename}'");
+						System.Console.WriteLine($"Nothing to remove on '{filename}'");
 						return;
 					}
 

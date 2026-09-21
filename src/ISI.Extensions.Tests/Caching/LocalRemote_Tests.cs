@@ -80,7 +80,7 @@ namespace ISI.Extensions.Tests.Caching
 
 			if (CacheManager.TryGetValue(key, out var cachedValue))
 			{
-				Console.WriteLine(cachedValue);
+				System.Console.WriteLine(cachedValue);
 			}
 		}
 
@@ -101,21 +101,21 @@ namespace ISI.Extensions.Tests.Caching
 			{
 				if (MemoryCacheManager.TryGetValue(key, out var cachedValue))
 				{
-					Console.WriteLine(cachedValue);
+					System.Console.WriteLine(cachedValue);
 				}
 			}
 
 			{
 				if (CacheManager.TryGetValue(key, out var cachedValue))
 				{
-					Console.WriteLine(cachedValue);
+					System.Console.WriteLine(cachedValue);
 				}
 			}
 
 			{
 				if (MemoryCacheManager.TryGetValue(key, out var cachedValue))
 				{
-					Console.WriteLine(cachedValue);
+					System.Console.WriteLine(cachedValue);
 				}
 			}
 		}
@@ -168,7 +168,7 @@ namespace ISI.Extensions.Tests.Caching
 
 			foreach (var item in items)
 			{
-				Console.WriteLine("{0} => {1}", item.Key, item.Value);
+				System.Console.WriteLine("{0} => {1}", item.Key, item.Value);
 			}
 		}
 
@@ -219,7 +219,7 @@ namespace ISI.Extensions.Tests.Caching
 
 			foreach (var item in items)
 			{
-				Console.WriteLine("{0} => {1}", item.Key, item.Value);
+				System.Console.WriteLine("{0} => {1}", item.Key, item.Value);
 			}
 		}
 	}

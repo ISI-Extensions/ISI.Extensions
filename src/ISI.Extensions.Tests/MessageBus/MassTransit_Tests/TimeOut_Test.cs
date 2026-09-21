@@ -80,7 +80,7 @@ namespace ISI.Extensions.Tests.MessageBus
 			}
 			catch (Exception exception)
 			{
-				Console.WriteLine(exception);
+				System.Console.WriteLine(exception);
 				//throw;
 			}
 

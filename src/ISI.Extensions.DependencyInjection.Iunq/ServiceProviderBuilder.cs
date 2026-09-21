@@ -67,7 +67,7 @@ namespace ISI.Extensions.DependencyInjection.Iunq
 
 			foreach (var serviceTypeGroup in serviceDescriptors.GroupBy(s => s.ServiceDescriptor.ServiceType))
 			{
-				//Console.WriteLine(" adding \"{0}\"", serviceTypeGroup.Key.FullName);
+				//System.Console.WriteLine(" adding \"{0}\"", serviceTypeGroup.Key.FullName);
 
 				var registrations = serviceTypeGroup.ToList();
 

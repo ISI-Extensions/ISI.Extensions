@@ -136,7 +136,7 @@ namespace ISI.Platforms.Serilog
 				});
 			}
 
-			Console.WriteLine($"LogDirectory => {platformsConfiguration?.LogDirectory}");
+			System.Console.WriteLine($"LogDirectory => {platformsConfiguration?.LogDirectory}");
 
 			if (!string.IsNullOrWhiteSpace(platformsConfiguration?.LogDirectory))
 			{

@@ -32,7 +32,7 @@ namespace ISI.Extensions.Tests
 			xxx["ddd"] = "yyyy";
 			xxx["ddd"] = "zzzz";
 
-			Console.WriteLine(xxx["ddd"]);
+			System.Console.WriteLine(xxx["ddd"]);
 		}
 	}
 }

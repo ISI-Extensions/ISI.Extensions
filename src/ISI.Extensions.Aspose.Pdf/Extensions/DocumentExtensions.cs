@@ -40,7 +40,7 @@ namespace ISI.Extensions.Aspose.Extensions
 				documentPage.Accept(imagePlacementAbsorber);
 
 				// Get the count of images over specific page
-				Console.WriteLine("Total Images = {0} over page number {1}", imagePlacementAbsorber.ImagePlacements.Count, documentPage.Number);
+				System.Console.WriteLine("Total Images = {0} over page number {1}", imagePlacementAbsorber.ImagePlacements.Count, documentPage.Number);
 
 				var image_counter = 1;
 				foreach (var imagePlacement in imagePlacementAbsorber.ImagePlacements)
@@ -49,10 +49,10 @@ namespace ISI.Extensions.Aspose.Extensions
 					switch (colorType)
 					{
 						case global::Aspose.Pdf.ColorType.Grayscale:
-							Console.WriteLine("Image {0} is GrayScale...", image_counter);
+							System.Console.WriteLine("Image {0} is GrayScale...", image_counter);
 							break;
 						case global::Aspose.Pdf.ColorType.Rgb:
-							Console.WriteLine("Image {0} is RGB...", image_counter);
+							System.Console.WriteLine("Image {0} is RGB...", image_counter);
 							break;
 					}
 					image_counter += 1;

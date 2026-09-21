@@ -46,7 +46,7 @@ namespace ISI.Extensions.MessageBus.NamedPipes
 			}
 			catch (Exception exception)
 			{
-				Console.WriteLine(exception);
+				System.Console.WriteLine(exception);
 			}
 		}
 

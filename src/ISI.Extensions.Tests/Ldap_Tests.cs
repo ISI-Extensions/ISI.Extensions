@@ -74,21 +74,21 @@ namespace ISI.Extensions.Tests
 
 			var ldapApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Security.Ldap.ILdapApi>();
 
-			Console.WriteLine(ldapApi.AuthenticateUser(new()
+			System.Console.WriteLine(ldapApi.AuthenticateUser(new()
 			{
 				LdapHost = settings.GetValue("LdapUrl"),
 				UserName = $"{settings.ActiveDirectory.Domain}\\{settings.ActiveDirectory.UserName}",
 				Password = settings.ActiveDirectory.Password,
 			}).Authenticated.TrueFalse());
 
-			Console.WriteLine(ldapApi.AuthenticateUser(new()
+			System.Console.WriteLine(ldapApi.AuthenticateUser(new()
 			{
 				LdapHost = settings.GetValue("LdapUrl"),
 				UserName = $"{settings.ActiveDirectory.UserName}-{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)}",
 				Password = settings.ActiveDirectory.Password,
 			}).Authenticated.TrueFalse());
 
-			Console.WriteLine(ldapApi.AuthenticateUser(new()
+			System.Console.WriteLine(ldapApi.AuthenticateUser(new()
 			{
 				LdapHost = settings.GetValue("LdapUrl"),
 				UserName = $"{settings.ActiveDirectory.Domain}\\{settings.ActiveDirectory.UserName}",
@@ -115,21 +115,21 @@ namespace ISI.Extensions.Tests
 
 			foreach (var user in users)
 			{
-				Console.WriteLine(user.Name);
-				Console.WriteLine(user.EmailAddress);
-				Console.WriteLine(user.FirstName);
-				Console.WriteLine(user.LastName);
-				Console.WriteLine(user.UserName);
-				Console.WriteLine(user.DistinguishedName);
-				Console.WriteLine(string.Join("; ", user.Roles.ToNullCheckedArray(NullCheckCollectionResult.Empty)));
-				Console.WriteLine("=====================================");
+				System.Console.WriteLine(user.Name);
+				System.Console.WriteLine(user.EmailAddress);
+				System.Console.WriteLine(user.FirstName);
+				System.Console.WriteLine(user.LastName);
+				System.Console.WriteLine(user.UserName);
+				System.Console.WriteLine(user.DistinguishedName);
+				System.Console.WriteLine(string.Join("; ", user.Roles.ToNullCheckedArray(NullCheckCollectionResult.Empty)));
+				System.Console.WriteLine("=====================================");
 			}
 		}
 
 		[Test]
 		public void EnvironmentUserDomainName_Test()
 		{
-			Console.WriteLine(Environment.UserDomainName);
+			System.Console.WriteLine(Environment.UserDomainName);
 		}
 
 		[Test]
@@ -150,14 +150,14 @@ namespace ISI.Extensions.Tests
 
 			foreach (var user in users)
 			{
-				Console.WriteLine(user.Name);
-				Console.WriteLine(user.EmailAddress);
-				Console.WriteLine(user.FirstName);
-				Console.WriteLine(user.LastName);
-				Console.WriteLine(user.UserName);
-				Console.WriteLine(user.DistinguishedName);
-				Console.WriteLine(string.Join("; ", user.Roles.ToNullCheckedArray(NullCheckCollectionResult.Empty)));
-				Console.WriteLine("=====================================");
+				System.Console.WriteLine(user.Name);
+				System.Console.WriteLine(user.EmailAddress);
+				System.Console.WriteLine(user.FirstName);
+				System.Console.WriteLine(user.LastName);
+				System.Console.WriteLine(user.UserName);
+				System.Console.WriteLine(user.DistinguishedName);
+				System.Console.WriteLine(string.Join("; ", user.Roles.ToNullCheckedArray(NullCheckCollectionResult.Empty)));
+				System.Console.WriteLine("=====================================");
 			}
 		}
 
@@ -179,7 +179,7 @@ namespace ISI.Extensions.Tests
 
 			foreach (var role in roles)
 			{
-				Console.WriteLine(role);
+				System.Console.WriteLine(role);
 			}
 		}
 	}

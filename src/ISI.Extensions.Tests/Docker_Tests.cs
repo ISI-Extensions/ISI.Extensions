@@ -153,10 +153,10 @@ namespace ISI.Extensions.Tests
 				{
 					if (tryGetEnvironmentValue("MESSAGE_BUS_CONNECTION_STRING", out var value))
 					{
-						Console.WriteLine(value);
+						System.Console.WriteLine(value);
 					}
 				},
-				AddToLog = (level, description) => Console.WriteLine(description),
+				AddToLog = (level, description) => System.Console.WriteLine(description),
 			});
 		}
 
@@ -169,7 +169,7 @@ namespace ISI.Extensions.Tests
 			{
 				Context = "isinydocker01",
 				ComposeDirectory = @"F:\ISI\Internal Projects\ISI.Docker.Recipes\isinydocker01\tailscale",
-				AddToLog = (level, description) => Console.WriteLine(description),
+				AddToLog = (level, description) => System.Console.WriteLine(description),
 			});
 		}
 
@@ -182,7 +182,7 @@ namespace ISI.Extensions.Tests
 			{
 				Context = "isinydocker01",
 				ComposeDirectory = @"F:\ISI\Internal Projects\ISI.Docker.Recipes\isinydocker01\scmmanager",
-				AddToLog = (level, description) => Console.WriteLine(description),
+				AddToLog = (level, description) => System.Console.WriteLine(description),
 			});
 		}
 
@@ -195,7 +195,7 @@ namespace ISI.Extensions.Tests
 			{
 				Host = "ssh://isinydocker01.isi-net.com",
 				Container = "isi-nginx-reverse-proxy",
-				AddToLog = (level, description) => Console.WriteLine(description),
+				AddToLog = (level, description) => System.Console.WriteLine(description),
 			});
 		}
 

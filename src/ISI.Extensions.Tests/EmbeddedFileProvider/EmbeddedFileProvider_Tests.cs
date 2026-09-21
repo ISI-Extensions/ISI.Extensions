@@ -31,9 +31,9 @@ namespace ISI.Extensions.Tests.EmbeddedFileProvider
 
 			foreach (var content in fileProvider.GetDirectoryContents(""))
 			{
-				Console.WriteLine(content.Name);
-				Console.WriteLine(content.Exists);
-				Console.WriteLine();
+				System.Console.WriteLine(content.Name);
+				System.Console.WriteLine(content.Exists);
+				System.Console.WriteLine();
 			}
 		}
 
@@ -47,12 +47,12 @@ namespace ISI.Extensions.Tests.EmbeddedFileProvider
 
 			var fileInfo = fileProvider.GetFileInfo(T4Files.EmbeddedFileProvider.Documents.TextFile1_txt);
 
-			Console.WriteLine(fileInfo.Name);
-			Console.WriteLine(fileInfo.Exists);
-			Console.WriteLine(fileInfo.Length);
-			Console.WriteLine(fileInfo.LastModified.Formatted(DateTimeExtensions.DateTimeFormat.DateTime));
-			Console.WriteLine(fileInfo.CreateReadStream().TextReadToEnd());
-			Console.WriteLine();
+			System.Console.WriteLine(fileInfo.Name);
+			System.Console.WriteLine(fileInfo.Exists);
+			System.Console.WriteLine(fileInfo.Length);
+			System.Console.WriteLine(fileInfo.LastModified.Formatted(DateTimeExtensions.DateTimeFormat.DateTime));
+			System.Console.WriteLine(fileInfo.CreateReadStream().TextReadToEnd());
+			System.Console.WriteLine();
 		}
 	}
 }

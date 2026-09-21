@@ -137,18 +137,18 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 
 			if (ldapSecureSocketLayer ?? false)
 			{
-				//Console.WriteLine("ldapConnection.SecureSocketLayer = true");
+				//System.Console.WriteLine("ldapConnection.SecureSocketLayer = true");
 				ldapConnection.SecureSocketLayer = true;
 			}
 
 			if (request.LdapStartTls ?? false)
 			{
-				//Console.WriteLine("ldapConnection.StartTls()");
+				//System.Console.WriteLine("ldapConnection.StartTls()");
 				ldapConnection.StartTlsAsync().GetAwaiter().GetResult();
 			}
 
-			//Console.WriteLine($"ldapConnection.Host = {ldapHost}");
-			//Console.WriteLine($"ldapConnection.Port = {ldapPort}");
+			//System.Console.WriteLine($"ldapConnection.Host = {ldapHost}");
+			//System.Console.WriteLine($"ldapConnection.Port = {ldapPort}");
 			ldapConnection.ConnectAsync(ldapHost, ldapPort.Value).GetAwaiter().GetResult();
 
 			return ldapConnection;

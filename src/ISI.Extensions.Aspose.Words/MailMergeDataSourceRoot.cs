@@ -34,7 +34,7 @@ namespace ISI.Extensions.Aspose
 
 			public global::Aspose.Words.MailMerging.IMailMergeDataSource GetDataSource(string tableName)
 			{
-				//Console.WriteLine("{0} => GetChildDataSource({1})", "Root", tableName);
+				//System.Console.WriteLine("{0} => GetChildDataSource({1})", "Root", tableName);
 
 				var childDataSource = DocumentDataSourceRoot.GetChildDataSource(tableName);
 

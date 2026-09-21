@@ -75,7 +75,7 @@ namespace ISI.Extensions.TypeLocator
 				}
 				catch(Exception exception)
 				{
-					Console.WriteLine(exception.ErrorMessageFormatted());
+					System.Console.WriteLine(exception.ErrorMessageFormatted());
 				}
 			}
 

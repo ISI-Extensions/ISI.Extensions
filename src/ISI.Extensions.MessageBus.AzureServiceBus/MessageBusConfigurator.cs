@@ -82,7 +82,7 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 
 					await queueClient.CompleteAsync(message.SystemProperties.LockToken);
 				},
-				new Microsoft.Azure.ServiceBus.MessageHandlerOptions(async args => Console.WriteLine(args.Exception))
+				new Microsoft.Azure.ServiceBus.MessageHandlerOptions(async args => System.Console.WriteLine(args.Exception))
 				{
 					MaxConcurrentCalls = _messageBusBuildRequest.ConcurrentConsumerLimit ?? 10,
 					AutoComplete = false,
@@ -110,7 +110,7 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 
 					await queueClient.CompleteAsync(message.SystemProperties.LockToken);
 				},
-				new Microsoft.Azure.ServiceBus.MessageHandlerOptions(async args => Console.WriteLine(args.Exception))
+				new Microsoft.Azure.ServiceBus.MessageHandlerOptions(async args => System.Console.WriteLine(args.Exception))
 				{
 					MaxConcurrentCalls = _messageBusBuildRequest.ConcurrentConsumerLimit ?? 10,
 					AutoComplete = false,
@@ -140,7 +140,7 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 
 					await queueClient.CompleteAsync(message.SystemProperties.LockToken);
 				},
-				new Microsoft.Azure.ServiceBus.MessageHandlerOptions(async args => Console.WriteLine(args.Exception))
+				new Microsoft.Azure.ServiceBus.MessageHandlerOptions(async args => System.Console.WriteLine(args.Exception))
 				{
 					MaxConcurrentCalls = _messageBusBuildRequest.ConcurrentConsumerLimit ?? 10,
 					AutoComplete = false,
@@ -168,7 +168,7 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 
 					await queueClient.CompleteAsync(message.SystemProperties.LockToken);
 				},
-				new Microsoft.Azure.ServiceBus.MessageHandlerOptions(async args => Console.WriteLine(args.Exception))
+				new Microsoft.Azure.ServiceBus.MessageHandlerOptions(async args => System.Console.WriteLine(args.Exception))
 				{
 					MaxConcurrentCalls = _messageBusBuildRequest.ConcurrentConsumerLimit ?? 10,
 					AutoComplete = false,
@@ -201,7 +201,7 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 
 					await queueClient.CompleteAsync(message.SystemProperties.LockToken);
 				},
-				new Microsoft.Azure.ServiceBus.MessageHandlerOptions(async args => Console.WriteLine(args.Exception))
+				new Microsoft.Azure.ServiceBus.MessageHandlerOptions(async args => System.Console.WriteLine(args.Exception))
 				{
 					MaxConcurrentCalls = _messageBusBuildRequest.ConcurrentConsumerLimit ?? 10,
 					AutoComplete = false,
@@ -228,7 +228,7 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 
 					await queueClient.CompleteAsync(message.SystemProperties.LockToken);
 				},
-				new Microsoft.Azure.ServiceBus.MessageHandlerOptions(async args => Console.WriteLine(args.Exception))
+				new Microsoft.Azure.ServiceBus.MessageHandlerOptions(async args => System.Console.WriteLine(args.Exception))
 				{
 					MaxConcurrentCalls = _messageBusBuildRequest.ConcurrentConsumerLimit ?? 10,
 					AutoComplete = false,

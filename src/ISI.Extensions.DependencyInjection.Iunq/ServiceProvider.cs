@@ -335,7 +335,7 @@ namespace ISI.Extensions.DependencyInjection.Iunq
 			}
 
 #if DEBUG
-			Console.WriteLine("serviceType not found \"{0}\"", serviceType.FullName);
+			System.Console.WriteLine("serviceType not found \"{0}\"", serviceType.FullName);
 #endif
 
 			return null;

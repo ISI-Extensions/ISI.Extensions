@@ -43,7 +43,7 @@ namespace ISI.Extensions.VisualStudio
 					}
 					catch (Exception exception)
 					{
-						Console.WriteLine($"Could not clear readOnly on {directoryInfo.Name}");
+						System.Console.WriteLine($"Could not clear readOnly on {directoryInfo.Name}");
 					}
 
 					try
@@ -55,7 +55,7 @@ namespace ISI.Extensions.VisualStudio
 					}
 					catch (Exception exception)
 					{
-						Console.WriteLine($"Could not GetDirectories on {directoryInfo.Name}");
+						System.Console.WriteLine($"Could not GetDirectories on {directoryInfo.Name}");
 					}
 
 					foreach (var fileInfo in directoryInfo.GetFiles())
@@ -68,7 +68,7 @@ namespace ISI.Extensions.VisualStudio
 						}
 						catch (Exception exception)
 						{
-							Console.WriteLine($"Could not clear readOnly on {fileInfo.FullName}");
+							System.Console.WriteLine($"Could not clear readOnly on {fileInfo.FullName}");
 						}
 					}
 
@@ -86,7 +86,7 @@ namespace ISI.Extensions.VisualStudio
 						{
 							if (maxRetries-- < 0)
 							{
-								Console.WriteLine(exception);
+								System.Console.WriteLine(exception);
 								throw;
 							}
 							System.Threading.Thread.Sleep(millisecondsDelay);

@@ -77,11 +77,11 @@ namespace ISI.Extensions.Tests.MessageBus
 				{
 					var response = new GetInterfaceResponse();
 
-					Console.WriteLine(request.GetType().FullName);
-					Console.WriteLine(request.Interface.GetType().FullName);
+					System.Console.WriteLine(request.GetType().FullName);
+					System.Console.WriteLine(request.Interface.GetType().FullName);
 					response.Interface = request.Interface;
-					Console.WriteLine(response.GetType().FullName);
-					Console.WriteLine(response.Interface.GetType().FullName);
+					System.Console.WriteLine(response.GetType().FullName);
+					System.Console.WriteLine(response.Interface.GetType().FullName);
 
 					return response;
 				});
@@ -98,9 +98,9 @@ namespace ISI.Extensions.Tests.MessageBus
 				},
 			};
 
-			Console.WriteLine(request.GetType().FullName);
-			Console.WriteLine(request.Interface.GetType().FullName);
-			Console.WriteLine();
+			System.Console.WriteLine(request.GetType().FullName);
+			System.Console.WriteLine(request.Interface.GetType().FullName);
+			System.Console.WriteLine();
 
 			var cancellationTokenSource = new System.Threading.CancellationTokenSource();
 
@@ -108,13 +108,13 @@ namespace ISI.Extensions.Tests.MessageBus
 			{
 				var response = MessageBus.PublishAsync<GetInterfaceRequest, GetInterfaceResponse>(request, timeout: TimeSpan.FromSeconds(5), cancellationToken: cancellationTokenSource.Token).GetAwaiter().GetResult();
 			
-				Console.WriteLine();
-				Console.WriteLine(response.GetType().FullName);
-				Console.WriteLine(response.Interface.GetType().FullName);
+				System.Console.WriteLine();
+				System.Console.WriteLine(response.GetType().FullName);
+				System.Console.WriteLine(response.Interface.GetType().FullName);
 			}
 			catch (Exception exception)
 			{
-				Console.WriteLine(exception);
+				System.Console.WriteLine(exception);
 				//throw;
 			}
 

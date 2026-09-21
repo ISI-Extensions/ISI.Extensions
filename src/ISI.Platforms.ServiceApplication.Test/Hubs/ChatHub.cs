@@ -26,7 +26,7 @@ namespace ISI.Platforms.ServiceApplication.Test.Hubs
 	{
 		public override async Task OnConnectedAsync()
 		{
-			Console.WriteLine($"New Connection: {Context.ConnectionId}");
+			System.Console.WriteLine($"New Connection: {Context.ConnectionId}");
 
 			await base.OnConnectedAsync();
 		}

@@ -49,19 +49,19 @@ namespace ISI.Extensions.Tests
 			{
 				foreach (var launchSettingJsonNode in profilesJsonObject)
 				{
-					Console.WriteLine(launchSettingJsonNode.Key);
+					System.Console.WriteLine(launchSettingJsonNode.Key);
 
 					if (launchSettingJsonNode.Value is System.Text.Json.Nodes.JsonObject launchSettingJsonObject)
 					{
 						foreach (var launchSetting in launchSettingJsonObject)
 						{
-							Console.WriteLine($"\t{launchSetting.Key}");
+							System.Console.WriteLine($"\t{launchSetting.Key}");
 
 							if (string.Equals(launchSetting.Key, "applicationUrl", StringComparison.InvariantCultureIgnoreCase))
 							{
 								var uri = new UriBuilder(launchSetting.Value.ToString());
 
-								Console.WriteLine($"\t\t{uri.Port}");
+								System.Console.WriteLine($"\t\t{uri.Port}");
 
 								schemaPortReservations.Add(launchSettingJsonNode.Key, (Schema: uri.Scheme, Port: uri.Port));
 							}
@@ -75,7 +75,7 @@ namespace ISI.Extensions.Tests
 				profilesJsonNode[portReservation.Key]["applicationUrl"] = $"{portReservation.Value.Schema}://localhost:{portReservation.Value.Port + 1}";
 			}
 
-			Console.WriteLine(launchSettingsJsonNode.ToJsonString(new System.Text.Json.JsonSerializerOptions()
+			System.Console.WriteLine(launchSettingsJsonNode.ToJsonString(new System.Text.Json.JsonSerializerOptions()
 			{
 				WriteIndented = true,
 			}));

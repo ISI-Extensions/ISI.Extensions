@@ -64,13 +64,13 @@ namespace ISI.Extensions.Repository
 							throw new("Can't create step");
 						}
 
-						Console.WriteLine("{1} => Started {0}", migrationStep.Value.Name, DateTime.Now.Formatted(DateTimeExtensions.DateTimeFormat.DateTime));
+						System.Console.WriteLine("{1} => Started {0}", migrationStep.Value.Name, DateTime.Now.Formatted(DateTimeExtensions.DateTimeFormat.DateTime));
 
 						migrationStepInstance.Execute(RepositorySetupApiFactory.GetRepositorySetupApi(migrationStep.Value));
 
 						defaultRepositorySetupApi.SetStep(migrationStep.Key);
 
-						Console.WriteLine("{1} => Finished {0}", migrationStep.Value.Name, DateTime.Now.Formatted(DateTimeExtensions.DateTimeFormat.DateTime));
+						System.Console.WriteLine("{1} => Finished {0}", migrationStep.Value.Name, DateTime.Now.Formatted(DateTimeExtensions.DateTimeFormat.DateTime));
 					}
 				}
 			}

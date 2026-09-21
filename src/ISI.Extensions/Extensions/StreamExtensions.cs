@@ -78,7 +78,7 @@ namespace ISI.Extensions.Extensions
 			catch (Exception e)
 			{
 #if DEBUG
-				Console.WriteLine(e.Message);
+				System.Console.WriteLine(e.Message);
 				System.Diagnostics.Debugger.Break();
 #endif
 			}
@@ -98,7 +98,7 @@ namespace ISI.Extensions.Extensions
 			catch (Exception exception)
 			{
 #if DEBUG
-				Console.WriteLine(exception.Message);
+				System.Console.WriteLine(exception.Message);
 				System.Diagnostics.Debugger.Break();
 #endif
 			}
@@ -123,7 +123,7 @@ namespace ISI.Extensions.Extensions
 			catch (Exception exception)
 			{
 #if DEBUG
-				Console.WriteLine(exception.Message);
+				System.Console.WriteLine(exception.Message);
 				System.Diagnostics.Debugger.Break();
 #endif
 			}
@@ -189,7 +189,7 @@ namespace ISI.Extensions.Extensions
 			catch (Exception exception)
 			{
 #if DEBUG
-				Console.WriteLine(exception.Message);
+				System.Console.WriteLine(exception.Message);
 				System.Diagnostics.Debugger.Break();
 #endif
 				return false;
@@ -227,7 +227,7 @@ namespace ISI.Extensions.Extensions
 			catch (Exception e)
 			{
 #if DEBUG
-				Console.WriteLine(e.Message);
+				System.Console.WriteLine(e.Message);
 				System.Diagnostics.Debugger.Break();
 #endif
 				result = false;

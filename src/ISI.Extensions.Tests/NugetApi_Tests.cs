@@ -660,15 +660,15 @@ namespace ISI.Extensions.Tests
 				}
 			}
 
-			Console.WriteLine();
-			Console.WriteLine();
-			Console.WriteLine();
-			Console.WriteLine();
-			Console.WriteLine();
+			System.Console.WriteLine();
+			System.Console.WriteLine();
+			System.Console.WriteLine();
+			System.Console.WriteLine();
+			System.Console.WriteLine();
 
 			foreach (var nugetPackageKey in nugetPackageKeys.Where(nugetPackageKey => nugetPackageKey.Package.StartsWith("ISI.")).OrderBy(nugetPackageKey => nugetPackageKey.Package, StringComparer.InvariantCultureIgnoreCase).ThenBy(nugetPackageKey => nugetPackageKey.Version, StringComparer.InvariantCultureIgnoreCase))
 			{
-				Console.WriteLine($"{nugetPackageKey.Package} {nugetPackageKey.Version}");
+				System.Console.WriteLine($"{nugetPackageKey.Package} {nugetPackageKey.Version}");
 			}
 		}
 	}

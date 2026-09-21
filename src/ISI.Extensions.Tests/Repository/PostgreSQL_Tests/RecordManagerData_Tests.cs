@@ -310,7 +310,7 @@ namespace ISI.Extensions.Tests.Repository
 
 			foreach (var record in recordManager.ListRecordsAsync().ToEnumerable())
 			{
-				Console.WriteLine($"{record.FirstName} {record.LastName}");
+				System.Console.WriteLine($"{record.FirstName} {record.LastName}");
 			}
 		}
 

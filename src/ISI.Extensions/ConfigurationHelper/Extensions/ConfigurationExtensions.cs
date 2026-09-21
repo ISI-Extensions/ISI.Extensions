@@ -29,7 +29,7 @@ namespace ISI.Extensions.ConfigurationHelper.Extensions
 	{
 		public static Microsoft.Extensions.Configuration.IConfiguration AddAllConfigurations(this Microsoft.Extensions.Configuration.IConfiguration configuration, Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
-			//Console.WriteLine($"AddAllConfigurations(configuration, services) services: {(services == null ? "null" : "not null")}");
+			//System.Console.WriteLine($"AddAllConfigurations(configuration, services) services: {(services == null ? "null" : "not null")}");
 
 			var configurationTypes = ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementationTypes<ISI.Extensions.ConfigurationHelper.IConfiguration>();
 
@@ -43,7 +43,7 @@ namespace ISI.Extensions.ConfigurationHelper.Extensions
 
 		public static Microsoft.Extensions.DependencyInjection.IServiceCollection AddAllConfigurations(this Microsoft.Extensions.DependencyInjection.IServiceCollection services, Microsoft.Extensions.Configuration.IConfiguration configuration)
 		{
-			//Console.WriteLine($"AddAllConfigurations(services, configuration) services: {(services == null ? "null" : "not null")}");
+			//System.Console.WriteLine($"AddAllConfigurations(services, configuration) services: {(services == null ? "null" : "not null")}");
 
 			var configurationTypes = ISI.Extensions.TypeLocator.Container.LocalContainer.GetImplementationTypes<ISI.Extensions.ConfigurationHelper.IConfiguration>();
 
@@ -109,7 +109,7 @@ namespace ISI.Extensions.ConfigurationHelper.Extensions
 
 			configuration.Bind(configurationSectionName, config);
 
-			//Console.WriteLine($"Adding ConfigurationSection: {configurationSectionName}, serviceProvider: {(serviceProvider == null ? "null" : "not null")}, services: {(services == null ? "null" : "not null")}, usedConfigurationAttribute: {usedConfigurationAttribute.TrueFalse()}");
+			//System.Console.WriteLine($"Adding ConfigurationSection: {configurationSectionName}, serviceProvider: {(serviceProvider == null ? "null" : "not null")}, services: {(services == null ? "null" : "not null")}, usedConfigurationAttribute: {usedConfigurationAttribute.TrueFalse()}");
 
 			services?.AddSingleton(configurationType, config);
 			serviceProvider?.RegisterInstance(configurationType, config, ServiceLifetime.Singleton);

@@ -87,7 +87,7 @@ namespace ISI.Extensions.Assemblies
 				}
 				catch
 				{
-					Console.WriteLine($"Could not load assembly: {assembly.FullName}");
+					System.Console.WriteLine($"Could not load assembly: {assembly.FullName}");
 				}
 			}
 
@@ -111,7 +111,7 @@ namespace ISI.Extensions.Assemblies
 				}
 				catch
 				{
-					Console.WriteLine($"Could not load assembly: {assemblyFileName} (possibly 2nd attempt)");
+					System.Console.WriteLine($"Could not load assembly: {assemblyFileName} (possibly 2nd attempt)");
 				}
 			}
 

@@ -193,7 +193,7 @@ namespace ISI.Extensions.Jenkins.Forms
 						}
 						catch (Exception exception)
 						{
-							Console.WriteLine(exception);
+							System.Console.WriteLine(exception);
 
 							jenkinsConfig.SetStatus(TaskActionStatus.Errored, "Failed");
 						}

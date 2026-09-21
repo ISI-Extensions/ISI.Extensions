@@ -37,10 +37,10 @@ namespace ISI.Extensions.Tests
 			var publicKeyToken = string.Concat(assemblyName.GetPublicKeyToken().Select(b => b.ToString("X2"))).ToLower();
 
 
-			Console.WriteLine("<dependentAssembly>");
-			Console.WriteLine($"\t<assemblyIdentity name=\"{name}\" publicKeyToken=\"{publicKeyToken}\" />");
-			Console.WriteLine($"\t<bindingRedirect oldVersion=\"0.0.0.0-{assemblyVersion}\" newVersion=\"{assemblyVersion}\" />");
-			Console.WriteLine("</dependentAssembly>");
+			System.Console.WriteLine("<dependentAssembly>");
+			System.Console.WriteLine($"\t<assemblyIdentity name=\"{name}\" publicKeyToken=\"{publicKeyToken}\" />");
+			System.Console.WriteLine($"\t<bindingRedirect oldVersion=\"0.0.0.0-{assemblyVersion}\" newVersion=\"{assemblyVersion}\" />");
+			System.Console.WriteLine("</dependentAssembly>");
 		}
 	}
 }

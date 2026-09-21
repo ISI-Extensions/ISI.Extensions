@@ -84,7 +84,7 @@ namespace ISI.Extensions.Tests
 
 			var fileSystemPath = fileSystemPaths.Cast<ISI.Extensions.GoDrive.GoDriveFileSystem.GoDriveFileSystemPathFile>().Last();
 
-			Console.WriteLine(fileSystemPath);
+			System.Console.WriteLine(fileSystemPath);
 
 			using (var stream = new System.IO.MemoryStream())
 			{

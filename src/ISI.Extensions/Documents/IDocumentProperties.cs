@@ -79,21 +79,21 @@ namespace ISI.Extensions.Documents
 	Document doc = new Document("Get Document Properties.doc");
 	foreach (DocumentProperty prop in doc.BuiltInDocumentProperties)
 	{
-			Console.WriteLine(prop.Name+": "+ prop.Value);
+			System.Console.WriteLine(prop.Name+": "+ prop.Value);
 	} 
 	SummaryInformation summaryInfo = new SummaryInformation(new PropertySet(new FileStream("Get Document Properties.doc", FileMode.Open)));
-	Console.WriteLine(summaryInfo.ApplicationName);
-	Console.WriteLine(summaryInfo.Author);
-	Console.WriteLine(summaryInfo.Comments);
-	Console.WriteLine(summaryInfo.CharCount);
-	Console.WriteLine(summaryInfo.EditTime);
-	Console.WriteLine(summaryInfo.Keywords);
-	Console.WriteLine(summaryInfo.LastAuthor);
-	Console.WriteLine(summaryInfo.PageCount);
-	Console.WriteLine(summaryInfo.RevNumber);
-	Console.WriteLine(summaryInfo.Security);
-	Console.WriteLine(summaryInfo.Subject);
-	Console.WriteLine(summaryInfo.Template);
+	System.Console.WriteLine(summaryInfo.ApplicationName);
+	System.Console.WriteLine(summaryInfo.Author);
+	System.Console.WriteLine(summaryInfo.Comments);
+	System.Console.WriteLine(summaryInfo.CharCount);
+	System.Console.WriteLine(summaryInfo.EditTime);
+	System.Console.WriteLine(summaryInfo.Keywords);
+	System.Console.WriteLine(summaryInfo.LastAuthor);
+	System.Console.WriteLine(summaryInfo.PageCount);
+	System.Console.WriteLine(summaryInfo.RevNumber);
+	System.Console.WriteLine(summaryInfo.Security);
+	System.Console.WriteLine(summaryInfo.Subject);
+	System.Console.WriteLine(summaryInfo.Template);
 	*/
 	public interface IWordDocumentProperties : IDocumentProperties
 	{

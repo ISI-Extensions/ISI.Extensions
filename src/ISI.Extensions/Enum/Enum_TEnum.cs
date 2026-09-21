@@ -215,7 +215,7 @@ namespace ISI.Extensions
 				{
 					System.IO.File.AppendAllText(@"C:\Temp\ISI.Extensions.Enum.Error.txt", exception.ErrorMessageFormatted());
 
-					Console.WriteLine(exception);
+					System.Console.WriteLine(exception);
 				}
 #endif
 				throw;

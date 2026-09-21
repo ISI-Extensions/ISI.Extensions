@@ -27,8 +27,8 @@ namespace ISI.Extensions.Security.Ldap.Extensions
 	{
 		public static void Bind(this Novell.Directory.Ldap.LdapConnection ldapConnection, DTOs.ILdapRequestWithBindCredentials request)
 		{
-			//Console.WriteLine($"ldapConnection.LdapBindUserName = {request.LdapBindUserName}");
-			//Console.WriteLine($"ldapConnection.LdapBindPassword = {request.LdapBindPassword}");
+			//System.Console.WriteLine($"ldapConnection.LdapBindUserName = {request.LdapBindUserName}");
+			//System.Console.WriteLine($"ldapConnection.LdapBindPassword = {request.LdapBindPassword}");
 
 			ldapConnection.BindAsync(request.LdapBindUserName, request.LdapBindPassword).GetAwaiter().GetResult();
 		}

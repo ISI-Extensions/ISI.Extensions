@@ -29,7 +29,7 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void ReadPassword_Test()
 		{
-			var password = ISI.Extensions.Console.ReadPassword();
+			var password = ISI.Extensions.ConsolePassword.Read();
 		}
 
 		[Test]

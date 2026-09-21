@@ -20,11 +20,11 @@ using System.Text;
 
 namespace ISI.Extensions
 {
-	public class Console
+	public class ConsolePassword
 	{
-		public static string ReadPassword()
+		public static string Read()
 		{
-			if (TryReadPassword(out var password))
+			if (TryRead(out var password))
 			{
 				return password;
 			}
@@ -32,7 +32,7 @@ namespace ISI.Extensions
 			return null;
 		}
 
-		public static bool TryReadPassword(out string password)
+		public static bool TryRead(out string password)
 		{
 			var passwordStack = new List<char>();
 

@@ -42,7 +42,6 @@ namespace ISI.Extensions.Tests
 			passwordStack.Add('T');
 
 			var password = new string(passwordStack.ToArray());
-
 		}
 	}
 }

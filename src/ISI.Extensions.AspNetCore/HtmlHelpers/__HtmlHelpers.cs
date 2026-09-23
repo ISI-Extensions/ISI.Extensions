@@ -138,8 +138,8 @@ namespace ISI.Extensions.AspNetCore.Extensions
 
 				public bool Equals(ISI.Extensions.AspNetCore.IContentUrl x, ISI.Extensions.AspNetCore.IContentUrl y)
 				{
-					var xKey = $"{(x is StylesheetContentUrl ? ((StylesheetContentUrl)x).Media : "-")}\t{x.VirtualPath}";
-					var yKey = $"{(y is StylesheetContentUrl ? ((StylesheetContentUrl)y).Media : "-")}\t{y.VirtualPath}";
+					var xKey = $"{(x is StylesheetContentUrl stylesheetContentUrlX ? stylesheetContentUrlX.Media : "-")}\t{x.VirtualPath}";
+					var yKey = $"{(y is StylesheetContentUrl stylesheetContentUrlY  ? stylesheetContentUrlY.Media : "-")}\t{y.VirtualPath}";
 
 					return string.Equals(xKey, yKey, StringComparison.InvariantCultureIgnoreCase);
 				}
@@ -164,9 +164,9 @@ namespace ISI.Extensions.AspNetCore.Extensions
 
 			public new void Add(ISI.Extensions.AspNetCore.IContentUrl item)
 			{
-				if ((item is StylesheetContentUrl) && string.IsNullOrEmpty(((StylesheetContentUrl)item).Media))
+				if ((item is StylesheetContentUrl stylesheetContentUrl) && string.IsNullOrEmpty(stylesheetContentUrl.Media))
 				{
-					base.Add(((StylesheetContentUrl)item).ContentUrl);
+					base.Add(stylesheetContentUrl.ContentUrl);
 				}
 				else
 				{

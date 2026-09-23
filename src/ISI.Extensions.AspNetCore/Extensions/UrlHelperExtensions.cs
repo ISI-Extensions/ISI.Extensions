@@ -37,7 +37,7 @@ namespace ISI.Extensions.AspNetCore.Extensions
 				var scheme = urlHelper.ActionContext.HttpContext.Request.Scheme;
 				var port = urlHelper.ActionContext.HttpContext.Request.Host.Port;
 
-				if (urlHelper.ActionContext.HttpContext.Request.Headers.TryGetValue("X-Forwarded-Host", out var forwardedHosts))
+				if (urlHelper.ActionContext.HttpContext.Request.Headers.TryGetValue(ISI.Extensions.HttpHeader.ForwardedHost, out var forwardedHosts))
 				{
 					var forwardedHost = forwardedHosts.NullCheckedFirstOrDefault() ?? string.Empty;
 
@@ -69,12 +69,12 @@ namespace ISI.Extensions.AspNetCore.Extensions
 					}
 				}
 
-				if (urlHelper.ActionContext.HttpContext.Request.Headers.TryGetValue("X-Forwarded-Proto", out var forwardedScheme))
+				if (urlHelper.ActionContext.HttpContext.Request.Headers.TryGetValue(ISI.Extensions.HttpHeader.ForwardedScheme, out var forwardedScheme))
 				{
 					scheme = forwardedScheme.NullCheckedFirstOrDefault();
 				}
 
-				if (urlHelper.ActionContext.HttpContext.Request.Headers.TryGetValue("X-Forwarded-Port", out var forwardedPort))
+				if (urlHelper.ActionContext.HttpContext.Request.Headers.TryGetValue(ISI.Extensions.HttpHeader.ForwardedPort, out var forwardedPort))
 				{
 					port = forwardedPort.NullCheckedFirstOrDefault().ToIntNullable();
 				}

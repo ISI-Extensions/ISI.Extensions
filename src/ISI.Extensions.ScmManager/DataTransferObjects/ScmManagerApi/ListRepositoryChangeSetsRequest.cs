@@ -29,5 +29,7 @@ namespace ISI.Extensions.ScmManager.DataTransferObjects.ScmManagerApi
 
 		public string Namespace { get; set; }
 		public string Name { get; set; }
+
+		public int? Take { get; set; }
 	}
 }

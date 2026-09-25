@@ -66,7 +66,7 @@ namespace ISI.Extensions.Tests
 
 			serviceProvider.SetServiceLocator();
 
-			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ICA.keyValue");
 			var settings = new ISI.Extensions.SimpleKeyValueStorage(settingsFullName);
 
 			ScmManagerApiUrl = settings.GetValue("SCMMANAGER-URL");
@@ -84,6 +84,17 @@ namespace ISI.Extensions.Tests
 				ScmManagerApiUrl = ScmManagerApiUrl,
 				ScmManagerApiToken = ScmManagerApiToken,
 			});
+
+			foreach (var repository in apiResponse.Repositories)
+			{
+				var apiResponse2 = scmManagerApi.ListRepositoryChangeSets(new()
+				{
+					ScmManagerApiUrl = ScmManagerApiUrl,
+					ScmManagerApiToken = ScmManagerApiToken,
+					Namespace = repository.Namespace,
+					Name = repository.Name,
+				});
+			}
 		}
 
 		[Test]

@@ -55,7 +55,7 @@ namespace ISI.Extensions.ScmManager
 					}),
 					Date = repositoryChangeSet.Date,
 					Description = repositoryChangeSet.Description,
-				}));
+				}, NullCheckCollectionResult.Empty));
 
 				uri = string.IsNullOrWhiteSpace(apiResponse?.Links.Next?.Href) ? null : new UriBuilder(apiResponse.Links.Next.Href);
 			}

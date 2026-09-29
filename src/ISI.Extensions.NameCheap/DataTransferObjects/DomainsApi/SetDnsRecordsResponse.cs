@@ -24,5 +24,6 @@ namespace ISI.Extensions.NameCheap.DataTransferObjects.DomainsApi
 {
 	public class SetDnsRecordsResponse
 	{
+		public bool Success { get; set; }	
 	}
 }

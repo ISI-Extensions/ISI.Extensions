@@ -31,7 +31,13 @@ namespace ISI.Extensions
 		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
 			services.AddSingleton<ISI.Extensions.IApplicationBus, ISI.Extensions.ApplicationBus>();
+
+			services.AddSingleton<ISI.Extensions.XmlSerialization.XmlSerializer>();
+			services.AddSingleton<ISI.Extensions.XmlSerialization.XmlDataContractSerializer>();
+			services.AddSingleton<ISI.Extensions.JsonSerialization.JsonSerializer>();
+			services.AddSingleton<ISI.Extensions.JsonSerialization.JsonDataContractSerializer>();
 			services.AddSingleton<ISI.Extensions.Serialization.ISerialization, ISI.Extensions.Serialization.Serialization>();
+
 			services.AddSingleton<ISI.Extensions.SecureShell.IHostConfigurationManager, ISI.Extensions.SecureShell.HostConfigurationManager>();
 
 			services.AddSingleton<ISI.Extensions.Crypto.Pbkdf2SaltedHashGenerator>();

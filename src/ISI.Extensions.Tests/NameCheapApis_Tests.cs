@@ -131,23 +131,31 @@ namespace ISI.Extensions.Tests
 				{
 					ApiUser = ApiUser,
 					ApiKey = ApiKey,
-					Domain = "muthmanor.com",
+					Domain = "isi-net.com",
+					//Domain = "muthmanor.com",
 					DnsRecords =
 					[
 						new ISI.Extensions.Dns.DnsRecord()
 						{
-							Name = "_acme-challenge",
-							Data = "syNbKycoWcK4rrO_VcN2VWVsurWpSS3z6Ftl6pTYpBg",
-							RecordType = ISI.Extensions.Dns.RecordType.TextRecord,
+							Name = "_E1241329C9F35CF20BB4EC0DA7210E43",
+							Data = "4BDE4B75ACA03C8871913A60CCB46DD9.16359AFE753EBFB20CFFE29845FEF647.6abb0faa81ed7.comodoca.com",
+							RecordType = ISI.Extensions.Dns.RecordType.CanonicalNameRecord,
 							Ttl = TimeSpan.FromMinutes(10),
 						},
-						new ISI.Extensions.Dns.DnsRecord()
-						{
-							Name = "_acme-challenge",
-							Data = "Jbw0sk_5m0g39QbqtFEcXpKP_wH-sSOwMLAz8_0tsn8",
-							RecordType = ISI.Extensions.Dns.RecordType.TextRecord,
-							Ttl = TimeSpan.FromMinutes(10),
-						},
+						//new ISI.Extensions.Dns.DnsRecord()
+						//{
+						//	Name = "_acme-challenge",
+						//	Data = "syNbKycoWcK4rrO_VcN2VWVsurWpSS3z6Ftl6pTYpBg",
+						//	RecordType = ISI.Extensions.Dns.RecordType.TextRecord,
+						//	Ttl = TimeSpan.FromMinutes(10),
+						//},
+						//new ISI.Extensions.Dns.DnsRecord()
+						//{
+						//	Name = "_acme-challenge",
+						//	Data = "Jbw0sk_5m0g39QbqtFEcXpKP_wH-sSOwMLAz8_0tsn8",
+						//	RecordType = ISI.Extensions.Dns.RecordType.TextRecord,
+						//	Ttl = TimeSpan.FromMinutes(10),
+						//},
 						//new ISI.Extensions.Dns.DnsRecord()
 						//{
 						//	Name = "@",
@@ -189,6 +197,11 @@ namespace ISI.Extensions.Tests
 		[Test]
 		public void ListCertificates_Test()
 		{
+			var serialization = ServiceProvider.GetService<ISI.Extensions.Serialization.ISerialization>();
+
+			var serializer = serialization.GetSerializer<ISI.Extensions.NameCheap.SerializableModels.SslCertificatesApi.ListCertificatesResponse>();
+
+
 			var sslCertificatesApi = ServiceProvider.GetService<ISI.Extensions.NameCheap.SslCertificatesApi>();
 
 			using (var eventHandler = ISI.Extensions.WebClient.Rest.GetEventHandler())

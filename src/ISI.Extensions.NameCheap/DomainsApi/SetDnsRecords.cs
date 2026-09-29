@@ -86,7 +86,7 @@ namespace ISI.Extensions.NameCheap
 			{
 				var dnsRecord = dnsRecords[dnsRecordIndex - 1];
 
-				addDnsRecordKeyValue(dnsRecordIndex, "HostName", dnsRecord.Name);
+				addDnsRecordKeyValue(dnsRecordIndex, "HostName", (dnsRecord.Name.StartsWith("_") ? $"\"{dnsRecord.Name}\"" : dnsRecord.Name));
 				addDnsRecordKeyValue(dnsRecordIndex, "RecordType", dnsRecord.RecordType.GetAbbreviation());
 				addDnsRecordKeyValue(dnsRecordIndex, "Address", dnsRecord.Data);
 				if (dnsRecord.Priority != 10)

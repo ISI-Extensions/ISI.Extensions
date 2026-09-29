@@ -22,10 +22,10 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.JsonSerialization
 {
-	[ISI.Extensions.TypeLocator(typeof(Serialization.ISerializer))]
+	[ISI.Extensions.TypeLocator(typeof(ISI.Extensions.Serialization.ISerializer))]
 	public class JsonDataContractSerializer : ISI.Extensions.JsonSerialization.IJsonSerializer, ISI.Extensions.Serialization.ISerializer
 	{
-		public Serialization.SerializationFormat SerializationFormat => Serialization.SerializationFormat.Json;
+		public ISI.Extensions.Serialization.SerializationFormat SerializationFormat => ISI.Extensions.Serialization.SerializationFormat.Json;
 
 		public bool UsesDataContract => true;
 

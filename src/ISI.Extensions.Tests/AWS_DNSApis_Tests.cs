@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -121,26 +121,33 @@ namespace ISI.Extensions.Tests
 				DnsRecords =
 				[
 					new ISI.Extensions.Dns.DnsRecord()
-						{
-							Name = "_acme-challenge",
-							Data = "xRonr7-ooXsI_wUXhYUNdQYbwMQfMe9x6tXfhL5VAOXrnLU",
-							RecordType = ISI.Extensions.Dns.RecordType.TextRecord,
-							Ttl = TimeSpan.FromMinutes(10),
-						},
-						new ISI.Extensions.Dns.DnsRecord()
-						{
-							Name = "_acme-challenge",
-							Data = "xMuthUF1bGUUhPPlcTYM1v9yz87gu4NnsrqQbFWMno1m5ZV4",
-							RecordType = ISI.Extensions.Dns.RecordType.TextRecord,
-							Ttl = TimeSpan.FromMinutes(10),
-						},
-						//new ISI.Extensions.Dns.DnsRecord()
-						//{
-						//	Name = "@",
-						//	Data = "10.165.0.1",
-						//	RecordType = ISI.Extensions.Dns.RecordType.A,
-						//},
-					]
+					{
+						Name = "_E1241329C9F35CF20BB4EC0DA7210E43",
+						Data = "4BDE4B75ACA03C8871913A60CCB46DD9.16359AFE753EBFB20CFFE29845FEF647.6abb0faa81ed7.comodoca.com",
+						RecordType = ISI.Extensions.Dns.RecordType.CanonicalNameRecord,
+						Ttl = TimeSpan.FromMinutes(10),
+					},
+					//new ISI.Extensions.Dns.DnsRecord()
+					//{
+					//	Name = "_acme-challenge",
+					//	Data = "xRonr7-ooXsI_wUXhYUNdQYbwMQfMe9x6tXfhL5VAOXrnLU",
+					//	RecordType = ISI.Extensions.Dns.RecordType.TextRecord,
+					//	Ttl = TimeSpan.FromMinutes(10),
+					//},
+					//new ISI.Extensions.Dns.DnsRecord()
+					//{
+					//	Name = "_acme-challenge",
+					//	Data = "xMuthUF1bGUUhPPlcTYM1v9yz87gu4NnsrqQbFWMno1m5ZV4",
+					//	RecordType = ISI.Extensions.Dns.RecordType.TextRecord,
+					//	Ttl = TimeSpan.FromMinutes(10),
+					//},
+					//new ISI.Extensions.Dns.DnsRecord()
+					//{
+					//	Name = "@",
+					//	Data = "10.165.0.1",
+					//	RecordType = ISI.Extensions.Dns.RecordType.A,
+					//},
+				]
 			});
 		}
 	}

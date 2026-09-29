@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,10 +22,10 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.XmlSerialization
 {
-	[ISI.Extensions.TypeLocator(typeof(Serialization.ISerializer))]
-	public class XmlDataContractSerializer : ISI.Extensions.XmlSerialization.IXmlSerializer, Serialization.ISerializer
+	[ISI.Extensions.TypeLocator(typeof(ISI.Extensions.Serialization.ISerializer))]
+	public class XmlDataContractSerializer : ISI.Extensions.XmlSerialization.IXmlSerializer, ISI.Extensions.Serialization.ISerializer
 	{
-		public Serialization.SerializationFormat SerializationFormat => Serialization.SerializationFormat.Xml;
+		public ISI.Extensions.Serialization.SerializationFormat SerializationFormat => ISI.Extensions.Serialization.SerializationFormat.Xml;
 
 		public bool UsesDataContract => true;
 
@@ -41,15 +41,9 @@ namespace ISI.Extensions.XmlSerialization
 
 		public object Deserialize(Type type, System.IO.Stream stream)
 		{
-			using (System.IO.TextReader textReader = new System.IO.StreamReader(stream, Encoding.UTF8))
-			{
-				using (var xmlTextReader = new System.Xml.XmlTextReader(textReader))
-				{
-					var dataContractSerializer = new System.Runtime.Serialization.DataContractSerializer(type);
+			var dataContractSerializer = new System.Runtime.Serialization.DataContractSerializer(type);
 
-					return dataContractSerializer.ReadObject(xmlTextReader);
-				}
-			}
+			return dataContractSerializer.ReadObject(stream);
 		}
 
 		public string Serialize(Type type, object value, bool friendlyFormatted = false)

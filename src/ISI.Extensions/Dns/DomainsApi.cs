@@ -45,7 +45,7 @@ namespace ISI.Extensions.Dns
 				var domainsApiAttribute = ((ISI.Extensions.DomainsApiAttribute[])(domainsApi.GetType().GetCustomAttributes(typeof(ISI.Extensions.DomainsApiAttribute), false))).FirstOrDefault();
 				if (domainsApiAttribute != null)
 				{
-					domainsApisByDnsProviderUuid.Add(domainsApiAttribute.DnsProviderUuid, (DomainsApi: domainsApi, DnsProviderProfile: new DnsProviderProfile()
+					var dnsProviderProfile = new DnsProviderProfile()
 					{
 						DnsProviderUuid = domainsApiAttribute.DnsProviderUuid,
 						Description = domainsApiAttribute.Description,
@@ -57,13 +57,19 @@ namespace ISI.Extensions.Dns
 						ApiKeyDescription = domainsApiAttribute.ApiKeyDescription,
 						UsePartition = domainsApiAttribute.UsePartition,
 						PartitionDescription = domainsApiAttribute.PartitionDescription,
-					}));
+					};
+
+					if (domainsApi is IDomainsApiWithListPartitions domainsApiWithListPartitions)
+					{
+						dnsProviderProfile.Partitions = domainsApiWithListPartitions.ListPartitions(new()).Partitions;
+					}
+
+					domainsApisByDnsProviderUuid.Add(domainsApiAttribute.DnsProviderUuid, (DomainsApi: domainsApi, DnsProviderProfile: dnsProviderProfile));
 				}
 			}
 
 			return domainsApisByDnsProviderUuid;
 		}
-
 
 		DTOs.ListPartitionsResponse ISI.Extensions.Dns.IDomainsApiWithListPartitions.ListPartitions(DTOs.ListPartitionsRequest request)
 		{

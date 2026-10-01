@@ -32,9 +32,11 @@ namespace ISI.Extensions
 		public string ApiUserDescription { get; }
 		public bool UseApiKey { get; }
 		public string ApiKeyDescription { get; }
+		public bool UsePartition { get; }
+		public string PartitionDescription { get; }
 
 
-		public DomainsApiAttribute(string dnsProviderUuid, string description, bool useApiUrl, string apiUrlDescription, bool useApiUser, string apiUserDescription, bool useApiKey, string apiKeyDescription)
+		public DomainsApiAttribute(string dnsProviderUuid, string description, bool useApiUrl, string apiUrlDescription, bool useApiUser, string apiUserDescription, bool useApiKey, string apiKeyDescription, bool usePartition, string partitionDescription)
 			: base(typeof(ISI.Extensions.Dns.IDomainsApi))
 		{
 			DnsProviderUuid = dnsProviderUuid.ToGuid();
@@ -45,6 +47,8 @@ namespace ISI.Extensions
 			ApiUserDescription = apiUserDescription;
 			UseApiKey = useApiKey;
 			ApiKeyDescription = apiKeyDescription;
+			UsePartition = usePartition;
+			PartitionDescription = partitionDescription;
 		}
 	}
 }

@@ -23,7 +23,7 @@ using DTOs = ISI.Extensions.Cloudflare.DataTransferObjects.DomainsApi;
 
 namespace ISI.Extensions.Cloudflare
 {
-	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "Cloudflare", false, null, false, null, true, "ApiKey")]
+	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "Cloudflare", false, null, false, null, true, "ApiKey", false, null)]
 	public partial class DomainsApi : ISI.Extensions.Dns.AbstractDomainsApi, ISI.Extensions.Dns.IDomainsApi
 	{
 		internal const string _dnsProviderUuid = "d7cdff03-b762-4d5d-b0fc-fac6bc623fa8";
@@ -43,11 +43,6 @@ namespace ISI.Extensions.Cloudflare
 			DateTimeStamper = dateTimeStamper;
 
 			CloudflareApi = cloudflareApi;
-		}
-
-		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsProviderProfilesResponse ISI.Extensions.Dns.IDomainsApi.GetDnsProviderProfiles(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsProviderProfilesRequest request)
-		{
-			throw new NotImplementedException();
 		}
 
 		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsResponse ISI.Extensions.Dns.IDomainsApi.GetDnsRecords(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsRequest request)

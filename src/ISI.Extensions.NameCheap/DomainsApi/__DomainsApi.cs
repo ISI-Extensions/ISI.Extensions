@@ -23,7 +23,7 @@ using DTOs = ISI.Extensions.NameCheap.DataTransferObjects.DomainsApi;
 
 namespace ISI.Extensions.NameCheap
 {
-	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "NameCheap", false, null, true, "Api User", true, "ApiKey")]
+	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "NameCheap", false, null, true, "Api User", true, "ApiKey", false, null)]
 	public partial class DomainsApi : ISI.Extensions.Dns.AbstractDomainsApi, ISI.Extensions.Dns.IDomainsApi
 	{
 		internal const string _dnsProviderUuid = "14746b87-ec50-4eb5-ace9-ae685a76a328";
@@ -44,11 +44,6 @@ namespace ISI.Extensions.NameCheap
 			Logger = logger;
 			DateTimeStamper = dateTimeStamper;
 			IpifyApi = ipifyApi;
-		}
-
-		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsProviderProfilesResponse ISI.Extensions.Dns.IDomainsApi.GetDnsProviderProfiles(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsProviderProfilesRequest request)
-		{
-			throw new NotImplementedException();
 		}
 
 		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsResponse ISI.Extensions.Dns.IDomainsApi.GetDnsRecords(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsRequest request)

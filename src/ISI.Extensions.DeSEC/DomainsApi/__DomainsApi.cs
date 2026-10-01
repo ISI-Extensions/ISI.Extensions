@@ -24,7 +24,7 @@ using SerializableDTOs = ISI.Extensions.DeSEC.SerializableModels.DomainsApi;
 
 namespace ISI.Extensions.DeSEC
 {
-	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "deSEC", false, "Url", false, null, true, "ApiKey")]
+	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "deSEC", false, "Url", false, null, true, "ApiKey", false, null)]
 	public partial class DomainsApi : ISI.Extensions.Dns.AbstractDomainsApi, ISI.Extensions.Dns.IDomainsApi
 	{
 		internal const string _dnsProviderUuid = "367c3118-ff70-4203-993a-704e786d2c02";
@@ -42,11 +42,6 @@ namespace ISI.Extensions.DeSEC
 			Configuration = configuration;
 			Logger = logger;
 			DateTimeStamper = dateTimeStamper;
-		}
-
-		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsProviderProfilesResponse ISI.Extensions.Dns.IDomainsApi.GetDnsProviderProfiles(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsProviderProfilesRequest request)
-		{
-			throw new NotImplementedException();
 		}
 
 		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsResponse ISI.Extensions.Dns.IDomainsApi.GetDnsRecords(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsRequest request)

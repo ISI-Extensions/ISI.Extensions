@@ -27,6 +27,7 @@ namespace ISI.Extensions.AWS
 	{
 		public const string ConfigurationSectionName = "ISI.Extensions.AWS";
 
+		public string RegionEndpoint { get; set; }
 		public string AmazonAccessKey { get; set; }
 		public string AmazonSecretKey { get; set; }
 	}

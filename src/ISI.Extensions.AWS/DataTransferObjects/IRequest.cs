@@ -23,5 +23,6 @@ namespace ISI.Extensions.AWS.DataTransferObjects
 	{
 		string AmazonAccessKey { get; }
 		string AmazonSecretKey { get; }
+		string RegionEndpoint { get; }
 	}
 }

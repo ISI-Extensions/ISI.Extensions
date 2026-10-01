@@ -23,7 +23,7 @@ using DTOs = ISI.Extensions.Dns.DataTransferObjects.DomainsApi;
 
 namespace ISI.Extensions.Dns
 {
-	public class DomainsApi : ISI.Extensions.Dns.AbstractDomainsApi, IDomainsApi
+	public class DomainsApi : ISI.Extensions.Dns.AbstractDomainsApi, IDomainsApi, IDomainsApiWithListPartitions, IDomainsApiWithGetDnsProviderProfiles
 	{
 		protected IServiceProvider ServiceProvider { get; }
 
@@ -55,6 +55,8 @@ namespace ISI.Extensions.Dns
 						ApiUserDescription = domainsApiAttribute.ApiUserDescription,
 						UseApiKey = domainsApiAttribute.UseApiKey,
 						ApiKeyDescription = domainsApiAttribute.ApiKeyDescription,
+						UsePartition = domainsApiAttribute.UsePartition,
+						PartitionDescription = domainsApiAttribute.PartitionDescription,
 					}));
 				}
 			}
@@ -63,7 +65,17 @@ namespace ISI.Extensions.Dns
 		}
 
 
-		DTOs.GetDnsProviderProfilesResponse ISI.Extensions.Dns.IDomainsApi.GetDnsProviderProfiles(DTOs.GetDnsProviderProfilesRequest request)
+		DTOs.ListPartitionsResponse ISI.Extensions.Dns.IDomainsApiWithListPartitions.ListPartitions(DTOs.ListPartitionsRequest request)
+		{
+			if (DomainsApisByDnsProviderUuid.TryGetValue(request.DnsProviderUuid, out var domainsApi) && (domainsApi.DomainsApi is IDomainsApiWithListPartitions domainsApiWithListPartitions))
+			{
+				return domainsApiWithListPartitions.ListPartitions(request);
+			}
+
+			return new DTOs.ListPartitionsResponse();
+		}
+
+		DTOs.GetDnsProviderProfilesResponse ISI.Extensions.Dns.IDomainsApiWithGetDnsProviderProfiles.GetDnsProviderProfiles(DTOs.GetDnsProviderProfilesRequest request)
 		{
 			var response = new DTOs.GetDnsProviderProfilesResponse();
 

@@ -393,12 +393,6 @@ namespace ISI.Extensions.Tests
 
 
 
-		[Test]
-		public void GetDnsProviders_Test()
-		{
-			var xxx = DomainsApi.GetDnsProviderProfiles(new());
-		}
-
 
 
 		[Test]

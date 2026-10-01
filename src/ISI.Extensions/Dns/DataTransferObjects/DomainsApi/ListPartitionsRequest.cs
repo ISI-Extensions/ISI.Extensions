@@ -18,19 +18,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Dns.DataTransferObjects.DomainsApi
 {
-	public class DeleteDnsRecordsRequest
+	public class ListPartitionsRequest
 	{
 		public Guid DnsProviderUuid { get; set; }
-
-		public string ApiUrl { get; set; }
-		public string ApiUser { get; set; }
-		public string ApiKey { get; set; }
-		public string Partition { get; set; }
-
-		public string Domain { get; set; }
-		public ISI.Extensions.Dns.DnsRecord[] DnsRecords { get; set; }
 	}
 }

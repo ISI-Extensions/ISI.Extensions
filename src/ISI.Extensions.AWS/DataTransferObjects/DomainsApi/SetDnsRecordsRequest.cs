@@ -26,6 +26,7 @@ namespace ISI.Extensions.AWS.DataTransferObjects.DomainsApi
 	{
 		public string AmazonAccessKey { get; set; }
 		public string AmazonSecretKey { get; set; }
+		public string RegionEndpoint { get; set; }
 
 		public string Domain { get; set; }
 

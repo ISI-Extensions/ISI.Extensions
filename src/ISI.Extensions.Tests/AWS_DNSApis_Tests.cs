@@ -74,6 +74,17 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void ListPartitions_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+
+			var domainsApi = ServiceProvider.GetService<ISI.Extensions.AWS.DomainsApi>();
+
+			var partitions = domainsApi.ListPartitions(new()).Partitions;
+		}
+
+		[Test]
 		public void GetTxtRecords_Test()
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
@@ -101,6 +112,7 @@ namespace ISI.Extensions.Tests
 			{
 				AmazonAccessKey = settings.GetValue("AmazonAccessKey2"),
 				AmazonSecretKey = settings.GetValue("AmazonSecretKey2"),
+				RegionEndpoint = "us-east-1",
 				Domain = "whizzia.services",
 			}).DnsRecords;
 		}

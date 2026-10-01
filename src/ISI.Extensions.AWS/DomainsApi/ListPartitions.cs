@@ -18,19 +18,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.AWS.DataTransferObjects.DomainsApi;
 
-namespace ISI.Extensions.Dns.DataTransferObjects.DomainsApi
+namespace ISI.Extensions.AWS
 {
-	public class DeleteDnsRecordsRequest
+	public partial class DomainsApi
 	{
-		public Guid DnsProviderUuid { get; set; }
+		public DTOs.ListPartitionsResponse ListPartitions(DTOs.ListPartitionsRequest request)
+		{
+			var response = new DTOs.ListPartitionsResponse();
 
-		public string ApiUrl { get; set; }
-		public string ApiUser { get; set; }
-		public string ApiKey { get; set; }
-		public string Partition { get; set; }
+			response.Partitions = ISI.Extensions.AWS.Extensions.AbstractRequestExtensions.RegionEndpointsByName.Keys.OrderBy(key => key, StringComparer.InvariantCultureIgnoreCase).ToArray();
 
-		public string Domain { get; set; }
-		public ISI.Extensions.Dns.DnsRecord[] DnsRecords { get; set; }
+			return response;
+		}
 	}
 }

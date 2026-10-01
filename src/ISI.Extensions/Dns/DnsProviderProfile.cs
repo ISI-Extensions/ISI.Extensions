@@ -33,5 +33,7 @@ namespace ISI.Extensions.Dns
 	  public string ApiUserDescription { get; set; }
 	  public bool UseApiKey { get; set; }
 	  public string ApiKeyDescription { get; set; }
+	  public bool UsePartition { get; set; }
+	  public string PartitionDescription { get; set; }
   }
 }

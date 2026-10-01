@@ -25,7 +25,7 @@ using SerializableDTOs = ISI.Extensions.GoDaddy.SerializableModels;
 
 namespace ISI.Extensions.GoDaddy
 {
-	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "GoDaddy", false, null, true, "ApiKey", true, "ApiSecret")]
+	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "GoDaddy", false, null, true, "ApiKey", true, "ApiSecret", false, null)]
 	public partial class DomainsApi : ISI.Extensions.Dns.AbstractDomainsApi, ISI.Extensions.Dns.IDomainsApi
 	{
 		internal const string _dnsProviderUuid = "72924eef-4777-4c35-87df-568da79cf8aa";
@@ -45,11 +45,6 @@ namespace ISI.Extensions.GoDaddy
 
 			Logger = logger;
 			DateTimeStamper = dateTimeStamper;
-		}
-
-		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsProviderProfilesResponse ISI.Extensions.Dns.IDomainsApi.GetDnsProviderProfiles(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsProviderProfilesRequest request)
-		{
-			throw new NotImplementedException();
 		}
 
 		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsResponse ISI.Extensions.Dns.IDomainsApi.GetDnsRecords(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsRequest request)

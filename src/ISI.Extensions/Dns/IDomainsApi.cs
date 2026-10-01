@@ -22,11 +22,20 @@ namespace ISI.Extensions.Dns
 {
 	public interface IDomainsApi
 	{
-		DTOs.GetDnsProviderProfilesResponse GetDnsProviderProfiles(DTOs.GetDnsProviderProfilesRequest request);
 		DTOs.DeleteDnsRecordsResponse DeleteDnsRecords(DTOs.DeleteDnsRecordsRequest request);
 		DTOs.SetDnsRecordsResponse SetDnsRecords(DTOs.SetDnsRecordsRequest request);
 		DTOs.GetDnsRecordsResponse GetDnsRecords(DTOs.GetDnsRecordsRequest request);
 		DTOs.GetTxtRecordsResponse GetTxtRecords(DTOs.GetTxtRecordsRequest request);
 		DTOs.GetNameServersResponse GetNameServers(DTOs.GetNameServersRequest request);
+	}
+
+	public interface IDomainsApiWithGetDnsProviderProfiles : IDomainsApi
+	{
+		DTOs.GetDnsProviderProfilesResponse GetDnsProviderProfiles(DTOs.GetDnsProviderProfilesRequest request);
+	}
+
+	public interface IDomainsApiWithListPartitions : IDomainsApi
+	{
+		DTOs.ListPartitionsResponse ListPartitions(DTOs.ListPartitionsRequest request);
 	}
 }

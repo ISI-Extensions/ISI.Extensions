@@ -23,8 +23,8 @@ using DTOs = ISI.Extensions.AWS.DataTransferObjects.DomainsApi;
 
 namespace ISI.Extensions.AWS
 {
-	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "AWS", false, null, true, "Amazon Access Key", true , "Amazon Secret Key")]
-	public partial class DomainsApi : ISI.Extensions.Dns.AbstractDomainsApi, ISI.Extensions.Dns.IDomainsApi
+	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "AWS", false, null, true, "Amazon Access Key", true , "Amazon Secret Key", true, "Amazon Region:")]
+	public partial class DomainsApi : ISI.Extensions.Dns.AbstractDomainsApi, ISI.Extensions.Dns.IDomainsApiWithListPartitions
 	{
 		internal const string _dnsProviderUuid = "73423321-52e0-4487-83a6-90fd3cd41a81";
 		public static Guid DnsProviderUuid { get; } = _dnsProviderUuid.ToGuid();
@@ -43,9 +43,13 @@ namespace ISI.Extensions.AWS
 			DateTimeStamper = dateTimeStamper;
 		}
 
-		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsProviderProfilesResponse ISI.Extensions.Dns.IDomainsApi.GetDnsProviderProfiles(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsProviderProfilesRequest request)
+		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.ListPartitionsResponse ISI.Extensions.Dns.IDomainsApiWithListPartitions.ListPartitions(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.ListPartitionsRequest request)
 		{
-			throw new NotImplementedException();
+			var response = new ISI.Extensions.Dns.DataTransferObjects.DomainsApi.ListPartitionsResponse();
+
+			response.Partitions = ListPartitions(new ()).Partitions;
+
+			return response;
 		}
 
 		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsResponse ISI.Extensions.Dns.IDomainsApi.GetDnsRecords(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsRequest request)
@@ -56,6 +60,7 @@ namespace ISI.Extensions.AWS
 			{
 				AmazonAccessKey = request.ApiUser,
 				AmazonSecretKey = request.ApiKey,
+				RegionEndpoint = request.Partition,
 				Domain = request.Domain,
 			}).DnsRecords;
 
@@ -70,6 +75,7 @@ namespace ISI.Extensions.AWS
 			{
 				AmazonAccessKey = request.ApiUser,
 				AmazonSecretKey = request.ApiKey,
+				RegionEndpoint = request.Partition,
 				Domain = request.Domain,
 				DnsRecords = request.DnsRecords,
 			});
@@ -85,6 +91,7 @@ namespace ISI.Extensions.AWS
 			{
 				AmazonAccessKey = request.ApiUser,
 				AmazonSecretKey = request.ApiKey,
+				RegionEndpoint = request.Partition,
 				Domain = request.Domain,
 				DnsRecords = request.DnsRecords,
 			});

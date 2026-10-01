@@ -99,8 +99,8 @@ namespace ISI.Extensions.Tests
 
 			var dnsRecords = domainsApi.GetDnsRecords(new()
 			{
-				AmazonAccessKey = settings.GetValue("AmazonAccessKey"),
-				AmazonSecretKey = settings.GetValue("AmazonSecretKey"),
+				AmazonAccessKey = settings.GetValue("AmazonAccessKey2"),
+				AmazonSecretKey = settings.GetValue("AmazonSecretKey2"),
 				Domain = "whizzia.services",
 			}).DnsRecords;
 		}
@@ -115,15 +115,15 @@ namespace ISI.Extensions.Tests
 
 			domainsApi.SetDnsRecords(new()
 			{
-				AmazonAccessKey = settings.GetValue("AmazonAccessKey"),
-				AmazonSecretKey = settings.GetValue("AmazonSecretKey"),
+				AmazonAccessKey = settings.GetValue("AmazonAccessKey2"),
+				AmazonSecretKey = settings.GetValue("AmazonSecretKey2"),
 				Domain = "whizzia.services",
 				DnsRecords =
 				[
 					new ISI.Extensions.Dns.DnsRecord()
 					{
-						Name = "_E1241329C9F35CF20BB4EC0DA7210E43",
-						Data = "4BDE4B75ACA03C8871913A60CCB46DD9.16359AFE753EBFB20CFFE29845FEF647.6abb0faa81ed7.comodoca.com",
+						Name = "_E1241329dfgvs20BB4EC0DA7210E43",
+						Data = "4BDE4B75ACA03CsdfgA60CCB46DD9.16359AFE753EBFB20CFFE29845FEF647.6abb0faa81ed7.comodoca.com",
 						RecordType = ISI.Extensions.Dns.RecordType.CanonicalNameRecord,
 						Ttl = TimeSpan.FromMinutes(10),
 					},

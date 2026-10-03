@@ -22,10 +22,13 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.TrueNAS.DataTransferObjects.TrueNASApi
 {
-	public class GetVersionRequest : IRequest
+	public class DeleteCertificateRequest : IRequest
 	{
 		public string TrueNASApiUrl { get; set; }
 		public string TrueNASUserName { get; set; }
 		public string TrueNASApiKey { get; set; }
+
+		public int CertificateId { get; set; }
+		public bool Force { get; set; }
 	}
 }

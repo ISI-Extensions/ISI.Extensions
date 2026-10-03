@@ -22,8 +22,24 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.TrueNAS.DataTransferObjects.TrueNASApi
 {
-	public class GetSystemStateResponse
+	public class SetSystemConfigGeneralResponse
 	{
-		public string State { get; set; }
+		public int? Id { get; set; }
+		public object Certificate { get; set; }
+		public int? UiHttpsPort { get; set; }
+		public bool? UiHttpsRedirect { get; set; }
+		public string[] UiHttpsProtocols { get; set; }
+		public int? UiPort { get; set; }
+		public string[] UiAddress { get; set; }
+		public string[] UiV6Address { get; set; }
+		public string[] UiAllowList { get; set; }
+		public bool? UiConsoleMessage { get; set; }
+		public string UiXFrameOptions { get; set; }
+		public string Kbdmap { get; set; }
+		public string Timezone { get; set; }
+		public bool? UsageCollection { get; set; }
+		public bool WizardShown { get; set; }
+		public bool? UsageCollectionIsSet { get; set; }
+		public bool? DsAuth { get; set; }
 	}
 }

@@ -122,37 +122,7 @@ namespace ISI.Extensions.Tests
 			}).GetAwaiter().GetResult();
 		}
 
-		[Test]
-		public void GetSystemState_Tests()
-		{
-			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
-			var settings = new ISI.Extensions.SimpleKeyValueStorage(settingsFullName);
 
-			var trueNASApiUrl = settings.GetValue("TrueNASApiUrl");
-			var trueNASApiKey = settings.GetValue("TrueNASApiKey");
-
-			var getSystemStateResponse = TrueNASApi.GetSystemState(new()
-			{
-				TrueNASApiUrl = trueNASApiUrl,
-				TrueNASApiKey = trueNASApiKey,
-			});
-		}
-
-		[Test]
-		public void GetVersion_Tests()
-		{
-			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
-			var settings = new ISI.Extensions.SimpleKeyValueStorage(settingsFullName);
-
-			var trueNASApiUrl = settings.GetValue("TrueNASApiUrl");
-			var trueNASApiKey = settings.GetValue("TrueNASApiKey");
-
-			var getVersionResponse = TrueNASApi.GetVersion(new()
-			{
-				TrueNASApiUrl = trueNASApiUrl,
-				TrueNASApiKey = trueNASApiKey,
-			});
-		}
 		
 		[Test]
 		public void ActivateCertificate_Tests()
@@ -161,11 +131,38 @@ namespace ISI.Extensions.Tests
 			var settings = new ISI.Extensions.SimpleKeyValueStorage(settingsFullName);
 
 			var trueNASApiUrl = settings.GetValue("TrueNASApiUrl");
+			var trueNASUserName = settings.GetValue("TrueNASUserName");
 			var trueNASApiKey = settings.GetValue("TrueNASApiKey");
 
-			var activateCertificateResponse = TrueNASApi.ActivateCertificate(new()
+			var activateCertificateResponse = TrueNASApi.ActivateCertificateAsync(new()
 			{
 				TrueNASApiUrl = trueNASApiUrl,
+				TrueNASUserName = trueNASUserName,
+				TrueNASApiKey = trueNASApiKey,
+				CertificateName = "ISI-20260929",
+				KeyCertificate = System.IO.File.ReadAllText(@"F:\ISI\Vendors\Name Cheap\SSL Wildcard 2026a\_.isi-net.com.key"),
+				BundleCertificate = System.IO.File.ReadAllText(@"F:\ISI\Vendors\Name Cheap\SSL Wildcard 2026a\_.isi-net.com.pem"),
+				//CertificateName = "Test-Cert-Ron",
+				//KeyCertificate = System.IO.File.ReadAllText(@"E:\Data\letsencrypt-account.certificate.key"),
+				//BundleCertificate = System.IO.File.ReadAllText(@"E:\Data\letsencrypt-account.certificate.crt"),
+				RemovePriorCertificate = true,
+			}).GetAwaiter().GetResult();
+		}
+
+		[Test]
+		public void CreateCertificate_Tests()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = new ISI.Extensions.SimpleKeyValueStorage(settingsFullName);
+
+			var trueNASApiUrl = settings.GetValue("TrueNASApiUrl");
+			var trueNASUserName = settings.GetValue("TrueNASUserName");
+			var trueNASApiKey = settings.GetValue("TrueNASApiKey");
+
+			var apiResponse = TrueNASApi.CreateCertificateAsync(new()
+			{
+				TrueNASApiUrl = trueNASApiUrl,
+				TrueNASUserName = trueNASUserName,
 				TrueNASApiKey = trueNASApiKey,
 				CertificateName = "ISI-20250210",
 				KeyCertificate = System.IO.File.ReadAllText(@"F:\ISI\Vendors\Name Cheap\SSL Wildcard 2024\_.isi-net.com.key"),
@@ -173,8 +170,7 @@ namespace ISI.Extensions.Tests
 				//CertificateName = "Test-Cert-Ron",
 				//KeyCertificate = System.IO.File.ReadAllText(@"E:\Data\letsencrypt-account.certificate.key"),
 				//BundleCertificate = System.IO.File.ReadAllText(@"E:\Data\letsencrypt-account.certificate.crt"),
-				RemovePriorCertificate = true,
-			});
+			}).GetAwaiter().GetResult();
 		}
 	}
 }

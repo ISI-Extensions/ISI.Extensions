@@ -29,12 +29,25 @@ namespace ISI.Extensions.TrueNAS
 		Task<SerializableDTOs.LoginResponse> LoginAsync(SerializableDTOs.LoginRequest login_data);
 
 		[StreamJsonRpc.JsonRpcMethod("system.info")]
-		Task<SerializableDTOs.SystemInfoResponse> SystemInfoAsync();
+		Task<SerializableDTOs.GetSystemInfoResponse> GetSystemInfoAsync();
 
 		[StreamJsonRpc.JsonRpcMethod("system.general.ui_certificate_choices")]
-		Task<object> ListCertificateChoicesAsync();
+		Task<Dictionary<string, string>> ListCertificateChoicesAsync();
 
 		[StreamJsonRpc.JsonRpcMethod("system.general.config")]
 		Task<SerializableDTOs.GetSystemConfigGeneralResponse> GetSystemConfigGeneralAsync();
+
+		[StreamJsonRpc.JsonRpcMethod("system.general.update")]
+		Task<SerializableDTOs.SetSystemConfigGeneralResponse> SetSystemConfigGeneralAsync(SerializableDTOs.SetSystemConfigGeneralRequest general_settings);
+
+		[StreamJsonRpc.JsonRpcMethod("certificate.create")]
+		Task<object> CreateCertificateAsync(SerializableDTOs.CreateCertificateRequest certificate_create);
+		//Task<SerializableDTOs.CreateCertificateResponse> CreateCertificateAsync(SerializableDTOs.CreateCertificateRequest certificate_create);
+
+		[StreamJsonRpc.JsonRpcMethod("certificate.delete")]
+		Task<bool> DeleteCertificateAsync(int id, bool force);
+
+		[StreamJsonRpc.JsonRpcMethod("system.general.ui_restart")]
+		Task<object> RestartUiAsync(int delay = 3);
 	}
 }

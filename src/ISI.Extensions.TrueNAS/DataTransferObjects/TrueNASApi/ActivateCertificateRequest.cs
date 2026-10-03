@@ -32,6 +32,8 @@ namespace ISI.Extensions.TrueNAS.DataTransferObjects.TrueNASApi
 		public string BundleCertificate { get; set; }
 		public string KeyCertificate { get; set; }
 
+		public int UiRestartDelay { get; set; } = 3;
+
 		public bool RemovePriorCertificate { get; set; }
 	}
 }

@@ -22,9 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.TrueNAS.DataTransferObjects.TrueNASApi
 {
-	public class GetVersionResponse
+	public class RestartUiResponse
 	{
-		public TrueNASProduct Product { get; set; }
-		public string Version { get; set; }
 	}
 }

@@ -16,10 +16,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
 using DTOs = ISI.Extensions.TrueNAS.DataTransferObjects.TrueNASApi;
 using SerializableDTOs = ISI.Extensions.TrueNAS.SerializableModels;
 
@@ -39,7 +39,7 @@ namespace ISI.Extensions.TrueNAS
 
 				await trueNASWebSocketApiWrapper.ExecuteAsync(trueNASApiUrl, trueNASUserName, trueNASApiKey, async trueNasWebSocketApi =>
 				{
-					var systemInfoResponse = await trueNasWebSocketApi.SystemInfoAsync();
+					var systemInfoResponse = await trueNasWebSocketApi.GetSystemInfoAsync();
 					
 					response.Version = systemInfoResponse.Version;
 					response.Hostname = systemInfoResponse.Hostname;

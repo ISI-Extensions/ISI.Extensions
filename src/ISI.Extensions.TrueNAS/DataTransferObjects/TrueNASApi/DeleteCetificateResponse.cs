@@ -19,33 +19,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
-using DTOs = ISI.Extensions.TrueNAS.DataTransferObjects.TrueNASApi;
-using SerializableDTOs = ISI.Extensions.TrueNAS.SerializableModels;
 
-namespace ISI.Extensions.TrueNAS
+namespace ISI.Extensions.TrueNAS.DataTransferObjects.TrueNASApi
 {
-	public partial class TrueNASApi
+	public class DeleteCertificateResponse
 	{
-		public async Task<DTOs.ListCertificateChoicesResponse> ListCertificateChoicesAsync(DTOs.ListCertificateChoicesRequest request, System.Threading.CancellationToken cancellationToken = default)
-		{
-			var response = new DTOs.ListCertificateChoicesResponse();
-
-			using (var trueNASWebSocketApiWrapper = new TrueNASWebSocketApiWrapper())
-			{
-				var trueNASApiUrl = GetTrueNASApiUrl(request);
-				var trueNASUserName = GetTrueNASUserName(request);
-				var trueNASApiKey = GetTrueNASApiKey(request);
-
-				await trueNASWebSocketApiWrapper.ExecuteAsync(trueNASApiUrl, trueNASUserName, trueNASApiKey, async trueNasWebSocketApi =>
-				{
-					var listCertificateChoicesResponse = await trueNasWebSocketApi.ListCertificateChoicesAsync();
-
-					response.Certificates = listCertificateChoicesResponse.ToNullCheckedArray(certificate => (CertificateKey: certificate.Key, CertificateName: certificate.Value), NullCheckCollectionResult.Empty);
-				}, cancellationToken);
-			}
-
-			return response;
+		public bool Success { get; set; }
 		}
-	}
 }

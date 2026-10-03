@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
 using DTOs = ISI.Extensions.TrueNAS.DataTransferObjects.TrueNASApi;
 using SerializableDTOs = ISI.Extensions.TrueNAS.SerializableModels;
 
@@ -26,33 +27,20 @@ namespace ISI.Extensions.TrueNAS
 {
 	public partial class TrueNASApi
 	{
-		public DTOs.GetVersionResponse GetVersion(DTOs.GetVersionRequest request)
+		public async Task<DTOs.RestartUiResponse> RestartUiAsync(DTOs.RestartUiRequest request, System.Threading.CancellationToken cancellationToken = default)
 		{
-			var response = new DTOs.GetVersionResponse();
+			var response = new DTOs.RestartUiResponse();
 
-			var uri = GetApiUri(request);
-			uri.SetPathAndQueryString("api/v2.0/system/version");
-
-			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteTextGet(uri.Uri, GetHeaders(request), true, serverCertificateValidationCallback: (sender, certificate, chain, errors) => true);
-
-			var versionPieces = (apiResponse ?? string.Empty).Trim(' ', '"').Split(['-'], 2);
-
-			if (versionPieces.Length >= 2)
+			using (var trueNASWebSocketApiWrapper = new TrueNASWebSocketApiWrapper())
 			{
-				var version = versionPieces[1];
+				var trueNASApiUrl = GetTrueNASApiUrl(request);
+				var trueNASUserName = GetTrueNASUserName(request);
+				var trueNASApiKey = GetTrueNASApiKey(request);
 
-				if (version.StartsWith("SCALE-", StringComparison.InvariantCultureIgnoreCase))
+				await trueNASWebSocketApiWrapper.ExecuteAsync(trueNASApiUrl, trueNASUserName, trueNASApiKey, async trueNasWebSocketApi =>
 				{
-					response.Product = TrueNASProduct.Scale;
-
-					version = version.TrimStart("SCALE-", StringComparison.InvariantCultureIgnoreCase);
-				}
-
-				response.Version = version;
-			}
-			else
-			{
-				response.Version = apiResponse;
+					var restartUiResponse = await trueNasWebSocketApi.RestartUiAsync(request.Delay);
+				}, cancellationToken);
 			}
 
 			return response;

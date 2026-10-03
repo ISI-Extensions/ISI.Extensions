@@ -56,7 +56,10 @@ namespace ISI.Extensions.TrueNAS
 
 				await trueNasWebSocketApiExecute(trueNasWebSocketApi);
 
-				await webSocket.CloseAsync(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, "Client shutting down", System.Threading.CancellationToken.None);
+				if (webSocket.State == System.Net.WebSockets.WebSocketState.Open)
+				{
+					await webSocket.CloseAsync(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, "Client shutting down", System.Threading.CancellationToken.None);
+				}
 			}
 		}
 

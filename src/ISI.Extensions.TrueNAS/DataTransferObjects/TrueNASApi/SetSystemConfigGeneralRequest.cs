@@ -19,12 +19,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
 
-namespace ISI.Extensions.TrueNAS.SerializableModels
+namespace ISI.Extensions.TrueNAS.DataTransferObjects.TrueNASApi
 {
-	[DataContract]
-	public class DeleteCertificateRequest
+	public class SetSystemConfigGeneralRequest : IRequest
 	{
+		public string TrueNASApiUrl { get; set; }
+		public string TrueNASUserName { get; set; }
+		public string TrueNASApiKey { get; set; }
+
+		public int? CertificateId { get; set; }
+		public int? UiHttpsPort { get; set; }
+		public bool? UiHttpsRedirect { get; set; }
+		public string[] UiHttpsProtocols { get; set; }
+		public int? UiPort { get; set; }
+		public string[] UiAddress { get; set; }
+		public string[] UiV6Address { get; set; }
+		public string[] UiAllowList { get; set; }
+		public bool? UiConsoleMessage { get; set; }
+		public string UiXFrameOptions { get; set; }
+		public string Kbdmap { get; set; }
+		public string Timezone { get; set; }
+		public bool? UsageCollection { get; set; }
+		public bool? DsAuth { get; set; }
+		public int? UiRestartDelayInSeconds { get; set; }
+		public int? RollBackTimeoutInSeconds { get; set; }
 	}
 }

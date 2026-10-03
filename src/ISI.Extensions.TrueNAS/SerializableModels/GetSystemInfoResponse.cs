@@ -24,7 +24,7 @@ using System.Runtime.Serialization;
 namespace ISI.Extensions.TrueNAS.SerializableModels
 {
 	[DataContract]
-	public class SystemInfoResponse
+	public class GetSystemInfoResponse
 	{
 		[DataMember(Name = "version", EmitDefaultValue = false)]
 		public string Version { get; set; }

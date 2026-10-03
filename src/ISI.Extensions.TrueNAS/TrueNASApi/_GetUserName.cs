@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
 using DTOs = ISI.Extensions.TrueNAS.DataTransferObjects.TrueNASApi;
 using SerializableDTOs = ISI.Extensions.TrueNAS.SerializableModels;
 

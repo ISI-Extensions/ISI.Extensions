@@ -12,37 +12,37 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
-
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
 
 namespace ISI.Extensions.TrueNAS.SerializableModels
 {
 	[DataContract]
-	public class GetSystemConfigGeneralResponse
+	public class SetSystemConfigGeneralResponse
 	{
 		[DataMember(Name = "id", EmitDefaultValue = false)]
-		public int SystemConfigGeneralId { get; set; }
+		public int? Id { get; set; }
 
 		[DataMember(Name = "ui_certificate", EmitDefaultValue = false)]
-		public GetSystemConfigGeneralResponseCertificate Certificate { get; set; }
+		public SetSystemConfigGeneralResponseCertificate Certificate { get; set; }
 
 		[DataMember(Name = "ui_httpsport", EmitDefaultValue = false)]
-		public int UiHttpsPort { get; set; }
+		public int? UiHttpsPort { get; set; }
 
 		[DataMember(Name = "ui_httpsredirect", EmitDefaultValue = false)]
-		public bool UiHttpsRedirect { get; set; }
+		public bool? UiHttpsRedirect { get; set; }
 
 		[DataMember(Name = "ui_httpsprotocols", EmitDefaultValue = false)]
 		public string[] UiHttpsProtocols { get; set; }
 
 		[DataMember(Name = "ui_port", EmitDefaultValue = false)]
-		public int UiPort { get; set; }
+		public int? UiPort { get; set; }
 
 		[DataMember(Name = "ui_address", EmitDefaultValue = false)]
 		public string[] UiAddress { get; set; }
@@ -54,7 +54,7 @@ namespace ISI.Extensions.TrueNAS.SerializableModels
 		public string[] UiAllowList { get; set; }
 
 		[DataMember(Name = "ui_consolemsg", EmitDefaultValue = false)]
-		public bool UiConsoleMessage { get; set; }
+		public bool? UiConsoleMessage { get; set; }
 
 		[DataMember(Name = "ui_x_frame_options", EmitDefaultValue = false)]
 		public string UiXFrameOptions { get; set; }
@@ -66,20 +66,20 @@ namespace ISI.Extensions.TrueNAS.SerializableModels
 		public string Timezone { get; set; }
 
 		[DataMember(Name = "usage_collection", EmitDefaultValue = false)]
-		public bool UsageCollection { get; set; }
+		public bool? UsageCollection { get; set; }
 
 		[DataMember(Name = "wizardshown", EmitDefaultValue = false)]
 		public bool WizardShown { get; set; }
 
 		[DataMember(Name = "usage_collection_is_set", EmitDefaultValue = false)]
-		public bool UsageCollectionIsSet { get; set; }
+		public bool? UsageCollectionIsSet { get; set; }
 
 		[DataMember(Name = "ds_auth", EmitDefaultValue = false)]
-		public bool DsAuth { get; set; }
+		public bool? DsAuth { get; set; }
 	}
 
 	[DataContract]
-	public class GetSystemConfigGeneralResponseCertificate
+	public class SetSystemConfigGeneralResponseCertificate
 	{
 		[DataMember(Name = "id", EmitDefaultValue = false)]
 		public int CertificateId { get; set; }
@@ -175,7 +175,7 @@ namespace ISI.Extensions.TrueNAS.SerializableModels
 		public string SubjectNameHash { get; set; }
 
 		[DataMember(Name = "extensions", EmitDefaultValue = false)]
-		public GetSystemConfigGeneralResponseExtensions Extensions { get; set; }
+		public SetSystemConfigGeneralResponseExtensions Extensions { get; set; }
 
 		[DataMember(Name = "digest_algorithm", EmitDefaultValue = false)]
 		public string DigestAlgorithm { get; set; }
@@ -206,7 +206,7 @@ namespace ISI.Extensions.TrueNAS.SerializableModels
 	}
 
 	[DataContract]
-	public class GetSystemConfigGeneralResponseExtensions
+	public class SetSystemConfigGeneralResponseExtensions
 	{
 		[DataMember(Name = "AuthorityKeyIdentifier", EmitDefaultValue = false)]
 		public string AuthorityKeyIdentifier { get; set; }

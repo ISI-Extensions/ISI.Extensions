@@ -22,10 +22,12 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.TrueNAS.DataTransferObjects.TrueNASApi
 {
-	public class GetSystemStateRequest : IRequest
+	public class RestartUiRequest : IRequest
 	{
 		public string TrueNASApiUrl { get; set; }
 		public string TrueNASUserName { get; set; }
 		public string TrueNASApiKey { get; set; }
+
+		public int Delay { get; set; } = 3;
 	}
 }

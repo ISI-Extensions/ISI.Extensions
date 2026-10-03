@@ -69,6 +69,60 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void GetSystemInfo_Tests()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = new ISI.Extensions.SimpleKeyValueStorage(settingsFullName);
+
+			var trueNASApiUrl = settings.GetValue("TrueNASApiUrl");
+			var trueNASUserName = settings.GetValue("TrueNASUserName");
+			var trueNASApiKey = settings.GetValue("TrueNASApiKey");
+
+			var apiResponse = TrueNASApi.GetSystemInfoAsync(new()
+			{
+				TrueNASApiUrl = trueNASApiUrl,
+				TrueNASUserName = trueNASUserName,
+				TrueNASApiKey = trueNASApiKey,
+			}).GetAwaiter().GetResult();
+		}
+
+		[Test]
+		public void ListCertificateChoices_Tests()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = new ISI.Extensions.SimpleKeyValueStorage(settingsFullName);
+
+			var trueNASApiUrl = settings.GetValue("TrueNASApiUrl");
+			var trueNASUserName = settings.GetValue("TrueNASUserName");
+			var trueNASApiKey = settings.GetValue("TrueNASApiKey");
+
+			var apiResponse = TrueNASApi.ListCertificateChoicesAsync(new()
+			{
+				TrueNASApiUrl = trueNASApiUrl,
+				TrueNASUserName = trueNASUserName,
+				TrueNASApiKey = trueNASApiKey,
+			}).GetAwaiter().GetResult();
+		}
+
+		[Test]
+		public void GetSystemConfigGeneral_Tests()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = new ISI.Extensions.SimpleKeyValueStorage(settingsFullName);
+
+			var trueNASApiUrl = settings.GetValue("TrueNASApiUrl");
+			var trueNASUserName = settings.GetValue("TrueNASUserName");
+			var trueNASApiKey = settings.GetValue("TrueNASApiKey");
+
+			var apiResponse = TrueNASApi.GetSystemConfigGeneralAsync(new()
+			{
+				TrueNASApiUrl = trueNASApiUrl,
+				TrueNASUserName = trueNASUserName,
+				TrueNASApiKey = trueNASApiKey,
+			}).GetAwaiter().GetResult();
+		}
+
+		[Test]
 		public void GetSystemState_Tests()
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");

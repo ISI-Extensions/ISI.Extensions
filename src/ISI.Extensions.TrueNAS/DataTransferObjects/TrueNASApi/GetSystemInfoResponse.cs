@@ -22,16 +22,21 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.TrueNAS.DataTransferObjects.TrueNASApi
 {
-	public class ActivateCertificateRequest : IRequest
+	public class GetSystemInfoResponse
 	{
-		public string TrueNASApiUrl { get; set; }
-		public string TrueNASUserName { get; set; }
-		public string TrueNASApiKey { get; set; }
-
-		public string CertificateName { get; set; }
-		public string BundleCertificate { get; set; }
-		public string KeyCertificate { get; set; }
-
-		public bool RemovePriorCertificate { get; set; }
+		public string Version { get; set; }
+		public string Hostname { get; set; }
+		public long? PhysicalMemory { get; set; }
+		public string Model { get; set; }
+		public int? Cores { get; set; }
+		public int? PhysicalCores { get; set; }
+		public string Uptime { get; set; }
+		public long? UptimeSeconds { get; set; }
+		public string SystemSerial { get; set; }
+		public string SystemProduct { get; set; }
+		public string SystemProductVersion { get; set; }
+		public string Timezone { get; set; }
+		public string SystemManufacturer { get; set; }
+		public bool? EccMemory { get; set; }
 	}
 }

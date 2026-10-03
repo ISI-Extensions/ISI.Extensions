@@ -16,6 +16,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
@@ -26,32 +27,39 @@ namespace ISI.Extensions.TrueNAS
 {
 	public partial class TrueNASApi
 	{
-		private string GetTrueNASApiUrl(DTOs.IRequest request)
+		public async Task<DTOs.GetSystemInfoResponse> GetSystemInfoAsync(DTOs.GetSystemInfoRequest request, System.Threading.CancellationToken cancellationToken = default)
 		{
-			if (!string.IsNullOrWhiteSpace(request.TrueNASApiUrl))
+			var response = new DTOs.GetSystemInfoResponse();
+
+			using (var trueNASWebSocketApiWrapper = new TrueNASWebSocketApiWrapper())
 			{
-				var trueNASApiUrl = request.TrueNASApiUrl;
+				var trueNASApiUrl = GetTrueNASApiUrl(request);
+				var trueNASUserName = GetTrueNASUserName(request);
+				var trueNASApiKey = GetTrueNASApiKey(request);
 
-				trueNASApiUrl = (trueNASApiUrl.StartsWith("%") && trueNASApiUrl.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(trueNASApiUrl.Trim('%')) : trueNASApiUrl);
+				await trueNASWebSocketApiWrapper.ExecuteAsync(trueNASApiUrl, trueNASUserName, trueNASApiKey, async trueNasWebSocketApi =>
+				{
+					var systemInfoResponse = await trueNasWebSocketApi.SystemInfoAsync();
+					
+					response.Version = systemInfoResponse.Version;
+					response.Hostname = systemInfoResponse.Hostname;
+					response.PhysicalMemory = systemInfoResponse.PhysicalMemory;
+					response.Model = systemInfoResponse.Model;
+					response.Cores = systemInfoResponse.Cores;
+					response.PhysicalCores = systemInfoResponse.PhysicalCores;
+					response.Uptime = systemInfoResponse.Uptime;
+					response.UptimeSeconds = systemInfoResponse.UptimeSeconds;
+					response.SystemSerial = systemInfoResponse.SystemSerial;
+					response.SystemProduct = systemInfoResponse.SystemProduct;
+					response.SystemProductVersion = systemInfoResponse.SystemProductVersion;
+					response.Timezone = systemInfoResponse.Timezone;
+					response.SystemManufacturer = systemInfoResponse.SystemManufacturer;
+					response.EccMemory = systemInfoResponse.EccMemory;
 
-				return trueNASApiUrl;
+				}, cancellationToken);
 			}
 
-			if (!string.IsNullOrWhiteSpace(Configuration.TrueNASApiUrl))
-			{
-				var trueNASApiUrl = Configuration.TrueNASApiUrl;
-
-				trueNASApiUrl = (trueNASApiUrl.StartsWith("%") && trueNASApiUrl.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(trueNASApiUrl.Trim('%')) : trueNASApiUrl);
-
-				return trueNASApiUrl;
-			}
-
-			throw new Exception("No TrueNASApiUrl available");
-		}
-
-		private UriBuilder GetApiUri(DTOs.IRequest request)
-		{
-			return new UriBuilder(GetTrueNASApiUrl(request));
+			return response;
 		}
 	}
 }

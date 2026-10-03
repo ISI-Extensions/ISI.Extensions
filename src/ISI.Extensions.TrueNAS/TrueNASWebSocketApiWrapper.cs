@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2026, Integrated Solutions, Inc.
 All rights reserved.
@@ -16,42 +16,53 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.TrueNAS.DataTransferObjects.TrueNASApi;
 using SerializableDTOs = ISI.Extensions.TrueNAS.SerializableModels;
 
 namespace ISI.Extensions.TrueNAS
 {
-	public partial class TrueNASApi
+	internal delegate Task TrueNASWebSocketApiExecuteAsync(ITrueNASWebSocketApi trueNasWebSocketApi);
+
+	internal class TrueNASWebSocketApiWrapper : IDisposable
 	{
-		private string GetTrueNASApiUrl(DTOs.IRequest request)
+		internal async Task ExecuteAsync(string trueNASApiUrl, string userName, string apiKey, TrueNASWebSocketApiExecuteAsync trueNasWebSocketApiExecute, System.Threading.CancellationToken cancellationToken = default)
 		{
-			if (!string.IsNullOrWhiteSpace(request.TrueNASApiUrl))
+			using (var webSocket = new System.Net.WebSockets.ClientWebSocket())
 			{
-				var trueNASApiUrl = request.TrueNASApiUrl;
+				var uri = new UriBuilder(trueNASApiUrl);
+				uri.Scheme = (string.Equals(uri.Scheme, Uri.UriSchemeHttp) ? Uri.UriSchemeWs : Uri.UriSchemeWss);
+				uri.SetPathAndQueryString("api/current");
 
-				trueNASApiUrl = (trueNASApiUrl.StartsWith("%") && trueNASApiUrl.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(trueNASApiUrl.Trim('%')) : trueNASApiUrl);
+				await webSocket.ConnectAsync(uri.Uri, System.Threading.CancellationToken.None);
 
-				return trueNASApiUrl;
+				var webSocketMessageHandler = new StreamJsonRpc.WebSocketMessageHandler(webSocket);
+
+				var trueNasWebSocketApi = StreamJsonRpc.JsonRpc.Attach<ITrueNASWebSocketApi>(webSocketMessageHandler);
+
+				var loginResponse = await trueNasWebSocketApi.LoginAsync(new()
+				{
+					Mechanism = "API_KEY_PLAIN",
+					Username = userName,
+					ApiKey = apiKey,
+				});
+
+				if (!string.Equals(loginResponse.ResponseType, "SUCCESS", StringComparison.InvariantCultureIgnoreCase))
+				{
+					throw new System.Security.Authentication.AuthenticationException("Not Authenticated");
+				}
+
+				await trueNasWebSocketApiExecute(trueNasWebSocketApi);
+
+				await webSocket.CloseAsync(System.Net.WebSockets.WebSocketCloseStatus.NormalClosure, "Client shutting down", System.Threading.CancellationToken.None);
 			}
-
-			if (!string.IsNullOrWhiteSpace(Configuration.TrueNASApiUrl))
-			{
-				var trueNASApiUrl = Configuration.TrueNASApiUrl;
-
-				trueNASApiUrl = (trueNASApiUrl.StartsWith("%") && trueNASApiUrl.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(trueNASApiUrl.Trim('%')) : trueNASApiUrl);
-
-				return trueNASApiUrl;
-			}
-
-			throw new Exception("No TrueNASApiUrl available");
 		}
 
-		private UriBuilder GetApiUri(DTOs.IRequest request)
+		public void Dispose()
 		{
-			return new UriBuilder(GetTrueNASApiUrl(request));
+			// TODO release managed resources here
 		}
 	}
 }

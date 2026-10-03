@@ -19,19 +19,37 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.TrueNAS.DataTransferObjects.TrueNASApi;
+using SerializableDTOs = ISI.Extensions.TrueNAS.SerializableModels;
 
-namespace ISI.Extensions.TrueNAS.DataTransferObjects.TrueNASApi
+namespace ISI.Extensions.TrueNAS
 {
-	public class ActivateCertificateRequest : IRequest
+	public partial class TrueNASApi
 	{
-		public string TrueNASApiUrl { get; set; }
-		public string TrueNASUserName { get; set; }
-		public string TrueNASApiKey { get; set; }
+		public async Task<DTOs.ListCertificateChoicesResponse> ListCertificateChoicesAsync(DTOs.ListCertificateChoicesRequest request, System.Threading.CancellationToken cancellationToken = default)
+		{
+			var response = new DTOs.ListCertificateChoicesResponse();
 
-		public string CertificateName { get; set; }
-		public string BundleCertificate { get; set; }
-		public string KeyCertificate { get; set; }
+			using (var trueNASWebSocketApiWrapper = new TrueNASWebSocketApiWrapper())
+			{
+				var trueNASApiUrl = GetTrueNASApiUrl(request);
+				var trueNASUserName = GetTrueNASUserName(request);
+				var trueNASApiKey = GetTrueNASApiKey(request);
 
-		public bool RemovePriorCertificate { get; set; }
+				await trueNASWebSocketApiWrapper.ExecuteAsync(trueNASApiUrl, trueNASUserName, trueNASApiKey, async trueNasWebSocketApi =>
+				{
+					var listCertificateChoicesResponse = await trueNasWebSocketApi.ListCertificateChoicesAsync();
+
+					if (listCertificateChoicesResponse is global::Newtonsoft.Json.Linq.JObject jObject)
+					{
+						var certificates = jObject.ToObject<Dictionary<string, string>>();
+
+						response.Certificates = certificates.ToNullCheckedArray(certificate => (CertificateKey: certificate.Key, CertificateName: certificate.Value), NullCheckCollectionResult.Empty);
+					}
+				}, cancellationToken);
+			}
+
+			return response;
+		}
 	}
 }

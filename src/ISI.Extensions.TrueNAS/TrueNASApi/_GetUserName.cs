@@ -19,19 +19,34 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.TrueNAS.DataTransferObjects.TrueNASApi;
+using SerializableDTOs = ISI.Extensions.TrueNAS.SerializableModels;
 
-namespace ISI.Extensions.TrueNAS.DataTransferObjects.TrueNASApi
+namespace ISI.Extensions.TrueNAS
 {
-	public class ActivateCertificateRequest : IRequest
+	public partial class TrueNASApi
 	{
-		public string TrueNASApiUrl { get; set; }
-		public string TrueNASUserName { get; set; }
-		public string TrueNASApiKey { get; set; }
+		private string GetTrueNASUserName(DTOs.IRequest request)
+		{
+			if (!string.IsNullOrWhiteSpace(request.TrueNASUserName))
+			{
+				var trueNASUserName = request.TrueNASUserName;
 
-		public string CertificateName { get; set; }
-		public string BundleCertificate { get; set; }
-		public string KeyCertificate { get; set; }
+				trueNASUserName = (trueNASUserName.StartsWith("%") && trueNASUserName.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(trueNASUserName.Trim('%')) : trueNASUserName);
 
-		public bool RemovePriorCertificate { get; set; }
+				return trueNASUserName;
+			}
+
+			if (!string.IsNullOrWhiteSpace(Configuration.TrueNASUserName))
+			{
+				var trueNASUserName = Configuration.TrueNASUserName;
+
+				trueNASUserName = (trueNASUserName.StartsWith("%") && trueNASUserName.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(trueNASUserName.Trim('%')) : trueNASUserName);
+
+				return trueNASUserName;
+			}
+
+			throw new Exception("No TrueNASUserName available");
+		}
 	}
 }

@@ -22,6 +22,7 @@ namespace ISI.Extensions.TrueNAS.DataTransferObjects.TrueNASApi
 	public interface IRequest
 	{
 		string TrueNASApiUrl { get; }
+		string TrueNASUserName { get; }
 		string TrueNASApiKey { get; }
 	}
 }

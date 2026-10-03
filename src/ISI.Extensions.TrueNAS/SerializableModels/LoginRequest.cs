@@ -19,19 +19,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using System.Runtime.Serialization;
 
-namespace ISI.Extensions.TrueNAS.DataTransferObjects.TrueNASApi
+namespace ISI.Extensions.TrueNAS.SerializableModels
 {
-	public class ActivateCertificateRequest : IRequest
+	[DataContract]
+	public class LoginRequest
 	{
-		public string TrueNASApiUrl { get; set; }
-		public string TrueNASUserName { get; set; }
-		public string TrueNASApiKey { get; set; }
+		[DataMember(Name = "mechanism", EmitDefaultValue = false)]
+		public string Mechanism { get; set; }
 
-		public string CertificateName { get; set; }
-		public string BundleCertificate { get; set; }
-		public string KeyCertificate { get; set; }
+		[DataMember(Name = "username", EmitDefaultValue = false)]
+		public string Username { get; set; }
 
-		public bool RemovePriorCertificate { get; set; }
+		[DataMember(Name = "api_key", EmitDefaultValue = false)]
+		public string ApiKey { get; set; }
 	}
 }

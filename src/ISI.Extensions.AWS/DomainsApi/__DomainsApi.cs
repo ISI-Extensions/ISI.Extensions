@@ -23,7 +23,7 @@ using DTOs = ISI.Extensions.AWS.DataTransferObjects.DomainsApi;
 
 namespace ISI.Extensions.AWS
 {
-	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "AWS", false, null, true, "Amazon Access Key", true , "Amazon Secret Key", true, "Amazon Region:")]
+	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "AWS", false, null, true, "Amazon Access Key", true , "Amazon Secret Key", true, "Amazon Region")]
 	public partial class DomainsApi : ISI.Extensions.Dns.AbstractDomainsApi, ISI.Extensions.Dns.IDomainsApiWithListPartitions
 	{
 		internal const string _dnsProviderUuid = "73423321-52e0-4487-83a6-90fd3cd41a81";

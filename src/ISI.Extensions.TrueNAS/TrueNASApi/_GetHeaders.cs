@@ -26,22 +26,34 @@ namespace ISI.Extensions.TrueNAS
 {
 	public partial class TrueNASApi
 	{
+		private string GetTrueNASApiKey(DTOs.IRequest request)
+		{
+			if (!string.IsNullOrWhiteSpace(request.TrueNASApiKey))
+			{
+				var trueNASApiKey = request.TrueNASApiKey;
+
+				trueNASApiKey = (trueNASApiKey.StartsWith("%") && trueNASApiKey.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(trueNASApiKey.Trim('%')) : trueNASApiKey);
+
+				return trueNASApiKey;
+			}
+			
+			if (!string.IsNullOrWhiteSpace(Configuration.TrueNASApiKey))
+			{
+				var trueNASApiKey = Configuration.TrueNASApiKey;
+
+				trueNASApiKey = (trueNASApiKey.StartsWith("%") && trueNASApiKey.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(trueNASApiKey.Trim('%')) : trueNASApiKey);
+
+				return trueNASApiKey;
+			}
+
+			throw new Exception("No TrueNASApiKey available");
+		}
+
 		private ISI.Extensions.WebClient.HeaderCollection GetHeaders(DTOs.IRequest request)
 		{
 			var headers = new ISI.Extensions.WebClient.HeaderCollection();
 
-			if (!string.IsNullOrWhiteSpace(request.TrueNASApiKey))
-			{
-				headers.AddBearerAuthentication(request.TrueNASApiKey);
-			}
-			else if (!string.IsNullOrWhiteSpace(Configuration.TrueNASApiKey))
-			{
-				headers.AddBearerAuthentication(Configuration.TrueNASApiKey);
-			}
-			else
-			{
-				throw new Exception("No TrueNASApiKey available");
-			}
+			headers.AddBearerAuthentication(GetTrueNASApiKey(request));
 
 			return headers;
 		}

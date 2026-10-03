@@ -30,7 +30,10 @@ namespace ISI.Extensions.TrueNAS
 		[ISI.Extensions.EnvironmentConfigurationVariableName("TRUENAS_API_URL")]
 		public string TrueNASApiUrl { get; set; }
 
-		[ISI.Extensions.EnvironmentConfigurationVariableName("TRUENAS_API_TOKEN")]
+		[ISI.Extensions.EnvironmentConfigurationVariableName("TRUENAS_USERNAME")]
+		public string TrueNASUserName { get; set; }
+
+		[ISI.Extensions.EnvironmentConfigurationVariableName("TRUENAS_API_KEY")]
 		public string TrueNASApiKey { get; set; }
 	}
 }

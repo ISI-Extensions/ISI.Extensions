@@ -25,6 +25,7 @@ namespace ISI.Extensions.TrueNAS.DataTransferObjects.TrueNASApi
 	public class GetVersionRequest : IRequest
 	{
 		public string TrueNASApiUrl { get; set; }
+		public string TrueNASUserName { get; set; }
 		public string TrueNASApiKey { get; set; }
 	}
 }

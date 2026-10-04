@@ -86,7 +86,7 @@ namespace ISI.Extensions.NameCheap
 			{
 				var dnsRecord = dnsRecords[dnsRecordIndex - 1];
 
-				addDnsRecordKeyValue(dnsRecordIndex, "HostName", (dnsRecord.Name.StartsWith("_") ? $"\"{dnsRecord.Name}\"" : dnsRecord.Name));
+				addDnsRecordKeyValue(dnsRecordIndex, "HostName", dnsRecord.Name);
 				addDnsRecordKeyValue(dnsRecordIndex, "RecordType", dnsRecord.RecordType.GetAbbreviation());
 				addDnsRecordKeyValue(dnsRecordIndex, "Address", dnsRecord.Data);
 				if (dnsRecord.Priority != 10)
@@ -98,8 +98,10 @@ namespace ISI.Extensions.NameCheap
 				addDnsRecordKeyValue(dnsRecordIndex, "TTL", $"{dnsRecord.Ttl.TotalSeconds}");
 			}
 			
-			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteFormRequestPost<ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, request.GetHeaders(Configuration), formData, true);
-			
+			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteFormRequestPost<SerializableModels.DomainsApi.SetDnsRecordsResponse>(uri.Uri, request.GetHeaders(Configuration), formData, true);
+
+			response.Success = string.Equals(apiResponse?.Status ?? string.Empty, "OK", StringComparison.InvariantCultureIgnoreCase);
+
 			return response;
 		}
 	}

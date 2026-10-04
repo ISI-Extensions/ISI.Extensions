@@ -24,5 +24,6 @@ namespace ISI.Extensions.AWS.DataTransferObjects.DomainsApi
 {
 	public class DeleteDnsRecordsResponse
 	{
+		public bool Success { get; set; }
 	}
 }

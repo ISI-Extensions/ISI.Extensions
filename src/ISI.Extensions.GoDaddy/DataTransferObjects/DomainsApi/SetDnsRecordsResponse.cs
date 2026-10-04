@@ -25,5 +25,7 @@ namespace ISI.Extensions.GoDaddy.DataTransferObjects.DomainsApi
 	public class SetDnsRecordsResponse
 	{
 		public Error Error { get; set; }
+
+		public bool Success => (Error == null);
 	}
 }

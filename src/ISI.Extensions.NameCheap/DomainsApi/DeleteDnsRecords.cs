@@ -45,44 +45,8 @@ namespace ISI.Extensions.NameCheap
 				dnsRecords.RemoveAll(d => d.Matches(dnsRecord));
 			}
 
-			var domainNamePieces = request.Domain.Split(new[] { '.' });
+			response.Success = SetDnsRecords(request, request.Domain, getDnsRecordsResponse.EmailType, dnsRecords.ToArray());
 
-			var uri = request.GetUrl(Configuration);
-			uri.Path = "xml.response";
-
-			var formData = new ISI.Extensions.WebClient.Rest.FormDataCollection();
-			formData.SetUserNameClientIp(request, IpifyApi, Configuration);
-			formData.Add("Command", "namecheap.domains.dns.getHosts");
-			formData.Add("SLD", domainNamePieces.First());
-			formData.Add("TLD", domainNamePieces.Last());
-			formData.Add("EmailType", getDnsRecordsResponse.EmailType);
-
-			void addDnsRecordKeyValue(int dnsRecordIndex, string key, string value)
-			{
-				if (!string.IsNullOrWhiteSpace(value))
-				{
-					uri.AddQueryStringParameter($"{key}{dnsRecordIndex}", value);
-				}
-			}
-
-			for (var dnsRecordIndex = 1; dnsRecordIndex <= dnsRecords.Count; dnsRecordIndex++)
-			{
-				var dnsRecord = dnsRecords[dnsRecordIndex - 1];
-
-				addDnsRecordKeyValue(dnsRecordIndex, "HostName", dnsRecord.Name);
-				addDnsRecordKeyValue(dnsRecordIndex, "RecordType", dnsRecord.RecordType.GetAbbreviation());
-				addDnsRecordKeyValue(dnsRecordIndex, "Address", dnsRecord.Data);
-				if (dnsRecord.Priority != 10)
-				{
-					addDnsRecordKeyValue(dnsRecordIndex, "MXPref", $"{dnsRecord.Priority}");
-				}
-				addDnsRecordKeyValue(dnsRecordIndex, "AssociatedAppTitle", dnsRecord.Protocol);
-				addDnsRecordKeyValue(dnsRecordIndex, "FriendlyName", dnsRecord.Service);
-				addDnsRecordKeyValue(dnsRecordIndex, "TTL", $"{dnsRecord.Ttl.TotalSeconds}");
-			}
-			
-			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteFormRequestPost<ISI.Extensions.WebClient.Rest.TextResponse>(uri.Uri, request.GetHeaders(Configuration), formData, true);
-			
 			return response;
 		}
 	}

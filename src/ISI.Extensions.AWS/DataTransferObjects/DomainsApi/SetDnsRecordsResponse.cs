@@ -24,5 +24,6 @@ namespace ISI.Extensions.AWS.DataTransferObjects.DomainsApi
 {
 	public class SetDnsRecordsResponse
 	{
+		public bool Success { get; set; }
 	}
 }

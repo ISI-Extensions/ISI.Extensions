@@ -71,14 +71,14 @@ namespace ISI.Extensions.AWS
 		{
 			var response = new ISI.Extensions.Dns.DataTransferObjects.DomainsApi.SetDnsRecordsResponse();
 
-			SetDnsRecords(new DTOs.SetDnsRecordsRequest()
+			response.Success = SetDnsRecords(new DTOs.SetDnsRecordsRequest()
 			{
 				AmazonAccessKey = request.ApiUser,
 				AmazonSecretKey = request.ApiKey,
 				RegionEndpoint = request.Partition,
 				Domain = request.Domain,
 				DnsRecords = request.DnsRecords,
-			});
+			}).Success;
 
 			return response;
 		}
@@ -87,14 +87,14 @@ namespace ISI.Extensions.AWS
 		{
 			var response = new ISI.Extensions.Dns.DataTransferObjects.DomainsApi.DeleteDnsRecordsResponse();
 
-			DeleteDnsRecords(new DTOs.DeleteDnsRecordsRequest()
+			response.Success = DeleteDnsRecords(new DTOs.DeleteDnsRecordsRequest()
 			{
 				AmazonAccessKey = request.ApiUser,
 				AmazonSecretKey = request.ApiKey,
 				RegionEndpoint = request.Partition,
 				Domain = request.Domain,
 				DnsRecords = request.DnsRecords,
-			});
+			}).Success;
 
 			return response;
 		}

@@ -37,6 +37,8 @@ namespace ISI.Extensions.Cloudflare
 				DnsRecords = request.DnsRecords,
 			});
 
+			response.Success = apiResponse.Success;
+
 			return response;
 		}
 	}

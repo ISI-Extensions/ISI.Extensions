@@ -12,16 +12,16 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.Cloudflare.DataTransferObjects.CloudflareApi;
 using SerializableDTOs = ISI.Extensions.Cloudflare.SerializableModels;
-using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.Cloudflare
 {
@@ -31,7 +31,10 @@ namespace ISI.Extensions.Cloudflare
 		//DNS Write
 		public DTOs.DeleteDnsRecordsResponse DeleteDnsRecords(DTOs.DeleteDnsRecordsRequest request)
 		{
-			var response = new DTOs.DeleteDnsRecordsResponse();
+			var response = new DTOs.DeleteDnsRecordsResponse()
+			{
+				Success = true,
+			};
 
 			EnsureZoneId(request);
 
@@ -56,46 +59,53 @@ namespace ISI.Extensions.Cloudflare
 			catch (Exception exception)
 			{
 				Logger.LogError(exception, "ListDnsRecords Failed\n{0}", exception.ErrorMessageFormatted());
+
+				response.Success = false;
 			}
 
 			foreach (var dnsRecord in request.DnsRecords)
 			{
-				switch (dnsRecord.RecordType)
+				if (response.Success)
 				{
-					case ISI.Extensions.Dns.RecordType.AddressRecord:
-						break;
-					case ISI.Extensions.Dns.RecordType.CanonicalNameRecord:
-						break;
-					case ISI.Extensions.Dns.RecordType.TextRecord:
-						break;
-					default:
-						throw new ArgumentOutOfRangeException();
-				}
-
-				var restRequest = existingDnsRecords.NullCheckedFirstOrDefault(existingDnsRecord =>
-					string.Equals((string.IsNullOrWhiteSpace(existingDnsRecord.SubName) ? "@" : existingDnsRecord.Name), (string.IsNullOrWhiteSpace(dnsRecord.Name) ? "@" : existingDnsRecord.Name), StringComparison.InvariantCultureIgnoreCase) &&
-					(ISI.Extensions.Enum<ISI.Extensions.Dns.RecordType>.ParseAbbreviation(existingDnsRecord.RecordType) == dnsRecord.RecordType) &&
-					((dnsRecord.RecordType != ISI.Extensions.Dns.RecordType.TextRecord) || string.Equals(existingDnsRecord.Content, $"\"{dnsRecord.Data}\"", StringComparison.InvariantCulture)));
-
-				if (restRequest != null)
-				{
-					try
+					switch (dnsRecord.RecordType)
 					{
-						var uri = GetUrl(request);
-						uri.AddDirectoryToPath("zones/{zoneId}/dns_records/{dnsRecordId}".Replace("{zoneId}", request.ZoneId).Replace("{dnsRecordId}", restRequest.DnsRecordKey));
-
-						var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonDelete<SerializableDTOs.DnsRecord, SerializableDTOs.DeleteDnsRecordsResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request), null, false);
-
-						if (restResponse.Error != null)
-						{
-							throw restResponse.Error.Exception;
-						}
-
-						ids.Add(restResponse?.Response?.Result?.Id ?? null);
+						case ISI.Extensions.Dns.RecordType.AddressRecord:
+							break;
+						case ISI.Extensions.Dns.RecordType.CanonicalNameRecord:
+							break;
+						case ISI.Extensions.Dns.RecordType.TextRecord:
+							break;
+						default:
+							throw new ArgumentOutOfRangeException();
 					}
-					catch (Exception exception)
+
+					var restRequest = existingDnsRecords.NullCheckedFirstOrDefault(existingDnsRecord =>
+						string.Equals((string.IsNullOrWhiteSpace(existingDnsRecord.SubName) ? "@" : existingDnsRecord.Name), (string.IsNullOrWhiteSpace(dnsRecord.Name) ? "@" : existingDnsRecord.Name), StringComparison.InvariantCultureIgnoreCase) &&
+						(ISI.Extensions.Enum<ISI.Extensions.Dns.RecordType>.ParseAbbreviation(existingDnsRecord.RecordType) == dnsRecord.RecordType) &&
+						((dnsRecord.RecordType != ISI.Extensions.Dns.RecordType.TextRecord) || string.Equals(existingDnsRecord.Content, $"\"{dnsRecord.Data}\"", StringComparison.InvariantCulture)));
+
+					if (restRequest != null)
 					{
-						Logger.LogError(exception, "DeleteDnsRecords (Delete) Failed\n{0}", exception.ErrorMessageFormatted());
+						try
+						{
+							var uri = GetUrl(request);
+							uri.AddDirectoryToPath("zones/{zoneId}/dns_records/{dnsRecordId}".Replace("{zoneId}", request.ZoneId).Replace("{dnsRecordId}", restRequest.DnsRecordKey));
+
+							var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonDelete<SerializableDTOs.DnsRecord, SerializableDTOs.DeleteDnsRecordsResponse, ISI.Extensions.WebClient.Rest.UnhandledExceptionResponse>(uri.Uri, GetHeaders(request), null, false);
+
+							if (restResponse.Error != null)
+							{
+								throw restResponse.Error.Exception;
+							}
+
+							ids.Add(restResponse?.Response?.Result?.Id ?? null);
+						}
+						catch (Exception exception)
+						{
+							Logger.LogError(exception, "DeleteDnsRecords (Delete) Failed\n{0}", exception.ErrorMessageFormatted());
+
+							response.Success = false;
+						}
 					}
 				}
 			}

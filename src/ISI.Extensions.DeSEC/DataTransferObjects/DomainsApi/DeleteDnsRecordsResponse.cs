@@ -24,5 +24,6 @@ namespace ISI.Extensions.DeSEC.DataTransferObjects.DomainsApi
 {
 	public class DeleteDnsRecordsResponse
 	{
+		public bool Success { get; set; }
 	}
 }

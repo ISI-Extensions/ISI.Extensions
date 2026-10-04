@@ -24,5 +24,6 @@ namespace ISI.Extensions.Cloudflare.DataTransferObjects.DomainsApi
 {
 	public class SetDnsRecordsResponse
 	{
+		public bool Success { get; set; }
 	}
 }

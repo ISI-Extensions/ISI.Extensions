@@ -29,7 +29,10 @@ namespace ISI.Extensions.DeSEC
 	{
 		public DTOs.SetDnsRecordsResponse SetDnsRecords(DTOs.SetDnsRecordsRequest request)
 		{
-			var response = new DTOs.SetDnsRecordsResponse();
+			var response = new DTOs.SetDnsRecordsResponse()
+			{
+				Success = true,
+			};
 
 			foreach (var dnsRecordsGroupedByType in request.DnsRecords.GroupBy(dnsRecord => dnsRecord.RecordType))
 			{

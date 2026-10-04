@@ -25,5 +25,6 @@ namespace ISI.Extensions.Cloudflare.DataTransferObjects.CloudflareApi
 	public class DeleteDnsRecordsResponse
 	{
 		public string[] Ids { get; set; }
+		public bool Success { get; set; }
 	}
 }

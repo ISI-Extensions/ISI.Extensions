@@ -66,14 +66,14 @@ namespace ISI.Extensions.GoDaddy
 		{
 			var response = new ISI.Extensions.Dns.DataTransferObjects.DomainsApi.SetDnsRecordsResponse();
 
-			SetDnsRecords(new DTOs.SetDnsRecordsRequest()
+			response.Success = SetDnsRecords(new DTOs.SetDnsRecordsRequest()
 			{
 				Url = request.ApiUrl,
 				ApiKey = request.ApiUser,
 				ApiSecret = request.ApiKey,
 				Domain = request.Domain,
 				DnsRecords = request.DnsRecords,
-			});
+			}).Success;
 
 			return response;
 		}
@@ -82,14 +82,14 @@ namespace ISI.Extensions.GoDaddy
 		{
 			var response = new ISI.Extensions.Dns.DataTransferObjects.DomainsApi.DeleteDnsRecordsResponse();
 
-			DeleteDnsRecords(new DTOs.DeleteDnsRecordsRequest()
+			response.Success = DeleteDnsRecords(new DTOs.DeleteDnsRecordsRequest()
 			{
 				Url = request.ApiUrl,
 				ApiKey = request.ApiUser,
 				ApiSecret = request.ApiKey,
 				Domain = request.Domain,
 				DnsRecords = request.DnsRecords,
-			});
+			}).Success;
 
 			return response;
 		}

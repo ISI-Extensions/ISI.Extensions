@@ -25,5 +25,7 @@ namespace ISI.Extensions.GoDaddy.DataTransferObjects.DomainsApi
 	public class DeleteDnsRecordsResponse
 	{
 		public Error Error { get; set; }
+
+		public bool Success => (Error == null);
 	}
 }

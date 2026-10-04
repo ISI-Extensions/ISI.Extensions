@@ -26,6 +26,49 @@ namespace ISI.Extensions.NameCheap
 {
 	public partial class DomainsApi
 	{
+		private bool SetDnsRecords(ISI.Extensions.NameCheap.DataTransferObjects.IRequest request, string domain, string emailType, ISI.Extensions.Dns.DnsRecord[] dnsRecords)
+		{
+			var domainNamePieces = domain.Split(new[] { '.' });
+
+			var uri = request.GetUrl(Configuration);
+			uri.Path = "xml.response";
+
+			var formData = new ISI.Extensions.WebClient.Rest.FormDataCollection();
+			formData.SetUserNameClientIp(request, IpifyApi, Configuration);
+			formData.Add("Command", "namecheap.domains.dns.setHosts");
+			formData.Add("SLD", domainNamePieces.First());
+			formData.Add("TLD", domainNamePieces.Last());
+			formData.Add("EmailType", emailType);
+
+			void addDnsRecordKeyValue(int dnsRecordIndex, string key, string value)
+			{
+				if (!string.IsNullOrWhiteSpace(value))
+				{
+					formData.Add($"{key}{dnsRecordIndex}", value);
+				}
+			}
+
+			for (var dnsRecordIndex = 1; dnsRecordIndex <= dnsRecords.Length; dnsRecordIndex++)
+			{
+				var dnsRecord = dnsRecords[dnsRecordIndex - 1];
+
+				addDnsRecordKeyValue(dnsRecordIndex, "HostName", dnsRecord.Name);
+				addDnsRecordKeyValue(dnsRecordIndex, "RecordType", dnsRecord.RecordType.GetAbbreviation());
+				addDnsRecordKeyValue(dnsRecordIndex, "Address", dnsRecord.Data);
+				if (dnsRecord.Priority != 10)
+				{
+					addDnsRecordKeyValue(dnsRecordIndex, "MXPref", $"{dnsRecord.Priority}");
+				}
+				addDnsRecordKeyValue(dnsRecordIndex, "AssociatedAppTitle", dnsRecord.Protocol);
+				addDnsRecordKeyValue(dnsRecordIndex, "FriendlyName", dnsRecord.Service);
+				addDnsRecordKeyValue(dnsRecordIndex, "TTL", $"{dnsRecord.Ttl.TotalSeconds}");
+			}
+
+			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteFormRequestPost<SerializableModels.DomainsApi.SetDnsRecordsResponse>(uri.Uri, request.GetHeaders(Configuration), formData, true);
+
+			return string.Equals(apiResponse?.Status ?? string.Empty, "OK", StringComparison.InvariantCultureIgnoreCase);
+		}
+
 		public DTOs.SetDnsRecordsResponse SetDnsRecords(DTOs.SetDnsRecordsRequest request)
 		{
 			var response = new DTOs.SetDnsRecordsResponse();
@@ -62,45 +105,7 @@ namespace ISI.Extensions.NameCheap
 				}
 			}
 
-			var domainNamePieces = request.Domain.Split(new[] { '.' });
-
-			var uri = request.GetUrl(Configuration);
-			uri.Path = "xml.response";
-
-			var formData = new ISI.Extensions.WebClient.Rest.FormDataCollection();
-			formData.SetUserNameClientIp(request, IpifyApi, Configuration);
-			formData.Add("Command", "namecheap.domains.dns.setHosts");
-			formData.Add("SLD", domainNamePieces.First());
-			formData.Add("TLD", domainNamePieces.Last());
-			formData.Add("EmailType", getDnsRecordsResponse.EmailType);
-
-			void addDnsRecordKeyValue(int dnsRecordIndex, string key, string value)
-			{
-				if (!string.IsNullOrWhiteSpace(value))
-				{
-					formData.Add($"{key}{dnsRecordIndex}", value);
-				}
-			}
-
-			for (var dnsRecordIndex = 1; dnsRecordIndex <= dnsRecords.Count; dnsRecordIndex++)
-			{
-				var dnsRecord = dnsRecords[dnsRecordIndex - 1];
-
-				addDnsRecordKeyValue(dnsRecordIndex, "HostName", dnsRecord.Name);
-				addDnsRecordKeyValue(dnsRecordIndex, "RecordType", dnsRecord.RecordType.GetAbbreviation());
-				addDnsRecordKeyValue(dnsRecordIndex, "Address", dnsRecord.Data);
-				if (dnsRecord.Priority != 10)
-				{
-					addDnsRecordKeyValue(dnsRecordIndex, "MXPref", $"{dnsRecord.Priority}");
-				}
-				addDnsRecordKeyValue(dnsRecordIndex, "AssociatedAppTitle", dnsRecord.Protocol);
-				addDnsRecordKeyValue(dnsRecordIndex, "FriendlyName", dnsRecord.Service);
-				addDnsRecordKeyValue(dnsRecordIndex, "TTL", $"{dnsRecord.Ttl.TotalSeconds}");
-			}
-			
-			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteFormRequestPost<SerializableModels.DomainsApi.SetDnsRecordsResponse>(uri.Uri, request.GetHeaders(Configuration), formData, true);
-
-			response.Success = string.Equals(apiResponse?.Status ?? string.Empty, "OK", StringComparison.InvariantCultureIgnoreCase);
+			response.Success = SetDnsRecords(request, request.Domain, getDnsRecordsResponse.EmailType, dnsRecords.ToArray());
 
 			return response;
 		}

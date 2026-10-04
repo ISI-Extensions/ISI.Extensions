@@ -83,6 +83,8 @@ namespace ISI.Extensions.AWS
 						Changes = changes,
 					}
 				}).GetAwaiter().GetResult();
+
+				response.Success = (changeResourceRecordSetsResponse.HttpStatusCode == System.Net.HttpStatusCode.OK);
 			}
 
 			return response;

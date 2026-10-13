@@ -49,7 +49,6 @@ namespace ISI.Extensions.Nginx
 
 			nginxSettings ??= new();
 
-
 			return nginxSettings;
 		}
 	}

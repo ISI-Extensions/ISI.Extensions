@@ -22,6 +22,7 @@
 		<PackageReference Include="NuGet.Frameworks" Version="7.9.0" />
 		<PackageReference Include="NuGet.Protocol" Version="7.9.0" />
 		<PackageReference Include="NuGet.Versioning" Version="7.9.0" />
+		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
 	</ItemGroup>
 
 	<ItemGroup>

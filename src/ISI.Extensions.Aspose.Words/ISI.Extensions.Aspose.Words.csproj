@@ -20,6 +20,7 @@
 		<PackageReference Include="Aspose.Words" Version="26.10.0" />
 	  <PackageReference Include="SkiaSharp" Version="4.153.1" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="4.153.1" />
+		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
 	</ItemGroup>
 
 	<ItemGroup>

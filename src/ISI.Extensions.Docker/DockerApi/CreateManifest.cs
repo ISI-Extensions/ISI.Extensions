@@ -39,11 +39,11 @@ namespace ISI.Extensions.Docker
 			arguments.Add("manifest");
 			arguments.Add("create");
 
-			arguments.Add(GetContainerImageReference(request.ContainerRegistry, request.ContainerRepository, request.ContainerTargetImageTag));
+			arguments.Add(ISI.Extensions.Docker.Extensions.ContainerImageExtensions.GetContainerImageReference(request.ContainerRegistry, request.ContainerRepository, request.ContainerTargetImageTag));
 
 			foreach (var containerSourceImageTag in request.ContainerSourceImageTags)
 			{
-				arguments.Add($"--amend {GetContainerImageReference(request.ContainerRegistry, request.ContainerRepository, containerSourceImageTag)}");
+				arguments.Add($"--amend {ISI.Extensions.Docker.Extensions.ContainerImageExtensions.GetContainerImageReference(request.ContainerRegistry, request.ContainerRepository, containerSourceImageTag)}");
 			}
 
 			logger.LogInformation($"docker {string.Join(" ", arguments)}");

@@ -40,7 +40,7 @@ namespace ISI.Extensions.Docker
 				var containerRegistry = request.ContainerRegistry ?? string.Empty;
 				var containerRepository = request.ContainerRepository;
 				var containerImageTag = (string.IsNullOrWhiteSpace(request.ContainerImageTag) ? "latest" : request.ContainerImageTag);
-				containerImageTag = GetContainerImageReference(containerRegistry, containerRepository, containerImageTag);
+				containerImageTag = ISI.Extensions.Docker.Extensions.ContainerImageExtensions.GetContainerImageReference(containerRegistry, containerRepository, containerImageTag);
 
 				{
 					var arguments = new List<string>();

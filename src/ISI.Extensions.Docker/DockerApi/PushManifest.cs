@@ -39,7 +39,7 @@ namespace ISI.Extensions.Docker
 			arguments.Add("manifest");
 			arguments.Add("push");
 
-			arguments.Add(GetContainerImageReference(request.ContainerRegistry, request.ContainerRepository, request.ContainerImageTag));
+			arguments.Add(ISI.Extensions.Docker.Extensions.ContainerImageExtensions.GetContainerImageReference(request.ContainerRegistry, request.ContainerRepository, request.ContainerImageTag));
 
 			logger.LogInformation($"docker {string.Join(" ", arguments)}");
 

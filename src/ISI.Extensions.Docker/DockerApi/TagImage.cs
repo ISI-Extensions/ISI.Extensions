@@ -39,9 +39,9 @@ namespace ISI.Extensions.Docker
 
 			arguments.Add("tag");
 
-			arguments.Add(GetContainerImageReference(request.SourceContainerRegistry, request.SourceContainerRepository, request.SourceContainerImageTag));
+			arguments.Add(ISI.Extensions.Docker.Extensions.ContainerImageExtensions.GetContainerImageReference(request.SourceContainerRegistry, request.SourceContainerRepository, request.SourceContainerImageTag));
 
-			arguments.Add(GetContainerImageReference(request.TargetContainerRegistry, request.TargetContainerRepository, request.TargetContainerImageTag));
+			arguments.Add(ISI.Extensions.Docker.Extensions.ContainerImageExtensions.GetContainerImageReference(request.TargetContainerRegistry, request.TargetContainerRepository, request.TargetContainerImageTag));
 
 			var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 			{

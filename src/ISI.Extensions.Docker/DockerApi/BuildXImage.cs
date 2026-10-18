@@ -85,7 +85,7 @@ namespace ISI.Extensions.Docker
 
 				for (var index = 0; index < containerImageTags.Length; index++)
 				{
-					containerImageTags[index] = GetContainerImageReference(containerRegistry, containerRepository, containerImageTags[index]);
+					containerImageTags[index] = ISI.Extensions.Docker.Extensions.ContainerImageExtensions.GetContainerImageReference(containerRegistry, containerRepository, containerImageTags[index]);
 				}
 
 				foreach (var containerImageTag in containerImageTags)

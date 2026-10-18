@@ -37,8 +37,8 @@ namespace ISI.Extensions.Docker
 			{
 				foreach (var containerImageTag in request.ContainerImageTags)
 				{
-					var fromContainerImageTag = GetContainerImageReference(request.FromContainerRegistry, request.ContainerRepository, containerImageTag);
-					var toContainerImageTag = GetContainerImageReference(request.ToContainerRegistry, request.ContainerRepository, containerImageTag);
+					var fromContainerImageTag = ISI.Extensions.Docker.Extensions.ContainerImageExtensions.GetContainerImageReference(request.FromContainerRegistry, request.ContainerRepository, containerImageTag);
+					var toContainerImageTag = ISI.Extensions.Docker.Extensions.ContainerImageExtensions.GetContainerImageReference(request.ToContainerRegistry, request.ContainerRepository, containerImageTag);
 
 					var arguments = new List<string>();
 
@@ -85,8 +85,8 @@ namespace ISI.Extensions.Docker
 				{
 					foreach (var containerImageTag in request.ContainerImageTags)
 					{
-						var fromContainerImageTag = GetContainerImageReference(request.FromContainerRegistry, request.ContainerRepository, containerImageTag);
-						var toContainerImageTag = GetContainerImageReference(request.ToContainerRegistry, request.ContainerRepository, containerImageTag);
+						var fromContainerImageTag = ISI.Extensions.Docker.Extensions.ContainerImageExtensions.GetContainerImageReference(request.FromContainerRegistry, request.ContainerRepository, containerImageTag);
+						var toContainerImageTag = ISI.Extensions.Docker.Extensions.ContainerImageExtensions.GetContainerImageReference(request.ToContainerRegistry, request.ContainerRepository, containerImageTag);
 
 						var arguments = new List<string>();
 

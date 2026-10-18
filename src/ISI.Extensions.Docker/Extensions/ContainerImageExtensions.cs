@@ -1,4 +1,4 @@
-#region Copyright & License
+﻿#region Copyright & License
 /*
 Copyright (c) 2026, Integrated Solutions, Inc.
 All rights reserved.
@@ -15,19 +15,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
-using ISI.Extensions.JsonSerialization.Extensions;
-using DTOs = ISI.Extensions.Docker.DataTransferObjects.DockerApi;
-using SERIALIZABLEMODELS = ISI.Extensions.Docker.SerializableModels;
 
-namespace ISI.Extensions.Docker
+namespace ISI.Extensions.Docker.Extensions
 {
-	public partial class DockerApi
+	public static class ContainerImageExtensions
 	{
-		private string GetContainerImageReference(string containerRegistry, string containerRepository, string containerImageTag)
+		public static string GetContainerImageReference(string containerRegistry, string containerRepository, string containerImageTag)
 		{
 			var containerImageReference = containerImageTag;
 

@@ -151,7 +151,7 @@ namespace ISI.Extensions.Docker
 
 		public string[] GetDockerComposeArguments() => GetFileNames().ToNullCheckedArray(environmentFileName => $"--env-file={environmentFileName}");
 
-		protected InvariantCultureIgnoreCaseStringDictionary<string> GetEnvironmentVariables()
+		public InvariantCultureIgnoreCaseStringDictionary<string> GetEnvironmentVariables()
 		{
 			var environmentVariables = new InvariantCultureIgnoreCaseStringDictionary<string>();
 

@@ -33,7 +33,19 @@ namespace ISI.Extensions.Ssh
 			
 			if (!string.IsNullOrWhiteSpace(request.Source) && !string.IsNullOrWhiteSpace(request.Target))
 			{
+				var processExeFullName = "scp";
+				
 				var arguments = new List<string>();
+
+				if (!string.IsNullOrWhiteSpace(request.Password))
+				{
+					processExeFullName = "sshpass";
+
+					arguments.Add("-p");
+					arguments.Add(request.Password);
+					arguments.Add("scp");
+				}
+
 				if (request.Recursive)
 				{
 					arguments.Add("-r");
@@ -44,7 +56,7 @@ namespace ISI.Extensions.Ssh
 				var waitForProcessResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
 					Logger = logger,
-					ProcessExeFullName = "scp",
+					ProcessExeFullName = processExeFullName,
 					Arguments = arguments.ToArray(),
 				});
 

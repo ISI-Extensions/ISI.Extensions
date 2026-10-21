@@ -27,6 +27,7 @@ namespace ISI.Extensions.Ssh.DataTransferObjects.SshApi
 		public string Source { get; set; }
 		public string Target { get; set; }
 		public bool Recursive { get; set; }
+		public string Password { get; set; }
 
 		public ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; set; }
 	}

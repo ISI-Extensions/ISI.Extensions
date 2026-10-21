@@ -109,7 +109,7 @@ namespace ISI.Extensions.Docker
 		}
 	}
 
-	internal class TempEnvironmentVariablesFiles : IDisposable
+	public class TempEnvironmentVariablesFiles : IDisposable
 	{
 		internal TempEnvironmentVariablesFile[] EnvironmentFiles { get; }
 

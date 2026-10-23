@@ -48,7 +48,7 @@ namespace ISI.Extensions
 
 				if (string.IsNullOrWhiteSpace(dataRoot))
 				{
-					var localAppData = System.Environment.GetEnvironmentVariable("LocalAppData");
+					var localAppData = System.Environment.GetEnvironmentVariable("LOCALAPPDATA");
 
 					if (!string.IsNullOrWhiteSpace(localAppData))
 					{
@@ -67,6 +67,26 @@ namespace ISI.Extensions
 				}
 
 				return $"{dataRoot.TrimEnd(System.IO.Path.DirectorySeparatorChar)}{System.IO.Path.DirectorySeparatorChar}";
+			}
+
+			private static string _userDataRoot = null;
+			public static string UserDataRoot => _userDataRoot ??= GetUserDataRoot();
+
+			private static string GetUserDataRoot()
+			{
+				var userDataRoot = System.Environment.GetEnvironmentVariable("LOCALAPPDATA");
+
+				if (string.IsNullOrWhiteSpace(userDataRoot) && (Environment.OSVersion.Platform == PlatformID.Unix))
+				{
+					userDataRoot = "~/.config/";
+
+					if (!System.IO.Directory.Exists(userDataRoot))
+					{
+						System.IO.Directory.CreateDirectory(userDataRoot);
+					}
+				}
+
+				return $"{userDataRoot.TrimEnd(System.IO.Path.DirectorySeparatorChar)}{System.IO.Path.DirectorySeparatorChar}";
 			}
 		}
 	}

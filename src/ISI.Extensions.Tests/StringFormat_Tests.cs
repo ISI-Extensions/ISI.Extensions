@@ -27,6 +27,12 @@ namespace ISI.Extensions.Tests
 	public class StringFormat_Tests
 	{
 		[Test]
+		public void ToLiteral_Test()
+		{
+			var xx = "Moose\nWas\nHere".ToLiteral();
+		}
+
+		[Test]
 		public void SplitCase_Test()
 		{
 			var xx = ISI.Extensions.StringFormat.SplitCase("MooseWasHere");

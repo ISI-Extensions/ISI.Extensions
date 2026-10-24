@@ -187,7 +187,7 @@ namespace ISI.Extensions.Extensions
 		}
 
 
-		public static string ToLiteral(this string value)
+		public static string ToLiteral(this string value, bool processUnicode = true)
 		{
 			var literal = new StringBuilder();
 
@@ -207,7 +207,7 @@ namespace ISI.Extensions.Extensions
 					case '\t': literal.Append(@"\t"); break;
 					case '\v': literal.Append(@"\v"); break;
 					default:
-						if (c >= 0x20 && c <= 0x7e)
+						if ((c >= 0x20 && c <= 0x7e) || !processUnicode)
 						{
 							literal.Append(c);
 							// As UTF16 escaped character

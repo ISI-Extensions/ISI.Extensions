@@ -73,7 +73,14 @@ namespace ISI.Extensions.Linux
 			var targetPath = entry.TargetPath;
 			if (!targetPath.StartsWith("."))
 			{
-				targetPath = "." + targetPath;
+				if (targetPath.IndexOf("/", StringComparison.InvariantCultureIgnoreCase) < 0)
+				{
+					targetPath = "./" + targetPath;
+				}
+				else
+				{
+					targetPath = "." + targetPath;
+				}
 			}
 
 			// Handle long file names (> 99 characters). If this is the case, add a "././@LongLink" pseudo-entry

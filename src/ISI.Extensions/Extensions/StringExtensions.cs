@@ -191,7 +191,6 @@ namespace ISI.Extensions.Extensions
 		{
 			var literal = new StringBuilder();
 
-
 			foreach (var c in value)
 			{
 				switch (c)

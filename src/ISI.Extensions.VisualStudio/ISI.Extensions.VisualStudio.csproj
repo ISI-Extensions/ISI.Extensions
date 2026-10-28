@@ -23,9 +23,9 @@
 
 	<ItemGroup>
 		<PackageReference Update="NETStandard.Library" Version="2.0.3" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.13" />
-		<PackageReference Include="Microsoft.Web.Xdt" Version="3.2.13" />
-		<PackageReference Include="OpenMcdf" Version="3.3.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.14" />
+		<PackageReference Include="Microsoft.Web.Xdt" Version="3.2.14" />
+		<PackageReference Include="OpenMcdf" Version="3.4.0" />
 	</ItemGroup>
 
 	<ItemGroup>

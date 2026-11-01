@@ -124,5 +124,17 @@ namespace ISI.Extensions.Tests
 				//ParseDataFiles = false,
 			});
 		}
+
+		[Test]
+		public void GetPackageDetails_Test()
+		{
+			var debianPackagingApi = ServiceProvider.GetService<ISI.Extensions.Debian.DebianPackagingApi>();
+
+			var getPackageDetailsResponse = debianPackagingApi.GetPackageDetails(new ()
+			{
+				Package = "curl",
+				//ParseDataFiles = false,
+			});
+		}
 	}
 }

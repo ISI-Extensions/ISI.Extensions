@@ -25,13 +25,16 @@ namespace ISI.Extensions.Debian
 {
 	public partial class DebianPackagingApi
 	{
+		protected Configuration Configuration { get; }
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
 		protected ISI.Extensions.DateTimeStamper.IDateTimeStamper DateTimeStamper { get; }
 
 		public DebianPackagingApi(
+			Configuration configuration,
 			Microsoft.Extensions.Logging.ILogger logger,
 			ISI.Extensions.DateTimeStamper.IDateTimeStamper dateTimeStamper)
 		{
+			Configuration = configuration;
 			Logger = logger;
 			DateTimeStamper = dateTimeStamper;
 		}

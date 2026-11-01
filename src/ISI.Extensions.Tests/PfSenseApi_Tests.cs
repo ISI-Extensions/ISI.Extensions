@@ -67,6 +67,7 @@ namespace ISI.Extensions.Tests
 
 			PfSenseApi = serviceProvider.GetService<ISI.Extensions.PfSense.PfSenseApi>();
 		}
+
 		[Test]
 		public void ActivateCertificate_Tests()
 		{
@@ -85,6 +86,24 @@ namespace ISI.Extensions.Tests
 				CertificateName = $"ISI-Test-{DateTime.Now.Formatted(DateTimeExtensions.DateTimeFormat.DateSortable)}",
 				KeyCertificate = System.IO.File.ReadAllBytes(@"F:\ISI\Vendors\Name Cheap\SSL Wildcard 2024\_.isi-net.com.key"),
 				BundleCertificate = System.IO.File.ReadAllBytes(@"F:\ISI\Vendors\Name Cheap\SSL Wildcard 2024\_.isi-net.com.pem"),
+			});
+		}
+
+		[Test]
+		public void BackupConfiguration_Tests()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = new ISI.Extensions.SimpleKeyValueStorage(settingsFullName);
+
+			var pfSenseServer = settings.GetValue("pfSense-Server");
+			var pfSenseUserName = settings.GetValue("pfSense-UserName");
+			var pfSensePassword = settings.GetValue("pfSense-Password");
+
+			var backupConfigurationResponse = PfSenseApi.BackupConfiguration(new()
+			{
+				PfSenseServer = pfSenseServer,
+				PfSenseUserName = pfSenseUserName,
+				PfSensePassword = pfSensePassword,
 			});
 		}
 	}

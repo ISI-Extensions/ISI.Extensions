@@ -27,29 +27,11 @@ namespace ISI.Extensions.PfSense
 	{
 		private Renci.SshNet.ConnectionInfo GetConnectionInfo(DTOs.IRequest request)
 		{
-			var server = (string)null;
-			var userName = (string)null;
-			var password = (string)null;
+			var serverUserNamePassword = GetServerUserNamePassword(request);
 
-			if (!string.IsNullOrWhiteSpace(request.PfSenseServer))
+			if (!string.IsNullOrWhiteSpace(serverUserNamePassword.Server))
 			{
-				server = request.PfSenseServer;
-				userName = request.PfSenseUserName;
-				password = request.PfSensePassword;
-			}
-
-			if (!string.IsNullOrWhiteSpace(Configuration.PfSenseServer))
-			{
-				server = Configuration.PfSenseServer;
-				userName = Configuration.PfSenseUserName;
-				password = Configuration.PfSensePassword;
-			}
-
-			password = (password.StartsWith("%") && password.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(password.Trim('%')) : password);
-
-			if (!string.IsNullOrWhiteSpace(server))
-			{
-				return ISI.Extensions.SshNet.ConnectionManager.GetConnectionInfo(server, userName, password);
+				return ISI.Extensions.SshNet.ConnectionManager.GetConnectionInfo(serverUserNamePassword.Server, serverUserNamePassword.UserName, serverUserNamePassword.Password);
 			}
 
 			throw new Exception("No Server available");

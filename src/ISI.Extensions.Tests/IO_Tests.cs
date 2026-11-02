@@ -212,6 +212,14 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void GetFileNameDeMasked_LocalApplicationData_Test()
+		{
+			var tartFullName = @"{LocalApplicationData}\baby.tab";
+
+			var xxx = ISI.Extensions.IO.Path.GetFileNameDeMasked(tartFullName);
+		}
+
+		[Test]
 		public void GetRelativePath_Test()
 		{
 			{

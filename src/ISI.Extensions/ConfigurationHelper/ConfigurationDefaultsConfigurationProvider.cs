@@ -49,7 +49,7 @@ namespace ISI.Extensions.ConfigurationHelper
 
 		private void AddData(object source, string prefix)
 		{
-			var properties = source.GetType().GetProperties(BindingFlags.Public);
+			var properties = source.GetType().GetProperties();
 
 			foreach (var property in properties)
 			{
@@ -82,7 +82,7 @@ namespace ISI.Extensions.ConfigurationHelper
 								var index = 0;
 								foreach (var item in enumerable)
 								{
-									AddData(propertyValue, $"{prefix}{property.Name}[{index++}]:");
+									AddData(item, $"{prefix}{property.Name}[{index++}]:");
 								}
 							}
 							else

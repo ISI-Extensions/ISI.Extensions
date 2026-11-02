@@ -138,6 +138,15 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void GetVsWhereExeFullName_Test()
+		{
+			var nugetApi = new ISI.Extensions.Nuget.NugetApi(new ISI.Extensions.Nuget.Configuration(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
+			var vsWhereApi = new ISI.Extensions.VisualStudio.VsWhereApi(ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.VisualStudio.Configuration>(), new ISI.Extensions.TextWriterLogger(TestContext.Progress), new ISI.Extensions.DateTimeStamper.LocalMachineDateTimeStamper(), nugetApi);
+
+			var xxx = vsWhereApi.GetVsWhereExeFullName(new());
+		}
+
+		[Test]
 		public void GetSolutionDetails_Test()
 		{
 			var logger = ISI.Extensions.ServiceLocator.Current.GetService<Microsoft.Extensions.Logging.ILogger>();

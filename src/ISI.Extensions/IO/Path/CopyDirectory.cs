@@ -49,13 +49,12 @@ namespace ISI.Extensions
 				 arguments.Add("/R:0");
 				 arguments.Add("/W:0");
 
-				var RobocopyDirectoryResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
+				var robocopyDirectoryResponse = ISI.Extensions.Process.WaitForProcessResponse(new ISI.Extensions.Process.ProcessRequest()
 				{
 					ProcessExeFullName = "robocopy",
 					Arguments = arguments,
 					Logger = new NullLogger(),
 				});
-
 			}
 		}
 	}

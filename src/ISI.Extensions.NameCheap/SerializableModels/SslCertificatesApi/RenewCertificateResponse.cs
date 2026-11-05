@@ -82,10 +82,10 @@ namespace ISI.Extensions.NameCheap.SerializableModels.SslCertificatesApi
 		public int Years { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute("OrderId")]
-		public int OrderId { get; set; }
+		public string OrderId { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute("TransactionId")]
-		public int TransactionId { get; set; }
+		public string TransactionId { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute("ChargedAmount")]
 		public decimal ChargedAmount { get; set; }

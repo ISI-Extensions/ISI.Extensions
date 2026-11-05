@@ -27,8 +27,8 @@ namespace ISI.Extensions.NameCheap.DataTransferObjects.SslCertificatesApi
 		public string VendorCertificateKey { get; set; }
 		public NameCheapSslCertificateType? CertificateType { get; set; }
 		public int Years { get; set; }
-		public int? OrderId { get; set; }
-		public int? TransactionId { get; set; }
+		public string OrderId { get; set; }
+		public string TransactionId { get; set; }
 		public decimal? ChargedAmount { get; set; }
 
 		public int? WarningCode { get; set; }

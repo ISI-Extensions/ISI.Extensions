@@ -173,7 +173,7 @@ namespace ISI.Extensions.NameCheap.SerializableModels.SslCertificatesApi
 	public class GetCertificateResponseCommandResponseGetInfoResultProvider
 	{
 		[System.Xml.Serialization.XmlElement("OrderID")]
-		public int OrderId { get; set; }
+		public string OrderId { get; set; }
 
 		[System.Xml.Serialization.XmlElement("Name")]
 		public string Name { get; set; }

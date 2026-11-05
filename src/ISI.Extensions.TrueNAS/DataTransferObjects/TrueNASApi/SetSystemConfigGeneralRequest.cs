@@ -28,6 +28,8 @@ namespace ISI.Extensions.TrueNAS.DataTransferObjects.TrueNASApi
 		public string TrueNASUserName { get; set; }
 		public string TrueNASApiKey { get; set; }
 
+		public bool UseRestApi { get; set; }
+
 		public int? CertificateId { get; set; }
 		public int? UiHttpsPort { get; set; }
 		public bool? UiHttpsRedirect { get; set; }

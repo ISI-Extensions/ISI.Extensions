@@ -25,7 +25,7 @@ using SerializableDTOs = ISI.Extensions.TrueNAS.SerializableModels.JsonRpc;
 
 namespace ISI.Extensions.TrueNAS
 {
-	public partial class TrueNASJsonRpcApi
+	public partial class TrueNASApi
 	{
 		public async Task<DTOs.SetSystemConfigGeneralResponse> SetSystemConfigGeneralAsync(DTOs.SetSystemConfigGeneralRequest request, System.Threading.CancellationToken cancellationToken = default)
 		{
@@ -37,9 +37,9 @@ namespace ISI.Extensions.TrueNAS
 				var trueNASUserName = GetTrueNASUserName(request);
 				var trueNASApiKey = GetTrueNASApiKey(request);
 
-				await trueNASJsonRpcApiWrapper.ExecuteAsync(trueNASApiUrl, trueNASUserName, trueNASApiKey, async trueNasWebSocketApi =>
+				await trueNASJsonRpcApiWrapper.ExecuteAsync(trueNASApiUrl, trueNASUserName, trueNASApiKey, async trueNASWebSocketApi =>
 				{
-					var setSystemConfigGeneralResponse = await trueNasWebSocketApi.SetSystemConfigGeneralAsync(new()
+					var setSystemConfigGeneralResponse = await trueNASWebSocketApi.SetSystemConfigGeneralAsync(new()
 					{
 						CertificateId = request.CertificateId,
 						UiHttpsPort = request.UiHttpsPort,

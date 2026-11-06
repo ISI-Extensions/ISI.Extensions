@@ -28,7 +28,8 @@ namespace ISI.Extensions.TrueNAS
 	{
 		public void ServiceRegister(Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
-			services.AddSingleton<TrueNASJsonRpcApi>();
+			services.AddSingleton<TrueNASApi>();
+			services.AddSingleton<TrueNASRestApi>();
 		}
 	}
 }

@@ -30,7 +30,7 @@ namespace ISI.Extensions.Tests
 	[TestFixture]
 	public class TrueNASApi_Tests
 	{
-		public ISI.Extensions.TrueNAS.TrueNASJsonRpcApi TrueNasJsonRpcApi { get; set; }
+		public ISI.Extensions.TrueNAS.TrueNASApi TrueNasApi { get; set; }
 
 		[OneTimeSetUp]
 		public void OneTimeSetup()
@@ -65,7 +65,7 @@ namespace ISI.Extensions.Tests
 
 			serviceProvider.SetServiceLocator();
 
-			TrueNasJsonRpcApi = serviceProvider.GetService<ISI.Extensions.TrueNAS.TrueNASJsonRpcApi>();
+			TrueNasApi = serviceProvider.GetService<ISI.Extensions.TrueNAS.TrueNASApi>();
 		}
 
 		[Test]
@@ -78,7 +78,7 @@ namespace ISI.Extensions.Tests
 			var trueNASUserName = settings.GetValue("TrueNASUserName");
 			var trueNASApiKey = settings.GetValue("TrueNASApiKey");
 
-			var apiResponse = TrueNasJsonRpcApi.GetSystemInfoAsync(new()
+			var apiResponse = TrueNasApi.GetSystemInfoAsync(new()
 			{
 				TrueNASApiUrl = trueNASApiUrl,
 				TrueNASUserName = trueNASUserName,
@@ -96,7 +96,7 @@ namespace ISI.Extensions.Tests
 			var trueNASUserName = settings.GetValue("TrueNASUserName");
 			var trueNASApiKey = settings.GetValue("TrueNASApiKey");
 
-			var apiResponse = TrueNasJsonRpcApi.ListCertificateChoicesAsync(new()
+			var apiResponse = TrueNasApi.ListCertificateChoicesAsync(new()
 			{
 				TrueNASApiUrl = trueNASApiUrl,
 				TrueNASUserName = trueNASUserName,
@@ -114,7 +114,7 @@ namespace ISI.Extensions.Tests
 			var trueNASUserName = settings.GetValue("TrueNASUserName");
 			var trueNASApiKey = settings.GetValue("TrueNASApiKey");
 
-			var apiResponse = TrueNasJsonRpcApi.GetSystemConfigGeneralAsync(new()
+			var apiResponse = TrueNasApi.GetSystemConfigGeneralAsync(new()
 			{
 				TrueNASApiUrl = trueNASApiUrl,
 				TrueNASUserName = trueNASUserName,
@@ -134,7 +134,7 @@ namespace ISI.Extensions.Tests
 			var trueNASUserName = settings.GetValue("TrueNASUserName");
 			var trueNASApiKey = settings.GetValue("TrueNASApiKey");
 
-			var activateCertificateResponse = TrueNasJsonRpcApi.ActivateCertificateAsync(new()
+			var activateCertificateResponse = TrueNasApi.ActivateCertificateAsync(new()
 			{
 				TrueNASApiUrl = trueNASApiUrl,
 				TrueNASUserName = trueNASUserName,
@@ -159,7 +159,7 @@ namespace ISI.Extensions.Tests
 			var trueNASUserName = settings.GetValue("TrueNASUserName");
 			var trueNASApiKey = settings.GetValue("TrueNASApiKey");
 
-			var apiResponse = TrueNasJsonRpcApi.CreateCertificateAsync(new()
+			var apiResponse = TrueNasApi.CreateCertificateAsync(new()
 			{
 				TrueNASApiUrl = trueNASApiUrl,
 				TrueNASUserName = trueNASUserName,

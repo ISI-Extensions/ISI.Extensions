@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,38 +25,31 @@ using SerializableDTOs = ISI.Extensions.TrueNAS.SerializableModels.JsonRpc;
 
 namespace ISI.Extensions.TrueNAS
 {
-	public partial class TrueNASJsonRpcApi
+	public partial class TrueNASApi
 	{
-		private string GetTrueNASApiKey(DTOs.IRequest request)
+		public async Task<DTOs.CreateCertificateResponse> CreateCertificateAsync(DTOs.CreateCertificateRequest request, System.Threading.CancellationToken cancellationToken = default)
 		{
-			if (!string.IsNullOrWhiteSpace(request.TrueNASApiKey))
+			var response = new DTOs.CreateCertificateResponse();
+
+			using (var trueNASJsonRpcApiWrapper = new TrueNASJsonRpcApiWrapper())
 			{
-				var trueNASApiKey = request.TrueNASApiKey;
+				var trueNASApiUrl = GetTrueNASApiUrl(request);
+				var trueNASUserName = GetTrueNASUserName(request);
+				var trueNASApiKey = GetTrueNASApiKey(request);
 
-				trueNASApiKey = (trueNASApiKey.StartsWith("%") && trueNASApiKey.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(trueNASApiKey.Trim('%')) : trueNASApiKey);
-
-				return trueNASApiKey;
+				await trueNASJsonRpcApiWrapper.ExecuteAsync(trueNASApiUrl, trueNASUserName, trueNASApiKey, async trueNASWebSocketApi =>
+				{
+					var createCertificateResponse = await trueNASWebSocketApi.CreateCertificateAsync(new()
+					{
+						CreateType = "CERTIFICATE_CREATE_IMPORTED",
+						CertificateName = request.CertificateName,
+						BundleCertificate = request.BundleCertificate,
+						KeyCertificate = request.KeyCertificate,
+					});
+				}, cancellationToken);
 			}
-			
-			if (!string.IsNullOrWhiteSpace(Configuration.TrueNASApiKey))
-			{
-				var trueNASApiKey = Configuration.TrueNASApiKey;
 
-				trueNASApiKey = (trueNASApiKey.StartsWith("%") && trueNASApiKey.EndsWith("%") ? ISI.Extensions.ConfigurationValueReader.GetValue(trueNASApiKey.Trim('%')) : trueNASApiKey);
-
-				return trueNASApiKey;
-			}
-
-			throw new Exception("No TrueNASApiKey available");
-		}
-
-		private ISI.Extensions.WebClient.HeaderCollection GetHeaders(DTOs.IRequest request)
-		{
-			var headers = new ISI.Extensions.WebClient.HeaderCollection();
-
-			headers.AddBearerAuthentication(GetTrueNASApiKey(request));
-
-			return headers;
+			return response;
 		}
 	}
 }

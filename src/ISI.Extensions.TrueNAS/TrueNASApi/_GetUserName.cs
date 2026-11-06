@@ -25,7 +25,7 @@ using SerializableDTOs = ISI.Extensions.TrueNAS.SerializableModels.JsonRpc;
 
 namespace ISI.Extensions.TrueNAS
 {
-	public partial class TrueNASJsonRpcApi
+	public partial class TrueNASApi
 	{
 		private string GetTrueNASUserName(DTOs.IRequest request)
 		{

@@ -25,7 +25,7 @@ using SerializableDTOs = ISI.Extensions.TrueNAS.SerializableModels.JsonRpc;
 
 namespace ISI.Extensions.TrueNAS
 {
-	public partial class TrueNASJsonRpcApi
+	public partial class TrueNASApi
 	{
 		public async Task<DTOs.ActivateCertificateResponse> ActivateCertificateAsync(DTOs.ActivateCertificateRequest request, System.Threading.CancellationToken cancellationToken = default)
 		{
@@ -47,17 +47,17 @@ namespace ISI.Extensions.TrueNAS
 				var trueNASUserName = GetTrueNASUserName(request);
 				var trueNASApiKey = GetTrueNASApiKey(request);
 
-				await trueNASJsonRpcApiWrapper.ExecuteAsync(trueNASApiUrl, trueNASUserName, trueNASApiKey, async trueNasWebSocketApi =>
+				await trueNASJsonRpcApiWrapper.ExecuteAsync(trueNASApiUrl, trueNASUserName, trueNASApiKey, async trueNASWebSocketApi =>
 				{
 					try
 					{
-						var getSystemConfigGeneralResponse = await trueNasWebSocketApi.GetSystemConfigGeneralAsync();
+						var getSystemConfigGeneralResponse = await trueNASWebSocketApi.GetSystemConfigGeneralAsync();
 
 						var activeCertificateId = getSystemConfigGeneralResponse?.Certificate?.CertificateId;
 						var activeCertificateName = getSystemConfigGeneralResponse?.Certificate?.CertificateName;
 						addLog($"Active Certificate: {activeCertificateName} ({activeCertificateId})");
 
-						var createCertificateResponse = await trueNasWebSocketApi.CreateCertificateAsync(new()
+						var createCertificateResponse = await trueNASWebSocketApi.CreateCertificateAsync(new()
 						{
 							CreateType = "CERTIFICATE_CREATE_IMPORTED",
 							CertificateName = request.CertificateName,
@@ -69,13 +69,13 @@ namespace ISI.Extensions.TrueNAS
 
 						await Task.Delay(TimeSpan.FromSeconds(3), cancellationToken);
 
-						var listCertificateChoicesResponse = await trueNasWebSocketApi.ListCertificateChoicesAsync();
+						var listCertificateChoicesResponse = await trueNASWebSocketApi.ListCertificateChoicesAsync();
 
 						var certificates = listCertificateChoicesResponse.ToNullCheckedDictionary(certificate => certificate.Value, certificate => certificate.Key.ToInt(), StringComparer.InvariantCultureIgnoreCase, NullCheckDictionaryResult.Empty);
 
 						if (certificates.TryGetValue(request.CertificateName, out var certificateId))
 						{
-							var setSystemConfigGeneralResponse = await trueNasWebSocketApi.SetSystemConfigGeneralAsync(new()
+							var setSystemConfigGeneralResponse = await trueNASWebSocketApi.SetSystemConfigGeneralAsync(new()
 							{
 								CertificateId = certificateId,
 							});
@@ -84,7 +84,7 @@ namespace ISI.Extensions.TrueNAS
 							{
 								addLog($"New Certificate Set: {request.CertificateName} ({certificateId})");
 
-								var restartUiResponse = await trueNasWebSocketApi.RestartUiAsync(request.UiRestartDelay);
+								var restartUiResponse = await trueNASWebSocketApi.RestartUiAsync(request.UiRestartDelay);
 
 								addLog("Restarted UI");
 
@@ -92,7 +92,7 @@ namespace ISI.Extensions.TrueNAS
 
 								if (request.RemovePriorCertificate && activeCertificateId.HasValue)
 								{
-									var deleteCertificateResponse = await trueNasWebSocketApi.DeleteCertificateAsync(activeCertificateId.Value, false);
+									var deleteCertificateResponse = await trueNASWebSocketApi.DeleteCertificateAsync(activeCertificateId.Value, false);
 
 									addLog($"Deleted Old Certificate: {activeCertificateName} ({activeCertificateId})");
 								}

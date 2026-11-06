@@ -25,11 +25,11 @@ using SerializableDTOs = ISI.Extensions.TrueNAS.SerializableModels.JsonRpc;
 
 namespace ISI.Extensions.TrueNAS
 {
-	public partial class TrueNASJsonRpcApi
+	public partial class TrueNASApi
 	{
-		public async Task<DTOs.CreateCertificateResponse> CreateCertificateAsync(DTOs.CreateCertificateRequest request, System.Threading.CancellationToken cancellationToken = default)
+		public async Task<DTOs.DeleteCertificateResponse> DeleteCertificateAsync(DTOs.DeleteCertificateRequest request, System.Threading.CancellationToken cancellationToken = default)
 		{
-			var response = new DTOs.CreateCertificateResponse();
+			var response = new DTOs.DeleteCertificateResponse();
 
 			using (var trueNASJsonRpcApiWrapper = new TrueNASJsonRpcApiWrapper())
 			{
@@ -37,15 +37,11 @@ namespace ISI.Extensions.TrueNAS
 				var trueNASUserName = GetTrueNASUserName(request);
 				var trueNASApiKey = GetTrueNASApiKey(request);
 
-				await trueNASJsonRpcApiWrapper.ExecuteAsync(trueNASApiUrl, trueNASUserName, trueNASApiKey, async trueNasWebSocketApi =>
+				await trueNASJsonRpcApiWrapper.ExecuteAsync(trueNASApiUrl, trueNASUserName, trueNASApiKey, async trueNASWebSocketApi =>
 				{
-					var createCertificateResponse = await trueNasWebSocketApi.CreateCertificateAsync(new()
-					{
-						CreateType = "CERTIFICATE_CREATE_IMPORTED",
-						CertificateName = request.CertificateName,
-						BundleCertificate = request.BundleCertificate,
-						KeyCertificate = request.KeyCertificate,
-					});
+					var deleteCertificateResponse = await trueNASWebSocketApi.DeleteCertificateAsync(request.CertificateId, request.Force);
+
+					response.Success = deleteCertificateResponse;
 				}, cancellationToken);
 			}
 

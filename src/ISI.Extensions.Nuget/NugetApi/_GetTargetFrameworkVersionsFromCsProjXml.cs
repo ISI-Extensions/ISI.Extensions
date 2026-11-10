@@ -52,7 +52,7 @@ namespace ISI.Extensions.Nuget
 
 				if (string.IsNullOrWhiteSpace(targetFrameworkVersion))
 				{
-					targetFrameworkVersion = "net10.0";
+					targetFrameworkVersion = "net11.0";
 				}
 
 				return [targetFrameworkVersion];
@@ -98,7 +98,7 @@ namespace ISI.Extensions.Nuget
 
 				if (string.IsNullOrWhiteSpace(targetFrameworkVersion))
 				{
-					targetFrameworkVersion = "net10.0";
+					targetFrameworkVersion = "net11.0";
 				}
 
 				return [NuGet.Frameworks.NuGetFramework.Parse(targetFrameworkVersion)];

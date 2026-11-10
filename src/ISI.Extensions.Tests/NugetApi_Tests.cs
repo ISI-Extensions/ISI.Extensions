@@ -441,7 +441,7 @@ namespace ISI.Extensions.Tests
 
 						if (content.IndexOf(net9, StringComparison.InvariantCultureIgnoreCase) > 0)
 						{
-							content = content.Replace(net9, "<TargetFramework>net10.0</TargetFramework>", StringComparison.InvariantCultureIgnoreCase);
+							content = content.Replace(net9, "<TargetFramework>net11.0</TargetFramework>", StringComparison.InvariantCultureIgnoreCase);
 
 							System.IO.File.WriteAllText(projectDetails.ProjectFullName, content);
 

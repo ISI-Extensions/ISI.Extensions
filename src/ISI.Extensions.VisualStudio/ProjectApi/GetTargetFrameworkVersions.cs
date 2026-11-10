@@ -60,7 +60,7 @@ namespace ISI.Extensions.VisualStudio
 
 						if (string.IsNullOrWhiteSpace(targetFrameworkVersion))
 						{
-							targetFrameworkVersion = "net10.0";
+							targetFrameworkVersion = "net11.0";
 						}
 
 						response.TargetFrameworkVersions = [targetFrameworkVersion];

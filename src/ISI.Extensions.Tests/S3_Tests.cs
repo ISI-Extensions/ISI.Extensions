@@ -73,6 +73,7 @@ namespace ISI.Extensions.Tests
 
 			//var s3BlobClient = new ISI.Extensions.S3.S3BlobClient(settings.GetValue("Minio-EndpointUrl"), settings.GetValue("Minio-AccessKey"), settings.GetValue("Minio-SecretKey"), "test-bucket");
 			var s3BlobClient = new ISI.Extensions.S3.S3BlobClient(settings.GetValue("rustfs-EndpointUrl"), settings.GetValue("rustfs-AccessKey"), settings.GetValue("rustfs-SecretKey"), "test");
+			//var s3BlobClient = new ISI.Extensions.S3.S3BlobClient(settings.GetValue("wasabi-EndpointUrl"), settings.GetValue("wasabi-AccessKey"), settings.GetValue("wasabi-SecretKey"), "wasabi-bucket");
 
 			var content = string.Join("==>", Enumerable.Range(1, 10000).Select(i => Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)));
 			var fileName = $"{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)}-document.txt";

@@ -52,9 +52,9 @@ namespace ISI.Extensions.Nuget
 						}
 						if (string.Equals(targetFramework.Value, "net9.0", StringComparison.InvariantCultureIgnoreCase))
 						{
-							targetFramework.Value = "net11.0";
+							targetFramework.Value = "net10.0";
 						}
-						if (string.Equals(targetFramework.Value, "net11.0", StringComparison.InvariantCultureIgnoreCase))
+						if (string.Equals(targetFramework.Value, "net10.0", StringComparison.InvariantCultureIgnoreCase))
 						{
 							targetFramework.Value = "net11.0";
 						}

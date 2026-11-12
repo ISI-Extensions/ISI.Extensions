@@ -18,8 +18,8 @@
 		<PackageReference Update="NETStandard.Library" Version="2.0.3" />
 	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="11.0.0" />
 		<PackageReference Include="Aspose.Words" Version="26.11.0" />
-	  <PackageReference Include="SkiaSharp" Version="4.155.0" />
-		<PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="4.155.0" />
+	  <PackageReference Include="SkiaSharp" Version="4.156.0" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="4.156.0" />
 		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="11.0.0" />
 	</ItemGroup>
 

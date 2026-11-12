@@ -31,6 +31,7 @@ namespace ISI.Extensions
 			string GetAbbreviation(object value);
 			string GetDescription(object value, bool addSpaceBetweenWords = true);
 			Guid? GetUuid(object value);
+			bool HasUuids();
 
 			object Parse(string value);
 			bool TryParse(string value, out object parsedValue);

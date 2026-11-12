@@ -30,7 +30,7 @@ namespace ISI.Extensions.VisualStudio
 		{
 			var response = new DTOs.PackageComponentsResponse();
 
-			var logger = new AddToLogLogger(request.AddToLog, Logger);
+			var logger = new AddToLogLogger(request.AddToLog, Logger, false);
 
 			if (string.IsNullOrWhiteSpace(request.PackageName))
 			{

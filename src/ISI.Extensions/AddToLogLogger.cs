@@ -24,13 +24,16 @@ namespace ISI.Extensions
 	{
 		protected ISI.Extensions.StatusTrackers.AddToLog AddToLog { get; }
 		protected Microsoft.Extensions.Logging.ILogger Logger { get; }
+		protected bool AddNewLine { get; }
 
 		public AddToLogLogger(
 			ISI.Extensions.StatusTrackers.AddToLog addToLog,
-			Microsoft.Extensions.Logging.ILogger logger = null)
+			Microsoft.Extensions.Logging.ILogger logger = null,
+			bool addNewLine = true)
 		{
 			AddToLog = addToLog;
 			Logger = logger;
+			AddNewLine = addNewLine;
 		}
 
 		public void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel, Microsoft.Extensions.Logging.EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
@@ -56,7 +59,14 @@ namespace ISI.Extensions
 					return formatterState.ToString();
 				};
 
-				AddToLog?.Invoke(logLevel.ToLogEntryLevel(), $"{formatter(state, exception)}{Environment.NewLine}");
+				if(AddNewLine)
+				{
+					AddToLog?.Invoke(logLevel.ToLogEntryLevel(), $"{formatter(state, exception)}{Environment.NewLine}");
+				}
+				else
+				{
+					AddToLog?.Invoke(logLevel.ToLogEntryLevel(), $"{formatter(state, exception)}");
+				}
 			}
 		}
 

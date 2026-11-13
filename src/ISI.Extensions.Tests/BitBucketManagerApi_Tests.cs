@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -130,7 +130,7 @@ namespace ISI.Extensions.Tests
 				{
 					gitApi.UpdateWorkingCopy(new()
 					{
-						FullName = sourceControlUrl,
+						FullName = repoDirectory,
 					});
 				}
 				else
@@ -159,6 +159,39 @@ namespace ISI.Extensions.Tests
 					});
 
 					repos.Add(sourceControlUrl, repoDirectory);
+				}
+			}
+
+			if(false)
+			{
+				foreach (var repoDirectory in repos.Values)
+				{
+					var dirtyFiles = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+
+					var jenkinsConfigFullNames = System.IO.Directory.EnumerateFiles(repoDirectory, "*.jenkinsConfig", System.IO.SearchOption.AllDirectories).ToArray();
+
+					foreach (var jenkinsConfigFullName in jenkinsConfigFullNames)
+					{
+						var jenkinsConfigXml = System.IO.File.ReadAllText(jenkinsConfigFullName);
+
+						if (jenkinsConfigXml.IndexOf("<url>git@bitbucket.org:", StringComparison.InvariantCultureIgnoreCase) >= 0)
+						{
+							jenkinsConfigXml = jenkinsConfigXml.Replace("<url>git@bitbucket.org:", "<url>git@ssh.bitbucket.org:", StringComparison.InvariantCultureIgnoreCase);
+
+							System.IO.File.WriteAllText(jenkinsConfigFullName, jenkinsConfigXml);
+
+							dirtyFiles.Add(jenkinsConfigFullName);
+						}
+					}
+
+					if (dirtyFiles.Any())
+					{
+						var success = gitApi.Commit(new()
+						{
+							FullNames = dirtyFiles,
+							LogMessage = "updated scm url",
+						}).Success;
+					}
 				}
 			}
 		}

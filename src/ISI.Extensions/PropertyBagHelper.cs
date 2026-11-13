@@ -244,7 +244,22 @@ namespace ISI.Extensions
 						}
 						else
 						{
-							throw new Exception($"Cannot have a parameter of type \"{propertyInfo.PropertyType.Name}\"");
+							if (!propertyInfo.PropertyType.IsArray && ISI.Extensions.Enum.IsGuidEnum(propertyInfo.PropertyType))
+							{
+								baseType = propertyInfo.PropertyType;
+								getValues = propertyBag => [ISI.Extensions.Enum.GetUuid(propertyInfo.PropertyType, (object)propertyInfo.GetValue(propertyBag)).Formatted(GuidExtensions.GuidFormat.WithHyphens)];
+								setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, values.ToNullCheckedArray(value => ISI.Extensions.Enum.ParseUuid(propertyInfo.PropertyType, value)));
+							}
+							else if (!propertyInfo.PropertyType.IsArray && ISI.Extensions.Enum.IsEnum(propertyInfo.PropertyType))
+							{
+								baseType = propertyInfo.PropertyType;
+								getValues = propertyBag => [ISI.Extensions.Enum.GetKey(propertyInfo.PropertyType, (object)propertyInfo.GetValue(propertyBag))];
+								setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, values.ToNullCheckedArray(value => ISI.Extensions.Enum.Parse(propertyInfo.PropertyType, value)));
+							}
+							else
+							{
+								throw new Exception($"Cannot have a parameter of type \"{propertyInfo.PropertyType.Name}\"");
+							}
 						}
 
 						return createPropertyBagParameter(propertyBagParameterAttribute, propertyInfo, isMultiValue, isNullable, baseType, getValues, setValues);

@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -80,6 +80,171 @@ namespace ISI.Extensions.Tests
 			}).Node;
 
 
+		}
+
+		public class JobSourceControl
+		{
+			public string JobId { get; set; }
+			public string JobConfigXml { get; set; }
+			public Guid SourceControlClientTypeUuid { get; set; }
+			public string SourceUrl { get; set; }
+		}
+
+		[Test]
+		public void UpdateScmUrl_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName);
+
+			var logger = new ISI.Extensions.TextWriterLogger(TestContext.Progress);
+			var jenkinsApi = new ISI.Extensions.Jenkins.JenkinsApi(new ISI.Extensions.Jenkins.Configuration(), logger, new ISI.Extensions.JsonSerialization.Newtonsoft.NewtonsoftJsonSerializer());
+			var sourceControlClientApi = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.Scm.ISourceControlClientApi>();
+
+			var jobIds = jenkinsApi.GetJobIds(new()
+			{
+				JenkinsUrl = settings.Jenkins.JenkinsUrl,
+				UserName = settings.Jenkins.UserName,
+				ApiToken = settings.Jenkins.ApiToken,
+			}).JobIds;
+
+			bool tryUpdateScmUrl(JobSourceControl jobSourceControl)
+			{
+				if (jobSourceControl.JobConfigXml.IndexOf("<url>git@bitbucket.org:", StringComparison.InvariantCultureIgnoreCase) >= 0)
+				{
+					jobSourceControl.JobConfigXml = jobSourceControl.JobConfigXml.Replace("<url>git@bitbucket.org:", "<url>git@ssh.bitbucket.org:", StringComparison.InvariantCultureIgnoreCase);
+
+					return true;
+				}
+
+				return false;
+			}
+
+			bool hasChanges(string original, string newVersion)
+			{
+				string getCompressed(string value) => value
+					.Replace(" ", string.Empty)
+					.Replace("\t", string.Empty)
+					.Replace("\r", string.Empty)
+					.Replace("\n", string.Empty);
+
+				return !string.Equals(getCompressed(original), getCompressed(newVersion), StringComparison.InvariantCultureIgnoreCase);
+			}
+
+			var jobsSourceControl = new List<JobSourceControl>();
+
+			foreach (var jobId in jobIds)
+			{
+				var getWorkspaceDetailsResponse = jenkinsApi.GetWorkspaceDetails(new()
+				{
+					JenkinsUrl = settings.Jenkins.JenkinsUrl,
+					UserName = settings.Jenkins.UserName,
+					ApiToken = settings.Jenkins.ApiToken,
+					JobId = jobId,
+				});
+
+				if (!string.IsNullOrWhiteSpace(getWorkspaceDetailsResponse.JobConfigXml))
+				{
+					if (!string.IsNullOrWhiteSpace(getWorkspaceDetailsResponse.SourceControlUrl))
+					{
+						var jobSourceControl = new JobSourceControl()
+						{
+							JobId = jobId,
+							JobConfigXml = getWorkspaceDetailsResponse.JobConfigXml,
+							SourceControlClientTypeUuid = getWorkspaceDetailsResponse.SourceControlClientTypeUuid.GetValueOrDefault(),
+							SourceUrl = getWorkspaceDetailsResponse.SourceControlUrl,
+						};
+
+						if(tryUpdateScmUrl(jobSourceControl))
+						{
+							jobsSourceControl.Add(jobSourceControl);
+						}
+					}
+				}
+			}
+
+			if (jobsSourceControl.Any())
+			{
+				foreach (var jobSourceControlGroupedBySourceUrl in jobsSourceControl.GroupBy(jobSourceControl => jobSourceControl.SourceUrl, StringComparer.InvariantCultureIgnoreCase))
+				{
+					foreach (var jobSourceControlGroupedBySourceControlClientTypeUuid in jobSourceControlGroupedBySourceUrl.GroupBy(jobSourceControl => jobSourceControl.SourceControlClientTypeUuid))
+					{
+						if (jobSourceControlGroupedBySourceControlClientTypeUuid.Key == ISI.Extensions.Scm.SourceControlClientType.GitSourceControlClientTypeUuid.ToGuid())
+						{
+							logger.LogInformation($"  {string.Join(", ", jobSourceControlGroupedBySourceControlClientTypeUuid.Select(jobSourceControl => jobSourceControl.JobId))}");
+
+							using (var tempDirectory = new ISI.Extensions.IO.Path.TempDirectory())
+							{
+								var url = jobSourceControlGroupedBySourceUrl.Key.Replace("git@bitbucket.org:", "https://bitbucket.org/");
+
+								sourceControlClientApi.CheckOut(new()
+								{
+									SourceControlClientTypeUuid = jobSourceControlGroupedBySourceControlClientTypeUuid.Key,
+									SourceUrl = url,
+									TargetFullName = tempDirectory.FullName,
+									//AddToLog = (logEntryLevel, description) => { statusTracker.AddToLog(description); },
+								});
+
+								var jenkinsConfigFullNames = System.IO.Directory.EnumerateFiles(tempDirectory.FullName, "*.jenkinsConfig", System.IO.SearchOption.AllDirectories)
+									.ToArray();
+
+								logger.LogInformation($"  {jenkinsConfigFullNames.Length} jenkinsConfigs found");
+
+								var dirtyFiles = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+
+								foreach (var jobSourceControl in jobSourceControlGroupedBySourceControlClientTypeUuid)
+								{
+									var jenkinsConfigFileName = $"{jobSourceControl.JobId}.jenkinsConfig";
+
+									var jenkinsConfigFullName = jenkinsConfigFullNames.FirstOrDefault(jenkinsConfigFullName => string.Equals(System.IO.Path.GetFileName(jenkinsConfigFullName), jenkinsConfigFileName, StringComparison.InvariantCultureIgnoreCase));
+
+									if (!string.IsNullOrWhiteSpace(jenkinsConfigFullName))
+									{
+										if (hasChanges(jobSourceControl.JobConfigXml, System.IO.File.ReadAllText(jenkinsConfigFullName)))
+										{
+											logger.LogInformation($"  Changes Found: {jenkinsConfigFileName}, writing");
+
+											System.IO.File.WriteAllText(jenkinsConfigFullName, jobSourceControl.JobConfigXml);
+											
+											dirtyFiles.Add(jenkinsConfigFullName);
+										}
+									}
+								}
+
+								foreach (var jobSourceControl in jobSourceControlGroupedBySourceControlClientTypeUuid)
+								{
+									jenkinsApi.SetJobConfigXml(new()
+									{
+										JenkinsUrl = settings.Jenkins.JenkinsUrl,
+										UserName = settings.Jenkins.UserName,
+										ApiToken = settings.Jenkins.ApiToken,
+										JobId = jobSourceControl.JobId,
+										ConfigXml = jobSourceControl.JobConfigXml,
+									});
+								}
+
+								if (dirtyFiles.Any())
+								{
+									logger.LogInformation("  Changes Found, committing");
+
+									var success = sourceControlClientApi.Commit(new()
+									{
+										FullNames = dirtyFiles,
+										LogMessage = "updated scm url",
+										AddToLog = (logEntryLevel, description) => { logger.LogInformation(description); },
+									}).Success;
+
+									logger.LogInformation($"  Commit Status: {success.TrueFalse()}");
+								}
+								else
+								{
+									logger.LogInformation("  No Changes Found");
+								}
+							}
+							logger.LogInformation("  Temp Directory Deleted");
+						}
+					}
+				}
+			}
 		}
 
 		[Test]

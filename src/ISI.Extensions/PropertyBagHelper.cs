@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -244,17 +244,62 @@ namespace ISI.Extensions
 						}
 						else
 						{
-							if (!propertyInfo.PropertyType.IsArray && ISI.Extensions.Enum.IsGuidEnum(propertyInfo.PropertyType))
+							if (propertyInfo.PropertyType.IsArray && ISI.Extensions.Enum.IsGuidEnum(propertyInfo.PropertyType.GetElementType()))
+							{
+								baseType = propertyInfo.PropertyType.GetElementType();
+								isMultiValue = true;
+								getValues = propertyBag => [ISI.Extensions.Enum.GetUuid(propertyInfo.PropertyType.GetElementType(), (object)propertyInfo.GetValue(propertyBag)).Formatted(GuidExtensions.GuidFormat.WithHyphens)];
+								setValues = (propertyBag, values) =>
+								{
+									if (values == null)
+									{
+										propertyInfo.SetValue(propertyBag, null);
+									}
+									else
+									{
+										var array = Array.CreateInstance(propertyInfo.PropertyType.GetElementType(), values.Length);
+										for (var index = 0; index < values.Length; index++)
+										{
+											array.SetValue(ISI.Extensions.Enum.ParseUuid(propertyInfo.PropertyType.GetElementType(), values[index]),index);
+										}
+
+										propertyInfo.SetValue(propertyBag, array);
+									}
+								};
+							}
+							else if (!propertyInfo.PropertyType.IsArray && ISI.Extensions.Enum.IsGuidEnum(propertyInfo.PropertyType))
 							{
 								baseType = propertyInfo.PropertyType;
 								getValues = propertyBag => [ISI.Extensions.Enum.GetUuid(propertyInfo.PropertyType, (object)propertyInfo.GetValue(propertyBag)).Formatted(GuidExtensions.GuidFormat.WithHyphens)];
-								setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, values.ToNullCheckedArray(value => ISI.Extensions.Enum.ParseUuid(propertyInfo.PropertyType, value)));
+								setValues = (propertyBag, values) => { propertyInfo.SetValue(propertyBag, values == null ? null : ISI.Extensions.Enum.ParseUuid(propertyInfo.PropertyType, (values.NullCheckedFirstOrDefault() ?? string.Empty))); };
+							}
+							else if (propertyInfo.PropertyType.IsArray && ISI.Extensions.Enum.IsEnum(propertyInfo.PropertyType.GetElementType()))
+							{
+								baseType = propertyInfo.PropertyType.GetElementType();
+								getValues = propertyBag => [ISI.Extensions.Enum.GetKey(propertyInfo.PropertyType.GetElementType(), (object)propertyInfo.GetValue(propertyBag))];
+								setValues = (propertyBag, values) =>
+								{
+									if (values == null)
+									{
+										propertyInfo.SetValue(propertyBag, null);
+									}
+									else
+									{
+										var array = Array.CreateInstance(propertyInfo.PropertyType.GetElementType(), values.Length);
+										for (var index = 0; index < values.Length; index++)
+										{
+											array.SetValue(ISI.Extensions.Enum.Parse(propertyInfo.PropertyType.GetElementType(), values[index]),index);
+										}
+
+										propertyInfo.SetValue(propertyBag, array);
+									}
+								};
 							}
 							else if (!propertyInfo.PropertyType.IsArray && ISI.Extensions.Enum.IsEnum(propertyInfo.PropertyType))
 							{
 								baseType = propertyInfo.PropertyType;
 								getValues = propertyBag => [ISI.Extensions.Enum.GetKey(propertyInfo.PropertyType, (object)propertyInfo.GetValue(propertyBag))];
-								setValues = (propertyBag, values) => propertyInfo.SetValue(propertyBag, values.ToNullCheckedArray(value => ISI.Extensions.Enum.Parse(propertyInfo.PropertyType, value)));
+								setValues = (propertyBag, values) => { propertyInfo.SetValue(propertyBag, values == null ? null : ISI.Extensions.Enum.Parse(propertyInfo.PropertyType, (values.NullCheckedFirstOrDefault() ?? string.Empty))); };
 							}
 							else
 							{

@@ -24,5 +24,6 @@ namespace ISI.Extensions.Assemblies
 		System.Reflection.Assembly[] Assemblies { get; }
 		Type[] Types { get; }
 		IAssembliesContainer Build(IEnumerable<string> excludeAssemblyFileNames = null, bool includedExes = false);
+		Type[] GetImplementationTypes(Type type);
 	}
 }

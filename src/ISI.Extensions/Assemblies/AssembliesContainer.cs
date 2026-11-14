@@ -132,5 +132,10 @@ namespace ISI.Extensions.Assemblies
 
 			return this;
 		}
+
+		public Type[] GetImplementationTypes(Type type)
+		{
+			return Types.Where(implementationType => !implementationType.IsInterface && !implementationType.IsAbstract && type.IsAssignableFrom(implementationType)).ToArray();
+		}
 	}
 }

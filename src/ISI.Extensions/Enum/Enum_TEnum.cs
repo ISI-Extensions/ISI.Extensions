@@ -72,7 +72,10 @@ namespace ISI.Extensions
 				foreach (TEnum value in System.Enum.GetValues(type))
 				{
 					var enumInformation = new EnumInformation(index++, value);
-					var enumAttribute = (type.GetField(value.ToString()).GetCustomAttributes(typeof(EnumAttribute), false) as EnumAttribute[]).NullCheckedFirstOrDefault();
+					if(!EnumAttributeOverridesLookUp.TryGetValue(value, out var enumAttribute))
+					{
+						enumAttribute = (type.GetField(value.ToString()).GetCustomAttributes(typeof(EnumAttribute), false) as EnumAttribute[]).NullCheckedFirstOrDefault();
+					}
 					var descriptionAttribute = (type.GetField(value.ToString()).GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false) as System.ComponentModel.DescriptionAttribute[]).NullCheckedFirstOrDefault();
 
 					if (enumAttribute != null)

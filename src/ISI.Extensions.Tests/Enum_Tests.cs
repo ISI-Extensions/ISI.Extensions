@@ -58,6 +58,9 @@ namespace ISI.Extensions.Tests
 
 			var d1 = MyEnum.Yes.GetDescription();
 			var d2 = MyEnum.Blah.GetDescription();
+
+
+			var dow = System.DayOfWeek.Sunday.GetAbbreviation();
 		}
 	}
 }

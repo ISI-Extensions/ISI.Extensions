@@ -58,6 +58,11 @@ namespace ISI.Extensions
 		{
 			Uuid = uuid;
 		}
+		public EnumGuidAttribute(string uuid, string description, string abbreviation, string[] aliases)
+			: base(description, abbreviation, aliases)
+		{
+			Uuid = uuid;
+		}
 		public EnumGuidAttribute(string uuid, string description, string abbreviation, bool active)
 			: base(description, abbreviation, active)
 		{
@@ -112,6 +117,13 @@ namespace ISI.Extensions
 		{
 			Description = description;
 			Abbreviation = abbreviation;
+			Active = true;
+		}
+		public EnumAttribute(string description, string abbreviation, string[] aliases)
+		{
+			Description = description;
+			Abbreviation = abbreviation;
+			Aliases = aliases;
 			Active = true;
 		}
 		public EnumAttribute(string description, string abbreviation, bool active)

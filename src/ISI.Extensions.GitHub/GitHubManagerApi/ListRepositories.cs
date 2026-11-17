@@ -52,7 +52,7 @@ namespace ISI.Extensions.GitHub
 					Contact = repository.Owner?.Login,
 					CreationDate = repository.CreatedAt,
 					Type = "git",
-					LastModified = repository.UpdatedAt,
+					LastModified = ((repository.UpdatedAt ?? DateTime.MinValue) > (repository.PushedAt ?? DateTime.MinValue) ? repository.UpdatedAt : repository.PushedAt),
 				}));
 
 				uri = null;

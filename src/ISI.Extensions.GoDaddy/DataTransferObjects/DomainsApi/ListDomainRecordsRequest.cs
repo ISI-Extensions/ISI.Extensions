@@ -20,15 +20,12 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.Dns.DataTransferObjects.DomainsApi
+namespace ISI.Extensions.GoDaddy.DataTransferObjects.DomainsApi
 {
-	public class ListDomainsRequest
+	public class ListDomainRecordsRequest : IRequest
 	{
-		public Guid DnsProviderUuid { get; set; }
-
-		public string ApiUrl { get; set; }
-		public string ApiUser { get; set; }
+		public string Url { get; set; }
 		public string ApiKey { get; set; }
-		public string Partition { get; set; }
+		public string ApiSecret { get; set; }
 	}
 }

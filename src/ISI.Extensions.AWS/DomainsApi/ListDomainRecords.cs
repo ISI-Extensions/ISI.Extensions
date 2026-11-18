@@ -18,14 +18,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISI.Extensions.AWS.Extensions;
 using ISI.Extensions.Extensions;
+using DTOs = ISI.Extensions.AWS.DataTransferObjects.DomainsApi;
 
-namespace ISI.Extensions.GoDaddy.DataTransferObjects.DomainsApi
+namespace ISI.Extensions.AWS
 {
-	public class ListDomainsRequest : IRequest
+	public partial class DomainsApi
 	{
-		public string Url { get; set; }
-		public string ApiKey { get; set; }
-		public string ApiSecret { get; set; }
+		public DTOs.ListDomainRecordsResponse ListDomainRecords(DTOs.ListDomainRecordsRequest request)
+		{
+			var response = new DTOs.ListDomainRecordsResponse();
+
+			var amazonRoute53DomainsClient = request.GetAmazonRoute53DomainsClient(Configuration);
+
+			var listDomainsResponse = amazonRoute53DomainsClient.ListDomainsAsync(new Amazon.Route53Domains.Model.ListDomainsRequest()).GetAwaiter().GetResult();
+
+			response.DomainRecords = listDomainsResponse.Domains.ToNullCheckedArray(domain => new ISI.Extensions.Dns.DomainRecord()
+			{
+				Domain = domain.DomainName,
+				ExpiresDateTime = domain.Expiry,
+			}, NullCheckCollectionResult.Empty);
+
+			return response;
+		}
 	}
 }

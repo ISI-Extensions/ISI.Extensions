@@ -20,10 +20,12 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.NameCheap.DataTransferObjects.DomainsApi
+namespace ISI.Extensions.GoDaddy.DataTransferObjects.DomainsApi
 {
-	public class ListDomainsResponse
+	public class ListDomainRecordsResponse
 	{
 		public ISI.Extensions.Dns.DomainRecord[] DomainRecords { get; set; }
+
+		public Error Error { get; set; }
 	}
 }

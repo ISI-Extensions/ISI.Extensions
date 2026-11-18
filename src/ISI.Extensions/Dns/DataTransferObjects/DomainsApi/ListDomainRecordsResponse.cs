@@ -22,7 +22,7 @@ using ISI.Extensions.Extensions;
 
 namespace ISI.Extensions.Dns.DataTransferObjects.DomainsApi
 {
-	public class ListDomainsResponse
+	public class ListDomainRecordsResponse
 	{
 		public ISI.Extensions.Dns.DomainRecord[] DomainRecords { get; set; }
 	}

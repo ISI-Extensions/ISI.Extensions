@@ -20,11 +20,15 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.DeSEC.DataTransferObjects.DomainsApi
+namespace ISI.Extensions.Dns.DataTransferObjects.DomainsApi
 {
-	public class ListDomainsRequest : IRequest
+	public class ListDomainRecordsRequest
 	{
-		public string Url { get; set; }
+		public Guid DnsProviderUuid { get; set; }
+
+		public string ApiUrl { get; set; }
+		public string ApiUser { get; set; }
 		public string ApiKey { get; set; }
+		public string Partition { get; set; }
 	}
 }

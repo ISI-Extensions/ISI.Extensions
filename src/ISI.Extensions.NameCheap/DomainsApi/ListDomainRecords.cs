@@ -26,9 +26,9 @@ namespace ISI.Extensions.NameCheap
 {
 	public partial class DomainsApi
 	{
-		public DTOs.ListDomainsResponse ListDomains(DTOs.ListDomainsRequest request)
+		public DTOs.ListDomainRecordsResponse ListDomainRecords(DTOs.ListDomainRecordsRequest request)
 		{
-			var response = new DTOs.ListDomainsResponse();
+			var response = new DTOs.ListDomainRecordsResponse();
 
 			var uri = request.GetUrl(Configuration);
 			uri.Path = "xml.response";

@@ -108,7 +108,7 @@ namespace ISI.Extensions.Tests
 
 			var domainsApi = ServiceProvider.GetService<ISI.Extensions.AWS.DomainsApi>();
 
-			var domains = domainsApi.ListDomains(new()
+			var domains = domainsApi.ListDomainRecords(new()
 			{
 				AmazonAccessKey = settings.GetValue("AmazonAccessKey2"),
 				AmazonSecretKey = settings.GetValue("AmazonSecretKey2"),

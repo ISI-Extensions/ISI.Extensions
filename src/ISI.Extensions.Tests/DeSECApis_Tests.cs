@@ -104,7 +104,7 @@ namespace ISI.Extensions.Tests
 
 			using (var eventHandler = ISI.Extensions.WebClient.Rest.GetEventHandler())
 			{
-				var domains = domainsApi.ListDomains(new()
+				var domains = domainsApi.ListDomainRecords(new()
 				{
 					ApiKey = settings.GetValue("DeSEC.ApiKey"),
 				}).DomainRecords;

@@ -18,27 +18,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.AWS.Extensions;
+using ISI.Extensions.DeSEC.Extensions;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.AWS.DataTransferObjects.DomainsApi;
+using DTOs = ISI.Extensions.DeSEC.DataTransferObjects.DomainsApi;
+using SerializableDTOs = ISI.Extensions.DeSEC.SerializableModels.DomainsApi;
 
-namespace ISI.Extensions.AWS
+namespace ISI.Extensions.DeSEC
 {
 	public partial class DomainsApi
 	{
-		public DTOs.ListDomainsResponse ListDomains(DTOs.ListDomainsRequest request)
+		public DTOs.ListDomainRecordsResponse ListDomainRecords(DTOs.ListDomainRecordsRequest request)
 		{
-			var response = new DTOs.ListDomainsResponse();
+			var response = new DTOs.ListDomainRecordsResponse();
 
-			var amazonRoute53DomainsClient = request.GetAmazonRoute53DomainsClient(Configuration);
+			var uri = new UriBuilder(request.GetUrl(Configuration));
+			uri.AddDirectoryToPath("api/v1/domains/");
 
-			var listDomainsResponse = amazonRoute53DomainsClient.ListDomainsAsync(new Amazon.Route53Domains.Model.ListDomainsRequest()).GetAwaiter().GetResult();
+			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableDTOs.DomainRecord[]>(uri.Uri, request.GetHeaders(Configuration), true);
 
-			response.DomainRecords = listDomainsResponse.Domains.ToNullCheckedArray(domain => new ISI.Extensions.Dns.DomainRecord()
-			{
-				Domain = domain.DomainName,
-				ExpiresDateTime = domain.Expiry,
-			}, NullCheckCollectionResult.Empty);
+			response.DomainRecords = apiResponse.ToNullCheckedArray(domainRecord => domainRecord.Export());
 
 			return response;
 		}

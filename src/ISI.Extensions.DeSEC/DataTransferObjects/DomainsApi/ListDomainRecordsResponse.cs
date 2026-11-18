@@ -18,27 +18,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.DeSEC.Extensions;
 using ISI.Extensions.Extensions;
-using DTOs = ISI.Extensions.DeSEC.DataTransferObjects.DomainsApi;
-using SerializableDTOs = ISI.Extensions.DeSEC.SerializableModels.DomainsApi;
 
-namespace ISI.Extensions.DeSEC
+namespace ISI.Extensions.DeSEC.DataTransferObjects.DomainsApi
 {
-	public partial class DomainsApi
+	public class ListDomainRecordsResponse
 	{
-		public DTOs.ListDomainsResponse ListDomains(DTOs.ListDomainsRequest request)
-		{
-			var response = new DTOs.ListDomainsResponse();
-
-			var uri = new UriBuilder(request.GetUrl(Configuration));
-			uri.AddDirectoryToPath("api/v1/domains/");
-
-			var apiResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableDTOs.DomainRecord[]>(uri.Uri, request.GetHeaders(Configuration), true);
-
-			response.DomainRecords = apiResponse.ToNullCheckedArray(domainRecord => domainRecord.Export());
-
-			return response;
-		}
+		public ISI.Extensions.Dns.DomainRecord[] DomainRecords { get; set; }
 	}
 }

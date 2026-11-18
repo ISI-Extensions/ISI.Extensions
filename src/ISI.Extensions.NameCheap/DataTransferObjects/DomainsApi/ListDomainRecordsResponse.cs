@@ -20,12 +20,10 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.AWS.DataTransferObjects.DomainsApi
+namespace ISI.Extensions.NameCheap.DataTransferObjects.DomainsApi
 {
-	public class ListDomainsRequest : IRequest
+	public class ListDomainRecordsResponse
 	{
-		public string AmazonAccessKey { get; set; }
-		public string AmazonSecretKey { get; set; }
-		public string RegionEndpoint { get; set; }
+		public ISI.Extensions.Dns.DomainRecord[] DomainRecords { get; set; }
 	}
 }

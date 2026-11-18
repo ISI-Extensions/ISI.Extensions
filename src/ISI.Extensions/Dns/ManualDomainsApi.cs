@@ -39,7 +39,7 @@ namespace ISI.Extensions.Dns
 			DateTimeStamper = dateTimeStamper;
 		}
 
-		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.ListDomainsResponse ISI.Extensions.Dns.IDomainsApi.ListDomains(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.ListDomainsRequest request)
+		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.ListDomainRecordsResponse ISI.Extensions.Dns.IDomainsApi.ListDomainRecords(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.ListDomainRecordsRequest request)
 		{
 			throw new NotImplementedException();
 		}

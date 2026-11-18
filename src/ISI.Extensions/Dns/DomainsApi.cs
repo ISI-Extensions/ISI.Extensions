@@ -90,14 +90,14 @@ namespace ISI.Extensions.Dns
 			return response;
 		}
 
-		DTOs.ListDomainsResponse ISI.Extensions.Dns.IDomainsApi.ListDomains(DTOs.ListDomainsRequest request)
+		DTOs.ListDomainRecordsResponse ISI.Extensions.Dns.IDomainsApi.ListDomainRecords(DTOs.ListDomainRecordsRequest request)
 		{
 			if (DomainsApisByDnsProviderUuid.TryGetValue(request.DnsProviderUuid, out var domainsApi))
 			{
-				return domainsApi.DomainsApi.ListDomains(request);
+				return domainsApi.DomainsApi.ListDomainRecords(request);
 			}
 
-			return new DTOs.ListDomainsResponse();
+			return new DTOs.ListDomainRecordsResponse();
 		}
 
 		DTOs.GetDnsRecordsResponse ISI.Extensions.Dns.IDomainsApi.GetDnsRecords(DTOs.GetDnsRecordsRequest request)

@@ -20,12 +20,12 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 
-namespace ISI.Extensions.GoDaddy.DataTransferObjects.DomainsApi
+namespace ISI.Extensions.AWS.DataTransferObjects.DomainsApi
 {
-	public class ListDomainsResponse
+	public class ListDomainRecordsRequest : IRequest
 	{
-		public ISI.Extensions.Dns.DomainRecord[] DomainRecords { get; set; }
-
-		public Error Error { get; set; }
+		public string AmazonAccessKey { get; set; }
+		public string AmazonSecretKey { get; set; }
+		public string RegionEndpoint { get; set; }
 	}
 }

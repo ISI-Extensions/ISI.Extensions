@@ -23,7 +23,7 @@ using DTOs = ISI.Extensions.Cloudflare.DataTransferObjects.DomainsApi;
 
 namespace ISI.Extensions.Cloudflare
 {
-	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "Cloudflare", false, null, false, null, true, "ApiKey", false, null)]
+	[ISI.Extensions.DomainsApi(_dnsProviderUuid, "Cloudflare", false, null, false, null, true, "ApiKey", true, "Account Id")]
 	public partial class DomainsApi : ISI.Extensions.Dns.AbstractDomainsApi, ISI.Extensions.Dns.IDomainsApi
 	{
 		internal const string _dnsProviderUuid = "d7cdff03-b762-4d5d-b0fc-fac6bc623fa8";
@@ -43,6 +43,20 @@ namespace ISI.Extensions.Cloudflare
 			DateTimeStamper = dateTimeStamper;
 
 			CloudflareApi = cloudflareApi;
+		}
+
+		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.ListDomainsResponse ISI.Extensions.Dns.IDomainsApi.ListDomains(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.ListDomainsRequest request)
+		{
+			var response = new ISI.Extensions.Dns.DataTransferObjects.DomainsApi.ListDomainsResponse();
+
+			response.DomainRecords = ListDomains(new DTOs.ListDomainsRequest()
+			{
+				Url = request.ApiUrl,
+				ApiToken = request.ApiKey,
+				AccountId = request.Partition,
+			}).DomainRecords;
+
+			return response;
 		}
 
 		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsResponse ISI.Extensions.Dns.IDomainsApi.GetDnsRecords(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsRequest request)

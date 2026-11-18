@@ -101,6 +101,22 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void ListDomains_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+
+			var domainsApi = ServiceProvider.GetService<ISI.Extensions.AWS.DomainsApi>();
+
+			var domains = domainsApi.ListDomains(new()
+			{
+				AmazonAccessKey = settings.GetValue("AmazonAccessKey2"),
+				AmazonSecretKey = settings.GetValue("AmazonSecretKey2"),
+				RegionEndpoint = "us-east-1",
+			}).DomainRecords;
+		}
+
+		[Test]
 		public void GetDnsRecords_Test()
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");

@@ -43,6 +43,20 @@ namespace ISI.Extensions.AWS
 			DateTimeStamper = dateTimeStamper;
 		}
 
+		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.ListDomainsResponse ISI.Extensions.Dns.IDomainsApi.ListDomains(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.ListDomainsRequest request)
+		{
+			var response = new ISI.Extensions.Dns.DataTransferObjects.DomainsApi.ListDomainsResponse();
+
+			response.DomainRecords = ListDomains(new DTOs.ListDomainsRequest()
+			{
+				AmazonAccessKey = request.ApiUser,
+				AmazonSecretKey = request.ApiKey,
+				RegionEndpoint = request.Partition,
+			}).DomainRecords;
+
+			return response;
+		}
+
 		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.ListPartitionsResponse ISI.Extensions.Dns.IDomainsApiWithListPartitions.ListPartitions(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.ListPartitionsRequest request)
 		{
 			var response = new ISI.Extensions.Dns.DataTransferObjects.DomainsApi.ListPartitionsResponse();

@@ -22,6 +22,7 @@ namespace ISI.Extensions.Dns
 {
 	public interface IDomainsApi
 	{
+		DTOs.ListDomainsResponse ListDomains(DTOs.ListDomainsRequest request);
 		DTOs.DeleteDnsRecordsResponse DeleteDnsRecords(DTOs.DeleteDnsRecordsRequest request);
 		DTOs.SetDnsRecordsResponse SetDnsRecords(DTOs.SetDnsRecordsRequest request);
 		DTOs.GetDnsRecordsResponse GetDnsRecords(DTOs.GetDnsRecordsRequest request);

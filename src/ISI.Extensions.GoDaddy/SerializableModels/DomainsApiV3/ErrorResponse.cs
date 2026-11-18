@@ -12,77 +12,76 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
-using System.Runtime.Serialization;
 
-namespace ISI.Extensions.GoDaddy.SerializableModels.DomainsApi
+namespace ISI.Extensions.GoDaddy.SerializableModels.DomainsApiV3
 {
 	[DataContract]
-	public class DnsRecord
+	public class ErrorResponse
 	{
-		public static DnsRecord ToSerializable(ISI.Extensions.Dns.DnsRecord dnsRecord)
-		{
-			return new()
-			{
-				Data = dnsRecord.Data,
-				Name = dnsRecord.Name,
-				Port = dnsRecord.Port,
-				Priority = dnsRecord.Priority,
-				Protocol = dnsRecord.Protocol,
-				Service = dnsRecord.Service,
-				Ttl = (long)dnsRecord.Ttl.TotalSeconds,
-				RecordType = dnsRecord.RecordType.GetAbbreviation(),
-				Weight = dnsRecord.Weight,
-			};
-		}
-
-		public ISI.Extensions.Dns.DnsRecord Export()
-		{
-			return new()
-			{
-				Data = Data,
-				Name = Name,
-				Port = Port,
-				Priority = Priority,
-				Protocol = Protocol,
-				Service = Service,
-				Ttl = TimeSpan.FromSeconds(Ttl),
-				RecordType = ISI.Extensions.Enum<ISI.Extensions.Dns.RecordType>.ParseAbbreviation(RecordType),
-				Weight = Weight,
-			};
-		}
-
-		[DataMember(Name = "data", EmitDefaultValue = false)]
-		public string Data { get; set; }
-
 		[DataMember(Name = "name", EmitDefaultValue = false)]
 		public string Name { get; set; }
 
-		[DataMember(Name = "port", EmitDefaultValue = false)]
-		public int? Port { get; set; }
+		[DataMember(Name = "correlationId", EmitDefaultValue = false)]
+		public string CorrelationId { get; set; }
 
-		[DataMember(Name = "priority", EmitDefaultValue = false)]
-		public int Priority { get; set; }
+		[DataMember(Name = "message", EmitDefaultValue = false)]
+		public string Message { get; set; }
 
-		[DataMember(Name = "protocol", EmitDefaultValue = false)]
-		public string Protocol { get; set; }
+		[DataMember(Name = "informationLink", EmitDefaultValue = false)]
+		public string InformationLink { get; set; }
 
-		[DataMember(Name = "service", EmitDefaultValue = false)]
-		public string Service { get; set; }
+		[DataMember(Name = "details", EmitDefaultValue = false)]
+		public ErrorResponseDetail[] Details { get; set; }
 
-		[DataMember(Name = "ttl", EmitDefaultValue = false)]
-		public long Ttl { get; set; }
+		[DataMember(Name = "links", EmitDefaultValue = false)]
+		public ResponseLink[] Links { get; set; }
 
-		[DataMember(Name = "type", EmitDefaultValue = false)]
-		public string RecordType { get; set; }
+		public ISI.Extensions.GoDaddy.Error Export()
+		{
+			return new()
+			{
+				Code = Name,
+				Fields = Details.ToNullCheckedArray(field => field.Export()),
+				Message = Message,
+			};
+		}
 
-		[DataMember(Name = "weight", EmitDefaultValue = false)]
-		public long? Weight { get; set; }
+	}
+
+	[DataContract]
+	public class ErrorResponseDetail
+	{
+		[DataMember(Name = "field", EmitDefaultValue = false)]
+		public string Field { get; set; }
+
+		[DataMember(Name = "value", EmitDefaultValue = false)]
+		public string Value { get; set; }
+
+		[DataMember(Name = "location", EmitDefaultValue = false)]
+		public string Location { get; set; }
+
+		[DataMember(Name = "issue", EmitDefaultValue = false)]
+		public string Issue { get; set; }
+
+		[DataMember(Name = "description", EmitDefaultValue = false)]
+		public string Description { get; set; }
+
+		public ISI.Extensions.GoDaddy.ErrorField Export()
+		{
+			return new()
+			{
+				Code = Field,
+				Message = Description,
+				Path = Location,
+			};
+		}
 	}
 }

@@ -90,6 +90,16 @@ namespace ISI.Extensions.Dns
 			return response;
 		}
 
+		DTOs.ListDomainsResponse ISI.Extensions.Dns.IDomainsApi.ListDomains(DTOs.ListDomainsRequest request)
+		{
+			if (DomainsApisByDnsProviderUuid.TryGetValue(request.DnsProviderUuid, out var domainsApi))
+			{
+				return domainsApi.DomainsApi.ListDomains(request);
+			}
+
+			return new DTOs.ListDomainsResponse();
+		}
+
 		DTOs.GetDnsRecordsResponse ISI.Extensions.Dns.IDomainsApi.GetDnsRecords(DTOs.GetDnsRecordsRequest request)
 		{
 			if (DomainsApisByDnsProviderUuid.TryGetValue(request.DnsProviderUuid, out var domainsApi))

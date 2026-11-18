@@ -23,7 +23,7 @@ namespace ISI.Extensions.AWS.Extensions
 {
 	public static class AbstractRequestExtensions
 	{
-		public static Amazon.Route53.AmazonRoute53Client GetAmazonRoute53Client(this DTOs.IRequest request, Configuration configuration)
+		public static (Amazon.RegionEndpoint RegionEndpoint, Amazon.Runtime.AWSCredentials Credentials) GetRegionEndpointAndCredentials(this DTOs.IRequest request, Configuration configuration)
 		{
 			var awsCredentials = (Amazon.Runtime.AWSCredentials)null;
 			var awsRegionEndpoint = (Amazon.RegionEndpoint)null;
@@ -63,7 +63,21 @@ namespace ISI.Extensions.AWS.Extensions
 				TryParseRegionEndpoint(regionEndpoint, out awsRegionEndpoint);
 			}
 
-			return new Amazon.Route53.AmazonRoute53Client(awsCredentials, awsRegionEndpoint ?? Amazon.RegionEndpoint.USEast1);
+			return (RegionEndpoint: awsRegionEndpoint ?? Amazon.RegionEndpoint.USEast1, Credentials: awsCredentials);
+		}
+
+		public static Amazon.Route53.AmazonRoute53Client GetAmazonRoute53Client(this DTOs.IRequest request, Configuration configuration)
+		{
+			var regionEndpointAndCredentials = request.GetRegionEndpointAndCredentials(configuration);
+
+			return new Amazon.Route53.AmazonRoute53Client(regionEndpointAndCredentials.Credentials, regionEndpointAndCredentials.RegionEndpoint);
+		}
+
+		public static Amazon.Route53Domains.AmazonRoute53DomainsClient GetAmazonRoute53DomainsClient(this DTOs.IRequest request, Configuration configuration)
+		{
+			var regionEndpointAndCredentials = request.GetRegionEndpointAndCredentials(configuration);
+
+			return new Amazon.Route53Domains.AmazonRoute53DomainsClient(regionEndpointAndCredentials.Credentials, regionEndpointAndCredentials.RegionEndpoint);
 		}
 
 		private static IDictionary<string, Amazon.RegionEndpoint> _regionEndpointsByName = null;

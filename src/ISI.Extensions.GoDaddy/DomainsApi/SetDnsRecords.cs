@@ -75,11 +75,11 @@ namespace ISI.Extensions.GoDaddy
 							dnsRecords.AddRange(dnsRecordsGroupedByName);
 						}
 
-						var serializableDnsRecords = dnsRecords.ToNullCheckedArray(SerializableModels.DomainsApi.DnsRecord.ToSerializable);
+						var serializableDnsRecords = dnsRecords.ToNullCheckedArray(SerializableModels.DomainsApiV1.DnsRecord.ToSerializable);
 
 						var goDaddyResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonPut(new()
 						{
-							{ System.Net.HttpStatusCode.OK, typeof(SerializableModels.DomainsApi.DnsRecord[]) },
+							{ System.Net.HttpStatusCode.OK, typeof(SerializableModels.DomainsApiV1.DnsRecord[]) },
 							{ System.Net.HttpStatusCode.BadRequest, typeof(SerializableModels.Error) },
 							{ System.Net.HttpStatusCode.Unauthorized, typeof(SerializableModels.Error) },
 							{ System.Net.HttpStatusCode.Forbidden, typeof(SerializableModels.Error) },

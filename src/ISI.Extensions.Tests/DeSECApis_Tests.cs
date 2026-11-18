@@ -95,6 +95,23 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void ListDomains_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+
+			var domainsApi = ServiceProvider.GetService<ISI.Extensions.DeSEC.DomainsApi>();
+
+			using (var eventHandler = ISI.Extensions.WebClient.Rest.GetEventHandler())
+			{
+				var domains = domainsApi.ListDomains(new()
+				{
+					ApiKey = settings.GetValue("DeSEC.ApiKey"),
+				}).DomainRecords;
+			}
+		}
+
+		[Test]
 		public void GetDnsRecords_Test()
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");

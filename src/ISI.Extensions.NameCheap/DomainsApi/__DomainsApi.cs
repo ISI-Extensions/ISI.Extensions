@@ -46,6 +46,20 @@ namespace ISI.Extensions.NameCheap
 			IpifyApi = ipifyApi;
 		}
 
+		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.ListDomainsResponse ISI.Extensions.Dns.IDomainsApi.ListDomains(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.ListDomainsRequest request)
+		{
+			var response = new ISI.Extensions.Dns.DataTransferObjects.DomainsApi.ListDomainsResponse();
+
+			response.DomainRecords = ListDomains(new DTOs.ListDomainsRequest()
+			{
+				Url = request.ApiUrl,
+				ApiUser = request.ApiUser,
+				ApiKey = request.ApiKey,
+			}).DomainRecords;
+
+			return response;
+		}
+
 		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsResponse ISI.Extensions.Dns.IDomainsApi.GetDnsRecords(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsRequest request)
 		{
 			var response = new ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsResponse();

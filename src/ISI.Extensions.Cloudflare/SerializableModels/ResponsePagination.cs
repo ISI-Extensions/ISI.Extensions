@@ -26,6 +26,9 @@ namespace ISI.Extensions.Cloudflare.SerializableModels
 	[DataContract]
 	public class ResponsePagination
 	{
+		[DataMember(Name = "cursor", EmitDefaultValue = false)]
+		public string Cursor { get; set; }
+		
 		[DataMember(Name = "page", EmitDefaultValue = false)]
 		public int Page { get; set; }
 

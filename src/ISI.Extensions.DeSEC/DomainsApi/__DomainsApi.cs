@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.DeSEC.Extensions;
 using DTOs = ISI.Extensions.DeSEC.DataTransferObjects.DomainsApi;
 using SerializableDTOs = ISI.Extensions.DeSEC.SerializableModels.DomainsApi;
 
@@ -42,6 +43,19 @@ namespace ISI.Extensions.DeSEC
 			Configuration = configuration;
 			Logger = logger;
 			DateTimeStamper = dateTimeStamper;
+		}
+
+		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.ListDomainsResponse ISI.Extensions.Dns.IDomainsApi.ListDomains(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.ListDomainsRequest request)
+		{
+			var response = new ISI.Extensions.Dns.DataTransferObjects.DomainsApi.ListDomainsResponse();
+
+			response.DomainRecords = ListDomains(new DTOs.ListDomainsRequest()
+			{
+				Url = request.ApiUrl,
+				ApiKey = request.ApiKey,
+			}).DomainRecords;
+
+			return response;
 		}
 
 		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsResponse ISI.Extensions.Dns.IDomainsApi.GetDnsRecords(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsRequest request)

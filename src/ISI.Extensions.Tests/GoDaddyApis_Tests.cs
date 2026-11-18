@@ -75,6 +75,25 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void ListDomains_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+
+			var ipifyApi = ServiceProvider.GetService<ISI.Extensions.Ipify.IpifyApi>();
+			var domainsApi = ServiceProvider.GetService<ISI.Extensions.GoDaddy.DomainsApi>();
+
+			using (var eventHandler = ISI.Extensions.WebClient.Rest.GetEventHandler())
+			{
+				var domains = domainsApi.ListDomains(new()
+				{
+					ApiKey = settings.GetValue("GoDaddy.ApiKey"),
+					ApiSecret = settings.GetValue("GoDaddy.ApiSecret"),
+				}).DomainRecords;
+			}
+		}
+
+		[Test]
 		public void DDNS_Test()
 		{
 			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");

@@ -47,6 +47,20 @@ namespace ISI.Extensions.GoDaddy
 			DateTimeStamper = dateTimeStamper;
 		}
 
+		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.ListDomainsResponse ISI.Extensions.Dns.IDomainsApi.ListDomains(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.ListDomainsRequest request)
+		{
+			var response = new ISI.Extensions.Dns.DataTransferObjects.DomainsApi.ListDomainsResponse();
+
+			response.DomainRecords = ListDomains(new DTOs.ListDomainsRequest()
+			{
+				Url = request.ApiUrl,
+				ApiKey = request.ApiUser,
+				ApiSecret = request.ApiKey,
+			}).DomainRecords;
+
+			return response;
+		}
+
 		ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsResponse ISI.Extensions.Dns.IDomainsApi.GetDnsRecords(ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsRequest request)
 		{
 			var response = new ISI.Extensions.Dns.DataTransferObjects.DomainsApi.GetDnsRecordsResponse();

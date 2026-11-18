@@ -104,6 +104,21 @@ namespace ISI.Extensions.Tests
 		}
 
 		[Test]
+		public void ListDomains_Test()
+		{
+			var domainsApi = ServiceProvider.GetService<ISI.Extensions.NameCheap.DomainsApi>();
+
+			using (var eventHandler = ISI.Extensions.WebClient.Rest.GetEventHandler())
+			{
+				var domains = domainsApi.ListDomains(new()
+				{
+					ApiUser = ApiUser,
+					ApiKey = ApiKey,
+				}).DomainRecords;
+			}
+		}
+
+		[Test]
 		public void GetDnsRecords_Test()
 		{
 			var domainsApi = ServiceProvider.GetService<ISI.Extensions.NameCheap.DomainsApi>();

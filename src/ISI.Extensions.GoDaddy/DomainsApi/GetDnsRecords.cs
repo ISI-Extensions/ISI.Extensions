@@ -52,7 +52,7 @@ namespace ISI.Extensions.GoDaddy
 
 			var goDaddyResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonGet(new()
 			{
-				{ System.Net.HttpStatusCode.OK, typeof(SerializableModels.DomainsApi.DnsRecord[]) },
+				{ System.Net.HttpStatusCode.OK, typeof(SerializableModels.DomainsApiV1.DnsRecord[]) },
 				{ System.Net.HttpStatusCode.BadRequest, typeof(SerializableModels.Error) },
 				{ System.Net.HttpStatusCode.Unauthorized, typeof(SerializableModels.Error) },
 				{ System.Net.HttpStatusCode.Forbidden, typeof(SerializableModels.Error) },
@@ -65,7 +65,7 @@ namespace ISI.Extensions.GoDaddy
 
 			switch (goDaddyResponse.Response)
 			{
-				case SerializableModels.DomainsApi.DnsRecord[] dnsRecords:
+				case SerializableModels.DomainsApiV1.DnsRecord[] dnsRecords:
 					response.DnsRecords = dnsRecords.ToNullCheckedArray(dnsRecord => dnsRecord.Export());
 					break;
 

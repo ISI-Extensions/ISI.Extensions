@@ -58,4 +58,38 @@ namespace ISI.Extensions.Dns
 			return true;
 		}
 	}
+
+	public class DnsRecordEqualityComparer : IEqualityComparer<DnsRecord>
+	{
+		private static IEqualityComparer<DnsRecord> _instance = null;
+		public static IEqualityComparer<DnsRecord> Instance => _instance ??= new DnsRecordEqualityComparer();
+		
+		public bool Equals(DnsRecord x, DnsRecord y)
+		{
+			if (ReferenceEquals(x, y)) return true;
+			if (x is null) return false;
+			if (y is null) return false;
+			if (x.GetType() != y.GetType()) return false;
+			return x.Matches(y);
+		}
+
+		public int GetHashCode(DnsRecord obj)
+		{
+			unchecked
+			{
+				var hashCode = (obj.Name != null ? obj.Name.GetHashCode() : 0);
+				hashCode = (hashCode * 397) ^ (int)obj.RecordType;
+				if(obj.RecordType == RecordType.TextRecord)
+				{
+					hashCode = (hashCode * 397) ^ (obj.Data != null ? obj.Data.GetHashCode() : 0);
+				}
+				else
+				{
+					hashCode = (hashCode * 397);
+				}
+				return hashCode;
+			}
+		}
+	}
+
 }

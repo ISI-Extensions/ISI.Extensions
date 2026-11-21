@@ -59,10 +59,10 @@ namespace ISI.Extensions.Dns
 		}
 	}
 
-	public class DnsRecordEqualityComparer : IEqualityComparer<DnsRecord>
+	public class DnsRecordMatchComparer : IEqualityComparer<DnsRecord>
 	{
-		private static IEqualityComparer<DnsRecord> _instance = null;
-		public static IEqualityComparer<DnsRecord> Instance => _instance ??= new DnsRecordEqualityComparer();
+		private static IEqualityComparer<DnsRecord> _matchComparer = null;
+		public static IEqualityComparer<DnsRecord> MatchComparer => _matchComparer ??= new DnsRecordMatchComparer();
 		
 		public bool Equals(DnsRecord x, DnsRecord y)
 		{

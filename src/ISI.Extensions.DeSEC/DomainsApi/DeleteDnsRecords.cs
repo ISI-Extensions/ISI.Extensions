@@ -20,6 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using ISI.Extensions.DeSEC.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.DeSEC.DataTransferObjects.DomainsApi;
 using SerializableDTOs = ISI.Extensions.DeSEC.SerializableModels.DomainsApi;
 
@@ -34,50 +35,61 @@ namespace ISI.Extensions.DeSEC
 				Success = true,
 			};
 
-			foreach (var dnsRecordsGroupedByType in request.DnsRecords.GroupBy(dnsRecord => dnsRecord.RecordType))
+			using (var eventHandler = ISI.Extensions.WebClient.Rest.GetEventHandler())
 			{
-				foreach (var dnsRecordsGroupedByName in dnsRecordsGroupedByType.GroupBy(dnsRecord => dnsRecord.Name))
+				try
 				{
-					var uri = new UriBuilder(request.GetUrl(Configuration));
-					uri.AddDirectoryToPath($"api/v1/domains/{request.Domain}/rrsets/{dnsRecordsGroupedByName.Key}/{dnsRecordsGroupedByType.Key.GetAbbreviation()}/");
-
-					var existingDnsRecord = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableDTOs.DnsRecord>(uri.Uri, request.GetHeaders(Configuration), false);
-					
-					var serializableDnsRecord = new SerializableDTOs.DnsRecord()
+					foreach (var dnsRecordsGroupedByType in request.DnsRecords.GroupBy(dnsRecord => dnsRecord.RecordType))
 					{
-						SubName = dnsRecordsGroupedByName.Key,
-						Ttl = (long)dnsRecordsGroupedByName.First().Ttl.TotalSeconds,
-						RecordType = dnsRecordsGroupedByType.Key.GetAbbreviation(),
-					};
-
-					if (serializableDnsRecord.Ttl < 3600)
-					{
-						serializableDnsRecord.Ttl = 3600;
-					}
-
-					switch (dnsRecordsGroupedByType.Key)
-					{
-						case ISI.Extensions.Dns.RecordType.TextRecord:
-							var records = new HashSet<string>((existingDnsRecord?.Records).ToNullCheckedArray(record => record.Trim(' ', '"'), NullCheckCollectionResult.Empty));
-							foreach (var dnsRecord in dnsRecordsGroupedByName)
-							{
-								records.Remove(dnsRecord.Data);
-							}
-							serializableDnsRecord.Records = records.ToNullCheckedArray(record => $"\"{record}\"");
-							break;
-
-						default:
-							serializableDnsRecord.Records = null;
-							break;
-					}
-
-					if (existingDnsRecord != null)
-					{
-						var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonDelete(new()
+						foreach (var dnsRecordsGroupedByName in dnsRecordsGroupedByType.GroupBy(dnsRecord => dnsRecord.Name))
 						{
-							{ System.Net.HttpStatusCode.NoContent, typeof(ISI.Extensions.WebClient.Rest.TextResponse) },
-						}, uri.Uri, request.GetHeaders(Configuration), serializableDnsRecord, true);
+							var uri = new UriBuilder(request.GetUrl(Configuration));
+							uri.AddDirectoryToPath($"api/v1/domains/{request.Domain}/rrsets/{dnsRecordsGroupedByName.Key}/{dnsRecordsGroupedByType.Key.GetAbbreviation()}/");
+
+							var existingDnsRecord = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableDTOs.DnsRecord>(uri.Uri, request.GetHeaders(Configuration), false);
+
+							var serializableDnsRecord = new SerializableDTOs.DnsRecord()
+							{
+								SubName = dnsRecordsGroupedByName.Key,
+								Ttl = (long)dnsRecordsGroupedByName.First().Ttl.TotalSeconds,
+								RecordType = dnsRecordsGroupedByType.Key.GetAbbreviation(),
+							};
+
+							if (serializableDnsRecord.Ttl < 3600)
+							{
+								serializableDnsRecord.Ttl = 3600;
+							}
+
+							switch (dnsRecordsGroupedByType.Key)
+							{
+								case ISI.Extensions.Dns.RecordType.TextRecord:
+									var records = new HashSet<string>((existingDnsRecord?.Records).ToNullCheckedArray(record => record.Trim(' ', '"'), NullCheckCollectionResult.Empty));
+									foreach (var dnsRecord in dnsRecordsGroupedByName)
+									{
+										records.Remove(dnsRecord.Data);
+									}
+									serializableDnsRecord.Records = records.ToNullCheckedArray(record => $"\"{record}\"");
+									break;
+
+								default:
+									serializableDnsRecord.Records = null;
+									break;
+							}
+
+							if (existingDnsRecord != null)
+							{
+								var restResponse = ISI.Extensions.WebClient.Rest.ExecuteJsonDelete(new()
+								{
+									{ System.Net.HttpStatusCode.NoContent, typeof(ISI.Extensions.WebClient.Rest.TextResponse) },
+								}, uri.Uri, request.GetHeaders(Configuration), serializableDnsRecord, true);
+							}
+						}
 					}
+				}
+				catch (Exception exception)
+				{
+					Logger.LogError($"Curl: {eventHandler?.WebRequestDetails?.GetCurlCommand()}");
+					throw;
 				}
 			}
 

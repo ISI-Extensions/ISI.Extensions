@@ -12,14 +12,15 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ISI.Extensions.Extensions;
 using ISI.Extensions.DeSEC.Extensions;
+using ISI.Extensions.Extensions;
+using Microsoft.Extensions.Logging;
 using DTOs = ISI.Extensions.DeSEC.DataTransferObjects.DomainsApi;
 using SerializableDTOs = ISI.Extensions.DeSEC.SerializableModels.DomainsApi;
 
@@ -34,51 +35,62 @@ namespace ISI.Extensions.DeSEC
 				Success = true,
 			};
 
-			foreach (var dnsRecordsGroupedByType in request.DnsRecords.GroupBy(dnsRecord => dnsRecord.RecordType))
+			using (var eventHandler = ISI.Extensions.WebClient.Rest.GetEventHandler())
 			{
-				foreach (var dnsRecordsGroupedByName in dnsRecordsGroupedByType.GroupBy(dnsRecord => dnsRecord.Name))
+				try
 				{
-					var uri = new UriBuilder(request.GetUrl(Configuration));
-					uri.AddDirectoryToPath($"api/v1/domains/{request.Domain}/rrsets/{dnsRecordsGroupedByName.Key}/{dnsRecordsGroupedByType.Key.GetAbbreviation()}/");
-
-					var existingDnsRecord = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableDTOs.DnsRecord>(uri.Uri, request.GetHeaders(Configuration), false);
-					
-					var dnsRecord = new SerializableDTOs.DnsRecord()
+					foreach (var dnsRecordsGroupedByType in request.DnsRecords.GroupBy(dnsRecord => dnsRecord.RecordType))
 					{
-						SubName = dnsRecordsGroupedByName.Key,
-						Ttl = (long)dnsRecordsGroupedByName.First().Ttl.TotalSeconds,
-						RecordType = dnsRecordsGroupedByType.Key.GetAbbreviation(),
-					};
+						foreach (var dnsRecordsGroupedByName in dnsRecordsGroupedByType.GroupBy(dnsRecord => dnsRecord.Name))
+						{
+							var uri = new UriBuilder(request.GetUrl(Configuration));
+							uri.AddDirectoryToPath($"api/v1/domains/{request.Domain}/rrsets/{dnsRecordsGroupedByName.Key}/{dnsRecordsGroupedByType.Key.GetAbbreviation()}/");
 
-					if (dnsRecord.Ttl < 3600)
-					{
-						dnsRecord.Ttl = 3600;
+							var existingDnsRecord = ISI.Extensions.WebClient.Rest.ExecuteJsonGet<SerializableDTOs.DnsRecord>(uri.Uri, request.GetHeaders(Configuration), false);
+
+							var dnsRecord = new SerializableDTOs.DnsRecord()
+							{
+								SubName = dnsRecordsGroupedByName.Key,
+								Ttl = (long)dnsRecordsGroupedByName.First().Ttl.TotalSeconds,
+								RecordType = dnsRecordsGroupedByType.Key.GetAbbreviation(),
+							};
+
+							if (dnsRecord.Ttl < 3600)
+							{
+								dnsRecord.Ttl = 3600;
+							}
+
+							switch (dnsRecordsGroupedByType.Key)
+							{
+								case ISI.Extensions.Dns.RecordType.TextRecord:
+									var records = new HashSet<string>((existingDnsRecord?.Records).ToNullCheckedArray(record => record.Trim(' ', '"'), NullCheckCollectionResult.Empty));
+									records.UnionWith(dnsRecordsGroupedByName.ToNullCheckedArray(record => record.Data));
+									dnsRecord.Records = records.ToNullCheckedArray(record => $"\"{record}\"");
+									break;
+
+								default:
+									dnsRecord.Records = dnsRecordsGroupedByName.ToNullCheckedArray(record => record.Data);
+									break;
+							}
+
+							if (existingDnsRecord != null)
+							{
+								var newDnsRecord = ISI.Extensions.WebClient.Rest.ExecuteJsonPut<SerializableDTOs.DnsRecord, SerializableDTOs.DnsRecord>(uri.Uri, request.GetHeaders(Configuration), dnsRecord, true);
+							}
+							else
+							{
+								uri = new UriBuilder(request.GetUrl(Configuration));
+								uri.AddDirectoryToPath($"api/v1/domains/{request.Domain}/rrsets/");
+
+								var newDnsRecord = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.DnsRecord, SerializableDTOs.DnsRecord>(uri.Uri, request.GetHeaders(Configuration), dnsRecord, true);
+							}
+						}
 					}
-
-					switch (dnsRecordsGroupedByType.Key)
-					{
-						case ISI.Extensions.Dns.RecordType.TextRecord:
-							var records = new HashSet<string>((existingDnsRecord?.Records).ToNullCheckedArray(record => record.Trim(' ', '"'), NullCheckCollectionResult.Empty));
-							records.UnionWith(dnsRecordsGroupedByName.ToNullCheckedArray(record => record.Data));
-							dnsRecord.Records = records.ToNullCheckedArray(record => $"\"{record}\"");
-							break;
-
-						default:
-							dnsRecord.Records = dnsRecordsGroupedByName.ToNullCheckedArray(record => record.Data);
-							break;
-					}
-
-					if (existingDnsRecord != null)
-					{
-						var newDnsRecord = ISI.Extensions.WebClient.Rest.ExecuteJsonPut<SerializableDTOs.DnsRecord, SerializableDTOs.DnsRecord>(uri.Uri, request.GetHeaders(Configuration), dnsRecord, true);
-					}
-					else
-					{
-						uri = new UriBuilder(request.GetUrl(Configuration));
-						uri.AddDirectoryToPath($"api/v1/domains/{request.Domain}/rrsets/");
-
-						var newDnsRecord = ISI.Extensions.WebClient.Rest.ExecuteJsonPost<SerializableDTOs.DnsRecord, SerializableDTOs.DnsRecord>(uri.Uri, request.GetHeaders(Configuration), dnsRecord, true);
-					}
+				}
+				catch (Exception exception)
+				{
+					Logger.LogError($"Curl: {eventHandler?.WebRequestDetails?.GetCurlCommand()}");
+					throw;
 				}
 			}
 

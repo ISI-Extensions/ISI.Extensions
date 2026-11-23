@@ -64,7 +64,7 @@ namespace ISI.Extensions.Xcp
 						{
 							stream.Rewind();
 							var command = $"cat > {keyCertificateFullName} <<EOF\n{stream.TextReadToEnd()}\nEOF\n";
-							addLog(command);
+							//addLog(command);
 							shellStream.SendCommandToShellStream(command);
 							addLog($"uploaded: {keyCertificateFullName}");
 						}
@@ -73,7 +73,7 @@ namespace ISI.Extensions.Xcp
 						{
 							stream.Rewind();
 							var command = $"cat > {certificateFullName} <<EOF\n{stream.TextReadToEnd()}\nEOF\n";
-							addLog(command);
+							//addLog(command);
 							shellStream.SendCommandToShellStream(command);
 							addLog($"uploaded: {certificateFullName}");
 						}
@@ -84,7 +84,7 @@ namespace ISI.Extensions.Xcp
 							{
 								stream.Rewind();
 								var command = $"cat > {caBundleCertificateFullName} <<EOF\n{stream.TextReadToEnd()}\nEOF\n";
-								addLog(command);
+								//addLog(command);
 								shellStream.SendCommandToShellStream(command);
 								addLog($"uploaded: {caBundleCertificateFullName}");
 							}

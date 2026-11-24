@@ -20,21 +20,28 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using MassTransit;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.MessageBus.MassTransit
 {
 	public class ConsumerAsync<TRequest> : AbstractConsumer<TRequest>
 		where TRequest : class
 	{
+		private readonly Microsoft.Extensions.Logging.ILogger _logger;
 		private readonly MessageBusConfigurator<TRequest>.ProcessorDelegate _processor;
 		private readonly IsAuthorizedDelegate _isAuthorized;
 		private readonly ISI.Extensions.MessageBus.OnError<TRequest> _onError;
 
-		public ConsumerAsync(MessageBusConfigurator<TRequest>.ProcessorDelegate processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
+		private readonly string _consumerName;
+
+		public ConsumerAsync(Microsoft.Extensions.Logging.ILogger logger, MessageBusConfigurator<TRequest>.ProcessorDelegate processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest> onError = null)
 		{
+			_logger = logger;
 			_processor = processor;
 			_isAuthorized = isAuthorized ?? ((headers, request) => true);
 			_onError = onError;
+
+			_consumerName = $"<{typeof(TRequest).Name}>";
 		}
 
 		public override async Task Consume(global::MassTransit.ConsumeContext<TRequest> context)
@@ -51,7 +58,16 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 				if (_isAuthorized(GetRequestHeaders(context), context.Message))
 				{
-					await _processor(context.Message, cancellationTokenSource.Token);
+					_logger.LogInformation($"MessageBus, Executing: {_consumerName}");
+
+					await _processor(context.Message, cancellationTokenSource.Token).ContinueWith(task =>
+					{
+						_logger.LogInformation($"MessageBus, Executed: {_consumerName}");
+					}, cancellationTokenSource.Token);
+				}
+				else
+				{
+					_logger.LogInformation($"MessageBus, Not Authenticated: {_consumerName}");
 				}
 
 				EndRequest();
@@ -62,11 +78,11 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 				if (_onError == null)
 				{
-					var message = $"{exception.Message}\nSerializedRequest:\n{serializedRequest}";
+					var message = $"MessageBus, {_consumerName}\n{exception.Message}\nSerializedRequest:\n{serializedRequest}";
 
 					exception = new ISI.Extensions.MessageBus.MessageBusException(message, exception);
 
-					System.Diagnostics.Trace.TraceError(exception.ErrorMessageFormatted());
+					_logger.LogError(exception.ErrorMessageFormatted());
 
 					throw exception;
 				}

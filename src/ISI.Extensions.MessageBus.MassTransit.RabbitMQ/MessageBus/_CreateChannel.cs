@@ -64,7 +64,7 @@ namespace ISI.Extensions.MessageBus.MassTransit.RabbitMQ
 
 					endPointConfigurator.UseInMemoryOutbox();
 
-					var messageBusQueueConfigurator = new MessageBusConfigurator(serviceProvider, endPointConfigurator);
+					var messageBusQueueConfigurator = new MessageBusConfigurator(Logger, serviceProvider, endPointConfigurator);
 
 					foreach (var addSubscription in messageBusBuildRequest.AddSubscriptions)
 					{

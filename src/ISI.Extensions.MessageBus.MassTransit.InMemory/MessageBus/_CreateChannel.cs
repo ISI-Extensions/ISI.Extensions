@@ -60,7 +60,7 @@ namespace ISI.Extensions.MessageBus.MassTransit.InMemory
 
 					endPointConfigurator.UseInMemoryOutbox();
 
-					var messageBusQueueConfigurator = new MessageBusConfigurator(serviceProvider, endPointConfigurator);
+					var messageBusQueueConfigurator = new MessageBusConfigurator(Logger, serviceProvider, endPointConfigurator);
 
 					foreach (var addSubscription in messageBusBuildRequest.AddSubscriptions)
 					{

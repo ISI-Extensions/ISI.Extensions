@@ -20,6 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
 using MassTransit;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.MessageBus.MassTransit
 {
@@ -28,17 +29,23 @@ namespace ISI.Extensions.MessageBus.MassTransit
 		where TRequest : class
 		where TResponse : class
 	{
+		private readonly Microsoft.Extensions.Logging.ILogger _logger;
 		private readonly GetControllerMessageBusConfigurator<TController>.GetControllerDelegate _getController;
 		private readonly ControllerMessageBusConfigurator<TController, TRequest, TResponse>.ProcessorDelegate _processor;
 		private readonly IsAuthorizedDelegate _isAuthorized;
 		private readonly ISI.Extensions.MessageBus.OnError<TRequest, TResponse> _onError;
 
-		public ControllerConsumerAsync(GetControllerMessageBusConfigurator<TController>.GetControllerDelegate getController, ControllerMessageBusConfigurator<TController, TRequest, TResponse>.ProcessorDelegate processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
+		private readonly string _consumerName;
+
+		public ControllerConsumerAsync(Microsoft.Extensions.Logging.ILogger logger, GetControllerMessageBusConfigurator<TController>.GetControllerDelegate getController, ControllerMessageBusConfigurator<TController, TRequest, TResponse>.ProcessorDelegate processor, IsAuthorizedDelegate isAuthorized = null, ISI.Extensions.MessageBus.OnError<TRequest, TResponse> onError = null)
 		{
+			_logger = logger;
 			_getController = getController;
 			_processor = processor;
 			_isAuthorized = isAuthorized ?? ((headers, request) => true);
 			_onError = onError;
+
+			_consumerName = $"{typeof(TController).Name}<{typeof(TRequest).Name}, {typeof(TResponse).Name}>";
 		}
 
 		public override async Task Consume(global::MassTransit.ConsumeContext<TRequest> context)
@@ -57,6 +64,8 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 				if (_isAuthorized(GetRequestHeaders(context), context.Message))
 				{
+					_logger.LogInformation($"MessageBus, Executing: {_consumerName}");
+
 					var controller = _getController();
 
 					if (context.Headers.TryGetHeader(ISI.Extensions.MessageBus.AbstractMessageBus.RequestTimeOutHeaderKey, out var requestTimeOutValue))
@@ -92,7 +101,14 @@ namespace ISI.Extensions.MessageBus.MassTransit
 						responseCorrelatedByLong.CorrelationId = requestCorrelatedByLong.CorrelationId;
 					}
 
-					await context.RespondAsync<TResponse>(response);
+					await context.RespondAsync<TResponse>(response).ContinueWith(task =>
+					{
+						_logger.LogInformation($"MessageBus, Executed: {_consumerName}");
+					}, cancellationTokenSource.Token);
+				}
+				else
+				{
+					_logger.LogInformation($"MessageBus, Not Authenticated: {_consumerName}");
 				}
 
 				EndRequest();
@@ -103,11 +119,11 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 				if (_onError == null)
 				{
-					var message = $"{exception.Message}\nSerializedRequest:\n{serializedRequest}";
+					var message = $"MessageBus, {_consumerName}\n{exception.Message}\nSerializedRequest:\n{serializedRequest}";
 
 					exception = new ISI.Extensions.MessageBus.MessageBusException(message, exception);
 
-					System.Diagnostics.Trace.TraceError(exception.ErrorMessageFormatted());
+					_logger.LogError(exception.ErrorMessageFormatted());
 
 					throw exception;
 				}

@@ -12,7 +12,7 @@ Redistribution and use in source and binary forms, with or without modification,
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #endregion
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +34,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 			timeout ??= Configuration.DefaultResponseTimeOut ?? DefaultResponseTimeOut;
 			timeToLive ??= Configuration.DefaultResponseTimeToLive;
 
-			if(!Configuration.CachePublishRequestClientWrapper)
+			if (!Configuration.CachePublishRequestClientWrapper)
 			{
 				var publishRequestClientWrapperType = typeof(PublishRequestClientWrapper<,>).MakeGenericType(requestType, responseType);
 
@@ -42,7 +42,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 			}
 
 			var key = $"{requestType.FullName}|{responseType.FullName}|{timeout.GetValueOrDefault().Ticks}|{timeToLive.GetValueOrDefault().Ticks}";
-			
+
 			if (!_publishRequestClientWrapperCache.TryGetValue(key, out var publishRequestClientWrapper))
 			{
 				lock (_publishRequestClientWrapperCacheLock)
@@ -96,68 +96,82 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 			public async Task<TResponse> GetResponse(IBus busControl, object request, IEnumerable<MessageBusMessageHeader> headers, System.Threading.CancellationToken cancellationToken)
 			{
+				if (request == null)
+				{
+					throw new NullReferenceException(nameof(request));
+				}
+
 				if (_client == null)
 				{
 					if (Configuration.LogPublishRequestClient)
 					{
 						Logger.LogInformation($"PublishRequestClientWrapper-Get Lock for {typeof(TRequest).Name}");
 					}
+
 					lock (_clientLock)
 					{
 						if (Configuration.LogPublishRequestClient)
 						{
 							Logger.LogInformation($"PublishRequestClientWrapper-Get CreateRequestClient for {typeof(TRequest).Name}");
 						}
+
 						_client ??= busControl.CreateRequestClient<TRequest>(_timeout);
 					}
 				}
 
-				if (Configuration.LogPublishRequestClient)
-				{
-					Logger.LogInformation($"PublishRequestClientWrapper-Get Create for {typeof(TRequest).Name}");
-				}
-				using (var busRequest = _client.Create(request as TRequest, cancellationToken))
+				if (request is TRequest tRequest)
 				{
 					if (Configuration.LogPublishRequestClient)
 					{
-						Logger.LogInformation($"PublishRequestClientWrapper-Get UseExecute for {typeof(TRequest).Name}");
+						Logger.LogInformation($"PublishRequestClientWrapper-Get Create for {typeof(TRequest).Name}");
 					}
-					busRequest.UseExecute(context =>
-					{
-						var operationKey = UpdateRequest(context.Message);
 
-						context.Headers.Set(ISI.Extensions.MessageBus.AbstractMessageBus.RequestTimeOutHeaderKey, _timeout.Formatted(TimeSpanExtensions.TimeSpanFormat.Precise));
-						context.Headers.Set(ISI.Extensions.Diagnostics.OperationKeyHeaderKey, operationKey);
-						
-						foreach (var header in headers ?? [])
+					using (var busRequest = _client.Create(tRequest, cancellationToken))
+					{
+						if (Configuration.LogPublishRequestClient)
 						{
-							context.Headers.Set(header.Key, header.Value);
+							Logger.LogInformation($"PublishRequestClientWrapper-Get UseExecute for {typeof(TRequest).Name}");
 						}
 
-						context.CorrelationId = NewId.NextGuid();
-					});
+						busRequest.UseExecute(context =>
+						{
+							var operationKey = UpdateRequest(context.Message);
 
-					if (_timeToLive.HasValue)
-					{
-						busRequest.TimeToLive = _timeToLive.Value;
+							context.Headers.Set(ISI.Extensions.MessageBus.AbstractMessageBus.RequestTimeOutHeaderKey, _timeout.Formatted(TimeSpanExtensions.TimeSpanFormat.Precise));
+							context.Headers.Set(ISI.Extensions.Diagnostics.OperationKeyHeaderKey, operationKey);
+
+							foreach (var header in headers ?? [])
+							{
+								context.Headers.Set(header.Key, header.Value);
+							}
+
+							context.CorrelationId = NewId.NextGuid();
+						});
+
+						if (_timeToLive.HasValue)
+						{
+							busRequest.TimeToLive = _timeToLive.Value;
+						}
+
+						if (Configuration.LogPublishRequestClient)
+						{
+							Logger.LogInformation($"PublishRequestClientWrapper-Get GetResponse for {typeof(TRequest).Name}");
+						}
+
+						var busResponse = await busRequest.GetResponse<TResponse>().ConfigureAwait(false);
+
+						var response = busResponse.Message;
+
+						if (Configuration.LogPublishRequestClient)
+						{
+							Logger.LogInformation($"PublishRequestClientWrapper-Get \"Return\" for {typeof(TRequest).Name}");
+						}
+
+						return response;
 					}
-
-					if (Configuration.LogPublishRequestClient)
-					{
-						Logger.LogInformation($"PublishRequestClientWrapper-Get GetResponse for {typeof(TRequest).Name}");
-					}
-
-					var busResponse = await busRequest.GetResponse<TResponse>().ConfigureAwait(false);
-
-					var response = busResponse.Message;
-
-					if (Configuration.LogPublishRequestClient)
-					{
-						Logger.LogInformation($"PublishRequestClientWrapper-Get \"Return\" for {typeof(TRequest).Name}");
-					}
-
-					return response;
 				}
+	
+				throw new Exception($"request is not of type: {typeof(TRequest).Name}, it is type: {request.GetType().Name}");
 			}
 		}
 	}

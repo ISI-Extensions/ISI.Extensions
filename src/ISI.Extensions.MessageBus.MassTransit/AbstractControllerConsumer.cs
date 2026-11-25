@@ -31,12 +31,12 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 		protected override void BeginRequest()
 		{
-			System.Diagnostics.Trace.TraceInformation($"BeginRequest ServiceType: \"{ControllerTypeAssemblyQualifiedNameWithoutVersion}\", RequestType: \"{RequestTypeAssemblyQualifiedNameWithoutVersion}\", OperationKey: \"{OperationKey}\"");
+			System.Diagnostics.Trace.TraceInformation($"MessageBus, BeginRequest: {ControllerTypeAssemblyQualifiedNameWithoutVersion}<{RequestTypeAssemblyQualifiedNameWithoutVersion}>, OperationKey: \"{OperationKey}\"");
 		}
 
 		protected override void EndRequest()
 		{
-			System.Diagnostics.Trace.TraceInformation($"EndRequest ServiceType: \"{ControllerTypeAssemblyQualifiedNameWithoutVersion}\", RequestType: \"{RequestTypeAssemblyQualifiedNameWithoutVersion}\", OperationKey: \"{OperationKey}\"");
+			System.Diagnostics.Trace.TraceInformation($"MessageBus, EndRequest: {ControllerTypeAssemblyQualifiedNameWithoutVersion}<{RequestTypeAssemblyQualifiedNameWithoutVersion}>, OperationKey: \"{OperationKey}\"");
 		}
 	}
 }

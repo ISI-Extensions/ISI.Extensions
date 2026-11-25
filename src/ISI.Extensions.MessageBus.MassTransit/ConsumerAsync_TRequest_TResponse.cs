@@ -61,8 +61,6 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 				if (_isAuthorized(GetRequestHeaders(context), context.Message))
 				{
-					_logger.LogInformation($"MessageBus, Executing: {_consumerName}");
-
 					response = await _processor(context.Message, cancellationTokenSource.Token);
 
 					if ((context.Message is ISI.Extensions.MessageBus.ICorrelatedBy<Guid> requestCorrelatedByGuid) && (response is ISI.Extensions.MessageBus.ICorrelatedBy<Guid> responseCorrelatedByGuid))
@@ -78,10 +76,7 @@ namespace ISI.Extensions.MessageBus.MassTransit
 						responseCorrelatedByLong.CorrelationId = requestCorrelatedByLong.CorrelationId;
 					}
 
-					await context.RespondAsync<TResponse>(response).ContinueWith(task =>
-					{
-						_logger.LogInformation($"MessageBus, Executed: {_consumerName}");
-					}, cancellationTokenSource.Token);
+					await context.RespondAsync<TResponse>(response);
 				}
 				else
 				{
@@ -114,6 +109,16 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 				throw;
 			}
+		}
+
+		protected override void BeginRequest()
+		{
+			_logger.LogInformation($"MessageBus, BeginRequest: {_consumerName}, OperationKey: \"{OperationKey}\"");
+		}
+
+		protected override void EndRequest()
+		{
+			_logger.LogInformation($"MessageBus, EndRequest: {_consumerName}, OperationKey: \"{OperationKey}\"");
 		}
 	}
 }

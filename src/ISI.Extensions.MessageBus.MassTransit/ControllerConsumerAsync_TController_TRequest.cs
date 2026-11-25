@@ -61,14 +61,9 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 				if (_isAuthorized(GetRequestHeaders(context), context.Message))
 				{
-					_logger.LogInformation($"MessageBus, Executing: {_consumerName}");
-
 					var controller = _getController();
 
-					await _processor(controller, context.Message, cancellationTokenSource.Token).ContinueWith(task =>
-					{
-						_logger.LogInformation($"MessageBus, Executed: {_consumerName}");
-					}, cancellationTokenSource.Token);
+					await _processor(controller, context.Message, cancellationTokenSource.Token);
 				}
 				else
 				{
@@ -101,6 +96,16 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 				throw;
 			}
+		}
+
+		protected override void BeginRequest()
+		{
+			_logger.LogInformation($"MessageBus, BeginRequest: {_consumerName}, OperationKey: \"{OperationKey}\"");
+		}
+
+		protected override void EndRequest()
+		{
+			_logger.LogInformation($"MessageBus, EndRequest: {_consumerName}, OperationKey: \"{OperationKey}\"");
 		}
 	}
 }

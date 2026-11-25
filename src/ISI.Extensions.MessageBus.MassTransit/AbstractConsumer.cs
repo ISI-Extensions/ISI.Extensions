@@ -57,12 +57,12 @@ namespace ISI.Extensions.MessageBus.MassTransit
 
 		protected virtual void BeginRequest()
 		{
-			System.Diagnostics.Trace.TraceInformation($"BeginRequest RequestType: \"{RequestTypeAssemblyQualifiedNameWithoutVersion}\", OperationKey: \"{OperationKey}\"");
+			System.Diagnostics.Trace.TraceInformation($"BeginRequest <{RequestTypeAssemblyQualifiedNameWithoutVersion}>, OperationKey: \"{OperationKey}\"");
 		}
 
 		protected virtual void EndRequest()
 		{
-			System.Diagnostics.Trace.TraceInformation($"EndRequest RequestType: \"{RequestTypeAssemblyQualifiedNameWithoutVersion}\", OperationKey: \"{OperationKey}\"");
+			System.Diagnostics.Trace.TraceInformation($"EndRequest <{RequestTypeAssemblyQualifiedNameWithoutVersion}>, OperationKey: \"{OperationKey}\"");
 		}
 
 		protected virtual void SetTrackingKeys(global::MassTransit.ConsumeContext<TRequest> context)

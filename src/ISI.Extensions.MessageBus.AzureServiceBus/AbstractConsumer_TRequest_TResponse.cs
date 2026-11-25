@@ -66,5 +66,17 @@ namespace ISI.Extensions.MessageBus.AzureServiceBus
 				ReplyToSessionId = requestMessage.SessionId,
 			};
 		}
+
+
+		protected override void BeginRequest()
+		{
+			System.Diagnostics.Trace.TraceInformation($"BeginRequest <{RequestTypeAssemblyQualifiedNameWithoutVersion}, {ResponseTypeAssemblyQualifiedNameWithoutVersion}>, OperationKey: \"{OperationKey}\"");
+		}
+
+		protected override void EndRequest()
+		{
+			System.Diagnostics.Trace.TraceInformation($"EndRequest <{RequestTypeAssemblyQualifiedNameWithoutVersion}, {ResponseTypeAssemblyQualifiedNameWithoutVersion}>, OperationKey: \"{OperationKey}\"");
+		}
+
 	}
 }

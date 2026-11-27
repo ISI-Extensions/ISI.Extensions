@@ -94,9 +94,9 @@ namespace ISI.Extensions.Tests
 
 			backupManager.FixCollationVersion(new ISI.Extensions.PostgreSQL.DataTransferObjects.BackupManager.FixCollationVersionRequest()
 			{
-				Host = "wrs-qa-postgres.westriversystems.com",
+				Host = "isinypostgresql01.isi-net.com",
 				UserName = "postgres",
-				Password = "7b5c7c08-516d-445d-962d-76fbaf022bc1",
+				Password = settings.GetValue("Postgres-Password"),
 			});
 		}
 	}

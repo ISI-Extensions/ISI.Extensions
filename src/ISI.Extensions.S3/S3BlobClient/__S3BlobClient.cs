@@ -28,7 +28,7 @@ namespace ISI.Extensions.S3
 	{
 		protected string BucketName { get; }
 
-		protected Minio.IMinioClient MinioClient { get; }
+		public Minio.IMinioClient MinioClient { get; }
 
 		public const string DirectorySeparator = "/";
 

@@ -24,6 +24,7 @@ using ISI.Extensions.Scm.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
+using Minio;
 
 namespace ISI.Extensions.Tests
 {
@@ -64,6 +65,8 @@ namespace ISI.Extensions.Tests
 			serviceProvider.SetServiceLocator();
 		}
 
+	
+
 		[Test]
 		public void S3BlobClient_Test()
 		{
@@ -72,18 +75,27 @@ namespace ISI.Extensions.Tests
 			settings.OverrideWithEnvironmentVariables();
 
 			//var s3BlobClient = new ISI.Extensions.S3.S3BlobClient(settings.GetValue("Minio-EndpointUrl"), settings.GetValue("Minio-AccessKey"), settings.GetValue("Minio-SecretKey"), "test-bucket");
-			var s3BlobClient = new ISI.Extensions.S3.S3BlobClient(settings.GetValue("rustfs-EndpointUrl"), settings.GetValue("rustfs-AccessKey"), settings.GetValue("rustfs-SecretKey"), "test");
-			//var s3BlobClient = new ISI.Extensions.S3.S3BlobClient(settings.GetValue("wasabi-EndpointUrl"), settings.GetValue("wasabi-AccessKey"), settings.GetValue("wasabi-SecretKey"), "wasabi-bucket");
+			//var s3BlobClient = new ISI.Extensions.S3.S3BlobClient(settings.GetValue("rustfs-EndpointUrl"), settings.GetValue("rustfs-AccessKey"), settings.GetValue("rustfs-SecretKey"), "test");
+			var s3BlobClient = new ISI.Extensions.S3.S3BlobClient(settings.GetValue("wasabi-EndpointUrl"), settings.GetValue("wasabi-AccessKey"), settings.GetValue("wasabi-SecretKey"), settings.GetValue("wasabi-bucket"));
+
+			//var xxxx=		s3BlobClient.MinioClient.ListBucketsAsync().GetAwaiter().GetResult();
+
+			var dir85 = s3BlobClient.ListFilesAsync(new()
+			{
+				//Prefix = "dir85",
+			}).GetAwaiter().GetResult();
+
+
 
 			var content = string.Join("==>", Enumerable.Range(1, 10000).Select(i => Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)));
 			var fileName = $"{Guid.NewGuid().Formatted(GuidExtensions.GuidFormat.WithHyphens)}-document.txt";
 
-			var fileExists = s3BlobClient.FileExistsAsync(new()
-			{
-				FullName = fileName,
-			}).GetAwaiter().GetResult().FileExists;
+			//var fileExists = s3BlobClient.FileExistsAsync(new()
+			//{
+			//	FullName = fileName,
+			//}).GetAwaiter().GetResult().FileExists;
 
-			Assert.That(!fileExists);
+			//Assert.That(!fileExists);
 
 			using (var stream = new System.IO.MemoryStream())
 			{

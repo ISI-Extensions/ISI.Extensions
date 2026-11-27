@@ -84,4 +84,3 @@ pg_restore -U postgres --format=c --dbname=dbxxxxxxxxxxx --create --verbose /var
 pg_restore -U postgres --format=c --dbname="ISI.SCM.BuildArtifacts" --create --verbose /var/lib/postgresql/dump/ISI.SCM.BuildArtifacts.20250812.032058383.dump
 pg_restore -U postgres --format=c --dbname="ISI.CertificateRegistry" --create --verbose /var/lib/postgresql/dump/ISI.CertificateRegistry.20250828.141522868.dump
 
-

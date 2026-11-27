@@ -82,5 +82,22 @@ namespace ISI.Extensions.Tests
 				LocalBackupDirectory = "/var/lib/postgresql-dump",
 			});
 		}
+
+		[Test]
+		public void FixCollationVersion_Test()
+		{
+			var settingsFullName = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("LocalAppData"), "Secrets", "ISI.keyValue");
+			var settings = ISI.Extensions.Scm.Settings.Load(settingsFullName, null);
+			settings.OverrideWithEnvironmentVariables();
+
+			var backupManager = ISI.Extensions.ServiceLocator.Current.GetService<ISI.Extensions.PostgreSQL.IBackupManager>();
+
+			backupManager.FixCollationVersion(new ISI.Extensions.PostgreSQL.DataTransferObjects.BackupManager.FixCollationVersionRequest()
+			{
+				Host = "wrs-qa-postgres.westriversystems.com",
+				UserName = "postgres",
+				Password = "7b5c7c08-516d-445d-962d-76fbaf022bc1",
+			});
+		}
 	}
 }

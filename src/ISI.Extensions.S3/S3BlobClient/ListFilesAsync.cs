@@ -34,9 +34,14 @@ namespace ISI.Extensions.S3
 			try
 			{
 				var listObjectArgs = new Minio.DataModel.Args.ListObjectsArgs()
-					.WithBucket(BucketName)
-					.WithPrefix(request.Prefix)
-					.WithRecursive(request.DoRecursive);
+					.WithBucket(BucketName);
+
+				if (!string.IsNullOrWhiteSpace(request.Prefix))
+				{
+					listObjectArgs = listObjectArgs.WithPrefix(request.Prefix);
+				}
+
+				listObjectArgs = listObjectArgs.WithRecursive(request.DoRecursive);
 
 				var blobInfos = new List<BlobInfo>();
 

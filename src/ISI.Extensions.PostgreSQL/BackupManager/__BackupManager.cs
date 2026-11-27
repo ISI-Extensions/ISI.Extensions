@@ -19,7 +19,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISI.Extensions.Extensions;
+using ISI.Extensions.PostgreSQL.Extensions;
+using ISI.Extensions.Repository.Extensions;
 using DTOs = ISI.Extensions.PostgreSQL.DataTransferObjects.BackupManager;
+using Microsoft.Extensions.Logging;
 
 namespace ISI.Extensions.PostgreSQL
 {

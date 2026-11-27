@@ -27,5 +27,6 @@ namespace ISI.Extensions.PostgreSQL
 	{
 		DTOs.BackupDatabaseResponse BackupDatabase(DTOs.IBackupDatabaseRequest request);
 		DTOs.ListDatabasesResponse ListDatabases(DTOs.IListDatabasesRequest request);
+		DTOs.FixCollationVersionResponse FixCollationVersion(DTOs.IFixCollationVersionRequest request);
 	}
 }
